@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>検証ラボ - Kenshow Labo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>検証ラボ</h1>
+    <p class="subtitle">端末内完結 / SQL Server → 配布SQLite → PWA表示</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>① SQLiteファイルを選択して読み込む</h2>
+
+      <div class="row">
+        <input id="sqlite-file" type="file" accept=".sqlite,.db" />
+        <button id="btn-load" disabled>読み込む</button>
+      </div>
+
+      <div class="row">
+        <div id="db-status" class="muted">未ロード</div>
+      </div>
+
+      <details>
+        <summary>確認（件数）</summary>
+        <div class="row">
+          <button id="btn-counts" disabled>件数を確認</button>
+        </div>
+        <pre id="counts-output" class="pre"></pre>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>② 過去レース検索</h2>
+
+      <div class="grid">
+        <label>
+          期間 From
+          <input id="q-from" type="date" />
+        </label>
+        <label>
+          期間 To
+          <input id="q-to" type="date" />
+        </label>
+        <label>
+          場コード（例: 05,06,09）
+          <input id="q-jyo" type="text" placeholder="05,06,09" />
+        </label>
+
+        <label>
+          芝/ダ（任意）
+          <select id="q-surface">
+            <option value="">指定なし</option>
+            <option value="芝">芝</option>
+            <option value="ダ">ダ</option>
+          </select>
+        </label>
+
+        <label>
+          距離（任意）
+          <input id="q-distance" type="number" min="0" step="100" placeholder="例: 1600" />
+        </label>
+
+        <label>
+          WIN5のみ
+          <select id="q-win5">
+            <option value="0">いいえ</option>
+            <option value="1">はい</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="row">
+        <button id="btn-search" disabled>検索</button>
+        <div id="search-status" class="muted"></div>
+      </div>
+
+      <div class="split">
+        <div>
+          <h3>検索結果（クリックで詳細）</h3>
+          <div id="race-list" class="list"></div>
+        </div>
+
+        <div>
+          <h3>レース詳細</h3>
+          <div id="race-detail" class="detail muted">未選択</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>③ 今週の指数つき出馬表（has_entry=1）</h2>
+
+      <div class="row">
+        <button id="btn-weekend" disabled>週末レース一覧を表示</button>
+        <div id="weekend-status" class="muted"></div>
+      </div>
+
+      <div class="split">
+        <div>
+          <h3>週末レース（クリックで新聞）</h3>
+          <div id="weekend-list" class="list"></div>
+        </div>
+
+        <div>
+          <h3>競馬新聞（vw_newspaper_rows）</h3>
+          <div id="newspaper" class="detail muted">未選択</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>kenshow_labo / 検証ラボ</small>
+  </footer>
+
+  <!-- sql.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
