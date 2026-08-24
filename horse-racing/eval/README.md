@@ -1,6 +1,6 @@
 # Eval表活用
 
-中央競馬のEval表取得・検証運用を支援するPythonツール群です。
+中央競馬のEval表取得・OCR・検証運用を支援するPythonツール群です。
 
 ## Source of truth
 
@@ -11,6 +11,8 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 ## Current tools
 
 - `src/master_eval_media_collector.py` — X上のEval表メディア収集
+- `src/extract_eval_table.py` — Eval表画像をCSVへ変換するOCR親CLI
+- `src/eval_ocr/` — 表構造検出・日本語OCR・数値OCR・検証・CSV出力
 - `src/fetch_jra_daily_results.py` — JRA日次結果・払戻取得
 - `src/validate_jra_results.py` — JRA結果CSVの機械検証
 
@@ -29,11 +31,41 @@ Issue作成をトリガーにGitHub Actionsが起動し、Git正本の `src/mast
 
 完了時はActionsが同じIssueへ `EVAL_MEDIA_RESULT` 形式の機械可読コメントを返し、Issueを自動で閉じます。コメントには `run_id`、artifact名、collection/validation終了コード、対象日と投稿ID、検証結果が含まれます。
 
-Actions側の検証は「各投稿でmetadataと1枚以上のmediaを取得できたか」までです。Eval表本体と注意事項・説明画像の内容判定は自動化せず、Chatがartifact回収後に画像内容を確認して選別します。
+Actions側の取得検証は「各投稿でmetadataと1枚以上のmediaを取得できたか」までです。Eval表本体かどうかの判定は後段OCR側でも行います。
 
-最終成果物は従来どおり、Eval表画像だけを含む `eval_YYYYMMDD_YYYYMMDD_Eval表画像.zip` とします。
+## Eval表OCRの標準実行経路
 
-投稿ID探索自体は `master_eval_media_collector.py` の担当外です。標準運用ではChatがWeb検索等で投稿IDを確定してからIssueを作成します。
+OCRは `src/extract_eval_table.py` を親CLIとして実行します。
+
+- 2会場=24R、3会場=36Rを自動判定
+- R番号はパネル位置から確定
+- 馬番は表の行位置から確定
+- 馬名は日本語OCR結果をそのまま保存（正式馬名との照合・補正は未実装）
+- Evalは数値専用OCR
+- `date + venue + race_no + horse_no` の重複、1〜12R構造、Eval 0〜100等を検証
+- CSVとvalidation JSONを出力
+
+GitHub Actionsでは `.github/workflows/eval_ocr_chat.yml` を使用します。
+
+- タイトル: `[EVAL_OCR_REQUEST] <request_id>`
+- 本文例:
+
+```json
+{
+  "source_run_id": 32744761146,
+  "source_artifact_name": "eval-media-...-32744761146"
+}
+```
+
+`source_run_id` と `source_artifact_name` には、直前の `EVAL_MEDIA_RESULT` が返した画像取得artifactを指定します。
+
+OCR workflowは取得artifact内の `resolved_request.json` を読み、各日付・投稿ID配下の画像を順にOCRへ投入します。Eval表レイアウトとして正常に構造解析・validationを通過した画像だけを成功候補とします。注意事項等の非Eval画像はレイアウト検出失敗として除外されます。
+
+各対象日で成功候補がちょうど1枚の場合のみ成功とし、0枚または複数枚ならfailure/ambiguousとして扱います。
+
+成果物artifactには、各画像から生成したCSV、個別validation JSON、全体の `batch_validation.json`、`resolved_request.json`、`run_status.txt` を含めます。完了時はIssueへ `EVAL_OCR_RESULT` コメントを返し、自動でIssueを閉じます。
+
+OS側依存としてGitHub Actionsでは `tesseract-ocr` と `tesseract-ocr-jpn` をインストールし、Python依存は `horse-racing/eval/requirements.txt` を使用します。
 
 ## JRA結果取得の標準実行経路
 
