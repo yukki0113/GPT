@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-"""Incrementally replace one or more completed JRDB race dates in Analysis Lite v1.2.
+"""Incrementally replace completed JRDB dates in Analysis Lite v1.2.
 
-Expected Raw layout for 2026+ daily archives:
-  RAW_ROOT/BAC/BACyymmdd.zip
-  RAW_ROOT/KYI/KYIyymmdd.zip
-  RAW_ROOT/SED/SEDyymmdd.zip
-  RAW_ROOT/CYB/CYByymmdd.zip
-  RAW_ROOT/UKC/UKCyymmdd.zip
+Supported input modes:
 
-A date is replaced atomically only after all required archives parse successfully.
+1. Daily-kind Raw layout (2026+ fetcher output)
+   RAW_ROOT/BAC/BACyymmdd.zip
+   RAW_ROOT/KYI/KYIyymmdd.zip
+   RAW_ROOT/SED/SEDyymmdd.zip
+   RAW_ROOT/CYB/CYByymmdd.zip
+   RAW_ROOT/UKC/UKCyymmdd.zip
+
+2. PACI + SED pair (recommended manual/ChatGPT operation)
+   PACIyymmdd.zip contains BAC/KYI/CYB/UKC and related pre-race members.
+   SEDyymmdd.zip provides completed results and actual track condition.
+
+A date is replaced atomically only after all required source members parse.
 """
 from __future__ import annotations
 
@@ -16,13 +22,15 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import re
 import sqlite3
 import zipfile
 from pathlib import Path
 
-VERSION = "1.0-production"
+VERSION = "1.1-production"
 SCHEMA_VERSION = "v1.2"
 REQUIRED_KINDS = ("BAC", "KYI", "SED", "CYB", "UKC")
+PACI_KINDS = ("BAC", "KYI", "CYB", "UKC")
 FACT_COLUMNS = (
     "race_date","year","venue_code","race_no","track_type","distance",
     "race_condition_code","track_condition_code","grade_code","race_key","horse_no",
@@ -40,6 +48,16 @@ def now() -> str:
 
 def parse_date(value: str) -> dt.date:
     return dt.datetime.strptime(value.replace("-", "").replace("/", ""), "%Y%m%d").date()
+
+
+def infer_date_from_name(path: Path, prefix: str) -> dt.date:
+    m = re.fullmatch(rf"{prefix}(\d{{6}})\.zip", path.name, re.IGNORECASE)
+    if not m:
+        raise ValueError(f"Cannot infer date from {path.name}; expected {prefix}yymmdd.zip")
+    yymmdd = m.group(1)
+    yy = int(yymmdd[:2])
+    year = 2000 + yy if yy < 80 else 1900 + yy
+    return dt.date(year, int(yymmdd[2:4]), int(yymmdd[4:6]))
 
 
 def text(raw: bytes, offset: int, width: int) -> str:
@@ -96,10 +114,7 @@ def parse_ukc_profile(raw: bytes) -> dict[str, object]:
     }
 
 
-def parse_day(raw_root: Path, date: dt.date) -> tuple[list[tuple], dict[str, object]]:
-    archives = {kind: daily_zip(raw_root, kind, date) for kind in REQUIRED_KINDS}
-    lines = {kind: read_member(path, kind, date) for kind, path in archives.items()}
-
+def _parse_lines(lines: dict[str, list[bytes]], date: dt.date) -> tuple[list[tuple], dict[str, object]]:
     races: dict[str, dict[str, object]] = {}
     entries: dict[tuple[str,int | None], dict[str, object]] = {}
     results: dict[tuple[str,int | None], dict[str, object]] = {}
@@ -173,15 +188,47 @@ def parse_day(raw_root: Path, date: dt.date) -> tuple[list[tuple], dict[str, obj
             result["win_payout"],result["place_payout"],entry["prev_result_key_1"],entry["prev_race_key_1"],
         ))
 
-    race_keys = {r[9] for r in rows}
     if not rows:
         raise ValueError(f"{date}: no joinable completed rows")
-    meta = {
-        "race_count": len(race_keys), "row_count": len(rows), "missing_profile_rows": missing_profiles,
+    return rows, {
+        "race_count": len({r[9] for r in rows}),
+        "row_count": len(rows),
+        "missing_profile_rows": missing_profiles,
+        "kind_line_counts": {kind: len(values) for kind, values in lines.items()},
+    }
+
+
+def parse_day(raw_root: Path, date: dt.date) -> tuple[list[tuple], dict[str, object]]:
+    archives = {kind: daily_zip(raw_root, kind, date) for kind in REQUIRED_KINDS}
+    lines = {kind: read_member(path, kind, date) for kind, path in archives.items()}
+    rows, meta = _parse_lines(lines, date)
+    meta.update({
+        "source_mode": "daily-kind",
         "source_sha256s": {k: sha256_file(v) for k,v in archives.items()},
         "source_manifest": {k: str(v) for k,v in archives.items()},
-    }
+    })
     return rows, meta
+
+
+def parse_paci_sed(paci: Path, sed: Path) -> tuple[dt.date, list[tuple], dict[str, object]]:
+    if not paci.exists():
+        raise FileNotFoundError(paci)
+    if not sed.exists():
+        raise FileNotFoundError(sed)
+    date = infer_date_from_name(paci, "PACI")
+    sed_date = infer_date_from_name(sed, "SED")
+    if sed_date != date:
+        raise ValueError(f"PACI/SED date mismatch: {date} vs {sed_date}")
+
+    lines = {kind: read_member(paci, kind, date) for kind in PACI_KINDS}
+    lines["SED"] = read_member(sed, "SED", date)
+    rows, meta = _parse_lines(lines, date)
+    meta.update({
+        "source_mode": "PACI+SED",
+        "source_sha256s": {"PACI": sha256_file(paci), "SED": sha256_file(sed)},
+        "source_manifest": {"PACI": str(paci), "SED": str(sed)},
+    })
+    return date, rows, meta
 
 
 def ensure_v12(conn: sqlite3.Connection) -> None:
@@ -194,8 +241,7 @@ def ensure_v12(conn: sqlite3.Connection) -> None:
         raise RuntimeError("Analysis DB is not v1.2; missing meta_analysis_ingest_batch")
 
 
-def update_date(conn: sqlite3.Connection, raw_root: Path, date: dt.date) -> dict[str, object]:
-    rows, meta = parse_day(raw_root, date)
+def update_rows(conn: sqlite3.Connection, date: dt.date, rows: list[tuple], meta: dict[str, object]) -> dict[str, object]:
     started = now()
     batch_id = conn.execute(
         "INSERT INTO meta_analysis_ingest_batch(target_date,builder_version,schema_version,started_at,status,source_manifest,source_sha256s,race_count,row_count) VALUES(?,?,?,?,?,?,?,?,?)",
@@ -212,9 +258,10 @@ def update_date(conn: sqlite3.Connection, raw_root: Path, date: dt.date) -> dict
         if inserted != len(rows):
             raise RuntimeError(f"inserted row mismatch: expected {len(rows)}, got {inserted}")
         conn.execute("COMMIT")
+        message = f"missing_profile_rows={meta['missing_profile_rows']}; source_mode={meta['source_mode']}"
         conn.execute(
             "UPDATE meta_analysis_ingest_batch SET finished_at=?,status='SUCCESS',replaced_row_count=?,message=? WHERE batch_id=?",
-            (now(),old_count,f"missing_profile_rows={meta['missing_profile_rows']}",batch_id),
+            (now(),old_count,message,batch_id),
         )
         conn.commit()
         return {"date":date.isoformat(),"old_rows":old_count,"new_rows":len(rows),**meta}
@@ -226,18 +273,40 @@ def update_date(conn: sqlite3.Connection, raw_root: Path, date: dt.date) -> dict
         raise
 
 
+def update_date(conn: sqlite3.Connection, raw_root: Path, date: dt.date) -> dict[str, object]:
+    rows, meta = parse_day(raw_root, date)
+    return update_rows(conn, date, rows, meta)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", type=Path, required=True)
-    ap.add_argument("--raw-root", type=Path, required=True)
-    ap.add_argument("--dates", nargs="+", required=True)
+    ap.add_argument("--raw-root", type=Path)
+    ap.add_argument("--dates", nargs="+")
+    ap.add_argument("--paci", type=Path, help="PACIyymmdd.zip; use together with --sed")
+    ap.add_argument("--sed", type=Path, help="SEDyymmdd.zip; use together with --paci")
     args = ap.parse_args()
+
+    daily_mode = args.raw_root is not None or args.dates is not None
+    paci_mode = args.paci is not None or args.sed is not None
+    if daily_mode and paci_mode:
+        ap.error("Use either --raw-root/--dates or --paci/--sed, not both")
+    if paci_mode:
+        if args.paci is None or args.sed is None:
+            ap.error("PACI mode requires both --paci and --sed")
+    elif args.raw_root is None or not args.dates:
+        ap.error("Daily-kind mode requires --raw-root and --dates")
+
     conn = sqlite3.connect(args.db)
     try:
         ensure_v12(conn)
         out=[]
-        for value in args.dates:
-            out.append(update_date(conn,args.raw_root,parse_date(value)))
+        if paci_mode:
+            date, rows, meta = parse_paci_sed(args.paci, args.sed)
+            out.append(update_rows(conn, date, rows, meta))
+        else:
+            for value in args.dates:
+                out.append(update_date(conn,args.raw_root,parse_date(value)))
         integrity=conn.execute("PRAGMA integrity_check").fetchone()[0]
         print(json.dumps({"updates":out,"integrity_check":integrity},ensure_ascii=False,indent=2))
     finally:
