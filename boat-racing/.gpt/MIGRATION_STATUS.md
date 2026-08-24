@@ -16,11 +16,13 @@ Status: COMPLETE
 - `docs/README_公式結果取得.md`
 - `docs/出走表取得依頼_定型作業.txt`
 - `docs/直前情報取得依頼_定型作業.txt`
+- `docs/直前情報取得_GitHubActions運用.md`
 - `docs/結果照合取得依頼_定型作業.txt`
 - `src/fetch_boatrace_racelist.py`
 - `src/fetch_boatrace_pre_race_info.py`
 - `src/fetch_boatrace_results.py`
 - `.github/workflows/boatrace_racelist_manual.yml`
+- `.github/workflows/boatrace_pre_race_manual.yml`
 - `.github/workflows/boatrace_results_manual.yml`
 
 ## 移行状態
@@ -60,10 +62,13 @@ Chat実行環境からBOAT RACE公式サイトへ直接通信できない、ま�
 現時点の常設Workflow：
 
 - 出走表取得: `.github/workflows/boatrace_racelist_manual.yml`
+- 直前情報取得: `.github/workflows/boatrace_pre_race_manual.yml`
 - 結果取得・予想照合: `.github/workflows/boatrace_results_manual.yml`
 
 Actions側でもGit main上の正本Pythonと `boat-racing/requirements.txt` をそのまま使用する。
 成果物はartifactへ保存し、Chat側で回収・監査する。
+
+直前情報取得では `date`・`venue`・`race`・`format` を `workflow_dispatch` の入力として渡し、正本 `boat-racing/src/fetch_boatrace_pre_race_info.py` を実行する。成功時・失敗時とも出力ファイルと `run_status.txt` をartifactへ保存し、Chat側で `fetch_status`、6艇分の出走表・展示タイム・展示進入/ST・必須気象情報を検査する。
 
 結果取得では日次の事前予想CSVをGitへcommitせず渡すため、CSVをgzip圧縮＋Base64化して `workflow_dispatch` 入力へ渡し、Runnerの一時領域へ復元する。
 
