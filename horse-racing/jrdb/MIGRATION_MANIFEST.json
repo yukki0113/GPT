@@ -1,0 +1,28 @@
+{
+  "package_date": "2026-08-24",
+  "status": "GIT_READY",
+  "current_core_builder": "v1.1.2-production",
+  "security": {
+    "jrdb_secret_py_in_user_source_zip": true,
+    "jrdb_secret_py_in_git_package": false,
+    "credentials_embedded_in_git_package": false
+  },
+  "notes": [
+    "fetch_jrdb_paci(4).py was normalized to src/fetch_jrdb_paci.py.",
+    "README_fetch_jrdb_paci(4).md was normalized to docs/README_fetch_jrdb_paci.md.",
+    "Core Builder README command examples were normalized to build_jrdb_core.py.",
+    "jrdb_core_config.json is not required by the supplied v1.1.2 builder.",
+    "fetch_jrdb_history.py supports optional --config but has built-in defaults."
+  ],
+  "tests": [
+    {"file":"src/build_jrdb_core.py","py_compile":"PASS","returncode":0,"help_smoke":"PASS","help_returncode":0},
+    {"file":"src/fetch_jrdb_history.py","py_compile":"PASS","returncode":0,"help_smoke":"PASS","help_returncode":0},
+    {"file":"src/fetch_jrdb_paci.py","py_compile":"PASS","returncode":0,"help_smoke":"PASS","help_returncode":0},
+    {"file":"src/racenote_jrdb.py","py_compile":"PASS","returncode":0,"help_smoke":"PASS","help_returncode":0},
+    {"file":"src/racenote_jrdb_pipeline.py","py_compile":"PASS","returncode":0,"help_smoke":"PASS","help_returncode":0},
+    {"file":"tools/audit_jrdb_core_v1_1_1.py","py_compile":"PASS","returncode":0,"help_smoke":"PASS","help_returncode":0},
+    {"file":"tools/generate_jrdb_codebooks.py","py_compile":"PASS","returncode":0,"help_smoke":"PASS","help_returncode":0}
+  ],
+  "source_package": "JRDB_Git移行_ready_20260824.zip",
+  "note": "Full file hashes remain recorded in the source package manifest; __pycache__ / .pyc are intentionally excluded from Git."
+}
