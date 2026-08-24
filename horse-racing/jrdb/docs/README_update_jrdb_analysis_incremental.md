@@ -7,26 +7,64 @@
 Routine flow:
 
 ```text
-JRDB daily Raw ZIPs
+JRDB completed-date sources
   -> Analysis Lite incremental replacement
-  -> Stats Mart refresh
+  -> current-year Stats Mart refresh
 ```
 
 Core is not required as an intermediate artifact.
 
-## Required daily Raw
+## Recommended input: PACI + SED
 
-For each target date, all of the following are required:
+For manual/ChatGPT operation, the preferred completed-date pair is:
 
-- BACyymmdd.zip
-- KYIyymmdd.zip
-- SEDyymmdd.zip
-- CYByymmdd.zip
-- UKCyymmdd.zip
+- `PACIyymmdd.zip`
+- `SEDyymmdd.zip`
 
-The updater validates that each archive contains exactly the expected daily TXT member before changing the database.
+PACI supplies the Analysis-required pre-race members:
 
-Because SED is the result source, a date should be ingested only after JRDB has published the completed result-side Raw for that race date.
+- BAC
+- KYI
+- CYB
+- UKC
+
+SED supplies completed results, final odds/popularity, payouts, and actual track condition.
+
+HJC/TYB are not required by the current Analysis Lite schema.
+
+The updater infers the race date from the two ZIP filenames and rejects a PACI/SED date mismatch before touching the database.
+
+Example:
+
+```bash
+python src/update_jrdb_analysis_incremental.py \
+  --db ./jrdb_analysis.sqlite \
+  --paci ./PACI260823.zip \
+  --sed ./SED260823.zip
+```
+
+## Alternative input: individual daily-kind ZIPs
+
+The fetcher-oriented layout remains supported:
+
+- `BAC/BACyymmdd.zip`
+- `KYI/KYIyymmdd.zip`
+- `SED/SEDyymmdd.zip`
+- `CYB/CYByymmdd.zip`
+- `UKC/UKCyymmdd.zip`
+
+Example:
+
+```bash
+python src/update_jrdb_analysis_incremental.py \
+  --db ./jrdb_analysis.sqlite \
+  --raw-root ./00_raw_local \
+  --dates 20260822 20260823
+```
+
+In both modes, the expected daily TXT member names are validated exactly and ZIP integrity is checked before any Analysis rows are replaced.
+
+Because SED is the result source, ingest a date only after JRDB has published the completed result-side SED for that race date.
 
 ## Replacement semantics
 
@@ -42,7 +80,7 @@ The updater parses and validates the complete target date first, then performs:
 
 Re-running the same race date therefore replaces it instead of duplicating it. This is intentional so later JRDB corrections can be re-applied safely.
 
-Each batch records source paths, SHA-256 values, race/row counts and the number of rows replaced.
+Each batch records source paths, SHA-256 values, race/row counts, source mode, and the number of rows replaced.
 
 ## Previous-race linkage
 
@@ -68,18 +106,11 @@ python src/upgrade_jrdb_analysis_v1_1_to_v1_2.py \
 
 This adds the v1.2 columns/batch table and backfills prev1 from annual KYI Raw.
 
-## Incremental run
-
-```bash
-python src/update_jrdb_analysis_incremental.py \
-  --db ./jrdb_analysis.sqlite \
-  --raw-root ./00_raw_local \
-  --dates 20260822 20260823
-```
-
 ## Validation
 
-Historical pseudo-daily regression using the canonical 2025-12-28 members:
+### Historical pseudo-daily regression
+
+Canonical 2025-12-28 members:
 
 - target rows before replacement: 356
 - target rows after replacement: 356
@@ -87,6 +118,53 @@ Historical pseudo-daily regression using the canonical 2025-12-28 members:
 - row hash before/after: identical
 - `PRAGMA integrity_check`: `ok`
 - batch status: SUCCESS
+
+### Real 2026 PACI + SED operational test — 2026-08-23
+
+Actual uploaded JRDB sources:
+
+- `PACI260823.zip`
+- `SED260823.zip`
+
+Source validation:
+
+- PACI BAC: 36 rows / 182-byte bodies
+- PACI KYI: 466 rows / 1022-byte bodies
+- PACI CYB: 466 rows / 94-byte bodies
+- PACI UKC: 466 rows / 290-byte bodies
+- SED: 466 rows / 374-byte bodies
+- ZIP integrity: PASS
+
+Incremental result against the accepted 2016-2025 Analysis v1.2 baseline:
+
+- races added: **36**
+- rows added: **466**
+- missing UKC profiles: **0**
+- frame populated: **466 / 466**
+- track condition populated: **466 / 466**
+- sire populated: **466 / 466**
+- `prev_result_key_1` populated: **417 / 466**
+- `prev_race_key_1` populated: **417 / 466**
+- total Analysis rows after test: **482,093**
+- batch status: **SUCCESS**
+- `PRAGMA integrity_check`: **ok**
+
+The date contained 12 races each at venue codes 01 / 04 / 07, with 154 / 161 / 151 entry rows respectively.
+
+A full Stats Mart rebuild from the updated test Analysis also passed:
+
+- 2026 sire mart rows: 403
+- 2026 jockey mart rows: 366
+- 2026 frame mart rows: 168
+- mart `PRAGMA integrity_check`: `ok`
+
+This confirms the intended live-season path:
+
+```text
+PACI + SED -> Analysis incremental replace/add -> current-year Stats Mart refresh
+```
+
+### Raw/Core equivalence baseline
 
 Raw -> Analysis v1.2 versus Core -> Analysis v1.2 exact equivalence:
 
