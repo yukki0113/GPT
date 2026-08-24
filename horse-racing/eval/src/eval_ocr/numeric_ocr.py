@@ -104,7 +104,6 @@ def _ocr_by_digit_components(binary: np.ndarray) -> Optional[int]:
 
 
 def _ocr_single_cell_candidates(binary: np.ndarray) -> list[int]:
-    """Collect independent whole-cell readings for conservative majority voting."""
     candidates: list[int] = []
     for psm in (7, 8, 10, 13):
         text = pytesseract.image_to_string(
@@ -117,7 +116,21 @@ def _ocr_single_cell_candidates(binary: np.ndarray) -> list[int]:
     return candidates
 
 
+def _needs_ambiguity_check(value: Optional[int]) -> bool:
+    if value is None or not (0 <= value <= 100):
+        return True
+    token = str(value)
+    # Initial production comparison found a real 74 -> 14 confusion. Restrict
+    # the expensive cell-level ensemble to values where 1/7 ambiguity can
+    # change the result; the stacked batch OCR remains the fast default for
+    # the other ~90% of cells.
+    return len(token) >= 2 and (token.startswith("1") or token.startswith("7"))
+
+
 def _choose_value(batch_value: Optional[int], binary: np.ndarray) -> Optional[int]:
+    if not _needs_ambiguity_check(batch_value):
+        return batch_value
+
     candidates: list[int] = []
     if batch_value is not None and 0 <= batch_value <= 100:
         candidates.append(batch_value)
@@ -133,11 +146,6 @@ def _choose_value(batch_value: Optional[int], binary: np.ndarray) -> Optional[in
     counts = Counter(candidates)
     best_value, best_count = counts.most_common(1)[0]
 
-    # Preserve the fast batch reading unless at least two independent readings
-    # agree on a different value with a strictly stronger vote. This avoids
-    # making the fallback path more aggressive than the original PoC while
-    # allowing confusions such as 1/7 to be corrected when cell-level OCR
-    # consistently disagrees with the stacked batch OCR.
     if batch_value is not None and 0 <= batch_value <= 100:
         batch_count = counts[batch_value]
         if best_value != batch_value and best_count >= 2 and best_count > batch_count:
