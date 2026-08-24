@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Build compact JRDB Analysis Lite SQLite from Core v1.2.
-
-The first implementation intentionally consumes Core v1.2. A Raw->Analysis
-path may be added after output equivalence is proven.
-"""
+"""Build compact JRDB Analysis Lite SQLite from Core v1.2.1."""
 from __future__ import annotations
 
 import argparse
@@ -12,8 +8,8 @@ import hashlib
 import sqlite3
 from pathlib import Path
 
-VERSION = "1.0"
-SCHEMA_VERSION = "v1"
+VERSION = "1.1"
+SCHEMA_VERSION = "v1.1"
 
 
 def now() -> str:
@@ -43,15 +39,15 @@ def build(core: Path, out: Path, schema: Path) -> dict[str, object]:
     ).lastrowid
     conn.execute("ATTACH DATABASE ? AS core", (str(core),))
 
-    # Calendar-year age is used for JRA aggregation.
     conn.execute(
         """
         INSERT INTO fact_entry_result_lite(
-          race_date,year,venue_code,race_no,track_type,distance,condition_code,grade_code,
-          race_key,horse_no,horse_id,horse_name,sex_code,age,sire_name,broodmare_sire_name,
-          sire_line_code,broodmare_sire_line_code,jockey_name,running_style,distance_aptitude,
-          uptrend,training_index,finish,abnormal_code,final_win_odds,final_win_popularity,
-          win_payout,place_payout
+          race_date,year,venue_code,race_no,track_type,distance,
+          race_condition_code,track_condition_code,grade_code,
+          race_key,horse_no,frame_no,horse_id,horse_name,sex_code,age,
+          sire_name,broodmare_sire_name,sire_line_code,broodmare_sire_line_code,
+          jockey_name,running_style,distance_aptitude,uptrend,training_index,
+          finish,abnormal_code,final_win_odds,final_win_popularity,win_payout,place_payout
         )
         SELECT
           r.race_date,
@@ -60,10 +56,12 @@ def build(core: Path, out: Path, schema: Path) -> dict[str, object]:
           r.race_no,
           r.track_type,
           r.distance,
-          r.condition_code,
+          r.condition_code AS race_condition_code,
+          rs.track_condition_code,
           r.grade_code,
           e.race_key,
           e.horse_no,
+          e.frame_no,
           e.horse_id,
           e.horse_name,
           hp.sex_code,
@@ -108,12 +106,20 @@ def build(core: Path, out: Path, schema: Path) -> dict[str, object]:
     bms_nonblank = conn.execute(
         "SELECT count(*) FROM fact_entry_result_lite WHERE trim(coalesce(broodmare_sire_name,''))<>''"
     ).fetchone()[0]
+    frame_nonnull = conn.execute(
+        "SELECT count(*) FROM fact_entry_result_lite WHERE frame_no IS NOT NULL"
+    ).fetchone()[0]
+    track_condition_nonblank = conn.execute(
+        "SELECT count(*) FROM fact_entry_result_lite WHERE trim(coalesce(track_condition_code,''))<>''"
+    ).fetchone()[0]
     conn.close()
 
     return {
         "rows": row_count,
         "sire_nonblank": sire_nonblank,
         "broodmare_sire_nonblank": bms_nonblank,
+        "frame_nonnull": frame_nonnull,
+        "track_condition_nonblank": track_condition_nonblank,
         "integrity_check": integrity,
         "size_bytes": out.stat().st_size,
         "source_core_sha256": sha256_file(core),
@@ -123,12 +129,12 @@ def build(core: Path, out: Path, schema: Path) -> dict[str, object]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--core", type=Path, required=True, help="Core v1.2 SQLite")
+    ap.add_argument("--core", type=Path, required=True, help="Core v1.2.1 SQLite")
     ap.add_argument("--db", type=Path, required=True, help="output Analysis Lite SQLite")
     ap.add_argument(
         "--schema",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_analysis_schema_v1.sql",
+        default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_analysis_schema_v1_1.sql",
     )
     args = ap.parse_args()
     result = build(args.core, args.db, args.schema)
