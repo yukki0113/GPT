@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - ops/boatrace-20260825
+  pull_request:
+    branches:
+      - main
 
 jobs:
   fetch:
@@ -36,11 +39,15 @@ jobs:
         id: fetch
         continue-on-error: true
         run: |
+          set +e
           python boat-racing/src/fetch_boatrace_racelist.py --config /tmp/config_20260825.json
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
       - name: Write run status
         if: always()
         run: |
+          mkdir -p boat-racing/output_20260825
           echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}" > boat-racing/output_20260825/run_status.txt
       - name: Upload outputs
         if: always()
