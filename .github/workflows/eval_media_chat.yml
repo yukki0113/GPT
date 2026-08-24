@@ -1,0 +1,346 @@
+name: eval-media-chat
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[EVAL_MEDIA_REQUEST]'
+
+jobs:
+  collect:
+    if: startsWith(github.event.issue.title, '[EVAL_MEDIA_REQUEST]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = '[EVAL_MEDIA_REQUEST]'
+          title = os.environ['ISSUE_TITLE']
+          if not title.startswith(prefix):
+              raise SystemExit('Unexpected issue title')
+
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('Invalid request_id in issue title')
+
+          body = (os.environ.get('ISSUE_BODY') or '').strip()
+          try:
+              request = json.loads(body)
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          raw_targets = request.get('targets')
+          targets = []
+
+          if raw_targets is not None:
+              if not isinstance(raw_targets, list) or not raw_targets:
+                  raise SystemExit('targets must be a non-empty array')
+              for item in raw_targets:
+                  if not isinstance(item, dict):
+                      raise SystemExit('Each targets item must be an object')
+                  date_value = str(item.get('date', '') or '').strip()
+                  post_id = str(
+                      item.get('post_id')
+                      or item.get('tweet_id')
+                      or item.get('status_id')
+                      or ''
+                  ).strip()
+                  targets.append({'date': date_value, 'post_id': post_id})
+          else:
+              dates_value = request.get('dates', [])
+              post_ids_value = request.get('post_ids', request.get('tweet_ids', []))
+
+              if isinstance(dates_value, str):
+                  dates = [x for x in re.split(r'[\s,]+', dates_value.strip()) if x]
+              elif isinstance(dates_value, list):
+                  dates = [str(x).strip() for x in dates_value if str(x).strip()]
+              else:
+                  raise SystemExit('dates must be a string or array')
+
+              if isinstance(post_ids_value, str):
+                  post_ids = [x for x in re.split(r'[\s,]+', post_ids_value.strip()) if x]
+              elif isinstance(post_ids_value, list):
+                  post_ids = [str(x).strip() for x in post_ids_value if str(x).strip()]
+              else:
+                  raise SystemExit('post_ids must be a string or array')
+
+              if not dates or not post_ids:
+                  raise SystemExit('Specify targets, or both dates and post_ids')
+              if len(dates) != len(post_ids):
+                  raise SystemExit('dates and post_ids must have the same number of items')
+              targets = [
+                  {'date': date_value, 'post_id': post_id}
+                  for date_value, post_id in zip(dates, post_ids)
+              ]
+
+          if len(targets) > 31:
+              raise SystemExit('Too many targets; maximum is 31 per request')
+
+          seen_post_ids = set()
+          parsed_dates = []
+          for target in targets:
+              try:
+                  parsed_date = datetime.strptime(target['date'], '%Y-%m-%d').date()
+              except ValueError as exc:
+                  raise SystemExit(
+                      f"Invalid date {target['date']!r}; expected YYYY-MM-DD"
+                  ) from exc
+              post_id = target['post_id']
+              if not re.fullmatch(r'\d{10,25}', post_id):
+                  raise SystemExit(f'Invalid post_id: {post_id!r}')
+              if post_id in seen_post_ids:
+                  raise SystemExit(f'Duplicate post_id: {post_id}')
+              seen_post_ids.add(post_id)
+              parsed_dates.append(parsed_date)
+
+          first_date = min(parsed_dates).strftime('%Y%m%d')
+          last_date = max(parsed_dates).strftime('%Y%m%d')
+          range_label = first_date if first_date == last_date else f'{first_date}-{last_date}'
+
+          output_label = str(request.get('output_label', '') or '').strip()
+          if output_label:
+              if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', output_label):
+                  raise SystemExit('output_label must contain only A-Z, a-z, 0-9, dot, underscore, or hyphen')
+              output_suffix = output_label
+          else:
+              output_suffix = range_label
+
+          output_dir = f'horse-racing/eval/output_eval_media_{request_id}_{output_suffix}'
+          command = [
+              'python',
+              'horse-racing/eval/src/master_eval_media_collector.py',
+              *[target['post_id'] for target in targets],
+              '--out',
+              output_dir,
+          ]
+
+          config = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'targets': targets,
+              'command': command,
+              'output_dir': output_dir,
+              'range_label': range_label,
+              'output_label': output_label or None,
+          }
+
+          Path('/tmp/eval_media_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'RANGE_LABEL={range_label}\n')
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'TARGET_COUNT={len(targets)}\n')
+          PY
+
+      - name: Save resolved request
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          cp /tmp/eval_media_config.json "$OUTPUT_DIR/resolved_request.json"
+
+      - name: Collect Eval post media
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(
+              Path('/tmp/eval_media_config.json').read_text(encoding='utf-8')
+          )
+          completed = subprocess.run(config['command'], check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate collected media
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          config = json.loads(
+              Path('/tmp/eval_media_config.json').read_text(encoding='utf-8')
+          )
+          output_dir = Path(config['output_dir'])
+          output_dir.mkdir(parents=True, exist_ok=True)
+
+          target_reports = []
+          total_media = 0
+          all_ok = True
+
+          for target in config['targets']:
+              target_dir = output_dir / target['post_id']
+              metadata_path = target_dir / 'metadata.json'
+              media_files = sorted(
+                  path.name
+                  for path in target_dir.glob('media_*')
+                  if path.is_file()
+              )
+              total_media += len(media_files)
+              ok = metadata_path.is_file() and bool(media_files)
+              all_ok = all_ok and ok
+              target_reports.append({
+                  'date': target['date'],
+                  'post_id': target['post_id'],
+                  'metadata_exists': metadata_path.is_file(),
+                  'media_count': len(media_files),
+                  'media_files': media_files,
+                  'status': 'success' if ok else 'failure',
+              })
+
+          report = {
+              'validation_status': 'success' if all_ok else 'failure',
+              'expected_target_count': len(config['targets']),
+              'validated_target_count': len(target_reports),
+              'media_files_total': total_media,
+              'targets': target_reports,
+              'content_classification_performed': False,
+              'note': (
+                  'This validation checks only whether metadata and at least one media file '
+                  'were collected for each post. Eval-table vs notice-image classification '
+                  'must be performed by Chat after artifact recovery.'
+              ),
+          }
+
+          (output_dir / 'validation_report.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          raise SystemExit(0 if all_ok else 1)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "event_name=${{ github.event_name }}"
+            echo "target_count=$TARGET_COUNT"
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "validation_exit_code=${{ steps.validate.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload outputs
+        id: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-media-${{ env.REQUEST_ID }}-${{ env.RANGE_LABEL }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          VALIDATE_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output_dir = Path(os.environ['OUTPUT_DIR'])
+          validation_path = output_dir / 'validation_report.json'
+          resolved_path = output_dir / 'resolved_request.json'
+
+          if validation_path.exists():
+              validation = json.loads(validation_path.read_text(encoding='utf-8'))
+          else:
+              validation = {
+                  'validation_status': 'failure',
+                  'error': 'validation report unavailable',
+              }
+
+          if resolved_path.exists():
+              resolved = json.loads(resolved_path.read_text(encoding='utf-8'))
+              targets = resolved.get('targets', [])
+          else:
+              targets = []
+
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': (
+                  f"eval-media-{os.environ['REQUEST_ID']}-"
+                  f"{os.environ['RANGE_LABEL']}-{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'fetch_exit_code': os.environ.get('FETCH_EXIT', ''),
+              'validation_exit_code': os.environ.get('VALIDATE_EXIT', ''),
+              'targets': targets,
+              'validation': validation,
+              'next_step': (
+                  'Chat recovers the artifact, visually identifies Eval-table images, '
+                  'excludes notice/explanation images, renames them by date, and creates '
+                  'eval_YYYYMMDD_YYYYMMDD_Eval表画像.zip.'
+              ),
+          }
+
+          Path('/tmp/result_comment.md').write_text(
+              'EVAL_MEDIA_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}"
+
+      - name: Fail workflow when collection or validation failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1
