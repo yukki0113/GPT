@@ -1,0 +1,180 @@
+競艇AI予想：結果照合・公式結果取得依頼の定型作業
+
+対象となる依頼文
+------------------
+結果の照合、取得、ファイルの出力をお願いします。
+※その日の事前予想.csv添付前提
+
+
+0. 正本の確認
+--------------
+1) GitHub `yukki0113/GPT` の main ブランチを正本とする。
+2) 次を順に確認する。
+   - boat-racing/README.md
+   - boat-racing/.gpt/CONTEXT.md
+   - boat-racing/.gpt/WORKFLOW.md
+   - boat-racing/.gpt/MIGRATION_STATUS.md
+   - boat-racing/docs/README_公式結果取得.md
+   - boat-racing/src/fetch_boatrace_results.py
+   - .github/workflows/boatrace_results_manual.yml
+3) 日次の事前予想CSV・結果CSV・HTMLキャッシュ・ログ・台帳はGit管理対象外とする。
+4) 過去のWorkスレッド内一時領域や添付ZIPをソース正本として使用しない。
+
+
+1. 依頼内容の受領・入力確認
+----------------------------
+1) 添付された当日分の事前予想CSVを唯一の処理入力とする。
+2) 入力CSVの全行を対象にし、入力にないレースは追加しない。入力1行につき結果CSVも1行とする。
+3) CSVがUTF-8（BOM有無は不問）であり、見出しの重複・空欄・列数過不足がないことを確認する。
+4) 必須列は `README_公式結果取得.md` および正本Pythonの入力検査に従う。
+5) 日付＋会場＋Rを正規化して重複を検査する。
+6) 主推奨・保険・参考の券種、買い目、点数は入力記載のまま検査し、予想内容を修正・補完しない。
+
+
+2. 通常実行経路
+----------------
+Chat実行環境からBOAT RACE公式サイトへHTTPS通信できる場合は、Git正本のPythonを直接実行する。
+
+例：
+
+python boat-racing/src/fetch_boatrace_results.py --input "INPUT.csv"
+
+通常運用では `--limit` を使用しない。
+出力結果は結果CSVと取得ログを監査し、正常終了条件を満たしたものだけを完成物として扱う。
+
+
+3. GitHub Actions代替実行経路
+-----------------------------
+Chat実行環境から `https://www.boatrace.jp` へ直接通信できない、またはネットワーク制約により安定実行できない場合は、GitHub Actionsを正式な代替実行経路とする。
+
+使用Workflow：
+
+.github/workflows/boatrace_results_manual.yml
+
+このWorkflowは `workflow_dispatch` で手動実行し、Git main上の以下をそのまま使用する。
+
+- boat-racing/src/fetch_boatrace_results.py
+- boat-racing/requirements.txt
+
+日次CSVや結果成果物をGitへcommitしない。
+
+
+4. Actionsへ事前予想CSVを渡す方法
+----------------------------------
+`workflow_dispatch` はファイルアップロード入力を持たないため、添付された事前予想CSVを gzip 圧縮してBase64化し、文字列入力としてRunnerへ渡す。
+
+Workflow inputs：
+
+- `input_filename`
+  - 元の事前予想CSVファイル名
+- `input_csv_gzip_base64`
+  - 事前予想CSVをgzip圧縮後にBase64化した文字列
+- `timeout_seconds`
+  - 既定20秒
+- `retry_count`
+  - 既定2回（初回を除く再試行回数）
+- `request_interval_seconds`
+  - 既定1.0秒
+- `unit_stake`
+  - 既定100円
+- `strict`
+  - trueの場合、中止・不成立を含め全行が取得成功でなければWorkflowを失敗扱いにする
+
+Base64生成例：
+
+python - <<'PY'
+import base64, gzip
+from pathlib import Path
+p = Path('INPUT.csv')
+print(base64.b64encode(gzip.compress(p.read_bytes())).decode('ascii'))
+PY
+
+Runner上では `/tmp` にCSVを復元する。復元した入力CSVはGit管理領域へ保存しない。
+
+
+5. Actions上の処理
+------------------
+1) mainをcheckoutする。
+2) Python 3.12をセットアップする。
+3) `pip install -r boat-racing/requirements.txt` を実行する。
+4) workflow_dispatch入力を検査する。
+5) gzip+Base64から事前予想CSVを `/tmp` に復元する。
+6) CSVの対象日と会場を読み取り、成果物名を決定する。
+7) 正本 `boat-racing/src/fetch_boatrace_results.py` を実行する。
+8) 結果CSV、取得ログ、run_status.txtを `boat-racing/actions_output/` に集約する。
+9) 成果物一式をartifact化する。
+10) Python終了コードが非0ならartifactは残したうえでWorkflowも失敗扱いにする。
+
+artifact名：
+
+boatrace-results-YYYYMMDD-<github.run_id>
+
+retention-days：14日
+
+
+6. Chat側でのartifact回収・検査
+-------------------------------
+Actions実行後、Chat側では対象Workflow runを確認し、artifactを取得する。
+
+確認対象：
+
+- `run_status.txt`
+- `YYYYMMDD_結果_会場....csv`
+- `YYYYMMDD_結果取得ログ_会場....log`
+
+検査内容：
+
+1) run_statusのfetch_exit_code
+2) 入力件数と出力件数の一致
+3) 日付＋会場＋Rの重複、未結合、余剰がないこと
+4) 全行に公式URLが記録されていること
+5) `取得失敗`、`解析失敗`、`入力不正`、`公式未確定` が0件であること
+6) 非0終了時はログ末尾の `未完了対象` とCSVの `取得状態`・`エラー内容` を確認する
+
+中止・不成立は通常モードでは公式に明示された終端状態として許容する。`strict=true` の場合は許容しない。
+
+Chat環境のGitHub連携でworkflow_dispatch実行APIが利用できない場合は、GitHub Actions画面から当該Workflowを手動起動し、その後のrun確認・artifact回収をChat側で行う。
+
+
+7. 公式結果取得・照合ルール
+----------------------------
+1) 参照先はBOAT RACE公式ページだけとする。
+2) HTTP 200だけでは成功扱いにせず、会場・日付・Rのページ同一性を確認する。
+3) 確定着順、着順詳細、全券種払戻、返還艇、欠場艇、失格艇、事故艇、備考、中止、不成立を公式表示から取得する。
+4) 主推奨・保険・参考を独立して展開・照合する。
+5) 主推奨と保険は展開買い目数と入力点数が一致しなければ入力不正とする。
+6) 返還は的中払戻と分離し、公式表示のない返還を推測しない。
+7) 公式未確定は空欄を残し、不的中や0円払戻に読み替えない。
+
+詳細仕様は `boat-racing/docs/README_公式結果取得.md` と正本Pythonを優先する。
+
+
+8. 成果物とGit管理
+------------------
+日常の依頼に対する成果物：
+
+- 結果CSV
+- 取得ログ
+
+Actions経由では監査補助として `run_status.txt` もartifactへ含める。
+
+以下はGitへcommitしない。
+
+- 入力の事前予想CSV
+- 結果CSV
+- 取得ログ
+- run_status.txt
+- HTMLキャッシュ
+- Excel台帳
+- その他の日次成果物
+
+Gitへcommitするのは、正本ソース、README、定型作業手順、Workflow等の再利用可能な資産だけとする。
+
+
+9. ソース改修が必要になった場合
+----------------------------------
+1) GitHub mainを基準に既存CSV互換性を維持して改修する。
+2) Python、対応README、Workflowまたは必要なテストを同時に確認する。
+3) 可能な限り保存済みfixtureまたは実運用データで回帰確認する。
+4) 差分確認後、再利用可能な資産だけをGitHubへ反映する。
+5) 日次成果物はcommitしない。
