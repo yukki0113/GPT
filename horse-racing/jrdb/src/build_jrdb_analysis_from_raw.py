@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Build JRDB Analysis Lite directly from annual Raw ZIPs.
+"""Build JRDB Analysis Lite v1.1 directly from annual Raw ZIPs.
 
-This is the remote-friendly companion to build_jrdb_analysis.py. It avoids a
-dependency on the large Core SQLite while preserving the same Analysis v1
-fact-table shape. Current scope: BAC/KYI/SED/CYB/UKC.
+Remote-friendly path using BAC/KYI/SED/CYB/UKC. It keeps the same fact shape as
+Core->Analysis v1.1 and adds actual SED track condition plus KYI frame number.
 """
 from __future__ import annotations
 
@@ -14,8 +13,8 @@ import sqlite3
 import zipfile
 from pathlib import Path
 
-VERSION = "0.1-poc"
-SCHEMA_VERSION = "v1"
+VERSION = "0.2-poc"
+SCHEMA_VERSION = "v1.1"
 
 
 def text(raw: bytes, offset: int, width: int) -> str:
@@ -109,7 +108,8 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
                             "race_no": num(raw, 6, 2),
                             "distance": num(raw, 20, 4),
                             "track_type": text(raw, 24, 1),
-                            "condition_code": text(raw, 29, 2),
+                            "race_condition_code": text(raw, 29, 2),
+                            "track_condition_code": "",
                             "grade_code": text(raw, 35, 1),
                         },
                     )
@@ -122,6 +122,7 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
                     entries.setdefault(
                         (race_key, horse_no),
                         {
+                            "frame_no": num(raw, 323, 1),
                             "horse_id": text(raw, 10, 8),
                             "horse_name": text(raw, 18, 36),
                             "jockey_name": text(raw, 171, 12),
@@ -137,8 +138,8 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
                 for raw in zf.read(member).splitlines():
                     race_key = text(raw, 0, 8)
                     horse_no = num(raw, 8, 2)
+                    track_condition_code = text(raw, 69, 2)
                     if race_key not in races:
-                        # Match the established Core BAC->SED fallback principle.
                         races[race_key] = {
                             "race_date": race_date,
                             "year": year,
@@ -146,9 +147,12 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
                             "race_no": num(raw, 6, 2),
                             "distance": num(raw, 62, 4),
                             "track_type": text(raw, 66, 1),
-                            "condition_code": "",
+                            "race_condition_code": "",
+                            "track_condition_code": track_condition_code,
                             "grade_code": "",
                         }
+                    elif not races[race_key]["track_condition_code"]:
+                        races[race_key]["track_condition_code"] = track_condition_code
                     results.setdefault(
                         (race_key, horse_no),
                         {
@@ -182,8 +186,9 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
         rows.append(
             (
                 race["race_date"], race["year"], race["venue_code"], race["race_no"],
-                race["track_type"], race["distance"], race["condition_code"], race["grade_code"],
-                race_key, horse_no, entry["horse_id"], entry["horse_name"], profile.get("sex_code"), age,
+                race["track_type"], race["distance"], race["race_condition_code"],
+                race["track_condition_code"], race["grade_code"], race_key, horse_no,
+                entry["frame_no"], entry["horse_id"], entry["horse_name"], profile.get("sex_code"), age,
                 profile.get("sire_name"), profile.get("broodmare_sire_name"),
                 profile.get("sire_line_code"), profile.get("broodmare_sire_line_code"),
                 entry["jockey_name"], entry["running_style"], entry["distance_aptitude"], entry["uptrend"],
@@ -193,7 +198,7 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
         )
 
     conn.executemany(
-        "INSERT INTO fact_entry_result_lite VALUES(" + ",".join("?" * 29) + ")",
+        "INSERT INTO fact_entry_result_lite VALUES(" + ",".join("?" * 31) + ")",
         rows,
     )
     conn.commit()
@@ -211,6 +216,12 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
     bms_nonblank = conn.execute(
         "SELECT count(*) FROM fact_entry_result_lite WHERE trim(coalesce(broodmare_sire_name,''))<>''"
     ).fetchone()[0]
+    frame_nonnull = conn.execute(
+        "SELECT count(*) FROM fact_entry_result_lite WHERE frame_no IS NOT NULL"
+    ).fetchone()[0]
+    track_condition_nonblank = conn.execute(
+        "SELECT count(*) FROM fact_entry_result_lite WHERE trim(coalesce(track_condition_code,''))<>''"
+    ).fetchone()[0]
     conn.close()
     return {
         "rows": len(rows),
@@ -222,6 +233,8 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
         "missing_profile_rows": missing_profile_rows,
         "sire_nonblank": sire_nonblank,
         "broodmare_sire_nonblank": bms_nonblank,
+        "frame_nonnull": frame_nonnull,
+        "track_condition_nonblank": track_condition_nonblank,
         "integrity_check": integrity,
         "size_bytes": out.stat().st_size,
     }
@@ -235,7 +248,7 @@ def main() -> None:
     ap.add_argument(
         "--schema",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_analysis_schema_v1.sql",
+        default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_analysis_schema_v1_1.sql",
     )
     args = ap.parse_args()
     result = build(args.raw_root, args.years, args.db, args.schema)
