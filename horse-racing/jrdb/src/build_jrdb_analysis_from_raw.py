@@ -13,7 +13,7 @@ import sqlite3
 import zipfile
 from pathlib import Path
 
-VERSION = "0.2-poc"
+VERSION = "0.2.1-poc"
 SCHEMA_VERSION = "v1.1"
 
 
@@ -109,7 +109,7 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
                             "distance": num(raw, 20, 4),
                             "track_type": text(raw, 24, 1),
                             "race_condition_code": text(raw, 29, 2),
-                            "track_condition_code": "",
+                            "track_condition_code": None,
                             "grade_code": text(raw, 35, 1),
                         },
                     )
@@ -147,9 +147,9 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
                             "race_no": num(raw, 6, 2),
                             "distance": num(raw, 62, 4),
                             "track_type": text(raw, 66, 1),
-                            "race_condition_code": "",
+                            "race_condition_code": None,
                             "track_condition_code": track_condition_code,
-                            "grade_code": "",
+                            "grade_code": None,
                         }
                     elif not races[race_key]["track_condition_code"]:
                         races[race_key]["track_condition_code"] = track_condition_code
