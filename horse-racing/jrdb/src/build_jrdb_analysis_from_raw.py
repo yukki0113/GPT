@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build JRDB Analysis Lite v1.1 directly from annual Raw ZIPs.
 
-Remote-friendly path using BAC/KYI/SED/CYB/UKC. It keeps the same fact shape as
-Core->Analysis v1.1 and adds actual SED track condition plus KYI frame number.
+Production routine path using BAC/KYI/SED/CYB/UKC. It keeps the same fact shape
+as Core->Analysis v1.1 and has been row-level validated against the Core path
+for 2016-2025.
 """
 from __future__ import annotations
 
@@ -13,7 +14,7 @@ import sqlite3
 import zipfile
 from pathlib import Path
 
-VERSION = "0.2.1-poc"
+VERSION = "1.0-production"
 SCHEMA_VERSION = "v1.1"
 
 
