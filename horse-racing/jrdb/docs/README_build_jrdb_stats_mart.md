@@ -1,32 +1,26 @@
 # JRDB Stats Mart Builder v1.1
 
-`build_jrdb_stats_mart.py` creates compact yearly pre-aggregated statistics from one or more non-overlapping Analysis Lite v1.1 shards.
+`build_jrdb_stats_mart.py` creates compact yearly pre-aggregated statistics from one or more non-overlapping Analysis Lite shards.
+`refresh_jrdb_stats_mart_year.py` refreshes only selected year partitions after in-season Analysis updates.
 
-Stats Mart is a cache/acceleration layer. Analysis Lite remains the flexible condition-query source.
+Stats Mart is a cache/acceleration layer. Analysis Lite remains the flexible condition-query source. Analysis v1.2 adds prev1 columns but does not change the mart grain, so Stats Mart v1.1 remains compatible.
 
-## v1.1 correction
+## Mart grain
 
-The old mart `condition_code` inherited the ambiguous Analysis v1.0 field and represented race condition/class, not actual track condition.
-
-v1.1 uses:
-
-- `track_condition_code` from SED actual track condition
-- `frame_no` for frame statistics
-
-`race_condition_code` remains available in Analysis Lite for flexible filtering but is not added to the default mart grain to avoid unnecessary dimension explosion.
-
-## Initial marts
-
-### `mart_sire_yearly`
-
-Grain:
+Default dimensions:
 
 - year
 - venue_code
 - track_type
 - distance
 - track_condition_code
-- sire_name
+- sire / jockey / frame dimension
+
+Default marts:
+
+- `mart_sire_yearly` — mandatory
+- `mart_jockey_yearly`
+- `mart_frame_yearly`
 
 Measures:
 
@@ -38,17 +32,11 @@ Measures:
 - win_payout_sum
 - place_payout_sum
 
-### `mart_jockey_yearly`
+`race_condition_code` remains available in Analysis Lite but is intentionally not added to the default mart grain to avoid dimension explosion.
 
-The same course/time/track-condition grain with `jockey_name` instead of `sire_name`.
+Fixed windows such as last 5/10 years are derived by summing yearly rows.
 
-### `mart_frame_yearly`
-
-The same grain with `frame_no` instead of sire/jockey.
-
-Fixed windows such as "last 5 years" and "last 10 years" are not stored. They are derived by summing yearly rows.
-
-## Run
+## Full build
 
 ```bash
 python src/build_jrdb_stats_mart.py \
@@ -56,7 +44,22 @@ python src/build_jrdb_stats_mart.py \
   --db ./jrdb_stats_mart_2016_2025.sqlite
 ```
 
-Multiple non-overlapping year shards may also be supplied. The builder rejects overlapping years to avoid accidental double counting.
+Multiple non-overlapping Analysis shards may be supplied. Overlapping years are rejected.
+
+## In-season year refresh
+
+After completed dates are incrementally replaced/appended in Analysis Lite, refresh only the current year:
+
+```bash
+python src/refresh_jrdb_stats_mart_year.py \
+  --analysis ./jrdb_analysis.sqlite \
+  --mart ./jrdb_stats_mart.sqlite \
+  --years 2026
+```
+
+The refresher recalculates the selected year from Analysis, deletes the old mart rows for that year, and inserts the recalculated rows inside a transaction. Historical years are untouched.
+
+This is intentionally simpler and safer than attempting row-level mart deltas; a single current-year aggregation is small and fast.
 
 ## Return-rate derivation
 
@@ -67,37 +70,50 @@ win_return_rate   = win_payout_sum   / (starts * 100)
 place_return_rate = place_payout_sum / (starts * 100)
 ```
 
-Do not pre-store a fixed-window return rate.
+Do not pre-store fixed-window return rates.
 
-## Validation history
+## Validation
 
-### v1.0 2025 pilot
-
-- sire rows: 21,281
-- jockey rows: 19,329
-- SQLite: ~5.2 MiB
-- integrity_check: ok
-
-### v1.1 corrected 2016-2025 pilot
-
-Built from the corrected ten-year Analysis Lite v1.1:
+### Corrected 2016-2025 full mart
 
 - sire rows: **194,656**
 - jockey rows: **155,118**
 - frame rows: **38,151**
 - SQLite: **52,518,912 bytes (~50.09 MiB)**
 - integrity_check: **ok**
+- representative ten-year sire query: ~1.61 ms
 
-Measured build-source aggregation timings in the test runtime:
+### Current-year refresh regression
 
-- sire yearly aggregation: ~1.09 s
-- jockey yearly aggregation: ~0.99 s
-- frame yearly aggregation: ~0.68 s
+A copy of the validated 2016-2025 mart had year 2025 deleted/recalculated from Analysis v1.2.
 
-Representative ten-year Tokyo turf 1600m / good-family condition / sire query against the completed mart: **~1.61 ms**.
+Refreshed 2025 rows:
 
-This confirms that the yearly mart remains comfortably below the remote connector ceiling and materially accelerates frequent aggregate queries.
+- sire: 19,360
+- jockey: 14,681
+- frame: 3,328
+- integrity_check: `ok`
+
+The refreshed database was compared against the original full-build mart across all three mart tables:
+
+- sire differences: 0
+- jockey differences: 0
+- frame differences: 0
+
+Therefore the current-year refresh path is equivalent to a full mart rebuild for the refreshed year.
+
+## Production cadence
+
+During the season:
+
+```text
+completed-date Raw
+  -> Analysis incremental replacement
+  -> refresh current year in Stats Mart
+```
+
+At year-end, rebuild the rolling ten-year Analysis window from Raw and then perform a clean full Stats Mart build.
 
 ## Design rule
 
-Do not add dimensions to every mart merely because Analysis Lite contains them. Add a mart only for demonstrated frequent query patterns; otherwise query Analysis Lite directly. This keeps yearly marts useful without creating a combinatorial row explosion.
+Do not add dimensions to every mart merely because Analysis Lite contains them. Add marts only for demonstrated frequent query patterns; otherwise query Analysis Lite directly.
