@@ -1,0 +1,225 @@
+name: eval-media-manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      dates:
+        description: 'Target dates (YYYY-MM-DD, space/comma separated)'
+        required: true
+        type: string
+      post_ids:
+        description: 'X/Twitter status IDs in the same order as dates'
+        required: true
+        type: string
+      output_label:
+        description: 'Optional ASCII label for the output directory'
+        required: false
+        type: string
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate inputs and prepare command
+        env:
+          DATES: ${{ inputs.dates }}
+          POST_IDS: ${{ inputs.post_ids }}
+          OUTPUT_LABEL: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          dates = [x for x in re.split(r'[\s,]+', os.environ.get('DATES', '').strip()) if x]
+          post_ids = [x for x in re.split(r'[\s,]+', os.environ.get('POST_IDS', '').strip()) if x]
+
+          if not dates or not post_ids:
+              raise SystemExit('dates and post_ids are required')
+          if len(dates) != len(post_ids):
+              raise SystemExit('dates and post_ids must have the same number of items')
+          if len(dates) > 31:
+              raise SystemExit('Too many targets; maximum is 31 per request')
+
+          targets = []
+          parsed_dates = []
+          seen_post_ids = set()
+
+          for date_value, post_id in zip(dates, post_ids):
+              try:
+                  parsed_date = datetime.strptime(date_value, '%Y-%m-%d').date()
+              except ValueError as exc:
+                  raise SystemExit(
+                      f'Invalid date {date_value!r}; expected YYYY-MM-DD'
+                  ) from exc
+              if not re.fullmatch(r'\d{10,25}', post_id):
+                  raise SystemExit(f'Invalid post_id: {post_id!r}')
+              if post_id in seen_post_ids:
+                  raise SystemExit(f'Duplicate post_id: {post_id}')
+              seen_post_ids.add(post_id)
+              parsed_dates.append(parsed_date)
+              targets.append({'date': date_value, 'post_id': post_id})
+
+          first_date = min(parsed_dates).strftime('%Y%m%d')
+          last_date = max(parsed_dates).strftime('%Y%m%d')
+          range_label = first_date if first_date == last_date else f'{first_date}-{last_date}'
+
+          output_label = os.environ.get('OUTPUT_LABEL', '').strip()
+          if output_label:
+              if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', output_label):
+                  raise SystemExit('output_label must contain only A-Z, a-z, 0-9, dot, underscore, or hyphen')
+              output_suffix = output_label
+          else:
+              output_suffix = range_label
+
+          output_dir = f'horse-racing/eval/output_eval_media_manual_{output_suffix}'
+          command = [
+              'python',
+              'horse-racing/eval/src/master_eval_media_collector.py',
+              *post_ids,
+              '--out',
+              output_dir,
+          ]
+
+          config = {
+              'targets': targets,
+              'command': command,
+              'output_dir': output_dir,
+              'range_label': range_label,
+              'output_label': output_label or None,
+          }
+
+          Path('/tmp/eval_media_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'RANGE_LABEL={range_label}\n')
+          PY
+
+      - name: Save resolved request
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          cp /tmp/eval_media_config.json "$OUTPUT_DIR/resolved_request.json"
+
+      - name: Collect Eval post media
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(
+              Path('/tmp/eval_media_config.json').read_text(encoding='utf-8')
+          )
+          completed = subprocess.run(config['command'], check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate collected media
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          config = json.loads(
+              Path('/tmp/eval_media_config.json').read_text(encoding='utf-8')
+          )
+          output_dir = Path(config['output_dir'])
+          output_dir.mkdir(parents=True, exist_ok=True)
+
+          target_reports = []
+          total_media = 0
+          all_ok = True
+
+          for target in config['targets']:
+              target_dir = output_dir / target['post_id']
+              metadata_path = target_dir / 'metadata.json'
+              media_files = sorted(
+                  path.name
+                  for path in target_dir.glob('media_*')
+                  if path.is_file()
+              )
+              total_media += len(media_files)
+              ok = metadata_path.is_file() and bool(media_files)
+              all_ok = all_ok and ok
+              target_reports.append({
+                  'date': target['date'],
+                  'post_id': target['post_id'],
+                  'metadata_exists': metadata_path.is_file(),
+                  'media_count': len(media_files),
+                  'media_files': media_files,
+                  'status': 'success' if ok else 'failure',
+              })
+
+          report = {
+              'validation_status': 'success' if all_ok else 'failure',
+              'expected_target_count': len(config['targets']),
+              'validated_target_count': len(target_reports),
+              'media_files_total': total_media,
+              'targets': target_reports,
+              'content_classification_performed': False,
+              'note': (
+                  'This validation checks only whether metadata and at least one media file '
+                  'were collected for each post. Eval-table vs notice-image classification '
+                  'must be performed after artifact recovery.'
+              ),
+          }
+
+          (output_dir / 'validation_report.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          raise SystemExit(0 if all_ok else 1)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "event_name=${{ github.event_name }}"
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "validation_exit_code=${{ steps.validate.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-media-manual-${{ env.RANGE_LABEL }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Fail workflow when collection or validation failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1
