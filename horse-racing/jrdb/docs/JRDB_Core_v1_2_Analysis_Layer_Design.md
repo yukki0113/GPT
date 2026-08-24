@@ -10,18 +10,37 @@
 
 The large Core is not the routine GPT query database. Analysis Lite is the flexible query layer; Stats Mart is the acceleration layer.
 
-Operationally, Core is **not** a mandatory intermediate step for every Analysis rebuild.
+## 2. Production data flow
 
-Production paths are:
+Routine analysis generation does **not** require Core as an intermediate artifact.
 
 ```text
-Raw -> Core                  # audit / normalization / reproducibility, updated when needed
-Raw -> Analysis -> Stats Mart # routine analytical production path
+canonical Raw ZIPs
+  ├─> Core                    # audit / complete normalized history / reproducibility
+  └─> Analysis Lite           # routine GPT/PWA use
+        └─> Stats Mart
 ```
 
-`Core -> Analysis` remains a reference/regression path and a convenient local build path when Core is already available.
+During the season:
 
-## 2. Core lineage
+```text
+completed-date daily Raw
+  -> Analysis incremental replace/add
+  -> refresh current-year Stats Mart
+```
+
+At year-end:
+
+```text
+rolling Analysis window
+  -> rebuild directly from next 10-year Raw window
+  -> VACUUM/compact
+  -> full Stats Mart rebuild
+```
+
+Core is maintained independently when audit/history work requires it.
+
+## 3. Core lineage
 
 ### v1.1.2
 
@@ -31,135 +50,102 @@ Rollback baseline with validated normalization, duplicate handling, BAC->SED fal
 
 Additive UKC horse-profile extension using confirmed 290-byte UKC offsets. Adds sire, dam, broodmare sire, birth date, owner/breeder and sire-line fields without replacing `horse_current / horse_history`.
 
-Contiguous 2021-2025 additive regression passed with zero row-level differences in the pre-existing normalized tables.
-
 ### v1.2.1
 
-Adds dimensions required by Analysis Lite v1.1:
+Adds dimensions required by Analysis:
 
 - `entry.frame_no` from KYI human position 324 / 0-based offset 323 / length 1
 - `result.track_condition_code` from SED human position 70 / 0-based offset 69 / length 2
 
-Important semantic distinction:
+Important distinction:
 
 - Core `race.condition_code` = BAC race condition/class
 - Core `result.track_condition_code` = actual SED track condition
 
-See `docs/README_build_jrdb_core_v1_2_1.md`.
+## 4. Analysis Lite v1.2
 
-## 3. Analysis Lite v1.1
+Analysis keeps one row per entry/result and omits provenance-heavy rows, comments, workouts, duplicate/anomaly metadata and the full 1-5 previous-link expansion.
 
-Analysis Lite keeps one row per entry/result and intentionally omits provenance-heavy rows, comments, workouts, previous-result rows, duplicate metadata and anomaly metadata.
-
-Primary dimensions/measures include:
+Primary fields include:
 
 - race_date / year / venue_code / race_no
 - track_type / distance
-- `race_condition_code`
-- `track_condition_code`
-- grade_code
-- race_key / horse_no / `frame_no`
+- race_condition_code / track_condition_code / grade_code
+- race_key / horse_no / frame_no
 - horse_id / horse_name / sex / age
 - sire / broodmare sire / sire-line codes
 - jockey / running style / distance aptitude / uptrend
 - training index
 - finish / abnormal code / final odds / popularity
 - win payout / place payout
+- `prev_result_key_1`
+- `prev_race_key_1`
 
-`race_key` is retained for trace-back to detailed Core/Delivery data.
+The previous-link fields are read directly from JRDB KYI:
 
-Age rule for JRA aggregation:
+- previous-result key 1: 0-based offset 203, length 16
+- previous-race key 1: 0-based offset 283, length 8
 
-`age = race_year - birth_year`
+This preserves JRDB's explicit previous-race declaration rather than inferring the previous start only from horse/date order.
 
-## 4. Raw -> Analysis production path
+### Why only prev1 in Analysis
 
-`src/build_jrdb_analysis_from_raw.py` reads canonical annual:
+A 2016-2025 benchmark of a separate normalized previous-link 1-5 table produced roughly 1.78 million nonblank rows and ~81.9 MiB by itself. Adding that to the routine Analysis artifact would remove too much remote-delivery headroom.
 
-- BAC
-- KYI
-- SED
-- CYB
-- UKC
+Production compromise:
 
-and builds the same Analysis v1.1 fact shape as `Core -> Analysis`.
+- Analysis: prev1 only for routine previous-race comparisons
+- Raw/Core: all five links retained for detailed investigation/delivery
 
-The Raw path preserves the established Core semantics needed by Analysis, including:
+## 5. Raw/Core Analysis equivalence
 
-- canonical filename filtering
-- BAC race fields
-- BAC-missing race fallback from SED
-- SED actual track condition
-- KYI frame number / horse / jockey / style fields
-- CYB training index
-- UKC current pedigree/profile fields
-- SED results / odds / payouts
+Analysis v1.2 was compared across all 33 fact columns.
 
-For BAC->SED fallback races, unavailable BAC-only fields are stored as SQL `NULL`, matching the Core path. This detail was found by row-level regression and fixed before production promotion.
+- 2016-2020: 243,849 rows, differences 0
+- 2021-2025: 237,778 rows, differences 0
+- combined 2016-2025: 481,627 rows, exact equivalence PASS
 
-### Explicit equivalence validation — PASS
+Thus `Raw -> Analysis` is the production route while `Core -> Analysis` remains the reference/regression route.
 
-All **31 Analysis fact columns** were compared row-for-row between Core-derived and Raw-derived Analysis outputs.
+## 6. Ten-year Analysis capacity
 
-2016-2020:
-
-- rows: 243,849 vs 243,849
-- Core minus Raw: 0
-- Raw minus Core: 0
-- key/value mismatches: 0
-
-2021-2025:
-
-- rows: 237,778 vs 237,778
-- Core minus Raw: 0
-- Raw minus Core: 0
-- key/value mismatches: 0
-
-Combined 2016-2025 coverage:
-
-- **481,627 rows**
-- **31 columns**
-- differences: **0**
-
-Reusable checker:
-
-`tools/audit_jrdb_analysis_equivalence.py`
-
-This equivalence result promotes `Raw -> Analysis` to the normal production path. `Core -> Analysis` is retained as a regression/reference path.
-
-## 5. Corrected 10-year measurement
-
-Analysis Lite v1.1 was measured for 2016-2025 using canonical annual Raw ZIPs.
+2016-2025 Analysis v1.2 after prev1 addition, removal of unnecessary prev-key indexes, and VACUUM:
 
 - rows: **481,627**
 - sire nonblank: **481,519**
-- broodmare-sire nonblank: **481,519**
-- frame non-null: **481,627**
-- track condition nonblank: **481,627**
-- SQLite: **177,328,128 bytes (~169.11 MiB)**
-- ZIP: **44,011,036 bytes (~41.97 MiB)**
+- prev1 populated: **434,622**
+- SQLite: **182,439,936 bytes (~173.99 MiB)**
 - integrity_check: **ok**
 
-Representative direct Analysis query timings in the test runtime:
+This remains below the 200 MiB routine target and the current ~256 MiB remote connector ceiling.
 
-- Tokyo turf 1600m / good-family track condition / sire: ~8.05 ms
-- Nakayama dirt 1800m / jockey: ~12.32 ms
-- Kyoto turf / frame: ~11.30 ms
+Prev-key indexes are intentionally omitted. Normal use starts from a current row, reads its explicit previous key, then resolves the target through existing fact/race-key paths; extra prev-key indexes cost useful headroom without helping the normal access pattern.
 
-Conclusion: a single rolling ten-year Analysis Lite is viable below both the 200 MiB design target and the current ~256 MiB remote connector ceiling. A single full-history 2010+ Analysis database should not be assumed safe without sharding.
+## 7. Incremental Analysis semantics
 
-### Drive delivery validation — PASS
+`src/update_jrdb_analysis_incremental.py` processes one or more completed race dates from daily BAC/KYI/SED/CYB/UKC ZIPs.
 
-The generated 2016-2025 Analysis SQLite was uploaded to Google Drive and fetched back through the ChatGPT Drive connector.
+For each date:
 
-- fetched size: **177,328,128 bytes**
-- SQLite integrity: **ok**
-- fact rows: **481,627**
-- SHA-256 matched the generated artifact
+1. validate all required ZIPs and expected TXT members
+2. parse the complete date before mutating the DB
+3. record source paths and SHA-256 values
+4. delete existing rows for the target `race_date`
+5. insert the parsed replacement rows inside a transaction
+6. verify inserted row count
+7. commit and mark the ingest batch SUCCESS
 
-Therefore the practical remote Analysis delivery path is validated, not merely inferred from nominal size limits.
+Re-running a date therefore safely applies later JRDB corrections.
 
-## 6. Stats Mart v1.1
+Historical pseudo-daily regression using 2025-12-28:
+
+- 24 races
+- 356 rows before
+- 356 rows after
+- complete row hash identical
+- integrity_check: ok
+
+## 8. Stats Mart
 
 Default yearly marts:
 
@@ -186,66 +172,34 @@ Measures:
 - win_payout_sum
 - place_payout_sum
 
-Do not pre-store fixed windows such as last 5 or last 10 years. Sum yearly rows at query time.
+Current-year mart refresh is performed by `src/refresh_jrdb_stats_mart_year.py` after Analysis increments. The selected year is fully recalculated from Analysis and atomically replaced; historical years remain untouched.
 
-Corrected 2016-2025 Stats Mart v1.1 measurement:
+2025 refresh regression against the full-build mart produced zero differences in sire, jockey and frame tables.
 
-- sire rows: **194,656**
-- jockey rows: **155,118**
-- frame rows: **38,151**
-- SQLite: **52,518,912 bytes (~50.09 MiB)**
-- integrity_check: **ok**
-- representative 10-year sire query: ~1.61 ms
+## 9. Rolling production window
 
-Do not add every Analysis dimension to every Mart; keep Mart dimensions driven by frequent query patterns.
+A recent ten-year Analysis shard is the normal flexible-query artifact.
 
-## 7. Production operation
-
-### Routine analytical update
-
-When the rolling window advances, build directly from Raw:
-
-```text
-annual/daily JRDB acquisition
-        -> canonical Raw storage
-        -> Raw -> rolling Analysis Lite
-        -> Stats Mart
-```
-
-Example year-end rollover:
+Example:
 
 ```text
 2016-2025 Analysis
-        -> rebuild from 2017-2026 Raw
-        -> 2017-2026 Analysis
-        -> rebuild/update Stats Mart
+  + completed 2026 dates incrementally during season
+  -> 2016-2026 YTD temporary growth
+
+at year end:
+  rebuild directly from 2017-2026 Raw
+  -> 2017-2026 rolling Analysis
 ```
 
-There is no requirement to rebuild Core first.
+The current year can temporarily extend the window beyond exactly ten calendar years; the year-end rebuild drops the oldest year and restores the intended rolling size.
 
-### Core update
+## 10. Operational source of truth
 
-Core is maintained independently for:
+- Raw ZIP: durable source data, Git-external
+- Core: complete normalized/audit layer, Git-external SQLite
+- Analysis: reproducible routine query artifact, Git-external SQLite
+- Stats Mart: reproducible aggregate cache, Git-external SQLite
+- Python/schema/docs: Git canonical source
 
-- auditability
-- normalized complete history
-- anomaly/duplicate investigation
-- reproducibility
-- future schema/mart development
-
-It may be rebuilt or refreshed on a slower cadence than Analysis, because Raw remains the durable source of truth for data files.
-
-## 8. Production delivery recommendation
-
-1. Keep canonical Raw as the durable source data.
-2. Keep one complete Core outside the direct GPT delivery path; update it when audit/history work requires it.
-3. Maintain a **rolling recent ten-year Analysis Lite shard directly from Raw** for routine flexible queries.
-4. Keep older years in one or more additional Analysis shards below the connector ceiling.
-5. Maintain a full-history yearly Stats Mart for common aggregates.
-6. Retain `race_key` so aggregate findings can be traced to detailed Core/Delivery records.
-
-Sire aggregation remains a mandatory capability and must not be removed from Analysis or Stats Mart.
-
-## 9. Remaining operational gate
-
-The architecture itself is validated. The next operational item is defining the exact 2026/current-year acquisition and rollover schedule: when current-year Raw is considered complete enough to refresh the rolling ten-year Analysis, and whether interim in-season Analysis updates are produced before year-end.
+Sire aggregation and explicit previous-race correctness remain mandatory capabilities.
