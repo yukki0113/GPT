@@ -56,6 +56,19 @@ Source evidence:
 
 No byte offsets should be guessed outside this confirmed definition.
 
+### 2025 Raw validation
+
+The canonical Drive Raw `UKC_2025.zip` was checked against the above definition.
+
+- canonical daily UKC files: 109
+- parsed body records: 47,239
+- record lengths other than 290 bytes: 0
+- CP932 replacement/decode errors: 0
+- invalid birth/data dates: 0
+- missing sire names: 0
+
+This validates the converter-derived offsets against actual Raw data.
+
 ---
 
 ## 3. Core v1.2 horse profile extension
@@ -64,17 +77,17 @@ Do not destructively replace `horse_current` / `horse_history` in the first v1.2
 
 ### horse_profile_current
 
-Recommended columns:
+Implemented in `schema/jrdb_core_schema_v1_2.sql` with:
 
 - horse_id TEXT PRIMARY KEY
 - horse_name TEXT
 - sex_code TEXT
 - coat_color_code TEXT
 - horse_symbol_code TEXT
-- birth_date TEXT
 - sire_name TEXT
 - dam_name TEXT
 - broodmare_sire_name TEXT
+- birth_date TEXT
 - sire_birth_year INTEGER
 - dam_birth_year INTEGER
 - broodmare_sire_birth_year INTEGER
@@ -93,48 +106,60 @@ Recommended columns:
 
 ### horse_profile_history
 
-Recommended columns:
-
-- history_id INTEGER PRIMARY KEY
-- horse_id TEXT
-- valid_from TEXT
-- valid_to TEXT
-- semantic_hash TEXT
-- source_file_id INTEGER
-- source_record_no INTEGER
-- plus the profile values needed to reconstruct the previous semantic state
-
-The history table must preserve the semantic profile, not only its hash, if it is intended for historical reconstruction.
+Implemented as a full previous semantic-state snapshot including the profile values, valid_from/valid_to, hash, and provenance.
 
 ### Semantic hash
 
-Include stable semantic attributes such as:
+Implemented in `src/jrdb_ukc.py`.
+
+Included:
 
 - horse_name
 - sex_code
 - coat_color_code
 - horse_symbol_code
-- birth_date
-- sire_name
-- dam_name
-- broodmare_sire_name
-- parent birth years
-- owner / breeder / breeding place
-- deregistered_flag
-- sire_line_code / broodmare_sire_line_code
+- sire / dam / broodmare sire
+- birth_date and parent birth years
+- owner / owner-group
+- breeder / breeding place
+- deregistration flag
+- sire-line / broodmare-sire-line codes
 
-Exclude ingestion/provenance timestamps and source IDs:
+Excluded from semantic version triggering:
 
-- data_date may be stored but should not by itself force a semantic history version
+- data_date
 - source_file_id
 - source_record_no
 - imported_at
+- reserved bytes
 
-The exact semantic hash field list must be frozen in the v1.2 README and covered by regression tests.
+2025 Raw check:
+
+- repeated snapshots with unchanged semantic hash: 35,115
+- repeated snapshots with changed semantic hash: 306
+
+Example unchanged snapshot:
+`horse_id=20104778`, 2025-01-05 -> 2025-01-11, hash unchanged.
+
+Example real semantic change:
+`horse_id=21105399`, 2025-01-19 -> 2025-03-23, owner / owner-group changed and hash changed.
 
 ---
 
-## 4. Analysis Lite
+## 4. v1.2 implementation strategy
+
+`src/build_jrdb_core_v1_2.py` is an additive wrapper rather than a rewrite.
+
+1. Run the proven `src/build_jrdb_core.py` v1.1.2 logic unchanged against `schema/jrdb_core_schema_v1_2.sql`.
+2. Scan canonical UKC members again through `src/jrdb_ukc.py`.
+3. Populate `horse_profile_current / horse_profile_history`.
+4. Promote builder/schema metadata to v1.2 after enrichment succeeds.
+
+This design intentionally minimizes regression risk in duplicate resolution, BAC fallback, payouts, anomalies, and provenance.
+
+---
+
+## 5. Analysis Lite
 
 Analysis Lite is the main GPT/PWA query database. Its first fact table should be one row per race entry/result.
 
@@ -192,7 +217,7 @@ Do not calculate Western-style birthday-dependent age.
 
 ---
 
-## 5. Stats Mart
+## 6. Stats Mart
 
 Stats Mart is a cache / acceleration layer, not the only analytical source.
 
@@ -231,7 +256,7 @@ Do not pre-store fixed windows such as "last 5 years" or "last 10 years". Derive
 
 ---
 
-## 6. Build paths
+## 7. Build paths
 
 Analysis Lite should ultimately support both:
 
@@ -244,18 +269,18 @@ Do not immediately refactor the stable v1.1.2 parser. First implement and valida
 
 ---
 
-## 7. Implementation order
+## 8. Implementation order / current status
 
 ### A. UKC / Core v1.2
 
-1. Confirm UKC field offsets from JRDB-data/converter. **Done in this document.**
-2. Validate several real UKC records against expected decoded values.
-3. Add v1.2 schema as a new file; do not overwrite v1.1.2 schema.
-4. Add horse profile current/history parsing.
-5. Validate semantic hash behavior.
-6. Run regression against known v1.1.2 race/entry/result counts and anomaly/duplicate behavior.
+1. Confirm UKC field offsets from JRDB-data/converter. **DONE**
+2. Validate real UKC records against expected decoded values. **DONE (2025 full Raw scan)**
+3. Add v1.2 schema as a new file. **DONE**
+4. Add UKC parser and horse profile current/history parsing. **DONE, regression phase**
+5. Validate semantic hash behavior. **DONE on UKC 2025 Raw**
+6. Run v1.2 Core regression against known v1.1.2 counts/anomalies. **NEXT**
 
-### B. Analysis Lite, after A is complete
+### B. Analysis Lite, mandatory after A
 
 1. Build 2021-2025 PoC including sire fields from the beginning.
 2. Measure row count and SQLite size.
@@ -269,7 +294,7 @@ Sire aggregation is a required capability and must not be deferred beyond the An
 
 ---
 
-## 8. Regression principles
+## 9. Regression principles
 
 Core v1.2 must preserve v1.1.2 behavior for:
 
