@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build compact yearly JRDB stats marts from one or more Analysis Lite shards."""
+"""Build compact yearly JRDB stats marts from one or more Analysis Lite v1.1 shards."""
 from __future__ import annotations
 
 import argparse
@@ -7,7 +7,7 @@ import datetime as dt
 import sqlite3
 from pathlib import Path
 
-VERSION = "1.0"
+VERSION = "1.1"
 
 
 def main() -> None:
@@ -17,7 +17,7 @@ def main() -> None:
     ap.add_argument(
         "--schema",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_stats_mart_schema_v1.sql",
+        default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_stats_mart_schema_v1_1.sql",
     )
     args = ap.parse_args()
 
@@ -49,29 +49,40 @@ def main() -> None:
         ),
     ).lastrowid
 
-    sire_sql = """
-      SELECT year,venue_code,track_type,distance,coalesce(condition_code,''),sire_name,
-             count(*),sum(finish=1),sum(finish=2),sum(finish=3),sum(finish between 1 and 3),
-             sum(coalesce(win_payout,0)),sum(coalesce(place_payout,0))
+    base_measures = """
+      count(*),sum(finish=1),sum(finish=2),sum(finish=3),sum(finish between 1 and 3),
+      sum(coalesce(win_payout,0)),sum(coalesce(place_payout,0))
+    """
+    sire_sql = f"""
+      SELECT year,venue_code,track_type,distance,coalesce(track_condition_code,''),sire_name,
+             {base_measures}
       FROM fact_entry_result_lite
       WHERE trim(coalesce(sire_name,''))<>''
-      GROUP BY year,venue_code,track_type,distance,coalesce(condition_code,''),sire_name
+      GROUP BY year,venue_code,track_type,distance,coalesce(track_condition_code,''),sire_name
     """
-    jockey_sql = """
-      SELECT year,venue_code,track_type,distance,coalesce(condition_code,''),jockey_name,
-             count(*),sum(finish=1),sum(finish=2),sum(finish=3),sum(finish between 1 and 3),
-             sum(coalesce(win_payout,0)),sum(coalesce(place_payout,0))
+    jockey_sql = f"""
+      SELECT year,venue_code,track_type,distance,coalesce(track_condition_code,''),jockey_name,
+             {base_measures}
       FROM fact_entry_result_lite
       WHERE trim(coalesce(jockey_name,''))<>''
-      GROUP BY year,venue_code,track_type,distance,coalesce(condition_code,''),jockey_name
+      GROUP BY year,venue_code,track_type,distance,coalesce(track_condition_code,''),jockey_name
+    """
+    frame_sql = f"""
+      SELECT year,venue_code,track_type,distance,coalesce(track_condition_code,''),frame_no,
+             {base_measures}
+      FROM fact_entry_result_lite
+      WHERE frame_no IS NOT NULL
+      GROUP BY year,venue_code,track_type,distance,coalesce(track_condition_code,''),frame_no
     """
 
     sire_rows = []
     jockey_rows = []
+    frame_rows = []
     for path, _ in years_by_file:
         conn = sqlite3.connect(path)
         sire_rows.extend(conn.execute(sire_sql))
         jockey_rows.extend(conn.execute(jockey_sql))
+        frame_rows.extend(conn.execute(frame_sql))
         conn.close()
 
     out.executemany(
@@ -81,6 +92,10 @@ def main() -> None:
     out.executemany(
         "INSERT INTO mart_jockey_yearly VALUES(" + ",".join("?" * 13) + ")",
         jockey_rows,
+    )
+    out.executemany(
+        "INSERT INTO mart_frame_yearly VALUES(" + ",".join("?" * 13) + ")",
+        frame_rows,
     )
     out.execute(
         "UPDATE meta_mart_build SET finished_at=?,status='SUCCESS' WHERE build_id=?",
@@ -93,6 +108,7 @@ def main() -> None:
             "years": sorted(all_years),
             "sire_rows": len(sire_rows),
             "jockey_rows": len(jockey_rows),
+            "frame_rows": len(frame_rows),
             "size_bytes": args.db.stat().st_size,
             "integrity_check": integrity,
         }
