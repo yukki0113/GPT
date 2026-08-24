@@ -1,6 +1,6 @@
 # JRDB Python tools
 
-JRDB関連の取得・RaceNote変換・Core SQLite構築をGitで正本管理するための整理済みパッケージです。
+JRDB関連の取得・RaceNote変換・Core / Analysis SQLite構築をGitで正本管理するための整理済みパッケージです。
 
 ## Current modules
 
@@ -8,11 +8,13 @@ JRDB関連の取得・RaceNote変換・Core SQLite構築をGitで正本管理す
 - `src/fetch_jrdb_history.py` — 年次ZIP / 2026年以降の単日ZIP取得
 - `src/racenote_jrdb.py` — PACI ZIP → RaceNote v0.2 JSON
 - `src/racenote_jrdb_pipeline.py` — PACI取得 → RaceNote 1R一体実行
-- `src/build_jrdb_core.py` — JRDB Core Builder v1.1.2-production（現行production baseline）
+- `src/build_jrdb_core.py` — JRDB Core Builder v1.1.2-production（rollback baseline）
 - `src/jrdb_ukc.py` — UKC 290-byte固定長parser（v1.2用）
-- `src/build_jrdb_core_v1_2.py` — v1.1.2を壊さずUKC horse profileを追加するv1.2 wrapper（回帰検証中）
+- `src/build_jrdb_core_v1_2.py` — v1.1.2を壊さずUKC horse profileを追加するv1.2 wrapper
+- `src/build_jrdb_analysis.py` — Core v1.2 → Analysis Lite SQLite
 - `tools/generate_jrdb_codebooks.py` — codebook生成
 - `tools/audit_jrdb_core_v1_1_1.py` — Core監査ツール
+- `tools/audit_jrdb_core_v1_2_regression.py` — v1.1.2 / v1.2回帰比較
 
 ## Dependencies
 
@@ -23,17 +25,35 @@ RaceNote:
 Core v1.1.2:
 `build_jrdb_core.py` は `schema/jrdb_core_schema_v1_1_2.sql` とRaw ZIP群を利用。
 
-Core v1.2 (regression phase):
+Core v1.2:
 `build_jrdb_core_v1_2.py` → `build_jrdb_core.py` + `jrdb_ukc.py` + `schema/jrdb_core_schema_v1_2.sql`。
 `horse_profile_current / horse_profile_history` に父・母・母父等のUKC profileを追加する。
 
-## Design / next stage
+Analysis Lite:
+`build_jrdb_analysis.py` → Core v1.2 + `schema/jrdb_analysis_schema_v1.sql`。
+1出走1行の `fact_entry_result_lite` を作成し、種牡馬・母父・騎手・脚質等の自由条件集計に使用する。
 
-- `docs/JRDB_Core_v1_2_Analysis_Layer_Design.md` — UKC血統拡張、Core v1.2、Analysis Lite、Stats Martの設計
-- `docs/README_build_jrdb_core_v1_2.md` — v1.2実装方針・実行方法・回帰ゲート
+## Validation status
 
-Core v1.2が回帰合格するまではv1.1.2をproduction baselineとして維持します。
-回帰合格後は、種牡馬項目を含むAnalysis Lite 2021-2025 PoCへ進みます。
+Core v1.2 additive regression:
+- contiguous 2021-2025: PASS
+- v1.1.2のrace/entry/result/training/workout等は行単位で差分0
+- `PRAGMA integrity_check`: ok
+
+Analysis Lite contiguous 2021-2025 PoC:
+- rows: 237,778
+- sire nonblank: 237,670
+- SQLite: 84,582,400 bytes (~80.7 MiB)
+- ZIP: 22,687,297 bytes (~21.6 MiB)
+- preferred < 100 MiB target: PASS
+
+詳細は以下を参照してください。
+
+- `docs/JRDB_Core_v1_2_Analysis_Layer_Design.md`
+- `docs/README_build_jrdb_core_v1_2.md`
+- `docs/README_build_jrdb_analysis.md`
+
+次の設計課題は、通常利用の「過去10年」集計を満たすAnalysis shardの実サイズ測定、production shard境界、Stats Mart（種牡馬集計必須）の確定です。
 
 ## Security
 
@@ -44,4 +64,4 @@ Core v1.2が回帰合格するまではv1.1.2をproduction baselineとして維�
 ## Validation
 
 既存パッケージの移行時スモークテスト結果は `MIGRATION_MANIFEST.json` を参照してください。
-v1.2追加分の実データ検証条件・結果は `docs/README_build_jrdb_core_v1_2.md` に記録します。
+v1.2 / Analysis追加分の検証条件・結果は各READMEと設計書に記録します。
