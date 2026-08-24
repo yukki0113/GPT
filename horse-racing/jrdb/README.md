@@ -21,6 +21,10 @@ RaceNote:
 Core:
 `build_jrdb_core.py` は `schema/jrdb_core_schema_v1_1_2.sql` とRaw ZIP群を利用。
 
+## Design / next stage
+
+- `docs/JRDB_Core_v1_2_Analysis_Layer_Design.md` — UKC血統拡張、Core v1.2、Analysis Lite、Stats Martの設計
+
 ## Security
 
 認証情報はGit管理しません。
