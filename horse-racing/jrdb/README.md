@@ -118,19 +118,35 @@ Actual `PACI260823.zip` + `SED260823.zip` were parsed and added to the accepted 
 - ingest batch: **SUCCESS**
 - integrity_check: **ok**
 
-A Stats Mart build from the updated test Analysis also passed; 2026-08-23 generated 403 sire, 366 jockey and 168 frame yearly aggregate rows for year 2026, with mart integrity `ok`.
+### 2026 YTD production backfill through 2026-08-23 — PASS
 
-### Stats Mart
+The accepted 2016-2025 Analysis v1.2 baseline was backfilled from JRDB PACI + SED for every detected 2026 JRA race date through 2026-08-23.
 
-2016-2025 full mart:
+- detected race dates: **70**
+- PACI: **70 / 70** downloaded and ZIP-validated
+- SED: **70 / 70** downloaded and ZIP-validated
+- 2026 Analysis rows added: **31,885**
+- total Analysis rows: **513,512**
+- 2026 races: **2,298**
+- frame / track condition / sire population: **31,885 / 31,885**
+- prev_result_key_1 / prev_race_key_1 populated: **29,334 / 31,885**
+- duplicate primary keys: **0**
+- ingest batch: **SUCCESS 70 / ERROR 0**
+- integrity_check: **ok**
+- production file: `jrdb_analysis_2016_2026YTD_20260823_v1_2.sqlite`
+- size: **197,492,736 bytes (~188.34 MiB)**
+- SHA-256: `4df011c74b226ad394a171b71c0841872cb94f3418c8e7f85225a31de89e21b2`
 
-- sire rows: 194,656
-- jockey rows: 155,118
-- frame rows: 38,151
-- SQLite: ~50.09 MiB
-- integrity_check: ok
+A full Stats Mart rebuilt from this accepted Analysis contains:
 
-2025 year-only refresh from Analysis v1.2 reproduced the original full-build mart with **zero differences** across sire/jockey/frame tables.
+- sire rows: **208,885** total / **14,228** for 2026
+- jockey rows: **165,739** total / **10,621** for 2026
+- frame rows: **40,634** total / **2,483** for 2026
+- SQLite size: **56,254,464 bytes (~53.65 MiB)**
+- integrity_check: **ok**
+- SHA-256: `116ac151b4ed499e81cfb66cfedc6f68f42c456458e2fa6b3160583633d5d874`
+
+The in-season Analysis is now close to the 200 MiB design target. Continue incremental 2026 updates during the season, then at year-end rebuild the rolling window directly from 2017-2026 Raw and drop 2016.
 
 ## Rolling operation
 
