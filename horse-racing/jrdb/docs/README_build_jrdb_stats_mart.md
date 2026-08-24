@@ -40,8 +40,8 @@ Fixed windows such as last 5/10 years are derived by summing yearly rows.
 
 ```bash
 python src/build_jrdb_stats_mart.py \
-  --analysis ./jrdb_analysis_2016_2025.sqlite \
-  --db ./jrdb_stats_mart_2016_2025.sqlite
+  --analysis ./jrdb_analysis_2016_2026YTD_20260823_v1_2.sqlite \
+  --db ./jrdb_stats_mart_2016_2026YTD_20260823_v1_1.sqlite
 ```
 
 Multiple non-overlapping Analysis shards may be supplied. Overlapping years are rejected.
@@ -102,12 +102,37 @@ The refreshed database was compared against the original full-build mart across 
 
 Therefore the current-year refresh path is equivalent to a full mart rebuild for the refreshed year.
 
+### 2016-2026 YTD full mart through 2026-08-23 — PASS
+
+Built from accepted production candidate `jrdb_analysis_2016_2026YTD_20260823_v1_2.sqlite`.
+
+Total yearly mart rows:
+
+- sire: **208,885**
+- jockey: **165,739**
+- frame: **40,634**
+
+2026-only rows:
+
+- sire: **14,228**
+- jockey: **10,621**
+- frame: **2,483**
+
+Artifact:
+
+- file: `jrdb_stats_mart_2016_2026YTD_20260823_v1_1.sqlite`
+- SQLite size: **56,254,464 bytes (~53.65 MiB)**
+- integrity_check: **ok**
+- SHA-256: `116ac151b4ed499e81cfb66cfedc6f68f42c456458e2fa6b3160583633d5d874`
+
+This matches the 2026 counts reported by the YTD backfill job and provides a complete current production mart for 2016-2026 YTD.
+
 ## Production cadence
 
 During the season:
 
 ```text
-completed-date Raw
+PACI + SED for completed date
   -> Analysis incremental replacement
   -> refresh current year in Stats Mart
 ```
