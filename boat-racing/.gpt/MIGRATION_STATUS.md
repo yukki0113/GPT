@@ -10,10 +10,12 @@ Status: COMPLETE
 - `.gpt/WORKFLOW.md`
 - `.gpt/MIGRATION_STATUS.md`
 - `requirements.txt`
+- `requirements_直前情報取得.txt`
 - `docs/README_出走表取得.md`
 - `docs/README_直前情報取得.md`
 - `docs/README_公式結果取得.md`
 - `docs/出走表取得依頼_定型作業.txt`
+- `docs/直前情報取得依頼_定型作業.txt`
 - `src/fetch_boatrace_racelist.py`
 - `src/fetch_boatrace_pre_race_info.py`
 - `src/fetch_boatrace_results.py`
@@ -35,7 +37,9 @@ Status: COMPLETE
 
 ## Python依存関係
 
-`boat-racing/requirements.txt` を使用する。
+取得ツール全体では `boat-racing/requirements.txt` を使用する。
+
+直前情報取得を単独で扱う場合は、専用の `boat-racing/requirements_直前情報取得.txt` も使用できる。
 
 現在の取得ツール3本で必要な外部パッケージは以下。
 
@@ -43,7 +47,7 @@ Status: COMPLETE
 - `beautifulsoup4`
 - `lxml`
 
-標準ライブラリのみの依存は `requirements.txt` へ記載しない。
+標準ライブラリのみの依存は requirements ファイルへ記載しない。
 
 ## Git対象外
 
