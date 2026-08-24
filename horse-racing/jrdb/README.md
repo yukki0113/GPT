@@ -12,12 +12,32 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/jrdb_ukc.py` — UKC 290-byte固定長parser
 - `src/build_jrdb_core_v1_2.py` — UKC horse profile追加版
 - `src/build_jrdb_core_v1_2_1.py` — v1.2 + KYI枠番 / SED馬場状態を追加
-- `src/build_jrdb_analysis.py` — Core v1.2.1 → Analysis Lite v1.1
-- `src/build_jrdb_analysis_from_raw.py` — Raw年次ZIP → Analysis Lite v1.1（remote-friendly path）
+- `src/build_jrdb_analysis.py` — Core v1.2.1 → Analysis Lite v1.1（reference/regression path）
+- `src/build_jrdb_analysis_from_raw.py` — Raw年次ZIP → Analysis Lite v1.1（production routine path）
 - `src/build_jrdb_stats_mart.py` — Analysis Lite v1.1 shard群 → 年次Stats Mart v1.1
 - `tools/generate_jrdb_codebooks.py` — codebook生成
 - `tools/audit_jrdb_core_v1_1_1.py` — Core監査ツール
 - `tools/audit_jrdb_core_v1_2_regression.py` — v1.1.2 / v1.2回帰比較
+- `tools/audit_jrdb_analysis_equivalence.py` — Core→Analysis / Raw→Analysis 全列等価性比較
+
+## Production data flow
+
+Routine analysis generation no longer requires Core as an intermediate artifact.
+
+```text
+canonical Raw ZIPs
+  ├─> Core                         # audit / full normalized history / reproducibility
+  └─> rolling Analysis Lite       # routine GPT/PWA analysis
+        └─> Stats Mart
+```
+
+Normal routine path:
+
+```text
+Raw -> Analysis Lite -> Stats Mart
+```
+
+Core is maintained independently when audit/history/rebuild work requires it. `Core -> Analysis` remains a validated reference/regression path.
 
 ## Dependencies
 
@@ -25,8 +45,9 @@ Core v1.2.1:
 `build_jrdb_core_v1_2_1.py` → v1.1.2 normalization + v1.2 UKC profile + `schema/jrdb_core_schema_v1_2_1.sql`。
 
 Analysis Lite v1.1:
-- Core path: `build_jrdb_analysis.py` + `schema/jrdb_analysis_schema_v1_1.sql`
-- Raw path: `build_jrdb_analysis_from_raw.py` + Raw `BAC/KYI/SED/CYB/UKC`
+- production Raw path: `build_jrdb_analysis_from_raw.py` + Raw `BAC/KYI/SED/CYB/UKC`
+- reference Core path: `build_jrdb_analysis.py` + Core v1.2.1
+- shared schema: `schema/jrdb_analysis_schema_v1_1.sql`
 
 v1.1では旧 `condition_code` の曖昧さを解消し、
 - `race_condition_code` = BAC競走条件
@@ -45,6 +66,11 @@ Core v1.2 additive regression:
 - v1.1.2の既存正規化部分は行単位差分0
 - integrity_check: ok
 
+Raw -> Analysis equivalence:
+- 2016-2020: 243,849 rows × 31 columns, differences 0
+- 2021-2025: 237,778 rows × 31 columns, differences 0
+- combined 2016-2025: **481,627 rows, exact equivalence PASS**
+
 Analysis Lite v1.1 corrected 2016-2025 measurement:
 - rows: **481,627**
 - sire nonblank: **481,519**
@@ -54,7 +80,9 @@ Analysis Lite v1.1 corrected 2016-2025 measurement:
 - ZIP: **44,011,036 bytes (~41.97 MiB)**
 - integrity_check: **ok**
 
-10-year shard is below the 200 MiB Analysis target and below the current ~256 MiB remote connector ceiling.
+Drive delivery:
+- the ~169 MiB 2016-2025 Analysis SQLite was uploaded and fetched back through the ChatGPT Drive connector
+- fetched size / row count / integrity / SHA-256 matched: **PASS**
 
 Stats Mart v1.1 corrected 2016-2025 pilot:
 - sire rows: 194,656
@@ -68,6 +96,21 @@ Stats Mart v1.1 corrected 2016-2025 pilot:
 - `docs/README_build_jrdb_core_v1_2.md`
 - `docs/README_build_jrdb_analysis.md`
 - `docs/README_build_jrdb_stats_mart.md`
+
+## Rolling Analysis operation
+
+A recent ten-year Analysis shard is the normal GPT/PWA flexible-query artifact.
+
+Example rollover:
+
+```text
+2016-2025 Analysis
+  -> rebuild directly from 2017-2026 Raw
+  -> 2017-2026 Analysis
+  -> rebuild/update Stats Mart
+```
+
+There is no requirement to rebuild Core first.
 
 ## Security
 
