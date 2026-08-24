@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Secrets / local environment
+.env
+.env.*
+!.env.example
+jrdb_secret.py
+*_secret.py
+secrets/
+
+# Runtime / generated data
+output/
+outputs/
+cache/
+logs/
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.zip
+*.xlsx
+*.xls
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
