@@ -16,6 +16,25 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 
 各ツールの詳細は `docs/` を参照してください。
 
+## Eval表画像取得の標準実行経路
+
+Chatからの依頼では `.github/workflows/eval_media_chat.yml` のGitHub Issue経路を標準とします。
+
+Chat側で対象日の `@master_eval` 投稿を探索し、対象日と投稿IDの対応を確定したうえで、専用Issueを作成します。
+
+- タイトル: `[EVAL_MEDIA_REQUEST] <request_id>`
+- 本文: 対象日と投稿IDを記したJSON
+
+Issue作成をトリガーにGitHub Actionsが起動し、Git正本の `src/master_eval_media_collector.py` を実行します。取得結果は `resolved_request.json`、`validation_report.json`、`run_status.txt`、投稿ID別の `metadata.json` と `media_XX.*` を含むartifactとして保存します。
+
+完了時はActionsが同じIssueへ `EVAL_MEDIA_RESULT` 形式の機械可読コメントを返し、Issueを自動で閉じます。コメントには `run_id`、artifact名、collection/validation終了コード、対象日と投稿ID、検証結果が含まれます。
+
+Actions側の検証は「各投稿でmetadataと1枚以上のmediaを取得できたか」までです。Eval表本体と注意事項・説明画像の内容判定は自動化せず、Chatがartifact回収後に画像内容を確認して選別します。
+
+最終成果物は従来どおり、Eval表画像だけを含む `eval_YYYYMMDD_YYYYMMDD_Eval表画像.zip` とします。
+
+投稿ID探索自体は `master_eval_media_collector.py` の担当外です。標準運用ではChatがWeb検索等で投稿IDを確定してからIssueを作成します。
+
 ## JRA結果取得の標準実行経路
 
 Chatからの依頼では `.github/workflows/jra_results_chat.yml` を標準経路とします。
@@ -33,9 +52,10 @@ Issue作成をトリガーにGitHub Actionsが起動し、Git正本のPythonと 
 
 ## 予備経路
 
-- `.github/workflows/jra_results_manual.yml` — 人間がGitHub UIから `workflow_dispatch` する場合の予備経路
-- Chat/ローカルから `fetch_jra_daily_results.py` を直接実行 — デバッグ・緊急時の補助経路
+- `.github/workflows/eval_media_manual.yml` — Eval画像取得を人間がGitHub UIから `workflow_dispatch` する場合の予備経路
+- `.github/workflows/jra_results_manual.yml` — JRA結果取得を人間がGitHub UIから `workflow_dispatch` する場合の予備経路
+- Chat/ローカルから各Pythonを直接実行 — デバッグ・緊急時の補助経路
 
 日常運用ではChat専用Issue経路を優先します。
 
-取得後は `validate_jra_results.py` で検証します。CSV・検証レポート・実行状態はartifact化し、日次成果物はGitへcommitしません。
+日次画像、CSV、検証レポート、実行ログ等はGitへcommitしません。
