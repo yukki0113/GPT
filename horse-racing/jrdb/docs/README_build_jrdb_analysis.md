@@ -61,26 +61,82 @@ This is calendar-year age, not birthday-dependent Western age.
 
 ### 2021 + 2025 two-year pilot
 
-This is a non-contiguous pilot used to validate growth and multi-year joins before the planned contiguous 2021-2025 PoC.
-
 - fact rows: 95,705
 - sire nonblank: 95,593
 - broodmare-sire nonblank: 95,593
 - unmatched horse profile rows: 112
 - SQLite size: 34,004,992 bytes (~32.4 MiB)
 - `PRAGMA integrity_check`: `ok`
-- sample sire/jockey aggregation queries: ~74-84 ms in the test runtime
 
-The two-year result implies that the planned contiguous 2021-2025 PoC is likely to remain comfortably below the 200 MiB hard target and plausibly near/below the preferred 100 MiB target, but this must be confirmed by the actual five-year build.
+### Contiguous 2021-2025 PoC — PASS
 
-## Required next validation
+Source years: 2021, 2022, 2023, 2024, 2025.
 
-1. Build contiguous 2021-2025 Core v1.2 / Analysis Lite.
-2. Confirm sire/broodmare-sire coverage.
-3. Record actual SQLite and ZIP sizes.
-4. Verify connector download/access under the remote file-size limit.
-5. Run sire/jockey/style/popularity aggregation regression queries.
-6. Only then expand to 2010-2025 and add Stats Mart.
+- fact rows: **237,778**
+- yearly rows:
+  - 2021: 47,821
+  - 2022: 47,220
+  - 2023: 47,672
+  - 2024: 47,181
+  - 2025: 47,884
+- sire nonblank: **237,670**
+- broodmare-sire nonblank: **237,670**
+- unmatched horse profile rows: **108**
+- SQLite size: **84,582,400 bytes (~80.7 MiB)**
+- ZIP size (deflate level 9): **22,687,297 bytes (~21.6 MiB)**
+- `PRAGMA integrity_check`: `ok`
+- Analysis SQLite SHA-256: `72b8953311de95abf45387e00c88a6d1d21680edc319f04027471896014d9451`
+- ZIP SHA-256: `de9127e3d9ced8aff35bccac70391763f0400364bd83d9136e8775ed0d50e2e1`
+
+Representative query timings in the test runtime:
+
+- sire aggregation, venue 05 / distance 1600: ~267 ms
+- jockey aggregation, venue 06 / distance 1800: ~239 ms
+- compound sire filter with venue/track/distance/popularity/style: ~47 ms
+
+The contiguous five-year build therefore passes both size targets:
+
+- mandatory: < 200 MiB — **PASS**
+- preferred: < 100 MiB — **PASS**
+
+## Core v1.2 regression used for the PoC
+
+The contiguous 2021-2025 Core v1.2 candidate preserved all existing v1.1.2 normalized rows exactly for:
+
+- race: 17,277
+- entry/result/training/workout: 237,778 each
+- result_extension: 236,764
+- entry_previous_result: 1,188,890
+- horse_current: 31,010
+- horse_history: 1,007
+
+Semantic metadata comparison also matched for archive/source-file/anomaly rows. v1.2 added:
+
+- horse_profile_current: 31,010
+- horse_profile_history: 2,773
+- BAC fallback: 53
+- MANUAL_REQUIRED: 0
+- non-canonical source files: 1
+- integrity_check: `ok`
+
+## Capacity implication
+
+The five-year size is small enough for routine GPT/PWA use. Linear extrapolation suggests a single 2010-2025 Analysis Lite could approach or exceed the current ~256 MiB remote connector download ceiling, so the 16-year delivery layout must be measured rather than assumed.
+
+The preferred next design is:
+
+1. keep a recent analytical shard large enough for routine 5-10 year queries;
+2. keep older years in one or more additional shard(s) below the connector limit;
+3. maintain a tiny full-history Stats Mart for frequent aggregate queries;
+4. use `race_key` to trace aggregate findings back to detailed delivery/Core records.
+
+## Next validation
+
+1. Measure a 10-year Analysis Lite shard (target use case: routine "past 10 years" queries).
+2. Decide the production shard boundary using actual size, leaving growth headroom for 2026+.
+3. Add Stats Mart, including mandatory `mart_sire_yearly`.
+4. Verify an uploaded Analysis Lite shard can actually be fetched through the Drive connector.
+5. Add Raw ZIP -> Analysis only after equivalence with Core -> Analysis is proven.
 
 ## Future Raw -> Analysis path
 
