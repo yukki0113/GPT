@@ -1,9 +1,9 @@
 # JRDB Analysis Lite Builder v1.1
 
 `build_jrdb_analysis.py` creates a compact one-entry-per-row analytical SQLite from Core v1.2.1.
-`build_jrdb_analysis_from_raw.py` provides the remote-friendly Raw ZIP -> Analysis path.
+`build_jrdb_analysis_from_raw.py` is the normal production path from canonical Raw ZIPs.
 
-The full provenance-preserving Core remains the durable normalized database; Analysis Lite is the routine GPT/PWA query layer.
+The full provenance-preserving Core remains the durable normalized/audit database; Analysis Lite is the routine GPT/PWA query layer.
 
 ## v1.1 field correction
 
@@ -15,18 +15,16 @@ Analysis v1.1 therefore uses distinct fields:
 - `track_condition_code` — actual SED track condition, 0-based byte offset 69, length 2
 - `frame_no` — KYI frame number, 0-based byte offset 323, length 1
 
-The source reference confirms KYI frame number at human position 324 and SED track condition at human position 70.
-
 ## Input
 
-Core path:
-
-- Core v1.2.1 SQLite containing `horse_profile_current`, `entry.frame_no`, and `result.track_condition_code`
-- `schema/jrdb_analysis_schema_v1_1.sql`
-
-Raw path:
+### Production Raw path
 
 - annual BAC/KYI/SED/CYB/UKC ZIPs
+- `schema/jrdb_analysis_schema_v1_1.sql`
+
+### Reference Core path
+
+- Core v1.2.1 SQLite containing `horse_profile_current`, `entry.frame_no`, and `result.track_condition_code`
 - `schema/jrdb_analysis_schema_v1_1.sql`
 
 ## Output
@@ -51,21 +49,21 @@ Provenance-heavy fields, full comments, workout rows, previous-result rows and d
 
 ## Run
 
-Core -> Analysis:
-
-```bash
-python src/build_jrdb_analysis.py \
-  --core ./jrdb_core_v1_2_1.sqlite \
-  --db ./jrdb_analysis.sqlite
-```
-
-Raw -> Analysis:
+Raw -> Analysis — production routine path:
 
 ```bash
 python src/build_jrdb_analysis_from_raw.py \
   --years 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025 \
   --raw-root ./00_raw_local \
   --db ./jrdb_analysis_2016_2025.sqlite
+```
+
+Core -> Analysis — regression/reference path:
+
+```bash
+python src/build_jrdb_analysis.py \
+  --core ./jrdb_core_v1_2_1.sqlite \
+  --db ./jrdb_analysis.sqlite
 ```
 
 The output path must not already exist.
@@ -80,45 +78,49 @@ age = race_year - birth_year
 
 This is calendar-year age, not birthday-dependent Western age.
 
-## Validation history
+## Explicit Core/Raw path equivalence — PASS
 
-### Analysis v1.0 contiguous 2021-2025 PoC
+The two build routes were compared across all **31 columns** in `fact_entry_result_lite`.
 
-- fact rows: 237,778
-- sire nonblank: 237,670
-- SQLite size: 84,582,400 bytes (~80.7 MiB)
-- ZIP: 22,687,297 bytes (~21.6 MiB)
-- integrity_check: ok
+### 2016-2020
 
-This established the original five-year size target before the v1.1 field correction.
+- Core-derived rows: 243,849
+- Raw-derived rows: 243,849
+- Core minus Raw: 0
+- Raw minus Core: 0
+- key/value mismatches: 0
 
-### Analysis v1.1 corrected 2016-2020
+### 2021-2025
 
-- rows: 243,849
-- sire nonblank: 243,849
-- broodmare-sire nonblank: 243,849
-- frame non-null: 243,849
-- track condition nonblank: 243,849
-- missing horse profiles: 0
-- SQLite: 92,082,176 bytes (~87.82 MiB)
-- integrity_check: ok
+- Core-derived rows: 237,778
+- Raw-derived rows: 237,778
+- Core minus Raw: 0
+- Raw minus Core: 0
+- key/value mismatches: 0
 
-### Analysis v1.1 corrected 2021-2025
+Combined validated coverage:
 
-- rows: 237,778
-- sire nonblank: 237,670
-- broodmare-sire nonblank: 237,670
-- frame non-null: 237,778
-- track condition nonblank: 237,778
-- missing horse profiles: 108
-- SQLite: 89,296,896 bytes (~85.16 MiB)
-- integrity_check: ok
+- years: **2016-2025**
+- rows: **481,627**
+- columns compared: **31**
+- differences: **0**
 
-### Analysis v1.1 corrected 2016-2025 — 10-year measurement PASS
+During this regression, 735 rows in 2025 BAC->SED fallback races initially differed only because Raw->Analysis emitted empty strings for unavailable BAC-only `race_condition_code` / `grade_code`, while Core correctly used SQL NULL. Raw->Analysis was corrected to use NULL, after which equivalence became exact.
 
-A single corrected ten-year Analysis Lite was measured from the two non-overlapping five-year shards.
+Reusable checker:
 
-- years: 2016-2025
+```bash
+python tools/audit_jrdb_analysis_equivalence.py \
+  --left ./analysis_from_core.sqlite \
+  --right ./analysis_from_raw.sqlite
+```
+
+This PASS promotes `build_jrdb_analysis_from_raw.py` to the normal production route.
+
+## Corrected 10-year measurement — PASS
+
+Analysis Lite v1.1 for 2016-2025:
+
 - rows: **481,627**
 - sire nonblank: **481,519**
 - broodmare-sire nonblank: **481,519**
@@ -129,29 +131,45 @@ A single corrected ten-year Analysis Lite was measured from the two non-overlapp
 - integrity_check: **ok**
 - measured SQLite SHA-256: `e33a5ec567e0431ec847855df9f224c5dda7fc7e328d53964b349d62c8ca3be6`
 
-Representative 10-year query timings in the test runtime:
+Representative 10-year direct query timings in the test runtime:
 
 - Tokyo turf 1600m / good-family track condition / sire aggregation: ~8.05 ms
 - Nakayama dirt 1800m / jockey aggregation: ~12.32 ms
 - Kyoto turf / frame aggregation: ~11.30 ms
 
-The corrected ten-year shard therefore passes:
+The ten-year shard passes the < 200 MiB Analysis design target and remains below the current ~256 MiB remote connector ceiling.
 
-- mandatory < 200 MiB Analysis target — **PASS**
-- current remote connector ~256 MiB file ceiling — **PASS with useful headroom**
+## Drive delivery validation — PASS
 
-It does not pass the earlier preferred < 100 MiB target, which is expected for ten years. The practical conclusion is that a rolling ten-year Analysis shard is viable, while full 2010+ history should remain sharded and/or served through Stats Mart.
+The 2016-2025 Analysis SQLite was uploaded to Google Drive and fetched back through the ChatGPT Drive connector.
 
-## Recommended production delivery layout
+Confirmed after fetch:
 
-- keep Core as the complete auditable layer; do not require GPT to read it directly
-- maintain one rolling recent-ten-year Analysis Lite shard for flexible routine queries
-- keep older years in separate Analysis shard(s) below the connector ceiling
-- maintain full-history yearly Stats Mart for frequent aggregate queries
-- retain `race_key` so aggregate findings can be traced to detailed race delivery/Core records
+- size: **177,328,128 bytes**
+- integrity_check: **ok**
+- rows: **481,627**
+- SHA-256 matched the generated artifact
 
-## Remaining validation
+Therefore the practical remote path is validated.
 
-1. Run explicit row-level equivalence for Core v1.2.1 -> Analysis v1.1 versus Raw -> Analysis v1.1.
-2. Upload/fetch a real ~169 MiB Analysis shard through the Drive connector to confirm the practical remote path, not only the nominal size ceiling.
-3. Keep the rolling ten-year shard under the configured safety ceiling as 2026+ is added.
+## Recommended production operation
+
+Routine analytical refresh:
+
+```text
+Raw -> rolling 10-year Analysis Lite -> Stats Mart
+```
+
+Core is maintained independently for auditability, complete normalized history, anomaly/duplicate investigation, and reproducibility. Rebuilding Core is **not** required before refreshing Analysis.
+
+Example rollover:
+
+```text
+2016-2025 Analysis
+    -> rebuild directly from 2017-2026 Raw
+    -> 2017-2026 Analysis
+```
+
+## Remaining operational decision
+
+Define the exact 2026/current-year refresh cadence: year-end-only rollover versus interim in-season Analysis refreshes. The Raw-direct architecture itself has passed equivalence and Drive-delivery validation.
