@@ -1,0 +1,162 @@
+name: jra-results-manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      dates:
+        description: 'Target dates (YYYY-MM-DD, space/comma separated). Leave empty when using from/to.'
+        required: false
+        type: string
+      date_from:
+        description: 'Start date (YYYY-MM-DD). Use together with date_to.'
+        required: false
+        type: string
+      date_to:
+        description: 'End date (YYYY-MM-DD). Use together with date_from.'
+        required: false
+        type: string
+      request_interval_seconds:
+        description: 'Interval between requests'
+        required: false
+        default: '0.7'
+        type: string
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r horse-racing/eval/requirements.txt
+
+      - name: Validate inputs and prepare command
+        env:
+          DATES: ${{ inputs.dates }}
+          DATE_FROM: ${{ inputs.date_from }}
+          DATE_TO: ${{ inputs.date_to }}
+          REQUEST_INTERVAL_SECONDS: ${{ inputs.request_interval_seconds }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          dates_raw = os.environ.get('DATES', '').strip()
+          date_from = os.environ.get('DATE_FROM', '').strip()
+          date_to = os.environ.get('DATE_TO', '').strip()
+
+          try:
+              interval = float(os.environ.get('REQUEST_INTERVAL_SECONDS', '0.7'))
+          except ValueError as exc:
+              raise SystemExit('request_interval_seconds must be numeric') from exc
+          if interval < 0:
+              raise SystemExit('request_interval_seconds must be >= 0')
+
+          command = ['python', 'horse-racing/eval/src/fetch_jra_daily_results.py']
+          labels = []
+
+          if dates_raw:
+              if date_from or date_to:
+                  raise SystemExit('Use either dates or date_from/date_to, not both')
+              dates = [item for item in re.split(r'[\s,]+', dates_raw) if item]
+              if not dates:
+                  raise SystemExit('dates is empty')
+              for value in dates:
+                  datetime.strptime(value, '%Y-%m-%d')
+              command += ['--dates', *dates]
+              labels = dates
+          else:
+              if not date_from or not date_to:
+                  raise SystemExit('Specify dates or both date_from and date_to')
+              start = datetime.strptime(date_from, '%Y-%m-%d').date()
+              end = datetime.strptime(date_to, '%Y-%m-%d').date()
+              if start > end:
+                  raise SystemExit('date_from must be <= date_to')
+              command += ['--from', date_from, '--to', date_to]
+              labels = [date_from, date_to]
+
+          compact = [value.replace('-', '') for value in labels]
+          range_label = compact[0] if len(compact) == 1 else f'{compact[0]}-{compact[-1]}'
+          output_dir = f'horse-racing/eval/output_{range_label}'
+          command += ['--output-dir', output_dir, '--interval', str(interval)]
+
+          config = {
+              'command': command,
+              'output_dir': output_dir,
+              'range_label': range_label,
+          }
+          Path('/tmp/jra_results_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'RANGE_LABEL={range_label}\n')
+          PY
+
+      - name: Fetch JRA results
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/jra_results_config.json').read_text(encoding='utf-8'))
+          completed = subprocess.run(config['command'], check=False)
+          Path('/tmp/fetch_exit_code').write_text(str(completed.returncode), encoding='utf-8')
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate output CSV
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p "$OUTPUT_DIR"
+          csv_path=$(find "$OUTPUT_DIR" -maxdepth 1 -type f -name '*_JRA結果払戻.csv' -print -quit)
+          if [ -z "$csv_path" ]; then
+            echo 'CSV output not found.' > "$OUTPUT_DIR/validation_error.txt"
+            echo "exit_code=2" >> "$GITHUB_OUTPUT"
+            exit 2
+          fi
+          python horse-racing/eval/src/validate_jra_results.py "$csv_path" --report "$OUTPUT_DIR/validation_report.json"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "validation_exit_code=${{ steps.validate.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jra-results-${{ env.RANGE_LABEL }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Fail workflow when fetch or validation failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1
