@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 import re
 from typing import Optional
 
@@ -51,6 +52,17 @@ def _digit_components(binary: np.ndarray) -> list[tuple[int, int, int, int]]:
     return blobs
 
 
+def _parse_value(text: str) -> Optional[int]:
+    token = re.sub(r"\D", "", text or "")
+    if not token:
+        return None
+    try:
+        value = int(token)
+    except ValueError:
+        return None
+    return value if 0 <= value <= 100 else None
+
+
 def _ocr_by_digit_components(binary: np.ndarray) -> Optional[int]:
     blobs = _digit_components(binary)
     if not (1 <= len(blobs) <= 3):
@@ -63,9 +75,18 @@ def _ocr_by_digit_components(binary: np.ndarray) -> Optional[int]:
         char_img = binary[y1:y2, x1:x2]
         token = ""
         for extra_scale in (1.0, 2.0):
-            test_img = char_img if extra_scale == 1.0 else cv2.resize(char_img, None, fx=extra_scale, fy=extra_scale, interpolation=cv2.INTER_CUBIC)
+            test_img = char_img if extra_scale == 1.0 else cv2.resize(
+                char_img,
+                None,
+                fx=extra_scale,
+                fy=extra_scale,
+                interpolation=cv2.INTER_CUBIC,
+            )
             for psm in (10, 8, 13):
-                candidate = pytesseract.image_to_string(test_img, config=f"--psm {psm} -l eng -c tessedit_char_whitelist=0123456789").strip()
+                candidate = pytesseract.image_to_string(
+                    test_img,
+                    config=f"--psm {psm} -l eng -c tessedit_char_whitelist=0123456789",
+                ).strip()
                 candidate = re.sub(r"\D", "", candidate)
                 if len(candidate) == 1:
                     token = candidate
@@ -76,16 +97,65 @@ def _ocr_by_digit_components(binary: np.ndarray) -> Optional[int]:
             return None
         chars.append(token)
     try:
-        return int("".join(chars))
+        value = int("".join(chars))
     except ValueError:
         return None
+    return value if 0 <= value <= 100 else None
+
+
+def _ocr_single_cell_candidates(binary: np.ndarray) -> list[int]:
+    """Collect independent whole-cell readings for conservative majority voting."""
+    candidates: list[int] = []
+    for psm in (7, 8, 10, 13):
+        text = pytesseract.image_to_string(
+            binary,
+            config=f"--psm {psm} -l eng -c tessedit_char_whitelist=0123456789",
+        )
+        value = _parse_value(text)
+        if value is not None:
+            candidates.append(value)
+    return candidates
+
+
+def _choose_value(batch_value: Optional[int], binary: np.ndarray) -> Optional[int]:
+    candidates: list[int] = []
+    if batch_value is not None and 0 <= batch_value <= 100:
+        candidates.append(batch_value)
+
+    component_value = _ocr_by_digit_components(binary)
+    if component_value is not None:
+        candidates.append(component_value)
+
+    candidates.extend(_ocr_single_cell_candidates(binary))
+    if not candidates:
+        return None
+
+    counts = Counter(candidates)
+    best_value, best_count = counts.most_common(1)[0]
+
+    # Preserve the fast batch reading unless at least two independent readings
+    # agree on a different value with a strictly stronger vote. This avoids
+    # making the fallback path more aggressive than the original PoC while
+    # allowing confusions such as 1/7 to be corrected when cell-level OCR
+    # consistently disagrees with the stacked batch OCR.
+    if batch_value is not None and 0 <= batch_value <= 100:
+        batch_count = counts[batch_value]
+        if best_value != batch_value and best_count >= 2 and best_count > batch_count:
+            return best_value
+        return batch_value
+
+    return best_value
 
 
 def ocr_numeric_cells(cells: list[np.ndarray]) -> list[Optional[int]]:
     if not cells:
         return []
     canvas, ranges = _stack_cells(cells)
-    data = pytesseract.image_to_data(canvas, config="--psm 6 -l eng -c tessedit_char_whitelist=0123456789", output_type=Output.DICT)
+    data = pytesseract.image_to_data(
+        canvas,
+        config="--psm 6 -l eng -c tessedit_char_whitelist=0123456789",
+        output_type=Output.DICT,
+    )
     raw = [""] * len(cells)
     for text, top, height in zip(data["text"], data["top"], data["height"]):
         token = re.sub(r"\D", "", (text or ""))
@@ -96,21 +166,10 @@ def ocr_numeric_cells(cells: list[np.ndarray]) -> list[Optional[int]]:
             if y1 <= cy <= y2:
                 raw[idx] += token
                 break
+
     values: list[Optional[int]] = []
     for cell, token in zip(cells, raw):
-        try:
-            value: Optional[int] = int(token) if token else None
-        except ValueError:
-            value = None
+        batch_value = _parse_value(token)
         binary = preprocess_numeric_cell(cell)
-        blobs = _digit_components(binary)
-        token_len = len(str(value)) if value is not None else 0
-        needs_repair = value is None or not (0 <= value <= 100)
-        if 1 <= len(blobs) <= 3 and len(blobs) > token_len:
-            needs_repair = True
-        if needs_repair:
-            repaired = _ocr_by_digit_components(binary)
-            if repaired is not None:
-                value = repaired
-        values.append(value)
+        values.append(_choose_value(batch_value, binary))
     return values
