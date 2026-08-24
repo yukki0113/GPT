@@ -76,11 +76,7 @@ def _ocr_by_digit_components(binary: np.ndarray) -> Optional[int]:
         token = ""
         for extra_scale in (1.0, 2.0):
             test_img = char_img if extra_scale == 1.0 else cv2.resize(
-                char_img,
-                None,
-                fx=extra_scale,
-                fy=extra_scale,
-                interpolation=cv2.INTER_CUBIC,
+                char_img, None, fx=extra_scale, fy=extra_scale, interpolation=cv2.INTER_CUBIC
             )
             for psm in (10, 8, 13):
                 candidate = pytesseract.image_to_string(
@@ -120,14 +116,22 @@ def _needs_ambiguity_check(value: Optional[int]) -> bool:
     if value is None or not (0 <= value <= 100):
         return True
     token = str(value)
-    # Initial production comparison found a real 74 -> 14 confusion. Restrict
-    # the expensive cell-level ensemble to values where 1/7 ambiguity can
-    # change the result; the stacked batch OCR remains the fast default for
-    # the other ~90% of cells.
     return len(token) >= 2 and (token.startswith("1") or token.startswith("7"))
 
 
 def _choose_value(batch_value: Optional[int], binary: np.ndarray) -> Optional[int]:
+    blobs = _digit_components(binary)
+    token_len = len(str(batch_value)) if batch_value is not None else 0
+
+    # Restore the original digit-count repair first. This catches cases where
+    # stacked OCR drops a digit (e.g. 37 -> 3) after row-count/layout changes.
+    if batch_value is None or not (0 <= batch_value <= 100) or (
+        1 <= len(blobs) <= 3 and len(blobs) > token_len
+    ):
+        repaired = _ocr_by_digit_components(binary)
+        if repaired is not None:
+            batch_value = repaired
+
     if not _needs_ambiguity_check(batch_value):
         return batch_value
 
