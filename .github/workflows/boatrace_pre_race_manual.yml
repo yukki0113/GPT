@@ -1,0 +1,124 @@
+name: boatrace-pre-race-manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Target date (YYYYMMDD)'
+        required: true
+        type: string
+      venue:
+        description: 'Venue name or code (e.g. 三国 / 10)'
+        required: true
+        type: string
+      race:
+        description: 'Race number (1-12)'
+        required: true
+        type: string
+      format:
+        description: 'Output format'
+        required: false
+        default: 'json'
+        type: choice
+        options:
+          - json
+          - csv
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r boat-racing/requirements.txt
+
+      - name: Validate inputs and prepare output
+        env:
+          TARGET_DATE: ${{ inputs.date }}
+          VENUE: ${{ inputs.venue }}
+          RACE: ${{ inputs.race }}
+          OUTPUT_FORMAT: ${{ inputs.format }}
+        run: |
+          python - <<'PY'
+          import os, re
+          from datetime import datetime
+          from pathlib import Path
+
+          date = os.environ['TARGET_DATE'].strip()
+          venue = os.environ['VENUE'].strip()
+          race = os.environ['RACE'].strip()
+          output_format = os.environ['OUTPUT_FORMAT'].strip()
+
+          if not re.fullmatch(r'\d{8}', date):
+              raise SystemExit('date must be YYYYMMDD')
+          datetime.strptime(date, '%Y%m%d')
+          if not venue:
+              raise SystemExit('venue must not be empty')
+          if not race.isdigit() or not 1 <= int(race) <= 12:
+              raise SystemExit('race must be 1-12')
+          if output_format not in {'json', 'csv'}:
+              raise SystemExit('format must be json or csv')
+
+          Path(f'boat-racing/output_pre_race_{date}').mkdir(parents=True, exist_ok=True)
+          PY
+
+      - name: Fetch pre-race info
+        id: fetch
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ inputs.date }}
+          VENUE: ${{ inputs.venue }}
+          RACE: ${{ inputs.race }}
+          OUTPUT_FORMAT: ${{ inputs.format }}
+        run: |
+          OUTPUT_DIR="boat-racing/output_pre_race_${TARGET_DATE}"
+          OUTPUT_FILE="${OUTPUT_DIR}/${TARGET_DATE}_直前情報_${VENUE}_${RACE}R.${OUTPUT_FORMAT}"
+          set +e
+          python boat-racing/src/fetch_boatrace_pre_race_info.py \
+            --date "${TARGET_DATE}" \
+            --venue "${VENUE}" \
+            --race "${RACE}" \
+            --format "${OUTPUT_FORMAT}" \
+            --output "${OUTPUT_FILE}"
+          code=$?
+          echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write run status
+        if: always()
+        env:
+          TARGET_DATE: ${{ inputs.date }}
+          VENUE: ${{ inputs.venue }}
+          RACE: ${{ inputs.race }}
+          OUTPUT_FORMAT: ${{ inputs.format }}
+        run: |
+          OUTPUT_DIR="boat-racing/output_pre_race_${TARGET_DATE}"
+          mkdir -p "${OUTPUT_DIR}"
+          {
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "date=${TARGET_DATE}"
+            echo "venue=${VENUE}"
+            echo "race=${RACE}"
+            echo "format=${OUTPUT_FORMAT}"
+            echo "source_sha=${GITHUB_SHA}"
+          } > "${OUTPUT_DIR}/run_status.txt"
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boatrace-pre-race-${{ inputs.date }}-${{ inputs.venue }}-${{ inputs.race }}R-${{ github.run_id }}
+          path: boat-racing/output_pre_race_${{ inputs.date }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Fail workflow when fetcher failed
+        if: always() && steps.fetch.outputs.exit_code != '0'
+        run: exit 1
