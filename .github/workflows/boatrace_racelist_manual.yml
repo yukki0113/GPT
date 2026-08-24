@@ -1,0 +1,98 @@
+name: boatrace-racelist-manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Target date (YYYYMMDD)'
+        required: true
+        type: string
+      venues_json:
+        description: 'JSON array: [{"name":"常滑","code":"08","day":"4日目"}]'
+        required: true
+        type: string
+      request_interval_seconds:
+        description: 'Interval between requests'
+        required: false
+        default: '1.0'
+        type: string
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r boat-racing/requirements.txt
+
+      - name: Validate inputs and create config
+        env:
+          TARGET_DATE: ${{ inputs.date }}
+          VENUES_JSON: ${{ inputs.venues_json }}
+          REQUEST_INTERVAL_SECONDS: ${{ inputs.request_interval_seconds }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          from datetime import datetime
+
+          date = os.environ['TARGET_DATE'].strip()
+          if not re.fullmatch(r'\d{8}', date):
+              raise SystemExit('date must be YYYYMMDD')
+          datetime.strptime(date, '%Y%m%d')
+
+          venues = json.loads(os.environ['VENUES_JSON'])
+          if not isinstance(venues, list) or not venues:
+              raise SystemExit('venues_json must be a non-empty JSON array')
+
+          try:
+              interval = float(os.environ.get('REQUEST_INTERVAL_SECONDS', '1.0'))
+          except ValueError as exc:
+              raise SystemExit('request_interval_seconds must be numeric') from exc
+
+          output_dir = f'boat-racing/output_{date}'
+          config = {
+              'date': date,
+              'venues': venues,
+              'output_dir': output_dir,
+              'request_interval_seconds': interval,
+          }
+          Path('/tmp/boatrace_racelist_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          PY
+
+      - name: Fetch racelists
+        id: fetch
+        continue-on-error: true
+        run: |
+          python boat-racing/src/fetch_boatrace_racelist.py --config /tmp/boatrace_racelist_config.json
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Write run status
+        if: always()
+        env:
+          TARGET_DATE: ${{ inputs.date }}
+        run: |
+          mkdir -p "boat-racing/output_${TARGET_DATE}"
+          echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}" > "boat-racing/output_${TARGET_DATE}/run_status.txt"
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boatrace-racelist-${{ inputs.date }}-${{ github.run_id }}
+          path: boat-racing/output_${{ inputs.date }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Fail workflow when fetcher failed
+        if: always() && steps.fetch.outputs.exit_code != '0'
+        run: exit 1
