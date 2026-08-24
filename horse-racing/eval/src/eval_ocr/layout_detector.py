@@ -78,22 +78,44 @@ def detect_layout(image: np.ndarray) -> LayoutDetection:
     venue_count = len(rows) // 2
     if venue_count not in (2, 3):
         warnings.append(f"Detected {venue_count} venue block(s); current PoC was tuned for 2 or 3 venues.")
+
     panels: list[PanelBox] = []
     image_h = image.shape[0]
-    intra_spans = []
+    intra_spans: list[int] = []
     for venue_idx in range(venue_count):
         upper = rows[venue_idx * 2]
         lower = rows[venue_idx * 2 + 1]
-        intra_spans.append(int(round(np.median([b[1] for b in lower]) - np.median([b[1] for b in upper]))))
-    panel_height = int(np.median(intra_spans)) if intra_spans else 310
-    panel_height = max(250, min(330, panel_height))
+        intra_spans.append(
+            int(round(np.median([b[1] for b in lower]) - np.median([b[1] for b in upper])))
+        )
+
+    # The old PoC cropped panels at the exact median distance between the upper
+    # and lower six-race rows. On a small number of 18-horse races the closing
+    # horizontal border for horse 18 fell just outside that crop, so row 18
+    # could not form a complete interval. Keep a small safety margin below each
+    # panel. detect_row_lines() stops at a large vertical gap, so including a
+    # few pixels from the following header does not create an extra horse row.
+    base_panel_height = int(np.median(intra_spans)) if intra_spans else 310
+    panel_height = max(270, min(360, base_panel_height + 24))
+
     for venue_idx in range(venue_count):
         for row_in_venue in range(2):
             header_row = rows[venue_idx * 2 + row_in_venue]
             for col_idx, (x, y, w, h) in enumerate(header_row):
                 race_no = col_idx + 1 + (6 if row_in_venue == 1 else 0)
                 height = min(panel_height, image_h - y)
-                panels.append(PanelBox(venue_index=venue_idx,row_in_venue=row_in_venue,col_index=col_idx,race_no=race_no,x=x,y=y,width=w,height=height))
+                panels.append(
+                    PanelBox(
+                        venue_index=venue_idx,
+                        row_in_venue=row_in_venue,
+                        col_index=col_idx,
+                        race_no=race_no,
+                        x=x,
+                        y=y,
+                        width=w,
+                        height=height,
+                    )
+                )
     return LayoutDetection(panels=panels, header_rows=rows, warnings=warnings)
 
 
