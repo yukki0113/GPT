@@ -10,6 +10,17 @@
 
 The large Core is not the routine GPT query database. Analysis Lite is the flexible query layer; Stats Mart is the acceleration layer.
 
+Operationally, Core is **not** a mandatory intermediate step for every Analysis rebuild.
+
+Production paths are:
+
+```text
+Raw -> Core                  # audit / normalization / reproducibility, updated when needed
+Raw -> Analysis -> Stats Mart # routine analytical production path
+```
+
+`Core -> Analysis` remains a reference/regression path and a convenient local build path when Core is already available.
+
 ## 2. Core lineage
 
 ### v1.1.2
@@ -61,7 +72,62 @@ Age rule for JRA aggregation:
 
 `age = race_year - birth_year`
 
-## 4. Corrected 10-year measurement
+## 4. Raw -> Analysis production path
+
+`src/build_jrdb_analysis_from_raw.py` reads canonical annual:
+
+- BAC
+- KYI
+- SED
+- CYB
+- UKC
+
+and builds the same Analysis v1.1 fact shape as `Core -> Analysis`.
+
+The Raw path preserves the established Core semantics needed by Analysis, including:
+
+- canonical filename filtering
+- BAC race fields
+- BAC-missing race fallback from SED
+- SED actual track condition
+- KYI frame number / horse / jockey / style fields
+- CYB training index
+- UKC current pedigree/profile fields
+- SED results / odds / payouts
+
+For BAC->SED fallback races, unavailable BAC-only fields are stored as SQL `NULL`, matching the Core path. This detail was found by row-level regression and fixed before production promotion.
+
+### Explicit equivalence validation — PASS
+
+All **31 Analysis fact columns** were compared row-for-row between Core-derived and Raw-derived Analysis outputs.
+
+2016-2020:
+
+- rows: 243,849 vs 243,849
+- Core minus Raw: 0
+- Raw minus Core: 0
+- key/value mismatches: 0
+
+2021-2025:
+
+- rows: 237,778 vs 237,778
+- Core minus Raw: 0
+- Raw minus Core: 0
+- key/value mismatches: 0
+
+Combined 2016-2025 coverage:
+
+- **481,627 rows**
+- **31 columns**
+- differences: **0**
+
+Reusable checker:
+
+`tools/audit_jrdb_analysis_equivalence.py`
+
+This equivalence result promotes `Raw -> Analysis` to the normal production path. `Core -> Analysis` is retained as a regression/reference path.
+
+## 5. Corrected 10-year measurement
 
 Analysis Lite v1.1 was measured for 2016-2025 using canonical annual Raw ZIPs.
 
@@ -82,7 +148,18 @@ Representative direct Analysis query timings in the test runtime:
 
 Conclusion: a single rolling ten-year Analysis Lite is viable below both the 200 MiB design target and the current ~256 MiB remote connector ceiling. A single full-history 2010+ Analysis database should not be assumed safe without sharding.
 
-## 5. Stats Mart v1.1
+### Drive delivery validation — PASS
+
+The generated 2016-2025 Analysis SQLite was uploaded to Google Drive and fetched back through the ChatGPT Drive connector.
+
+- fetched size: **177,328,128 bytes**
+- SQLite integrity: **ok**
+- fact rows: **481,627**
+- SHA-256 matched the generated artifact
+
+Therefore the practical remote Analysis delivery path is validated, not merely inferred from nominal size limits.
+
+## 6. Stats Mart v1.1
 
 Default yearly marts:
 
@@ -122,27 +199,53 @@ Corrected 2016-2025 Stats Mart v1.1 measurement:
 
 Do not add every Analysis dimension to every Mart; keep Mart dimensions driven by frequent query patterns.
 
-## 6. Production delivery recommendation
+## 7. Production operation
 
-1. Keep one complete Core outside the direct GPT delivery path.
-2. Maintain a **rolling recent ten-year Analysis Lite shard** for routine flexible queries.
-3. Keep older years in one or more additional Analysis shards below the connector ceiling.
-4. Maintain a full-history yearly Stats Mart for common aggregates.
-5. Rebuild the rolling Analysis shard from Raw/Core when the window advances rather than letting one delivery DB grow indefinitely.
+### Routine analytical update
 
-This structure supports routine requests such as:
+When the rolling window advances, build directly from Raw:
 
-- past 10 years, Tokyo turf 1600m, sire results
-- Nakayama dirt 1800m, jockey results
-- Kyoto turf, frame results
-- track-condition-specific variants of the above
+```text
+annual/daily JRDB acquisition
+        -> canonical Raw storage
+        -> Raw -> rolling Analysis Lite
+        -> Stats Mart
+```
 
-while preserving the complete normalized Core for detailed investigation.
+Example year-end rollover:
 
-## 7. Remaining gates
+```text
+2016-2025 Analysis
+        -> rebuild from 2017-2026 Raw
+        -> 2017-2026 Analysis
+        -> rebuild/update Stats Mart
+```
 
-- explicit row-level equivalence: Core v1.2.1 -> Analysis v1.1 vs Raw -> Analysis v1.1
-- actual Drive upload/fetch validation for the ~169 MiB ten-year Analysis file
-- production scheduling/update rule for the rolling ten-year shard and current-year additions
+There is no requirement to rebuild Core first.
+
+### Core update
+
+Core is maintained independently for:
+
+- auditability
+- normalized complete history
+- anomaly/duplicate investigation
+- reproducibility
+- future schema/mart development
+
+It may be rebuilt or refreshed on a slower cadence than Analysis, because Raw remains the durable source of truth for data files.
+
+## 8. Production delivery recommendation
+
+1. Keep canonical Raw as the durable source data.
+2. Keep one complete Core outside the direct GPT delivery path; update it when audit/history work requires it.
+3. Maintain a **rolling recent ten-year Analysis Lite shard directly from Raw** for routine flexible queries.
+4. Keep older years in one or more additional Analysis shards below the connector ceiling.
+5. Maintain a full-history yearly Stats Mart for common aggregates.
+6. Retain `race_key` so aggregate findings can be traced to detailed Core/Delivery records.
 
 Sire aggregation remains a mandatory capability and must not be removed from Analysis or Stats Mart.
+
+## 9. Remaining operational gate
+
+The architecture itself is validated. The next operational item is defining the exact 2026/current-year acquisition and rollover schedule: when current-year Raw is considered complete enough to refresh the rolling ten-year Analysis, and whether interim in-season Analysis updates are produced before year-end.
