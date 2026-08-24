@@ -12,9 +12,12 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/jrdb_ukc.py` — UKC 290-byte固定長parser
 - `src/build_jrdb_core_v1_2.py` — UKC horse profile追加版
 - `src/build_jrdb_core_v1_2_1.py` — v1.2 + KYI枠番 / SED馬場状態を追加
-- `src/build_jrdb_analysis.py` — Core v1.2.1 → Analysis Lite v1.1（reference/regression path）
-- `src/build_jrdb_analysis_from_raw.py` — Raw年次ZIP → Analysis Lite v1.1（production routine path）
-- `src/build_jrdb_stats_mart.py` — Analysis Lite v1.1 shard群 → 年次Stats Mart v1.1
+- `src/build_jrdb_analysis.py` — Core v1.2.1 → Analysis Lite v1.2（reference/regression path）
+- `src/build_jrdb_analysis_from_raw.py` — Raw年次ZIP → Analysis Lite v1.2（production full-rebuild path）
+- `src/update_jrdb_analysis_incremental.py` — 2026+単日Raw → Analysis Lite v1.2 増分置換
+- `src/upgrade_jrdb_analysis_v1_1_to_v1_2.py` — 既存v1.1 Analysisへprev1/batch管理を追加
+- `src/build_jrdb_stats_mart.py` — Analysis Lite → 年次Stats Mart v1.1
+- `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
 - `tools/generate_jrdb_codebooks.py` — codebook生成
 - `tools/audit_jrdb_core_v1_1_1.py` — Core監査ツール
 - `tools/audit_jrdb_core_v1_2_regression.py` — v1.1.2 / v1.2回帰比較
@@ -22,95 +25,116 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 
 ## Production data flow
 
-Routine analysis generation no longer requires Core as an intermediate artifact.
+Routine analysis generation does not require Core as an intermediate artifact.
 
 ```text
 canonical Raw ZIPs
-  ├─> Core                         # audit / full normalized history / reproducibility
+  ├─> Core                         # audit / complete normalized history / reproducibility
   └─> rolling Analysis Lite       # routine GPT/PWA analysis
         └─> Stats Mart
 ```
 
-Normal routine path:
+During the season:
 
 ```text
-Raw -> Analysis Lite -> Stats Mart
+completed-date Raw
+  -> Analysis incremental replace/add
+  -> refresh current-year Stats Mart
 ```
 
-Core is maintained independently when audit/history/rebuild work requires it. `Core -> Analysis` remains a validated reference/regression path.
+At year-end:
 
-## Dependencies
+```text
+rolling Analysis
+  -> rebuild directly from next 10-year Raw window
+  -> compact/VACUUM
+  -> full Stats Mart rebuild
+```
 
-Core v1.2.1:
-`build_jrdb_core_v1_2_1.py` → v1.1.2 normalization + v1.2 UKC profile + `schema/jrdb_core_schema_v1_2_1.sql`。
+Core is maintained independently when audit/history/rebuild work requires it. `Core -> Analysis` remains the validated reference/regression path.
 
-Analysis Lite v1.1:
-- production Raw path: `build_jrdb_analysis_from_raw.py` + Raw `BAC/KYI/SED/CYB/UKC`
-- reference Core path: `build_jrdb_analysis.py` + Core v1.2.1
-- shared schema: `schema/jrdb_analysis_schema_v1_1.sql`
+## Analysis Lite v1.2
 
-v1.1では旧 `condition_code` の曖昧さを解消し、
+Shared schema:
+
+`schema/jrdb_analysis_schema_v1_2.sql`
+
+Important fields:
+
 - `race_condition_code` = BAC競走条件
 - `track_condition_code` = SED実馬場状態
 - `frame_no` = KYI枠番
-を明示的に分離しています。
+- `sire_name` / `broodmare_sire_name` = UKC血統
+- `prev_result_key_1` / `prev_race_key_1` = KYIが明示する前走1リンク
 
-Stats Mart v1.1:
-`build_jrdb_stats_mart.py` + `schema/jrdb_stats_mart_schema_v1_1.sql`。
-`mart_sire_yearly` / `mart_jockey_yearly` / `mart_frame_yearly` を作成します。
+All five previous-result links remain in Raw/Core. Routine Analysis keeps prev1 only to preserve remote-delivery size headroom.
 
 ## Validation status
 
-Core v1.2 additive regression:
-- contiguous 2021-2025: PASS
-- v1.1.2の既存正規化部分は行単位差分0
-- integrity_check: ok
+### Raw -> Analysis v1.2 equivalence
 
-Raw -> Analysis equivalence:
-- 2016-2020: 243,849 rows × 31 columns, differences 0
-- 2021-2025: 237,778 rows × 31 columns, differences 0
+- 2016-2020: 243,849 rows × 33 columns, differences 0
+- 2021-2025: 237,778 rows × 33 columns, differences 0
 - combined 2016-2025: **481,627 rows, exact equivalence PASS**
 
-Analysis Lite v1.1 corrected 2016-2025 measurement:
+### Analysis Lite v1.2 2016-2025
+
+After prev1 addition, removal of unnecessary prev-key indexes and VACUUM:
+
 - rows: **481,627**
 - sire nonblank: **481,519**
-- frame non-null: **481,627**
-- track condition nonblank: **481,627**
-- SQLite: **177,328,128 bytes (~169.11 MiB)**
-- ZIP: **44,011,036 bytes (~41.97 MiB)**
+- prev1 populated: **434,622**
+- SQLite: **182,439,936 bytes (~173.99 MiB)**
 - integrity_check: **ok**
 
-Drive delivery:
-- the ~169 MiB 2016-2025 Analysis SQLite was uploaded and fetched back through the ChatGPT Drive connector
-- fetched size / row count / integrity / SHA-256 matched: **PASS**
+A full normalized previous-link 1-5 child-table benchmark produced ~1.78M rows / ~81.9 MiB by itself, so prev1-only is the production Analysis design.
 
-Stats Mart v1.1 corrected 2016-2025 pilot:
+### Incremental Analysis regression
+
+Historical pseudo-daily 2025-12-28 test:
+
+- 24 races
+- 356 rows before replacement
+- 356 rows after replacement
+- complete row hash identical
+- batch status SUCCESS
+- integrity_check: ok
+
+### Stats Mart
+
+2016-2025 full mart:
+
 - sire rows: 194,656
 - jockey rows: 155,118
 - frame rows: 38,151
-- SQLite: 52,518,912 bytes (~50.09 MiB)
+- SQLite: ~50.09 MiB
 - integrity_check: ok
 
-詳細:
-- `docs/JRDB_Core_v1_2_Analysis_Layer_Design.md`
-- `docs/README_build_jrdb_core_v1_2.md`
-- `docs/README_build_jrdb_analysis.md`
-- `docs/README_build_jrdb_stats_mart.md`
+2025 year-only refresh from Analysis v1.2 reproduced the original full-build mart with **zero differences** across sire/jockey/frame tables.
 
-## Rolling Analysis operation
+## Rolling operation
 
-A recent ten-year Analysis shard is the normal GPT/PWA flexible-query artifact.
-
-Example rollover:
+Example 2026 operation:
 
 ```text
 2016-2025 Analysis
-  -> rebuild directly from 2017-2026 Raw
-  -> 2017-2026 Analysis
-  -> rebuild/update Stats Mart
+  + completed 2026 dates incrementally
+  -> 2016-2026 YTD
+
+at year end:
+  rebuild directly from 2017-2026 Raw
+  -> 2017-2026 rolling Analysis
 ```
 
 There is no requirement to rebuild Core first.
+
+## Documentation
+
+- `docs/JRDB_Core_v1_2_Analysis_Layer_Design.md`
+- `docs/README_build_jrdb_core_v1_2.md`
+- `docs/README_build_jrdb_analysis.md`
+- `docs/README_update_jrdb_analysis_incremental.md`
+- `docs/README_build_jrdb_stats_mart.md`
 
 ## Security
 
