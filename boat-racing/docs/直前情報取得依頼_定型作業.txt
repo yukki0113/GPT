@@ -15,8 +15,10 @@
 4. boat-racing/.gpt/WORKFLOW.md を読む。
 5. 実行対象の以下を読む。
    - boat-racing/src/fetch_boatrace_pre_race_info.py
-   - 同ツールのREADME
-   - requirements_直前情報取得.txt（配置はREADMEに従う）
+   - boat-racing/docs/README_直前情報取得.md
+   - boat-racing/requirements_直前情報取得.txt
+   - Actions代替経路を使う場合は `.github/workflows/boatrace_pre_race_manual.yml`
+   - Actions運用の詳細は `boat-racing/docs/直前情報取得_GitHubActions運用.md`
 6. Git管理対象外の日次出力・過去ログ・キャッシュを正本の代わりに参照しない。必要なら今回の実行で新規取得する。
 
 入力の解釈
@@ -26,14 +28,26 @@
 3. xxR は整数のレース番号に正規化する（例：4R → 4）。
 4. 対象は指定された1レースのみ。結果、払戻、オッズ、予想サイト、SNS、検索結果は取得・参照しない。
 
+実行経路
+--------
+原則として、まずChat実行環境から正本Pythonを直接実行する。
+
+Chat実行環境からBOAT RACE公式サイトへ直接通信できない、または通信が不安定な場合は、GitHub Actionsの常設Workflow
+
+`.github/workflows/boatrace_pre_race_manual.yml`
+
+を正式な代替実行経路として使用する。
+
+Actions側でもGit main上の正本Pythonと `boat-racing/requirements.txt` をそのまま使用し、日次成果物をGitへcommitしない。
+
 実行前の確認
 --------------
 1. 取得ツールの依存関係を、作業用の一時環境へ用意する。既存の環境を汚さない。
 2. BOAT RACE公式サイトの対象「出走表」と「直前情報」ページが取得可能であることを確認する。
 3. 公式ページのHTML構造変更が疑われる場合は、数値の並びだけで値を推測しない。HTMLの見出し、列、class、行との対応を優先する。
 
-実行
-----
+直接実行
+--------
 READMEに記載されたコマンドを用いる。基本形は以下。
 
 python fetch_boatrace_pre_race_info.py \
@@ -47,6 +61,22 @@ python fetch_boatrace_pre_race_info.py \
 
 YYYYMMDD_直前情報_会場名_R番号R.json
 例：20260807_直前情報_宮島_6R.json
+
+GitHub Actions実行
+------------------
+`boatrace_pre_race_manual.yml` の `workflow_dispatch` へ以下を渡す。
+
+- date: YYYYMMDD
+- venue: 会場名または会場コード
+- race: 1〜12
+- format: 原則 json
+
+Workflowは正本 `boat-racing/src/fetch_boatrace_pre_race_info.py` を実行し、取得ファイルと `run_status.txt` をartifact化する。
+取得処理が失敗した場合も、失敗内容を含む出力ファイルが生成されていればartifactへ保存し、その後Workflowを失敗扱いとする。
+
+Chat側では対象runのartifactを回収し、展開後のJSONと `run_status.txt` を検査する。
+
+GitHub連携上、Chatから `workflow_dispatch` 自体を起動できない場合は、GitHub Actions画面から手動起動し、その後のrun・artifact確認をChat側で行う。
 
 取得する情報（JSON）
 ---------------------
@@ -92,23 +122,29 @@ YYYYMMDD_直前情報_会場名_R番号R.json
 
 実行後の検証
 --------------
+直接実行・GitHub Actions実行のどちらでも、同じ基準で検証する。
+
 1. JSONがUTF-8で有効なJSONであることを検証する。
 2. fetch_status が success であることを確認する。
 3. 出走表・展示タイム・展示進入/STがそれぞれ6艇であることを確認する。
 4. start_exhibition の全要素に exhibition_course、boat_number、start_exhibition_st があることを確認する。
-5. 結果・払戻・オッズに由来する値が出力・参照されていないことを確認する。
-6. 任意項目のnullは状態フィールドと照合し、誤って全体失敗にしていないことを確認する。
-7. 公式HTMLの構造差で任意項目が取れない場合は、推測値を出さず、警告と理由を残す。
+5. 必須気象情報（気温、水温、天候、風向、風速、波高）が揃っていることを確認する。
+6. 結果・払戻・オッズに由来する値が出力・参照されていないことを確認する。
+7. 任意項目のnullは状態フィールドと照合し、誤って全体失敗にしていないことを確認する。
+8. 公式HTMLの構造差で任意項目が取れない場合は、推測値を出さず、警告と理由を残す。
+9. Actions利用時は `run_status.txt` の fetch_exit_code、対象日、会場、R、format、source_sha を確認する。
 
 ユーザーへの返却
 ------------------
 1. 対象日・会場・Rと fetch_status を簡潔に報告する。
 2. 6艇の出走表、展示タイム、展示進入/ST、気象が揃ったかを報告する。
 3. 出力JSONファイルを添付（リンク）する。
-4. 失敗または一部任意項目が未取得の場合は、取得不可項目と理由を短く明記する。
-5. 予想を依頼されていない限り、この作業では予想・買い目・評価を出さない。
+4. Actions経由の場合も、artifactそのものではなく、回収・検査した成果物を返却する。
+5. 失敗または一部任意項目が未取得の場合は、取得不可項目と理由を短く明記する。
+6. 予想を依頼されていない限り、この作業では予想・買い目・評価を出さない。
 
 正本への反映が必要な場合
 --------------------------
-取得ロジック、README、requirements、仕様の修正を行ったときだけ、正本の手順に従いテスト・差分確認・関連文書更新を行い、boat-racing/へ反映する。
-今回のような日次JSON、CSV、ログ、キャッシュ、台帳はGit管理対象外である。
+取得ロジック、README、requirements、仕様、Workflowの修正を行ったときだけ、正本の手順に従いテスト・差分確認・関連文書更新を行い、Gitへ反映する。
+
+今回のような日次JSON、CSV、ログ、キャッシュ、Actions artifact、台帳はGit管理対象外であり、commitしない。
