@@ -5,8 +5,10 @@
 ## セットアップ
 
 ```bash
-pip install requests beautifulsoup4
+pip install -r boat-racing/requirements.txt
 ```
+
+直前情報取得だけを単独で扱う場合は、`boat-racing/requirements_直前情報取得.txt` も使用できます。
 
 ## 実行例
 
@@ -16,6 +18,35 @@ python fetch_boatrace_pre_race_info.py --date 20260806 --venue 10 --race 1 --for
 ```
 
 会場は名称または公式会場コードで指定できます。出力JSONはレース単位、CSVは艇ごとに1行です。
+
+## GitHub Actionsによる代替実行
+
+Chat実行環境からBOAT RACE公式サイトへ直接通信できない場合は、GitHub Actionsを正式な代替実行経路として使用します。
+
+常設Workflow:
+
+```text
+.github/workflows/boatrace_pre_race_manual.yml
+```
+
+`workflow_dispatch` の入力は以下です。
+
+- `date`: 対象日 `YYYYMMDD`
+- `venue`: 会場名または公式会場コード（例: `三国` / `10`）
+- `race`: R番号 `1`〜`12`
+- `format`: `json` または `csv`（通常運用は `json`）
+
+Workflowは `main` の正本をcheckoutし、`boat-racing/requirements.txt` をインストールしたうえで、`boat-racing/src/fetch_boatrace_pre_race_info.py` をそのまま実行します。専用の別ロジックは持ちません。
+
+成果物は次のartifactとして保存します。
+
+```text
+boatrace-pre-race-<date>-<venue>-<race>R-<run_id>
+```
+
+artifact内には取得JSON/CSVと `run_status.txt` を含めます。取得処理が失敗した場合も、生成できた失敗JSONと `run_status.txt` を可能な限りartifactへ残した後、Workflowを失敗扱いにします。
+
+Chat側ではartifactを回収し、通常の直接実行時と同じ成功条件・検査項目で確認します。Actions実行で生成した日次JSON/CSV、ログ、artifactの内容をGitへcommitしません。
 
 ## 取得対象
 
