@@ -12,7 +12,7 @@ This document defines the next-stage architecture:
 - Layer 2B Stats Mart: pre-aggregated yearly statistics for frequent queries
 - Layer 3 Delivery: race- or condition-specific JSON/CSV/RaceNote outputs
 
-Core v1.1.2 remains the current production baseline until v1.2 passes regression testing.
+Core v1.1.2 remains the rollback baseline. Core v1.2 has passed additive regression on the contiguous 2021-2025 PoC range; full-history production promotion is still separate from this PoC.
 
 ---
 
@@ -67,13 +67,11 @@ The canonical Drive Raw `UKC_2025.zip` was checked against the above definition.
 - invalid birth/data dates: 0
 - missing sire names: 0
 
-This validates the converter-derived offsets against actual Raw data.
-
 ---
 
 ## 3. Core v1.2 horse profile extension
 
-Do not destructively replace `horse_current` / `horse_history` in the first v1.2 implementation. Add a richer UKC profile layer and retain the existing tables for regression compatibility.
+Do not destructively replace `horse_current` / `horse_history`. Core v1.2 adds the richer UKC profile layer while retaining the existing tables for regression compatibility.
 
 ### horse_profile_current
 
@@ -138,12 +136,6 @@ Excluded from semantic version triggering:
 - repeated snapshots with unchanged semantic hash: 35,115
 - repeated snapshots with changed semantic hash: 306
 
-Example unchanged snapshot:
-`horse_id=20104778`, 2025-01-05 -> 2025-01-11, hash unchanged.
-
-Example real semantic change:
-`horse_id=21105399`, 2025-01-19 -> 2025-03-23, owner / owner-group changed and hash changed.
-
 ---
 
 ## 4. v1.2 implementation strategy
@@ -157,15 +149,42 @@ Example real semantic change:
 
 This design intentionally minimizes regression risk in duplicate resolution, BAC fallback, payouts, anomalies, and provenance.
 
+### Contiguous 2021-2025 Core regression — PASS
+
+Existing v1.1.2 rows were preserved exactly for:
+
+- race: 17,277
+- entry: 237,778
+- result: 237,778
+- training_analysis: 237,778
+- workout: 237,778
+- result_extension: 236,764
+- entry_previous_result: 1,188,890
+- horse_current: 31,010
+- horse_history: 1,007
+
+Semantic archive/source-file/anomaly metadata also matched. Added v1.2 profile rows:
+
+- horse_profile_current: 31,010
+- horse_profile_history: 2,773
+- unmatched entry -> profile rows: 108
+- sire-populated entry rows: 237,670
+- BAC fallback: 53
+- MANUAL_REQUIRED: 0
+- non-canonical source files: 1
+- `PRAGMA integrity_check`: `ok`
+
+`tools/audit_jrdb_core_v1_2_regression.py` is the reusable regression checker.
+
 ---
 
 ## 5. Analysis Lite
 
-Analysis Lite is the main GPT/PWA query database. Its first fact table should be one row per race entry/result.
+Analysis Lite is the main GPT/PWA query database. `src/build_jrdb_analysis.py` and `schema/jrdb_analysis_schema_v1.sql` implement the first Core -> Analysis path.
 
 ### fact_entry_result_lite
 
-Initial recommended columns:
+Columns:
 
 - race_date
 - year
@@ -197,7 +216,7 @@ Initial recommended columns:
 - win_payout
 - place_payout
 
-Do not copy the following by default:
+Omitted by default:
 
 - source_file_id / source_record_no / record_hash
 - meta_anomaly / meta_duplicate
@@ -205,15 +224,31 @@ Do not copy the following by default:
 - full race comments
 - entry_previous_result rows
 
-`race_key` must remain so that an aggregated finding can be traced back to a detailed race delivery/Core record.
+`race_key` remains so aggregate findings can be traced back to a detailed race delivery/Core record.
 
 ### Age rule
 
-For JRA aggregation age should use calendar-year age:
+For JRA aggregation:
 
 `age = race_year - birth_year`
 
-Do not calculate Western-style birthday-dependent age.
+### Contiguous 2021-2025 Analysis Lite PoC — PASS
+
+- rows: **237,778**
+- sire nonblank: **237,670**
+- broodmare-sire nonblank: **237,670**
+- unmatched profile rows: **108**
+- SQLite: **84,582,400 bytes (~80.7 MiB)**
+- ZIP: **22,687,297 bytes (~21.6 MiB)**
+- integrity: `ok`
+- typical tested aggregation queries: roughly **47-267 ms**
+
+This passes both capacity targets:
+
+- < 200 MiB mandatory: PASS
+- < 100 MiB preferred: PASS
+
+See `docs/README_build_jrdb_analysis.md` for detailed pilot results and hashes.
 
 ---
 
@@ -233,7 +268,7 @@ Initial mart candidates:
 
 ### mart_sire_yearly initial grain
 
-Suggested dimensions:
+Dimensions:
 
 - year
 - venue_code
@@ -254,47 +289,64 @@ Measures:
 
 Do not pre-store fixed windows such as "last 5 years" or "last 10 years". Derive them by summing yearly rows.
 
+Sire aggregation is mandatory and must remain in the production mart.
+
 ---
 
 ## 7. Build paths
 
 Analysis Lite should ultimately support both:
 
-1. Core -> Analysis Lite
-2. Raw ZIP -> Analysis Lite
+1. Core -> Analysis Lite — **implemented and validated**
+2. Raw ZIP -> Analysis Lite — future path
 
 Reason: the full Core may be too large for some remote connector download paths, while Raw ZIPs remain the durable source.
 
-Do not immediately refactor the stable v1.1.2 parser. First implement and validate the Analysis path separately, then consider extracting shared parser functions only after output equivalence is proven.
+Do not refactor the stable v1.1.2 parser merely to add the Raw path. First prove Raw -> Analysis output equivalence against Core -> Analysis.
 
 ---
 
-## 8. Implementation order / current status
+## 8. Production delivery / sharding implication
+
+The contiguous five-year Analysis SQLite is ~80.7 MiB. A naive linear extrapolation to all 2010-2025 years would approach or exceed the current ~256 MiB remote connector limit.
+
+Therefore do not assume one 16-year Analysis SQLite is the final delivery shape.
+
+Preferred next experiment:
+
+1. build/measure a recent **10-year** Analysis shard because "past 10 years" is a routine query requirement;
+2. retain growth headroom for 2026+ rather than sizing exactly to the connector ceiling;
+3. place older years in one or more separate shard(s);
+4. keep a tiny full-history Stats Mart for common aggregate queries across all years.
+
+The full Core remains one logical complete database outside the direct GPT delivery path.
+
+---
+
+## 9. Implementation order / current status
 
 ### A. UKC / Core v1.2
 
-1. Confirm UKC field offsets from JRDB-data/converter. **DONE**
-2. Validate real UKC records against expected decoded values. **DONE (2025 full Raw scan)**
-3. Add v1.2 schema as a new file. **DONE**
-4. Add UKC parser and horse profile current/history parsing. **DONE, regression phase**
-5. Validate semantic hash behavior. **DONE on UKC 2025 Raw**
-6. Run v1.2 Core regression against known v1.1.2 counts/anomalies. **NEXT**
+1. UKC offsets confirmed. **DONE**
+2. Real Raw validation. **DONE**
+3. v1.2 schema. **DONE**
+4. UKC parser/current/history. **DONE**
+5. Semantic hash validation. **DONE**
+6. Contiguous 2021-2025 additive Core regression. **DONE / PASS**
 
-### B. Analysis Lite, mandatory after A
+### B. Analysis Lite
 
-1. Build 2021-2025 PoC including sire fields from the beginning.
-2. Measure row count and SQLite size.
-3. Target: < 200 MiB mandatory; < 100 MiB preferred.
-4. Verify GPT/Drive connector accessibility.
-5. Verify flexible SQL examples including sire aggregation.
-6. Expand to 2010-2025 if accepted.
-7. Add Stats Mart.
-
-Sire aggregation is a required capability and must not be deferred beyond the Analysis Lite PoC.
+1. Contiguous 2021-2025 PoC including sire. **DONE / PASS**
+2. Size/integrity/query timing. **DONE / PASS**
+3. 10-year shard capacity measurement. **NEXT**
+4. Drive connector fetch validation for the resulting delivery file. **NEXT**
+5. Production shard boundary decision. **NEXT**
+6. Stats Mart implementation, with `mart_sire_yearly` mandatory. **NEXT**
+7. Raw ZIP -> Analysis equivalence path. **LATER**
 
 ---
 
-## 9. Regression principles
+## 10. Regression principles
 
 Core v1.2 must preserve v1.1.2 behavior for:
 
@@ -306,4 +358,4 @@ Core v1.2 must preserve v1.1.2 behavior for:
 - missing/orphan anomaly recording
 - provenance
 
-The v1.1.2 production builder remains the rollback baseline until v1.2 passes the full regression suite.
+The v1.1.2 production builder remains the rollback baseline even after v1.2 PoC success until full production promotion is explicitly completed.
