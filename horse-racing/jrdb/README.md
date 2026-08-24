@@ -14,7 +14,7 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/build_jrdb_core_v1_2_1.py` — v1.2 + KYI枠番 / SED馬場状態を追加
 - `src/build_jrdb_analysis.py` — Core v1.2.1 → Analysis Lite v1.2（reference/regression path）
 - `src/build_jrdb_analysis_from_raw.py` — Raw年次ZIP → Analysis Lite v1.2（production full-rebuild path）
-- `src/update_jrdb_analysis_incremental.py` — 2026+単日Raw → Analysis Lite v1.2 増分置換
+- `src/update_jrdb_analysis_incremental.py` — PACI+SED または2026+単日Raw → Analysis Lite v1.2 増分置換
 - `src/upgrade_jrdb_analysis_v1_1_to_v1_2.py` — 既存v1.1 Analysisへprev1/batch管理を追加
 - `src/build_jrdb_stats_mart.py` — Analysis Lite → 年次Stats Mart v1.1
 - `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
@@ -34,13 +34,17 @@ canonical Raw ZIPs
         └─> Stats Mart
 ```
 
-During the season:
+During the season, the recommended manual/ChatGPT path is:
 
 ```text
-completed-date Raw
+PACIyymmdd.zip + SEDyymmdd.zip
   -> Analysis incremental replace/add
   -> refresh current-year Stats Mart
 ```
+
+PACI supplies BAC/KYI/CYB/UKC. SED supplies completed results, payouts and actual track condition. HJC/TYB are not required by the current Analysis schema.
+
+The individual daily-kind layout (`BAC/KYI/SED/CYB/UKC`) remains supported for fetcher-oriented operation.
 
 At year-end:
 
@@ -99,6 +103,22 @@ Historical pseudo-daily 2025-12-28 test:
 - complete row hash identical
 - batch status SUCCESS
 - integrity_check: ok
+
+### Real 2026 PACI + SED operational test
+
+Actual `PACI260823.zip` + `SED260823.zip` were parsed and added to the accepted 2016-2025 Analysis v1.2 baseline.
+
+- BAC races: 36
+- KYI/CYB/UKC/SED rows: 466 each
+- resulting Analysis rows for 2026-08-23: **466**
+- missing UKC profiles: **0**
+- frame/track-condition/sire populated: **466 / 466**
+- prev1 populated: **417 / 466**
+- total Analysis rows after test: **482,093**
+- ingest batch: **SUCCESS**
+- integrity_check: **ok**
+
+A Stats Mart build from the updated test Analysis also passed; 2026-08-23 generated 403 sire, 366 jockey and 168 frame yearly aggregate rows for year 2026, with mart integrity `ok`.
 
 ### Stats Mart
 
