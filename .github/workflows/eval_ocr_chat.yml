@@ -1,0 +1,273 @@
+name: eval-ocr-chat
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[EVAL_OCR_REQUEST]'
+
+jobs:
+  ocr:
+    if: startsWith(github.event.issue.title, '[EVAL_OCR_REQUEST]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install OCR runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-jpn
+          python -m pip install --upgrade pip
+          pip install -r horse-racing/eval/requirements.txt
+          tesseract --version
+          tesseract --list-langs
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = '[EVAL_OCR_REQUEST]'
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('Invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          run_id = str(request.get('source_run_id', '') or '').strip()
+          artifact_name = str(request.get('source_artifact_name', '') or '').strip()
+          if not re.fullmatch(r'\d+', run_id):
+              raise SystemExit('source_run_id must be a GitHub Actions run id')
+          if not artifact_name or not re.fullmatch(r'[A-Za-z0-9._-]{1,160}', artifact_name):
+              raise SystemExit('Invalid source_artifact_name')
+
+          expected_venues = request.get('expected_venues')
+          if expected_venues not in (None, 2, 3):
+              raise SystemExit('expected_venues must be 2, 3, or omitted')
+
+          output_dir = f'horse-racing/eval/output_eval_ocr_{request_id}'
+          config = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'source_run_id': int(run_id),
+              'source_artifact_name': artifact_name,
+              'expected_venues': expected_venues,
+              'output_dir': output_dir,
+          }
+          Path('/tmp/eval_ocr_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
+              f.write(f'REQUEST_ID={request_id}\n')
+              f.write(f'OUTPUT_DIR={output_dir}\n')
+              f.write(f'SOURCE_RUN_ID={run_id}\n')
+              f.write(f'SOURCE_ARTIFACT_NAME={artifact_name}\n')
+          PY
+
+      - name: Download Eval media artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/eval_media_source
+          gh run download "$SOURCE_RUN_ID" \
+            --repo "${{ github.repository }}" \
+            --name "$SOURCE_ARTIFACT_NAME" \
+            --dir /tmp/eval_media_source
+          find /tmp/eval_media_source -maxdepth 3 -type f -print
+
+      - name: Run OCR against collected media
+        id: ocr
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_ocr_config.json').read_text(encoding='utf-8'))
+          source = Path('/tmp/eval_media_source')
+          output = Path(config['output_dir'])
+          output.mkdir(parents=True, exist_ok=True)
+
+          resolved_candidates = list(source.rglob('resolved_request.json'))
+          if not resolved_candidates:
+              raise SystemExit('resolved_request.json not found in source artifact')
+          resolved = json.loads(resolved_candidates[0].read_text(encoding='utf-8'))
+          targets = resolved.get('targets', [])
+          if not targets:
+              raise SystemExit('No targets in resolved_request.json')
+
+          image_exts = {'.png', '.jpg', '.jpeg', '.webp'}
+          batch = []
+          overall_ok = True
+
+          for target in targets:
+              date = str(target['date'])
+              post_id = str(target['post_id'])
+              dirs = [p for p in source.rglob(post_id) if p.is_dir()]
+              if not dirs:
+                  batch.append({'date': date, 'post_id': post_id, 'status': 'failure', 'error': 'post directory not found'})
+                  overall_ok = False
+                  continue
+
+              media_files = sorted(p for p in dirs[0].iterdir() if p.is_file() and p.suffix.lower() in image_exts)
+              attempts = []
+              successes = []
+              for image in media_files:
+                  candidate_out = output / date / image.stem
+                  candidate_out.mkdir(parents=True, exist_ok=True)
+                  cmd = [
+                      sys.executable,
+                      'horse-racing/eval/src/extract_eval_table.py',
+                      '--image', str(image),
+                      '--date', date,
+                      '--outdir', str(candidate_out),
+                  ]
+                  if config.get('expected_venues'):
+                      cmd += ['--expected-venues', str(config['expected_venues'])]
+                  completed = subprocess.run(cmd, text=True, capture_output=True)
+                  attempts.append({
+                      'image': image.name,
+                      'exit_code': completed.returncode,
+                      'stdout_tail': completed.stdout[-2000:],
+                      'stderr_tail': completed.stderr[-2000:],
+                  })
+                  if completed.returncode == 0:
+                      successes.append({'image': image.name, 'output_dir': str(candidate_out)})
+                  else:
+                      for child in candidate_out.iterdir():
+                          if child.is_file():
+                              child.unlink()
+                      try:
+                          candidate_out.rmdir()
+                      except OSError:
+                          pass
+
+              if len(successes) == 1:
+                  status = 'success'
+              elif len(successes) == 0:
+                  status = 'failure'
+                  overall_ok = False
+              else:
+                  status = 'ambiguous'
+                  overall_ok = False
+
+              batch.append({
+                  'date': date,
+                  'post_id': post_id,
+                  'status': status,
+                  'media_count': len(media_files),
+                  'successful_candidates': successes,
+                  'attempts': attempts,
+              })
+
+          report = {
+              'status': 'success' if overall_ok else 'failure',
+              'source_run_id': config['source_run_id'],
+              'source_artifact_name': config['source_artifact_name'],
+              'target_count': len(targets),
+              'targets': batch,
+              'horse_name_policy': 'OCR only; no master-data correction',
+          }
+          (output / 'batch_validation.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          (output / 'resolved_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          raise SystemExit(0 if overall_ok else 2)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "source_run_id=$SOURCE_RUN_ID"
+            echo "source_artifact_name=$SOURCE_ARTIFACT_NAME"
+            echo "ocr_exit_code=${{ steps.ocr.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload OCR outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-ocr-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OCR_EXIT: ${{ steps.ocr.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output = Path(os.environ['OUTPUT_DIR'])
+          report_path = output / 'batch_validation.json'
+          report = json.loads(report_path.read_text(encoding='utf-8')) if report_path.exists() else {
+              'status': 'failure', 'error': 'batch_validation.json unavailable'
+          }
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"eval-ocr-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}",
+              'ocr_exit_code': os.environ.get('OCR_EXIT', ''),
+              'validation': report,
+          }
+          Path('/tmp/eval_ocr_result.md').write_text(
+              'EVAL_OCR_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/eval_ocr_result.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when OCR failed
+        if: always() && steps.ocr.outputs.exit_code != '0'
+        run: exit 1
