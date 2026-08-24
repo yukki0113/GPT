@@ -1,9 +1,6 @@
-name: jra-results-collector
+name: jra-results-manual
 
 on:
-  push:
-    paths:
-      - 'horse-racing/eval/.gpt/jra_results_request.json'
   workflow_dispatch:
     inputs:
       dates:
@@ -39,13 +36,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r horse-racing/eval/requirements.txt
 
-      - name: Validate request and prepare command
+      - name: Validate inputs and prepare command
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          MANUAL_DATES: ${{ inputs.dates }}
-          MANUAL_DATE_FROM: ${{ inputs.date_from }}
-          MANUAL_DATE_TO: ${{ inputs.date_to }}
-          MANUAL_INTERVAL: ${{ inputs.request_interval_seconds }}
+          DATES: ${{ inputs.dates }}
+          DATE_FROM: ${{ inputs.date_from }}
+          DATE_TO: ${{ inputs.date_to }}
+          REQUEST_INTERVAL_SECONDS: ${{ inputs.request_interval_seconds }}
         run: |
           python - <<'PY'
           import json
@@ -54,35 +50,12 @@ jobs:
           from datetime import datetime
           from pathlib import Path
 
-          event_name = os.environ['EVENT_NAME']
-          request_file = Path('horse-racing/eval/.gpt/jra_results_request.json')
-
-          if event_name == 'push':
-              if not request_file.exists():
-                  raise SystemExit(f'Request file not found: {request_file}')
-              request = json.loads(request_file.read_text(encoding='utf-8'))
-              request_id = str(request.get('request_id', '')).strip()
-              if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
-                  raise SystemExit('request_id must be 1-80 chars: A-Z a-z 0-9 . _ -')
-              dates_value = request.get('dates', '')
-              if isinstance(dates_value, list):
-                  dates_raw = ' '.join(str(item) for item in dates_value)
-              else:
-                  dates_raw = str(dates_value or '')
-              date_from = str(request.get('date_from', '') or '').strip()
-              date_to = str(request.get('date_to', '') or '').strip()
-              interval_raw = str(request.get('request_interval_seconds', '0.7'))
-          elif event_name == 'workflow_dispatch':
-              request_id = f'manual-{os.environ.get("GITHUB_RUN_ID", "run")}'
-              dates_raw = os.environ.get('MANUAL_DATES', '').strip()
-              date_from = os.environ.get('MANUAL_DATE_FROM', '').strip()
-              date_to = os.environ.get('MANUAL_DATE_TO', '').strip()
-              interval_raw = os.environ.get('MANUAL_INTERVAL', '0.7') or '0.7'
-          else:
-              raise SystemExit(f'Unsupported event: {event_name}')
+          dates_raw = os.environ.get('DATES', '').strip()
+          date_from = os.environ.get('DATE_FROM', '').strip()
+          date_to = os.environ.get('DATE_TO', '').strip()
 
           try:
-              interval = float(interval_raw)
+              interval = float(os.environ.get('REQUEST_INTERVAL_SECONDS', '0.7') or '0.7')
           except ValueError as exc:
               raise SystemExit('request_interval_seconds must be numeric') from exc
           if interval < 0:
@@ -91,10 +64,10 @@ jobs:
           command = ['python', 'horse-racing/eval/src/fetch_jra_daily_results.py']
           labels = []
 
-          if dates_raw.strip():
+          if dates_raw:
               if date_from or date_to:
                   raise SystemExit('Use either dates or date_from/date_to, not both')
-              dates = [item for item in re.split(r'[\s,]+', dates_raw.strip()) if item]
+              dates = [item for item in re.split(r'[\s,]+', dates_raw) if item]
               if not dates:
                   raise SystemExit('dates is empty')
               for value in dates:
@@ -113,16 +86,13 @@ jobs:
 
           compact = [value.replace('-', '') for value in labels]
           range_label = compact[0] if len(compact) == 1 else f'{compact[0]}-{compact[-1]}'
-          output_dir = f'horse-racing/eval/output_{request_id}_{range_label}'
+          output_dir = f'horse-racing/eval/output_{range_label}'
           command += ['--output-dir', output_dir, '--interval', str(interval)]
 
           config = {
-              'request_id': request_id,
-              'event_name': event_name,
               'command': command,
               'output_dir': output_dir,
               'range_label': range_label,
-              'request_interval_seconds': interval,
           }
           Path('/tmp/jra_results_config.json').write_text(
               json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
@@ -130,13 +100,7 @@ jobs:
           with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
               file.write(f'OUTPUT_DIR={output_dir}\n')
               file.write(f'RANGE_LABEL={range_label}\n')
-              file.write(f'REQUEST_ID={request_id}\n')
           PY
-
-      - name: Save resolved request
-        run: |
-          mkdir -p "$OUTPUT_DIR"
-          cp /tmp/jra_results_config.json "$OUTPUT_DIR/resolved_request.json"
 
       - name: Fetch JRA results
         id: fetch
@@ -179,10 +143,6 @@ jobs:
         run: |
           mkdir -p "$OUTPUT_DIR"
           {
-            echo "request_id=$REQUEST_ID"
-            echo "run_id=${{ github.run_id }}"
-            echo "head_sha=${{ github.sha }}"
-            echo "event_name=${{ github.event_name }}"
             echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
             echo "validation_exit_code=${{ steps.validate.outputs.exit_code }}"
           } > "$OUTPUT_DIR/run_status.txt"
@@ -191,7 +151,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: jra-results-${{ env.REQUEST_ID }}-${{ env.RANGE_LABEL }}-${{ github.run_id }}
+          name: jra-results-${{ env.RANGE_LABEL }}-${{ github.run_id }}
           path: ${{ env.OUTPUT_DIR }}/
           if-no-files-found: error
           retention-days: 14
