@@ -1,0 +1,227 @@
+name: jra-results-chat
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRA_RESULTS_REQUEST]'
+
+jobs:
+  fetch:
+    if: startsWith(github.event.issue.title, '[JRA_RESULTS_REQUEST]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r horse-racing/eval/requirements.txt
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = '[JRA_RESULTS_REQUEST]'
+          title = os.environ['ISSUE_TITLE']
+          if not title.startswith(prefix):
+              raise SystemExit('Unexpected issue title')
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('Invalid request_id in issue title')
+
+          body = (os.environ.get('ISSUE_BODY') or '').strip()
+          try:
+              request = json.loads(body)
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          dates_value = request.get('dates', '')
+          if isinstance(dates_value, list):
+              dates_raw = ' '.join(str(item) for item in dates_value)
+          else:
+              dates_raw = str(dates_value or '')
+          date_from = str(request.get('date_from', '') or '').strip()
+          date_to = str(request.get('date_to', '') or '').strip()
+          interval_raw = str(request.get('request_interval_seconds', '0.7'))
+
+          try:
+              interval = float(interval_raw)
+          except ValueError as exc:
+              raise SystemExit('request_interval_seconds must be numeric') from exc
+          if interval < 0:
+              raise SystemExit('request_interval_seconds must be >= 0')
+
+          command = ['python', 'horse-racing/eval/src/fetch_jra_daily_results.py']
+          labels = []
+          if dates_raw.strip():
+              if date_from or date_to:
+                  raise SystemExit('Use either dates or date_from/date_to, not both')
+              dates = [item for item in re.split(r'[\s,]+', dates_raw.strip()) if item]
+              if not dates:
+                  raise SystemExit('dates is empty')
+              for value in dates:
+                  datetime.strptime(value, '%Y-%m-%d')
+              command += ['--dates', *dates]
+              labels = dates
+          else:
+              if not date_from or not date_to:
+                  raise SystemExit('Specify dates or both date_from and date_to')
+              start = datetime.strptime(date_from, '%Y-%m-%d').date()
+              end = datetime.strptime(date_to, '%Y-%m-%d').date()
+              if start > end:
+                  raise SystemExit('date_from must be <= date_to')
+              command += ['--from', date_from, '--to', date_to]
+              labels = [date_from, date_to]
+
+          compact = [value.replace('-', '') for value in labels]
+          range_label = compact[0] if len(compact) == 1 else f'{compact[0]}-{compact[-1]}'
+          output_dir = f'horse-racing/eval/output_{request_id}_{range_label}'
+          command += ['--output-dir', output_dir, '--interval', str(interval)]
+
+          config = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'command': command,
+              'output_dir': output_dir,
+              'range_label': range_label,
+              'request_interval_seconds': interval,
+          }
+          Path('/tmp/jra_results_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'RANGE_LABEL={range_label}\n')
+              file.write(f'REQUEST_ID={request_id}\n')
+          PY
+
+      - name: Save resolved request
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          cp /tmp/jra_results_config.json "$OUTPUT_DIR/resolved_request.json"
+
+      - name: Fetch JRA results
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/jra_results_config.json').read_text(encoding='utf-8'))
+          completed = subprocess.run(config['command'], check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate output CSV
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p "$OUTPUT_DIR"
+          csv_path=$(find "$OUTPUT_DIR" -maxdepth 1 -type f -name '*_JRA結果払戻.csv' -print -quit)
+          if [ -z "$csv_path" ]; then
+            echo 'CSV output not found.' > "$OUTPUT_DIR/validation_error.txt"
+            echo "exit_code=2" >> "$GITHUB_OUTPUT"
+            exit 2
+          fi
+          python horse-racing/eval/src/validate_jra_results.py "$csv_path" --report "$OUTPUT_DIR/validation_report.json"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "event_name=${{ github.event_name }}"
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "validation_exit_code=${{ steps.validate.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload outputs
+        id: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jra-results-${{ env.REQUEST_ID }}-${{ env.RANGE_LABEL }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          VALIDATE_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output_dir = Path(os.environ['OUTPUT_DIR'])
+          report_path = output_dir / 'validation_report.json'
+          error_path = output_dir / 'validation_error.txt'
+          if report_path.exists():
+              validation = json.loads(report_path.read_text(encoding='utf-8'))
+          elif error_path.exists():
+              validation = {'validation_status': 'failure', 'error': error_path.read_text(encoding='utf-8').strip()}
+          else:
+              validation = {'validation_status': 'failure', 'error': 'validation report unavailable'}
+
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"jra-results-{os.environ['REQUEST_ID']}-{os.environ['RANGE_LABEL']}-{os.environ['GITHUB_RUN_ID']}",
+              'fetch_exit_code': os.environ.get('FETCH_EXIT', ''),
+              'validation_exit_code': os.environ.get('VALIDATE_EXIT', ''),
+              'validation': validation,
+          }
+          Path('/tmp/result_comment.md').write_text(
+              'JRA_RESULTS_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when fetch or validation failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1
