@@ -9,9 +9,13 @@
 ## Chatでの日次取得実行
 
 - まずGitHub `main` の `boat-racing/` を正本として確認する。
-- Chat側の実行環境から公式サイトへ直接通信できる場合は、正本Pythonをそのまま実行する。
-- 直接通信が利用できない場合は、GitHub Actionsの常設手動Workflowを正式な代替実行経路として使用する。
-- 出走表取得は `.github/workflows/boatrace_racelist_manual.yml` を使用する。
-- Actionsでも `main` の `boat-racing/src/fetch_boatrace_racelist.py` と `boat-racing/requirements.txt` を使用し、独自ロジックを別実装しない。
-- 実行成果物はartifactから回収し、取得状況・ログ・CSV整合性を確認してから日常成果物を受け渡す。
+- Chatからの定型実行は、GitHub Issue経由を標準経路とする。
+- 出走表取得は `.github/workflows/boatrace_racelist_issue.yml` を使用する。
+- Issue title は `[BOATRACE_RACELIST_REQUEST] <request_id>`、Issue本文はraw JSONとする。
+- Workflowは `main` の `boat-racing/src/fetch_boatrace_racelist.py` と `boat-racing/requirements.txt` をそのまま使用し、独自ロジックを別実装しない。
+- Issueコメントの `BOATRACE_RACELIST_RESULT` JSONから `status` / `run_id` / `artifact_name` を取得し、artifactを回収する。
+- artifact内の `resolved_request.json`、`run_status.txt`、`validation_report.json`、取得状況・ログ・CSVを確認してから日常成果物を受け渡す。
+- Request Issueは処理終了後に自動Closeする。
+- 失敗時もartifactとRESULTコメントを残し、診断可能にする。
+- `.github/workflows/boatrace_racelist_manual.yml` は手動フォールバックとして残すが、Chatからの日常実行ではIssue経由を優先する。
 - 日次成果物はGitへcommitしない。
