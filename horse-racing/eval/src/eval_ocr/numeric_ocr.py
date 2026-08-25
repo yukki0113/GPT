@@ -112,19 +112,42 @@ def _ocr_single_cell_candidates(binary: np.ndarray) -> list[int]:
     return candidates
 
 
-def _needs_ambiguity_check(value: Optional[int]) -> bool:
+def _cell_has_colored_fill(cell: np.ndarray) -> bool:
+    """Return True when the Eval cell contains a substantial colored fill.
+
+    master_eval highlights ranked cells with red/blue/yellow backgrounds.  A
+    recurrent failure mode is stacked OCR dropping the leading digit from such
+    white-on-color values (75->7, 52->2, 50->0, 62->2, 55->5).  Detecting the
+    source color lets us selectively re-read those suspicious one-digit tokens
+    without re-OCRing every ordinary white cell.
+    """
+    if cell.size == 0:
+        return False
+    hsv = cv2.cvtColor(cell, cv2.COLOR_BGR2HSV)
+    saturation = hsv[:, :, 1]
+    value = hsv[:, :, 2]
+    # Ignore very dark grid/text pixels. Colored fills occupy a broad portion
+    # of the cell and retain materially higher saturation than white/gray cells.
+    colored = (saturation >= 55) & (value >= 70)
+    return float(colored.mean()) >= 0.18
+
+
+def _needs_ambiguity_check(value: Optional[int], colored_fill: bool = False) -> bool:
     if value is None or not (0 <= value <= 100):
         return True
     token = str(value)
-    return len(token) >= 2 and (token.startswith("1") or token.startswith("7"))
+    if len(token) >= 2 and (token.startswith("1") or token.startswith("7")):
+        return True
+    # Generalize the production repair: colored cells returning only one digit
+    # are suspicious regardless of which leading digit may have disappeared.
+    return colored_fill and len(token) == 1
 
 
-def _choose_value(batch_value: Optional[int], binary: np.ndarray) -> Optional[int]:
+def _choose_value(batch_value: Optional[int], binary: np.ndarray, *, colored_fill: bool = False) -> Optional[int]:
     blobs = _digit_components(binary)
     token_len = len(str(batch_value)) if batch_value is not None else 0
 
-    # Restore the original digit-count repair first. This catches cases where
-    # stacked OCR drops a digit (e.g. 37 -> 3) after row-count/layout changes.
+    # Digit-count repair catches cleanly separated dropped digits (e.g. 37->3).
     if batch_value is None or not (0 <= batch_value <= 100) or (
         1 <= len(blobs) <= 3 and len(blobs) > token_len
     ):
@@ -132,7 +155,7 @@ def _choose_value(batch_value: Optional[int], binary: np.ndarray) -> Optional[in
         if repaired is not None:
             batch_value = repaired
 
-    if not _needs_ambiguity_check(batch_value):
+    if not _needs_ambiguity_check(batch_value, colored_fill=colored_fill):
         return batch_value
 
     candidates: list[int] = []
@@ -145,7 +168,19 @@ def _choose_value(batch_value: Optional[int], binary: np.ndarray) -> Optional[in
 
     candidates.extend(_ocr_single_cell_candidates(binary))
     if not candidates:
-        return None
+        return batch_value
+
+    # On a colored cell that initially collapsed to one digit, prefer a
+    # repeatedly observed multi-digit candidate.  This specifically addresses
+    # leading-digit loss while retaining the one-digit value when the re-read
+    # evidence is weak or contradictory.
+    if colored_fill and batch_value is not None and batch_value < 10:
+        multi = [v for v in candidates if v >= 10]
+        if multi:
+            multi_counts = Counter(multi)
+            best_multi, best_multi_count = multi_counts.most_common(1)[0]
+            if best_multi_count >= 2:
+                return best_multi
 
     counts = Counter(candidates)
     best_value, best_count = counts.most_common(1)[0]
@@ -183,5 +218,11 @@ def ocr_numeric_cells(cells: list[np.ndarray]) -> list[Optional[int]]:
     for cell, token in zip(cells, raw):
         batch_value = _parse_value(token)
         binary = preprocess_numeric_cell(cell)
-        values.append(_choose_value(batch_value, binary))
+        values.append(
+            _choose_value(
+                batch_value,
+                binary,
+                colored_fill=_cell_has_colored_fill(cell),
+            )
+        )
     return values
