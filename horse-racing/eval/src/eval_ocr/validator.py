@@ -36,7 +36,8 @@ def _validate_colors(color_observations: list[dict]) -> dict:
 
     top_set_violations: list[dict] = []
     order_violations: list[dict] = []
-    duplicate_color_races: list[dict] = []
+    tie_color_groups: list[dict] = []
+    inconsistent_same_color_groups: list[dict] = []
 
     for (venue, race_no), rows in sorted(by_race.items()):
         colored = [r for r in rows if r.get("color") and r.get("eval") is not None]
@@ -44,12 +45,28 @@ def _validate_colors(color_observations: list[dict]) -> dict:
         if not colored:
             continue
 
-        color_counts = Counter(str(r["color"]) for r in colored)
-        duplicates = sorted(color for color, count in color_counts.items() if count > 1)
-        if duplicates:
-            duplicate_color_races.append(
-                {"venue": venue, "race_no": race_no, "colors": duplicates}
-            )
+        # Same-color duplicates are expected when multiple horses share the
+        # same Eval/rank. Record them as normal tie information. Only treat a
+        # repeated color as inconsistent when it is attached to different
+        # numeric Eval values inside the same race.
+        by_color: dict[str, list[dict]] = defaultdict(list)
+        for row in colored:
+            by_color[str(row["color"])].append(row)
+        for color, same_color_rows in sorted(by_color.items()):
+            if len(same_color_rows) <= 1:
+                continue
+            values = sorted({int(r["eval"]) for r in same_color_rows})
+            payload = {
+                "venue": venue,
+                "race_no": race_no,
+                "color": color,
+                "eval_values": values,
+                "horse_nos": sorted(int(r["horse_no"]) for r in same_color_rows),
+            }
+            if len(values) == 1:
+                tie_color_groups.append(payload)
+            else:
+                inconsistent_same_color_groups.append(payload)
 
         # Colored cells represent the top-N horses. Therefore an uncolored Eval
         # must never be strictly greater than the lowest colored Eval. Ties are
@@ -104,7 +121,8 @@ def _validate_colors(color_observations: list[dict]) -> dict:
         },
         "top_set_violations": top_set_violations,
         "order_violations": order_violations,
-        "duplicate_color_races": duplicate_color_races,
+        "tie_color_groups": tie_color_groups,
+        "inconsistent_same_color_groups": inconsistent_same_color_groups,
     }
 
 
@@ -169,9 +187,10 @@ def validate(
         errors.append(
             f"Colored Eval color-order violation: {len(color_validation['order_violations'])} pair(s)."
         )
-    if color_validation["duplicate_color_races"]:
-        warnings.append(
-            f"Duplicate detected rank color in {len(color_validation['duplicate_color_races'])} race(s)."
+    if color_validation["inconsistent_same_color_groups"]:
+        errors.append(
+            "Repeated rank color mapped to different Eval values: "
+            f"{len(color_validation['inconsistent_same_color_groups'])} group(s)."
         )
 
     return {
@@ -188,6 +207,8 @@ def validate(
             "colored_cells": color_validation["colored_cells"],
             "color_top_set_violations": len(color_validation["top_set_violations"]),
             "color_order_violations": len(color_validation["order_violations"]),
+            "color_tie_groups": len(color_validation["tie_color_groups"]),
+            "color_same_color_inconsistencies": len(color_validation["inconsistent_same_color_groups"]),
         },
         "color_validation": color_validation,
         "errors": errors,
