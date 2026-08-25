@@ -1,0 +1,335 @@
+name: boatrace-results-chat
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[BOATRACE_RESULTS_REQUEST]'
+
+jobs:
+  fetch:
+    if: startsWith(github.event.issue.title, '[BOATRACE_RESULTS_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r boat-racing/requirements.txt
+
+      - name: Parse request and restore input CSV
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import base64
+          import csv
+          import gzip
+          import hashlib
+          import io
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = '[BOATRACE_RESULTS_REQUEST]'
+          title = os.environ['ISSUE_TITLE']
+          if not title.startswith(prefix):
+              raise SystemExit('Unexpected issue title')
+
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('Invalid request_id in issue title')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          filename = str(request.get('input_filename', '') or '').strip()
+          if not filename or Path(filename).name != filename or not filename.lower().endswith('.csv'):
+              raise SystemExit('input_filename must be a basename ending in .csv')
+
+          encoded = ''.join(str(request.get('input_csv_gzip_base64', '') or '').split())
+          if not encoded:
+              raise SystemExit('input_csv_gzip_base64 is required')
+
+          try:
+              compressed = base64.b64decode(encoded, validate=True)
+              raw = gzip.decompress(compressed)
+          except Exception as exc:
+              raise SystemExit(f'input_csv_gzip_base64 cannot be decoded: {exc}') from exc
+
+          if not raw or len(raw) > 5 * 1024 * 1024:
+              raise SystemExit('decoded CSV must be non-empty and at most 5 MiB')
+
+          expected_sha256 = str(request.get('input_sha256', '') or '').strip().lower()
+          actual_sha256 = hashlib.sha256(raw).hexdigest()
+          if expected_sha256:
+              if not re.fullmatch(r'[0-9a-f]{64}', expected_sha256):
+                  raise SystemExit('input_sha256 must be 64 lowercase hex characters')
+              if actual_sha256 != expected_sha256:
+                  raise SystemExit('input_sha256 mismatch')
+
+          try:
+              text = raw.decode('utf-8-sig')
+          except UnicodeDecodeError as exc:
+              raise SystemExit('prediction CSV must be UTF-8 (BOM optional)') from exc
+
+          reader = csv.DictReader(io.StringIO(text))
+          rows = list(reader)
+          if not rows:
+              raise SystemExit('prediction CSV has no data rows')
+
+          required = {
+              '日付', '会場', 'R', '判定', '主推奨券種', '主推奨買い目展開後', '主推奨点数',
+              '保険券種', '保険買い目', '保険点数', '参考券種', '参考買い目', '予想確定日時'
+          }
+          missing = sorted(required - set(reader.fieldnames or []))
+          if missing:
+              raise SystemExit(f'missing required columns: {missing}')
+
+          timeout = float(request.get('timeout_seconds', 20))
+          retry = int(request.get('retry_count', 2))
+          interval = float(request.get('request_interval_seconds', 1.0))
+          unit_stake = int(request.get('unit_stake', 100))
+          strict = bool(request.get('strict', False))
+
+          if timeout <= 0 or retry < 0 or interval < 0 or unit_stake <= 0 or unit_stake % 100:
+              raise SystemExit('timeout>0, retry>=0, interval>=0, unit_stake>0 and unit_stake%100==0 are required')
+
+          dates = []
+          venues = []
+          for row in rows:
+              date = (row.get('日付') or '').strip().replace('-', '').replace('/', '')
+              if not re.fullmatch(r'\d{8}', date):
+                  raise SystemExit(f'invalid date: {row.get("日付")!r}')
+              if date not in dates:
+                  dates.append(date)
+              venue = (row.get('会場') or '').strip()
+              if not venue:
+                  raise SystemExit('会場 is blank')
+              if venue not in venues:
+                  venues.append(venue)
+
+          if len(dates) != 1:
+              raise SystemExit(f'chat workflow requires a single target date: {dates}')
+
+          target_date = dates[0]
+          venue_part = '_'.join(venues)
+          output_dir = Path(f'boat-racing/actions_output/{request_id}')
+          output_dir.mkdir(parents=True, exist_ok=True)
+          input_path = Path('/tmp') / filename
+          input_path.write_bytes(raw)
+          output_path = output_dir / f'{target_date}_結果_{venue_part}.csv'
+          log_path = output_dir / f'{target_date}_結果取得ログ_{venue_part}.log'
+
+          command = [
+              'python', 'boat-racing/src/fetch_boatrace_results.py',
+              '--input', str(input_path),
+              '--output', str(output_path),
+              '--log', str(log_path),
+              '--timeout', str(timeout),
+              '--retry', str(retry),
+              '--interval', str(interval),
+              '--unit-stake', str(unit_stake),
+          ]
+          if strict:
+              command.append('--strict')
+
+          config = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'input_filename': filename,
+              'input_sha256': actual_sha256,
+              'input_rows': len(rows),
+              'target_date': target_date,
+              'venues': venues,
+              'output_dir': str(output_dir),
+              'output_path': str(output_path),
+              'log_path': str(log_path),
+              'command': command,
+          }
+
+          Path('/tmp/boatrace_results_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+
+          (output_dir / 'resolved_request.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'TARGET_DATE={target_date}\n')
+              file.write(f'VENUE_PART={venue_part}\n')
+              file.write(f'EXPECTED_ROWS={len(rows)}\n')
+          PY
+
+      - name: Fetch official results and reconcile predictions
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/boatrace_results_config.json').read_text(encoding='utf-8'))
+          completed = subprocess.run(config['command'], check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate outputs
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import csv
+          import json
+          import os
+          from collections import Counter
+          from pathlib import Path
+
+          output_dir = Path(os.environ['OUTPUT_DIR'])
+          csv_path = output_dir / f"{os.environ['TARGET_DATE']}_結果_{os.environ['VENUE_PART']}.csv"
+          log_path = output_dir / f"{os.environ['TARGET_DATE']}_結果取得ログ_{os.environ['VENUE_PART']}.log"
+          expected_rows = int(os.environ['EXPECTED_ROWS'])
+
+          report = {
+              'validation_status': 'failure',
+              'expected_rows': expected_rows,
+              'output_rows': 0,
+              'status_counts': {},
+              'official_url_count': 0,
+              'csv_exists': csv_path.exists(),
+              'log_exists': log_path.exists(),
+              'errors': [],
+          }
+
+          if not csv_path.exists():
+              report['errors'].append('result CSV not found')
+          else:
+              try:
+                  with csv_path.open('r', encoding='utf-8-sig', newline='') as stream:
+                      rows = list(csv.DictReader(stream))
+                  report['output_rows'] = len(rows)
+                  counts = Counter(row.get('取得状態', '') for row in rows)
+                  report['status_counts'] = dict(counts)
+                  report['official_url_count'] = sum(bool(row.get('公式URL', '')) for row in rows)
+                  if len(rows) != expected_rows:
+                      report['errors'].append('input/output row count mismatch')
+                  if report['official_url_count'] != len(rows):
+                      report['errors'].append('official URL count mismatch')
+                  for bad in ('取得失敗', '解析失敗', '入力不正', '公式未確定'):
+                      if counts.get(bad, 0):
+                          report['errors'].append(f'{bad}: {counts[bad]}')
+              except Exception as exc:
+                  report['errors'].append(f'CSV validation error: {type(exc).__name__}: {exc}')
+
+          if not log_path.exists():
+              report['errors'].append('result log not found')
+
+          if not report['errors']:
+              report['validation_status'] = 'success'
+
+          (output_dir / 'validation_report.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+
+          raise SystemExit(0 if report['validation_status'] == 'success' else 1)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "event_name=${{ github.event_name }}"
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "validation_exit_code=${{ steps.validate.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boatrace-results-${{ env.REQUEST_ID }}-${{ env.TARGET_DATE }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          VALIDATE_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output_dir = Path(os.environ['OUTPUT_DIR'])
+          report_path = output_dir / 'validation_report.json'
+          if report_path.exists():
+              validation = json.loads(report_path.read_text(encoding='utf-8'))
+          else:
+              validation = {'validation_status': 'failure', 'error': 'validation report unavailable'}
+
+          fetch_exit = os.environ.get('FETCH_EXIT', '')
+          validate_exit = os.environ.get('VALIDATE_EXIT', '')
+          status = 'success' if fetch_exit == '0' and validate_exit == '0' else 'failure'
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"boatrace-results-{os.environ['REQUEST_ID']}-{os.environ['TARGET_DATE']}-{os.environ['GITHUB_RUN_ID']}",
+              'task_exit_code': fetch_exit,
+              'validation_exit_code': validate_exit,
+              'validation': validation,
+          }
+          Path('/tmp/result_comment.md').write_text(
+              'BOATRACE_RESULTS_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when fetch or validation failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1
