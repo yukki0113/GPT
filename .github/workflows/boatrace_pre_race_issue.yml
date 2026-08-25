@@ -1,0 +1,354 @@
+name: boatrace-pre-race-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[BOATRACE_PRE_RACE_REQUEST]'
+
+jobs:
+  run:
+    if: startsWith(github.event.issue.title, '[BOATRACE_PRE_RACE_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r boat-racing/requirements.txt
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          if not title.startswith(prefix):
+              raise SystemExit('Unexpected issue title')
+
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('Invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          raw_date = str(request.get('date', '')).strip()
+          compact_date = raw_date.replace('-', '').replace('/', '')
+          if not re.fullmatch(r'\d{8}', compact_date):
+              raise SystemExit('date must be YYYYMMDD or YYYY-MM-DD')
+          datetime.strptime(compact_date, '%Y%m%d')
+
+          venue = str(request.get('venue', '')).strip()
+          if not venue:
+              raise SystemExit('venue must not be empty')
+          if len(venue) > 40 or any(ch in venue for ch in '/\\\n\r\t'):
+              raise SystemExit('Invalid venue')
+
+          race_value = request.get('race')
+          try:
+              race = int(race_value)
+          except (TypeError, ValueError) as exc:
+              raise SystemExit('race must be an integer from 1 to 12') from exc
+          if not 1 <= race <= 12:
+              raise SystemExit('race must be 1-12')
+
+          output_format = str(request.get('format', 'json')).strip().lower()
+          if output_format not in {'json', 'csv'}:
+              raise SystemExit('format must be json or csv')
+
+          output_dir = f'boat-racing/output_issue/pre_race/{request_id}'
+          suffix = output_format
+          output_path = f'{output_dir}/pre_race_result.{suffix}'
+
+          command = [
+              'python',
+              'boat-racing/src/fetch_boatrace_pre_race_info.py',
+              '--date', compact_date,
+              '--venue', venue,
+              '--race', str(race),
+              '--format', output_format,
+              '--output', output_path,
+          ]
+
+          resolved = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'output_dir': output_dir,
+              'output_path': output_path,
+              'command': command,
+              'request': {
+                  'date': compact_date,
+                  'venue': venue,
+                  'race': race,
+                  'format': output_format,
+              },
+          }
+          Path('/tmp/resolved_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'TARGET_DATE={compact_date}\n')
+              file.write(f'VENUE={venue}\n')
+              file.write(f'RACE={race}\n')
+              file.write(f'OUTPUT_FORMAT={output_format}\n')
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'OUTPUT_PATH={output_path}\n')
+          PY
+
+      - name: Save resolved request
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          cp /tmp/resolved_request.json "$OUTPUT_DIR/resolved_request.json"
+
+      - name: Run pre-race fetcher
+        id: task
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          resolved = json.loads(Path('/tmp/resolved_request.json').read_text(encoding='utf-8'))
+          completed = subprocess.run(resolved['command'], check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate output
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+
+          out = Path(os.environ['OUTPUT_DIR'])
+          output_path = Path(os.environ['OUTPUT_PATH'])
+          output_format = os.environ['OUTPUT_FORMAT']
+          errors = []
+          warnings = []
+          details = {}
+
+          if not output_path.exists():
+              errors.append(f'missing: {output_path.name}')
+          elif output_format == 'json':
+              try:
+                  data = json.loads(output_path.read_text(encoding='utf-8'))
+              except Exception as exc:
+                  errors.append(f'invalid JSON: {exc}')
+                  data = None
+
+              if isinstance(data, dict):
+                  details['fetch_status'] = data.get('fetch_status')
+                  details['failure_kind'] = data.get('failure_kind')
+                  details['failure_message'] = data.get('failure_message')
+
+                  if data.get('fetch_status') != 'success':
+                      errors.append(f"fetch_status={data.get('fetch_status')}")
+
+                  racers = data.get('racecard_racers') or []
+                  exhibition = data.get('exhibition') or []
+                  weather = data.get('weather') or {}
+                  starts = weather.get('start_exhibition') or []
+
+                  details['racecard_racers_count'] = len(racers)
+                  details['exhibition_count'] = len(exhibition)
+                  details['start_exhibition_count'] = len(starts)
+
+                  if len(racers) != 6:
+                      errors.append(f'racecard_racers count={len(racers)}, expected=6')
+                  if len(exhibition) != 6:
+                      errors.append(f'exhibition count={len(exhibition)}, expected=6')
+                  if len(starts) != 6:
+                      errors.append(f'start_exhibition count={len(starts)}, expected=6')
+
+                  for index, item in enumerate(starts, start=1):
+                      for key in ('exhibition_course', 'boat_number', 'start_exhibition_st'):
+                          if key not in item or item.get(key) in (None, ''):
+                              errors.append(f'start_exhibition[{index}] missing {key}')
+
+                  for key in (
+                      'temperature_c',
+                      'water_temperature_c',
+                      'weather',
+                      'wind_direction',
+                      'wind_speed_mps',
+                      'wave_height_cm',
+                  ):
+                      if weather.get(key) in (None, ''):
+                          errors.append(f'weather missing {key}')
+
+                  target = data.get('target') or {}
+                  expected_date = os.environ['TARGET_DATE']
+                  formatted_date = f'{expected_date[:4]}-{expected_date[4:6]}-{expected_date[6:]}'
+                  if target.get('date') != formatted_date:
+                      errors.append(f"target.date={target.get('date')}, expected={formatted_date}")
+                  if int(target.get('race') or 0) != int(os.environ['RACE']):
+                      errors.append(f"target.race={target.get('race')}, expected={os.environ['RACE']}")
+
+                  urls = data.get('source_urls') or {}
+                  allowed_suffixes = ('/racelist?', '/beforeinfo?')
+                  for name, url in urls.items():
+                      if not isinstance(url, str) or 'boatrace.jp/owpc/pc/race/' not in url:
+                          errors.append(f'unexpected source URL for {name}')
+                      elif not any(suffix in url for suffix in allowed_suffixes):
+                          errors.append(f'unsupported source page for {name}: {url}')
+
+          else:
+              try:
+                  with output_path.open('r', encoding='utf-8-sig', newline='') as file:
+                      rows = list(csv.DictReader(file))
+              except Exception as exc:
+                  errors.append(f'invalid CSV: {exc}')
+                  rows = []
+              details['csv_rows'] = len(rows)
+              if len(rows) != 6:
+                  errors.append(f'CSV rows={len(rows)}, expected=6')
+              statuses = {row.get('fetch_status') for row in rows}
+              if statuses != {'success'}:
+                  errors.append(f'CSV fetch_status values={sorted(str(x) for x in statuses)}')
+
+          report = {
+              'request_id': os.environ['REQUEST_ID'],
+              'date': os.environ['TARGET_DATE'],
+              'venue': os.environ['VENUE'],
+              'race': int(os.environ['RACE']),
+              'format': output_format,
+              'validation_status': 'failure' if errors else 'success',
+              'errors': errors,
+              'warnings': warnings,
+              'details': details,
+              'output_files': [p.name for p in sorted(out.iterdir()) if p.is_file()],
+          }
+          (out / 'validation_report.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          raise SystemExit(1 if errors else 0)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        env:
+          TASK_EXIT: ${{ steps.task.outputs.exit_code }}
+          VALIDATION_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "event_name=${{ github.event_name }}"
+            echo "date=$TARGET_DATE"
+            echo "venue=$VENUE"
+            echo "race=$RACE"
+            echo "format=$OUTPUT_FORMAT"
+            echo "task_exit_code=$TASK_EXIT"
+            echo "validation_exit_code=$VALIDATION_EXIT"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boatrace-pre-race-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK_EXIT: ${{ steps.task.outputs.exit_code }}
+          VALIDATION_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          task_exit = os.environ.get('TASK_EXIT', '')
+          validation_exit = os.environ.get('VALIDATION_EXIT', '')
+          if task_exit == '0' and validation_exit == '0':
+              status = 'success'
+          elif task_exit == '0':
+              status = 'partial'
+          else:
+              status = 'failure'
+
+          validation = {}
+          report_path = Path(os.environ['OUTPUT_DIR']) / 'validation_report.json'
+          if report_path.exists():
+              validation = json.loads(report_path.read_text(encoding='utf-8'))
+
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"boatrace-pre-race-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}",
+              'task_exit_code': task_exit,
+              'validation_exit_code': validation_exit,
+              'validation': validation,
+              'output_files': validation.get('output_files', []),
+          }
+          Path('/tmp/result_comment.md').write_text(
+              'BOATRACE_PRE_RACE_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when task or validation failed
+        if: always() && (steps.task.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1
