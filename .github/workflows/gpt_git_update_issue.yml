@@ -1,0 +1,211 @@
+name: GPT Git Update via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: gpt-git-update-main
+  cancel-in-progress: false
+
+jobs:
+  apply-update:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[gpt-git-update]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Extract and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import os
+          import pathlib
+          import re
+          import sys
+
+          body = os.environ.get("ISSUE_BODY", "")
+
+          message_match = re.search(r"(?m)^commit_message:\s*(.+?)\s*$", body)
+          if message_match is None:
+              raise SystemExit("Missing 'commit_message:' line.")
+
+          commit_message = message_match.group(1).strip()
+          if len(commit_message) == 0 or len(commit_message) > 200:
+              raise SystemExit("commit_message must be 1..200 characters.")
+
+          patch_match = re.search(r"```diff\s*\n(.*?)\n```", body, flags=re.DOTALL)
+          if patch_match is None:
+              raise SystemExit("Missing fenced ```diff patch block.")
+
+          patch = patch_match.group(1)
+          if len(patch.strip()) == 0:
+              raise SystemExit("Patch is empty.")
+
+          allowed_prefixes = (
+              "horse-racing/jrdb/",
+              "horse-racing/eval/",
+              "boat-racing/",
+          )
+
+          forbidden_names = {
+              ".env",
+              "jrdb_secret.py",
+          }
+          forbidden_suffixes = (
+              ".zip", ".7z", ".rar",
+              ".sqlite", ".sqlite3", ".db",
+              ".xlsx", ".xls",
+              ".pem", ".key", ".p12", ".pfx",
+              ".pyc",
+          )
+          forbidden_segments = {
+              "__pycache__",
+              ".git",
+              ".github",
+              "secrets",
+          }
+
+          header_paths = []
+          for line in patch.splitlines():
+              if not (line.startswith("--- ") or line.startswith("+++ ")):
+                  continue
+
+              raw = line[4:].split("\t", 1)[0].strip()
+              if raw == "/dev/null":
+                  continue
+              if raw.startswith("a/") or raw.startswith("b/"):
+                  raw = raw[2:]
+              header_paths.append(raw)
+
+          if not header_paths:
+              raise SystemExit("No changed paths found in patch headers.")
+
+          checked = set()
+          for raw in header_paths:
+              if raw in checked:
+                  continue
+              checked.add(raw)
+
+              path = pathlib.PurePosixPath(raw)
+              parts = path.parts
+
+              if path.is_absolute() or ".." in parts:
+                  raise SystemExit(f"Unsafe path: {raw}")
+
+              if not raw.startswith(allowed_prefixes):
+                  raise SystemExit(f"Path outside allowed projects: {raw}")
+
+              lowered_parts = {part.lower() for part in parts}
+              if lowered_parts.intersection(forbidden_segments):
+                  raise SystemExit(f"Forbidden path segment: {raw}")
+
+              name_lower = path.name.lower()
+              if name_lower in forbidden_names:
+                  raise SystemExit(f"Forbidden file: {raw}")
+              if name_lower.endswith(forbidden_suffixes):
+                  raise SystemExit(f"Forbidden file type: {raw}")
+              if "secret" in name_lower or "credential" in name_lower or "password" in name_lower:
+                  raise SystemExit(f"Potential secret file rejected: {raw}")
+
+          pathlib.Path("/tmp/gpt-update.patch").write_text(patch + "\n", encoding="utf-8")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"commit_message={commit_message}\n")
+
+          print("Validated paths:")
+          for raw in sorted(checked):
+              print(f"  {raw}")
+          PY
+
+      - name: Check patch applies cleanly
+        run: git apply --check --whitespace=error-all /tmp/gpt-update.patch
+
+      - name: Apply patch
+        run: git apply --whitespace=error-all /tmp/gpt-update.patch
+
+      - name: Show diff
+        run: git diff --check && git diff --stat && git diff
+
+      - name: Compile changed Python files
+        run: |
+          python - <<'PY'
+          import pathlib
+          import subprocess
+          import sys
+
+          result = subprocess.run(
+              ["git", "diff", "--name-only", "--diff-filter=ACM"],
+              check=True,
+              capture_output=True,
+              text=True,
+          )
+
+          python_files = [
+              pathlib.Path(line)
+              for line in result.stdout.splitlines()
+              if line.endswith(".py")
+          ]
+
+          if not python_files:
+              print("No changed Python files.")
+              raise SystemExit(0)
+
+          for path in python_files:
+              print(f"py_compile: {path}")
+              subprocess.run(
+                  [sys.executable, "-m", "py_compile", str(path)],
+                  check=True,
+              )
+          PY
+
+      - name: Commit and push
+        id: commit
+        env:
+          COMMIT_MESSAGE: ${{ steps.request.outputs.commit_message }}
+        run: |
+          if git diff --quiet; then
+            echo "Patch produced no changes."
+            exit 1
+          fi
+
+          git config user.name "gpt-git-update[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+          git commit -m "$COMMIT_MESSAGE"
+          git push origin HEAD:main
+
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment success
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          COMMIT_SHA: ${{ steps.commit.outputs.sha }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "✅ Git update applied and pushed to \`main\`.\n\nCommit: \`$COMMIT_SHA\`"
+          gh issue close "$ISSUE_NUMBER" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "❌ Git update was not pushed. Validation, patch application, or tests failed.\n\nWorkflow run: $RUN_URL\n\nThe issue is left open for inspection/retry."
