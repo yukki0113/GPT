@@ -15,6 +15,47 @@ BOAT RACE公式サイトのPC版出走表をHTTP取得して解析し、失敗�
 
 実行中は、会場の開始、各レースの「取得中」「完了」、会場ごとの完了件数、CSV出力の開始・完了をコマンドプロンプトに表示します。通常は1レースあたり数秒～十数秒かかります。
 
+## Chatからの標準実行（GitHub Issue経由）
+
+Chatからの日次取得は、GitHub Issueを実行要求として使う方式を標準とします。
+
+- Workflow: `.github/workflows/boatrace_racelist_issue.yml`
+- Issue title: `[BOATRACE_RACELIST_REQUEST] <request_id>`
+- Issue body: raw JSON
+- RESULT marker: `BOATRACE_RACELIST_RESULT`
+- artifact名: `boatrace-racelist-<request_id>-<run_id>`
+- 処理終了後、Request Issueは自動Close
+- artifact保持期間: 14日
+
+Issue本文例:
+
+```json
+{
+  "date": "20260825",
+  "venues": [
+    {"name": "常滑", "code": "08", "day": "4日目"},
+    {"name": "三国", "code": "10", "day": "2日目"}
+  ],
+  "request_interval_seconds": 1.0
+}
+```
+
+WorkflowはIssue本文をJSONとして検証し、Git正本の `boat-racing/src/fetch_boatrace_racelist.py` を通常CLIとして実行します。Issue本文をshellへ直接展開せず、解決済み設定を `resolved_request.json` に保存します。
+
+artifactには通常、以下を含めます。
+
+- 予想入力CSV
+- 原本CSV
+- 取得状況CSV
+- 取得ログ
+- `resolved_request.json`
+- `run_status.txt`
+- `validation_report.json`
+
+Chat側はIssueコメントのRESULT JSONから `status`、`run_id`、`artifact_name` を取得し、artifactを回収して検査後に日常成果物を返却します。
+
+`.github/workflows/boatrace_racelist_manual.yml` は手動フォールバックとして残しますが、Chatからの通常運用ではIssue経由を優先します。
+
 ## 出力
 
 指定フォルダへ以下を都度**上書き再生成**します（追記しません）。
