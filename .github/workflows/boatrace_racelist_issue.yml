@@ -1,0 +1,303 @@
+name: boatrace-racelist-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[BOATRACE_RACELIST_REQUEST]'
+
+jobs:
+  run:
+    if: startsWith(github.event.issue.title, '[BOATRACE_RACELIST_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r boat-racing/requirements.txt
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          if not title.startswith(prefix):
+              raise SystemExit('Unexpected issue title')
+
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('Invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          date = str(request.get('date', '')).strip()
+          if not re.fullmatch(r'\d{8}', date):
+              raise SystemExit('date must be YYYYMMDD')
+          datetime.strptime(date, '%Y%m%d')
+
+          venues = request.get('venues')
+          if not isinstance(venues, list) or not venues:
+              raise SystemExit('venues must be a non-empty array')
+          for venue in venues:
+              if not isinstance(venue, dict):
+                  raise SystemExit('each venue must be an object')
+              if not all(key in venue for key in ('name', 'code', 'day')):
+                  raise SystemExit('each venue requires name, code, day')
+
+          try:
+              interval = float(request.get('request_interval_seconds', 1.0))
+          except (TypeError, ValueError) as exc:
+              raise SystemExit('request_interval_seconds must be numeric') from exc
+          if not 0 <= interval <= 60:
+              raise SystemExit('request_interval_seconds must be between 0 and 60')
+
+          output_dir = f'boat-racing/output_issue/{request_id}'
+          config_path = '/tmp/boatrace_racelist_config.json'
+          config = {
+              'date': date,
+              'venues': venues,
+              'output_dir': output_dir,
+              'request_interval_seconds': interval,
+          }
+          Path(config_path).write_text(
+              json.dumps(config, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          resolved = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'output_dir': output_dir,
+              'command': [
+                  'python',
+                  'boat-racing/src/fetch_boatrace_racelist.py',
+                  '--config',
+                  config_path,
+              ],
+              'request': request,
+          }
+          Path('/tmp/resolved_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'TARGET_DATE={date}\n')
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'VENUE_COUNT={len(venues)}\n')
+          PY
+
+      - name: Save resolved request
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          cp /tmp/resolved_request.json "$OUTPUT_DIR/resolved_request.json"
+
+      - name: Run racelist fetcher
+        id: task
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          resolved = json.loads(Path('/tmp/resolved_request.json').read_text(encoding='utf-8'))
+          completed = subprocess.run(resolved['command'], check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate output
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+
+          out = Path(os.environ['OUTPUT_DIR'])
+          request = json.loads(Path('/tmp/resolved_request.json').read_text(encoding='utf-8'))['request']
+          date = str(request['date'])
+          venues = request['venues']
+          names = '_'.join(str(v['name']) for v in venues)
+
+          input_csv = out / f'{date}_公式出走表_{names}.csv'
+          status_csv = out / f'{date}_出走表取得状況_{names}.csv'
+          log_file = out / f'{date}_出走表取得ログ_{names}.log'
+
+          errors = []
+          if not input_csv.exists():
+              errors.append(f'missing: {input_csv.name}')
+          if not status_csv.exists():
+              errors.append(f'missing: {status_csv.name}')
+          if not log_file.exists():
+              errors.append(f'missing: {log_file.name}')
+
+          row_count = 0
+          column_count = 0
+          if input_csv.exists():
+              with input_csv.open('r', encoding='utf-8-sig', newline='') as file:
+                  reader = csv.DictReader(file)
+                  column_count = len(reader.fieldnames or [])
+                  rows = list(reader)
+              row_count = len(rows)
+              expected_rows = len(venues) * 12 * 6
+              if column_count != 19:
+                  errors.append(f'input csv columns={column_count}, expected=19')
+              if row_count != expected_rows:
+                  errors.append(f'input csv rows={row_count}, expected={expected_rows}')
+              keys = [(r.get('日付',''), r.get('会場',''), r.get('R',''), r.get('艇番','')) for r in rows]
+              if len(keys) != len(set(keys)):
+                  errors.append('duplicate 日付+会場+R+艇番')
+
+          success_count = 0
+          status_count = 0
+          non_success = []
+          if status_csv.exists():
+              with status_csv.open('r', encoding='utf-8-sig', newline='') as file:
+                  statuses = list(csv.DictReader(file))
+              status_count = len(statuses)
+              success_count = sum(r.get('取得状態') == '成功' for r in statuses)
+              non_success = [f"{r.get('会場')} {r.get('R')}R:{r.get('取得状態')}" for r in statuses if r.get('取得状態') != '成功']
+              expected_status = len(venues) * 12
+              if status_count != expected_status:
+                  errors.append(f'status rows={status_count}, expected={expected_status}')
+              if non_success:
+                  errors.append('non-success races: ' + ', '.join(non_success[:20]))
+
+          report = {
+              'date': date,
+              'venues': [v['name'] for v in venues],
+              'expected_races': len(venues) * 12,
+              'status_rows': status_count,
+              'success_races': success_count,
+              'input_rows': row_count,
+              'input_columns': column_count,
+              'errors': errors,
+              'output_files': [p.name for p in sorted(out.iterdir()) if p.is_file()],
+          }
+          (out / 'validation_report.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          raise SystemExit(1 if errors else 0)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        env:
+          TASK_EXIT: ${{ steps.task.outputs.exit_code }}
+          VALIDATION_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "event_name=${{ github.event_name }}"
+            echo "task_exit_code=$TASK_EXIT"
+            echo "validation_exit_code=$VALIDATION_EXIT"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boatrace-racelist-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK_EXIT: ${{ steps.task.outputs.exit_code }}
+          VALIDATION_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          task_exit = os.environ.get('TASK_EXIT', '')
+          validation_exit = os.environ.get('VALIDATION_EXIT', '')
+          if task_exit == '0' and validation_exit == '0':
+              status = 'success'
+          elif task_exit == '0':
+              status = 'partial'
+          else:
+              status = 'failure'
+
+          validation = {}
+          validation_path = Path(os.environ['OUTPUT_DIR']) / 'validation_report.json'
+          if validation_path.exists():
+              validation = json.loads(validation_path.read_text(encoding='utf-8'))
+
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"boatrace-racelist-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}",
+              'task_exit_code': task_exit,
+              'validation_exit_code': validation_exit,
+              'validation': validation,
+          }
+          Path('/tmp/result_comment.md').write_text(
+              'BOATRACE_RACELIST_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when task or validation failed
+        if: always() && (steps.task.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1
