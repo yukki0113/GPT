@@ -6,6 +6,7 @@ from typing import Optional
 import cv2
 import numpy as np
 
+from .color_detector import classify_eval_cell
 from .japanese_ocr import ocr_header_text, ocr_name_cells, resolve_venue
 from .layout_detector import detect_column_lines, detect_layout, detect_row_lines
 from .models import HorseRecord, PanelBox
@@ -21,10 +22,10 @@ def _crop_inner(panel: np.ndarray, y1: int, y2: int, x1: int, x2: int) -> np.nda
     return panel[yy1:yy2, xx1:xx2]
 
 
-def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[str], list[int | None], list[int]]:
+def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[str], list[int | None], list[str | None], list[int]]:
     row_lines = detect_row_lines(panel_image)
     if len(row_lines) < 3:
-        return [], [], row_lines
+        return [], [], [], row_lines
     col_lines = detect_column_lines(panel_image, row_lines)
     intervals = list(zip(row_lines[:-1], row_lines[1:]))[:18]
     name_cells: list[np.ndarray] = []
@@ -47,11 +48,14 @@ def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[str], list[int | 
         if flag:
             last_occupied = idx
     if last_occupied == 0:
-        return [], [], row_lines
+        return [], [], [], row_lines
 
-    names = ocr_name_cells(name_cells[:last_occupied])
-    evals = ocr_numeric_cells(eval_cells[:last_occupied])
-    return names, evals, row_lines
+    name_cells = name_cells[:last_occupied]
+    eval_cells = eval_cells[:last_occupied]
+    names = ocr_name_cells(name_cells)
+    evals = ocr_numeric_cells(eval_cells)
+    colors = [classify_eval_cell(cell) for cell in eval_cells]
+    return names, evals, colors, row_lines
 
 
 def run_pipeline(
@@ -83,18 +87,58 @@ def run_pipeline(
         debug_path.mkdir(parents=True, exist_ok=True)
 
     records: list[HorseRecord] = []
+    color_observations: list[dict] = []
     panel_debug: list[dict] = []
     for p in sorted(panels, key=lambda x: (x.venue_index, x.race_no)):
         panel_img = image[p.y:p.y + p.height, p.x:p.x + p.width]
-        names, evals, row_lines = _extract_panel_rows(panel_img)
-        count = max(len(names), len(evals))
+        names, evals, colors, row_lines = _extract_panel_rows(panel_img)
+        count = max(len(names), len(evals), len(colors))
         for i in range(count):
-            records.append(HorseRecord(date=date,venue=p.venue or "UNKNOWN",race_no=p.race_no,horse_no=i + 1,horse_name_ocr=names[i] if i < len(names) else "",eval=evals[i] if i < len(evals) else None))
-        panel_debug.append({"venue": p.venue,"race_no": p.race_no,"rows": count,"row_lines": row_lines,"box": p.to_dict()})
+            value = evals[i] if i < len(evals) else None
+            color = colors[i] if i < len(colors) else None
+            records.append(
+                HorseRecord(
+                    date=date,
+                    venue=p.venue or "UNKNOWN",
+                    race_no=p.race_no,
+                    horse_no=i + 1,
+                    horse_name_ocr=names[i] if i < len(names) else "",
+                    eval=value,
+                )
+            )
+            color_observations.append(
+                {
+                    "venue": p.venue or "UNKNOWN",
+                    "race_no": p.race_no,
+                    "horse_no": i + 1,
+                    "color": color,
+                    "eval": value,
+                }
+            )
+        panel_debug.append(
+            {
+                "venue": p.venue,
+                "race_no": p.race_no,
+                "rows": count,
+                "row_lines": row_lines,
+                "colored_rows": [
+                    {"horse_no": i + 1, "color": colors[i], "eval": evals[i] if i < len(evals) else None}
+                    for i in range(len(colors))
+                    if colors[i]
+                ],
+                "box": p.to_dict(),
+            }
+        )
         if debug_path:
             cv2.imwrite(str(debug_path / f"v{p.venue_index + 1}_{p.race_no:02d}R.png"), panel_img)
 
-    report = validate(records, panels, detection.warnings, expected_venues=expected_venues)
+    report = validate(
+        records,
+        panels,
+        detection.warnings,
+        expected_venues=expected_venues,
+        color_observations=color_observations,
+    )
     report["panels"] = panel_debug
     report["source_image"] = str(image_path)
     report["date"] = date
