@@ -35,7 +35,6 @@ jobs:
           import os
           import pathlib
           import re
-          import sys
 
           body = os.environ.get("ISSUE_BODY", "")
 
@@ -137,8 +136,12 @@ jobs:
       - name: Apply patch
         run: git apply --whitespace=error-all /tmp/gpt-update.patch
 
-      - name: Show diff
-        run: git diff --check && git diff --stat && git diff
+      - name: Show status and diff
+        run: |
+          git diff --check
+          git status --short
+          git diff --stat
+          git diff
 
       - name: Compile changed Python files
         run: |
@@ -148,23 +151,34 @@ jobs:
           import sys
 
           result = subprocess.run(
-              ["git", "diff", "--name-only", "--diff-filter=ACM"],
+              ["git", "status", "--porcelain=v1", "-z"],
               check=True,
               capture_output=True,
-              text=True,
           )
 
-          python_files = [
-              pathlib.Path(line)
-              for line in result.stdout.splitlines()
-              if line.endswith(".py")
-          ]
+          python_files = []
+          for record in result.stdout.split(b"\0"):
+              if not record:
+                  continue
+              text = record.decode("utf-8", errors="strict")
+              status = text[:2]
+              raw_path = text[3:]
+
+              if status.strip() == "D":
+                  continue
+
+              if " -> " in raw_path:
+                  raw_path = raw_path.split(" -> ", 1)[1]
+
+              path = pathlib.Path(raw_path)
+              if path.suffix == ".py" and path.exists():
+                  python_files.append(path)
 
           if not python_files:
               print("No changed Python files.")
               raise SystemExit(0)
 
-          for path in python_files:
+          for path in sorted(set(python_files)):
               print(f"py_compile: {path}")
               subprocess.run(
                   [sys.executable, "-m", "py_compile", str(path)],
@@ -177,7 +191,7 @@ jobs:
         env:
           COMMIT_MESSAGE: ${{ steps.request.outputs.commit_message }}
         run: |
-          if git diff --quiet; then
+          if [ -z "$(git status --porcelain)" ]; then
             echo "Patch produced no changes."
             exit 1
           fi
@@ -187,6 +201,9 @@ jobs:
 
           git add -A
           git commit -m "$COMMIT_MESSAGE"
+
+          git fetch origin main
+          git rebase origin/main
           git push origin HEAD:main
 
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -198,8 +215,13 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           COMMIT_SHA: ${{ steps.commit.outputs.sha }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --body "✅ Git update applied and pushed to \`main\`.\n\nCommit: \`$COMMIT_SHA\`"
-          gh issue close "$ISSUE_NUMBER" --reason completed
+          cat > /tmp/result_comment.md <<EOF
+          ✅ Git update applied and pushed to \`main\`.
+
+          Commit: \`$COMMIT_SHA\`
+          EOF
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
 
       - name: Comment failure
         if: failure()
@@ -208,4 +230,11 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --body "❌ Git update was not pushed. Validation, patch application, or tests failed.\n\nWorkflow run: $RUN_URL\n\nThe issue is left open for inspection/retry."
+          cat > /tmp/result_comment.md <<EOF
+          ❌ Git update was not pushed. Validation, patch application, tests, commit, or push failed.
+
+          Workflow run: $RUN_URL
+
+          The issue is left open for inspection/retry.
+          EOF
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
