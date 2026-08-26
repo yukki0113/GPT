@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Unified RaceNote request router.
 
-A stable front door for RaceNote generation. The request model is independent from
-how target-date data is sourced:
+Stable RaceNote entrypoint. User/GPT specifies a target date and optionally venue/race.
+Temporal routing and scope routing are independent.
 
-- current/future dates: JRDB PACI
-- past dates: historical annual Raw fallback for now; a future RaceNote Archive
-  backend can replace this without changing the request contract.
+Backends:
+- current/future: JRDB PACI
+- past: pre-positioned historical Raw cache first, JRDB annual fetch only for missing packs
+- future design: RaceNote Archive can replace the past base backend without changing
+  this request contract.
 
-Analysis Lite and Stats Mart are always treated as as-of sources. Queries must not
-read rows on or after the target race date when reproducing a historical race.
+Historical enrichment always uses as_of_exclusive=target_date.
 """
 from __future__ import annotations
 
@@ -42,7 +43,7 @@ PREV_RESULT_SLICES = (
 
 @dataclass(frozen=True)
 class RaceNoteRequest:
-    """Normalized request understood by the router."""
+    """Normalized RaceNote request."""
 
     target_date: date
     venue: str | None
@@ -51,7 +52,7 @@ class RaceNoteRequest:
 
     @property
     def temporal_mode(self) -> str:
-        """Return past/current/future without mixing it with source selection."""
+        """Return past/current/future."""
         if self.target_date < self.today:
             return "past"
         if self.target_date == self.today:
@@ -60,7 +61,7 @@ class RaceNoteRequest:
 
     @property
     def scope(self) -> str:
-        """Return all/venue/race selection scope."""
+        """Return all/venue/race."""
         if self.venue is None:
             return "all"
         if self.race_no is None:
@@ -74,7 +75,7 @@ class RaceNoteRequest:
 
 
 class RaceNoteRequestError(RuntimeError):
-    """Raised when a request cannot be safely fulfilled."""
+    """RaceNote request cannot be fulfilled safely."""
 
 
 def parse_date(value: str) -> date:
@@ -84,15 +85,15 @@ def parse_date(value: str) -> date:
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse command-line arguments."""
+    """Parse CLI arguments."""
     parser = argparse.ArgumentParser(description="Unified RaceNote request router")
-    parser.add_argument("--date", required=True, help="Target date: YYYYMMDD / YYYY-MM-DD")
-    parser.add_argument("--venue", default=None, help="Optional JRA venue name, e.g. 新潟")
-    parser.add_argument("--race", type=int, default=None, help="Optional race number 1-12; requires --venue")
-    parser.add_argument("--today", default=None, help="Test override for router current date")
+    parser.add_argument("--date", required=True, help="Target date")
+    parser.add_argument("--venue", default=None, help="Optional JRA venue")
+    parser.add_argument("--race", type=int, default=None, help="Optional race number; requires venue")
+    parser.add_argument("--today", default=None, help="Router-date override for tests")
     parser.add_argument("--analysis", type=Path, required=True, help="Analysis Lite SQLite")
     parser.add_argument("--mart", type=Path, required=True, help="Stats Mart SQLite")
-    parser.add_argument("--raw-dir", type=Path, default=None, help="Historical Raw cache/root; fetched when needed")
+    parser.add_argument("--raw-dir", type=Path, default=None, help="Historical Raw cache/root")
     parser.add_argument("--output", type=Path, default=Path("output_racenote_request"))
     parser.add_argument("--stats-window-years", type=int, default=5)
     parser.add_argument("--plan-only", action="store_true")
@@ -101,34 +102,23 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalize_request(args: argparse.Namespace) -> RaceNoteRequest:
-    """Validate and normalize user selection independently from data backends."""
+    """Validate request dimensions independently from backend choice."""
     target_date = parse_date(args.date)
     today_value = parse_date(args.today) if args.today else date.today()
     venue = args.venue.strip() if args.venue else None
     race_no = args.race
-
     if race_no is not None and venue is None:
         raise RaceNoteRequestError("--race requires --venue")
     if race_no is not None and not 1 <= race_no <= 12:
         raise RaceNoteRequestError("--race must be between 1 and 12")
-
-    return RaceNoteRequest(
-        target_date=target_date,
-        venue=venue,
-        race_no=race_no,
-        today=today_value,
-    )
+    return RaceNoteRequest(target_date, venue, race_no, today_value)
 
 
 def build_plan(request: RaceNoteRequest) -> dict:
-    """Build a machine-readable plan before any I/O occurs."""
-    if request.temporal_mode == "past":
-        base_backend = "historical_raw_fallback"
-    else:
-        base_backend = "paci"
-
+    """Return a machine-readable execution plan before I/O."""
+    base_backend = "historical_raw_cache_or_fetch" if request.temporal_mode == "past" else "paci"
     return {
-        "request_version": "0.1",
+        "request_version": "0.1.1",
         "target_date": request.target_date.isoformat(),
         "today": request.today.isoformat(),
         "temporal_mode": request.temporal_mode,
@@ -144,19 +134,19 @@ def build_plan(request: RaceNoteRequest) -> dict:
         },
         "historical_backend_policy": {
             "preferred_future": "racenote_archive",
-            "current_fallback": "annual_raw_reconstruction",
+            "current": "prepositioned annual Raw cache; fetch only missing packs",
             "raw_is_not_normal_daily_query_path": True,
         },
     }
 
 
 def run(command: list[str], cwd: Path | None = None) -> None:
-    """Run a subprocess and fail fast with the exact command owner isolated."""
+    """Run subprocess with fail-fast semantics."""
     subprocess.run(command, cwd=cwd, check=True)
 
 
 def validate_sqlite(path: Path, label: str) -> None:
-    """Confirm that the supplied external database is a healthy SQLite file."""
+    """Validate external SQLite artifact."""
     if not path.is_file():
         raise RaceNoteRequestError(f"{label} not found: {path}")
     connection = sqlite3.connect(path)
@@ -169,7 +159,7 @@ def validate_sqlite(path: Path, label: str) -> None:
 
 
 def target_race_keys(analysis: Path, request: RaceNoteRequest) -> set[bytes]:
-    """Resolve race keys from Analysis without reading target-race result values."""
+    """Resolve target race keys without using target result values."""
     sql = "SELECT DISTINCT race_key FROM fact_entry_result_lite WHERE race_date=?"
     parameters: list[object] = [request.target_date.isoformat()]
     if request.venue is not None:
@@ -184,73 +174,74 @@ def target_race_keys(analysis: Path, request: RaceNoteRequest) -> set[bytes]:
     if request.race_no is not None:
         sql += " AND race_no=?"
         parameters.append(request.race_no)
-
     connection = sqlite3.connect(analysis)
     try:
         rows = connection.execute(sql, parameters).fetchall()
     finally:
         connection.close()
-
     race_keys = {str(row[0]).encode("ascii") for row in rows if row[0]}
     if not race_keys:
         raise RaceNoteRequestError("No target races found in Analysis Lite for request")
     return race_keys
 
 
+def annual_zip(raw_dir: Path, kind: str, year: int) -> Path:
+    """Return canonical cache path for one annual Raw ZIP."""
+    return raw_dir / kind / f"{kind}_{year}.zip"
+
+
 def fetch_historical_raw(year: int, raw_dir: Path, force: bool, kinds: list[str]) -> None:
-    """Fetch requested annual Raw kinds through the canonical history fetcher."""
+    """Fetch annual packs through the canonical JRDB history fetcher."""
     command = [
-        sys.executable,
-        str(FETCH_HISTORY),
-        "--year",
-        str(year),
-        "--kinds",
-        *kinds,
-        "--output-dir",
-        str(raw_dir),
-        "--continue-on-error",
+        sys.executable, str(FETCH_HISTORY), "--year", str(year), "--kinds", *kinds,
+        "--output-dir", str(raw_dir), "--continue-on-error",
     ]
     if force:
         command.append("--force")
     run(command, cwd=HERE)
 
 
+def ensure_historical_raw(year: int, raw_dir: Path, force: bool, kinds: list[str]) -> None:
+    """Use pre-positioned Raw ZIPs first; fetch only packs that are actually missing.
+
+    This keeps normal historical requests independent from JRDB credentials when GPT,
+    an Archive builder, or another storage adapter has already populated the cache.
+    """
+    missing = [kind for kind in kinds if not annual_zip(raw_dir, kind, year).is_file()]
+    if force:
+        missing = list(kinds)
+    if missing:
+        fetch_historical_raw(year, raw_dir, force, missing)
+    still_missing = [kind for kind in kinds if not annual_zip(raw_dir, kind, year).is_file()]
+    if still_missing:
+        raise RaceNoteRequestError(f"Missing historical Raw after fetch/cache resolution: {still_missing}")
+
+
 def iter_records(zip_path: Path, prefix: str) -> Iterable[bytes]:
-    """Yield non-empty fixed-width records from all matching members in one annual ZIP."""
+    """Yield non-empty fixed-width rows from matching ZIP members."""
     with zipfile.ZipFile(zip_path) as archive:
         members = [name for name in archive.namelist() if Path(name).name.upper().startswith(prefix)]
         if not members:
             raise RaceNoteRequestError(f"No {prefix} member in {zip_path}")
         for member in members:
-            data = archive.read(member)
-            for line in data.splitlines():
+            for line in archive.read(member).splitlines():
                 if line:
                     yield line
 
 
-def annual_zip(raw_dir: Path, kind: str, year: int) -> Path:
-    """Return expected path produced by fetch_jrdb_history.py."""
-    path = raw_dir / kind / f"{kind}_{year}.zip"
-    if not path.is_file():
-        raise RaceNoteRequestError(f"Missing historical Raw ZIP: {path}")
-    return path
-
-
 def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Path, destination: Path, force_fetch: bool) -> dict:
-    """Reconstruct one target-date PACI-equivalent ZIP from annual Raw.
+    """Build target-date PACI-equivalent input from annual Raw.
 
-    Target entries come from BAC/KYI/CHA/CYB race keys. Historical ZED/ZKB rows are
-    restricted to result keys explicitly referenced by the selected KYI records.
+    BAC/KYI/CHA/CYB are selected by target race key. SED/SKB are selected only by
+    previous-result keys explicitly carried by selected KYI rows.
     """
     year = request.target_date.year
     race_keys = target_race_keys(analysis, request)
-
     selected: dict[str, list[bytes]] = {"BAC": [], "KYI": [], "CHA": [], "CYB": []}
     for kind in selected:
         for line in iter_records(annual_zip(raw_dir, kind, year), kind):
             if line[:8] in race_keys:
                 selected[kind].append(line)
-
     if not selected["BAC"] or not selected["KYI"]:
         raise RaceNoteRequestError("Historical reconstruction found no BAC/KYI records")
 
@@ -261,22 +252,17 @@ def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Pat
             if key and key != b"0" * 16:
                 previous_result_keys.add(key)
 
-    # Previous runs can cross a year boundary. The result key ends with YYYYMMDD,
-    # so fetch only the SED/SKB annual packs actually referenced by target KYI.
     previous_years: set[int] = set()
     for key in previous_result_keys:
         try:
             previous_years.add(int(key[-8:-4].decode("ascii")))
         except (UnicodeDecodeError, ValueError):
             continue
-    if not previous_years and previous_result_keys:
+    if previous_result_keys and not previous_years:
         raise RaceNoteRequestError("Could not resolve previous-result years from KYI keys")
 
     for previous_year in sorted(previous_years):
-        sed_path = raw_dir / "SED" / f"SED_{previous_year}.zip"
-        skb_path = raw_dir / "SKB" / f"SKB_{previous_year}.zip"
-        if not sed_path.is_file() or not skb_path.is_file():
-            fetch_historical_raw(previous_year, raw_dir, force_fetch, ["SED", "SKB"])
+        ensure_historical_raw(previous_year, raw_dir, force_fetch, ["SED", "SKB"])
 
     zed: list[bytes] = []
     zkb: list[bytes] = []
@@ -289,13 +275,12 @@ def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Pat
                 zkb.append(line)
 
     destination.parent.mkdir(parents=True, exist_ok=True)
-    yyMMdd = request.target_date.strftime("%y%m%d")
+    short_date = request.target_date.strftime("%y%m%d")
     with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for kind in ("BAC", "KYI", "CHA", "CYB"):
-            payload = b"\r\n".join(selected[kind]) + b"\r\n"
-            archive.writestr(f"{kind}{yyMMdd}.txt", payload)
-        archive.writestr(f"ZED{yyMMdd}.txt", b"\r\n".join(zed) + (b"\r\n" if zed else b""))
-        archive.writestr(f"ZKB{yyMMdd}.txt", b"\r\n".join(zkb) + (b"\r\n" if zkb else b""))
+            archive.writestr(f"{kind}{short_date}.txt", b"\r\n".join(selected[kind]) + b"\r\n")
+        archive.writestr(f"ZED{short_date}.txt", b"\r\n".join(zed) + (b"\r\n" if zed else b""))
+        archive.writestr(f"ZKB{short_date}.txt", b"\r\n".join(zkb) + (b"\r\n" if zkb else b""))
 
     return {
         "race_key_count": len(race_keys),
@@ -306,16 +291,9 @@ def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Pat
 
 
 def fetch_paci(request: RaceNoteRequest, work_dir: Path, force: bool) -> Path:
-    """Fetch target-date PACI using the existing authenticated downloader."""
+    """Fetch current/future PACI through canonical authenticated downloader."""
     paci_dir = work_dir / "PACI"
-    command = [
-        sys.executable,
-        str(FETCH_PACI),
-        "--date",
-        request.compact_date,
-        "--out-dir",
-        str(paci_dir),
-    ]
+    command = [sys.executable, str(FETCH_PACI), "--date", request.compact_date, "--out-dir", str(paci_dir)]
     if force:
         command.append("--force")
     run(command, cwd=HERE)
@@ -326,16 +304,8 @@ def fetch_paci(request: RaceNoteRequest, work_dir: Path, force: bool) -> Path:
 
 
 def convert_base(paci_path: Path, request: RaceNoteRequest, work_dir: Path) -> Path:
-    """Create base RaceNote bundles using the existing converter."""
-    command = [
-        sys.executable,
-        str(CONVERTER),
-        str(paci_path),
-        "--output",
-        str(work_dir),
-        "--format",
-        "json",
-    ]
+    """Convert base PACI-equivalent input with existing RaceNote converter."""
+    command = [sys.executable, str(CONVERTER), str(paci_path), "--output", str(work_dir), "--format", "json"]
     if request.scope == "race":
         command.extend(["--race", f"{request.venue}{request.race_no}"])
     run(command)
@@ -346,7 +316,7 @@ def convert_base(paci_path: Path, request: RaceNoteRequest, work_dir: Path) -> P
 
 
 def select_bundles(bundle_dir: Path, request: RaceNoteRequest) -> list[Path]:
-    """Select all, venue or one-race bundle after conversion."""
+    """Apply all/venue/race scope after base generation."""
     bundles = sorted(bundle_dir.glob("race_bundle_*.json"))
     if request.scope == "all":
         selected = bundles
@@ -360,21 +330,11 @@ def select_bundles(bundle_dir: Path, request: RaceNoteRequest) -> list[Path]:
 
 
 def enrich_bundle(bundle: Path, analysis: Path, mart: Path, output_dir: Path, stats_window_years: int) -> Path:
-    """Add Analysis/Mart information using the validated enrichment implementation."""
-    temp_dir = output_dir / "_enrichment_tmp"
+    """Add Analysis/Mart enrichment, choosing the 8-run PoC variant."""
+    temp_dir = output_dir / "_enrichment_tmp" / bundle.stem
     command = [
-        sys.executable,
-        str(ENRICHER),
-        "--bundle",
-        str(bundle),
-        "--analysis",
-        str(analysis),
-        "--mart",
-        str(mart),
-        "--output-dir",
-        str(temp_dir),
-        "--stats-window-years",
-        str(stats_window_years),
+        sys.executable, str(ENRICHER), "--bundle", str(bundle), "--analysis", str(analysis),
+        "--mart", str(mart), "--output-dir", str(temp_dir), "--stats-window-years", str(stats_window_years),
     ]
     run(command)
     enriched = temp_dir / f"{bundle.stem}_enriched_8runs_poc.json"
@@ -386,7 +346,7 @@ def enrich_bundle(bundle: Path, analysis: Path, mart: Path, output_dir: Path, st
 
 
 def package_output(output_dir: Path, request: RaceNoteRequest, generated: list[Path], plan: dict, reconstruction: dict | None) -> Path:
-    """Write request manifest and package selected RaceNote files as one ZIP."""
+    """Write manifest and package selected RaceNote bundles."""
     manifest = {
         "request": plan,
         "bundle_count": len(generated),
@@ -395,7 +355,6 @@ def package_output(output_dir: Path, request: RaceNoteRequest, generated: list[P
     }
     manifest_path = output_dir / "request_manifest.json"
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
     parts = [request.compact_date]
     if request.venue:
         parts.append(request.venue)
@@ -410,7 +369,7 @@ def package_output(output_dir: Path, request: RaceNoteRequest, generated: list[P
 
 
 def main() -> int:
-    """Resolve the request, choose a backend, enrich as-of and package output."""
+    """Route, build, enrich and package one RaceNote request."""
     args = parse_args()
     request = normalize_request(args)
     plan = build_plan(request)
@@ -420,7 +379,6 @@ def main() -> int:
 
     validate_sqlite(args.analysis, "Analysis Lite")
     validate_sqlite(args.mart, "Stats Mart")
-
     request_root = args.output / request.compact_date
     work_dir = request_root / "work"
     final_dir = request_root / "bundles"
@@ -429,30 +387,15 @@ def main() -> int:
     reconstruction: dict | None = None
     if request.temporal_mode == "past":
         raw_dir = args.raw_dir if args.raw_dir is not None else request_root / "raw_cache"
-        # First fetch only target-date pre-race source kinds. SED/SKB years are
-        # resolved from KYI previous-result keys inside build_historical_paci.
-        fetch_historical_raw(
-            request.target_date.year,
-            raw_dir,
-            args.force_fetch,
-            ["BAC", "KYI", "CHA", "CYB"],
-        )
+        ensure_historical_raw(request.target_date.year, raw_dir, args.force_fetch, ["BAC", "KYI", "CHA", "CYB"])
         paci_path = request_root / f"PACI_REBUILT_{request.compact_date}.zip"
-        reconstruction = build_historical_paci(
-            raw_dir, request, args.analysis, paci_path, args.force_fetch
-        )
+        reconstruction = build_historical_paci(raw_dir, request, args.analysis, paci_path, args.force_fetch)
     else:
         paci_path = fetch_paci(request, request_root, args.force_fetch)
 
     base_dir = convert_base(paci_path, request, work_dir)
     selected = select_bundles(base_dir, request)
-
-    generated: list[Path] = []
-    for bundle in selected:
-        generated.append(
-            enrich_bundle(bundle, args.analysis, args.mart, final_dir, args.stats_window_years)
-        )
-
+    generated = [enrich_bundle(bundle, args.analysis, args.mart, final_dir, args.stats_window_years) for bundle in selected]
     zip_path = package_output(final_dir, request, generated, plan, reconstruction)
     print(json.dumps({"status": "success", "zip": str(zip_path), "bundle_count": len(generated)}, ensure_ascii=False))
     return 0
