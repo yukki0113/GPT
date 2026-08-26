@@ -18,6 +18,7 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/upgrade_jrdb_analysis_v1_1_to_v1_2.py` — 既存v1.1 Analysisへprev1/batch管理を追加
 - `src/build_jrdb_stats_mart.py` — Analysis Lite → 年次Stats Mart v1.1
 - `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
+- `src/export_jrdb_eval_race_conditions.py` — Raw BAC → Eval用1レース1行レース条件CSV（Analysis非変更）
 - `tools/generate_jrdb_codebooks.py` — codebook生成
 - `tools/audit_jrdb_core_v1_1_1.py` — Core監査ツール
 - `tools/audit_jrdb_core_v1_2_regression.py` — v1.1.2 / v1.2回帰比較
@@ -171,6 +172,7 @@ There is no requirement to rebuild Core first.
 - `docs/README_build_jrdb_analysis.md`
 - `docs/README_update_jrdb_analysis_incremental.md`
 - `docs/README_build_jrdb_stats_mart.md`
+- `docs/README_export_jrdb_eval_race_conditions.md`
 
 ## Security
 
