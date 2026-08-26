@@ -69,6 +69,17 @@ def rate(numerator: int, denominator: int) -> float | None:
     return round(numerator * 100 / denominator, 1)
 
 
+def sample_size_band(starts: int) -> str:
+    """Return a descriptive sample-size band derived only from starts."""
+    if starts == 0:
+        return "none"
+    if starts < 20:
+        return "small"
+    if starts < 50:
+        return "moderate"
+    return "sufficient"
+
+
 def summary(starts: int, wins: int, top3: int) -> dict:
     """Build a compact starts/wins/top3 summary."""
     starts_int = int(starts)
@@ -80,6 +91,7 @@ def summary(starts: int, wins: int, top3: int) -> dict:
         "top3": top3_int,
         "win_rate": rate(wins_int, starts_int),
         "top3_rate": rate(top3_int, starts_int),
+        "sample_size_band": sample_size_band(starts_int),
     }
 
 
