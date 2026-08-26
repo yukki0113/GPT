@@ -264,6 +264,8 @@ jobs:
           FILE_SIZE: ${{ steps.request.outputs.size_bytes }}
         run: |
           cat > /tmp/result_comment.md <<EOF
+          @yukki0113
+
           ✅ Binary Git update reconstructed, verified, and pushed to \`main\`.
 
           Path: \`$TARGET_PATH\`
@@ -282,6 +284,8 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           cat > /tmp/result_comment.md <<EOF
+          @yukki0113
+
           ❌ Binary Git update was not pushed. Metadata validation, chunk reconstruction, SHA-256 verification, file validation, gitignore policy, commit, or push failed.
 
           Workflow run: $RUN_URL

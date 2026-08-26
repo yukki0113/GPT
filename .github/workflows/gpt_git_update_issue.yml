@@ -223,6 +223,8 @@ jobs:
           COMMIT_SHA: ${{ steps.commit.outputs.sha }}
         run: |
           cat > /tmp/result_comment.md <<EOF
+          @yukki0113
+
           ✅ Git update applied and pushed to \`main\`.
 
           Commit: \`$COMMIT_SHA\`
@@ -238,6 +240,8 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           cat > /tmp/result_comment.md <<EOF
+          @yukki0113
+
           ❌ Git update was not pushed. Validation, patch application, tests, commit, or push failed.
 
           Workflow run: $RUN_URL

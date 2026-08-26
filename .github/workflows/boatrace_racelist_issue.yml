@@ -301,3 +301,18 @@ jobs:
       - name: Fail workflow when task or validation failed
         if: always() && (steps.task.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
         run: exit 1
+
+      - name: Notify completion
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            printf '@yukki0113\n\n✅ BOATRACE racelist completed successfully.\n\nWorkflow run: %s\n' "$RUN_URL" > /tmp/final_notification.md
+          else
+            printf '@yukki0113\n\n❌ BOATRACE racelist failed. Check the workflow run.\n\nWorkflow run: %s\n' "$RUN_URL" > /tmp/final_notification.md
+          fi
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/final_notification.md
