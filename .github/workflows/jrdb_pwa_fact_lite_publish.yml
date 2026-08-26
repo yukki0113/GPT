@@ -1,0 +1,220 @@
+name: JRDB PWA Fact Lite Publish
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "jrdb-pwa-pages"
+  cancel-in-progress: false
+
+env:
+  ISSUE_PREFIX: "[JRDB_PWA_FACT_LITE_PUBLISH]"
+  FACT_RELEASE_TAG: jrdb-pwa-fact-lite-current
+  MART_RELEASE_TAG: jrdb-stats-mart-current
+
+jobs:
+  publish:
+    if: startsWith(github.event.issue.title, '[JRDB_PWA_FACT_LITE_PUBLISH]')
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse request
+        shell: bash
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p .fact_publish
+          python - <<'PY'
+          import json
+          import os
+
+          request = json.loads(os.environ["ISSUE_BODY"])
+          required = ["drive_file_id", "source_filename", "data_version"]
+          missing = [key for key in required if key not in request]
+          if missing:
+              raise SystemExit("Missing request fields: " + ", ".join(missing))
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"DRIVE_FILE_ID={request['drive_file_id']}\n")
+              env_file.write(f"SOURCE_FILENAME={request['source_filename']}\n")
+              env_file.write(f"DATA_VERSION={request['data_version']}\n")
+              expected_sha = str(request.get("expected_sha256", "")).strip().lower()
+              env_file.write(f"EXPECTED_SHA256={expected_sha}\n")
+          PY
+
+      - name: Download Analysis Lite from Google Drive
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
+            --output .fact_publish/analysis.sqlite
+
+      - name: Build and validate Fact Lite
+        shell: bash
+        run: |
+          set -euo pipefail
+          FACT_FILE=".fact_publish/jrdb_pwa_fact_lite.sqlite"
+          python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
+            --analysis .fact_publish/analysis.sqlite \
+            --db "$FACT_FILE" \
+            | tee .fact_publish/build_result.txt
+
+          ACTUAL_SIZE="$(stat -c %s "$FACT_FILE")"
+          ACTUAL_SHA256="$(sha256sum "$FACT_FILE" | awk '{print $1}')"
+
+          if [ -n "$EXPECTED_SHA256" ] && [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo "SHA-256 mismatch: expected=$EXPECTED_SHA256 actual=$ACTUAL_SHA256"
+            exit 1
+          fi
+
+          python - <<'PY'
+          import json
+          import os
+          import sqlite3
+          from pathlib import Path
+
+          path = Path('.fact_publish/jrdb_pwa_fact_lite.sqlite')
+          connection = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
+          try:
+              required = {'fact_stats_entry', 'dim_sire', 'dim_bms', 'dim_jockey'}
+              names = {row[0] for row in connection.execute(
+                  "SELECT name FROM sqlite_master WHERE type='table'"
+              )}
+              missing = sorted(required - names)
+              if missing:
+                  raise SystemExit('Missing tables: ' + ', '.join(missing))
+
+              integrity = connection.execute('PRAGMA integrity_check').fetchone()
+              if not integrity or integrity[0] != 'ok':
+                  raise SystemExit(f'integrity_check failed: {integrity}')
+
+              meta = connection.execute(
+                  "SELECT schema_version, period_from, period_to, row_count "
+                  "FROM meta_pwa_fact_build ORDER BY build_id DESC LIMIT 1"
+              ).fetchone()
+              if not meta:
+                  raise SystemExit('meta_pwa_fact_build is empty')
+          finally:
+              connection.close()
+
+          sha = os.popen(f"sha256sum {path} | awk '{{print $1}}'").read().strip()
+          size = path.stat().st_size
+          manifest = {
+              'artifact_type': 'jrdb_pwa_fact_lite',
+              'schema_version': str(meta[0]),
+              'data_version': os.environ['DATA_VERSION'],
+              'period_from': str(meta[1]),
+              'period_to': str(meta[2]),
+              'rows': int(meta[3]),
+              'source_filename': os.environ['SOURCE_FILENAME'],
+              'size': size,
+              'sha256': sha,
+              'download': {
+                  'provider': 'github_pages',
+                  'path': './data/fact-lite/jrdb_pwa_fact_lite.sqlite'
+              }
+          }
+          Path('.fact_publish/manifest.json').write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8'
+          )
+          PY
+
+          echo "FACT_SIZE=$ACTUAL_SIZE" >> "$GITHUB_ENV"
+          echo "FACT_SHA256=$ACTUAL_SHA256" >> "$GITHUB_ENV"
+
+      - name: Publish Fact Lite release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh release view "$FACT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$FACT_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "JRDB PWA Fact Lite current" \
+              --notes "PWA Fact Lite distribution cache. Generated from Analysis Lite; not a Git-tracked canonical data artifact."
+          fi
+          gh release upload "$FACT_RELEASE_TAG" \
+            .fact_publish/jrdb_pwa_fact_lite.sqlite \
+            .fact_publish/manifest.json \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare Pages artifact with both data sources
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .pages
+          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite
+          cp -a horse-racing/jrdb/pwa/. .pages/
+
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js \
+            --output .pages/vendor/sql-wasm.js
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm \
+            --output .pages/vendor/sql-wasm.wasm
+
+          if gh release view "$MART_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release download "$MART_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "jrdb_stats_mart.sqlite" \
+              --pattern "manifest.json" \
+              --dir .pages/data
+          fi
+
+          cp .fact_publish/jrdb_pwa_fact_lite.sqlite .pages/data/fact-lite/jrdb_pwa_fact_lite.sqlite
+          cp .fact_publish/manifest.json .pages/data/fact-lite/manifest.json
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Close successful request
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "Published Fact Lite ${DATA_VERSION}. size=${FACT_SIZE} sha256=${FACT_SHA256}. Stats Mart distribution remains unchanged."
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
+
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB PWA Fact Lite publish failed. Existing Stats Mart distribution was not intentionally replaced. Check workflow logs before retrying."
