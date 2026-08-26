@@ -59,6 +59,23 @@ RaceNoteの `recent_runs` / `older_runs` は、キャリア全体の完全な直
 }
 ```
 
+## 実データ確認
+
+2025-11-30東京12Rジャパンカップの既存RaceNoteへ同metadataを適用して確認した。
+
+- カランダガン
+  - `recent_runs.observed_count = 0`
+  - `older_runs.observed_count = 0`
+  - `history_coverage.reason = foreign_based_entry_no_jra_history`
+  - 2レイヤーが0件でも「未出走」とは解釈しない。
+- シンエンペラー
+  - `recent_runs.observed_count = 1`
+  - `older_runs.observed_count = 3`
+  - `historical_profile.career.starts = 7`
+  - 表示4走と観測JRAキャリア7走が異なるため、`recent_runs + older_runs` がキャリア全体・完全な直近N走ではないことを明示する効果が確認できた。
+
+2026-05-09京都11R京都新聞杯では、`recent_runs / older_runs` の組み合わせが馬ごとに異なり、若駒で存在する履歴だけを表示する現在方針と整合した。
+
 ## 正式採用候補
 
 通常RaceNoteでは以下を採用候補とする。
@@ -70,3 +87,5 @@ older_runs   Analysis簡略 最大3
 ```
 
 履歴件数を10走へ増やすより、各レイヤーの意味・coverage・距離統計・sample sizeを明確にすることを優先する。
+
+実装差分は `[gpt-git-update]` Issue #100 でmain反映を待機している。
