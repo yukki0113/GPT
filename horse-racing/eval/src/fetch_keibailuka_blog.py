@@ -2,8 +2,13 @@
 """Fetch and parse keibailuka Blogger race-pick articles.
 
 Recurring use case:
-    date + venue order -> discover article URLs -> parse 1R..12R ->
+    date + venue order -> discover posts -> parse 1R..12R ->
     omit no-pick/paid sections -> preserve masked picks as 🤡 -> JSON/TSV.
+
+The module deliberately prefers Blogger's public feed content over fetching each
+article page. The blog sometimes rate-limits individual article HTML with HTTP
+429 while the public feed remains available. Article-page access is therefore a
+fallback, not the primary path.
 """
 
 from __future__ import annotations
@@ -14,10 +19,10 @@ import re
 import sys
 import time
 from dataclasses import asdict, dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote, urljoin, urlsplit, urlunsplit
+from urllib.parse import quote, urlencode, urljoin, urlsplit, urlunsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -26,8 +31,16 @@ from bs4 import BeautifulSoup
 BASE_URL = "https://keibailuka.blogspot.com/"
 ARTICLE_PHRASE = "全レース中の強き不利馬達"
 VALID_VENUES = {
-    "札幌", "函館", "福島", "新潟", "東京",
-    "中山", "中京", "京都", "阪神", "小倉",
+    "札幌",
+    "函館",
+    "福島",
+    "新潟",
+    "東京",
+    "中山",
+    "中京",
+    "京都",
+    "阪神",
+    "小倉",
 }
 RACE_HEADER_RE = re.compile(
     r"^(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)"
@@ -48,6 +61,17 @@ FOOTER_MARKERS = (
 
 
 @dataclass
+class ArticleSource:
+    """Resolved source for one requested venue."""
+
+    venue: str
+    url: str
+    title: str
+    embedded_html: str | None
+    source_method: str
+
+
+@dataclass
 class RacePick:
     """Parsed state for one race section."""
 
@@ -65,6 +89,7 @@ class VenueResult:
 
     venue: str
     source_url: str
+    source_method: str
     article_title: str
     races: list[RacePick]
 
@@ -209,50 +234,122 @@ def canonicalize_article_url(url: str) -> str:
     return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, "", ""))
 
 
+def feed_urls(target_date: date) -> list[str]:
+    """Build current-feed and date-focused Blogger JSON feed URLs."""
+
+    current_query = urlencode(
+        {
+            "alt": "json",
+            "max-results": "100",
+            "orderby": "published",
+        }
+    )
+
+    # Blogger timestamps are timezone-aware and blog settings can vary. Use a
+    # broad UTC window around the requested local calendar day.
+    start = datetime.combine(
+        target_date - timedelta(days=1),
+        datetime.min.time(),
+        tzinfo=timezone.utc,
+    )
+    end = datetime.combine(
+        target_date + timedelta(days=2),
+        datetime.min.time(),
+        tzinfo=timezone.utc,
+    )
+    focused_query = urlencode(
+        {
+            "alt": "json",
+            "max-results": "100",
+            "orderby": "published",
+            "published-min": start.isoformat().replace("+00:00", "Z"),
+            "published-max": end.isoformat().replace("+00:00", "Z"),
+        }
+    )
+
+    return [
+        urljoin(BASE_URL, "feeds/posts/default?" + focused_query),
+        urljoin(BASE_URL, "feeds/posts/default?" + current_query),
+    ]
+
+
+def extract_feed_entry(entry: dict[str, Any]) -> tuple[str, str, str | None]:
+    """Extract title, alternate URL and embedded HTML from one feed entry."""
+
+    title = ""
+    title_node = entry.get("title", {})
+    if isinstance(title_node, dict):
+        title = str(title_node.get("$t", ""))
+
+    alternate_url = ""
+    links = entry.get("link", [])
+    if isinstance(links, list):
+        for link in links:
+            if isinstance(link, dict) and link.get("rel") == "alternate":
+                alternate_url = str(link.get("href", ""))
+                break
+
+    embedded_html: str | None = None
+    for key in ("content", "summary"):
+        node = entry.get(key, {})
+        if not isinstance(node, dict):
+            continue
+        raw = str(node.get("$t", "") or "")
+        if raw.strip():
+            embedded_html = raw
+            break
+
+    return title, alternate_url, embedded_html
+
+
 def discover_from_feed(
     session: requests.Session,
     target_date: date,
     venues: list[str],
     timeout: float,
     interval: float,
-) -> dict[str, str]:
-    """Try Blogger's public JSON feed first."""
+) -> dict[str, ArticleSource]:
+    """Discover posts and retain full feed HTML when Blogger provides it."""
 
-    discovered: dict[str, str] = {}
-    url = urljoin(BASE_URL, "feeds/posts/default?alt=json&max-results=100")
+    discovered: dict[str, ArticleSource] = {}
 
-    try:
-        payload = fetch_response(session, url, timeout, interval).json()
-    except (FetchError, ValueError, requests.RequestException):
-        return discovered
+    for feed_url in feed_urls(target_date):
+        if len(discovered) == len(venues):
+            break
 
-    entries = payload.get("feed", {}).get("entry", [])
-    if not isinstance(entries, list):
-        return discovered
-
-    for entry in entries:
-        if not isinstance(entry, dict):
+        try:
+            payload = fetch_response(session, feed_url, timeout, interval).json()
+        except (FetchError, ValueError, requests.RequestException):
             continue
 
-        title_node = entry.get("title", {})
-        title = ""
-        if isinstance(title_node, dict):
-            title = str(title_node.get("$t", ""))
-
-        alternate_url = ""
-        links = entry.get("link", [])
-        if isinstance(links, list):
-            for link in links:
-                if isinstance(link, dict) and link.get("rel") == "alternate":
-                    alternate_url = str(link.get("href", ""))
-                    break
-
-        if not alternate_url:
+        entries = payload.get("feed", {}).get("entry", [])
+        if not isinstance(entries, list):
             continue
 
-        for venue in venues:
-            if venue not in discovered and title_matches(title, target_date, venue):
-                discovered[venue] = canonicalize_article_url(alternate_url)
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+
+            title, alternate_url, embedded_html = extract_feed_entry(entry)
+            if not alternate_url:
+                continue
+
+            for venue in venues:
+                if venue in discovered:
+                    continue
+                if not title_matches(title, target_date, venue):
+                    continue
+
+                method = "blogger_feed_content"
+                if not embedded_html:
+                    method = "blogger_feed_url"
+                discovered[venue] = ArticleSource(
+                    venue=venue,
+                    url=canonicalize_article_url(alternate_url),
+                    title=normalize_text(title),
+                    embedded_html=embedded_html,
+                    source_method=method,
+                )
 
     return discovered
 
@@ -276,17 +373,21 @@ def discovery_pages(target_date: date, venues: list[str]) -> list[str]:
     return list(dict.fromkeys(pages))
 
 
-def discover_article_urls(
+def discover_article_sources(
     session: requests.Session,
     target_date: date,
     venues: list[str],
     timeout: float,
     interval: float,
-) -> dict[str, str]:
-    """Discover one article URL per requested venue without search-engine indexing."""
+) -> dict[str, ArticleSource]:
+    """Discover one source per venue without relying on search-engine indexing."""
 
     discovered = discover_from_feed(
-        session, target_date, venues, timeout, interval
+        session,
+        target_date,
+        venues,
+        timeout,
+        interval,
     )
 
     for page_url in discovery_pages(target_date, venues):
@@ -307,15 +408,21 @@ def discover_article_urls(
             for venue in venues:
                 if venue in discovered:
                     continue
-                if title_matches(title, target_date, venue):
-                    discovered[venue] = canonicalize_article_url(
-                        str(anchor.get("href", ""))
-                    )
+                if not title_matches(title, target_date, venue):
+                    continue
+
+                discovered[venue] = ArticleSource(
+                    venue=venue,
+                    url=canonicalize_article_url(str(anchor.get("href", ""))),
+                    title=title,
+                    embedded_html=None,
+                    source_method="blog_page_link",
+                )
 
     missing = [venue for venue in venues if venue not in discovered]
     if missing:
         raise FetchError(
-            "Article URL discovery failed for venue(s): " + ", ".join(missing)
+            "Article discovery failed for venue(s): " + ", ".join(missing)
         )
 
     return discovered
@@ -342,7 +449,7 @@ def fetch_article_html(
 
 
 def select_article_body(soup: BeautifulSoup) -> Any:
-    """Select a Blogger post-body container."""
+    """Select a Blogger post-body container from a full article page."""
 
     for selector in (
         "div.post-body.entry-content",
@@ -358,7 +465,7 @@ def select_article_body(soup: BeautifulSoup) -> Any:
 
 
 def extract_article_title(soup: BeautifulSoup) -> str:
-    """Extract the visible article title."""
+    """Extract the visible article title from a full page."""
 
     for selector in (
         "h3.post-title",
@@ -380,7 +487,7 @@ def extract_article_title(soup: BeautifulSoup) -> str:
 
 
 def body_lines(body: Any) -> list[str]:
-    """Convert post-body visible strings into normalized lines."""
+    """Convert visible strings into normalized lines."""
 
     lines: list[str] = []
     for value in body.stripped_strings:
@@ -432,13 +539,27 @@ def classify_race(
     combined = " ".join([horse_tail, *section_lines])
 
     if "該当無し" in combined:
-        return RacePick(venue, race_no, None, "", "excluded", "no_selection")
+        return RacePick(
+            venue,
+            race_no,
+            None,
+            "",
+            "excluded",
+            "no_selection",
+        )
 
     paid_url = any(
         "note.com/keibailuka/n/" in line for line in section_lines
     )
     if "勝負レース" in combined or paid_url:
-        return RacePick(venue, race_no, None, "", "excluded", "paid_lead")
+        return RacePick(
+            venue,
+            race_no,
+            None,
+            "",
+            "excluded",
+            "paid_lead",
+        )
 
     if "🤡" in combined:
         return RacePick(
@@ -471,20 +592,12 @@ def classify_race(
     )
 
 
-def parse_article(
-    html: str,
+def parse_race_lines(
+    lines: list[str],
     venue: str,
-    source_url: str,
-    target_date: date,
-) -> VenueResult:
-    """Parse exactly 12 race sections from one venue article."""
+) -> list[RacePick]:
+    """Parse and classify the exact 1R..12R structure for one venue."""
 
-    soup = BeautifulSoup(html, "html.parser")
-    title = extract_article_title(soup)
-    if title and not title_matches(title, target_date, venue):
-        raise ParseError(f"Article title does not match request: {title}")
-
-    lines = body_lines(select_article_body(soup))
     headers: list[tuple[int, int, str]] = []
 
     for index, line in enumerate(lines):
@@ -492,7 +605,11 @@ def parse_article(
         if match is None or match.group(1) != venue:
             continue
         headers.append(
-            (index, int(match.group(2)), normalize_text(match.group(3) or ""))
+            (
+                index,
+                int(match.group(2)),
+                normalize_text(match.group(3) or ""),
+            )
         )
 
     race_numbers = [item[1] for item in headers]
@@ -517,9 +634,33 @@ def parse_article(
             )
         )
 
+    return races
+
+
+def parse_source(
+    source: ArticleSource,
+    html: str,
+    target_date: date,
+) -> VenueResult:
+    """Parse either embedded feed HTML or a fetched full article page."""
+
+    if source.embedded_html is not None:
+        fragment_soup = BeautifulSoup(source.embedded_html, "html.parser")
+        title = source.title
+        lines = body_lines(fragment_soup)
+    else:
+        page_soup = BeautifulSoup(html, "html.parser")
+        title = extract_article_title(page_soup)
+        lines = body_lines(select_article_body(page_soup))
+
+    if not title_matches(title, target_date, source.venue):
+        raise ParseError(f"Article title does not match request: {title}")
+
+    races = parse_race_lines(lines, source.venue)
     return VenueResult(
-        venue=venue,
-        source_url=canonicalize_article_url(source_url),
+        venue=source.venue,
+        source_url=canonicalize_article_url(source.url),
+        source_method=source.source_method,
         article_title=title,
         races=races,
     )
@@ -545,8 +686,12 @@ def build_validation(
         parse_errors = [
             race.race_no for race in result.races if race.status == "parse_error"
         ]
-        included = sum(1 for race in result.races if race.status == "included")
-        excluded = sum(1 for race in result.races if race.status == "excluded")
+        included = sum(
+            1 for race in result.races if race.status == "included"
+        )
+        excluded = sum(
+            1 for race in result.races if race.status == "excluded"
+        )
 
         if parse_errors:
             errors.append(
@@ -560,6 +705,7 @@ def build_validation(
             {
                 "venue": venue,
                 "source_url": result.source_url,
+                "source_method": result.source_method,
                 "included_count": included,
                 "excluded_count": excluded,
                 "parse_error_races": parse_errors,
@@ -588,30 +734,36 @@ def build_result(
 
     entries: list[dict[str, Any]] = []
     source_urls: dict[str, str] = {}
+    source_methods: dict[str, str] = {}
 
     for venue in venues:
         result = next(item for item in results if item.venue == venue)
         source_urls[venue] = result.source_url
+        source_methods[venue] = result.source_method
+
         for race in result.races:
-            if race.status == "included":
-                entries.append(
-                    {
-                        "場所": venue,
-                        "R": f"{race.race_no}R",
-                        "馬名": race.horse,
-                        "コメント": race.comment,
-                    }
-                )
+            if race.status != "included":
+                continue
+            entries.append(
+                {
+                    "場所": venue,
+                    "R": f"{race.race_no}R",
+                    "馬名": race.horse,
+                    "コメント": race.comment,
+                }
+            )
 
     return {
         "date": target_date.isoformat(),
         "venues": venues,
         "source_urls": source_urls,
+        "source_methods": source_methods,
         "entries": entries,
         "articles": [
             {
                 "venue": result.venue,
                 "source_url": result.source_url,
+                "source_method": result.source_method,
                 "article_title": result.article_title,
                 "races": [asdict(race) for race in result.races],
             }
@@ -675,7 +827,10 @@ def write_failure(
         json.dumps(report, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    (output_dir / "error.txt").write_text(str(error) + "\n", encoding="utf-8")
+    (output_dir / "error.txt").write_text(
+        str(error) + "\n",
+        encoding="utf-8",
+    )
 
 
 def main() -> int:
@@ -695,7 +850,7 @@ def main() -> int:
             args.timeout,
         )
         session = build_session()
-        urls = discover_article_urls(
+        sources = discover_article_sources(
             session,
             target_date,
             venues,
@@ -705,15 +860,16 @@ def main() -> int:
 
         results: list[VenueResult] = []
         for venue in venues:
-            html = fetch_article_html(
-                session,
-                urls[venue],
-                args.timeout,
-                args.interval,
-            )
-            results.append(
-                parse_article(html, venue, urls[venue], target_date)
-            )
+            source = sources[venue]
+            html = ""
+            if source.embedded_html is None:
+                html = fetch_article_html(
+                    session,
+                    source.url,
+                    args.timeout,
+                    args.interval,
+                )
+            results.append(parse_source(source, html, target_date))
 
         validation = build_validation(target_date, venues, results)
         payload = build_result(target_date, venues, results)
