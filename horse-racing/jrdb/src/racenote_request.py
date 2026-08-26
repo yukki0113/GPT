@@ -116,7 +116,11 @@ def normalize_request(args: argparse.Namespace) -> RaceNoteRequest:
 
 def build_plan(request: RaceNoteRequest) -> dict:
     """Return a machine-readable execution plan before I/O."""
-    base_backend = "historical_raw_cache_or_fetch" if request.temporal_mode == "past" else "paci"
+    use_annual_raw = request.temporal_mode == "past" and request.target_date.year <= 2025
+    if use_annual_raw:
+        base_backend = "historical_raw_cache_or_fetch"
+    else:
+        base_backend = "paci"
     return {
         "request_version": "0.1.1",
         "target_date": request.target_date.isoformat(),
@@ -385,7 +389,8 @@ def main() -> int:
     final_dir.mkdir(parents=True, exist_ok=True)
 
     reconstruction: dict | None = None
-    if request.temporal_mode == "past":
+    use_annual_raw = request.temporal_mode == "past" and request.target_date.year <= 2025
+    if use_annual_raw:
         raw_dir = args.raw_dir if args.raw_dir is not None else request_root / "raw_cache"
         ensure_historical_raw(request.target_date.year, raw_dir, args.force_fetch, ["BAC", "KYI", "CHA", "CYB"])
         paci_path = request_root / f"PACI_REBUILT_{request.compact_date}.zip"
