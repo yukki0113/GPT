@@ -114,8 +114,8 @@ jobs:
           from pathlib import Path
 
           request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
-          subprocess.run(['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite', '--fuzzy'], check=True)
-          subprocess.run(['gdown', request['mart_url'], '-O', '/tmp/jrdb_stats_mart.sqlite', '--fuzzy'], check=True)
+          subprocess.run(['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'], check=True)
+          subprocess.run(['gdown', request['mart_url'], '-O', '/tmp/jrdb_stats_mart.sqlite'], check=True)
           PY
 
       - name: Run RaceNote request
