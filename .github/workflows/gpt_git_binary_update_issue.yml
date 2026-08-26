@@ -1,0 +1,291 @@
+name: GPT Git Binary Update via Issue
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: gpt-git-update-main
+  cancel-in-progress: false
+
+jobs:
+  apply-binary-update:
+    if: >-
+      github.event.issue.pull_request == null &&
+      github.event.issue.user.login == 'yukki0113' &&
+      github.event.comment.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[gpt-git-binary-update]') &&
+      github.event.comment.body == '[gpt-git-binary-commit]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Reconstruct and validate binary payload
+        id: request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_API_URL: ${{ github.api_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import os
+          import pathlib
+          import re
+          import urllib.request
+          import zipfile
+
+          body = os.environ.get("ISSUE_BODY", "")
+
+          def require_line(name):
+              match = re.search(rf"(?m)^{re.escape(name)}:\s*(.+?)\s*$", body)
+              if match is None:
+                  raise SystemExit(f"Missing '{name}:' line.")
+              return match.group(1).strip()
+
+          target_path_raw = require_line("target_path")
+          commit_message = require_line("commit_message")
+          expected_sha256 = require_line("sha256").lower()
+          expected_size_text = require_line("size_bytes")
+          chunks_text = require_line("chunks")
+          encoding = require_line("encoding").lower()
+
+          if encoding != "base64":
+              raise SystemExit("encoding must be base64.")
+
+          if not re.fullmatch(r"[0-9a-f]{64}", expected_sha256):
+              raise SystemExit("sha256 must be 64 lowercase/uppercase hex characters.")
+
+          try:
+              expected_size = int(expected_size_text)
+              expected_chunks = int(chunks_text)
+          except ValueError as exc:
+              raise SystemExit("size_bytes and chunks must be integers.") from exc
+
+          if expected_size < 0:
+              raise SystemExit("size_bytes must be non-negative.")
+          if expected_chunks < 1:
+              raise SystemExit("chunks must be at least 1.")
+          if len(commit_message) == 0 or len(commit_message) > 200:
+              raise SystemExit("commit_message must be 1..200 characters.")
+
+          path = pathlib.PurePosixPath(target_path_raw)
+          parts = path.parts
+          lowered_parts = [part.lower() for part in parts]
+          name_lower = path.name.lower()
+
+          if path.is_absolute() or ".." in parts or len(parts) == 0:
+              raise SystemExit(f"Unsafe target_path: {target_path_raw}")
+          if any(part == ".git" for part in lowered_parts):
+              raise SystemExit(".git is protected.")
+          if len(lowered_parts) >= 2 and lowered_parts[0] == ".github" and lowered_parts[1] == "workflows":
+              raise SystemExit(".github/workflows is protected from this route.")
+          if any(part == "secrets" for part in lowered_parts):
+              raise SystemExit("secrets directory is protected.")
+          if name_lower == ".env" or name_lower.startswith(".env."):
+              raise SystemExit("Environment credential files are protected.")
+          if name_lower == "jrdb_secret.py":
+              raise SystemExit("Known secret file is protected.")
+          if any(word in name_lower for word in ("secret", "credential", "password")):
+              raise SystemExit("Potential secret/credential file rejected.")
+          if name_lower.endswith((".pem", ".key", ".p12", ".pfx")):
+              raise SystemExit("Private-key/certificate bundle rejected.")
+
+          owner, repo = os.environ["GITHUB_REPOSITORY"].split("/", 1)
+          issue_number = os.environ["ISSUE_NUMBER"]
+          api_url = os.environ["GITHUB_API_URL"].rstrip("/")
+          token = os.environ["GH_TOKEN"]
+
+          comments = []
+          page = 1
+          while True:
+              url = f"{api_url}/repos/{owner}/{repo}/issues/{issue_number}/comments?per_page=100&page={page}"
+              request = urllib.request.Request(
+                  url,
+                  headers={
+                      "Authorization": f"Bearer {token}",
+                      "Accept": "application/vnd.github+json",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+              with urllib.request.urlopen(request) as response:
+                  batch = json.load(response)
+              comments.extend(batch)
+              if len(batch) < 100:
+                  break
+              page += 1
+
+          chunk_pattern = re.compile(
+              r"^\[gpt-git-binary-chunk\s+(\d+)/(\d+)\]\s*\n```(?:text|base64)?\s*\n(.*?)\n```\s*$",
+              flags=re.DOTALL,
+          )
+
+          chunk_map = {}
+          for comment in comments:
+              if comment.get("user", {}).get("login") != "yukki0113":
+                  continue
+              text = comment.get("body") or ""
+              match = chunk_pattern.match(text.strip())
+              if match is None:
+                  continue
+
+              index = int(match.group(1))
+              total = int(match.group(2))
+              if total != expected_chunks:
+                  raise SystemExit(
+                      f"Chunk {index} declares total {total}, expected {expected_chunks}."
+                  )
+              if index < 1 or index > expected_chunks:
+                  raise SystemExit(f"Chunk index out of range: {index}")
+              if index in chunk_map:
+                  raise SystemExit(f"Duplicate chunk index: {index}")
+
+              payload_text = "".join(match.group(3).split())
+              chunk_map[index] = payload_text
+
+          missing = [index for index in range(1, expected_chunks + 1) if index not in chunk_map]
+          if missing:
+              raise SystemExit(f"Missing binary chunks: {missing}")
+
+          encoded = "".join(chunk_map[index] for index in range(1, expected_chunks + 1))
+          try:
+              data = base64.b64decode(encoded, validate=True)
+          except Exception as exc:
+              raise SystemExit("Base64 payload is invalid.") from exc
+
+          actual_size = len(data)
+          actual_sha256 = hashlib.sha256(data).hexdigest()
+          if actual_size != expected_size:
+              raise SystemExit(
+                  f"size_bytes mismatch: expected {expected_size}, actual {actual_size}."
+              )
+          if actual_sha256 != expected_sha256:
+              raise SystemExit(
+                  f"sha256 mismatch: expected {expected_sha256}, actual {actual_sha256}."
+              )
+
+          target = pathlib.Path(target_path_raw)
+          target.parent.mkdir(parents=True, exist_ok=True)
+          target.write_bytes(data)
+
+          if target.suffix.lower() == ".xlsx":
+              try:
+                  with zipfile.ZipFile(target, "r") as archive:
+                      bad_member = archive.testzip()
+                      if bad_member is not None:
+                          raise SystemExit(f"XLSX ZIP CRC check failed: {bad_member}")
+                      names = set(archive.namelist())
+                      required = {"[Content_Types].xml", "xl/workbook.xml"}
+                      missing_xlsx = sorted(required - names)
+                      if missing_xlsx:
+                          raise SystemExit(
+                              f"XLSX structure is incomplete; missing: {missing_xlsx}"
+                          )
+              except zipfile.BadZipFile as exc:
+                  raise SystemExit("XLSX is not a valid ZIP container.") from exc
+
+          output_path = os.environ["GITHUB_OUTPUT"]
+          with open(output_path, "a", encoding="utf-8") as output:
+              output.write(f"target_path={target_path_raw}\n")
+              output.write(f"commit_message={commit_message}\n")
+              output.write(f"sha256={actual_sha256}\n")
+              output.write(f"size_bytes={actual_size}\n")
+
+          print(f"Reconstructed: {target_path_raw}")
+          print(f"Size: {actual_size} bytes")
+          print(f"SHA-256: {actual_sha256}")
+          PY
+
+      - name: Respect gitignore for new files
+        env:
+          TARGET_PATH: ${{ steps.request.outputs.target_path }}
+        run: |
+          if git ls-files --error-unmatch -- "$TARGET_PATH" >/dev/null 2>&1; then
+            echo "Existing tracked file; gitignore does not block updates."
+            exit 0
+          fi
+
+          if git check-ignore -q -- "$TARGET_PATH"; then
+            echo "New file is ignored by .gitignore: $TARGET_PATH"
+            exit 1
+          fi
+
+      - name: Show binary update status
+        env:
+          TARGET_PATH: ${{ steps.request.outputs.target_path }}
+        run: |
+          git status --short -- "$TARGET_PATH"
+          git diff --stat -- "$TARGET_PATH" || true
+
+      - name: Commit and push
+        id: commit
+        env:
+          COMMIT_MESSAGE: ${{ steps.request.outputs.commit_message }}
+          TARGET_PATH: ${{ steps.request.outputs.target_path }}
+        run: |
+          if [ -z "$(git status --porcelain -- "$TARGET_PATH")" ]; then
+            echo "Binary payload produced no repository change."
+            exit 1
+          fi
+
+          git config user.name "gpt-git-update[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -- "$TARGET_PATH"
+          git commit -m "$COMMIT_MESSAGE" -- "$TARGET_PATH"
+
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
+
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment success
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          COMMIT_SHA: ${{ steps.commit.outputs.sha }}
+          TARGET_PATH: ${{ steps.request.outputs.target_path }}
+          FILE_SHA256: ${{ steps.request.outputs.sha256 }}
+          FILE_SIZE: ${{ steps.request.outputs.size_bytes }}
+        run: |
+          cat > /tmp/result_comment.md <<EOF
+          ✅ Binary Git update reconstructed, verified, and pushed to \`main\`.
+
+          Path: \`$TARGET_PATH\`
+          Size: \`$FILE_SIZE bytes\`
+          SHA-256: \`$FILE_SHA256\`
+          Commit: \`$COMMIT_SHA\`
+          EOF
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          cat > /tmp/result_comment.md <<EOF
+          ❌ Binary Git update was not pushed. Metadata validation, chunk reconstruction, SHA-256 verification, file validation, gitignore policy, commit, or push failed.
+
+          Workflow run: $RUN_URL
+
+          The issue is left open for inspection/retry.
+          EOF
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
