@@ -31,21 +31,26 @@ python horse-racing/eval/src/fetch_keibailuka_blog.py \
 - `--interval`: HTTPアクセス間隔。既定 `0.8` 秒。
 - `--timeout`: 1リクエストのタイムアウト。既定 `20` 秒。
 
-## URL探索
+## 取得経路
 
 検索エンジンのインデックスには依存しない。
 
-次の経路を順次利用する。
+最優先は **Blogger公開JSON feedに含まれる記事本文HTML** とする。個別記事URLがHTTP 429になる場合でも公開feedが取得できることがあるため、feed本文だけで1R〜12Rを解析できる場合は個別記事ページへアクセスしない。
 
-1. Blogger公開JSON feed
-2. ブログトップ
-3. 対象月アーカイブ
-4. 前月アーカイブ（日付が月初の場合を考慮）
-5. Bloggerブログ内検索
+探索・取得は概ね次の順序で行う。
+
+1. 対象日前後を指定したBlogger公開JSON feed
+2. 直近100件のBlogger公開JSON feed
+3. ブログトップ
+4. 対象月アーカイブ
+5. 前月アーカイブ
+6. Bloggerブログ内検索
+7. feed本文が無い場合のみ個別記事通常表示
+8. 個別記事 `?m=1` モバイル表示
 
 記事タイトル中の `YYYY/M/D`、開催場、`全レース中の強き不利馬達` を照合して対象記事を確定する。
 
-個別記事取得は通常URLを先に試し、失敗時は `?m=1` のモバイル表示を予備経路とする。429/5xxは間隔を置いて再試行する。
+個別記事取得時の429/5xxは間隔を置いて再試行する。ただし429を回避するために検索エンジンやユーザー提示URLへ依存するのではなく、公開feed本文を第一選択とする。
 
 ## 解析ルール
 
@@ -78,6 +83,7 @@ python horse-racing/eval/src/fetch_keibailuka_blog.py \
 
 - `keibailuka_20260823.json`
   - source URL
+  - source method
   - 全12Rの解析状態
   - 最終採用entries
 - `keibailuka_20260823.tsv`
@@ -118,6 +124,36 @@ Issue本文:
 - そのまま使えるPlain text TSV
 
 したがってChatは通常artifactを展開せず、Issueコメントだけで最終回答を組み立てられる。必要な場合だけartifactを回収する。
+
+## 実動確認
+
+2026-08-26にGitHub Actions上で実動確認を行った。
+
+### 2026-08-23
+
+- Issue: `#48`
+- run_id: `32932688716`
+- 開催順: 新潟 → 中京 → 札幌
+- fetch: `0`
+- validation: `0 / success`
+- 3場とも `source_method = blogger_feed_content`
+- 新潟 6件 / 中京 5件 / 札幌 8件を採用
+- `🤡`、`該当無し`、有料導入の分類も既存Chat解析結果と一致
+
+### 2026-08-22
+
+この日はChat上で個別記事の取得・検索反映に苦戦し、ユーザーから一時的にURL提示を受けた実績があるため、障害再現性確認用として採用した。
+
+- Issue: `#49`
+- run_id: `32932756300`
+- 開催順: 新潟 → 中京 → 札幌
+- fetch: `0`
+- validation: `0 / success`
+- 3場とも `source_method = blogger_feed_content`
+- 新潟 6件 / 中京 6件 / 札幌 9件を採用
+- ユーザーから個別記事URLを入力せずに3場すべて取得できた
+
+なお初版の個別記事HTML優先方式ではIssue `#47` で429が再現した。公開feed本文を優先する方式へ修正したことで、Issue `#48`・`#49` の連続成功を確認した。
 
 ## 運用上の位置づけ
 
