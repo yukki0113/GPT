@@ -44,4 +44,5 @@
 ## 共通
 
 32. 画像、日次CSV、ブログ解析結果、検証レポート、ログ等の運用成果物はcommitしない。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGit管理対象とし、更新は最新mainを基準に `[gpt-git-binary-update]` Issue経路で反映する。
-33. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
+33. GitHub `main` 上の継続台帳やその他バイナリ正本をChat / Workで実ファイルとして解析する場合は、GitHub Connectorで読めないことを理由にユーザーへ再添付を依頼せず、共通の `[gpt-git-binary-read]` Issue経路を使用する。詳細はルート `.gpt/GIT_BINARY_READ_ISSUE.md` を参照し、artifact回収後は `manifest.json` のSHA-256と実ファイルを照合する。
+34. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
