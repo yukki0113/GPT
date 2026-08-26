@@ -55,16 +55,14 @@ jobs:
           except json.JSONDecodeError as exc:
               raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
 
-          date = str(request.get('date', '')).replace('-', '').replace('/', '').strip()
-          if not re.fullmatch(r'\d{8}', date):
+          target_date = str(request.get('date', '')).replace('-', '').replace('/', '').strip()
+          if not re.fullmatch(r'\d{8}', target_date):
               raise SystemExit('date must be YYYYMMDD')
-          datetime.strptime(date, '%Y%m%d')
+          datetime.strptime(target_date, '%Y%m%d')
 
           venue = request.get('venue')
           if venue is not None:
-              venue = str(venue).strip()
-              if not venue:
-                  venue = None
+              venue = str(venue).strip() or None
 
           race = request.get('race')
           if race is not None:
@@ -85,28 +83,45 @@ jobs:
           if not 1 <= stats_window_years <= 10:
               raise SystemExit('stats_window_years must be 1..10')
 
+          raw_urls = request.get('raw_urls', {}) or {}
+          if not isinstance(raw_urls, dict):
+              raise SystemExit('raw_urls must be an object')
+          normalized_raw_urls = {}
+          for key, url in raw_urls.items():
+              key = str(key).strip().upper()
+              if not re.fullmatch(r'(BAC|KYI|CHA|CYB|SED|SKB)_\d{4}', key):
+                  raise SystemExit(f'invalid raw_urls key: {key}')
+              url = str(url).strip()
+              if not url.startswith('https://drive.google.com/'):
+                  raise SystemExit(f'raw_urls[{key}] must be a Google Drive URL')
+              normalized_raw_urls[key] = url
+
           output_dir = f'horse-racing/jrdb/output_issue/{request_id}'
+          raw_dir = f'{output_dir}/raw_cache'
           resolved = {
               'request_id': request_id,
               'issue_number': int(os.environ['ISSUE_NUMBER']),
-              'date': date,
+              'date': target_date,
               'venue': venue,
               'race': race,
               'analysis_url': analysis_url,
               'mart_url': mart_url,
+              'raw_urls': normalized_raw_urls,
               'stats_window_years': stats_window_years,
               'output_dir': output_dir,
+              'raw_dir': raw_dir,
           }
           Path('/tmp/racenote_request.json').write_text(
               json.dumps(resolved, ensure_ascii=False, indent=2), encoding='utf-8'
           )
           with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
               file.write(f'REQUEST_ID={request_id}\n')
-              file.write(f'TARGET_DATE={date}\n')
+              file.write(f'TARGET_DATE={target_date}\n')
               file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'RAW_DIR={raw_dir}\n')
           PY
 
-      - name: Download Analysis and Mart
+      - name: Download Analysis, Mart and supplied Raw cache
         run: |
           python - <<'PY'
           import json
@@ -116,6 +131,13 @@ jobs:
           request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
           subprocess.run(['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'], check=True)
           subprocess.run(['gdown', request['mart_url'], '-O', '/tmp/jrdb_stats_mart.sqlite'], check=True)
+
+          raw_dir = Path(request['raw_dir'])
+          for key, url in request['raw_urls'].items():
+              kind, year = key.split('_', 1)
+              destination = raw_dir / kind / f'{kind}_{year}.zip'
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              subprocess.run(['gdown', url, '-O', str(destination)], check=True)
           PY
 
       - name: Run RaceNote request
@@ -137,6 +159,7 @@ jobs:
               '--date', request['date'],
               '--analysis', '/tmp/jrdb_analysis.sqlite',
               '--mart', '/tmp/jrdb_stats_mart.sqlite',
+              '--raw-dir', request['raw_dir'],
               '--output', request['output_dir'],
               '--stats-window-years', str(request['stats_window_years']),
           ]
@@ -170,8 +193,10 @@ jobs:
               raise SystemExit('RaceNote ZIP not found')
           for path in zips:
               shutil.copy2(path, root / 'artifact' / path.name)
+          safe_request = dict(request)
+          safe_request.pop('raw_urls', None)
           Path(root / 'artifact' / 'resolved_request.json').write_text(
-              json.dumps(request, ensure_ascii=False, indent=2), encoding='utf-8'
+              json.dumps(safe_request, ensure_ascii=False, indent=2), encoding='utf-8'
           )
           PY
           code=$?
