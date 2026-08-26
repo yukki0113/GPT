@@ -1,0 +1,102 @@
+name: JRDB PWA Fact Lite Build
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  ISSUE_PREFIX: "[JRDB_PWA_FACT_LITE_BUILD]"
+
+jobs:
+  build:
+    if: startsWith(github.event.issue.title, '[JRDB_PWA_FACT_LITE_BUILD]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse request
+        shell: bash
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+
+          request = json.loads(os.environ["ISSUE_BODY"])
+          required = ["drive_file_id", "source_filename", "data_version"]
+          missing = [key for key in required if key not in request]
+          if missing:
+              raise SystemExit("Missing request fields: " + ", ".join(missing))
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"DRIVE_FILE_ID={request['drive_file_id']}\n")
+              env_file.write(f"SOURCE_FILENAME={request['source_filename']}\n")
+              env_file.write(f"DATA_VERSION={request['data_version']}\n")
+          PY
+
+      - name: Download Analysis Lite from Google Drive
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .pwa_fact
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
+            --output .pwa_fact/analysis.sqlite
+
+      - name: Build Fact Lite
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
+            --analysis .pwa_fact/analysis.sqlite \
+            --db ".pwa_fact/jrdb_pwa_fact_lite_${DATA_VERSION}_v0_1.sqlite" \
+            | tee .pwa_fact/build_result.txt
+
+          FACT_FILE=".pwa_fact/jrdb_pwa_fact_lite_${DATA_VERSION}_v0_1.sqlite"
+          sha256sum "$FACT_FILE" | tee .pwa_fact/sha256.txt
+          ls -lh "$FACT_FILE"
+
+      - name: Upload Fact Lite artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-pwa-fact-lite-${{ env.DATA_VERSION }}-v0-1
+          path: |
+            .pwa_fact/jrdb_pwa_fact_lite_${{ env.DATA_VERSION }}_v0_1.sqlite
+            .pwa_fact/build_result.txt
+            .pwa_fact/sha256.txt
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Report success
+        if: success()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          RESULT="$(cat .pwa_fact/build_result.txt)"
+          SHA="$(cat .pwa_fact/sha256.txt)"
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB PWA Fact Lite build succeeded.\n\nResult: \`${RESULT}\`\n\nSHA-256: \`${SHA}\`\n\nArtifact is attached to this workflow run."
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
+
+      - name: Report failure
+        if: failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB PWA Fact Lite build failed. Check the workflow run logs before retrying."
