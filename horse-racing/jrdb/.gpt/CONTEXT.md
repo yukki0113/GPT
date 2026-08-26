@@ -15,5 +15,11 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - 過去時点を再現する分析では、対象日以降の結果が混入しないようas-of条件を必ず設ける。現行YTD Martを過去レースへそのまま適用しない。
 - 将来、外部artifact探索を自動化する場合は、変動するFile IDのGit固定ではなく、固定名manifestやDrive側の安定した探索規約を優先する。
 
+## RaceNote request entrypoint
+- RaceNote取得は `src/racenote_request.py` を統一入口とする。ユーザー/GPTは原則として対象日、任意の開催場、任意のRだけを指定し、過去/当日/未来のsource分岐はrouter内部で行う。
+- GPTからの定型実行は `[RACENOTE_REQUEST]` Issue → GitHub Actions → artifact 回収を標準経路とする。詳細は `docs/README_racenote_request.md`。
+- 過去日では `as_of_exclusive = target_date` を強制し、対象レース結果および対象日以降の結果を利用しない。
+- v0.1の過去base情報はannual Raw再構成をfallbackとして利用するが、Rawを日常検索層にはしない。大量バックテスト運用前に同じrequest contractのまま `RaceNote Archive` backendへ差し替える方針。
+
 ## Important
 旧JRA-VAN版の検証ラボは `horse-racing/legacy/` の凍結資産であり、現行実装とは分離します。
