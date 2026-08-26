@@ -30,14 +30,14 @@
       <div class="import-panel">
         <label>
           初回・非常時のStats Mart取込
-          <input id="sqlite-file" type="file" accept=".sqlite,.sqlite3,.db,application/vnd.sqlite3,application/x-sqlite3,application/octet-stream" />
+          <input id="sqlite-file" type="file" />
         </label>
         <div class="button-row">
           <button id="btn-import" type="button" disabled>端末へ保存</button>
           <button id="btn-clear-db" type="button" class="secondary" disabled>端末DBを削除</button>
         </div>
       </div>
-      <p class="note">iPhone / iPad では Google Drive 等のファイルプロバイダも候補に出せるよう、SQLiteで使われる複数の拡張子・MIME typeを許可しています。選択後はSQLite必須テーブルとintegrity_checkで検証します。PoC版では初回だけStats Martを選択し、正常に保存されれば次回以降はOPFSから自動復元します。</p>
+      <p class="note">PoC版の手動取込はiPhone / iPad互換性を優先し、ファイル種別フィルタを設けていません。選択後にSQLite必須テーブルとintegrity_checkで検証します。Google Driveからの通常同期は最終版でファイルピッカーを使わず自動同期経路として実装します。</p>
     </section>
 
     <section class="card">
