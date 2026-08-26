@@ -51,10 +51,25 @@ JRDB PACI
 
 ### past
 
-現段階の安全なfallback:
+JRDBの配布形態に合わせ、base backendを年境界で分けます。
+
+2026年以降の過去日は、その日付のPACIを直接取得します。PACIは事前情報パックなので、Analysis/Mart enrichment側で `as_of_exclusive = target_date` を固定すれば対象日結果や未来結果は混入しません。
 
 ```text
-annual Raw
+2026+ historical date
+ -> JRDB daily PACI
+ -> racenote_jrdb.py
+ -> Analysis Lite (race_date < target_date)
+ -> Stats Mart as-of aggregation
+ -> selected bundles
+ -> ZIP
+```
+
+2025年以前は現段階の安全なfallbackとして年次Rawを使います。
+
+```text
+<=2025 historical date
+ -> annual Raw
  -> target-date BAC/KYI/CHA/CYBだけ抽出
  -> KYI prev1-5が明示するSED/SKBだけ抽出
  -> PACI-equivalent ZIPを再構成
@@ -113,7 +128,7 @@ python src/racenote_request.py \
   --output ./output
 ```
 
-必要な年次Rawは `fetch_jrdb_history.py` を通じて取得します。前走5走が前年へ跨る場合も、KYI result keyから必要年だけ追加取得します。
+2025年以前で必要な年次Rawは `fetch_jrdb_history.py` を通じて取得します。前走5走が前年へ跨る場合も、KYI result keyから必要年だけ追加取得します。2026年以降の過去日はPACIを取得します。
 
 ### Future / current all races
 
@@ -205,6 +220,8 @@ Analysis/MartはIssue requestで渡されたDrive URLから一時取得し、art
 
 ## Current limitation / next backend
 
-v0.1では過去base bundleの生成にannual Raw fallbackを使用します。
+v0.1では、2026年以降の過去日はdaily PACI、2025年以前の過去base bundleはannual Raw fallbackを使用します。
 
 過去RaceNoteを大量生成する運用へ入る前に、同じrequest contractのまま `RaceNote Archive` backendを追加します。Archiveはtarget-dateの事前情報を高速に取り出すための派生層であり、Raw/Coreは監査・再生成用のまま残します。
+
+5レース横断PoCの結果は `docs/RaceNote_multi_race_poc_20260826.md` を参照してください。
