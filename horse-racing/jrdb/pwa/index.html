@@ -23,21 +23,33 @@
       <dl class="status-grid">
         <div><dt>ローカルDB</dt><dd id="db-status">確認中</dd></div>
         <div><dt>最終同期</dt><dd id="sync-status">未同期</dd></div>
+        <div><dt>配布版</dt><dd id="remote-status">未確認</dd></div>
         <div><dt>OPFS</dt><dd id="opfs-status">確認中</dd></div>
         <div><dt>Service Worker</dt><dd id="sw-status">確認中</dd></div>
       </dl>
 
-      <div class="import-panel">
-        <label>
-          初回・非常時のStats Mart取込
-          <input id="sqlite-file" type="file" />
-        </label>
+      <div class="sync-panel">
         <div class="button-row">
-          <button id="btn-import" type="button" disabled>端末へ保存</button>
-          <button id="btn-clear-db" type="button" class="secondary" disabled>端末DBを削除</button>
+          <button id="btn-check-update" type="button" class="secondary" disabled>最新版を確認</button>
+          <button id="btn-sync" type="button" disabled>今すぐ同期</button>
         </div>
+        <div id="sync-progress" class="query-status"></div>
       </div>
-      <p class="note">PoC版の手動取込はiPhone / iPad互換性を優先し、ファイル種別フィルタを設けていません。選択後にSQLite必須テーブルとintegrity_checkで検証します。Google Driveからの通常同期は最終版でファイルピッカーを使わず自動同期経路として実装します。</p>
+
+      <details class="recovery-panel">
+        <summary>手動取込・復旧</summary>
+        <div class="import-panel">
+          <label>
+            Stats Mart SQLite
+            <input id="sqlite-file" type="file" />
+          </label>
+          <div class="button-row">
+            <button id="btn-import" type="button" disabled>端末へ保存</button>
+            <button id="btn-clear-db" type="button" class="secondary" disabled>端末DBを削除</button>
+          </div>
+        </div>
+        <p class="note">通常利用では自動同期を使います。手動取込は初期導入・非常時の復旧用です。選択後に必須テーブルとintegrity_checkでSQLiteを検証します。</p>
+      </details>
     </section>
 
     <section class="card">
@@ -83,7 +95,7 @@
         <button type="button" class="tab" data-axis="jockey" disabled>騎手</button>
         <button type="button" class="tab" data-axis="frame" disabled>枠</button>
       </div>
-      <div id="result-area"><div class="empty-state">Stats Martを取り込むと集計結果を表示します。</div></div>
+      <div id="result-area"><div class="empty-state">Stats Martを同期すると集計結果を表示します。</div></div>
     </section>
   </main>
 
