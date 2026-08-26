@@ -7,6 +7,7 @@ on:
     paths:
       - "horse-racing/jrdb/pwa/**"
       - ".github/workflows/jrdb_pwa_pages.yml"
+      - ".github/workflows/jrdb_pwa_publish_data.yml"
   workflow_dispatch:
 
 permissions:
@@ -17,6 +18,9 @@ permissions:
 concurrency:
   group: "jrdb-pwa-pages"
   cancel-in-progress: true
+
+env:
+  DATA_RELEASE_TAG: jrdb-stats-mart-current
 
 jobs:
   deploy:
@@ -33,11 +37,13 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Prepare Pages artifact
-        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+
           rm -rf .pages
-          mkdir -p .pages/vendor
+          mkdir -p .pages/vendor .pages/data
           cp -a horse-racing/jrdb/pwa/. .pages/
 
           curl --fail --location --retry 3 \
@@ -47,12 +53,16 @@ jobs:
             https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm \
             --output .pages/vendor/sql-wasm.wasm
 
-          sed -i \
-            's#https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js#./vendor/sql-wasm.js#g' \
-            .pages/app.js
-          sed -i \
-            's#https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm#./vendor/sql-wasm.wasm#g' \
-            .pages/app.js
+          if gh release view "$DATA_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release download "$DATA_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "jrdb_stats_mart.sqlite" \
+              --pattern "manifest.json" \
+              --dir .pages/data
+            echo "Current Stats Mart release added to Pages artifact."
+          else
+            echo "No current Stats Mart release yet. Deploying PWA without remote data."
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
