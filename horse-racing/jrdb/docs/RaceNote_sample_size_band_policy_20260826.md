@@ -32,3 +32,42 @@ JSONキーは `sample_size_band` とする。
 万葉Sのような希少距離では、`top3_rate=100.0` でも `starts=1` の可能性がある。率は保持したまま `sample_size_band=small` を併記し、GPTが母数を同時に読める構造とする。
 
 距離レンジに広げても長距離条件ではsmallが残る場合があるため、距離レンジとsample size bandは別々の役割として扱う。
+
+## 実データ検証
+
+2026-05-09 京都11R 京都新聞杯と2026-01-05 京都11R 万葉SでRaceNote Request経路から再生成して確認した。
+
+### 京都新聞杯
+
+集計オブジェクトのband件数は以下。
+
+```text
+none        30
+small       76
+moderate    17
+sufficient  37
+```
+
+実例として、種牡馬の完全一致距離統計で `starts=1 / top3_rate=100.0` の馬が存在し、`sample_size_band=small` が付与された。率を削らず、母数の小ささだけを明示する目的に合致する。
+
+### 万葉S
+
+集計オブジェクトのband件数は以下。
+
+```text
+none        15
+small       69
+moderate    13
+sufficient   0
+```
+
+2500m以上のdistance rangeへ広げても `sufficient` が1件もなく、長距離条件そのものの標本不足が残ることを表現できた。
+
+## PoC結論
+
+`sample_size_band` は採用候補とする。
+
+- 数値を置換・抑制しない
+- `starts` と必ず併記する
+- `small` だから無効、`sufficient` だから有効という判断には使わない
+- GPTが率を見る際に母数の大きさを同時に把握するための補助情報として扱う
