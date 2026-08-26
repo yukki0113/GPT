@@ -1,0 +1,15 @@
+{
+  "artifact_type": "jrdb_stats_mart",
+  "schema_version": "1.1",
+  "data_version": "2016_2026YTD_20260823",
+  "period_from": "2016-01-01",
+  "period_to": "2026-08-23",
+  "source_filename": "jrdb_stats_mart_2016_2026YTD_20260823_v1_1.sqlite",
+  "size": 56254464,
+  "sha256": "116ac151b4ed499e81cfb66cfedc6f68f42c456458e2fa6b3160583633d5d874",
+  "published_at": "",
+  "download": {
+    "provider": "github_pages",
+    "path": "./data/jrdb_stats_mart.sqlite"
+  }
+}
