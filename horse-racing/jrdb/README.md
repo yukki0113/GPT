@@ -19,6 +19,7 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/build_jrdb_stats_mart.py` — Analysis Lite → 年次Stats Mart v1.1
 - `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
 - `src/export_jrdb_eval_race_conditions.py` — Raw BAC → Eval用1レース1行レース条件CSV（Analysis非変更）
+- `src/export_jrdb_eval_dataset.py` — Raw BAC + SED → Eval専用1レース1行統合CSV（Analysis/Core非依存）
 - `tools/generate_jrdb_codebooks.py` — codebook生成
 - `tools/audit_jrdb_core_v1_1_1.py` — Core監査ツール
 - `tools/audit_jrdb_core_v1_2_regression.py` — v1.1.2 / v1.2回帰比較
@@ -31,8 +32,9 @@ Routine analysis generation does not require Core as an intermediate artifact.
 ```text
 canonical Raw ZIPs
   ├─> Core                         # audit / complete normalized history / reproducibility
-  └─> rolling Analysis Lite       # routine GPT/PWA analysis
-        └─> Stats Mart
+  ├─> rolling Analysis Lite       # routine GPT/PWA analysis
+  │     └─> Stats Mart
+  └─> Eval dataset exporter       # Eval検証専用、Analysis/Core非依存
 ```
 
 During the season, the recommended manual/ChatGPT path is:
@@ -73,6 +75,18 @@ Important fields:
 - `prev_result_key_1` / `prev_race_key_1` = KYIが明示する前走1リンク
 
 All five previous-result links remain in Raw/Core. Routine Analysis keeps prev1 only to preserve remote-delivery size headroom.
+
+## Eval Raw dataset
+
+Eval用途ではAnalysis Lite / Core SQLiteを中間入力にせず、JRDB Rawを正本入力として専用CSVを生成します。
+
+```text
+BAC + SED Raw
+  -> src/export_jrdb_eval_dataset.py
+  -> 1 race / row CSV
+```
+
+外部結合キーは `race_date + venue_code + race_no`。BACからレース条件、SEDから確定馬場状態を取得し、両TYPEの共通レース条件が食い違う場合はエラーにします。詳細は `docs/README_export_jrdb_eval_dataset.md`。
 
 ## Validation status
 
@@ -173,6 +187,7 @@ There is no requirement to rebuild Core first.
 - `docs/README_update_jrdb_analysis_incremental.md`
 - `docs/README_build_jrdb_stats_mart.md`
 - `docs/README_export_jrdb_eval_race_conditions.md`
+- `docs/README_export_jrdb_eval_dataset.md`
 
 ## Security
 
