@@ -21,77 +21,69 @@
     <section class="card status-card">
       <h2>データ状態</h2>
       <dl class="status-grid">
-        <div>
-          <dt>ローカルDB</dt>
-          <dd id="db-status">未設定</dd>
-        </div>
-        <div>
-          <dt>最終同期</dt>
-          <dd id="sync-status">未同期</dd>
-        </div>
-        <div>
-          <dt>OPFS</dt>
-          <dd id="opfs-status">確認中</dd>
-        </div>
-        <div>
-          <dt>Service Worker</dt>
-          <dd id="sw-status">確認中</dd>
-        </div>
+        <div><dt>ローカルDB</dt><dd id="db-status">確認中</dd></div>
+        <div><dt>最終同期</dt><dd id="sync-status">未同期</dd></div>
+        <div><dt>OPFS</dt><dd id="opfs-status">確認中</dd></div>
+        <div><dt>Service Worker</dt><dd id="sw-status">確認中</dd></div>
       </dl>
-      <p class="note">現在はPWA配信・オフライン起動の基盤確認版です。Stats Mart同期と集計機能は次段階で追加します。</p>
+
+      <div class="import-panel">
+        <label>
+          初回・非常時のStats Mart取込
+          <input id="sqlite-file" type="file" accept=".sqlite,.db,application/vnd.sqlite3" />
+        </label>
+        <div class="button-row">
+          <button id="btn-import" type="button" disabled>端末へ保存</button>
+          <button id="btn-clear-db" type="button" class="secondary" disabled>端末DBを削除</button>
+        </div>
+      </div>
+      <p class="note">PoC版では初回だけStats Martを選択します。正常に保存されれば、次回以降はOPFSから自動復元し、ファイル選択は不要です。</p>
     </section>
 
     <section class="card">
       <h2>条件集計</h2>
       <div class="filter-grid">
-        <label>
-          年 From
-          <input type="number" value="2016" disabled />
-        </label>
-        <label>
-          年 To
-          <input type="number" value="2026" disabled />
-        </label>
+        <label>年 From<input id="q-year-from" type="number" value="2016" min="2016" max="2026" disabled /></label>
+        <label>年 To<input id="q-year-to" type="number" value="2026" min="2016" max="2026" disabled /></label>
         <label>
           競馬場
-          <select disabled>
-            <option>指定なし</option>
+          <select id="q-venue" disabled>
+            <option value="">指定なし</option>
+            <option value="01">札幌</option><option value="02">函館</option><option value="03">福島</option><option value="04">新潟</option>
+            <option value="05">東京</option><option value="06">中山</option><option value="07">中京</option><option value="08">京都</option>
+            <option value="09">阪神</option><option value="10">小倉</option>
           </select>
         </label>
         <label>
           芝 / ダ
-          <select disabled>
-            <option>指定なし</option>
+          <select id="q-track-type" disabled>
+            <option value="">指定なし</option><option value="1">芝</option><option value="2">ダート</option>
           </select>
         </label>
+        <label>距離<input id="q-distance" type="number" step="100" placeholder="例: 1600" disabled /></label>
         <label>
-          距離
-          <input type="number" placeholder="例: 1600" disabled />
-        </label>
-        <label>
-          馬場状態
-          <select disabled>
-            <option>指定なし</option>
+          馬場状態コード
+          <select id="q-track-condition" disabled>
+            <option value="">指定なし</option><option value="10">良</option><option value="11">稍重</option><option value="12">重</option><option value="13">不良</option>
           </select>
         </label>
+        <label>最低出走数<input id="q-min-starts" type="number" value="20" min="1" disabled /></label>
       </div>
-      <button type="button" disabled>集計</button>
+      <button id="btn-aggregate" type="button" disabled>集計</button>
+      <div id="query-status" class="query-status"></div>
     </section>
 
     <section class="card">
       <div class="tabs" role="tablist" aria-label="集計軸">
-        <button type="button" class="tab active" disabled>種牡馬</button>
-        <button type="button" class="tab" disabled>騎手</button>
-        <button type="button" class="tab" disabled>枠</button>
+        <button type="button" class="tab active" data-axis="sire" disabled>種牡馬</button>
+        <button type="button" class="tab" data-axis="jockey" disabled>騎手</button>
+        <button type="button" class="tab" data-axis="frame" disabled>枠</button>
       </div>
-      <div class="empty-state">Stats Mart接続後に集計結果を表示します。</div>
+      <div id="result-area"><div class="empty-state">Stats Martを取り込むと集計結果を表示します。</div></div>
     </section>
   </main>
 
-  <footer>
-    <small>JRDB 検証ラボ / GitHub Pages + Offline PWA</small>
-  </footer>
-
+  <footer><small>JRDB 検証ラボ / GitHub Pages + Offline PWA</small></footer>
   <script src="./app.js"></script>
 </body>
 </html>
