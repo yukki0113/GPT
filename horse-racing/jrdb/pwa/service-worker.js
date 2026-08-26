@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v5";
+const CACHE_NAME = "jrdb-pwa-shell-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -35,7 +35,6 @@ self.addEventListener("activate", function (event) {
           if (cacheName === CACHE_NAME) {
             return Promise.resolve(false);
           }
-
           return caches.delete(cacheName);
         })
       );
@@ -46,8 +45,8 @@ self.addEventListener("activate", function (event) {
 });
 
 /**
- * 同一originのGETは cache-first で処理する。
- * navigation失敗時は index.html を返し、オフライン起動を維持する。
+ * data/ 配下は同期管理対象なのでService Workerへ保存しない。
+ * app shellのみcache-firstで扱う。
  */
 self.addEventListener("fetch", function (event) {
   const request = event.request;
@@ -57,8 +56,11 @@ self.addEventListener("fetch", function (event) {
   }
 
   const requestUrl = new URL(request.url);
-
   if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
+
+  if (requestUrl.pathname.includes("/data/")) {
     return;
   }
 
@@ -78,14 +80,12 @@ self.addEventListener("fetch", function (event) {
           caches.open(CACHE_NAME).then(function (cache) {
             cache.put(request, responseCopy);
           });
-
           return networkResponse;
         })
         .catch(function () {
           if (request.mode === "navigate") {
             return caches.match("./index.html");
           }
-
           throw new Error("Offline and no cached response");
         });
     })
