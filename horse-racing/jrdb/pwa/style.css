@@ -21,6 +21,7 @@ main { width: min(960px, 100%); margin: 0 auto; padding: 16px; }
 .recovery-panel summary { cursor: pointer; color: #555; font-size: 14px; }
 .import-panel { margin-top: 12px; padding: 14px; background: #f7f7f7; border-radius: 10px; }
 .button-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.link-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 9px 12px; border: 1px solid #cfcfcf; border-radius: 9px; background: #fff; color: #1d1d1f; font-size: 14px; font-weight: 500; text-decoration: none; }
 .note { margin: 14px 0 0; color: #666; font-size: 13px; line-height: 1.6; }
 .filter-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-bottom: 14px; }
 label { display: grid; gap: 6px; font-size: 13px; color: #444; }
@@ -40,5 +41,5 @@ footer { padding: 8px 16px calc(22px + env(safe-area-inset-bottom)); text-align:
 @media (max-width: 640px) {
   .status-grid, .filter-grid { grid-template-columns: 1fr; }
   .card { padding: 15px; border-radius: 12px; }
-  .button-row button { flex: 1 1 140px; }
+  .button-row button, .button-row .link-button { flex: 1 1 140px; }
 }
