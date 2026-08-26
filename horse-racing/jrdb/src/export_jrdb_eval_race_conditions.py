@@ -31,7 +31,7 @@ import sys
 import zipfile
 
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 OUTPUT_COLUMNS = (
     "race_date",
@@ -51,6 +51,10 @@ OUTPUT_COLUMNS = (
 # BAC固定長仕様。offsetは0始まり。
 BAC_MIN_LENGTH = 98
 BAC_OFFSETS = {
+    "distance": (20, 4),
+    "track_type": (24, 1),
+    "race_condition_code": (29, 2),
+    "grade_code": (35, 1),
     "venue_code": (0, 2),
     "race_no": (6, 2),
     "race_date": (8, 8),
@@ -128,8 +132,11 @@ def normalize_venue_code(value: str) -> str:
     return stripped
 
 
-def parse_bac_record(record: SourceRecord) -> dict[str, object]:
-    """BAC 1レコードをEval補助CSVの1行へ変換する。"""
+def parse_bac_record_full(record: SourceRecord) -> dict[str, object]:
+    """BAC 1レコードからEval用途の全レース条件を返す。
+
+    既存12列ExporterとRAW統合Exporterの共通解析関数。
+    """
     raw = record.raw
 
     if len(raw) < BAC_MIN_LENGTH:
@@ -141,6 +148,7 @@ def parse_bac_record(record: SourceRecord) -> dict[str, object]:
     venue_code = decode_text(raw, *BAC_OFFSETS["venue_code"])
     race_no = parse_int(raw, *BAC_OFFSETS["race_no"])
     race_date_raw = decode_text(raw, *BAC_OFFSETS["race_date"])
+    distance = parse_int(raw, *BAC_OFFSETS["distance"])
     declared_field_size = parse_int(raw, *BAC_OFFSETS["declared_field_size"])
 
     if race_no is None:
@@ -149,26 +157,32 @@ def parse_bac_record(record: SourceRecord) -> dict[str, object]:
             f"{record.member_name} record={record.record_no}"
         )
 
-    row: dict[str, object] = {
+    return {
         "race_date": normalize_date_yyyymmdd(race_date_raw),
         "venue_code": normalize_venue_code(venue_code),
         "race_no": race_no,
         "race_name": decode_text(raw, *BAC_OFFSETS["race_name"]),
         "race_type_code": decode_text(raw, *BAC_OFFSETS["race_type_code"]),
+        "race_condition_code": decode_text(raw, *BAC_OFFSETS["race_condition_code"]),
         "race_symbol_code": decode_text(raw, *BAC_OFFSETS["race_symbol_code"]),
-        "weight_condition_code": decode_text(
-            raw, *BAC_OFFSETS["weight_condition_code"]
-        ),
+        "weight_condition_code": decode_text(raw, *BAC_OFFSETS["weight_condition_code"]),
+        "grade_code": decode_text(raw, *BAC_OFFSETS["grade_code"]),
+        "track_type": decode_text(raw, *BAC_OFFSETS["track_type"]),
+        "distance": distance,
         "declared_field_size": declared_field_size,
-        "turn_direction_code": decode_text(
-            raw, *BAC_OFFSETS["turn_direction_code"]
-        ),
+        "turn_direction_code": decode_text(raw, *BAC_OFFSETS["turn_direction_code"]),
         "inner_outer_code": decode_text(raw, *BAC_OFFSETS["inner_outer_code"]),
         "course_code": decode_text(raw, *BAC_OFFSETS["course_code"]),
-        "event_region_code": decode_text(
-            raw, *BAC_OFFSETS["event_region_code"]
-        ),
+        "event_region_code": decode_text(raw, *BAC_OFFSETS["event_region_code"]),
     }
+
+
+def parse_bac_record(record: SourceRecord) -> dict[str, object]:
+    """BAC 1レコードを既存12列CSVの1行へ変換する。"""
+    full_row = parse_bac_record_full(record)
+    row: dict[str, object] = {}
+    for column in OUTPUT_COLUMNS:
+        row[column] = full_row[column]
     return row
 
 
