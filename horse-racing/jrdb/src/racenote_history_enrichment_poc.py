@@ -506,6 +506,34 @@ def statistic_with_ranges(
     return output
 
 
+def build_history_coverage(horse: dict, profile: dict | None) -> dict:
+    """Describe the observable JRDB/JRA history without guessing overseas completeness."""
+    trainer_base = horse.get("basic", {}).get("trainer_base")
+    domestic_bases = {"美浦", "栗東", "地方"}
+    observed_starts = 0
+    if profile is not None:
+        observed_starts = int(profile.get("career", {}).get("starts") or 0)
+
+    foreign_based = trainer_base not in domestic_bases and trainer_base not in (None, "")
+    if observed_starts > 0:
+        reason = "jra_history_observed"
+        overseas_coverage = "not_guaranteed"
+    elif foreign_based:
+        reason = "foreign_based_entry_no_jra_history"
+        overseas_coverage = "not_in_scope"
+    else:
+        reason = "no_prior_jra_history_observed"
+        overseas_coverage = "not_guaranteed"
+
+    return {
+        "scope": "jrdb_jra_history",
+        "observed_history": "present" if observed_starts > 0 else "none",
+        "observed_starts": observed_starts,
+        "overseas_history_coverage": overseas_coverage,
+        "reason": reason,
+    }
+
+
 def enrich(
     base: dict,
     analysis: sqlite3.Connection,
@@ -548,6 +576,13 @@ def enrich(
             horse["older_runs"] = []
             horse["historical_profile"] = None
             horse["stats"] = {"sire": None, "jockey": None}
+            horse["history_coverage"] = {
+                "scope": "jrdb_jra_history",
+                "observed_history": "unknown",
+                "observed_starts": None,
+                "overseas_history_coverage": "not_guaranteed",
+                "reason": "target_entry_not_found",
+            }
             continue
 
         horse_id = entry["horse_id"]
@@ -562,7 +597,7 @@ def enrich(
             if horse_id
             else []
         )
-        horse["historical_profile"] = (
+        profile_value = (
             historical_profile(
                 analysis,
                 horse_id,
@@ -575,6 +610,13 @@ def enrich(
             if horse_id
             else None
         )
+        horse["history_coverage"] = build_history_coverage(horse, profile_value)
+        if (
+            horse["history_coverage"]["reason"]
+            == "foreign_based_entry_no_jra_history"
+        ):
+            profile_value = None
+        horse["historical_profile"] = profile_value
 
         sire = entry["sire_name"]
         jockey = entry["jockey_name"] or horse["basic"].get("jockey")
