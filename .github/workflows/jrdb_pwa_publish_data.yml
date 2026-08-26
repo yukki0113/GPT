@@ -1,0 +1,220 @@
+name: JRDB PWA Publish Data
+
+on:
+  issues:
+    types:
+      - opened
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "jrdb-pwa-pages"
+  cancel-in-progress: false
+
+env:
+  DATA_RELEASE_TAG: jrdb-stats-mart-current
+
+jobs:
+  publish:
+    if: startsWith(github.event.issue.title, '[JRDB_PWA_DATA_PUBLISH]')
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse publish request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p .publish
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(os.environ["ISSUE_BODY"])
+          required = [
+              "drive_file_id",
+              "source_filename",
+              "artifact_type",
+              "schema_version",
+              "data_version",
+              "period_from",
+              "period_to",
+              "size",
+              "sha256",
+          ]
+
+          missing = [key for key in required if key not in request]
+          if missing:
+              raise SystemExit("Missing request fields: " + ", ".join(missing))
+
+          file_id = str(request["drive_file_id"]).strip()
+          sha256 = str(request["sha256"]).strip().lower()
+          expected_size = int(request["size"])
+
+          if not file_id:
+              raise SystemExit("drive_file_id is empty")
+          if len(sha256) != 64:
+              raise SystemExit("sha256 must be 64 hex characters")
+          if expected_size <= 0:
+              raise SystemExit("size must be positive")
+
+          manifest = {
+              "artifact_type": str(request["artifact_type"]),
+              "schema_version": str(request["schema_version"]),
+              "data_version": str(request["data_version"]),
+              "period_from": str(request["period_from"]),
+              "period_to": str(request["period_to"]),
+              "source_filename": str(request["source_filename"]),
+              "size": expected_size,
+              "sha256": sha256,
+              "published_at": str(request.get("published_at", "")),
+              "download": {
+                  "provider": "github_pages",
+                  "path": "./data/jrdb_stats_mart.sqlite",
+              },
+          }
+
+          Path(".publish/manifest.json").write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"DRIVE_FILE_ID={file_id}\n")
+              env_file.write(f"EXPECTED_SHA256={sha256}\n")
+              env_file.write(f"EXPECTED_SIZE={expected_size}\n")
+              env_file.write(f"DATA_VERSION={manifest['data_version']}\n")
+          PY
+
+      - name: Download Stats Mart from Google Drive
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
+            --output .publish/jrdb_stats_mart.sqlite
+
+      - name: Validate downloaded artifact
+        run: |
+          set -euo pipefail
+
+          ACTUAL_SIZE="$(stat -c %s .publish/jrdb_stats_mart.sqlite)"
+          if [ "$ACTUAL_SIZE" != "$EXPECTED_SIZE" ]; then
+            echo "Size mismatch: expected=$EXPECTED_SIZE actual=$ACTUAL_SIZE"
+            exit 1
+          fi
+
+          ACTUAL_SHA256="$(sha256sum .publish/jrdb_stats_mart.sqlite | awk '{print $1}')"
+          if [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo "SHA-256 mismatch: expected=$EXPECTED_SHA256 actual=$ACTUAL_SHA256"
+            exit 1
+          fi
+
+          python - <<'PY'
+          import sqlite3
+
+          path = ".publish/jrdb_stats_mart.sqlite"
+          required_tables = {
+              "mart_sire_yearly",
+              "mart_jockey_yearly",
+              "mart_frame_yearly",
+          }
+
+          connection = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+          try:
+              names = {
+                  row[0]
+                  for row in connection.execute(
+                      "SELECT name FROM sqlite_master WHERE type = 'table'"
+                  )
+              }
+              missing = sorted(required_tables - names)
+              if missing:
+                  raise SystemExit("Missing tables: " + ", ".join(missing))
+
+              integrity = connection.execute("PRAGMA integrity_check").fetchone()
+              if not integrity or integrity[0] != "ok":
+                  raise SystemExit(f"integrity_check failed: {integrity}")
+          finally:
+              connection.close()
+          PY
+
+      - name: Publish current data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if ! gh release view "$DATA_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$DATA_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "JRDB Stats Mart current" \
+              --notes "PWA distribution cache. Canonical generated artifact remains outside Git."
+          fi
+
+          gh release upload "$DATA_RELEASE_TAG" \
+            .publish/jrdb_stats_mart.sqlite \
+            .publish/manifest.json \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare Pages artifact
+        run: |
+          set -euo pipefail
+
+          rm -rf .pages
+          mkdir -p .pages/vendor .pages/data
+          cp -a horse-racing/jrdb/pwa/. .pages/
+          cp .publish/jrdb_stats_mart.sqlite .pages/data/jrdb_stats_mart.sqlite
+          cp .publish/manifest.json .pages/data/manifest.json
+
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js \
+            --output .pages/vendor/sql-wasm.js
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm \
+            --output .pages/vendor/sql-wasm.wasm
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Close successful request
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "Published Stats Mart ${DATA_VERSION} to the PWA distribution cache and GitHub Pages."
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
+
+      - name: Report failed request
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB PWA data publish failed. Check this workflow run before retrying."
