@@ -2,13 +2,13 @@
 
 ## Status
 
-Active。Eval表の画像取得、結果取得、OCR/検証・台帳更新を支援する領域です。
+Active。Eval表の画像取得、結果取得、OCR/検証・台帳更新に加え、関連する中央競馬の定型データ取得・解析を支援する領域です。
 
 ## Source of truth
 
 Python、README、作業手順、依存関係、GitHub Actions WorkflowはGitHub `yukki0113/GPT` の `main` を正本とします。
 
-Eval画像、OCR途中成果物、日次取得CSV、検証レポート、ログ等の運用成果物はGit外を正本とします。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGitHub `main` を正本とします。
+Eval画像、OCR途中成果物、日次取得CSV、ブログ解析結果、検証レポート、ログ等の運用成果物はGit外を正本とします。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGitHub `main` を正本とします。
 
 ## Eval表画像取得
 
@@ -37,5 +37,21 @@ ActionsはGit正本のPythonと `requirements.txt` を使用し、CSV・検証�
 `.github/workflows/jra_results_manual.yml` の `workflow_dispatch` は人間操作用の予備経路です。直接Python実行はデバッグ・緊急時の補助経路とします。
 
 出走頭数は取消・競走除外前の枠順確定時の頭数を維持することが重要仕様です。
+
+## keibailukaブログ解析
+
+本体は `src/fetch_keibailuka_blog.py`。対象日と開催場順を受け取り、`keibailuka.blogspot.com` の対象記事URLを自動探索し、各場1R〜12Rを解析します。
+
+通常運用ではユーザーに個別記事URLの探索・提示を求めません。URLがユーザーから提示された場合も、取得障害やブログ仕様変更を調べるための一時的な参考情報として扱い、恒常的な入力仕様にはしません。
+
+Chatからの定型解析は `.github/workflows/keibailuka_chat.yml` のIssue経路を標準とします。Chatがタイトル `[KEIBAILUKA_REQUEST] <request_id>` のIssueを作成し、本文JSONへ `date` と `venues` を記載します。`venues` の配列順は最終出力の開催場順でもあります。
+
+ActionsはGit正本のPythonを実行し、Blogger公開feed、ブログトップ、月別アーカイブ、ブログ内検索を使って記事を探索します。個別記事は通常表示とモバイル表示を試し、429/5xxは間隔を置いて再試行します。
+
+各記事は1R〜12Rの構造を機械検証し、`該当無し` と有料導入を除外、`🤡` は `🤡` のまま公開コメントだけを残します。安全に馬名を確定できない場合は推測せずfailureとします。
+
+完了後は同じIssueへ `KEIBAILUKA_RESULT` コメントとしてsource URL、採用entries、Plain text TSV、validation結果、run/artifact情報を返し、Issueを自動クローズします。Chatは原則としてこの結果コメントからユーザー向けの最終出力を作り、コメントが長い場合のみ意味を保った軽い要約を行います。
+
+日次のブログ解析JSON/TSV、validation、ログはGit管理対象外です。
 
 今後OCR・台帳取込等のモジュールが増えた場合も、このプロジェクト配下へ追加します。
