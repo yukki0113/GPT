@@ -49,3 +49,34 @@ RaceNoteの履歴層はJRDB / JRAで取得できる国内履歴を正本範囲�
 - 取得できない海外実績を補完・推測しない。
 - `0`（JRA履歴0走）と `null`（この履歴層ではキャリア集計として扱わない）を区別する。
 - PACIの当日事前情報（IDM、適性、調教等）は履歴coverageとは独立して保持する。
+
+## 実データ検証
+
+2026-08-26に以下で再生成し、RaceNote Request経路が正常完走することを確認した。
+
+### 2025-11-30 東京12R ジャパンカップ
+
+- カランダガン（trainer_base=`仏国`）
+  - `observed_history = none`
+  - `observed_starts = 0`
+  - `overseas_history_coverage = not_in_scope`
+  - `reason = foreign_based_entry_no_jra_history`
+  - `historical_profile = null`
+  - PACI由来の当日事前情報は保持。
+- シンエンペラー（trainer_base=`栗東`）
+  - `observed_history = present`
+  - `observed_starts = 7`
+  - `overseas_history_coverage = not_guaranteed`
+  - `reason = jra_history_observed`
+  - 海外戦の欠落数やcomplete/partialは推測しない。
+- 全18頭のreason分布
+  - `jra_history_observed`: 17頭
+  - `foreign_based_entry_no_jra_history`: 1頭
+
+### 2026-05-09 京都11R 京都新聞杯
+
+- 全16頭が `jra_history_observed`。
+- 全16頭で `historical_profile` を保持。
+- 海外所属誤判定・不要なnull化は0件。
+
+以上から、海外所属馬の0件履歴と国内馬の観測済みJRA履歴を区別しつつ、海外遠征履歴の完全性を推測しない方針を採用候補とする。
