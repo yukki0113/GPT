@@ -39,12 +39,20 @@ jobs:
           rm -rf .pages
           mkdir -p .pages/vendor
           cp -a horse-racing/jrdb/pwa/. .pages/
+
           curl --fail --location --retry 3 \
             https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js \
             --output .pages/vendor/sql-wasm.js
           curl --fail --location --retry 3 \
             https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm \
             --output .pages/vendor/sql-wasm.wasm
+
+          sed -i \
+            's#https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js#./vendor/sql-wasm.js#g' \
+            .pages/app.js
+          sed -i \
+            's#https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm#./vendor/sql-wasm.wasm#g' \
+            .pages/app.js
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
