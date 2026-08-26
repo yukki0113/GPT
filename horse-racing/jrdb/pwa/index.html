@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f7f7" />
+  <title>JRDB 検証ラボ</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">JRDB / Offline PWA</p>
+      <h1>検証ラボ</h1>
+    </div>
+    <div id="network-badge" class="badge">確認中</div>
+  </header>
+
+  <main>
+    <section class="card status-card">
+      <h2>データ状態</h2>
+      <dl class="status-grid">
+        <div>
+          <dt>ローカルDB</dt>
+          <dd id="db-status">未設定</dd>
+        </div>
+        <div>
+          <dt>最終同期</dt>
+          <dd id="sync-status">未同期</dd>
+        </div>
+        <div>
+          <dt>OPFS</dt>
+          <dd id="opfs-status">確認中</dd>
+        </div>
+        <div>
+          <dt>Service Worker</dt>
+          <dd id="sw-status">確認中</dd>
+        </div>
+      </dl>
+      <p class="note">現在はPWA配信・オフライン起動の基盤確認版です。Stats Mart同期と集計機能は次段階で追加します。</p>
+    </section>
+
+    <section class="card">
+      <h2>条件集計</h2>
+      <div class="filter-grid">
+        <label>
+          年 From
+          <input type="number" value="2016" disabled />
+        </label>
+        <label>
+          年 To
+          <input type="number" value="2026" disabled />
+        </label>
+        <label>
+          競馬場
+          <select disabled>
+            <option>指定なし</option>
+          </select>
+        </label>
+        <label>
+          芝 / ダ
+          <select disabled>
+            <option>指定なし</option>
+          </select>
+        </label>
+        <label>
+          距離
+          <input type="number" placeholder="例: 1600" disabled />
+        </label>
+        <label>
+          馬場状態
+          <select disabled>
+            <option>指定なし</option>
+          </select>
+        </label>
+      </div>
+      <button type="button" disabled>集計</button>
+    </section>
+
+    <section class="card">
+      <div class="tabs" role="tablist" aria-label="集計軸">
+        <button type="button" class="tab active" disabled>種牡馬</button>
+        <button type="button" class="tab" disabled>騎手</button>
+        <button type="button" class="tab" disabled>枠</button>
+      </div>
+      <div class="empty-state">Stats Mart接続後に集計結果を表示します。</div>
+    </section>
+  </main>
+
+  <footer>
+    <small>JRDB 検証ラボ / GitHub Pages + Offline PWA</small>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
