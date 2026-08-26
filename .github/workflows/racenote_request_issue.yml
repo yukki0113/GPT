@@ -1,0 +1,235 @@
+name: racenote-request-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_REQUEST]'
+
+jobs:
+  run:
+    if: startsWith(github.event.issue.title, '[RACENOTE_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          date = str(request.get('date', '')).replace('-', '').replace('/', '').strip()
+          if not re.fullmatch(r'\d{8}', date):
+              raise SystemExit('date must be YYYYMMDD')
+          datetime.strptime(date, '%Y%m%d')
+
+          venue = request.get('venue')
+          if venue is not None:
+              venue = str(venue).strip()
+              if not venue:
+                  venue = None
+
+          race = request.get('race')
+          if race is not None:
+              race = int(race)
+              if venue is None:
+                  raise SystemExit('race requires venue')
+              if not 1 <= race <= 12:
+                  raise SystemExit('race must be 1..12')
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          mart_url = str(request.get('mart_url', '')).strip()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+          if not mart_url.startswith('https://drive.google.com/'):
+              raise SystemExit('mart_url must be a Google Drive URL')
+
+          stats_window_years = int(request.get('stats_window_years', 5))
+          if not 1 <= stats_window_years <= 10:
+              raise SystemExit('stats_window_years must be 1..10')
+
+          output_dir = f'horse-racing/jrdb/output_issue/{request_id}'
+          resolved = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'date': date,
+              'venue': venue,
+              'race': race,
+              'analysis_url': analysis_url,
+              'mart_url': mart_url,
+              'stats_window_years': stats_window_years,
+              'output_dir': output_dir,
+          }
+          Path('/tmp/racenote_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'TARGET_DATE={date}\n')
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+          PY
+
+      - name: Download Analysis and Mart
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
+          subprocess.run(['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite', '--fuzzy'], check=True)
+          subprocess.run(['gdown', request['mart_url'], '-O', '/tmp/jrdb_stats_mart.sqlite', '--fuzzy'], check=True)
+          PY
+
+      - name: Run RaceNote request
+        id: task
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
+          command = [
+              'python', 'horse-racing/jrdb/src/racenote_request.py',
+              '--date', request['date'],
+              '--analysis', '/tmp/jrdb_analysis.sqlite',
+              '--mart', '/tmp/jrdb_stats_mart.sqlite',
+              '--output', request['output_dir'],
+              '--stats-window-years', str(request['stats_window_years']),
+          ]
+          if request['venue']:
+              command.extend(['--venue', request['venue']])
+          if request['race'] is not None:
+              command.extend(['--race', str(request['race'])])
+          completed = subprocess.run(command, check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Collect request ZIP
+        id: collect
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p "$OUTPUT_DIR/artifact"
+          python - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
+          root = Path(request['output_dir'])
+          zips = sorted(root.rglob('RaceNote_*.zip'))
+          if not zips:
+              raise SystemExit('RaceNote ZIP not found')
+          for path in zips:
+              shutil.copy2(path, root / 'artifact' / path.name)
+          Path(root / 'artifact' / 'resolved_request.json').write_text(
+              json.dumps(request, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/artifact/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK_EXIT: ${{ steps.task.outputs.exit_code }}
+          COLLECT_EXIT: ${{ steps.collect.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
+          task_exit = os.environ.get('TASK_EXIT', '')
+          collect_exit = os.environ.get('COLLECT_EXIT', '')
+          status = 'success' if task_exit == '0' and collect_exit == '0' else 'failure'
+          artifact_name = f"racenote-{request['request_id']}-{os.environ['GITHUB_RUN_ID']}"
+          result = {
+              'request_id': request['request_id'],
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': artifact_name,
+              'target_date': request['date'],
+              'venue': request['venue'],
+              'race': request['race'],
+              'task_exit_code': task_exit,
+              'collect_exit_code': collect_exit,
+          }
+          Path('/tmp/result_comment.md').write_text(
+              'RACENOTE_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n', encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when request failed
+        if: always() && (steps.task.outputs.exit_code != '0' || steps.collect.outputs.exit_code != '0')
+        run: exit 1
