@@ -8,6 +8,7 @@ on:
       - "horse-racing/jrdb/pwa/**"
       - ".github/workflows/jrdb_pwa_pages.yml"
       - ".github/workflows/jrdb_pwa_publish_data.yml"
+      - ".github/workflows/jrdb_pwa_fact_lite_publish.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,6 +22,7 @@ concurrency:
 
 env:
   DATA_RELEASE_TAG: jrdb-stats-mart-current
+  FACT_RELEASE_TAG: jrdb-pwa-fact-lite-current
 
 jobs:
   deploy:
@@ -43,7 +45,7 @@ jobs:
           set -euo pipefail
 
           rm -rf .pages
-          mkdir -p .pages/vendor .pages/data
+          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite
           cp -a horse-racing/jrdb/pwa/. .pages/
 
           curl --fail --location --retry 3 \
@@ -61,7 +63,18 @@ jobs:
               --dir .pages/data
             echo "Current Stats Mart release added to Pages artifact."
           else
-            echo "No current Stats Mart release yet. Deploying PWA without remote data."
+            echo "No current Stats Mart release yet."
+          fi
+
+          if gh release view "$FACT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release download "$FACT_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "jrdb_pwa_fact_lite.sqlite" \
+              --pattern "manifest.json" \
+              --dir .pages/data/fact-lite
+            echo "Current Fact Lite release added to Pages artifact."
+          else
+            echo "No current Fact Lite release yet."
           fi
 
       - name: Upload Pages artifact
