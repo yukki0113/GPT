@@ -25,7 +25,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install -r horse-racing/eval/requirements.txt
+        run: pip install -r horse-racing/fetch_keibailuka_blog/requirements.txt
 
       - name: Parse request
         env:
@@ -77,10 +77,13 @@ jobs:
               raise SystemExit('request_interval_seconds must be >= 0')
 
           compact_date = date_text.replace('-', '')
-          output_dir = f'horse-racing/eval/output_{request_id}_{compact_date}'
+          output_dir = (
+              f'horse-racing/fetch_keibailuka_blog/'
+              f'output_{request_id}_{compact_date}'
+          )
           command = [
               'python',
-              'horse-racing/eval/src/fetch_keibailuka_blog.py',
+              'horse-racing/fetch_keibailuka_blog/src/fetch_keibailuka_blog.py',
               '--date', date_text,
               '--venues', *venues,
               '--output-dir', output_dir,

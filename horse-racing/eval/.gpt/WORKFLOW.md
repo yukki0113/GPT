@@ -28,21 +28,7 @@
 20. JRA結果CSVでは全行成功、キー重複なし、出走頭数、1〜3着、単勝・複勝等を確認する。
 21. 出走頭数は取消・競走除外前の枠順確定時の頭数を維持する。着順が数値の行だけで数えない。
 
-## keibailukaブログ解析
-
-22. Chatから `keibailuka.blogspot.com` の日次ブログ解析を依頼された場合は、原則として `.github/workflows/keibailuka_chat.yml` のIssue経路を使用する。
-23. 通常入力は対象日と開催場順だけとし、ユーザーへ個別記事URLの探索・提示を求めない。ユーザーからURLが提示された場合も取得障害や仕様変更の調査材料としてのみ扱い、恒常的な入力仕様にはしない。
-24. 一意の `request_id` を生成し、タイトル `[KEIBAILUKA_REQUEST] <request_id>` のIssueを作成する。Issue本文はJSONで `date` と `venues` を渡す。`venues` の配列順を最終回答の開催場順として維持する。
-25. ActionsはIssue作成をトリガーにGit正本の `src/fetch_keibailuka_blog.py` を実行する。モジュール側でBlogger公開feed、ブログトップ、対象月・前月アーカイブ、ブログ内検索を利用して記事URLを探索する。個別記事は通常表示と `?m=1` を試し、429/5xxは間隔を置いて再試行する。
-26. 各開催場の記事には1R〜12Rが順番どおり12個存在することを必須条件とする。構造不一致や馬名を安全に確定できないRがある場合は推測補完せずfailureとする。
-27. `該当無し` は除外する。`勝負レース` や `note.com/keibailuka/n/` への有料導入も除外する。`🤡` は馬名欄を `🤡` として残し、公開されているコメントだけを採用する。
-28. Chatは対象Issueの `KEIBAILUKA_RESULT` コメントを完了通知として読む。`fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を必須成功条件とする。
-29. 成功時は結果コメント内の `entries` またはPlain text TSVを基に、`場所 / R / 馬名 / コメント` を依頼された開催場順、各場1R〜12R順で返す。長いコメントだけ意味を変えない範囲でChat側が軽く要約する。
-30. 通常はIssueコメントだけで最終回答を構成する。詳細な障害調査や生データ確認が必要な場合のみ `run_id` と `artifact_name` を使ってartifactを回収する。
-31. 日次ブログ解析JSON/TSV、validation、実行ログはGitへcommitしない。
-
 ## 共通
 
-32. 画像、日次CSV、ブログ解析結果、検証レポート、ログ等の運用成果物はcommitしない。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGit管理対象とし、更新は最新mainを基準に `[gpt-git-binary-update]` Issue経路で反映する。
-33. GitHub `main` 上の継続台帳やその他バイナリ正本をChat / Workで実ファイルとして解析する場合は、GitHub Connectorで読めないことを理由にユーザーへ再添付を依頼せず、共通の `[gpt-git-binary-read]` Issue経路を使用する。詳細はルート `.gpt/GIT_BINARY_READ_ISSUE.md` を参照し、artifact回収後は `manifest.json` のSHA-256と実ファイルを照合する。
-34. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
+22. 画像、日次CSV、検証レポート、ログ等の運用成果物はcommitしない。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGit管理対象とし、更新は最新mainを基準に `[gpt-git-binary-update]` Issue経路で反映する。
+23. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
