@@ -30,5 +30,5 @@
 
 ## 共通
 
-22. 画像、Excel、日次CSV、検証レポート、ログ等の運用成果物はcommitしない。
+22. 画像、日次CSV、検証レポート、ログ等の運用成果物はcommitしない。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGit管理対象とし、更新は最新mainを基準に `[gpt-git-binary-update]` Issue経路で反映する。
 23. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
