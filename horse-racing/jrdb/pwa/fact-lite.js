@@ -18,6 +18,7 @@ const factSyncProgress = document.getElementById("fact-sync-progress");
 const factCheckButton = document.getElementById("fact-btn-check");
 const factSyncButton = document.getElementById("fact-btn-sync");
 const factAggregateButton = document.getElementById("fact-btn-aggregate");
+const factClearButton = document.getElementById("fact-btn-clear");
 const factResultArea = document.getElementById("fact-result-area");
 const factQueryStatus = document.getElementById("fact-query-status");
 const factTabs = Array.from(document.querySelectorAll("#fact-tabs .tab"));
@@ -282,6 +283,7 @@ function setFactDbLoaded(source, size, metadata) {
   }
 
   factAggregateButton.disabled = false;
+  factClearButton.disabled = false;
   FACT_FILTER_ELEMENTS.forEach(function (element) {
     element.disabled = false;
   });
@@ -626,6 +628,21 @@ function configureFactTabs() {
   });
 }
 
+function clearFactFilters() {
+  factYearFrom.value = "2016";
+  factYearTo.value = "2026";
+  factVenue.value = "";
+  factTrackType.value = "";
+  factDistance.value = "";
+  factTrackCondition.value = "";
+  factAge.value = "";
+  factSex.value = "";
+  factPopBand.value = "";
+  factRunningStyle.value = "";
+  factMinStarts.value = "20";
+  runFactAggregation();
+}
+
 async function initializeFactLite() {
   updateFactNetworkStatus();
   configureFactTabs();
@@ -657,6 +674,7 @@ factCheckButton.addEventListener("click", function () {
 });
 factSyncButton.addEventListener("click", syncFactFromRemote);
 factAggregateButton.addEventListener("click", runFactAggregation);
+factClearButton.addEventListener("click", clearFactFilters);
 window.addEventListener("online", function () {
   updateFactNetworkStatus();
   checkFactManifest(false);
