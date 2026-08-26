@@ -14,17 +14,14 @@ jrdb_secret.py
 secrets/
 
 # Runtime / generated data
+# Ignore by role/location rather than by broad file extension.
+# Canonical ledgers, test fixtures, archives, databases, etc. may be tracked
+# when a project explicitly treats them as repository assets.
 output/
 outputs/
 cache/
 logs/
 *.log
-*.sqlite
-*.sqlite3
-*.db
-*.zip
-*.xlsx
-*.xls
 
 # OS / editor
 .DS_Store
