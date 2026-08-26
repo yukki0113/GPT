@@ -54,29 +54,29 @@ jobs:
           if len(patch.strip()) == 0:
               raise SystemExit("Patch is empty.")
 
-          allowed_prefixes = (
-              "horse-racing/jrdb/",
-              "horse-racing/eval/",
-              "boat-racing/",
-          )
-
-          forbidden_names = {
+          # This route is repository-wide by default. Only security-sensitive
+          # locations and obvious credential material are blocked here.
+          forbidden_exact_paths = {
               ".env",
+          }
+          forbidden_path_prefixes = (
+              ".github/workflows/",
+              ".git/",
+          )
+          forbidden_names = {
               "jrdb_secret.py",
           }
-          forbidden_suffixes = (
-              ".zip", ".7z", ".rar",
-              ".sqlite", ".sqlite3", ".db",
-              ".xlsx", ".xls",
-              ".pem", ".key", ".p12", ".pfx",
-              ".pyc",
+          forbidden_secret_suffixes = (
+              ".pem",
+              ".key",
+              ".p12",
+              ".pfx",
           )
-          forbidden_segments = {
-              "__pycache__",
-              ".git",
-              ".github",
-              "secrets",
-          }
+          forbidden_name_fragments = (
+              "secret",
+              "credential",
+              "password",
+          )
 
           header_paths = []
           for line in patch.splitlines():
@@ -105,27 +105,34 @@ jobs:
               if path.is_absolute() or ".." in parts:
                   raise SystemExit(f"Unsafe path: {raw}")
 
-              if not raw.startswith(allowed_prefixes):
-                  raise SystemExit(f"Path outside allowed projects: {raw}")
-
-              lowered_parts = {part.lower() for part in parts}
-              if lowered_parts.intersection(forbidden_segments):
-                  raise SystemExit(f"Forbidden path segment: {raw}")
-
+              normalized = path.as_posix()
+              normalized_lower = normalized.lower()
               name_lower = path.name.lower()
+
+              if normalized_lower in forbidden_exact_paths:
+                  raise SystemExit(f"Forbidden credential path: {raw}")
+
+              if normalized_lower.startswith(forbidden_path_prefixes):
+                  raise SystemExit(f"Protected path: {raw}")
+
+              if any(part.lower() == ".git" for part in parts):
+                  raise SystemExit(f"Forbidden Git metadata path: {raw}")
+
               if name_lower in forbidden_names:
-                  raise SystemExit(f"Forbidden file: {raw}")
-              if name_lower.endswith(forbidden_suffixes):
-                  raise SystemExit(f"Forbidden file type: {raw}")
-              if "secret" in name_lower or "credential" in name_lower or "password" in name_lower:
-                  raise SystemExit(f"Potential secret file rejected: {raw}")
+                  raise SystemExit(f"Forbidden credential file: {raw}")
+
+              if name_lower.endswith(forbidden_secret_suffixes):
+                  raise SystemExit(f"Private-key/certificate file rejected: {raw}")
+
+              if any(fragment in name_lower for fragment in forbidden_name_fragments):
+                  raise SystemExit(f"Potential credential file rejected: {raw}")
 
           pathlib.Path("/tmp/gpt-update.patch").write_text(patch + "\n", encoding="utf-8")
 
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"commit_message={commit_message}\n")
 
-          print("Validated paths:")
+          print("Validated repository paths:")
           for raw in sorted(checked):
               print(f"  {raw}")
           PY
