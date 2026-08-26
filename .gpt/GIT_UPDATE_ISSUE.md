@@ -62,7 +62,9 @@ Gitで管理すべきかどうかは、ファイルの役割・保存先・各�
 
 ただし、この `[gpt-git-update]` 経路自体は Issue本文の unified diff を `git apply` するテキスト更新方式です。
 そのため、Excel等のバイナリファイルは「Git管理可能」であっても、このdiff方式では転送できません。
-バイナリ更新経路は別途扱います。
+
+バイナリファイルは、実装済みの `[gpt-git-binary-update]` 経路を使用してください。
+詳細は `.gpt/GIT_BINARY_UPDATE_ISSUE.md` を参照してください。
 
 ## Processing
 
@@ -84,5 +86,7 @@ If any step fails, nothing is pushed and the Issue remains open with a link to t
 
 When direct GitHub commit/push is unavailable, do not ask the user to manually push ordinary source/documentation changes.
 Create a `[gpt-git-update]` Issue using this protocol and use the Issue/Actions route instead.
+
+変更対象にバイナリファイルが含まれる場合は `.gpt/GIT_BINARY_UPDATE_ISSUE.md` の経路へ切り替えてください。
 
 古いローカルcommitをそのままpushするのではなく、最新mainを基準として未反映差分を作成してください。
