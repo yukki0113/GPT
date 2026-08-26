@@ -55,16 +55,20 @@
           </select>
         </label>
         <label>
-          芝 / ダ
+          芝 / ダ / 障害
           <select id="q-track-type" disabled>
-            <option value="">指定なし</option><option value="1">芝</option><option value="2">ダート</option>
+            <option value="">指定なし</option><option value="1">芝</option><option value="2">ダート</option><option value="3">障害</option>
           </select>
         </label>
         <label>距離<input id="q-distance" type="number" step="100" placeholder="例: 1600" disabled /></label>
         <label>
-          馬場状態コード
+          馬場状態
           <select id="q-track-condition" disabled>
-            <option value="">指定なし</option><option value="10">良</option><option value="11">稍重</option><option value="12">重</option><option value="13">不良</option>
+            <option value="">指定なし</option>
+            <option value="10">良</option><option value="11">速良</option><option value="12">遅良</option>
+            <option value="20">稍重</option><option value="21">速稍重</option><option value="22">遅稍重</option>
+            <option value="30">重</option><option value="31">速重</option><option value="32">遅重</option>
+            <option value="40">不良</option><option value="41">速不良</option><option value="42">遅不良</option>
           </select>
         </label>
         <label>最低出走数<input id="q-min-starts" type="number" value="20" min="1" disabled /></label>
