@@ -198,7 +198,7 @@ def fetch_historical_raw(year: int, raw_dir: Path, force: bool, kinds: list[str]
     """Fetch annual packs through the canonical JRDB history fetcher."""
     command = [
         sys.executable, str(FETCH_HISTORY), "--year", str(year), "--kinds", *kinds,
-        "--output-dir", str(raw_dir), "--continue-on-error",
+        "--output-dir", str(raw_dir.resolve()), "--continue-on-error",
     ]
     if force:
         command.append("--force")
@@ -297,7 +297,7 @@ def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Pat
 def fetch_paci(request: RaceNoteRequest, work_dir: Path, force: bool) -> Path:
     """Fetch current/future PACI through canonical authenticated downloader."""
     paci_dir = work_dir / "PACI"
-    command = [sys.executable, str(FETCH_PACI), "--date", request.compact_date, "--out-dir", str(paci_dir)]
+    command = [sys.executable, str(FETCH_PACI), "--date", request.compact_date, "--out-dir", str(paci_dir.resolve())]
     if force:
         command.append("--force")
     run(command, cwd=HERE)
