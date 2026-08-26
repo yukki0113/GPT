@@ -1,16 +1,18 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v4";
+const CACHE_NAME = "jrdb-pwa-shell-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
-  "./manifest.webmanifest"
+  "./manifest.webmanifest",
+  "./vendor/sql-wasm.js",
+  "./vendor/sql-wasm.wasm"
 ];
 
 /**
- * PWA shell を事前キャッシュする。
+ * PWA shell と SQLite 実行エンジンを事前キャッシュする。
  */
 self.addEventListener("install", function (event) {
   event.waitUntil(
