@@ -1,0 +1,197 @@
+name: GPT Git Binary Read via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[gpt-git-binary-read]'
+
+jobs:
+  export:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[gpt-git-binary-read]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import pathlib
+          import re
+          import subprocess
+
+          body = os.environ.get('ISSUE_BODY', '')
+
+          def read_field(name: str, required: bool = True) -> str:
+              match = re.search(rf'(?m)^{re.escape(name)}:\s*(.*?)\s*$', body)
+              if match is None:
+                  if required:
+                      raise SystemExit(f'Missing {name}')
+                  return ''
+              return match.group(1).strip()
+
+          target_path = read_field('path')
+          request_id = read_field('request_id', required=False)
+          if not request_id:
+              request_id = f"issue-{os.environ['ISSUE_NUMBER']}"
+
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,100}', request_id):
+              raise SystemExit('request_id must contain only A-Z, a-z, 0-9, dot, underscore, or hyphen')
+
+          pure = pathlib.PurePosixPath(target_path)
+          if pure.is_absolute() or '..' in pure.parts or not pure.parts:
+              raise SystemExit(f'Unsafe path: {target_path}')
+
+          normalized = pure.as_posix()
+          lowered = normalized.lower()
+          blocked_parts = {'.git'}
+          if any(part.lower() in blocked_parts for part in pure.parts):
+              raise SystemExit(f'Blocked path: {normalized}')
+
+          blocked_names = ('.env', 'jrdb_secret.py')
+          if pure.name.lower() in blocked_names:
+              raise SystemExit(f'Blocked sensitive file: {normalized}')
+
+          sensitive_tokens = ('credential', 'password', 'secret')
+          if any(token in lowered for token in sensitive_tokens):
+              raise SystemExit(f'Blocked sensitive path: {normalized}')
+
+          blocked_suffixes = ('.pem', '.key', '.p12', '.pfx')
+          if lowered.endswith(blocked_suffixes):
+              raise SystemExit(f'Blocked private key or certificate: {normalized}')
+
+          path = pathlib.Path(normalized)
+          if not path.exists():
+              raise SystemExit(f'File not found on main: {normalized}')
+          if not path.is_file():
+              raise SystemExit(f'Path is not a file: {normalized}')
+
+          size = path.stat().st_size
+          digest = hashlib.sha256(path.read_bytes()).hexdigest()
+          source_commit = subprocess.check_output(
+              ['git', 'rev-parse', 'HEAD'], text=True
+          ).strip()
+
+          safe_name = re.sub(r'[^A-Za-z0-9._-]+', '_', path.name)
+          artifact_name = f'gpt-git-binary-read-{request_id}-{safe_name}'[:200]
+
+          manifest = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'path': normalized,
+              'file_name': path.name,
+              'size_bytes': size,
+              'sha256': digest,
+              'source_ref': 'main',
+              'source_commit': source_commit,
+              'artifact_name': artifact_name,
+          }
+          pathlib.Path('/tmp/binary_read_manifest.json').write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+
+          with pathlib.Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
+              output.write(f'target_path={normalized}\n')
+              output.write(f'request_id={request_id}\n')
+              output.write(f'artifact_name={artifact_name}\n')
+              output.write(f'size_bytes={size}\n')
+              output.write(f'sha256={digest}\n')
+              output.write(f'source_commit={source_commit}\n')
+          PY
+
+      - name: Stage readback package
+        env:
+          TARGET_PATH: ${{ steps.request.outputs.target_path }}
+        run: |
+          mkdir -p /tmp/gpt-binary-read/package
+          cp -- "$TARGET_PATH" /tmp/gpt-binary-read/package/
+          cp /tmp/binary_read_manifest.json /tmp/gpt-binary-read/package/manifest.json
+
+      - name: Upload binary readback artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.artifact_name }}
+          path: /tmp/gpt-binary-read/package/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          TARGET_PATH: ${{ steps.request.outputs.target_path }}
+          ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+          FILE_SIZE: ${{ steps.request.outputs.size_bytes }}
+          FILE_SHA256: ${{ steps.request.outputs.sha256 }}
+          SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'status': 'success',
+              'run_id': int(os.environ['RUN_ID']),
+              'artifact_name': os.environ['ARTIFACT_NAME'],
+              'path': os.environ['TARGET_PATH'],
+              'size_bytes': int(os.environ['FILE_SIZE']),
+              'sha256': os.environ['FILE_SHA256'],
+              'source_ref': 'main',
+              'source_commit': os.environ['SOURCE_COMMIT'],
+          }
+          Path('/tmp/result_comment.md').write_text(
+              '@yukki0113\n\n'
+              '✅ Git binary readback artifact is ready.\n\n'
+              'GIT_BINARY_READ_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          cat > /tmp/result_comment.md <<EOF
+          @yukki0113
+
+          ❌ Git binary readback failed. The requested path was not exported.
+
+          Workflow run: $RUN_URL
+
+          The issue is left open for inspection/retry.
+          EOF
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
