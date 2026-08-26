@@ -1,6 +1,6 @@
 # JRDB 検証ラボ PWA
 
-JRDB Stats Mart をスマホ端末へ保存し、競馬場など通信が不安定な場所でも条件集計できるオフライン PWA のフロントエンド正本です。
+JRDBデータをスマホ端末へ保存し、競馬場など通信が不安定な場所でも条件集計できるオフライン PWA のフロントエンド正本です。
 
 ## Deployment
 
@@ -8,15 +8,21 @@ GitHub Pages は GitHub Actions 方式を使用します。
 
 - source: `horse-racing/jrdb/pwa/`
 - UI workflow: `.github/workflows/jrdb_pwa_pages.yml`
-- data publish workflow: `.github/workflows/jrdb_pwa_publish_data.yml`
+- Stats Mart data publish workflow: `.github/workflows/jrdb_pwa_publish_data.yml`
+- Fact Lite publish workflow: `.github/workflows/jrdb_pwa_fact_lite_publish.yml`
 - target branch: `main`
 - default Pages URL: `https://yukki0113.github.io/GPT/`
+- Fact Lite PoC: `https://yukki0113.github.io/GPT/fact-lite.html`
 
 `pwa/**` または Pages workflow が `main` で更新されると自動デプロイします。
 
 ## Current phase
 
-Phase 3 では、実機PoCで成立した OPFS / sql.js 基盤へ remote manifest と安全なStats Mart自動同期を追加しました。
+OPFS / sql.js / remote manifest /安全な自動同期を実機で確認済みです。
+
+現在は、軸別事前集計の Stats Mart に加え、1出走1行の PWA専用 Fact Lite を並行検証しています。
+
+Fact Lite は自由な `WHERE / GROUP BY` を主目的とし、種牡馬・母父・騎手・枠・脚質・年齢・性別・人気帯などを同一SQLite上で横断集計できます。
 
 実装済み:
 
@@ -28,28 +34,29 @@ Phase 3 では、実機PoCで成立した OPFS / sql.js 基盤へ remote manifes
 - OPFS 利用可否チェック
 - sql.js 1.14.1 + WASM の固定version利用
 - sql.js / WASM の同一origin配信・Service Workerキャッシュ
-- Stats Mart SQLite の手動復旧取込
-- 必須3テーブル確認 / `PRAGMA integrity_check`
-- OPFS `jrdb/current.sqlite` への永続保存
-- 次回起動時の OPFS 自動復元
-- remote `data/manifest.json` による最新版確認
+- remote manifest による最新版確認
 - size / SHA-256 / schema / required tables / integrity validation
 - `incoming.sqlite` / `previous.sqlite` / `current.sqlite` による安全な全量差し替え
 - GitHub Release を利用したGit非管理の配布キャッシュ
 - Google Drive -> Issue -> Actions -> Release -> Pages artifact の配布経路
-- 種牡馬 / 騎手 / 枠の集計
-- 年 / 競馬場 / 芝ダ障害 / 距離 / 馬場状態 / 最低出走数フィルタ
+- Stats Mart: 種牡馬 / 騎手 / 枠の集計
+- Fact Lite: 種牡馬 / 母父 / 騎手 / 枠 / 脚質 / 年齢 / 性別 / 人気帯の集計
+- 年 / 競馬場 / 芝ダ障害 / 距離 / 馬場状態 / 年齢 / 性別 / 人気帯 / 脚質 / 最低出走数フィルタ
 - 勝率 / 複勝率 / 単勝回収率 / 複勝回収率表示
+- Fact Lite 検索条件クリア
 
 未実装 / 今後:
 
-- Stats Mart更新生成処理から `[JRDB_PWA_DATA_PUBLISH]` Issue作成までの完全自動連携
-- 追加Mart軸
+- Fact Liteを正式主DBとするかの最終設計反映
+- 必要な追加条件・集計軸
 - UIの最終調整
+- データ生成から配布Issue作成までの完全自動連携
 
 ## Real-device validation
 
-2026-08-26 に iOS版Google Chromeで現行 Stats Mart v1.1 を検証しました。
+### Stats Mart
+
+2026-08-26 に iOS版Google Chromeで Stats Mart v1.1 を検証しました。
 
 - SQLite size: 約53.6 MiB
 - OPFS保存: 成功
@@ -60,17 +67,38 @@ Phase 3 では、実機PoCで成立した OPFS / sql.js 基盤へ remote manifes
 - 機内モードでのPWA起動: 成功
 - 機内モードでのOPFS復元・集計: 成功
 
-これにより、約54MiB級 Stats Mart を端末常用DBとする基本構成は実機で成立済みです。
+### Fact Lite v0.1
+
+同日、iOS版Google Chromeで Fact Lite v0.1 を検証しました。
+
+- rows: 513,512
+- SQLite size: 49,700,864 bytes（約47.4 MiB）
+- 初回取得・読込体感: 約2〜3秒
+- OPFS保存・自動復元: 成功
+- 全期間集計:
+  - 種牡馬: 約370 ms
+  - 母父: 約348 ms
+  - 騎手: 約310 ms
+- 東京・芝・1600m:
+  - 種牡馬: 約65 ms
+  - 母父: 約65 ms
+  - 騎手: 約62 ms
+- 東京・芝・1600m・3歳・牡・1〜3人気・先行:
+  - 該当0件
+  - 約52 ms
+- 全期間集計では一瞬の待機感はあるが、実用上ストレスになる水準ではないことを実機確認
+
+この結果から、Fact Lite を自由条件集計の主DBとし、Stats Mart は必要な箇所だけ高速化用途で補助する構成が有力です。
 
 ## Distribution flow
 
 大容量SQLiteはGitへcommitしません。
 
 ```text
-Google Drive Stats Mart
-  -> [JRDB_PWA_DATA_PUBLISH] Issue
+Google Drive Analysis / Stats Mart
+  -> dedicated Issue
   -> GitHub Actions
-  -> size / SHA-256 / SQLite validation
+  -> build / size / SHA-256 / SQLite validation
   -> GitHub Release asset (distribution cache)
   -> GitHub Pages artifact /data/
   -> PWA manifest sync
@@ -79,7 +107,7 @@ Google Drive Stats Mart
 
 Google Drive File IDは世代更新で変わり得るためGitへ固定しません。Issue本文だけでその時点のFile IDとartifact metadataを渡します。
 
-通常のPWAコード更新時は `.github/workflows/jrdb_pwa_pages.yml` が `jrdb-stats-mart-current` Releaseの現行assetをPages artifactへ再同梱するため、UI更新で配布DBが消えない構成です。
+通常のPWAコード更新時は `.github/workflows/jrdb_pwa_pages.yml` が現行Release assetをPages artifactへ再同梱するため、UI更新で配布DBが消えない構成です。
 
 詳細は `SYNC_PROVIDER.md` を参照してください。
 
@@ -90,14 +118,14 @@ PWA起動時はネットワークより先に OPFS `current.sqlite` を復元し
 オンライン時のみmanifestを確認し、ローカル metadata の SHA-256 と比較します。
 
 - 同一SHA-256: 再ダウンロードしない
-- 新版: `data/jrdb_stats_mart.sqlite` を取得
+- 新版: 配布SQLiteを取得
 - 取得後: size / SHA-256 / SQLite validation
 - validation成功: incoming -> previous/current の順で切替
 - validation失敗: current.sqlite を維持
 
 Service Workerは `/data/` をキャッシュしません。オフライン利用は OPFS の current.sqlite を使います。
 
-## Current distribution artifact
+## Current Stats Mart distribution artifact
 
 2026-08-26 のDrive実ファイルをActionsから再取得して検証した結果:
 
@@ -112,7 +140,7 @@ Service Workerは `/data/` をキャッシュしません。オフライン利�
 
 ## Data policy
 
-JRDB Raw、Analysis Lite、Stats Mart の生成正本は引き続き Git 管理外です。
-GitHub Release / GitHub Pages artifact に置く Stats Mart は **PWA配信用キャッシュ** であり、Git正本ではありません。
+JRDB Raw、Analysis Lite、Stats Mart、Fact Lite の生成正本は引き続き Git 管理外です。
+GitHub Release / GitHub Pages artifact に置くSQLiteは **PWA配信用キャッシュ** であり、Git正本ではありません。
 
 詳細設計は `../docs/JRDB_PWA_Offline_Sync_Design.md`、実配布方式は `SYNC_PROVIDER.md` を参照してください。
