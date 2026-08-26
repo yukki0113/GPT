@@ -32,10 +32,24 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare Pages artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .pages
+          mkdir -p .pages/vendor
+          cp -a horse-racing/jrdb/pwa/. .pages/
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js \
+            --output .pages/vendor/sql-wasm.js
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm \
+            --output .pages/vendor/sql-wasm.wasm
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: horse-racing/jrdb/pwa
+          path: .pages
 
       - name: Deploy to GitHub Pages
         id: deployment
