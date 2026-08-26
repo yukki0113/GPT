@@ -6,7 +6,7 @@
 
 GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPython・README・作業手順の正本とします。
 
-画像、OCR途中成果物、Excel運用台帳、日次CSV、ログ等の運用成果物はGit管理対象外です。
+画像、OCR途中成果物、日次CSV、ログ等の運用成果物はGit管理対象外です。継続台帳のみ `ledger/Eval表集計・検証.xlsx` をGit管理し、GitHub `main` を正本とします。
 
 ## Current tools
 
@@ -90,4 +90,4 @@ Issue作成をトリガーにGitHub Actionsが起動し、Git正本のPythonと 
 
 日常運用ではChat専用Issue経路を優先します。
 
-日次画像、CSV、検証レポート、実行ログ等はGitへcommitしません。
+日次画像、CSV、検証レポート、実行ログ等はGitへcommitしません。台帳更新時は最新mainの `ledger/Eval表集計・検証.xlsx` を更新し、バイナリ更新Issue経路で反映します。
