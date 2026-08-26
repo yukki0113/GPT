@@ -8,7 +8,7 @@ Active。Eval表の画像取得、結果取得、OCR/検証・台帳更新を支
 
 Python、README、作業手順、依存関係、GitHub Actions WorkflowはGitHub `yukki0113/GPT` の `main` を正本とします。
 
-Eval画像、OCR途中成果物、Excel運用台帳、日次取得CSV、検証レポート、ログ等の運用成果物はGit外を正本とします。
+Eval画像、OCR途中成果物、日次取得CSV、検証レポート、ログ等の運用成果物はGit外を正本とします。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGitHub `main` を正本とします。
 
 ## Eval表画像取得
 
