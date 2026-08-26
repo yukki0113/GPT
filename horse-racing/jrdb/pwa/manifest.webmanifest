@@ -1,0 +1,11 @@
+{
+  "name": "JRDB 検証ラボ",
+  "short_name": "検証ラボ",
+  "description": "JRDB Stats Mart を端末内で利用するオフライン競馬条件集計PWA",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f3f3",
+  "theme_color": "#f7f7f7",
+  "lang": "ja"
+}
