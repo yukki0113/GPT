@@ -1,0 +1,365 @@
+name: eval-jrdb-dataset-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[EVAL_JRDB_DATASET]'
+
+jobs:
+  run:
+    if: startsWith(github.event.issue.title, '[EVAL_JRDB_DATASET]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          ledger_path = str(request.get(
+              'ledger_path',
+              'horse-racing/eval/ledger/Eval表集計・検証.xlsx',
+          )).strip()
+          if not ledger_path.startswith('horse-racing/eval/') or not ledger_path.endswith('.xlsx'):
+              raise SystemExit('ledger_path must be an Eval .xlsx repository path')
+          if '..' in Path(ledger_path).parts:
+              raise SystemExit('ledger_path must not contain ..')
+
+          output_name = str(request.get('output_name', 'eval_jrdb_dataset.csv')).strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,100}\.csv', output_name):
+              raise SystemExit('output_name must be a simple .csv file name')
+
+          output_dir = f'horse-racing/jrdb/output_issue/{request_id}'
+          resolved = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'ledger_path': ledger_path,
+              'output_name': output_name,
+              'output_dir': output_dir,
+              'raw_dir': f'{output_dir}/raw',
+              'targets_csv': f'{output_dir}/eval_targets.csv',
+              'dataset_csv': f'{output_dir}/{output_name}',
+          }
+          Path('/tmp/eval_jrdb_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f"REQUEST_ID={request_id}\n")
+              file.write(f"OUTPUT_DIR={output_dir}\n")
+          PY
+
+      - name: Extract Eval race targets from ledger
+        run: |
+          python - <<'PY'
+          import csv
+          import datetime as dt
+          import json
+          import re
+          import zipfile
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/eval_jrdb_request.json').read_text(encoding='utf-8'))
+          ledger = Path(request['ledger_path'])
+          if not ledger.exists():
+              raise SystemExit(f'ledger not found: {ledger}')
+
+          main_ns = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
+          rel_ns = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+          pkg_rel_ns = 'http://schemas.openxmlformats.org/package/2006/relationships'
+          ns = {'a': main_ns, 'r': rel_ns}
+
+          with zipfile.ZipFile(ledger) as archive:
+              workbook = ET.fromstring(archive.read('xl/workbook.xml'))
+              rels = ET.fromstring(archive.read('xl/_rels/workbook.xml.rels'))
+              rid_to_target = {
+                  rel.attrib['Id']: rel.attrib['Target']
+                  for rel in rels.findall(f'{{{pkg_rel_ns}}}Relationship')
+              }
+
+              sheet_target = None
+              for sheet in workbook.find('a:sheets', ns):
+                  if sheet.attrib.get('name') == 'レース分析':
+                      rid = sheet.attrib[f'{{{rel_ns}}}id']
+                      sheet_target = rid_to_target[rid]
+                      break
+              if sheet_target is None:
+                  raise SystemExit('sheet レース分析 not found')
+
+              shared_strings = []
+              if 'xl/sharedStrings.xml' in archive.namelist():
+                  sst = ET.fromstring(archive.read('xl/sharedStrings.xml'))
+                  for si in sst.findall('a:si', ns):
+                      text = ''.join(
+                          node.text or ''
+                          for node in si.iter(f'{{{main_ns}}}t')
+                      )
+                      shared_strings.append(text)
+
+              sheet_xml = ET.fromstring(archive.read('xl/' + sheet_target))
+
+          def cell_value(cell):
+              cell_type = cell.attrib.get('t')
+              value_node = cell.find('a:v', ns)
+              if cell_type == 's' and value_node is not None:
+                  return shared_strings[int(value_node.text)]
+              if cell_type == 'inlineStr':
+                  text_node = cell.find('a:is/a:t', ns)
+                  return text_node.text if text_node is not None else ''
+              return value_node.text if value_node is not None else ''
+
+          def excel_serial_to_iso(value):
+              serial = float(value)
+              return (dt.datetime(1899, 12, 30) + dt.timedelta(days=serial)).date().isoformat()
+
+          venues = {
+              '札幌': '01', '函館': '02', '福島': '03', '新潟': '04', '東京': '05',
+              '中山': '06', '中京': '07', '京都': '08', '阪神': '09', '小倉': '10',
+          }
+          targets = set()
+          for row in sheet_xml.findall('.//a:sheetData/a:row', ns):
+              values = {}
+              for cell in row.findall('a:c', ns):
+                  ref = cell.attrib.get('r', '')
+                  match = re.match(r'([A-Z]+)', ref)
+                  if match:
+                      values[match.group(1)] = cell_value(cell)
+              if values.get('A') == '開催日':
+                  continue
+              if not values.get('A') or not values.get('B') or not values.get('C'):
+                  continue
+              venue_code = venues.get(str(values['B']).strip())
+              if venue_code is None:
+                  raise SystemExit(f"unknown venue: {values['B']!r}")
+              race_date = excel_serial_to_iso(values['A'])
+              race_no = int(float(values['C']))
+              targets.add((race_date, venue_code, race_no))
+
+          if not targets:
+              raise SystemExit('no Eval targets extracted')
+
+          output = Path(request['targets_csv'])
+          output.parent.mkdir(parents=True, exist_ok=True)
+          with output.open('w', encoding='utf-8', newline='') as handle:
+              writer = csv.writer(handle)
+              writer.writerow(['race_date', 'venue_code', 'race_no'])
+              writer.writerows(sorted(targets))
+
+          dates = sorted({row[0] for row in targets})
+          Path('/tmp/eval_target_dates.txt').write_text('\n'.join(dates) + '\n', encoding='utf-8')
+          Path('/tmp/eval_target_summary.json').write_text(
+              json.dumps({
+                  'target_races': len(targets),
+                  'target_dates': len(dates),
+                  'first_date': dates[0],
+                  'last_date': dates[-1],
+              }, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          print(Path('/tmp/eval_target_summary.json').read_text(encoding='utf-8'))
+          PY
+
+      - name: Fetch BAC and SED Raw for target dates
+        id: fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/eval_jrdb_request.json').read_text(encoding='utf-8'))
+          dates = [line.strip() for line in Path('/tmp/eval_target_dates.txt').read_text(encoding='utf-8').splitlines() if line.strip()]
+          failures = []
+          for race_date in dates:
+              command = [
+                  'python', 'horse-racing/jrdb/src/fetch_jrdb_history.py',
+                  '--date', race_date,
+                  '--kinds', 'BAC', 'SED',
+                  '--output-dir', request['raw_dir'],
+                  '--sleep-seconds', '0.2',
+              ]
+              completed = subprocess.run(command, check=False)
+              if completed.returncode != 0:
+                  failures.append(race_date)
+          Path('/tmp/eval_fetch_failures.json').write_text(
+              json.dumps({'failures': failures}, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          raise SystemExit(1 if failures else 0)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Export integrated JRDB Eval dataset
+        id: export
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/eval_jrdb_request.json').read_text(encoding='utf-8'))
+          log_path = Path(request['output_dir']) / 'export_metrics.txt'
+          command = [
+              'python', 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py',
+              '--raw', request['raw_dir'],
+              '--targets-csv', request['targets_csv'],
+              '--fail-on-missing-target',
+              '--output', request['dataset_csv'],
+          ]
+          completed = subprocess.run(command, check=False, text=True, capture_output=True)
+          log_path.parent.mkdir(parents=True, exist_ok=True)
+          log_path.write_text(
+              completed.stdout + ('\nSTDERR:\n' + completed.stderr if completed.stderr else ''),
+              encoding='utf-8',
+          )
+          print(completed.stdout, end='')
+          if completed.stderr:
+              print(completed.stderr, end='')
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Collect artifact
+        id: collect
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/eval_jrdb_request.json').read_text(encoding='utf-8'))
+          output_dir = Path(request['output_dir'])
+          artifact_dir = output_dir / 'artifact'
+          artifact_dir.mkdir(parents=True, exist_ok=True)
+
+          for source in [
+              Path(request['targets_csv']),
+              Path(request['dataset_csv']),
+              output_dir / 'export_metrics.txt',
+              Path('/tmp/eval_target_summary.json'),
+              Path('/tmp/eval_fetch_failures.json'),
+          ]:
+              if source.exists():
+                  shutil.copy2(source, artifact_dir / source.name)
+
+          safe_request = dict(request)
+          Path(artifact_dir / 'resolved_request.json').write_text(
+              json.dumps(safe_request, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          if not Path(request['dataset_csv']).exists():
+              raise SystemExit('dataset CSV not found')
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-jrdb-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/artifact/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          EXPORT_EXIT: ${{ steps.export.outputs.exit_code }}
+          COLLECT_EXIT: ${{ steps.collect.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/eval_jrdb_request.json').read_text(encoding='utf-8'))
+          summary = json.loads(Path('/tmp/eval_target_summary.json').read_text(encoding='utf-8'))
+          dataset = Path(request['dataset_csv'])
+          output_rows = 0
+          if dataset.exists():
+              with dataset.open('r', encoding='utf-8-sig', newline='') as handle:
+                  output_rows = sum(1 for _ in csv.reader(handle)) - 1
+          fetch_exit = os.environ.get('FETCH_EXIT', '')
+          export_exit = os.environ.get('EXPORT_EXIT', '')
+          collect_exit = os.environ.get('COLLECT_EXIT', '')
+          status = 'success' if fetch_exit == '0' and export_exit == '0' and collect_exit == '0' else 'failure'
+          result = {
+              'request_id': request['request_id'],
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"eval-jrdb-{request['request_id']}-{os.environ['GITHUB_RUN_ID']}",
+              **summary,
+              'output_rows': output_rows,
+              'fetch_exit_code': fetch_exit,
+              'export_exit_code': export_exit,
+              'collect_exit_code': collect_exit,
+          }
+          Path('/tmp/result_comment.md').write_text(
+              'EVAL_JRDB_DATASET_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n', encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when request failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.export.outputs.exit_code != '0' || steps.collect.outputs.exit_code != '0')
+        run: exit 1
