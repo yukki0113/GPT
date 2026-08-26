@@ -183,10 +183,23 @@ GPT
 
 GitHubへ大容量SQLite、Raw ZIP、認証情報をcommitしません。
 
-Actionsでは以下のRepository secretsを利用します。
+Actionsでは以下のRepository Secretsを利用します。
 
 - `JRDB_USER`
 - `JRDB_PASSWORD`
+
+秘密値はRepository Settingsの `Secrets and variables -> Actions` でのみ管理します。値そのものを次へ記載・保存しません。
+
+- Git管理ファイル
+- Issue本文 / Issueコメント
+- workflow input
+- artifact
+- ChatGPTへの依頼文
+- ログ
+
+Workflowは実行時だけ `${{ secrets.JRDB_USER }}` / `${{ secrets.JRDB_PASSWORD }}` を環境変数へ渡します。Actionsログではsecret値が `***` にマスクされることを確認します。
+
+2026-08-26の接続試験では、Repository Secretsが両方Workflowへ供給され、JRDB PACI取得処理まで到達することを確認済みです。未提供日のPACIに対してJRDBから404が返り、認証失敗時の401/403とは区別されています。秘密値そのものはログへ出力されていません。
 
 Analysis/MartはIssue requestで渡されたDrive URLから一時取得し、artifactには含めません。
 
