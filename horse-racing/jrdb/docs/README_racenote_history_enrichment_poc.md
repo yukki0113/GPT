@@ -16,7 +16,22 @@
 - `horses[].stats.jockey`: 同条件の騎手傾向
 - `race.race_trends.frame`: 同条件の枠傾向
 
-集計値は `starts / wins / top3 / win_rate / top3_rate` に絞り、払戻率は初期PoCでは付加しません。
+集計値は `starts / wins / top3 / win_rate / top3_rate / sample_size_band` とし、払戻率は初期PoCでは付加しません。
+
+## sample_size_band
+
+率だけを見て少サンプル統計を過大評価しないよう、`starts` から単純な母数帯を付与します。
+
+```text
+0       -> none
+1-19    -> small
+20-49   -> moderate
+50+     -> sufficient
+```
+
+これは統計的有意性や信頼区間を表すものではなく、母数の大きさをGPTへ明示する補助情報です。`starts / wins / top3 / win_rate / top3_rate` の数値はそのまま保持します。
+
+2026-05-09 京都新聞杯では `starts=1 / top3_rate=100.0 / sample_size_band=small` の実例が確認されました。2026-01-05 万葉Sではdistance rangeを含む集計でも `sufficient` が0件であり、希少条件の標本不足をそのまま表現できています。
 
 ## 距離レンジ
 
@@ -53,16 +68,18 @@
     "wins": 2,
     "top3": 5,
     "win_rate": 16.7,
-    "top3_rate": 41.7
+    "top3_rate": 41.7,
+    "sample_size_band": "small"
   },
   {
     "min_m": 1400,
     "max_m": 1800,
-    "starts": 9,
-    "wins": 1,
-    "top3": 3,
-    "win_rate": 11.1,
-    "top3_rate": 33.3
+    "starts": 59,
+    "wins": 7,
+    "top3": 20,
+    "win_rate": 11.9,
+    "top3_rate": 33.9,
+    "sample_size_band": "sufficient"
   }
 ]
 ```
@@ -115,7 +132,7 @@ Analysis側の表示項目はコンパクトに、日付・場・R・芝ダ・�
 1. 8走案 / 10走案のファイルサイズ・文字量差
 2. 6走目以降が予想判断に実質的な追加材料を与えるか
 3. sire / jockey / frameのMart傾向が読みやすく、過剰にJSONを肥大化させていないか
-4. `starts` が小さい統計をGPTが過大評価しない構造になっているか
+4. `sample_size_band` が少サンプル率の過大評価防止に有効か
 5. 完全一致距離が疎な条件で `distance_ranges` が有効な補助情報になるか
 6. 1400m / 1800mの重複境界が過剰な重複情報にならないか
 7. 対象日以降のデータ混入がないか
