@@ -157,4 +157,30 @@ PoCから得た主な修正:
 - `recent_runs` を完全な直近N走と誤読 -> `run_layers`
 - 履歴量は5詳細 + 3簡略の最大8走を採用
 
+## Production E2E validation
+
+2026-08-27、標準 `[RACENOTE_REQUEST]` Issue経路から2026-05-09京都11R 京都新聞杯を生成し、production v1.0経路のE2Eを確認した。
+
+- Issue: `#109 [RACENOTE_REQUEST] v1-e2e-20260827-kyoto11`
+- workflow run: `33026405453`
+- checked-out router commit: `d5614ffe8ffcff564fede3a66e6aad752efd78aa`
+- task exit: 0
+- collect exit: 0
+- bundle count: 1
+- runners: 16
+- request manifest `final_schema_version`: `1.0`
+- bundle `schema_version`: `1.0`
+- `metadata.history_enrichment`: present
+- `metadata.history_enrichment_poc`: absent
+- all 16 horses: `history_coverage.run_layers` present
+- `recent_runs` maximum: 5
+- `older_runs` maximum: 3
+- horse/sire/jockey summary sample-size bands: present
+- distance-range summaries: present
+- race-level frame trends: present
+- target-date or later history rows: 0
+- latest included history date: 2026-04-18 (< target 2026-05-09)
+
+このE2E PASSをもって、通常RaceNote生成はv1.0 production pathを正本運用とする。
+
 以後の通常RaceNote生成はv1.0を正本仕様とします。
