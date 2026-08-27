@@ -7,7 +7,7 @@ import datetime as dt
 import sqlite3
 from pathlib import Path
 
-VERSION = "0.2"
+VERSION = "0.2.1"
 SCHEMA_VERSION = "0.2"
 
 
@@ -16,6 +16,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--analysis", type=Path, required=True)
     parser.add_argument("--db", type=Path, required=True)
+    parser.add_argument(
+        "--race-names",
+        type=Path,
+        default=None,
+        help="Optional SQLite containing race_name_lookup(race_key, race_name)",
+    )
     parser.add_argument(
         "--schema",
         type=Path,
@@ -96,6 +102,35 @@ def source_columns(output: sqlite3.Connection) -> set[str]:
     }
 
 
+def validate_race_name_source(path: Path) -> None:
+    """Validate an optional race-name lookup SQLite."""
+    if not path.exists():
+        raise SystemExit(f"Race-name DB not found: {path}")
+
+    connection = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
+        table = connection.execute(
+            "SELECT 1 FROM sqlite_master "
+            "WHERE type='table' AND name='race_name_lookup'"
+        ).fetchone()
+        if table is None:
+            raise SystemExit("race_name_lookup table was not found")
+        columns = {
+            row[1]
+            for row in connection.execute("PRAGMA table_info(race_name_lookup)")
+        }
+        missing = {"race_key", "race_name"} - columns
+        if missing:
+            raise SystemExit(
+                "race_name_lookup is missing columns: " + ", ".join(sorted(missing))
+            )
+        integrity = connection.execute("PRAGMA integrity_check").fetchone()
+        if integrity is None or integrity[0] != "ok":
+            raise SystemExit(f"Race-name integrity_check failed: {integrity}")
+    finally:
+        connection.close()
+
+
 def insert_dictionary(
     output: sqlite3.Connection,
     source_alias: str,
@@ -122,19 +157,36 @@ def insert_dictionary(
 
 def insert_race_dictionary(
     output: sqlite3.Connection,
-    has_race_name: bool,
+    has_analysis_race_name: bool,
+    has_lookup: bool,
 ) -> None:
-    """Create one race dimension row per race key.
-
-    Analysis Lite v1.2 has no race_name column. In that case the dimension is
-    still created so Fact Lite v0.2 remains usable; race-name search becomes
-    available automatically after a source Analysis carrying race_name is used.
-    """
-    if has_race_name:
+    """Create one race dimension row per Analysis race key."""
+    if has_analysis_race_name and has_lookup:
+        rows = output.execute(
+            "WITH source_race AS ("
+            "  SELECT race_key, MAX(NULLIF(TRIM(race_name), '')) AS race_name "
+            "  FROM analysis.fact_entry_result_lite GROUP BY race_key"
+            ") "
+            "SELECT s.race_key, COALESCE(s.race_name, l.race_name) "
+            "FROM source_race AS s "
+            "LEFT JOIN race_names.race_name_lookup AS l ON l.race_key=s.race_key "
+            "ORDER BY s.race_key"
+        ).fetchall()
+    elif has_analysis_race_name:
         rows = output.execute(
             "SELECT race_key, MAX(NULLIF(TRIM(race_name), '')) AS race_name "
             "FROM analysis.fact_entry_result_lite "
             "GROUP BY race_key ORDER BY race_key"
+        ).fetchall()
+    elif has_lookup:
+        rows = output.execute(
+            "WITH source_race AS ("
+            "  SELECT DISTINCT race_key FROM analysis.fact_entry_result_lite"
+            ") "
+            "SELECT s.race_key, l.race_name "
+            "FROM source_race AS s "
+            "LEFT JOIN race_names.race_name_lookup AS l ON l.race_key=s.race_key "
+            "ORDER BY s.race_key"
         ).fetchall()
     else:
         rows = output.execute(
@@ -159,35 +211,12 @@ def build_fact(output: sqlite3.Connection) -> None:
     output.execute(
         """
         INSERT INTO fact_stats_entry(
-          race_date_int,
-          year,
-          month,
-          venue_code,
-          race_no,
-          race_id,
-          track_type,
-          distance,
-          race_condition_code,
-          track_condition_code,
-          grade_code,
-          frame_no,
-          sex_code,
-          age,
-          sire_id,
-          bms_id,
-          sire_line_code,
-          bms_line_code,
-          jockey_id,
-          running_style,
-          distance_aptitude,
-          uptrend,
-          training_index,
-          final_win_popularity,
-          finish,
-          win_payout,
-          place_payout,
-          prev_distance_delta,
-          prev_class_code
+          race_date_int, year, month, venue_code, race_no, race_id,
+          track_type, distance, race_condition_code, track_condition_code,
+          grade_code, frame_no, sex_code, age, sire_id, bms_id,
+          sire_line_code, bms_line_code, jockey_id, running_style,
+          distance_aptitude, uptrend, training_index, final_win_popularity,
+          finish, win_payout, place_payout, prev_distance_delta, prev_class_code
         )
         SELECT
           CAST(REPLACE(source.race_date, '-', '') AS INTEGER),
@@ -205,49 +234,41 @@ def build_fact(output: sqlite3.Connection) -> None:
             ELSE CAST(source.track_condition_code AS INTEGER)
           END,
           CASE
-            WHEN source.grade_code IS NULL OR source.grade_code = ''
-              THEN 0
+            WHEN source.grade_code IS NULL OR source.grade_code = '' THEN 0
             ELSE CAST(source.grade_code AS INTEGER)
           END,
           source.frame_no,
           CASE
-            WHEN source.sex_code IS NULL OR source.sex_code = ''
-              THEN NULL
+            WHEN source.sex_code IS NULL OR source.sex_code = '' THEN NULL
             ELSE CAST(source.sex_code AS INTEGER)
           END,
           source.age,
           sire.id,
           bms.id,
           CASE
-            WHEN source.sire_line_code IS NULL OR source.sire_line_code = ''
-              THEN NULL
+            WHEN source.sire_line_code IS NULL OR source.sire_line_code = '' THEN NULL
             ELSE CAST(source.sire_line_code AS INTEGER)
           END,
           CASE
             WHEN source.broodmare_sire_line_code IS NULL
-              OR source.broodmare_sire_line_code = ''
-              THEN NULL
+              OR source.broodmare_sire_line_code = '' THEN NULL
             ELSE CAST(source.broodmare_sire_line_code AS INTEGER)
           END,
           jockey.id,
           CASE
-            WHEN source.running_style IS NULL OR source.running_style = ''
-              THEN NULL
+            WHEN source.running_style IS NULL OR source.running_style = '' THEN NULL
             ELSE CAST(source.running_style AS INTEGER)
           END,
           CASE
-            WHEN source.distance_aptitude IS NULL OR source.distance_aptitude = ''
-              THEN NULL
+            WHEN source.distance_aptitude IS NULL OR source.distance_aptitude = '' THEN NULL
             ELSE CAST(source.distance_aptitude AS INTEGER)
           END,
           CASE
-            WHEN source.uptrend IS NULL OR source.uptrend = ''
-              THEN NULL
+            WHEN source.uptrend IS NULL OR source.uptrend = '' THEN NULL
             ELSE CAST(source.uptrend AS INTEGER)
           END,
           CASE
-            WHEN source.training_index IS NULL
-              THEN NULL
+            WHEN source.training_index IS NULL THEN NULL
             ELSE CAST(source.training_index AS INTEGER)
           END,
           source.final_win_popularity,
@@ -255,8 +276,7 @@ def build_fact(output: sqlite3.Connection) -> None:
           source.win_payout,
           source.place_payout,
           CASE
-            WHEN previous.distance IS NULL OR source.distance IS NULL
-              THEN NULL
+            WHEN previous.distance IS NULL OR source.distance IS NULL THEN NULL
             ELSE source.distance - previous.distance
           END,
           CASE
@@ -276,14 +296,10 @@ def build_fact(output: sqlite3.Connection) -> None:
             ELSE 13
           END
         FROM analysis.fact_entry_result_lite AS source
-        JOIN dim_race AS race
-          ON race.race_key = source.race_key
-        LEFT JOIN dim_sire AS sire
-          ON sire.name = source.sire_name
-        LEFT JOIN dim_bms AS bms
-          ON bms.name = source.broodmare_sire_name
-        LEFT JOIN dim_jockey AS jockey
-          ON jockey.name = source.jockey_name
+        JOIN dim_race AS race ON race.race_key = source.race_key
+        LEFT JOIN dim_sire AS sire ON sire.name = source.sire_name
+        LEFT JOIN dim_bms AS bms ON bms.name = source.broodmare_sire_name
+        LEFT JOIN dim_jockey AS jockey ON jockey.name = source.jockey_name
         LEFT JOIN (
           SELECT
             race_key,
@@ -292,8 +308,7 @@ def build_fact(output: sqlite3.Connection) -> None:
             MAX(grade_code) AS grade_code
           FROM analysis.fact_entry_result_lite
           GROUP BY race_key
-        ) AS previous
-          ON previous.race_key = source.prev_race_key_1
+        ) AS previous ON previous.race_key = source.prev_race_key_1
         """
     )
 
@@ -306,6 +321,8 @@ def main() -> None:
         raise SystemExit(f"Refusing to overwrite existing DB: {args.db}")
     if not args.schema.exists():
         raise SystemExit(f"Schema file not found: {args.schema}")
+    if args.race_names is not None:
+        validate_race_name_source(args.race_names)
 
     source_row_count, period_from, period_to = validate_source(args.analysis)
 
@@ -332,15 +349,22 @@ def main() -> None:
     ).lastrowid
 
     output.execute("ATTACH DATABASE ? AS analysis", (str(args.analysis),))
+    has_lookup = False
+    if args.race_names is not None:
+        output.execute("ATTACH DATABASE ? AS race_names", (str(args.race_names),))
+        has_lookup = True
+
     try:
         columns = source_columns(output)
         insert_dictionary(output, "analysis", "dim_sire", "sire_name")
         insert_dictionary(output, "analysis", "dim_bms", "broodmare_sire_name")
         insert_dictionary(output, "analysis", "dim_jockey", "jockey_name")
-        insert_race_dictionary(output, "race_name" in columns)
+        insert_race_dictionary(output, "race_name" in columns, has_lookup)
         build_fact(output)
         output.commit()
     finally:
+        if has_lookup:
+            output.execute("DETACH DATABASE race_names")
         output.execute("DETACH DATABASE analysis")
 
     built_row_count = output.execute(
