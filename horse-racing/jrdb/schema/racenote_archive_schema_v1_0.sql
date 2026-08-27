@@ -32,7 +32,7 @@ CREATE TABLE race_bundle (
     venue_code TEXT NOT NULL,
     venue TEXT NOT NULL,
     race_no INTEGER NOT NULL CHECK (race_no BETWEEN 1 AND 12),
-    race_key TEXT NOT NULL,
+    source_race_key TEXT,
     field_size INTEGER,
     base_schema_version TEXT NOT NULL,
     source_mode TEXT NOT NULL CHECK (
@@ -44,8 +44,7 @@ CREATE TABLE race_bundle (
     bundle_sha256 TEXT NOT NULL,
     semantic_sha256 TEXT NOT NULL,
     warning_count INTEGER NOT NULL DEFAULT 0 CHECK (warning_count >= 0),
-    PRIMARY KEY (race_date, venue_code, race_no),
-    UNIQUE (race_key)
+    PRIMARY KEY (race_date, venue_code, race_no)
 );
 
 CREATE INDEX idx_race_bundle_date
@@ -53,6 +52,10 @@ CREATE INDEX idx_race_bundle_date
 
 CREATE INDEX idx_race_bundle_date_venue
     ON race_bundle (race_date, venue_code, race_no);
+
+CREATE UNIQUE INDEX idx_race_bundle_source_race_key
+    ON race_bundle (source_race_key)
+    WHERE source_race_key IS NOT NULL;
 
 -- Required archive_meta keys for v1.0:
 --   archive_schema_version = 1.0
@@ -70,9 +73,10 @@ CREATE INDEX idx_race_bundle_date_venue
 --   PRAGMA integrity_check = ok
 --   no race rows outside target_month
 --   duplicate PK = 0
---   duplicate race_key = 0
+--   duplicate non-null source_race_key = 0
 --   every bundle decompresses
 --   every bundle_sha256 matches decompressed bytes
+--   every semantic_sha256 matches canonical JSON with metadata.generated_at omitted
 --   every bundle schema_version = 0.2
 --   every JSON race date/venue/race matches index columns
 --   all recent_runs dates < target race date
