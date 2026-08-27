@@ -37,9 +37,9 @@ Fact Liteは1出走1行を保持するため、条件を重ねても同一SQLite
 - `incoming.sqlite` / `previous.sqlite` / `current.sqlite` による安全な全量差し替え
 - GitHub Release を利用したGit非管理の配布キャッシュ
 - Google Drive -> Issue -> Actions -> Release -> Pages artifact の配布経路
-- Fact Lite集計軸: 種牡馬 / 母父 / 騎手 / 枠 / 脚質 / 年齢 / 性別 / 人気帯 / 距離変化 / 前走クラス
-- 検索条件: 年From-To / 月From-To / 競馬場 / 芝ダ障害 / 距離From-To / 馬場状態 / クラス / 最低出走数
-- 追加cross-filter: 年齢 / 性別 / 人気帯 / 脚質
+- Fact Lite集計軸: 種牡馬 / 騎手 / 枠 / 脚質 / 年齢 / 性別 / 人気 / 前走距離 / 前走クラス
+- 検索条件: 年From-To / 月From-To / 競馬場 / 芝ダ障害 / 距離From-To / 馬場状態 / クラス / レース名 / 最低出走数
+- 年 / 月 / 距離のFrom-Toは同一行で横並び表示
 - レース名部分一致UI（source dataのrace_name有無で自動有効化）
 - 勝率 / 複勝率 / 単勝回収率 / 複勝回収率表示
 - 検索条件クリア
@@ -69,6 +69,12 @@ Fact Liteは1出走1行を保持するため、条件を重ねても同一SQLite
 現走の `grade_code` / `race_condition_code` を前走クラスと同じ分類規則で、新馬・未勝利・1勝・2勝・3勝・オープン・L・G3・G2・G1等へ分類し、検索条件として利用します。
 
 Fact Lite v0.2 SQLiteには両列が既に収録されているため、この検索条件追加だけではSQLite再生成を必要としません。たとえば `東京 / 芝 / 1600m / 2勝クラス` を指定し、集計軸を「脚質」にするとクラス限定の脚質傾向を確認できます。
+
+### Popularity and previous-distance axes
+
+集計軸「人気」は1〜9人気を個別カテゴリ、10番人気以下を `10～` にまとめます。人気は検索条件としては持たせません。
+
+旧表示名「距離変化」は「前走距離」へ変更し、内部区分（距離延長 / 同距離 / 距離短縮 / 前走不明）は維持します。
 
 ## Race-name search status
 
@@ -114,6 +120,10 @@ PWA側はSQLite内の実データを検出してレース名入力欄を自動�
 
 この結果を根拠に、Fact Liteを自由条件集計の主DB候補とします。
 
+### Fact Lite v0.2 current-class filter
+
+2026-08-27、iOS版Google Chromeで `東京 / 芝 / 1600m / 2勝クラス -> 脚質` の集計を実行し、正常動作と実用上問題ないレスポンスを確認しました。
+
 ## Current Fact Lite v0.2 distribution
 
 現行Analysis Lite v1.2から生成・配布済み:
@@ -126,7 +136,7 @@ PWA側はSQLite内の実データを検出してレース名入力欄を自動�
 - Release tag: `jrdb-pwa-fact-lite-current`
 - race-name search: race-name lookupを併用し9,920レースで有効
 
-v0.2のiOS実機集計速度はUI更新後に再計測します。
+v0.2のクラス検索についてiOS実機で正常動作・実用上問題ないレスポンスを確認済みです。
 
 ## Distribution flow
 
