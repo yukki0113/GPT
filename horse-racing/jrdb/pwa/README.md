@@ -118,13 +118,13 @@ PWA側はSQLite内の実データを検出してレース名入力欄を自動�
 
 現行Analysis Lite v1.2から生成・配布済み:
 
-- data version: `2016_2026YTD_20260823_v0_2`
+- data version: `2016_2026YTD_20260823_v0_2_1`
 - rows: 513,512
-- size: `62,230,528 bytes`（約59.3 MiB）
-- SHA-256: `b5ba7a645f134bec03538fc9d255fc30d626908af4ce939416cea8ac735cd29d`
+- size: `62,423,040 bytes`（約59.5 MiB）
+- SHA-256: `279374cbd5e1e26f5d51b2cc03e5126c28c05d88da7a844b775c977dcec004ca`
 - schema version: `0.2`
 - Release tag: `jrdb-pwa-fact-lite-current`
-- race-name search: source Analysisにrace_nameがないため未有効
+- race-name search: race-name lookupを併用し9,920レースで有効
 
 v0.2のiOS実機集計速度はUI更新後に再計測します。
 
