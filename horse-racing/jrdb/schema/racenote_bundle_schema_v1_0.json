@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_bundle_schema_v1_0.json",
+  "title": "RaceNote Bundle v1.0",
+  "description": "Stable GPT-facing RaceNote bundle after PACI conversion and as-of-safe Analysis Lite / Stats Mart enrichment.",
+  "type": "object",
+  "required": ["schema_version", "metadata", "race", "horses"],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["history_enrichment"],
+      "properties": {
+        "history_enrichment": {
+          "$ref": "#/$defs/historyEnrichmentMetadata"
+        }
+      },
+      "additionalProperties": true
+    },
+    "race": {
+      "type": "object",
+      "required": ["date", "venue", "race_no", "surface", "distance_m", "race_trends"],
+      "properties": {
+        "date": {"type": "string", "format": "date"},
+        "venue": {"type": "string"},
+        "race_no": {"type": "integer", "minimum": 1, "maximum": 12},
+        "surface": {"type": "string"},
+        "distance_m": {"type": "integer", "minimum": 1},
+        "race_trends": {
+          "type": "object",
+          "required": ["frame"],
+          "properties": {
+            "frame": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/statisticWithRanges"
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "horses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/horse"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "sampleSizeBand": {
+      "enum": ["none", "small", "moderate", "sufficient"]
+    },
+    "summary": {
+      "type": "object",
+      "required": ["starts", "wins", "top3", "win_rate", "top3_rate", "sample_size_band"],
+      "properties": {
+        "starts": {"type": "integer", "minimum": 0},
+        "wins": {"type": "integer", "minimum": 0},
+        "top3": {"type": "integer", "minimum": 0},
+        "win_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+        "top3_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+        "sample_size_band": {"$ref": "#/$defs/sampleSizeBand"}
+      },
+      "additionalProperties": true
+    },
+    "distanceRangeSummary": {
+      "allOf": [
+        {"$ref": "#/$defs/summary"},
+        {
+          "type": "object",
+          "required": ["min_m", "max_m"],
+          "properties": {
+            "min_m": {"type": "integer", "minimum": 1},
+            "max_m": {"type": ["integer", "null"], "minimum": 1}
+          }
+        }
+      ]
+    },
+    "statisticWithRanges": {
+      "allOf": [
+        {"$ref": "#/$defs/summary"},
+        {
+          "type": "object",
+          "required": ["distance_ranges"],
+          "properties": {
+            "distance_ranges": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/distanceRangeSummary"}
+            }
+          }
+        }
+      ]
+    },
+    "historicalProfile": {
+      "type": "object",
+      "required": ["source", "source_window_start", "as_of_exclusive", "career", "same_surface", "same_distance", "distance_ranges", "same_venue"],
+      "properties": {
+        "source": {"const": "JRDB Analysis Lite"},
+        "source_window_start": {"type": "string", "format": "date"},
+        "as_of_exclusive": {"type": "string", "format": "date"},
+        "career": {"$ref": "#/$defs/summary"},
+        "same_surface": {"$ref": "#/$defs/summary"},
+        "same_distance": {"$ref": "#/$defs/summary"},
+        "distance_ranges": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/distanceRangeSummary"}
+        },
+        "same_venue": {"$ref": "#/$defs/summary"}
+      },
+      "additionalProperties": true
+    },
+    "olderRun": {
+      "type": "object",
+      "required": ["date", "venue", "race_no", "surface", "distance_m"],
+      "properties": {
+        "date": {"type": "string", "format": "date"},
+        "venue": {"type": "string"},
+        "race_no": {"type": "integer", "minimum": 1, "maximum": 12},
+        "surface": {"type": ["string", "null"]},
+        "distance_m": {"type": ["integer", "null"]},
+        "track_condition": {},
+        "grade": {},
+        "running_style": {},
+        "training_index": {},
+        "finish": {},
+        "abnormal_code": {},
+        "final_win_odds": {},
+        "final_popularity": {}
+      },
+      "additionalProperties": true
+    },
+    "runLayer": {
+      "type": "object",
+      "required": ["source", "role", "observed_count", "max_count", "career_completeness"],
+      "properties": {
+        "source": {"type": "string"},
+        "role": {"enum": ["detailed_recent_history", "compact_older_history"]},
+        "observed_count": {"type": "integer", "minimum": 0},
+        "max_count": {"type": "integer", "minimum": 0},
+        "career_completeness": {"const": "not_guaranteed"},
+        "selection": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "historyCoverage": {
+      "type": "object",
+      "required": ["scope", "observed_history", "observed_starts", "overseas_history_coverage", "reason", "run_layers"],
+      "properties": {
+        "scope": {"const": "jrdb_jra_history"},
+        "observed_history": {"enum": ["present", "none", "unknown"]},
+        "observed_starts": {"type": ["integer", "null"], "minimum": 0},
+        "overseas_history_coverage": {"enum": ["not_guaranteed", "not_in_scope"]},
+        "reason": {
+          "enum": [
+            "jra_history_observed",
+            "foreign_based_entry_no_jra_history",
+            "no_prior_jra_history_observed",
+            "target_entry_not_found"
+          ]
+        },
+        "run_layers": {
+          "type": "object",
+          "required": ["recent_runs", "older_runs"],
+          "properties": {
+            "recent_runs": {"$ref": "#/$defs/runLayer"},
+            "older_runs": {"$ref": "#/$defs/runLayer"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "horse": {
+      "type": "object",
+      "required": ["basic", "recent_runs", "older_runs", "historical_profile", "history_coverage", "stats"],
+      "properties": {
+        "basic": {
+          "type": "object",
+          "required": ["horse_no"],
+          "additionalProperties": true
+        },
+        "recent_runs": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {"type": "object"}
+        },
+        "older_runs": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/olderRun"}
+        },
+        "historical_profile": {
+          "oneOf": [
+            {"$ref": "#/$defs/historicalProfile"},
+            {"type": "null"}
+          ]
+        },
+        "history_coverage": {"$ref": "#/$defs/historyCoverage"},
+        "stats": {
+          "type": "object",
+          "required": ["sire", "jockey"],
+          "properties": {
+            "sire": {
+              "oneOf": [
+                {"$ref": "#/$defs/statisticWithRanges"},
+                {"type": "null"}
+              ]
+            },
+            "jockey": {
+              "oneOf": [
+                {"$ref": "#/$defs/statisticWithRanges"},
+                {"type": "null"}
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "historyEnrichmentMetadata": {
+      "type": "object",
+      "required": ["version", "base_schema_version", "recent_runs_max", "older_runs_max", "stats_window_years", "as_of_exclusive", "distance_range_policy", "sample_size_band_policy", "history_scope", "overseas_history_policy", "warning_count", "warnings"],
+      "properties": {
+        "version": {"const": "1.0"},
+        "base_schema_version": {"type": ["string", "null"]},
+        "recent_runs_max": {"const": 5},
+        "older_runs_max": {"const": 3},
+        "stats_window_years": {"type": "integer", "minimum": 1},
+        "as_of_exclusive": {"type": "string", "format": "date"},
+        "history_scope": {"const": "jrdb_jra_history"},
+        "overseas_history_policy": {"const": "not_guaranteed"},
+        "warning_count": {"type": "integer", "minimum": 0},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "distance_range_policy": {"type": "object"},
+        "sample_size_band_policy": {"type": "object"}
+      },
+      "additionalProperties": true
+    }
+  }
+}
