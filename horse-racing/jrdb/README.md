@@ -6,7 +6,9 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 
 - `src/fetch_jrdb_paci.py` — PACI前日一括ZIP取得
 - `src/fetch_jrdb_history.py` — 年次ZIP / 2026年以降の単日ZIP取得
-- `src/racenote_jrdb.py` — PACI ZIP → RaceNote v0.2 JSON
+- `src/racenote_jrdb.py` — PACI ZIP → RaceNote base v0.2 JSON
+- `src/racenote_history_enrichment.py` — base RaceNote v0.2 + Analysis Lite / Stats Mart → 正式RaceNote v1.0
+- `src/racenote_request.py` — 日付・任意の開催場/Rを受ける統一RaceNote request router
 - `src/racenote_jrdb_pipeline.py` — PACI取得 → RaceNote 1R一体実行
 - `src/build_jrdb_core.py` — JRDB Core Builder v1.1.2-production（rollback baseline）
 - `src/jrdb_ukc.py` — UKC 290-byte固定長parser
@@ -24,6 +26,31 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `tools/audit_jrdb_core_v1_1_1.py` — Core監査ツール
 - `tools/audit_jrdb_core_v1_2_regression.py` — v1.1.2 / v1.2回帰比較
 - `tools/audit_jrdb_analysis_equivalence.py` — Core→Analysis / Raw→Analysis 全列等価性比較
+
+## RaceNote production v1.0
+
+GPT-facingな正式RaceNote bundleは `schema/racenote_bundle_schema_v1_0.json` に従うv1.0です。
+
+```text
+PACI
+  -> src/racenote_jrdb.py                 # base schema v0.2
+  -> src/racenote_history_enrichment.py   # Analysis Lite / Stats Mart enrichment
+  -> final RaceNote schema v1.0
+```
+
+通常の取得入口は `src/racenote_request.py`。GPTからは `[RACENOTE_REQUEST]` Issue → GitHub Actions → artifact回収を標準経路とします。
+
+v1.0の主要方針:
+
+- PACI詳細 `recent_runs` 最大5 + Analysis Lite簡略 `older_runs` 最大3
+- 固定8件・キャリア上の完全な直近8戦とはみなさず、`history_coverage.run_layers` でsource/coverageを明示
+- exact distanceを保持し、1000-1400 / 1400-1800 / 1800-2400 / 2500+ の重複距離レンジを追加
+- 1400m / 1800mは隣接レンジへ重複所属、2400mは1800-2400側のみ
+- `sample_size_band`: none=0 / small=1-19 / moderate=20-49 / sufficient=50+。統計的有意性ではなく説明用母数帯
+- `history_coverage.scope = jrdb_jra_history`。海外所属馬・海外遠征の履歴完全性を推測しない
+- 過去日は常に `as_of_exclusive = target_date`。対象日結果・後日結果を使わない
+
+詳細は `docs/README_racenote_v1.md` と `docs/README_racenote_request.md` を参照してください。
 
 ## Production data flow
 
@@ -181,6 +208,8 @@ There is no requirement to rebuild Core first.
 
 ## Documentation
 
+- `docs/README_racenote_v1.md`
+- `docs/README_racenote_request.md`
 - `docs/JRDB_Core_v1_2_Analysis_Layer_Design.md`
 - `docs/README_build_jrdb_core_v1_2.md`
 - `docs/README_build_jrdb_analysis.md`
