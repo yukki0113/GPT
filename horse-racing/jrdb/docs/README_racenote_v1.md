@@ -6,10 +6,14 @@ RaceNote v1.0 は、JRDB PACIをGPT向けの1レース1JSONへ変換したbase�
 
 - request router: `src/racenote_request.py`
 - PACI base converter: `src/racenote_jrdb.py`
+- shared enrichment engine: `src/racenote_history_engine.py`
 - production enrichment: `src/racenote_history_enrichment.py`
+- PoC compatibility CLI: `src/racenote_history_enrichment_poc.py`
 - machine-readable schema: `schema/racenote_bundle_schema_v1_0.json`
 
-`src/racenote_history_enrichment_poc.py` は、8走/10走比較などの検証を行ったPoC engineとして当面残します。通常利用者・GPTはproduction entrypointのみを使用します。
+Enrichmentロジックの正本は `src/racenote_history_engine.py` です。productionとPoC比較CLIの双方が同じneutral engineを利用し、productionから `_poc.py` への依存は持ちません。
+
+`src/racenote_history_enrichment_poc.py` は8走/10走比較など過去PoCのCLI互換wrapperとして残します。通常利用者・GPTはproduction entrypointのみを使用します。
 
 ## Version boundary
 
@@ -17,6 +21,7 @@ RaceNote v1.0 は、JRDB PACIをGPT向けの1レース1JSONへ変換したbase�
 PACI
   -> racenote_jrdb.py
   -> base RaceNote schema v0.2
+  -> racenote_history_engine.py
   -> racenote_history_enrichment.py
   -> final RaceNote schema v1.0
 ```
@@ -182,5 +187,31 @@ PoCから得た主な修正:
 - latest included history date: 2026-04-18 (< target 2026-05-09)
 
 このE2E PASSをもって、通常RaceNote生成はv1.0 production pathを正本運用とする。
+
+## Engine refactor regression
+
+2026-08-27、productionからPoC moduleへの内部依存を除去し、検証済みenrichmentロジックをneutral `src/racenote_history_engine.py` へ正本化した。
+
+実装:
+
+```text
+racenote_history_engine.py
+  ↑                     ↑
+racenote_history_enrichment.py
+racenote_history_enrichment_poc.py
+```
+
+回帰確認は同じ2026-05-09京都11Rで標準 `[RACENOTE_REQUEST]` 経路を再実行した。
+
+- Issue: `#113 [RACENOTE_REQUEST] v1-refactor-regression-20260827-kyoto11`
+- workflow run: `33029315546`
+- checked-out head: `bfb5cf6bab44103ea8fa3b9b6735395f706cdcf2`
+- task exit: 0
+- collect exit: 0
+- `request_manifest.json`: リファクタ前後で完全一致
+- bundle JSON差分: `metadata.generated_at` の生成時刻だけ
+- `metadata.generated_at` を除外したcanonical bundle SHA-256: `aa0958c1d821748f76bfcb178ed4ff48a5202a819d65be95a6c84a5564d91fd1` で前後一致
+
+したがって、engine refactorによるRaceNote v1.0の意味・数値・配列・履歴・統計・schema差分は0と判定する。
 
 以後の通常RaceNote生成はv1.0を正本仕様とします。
