@@ -38,7 +38,7 @@ Fact Liteは1出走1行を保持するため、条件を重ねても同一SQLite
 - GitHub Release を利用したGit非管理の配布キャッシュ
 - Google Drive -> Issue -> Actions -> Release -> Pages artifact の配布経路
 - Fact Lite集計軸: 種牡馬 / 母父 / 騎手 / 枠 / 脚質 / 年齢 / 性別 / 人気帯 / 距離変化 / 前走クラス
-- 検索条件: 年From-To / 月From-To / 競馬場 / 芝ダ障害 / 距離From-To / 馬場状態 / 最低出走数
+- 検索条件: 年From-To / 月From-To / 競馬場 / 芝ダ障害 / 距離From-To / 馬場状態 / クラス / 最低出走数
 - 追加cross-filter: 年齢 / 性別 / 人気帯 / 脚質
 - レース名部分一致UI（source dataのrace_name有無で自動有効化）
 - 勝率 / 複勝率 / 単勝回収率 / 複勝回収率表示
@@ -64,13 +64,17 @@ Fact Liteは1出走1行を保持するため、条件を重ねても同一SQLite
 
 前走 `grade_code` / `race_condition_code` から、新馬・未勝利・1勝・2勝・3勝・オープン・L・G3・G2・G1等へ分類します。Analysis内で前走を解決できない場合は推測せず「前走不明」です。
 
+### Current-class filter
+
+現走の `grade_code` / `race_condition_code` を前走クラスと同じ分類規則で、新馬・未勝利・1勝・2勝・3勝・オープン・L・G3・G2・G1等へ分類し、検索条件として利用します。
+
+Fact Lite v0.2 SQLiteには両列が既に収録されているため、この検索条件追加だけではSQLite再生成を必要としません。たとえば `東京 / 芝 / 1600m / 2勝クラス` を指定し、集計軸を「脚質」にするとクラス限定の脚質傾向を確認できます。
+
 ## Race-name search status
 
-JRDB BACにはrace nameがありますが、現行配布元の Analysis Lite v1.2 には `race_name` 列がありません。
+Analysis Lite v1.2自体には `race_name` 列がないため、現行 Fact Lite v0.2.1は配布時にBAC由来のrace-name lookupを併用して `dim_race.race_name` へ収録します。現行配布では9,920レースのレース名を利用できます。
 
-そのため初回 Fact Lite v0.2 配布物では、レース名入力欄を **「現配布データでは未収録」** として無効化します。空文字を検索して0件になるような見せ方にはしません。
-
-将来 `race_name` を持つAnalysisを入力すると、同じFact Lite v0.2 builderが `dim_race.race_name` を自動収録し、PWA側もSQLite内の実データを検出して入力欄を自動有効化します。
+PWA側はSQLite内の実データを検出してレース名入力欄を自動有効化し、部分一致で絞り込みます。
 
 ## Real-device validation
 
