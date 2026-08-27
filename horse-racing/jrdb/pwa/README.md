@@ -116,8 +116,8 @@ JRDB BACにはrace nameがありますが、現行配布元の Analysis Lite v1.
 
 - data version: `2016_2026YTD_20260823_v0_2`
 - rows: 513,512
-- size: `59,449,344 bytes`（約56.7 MiB）
-- SHA-256: `7682358bc511463cfc22f117afc6859e07cf75783adb3f732ac67f4cc08672eb`
+- size: `62,230,528 bytes`（約59.3 MiB）
+- SHA-256: `b5ba7a645f134bec03538fc9d255fc30d626908af4ce939416cea8ac735cd29d`
 - schema version: `0.2`
 - Release tag: `jrdb-pwa-fact-lite-current`
 - race-name search: source Analysisにrace_nameがないため未有効
