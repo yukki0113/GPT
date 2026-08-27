@@ -14,5 +14,10 @@
 - 通常テキストの更新: `.gpt/GIT_UPDATE_ISSUE.md` / `[gpt-git-update]`
 - バイナリの更新: `.gpt/GIT_BINARY_UPDATE_ISSUE.md` / `[gpt-git-binary-update]`
 - GitHub上のバイナリをChat / Workへ実ファイルとして取得: `.gpt/GIT_BINARY_READ_ISSUE.md` / `[gpt-git-binary-read]`
+- バイナリread/updateの1コマンド操作: `.gpt/GIT_BINARY_TOOL.md` / `.gpt/tools/gpt_git_binary_tool.py`
 
-GitHub Connectorが `.xlsx` 等の中身を直接展開できない場合でも、GitHub `main` が正本として定義されているファイルについては、ユーザーへ再添付を依頼する前に `[gpt-git-binary-read]` 経路を使用する。
+認証済み `gh` CLIを実行できる環境では、バイナリread/updateは `.gpt/tools/gpt_git_binary_tool.py` を第一選択とし、Issue本文・Base64チャンク・artifact回収手順をGPTが手作業で組み立てない。
+
+`gh` CLIを利用できないChat環境では、GitHub Connector + `[gpt-git-binary-read]` / `[gpt-git-binary-update]` をフォールバックとして使用する。
+
+GitHub Connectorが `.xlsx` 等の中身を直接展開できない場合でも、GitHub `main` が正本として定義されているファイルについては、ユーザーへ再添付を依頼する前にバイナリread経路を使用する。
