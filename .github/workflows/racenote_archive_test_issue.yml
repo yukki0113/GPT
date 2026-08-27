@@ -1,0 +1,84 @@
+name: racenote-archive-test-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  test:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_TEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile Archive modules
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_archive.py \
+            horse-racing/jrdb/src/build_racenote_archive.py \
+            horse-racing/jrdb/src/read_racenote_archive.py
+
+      - name: Run Archive regression tests
+        id: tests
+        continue-on-error: true
+        run: |
+          set +e
+          python -m unittest discover \
+            -s horse-racing/jrdb/tests \
+            -p 'test_racenote_archive.py' \
+            -v
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TEST_EXIT: ${{ steps.tests.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          exit_code = os.environ.get('TEST_EXIT', '')
+          status = 'success' if exit_code == '0' else 'failure'
+          result = {
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'test_exit_code': exit_code,
+          }
+          Path('/tmp/racenote_archive_test.md').write_text(
+              'RACENOTE_ARCHIVE_TEST_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/racenote_archive_test.md
+
+      - name: Close test issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when regression failed
+        if: always() && steps.tests.outputs.exit_code != '0'
+        run: exit 1
