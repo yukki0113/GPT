@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Production RaceNote history enrichment entrypoint.
 
-The validated enrichment engine currently lives in
-``racenote_history_enrichment_poc.py``. This module is the stable production
-entrypoint and owns the final RaceNote v1.0 contract:
+The validated enrichment logic lives in ``racenote_history_engine.py``. This
+module is the stable production entrypoint and owns the final RaceNote v1.0
+contract:
 
 - detailed PACI recent history: up to 5 runs
 - compact Analysis Lite older history: up to 3 runs
@@ -12,8 +12,8 @@ entrypoint and owns the final RaceNote v1.0 contract:
 - sample-size bands
 - explicit history coverage / run-layer metadata
 
-The internal engine may be refactored later without changing this CLI or the
-v1.0 output contract.
+The shared engine can be refactored independently without changing this CLI or
+the v1.0 output contract.
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ import json
 import sqlite3
 from pathlib import Path
 
-import racenote_history_enrichment_poc as engine
+import racenote_history_engine as engine
 
 SCHEMA_VERSION = "1.0"
 OLDER_RUNS_LIMIT = 3
