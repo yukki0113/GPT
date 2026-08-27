@@ -77,30 +77,36 @@ jobs:
               min_year, max_year = connection.execute(
                   'SELECT MIN(year), MAX(year) FROM fact_entry_result_lite'
               ).fetchone()
+              if min_year is None or max_year is None:
+                  raise SystemExit('Could not resolve Analysis BAC period')
+
+              recent_year_from = max(int(min_year), int(max_year) - 1)
               dates = [
                   str(row[0])
                   for row in connection.execute(
                       'SELECT DISTINCT race_date FROM fact_entry_result_lite '
-                      'WHERE year=? ORDER BY race_date',
-                      (max_year,),
+                      'WHERE year BETWEEN ? AND ? ORDER BY race_date',
+                      (recent_year_from, int(max_year)),
                   )
               ]
           finally:
               connection.close()
 
-          if min_year is None or max_year is None or not dates:
-              raise SystemExit('Could not resolve Analysis BAC periods')
+          if not dates:
+              raise SystemExit('Could not resolve recent Analysis BAC dates')
 
-          Path('.fact_publish/max_year_dates.txt').write_text(
+          Path('.fact_publish/recent_year_dates.txt').write_text(
               '\n'.join(dates) + '\n', encoding='utf-8'
           )
           with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as env_file:
               env_file.write(f'MIN_ANALYSIS_YEAR={int(min_year)}\n')
               env_file.write(f'MAX_ANALYSIS_YEAR={int(max_year)}\n')
+              env_file.write(f'RECENT_ANALYSIS_YEAR_FROM={recent_year_from}\n')
           print({
               'min_year': int(min_year),
               'max_year': int(max_year),
-              'max_year_dates': len(dates),
+              'recent_year_from': recent_year_from,
+              'recent_year_dates': len(dates),
           })
           PY
 
@@ -123,6 +129,8 @@ jobs:
               --sleep-seconds 0.25
           fi
 
+          # Annual BAC can lag or omit late-year race days. Re-fetch every race
+          # date in the latest two Analysis years as a deterministic fallback.
           while IFS= read -r race_date; do
             if [ -z "$race_date" ]; then
               continue
@@ -132,7 +140,7 @@ jobs:
               --kinds BAC \
               --output-dir "$RAW_ROOT" \
               --sleep-seconds 0
-          done < .fact_publish/max_year_dates.txt
+          done < .fact_publish/recent_year_dates.txt
 
       - name: Build BAC race-name lookup
         shell: bash
