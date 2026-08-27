@@ -669,34 +669,6 @@ function buildFactWhere() {
     params.push(raceName);
   }
 
-  if (factAge.value) {
-    if (factAge.value === "8") {
-      clauses.push("f.age >= 8");
-    } else {
-      clauses.push("f.age = ?");
-      params.push(Number(factAge.value));
-    }
-  }
-  if (factSex.value) {
-    clauses.push("f.sex_code = ?");
-    params.push(Number(factSex.value));
-  }
-  if (factRunningStyle.value) {
-    clauses.push("f.running_style = ?");
-    params.push(Number(factRunningStyle.value));
-  }
-  if (factPopBand.value) {
-    if (factPopBand.value === "1-3") {
-      clauses.push("f.final_win_popularity BETWEEN 1 AND 3");
-    } else if (factPopBand.value === "4-6") {
-      clauses.push("f.final_win_popularity BETWEEN 4 AND 6");
-    } else if (factPopBand.value === "7-9") {
-      clauses.push("f.final_win_popularity BETWEEN 7 AND 9");
-    } else if (factPopBand.value === "10+") {
-      clauses.push("f.final_win_popularity >= 10");
-    }
-  }
-
   return {
     clauses: clauses,
     params: params,
@@ -857,10 +829,6 @@ function clearFactFilters() {
   factTrackCondition.value = "";
   factRaceClass.value = "";
   factRaceName.value = "";
-  factAge.value = "";
-  factSex.value = "";
-  factPopBand.value = "";
-  factRunningStyle.value = "";
   factMinStarts.value = "20";
   runFactAggregation();
 }
