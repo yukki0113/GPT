@@ -84,13 +84,35 @@ jobs:
           path = Path('.fact_publish/jrdb_pwa_fact_lite.sqlite')
           connection = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
           try:
-              required = {'fact_stats_entry', 'dim_sire', 'dim_bms', 'dim_jockey'}
+              required = {
+                  'fact_stats_entry',
+                  'dim_sire',
+                  'dim_bms',
+                  'dim_jockey',
+                  'dim_race',
+              }
               names = {row[0] for row in connection.execute(
                   "SELECT name FROM sqlite_master WHERE type='table'"
               )}
               missing = sorted(required - names)
               if missing:
                   raise SystemExit('Missing tables: ' + ', '.join(missing))
+
+              fact_columns = {
+                  row[1]
+                  for row in connection.execute('PRAGMA table_info(fact_stats_entry)')
+              }
+              required_columns = {
+                  'month',
+                  'race_id',
+                  'prev_distance_delta',
+                  'prev_class_code',
+              }
+              missing_columns = sorted(required_columns - fact_columns)
+              if missing_columns:
+                  raise SystemExit(
+                      'Missing Fact Lite v0.2 columns: ' + ', '.join(missing_columns)
+                  )
 
               integrity = connection.execute('PRAGMA integrity_check').fetchone()
               if not integrity or integrity[0] != 'ok':
@@ -102,6 +124,8 @@ jobs:
               ).fetchone()
               if not meta:
                   raise SystemExit('meta_pwa_fact_build is empty')
+              if str(meta[0]) != '0.2':
+                  raise SystemExit(f'unexpected schema_version: {meta[0]}')
 
               actual_rows = connection.execute(
                   "SELECT COUNT(*) FROM fact_stats_entry"
@@ -110,6 +134,19 @@ jobs:
                   raise SystemExit(
                       f'row_count mismatch: meta={meta[3]} actual={actual_rows}'
                   )
+
+              race_name_count = connection.execute(
+                  "SELECT COUNT(*) FROM dim_race "
+                  "WHERE TRIM(COALESCE(race_name, '')) <> ''"
+              ).fetchone()[0]
+              prev_distance_rows = connection.execute(
+                  "SELECT COUNT(*) FROM fact_stats_entry "
+                  "WHERE prev_distance_delta IS NOT NULL"
+              ).fetchone()[0]
+              prev_class_rows = connection.execute(
+                  "SELECT COUNT(*) FROM fact_stats_entry "
+                  "WHERE prev_class_code IS NOT NULL"
+              ).fetchone()[0]
           finally:
               connection.close()
 
@@ -125,6 +162,16 @@ jobs:
               'source_filename': os.environ['SOURCE_FILENAME'],
               'size': size,
               'sha256': sha,
+              'capabilities': {
+                  'month_filter': True,
+                  'distance_range_filter': True,
+                  'race_name_search': race_name_count > 0,
+                  'previous_distance_axis': prev_distance_rows > 0,
+                  'previous_class_axis': prev_class_rows > 0,
+                  'race_name_rows': int(race_name_count),
+                  'previous_distance_rows': int(prev_distance_rows),
+                  'previous_class_rows': int(prev_class_rows),
+              },
               'download': {
                   'provider': 'github_pages',
                   'path': './data/fact-lite/jrdb_pwa_fact_lite.sqlite'
