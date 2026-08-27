@@ -36,10 +36,6 @@ const factTrackCondition = document.getElementById("fact-track-condition");
 const factRaceClass = document.getElementById("fact-race-class");
 const factRaceName = document.getElementById("fact-race-name");
 const factRaceNameNote = document.getElementById("fact-race-name-note");
-const factAge = document.getElementById("fact-age");
-const factSex = document.getElementById("fact-sex");
-const factPopBand = document.getElementById("fact-pop-band");
-const factRunningStyle = document.getElementById("fact-running-style");
 const factMinStarts = document.getElementById("fact-min-starts");
 
 const FACT_FILTER_ELEMENTS = [
@@ -53,19 +49,13 @@ const FACT_FILTER_ELEMENTS = [
   factDistanceTo,
   factTrackCondition,
   factRaceClass,
-  factAge,
-  factSex,
-  factPopBand,
-  factRunningStyle,
   factMinStarts
 ];
 
-const POPULARITY_BAND_EXPRESSION =
+const POPULARITY_EXPRESSION =
   "CASE " +
-  "WHEN f.final_win_popularity BETWEEN 1 AND 3 THEN '1-3' " +
-  "WHEN f.final_win_popularity BETWEEN 4 AND 6 THEN '4-6' " +
-  "WHEN f.final_win_popularity BETWEEN 7 AND 9 THEN '7-9' " +
-  "WHEN f.final_win_popularity >= 10 THEN '10+' " +
+  "WHEN f.final_win_popularity BETWEEN 1 AND 9 THEN CAST(f.final_win_popularity AS TEXT) " +
+  "WHEN f.final_win_popularity >= 10 THEN '10～' " +
   "ELSE '不明' END";
 
 const DISTANCE_CHANGE_EXPRESSION =
