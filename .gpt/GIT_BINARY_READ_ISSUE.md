@@ -10,6 +10,20 @@ GitHub `main` 上の `.xlsx`、`.sqlite`、`.zip` など、GitHub Connectorだ�
 この経路では、Issueを起点にGitHub Actionsが最新 `main` の対象ファイルをActions artifactへ梱包します。
 Chat側はworkflow runのartifactを取得し、実ファイルとして解析します。
 
+## 推奨操作層
+
+認証済み `gh` CLIを実行できる環境では、Issue作成・完了待ち・artifact取得・SHA-256照合を手作業で行わず、次の共通CLIを第一選択にします。
+
+```bash
+python .gpt/tools/gpt_git_binary_tool.py read \
+  --path "horse-racing/eval/ledger/Eval表集計・検証.xlsx" \
+  --output "/tmp/Eval表集計・検証.xlsx"
+```
+
+詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
+
+`gh` CLIが利用できないChat環境では、以下のIssueプロトコルを直接使用します。
+
 ## Issueタイトル
 
 ```text
@@ -78,10 +92,12 @@ GitHub公開リポジトリに置くべきでない情報は、そもそもこ�
   → [gpt-git-update]
 
 バイナリをGitHubへ更新
-  → [gpt-git-binary-update]
+  → gpt_git_binary_tool.py update
+     または [gpt-git-binary-update]
 
 GitHub上のバイナリをChat / Workへ取得
-  → [gpt-git-binary-read]
+  → gpt_git_binary_tool.py read
+     または [gpt-git-binary-read]
 ```
 
 このreadback経路はGitHub正本を変更しません。Actions artifactは一時的な搬送物であり、正本は常にGitHub `main` 上の対象ファイルです。
