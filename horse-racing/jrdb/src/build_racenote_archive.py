@@ -2,7 +2,7 @@
 """Build one monthly RaceNote Archive SQLite shard from base v0.2 bundles.
 
 Phase A intentionally starts from already-generated ``race_bundle_*.json``
-files.  PACI/annual-Raw batch conversion is an upstream concern and can be
+files. PACI/annual-Raw batch conversion is an upstream concern and can be
 connected after the archive storage contract is validated.
 """
 from __future__ import annotations
@@ -20,6 +20,7 @@ HERE = Path(__file__).resolve().parent
 DEFAULT_SCHEMA = HERE.parent / "schema" / "racenote_archive_schema_v1_0.sql"
 SOURCE_MODES = ("paci", "annual_raw_reconstruction")
 SHA256_PATTERN = re.compile(r"[0-9a-fA-F]{64}")
+SOURCE_REF_PATTERN = re.compile(r"[A-Za-z0-9._-]{1,120}")
 
 
 class BuildError(RuntimeError):
@@ -48,7 +49,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--source-ref",
         default=None,
-        help="Optional non-secret provenance label stored on every race row",
+        help=(
+            "Optional short provenance label stored on every race row. "
+            "URLs, paths and external file IDs must not be used."
+        ),
     )
     parser.add_argument(
         "--source-manifest",
@@ -97,6 +101,28 @@ def validate_converter_git_sha(value: str) -> str:
     return text.lower()
 
 
+def validate_source_ref(value: str | None) -> str | None:
+    """Validate the optional non-secret, non-location provenance label.
+
+    ``source_ref`` is intentionally only a compact logical label such as
+    ``paci-202605`` or ``annual-raw-2025``. Exact source filenames and hashes
+    belong in ``source_input``. Drive URLs, file IDs, filesystem paths and
+    other transport-specific references must not be stored here.
+    """
+    if value is None:
+        return None
+    text = value.strip()
+    if not text:
+        return None
+    if not SOURCE_REF_PATTERN.fullmatch(text):
+        raise BuildError(
+            "--source-ref must be a 1-120 character ASCII label using only "
+            "letters, digits, dot, underscore or hyphen; URLs/paths/file IDs "
+            "must not be stored"
+        )
+    return text
+
+
 def source_inputs_from_manifest(path: Path | None) -> list[dict]:
     """Read and validate optional source provenance rows."""
     if path is None:
@@ -126,9 +152,9 @@ def source_inputs_from_manifest(path: Path | None) -> list[dict]:
             raise BuildError(f"source manifest row {index} has invalid sha256")
 
         filename = str(row["filename"]).strip()
-        if "://" in filename:
+        if "://" in filename or "/" in filename or "\\" in filename:
             raise BuildError(
-                "source manifest filename must not contain a URL; store only a filename"
+                "source manifest filename must be a basename only; URLs/paths are forbidden"
             )
 
         output.append(
@@ -178,6 +204,7 @@ def build(args: argparse.Namespace) -> dict:
     """Build and validate one monthly shard."""
     target_month = validate_target_month(args.target_month)
     converter_git_sha = validate_converter_git_sha(args.converter_git_sha)
+    source_ref = validate_source_ref(args.source_ref)
     source_inputs = source_inputs_from_manifest(args.source_manifest)
 
     if not args.schema.is_file():
@@ -249,7 +276,7 @@ def build(args: argparse.Namespace) -> dict:
                     connection,
                     json_bytes,
                     source_mode=args.source_mode,
-                    source_ref=args.source_ref,
+                    source_ref=source_ref,
                 )
             except (archive.RaceNoteArchiveError, sqlite3.IntegrityError) as exc:
                 raise BuildError(f"Insert failed for {path}: {exc}") from exc
@@ -284,7 +311,7 @@ def build(args: argparse.Namespace) -> dict:
         "output": str(args.output),
         "output_bytes": args.output.stat().st_size,
         "source_mode": args.source_mode,
-        "source_ref": args.source_ref,
+        "source_ref": source_ref,
         "converter_git_sha": converter_git_sha,
         "candidate_bundle_count": len(candidates),
         "selected_bundle_count": len(selected),
