@@ -62,6 +62,88 @@ jobs:
             "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
             --output .fact_publish/analysis.sqlite
 
+      - name: Resolve BAC periods from Analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import sqlite3
+          from pathlib import Path
+
+          analysis = Path('.fact_publish/analysis.sqlite')
+          connection = sqlite3.connect(f'file:{analysis}?mode=ro', uri=True)
+          try:
+              min_year, max_year = connection.execute(
+                  'SELECT MIN(year), MAX(year) FROM fact_entry_result_lite'
+              ).fetchone()
+              dates = [
+                  str(row[0])
+                  for row in connection.execute(
+                      'SELECT DISTINCT race_date FROM fact_entry_result_lite '
+                      'WHERE year=? ORDER BY race_date',
+                      (max_year,),
+                  )
+              ]
+          finally:
+              connection.close()
+
+          if min_year is None or max_year is None or not dates:
+              raise SystemExit('Could not resolve Analysis BAC periods')
+
+          Path('.fact_publish/max_year_dates.txt').write_text(
+              '\n'.join(dates) + '\n', encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as env_file:
+              env_file.write(f'MIN_ANALYSIS_YEAR={int(min_year)}\n')
+              env_file.write(f'MAX_ANALYSIS_YEAR={int(max_year)}\n')
+          print({
+              'min_year': int(min_year),
+              'max_year': int(max_year),
+              'max_year_dates': len(dates),
+          })
+          PY
+
+      - name: Fetch BAC Raw for race-name lookup
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          RAW_ROOT=".fact_publish/raw"
+          mkdir -p "$RAW_ROOT"
+
+          if [ "$MIN_ANALYSIS_YEAR" -lt "$MAX_ANALYSIS_YEAR" ]; then
+            python horse-racing/jrdb/src/fetch_jrdb_history.py \
+              --from-year "$MIN_ANALYSIS_YEAR" \
+              --to-year "$((MAX_ANALYSIS_YEAR - 1))" \
+              --kinds BAC \
+              --output-dir "$RAW_ROOT" \
+              --sleep-seconds 0.25
+          fi
+
+          while IFS= read -r race_date; do
+            if [ -z "$race_date" ]; then
+              continue
+            fi
+            python horse-racing/jrdb/src/fetch_jrdb_history.py \
+              --date "$race_date" \
+              --kinds BAC \
+              --output-dir "$RAW_ROOT" \
+              --sleep-seconds 0
+          done < .fact_publish/max_year_dates.txt
+
+      - name: Build BAC race-name lookup
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/build_jrdb_pwa_race_names.py \
+            --analysis .fact_publish/analysis.sqlite \
+            --raw-root .fact_publish/raw \
+            --db .fact_publish/race_names.sqlite \
+            | tee .fact_publish/race_name_result.txt
+
       - name: Build and validate Fact Lite
         shell: bash
         run: |
@@ -69,6 +151,7 @@ jobs:
           FACT_FILE=".fact_publish/jrdb_pwa_fact_lite.sqlite"
           python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
             --analysis .fact_publish/analysis.sqlite \
+            --race-names .fact_publish/race_names.sqlite \
             --db "$FACT_FILE" \
             | tee .fact_publish/build_result.txt
 
@@ -139,6 +222,9 @@ jobs:
                   "SELECT COUNT(*) FROM dim_race "
                   "WHERE TRIM(COALESCE(race_name, '')) <> ''"
               ).fetchone()[0]
+              if int(race_name_count) <= 0:
+                  raise SystemExit('race-name lookup produced no named races')
+
               prev_distance_rows = connection.execute(
                   "SELECT COUNT(*) FROM fact_stats_entry "
                   "WHERE prev_distance_delta IS NOT NULL"
@@ -165,7 +251,7 @@ jobs:
               'capabilities': {
                   'month_filter': True,
                   'distance_range_filter': True,
-                  'race_name_search': race_name_count > 0,
+                  'race_name_search': True,
                   'previous_distance_axis': prev_distance_rows > 0,
                   'previous_class_axis': prev_class_rows > 0,
                   'race_name_rows': int(race_name_count),
@@ -181,6 +267,10 @@ jobs:
               json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
               encoding='utf-8'
           )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as env_file:
+              env_file.write(f'RACE_NAME_COUNT={int(race_name_count)}\n')
+              env_file.write(f'PREV_DISTANCE_ROWS={int(prev_distance_rows)}\n')
+              env_file.write(f'PREV_CLASS_ROWS={int(prev_class_rows)}\n')
           PY
 
           echo "FACT_SIZE=$ACTUAL_SIZE" >> "$GITHUB_ENV"
@@ -196,7 +286,7 @@ jobs:
             gh release create "$FACT_RELEASE_TAG" \
               --repo "$GITHUB_REPOSITORY" \
               --title "JRDB PWA Fact Lite current" \
-              --notes "PWA Fact Lite distribution cache. Generated from Analysis Lite; not a Git-tracked canonical data artifact."
+              --notes "PWA Fact Lite distribution cache. Generated from Analysis Lite plus BAC race-name lookup; not a Git-tracked canonical data artifact."
           fi
           gh release upload "$FACT_RELEASE_TAG" \
             .fact_publish/jrdb_pwa_fact_lite.sqlite \
@@ -253,7 +343,7 @@ jobs:
         run: |
           gh issue comment "$ISSUE_NUMBER" \
             --repo "$GITHUB_REPOSITORY" \
-            --body "Published Fact Lite ${DATA_VERSION}. size=${FACT_SIZE} sha256=${FACT_SHA256}. Stats Mart distribution remains unchanged."
+            --body "Published Fact Lite ${DATA_VERSION}. size=${FACT_SIZE} sha256=${FACT_SHA256} race_names=${RACE_NAME_COUNT} prev_distance=${PREV_DISTANCE_ROWS} prev_class=${PREV_CLASS_ROWS}. Stats Mart distribution remains unchanged."
           gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
 
       - name: Report failure
