@@ -4,6 +4,21 @@ GitHubへ直接commit/pushできないChatGPT / Work環境から、`.xlsx` な�
 
 通常のテキストファイルは `.gpt/GIT_UPDATE_ISSUE.md` の `[gpt-git-update]` を使用してください。
 
+## 推奨操作層
+
+認証済み `gh` CLIを実行できる環境では、Base64化、分割コメント、確定コメント、完了待ちを手作業で行わず、次の共通CLIを第一選択にします。
+
+```bash
+python .gpt/tools/gpt_git_binary_tool.py update \
+  --file "/tmp/競艇note販売運用台帳.xlsx" \
+  --path "boat-racing/ledger/競艇note販売運用台帳.xlsx" \
+  --message "chore: update boat racing ledger"
+```
+
+詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
+
+`gh` CLIが利用できないChat環境では、以下のIssueプロトコルを直接使用します。
+
 ## Trigger
 
 Issue title must start with:
@@ -88,4 +103,6 @@ Actionsはpush前に以下を検証します。
 
 直接GitHubへcommit/pushできず、変更対象にバイナリファイルが含まれる場合、ユーザーへ手動pushを依頼する前にこの経路を使用してください。
 
-ファイルをBase64化し、SHA-256・バイト数を算出し、Issueとチャンクコメントを登録してから `[gpt-git-binary-commit]` を投稿してください。
+認証済み `gh` CLIを実行できる場合は `.gpt/tools/gpt_git_binary_tool.py update` を使い、GPTがBase64チャンクを手作業で組み立てないでください。
+
+`gh` CLIが利用できない場合のみ、ファイルをBase64化し、SHA-256・バイト数を算出し、Issueとチャンクコメントを登録してから `[gpt-git-binary-commit]` を投稿してください。
