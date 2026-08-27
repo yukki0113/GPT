@@ -18,39 +18,59 @@ GitHub Pages は GitHub Actions 方式を使用します。
 
 ## Current phase
 
-OPFS / sql.js / remote manifest /安全な自動同期を実機で確認済みです。
+OPFS / sql.js / remote manifest / 安全な自動同期をiOS実機で確認済みです。
 
-現在は、軸別事前集計の Stats Mart に加え、1出走1行の PWA専用 Fact Lite を並行検証しています。
+自由条件集計の主DB候補を **Fact Lite v0.2** とし、Stats Mart は将来必要になる重い集計だけを補助する位置づけへ寄せています。
 
-Fact Lite は自由な `WHERE / GROUP BY` を主目的とし、種牡馬・母父・騎手・枠・脚質・年齢・性別・人気帯などを同一SQLite上で横断集計できます。
+Fact Liteは1出走1行を保持するため、条件を重ねても同一SQLite上で自由に `WHERE / GROUP BY` できます。
 
 実装済み:
 
 - mobile-first UI
 - Web App Manifest
-- Service Worker
-- app shell の事前キャッシュ
+- Service Worker / app shell cache
 - online / offline 表示
-- OPFS 利用可否チェック
-- sql.js 1.14.1 + WASM の固定version利用
-- sql.js / WASM の同一origin配信・Service Workerキャッシュ
+- OPFS 永続保存・自動復元
+- sql.js 1.14.1 + WASM の同一origin配信
 - remote manifest による最新版確認
 - size / SHA-256 / schema / required tables / integrity validation
 - `incoming.sqlite` / `previous.sqlite` / `current.sqlite` による安全な全量差し替え
 - GitHub Release を利用したGit非管理の配布キャッシュ
 - Google Drive -> Issue -> Actions -> Release -> Pages artifact の配布経路
-- Stats Mart: 種牡馬 / 騎手 / 枠の集計
-- Fact Lite: 種牡馬 / 母父 / 騎手 / 枠 / 脚質 / 年齢 / 性別 / 人気帯の集計
-- 年 / 競馬場 / 芝ダ障害 / 距離 / 馬場状態 / 年齢 / 性別 / 人気帯 / 脚質 / 最低出走数フィルタ
+- Fact Lite集計軸: 種牡馬 / 母父 / 騎手 / 枠 / 脚質 / 年齢 / 性別 / 人気帯 / 距離変化 / 前走クラス
+- 検索条件: 年From-To / 月From-To / 競馬場 / 芝ダ障害 / 距離From-To / 馬場状態 / 最低出走数
+- 追加cross-filter: 年齢 / 性別 / 人気帯 / 脚質
+- レース名部分一致UI（source dataのrace_name有無で自動有効化）
 - 勝率 / 複勝率 / 単勝回収率 / 複勝回収率表示
-- Fact Lite 検索条件クリア
+- 検索条件クリア
 
-未実装 / 今後:
+### Month range semantics
 
-- Fact Liteを正式主DBとするかの最終設計反映
-- 必要な追加条件・集計軸
-- UIの最終調整
-- データ生成から配布Issue作成までの完全自動連携
+- Fromのみ: 指定月以上
+- Toのみ: 指定月以下
+- From <= To: 範囲内
+- From > To: 年またぎ扱い。例 `11月 -> 2月` は11,12,1,2月
+
+### Previous-distance axis
+
+`current_distance - previous_distance` をFact生成時に派生します。
+
+- 正: 距離延長
+- 0: 同距離
+- 負: 距離短縮
+- NULL: 前走不明
+
+### Previous-class axis
+
+前走 `grade_code` / `race_condition_code` から、新馬・未勝利・1勝・2勝・3勝・オープン・L・G3・G2・G1等へ分類します。Analysis内で前走を解決できない場合は推測せず「前走不明」です。
+
+## Race-name search status
+
+JRDB BACにはrace nameがありますが、現行配布元の Analysis Lite v1.2 には `race_name` 列がありません。
+
+そのため初回 Fact Lite v0.2 配布物では、レース名入力欄を **「現配布データでは未収録」** として無効化します。空文字を検索して0件になるような見せ方にはしません。
+
+将来 `race_name` を持つAnalysisを入力すると、同じFact Lite v0.2 builderが `dim_race.race_name` を自動収録し、PWA側もSQLite内の実データを検出して入力欄を自動有効化します。
 
 ## Real-device validation
 
@@ -67,9 +87,9 @@ Fact Lite は自由な `WHERE / GROUP BY` を主目的とし、種牡馬・母�
 - 機内モードでのPWA起動: 成功
 - 機内モードでのOPFS復元・集計: 成功
 
-### Fact Lite v0.1
+### Fact Lite v0.1 baseline
 
-同日、iOS版Google Chromeで Fact Lite v0.1 を検証しました。
+2026-08-27、iOS版Google Chromeで検証しました。
 
 - rows: 513,512
 - SQLite size: 49,700,864 bytes（約47.4 MiB）
@@ -86,9 +106,23 @@ Fact Lite は自由な `WHERE / GROUP BY` を主目的とし、種牡馬・母�
 - 東京・芝・1600m・3歳・牡・1〜3人気・先行:
   - 該当0件
   - 約52 ms
-- 全期間集計では一瞬の待機感はあるが、実用上ストレスになる水準ではないことを実機確認
+- 全期間集計では一瞬の待機感はあるが、実用上ストレスになる水準ではないことを確認
 
-この結果から、Fact Lite を自由条件集計の主DBとし、Stats Mart は必要な箇所だけ高速化用途で補助する構成が有力です。
+この結果を根拠に、Fact Liteを自由条件集計の主DB候補とします。
+
+## Current Fact Lite v0.2 distribution
+
+現行Analysis Lite v1.2から生成・配布済み:
+
+- data version: `2016_2026YTD_20260823_v0_2`
+- rows: 513,512
+- size: `59,449,344 bytes`（約56.7 MiB）
+- SHA-256: `7682358bc511463cfc22f117afc6859e07cf75783adb3f732ac67f4cc08672eb`
+- schema version: `0.2`
+- Release tag: `jrdb-pwa-fact-lite-current`
+- race-name search: source Analysisにrace_nameがないため未有効
+
+v0.2のiOS実機集計速度はUI更新後に再計測します。
 
 ## Distribution flow
 
@@ -115,6 +149,8 @@ Google Drive File IDは世代更新で変わり得るためGitへ固定しませ
 
 PWA起動時はネットワークより先に OPFS `current.sqlite` を復元します。
 
+v0.2 UIがv0.1保存DBを検出した場合は旧DBを利用状態にせず、オンラインならmanifest確認後にv0.2を自動同期します。
+
 オンライン時のみmanifestを確認し、ローカル metadata の SHA-256 と比較します。
 
 - 同一SHA-256: 再ダウンロードしない
@@ -127,16 +163,12 @@ Service Workerは `/data/` をキャッシュしません。オフライン利�
 
 ## Current Stats Mart distribution artifact
 
-2026-08-26 のDrive実ファイルをActionsから再取得して検証した結果:
-
 - source filename: `jrdb_stats_mart_2016_2026YTD_20260823_v1_1.sqlite`
 - size: `56,254,464 bytes`
 - SHA-256: `1d1798315646996991487c6e0cd5ee40ab330da58a8f77f6950694959a2b9f50`
 - required tables: PASS
 - `PRAGMA integrity_check`: `ok`
 - Release tag: `jrdb-stats-mart-current`
-
-従来READMEに記録されていたSHA-256とは差異があったため、配布workflowではDrive実ファイルを再取得し、実artifactのsize / SHA-256 / SQLite内容を検証した値を採用しています。
 
 ## Data policy
 
