@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import sqlite3
 import subprocess
 import sys
@@ -30,7 +29,7 @@ HERE = Path(__file__).resolve().parent
 FETCH_PACI = HERE / "fetch_jrdb_paci.py"
 FETCH_HISTORY = HERE / "fetch_jrdb_history.py"
 CONVERTER = HERE / "racenote_jrdb.py"
-ENRICHER = HERE / "racenote_history_enrichment_poc.py"
+ENRICHER = HERE / "racenote_history_enrichment.py"
 
 PREV_RESULT_SLICES = (
     (203, 219),
@@ -123,6 +122,7 @@ def build_plan(request: RaceNoteRequest) -> dict:
         base_backend = "paci"
     return {
         "request_version": "0.1.1",
+        "final_schema_version": "1.0",
         "target_date": request.target_date.isoformat(),
         "today": request.today.isoformat(),
         "temporal_mode": request.temporal_mode,
@@ -334,18 +334,15 @@ def select_bundles(bundle_dir: Path, request: RaceNoteRequest) -> list[Path]:
 
 
 def enrich_bundle(bundle: Path, analysis: Path, mart: Path, output_dir: Path, stats_window_years: int) -> Path:
-    """Add Analysis/Mart enrichment, choosing the 8-run PoC variant."""
-    temp_dir = output_dir / "_enrichment_tmp" / bundle.stem
+    """Add production Analysis/Mart enrichment and write a stable v1.0 bundle."""
+    target = output_dir / bundle.name
     command = [
         sys.executable, str(ENRICHER), "--bundle", str(bundle), "--analysis", str(analysis),
-        "--mart", str(mart), "--output-dir", str(temp_dir), "--stats-window-years", str(stats_window_years),
+        "--mart", str(mart), "--output", str(target), "--stats-window-years", str(stats_window_years),
     ]
     run(command)
-    enriched = temp_dir / f"{bundle.stem}_enriched_8runs_poc.json"
-    if not enriched.is_file():
-        raise RaceNoteRequestError(f"Enriched bundle missing: {enriched}")
-    target = output_dir / bundle.name
-    shutil.copy2(enriched, target)
+    if not target.is_file():
+        raise RaceNoteRequestError(f"Enriched bundle missing: {target}")
     return target
 
 
