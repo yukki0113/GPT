@@ -38,24 +38,32 @@
     <section class="card">
       <h2>条件</h2>
       <div class="filter-grid">
-        <label>年 From<input id="fact-year-from" type="number" value="2016" min="2016" max="2026" disabled /></label>
-        <label>年 To<input id="fact-year-to" type="number" value="2026" min="2016" max="2026" disabled /></label>
-        <label>月 From
-          <select id="fact-month-from" disabled>
-            <option value="">指定なし</option>
-            <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option>
-            <option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option>
-            <option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
-          </select>
-        </label>
-        <label>月 To
-          <select id="fact-month-to" disabled>
-            <option value="">指定なし</option>
-            <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option>
-            <option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option>
-            <option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
-          </select>
-        </label>
+        <div class="range-field">
+          <span class="range-label">年</span>
+          <div class="range-controls">
+            <input id="fact-year-from" type="number" value="2016" min="2016" max="2026" aria-label="年 From" disabled />
+            <span class="range-separator">～</span>
+            <input id="fact-year-to" type="number" value="2026" min="2016" max="2026" aria-label="年 To" disabled />
+          </div>
+        </div>
+        <div class="range-field">
+          <span class="range-label">月</span>
+          <div class="range-controls">
+            <select id="fact-month-from" aria-label="月 From" disabled>
+              <option value="">指定なし</option>
+              <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option>
+              <option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option>
+              <option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+            </select>
+            <span class="range-separator">～</span>
+            <select id="fact-month-to" aria-label="月 To" disabled>
+              <option value="">指定なし</option>
+              <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option>
+              <option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option>
+              <option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+            </select>
+          </div>
+        </div>
         <label>競馬場
           <select id="fact-venue" disabled>
             <option value="">指定なし</option>
@@ -69,8 +77,14 @@
             <option value="">指定なし</option><option value="1">芝</option><option value="2">ダート</option><option value="3">障害</option>
           </select>
         </label>
-        <label>距離 From<input id="fact-distance-from" type="number" step="100" placeholder="例: 1200" disabled /></label>
-        <label>距離 To<input id="fact-distance-to" type="number" step="100" placeholder="例: 1800" disabled /></label>
+        <div class="range-field">
+          <span class="range-label">距離</span>
+          <div class="range-controls">
+            <input id="fact-distance-from" type="number" step="100" placeholder="例: 1200" aria-label="距離 From" disabled />
+            <span class="range-separator">～</span>
+            <input id="fact-distance-to" type="number" step="100" placeholder="例: 1800" aria-label="距離 To" disabled />
+          </div>
+        </div>
         <label>馬場状態
           <select id="fact-track-condition" disabled>
             <option value="">指定なし</option>
@@ -93,26 +107,6 @@
           <input id="fact-race-name" type="text" placeholder="現配布データでは未収録" disabled />
           <small id="fact-race-name-note">レース名データを確認中</small>
         </label>
-        <label>年齢
-          <select id="fact-age" disabled>
-            <option value="">指定なし</option><option value="2">2歳</option><option value="3">3歳</option><option value="4">4歳</option><option value="5">5歳</option><option value="6">6歳</option><option value="7">7歳</option><option value="8">8歳以上</option>
-          </select>
-        </label>
-        <label>性別
-          <select id="fact-sex" disabled>
-            <option value="">指定なし</option><option value="1">牡</option><option value="2">牝</option><option value="3">セン</option>
-          </select>
-        </label>
-        <label>人気帯
-          <select id="fact-pop-band" disabled>
-            <option value="">指定なし</option><option value="1-3">1〜3人気</option><option value="4-6">4〜6人気</option><option value="7-9">7〜9人気</option><option value="10+">10人気以下</option>
-          </select>
-        </label>
-        <label>脚質
-          <select id="fact-running-style" disabled>
-            <option value="">指定なし</option><option value="1">逃げ</option><option value="2">先行</option><option value="3">差し</option><option value="4">追込</option><option value="5">好位差し</option><option value="6">自在</option>
-          </select>
-        </label>
         <label>最低出走数<input id="fact-min-starts" type="number" value="20" min="1" disabled /></label>
       </div>
       <div class="button-row">
@@ -125,14 +119,13 @@
     <section class="card">
       <div class="tabs" id="fact-tabs" role="tablist" aria-label="Fact Lite集計軸">
         <button type="button" class="tab active" data-axis="sire" disabled>種牡馬</button>
-        <button type="button" class="tab" data-axis="bms" disabled>母父</button>
         <button type="button" class="tab" data-axis="jockey" disabled>騎手</button>
         <button type="button" class="tab" data-axis="frame" disabled>枠</button>
         <button type="button" class="tab" data-axis="style" disabled>脚質</button>
         <button type="button" class="tab" data-axis="age" disabled>年齢</button>
         <button type="button" class="tab" data-axis="sex" disabled>性別</button>
-        <button type="button" class="tab" data-axis="pop_band" disabled>人気帯</button>
-        <button type="button" class="tab" data-axis="distance_change" disabled>距離変化</button>
+        <button type="button" class="tab" data-axis="popularity" disabled>人気</button>
+        <button type="button" class="tab" data-axis="distance_change" disabled>前走距離</button>
         <button type="button" class="tab" data-axis="prev_class" disabled>前走クラス</button>
       </div>
       <div id="fact-result-area"><div class="empty-state">Fact Liteを同期すると集計結果を表示します。</div></div>
