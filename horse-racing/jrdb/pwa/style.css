@@ -25,6 +25,10 @@ main { width: min(960px, 100%); margin: 0 auto; padding: 16px; }
 .note { margin: 14px 0 0; color: #666; font-size: 13px; line-height: 1.6; }
 .filter-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-bottom: 14px; }
 label { display: grid; gap: 6px; font-size: 13px; color: #444; }
+.range-field { grid-column: 1 / -1; display: grid; gap: 6px; font-size: 13px; color: #444; }
+.range-label { display: block; }
+.range-controls { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 8px; align-items: center; }
+.range-separator { color: #666; text-align: center; }
 input, select, button { min-height: 44px; border: 1px solid #cfcfcf; border-radius: 9px; background: #fff; padding: 9px 10px; }
 button { font-weight: 600; } button.secondary { font-weight: 500; background: #f7f7f7; }
 button:disabled, input:disabled, select:disabled { opacity: .55; }
@@ -40,6 +44,7 @@ th { background: #f7f7f7; }
 footer { padding: 8px 16px calc(22px + env(safe-area-inset-bottom)); text-align: center; color: #777; }
 @media (max-width: 640px) {
   .status-grid, .filter-grid { grid-template-columns: 1fr; }
+  .range-controls { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); }
   .card { padding: 15px; border-radius: 12px; }
   .button-row button, .button-row .link-button { flex: 1 1 140px; }
 }
