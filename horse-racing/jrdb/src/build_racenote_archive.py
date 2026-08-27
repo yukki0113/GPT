@@ -4,6 +4,11 @@
 Phase A intentionally starts from already-generated ``race_bundle_*.json``
 files. PACI/annual-Raw batch conversion is an upstream concern and can be
 connected after the archive storage contract is validated.
+
+A shard is publishable only when it is explicitly built as ``full_month``, its
+race identity set exactly matches an authoritative expected index, and source
+provenance rows are present. Partial/test shards remain useful for regression
+but are never production Archive candidates.
 """
 from __future__ import annotations
 
@@ -19,6 +24,7 @@ import racenote_archive as archive
 HERE = Path(__file__).resolve().parent
 DEFAULT_SCHEMA = HERE.parent / "schema" / "racenote_archive_schema_v1_0.sql"
 SOURCE_MODES = ("paci", "annual_raw_reconstruction")
+COVERAGE_MODES = ("partial", "full_month")
 SHA256_PATTERN = re.compile(r"[0-9a-fA-F]{64}")
 SOURCE_REF_PATTERN = re.compile(r"[A-Za-z0-9._-]{1,120}")
 
@@ -47,6 +53,21 @@ def parse_args() -> argparse.Namespace:
         help="How the base bundles were produced",
     )
     parser.add_argument(
+        "--coverage-mode",
+        choices=COVERAGE_MODES,
+        default="partial",
+        help="partial for PoC/subset shards; full_month for publishable candidates",
+    )
+    parser.add_argument(
+        "--expected-index",
+        type=Path,
+        default=None,
+        help=(
+            "Authoritative JSON race identity set for full_month builds. "
+            "Each row requires race_date + venue_code/venue + race_no."
+        ),
+    )
+    parser.add_argument(
         "--source-ref",
         default=None,
         help=(
@@ -66,7 +87,12 @@ def parse_args() -> argparse.Namespace:
         help="Git commit used for racenote_jrdb.py base conversion",
     )
     parser.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
-    parser.add_argument("--expected-race-count", type=int, default=None)
+    parser.add_argument(
+        "--expected-race-count",
+        type=int,
+        default=None,
+        help="Optional additional count assertion; full_month truth comes from --expected-index",
+    )
     parser.add_argument("--replace", action="store_true")
     parser.add_argument(
         "--strict-input-month",
@@ -102,13 +128,7 @@ def validate_converter_git_sha(value: str) -> str:
 
 
 def validate_source_ref(value: str | None) -> str | None:
-    """Validate the optional non-secret, non-location provenance label.
-
-    ``source_ref`` is intentionally only a compact logical label such as
-    ``paci-202605`` or ``annual-raw-2025``. Exact source filenames and hashes
-    belong in ``source_input``. Drive URLs, file IDs, filesystem paths and
-    other transport-specific references must not be stored here.
-    """
+    """Validate the optional non-secret, non-location provenance label."""
     if value is None:
         return None
     text = value.strip()
@@ -178,6 +198,96 @@ def source_inputs_from_manifest(path: Path | None) -> list[dict]:
     return output
 
 
+def expected_index_from_file(
+    path: Path | None,
+    target_month: str,
+) -> tuple[set[tuple[str, str, int]], str | None]:
+    """Read an authoritative race identity set and return its canonical hash."""
+    if path is None:
+        return set(), None
+    if not path.is_file():
+        raise BuildError(f"Expected race index not found: {path}")
+
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(value, dict):
+        rows = value.get("races")
+    else:
+        rows = value
+    if not isinstance(rows, list) or not rows:
+        raise BuildError("Expected race index must contain a non-empty races[] list")
+
+    identities: set[tuple[str, str, int]] = set()
+    canonical_rows: list[dict] = []
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise BuildError(f"expected index row {index} must be an object")
+        try:
+            race_date = archive.normalize_race_date(row.get("race_date"))
+        except archive.RaceNoteArchiveError as exc:
+            raise BuildError(f"expected index row {index}: {exc}") from exc
+        if race_date.replace("-", "")[:6] != target_month:
+            raise BuildError(
+                f"expected index row {index} is outside target month: {race_date}"
+            )
+
+        venue_code_value = str(row.get("venue_code") or "").strip()
+        venue_value = str(row.get("venue") or "").strip()
+        if venue_code_value:
+            if venue_code_value not in archive.JRA_VENUES:
+                raise BuildError(
+                    f"expected index row {index} has invalid venue_code: {venue_code_value}"
+                )
+            venue_code = venue_code_value
+            if venue_value and archive.JRA_VENUES[venue_code] != venue_value:
+                raise BuildError(
+                    f"expected index row {index} venue/venue_code mismatch"
+                )
+        elif venue_value:
+            if venue_value not in archive.JRA_VENUE_CODES:
+                raise BuildError(
+                    f"expected index row {index} has invalid venue: {venue_value}"
+                )
+            venue_code = archive.JRA_VENUE_CODES[venue_value]
+        else:
+            raise BuildError(
+                f"expected index row {index} requires venue_code or venue"
+            )
+
+        try:
+            race_no = int(row.get("race_no"))
+        except (TypeError, ValueError) as exc:
+            raise BuildError(
+                f"expected index row {index} has invalid race_no"
+            ) from exc
+        if not 1 <= race_no <= 12:
+            raise BuildError(
+                f"expected index row {index} race_no must be 1..12"
+            )
+
+        identity = (race_date, venue_code, race_no)
+        if identity in identities:
+            raise BuildError(f"duplicate expected race identity: {identity}")
+        identities.add(identity)
+        canonical_rows.append(
+            {
+                "race_date": race_date,
+                "venue_code": venue_code,
+                "race_no": race_no,
+            }
+        )
+
+    canonical_rows.sort(
+        key=lambda row: (row["race_date"], row["venue_code"], row["race_no"])
+    )
+    canonical_bytes = json.dumps(
+        canonical_rows,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return identities, archive.sha256_bytes(canonical_bytes)
+
+
 def discover_bundle_paths(root: Path) -> list[Path]:
     """Return all base RaceNote bundle candidates below root."""
     if not root.is_dir():
@@ -215,6 +325,13 @@ def build(args: argparse.Namespace) -> dict:
     converter_git_sha = validate_converter_git_sha(args.converter_git_sha)
     source_ref = validate_source_ref(args.source_ref)
     source_inputs = source_inputs_from_manifest(args.source_manifest)
+    expected_identities, expected_index_sha256 = expected_index_from_file(
+        args.expected_index,
+        target_month,
+    )
+
+    if args.coverage_mode == "full_month" and not expected_identities:
+        raise BuildError("full_month builds require --expected-index")
 
     if not args.schema.is_file():
         raise BuildError(f"Archive schema not found: {args.schema}")
@@ -241,6 +358,23 @@ def build(args: argparse.Namespace) -> dict:
 
     if not selected:
         raise BuildError(f"No bundles matched target month {target_month}")
+
+    selected_identities = {
+        (identity.race_date, identity.venue_code, identity.race_no)
+        for _, _, identity in selected
+    }
+    if len(selected_identities) != len(selected):
+        raise BuildError("Duplicate race identities found before SQLite insert")
+
+    missing_expected = sorted(expected_identities - selected_identities)
+    unexpected_selected = sorted(selected_identities - expected_identities)
+    if args.coverage_mode == "full_month":
+        if missing_expected or unexpected_selected:
+            raise BuildError(
+                "Full-month identity mismatch: "
+                f"missing={missing_expected[:20]} unexpected={unexpected_selected[:20]}"
+            )
+
     if args.expected_race_count is not None and args.expected_race_count < 0:
         raise BuildError("--expected-race-count must be >= 0")
     if (
@@ -251,6 +385,26 @@ def build(args: argparse.Namespace) -> dict:
             "Expected race count mismatch before build: "
             f"expected={args.expected_race_count} selected={len(selected)}"
         )
+    if (
+        expected_identities
+        and args.expected_race_count is not None
+        and len(expected_identities) != args.expected_race_count
+    ):
+        raise BuildError(
+            "Expected index/count mismatch: "
+            f"index={len(expected_identities)} count={args.expected_race_count}"
+        )
+
+    identity_match = (
+        bool(expected_identities)
+        and selected_identities == expected_identities
+    )
+    publishable = (
+        args.coverage_mode == "full_month"
+        and identity_match
+        and bool(source_inputs)
+    )
+    publication_status = "publishable" if publishable else "test_only"
 
     coverage_dates = sorted({identity.race_date for _, _, identity in selected})
     built_at = datetime.now(timezone.utc).isoformat()
@@ -267,6 +421,7 @@ def build(args: argparse.Namespace) -> dict:
         archive.set_meta(connection, "semantic_hash_rule", archive.SEMANTIC_HASH_RULE)
         archive.set_meta(connection, "coverage_start", coverage_dates[0])
         archive.set_meta(connection, "coverage_end", coverage_dates[-1])
+        archive.set_meta(connection, "coverage_mode", args.coverage_mode)
         archive.set_meta(connection, "race_count", len(selected))
         archive.set_meta(connection, "built_at", built_at)
         archive.set_meta(
@@ -275,6 +430,18 @@ def build(args: argparse.Namespace) -> dict:
             "complete" if source_inputs else "unrecorded",
         )
         archive.set_meta(connection, "source_input_count", len(source_inputs))
+        archive.set_meta(connection, "publication_status", publication_status)
+        if expected_identities:
+            archive.set_meta(
+                connection,
+                "expected_race_count",
+                len(expected_identities),
+            )
+            archive.set_meta(
+                connection,
+                "expected_index_sha256",
+                expected_index_sha256,
+            )
         archive.insert_source_inputs(connection, source_inputs)
 
         total_json_bytes = 0
@@ -321,13 +488,20 @@ def build(args: argparse.Namespace) -> dict:
         "output_bytes": args.output.stat().st_size,
         "source_mode": args.source_mode,
         "source_ref": source_ref,
+        "coverage_mode": args.coverage_mode,
+        "publication_status": publication_status,
         "converter_git_sha": converter_git_sha,
         "candidate_bundle_count": len(candidates),
         "selected_bundle_count": len(selected),
         "skipped_other_month_count": len(skipped_other_month),
         "source_input_count": source_input_count,
         "provenance_status": "complete" if source_input_count else "unrecorded",
-        "publishable": source_input_count > 0,
+        "publishable": publishable,
+        "identity_match": identity_match,
+        "expected_index_count": len(expected_identities) if expected_identities else None,
+        "expected_index_sha256": expected_index_sha256,
+        "missing_expected_count": len(missing_expected),
+        "unexpected_selected_count": len(unexpected_selected),
         "total_json_bytes": total_json_bytes,
         "total_compressed_blob_bytes": compressed_bytes,
         "compression_ratio": (
