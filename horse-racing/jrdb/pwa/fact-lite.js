@@ -8,6 +8,7 @@ const FACT_CURRENT = "current.sqlite";
 const FACT_PREVIOUS = "previous.sqlite";
 const FACT_INCOMING = "incoming.sqlite";
 const FACT_METADATA = "metadata.json";
+const FACT_SCHEMA_VERSION = "0.2";
 
 const factNetworkBadge = document.getElementById("fact-network-badge");
 const factDbStatus = document.getElementById("fact-db-status");
@@ -25,10 +26,15 @@ const factTabs = Array.from(document.querySelectorAll("#fact-tabs .tab"));
 
 const factYearFrom = document.getElementById("fact-year-from");
 const factYearTo = document.getElementById("fact-year-to");
+const factMonthFrom = document.getElementById("fact-month-from");
+const factMonthTo = document.getElementById("fact-month-to");
 const factVenue = document.getElementById("fact-venue");
 const factTrackType = document.getElementById("fact-track-type");
-const factDistance = document.getElementById("fact-distance");
+const factDistanceFrom = document.getElementById("fact-distance-from");
+const factDistanceTo = document.getElementById("fact-distance-to");
 const factTrackCondition = document.getElementById("fact-track-condition");
+const factRaceName = document.getElementById("fact-race-name");
+const factRaceNameNote = document.getElementById("fact-race-name-note");
 const factAge = document.getElementById("fact-age");
 const factSex = document.getElementById("fact-sex");
 const factPopBand = document.getElementById("fact-pop-band");
@@ -38,9 +44,12 @@ const factMinStarts = document.getElementById("fact-min-starts");
 const FACT_FILTER_ELEMENTS = [
   factYearFrom,
   factYearTo,
+  factMonthFrom,
+  factMonthTo,
   factVenue,
   factTrackType,
-  factDistance,
+  factDistanceFrom,
+  factDistanceTo,
   factTrackCondition,
   factAge,
   factSex,
@@ -48,6 +57,21 @@ const FACT_FILTER_ELEMENTS = [
   factRunningStyle,
   factMinStarts
 ];
+
+const POPULARITY_BAND_EXPRESSION =
+  "CASE " +
+  "WHEN f.final_win_popularity BETWEEN 1 AND 3 THEN '1-3' " +
+  "WHEN f.final_win_popularity BETWEEN 4 AND 6 THEN '4-6' " +
+  "WHEN f.final_win_popularity BETWEEN 7 AND 9 THEN '7-9' " +
+  "WHEN f.final_win_popularity >= 10 THEN '10+' " +
+  "ELSE '不明' END";
+
+const DISTANCE_CHANGE_EXPRESSION =
+  "CASE " +
+  "WHEN f.prev_distance_delta IS NULL THEN 'unknown' " +
+  "WHEN f.prev_distance_delta > 0 THEN 'extend' " +
+  "WHEN f.prev_distance_delta = 0 THEN 'same' " +
+  "ELSE 'shorten' END";
 
 const FACT_AXIS_CONFIG = {
   sire: {
@@ -94,8 +118,20 @@ const FACT_AXIS_CONFIG = {
   },
   pop_band: {
     label: "人気帯",
-    select: "CASE WHEN f.final_win_popularity BETWEEN 1 AND 3 THEN '1-3' WHEN f.final_win_popularity BETWEEN 4 AND 6 THEN '4-6' WHEN f.final_win_popularity BETWEEN 7 AND 9 THEN '7-9' WHEN f.final_win_popularity >= 10 THEN '10+' ELSE '不明' END",
-    group: "CASE WHEN f.final_win_popularity BETWEEN 1 AND 3 THEN '1-3' WHEN f.final_win_popularity BETWEEN 4 AND 6 THEN '4-6' WHEN f.final_win_popularity BETWEEN 7 AND 9 THEN '7-9' WHEN f.final_win_popularity >= 10 THEN '10+' ELSE '不明' END",
+    select: POPULARITY_BAND_EXPRESSION,
+    group: POPULARITY_BAND_EXPRESSION,
+    joins: ""
+  },
+  distance_change: {
+    label: "距離変化",
+    select: DISTANCE_CHANGE_EXPRESSION,
+    group: DISTANCE_CHANGE_EXPRESSION,
+    joins: ""
+  },
+  prev_class: {
+    label: "前走クラス",
+    select: "f.prev_class_code",
+    group: "f.prev_class_code",
     joins: ""
   }
 };
@@ -115,12 +151,36 @@ const SEX_LABELS = {
   3: "セン"
 };
 
+const DISTANCE_CHANGE_LABELS = {
+  extend: "距離延長",
+  same: "同距離",
+  shorten: "距離短縮",
+  unknown: "前走不明"
+};
+
+const PREVIOUS_CLASS_LABELS = {
+  1: "新馬",
+  2: "未出走",
+  3: "未勝利",
+  4: "1勝",
+  5: "2勝",
+  6: "3勝",
+  7: "オープン",
+  8: "L",
+  9: "G3",
+  10: "G2",
+  11: "G1",
+  12: "その他重賞",
+  13: "その他"
+};
+
 let FACT_SQL = null;
 let factDb = null;
 let factLocalMetadata = null;
 let factRemoteManifest = null;
 let factSyncInProgress = false;
 let factActiveAxis = "sire";
+let factHasRaceNames = false;
 
 function updateFactNetworkStatus() {
   if (navigator.onLine) {
@@ -210,6 +270,7 @@ async function loadFactMetadata() {
   if (!stored) {
     return null;
   }
+
   try {
     return JSON.parse(new TextDecoder().decode(stored.bytes));
   } catch (error) {
@@ -228,20 +289,58 @@ async function factSha256Hex(bytes) {
 }
 
 function validateFactDatabaseObject(database) {
-  const required = ["fact_stats_entry", "dim_sire", "dim_bms", "dim_jockey"];
-  const result = database.exec("SELECT name FROM sqlite_master WHERE type='table'");
-  const names = new Set();
-  if (result.length > 0) {
-    result[0].values.forEach(function (row) {
-      names.add(row[0]);
+  const requiredTables = [
+    "fact_stats_entry",
+    "dim_sire",
+    "dim_bms",
+    "dim_jockey",
+    "dim_race",
+    "meta_pwa_fact_build"
+  ];
+  const tableResult = database.exec(
+    "SELECT name FROM sqlite_master WHERE type='table'"
+  );
+  const tableNames = new Set();
+
+  if (tableResult.length > 0) {
+    tableResult[0].values.forEach(function (row) {
+      tableNames.add(row[0]);
     });
   }
 
-  required.forEach(function (tableName) {
-    if (!names.has(tableName)) {
+  requiredTables.forEach(function (tableName) {
+    if (!tableNames.has(tableName)) {
       throw new Error("必須テーブルがありません: " + tableName);
     }
   });
+
+  const factInfo = database.exec("PRAGMA table_info(fact_stats_entry)");
+  const factColumns = new Set();
+  if (factInfo.length > 0) {
+    factInfo[0].values.forEach(function (row) {
+      factColumns.add(row[1]);
+    });
+  }
+
+  ["month", "race_id", "prev_distance_delta", "prev_class_code"].forEach(
+    function (columnName) {
+      if (!factColumns.has(columnName)) {
+        throw new Error("Fact Lite v0.2列がありません: " + columnName);
+      }
+    }
+  );
+
+  const meta = database.exec(
+    "SELECT schema_version FROM meta_pwa_fact_build " +
+    "ORDER BY build_id DESC LIMIT 1"
+  );
+  if (
+    meta.length === 0 ||
+    meta[0].values.length === 0 ||
+    String(meta[0].values[0][0]) !== FACT_SCHEMA_VERSION
+  ) {
+    throw new Error("Fact Lite v0.2ではない保存DBです");
+  }
 
   const integrity = database.exec("PRAGMA integrity_check");
   if (
@@ -254,11 +353,20 @@ function validateFactDatabaseObject(database) {
 }
 
 function openFactDatabase(bytes) {
+  const candidate = new FACT_SQL.Database(bytes);
+
+  try {
+    validateFactDatabaseObject(candidate);
+  } catch (error) {
+    candidate.close();
+    throw error;
+  }
+
   if (factDb) {
     factDb.close();
   }
-  factDb = new FACT_SQL.Database(bytes);
-  validateFactDatabaseObject(factDb);
+  factDb = candidate;
+  refreshFactLocalCapabilities();
 }
 
 function validateFactBytes(bytes) {
@@ -268,6 +376,32 @@ function validateFactBytes(bytes) {
   } finally {
     temporary.close();
   }
+}
+
+function refreshFactLocalCapabilities() {
+  factHasRaceNames = false;
+
+  if (factDb) {
+    const result = factDb.exec(
+      "SELECT COUNT(*) FROM dim_race " +
+      "WHERE TRIM(COALESCE(race_name, '')) <> ''"
+    );
+    if (result.length > 0 && result[0].values.length > 0) {
+      factHasRaceNames = Number(result[0].values[0][0]) > 0;
+    }
+  }
+
+  if (factHasRaceNames) {
+    factRaceName.disabled = false;
+    factRaceName.placeholder = "例: 記念 / 天皇賞";
+    factRaceNameNote.textContent = "部分一致で検索します";
+    return;
+  }
+
+  factRaceName.value = "";
+  factRaceName.disabled = true;
+  factRaceName.placeholder = "現配布データでは未収録";
+  factRaceNameNote.textContent = "現配布データにはレース名が未収録です";
 }
 
 function formatFactBytes(bytes) {
@@ -290,10 +424,19 @@ function setFactDbLoaded(source, size, metadata) {
   factTabs.forEach(function (tab) {
     tab.disabled = false;
   });
+  refreshFactLocalCapabilities();
 }
 
 function validateFactManifest(manifest) {
-  const required = ["artifact_type", "schema_version", "data_version", "size", "sha256", "download"];
+  const required = [
+    "artifact_type",
+    "schema_version",
+    "data_version",
+    "size",
+    "sha256",
+    "download"
+  ];
+
   required.forEach(function (key) {
     if (!Object.prototype.hasOwnProperty.call(manifest, key)) {
       throw new Error("manifest必須項目がありません: " + key);
@@ -303,7 +446,7 @@ function validateFactManifest(manifest) {
   if (manifest.artifact_type !== "jrdb_pwa_fact_lite") {
     throw new Error("artifact_typeが不正です");
   }
-  if (String(manifest.schema_version) !== "0.1") {
+  if (String(manifest.schema_version) !== FACT_SCHEMA_VERSION) {
     throw new Error("未対応schema_versionです: " + manifest.schema_version);
   }
   if (!manifest.download.path) {
@@ -326,9 +469,11 @@ async function restoreFactDatabase() {
     runFactAggregation();
     return true;
   } catch (error) {
-    console.error("Fact Lite restore failed", error);
-    factDbStatus.textContent = "保存DBエラー";
-    factSyncProgress.textContent = "保存済みFact Liteを開けませんでした: " + error.message;
+    console.warn("Fact Lite restore requires refresh", error);
+    factDbStatus.textContent = "旧版DB / 更新待ち";
+    factSyncProgress.textContent =
+      "保存済みDBはv0.2互換ではないため、オンライン時に最新版へ更新します。";
+    factDb = null;
     return false;
   }
 }
@@ -342,7 +487,10 @@ async function checkFactManifest(autoSyncWhenMissing) {
   factRemoteStatus.textContent = "確認中...";
 
   try {
-    const response = await fetch(FACT_MANIFEST_URL + "?t=" + Date.now(), { cache: "no-store" });
+    const response = await fetch(
+      FACT_MANIFEST_URL + "?t=" + Date.now(),
+      { cache: "no-store" }
+    );
     if (response.status === 404) {
       factRemoteStatus.textContent = "配布データ未設定";
       return;
@@ -355,7 +503,11 @@ async function checkFactManifest(autoSyncWhenMissing) {
     validateFactManifest(manifest);
     factRemoteManifest = manifest;
 
-    if (factLocalMetadata && factLocalMetadata.sha256 === manifest.sha256) {
+    if (
+      factDb &&
+      factLocalMetadata &&
+      factLocalMetadata.sha256 === manifest.sha256
+    ) {
       factRemoteStatus.textContent = "最新版 / " + manifest.data_version;
       factSyncButton.disabled = true;
       return;
@@ -391,10 +543,13 @@ async function syncFactFromRemote() {
   factSyncInProgress = true;
   factSyncButton.disabled = true;
   factCheckButton.disabled = true;
-  factSyncProgress.textContent = "Fact Liteを取得中...";
+  factSyncProgress.textContent = "Fact Lite v0.2を取得中...";
 
   try {
-    const response = await fetch(factRemoteManifest.download.path + "?t=" + Date.now(), { cache: "no-store" });
+    const response = await fetch(
+      factRemoteManifest.download.path + "?t=" + Date.now(),
+      { cache: "no-store" }
+    );
     if (!response.ok) {
       throw new Error("SQLite HTTP " + response.status);
     }
@@ -428,6 +583,7 @@ async function syncFactFromRemote() {
       period_to: factRemoteManifest.period_to,
       size: factRemoteManifest.size,
       sha256: factRemoteManifest.sha256,
+      capabilities: factRemoteManifest.capabilities || {},
       synced_at: new Date().toISOString(),
       source: "automatic_sync"
     };
@@ -436,12 +592,13 @@ async function syncFactFromRemote() {
     openFactDatabase(bytes);
     setFactDbLoaded("自動同期", bytes.byteLength, metadata);
     factRemoteStatus.textContent = "最新版 / " + factRemoteManifest.data_version;
-    factSyncProgress.textContent = "同期完了。Fact Liteで自由条件集計できます。";
+    factSyncProgress.textContent = "同期完了。Fact Lite v0.2を利用できます。";
     runFactAggregation();
   } catch (error) {
     console.error("Fact Lite sync failed", error);
     await removeFactFile(FACT_INCOMING);
-    factSyncProgress.textContent = "同期失敗: " + error.message + "。既存Fact Liteは維持します。";
+    factSyncProgress.textContent =
+      "同期失敗: " + error.message + "。既存Fact Liteは維持します。";
   } finally {
     factSyncInProgress = false;
     factCheckButton.disabled = !navigator.onLine;
@@ -456,6 +613,27 @@ async function syncFactFromRemote() {
 function buildFactWhere() {
   const clauses = ["f.year BETWEEN ? AND ?"];
   const params = [Number(factYearFrom.value), Number(factYearTo.value)];
+  const extraJoins = [];
+
+  const monthFrom = factMonthFrom.value;
+  const monthTo = factMonthTo.value;
+  if (monthFrom && monthTo) {
+    const fromValue = Number(monthFrom);
+    const toValue = Number(monthTo);
+    if (fromValue <= toValue) {
+      clauses.push("f.month BETWEEN ? AND ?");
+      params.push(fromValue, toValue);
+    } else {
+      clauses.push("(f.month >= ? OR f.month <= ?)");
+      params.push(fromValue, toValue);
+    }
+  } else if (monthFrom) {
+    clauses.push("f.month >= ?");
+    params.push(Number(monthFrom));
+  } else if (monthTo) {
+    clauses.push("f.month <= ?");
+    params.push(Number(monthTo));
+  }
 
   if (factVenue.value) {
     clauses.push("f.venue_code = ?");
@@ -465,14 +643,26 @@ function buildFactWhere() {
     clauses.push("f.track_type = ?");
     params.push(Number(factTrackType.value));
   }
-  if (factDistance.value) {
-    clauses.push("f.distance = ?");
-    params.push(Number(factDistance.value));
+  if (factDistanceFrom.value) {
+    clauses.push("f.distance >= ?");
+    params.push(Number(factDistanceFrom.value));
+  }
+  if (factDistanceTo.value) {
+    clauses.push("f.distance <= ?");
+    params.push(Number(factDistanceTo.value));
   }
   if (factTrackCondition.value) {
     clauses.push("f.track_condition_code = ?");
     params.push(Number(factTrackCondition.value));
   }
+
+  const raceName = factRaceName.value.trim();
+  if (factHasRaceNames && raceName !== "") {
+    extraJoins.push("JOIN dim_race AS r ON r.id = f.race_id");
+    clauses.push("INSTR(COALESCE(r.race_name, ''), ?) > 0");
+    params.push(raceName);
+  }
+
   if (factAge.value) {
     if (factAge.value === "8") {
       clauses.push("f.age >= 8");
@@ -501,7 +691,11 @@ function buildFactWhere() {
     }
   }
 
-  return { clauses: clauses, params: params };
+  return {
+    clauses: clauses,
+    params: params,
+    extraJoins: extraJoins
+  };
 }
 
 function buildFactQuery() {
@@ -519,10 +713,13 @@ function buildFactQuery() {
     "  SUM(COALESCE(f.place_payout, 0)) AS place_payout_sum",
     "FROM fact_stats_entry AS f",
     config.joins,
+    where.extraJoins.join("\n"),
     "WHERE " + where.clauses.join(" AND "),
     "GROUP BY " + config.group,
     "HAVING COUNT(*) >= ?",
-    "ORDER BY (1.0 * SUM(CASE WHEN f.finish = 1 THEN 1 ELSE 0 END) / COUNT(*)) DESC, COUNT(*) DESC",
+    "ORDER BY " +
+      "(1.0 * SUM(CASE WHEN f.finish = 1 THEN 1 ELSE 0 END) / COUNT(*)) DESC, " +
+      "COUNT(*) DESC",
     "LIMIT 200"
   ].filter(Boolean).join("\n");
 
@@ -560,6 +757,15 @@ function displayFactItem(item) {
   if (factActiveAxis === "sex") {
     return SEX_LABELS[item] || item || "不明";
   }
+  if (factActiveAxis === "distance_change") {
+    return DISTANCE_CHANGE_LABELS[item] || item || "前走不明";
+  }
+  if (factActiveAxis === "prev_class") {
+    if (item === null || item === undefined || item === "") {
+      return "前走不明";
+    }
+    return PREVIOUS_CLASS_LABELS[item] || "その他";
+  }
   if (item === null || item === undefined || item === "") {
     return "不明";
   }
@@ -568,12 +774,15 @@ function displayFactItem(item) {
 
 function renderFactResults(rows) {
   if (rows.length === 0) {
-    factResultArea.innerHTML = '<div class="empty-state">該当データがありません。</div>';
+    factResultArea.innerHTML =
+      '<div class="empty-state">該当データがありません。</div>';
     return;
   }
 
   let html = '<div class="table-wrap"><table><thead><tr>';
-  html += '<th>対象</th><th>出走</th><th>勝率</th><th>複勝率</th><th>単回</th><th>複回</th>';
+  html +=
+    '<th>対象</th><th>出走</th><th>勝率</th><th>複勝率</th>' +
+    '<th>単回</th><th>複回</th>';
   html += '</tr></thead><tbody>';
 
   rows.forEach(function (row) {
@@ -612,7 +821,9 @@ function runFactAggregation() {
 
   renderFactResults(rows);
   const elapsed = performance.now() - started;
-  factQueryStatus.textContent = FACT_AXIS_CONFIG[factActiveAxis].label + " / " + rows.length + "件 / " + elapsed.toFixed(0) + " ms";
+  factQueryStatus.textContent =
+    FACT_AXIS_CONFIG[factActiveAxis].label +
+    " / " + rows.length + "件 / " + elapsed.toFixed(0) + " ms";
 }
 
 function configureFactTabs() {
@@ -631,10 +842,14 @@ function configureFactTabs() {
 function clearFactFilters() {
   factYearFrom.value = "2016";
   factYearTo.value = "2026";
+  factMonthFrom.value = "";
+  factMonthTo.value = "";
   factVenue.value = "";
   factTrackType.value = "";
-  factDistance.value = "";
+  factDistanceFrom.value = "";
+  factDistanceTo.value = "";
   factTrackCondition.value = "";
+  factRaceName.value = "";
   factAge.value = "";
   factSex.value = "";
   factPopBand.value = "";
