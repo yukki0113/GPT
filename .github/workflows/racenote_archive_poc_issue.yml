@@ -1,0 +1,383 @@
+name: racenote-archive-poc-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  poc:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_POC]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = '[RACENOTE_ARCHIVE_POC]'
+          request_id = os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          target_date = str(request.get('date', '')).replace('-', '').replace('/', '').strip()
+          if not re.fullmatch(r'\d{8}', target_date):
+              raise SystemExit('date must be YYYYMMDD')
+          datetime.strptime(target_date, '%Y%m%d')
+
+          venue = str(request.get('venue', '')).strip()
+          if not venue:
+              raise SystemExit('venue is required for Phase B PoC')
+          race = int(request.get('race', 0))
+          if not 1 <= race <= 12:
+              raise SystemExit('race must be 1..12')
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          mart_url = str(request.get('mart_url', '')).strip()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+          if not mart_url.startswith('https://drive.google.com/'):
+              raise SystemExit('mart_url must be a Google Drive URL')
+
+          resolved = {
+              'request_id': request_id,
+              'date': target_date,
+              'venue': venue,
+              'race': race,
+              'analysis_url': analysis_url,
+              'mart_url': mart_url,
+              'target_month': target_date[:6],
+          }
+          Path('/tmp/archive_poc_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f"REQUEST_ID={request_id}\n")
+              file.write(f"TARGET_DATE={target_date}\n")
+              file.write(f"TARGET_MONTH={target_date[:6]}\n")
+          PY
+
+      - name: Download Analysis and Mart
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/archive_poc_request.json').read_text(encoding='utf-8'))
+          subprocess.run(['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'], check=True)
+          subprocess.run(['gdown', request['mart_url'], '-O', '/tmp/jrdb_stats_mart.sqlite'], check=True)
+          PY
+
+      - name: Fetch PACI
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/archive_poc/paci
+          python horse-racing/jrdb/src/fetch_jrdb_paci.py \
+            --date "$TARGET_DATE" \
+            --out-dir /tmp/archive_poc/paci
+
+      - name: Build base RaceNote
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/archive_poc_request.json').read_text(encoding='utf-8'))
+          short_date = request['date'][2:]
+          paci = Path('/tmp/archive_poc/paci') / f'PACI{short_date}.zip'
+          if not paci.is_file():
+              raise SystemExit(f'PACI not found: {paci}')
+          command = [
+              'python', 'horse-racing/jrdb/src/racenote_jrdb.py', str(paci),
+              '--output', '/tmp/archive_poc/base',
+              '--format', 'json',
+              '--race', f"{request['venue']}{request['race']}",
+          ]
+          subprocess.run(command, check=True)
+
+          matches = sorted(Path('/tmp/archive_poc/base').rglob(
+              f"race_bundle_*_{request['venue']}{request['race']}R.json"
+          ))
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one base bundle, got {matches}')
+          Path('/tmp/archive_poc/base_path.txt').write_text(str(matches[0]), encoding='utf-8')
+          PY
+
+      - name: Write source provenance manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/archive_poc_request.json').read_text(encoding='utf-8'))
+          paci = Path('/tmp/archive_poc/paci') / f"PACI{request['date'][2:]}.zip"
+          digest = hashlib.sha256(paci.read_bytes()).hexdigest()
+          manifest = {
+              'sources': [
+                  {
+                      'source_type': 'PACI',
+                      'source_period': request['date'],
+                      'filename': paci.name,
+                      'sha256': digest,
+                      'role': 'target_race_base',
+                  }
+              ]
+          }
+          Path('/tmp/archive_poc/source_manifest.json').write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Build Archive shard
+        run: |
+          python horse-racing/jrdb/src/build_racenote_archive.py \
+            --bundle-dir /tmp/archive_poc/base \
+            --target-month "$TARGET_MONTH" \
+            --output "/tmp/archive_poc/jrdb_racenote_archive_${TARGET_MONTH}_v1_0.sqlite" \
+            --source-mode paci \
+            --source-ref "paci-${TARGET_DATE}" \
+            --source-manifest /tmp/archive_poc/source_manifest.json \
+            --converter-git-sha "$GITHUB_SHA" \
+            --expected-race-count 1 \
+            --validation-report /tmp/archive_poc/archive_validation.json
+
+      - name: Read Archive shard
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/archive_poc_request.json').read_text(encoding='utf-8'))
+          command = [
+              'python', 'horse-racing/jrdb/src/read_racenote_archive.py',
+              '--archive', f"/tmp/archive_poc/jrdb_racenote_archive_{request['target_month']}_v1_0.sqlite",
+              '--date', request['date'],
+              '--venue', request['venue'],
+              '--race', str(request['race']),
+              '--output-dir', '/tmp/archive_poc/restored',
+              '--full-validate',
+          ]
+          subprocess.run(command, check=True)
+          matches = sorted(Path('/tmp/archive_poc/restored').glob('race_bundle_*.json'))
+          if len(matches) != 1:
+              raise SystemExit(f'Expected one restored bundle, got {matches}')
+          Path('/tmp/archive_poc/restored_path.txt').write_text(str(matches[0]), encoding='utf-8')
+          PY
+
+      - name: Verify exact base roundtrip
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          original = Path(Path('/tmp/archive_poc/base_path.txt').read_text(encoding='utf-8').strip())
+          restored = Path(Path('/tmp/archive_poc/restored_path.txt').read_text(encoding='utf-8').strip())
+          original_bytes = original.read_bytes()
+          restored_bytes = restored.read_bytes()
+          if original_bytes != restored_bytes:
+              raise SystemExit('Archive base roundtrip changed JSON bytes')
+          result = {
+              'base_exact_match': True,
+              'base_bytes': len(original_bytes),
+              'base_sha256': hashlib.sha256(original_bytes).hexdigest(),
+          }
+          Path('/tmp/archive_poc/base_compare.json').write_text(
+              json.dumps(result, indent=2) + '\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Enrich direct and restored base
+        run: |
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+
+          original = Path(Path('/tmp/archive_poc/base_path.txt').read_text(encoding='utf-8').strip())
+          restored = Path(Path('/tmp/archive_poc/restored_path.txt').read_text(encoding='utf-8').strip())
+          common = [
+              '--analysis', '/tmp/jrdb_analysis.sqlite',
+              '--mart', '/tmp/jrdb_stats_mart.sqlite',
+              '--stats-window-years', '5',
+          ]
+          subprocess.run([
+              'python', 'horse-racing/jrdb/src/racenote_history_enrichment.py',
+              '--bundle', str(original), '--output', '/tmp/archive_poc/final_direct.json', *common,
+          ], check=True)
+          subprocess.run([
+              'python', 'horse-racing/jrdb/src/racenote_history_enrichment.py',
+              '--bundle', str(restored), '--output', '/tmp/archive_poc/final_archive.json', *common,
+          ], check=True)
+          PY
+
+      - name: Verify final semantic equivalence
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          from pathlib import Path
+          import racenote_archive
+
+          direct = json.loads(Path('/tmp/archive_poc/final_direct.json').read_text(encoding='utf-8'))
+          archived = json.loads(Path('/tmp/archive_poc/final_archive.json').read_text(encoding='utf-8'))
+          direct_hash = racenote_archive.semantic_sha256(direct)
+          archived_hash = racenote_archive.semantic_sha256(archived)
+          if direct_hash != archived_hash:
+              raise SystemExit(
+                  f'Final semantic mismatch direct={direct_hash} archive={archived_hash}'
+              )
+          if direct.get('schema_version') != '1.0' or archived.get('schema_version') != '1.0':
+              raise SystemExit('Final RaceNote schema_version is not 1.0')
+          result = {
+              'final_semantic_match': True,
+              'final_semantic_sha256': direct_hash,
+              'final_schema_version': '1.0',
+          }
+          Path('/tmp/archive_poc/final_compare.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Build PoC summary
+        run: |
+          python - <<'PY'
+          import json
+          import sqlite3
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/archive_poc_request.json').read_text(encoding='utf-8'))
+          base = json.loads(Path('/tmp/archive_poc/base_compare.json').read_text(encoding='utf-8'))
+          final = json.loads(Path('/tmp/archive_poc/final_compare.json').read_text(encoding='utf-8'))
+          validation = json.loads(Path('/tmp/archive_poc/archive_validation.json').read_text(encoding='utf-8'))
+          archive_path = Path(f"/tmp/archive_poc/jrdb_racenote_archive_{request['target_month']}_v1_0.sqlite")
+          connection = sqlite3.connect(archive_path)
+          try:
+              compressed_blob_bytes = connection.execute(
+                  'SELECT SUM(LENGTH(bundle_zlib)) FROM race_bundle'
+              ).fetchone()[0]
+          finally:
+              connection.close()
+          summary = {
+              'request': request,
+              **base,
+              **final,
+              'archive_schema_version': validation['archive_schema_version'],
+              'archive_race_count': validation['race_count'],
+              'archive_full_scan_verified': validation['verified_bundle_count'],
+              'archive_sqlite_bytes': archive_path.stat().st_size,
+              'compressed_blob_bytes': compressed_blob_bytes,
+              'compression_ratio': validation.get('compression_ratio'),
+              'publishable': validation.get('publishable'),
+              'provenance_status': validation.get('provenance_status'),
+          }
+          Path('/tmp/archive_poc/poc_summary.json').write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Collect artifact
+        if: always()
+        run: |
+          mkdir -p "/tmp/archive_poc/artifact"
+          cp -f /tmp/archive_poc/*_validation.json /tmp/archive_poc/artifact/ 2>/dev/null || true
+          cp -f /tmp/archive_poc/*_compare.json /tmp/archive_poc/artifact/ 2>/dev/null || true
+          cp -f /tmp/archive_poc/poc_summary.json /tmp/archive_poc/artifact/ 2>/dev/null || true
+          cp -f /tmp/archive_poc/jrdb_racenote_archive_*_v1_0.sqlite /tmp/archive_poc/artifact/ 2>/dev/null || true
+          cp -f /tmp/archive_poc/final_direct.json /tmp/archive_poc/artifact/ 2>/dev/null || true
+          cp -f /tmp/archive_poc/final_archive.json /tmp/archive_poc/artifact/ 2>/dev/null || true
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-archive-poc-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: /tmp/archive_poc/artifact/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary_path = Path('/tmp/archive_poc/poc_summary.json')
+          if summary_path.is_file():
+              summary = json.loads(summary_path.read_text(encoding='utf-8'))
+              status = 'success'
+          else:
+              summary = {}
+              status = 'failure'
+          result = {
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'artifact_name': (
+                  f"racenote-archive-poc-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'base_exact_match': summary.get('base_exact_match'),
+              'final_semantic_match': summary.get('final_semantic_match'),
+              'final_semantic_sha256': summary.get('final_semantic_sha256'),
+              'archive_race_count': summary.get('archive_race_count'),
+              'publishable': summary.get('publishable'),
+          }
+          Path('/tmp/archive_poc_result.md').write_text(
+              'RACENOTE_ARCHIVE_POC_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/archive_poc_result.md
+
+      - name: Close PoC issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail when PoC summary is missing
+        if: always()
+        run: test -f /tmp/archive_poc/poc_summary.json
