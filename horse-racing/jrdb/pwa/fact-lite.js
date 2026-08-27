@@ -33,6 +33,7 @@ const factTrackType = document.getElementById("fact-track-type");
 const factDistanceFrom = document.getElementById("fact-distance-from");
 const factDistanceTo = document.getElementById("fact-distance-to");
 const factTrackCondition = document.getElementById("fact-track-condition");
+const factRaceClass = document.getElementById("fact-race-class");
 const factRaceName = document.getElementById("fact-race-name");
 const factRaceNameNote = document.getElementById("fact-race-name-note");
 const factAge = document.getElementById("fact-age");
@@ -51,6 +52,7 @@ const FACT_FILTER_ELEMENTS = [
   factDistanceFrom,
   factDistanceTo,
   factTrackCondition,
+  factRaceClass,
   factAge,
   factSex,
   factPopBand,
@@ -72,6 +74,22 @@ const DISTANCE_CHANGE_EXPRESSION =
   "WHEN f.prev_distance_delta > 0 THEN 'extend' " +
   "WHEN f.prev_distance_delta = 0 THEN 'same' " +
   "ELSE 'shorten' END";
+
+const RACE_CLASS_EXPRESSION =
+  "CASE " +
+  "WHEN f.grade_code = 1 THEN 11 " +
+  "WHEN f.grade_code = 2 THEN 10 " +
+  "WHEN f.grade_code = 3 THEN 9 " +
+  "WHEN f.grade_code = 4 THEN 12 " +
+  "WHEN f.grade_code = 6 THEN 8 " +
+  "WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'A1' THEN 1 " +
+  "WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'A2' THEN 2 " +
+  "WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'A3' THEN 3 " +
+  "WHEN TRIM(COALESCE(f.race_condition_code, '')) IN ('04', '05') THEN 4 " +
+  "WHEN TRIM(COALESCE(f.race_condition_code, '')) IN ('08', '09', '10') THEN 5 " +
+  "WHEN TRIM(COALESCE(f.race_condition_code, '')) IN ('15', '16') THEN 6 " +
+  "WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'OP' THEN 7 " +
+  "ELSE 13 END";
 
 const FACT_AXIS_CONFIG = {
   sire: {
@@ -655,6 +673,10 @@ function buildFactWhere() {
     clauses.push("f.track_condition_code = ?");
     params.push(Number(factTrackCondition.value));
   }
+  if (factRaceClass.value) {
+    clauses.push(RACE_CLASS_EXPRESSION + " = ?");
+    params.push(Number(factRaceClass.value));
+  }
 
   const raceName = factRaceName.value.trim();
   if (factHasRaceNames && raceName !== "") {
@@ -849,6 +871,7 @@ function clearFactFilters() {
   factDistanceFrom.value = "";
   factDistanceTo.value = "";
   factTrackCondition.value = "";
+  factRaceClass.value = "";
   factRaceName.value = "";
   factAge.value = "";
   factSex.value = "";
