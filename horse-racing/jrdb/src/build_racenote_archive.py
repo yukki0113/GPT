@@ -114,6 +114,15 @@ def validate_source_ref(value: str | None) -> str | None:
     text = value.strip()
     if not text:
         return None
+    lowered = text.lower()
+    forbidden_fragments = (
+        "drive.google.com",
+        "docs.google.com",
+        "github.com",
+        "googleusercontent.com",
+    )
+    if any(fragment in lowered for fragment in forbidden_fragments):
+        raise BuildError("--source-ref must not contain an external service location")
     if not SOURCE_REF_PATTERN.fullmatch(text):
         raise BuildError(
             "--source-ref must be a 1-120 character ASCII label using only "
