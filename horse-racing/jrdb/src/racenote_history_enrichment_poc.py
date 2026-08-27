@@ -506,7 +506,32 @@ def statistic_with_ranges(
     return output
 
 
-def build_history_coverage(horse: dict, profile: dict | None) -> dict:
+def build_run_layers(horse: dict, older_limit: int) -> dict:
+    """Describe the meaning and observed size of detailed and compact run layers."""
+    return {
+        "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": len(horse.get("recent_runs", [])),
+            "max_count": 5,
+            "career_completeness": "not_guaranteed",
+        },
+        "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": len(horse.get("older_runs", [])),
+            "max_count": older_limit,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed",
+        },
+    }
+
+
+def build_history_coverage(
+    horse: dict,
+    profile: dict | None,
+    older_limit: int,
+) -> dict:
     """Describe the observable JRDB/JRA history without guessing overseas completeness."""
     trainer_base = horse.get("basic", {}).get("trainer_base")
     domestic_bases = {"美浦", "栗東", "地方"}
@@ -531,6 +556,7 @@ def build_history_coverage(horse: dict, profile: dict | None) -> dict:
         "observed_starts": observed_starts,
         "overseas_history_coverage": overseas_coverage,
         "reason": reason,
+        "run_layers": build_run_layers(horse, older_limit),
     }
 
 
@@ -582,6 +608,7 @@ def enrich(
                 "observed_starts": None,
                 "overseas_history_coverage": "not_guaranteed",
                 "reason": "target_entry_not_found",
+                "run_layers": build_run_layers(horse, older_limit),
             }
             continue
 
@@ -610,7 +637,11 @@ def enrich(
             if horse_id
             else None
         )
-        horse["history_coverage"] = build_history_coverage(horse, profile_value)
+        horse["history_coverage"] = build_history_coverage(
+            horse,
+            profile_value,
+            older_limit,
+        )
         if (
             horse["history_coverage"]["reason"]
             == "foreign_based_entry_no_jra_history"
