@@ -90,6 +90,47 @@ class RaceNoteArchiveTest(unittest.TestCase):
         with self.assertRaises(archive.RaceNoteArchiveError):
             archive.validate_base_bundle(value)
 
+    def test_provenance_labels_reject_urls_paths_and_external_ids(self) -> None:
+        self.assertEqual(builder.validate_source_ref("paci-202605"), "paci-202605")
+        self.assertEqual(builder.validate_source_ref("annual-raw-2025"), "annual-raw-2025")
+        self.assertIsNone(builder.validate_source_ref(None))
+        self.assertIsNone(builder.validate_source_ref("   "))
+
+        invalid_refs = (
+            "https://drive.google.com/file/d/example",
+            "drive.google.com-file",
+            "folder/source",
+            "C:\\source\\file",
+            "label with spaces",
+        )
+        for value in invalid_refs:
+            with self.subTest(value=value):
+                with self.assertRaises(builder.BuildError):
+                    builder.validate_source_ref(value)
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest = root / "sources.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "sources": [
+                            {
+                                "source_type": "PACI",
+                                "source_period": "202605",
+                                "filename": "folder/PACI260509.zip",
+                                "sha256": "0" * 64,
+                                "role": "base",
+                            }
+                        ]
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaises(builder.BuildError):
+                builder.source_inputs_from_manifest(manifest)
+
     def test_build_lookup_and_reader_roundtrip(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -154,6 +195,7 @@ class RaceNoteArchiveTest(unittest.TestCase):
             self.assertEqual(build_report["skipped_other_month_count"], 1)
             self.assertTrue(build_report["publishable"])
             self.assertEqual(build_report["verified_bundle_count"], 2)
+            self.assertEqual(build_report["source_ref"], "synthetic-2025")
 
             connection = archive.open_archive(output)
             try:
