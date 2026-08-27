@@ -31,10 +31,13 @@ def materialize(
     venue: str | None,
     race_no: int | None,
     output_dir: Path,
+    allow_partial: bool = False,
 ) -> tuple[Path, dict]:
     """Restore verified base bundles for all/venue/race scope.
 
-    The shard is assumed to have passed publication-time full validation.
+    Production calls require a ``full_month`` / ``publishable`` shard. The
+    ``allow_partial`` switch exists only for controlled PoC/regression use.
+
     Runtime verification rechecks archive metadata and every selected bundle,
     but deliberately does not full-scan unrelated races in the month.
     """
@@ -64,6 +67,19 @@ def materialize(
                     "Archive target month mismatch: "
                     f"request={target_month} shard={shard_month}"
                 )
+
+            coverage_mode = metadata.get("coverage_mode")
+            publication_status = metadata.get("publication_status")
+            if not allow_partial and (
+                coverage_mode != "full_month"
+                or publication_status != "publishable"
+            ):
+                raise RaceNoteArchiveBackendError(
+                    "Archive is not a publishable full-month shard: "
+                    f"coverage_mode={coverage_mode!r}, "
+                    f"publication_status={publication_status!r}"
+                )
+
             bundles = archive.lookup(
                 connection,
                 normalized_date,
@@ -108,6 +124,10 @@ def materialize(
         "archive_schema_version": metadata["archive_schema_version"],
         "base_schema_version": metadata["base_schema_version"],
         "target_month": metadata["target_month"],
+        "coverage_mode": metadata.get("coverage_mode"),
+        "publication_status": metadata.get("publication_status"),
+        "expected_race_count": metadata.get("expected_race_count"),
+        "expected_index_sha256": metadata.get("expected_index_sha256"),
         "converter_git_sha": metadata.get("converter_git_sha"),
         "provenance_status": metadata.get("provenance_status"),
         "bundle_count": len(rows),
