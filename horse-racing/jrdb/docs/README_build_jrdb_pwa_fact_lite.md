@@ -96,8 +96,8 @@ Builder は source / output row count equality、必須table/column、`PRAGMA in
 Current Analysis Lite v1.2から生成した初回v0.2配布物:
 
 - rows: 513,512
-- size: 59,449,344 bytes（約56.7 MiB）
-- SHA-256: `7682358bc511463cfc22f117afc6859e07cf75783adb3f732ac67f4cc08672eb`
+- size: 62,230,528 bytes（約59.3 MiB）
+- SHA-256: `b5ba7a645f134bec03538fc9d255fc30d626908af4ce939416cea8ac735cd29d`
 - Release tag: `jrdb-pwa-fact-lite-current`
 - race-name search: source Analysis v1.2 に `race_name` がないため未有効
 
