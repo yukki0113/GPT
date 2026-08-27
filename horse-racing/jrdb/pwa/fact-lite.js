@@ -88,12 +88,6 @@ const FACT_AXIS_CONFIG = {
     group: "f.sire_id",
     joins: "LEFT JOIN dim_sire AS s ON s.id = f.sire_id"
   },
-  bms: {
-    label: "母父",
-    select: "b.name",
-    group: "f.bms_id",
-    joins: "LEFT JOIN dim_bms AS b ON b.id = f.bms_id"
-  },
   jockey: {
     label: "騎手",
     select: "j.name",
@@ -124,14 +118,14 @@ const FACT_AXIS_CONFIG = {
     group: "f.sex_code",
     joins: ""
   },
-  pop_band: {
-    label: "人気帯",
-    select: POPULARITY_BAND_EXPRESSION,
-    group: POPULARITY_BAND_EXPRESSION,
+  popularity: {
+    label: "人気",
+    select: POPULARITY_EXPRESSION,
+    group: POPULARITY_EXPRESSION,
     joins: ""
   },
   distance_change: {
-    label: "距離変化",
+    label: "前走距離",
     select: DISTANCE_CHANGE_EXPRESSION,
     group: DISTANCE_CHANGE_EXPRESSION,
     joins: ""
