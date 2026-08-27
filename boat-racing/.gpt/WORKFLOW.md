@@ -22,9 +22,10 @@
 
 ## GitHubバイナリ正本の更新・取得
 
-- 継続台帳 `ledger/競艇note販売運用台帳.xlsx` を更新する場合は、最新mainを基準にし、直接pushできなければ共通の `[gpt-git-binary-update]` Issue経路を使用する。
-- GitHub `main` 上の台帳やその他バイナリ正本をChat / Workで実ファイルとして解析する必要がある場合、GitHub Connectorで読めないことを理由にユーザーへ再添付を依頼しない。
-- 共通の `[gpt-git-binary-read]` Issue経路を使用し、Actions artifactとして対象ファイルを回収する。
-- 詳細はルート `.gpt/GIT_BINARY_READ_ISSUE.md` を参照する。
-- artifact回収後は `manifest.json` のSHA-256と実ファイルを照合し、ファイル形式に応じたツールで解析する。
+- 継続台帳 `ledger/競艇note販売運用台帳.xlsx` のread/updateは、認証済み `gh` CLIを実行できる環境ではルート `.gpt/tools/gpt_git_binary_tool.py` を第一選択にする。
+- 台帳を更新する場合は `update` サブコマンドを使用し、Base64化・Issueチャンク登録・確定コメント・完了待ちをツールへ任せる。
+- GitHub `main` 上の台帳をChat / Workで実ファイルとして解析する場合は `read` サブコマンドを使用し、Issue作成・artifact取得・SHA-256照合をツールへ任せる。
+- `gh` CLIを利用できないChat環境では、更新は `[gpt-git-binary-update]`、取得は `[gpt-git-binary-read]` Issue経路をフォールバックとして使用する。
+- GitHub Connectorで `.xlsx` を直接読めないことを理由に、GitHub正本が存在する台帳の再添付をユーザーへ依頼しない。
+- 詳細はルート `.gpt/GIT_BINARY_TOOL.md`、`.gpt/GIT_BINARY_UPDATE_ISSUE.md`、`.gpt/GIT_BINARY_READ_ISSUE.md` を参照する。
 - readback artifactは搬送用の一時物であり、正本はGitHub `main` 上の対象ファイルとする。
