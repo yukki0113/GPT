@@ -11,6 +11,12 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 ## Ledger source of truth
 
-継続台帳 `競艇note販売運用台帳.xlsx` は **Google Drive `GPT/ledger/競艇note販売運用台帳.xlsx` を正本** とします。Chat / Workで参照・更新する場合はDrive上の正本を取得し、更新後も同一Driveファイルへ反映してください。
+継続台帳の正本は **Googleスプレッドシート `競艇note販売運用台帳`** とします。
 
-GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` に同名ファイルが残っている場合、それはDrive移行前の旧スナップショットです。以後の台帳参照・更新に使用せず、GitHubバイナリread/update経路で同期しません。
+- Spreadsheet ID: `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`
+- URL: `https://docs.google.com/spreadsheets/d/1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM/edit`
+- タイムゾーン: `Asia/Tokyo`
+
+Chat / Workで参照・更新する場合は、Google Sheets API / Google Drive ConnectorでこのネイティブGoogleスプレッドシートを直接読み書きし、同一スプレッドシートへ反映してください。
+
+Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットです。以後の台帳参照・更新には使用せず、Drive旧ExcelやGitHub旧Excelへフォールバックしません。
