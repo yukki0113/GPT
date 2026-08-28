@@ -1,0 +1,134 @@
+name: JRDB Raw Fetch via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_RAW_FETCH_REQUEST]'
+
+jobs:
+  fetch:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_RAW_FETCH_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          date = str(req.get('date','')).strip()
+          kinds = req.get('kinds') or []
+          if not re.fullmatch(r'20\d{6}', date):
+              raise SystemExit('date must be YYYYMMDD')
+          if not isinstance(kinds, list) or not kinds:
+              raise SystemExit('kinds must be non-empty list')
+          kinds = [str(x).upper() for x in kinds]
+          allowed = {'PACI','SED'}
+          if any(x not in allowed for x in kinds):
+              raise SystemExit('supported kinds: PACI, SED')
+          Path('/tmp/request.json').write_text(json.dumps({'date':date,'kinds':kinds}), encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
+              f.write(f'date={date}\n')
+              f.write(f'artifact_name=jrdb-raw-{date}\n')
+          PY
+
+      - name: Fetch requested raw ZIPs
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_raw
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          date = req['date']
+          for kind in req['kinds']:
+              if kind == 'PACI':
+                  cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_paci.py','--date',date,'--out-dir','/tmp/jrdb_raw']
+              else:
+                  cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_history.py','--date',date,'--kinds','SED','--out-dir','/tmp/jrdb_raw']
+              subprocess.run(cmd, check=True)
+          PY
+
+      - name: Build manifest and validate ZIPs
+        run: |
+          python - <<'PY'
+          import hashlib, json, zipfile
+          from pathlib import Path
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          out = Path('/tmp/jrdb_raw')
+          date = req['date']
+          yy = date[2:]
+          rows = []
+          for kind in req['kinds']:
+              name = f'{kind}{yy}.zip'
+              path = out / name
+              if not path.exists():
+                  raise SystemExit(f'missing output: {name}')
+              if not zipfile.is_zipfile(path):
+                  raise SystemExit(f'invalid zip: {name}')
+              with zipfile.ZipFile(path) as zf:
+                  bad = zf.testzip()
+                  if bad is not None:
+                      raise SystemExit(f'corrupt member in {name}: {bad}')
+                  members = zf.namelist()
+              rows.append({'kind':kind,'file_name':name,'size_bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'members':members})
+          Path('/tmp/jrdb_raw/manifest.json').write_text(json.dumps({'date':date,'status':'success','files':rows},ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+
+      - name: Upload raw artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.artifact_name }}
+          path: /tmp/jrdb_raw/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          manifest = json.loads(Path('/tmp/jrdb_raw/manifest.json').read_text(encoding='utf-8'))
+          result = {'status':'success','run_id':int(os.environ['RUN_ID']),'artifact_name':os.environ['ARTIFACT_NAME'],'manifest':manifest}
+          Path('/tmp/comment.md').write_text('JRDB_RAW_FETCH_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n',encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB raw fetch failed. Workflow run: $RUN_URL"
