@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 
 from .color_detector import classify_eval_cell
-from .japanese_ocr import ocr_header_text, ocr_name_cells, resolve_venue
+from .japanese_ocr import ocr_header_text, resolve_venue
 from .layout_detector import detect_column_lines, detect_layout, detect_row_lines
 from .models import HorseRecord, PanelBox
 from .numeric_ocr import ocr_numeric_cells
@@ -22,20 +22,27 @@ def _crop_inner(panel: np.ndarray, y1: int, y2: int, x1: int, x2: int) -> np.nda
     return panel[yy1:yy2, xx1:xx2]
 
 
-def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[str], list[int | None], list[str | None], list[int]]:
+def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[int | None], list[str | None], list[int]]:
+    """Extract Eval values/colors while using horse-name cells only for row existence.
+
+    Horse-name cell images remain the occupancy signal because they are stable
+    even when the Eval cell is blank or difficult to OCR.  Their text is not
+    sent to Tesseract in the normal pipeline.
+    """
     row_lines = detect_row_lines(panel_image)
     if len(row_lines) < 3:
-        return [], [], [], row_lines
+        return [], [], row_lines
+
     col_lines = detect_column_lines(panel_image, row_lines)
     intervals = list(zip(row_lines[:-1], row_lines[1:]))[:18]
-    name_cells: list[np.ndarray] = []
     eval_cells: list[np.ndarray] = []
     occupied: list[bool] = []
+
     for y1, y2 in intervals:
         name_cell = _crop_inner(panel_image, y1, y2, col_lines[1], col_lines[2])
         eval_cell = _crop_inner(panel_image, y1, y2, col_lines[2], col_lines[3])
-        name_cells.append(name_cell)
         eval_cells.append(eval_cell)
+
         if name_cell.size:
             name_gray = cv2.cvtColor(name_cell, cv2.COLOR_BGR2GRAY)
             has_ink = float(name_gray.std()) > 8.0 or int((name_gray < 210).sum()) >= 8
@@ -48,14 +55,12 @@ def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[str], list[int | 
         if flag:
             last_occupied = idx
     if last_occupied == 0:
-        return [], [], [], row_lines
+        return [], [], row_lines
 
-    name_cells = name_cells[:last_occupied]
     eval_cells = eval_cells[:last_occupied]
-    names = ocr_name_cells(name_cells)
     evals = ocr_numeric_cells(eval_cells)
     colors = [classify_eval_cell(cell) for cell in eval_cells]
-    return names, evals, colors, row_lines
+    return evals, colors, row_lines
 
 
 def run_pipeline(
@@ -91,8 +96,8 @@ def run_pipeline(
     panel_debug: list[dict] = []
     for p in sorted(panels, key=lambda x: (x.venue_index, x.race_no)):
         panel_img = image[p.y:p.y + p.height, p.x:p.x + p.width]
-        names, evals, colors, row_lines = _extract_panel_rows(panel_img)
-        count = max(len(names), len(evals), len(colors))
+        evals, colors, row_lines = _extract_panel_rows(panel_img)
+        count = max(len(evals), len(colors))
         for i in range(count):
             value = evals[i] if i < len(evals) else None
             color = colors[i] if i < len(colors) else None
@@ -102,7 +107,6 @@ def run_pipeline(
                     venue=p.venue or "UNKNOWN",
                     race_no=p.race_no,
                     horse_no=i + 1,
-                    horse_name_ocr=names[i] if i < len(names) else "",
                     eval=value,
                 )
             )
