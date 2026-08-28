@@ -129,7 +129,7 @@ def build_plan(request: RaceNoteRequest) -> dict:
     else:
         base_backend = "paci"
     return {
-        "request_version": "0.1.1",
+        "request_version": "0.2.0",
         "final_schema_version": "1.0",
         "target_date": request.target_date.isoformat(),
         "today": request.today.isoformat(),
