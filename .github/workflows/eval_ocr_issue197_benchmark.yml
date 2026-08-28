@@ -1,0 +1,141 @@
+name: eval-ocr-issue197-benchmark
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  benchmark:
+    if: startsWith(github.event.issue.title, '[EVAL_OCR_BENCHMARK]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          path: current
+
+      - name: Checkout pre-Issue-197 baseline
+        uses: actions/checkout@v4
+        with:
+          ref: 85d9cee79dbf6ef7f4dba8fa47e3a53217109a52
+          path: old
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install OCR runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-jpn
+          python -m pip install --upgrade pip
+          pip install -r current/horse-racing/eval/requirements.txt
+
+      - name: Download representative Eval media
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/eval_media
+          gh run download 32793135080 \
+            --repo "${{ github.repository }}" \
+            --name "eval-media-evalmedia-20260531-retry-20260825T0918JST-20260531-32793135080" \
+            --dir /tmp/eval_media
+          IMAGE=$(find /tmp/eval_media -type f -path '*/2060652173349015558/media_01.jpg' | head -1)
+          test -n "$IMAGE"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Run paired benchmark
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          import sys
+          import time
+          from pathlib import Path
+
+          image = Path(__import__('os').environ['IMAGE'])
+          cases = [
+              ('old', Path('old/horse-racing/eval/src/extract_eval_table.py'), Path('/tmp/bench_old')),
+              ('new', Path('current/horse-racing/eval/src/extract_eval_table.py'), Path('/tmp/bench_new')),
+          ]
+          elapsed = {}
+          for label, script, outdir in cases:
+              outdir.mkdir(parents=True, exist_ok=True)
+              cmd = [
+                  sys.executable,
+                  str(script),
+                  '--image', str(image),
+                  '--date', '2026-05-31',
+                  '--expected-venues', '2',
+                  '--outdir', str(outdir),
+              ]
+              started = time.perf_counter()
+              completed = subprocess.run(cmd, text=True, capture_output=True)
+              elapsed[label] = time.perf_counter() - started
+              Path(f'/tmp/{label}_stdout.txt').write_text(completed.stdout, encoding='utf-8')
+              Path(f'/tmp/{label}_stderr.txt').write_text(completed.stderr, encoding='utf-8')
+              if completed.returncode != 0:
+                  raise SystemExit(f'{label} failed: {completed.stderr[-2000:]}')
+
+          import pandas as pd
+          old_csv = next(Path('/tmp/bench_old').glob('*.csv'))
+          new_csv = next(Path('/tmp/bench_new').glob('*.csv'))
+          old_df = pd.read_csv(old_csv)
+          new_df = pd.read_csv(new_csv)
+          old5 = old_df[['date', 'venue', 'race_no', 'horse_no', 'eval']]
+          exact_match = old5.equals(new_df[['date', 'venue', 'race_no', 'horse_no', 'eval']])
+
+          old_val = json.loads(next(Path('/tmp/bench_old').glob('*validation.json')).read_text(encoding='utf-8'))
+          new_val = json.loads(next(Path('/tmp/bench_new').glob('*validation.json')).read_text(encoding='utf-8'))
+
+          old_seconds = elapsed['old']
+          new_seconds = elapsed['new']
+          saved_seconds = old_seconds - new_seconds
+          saved_percent = (saved_seconds / old_seconds * 100.0) if old_seconds else 0.0
+          result = {
+              'baseline_commit': '85d9cee79dbf6ef7f4dba8fa47e3a53217109a52',
+              'current_commit': __import__('os').environ['GITHUB_SHA'],
+              'image': '2026-05-31 media_01.jpg (2 venues / 24 races)',
+              'old_seconds': round(old_seconds, 3),
+              'new_seconds': round(new_seconds, 3),
+              'saved_seconds': round(saved_seconds, 3),
+              'saved_percent': round(saved_percent, 2),
+              'old_columns': old_df.columns.tolist(),
+              'new_columns': new_df.columns.tolist(),
+              'old_rows': len(old_df),
+              'new_rows': len(new_df),
+              'five_column_exact_match': bool(exact_match),
+              'old_summary': old_val.get('summary', {}),
+              'new_summary': new_val.get('summary', {}),
+          }
+          Path('/tmp/benchmark_result.json').write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          if not exact_match:
+              raise SystemExit('Five-column regression mismatch')
+          if new_df.columns.tolist() != ['date', 'venue', 'race_no', 'horse_no', 'eval']:
+              raise SystemExit('New CSV schema is not the required five columns')
+          PY
+
+      - name: Comment benchmark result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('/tmp/benchmark_result.json')
+          if p.exists():
+              body = 'EVAL_OCR_BENCHMARK_RESULT\n```json\n' + p.read_text(encoding='utf-8') + '\n```\n'
+          else:
+              body = 'EVAL_OCR_BENCHMARK_RESULT\nbenchmark_result.json unavailable\n'
+          Path('/tmp/benchmark_comment.md').write_text(body, encoding='utf-8')
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/benchmark_comment.md
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
