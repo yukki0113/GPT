@@ -1,12 +1,16 @@
 【競艇note販売台帳の正本運用変更】
 
-競艇note販売のExcel台帳は、GitHub `yukki0113/GPT` の main ブランチを正本として運用します。
+競艇note販売の継続台帳は、ネイティブGoogleスプレッドシートを正本として運用します。
 
-正本パス：
-boat-racing/ledger/競艇note販売運用台帳.xlsx
+正本：
+Googleスプレッドシート `競艇note販売運用台帳`
+Spreadsheet ID: 1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM
+URL: https://docs.google.com/spreadsheets/d/1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM/edit
+タイムゾーン: Asia/Tokyo
 
 日次の予想CSV・販売選別ファイル・結果CSVはGit管理外の入力物です。
-台帳更新担当は、mainの最新台帳に当日分を差分追記し、キー照合・既存データ不変確認・数式エラー確認後、同じ台帳ファイルを更新してcommit/pushします。
+台帳更新担当は、Googleスプレッドシート正本へ当日分を差分追記し、キー照合・既存データ不変確認・数式エラー確認後、同一スプレッドシートへ反映します。
 
-日付別の台帳ファイルをGit上に増やさず、Gitのコミット履歴を日次版の履歴として扱います。
-ライブラリ保存は利用・配布用の最新版として継続して構いませんが、台帳の更新起点はGitHubの上記ファイルです。
+Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットです。通常運用で最新台帳として参照・更新せず、正本へアクセスできない場合も旧Excelへフォールバックしません。
+
+台帳の参照・分析はGoogle Sheets API / Google Drive Connectorによる直接アクセスを優先し、GitHubバイナリread/update経路はこの台帳には使用しません。
