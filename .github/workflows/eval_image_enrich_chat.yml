@@ -1,0 +1,378 @@
+name: eval-image-enrich-chat
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[EVAL_IMAGE_ENRICH_REQUEST]'
+  READY_MARKER: 'EVAL_IMAGE_PAYLOAD_READY'
+
+jobs:
+  run:
+    if: >-
+      startsWith(github.event.issue.title, '[EVAL_IMAGE_ENRICH_REQUEST]') &&
+      startsWith(github.event.comment.body, 'EVAL_IMAGE_PAYLOAD_READY')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install OCR runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-jpn
+          python -m pip install --upgrade pip
+          pip install -r horse-racing/eval/requirements.txt
+
+      - name: Parse request and reconstruct image
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import base64
+          import json
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+          if not isinstance(request, dict):
+              raise SystemExit('Issue body JSON must be an object')
+
+          race_date = str(request.get('date', '') or '').strip()
+          if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', race_date):
+              raise SystemExit('date must be YYYY-MM-DD')
+
+          image_ext = str(request.get('image_ext', 'jpg') or '').lower().lstrip('.')
+          if image_ext not in ('jpg', 'jpeg', 'png', 'webp'):
+              raise SystemExit('image_ext must be jpg/jpeg/png/webp')
+
+          expected_venues = request.get('expected_venues')
+          if expected_venues not in (None, 2, 3):
+              raise SystemExit('expected_venues must be 2, 3, or omitted')
+
+          fail_on_unmatched = request.get('fail_on_unmatched', True)
+          if not isinstance(fail_on_unmatched, bool):
+              raise SystemExit('fail_on_unmatched must be true or false')
+
+          output_name = str(request.get('output_name', '') or '').strip()
+          compact = race_date.replace('-', '')
+          if not output_name:
+              output_name = f'eval_{compact}_enriched.csv'
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,120}\.csv', output_name):
+              raise SystemExit('output_name must be a simple ASCII .csv file name')
+
+          comments_json = subprocess.check_output([
+              'gh', 'api',
+              f"repos/{os.environ['REPOSITORY']}/issues/{os.environ['ISSUE_NUMBER']}/comments",
+              '--paginate',
+          ], text=True)
+          comments = json.loads(comments_json)
+          chunk_re = re.compile(r'^EVAL_IMAGE_CHUNK\s+(\d+)/(\d+)\n([A-Za-z0-9+/=\n\r]+)$')
+          chunks = {}
+          total = None
+          for comment in comments:
+              body = str(comment.get('body', '') or '').strip()
+              match = chunk_re.fullmatch(body)
+              if not match:
+                  continue
+              index = int(match.group(1))
+              this_total = int(match.group(2))
+              payload = ''.join(match.group(3).split())
+              if total is None:
+                  total = this_total
+              elif total != this_total:
+                  raise SystemExit('inconsistent image chunk totals')
+              if index in chunks:
+                  raise SystemExit(f'duplicate image chunk {index}')
+              chunks[index] = payload
+
+          if total is None or total < 1 or total > 40:
+              raise SystemExit('image chunks are missing or total is invalid')
+          expected_indexes = set(range(1, total + 1))
+          if set(chunks) != expected_indexes:
+              missing = sorted(expected_indexes - set(chunks))
+              raise SystemExit(f'image chunk(s) missing: {missing}')
+
+          encoded = ''.join(chunks[index] for index in range(1, total + 1))
+          if len(encoded) > 8_000_000:
+              raise SystemExit('encoded image payload is too large')
+          try:
+              raw = base64.b64decode(encoded, validate=True)
+          except Exception as exc:
+              raise SystemExit(f'cannot decode image payload: {type(exc).__name__}') from exc
+          if len(raw) > 6_000_000:
+              raise SystemExit('decoded image is too large')
+
+          output_dir = Path(f'horse-racing/eval/output_eval_image_enrich_{request_id}')
+          output_dir.mkdir(parents=True, exist_ok=True)
+          image_path = output_dir / f'eval_{compact}.{image_ext}'
+          image_path.write_bytes(raw)
+
+          config = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'date': race_date,
+              'compact_date': compact,
+              'expected_venues': expected_venues,
+              'fail_on_unmatched': fail_on_unmatched,
+              'output_name': output_name,
+              'output_dir': str(output_dir),
+              'image_path': str(image_path),
+              'chunk_count': total,
+              'image_bytes': len(raw),
+          }
+          Path('/tmp/eval_image_enrich_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as handle:
+              handle.write(f"REQUEST_ID={request_id}\n")
+              handle.write(f"OUTPUT_DIR={output_dir}\n")
+          PY
+
+      - name: Run Eval OCR
+        id: ocr
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_image_enrich_config.json').read_text(encoding='utf-8'))
+          ocr_dir = Path(config['output_dir']) / 'ocr'
+          command = [
+              sys.executable,
+              'horse-racing/eval/src/extract_eval_table.py',
+              '--image', config['image_path'],
+              '--date', config['date'],
+              '--outdir', str(ocr_dir),
+          ]
+          if config.get('expected_venues'):
+              command += ['--expected-venues', str(config['expected_venues'])]
+          completed = subprocess.run(command, check=False, text=True, capture_output=True)
+          (Path(config['output_dir']) / 'ocr.log.txt').write_text(
+              completed.stdout + ('\nSTDERR:\n' + completed.stderr if completed.stderr else ''),
+              encoding='utf-8',
+          )
+          print(completed.stdout, end='')
+          if completed.stderr:
+              print(completed.stderr, end='')
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Fetch PACI
+        id: fetch
+        if: always()
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_image_enrich_config.json').read_text(encoding='utf-8'))
+          paci_dir = Path(config['output_dir']) / 'paci'
+          command = [
+              'python', 'horse-racing/jrdb/src/fetch_jrdb_paci.py',
+              '--date', config['compact_date'],
+              '--out-dir', str(paci_dir),
+          ]
+          completed = subprocess.run(command, check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Enrich OCR CSV with PACI
+        id: enrich
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_image_enrich_config.json').read_text(encoding='utf-8'))
+          output_dir = Path(config['output_dir'])
+          ocr_dir = output_dir / 'ocr'
+          csvs = sorted(ocr_dir.glob('eval_ocr_*.csv'))
+          validations = sorted(ocr_dir.glob('eval_ocr_*_validation.json'))
+          if len(csvs) != 1 or len(validations) != 1:
+              raise SystemExit(f'expected exactly one OCR CSV/validation, got csv={len(csvs)} validation={len(validations)}')
+
+          paci = output_dir / 'paci' / f"PACI{config['compact_date'][2:]}.zip"
+          final_csv = output_dir / config['output_name']
+          audit_json = output_dir / f"{Path(config['output_name']).stem}.audit.json"
+          command = [
+              'python', 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py',
+              '--eval-csv', str(csvs[0]),
+              '--paci', str(paci),
+              '--output', str(final_csv),
+              '--audit-json', str(audit_json),
+          ]
+          if config['fail_on_unmatched']:
+              command.append('--fail-on-unmatched')
+          completed = subprocess.run(command, check=False, text=True, capture_output=True)
+          (output_dir / 'enrich.log.txt').write_text(
+              completed.stdout + ('\nSTDERR:\n' + completed.stderr if completed.stderr else ''),
+              encoding='utf-8',
+          )
+          print(completed.stdout, end='')
+          if completed.stderr:
+              print(completed.stderr, end='')
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Collect artifact
+        id: collect
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_image_enrich_config.json').read_text(encoding='utf-8'))
+          output_dir = Path(config['output_dir'])
+          artifact = output_dir / 'artifact'
+          artifact.mkdir(parents=True, exist_ok=True)
+
+          for source in [
+              output_dir / config['output_name'],
+              output_dir / f"{Path(config['output_name']).stem}.audit.json",
+              output_dir / 'ocr.log.txt',
+              output_dir / 'enrich.log.txt',
+          ]:
+              if source.exists():
+                  shutil.copy2(source, artifact / source.name)
+
+          ocr_dir = output_dir / 'ocr'
+          if ocr_dir.exists():
+              for source in ocr_dir.iterdir():
+                  if source.is_file():
+                      shutil.copy2(source, artifact / source.name)
+
+          Path(artifact / 'resolved_request.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          if not (output_dir / config['output_name']).exists():
+              raise SystemExit('final enriched CSV not found')
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-image-enriched-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/artifact/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OCR_EXIT: ${{ steps.ocr.outputs.exit_code }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          ENRICH_EXIT: ${{ steps.enrich.outputs.exit_code }}
+          COLLECT_EXIT: ${{ steps.collect.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_image_enrich_config.json').read_text(encoding='utf-8'))
+          output_dir = Path(config['output_dir'])
+          final_csv = output_dir / config['output_name']
+          audit_path = output_dir / f"{Path(config['output_name']).stem}.audit.json"
+          validation_files = sorted((output_dir / 'ocr').glob('eval_ocr_*_validation.json'))
+          audit = json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.exists() else {}
+          validation = json.loads(validation_files[0].read_text(encoding='utf-8')) if len(validation_files) == 1 else {}
+          output_rows = 0
+          if final_csv.exists():
+              with final_csv.open('r', encoding='utf-8-sig', newline='') as handle:
+                  output_rows = max(0, sum(1 for _ in csv.reader(handle)) - 1)
+          exits = {
+              'ocr_exit_code': os.environ.get('OCR_EXIT', ''),
+              'fetch_exit_code': os.environ.get('FETCH_EXIT', ''),
+              'enrich_exit_code': os.environ.get('ENRICH_EXIT', ''),
+              'collect_exit_code': os.environ.get('COLLECT_EXIT', ''),
+          }
+          status = 'success' if all(value == '0' for value in exits.values()) else 'failure'
+          result = {
+              'request_id': config['request_id'],
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"eval-image-enriched-{config['request_id']}-{os.environ['GITHUB_RUN_ID']}",
+              'date': config['date'],
+              'output_name': config['output_name'],
+              'output_rows': output_rows,
+              'ocr_summary': validation.get('summary', {}),
+              'enrichment_summary': audit.get('summary', {}),
+              **exits,
+          }
+          Path('/tmp/eval_image_result.md').write_text(
+              'EVAL_IMAGE_ENRICH_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/eval_image_result.md
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when request failed
+        if: always() && (steps.ocr.outputs.exit_code != '0' || steps.fetch.outputs.exit_code != '0' || steps.enrich.outputs.exit_code != '0' || steps.collect.outputs.exit_code != '0')
+        run: exit 1
