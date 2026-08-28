@@ -17,6 +17,9 @@ from pathlib import Path
 
 import build_racenote_archive_month_from_raw as base
 
+HERE = Path(__file__).resolve().parent
+base.FETCH_HISTORY = HERE / "fetch_jrdb_history_retry.py"
+
 
 REPAIR_PATHS: list[Path] = []
 REPAIR_DATES: list[str] = []
