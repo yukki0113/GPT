@@ -170,6 +170,54 @@ def validate_sqlite(path: Path, label: str) -> None:
         connection.close()
 
 
+def try_archive_base(
+    archive_path: Path | None,
+    request: RaceNoteRequest,
+    output_dir: Path,
+) -> tuple[Path | None, dict]:
+    """Try a publishable Archive shard before historical fallback."""
+    if request.temporal_mode != "past":
+        return None, {
+            "attempted": False,
+            "status": "skipped_non_past",
+        }
+    if archive_path is None:
+        return None, {
+            "attempted": False,
+            "status": "not_supplied",
+        }
+    if not archive_path.is_file():
+        return None, {
+            "attempted": True,
+            "status": "fallback",
+            "archive_file": archive_path.name,
+            "reason": "archive_file_missing",
+        }
+
+    try:
+        base_dir, report = archive_backend.materialize(
+            archive_path,
+            request.target_date.isoformat(),
+            request.venue,
+            request.race_no,
+            output_dir,
+        )
+    except (archive_backend.RaceNoteArchiveBackendError, sqlite3.Error, OSError) as exc:
+        return None, {
+            "attempted": True,
+            "status": "fallback",
+            "archive_file": archive_path.name,
+            "reason": "archive_rejected",
+            "detail": str(exc),
+        }
+
+    return base_dir, {
+        "attempted": True,
+        "status": "used",
+        **report,
+    }
+
+
 def target_race_keys(analysis: Path, request: RaceNoteRequest) -> set[bytes]:
     """Resolve target race keys without using target result values."""
     sql = "SELECT DISTINCT race_key FROM fact_entry_result_lite WHERE race_date=?"
