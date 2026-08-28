@@ -11,8 +11,8 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 ## Current tools
 
 - `src/master_eval_media_collector.py` — X上のEval表メディア収集
-- `src/extract_eval_table.py` — Eval表画像をCSVへ変換するOCR親CLI
-- `src/eval_ocr/` — 表構造検出・日本語OCR・数値OCR・検証・CSV出力
+- `src/extract_eval_table.py` — Eval表画像を5列CSVへ変換するOCR親CLI
+- `src/eval_ocr/` — 表構造検出・会場OCR・数値OCR・色検証・CSV出力
 - `src/fetch_jra_daily_results.py` — JRA日次結果・払戻取得
 - `src/validate_jra_results.py` — JRA結果CSVの機械検証
 
@@ -40,10 +40,30 @@ OCRは `src/extract_eval_table.py` を親CLIとして実行します。
 - 2会場=24R、3会場=36Rを自動判定
 - R番号はパネル位置から確定
 - 馬番は表の行位置から確定
-- 馬名は日本語OCR結果をそのまま保存（正式馬名との照合・補正は未実装）
+- 馬名セル画像は「その行に馬が存在するか」の画像判定だけに使用し、馬名文字列のTesseract OCRは行わない
+- 会場名ヘッダーは日本語OCRを継続使用
 - Evalは数値専用OCR
+- 色付き上位セル、同色tie、色順位とEval大小の整合を検証
 - `date + venue + race_no + horse_no` の重複、1〜12R構造、Eval 0〜100等を検証
 - CSVとvalidation JSONを出力
+
+通常出力CSVの契約は次の5列です。
+
+```text
+date,venue,race_no,horse_no,eval
+```
+
+`horse_name_ocr` は出力しません。正式馬名は後段のJRDB PACI enrichmentで `date + venue + race_no + horse_no` をキーに付与します。
+
+日次運用の責務分担は次のとおりです。
+
+```text
+Eval OCR
+  -> date,venue,race_no,horse_no,eval のみ取得
+
+JRDB PACI enrichment
+  -> 正式馬名・レース属性・馬属性を付与
+```
 
 GitHub Actionsでは `.github/workflows/eval_ocr_chat.yml` を使用します。
 
@@ -63,9 +83,9 @@ OCR workflowは取得artifact内の `resolved_request.json` を読み、各日�
 
 各対象日で成功候補がちょうど1枚の場合のみ成功とし、0枚または複数枚ならfailure/ambiguousとして扱います。
 
-成果物artifactには、各画像から生成したCSV、個別validation JSON、全体の `batch_validation.json`、`resolved_request.json`、`run_status.txt` を含めます。完了時はIssueへ `EVAL_OCR_RESULT` コメントを返し、自動でIssueを閉じます。
+成果物artifactには、各画像から生成した5列CSV、個別validation JSON、全体の `batch_validation.json`、`resolved_request.json`、`run_status.txt` を含めます。完了時はIssueへ `EVAL_OCR_RESULT` コメントを返し、自動でIssueを閉じます。
 
-OS側依存としてGitHub Actionsでは `tesseract-ocr` と `tesseract-ocr-jpn` をインストールし、Python依存は `horse-racing/eval/requirements.txt` を使用します。
+OS側依存としてGitHub Actionsでは `tesseract-ocr` と `tesseract-ocr-jpn` をインストールします。日本語データは会場名ヘッダーOCRに必要です。Python依存は `horse-racing/eval/requirements.txt` を使用します。
 
 ## JRA結果取得の標準実行経路
 
