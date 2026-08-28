@@ -317,12 +317,24 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
                 maybe_type = ""
             if maybe_type:
                 current_type = maybe_type
+            if not current_type:
+                continue
+            row_text = text_of(row)
+            special_match = re.search(r"特払い[^0-9]*([0-9][0-9,]*)\s*円?", row_text)
+            if special_match:
+                payout = parse_money(special_match.group(1))
+                if payout <= 0:
+                    raise ParseError(
+                        f"公式特払いが0円以下です: 券種={current_type}, 払戻={payout}")
+                if current_type in result.special_payouts:
+                    raise ParseError(f"公式特払いが重複しています: 券種={current_type}")
+                result.special_payouts[current_type] = payout
+                continue
             number_nodes = row.xpath('.//*[contains(concat(" ", normalize-space(@class), " "), " numberSet1_number ")]')
             boats = [text_of(x) for x in number_nodes if re.fullmatch(r"[1-6]", text_of(x))]
             payout_nodes = row.xpath('.//*[contains(concat(" ", normalize-space(@class), " "), " is-payout1 ")]')
-            if not current_type or not payout_nodes:
+            if not payout_nodes:
                 continue
-            row_text = text_of(row)
             try:
                 payout = parse_money(text_of(payout_nodes[0]))
             except ParseError:
@@ -330,11 +342,6 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
             if payout <= 0:
                 raise ParseError(
                     f"公式払戻が0円以下です: 券種={current_type}, 払戻={payout}")
-            if "特払い" in row_text:
-                if current_type in result.special_payouts:
-                    raise ParseError(f"公式特払いが重複しています: 券種={current_type}")
-                result.special_payouts[current_type] = payout
-                continue
             if not boats:
                 continue
             try:
