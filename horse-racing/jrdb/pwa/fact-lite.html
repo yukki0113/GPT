@@ -108,6 +108,10 @@
           <small id="fact-race-name-note">レース名データを確認中</small>
         </label>
         <label>最低出走数<input id="fact-min-starts" type="number" value="20" min="1" disabled /></label>
+        <label class="fact-checkbox-field">
+          <input id="fact-exclude-jumps" type="checkbox" checked disabled />
+          <span>障害レースを除く</span>
+        </label>
       </div>
       <div class="button-row">
         <button id="fact-btn-aggregate" type="button" disabled>集計</button>
@@ -133,7 +137,7 @@
   </main>
 
   <footer><small>JRDB Fact Lite v0.2 real-device PoC</small></footer>
-  <script src="./fact-lite.js?v=16"></script>
-  <script src="./fact-lite-sort.js?v=16"></script>
+  <script src="./fact-lite.js?v=17"></script>
+  <script src="./fact-lite-sort.js?v=17"></script>
 </body>
 </html>
