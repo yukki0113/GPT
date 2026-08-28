@@ -1,0 +1,491 @@
+name: eval-paci-enrich-chat
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[EVAL_PACI_ENRICH_REQUEST]'
+
+jobs:
+  enrich:
+    if: startsWith(github.event.issue.title, '[EVAL_PACI_ENRICH_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request and restore Eval OCR CSV
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import base64
+          import csv
+          import datetime as dt
+          import gzip
+          import json
+          import os
+          import re
+          from io import StringIO
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+          if not isinstance(request, dict):
+              raise SystemExit('Issue body JSON must be an object')
+
+          payload = str(request.get('eval_csv_gzip_b64', '') or '').strip()
+          if not payload:
+              raise SystemExit('eval_csv_gzip_b64 is required')
+          if len(payload) > 120000:
+              raise SystemExit('eval_csv_gzip_b64 is too large')
+
+          try:
+              compressed = base64.b64decode(payload, validate=True)
+              raw = gzip.decompress(compressed)
+          except Exception as exc:
+              raise SystemExit(f'cannot decode eval_csv_gzip_b64: {type(exc).__name__}') from exc
+          if len(raw) > 2_000_000:
+              raise SystemExit('decoded Eval CSV is too large')
+
+          try:
+              text = raw.decode('utf-8-sig')
+          except UnicodeDecodeError as exc:
+              raise SystemExit('Eval CSV must be UTF-8/UTF-8-BOM') from exc
+
+          reader = csv.DictReader(StringIO(text))
+          required = ['date', 'venue', 'race_no', 'horse_no', 'eval']
+          if reader.fieldnames is None:
+              raise SystemExit('Eval CSV has no header')
+          missing = [name for name in required if name not in reader.fieldnames]
+          if missing:
+              raise SystemExit('Eval CSV missing required columns: ' + ', '.join(missing))
+
+          rows = list(reader)
+          if not rows:
+              raise SystemExit('Eval CSV has no data rows')
+
+          def normalize_date(value):
+              value = str(value or '').strip()
+              for fmt in ('%Y-%m-%d', '%Y%m%d'):
+                  try:
+                      return dt.datetime.strptime(value, fmt).date().isoformat()
+                  except ValueError:
+                      pass
+              raise SystemExit(f'invalid Eval date: {value!r}')
+
+          dates = sorted({normalize_date(row.get('date')) for row in rows})
+          if len(dates) > 10:
+              raise SystemExit('too many dates in one request; maximum is 10')
+
+          fail_on_unmatched = request.get('fail_on_unmatched', True)
+          if not isinstance(fail_on_unmatched, bool):
+              raise SystemExit('fail_on_unmatched must be true or false')
+
+          output_name = str(request.get('output_name', '') or '').strip()
+          if not output_name:
+              first = dates[0].replace('-', '')
+              last = dates[-1].replace('-', '')
+              if first == last:
+                  output_name = f'eval_{first}_enriched.csv'
+              else:
+                  output_name = f'eval_{first}_{last}_enriched.csv'
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,120}\.csv', output_name):
+              raise SystemExit('output_name must be a simple ASCII .csv file name')
+
+          output_dir = f'horse-racing/eval/output_eval_paci_enrich_{request_id}'
+          source_csv = f'{output_dir}/source_eval_ocr.csv'
+          final_csv = f'{output_dir}/{output_name}'
+          batch_audit = f'{output_dir}/batch_enrichment_audit.json'
+
+          Path(output_dir).mkdir(parents=True, exist_ok=True)
+          Path(source_csv).write_text(text, encoding='utf-8-sig')
+
+          config = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'output_dir': output_dir,
+              'source_csv': source_csv,
+              'final_csv': final_csv,
+              'output_name': output_name,
+              'batch_audit': batch_audit,
+              'fail_on_unmatched': fail_on_unmatched,
+              'dates': dates,
+              'input_rows': len(rows),
+          }
+          Path('/tmp/eval_paci_enrich_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as handle:
+              handle.write(f'REQUEST_ID={request_id}\n')
+              handle.write(f'OUTPUT_DIR={output_dir}\n')
+              handle.write(f'FINAL_CSV={final_csv}\n')
+              handle.write(f'OUTPUT_NAME={output_name}\n')
+          PY
+
+      - name: Split Eval CSV by race date
+        run: |
+          python - <<'PY'
+          import csv
+          import datetime as dt
+          import json
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_paci_enrich_config.json').read_text(encoding='utf-8'))
+          required = ['date', 'venue', 'race_no', 'horse_no', 'eval']
+
+          def normalize_date(value):
+              value = str(value or '').strip()
+              for fmt in ('%Y-%m-%d', '%Y%m%d'):
+                  try:
+                      return dt.datetime.strptime(value, fmt).date().isoformat()
+                  except ValueError:
+                      pass
+              raise SystemExit(f'invalid Eval date: {value!r}')
+
+          with Path(config['source_csv']).open('r', encoding='utf-8-sig', newline='') as handle:
+              reader = csv.DictReader(handle)
+              rows = list(reader)
+
+          grouped = {}
+          for row in rows:
+              race_date = normalize_date(row.get('date'))
+              grouped.setdefault(race_date, []).append({name: str(row.get(name, '') or '') for name in required})
+
+          split_dir = Path(config['output_dir']) / 'split'
+          split_dir.mkdir(parents=True, exist_ok=True)
+          manifest = []
+          for race_date in sorted(grouped):
+              compact = race_date.replace('-', '')
+              path = split_dir / f'eval_ocr_{compact}.csv'
+              with path.open('w', encoding='utf-8-sig', newline='') as handle:
+                  writer = csv.DictWriter(handle, fieldnames=required)
+                  writer.writeheader()
+                  writer.writerows(grouped[race_date])
+              manifest.append({'date': race_date, 'eval_csv': str(path), 'rows': len(grouped[race_date])})
+
+          Path('/tmp/eval_paci_enrich_manifest.json').write_text(
+              json.dumps({'targets': manifest}, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          PY
+
+      - name: Fetch PACI for target dates
+        id: fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_paci_enrich_config.json').read_text(encoding='utf-8'))
+          manifest = json.loads(Path('/tmp/eval_paci_enrich_manifest.json').read_text(encoding='utf-8'))
+          paci_dir = Path(config['output_dir']) / 'paci'
+          paci_dir.mkdir(parents=True, exist_ok=True)
+          failures = []
+
+          for target in manifest['targets']:
+              date_compact = target['date'].replace('-', '')
+              command = [
+                  'python', 'horse-racing/jrdb/src/fetch_jrdb_paci.py',
+                  '--date', date_compact,
+                  '--out-dir', str(paci_dir),
+              ]
+              completed = subprocess.run(command, check=False)
+              if completed.returncode != 0:
+                  failures.append({'date': target['date'], 'exit_code': completed.returncode})
+
+          Path('/tmp/eval_paci_fetch_result.json').write_text(
+              json.dumps({'failures': failures}, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          raise SystemExit(1 if failures else 0)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Enrich Eval CSV with PACI
+        id: enrich
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import csv
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_paci_enrich_config.json').read_text(encoding='utf-8'))
+          manifest = json.loads(Path('/tmp/eval_paci_enrich_manifest.json').read_text(encoding='utf-8'))
+          output_dir = Path(config['output_dir'])
+          paci_dir = output_dir / 'paci'
+          enrich_dir = output_dir / 'enriched_by_date'
+          enrich_dir.mkdir(parents=True, exist_ok=True)
+
+          target_results = []
+          output_files = []
+          any_failure = False
+
+          for target in manifest['targets']:
+              race_date = target['date']
+              compact = race_date.replace('-', '')
+              yy = compact[2:]
+              paci = paci_dir / f'PACI{yy}.zip'
+              enriched = enrich_dir / f'eval_{compact}_enriched.csv'
+              audit = enrich_dir / f'eval_{compact}_enriched.audit.json'
+              log = enrich_dir / f'eval_{compact}_enriched.log.txt'
+
+              if not paci.exists():
+                  target_results.append({
+                      'date': race_date,
+                      'status': 'failure',
+                      'error': f'PACI not found: {paci.name}',
+                      'input_rows': target['rows'],
+                  })
+                  any_failure = True
+                  continue
+
+              command = [
+                  'python', 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py',
+                  '--eval-csv', target['eval_csv'],
+                  '--paci', str(paci),
+                  '--output', str(enriched),
+                  '--audit-json', str(audit),
+              ]
+              if config['fail_on_unmatched']:
+                  command.append('--fail-on-unmatched')
+
+              completed = subprocess.run(command, check=False, text=True, capture_output=True)
+              log.write_text(
+                  completed.stdout + ('\nSTDERR:\n' + completed.stderr if completed.stderr else ''),
+                  encoding='utf-8',
+              )
+
+              audit_data = {}
+              if audit.exists():
+                  audit_data = json.loads(audit.read_text(encoding='utf-8'))
+              summary = audit_data.get('summary', {})
+
+              status = 'success' if completed.returncode == 0 else 'failure'
+              if status != 'success':
+                  any_failure = True
+              if enriched.exists():
+                  output_files.append((race_date, enriched))
+
+              target_results.append({
+                  'date': race_date,
+                  'status': status,
+                  'exit_code': completed.returncode,
+                  'input_rows': target['rows'],
+                  'output_csv': str(enriched) if enriched.exists() else None,
+                  'audit_json': str(audit) if audit.exists() else None,
+                  'summary': summary,
+              })
+
+          final_path = Path(config['final_csv'])
+          final_path.parent.mkdir(parents=True, exist_ok=True)
+          final_header = None
+          final_rows = []
+          for race_date, path in sorted(output_files):
+              with path.open('r', encoding='utf-8-sig', newline='') as handle:
+                  reader = csv.DictReader(handle)
+                  header = list(reader.fieldnames or [])
+                  if final_header is None:
+                      final_header = header
+                  elif header != final_header:
+                      raise SystemExit(f'enriched CSV schema mismatch for {race_date}')
+                  final_rows.extend(list(reader))
+
+          if final_header is not None:
+              with final_path.open('w', encoding='utf-8-sig', newline='') as handle:
+                  writer = csv.DictWriter(handle, fieldnames=final_header)
+                  writer.writeheader()
+                  writer.writerows(final_rows)
+
+          totals = {
+              'input_rows': config['input_rows'],
+              'output_rows': len(final_rows),
+              'joined_horses': 0,
+              'unmatched_horses': 0,
+              'race_headcount_mismatches': 0,
+              'duplicate_keys': 0,
+          }
+          for result in target_results:
+              summary = result.get('summary') or {}
+              for key in ('joined_horses', 'unmatched_horses', 'race_headcount_mismatches', 'duplicate_keys'):
+                  totals[key] += int(summary.get(key, 0) or 0)
+
+          batch = {
+              'schema_version': '1.0',
+              'request_id': config['request_id'],
+              'status': 'failure' if any_failure else 'success',
+              'dates': config['dates'],
+              'fail_on_unmatched': config['fail_on_unmatched'],
+              'output_name': config['output_name'],
+              'summary': totals,
+              'targets': target_results,
+          }
+          Path(config['batch_audit']).write_text(
+              json.dumps(batch, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+
+          if len(output_files) != len(manifest['targets']):
+              any_failure = True
+          if not final_path.exists():
+              any_failure = True
+          raise SystemExit(1 if any_failure else 0)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Collect artifact
+        id: collect
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_paci_enrich_config.json').read_text(encoding='utf-8'))
+          output_dir = Path(config['output_dir'])
+          artifact_dir = output_dir / 'artifact'
+          artifact_dir.mkdir(parents=True, exist_ok=True)
+
+          candidates = [
+              Path(config['source_csv']),
+              Path(config['final_csv']),
+              Path(config['batch_audit']),
+              Path('/tmp/eval_paci_enrich_manifest.json'),
+              Path('/tmp/eval_paci_fetch_result.json'),
+          ]
+          for source in candidates:
+              if source.exists():
+                  shutil.copy2(source, artifact_dir / source.name)
+
+          enrich_dir = output_dir / 'enriched_by_date'
+          if enrich_dir.exists():
+              detail_dir = artifact_dir / 'by_date'
+              detail_dir.mkdir(parents=True, exist_ok=True)
+              for source in enrich_dir.iterdir():
+                  if source.is_file() and source.suffix.lower() != '.zip':
+                      shutil.copy2(source, detail_dir / source.name)
+
+          safe_request = dict(config)
+          Path(artifact_dir / 'resolved_request.json').write_text(
+              json.dumps(safe_request, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+
+          if not Path(config['final_csv']).exists():
+              raise SystemExit('final enriched CSV not found')
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR/artifact"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "enrich_exit_code=${{ steps.enrich.outputs.exit_code }}"
+            echo "collect_exit_code=${{ steps.collect.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/artifact/run_status.txt"
+
+      - name: Upload completed Eval CSV artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-paci-enriched-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/artifact/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          ENRICH_EXIT: ${{ steps.enrich.outputs.exit_code }}
+          COLLECT_EXIT: ${{ steps.collect.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          config = json.loads(Path('/tmp/eval_paci_enrich_config.json').read_text(encoding='utf-8'))
+          audit_path = Path(config['batch_audit'])
+          audit = json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.exists() else {
+              'status': 'failure', 'summary': {}, 'targets': []
+          }
+          fetch_exit = os.environ.get('FETCH_EXIT', '')
+          enrich_exit = os.environ.get('ENRICH_EXIT', '')
+          collect_exit = os.environ.get('COLLECT_EXIT', '')
+          status = 'success' if fetch_exit == '0' and enrich_exit == '0' and collect_exit == '0' else 'failure'
+          result = {
+              'request_id': config['request_id'],
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"eval-paci-enriched-{config['request_id']}-{os.environ['GITHUB_RUN_ID']}",
+              'output_name': config['output_name'],
+              'dates': config['dates'],
+              'summary': audit.get('summary', {}),
+              'targets': audit.get('targets', []),
+              'fetch_exit_code': fetch_exit,
+              'enrich_exit_code': enrich_exit,
+              'collect_exit_code': collect_exit,
+          }
+          Path('/tmp/eval_paci_enrich_result.md').write_text(
+              'EVAL_PACI_ENRICH_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/eval_paci_enrich_result.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when request failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.enrich.outputs.exit_code != '0' || steps.collect.outputs.exit_code != '0')
+        run: exit 1
