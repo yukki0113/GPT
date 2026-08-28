@@ -29,7 +29,7 @@ import racenote_archive
 import resolve_racenote_archive_release as release_resolver
 
 HERE = Path(__file__).resolve().parent
-MONTH_BUILDER = HERE / "build_racenote_archive_month_from_raw.py"
+MONTH_BUILDER = HERE / "build_racenote_archive_month_with_daily_repair.py"
 
 
 class YearBackfillError(RuntimeError):
