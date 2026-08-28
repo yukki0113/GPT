@@ -25,6 +25,8 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Iterable
 
+import racenote_archive_backend as archive_backend
+
 HERE = Path(__file__).resolve().parent
 FETCH_PACI = HERE / "fetch_jrdb_paci.py"
 FETCH_HISTORY = HERE / "fetch_jrdb_history.py"
@@ -93,6 +95,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--analysis", type=Path, required=True, help="Analysis Lite SQLite")
     parser.add_argument("--mart", type=Path, required=True, help="Stats Mart SQLite")
     parser.add_argument("--raw-dir", type=Path, default=None, help="Historical Raw cache/root")
+    parser.add_argument(
+        "--archive",
+        type=Path,
+        default=None,
+        help="Optional resolved publishable monthly RaceNote Archive shard for past requests",
+    )
     parser.add_argument("--output", type=Path, default=Path("output_racenote_request"))
     parser.add_argument("--stats-window-years", type=int, default=5)
     parser.add_argument("--plan-only", action="store_true")
