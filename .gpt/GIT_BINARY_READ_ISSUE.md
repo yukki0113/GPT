@@ -10,6 +10,12 @@ GitHub `main` 上の `.xlsx`、`.sqlite`、`.zip` など、GitHub Connectorだ�
 この経路では、Issueを起点にGitHub Actionsが最新 `main` の対象ファイルをActions artifactへ梱包します。
 Chat側はworkflow runのartifactを取得し、実ファイルとして解析します。
 
+## External source-of-truth exception
+
+各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このreadback経路の対象外です。GitHubに旧コピーが残っていても最新と推定しません。
+
+競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このreadback経路で競艇台帳を取得しません。
+
 ## 推奨操作層
 
 認証済み `gh` CLIを実行できる環境では、Issue作成・完了待ち・artifact取得・SHA-256照合を手作業で行わず、次の共通CLIを第一選択にします。
@@ -65,7 +71,7 @@ artifact保持期間は7日です。
 3. artifact ZIPをダウンロード
 4. ZIP内の元ファイルを実行環境へ展開
 5. `manifest.json` のSHA-256と実ファイルのSHA-256を照合
-6. `.xlsx` ならopenpyxl等、`.sqlite`ならSQLite等、ファイル形式に応じたツールで解析
+6. ファイル形式に応じたツールで解析
 
 まで行います。
 
@@ -91,13 +97,16 @@ GitHub公開リポジトリに置くべきでない情報は、そもそもこ�
 通常テキストを更新
   → [gpt-git-update]
 
-バイナリをGitHubへ更新
+Git管理バイナリをGitHubへ更新
   → gpt_git_binary_tool.py update
      または [gpt-git-binary-update]
 
-GitHub上のバイナリをChat / Workへ取得
+GitHub正本のバイナリをChat / Workへ取得
   → gpt_git_binary_tool.py read
      または [gpt-git-binary-read]
+
+外部ストレージ正本
+  → プロジェクト定義の外部正本へ直接アクセス
 ```
 
-このreadback経路はGitHub正本を変更しません。Actions artifactは一時的な搬送物であり、正本は常にGitHub `main` 上の対象ファイルです。
+このreadback経路はGitHub正本を変更しません。Actions artifactは一時的な搬送物です。正本の所在は各プロジェクトのREADME / `.gpt/WORKFLOW.md` に従います。
