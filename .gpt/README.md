@@ -24,7 +24,9 @@ GitHub Connectorが `.xlsx` 等の中身を直接展開できない場合でも�
 
 各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGoogle Drive等の外部ストレージが正本と明示されている運用ファイルは、このGitバイナリ搬送ルールの対象外とする。外部正本を優先し、GitHubに残る旧コピーを最新と推定しない。
 
-現在、Eval継続台帳 `Eval表集計・検証.xlsx` と競艇継続台帳 `競艇note販売運用台帳.xlsx` はGoogle Drive `GPT/ledger/` を正本とする。
+現在、競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）とする。旧Google Drive Excel版およびGitHub上の `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットであり、正本として扱わない。
+
+中央競馬Eval継続台帳は各プロジェクト側README / `.gpt/WORKFLOW.md` に定義された外部正本を優先する。
 
 ## GitHub Actions実行時間監査
 
