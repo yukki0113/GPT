@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression tests for RaceNote Archive storage semantics."""
+"""Regression tests for RaceNote Archive storage and publication semantics."""
 from __future__ import annotations
 
 import argparse
@@ -17,6 +17,7 @@ if str(SRC) not in sys.path:
 
 import build_racenote_archive as builder  # noqa: E402
 import racenote_archive as archive  # noqa: E402
+import racenote_archive_backend as archive_backend  # noqa: E402
 import read_racenote_archive as reader  # noqa: E402
 
 SCHEMA = PROJECT_ROOT / "schema" / "racenote_archive_schema_v1_0.sql"
@@ -67,8 +68,68 @@ def write_bundle(path: Path, value: dict) -> bytes:
     return data
 
 
+def write_source_manifest(path: Path) -> None:
+    """Write one synthetic provenance row."""
+    path.write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {
+                        "source_type": "ANNUAL_RAW",
+                        "source_period": "2025",
+                        "filename": "BAC_2025.zip",
+                        "sha256": "0" * 64,
+                        "role": "target_race_base",
+                    }
+                ]
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def write_expected_index(path: Path, races: list[dict]) -> None:
+    """Write an authoritative expected race identity list."""
+    path.write_text(
+        json.dumps({"races": races}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def build_args(
+    *,
+    bundle_dir: Path,
+    output: Path,
+    validation_report: Path,
+    source_manifest: Path | None = None,
+    expected_index: Path | None = None,
+    coverage_mode: str = "partial",
+    expected_race_count: int | None = None,
+) -> argparse.Namespace:
+    """Return a complete builder Namespace matching the current CLI contract."""
+    return argparse.Namespace(
+        bundle_dir=bundle_dir,
+        target_month="202508",
+        output=output,
+        source_mode="annual_raw_reconstruction",
+        coverage_mode=coverage_mode,
+        expected_index=expected_index,
+        source_ref="synthetic-2025" if source_manifest is not None else None,
+        source_manifest=source_manifest,
+        converter_git_sha="1234567",
+        schema=SCHEMA,
+        expected_race_count=expected_race_count,
+        replace=False,
+        strict_input_month=False,
+        validation_report=validation_report,
+    )
+
+
 class RaceNoteArchiveTest(unittest.TestCase):
-    """Archive hash, build, lookup and leakage regression tests."""
+    """Archive hash, build, lookup, publication and leakage regression tests."""
 
     def test_semantic_hash_ignores_only_generated_at(self) -> None:
         first = base_bundle(generated_at="2026-08-27T00:00:00+00:00")
@@ -131,13 +192,14 @@ class RaceNoteArchiveTest(unittest.TestCase):
             with self.assertRaises(builder.BuildError):
                 builder.source_inputs_from_manifest(manifest)
 
-    def test_build_lookup_and_reader_roundtrip(self) -> None:
+    def test_full_month_build_lookup_reader_and_backend_roundtrip(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             bundle_dir = root / "bundles"
             output = root / "jrdb_racenote_archive_202508_v1_0.sqlite"
             report_path = root / "validation.json"
             restored = root / "restored"
+            backend_restored = root / "backend_restored"
 
             first_path = bundle_dir / "race_bundle_20250824_新潟11R.json"
             second_path = bundle_dir / "race_bundle_20250824_新潟12R.json"
@@ -155,47 +217,36 @@ class RaceNoteArchiveTest(unittest.TestCase):
             )
 
             source_manifest = root / "sources.json"
-            source_manifest.write_text(
-                json.dumps(
-                    {
-                        "sources": [
-                            {
-                                "source_type": "ANNUAL_RAW",
-                                "source_period": "2025",
-                                "filename": "BAC_2025.zip",
-                                "sha256": "0" * 64,
-                                "role": "target_race_base",
-                            }
-                        ]
-                    },
-                    ensure_ascii=False,
-                    indent=2,
-                )
-                + "\n",
-                encoding="utf-8",
+            write_source_manifest(source_manifest)
+            expected_index = root / "expected.json"
+            write_expected_index(
+                expected_index,
+                [
+                    {"race_date": "2025-08-24", "venue": "新潟", "race_no": 11},
+                    {"race_date": "2025-08-24", "venue_code": "04", "race_no": 12},
+                ],
             )
 
-            build_args = argparse.Namespace(
-                bundle_dir=bundle_dir,
-                target_month="202508",
-                output=output,
-                source_mode="annual_raw_reconstruction",
-                source_ref="synthetic-2025",
-                source_manifest=source_manifest,
-                converter_git_sha="1234567",
-                schema=SCHEMA,
-                expected_race_count=2,
-                replace=False,
-                strict_input_month=False,
-                validation_report=report_path,
+            report = builder.build(
+                build_args(
+                    bundle_dir=bundle_dir,
+                    output=output,
+                    validation_report=report_path,
+                    source_manifest=source_manifest,
+                    expected_index=expected_index,
+                    coverage_mode="full_month",
+                    expected_race_count=2,
+                )
             )
-            build_report = builder.build(build_args)
-            self.assertEqual(build_report["status"], "PASS")
-            self.assertEqual(build_report["selected_bundle_count"], 2)
-            self.assertEqual(build_report["skipped_other_month_count"], 1)
-            self.assertTrue(build_report["publishable"])
-            self.assertEqual(build_report["verified_bundle_count"], 2)
-            self.assertEqual(build_report["source_ref"], "synthetic-2025")
+            self.assertEqual(report["status"], "PASS")
+            self.assertEqual(report["selected_bundle_count"], 2)
+            self.assertEqual(report["skipped_other_month_count"], 1)
+            self.assertTrue(report["publishable"])
+            self.assertTrue(report["identity_match"])
+            self.assertEqual(report["coverage_mode"], "full_month")
+            self.assertEqual(report["publication_status"], "publishable")
+            self.assertEqual(report["verified_bundle_count"], 2)
+            self.assertEqual(report["source_ref"], "synthetic-2025")
 
             connection = archive.open_archive(output)
             try:
@@ -214,15 +265,16 @@ class RaceNoteArchiveTest(unittest.TestCase):
             finally:
                 connection.close()
 
-            read_args = argparse.Namespace(
-                archive=output,
-                date="20250824",
-                venue="新潟",
-                race=None,
-                output_dir=restored,
-                full_validate=True,
+            read_report = reader.read(
+                argparse.Namespace(
+                    archive=output,
+                    date="20250824",
+                    venue="新潟",
+                    race=None,
+                    output_dir=restored,
+                    full_validate=True,
+                )
             )
-            read_report = reader.read(read_args)
             self.assertEqual(read_report["status"], "PASS")
             self.assertEqual(read_report["bundle_count"], 2)
             self.assertEqual(
@@ -234,6 +286,99 @@ class RaceNoteArchiveTest(unittest.TestCase):
                 second_bytes,
             )
 
+            backend_dir, backend_report = archive_backend.materialize(
+                output,
+                "20250824",
+                "新潟",
+                11,
+                backend_restored,
+            )
+            self.assertEqual(backend_report["used_backend"], "racenote_archive")
+            self.assertEqual(backend_report["coverage_mode"], "full_month")
+            self.assertEqual(backend_report["publication_status"], "publishable")
+            self.assertEqual(
+                (backend_dir / "race_bundle_20250824_新潟11R.json").read_bytes(),
+                first_bytes,
+            )
+
+    def test_partial_archive_is_test_only_and_backend_rejects_it(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            bundle_dir = root / "bundles"
+            output = root / "jrdb_racenote_archive_202508_v1_0.sqlite"
+            write_bundle(
+                bundle_dir / "race_bundle_20250824_新潟11R.json",
+                base_bundle(),
+            )
+            source_manifest = root / "sources.json"
+            write_source_manifest(source_manifest)
+
+            report = builder.build(
+                build_args(
+                    bundle_dir=bundle_dir,
+                    output=output,
+                    validation_report=root / "validation.json",
+                    source_manifest=source_manifest,
+                    coverage_mode="partial",
+                    expected_race_count=1,
+                )
+            )
+            self.assertFalse(report["publishable"])
+            self.assertEqual(report["publication_status"], "test_only")
+            self.assertEqual(report["coverage_mode"], "partial")
+
+            with self.assertRaises(archive_backend.RaceNoteArchiveBackendError):
+                archive_backend.materialize(
+                    output,
+                    "20250824",
+                    "新潟",
+                    11,
+                    root / "backend_rejected",
+                )
+
+            backend_dir, backend_report = archive_backend.materialize(
+                output,
+                "20250824",
+                "新潟",
+                11,
+                root / "backend_allowed_for_test",
+                allow_partial=True,
+            )
+            self.assertEqual(backend_report["publication_status"], "test_only")
+            self.assertTrue(backend_dir.is_dir())
+
+    def test_full_month_identity_mismatch_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            bundle_dir = root / "bundles"
+            write_bundle(
+                bundle_dir / "race_bundle_20250824_新潟11R.json",
+                base_bundle(),
+            )
+            source_manifest = root / "sources.json"
+            write_source_manifest(source_manifest)
+            expected_index = root / "expected.json"
+            write_expected_index(
+                expected_index,
+                [
+                    {"race_date": "2025-08-24", "venue": "新潟", "race_no": 11},
+                    {"race_date": "2025-08-24", "venue": "新潟", "race_no": 12},
+                ],
+            )
+
+            with self.assertRaises(builder.BuildError):
+                builder.build(
+                    build_args(
+                        bundle_dir=bundle_dir,
+                        output=root / "archive.sqlite",
+                        validation_report=root / "validation.json",
+                        source_manifest=source_manifest,
+                        expected_index=expected_index,
+                        coverage_mode="full_month",
+                        expected_race_count=2,
+                    )
+                )
+
     def test_reader_rejects_wrong_month_shard(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -243,32 +388,27 @@ class RaceNoteArchiveTest(unittest.TestCase):
                 bundle_dir / "race_bundle_20250824_新潟11R.json",
                 base_bundle(),
             )
-            build_args = argparse.Namespace(
-                bundle_dir=bundle_dir,
-                target_month="202508",
-                output=output,
-                source_mode="annual_raw_reconstruction",
-                source_ref=None,
-                source_manifest=None,
-                converter_git_sha="1234567",
-                schema=SCHEMA,
-                expected_race_count=1,
-                replace=False,
-                strict_input_month=False,
-                validation_report=root / "validation.json",
+            builder.build(
+                build_args(
+                    bundle_dir=bundle_dir,
+                    output=output,
+                    validation_report=root / "validation.json",
+                    coverage_mode="partial",
+                    expected_race_count=1,
+                )
             )
-            builder.build(build_args)
 
-            read_args = argparse.Namespace(
-                archive=output,
-                date="20250906",
-                venue=None,
-                race=None,
-                output_dir=root / "restored",
-                full_validate=False,
-            )
             with self.assertRaises(archive.RaceNoteArchiveError):
-                reader.read(read_args)
+                reader.read(
+                    argparse.Namespace(
+                        archive=output,
+                        date="20250906",
+                        venue=None,
+                        race=None,
+                        output_dir=root / "restored",
+                        full_validate=False,
+                    )
+                )
 
 
 if __name__ == "__main__":
