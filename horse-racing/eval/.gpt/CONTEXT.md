@@ -34,13 +34,36 @@ Actions側の検証は各投稿でmetadataと1枚以上のmediaが取得でき�
 
 Chatから取得済みartifactをOCRする場合は `.github/workflows/eval_ocr_chat.yml` の `[EVAL_OCR_REQUEST]` Issue経路を使用します。日常開催でユーザーがEval表画像を直接渡す運用では、画像取得工程は不要で、OCR/CSV化から開始します。
 
+## Chat画像 -> 完成CSV
+
+ChatへユーザーがEval表画像または画像ZIPを直接渡しCSV化を依頼した場合、通常の最終成果物は5列OCR CSVではなく **JRDB PACI事前情報まで付与した完成CSV** とします。OCRのみを明示された場合だけ5列で停止します。
+
+標準フロー:
+
+```text
+ユーザー画像
+  -> Chat実行環境でGitHub mainのOCRロジックを使用
+  -> 5列OCR CSV
+  -> gzip + Base64 payload
+  -> [EVAL_PACI_ENRICH_REQUEST] Issue
+  -> .github/workflows/eval_paci_enrich_chat.yml
+  -> 対象日PACIyymmdd.zipをActions側で取得
+  -> horse-racing/jrdb/src/enrich_eval_csv_with_paci.py
+  -> JRDB事前情報付き完成CSV artifact
+  -> Chatが回収してユーザーへ返却
+```
+
+直接アップロードされた画像自体はGitHubへ永続化しません。GitHubへ渡すのはOCR後の5列CSVを圧縮・Base64化したpayloadのみです。PACIはユーザーへ再添付を求めず、Actions側の `JRDB_USER` / `JRDB_PASSWORD` secretで取得します。
+
+`[EVAL_PACI_ENRICH_REQUEST]` は複数日を受け付け、日付ごとにPACIを取得・結合して最終CSVを1本にまとめます。既定で `fail_on_unmatched=true` とし、`joined_horses == input_rows`、`unmatched_horses == 0`、`duplicate_keys == 0` を通常成功条件として確認します。`race_headcount_mismatches` は警告監査として必ず報告します。
+
 ## JRA結果取得
 
 本体は `src/fetch_jra_daily_results.py`。取得後は `src/validate_jra_results.py` で検証します。
 
 Chatからの定型取得は `.github/workflows/jra_results_chat.yml` を標準経路とします。Chatがタイトル `[JRA_RESULTS_REQUEST] <request_id>` のGitHub Issueを作成し、本文JSONに対象日を記載すると、Issue作成イベントでActionsが起動します。
 
-ActionsはGit正本のPythonと `requirements.txt` を使用し、CSV・検証レポート・実行状態をartifact化します。完了後、同じIssueへ `JRA_RESULTS_RESULT` コメントとして `run_id`、artifact名、fetch/validation終了コード、validator結果を返し、Issueを自動クローズします。Chatはこのコメントを完了通知として利用し、必要に応じてartifactを回収します。
+ActionsはGit正本のPythonと `requirements.txt` を使用して取得・検証します。完了後、同じIssueへ `JRA_RESULTS_RESULT` コメントとして `run_id`、artifact名、fetch/validation終了コード、validator結果を返し、Issueを自動クローズします。Chatはこのコメントを完了通知として利用し、必要に応じてartifactを回収します。
 
 このIssue経路を日常運用の第一選択とし、Chat実行環境からの直接HTTPS通信や `workflow_dispatch` 起動APIには依存しません。
 
