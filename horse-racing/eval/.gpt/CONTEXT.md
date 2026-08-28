@@ -16,13 +16,23 @@ Eval画像、OCR途中成果物、日次取得CSV、検証レポート、ログ�
 
 Chatからの定型取得は `.github/workflows/eval_media_chat.yml` のIssue経路を標準とします。Chatが対象日の `@master_eval` 投稿を探索して投稿IDを確定し、タイトル `[EVAL_MEDIA_REQUEST] <request_id>` のGitHub Issueを作成します。Issue本文JSONには対象日と投稿IDの対応を記載します。
 
-ActionsはIssue作成をトリガーにGit正本の `src/master_eval_media_collector.py` を実行し、投稿ID別の `metadata.json` と `media_XX.*`、`resolved_request.json`、`validation_report.json`、`run_status.txt` をartifact化します。
+ActionsはIssue作成をトリガーにGit正本の `src/master_eval_media_collector.py` を実行し、投稿ID別のmetadataとmedia、`resolved_request.json`、`validation_report.json`、`run_status.txt` をartifact化します。
 
 完了後、同じIssueへ `EVAL_MEDIA_RESULT` コメントとして `run_id`、artifact名、fetch/validation終了コード、対象日・投稿ID、検証結果を返し、Issueを自動クローズします。Chatはこのコメントを完了通知として利用し、artifactを回収します。
 
 Actions側の検証は各投稿でmetadataと1枚以上のmediaが取得できたかまでです。Eval表本体と注意事項・説明画像の分類はChatがartifact回収後に画像内容を見て行い、Eval表のみを `eval_YYYYMMDD_YYYYMMDD_Eval表画像.zip` にまとめます。
 
 `.github/workflows/eval_media_manual.yml` の `workflow_dispatch` は人間操作用の予備経路です。直接Python実行はデバッグ・緊急時の補助経路とします。
+
+## Eval表OCR
+
+本体は `src/extract_eval_table.py` と `src/eval_ocr/` です。通常出力CSVの契約は `date,venue,race_no,horse_no,eval` の5列です。
+
+馬名セル画像は行存在判定には使用しますが、馬名文字列のTesseract OCRは通常処理では行いません。会場名ヘッダーOCR、Eval数値OCR、色付き上位セル・同色tieを含む色検証は維持します。
+
+正式馬名・レース属性・馬属性は後段のJRDB PACI enrichmentが `date + venue + race_no + horse_no` をキーに付与します。Eval OCRは識別キーとEval値の取得に責務を限定します。
+
+Chatから取得済みartifactをOCRする場合は `.github/workflows/eval_ocr_chat.yml` の `[EVAL_OCR_REQUEST]` Issue経路を使用します。日常開催でユーザーがEval表画像を直接渡す運用では、画像取得工程は不要で、OCR/CSV化から開始します。
 
 ## JRA結果取得
 
