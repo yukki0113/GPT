@@ -123,6 +123,7 @@ function compareFactMetricRows(left, right, columnIndex, direction) {
 }
 
 function updateFactSortHeaderState(table) {
+  const activeAxis = getFactResultActiveAxis();
   const buttons = table.querySelectorAll("button.fact-sort-button");
   buttons.forEach(function (button) {
     const columnKey = button.dataset.sortKey;
@@ -130,6 +131,17 @@ function updateFactSortHeaderState(table) {
     button.classList.remove("active");
     button.removeAttribute("aria-sort");
     button.textContent = baseLabel;
+
+    if (
+      factResultSortKey === "default" &&
+      (activeAxis === "sire" || activeAxis === "jockey") &&
+      columnKey === "starts"
+    ) {
+      button.classList.add("active");
+      button.setAttribute("aria-sort", "descending");
+      button.textContent = baseLabel + " ▼";
+      return;
+    }
 
     if (factResultSortKey !== columnKey) {
       return;
