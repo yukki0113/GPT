@@ -402,12 +402,20 @@ def enrich_bundle(bundle: Path, analysis: Path, mart: Path, output_dir: Path, st
     return target
 
 
-def package_output(output_dir: Path, request: RaceNoteRequest, generated: list[Path], plan: dict, reconstruction: dict | None) -> Path:
+def package_output(
+    output_dir: Path,
+    request: RaceNoteRequest,
+    generated: list[Path],
+    plan: dict,
+    reconstruction: dict | None,
+    backend_resolution: dict,
+) -> Path:
     """Write manifest and package selected RaceNote bundles."""
     manifest = {
         "request": plan,
         "bundle_count": len(generated),
         "bundles": [path.name for path in generated],
+        "backend_resolution": backend_resolution,
         "historical_reconstruction": reconstruction,
     }
     manifest_path = output_dir / "request_manifest.json"
