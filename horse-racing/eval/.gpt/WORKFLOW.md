@@ -52,7 +52,7 @@
 
 ## 共通
 
-32. 継続台帳 `ledger/Eval表集計・検証.xlsx` のread/updateは、認証済み `gh` CLIを実行できる環境ではルート `.gpt/tools/gpt_git_binary_tool.py` を第一選択にする。readは `read`、更新は `update` サブコマンドを使用し、Issue本文・Base64チャンク・artifact回収をGPTが手作業で組み立てない。
-33. `gh` CLIを利用できないChat環境では、readは `[gpt-git-binary-read]`、更新は `[gpt-git-binary-update]` Issue経路をフォールバックとして使用する。
-34. 画像、日次CSV、検証レポート、ログ等の運用成果物はcommitしない。ただし継続台帳 `ledger/Eval表集計・検証.xlsx` はGit管理対象とする。
+32. 継続台帳 `Eval表集計・検証.xlsx` はGoogle Drive `GPT/ledger/Eval表集計・検証.xlsx` を正本とする。台帳参照時はDrive上の正本を取得し、更新時は同一Driveファイルへ反映する。
+33. GitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` に同名ファイルが残っていてもDrive移行前の旧スナップショットとして扱う。通常運用では `.gpt/tools/gpt_git_binary_tool.py`、`[gpt-git-binary-read]`、`[gpt-git-binary-update]` を台帳同期目的に使用しない。
+34. Drive上の正本へアクセスできない場合はGitHub旧スナップショットを最新と推定せず、正本取得不能として扱う。画像、日次CSV、検証レポート、ログ等の運用成果物も引き続きcommitしない。
 35. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。

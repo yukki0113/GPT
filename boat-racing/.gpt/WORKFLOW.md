@@ -3,7 +3,7 @@
 1. READMEと対象ツールのdocsを確認。
 2. 公式サイト側の変更に注意し、既存CSV互換性を維持する。
 3. 改修後は実日付または保存済みfixtureで回帰確認。
-4. キャッシュ、日次成果物、ログはcommitしない。ただし継続台帳 `ledger/競艇note販売運用台帳.xlsx` はGit管理対象とする。
+4. キャッシュ、日次成果物、ログ、継続台帳はcommitしない。継続台帳 `競艇note販売運用台帳.xlsx` はGoogle Drive `GPT/ledger/競艇note販売運用台帳.xlsx` を正本とする。
 5. Pythonと対応READMEを同時に更新してcommitする。
 
 ## Chatでの日次取得実行
@@ -20,12 +20,10 @@
 - `.github/workflows/boatrace_racelist_manual.yml` は手動フォールバックとして残すが、Chatからの日常実行ではIssue経由を優先する。
 - 日次成果物はGitへcommitしない。
 
-## GitHubバイナリ正本の更新・取得
+## Google Drive台帳正本の更新・取得
 
-- 継続台帳 `ledger/競艇note販売運用台帳.xlsx` のread/updateは、認証済み `gh` CLIを実行できる環境ではルート `.gpt/tools/gpt_git_binary_tool.py` を第一選択にする。
-- 台帳を更新する場合は `update` サブコマンドを使用し、Base64化・Issueチャンク登録・確定コメント・完了待ちをツールへ任せる。
-- GitHub `main` 上の台帳をChat / Workで実ファイルとして解析する場合は `read` サブコマンドを使用し、Issue作成・artifact取得・SHA-256照合をツールへ任せる。
-- `gh` CLIを利用できないChat環境では、更新は `[gpt-git-binary-update]`、取得は `[gpt-git-binary-read]` Issue経路をフォールバックとして使用する。
-- GitHub Connectorで `.xlsx` を直接読めないことを理由に、GitHub正本が存在する台帳の再添付をユーザーへ依頼しない。
-- 詳細はルート `.gpt/GIT_BINARY_TOOL.md`、`.gpt/GIT_BINARY_UPDATE_ISSUE.md`、`.gpt/GIT_BINARY_READ_ISSUE.md` を参照する。
-- readback artifactは搬送用の一時物であり、正本はGitHub `main` 上の対象ファイルとする。
+- 継続台帳 `競艇note販売運用台帳.xlsx` はGoogle Drive `GPT/ledger/競艇note販売運用台帳.xlsx` を正本とする。
+- Chat / Workで台帳を解析する場合はDrive上の正本を取得し、更新時は同一Driveファイルへ反映する。
+- GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` に同名ファイルが残っていてもDrive移行前の旧スナップショットとして扱い、通常運用では参照・更新しない。
+- `.gpt/tools/gpt_git_binary_tool.py`、`[gpt-git-binary-read]`、`[gpt-git-binary-update]` はGit管理バイナリ用の共通補助経路として残すが、この台帳の同期には使用しない。
+- Drive上の正本へアクセスできない場合はGitHub旧スナップショットを最新と推定せず、正本取得不能として扱う。

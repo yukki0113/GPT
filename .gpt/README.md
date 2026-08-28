@@ -22,6 +22,10 @@
 
 GitHub Connectorが `.xlsx` 等の中身を直接展開できない場合でも、GitHub `main` が正本として定義されているファイルについては、ユーザーへ再添付を依頼する前にバイナリread経路を使用する。
 
+各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGoogle Drive等の外部ストレージが正本と明示されている運用ファイルは、このGitバイナリ搬送ルールの対象外とする。外部正本を優先し、GitHubに残る旧コピーを最新と推定しない。
+
+現在、Eval継続台帳 `Eval表集計・検証.xlsx` と競艇継続台帳 `競艇note販売運用台帳.xlsx` はGoogle Drive `GPT/ledger/` を正本とする。
+
 ## GitHub Actions実行時間監査
 
 - job時間 / Private化時のGitHub-hosted runner分数の監査: `.gpt/GITHUB_ACTIONS_JOB_AUDIT.md`

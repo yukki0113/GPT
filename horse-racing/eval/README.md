@@ -6,7 +6,11 @@
 
 GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPython・README・作業手順の正本とします。
 
-画像、OCR途中成果物、日次CSV、ログ等の運用成果物はGit管理対象外です。継続台帳のみ `ledger/Eval表集計・検証.xlsx` をGit管理し、GitHub `main` を正本とします。
+画像、OCR途中成果物、日次CSV、ログ等の運用成果物はGit管理対象外です。
+
+継続台帳 `Eval表集計・検証.xlsx` は **Google Drive `GPT/ledger/Eval表集計・検証.xlsx` を正本** とします。Chat / Workで台帳を参照・更新する場合はDrive上の正本を取得し、更新後も同一Driveファイルへ反映してください。
+
+GitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` に同名ファイルが残っている場合、それはDrive移行前の旧スナップショットです。以後の台帳参照・更新に使用せず、GitHubバイナリread/update経路で同期しません。
 
 ## Current tools
 
@@ -140,4 +144,4 @@ Issue作成をトリガーにGitHub Actionsが起動し、Git正本のPythonと 
 
 日常運用ではChat専用Issue経路を優先します。
 
-日次画像、CSV、検証レポート、実行ログ等はGitへcommitしません。台帳更新時は最新mainの `ledger/Eval表集計・検証.xlsx` を更新し、バイナリ更新Issue経路で反映します。
+日次画像、CSV、検証レポート、実行ログ等はGitへcommitしません。台帳更新時はGoogle Drive `GPT/ledger/Eval表集計・検証.xlsx` の正本を取得・更新し、GitHub上の旧台帳ファイルへは反映しません。
