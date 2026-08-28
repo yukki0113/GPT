@@ -1,0 +1,340 @@
+name: racenote-archive-router-e2e-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  e2e:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_ROUTER_E2E]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = '[RACENOTE_ARCHIVE_ROUTER_E2E]'
+          request_id = os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          target_date = str(request.get('date', '')).replace('-', '').replace('/', '').strip()
+          if not re.fullmatch(r'\d{8}', target_date):
+              raise SystemExit('date must be YYYYMMDD')
+          datetime.strptime(target_date, '%Y%m%d')
+
+          venue = str(request.get('venue', '')).strip()
+          if not venue:
+              raise SystemExit('venue is required')
+          race = int(request.get('race', 0))
+          if not 1 <= race <= 12:
+              raise SystemExit('race must be 1..12')
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          mart_url = str(request.get('mart_url', '')).strip()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+          if not mart_url.startswith('https://drive.google.com/'):
+              raise SystemExit('mart_url must be a Google Drive URL')
+
+          resolved = {
+              'request_id': request_id,
+              'date': target_date,
+              'month': target_date[:6],
+              'venue': venue,
+              'race': race,
+              'analysis_url': analysis_url,
+              'mart_url': mart_url,
+          }
+          Path('/tmp/e2e_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f"REQUEST_ID={request_id}\n")
+              file.write(f"TARGET_DATE={target_date}\n")
+              file.write(f"TARGET_MONTH={target_date[:6]}\n")
+              file.write(f"TARGET_VENUE={venue}\n")
+              file.write(f"TARGET_RACE={race}\n")
+          PY
+
+      - name: Download Analysis and Mart
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/e2e_request.json').read_text(encoding='utf-8'))
+          subprocess.run(['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'], check=True)
+          subprocess.run(['gdown', request['mart_url'], '-O', '/tmp/jrdb_stats_mart.sqlite'], check=True)
+          PY
+
+      - name: Compile E2E modules
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_archive.py \
+            horse-racing/jrdb/src/racenote_archive_backend.py \
+            horse-racing/jrdb/src/racenote_request.py \
+            horse-racing/jrdb/src/build_racenote_archive.py \
+            horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py \
+            horse-racing/jrdb/src/racenote_history_enrichment.py
+
+      - name: Build full-month Archive and Raw cache
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/e2e/raw /tmp/e2e/month_work /tmp/e2e/month_output
+          python horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py \
+            --target-month "$TARGET_MONTH" \
+            --analysis /tmp/jrdb_analysis.sqlite \
+            --raw-dir /tmp/e2e/raw \
+            --work-dir /tmp/e2e/month_work \
+            --archive-output "/tmp/e2e/month_output/jrdb_racenote_archive_${TARGET_MONTH}_v1_0.sqlite" \
+            --converter-git-sha "$GITHUB_SHA" \
+            --source-ref "annual-raw-${TARGET_MONTH}" \
+            --fetch-missing \
+            --validation-report /tmp/e2e/month_output/archive_validation.json \
+            --summary /tmp/e2e/month_output/month_build_summary.json
+
+      - name: Run Router through Archive and Raw
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          import subprocess
+          import sys
+          import time
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/e2e_request.json').read_text(encoding='utf-8'))
+          router = Path('horse-racing/jrdb/src/racenote_request.py')
+          archive = Path(f"/tmp/e2e/month_output/jrdb_racenote_archive_{request['month']}_v1_0.sqlite")
+          common = [
+              sys.executable,
+              str(router),
+              '--date', request['date'],
+              '--venue', request['venue'],
+              '--race', str(request['race']),
+              '--today', '20260828',
+              '--analysis', '/tmp/jrdb_analysis.sqlite',
+              '--mart', '/tmp/jrdb_stats_mart.sqlite',
+              '--raw-dir', '/tmp/e2e/raw',
+              '--stats-window-years', '5',
+          ]
+
+          start = time.perf_counter()
+          subprocess.run(
+              common + [
+                  '--archive', str(archive),
+                  '--output', '/tmp/e2e/archive_request',
+              ],
+              check=True,
+          )
+          archive_seconds = time.perf_counter() - start
+
+          start = time.perf_counter()
+          subprocess.run(
+              common + [
+                  '--output', '/tmp/e2e/raw_request',
+              ],
+              check=True,
+          )
+          raw_seconds = time.perf_counter() - start
+
+          Path('/tmp/e2e/timing.json').write_text(
+              json.dumps({
+                  'archive_router_seconds': round(archive_seconds, 6),
+                  'raw_router_seconds': round(raw_seconds, 6),
+              }, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Compare final RaceNote bundles and manifests
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          import racenote_archive
+
+          request = json.loads(Path('/tmp/e2e_request.json').read_text(encoding='utf-8'))
+          timing = json.loads(Path('/tmp/e2e/timing.json').read_text(encoding='utf-8'))
+
+          filename = f"race_bundle_{request['date']}_{request['venue']}{request['race']}R.json"
+          archive_bundle_path = Path('/tmp/e2e/archive_request') / request['date'] / 'bundles' / filename
+          raw_bundle_path = Path('/tmp/e2e/raw_request') / request['date'] / 'bundles' / filename
+          if not archive_bundle_path.is_file():
+              raise SystemExit(f'Archive Router bundle missing: {archive_bundle_path}')
+          if not raw_bundle_path.is_file():
+              raise SystemExit(f'Raw Router bundle missing: {raw_bundle_path}')
+
+          archive_bundle = json.loads(archive_bundle_path.read_text(encoding='utf-8'))
+          raw_bundle = json.loads(raw_bundle_path.read_text(encoding='utf-8'))
+          archive_semantic = racenote_archive.semantic_sha256(archive_bundle)
+          raw_semantic = racenote_archive.semantic_sha256(raw_bundle)
+          semantic_match = archive_semantic == raw_semantic
+          if not semantic_match:
+              raise SystemExit(
+                  f'Final RaceNote semantic mismatch archive={archive_semantic} raw={raw_semantic}'
+              )
+
+          archive_manifest_path = Path('/tmp/e2e/archive_request') / request['date'] / 'bundles' / 'request_manifest.json'
+          raw_manifest_path = Path('/tmp/e2e/raw_request') / request['date'] / 'bundles' / 'request_manifest.json'
+          archive_manifest = json.loads(archive_manifest_path.read_text(encoding='utf-8'))
+          raw_manifest = json.loads(raw_manifest_path.read_text(encoding='utf-8'))
+
+          archive_backend = archive_manifest.get('backend_resolution', {}).get('used_backend')
+          raw_backend = raw_manifest.get('backend_resolution', {}).get('used_backend')
+          if archive_backend != 'racenote_archive':
+              raise SystemExit(f'Archive Router did not use Archive: {archive_backend}')
+          if raw_backend != 'historical_raw_cache_or_fetch':
+              raise SystemExit(f'Raw Router did not use historical Raw: {raw_backend}')
+
+          archive_resolution = archive_manifest.get('backend_resolution', {}).get('archive', {})
+          if archive_resolution.get('status') != 'used':
+              raise SystemExit(f'Archive resolution was not used: {archive_resolution}')
+
+          archive_bytes = archive_bundle_path.read_bytes()
+          raw_bytes = raw_bundle_path.read_bytes()
+          summary = {
+              'status': 'success',
+              'target_date': request['date'],
+              'venue': request['venue'],
+              'race': request['race'],
+              'archive_backend': archive_backend,
+              'raw_backend': raw_backend,
+              'archive_resolution_status': archive_resolution.get('status'),
+              'archive_publication_status': archive_resolution.get('publication_status'),
+              'archive_coverage_mode': archive_resolution.get('coverage_mode'),
+              'final_schema_version': archive_bundle.get('schema_version'),
+              'semantic_match': semantic_match,
+              'semantic_sha256': archive_semantic,
+              'archive_bundle_bytes': len(archive_bytes),
+              'raw_bundle_bytes': len(raw_bytes),
+              'archive_bundle_byte_sha256': hashlib.sha256(archive_bytes).hexdigest(),
+              'raw_bundle_byte_sha256': hashlib.sha256(raw_bytes).hexdigest(),
+              'byte_exact_match': archive_bytes == raw_bytes,
+              **timing,
+          }
+          Path('/tmp/e2e/e2e_summary.json').write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Collect artifact
+        if: always()
+        run: |
+          mkdir -p /tmp/e2e/artifact
+          cp -f /tmp/e2e/e2e_summary.json /tmp/e2e/artifact/ 2>/dev/null || true
+          cp -f /tmp/e2e/timing.json /tmp/e2e/artifact/ 2>/dev/null || true
+          cp -f /tmp/e2e/month_output/archive_validation.json /tmp/e2e/artifact/ 2>/dev/null || true
+          cp -f /tmp/e2e/month_output/month_build_summary.json /tmp/e2e/artifact/ 2>/dev/null || true
+          cp -f /tmp/e2e/archive_request/$TARGET_DATE/bundles/request_manifest.json /tmp/e2e/artifact/archive_request_manifest.json 2>/dev/null || true
+          cp -f /tmp/e2e/raw_request/$TARGET_DATE/bundles/request_manifest.json /tmp/e2e/artifact/raw_request_manifest.json 2>/dev/null || true
+          cp -f /tmp/e2e/archive_request/$TARGET_DATE/bundles/race_bundle_* /tmp/e2e/artifact/archive_final.json 2>/dev/null || true
+          cp -f /tmp/e2e/raw_request/$TARGET_DATE/bundles/race_bundle_* /tmp/e2e/artifact/raw_final.json 2>/dev/null || true
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-archive-router-e2e-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: /tmp/e2e/artifact/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary_path = Path('/tmp/e2e/e2e_summary.json')
+          if summary_path.is_file():
+              summary = json.loads(summary_path.read_text(encoding='utf-8'))
+              status = 'success'
+          else:
+              summary = {}
+              status = 'failure'
+
+          result = {
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'artifact_name': f"racenote-archive-router-e2e-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}",
+              'target_date': summary.get('target_date'),
+              'venue': summary.get('venue'),
+              'race': summary.get('race'),
+              'archive_backend': summary.get('archive_backend'),
+              'raw_backend': summary.get('raw_backend'),
+              'archive_resolution_status': summary.get('archive_resolution_status'),
+              'archive_publication_status': summary.get('archive_publication_status'),
+              'archive_coverage_mode': summary.get('archive_coverage_mode'),
+              'final_schema_version': summary.get('final_schema_version'),
+              'semantic_match': summary.get('semantic_match'),
+              'semantic_sha256': summary.get('semantic_sha256'),
+              'byte_exact_match': summary.get('byte_exact_match'),
+              'archive_router_seconds': summary.get('archive_router_seconds'),
+              'raw_router_seconds': summary.get('raw_router_seconds'),
+          }
+          Path('/tmp/e2e_result.md').write_text(
+              'RACENOTE_ARCHIVE_ROUTER_E2E_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/e2e_result.md
+
+      - name: Close E2E issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail when E2E summary is missing
+        if: always()
+        run: test -f /tmp/e2e/e2e_summary.json
