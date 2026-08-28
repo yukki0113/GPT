@@ -6,7 +6,7 @@ from pathlib import Path
 from .models import HorseRecord
 
 
-FIELDNAMES = ["date", "venue", "race_no", "horse_no", "horse_name_ocr", "eval"]
+FIELDNAMES = ["date", "venue", "race_no", "horse_no", "eval"]
 
 
 def write_csv(path: str | Path, records: list[HorseRecord]) -> None:
