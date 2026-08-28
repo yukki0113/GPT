@@ -21,3 +21,10 @@
 `gh` CLIを利用できないChat環境では、GitHub Connector + `[gpt-git-binary-read]` / `[gpt-git-binary-update]` をフォールバックとして使用する。
 
 GitHub Connectorが `.xlsx` 等の中身を直接展開できない場合でも、GitHub `main` が正本として定義されているファイルについては、ユーザーへ再添付を依頼する前にバイナリread経路を使用する。
+
+## GitHub Actions実行時間監査
+
+- job時間 / Private化時のGitHub-hosted runner分数の監査: `.gpt/GITHUB_ACTIONS_JOB_AUDIT.md`
+- CLI: `.gpt/tools/github_actions_job_audit.py`
+
+月次確認は `python .gpt/tools/github_actions_job_audit.py --month YYYY-MM` を基本とする。
