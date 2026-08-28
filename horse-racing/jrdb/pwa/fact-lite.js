@@ -695,10 +695,6 @@ function buildFactQuery() {
     "WHERE " + where.clauses.join(" AND "),
     "GROUP BY " + config.group,
     "HAVING COUNT(*) >= ?",
-    "ORDER BY " +
-      "(1.0 * SUM(CASE WHEN f.finish = 1 THEN 1 ELSE 0 END) / COUNT(*)) DESC, " +
-      "COUNT(*) DESC",
-    "LIMIT 200"
   ].filter(Boolean).join("\n");
 
   where.params.push(Math.max(1, Number(factMinStarts.value) || 1));
