@@ -1,4 +1,4 @@
-# RaceNote Request Router v0.1
+# RaceNote Request Router
 
 RaceNote生成を「過去データ取得」「当日取得」「未来取得」に分けず、1つのリクエスト契約で扱うための入口です。
 
@@ -51,9 +51,22 @@ JRDB PACI
 
 ### past
 
-JRDBの配布形態に合わせ、base backendを年境界で分けます。
+過去日は **publishableなRaceNote Archiveをpreferred base backend** とします。
 
-2026年以降の過去日は、その日付のPACIを直接取得します。PACIは事前情報パックなので、Analysis/Mart enrichment側で `as_of_exclusive = target_date` を固定すれば対象日結果や未来結果は混入しません。
+```text
+publishable full-month RaceNote Archive
+ -> base RaceNote v0.2 restore
+ -> Analysis Lite (race_date < target_date)
+ -> Stats Mart as-of aggregation
+ -> selected bundles
+ -> final RaceNote v1.0 ZIP
+```
+
+Archiveはbase v0.2だけを保存するdelivery cacheです。final v1.0はrequest時点のproduction enrichmentで毎回生成します。
+
+Archiveを解決できない、対象月が未整備、validationで拒否された、または対象scopeが存在しない場合は、従来のsafe fallbackを維持します。
+
+2026年以降の過去日:
 
 ```text
 2026+ historical date
@@ -65,7 +78,7 @@ JRDBの配布形態に合わせ、base backendを年境界で分けます。
  -> ZIP
 ```
 
-2025年以前は現段階の安全なfallbackとして年次Rawを使います。
+2025年以前:
 
 ```text
 <=2025 historical date
@@ -80,15 +93,60 @@ JRDBの配布形態に合わせ、base backendを年境界で分けます。
  -> ZIP
 ```
 
-Raw fallbackは正当性確認とArchive未整備期間の互換経路です。日常の過去RaceNote量産で恒久的にRawを毎回走査することを意図していません。
+Raw fallbackはArchive未整備期間・Archive validation失敗時の互換経路であり、Raw/Core自体は引き続き監査・再生成用のsource of truthです。
 
-将来はbase backendだけを次へ差し替えます。
+## RaceNote Archive distribution / resolution
+
+大容量Archive SQLiteはGit treeへcommitしません。
+
+固定命名:
 
 ```text
-past -> RaceNote Archive
+jrdb_racenote_archive_YYYYMM_v1_0.sqlite
 ```
 
-リクエスト契約、GPT Issue経路、Analysis/Mart enrichmentは変更しません。
+現在の配布実装では、immutableなGitHub Release assetとして配置します。
+
+Release tag:
+
+```text
+jrdb-racenote-archive-YYYYMM-v1.0
+```
+
+同じReleaseへ次のvalidation/reproducibility metadataも配置します。
+
+- `racenote_archive_manifest.json`
+- `archive_validation.json`
+- `month_build_summary.json`
+- `expected_race_index.json`
+- `source_manifest.json`
+
+`src/resolve_racenote_archive_release.py` は対象月のRelease候補をversion降順で探索し、SQLite実体をダウンロードした後に次を検証します。
+
+- SQLite `integrity_check`
+- Archive schema version / base schema version
+- `target_month`
+- `coverage_mode = full_month`
+- `publication_status = publishable`
+- `provenance_status = complete`
+- `expected_race_count == actual race_count`
+- `expected_index_sha256` が存在すること
+
+tag名だけでは採用せず、SQLite metadataを最終判定根拠にします。
+
+通常の `[RACENOTE_REQUEST]` workflowは過去日についてresolverを自動実行し、解決できた場合だけ `racenote_request.py --archive <local-path>` を渡します。resolverが `not_found` / `error` の場合もrequestは停止せず、Raw/PACI fallbackへ進みます。
+
+月次Archiveをpublishする検証済み経路:
+
+```text
+[RACENOTE_ARCHIVE_PUBLISH] <request_id>
+ -> Analysis Liteからauthoritative monthly race identityを生成
+ -> annual Rawからfull-month base v0.2を再構築
+ -> identity exact match
+ -> 360/360等のfull scan validation
+ -> publishable確認
+ -> immutable GitHub Release asset
+```
 
 ## Future leakage contract
 
@@ -99,6 +157,7 @@ past -> RaceNote Archive
 - prior years Stats: Stats Mart年次行を利用
 - 対象レース結果、対象日以降の結果は参照しない
 - Historical RawではKYIが明示するprev1-5 result keyのみをSED/SKBへJOINする
+- Archive内base v0.2も、保存時に`recent_runs`がtarget dateより前であることを検証する
 
 完成済み当年Martをそのまま過去日へ適用しません。
 
@@ -116,7 +175,9 @@ python src/racenote_request.py \
   --plan-only
 ```
 
-### Past race
+### Past race with a resolved Archive
+
+外部artifact探索はRouterの外で行い、Routerにはローカル解決済みSQLiteだけを渡します。
 
 ```bash
 python src/racenote_request.py \
@@ -125,10 +186,11 @@ python src/racenote_request.py \
   --race 11 \
   --analysis ./jrdb_analysis.sqlite \
   --mart ./jrdb_stats_mart.sqlite \
+  --archive ./jrdb_racenote_archive_202508_v1_0.sqlite \
   --output ./output
 ```
 
-2025年以前で必要な年次Rawは `fetch_jrdb_history.py` を通じて取得します。前走5走が前年へ跨る場合も、KYI result keyから必要年だけ追加取得します。2026年以降の過去日はPACIを取得します。
+`--archive` を省略した場合、またはArchiveがproduction条件を満たさない場合はsafe fallbackを利用します。
 
 ### Future / current all races
 
@@ -153,6 +215,8 @@ ZIP内:
 - selected `race_bundle_*.json`
 - `request_manifest.json`
 
+`request_manifest.json` の `backend_resolution.used_backend` で実際に利用したbase backendを確認できます。
+
 RaceNote JSONは現行の「PACI詳細 + Analysis履歴 + Stats傾向」を使用します。履歴は詳細recent_runs最大5走 + Analysis older_runs最大3走の8走上限を初期方針とします。
 
 ## GPT / GitHub Actions route
@@ -175,28 +239,37 @@ Issue bodyはraw JSON:
 }
 ```
 
-`venue` / `race` は省略可能です。
+`venue` / `race` は省略可能です。ArchiveのURL・Release tag・Raw URLを通常利用者が指定する必要はありません。
 
-GPTはIssue作成前にGoogle Driveから現行Analysis/Martを解決します。Drive file IDは再生成で変わり得るためGitへ固定しません。
+GPTはIssue作成前に現行Analysis/Martを解決します。Drive file IDは再生成で変わり得るためGitへ固定しません。
 
 Workflow:
 
 ```text
 GPT
- -> Driveでcurrent Analysis/Martを解決
+ -> current Analysis/Martを解決
  -> [RACENOTE_REQUEST] Issue
  -> GitHub Actions
- -> DB download
+ -> Analysis/Mart download
+ -> pastなら月次Archiveを自動探索・validation
  -> racenote_request.py
+      ├ Archive resolved -> racenote_archive
+      └ otherwise        -> Raw/PACI fallback
  -> artifact ZIP
  -> machine-readable Issue comment
  -> Issue close
  -> GPTがartifactを回収
 ```
 
+Issue resultには次も出します。
+
+- `archive_resolution_status`
+- `archive_tag`
+- `used_backend`
+
 ## External data / secrets
 
-GitHubへ大容量SQLite、Raw ZIP、認証情報をcommitしません。
+GitHub treeへ大容量SQLite、Raw ZIP、認証情報をcommitしません。
 
 Actionsでは以下のRepository Secretsを利用します。
 
@@ -214,14 +287,38 @@ Actionsでは以下のRepository Secretsを利用します。
 
 Workflowは実行時だけ `${{ secrets.JRDB_USER }}` / `${{ secrets.JRDB_PASSWORD }}` を環境変数へ渡します。Actionsログではsecret値が `***` にマスクされることを確認します。
 
-2026-08-26の接続試験では、Repository Secretsが両方Workflowへ供給され、JRDB PACI取得処理まで到達することを確認済みです。未提供日のPACIに対してJRDBから404が返り、認証失敗時の401/403とは区別されています。秘密値そのものはログへ出力されていません。
+Analysis/MartはIssue requestで渡されたDrive URLから一時取得し、artifactには含めません。RaceNote ArchiveはRelease assetを一時取得し、最終RaceNote artifactにはSQLite自体を含めません。
 
-Analysis/MartはIssue requestで渡されたDrive URLから一時取得し、artifactには含めません。
+## Validation status
 
-## Current limitation / next backend
+2025-08 full-month build:
 
-v0.1では、2026年以降の過去日はdaily PACI、2025年以前の過去base bundleはannual Raw fallbackを使用します。
+- race dates: 10
+- expected races: 360
+- generated bundles: 360
+- identity match: PASS
+- full scan: 360 / 360 PASS
+- coverage: `full_month`
+- publication: `publishable`
+- SQLite: 6,852,608 bytes
 
-過去RaceNoteを大量生成する運用へ入る前に、同じrequest contractのまま `RaceNote Archive` backendを追加します。Archiveはtarget-dateの事前情報を高速に取り出すための派生層であり、Raw/Coreは監査・再生成用のまま残します。
+2025-08-24 新潟11R real-data Router E2E:
 
-5レース横断PoCの結果は `docs/RaceNote_multi_race_poc_20260826.md` を参照してください。
+- Archive backend: `racenote_archive`
+- fallback backend: `historical_raw_cache_or_fetch`
+- final schema: v1.0
+- final semantic SHA-256: identical
+- semantic match: PASS
+
+通常 `[RACENOTE_REQUEST]` 自動解決試験:
+
+- Archive resolution: `resolved`
+- resolved tag: `jrdb-racenote-archive-202508-v1.0`
+- used backend: `racenote_archive`
+- task / collect: success
+
+詳細は次を参照してください。
+
+- `docs/RaceNote_archive_router_e2e_plan_20250824.md`
+- `docs/RaceNote_archive_router_e2e_status.md`
+- `docs/RaceNote_multi_race_poc_20260826.md`
