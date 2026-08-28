@@ -4,15 +4,21 @@ GitHubへ直接commit/pushできないChatGPT / Work環境から、`.xlsx` な�
 
 通常のテキストファイルは `.gpt/GIT_UPDATE_ISSUE.md` の `[gpt-git-update]` を使用してください。
 
+## External source-of-truth exception
+
+各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このプロトコルで同期しません。
+
+競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットであり、このプロトコルの更新対象として扱いません。
+
 ## 推奨操作層
 
 認証済み `gh` CLIを実行できる環境では、Base64化、分割コメント、確定コメント、完了待ちを手作業で行わず、次の共通CLIを第一選択にします。
 
 ```bash
 python .gpt/tools/gpt_git_binary_tool.py update \
-  --file "/tmp/競艇note販売運用台帳.xlsx" \
-  --path "boat-racing/ledger/競艇note販売運用台帳.xlsx" \
-  --message "chore: update boat racing ledger"
+  --file "/tmp/example-ledger.xlsx" \
+  --path "example-project/ledger/example-ledger.xlsx" \
+  --message "chore: update example ledger"
 ```
 
 詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
@@ -38,7 +44,7 @@ Issue author and payload comments must be `yukki0113`.
 ## Issue body format
 
 ```text
-target_path: boat-racing/ledger/example.xlsx
+target_path: example-project/ledger/example.xlsx
 commit_message: chore: update example ledger
 sha256: <64 hex characters>
 size_bytes: <raw file byte count>
@@ -54,12 +60,9 @@ Base64文字列を複数コメントに分割して登録できます。
 
 ```text
 [gpt-git-binary-chunk 1/3]
-```text
-<base64 chunk 1>
-```
 ```
 
-続けて `2/3`, `3/3` を登録します。チャンク番号の欠落・重複・総数不一致は拒否されます。
+続けてコードブロック内へBase64文字列を登録し、`2/3`, `3/3` と続けます。チャンク番号の欠落・重複・総数不一致は拒否されます。
 
 1コメントあたりのBase64文字列は、GitHubのコメント上限に余裕を持たせるため、おおむね48,000文字以下を推奨します。
 
@@ -101,7 +104,7 @@ Actionsはpush前に以下を検証します。
 
 ## GPT / Work rule
 
-直接GitHubへcommit/pushできず、変更対象にバイナリファイルが含まれる場合、ユーザーへ手動pushを依頼する前にこの経路を使用してください。
+直接GitHubへcommit/pushできず、変更対象にGit管理バイナリファイルが含まれる場合、ユーザーへ手動pushを依頼する前にこの経路を使用してください。
 
 認証済み `gh` CLIを実行できる場合は `.gpt/tools/gpt_git_binary_tool.py update` を使い、GPTがBase64チャンクを手作業で組み立てないでください。
 
