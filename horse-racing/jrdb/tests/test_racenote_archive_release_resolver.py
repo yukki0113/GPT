@@ -25,9 +25,9 @@ class ReleasePaginationTest(unittest.TestCase):
 
         def fake_request_json(url: str, token: str | None) -> object:
             calls.append(url)
-            if "page=1" in url:
+            if url.endswith("page=1"):
                 return first_page
-            if "page=2" in url:
+            if url.endswith("page=2"):
                 return second_page
             self.fail(f"unexpected URL: {url}")
 
