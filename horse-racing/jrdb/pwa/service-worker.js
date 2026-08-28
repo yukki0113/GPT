@@ -1,14 +1,14 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v13";
+const CACHE_NAME = "jrdb-pwa-shell-v14";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./fact-lite.html",
   "./style.css",
   "./app.js",
-  "./fact-lite.js",
-  "./fact-lite-sort.js",
+  "./fact-lite.js?v=14",
+  "./fact-lite-sort.js?v=14",
   "./manifest.webmanifest",
   "./vendor/sql-wasm.js",
   "./vendor/sql-wasm.wasm"
