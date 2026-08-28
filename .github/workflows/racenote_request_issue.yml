@@ -140,6 +140,59 @@ jobs:
               subprocess.run(['gdown', url, '-O', str(destination)], check=True)
           PY
 
+      - name: Resolve publishable monthly Archive
+        id: archive
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import sys
+          from datetime import date, datetime
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
+          target_date = datetime.strptime(request['date'], '%Y%m%d').date()
+          result_path = Path('/tmp/archive_resolution.json')
+
+          if target_date >= date.today():
+              result = {
+                  'status': 'skipped_non_past',
+                  'target_month': request['date'][:6],
+                  'archive_path': None,
+              }
+              result_path.write_text(
+                  json.dumps(result, ensure_ascii=False, indent=2) + '\n',
+                  encoding='utf-8',
+              )
+              raise SystemExit(0)
+
+          command = [
+              sys.executable,
+              'horse-racing/jrdb/src/resolve_racenote_archive_release.py',
+              '--repo', os.environ['GITHUB_REPOSITORY'],
+              '--target-month', request['date'][:6],
+              '--output-dir', str(Path(request['output_dir']) / 'archive_cache'),
+              '--result-json', str(result_path),
+          ]
+          completed = subprocess.run(command, check=False)
+          if not result_path.is_file():
+              result = {
+                  'status': 'error',
+                  'target_month': request['date'][:6],
+                  'archive_path': None,
+                  'resolver_exit_code': completed.returncode,
+                  'error': 'resolver did not produce a result file',
+              }
+              result_path.write_text(
+                  json.dumps(result, ensure_ascii=False, indent=2) + '\n',
+                  encoding='utf-8',
+              )
+          PY
+
       - name: Run RaceNote request
         id: task
         continue-on-error: true
@@ -167,6 +220,16 @@ jobs:
               command.extend(['--venue', request['venue']])
           if request['race'] is not None:
               command.extend(['--race', str(request['race'])])
+
+          archive_result_path = Path('/tmp/archive_resolution.json')
+          if archive_result_path.is_file():
+              archive_result = json.loads(archive_result_path.read_text(encoding='utf-8'))
+              archive_path_value = archive_result.get('archive_path')
+              if archive_result.get('status') == 'resolved' and archive_path_value:
+                  archive_path = Path(archive_path_value)
+                  if archive_path.is_file():
+                      command.extend(['--archive', str(archive_path)])
+
           completed = subprocess.run(command, check=False)
           raise SystemExit(completed.returncode)
           PY
@@ -188,16 +251,32 @@ jobs:
 
           request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
           root = Path(request['output_dir'])
+          artifact_dir = root / 'artifact'
           zips = sorted(root.rglob('RaceNote_*.zip'))
           if not zips:
               raise SystemExit('RaceNote ZIP not found')
           for path in zips:
-              shutil.copy2(path, root / 'artifact' / path.name)
+              shutil.copy2(path, artifact_dir / path.name)
+
           safe_request = dict(request)
           safe_request.pop('raw_urls', None)
-          Path(root / 'artifact' / 'resolved_request.json').write_text(
+          Path(artifact_dir / 'resolved_request.json').write_text(
               json.dumps(safe_request, ensure_ascii=False, indent=2), encoding='utf-8'
           )
+
+          archive_result_path = Path('/tmp/archive_resolution.json')
+          if archive_result_path.is_file():
+              shutil.copy2(archive_result_path, artifact_dir / 'archive_resolution.json')
+
+          manifests = sorted(root.rglob('request_manifest.json'))
+          if manifests:
+              manifest = json.loads(manifests[0].read_text(encoding='utf-8'))
+              shutil.copy2(manifests[0], artifact_dir / 'request_manifest.json')
+              backend = manifest.get('backend_resolution', {})
+              Path('/tmp/backend_resolution_summary.json').write_text(
+                  json.dumps(backend, ensure_ascii=False, indent=2) + '\n',
+                  encoding='utf-8',
+              )
           PY
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
@@ -229,14 +308,29 @@ jobs:
           collect_exit = os.environ.get('COLLECT_EXIT', '')
           status = 'success' if task_exit == '0' and collect_exit == '0' else 'failure'
           artifact_name = f"racenote-{request['request_id']}-{os.environ['GITHUB_RUN_ID']}"
+
+          archive_resolution = {}
+          archive_path = Path('/tmp/archive_resolution.json')
+          if archive_path.is_file():
+              archive_resolution = json.loads(archive_path.read_text(encoding='utf-8'))
+
+          backend_resolution = {}
+          backend_path = Path('/tmp/backend_resolution_summary.json')
+          if backend_path.is_file():
+              backend_resolution = json.loads(backend_path.read_text(encoding='utf-8'))
+
           result = {
               'request_id': request['request_id'],
               'status': status,
               'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
               'artifact_name': artifact_name,
               'target_date': request['date'],
               'venue': request['venue'],
               'race': request['race'],
+              'archive_resolution_status': archive_resolution.get('status'),
+              'archive_tag': archive_resolution.get('tag_name'),
+              'used_backend': backend_resolution.get('used_backend'),
               'task_exit_code': task_exit,
               'collect_exit_code': collect_exit,
           }
