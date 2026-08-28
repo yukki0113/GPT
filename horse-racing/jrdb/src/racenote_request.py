@@ -438,6 +438,7 @@ def main() -> int:
     args = parse_args()
     request = normalize_request(args)
     plan = build_plan(request)
+    plan["archive_candidate_supplied"] = args.archive is not None
     print(json.dumps(plan, ensure_ascii=False, indent=2))
     if args.plan_only:
         return 0
@@ -450,19 +451,64 @@ def main() -> int:
     final_dir.mkdir(parents=True, exist_ok=True)
 
     reconstruction: dict | None = None
-    use_annual_raw = request.temporal_mode == "past" and request.target_date.year <= 2025
-    if use_annual_raw:
-        raw_dir = args.raw_dir if args.raw_dir is not None else request_root / "raw_cache"
-        ensure_historical_raw(request.target_date.year, raw_dir, args.force_fetch, ["BAC", "KYI", "CHA", "CYB"])
-        paci_path = request_root / f"PACI_REBUILT_{request.compact_date}.zip"
-        reconstruction = build_historical_paci(raw_dir, request, args.analysis, paci_path, args.force_fetch)
-    else:
-        paci_path = fetch_paci(request, request_root, args.force_fetch)
+    base_dir, archive_resolution = try_archive_base(
+        args.archive,
+        request,
+        work_dir / "archive_base",
+    )
 
-    base_dir = convert_base(paci_path, request, work_dir)
+    if base_dir is not None:
+        plan["base_backend"] = "racenote_archive"
+    else:
+        use_annual_raw = (
+            request.temporal_mode == "past"
+            and request.target_date.year <= 2025
+        )
+        if use_annual_raw:
+            raw_dir = args.raw_dir if args.raw_dir is not None else request_root / "raw_cache"
+            ensure_historical_raw(
+                request.target_date.year,
+                raw_dir,
+                args.force_fetch,
+                ["BAC", "KYI", "CHA", "CYB"],
+            )
+            paci_path = request_root / f"PACI_REBUILT_{request.compact_date}.zip"
+            reconstruction = build_historical_paci(
+                raw_dir,
+                request,
+                args.analysis,
+                paci_path,
+                args.force_fetch,
+            )
+            plan["base_backend"] = "historical_raw_cache_or_fetch"
+        else:
+            paci_path = fetch_paci(request, request_root, args.force_fetch)
+            plan["base_backend"] = "paci"
+        base_dir = convert_base(paci_path, request, work_dir)
+
+    backend_resolution = {
+        "used_backend": plan["base_backend"],
+        "archive": archive_resolution,
+    }
     selected = select_bundles(base_dir, request)
-    generated = [enrich_bundle(bundle, args.analysis, args.mart, final_dir, args.stats_window_years) for bundle in selected]
-    zip_path = package_output(final_dir, request, generated, plan, reconstruction)
+    generated = [
+        enrich_bundle(
+            bundle,
+            args.analysis,
+            args.mart,
+            final_dir,
+            args.stats_window_years,
+        )
+        for bundle in selected
+    ]
+    zip_path = package_output(
+        final_dir,
+        request,
+        generated,
+        plan,
+        reconstruction,
+        backend_resolution,
+    )
     print(json.dumps({"status": "success", "zip": str(zip_path), "bundle_count": len(generated)}, ensure_ascii=False))
     return 0
 
