@@ -8,9 +8,14 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 
 画像、OCR途中成果物、日次CSV、ログ等の運用成果物はGit管理対象外です。
 
-継続台帳 `Eval表集計・検証.xlsx` は **Google Drive `GPT/ledger/Eval表集計・検証.xlsx` を正本** とします。Chat / Workで台帳を参照・更新する場合はDrive上の正本を取得し、更新後も同一Driveファイルへ反映してください。
+継続台帳は **ネイティブGoogleスプレッドシート `Eval表集計・検証`** を正本とします。
 
-GitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` に同名ファイルが残っている場合、それはDrive移行前の旧スナップショットです。以後の台帳参照・更新に使用せず、GitHubバイナリread/update経路で同期しません。
+- Spreadsheet ID: `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`
+- URL: `https://docs.google.com/spreadsheets/d/1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0/edit`
+
+Chat / Workで台帳を参照・更新する場合は、Google Drive / Google Sheetsのネイティブスプレッドシート操作を使ってこのSpreadsheet IDへ直接アクセスしてください。Excelへ書き出して再アップロードする運用は行いません。
+
+旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットです。以後の台帳参照・更新には使用せず、GitHubバイナリread/update経路でも同期しません。
 
 ## Current tools
 
@@ -144,4 +149,4 @@ Issue作成をトリガーにGitHub Actionsが起動し、Git正本のPythonと 
 
 日常運用ではChat専用Issue経路を優先します。
 
-日次画像、CSV、検証レポート、実行ログ等はGitへcommitしません。台帳更新時はGoogle Drive `GPT/ledger/Eval表集計・検証.xlsx` の正本を取得・更新し、GitHub上の旧台帳ファイルへは反映しません。
+日次画像、CSV、検証レポート、実行ログ等はGitへcommitしません。台帳参照・更新はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）へ直接行い、旧Drive Excel版やGitHub上の旧台帳ファイルへは反映しません。
