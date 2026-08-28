@@ -3,7 +3,7 @@
 1. READMEと対象ツールのdocsを確認。
 2. 公式サイト側の変更に注意し、既存CSV互換性を維持する。
 3. 改修後は実日付または保存済みfixtureで回帰確認。
-4. キャッシュ、日次成果物、ログ、継続台帳はcommitしない。継続台帳 `競艇note販売運用台帳.xlsx` はGoogle Drive `GPT/ledger/競艇note販売運用台帳.xlsx` を正本とする。
+4. キャッシュ、日次成果物、ログ、継続台帳はcommitしない。継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳` を正本とする。
 5. Pythonと対応READMEを同時に更新してcommitする。
 
 ## Chatでの日次取得実行
@@ -20,10 +20,14 @@
 - `.github/workflows/boatrace_racelist_manual.yml` は手動フォールバックとして残すが、Chatからの日常実行ではIssue経由を優先する。
 - 日次成果物はGitへcommitしない。
 
-## Google Drive台帳正本の更新・取得
+## Google Sheets台帳正本の更新・取得
 
-- 継続台帳 `競艇note販売運用台帳.xlsx` はGoogle Drive `GPT/ledger/競艇note販売運用台帳.xlsx` を正本とする。
-- Chat / Workで台帳を解析する場合はDrive上の正本を取得し、更新時は同一Driveファイルへ反映する。
-- GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` に同名ファイルが残っていてもDrive移行前の旧スナップショットとして扱い、通常運用では参照・更新しない。
+- 継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳` とする。
+- Spreadsheet ID: `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`
+- URL: `https://docs.google.com/spreadsheets/d/1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM/edit`
+- タイムゾーンは `Asia/Tokyo` とする。
+- Chat / Workで台帳を解析する場合はGoogle Sheets API / Google Drive Connectorで正本を直接参照する。
+- 更新時は同一ネイティブGoogleスプレッドシートへ直接反映し、必要なキー照合・既存データ不変確認・数式エラー確認を行う。
+- Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` と GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットとして扱い、通常運用では参照・更新しない。
 - `.gpt/tools/gpt_git_binary_tool.py`、`[gpt-git-binary-read]`、`[gpt-git-binary-update]` はGit管理バイナリ用の共通補助経路として残すが、この台帳の同期には使用しない。
-- Drive上の正本へアクセスできない場合はGitHub旧スナップショットを最新と推定せず、正本取得不能として扱う。
+- Googleスプレッドシート正本へアクセスできない場合は、旧Excelを最新と推定せず正本取得不能として扱う。
