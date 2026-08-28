@@ -24,6 +24,7 @@ base.FETCH_HISTORY = HERE / "fetch_jrdb_history_retry.py"
 REPAIR_PATHS: list[Path] = []
 REPAIR_DATES: list[str] = []
 ORIGINAL_SOURCE_MANIFEST_ROWS = base.source_manifest_rows
+ORIGINAL_BUILD = base.build
 
 
 def daily_zip(raw_dir: Path, kind: str, race_date: str) -> Path:
@@ -214,10 +215,27 @@ def source_manifest_rows(
     return rows
 
 
+def build(args):
+    """Delegate to the canonical build and persist daily-repair audit fields."""
+    summary = ORIGINAL_BUILD(args)
+    summary["target_daily_repair_dates"] = sorted(set(REPAIR_DATES))
+    summary["target_daily_repair_file_count"] = len(REPAIR_PATHS)
+
+    summary_path = args.summary or (args.work_dir / "month_build_summary.json")
+    persisted = dict(summary)
+    persisted.pop("summary_path", None)
+    summary_path.write_text(
+        base.json.dumps(persisted, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return summary
+
+
 def main() -> int:
     """Install the compatibility hooks and delegate to the canonical CLI."""
     base.extract_target_base_records = extract_target_base_records
     base.source_manifest_rows = source_manifest_rows
+    base.build = build
     return base.main()
 
 
