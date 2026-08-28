@@ -1,0 +1,119 @@
+name: racenote-archive-resolver-test-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  test:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_RESOLVE_TEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse month
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          month = str(request.get('month', '')).strip()
+          if not re.fullmatch(r'\d{6}', month):
+              raise SystemExit('month must be YYYYMM')
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'TARGET_MONTH={month}\n')
+          PY
+
+      - name: Resolve Archive
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python \
+            horse-racing/jrdb/src/resolve_racenote_archive_release.py \
+            --repo "${{ github.repository }}" \
+            --target-month "$TARGET_MONTH" \
+            --output-dir /tmp/archive_resolver \
+            --result-json /tmp/archive_resolution.json
+
+      - name: Verify resolved contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          result = json.loads(Path('/tmp/archive_resolution.json').read_text(encoding='utf-8'))
+          if result.get('status') != 'resolved':
+              raise SystemExit(f"Archive not resolved: {result}")
+          validation = result.get('validation', {})
+          if validation.get('coverage_mode') != 'full_month':
+              raise SystemExit('coverage_mode mismatch')
+          if validation.get('publication_status') != 'publishable':
+              raise SystemExit('publication_status mismatch')
+          if validation.get('provenance_status') != 'complete':
+              raise SystemExit('provenance_status mismatch')
+          if not Path(result['archive_path']).is_file():
+              raise SystemExit('resolved archive file missing')
+          PY
+
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-archive-resolver-test-${{ github.run_id }}
+          path: /tmp/archive_resolution.json
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/archive_resolution.json')
+          result = json.loads(path.read_text(encoding='utf-8')) if path.is_file() else {}
+          comment = {
+              'status': result.get('status', 'failure'),
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'target_month': result.get('target_month'),
+              'tag_name': result.get('tag_name'),
+              'asset_name': result.get('asset_name'),
+              'archive_sha256': result.get('archive_sha256'),
+              'coverage_mode': result.get('validation', {}).get('coverage_mode'),
+              'publication_status': result.get('validation', {}).get('publication_status'),
+              'race_count': result.get('validation', {}).get('race_count'),
+          }
+          Path('/tmp/resolver_result.md').write_text(
+              'RACENOTE_ARCHIVE_RESOLVE_TEST_RESULT\n```json\n'
+              + json.dumps(comment, ensure_ascii=False, indent=2)
+              + '\n```\n', encoding='utf-8'
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/resolver_result.md
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
