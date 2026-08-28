@@ -1,0 +1,281 @@
+name: racenote-archive-publish-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  PREFIX: '[RACENOTE_ARCHIVE_PUBLISH]'
+
+jobs:
+  publish:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_PUBLISH]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = os.environ['PREFIX']
+          request_id = os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          target_month = str(request.get('month', '')).strip()
+          if not re.fullmatch(r'\d{6}', target_month):
+              raise SystemExit('month must be YYYYMM')
+          datetime.strptime(target_month, '%Y%m')
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+
+          archive_version = str(request.get('archive_version', '1.0')).strip()
+          if not re.fullmatch(r'\d+\.\d+', archive_version):
+              raise SystemExit('archive_version must be major.minor')
+
+          resolved = {
+              'request_id': request_id,
+              'month': target_month,
+              'analysis_url': analysis_url,
+              'archive_version': archive_version,
+          }
+          Path('/tmp/archive_publish_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          version_file = archive_version.replace('.', '_')
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'TARGET_MONTH={target_month}\n')
+              file.write(f'ARCHIVE_VERSION={archive_version}\n')
+              file.write(f'ARCHIVE_VERSION_FILE={version_file}\n')
+              file.write(f'RELEASE_TAG=jrdb-racenote-archive-{target_month}-v{archive_version}\n')
+              file.write(f'ARCHIVE_NAME=jrdb_racenote_archive_{target_month}_v{version_file}.sqlite\n')
+          PY
+
+      - name: Download Analysis Lite
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/archive_publish_request.json').read_text(encoding='utf-8'))
+          subprocess.run(
+              ['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'],
+              check=True,
+          )
+          PY
+
+      - name: Refuse existing immutable release tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release tag already exists and is immutable: $RELEASE_TAG" >&2
+            exit 1
+          fi
+
+      - name: Build publishable full-month Archive
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/archive_publish/raw /tmp/archive_publish/work /tmp/archive_publish/output
+          python horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py \
+            --target-month "$TARGET_MONTH" \
+            --analysis /tmp/jrdb_analysis.sqlite \
+            --raw-dir /tmp/archive_publish/raw \
+            --work-dir /tmp/archive_publish/work \
+            --archive-output "/tmp/archive_publish/output/$ARCHIVE_NAME" \
+            --converter-git-sha "$GITHUB_SHA" \
+            --source-ref "annual-raw-${TARGET_MONTH}" \
+            --fetch-missing \
+            --validation-report /tmp/archive_publish/output/archive_validation.json \
+            --summary /tmp/archive_publish/output/month_build_summary.json
+
+      - name: Verify publication contract and build external manifest
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          import racenote_archive
+
+          output_dir = Path('/tmp/archive_publish/output')
+          archive_path = output_dir / os.environ['ARCHIVE_NAME']
+          summary = json.loads((output_dir / 'month_build_summary.json').read_text(encoding='utf-8'))
+          validation = json.loads((output_dir / 'archive_validation.json').read_text(encoding='utf-8'))
+
+          if summary.get('coverage_mode') != 'full_month':
+              raise SystemExit('coverage_mode is not full_month')
+          if summary.get('publication_status') != 'publishable':
+              raise SystemExit('publication_status is not publishable')
+          if not summary.get('publishable'):
+              raise SystemExit('publishable flag is false')
+          if not summary.get('identity_match'):
+              raise SystemExit('identity_match is false')
+          if summary.get('generated_bundle_count') != summary.get('expected_race_count'):
+              raise SystemExit('generated/expected race count mismatch')
+          if validation.get('status') != 'PASS':
+              raise SystemExit('archive validation is not PASS')
+
+          connection = racenote_archive.open_archive(archive_path)
+          try:
+              runtime_validation = racenote_archive.validate_archive(connection, full_scan=True)
+              metadata = racenote_archive.get_meta(connection)
+          finally:
+              connection.close()
+
+          digest = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+          manifest = {
+              'manifest_version': '1.0',
+              'artifact_type': 'racenote_archive',
+              'target_month': os.environ['TARGET_MONTH'],
+              'release_tag': os.environ['RELEASE_TAG'],
+              'archive_name': os.environ['ARCHIVE_NAME'],
+              'archive_sha256': digest,
+              'archive_bytes': archive_path.stat().st_size,
+              'archive_schema_version': metadata.get('archive_schema_version'),
+              'base_schema_version': metadata.get('base_schema_version'),
+              'coverage_mode': metadata.get('coverage_mode'),
+              'publication_status': metadata.get('publication_status'),
+              'provenance_status': metadata.get('provenance_status'),
+              'race_count': runtime_validation.get('race_count'),
+              'expected_race_count': int(metadata['expected_race_count']),
+              'expected_index_sha256': metadata.get('expected_index_sha256'),
+              'converter_git_sha': metadata.get('converter_git_sha'),
+              'full_scan_verified_bundle_count': runtime_validation.get('verified_bundle_count'),
+              'published_from_git_sha': os.environ['GITHUB_SHA'],
+              'published_at': datetime.now(timezone.utc).isoformat(),
+          }
+          (output_dir / 'racenote_archive_manifest.json').write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Collect reproducibility metadata
+        run: |
+          cp -f /tmp/archive_publish/work/expected_race_index.json /tmp/archive_publish/output/expected_race_index.json
+          cp -f /tmp/archive_publish/work/source_manifest.json /tmp/archive_publish/output/source_manifest.json
+
+      - name: Publish immutable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > /tmp/release_notes.md <<EOF
+          RaceNote Archive monthly shard
+
+          - target_month: $TARGET_MONTH
+          - archive_schema_version: $ARCHIVE_VERSION
+          - coverage: full_month
+          - publication_status: publishable
+          - source: annual Raw reconstruction
+          - converter_git_sha: $GITHUB_SHA
+
+          The SQLite shard is a delivery cache for base RaceNote v0.2 only.
+          Raw/Core remain the audit and rebuild source of truth.
+          EOF
+
+          gh release create "$RELEASE_TAG" \
+            --repo "${{ github.repository }}" \
+            --title "RaceNote Archive $TARGET_MONTH v$ARCHIVE_VERSION" \
+            --notes-file /tmp/release_notes.md \
+            "/tmp/archive_publish/output/$ARCHIVE_NAME" \
+            /tmp/archive_publish/output/racenote_archive_manifest.json \
+            /tmp/archive_publish/output/archive_validation.json \
+            /tmp/archive_publish/output/month_build_summary.json \
+            /tmp/archive_publish/output/expected_race_index.json \
+            /tmp/archive_publish/output/source_manifest.json
+
+      - name: Upload workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-archive-publish-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: /tmp/archive_publish/output/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          manifest_path = Path('/tmp/archive_publish/output/racenote_archive_manifest.json')
+          if manifest_path.is_file():
+              manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+              status = 'success'
+          else:
+              manifest = {}
+              status = 'failure'
+
+          result = {
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'release_tag': os.environ['RELEASE_TAG'],
+              'archive_name': os.environ['ARCHIVE_NAME'],
+              'target_month': manifest.get('target_month'),
+              'archive_sha256': manifest.get('archive_sha256'),
+              'archive_bytes': manifest.get('archive_bytes'),
+              'race_count': manifest.get('race_count'),
+              'coverage_mode': manifest.get('coverage_mode'),
+              'publication_status': manifest.get('publication_status'),
+              'full_scan_verified_bundle_count': manifest.get('full_scan_verified_bundle_count'),
+          }
+          Path('/tmp/archive_publish_result.md').write_text(
+              'RACENOTE_ARCHIVE_PUBLISH_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/archive_publish_result.md
+
+      - name: Close publish issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
