@@ -52,7 +52,9 @@
 
 ## 共通
 
-32. 継続台帳 `Eval表集計・検証.xlsx` はGoogle Drive `GPT/ledger/Eval表集計・検証.xlsx` を正本とする。台帳参照時はDrive上の正本を取得し、更新時は同一Driveファイルへ反映する。
-33. GitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` に同名ファイルが残っていてもDrive移行前の旧スナップショットとして扱う。通常運用では `.gpt/tools/gpt_git_binary_tool.py`、`[gpt-git-binary-read]`、`[gpt-git-binary-update]` を台帳同期目的に使用しない。
-34. Drive上の正本へアクセスできない場合はGitHub旧スナップショットを最新と推定せず、正本取得不能として扱う。画像、日次CSV、検証レポート、ログ等の運用成果物も引き続きcommitしない。
-35. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
+32. 継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）とする。参照・更新はGoogle Drive / Google Sheetsのネイティブスプレッドシート操作で同一Spreadsheet IDへ直接行う。
+33. 旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットとして扱う。通常運用では `.gpt/tools/gpt_git_binary_tool.py`、`[gpt-git-binary-read]`、`[gpt-git-binary-update]` をEval台帳同期目的に使用しない。
+34. ネイティブGoogleスプレッドシート正本へアクセスできない場合は、旧Drive Excel版やGitHub旧スナップショットを最新と推定せず、正本取得不能として扱う。
+35. 台帳更新時は必要範囲だけをGoogle Sheets上で更新し、数式・書式・既存集計を維持する。Excel書き出し→再アップロードを通常更新経路にしない。
+36. 画像、日次CSV、検証レポート、ログ等の運用成果物は引き続きcommitしない。
+37. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
