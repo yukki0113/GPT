@@ -27,7 +27,6 @@ class HorseRecord:
     venue: str
     race_no: int
     horse_no: int
-    horse_name_ocr: str
     eval: Optional[int]
 
     def to_dict(self) -> dict:
