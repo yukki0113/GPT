@@ -10,7 +10,12 @@ Python、README、作業手順、依存関係、GitHub Actions WorkflowはGitHub
 
 Eval画像、OCR途中成果物、日次取得CSV、検証レポート、ログ等の運用成果物はGit外を正本とします。
 
-継続台帳 `Eval表集計・検証.xlsx` はGoogle Drive `GPT/ledger/Eval表集計・検証.xlsx` を正本とします。GitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` に残る同名ファイルはDrive移行前の旧スナップショットであり、最新台帳として扱いません。
+継続台帳はネイティブGoogleスプレッドシート `Eval表集計・検証` を正本とします。
+
+- Spreadsheet ID: `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`
+- URL: `https://docs.google.com/spreadsheets/d/1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0/edit`
+
+Chat / WorkではGoogle Drive / Google Sheetsのネイティブ操作でこのSpreadsheet IDを直接参照・更新します。旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）とGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットであり、最新台帳として扱いません。
 
 ## Eval表画像取得
 
