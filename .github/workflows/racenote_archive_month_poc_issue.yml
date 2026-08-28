@@ -1,0 +1,240 @@
+name: racenote-archive-month-poc-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  poc:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_MONTH_POC]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = '[RACENOTE_ARCHIVE_MONTH_POC]'
+          request_id = os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          target_month = str(request.get('month', '')).strip()
+          if not re.fullmatch(r'\d{6}', target_month):
+              raise SystemExit('month must be YYYYMM')
+          datetime.strptime(target_month, '%Y%m')
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+
+          resolved = {
+              'request_id': request_id,
+              'month': target_month,
+              'analysis_url': analysis_url,
+          }
+          Path('/tmp/archive_month_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f"REQUEST_ID={request_id}\n")
+              file.write(f"TARGET_MONTH={target_month}\n")
+          PY
+
+      - name: Download Analysis Lite
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/archive_month_request.json').read_text(encoding='utf-8'))
+          subprocess.run(
+              ['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'],
+              check=True,
+          )
+          PY
+
+      - name: Compile monthly Archive modules
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_archive.py \
+            horse-racing/jrdb/src/racenote_jrdb.py \
+            horse-racing/jrdb/src/fetch_jrdb_history.py \
+            horse-racing/jrdb/src/build_racenote_archive.py \
+            horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py \
+            horse-racing/jrdb/src/racenote_archive_backend.py
+
+      - name: Build full-month Archive
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/archive_month/raw /tmp/archive_month/work /tmp/archive_month/output
+          python horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py \
+            --target-month "$TARGET_MONTH" \
+            --analysis /tmp/jrdb_analysis.sqlite \
+            --raw-dir /tmp/archive_month/raw \
+            --work-dir /tmp/archive_month/work \
+            --archive-output "/tmp/archive_month/output/jrdb_racenote_archive_${TARGET_MONTH}_v1_0.sqlite" \
+            --converter-git-sha "$GITHUB_SHA" \
+            --source-ref "annual-raw-${TARGET_MONTH}" \
+            --fetch-missing \
+            --validation-report /tmp/archive_month/output/archive_validation.json \
+            --summary /tmp/archive_month/output/month_build_summary.json
+
+      - name: Verify production backend accepts shard
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          import sqlite3
+          from pathlib import Path
+
+          import racenote_archive_backend
+
+          summary = json.loads(
+              Path('/tmp/archive_month/output/month_build_summary.json').read_text(encoding='utf-8')
+          )
+          archive_path = Path(
+              f"/tmp/archive_month/output/jrdb_racenote_archive_{summary['target_month']}_v1_0.sqlite"
+          )
+
+          connection = sqlite3.connect(archive_path)
+          try:
+              first = connection.execute(
+                  'SELECT race_date, venue, race_no FROM race_bundle '
+                  'ORDER BY race_date, venue_code, race_no LIMIT 1'
+              ).fetchone()
+          finally:
+              connection.close()
+          if first is None:
+              raise SystemExit('Archive has no race rows')
+
+          output_dir, report = racenote_archive_backend.materialize(
+              archive_path,
+              first[0],
+              first[1],
+              int(first[2]),
+              Path('/tmp/archive_month/backend_probe'),
+          )
+          if report.get('publication_status') != 'publishable':
+              raise SystemExit('production backend did not accept publishable shard')
+          probe = {
+              'race_date': first[0],
+              'venue': first[1],
+              'race_no': int(first[2]),
+              'bundle_count': report['bundle_count'],
+              'coverage_mode': report['coverage_mode'],
+              'publication_status': report['publication_status'],
+              'output_dir': str(output_dir),
+          }
+          Path('/tmp/archive_month/output/backend_probe.json').write_text(
+              json.dumps(probe, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Collect reproducibility metadata
+        run: |
+          cp -f /tmp/archive_month/work/expected_race_index.json /tmp/archive_month/output/expected_race_index.json
+          cp -f /tmp/archive_month/work/source_manifest.json /tmp/archive_month/output/source_manifest.json
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-archive-month-poc-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: /tmp/archive_month/output/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary_path = Path('/tmp/archive_month/output/month_build_summary.json')
+          if summary_path.is_file():
+              summary = json.loads(summary_path.read_text(encoding='utf-8'))
+              status = 'success'
+          else:
+              summary = {}
+              status = 'failure'
+
+          result = {
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'artifact_name': (
+                  f"racenote-archive-month-poc-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'target_month': summary.get('target_month'),
+              'race_date_count': summary.get('race_date_count'),
+              'expected_race_count': summary.get('expected_race_count'),
+              'generated_bundle_count': summary.get('generated_bundle_count'),
+              'archive_bytes': summary.get('archive_bytes'),
+              'compression_ratio': summary.get('compression_ratio'),
+              'coverage_mode': summary.get('coverage_mode'),
+              'publication_status': summary.get('publication_status'),
+              'publishable': summary.get('publishable'),
+              'identity_match': summary.get('identity_match'),
+              'verified_bundle_count': summary.get('verified_bundle_count'),
+              'previous_result_key_count': summary.get('previous_result_key_count'),
+              'zed_unmatched_key_count': summary.get('zed_unmatched_key_count'),
+              'zkb_unmatched_key_count': summary.get('zkb_unmatched_key_count'),
+              'elapsed_seconds': summary.get('elapsed_seconds'),
+          }
+          Path('/tmp/archive_month_result.md').write_text(
+              'RACENOTE_ARCHIVE_MONTH_POC_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/archive_month_result.md
+
+      - name: Close PoC issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail when summary is missing
+        if: always()
+        run: test -f /tmp/archive_month/output/month_build_summary.json
