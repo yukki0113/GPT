@@ -87,6 +87,36 @@ OCR workflowは取得artifact内の `resolved_request.json` を読み、各日�
 
 OS側依存としてGitHub Actionsでは `tesseract-ocr` と `tesseract-ocr-jpn` をインストールします。日本語データは会場名ヘッダーOCRに必要です。Python依存は `horse-racing/eval/requirements.txt` を使用します。
 
+## Chatで画像から完成CSVを作る標準経路
+
+ユーザーがChatへEval表画像または画像ZIPを直接渡して「CSV化」を依頼した場合、ユーザー向けの標準成果物は5列OCR CSVではなく、JRDB PACI事前情報まで付与した完成CSVとします。ユーザーはPACI ZIPを別途用意する必要はありません。
+
+```text
+ユーザー画像
+  -> GitHub mainのEval OCRロジックで5列CSV化
+  -> [EVAL_PACI_ENRICH_REQUEST] Issue
+  -> Actionsが対象日のPACIyymmdd.zipを取得
+  -> enrich_eval_csv_with_paci.py
+  -> JRDB事前情報付き完成CSV
+  -> Chatがartifactを回収して返却
+```
+
+Chatへ直接渡された画像はGitHubへ永続化せず、Chat実行環境でOCRします。GitHub Actionsへ渡すのはOCR後の5列CSVをgzip+Base64化したテキストpayloadだけです。これにより、ユーザー画像をGitHub Issueへ貼り付ける必要がありません。
+
+PACI enrichment用Issueの契約は次です。
+
+- Workflow: `.github/workflows/eval_paci_enrich_chat.yml`
+- タイトル: `[EVAL_PACI_ENRICH_REQUEST] <request_id>`
+- 本文JSON: `eval_csv_gzip_b64`、任意 `output_name`、任意 `fail_on_unmatched`
+- `fail_on_unmatched` は既定 `true`
+- 複数日のOCR CSVも受け付け、日付ごとにPACIを取得して最後に1本へ結合する
+- 完了コメント: `EVAL_PACI_ENRICH_RESULT`
+- artifact: 完成CSV、元5列OCR CSV、batch audit、日付別audit/log
+
+正常完了の確認では、少なくとも `joined_horses == input_rows`、`unmatched_horses == 0`、`duplicate_keys == 0` を確認します。`race_headcount_mismatches` は監査指標として必ず確認し、0でない場合は完成CSVと併せてユーザーへ明示します。
+
+このChat標準経路では、OCR 5列CSVは内部中間成果物として扱い、通常はJRDB情報付き完成CSVを最終返却物とします。OCRのみを明示的に依頼された場合は5列CSVで止めても構いません。
+
 ## JRA結果取得の標準実行経路
 
 Chatからの依頼では `.github/workflows/jra_results_chat.yml` を標準経路とします。
