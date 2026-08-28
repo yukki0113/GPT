@@ -24,8 +24,8 @@ GitHub `main` 上のバイナリを実ファイルとしてローカルへ取得
 
 ```bash
 python .gpt/tools/gpt_git_binary_tool.py read \
-  --path "horse-racing/eval/ledger/Eval表集計・検証.xlsx" \
-  --output "/tmp/Eval表集計・検証.xlsx"
+  --path "example-project/ledger/example-ledger.xlsx" \
+  --output "/tmp/example-ledger.xlsx"
 ```
 
 内部では以下を自動実行します。
@@ -69,7 +69,8 @@ Issue / Actions側のXLSX構造検証、gitignore、保護パス等の既存ル�
 
 各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このツールの対象外です。
 
-競艇継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）が正本です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このCLIで同期・取得しません。
+- Eval継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）です。旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットなので、このCLIで同期・取得しません。
+- 競艇継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）が正本です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このCLIで同期・取得しません。
 
 ## Output
 
@@ -82,8 +83,8 @@ Read例:
   "status": "success",
   "operation": "read",
   "repository": "yukki0113/GPT",
-  "repository_path": "horse-racing/eval/ledger/Eval表集計・検証.xlsx",
-  "local_path": "/tmp/Eval表集計・検証.xlsx",
+  "repository_path": "example-project/ledger/example-ledger.xlsx",
+  "local_path": "/tmp/example-ledger.xlsx",
   "issue_number": 123,
   "run_id": 456,
   "artifact_name": "...",
