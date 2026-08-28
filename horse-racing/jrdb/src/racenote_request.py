@@ -6,9 +6,9 @@ Temporal routing and scope routing are independent.
 
 Backends:
 - current/future: JRDB PACI
-- past: pre-positioned historical Raw cache first, JRDB annual fetch only for missing packs
-- future design: RaceNote Archive can replace the past base backend without changing
-  this request contract.
+- past: resolved publishable RaceNote Archive first
+- past fallback: 2026+ JRDB PACI / <=2025 annual Raw reconstruction
+- Archive discovery remains outside this router; this module receives only a resolved local shard.
 
 Historical enrichment always uses as_of_exclusive=target_date.
 """
