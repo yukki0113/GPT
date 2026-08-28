@@ -145,8 +145,9 @@ def build_plan(request: RaceNoteRequest) -> dict:
             "future_leakage_rule": "Never use target-date result rows or later rows.",
         },
         "historical_backend_policy": {
-            "preferred_future": "racenote_archive",
-            "current": "prepositioned annual Raw cache; fetch only missing packs",
+            "preferred": "racenote_archive",
+            "fallback_through_2025": "historical_raw_cache_or_fetch",
+            "fallback_from_2026": "paci",
             "raw_is_not_normal_daily_query_path": True,
         },
     }
