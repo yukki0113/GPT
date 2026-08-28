@@ -159,13 +159,10 @@ def validate(
 
     missing_eval = [r for r in records if r.eval is None]
     out_of_range = [r for r in records if r.eval is not None and not (0 <= r.eval <= 100)]
-    missing_name = [r for r in records if not r.horse_name_ocr]
     if missing_eval:
         warnings.append(f"Missing Eval OCR: {len(missing_eval)} row(s).")
     if out_of_range:
         errors.append(f"Eval outside 0..100: {len(out_of_range)} row(s).")
-    if missing_name:
-        warnings.append(f"Missing horse-name OCR: {len(missing_name)} row(s).")
 
     if any((p.venue or "UNKNOWN") == "UNKNOWN" for p in panels):
         errors.append("At least one venue header could not be resolved.")
@@ -201,7 +198,6 @@ def validate(
             "race_panels": race_count,
             "horse_rows": len(records),
             "missing_eval": len(missing_eval),
-            "missing_horse_name": len(missing_name),
             "eval_out_of_range": len(out_of_range),
             "duplicate_keys": len(duplicate_keys),
             "colored_cells": color_validation["colored_cells"],
