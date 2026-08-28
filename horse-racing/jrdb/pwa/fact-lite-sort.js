@@ -3,6 +3,7 @@
 const FACT_RESULT_LIMIT = 200;
 
 const FACT_SORTABLE_COLUMNS = [
+  { key: "item", label: "対象", index: 0 },
   { key: "starts", label: "出走", index: 1 },
   { key: "win_rate", label: "勝率", index: 2 },
   { key: "top3_rate", label: "複勝率", index: 3 },
@@ -23,8 +24,7 @@ const FACT_AXIS_ITEM_ORDER = {
     "1勝",
     "2勝",
     "3勝",
-    "オープン",
-    "L",
+    "OP・L",
     "G3",
     "G2",
     "G1",
@@ -33,6 +33,27 @@ const FACT_AXIS_ITEM_ORDER = {
     "前走不明"
   ]
 };
+
+const FACT_NORMALIZED_RUNNING_STYLE_EXPRESSION =
+  "CASE " +
+  "WHEN f.running_style BETWEEN 1 AND 6 THEN f.running_style " +
+  "ELSE 0 END";
+
+const FACT_NORMALIZED_PREVIOUS_CLASS_EXPRESSION =
+  "CASE " +
+  "WHEN f.prev_class_code IN (7, 8) THEN 7 " +
+  "ELSE f.prev_class_code END";
+
+/*
+ * 同じ表示名になる元コードは、表示後ではなくGROUP BY前に統合する。
+ * これにより「不明」が複数行になることや、OP/Lが別行になることを防ぐ。
+ */
+FACT_AXIS_CONFIG.style.select = FACT_NORMALIZED_RUNNING_STYLE_EXPRESSION;
+FACT_AXIS_CONFIG.style.group = FACT_NORMALIZED_RUNNING_STYLE_EXPRESSION;
+FACT_AXIS_CONFIG.prev_class.select = FACT_NORMALIZED_PREVIOUS_CLASS_EXPRESSION;
+FACT_AXIS_CONFIG.prev_class.group = FACT_NORMALIZED_PREVIOUS_CLASS_EXPRESSION;
+PREVIOUS_CLASS_LABELS[7] = "OP・L";
+PREVIOUS_CLASS_LABELS[8] = "OP・L";
 
 let factResultSortKey = "default";
 let factResultSortDirection = "desc";
@@ -44,6 +65,13 @@ function getFactResultActiveAxis() {
     return "sire";
   }
   return activeTab.dataset.axis || "sire";
+}
+
+function getFactDefaultSort(axis) {
+  if (axis === "sire" || axis === "jockey") {
+    return { key: "starts", direction: "desc" };
+  }
+  return { key: "item", direction: "asc" };
 }
 
 function parseFactResultNumber(text) {
@@ -83,6 +111,12 @@ function compareFactDefaultRows(left, right, axis) {
   }
 
   if (axis === "age") {
+    const leftUnknown = leftItem === "不明";
+    const rightUnknown = rightItem === "不明";
+    if (leftUnknown !== rightUnknown) {
+      return leftUnknown ? 1 : -1;
+    }
+
     const leftAge = parseFactResultNumber(leftItem);
     const rightAge = parseFactResultNumber(rightItem);
     if (leftAge !== rightAge) {
@@ -105,6 +139,18 @@ function compareFactDefaultRows(left, right, axis) {
   return compareFactText(leftItem, rightItem);
 }
 
+function compareFactItemRows(left, right, axis, direction) {
+  let comparison;
+
+  if (axis === "sire" || axis === "jockey") {
+    comparison = compareFactText(getFactRowItem(left), getFactRowItem(right));
+  } else {
+    comparison = compareFactDefaultRows(left, right, axis);
+  }
+
+  return direction === "asc" ? comparison : -comparison;
+}
+
 function compareFactMetricRows(left, right, columnIndex, direction) {
   const leftValue = getFactRowNumericValue(left, columnIndex);
   const rightValue = getFactRowNumericValue(right, columnIndex);
@@ -124,7 +170,9 @@ function compareFactMetricRows(left, right, columnIndex, direction) {
 
 function updateFactSortHeaderState(table) {
   const activeAxis = getFactResultActiveAxis();
+  const defaultSort = getFactDefaultSort(activeAxis);
   const buttons = table.querySelectorAll("button.fact-sort-button");
+
   buttons.forEach(function (button) {
     const columnKey = button.dataset.sortKey;
     const baseLabel = button.dataset.sortLabel;
@@ -132,14 +180,14 @@ function updateFactSortHeaderState(table) {
     button.removeAttribute("aria-sort");
     button.textContent = baseLabel;
 
-    if (
-      factResultSortKey === "default" &&
-      (activeAxis === "sire" || activeAxis === "jockey") &&
-      columnKey === "starts"
-    ) {
+    if (factResultSortKey === "default" && columnKey === defaultSort.key) {
+      const arrow = defaultSort.direction === "asc" ? "▲" : "▼";
       button.classList.add("active");
-      button.setAttribute("aria-sort", "descending");
-      button.textContent = baseLabel + " ▼";
+      button.setAttribute(
+        "aria-sort",
+        defaultSort.direction === "asc" ? "ascending" : "descending"
+      );
+      button.textContent = baseLabel + " " + arrow;
       return;
     }
 
@@ -174,6 +222,10 @@ function renderFactSortedRows(table) {
   if (factResultSortKey === "default") {
     allRows.sort(function (left, right) {
       return compareFactDefaultRows(left, right, axis);
+    });
+  } else if (factResultSortKey === "item") {
+    allRows.sort(function (left, right) {
+      return compareFactItemRows(left, right, axis, factResultSortDirection);
     });
   } else {
     const column = FACT_SORTABLE_COLUMNS.find(function (candidate) {
@@ -225,11 +277,20 @@ function configureFactResultSorting(table) {
     button.textContent = column.label;
     button.setAttribute("aria-label", column.label + "で並び替え");
     button.addEventListener("click", function () {
+      const activeAxis = getFactResultActiveAxis();
+      const defaultSort = getFactDefaultSort(activeAxis);
+
       if (factResultSortKey === column.key) {
         factResultSortDirection = factResultSortDirection === "desc" ? "asc" : "desc";
+      } else if (
+        factResultSortKey === "default" &&
+        column.key === defaultSort.key
+      ) {
+        factResultSortKey = column.key;
+        factResultSortDirection = defaultSort.direction === "asc" ? "desc" : "asc";
       } else {
         factResultSortKey = column.key;
-        factResultSortDirection = "desc";
+        factResultSortDirection = column.key === "item" ? "asc" : "desc";
       }
       renderFactSortedRows(table);
     });
