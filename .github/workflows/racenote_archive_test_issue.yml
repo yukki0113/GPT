@@ -30,6 +30,7 @@ jobs:
             horse-racing/jrdb/src/read_racenote_archive.py \
             horse-racing/jrdb/src/racenote_archive_backend.py \
             horse-racing/jrdb/src/resolve_racenote_archive_release.py \
+            horse-racing/jrdb/src/backfill_racenote_archive_year.py \
             horse-racing/jrdb/src/racenote_request.py
 
       - name: Run Archive regression tests
