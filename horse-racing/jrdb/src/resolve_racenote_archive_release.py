@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Resolve the newest compatible RaceNote Archive release asset for one month.
 
-External storage discovery intentionally lives outside racenote_request.py.
+External storage discovery intentionally lives outside ``racenote_request.py``.
 The router only receives a resolved local Archive path.
 
-This resolver uses immutable GitHub Release tags as an external distribution
-index while keeping large SQLite shards outside the Git tree.  Compatibility
-is decided from the downloaded SQLite metadata, not from tag names alone.
+Immutable GitHub Release tags are used as the external distribution index while
+large SQLite shards remain outside the Git tree. Compatibility is decided from
+the downloaded SQLite metadata, not from tag names alone.
 """
 from __future__ import annotations
 
@@ -17,7 +17,6 @@ import os
 from pathlib import Path
 import re
 import sqlite3
-import sys
 import urllib.error
 import urllib.request
 
@@ -27,6 +26,8 @@ TAG_PATTERN_TEMPLATE = r"^jrdb-racenote-archive-{month}-v(?P<major>\d+)\.(?P<min
 ASSET_PATTERN_TEMPLATE = (
     r"^jrdb_racenote_archive_{month}_v(?P<major>\d+)_(?P<minor>\d+)\.sqlite$"
 )
+RELEASES_PER_PAGE = 100
+MAX_RELEASE_PAGES = 100
 
 
 class ResolveError(RuntimeError):
@@ -67,7 +68,7 @@ def validate_month(value: str) -> str:
 
 
 def sha256_file(path: Path) -> str:
-    """Return lowercase SHA-256 for a local file."""
+    """Return lowercase SHA-256 for one local file."""
     digest = hashlib.sha256()
     with path.open("rb") as file:
         for chunk in iter(lambda: file.read(1024 * 1024), b""):
@@ -92,6 +93,32 @@ def request_json(url: str, token: str | None) -> object:
         raise ResolveError(f"GitHub API HTTP {exc.code}: {url}") from exc
     except (urllib.error.URLError, json.JSONDecodeError) as exc:
         raise ResolveError(f"GitHub API request failed: {url}: {exc}") from exc
+
+
+def request_all_releases(repo: str, token: str | None) -> list[dict]:
+    """Read every GitHub Release page needed for long-term Archive coverage.
+
+    One monthly shard per month means a ten-year Archive exceeds GitHub's
+    100-item first page. Stop when a short page is reached and keep a generous
+    safety cap so a malformed API response cannot create an unbounded loop.
+    """
+    releases: list[dict] = []
+    for page in range(1, MAX_RELEASE_PAGES + 1):
+        url = (
+            f"https://api.github.com/repos/{repo}/releases"
+            f"?per_page={RELEASES_PER_PAGE}&page={page}"
+        )
+        value = request_json(url, token)
+        if not isinstance(value, list):
+            raise ResolveError("GitHub releases response page must be a list")
+        for item in value:
+            if isinstance(item, dict):
+                releases.append(item)
+        if len(value) < RELEASES_PER_PAGE:
+            return releases
+    raise ResolveError(
+        f"GitHub release pagination exceeded safety limit: {MAX_RELEASE_PAGES} pages"
+    )
 
 
 def download_asset(url: str, destination: Path, token: str | None) -> None:
@@ -243,10 +270,7 @@ def resolve(args: argparse.Namespace) -> dict:
         raise ResolveError("--repo must be owner/repository")
 
     token = os.getenv(args.token_env) or None
-    releases = request_json(
-        f"https://api.github.com/repos/{repo}/releases?per_page=100",
-        token,
-    )
+    releases = request_all_releases(repo, token)
     candidates = release_candidates(releases, target_month)
     rejected: list[dict] = []
     args.output_dir.mkdir(parents=True, exist_ok=True)
