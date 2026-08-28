@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 
 import pytesseract
@@ -12,7 +13,9 @@ from eval_ocr.pipeline import run_pipeline
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="OCR master_eval table image into CSV (PoC v0.1).")
+    parser = argparse.ArgumentParser(
+        description="OCR master_eval table image into five-column CSV: date,venue,race_no,horse_no,eval."
+    )
     parser.add_argument("--image", required=True, help="Input JPEG/PNG path")
     parser.add_argument("--date", default="", help="Race date, e.g. 2026-08-22. Optional for structural tests.")
     parser.add_argument("--outdir", default="output", help="Output directory")
@@ -27,6 +30,7 @@ def main() -> int:
     if args.tesseract_cmd:
         pytesseract.pytesseract.tesseract_cmd = args.tesseract_cmd
 
+    started = time.perf_counter()
     image_path = Path(args.image)
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -42,11 +46,16 @@ def main() -> int:
         debug_dir=debug_dir,
     )
     write_csv(csv_path, records)
+    elapsed = time.perf_counter() - started
+    report["processing_seconds"] = round(elapsed, 3)
+    report["csv_schema"] = ["date", "venue", "race_no", "horse_no", "eval"]
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
 
     summary = report["summary"]
     print(f"status={report['status']}")
     print(f"venues={summary['detected_venues']} races={summary['race_panels']} horses={summary['horse_rows']}")
+    print("csv_schema=date,venue,race_no,horse_no,eval")
+    print(f"processing_seconds={elapsed:.3f}")
     print(f"csv={csv_path}")
     print(f"validation={report_path}")
     if report["errors"]:
