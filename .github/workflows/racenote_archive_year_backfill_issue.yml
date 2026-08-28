@@ -1,0 +1,214 @@
+name: racenote-archive-year-backfill-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  PREFIX: '[RACENOTE_ARCHIVE_YEAR_BACKFILL]'
+
+jobs:
+  backfill:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_YEAR_BACKFILL]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = os.environ['PREFIX']
+          request_id = os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          year = int(request.get('year', 0))
+          if not 2010 <= year <= 2025:
+              raise SystemExit('year must be 2010..2025')
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+
+          archive_version = str(request.get('archive_version', '1.0')).strip()
+          if not re.fullmatch(r'\d+\.\d+', archive_version):
+              raise SystemExit('archive_version must be major.minor')
+
+          raw_months = request.get('months')
+          months = []
+          if raw_months is not None:
+              if not isinstance(raw_months, list):
+                  raise SystemExit('months must be an array when supplied')
+              for value in raw_months:
+                  month = int(value)
+                  if not 1 <= month <= 12:
+                      raise SystemExit(f'invalid month: {month}')
+                  if month not in months:
+                      months.append(month)
+              months.sort()
+              if not months:
+                  raise SystemExit('months must not be empty when supplied')
+
+          resolved = {
+              'request_id': request_id,
+              'year': year,
+              'analysis_url': analysis_url,
+              'archive_version': archive_version,
+              'months': months,
+          }
+          Path('/tmp/racenote_archive_year_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          months_text = ','.join(f'{month:02d}' for month in months)
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'TARGET_YEAR={year}\n')
+              file.write(f'ARCHIVE_VERSION={archive_version}\n')
+              file.write(f'MONTHS_TEXT={months_text}\n')
+          PY
+
+      - name: Download Analysis Lite once
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(
+              Path('/tmp/racenote_archive_year_request.json').read_text(encoding='utf-8')
+          )
+          subprocess.run(
+              ['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'],
+              check=True,
+          )
+          PY
+
+      - name: Run yearly Archive backfill
+        id: task
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          mkdir -p \
+            /tmp/racenote_archive_year/raw \
+            /tmp/racenote_archive_year/work \
+            /tmp/racenote_archive_year/output \
+            /tmp/racenote_archive_year/report
+
+          command=(
+            python horse-racing/jrdb/src/backfill_racenote_archive_year.py
+            --year "$TARGET_YEAR"
+            --analysis /tmp/jrdb_analysis.sqlite
+            --raw-dir /tmp/racenote_archive_year/raw
+            --work-root /tmp/racenote_archive_year/work
+            --output-root /tmp/racenote_archive_year/output
+            --report-root /tmp/racenote_archive_year/report/months
+            --repo "${{ github.repository }}"
+            --archive-version "$ARCHIVE_VERSION"
+            --converter-git-sha "$GITHUB_SHA"
+            --summary /tmp/racenote_archive_year/report/year_backfill_summary.json
+          )
+          if [ -n "$MONTHS_TEXT" ]; then
+            command+=(--months "$MONTHS_TEXT")
+          fi
+          "${command[@]}"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload lightweight backfill reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-archive-year-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: /tmp/racenote_archive_year/report/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK_EXIT: ${{ steps.task.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(
+              Path('/tmp/racenote_archive_year_request.json').read_text(encoding='utf-8')
+          )
+          summary_path = Path('/tmp/racenote_archive_year/report/year_backfill_summary.json')
+          if summary_path.is_file():
+              summary = json.loads(summary_path.read_text(encoding='utf-8'))
+          else:
+              summary = {}
+
+          task_exit = os.environ.get('TASK_EXIT', '')
+          status = 'success' if task_exit == '0' else 'failure'
+          result = {
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'year': request['year'],
+              'requested_months': summary.get('requested_months'),
+              'completed_month_count': summary.get('completed_month_count', len(summary.get('months', []))),
+              'published_count': summary.get('published_count'),
+              'skipped_existing_count': summary.get('skipped_existing_count'),
+              'months': summary.get('months', []),
+              'error': summary.get('error'),
+              'task_exit_code': task_exit,
+          }
+          Path('/tmp/racenote_archive_year_result.md').write_text(
+              'RACENOTE_ARCHIVE_YEAR_BACKFILL_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/racenote_archive_year_result.md
+
+      - name: Close successful backfill issue
+        if: always() && steps.task.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail workflow when backfill failed
+        if: always() && steps.task.outputs.exit_code != '0'
+        run: exit 1
