@@ -46,9 +46,9 @@ python .gpt/tools/gpt_git_binary_tool.py read \
 
 ```bash
 python .gpt/tools/gpt_git_binary_tool.py update \
-  --file "/tmp/競艇note販売運用台帳.xlsx" \
-  --path "boat-racing/ledger/競艇note販売運用台帳.xlsx" \
-  --message "chore: update boat racing ledger"
+  --file "/tmp/example-ledger.xlsx" \
+  --path "example-project/ledger/example-ledger.xlsx" \
+  --message "chore: update example ledger"
 ```
 
 内部では以下を自動実行します。
@@ -64,6 +64,12 @@ python .gpt/tools/gpt_git_binary_tool.py update \
 9. main反映commit SHAを返却
 
 Issue / Actions側のXLSX構造検証、gitignore、保護パス等の既存ルールはそのまま有効です。
+
+## Project-specific external sources of truth
+
+各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このツールの対象外です。
+
+競艇継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）が正本です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このCLIで同期・取得しません。
 
 ## Output
 
@@ -94,8 +100,8 @@ Update例:
   "status": "success",
   "operation": "update",
   "repository": "yukki0113/GPT",
-  "repository_path": "boat-racing/ledger/競艇note販売運用台帳.xlsx",
-  "local_path": "/tmp/競艇note販売運用台帳.xlsx",
+  "repository_path": "example-project/ledger/example-ledger.xlsx",
+  "local_path": "/tmp/example-ledger.xlsx",
   "issue_number": 124,
   "commit_sha": "...",
   "size_bytes": 1012259,
@@ -108,7 +114,7 @@ Update例:
 
 ## GPT / Work rule
 
-認証済み `gh` CLIを実行できる環境では、バイナリのread/updateについてIssue本文やBase64チャンクをGPTが手作業で組み立てず、このCLIを第一選択にしてください。
+認証済み `gh` CLIを実行できる環境では、Git管理バイナリのread/updateについてIssue本文やBase64チャンクをGPTが手作業で組み立てず、このCLIを第一選択にしてください。
 
 ```text
 GitHub binary read
