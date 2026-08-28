@@ -27,7 +27,10 @@ jobs:
           python -m py_compile \
             horse-racing/jrdb/src/racenote_archive.py \
             horse-racing/jrdb/src/build_racenote_archive.py \
-            horse-racing/jrdb/src/read_racenote_archive.py
+            horse-racing/jrdb/src/read_racenote_archive.py \
+            horse-racing/jrdb/src/racenote_archive_backend.py \
+            horse-racing/jrdb/src/resolve_racenote_archive_release.py \
+            horse-racing/jrdb/src/racenote_request.py
 
       - name: Run Archive regression tests
         id: tests
@@ -36,7 +39,7 @@ jobs:
           set +e
           python -m unittest discover \
             -s horse-racing/jrdb/tests \
-            -p 'test_racenote_archive.py' \
+            -p 'test_racenote_archive*.py' \
             -v
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
