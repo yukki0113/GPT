@@ -14,7 +14,8 @@ Chat側はworkflow runのartifactを取得し、実ファイルとして解析�
 
 各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このreadback経路の対象外です。GitHubに旧コピーが残っていても最新と推定しません。
 
-競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このreadback経路で競艇台帳を取得しません。
+- Eval継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）です。旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットなので、このreadback経路でEval台帳を取得しません。
+- 競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このreadback経路で競艇台帳を取得しません。
 
 ## 推奨操作層
 
@@ -22,8 +23,8 @@ Chat側はworkflow runのartifactを取得し、実ファイルとして解析�
 
 ```bash
 python .gpt/tools/gpt_git_binary_tool.py read \
-  --path "horse-racing/eval/ledger/Eval表集計・検証.xlsx" \
-  --output "/tmp/Eval表集計・検証.xlsx"
+  --path "example-project/ledger/example-ledger.xlsx" \
+  --output "/tmp/example-ledger.xlsx"
 ```
 
 詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
@@ -41,8 +42,8 @@ Issue作成者は `yukki0113` である必要があります。
 ## Issue本文
 
 ```text
-path: horse-racing/eval/ledger/Eval表集計・検証.xlsx
-request_id: eval-ledger-analysis-20260826
+path: example-project/ledger/example-ledger.xlsx
+request_id: example-ledger-analysis-20260826
 ```
 
 `request_id` は省略可能です。省略時はIssue番号から自動生成します。
