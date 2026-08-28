@@ -259,3 +259,77 @@ factResultObserver.observe(document.getElementById("fact-result-area"), {
 });
 
 refreshFactResultSorting();
+
+/**
+ * 検索条件に「障害レースを除く」を追加する。
+ * Fact Lite本体のschemaを変えず、既存WHEREへtrack_type条件だけを足す。
+ */
+function installFactJumpExclusionFilter() {
+  const minimumStartsInput = document.getElementById("fact-min-starts");
+  if (!minimumStartsInput) {
+    return;
+  }
+
+  const minimumStartsLabel = minimumStartsInput.closest("label");
+  if (!minimumStartsLabel) {
+    return;
+  }
+
+  let checkbox = document.getElementById("fact-exclude-jumps");
+  if (!checkbox) {
+    const label = document.createElement("label");
+    label.className = "fact-checkbox-field";
+
+    checkbox = document.createElement("input");
+    checkbox.id = "fact-exclude-jumps";
+    checkbox.type = "checkbox";
+    checkbox.checked = true;
+    checkbox.disabled = !factDb;
+
+    const text = document.createElement("span");
+    text.textContent = "障害レースを除く";
+
+    label.appendChild(checkbox);
+    label.appendChild(text);
+    minimumStartsLabel.insertAdjacentElement("afterend", label);
+  }
+
+  if (!document.getElementById("fact-jump-filter-style")) {
+    const style = document.createElement("style");
+    style.id = "fact-jump-filter-style";
+    style.textContent =
+      ".fact-checkbox-field{" +
+      "grid-column:1/-1;display:flex;align-items:center;gap:10px;" +
+      "min-height:44px;font-size:13px;color:#444}" +
+      ".fact-checkbox-field input[type='checkbox']{" +
+      "width:20px;height:20px;min-height:0;margin:0;padding:0;flex:0 0 auto}";
+    document.head.appendChild(style);
+  }
+
+  const originalBuildFactWhere = buildFactWhere;
+  buildFactWhere = function () {
+    const result = originalBuildFactWhere();
+    if (checkbox.checked) {
+      result.clauses.push("f.track_type <> 3");
+    }
+    return result;
+  };
+
+  const originalClearFactFilters = clearFactFilters;
+  clearFactFilters = function () {
+    checkbox.checked = true;
+    originalClearFactFilters();
+  };
+
+  const originalSetFactDbLoaded = setFactDbLoaded;
+  setFactDbLoaded = function (source, size, metadata) {
+    originalSetFactDbLoaded(source, size, metadata);
+    checkbox.disabled = false;
+  };
+
+  if (factDb) {
+    checkbox.disabled = false;
+  }
+}
+
+installFactJumpExclusionFilter();
