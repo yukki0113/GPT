@@ -192,7 +192,8 @@ jobs:
               'source_artifact_name': config['source_artifact_name'],
               'target_count': len(targets),
               'targets': batch,
-              'horse_name_policy': 'OCR only; no master-data correction',
+              'csv_schema': ['date', 'venue', 'race_no', 'horse_no', 'eval'],
+              'horse_name_policy': 'not collected; canonical horse names are added by JRDB PACI enrichment',
           }
           (output / 'batch_validation.json').write_text(
               json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
