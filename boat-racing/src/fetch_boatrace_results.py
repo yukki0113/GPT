@@ -97,6 +97,7 @@ class OfficialResult:
     finish_order: list[str] = field(default_factory=list)
     finish_rows: list[dict] = field(default_factory=list)
     payouts: dict[str, list[dict]] = field(default_factory=dict)
+    special_payouts: dict[str, int] = field(default_factory=dict)
     refunded_boats: list[str] = field(default_factory=list)
     absent_boats: list[str] = field(default_factory=list)
     disqualified_boats: list[str] = field(default_factory=list)
@@ -319,16 +320,27 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
             number_nodes = row.xpath('.//*[contains(concat(" ", normalize-space(@class), " "), " numberSet1_number ")]')
             boats = [text_of(x) for x in number_nodes if re.fullmatch(r"[1-6]", text_of(x))]
             payout_nodes = row.xpath('.//*[contains(concat(" ", normalize-space(@class), " "), " is-payout1 ")]')
-            if not current_type or not boats or not payout_nodes:
+            if not current_type or not payout_nodes:
                 continue
+            row_text = text_of(row)
             try:
-                combination = canonical_bet(current_type, boats)
                 payout = parse_money(text_of(payout_nodes[0]))
-            except (InputError, ParseError):
+            except ParseError:
                 continue
             if payout <= 0:
                 raise ParseError(
-                    f"公式払戻が0円以下です: 券種={current_type}, 組番={combination}, 払戻={payout}")
+                    f"公式払戻が0円以下です: 券種={current_type}, 払戻={payout}")
+            if "特払い" in row_text:
+                if current_type in result.special_payouts:
+                    raise ParseError(f"公式特払いが重複しています: 券種={current_type}")
+                result.special_payouts[current_type] = payout
+                continue
+            if not boats:
+                continue
+            try:
+                combination = canonical_bet(current_type, boats)
+            except InputError:
+                continue
             result.payouts.setdefault(current_type, []).append(
                 {"combination": combination, "payout": payout})
 
@@ -337,6 +349,8 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
         if len(combinations) != len(set(combinations)):
             raise ParseError(
                 f"公式払戻に同一組番が重複しています: 券種={ticket_type}, 組番={combinations}")
+        if ticket_type in result.special_payouts:
+            raise ParseError(f"通常払戻と特払いが同一勝式に併存しています: 券種={ticket_type}")
 
     refund_table = find_table_by_headers(doc, {"返還"})
     if refund_table is not None:
@@ -355,7 +369,7 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
     # 公式結果ページでは、レース不成立時に備考ではなく各勝式の組番欄へ
     # 「不成立」と表示されるケースがある。そのためページ全体の公式表示を判定する。
     result.invalid = "不成立" in result_text
-    result.determined = bool(result.finish_order and result.payouts)
+    result.determined = bool(result.finish_order and (result.payouts or result.special_payouts))
     return result
 
 
@@ -501,13 +515,21 @@ def evaluate_section(ticket_type_value: str, bet_text: str, point_text: str | No
     valid_bets = [x for x in bets if x not in set(refunded_bets)]
     official = payout_map(result, ticket_type) if ticket_type else {}
     hits = [x for x in valid_bets if x in official]
-    hit_payout = sum(official[x] * unit_stake // 100 for x in hits)
+    special_payout = result.special_payouts.get(ticket_type) if ticket_type else None
+    if special_payout is not None and valid_bets:
+        hit_state = "特払い"
+        hit_bets = valid_bets
+        hit_payout = len(valid_bets) * special_payout * unit_stake // 100
+    else:
+        hit_state = "的中" if hits else ("対象なし" if not bets else "不的中")
+        hit_bets = hits
+        hit_payout = sum(official[x] * unit_stake // 100 for x in hits)
     return {
         "planned": planned,
         "refund": refund,
         "net_investment": planned - refund,
-        "hit": "的中" if hits else ("対象なし" if not bets else "不的中"),
-        "hit_bet": "／".join(hits),
+        "hit": hit_state,
+        "hit_bet": "／".join(hit_bets),
         "payout": hit_payout,
         "expanded": "／".join(bets),
     }
@@ -515,11 +537,15 @@ def evaluate_section(ticket_type_value: str, bet_text: str, point_text: str | No
 
 def serialize_payouts(result: OfficialResult, ticket_type: str) -> tuple[str, str]:
     rows = result.payouts.get(ticket_type, [])
+    if not rows and ticket_type in result.special_payouts:
+        return "特払い", str(result.special_payouts[ticket_type])
     return ("／".join(x["combination"] for x in rows),
             "／".join(str(x["payout"]) for x in rows))
 
 
 def serialize_combined_payouts(result: OfficialResult, ticket_type: str) -> str:
+    if not result.payouts.get(ticket_type) and ticket_type in result.special_payouts:
+        return f"特払い:{result.special_payouts[ticket_type]}"
     return "／".join(f"{x['combination']}:{x['payout']}" for x in result.payouts.get(ticket_type, []))
 
 
@@ -540,7 +566,8 @@ def result_status(result: OfficialResult) -> str:
     if not result.determined:
         return "公式未確定"
     required = ("3連単", "3連複", "2連単", "2連複", "拡連複", "単勝", "複勝")
-    if any(not result.payouts.get(x) for x in required):
+    if any(not result.payouts.get(x) and x not in result.special_payouts
+           for x in required):
         return "解析失敗"
     if len(result.finish_order) < 3:
         return "解析失敗"
@@ -599,7 +626,8 @@ def fill_result(output: dict[str, str], row: dict[str, str], fetched: FetchData,
     if status == "解析失敗":
         missing = [x for x in ("確定着順", "3連単", "3連複", "2連単", "2連複", "拡連複", "単勝", "複勝")
                    if (x == "確定着順" and len(result.finish_order) < 3) or
-                   (x != "確定着順" and not result.payouts.get(x))]
+                   (x != "確定着順" and not result.payouts.get(x)
+                    and x not in result.special_payouts)]
         expected = canonical_bet("3連単", result.finish_order[:3]) if len(result.finish_order) >= 3 else ""
         if expected and expected not in payout_map(result, "3連単"):
             output["エラー内容"] = f"確定着順上位3艇と公式3連単が不一致: 着順={expected}"
