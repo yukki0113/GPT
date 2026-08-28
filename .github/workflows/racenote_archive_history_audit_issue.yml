@@ -1,0 +1,251 @@
+name: racenote-archive-history-audit-issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_HISTORY_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = '[RACENOTE_ARCHIVE_HISTORY_AUDIT]'
+          request_id = os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          target_month = str(request.get('month', '')).strip()
+          if not re.fullmatch(r'\d{6}', target_month):
+              raise SystemExit('month must be YYYYMM')
+          target = datetime.strptime(target_month, '%Y%m')
+          if target.year >= 2026:
+              raise SystemExit('this audit workflow currently targets annual Raw <=2025')
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+
+          resolved = {
+              'request_id': request_id,
+              'month': target_month,
+              'target_year': target.year,
+              'analysis_url': analysis_url,
+          }
+          Path('/tmp/history_audit_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f"REQUEST_ID={request_id}\n")
+              file.write(f"TARGET_MONTH={target_month}\n")
+              file.write(f"TARGET_YEAR={target.year}\n")
+          PY
+
+      - name: Download Analysis Lite
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/history_audit_request.json').read_text(encoding='utf-8'))
+          subprocess.run(
+              ['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'],
+              check=True,
+          )
+          PY
+
+      - name: Compile audit modules
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_archive.py \
+            horse-racing/jrdb/src/fetch_jrdb_history.py \
+            horse-racing/jrdb/src/audit_racenote_archive_history_resolution.py
+
+      - name: Fetch target KYI annual Raw
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/history_audit/raw /tmp/history_audit/output
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --year "$TARGET_YEAR" \
+            --kinds KYI \
+            --output-dir /tmp/history_audit/raw \
+            --sleep-seconds 0.5
+
+      - name: Fetch candidate SED/SKB history years
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          python - <<'PY'
+          import json
+          import sqlite3
+          import subprocess
+          import zipfile
+          from pathlib import Path
+
+          target_month = '${{ env.TARGET_MONTH }}'
+          target_year = int('${{ env.TARGET_YEAR }}')
+          analysis = sqlite3.connect('/tmp/jrdb_analysis.sqlite')
+          try:
+              rows = analysis.execute(
+                  "SELECT DISTINCT race_key FROM fact_entry_result_lite "
+                  "WHERE race_date LIKE ? ORDER BY race_key",
+                  (f"{target_month[:4]}-{target_month[4:]}-%",),
+              ).fetchall()
+          finally:
+              analysis.close()
+          target_keys = {str(row[0]).encode('ascii') for row in rows if row[0]}
+          if not target_keys:
+              raise SystemExit('no target race keys')
+
+          kyi_path = Path('/tmp/history_audit/raw/KYI') / f'KYI_{target_year}.zip'
+          previous_years = set()
+          with zipfile.ZipFile(kyi_path) as source:
+              members = [n for n in source.namelist() if Path(n).name.upper().startswith('KYI')]
+              for member in members:
+                  for line in source.read(member).splitlines():
+                      if not line or line[:8] not in target_keys:
+                          continue
+                      for start, end in ((203,219),(219,235),(235,251),(251,267),(267,283)):
+                          key = line[start:end].strip()
+                          if not key or key == b'0' * 16:
+                              continue
+                          previous_years.add(int(key[-8:-4].decode('ascii')))
+          if not previous_years:
+              raise SystemExit('no previous years resolved')
+          Path('/tmp/history_audit/previous_years.json').write_text(
+              json.dumps(sorted(previous_years)), encoding='utf-8'
+          )
+          for year in sorted(previous_years):
+              subprocess.run([
+                  'python', 'horse-racing/jrdb/src/fetch_jrdb_history.py',
+                  '--year', str(year),
+                  '--kinds', 'SED', 'SKB',
+                  '--output-dir', '/tmp/history_audit/raw',
+                  '--sleep-seconds', '0.5',
+              ], check=True)
+          PY
+
+      - name: Audit unresolved history keys
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/audit_racenote_archive_history_resolution.py \
+            --target-month "$TARGET_MONTH" \
+            --analysis /tmp/jrdb_analysis.sqlite \
+            --raw-dir /tmp/history_audit/raw \
+            --output /tmp/history_audit/output/history_resolution_audit.json
+
+      - name: Write compact summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          full = json.loads(
+              Path('/tmp/history_audit/output/history_resolution_audit.json').read_text(encoding='utf-8')
+          )
+          summary = {key: value for key, value in full.items() if key != 'unresolved_rows'}
+          Path('/tmp/history_audit/output/history_resolution_summary.json').write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-archive-history-audit-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: /tmp/history_audit/output/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/history_audit/output/history_resolution_summary.json')
+          if path.is_file():
+              summary = json.loads(path.read_text(encoding='utf-8'))
+              status = 'success'
+          else:
+              summary = {}
+              status = 'failure'
+          result = {
+              'status': status,
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'artifact_name': (
+                  f"racenote-archive-history-audit-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'target_month': summary.get('target_month'),
+              'previous_result_key_count': summary.get('previous_result_key_count'),
+              'zed_unresolved_key_count': summary.get('zed_unresolved_key_count'),
+              'zkb_unresolved_key_count': summary.get('zkb_unresolved_key_count'),
+              'zed_zkb_unresolved_sets_equal': summary.get('zed_zkb_unresolved_sets_equal'),
+              'analysis_status_counts': summary.get('analysis_status_counts'),
+              'unresolved_previous_year_counts': summary.get('unresolved_previous_year_counts'),
+          }
+          Path('/tmp/history_audit_result.md').write_text(
+              'RACENOTE_ARCHIVE_HISTORY_AUDIT_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/history_audit_result.md
+
+      - name: Close audit issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Fail when summary is missing
+        if: always()
+        run: test -f /tmp/history_audit/output/history_resolution_summary.json
