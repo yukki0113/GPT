@@ -9,6 +9,11 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/racenote_jrdb.py` — PACI ZIP → RaceNote base v0.2 JSON
 - `src/racenote_history_enrichment.py` — base RaceNote v0.2 + Analysis Lite / Stats Mart → 正式RaceNote v1.0
 - `src/racenote_request.py` — 日付・任意の開催場/Rを受ける統一RaceNote request router
+- `src/racenote_archive.py` — 月次RaceNote Archive SQLite共通schema/validation/read-write
+- `src/racenote_archive_backend.py` — publishable Archiveをbase v0.2へ復元するproduction backend adapter
+- `src/build_racenote_archive.py` — base v0.2 bundle群から月次Archive shardを構築
+- `src/build_racenote_archive_month_from_raw.py` — annual Raw + Analysis identityからfull-month Archiveを再構築
+- `src/resolve_racenote_archive_release.py` — 対象月のlatest compatible publishable Archive Releaseを解決
 - `src/racenote_jrdb_pipeline.py` — PACI取得 → RaceNote 1R一体実行
 - `src/build_jrdb_core.py` — JRDB Core Builder v1.1.2-production（rollback baseline）
 - `src/jrdb_ukc.py` — UKC 290-byte固定長parser
