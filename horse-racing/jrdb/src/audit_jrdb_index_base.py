@@ -67,8 +67,8 @@ def audit(db_path: Path, include_db_sha256: bool = True) -> dict[str, Any]:
             SELECT
               r.year,
               COUNT(DISTINCT r.race_key) AS race_count,
-              SUM(CASE WHEN r.availability_class='PRE_RACE' THEN 1 ELSE 0 END) AS pre_race_count,
-              SUM(CASE WHEN r.availability_class='CURRENT_RESULT_FALLBACK' THEN 1 ELSE 0 END) AS fallback_race_count,
+              COUNT(DISTINCT CASE WHEN r.availability_class='PRE_RACE' THEN r.race_key END) AS pre_race_count,
+              COUNT(DISTINCT CASE WHEN r.availability_class='CURRENT_RESULT_FALLBACK' THEN r.race_key END) AS fallback_race_count,
               COUNT(DISTINCT p.race_key || ':' || printf('%02d',p.horse_no)) AS runner_pre_count,
               COUNT(DISTINCT x.race_key || ':' || printf('%02d',x.horse_no)) AS runner_result_count,
               COUNT(DISTINCT w.race_key || ':' || printf('%02d',w.horse_no)) AS workout_count,
