@@ -58,3 +58,4 @@
 35. 台帳更新時は必要範囲だけをGoogle Sheets上で更新し、数式・書式・既存集計を維持する。Excel書き出し→再アップロードを通常更新経路にしない。
 36. 画像、日次CSV、検証レポート、ログ等の運用成果物は引き続きcommitしない。
 37. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
+38. Eval `全馬データ` へJRDB SED結果を取り込む依頼では、`docs/README_jrdb_horse_results_import.md` を標準手順として、Google Drive Raw取得 → 馬単位CSV/audit生成 → Google Sheets厳密照合・必要セル更新 → 更新後監査まで実行する。
