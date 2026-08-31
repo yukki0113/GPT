@@ -110,6 +110,24 @@ Important fields:
 
 All five previous-result links remain in Raw/Core. Routine Analysis keeps prev1 only to preserve remote-delivery size headroom.
 
+## PWA independent index design
+
+PWA競馬新聞向けの独自指数は、条件集計用Fact Lite / Stats MartやRaceNoteとは分離して設計する。
+
+基本3層は次のとおり。
+
+- `Ability` — 今回条件で平常なら期待される競走能力
+- `Edge` — Abilityに対する今回の上振れ / 下振れシグナル
+- `Value` — 独自予測と市場オッズとの差。Ability / Edge には人気・オッズを入れない
+
+2010-2025の長期JRDB履歴を用い、2010-2012 warm-up、2013-2023 development walk-forward、2024-2025 locked holdoutを基本検証構成とする。新馬も血統・調教・騎手・厩舎等の事前情報からAbilityを算出し、既走馬と同じRunPerf尺度へ接続する。
+
+設計正本:
+
+- `docs/JRDB_PWA_Index_Design_v0_1.md`
+- `docs/JRDB_PWA_Index_Feature_Registry_v0_1.md`
+- `docs/JRDB_Training_Index_Definitions.md`
+
 ## Eval Raw dataset
 
 Eval用途ではAnalysis Lite / Core SQLiteを中間入力にせず、JRDB Rawを正本入力として専用CSVを生成します。
@@ -232,6 +250,9 @@ There is no requirement to rebuild Core first.
 - `docs/README_racenote_v1.md`
 - `docs/README_racenote_request.md`
 - `docs/JRDB_Core_v1_2_Analysis_Layer_Design.md`
+- `docs/JRDB_PWA_Index_Design_v0_1.md`
+- `docs/JRDB_PWA_Index_Feature_Registry_v0_1.md`
+- `docs/JRDB_Training_Index_Definitions.md`
 - `docs/README_build_jrdb_core_v1_2.md`
 - `docs/README_build_jrdb_analysis.md`
 - `docs/README_update_jrdb_analysis_incremental.md`
