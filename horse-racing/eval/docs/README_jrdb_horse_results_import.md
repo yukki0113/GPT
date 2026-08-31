@@ -143,6 +143,7 @@ unmatched_jrdb_rows
 duplicate_sheet_keys
 duplicate_jrdb_keys
 horse_name_mismatches
+sheet_horse_name_blank_rows
 review_required_rows
 ```
 
@@ -154,6 +155,10 @@ duplicate_jrdb_keys == 0
 horse_name_mismatches == 0
 unmatched_sheet_rows == 0
 ```
+
+`horse_name_mismatches` は、Sheet側とJRDB側の馬名が双方とも非空欄なのに一致しない行だけを数える。Sheet側馬名が空欄なら `sheet_horse_name_blank_rows` として警告監査し、完全キー一致を失敗扱いにしない。
+
+馬名空欄を結果取込処理で補完してA～Gを変更してはいけない。馬名は照合用であり、非空欄同士の不一致時に推測結合しない。
 
 `unmatched_jrdb_rows` は、Eval台帳側がJRDB全出走馬を収録していない運用では正常に発生し得るため、参考値とする。
 
