@@ -1,0 +1,153 @@
+name: JRDB pre-race duplicate inspect via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  inspect:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_PRERACE_DUP_INSPECT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch 2013 pre-race kinds
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/jrdb_pre_dup/raw
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2013 \
+            --to-year 2013 \
+            --kinds BAC KYI CHA CYB \
+            --output-dir /tmp/jrdb_pre_dup/raw \
+            --manifest /tmp/jrdb_pre_dup/fetch_manifest.jsonl \
+            --sleep-seconds 0
+
+      - name: Inspect pre-race duplicate keys
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          import zipfile
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          from build_jrdb_index_base_from_raw import (
+              _canonical_members,
+              _member_date,
+              parse_bac,
+              parse_cha,
+              parse_cyb,
+              parse_kyi,
+          )
+
+          root = Path('/tmp/jrdb_pre_dup/raw')
+
+          race_dates = {}
+          with zipfile.ZipFile(root / 'BAC' / 'BAC_2013.zip') as zf:
+              grouped_bac = defaultdict(list)
+              for member in _canonical_members(zf, 'BAC'):
+                  for raw in zf.read(member).splitlines():
+                      if raw:
+                          row = parse_bac(raw, member)
+                          grouped_bac[row['race_key']].append(row)
+              for key, rows in grouped_bac.items():
+                  race_dates[key] = max(row['race_date'] for row in rows if row.get('race_date'))
+
+          parsers = {
+              'KYI': lambda raw, member: parse_kyi(raw, member)[0],
+              'CHA': parse_cha,
+              'CYB': parse_cyb,
+          }
+          results = {}
+          for kind, parser in parsers.items():
+              grouped = defaultdict(list)
+              with zipfile.ZipFile(root / kind / f'{kind}_2013.zip') as zf:
+                  for member in _canonical_members(zf, kind):
+                      for raw in zf.read(member).splitlines():
+                          if not raw:
+                              continue
+                          row = parser(raw, member)
+                          grouped[(row['race_key'], row['horse_no'])].append(row)
+
+              duplicate_count = 0
+              exact_race_day_candidate_count = 0
+              ambiguous_exact_count = 0
+              no_exact_count = 0
+              member_pair_counts = Counter()
+              examples = []
+              for key, rows in sorted(grouped.items()):
+                  if len(rows) <= 1 or len({row['record_hash'] for row in rows}) <= 1:
+                      continue
+                  duplicate_count += 1
+                  canonical_date = race_dates.get(key[0])
+                  exact = [row for row in rows if _member_date(row['source_member']) == canonical_date]
+                  if len(exact) == 1:
+                      exact_race_day_candidate_count += 1
+                  elif len(exact) > 1:
+                      ambiguous_exact_count += 1
+                  else:
+                      no_exact_count += 1
+                  members = tuple(row['source_member'] for row in rows)
+                  member_pair_counts[members] += 1
+                  if len(examples) < 8:
+                      examples.append({
+                          'key': [key[0], key[1]],
+                          'canonical_race_date': canonical_date,
+                          'members': list(members),
+                          'member_dates': [_member_date(row['source_member']) for row in rows],
+                          'exact_race_day_candidates': [row['source_member'] for row in exact],
+                      })
+
+              results[kind] = {
+                  'duplicate_nonidentical_key_count': duplicate_count,
+                  'exact_race_day_candidate_count': exact_race_day_candidate_count,
+                  'ambiguous_exact_count': ambiguous_exact_count,
+                  'no_exact_count': no_exact_count,
+                  'top_member_pairs': [
+                      {'members': list(pair), 'count': count}
+                      for pair, count in member_pair_counts.most_common(10)
+                  ],
+                  'examples': examples,
+              }
+
+          result = {'status': 'success', 'year': 2013, 'kinds': results}
+          Path('/tmp/jrdb_pre_dup_comment.md').write_text(
+              'JRDB_PRERACE_DUP_INSPECT_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n', encoding='utf-8'
+          )
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Comment result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' \
+            --repo '${{ github.repository }}' \
+            --body-file /tmp/jrdb_pre_dup_comment.md
+
+      - name: Close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
