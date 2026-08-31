@@ -23,6 +23,9 @@ Main files:
 - `src/audit_jrdb_runperf.py`
 - `tests/test_build_jrdb_runperf_features.py`
 - `tests/test_audit_jrdb_runperf.py`
+- `src/compare_jrdb_runperf_candidates.py`
+- `tests/test_compare_jrdb_runperf_candidates.py`
+- `docs/README_compare_jrdb_runperf_candidates.md`
 
 ## Race representative time
 
@@ -166,6 +169,44 @@ Market data remains evaluation/Value-layer material and must not enter RunPerf, 
 
 A synthetic build must pass before a real-history build is accepted.
 
+## Full-history acceptance
+
+The 2010-2025 real-history audit completed successfully in Issue `#283` / Actions run `33450491990` using builder `0.1.0` and schema `0.1`.
+
+Accepted full-history facts:
+
+```text
+race observations       55,268
+runner observations    781,161
+expected-time rows     221,072   (four baseline methods)
+RunPerf feature rows 3,124,644   (781,161 × four methods)
+day-bias rows            36,762
+```
+
+ExpectedTime coverage by baseline method was approximately 95.8%:
+
+```text
+EXPANDING   52,952 / 55,268 = 0.958095
+ROLLING_2Y  52,932 / 55,268 = 0.957733
+ROLLING_3Y  52,950 / 55,268 = 0.958059
+ROLLING_5Y  52,950 / 55,268 = 0.958059
+```
+
+All RunPerf audit gates passed:
+
+```text
+SQLite integrity                 PASS
+strict past-only history         PASS
+duplicate keys                   0
+negative margin violations       0
+finish-percentile violations     0
+winner-margin violations         0
+time-residual arithmetic errors  0
+market-named columns             0
+```
+
+This accepts the **candidate-input layer**, not a final RunPerf formula. The 2024-2025 rows were built and audited for structural completeness, but are not used by the development candidate comparison.
+
 ## Example
 
 ```bash
@@ -178,12 +219,14 @@ python horse-racing/jrdb/src/audit_jrdb_runperf.py \
   --out /path/runperf_audit.json
 ```
 
-## Next validation step
+## Current validation step
 
-After Phase A full-history acceptance, build this layer on 2010-2025 and inspect coverage first. Then use only 2010-2023 to compare:
+The structural full-history build is accepted. Candidate selection now uses **only 2010-2023** through `compare_jrdb_runperf_candidates.py` to compare:
 
 - history window
 - DayTrackBias shrink candidate
 - B0 / B1 / T0-T3 / J0 / J1
 
-The 2024-2025 locked holdout is not opened merely to tune these choices.
+The complete protocol, adoption gates, and fitted-coefficient as-of rules are defined in `docs/README_compare_jrdb_runperf_candidates.md`.
+
+The 2024-2025 locked holdout remains unopened for candidate selection.
