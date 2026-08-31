@@ -15,6 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from build_jrdb_index_base_from_raw import (  # noqa: E402
+    _put_bac_revision,
     build,
     parse_bac,
     parse_cha,
@@ -258,6 +259,31 @@ class IndexBaseBuilderTest(unittest.TestCase):
         self.assertEqual(parsed["distance_m"], 1600)
         self.assertEqual(parsed["turn_code"], "2")
         self.assertEqual(parsed["availability_class"], "PRE_RACE")
+
+    def test_bac_postponement_revision_keeps_later_date(self) -> None:
+        first = parse_bac(make_bac(), "BAC260830.txt")
+        postponed_raw = bytearray(make_bac())
+        put(postponed_raw, 8, 8, "20260831")
+        postponed = parse_bac(bytes(postponed_raw), "BAC260831.txt")
+
+        races: dict[str, dict[str, object]] = {}
+        _put_bac_revision(races, first)
+        _put_bac_revision(races, postponed)
+
+        self.assertEqual(races["0526A101"]["race_date"], "2026-08-31")
+        self.assertEqual(races["0526A101"]["source_member"], "BAC260831.txt")
+
+    def test_bac_revision_with_material_difference_is_rejected(self) -> None:
+        first = parse_bac(make_bac(), "BAC260830.txt")
+        changed_raw = bytearray(make_bac())
+        put(changed_raw, 8, 8, "20260831")
+        put(changed_raw, 20, 4, "1800")
+        changed = parse_bac(bytes(changed_raw), "BAC260831.txt")
+
+        races: dict[str, dict[str, object]] = {}
+        _put_bac_revision(races, first)
+        with self.assertRaisesRegex(ValueError, "non-identical duplicate BAC"):
+            _put_bac_revision(races, changed)
 
     def test_kyi_parser_keeps_previous_links_and_pre_race_material(self) -> None:
         runner, links = parse_kyi(make_kyi(), "KYI260830.txt")

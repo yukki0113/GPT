@@ -476,6 +476,40 @@ def _unique_put(
     raise ValueError(f"non-identical duplicate {kind} key={key}")
 
 
+def _put_bac_revision(
+    target: dict[str, dict[str, Any]],
+    value: dict[str, Any],
+) -> None:
+    """Resolve a BAC postponement revision without relaxing race identity checks."""
+    key = value["race_key"]
+    existing = target.get(key)
+    if existing is None:
+        target[key] = value
+        return
+    if existing.get("record_hash") == value.get("record_hash"):
+        return
+
+    ignored_fields = {"race_date", "source_member", "record_hash"}
+    existing_identity = {
+        field: field_value
+        for field, field_value in existing.items()
+        if field not in ignored_fields
+    }
+    value_identity = {
+        field: field_value
+        for field, field_value in value.items()
+        if field not in ignored_fields
+    }
+    if existing_identity != value_identity:
+        raise ValueError(f"non-identical duplicate BAC key={key}")
+
+    existing_date = existing.get("race_date")
+    value_date = value.get("race_date")
+    if not existing_date or not value_date:
+        raise ValueError(f"ambiguous BAC date revision key={key}")
+    if value_date > existing_date:
+        target[key] = value
+
 def _archive_path(raw_root: Path, kind: str, year: int) -> Path:
     return raw_root / kind / f"{kind}_{year}.zip"
 
@@ -504,7 +538,7 @@ def load_year(raw_root: Path, year: int) -> YearData:
     profiles: list[dict[str, Any]] = []
 
     for _, race in _read_kind(_archive_path(raw_root, "BAC", year), "BAC", parse_bac):
-        _unique_put(races, race["race_key"], race, "BAC")
+        _put_bac_revision(races, race)
 
     for _, parsed in _read_kind(_archive_path(raw_root, "KYI", year), "KYI", parse_kyi):
         runner, links = parsed
