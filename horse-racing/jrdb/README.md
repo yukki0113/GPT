@@ -27,6 +27,7 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
 - `src/export_jrdb_eval_race_conditions.py` — Raw BAC → Eval用1レース1行レース条件CSV（Analysis非変更）
 - `src/export_jrdb_eval_dataset.py` — Raw BAC + SED → Eval専用1レース1行統合CSV（Analysis/Core非依存）
+- `src/export_jrdb_eval_horse_results.py` — Raw SED → Eval「全馬データ」結果用1頭1行CSV + audit JSON
 - `src/enrich_eval_csv_with_paci.py` — Eval OCR 5列CSV + PACI → 開催前1頭1行エンリッチCSV（Analysis/Core/SED非依存）
 - `tools/generate_jrdb_codebooks.py` — codebook生成
 - `tools/audit_jrdb_core_v1_1_1.py` — Core監査ツール
