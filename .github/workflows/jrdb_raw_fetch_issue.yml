@@ -67,7 +67,7 @@ jobs:
               if kind == 'PACI':
                   cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_paci.py','--date',date,'--out-dir','/tmp/jrdb_raw']
               else:
-                  cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_history.py','--date',date,'--kinds','SED','--out-dir','/tmp/jrdb_raw']
+                  cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_history.py','--date',date,'--kinds','SED','--output-dir','/tmp/jrdb_raw']
               subprocess.run(cmd, check=True)
           PY
 
