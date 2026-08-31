@@ -115,6 +115,31 @@ The ranking is evidence, not an automatic promotion rule. A candidate becomes th
 
 No single numeric cutoff is hard-coded before seeing the development distribution. Any tolerance used to define a practical tie must be derived from year-to-year development variation and documented before the holdout is opened.
 
+## As-of coefficient snapshots after adoption
+
+If the adopted RunPerf is `T1`, `T2`, or `T3`, the development-wide final coefficient must **not** be copied backward into earlier years. That would allow later outcomes to alter the historical target definition used by an earlier walk-forward model.
+
+Instead, fitted RunPerf uses an annual as-of coefficient snapshot:
+
+```text
+RunPerf snapshot for races in year Y
+<- coefficient fit using eligible next-start pairs ending no later than Y-1
+```
+
+Therefore:
+
+- 2013 RunPerf targets/features use the coefficient snapshot available after 2012.
+- 2014 uses the snapshot available after 2013.
+- ...
+- 2024 locked holdout uses a coefficient snapshot frozen with data through 2023 only.
+- future production uses only data that were available before the published prediction snapshot.
+
+When predicting a race in year `Y`, historical completed runs may be rescored under the same `Y` as-of coefficient snapshot. This is a versioned representation: the stored raw RunPerf components remain immutable, while the composite score records `coefficient_asof`, `coefficient_version`, and the selected candidate specification.
+
+A completed race in the target test year is also scored with the coefficient snapshot frozen before that year; the test year's own outcomes do not refit the target definition until the next year's snapshot.
+
+Direct candidates `B0`, `B1`, `T0`, `J0`, and `J1` do not require fitted coefficient snapshots, but their source/version metadata remain recorded.
+
 ## Market isolation
 
 Odds and popularity are not inputs. The RunPerf database is separately audited for market-named columns before comparison.
