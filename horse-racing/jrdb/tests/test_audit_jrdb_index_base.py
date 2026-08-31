@@ -125,6 +125,16 @@ class IndexBaseAuditTest(unittest.TestCase):
             self.assertEqual(report["coverage"]["horse_id_match_rate"], 1.0)
             self.assertEqual(report["coverage"]["profile_asof_rate"], 1.0)
             self.assertTrue(report["checks"]["no_duplicate_business_keys"])
+            self.assertEqual(len(report["yearly"]), 1)
+            yearly = report["yearly"][0]
+            self.assertEqual(yearly["year"], 2020)
+            self.assertEqual(yearly["race_count"], 1)
+            self.assertEqual(yearly["pre_race_count"], 1)
+            self.assertEqual(yearly["fallback_race_count"], 0)
+            self.assertEqual(yearly["runner_pre_count"], 1)
+            self.assertEqual(yearly["runner_result_count"], 1)
+            self.assertEqual(yearly["workout_count"], 0)
+            self.assertEqual(yearly["training_count"], 0)
 
 
 if __name__ == "__main__":
