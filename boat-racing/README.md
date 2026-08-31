@@ -9,6 +9,38 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 詳細仕様は `docs/` を参照してください。日次CSV、キャッシュ、ログ、運用台帳はGit管理対象外です。
 
+## Prediction specs
+
+### 基礎・履歴仕様
+- `docs/競艇AI予想_事前予想仕様書_Ver1.2.1.md`
+  - 2026-08-31までの事前予想基礎仕様・履歴正本
+  - 24列予想CSV、26列予想根拠明細CSV、相対比較・軸警戒ルールを定義
+
+### 2026-09-01以降の前向き試行
+- `docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
+  - `ForwardTrial_Ver0.1`
+  - 予想スレッドは日次試行開始時にこの仕様を優先して読む
+  - Ver1.2.1を基礎資料としつつ、試行用の決定規則、2連単1点、販売選別、結果遮断を固定
+
+## Daily data source of truth
+
+日次原本はGoogle Driveを正本とし、Gitへcommitしません。
+
+### data
+- Folder ID: `11OtFNwroVbgV8BClzoepTKoa81fQJ-A1`
+- URL: `https://drive.google.com/drive/folders/11OtFNwroVbgV8BClzoepTKoa81fQJ-A1`
+- 主な区分:
+  - `racecards`
+  - `predictions`
+  - `prediction-rationales`
+  - `sales-selection`
+  - `results`
+
+### analysis
+- Folder ID: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
+- URL: `https://drive.google.com/drive/folders/19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
+- バックテスト結果、結果参照前固定、比較資料、仕様改訂判断などを保存
+
 ## Ledger source of truth
 
 継続台帳の正本は **Googleスプレッドシート `競艇note販売運用台帳`** とします。
