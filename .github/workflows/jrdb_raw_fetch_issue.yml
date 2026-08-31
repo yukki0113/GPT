@@ -83,11 +83,14 @@ jobs:
           rows = []
           for kind in req['kinds']:
               name = f'{kind}{yy}.zip'
-              path = out / name
+              if kind == 'SED':
+                  path = out / 'SED' / name
+              else:
+                  path = out / name
               if not path.exists():
-                  raise SystemExit(f'missing output: {name}')
+                  raise SystemExit(f'missing output: {path}')
               if not zipfile.is_zipfile(path):
-                  raise SystemExit(f'invalid zip: {name}')
+                  raise SystemExit(f'invalid zip: {path}')
               with zipfile.ZipFile(path) as zf:
                   bad = zf.testzip()
                   if bad is not None:
