@@ -591,13 +591,13 @@ def load_year(raw_root: Path, year: int) -> YearData:
     if cha_archive.exists():
         for _, workout in _read_kind(cha_archive, "CHA", parse_cha):
             key = (workout["race_key"], workout["horse_no"])
-            _unique_put(workouts, key, workout, "CHA")
+            _put_pre_race_revision(workouts, key, workout, "CHA", races)
 
     cyb_archive = _archive_path(raw_root, "CYB", year)
     if cyb_archive.exists():
         for _, row in _read_kind(cyb_archive, "CYB", parse_cyb):
             key = (row["race_key"], row["horse_no"])
-            _unique_put(training, key, row, "CYB")
+            _put_pre_race_revision(training, key, row, "CYB", races)
 
     for _, profile in _read_kind(_archive_path(raw_root, "UKC", year), "UKC", profile_observation):
         profiles.append(profile)
