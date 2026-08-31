@@ -14,7 +14,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 
 def _scalar(connection: sqlite3.Connection, sql: str, params: tuple[Any, ...] = ()) -> Any:
@@ -61,25 +61,61 @@ def audit(db_path: Path, include_db_sha256: bool = True) -> dict[str, Any]:
         )
         latest_build = build_rows[-1] if build_rows else None
 
+        # Aggregate each horse-level table independently before joining by year.
+        # Joining runner_pre/result/workout/training directly by race_key creates an
+        # O(field_size^4) intermediate relation and is prohibitively expensive on
+        # full history even though the final DISTINCT counts are correct.
         yearly = _rows(
             connection,
             """
+            WITH race_year AS (
+              SELECT
+                year,
+                COUNT(*) AS race_count,
+                SUM(CASE WHEN availability_class='PRE_RACE' THEN 1 ELSE 0 END) AS pre_race_count,
+                SUM(CASE WHEN availability_class='CURRENT_RESULT_FALLBACK' THEN 1 ELSE 0 END) AS fallback_race_count
+              FROM race_context
+              GROUP BY year
+            ),
+            pre_year AS (
+              SELECT r.year,COUNT(*) AS runner_pre_count
+              FROM runner_pre p
+              JOIN race_context r ON r.race_key=p.race_key
+              GROUP BY r.year
+            ),
+            result_year AS (
+              SELECT r.year,COUNT(*) AS runner_result_count
+              FROM runner_result x
+              JOIN race_context r ON r.race_key=x.race_key
+              GROUP BY r.year
+            ),
+            workout_year AS (
+              SELECT r.year,COUNT(*) AS workout_count
+              FROM workout_main w
+              JOIN race_context r ON r.race_key=w.race_key
+              GROUP BY r.year
+            ),
+            training_year AS (
+              SELECT r.year,COUNT(*) AS training_count
+              FROM training_analysis t
+              JOIN race_context r ON r.race_key=t.race_key
+              GROUP BY r.year
+            )
             SELECT
-              r.year,
-              COUNT(DISTINCT r.race_key) AS race_count,
-              COUNT(DISTINCT CASE WHEN r.availability_class='PRE_RACE' THEN r.race_key END) AS pre_race_count,
-              COUNT(DISTINCT CASE WHEN r.availability_class='CURRENT_RESULT_FALLBACK' THEN r.race_key END) AS fallback_race_count,
-              COUNT(DISTINCT p.race_key || ':' || printf('%02d',p.horse_no)) AS runner_pre_count,
-              COUNT(DISTINCT x.race_key || ':' || printf('%02d',x.horse_no)) AS runner_result_count,
-              COUNT(DISTINCT w.race_key || ':' || printf('%02d',w.horse_no)) AS workout_count,
-              COUNT(DISTINCT t.race_key || ':' || printf('%02d',t.horse_no)) AS training_count
-            FROM race_context r
-            LEFT JOIN runner_pre p ON p.race_key=r.race_key
-            LEFT JOIN runner_result x ON x.race_key=r.race_key
-            LEFT JOIN workout_main w ON w.race_key=r.race_key
-            LEFT JOIN training_analysis t ON t.race_key=r.race_key
-            GROUP BY r.year
-            ORDER BY r.year
+              y.year,
+              y.race_count,
+              y.pre_race_count,
+              y.fallback_race_count,
+              COALESCE(p.runner_pre_count,0) AS runner_pre_count,
+              COALESCE(x.runner_result_count,0) AS runner_result_count,
+              COALESCE(w.workout_count,0) AS workout_count,
+              COALESCE(t.training_count,0) AS training_count
+            FROM race_year y
+            LEFT JOIN pre_year p ON p.year=y.year
+            LEFT JOIN result_year x ON x.year=y.year
+            LEFT JOIN workout_year w ON w.year=y.year
+            LEFT JOIN training_year t ON t.year=y.year
+            ORDER BY y.year
             """,
         )
 
