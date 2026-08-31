@@ -66,6 +66,20 @@ Each is crossed with five DayTrackBias forms:
 
 The full standard comparison therefore contains 84 candidates: four B/J benchmarks plus 80 T-family variants.
 
+## Predeclared adoption eligibility
+
+Before the full 2013-2023 result is inspected, candidates are assigned the following adoption roles:
+
+- **independent-core eligible**: `B0`, `B1`, `T0`, `T1`
+- **diagnostic / conditional eligibility**: `T2`, `T3`
+- **JRDB benchmark only**: `J0`, `J1`
+
+`T2/T3` remain useful diagnostics, but their relative-carried-weight coefficient is learned against next-start performance. That can capture not only the burden of carrying weight but also the reverse signal that stronger horses are assigned more weight. Therefore a high T2/T3 rank alone is insufficient to define demonstrated run performance.
+
+T2/T3 may be promoted only after a separate weight-effect test isolates the burden effect with an approach such as within-horse changes and appropriate race/class controls. Until then, weight remains available later as an Ability/Edge contextual factor rather than being silently embedded in RunPerf.
+
+J0/J1 are never promoted merely by winning this table. They measure the benchmark gap to JRDB's prepared scores and remain provenance-explicit comparison references.
+
 ## T1-T3 coefficient fitting
 
 The coefficients are not fixed by hand.
