@@ -1,0 +1,120 @@
+name: JRDB BAC duplicate inspect via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  inspect:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_BAC_DUP_INSPECT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch BAC 2013
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/jrdb_dup/raw
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2013 \
+            --to-year 2013 \
+            --kinds BAC \
+            --output-dir /tmp/jrdb_dup/raw \
+            --manifest /tmp/jrdb_dup/fetch_manifest.jsonl \
+            --sleep-seconds 0
+
+      - name: Inspect duplicate BAC keys
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          import zipfile
+          from collections import defaultdict
+          from pathlib import Path
+
+          from build_jrdb_index_base_from_raw import _canonical_members, parse_bac
+
+          archive = Path('/tmp/jrdb_dup/raw/BAC/BAC_2013.zip')
+          grouped = defaultdict(list)
+          with zipfile.ZipFile(archive) as zf:
+              for member in _canonical_members(zf, 'BAC'):
+                  for raw in zf.read(member).splitlines():
+                      if not raw:
+                          continue
+                      parsed = parse_bac(raw, member)
+                      grouped[parsed['race_key']].append((member, parsed, raw))
+
+          duplicates = []
+          for key, rows in sorted(grouped.items()):
+              hashes = {row[1]['record_hash'] for row in rows}
+              if len(rows) <= 1 or len(hashes) <= 1:
+                  continue
+              item = {'race_key': key, 'records': []}
+              for member, parsed, raw in rows:
+                  clean = dict(parsed)
+                  clean.pop('record_hash', None)
+                  item['records'].append({
+                      'member': member,
+                      'parsed': clean,
+                      'raw_sha256': parsed['record_hash'],
+                      'raw_len': len(raw),
+                  })
+              base = rows[0][1]
+              differing_fields = []
+              for field in sorted(base.keys()):
+                  if field == 'record_hash':
+                      continue
+                  values = [row[1].get(field) for row in rows]
+                  if any(value != values[0] for value in values[1:]):
+                      differing_fields.append({'field': field, 'values': values})
+              item['differing_fields'] = differing_fields
+              duplicates.append(item)
+
+          result = {
+              'status': 'success',
+              'year': 2013,
+              'duplicate_nonidentical_key_count': len(duplicates),
+              'duplicates': duplicates,
+          }
+          Path('/tmp/jrdb_dup_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          Path('/tmp/jrdb_dup_comment.md').write_text(
+              'JRDB_BAC_DUP_INSPECT_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n', encoding='utf-8'
+          )
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Comment result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' \
+            --repo '${{ github.repository }}' \
+            --body-file /tmp/jrdb_dup_comment.md
+
+      - name: Close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
