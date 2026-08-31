@@ -510,6 +510,39 @@ def _put_bac_revision(
     if value_date > existing_date:
         target[key] = value
 
+
+def _put_pre_race_revision(
+    target: dict[tuple[str, int], dict[str, Any]],
+    key: tuple[str, int],
+    value: dict[str, Any],
+    kind: str,
+    races: dict[str, dict[str, Any]],
+) -> None:
+    """Resolve postponed-day pre-race snapshots against the canonical BAC race date."""
+    existing = target.get(key)
+    if existing is None:
+        target[key] = value
+        return
+    if existing.get("record_hash") == value.get("record_hash"):
+        return
+
+    race = races.get(key[0])
+    canonical_date = race.get("race_date") if race else None
+    existing_date = _member_date(existing.get("source_member", ""))
+    value_date = _member_date(value.get("source_member", ""))
+    if canonical_date is None or existing_date is None or value_date is None:
+        raise ValueError(f"ambiguous duplicate {kind} key={key}")
+
+    existing_is_canonical = existing_date == canonical_date
+    value_is_canonical = value_date == canonical_date
+    if existing_is_canonical and not value_is_canonical:
+        return
+    if value_is_canonical and not existing_is_canonical:
+        target[key] = value
+        return
+    raise ValueError(f"ambiguous duplicate {kind} key={key}")
+
+
 def _archive_path(raw_root: Path, kind: str, year: int) -> Path:
     return raw_root / kind / f"{kind}_{year}.zip"
 
