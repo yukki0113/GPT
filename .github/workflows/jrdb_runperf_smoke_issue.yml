@@ -1,0 +1,69 @@
+name: JRDB RunPerf smoke via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  smoke:
+    if: startsWith(github.event.issue.title, '[JRDB_RUNPERF_SMOKE]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run RunPerf synthetic tests
+        id: test
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_build_jrdb_runperf_features.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_runperf.py 2>&1 | tee /tmp/runperf_smoke.log
+
+      - name: Comment success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'JRDB_RUNPERF_SMOKE_RESULT\nstatus=PASS\nSynthetic RunPerf builder/audit tests passed on GitHub Actions.'
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              state_reason: 'completed'
+            });
+
+      - name: Comment failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let log = '';
+            if (fs.existsSync('/tmp/runperf_smoke.log')) {
+              log = fs.readFileSync('/tmp/runperf_smoke.log', 'utf8').slice(-12000);
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `JRDB_RUNPERF_SMOKE_RESULT\nstatus=FAIL\n\n\`\`\`text\n${log}\n\`\`\``
+            });
