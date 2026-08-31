@@ -1,0 +1,233 @@
+name: JRDB Index Base full audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_INDEX_BASE_AUDIT]'
+
+jobs:
+  build-audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_INDEX_BASE_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '{}').strip())
+          from_year = int(request.get('from_year', 2010))
+          to_year = int(request.get('to_year', 2025))
+          if from_year < 2010 or to_year > 2025 or to_year < from_year:
+              raise SystemExit('year range must be within 2010..2025')
+
+          hash_archives = bool(request.get('hash_archives', True))
+          resolved = {
+              'request_id': request_id,
+              'from_year': from_year,
+              'to_year': to_year,
+              'hash_archives': hash_archives,
+              'kinds': ['BAC','KYI','SED','UKC','CHA','CYB'],
+          }
+          Path('/tmp/index_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as fh:
+              fh.write(f'request_id={request_id}\n')
+              fh.write(f'from_year={from_year}\n')
+              fh.write(f'to_year={to_year}\n')
+          PY
+
+      - name: Run synthetic regression tests first
+        run: |
+          python -m unittest horse-racing/jrdb/tests/test_build_jrdb_index_base_from_raw.py -v
+
+      - name: Fetch annual JRDB Raw
+        id: fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_index/raw /tmp/jrdb_index/report
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year '${{ steps.request.outputs.from_year }}' \
+            --to-year '${{ steps.request.outputs.to_year }}' \
+            --kinds BAC KYI SED UKC CHA CYB \
+            --output-dir /tmp/jrdb_index/raw \
+            --manifest /tmp/jrdb_index/report/fetch_manifest.jsonl \
+            --sleep-seconds 1 \
+            --continue-on-error \
+            > /tmp/jrdb_index/report/fetch_stdout.log 2> /tmp/jrdb_index/report/fetch_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ -f /tmp/jrdb_index/raw/fetch_summary.json ]; then
+            cp /tmp/jrdb_index/raw/fetch_summary.json /tmp/jrdb_index/report/fetch_summary.json
+          fi
+          exit 0
+
+      - name: Build Index Base
+        id: build
+        continue-on-error: true
+        run: |
+          set +e
+          HASH_ARG=()
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          request = json.loads(Path('/tmp/index_request.json').read_text(encoding='utf-8'))
+          years = list(range(request['from_year'], request['to_year'] + 1))
+          Path('/tmp/index_years.txt').write_text(' '.join(map(str, years)), encoding='utf-8')
+          PY
+          if [ "$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print('1' if json.loads(Path('/tmp/index_request.json').read_text())['hash_archives'] else '0')
+          PY
+          )" = "0" ]; then
+            HASH_ARG+=(--no-archive-hash)
+          fi
+          read -ra YEARS <<< "$(cat /tmp/index_years.txt)"
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
+            --raw-root /tmp/jrdb_index/raw \
+            --years "${YEARS[@]}" \
+            --db /tmp/jrdb_index/jrdb_index_base.sqlite \
+            "${HASH_ARG[@]}" \
+            > /tmp/jrdb_index/report/build_stdout.log 2> /tmp/jrdb_index/report/build_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit Index Base
+        id: audit
+        continue-on-error: true
+        run: |
+          set +e
+          if [ ! -f /tmp/jrdb_index/jrdb_index_base.sqlite ]; then
+            echo "database was not created" > /tmp/jrdb_index/report/audit_stderr.log
+            echo "exit_code=99" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/audit_jrdb_index_base.py \
+            --db /tmp/jrdb_index/jrdb_index_base.sqlite \
+            --out /tmp/jrdb_index/report/index_base_audit.json \
+            > /tmp/jrdb_index/report/audit_stdout.log 2> /tmp/jrdb_index/report/audit_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build lightweight workflow result
+        if: always()
+        env:
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          BUILD_EXIT: ${{ steps.build.outputs.exit_code }}
+          AUDIT_EXIT: ${{ steps.audit.outputs.exit_code }}
+          HEAD_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/index_request.json').read_text(encoding='utf-8'))
+          audit_path = Path('/tmp/jrdb_index/report/index_base_audit.json')
+          audit = json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.is_file() else {}
+          fetch_exit = os.environ.get('FETCH_EXIT', '')
+          build_exit = os.environ.get('BUILD_EXIT', '')
+          audit_exit = os.environ.get('AUDIT_EXIT', '')
+          status = 'success' if fetch_exit == '0' and build_exit == '0' and audit_exit == '0' and audit.get('status') == 'PASS' else 'failure'
+
+          result = {
+              'status': status,
+              'run_id': int(os.environ['RUN_ID']),
+              'head_sha': os.environ['HEAD_SHA'],
+              'request': request,
+              'fetch_exit_code': fetch_exit,
+              'build_exit_code': build_exit,
+              'audit_exit_code': audit_exit,
+              'audit_status': audit.get('status'),
+              'database': audit.get('database'),
+              'coverage': audit.get('coverage'),
+              'checks': audit.get('checks'),
+              'yearly': audit.get('yearly'),
+              'anomaly_count': len(audit.get('anomalies', [])),
+          }
+          Path('/tmp/jrdb_index/report/workflow_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          Path('/tmp/comment.md').write_text(
+              'JRDB_INDEX_BASE_AUDIT_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Upload audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-index-base-audit-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/jrdb_index/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' \
+            --repo '${{ github.repository }}' \
+            --body-file /tmp/comment.md
+
+      - name: Close successful issue
+        if: always() && steps.fetch.outputs.exit_code == '0' && steps.build.outputs.exit_code == '0' && steps.audit.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Fail workflow when audit failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.build.outputs.exit_code != '0' || steps.audit.outputs.exit_code != '0')
+        run: exit 1
