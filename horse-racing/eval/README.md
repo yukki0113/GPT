@@ -24,6 +24,7 @@ Chat / Workで台帳を参照・更新する場合は、Google Drive / Google Sh
 - `src/eval_ocr/` — 表構造検出・会場OCR・数値OCR・色検証・CSV出力
 - `src/fetch_jra_daily_results.py` — JRA日次結果・払戻取得
 - `src/validate_jra_results.py` — JRA結果CSVの機械検証
+- `../jrdb/src/export_jrdb_eval_horse_results.py` — JRDB SED Raw → 「全馬データ」結果用1頭1行CSV + audit JSON
 
 各ツールの詳細は `docs/` を参照してください。
 
