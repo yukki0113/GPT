@@ -76,7 +76,7 @@ jobs:
 
       - name: Run synthetic regression tests first
         run: |
-          python -m unittest horse-racing/jrdb/tests/test_build_jrdb_index_base_from_raw.py -v
+          python horse-racing/jrdb/tests/test_build_jrdb_index_base_from_raw.py -v
 
       - name: Fetch annual JRDB Raw
         id: fetch
