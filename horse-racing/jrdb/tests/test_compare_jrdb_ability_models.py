@@ -6,6 +6,8 @@ import sqlite3
 import sys
 from pathlib import Path
 
+import numpy as np
+
 SRC=Path(__file__).resolve().parents[1]/"src"; sys.path.insert(0,str(SRC))
 SNAP=SRC/"build_jrdb_ability_snapshot.py"; COMP=SRC/"compare_jrdb_ability_models.py"
 REF=SRC/"compare_jrdb_ability_models_reference.py"
@@ -45,4 +47,13 @@ def test_optimized_reference_equivalence_on_fixture(tmp_path:Path)->None:
     assert got["best_a0"]["candidate"] == expected["best_a0"]["candidate"]
     assert got["best_ridge"]["candidate"] == expected["best_ridge"]["candidate"]
     assert got["best_elastic_net"]["candidate"] == expected["best_elastic_net"]["candidate"]
+
+    rng = np.random.default_rng(7)
+    pred = rng.normal(size=12); target = rng.normal(size=12)
+    races = np.asarray(["r1"] * 4 + ["r2"] * 4 + ["r3"] * 4)
+    groups = [np.asarray([0, 1, 2, 3]), np.asarray([4, 5, 6, 7]), np.asarray([8, 9, 10, 11])]
+    reference_metric = reference._metric(pred, target, races)
+    optimized_metric = optimized._metric_cached(pred, target, groups)
+    for key in ("spearman_all", "within_race_spearman", "primary", "pearson", "mae", "rmse", "top_target_rank_percentile"):
+        assert np.isclose(reference_metric[key], optimized_metric[key], atol=1e-12, rtol=1e-12)
 
