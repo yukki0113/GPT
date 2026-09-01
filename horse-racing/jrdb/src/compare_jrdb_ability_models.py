@@ -23,6 +23,10 @@ RIDGE_ALPHAS = (0.01, 0.1, 1.0, 10.0, 100.0)
 ENET_ALPHAS = (0.001, 0.01, 0.1)
 ENET_L1 = (0.1, 0.5)
 
+# Runtime cache: transform/fold matrices and race slices are built once and
+# reused across all Ridge/Elastic-Net parameter pairs.
+_RUNTIME_CACHE: dict[str, Any] = {}
+
 
 def _metric(pred: np.ndarray, target: np.ndarray, races: np.ndarray) -> dict[str, Any]:
     """Calculate primary and required raw-scale metrics for one fold."""
@@ -51,6 +55,64 @@ def _metric(pred: np.ndarray, target: np.ndarray, races: np.ndarray) -> dict[str
         rank = 1 + int(np.sum(target[mask] > selected_target))
         top_percentiles.append(1.0 if n == 1 else float((n - rank) / (n - 1)))
     return {"spearman_all":all_s,"within_race_spearman":within_s,"primary":primary,"pearson":pearson,"mae":float(np.mean(np.abs(pred-target))),"rmse":float(np.sqrt(np.mean((pred-target)**2))),"top_target_rank_percentile":float(np.mean(top_percentiles)) if top_percentiles else None,"row_count":int(len(target)),"race_count":int(len(set(races)))}
+
+
+def _metric_cached(pred: np.ndarray, target: np.ndarray, race_groups: list[np.ndarray]) -> dict[str, Any]:
+    """Metric equivalent using cached race index slices (no repeated race scans)."""
+    races = np.arange(len(target), dtype=np.int64)
+    if len(target) < 2:
+        return _metric(pred, target, races)
+    all_s = float(spearmanr(pred, target).statistic) if np.std(pred) and np.std(target) else 0.0
+    within = []
+    top_percentiles = []
+    race_count = len(race_groups)
+    for idx in race_groups:
+        n = int(idx.size)
+        if n >= 3:
+            value = spearmanr(pred[idx], target[idx]).statistic
+            if value is not None and math.isfinite(float(value)):
+                within.append(float(value))
+        if n:
+            selected = int(np.argmax(pred[idx]))
+            selected_target = float(target[idx][selected])
+            rank = 1 + int(np.sum(target[idx] > selected_target))
+            top_percentiles.append(1.0 if n == 1 else float((n-rank)/(n-1)))
+    within_s = float(np.mean(within)) if within else None
+    primary = float(np.mean([all_s, within_s])) if within_s is not None else all_s
+    pearson = float(pearsonr(pred, target).statistic) if np.std(pred) and np.std(target) else 0.0
+    return {"spearman_all":all_s,"within_race_spearman":within_s,"primary":primary,"pearson":pearson,"mae":float(np.mean(np.abs(pred-target))),"rmse":float(np.sqrt(np.mean((pred-target)**2))),"top_target_rank_percentile":float(np.mean(top_percentiles)) if top_percentiles else None,"row_count":int(len(target)),"race_count":race_count}
+
+
+def _prepare_runtime_cache(rows: list[dict[str, Any]]) -> None:
+    """Prepare columnar arrays, fold indices, race slices, and matrices once."""
+    years = list(range(DEVELOPMENT_START, DEVELOPMENT_END + 1))
+    fold_rows = {year: [i for i, row in enumerate(rows) if int(row["year"]) == year] for year in years}
+    train_rows = {year: [i for i, row in enumerate(rows) if int(row["year"]) < year] for year in years}
+    targets = np.asarray([float(row["official_runperf_raw"]) for row in rows], dtype=float)
+    race_groups = {}
+    for year in years:
+        by_race: dict[Any, list[int]] = {}
+        for i in fold_rows[year]:
+            by_race.setdefault(rows[i]["race_key"], []).append(i)
+        race_groups[year] = [np.asarray([fold_rows[year].index(i) for i in idx], dtype=np.int64) for idx in by_race.values()]
+    transforms = {}
+    for recent in RECENT:
+        for bandwidth in BANDWIDTHS:
+            for aptitude_k in APTITUDE_K:
+                for jockey_k in JOCKEY_K:
+                    key = f"R:{recent}:{bandwidth}:{aptitude_k}:{jockey_k}"
+                    transforms[key] = {}
+                    for year in years:
+                        train_idx = train_rows[year]; test_idx = fold_rows[year]
+                        if not train_idx or not test_idx:
+                            transforms[key][year] = {"skipped": True}
+                            continue
+                        x_train = np.asarray([_feature_vector(rows[i], recent, bandwidth, aptitude_k, jockey_k)[0] for i in train_idx], dtype=float)
+                        x_test = np.asarray([_feature_vector(rows[i], recent, bandwidth, aptitude_k, jockey_k)[0] for i in test_idx], dtype=float)
+                        x_train, x_test, prep = _fold_preprocess(x_train, x_test)
+                        transforms[key][year] = {"x_train": x_train, "x_test": x_test, "y_train": targets[train_idx], "y_test": targets[test_idx], "race_groups": race_groups[year], "prep": prep, "train_year_max": year-1, "test_year": year}
+    _RUNTIME_CACHE.clear()
+    _RUNTIME_CACHE.update({"rows": rows, "targets": targets, "fold_rows": fold_rows, "train_rows": train_rows, "race_groups": race_groups, "transforms": transforms})
 
 
 def _load_rows(db: Path) -> list[dict[str, Any]]:
@@ -124,6 +186,24 @@ def _strata_summary(rows: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
 
 def _ridge_transform(rows: list[dict[str, Any]], year: int, recent: str, bandwidth: int, aptitude_k: int, jockey_k: int, alpha: float, family: str="Ridge", l1_ratio: float|None=None) -> tuple[dict[str, Any], dict[str, Any]]:
     """Fit one fold-local regularized model and return metrics plus preprocessing evidence."""
+    cached = _RUNTIME_CACHE.get("transforms", {}).get(f"R:{recent}:{bandwidth}:{aptitude_k}:{jockey_k}", {}).get(year)
+    if cached is not None:
+        if cached.get("skipped"):
+            metric={"year":year,"family":family,"recent":recent,"bandwidth":bandwidth,"aptitude_k":aptitude_k,"jockey_k":jockey_k,"alpha":alpha,"primary":None,"row_count":0,"race_count":0}
+            if l1_ratio is not None: metric["l1_ratio"]=l1_ratio
+            return metric,{"train_year_max":year-1,"test_year":year,"skipped":True}
+        x_train = cached["x_train"]; x_test = cached["x_test"]; y_train = cached["y_train"]; y_test = cached["y_test"]
+        if family == "Ridge":
+            model = Ridge(alpha=alpha, solver="lsqr", fit_intercept=True)
+        else:
+            model = ElasticNet(alpha=alpha, l1_ratio=float(l1_ratio), fit_intercept=True, max_iter=10000, tol=1e-6, random_state=0)
+        model.fit(x_train, y_train)
+        pred = model.predict(x_test)
+        metric = _metric_cached(pred, y_test, cached["race_groups"]) | {"year":year,"family":family,"recent":recent,"bandwidth":bandwidth,"aptitude_k":aptitude_k,"jockey_k":jockey_k,"alpha":alpha}
+        if l1_ratio is not None: metric["l1_ratio"] = l1_ratio
+        prep = dict(cached["prep"])
+        prep["coefficient_count"] = int(np.count_nonzero(model.coef_)); prep["intercept"] = float(model.intercept_); prep["coefficients"] = model.coef_.tolist(); prep["train_year_max"] = year-1; prep["test_year"] = year
+        return metric, prep
     train=[row for row in rows if int(row["year"])<year]; test=[row for row in rows if int(row["year"])==year]
     if not train or not test:
         metric={"year":year,"family":family,"recent":recent,"bandwidth":bandwidth,"aptitude_k":aptitude_k,"jockey_k":jockey_k,"alpha":alpha,"primary":None,"row_count":0,"race_count":0}
@@ -145,6 +225,7 @@ def compare(database: Path) -> dict[str, Any]:
     """Execute the frozen A0/Ridge/Elastic Net development comparison."""
     rows=_load_rows(database)
     if not rows: raise ValueError("no eligible existing-horse development rows")
+    _prepare_runtime_cache(rows)
     years=list(range(DEVELOPMENT_START,DEVELOPMENT_END+1)); a0=[]
     for label in RECENT:
         a0.extend(_a0_candidate(rows,year,label) for year in years)
