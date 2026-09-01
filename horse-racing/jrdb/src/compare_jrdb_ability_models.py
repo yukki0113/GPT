@@ -61,7 +61,9 @@ def _metric_cached(pred: np.ndarray, target: np.ndarray, race_groups: list[np.nd
     """Metric equivalent using cached race index slices (no repeated race scans)."""
     races = np.arange(len(target), dtype=np.int64)
     if len(target) < 2:
-        return _metric(pred, target, races)
+        result = _metric(pred, target, races)
+        result["race_count"] = len(race_groups)
+        return result
     all_s = float(spearmanr(pred, target).statistic) if np.std(pred) and np.std(target) else 0.0
     within = []
     top_percentiles = []
