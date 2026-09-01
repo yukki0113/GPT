@@ -32,7 +32,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install test dependencies
-        run: python -m pip install --disable-pip-version-check pytest
+        run: python -m pip install --disable-pip-version-check pytest numpy
 
       - name: Parse request
         id: request
@@ -65,6 +65,8 @@ jobs:
           methods = [str(item).upper() for item in methods]
           if len(set(methods)) != len(methods) or any(item not in allowed_methods for item in methods):
               raise SystemExit('invalid or duplicate baseline method')
+          if 'EXPANDING' not in methods:
+              raise SystemExit('official RunPerf v0.1 requires EXPANDING source rows')
 
           resolved = {
               'request_id': request_id,
@@ -88,7 +90,10 @@ jobs:
           python horse-racing/jrdb/tests/test_build_jrdb_index_base_from_raw.py -v
           python -m pytest -q \
             horse-racing/jrdb/tests/test_build_jrdb_runperf_features.py \
-            horse-racing/jrdb/tests/test_audit_jrdb_runperf.py
+            horse-racing/jrdb/tests/test_audit_jrdb_runperf.py \
+            horse-racing/jrdb/tests/test_fit_jrdb_runperf_coefficient_snapshot.py \
+            horse-racing/jrdb/tests/test_build_jrdb_official_runperf.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_official_runperf.py
 
       - name: Fetch annual JRDB Raw
         id: fetch
@@ -194,6 +199,44 @@ jobs:
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
 
+      - name: Materialize official RunPerf v0.1
+        id: official_build
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.runperf_audit.outputs.exit_code }}' != '0' ]; then
+            echo "RunPerf feature gate did not pass" > /tmp/jrdb_runperf/report/official_build_stderr.log
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/build_jrdb_official_runperf.py \
+            --runperf-db /tmp/jrdb_runperf/jrdb_runperf.sqlite \
+            --out /tmp/jrdb_runperf/jrdb_official_runperf.sqlite \
+            > /tmp/jrdb_runperf/report/official_build_stdout.log 2> /tmp/jrdb_runperf/report/official_build_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit official RunPerf v0.1
+        id: official_audit
+        continue-on-error: true
+        run: |
+          set +e
+          if [ ! -f /tmp/jrdb_runperf/jrdb_official_runperf.sqlite ]; then
+            echo "official RunPerf database was not created" > /tmp/jrdb_runperf/report/official_audit_stderr.log
+            echo "exit_code=99" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/audit_jrdb_official_runperf.py \
+            --db /tmp/jrdb_runperf/jrdb_official_runperf.sqlite \
+            --source-runperf-db /tmp/jrdb_runperf/jrdb_runperf.sqlite \
+            --out /tmp/jrdb_runperf/report/official_runperf_audit.json \
+            --no-db-hash \
+            > /tmp/jrdb_runperf/report/official_audit_stdout.log 2> /tmp/jrdb_runperf/report/official_audit_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
       - name: Build lightweight result
         if: always()
         env:
@@ -202,6 +245,8 @@ jobs:
           INDEX_AUDIT_EXIT: ${{ steps.index_audit.outputs.exit_code }}
           RUNPERF_BUILD_EXIT: ${{ steps.runperf_build.outputs.exit_code }}
           RUNPERF_AUDIT_EXIT: ${{ steps.runperf_audit.outputs.exit_code }}
+          OFFICIAL_BUILD_EXIT: ${{ steps.official_build.outputs.exit_code }}
+          OFFICIAL_AUDIT_EXIT: ${{ steps.official_audit.outputs.exit_code }}
           RUN_ID: ${{ github.run_id }}
           HEAD_SHA: ${{ github.sha }}
         run: |
@@ -213,16 +258,20 @@ jobs:
           request = json.loads(Path('/tmp/runperf_request.json').read_text(encoding='utf-8'))
           index_path = Path('/tmp/jrdb_runperf/report/index_base_audit.json')
           runperf_path = Path('/tmp/jrdb_runperf/report/runperf_audit.json')
+          official_path = Path('/tmp/jrdb_runperf/report/official_runperf_audit.json')
           index_audit = json.loads(index_path.read_text(encoding='utf-8')) if index_path.is_file() else {}
           runperf_audit = json.loads(runperf_path.read_text(encoding='utf-8')) if runperf_path.is_file() else {}
+          official_audit = json.loads(official_path.read_text(encoding='utf-8')) if official_path.is_file() else {}
           exits = {
               'fetch': os.environ.get('FETCH_EXIT', ''),
               'index_build': os.environ.get('INDEX_BUILD_EXIT', ''),
               'index_audit': os.environ.get('INDEX_AUDIT_EXIT', ''),
               'runperf_build': os.environ.get('RUNPERF_BUILD_EXIT', ''),
               'runperf_audit': os.environ.get('RUNPERF_AUDIT_EXIT', ''),
+              'official_build': os.environ.get('OFFICIAL_BUILD_EXIT', ''),
+              'official_audit': os.environ.get('OFFICIAL_AUDIT_EXIT', ''),
           }
-          status = 'success' if all(value == '0' for value in exits.values()) and runperf_audit.get('status') == 'PASS' else 'failure'
+          status = 'success' if all(value == '0' for value in exits.values()) and official_audit.get('status') == 'PASS' else 'failure'
           result = {
               'status': status,
               'run_id': int(os.environ['RUN_ID']),
@@ -237,6 +286,12 @@ jobs:
               'runperf_checks': runperf_audit.get('checks'),
               'runperf_violations': runperf_audit.get('violations'),
               'runperf_yearly': runperf_audit.get('yearly'),
+              'official_runperf_status': official_audit.get('status'),
+              'official_runperf_build': official_audit.get('build'),
+              'official_runperf_checks': official_audit.get('checks'),
+              'official_runperf_violations': official_audit.get('violations'),
+              'official_runperf_annual_coverage': official_audit.get('annual_coverage'),
+              'official_runperf_yearly_status_counts': official_audit.get('yearly_status_counts'),
           }
           Path('/tmp/jrdb_runperf/report/workflow_result.json').write_text(
               json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8'
@@ -275,7 +330,9 @@ jobs:
           steps.index_build.outputs.exit_code == '0' &&
           steps.index_audit.outputs.exit_code == '0' &&
           steps.runperf_build.outputs.exit_code == '0' &&
-          steps.runperf_audit.outputs.exit_code == '0'
+          steps.runperf_audit.outputs.exit_code == '0' &&
+          steps.official_build.outputs.exit_code == '0' &&
+          steps.official_audit.outputs.exit_code == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -288,5 +345,7 @@ jobs:
            steps.index_build.outputs.exit_code != '0' ||
            steps.index_audit.outputs.exit_code != '0' ||
            steps.runperf_build.outputs.exit_code != '0' ||
-           steps.runperf_audit.outputs.exit_code != '0')
+           steps.runperf_audit.outputs.exit_code != '0' ||
+           steps.official_build.outputs.exit_code != '0' ||
+           steps.official_audit.outputs.exit_code != '0')
         run: exit 1

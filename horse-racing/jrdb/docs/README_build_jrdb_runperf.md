@@ -230,3 +230,38 @@ The structural full-history build is accepted. Candidate selection now uses **on
 The complete protocol, adoption gates, and fitted-coefficient as-of rules are defined in `docs/README_compare_jrdb_runperf_candidates.md`.
 
 The 2024-2025 locked holdout remains unopened for candidate selection.
+
+## Official RunPerf v0.1 materialization
+
+After the candidate DB passes its structural audit, the frozen specification is
+materialized with no further candidate selection:
+
+```text
+jrdb_runperf.sqlite (EXPANDING source rows)
+  -> build_jrdb_official_runperf.py
+  -> jrdb_official_runperf.sqlite
+  -> audit_jrdb_official_runperf.py
+```
+
+The materializer creates annual coefficient snapshots.  A run in year `Y >= 2013`
+uses only the snapshot fitted through target-year pairs in `Y-1`; 2010-2012 use the
+permitted 2013-through-2012 snapshot and are labelled
+`WARMUP_RETROSPECTIVE_2013_SNAPSHOT`.  Source exclusions are copied, retain their
+source status, and never receive a zero-imputed score.
+
+```bash
+python horse-racing/jrdb/src/build_jrdb_official_runperf.py \
+  --runperf-db /path/jrdb_runperf.sqlite \
+  --out /path/jrdb_official_runperf.sqlite
+
+python horse-racing/jrdb/src/audit_jrdb_official_runperf.py \
+  --db /path/jrdb_official_runperf.sqlite \
+  --source-runperf-db /path/jrdb_runperf.sqlite \
+  --out /path/official_runperf_audit.json
+```
+
+The official audit fails closed on source coverage/status mismatches, duplicate
+business keys, coefficient chronology/provenance errors, non-finite components,
+arithmetic mismatch, future coefficient backfill, market columns, unordered
+horse/date history, and (when 2024/2025 exist) disagreement with the documented
+frozen snapshot coefficients.
