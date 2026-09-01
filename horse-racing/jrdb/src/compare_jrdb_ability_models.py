@@ -86,35 +86,59 @@ def _metric_cached(pred: np.ndarray, target: np.ndarray, race_groups: list[np.nd
 
 
 def _prepare_runtime_cache(rows: list[dict[str, Any]]) -> None:
-    """Prepare columnar arrays, fold indices, race slices, and matrices once."""
+    """Prepare columnar arrays, fold indices, and race slices once.
+
+    Transform matrices are materialized lazily for one transform at a time,
+    then reused across that transform's five Ridge alphas/six Elastic-Net
+    pairs. This avoids reconstructing Python dictionaries and avoids retaining
+    all 144 x 11 matrices simultaneously.
+    """
     years = list(range(DEVELOPMENT_START, DEVELOPMENT_END + 1))
     fold_rows = {year: [i for i, row in enumerate(rows) if int(row["year"]) == year] for year in years}
     train_rows = {year: [i for i, row in enumerate(rows) if int(row["year"]) < year] for year in years}
     targets = np.asarray([float(row["official_runperf_raw"]) for row in rows], dtype=float)
+    def column(name: str) -> np.ndarray:
+        return np.asarray([np.nan if row.get(name) is None else float(row[name]) for row in rows], dtype=float)
+    base = {name: column(name) for name in ("recent_perf_d070","recent_perf_d080","recent_perf_d090","recent_perf_d100","peak_best1_last5","peak_best2_mean_last5","performance_mad_last5","surface_fit_delta_raw","surface_fit_neff","course_exact_delta_raw","course_exact_neff","jockey_residual_mean_raw","jockey_residual_n","weight_relative","career_scored_run_count")}
+    for bandwidth in BANDWIDTHS:
+        base[f"distance_d{bandwidth}_delta_raw"] = column(f"distance_d{bandwidth}_delta_raw")
+        base[f"distance_d{bandwidth}_neff"] = column(f"distance_d{bandwidth}_neff")
     race_groups = {}
     for year in years:
         by_race: dict[Any, list[int]] = {}
         for i in fold_rows[year]:
             by_race.setdefault(rows[i]["race_key"], []).append(i)
         race_groups[year] = [np.asarray([fold_rows[year].index(i) for i in idx], dtype=np.int64) for idx in by_race.values()]
-    transforms = {}
-    for recent in RECENT:
-        for bandwidth in BANDWIDTHS:
-            for aptitude_k in APTITUDE_K:
-                for jockey_k in JOCKEY_K:
-                    key = f"R:{recent}:{bandwidth}:{aptitude_k}:{jockey_k}"
-                    transforms[key] = {}
-                    for year in years:
-                        train_idx = train_rows[year]; test_idx = fold_rows[year]
-                        if not train_idx or not test_idx:
-                            transforms[key][year] = {"skipped": True}
-                            continue
-                        x_train = np.asarray([_feature_vector(rows[i], recent, bandwidth, aptitude_k, jockey_k)[0] for i in train_idx], dtype=float)
-                        x_test = np.asarray([_feature_vector(rows[i], recent, bandwidth, aptitude_k, jockey_k)[0] for i in test_idx], dtype=float)
-                        x_train, x_test, prep = _fold_preprocess(x_train, x_test)
-                        transforms[key][year] = {"x_train": x_train, "x_test": x_test, "y_train": targets[train_idx], "y_test": targets[test_idx], "race_groups": race_groups[year], "prep": prep, "train_year_max": year-1, "test_year": year}
     _RUNTIME_CACHE.clear()
-    _RUNTIME_CACHE.update({"rows": rows, "targets": targets, "fold_rows": fold_rows, "train_rows": train_rows, "race_groups": race_groups, "transforms": transforms})
+    _RUNTIME_CACHE.update({"rows": rows, "targets": targets, "fold_rows": fold_rows, "train_rows": train_rows, "race_groups": race_groups, "base": base, "transforms": {}, "active_key": None})
+
+
+def _materialize_transform(key: str, year: int) -> dict[str, Any]:
+    """Vectorize one transform/fold and cache it for parameter-path reuse."""
+    if _RUNTIME_CACHE.get("active_key") != key:
+        _RUNTIME_CACHE["active_key"] = key
+        _RUNTIME_CACHE["transforms"] = {}
+    cache = _RUNTIME_CACHE["transforms"]
+    if year in cache:
+        return cache[year]
+    _, recent, bandwidth, aptitude_k, jockey_k = key.split(":")
+    base = _RUNTIME_CACHE["base"]
+    recent_arr = base[f"recent_perf_d{recent}"]
+    peak1 = base["peak_best1_last5"]; peak2 = base["peak_best2_mean_last5"]
+    surface_neff = base["surface_fit_neff"]; distance_neff = base[f"distance_d{bandwidth}_neff"]
+    course_neff = base["course_exact_neff"]; jockey_n = base["jockey_residual_n"]
+    values = [recent_arr, peak1, peak2, peak2-recent_arr, base["performance_mad_last5"], base["surface_fit_delta_raw"]*surface_neff/(surface_neff+float(aptitude_k)), base[f"distance_d{bandwidth}_delta_raw"]*distance_neff/(distance_neff+float(aptitude_k)), base["course_exact_delta_raw"]*course_neff/(course_neff+float(aptitude_k)), base["jockey_residual_mean_raw"]*jockey_n/(jockey_n+float(jockey_k)), base["weight_relative"], np.log1p(base["career_scored_run_count"])]
+    values = [np.where(np.isfinite(v), v, np.nan) for v in values]
+    matrix = np.column_stack(values)
+    flags = np.isnan(matrix[:, :-1]).astype(float)
+    matrix = np.column_stack([matrix, flags, np.zeros(len(matrix))])
+    train_idx = _RUNTIME_CACHE["train_rows"][year]; test_idx = _RUNTIME_CACHE["fold_rows"][year]
+    if not train_idx or not test_idx:
+        cache[year] = {"skipped": True}; return cache[year]
+    x_train, x_test, prep = _fold_preprocess(matrix[train_idx], matrix[test_idx])
+    result = {"x_train":x_train,"x_test":x_test,"y_train":_RUNTIME_CACHE["targets"][train_idx],"y_test":_RUNTIME_CACHE["targets"][test_idx],"race_groups":_RUNTIME_CACHE["race_groups"][year],"prep":prep,"train_year_max":year-1,"test_year":year}
+    cache[year] = result
+    return result
 
 
 def _load_rows(db: Path) -> list[dict[str, Any]]:
@@ -188,7 +212,8 @@ def _strata_summary(rows: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
 
 def _ridge_transform(rows: list[dict[str, Any]], year: int, recent: str, bandwidth: int, aptitude_k: int, jockey_k: int, alpha: float, family: str="Ridge", l1_ratio: float|None=None) -> tuple[dict[str, Any], dict[str, Any]]:
     """Fit one fold-local regularized model and return metrics plus preprocessing evidence."""
-    cached = _RUNTIME_CACHE.get("transforms", {}).get(f"R:{recent}:{bandwidth}:{aptitude_k}:{jockey_k}", {}).get(year)
+    transform_key = f"R:{recent}:{bandwidth}:{aptitude_k}:{jockey_k}"
+    cached = _materialize_transform(transform_key, year) if _RUNTIME_CACHE else None
     if cached is not None:
         if cached.get("skipped"):
             metric={"year":year,"family":family,"recent":recent,"bandwidth":bandwidth,"aptitude_k":aptitude_k,"jockey_k":jockey_k,"alpha":alpha,"primary":None,"row_count":0,"race_count":0}
