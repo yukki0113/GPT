@@ -1,0 +1,78 @@
+name: JRDB Ability existing-horse comparison via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  compare:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_ABILITY_COMPARE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pytest numpy scipy scikit-learn
+      - name: Run regression tests
+        run: |
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_build_jrdb_ability_snapshot.py \
+            horse-racing/jrdb/tests/test_compare_jrdb_ability_models.py \
+            horse-racing/jrdb/tests/test_build_jrdb_official_runperf.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_official_runperf.py
+      - name: Clean 2010-2023 build and comparison
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_ability_compare/raw /tmp/jrdb_ability_compare/report
+          python horse-racing/jrdb/src/fetch_jrdb_history.py --from-year 2010 --to-year 2023 --kinds BAC KYI SED UKC CHA CYB --output-dir /tmp/jrdb_ability_compare/raw --manifest /tmp/jrdb_ability_compare/report/fetch_manifest.jsonl --sleep-seconds 1
+          YEARS=$(seq 2010 2023)
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py --raw-root /tmp/jrdb_ability_compare/raw --years $YEARS --db /tmp/jrdb_ability_compare/index.sqlite --no-archive-hash
+          python horse-racing/jrdb/src/audit_jrdb_index_base.py --db /tmp/jrdb_ability_compare/index.sqlite --out /tmp/jrdb_ability_compare/report/index_audit.json --no-db-hash
+          python horse-racing/jrdb/src/build_jrdb_runperf_features.py --index-db /tmp/jrdb_ability_compare/index.sqlite --out /tmp/jrdb_ability_compare/runperf.sqlite --methods EXPANDING
+          python horse-racing/jrdb/src/audit_jrdb_runperf.py --db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/report/runperf_audit.json --no-db-hash
+          python horse-racing/jrdb/src/build_jrdb_official_runperf.py --runperf-db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/official.sqlite
+          python horse-racing/jrdb/src/audit_jrdb_official_runperf.py --db /tmp/jrdb_ability_compare/official.sqlite --source-runperf-db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/report/official_audit.json --no-db-hash
+          python horse-racing/jrdb/src/build_jrdb_ability_snapshot.py --index-db /tmp/jrdb_ability_compare/index.sqlite --official-runperf-db /tmp/jrdb_ability_compare/official.sqlite --out /tmp/jrdb_ability_compare/ability.sqlite
+          python horse-racing/jrdb/src/audit_jrdb_ability_snapshot.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_snapshot_audit.json
+          python horse-racing/jrdb/src/compare_jrdb_ability_models.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_comparison.json
+      - name: Build lightweight result
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=Path('/tmp/jrdb_ability_compare/report/ability_comparison.json')
+          result={'status':'failure','run_id':'${{ github.run_id }}','head_sha':'${{ github.sha }}','development_end':2023,'holdout_touched':False,'2024_2025_predictive_metrics_inspected':False,'model_promoted':False}
+          if report.exists(): result.update(json.loads(report.read_text(encoding='utf-8')))
+          result['status']='success' if result.get('status')=='PASS' and result.get('holdout_touched') is False else 'failure'
+          Path('/tmp/jrdb_ability_compare/report/workflow_result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jrdb-ability-compare-2010-2023-${{ github.run_id }}
+          path: /tmp/jrdb_ability_compare/report
+          if-no-files-found: warn
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'); const p='/tmp/jrdb_ability_compare/report/workflow_result.json';
+            const body=fs.existsSync(p)?'JRDB_ABILITY_COMPARE_RESULT\n```json\n'+fs.readFileSync(p,'utf8')+'\n```':'JRDB_ABILITY_COMPARE_RESULT\nworkflow failed before report generation';
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:context.issue.number,body});
