@@ -57,12 +57,14 @@ Then classify the two-year holdout:
 - `delta_primary_2025 > 0`
 - mean holdout `delta_primary > 0`
 - both fitted T1 coefficients remain finite and positive for both annual snapshots
+- selected-candidate coverage is at least `0.95` in both holdout years
 
 ### PASS_MIXED
 
 - mean holdout `delta_primary > 0`
 - exactly one of 2024 / 2025 has `delta_primary <= 0`
 - both fitted T1 coefficients remain finite and positive
+- selected-candidate coverage is at least `0.95` in both holdout years
 
 ### FAIL
 
@@ -71,7 +73,10 @@ Any of the following:
 - mean holdout `delta_primary <= 0`
 - a required T1 coefficient is missing / non-finite
 - a required T1 coefficient changes to a non-positive sign
-- the selected candidate cannot be evaluated at useful coverage because of an implementation/data failure
+- selected-candidate coverage is below `0.95` in either holdout year
+- the selected candidate cannot be evaluated because of an implementation/data failure
+
+The `0.95` coverage gate was frozen from development behavior before holdout evaluation. `T1|EXPANDING|RAW` development coverage ranged from approximately `0.9621` to `0.9678` across 2013-2023, so `0.95` is an implementation/data-continuity guard rather than a performance-tuning parameter.
 
 `same_surface AND abs(distance_change) <= 400m` performance is reported as a secondary validity check. It does not override the frozen primary classification by itself, but a materially opposite pattern must be called out before Ability development begins.
 
