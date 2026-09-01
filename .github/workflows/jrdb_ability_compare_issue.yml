@@ -32,24 +32,35 @@ jobs:
             horse-racing/jrdb/tests/test_compare_jrdb_ability_models.py \
             horse-racing/jrdb/tests/test_build_jrdb_official_runperf.py \
             horse-racing/jrdb/tests/test_audit_jrdb_official_runperf.py
-      - name: Clean 2010-2023 build and comparison
-        env:
-          JRDB_USER: ${{ secrets.JRDB_USER }}
-          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+      - name: Prepare 2010-2023 workspace
         run: |
           set -euo pipefail
           mkdir -p /tmp/jrdb_ability_compare/raw /tmp/jrdb_ability_compare/report
-          python horse-racing/jrdb/src/fetch_jrdb_history.py --from-year 2010 --to-year 2023 --kinds BAC KYI SED UKC CHA CYB --output-dir /tmp/jrdb_ability_compare/raw --manifest /tmp/jrdb_ability_compare/report/fetch_manifest.jsonl --sleep-seconds 1
+      - name: Fetch Raw
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: python horse-racing/jrdb/src/fetch_jrdb_history.py --from-year 2010 --to-year 2023 --kinds BAC KYI SED UKC CHA CYB --output-dir /tmp/jrdb_ability_compare/raw --manifest /tmp/jrdb_ability_compare/report/fetch_manifest.jsonl --sleep-seconds 1
+      - name: Build Index Base
+        run: |
           YEARS=$(seq 2010 2023)
           python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py --raw-root /tmp/jrdb_ability_compare/raw --years $YEARS --db /tmp/jrdb_ability_compare/index.sqlite --no-archive-hash
-          python horse-racing/jrdb/src/audit_jrdb_index_base.py --db /tmp/jrdb_ability_compare/index.sqlite --out /tmp/jrdb_ability_compare/report/index_audit.json --no-db-hash
-          python horse-racing/jrdb/src/build_jrdb_runperf_features.py --index-db /tmp/jrdb_ability_compare/index.sqlite --out /tmp/jrdb_ability_compare/runperf.sqlite --methods EXPANDING
-          python horse-racing/jrdb/src/audit_jrdb_runperf.py --db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/report/runperf_audit.json --no-db-hash
-          python horse-racing/jrdb/src/build_jrdb_official_runperf.py --runperf-db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/official.sqlite
-          python horse-racing/jrdb/src/audit_jrdb_official_runperf.py --db /tmp/jrdb_ability_compare/official.sqlite --source-runperf-db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/report/official_audit.json --no-db-hash
-          python horse-racing/jrdb/src/build_jrdb_ability_snapshot.py --index-db /tmp/jrdb_ability_compare/index.sqlite --official-runperf-db /tmp/jrdb_ability_compare/official.sqlite --out /tmp/jrdb_ability_compare/ability.sqlite
-          python horse-racing/jrdb/src/audit_jrdb_ability_snapshot.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_snapshot_audit.json
-          python horse-racing/jrdb/src/compare_jrdb_ability_models.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_comparison.json
+      - name: Audit Index Base
+        run: python horse-racing/jrdb/src/audit_jrdb_index_base.py --db /tmp/jrdb_ability_compare/index.sqlite --out /tmp/jrdb_ability_compare/report/index_audit.json --no-db-hash
+      - name: Build RunPerf
+        run: python horse-racing/jrdb/src/build_jrdb_runperf_features.py --index-db /tmp/jrdb_ability_compare/index.sqlite --out /tmp/jrdb_ability_compare/runperf.sqlite --methods EXPANDING
+      - name: Audit RunPerf
+        run: python horse-racing/jrdb/src/audit_jrdb_runperf.py --db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/report/runperf_audit.json --no-db-hash
+      - name: Build Official RunPerf
+        run: python horse-racing/jrdb/src/build_jrdb_official_runperf.py --runperf-db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/official.sqlite
+      - name: Audit Official RunPerf
+        run: python horse-racing/jrdb/src/audit_jrdb_official_runperf.py --db /tmp/jrdb_ability_compare/official.sqlite --source-runperf-db /tmp/jrdb_ability_compare/runperf.sqlite --out /tmp/jrdb_ability_compare/report/official_audit.json --no-db-hash
+      - name: Build Ability Snapshot
+        run: python horse-racing/jrdb/src/build_jrdb_ability_snapshot.py --index-db /tmp/jrdb_ability_compare/index.sqlite --official-runperf-db /tmp/jrdb_ability_compare/official.sqlite --out /tmp/jrdb_ability_compare/ability.sqlite
+      - name: Audit Ability Snapshot
+        run: python horse-racing/jrdb/src/audit_jrdb_ability_snapshot.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_snapshot_audit.json
+      - name: Compare Ability models
+        run: python horse-racing/jrdb/src/compare_jrdb_ability_models.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_comparison.json
       - name: Build lightweight result
         if: always()
         run: |
@@ -76,3 +87,4 @@ jobs:
             const fs=require('fs'); const p='/tmp/jrdb_ability_compare/report/workflow_result.json';
             const body=fs.existsSync(p)?'JRDB_ABILITY_COMPARE_RESULT\n```json\n'+fs.readFileSync(p,'utf8')+'\n```':'JRDB_ABILITY_COMPARE_RESULT\nworkflow failed before report generation';
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:context.issue.number,body});
+
