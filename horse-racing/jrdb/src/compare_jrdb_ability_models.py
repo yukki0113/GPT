@@ -27,7 +27,7 @@ ENET_L1 = (0.1, 0.5)
 def _metric(pred: np.ndarray, target: np.ndarray, races: np.ndarray) -> dict[str, Any]:
     """Calculate primary and required raw-scale metrics for one fold."""
     if len(target) < 2:
-        return {"spearman_all": None,"within_race_spearman": None,"primary": None,"pearson": None,"mae": None,"rmse": None,"row_count": int(len(target)),"race_count": int(len(set(races)))}
+        return {"spearman_all": None,"within_race_spearman": None,"primary": None,"pearson": None,"mae": None,"rmse": None,"top_target_rank_percentile": None,"row_count": int(len(target)),"race_count": int(len(set(races)))}
     all_s = float(spearmanr(pred, target).statistic) if np.std(pred) and np.std(target) else 0.0
     within: list[float] = []
     for race in sorted(set(races.tolist())):
@@ -40,7 +40,17 @@ def _metric(pred: np.ndarray, target: np.ndarray, races: np.ndarray) -> dict[str
     within_s = float(np.mean(within)) if within else None
     primary = float(np.mean([all_s, within_s])) if within_s is not None else all_s
     pearson = float(pearsonr(pred, target).statistic) if np.std(pred) and np.std(target) else 0.0
-    return {"spearman_all":all_s,"within_race_spearman":within_s,"primary":primary,"pearson":pearson,"mae":float(np.mean(np.abs(pred-target))),"rmse":float(np.sqrt(np.mean((pred-target)**2))),"row_count":int(len(target)),"race_count":int(len(set(races)))}
+    top_percentiles = []
+    for race in sorted(set(races.tolist())):
+        mask = races == race
+        n = int(mask.sum())
+        if n < 1:
+            continue
+        selected = int(np.argmax(pred[mask]))
+        selected_target = float(target[mask][selected])
+        rank = 1 + int(np.sum(target[mask] > selected_target))
+        top_percentiles.append(1.0 if n == 1 else float((n - rank) / (n - 1)))
+    return {"spearman_all":all_s,"within_race_spearman":within_s,"primary":primary,"pearson":pearson,"mae":float(np.mean(np.abs(pred-target))),"rmse":float(np.sqrt(np.mean((pred-target)**2))),"top_target_rank_percentile":float(np.mean(top_percentiles)) if top_percentiles else None,"row_count":int(len(target)),"race_count":int(len(set(races)))}
 
 
 def _load_rows(db: Path) -> list[dict[str, Any]]:
@@ -185,3 +195,4 @@ def main() -> int:
 
 
 if __name__=="__main__": raise SystemExit(main())
+
