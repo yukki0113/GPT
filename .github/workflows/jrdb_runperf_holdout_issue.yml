@@ -1,0 +1,352 @@
+name: JRDB RunPerf frozen holdout via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_RUNPERF_HOLDOUT]'
+
+jobs:
+  holdout:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_RUNPERF_HOLDOUT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pytest numpy
+
+      - name: Parse frozen request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request id')
+
+          raw_body = (os.environ.get('ISSUE_BODY') or '{}').strip()
+          request = json.loads(raw_body or '{}')
+          if not isinstance(request, dict):
+              raise SystemExit('request body must be a JSON object')
+          unknown = sorted(set(request) - {'protocol'})
+          if unknown:
+              raise SystemExit('holdout request cannot override frozen specification: ' + ','.join(unknown))
+          protocol = str(request.get('protocol', 'v0.1'))
+          if protocol != 'v0.1':
+              raise SystemExit('only frozen holdout protocol v0.1 is accepted')
+
+          decision = Path('horse-racing/jrdb/docs/RunPerf_Development_Decision_v0_1.md')
+          holdout = Path('horse-racing/jrdb/docs/RunPerf_Holdout_Protocol_v0_1.md')
+          if not decision.is_file() or not holdout.is_file():
+              raise SystemExit('frozen decision/protocol documents are missing from main')
+
+          resolved = {
+              'request_id': request_id,
+              'protocol': 'v0.1',
+              'from_year': 2010,
+              'to_year': 2025,
+              'methods': ['EXPANDING'],
+              'kinds': ['BAC','KYI','SED','UKC','CHA','CYB'],
+              'frozen_candidate': 'T1|EXPANDING|RAW',
+              'holdout_years': [2024, 2025],
+              'minimum_coverage': 0.95,
+          }
+          Path('/tmp/runperf_holdout_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as fh:
+              fh.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Run regression tests
+        run: |
+          python horse-racing/jrdb/tests/test_build_jrdb_index_base_from_raw.py -v
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_build_jrdb_runperf_features.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_runperf.py \
+            horse-racing/jrdb/tests/test_compare_jrdb_runperf_candidates.py \
+            horse-racing/jrdb/tests/test_fit_jrdb_runperf_coefficient_snapshot.py \
+            horse-racing/jrdb/tests/test_evaluate_jrdb_runperf_holdout.py
+
+      - name: Fetch frozen holdout JRDB Raw
+        id: fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_runperf_holdout/raw /tmp/jrdb_runperf_holdout/report
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2010 \
+            --to-year 2025 \
+            --kinds BAC KYI SED UKC CHA CYB \
+            --output-dir /tmp/jrdb_runperf_holdout/raw \
+            --manifest /tmp/jrdb_runperf_holdout/report/fetch_manifest.jsonl \
+            --sleep-seconds 1 \
+            --continue-on-error \
+            > /tmp/jrdb_runperf_holdout/report/fetch_stdout.log \
+            2> /tmp/jrdb_runperf_holdout/report/fetch_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build Index Base
+        id: index_build
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          from pathlib import Path
+          Path('/tmp/runperf_holdout_years.txt').write_text(
+              ' '.join(map(str, range(2010, 2026))), encoding='utf-8'
+          )
+          PY
+          read -ra YEARS <<< "$(cat /tmp/runperf_holdout_years.txt)"
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
+            --raw-root /tmp/jrdb_runperf_holdout/raw \
+            --years "${YEARS[@]}" \
+            --db /tmp/jrdb_runperf_holdout/jrdb_index_base.sqlite \
+            --no-archive-hash \
+            > /tmp/jrdb_runperf_holdout/report/index_build_stdout.log \
+            2> /tmp/jrdb_runperf_holdout/report/index_build_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit Index Base gate
+        id: index_audit
+        continue-on-error: true
+        run: |
+          set +e
+          if [ ! -f /tmp/jrdb_runperf_holdout/jrdb_index_base.sqlite ]; then
+            echo "index database was not created" > /tmp/jrdb_runperf_holdout/report/index_audit_stderr.log
+            echo "exit_code=99" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/audit_jrdb_index_base.py \
+            --db /tmp/jrdb_runperf_holdout/jrdb_index_base.sqlite \
+            --out /tmp/jrdb_runperf_holdout/report/index_base_audit.json \
+            --no-db-hash \
+            > /tmp/jrdb_runperf_holdout/report/index_audit_stdout.log \
+            2> /tmp/jrdb_runperf_holdout/report/index_audit_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build frozen RunPerf feature DB
+        id: runperf_build
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.index_audit.outputs.exit_code }}' != '0' ]; then
+            echo "Index Base gate did not pass" > /tmp/jrdb_runperf_holdout/report/runperf_build_stderr.log
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/build_jrdb_runperf_features.py \
+            --index-db /tmp/jrdb_runperf_holdout/jrdb_index_base.sqlite \
+            --out /tmp/jrdb_runperf_holdout/jrdb_runperf.sqlite \
+            --methods EXPANDING \
+            > /tmp/jrdb_runperf_holdout/report/runperf_build_stdout.log \
+            2> /tmp/jrdb_runperf_holdout/report/runperf_build_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit frozen RunPerf feature DB
+        id: runperf_audit
+        continue-on-error: true
+        run: |
+          set +e
+          if [ ! -f /tmp/jrdb_runperf_holdout/jrdb_runperf.sqlite ]; then
+            echo "RunPerf database was not created" > /tmp/jrdb_runperf_holdout/report/runperf_audit_stderr.log
+            echo "exit_code=99" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/audit_jrdb_runperf.py \
+            --db /tmp/jrdb_runperf_holdout/jrdb_runperf.sqlite \
+            --out /tmp/jrdb_runperf_holdout/report/runperf_audit.json \
+            --no-db-hash \
+            > /tmp/jrdb_runperf_holdout/report/runperf_audit_stdout.log \
+            2> /tmp/jrdb_runperf_holdout/report/runperf_audit_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Evaluate frozen 2024-2025 holdout
+        id: evaluate
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.runperf_audit.outputs.exit_code }}' != '0' ]; then
+            echo "RunPerf audit gate did not pass" > /tmp/jrdb_runperf_holdout/report/holdout_stderr.log
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/evaluate_jrdb_runperf_holdout.py \
+            --db /tmp/jrdb_runperf_holdout/jrdb_runperf.sqlite \
+            --out /tmp/jrdb_runperf_holdout/report/runperf_holdout.json \
+            > /tmp/jrdb_runperf_holdout/report/holdout_stdout.log \
+            2> /tmp/jrdb_runperf_holdout/report/holdout_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build lightweight result
+        if: always()
+        env:
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          INDEX_BUILD_EXIT: ${{ steps.index_build.outputs.exit_code }}
+          INDEX_AUDIT_EXIT: ${{ steps.index_audit.outputs.exit_code }}
+          RUNPERF_BUILD_EXIT: ${{ steps.runperf_build.outputs.exit_code }}
+          RUNPERF_AUDIT_EXIT: ${{ steps.runperf_audit.outputs.exit_code }}
+          EVALUATE_EXIT: ${{ steps.evaluate.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/runperf_holdout_request.json').read_text(encoding='utf-8'))
+          index_path = Path('/tmp/jrdb_runperf_holdout/report/index_base_audit.json')
+          runperf_path = Path('/tmp/jrdb_runperf_holdout/report/runperf_audit.json')
+          holdout_path = Path('/tmp/jrdb_runperf_holdout/report/runperf_holdout.json')
+          index_audit = json.loads(index_path.read_text(encoding='utf-8')) if index_path.is_file() else {}
+          runperf_audit = json.loads(runperf_path.read_text(encoding='utf-8')) if runperf_path.is_file() else {}
+          holdout = json.loads(holdout_path.read_text(encoding='utf-8')) if holdout_path.is_file() else {}
+          exits = {
+              'fetch': os.environ.get('FETCH_EXIT', ''),
+              'index_build': os.environ.get('INDEX_BUILD_EXIT', ''),
+              'index_audit': os.environ.get('INDEX_AUDIT_EXIT', ''),
+              'runperf_build': os.environ.get('RUNPERF_BUILD_EXIT', ''),
+              'runperf_audit': os.environ.get('RUNPERF_AUDIT_EXIT', ''),
+              'evaluate': os.environ.get('EVALUATE_EXIT', ''),
+          }
+          technical_success = all(value == '0' for value in exits.values())
+          technical_success = technical_success and holdout.get('status') == 'PASS'
+
+          compact_yearly = []
+          for row in holdout.get('yearly') or []:
+              selected = row.get('selected') or {}
+              diagnostics = row.get('diagnostics') or {}
+              snapshot = row.get('coefficient_snapshot') or {}
+              compact_yearly.append({
+                  'year': row.get('year'),
+                  'selected_primary': selected.get('primary_rank_score'),
+                  'selected_same_condition_primary': selected.get('same_primary_rank_score'),
+                  'selected_coverage': selected.get('coverage'),
+                  'selected_top_pick_win_rate': selected.get('top_pick_win_rate'),
+                  'selected_top_pick_top3_rate': selected.get('top_pick_top3_rate'),
+                  'b1_primary': (diagnostics.get('B1') or {}).get('primary_rank_score'),
+                  'b1_same_condition_primary': (diagnostics.get('B1') or {}).get('same_primary_rank_score'),
+                  'delta_primary_vs_B1': row.get('delta_primary_vs_B1'),
+                  'delta_same_condition_vs_B1': row.get('delta_same_condition_vs_B1'),
+                  'coefficient_asof_through_year': snapshot.get('coefficient_asof_through_year'),
+                  'training_pair_count': snapshot.get('training_pair_count'),
+                  'intercept': snapshot.get('intercept'),
+                  'coefficients': snapshot.get('coefficients'),
+              })
+
+          result = {
+              'status': 'success' if technical_success else 'failure',
+              'run_id': int(os.environ['RUN_ID']),
+              'head_sha': os.environ['HEAD_SHA'],
+              'request': request,
+              'exit_codes': exits,
+              'index_gate_status': index_audit.get('status'),
+              'index_coverage': index_audit.get('coverage'),
+              'runperf_gate_status': runperf_audit.get('status'),
+              'holdout_evaluator_status': holdout.get('status'),
+              'validation_classification': holdout.get('validation_classification'),
+              'classification_reasons': holdout.get('classification_reasons'),
+              'mean_delta_primary_vs_B1': holdout.get('mean_delta_primary_vs_B1'),
+              'mean_delta_same_condition_vs_B1': holdout.get('mean_delta_same_condition_vs_B1'),
+              'frozen_specification': holdout.get('frozen_specification'),
+              'yearly': compact_yearly,
+              'calculation_status_counts': holdout.get('calculation_status_counts'),
+          }
+          Path('/tmp/jrdb_runperf_holdout/report/workflow_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          Path('/tmp/comment.md').write_text(
+              'JRDB_RUNPERF_HOLDOUT_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Upload holdout reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-runperf-holdout-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/jrdb_runperf_holdout/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' \
+            --repo '${{ github.repository }}' \
+            --body-file /tmp/comment.md
+
+      - name: Close technically completed issue
+        if: >-
+          always() &&
+          steps.fetch.outputs.exit_code == '0' &&
+          steps.index_build.outputs.exit_code == '0' &&
+          steps.index_audit.outputs.exit_code == '0' &&
+          steps.runperf_build.outputs.exit_code == '0' &&
+          steps.runperf_audit.outputs.exit_code == '0' &&
+          steps.evaluate.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Fail workflow when technical execution failed
+        if: >-
+          always() &&
+          (steps.fetch.outputs.exit_code != '0' ||
+           steps.index_build.outputs.exit_code != '0' ||
+           steps.index_audit.outputs.exit_code != '0' ||
+           steps.runperf_build.outputs.exit_code != '0' ||
+           steps.runperf_audit.outputs.exit_code != '0' ||
+           steps.evaluate.outputs.exit_code != '0')
+        run: exit 1
