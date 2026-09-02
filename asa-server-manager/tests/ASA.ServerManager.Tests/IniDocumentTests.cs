@@ -75,6 +75,6 @@ public sealed class IniDocumentTests
 
     private static GameSettingDefinition CreateDefinition(string id, string section, string key)
     {
-        return new GameSettingDefinition { Id = id, DisplayNameJa = id, DisplayNameEn = id, Category = "Test", FileKind = IniFileKind.Game, Section = section, Key = key, ValueType = GameSettingValueType.String, SupportStatus = SupportStatus.AsaSupported, Sources = [], Notes = string.Empty };
+        return new GameSettingDefinition { Id = id, DisplayNameJa = id, DisplayNameEn = id, Category = "Test", FileKind = IniFileKind.Game, Section = section, Key = key, ValueType = GameSettingValueType.String, SupportStatus = SupportStatus.AsaSupported, Deprecated = false, RestartRequired = false, Sources = [], Notes = string.Empty };
     }
 }
