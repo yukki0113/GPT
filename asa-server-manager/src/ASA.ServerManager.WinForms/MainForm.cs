@@ -4,7 +4,7 @@ namespace ASA.ServerManager.WinForms;
 public sealed class MainForm : Form
 {
     /// <summary>メイン画面を構築します。</summary>
-    public MainForm()
+    public MainForm(ServerOrchestrator? serverOrchestrator = null)
     {
         Text = "ASA Server Manager V3";
         StartPosition = FormStartPosition.CenterScreen;
@@ -14,7 +14,7 @@ public sealed class MainForm : Form
 
         TabControl tabs = new TabControl();
         tabs.Dock = DockStyle.Fill;
-        tabs.TabPages.Add(CreateTab("サーバー操作", new ServerControlView()));
+        tabs.TabPages.Add(CreateTab("サーバー操作", new ServerControlView(serverOrchestrator)));
         tabs.TabPages.Add(CreateTab("基本設定", new BasicSettingsView()));
         tabs.TabPages.Add(CreateTab("MOD", new ModsView()));
         tabs.TabPages.Add(CreateTab("ゲーム設定", new GameSettingsView()));
