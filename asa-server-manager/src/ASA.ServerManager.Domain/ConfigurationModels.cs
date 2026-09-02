@@ -1,0 +1,92 @@
+using System.Globalization;
+
+namespace ASA.ServerManager.Domain;
+
+public enum ServerState { Stopped, Updating, Starting, WaitingForRcon, Running, Saving, Stopping, Error }
+public enum SupportStatus { AsaSupported, AsaSupportedConditional, AsaMapSpecific, Deprecated, AseOnly, Unverified, Unknown }
+public enum GameSettingValueType { Boolean, Integer, Decimal, String, Enum, List, Complex }
+public enum IniFileKind { GameUserSettings, Game }
+public enum ValidationState { Valid, Warning, Invalid }
+
+/// <summary>INI内の設定を一意に識別します。</summary>
+public sealed record SettingIdentity(IniFileKind FileKind, string Section, string Key)
+{
+    /// <summary>大文字小文字を区別しない比較用のキーを返します。</summary>
+    public string ToLookupKey()
+    {
+        return string.Create(CultureInfo.InvariantCulture, $"{FileKind}|{Section}|{Key}").ToUpperInvariant();
+    }
+}
+
+/// <summary>外部JSONから読み込むゲーム設定の定義です。</summary>
+public sealed class GameSettingDefinition
+{
+    public required string Id { get; init; }
+    public required string DisplayNameJa { get; init; }
+    public required string DisplayNameEn { get; init; }
+    public required string Category { get; init; }
+    public required IniFileKind FileKind { get; init; }
+    public required string Section { get; init; }
+    public required string Key { get; init; }
+    public required GameSettingValueType ValueType { get; init; }
+    public string? DefaultValue { get; init; }
+    public required SupportStatus SupportStatus { get; init; }
+    public required bool Deprecated { get; init; }
+    public required bool RestartRequired { get; init; }
+    public required IReadOnlyList<string> Sources { get; init; }
+    public required string Notes { get; init; }
+
+    /// <summary>定義のINI照合用IDを返します。</summary>
+    public SettingIdentity GetIdentity()
+    {
+        return new SettingIdentity(FileKind, Section, Key);
+    }
+}
+
+/// <summary>利用者編集値とINI現在値を分離して保持する状態です。</summary>
+public sealed class GameSettingState
+{
+    public required string DefinitionId { get; init; }
+    public bool Enabled { get; set; }
+    public string? EditedValue { get; set; }
+    public string? CurrentIniValue { get; set; }
+    public bool ExistsInIni { get; set; }
+    public ValidationState ValidationState { get; set; } = ValidationState.Valid;
+}
+
+public sealed class ServerSettings
+{
+    public string DedicatedServerPath { get; set; } = string.Empty;
+    public string SteamCmdPath { get; set; } = string.Empty;
+    public string MapId { get; set; } = string.Empty;
+    public PortSettings Ports { get; set; } = new();
+    public List<GameSettingState> GameSettings { get; set; } = [];
+    public List<ModDefinition> Mods { get; set; } = [];
+}
+
+public sealed class PortSettings { public int GamePort { get; set; } = 7777; public int RconPort { get; set; } = 27020; }
+public sealed class ServerSecrets { public string ServerPassword { get; set; } = string.Empty; public string AdminPassword { get; set; } = string.Empty; public string SpectatorPassword { get; set; } = string.Empty; }
+public sealed class ModDefinition { public required string ProjectId { get; init; } public string Name { get; init; } = string.Empty; public bool Enabled { get; init; } = true; public int Order { get; init; } }
+public sealed class MapDefinition { public required string Id { get; init; } public required string LevelName { get; init; } public required string DisplayNameJa { get; init; } }
+public sealed record OperationProgress(string OperationName, int? Percent, string Message);
+
+/// <summary>失敗理由を例外に依存せず呼出元へ返す結果です。</summary>
+public sealed class OperationResult
+{
+    public bool Succeeded { get; init; }
+    public string? ErrorMessage { get; init; }
+    public IReadOnlyList<string> Warnings { get; init; } = [];
+    public static OperationResult Success(IReadOnlyList<string>? warnings = null) => new() { Succeeded = true, Warnings = warnings ?? [] };
+    public static OperationResult Failure(string message, IReadOnlyList<string>? warnings = null) => new() { Succeeded = false, ErrorMessage = message, Warnings = warnings ?? [] };
+}
+
+/// <summary>値を返す操作結果です。</summary>
+public sealed class OperationResult<T>
+{
+    public bool Succeeded { get; init; }
+    public T? Value { get; init; }
+    public string? ErrorMessage { get; init; }
+    public IReadOnlyList<string> Warnings { get; init; } = [];
+    public static OperationResult<T> Success(T value, IReadOnlyList<string>? warnings = null) => new() { Succeeded = true, Value = value, Warnings = warnings ?? [] };
+    public static OperationResult<T> Failure(string message, IReadOnlyList<string>? warnings = null) => new() { Succeeded = false, ErrorMessage = message, Warnings = warnings ?? [] };
+}

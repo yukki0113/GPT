@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ASA Server Manager V3 game settings",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "displayNameJa",
+      "file",
+      "section",
+      "key",
+      "valueType",
+      "supportStatus",
+      "source"
+    ],
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "displayNameJa": {
+        "type": "string"
+      },
+      "file": {
+        "enum": [
+          "GameUserSettings.ini",
+          "Game.ini"
+        ]
+      },
+      "section": {
+        "type": "string"
+      },
+      "key": {
+        "type": "string"
+      },
+      "valueType": {
+        "enum": [
+          "boolean",
+          "integer",
+          "decimal",
+          "string",
+          "enum",
+          "list",
+          "complex"
+        ]
+      },
+      "defaultValue": {},
+      "asaSupported": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      },
+      "supportStatus": {
+        "enum": [
+          "ASA_SUPPORTED",
+          "ASA_SUPPORTED_CONDITIONAL",
+          "ASA_MAP_SPECIFIC",
+          "DEPRECATED",
+          "ASE_ONLY",
+          "UNVERIFIED",
+          "UNKNOWN"
+        ]
+      },
+      "source": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

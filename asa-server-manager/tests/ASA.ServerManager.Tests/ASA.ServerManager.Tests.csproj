@@ -26,4 +26,10 @@
     <ProjectReference Include="..\..\src\ASA.ServerManager.Infrastructure\ASA.ServerManager.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\definitions\game-settings.json" Link="definitions\game-settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
