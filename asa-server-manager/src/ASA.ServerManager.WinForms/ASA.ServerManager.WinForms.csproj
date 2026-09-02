@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ASA.ServerManager.Application\ASA.ServerManager.Application.csproj" />
+    <ProjectReference Include="..\ASA.ServerManager.Domain\ASA.ServerManager.Domain.csproj" />
+    <ProjectReference Include="..\ASA.ServerManager.Infrastructure\ASA.ServerManager.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
