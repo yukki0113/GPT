@@ -1,3 +1,5 @@
+using ASA.ServerManager.Application;
+
 namespace ASA.ServerManager.WinForms;
 
 /// <summary>V3の最上位画面です。各領域は個別UserControlとして分離します。</summary>
