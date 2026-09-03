@@ -72,12 +72,34 @@ def _load_all_rows(database: Path) -> list[dict[str, Any]]:
         connection.close()
 
 
+def _complete_feature_names(values: list[float | None], names: list[str]) -> list[str]:
+    """Return one name per frozen numeric model column without changing values.
+
+    The frozen comparison vector has always contained an explicit final
+    ``log1p_career`` missing flag.  Because career count is structurally
+    present for eligible existing horses, that column is the constant value
+    zero.  The original comparison helper omitted only the metadata label for
+    this already-present 22nd column.  Naming it here preserves the exact
+    trained matrix and coefficients while making annual model snapshots fully
+    self-describing.
+    """
+    if len(names) + 1 == len(values):
+        names = [*names, "log1p_career_missing"]
+    if len(names) != len(values):
+        raise ValueError(
+            "Ability feature-name/value length mismatch: "
+            f"names={len(names)} values={len(values)}"
+        )
+    return names
+
+
 def _feature_matrix(rows: list[dict[str, Any]]) -> tuple[np.ndarray, list[str]]:
     """Build the exact frozen Existing-Horse Ability v0.1 feature matrix."""
     vectors: list[list[float | None]] = []
     feature_names: list[str] | None = None
     for row in rows:
         values, names = _feature_vector(row, RECENT, BANDWIDTH, APTITUDE_K, JOCKEY_K)
+        names = _complete_feature_names(values, names)
         vectors.append(values)
         if feature_names is None:
             feature_names = names
