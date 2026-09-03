@@ -1,0 +1,96 @@
+name: JRDB Debut Ability development coverage via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  coverage:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_DEBUT_ABILITY_COVERAGE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-learn
+      - name: Compile coverage path
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/build_jrdb_debut_ability_snapshot.py \
+            horse-racing/jrdb/src/audit_jrdb_debut_ability_snapshot.py \
+            horse-racing/jrdb/src/report_jrdb_debut_ability_coverage.py
+      - name: Prepare workspace
+        run: mkdir -p /tmp/jrdb_debut_coverage/raw /tmp/jrdb_debut_coverage/report
+      - name: Fetch Raw 2010-2023
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: python horse-racing/jrdb/src/fetch_jrdb_history.py --from-year 2010 --to-year 2023 --kinds BAC KYI SED UKC CHA CYB --output-dir /tmp/jrdb_debut_coverage/raw --manifest /tmp/jrdb_debut_coverage/report/fetch_manifest.jsonl --sleep-seconds 1
+      - name: Build Index Base
+        run: |
+          YEARS=$(seq 2010 2023)
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py --raw-root /tmp/jrdb_debut_coverage/raw --years $YEARS --db /tmp/jrdb_debut_coverage/index.sqlite --no-archive-hash
+      - name: Audit Index Base
+        run: python horse-racing/jrdb/src/audit_jrdb_index_base.py --db /tmp/jrdb_debut_coverage/index.sqlite --out /tmp/jrdb_debut_coverage/report/index_audit.json --no-db-hash
+      - name: Build RunPerf
+        run: python horse-racing/jrdb/src/build_jrdb_runperf_features.py --index-db /tmp/jrdb_debut_coverage/index.sqlite --out /tmp/jrdb_debut_coverage/runperf.sqlite --methods EXPANDING
+      - name: Audit RunPerf
+        run: python horse-racing/jrdb/src/audit_jrdb_runperf.py --db /tmp/jrdb_debut_coverage/runperf.sqlite --out /tmp/jrdb_debut_coverage/report/runperf_audit.json --no-db-hash
+      - name: Build Official RunPerf
+        run: python horse-racing/jrdb/src/build_jrdb_official_runperf.py --runperf-db /tmp/jrdb_debut_coverage/runperf.sqlite --out /tmp/jrdb_debut_coverage/official_runperf.sqlite
+      - name: Audit Official RunPerf
+        run: python horse-racing/jrdb/src/audit_jrdb_official_runperf.py --db /tmp/jrdb_debut_coverage/official_runperf.sqlite --source-runperf-db /tmp/jrdb_debut_coverage/runperf.sqlite --out /tmp/jrdb_debut_coverage/report/official_runperf_audit.json --no-db-hash
+      - name: Build Debut Ability Snapshot
+        run: python horse-racing/jrdb/src/build_jrdb_debut_ability_snapshot.py --index-db /tmp/jrdb_debut_coverage/index.sqlite --official-runperf-db /tmp/jrdb_debut_coverage/official_runperf.sqlite --out /tmp/jrdb_debut_coverage/debut_snapshot.sqlite
+      - name: Audit Debut Ability Snapshot
+        run: python horse-racing/jrdb/src/audit_jrdb_debut_ability_snapshot.py --db /tmp/jrdb_debut_coverage/debut_snapshot.sqlite --index-db /tmp/jrdb_debut_coverage/index.sqlite --official-runperf-db /tmp/jrdb_debut_coverage/official_runperf.sqlite --out /tmp/jrdb_debut_coverage/report/debut_snapshot_audit.json
+      - name: Report 2010-2023 structural coverage
+        run: python horse-racing/jrdb/src/report_jrdb_debut_ability_coverage.py --db /tmp/jrdb_debut_coverage/debut_snapshot.sqlite --from-year 2010 --to-year 2023 --out /tmp/jrdb_debut_coverage/report/debut_coverage_2010_2023.json
+      - name: Build lightweight result
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          audit_path=Path('/tmp/jrdb_debut_coverage/report/debut_snapshot_audit.json')
+          coverage_path=Path('/tmp/jrdb_debut_coverage/report/debut_coverage_2010_2023.json')
+          result={'status':'failure','run_id':'${{ github.run_id }}','head_sha':'${{ github.sha }}','predictive_metrics_computed':False,'2024_2025_predictive_metrics_inspected':False,'model_selected':False}
+          if audit_path.exists() and coverage_path.exists():
+              audit=json.loads(audit_path.read_text(encoding='utf-8'))
+              coverage=json.loads(coverage_path.read_text(encoding='utf-8'))
+              result.update({'status':'success' if audit.get('status')=='PASS' else 'failure','audit_status':audit.get('status'),'violations':audit.get('violations'),'aggregate':coverage.get('aggregate'),'annual':coverage.get('annual'),'predictive_metrics_computed':False,'2024_2025_predictive_metrics_inspected':False,'model_selected':False})
+          Path('/tmp/jrdb_debut_coverage/report/workflow_result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
+          PY
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-debut-ability-coverage-${{ github.run_id }}
+          path: /tmp/jrdb_debut_coverage/report
+          if-no-files-found: warn
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const p='/tmp/jrdb_debut_coverage/report/workflow_result.json';
+            let body='JRDB_DEBUT_ABILITY_COVERAGE_RESULT\nworkflow failed before report generation';
+            if(fs.existsSync(p)){
+              const r=JSON.parse(fs.readFileSync(p,'utf8'));
+              const compact={status:r.status,run_id:r.run_id,head_sha:r.head_sha,audit_status:r.audit_status,violations:r.violations,aggregate:r.aggregate,predictive_metrics_computed:false,2024_2025_predictive_metrics_inspected:false,model_selected:false};
+              body='JRDB_DEBUT_ABILITY_COVERAGE_RESULT\n```json\n'+JSON.stringify(compact,null,2)+'\n```';
+            }
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:context.issue.number,body});
