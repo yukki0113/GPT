@@ -1,0 +1,41 @@
+name: ASA Server Manager CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'asa-server-manager/**'
+      - '.github/workflows/asa_server_manager_ci.yml'
+  pull_request:
+    paths:
+      - 'asa-server-manager/**'
+      - '.github/workflows/asa_server_manager_ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Windows .NET 8 Build/Test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        working-directory: asa-server-manager
+        run: dotnet restore ASA.ServerManager.sln
+      - name: Build Debug
+        working-directory: asa-server-manager
+        run: dotnet build ASA.ServerManager.sln -c Debug --no-restore
+      - name: Test Debug
+        working-directory: asa-server-manager
+        run: dotnet test ASA.ServerManager.sln -c Debug --no-build
+      - name: Build Release
+        working-directory: asa-server-manager
+        run: dotnet build ASA.ServerManager.sln -c Release --no-restore
