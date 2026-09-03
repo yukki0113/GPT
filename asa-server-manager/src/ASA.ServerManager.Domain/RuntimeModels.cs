@@ -7,6 +7,9 @@ public sealed class ServerSnapshot
     public string Detail { get; init; } = string.Empty;
     public int? ProcessId { get; init; }
     public bool IsRconReady { get; init; }
+    public DateTimeOffset? ProcessStartedAt { get; init; }
+    public string? CurrentMap { get; init; }
+    public int EnabledModCount { get; init; }
     public FirewallSnapshot? Firewall { get; init; }
     public NetworkSnapshot? Network { get; init; }
     public DateTimeOffset ObservedAt { get; init; } = DateTimeOffset.UtcNow;

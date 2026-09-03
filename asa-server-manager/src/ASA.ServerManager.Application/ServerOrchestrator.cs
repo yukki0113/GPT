@@ -104,6 +104,9 @@ public sealed class ServerOrchestrator : IAsyncDisposable
             Detail = runtimeSnapshot.Detail,
             ProcessId = runtimeSnapshot.ProcessId,
             IsRconReady = runtimeSnapshot.IsRconReady,
+            ProcessStartedAt = process.StartedAt,
+            CurrentMap = settings.MapLevelName,
+            EnabledModCount = settings.Mods.Count(mod => mod.Enabled),
             ObservedAt = runtimeSnapshot.ObservedAt,
             Firewall = firewall,
             Network = network

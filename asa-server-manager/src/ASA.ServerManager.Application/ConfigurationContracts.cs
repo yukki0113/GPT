@@ -9,6 +9,13 @@ public interface IGameSettingCatalogRepository
     Task<OperationResult<IReadOnlyList<GameSettingDefinition>>> LoadAsync(CancellationToken cancellationToken);
 }
 
+/// <summary>外部定義から選択可能なASA MAPを取得します。</summary>
+public interface IMapDefinitionRepository
+{
+    /// <summary>MAP定義を検証して読み込みます。</summary>
+    Task<OperationResult<IReadOnlyList<MapDefinition>>> LoadAsync(CancellationToken cancellationToken);
+}
+
 /// <summary>秘密情報を除くサーバー設定を保存します。</summary>
 public interface IServerSettingsRepository
 {
@@ -132,4 +139,24 @@ public interface IOperationDelay
 {
     /// <summary>指定時間待機します。</summary>
     Task DelayAsync(TimeSpan delay, CancellationToken cancellationToken);
+}
+
+/// <summary>最新アプリログを件数制限して読み込みます。</summary>
+public interface ILogFileService
+{
+    /// <summary>最新ログファイルの末尾を最大行数まで返します。</summary>
+    Task<OperationResult<LogTailSnapshot>> ReadTailAsync(int maximumLines, CancellationToken cancellationToken);
+
+    /// <summary>ログ保存フォルダーのパスを返します。</summary>
+    string GetLogDirectory();
+}
+
+/// <summary>画面間で最後の利用者向けエラー状態を共有します。</summary>
+public interface IApplicationStatusStore
+{
+    /// <summary>最後の操作結果を記録します。</summary>
+    void Record(OperationResult result);
+
+    /// <summary>最後のエラーコードを返します。</summary>
+    string? GetLastErrorCode();
 }

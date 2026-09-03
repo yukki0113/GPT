@@ -25,11 +25,17 @@ public sealed class GameSettingDefinition
     public required string DisplayNameJa { get; init; }
     public required string DisplayNameEn { get; init; }
     public required string Category { get; init; }
+    public required string UiCategory { get; init; }
+    public required string UiSubCategory { get; init; }
+    public required string DescriptionJa { get; init; }
     public required IniFileKind FileKind { get; init; }
     public required string Section { get; init; }
     public required string Key { get; init; }
     public required GameSettingValueType ValueType { get; init; }
     public string? DefaultValue { get; init; }
+    public string? Minimum { get; init; }
+    public string? Maximum { get; init; }
+    public required IReadOnlyList<string> EnumValues { get; init; }
     public required SupportStatus SupportStatus { get; init; }
     public required bool Deprecated { get; init; }
     public required bool RestartRequired { get; init; }
@@ -78,6 +84,44 @@ public sealed class ServerSecrets { public string ServerPassword { get; set; } =
 public sealed class ModDefinition { public required string ProjectId { get; init; } public string Name { get; init; } = string.Empty; public bool Enabled { get; init; } = true; public int Order { get; init; } }
 public sealed class MapDefinition { public required string Id { get; init; } public required string LevelName { get; init; } public required string DisplayNameJa { get; init; } }
 public sealed record OperationProgress(string StepCode, string UserMessage, int? Percent);
+
+/// <summary>基本設定画面へ設定本体と秘密情報をまとめて返します。</summary>
+public sealed class BasicSettingsData
+{
+    public required ServerSettings Settings { get; init; }
+    public required ServerSecrets Secrets { get; init; }
+    public required IReadOnlyList<MapDefinition> Maps { get; init; }
+}
+
+/// <summary>手動Savedバックアップの利用者向け結果です。</summary>
+public sealed class ManualBackupResult
+{
+    public required BackupInfo Backup { get; init; }
+    public bool IsLiveBackup { get; init; }
+    public string? Warning { get; init; }
+}
+
+/// <summary>ログ画面へ返す件数制限済みの内容です。</summary>
+public sealed class LogTailSnapshot
+{
+    public string? Path { get; init; }
+    public IReadOnlyList<string> Lines { get; init; } = [];
+}
+
+/// <summary>秘密情報を含まない診断画面用スナップショットです。</summary>
+public sealed class DiagnosticsSnapshot
+{
+    public required string AppVersion { get; init; }
+    public required ServerState ServerState { get; init; }
+    public string ServerPath { get; init; } = string.Empty;
+    public string SteamCmdPath { get; init; } = string.Empty;
+    public FirewallReadiness? Firewall { get; init; }
+    public string? LanIpv4 { get; init; }
+    public string? HamachiIpv4 { get; init; }
+    public string? CurrentLogPath { get; init; }
+    public string? LastErrorCode { get; init; }
+    public IReadOnlyList<string> LogLines { get; init; } = [];
+}
 
 /// <summary>ASA Server Managerが必要とする受信Firewall設定です。</summary>
 public sealed class FirewallRequirements
