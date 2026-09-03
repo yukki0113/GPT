@@ -30,6 +30,7 @@ jobs:
           python -m pytest -q \
             horse-racing/jrdb/tests/test_build_jrdb_ability_snapshot.py \
             horse-racing/jrdb/tests/test_compare_jrdb_ability_models.py \
+            horse-racing/jrdb/tests/test_finalize_jrdb_ability_comparison.py \
             horse-racing/jrdb/tests/test_build_jrdb_official_runperf.py \
             horse-racing/jrdb/tests/test_audit_jrdb_official_runperf.py
       - name: Prepare 2010-2023 workspace
@@ -61,17 +62,62 @@ jobs:
         run: python horse-racing/jrdb/src/audit_jrdb_ability_snapshot.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_snapshot_audit.json
       - name: Compare Ability models
         run: python horse-racing/jrdb/src/compare_jrdb_ability_models.py --db /tmp/jrdb_ability_compare/ability.sqlite --out /tmp/jrdb_ability_compare/report/ability_comparison.json
+      - name: Finalize Ability comparison report
+        run: python horse-racing/jrdb/src/finalize_jrdb_ability_comparison.py --report /tmp/jrdb_ability_compare/report/ability_comparison.json
       - name: Build lightweight result
         if: always()
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          report=Path('/tmp/jrdb_ability_compare/report/ability_comparison.json')
-          result={'status':'failure','run_id':'${{ github.run_id }}','head_sha':'${{ github.sha }}','development_end':2023,'holdout_touched':False,'2024_2025_predictive_metrics_inspected':False,'model_promoted':False}
-          if report.exists(): result.update(json.loads(report.read_text(encoding='utf-8')))
-          result['status']='success' if result.get('status')=='PASS' and result.get('holdout_touched') is False else 'failure'
-          Path('/tmp/jrdb_ability_compare/report/workflow_result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+
+          report_path = Path('/tmp/jrdb_ability_compare/report/ability_comparison.json')
+          result = {
+              'status': 'failure',
+              'run_id': '${{ github.run_id }}',
+              'head_sha': '${{ github.sha }}',
+              'development_end': 2023,
+              'holdout_touched': False,
+              '2024_2025_predictive_metrics_inspected': False,
+              'model_promoted': False,
+          }
+
+          if report_path.exists():
+              report = json.loads(report_path.read_text(encoding='utf-8'))
+
+              def compact_candidate(candidate):
+                  if candidate is None:
+                      return None
+                  return {
+                      'candidate': candidate.get('candidate'),
+                      'mean_primary': candidate.get('mean_primary'),
+                      'primary_sd': candidate.get('primary_sd'),
+                      'row_count': candidate.get('row_count'),
+                      'race_count': candidate.get('race_count'),
+                      'selection_status': candidate.get('selection_status'),
+                  }
+
+              result.update({
+                  'protocol_version': report.get('protocol_version'),
+                  'development_end': report.get('development_end'),
+                  'holdout_touched': report.get('holdout_touched'),
+                  '2024_2025_predictive_metrics_inspected': report.get('2024_2025_predictive_metrics_inspected'),
+                  'debut_rows_used': report.get('debut_rows_used'),
+                  'source_eligible_rows': report.get('source_eligible_rows'),
+                  'candidate_counts': report.get('candidate_counts'),
+                  'candidate_validity': report.get('candidate_validity'),
+                  'preprocessing_leakage_violations': report.get('preprocessing_leakage_violations'),
+                  'best_a0': compact_candidate(report.get('best_a0')),
+                  'best_ridge': compact_candidate(report.get('best_ridge')),
+                  'best_elastic_net': compact_candidate(report.get('best_elastic_net')),
+                  'paired_vs_best_a0': report.get('paired_vs_best_a0'),
+              })
+              result['status'] = 'success' if report.get('status') == 'PASS' and report.get('holdout_touched') is False else 'failure'
+
+          Path('/tmp/jrdb_ability_compare/report/workflow_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False),
+              encoding='utf-8',
+          )
           PY
       - uses: actions/upload-artifact@v4
         if: always()
@@ -87,4 +133,3 @@ jobs:
             const fs=require('fs'); const p='/tmp/jrdb_ability_compare/report/workflow_result.json';
             const body=fs.existsSync(p)?'JRDB_ABILITY_COMPARE_RESULT\n```json\n'+fs.readFileSync(p,'utf8')+'\n```':'JRDB_ABILITY_COMPARE_RESULT\nworkflow failed before report generation';
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:context.issue.number,body});
-
