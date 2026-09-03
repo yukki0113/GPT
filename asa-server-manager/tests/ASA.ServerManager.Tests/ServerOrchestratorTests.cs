@@ -49,6 +49,7 @@ public sealed class ServerOrchestratorTests
     {
         RuntimeFakes fakes = new RuntimeFakes();
         fakes.Process.IsRunning = false;
+        fakes.Firewall.Snapshots.Enqueue(new FirewallSnapshot { Readiness = FirewallReadiness.Ready });
         fakes.Firewall.Snapshots.Enqueue(new FirewallSnapshot { Readiness = FirewallReadiness.NeedsUpdate });
         fakes.Firewall.Snapshots.Enqueue(new FirewallSnapshot { Readiness = FirewallReadiness.Ready });
         await using ServerOrchestrator orchestrator = fakes.CreateOrchestrator();
