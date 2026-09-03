@@ -1,0 +1,123 @@
+name: JRDB UKC availability probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_UKC_AVAILABILITY_PROBE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Probe authenticated UKC daily archive headers
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+          PROBE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          """Probe JRDB UKC daily archive availability without downloading archive bodies."""
+          import base64
+          import datetime as dt
+          import json
+          import os
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          body = os.environ.get('PROBE_BODY', '').strip()
+          payload = json.loads(body) if body else {}
+          raw_dates = payload.get('dates', [])
+          if not isinstance(raw_dates, list) or not raw_dates:
+              raise SystemExit('Issue body must contain a non-empty JSON dates array')
+
+          user = os.environ.get('JRDB_USER', '')
+          password = os.environ.get('JRDB_PASSWORD', '')
+          if not user or not password:
+              raise SystemExit('JRDB credentials unavailable')
+
+          token = base64.b64encode(f'{user}:{password}'.encode('utf-8')).decode('ascii')
+          auth = f'Basic {token}'
+          base = 'https://jrdb.com/member/datazip/Ukc'
+          results = []
+
+          for raw_date in raw_dates:
+              target = dt.date.fromisoformat(str(raw_date))
+              url = f'{base}/{target.year}/UKC{target:%y%m%d}.zip'
+              request = urllib.request.Request(url, method='HEAD', headers={'Authorization': auth})
+              status = None
+              headers = None
+              final_url = url
+              error_text = None
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      status = int(response.status)
+                      headers = response.headers
+                      final_url = response.geturl()
+              except urllib.error.HTTPError as exc:
+                  status = int(exc.code)
+                  headers = exc.headers
+                  final_url = exc.geturl()
+                  error_text = f'HTTP {exc.code}'
+              except Exception as exc:
+                  error_text = f'{type(exc).__name__}: {exc}'
+
+              results.append({
+                  'target_date': target.isoformat(),
+                  'path': f'Ukc/{target.year}/UKC{target:%y%m%d}.zip',
+                  'http_status': status,
+                  'exists': status in (200, 206),
+                  'date_header': headers.get('Date') if headers else None,
+                  'last_modified': headers.get('Last-Modified') if headers else None,
+                  'content_length': headers.get('Content-Length') if headers else None,
+                  'etag': headers.get('ETag') if headers else None,
+                  'final_url_host': urllib.request.urlparse(final_url).hostname if final_url else None,
+                  'error': error_text,
+              })
+
+          report = {
+              'status': 'PASS',
+              'probe_kind': 'UKC_DAILY_ARCHIVE_HEADERS_ONLY',
+              'observed_at_utc': dt.datetime.now(dt.timezone.utc).isoformat(),
+              'credentials_exposed': False,
+              'archive_body_downloaded': False,
+              'results': results,
+          }
+          Path('/tmp/ukc_probe.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const p = '/tmp/ukc_probe.json';
+            const body = fs.existsSync(p)
+              ? 'JRDB_UKC_AVAILABILITY_PROBE_RESULT\n```json\n' + fs.readFileSync(p, 'utf8') + '\n```'
+              : 'JRDB_UKC_AVAILABILITY_PROBE_RESULT\nprobe failed before report generation';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
