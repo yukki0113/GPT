@@ -27,6 +27,19 @@ def _is_finite_number(value: Any) -> bool:
     return math.isfinite(float(value))
 
 
+def _json_safe(value: Any) -> Any:
+    """Recursively replace non-finite floats with explicit JSON null values."""
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, tuple):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    return value
+
+
 def _selection_sort_key(candidate: dict[str, Any]) -> float:
     """Return a fail-closed sorting key for candidate selection."""
     value = candidate.get("mean_primary")
@@ -121,7 +134,7 @@ def finalize(report: dict[str, Any]) -> dict[str, Any]:
         result["paired_vs_best_a0"] = []
         result["status"] = "FAIL"
         result["selection_failure_reason"] = "NO_VALID_A0_CANDIDATE"
-        return result
+        return _json_safe(result)
 
     paired = []
     for family_key in ("best_ridge", "best_elastic_net"):
@@ -135,7 +148,7 @@ def finalize(report: dict[str, Any]) -> dict[str, Any]:
         result["selection_failure_reason"] = "NO_VALID_REGULARIZED_CANDIDATE"
     else:
         result["selection_failure_reason"] = None
-    return result
+    return _json_safe(result)
 
 
 def main() -> int:
