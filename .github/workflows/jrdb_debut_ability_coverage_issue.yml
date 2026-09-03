@@ -90,7 +90,7 @@ jobs:
             let body='JRDB_DEBUT_ABILITY_COVERAGE_RESULT\nworkflow failed before report generation';
             if(fs.existsSync(p)){
               const r=JSON.parse(fs.readFileSync(p,'utf8'));
-              const compact={status:r.status,run_id:r.run_id,head_sha:r.head_sha,audit_status:r.audit_status,violations:r.violations,aggregate:r.aggregate,predictive_metrics_computed:false,2024_2025_predictive_metrics_inspected:false,model_selected:false};
+              const compact={status:r.status,run_id:r.run_id,head_sha:r.head_sha,audit_status:r.audit_status,violations:r.violations,aggregate:r.aggregate,predictive_metrics_computed:false,'2024_2025_predictive_metrics_inspected':false,model_selected:false};
               body='JRDB_DEBUT_ABILITY_COVERAGE_RESULT\n```json\n'+JSON.stringify(compact,null,2)+'\n```';
             }
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:context.issue.number,body});
