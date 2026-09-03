@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parents[1] / "src"
@@ -21,7 +22,15 @@ def _candidate(name: str, values: list[float]) -> dict:
     """Build a compact 2013-2023 candidate fixture."""
     annual = []
     for offset, value in enumerate(values):
-        annual.append({"year": 2013 + offset, "primary": value, "row_count": 10, "race_count": 2})
+        annual.append(
+            {
+                "year": 2013 + offset,
+                "primary": value,
+                "spearman_all": value,
+                "row_count": 10,
+                "race_count": 2,
+            }
+        )
     return {
         "candidate": name,
         "mean_primary": sum(values) / len(values),
@@ -60,7 +69,12 @@ def test_nonfinite_candidate_is_invalid_and_cannot_rank_first() -> None:
     assert finalized["elastic_net"][-1]["candidate"] == "ElasticNet:invalid"
     assert finalized["elastic_net"][-1]["selection_status"] == "INVALID_NONFINITE_ANNUAL_PRIMARY"
     assert finalized["elastic_net"][-1]["mean_primary"] is None
+    assert finalized["elastic_net"][-1]["annual"][4]["primary"] is None
+    assert finalized["elastic_net"][-1]["annual"][4]["spearman_all"] is None
     assert all(candidate["candidate"] != "ElasticNet:invalid" for candidate in finalized["top_candidates"])
+
+    # The finalized report must be strict JSON; Python's non-standard NaN token is forbidden.
+    json.dumps(finalized, allow_nan=False)
 
 
 def test_finite_candidate_metrics_are_recomputed_from_all_eleven_years() -> None:
