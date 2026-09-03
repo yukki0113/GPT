@@ -1,0 +1,43 @@
+name: JRDB Debut Ability snapshot smoke via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  smoke:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_DEBUT_ABILITY_SMOKE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pytest numpy scipy scikit-learn
+      - name: Compile Debut snapshot implementation
+        run: |
+          python -m py_compile horse-racing/jrdb/src/build_jrdb_debut_ability_snapshot.py horse-racing/jrdb/src/audit_jrdb_debut_ability_snapshot.py
+      - name: Run Debut Ability snapshot regression tests
+        run: python -m pytest -q horse-racing/jrdb/tests/test_build_jrdb_debut_ability_snapshot.py
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `JRDB_DEBUT_ABILITY_SMOKE_RESULT\nstatus=${{ job.status }}\nrun_id=${context.runId}\nhead_sha=${context.sha}`
+            });
