@@ -1,0 +1,139 @@
+name: JRDB official Existing-Horse Ability v0.1 audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_OFFICIAL_ABILITY_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pytest numpy scipy scikit-learn
+
+      - name: Compile new materializer and audit
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/build_jrdb_official_existing_ability.py \
+            horse-racing/jrdb/src/audit_jrdb_official_existing_ability.py
+
+      - name: Run relevant regression tests
+        run: |
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_build_jrdb_ability_snapshot.py \
+            horse-racing/jrdb/tests/test_evaluate_jrdb_ability_holdout.py \
+            horse-racing/jrdb/tests/test_build_jrdb_official_runperf.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_official_runperf.py
+
+      - name: Prepare workspace
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_official_ability/raw /tmp/jrdb_official_ability/report
+
+      - name: Fetch Raw 2010-2025
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: python horse-racing/jrdb/src/fetch_jrdb_history.py --from-year 2010 --to-year 2025 --kinds BAC KYI SED UKC CHA CYB --output-dir /tmp/jrdb_official_ability/raw --manifest /tmp/jrdb_official_ability/report/fetch_manifest.jsonl --sleep-seconds 1
+
+      - name: Build Index Base
+        run: |
+          YEARS=$(seq 2010 2025)
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py --raw-root /tmp/jrdb_official_ability/raw --years $YEARS --db /tmp/jrdb_official_ability/index.sqlite --no-archive-hash
+
+      - name: Audit Index Base
+        run: python horse-racing/jrdb/src/audit_jrdb_index_base.py --db /tmp/jrdb_official_ability/index.sqlite --out /tmp/jrdb_official_ability/report/index_audit.json --no-db-hash
+
+      - name: Build RunPerf
+        run: python horse-racing/jrdb/src/build_jrdb_runperf_features.py --index-db /tmp/jrdb_official_ability/index.sqlite --out /tmp/jrdb_official_ability/runperf.sqlite --methods EXPANDING
+
+      - name: Audit RunPerf
+        run: python horse-racing/jrdb/src/audit_jrdb_runperf.py --db /tmp/jrdb_official_ability/runperf.sqlite --out /tmp/jrdb_official_ability/report/runperf_audit.json --no-db-hash
+
+      - name: Build Official RunPerf
+        run: python horse-racing/jrdb/src/build_jrdb_official_runperf.py --runperf-db /tmp/jrdb_official_ability/runperf.sqlite --out /tmp/jrdb_official_ability/official_runperf.sqlite
+
+      - name: Audit Official RunPerf
+        run: python horse-racing/jrdb/src/audit_jrdb_official_runperf.py --db /tmp/jrdb_official_ability/official_runperf.sqlite --source-runperf-db /tmp/jrdb_official_ability/runperf.sqlite --out /tmp/jrdb_official_ability/report/official_runperf_audit.json --no-db-hash
+
+      - name: Build Ability Snapshot
+        run: python horse-racing/jrdb/src/build_jrdb_ability_snapshot.py --index-db /tmp/jrdb_official_ability/index.sqlite --official-runperf-db /tmp/jrdb_official_ability/official_runperf.sqlite --out /tmp/jrdb_official_ability/ability_snapshot.sqlite
+
+      - name: Audit Ability Snapshot
+        run: python horse-racing/jrdb/src/audit_jrdb_ability_snapshot.py --db /tmp/jrdb_official_ability/ability_snapshot.sqlite --out /tmp/jrdb_official_ability/report/ability_snapshot_audit.json
+
+      - name: Materialize Existing-Horse Ability v0.1
+        run: python horse-racing/jrdb/src/build_jrdb_official_existing_ability.py --ability-snapshot-db /tmp/jrdb_official_ability/ability_snapshot.sqlite --out /tmp/jrdb_official_ability/official_existing_ability.sqlite
+
+      - name: Audit Existing-Horse Ability v0.1
+        run: python horse-racing/jrdb/src/audit_jrdb_official_existing_ability.py --db /tmp/jrdb_official_ability/official_existing_ability.sqlite --source-ability-snapshot-db /tmp/jrdb_official_ability/ability_snapshot.sqlite --out /tmp/jrdb_official_ability/report/official_existing_ability_audit.json
+
+      - name: Build lightweight result
+        if: always()
+        run: |
+          mkdir -p /tmp/jrdb_official_ability/report
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report_path = Path('/tmp/jrdb_official_ability/report/official_existing_ability_audit.json')
+          result = {
+              'status': 'failure',
+              'run_id': '${{ github.run_id }}',
+              'head_sha': '${{ github.sha }}',
+              'model_version': 'Existing_Horse_Ability_v0_1',
+          }
+          if report_path.exists():
+              report = json.loads(report_path.read_text(encoding='utf-8'))
+              result.update({
+                  'status': 'success' if report.get('status') == 'PASS' else 'failure',
+                  'audit_status': report.get('status'),
+                  'source_target_runner_count': report.get('source_target_runner_count'),
+                  'materialized_runner_count': report.get('materialized_runner_count'),
+                  'model_snapshot_count': report.get('model_snapshot_count'),
+                  'violations': report.get('violations'),
+                  'confirmation_reproduction': report.get('confirmation_reproduction'),
+                  'annual': report.get('annual'),
+              })
+          Path('/tmp/jrdb_official_ability/report/workflow_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False),
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-official-existing-ability-v0-1-${{ github.run_id }}
+          path: /tmp/jrdb_official_ability/report
+          if-no-files-found: warn
+
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const p = '/tmp/jrdb_official_ability/report/workflow_result.json';
+            const body = fs.existsSync(p)
+              ? 'JRDB_OFFICIAL_ABILITY_AUDIT_RESULT\n```json\n' + fs.readFileSync(p, 'utf8') + '\n```'
+              : 'JRDB_OFFICIAL_ABILITY_AUDIT_RESULT\nworkflow failed before report generation';
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body});
