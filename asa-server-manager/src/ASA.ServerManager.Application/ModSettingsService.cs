@@ -78,7 +78,7 @@ public sealed class ModSettingsService
         {
             return OperationResult<IReadOnlyList<ModDefinition>>.Failure(settingsResult.ErrorMessage ?? "基本設定を読み込めません。", errorCode: "SETTINGS_LOAD_FAILED");
         }
-        settingsResult.Value.Mods = NormalizeInOrder(mods).ToList();
+        settingsResult.Value.Mods = SortAndNormalize(mods).ToList();
         OperationResult saveResult = await _settingsRepository.SaveAsync(settingsResult.Value, cancellationToken);
         if (!saveResult.Succeeded)
         {

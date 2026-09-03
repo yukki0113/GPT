@@ -196,7 +196,12 @@ public sealed class ModsView : UserControl
     private void CommitGridEdits()
     {
         _grid.EndEdit();
-        CurrencyManager? manager = BindingContext[_grid.DataSource] as CurrencyManager;
+        object? dataSource = _grid.DataSource;
+        if (dataSource is null)
+        {
+            return;
+        }
+        CurrencyManager? manager = BindingContext[dataSource] as CurrencyManager;
         manager?.EndCurrentEdit();
     }
 

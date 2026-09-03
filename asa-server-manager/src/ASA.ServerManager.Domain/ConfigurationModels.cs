@@ -217,5 +217,5 @@ public sealed class OperationResult<T> : OperationResult
 {
     public T? Value { get; init; }
     public static OperationResult<T> Success(T value, IReadOnlyList<string>? warnings = null) => new() { Succeeded = true, Value = value, Warnings = warnings ?? [] };
-    public static OperationResult<T> Failure(string message, IReadOnlyList<string>? warnings = null, string? errorCode = null, string? technicalMessage = null) => new() { Succeeded = false, ErrorMessage = message, UserMessage = message, ErrorCode = errorCode, TechnicalMessage = technicalMessage, Warnings = warnings ?? [] };
+    public new static OperationResult<T> Failure(string message, IReadOnlyList<string>? warnings = null, string? errorCode = null, string? technicalMessage = null) => new() { Succeeded = false, ErrorMessage = message, UserMessage = message, ErrorCode = errorCode, TechnicalMessage = technicalMessage, Warnings = warnings ?? [] };
 }
