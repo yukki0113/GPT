@@ -13,6 +13,9 @@
     <Content Include="..\..\definitions\game-settings.schema.json" Link="definitions\game-settings.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\definitions\maps.json" Link="definitions\maps.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
