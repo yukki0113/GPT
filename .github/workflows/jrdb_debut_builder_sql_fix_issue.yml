@@ -1,0 +1,57 @@
+name: JRDB Debut builder SQL arity repair
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  repair:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_DEBUT_BUILDER_SQL_FIX]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Repair static INSERT arity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('horse-racing/jrdb/src/build_jrdb_debut_ability_snapshot.py')
+          text = path.read_text(encoding='utf-8')
+          old = '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?'
+          new = '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?'
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'expected exactly one 42-placeholder training INSERT, found {count}')
+          text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+          python -m py_compile horse-racing/jrdb/src/build_jrdb_debut_ability_snapshot.py
+      - name: Commit correction to main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/src/build_jrdb_debut_ability_snapshot.py
+          git commit -m 'Fix Debut Ability training insert arity'
+          git push origin HEAD:main
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `JRDB_DEBUT_BUILDER_SQL_FIX_RESULT\nstatus=${{ job.status }}\nrun_id=${context.runId}`
+            });
