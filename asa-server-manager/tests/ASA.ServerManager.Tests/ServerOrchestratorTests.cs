@@ -45,6 +45,35 @@ public sealed class ServerOrchestratorTests
     }
 
     [Fact]
+    public async Task StartAsync_FirewallNeedsUpdateRequestsElevationBeforeUpdate()
+    {
+        RuntimeFakes fakes = new RuntimeFakes();
+        fakes.Process.IsRunning = false;
+        fakes.Firewall.Snapshots.Enqueue(new FirewallSnapshot { Readiness = FirewallReadiness.NeedsUpdate });
+        fakes.Firewall.Snapshots.Enqueue(new FirewallSnapshot { Readiness = FirewallReadiness.Ready });
+        await using ServerOrchestrator orchestrator = fakes.CreateOrchestrator();
+        OperationResult result = await orchestrator.StartAsync(null, CancellationToken.None);
+        Assert.True(result.Succeeded);
+        Assert.Equal(1, fakes.Elevation.EnsureCalls);
+        Assert.Equal(1, fakes.Steam.UpdateCalls);
+    }
+
+    [Fact]
+    public async Task StartAsync_FirewallEnsureFailureDoesNotUpdateOrStart()
+    {
+        RuntimeFakes fakes = new RuntimeFakes();
+        fakes.Process.IsRunning = false;
+        fakes.Firewall.Snapshot = new FirewallSnapshot { Readiness = FirewallReadiness.NeedsUpdate };
+        fakes.Elevation.EnsureResult = OperationResult.Failure("cancelled", errorCode: "FIREWALL_ELEVATION_CANCELLED");
+        await using ServerOrchestrator orchestrator = fakes.CreateOrchestrator();
+        OperationResult result = await orchestrator.StartAsync(null, CancellationToken.None);
+        Assert.False(result.Succeeded);
+        Assert.Equal("FIREWALL_ELEVATION_CANCELLED", result.ErrorCode);
+        Assert.Equal(0, fakes.Steam.UpdateCalls);
+        Assert.Equal(0, fakes.Process.StartCalls);
+    }
+
+    [Fact]
     public async Task StopAsync_SaveWorldFailureDoesNotIssueDoExit()
     {
         RuntimeFakes fakes = new RuntimeFakes();
@@ -70,6 +99,7 @@ public sealed class ServerOrchestratorTests
         Assert.True(result.Succeeded);
         Assert.Equal(new[] { "SaveWorld", "DoExit" }, fakes.Rcon.Commands);
         Assert.Equal(0, fakes.Process.ForceKillCalls);
+        Assert.Equal(0, fakes.Elevation.EnsureCalls);
     }
 
     [Fact]
@@ -114,6 +144,25 @@ public sealed class ServerOrchestratorTests
         Assert.False(result.Succeeded);
         Assert.Equal(0, fakes.Process.StartCalls);
     }
+
+    [Fact]
+    public async Task RestartAsync_FirewallFailureAfterSafeStopDoesNotUpdateOrStart()
+    {
+        RuntimeFakes fakes = new RuntimeFakes();
+        fakes.Process.IsRunning = true;
+        fakes.Rcon.CommandResults.Enqueue(RconConnectionResult.Success());
+        fakes.Rcon.CommandResults.Enqueue(RconConnectionResult.Success());
+        fakes.Process.ExitResults.Enqueue(true);
+        fakes.Firewall.Snapshots.Enqueue(new FirewallSnapshot { Readiness = FirewallReadiness.Ready });
+        fakes.Firewall.Snapshots.Enqueue(new FirewallSnapshot { Readiness = FirewallReadiness.NeedsUpdate });
+        fakes.Elevation.EnsureResult = OperationResult.Failure("cancelled", errorCode: "FIREWALL_ELEVATION_CANCELLED");
+        await using ServerOrchestrator orchestrator = fakes.CreateOrchestrator();
+        OperationResult result = await orchestrator.RestartAsync(null, CancellationToken.None);
+        Assert.False(result.Succeeded);
+        Assert.Equal(new[] { "SaveWorld", "DoExit" }, fakes.Rcon.Commands);
+        Assert.Equal(0, fakes.Steam.UpdateCalls);
+        Assert.Equal(0, fakes.Process.StartCalls);
+    }
 }
 
 internal sealed class RuntimeFakes
@@ -124,10 +173,13 @@ internal sealed class RuntimeFakes
     internal FakeProcessService Process { get; } = new();
     internal FakeRconClient Rcon { get; } = new();
     internal FakeIniSaver Saver { get; } = new();
+    internal FakeFirewallService Firewall { get; } = new();
+    internal FakeElevationLauncher Elevation { get; } = new();
+    internal FakeNetworkInfoService Network { get; } = new();
 
     internal ServerOrchestrator CreateOrchestrator()
     {
-        return new ServerOrchestrator(Settings, Secrets, Steam, Process, Rcon, Saver, new ServerArgumentBuilder(), new ServerStateResolver(), new FakeDelay(), new FakeLogger());
+        return new ServerOrchestrator(Settings, Secrets, Steam, Process, Rcon, Saver, new ServerArgumentBuilder(), new ServerStateResolver(), new FakeDelay(), new FakeLogger(), Firewall, Elevation, Network, new FirewallRequirementsBuilder());
     }
 }
 
@@ -195,6 +247,35 @@ internal sealed class FakeIniSaver : IEnabledIniSettingsSaver
 {
     internal int SaveCalls { get; private set; }
     public Task<OperationResult> SaveEnabledSettingsAsync(ServerSettings settings, CancellationToken cancellationToken) { SaveCalls++; return Task.FromResult(OperationResult.Success()); }
+}
+
+internal sealed class FakeFirewallService : IFirewallService
+{
+    internal int InspectCalls { get; private set; }
+    internal FirewallSnapshot Snapshot { get; set; } = new FirewallSnapshot { Readiness = FirewallReadiness.Ready };
+    internal Queue<FirewallSnapshot> Snapshots { get; } = new();
+    public Task<FirewallSnapshot> InspectAsync(FirewallRequirements requirements, CancellationToken cancellationToken)
+    {
+        InspectCalls++;
+        if (Snapshots.Count > 0)
+        {
+            return Task.FromResult(Snapshots.Dequeue());
+        }
+        return Task.FromResult(Snapshot);
+    }
+    public Task<OperationResult> EnsureAsync(FirewallRequirements requirements, CancellationToken cancellationToken) => Task.FromResult(OperationResult.Success());
+}
+
+internal sealed class FakeElevationLauncher : IFirewallElevationLauncher
+{
+    internal int EnsureCalls { get; private set; }
+    internal OperationResult EnsureResult { get; set; } = OperationResult.Success();
+    public Task<OperationResult> EnsureAsync(FirewallRequirements requirements, CancellationToken cancellationToken) { EnsureCalls++; return Task.FromResult(EnsureResult); }
+}
+
+internal sealed class FakeNetworkInfoService : INetworkInfoService
+{
+    public Task<NetworkSnapshot> GetSnapshotAsync(int gamePort, CancellationToken cancellationToken) => Task.FromResult(new NetworkSnapshot());
 }
 
 internal sealed class FakeDelay : IOperationDelay
