@@ -401,7 +401,12 @@ public sealed class GameSettingsView : UserControl
         {
             return;
         }
-        CurrencyManager? manager = BindingContext[dataSource] as CurrencyManager;
+        BindingContext? context = BindingContext;
+        if (context is null)
+        {
+            return;
+        }
+        CurrencyManager? manager = context[dataSource] as CurrencyManager;
         manager?.EndCurrentEdit();
     }
 
