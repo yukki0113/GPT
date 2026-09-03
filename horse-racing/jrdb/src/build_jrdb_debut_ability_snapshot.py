@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 BANDWIDTHS = (200, 400, 600, 800)
-BUILDER_VERSION = "build_jrdb_debut_ability_snapshot_v0_1"
+BUILDER_VERSION = "build_jrdb_debut_ability_snapshot_v0_1_1"
 SCHEMA_VERSION = "jrdb_debut_ability_snapshot_schema_v0_1"
 FORMULA_VERSION = "Debut_Ability_Snapshot_Protocol_v0_1"
 
@@ -111,19 +111,21 @@ def _resolve_profile(
     profiles: dict[str, list[dict[str, Any]]],
     horse_id: Any,
     race_date: Any,
-) -> tuple[dict[str, Any] | None, int]:
-    """Resolve latest strict-prior-day UKC profile and whether a same-day observation exists."""
+) -> tuple[dict[str, Any] | None, int, int]:
+    """Resolve the latest UKC observation verified available pre-race by target date."""
     if horse_id is None:
-        return None, 0
+        return None, 0, 0
     observations = profiles.get(str(horse_id), [])
     target = _date_token(race_date)
     if not observations or target is None:
-        return None, 0
+        return None, 0, 0
     dates = [str(item["date_token"]) for item in observations]
-    position = bisect.bisect_left(dates, target)
-    prior = observations[position - 1] if position > 0 else None
-    same_day_exists = 1 if position < len(dates) and dates[position] == target else 0
-    return prior, same_day_exists
+    left = bisect.bisect_left(dates, target)
+    right = bisect.bisect_right(dates, target)
+    prior_day_exists = 1 if left > 0 else 0
+    same_day_exists = 1 if left < len(dates) and dates[left] == target else 0
+    selected = observations[right - 1] if right > 0 else None
+    return selected, prior_day_exists, same_day_exists
 
 
 def _load_runner_rows(connection: sqlite3.Connection) -> list[dict[str, Any]]:
@@ -171,7 +173,7 @@ def _load_runperf(connection: sqlite3.Connection) -> dict[tuple[str, int], dict[
 
 
 def build(index_db: Path, official_runperf_db: Path, output_db: Path, schema_path: Path) -> dict[str, Any]:
-    """Build strict-prior-day pedigree and target PRE_RACE training snapshots."""
+    """Build verified pre-race pedigree and target PRE_RACE training snapshots."""
     if output_db.exists():
         output_db.unlink()
 
@@ -257,7 +259,7 @@ def build(index_db: Path, official_runperf_db: Path, output_db: Path, schema_pat
                     prior_start_no_scored_count += 1
                 target_count += 1
 
-                profile, same_day_profile = _resolve_profile(profiles, horse_id, race_date)
+                profile, prior_day_profile, same_day_profile = _resolve_profile(profiles, horse_id, race_date)
                 sire = str(profile.get("sire_name") or "") if profile else ""
                 damsire = str(profile.get("broodmare_sire_name") or "") if profile else ""
                 sire_line = str(profile.get("sire_line_code") or "") if profile else ""
@@ -300,7 +302,7 @@ def build(index_db: Path, official_runperf_db: Path, output_db: Path, schema_pat
                     (
                         race_date,str(row["race_key"]),int(row["horse_no"]),horse_id,int(row["year"]),row.get("venue_code"),
                         row.get("surface_code"),distance,row.get("jockey_code"),row.get("trainer_code"),current_weight,mean_weight,weight_relative,
-                        starts_before,is_true_first,str(row["race_context_availability"]),profile_date,1 if profile else 0,same_day_profile,
+                        starts_before,is_true_first,str(row["race_context_availability"]),profile_date,prior_day_profile,same_day_profile,
                         sire or None,damsire or None,sire_line or None,damsire_line or None,
                         profile.get("dam_name") if profile else None,profile.get("birth_date") if profile else None,
                         profile.get("sex_code") if profile else row.get("pre_sex_code"),
@@ -431,7 +433,7 @@ def build(index_db: Path, official_runperf_db: Path, output_db: Path, schema_pat
             """,
             (
                 _utc_now(),target_count,true_first_count,prior_start_no_scored_count,
-                "Strict-prior-day Debut Ability snapshot complete; same-day UKC remains diagnostic only",
+                "Verified pre-race Debut Ability snapshot complete; same-day UKC allowed by Controller evidence #332",
             ),
         )
         output_connection.commit()

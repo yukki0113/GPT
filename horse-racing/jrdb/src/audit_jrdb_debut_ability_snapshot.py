@@ -106,7 +106,8 @@ def audit(database: Path, index_db: Path, official_runperf_db: Path) -> dict[str
         target_definition_violation = 0
         prior_start_count_violation = 0
         true_first_flag_violation = 0
-        profile_future_or_same_day_use = 0
+        profile_future_use = 0
+        profile_availability_contract_violation = 0
         missing_horse_identity = 0
         fallback_target_count = 0
         for (
@@ -132,12 +133,16 @@ def audit(database: Path, index_db: Path, official_runperf_db: Path) -> dict[str
                     true_first_flag_violation += 1
             if profile_date is not None:
                 profile_token = _date_token(profile_date)
-                if profile_token is None or profile_token >= target:
-                    profile_future_or_same_day_use += 1
-                if int(profile_prior_day_available) != 1:
-                    profile_future_or_same_day_use += 1
-            elif int(profile_prior_day_available) != 0:
-                profile_future_or_same_day_use += 1
+                if profile_token is None:
+                    profile_availability_contract_violation += 1
+                elif profile_token > target:
+                    profile_future_use += 1
+                elif profile_token < target and int(profile_prior_day_available) != 1:
+                    profile_availability_contract_violation += 1
+                elif profile_token == target and int(same_day_exists) != 1:
+                    profile_availability_contract_violation += 1
+            elif int(profile_prior_day_available) != 0 or int(same_day_exists) != 0:
+                profile_availability_contract_violation += 1
             if availability != "PRE_RACE":
                 fallback_target_count += 1
 
@@ -222,7 +227,9 @@ def audit(database: Path, index_db: Path, official_runperf_db: Path) -> dict[str
                   COUNT(*),
                   SUM(is_true_first_start),
                   SUM(profile_prior_day_available),
-                  SUM(profile_same_day_observation_exists)
+                  SUM(profile_same_day_observation_exists),
+                  SUM(CASE WHEN profile_data_date IS NOT NULL THEN 1 ELSE 0 END),
+                  SUM(CASE WHEN profile_data_date=race_date THEN 1 ELSE 0 END)
                 FROM debut_target_runner WHERE year=?
                 """,
                 (year,),
@@ -254,6 +261,8 @@ def audit(database: Path, index_db: Path, official_runperf_db: Path) -> dict[str
                     "true_first_start_count":int(summary[1] or 0),
                     "profile_prior_day_coverage":float(summary[2] or 0)/count if count else 0.0,
                     "profile_same_day_observation_rate":float(summary[3] or 0)/count if count else 0.0,
+                    "profile_selected_pre_race_coverage":float(summary[4] or 0)/count if count else 0.0,
+                    "profile_same_day_selected_rate":float(summary[5] or 0)/count if count else 0.0,
                     "sire_prior_coverage":float(coverage[0] or 0)/count if count else 0.0,
                     "broodmare_sire_prior_coverage":float(coverage[1] or 0)/count if count else 0.0,
                     "sire_line_prior_coverage":float(coverage[2] or 0)/count if count else 0.0,
@@ -271,7 +280,9 @@ def audit(database: Path, index_db: Path, official_runperf_db: Path) -> dict[str
             "target_definition_violation":target_definition_violation,
             "prior_start_count_violation":prior_start_count_violation,
             "true_first_flag_violation":true_first_flag_violation,
-            "profile_future_or_same_day_use":profile_future_or_same_day_use,
+            "missing_horse_identity_count":missing_horse_identity,
+            "profile_future_use":profile_future_use,
+            "profile_availability_contract_violation":profile_availability_contract_violation,
             "count_reconciliation_violation":count_reconciliation_violation,
             "pedigree_evidence_contract_violation":evidence_contract_violation,
             "people_evidence_contract_violation":people_contract_violation,

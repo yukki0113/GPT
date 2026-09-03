@@ -115,7 +115,13 @@ def report(database: Path, from_year: int, to_year: int) -> dict[str, Any]:
             pre_race = sum(row.get("race_context_availability") == "PRE_RACE" for row in subset)
             identity = sum(row.get("horse_id") not in (None, "") for row in subset)
             profile = sum(int(row["profile_prior_day_available"]) == 1 for row in subset)
+            selected_profile = sum(row.get("profile_data_date") is not None for row in subset)
             same_day_profile = sum(int(row["profile_same_day_observation_exists"]) == 1 for row in subset)
+            same_day_selected = sum(
+                _date_token(row.get("profile_data_date")) == _date_token(row.get("race_date"))
+                and row.get("profile_data_date") is not None
+                for row in subset
+            )
             weight = sum(row.get("weight_relative") is not None for row in subset)
             cha = sum(int(row["cha_missing"]) == 0 for row in subset)
             cyb = sum(int(row["cyb_missing"]) == 0 for row in subset)
@@ -187,8 +193,10 @@ def report(database: Path, from_year: int, to_year: int) -> dict[str, Any]:
                 "horse_id_coverage": _coverage(identity, total),
                 "target_label_coverage": _coverage(label_ok, total),
                 "profile_prior_day_coverage": _coverage(profile, total),
+                "profile_selected_pre_race_coverage": _coverage(selected_profile, total),
                 "profile_same_day_observation_rate": _coverage(same_day_profile, total),
-                "profile_lag_days_when_prior_available": _distribution(lag_values),
+                "profile_same_day_selected_rate": _coverage(same_day_selected, total),
+                "profile_lag_days_when_selected": _distribution(lag_values),
                 "weight_relative_coverage": _coverage(weight, total),
                 "cha_coverage": _coverage(cha, total),
                 "cyb_coverage": _coverage(cyb, total),

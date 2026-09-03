@@ -123,8 +123,8 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path]:
         _insert_race(connection,"R2013","20130101",2013,1)
         _insert_runner(connection,"R2013",1,"H3","J1","T1")
         _insert_profile(connection,"H3","20121220","S1")
-        # Same-day UKC intentionally disagrees; it must be diagnostic only, never selected.
-        _insert_profile(connection,"H3","20130101","SAME_DAY_SIRE")
+        # Same-day UKC is verified PRE_RACE profile data and should be selected.
+        _insert_profile(connection,"H3","20130101","S1")
         connection.execute(
             """
             INSERT INTO workout_main(
@@ -157,8 +157,8 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path]:
     return index, official
 
 
-def test_same_day_results_do_not_enter_debut_prior_and_prior_day_profile_wins(tmp_path: Path) -> None:
-    """Daily batching prevents same-day result leakage and same-day UKC is never selected."""
+def test_same_day_results_do_not_enter_debut_prior_and_same_day_profile_is_selected(tmp_path: Path) -> None:
+    """Daily batching blocks same-day result leakage while verified same-day UKC is selected."""
     index, official = _fixture(tmp_path)
     output = tmp_path / "debut.sqlite"
     BUILDER.build(index,official,output,DEBUT_SCHEMA)
@@ -183,7 +183,8 @@ def test_same_day_results_do_not_enter_debut_prior_and_prior_day_profile_wins(tm
         ).fetchone()
         assert target is not None and pedigree is not None and training is not None
         assert target["is_true_first_start"] == 1
-        assert target["profile_data_date"] == "20121220"
+        assert target["profile_data_date"] == "20130101"
+        assert target["profile_prior_day_available"] == 1
         assert target["profile_same_day_observation_exists"] == 1
         assert target["sire_name"] == "S1"
         assert pedigree["sire_debut_n"] == 2

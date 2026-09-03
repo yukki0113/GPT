@@ -44,6 +44,8 @@ def test_coverage_report_is_structural_only_and_summarizes_fixture(tmp_path: Pat
     assert aggregate["horse_id_coverage"] == 1.0
     assert aggregate["pre_race_context_coverage"] == 1.0
     assert aggregate["profile_prior_day_coverage"] == 1.0
+    assert aggregate["profile_selected_pre_race_coverage"] == 1.0
+    assert aggregate["profile_same_day_selected_rate"] == 1 / 3
     assert aggregate["target_label_coverage"] == 2 / 3
     assert aggregate["sire_debut"]["coverage"] if False else True
     assert aggregate["pedigree"]["sire_debut"]["coverage"] == 1 / 3
