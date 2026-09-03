@@ -38,6 +38,7 @@ jobs:
           import json
           import os
           import urllib.error
+          import urllib.parse
           import urllib.request
           from pathlib import Path
 
@@ -87,7 +88,7 @@ jobs:
                   'last_modified': headers.get('Last-Modified') if headers else None,
                   'content_length': headers.get('Content-Length') if headers else None,
                   'etag': headers.get('ETag') if headers else None,
-                  'final_url_host': urllib.request.urlparse(final_url).hostname if final_url else None,
+                  'final_url_host': urllib.parse.urlparse(final_url).hostname if final_url else None,
                   'error': error_text,
               })
 
