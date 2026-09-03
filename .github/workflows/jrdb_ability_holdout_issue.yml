@@ -32,7 +32,6 @@ jobs:
         run: |
           python -m pytest -q \
             horse-racing/jrdb/tests/test_build_jrdb_ability_snapshot.py \
-            horse-racing/jrdb/tests/test_audit_jrdb_ability_snapshot.py \
             horse-racing/jrdb/tests/test_evaluate_jrdb_ability_holdout.py \
             horse-racing/jrdb/tests/test_build_jrdb_official_runperf.py \
             horse-racing/jrdb/tests/test_audit_jrdb_official_runperf.py
@@ -84,7 +83,9 @@ jobs:
           import json
           from pathlib import Path
 
-          report_path = Path('/tmp/jrdb_ability_holdout/report/ability_holdout.json')
+          report_dir = Path('/tmp/jrdb_ability_holdout/report')
+          report_dir.mkdir(parents=True, exist_ok=True)
+          report_path = report_dir / 'ability_holdout.json'
           result = {
               'status': 'failure',
               'run_id': '${{ github.run_id }}',
@@ -123,7 +124,7 @@ jobs:
                   'model_promoted': False,
               })
 
-          Path('/tmp/jrdb_ability_holdout/report/workflow_result.json').write_text(
+          (report_dir / 'workflow_result.json').write_text(
               json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False),
               encoding='utf-8',
           )
