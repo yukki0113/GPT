@@ -7,6 +7,9 @@
     "required": [
       "id",
       "displayNameJa",
+      "uiCategory",
+      "uiSubCategory",
+      "descriptionJa",
       "file",
       "section",
       "key",
@@ -20,6 +23,18 @@
       },
       "displayNameJa": {
         "type": "string"
+      },
+      "uiCategory": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uiSubCategory": {
+        "type": "string",
+        "minLength": 1
+      },
+      "descriptionJa": {
+        "type": "string",
+        "minLength": 1
       },
       "file": {
         "enum": [

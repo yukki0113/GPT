@@ -123,7 +123,7 @@ public sealed class ModSettingsService
     {
         List<ModDefinition> result = [];
         int order = 0;
-        foreach (ModDefinition mod in mods.OrderBy(mod => mod.Order))
+        foreach (ModDefinition mod in mods)
         {
             result.Add(new ModDefinition { ProjectId = mod.ProjectId.Trim(), Name = mod.Name.Trim(), Enabled = mod.Enabled, Order = order });
             order++;

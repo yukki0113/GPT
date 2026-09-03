@@ -30,6 +30,9 @@
     <Content Include="..\..\definitions\game-settings.json" Link="definitions\game-settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\definitions\maps.json" Link="definitions\maps.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
