@@ -4,7 +4,7 @@ using ASA.ServerManager.Domain;
 namespace ASA.ServerManager.Infrastructure;
 
 /// <summary>INI保存前のファイルを時刻別フォルダに複製します。</summary>
-public sealed class IniBackupService(string backupRoot) : IBackupService
+public sealed class IniBackupService(string backupRoot) : IIniBackupService
 {
     private readonly string _backupRoot = backupRoot;
 

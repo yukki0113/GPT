@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace ASA.ServerManager.Domain;
 
-public enum ServerState { Unconfigured, Stopped, Installing, Updating, Starting, WaitingForRcon, Running, Saving, Stopping, Error }
+public enum ServerState { Unconfigured, Stopped, Firewall, Installing, Updating, Starting, WaitingForRcon, Running, Saving, Stopping, Error }
 public enum SupportStatus { AsaSupported, AsaSupportedConditional, AsaMapSpecific, Deprecated, AseOnly, Unverified, Unknown }
 public enum GameSettingValueType { Boolean, Integer, Decimal, String, Enum, List, Complex }
 public enum IniFileKind { GameUserSettings, Game }
@@ -78,6 +78,81 @@ public sealed class ServerSecrets { public string ServerPassword { get; set; } =
 public sealed class ModDefinition { public required string ProjectId { get; init; } public string Name { get; init; } = string.Empty; public bool Enabled { get; init; } = true; public int Order { get; init; } }
 public sealed class MapDefinition { public required string Id { get; init; } public required string LevelName { get; init; } public required string DisplayNameJa { get; init; } }
 public sealed record OperationProgress(string StepCode, string UserMessage, int? Percent);
+
+/// <summary>ASA Server Managerが必要とする受信Firewall設定です。</summary>
+public sealed class FirewallRequirements
+{
+    public required string ServerExecutablePath { get; init; }
+    public required IReadOnlyList<int> UdpInboundPorts { get; init; }
+    public required bool ExposeRcon { get; init; }
+    public int? RconTcpPort { get; init; }
+}
+
+/// <summary>現在のFirewall設定が起動に利用できる状態かを表します。</summary>
+public enum FirewallReadiness { Unknown, Ready, NeedsUpdate, Unavailable, Error }
+
+/// <summary>管理対象Firewall Ruleの比較用表現です。</summary>
+public sealed class ManagedFirewallRule
+{
+    public required string Name { get; init; }
+    public required bool Enabled { get; init; }
+    public required bool IsInbound { get; init; }
+    public required FirewallProtocol Protocol { get; init; }
+    public required IReadOnlyList<int> LocalPorts { get; init; }
+    public string? ApplicationPath { get; init; }
+}
+
+/// <summary>Firewall Ruleの対象プロトコルです。</summary>
+public enum FirewallProtocol { Tcp, Udp }
+
+/// <summary>Firewall状態を画面と起動処理へ返します。</summary>
+public sealed class FirewallSnapshot
+{
+    public FirewallReadiness Readiness { get; init; }
+    public IReadOnlyList<int> ExpectedUdpPorts { get; init; } = [];
+    public IReadOnlyList<int> ActualUdpPorts { get; init; } = [];
+    public bool ExpectedRconExposed { get; init; }
+    public bool ActualRconExposed { get; init; }
+    public int? ExpectedRconTcpPort { get; init; }
+    public int? ActualRconTcpPort { get; init; }
+    public string? Detail { get; init; }
+}
+
+/// <summary>昇格helperへ渡す固定用途の要求です。</summary>
+public sealed class ElevatedFirewallRequest
+{
+    public required string Operation { get; init; }
+    public required FirewallRequirements Requirements { get; init; }
+}
+
+/// <summary>ネットワークアダプター上で検出したIPv4候補です。</summary>
+public sealed class NetworkAddressInfo
+{
+    public required string AdapterName { get; init; }
+    public required string AdapterDescription { get; init; }
+    public required string Ipv4Address { get; init; }
+    public bool IsHamachi { get; init; }
+    public bool IsPrivateLan { get; init; }
+}
+
+/// <summary>接続候補として画面に出すネットワーク情報です。</summary>
+public sealed class NetworkSnapshot
+{
+    public string? LanIpv4 { get; init; }
+    public string? HamachiIpv4 { get; init; }
+    public IReadOnlyList<NetworkAddressInfo> Addresses { get; init; } = [];
+    public string? LanConnectCommand { get; init; }
+    public string? HamachiConnectCommand { get; init; }
+}
+
+/// <summary>Saved手動バックアップの完了情報です。</summary>
+public sealed class BackupInfo
+{
+    public required string Path { get; init; }
+    public required DateTimeOffset CreatedAt { get; init; }
+    public required int FileCount { get; init; }
+    public required long TotalBytes { get; init; }
+}
 
 /// <summary>失敗理由を例外に依存せず呼出元へ返す結果です。</summary>
 public class OperationResult

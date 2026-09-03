@@ -15,6 +15,10 @@ public sealed class ServerOrchestrator : IAsyncDisposable
     private readonly ServerStateResolver _stateResolver;
     private readonly IOperationDelay _delay;
     private readonly IAppLogger _logger;
+    private readonly IFirewallService _firewallService;
+    private readonly IFirewallElevationLauncher _firewallElevationLauncher;
+    private readonly INetworkInfoService _networkInfoService;
+    private readonly FirewallRequirementsBuilder _firewallRequirementsBuilder;
     private readonly SemaphoreSlim _operationLock = new(1, 1);
     private ServerState? _operationState;
 
@@ -29,7 +33,11 @@ public sealed class ServerOrchestrator : IAsyncDisposable
         ServerArgumentBuilder argumentBuilder,
         ServerStateResolver stateResolver,
         IOperationDelay delay,
-        IAppLogger logger)
+        IAppLogger logger,
+        IFirewallService firewallService,
+        IFirewallElevationLauncher firewallElevationLauncher,
+        INetworkInfoService networkInfoService,
+        FirewallRequirementsBuilder firewallRequirementsBuilder)
     {
         _settingsRepository = settingsRepository;
         _secretRepository = secretRepository;
@@ -41,6 +49,10 @@ public sealed class ServerOrchestrator : IAsyncDisposable
         _stateResolver = stateResolver;
         _delay = delay;
         _logger = logger;
+        _firewallService = firewallService;
+        _firewallElevationLauncher = firewallElevationLauncher;
+        _networkInfoService = networkInfoService;
+        _firewallRequirementsBuilder = firewallRequirementsBuilder;
     }
 
     /// <summary>実プロセスとRCONから最新スナップショットを取得します。</summary>
@@ -70,7 +82,32 @@ public sealed class ServerOrchestrator : IAsyncDisposable
                 rcon = await _rconClient.TestConnectionAsync(CreateRconEndpoint(settings, secretsResult.Value), cancellationToken);
             }
         }
-        return _stateResolver.Resolve(true, process, rcon);
+        ServerSnapshot runtimeSnapshot = _stateResolver.Resolve(true, process, rcon);
+        FirewallSnapshot? firewall = null;
+        NetworkSnapshot? network = null;
+        OperationResult<FirewallRequirements> requirementsResult = _firewallRequirementsBuilder.Build(settings);
+        if (requirementsResult.Succeeded && requirementsResult.Value is not null)
+        {
+            firewall = await _firewallService.InspectAsync(requirementsResult.Value, cancellationToken);
+            try
+            {
+                network = await _networkInfoService.GetSnapshotAsync(settings.Ports.GamePort, cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, "Network information inspection failed.");
+            }
+        }
+        return new ServerSnapshot
+        {
+            State = runtimeSnapshot.State,
+            Detail = runtimeSnapshot.Detail,
+            ProcessId = runtimeSnapshot.ProcessId,
+            IsRconReady = runtimeSnapshot.IsRconReady,
+            ObservedAt = runtimeSnapshot.ObservedAt,
+            Firewall = firewall,
+            Network = network
+        };
     }
 
     /// <summary>停止中のASAを更新して起動します。</summary>
@@ -193,6 +230,11 @@ public sealed class ServerOrchestrator : IAsyncDisposable
             SetState(ServerState.Unconfigured);
             return OperationResult.Failure("必須設定を確認してください。", errorCode: "CFG_REQUIRED_MISSING");
         }
+        OperationResult firewallResult = await EnsureFirewallReadyAsync(context.Settings, progress, cancellationToken);
+        if (!firewallResult.Succeeded)
+        {
+            return Fail(firewallResult, ServerState.Error, "FIREWALL_NOT_READY");
+        }
         SetState(ServerState.Installing);
         Report(progress, "INSTALLING", "SteamCMDを確認しています", null);
         OperationResult ensureResult = await _steamCmdService.EnsureInstalledAsync(context.Settings.SteamCmdPath, progress, cancellationToken);
@@ -277,6 +319,38 @@ public sealed class ServerOrchestrator : IAsyncDisposable
             return OperationResult.Failure("ASAプロセスの終了待機がタイムアウトしました。強制終了は実行していません。", errorCode: "STOP_TIMEOUT");
         }
         SetState(ServerState.Stopped);
+        return OperationResult.Success();
+    }
+
+    private async Task<OperationResult> EnsureFirewallReadyAsync(ServerSettings settings, IProgress<OperationProgress>? progress, CancellationToken cancellationToken)
+    {
+        OperationResult<FirewallRequirements> requirementsResult = _firewallRequirementsBuilder.Build(settings);
+        if (!requirementsResult.Succeeded || requirementsResult.Value is null)
+        {
+            return OperationResult.Failure(requirementsResult.ErrorMessage ?? "Firewall設定を確認できません。", errorCode: requirementsResult.ErrorCode ?? "FIREWALL_NOT_READY");
+        }
+        SetState(ServerState.Firewall);
+        Report(progress, "FIREWALL", "Firewall設定を確認しています", null);
+        FirewallSnapshot before = await _firewallService.InspectAsync(requirementsResult.Value, cancellationToken);
+        if (before.Readiness == FirewallReadiness.Ready)
+        {
+            return OperationResult.Success();
+        }
+        if (before.Readiness is FirewallReadiness.Error or FirewallReadiness.Unavailable or FirewallReadiness.Unknown)
+        {
+            return OperationResult.Failure("Firewall状態を確認できません。", errorCode: "FIREWALL_INSPECT_FAILED", technicalMessage: before.Detail);
+        }
+        Report(progress, "FIREWALL", "Firewall設定の管理者承認を待っています", null);
+        OperationResult elevationResult = await _firewallElevationLauncher.EnsureAsync(requirementsResult.Value, cancellationToken);
+        if (!elevationResult.Succeeded)
+        {
+            return elevationResult;
+        }
+        FirewallSnapshot after = await _firewallService.InspectAsync(requirementsResult.Value, cancellationToken);
+        if (after.Readiness != FirewallReadiness.Ready)
+        {
+            return OperationResult.Failure("Firewall設定の再確認に失敗しました。", errorCode: "FIREWALL_REINSPECT_FAILED", technicalMessage: after.Detail);
+        }
         return OperationResult.Success();
     }
 

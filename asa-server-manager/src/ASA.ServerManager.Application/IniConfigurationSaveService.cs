@@ -3,10 +3,10 @@ using ASA.ServerManager.Domain;
 namespace ASA.ServerManager.Application;
 
 /// <summary>INIの再読込、バックアップ、反映、保存を安全な順序で実行します。</summary>
-public sealed class IniConfigurationSaveService(IIniDocumentService iniDocumentService, IBackupService backupService)
+public sealed class IniConfigurationSaveService(IIniDocumentService iniDocumentService, IIniBackupService backupService)
 {
     private readonly IIniDocumentService _iniDocumentService = iniDocumentService;
-    private readonly IBackupService _backupService = backupService;
+    private readonly IIniBackupService _backupService = backupService;
     private readonly ConfigurationOrchestrator _orchestrator = new ConfigurationOrchestrator();
 
     /// <summary>現在のINIを読み直してから、バックアップを作成し、編集値を保存します。</summary>

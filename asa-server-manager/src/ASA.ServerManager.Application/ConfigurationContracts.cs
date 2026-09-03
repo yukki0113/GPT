@@ -28,10 +28,41 @@ public interface ISecretRepository
 }
 
 /// <summary>INIファイルのバックアップを作成します。</summary>
-public interface IBackupService
+public interface IIniBackupService
 {
     /// <summary>指定INIを同じ時刻フォルダへ退避します。</summary>
     Task<OperationResult<string>> BackupIniAsync(IEnumerable<string> sourcePaths, CancellationToken cancellationToken);
+}
+
+/// <summary>ASAの起動に必要なWindows Firewall状態を確認・補正します。</summary>
+public interface IFirewallService
+{
+    /// <summary>現在の管理Ruleを読み取り、要求との差分を返します。</summary>
+    Task<FirewallSnapshot> InspectAsync(FirewallRequirements requirements, CancellationToken cancellationToken);
+
+    /// <summary>管理Ruleだけを要求に一致するよう補正します。昇格helperからのみ呼び出します。</summary>
+    Task<OperationResult> EnsureAsync(FirewallRequirements requirements, CancellationToken cancellationToken);
+}
+
+/// <summary>Firewall補正用に固定用途のUAC helperを起動します。</summary>
+public interface IFirewallElevationLauncher
+{
+    /// <summary>Firewall補正だけを昇格プロセスへ委譲します。</summary>
+    Task<OperationResult> EnsureAsync(FirewallRequirements requirements, CancellationToken cancellationToken);
+}
+
+/// <summary>LANおよびHamachiの接続候補を取得します。</summary>
+public interface INetworkInfoService
+{
+    /// <summary>指定ゲームポート向けの接続文字列を含む情報を取得します。</summary>
+    Task<NetworkSnapshot> GetSnapshotAsync(int gamePort, CancellationToken cancellationToken);
+}
+
+/// <summary>ASAのSaved全体を手動バックアップします。</summary>
+public interface IBackupService
+{
+    /// <summary>指定サーバールート配下のShooterGame/Savedを複製します。</summary>
+    Task<OperationResult<BackupInfo>> CreateSavedBackupAsync(string serverRoot, CancellationToken cancellationToken);
 }
 
 /// <summary>順序保持INIドキュメントを読み書きします。</summary>

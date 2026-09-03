@@ -9,6 +9,8 @@ public sealed class ServerControlView : UserControl
     private readonly ServerOrchestrator? _orchestrator;
     private readonly Label _status;
     private readonly Label _detail;
+    private readonly Label _firewall;
+    private readonly Label _network;
     private readonly Button _start;
     private readonly Button _stop;
     private readonly System.Windows.Forms.Timer _timer;
@@ -28,20 +30,32 @@ public sealed class ServerControlView : UserControl
         _detail.Location = new Point(24, 48);
         _detail.Text = "状態を取得しています。";
 
+        _firewall = new Label();
+        _firewall.AutoSize = true;
+        _firewall.Location = new Point(24, 72);
+        _firewall.Text = "Firewall: 確認中";
+
+        _network = new Label();
+        _network.AutoSize = true;
+        _network.Location = new Point(24, 96);
+        _network.Text = "LAN IPv4: - / Hamachi IPv4: -";
+
         _start = new Button();
-        _start.Location = new Point(24, 84);
+        _start.Location = new Point(24, 132);
         _start.Size = new Size(140, 32);
         _start.Text = "起動／再起動";
         _start.Click += StartButton_Click;
 
         _stop = new Button();
-        _stop.Location = new Point(176, 84);
+        _stop.Location = new Point(176, 132);
         _stop.Size = new Size(100, 32);
         _stop.Text = "停止";
         _stop.Click += StopButton_Click;
 
         Controls.Add(_status);
         Controls.Add(_detail);
+        Controls.Add(_firewall);
+        Controls.Add(_network);
         Controls.Add(_start);
         Controls.Add(_stop);
 
@@ -132,6 +146,8 @@ public sealed class ServerControlView : UserControl
         {
             _detail.Text = $"{snapshot.Detail} PID: {snapshot.ProcessId}";
         }
+        _firewall.Text = $"Firewall: {GetFirewallLabel(snapshot.Firewall?.Readiness)}";
+        _network.Text = GetNetworkLabel(snapshot.Network);
         bool canStart = snapshot.State == ServerState.Stopped || snapshot.State == ServerState.Running;
         _start.Enabled = !_operationInProgress && canStart;
         _stop.Enabled = !_operationInProgress && snapshot.State == ServerState.Running;
@@ -157,6 +173,7 @@ public sealed class ServerControlView : UserControl
         {
             ServerState.Unconfigured => "未構成",
             ServerState.Stopped => "停止中",
+            ServerState.Firewall => "Firewall確認中",
             ServerState.Installing => "SteamCMD導入中",
             ServerState.Updating => "更新中",
             ServerState.Starting => "起動中",
@@ -166,5 +183,25 @@ public sealed class ServerControlView : UserControl
             ServerState.Stopping => "停止中",
             _ => "エラー"
         };
+    }
+
+    private static string GetFirewallLabel(FirewallReadiness? readiness)
+    {
+        return readiness switch
+        {
+            FirewallReadiness.Ready => "Ready",
+            FirewallReadiness.NeedsUpdate => "要更新",
+            FirewallReadiness.Unavailable => "利用不可",
+            FirewallReadiness.Error => "Error",
+            _ => "確認中"
+        };
+    }
+
+    private static string GetNetworkLabel(NetworkSnapshot? network)
+    {
+        string lan = network?.LanIpv4 ?? "-";
+        string hamachi = network?.HamachiIpv4 ?? "-";
+        string command = network?.HamachiConnectCommand ?? network?.LanConnectCommand ?? "-";
+        return $"LAN IPv4: {lan} / Hamachi IPv4: {hamachi} / 接続: {command}";
     }
 }
