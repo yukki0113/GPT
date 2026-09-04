@@ -1,38 +1,27 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from statistics import median
 
+from .color_detector import COLOR_RANK_INDEX, COLOR_RANK_ORDER
 from .models import HorseRecord, PanelBox
 
 
 def _validate_colors(color_observations: list[dict]) -> dict:
+    """Validate ranked-cell colors against numeric Eval values.
+
+    The color order is an image-side invariant taken from the master_eval
+    legend: red(1st) -> blue(2nd) -> orange(3rd) -> green(4th) -> yellow(5th).
+    It is deliberately *not* inferred from OCR values. OCR values are the
+    subject being validated and must never determine the validation baseline.
+    """
     by_race: dict[tuple[str, int], list[dict]] = defaultdict(list)
     for obs in color_observations:
         by_race[(str(obs["venue"]), int(obs["race_no"]))].append(obs)
 
-    active_colors = sorted({str(o["color"]) for o in color_observations if o.get("color")})
-    rank_samples: dict[str, list[float]] = defaultdict(list)
-
-    for rows in by_race.values():
-        numeric = [int(r["eval"]) for r in rows if r.get("eval") is not None]
-        for row in rows:
-            color = row.get("color")
-            value = row.get("eval")
-            if not color or value is None:
-                continue
-            # Rank 1 + number of strictly greater values; ties share the rank.
-            rank = 1 + sum(1 for v in numeric if v > int(value))
-            rank_samples[str(color)].append(float(rank))
-
-    inferred_order = sorted(
-        active_colors,
-        key=lambda color: (
-            median(rank_samples[color]) if rank_samples[color] else 999.0,
-            color,
-        ),
-    )
-    order_index = {color: idx for idx, color in enumerate(inferred_order)}
+    active_colors = [
+        color for color in COLOR_RANK_ORDER
+        if any(str(o.get("color")) == color for o in color_observations if o.get("color"))
+    ]
 
     top_set_violations: list[dict] = []
     order_violations: list[dict] = []
@@ -45,10 +34,9 @@ def _validate_colors(color_observations: list[dict]) -> dict:
         if not colored:
             continue
 
-        # Same-color duplicates are expected when multiple horses share the
-        # same Eval/rank. Record them as normal tie information. Only treat a
-        # repeated color as inconsistent when it is attached to different
-        # numeric Eval values inside the same race.
+        # Same-color duplicates are expected only when the same rank is tied.
+        # Different numeric values attached to the same rank color are a direct
+        # contradiction and therefore independent evidence of OCR/color error.
         by_color: dict[str, list[dict]] = defaultdict(list)
         for row in colored:
             by_color[str(row["color"])].append(row)
@@ -68,9 +56,8 @@ def _validate_colors(color_observations: list[dict]) -> dict:
             else:
                 inconsistent_same_color_groups.append(payload)
 
-        # Colored cells represent the top-N horses. Therefore an uncolored Eval
-        # must never be strictly greater than the lowest colored Eval. Ties are
-        # allowed because a boundary tie can legitimately be partly colored.
+        # Colored cells are the ranked top set. An uncolored Eval may tie the
+        # lowest colored boundary, but may not be strictly greater than it.
         if uncolored:
             min_colored = min(int(r["eval"]) for r in colored)
             max_uncolored = max(int(r["eval"]) for r in uncolored)
@@ -89,36 +76,56 @@ def _validate_colors(color_observations: list[dict]) -> dict:
                             }
                             for r in colored
                         ],
+                        "uncolored_above_boundary": [
+                            {
+                                "horse_no": int(r["horse_no"]),
+                                "eval": int(r["eval"]),
+                            }
+                            for r in uncolored
+                            if int(r["eval"]) > min_colored
+                        ],
                     }
                 )
 
-        ordered = sorted(
-            colored,
-            key=lambda r: order_index.get(str(r["color"]), 999),
-        )
-        for left, right in zip(ordered, ordered[1:]):
-            if str(left["color"]) == str(right["color"]):
+        # Directly compare the fixed image-side rank colors. Ties are legal;
+        # only a strictly lower-ranked color beating a higher-ranked color is
+        # an error. Compare all pairs so one bad OCR value cannot redefine the
+        # global color order and hide itself.
+        for left in colored:
+            left_color = str(left["color"])
+            left_rank = COLOR_RANK_INDEX.get(left_color)
+            if left_rank is None:
                 continue
-            if int(left["eval"]) < int(right["eval"]):
-                order_violations.append(
-                    {
-                        "venue": venue,
-                        "race_no": race_no,
-                        "higher_color": str(left["color"]),
-                        "higher_eval": int(left["eval"]),
-                        "lower_color": str(right["color"]),
-                        "lower_eval": int(right["eval"]),
-                    }
-                )
+            for right in colored:
+                right_color = str(right["color"])
+                right_rank = COLOR_RANK_INDEX.get(right_color)
+                if right_rank is None or left_rank >= right_rank:
+                    continue
+                if int(left["eval"]) < int(right["eval"]):
+                    order_violations.append(
+                        {
+                            "venue": venue,
+                            "race_no": race_no,
+                            "higher_rank_color": left_color,
+                            "higher_rank": left_rank + 1,
+                            "higher_horse_no": int(left["horse_no"]),
+                            "higher_eval": int(left["eval"]),
+                            "lower_rank_color": right_color,
+                            "lower_rank": right_rank + 1,
+                            "lower_horse_no": int(right["horse_no"]),
+                            "lower_eval": int(right["eval"]),
+                        }
+                    )
 
     return {
         "colored_cells": sum(1 for o in color_observations if o.get("color")),
         "active_colors": active_colors,
-        "inferred_color_order": inferred_order,
-        "median_numeric_rank_by_color": {
-            color: median(rank_samples[color]) if rank_samples[color] else None
-            for color in inferred_order
-        },
+        "color_order_source": "master_eval_image_legend_fixed",
+        "fixed_color_order": list(COLOR_RANK_ORDER),
+        # Compatibility aliases retained for existing audit readers. The value
+        # is now fixed, never OCR-inferred.
+        "inferred_color_order": list(COLOR_RANK_ORDER),
+        "median_numeric_rank_by_color": {},
         "top_set_violations": top_set_violations,
         "order_violations": order_violations,
         "tie_color_groups": tie_color_groups,
@@ -132,6 +139,7 @@ def validate(
     layout_warnings: list[str],
     expected_venues: int | None = None,
     color_observations: list[dict] | None = None,
+    ocr_cell_audits: list[dict] | None = None,
 ) -> dict:
     errors: list[str] = []
     warnings: list[str] = list(layout_warnings)
@@ -190,6 +198,11 @@ def validate(
             f"{len(color_validation['inconsistent_same_color_groups'])} group(s)."
         )
 
+    audits = list(ocr_cell_audits or [])
+    manual_review = [audit for audit in audits if audit.get("requires_review")]
+    if manual_review:
+        errors.append(f"Eval OCR manual review required: {len(manual_review)} cell(s).")
+
     return {
         "status": "ok" if not errors else "error",
         "summary": {
@@ -205,8 +218,11 @@ def validate(
             "color_order_violations": len(color_validation["order_violations"]),
             "color_tie_groups": len(color_validation["tie_color_groups"]),
             "color_same_color_inconsistencies": len(color_validation["inconsistent_same_color_groups"]),
+            "ocr_rechecked_cells": sum(1 for audit in audits if audit.get("recheck_triggered")),
+            "ocr_manual_review_required": len(manual_review),
         },
         "color_validation": color_validation,
+        "ocr_manual_review": manual_review,
         "errors": errors,
         "warnings": warnings,
     }
