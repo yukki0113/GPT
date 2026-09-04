@@ -113,39 +113,54 @@ def _ocr_single_cell_candidates(binary: np.ndarray) -> list[int]:
 
 
 def _cell_has_colored_fill(cell: np.ndarray) -> bool:
-    """Return True when the Eval cell contains a substantial colored fill.
-
-    master_eval highlights ranked cells with red/blue/yellow backgrounds.  A
-    recurrent failure mode is stacked OCR dropping the leading digit from such
-    white-on-color values (75->7, 52->2, 50->0, 62->2, 55->5).  Detecting the
-    source color lets us selectively re-read those suspicious one-digit tokens
-    without re-OCRing every ordinary white cell.
-    """
+    """Return True when the Eval cell contains a substantial colored fill."""
     if cell.size == 0:
         return False
     hsv = cv2.cvtColor(cell, cv2.COLOR_BGR2HSV)
     saturation = hsv[:, :, 1]
     value = hsv[:, :, 2]
-    # Ignore very dark grid/text pixels. Colored fills occupy a broad portion
-    # of the cell and retain materially higher saturation than white/gray cells.
     colored = (saturation >= 55) & (value >= 70)
     return float(colored.mean()) >= 0.18
 
 
-def _needs_ambiguity_check(value: Optional[int], colored_fill: bool = False) -> bool:
+def _ambiguity_reasons(value: Optional[int], colored_fill: bool = False) -> list[str]:
+    reasons: list[str] = []
     if value is None or not (0 <= value <= 100):
-        return True
+        reasons.append("missing_or_out_of_range")
+        return reasons
+
     token = str(value)
-    if len(token) >= 2 and (token.startswith("1") or token.startswith("7")):
-        return True
-    # Generalize the production repair: colored cells returning only one digit
-    # are suspicious regardless of which leading digit may have disappeared.
-    return colored_fill and len(token) == 1
+    if len(token) >= 2 and token.startswith(("1", "7")):
+        reasons.append("existing_leading_digit_ambiguity")
+    # 2026-09-05 production regression: stacked OCR repeatedly confused a
+    # leading 2 with 9 (24->94, 21->91, 23->93, 29->99).  A 9x token is not
+    # rewritten mechanically; it is only forced through independent re-reads.
+    if len(token) == 2 and token.startswith("9"):
+        reasons.append("leading_2_or_9_ambiguity")
+    if colored_fill and len(token) == 1:
+        reasons.append("colored_single_digit")
+    return reasons
 
 
-def _choose_value(batch_value: Optional[int], binary: np.ndarray, *, colored_fill: bool = False) -> Optional[int]:
+def _needs_ambiguity_check(value: Optional[int], colored_fill: bool = False) -> bool:
+    return bool(_ambiguity_reasons(value, colored_fill=colored_fill))
+
+
+def _choose_value_with_audit(
+    batch_value: Optional[int],
+    binary: np.ndarray,
+    *,
+    colored_fill: bool = False,
+) -> tuple[Optional[int], dict]:
+    initial_value = batch_value
     blobs = _digit_components(binary)
     token_len = len(str(batch_value)) if batch_value is not None else 0
+    candidate_values: list[int] = []
+    resolution_method = "stacked_batch"
+    requires_review = False
+
+    if batch_value is not None and 0 <= batch_value <= 100:
+        candidate_values.append(batch_value)
 
     # Digit-count repair catches cleanly separated dropped digits (e.g. 37->3).
     if batch_value is None or not (0 <= batch_value <= 100) or (
@@ -153,50 +168,98 @@ def _choose_value(batch_value: Optional[int], binary: np.ndarray, *, colored_fil
     ):
         repaired = _ocr_by_digit_components(binary)
         if repaired is not None:
+            candidate_values.append(repaired)
             batch_value = repaired
+            resolution_method = "digit_component_repair"
 
-    if not _needs_ambiguity_check(batch_value, colored_fill=colored_fill):
-        return batch_value
+    reasons = _ambiguity_reasons(batch_value, colored_fill=colored_fill)
+    if not reasons:
+        return batch_value, {
+            "initial_ocr_value": initial_value,
+            "final_ocr_value": batch_value,
+            "colored_fill": colored_fill,
+            "recheck_triggered": False,
+            "recheck_reason": [],
+            "candidate_values": candidate_values,
+            "resolution_method": resolution_method,
+            "requires_review": False,
+        }
 
-    candidates: list[int] = []
-    if batch_value is not None and 0 <= batch_value <= 100:
-        candidates.append(batch_value)
+    if batch_value is not None and 0 <= batch_value <= 100 and batch_value not in candidate_values:
+        candidate_values.append(batch_value)
 
     component_value = _ocr_by_digit_components(binary)
     if component_value is not None:
-        candidates.append(component_value)
+        candidate_values.append(component_value)
 
-    candidates.extend(_ocr_single_cell_candidates(binary))
-    if not candidates:
-        return batch_value
+    single_candidates = _ocr_single_cell_candidates(binary)
+    candidate_values.extend(single_candidates)
 
-    # On a colored cell that initially collapsed to one digit, prefer a
-    # repeatedly observed multi-digit candidate.  This specifically addresses
-    # leading-digit loss while retaining the one-digit value when the re-read
-    # evidence is weak or contradictory.
-    if colored_fill and batch_value is not None and batch_value < 10:
-        multi = [v for v in candidates if v >= 10]
-        if multi:
-            multi_counts = Counter(multi)
-            best_multi, best_multi_count = multi_counts.most_common(1)[0]
-            if best_multi_count >= 2:
-                return best_multi
+    if not candidate_values:
+        requires_review = True
+        final_value = batch_value
+        resolution_method = "recheck_no_candidate"
+    else:
+        # On a colored cell that initially collapsed to one digit, prefer a
+        # repeatedly observed multi-digit candidate. This retains the previous
+        # production repair while making the evidence visible in the audit.
+        final_value = batch_value
+        if colored_fill and batch_value is not None and batch_value < 10:
+            multi = [v for v in candidate_values if v >= 10]
+            if multi:
+                multi_counts = Counter(multi)
+                best_multi, best_multi_count = multi_counts.most_common(1)[0]
+                if best_multi_count >= 2:
+                    final_value = best_multi
+                    resolution_method = "colored_multidigit_vote"
 
-    counts = Counter(candidates)
-    best_value, best_count = counts.most_common(1)[0]
+        if resolution_method != "colored_multidigit_vote":
+            counts = Counter(candidate_values)
+            best_value, best_count = counts.most_common(1)[0]
+            batch_count = counts[batch_value] if batch_value is not None else 0
 
-    if batch_value is not None and 0 <= batch_value <= 100:
-        batch_count = counts[batch_value]
-        if best_value != batch_value and best_count >= 2 and best_count > batch_count:
-            return best_value
-        return batch_value
+            if batch_value is None or not (0 <= batch_value <= 100):
+                if best_count >= 2 or len(counts) == 1:
+                    final_value = best_value
+                    resolution_method = "recheck_recovered"
+                else:
+                    final_value = best_value
+                    requires_review = True
+                    resolution_method = "recheck_weak_consensus"
+            elif best_value != batch_value and best_count >= 2 and best_count > batch_count:
+                final_value = best_value
+                resolution_method = "multi_ocr_vote"
+            elif best_value == batch_value and best_count >= 2:
+                final_value = batch_value
+                resolution_method = "recheck_confirmed"
+            else:
+                # Ambiguity was explicitly triggered but independent methods
+                # did not establish a stable answer. Preserve the observed value
+                # in audit, but require validator/manual review before release.
+                final_value = batch_value
+                requires_review = True
+                resolution_method = "manual_review_required"
 
-    return best_value
+    return final_value, {
+        "initial_ocr_value": initial_value,
+        "final_ocr_value": final_value,
+        "colored_fill": colored_fill,
+        "recheck_triggered": True,
+        "recheck_reason": reasons,
+        "candidate_values": candidate_values,
+        "resolution_method": resolution_method,
+        "requires_review": requires_review,
+    }
 
 
-def ocr_numeric_cells(cells: list[np.ndarray]) -> list[Optional[int]]:
+def _choose_value(batch_value: Optional[int], binary: np.ndarray, *, colored_fill: bool = False) -> Optional[int]:
+    value, _ = _choose_value_with_audit(batch_value, binary, colored_fill=colored_fill)
+    return value
+
+
+def ocr_numeric_cells_with_audit(cells: list[np.ndarray]) -> tuple[list[Optional[int]], list[dict]]:
     if not cells:
-        return []
+        return [], []
     canvas, ranges = _stack_cells(cells)
     data = pytesseract.image_to_data(
         canvas,
@@ -215,14 +278,20 @@ def ocr_numeric_cells(cells: list[np.ndarray]) -> list[Optional[int]]:
                 break
 
     values: list[Optional[int]] = []
+    audits: list[dict] = []
     for cell, token in zip(cells, raw):
         batch_value = _parse_value(token)
         binary = preprocess_numeric_cell(cell)
-        values.append(
-            _choose_value(
-                batch_value,
-                binary,
-                colored_fill=_cell_has_colored_fill(cell),
-            )
+        value, audit = _choose_value_with_audit(
+            batch_value,
+            binary,
+            colored_fill=_cell_has_colored_fill(cell),
         )
+        values.append(value)
+        audits.append(audit)
+    return values, audits
+
+
+def ocr_numeric_cells(cells: list[np.ndarray]) -> list[Optional[int]]:
+    values, _ = ocr_numeric_cells_with_audit(cells)
     return values
