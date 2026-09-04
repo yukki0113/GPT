@@ -65,9 +65,7 @@ public sealed class GameSettingsView : UserControl
         SplitContainer content = new SplitContainer
         {
             Dock = DockStyle.Fill,
-            Orientation = Orientation.Vertical,
-            Panel1MinSize = SettingsPanelMinimumWidth,
-            Panel2MinSize = DetailsPanelMinimumWidth
+            Orientation = Orientation.Vertical
         };
         _contentSplitContainer = content;
         content.Layout += ContentSplitContainer_Layout;
@@ -115,8 +113,8 @@ public sealed class GameSettingsView : UserControl
         }
 
         int availableWidth = _contentSplitContainer.ClientSize.Width - _contentSplitContainer.SplitterWidth;
-        int minimumDistance = _contentSplitContainer.Panel1MinSize;
-        int maximumDistance = availableWidth - _contentSplitContainer.Panel2MinSize;
+        int minimumDistance = SettingsPanelMinimumWidth;
+        int maximumDistance = availableWidth - DetailsPanelMinimumWidth;
         if (maximumDistance < minimumDistance)
         {
             return;
@@ -133,6 +131,14 @@ public sealed class GameSettingsView : UserControl
             _contentSplitContainer.SplitterDistance = safeDistance;
         }
         _initialSplitterDistanceApplied = true;
+        if (_contentSplitContainer.Panel1MinSize != SettingsPanelMinimumWidth)
+        {
+            _contentSplitContainer.Panel1MinSize = SettingsPanelMinimumWidth;
+        }
+        if (_contentSplitContainer.Panel2MinSize != DetailsPanelMinimumWidth)
+        {
+            _contentSplitContainer.Panel2MinSize = DetailsPanelMinimumWidth;
+        }
     }
 
     private void ConfigureGrid()
