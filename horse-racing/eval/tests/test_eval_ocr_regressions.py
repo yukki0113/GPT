@@ -13,6 +13,7 @@ if str(SRC) not in sys.path:
 
 from eval_ocr import numeric_ocr  # noqa: E402
 from eval_ocr.color_detector import COLOR_RANK_ORDER  # noqa: E402
+from eval_ocr.pipeline import _color_conflict_reasons  # noqa: E402
 from eval_ocr.validator import _validate_colors  # noqa: E402
 
 
@@ -40,6 +41,18 @@ class NumericOcrRegressionTests(unittest.TestCase):
         value, audit = self._resolve(95, 95)
         self.assertEqual(95, value)
         self.assertEqual("recheck_confirmed", audit["resolution_method"])
+        self.assertFalse(audit["requires_review"])
+
+    def test_color_conflict_recheck_can_repair_non_9x_value(self):
+        cell = np.full((10, 10, 3), 255, dtype=np.uint8)
+        with (
+            patch.object(numeric_ocr, "preprocess_numeric_cell", return_value=np.full((80, 160), 255, dtype=np.uint8)),
+            patch.object(numeric_ocr, "_ocr_by_digit_components", return_value=52),
+            patch.object(numeric_ocr, "_ocr_single_cell_candidates", return_value=[52, 52, 2, 2]),
+        ):
+            value, audit = numeric_ocr.recheck_numeric_cell(cell, 62, reason="lower_rank_color_above_higher")
+        self.assertEqual(52, value)
+        self.assertEqual("color_conflict_multi_ocr_vote", audit["resolution_method"])
         self.assertFalse(audit["requires_review"])
 
 
@@ -97,6 +110,21 @@ class ColorValidationRegressionTests(unittest.TestCase):
         result = _validate_colors(observations)
         self.assertEqual(1, len(result["tie_color_groups"]))
         self.assertEqual([], result["inconsistent_same_color_groups"])
+
+    def test_conflict_selection_rechecks_lower_side_before_higher_side(self):
+        evals = [56, 62]
+        colors = ["red", "blue"]
+        first = _color_conflict_reasons(evals, colors, include_higher_rank_side=False)
+        self.assertNotIn(0, first)
+        self.assertIn(1, first)
+        second = _color_conflict_reasons(evals, colors, include_higher_rank_side=True)
+        self.assertIn(0, second)
+        self.assertIn(1, second)
+
+    def test_conflict_selection_keeps_boundary_tie_legal(self):
+        evals = [60, 40, 40]
+        colors = ["red", "yellow", None]
+        self.assertEqual({}, _color_conflict_reasons(evals, colors))
 
 
 if __name__ == "__main__":
