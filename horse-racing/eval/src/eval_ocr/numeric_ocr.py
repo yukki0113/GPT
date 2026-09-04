@@ -133,7 +133,7 @@ def _ambiguity_reasons(value: Optional[int], colored_fill: bool = False) -> list
     if len(token) >= 2 and token.startswith(("1", "7")):
         reasons.append("existing_leading_digit_ambiguity")
     # 2026-09-05 production regression: stacked OCR repeatedly confused a
-    # leading 2 with 9 (24->94, 21->91, 23->93, 29->99).  A 9x token is not
+    # leading 2 with 9 (24->94, 21->91, 23->93, 29->99). A 9x token is not
     # rewritten mechanically; it is only forced through independent re-reads.
     if len(token) == 2 and token.startswith("9"):
         reasons.append("leading_2_or_9_ambiguity")
@@ -201,8 +201,9 @@ def _choose_value_with_audit(
         resolution_method = "recheck_no_candidate"
     else:
         # On a colored cell that initially collapsed to one digit, prefer a
-        # repeatedly observed multi-digit candidate. This retains the previous
-        # production repair while making the evidence visible in the audit.
+        # repeatedly observed multi-digit candidate. This specifically repairs
+        # dropped leading digits while retaining a true one-digit value when
+        # multi-digit evidence is weak.
         final_value = batch_value
         if colored_fill and batch_value is not None and batch_value < 10:
             multi = [v for v in candidate_values if v >= 10]
@@ -233,9 +234,6 @@ def _choose_value_with_audit(
                 final_value = batch_value
                 resolution_method = "recheck_confirmed"
             else:
-                # Ambiguity was explicitly triggered but independent methods
-                # did not establish a stable answer. Preserve the observed value
-                # in audit, but require validator/manual review before release.
                 final_value = batch_value
                 requires_review = True
                 resolution_method = "manual_review_required"
@@ -248,6 +246,75 @@ def _choose_value_with_audit(
         "recheck_reason": reasons,
         "candidate_values": candidate_values,
         "resolution_method": resolution_method,
+        "requires_review": requires_review,
+    }
+
+
+def recheck_numeric_cell(
+    cell: np.ndarray,
+    current_value: Optional[int],
+    *,
+    reason: str,
+) -> tuple[Optional[int], dict]:
+    """Conservatively re-read a value selected by independent color checks.
+
+    This second-stage path is intentionally separate from the initial ambiguity
+    rules. It is called only after the image-side rank colors contradict the
+    numeric result. For an already multi-digit value, one-digit alternatives
+    are ignored so a per-cell leading-digit drop cannot overwrite a sound batch
+    read (for example 56 -> 6). An alternative needs repeated independent OCR
+    support before it replaces the current value; otherwise manual review is
+    required and the validator remains a fail-closed gate.
+    """
+    binary = preprocess_numeric_cell(cell)
+    candidates: list[int] = []
+    if current_value is not None and 0 <= current_value <= 100:
+        candidates.append(current_value)
+
+    component_value = _ocr_by_digit_components(binary)
+    if component_value is not None:
+        candidates.append(component_value)
+    candidates.extend(_ocr_single_cell_candidates(binary))
+
+    usable = list(candidates)
+    if current_value is not None and current_value >= 10:
+        width = len(str(current_value))
+        same_width = [v for v in candidates if len(str(v)) == width]
+        if same_width:
+            usable = same_width
+
+    final_value = current_value
+    requires_review = False
+    method = "color_conflict_recheck_no_candidate"
+    if usable:
+        counts = Counter(usable)
+        best_value, best_count = counts.most_common(1)[0]
+        current_count = counts[current_value] if current_value is not None else 0
+        if current_value is None:
+            if best_count >= 2 or len(counts) == 1:
+                final_value = best_value
+                method = "color_conflict_recovered"
+            else:
+                final_value = best_value
+                requires_review = True
+                method = "color_conflict_weak_consensus"
+        elif best_value != current_value and best_count >= 2 and best_count > current_count:
+            final_value = best_value
+            method = "color_conflict_multi_ocr_vote"
+        elif best_value == current_value and best_count >= 2:
+            method = "color_conflict_recheck_confirmed"
+        else:
+            requires_review = True
+            method = "color_conflict_manual_review_required"
+    else:
+        requires_review = True
+
+    return final_value, {
+        "final_ocr_value": final_value,
+        "recheck_triggered": True,
+        "recheck_reason": [reason],
+        "candidate_values": candidates,
+        "resolution_method": method,
         "requires_review": requires_review,
     }
 
