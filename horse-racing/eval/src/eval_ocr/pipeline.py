@@ -10,7 +10,7 @@ from .color_detector import classify_eval_cell
 from .japanese_ocr import ocr_header_text, resolve_venue
 from .layout_detector import detect_column_lines, detect_layout, detect_row_lines
 from .models import HorseRecord, PanelBox
-from .numeric_ocr import ocr_numeric_cells
+from .numeric_ocr import ocr_numeric_cells_with_audit
 from .validator import validate
 
 
@@ -22,16 +22,16 @@ def _crop_inner(panel: np.ndarray, y1: int, y2: int, x1: int, x2: int) -> np.nda
     return panel[yy1:yy2, xx1:xx2]
 
 
-def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[int | None], list[str | None], list[int]]:
+def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[int | None], list[str | None], list[int], list[dict]]:
     """Extract Eval values/colors while using horse-name cells only for row existence.
 
     Horse-name cell images remain the occupancy signal because they are stable
-    even when the Eval cell is blank or difficult to OCR.  Their text is not
+    even when the Eval cell is blank or difficult to OCR. Their text is not
     sent to Tesseract in the normal pipeline.
     """
     row_lines = detect_row_lines(panel_image)
     if len(row_lines) < 3:
-        return [], [], row_lines
+        return [], [], row_lines, []
 
     col_lines = detect_column_lines(panel_image, row_lines)
     intervals = list(zip(row_lines[:-1], row_lines[1:]))[:18]
@@ -55,12 +55,12 @@ def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[int | None], list
         if flag:
             last_occupied = idx
     if last_occupied == 0:
-        return [], [], row_lines
+        return [], [], row_lines, []
 
     eval_cells = eval_cells[:last_occupied]
-    evals = ocr_numeric_cells(eval_cells)
+    evals, audits = ocr_numeric_cells_with_audit(eval_cells)
     colors = [classify_eval_cell(cell) for cell in eval_cells]
-    return evals, colors, row_lines
+    return evals, colors, row_lines, audits
 
 
 def run_pipeline(
@@ -93,20 +93,23 @@ def run_pipeline(
 
     records: list[HorseRecord] = []
     color_observations: list[dict] = []
+    ocr_cell_audits: list[dict] = []
     panel_debug: list[dict] = []
     for p in sorted(panels, key=lambda x: (x.venue_index, x.race_no)):
         panel_img = image[p.y:p.y + p.height, p.x:p.x + p.width]
-        evals, colors, row_lines = _extract_panel_rows(panel_img)
+        evals, colors, row_lines, audits = _extract_panel_rows(panel_img)
         count = max(len(evals), len(colors))
+        panel_audits: list[dict] = []
         for i in range(count):
             value = evals[i] if i < len(evals) else None
             color = colors[i] if i < len(colors) else None
+            horse_no = i + 1
             records.append(
                 HorseRecord(
                     date=date,
                     venue=p.venue or "UNKNOWN",
                     race_no=p.race_no,
-                    horse_no=i + 1,
+                    horse_no=horse_no,
                     eval=value,
                 )
             )
@@ -114,11 +117,33 @@ def run_pipeline(
                 {
                     "venue": p.venue or "UNKNOWN",
                     "race_no": p.race_no,
-                    "horse_no": i + 1,
+                    "horse_no": horse_no,
                     "color": color,
                     "eval": value,
                 }
             )
+
+            cell_audit = dict(audits[i]) if i < len(audits) else {
+                "initial_ocr_value": None,
+                "final_ocr_value": value,
+                "colored_fill": bool(color),
+                "recheck_triggered": False,
+                "recheck_reason": [],
+                "candidate_values": [],
+                "resolution_method": "audit_missing",
+                "requires_review": True,
+            }
+            cell_audit.update(
+                {
+                    "venue": p.venue or "UNKNOWN",
+                    "race_no": p.race_no,
+                    "horse_no": horse_no,
+                    "color": color,
+                }
+            )
+            ocr_cell_audits.append(cell_audit)
+            panel_audits.append(cell_audit)
+
         panel_debug.append(
             {
                 "venue": p.venue,
@@ -130,6 +155,7 @@ def run_pipeline(
                     for i in range(len(colors))
                     if colors[i]
                 ],
+                "ocr_audit": panel_audits,
                 "box": p.to_dict(),
             }
         )
@@ -142,8 +168,10 @@ def run_pipeline(
         detection.warnings,
         expected_venues=expected_venues,
         color_observations=color_observations,
+        ocr_cell_audits=ocr_cell_audits,
     )
     report["panels"] = panel_debug
+    report["ocr_cell_audits"] = ocr_cell_audits
     report["source_image"] = str(image_path)
     report["date"] = date
     if not date:
