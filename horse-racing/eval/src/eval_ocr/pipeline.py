@@ -1,16 +1,17 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional
 
 import cv2
 import numpy as np
 
-from .color_detector import classify_eval_cell
+from .color_detector import COLOR_RANK_INDEX, classify_eval_cell
 from .japanese_ocr import ocr_header_text, resolve_venue
 from .layout_detector import detect_column_lines, detect_layout, detect_row_lines
 from .models import HorseRecord, PanelBox
-from .numeric_ocr import ocr_numeric_cells_with_audit
+from .numeric_ocr import ocr_numeric_cells_with_audit, recheck_numeric_cell
 from .validator import validate
 
 
@@ -20,6 +21,76 @@ def _crop_inner(panel: np.ndarray, y1: int, y2: int, x1: int, x2: int) -> np.nda
     xx1 = min(x2 - 1, x1 + 2)
     xx2 = max(xx1 + 1, x2 - 2)
     return panel[yy1:yy2, xx1:xx2]
+
+
+def _color_conflict_reasons(
+    evals: list[int | None],
+    colors: list[str | None],
+) -> dict[int, list[str]]:
+    """Select cells for second-stage OCR using only image-side color rules.
+
+    Color order itself is fixed by the master_eval legend and never learned
+    from these numeric values. Numeric values are used only to detect a
+    contradiction against that independent image-side invariant.
+    """
+    reasons: dict[int, list[str]] = defaultdict(list)
+    colored = [i for i, (value, color) in enumerate(zip(evals, colors)) if value is not None and color]
+    uncolored = [i for i, (value, color) in enumerate(zip(evals, colors)) if value is not None and not color]
+
+    by_color: dict[str, list[int]] = defaultdict(list)
+    for i in colored:
+        by_color[str(colors[i])].append(i)
+    for color, indexes in by_color.items():
+        values = {int(evals[i]) for i in indexes if evals[i] is not None}
+        if len(indexes) > 1 and len(values) > 1:
+            for i in indexes:
+                reasons[i].append(f"same_color_eval_conflict:{color}")
+
+    if colored and uncolored:
+        min_colored = min(int(evals[i]) for i in colored if evals[i] is not None)
+        for i in uncolored:
+            if int(evals[i]) > min_colored:
+                reasons[i].append("uncolored_above_colored_boundary")
+
+    for left in colored:
+        left_color = str(colors[left])
+        left_rank = COLOR_RANK_INDEX.get(left_color)
+        if left_rank is None:
+            continue
+        for right in colored:
+            right_color = str(colors[right])
+            right_rank = COLOR_RANK_INDEX.get(right_color)
+            if right_rank is None or left_rank >= right_rank:
+                continue
+            if int(evals[left]) < int(evals[right]):
+                reasons[left].append(
+                    f"higher_rank_color_below_lower:{left_color}>{right_color}"
+                )
+                reasons[right].append(
+                    f"lower_rank_color_above_higher:{right_color}<{left_color}"
+                )
+
+    return {i: list(dict.fromkeys(items)) for i, items in reasons.items()}
+
+
+def _merge_recheck_audit(base: dict, update: dict, reasons: list[str]) -> dict:
+    merged = dict(base)
+    merged["recheck_triggered"] = True
+    merged["recheck_reason"] = list(dict.fromkeys(
+        list(base.get("recheck_reason") or []) + reasons + list(update.get("recheck_reason") or [])
+    ))
+    merged["candidate_values"] = list(base.get("candidate_values") or []) + list(update.get("candidate_values") or [])
+    history = list(base.get("resolution_history") or [])
+    previous_method = base.get("resolution_method")
+    if previous_method:
+        history.append(previous_method)
+    if update.get("resolution_method"):
+        history.append(update["resolution_method"])
+        merged["resolution_method"] = update["resolution_method"]
+    merged["resolution_history"] = list(dict.fromkeys(history))
+    merged["final_ocr_value"] = update.get("final_ocr_value", base.get("final_ocr_value"))
+    merged["requires_review"] = bool(base.get("requires_review")) or bool(update.get("requires_review"))
+    return merged
 
 
 def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[int | None], list[str | None], list[int], list[dict]]:
@@ -60,6 +131,31 @@ def _extract_panel_rows(panel_image: np.ndarray) -> tuple[list[int | None], list
     eval_cells = eval_cells[:last_occupied]
     evals, audits = ocr_numeric_cells_with_audit(eval_cells)
     colors = [classify_eval_cell(cell) for cell in eval_cells]
+
+    # Second-stage re-read: independent image-side color ordering selects only
+    # contradictory cells. Two passes allow a corrected value to expose a
+    # second contradiction without turning every colored cell into an OCR cost.
+    rechecked_at_value: set[tuple[int, int | None]] = set()
+    for _ in range(2):
+        conflicts = _color_conflict_reasons(evals, colors)
+        changed = False
+        for idx, reasons in conflicts.items():
+            marker = (idx, evals[idx])
+            if marker in rechecked_at_value:
+                continue
+            rechecked_at_value.add(marker)
+            new_value, recheck_audit = recheck_numeric_cell(
+                eval_cells[idx],
+                evals[idx],
+                reason=";".join(reasons),
+            )
+            audits[idx] = _merge_recheck_audit(audits[idx], recheck_audit, reasons)
+            if new_value != evals[idx]:
+                evals[idx] = new_value
+                changed = True
+        if not changed:
+            break
+
     return evals, colors, row_lines, audits
 
 
