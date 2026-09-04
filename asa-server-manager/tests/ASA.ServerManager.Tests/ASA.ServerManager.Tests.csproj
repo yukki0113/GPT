@@ -4,6 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -24,6 +25,7 @@
     <ProjectReference Include="..\..\src\ASA.ServerManager.Domain\ASA.ServerManager.Domain.csproj" />
     <ProjectReference Include="..\..\src\ASA.ServerManager.Application\ASA.ServerManager.Application.csproj" />
     <ProjectReference Include="..\..\src\ASA.ServerManager.Infrastructure\ASA.ServerManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\ASA.ServerManager.WinForms\ASA.ServerManager.WinForms.csproj" />
   </ItemGroup>
 
   <ItemGroup>

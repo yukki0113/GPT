@@ -8,6 +8,9 @@ namespace ASA.ServerManager.WinForms;
 /// <summary>335件の設定をカテゴリ、横断検索、詳細Pane付きで編集します。</summary>
 public sealed class GameSettingsView : UserControl
 {
+    private const int PreferredSplitterDistance = 820;
+    private const int SettingsPanelMinimumWidth = 520;
+    private const int DetailsPanelMinimumWidth = 260;
     private readonly GameSettingsService _service;
     private readonly IApplicationStatusStore _statusStore;
     private readonly Button _importButton = new Button();
@@ -21,7 +24,9 @@ public sealed class GameSettingsView : UserControl
     private readonly Label _status = new Label();
     private GameSettingsWorkspace? _workspace;
     private GameSettingsSession? _session;
+    private SplitContainer? _contentSplitContainer;
     private bool _bindingCategories;
+    private bool _initialSplitterDistanceApplied;
 
     /// <summary>カタログとINI Coreを束ねたApplication serviceを受け取ります。</summary>
     public GameSettingsView(GameSettingsService service, IApplicationStatusStore statusStore)
@@ -57,7 +62,16 @@ public sealed class GameSettingsView : UserControl
         _categories.Height = 32;
         _categories.SelectedIndexChanged += Categories_SelectedIndexChanged;
 
-        SplitContainer content = new SplitContainer { Dock = DockStyle.Fill, Orientation = Orientation.Vertical, SplitterDistance = 820, Panel1MinSize = 520, Panel2MinSize = 260 };
+        SplitContainer content = new SplitContainer
+        {
+            Dock = DockStyle.Fill,
+            Orientation = Orientation.Vertical,
+            Panel1MinSize = SettingsPanelMinimumWidth,
+            Panel2MinSize = DetailsPanelMinimumWidth
+        };
+        _contentSplitContainer = content;
+        content.Layout += ContentSplitContainer_Layout;
+        content.SizeChanged += ContentSplitContainer_SizeChanged;
         ConfigureGrid();
         content.Panel1.Controls.Add(_grid);
         GroupBox detailsGroup = new GroupBox { Dock = DockStyle.Fill, Text = "設定詳細", Padding = new Padding(8) };
@@ -79,6 +93,46 @@ public sealed class GameSettingsView : UserControl
         root.Controls.Add(content, 0, 2);
         root.Controls.Add(_status, 0, 3);
         Controls.Add(root);
+    }
+
+    /// <summary>実レイアウト後の利用可能幅に合わせて詳細Paneの分割位置を安全に設定します。</summary>
+    private void ContentSplitContainer_Layout(object? sender, LayoutEventArgs eventArgs)
+    {
+        ApplySafeSplitterDistance();
+    }
+
+    /// <summary>ウィンドウのリサイズ時に最小Pane幅を維持できる範囲へ分割位置を収めます。</summary>
+    private void ContentSplitContainer_SizeChanged(object? sender, EventArgs eventArgs)
+    {
+        ApplySafeSplitterDistance();
+    }
+
+    private void ApplySafeSplitterDistance()
+    {
+        if (_contentSplitContainer is null)
+        {
+            return;
+        }
+
+        int availableWidth = _contentSplitContainer.ClientSize.Width - _contentSplitContainer.SplitterWidth;
+        int minimumDistance = _contentSplitContainer.Panel1MinSize;
+        int maximumDistance = availableWidth - _contentSplitContainer.Panel2MinSize;
+        if (maximumDistance < minimumDistance)
+        {
+            return;
+        }
+
+        int requestedDistance = _contentSplitContainer.SplitterDistance;
+        if (!_initialSplitterDistanceApplied)
+        {
+            requestedDistance = PreferredSplitterDistance;
+        }
+        int safeDistance = Math.Clamp(requestedDistance, minimumDistance, maximumDistance);
+        if (_contentSplitContainer.SplitterDistance != safeDistance)
+        {
+            _contentSplitContainer.SplitterDistance = safeDistance;
+        }
+        _initialSplitterDistanceApplied = true;
     }
 
     private void ConfigureGrid()
