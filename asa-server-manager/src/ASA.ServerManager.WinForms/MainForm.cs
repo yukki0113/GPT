@@ -13,7 +13,8 @@ public sealed class MainForm : Form
         GameSettingsService gameSettingsService,
         DiagnosticsService diagnosticsService,
         ManualBackupCoordinator backupCoordinator,
-        IApplicationStatusStore statusStore)
+        IApplicationStatusStore statusStore,
+        IFolderPickerService folderPickerService)
     {
         Text = "ASA Server Manager V3";
         StartPosition = FormStartPosition.CenterScreen;
@@ -23,7 +24,7 @@ public sealed class MainForm : Form
 
         TabControl tabs = new TabControl { Dock = DockStyle.Fill };
         tabs.TabPages.Add(CreateTab("サーバー操作", new ServerControlView(serverOrchestrator, statusStore)));
-        tabs.TabPages.Add(CreateTab("基本設定", new BasicSettingsView(basicSettingsService, serverOrchestrator, statusStore)));
+        tabs.TabPages.Add(CreateTab("基本設定", new BasicSettingsView(basicSettingsService, serverOrchestrator, statusStore, folderPickerService)));
         tabs.TabPages.Add(CreateTab("MOD", new ModsView(modSettingsService, statusStore)));
         tabs.TabPages.Add(CreateTab("ゲーム設定", new GameSettingsView(gameSettingsService, statusStore)));
         tabs.TabPages.Add(CreateTab("ログ・診断", new DiagnosticsView(diagnosticsService, backupCoordinator, statusStore)));

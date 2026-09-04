@@ -29,7 +29,8 @@ internal static class Program
             composition.GameSettingsService,
             composition.DiagnosticsService,
             composition.BackupCoordinator,
-            composition.StatusStore));
+            composition.StatusStore,
+            composition.FolderPickerService));
     }
 
     private static ApplicationComposition CreateComposition()
@@ -80,7 +81,8 @@ internal static class Program
             GameSettingsService = new GameSettingsService(catalogRepository, settingsRepository, iniDocumentService, saveService),
             DiagnosticsService = new DiagnosticsService(serverOrchestrator, settingsRepository, logFileService, statusStore, appVersion),
             BackupCoordinator = backupCoordinator,
-            StatusStore = statusStore
+            StatusStore = statusStore,
+            FolderPickerService = new WindowsFolderPickerService(logger)
         };
     }
 
@@ -112,5 +114,6 @@ internal static class Program
         public required DiagnosticsService DiagnosticsService { get; init; }
         public required ManualBackupCoordinator BackupCoordinator { get; init; }
         public required IApplicationStatusStore StatusStore { get; init; }
+        public required IFolderPickerService FolderPickerService { get; init; }
     }
 }

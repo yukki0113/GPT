@@ -9,6 +9,7 @@ public sealed class BasicSettingsView : UserControl
     private readonly BasicSettingsService _service;
     private readonly ServerOrchestrator _serverOrchestrator;
     private readonly IApplicationStatusStore _statusStore;
+    private readonly IFolderPickerService _folderPickerService;
     private readonly TextBox _serverName = new TextBox();
     private readonly NumericUpDown _maxPlayers = CreateNumber(1, 1000, 20);
     private readonly ComboBox _gameMode = new ComboBox();
@@ -29,16 +30,22 @@ public sealed class BasicSettingsView : UserControl
     private readonly TextBox _spectatorPassword = CreatePasswordBox();
     private readonly TextBox _extraArguments = new TextBox();
     private readonly Button _saveButton = new Button();
+    private readonly Button _serverPathBrowseButton = new Button { AutoSize = true, Name = "ServerPathBrowseButton", Text = "参照..." };
+    private readonly Button _steamCmdPathBrowseButton = new Button { AutoSize = true, Name = "SteamCmdPathBrowseButton", Text = "参照..." };
     private readonly Label _statusLabel = new Label();
     private readonly ErrorProvider _errors = new ErrorProvider();
     private IReadOnlyList<MapDefinition> _maps = [];
+    private int _folderPickerActive;
 
     /// <summary>基本設定用Application serviceを受け取って画面を構築します。</summary>
-    public BasicSettingsView(BasicSettingsService service, ServerOrchestrator serverOrchestrator, IApplicationStatusStore statusStore)
+    public BasicSettingsView(BasicSettingsService service, ServerOrchestrator serverOrchestrator, IApplicationStatusStore statusStore, IFolderPickerService folderPickerService)
     {
         _service = service;
         _serverOrchestrator = serverOrchestrator;
         _statusStore = statusStore;
+        _folderPickerService = folderPickerService;
+        _serverPath.Name = "ServerPathTextBox";
+        _steamCmdPath.Name = "SteamCmdPathTextBox";
         AutoScaleMode = AutoScaleMode.Dpi;
         AutoScroll = true;
         _errors.ContainerControl = this;
@@ -120,8 +127,8 @@ public sealed class BasicSettingsView : UserControl
     private Control CreatePathsPanel()
     {
         TableLayoutPanel panel = CreateFormPanel();
-        AddPathField(panel, "ASAサーバーフォルダー", _serverPath, SelectServerPath_Click);
-        AddPathField(panel, "SteamCMDフォルダー", _steamCmdPath, SelectSteamCmdPath_Click);
+        AddPathField(panel, "ASAサーバーフォルダー", _serverPath, _serverPathBrowseButton, SelectServerPath_Click);
+        AddPathField(panel, "SteamCMDフォルダー", _steamCmdPath, _steamCmdPathBrowseButton, SelectSteamCmdPath_Click);
         return panel;
     }
 
@@ -313,27 +320,74 @@ public sealed class BasicSettingsView : UserControl
         _customMapModId.Enabled = isCustom;
     }
 
-    private void SelectServerPath_Click(object? sender, EventArgs eventArgs)
+    private async void SelectServerPath_Click(object? sender, EventArgs eventArgs)
     {
-        SelectFolder(_serverPath, "ASA Dedicated Serverのインストール先を選択してください");
+        await BrowseServerPathAsync();
     }
 
-    private void SelectSteamCmdPath_Click(object? sender, EventArgs eventArgs)
+    private async void SelectSteamCmdPath_Click(object? sender, EventArgs eventArgs)
     {
-        SelectFolder(_steamCmdPath, "SteamCMDの保存先を選択してください");
+        await BrowseSteamCmdPathAsync();
     }
 
-    private void SelectFolder(TextBox target, string description)
+    internal Task BrowseServerPathAsync()
     {
-        using FolderBrowserDialog dialog = new FolderBrowserDialog { Description = description, ShowNewFolderButton = true };
-        if (Directory.Exists(target.Text))
+        return SelectFolderAsync(_serverPath, "ASA Dedicated Serverのインストール先を選択してください");
+    }
+
+    internal Task BrowseSteamCmdPathAsync()
+    {
+        return SelectFolderAsync(_steamCmdPath, "SteamCMDの保存先を選択してください");
+    }
+
+    private async Task SelectFolderAsync(TextBox target, string title)
+    {
+        if (Interlocked.CompareExchange(ref _folderPickerActive, 1, 0) != 0)
         {
-            dialog.SelectedPath = target.Text;
+            return;
         }
-        if (dialog.ShowDialog(this) == DialogResult.OK)
+        SetBrowseButtonsEnabled(false);
+        string currentPath = target.Text;
+        try
         {
-            target.Text = dialog.SelectedPath;
+            FolderPickResult result = await _folderPickerService.PickFolderAsync(new FolderPickRequest(title, currentPath), CancellationToken.None);
+            if (IsDisposed || Disposing)
+            {
+                return;
+            }
+            if (result.Status == FolderPickStatus.Accepted && !string.IsNullOrWhiteSpace(result.SelectedPath))
+            {
+                target.Text = result.SelectedPath;
+                _statusLabel.Text = "フォルダーを選択しました。";
+            }
+            else if (result.Status == FolderPickStatus.Failed)
+            {
+                _statusLabel.Text = result.UserMessage ?? "フォルダー選択画面を開けませんでした。パスを直接入力して続行できます。";
+                _statusStore.Record(OperationResult.Failure("フォルダー選択画面を開けませんでした。", errorCode: "FOLDER_PICKER_FAILED"));
+            }
         }
+        catch (Exception exception)
+        {
+            if (!IsDisposed && !Disposing)
+            {
+                _statusLabel.Text = "フォルダー選択画面を開けませんでした。パスを直接入力して続行できます。";
+                _statusStore.Record(OperationResult.Failure("フォルダー選択画面を開けませんでした。", errorCode: "FOLDER_PICKER_FAILED", technicalMessage: exception.Message));
+            }
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _folderPickerActive, 0);
+            if (!IsDisposed && !Disposing)
+            {
+                SetBrowseButtonsEnabled(true);
+            }
+        }
+    }
+
+    private void SetBrowseButtonsEnabled(bool enabled)
+    {
+        _serverPathBrowseButton.Enabled = enabled;
+        _steamCmdPathBrowseButton.Enabled = enabled;
     }
 
     private void ShowResult(OperationResult result)
@@ -386,12 +440,11 @@ public sealed class BasicSettingsView : UserControl
         panel.Controls.Add(control, 1, row);
     }
 
-    private static void AddPathField(TableLayoutPanel panel, string labelText, TextBox textBox, EventHandler clickHandler)
+    private static void AddPathField(TableLayoutPanel panel, string labelText, TextBox textBox, Button selectButton, EventHandler clickHandler)
     {
         FlowLayoutPanel field = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, WrapContents = false };
         textBox.Width = 700;
         textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-        Button selectButton = new Button { AutoSize = true, Text = "参照..." };
         selectButton.Click += clickHandler;
         field.Controls.Add(textBox);
         field.Controls.Add(selectButton);

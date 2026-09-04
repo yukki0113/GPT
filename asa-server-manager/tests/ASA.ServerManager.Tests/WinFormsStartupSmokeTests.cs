@@ -22,6 +22,7 @@ public sealed class WinFormsStartupSmokeTests
             ModSettingsService modSettingsService = new ModSettingsService(fakes.Settings);
             GameSettingsService gameSettingsService = CreateGameSettingsService(fakes.Settings);
             DiagnosticsService diagnosticsService = new DiagnosticsService(orchestrator, fakes.Settings, new StartupSmokeLogFileService(), statusStore, "test");
+            IFolderPickerService folderPickerService = new StartupSmokeFolderPickerService();
 
             using (ServerControlView serverControl = new ServerControlView(orchestrator, statusStore))
             {
@@ -34,7 +35,7 @@ public sealed class WinFormsStartupSmokeTests
                     Assert.InRange(button.Height, 40, 50);
                 });
             }
-            using (BasicSettingsView basicSettings = new BasicSettingsView(basicSettingsService, orchestrator, statusStore))
+            using (BasicSettingsView basicSettings = new BasicSettingsView(basicSettingsService, orchestrator, statusStore, folderPickerService))
             {
                 string[] texts = FindControls<Control>(basicSettings).Select(control => control.Text).ToArray();
                 string[] expectedLabels =
@@ -66,7 +67,7 @@ public sealed class WinFormsStartupSmokeTests
             using (GameSettingsView gameSettings = new GameSettingsView(gameSettingsService, statusStore)) { }
             using (DiagnosticsView diagnostics = new DiagnosticsView(diagnosticsService, backupCoordinator, statusStore)) { }
 
-            using MainForm form = new MainForm(orchestrator, basicSettingsService, modSettingsService, gameSettingsService, diagnosticsService, backupCoordinator, statusStore);
+            using MainForm form = new MainForm(orchestrator, basicSettingsService, modSettingsService, gameSettingsService, diagnosticsService, backupCoordinator, statusStore, folderPickerService);
             Assert.Equal(5, form.Controls.OfType<TabControl>().Single().TabPages.Count);
             foreach (Size clientSize in new[] { new Size(1100, 700), new Size(1375, 875), new Size(1650, 1050) })
             {
@@ -134,6 +135,14 @@ public sealed class WinFormsStartupSmokeTests
         public Task<OperationResult<LogTailSnapshot>> ReadTailAsync(int maximumLines, CancellationToken cancellationToken)
         {
             return Task.FromResult(OperationResult<LogTailSnapshot>.Success(new LogTailSnapshot()));
+        }
+    }
+
+    private sealed class StartupSmokeFolderPickerService : IFolderPickerService
+    {
+        public Task<FolderPickResult> PickFolderAsync(FolderPickRequest request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(FolderPickResult.Cancelled());
         }
     }
 }
