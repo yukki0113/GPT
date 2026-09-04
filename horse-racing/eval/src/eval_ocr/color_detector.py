@@ -8,6 +8,19 @@ import numpy as np
 
 COLOR_NAMES = ("red", "orange", "yellow", "green", "blue")
 
+# master_eval の画像内凡例そのものを正本とする順位。
+# 1位=赤, 2位=青, 3位=橙, 4位=緑, 5位=黄。
+# OCR済みEval値からこの順序を推定してはならない。
+COLOR_RANK_ORDER = ("red", "blue", "orange", "green", "yellow")
+COLOR_RANK_INDEX = {color: index for index, color in enumerate(COLOR_RANK_ORDER)}
+
+
+def color_rank(color: Optional[str]) -> Optional[int]:
+    if color is None:
+        return None
+    index = COLOR_RANK_INDEX.get(str(color))
+    return None if index is None else index + 1
+
 
 def classify_eval_cell(cell: np.ndarray) -> Optional[str]:
     """Classify the fill color of an Eval cell.
