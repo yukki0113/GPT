@@ -29,6 +29,9 @@ public sealed class CatalogRepositoryTests
         Assert.All(definitions, definition => Assert.False(string.IsNullOrWhiteSpace(definition.DescriptionJa)));
         Assert.DoesNotContain(definitions, definition => string.Equals(definition.DisplayNameJa, definition.Key, StringComparison.Ordinal));
         Assert.DoesNotContain(definitions, definition => definition.DisplayNameJa.Contains("に関する設定（", StringComparison.Ordinal));
+        Assert.Empty(GameSettingJapaneseNameAudit.FindIssues(definitions));
+        Assert.Equal("ヘキサゴン報酬倍率", definitions.Single(definition => definition.Key == "BaseHexagonRewardMultiplier").DisplayNameJa);
+        Assert.Equal("飛行生物の速度レベルアップを許可", definitions.Single(definition => definition.Key == "bAllowFlyerSpeedLeveling").DisplayNameJa);
         Dictionary<string, int> expectedCategoryCounts = new Dictionary<string, int>(StringComparer.Ordinal)
         {
             ["基本・ゲーム進行"] = 86,

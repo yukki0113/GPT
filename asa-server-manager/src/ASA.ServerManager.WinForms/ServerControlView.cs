@@ -68,11 +68,17 @@ public sealed class ServerControlView : UserControl
 
         GroupBox operationGroup = new GroupBox { AutoSize = true, Dock = DockStyle.Top, Text = "操作", Padding = new Padding(12) };
         TableLayoutPanel operation = new TableLayoutPanel { AutoSize = true, Dock = DockStyle.Top, ColumnCount = 1, RowCount = 4 };
-        FlowLayoutPanel buttons = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill };
-        _start.AutoSize = true;
+        FlowLayoutPanel buttons = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, WrapContents = false, Padding = new Padding(0, 4, 0, 8) };
+        Font operationButtonFont = new Font(Font.FontFamily, Font.Size + 1.5F, FontStyle.Bold);
+        _start.AutoSize = false;
+        _start.Size = new Size(190, 46);
+        _start.Font = operationButtonFont;
         _start.Text = "起動／再起動";
         _start.Click += StartButton_Click;
-        _stop.AutoSize = true;
+        _stop.AutoSize = false;
+        _stop.Size = new Size(190, 46);
+        _stop.Font = operationButtonFont;
+        _stop.Margin = new Padding(12, 3, 3, 3);
         _stop.Text = "停止";
         _stop.Click += StopButton_Click;
         buttons.Controls.AddRange([_start, _stop]);

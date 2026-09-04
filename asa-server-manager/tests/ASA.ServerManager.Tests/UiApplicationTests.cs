@@ -151,6 +151,78 @@ public sealed class GameSettingsSessionTests
     }
 
     [Fact]
+    public void Categories_UseDailyOperationDisplayOrder()
+    {
+        GameSettingsSession session = new GameSettingsSession(CreateWorkspace());
+        string[] expectedCategories =
+        [
+            "基本・ゲーム進行",
+            "プレイヤー",
+            "恐竜・生物",
+            "採取・テイム",
+            "繁殖",
+            "建築・戦闘",
+            "アイテム・転送",
+            "管理・高度"
+        ];
+
+        Assert.Equal(expectedCategories, session.Categories);
+    }
+
+    [Theory]
+    [InlineData(SupportStatus.AsaSupported, "ASA対応")]
+    [InlineData(SupportStatus.AsaSupportedConditional, "条件付き")]
+    [InlineData(SupportStatus.AsaMapSpecific, "MAP固有")]
+    [InlineData(SupportStatus.Unverified, "未検証")]
+    [InlineData(SupportStatus.Deprecated, "非推奨")]
+    [InlineData(SupportStatus.AseOnly, "ASE専用")]
+    [InlineData(SupportStatus.Unknown, "状態不明")]
+    public void SupportStatus_UsesJapaneseUserFacingLabel(SupportStatus status, string expected)
+    {
+        Assert.Equal(expected, GameSettingEditorItem.GetSupportStatusLabel(status));
+    }
+
+    [Fact]
+    public void DetailText_UsesJapaneseLabelsAndKeepsUnverifiedWarning()
+    {
+        GameSettingDefinition definition = CreateDefinition("id", "管理・高度", "UnknownSetting", GameSettingValueType.String);
+        definition = new GameSettingDefinition
+        {
+            Id = definition.Id,
+            DisplayNameJa = definition.DisplayNameJa,
+            DisplayNameEn = definition.DisplayNameEn,
+            Category = definition.Category,
+            UiCategory = definition.UiCategory,
+            UiSubCategory = definition.UiSubCategory,
+            DescriptionJa = definition.DescriptionJa,
+            FileKind = definition.FileKind,
+            Section = definition.Section,
+            Key = definition.Key,
+            ValueType = definition.ValueType,
+            DefaultValue = definition.DefaultValue,
+            EnumValues = definition.EnumValues,
+            SupportStatus = SupportStatus.Unverified,
+            Deprecated = false,
+            RestartRequired = true,
+            Sources = definition.Sources,
+            Notes = "未検証"
+        };
+
+        string text = GameSettingDetailTextFormatter.Format(definition, new GameSettingState { DefinitionId = "id", EditedValue = "value" });
+
+        Assert.Contains("対応状況: 未検証", text);
+        Assert.Contains("再起動: 必要", text);
+        Assert.Contains("INIファイル: Game.ini", text);
+        Assert.Contains("セクション: Section", text);
+        Assert.Contains("INIキー: UnknownSetting", text);
+        Assert.Contains("英語名:", text);
+        Assert.Contains("備考: 未検証", text);
+        Assert.Contains("この設定は未検証です", text);
+        Assert.DoesNotContain("Support Status", text);
+        Assert.DoesNotContain("Restart Required", text);
+    }
+
+    [Fact]
     public void CategoryAndSearch_KeepStateAndRestorePreviousCategory()
     {
         GameSettingsSession session = new GameSettingsSession(CreateWorkspace());

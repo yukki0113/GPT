@@ -34,6 +34,7 @@ public sealed class JsonGameSettingCatalogRepository(string catalogPath) : IGame
         if (definitions.Any(x => string.IsNullOrWhiteSpace(x.Id) || string.IsNullOrWhiteSpace(x.DisplayNameJa) || string.IsNullOrWhiteSpace(x.Category) || string.IsNullOrWhiteSpace(x.UiCategory) || string.IsNullOrWhiteSpace(x.UiSubCategory) || string.IsNullOrWhiteSpace(x.DescriptionJa) || string.IsNullOrWhiteSpace(x.Section) || string.IsNullOrWhiteSpace(x.Key))) { errors.Add("設定カタログに必須項目が不足しています。"); }
         if (definitions.GroupBy(x => x.Id, StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1)) { errors.Add("設定カタログにID重複があります。"); }
         if (definitions.GroupBy(x => x.GetIdentity().ToLookupKey(), StringComparer.Ordinal).Any(x => x.Count() > 1)) { errors.Add("設定カタログにfile + section + key重複があります。"); }
+        errors.AddRange(GameSettingJapaneseNameAudit.FindIssues(definitions));
         return errors;
     }
 

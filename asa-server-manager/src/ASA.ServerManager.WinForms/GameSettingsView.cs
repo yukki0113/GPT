@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Text;
 using ASA.ServerManager.Application;
 using ASA.ServerManager.Domain;
 
@@ -54,7 +53,7 @@ public sealed class GameSettingsView : UserControl
         toolbar.Controls.AddRange([_importButton, _saveButton, _selectButton, _resetButton]);
         toolbar.Controls.Add(new Label { AutoSize = true, Text = "検索", Margin = new Padding(18, 8, 3, 3) });
         _searchBox.Width = 320;
-        _searchBox.PlaceholderText = "日本語名・英語名・Key・説明・カテゴリを横断検索";
+        _searchBox.PlaceholderText = "日本語名・英語名・INIキー・説明・カテゴリを横断検索";
         _searchBox.TextChanged += SearchBox_TextChanged;
         toolbar.Controls.Add(_searchBox);
 
@@ -414,43 +413,7 @@ public sealed class GameSettingsView : UserControl
             return;
         }
         GameSettingDefinition definition = item.Definition;
-        StringBuilder builder = new StringBuilder();
-        AppendDetail(builder, "日本語設定名", definition.DisplayNameJa);
-        AppendDetail(builder, "説明", definition.DescriptionJa);
-        AppendDetail(builder, "カテゴリ", definition.UiCategory);
-        AppendDetail(builder, "サブカテゴリ", definition.UiSubCategory);
-        AppendDetail(builder, "現在の編集値", item.State.EditedValue);
-        AppendDetail(builder, "現在のINI値", item.State.CurrentIniValue);
-        AppendDetail(builder, "既定値", definition.DefaultValue);
-        AppendDetail(builder, "Support Status", definition.SupportStatus.ToString());
-        string restartRequired = "不要";
-        if (definition.RestartRequired)
-        {
-            restartRequired = "必要";
-        }
-        AppendDetail(builder, "再起動要否", restartRequired);
-        string iniFile = "GameUserSettings.ini";
-        if (definition.FileKind == IniFileKind.Game)
-        {
-            iniFile = "Game.ini";
-        }
-        AppendDetail(builder, "INIファイル", iniFile);
-        AppendDetail(builder, "Section", definition.Section);
-        AppendDetail(builder, "Key", definition.Key);
-        AppendDetail(builder, "英語名", definition.DisplayNameEn);
-        AppendDetail(builder, "値形式", definition.ValueType.ToString());
-        AppendDetail(builder, "Notes", definition.Notes);
-        if (definition.SupportStatus == SupportStatus.Unverified)
-        {
-            builder.AppendLine();
-            builder.AppendLine("注意: この設定は未検証です。実機確認後に使用してください。");
-        }
-        if (definition.ValueType == GameSettingValueType.Complex)
-        {
-            builder.AppendLine();
-            builder.AppendLine("注意: 複合設定です。Raw文字列の構造を保持してください。");
-        }
-        _details.Text = builder.ToString();
+        _details.Text = GameSettingDetailTextFormatter.Format(definition, item.State);
     }
 
     private void CommitGridEdits()
@@ -498,18 +461,6 @@ public sealed class GameSettingsView : UserControl
         button.AutoSize = true;
         button.Text = text;
         button.Click += handler;
-    }
-
-    private static void AppendDetail(StringBuilder builder, string label, string? value)
-    {
-        builder.Append(label);
-        builder.Append(": ");
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            builder.AppendLine("-");
-            return;
-        }
-        builder.AppendLine(value);
     }
 
     private static string CreateSuccessMessage(string message, IReadOnlyList<string> warnings)

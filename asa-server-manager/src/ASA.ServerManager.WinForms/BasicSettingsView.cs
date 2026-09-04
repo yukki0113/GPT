@@ -60,10 +60,10 @@ public sealed class BasicSettingsView : UserControl
         GroupBox serverGroup = CreateGroup("サーバー", CreateServerPanel());
         GroupBox mapGroup = CreateGroup("MAP", CreateMapPanel());
         GroupBox pathsGroup = CreateGroup("インストール先", CreatePathsPanel());
-        GroupBox portsGroup = CreateGroup("Port", CreatePortsPanel());
+        GroupBox portsGroup = CreateGroup("ポート設定", CreatePortsPanel());
         GroupBox rconGroup = CreateGroup("RCON", CreateRconPanel());
-        GroupBox passwordGroup = CreateGroup("Password", CreatePasswordPanel());
-        GroupBox advancedGroup = CreateGroup("高度", CreateAdvancedPanel());
+        GroupBox passwordGroup = CreateGroup("パスワード", CreatePasswordPanel());
+        GroupBox advancedGroup = CreateGroup("高度な設定", CreateAdvancedPanel());
 
         root.Controls.Add(serverGroup, 0, 0);
         root.Controls.Add(mapGroup, 1, 0);
@@ -78,11 +78,13 @@ public sealed class BasicSettingsView : UserControl
         commands.AutoSize = true;
         commands.Dock = DockStyle.Top;
         commands.Padding = new Padding(12, 4, 12, 12);
-        _saveButton.AutoSize = true;
+        _saveButton.AutoSize = false;
+        _saveButton.Size = new Size(160, 43);
+        _saveButton.Font = new Font(Font.FontFamily, Font.Size + 1.0F, FontStyle.Bold);
         _saveButton.Text = "設定を保存";
         _saveButton.Click += SaveButton_Click;
         _statusLabel.AutoSize = true;
-        _statusLabel.Margin = new Padding(16, 8, 0, 0);
+        _statusLabel.Margin = new Padding(16, 5, 0, 0);
         _statusLabel.Text = "設定を読み込んでいます。";
         commands.Controls.Add(_saveButton);
         commands.Controls.Add(_statusLabel);
@@ -107,29 +109,29 @@ public sealed class BasicSettingsView : UserControl
         _map.DropDownStyle = ComboBoxStyle.DropDownList;
         _map.DisplayMember = nameof(MapChoice.DisplayName);
         _map.SelectedIndexChanged += Map_SelectedIndexChanged;
-        AddFieldTooltip(_mapLevelName, "公式MAPでは選択内容から自動設定されます。カスタムMAPではLevel Nameを入力してください。");
+        AddFieldTooltip(_mapLevelName, "公式MAPでは自動設定されます。カスタムMAPでは内部名を入力してください。");
         TableLayoutPanel panel = CreateFormPanel();
-        AddField(panel, "MAP選択", _map);
-        AddField(panel, "MAP Level Name", _mapLevelName);
-        AddField(panel, "Custom Map MOD Project ID", _customMapModId);
+        AddField(panel, "MAP", _map);
+        AddField(panel, "MAP内部名", _mapLevelName);
+        AddField(panel, "カスタムMAP MOD ID", _customMapModId);
         return panel;
     }
 
     private Control CreatePathsPanel()
     {
         TableLayoutPanel panel = CreateFormPanel();
-        AddPathField(panel, "ASA Dedicated Server Path", _serverPath, SelectServerPath_Click);
-        AddPathField(panel, "SteamCMD Path", _steamCmdPath, SelectSteamCmdPath_Click);
+        AddPathField(panel, "ASAサーバーフォルダー", _serverPath, SelectServerPath_Click);
+        AddPathField(panel, "SteamCMDフォルダー", _steamCmdPath, SelectSteamCmdPath_Click);
         return panel;
     }
 
     private Control CreatePortsPanel()
     {
         TableLayoutPanel panel = CreateFormPanel();
-        AddField(panel, "Game Port", _gamePort);
-        AddField(panel, "Peer Port", _peerPort);
-        AddField(panel, "Query Port", _queryPort);
-        AddField(panel, "RCON Port", _rconPort);
+        AddField(panel, "ゲームポート", _gamePort);
+        AddField(panel, "Peerポート", _peerPort);
+        AddField(panel, "Queryポート", _queryPort);
+        AddField(panel, "RCONポート", _rconPort);
         return panel;
     }
 
@@ -140,16 +142,16 @@ public sealed class BasicSettingsView : UserControl
         TableLayoutPanel panel = CreateFormPanel();
         AddField(panel, string.Empty, _rconEnabled);
         AddField(panel, string.Empty, _exposeRcon);
-        AddField(panel, "RCON Password", _rconPassword);
+        AddField(panel, "RCONパスワード", _rconPassword);
         return panel;
     }
 
     private Control CreatePasswordPanel()
     {
         TableLayoutPanel panel = CreateFormPanel();
-        AddField(panel, "Server Password", _serverPassword);
-        AddField(panel, "Admin Password", _adminPassword);
-        AddField(panel, "Spectator Password", _spectatorPassword);
+        AddField(panel, "サーバーパスワード", _serverPassword);
+        AddField(panel, "管理者パスワード", _adminPassword);
+        AddField(panel, "観戦者パスワード", _spectatorPassword);
         return panel;
     }
 
@@ -159,7 +161,7 @@ public sealed class BasicSettingsView : UserControl
         _extraArguments.Height = 78;
         _extraArguments.ScrollBars = ScrollBars.Vertical;
         TableLayoutPanel panel = CreateFormPanel();
-        AddField(panel, "Extra Arguments", _extraArguments);
+        AddField(panel, "追加起動引数", _extraArguments);
         return panel;
     }
 
@@ -198,11 +200,12 @@ public sealed class BasicSettingsView : UserControl
             return;
         }
         ApplyData(result.Value);
-        string message = "設定を保存しました。";
-        if (result.Warnings.Count > 0)
+        string message = "設定を保存しました。" + Environment.NewLine;
+        if (snapshot.State == ServerState.Running)
         {
-            message = message + " " + string.Join(" ", result.Warnings);
+            message = message + "現在稼働中のサーバーにはまだ反映されていません。" + Environment.NewLine;
         }
+        message = message + "次回の起動／再起動時に反映されます。";
         SetBusy(false, message);
     }
 

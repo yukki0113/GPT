@@ -35,7 +35,10 @@ public sealed class IniDocumentService : IIniDocumentService
         }
         catch (DecoderFallbackException exception)
         {
-            return OperationResult<IniDocument>.Failure($"INIはUTF-8として読み込めません: {exception.Message}");
+            string userMessage = "INIファイルをUTF-8として読み込めませんでした。" + Environment.NewLine
+                + "安全のためファイルは変更していません。" + Environment.NewLine
+                + "Game.ini / GameUserSettings.ini の文字コードを確認してください。";
+            return OperationResult<IniDocument>.Failure(userMessage, errorCode: "INI_UNSUPPORTED_ENCODING", technicalMessage: exception.ToString());
         }
         catch (Exception exception)
         {

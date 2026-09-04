@@ -21,12 +21,12 @@ public sealed class IniConfigurationSaveService(IIniDocumentService iniDocumentS
         OperationResult<IniDocument> gusResult = await _iniDocumentService.LoadAsync(gameUserSettingsPath, IniFileKind.GameUserSettings, cancellationToken);
         if (!gusResult.Succeeded || gusResult.Value is null)
         {
-            return OperationResult.Failure(gusResult.ErrorMessage ?? "GameUserSettings.iniを読み込めません。");
+            return CopyFailure(gusResult, "GameUserSettings.iniを読み込めません。");
         }
         OperationResult<IniDocument> gameResult = await _iniDocumentService.LoadAsync(gameIniPath, IniFileKind.Game, cancellationToken);
         if (!gameResult.Succeeded || gameResult.Value is null)
         {
-            return OperationResult.Failure(gameResult.ErrorMessage ?? "Game.iniを読み込めません。");
+            return CopyFailure(gameResult, "Game.iniを読み込めません。");
         }
 
         List<IniDocument> documents = [gusResult.Value, gameResult.Value];
@@ -62,5 +62,11 @@ public sealed class IniConfigurationSaveService(IIniDocumentService iniDocumentS
             return OperationResult.Failure("保存後のINI再読込検証に失敗しました。", applyResult.Warnings);
         }
         return OperationResult.Success(applyResult.Warnings);
+    }
+
+    private static OperationResult CopyFailure(OperationResult source, string fallbackMessage)
+    {
+        string message = source.UserMessage ?? source.ErrorMessage ?? fallbackMessage;
+        return OperationResult.Failure(message, source.Warnings, source.ErrorCode, source.TechnicalMessage);
     }
 }

@@ -23,8 +23,45 @@ public sealed class WinFormsStartupSmokeTests
             GameSettingsService gameSettingsService = CreateGameSettingsService(fakes.Settings);
             DiagnosticsService diagnosticsService = new DiagnosticsService(orchestrator, fakes.Settings, new StartupSmokeLogFileService(), statusStore, "test");
 
-            using (ServerControlView serverControl = new ServerControlView(orchestrator, statusStore)) { }
-            using (BasicSettingsView basicSettings = new BasicSettingsView(basicSettingsService, orchestrator, statusStore)) { }
+            using (ServerControlView serverControl = new ServerControlView(orchestrator, statusStore))
+            {
+                Button[] operationButtons = FindControls<Button>(serverControl).ToArray();
+                Assert.Equal(2, operationButtons.Length);
+                Assert.Equal(new[] { "起動／再起動", "停止" }, operationButtons.Select(button => button.Text));
+                Assert.All(operationButtons, button =>
+                {
+                    Assert.InRange(button.Width, 150, 220);
+                    Assert.InRange(button.Height, 40, 50);
+                });
+            }
+            using (BasicSettingsView basicSettings = new BasicSettingsView(basicSettingsService, orchestrator, statusStore))
+            {
+                string[] texts = FindControls<Control>(basicSettings).Select(control => control.Text).ToArray();
+                string[] expectedLabels =
+                [
+                    "MAP",
+                    "MAP内部名",
+                    "カスタムMAP MOD ID",
+                    "ASAサーバーフォルダー",
+                    "SteamCMDフォルダー",
+                    "ゲームポート",
+                    "Peerポート",
+                    "Queryポート",
+                    "RCONポート",
+                    "RCONパスワード",
+                    "サーバーパスワード",
+                    "管理者パスワード",
+                    "観戦者パスワード",
+                    "追加起動引数",
+                    "ポート設定",
+                    "パスワード",
+                    "高度な設定"
+                ];
+                Assert.All(expectedLabels, expected => Assert.Contains(expected, texts));
+                Button saveButton = Assert.Single(FindControls<Button>(basicSettings).Where(button => button.Text == "設定を保存"));
+                Assert.InRange(saveButton.Width, 140, 180);
+                Assert.InRange(saveButton.Height, 40, 45);
+            }
             using (ModsView mods = new ModsView(modSettingsService, statusStore)) { }
             using (GameSettingsView gameSettings = new GameSettingsView(gameSettingsService, statusStore)) { }
             using (DiagnosticsView diagnostics = new DiagnosticsView(diagnosticsService, backupCoordinator, statusStore)) { }
@@ -69,6 +106,21 @@ public sealed class WinFormsStartupSmokeTests
         if (failure is not null)
         {
             ExceptionDispatchInfo.Capture(failure).Throw();
+        }
+    }
+
+    private static IEnumerable<TControl> FindControls<TControl>(Control root) where TControl : Control
+    {
+        foreach (Control child in root.Controls)
+        {
+            if (child is TControl match)
+            {
+                yield return match;
+            }
+            foreach (TControl descendant in FindControls<TControl>(child))
+            {
+                yield return descendant;
+            }
         }
     }
 

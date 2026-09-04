@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using ASA.ServerManager.Domain;
 
 namespace ASA.ServerManager.Application;
@@ -35,9 +36,10 @@ public sealed class GameSettingEditorItem
     public string? Value { get => State.EditedValue; set => State.EditedValue = value; }
     public string? CurrentIniValue => State.CurrentIniValue;
     public string? DefaultValue => Definition.DefaultValue;
-    public string Status => GetStatusLabel(Definition.SupportStatus);
+    public string Status => GetSupportStatusLabel(Definition.SupportStatus);
 
-    private static string GetStatusLabel(SupportStatus status)
+    /// <summary>内部の対応状態を利用者向け日本語へ変換します。</summary>
+    public static string GetSupportStatusLabel(SupportStatus status)
     {
         if (status == SupportStatus.AsaSupported)
         {
@@ -55,13 +57,121 @@ public sealed class GameSettingEditorItem
         {
             return "非推奨";
         }
-        return status.ToString();
+        if (status == SupportStatus.AsaMapSpecific)
+        {
+            return "MAP固有";
+        }
+        if (status == SupportStatus.AseOnly)
+        {
+            return "ASE専用";
+        }
+        return "状態不明";
+    }
+}
+
+/// <summary>ゲーム設定の技術情報を利用者向け日本語ラベルで整形します。</summary>
+public static class GameSettingDetailTextFormatter
+{
+    /// <summary>指定した設定と編集状態から詳細Paneの表示文字列を作成します。</summary>
+    public static string Format(GameSettingDefinition definition, GameSettingState state)
+    {
+        StringBuilder builder = new StringBuilder();
+        AppendDetail(builder, "日本語設定名", definition.DisplayNameJa);
+        AppendDetail(builder, "説明", definition.DescriptionJa);
+        AppendDetail(builder, "カテゴリ", definition.UiCategory);
+        AppendDetail(builder, "サブカテゴリ", definition.UiSubCategory);
+        AppendDetail(builder, "現在の編集値", state.EditedValue);
+        AppendDetail(builder, "現在のINI値", state.CurrentIniValue);
+        AppendDetail(builder, "既定値", definition.DefaultValue);
+        AppendDetail(builder, "対応状況", GameSettingEditorItem.GetSupportStatusLabel(definition.SupportStatus));
+        string restartRequired = "不要";
+        if (definition.RestartRequired)
+        {
+            restartRequired = "必要";
+        }
+        AppendDetail(builder, "再起動", restartRequired);
+        string iniFile = "GameUserSettings.ini";
+        if (definition.FileKind == IniFileKind.Game)
+        {
+            iniFile = "Game.ini";
+        }
+        AppendDetail(builder, "INIファイル", iniFile);
+        AppendDetail(builder, "セクション", definition.Section);
+        AppendDetail(builder, "INIキー", definition.Key);
+        AppendDetail(builder, "英語名", definition.DisplayNameEn);
+        AppendDetail(builder, "値形式", definition.ValueType.ToString());
+        AppendDetail(builder, "備考", definition.Notes);
+        if (definition.SupportStatus == SupportStatus.Unverified)
+        {
+            builder.AppendLine();
+            builder.AppendLine("注意: この設定は未検証です。実機確認後に使用してください。");
+        }
+        if (definition.ValueType == GameSettingValueType.Complex)
+        {
+            builder.AppendLine();
+            builder.AppendLine("注意: 複合設定です。Raw文字列の構造を保持してください。");
+        }
+        return builder.ToString();
+    }
+
+    private static void AppendDetail(StringBuilder builder, string label, string? value)
+    {
+        builder.Append(label);
+        builder.Append(": ");
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            builder.AppendLine("-");
+            return;
+        }
+        builder.AppendLine(value);
+    }
+}
+
+/// <summary>利用者向け日本語名に機械変換の残りがないか監査します。</summary>
+public static class GameSettingJapaneseNameAudit
+{
+    /// <summary>空欄、Key流用、汎用placeholder、Token区切りの残存を検出します。</summary>
+    public static IReadOnlyList<string> FindIssues(IEnumerable<GameSettingDefinition> definitions)
+    {
+        List<string> issues = [];
+        foreach (GameSettingDefinition definition in definitions)
+        {
+            if (string.IsNullOrWhiteSpace(definition.DisplayNameJa))
+            {
+                issues.Add(definition.Id + ": 日本語名が空です。");
+                continue;
+            }
+            if (string.Equals(definition.DisplayNameJa, definition.Key, StringComparison.Ordinal))
+            {
+                issues.Add(definition.Id + ": INIキーが日本語名へ流用されています。");
+            }
+            if (definition.DisplayNameJa.Contains("に関する設定（", StringComparison.Ordinal))
+            {
+                issues.Add(definition.Id + ": 汎用placeholderが残っています。");
+            }
+            if (definition.DisplayNameJa.Contains('・'))
+            {
+                issues.Add(definition.Id + ": Token区切りの中黒が残っています。");
+            }
+        }
+        return issues;
     }
 }
 
 /// <summary>カテゴリ、横断検索、選択、既定値復元を純粋なUI状態として管理します。</summary>
 public sealed class GameSettingsSession
 {
+    private static readonly IReadOnlyList<string> CategoryDisplayOrder =
+    [
+        "基本・ゲーム進行",
+        "プレイヤー",
+        "恐竜・生物",
+        "採取・テイム",
+        "繁殖",
+        "建築・戦闘",
+        "アイテム・転送",
+        "管理・高度"
+    ];
     private readonly IReadOnlyList<GameSettingDefinition> _definitions;
     private readonly Dictionary<string, GameSettingState> _states;
     private string _selectedCategory;
@@ -73,7 +183,10 @@ public sealed class GameSettingsSession
     {
         _definitions = workspace.Definitions;
         _states = workspace.States.ToDictionary(state => state.DefinitionId, StringComparer.Ordinal);
-        Categories = _definitions.Select(definition => definition.UiCategory).Distinct(StringComparer.Ordinal).ToList();
+        HashSet<string> availableCategories = _definitions.Select(definition => definition.UiCategory).ToHashSet(StringComparer.Ordinal);
+        List<string> orderedCategories = CategoryDisplayOrder.Where(availableCategories.Contains).ToList();
+        orderedCategories.AddRange(availableCategories.Where(category => !CategoryDisplayOrder.Contains(category, StringComparer.Ordinal)).OrderBy(category => category, StringComparer.Ordinal));
+        Categories = orderedCategories;
         _selectedCategory = Categories.FirstOrDefault() ?? string.Empty;
         _previousCategory = _selectedCategory;
     }
@@ -288,11 +401,11 @@ public sealed class GameSettingsService
         OperationResult<IniDocument> gameResult = await _iniDocumentService.LoadAsync(gameIniPath, IniFileKind.Game, cancellationToken);
         if (!gusResult.Succeeded || gusResult.Value is null)
         {
-            return OperationResult.Failure(gusResult.ErrorMessage ?? "GameUserSettings.iniを読み込めません。", errorCode: "INI_IMPORT_FAILED");
+            return CopyIniFailure(gusResult, "GameUserSettings.iniを読み込めません。");
         }
         if (!gameResult.Succeeded || gameResult.Value is null)
         {
-            return OperationResult.Failure(gameResult.ErrorMessage ?? "Game.iniを読み込めません。", errorCode: "INI_IMPORT_FAILED");
+            return CopyIniFailure(gameResult, "Game.iniを読み込めません。");
         }
         OperationResult importResult = _configurationOrchestrator.Import(workspace.Definitions, [gusResult.Value, gameResult.Value], workspace.States.ToList());
         settingsResult.Value.GameSettings = workspace.States.ToList();
@@ -346,5 +459,12 @@ public sealed class GameSettingsService
     {
         string directory = Path.Combine(settings.DedicatedServerPath, "ShooterGame", "Saved", "Config", "WindowsServer");
         return (Path.Combine(directory, "GameUserSettings.ini"), Path.Combine(directory, "Game.ini"));
+    }
+
+    private static OperationResult CopyIniFailure(OperationResult source, string fallbackMessage)
+    {
+        string message = source.UserMessage ?? source.ErrorMessage ?? fallbackMessage;
+        string errorCode = source.ErrorCode ?? "INI_IMPORT_FAILED";
+        return OperationResult.Failure(message, source.Warnings, errorCode, source.TechnicalMessage);
     }
 }
