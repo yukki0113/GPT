@@ -1,7 +1,7 @@
 [
   {
     "id": "game.script.shootergame.shootergamemode.BaseHexagonRewardMultiplier",
-    "displayNameJa": "基本・ヘキサゴン・報酬・倍率",
+    "displayNameJa": "ヘキサゴン報酬倍率",
     "displayNameEn": "BaseHexagonRewardMultiplier",
     "category": "ASA固有",
     "subCategory": "",
@@ -33,7 +33,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.HexagonCostMultiplier",
-    "displayNameJa": "ヘキサゴン・コスト・倍率",
+    "displayNameJa": "ヘキサゴン消費コスト倍率",
     "displayNameEn": "HexagonCostMultiplier",
     "category": "ASA固有",
     "subCategory": "",
@@ -65,7 +65,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.ValgueroMemorialEntries",
-    "displayNameJa": "Valguero・記念碑・項目",
+    "displayNameJa": "Valguero記念碑項目",
     "displayNameEn": "ValgueroMemorialEntries",
     "category": "ASA固有",
     "subCategory": "",
@@ -97,7 +97,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.WirelessCraftingRangeOverride",
-    "displayNameJa": "ワイヤレス・クラフト・範囲・上書き",
+    "displayNameJa": "ワイヤレスクラフト範囲の上書き",
     "displayNameEn": "WirelessCraftingRangeOverride",
     "category": "ASA固有",
     "subCategory": "",
@@ -129,7 +129,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bAllowFlyerSpeedLeveling",
-    "displayNameJa": "許可・飛行生物・速度・レベルアップ",
+    "displayNameJa": "飛行生物の速度レベルアップを許可",
     "displayNameEn": "bAllowFlyerSpeedLeveling",
     "category": "ASA固有",
     "subCategory": "",
@@ -161,7 +161,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bAllowSpeedLeveling",
-    "displayNameJa": "許可・速度・レベルアップ",
+    "displayNameJa": "速度レベルアップを許可",
     "displayNameEn": "bAllowSpeedLeveling",
     "category": "ASA固有",
     "subCategory": "",
@@ -193,7 +193,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bDisableWirelessCrafting",
-    "displayNameJa": "無効化・ワイヤレス・クラフト",
+    "displayNameJa": "ワイヤレスクラフトを無効化",
     "displayNameEn": "bDisableWirelessCrafting",
     "category": "ASA固有",
     "subCategory": "",
@@ -225,7 +225,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.PhotoModeRangeLimit",
-    "displayNameJa": "フォト・モード・範囲・制限",
+    "displayNameJa": "フォトモード範囲制限",
     "displayNameEn": "PhotoModeRangeLimit",
     "category": "MOD・MAP",
     "subCategory": "",
@@ -257,7 +257,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bDisablePhotoMode",
-    "displayNameJa": "無効化・フォト・モード",
+    "displayNameJa": "フォトモードを無効化",
     "displayNameEn": "bDisablePhotoMode",
     "category": "MOD・MAP",
     "subCategory": "",
@@ -289,7 +289,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bShowCreativeMode",
-    "displayNameJa": "表示・クリエイティブ・モード",
+    "displayNameJa": "クリエイティブモードを表示",
     "displayNameEn": "bShowCreativeMode",
     "category": "MOD・MAP",
     "subCategory": "",
@@ -321,7 +321,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.IgnorePVPMountedWeaponryRestrictions",
-    "displayNameJa": "無視・PvP・騎乗・武器・制限",
+    "displayNameJa": "PvP騎乗武器制限を無視",
     "displayNameEn": "IgnorePVPMountedWeaponryRestrictions",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -353,7 +353,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.TribeTowerBonusMultiplier",
-    "displayNameJa": "トライブ・タワー・ボーナス・倍率",
+    "displayNameJa": "トライブタワーボーナス倍率",
     "displayNameEn": "TribeTowerBonusMultiplier",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -385,7 +385,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bDisableFriendlyFire",
-    "displayNameJa": "無効化・味方・攻撃",
+    "displayNameJa": "味方攻撃を無効化",
     "displayNameEn": "bDisableFriendlyFire",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -417,7 +417,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bPvEDisableFriendlyFire",
-    "displayNameJa": "PvE・無効化・味方・攻撃",
+    "displayNameJa": "PvEで味方攻撃を無効化",
     "displayNameEn": "bPvEDisableFriendlyFire",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -449,7 +449,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.CraftingSkillBonusMultiplier",
-    "displayNameJa": "クラフト・スキル・ボーナス・倍率",
+    "displayNameJa": "クラフトスキルボーナス倍率",
     "displayNameEn": "CraftingSkillBonusMultiplier",
     "category": "アイテム",
     "subCategory": "",
@@ -481,7 +481,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.ExcludeItemIndices",
-    "displayNameJa": "除外・アイテム・インデックス",
+    "displayNameJa": "アイテムインデックスを除外",
     "displayNameEn": "ExcludeItemIndices",
     "category": "アイテム",
     "subCategory": "",
@@ -513,7 +513,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.DestroyTamesOverLevelClamp",
-    "displayNameJa": "削除・テイム生物・超過・レベル・上限固定",
+    "displayNameJa": "レベル上限超過テイム生物を削除",
     "displayNameEn": "DestroyTamesOverLevelClamp",
     "category": "エングラム・レベル",
     "subCategory": "",
@@ -545,7 +545,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.CustomRecipeEffectivenessMultiplier",
-    "displayNameJa": "カスタム・レシピ・効果・倍率",
+    "displayNameJa": "カスタムレシピ効果倍率",
     "displayNameEn": "CustomRecipeEffectivenessMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -577,7 +577,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.CustomRecipeSkillMultiplier",
-    "displayNameJa": "カスタム・レシピ・スキル・倍率",
+    "displayNameJa": "カスタムレシピスキル倍率",
     "displayNameEn": "CustomRecipeSkillMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -609,7 +609,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.HairGrowthSpeedMultiplier",
-    "displayNameJa": "髪・成長・速度・倍率",
+    "displayNameJa": "髪成長速度倍率",
     "displayNameEn": "HairGrowthSpeedMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -641,7 +641,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.LimitGeneratorsNum",
-    "displayNameJa": "制限・発電機・数",
+    "displayNameJa": "制限発電機数",
     "displayNameEn": "LimitGeneratorsNum",
     "category": "サーバー基本",
     "subCategory": "",
@@ -673,7 +673,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.LimitGeneratorsRange",
-    "displayNameJa": "制限・発電機・範囲",
+    "displayNameJa": "制限発電機範囲",
     "displayNameEn": "LimitGeneratorsRange",
     "category": "サーバー基本",
     "subCategory": "",
@@ -769,7 +769,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.MaxFallSpeedMultiplier",
-    "displayNameJa": "最大・落下・速度・倍率",
+    "displayNameJa": "最大落下速度倍率",
     "displayNameEn": "MaxFallSpeedMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -801,7 +801,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.PoopIntervalMultiplier",
-    "displayNameJa": "排便・間隔・倍率",
+    "displayNameJa": "排便間隔倍率",
     "displayNameEn": "PoopIntervalMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -833,7 +833,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bAllowUnlimitedRespecs",
-    "displayNameJa": "許可・無制限・再振り",
+    "displayNameJa": "無制限再振りを許可",
     "displayNameEn": "bAllowUnlimitedRespecs",
     "category": "サーバー基本",
     "subCategory": "",
@@ -865,7 +865,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.DisableWorldBuffs",
-    "displayNameJa": "無効化・ワールド・バフ",
+    "displayNameJa": "ワールドバフを無効化",
     "displayNameEn": "DisableWorldBuffs",
     "category": "ワールド・イベント",
     "subCategory": "",
@@ -897,7 +897,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.DormancyNetMultiplier",
-    "displayNameJa": "休眠・ネットワーク・倍率",
+    "displayNameJa": "休眠ネットワーク倍率",
     "displayNameEn": "DormancyNetMultiplier",
     "category": "ワールド・イベント",
     "subCategory": "",
@@ -929,7 +929,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.DynamicUndermeshRegions",
-    "displayNameJa": "動的・地形下・領域",
+    "displayNameJa": "動的地形下領域",
     "displayNameEn": "DynamicUndermeshRegions",
     "category": "ワールド・イベント",
     "subCategory": "",
@@ -961,7 +961,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.EnableWorldBuffScaling",
-    "displayNameJa": "有効化・ワールド・バフ・倍率調整",
+    "displayNameJa": "ワールドバフ倍率調整を有効化",
     "displayNameEn": "EnableWorldBuffScaling",
     "category": "ワールド・イベント",
     "subCategory": "",
@@ -993,7 +993,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.WorldBuffScalingEfficacy",
-    "displayNameJa": "ワールド・バフ・倍率調整・効果",
+    "displayNameJa": "ワールドバフ倍率調整効果",
     "displayNameEn": "WorldBuffScalingEfficacy",
     "category": "ワールド・イベント",
     "subCategory": "",
@@ -1025,7 +1025,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bDisableStructurePlacementCollision",
-    "displayNameJa": "無効化・建造物・設置・衝突",
+    "displayNameJa": "建造物設置衝突を無効化",
     "displayNameEn": "bDisableStructurePlacementCollision",
     "category": "建築・防衛",
     "subCategory": "",
@@ -1057,7 +1057,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bDisableWirelessCraftingForStructures",
-    "displayNameJa": "無効化・ワイヤレス・クラフト・建造物",
+    "displayNameJa": "ワイヤレスクラフト建造物を無効化",
     "displayNameEn": "bDisableWirelessCraftingForStructures",
     "category": "建築・防衛",
     "subCategory": "",
@@ -1089,7 +1089,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bIgnoreStructuresPreventionVolumes",
-    "displayNameJa": "無視・建造物・禁止区域・領域",
+    "displayNameJa": "建造物禁止区域領域を無視",
     "displayNameEn": "bIgnoreStructuresPreventionVolumes",
     "category": "建築・防衛",
     "subCategory": "",
@@ -1121,7 +1121,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.EnemyLevelsMax",
-    "displayNameJa": "敵・レベル・最大",
+    "displayNameJa": "敵レベル最大",
     "displayNameEn": "EnemyLevelsMax",
     "category": "恐竜レベル・経験値",
     "subCategory": "",
@@ -1153,7 +1153,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.EnemyLevelsMin",
-    "displayNameJa": "敵・レベル・最小",
+    "displayNameJa": "敵レベル最小",
     "displayNameEn": "EnemyLevelsMin",
     "category": "恐竜レベル・経験値",
     "subCategory": "",
@@ -1185,7 +1185,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.GameDifficulties",
-    "displayNameJa": "ゲーム・難易度",
+    "displayNameJa": "ゲーム難易度",
     "displayNameEn": "GameDifficulties",
     "category": "恐竜レベル・経験値",
     "subCategory": "",
@@ -1217,7 +1217,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.OverrideMaxExperiencePointsDino",
-    "displayNameJa": "上書き・最大・経験値・ポイント・恐竜",
+    "displayNameJa": "最大経験値ポイント恐竜を上書き",
     "displayNameEn": "OverrideMaxExperiencePointsDino",
     "category": "恐竜レベル・経験値",
     "subCategory": "",
@@ -1249,7 +1249,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.OverrideMaxExperiencePointsPlayer",
-    "displayNameJa": "上書き・最大・経験値・ポイント・プレイヤー",
+    "displayNameJa": "最大経験値ポイントプレイヤーを上書き",
     "displayNameEn": "OverrideMaxExperiencePointsPlayer",
     "category": "恐竜レベル・経験値",
     "subCategory": "",
@@ -1281,7 +1281,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.OverridePlayerLevelEngramPoints",
-    "displayNameJa": "上書き・プレイヤー・レベル・エングラム・ポイント",
+    "displayNameJa": "プレイヤーレベルエングラムポイントを上書き",
     "displayNameEn": "OverridePlayerLevelEngramPoints",
     "category": "恐竜レベル・経験値",
     "subCategory": "",
@@ -1345,7 +1345,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bDisableWirelessCraftingForDinos",
-    "displayNameJa": "無効化・ワイヤレス・クラフト・恐竜",
+    "displayNameJa": "ワイヤレスクラフト恐竜を無効化",
     "displayNameEn": "bDisableWirelessCraftingForDinos",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -1377,7 +1377,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bUseDinoLevelUpAnimations",
-    "displayNameJa": "使用・恐竜・レベル・上昇・アニメーション",
+    "displayNameJa": "恐竜レベル上昇アニメーションを使用",
     "displayNameEn": "bUseDinoLevelUpAnimations",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -1409,7 +1409,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.CropDecaySpeedMultiplier",
-    "displayNameJa": "作物・劣化・速度・倍率",
+    "displayNameJa": "作物劣化速度倍率",
     "displayNameEn": "CropDecaySpeedMultiplier",
     "category": "採取・資源",
     "subCategory": "",
@@ -1441,7 +1441,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.CropGrowthSpeedMultiplier",
-    "displayNameJa": "作物・成長・速度・倍率",
+    "displayNameJa": "作物成長速度倍率",
     "displayNameEn": "CropGrowthSpeedMultiplier",
     "category": "採取・資源",
     "subCategory": "",
@@ -1473,7 +1473,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.HarvestResourceItemAmountClassMultipliers",
-    "displayNameJa": "採取・資源・アイテム・量・クラス・倍率",
+    "displayNameJa": "クラス別採取資源量倍率",
     "displayNameEn": "HarvestResourceItemAmountClassMultipliers",
     "category": "採取・資源",
     "subCategory": "",
@@ -1505,7 +1505,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.ResourceNoReplenishRadiusStructures",
-    "displayNameJa": "資源・禁止・再生成・半径・建造物",
+    "displayNameJa": "建造物周辺の資源再生成禁止半径",
     "displayNameEn": "ResourceNoReplenishRadiusStructures",
     "category": "採取・資源",
     "subCategory": "",
@@ -1537,7 +1537,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.GlobalItemDecompositionTimeMultiplier",
-    "displayNameJa": "全体・アイテム・消滅・時間・倍率",
+    "displayNameJa": "全体アイテム消滅時間倍率",
     "displayNameEn": "GlobalItemDecompositionTimeMultiplier",
     "category": "時間・保存",
     "subCategory": "",
@@ -1569,7 +1569,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.GlobalSpoilingTimeMultiplier",
-    "displayNameJa": "全体・腐敗・時間・倍率",
+    "displayNameJa": "全体腐敗時間倍率",
     "displayNameEn": "GlobalSpoilingTimeMultiplier",
     "category": "時間・保存",
     "subCategory": "",
@@ -1601,7 +1601,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.CraftXPMultiplier",
-    "displayNameJa": "クラフト・経験値・倍率",
+    "displayNameJa": "クラフト経験値倍率",
     "displayNameEn": "CraftXPMultiplier",
     "category": "経験値",
     "subCategory": "",
@@ -1633,7 +1633,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.GenericXPMultiplier",
-    "displayNameJa": "汎用・経験値・倍率",
+    "displayNameJa": "汎用経験値倍率",
     "displayNameEn": "GenericXPMultiplier",
     "category": "経験値",
     "subCategory": "",
@@ -1665,7 +1665,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.HarvestXPMultiplier",
-    "displayNameJa": "採取・経験値・倍率",
+    "displayNameJa": "採取経験値倍率",
     "displayNameEn": "HarvestXPMultiplier",
     "category": "経験値",
     "subCategory": "",
@@ -1697,7 +1697,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.KillXPMultiplier",
-    "displayNameJa": "討伐・経験値・倍率",
+    "displayNameJa": "討伐経験値倍率",
     "displayNameEn": "KillXPMultiplier",
     "category": "経験値",
     "subCategory": "",
@@ -1729,7 +1729,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.SpecialXPMultiplier",
-    "displayNameJa": "特殊・経験値・倍率",
+    "displayNameJa": "特殊経験値倍率",
     "displayNameEn": "SpecialXPMultiplier",
     "category": "経験値",
     "subCategory": "",
@@ -1761,7 +1761,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.BabyCuddleGracePeriodMultiplier",
-    "displayNameJa": "赤ちゃん恐竜・刷り込み・猶予・期間・倍率",
+    "displayNameJa": "赤ちゃん恐竜刷り込み猶予期間倍率",
     "displayNameEn": "BabyCuddleGracePeriodMultiplier",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -1825,7 +1825,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.BabyCuddleLoseImprintQualitySpeedMultiplier",
-    "displayNameJa": "赤ちゃん恐竜・刷り込み・減少・刷り込み・品質・速度・倍率",
+    "displayNameJa": "赤ちゃん恐竜の刷り込み品質低下速度倍率",
     "displayNameEn": "BabyCuddleLoseImprintQualitySpeedMultiplier",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -2017,7 +2017,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.LayEggIntervalMultiplier",
-    "displayNameJa": "産卵・卵・間隔・倍率",
+    "displayNameJa": "産卵間隔倍率",
     "displayNameEn": "LayEggIntervalMultiplier",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -2049,7 +2049,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.PerLevelStatsMultiplier_Player",
-    "displayNameJa": "単位・レベル・ステータス・倍率・プレイヤー",
+    "displayNameJa": "プレイヤーのレベルごとのステータス倍率",
     "displayNameEn": "PerLevelStatsMultiplier_Player",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -2081,7 +2081,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.PreventBreedingForClassNames",
-    "displayNameJa": "禁止・繁殖・クラス・名前",
+    "displayNameJa": "指定クラスの繁殖を禁止",
     "displayNameEn": "PreventBreedingForClassNames",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -2113,7 +2113,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.ResourceNoReplenishRadiusPlayers",
-    "displayNameJa": "資源・禁止・再生成・半径・プレイヤー",
+    "displayNameJa": "プレイヤー周辺の資源再生成禁止半径",
     "displayNameEn": "ResourceNoReplenishRadiusPlayers",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -2145,7 +2145,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bDisableWirelessCraftingForPlayers",
-    "displayNameJa": "無効化・ワイヤレス・クラフト・プレイヤー",
+    "displayNameJa": "ワイヤレスクラフトプレイヤーを無効化",
     "displayNameEn": "bDisableWirelessCraftingForPlayers",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -2177,7 +2177,7 @@
   },
   {
     "id": "game.script.shootergame.shootergamemode.bUseSingleplayerSettings",
-    "displayNameJa": "使用・シングルプレイヤー・設定",
+    "displayNameJa": "シングルプレイヤー設定を使用",
     "displayNameEn": "bUseSingleplayerSettings",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -2625,7 +2625,7 @@
   },
   {
     "id": "gus.serversettings.AllowBunkersInPreventionZones",
-    "displayNameJa": "許可・バンカー・禁止区域・区域",
+    "displayNameJa": "バンカー禁止区域区域を許可",
     "displayNameEn": "AllowBunkersInPreventionZones",
     "category": "ASA固有",
     "subCategory": "",
@@ -2657,7 +2657,7 @@
   },
   {
     "id": "gus.serversettings.AllowCryoFridgeOnSaddle",
-    "displayNameJa": "許可・クライオ・冷蔵庫・サドル",
+    "displayNameJa": "クライオ冷蔵庫サドルを許可",
     "displayNameEn": "AllowCryoFridgeOnSaddle",
     "category": "ASA固有",
     "subCategory": "",
@@ -2689,7 +2689,7 @@
   },
   {
     "id": "gus.serversettings.ArmadoggoDeathCooldown",
-    "displayNameJa": "アルマドッゴ・死亡・クールダウン",
+    "displayNameJa": "アルマドッゴ死亡クールダウン",
     "displayNameEn": "ArmadoggoDeathCooldown",
     "category": "ASA固有",
     "subCategory": "",
@@ -2721,7 +2721,7 @@
   },
   {
     "id": "gus.serversettings.BunkerUnderHPThresholdDmgMultiplier",
-    "displayNameJa": "バンカー・未満・体力・しきい値・ダメージ・倍率",
+    "displayNameJa": "バンカー未満体力しきい値ダメージ倍率",
     "displayNameEn": "BunkerUnderHPThresholdDmgMultiplier",
     "category": "ASA固有",
     "subCategory": "",
@@ -2753,7 +2753,7 @@
   },
   {
     "id": "gus.serversettings.CosmoWeaponAmmoReloadAmount",
-    "displayNameJa": "コスモ・武器・弾薬・補充・量",
+    "displayNameJa": "コスモ武器弾薬補充量",
     "displayNameEn": "CosmoWeaponAmmoReloadAmount",
     "category": "ASA固有",
     "subCategory": "",
@@ -2785,7 +2785,7 @@
   },
   {
     "id": "gus.serversettings.CryoHospitalHoursToRegenHP",
-    "displayNameJa": "クライオ・病院・時間・回復・体力",
+    "displayNameJa": "クライオ病院時間回復体力",
     "displayNameEn": "CryoHospitalHoursToRegenHP",
     "category": "ASA固有",
     "subCategory": "",
@@ -2817,7 +2817,7 @@
   },
   {
     "id": "gus.serversettings.CryoHospitalMatingCooldownReduction",
-    "displayNameJa": "クライオ・病院・交配・クールダウン・短縮",
+    "displayNameJa": "クライオ病院交配クールダウン短縮",
     "displayNameEn": "CryoHospitalMatingCooldownReduction",
     "category": "ASA固有",
     "subCategory": "",
@@ -2849,7 +2849,7 @@
   },
   {
     "id": "gus.serversettings.DisableCryopodEnemyCheck",
-    "displayNameJa": "無効化・クライオポッド・敵・確認",
+    "displayNameJa": "クライオポッド敵確認を無効化",
     "displayNameEn": "DisableCryopodEnemyCheck",
     "category": "ASA固有",
     "subCategory": "",
@@ -2881,7 +2881,7 @@
   },
   {
     "id": "gus.serversettings.DisableCryopodFridgeRequirement",
-    "displayNameJa": "無効化・クライオポッド・冷蔵庫・要件",
+    "displayNameJa": "クライオポッド冷蔵庫要件を無効化",
     "displayNameEn": "DisableCryopodFridgeRequirement",
     "category": "ASA固有",
     "subCategory": "",
@@ -2913,7 +2913,7 @@
   },
   {
     "id": "gus.serversettings.EnemyAccessBunkerHPThreshold",
-    "displayNameJa": "敵・アクセス・バンカー・体力・しきい値",
+    "displayNameJa": "敵アクセスバンカー体力しきい値",
     "displayNameEn": "EnemyAccessBunkerHPThreshold",
     "category": "ASA固有",
     "subCategory": "",
@@ -2945,7 +2945,7 @@
   },
   {
     "id": "gus.serversettings.ForceGachaUnhappyInCaves",
-    "displayNameJa": "強制・ガチャ・不機嫌・洞窟",
+    "displayNameJa": "ガチャ不機嫌洞窟を強制",
     "displayNameEn": "ForceGachaUnhappyInCaves",
     "category": "ASA固有",
     "subCategory": "",
@@ -2977,7 +2977,7 @@
   },
   {
     "id": "gus.serversettings.ImplantSuicideCD",
-    "displayNameJa": "インプラント・自殺・クールダウン",
+    "displayNameJa": "インプラント自殺クールダウン",
     "displayNameEn": "ImplantSuicideCD",
     "category": "ASA固有",
     "subCategory": "",
@@ -3009,7 +3009,7 @@
   },
   {
     "id": "gus.serversettings.MaxCosmoWeaponAmmo",
-    "displayNameJa": "最大・コスモ・武器・弾薬",
+    "displayNameJa": "最大コスモ武器弾薬",
     "displayNameEn": "MaxCosmoWeaponAmmo",
     "category": "ASA固有",
     "subCategory": "",
@@ -3041,7 +3041,7 @@
   },
   {
     "id": "gus.serversettings.MinDistanceBetweenBunkers",
-    "displayNameJa": "最小・距離・間・バンカー",
+    "displayNameJa": "最小距離間バンカー",
     "displayNameEn": "MinDistanceBetweenBunkers",
     "category": "ASA固有",
     "subCategory": "",
@@ -3073,7 +3073,7 @@
   },
   {
     "id": "gus.serversettings.UpdateAllowedCheatersInterval",
-    "displayNameJa": "更新・許可済み・管理者許可リスト・間隔",
+    "displayNameJa": "更新許可済み管理者許可リスト間隔",
     "displayNameEn": "UpdateAllowedCheatersInterval",
     "category": "ASA固有",
     "subCategory": "",
@@ -3169,7 +3169,7 @@
   },
   {
     "id": "gus.serversettings.AllowBunkerModulesAboveGround",
-    "displayNameJa": "許可・バンカー・モジュール・地上",
+    "displayNameJa": "バンカーモジュール地上を許可",
     "displayNameEn": "AllowBunkerModulesAboveGround",
     "category": "MOD・MAP",
     "subCategory": "",
@@ -3201,7 +3201,7 @@
   },
   {
     "id": "gus.serversettings.AllowBunkerModulesInPreventionZones",
-    "displayNameJa": "許可・バンカー・モジュール・禁止区域・区域",
+    "displayNameJa": "バンカーモジュール禁止区域区域を許可",
     "displayNameEn": "AllowBunkerModulesInPreventionZones",
     "category": "MOD・MAP",
     "subCategory": "",
@@ -3233,7 +3233,7 @@
   },
   {
     "id": "gus.serversettings.AutoPvEStartTimeSeconds",
-    "displayNameJa": "自動・PvE・開始・時間・秒",
+    "displayNameJa": "自動PvE開始時間秒",
     "displayNameEn": "AutoPvEStartTimeSeconds",
     "category": "PvE",
     "subCategory": "",
@@ -3265,7 +3265,7 @@
   },
   {
     "id": "gus.serversettings.AutoPvEStopTimeSeconds",
-    "displayNameJa": "自動・PvE・停止・時間・秒",
+    "displayNameJa": "自動PvE停止時間秒",
     "displayNameEn": "AutoPvEStopTimeSeconds",
     "category": "PvE",
     "subCategory": "",
@@ -3393,7 +3393,7 @@
   },
   {
     "id": "gus.serversettings.IncreasePvPRespawnIntervalBaseAmount",
-    "displayNameJa": "増加・PvP・リスポーン・間隔・基本・量",
+    "displayNameJa": "増加PvPリスポーン間隔基本量",
     "displayNameEn": "IncreasePvPRespawnIntervalBaseAmount",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3425,7 +3425,7 @@
   },
   {
     "id": "gus.serversettings.IncreasePvPRespawnIntervalCheckPeriod",
-    "displayNameJa": "増加・PvP・リスポーン・間隔・確認・期間",
+    "displayNameJa": "増加PvPリスポーン間隔確認期間",
     "displayNameEn": "IncreasePvPRespawnIntervalCheckPeriod",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3457,7 +3457,7 @@
   },
   {
     "id": "gus.serversettings.IncreasePvPRespawnIntervalMultiplier",
-    "displayNameJa": "増加・PvP・リスポーン・間隔・倍率",
+    "displayNameJa": "増加PvPリスポーン間隔倍率",
     "displayNameEn": "IncreasePvPRespawnIntervalMultiplier",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3489,7 +3489,7 @@
   },
   {
     "id": "gus.serversettings.LimitBunkersPerTribe",
-    "displayNameJa": "制限・バンカー・単位・トライブ",
+    "displayNameJa": "制限バンカー単位トライブ",
     "displayNameEn": "LimitBunkersPerTribe",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3521,7 +3521,7 @@
   },
   {
     "id": "gus.serversettings.LimitBunkersPerTribeNum",
-    "displayNameJa": "制限・バンカー・単位・トライブ・数",
+    "displayNameJa": "制限バンカー単位トライブ数",
     "displayNameEn": "LimitBunkersPerTribeNum",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3553,7 +3553,7 @@
   },
   {
     "id": "gus.serversettings.MaxAlliancesPerTribe",
-    "displayNameJa": "最大・同盟・単位・トライブ",
+    "displayNameJa": "最大同盟単位トライブ",
     "displayNameEn": "MaxAlliancesPerTribe",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3585,7 +3585,7 @@
   },
   {
     "id": "gus.serversettings.MaxNumberOfPlayersInTribe",
-    "displayNameJa": "最大・数・プレイヤー・トライブ",
+    "displayNameJa": "最大数プレイヤートライブ",
     "displayNameEn": "MaxNumberOfPlayersInTribe",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3617,7 +3617,7 @@
   },
   {
     "id": "gus.serversettings.MaxTribeLogs",
-    "displayNameJa": "最大・トライブ・ログ",
+    "displayNameJa": "最大トライブログ",
     "displayNameEn": "MaxTribeLogs",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3649,7 +3649,7 @@
   },
   {
     "id": "gus.serversettings.MaxTribesPerAlliance",
-    "displayNameJa": "最大・トライブ・単位・同盟",
+    "displayNameJa": "最大トライブ単位同盟",
     "displayNameEn": "MaxTribesPerAlliance",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3713,7 +3713,7 @@
   },
   {
     "id": "gus.serversettings.PreventOfflinePvPConnectionInvincibleInterval",
-    "displayNameJa": "禁止・オフライン・PvP・接続・無敵・間隔",
+    "displayNameJa": "オフラインPvP接続無敵間隔を禁止",
     "displayNameEn": "PreventOfflinePvPConnectionInvincibleInterval",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3745,7 +3745,7 @@
   },
   {
     "id": "gus.serversettings.PreventOfflinePvPInterval",
-    "displayNameJa": "禁止・オフライン・PvP・間隔",
+    "displayNameJa": "オフラインPvP間隔を禁止",
     "displayNameEn": "PreventOfflinePvPInterval",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3777,7 +3777,7 @@
   },
   {
     "id": "gus.serversettings.PreventOutOfTribePinCodeUse",
-    "displayNameJa": "禁止・退出・トライブ・PIN・コード・使用",
+    "displayNameJa": "退出トライブPINコード使用を禁止",
     "displayNameEn": "PreventOutOfTribePinCodeUse",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3809,7 +3809,7 @@
   },
   {
     "id": "gus.serversettings.PreventTribeAlliances",
-    "displayNameJa": "禁止・トライブ・同盟",
+    "displayNameJa": "トライブ同盟を禁止",
     "displayNameEn": "PreventTribeAlliances",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3841,7 +3841,7 @@
   },
   {
     "id": "gus.serversettings.PvPStructureDecay",
-    "displayNameJa": "PvP・建造物・劣化",
+    "displayNameJa": "PvP建造物劣化",
     "displayNameEn": "PvPStructureDecay",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3873,7 +3873,7 @@
   },
   {
     "id": "gus.serversettings.PvPZoneStructureDamageMultiplier",
-    "displayNameJa": "PvP・区域・建造物・ダメージ・倍率",
+    "displayNameJa": "PvP区域建造物ダメージ倍率",
     "displayNameEn": "PvPZoneStructureDamageMultiplier",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3905,7 +3905,7 @@
   },
   {
     "id": "gus.serversettings.TribeLogDestroyedEnemyStructures",
-    "displayNameJa": "トライブ・ログ・破壊済み・敵・建造物",
+    "displayNameJa": "トライブログ破壊済み敵建造物",
     "displayNameEn": "TribeLogDestroyedEnemyStructures",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3937,7 +3937,7 @@
   },
   {
     "id": "gus.serversettings.TribeMergeAllowed",
-    "displayNameJa": "トライブ・統合・許可済み",
+    "displayNameJa": "トライブ統合許可済み",
     "displayNameEn": "TribeMergeAllowed",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -3969,7 +3969,7 @@
   },
   {
     "id": "gus.serversettings.TribeMergeCooldown",
-    "displayNameJa": "トライブ・統合・クールダウン",
+    "displayNameJa": "トライブ統合クールダウン",
     "displayNameEn": "TribeMergeCooldown",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -4001,7 +4001,7 @@
   },
   {
     "id": "gus.serversettings.TribeNameChangeCooldown",
-    "displayNameJa": "トライブ・名前・変更・クールダウン",
+    "displayNameJa": "トライブ名前変更クールダウン",
     "displayNameEn": "TribeNameChangeCooldown",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -4033,7 +4033,7 @@
   },
   {
     "id": "gus.serversettings.TribeSlotReuseCooldown",
-    "displayNameJa": "トライブ・枠・再利用・クールダウン",
+    "displayNameJa": "トライブ枠再利用クールダウン",
     "displayNameEn": "TribeSlotReuseCooldown",
     "category": "PvP・Tribe",
     "subCategory": "",
@@ -4097,7 +4097,7 @@
   },
   {
     "id": "gus.serversettings.ClampItemStats",
-    "displayNameJa": "上限固定・アイテム・ステータス",
+    "displayNameJa": "上限固定アイテムステータス",
     "displayNameEn": "ClampItemStats",
     "category": "アイテム",
     "subCategory": "",
@@ -4161,7 +4161,7 @@
   },
   {
     "id": "gus.serversettings.FuelConsumptionIntervalMultiplier",
-    "displayNameJa": "燃料・消費・間隔・倍率",
+    "displayNameJa": "燃料消費間隔倍率",
     "displayNameEn": "FuelConsumptionIntervalMultiplier",
     "category": "アイテム",
     "subCategory": "",
@@ -4193,7 +4193,7 @@
   },
   {
     "id": "gus.serversettings.GlobalCorpseDecompositionTimeMultiplier",
-    "displayNameJa": "全体・死体・消滅・時間・倍率",
+    "displayNameJa": "全体死体消滅時間倍率",
     "displayNameEn": "GlobalCorpseDecompositionTimeMultiplier",
     "category": "アイテム",
     "subCategory": "",
@@ -4225,7 +4225,7 @@
   },
   {
     "id": "gus.serversettings.GlobalPoweredBatteryDurabilityDecreasePerSecond",
-    "displayNameJa": "全体・給電・バッテリー・耐久値・低下・単位・秒",
+    "displayNameJa": "全体給電バッテリー耐久値低下単位秒",
     "displayNameEn": "GlobalPoweredBatteryDurabilityDecreasePerSecond",
     "category": "アイテム",
     "subCategory": "",
@@ -4289,7 +4289,7 @@
   },
   {
     "id": "gus.serversettings.MaxTributeCharacters",
-    "displayNameJa": "最大・転送・キャラクター",
+    "displayNameJa": "最大転送キャラクター",
     "displayNameEn": "MaxTributeCharacters",
     "category": "アイテム",
     "subCategory": "",
@@ -4321,7 +4321,7 @@
   },
   {
     "id": "gus.serversettings.MaxTributeItems",
-    "displayNameJa": "最大・転送・アイテム",
+    "displayNameJa": "最大転送アイテム",
     "displayNameEn": "MaxTributeItems",
     "category": "アイテム",
     "subCategory": "",
@@ -4353,7 +4353,7 @@
   },
   {
     "id": "gus.serversettings.MinimumDinoReuploadInterval",
-    "displayNameJa": "最小・恐竜・再アップロード・間隔",
+    "displayNameJa": "最小恐竜再アップロード間隔",
     "displayNameEn": "MinimumDinoReuploadInterval",
     "category": "アイテム",
     "subCategory": "",
@@ -4385,7 +4385,7 @@
   },
   {
     "id": "gus.serversettings.PersonalTamedDinosSaddleStructureCost",
-    "displayNameJa": "個人・テイム済み・恐竜・サドル・建造物・コスト",
+    "displayNameJa": "個人テイム済み恐竜サドル建造物コスト",
     "displayNameEn": "PersonalTamedDinosSaddleStructureCost",
     "category": "アイテム",
     "subCategory": "",
@@ -4417,7 +4417,7 @@
   },
   {
     "id": "gus.serversettings.PreventDownloadItems",
-    "displayNameJa": "禁止・ダウンロード・アイテム",
+    "displayNameJa": "ダウンロードアイテムを禁止",
     "displayNameEn": "PreventDownloadItems",
     "category": "アイテム",
     "subCategory": "",
@@ -4449,7 +4449,7 @@
   },
   {
     "id": "gus.serversettings.PreventTransferForClassNames",
-    "displayNameJa": "禁止・転送・クラス・名前",
+    "displayNameJa": "転送クラス名前を禁止",
     "displayNameEn": "PreventTransferForClassNames",
     "category": "アイテム",
     "subCategory": "",
@@ -4481,7 +4481,7 @@
   },
   {
     "id": "gus.serversettings.PreventUploadItems",
-    "displayNameJa": "禁止・アップロード・アイテム",
+    "displayNameJa": "アップロードアイテムを禁止",
     "displayNameEn": "PreventUploadItems",
     "category": "アイテム",
     "subCategory": "",
@@ -4513,7 +4513,7 @@
   },
   {
     "id": "gus.serversettings.RandomSupplyCratePoints",
-    "displayNameJa": "ランダム・供給・クレート・ポイント",
+    "displayNameJa": "ランダム供給クレートポイント",
     "displayNameEn": "RandomSupplyCratePoints",
     "category": "アイテム",
     "subCategory": "",
@@ -4577,7 +4577,7 @@
   },
   {
     "id": "gus.serversettings.TributeCharacterExpirationSeconds",
-    "displayNameJa": "転送・キャラクター・有効期限・秒",
+    "displayNameJa": "転送キャラクター有効期限秒",
     "displayNameEn": "TributeCharacterExpirationSeconds",
     "category": "アイテム",
     "subCategory": "",
@@ -4609,7 +4609,7 @@
   },
   {
     "id": "gus.serversettings.TributeDinoExpirationSeconds",
-    "displayNameJa": "転送・恐竜・有効期限・秒",
+    "displayNameJa": "転送恐竜有効期限秒",
     "displayNameEn": "TributeDinoExpirationSeconds",
     "category": "アイテム",
     "subCategory": "",
@@ -4641,7 +4641,7 @@
   },
   {
     "id": "gus.serversettings.TributeItemExpirationSeconds",
-    "displayNameJa": "転送・アイテム・有効期限・秒",
+    "displayNameJa": "転送アイテム有効期限秒",
     "displayNameEn": "TributeItemExpirationSeconds",
     "category": "アイテム",
     "subCategory": "",
@@ -4673,7 +4673,7 @@
   },
   {
     "id": "gus.serversettings.CosmeticWhitelistOverride",
-    "displayNameJa": "コスメ・許可リスト・上書き",
+    "displayNameJa": "コスメ許可リスト上書き",
     "displayNameEn": "CosmeticWhitelistOverride",
     "category": "エングラム・レベル",
     "subCategory": "",
@@ -4737,7 +4737,7 @@
   },
   {
     "id": "gus.serversettings.CryopodNerfDamageMult",
-    "displayNameJa": "クライオポッド・弱体化・ダメージ・倍率",
+    "displayNameJa": "クライオポッド弱体化ダメージ倍率",
     "displayNameEn": "CryopodNerfDamageMult",
     "category": "クライオポッド",
     "subCategory": "",
@@ -4769,7 +4769,7 @@
   },
   {
     "id": "gus.serversettings.CryopodNerfDuration",
-    "displayNameJa": "クライオポッド・弱体化・期間",
+    "displayNameJa": "クライオポッド弱体化期間",
     "displayNameEn": "CryopodNerfDuration",
     "category": "クライオポッド",
     "subCategory": "",
@@ -4801,7 +4801,7 @@
   },
   {
     "id": "gus.serversettings.CryopodNerfIncomingDamageMultPercent",
-    "displayNameJa": "クライオポッド・弱体化・被・ダメージ・倍率・割合",
+    "displayNameJa": "クライオポッド弱体化被ダメージ倍率割合",
     "displayNameEn": "CryopodNerfIncomingDamageMultPercent",
     "category": "クライオポッド",
     "subCategory": "",
@@ -4833,7 +4833,7 @@
   },
   {
     "id": "gus.serversettings.EnableCryoSicknessPVE",
-    "displayNameJa": "有効化・クライオ・低温症・PvE",
+    "displayNameJa": "クライオ低温症PvEを有効化",
     "displayNameEn": "EnableCryoSicknessPVE",
     "category": "クライオポッド",
     "subCategory": "",
@@ -4865,7 +4865,7 @@
   },
   {
     "id": "gus.serversettings.EnableCryopodNerf",
-    "displayNameJa": "有効化・クライオポッド・弱体化",
+    "displayNameJa": "クライオポッド弱体化を有効化",
     "displayNameEn": "EnableCryopodNerf",
     "category": "クライオポッド",
     "subCategory": "",
@@ -4897,7 +4897,7 @@
   },
   {
     "id": "gus.serversettings.AllowHideDamageSourceFromLogs",
-    "displayNameJa": "許可・非表示・ダメージ・発生源・ログ",
+    "displayNameJa": "非表示ダメージ発生源ログを許可",
     "displayNameEn": "AllowHideDamageSourceFromLogs",
     "category": "サーバー基本",
     "subCategory": "",
@@ -4929,7 +4929,7 @@
   },
   {
     "id": "gus.serversettings.AllowHitMarkers",
-    "displayNameJa": "許可・ヒット・マーカー",
+    "displayNameJa": "ヒットマーカーを許可",
     "displayNameEn": "AllowHitMarkers",
     "category": "サーバー基本",
     "subCategory": "",
@@ -4961,7 +4961,7 @@
   },
   {
     "id": "gus.serversettings.AllowMultipleAttachedC4",
-    "displayNameJa": "許可・複数・接続・C4",
+    "displayNameJa": "複数接続C4を許可",
     "displayNameEn": "AllowMultipleAttachedC4",
     "category": "サーバー基本",
     "subCategory": "",
@@ -4993,7 +4993,7 @@
   },
   {
     "id": "gus.serversettings.AutoRestartIntervalSeconds",
-    "displayNameJa": "自動・再起動・間隔・秒",
+    "displayNameJa": "自動再起動間隔秒",
     "displayNameEn": "AutoRestartIntervalSeconds",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5025,7 +5025,7 @@
   },
   {
     "id": "gus.serversettings.BadWordListURL",
-    "displayNameJa": "禁止・ワード・リスト・URL",
+    "displayNameJa": "ワードリストURLを禁止",
     "displayNameEn": "BadWordListURL",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5057,7 +5057,7 @@
   },
   {
     "id": "gus.serversettings.BadWordWhiteListURL",
-    "displayNameJa": "禁止・ワード・許可・リスト・URL",
+    "displayNameJa": "ワード許可リストURLを禁止",
     "displayNameEn": "BadWordWhiteListURL",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5089,7 +5089,7 @@
   },
   {
     "id": "gus.serversettings.BloodforgeReinforceExtraDurability",
-    "displayNameJa": "Bloodforge・強化・追加・耐久値",
+    "displayNameJa": "Bloodforge強化追加耐久値",
     "displayNameEn": "BloodforgeReinforceExtraDurability",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5121,7 +5121,7 @@
   },
   {
     "id": "gus.serversettings.BloodforgeReinforceSpeedMultiplier",
-    "displayNameJa": "Bloodforge・強化・速度・倍率",
+    "displayNameJa": "Bloodforge強化速度倍率",
     "displayNameEn": "BloodforgeReinforceSpeedMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5153,7 +5153,7 @@
   },
   {
     "id": "gus.serversettings.CustomLiveTuningUrl",
-    "displayNameJa": "カスタム・ライブ・調整・URL",
+    "displayNameJa": "カスタムライブ調整URL",
     "displayNameEn": "CustomLiveTuningUrl",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5185,7 +5185,7 @@
   },
   {
     "id": "gus.serversettings.DestroyTamesOverTheSoftTameLimit",
-    "displayNameJa": "削除・テイム生物・超過・ソフト・テイム・制限",
+    "displayNameJa": "テイム生物超過ソフトテイム制限を削除",
     "displayNameEn": "DestroyTamesOverTheSoftTameLimit",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5249,7 +5249,7 @@
   },
   {
     "id": "gus.serversettings.DisableWeatherFog",
-    "displayNameJa": "無効化・天候・霧",
+    "displayNameJa": "天候霧を無効化",
     "displayNameEn": "DisableWeatherFog",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5281,7 +5281,7 @@
   },
   {
     "id": "gus.serversettings.MaxActiveCityOutposts",
-    "displayNameJa": "最大・有効・都市・前哨基地",
+    "displayNameJa": "最大有効都市前哨基地",
     "displayNameEn": "MaxActiveCityOutposts",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5313,7 +5313,7 @@
   },
   {
     "id": "gus.serversettings.MaxActiveOutposts",
-    "displayNameJa": "最大・有効・前哨基地",
+    "displayNameJa": "最大有効前哨基地",
     "displayNameEn": "MaxActiveOutposts",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5345,7 +5345,7 @@
   },
   {
     "id": "gus.serversettings.MaxTrainCars",
-    "displayNameJa": "最大・列車・車両",
+    "displayNameJa": "最大列車車両",
     "displayNameEn": "MaxTrainCars",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5377,7 +5377,7 @@
   },
   {
     "id": "gus.serversettings.NonPermanentDiseases",
-    "displayNameJa": "非・永続・病気",
+    "displayNameJa": "非永続病気",
     "displayNameEn": "NonPermanentDiseases",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5409,7 +5409,7 @@
   },
   {
     "id": "gus.serversettings.OutpostSigilRewardMultiplier",
-    "displayNameJa": "前哨基地・シジル・報酬・倍率",
+    "displayNameJa": "前哨基地シジル報酬倍率",
     "displayNameEn": "OutpostSigilRewardMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5441,7 +5441,7 @@
   },
   {
     "id": "gus.serversettings.OxygenSwimSpeedStatMultiplier",
-    "displayNameJa": "酸素・泳ぎ・速度・ステータス・倍率",
+    "displayNameJa": "酸素泳ぎ速度ステータス倍率",
     "displayNameEn": "OxygenSwimSpeedStatMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5473,7 +5473,7 @@
   },
   {
     "id": "gus.serversettings.PlatformSaddleBuildAreaBoundsMultiplier",
-    "displayNameJa": "プラットフォーム・サドル・建築・範囲・境界・倍率",
+    "displayNameJa": "プラットフォームサドル建築範囲境界倍率",
     "displayNameEn": "PlatformSaddleBuildAreaBoundsMultiplier",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5505,7 +5505,7 @@
   },
   {
     "id": "gus.serversettings.PreventDiseases",
-    "displayNameJa": "禁止・病気",
+    "displayNameJa": "病気を禁止",
     "displayNameEn": "PreventDiseases",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5537,7 +5537,7 @@
   },
   {
     "id": "gus.serversettings.PreventDownloadSurvivors",
-    "displayNameJa": "禁止・ダウンロード・サバイバー",
+    "displayNameJa": "ダウンロードサバイバーを禁止",
     "displayNameEn": "PreventDownloadSurvivors",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5569,7 +5569,7 @@
   },
   {
     "id": "gus.serversettings.PreventUploadSurvivors",
-    "displayNameJa": "禁止・アップロード・サバイバー",
+    "displayNameJa": "アップロードサバイバーを禁止",
     "displayNameEn": "PreventUploadSurvivors",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5665,7 +5665,7 @@
   },
   {
     "id": "gus.serversettings.RCONServerGameLogBuffer",
-    "displayNameJa": "RCON・サーバー・ゲーム・ログ・バッファ",
+    "displayNameJa": "RCONサーバーゲームログバッファ",
     "displayNameEn": "RCONServerGameLogBuffer",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5729,7 +5729,7 @@
   },
   {
     "id": "gus.serversettings.ServerForceNoHUD",
-    "displayNameJa": "サーバー・強制・禁止・HUD",
+    "displayNameJa": "サーバー強制禁止HUD",
     "displayNameEn": "ServerForceNoHUD",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5793,7 +5793,7 @@
   },
   {
     "id": "gus.serversettings.ShowFloatingDamageText",
-    "displayNameJa": "表示・フローティング・ダメージ・テキスト",
+    "displayNameJa": "フローティングダメージテキストを表示",
     "displayNameEn": "ShowFloatingDamageText",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5825,7 +5825,7 @@
   },
   {
     "id": "gus.serversettings.UseAstraeosTraversalBuff",
-    "displayNameJa": "使用・Astraeos・移動・バフ",
+    "displayNameJa": "Astraeos移動バフを使用",
     "displayNameEn": "UseAstraeosTraversalBuff",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5857,7 +5857,7 @@
   },
   {
     "id": "gus.serversettings.UseCharacterTracker",
-    "displayNameJa": "使用・キャラクター・追跡",
+    "displayNameJa": "キャラクター追跡を使用",
     "displayNameEn": "UseCharacterTracker",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5889,7 +5889,7 @@
   },
   {
     "id": "gus.serversettings.YoungIceFoxDeathCooldown",
-    "displayNameJa": "幼体・アイス・フォックス・死亡・クールダウン",
+    "displayNameJa": "幼体アイスフォックス死亡クールダウン",
     "displayNameEn": "YoungIceFoxDeathCooldown",
     "category": "サーバー基本",
     "subCategory": "",
@@ -5953,7 +5953,7 @@
   },
   {
     "id": "gus.serversettings.noTributeDownloads",
-    "displayNameJa": "禁止・転送・ダウンロード",
+    "displayNameJa": "転送ダウンロードを禁止",
     "displayNameEn": "noTributeDownloads",
     "category": "サーバー基本",
     "subCategory": "",
@@ -6017,7 +6017,7 @@
   },
   {
     "id": "gus.serversettings.AutoDestroyDecayedDinos",
-    "displayNameJa": "自動・削除・劣化済み・恐竜",
+    "displayNameJa": "自動削除劣化済み恐竜",
     "displayNameEn": "AutoDestroyDecayedDinos",
     "category": "保守・自動化",
     "subCategory": "",
@@ -6049,7 +6049,7 @@
   },
   {
     "id": "gus.serversettings.AutoDestroyOldStructuresMultiplier",
-    "displayNameJa": "自動・削除・古い・建造物・倍率",
+    "displayNameJa": "自動削除古い建造物倍率",
     "displayNameEn": "AutoDestroyOldStructuresMultiplier",
     "category": "保守・自動化",
     "subCategory": "",
@@ -6081,7 +6081,7 @@
   },
   {
     "id": "gus.serversettings.DestroyUnconnectedWaterPipes",
-    "displayNameJa": "削除・未接続・水分・パイプ",
+    "displayNameJa": "未接続水分パイプを削除",
     "displayNameEn": "DestroyUnconnectedWaterPipes",
     "category": "保守・自動化",
     "subCategory": "",
@@ -6113,7 +6113,7 @@
   },
   {
     "id": "gus.serversettings.ServerAutoForceRespawnWildDinosInterval",
-    "displayNameJa": "サーバー・自動・強制・リスポーン・野生・恐竜・間隔",
+    "displayNameJa": "サーバー自動強制リスポーン野生恐竜間隔",
     "displayNameEn": "ServerAutoForceRespawnWildDinosInterval",
     "category": "保守・自動化",
     "subCategory": "",
@@ -6145,7 +6145,7 @@
   },
   {
     "id": "gus.serversettings.AllowCaveBuildingPvE",
-    "displayNameJa": "許可・洞窟・建築・PvE",
+    "displayNameJa": "洞窟建築PvEを許可",
     "displayNameEn": "AllowCaveBuildingPvE",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6177,7 +6177,7 @@
   },
   {
     "id": "gus.serversettings.AllowCaveBuildingPvP",
-    "displayNameJa": "許可・洞窟・建築・PvP",
+    "displayNameJa": "洞窟建築PvPを許可",
     "displayNameEn": "AllowCaveBuildingPvP",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6209,7 +6209,7 @@
   },
   {
     "id": "gus.serversettings.AllowCrateSpawnsOnTopOfStructures",
-    "displayNameJa": "許可・クレート・スポーン・上・建造物",
+    "displayNameJa": "クレートスポーン上建造物を許可",
     "displayNameEn": "AllowCrateSpawnsOnTopOfStructures",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6241,7 +6241,7 @@
   },
   {
     "id": "gus.serversettings.AllowDeprecatedStructures",
-    "displayNameJa": "許可・旧式・建造物",
+    "displayNameJa": "旧式建造物を許可",
     "displayNameEn": "AllowDeprecatedStructures",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6273,7 +6273,7 @@
   },
   {
     "id": "gus.serversettings.AlwaysAllowStructurePickup",
-    "displayNameJa": "常時・許可・建造物・回収",
+    "displayNameJa": "常時許可建造物回収",
     "displayNameEn": "AlwaysAllowStructurePickup",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6305,7 +6305,7 @@
   },
   {
     "id": "gus.serversettings.DisableStructureDecayPvE",
-    "displayNameJa": "無効化・建造物・劣化・PvE",
+    "displayNameJa": "建造物劣化PvEを無効化",
     "displayNameEn": "DisableStructureDecayPvE",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6337,7 +6337,7 @@
   },
   {
     "id": "gus.serversettings.EnableExtraStructurePreventionVolumes",
-    "displayNameJa": "有効化・追加・建造物・禁止区域・領域",
+    "displayNameJa": "追加建造物禁止区域領域を有効化",
     "displayNameEn": "EnableExtraStructurePreventionVolumes",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6369,7 +6369,7 @@
   },
   {
     "id": "gus.serversettings.FastDecayInterval",
-    "displayNameJa": "高速・劣化・間隔",
+    "displayNameJa": "高速劣化間隔",
     "displayNameEn": "FastDecayInterval",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6401,7 +6401,7 @@
   },
   {
     "id": "gus.serversettings.FastDecayUnsnappedCoreStructures",
-    "displayNameJa": "高速・劣化・未接続・本体・建造物",
+    "displayNameJa": "高速劣化未接続本体建造物",
     "displayNameEn": "FastDecayUnsnappedCoreStructures",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6433,7 +6433,7 @@
   },
   {
     "id": "gus.serversettings.ForceAllStructureLocking",
-    "displayNameJa": "強制・全・建造物・施錠",
+    "displayNameJa": "全建造物施錠を強制",
     "displayNameEn": "ForceAllStructureLocking",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6465,7 +6465,7 @@
   },
   {
     "id": "gus.serversettings.IgnoreLimitMaxStructuresInRangeTypeFlag",
-    "displayNameJa": "無視・制限・最大・建造物・範囲・種別・フラグ",
+    "displayNameJa": "制限最大建造物範囲種別フラグを無視",
     "displayNameEn": "IgnoreLimitMaxStructuresInRangeTypeFlag",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6497,7 +6497,7 @@
   },
   {
     "id": "gus.serversettings.LimitNonPlayerDroppedItemsCount",
-    "displayNameJa": "制限・非・プレイヤー・ドロップ・アイテム・数",
+    "displayNameJa": "制限非プレイヤードロップアイテム数",
     "displayNameEn": "LimitNonPlayerDroppedItemsCount",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6529,7 +6529,7 @@
   },
   {
     "id": "gus.serversettings.LimitNonPlayerDroppedItemsRange",
-    "displayNameJa": "制限・非・プレイヤー・ドロップ・アイテム・範囲",
+    "displayNameJa": "制限非プレイヤードロップアイテム範囲",
     "displayNameEn": "LimitNonPlayerDroppedItemsRange",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6561,7 +6561,7 @@
   },
   {
     "id": "gus.serversettings.LimitTurretsNum",
-    "displayNameJa": "制限・タレット・数",
+    "displayNameJa": "制限タレット数",
     "displayNameEn": "LimitTurretsNum",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6593,7 +6593,7 @@
   },
   {
     "id": "gus.serversettings.LimitTurretsRange",
-    "displayNameJa": "制限・タレット・範囲",
+    "displayNameJa": "制限タレット範囲",
     "displayNameEn": "LimitTurretsRange",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6625,7 +6625,7 @@
   },
   {
     "id": "gus.serversettings.MaxGateFrameOnSaddles",
-    "displayNameJa": "最大・門・枠・サドル",
+    "displayNameJa": "最大門枠サドル",
     "displayNameEn": "MaxGateFrameOnSaddles",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6657,7 +6657,7 @@
   },
   {
     "id": "gus.serversettings.MaxPlatformSaddleStructureLimit",
-    "displayNameJa": "最大・プラットフォーム・サドル・建造物・制限",
+    "displayNameJa": "最大プラットフォームサドル建造物制限",
     "displayNameEn": "MaxPlatformSaddleStructureLimit",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6689,7 +6689,7 @@
   },
   {
     "id": "gus.serversettings.MaxStructuresInRange",
-    "displayNameJa": "最大・建造物・範囲",
+    "displayNameJa": "最大建造物範囲",
     "displayNameEn": "MaxStructuresInRange",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6721,7 +6721,7 @@
   },
   {
     "id": "gus.serversettings.MaxStructuresInSmallRadius",
-    "displayNameJa": "最大・建造物・小範囲・半径",
+    "displayNameJa": "最大建造物小範囲半径",
     "displayNameEn": "MaxStructuresInSmallRadius",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6753,7 +6753,7 @@
   },
   {
     "id": "gus.serversettings.MaxStructuresToProcess",
-    "displayNameJa": "最大・建造物・処理",
+    "displayNameJa": "最大建造物処理",
     "displayNameEn": "MaxStructuresToProcess",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6785,7 +6785,7 @@
   },
   {
     "id": "gus.serversettings.NewMaxStructuresInRange",
-    "displayNameJa": "新・最大・建造物・範囲",
+    "displayNameJa": "新最大建造物範囲",
     "displayNameEn": "NewMaxStructuresInRange",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6817,7 +6817,7 @@
   },
   {
     "id": "gus.serversettings.OnlyAutoDestroyCoreStructures",
-    "displayNameJa": "限定・自動・削除・本体・建造物",
+    "displayNameJa": "限定自動削除本体建造物",
     "displayNameEn": "OnlyAutoDestroyCoreStructures",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6849,7 +6849,7 @@
   },
   {
     "id": "gus.serversettings.OnlyDecayUnsnappedCoreStructures",
-    "displayNameJa": "限定・劣化・未接続・本体・建造物",
+    "displayNameJa": "限定劣化未接続本体建造物",
     "displayNameEn": "OnlyDecayUnsnappedCoreStructures",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6881,7 +6881,7 @@
   },
   {
     "id": "gus.serversettings.OverrideStructurePlatformPrevention",
-    "displayNameJa": "上書き・建造物・プラットフォーム・禁止区域",
+    "displayNameJa": "建造物プラットフォーム禁止区域を上書き",
     "displayNameEn": "OverrideStructurePlatformPrevention",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6913,7 +6913,7 @@
   },
   {
     "id": "gus.serversettings.PerPlatformMaxStructuresMultiplier",
-    "displayNameJa": "単位・プラットフォーム・最大・建造物・倍率",
+    "displayNameJa": "単位プラットフォーム最大建造物倍率",
     "displayNameEn": "PerPlatformMaxStructuresMultiplier",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6945,7 +6945,7 @@
   },
   {
     "id": "gus.serversettings.PvEAllowStructuresAtSupplyDrops",
-    "displayNameJa": "PvE・許可・建造物・供給・ドロップ地点",
+    "displayNameJa": "PvE許可建造物供給ドロップ地点",
     "displayNameEn": "PvEAllowStructuresAtSupplyDrops",
     "category": "建築・防衛",
     "subCategory": "",
@@ -6977,7 +6977,7 @@
   },
   {
     "id": "gus.serversettings.PvEStructureDecayDestructionPeriod",
-    "displayNameJa": "PvE・建造物・劣化・破壊・期間",
+    "displayNameJa": "PvE建造物劣化破壊期間",
     "displayNameEn": "PvEStructureDecayDestructionPeriod",
     "category": "建築・防衛",
     "subCategory": "",
@@ -7009,7 +7009,7 @@
   },
   {
     "id": "gus.serversettings.PvEStructureDecayPeriodMultiplier",
-    "displayNameJa": "PvE・建造物・劣化・期間・倍率",
+    "displayNameJa": "PvE建造物劣化期間倍率",
     "displayNameEn": "PvEStructureDecayPeriodMultiplier",
     "category": "建築・防衛",
     "subCategory": "",
@@ -7073,7 +7073,7 @@
   },
   {
     "id": "gus.serversettings.StructureDamageRepairCooldown",
-    "displayNameJa": "建造物・ダメージ・修理・クールダウン",
+    "displayNameJa": "建造物ダメージ修理クールダウン",
     "displayNameEn": "StructureDamageRepairCooldown",
     "category": "建築・防衛",
     "subCategory": "",
@@ -7105,7 +7105,7 @@
   },
   {
     "id": "gus.serversettings.StructurePickupHoldDuration",
-    "displayNameJa": "建造物・回収・長押し・期間",
+    "displayNameJa": "建造物回収長押し期間",
     "displayNameEn": "StructurePickupHoldDuration",
     "category": "建築・防衛",
     "subCategory": "",
@@ -7169,7 +7169,7 @@
   },
   {
     "id": "gus.serversettings.TheMaxStructuresInRange",
-    "displayNameJa": "最大・建造物・範囲",
+    "displayNameJa": "最大建造物範囲",
     "displayNameEn": "TheMaxStructuresInRange",
     "category": "建築・防衛",
     "subCategory": "",
@@ -7201,7 +7201,7 @@
   },
   {
     "id": "gus.serversettings.AllowDinoAIInsideBunkers",
-    "displayNameJa": "許可・恐竜・AI・内部・バンカー",
+    "displayNameJa": "恐竜AI内部バンカーを許可",
     "displayNameEn": "AllowDinoAIInsideBunkers",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7233,7 +7233,7 @@
   },
   {
     "id": "gus.serversettings.AllowRaidDinoFeeding",
-    "displayNameJa": "許可・レイド・恐竜・給餌",
+    "displayNameJa": "レイド恐竜給餌を許可",
     "displayNameEn": "AllowRaidDinoFeeding",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7265,7 +7265,7 @@
   },
   {
     "id": "gus.serversettings.AllowRidingDinosInsideBunkers",
-    "displayNameJa": "許可・騎乗・恐竜・内部・バンカー",
+    "displayNameJa": "騎乗恐竜内部バンカーを許可",
     "displayNameEn": "AllowRidingDinosInsideBunkers",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7297,7 +7297,7 @@
   },
   {
     "id": "gus.serversettings.CrossARKAllowForeignDinoDownloads",
-    "displayNameJa": "クロス・ARK・許可・外部・恐竜・ダウンロード",
+    "displayNameJa": "クロスARK許可外部恐竜ダウンロード",
     "displayNameEn": "CrossARKAllowForeignDinoDownloads",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7329,7 +7329,7 @@
   },
   {
     "id": "gus.serversettings.CryoHospitalHoursToDrainTorpor",
-    "displayNameJa": "クライオ・病院・時間・消費・気絶値",
+    "displayNameJa": "クライオ病院時間消費気絶値",
     "displayNameEn": "CryoHospitalHoursToDrainTorpor",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7361,7 +7361,7 @@
   },
   {
     "id": "gus.serversettings.CryoHospitalHoursToRegenFood",
-    "displayNameJa": "クライオ・病院・時間・回復・食料",
+    "displayNameJa": "クライオ病院時間回復食料",
     "displayNameEn": "CryoHospitalHoursToRegenFood",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7393,7 +7393,7 @@
   },
   {
     "id": "gus.serversettings.DinoCharacterFoodDrainMultiplier",
-    "displayNameJa": "恐竜・キャラクター・食料・消費・倍率",
+    "displayNameJa": "恐竜キャラクター食料消費倍率",
     "displayNameEn": "DinoCharacterFoodDrainMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7553,7 +7553,7 @@
   },
   {
     "id": "gus.serversettings.DinoHarvestingDamageMultiplier",
-    "displayNameJa": "恐竜・採取・ダメージ・倍率",
+    "displayNameJa": "恐竜採取ダメージ倍率",
     "displayNameEn": "DinoHarvestingDamageMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7617,7 +7617,7 @@
   },
   {
     "id": "gus.serversettings.DinoTurretDamageMultiplier",
-    "displayNameJa": "恐竜・タレット・ダメージ・倍率",
+    "displayNameJa": "恐竜タレットダメージ倍率",
     "displayNameEn": "DinoTurretDamageMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7649,7 +7649,7 @@
   },
   {
     "id": "gus.serversettings.DisableDinoDecayPvE",
-    "displayNameJa": "無効化・恐竜・劣化・PvE",
+    "displayNameJa": "恐竜劣化PvEを無効化",
     "displayNameEn": "DisableDinoDecayPvE",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7681,7 +7681,7 @@
   },
   {
     "id": "gus.serversettings.FreezeReaperPregnancy",
-    "displayNameJa": "凍結・リーパー・妊娠",
+    "displayNameJa": "凍結リーパー妊娠",
     "displayNameEn": "FreezeReaperPregnancy",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7713,7 +7713,7 @@
   },
   {
     "id": "gus.serversettings.MaxPersonalTamedDinos",
-    "displayNameJa": "最大・個人・テイム済み・恐竜",
+    "displayNameJa": "最大個人テイム済み恐竜",
     "displayNameEn": "MaxPersonalTamedDinos",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7745,7 +7745,7 @@
   },
   {
     "id": "gus.serversettings.MaxTamedDinos",
-    "displayNameJa": "最大・テイム済み・恐竜",
+    "displayNameJa": "最大テイム済み恐竜",
     "displayNameEn": "MaxTamedDinos",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7777,7 +7777,7 @@
   },
   {
     "id": "gus.serversettings.MaxTamedDinos_SoftTameLimit",
-    "displayNameJa": "最大・テイム済み・恐竜・ソフト・テイム・制限",
+    "displayNameJa": "最大テイム済み恐竜ソフトテイム制限",
     "displayNameEn": "MaxTamedDinos_SoftTameLimit",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7809,7 +7809,7 @@
   },
   {
     "id": "gus.serversettings.MaxTamedDinos_SoftTameLimit_CountdownForDeletionDuration",
-    "displayNameJa": "最大・テイム済み・恐竜・ソフト・テイム・制限・カウントダウン・削除・期間",
+    "displayNameJa": "最大テイム済み恐竜ソフトテイム制限カウントダウン削除期間",
     "displayNameEn": "MaxTamedDinos_SoftTameLimit_CountdownForDeletionDuration",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7841,7 +7841,7 @@
   },
   {
     "id": "gus.serversettings.MaxTributeDinos",
-    "displayNameJa": "最大・転送・恐竜",
+    "displayNameJa": "最大転送恐竜",
     "displayNameEn": "MaxTributeDinos",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7873,7 +7873,7 @@
   },
   {
     "id": "gus.serversettings.PassiveTameIntervalMultiplier",
-    "displayNameJa": "手渡し・テイム・間隔・倍率",
+    "displayNameJa": "手渡しテイム間隔倍率",
     "displayNameEn": "PassiveTameIntervalMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7905,7 +7905,7 @@
   },
   {
     "id": "gus.serversettings.PreventDownloadDinos",
-    "displayNameJa": "禁止・ダウンロード・恐竜",
+    "displayNameJa": "ダウンロード恐竜を禁止",
     "displayNameEn": "PreventDownloadDinos",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7937,7 +7937,7 @@
   },
   {
     "id": "gus.serversettings.PreventSpawnAnimations",
-    "displayNameJa": "禁止・スポーン・アニメーション",
+    "displayNameJa": "スポーンアニメーションを禁止",
     "displayNameEn": "PreventSpawnAnimations",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -7969,7 +7969,7 @@
   },
   {
     "id": "gus.serversettings.PreventUploadDinos",
-    "displayNameJa": "禁止・アップロード・恐竜",
+    "displayNameJa": "アップロード恐竜を禁止",
     "displayNameEn": "PreventUploadDinos",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8001,7 +8001,7 @@
   },
   {
     "id": "gus.serversettings.PvEDinoDecayPeriodMultiplier",
-    "displayNameJa": "PvE・恐竜・劣化・期間・倍率",
+    "displayNameJa": "PvE恐竜劣化期間倍率",
     "displayNameEn": "PvEDinoDecayPeriodMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8033,7 +8033,7 @@
   },
   {
     "id": "gus.serversettings.PvPDinoDecay",
-    "displayNameJa": "PvP・恐竜・劣化",
+    "displayNameJa": "PvP恐竜劣化",
     "displayNameEn": "PvPDinoDecay",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8065,7 +8065,7 @@
   },
   {
     "id": "gus.serversettings.RaidDinoCharacterFoodDrainMultiplier",
-    "displayNameJa": "レイド・恐竜・キャラクター・食料・消費・倍率",
+    "displayNameJa": "レイド恐竜キャラクター食料消費倍率",
     "displayNameEn": "RaidDinoCharacterFoodDrainMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8129,7 +8129,7 @@
   },
   {
     "id": "gus.serversettings.TamedDinoCharacterFoodDrainMultiplier",
-    "displayNameJa": "テイム済み・恐竜・キャラクター・食料・消費・倍率",
+    "displayNameJa": "テイム済み恐竜キャラクター食料消費倍率",
     "displayNameEn": "TamedDinoCharacterFoodDrainMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8225,7 +8225,7 @@
   },
   {
     "id": "gus.serversettings.TamedDinoTorporDrainMultiplier",
-    "displayNameJa": "テイム済み・恐竜・気絶値・消費・倍率",
+    "displayNameJa": "テイム済み恐竜気絶値消費倍率",
     "displayNameEn": "TamedDinoTorporDrainMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8257,7 +8257,7 @@
   },
   {
     "id": "gus.serversettings.UnicornSpawnInterval",
-    "displayNameJa": "ユニコーン・スポーン・間隔",
+    "displayNameJa": "ユニコーンスポーン間隔",
     "displayNameEn": "UnicornSpawnInterval",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8289,7 +8289,7 @@
   },
   {
     "id": "gus.serversettings.WildDinoTorporDrainMultiplier",
-    "displayNameJa": "野生・恐竜・気絶値・消費・倍率",
+    "displayNameJa": "野生恐竜気絶値消費倍率",
     "displayNameEn": "WildDinoTorporDrainMultiplier",
     "category": "恐竜・生物",
     "subCategory": "",
@@ -8321,7 +8321,7 @@
   },
   {
     "id": "gus.serversettings.BloodforgeReinforceResourceCostMultiplier",
-    "displayNameJa": "Bloodforge・強化・資源・コスト・倍率",
+    "displayNameJa": "Bloodforge強化資源コスト倍率",
     "displayNameEn": "BloodforgeReinforceResourceCostMultiplier",
     "category": "採取・資源",
     "subCategory": "",
@@ -8353,7 +8353,7 @@
   },
   {
     "id": "gus.serversettings.ClampResourceHarvestDamage",
-    "displayNameJa": "上限固定・資源・採取・ダメージ",
+    "displayNameJa": "上限固定資源採取ダメージ",
     "displayNameEn": "ClampResourceHarvestDamage",
     "category": "採取・資源",
     "subCategory": "",
@@ -8417,7 +8417,7 @@
   },
   {
     "id": "gus.serversettings.HarvestHealthMultiplier",
-    "displayNameJa": "採取・体力・倍率",
+    "displayNameJa": "採取体力倍率",
     "displayNameEn": "HarvestHealthMultiplier",
     "category": "採取・資源",
     "subCategory": "",
@@ -8449,7 +8449,7 @@
   },
   {
     "id": "gus.serversettings.MaxActiveResourceCaches",
-    "displayNameJa": "最大・有効・資源・キャッシュ",
+    "displayNameJa": "最大有効資源キャッシュ",
     "displayNameEn": "MaxActiveResourceCaches",
     "category": "採取・資源",
     "subCategory": "",
@@ -8481,7 +8481,7 @@
   },
   {
     "id": "gus.serversettings.StructurePreventResourceRadiusMultiplier",
-    "displayNameJa": "建造物・禁止・資源・半径・倍率",
+    "displayNameJa": "建造物禁止資源半径倍率",
     "displayNameEn": "StructurePreventResourceRadiusMultiplier",
     "category": "採取・資源",
     "subCategory": "",
@@ -8545,7 +8545,7 @@
   },
   {
     "id": "gus.serversettings.ClampItemSpoilingTimes",
-    "displayNameJa": "上限固定・アイテム・腐敗・時間",
+    "displayNameJa": "上限固定アイテム腐敗時間",
     "displayNameEn": "ClampItemSpoilingTimes",
     "category": "時間・保存",
     "subCategory": "",
@@ -8641,7 +8641,7 @@
   },
   {
     "id": "gus.serversettings.DisableBurrowDecayTimers",
-    "displayNameJa": "無効化・地中・劣化・タイマー",
+    "displayNameJa": "地中劣化タイマーを無効化",
     "displayNameEn": "DisableBurrowDecayTimers",
     "category": "時間・保存",
     "subCategory": "",
@@ -8705,7 +8705,7 @@
   },
   {
     "id": "gus.serversettings.StructurePickupTimeAfterPlacement",
-    "displayNameJa": "建造物・回収・時間・後・設置",
+    "displayNameJa": "建造物回収時間後設置",
     "displayNameEn": "StructurePickupTimeAfterPlacement",
     "category": "時間・保存",
     "subCategory": "",
@@ -8737,7 +8737,7 @@
   },
   {
     "id": "gus.serversettings.EnableVolcano",
-    "displayNameJa": "有効化・火山",
+    "displayNameJa": "火山を有効化",
     "displayNameEn": "EnableVolcano",
     "category": "環境・イベント",
     "subCategory": "",
@@ -8769,7 +8769,7 @@
   },
   {
     "id": "gus.serversettings.ExtinctionEventTimeInterval",
-    "displayNameJa": "Extinction・イベント・時間・間隔",
+    "displayNameJa": "Extinctionイベント時間間隔",
     "displayNameEn": "ExtinctionEventTimeInterval",
     "category": "環境・イベント",
     "subCategory": "",
@@ -8801,7 +8801,7 @@
   },
   {
     "id": "gus.serversettings.VolcanoIntensity",
-    "displayNameJa": "火山・強度",
+    "displayNameJa": "火山強度",
     "displayNameEn": "VolcanoIntensity",
     "category": "環境・イベント",
     "subCategory": "",
@@ -8833,7 +8833,7 @@
   },
   {
     "id": "gus.serversettings.VolcanoInterval",
-    "displayNameJa": "火山・間隔",
+    "displayNameJa": "火山間隔",
     "displayNameEn": "VolcanoInterval",
     "category": "環境・イベント",
     "subCategory": "",
@@ -8865,7 +8865,7 @@
   },
   {
     "id": "gus.serversettings.AdjustableMutagenSpawnDelayMultiplier",
-    "displayNameJa": "調整可能・変異原・スポーン・遅延・倍率",
+    "displayNameJa": "調整可能変異原スポーン遅延倍率",
     "displayNameEn": "AdjustableMutagenSpawnDelayMultiplier",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -8897,7 +8897,7 @@
   },
   {
     "id": "gus.serversettings.AdminListURL",
-    "displayNameJa": "管理者・リスト・URL",
+    "displayNameJa": "管理者リストURL",
     "displayNameEn": "AdminListURL",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -8929,7 +8929,7 @@
   },
   {
     "id": "gus.serversettings.AdminLogging",
-    "displayNameJa": "管理者・ログ記録",
+    "displayNameJa": "管理者ログ記録",
     "displayNameEn": "AdminLogging",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -8961,7 +8961,7 @@
   },
   {
     "id": "gus.serversettings.AllowFlyingStaminaRecovery",
-    "displayNameJa": "許可・飛行・スタミナ・回復",
+    "displayNameJa": "飛行スタミナ回復を許可",
     "displayNameEn": "AllowFlyingStaminaRecovery",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -8993,7 +8993,7 @@
   },
   {
     "id": "gus.serversettings.AllowIntegratedSPlusStructures",
-    "displayNameJa": "許可・統合・プラス・建造物",
+    "displayNameJa": "統合プラス建造物を許可",
     "displayNameEn": "AllowIntegratedSPlusStructures",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9025,7 +9025,7 @@
   },
   {
     "id": "gus.serversettings.AllowMultipleTamedUnicorns",
-    "displayNameJa": "許可・複数・テイム済み・ユニコーン",
+    "displayNameJa": "複数テイム済みユニコーンを許可",
     "displayNameEn": "AllowMultipleTamedUnicorns",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9057,7 +9057,7 @@
   },
   {
     "id": "gus.serversettings.AllowSharedConnections",
-    "displayNameJa": "許可・共有・接続",
+    "displayNameJa": "共有接続を許可",
     "displayNameEn": "AllowSharedConnections",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9089,7 +9089,7 @@
   },
   {
     "id": "gus.serversettings.AllowTekSuitPowersInGenesis",
-    "displayNameJa": "許可・TEK・スーツ・能力・Genesis",
+    "displayNameJa": "TEKスーツ能力Genesisを許可",
     "displayNameEn": "AllowTekSuitPowersInGenesis",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9121,7 +9121,7 @@
   },
   {
     "id": "gus.serversettings.AllowedCheatersURL",
-    "displayNameJa": "許可済み・管理者許可リスト・URL",
+    "displayNameJa": "許可済み管理者許可リストURL",
     "displayNameEn": "AllowedCheatersURL",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9153,7 +9153,7 @@
   },
   {
     "id": "gus.serversettings.AlwaysNotifyPlayerLeft",
-    "displayNameJa": "常時・通知・プレイヤー・退出",
+    "displayNameJa": "常時通知プレイヤー退出",
     "displayNameEn": "AlwaysNotifyPlayerLeft",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9185,7 +9185,7 @@
   },
   {
     "id": "gus.serversettings.BanListURL",
-    "displayNameJa": "BAN・リスト・URL",
+    "displayNameJa": "BANリストURL",
     "displayNameEn": "BanListURL",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9217,7 +9217,7 @@
   },
   {
     "id": "gus.serversettings.BaseTemperatureMultiplier",
-    "displayNameJa": "基本・気温・倍率",
+    "displayNameJa": "基本気温倍率",
     "displayNameEn": "BaseTemperatureMultiplier",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9249,7 +9249,7 @@
   },
   {
     "id": "gus.serversettings.ChatLogFileSplitIntervalSeconds",
-    "displayNameJa": "チャット・ログ・ファイル・分割・間隔・秒",
+    "displayNameJa": "チャットログファイル分割間隔秒",
     "displayNameEn": "ChatLogFileSplitIntervalSeconds",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9281,7 +9281,7 @@
   },
   {
     "id": "gus.serversettings.ChatLogFlushIntervalSeconds",
-    "displayNameJa": "チャット・ログ・書込み・間隔・秒",
+    "displayNameJa": "チャットログ書込み間隔秒",
     "displayNameEn": "ChatLogFlushIntervalSeconds",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9313,7 +9313,7 @@
   },
   {
     "id": "gus.serversettings.ChatLogMaxAgeInDays",
-    "displayNameJa": "チャット・ログ・最大・日数・日",
+    "displayNameJa": "チャットログ最大日数日",
     "displayNameEn": "ChatLogMaxAgeInDays",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9345,7 +9345,7 @@
   },
   {
     "id": "gus.serversettings.CustomDynamicConfigUrl",
-    "displayNameJa": "カスタム・動的・設定・URL",
+    "displayNameJa": "カスタム動的設定URL",
     "displayNameEn": "CustomDynamicConfigUrl",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9377,7 +9377,7 @@
   },
   {
     "id": "gus.serversettings.DisableTimestampVerification",
-    "displayNameJa": "無効化・タイムスタンプ・検証",
+    "displayNameJa": "タイムスタンプ検証を無効化",
     "displayNameEn": "DisableTimestampVerification",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9409,7 +9409,7 @@
   },
   {
     "id": "gus.serversettings.DontRestoreBackup",
-    "displayNameJa": "復元しない・復元・バックアップ",
+    "displayNameJa": "復元しない復元バックアップ",
     "displayNameEn": "DontRestoreBackup",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9441,7 +9441,7 @@
   },
   {
     "id": "gus.serversettings.EnableAFKKickPlayerCountPercent",
-    "displayNameJa": "有効化・AFK・キック・プレイヤー・数・割合",
+    "displayNameJa": "AFKキックプレイヤー数割合を有効化",
     "displayNameEn": "EnableAFKKickPlayerCountPercent",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9473,7 +9473,7 @@
   },
   {
     "id": "gus.serversettings.EnableFullDump",
-    "displayNameJa": "有効化・完全・ダンプ",
+    "displayNameJa": "完全ダンプを有効化",
     "displayNameEn": "EnableFullDump",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9505,7 +9505,7 @@
   },
   {
     "id": "gus.serversettings.EnableMeshBitingProtection",
-    "displayNameJa": "有効化・メッシュ・攻撃・保護",
+    "displayNameJa": "メッシュ攻撃保護を有効化",
     "displayNameEn": "EnableMeshBitingProtection",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9537,7 +9537,7 @@
   },
   {
     "id": "gus.serversettings.ForceFlyerExplosives",
-    "displayNameJa": "強制・飛行生物・爆発物",
+    "displayNameJa": "飛行生物爆発物を強制",
     "displayNameEn": "ForceFlyerExplosives",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9569,7 +9569,7 @@
   },
   {
     "id": "gus.serversettings.GMaxFlameThrowerServerTicksPerFrame",
-    "displayNameJa": "最大・火炎・放射器・サーバー・Tick・単位・枠",
+    "displayNameJa": "最大火炎放射器サーバーTick単位枠",
     "displayNameEn": "GMaxFlameThrowerServerTicksPerFrame",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9601,7 +9601,7 @@
   },
   {
     "id": "gus.serversettings.GUseServerNetSpeedCheck",
-    "displayNameJa": "使用・サーバー・ネットワーク・速度・確認",
+    "displayNameJa": "サーバーネットワーク速度確認を使用",
     "displayNameEn": "GUseServerNetSpeedCheck",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9633,7 +9633,7 @@
   },
   {
     "id": "gus.serversettings.HexagonRewardMultiplier",
-    "displayNameJa": "ヘキサゴン・報酬・倍率",
+    "displayNameJa": "ヘキサゴン報酬倍率",
     "displayNameEn": "HexagonRewardMultiplier",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9665,7 +9665,7 @@
   },
   {
     "id": "gus.serversettings.ListenServerTetherDistanceMultiplier",
-    "displayNameJa": "リッスンサーバー・サーバー・テザー・距離・倍率",
+    "displayNameJa": "リッスンサーバーサーバーテザー距離倍率",
     "displayNameEn": "ListenServerTetherDistanceMultiplier",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9697,7 +9697,7 @@
   },
   {
     "id": "gus.serversettings.LogChatMessages",
-    "displayNameJa": "ログ・チャット・メッセージ",
+    "displayNameJa": "ログチャットメッセージ",
     "displayNameEn": "LogChatMessages",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9729,7 +9729,7 @@
   },
   {
     "id": "gus.serversettings.MaxHexagonsPerCharacter",
-    "displayNameJa": "最大・ヘキサゴン・単位・キャラクター",
+    "displayNameJa": "最大ヘキサゴン単位キャラクター",
     "displayNameEn": "MaxHexagonsPerCharacter",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9761,7 +9761,7 @@
   },
   {
     "id": "gus.serversettings.OverrideSpawnLimitPercentage",
-    "displayNameJa": "上書き・スポーン・制限・割合",
+    "displayNameJa": "スポーン制限割合を上書き",
     "displayNameEn": "OverrideSpawnLimitPercentage",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9793,7 +9793,7 @@
   },
   {
     "id": "gus.serversettings.PreventDinoTameClassNames",
-    "displayNameJa": "禁止・恐竜・テイム・クラス・名前",
+    "displayNameJa": "恐竜テイムクラス名前を禁止",
     "displayNameEn": "PreventDinoTameClassNames",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9889,7 +9889,7 @@
   },
   {
     "id": "gus.serversettings.ServerEnableMeshChecking",
-    "displayNameJa": "サーバー・有効化・メッシュ・確認",
+    "displayNameJa": "サーバー有効化メッシュ確認",
     "displayNameEn": "ServerEnableMeshChecking",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -9985,7 +9985,7 @@
   },
   {
     "id": "gus.serversettings.UseExclusiveList",
-    "displayNameJa": "使用・専用・リスト",
+    "displayNameJa": "専用リストを使用",
     "displayNameEn": "UseExclusiveList",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -10017,7 +10017,7 @@
   },
   {
     "id": "gus.serversettings.UseFjordurTraversalBuff",
-    "displayNameJa": "使用・Fjordur・移動・バフ",
+    "displayNameJa": "Fjordur移動バフを使用",
     "displayNameEn": "UseFjordurTraversalBuff",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -10049,7 +10049,7 @@
   },
   {
     "id": "gus.serversettings.UseOptimizedHarvestingHealth",
-    "displayNameJa": "使用・最適化・採取・体力",
+    "displayNameJa": "最適化採取体力を使用",
     "displayNameEn": "UseOptimizedHarvestingHealth",
     "category": "管理・セキュリティ",
     "subCategory": "",
@@ -10113,7 +10113,7 @@
   },
   {
     "id": "gus.serversettings.AllowAnyoneBabyImprintCuddle",
-    "displayNameJa": "許可・全員・赤ちゃん恐竜・刷り込み",
+    "displayNameJa": "全員赤ちゃん恐竜刷り込みを許可",
     "displayNameEn": "AllowAnyoneBabyImprintCuddle",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -10177,7 +10177,7 @@
   },
   {
     "id": "gus.serversettings.DisableImprintDinoBuff",
-    "displayNameJa": "無効化・刷り込み・恐竜・バフ",
+    "displayNameJa": "刷り込み恐竜バフを無効化",
     "displayNameEn": "DisableImprintDinoBuff",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -10209,7 +10209,7 @@
   },
   {
     "id": "gus.serversettings.DontAlwaysNotifyPlayerJoined",
-    "displayNameJa": "復元しない・常時・通知・プレイヤー・参加",
+    "displayNameJa": "復元しない常時通知プレイヤー参加",
     "displayNameEn": "DontAlwaysNotifyPlayerJoined",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -10241,7 +10241,7 @@
   },
   {
     "id": "gus.serversettings.KickIdlePlayersPeriod",
-    "displayNameJa": "キック・アイドル・プレイヤー・期間",
+    "displayNameJa": "キックアイドルプレイヤー期間",
     "displayNameEn": "KickIdlePlayersPeriod",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -10433,7 +10433,7 @@
   },
   {
     "id": "gus.serversettings.PlayerHarvestingDamageMultiplier",
-    "displayNameJa": "プレイヤー・採取・ダメージ・倍率",
+    "displayNameJa": "プレイヤー採取ダメージ倍率",
     "displayNameEn": "PlayerHarvestingDamageMultiplier",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -10497,7 +10497,7 @@
   },
   {
     "id": "gus.serversettings.PreventMateBoost",
-    "displayNameJa": "禁止・メイト・ブースト",
+    "displayNameJa": "メイトブーストを禁止",
     "displayNameEn": "PreventMateBoost",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -10561,7 +10561,7 @@
   },
   {
     "id": "gus.serversettings.UseCorpseLifeSpanMultiplier",
-    "displayNameJa": "使用・死体・生存・寿命・倍率",
+    "displayNameJa": "死体生存寿命倍率を使用",
     "displayNameEn": "UseCorpseLifeSpanMultiplier",
     "category": "繁殖・成長",
     "subCategory": "",
@@ -10593,7 +10593,7 @@
   },
   {
     "id": "gus.sessionsettings.MultiHome",
-    "displayNameJa": "複数・ホーム",
+    "displayNameJa": "複数ホーム",
     "displayNameEn": "MultiHome",
     "category": "経験値",
     "subCategory": "",
