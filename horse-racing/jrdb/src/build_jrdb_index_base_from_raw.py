@@ -19,6 +19,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
+from jrdb_index_base_adapter import (
+    parse_bac as adapted_parse_bac,
+    parse_kyi as adapted_parse_kyi,
+)
 from jrdb_ukc import parse_ukc_record
 
 VERSION = "0.1.0"
@@ -237,6 +241,13 @@ def parse_kyi(raw: bytes, member: str) -> tuple[dict[str, Any], list[dict[str, A
             }
         )
     return runner, links
+
+
+# Keep pre-common implementations only as temporary equivalence oracles.
+LegacyParseBac = parse_bac
+LegacyParseKyi = parse_kyi
+parse_bac = adapted_parse_bac
+parse_kyi = adapted_parse_kyi
 
 
 def parse_sed(

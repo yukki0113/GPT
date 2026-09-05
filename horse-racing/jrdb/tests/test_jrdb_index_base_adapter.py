@@ -13,8 +13,8 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 sys.path.insert(0, str(TEST_ROOT))
 
 from build_jrdb_index_base_from_raw import (  # noqa: E402
-    parse_bac as legacy_parse_bac,
-    parse_kyi as legacy_parse_kyi,
+    LegacyParseBac as legacy_parse_bac,
+    LegacyParseKyi as legacy_parse_kyi,
 )
 from jrdb_index_base_adapter import (  # noqa: E402
     parse_bac as adapted_parse_bac,
