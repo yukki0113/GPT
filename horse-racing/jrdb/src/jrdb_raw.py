@@ -223,6 +223,7 @@ class Parser:
             "meeting": text_field(record, 87, 8),
             "field_size": number_field(record, 95, 2),
             "course_code": raw_field(record, 97, 1),
+            "meeting_area_code": raw_field(record, 98, 1),
         }
 
     def kyi(self, record: bytes) -> dict[str, Any]:
@@ -268,6 +269,12 @@ class Parser:
             "trainer_base": text_field(record, 200, 4),
             "previous": previous,
             "frame_no": number_field(record, 324, 1),
+            "condition_class_code": raw_field(record, 358, 1),
+            "distance_fit2_code": raw_field(record, 396, 1),
+            "body_weight_pre_kg": number_field(record, 397, 3),
+            "body_weight_change_pre_kg": number_field(record, 400, 3),
+            "cancel_flag": raw_field(record, 403, 1),
+            "sex_code": raw_field(record, 404, 1),
             "marks": {
                 "total": raw_field(record, 327, 1),
                 "idm": raw_field(record, 328, 1),
@@ -314,6 +321,9 @@ class Parser:
             "symbol_code": raw_field(record, 395, 1),
             "start_index": number_field(record, 520, 4),
             "late_break_rate": number_field(record, 524, 4),
+            "stable_run_no": number_field(record, 560, 2),
+            "stable_entry_date_raw": raw_field(record, 562, 8),
+            "stable_days_before": number_field(record, 570, 3),
             "rest_reason_code": raw_field(record, 542, 2),
             "farm_name": text_field(record, 573, 50),
             "farm_rank": raw_field(record, 623, 1),
