@@ -18,6 +18,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
+from jrdb_raw import Parser as CommonParser
+from jrdb_raw import read_fixed_records as common_read_fixed_records
+
 SCHEMA_VERSION = "0.2"
 RECORD_LENGTHS = {"BAC": 184, "KYI": 1024, "CHA": 64, "CYB": 96, "ZED": 376, "ZKB": 304}
 REQUIRED_PREFIXES = tuple(RECORD_LENGTHS)
@@ -234,11 +237,8 @@ def race_key_parts(key: str) -> dict[str, Any]:
 
 
 def read_fixed_records(zf: zipfile.ZipFile, member: str, prefix: str, audit: Audit) -> list[bytes]:
-    data = zf.read(member)
-    length = RECORD_LENGTHS[prefix]
-    if len(data) % length:
-        audit.record_length_errors[prefix] += 1
-    return [data[offset:offset + length] for offset in range(0, len(data) - len(data) % length, length)]
+    """Compatibility facade; fixed-record splitting is owned by jrdb_raw."""
+    return common_read_fixed_records(zf, member, prefix, audit)
 
 
 class Parser:
@@ -265,6 +265,12 @@ class Parser:
 
     def zkb(self, record: bytes) -> dict[str, Any]:
         return {"result_key": result_key(record), "tokki_codes": [raw_field(record, 27 + i * 3, 3) for i in range(6)], "equipment_codes": [raw_field(record, 45 + i * 3, 3) for i in range(8)], "leg_codes": {"overall": raw_field(record, 69, 3), "left_front": raw_field(record, 78, 3), "right_front": raw_field(record, 87, 3), "left_hind": raw_field(record, 96, 3), "right_hind": raw_field(record, 105, 3)}, "paddock_comment": text_field(record, 114, 40), "leg_comment": text_field(record, 154, 40), "equipment_comment": text_field(record, 194, 40), "race_comment": text_field(record, 234, 40)}
+
+
+# Keep the old implementation only as a temporary characterization oracle.
+LegacyParser = Parser
+# Production fixed-width parsing is owned by the common JRDB reader.
+Parser = CommonParser
 
 
 class Normalizer:
