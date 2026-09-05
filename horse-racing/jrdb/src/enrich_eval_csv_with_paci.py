@@ -27,14 +27,16 @@ from export_jrdb_eval_race_conditions import (
     SourceRecord,
     parse_bac_record_full,
 )
-from racenote_jrdb import (
-    Audit,
-    DISTANCE_FIT,
-    IMPROVEMENT,
+from jrdb_raw import (
     Parser,
-    RUNNING_STYLE,
+    ReaderAudit as Audit,
     race_key,
     read_fixed_records,
+)
+from racenote_jrdb import (
+    DISTANCE_FIT,
+    IMPROVEMENT,
+    RUNNING_STYLE,
 )
 
 
