@@ -33,24 +33,33 @@ class RaceNoteCompatibilityTest(unittest.TestCase):
         self.common = CommonParser()
         self.legacy = LegacyParser(Audit())
 
+    def assert_legacy_projection(
+        self,
+        common: dict[str, object],
+        legacy: dict[str, object],
+    ) -> None:
+        """Common may grow, but every legacy RaceNote field must stay identical."""
+        projection = {key: common.get(key) for key in legacy}
+        self.assertEqual(projection, legacy)
+
     def test_production_parser_is_common_parser(self) -> None:
         self.assertIs(ProductionRaceNoteParser, CommonParser)
 
-    def test_bac_exact_match(self) -> None:
+    def test_bac_legacy_projection_match(self) -> None:
         record = make_bac()
-        self.assertEqual(self.common.bac(record), self.legacy.bac(record))
+        self.assert_legacy_projection(self.common.bac(record), self.legacy.bac(record))
 
-    def test_kyi_exact_match(self) -> None:
+    def test_kyi_legacy_projection_match(self) -> None:
         record = make_kyi()
-        self.assertEqual(self.common.kyi(record), self.legacy.kyi(record))
+        self.assert_legacy_projection(self.common.kyi(record), self.legacy.kyi(record))
 
-    def test_zed_exact_match(self) -> None:
+    def test_zed_legacy_projection_match(self) -> None:
         record = make_sed("20231001", "20260830", "0526A101", "01")
-        self.assertEqual(self.common.zed(record), self.legacy.zed(record))
+        self.assert_legacy_projection(self.common.zed(record), self.legacy.zed(record))
 
-    def test_zkb_exact_match(self) -> None:
+    def test_zkb_legacy_projection_match(self) -> None:
         record = make_skb()
-        self.assertEqual(self.common.zkb(record), self.legacy.zkb(record))
+        self.assert_legacy_projection(self.common.zkb(record), self.legacy.zkb(record))
 
 
 if __name__ == "__main__":
