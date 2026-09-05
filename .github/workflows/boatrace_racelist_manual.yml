@@ -12,7 +12,7 @@ on:
         required: true
         type: string
       request_interval_seconds:
-        description: 'Interval between requests'
+        description: 'Interval between request starts'
         required: false
         default: '1.0'
         type: string
@@ -28,9 +28,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: boat-racing/requirements.txt
 
       - name: Install dependencies
-        run: pip install -r boat-racing/requirements.txt
+        run: python -m pip install -r boat-racing/requirements.txt
 
       - name: Validate inputs and create config
         env:
