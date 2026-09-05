@@ -64,6 +64,34 @@ class FetchResult:
     error: str
     final_url: str
     content_type: str
+    elapsed_seconds: float = 0.0
+
+
+@dataclass
+class RequestStartLimiter:
+    """HTTPリクエスト開始時刻どうしの最小間隔を保証する。"""
+
+    interval_seconds: float
+    last_started_at: float | None = None
+
+    def wait_until_ready(self) -> float:
+        waited = 0.0
+        now = time.monotonic()
+        if self.last_started_at is not None:
+            remaining = self.interval_seconds - (now - self.last_started_at)
+            if remaining > 0:
+                time.sleep(remaining)
+                waited = remaining
+        self.last_started_at = time.monotonic()
+        return waited
+
+
+@dataclass
+class TimingStats:
+    request_count: int = 0
+    http_seconds: float = 0.0
+    parse_seconds: float = 0.0
+    rate_limit_wait_seconds: float = 0.0
 
 
 def clean(value: Any) -> str:
@@ -219,18 +247,38 @@ def parse_sp(html: str) -> tuple[str, list[dict[str, str]]]:
     return "", []  # JS描画ページを推測解析しない。
 
 
-def request_page(session: requests.Session, url: str, logger: logging.Logger, wait: float) -> FetchResult:
+def request_page(
+    session: requests.Session,
+    url: str,
+    logger: logging.Logger,
+    wait: float,
+    limiter: RequestStartLimiter,
+    timing: TimingStats,
+) -> FetchResult:
     error = ""
     last_status: int | None = None
     last_url = url
     last_content_type = ""
+    last_elapsed = 0.0
+    retry_after_header = ""
     for attempt in range(3):
+        rate_limit_wait = limiter.wait_until_ready()
+        timing.rate_limit_wait_seconds += rate_limit_wait
+        request_started = time.monotonic()
         try:
             response = session.get(url, timeout=(10, 30))
+            elapsed = time.monotonic() - request_started
+            last_elapsed = elapsed
+            timing.request_count += 1
+            timing.http_seconds += elapsed
             final_url = response.url
             content_type = response.headers.get("Content-Type", "")
+            retry_after_header = response.headers.get("Retry-After", "")
             last_status, last_url, last_content_type = response.status_code, final_url, content_type
-            logger.info("url=%s final_url=%s status=%s content_type=%s retry=%s", url, final_url, response.status_code, content_type, attempt)
+            logger.info(
+                "http url=%s final_url=%s status=%s content_type=%s retry=%s rate_limit_wait_seconds=%.3f http_seconds=%.3f",
+                url, final_url, response.status_code, content_type, attempt, rate_limit_wait, elapsed,
+            )
             if response.status_code == 200:
                 parsed = urlparse(final_url)
                 if parsed.scheme != "https" or parsed.hostname != OFFICIAL_HOST:
@@ -240,21 +288,29 @@ def request_page(session: requests.Session, url: str, logger: logging.Logger, wa
                 elif not response.text.strip():
                     error = "HTTP 200だが応答本文が空"
                 else:
-                    return FetchResult(response.text, response.status_code, attempt, "", final_url, content_type)
+                    return FetchResult(response.text, response.status_code, attempt, "", final_url, content_type, elapsed)
                 logger.warning("url=%s error=%s", url, error)
-                return FetchResult(None, response.status_code, attempt, error, final_url, content_type)
+                return FetchResult(None, response.status_code, attempt, error, final_url, content_type, elapsed)
             error = f"HTTP {response.status_code}"
             if response.status_code not in RETRYABLE_HTTP_STATUS:
-                return FetchResult(None, response.status_code, attempt, error, final_url, content_type)
+                return FetchResult(None, response.status_code, attempt, error, final_url, content_type, elapsed)
         except requests.RequestException as exc:
+            elapsed = time.monotonic() - request_started
+            last_elapsed = elapsed
+            timing.request_count += 1
+            timing.http_seconds += elapsed
             error = f"{type(exc).__name__}: {exc}"
-            logger.warning("url=%s retry=%s error=%s", url, attempt, error)
+            logger.warning(
+                "http url=%s retry=%s rate_limit_wait_seconds=%.3f http_seconds=%.3f error=%s",
+                url, attempt, rate_limit_wait, elapsed, error,
+            )
         if attempt < 2:
             retry_after = 0.0
-            if last_status is not None and response.headers.get("Retry-After", "").isdigit():
-                retry_after = min(float(response.headers["Retry-After"]), 60.0)
+            if last_status is not None and retry_after_header.isdigit():
+                retry_after = min(float(retry_after_header), 60.0)
+            # 一時障害時の指数バックオフは従来どおり維持する。
             time.sleep(max(retry_after, max(wait, 1.0) * (2 ** attempt)))
-    return FetchResult(None, last_status, 2, error, last_url, last_content_type)
+    return FetchResult(None, last_status, 2, error, last_url, last_content_type, last_elapsed)
 
 
 def missing_fields(rows: list[dict[str, str]]) -> list[str]:
@@ -283,19 +339,34 @@ def missing_fields(rows: list[dict[str, str]]) -> list[str]:
     return sorted(missing)
 
 
-def collect_race(session: requests.Session, date: str, venue: dict[str, Any], rno: int, logger: logging.Logger, delay: float) -> tuple[list[dict[str, str]], dict[str, str], int]:
+def collect_race(
+    session: requests.Session,
+    date: str,
+    venue: dict[str, Any],
+    rno: int,
+    logger: logging.Logger,
+    delay: float,
+    limiter: RequestStartLimiter,
+    timing: TimingStats,
+) -> tuple[list[dict[str, str]], dict[str, str], int]:
+    race_started = time.monotonic()
+    http_before = timing.http_seconds
+    parse_before = timing.parse_seconds
+    wait_before = timing.rate_limit_wait_seconds
     params = {"hd": date, "jcd": str(venue["code"]).zfill(2), "rno": rno}
     pc_url = f"{PC_URL}?{urlencode(params)}"
     sp_url = f"{SP_URL}?{urlencode(params)}"
     stamp = datetime.now(JST).isoformat(timespec="seconds")
-    pc_result = request_page(session, pc_url, logger, delay)
+    pc_result = request_page(session, pc_url, logger, delay, limiter, timing)
     retries, pc_error = pc_result.retries, pc_result.error
     race_type, boats, cutoff_time = "", [], ""
     if pc_result.html:
+        parse_started = time.monotonic()
         soup = BeautifulSoup(pc_result.html, "html.parser")
         race_type, boats = parse_pc_soup(soup)
         cutoff_time = parse_cutoff_time_soup(soup, rno)
         page_errors = identity_errors(parse_page_identity(soup), date, venue, pc_result.final_url)
+        timing.parse_seconds += time.monotonic() - parse_started
         if page_errors:
             boats = []
             pc_error = "; ".join(page_errors)
@@ -303,20 +374,23 @@ def collect_race(session: requests.Session, date: str, venue: dict[str, Any], rn
             pc_error = "HTTP 200だが出走表テーブルを解析できません"
     source, source_url, sp_flag, error = "PC", pc_result.final_url or pc_url, "未使用", pc_error
     if not boats:
-        sp_result = request_page(session, sp_url, logger, delay)
+        sp_result = request_page(session, sp_url, logger, delay, limiter, timing)
         retries += sp_result.retries
         sp_error = sp_result.error
-        race_type, boats = parse_sp(sp_result.html) if sp_result.html else ("", [])
-        if boats and sp_result.html:
-            sp_soup = BeautifulSoup(sp_result.html, "html.parser")
-            page_errors = identity_errors(parse_page_identity(sp_soup), date, venue, sp_result.final_url)
-            if page_errors:
-                boats = []
-                sp_error = "; ".join(page_errors)
-            if not cutoff_time:
-                cutoff_time = parse_cutoff_time_soup(sp_soup, rno)
-        elif sp_result.html and not sp_error:
-            sp_error = "HTTP 200だが出走表テーブルを解析できません"
+        if sp_result.html:
+            parse_started = time.monotonic()
+            race_type, boats = parse_sp(sp_result.html)
+            if boats:
+                sp_soup = BeautifulSoup(sp_result.html, "html.parser")
+                page_errors = identity_errors(parse_page_identity(sp_soup), date, venue, sp_result.final_url)
+                if page_errors:
+                    boats = []
+                    sp_error = "; ".join(page_errors)
+                if not cutoff_time:
+                    cutoff_time = parse_cutoff_time_soup(sp_soup, rno)
+            elif not sp_error:
+                sp_error = "HTTP 200だが出走表テーブルを解析できません"
+            timing.parse_seconds += time.monotonic() - parse_started
         source, source_url, sp_flag = "スマホ", sp_result.final_url or sp_url, "成功" if boats else "失敗"
         error = "; ".join(x for x in (pc_error, sp_error) if x)
     else:
@@ -333,7 +407,15 @@ def collect_race(session: requests.Session, date: str, venue: dict[str, Any], rn
     report = {"日付": date, "会場": venue["name"], "場コード": str(venue["code"]).zfill(2), "R": str(rno), "取得状態": status, "取得艇数": str(len(rows)),
               "PC版取得": "成功" if source == "PC" else "失敗", "スマホ版取得": sp_flag, "不足項目": ", ".join(missing), "取得元URL": source_url,
               "取得確認日時": stamp, "エラー内容": error, "備考": "再試行回数: " + str(retries)}
+    race_http_seconds = timing.http_seconds - http_before
+    race_parse_seconds = timing.parse_seconds - parse_before
+    race_rate_wait_seconds = timing.rate_limit_wait_seconds - wait_before
+    race_seconds = time.monotonic() - race_started
     logger.info("venue=%s r=%s parsed=%s status=%s missing=%s error=%s", venue["name"], rno, len(rows), status, report["不足項目"], error)
+    logger.info(
+        "timing venue=%s r=%s http_seconds=%.3f parse_seconds=%.3f rate_limit_wait_seconds=%.3f race_seconds=%.3f",
+        venue["name"], rno, race_http_seconds, race_parse_seconds, race_rate_wait_seconds, race_seconds,
+    )
     return rows, report, retries
 
 
@@ -422,25 +504,27 @@ def main() -> int:
     logger = logging.getLogger("boatrace"); logger.info("開始 date=%s venues=%s", date, venues)
     session = requests.Session(); session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) BoatraceRacelistFetcher/1.0", "Accept-Language": "ja-JP,ja;q=0.9"})
     delay = float(config.get("request_interval_seconds", 1.0))
+    limiter = RequestStartLimiter(delay)
+    timing = TimingStats()
+    run_started = time.monotonic()
     raw_rows: list[dict[str, str]] = []; reports: list[dict[str, str]] = []; retry_total = 0
     total_races = len(venues) * 12
     print("=" * 60, flush=True)
     print("BOAT RACE公式出走表 CSV取得を開始します", flush=True)
     print(f"対象日: {date} / 会場数: {len(venues)} / レース数: {total_races}", flush=True)
-    print("※ 各レースは公式サイトへの配慮として、1回ずつ順番に取得します。", flush=True)
+    print(f"※ 各レースは順番に取得し、HTTPリクエスト開始間隔を最低{delay:g}秒に保ちます。", flush=True)
     print("=" * 60, flush=True)
     for venue_index, venue in enumerate(venues, start=1):
         print(f"\n[{venue_index}/{len(venues)}会場] {venue['name']}（場コード {str(venue['code']).zfill(2)}・{venue['day']}日目）を開始", flush=True)
         for rno in range(1, 13):
             current = (venue_index - 1) * 12 + rno
             print(f"  [{current}/{total_races}] {venue['name']} {rno}R を取得中...", end="", flush=True)
-            rows, report, retries = collect_race(session, date, venue, rno, logger, delay)
+            rows, report, retries = collect_race(session, date, venue, rno, logger, delay, limiter, timing)
             raw_rows.extend(rows); reports.append(report); retry_total += retries
             detail = f"{report['取得状態']} / {report['取得艇数']}艇 / {report['PC版取得']}"
             if report["スマホ版取得"] != "未使用": detail += f" / スマホ版: {report['スマホ版取得']}"
             if report["不足項目"]: detail += f" / 不足: {report['不足項目']}"
             print(f" 完了（{detail}）", flush=True)
-            if not (venue is venues[-1] and rno == 12): time.sleep(delay)
         venue_reports = reports[-12:]
         print(f"  → {venue['name']} 出力対象の取得完了（成功 {sum(x['取得状態'] == '成功' for x in venue_reports)}/12レース）", flush=True)
     errors = validate(raw_rows, reports, len(venues))
@@ -451,6 +535,11 @@ def main() -> int:
     status_path = output / f"{date}_出走表取得状況_{names}.csv"
     print("\nCSVファイルを出力中...", flush=True)
     write_csv(raw_path, RAW_COLUMNS, raw_rows); write_csv(input_path, INPUT_COLUMNS, input_rows); write_csv(status_path, STATUS_COLUMNS, reports)
+    run_seconds = time.monotonic() - run_started
+    logger.info(
+        "timing_summary requests=%s http_seconds=%.3f parse_seconds=%.3f rate_limit_wait_seconds=%.3f run_seconds=%.3f",
+        timing.request_count, timing.http_seconds, timing.parse_seconds, timing.rate_limit_wait_seconds, run_seconds,
+    )
     logger.info("終了 rows=%s success=%s retries=%s validation_errors=%s", len(raw_rows), sum(r["取得状態"] == "成功" for r in reports), retry_total, errors)
     print("CSV出力完了", flush=True)
     print(f"原本CSV: {raw_path}\n予想入力CSV: {input_path}\n取得状況CSV: {status_path}\nログ: {log_path}", flush=True)
