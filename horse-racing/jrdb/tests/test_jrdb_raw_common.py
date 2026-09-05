@@ -55,6 +55,7 @@ def make_bac() -> bytes:
         (87, 8, "第2回"),
         (95, 2, "16"),
         (97, 1, "1"),
+        (98, 1, "1"),
     ):
         put(row, start, width, value)
     return bytes(row)
@@ -96,6 +97,12 @@ def make_kyi() -> bytes:
         (324, 1, "2"),
         (336, 5, "01234"),
         (341, 5, "54321"),
+        (358, 1, "3"),
+        (396, 1, "6"),
+        (397, 3, "480"),
+        (400, 3, "+04"),
+        (403, 1, "0"),
+        (404, 1, "1"),
         (359, 5, "10.5"),
         (364, 5, "11.5"),
         (369, 5, "12.5"),
@@ -114,6 +121,9 @@ def make_kyi() -> bytes:
         (520, 4, "12.3"),
         (524, 4, " 5.5"),
         (542, 2, "01"),
+        (560, 2, " 2"),
+        (562, 8, "20260801"),
+        (570, 3, " 29"),
         (573, 50, "テスト牧場"),
         (623, 1, "A"),
         (624, 1, "2"),
@@ -229,12 +239,22 @@ class CommonRawReaderTest(unittest.TestCase):
         self.assertEqual(bac["date_raw"], "20260830")
         self.assertEqual(bac["race_name"], "テストレース")
         self.assertEqual(bac["field_size"], 16)
+        self.assertEqual(bac["meeting_area_code"], "1")
         self.assertEqual(kyi["horse_name"], "テストホース")
         self.assertEqual(kyi["previous"][0]["result_key"], "2023100120260810")
         self.assertEqual(kyi["previous"][1]["race_key_raw"], "05269012")
         self.assertEqual(kyi["pace_indices"]["late"], 12.5)
         self.assertEqual(kyi["pace_ranks"]["position"], 1)
         self.assertEqual(kyi["trait_codes"][0], "033")
+        self.assertEqual(kyi["condition_class_code"], "3")
+        self.assertEqual(kyi["distance_fit2_code"], "6")
+        self.assertEqual(kyi["body_weight_pre_kg"], 480)
+        self.assertEqual(kyi["body_weight_change_pre_kg"], 4)
+        self.assertEqual(kyi["cancel_flag"], "0")
+        self.assertEqual(kyi["sex_code"], "1")
+        self.assertEqual(kyi["stable_run_no"], 2)
+        self.assertEqual(kyi["stable_entry_date_raw"], "20260801")
+        self.assertEqual(kyi["stable_days_before"], 29)
 
     def test_sed_zed_and_skb_zkb_aliases_are_exact(self) -> None:
         parser = Parser()
