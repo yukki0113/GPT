@@ -1,0 +1,47 @@
+name: JRDB Common Reader tests
+
+on:
+  push:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_raw.py'
+      - 'horse-racing/jrdb/src/jrdb_raw_history.py'
+      - 'horse-racing/jrdb/src/racenote_jrdb.py'
+      - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
+      - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
+      - '.github/workflows/jrdb_common_reader_tests.yml'
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_raw.py'
+      - 'horse-racing/jrdb/src/jrdb_raw_history.py'
+      - 'horse-racing/jrdb/src/racenote_jrdb.py'
+      - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
+      - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
+      - '.github/workflows/jrdb_common_reader_tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run common reader regressions
+        working-directory: horse-racing/jrdb/tests
+        run: |
+          python -m unittest -v \
+            test_jrdb_raw_common \
+            test_jrdb_raw_racenote_compat \
+            test_enrich_eval_csv_with_paci
