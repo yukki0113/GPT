@@ -14,13 +14,25 @@ sys.path.insert(0, str(TEST_ROOT))
 
 from build_jrdb_index_base_from_raw import (  # noqa: E402
     LegacyParseBac as legacy_parse_bac,
+    LegacyParseCha as legacy_parse_cha,
+    LegacyParseCyb as legacy_parse_cyb,
     LegacyParseKyi as legacy_parse_kyi,
+    LegacyParseSed as legacy_parse_sed,
 )
 from jrdb_index_base_adapter import (  # noqa: E402
     parse_bac as adapted_parse_bac,
+    parse_cha as adapted_parse_cha,
+    parse_cyb as adapted_parse_cyb,
     parse_kyi as adapted_parse_kyi,
+    parse_sed as adapted_parse_sed,
 )
-from test_build_jrdb_index_base_from_raw import make_bac, make_kyi  # noqa: E402
+from test_build_jrdb_index_base_from_raw import (  # noqa: E402
+    make_bac,
+    make_cha,
+    make_cyb,
+    make_kyi,
+    make_sed,
+)
 
 
 class IndexBaseAdapterTest(unittest.TestCase):
@@ -42,6 +54,30 @@ class IndexBaseAdapterTest(unittest.TestCase):
         self.assertIsInstance(adapted_runner["pre_idm"], float)
         self.assertIsInstance(adapted_runner["training_score"], float)
         self.assertIsInstance(adapted_runner["stable_score"], float)
+
+    def test_sed_adapter_matches_existing_contract(self) -> None:
+        raw = make_sed()
+        member = "SED260830.txt"
+        self.assertEqual(
+            adapted_parse_sed(raw, member),
+            legacy_parse_sed(raw, member),
+        )
+
+    def test_cha_adapter_matches_existing_contract(self) -> None:
+        raw = make_cha()
+        member = "CHA260830.txt"
+        self.assertEqual(
+            adapted_parse_cha(raw, member),
+            legacy_parse_cha(raw, member),
+        )
+
+    def test_cyb_adapter_matches_existing_contract(self) -> None:
+        raw = make_cyb()
+        member = "CYB260830.txt"
+        self.assertEqual(
+            adapted_parse_cyb(raw, member),
+            legacy_parse_cyb(raw, member),
+        )
 
 
 if __name__ == "__main__":
