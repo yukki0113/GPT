@@ -288,6 +288,20 @@ def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Pat
     BAC/KYI/CHA/CYB are selected by target race key. SED/SKB are selected only by
     previous-result keys explicitly carried by selected KYI rows.
     """
+    try:
+        return build_common_historical_paci(
+            raw_dir=raw_dir,
+            target_year=request.target_date.year,
+            short_date=request.target_date.strftime("%y%m%d"),
+            race_keys=target_race_keys(analysis, request),
+            destination=destination,
+            ensure_history=lambda year, kinds: ensure_historical_raw(
+                year, raw_dir, force_fetch, kinds
+            ),
+        )
+    except ValueError as exc:
+        raise RaceNoteRequestError(str(exc)) from exc
+
     year = request.target_date.year
     race_keys = target_race_keys(analysis, request)
     selected: dict[str, list[bytes]] = {"BAC": [], "KYI": [], "CHA": [], "CYB": []}
