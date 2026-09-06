@@ -12,11 +12,21 @@ on:
       - 'horse-racing/jrdb/src/jrdb_analysis_raw_adapter.py'
       - 'horse-racing/jrdb/src/update_jrdb_analysis_incremental.py'
       - 'horse-racing/jrdb/src/build_jrdb_analysis_from_raw.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_raw_adapter.py'
+      - 'horse-racing/jrdb/src/racenote_request.py'
+      - 'horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py'
+      - 'horse-racing/jrdb/src/jrdb_eval_raw_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_eval_horse_result_adapter.py'
+      - 'horse-racing/jrdb/src/export_jrdb_eval_race_conditions.py'
+      - 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py'
+      - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
       - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/tests/test_jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_racenote_raw_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
       - '.github/workflows/jrdb_common_reader_tests.yml'
   pull_request:
     paths:
@@ -29,11 +39,21 @@ on:
       - 'horse-racing/jrdb/src/jrdb_analysis_raw_adapter.py'
       - 'horse-racing/jrdb/src/update_jrdb_analysis_incremental.py'
       - 'horse-racing/jrdb/src/build_jrdb_analysis_from_raw.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_raw_adapter.py'
+      - 'horse-racing/jrdb/src/racenote_request.py'
+      - 'horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py'
+      - 'horse-racing/jrdb/src/jrdb_eval_raw_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_eval_horse_result_adapter.py'
+      - 'horse-racing/jrdb/src/export_jrdb_eval_race_conditions.py'
+      - 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py'
+      - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
       - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/tests/test_jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_racenote_raw_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
       - '.github/workflows/jrdb_common_reader_tests.yml'
   workflow_dispatch:
 
@@ -60,4 +80,6 @@ jobs:
             test_jrdb_raw_racenote_compat \
             test_enrich_eval_csv_with_paci \
             test_jrdb_index_base_adapter \
-            test_jrdb_analysis_raw_adapter
+            test_jrdb_analysis_raw_adapter \
+            test_jrdb_racenote_raw_adapter \
+            test_jrdb_eval_horse_result_adapter
