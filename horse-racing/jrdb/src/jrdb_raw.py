@@ -337,6 +337,8 @@ class Parser:
     def cha(self, record: bytes) -> dict[str, Any]:
         return {
             "race_horse_key": race_horse_key(record),
+            "weekday": text_field(record, 11, 2),
+            "workout_count": number_field(record, 21, 1),
             "date_raw": raw_field(record, 13, 8),
             "course_code": raw_field(record, 22, 2),
             "strength_code": raw_field(record, 24, 1),
@@ -365,6 +367,8 @@ class Parser:
     def cyb(self, record: bytes) -> dict[str, Any]:
         return {
             "race_horse_key": race_horse_key(record),
+            "training_type_code": raw_field(record, 11, 2),
+            "training_course_type_code": raw_field(record, 13, 1),
             "course_counts": {
                 "slope": number_field(record, 14, 2),
                 "wood": number_field(record, 16, 2),
@@ -391,8 +395,11 @@ class Parser:
         """Parse SED current-result data; ZED is byte-compatible."""
         return {
             "race_key_raw": race_key(record),
+            "horse_no": number_field(record, 9, 2),
             "result_key": result_key(record),
+            "blood_registration_no": raw_field(record, 11, 8),
             "date_raw": raw_field(record, 19, 8),
+            "horse_name": text_field(record, 27, 36),
             "race_name": text_field(record, 81, 50),
             "distance_m": number_field(record, 63, 4),
             "surface_code": raw_field(record, 67, 1),
@@ -401,6 +408,8 @@ class Parser:
             "track_condition_code": raw_field(record, 70, 2),
             "race_type_code": raw_field(record, 72, 2),
             "race_class_code": raw_field(record, 74, 2),
+            "race_symbol_code": raw_field(record, 76, 3),
+            "weight_condition_code": raw_field(record, 79, 1),
             "grade_code": raw_field(record, 80, 1),
             "field_size": number_field(record, 131, 2),
             "finish": number_field(record, 141, 2),
@@ -408,6 +417,7 @@ class Parser:
             "time_raw": raw_field(record, 144, 4),
             "carried_weight_tenths": number_field(record, 148, 3),
             "jockey": text_field(record, 151, 12),
+            "trainer": text_field(record, 163, 12),
             "final_win_odds": number_field(record, 175, 6),
             "final_popularity_raw": raw_field(record, 181, 2),
             "final_popularity": number_field(record, 181, 2),
@@ -429,18 +439,33 @@ class Parser:
                 "race_pace_index": number_field(record, 239, 5),
             },
             "course_lane_code": raw_field(record, 216, 1),
+            "result_uptrend_code": raw_field(record, 217, 1),
+            "result_class_code": raw_field(record, 218, 2),
+            "mood_code": raw_field(record, 221, 1),
             "corners": [
                 number_field(record, pos, 2)
                 for pos in (309, 311, 313, 315)
             ],
+            "first_second_time_diff_sec": tenths(record, 256, 3),
             "first3f_sec": tenths(record, 259, 3),
             "last3f_sec": tenths(record, 262, 3),
+            "first3f_leader_diff_sec": tenths(record, 317, 3),
+            "last3f_leader_diff_sec": tenths(record, 320, 3),
             "race_pace_code": raw_field(record, 222, 1),
             "horse_pace_code": raw_field(record, 223, 1),
+            "final_place_odds_lower": number_field(record, 291, 6),
+            "jockey_code": raw_field(record, 323, 5),
+            "trainer_code": raw_field(record, 328, 5),
             "body_weight_kg": number_field(record, 333, 3),
             "body_weight_change_kg": number_field(record, 336, 3),
             "weather_code": raw_field(record, 339, 1),
             "body_condition_code": raw_field(record, 220, 1),
+            "course_code": raw_field(record, 340, 1),
+            "race_running_style_code": raw_field(record, 341, 1),
+            "win_payout": number_field(record, 342, 7),
+            "place_payout": number_field(record, 349, 7),
+            "fourth_corner_lane_code": raw_field(record, 370, 1),
+            "start_time_raw": raw_field(record, 371, 4),
         }
 
     def zed(self, record: bytes) -> dict[str, Any]:
