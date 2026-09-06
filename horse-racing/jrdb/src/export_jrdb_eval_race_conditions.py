@@ -29,6 +29,7 @@ from pathlib import Path
 import re
 import sys
 import zipfile
+from jrdb_eval_raw_adapter import parse_bac_eval
 
 
 VERSION = "1.1.0"
@@ -144,6 +145,17 @@ def parse_bac_record_full(record: SourceRecord) -> dict[str, object]:
             f"BAC record too short: {record.source_path} "
             f"{record.member_name} record={record.record_no} bytes={len(raw)}"
         )
+
+    try:
+        row = parse_bac_eval(raw)
+    except ValueError as exc:
+        raise ExportError(str(exc)) from exc
+    if row["race_no"] is None:
+        raise ExportError(
+            f"race_no is blank: {record.source_path} "
+            f"{record.member_name} record={record.record_no}"
+        )
+    return row
 
     venue_code = decode_text(raw, *BAC_OFFSETS["venue_code"])
     race_no = parse_int(raw, *BAC_OFFSETS["race_no"])
