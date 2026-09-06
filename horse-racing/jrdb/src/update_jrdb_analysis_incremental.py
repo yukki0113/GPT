@@ -35,7 +35,7 @@ from jrdb_analysis_raw_adapter import (
     parse_sed,
     parse_ukc,
 )
-from jrdb_raw import read_fixed_records
+from jrdb_raw import race_key as common_race_key, read_fixed_records
 
 VERSION = "1.2-production"
 SCHEMA_VERSION = "v1.2"
@@ -116,7 +116,7 @@ def _parse_lines(lines: dict[str, list[bytes]], date: dt.date) -> tuple[list[tup
     race_date = date.isoformat()
     for raw in lines["BAC"]:
         race = parse_bac(raw, race_date, date.year)
-        race_key = str(raw[:8].decode("ascii", "replace").strip())
+        race_key = common_race_key(raw)
         races.setdefault(race_key, race)
 
     for raw in lines["KYI"]:
