@@ -21,7 +21,7 @@ Google Drive JRDB store
       |       |
       |       +-- logical name -> Drive file ID / size / SHA / status
       |
-      +-- 10_database / 20_mart / future canonical shards
+      +-- 10_database / 20_mart / canonical shards
               |
               v
         src/jrdb_store.py
@@ -39,7 +39,7 @@ Google Drive JRDB store
 1. **データ原典 / reproducibility source:** JRDB Raw / PACI
 2. **通常運用で使う共有artifactの所在正本:** Google Drive上のstore manifest
 
-Analysis Lite、Stats Mart、将来のannual Canonical SQLite等はRawから再生成可能な派生artifactだが、通常のconsumerはDrive上のvalidation済みartifactを共有運用の正本として利用してよい。
+Analysis Lite、Stats Mart、annual Canonical SQLite等はRawから再生成可能な派生artifactだが、通常のconsumerはDrive上のvalidation済みartifactを共有運用の正本として利用してよい。
 
 ローカルファイルはすべてcacheであり、手動管理する正本ではない。
 
@@ -123,13 +123,13 @@ payload compression:
 
 `extractall()` は使わず、manifest指定memberだけを読み出す。
 
-annual Canonical SQLiteを圧縮配置する場合は次の形を想定する。
+annual Canonical SQLiteの現行配置は次の形。
 
 ```text
-storage.filename = jrdb_canonical_2024.sqlite.zip
+storage.filename = jrdb_canonical_2024_v0_1.sqlite.zip
 payload.compression = zip
-payload.member = jrdb_canonical_2024.sqlite
-payload.filename = jrdb_canonical_2024.sqlite
+payload.member = jrdb_canonical_2024_v0_1.sqlite
+payload.filename = jrdb_canonical_2024_v0_1.sqlite
 ```
 
 ## 7. Python API
@@ -173,29 +173,35 @@ P1ではRaceNoteの既存CLI `--analysis` / `--mart` を壊さず残す。
   - Analysis: `jrdb://analysis/current`
   - Stats Mart: `jrdb://stats/current`
 
-これにより既存Actionsは無変更で動かしながら、GPT/PC側ではmanifestを一度解決すれば個別SQLite path指定を省略できる。
+これにより既存Actionsは明示path互換モードを維持しながら、GPT/PC側ではmanifestを一度解決すれば個別SQLite path指定を省略できる。
 
-## 10. 2026-09-06 初期Drive manifest
+## 10. 2026-09-06 Drive manifest
 
-Drive `JRDB/manifest/` を新設し、`jrdb_store_manifest_v1.json` を配置した。
+Drive `JRDB/manifest/` の固定名 `jrdb_store_manifest_v1.json` をlive manifestとする。
 
-初期entry:
+現在のentry:
 
 - `jrdb://analysis/current` — Analysis Lite v1.2, 2016-2026YTD through 2026-08-23
 - `jrdb://stats/current` — Stats Mart v1.1, same data period
+- `jrdb://canonical/2024` — Canonical Annual Shard v0.1, 2024 full year, `FINAL`
 
-両entryとも既存README/validationで確定済みのsize/SHA-256と、Drive上の現物metadataを突合して登録した。
+2024 Canonicalは `JRDB/10_database/canonical/` にZIP transportとして配置し、storage ZIPと展開後SQLiteの双方をmanifestのsize/SHA-256で検証する。
 
 live File IDはGit文書へ固定しない。
 
-## 11. 今後
+2024 Canonicalの実測・validation詳細は `docs/JRDB_Canonical_Annual_Shard_v0_1.md` を正本とする。
 
-次の段階で追加する。
+## 11. P1 status / next
 
-1. true canonical 2024 SQLiteをCommon Readerからbuild
-2. Driveへ `jrdb_canonical_2024.sqlite.zip` を配置
-3. `jrdb://canonical/2024` をlive manifestへ登録
-4. 100 race / 100 horse field-level semantic regression
-5. RaceNote / PWA / Evalのうち反復アクセスが有利な経路だけ段階的にStore Resolverへ接続
+2026-09-06時点で以下を完了した。
+
+1. Store Resolver / verified local cache
+2. RaceNote Analysis/Mart optional Store bridge
+3. true Canonical 2024 v0.1 build
+4. Drive publication + `jrdb://canonical/2024` `FINAL` 登録
+5. BAC/KYI/CHA/CYB/SED/SKB/UKC 各100件、計700件のfield-level comparison mismatch 0
+6. synthetic Canonical builder regression test
+
+次はschema contractを固定したうえで、必要な年だけannual shardを拡張する。RaceNote / PWA / Evalのconsumer migrationは一括ではなく、反復アクセスで利益がある経路だけ段階的に行う。
 
 Raw直読が十分速い単発処理まで無理にSQLite化しない。Store Resolverは「SQLite必須化」ではなく、共有artifactの所在・検証・cacheをconsumerから隠す層である。
