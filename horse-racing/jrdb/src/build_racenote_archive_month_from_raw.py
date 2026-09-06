@@ -271,6 +271,9 @@ def ensure_raw_kinds(
 
 def iter_records(zip_path: Path, kind: str) -> Iterable[bytes]:
     """Yield fixed-width rows from all matching members in source order."""
+    for _member, record in iter_archive_records(zip_path, kind):
+        yield record
+    return
     with zipfile.ZipFile(zip_path) as source:
         members = [
             name
@@ -287,6 +290,7 @@ def iter_records(zip_path: Path, kind: str) -> Iterable[bytes]:
 
 def previous_result_keys(line: bytes) -> list[bytes]:
     """Return explicit KYI previous-result keys without guessing missing values."""
+    return [key.encode("ascii") for key in common_previous_result_keys(line)]
     output: list[bytes] = []
     for start, end in PREV_RESULT_SLICES:
         key = line[start:end].strip()
