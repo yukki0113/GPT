@@ -26,8 +26,8 @@ horse-racing/jrdb/src/enrich_eval_csv_with_paci.py
 
 - BAC: `export_jrdb_eval_race_conditions.py::parse_bac_record_full`
 - 表示ラベル: `export_jrdb_eval_dataset.py::add_labels`
-- KYI: `racenote_jrdb.py::Parser.kyi`
-- PACI固定長分割: `racenote_jrdb.py::read_fixed_records`
+- KYI: `jrdb_raw.py::Parser.kyi`
+- PACI固定長分割: `jrdb_raw.py::read_fixed_records`
 
 固定長位置やコード定義をこのモジュールへ重複実装しません。
 
