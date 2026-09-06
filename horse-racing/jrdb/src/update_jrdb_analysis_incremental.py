@@ -14,7 +14,8 @@ Supported input modes:
    PACIyymmdd.zip contains BAC/KYI/CYB/UKC and related pre-race members.
    SEDyymmdd.zip provides completed results and actual track condition.
 
-A date is replaced atomically only after all required source members parse.
+Fixed-width byte positions are owned by ``jrdb_raw``.  This module keeps only
+Analysis Lite joining, as-of and SQLite update semantics.
 """
 from __future__ import annotations
 
@@ -27,7 +28,16 @@ import sqlite3
 import zipfile
 from pathlib import Path
 
-VERSION = "1.1-production"
+from jrdb_analysis_raw_adapter import (
+    parse_bac,
+    parse_cyb,
+    parse_kyi,
+    parse_sed,
+    parse_ukc,
+)
+from jrdb_raw import read_fixed_records
+
+VERSION = "1.2-production"
 SCHEMA_VERSION = "v1.2"
 REQUIRED_KINDS = ("BAC", "KYI", "SED", "CYB", "UKC")
 PACI_KINDS = ("BAC", "KYI", "CYB", "UKC")
@@ -51,33 +61,21 @@ def parse_date(value: str) -> dt.date:
 
 
 def infer_date_from_name(path: Path, prefix: str) -> dt.date:
-    m = re.fullmatch(rf"{prefix}(\d{{6}})\.zip", path.name, re.IGNORECASE)
-    if not m:
+    match = re.fullmatch(rf"{prefix}(\d{{6}})\.zip", path.name, re.IGNORECASE)
+    if not match:
         raise ValueError(f"Cannot infer date from {path.name}; expected {prefix}yymmdd.zip")
-    yymmdd = m.group(1)
+    yymmdd = match.group(1)
     yy = int(yymmdd[:2])
     year = 2000 + yy if yy < 80 else 1900 + yy
     return dt.date(year, int(yymmdd[2:4]), int(yymmdd[4:6]))
 
 
-def text(raw: bytes, offset: int, width: int) -> str:
-    return raw[offset:offset+width].decode("cp932", "replace").strip()
-
-
-def num(raw: bytes, offset: int, width: int) -> int | None:
-    value = text(raw, offset, width).replace(",", "")
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
-
-
 def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def daily_zip(raw_root: Path, kind: str, date: dt.date) -> Path:
@@ -88,110 +86,82 @@ def read_member(path: Path, kind: str, date: dt.date) -> list[bytes]:
     if not path.exists():
         raise FileNotFoundError(path)
     expected = f"{kind}{date:%y%m%d}.txt".upper()
-    with zipfile.ZipFile(path) as zf:
-        matches = [n for n in zf.namelist() if Path(n).name.upper() == expected]
+    with zipfile.ZipFile(path) as archive:
+        matches = [name for name in archive.namelist() if Path(name).name.upper() == expected]
         if len(matches) != 1:
             raise ValueError(f"{path}: expected exactly one {expected}, found {len(matches)}")
-        bad = zf.testzip()
+        bad = archive.testzip()
         if bad is not None:
             raise ValueError(f"{path}: bad ZIP member {bad}")
-        return zf.read(matches[0]).splitlines()
-
-
-def parse_ukc_profile(raw: bytes) -> dict[str, object]:
-    if len(raw) != 290:
-        raise ValueError(f"UKC body length must be 290, got {len(raw)}")
-    birth_date = text(raw, 157, 8)
-    birth_year = int(birth_date[:4]) if len(birth_date) >= 4 and birth_date[:4].isdigit() else None
-    return {
-        "sex_code": text(raw, 44, 1),
-        "birth_year": birth_year,
-        "sire_name": text(raw, 49, 36),
-        "broodmare_sire_name": text(raw, 121, 36),
-        "sire_line_code": text(raw, 276, 4),
-        "broodmare_sire_line_code": text(raw, 280, 4),
-        "data_date": text(raw, 268, 8),
-    }
+        source = archive.read(matches[0])
+        records = read_fixed_records(archive, matches[0], kind)
+        if source and not records:
+            raise ValueError(f"{path}: invalid fixed-width {kind} member {matches[0]}")
+        return records
 
 
 def _parse_lines(lines: dict[str, list[bytes]], date: dt.date) -> tuple[list[tuple], dict[str, object]]:
     races: dict[str, dict[str, object]] = {}
-    entries: dict[tuple[str,int | None], dict[str, object]] = {}
-    results: dict[tuple[str,int | None], dict[str, object]] = {}
-    training: dict[tuple[str,int | None], int | None] = {}
+    entries: dict[tuple[str, int | None], dict[str, object]] = {}
+    results: dict[tuple[str, int | None], dict[str, object]] = {}
+    training: dict[tuple[str, int | None], int | None] = {}
     horses: dict[str, dict[str, object]] = {}
 
     for raw in lines["UKC"]:
-        horse_id = text(raw, 0, 8)
-        profile = parse_ukc_profile(raw)
+        horse_id, profile = parse_ukc(raw)
         old = horses.get(horse_id)
         if old is None or str(profile["data_date"]) >= str(old["data_date"]):
             horses[horse_id] = profile
 
+    race_date = date.isoformat()
     for raw in lines["BAC"]:
-        rk = text(raw, 0, 8)
-        races.setdefault(rk, {
-            "race_date": date.isoformat(), "year": date.year, "venue_code": text(raw,0,2),
-            "race_no": num(raw,6,2), "distance": num(raw,20,4), "track_type": text(raw,24,1),
-            "race_condition_code": text(raw,29,2), "track_condition_code": None,
-            "grade_code": text(raw,35,1),
-        })
+        race = parse_bac(raw, race_date, date.year)
+        race_key = str(raw[:8].decode("ascii", "replace").strip())
+        races.setdefault(race_key, race)
 
     for raw in lines["KYI"]:
-        rk, hn = text(raw,0,8), num(raw,8,2)
-        entries.setdefault((rk,hn), {
-            "frame_no": num(raw,323,1), "horse_id": text(raw,10,8), "horse_name": text(raw,18,36),
-            "jockey_name": text(raw,171,12), "running_style": text(raw,89,1),
-            "distance_aptitude": text(raw,90,1), "uptrend": text(raw,91,1),
-            "prev_result_key_1": text(raw,203,16) or None,
-            "prev_race_key_1": text(raw,283,8) or None,
-        })
+        key, entry = parse_kyi(raw)
+        entries.setdefault(key, entry)
 
     for raw in lines["SED"]:
-        rk, hn = text(raw,0,8), num(raw,8,2)
-        tc = text(raw,69,2)
-        if rk not in races:
-            races[rk] = {
-                "race_date": date.isoformat(), "year": date.year, "venue_code": text(raw,0,2),
-                "race_no": num(raw,6,2), "distance": num(raw,62,4), "track_type": text(raw,66,1),
-                "race_condition_code": None, "track_condition_code": tc, "grade_code": None,
-            }
-        elif not races[rk]["track_condition_code"]:
-            races[rk]["track_condition_code"] = tc
-        results.setdefault((rk,hn), {
-            "finish": num(raw,140,2), "abnormal_code": text(raw,142,1),
-            "final_win_odds": num(raw,174,6), "final_win_popularity": num(raw,180,2),
-            "win_payout": num(raw,341,7), "place_payout": num(raw,348,7),
-        })
+        key, result, fallback_race = parse_sed(raw, race_date, date.year)
+        race_key = key[0]
+        if race_key not in races:
+            races[race_key] = fallback_race
+        elif not races[race_key]["track_condition_code"]:
+            races[race_key]["track_condition_code"] = fallback_race["track_condition_code"]
+        results.setdefault(key, result)
 
     for raw in lines["CYB"]:
-        training.setdefault((text(raw,0,8), num(raw,8,2)), num(raw,29,3))
+        key, value = parse_cyb(raw)
+        training.setdefault(key, value)
 
     rows: list[tuple] = []
     missing_profiles = 0
     for key, entry in entries.items():
-        race = races.get(key[0]); result = results.get(key)
+        race = races.get(key[0])
+        result = results.get(key)
         if race is None or result is None:
             continue
         profile = horses.get(str(entry["horse_id"]), {})
         if not profile:
             missing_profiles += 1
-        by = profile.get("birth_year")
-        age = date.year - int(by) if by else None
+        birth_year = profile.get("birth_year")
+        age = date.year - int(birth_year) if birth_year else None
         rows.append((
-            race["race_date"],race["year"],race["venue_code"],race["race_no"],race["track_type"],race["distance"],
-            race["race_condition_code"],race["track_condition_code"],race["grade_code"],key[0],key[1],entry["frame_no"],
-            entry["horse_id"],entry["horse_name"],profile.get("sex_code"),age,profile.get("sire_name"),
-            profile.get("broodmare_sire_name"),profile.get("sire_line_code"),profile.get("broodmare_sire_line_code"),
-            entry["jockey_name"],entry["running_style"],entry["distance_aptitude"],entry["uptrend"],training.get(key),
-            result["finish"],result["abnormal_code"],result["final_win_odds"],result["final_win_popularity"],
-            result["win_payout"],result["place_payout"],entry["prev_result_key_1"],entry["prev_race_key_1"],
+            race["race_date"], race["year"], race["venue_code"], race["race_no"], race["track_type"], race["distance"],
+            race["race_condition_code"], race["track_condition_code"], race["grade_code"], key[0], key[1], entry["frame_no"],
+            entry["horse_id"], entry["horse_name"], profile.get("sex_code"), age, profile.get("sire_name"),
+            profile.get("broodmare_sire_name"), profile.get("sire_line_code"), profile.get("broodmare_sire_line_code"),
+            entry["jockey_name"], entry["running_style"], entry["distance_aptitude"], entry["uptrend"], training.get(key),
+            result["finish"], result["abnormal_code"], result["final_win_odds"], result["final_win_popularity"],
+            result["win_payout"], result["place_payout"], entry["prev_result_key_1"], entry["prev_race_key_1"],
         ))
 
     if not rows:
         raise ValueError(f"{date}: no joinable completed rows")
     return rows, {
-        "race_count": len({r[9] for r in rows}),
+        "race_count": len({row[9] for row in rows}),
         "row_count": len(rows),
         "missing_profile_rows": missing_profiles,
         "kind_line_counts": {kind: len(values) for kind, values in lines.items()},
@@ -204,8 +174,8 @@ def parse_day(raw_root: Path, date: dt.date) -> tuple[list[tuple], dict[str, obj
     rows, meta = _parse_lines(lines, date)
     meta.update({
         "source_mode": "daily-kind",
-        "source_sha256s": {k: sha256_file(v) for k,v in archives.items()},
-        "source_manifest": {k: str(v) for k,v in archives.items()},
+        "source_sha256s": {kind: sha256_file(path) for kind, path in archives.items()},
+        "source_manifest": {kind: str(path) for kind, path in archives.items()},
     })
     return rows, meta
 
@@ -232,11 +202,11 @@ def parse_paci_sed(paci: Path, sed: Path) -> tuple[dt.date, list[tuple], dict[st
 
 
 def ensure_v12(conn: sqlite3.Connection) -> None:
-    cols = {r[1] for r in conn.execute("PRAGMA table_info(fact_entry_result_lite)")}
-    missing = {"prev_result_key_1","prev_race_key_1"} - cols
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(fact_entry_result_lite)")}
+    missing = {"prev_result_key_1", "prev_race_key_1"} - columns
     if missing:
         raise RuntimeError(f"Analysis DB is not v1.2; missing columns: {sorted(missing)}")
-    tables = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
     if "meta_analysis_ingest_batch" not in tables:
         raise RuntimeError("Analysis DB is not v1.2; missing meta_analysis_ingest_batch")
 
@@ -245,7 +215,7 @@ def update_rows(conn: sqlite3.Connection, date: dt.date, rows: list[tuple], meta
     started = now()
     batch_id = conn.execute(
         "INSERT INTO meta_analysis_ingest_batch(target_date,builder_version,schema_version,started_at,status,source_manifest,source_sha256s,race_count,row_count) VALUES(?,?,?,?,?,?,?,?,?)",
-        (date.isoformat(),VERSION,SCHEMA_VERSION,started,"RUNNING",json.dumps(meta["source_manifest"],ensure_ascii=False),json.dumps(meta["source_sha256s"]),meta["race_count"],meta["row_count"]),
+        (date.isoformat(), VERSION, SCHEMA_VERSION, started, "RUNNING", json.dumps(meta["source_manifest"], ensure_ascii=False), json.dumps(meta["source_sha256s"]), meta["race_count"], meta["row_count"]),
     ).lastrowid
     conn.commit()
     try:
@@ -261,14 +231,17 @@ def update_rows(conn: sqlite3.Connection, date: dt.date, rows: list[tuple], meta
         message = f"missing_profile_rows={meta['missing_profile_rows']}; source_mode={meta['source_mode']}"
         conn.execute(
             "UPDATE meta_analysis_ingest_batch SET finished_at=?,status='SUCCESS',replaced_row_count=?,message=? WHERE batch_id=?",
-            (now(),old_count,message,batch_id),
+            (now(), old_count, message, batch_id),
         )
         conn.commit()
-        return {"date":date.isoformat(),"old_rows":old_count,"new_rows":len(rows),**meta}
+        return {"date": date.isoformat(), "old_rows": old_count, "new_rows": len(rows), **meta}
     except Exception as exc:
         if conn.in_transaction:
             conn.execute("ROLLBACK")
-        conn.execute("UPDATE meta_analysis_ingest_batch SET finished_at=?,status='ERROR',message=? WHERE batch_id=?", (now(),f"{type(exc).__name__}: {exc}",batch_id))
+        conn.execute(
+            "UPDATE meta_analysis_ingest_batch SET finished_at=?,status='ERROR',message=? WHERE batch_id=?",
+            (now(), f"{type(exc).__name__}: {exc}", batch_id),
+        )
         conn.commit()
         raise
 
@@ -279,38 +252,39 @@ def update_date(conn: sqlite3.Connection, raw_root: Path, date: dt.date) -> dict
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--db", type=Path, required=True)
-    ap.add_argument("--raw-root", type=Path)
-    ap.add_argument("--dates", nargs="+")
-    ap.add_argument("--paci", type=Path, help="PACIyymmdd.zip; use together with --sed")
-    ap.add_argument("--sed", type=Path, help="SEDyymmdd.zip; use together with --paci")
-    args = ap.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--db", type=Path, required=True)
+    parser.add_argument("--raw-root", type=Path)
+    parser.add_argument("--dates", nargs="+")
+    parser.add_argument("--paci", type=Path, help="PACIyymmdd.zip; use together with --sed")
+    parser.add_argument("--sed", type=Path, help="SEDyymmdd.zip; use together with --paci")
+    args = parser.parse_args()
 
     daily_mode = args.raw_root is not None or args.dates is not None
     paci_mode = args.paci is not None or args.sed is not None
     if daily_mode and paci_mode:
-        ap.error("Use either --raw-root/--dates or --paci/--sed, not both")
+        parser.error("Use either --raw-root/--dates or --paci/--sed, not both")
     if paci_mode:
         if args.paci is None or args.sed is None:
-            ap.error("PACI mode requires both --paci and --sed")
+            parser.error("PACI mode requires both --paci and --sed")
     elif args.raw_root is None or not args.dates:
-        ap.error("Daily-kind mode requires --raw-root and --dates")
+        parser.error("Daily-kind mode requires --raw-root and --dates")
 
     conn = sqlite3.connect(args.db)
     try:
         ensure_v12(conn)
-        out=[]
+        output = []
         if paci_mode:
             date, rows, meta = parse_paci_sed(args.paci, args.sed)
-            out.append(update_rows(conn, date, rows, meta))
+            output.append(update_rows(conn, date, rows, meta))
         else:
             for value in args.dates:
-                out.append(update_date(conn,args.raw_root,parse_date(value)))
-        integrity=conn.execute("PRAGMA integrity_check").fetchone()[0]
-        print(json.dumps({"updates":out,"integrity_check":integrity},ensure_ascii=False,indent=2))
+                output.append(update_date(conn, args.raw_root, parse_date(value)))
+        integrity = conn.execute("PRAGMA integrity_check").fetchone()[0]
+        print(json.dumps({"updates": output, "integrity_check": integrity}, ensure_ascii=False, indent=2))
     finally:
         conn.close()
+
 
 if __name__ == "__main__":
     main()
