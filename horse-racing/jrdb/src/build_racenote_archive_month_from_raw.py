@@ -26,6 +26,8 @@ from pathlib import Path
 from typing import Iterable
 
 import racenote_archive as archive
+from jrdb_raw import iter_archive_records, race_key as common_race_key, result_key as common_result_key
+from jrdb_racenote_raw_adapter import previous_result_keys as common_previous_result_keys
 
 HERE = Path(__file__).resolve().parent
 FETCH_HISTORY = HERE / "fetch_jrdb_history.py"
