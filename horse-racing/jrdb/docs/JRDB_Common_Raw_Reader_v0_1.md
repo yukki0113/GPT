@@ -2,7 +2,7 @@
 
 ## 1. 目的
 
-中央競馬プロジェクトで JRDB Raw / PACI を読む固定長処理を、RaceNote・Eval・PWA・検証/指数開発から独立した共通責務へ移す。
+中央競馬プロジェクトで JRDB Raw / PACI を読む固定長処理を、RaceNote・Eval・PWA・Analysis・検証/指数開発から独立した共通責務へ移す。
 
 共通基盤の正本は SQLite ではなく、以下の2点とする。
 
@@ -17,8 +17,9 @@ JRDB Raw / PACI
       v
 Common JRDB Raw Reader
       |
-      +-- RaceNote formatter
-      +-- Eval enrichment
+      +-- RaceNote formatter / historical fallback / Archive builder
+      +-- Eval enrichment / BAC・SED exporter
+      +-- Analysis full rebuild / incremental updater
       +-- PWA/index builder
       +-- Raw history access
 ```
@@ -40,8 +41,11 @@ Common JRDB Raw Reader
 - JRDB code の日本語 label 化
 - RaceNote の JSON grouping / token compression
 - Eval 固有列への変換
+- Analysis schema への列投影
 - PWA index / Ability / Edge 等の特徴量生成
 - 予想ロジック
+
+Consumer adapter は、Common Reader が返した値を各 consumer の既存 schema / policy へ投影する責務だけを持つ。Common Reader が対応する field について、新しい固定 byte offset を consumer 側へ重複定義しない。
 
 ## 3. SED/ZED・SKB/ZKB
 
@@ -123,7 +127,7 @@ Drive 上の2024年 annual Rawを用い、Common Readerで全件走査した。
 | SKB | 47,181 | 0 |
 | UKC | 47,181 | 0 |
 
-### characterization tests
+### characterization / regression tests
 
 `tests/test_jrdb_raw_common.py`
 
@@ -140,20 +144,50 @@ Drive 上の2024年 annual Rawを用い、Common Readerで全件走査した。
 
 - current RaceNote `Parser` と Common `Parser` の BAC/KYI/ZED/ZKB parsed dict 完全一致を固定する。
 
-## 7. 移行方針
+`tests/test_jrdb_analysis_raw_adapter.py`
 
-v0.1 の追加時点では、既存 production consumer の import は変更しない。
+- Analysis production 33列へ投影する BAC/KYI/SED/CYB/UKC の既存意味を固定する。
 
-移行は次の順序で行う。
+`tests/test_jrdb_racenote_raw_adapter.py`
 
-1. Common Reader characterization test を固定
-2. RaceNote `racenote_jrdb.py` の固定長 helper / `Parser` を Common Reader import に置換
-3. RaceNote base schema v0.2 semantic regression
-4. Eval PACI enrichment の `Parser` / fixed-record reader を Common Reader へ置換
-5. PWA/index builder の重複 parser を段階的に置換
-6. 必要に応じて history locator index を追加
+- annual BAC/KYI/CHA/CYB から対象raceを選択し、KYIが明示する previous-result key だけで SED/SKB を ZED/ZKB として再構築することを固定する。
 
-**Parser 共通化と RaceNote schema変更は同時に行わない。**
+`tests/test_jrdb_eval_horse_result_adapter.py`
+
+- Eval全馬結果の通常着順・top3・払戻と、取消/除外/中止/失格等を自動着順確定しない review policy を固定する。
+
+`.github/workflows/jrdb_common_reader_tests.yml` は Common Reader と主要 consumer adapter / production path の変更を監視し、production Python の compile と regression tests を実行する。
+
+2026-09-06 の P0 最終確認では run `34028675390` が `success`。
+
+## 7. P0 migration status
+
+2026-09-06 に Common Reader P0 migration を完了した。
+
+production で Common Reader / consumer adapter を利用する経路:
+
+1. RaceNote `racenote_jrdb.py` の fixed-width parse
+2. RaceNote historical annual Raw fallback
+3. RaceNote Archive full-month Raw builder
+4. Eval PACI enrichment
+5. Eval BAC race-condition exporter
+6. Eval BAC+SED dataset exporter
+7. Eval SED horse-result exporter
+8. Analysis Lite full rebuild
+9. Analysis Lite incremental updater
+10. PWA/index-base Raw builder
+11. Raw history access
+
+移行中も RaceNote schema v0.2 / v1.0、Analysis v1.2、Eval CSV契約、as-of leakage policy は変更していない。
+
+**Parser 共通化と Consumer schema変更は同時に行わない。** 今後もこの原則を維持する。
+
+P1として残すもの:
+
+- rollback baseline として残る Core 系legacy parserの整理
+- Common Reader未利用の小規模 helper / race-name reader 等の棚卸しと必要に応じた統合
+- Drive上の共有 artifact を論理名から解決する Store Resolver / cache 層
+- 大量横断検索で必要になった場合の小型 locator index
 
 ## 8. SQLite の位置づけ
 
