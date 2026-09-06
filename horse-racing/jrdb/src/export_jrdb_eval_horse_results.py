@@ -19,6 +19,7 @@ import json
 from pathlib import Path
 import sys
 import zipfile
+from jrdb_eval_horse_result_adapter import project_eval_horse_result
 
 from export_jrdb_eval_dataset import (
     ExportError,
@@ -118,6 +119,20 @@ def parse_sed_horse_record(record: SourceRecord) -> dict[str, object]:
             f"SED record too short: {record.source_path} {record.member_name} "
             f"record={record.record_no} bytes={len(raw)}"
         )
+
+    try:
+        row = project_eval_horse_result(raw, VENUE_LABELS, ABNORMALITY_LABELS)
+    except ValueError as exc:
+        raise ExportError(
+            f"{exc}: {record.source_path} record={record.record_no}"
+        ) from exc
+    row.update({
+        "source_kind": "SED",
+        "source_file": record.source_path,
+        "source_member": record.member_name,
+        "source_record_no": record.record_no,
+    })
+    return row
 
     venue_code = normalize_venue_code(
         decode_text(raw, *SED_OFFSETS["venue_code"])
