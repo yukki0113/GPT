@@ -26,21 +26,14 @@ from pathlib import Path
 from typing import Iterable
 
 import racenote_archive_backend as archive_backend
+from jrdb_raw import Parser as CommonRawParser
+from jrdb_raw import iter_archive_records, race_key as raw_race_key, result_key as raw_result_key
 
 HERE = Path(__file__).resolve().parent
 FETCH_PACI = HERE / "fetch_jrdb_paci.py"
 FETCH_HISTORY = HERE / "fetch_jrdb_history.py"
 CONVERTER = HERE / "racenote_jrdb.py"
 ENRICHER = HERE / "racenote_history_enrichment.py"
-
-PREV_RESULT_SLICES = (
-    (203, 219),
-    (219, 235),
-    (235, 251),
-    (251, 267),
-    (267, 283),
-)
-
 
 @dataclass(frozen=True)
 class RaceNoteRequest:
