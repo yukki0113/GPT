@@ -8,6 +8,14 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - JRDB Raw ZIP / 大容量SQLite等: Git外ストレージ
 - 秘密情報: 環境変数またはローカル `jrdb_secret.py`。Gitへ保存しない
 
+## Common JRDB Raw Reader
+- `src/jrdb_raw.py` を BAC / KYI / CHA / CYB / SED / SKB / ZED / ZKB / UKC の固定長解釈の正本とする。
+- CP932 decode、fixed byte offset、race key / race-horse key / result key、record-length auditはCommon Readerが担当する。
+- RaceNote / Eval / Analysis / PWA は consumer adapter で既存schema・label・集計・as-of policyへ投影し、Common Reader対応fieldのbyte offsetを重複実装しない。
+- 新しいRaw fieldが必要な場合はconsumerへ直接sliceを追加せず、Common Readerへfieldとcharacterization testを追加してから利用する。
+- RaceNote historical fallback / Archive builderのprevious-result参照もKYI/SED/SKB Common Reader keyを使用する。
+- P0 production migrationは2026-09-06完了。回帰CIは `.github/workflows/jrdb_common_reader_tests.yml`。
+
 ## External data selection
 - Analysis Lite / Stats Mart / RaceNote Archive などの大容量artifactは再生成・世代更新でファイル名や外部storage上の識別子が変わり得るため、Gitには個別のDrive URL / File IDを固定しない。
 - 利用時はGit上のREADME・schema・対応ドキュメントで要求versionを確認し、外部ストレージ上から対象期間を満たす最新のvalidation PASS済みartifactを選ぶ。
