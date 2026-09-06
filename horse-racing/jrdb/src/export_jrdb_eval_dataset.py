@@ -31,6 +31,7 @@ from export_jrdb_eval_race_conditions import (
     parse_optional_date,
     row_matches,
 )
+from jrdb_eval_raw_adapter import parse_sed_race_eval
 
 VERSION = "1.0.0"
 
@@ -113,6 +114,16 @@ def parse_sed_race_record(record: SourceRecord) -> dict[str, object]:
             f"SED record too short: {record.source_path} {record.member_name} "
             f"record={record.record_no} bytes={len(raw)}"
         )
+
+    try:
+        row = parse_sed_race_eval(raw)
+    except ValueError as exc:
+        raise ExportError(str(exc)) from exc
+    if row["race_no"] is None:
+        raise ExportError(
+            f"SED race_no is blank: {record.source_path} record={record.record_no}"
+        )
+    return row
 
     race_no = parse_int(raw, *SED_OFFSETS["race_no"])
     distance = parse_int(raw, *SED_OFFSETS["distance"])
