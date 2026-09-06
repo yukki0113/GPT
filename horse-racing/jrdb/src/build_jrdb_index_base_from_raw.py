@@ -427,6 +427,13 @@ def parse_cyb(raw: bytes, member: str) -> dict[str, Any]:
     }
 
 
+# Keep remaining pre-common implementations as equivalence oracles until
+# production binding is switched after exact adapter regression tests pass.
+LegacyParseSed = parse_sed
+LegacyParseCha = parse_cha
+LegacyParseCyb = parse_cyb
+
+
 def profile_observation(raw: bytes, member: str) -> dict[str, Any]:
     """Parse one dated UKC profile observation for as-of pedigree joins."""
     record = parse_ukc_record(raw)
