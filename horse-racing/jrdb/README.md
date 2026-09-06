@@ -39,6 +39,18 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `tools/audit_jrdb_core_v1_2_regression.py` — v1.1.2 / v1.2回帰比較
 - `tools/audit_jrdb_analysis_equivalence.py` — Core→Analysis / Raw→Analysis 全列等価性比較
 
+## Common Raw Reader contract
+
+JRDB Raw / PACI の固定 byte positionを解釈する正本は `src/jrdb_raw.py` です。
+
+```text
+JRDB Raw / PACI
+  -> src/jrdb_raw.py
+     -> RaceNote / Eval / Analysis / PWA adapters
+```
+
+Consumerはschemaへの投影・label化・集計・as-of policyだけを担当し、Common Readerが対応済みのfieldについて独自offsetを新設しません。詳細は `docs/JRDB_Common_Raw_Reader_v0_1.md`。
+
 ## RaceNote production v1.0
 
 GPT-facingな正式RaceNote bundleは `schema/racenote_bundle_schema_v1_0.json` に従うv1.0です。
