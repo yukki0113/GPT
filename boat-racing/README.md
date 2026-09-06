@@ -52,3 +52,7 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 Chat / Workで参照・更新する場合は、Google Sheets API / Google Drive ConnectorでこのネイティブGoogleスプレッドシートを直接読み書きし、同一スプレッドシートへ反映してください。
 
 Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットです。以後の台帳参照・更新には使用せず、Drive旧ExcelやGitHub旧Excelへフォールバックしません。
+
+## Ledger daily result-import safeguards
+
+日次結果取込の対象日・freeze固定、掲載成績とCSV-onlyの分離、条件付き構造KPI、失敗構造ラベル、回帰確認は [`docs/競艇note販売運用台帳_日次結果取込再発防止手順.md`](docs/競艇note販売運用台帳_日次結果取込再発防止手順.md) に従います。
