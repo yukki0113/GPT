@@ -417,7 +417,7 @@ def extract_history_records(
         for kind in HISTORY_KINDS:
             path = annual_zip(raw_dir, kind, year)
             for line in iter_records(path, kind):
-                key = line[10:26].strip()
+                key = common_result_key(line).encode("ascii")
                 dates = key_dates.get(key)
                 if not dates:
                     continue
