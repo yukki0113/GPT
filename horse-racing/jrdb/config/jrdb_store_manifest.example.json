@@ -1,0 +1,52 @@
+{
+  "manifest_version": "1.0",
+  "updated_at": "",
+  "artifacts": [
+    {
+      "logical_name": "analysis/current",
+      "artifact_type": "analysis_lite",
+      "schema_version": "v1.2",
+      "data_version": "REPLACE_WITH_DATA_VERSION",
+      "period_from": "2016-01-01",
+      "period_to": "REPLACE_WITH_PERIOD_TO",
+      "status": "YTD",
+      "storage": {
+        "provider": "google_drive",
+        "file_id": "REPLACE_WITH_DRIVE_FILE_ID",
+        "filename": "jrdb_analysis_CURRENT.sqlite",
+        "size": 1,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payload": {
+        "compression": "none",
+        "member": null,
+        "filename": "jrdb_analysis_CURRENT.sqlite",
+        "size": 1,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "logical_name": "canonical/2024",
+      "artifact_type": "canonical_year",
+      "schema_version": "v1.0",
+      "data_version": "2024-final",
+      "period_from": "2024-01-01",
+      "period_to": "2024-12-31",
+      "status": "FINAL",
+      "storage": {
+        "provider": "google_drive",
+        "file_id": "REPLACE_WITH_DRIVE_FILE_ID",
+        "filename": "jrdb_canonical_2024.sqlite.zip",
+        "size": 1,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "payload": {
+        "compression": "zip",
+        "member": "jrdb_canonical_2024.sqlite",
+        "filename": "jrdb_canonical_2024.sqlite",
+        "size": 1,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  ]
+}
