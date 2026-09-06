@@ -273,14 +273,12 @@ def ensure_historical_raw(year: int, raw_dir: Path, force: bool, kinds: list[str
 
 def iter_records(zip_path: Path, prefix: str) -> Iterable[bytes]:
     """Yield non-empty fixed-width rows from matching ZIP members."""
-    with zipfile.ZipFile(zip_path) as archive:
-        members = [name for name in archive.namelist() if Path(name).name.upper().startswith(prefix)]
-        if not members:
-            raise RaceNoteRequestError(f"No {prefix} member in {zip_path}")
-        for member in members:
-            for line in archive.read(member).splitlines():
-                if line:
-                    yield line
+    found = False
+    for _member, record in iter_archive_records(zip_path, prefix):
+        found = True
+        yield record
+    if not found:
+        raise RaceNoteRequestError(f"No {prefix} member in {zip_path}")
 
 
 def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Path, destination: Path, force_fetch: bool) -> dict:
