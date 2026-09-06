@@ -72,6 +72,28 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Compile common-reader production consumers
+        working-directory: horse-racing/jrdb
+        run: |
+          python -m py_compile \
+            src/jrdb_raw.py \
+            src/jrdb_raw_history.py \
+            src/racenote_jrdb.py \
+            src/enrich_eval_csv_with_paci.py \
+            src/jrdb_index_base_adapter.py \
+            src/build_jrdb_index_base_from_raw.py \
+            src/jrdb_analysis_raw_adapter.py \
+            src/update_jrdb_analysis_incremental.py \
+            src/build_jrdb_analysis_from_raw.py \
+            src/jrdb_racenote_raw_adapter.py \
+            src/racenote_request.py \
+            src/build_racenote_archive_month_from_raw.py \
+            src/jrdb_eval_raw_adapter.py \
+            src/jrdb_eval_horse_result_adapter.py \
+            src/export_jrdb_eval_race_conditions.py \
+            src/export_jrdb_eval_dataset.py \
+            src/export_jrdb_eval_horse_results.py
+
       - name: Run common reader regressions
         working-directory: horse-racing/jrdb/tests
         run: |
