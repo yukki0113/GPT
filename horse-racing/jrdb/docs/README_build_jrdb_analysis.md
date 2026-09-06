@@ -4,6 +4,9 @@
 `update_jrdb_analysis_incremental.py` is the normal in-season daily replacement path.
 `build_jrdb_analysis.py` remains the Core v1.2.1 reference/regression path.
 
+Both Raw production paths parse fixed-width records through `jrdb_raw.py` and `jrdb_analysis_raw_adapter.py`.
+The byte offsets listed below document field lineage; they are not an independent production parser contract.
+
 The full provenance-preserving Core remains the durable normalized/audit database; Analysis Lite is the routine GPT/PWA query layer.
 
 ## Field lineage
