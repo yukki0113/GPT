@@ -168,6 +168,53 @@ def validate_sqlite(path: Path, label: str) -> None:
     finally:
         connection.close()
 
+def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, Path, dict]:
+    """Resolve Analysis/Mart explicitly or through the shared JRDB Store."""
+    analysis = args.analysis
+    mart = args.mart
+    if analysis is not None and mart is not None:
+        validate_sqlite(analysis, "Analysis Lite")
+        validate_sqlite(mart, "Stats Mart")
+        return analysis, mart, {
+            "mode": "explicit_paths",
+            "analysis": "explicit",
+            "stats_mart": "explicit",
+        }
+
+    try:
+        manifest_path = manifest_path_from_args(args.store_manifest)
+        resolver = StoreResolver.from_file(
+            manifest_path,
+            cache_root=args.store_cache,
+        )
+        analysis_source = "explicit"
+        mart_source = "explicit"
+        if analysis is None:
+            analysis = resolver.resolve(
+                "jrdb://analysis/current",
+                offline=args.store_offline,
+            )
+            analysis_source = "jrdb://analysis/current"
+        if mart is None:
+            mart = resolver.resolve(
+                "jrdb://stats/current",
+                offline=args.store_offline,
+            )
+            mart_source = "jrdb://stats/current"
+    except StoreError as exc:
+        raise RaceNoteRequestError(f"JRDB Store resolution failed: {exc}") from exc
+
+    if analysis is None or mart is None:
+        raise RaceNoteRequestError("Analysis Lite / Stats Mart resolution is incomplete")
+    validate_sqlite(analysis, "Analysis Lite")
+    validate_sqlite(mart, "Stats Mart")
+    return analysis, mart, {
+        "mode": "store_manifest",
+        "manifest_file": manifest_path.name,
+        "analysis": analysis_source,
+        "stats_mart": mart_source,
+    }
+
 
 def try_archive_base(
     archive_path: Path | None,
