@@ -19,7 +19,7 @@ from jrdb_analysis_raw_adapter import (
     parse_sed,
     parse_ukc,
 )
-from jrdb_raw import iter_archive_records
+from jrdb_raw import iter_archive_records, race_key as common_race_key
 
 VERSION = "1.2-production"
 SCHEMA_VERSION = "v1.2"
@@ -79,7 +79,7 @@ def build(raw_root: Path, years: list[int], out: Path, schema: Path) -> dict[str
             if race_date is None:
                 continue
             race = parse_bac(raw, race_date, year)
-            race_key = raw[:8].decode("ascii", "replace").strip()
+            race_key = common_race_key(raw)
             races.setdefault(race_key, race)
 
         for _member, raw in iter_archive_records(raw_root / "KYI" / f"KYI_{year}.zip", "KYI"):
