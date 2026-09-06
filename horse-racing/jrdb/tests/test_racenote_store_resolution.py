@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sqlite3
 import sys
 import tempfile
@@ -150,6 +151,16 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                     racenote_request.resolve_enrichment_sources(
                         args_for(None, None, manifest)
                     )
+
+    def test_missing_manifest_is_clear_when_store_is_required(self) -> None:
+        with patch.dict(os.environ, {}, clear=True):
+            with self.assertRaisesRegex(
+                racenote_request.RaceNoteRequestError,
+                "Store manifest is required",
+            ):
+                racenote_request.resolve_enrichment_sources(
+                    args_for(None, None)
+                )
 
 
 if __name__ == "__main__":
