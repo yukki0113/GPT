@@ -29,6 +29,7 @@ import racenote_archive_backend as archive_backend
 from jrdb_raw import Parser as CommonRawParser
 from jrdb_raw import iter_archive_records, race_key as raw_race_key, result_key as raw_result_key
 from jrdb_racenote_raw_adapter import build_paci_equivalent as build_common_historical_paci
+from jrdb_store import StoreError, StoreResolver, manifest_path_from_args
 
 HERE = Path(__file__).resolve().parent
 FETCH_PACI = HERE / "fetch_jrdb_paci.py"
@@ -86,8 +87,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--venue", default=None, help="Optional JRA venue")
     parser.add_argument("--race", type=int, default=None, help="Optional race number; requires venue")
     parser.add_argument("--today", default=None, help="Router-date override for tests")
-    parser.add_argument("--analysis", type=Path, required=True, help="Analysis Lite SQLite")
-    parser.add_argument("--mart", type=Path, required=True, help="Stats Mart SQLite")
+    parser.add_argument("--analysis", type=Path, default=None, help="Optional explicit Analysis Lite SQLite")
+    parser.add_argument("--mart", type=Path, default=None, help="Optional explicit Stats Mart SQLite")
+    parser.add_argument("--store-manifest", type=Path, default=None, help="JRDB Store manifest; falls back to JRDB_STORE_MANIFEST")
+    parser.add_argument("--store-cache", type=Path, default=None, help="Optional JRDB Store cache root")
+    parser.add_argument("--store-offline", action="store_true", help="Resolve Store artifacts from verified cache only")
     parser.add_argument("--raw-dir", type=Path, default=None, help="Historical Raw cache/root")
     parser.add_argument(
         "--archive",
