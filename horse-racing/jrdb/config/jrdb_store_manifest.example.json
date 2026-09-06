@@ -28,22 +28,22 @@
     {
       "logical_name": "canonical/2024",
       "artifact_type": "canonical_year",
-      "schema_version": "v1.0",
-      "data_version": "2024-final",
+      "schema_version": "v0.1",
+      "data_version": "2024_v0_1",
       "period_from": "2024-01-01",
       "period_to": "2024-12-31",
       "status": "FINAL",
       "storage": {
         "provider": "google_drive",
         "file_id": "REPLACE_WITH_DRIVE_FILE_ID",
-        "filename": "jrdb_canonical_2024.sqlite.zip",
+        "filename": "jrdb_canonical_2024_v0_1.sqlite.zip",
         "size": 1,
         "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
       },
       "payload": {
         "compression": "zip",
-        "member": "jrdb_canonical_2024.sqlite",
-        "filename": "jrdb_canonical_2024.sqlite",
+        "member": "jrdb_canonical_2024_v0_1.sqlite",
+        "filename": "jrdb_canonical_2024_v0_1.sqlite",
         "size": 1,
         "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
       }
