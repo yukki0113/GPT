@@ -534,7 +534,7 @@ def main() -> int:
             reconstruction = build_historical_paci(
                 raw_dir,
                 request,
-                args.analysis,
+                analysis,
                 paci_path,
                 args.force_fetch,
             )
@@ -552,8 +552,8 @@ def main() -> int:
     generated = [
         enrich_bundle(
             bundle,
-            args.analysis,
-            args.mart,
+            analysis,
+            mart,
             final_dir,
             args.stats_window_years,
         )
