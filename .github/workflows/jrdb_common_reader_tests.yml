@@ -5,6 +5,7 @@ on:
     paths:
       - 'horse-racing/jrdb/src/jrdb_raw.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
+      - 'horse-racing/jrdb/src/jrdb_store.py'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/src/jrdb_index_base_adapter.py'
@@ -22,6 +23,8 @@ on:
       - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_store.py'
+      - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
       - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/tests/test_jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
@@ -32,6 +35,7 @@ on:
     paths:
       - 'horse-racing/jrdb/src/jrdb_raw.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
+      - 'horse-racing/jrdb/src/jrdb_store.py'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/src/jrdb_index_base_adapter.py'
@@ -49,6 +53,8 @@ on:
       - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_store.py'
+      - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
       - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/tests/test_jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
@@ -78,6 +84,7 @@ jobs:
           python -m py_compile \
             src/jrdb_raw.py \
             src/jrdb_raw_history.py \
+            src/jrdb_store.py \
             src/racenote_jrdb.py \
             src/enrich_eval_csv_with_paci.py \
             src/jrdb_index_base_adapter.py \
@@ -100,6 +107,8 @@ jobs:
           python -m unittest -v \
             test_jrdb_raw_common \
             test_jrdb_raw_racenote_compat \
+            test_jrdb_store \
+            test_racenote_store_resolution \
             test_enrich_eval_csv_with_paci \
             test_jrdb_index_base_adapter \
             test_jrdb_analysis_raw_adapter \
