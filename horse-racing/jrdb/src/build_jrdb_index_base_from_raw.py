@@ -21,7 +21,10 @@ from typing import Any, Callable, Iterable
 
 from jrdb_index_base_adapter import (
     parse_bac as adapted_parse_bac,
+    parse_cha as adapted_parse_cha,
+    parse_cyb as adapted_parse_cyb,
     parse_kyi as adapted_parse_kyi,
+    parse_sed as adapted_parse_sed,
 )
 from jrdb_ukc import parse_ukc_record
 
@@ -432,6 +435,9 @@ def parse_cyb(raw: bytes, member: str) -> dict[str, Any]:
 LegacyParseSed = parse_sed
 LegacyParseCha = parse_cha
 LegacyParseCyb = parse_cyb
+parse_sed = adapted_parse_sed
+parse_cha = adapted_parse_cha
+parse_cyb = adapted_parse_cyb
 
 
 def profile_observation(raw: bytes, member: str) -> dict[str, Any]:
