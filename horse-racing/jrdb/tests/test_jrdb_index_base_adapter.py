@@ -18,6 +18,9 @@ from build_jrdb_index_base_from_raw import (  # noqa: E402
     LegacyParseCyb as legacy_parse_cyb,
     LegacyParseKyi as legacy_parse_kyi,
     LegacyParseSed as legacy_parse_sed,
+    parse_cha as production_parse_cha,
+    parse_cyb as production_parse_cyb,
+    parse_sed as production_parse_sed,
 )
 from jrdb_index_base_adapter import (  # noqa: E402
     parse_bac as adapted_parse_bac,
@@ -78,6 +81,11 @@ class IndexBaseAdapterTest(unittest.TestCase):
             adapted_parse_cyb(raw, member),
             legacy_parse_cyb(raw, member),
         )
+
+    def test_production_bindings_use_common_adapters(self) -> None:
+        self.assertIs(production_parse_sed, adapted_parse_sed)
+        self.assertIs(production_parse_cha, adapted_parse_cha)
+        self.assertIs(production_parse_cyb, adapted_parse_cyb)
 
 
 if __name__ == "__main__":
