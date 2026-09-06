@@ -4,6 +4,11 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 
 ## Current modules
 
+- `src/jrdb_raw.py` — BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/UKCの共通固定長Reader / neutral parser
+- `src/jrdb_raw_history.py` — Common Reader上のannual Raw履歴アクセス
+- `src/jrdb_racenote_raw_adapter.py` — RaceNote historical Raw再構築用projection
+- `src/jrdb_analysis_raw_adapter.py` — Analysis v1.2用projection
+- `src/jrdb_eval_raw_adapter.py` / `src/jrdb_eval_horse_result_adapter.py` — Eval用projection / 結果policy
 - `src/fetch_jrdb_paci.py` — PACI前日一括ZIP取得
 - `src/fetch_jrdb_history.py` — 年次ZIP / 2026年以降の単日ZIP取得
 - `src/racenote_jrdb.py` — PACI ZIP → RaceNote base v0.2 JSON
