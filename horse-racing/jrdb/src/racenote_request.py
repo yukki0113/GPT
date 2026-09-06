@@ -501,8 +501,8 @@ def main() -> int:
     if args.plan_only:
         return 0
 
-    validate_sqlite(args.analysis, "Analysis Lite")
-    validate_sqlite(args.mart, "Stats Mart")
+    analysis, mart, enrichment_resolution = resolve_enrichment_sources(args)
+    plan["enrichment_source_resolution"] = enrichment_resolution
     request_root = args.output / request.compact_date
     work_dir = request_root / "work"
     final_dir = request_root / "bundles"
