@@ -332,10 +332,7 @@ def extract_target_base_records(
     for kind in TARGET_KINDS:
         path = annual_zip(raw_dir, kind, year)
         for line in iter_records(path, kind):
-            try:
-                race_key = line[:8].decode("ascii")
-            except UnicodeDecodeError:
-                continue
+            race_key = common_race_key(line)
             identity = index.by_race_key.get(race_key)
             if identity is None:
                 continue
