@@ -28,6 +28,7 @@ from typing import Iterable
 import racenote_archive_backend as archive_backend
 from jrdb_raw import Parser as CommonRawParser
 from jrdb_raw import iter_archive_records, race_key as raw_race_key, result_key as raw_result_key
+from jrdb_racenote_raw_adapter import build_paci_equivalent as build_common_historical_paci
 
 HERE = Path(__file__).resolve().parent
 FETCH_PACI = HERE / "fetch_jrdb_paci.py"
