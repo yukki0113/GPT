@@ -120,9 +120,13 @@ def _metrics(rows: Iterable[Mapping[str, object]]) -> Metrics:
 
 def build_update_plan(
     *, article_id: str, data_dates: Iterable[str], detail_dates: Iterable[str],
-    prediction_freezes: Iterable[str], sales_freezes: Iterable[str], details: Iterable[Mapping[str, object]]
+    prediction_freezes: Iterable[str], sales_freezes: Iterable[str], details: Iterable[Mapping[str, object]],
+    process_datetime: str | None = None,
 ) -> Mapping[str, object]:
     """Return a normalized, Sheets-ready daily update plan and validate invariants."""
+    # Retained only for audit callers.  It is intentionally not a source of
+    # target-day or freeze values, including when execution crosses midnight.
+    _ = process_datetime
     facts = resolve_immutable_facts(
         article_id=article_id, data_dates=data_dates, detail_dates=detail_dates,
         prediction_freezes=prediction_freezes, sales_freezes=sales_freezes,
