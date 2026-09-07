@@ -49,26 +49,7 @@ OUTPUT_COLUMNS = (
     "event_region_code",
 )
 
-# BAC固定長仕様。offsetは0始まり。
 BAC_MIN_LENGTH = 98
-BAC_OFFSETS = {
-    "distance": (20, 4),
-    "track_type": (24, 1),
-    "race_condition_code": (29, 2),
-    "grade_code": (35, 1),
-    "venue_code": (0, 2),
-    "race_no": (6, 2),
-    "race_date": (8, 8),
-    "turn_direction_code": (25, 1),
-    "inner_outer_code": (26, 1),
-    "race_type_code": (27, 2),
-    "race_symbol_code": (31, 3),
-    "weight_condition_code": (34, 1),
-    "race_name": (36, 50),
-    "declared_field_size": (94, 2),
-    "course_code": (96, 1),
-    "event_region_code": (97, 1),
-}
 
 BAC_TXT_RE = re.compile(r"^BAC\d{6}\.txt$", re.IGNORECASE)
 BAC_ANNUAL_ZIP_RE = re.compile(r"^BAC_\d{4}\.zip$", re.IGNORECASE)
@@ -156,37 +137,6 @@ def parse_bac_record_full(record: SourceRecord) -> dict[str, object]:
             f"{record.member_name} record={record.record_no}"
         )
     return row
-
-    venue_code = decode_text(raw, *BAC_OFFSETS["venue_code"])
-    race_no = parse_int(raw, *BAC_OFFSETS["race_no"])
-    race_date_raw = decode_text(raw, *BAC_OFFSETS["race_date"])
-    distance = parse_int(raw, *BAC_OFFSETS["distance"])
-    declared_field_size = parse_int(raw, *BAC_OFFSETS["declared_field_size"])
-
-    if race_no is None:
-        raise ExportError(
-            f"race_no is blank: {record.source_path} "
-            f"{record.member_name} record={record.record_no}"
-        )
-
-    return {
-        "race_date": normalize_date_yyyymmdd(race_date_raw),
-        "venue_code": normalize_venue_code(venue_code),
-        "race_no": race_no,
-        "race_name": decode_text(raw, *BAC_OFFSETS["race_name"]),
-        "race_type_code": decode_text(raw, *BAC_OFFSETS["race_type_code"]),
-        "race_condition_code": decode_text(raw, *BAC_OFFSETS["race_condition_code"]),
-        "race_symbol_code": decode_text(raw, *BAC_OFFSETS["race_symbol_code"]),
-        "weight_condition_code": decode_text(raw, *BAC_OFFSETS["weight_condition_code"]),
-        "grade_code": decode_text(raw, *BAC_OFFSETS["grade_code"]),
-        "track_type": decode_text(raw, *BAC_OFFSETS["track_type"]),
-        "distance": distance,
-        "declared_field_size": declared_field_size,
-        "turn_direction_code": decode_text(raw, *BAC_OFFSETS["turn_direction_code"]),
-        "inner_outer_code": decode_text(raw, *BAC_OFFSETS["inner_outer_code"]),
-        "course_code": decode_text(raw, *BAC_OFFSETS["course_code"]),
-        "event_region_code": decode_text(raw, *BAC_OFFSETS["event_region_code"]),
-    }
 
 
 def parse_bac_record(record: SourceRecord) -> dict[str, object]:
