@@ -11,6 +11,8 @@
 
 ## 共通Git搬送経路
 
+GPT / Workから通常のソース・Markdownを反映する際、直接`git push`が認証不可なら、必ず`[gpt-git-update]` Issueを作成する。最新main基準のunified diffと`commit_message`をIssue本文へ入れ、Actionsの検証・commit・push・Issue closeを確認する。ローカルcommitをそのままpushしない。バイナリはbinary update経路を使用する。
+
 - 通常テキストの更新: `.gpt/GIT_UPDATE_ISSUE.md` / `[gpt-git-update]`
 - バイナリの更新: `.gpt/GIT_BINARY_UPDATE_ISSUE.md` / `[gpt-git-binary-update]`
 - GitHub上のバイナリをChat / Workへ実ファイルとして取得: `.gpt/GIT_BINARY_READ_ISSUE.md` / `[gpt-git-binary-read]`
