@@ -68,6 +68,11 @@ CREATE TABLE fact_entry_result_lite(
 );
 
 CREATE INDEX ix_analysis_date ON fact_entry_result_lite(race_date);
+-- RaceNote/history consumers repeatedly query one horse's prior rows with
+-- horse_id=? AND race_date<? and request the newest rows first.  Keep this
+-- physical optimization inside Analysis Lite so consumers do not implement
+-- their own history cache/index.
+CREATE INDEX ix_analysis_horse_history ON fact_entry_result_lite(horse_id,race_date DESC,race_no DESC);
 CREATE INDEX ix_analysis_course ON fact_entry_result_lite(year,venue_code,track_type,distance,track_condition_code);
 CREATE INDEX ix_analysis_sire ON fact_entry_result_lite(sire_name);
 CREATE INDEX ix_analysis_bms ON fact_entry_result_lite(broodmare_sire_name);
