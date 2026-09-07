@@ -13,17 +13,18 @@
       "storage": {
         "provider": "google_drive",
         "file_id": "REPLACE_WITH_DRIVE_FILE_ID",
-        "filename": "jrdb_analysis_CURRENT.sqlite",
+        "filename": "jrdb_analysis_CURRENT.sqlite.zip",
         "size": 1,
         "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
       },
       "payload": {
-        "compression": "none",
-        "member": null,
+        "compression": "zip",
+        "member": "jrdb_analysis_CURRENT.sqlite",
         "filename": "jrdb_analysis_CURRENT.sqlite",
         "size": 1,
         "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
-      }
+      },
+      "artifact_revision": "REPLACE_WITH_OPTIONAL_REVISION"
     },
     {
       "logical_name": "canonical/2024",
