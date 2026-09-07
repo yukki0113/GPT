@@ -1,0 +1,68 @@
+name: GPT Google Drive Request via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: gpt-gdrive-request
+  cancel-in-progress: false
+
+jobs:
+  execute:
+    if: github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[gpt-gdrive-request]')
+    runs-on: ubuntu-latest
+    env:
+      GPT_GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GPT_GDRIVE_SERVICE_ACCOUNT_JSON }}
+      GPT_GDRIVE_AUTOMATION_ROOT_ID: ${{ secrets.GPT_GDRIVE_AUTOMATION_ROOT_ID }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Drive client
+        run: pip install google-api-python-client google-auth
+      - name: Parse request and fetch optional source artifact
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from tools.gpt_io.gdrive.gdrive_issue_protocol import parse_issue
+          request=parse_issue(os.environ['ISSUE_TITLE'],os.environ['ISSUE_BODY'])
+          Path('/tmp/gdrive-request.json').write_text(__import__('json').dumps(request),encoding='utf-8')
+          PY
+          run_id=$(python -c "import json;print(json.load(open('/tmp/gdrive-request.json')).get('source_artifact_run_id',''))")
+          artifact=$(python -c "import json;print(json.load(open('/tmp/gdrive-request.json')).get('source_artifact_name',''))")
+          if [ -n "$run_id" ] && [ -n "$artifact" ]; then
+            mkdir -p /tmp/gdrive-source
+            gh run download "$run_id" --repo "${{ github.repository }}" --name "$artifact" --dir /tmp/gdrive-source
+          fi
+      - name: Execute request
+        id: drive
+        run: |
+          operation=$(python -c "import json;print(json.load(open('/tmp/gdrive-request.json'))['operation'])")
+          python tools/gpt_io/gpt_io.py gdrive "$operation" --request /tmp/gdrive-request.json > /tmp/gdrive-result.json
+      - name: Comment result
+        if: always()
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from tools.gpt_io.gdrive.gdrive_issue_protocol import format_result
+          path=Path('/tmp/gdrive-result.json')
+          result=json.loads(path.read_text()) if path.exists() else {'status':'failure','backend':'gdrive','error':'request execution failed; inspect run logs'}
+          Path('/tmp/comment.md').write_text(format_result(result),encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          if [ "${{ steps.drive.outcome }}" = "success" ]; then gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed; fi
