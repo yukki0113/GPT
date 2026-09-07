@@ -207,6 +207,17 @@ python src/racenote_request.py \
 
 `--archive` を省略した場合、またはArchiveがproduction条件を満たさない場合はsafe fallbackを利用します。
 
+### Store-managed Analysis / Mart
+
+```bash
+python src/racenote_request.py \
+  --date 20260827 \
+  --store-manifest ./jrdb_store_manifest_v1.json \
+  --output ./output
+```
+
+`--analysis` / `--mart` の片方だけを明示した場合は、未指定側だけStoreから解決します。`--store-offline` はSHA検証済みcacheだけを利用し、未cacheならfailします。
+
 ### Future / current all races
 
 ```bash
