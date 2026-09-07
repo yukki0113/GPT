@@ -8,6 +8,7 @@ on:
       - 'horse-racing/jrdb/src/jrdb_store.py'
       - 'horse-racing/jrdb/src/build_jrdb_canonical.py'
       - 'horse-racing/jrdb/schema/jrdb_canonical_schema_v0_1.sql'
+      - 'horse-racing/jrdb/schema/jrdb_analysis_schema_v1_2.sql'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/src/jrdb_index_base_adapter.py'
@@ -38,6 +39,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_raw_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
+      - 'horse-racing/jrdb/tests/test_racenote_analysis_history_index.py'
       - '.github/workflows/jrdb_common_reader_tests.yml'
   pull_request:
     paths:
@@ -46,6 +48,7 @@ on:
       - 'horse-racing/jrdb/src/jrdb_store.py'
       - 'horse-racing/jrdb/src/build_jrdb_canonical.py'
       - 'horse-racing/jrdb/schema/jrdb_canonical_schema_v0_1.sql'
+      - 'horse-racing/jrdb/schema/jrdb_analysis_schema_v1_2.sql'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/src/jrdb_index_base_adapter.py'
@@ -76,6 +79,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_raw_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
+      - 'horse-racing/jrdb/tests/test_racenote_analysis_history_index.py'
       - '.github/workflows/jrdb_common_reader_tests.yml'
   workflow_dispatch:
 
@@ -136,4 +140,5 @@ jobs:
             test_jrdb_index_base_adapter \
             test_jrdb_analysis_raw_adapter \
             test_jrdb_racenote_raw_adapter \
-            test_jrdb_eval_horse_result_adapter
+            test_jrdb_eval_horse_result_adapter \
+            test_racenote_analysis_history_index
