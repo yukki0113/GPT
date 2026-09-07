@@ -16,6 +16,7 @@ on:
       - 'horse-racing/jrdb/src/jrdb_analysis_raw_adapter.py'
       - 'horse-racing/jrdb/src/update_jrdb_analysis_incremental.py'
       - 'horse-racing/jrdb/src/build_jrdb_analysis_from_raw.py'
+      - 'horse-racing/jrdb/src/upgrade_jrdb_analysis_v1_1_to_v1_2.py'
       - 'horse-racing/jrdb/src/jrdb_racenote_raw_adapter.py'
       - 'horse-racing/jrdb/src/racenote_request.py'
       - 'horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py'
@@ -31,6 +32,7 @@ on:
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
       - 'horse-racing/jrdb/tests/test_jrdb_canonical_builder.py'
       - 'horse-racing/jrdb/tests/test_jrdb_pwa_race_names_common.py'
+      - 'horse-racing/jrdb/tests/test_upgrade_jrdb_analysis_common.py'
       - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/tests/test_jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
@@ -52,6 +54,7 @@ on:
       - 'horse-racing/jrdb/src/jrdb_analysis_raw_adapter.py'
       - 'horse-racing/jrdb/src/update_jrdb_analysis_incremental.py'
       - 'horse-racing/jrdb/src/build_jrdb_analysis_from_raw.py'
+      - 'horse-racing/jrdb/src/upgrade_jrdb_analysis_v1_1_to_v1_2.py'
       - 'horse-racing/jrdb/src/jrdb_racenote_raw_adapter.py'
       - 'horse-racing/jrdb/src/racenote_request.py'
       - 'horse-racing/jrdb/src/build_racenote_archive_month_from_raw.py'
@@ -67,6 +70,7 @@ on:
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
       - 'horse-racing/jrdb/tests/test_jrdb_canonical_builder.py'
       - 'horse-racing/jrdb/tests/test_jrdb_pwa_race_names_common.py'
+      - 'horse-racing/jrdb/tests/test_upgrade_jrdb_analysis_common.py'
       - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/tests/test_jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
@@ -106,6 +110,7 @@ jobs:
             src/jrdb_analysis_raw_adapter.py \
             src/update_jrdb_analysis_incremental.py \
             src/build_jrdb_analysis_from_raw.py \
+            src/upgrade_jrdb_analysis_v1_1_to_v1_2.py \
             src/jrdb_racenote_raw_adapter.py \
             src/racenote_request.py \
             src/build_racenote_archive_month_from_raw.py \
@@ -126,6 +131,7 @@ jobs:
             test_racenote_store_resolution \
             test_jrdb_canonical_builder \
             test_jrdb_pwa_race_names_common \
+            test_upgrade_jrdb_analysis_common \
             test_enrich_eval_csv_with_paci \
             test_jrdb_index_base_adapter \
             test_jrdb_analysis_raw_adapter \
