@@ -3,6 +3,7 @@
 BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 ## Current tools
+- `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
 - `src/fetch_boatrace_racelist.py` — 出走表取得
 - `src/fetch_boatrace_pre_race_info.py` — 直前情報取得
 - `src/fetch_boatrace_results.py` — 公式結果取得
@@ -56,3 +57,12 @@ Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` および G
 ## Ledger daily result-import safeguards
 
 日次結果取込の対象日・freeze固定、掲載成績とCSV-onlyの分離、条件付き構造KPI、失敗構造ラベル、回帰確認は [`docs/競艇note販売運用台帳_日次結果取込再発防止手順.md`](docs/競艇note販売運用台帳_日次結果取込再発防止手順.md) に従います。
+
+## Ledger result-import implementation
+
+`src/ledger_daily_result_import.py` は、日次CSVを基に対象日・freeze・掲載成績・CSVのみ・全対象・条件付き構造KPI・失敗構造を正規化し、Google Sheets反映前のJSON更新計画を生成します。Google認証・書込みは持たず、生成した計画を確認してからネイティブGoogleスプレッドシートへ反映します。
+
+```bash
+python boat-racing/src/ledger_daily_result_import.py --input source.json --output update_plan.json
+python -m unittest discover -s boat-racing/tests -v
+```
