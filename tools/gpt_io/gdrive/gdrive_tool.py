@@ -13,6 +13,7 @@ from typing import Any
 from tools.gpt_io.common.checksum import file_integrity
 from tools.gpt_io.common.result import build_result
 from tools.gpt_io.gdrive import gdrive_api as api
+from tools.gpt_io.gdrive.validators import validate_file
 
 OPS = {"metadata", "list", "search", "download", "verify", "upload", "mkdir", "copy", "move", "replace", "trash"}
 
@@ -70,8 +71,11 @@ def execute(request: dict[str, Any], service=None, root_id: str | None = None) -
             raise api.DriveError("Downloaded size mismatch")
         if "sha256" in expected and expected["sha256"].lower() != meta["sha256"]:
             raise api.DriveError("Downloaded SHA-256 mismatch")
+        validation = validate_file(output, request.get("format_validation"))
         if op == "verify": output.unlink(missing_ok=True)
-        return _result(op, request, {"file_id": request["file_id"], "local_path": str(output)}, meta)
+        result = _result(op, request, {"file_id": request["file_id"], "local_path": str(output)}, meta)
+        result["provenance"].update(validation)
+        return result
     if op == "mkdir":
         meta = api.mkdir(service, request["parent_folder_id"], request["filename"], root_id)
         return _result(op, request, meta)
@@ -93,9 +97,11 @@ def execute(request: dict[str, Any], service=None, root_id: str | None = None) -
     if request.get("verify"):
         with tempfile.TemporaryDirectory(prefix="gdrive-roundtrip-") as folder:
             checked = api.download(service, meta["id"], Path(folder) / "payload", False)
+            validation = validate_file(Path(folder) / "payload", request.get("format_validation"))
         if checked["size_bytes"] != integrity["size_bytes"] or checked["sha256"] != integrity["sha256"]:
             raise api.DriveError("Round-trip verification failed")
         result["provenance"]["round_trip_verified"] = True
+        result["provenance"].update(validation)
     return result
 
 

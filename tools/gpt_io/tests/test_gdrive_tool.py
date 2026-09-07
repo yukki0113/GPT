@@ -6,6 +6,7 @@ from unittest.mock import patch
 from tools.gpt_io.common.result import build_result
 from tools.gpt_io.gdrive import gdrive_api as api
 from tools.gpt_io.gdrive.gdrive_tool import execute, validate_request
+from tools.gpt_io.gdrive.validators import validate_file
 
 class RequestTests(unittest.TestCase):
     def test_unsupported(self):
@@ -51,5 +52,19 @@ class BoundaryTests(unittest.TestCase):
         with patch.dict("os.environ",{api.SERVICE_ACCOUNT_ENV:"top-secret",api.ROOT_ENV:"r"},clear=True):
             with self.assertRaisesRegex(api.DriveError,"authentication failed") as caught: api.load_service()
             self.assertNotIn("top-secret",str(caught.exception))
+    def test_same_name_upload_conflict(self):
+        with patch.object(api,"assert_under_root"), patch.object(api,"_same_name",return_value=[{"id":"existing"}]):
+            with self.assertRaisesRegex(api.DriveError,"same name"): api.upload(object(),Path("x"),"parent","x","root")
+    def test_local_overwrite_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            target=Path(d)/"exists"; target.write_bytes(b"x")
+            s=FakeService({"file":{"mimeType":"application/octet-stream"}})
+            with self.assertRaisesRegex(api.DriveError,"already exists"): api.download(s,"file",target)
+    def test_zip_validation(self):
+        from zipfile import ZipFile
+        with tempfile.TemporaryDirectory() as d:
+            target=Path(d)/"x.zip"
+            with ZipFile(target,"w") as z: z.writestr("a.txt","ok")
+            self.assertTrue(validate_file(target,"zip")["format_valid"])
 
 if __name__ == "__main__": unittest.main()
