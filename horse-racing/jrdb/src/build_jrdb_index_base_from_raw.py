@@ -472,6 +472,10 @@ def profile_observation(raw: bytes, member: str) -> dict[str, Any]:
     }
 
 
+LegacyProfileObservation = profile_observation
+profile_observation = adapted_parse_ukc
+
+
 @dataclass
 class YearData:
     races: dict[str, dict[str, Any]]
