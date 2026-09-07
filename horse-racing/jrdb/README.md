@@ -61,10 +61,33 @@ Google Drive上のvalidation済み共有artifactは `src/jrdb_store.py` で論�
 Drive live manifest
   -> jrdb_store.py
      -> verified local cache
-     -> Analysis / Stats Mart / future canonical shards
+     -> Analysis / Stats Mart / Canonical annual shards
 ```
 
 Consumerへ個別Drive File IDや恒久ローカルpathを持たせません。ローカル実体はcacheであり、live manifestはGit外の固定名 `JRDB/manifest/jrdb_store_manifest_v1.json` で管理します。Gitにはexample/schemaだけを保持します。詳細は `docs/JRDB_Store_Resolver_v0_1.md`。
+
+### Canonical Annual Shard v0.1
+
+CanonicalはRaw/PACIやCommon Readerを置換する新しい正本ではなく、Common Reader neutral factsの任意の高速materializationです。
+
+```text
+annual Raw ZIPs
+  -> jrdb_raw.py
+  -> build_jrdb_canonical.py
+  -> jrdb_canonical_YYYY_v0_1.sqlite
+  -> ZIP transport / Drive Store
+```
+
+2024 full-year PoCは `jrdb://canonical/2024` としてDrive live manifestへ `FINAL` 登録済みです。
+
+- source records: 286,540
+- BAC: 3,454 / KYI・CHA・CYB・SED・SKB・UKC: 各47,181
+- field-level comparison: 7 family × 100件 = 700件、mismatch 0
+- SQLite integrity_check: ok
+- SQLite: 178,450,432 bytes (~170.18 MiB)
+- ZIP transport: 54,815,315 bytes (~52.28 MiB)
+
+schemaは `schema/jrdb_canonical_schema_v0_1.sql`、設計・実測正本は `docs/JRDB_Canonical_Annual_Shard_v0_1.md`。単発RaceNote/Evalを無条件にSQLiteへ寄せず、反復・横断アクセスで利益があるconsumerだけ段階利用します。
 
 ## RaceNote production v1.0
 
