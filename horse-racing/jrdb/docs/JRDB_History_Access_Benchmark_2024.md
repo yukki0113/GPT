@@ -4,7 +4,9 @@ Updated: 2026-09-07
 
 ## Purpose
 
-Common Raw history batch API (`jrdb_raw_history.get_horses_runs`) が、単発RaceNoteの履歴取得に対して軽量history indexを別途必須にする必要があるかを2024実データで確認する。
+Common Raw history batch API (`jrdb_raw_history.get_horses_runs`) の性能境界を2024実データで確認し、将来Raw履歴アクセスをconsumerへ使う場合に軽量history locator indexを別途必須にする必要があるかを判断する。
+
+現行RaceNote productionはこのAPIを直接利用していない。RaceNoteの履歴は主にPACI / Archive / Analysis Lite経路で構成されるため、本benchmarkは現行RaceNote自体の処理時間改善を示すものではない。
 
 ## Test case
 
@@ -52,13 +54,14 @@ These are local CPU/storage timings only and exclude Drive network transfer.
 
 ## Decision
 
-For an ordinary one-race RaceNote request, annual SED Raw + batch lookup is already sufficiently fast. The ~85 ms Raw-vs-local-SQLite lookup difference is much smaller than the first-use materialization and transfer cost of the Canonical shard.
+If a one-race consumer chooses direct annual SED Raw history lookup, batch scanning is already sufficiently fast in this 2024 case. The ~85 ms Raw-vs-local-SQLite lookup difference is much smaller than the first-use materialization and transfer cost of the Canonical shard.
 
 Therefore:
 
-- do not add a lightweight history locator index merely for one-race RaceNote latency at this stage;
-- use `get_horses_runs()` for multi-runner Raw history access;
+- do not add a lightweight history locator index merely because single-horse Raw scans are slow; batch scan removes most of that overhead;
+- use `get_horses_runs()` when a consumer actually needs multi-runner direct Raw history access;
+- do not migrate current RaceNote history to this API solely for this benchmark result;
 - use Canonical annual shards when the workload already benefits from repeated, cross-race, cross-horse, or research queries and the shard is cached;
 - keep the Store/Canonical path optional rather than making it a dependency of ordinary Raw history lookup.
 
-This benchmark does not claim that Canonical is unnecessary. It establishes a workload boundary: batch Raw is the preferred simple path for one-off race history, while Canonical is the preferred materialization for repeated/bulk access.
+This benchmark does not claim that Canonical is unnecessary. It establishes a workload boundary for future consumers: batch Raw is a simple low-overhead option for one-off race history, while Canonical is the preferred materialization for repeated/bulk access.
