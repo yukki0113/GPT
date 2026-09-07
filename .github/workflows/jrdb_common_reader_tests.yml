@@ -25,6 +25,7 @@ on:
       - 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py'
       - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
@@ -60,6 +61,7 @@ on:
       - 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py'
       - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
@@ -118,6 +120,7 @@ jobs:
         run: |
           python -m unittest -v \
             test_jrdb_raw_common \
+            test_jrdb_raw_history_batch \
             test_jrdb_raw_racenote_compat \
             test_jrdb_store \
             test_racenote_store_resolution \
