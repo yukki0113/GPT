@@ -26,7 +26,9 @@ def plan(article_id, day, freeze, rows):
 
 class LedgerDailyResultImportTest(unittest.TestCase):
     def test_midnight_process_time_cannot_change_target_day(self):
-        result = plan("20260906", "2026-09-06", FREEZE_0906, [])
+        result = build_update_plan(article_id="20260906", data_dates=["2026-09-06"], detail_dates=["2026-09-06"],
+                                   prediction_freezes=[FREEZE_0906], sales_freezes=[FREEZE_0906], details=[],
+                                   process_datetime="2026-09-07 00:57:36+09:00")
         self.assertEqual(result["target_date"], "2026-09-06")
         self.assertEqual(result["prediction_freeze"], FREEZE_0906)
 
