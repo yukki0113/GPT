@@ -225,14 +225,36 @@ Canonicalの実測・validation詳細は `docs/JRDB_Canonical_Annual_Shard_v0_1.
 7. Analysis v1.2 horse-history index追加・実データbenchmark
 8. indexed Analysis candidateのproduction RaceNote E2E同値確認
 9. live `jrdb://analysis/current` のindexed ZIP artifactへの昇格
+10. Store Resolver自身のlive network E2E
 
-### Live network E2E
+### Live network E2E — COMPLETE
 
-Drive connector経由ではlive manifest、Canonical ZIP、indexed Analysis ZIPのmetadata・storage size・manifest登録内容まで確認済み。download/cache/materialize/SHA検証のStore Resolverロジックはsynthetic regressionでPASSしている。
+2026-09-07に `.github/workflows/jrdb_store_smoke_issue.yml` を追加し、Issue #454 / run `34088924350` で `analysis/current` のlive network resolveを検証した。workflow conclusionは `success`。
 
-さらにnetwork-enabled GitHub Actionsでindexed Analysis ZIPをGoogle Driveから取得し、single SQLite member展開後に通常RaceNoteを実行するE2Eを完走した。2024-12-28 中山11Rの最終RaceNote JSONは旧Analysis runとbyte-for-byte一致した。
+smokeの経路:
 
-ただし、このActions経路は互換 `analysis_url` downloadであり、`jrdb_store.py` 自身がlive manifestからGoogle Driveへ接続してcache/materializeするnetwork E2Eとは別である。Store Resolver自身のlive direct-download E2Eは実PCまたは対応Actions経路を用意した時点で追加確認する。
+```text
+live manifest download
+  -> StoreResolver.from_file(...)
+  -> resolver.resolve("analysis/current")
+  -> Drive storage download
+  -> storage size/SHA validation
+  -> ZIP member-only materialization
+  -> payload size/SHA validation
+  -> SQLite integrity/index validation
+```
+
+結果:
+
+- resolved payload size: **212,938,752 bytes**
+- payload SHA-256: `25e9cb29f0d957f484d4f2daec7a8656a9a7ef0435dde09338f31c61be91457a`
+- integrity_check: **ok**
+- fact rows: **513,512**
+- `ix_analysis_horse_history`: present
+
+これにより、Store Resolverのdownload/cache/materialize/SHA policyはsynthetic regressionだけでなく、network-enabled GitHub Actions上のlive Drive artifactでも確認済みとなった。
+
+通常RaceNoteの互換 `analysis_url` E2Eも別途完走済みで、2024-12-28 中山11Rの最終RaceNote JSONは旧Analysis runとbyte-for-byte一致している。
 
 次はschema contractを維持したうえで、必要な年だけannual shardを拡張する。RaceNote / PWA / Evalのconsumer migrationは一括ではなく、反復アクセスで利益がある経路だけ段階的に行う。
 
