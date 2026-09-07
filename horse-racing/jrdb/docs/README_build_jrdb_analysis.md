@@ -151,7 +151,45 @@ A benchmark of a separate normalized table containing all available previous lin
 
 Adding this to the routine ten-year Analysis artifact would consume too much connector headroom. A prev1-only representation is therefore the production Analysis design; full 1-5 linkage stays in Raw/Core and can be used for detailed delivery when required.
 
-## Analysis v1.2 ten-year measurement — PASS
+## RaceNote horse-history access index — production required
+
+RaceNote v1.0 repeatedly queries Analysis Lite with:
+
+```sql
+WHERE horse_id=? AND race_date<?
+```
+
+and retrieves older runs with:
+
+```sql
+WHERE horse_id=? AND race_date<?
+ORDER BY race_date DESC, race_no DESC
+LIMIT ?
+```
+
+Analysis v1.2 therefore includes the physical access index:
+
+```sql
+CREATE INDEX ix_analysis_horse_history
+ON fact_entry_result_lite(horse_id, race_date DESC, race_no DESC);
+```
+
+This does **not** create Analysis v1.3. It changes no columns, types, semantic keys, as-of rules, or consumer output. It is a physical performance requirement of the current v1.2 artifact.
+
+2024-12-28 Nakayama 11R, 18 runners, 2000m:
+
+- RaceNote-shaped SQLite queries: 303
+- before: 10.7868 s
+- after: 0.0736 s
+- captured query results: identical
+
+1400m/1800m overlap cases with 409 queries were also validated. Full measurements are in `docs/JRDB_Analysis_History_Index_Benchmark_20260907.md`.
+
+`tests/test_racenote_analysis_history_index.py` pins both index presence and SQLite planner usage.
+
+## Analysis v1.2 ten-year measurement — historical pre-history-index baseline
+
+The following measurement was taken before `ix_analysis_horse_history` became a production requirement. It remains useful as the storage baseline for the prev1 design but is **not** the current accepted production artifact size.
 
 2016-2025 after prev1 addition, removal of unnecessary prev-key indexes, and VACUUM:
 
@@ -164,9 +202,21 @@ Adding this to the routine ten-year Analysis artifact would consume too much con
 - SQLite SHA-256: `a9ebbd03c327e37384aa73593c2049c1f7efd0b5f3faf55449f6560763faf579`
 - ZIP SHA-256: `69955c3e2930def2f47a88676c955bc610e6a31fd275dd1570c97921631af3f9`
 
-This remains below the 200 MiB routine Analysis design target and below the current ~256 MiB remote connector ceiling.
+Prev-key indexes are intentionally omitted: normal previous-race retrieval starts from a selected current row, reads its explicit previous key, then resolves the target through the existing fact primary key/race key path. The horse-history index is different: it directly supports RaceNote's repeated `horse_id + race_date` historical scans and has measured production value.
 
-Prev-key indexes are intentionally omitted: normal previous-race retrieval starts from a selected current row, reads its explicit previous key, then resolves the target through the existing fact primary key/race key path. Avoiding two low-value indexes preserves about 18 MiB of delivery headroom.
+## Current accepted 2016-2026YTD Analysis artifact — 2026-09-07
+
+The live `jrdb://analysis/current` locator points to the history-indexed Analysis v1.2 artifact.
+
+- rows: **513,512**
+- payload SQLite: **212,938,752 bytes**
+- payload SHA-256: `25e9cb29f0d957f484d4f2daec7a8656a9a7ef0435dde09338f31c61be91457a`
+- storage ZIP: **60,569,456 bytes**
+- storage SHA-256: `0c0d604e331e9afc6ba9c8489b993915f817b41bdb3303a2a8a0fb53dfbbe023`
+- `PRAGMA integrity_check`: **ok**
+- Store artifact revision: `historyidx-20260907`
+
+A normal `[RACENOTE_REQUEST]` E2E on 2024-12-28 Nakayama 11R returned a final RaceNote bundle byte-for-byte identical to the unindexed baseline while reducing the request step from about 7.94 s to about 5.90 s. The old unindexed Analysis artifact remains in Drive for rollback; the live Store locator selects the indexed artifact.
 
 ## Incremental replacement regression — PASS
 
@@ -181,9 +231,13 @@ Historical pseudo-daily test using canonical 2025-12-28 Raw members:
 
 The updater parses all five required daily Raw archives before opening the replacement transaction. Re-running a date safely replaces that date and records source SHA-256 values in `meta_analysis_ingest_batch`.
 
+A 385-row delete/reinsert simulation measured about 25 ms additional maintenance cost from the horse-history index (39.8 ms baseline vs 64.5 ms indexed), which is negligible for the daily update path relative to the read-side improvement.
+
 ## Drive delivery
 
-The earlier v1.1 2016-2025 Analysis SQLite (~169 MiB) was uploaded and fetched through the ChatGPT Drive connector with size/row count/integrity/SHA matching. v1.2 remains in the same practical size class and below the connector ceiling.
+Analysis delivery supports raw SQLite and ZIP transport. The accepted `analysis/current` uses ZIP transport to reduce cold transfer size, while Store Resolver validates both storage ZIP and materialized payload SQLite by size/SHA.
+
+The previous unindexed raw SQLite remains available only as rollback history; consumer code should resolve `jrdb://analysis/current` rather than hard-code that old Drive file ID.
 
 ## Recommended production operation
 
@@ -198,8 +252,9 @@ JRDB completed-date Raw
 At year-end:
 
 ```text
-2016-2026 YTD Analysis
-  -> rebuild rolling window directly from 2017-2026 Raw
+rolling Analysis
+  -> rebuild rolling window directly from next 10-year Raw window
+  -> schema v1.2 including ix_analysis_horse_history
   -> compact/VACUUM
   -> rebuild full yearly Stats Mart
 ```
