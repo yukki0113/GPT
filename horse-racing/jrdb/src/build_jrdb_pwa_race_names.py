@@ -8,12 +8,9 @@ import sqlite3
 import zipfile
 from pathlib import Path
 
-VERSION = "0.1"
-BAC_MEMBER_RE = re.compile(r"^BAC\d{6}\.txt$", re.IGNORECASE)
-RACE_KEY_OFFSET = 0
-RACE_KEY_WIDTH = 8
-RACE_NAME_OFFSET = 36
-RACE_NAME_WIDTH = 50
+from jrdb_raw import Parser, iter_archive_records
+
+VERSION = "0.2"
 
 
 def parse_args() -> argparse.Namespace:
@@ -23,11 +20,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--raw-root", type=Path, required=True)
     parser.add_argument("--db", type=Path, required=True)
     return parser.parse_args()
-
-
-def decode_text(raw: bytes, offset: int, width: int) -> str:
-    """Decode one CP932 fixed-width field and trim whitespace."""
-    return raw[offset:offset + width].decode("cp932", errors="replace").strip()
 
 
 def analysis_race_keys(path: Path) -> set[str]:
@@ -56,33 +48,28 @@ def discover_bac_archives(raw_root: Path) -> list[Path]:
 
 
 def read_archive(path: Path, target_keys: set[str]) -> dict[str, str]:
-    """Read race names from one BAC ZIP, restricted to target Analysis keys."""
-    names: dict[str, str] = {}
+    """Read race names from one BAC ZIP through the Common JRDB Reader."""
+    # Preserve the existing fail-fast ZIP integrity gate before parsing records.
     with zipfile.ZipFile(path) as archive:
         bad_member = archive.testzip()
         if bad_member is not None:
             raise RuntimeError(f"Bad ZIP member in {path}: {bad_member}")
 
-        members = [
-            member
-            for member in archive.namelist()
-            if BAC_MEMBER_RE.fullmatch(Path(member).name)
-        ]
-        for member in sorted(members):
-            for raw in archive.read(member).splitlines():
-                if len(raw) < RACE_NAME_OFFSET + RACE_NAME_WIDTH:
-                    continue
-                race_key = decode_text(raw, RACE_KEY_OFFSET, RACE_KEY_WIDTH)
-                if race_key not in target_keys:
-                    continue
-                race_name = decode_text(raw, RACE_NAME_OFFSET, RACE_NAME_WIDTH)
-                existing = names.get(race_key)
-                if existing is not None and existing != race_name:
-                    raise RuntimeError(
-                        f"Conflicting race_name for {race_key}: "
-                        f"{existing!r} vs {race_name!r}"
-                    )
-                names[race_key] = race_name
+    parser = Parser()
+    names: dict[str, str] = {}
+    for _member, raw in iter_archive_records(path, "BAC"):
+        parsed = parser.bac(raw)
+        race_key = str(parsed.get("race_key_raw") or "")
+        if race_key not in target_keys:
+            continue
+        race_name = str(parsed.get("race_name") or "")
+        existing = names.get(race_key)
+        if existing is not None and existing != race_name:
+            raise RuntimeError(
+                f"Conflicting race_name for {race_key}: "
+                f"{existing!r} vs {race_name!r}"
+            )
+        names[race_key] = race_name
     return names
 
 
