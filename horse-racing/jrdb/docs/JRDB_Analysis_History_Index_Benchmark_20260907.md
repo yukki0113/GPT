@@ -138,7 +138,7 @@ The final RaceNote JSON was byte-for-byte identical:
 The nested `request_manifest.json` was also byte-for-byte identical:
 
 - bytes: 2,324 both
-- SHA-256: `a3d927a60a0028d6492590a5d24ab7ff6346c907fc107dc7793664dafbfb08`
+- SHA-256: `a3d927a60a0028d6492590a5d24ab7ff634ef6c907fc107dc7793664dafbfb08`
 
 The outer ZIP SHA differs because ZIP metadata timestamps differ; the payload contents do not.
 
