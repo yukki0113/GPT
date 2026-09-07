@@ -526,4 +526,5 @@ class Parser:
             "data_date": parsed.data_date,
             "sire_line_code": parsed.sire_line_code,
             "broodmare_sire_line_code": parsed.broodmare_sire_line_code,
+            "semantic_hash": parsed.semantic_hash(),
         }
