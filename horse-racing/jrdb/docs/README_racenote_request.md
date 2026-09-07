@@ -267,7 +267,9 @@ Issue bodyはraw JSON:
 
 `venue` / `race` は省略可能です。ArchiveのURL・Release tag・Raw URLを通常利用者が指定する必要はありません。
 
-GPTはIssue作成前に現行Analysis/Martを解決します。Drive file IDは再生成で変わり得るためGitへ固定しません。
+現行Actions経路ではGPTがIssue作成前に現行Analysis/Martを解決し、URLをrequestへ渡します。Drive file IDは再生成で変わり得るためGitへ固定しません。
+
+Routerを直接利用するPC/GPT環境では、Store live manifestを一度解決すればAnalysis/Martの個別path指定を省略できます。
 
 Workflow:
 
