@@ -2,7 +2,7 @@
 
 Updated: 2026-09-07
 
-**Status: Git migration COMPLETE / Common Reader P0 COMPLETE / Store Resolver + Canonical 2024 P1-1 COMPLETE**
+**Status: Git migration COMPLETE / Common Reader P0 COMPLETE / Store Resolver + Canonical 2024 P1-1 COMPLETE / Analysis history-index P1-2 COMPLETE**
 
 ## 正本
 
@@ -58,6 +58,7 @@ ConsumerはCommon Readerの結果を既存schema / policyへ投影する。Commo
 - Analysis Lite full rebuild
 - Analysis Lite incremental updater
 - PWA/index-base Raw builder
+- PWA race-name lookup
 - annual Raw horse history access
 
 Consumer-specific adapter:
@@ -109,11 +110,69 @@ Consumer-specific adapter:
 
 Canonicalは単発RaceNote/Evalを無条件にSQLite化するための層ではない。Raw/PACI直読が十分速い処理は維持し、反復・横断アクセスで利益があるconsumerだけ段階利用する。
 
+## Analysis history-index P1-2
+
+RaceNote v1.0の履歴enrichmentがAnalysis Liteへ繰り返し発行する
+
+```sql
+WHERE horse_id=? AND race_date<?
+```
+
+に対し、Analysis v1.2に以下の物理indexを追加した。
+
+```sql
+CREATE INDEX ix_analysis_horse_history
+ON fact_entry_result_lite(horse_id, race_date DESC, race_no DESC);
+```
+
+これは物理アクセス最適化であり、Analysis logical schemaは **v1.2のまま**とする。列・型・主キー・as-of条件・RaceNote v1.0 JSON契約は変更しない。
+
+2024-12-28 中山11R・18頭・2000mのRaceNote-shaped local benchmark:
+
+- engine-equivalent queries: 303
+- baseline: **10.7868 s**
+- indexed: **0.0736 s**
+- query-result comparison: **完全一致**
+
+1400m/1800mの距離レンジ重複ケース（409 query）でも大幅改善を確認済み。詳細は `docs/JRDB_Analysis_History_Index_Benchmark_20260907.md`。
+
+### production artifact昇格
+
+同一Analysisデータへindexだけを追加したartifactをDriveへZIP transportで配置し、通常 `[RACENOTE_REQUEST]` workflowでE2E比較した。
+
+Baseline:
+
+- Issue #452 / run `34072355676`
+- original unindexed Analysis v1.2
+- RaceNote request step: 約7.94 s
+
+Indexed:
+
+- Issue #453 / run `34087811996`
+- warning 0 / workflow success
+- RaceNote request step: 約5.90 s
+
+最終 `race_bundle_20241228_中山11R.json` は **264,682 bytes、SHA-256 `b9e82e8db7d7b514dbf9bde962317d9d7487b93d192fba4dc2e23f645435e46f` でbyte-for-byte一致**した。
+
+昇格後の `jrdb://analysis/current`:
+
+- artifact revision: `historyidx-20260907`
+- storage compression: ZIP
+- storage size: **60,569,456 bytes**
+- storage SHA-256: `0c0d604e331e9afc6ba9c8489b993915f817b41bdb3303a2a8a0fb53dfbbe023`
+- payload size: **212,938,752 bytes**
+- payload SHA-256: `25e9cb29f0d957f484d4f2daec7a8656a9a7ef0435dde09338f31c61be91457a`
+- rows: **513,512**
+- SQLite integrity_check: **ok**
+
+2026-09-07にlive Store manifestを更新し、`analysis/current` をこのartifactへ昇格した。旧unindexed Analysisファイルは削除せずrollback用に残す。
+
 ## Regression / CI
 
-Common Reader / Store / Canonicalの主要回帰は以下で固定する。
+Common Reader / Store / Canonical / Analysis history-indexの主要回帰は以下で固定する。
 
 - `tests/test_jrdb_raw_common.py`
+- `tests/test_jrdb_raw_history_batch.py`
 - `tests/test_jrdb_raw_racenote_compat.py`
 - `tests/test_jrdb_store.py`
 - `tests/test_racenote_store_resolution.py`
@@ -123,6 +182,7 @@ Common Reader / Store / Canonicalの主要回帰は以下で固定する。
 - `tests/test_jrdb_analysis_raw_adapter.py`
 - `tests/test_jrdb_racenote_raw_adapter.py`
 - `tests/test_jrdb_eval_horse_result_adapter.py`
+- `tests/test_racenote_analysis_history_index.py`
 
 CI: `.github/workflows/jrdb_common_reader_tests.yml`
 
@@ -130,17 +190,22 @@ CI: `.github/workflows/jrdb_common_reader_tests.yml`
 
 - workflow: `JRDB Common Reader tests`
 - run: `34037794467`
-- `build_jrdb_canonical.py` compile: PASS
 - regression tests: **45 tests / 45 PASS**
-- Canonical synthetic builder test: PASS
+- conclusion: `success`
+
+2026-09-07 Analysis history-index regression追加後確認:
+
+- workflow: `JRDB Common Reader tests`
+- run: `34088419323`
+- schema/planner regressionを含む
 - conclusion: `success`
 
 ## Store live E2E status
 
-- Drive connector経由でlive manifest、Canonical ZIP metadata、storage size、manifest登録内容を確認済み。
+- Drive connector経由でlive manifest、Canonical ZIP、Analysis indexed ZIPのmetadata / size / manifest登録内容を確認済み。
 - Store Resolverのdownload/cache/materialize/SHA policyはsynthetic regressionでPASS。
-- このChatGPT実行環境のローカルコンテナは外部DNSが閉じているため、`drive.usercontent.google.com` をResolver自身が直接取得するlive network E2Eだけは未確認。これはコード失敗ではなく実行環境制約として記録する。
-- 実PCまたはnetwork-enabled Actionsで初回live resolveを実施した際、storage SHA、payload SHA、SQLite integrity_checkまで確認して本項を更新する。
+- network-enabled GitHub Actionsではindexed Analysis ZIPのDrive download → single SQLite member展開 → production RaceNote E2Eを完走済み。
+- ただしActionsの `[RACENOTE_REQUEST]` は互換URL download経路であり、`jrdb_store.py` 自身がGoogle Driveからlive manifestを読んでdownload/cache/materializeするnetwork E2Eとは別。Store Resolver自身のlive direct-download E2Eは、実PCまたは対応Actions経路を用意した時点で追加確認する。
 
 ## 変更時のルール
 
@@ -159,6 +224,7 @@ CI: `.github/workflows/jrdb_common_reader_tests.yml`
 3. 大容量artifactをGitへcommitせずDriveへ配置する。
 4. live manifestへlogical name / version / period / status / storage+payload size/SHAを登録する。
 5. `FINAL` を同一logical nameで黙って差し替えない。
+6. `YTD/current` の昇格でも旧artifactを即削除せず、E2E同値性を確認してからlocatorを切り替える。
 
 unknown code / malformed recordを推測補完しない。Raw codeまたはaudit情報を保持し、必要なconsumer policyで明示的に処理する。
 
@@ -174,13 +240,12 @@ unknown code / malformed recordを推測補完しない。Raw codeまたはaudit
 
 ## P1として残すもの
 
-P0/P1-1完了は「JRDB全コードから全legacy parserを削除した」という意味ではない。以下は後続P1として扱う。
+P0/P1-1/P1-2完了は「JRDB全コードから全legacy parserを削除した」という意味ではない。以下は後続P1として扱う。
 
 - rollback baselineとして残すCore系legacy parserの整理
-- Common Reader未利用の小規模helper / race-name reader等の棚卸し
-- 必要な場合の軽量history locator index / batch history API拡張
+- Common adapterへ移行済みconsumer内に残る到達不能legacy fixed-width blockのcleanup
 - 2024以外のannual Canonical shardは、実際に反復アクセス需要がある年から段階追加
 - RaceNote / Eval / PWAへのCanonical利用は、Raw直読より実利益がある経路だけ個別判断
-- network-enabled環境でのStore live direct-download E2E記録
+- `jrdb_store.py` 自身のnetwork-enabled live direct-download E2E記録
 
 P1を続ける場合も、P0で確立したCommon Reader contractと回帰CIを維持する。
