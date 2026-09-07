@@ -5,7 +5,10 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 
 ## Source of truth
 - Python / SQL / schema / docs: このGitディレクトリ
-- JRDB Raw ZIP / 大容量SQLite等: Git外ストレージ
+- JRDB Raw ZIP / PACI: データ原典 / reproducibility source
+- Analysis Lite / Stats Mart / annual Canonical等の共有大容量artifactの所在: Google Drive `JRDB/manifest/jrdb_store_manifest_v1.json`
+- ローカルの共有artifact実体: `src/jrdb_store.py` がmaterializeする検証済みcache。手動管理する正本ではない
+- RaceNote Archive: immutable GitHub Release asset + release metadata
 - 秘密情報: 環境変数またはローカル `jrdb_secret.py`。Gitへ保存しない
 
 ## Common JRDB Raw Reader
@@ -16,17 +19,39 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - RaceNote historical fallback / Archive builderのprevious-result参照もKYI/SED/SKB Common Reader keyを使用する。
 - P0 production migrationは2026-09-06完了。回帰CIは `.github/workflows/jrdb_common_reader_tests.yml`。
 
+## Shared JRDB Store
+- `src/jrdb_store.py` を共有artifactのlogical resolver / verified local cache層とする。
+- ConsumerはDrive File IDや恒久ローカルpathではなく `jrdb://...` 論理名を要求する。
+- live manifestはGit外の固定名 `JRDB/manifest/jrdb_store_manifest_v1.json`。Gitにはexample/schema/docsだけを置き、変動するDrive File IDを固定しない。
+- 現行logical entry:
+  - `jrdb://analysis/current` — Analysis Lite v1.2
+  - `jrdb://stats/current` — Stats Mart v1.1
+  - `jrdb://canonical/2024` — Canonical Annual Shard v0.1 / full 2024 / `FINAL`
+- Store Resolverはstorage objectと展開後payloadのsize/SHA-256を検証し、content-addressed cacheへ保存する。ZIPはmanifest指定memberだけを展開する。
+- `FINAL` artifactを同一logical nameで黙って差し替えない。変更が必要ならdata version / SHAを明示更新する。
+- RaceNote Routerは従来の明示 `--analysis` / `--mart` を優先し、未指定時だけStore manifestから `analysis/current` / `stats/current` をresolveできる。既存GitHub Actionsは明示path互換モードを維持する。
+- Store/Canonicalの設計正本は `docs/JRDB_Store_Resolver_v0_1.md` と `docs/JRDB_Canonical_Annual_Shard_v0_1.md`。
+
+## Annual Canonical materialization
+- `src/build_jrdb_canonical.py` はCommon Readerのneutral parse結果をannual SQLiteへmaterializeする任意の高速アクセス層。
+- Canonical SQLiteはRawを置換せず、固定長解釈の独立正本にもならない。byte offsetは持たず、Common Readerの返却fieldを投影する。
+- schema v0.1は `schema/jrdb_canonical_schema_v0_1.sql`。BAC/KYI/CHA/CYB/SED/SKB/UKCを収録し、KYI previous link / trait、SKB特記・馬具は子tableで保持する。
+- 2024 shardはDrive `JRDB/10_database/canonical/` へZIP transportで公開済み。live manifestの `jrdb://canonical/2024` は `FINAL`。
+- 2024実データ監査: source records 286,540、7 family × 各100件 = 700件field-level mismatch 0、SQLite `integrity_check=ok`。
+- 単発RaceNote/Evalまで無条件にCanonicalへ寄せない。Raw/PACI直読が十分速い経路はそのまま維持し、反復・横断アクセスで利益があるconsumerだけ段階的に利用する。
+
 ## External data selection
-- Analysis Lite / Stats Mart / RaceNote Archive などの大容量artifactは再生成・世代更新でファイル名や外部storage上の識別子が変わり得るため、Gitには個別のDrive URL / File IDを固定しない。
-- 利用時はGit上のREADME・schema・対応ドキュメントで要求versionを確認し、外部ストレージ上から対象期間を満たす最新のvalidation PASS済みartifactを選ぶ。
-- AnalysisとStats Martを組み合わせる場合は、schema互換性・対象期間・生成元Analysisの対応関係を確認する。
+- Analysis Lite / Stats Mart / annual Canonical等、Store登録済み共有artifactはlive manifestを所在正本とし、`src/jrdb_store.py` でlogical nameから解決する。
+- Consumerへ個別Drive URL / File IDを固定しない。ローカルpathもcache実体としてのみ扱い、次回実行の恒久設定として記録しない。
+- AnalysisとStats Martを組み合わせる場合は、manifest上のschema互換性・対象期間・data versionを確認する。
 - 過去時点を再現する分析では、対象日以降の結果が混入しないようas-of条件を必ず設ける。現行YTD Martを過去レースへそのまま適用しない。
-- RaceNote Archiveは固定命名のimmutable GitHub Release assetとrelease metadataを現在の探索indexとして使用する。Router本体へRelease URLを固定せず、`src/resolve_racenote_archive_release.py` が対象月のlatest compatible publishable shardを解決してローカルpathだけをRouterへ渡す。
-- その他の外部artifact探索を自動化する場合も、変動するFile IDのGit固定ではなく、固定名manifestや安定した探索規約を優先する。
+- RaceNote ArchiveはStoreとは別に、固定命名のimmutable GitHub Release assetとrelease metadataを探索indexとして使用する。Router本体へRelease URLを固定せず、`src/resolve_racenote_archive_release.py` が対象月のlatest compatible publishable shardを解決してローカルpathだけをRouterへ渡す。
+- Store未登録の外部artifact探索を新規自動化する場合も、変動するFile IDのGit固定ではなく、固定名manifestや安定した探索規約を優先する。
 
 ## RaceNote request entrypoint
 - RaceNote取得は `src/racenote_request.py` を統一入口とする。ユーザー/GPTは原則として対象日、任意の開催場、任意のRだけを指定し、過去/当日/未来のsource分岐はrouter内部で行う。
 - GPTからの定型実行は `[RACENOTE_REQUEST]` Issue → GitHub Actions → artifact 回収を標準経路とする。詳細は `docs/README_racenote_request.md`。
+- RouterへAnalysis/Martの明示pathが両方渡された場合は従来経路を維持する。未指定がある場合は `--store-manifest` または `JRDB_STORE_MANIFEST` を使いStore Resolverから不足artifactを解決する。
 - GPT-facingな正式RaceNote bundleはschema v1.0。`src/racenote_jrdb.py` のbase v0.2を `src/racenote_history_enrichment.py` でenrichし、`schema/racenote_bundle_schema_v1_0.json` に従う。正式仕様は `docs/README_racenote_v1.md`。
 - enrichmentロジックの正本は `src/racenote_history_engine.py`。production `src/racenote_history_enrichment.py` と検証用 `src/racenote_history_enrichment_poc.py` は同じneutral engineを利用し、productionからPoC moduleへの依存は持たない。
 - v1.0の履歴はPACI詳細 `recent_runs` 最大5 + Analysis Lite簡略 `older_runs` 最大3。固定8件・キャリア上の完全な直近8戦とはみなさず、`history_coverage.run_layers` を併せて解釈する。
