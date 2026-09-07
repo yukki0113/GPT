@@ -202,6 +202,12 @@ live File IDはGit文書へ固定しない。
 5. BAC/KYI/CHA/CYB/SED/SKB/UKC 各100件、計700件のfield-level comparison mismatch 0
 6. synthetic Canonical builder regression test
 
+### Live direct-download E2E
+
+Drive connector経由ではlive manifest、Canonical ZIP metadata、storage size、manifest登録内容まで確認済み。download/cache/materialize/SHA検証のResolverロジックはsynthetic regressionでPASSしている。
+
+このChatGPT実行環境のローカルコンテナは外部DNSが閉じているため、`drive.usercontent.google.com` をResolver自身が直接取得するlive network E2Eだけは未確認。実PCまたはnetwork-enabled Actionsで初回live resolveを行った際に、storage SHA・payload SHA・SQLite `integrity_check` まで確認して本項を更新する。
+
 次はschema contractを固定したうえで、必要な年だけannual shardを拡張する。RaceNote / PWA / Evalのconsumer migrationは一括ではなく、反復アクセスで利益がある経路だけ段階的に行う。
 
 Raw直読が十分速い単発処理まで無理にSQLite化しない。Store Resolverは「SQLite必須化」ではなく、共有artifactの所在・検証・cacheをconsumerから隠す層である。
