@@ -20,6 +20,21 @@ RaceNote生成を「過去データ取得」「当日取得」「未来取得」
 
 RaceNote Request Routerが日付と対象範囲を正規化し、データ取得方法を内部で選択します。
 
+## Enrichment artifact resolution
+
+RaceNoteのAnalysis Lite / Stats Martは2つの互換経路で解決します。
+
+- `--analysis` と `--mart` を両方明示した場合: 従来どおりそのSQLiteを利用
+- どちらかが未指定の場合: `--store-manifest` または `JRDB_STORE_MANIFEST` から `src/jrdb_store.py` を使って不足artifactをresolve
+  - Analysis: `jrdb://analysis/current`
+  - Stats Mart: `jrdb://stats/current`
+
+Store ResolverはDrive live manifestのsize/SHA-256を検証し、ローカル実体をcontent-addressed cacheとしてmaterializeします。ConsumerはDrive File IDや恒久ローカルpathを保持しません。
+
+現行GitHub Actionsの `[RACENOTE_REQUEST]` workflowは後方互換のためIssueで指定されたAnalysis/Mart URLをdownloadし、Routerへ明示pathとして渡します。Store bridgeはRouterの追加機能であり、既存Actions経路を壊しません。
+
+Store設計は `docs/JRDB_Store_Resolver_v0_1.md` を正本とします。
+
 ## Temporal routing
 
 日付判定と対象範囲判定を分離します。
