@@ -74,6 +74,8 @@ manifest versionは `1.0`。
 - `payload.size`
 - `payload.sha256`
 
+同一data/schemaでも物理最適化版を識別する必要がある場合、`artifact_revision` を追加してよい。2026-09-07時点の `analysis/current` は `historyidx-20260907` を使う。
+
 Git側exampleは `config/jrdb_store_manifest.example.json`。
 
 ## 4. status
@@ -89,6 +91,8 @@ Git側exampleは `config/jrdb_store_manifest.example.json`。
 - `CANDIDATE` — validation中。明示的なallow時だけ利用可能
 
 FINAL artifactは同一logical nameの内容を黙って差し替えない。変更が必要ならdata version / SHAを更新し、必要に応じてlogical naming policyを見直す。
+
+YTD/current artifactでも、旧artifactを先に削除してから差し替えない。候補artifactを別実体としてvalidationし、consumer E2E同値性を確認した後にlive manifestのlocatorだけを切り替える。
 
 ## 5. cache
 
@@ -132,6 +136,8 @@ payload.member = jrdb_canonical_2024_v0_1.sqlite
 payload.filename = jrdb_canonical_2024_v0_1.sqlite
 ```
 
+2026-09-07以降の `analysis/current` もZIP transportを利用する。これはAnalysis logical schemaを変更するものではなく、Drive転送量を減らしながらpayload SQLiteを検証・materializeするためのstorage policyである。
+
 ## 7. Python API
 
 ```python
@@ -166,7 +172,7 @@ manifest pathは `JRDB_STORE_MANIFEST` でも指定できる。
 
 ## 9. RaceNote bridge
 
-P1ではRaceNoteの既存CLI `--analysis` / `--mart` を壊さず残す。
+RaceNoteの既存CLI `--analysis` / `--mart` を壊さず残す。
 
 - 明示pathが両方ある場合: 従来どおりそれを利用
 - 未指定のartifactがある場合: store manifestから論理名をresolve
@@ -175,25 +181,40 @@ P1ではRaceNoteの既存CLI `--analysis` / `--mart` を壊さず残す。
 
 これにより既存Actionsは明示path互換モードを維持しながら、GPT/PC側ではmanifestを一度解決すれば個別SQLite path指定を省略できる。
 
-## 10. 2026-09-06 Drive manifest
+`.github/workflows/racenote_request_issue.yml` の互換URL download経路は、raw SQLiteに加えて「SQLite memberを1つだけ含むZIP」も受け入れる。ZIPはCRCを検査し、展開後ファイルはSQLite headerを確認してからRaceNoteへ渡す。
+
+## 10. 2026-09-07 Drive manifest
 
 Drive `JRDB/manifest/` の固定名 `jrdb_store_manifest_v1.json` をlive manifestとする。
 
 現在のentry:
 
-- `jrdb://analysis/current` — Analysis Lite v1.2, 2016-2026YTD through 2026-08-23
+- `jrdb://analysis/current` — Analysis Lite v1.2, 2016-2026YTD through 2026-08-23, accepted revision `historyidx-20260907`
 - `jrdb://stats/current` — Stats Mart v1.1, same data period
 - `jrdb://canonical/2024` — Canonical Annual Shard v0.1, 2024 full year, `FINAL`
+
+`analysis/current` のaccepted storageはZIP transportで、payload SQLiteにはRaceNote horse-history access用の `ix_analysis_horse_history(horse_id, race_date DESC, race_no DESC)` を含む。
+
+Accepted Analysis artifact:
+
+- storage size: **60,569,456 bytes**
+- storage SHA-256: `0c0d604e331e9afc6ba9c8489b993915f817b41bdb3303a2a8a0fb53dfbbe023`
+- payload size: **212,938,752 bytes**
+- payload SHA-256: `25e9cb29f0d957f484d4f2daec7a8656a9a7ef0435dde09338f31c61be91457a`
+- rows: **513,512**
+- integrity_check: **ok**
+
+旧unindexed Analysis artifactはrollback用としてDriveに残し、通常consumerのlocatorだけを新artifactへ切り替えた。
 
 2024 Canonicalは `JRDB/10_database/canonical/` にZIP transportとして配置し、storage ZIPと展開後SQLiteの双方をmanifestのsize/SHA-256で検証する。
 
 live File IDはGit文書へ固定しない。
 
-2024 Canonicalの実測・validation詳細は `docs/JRDB_Canonical_Annual_Shard_v0_1.md` を正本とする。
+Canonicalの実測・validation詳細は `docs/JRDB_Canonical_Annual_Shard_v0_1.md`、Analysis history-indexの実測・昇格詳細は `docs/JRDB_Analysis_History_Index_Benchmark_20260907.md` を正本とする。
 
 ## 11. P1 status / next
 
-2026-09-06時点で以下を完了した。
+2026-09-06〜07時点で以下を完了した。
 
 1. Store Resolver / verified local cache
 2. RaceNote Analysis/Mart optional Store bridge
@@ -201,13 +222,18 @@ live File IDはGit文書へ固定しない。
 4. Drive publication + `jrdb://canonical/2024` `FINAL` 登録
 5. BAC/KYI/CHA/CYB/SED/SKB/UKC 各100件、計700件のfield-level comparison mismatch 0
 6. synthetic Canonical builder regression test
+7. Analysis v1.2 horse-history index追加・実データbenchmark
+8. indexed Analysis candidateのproduction RaceNote E2E同値確認
+9. live `jrdb://analysis/current` のindexed ZIP artifactへの昇格
 
-### Live direct-download E2E
+### Live network E2E
 
-Drive connector経由ではlive manifest、Canonical ZIP metadata、storage size、manifest登録内容まで確認済み。download/cache/materialize/SHA検証のResolverロジックはsynthetic regressionでPASSしている。
+Drive connector経由ではlive manifest、Canonical ZIP、indexed Analysis ZIPのmetadata・storage size・manifest登録内容まで確認済み。download/cache/materialize/SHA検証のStore Resolverロジックはsynthetic regressionでPASSしている。
 
-このChatGPT実行環境のローカルコンテナは外部DNSが閉じているため、`drive.usercontent.google.com` をResolver自身が直接取得するlive network E2Eだけは未確認。実PCまたはnetwork-enabled Actionsで初回live resolveを行った際に、storage SHA・payload SHA・SQLite `integrity_check` まで確認して本項を更新する。
+さらにnetwork-enabled GitHub Actionsでindexed Analysis ZIPをGoogle Driveから取得し、single SQLite member展開後に通常RaceNoteを実行するE2Eを完走した。2024-12-28 中山11Rの最終RaceNote JSONは旧Analysis runとbyte-for-byte一致した。
 
-次はschema contractを固定したうえで、必要な年だけannual shardを拡張する。RaceNote / PWA / Evalのconsumer migrationは一括ではなく、反復アクセスで利益がある経路だけ段階的に行う。
+ただし、このActions経路は互換 `analysis_url` downloadであり、`jrdb_store.py` 自身がlive manifestからGoogle Driveへ接続してcache/materializeするnetwork E2Eとは別である。Store Resolver自身のlive direct-download E2Eは実PCまたは対応Actions経路を用意した時点で追加確認する。
+
+次はschema contractを維持したうえで、必要な年だけannual shardを拡張する。RaceNote / PWA / Evalのconsumer migrationは一括ではなく、反復アクセスで利益がある経路だけ段階的に行う。
 
 Raw直読が十分速い単発処理まで無理にSQLite化しない。Store Resolverは「SQLite必須化」ではなく、共有artifactの所在・検証・cacheをconsumerから隠す層である。
