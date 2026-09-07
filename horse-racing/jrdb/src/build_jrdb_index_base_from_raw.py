@@ -25,6 +25,7 @@ from jrdb_index_base_adapter import (
     parse_cyb as adapted_parse_cyb,
     parse_kyi as adapted_parse_kyi,
     parse_sed as adapted_parse_sed,
+    parse_ukc as adapted_parse_ukc,
 )
 from jrdb_ukc import parse_ukc_record
 
