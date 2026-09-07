@@ -125,12 +125,42 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import shutil
           import subprocess
+          import zipfile
           from pathlib import Path
 
           request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
-          subprocess.run(['gdown', request['analysis_url'], '-O', '/tmp/jrdb_analysis.sqlite'], check=True)
-          subprocess.run(['gdown', request['mart_url'], '-O', '/tmp/jrdb_stats_mart.sqlite'], check=True)
+
+          def download_sqlite(url: str, output: Path, label: str) -> None:
+              downloaded = output.with_suffix(output.suffix + '.download')
+              subprocess.run(['gdown', url, '-O', str(downloaded)], check=True)
+              if zipfile.is_zipfile(downloaded):
+                  with zipfile.ZipFile(downloaded) as archive:
+                      bad_member = archive.testzip()
+                      if bad_member is not None:
+                          raise SystemExit(f'{label} ZIP has bad member: {bad_member}')
+                      members = [
+                          name for name in archive.namelist()
+                          if not name.endswith('/') and Path(name).name.lower().endswith('.sqlite')
+                      ]
+                      if len(members) != 1:
+                          raise SystemExit(
+                              f'{label} ZIP must contain exactly one SQLite member; found {members}'
+                          )
+                      with archive.open(members[0]) as source, output.open('wb') as target:
+                          shutil.copyfileobj(source, target, 1024 * 1024)
+                  downloaded.unlink()
+              else:
+                  downloaded.replace(output)
+
+              with output.open('rb') as handle:
+                  header = handle.read(16)
+              if header != b'SQLite format 3\x00':
+                  raise SystemExit(f'{label} download is not a SQLite database')
+
+          download_sqlite(request['analysis_url'], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis')
+          download_sqlite(request['mart_url'], Path('/tmp/jrdb_stats_mart.sqlite'), 'Stats Mart')
 
           raw_dir = Path(request['raw_dir'])
           for key, url in request['raw_urls'].items():
