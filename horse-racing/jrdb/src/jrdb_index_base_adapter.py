@@ -383,3 +383,37 @@ def parse_cyb(raw: bytes, member: str) -> dict[str, Any]:
         "source_member": member,
         "record_hash": _record_hash(raw),
     }
+
+
+def parse_ukc(raw: bytes, member: str) -> dict[str, Any]:
+    """Return the established index-base UKC profile via Common Reader."""
+    parsed = _COMMON.ukc(raw)
+    data_date = _yyyymmdd(str(parsed.get("data_date") or ""))
+    if data_date is None:
+        match = re.search(r"(\d{6})\.txt$", member, re.IGNORECASE)
+        if match is not None:
+            data_date = _yyyymmdd(f"20{match.group(1)}")
+    if data_date is None:
+        raise ValueError(f"UKC profile observation has no usable date: {member}")
+
+    birth_raw = str(parsed.get("birth_date") or "")
+    return {
+        "horse_id": str(parsed.get("horse_id") or ""),
+        "data_date": data_date,
+        "horse_name": str(parsed.get("horse_name") or ""),
+        "sex_code": str(parsed.get("sex_code") or ""),
+        "sire_name": str(parsed.get("sire_name") or ""),
+        "dam_name": str(parsed.get("dam_name") or ""),
+        "broodmare_sire_name": str(parsed.get("broodmare_sire_name") or ""),
+        "birth_date": _yyyymmdd(birth_raw) or birth_raw,
+        "sire_birth_year": _int_value(parsed.get("sire_birth_year")),
+        "dam_birth_year": _int_value(parsed.get("dam_birth_year")),
+        "broodmare_sire_birth_year": _int_value(parsed.get("broodmare_sire_birth_year")),
+        "breeder_name": str(parsed.get("breeder_name") or ""),
+        "breeding_place": str(parsed.get("breeding_place") or ""),
+        "sire_line_code": str(parsed.get("sire_line_code") or ""),
+        "broodmare_sire_line_code": str(parsed.get("broodmare_sire_line_code") or ""),
+        "semantic_hash": str(parsed.get("semantic_hash") or ""),
+        "source_member": member,
+        "record_hash": _record_hash(raw),
+    }
