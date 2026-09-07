@@ -200,12 +200,24 @@ CI: `.github/workflows/jrdb_common_reader_tests.yml`
 - schema/planner regressionを含む
 - conclusion: `success`
 
-## Store live E2E status
+## Store live E2E status — COMPLETE
 
-- Drive connector経由でlive manifest、Canonical ZIP、Analysis indexed ZIPのmetadata / size / manifest登録内容を確認済み。
-- Store Resolverのdownload/cache/materialize/SHA policyはsynthetic regressionでPASS。
-- network-enabled GitHub Actionsではindexed Analysis ZIPのDrive download → single SQLite member展開 → production RaceNote E2Eを完走済み。
-- ただしActionsの `[RACENOTE_REQUEST]` は互換URL download経路であり、`jrdb_store.py` 自身がGoogle Driveからlive manifestを読んでdownload/cache/materializeするnetwork E2Eとは別。Store Resolver自身のlive direct-download E2Eは、実PCまたは対応Actions経路を用意した時点で追加確認する。
+Store Resolver自身のnetwork-enabled live E2Eも2026-09-07に完了した。
+
+- workflow: `.github/workflows/jrdb_store_smoke_issue.yml`
+- Issue: #454 `[JRDB_STORE_SMOKE] analysis-current-20260907`
+- run: `34088924350`
+- workflow conclusion: `success`
+- logical name: `analysis/current`
+- resolved payload size: **212,938,752 bytes**
+- resolved payload SHA-256: `25e9cb29f0d957f484d4f2daec7a8656a9a7ef0435dde09338f31c61be91457a`
+- SQLite integrity_check: **ok**
+- fact rows: **513,512**
+- `ix_analysis_horse_history` presence: confirmed
+
+このsmokeはlive manifestだけを通常downloadした後、`src/jrdb_store.py` の `StoreResolver` 自身に `analysis/current` をresolveさせている。したがって、Drive file ID解決 → storage download → storage SHA/size validation → ZIP member materialization → payload SHA/size validation → SQLite検証というStore Resolverのlive network pathを実際に通している。
+
+これにより、従来のsynthetic Store testとRaceNote互換URL E2Eに加えて、Store Resolver本体のlive direct-download E2Eも確認済みとなった。
 
 ## 変更時のルール
 
@@ -246,6 +258,5 @@ P0/P1-1/P1-2完了は「JRDB全コードから全legacy parserを削除した」
 - Common adapterへ移行済みconsumer内に残る到達不能legacy fixed-width blockのcleanup
 - 2024以外のannual Canonical shardは、実際に反復アクセス需要がある年から段階追加
 - RaceNote / Eval / PWAへのCanonical利用は、Raw直読より実利益がある経路だけ個別判断
-- `jrdb_store.py` 自身のnetwork-enabled live direct-download E2E記録
 
 P1を続ける場合も、P0で確立したCommon Reader contractと回帰CIを維持する。
