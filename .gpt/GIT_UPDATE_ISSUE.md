@@ -34,6 +34,23 @@ commit_message: fix: describe the change
 ```
 ```
 
+## Preflight before Issue creation
+
+Issueを作成する前に `.gpt/ISSUE_REQUEST_CONTRACTS.md` の共通preflight / retry規約を適用します。
+
+可能な環境では以下を実行し、成功してからIssueを作成してください。
+
+```bash
+python .gpt/tools/gpt_issue_preflight.py \
+  --title "[gpt-git-update] describe change" \
+  --body-file /tmp/issue-body.md \
+  --repo-root .
+```
+
+`--repo-root` は最新 `main` をcheckout / pull済みのworking treeを指定します。これによりIssue作成前に `git apply --check` を行い、壊れたdiffやstale patchをActionsへ送るのを防ぎます。
+
+patch failure後は旧patchを継ぎ足し修正せず、最新 `main` を再取得してpatchを再生成してください。
+
 ## Repository scope
 
 原則として、リポジトリ内の通常ファイルはこの経路から更新可能です。
