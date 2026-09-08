@@ -47,6 +47,16 @@ def canonical_key(date: str, venue: object, race_no: object, horse_no: object) -
     return (normalize_date(date), str(venue).strip(), int(float(race_no)), int(float(horse_no)))
 
 
+def canonical_key_text(date: str, venue: object, race_no: object, horse_no: object) -> str:
+    """Return the spreadsheet-safe serialization of a canonical horse key.
+
+    Separators are mandatory.  Concatenating variable-width race and horse
+    numbers would make e.g. ``1R / 11`` indistinguishable from ``11R / 1``.
+    """
+    normalized = canonical_key(date, venue, race_no, horse_no)
+    return "|".join(map(str, normalized))
+
+
 def normalize_name(value: object) -> str:
     return str(value or "").replace(" ", "").replace("　", "").strip()
 
@@ -164,6 +174,24 @@ def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
         writer.writerows(rows)
 
 
+def write_duplicate_ledger_keys(path: Path, ledger: list[dict[str, object]]) -> int:
+    """Write a reviewable duplicate-key list without dropping ledger rows."""
+    grouped: dict[str, list[dict[str, object]]] = {}
+    for row in ledger:
+        key = canonical_key_text(row["開催日"], row["場"], row["R"], row["馬番"])
+        grouped.setdefault(key, []).append(row)
+    duplicate_rows = [
+        {"canonical_key": key, "row_count": len(rows), "horse_names": " | ".join(str(r["馬名"]) for r in rows)}
+        for key, rows in grouped.items()
+        if len(rows) > 1
+    ]
+    with path.open("w", encoding="utf-8-sig", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=["canonical_key", "row_count", "horse_names"])
+        writer.writeheader()
+        writer.writerows(duplicate_rows)
+    return len(duplicate_rows)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ledger-json", type=Path, required=True)
@@ -178,6 +206,9 @@ def main() -> int:
     rows, unmatched, stats = build_rows(ledger, sed)
     write_csv(args.out_dir / "eval_phase2_sed_backfill_20260908.csv", rows)
     write_csv(args.out_dir / "eval_phase2_sed_backfill_unmatched_20260908.csv", unmatched)
+    duplicate_ledger_key_groups = write_duplicate_ledger_keys(
+        args.out_dir / "eval_phase2_sed_backfill_duplicate_ledger_keys_20260908.csv", ledger
+    )
     audit = {
         "schema_version": "1.0", "task": "eval_phase2_sed_backfill",
         "source_rows": len(ledger), "unique_ledger_keys": len(set(ledger_keys)),
@@ -186,7 +217,9 @@ def main() -> int:
         "sed_files_found": len(list(args.sed_dir.glob("SED*.zip"))),
         "sed_files_missing": [], "sed_records_parsed": record_count,
         "matched_rows": stats["matched"], "unmatched_rows": stats["unmatched"],
-        "duplicate_ledger_keys": duplicate_ledger, "duplicate_sed_keys": sum(duplicate_sed.values()),
+        "duplicate_ledger_keys": duplicate_ledger,
+        "duplicate_ledger_key_groups": duplicate_ledger_key_groups,
+        "duplicate_sed_keys": sum(duplicate_sed.values()),
         "name_mismatch_rows": stats["name_mismatch"], "win_odds_filled": stats["win_odds_filled"],
         "win_popularity_filled": stats["win_popularity_filled"],
         "win_payout_normalized": stats["matched"] - stats["abnormal_rows"],

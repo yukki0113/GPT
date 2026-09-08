@@ -10,3 +10,5 @@
 - 馬名警告: 383行。キー結合は維持し、SED正規化タブの join_status で識別する。
 
 Google Sheetでは Phase2_SED補完 をSED正本とし、Phase2_全馬研究 はCanonical KeyによるARRAYFORMULA/XLOOKUPで参照する。Phase 1タブは変更していない。
+
+Canonical Keyを文字列化する場合は、必ず `開催日|場|R|馬番` の区切り付き形式を使用する。可変桁の数値を単純連結すると、`1R・11番` と `11R・1番` が衝突するためである。
