@@ -5,6 +5,7 @@ on:
     paths:
       - 'horse-racing/jrdb/src/jrdb_raw.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
+      - 'horse-racing/jrdb/src/fetch_jrdb_history.py'
       - 'horse-racing/jrdb/src/jrdb_store.py'
       - 'horse-racing/jrdb/src/build_jrdb_canonical.py'
       - 'horse-racing/jrdb/schema/jrdb_canonical_schema_v0_1.sql'
@@ -30,6 +31,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_hjc_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
       - 'horse-racing/jrdb/tests/test_racenote_reader_view.py'
@@ -47,6 +49,7 @@ on:
     paths:
       - 'horse-racing/jrdb/src/jrdb_raw.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
+      - 'horse-racing/jrdb/src/fetch_jrdb_history.py'
       - 'horse-racing/jrdb/src/jrdb_store.py'
       - 'horse-racing/jrdb/src/build_jrdb_canonical.py'
       - 'horse-racing/jrdb/schema/jrdb_canonical_schema_v0_1.sql'
@@ -72,6 +75,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_hjc_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
       - 'horse-racing/jrdb/tests/test_racenote_reader_view.py'
@@ -108,6 +112,7 @@ jobs:
           python -m py_compile \
             src/jrdb_raw.py \
             src/jrdb_raw_history.py \
+            src/fetch_jrdb_history.py \
             src/jrdb_store.py \
             src/build_jrdb_canonical.py \
             src/racenote_jrdb.py \
@@ -136,6 +141,7 @@ jobs:
             test_jrdb_raw_common \
             test_jrdb_raw_history_batch \
             test_jrdb_raw_racenote_compat \
+            test_jrdb_hjc_common \
             test_jrdb_store \
             test_racenote_store_resolution \
             test_racenote_reader_view \
