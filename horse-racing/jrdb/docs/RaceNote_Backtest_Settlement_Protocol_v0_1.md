@@ -43,11 +43,12 @@ For settlement purposes:
 ○ = first ○
 ▲ = first ▲
 △1 = first △ appearing after ▲ in the frozen marks array
+△2 = second △ appearing after ▲ in the frozen marks array
 ```
 
-Additional △ marks remain prediction information but are not used in the v0.1 3連複 ticket construction.
+Any additional △ marks remain prediction information but are not used in the v0.1 3連複 ticket construction.
 
-This makes the 4-horse selection mechanical and prevents result-driven choice among multiple △ horses.
+This prevents result-driven choice among multiple △ horses.
 
 ## 3. Bet definitions
 
@@ -74,24 +75,36 @@ Two quinella tickets:
 Tickets: 2
 Investment per race: 200 JPY
 
-### Bet 3 — 4-horse trio box
+### Bet 3 — ◎ single-axis trio, four opponents
 
-Use exactly these four horses:
+The handoff explicitly requires a six-ticket 3連複 evaluation. Its example text called a four-horse BOX six tickets, but a four-horse 3連複 BOX is mathematically four tickets (`C(4,3)=4`).
 
-```text
-◎ / ○ / ▲ / △1
-```
-
-Buy the complete 4-horse 3連複 BOX:
+To preserve the explicit **six-ticket** intent without inventing duplicate combinations, v0.1 freezes the following mechanical construction before result acquisition:
 
 ```text
-C(4,3) = 4 tickets
+axis: ◎
+opponents: ○ / ▲ / △1 / △2
 ```
 
-**Important correction to the earlier handoff note:** a 4-horse 3連複 BOX is 4 tickets, not 6. Therefore v0.1 freezes the mathematically correct 4-ticket BOX rather than manufacturing six non-distinct 3-horse combinations.
+Buy every pair of opponents with ◎:
 
-Tickets: 4
-Investment per race: 400 JPY
+```text
+◎-○-▲
+◎-○-△1
+◎-○-△2
+◎-▲-△1
+◎-▲-△2
+◎-△1-△2
+```
+
+This is:
+
+```text
+C(4,2) = 6 tickets
+```
+
+Tickets: 6
+Investment per race: 600 JPY
 
 ## 4. Combined evaluation patterns
 
@@ -101,10 +114,10 @@ Evaluate the following six patterns independently:
 |---|---|---:|---:|
 | ① | Bet 1 | 1 | 100 JPY |
 | ② | Bet 2 | 2 | 200 JPY |
-| ③ | Bet 3 | 4 | 400 JPY |
+| ③ | Bet 3 | 6 | 600 JPY |
 | ①+② | Bet 1 + Bet 2 | 3 | 300 JPY |
-| ①+③ | Bet 1 + Bet 3 | 5 | 500 JPY |
-| ①+②+③ | Bet 1 + Bet 2 + Bet 3 | 7 | 700 JPY |
+| ①+③ | Bet 1 + Bet 3 | 7 | 700 JPY |
+| ①+②+③ | Bet 1 + Bet 2 + Bet 3 | 9 | 900 JPY |
 
 Different wager types are settled independently and their payouts are summed within a combined pattern.
 
@@ -185,7 +198,7 @@ prediction freeze
 After HJC acquisition begins, do not change:
 
 - prediction marks/order;
-- which △ is used;
+- which △ horses are used;
 - ticket construction;
 - stake size;
 - headline metric definitions.
