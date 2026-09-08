@@ -33,6 +33,22 @@ class IssuePreflightTests(unittest.TestCase):
         with self.assertRaisesRegex(PreflightError, "protected path"):
             validate_request("[gpt-git-update] test", body)
 
+    def test_key_value_parser_ignores_diff_contents(self) -> None:
+        body = """```diff
+--- a/a.txt
++++ b/a.txt
+@@ -1 +1 @@
+-old
++commit_message: only inside patch
+```
+"""
+        with self.assertRaisesRegex(PreflightError, "commit_message"):
+            validate_request("[gpt-git-update] test", body)
+
+    def test_binary_read_still_rejects_git_internal_path(self) -> None:
+        with self.assertRaisesRegex(PreflightError, "protected path"):
+            validate_request("[gpt-git-binary-read] test", "path: .git/config\n")
+
     def test_binary_read_accepts_path_and_request_id(self) -> None:
         result = validate_request(
             "[gpt-git-binary-read] ledger",
