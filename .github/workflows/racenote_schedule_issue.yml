@@ -1,0 +1,129 @@
+name: RaceNote Schedule Metadata via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_SCHEDULE_REQUEST]'
+
+jobs:
+  schedule:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_SCHEDULE_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          month = str(req.get('month','')).strip()
+          if not re.fullmatch(r'20\d{4}', month):
+              raise SystemExit('month must be YYYYMM')
+          if not 1 <= int(month[4:6]) <= 12:
+              raise SystemExit('invalid month')
+          Path('/tmp/request.json').write_text(
+              json.dumps({'month': month}, ensure_ascii=False), encoding='utf-8'
+          )
+          PY
+
+      - name: Download BAC-derived expected race index
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          month="$(python -c "import json; print(json.load(open('/tmp/request.json'))['month'])")"
+          tag="jrdb-racenote-archive-${month}-v1.0"
+          mkdir -p /tmp/schedule
+          gh release download "$tag" \
+            --repo "${{ github.repository }}" \
+            --pattern expected_race_index.json \
+            --dir /tmp/schedule
+
+      - name: Build schedule summary
+        run: |
+          python - <<'PY'
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+
+          src = json.loads(Path('/tmp/schedule/expected_race_index.json').read_text(encoding='utf-8'))
+          grouped = defaultdict(lambda: defaultdict(list))
+          for row in src.get('races', []):
+              grouped[row['race_date']][row['venue']].append(int(row['race_no']))
+
+          dates = []
+          for race_date in sorted(grouped):
+              venues = []
+              for venue in sorted(grouped[race_date]):
+                  race_nos = sorted(grouped[race_date][venue])
+                  venues.append({
+                      'venue': venue,
+                      'race_count': len(race_nos),
+                      'race_nos': race_nos,
+                  })
+              dates.append({
+                  'race_date': race_date,
+                  'total_races': sum(v['race_count'] for v in venues),
+                  'venues': venues,
+              })
+
+          out = {
+              'status': 'success',
+              'source': 'RaceNote Archive expected_race_index.json (BAC/Analysis identity metadata only)',
+              'target_month': src.get('target_month'),
+              'dates': dates,
+          }
+          Path('/tmp/schedule_result.json').write_text(
+              json.dumps(out, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Comment result and close issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          result = json.loads(Path('/tmp/schedule_result.json').read_text(encoding='utf-8'))
+          result['run_id'] = int(os.environ['RUN_ID'])
+          Path('/tmp/comment.md').write_text(
+              'RACENOTE_SCHEDULE_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" \
+            --body "RaceNote schedule metadata query failed. Workflow run: $RUN_URL"
