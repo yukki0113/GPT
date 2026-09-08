@@ -54,6 +54,20 @@ encoding: base64
 
 `target_path` はリポジトリ相対パスです。
 
+## Preflight before Issue creation
+
+手動でIssue / chunkを組み立てる場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` の共通preflight / retry規約を適用します。
+
+```bash
+python .gpt/tools/gpt_issue_preflight.py \
+  --title "[gpt-git-binary-update] update example" \
+  --body-file /tmp/issue-body.txt
+```
+
+`target_path` / `commit_message` / `sha256` / `size_bytes` / `chunks` / `encoding` は全て必須です。SHA-256、size、chunk数はローカル実ファイルから算出し、推測しません。
+
+認証済み `gh` CLI がある環境では、この手動preflightより `.gpt/tools/gpt_git_binary_tool.py update` を優先し、Issue / chunk自体をGPTが手組みしません。
+
 ## Chunk comment format
 
 Base64文字列を複数コメントに分割して登録できます。
