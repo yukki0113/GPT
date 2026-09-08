@@ -1,0 +1,74 @@
+name: boatrace-racelist-fallback-20260909-0909-002
+
+on:
+  push:
+    branches:
+      - boatrace-racelist-fallback-20260909-0909-002
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: boat-racing/requirements.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r boat-racing/requirements.txt
+
+      - name: Create config
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          config = {
+              "date": "20260909",
+              "venues": [
+                  {"name": "尼崎", "code": "13", "day": "3日目"},
+                  {"name": "児島", "code": "16", "day": "3日目"},
+                  {"name": "鳴門", "code": "14", "day": "4日目"},
+                  {"name": "大村", "code": "24", "day": "3日目"},
+                  {"name": "平和島", "code": "04", "day": "5日目"}
+              ],
+              "output_dir": "boat-racing/output_fallback/20260909-0909-002",
+              "request_interval_seconds": 1.0
+          }
+          Path('/tmp/boatrace_racelist_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          PY
+
+      - name: Fetch racelists
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          python boat-racing/src/fetch_boatrace_racelist.py --config /tmp/boatrace_racelist_config.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "boat-racing/output_fallback/20260909-0909-002"
+          echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}" > "boat-racing/output_fallback/20260909-0909-002/run_status.txt"
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boatrace-racelist-fallback-20260909-0909-002-${{ github.run_id }}
+          path: boat-racing/output_fallback/20260909-0909-002/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Fail workflow when fetcher failed
+        if: always() && steps.fetch.outputs.exit_code != '0'
+        run: exit 1
