@@ -1,0 +1,189 @@
+name: JRDB Annual Raw Fetch via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_ANNUAL_RAW_FETCH_REQUEST]'
+
+jobs:
+  fetch:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_ANNUAL_RAW_FETCH_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          start = int(req.get('from_year', 0))
+          end = int(req.get('to_year', 0))
+          kinds = req.get('kinds') or []
+          sleep_seconds = float(req.get('sleep_seconds', 2.0))
+
+          if start < 1999 or end < start or end > 2025:
+              raise SystemExit('annual mode requires 1999 <= from_year <= to_year <= 2025')
+          if not isinstance(kinds, list) or not kinds:
+              raise SystemExit('kinds must be a non-empty list')
+          kinds = [str(x).upper() for x in kinds]
+          allowed = {'BAC','KYI','SED','SKB','CYB','CHA','UKC','KKA','HJC'}
+          if any(kind not in allowed for kind in kinds):
+              raise SystemExit('unsupported JRDB kind')
+          if sleep_seconds < 0:
+              raise SystemExit('sleep_seconds must be >= 0')
+
+          resolved = {
+              'from_year': start,
+              'to_year': end,
+              'kinds': kinds,
+              'sleep_seconds': sleep_seconds,
+          }
+          Path('/tmp/request.json').write_text(json.dumps(resolved), encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f'artifact_name=jrdb-annual-raw-{start}-{end}\n')
+          PY
+
+      - name: Fetch requested annual ZIPs
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_annual_raw
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          cmd = [
+              'python', 'horse-racing/jrdb/src/fetch_jrdb_history.py',
+              '--from-year', str(req['from_year']),
+              '--to-year', str(req['to_year']),
+              '--kinds', *req['kinds'],
+              '--output-dir', '/tmp/jrdb_annual_raw',
+              '--manifest', '/tmp/jrdb_annual_raw/fetch_manifest.jsonl',
+              '--sleep-seconds', str(req['sleep_seconds']),
+              '--continue-on-error',
+          ]
+          completed = subprocess.run(cmd, check=False)
+          if completed.returncode != 0:
+              raise SystemExit(completed.returncode)
+          PY
+
+      - name: Validate annual ZIP set
+        run: |
+          python - <<'PY'
+          import hashlib, json, zipfile
+          from pathlib import Path
+
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          root = Path('/tmp/jrdb_annual_raw')
+          files = []
+          missing = []
+
+          for year in range(req['from_year'], req['to_year'] + 1):
+              for kind in req['kinds']:
+                  path = root / kind / f'{kind}_{year}.zip'
+                  if not path.exists():
+                      missing.append(str(path.relative_to(root)))
+                      continue
+                  if not zipfile.is_zipfile(path):
+                      raise SystemExit(f'invalid zip: {path}')
+                  with zipfile.ZipFile(path) as zf:
+                      bad = zf.testzip()
+                      if bad is not None:
+                          raise SystemExit(f'corrupt member in {path.name}: {bad}')
+                      members = [name for name in zf.namelist() if not name.endswith('/')]
+                      matching = [name for name in members if Path(name).name.upper().startswith(kind)]
+                      if not matching:
+                          raise SystemExit(f'no {kind} member in {path.name}')
+                  files.append({
+                      'kind': kind,
+                      'year': year,
+                      'file_name': path.name,
+                      'size_bytes': path.stat().st_size,
+                      'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                      'member_count': len(members),
+                      'matching_member_count': len(matching),
+                  })
+
+          if missing:
+              raise SystemExit('missing annual ZIPs: ' + ', '.join(missing))
+
+          report = {
+              'status': 'success',
+              'from_year': req['from_year'],
+              'to_year': req['to_year'],
+              'kinds': req['kinds'],
+              'file_count': len(files),
+              'files': files,
+          }
+          (root / 'annual_validation.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          PY
+
+      - name: Upload annual raw artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.artifact_name }}
+          path: /tmp/jrdb_annual_raw/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = json.loads(Path('/tmp/jrdb_annual_raw/annual_validation.json').read_text(encoding='utf-8'))
+          result = {
+              'status': 'success',
+              'run_id': int(os.environ['RUN_ID']),
+              'artifact_name': os.environ['ARTIFACT_NAME'],
+              'validation': report,
+          }
+          Path('/tmp/comment.md').write_text(
+              'JRDB_ANNUAL_RAW_FETCH_RESULT\n```json\n' +
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB annual raw fetch failed. Workflow run: $RUN_URL"
