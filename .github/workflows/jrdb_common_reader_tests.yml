@@ -10,6 +10,7 @@ on:
       - 'horse-racing/jrdb/schema/jrdb_canonical_schema_v0_1.sql'
       - 'horse-racing/jrdb/schema/jrdb_analysis_schema_v1_2.sql'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
+      - 'horse-racing/jrdb/src/racenote_reader_view.py'
       - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/src/jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py'
@@ -31,6 +32,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
+      - 'horse-racing/jrdb/tests/test_racenote_reader_view.py'
       - 'horse-racing/jrdb/tests/test_jrdb_canonical_builder.py'
       - 'horse-racing/jrdb/tests/test_jrdb_pwa_race_names_common.py'
       - 'horse-racing/jrdb/tests/test_upgrade_jrdb_analysis_common.py'
@@ -50,6 +52,7 @@ on:
       - 'horse-racing/jrdb/schema/jrdb_canonical_schema_v0_1.sql'
       - 'horse-racing/jrdb/schema/jrdb_analysis_schema_v1_2.sql'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
+      - 'horse-racing/jrdb/src/racenote_reader_view.py'
       - 'horse-racing/jrdb/src/enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/src/jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py'
@@ -71,6 +74,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
+      - 'horse-racing/jrdb/tests/test_racenote_reader_view.py'
       - 'horse-racing/jrdb/tests/test_jrdb_canonical_builder.py'
       - 'horse-racing/jrdb/tests/test_jrdb_pwa_race_names_common.py'
       - 'horse-racing/jrdb/tests/test_upgrade_jrdb_analysis_common.py'
@@ -107,6 +111,7 @@ jobs:
             src/jrdb_store.py \
             src/build_jrdb_canonical.py \
             src/racenote_jrdb.py \
+            src/racenote_reader_view.py \
             src/enrich_eval_csv_with_paci.py \
             src/jrdb_index_base_adapter.py \
             src/build_jrdb_index_base_from_raw.py \
@@ -133,6 +138,7 @@ jobs:
             test_jrdb_raw_racenote_compat \
             test_jrdb_store \
             test_racenote_store_resolution \
+            test_racenote_reader_view \
             test_jrdb_canonical_builder \
             test_jrdb_pwa_race_names_common \
             test_upgrade_jrdb_analysis_common \
