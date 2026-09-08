@@ -1,0 +1,122 @@
+{
+  "prediction_contract_version": "0.1",
+  "logic_profile": "provisional_handoff_v0.1_unweighted",
+  "status": "FROZEN_BEFORE_RESULT_LOOKUP",
+  "frozen_at": "2026-09-08T11:46:25+09:00",
+  "result_lookup_performed_before_freeze": false,
+  "purpose": "End-to-end proof from JRDB-derived RaceNote through GPT prediction output. Evaluation dimensions/weights are intentionally provisional and will be tuned separately.",
+  "input_contract": {
+    "source_schema": "RaceNote v1.0",
+    "reader_view_version": "0.1",
+    "reader_view_roundtrip_required": true,
+    "as_of_exclusive": "2025-08-24",
+    "target_result_forbidden": true
+  },
+  "races": [
+    {
+      "request_issue": 468,
+      "workflow_run": 34180397926,
+      "artifact_id": 10038692803,
+      "date": "2025-08-24",
+      "venue": "新潟",
+      "race_no": 7,
+      "race": "3歳以上1勝クラス 芝1000m直線 18頭",
+      "source_semantic_sha256": "62e4e113f5f2ec76fff44606b62bf6aa65b653b4870fb335dc6d57441db7f85b",
+      "reader_view_validation": "PASS",
+      "reader_view_bytes": 212864,
+      "prediction": {
+        "confidence": "B",
+        "marks": [
+          {"mark": "◎", "horse_no": 5, "horse_name": "シュラフ"},
+          {"mark": "○", "horse_no": 8, "horse_name": "レオプルミエール"},
+          {"mark": "▲", "horse_no": 14, "horse_name": "ラトルシェ"},
+          {"mark": "△", "horse_no": 7, "horse_name": "マルモリディライト"},
+          {"mark": "△", "horse_no": 16, "horse_name": "アップフルーク"}
+        ],
+        "race_shape": "新潟芝1000m直線。近年frame trendは外ほど強く、8枠top3率36.3%、7枠26.4%に対して1〜5枠は概ね12%以下。ただし能力・同条件実績との両立を優先する。",
+        "key_evidence": [
+          "5シュラフ: IDM50.0 / total54.3で上位。新潟1000m直近2走連続3着、same_distance top3率80.0%、same_venue 66.7%。3枠不利を差し引いても軸候補。",
+          "8レオプルミエール: total48.8、forecast finish 1位。近2走1200mで連続2着。",
+          "14ラトルシェ: 7枠の外有利、forecast finish 2位、career top3率42.9%。",
+          "7マルモリディライト: 直近新潟1200m2着、forecast finish 5位。",
+          "16アップフルーク: 8枠のコースバイアスを評価。能力値は上位3頭より低く、連下扱い。"
+        ],
+        "risks": [
+          "本命5は3枠で、新潟直線1000mのframe trend上は明確な逆風。",
+          "training_index等がnullのため、調教評価を強く使えない。"
+        ]
+      }
+    },
+    {
+      "request_issue": 469,
+      "workflow_run": 34180404763,
+      "artifact_id": 10038694241,
+      "date": "2025-08-24",
+      "venue": "中京",
+      "race_no": 9,
+      "race": "賢島特別 3歳以上1勝クラス 芝1400m 14頭",
+      "source_semantic_sha256": "c4f1d6a96423b2a6cdbf159ca46ed251b1d9eaa83be1821a1002be2a70b837e9",
+      "reader_view_validation": "PASS",
+      "reader_view_bytes": 166528,
+      "prediction": {
+        "confidence": "B",
+        "marks": [
+          {"mark": "◎", "horse_no": 10, "horse_name": "ホーリーブラッサム"},
+          {"mark": "○", "horse_no": 6, "horse_name": "モンタルチーノ"},
+          {"mark": "▲", "horse_no": 8, "horse_name": "ブルクトーア"},
+          {"mark": "△", "horse_no": 7, "horse_name": "テクノデザイン"},
+          {"mark": "△", "horse_no": 1, "horse_name": "ジーティーエスピ"}
+        ],
+        "race_shape": "forecast paceはハイ。単純な先行力だけでなく、1400m適性と能力値、近走内容を横比較する。",
+        "key_evidence": [
+          "10ホーリーブラッサム: IDM50.4 / total57.6で総合最上位、forecast finish 1位。same_distance top3率75.0%、same_venue 100%。直近1400mで2着、2着。",
+          "6モンタルチーノ: IDM49.4 / total53.7。same_distance / same_venueともtop3率100%だが小標本。",
+          "8ブルクトーア: total52.3、same_distance / same_venueともtop3率100%の小標本。直近阪神1400m3着。",
+          "7テクノデザイン: IDM50.0。近3走に1400m2着・3着があり、差し込み候補。",
+          "1ジーティーエスピ: forecast finish 2位。career/same_distance 100%は3走程度の小標本なので評価を抑えて連下。"
+        ],
+        "risks": [
+          "6・8・1の条件別好走率は小標本で、率をそのまま能力差とは扱えない。",
+          "forecast paceハイのため、前受け有力馬の位置取りリスクがある。"
+        ]
+      }
+    },
+    {
+      "request_issue": 470,
+      "workflow_run": 34180410888,
+      "artifact_id": 10038698110,
+      "date": "2025-08-24",
+      "venue": "札幌",
+      "race_no": 10,
+      "race": "ワールドAJ第3戦 3歳以上2勝クラス ダート1700m 14頭",
+      "source_semantic_sha256": "0f209481d06bab9b59dc607c7debfabd4a577e9cf663d3f0100bee9cab525f1d",
+      "reader_view_validation": "PASS",
+      "reader_view_bytes": 172815,
+      "prediction": {
+        "confidence": "B",
+        "marks": [
+          {"mark": "◎", "horse_no": 3, "horse_name": "オコタンペ"},
+          {"mark": "○", "horse_no": 2, "horse_name": "ラオラシオン"},
+          {"mark": "▲", "horse_no": 6, "horse_name": "チュウワクリスエス"},
+          {"mark": "△", "horse_no": 14, "horse_name": "エイブラムス"},
+          {"mark": "△", "horse_no": 10, "horse_name": "ベルギューン"},
+          {"mark": "△", "horse_no": 12, "horse_name": "カプラローラ"}
+        ],
+        "race_shape": "forecast paceはハイ。1スカンジナビア、6チュウワクリスエス、10ベルギューンなど前方候補がいて、能力上位の先行勢と差し追込の展開利を両方評価する。",
+        "key_evidence": [
+          "3オコタンペ: IDM51.0 / total56.3。直近札幌1700m4着、career top3率50.0%、same_venue 66.7%。先行争いの後ろで運べる差しを評価。",
+          "2ラオラシオン: IDM52.0 / total55.1、forecast finish 1位。追込でハイペース想定は向く一方、札幌1700m直近10着とsame_distance実績0/2がrisk。",
+          "6チュウワクリスエス: total56.9で全体最上位、forecast finish 2位。前走函館1700m1着。逃げでハイ想定のため本命から一段下げる。",
+          "14エイブラムス: IDM50.3 / total52.9、forecast finish 3位。近3走に新潟1800m1着。",
+          "10ベルギューン: total53.6、札幌1700m直近3着、same_venue top3率100%（1走）。逃げ脚質で展開リスクを考慮。",
+          "12カプラローラ: 差し追込側の候補。近3走で7・4・4着、forecast finish 4位。"
+        ],
+        "risks": [
+          "6と10は能力・実績が高いが、ハイペース想定で前残り前提には置けない。",
+          "2は展開利候補だが同条件実績が弱く、ブレが大きい。"
+        ]
+      }
+    }
+  ],
+  "next_step": "Only after this freeze is committed may target-race results be acquired for post-race evaluation."
+}
