@@ -1,0 +1,97 @@
+{
+  "schema_version": "0.1",
+  "policy_version": "2026-09-09.v1",
+  "policies": {
+    "STRUCTURAL_COURSE_V1": {
+      "validation_class": "STRUCTURAL",
+      "min_total_n": 240,
+      "min_unique_horses": 60,
+      "min_unique_races": 120,
+      "segment_mode": "calendar_blocks",
+      "segment_years": 4,
+      "min_segments": 3,
+      "min_segment_n": 40,
+      "min_same_direction_ratio": 0.75,
+      "review_days": 365,
+      "expiry_days": null
+    },
+    "LIFECYCLE_SIRE_V1": {
+      "validation_class": "LIFECYCLE",
+      "min_total_n": 120,
+      "min_unique_horses": 20,
+      "min_unique_races": 80,
+      "segment_mode": "relative_lifecycle",
+      "relative_segments": 3,
+      "min_segments": 2,
+      "min_segment_n": 25,
+      "min_same_direction_ratio": 0.6666666667,
+      "review_days": 180,
+      "expiry_days": 730,
+      "mature_min_active_days": 730
+    },
+    "DYNAMIC_JOCKEY_V1": {
+      "validation_class": "DYNAMIC",
+      "min_total_n": 120,
+      "min_unique_horses": 40,
+      "min_unique_races": 100,
+      "segment_mode": "rolling",
+      "windows_days": [90, 180, 365, 730],
+      "primary_window_days": 365,
+      "review_days": 30,
+      "expiry_days": 60,
+      "mature_min_active_days": 365
+    },
+    "DYNAMIC_TRAINER_V1": {
+      "validation_class": "DYNAMIC",
+      "min_total_n": 120,
+      "min_unique_horses": 30,
+      "min_unique_races": 100,
+      "segment_mode": "rolling",
+      "windows_days": [90, 180, 365, 730],
+      "primary_window_days": 365,
+      "review_days": 30,
+      "expiry_days": 60,
+      "mature_min_active_days": 365
+    },
+    "DYNAMIC_JOCKEY_TRAINER_V1": {
+      "validation_class": "DYNAMIC",
+      "min_total_n": 40,
+      "min_unique_horses": 12,
+      "min_unique_races": 35,
+      "segment_mode": "rolling",
+      "windows_days": [180, 365, 730],
+      "primary_window_days": 365,
+      "review_days": 30,
+      "expiry_days": 45,
+      "mature_min_active_days": 180
+    },
+    "EMERGING_SIRE_V1": {
+      "validation_class": "EMERGING",
+      "watch_min_n": 20,
+      "provisional_min_n": 40,
+      "eligible_min_n": 80,
+      "min_unique_horses": 8,
+      "min_unique_races": 30,
+      "max_single_horse_sample_share": 0.35,
+      "max_single_return_share": 0.50,
+      "segment_mode": "rolling",
+      "windows_days": [180, 365, 730],
+      "review_days": 30,
+      "expiry_days": 45
+    },
+    "EMERGING_HUMAN_V1": {
+      "validation_class": "EMERGING",
+      "watch_min_n": 20,
+      "provisional_min_n": 40,
+      "eligible_min_n": 80,
+      "min_unique_horses": 12,
+      "min_unique_races": 30,
+      "max_single_horse_sample_share": 0.25,
+      "max_single_return_share": 0.50,
+      "segment_mode": "rolling",
+      "windows_days": [90, 180, 365],
+      "review_days": 14,
+      "expiry_days": 30
+    }
+  }
+}
