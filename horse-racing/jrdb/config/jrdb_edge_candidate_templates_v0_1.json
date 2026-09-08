@@ -1,0 +1,114 @@
+{
+  "schema_version": "0.1",
+  "template_version": "2026-09-09.v1",
+  "rules": {
+    "max_anchor_count": 1,
+    "max_modifier_count": 2,
+    "free_numeric_threshold_search": false,
+    "exact_distance_is_canonical_value": true
+  },
+  "canonical_values": {
+    "surface_code": ["1", "2"],
+    "turn_code": ["1", "2", "3"],
+    "frame_zone": ["INNER", "MIDDLE", "OUTER"],
+    "distance_change_bucket": ["LARGE_SHORTEN", "SHORTEN", "SAME_BAND", "EXTEND", "LARGE_EXTEND"],
+    "surface_transition": ["1->1", "1->2", "2->1", "2->2"],
+    "frame_transition": [
+      "INNER->INNER", "INNER->MIDDLE", "INNER->OUTER",
+      "MIDDLE->INNER", "MIDDLE->MIDDLE", "MIDDLE->OUTER",
+      "OUTER->INNER", "OUTER->MIDDLE", "OUTER->OUTER"
+    ]
+  },
+  "templates": [
+    {
+      "template_id": "COURSE_FRAME_V1",
+      "family": "COURSE",
+      "anchor_type": "course",
+      "anchor_fields": ["venue_code", "surface_code", "distance_m"],
+      "modifier_fields": ["frame_zone"],
+      "baseline": "same_anchor",
+      "enabled": true,
+      "example": "東京ダ1600 × 外枠"
+    },
+    {
+      "template_id": "SIRE_TURN_DISTANCE_V1",
+      "family": "PEDIGREE",
+      "anchor_type": "sire",
+      "anchor_fields": ["sire_name"],
+      "modifier_fields": ["turn_code", "distance_m"],
+      "baseline": "same_anchor",
+      "enabled": true,
+      "example": "○○産駒 × 右回り × 1600m"
+    },
+    {
+      "template_id": "SIRE_SURFACE_DISTANCE_V1",
+      "family": "PEDIGREE",
+      "anchor_type": "sire",
+      "anchor_fields": ["sire_name"],
+      "modifier_fields": ["surface_code", "distance_m"],
+      "baseline": "same_anchor",
+      "enabled": true,
+      "example": "○○産駒 × 芝 × 1600m"
+    },
+    {
+      "template_id": "SIRE_LINE_TURN_DISTANCE_V1",
+      "family": "PEDIGREE",
+      "anchor_type": "sire_line",
+      "anchor_fields": ["sire_line_code"],
+      "modifier_fields": ["turn_code", "distance_m"],
+      "baseline": "same_anchor",
+      "enabled": true,
+      "example": "○○系 × 右回り × 1600m"
+    },
+    {
+      "template_id": "SIRE_DISTANCE_CHANGE_V1",
+      "family": "TRANSITION",
+      "anchor_type": "sire",
+      "anchor_fields": ["sire_name"],
+      "modifier_fields": ["distance_change_bucket"],
+      "baseline": "same_anchor_with_prev1",
+      "enabled": true,
+      "example": "○○産駒 × 距離延長"
+    },
+    {
+      "template_id": "SIRE_SURFACE_TRANSITION_V1",
+      "family": "TRANSITION",
+      "anchor_type": "sire",
+      "anchor_fields": ["sire_name"],
+      "modifier_fields": ["surface_transition"],
+      "baseline": "same_anchor_with_prev1",
+      "enabled": true,
+      "example": "○○産駒 × ダート替わり"
+    },
+    {
+      "template_id": "SIRE_FRAME_TRANSITION_V1",
+      "family": "TRANSITION",
+      "anchor_type": "sire",
+      "anchor_fields": ["sire_name"],
+      "modifier_fields": ["frame_transition"],
+      "baseline": "same_anchor_with_prev1",
+      "enabled": true,
+      "example": "○○産駒 × 内枠から外枠"
+    },
+    {
+      "template_id": "JOCKEY_COURSE_V1",
+      "family": "HUMAN",
+      "anchor_type": "jockey",
+      "anchor_fields": ["jockey_code"],
+      "modifier_fields": ["venue_code", "surface_code"],
+      "baseline": "human_residual_required",
+      "enabled": false,
+      "phase1_note": "Enable only after horse-quality-adjusted human residual baseline is connected."
+    },
+    {
+      "template_id": "JOCKEY_TRAINER_PAIR_V1",
+      "family": "HUMAN",
+      "anchor_type": "jockey_trainer",
+      "anchor_fields": ["jockey_code", "trainer_code"],
+      "modifier_fields": [],
+      "baseline": "human_residual_required",
+      "enabled": false,
+      "phase1_note": "Raw pair win/place rate is descriptive only; formal Edge requires residual after individual jockey/trainer effects."
+    }
+  ]
+}
