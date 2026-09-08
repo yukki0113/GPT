@@ -1,12 +1,24 @@
 # GPT External I/O Bridge
 
+## v0.1 routing status
+
+- **Git backend:** PRODUCTION / STANDARD.
+- **Google Drive native connector route:** PRODUCTION / STANDARD FOR CHATGPT-WORK.
+- **Google Drive Actions backend:** DEFERRED / NOT REAL-DRIVE E2E ACCEPTED.
+
+Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. The Actions backend remains in the repository as a future unattended-automation foundation; it is disabled unless repository variable `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` is exactly `true`.
+
+`GPT_GDRIVE_SERVICE_ACCOUNT_JSON` is not a standard setup requirement. The current JSON-key implementation is deferred because the environment's key-creation policy does not permit adopting long-lived Service Account keys. If unattended Actions-to-Drive automation becomes necessary, reopen the backend with GitHub Actions OIDC, Google Workload Identity Federation, and short-lived Service Account impersonation credentials.
+
+See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` for the architecture decision and safety contract.
+
 ## Publishing GPT changes to GitHub
 
 For text/source changes, use the repository-level `[gpt-git-update]` Issue protocol in `.gpt/GIT_UPDATE_ISSUE.md` whenever direct push authentication is unavailable. Build the unified diff from latest `main`; the Action validates, commits and pushes it. Do not push an old local commit. Use `[gpt-git-binary-update]` for binary files.
 
 `python tools/gpt_io/gpt_io.py git read|update ...` is the unified entry point. The original `.gpt/tools/gpt_git_binary_tool.py` remains supported unchanged during migration.
 
-Drive v0.1 implements request validation only until a Service Account and an explicitly shared automation root are configured. Upload never overwrites; move, replace, and trash require a file ID; replace also requires `expected.file_id`.
+The deferred Actions implementation retains request validation. Upload never overwrites; move, replace, and trash require a file ID; replace also requires `expected.file_id`.
 
 ## Google Drive backend
 
@@ -27,4 +39,4 @@ python tools/gpt_io/gpt_io.py gdrive upload --request request.json
 python tools/gpt_io/gpt_io.py gdrive download --request request.json
 ```
 
-When the local environment cannot access Drive, open `[gpt-gdrive-request] <request_id>` with the request JSON. Large source bytes use a short-lived Actions artifact referenced by `source_artifact_run_id` and `source_artifact_name`; do not place large Base64 in an Issue and do not commit Drive data to Git. Artifact retention and cleanup follow the producing workflow.
+`[gpt-gdrive-request]` is for the deferred Actions backend only, not the standard GPT/Work route. Large source bytes use a short-lived Actions artifact referenced by `source_artifact_run_id` and `source_artifact_name`; do not place large Base64 in an Issue and do not commit Drive data to Git.

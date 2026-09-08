@@ -17,7 +17,7 @@ GPT / Workから通常のソース・Markdownを反映する際、直接`git pus
 - バイナリの更新: `.gpt/GIT_BINARY_UPDATE_ISSUE.md` / `[gpt-git-binary-update]`
 - GitHub上のバイナリをChat / Workへ実ファイルとして取得: `.gpt/GIT_BINARY_READ_ISSUE.md` / `[gpt-git-binary-read]`
 - バイナリread/updateの1コマンド操作: `.gpt/GIT_BINARY_TOOL.md` / `.gpt/tools/gpt_git_binary_tool.py`
-- Google Drive stored-file操作: `tools/gpt_io/README.md` / `[gpt-gdrive-request]`
+- Google Drive: connected native Google Drive tools / connectorを第一選択とする。Google native Docs/Sheets/Slidesもnative toolsで扱う。Actions Drive bridgeはdeferredであり、標準経路ではない（`tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`）。
 
 認証済み `gh` CLIを実行できる環境では、バイナリread/updateは `.gpt/tools/gpt_git_binary_tool.py` を第一選択とし、Issue本文・Base64チャンク・artifact回収手順をGPTが手作業で組み立てない。
 
