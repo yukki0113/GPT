@@ -15,7 +15,10 @@ concurrency:
 
 jobs:
   execute:
-    if: github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[gpt-gdrive-request]')
+    if: >
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[gpt-gdrive-request]') &&
+      vars.GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED == 'true'
     runs-on: ubuntu-latest
     env:
       GPT_GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GPT_GDRIVE_SERVICE_ACCOUNT_JSON }}
