@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Preflight validation for GPT-created GitHub Issue requests.
 
-The validator intentionally runs before an Issue is created so malformed request
-bodies and stale/broken unified diffs do not consume an Actions run.
+The validator runs before an Issue is created so deterministic request errors do
+not consume an Actions run. It covers the common GPT-Git protocols, selected
+high-frequency project JSON protocols, and a generic key/value fallback.
 """
 
 from __future__ import annotations
@@ -12,7 +13,6 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
-import sys
 import tempfile
 from typing import Iterable
 
@@ -37,7 +37,7 @@ class PreflightError(ValueError):
 
 
 def parse_key_value_body(body: str) -> dict[str, str]:
-    """Parse simple `key: value` lines from an Issue body."""
+    """Parse top-level simple `key: value` lines from an Issue body."""
     values: dict[str, str] = {}
     in_fence = False
     for raw_line in body.splitlines():
@@ -65,20 +65,19 @@ def require_keys(values: dict[str, str], keys: Iterable[str]) -> None:
 
 def validate_repo_path(path_text: str, allow_workflows: bool = False) -> str:
     """Validate a repository-relative path against the common security boundary."""
-    path_text = path_text.strip().replace("\\", "/")
-    if not path_text:
+    normalized_input = path_text.strip().replace("\\", "/")
+    if not normalized_input:
         raise PreflightError("INVALID_PATH", "repository path is empty")
-    if path_text.startswith("/"):
+    if normalized_input.startswith("/"):
         raise PreflightError("INVALID_PATH", "absolute paths are not allowed")
 
-    path = PurePosixPath(path_text)
+    path = PurePosixPath(normalized_input)
     if ".." in path.parts:
         raise PreflightError("INVALID_PATH", "parent traversal is not allowed")
 
     normalized = path.as_posix()
     lowered = normalized.lower()
     base_name = path.name.lower()
-
     if normalized in PROTECTED_EXACT or base_name in PROTECTED_EXACT:
         raise PreflightError("PROTECTED_PATH", f"protected path: {normalized}")
     if lowered.startswith(PROTECTED_GIT_PREFIX):
@@ -114,10 +113,7 @@ def diff_paths(patch: str) -> list[str]:
         if not line.startswith("+++ "):
             continue
         new_path = line[4:].split("\t", 1)[0].strip()
-        if new_path != "/dev/null":
-            candidate = new_path
-        else:
-            candidate = old_path
+        candidate = new_path if new_path != "/dev/null" else old_path
         if candidate is None or candidate == "/dev/null":
             continue
         if candidate.startswith("a/") or candidate.startswith("b/"):
@@ -134,6 +130,7 @@ def git_apply_check(patch: str, repo_root: Path) -> None:
     """Run `git apply --check` against the caller's latest working tree."""
     if not (repo_root / ".git").exists():
         raise PreflightError("REPO_ROOT_INVALID", f"not a Git working tree: {repo_root}")
+
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".diff", delete=False) as handle:
         handle.write(patch)
         patch_path = Path(handle.name)
@@ -160,7 +157,11 @@ def validate_git_update(body: str, repo_root: Path | None) -> dict[str, object]:
     paths = diff_paths(patch)
     if repo_root is not None:
         git_apply_check(patch, repo_root)
-    return {"protocol": "gpt-git-update", "paths": paths, "git_apply_checked": repo_root is not None}
+    return {
+        "protocol": "gpt-git-update",
+        "paths": paths,
+        "git_apply_checked": repo_root is not None,
+    }
 
 
 def validate_binary_read(body: str) -> dict[str, object]:
@@ -170,14 +171,20 @@ def validate_binary_read(body: str) -> dict[str, object]:
     path = validate_repo_path(values["path"], allow_workflows=True)
     request_id = values.get("request_id")
     if request_id and not REQUEST_ID_PATTERN.fullmatch(request_id):
-        raise PreflightError("INVALID_REQUEST_ID", "request_id must use 1-100 ASCII letters, digits, dot, underscore or hyphen")
+        raise PreflightError(
+            "INVALID_REQUEST_ID",
+            "request_id must use 1-100 ASCII letters, digits, dot, underscore or hyphen",
+        )
     return {"protocol": "gpt-git-binary-read", "path": path}
 
 
 def validate_binary_update(body: str) -> dict[str, object]:
     """Validate a `[gpt-git-binary-update]` request body before chunk upload."""
     values = parse_key_value_body(body)
-    require_keys(values, ["target_path", "commit_message", "sha256", "size_bytes", "chunks", "encoding"])
+    require_keys(
+        values,
+        ["target_path", "commit_message", "sha256", "size_bytes", "chunks", "encoding"],
+    )
     path = validate_repo_path(values["target_path"])
     if not SHA256_PATTERN.fullmatch(values["sha256"]):
         raise PreflightError("INVALID_SHA256", "sha256 must be exactly 64 hexadecimal characters")
@@ -192,20 +199,28 @@ def validate_binary_update(body: str) -> dict[str, object]:
         raise PreflightError("INVALID_CHUNK_COUNT", "chunks must be at least 1")
     if values["encoding"].lower() != "base64":
         raise PreflightError("INVALID_ENCODING", "encoding must be base64")
-    return {"protocol": "gpt-git-binary-update", "path": path, "size_bytes": size_bytes, "chunks": chunks}
+    return {
+        "protocol": "gpt-git-binary-update",
+        "path": path,
+        "size_bytes": size_bytes,
+        "chunks": chunks,
+    }
 
 
 def validate_generic_key_value(body: str, required_keys: list[str]) -> dict[str, object]:
     """Validate project-specific simple key/value requests without duplicating a parser."""
     if not required_keys:
-        raise PreflightError("NO_GENERIC_CONTRACT", "generic mode requires at least one --required-key")
+        raise PreflightError(
+            "NO_GENERIC_CONTRACT",
+            "generic mode requires at least one --required-key or a recognized project Issue prefix",
+        )
     values = parse_key_value_body(body)
     require_keys(values, required_keys)
     return {"protocol": "generic-key-value", "required_keys": required_keys}
 
 
 def infer_protocol(title: str) -> str:
-    """Infer a supported protocol from an Issue title prefix."""
+    """Infer one common protocol from an Issue title prefix."""
     if title.startswith("[gpt-git-update]"):
         return "git-update"
     if title.startswith("[gpt-git-binary-read]"):
@@ -213,6 +228,19 @@ def infer_protocol(title: str) -> str:
     if title.startswith("[gpt-git-binary-update]"):
         return "binary-update"
     return "generic"
+
+
+def validate_project_request(title: str, body: str) -> dict[str, object] | None:
+    """Delegate recognized high-frequency project JSON requests to their contracts."""
+    from tools.gpt_io.git.project_issue_preflight import (
+        ProjectPreflightError,
+        validate_project_request as validate_project,
+    )
+
+    try:
+        return validate_project(title, body)
+    except ProjectPreflightError as exc:
+        raise PreflightError(exc.error_code, str(exc)) from exc
 
 
 def validate_request(
@@ -223,10 +251,7 @@ def validate_request(
     required_keys: list[str] | None = None,
 ) -> dict[str, object]:
     """Validate one Issue title/body pair and return machine-readable details."""
-    if protocol == "auto":
-        selected = infer_protocol(title)
-    else:
-        selected = protocol
+    selected = infer_protocol(title) if protocol == "auto" else protocol
     required_keys = required_keys or []
 
     if selected == "git-update":
@@ -242,53 +267,74 @@ def validate_request(
             raise PreflightError("TITLE_PREFIX_MISMATCH", "title must start with [gpt-git-binary-update]")
         return validate_binary_update(body)
     if selected == "generic":
+        if protocol == "auto":
+            project_result = validate_project_request(title, body)
+            if project_result is not None:
+                return project_result
         return validate_generic_key_value(body, required_keys)
     raise PreflightError("UNKNOWN_PROTOCOL", f"unsupported protocol: {selected}")
 
 
 def build_parser() -> argparse.ArgumentParser:
     """Build the command-line parser."""
-    parser = argparse.ArgumentParser(description="Validate a GPT-created GitHub Issue request before creating the Issue.")
+    parser = argparse.ArgumentParser(
+        description="Validate a GPT-created GitHub Issue request before creating the Issue."
+    )
     parser.add_argument("--title", required=True, help="Prospective GitHub Issue title")
     body_group = parser.add_mutually_exclusive_group(required=True)
     body_group.add_argument("--body", help="Prospective GitHub Issue body")
-    body_group.add_argument("--body-file", type=Path, help="UTF-8 file containing the prospective Issue body")
+    body_group.add_argument(
+        "--body-file",
+        type=Path,
+        help="UTF-8 file containing the prospective Issue body",
+    )
     parser.add_argument(
         "--protocol",
         choices=["auto", "git-update", "binary-read", "binary-update", "generic"],
         default="auto",
-        help="Validation protocol; auto infers the three common GPT-Git prefixes",
+        help="Validation protocol; auto also recognizes selected project Issue prefixes",
     )
-    parser.add_argument("--repo-root", type=Path, help="Git working tree used for git apply --check in git-update mode")
-    parser.add_argument("--required-key", action="append", default=[], help="Required body key for generic key/value mode; repeat as needed")
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        help="Git working tree used for git apply --check in git-update mode",
+    )
+    parser.add_argument(
+        "--required-key",
+        action="append",
+        default=[],
+        help="Required body key for generic key/value mode; repeat as needed",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
     parser = build_parser()
-    args = parser.parse_args(argv)
-    body = args.body
-    if args.body_file is not None:
-        body = args.body_file.read_text(encoding="utf-8")
+    arguments = parser.parse_args(argv)
+    body = arguments.body
+    if arguments.body_file is not None:
+        body = arguments.body_file.read_text(encoding="utf-8")
     assert body is not None
 
     resolved_repo_root = None
-    if args.repo_root is not None:
-        resolved_repo_root = args.repo_root.resolve()
+    if arguments.repo_root is not None:
+        resolved_repo_root = arguments.repo_root.resolve()
 
     try:
         details = validate_request(
-            title=args.title,
+            title=arguments.title,
             body=body,
-            protocol=args.protocol,
+            protocol=arguments.protocol,
             repo_root=resolved_repo_root,
-            required_keys=args.required_key,
+            required_keys=arguments.required_key,
         )
     except PreflightError as exc:
         failure_class = FAILURE_CLASS
         if exc.error_code == "PATCH_INVALID_OR_STALE":
             failure_class = "PATCH_INVALID_OR_STALE"
+        if exc.error_code in {"MISSING_SOURCE_RUN", "MISSING_SOURCE_ARTIFACT"}:
+            failure_class = "UPSTREAM_REF_INVALID"
         payload = {
             "status": "failure",
             "failure_class": failure_class,
