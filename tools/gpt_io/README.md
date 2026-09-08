@@ -16,7 +16,18 @@ See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` for the architecture decision 
 
 For text/source changes, use the repository-level `[gpt-git-update]` Issue protocol in `.gpt/GIT_UPDATE_ISSUE.md` whenever direct push authentication is unavailable. Build the unified diff from latest `main`; the Action validates, commits and pushes it. Do not push an old local commit. Use `[gpt-git-binary-update]` for binary files.
 
-`python tools/gpt_io/gpt_io.py git read|update ...` is the unified entry point. The original `.gpt/tools/gpt_git_binary_tool.py` remains supported unchanged during migration.
+`python tools/gpt_io/gpt_io.py git read|update ...` is the unified binary entry point. The original `.gpt/tools/gpt_git_binary_tool.py` remains supported unchanged during migration.
+
+Before GPT / Work creates an Issue-driven Actions request, follow `.gpt/ISSUE_REQUEST_CONTRACTS.md`. The shared validator is:
+
+```bash
+python .gpt/tools/gpt_issue_preflight.py \
+  --title "[gpt-git-update] update docs" \
+  --body-file /tmp/issue-body.md \
+  --repo-root .
+```
+
+The implementation lives at `tools/gpt_io/git/issue_preflight.py`. It validates the three common GPT-Git Issue protocols and supports project-specific simple key/value contracts with repeated `--required-key` options. In `[gpt-git-update]` mode, `--repo-root` enables `git apply --check` so malformed or stale patches can be rejected before an Actions run is created.
 
 The deferred Actions implementation retains request validation. Upload never overwrites; move, replace, and trash require a file ID; replace also requires `expected.file_id`.
 
