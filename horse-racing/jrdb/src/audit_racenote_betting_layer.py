@@ -153,6 +153,9 @@ def load_hjc_map(items: Iterable[str]) -> dict[str, dict[str, dict[str, Any]]]:
         if "=" not in item:
             raise ValueError("--hjc must be DATE=PATH")
         date, raw_path = item.split("=", 1)
+        date = date.strip()
+        if re.fullmatch(r"20\d{6}", date):
+            date = f"{date[:4]}-{date[4:6]}-{date[6:8]}"
         out[date] = load_hjc_zip(Path(raw_path))
     return out
 
