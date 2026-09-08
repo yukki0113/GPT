@@ -42,9 +42,9 @@ jobs:
           if not isinstance(kinds, list) or not kinds:
               raise SystemExit('kinds must be non-empty list')
           kinds = [str(x).upper() for x in kinds]
-          allowed = {'PACI','SED'}
+          allowed = {'PACI','SED','HJC'}
           if any(x not in allowed for x in kinds):
-              raise SystemExit('supported kinds: PACI, SED')
+              raise SystemExit('supported kinds: PACI, SED, HJC')
           Path('/tmp/request.json').write_text(json.dumps({'date':date,'kinds':kinds}), encoding='utf-8')
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
               f.write(f'date={date}\n')
@@ -67,7 +67,7 @@ jobs:
               if kind == 'PACI':
                   cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_paci.py','--date',date,'--out-dir','/tmp/jrdb_raw']
               else:
-                  cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_history.py','--date',date,'--kinds','SED','--output-dir','/tmp/jrdb_raw']
+                  cmd = ['python','horse-racing/jrdb/src/fetch_jrdb_history.py','--date',date,'--kinds',kind,'--output-dir','/tmp/jrdb_raw']
               subprocess.run(cmd, check=True)
           PY
 
@@ -83,10 +83,10 @@ jobs:
           rows = []
           for kind in req['kinds']:
               name = f'{kind}{yy}.zip'
-              if kind == 'SED':
-                  path = out / 'SED' / name
-              else:
+              if kind == 'PACI':
                   path = out / name
+              else:
+                  path = out / kind / name
               if not path.exists():
                   raise SystemExit(f'missing output: {path}')
               if not zipfile.is_zipfile(path):
