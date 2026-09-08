@@ -9,10 +9,11 @@ This document defines the user-facing per-race presentation format for the curre
 The purpose is not to expose every internal factor or raw index. The user should be able to understand, at a glance:
 
 1. what kind of race is expected;
-2. why ◎ is buyable;
-3. why ○ is one step below ◎ and what could reverse them;
-4. why ▲ is the value-oriented second quinella counterpart when a meaningful value candidate exists;
-5. which two remaining horses are △1 / △2 in prediction priority order.
+2. how confident the model is in the race-level judgment;
+3. why ◎ is buyable;
+4. why ○ is one step below ◎ and what could reverse them;
+5. why ▲ is the value-oriented second quinella counterpart when a meaningful value candidate exists;
+6. which two remaining horses are △1 / △2 in prediction priority order.
 
 Raw JRDB indices may be used internally but should not be copied mechanically into the short comment unless the number itself materially improves interpretability.
 
@@ -41,7 +42,9 @@ Do not sort triangle horse numbers numerically.
 ```text
 <venue><race_no>R <race name / class when useful>
 
-レース短評：<race-shape / confidence / upset-risk summary when there is something worth saying>
+レース短評：
+自信度：<A/B/C>
+<race-shape / upset-risk summary when there is something worth saying>
 
 ◎ <horse_no> <horse_name>
 <main reason to buy; today-specific suitability; meaningful caution if present>
@@ -59,31 +62,34 @@ Bet selections are not repeated in every short comment when the active betting c
 
 ## 3. Race short comment
 
-`レース短評` is optional in substance but reserved in the format.
+`レース短評` reserves two compact pieces of information:
 
-Use it when at least one of the following is genuinely informative:
+1. first line: `自信度：A/B/C`;
+2. second line: one concise race-shape / upset-risk observation when useful.
 
-- projected pace / likely shape;
-- strong positional or running-style bias within this field;
-- likely upset / wide-open structure;
-- unusually strong confidence / unusually weak confidence;
-- important race-wide uncertainty such as pace collapse risk or many unproven distance runners.
+Confidence is intended as purchase-decision support, not as a synonym for popularity or chalkiness.
 
-Keep it short. Do not force generic text into every race merely to fill the field.
+- A: major evidence layers broadly agree and unresolved risk is limited;
+- B: reasonable top choice but at least one meaningful uncertainty remains;
+- C: upper horses are close, evidence is sparse/contradictory, or a major trip/distance uncertainty remains.
 
-Acceptable examples:
+A popular favorite can be C. A less-popular horse can be A when the evidence strongly aligns.
+
+Examples:
 
 ```text
-レース短評：先行馬が多くハイ寄り。好位差しを優先したい。
+レース短評：
+自信度：A
+先行馬が多くハイ寄り。好位差しを優先したい。
 ```
 
 ```text
-レース短評：上位の差が小さく波乱含み。◎も絶対視はしづらい。
+レース短評：
+自信度：C
+上位の差が小さく波乱含み。◎も絶対視はしづらい。
 ```
 
-```text
-レース短評：上位2頭の能力・適性が一枚上で比較的堅め。
-```
+Keep the second line short. Do not force generic text merely to fill the field.
 
 ## 4. ◎ comment
 
@@ -197,7 +203,7 @@ The default output should remain readable for an entire race card.
 
 Aim for:
 
-- race comment: roughly one concise sentence;
+- race comment: confidence + roughly one concise sentence;
 - ◎: roughly 1-3 concise sentences;
 - ○: roughly 1-2 concise sentences;
 - ▲: roughly 1-2 concise sentences;
