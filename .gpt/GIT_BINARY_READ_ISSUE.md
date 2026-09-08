@@ -48,6 +48,18 @@ request_id: example-ledger-analysis-20260826
 
 `request_id` は省略可能です。省略時はIssue番号から自動生成します。
 
+## Preflight before Issue creation
+
+手動でIssueを組み立てる場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` の共通preflight / retry規約を適用します。
+
+```bash
+python .gpt/tools/gpt_issue_preflight.py \
+  --title "[gpt-git-binary-read] read example" \
+  --body-file /tmp/issue-body.txt
+```
+
+`path` は必須です。`request_id` を明示する場合は許可文字を満たす一意な値とし、retryでは新しい値を使用します。
+
 ## Actionsの処理
 
 1. 最新 `main` をcheckout
