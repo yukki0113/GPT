@@ -1,0 +1,118 @@
+"""Contract tests for factor-specific Edge validation policy routing."""
+from __future__ import annotations
+
+import sqlite3
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
+
+import jrdb_edge_validation as edgeval  # noqa: E402
+
+
+def test_structural_course_uses_calendar_block_policy() -> None:
+    catalog = edgeval.load_policy_catalog()
+    selected = edgeval.select_policy(
+        family="COURSE",
+        anchor_type="course",
+        first_seen_date="2010-01-01",
+        total_n=5000,
+        as_of_date="2026-09-09",
+        catalog=catalog,
+    )
+    assert selected.validation_class == "STRUCTURAL"
+    assert selected.policy_id == "STRUCTURAL_COURSE_V1"
+    assert catalog["policies"][selected.policy_id]["segment_mode"] == "calendar_blocks"
+
+
+def test_sire_moves_from_emerging_to_lifecycle() -> None:
+    catalog = edgeval.load_policy_catalog()
+    young = edgeval.select_policy(
+        family="PEDIGREE",
+        anchor_type="sire",
+        first_seen_date="2025-06-01",
+        total_n=95,
+        as_of_date="2026-09-09",
+        catalog=catalog,
+    )
+    mature = edgeval.select_policy(
+        family="PEDIGREE",
+        anchor_type="sire",
+        first_seen_date="2020-06-01",
+        total_n=800,
+        as_of_date="2026-09-09",
+        catalog=catalog,
+    )
+    assert young.validation_class == "EMERGING"
+    assert young.policy_id == "EMERGING_SIRE_V1"
+    assert mature.validation_class == "LIFECYCLE"
+    assert mature.policy_id == "LIFECYCLE_SIRE_V1"
+
+
+def test_human_pair_uses_emerging_then_dynamic() -> None:
+    catalog = edgeval.load_policy_catalog()
+    low_sample = edgeval.select_policy(
+        family="HUMAN",
+        anchor_type="jockey_trainer",
+        first_seen_date="2025-01-01",
+        total_n=24,
+        as_of_date="2026-09-09",
+        catalog=catalog,
+    )
+    established = edgeval.select_policy(
+        family="HUMAN",
+        anchor_type="jockey_trainer",
+        first_seen_date="2024-01-01",
+        total_n=90,
+        as_of_date="2026-09-09",
+        catalog=catalog,
+    )
+    assert low_sample.policy_id == "EMERGING_HUMAN_V1"
+    assert established.policy_id == "DYNAMIC_JOCKEY_TRAINER_V1"
+
+
+def test_dynamic_policy_expires_but_structural_does_not() -> None:
+    catalog = edgeval.load_policy_catalog()["policies"]
+    dynamic = catalog["DYNAMIC_JOCKEY_V1"]
+    structural = catalog["STRUCTURAL_COURSE_V1"]
+    assert edgeval.temporal_status(
+        dynamic,
+        last_validated_at="2026-06-01",
+        as_of_date="2026-09-09",
+    ) == "EXPIRED"
+    assert edgeval.expiry_date(structural, "2026-06-01") is None
+    assert edgeval.temporal_status(
+        structural,
+        last_validated_at="2026-06-01",
+        as_of_date="2026-09-09",
+    ) == "CURRENT"
+
+
+def test_registry_schema_parses_and_enforces_core_enums(tmp_path: Path) -> None:
+    schema = (ROOT / "schema/jrdb_edge_registry_schema_v0_1.sql").read_text(encoding="utf-8")
+    path = tmp_path / "edge.sqlite"
+    connection = sqlite3.connect(path)
+    try:
+        connection.executescript(schema)
+        tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        assert {"edge_registry_meta", "edge_definition", "edge_metric_snapshot", "edge_validation_event"} <= tables
+        connection.execute(
+            "INSERT INTO edge_registry_meta VALUES (?,?,?,?,?,?,?)",
+            ("0.1", "2026-09-09.v1", "2026-09-09T00:00:00+09:00", "jrdb", None, "VALID", None),
+        )
+        connection.execute(
+            """INSERT INTO edge_definition(
+              edge_id,registry_version,family,anchor_type,validation_class,policy_id,polarity,
+              performance_signal,value_signal,status,conditions_json,display_text,specificity,created_at,updated_at
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                "PED-SIRE-TEST", "0.1", "PEDIGREE", "sire", "LIFECYCLE", "LIFECYCLE_SIRE_V1",
+                "POSITIVE", "POSITIVE", "UNASSESSED", "ACTIVE", "[]", "test", 0,
+                "2026-09-09T00:00:00+09:00", "2026-09-09T00:00:00+09:00",
+            ),
+        )
+        connection.commit()
+    finally:
+        connection.close()
