@@ -8,6 +8,14 @@
 6. README/仕様変更が必要なら同時更新。
 7. Gitへcommitし、以後Git版を正本とする。
 
+## Issue駆動Actionsのpreflight
+
+- JRDB / RaceNote系を含むIssue起点Actionsは、Issue作成前にルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` を確認する。
+- title prefix、必須body項目、upstream dependency、RESULT markerをworkflow / 対応docsから確認してからIssueを作成する。
+- upstream `run_id` / `artifact_name` 等を使う場合、前工程RESULTが `status=success` であることを確認し、値を完全一致で転記する。推測値を使用しない。
+- simple `key: value` bodyは `.gpt/tools/gpt_issue_preflight.py --protocol generic --required-key ...` で事前検証できる。
+- retry時はfailed stepを確認し、必要に応じて最新 `main` / upstream RESULTからrequestを再構築する。同一requestの盲目的rerunを標準運用にしない。
+
 ## GitHubバイナリ正本の取得・更新
 
 - GitHub `main` 上の `.xlsx`、`.sqlite`、`.zip` 等をChat / Workで実ファイルとして扱う必要がある場合、認証済み `gh` CLIを実行できる環境ではルート `.gpt/tools/gpt_git_binary_tool.py` を第一選択にする。
