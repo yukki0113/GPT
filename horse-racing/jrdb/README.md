@@ -32,6 +32,8 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/upgrade_jrdb_analysis_v1_1_to_v1_2.py` — 既存v1.1 Analysisへprev1/batch管理を追加
 - `src/build_jrdb_stats_mart.py` — Analysis Lite → 年次Stats Mart v1.1
 - `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
+- `src/jrdb_edge_validation.py` — Edge Registryのfactor-specific Validation Policy routing / review・expiry判定
+- `src/build_jrdb_edge_feature_mart.py` — Index Base → leakage-safe Edge探索用1レース×1頭Feature Mart
 - `src/export_jrdb_eval_race_conditions.py` — Raw BAC → Eval用1レース1行レース条件CSV（Analysis非変更）
 - `src/export_jrdb_eval_dataset.py` — Raw BAC + SED → Eval専用1レース1行統合CSV（Analysis/Core非依存）
 - `src/export_jrdb_eval_horse_results.py` — Raw SED → Eval「全馬データ」結果用1頭1行CSV + audit JSON
@@ -183,6 +185,18 @@ PWA競馬新聞向けの独自指数は、条件集計用Fact Lite / Stats Mart�
 - `docs/JRDB_PWA_Index_Feature_Registry_v0_1.md`
 - `docs/JRDB_Training_Index_Definitions.md`
 
+### JRDB Edge Registry Phase1
+
+`JRDB Edge Registry` は長期履歴からコース・血統・条件変化・騎手/厩舎等の再利用可能な正負Edgeを探索・検証する派生知識層です。PWA新聞、RaceNote/GPT、独自指数のEdge層で共有しますが、Phase1では指数へ自動加点しません。
+
+一律の固定期間分割ではなく、factorの時間特性ごとに `STRUCTURAL / LIFECYCLE / DYNAMIC / EMERGING` のValidation Classを使い分けます。新興種牡馬や新人/新コンビはEMERGINGから開始し、成熟後にLIFECYCLE/DYNAMICへ遷移します。
+
+- 設計: `docs/JRDB_Edge_Registry_Phase1_v0_1.md`
+- Policy: `config/jrdb_edge_validation_policies_v0_1.json`
+- Registry schema: `schema/jrdb_edge_registry_schema_v0_1.sql`
+- Feature Mart schema: `schema/jrdb_edge_feature_mart_schema_v0_1.sql`
+- Builder: `src/build_jrdb_edge_feature_mart.py`
+
 ## Eval Raw dataset
 
 Eval用途ではAnalysis Lite / Core SQLiteを中間入力にせず、JRDB Rawを正本入力として専用CSVを生成します。
@@ -308,6 +322,7 @@ There is no requirement to rebuild Core first.
 - `docs/JRDB_PWA_Index_Design_v0_1.md`
 - `docs/JRDB_PWA_Index_Feature_Registry_v0_1.md`
 - `docs/JRDB_Training_Index_Definitions.md`
+- `docs/JRDB_Edge_Registry_Phase1_v0_1.md`
 - `docs/README_build_jrdb_core_v1_2.md`
 - `docs/README_build_jrdb_analysis.md`
 - `docs/README_update_jrdb_analysis_incremental.md`
