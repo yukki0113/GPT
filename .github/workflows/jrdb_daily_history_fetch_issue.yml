@@ -1,0 +1,199 @@
+name: JRDB Daily History Fetch via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_DAILY_HISTORY_FETCH_REQUEST]'
+
+jobs:
+  fetch:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_DAILY_HISTORY_FETCH_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json, os
+          from pathlib import Path
+
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          start_raw = str(req.get('from_date', '')).replace('-', '')
+          end_raw = str(req.get('to_date', '')).replace('-', '')
+          kinds = req.get('kinds') or []
+          sleep_seconds = float(req.get('sleep_seconds', 2.0))
+
+          try:
+              start = dt.datetime.strptime(start_raw, '%Y%m%d').date()
+              end = dt.datetime.strptime(end_raw, '%Y%m%d').date()
+          except ValueError as exc:
+              raise SystemExit('from_date/to_date must be YYYYMMDD or YYYY-MM-DD') from exc
+          if end < start:
+              raise SystemExit('to_date must be >= from_date')
+          if (end - start).days > 370:
+              raise SystemExit('daily history range must be <= 371 days')
+          if not isinstance(kinds, list) or not kinds:
+              raise SystemExit('kinds must be a non-empty list')
+          kinds = [str(x).upper() for x in kinds]
+          allowed = {'BAC','KYI','SED','SKB','CYB','CHA','UKC','KKA','HJC'}
+          if any(kind not in allowed for kind in kinds):
+              raise SystemExit('unsupported JRDB kind')
+          if sleep_seconds < 0:
+              raise SystemExit('sleep_seconds must be >= 0')
+
+          resolved = {
+              'from_date': start.strftime('%Y%m%d'),
+              'to_date': end.strftime('%Y%m%d'),
+              'kinds': kinds,
+              'sleep_seconds': sleep_seconds,
+          }
+          Path('/tmp/request.json').write_text(json.dumps(resolved), encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f'artifact_name=jrdb-daily-history-{resolved["from_date"]}-{resolved["to_date"]}\n')
+          PY
+
+      - name: Fetch requested daily ZIPs
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_daily_history
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          cmd = [
+              'python', 'horse-racing/jrdb/src/fetch_jrdb_history.py',
+              '--from-date', req['from_date'],
+              '--to-date', req['to_date'],
+              '--kinds', *req['kinds'],
+              '--output-dir', '/tmp/jrdb_daily_history',
+              '--manifest', '/tmp/jrdb_daily_history/fetch_manifest.jsonl',
+              '--sleep-seconds', str(req['sleep_seconds']),
+              '--continue-on-error',
+          ]
+          completed = subprocess.run(cmd, check=False)
+          if completed.returncode != 0:
+              raise SystemExit(completed.returncode)
+          PY
+
+      - name: Validate downloaded daily ZIPs
+        run: |
+          python - <<'PY'
+          import hashlib, json, zipfile
+          from collections import Counter
+          from pathlib import Path
+
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          root = Path('/tmp/jrdb_daily_history')
+          manifest_path = root / 'fetch_manifest.jsonl'
+          manifest_rows = [json.loads(line) for line in manifest_path.read_text(encoding='utf-8').splitlines() if line.strip()]
+          status_counts = Counter(row.get('status') for row in manifest_rows)
+          errors = [row for row in manifest_rows if row.get('status') == 'ERROR']
+          if errors:
+              raise SystemExit(f'download errors: {len(errors)}')
+
+          files = []
+          for kind in req['kinds']:
+              kind_dir = root / kind
+              for path in sorted(kind_dir.glob(f'{kind}*.zip')):
+                  if not zipfile.is_zipfile(path):
+                      raise SystemExit(f'invalid zip: {path}')
+                  with zipfile.ZipFile(path) as zf:
+                      bad = zf.testzip()
+                      if bad is not None:
+                          raise SystemExit(f'corrupt member in {path.name}: {bad}')
+                      members = [name for name in zf.namelist() if not name.endswith('/')]
+                      matching = [name for name in members if Path(name).name.upper().startswith(kind)]
+                      if not matching:
+                          raise SystemExit(f'no {kind} member in {path.name}')
+                  files.append({
+                      'kind': kind,
+                      'file_name': path.name,
+                      'size_bytes': path.stat().st_size,
+                      'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                      'member_count': len(members),
+                  })
+
+          if not files:
+              raise SystemExit('no daily ZIP was downloaded')
+
+          report = {
+              'status': 'success',
+              'from_date': req['from_date'],
+              'to_date': req['to_date'],
+              'kinds': req['kinds'],
+              'downloaded_file_count': len(files),
+              'fetch_status_counts': dict(status_counts),
+              'files': files,
+          }
+          (root / 'daily_validation.json').write_text(
+              json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          PY
+
+      - name: Upload daily history artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.artifact_name }}
+          path: /tmp/jrdb_daily_history/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = json.loads(Path('/tmp/jrdb_daily_history/daily_validation.json').read_text(encoding='utf-8'))
+          result = {
+              'status': 'success',
+              'run_id': int(os.environ['RUN_ID']),
+              'artifact_name': os.environ['ARTIFACT_NAME'],
+              'validation': report,
+          }
+          Path('/tmp/comment.md').write_text(
+              'JRDB_DAILY_HISTORY_FETCH_RESULT\n```json\n' +
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB daily history fetch failed. Workflow run: $RUN_URL"
