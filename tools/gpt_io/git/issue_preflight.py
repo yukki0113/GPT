@@ -24,7 +24,8 @@ SHA256_PATTERN = re.compile(r"[0-9a-fA-F]{64}\Z")
 PROTECTED_EXACT = {".env", "jrdb_secret.py"}
 PROTECTED_SUFFIXES = {".pem", ".key", ".p12", ".pfx"}
 PROTECTED_NAME_PARTS = {"secret", "credential", "password"}
-PROTECTED_PREFIXES = (".github/workflows/", ".git/")
+PROTECTED_WORKFLOW_PREFIX = ".github/workflows/"
+PROTECTED_GIT_PREFIX = ".git/"
 
 
 class PreflightError(ValueError):
@@ -38,9 +39,13 @@ class PreflightError(ValueError):
 def parse_key_value_body(body: str) -> dict[str, str]:
     """Parse simple `key: value` lines from an Issue body."""
     values: dict[str, str] = {}
+    in_fence = False
     for raw_line in body.splitlines():
         line = raw_line.strip()
-        if not line or line.startswith("```") or ":" not in line:
+        if line.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence or not line or ":" not in line:
             continue
         key, value = line.split(":", 1)
         key = key.strip()
@@ -76,7 +81,9 @@ def validate_repo_path(path_text: str, allow_workflows: bool = False) -> str:
 
     if normalized in PROTECTED_EXACT or base_name in PROTECTED_EXACT:
         raise PreflightError("PROTECTED_PATH", f"protected path: {normalized}")
-    if not allow_workflows and lowered.startswith(PROTECTED_PREFIXES):
+    if lowered.startswith(PROTECTED_GIT_PREFIX):
+        raise PreflightError("PROTECTED_PATH", f"protected path: {normalized}")
+    if not allow_workflows and lowered.startswith(PROTECTED_WORKFLOW_PREFIX):
         raise PreflightError("PROTECTED_PATH", f"protected path: {normalized}")
     if any(part in lowered for part in PROTECTED_NAME_PARTS):
         raise PreflightError("PROTECTED_PATH", f"credential-like path is not allowed: {normalized}")
@@ -279,9 +286,12 @@ def main(argv: list[str] | None = None) -> int:
             required_keys=args.required_key,
         )
     except PreflightError as exc:
+        failure_class = FAILURE_CLASS
+        if exc.error_code == "PATCH_INVALID_OR_STALE":
+            failure_class = "PATCH_INVALID_OR_STALE"
         payload = {
             "status": "failure",
-            "failure_class": FAILURE_CLASS,
+            "failure_class": failure_class,
             "error_code": exc.error_code,
             "message": str(exc),
             "retryable": False,
