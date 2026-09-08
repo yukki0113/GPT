@@ -1,0 +1,160 @@
+name: RaceNote Betting Audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_BETTING_AUDIT_REQUEST]'
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_BETTING_AUDIT_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          preds = req.get('prediction_files') or []
+          hjc = req.get('hjc_runs') or []
+          if not isinstance(preds, list) or not preds:
+              raise SystemExit('prediction_files must be a non-empty list')
+          if not isinstance(hjc, list) or not hjc:
+              raise SystemExit('hjc_runs must be a non-empty list')
+          for p in preds:
+              path = Path(str(p))
+              if not path.exists():
+                  raise SystemExit(f'prediction file not found: {path}')
+          for row in hjc:
+              if not all(k in row for k in ('date','run_id','artifact_name')):
+                  raise SystemExit('each hjc_runs row needs date/run_id/artifact_name')
+          Path('/tmp/request.json').write_text(json.dumps(req, ensure_ascii=False, indent=2), encoding='utf-8')
+          PY
+
+      - name: Download historical HJC artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          root = Path('/tmp/hjc')
+          root.mkdir(parents=True, exist_ok=True)
+          for row in req['hjc_runs']:
+              date = str(row['date'])
+              run_id = str(row['run_id'])
+              artifact = str(row['artifact_name'])
+              dest = root / date
+              dest.mkdir(parents=True, exist_ok=True)
+              subprocess.run([
+                  'gh','run','download',run_id,
+                  '--repo', '${{ github.repository }}',
+                  '--name', artifact,
+                  '--dir', str(dest),
+              ], check=True)
+              matches = list(dest.rglob('HJC*.zip'))
+              if len(matches) != 1:
+                  raise SystemExit(f'expected one HJC zip for {date}, got {matches}')
+          PY
+
+      - name: Run betting-layer audit
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          cmd = ['python','horse-racing/jrdb/src/audit_racenote_betting_layer.py']
+          for p in req['prediction_files']:
+              cmd += ['--prediction', str(p)]
+          for row in req['hjc_runs']:
+              date = str(row['date'])
+              matches = list((Path('/tmp/hjc')/date).rglob('HJC*.zip'))
+              cmd += ['--hjc', f'{date}={matches[0]}']
+          cmd += ['--output','/tmp/betting_audit.json']
+          subprocess.run(cmd, check=True)
+          PY
+
+      - name: Upload audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-betting-audit-${{ github.run_id }}
+          path: /tmp/betting_audit.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment audit summary and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          d = json.loads(Path('/tmp/betting_audit.json').read_text(encoding='utf-8'))
+          q = d['quinella_role_decomposition']
+          t = d['trio_role_decomposition']
+          pct = lambda x: f"{100*x:.2f}%"
+          lines = [
+              'RACENOTE_BETTING_AUDIT_RESULT',
+              '```json',
+              json.dumps({
+                  'status': d['status'],
+                  'run_id': int(os.environ['RUN_ID']),
+                  'race_count': d['race_count'],
+                  'quinella': {
+                      '◎-○': q['◎-○'],
+                      '◎-▲': q['◎-▲'],
+                      'current_2_ticket': q['current_2_ticket'],
+                  },
+                  'trio': {
+                      '◎○▲': t['◎○▲'],
+                      '◎○△': t['◎○△'],
+                      '◎▲△': t['◎▲△'],
+                      '◎△△': t['◎△△'],
+                      'current_6_ticket': t['current_6_ticket'],
+                      'formation_5_ticket_no_◎△△': t['formation_5_ticket_no_◎△△'],
+                      '◎△△_increment': t['◎△△_increment'],
+                  },
+                  'by_date': d['by_date'],
+                  'top_◎-▲_payout_races': d['top_◎-▲_payout_races'],
+                  'top_◎△△_payout_races': d['top_◎△△_payout_races'],
+              }, ensure_ascii=False, indent=2),
+              '```',
+          ]
+          Path('/tmp/comment.md').write_text('\n'.join(lines)+'\n', encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "RaceNote betting audit failed. Workflow run: $RUN_URL"
