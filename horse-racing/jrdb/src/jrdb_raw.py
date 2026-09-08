@@ -33,6 +33,7 @@ RECORD_LENGTHS: dict[str, int] = {
     "ZED": 376,
     "ZKB": 304,
     "UKC": 292,
+    "HJC": 444,
 }
 BODY_LENGTHS: dict[str, int] = {
     kind: length - 2 for kind, length in RECORD_LENGTHS.items()
@@ -500,6 +501,48 @@ class Parser:
     def zkb(self, record: bytes) -> dict[str, Any]:
         """Parse ZKB using the SKB-compatible layout."""
         return self.skb(record)
+
+    @staticmethod
+    def _hjc_slots(
+        record: bytes,
+        *,
+        start: int,
+        count: int,
+        part_widths: tuple[int, ...],
+        payout_width: int,
+    ) -> list[dict[str, Any]]:
+        """Parse fixed HJC payout slots without dropping zero/blank entries."""
+        combination_width = sum(part_widths)
+        slot_width = combination_width + payout_width
+        slots: list[dict[str, Any]] = []
+        for index in range(count):
+            slot_start = start + index * slot_width
+            combination_raw = raw_field(record, slot_start, combination_width)
+            numbers: list[int | None] = []
+            cursor = slot_start
+            for width in part_widths:
+                numbers.append(number_field(record, cursor, width))
+                cursor += width
+            slots.append({
+                "combination_raw": combination_raw,
+                "numbers": numbers,
+                "payout": number_field(record, slot_start + combination_width, payout_width),
+            })
+        return slots
+
+    def hjc(self, record: bytes) -> dict[str, Any]:
+        """Parse JRDB HJC v4 race-level payout data."""
+        return {
+            "race_key_raw": race_key(record),
+            "win": self._hjc_slots(record, start=9, count=3, part_widths=(2,), payout_width=7),
+            "place": self._hjc_slots(record, start=36, count=5, part_widths=(2,), payout_width=7),
+            "frame_quinella": self._hjc_slots(record, start=81, count=3, part_widths=(1, 1), payout_width=7),
+            "quinella": self._hjc_slots(record, start=108, count=3, part_widths=(2, 2), payout_width=8),
+            "wide": self._hjc_slots(record, start=144, count=7, part_widths=(2, 2), payout_width=8),
+            "exacta": self._hjc_slots(record, start=228, count=6, part_widths=(2, 2), payout_width=8),
+            "trio": self._hjc_slots(record, start=300, count=3, part_widths=(2, 2, 2), payout_width=8),
+            "trifecta": self._hjc_slots(record, start=342, count=6, part_widths=(2, 2, 2), payout_width=9),
+        }
 
     def ukc(self, record: bytes) -> dict[str, Any]:
         """Parse UKC horse profile data using the validated common UKC parser."""
