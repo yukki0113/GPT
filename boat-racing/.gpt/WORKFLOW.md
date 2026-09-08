@@ -51,6 +51,36 @@
 - `.github/workflows/boatrace_racelist_manual.yml` は手動フォールバックとして残すが、Chatからの日常実行ではIssue経由を優先する。
 - 日次成果物はGitへcommitしない。
 
+### Issue request preflight / retry
+
+Issue駆動Actionsでは、ルート `.gpt/README.md` と `.gpt/ISSUE_REQUEST_CONTRACTS.md` を共通正本とし、本節は競艇固有contractを補足する。共通規約と競艇固有規約が競合する場合は、データ意味を変えない範囲で共通のfail-closed / preflight / retry原則を満たし、曖昧なままIssueを作成しない。
+
+Issue作成前は、必ず最新 `main` の共通contract、本ファイル、対象workflowを確認する。Issueを先に作成して不足項目を後から補う運用は行わない。
+
+`[BOATRACE_RACELIST_REQUEST]` のrequest contractは以下とする。
+
+- title: `[BOATRACE_RACELIST_REQUEST] <request_id>`
+- `request_id`: `[A-Za-z0-9._-]{1,80}` に完全一致する一意な値。
+- body: Markdown fenceを付けないraw JSON object。
+- required `date`: `YYYYMMDD` 形式で、実在する暦日。
+- required `venues`: 1件以上のarray。各要素はobjectで、`name` / `code` / `day` を必須とする。値は対象workflow / fetcherへ渡す実値を使用し、推測で補完しない。
+- optional `request_interval_seconds`: numeric、`0 <= value <= 60`。省略時は `1.0`。
+- upstream dependency: なし。別workflowの `run_id` / `artifact_name` / `file_id` を推測して付与しない。
+- success marker: Issueコメントの `BOATRACE_RACELIST_RESULT` JSONで `status=success`。
+- downstreamで使用する `run_id` / `artifact_name` は、同RESULTから完全一致で転記する。
+- `status=partial` / `status=failure` は成功扱いにせず、artifactと `validation_report.json`、runのfailed stepを確認して原因分類する。
+
+preflightでは少なくとも title / request_id / JSON parse / `date` / `venues` / `request_interval_seconds` をIssue作成前に検証する。共通 `.gpt/tools/gpt_issue_preflight.py` が当該raw JSON protocolを直接検証できる環境・版ではそれを使用する。未対応の場合は、上記contractを同等に事前検証し、専用validatorが追加された後はvalidatorを優先する。
+
+retry時は以下を必須とする。
+
+1. RESULT、artifact、failed step / logを確認し、共通failure taxonomyに沿って原因を分類する。
+2. `REQUEST_INVALID` はIssue本文を修正してから再作成する。
+3. `EXTERNAL_TRANSIENT` は同一Issueの盲目的rerunではなく、必要なbackoff後に最新 `main` を確認し、新しい `request_id` で新規requestを作成する。
+4. `DOMAIN_VALIDATION_FAILED` は正常なfail-closedとして扱い、同一入力を盲目的にretryしない。
+5. `IMPLEMENTATION_ERROR` / `PERMISSION_ERROR` / `CONCURRENCY_CONFLICT` はrequest再送だけで解決しようとせず、実装・権限・競合原因を修正する。
+6. retryで旧requestの `run_id` / `artifact_name` 等を使い回さず、新しいRESULTが発生した場合はその値へ完全一致で更新する。
+
 ## Google Sheets台帳正本の更新・取得
 
 - 継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳` とする。
