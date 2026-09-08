@@ -1,0 +1,18 @@
+{
+  "prediction_files": [
+    "horse-racing/jrdb/prediction_runs/20250824_racenote_prediction_poc_v0_1.json",
+    "horse-racing/jrdb/prediction_runs/20250823_racenote_prediction_blind_batch_v0_1.md",
+    "horse-racing/jrdb/prediction_runs/20251115_20251116_racenote_prediction_blind_batch_v0_1.md",
+    "horse-racing/jrdb/prediction_runs/20250524_20250525_racenote_prediction_blind_batch_v0_1.md",
+    "horse-racing/jrdb/prediction_runs/20250504_racenote_prediction_blind_batch_v0_1.md"
+  ],
+  "hjc_runs": [
+    {"date":"20250824","run_id":34188799251,"artifact_name":"jrdb-raw-20250824"},
+    {"date":"20250823","run_id":34190672923,"artifact_name":"jrdb-raw-20250823"},
+    {"date":"20251115","run_id":34191602120,"artifact_name":"jrdb-raw-20251115"},
+    {"date":"20251116","run_id":34191607477,"artifact_name":"jrdb-raw-20251116"},
+    {"date":"20250524","run_id":34193178124,"artifact_name":"jrdb-raw-20250524"},
+    {"date":"20250525","run_id":34193188307,"artifact_name":"jrdb-raw-20250525"},
+    {"date":"20250504","run_id":34193978112,"artifact_name":"jrdb-raw-20250504"}
+  ]
+}
