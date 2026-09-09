@@ -35,9 +35,15 @@ Blogger公開JSON feedに含まれる本文HTMLを第一選択とします。個
 - `🤡` は馬名欄を `🤡` のまま保持
 - 公開コメントだけを採用
 - 馬名を安全に確定できない場合は推測せずfailure
-- 最終順序は依頼された開催場順、各場1R〜12R順
+- 最終順序は1R→12RのR順、同一R内は依頼された開催場順
 
 Pythonはコメントの意味を変える要約を行いません。長文の軽い要約はChat側の責務です。
+
+## PWA handoff
+
+成功時はJSON / TSVに加えて `keibailuka_YYYYMMDD.csv` を生成します。CSV列は `日付 / 会場 / R / 馬名 / コメント` です。
+
+このCSVはPWA新聞の `keibailuka` addonへ渡すsource payloadです。抽出処理はブログ由来情報だけを担当し、JRDB / PWA側のvenue code・horse no等の最終join keyを馬名から推測しません。
 
 ## Chat execution
 
@@ -45,4 +51,4 @@ Pythonはコメントの意味を変える要約を行いません。長文の�
 
 Chatが `[KEIBAILUKA_REQUEST] <request_id>` Issueを作成し、本文JSONに `date` と `venues` を渡します。Actions完了後の `KEIBAILUKA_RESULT` コメントを完了通知として利用します。
 
-日次JSON / TSV、validation、ログ、artifactはGit管理対象外です。
+日次JSON / TSV / CSV、validation、ログ、artifactはGit管理対象外です。

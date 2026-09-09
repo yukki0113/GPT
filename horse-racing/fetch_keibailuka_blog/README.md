@@ -13,7 +13,7 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/fetch_keibail
 - Chat用Workflow: `.github/workflows/keibailuka_chat.yml`
 - GPT運用ルール: `.gpt/CONTEXT.md`, `.gpt/WORKFLOW.md`
 
-日次の解析JSON / TSV、validation、ログ、artifactはGit管理対象外です。
+日次の解析JSON / TSV / CSV、validation、ログ、artifactはGit管理対象外です。
 
 ## 通常入力
 
@@ -73,9 +73,22 @@ python horse-racing/fetch_keibailuka_blog/src/fetch_keibailuka_blog.py \
 - `🤡` → 馬名を `🤡` として出力する
 - 🤡欄の「noteにスキボタンを押すと馬名表示」文言 → コメントから除去する
 - 通常馬 → 見出し中の馬名と直下コメントを出力する
-- 開催場は依頼で渡された順、各場内は1R〜12R順を維持する
+- 最終出力は1R→12RのR順とし、同一R内では依頼で渡された開催場順を維持する
 
 ブログ本文の意味を変える要約はPythonでは行いません。空白・CTA等だけを正規化し、長いコメントの軽い要約はChat側で行います。
+
+## 出力ファイル
+
+成功時は指定された `output-dir` に次を生成します。
+
+- `keibailuka_YYYYMMDD.json`: 解析結果・source情報・全R分類を含む機械可読JSON
+- `keibailuka_YYYYMMDD.tsv`: Chatのコードブロック表示用。列は `場所 / R / 馬名 / コメント`
+- `keibailuka_YYYYMMDD.csv`: PWA等への受け渡し用。列は `日付 / 会場 / R / 馬名 / コメント`
+- `validation_report.json`: 1R〜12R構造・除外・parse errorのvalidation
+
+TSV / CSV / JSONの `entries` は、1R→12Rの順で、同一R内は依頼された開催場順に並びます。`該当無し` と有料導入は含めず、`🤡` はそのまま保持します。
+
+CSVはUTF-8・ヘッダー付きで、日付は `YYYY-MM-DD`、Rは `1R`〜`12R` 形式です。これはPWA新聞の `keibailuka` addonへ渡すsource payloadであり、JRDB / PWA側の最終join keyをこの抽出処理で推測しません。
 
 ## 検証
 
@@ -96,7 +109,7 @@ Chatからの定型解析は `.github/workflows/keibailuka_chat.yml` のIssue経
 - Issue title: `[KEIBAILUKA_REQUEST] <request_id>`
 - Issue body: `date` と `venues` を持つJSON
 
-ActionsはGit正本のPythonを実行し、結果JSON / TSV / validationをartifact化します。完了後、同じIssueへ `KEIBAILUKA_RESULT` コメントを返し、自動クローズします。
+ActionsはGit正本のPythonを実行し、結果JSON / TSV / CSV / validationをartifact化します。完了後、同じIssueへ `KEIBAILUKA_RESULT` コメントを返し、自動クローズします。
 
 成功条件は次の3点です。
 
@@ -105,6 +118,8 @@ ActionsはGit正本のPythonを実行し、結果JSON / TSV / validationをartif
 - `validation.validation_status = success`
 
 結果コメントにはsource URL、採用entries、Plain text TSV、run/artifact情報を含めます。通常のChat回答はこの結果コメントから組み立てます。
+
+通常のChat回答では従来どおりコードブロックを返し、あわせてartifact内の `keibailuka_YYYYMMDD.csv` をCSV成果物として返します。
 
 ## 実動確認
 
