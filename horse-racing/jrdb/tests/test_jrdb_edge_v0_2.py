@@ -14,7 +14,9 @@ from build_jrdb_edge_feature_mart_v0_2 import build as build_mart
 import jrdb_edge_discovery_v0_2 as discovery_v02
 import jrdb_edge_matcher_v0_2 as matcher_v02
 import jrdb_edge_statistical_guard as stats_base
+import jrdb_edge_temporal_validator as temporal_base
 import apply_jrdb_edge_statistical_guard_v0_2  # noqa: F401
+import build_jrdb_edge_registry_v0_2  # noqa: F401
 
 
 def test_horse_age_uses_jra_calendar_age() -> None:
@@ -48,6 +50,15 @@ def test_v02_catalog_enables_cross_recent_and_track_but_not_human() -> None:
     assert by_id["SIRE_TRACK_CONDITION_V2"]["modifier_fields"] == ["surface_code", "track_condition_bucket"]
     assert by_id["JOCKEY_VENUE_DISTANCE_V2"]["enabled"] is False
     assert by_id["JOCKEY_VENUE_DISTANCE_V2"]["baseline"] == "human_residual_required"
+
+
+def test_v02_temporal_validator_accepts_all_added_condition_fields() -> None:
+    expected = {
+        "frame_no", "horse_age", "rotation_interval", "pre_idm", "training_score",
+        "stable_score", "uptrend_code", "training_arrow_code", "stable_evaluation_code",
+        "body_weight_pre_kg", "body_weight_change_pre_kg", "track_condition_bucket",
+    }
+    assert expected <= temporal_base.ALLOWED_FIELDS
 
 
 def test_recent_policy_routes_to_dynamic_recent() -> None:
