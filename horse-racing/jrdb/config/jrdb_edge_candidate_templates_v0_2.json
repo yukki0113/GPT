@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "template_version": "2026-09-09.v2.1",
+  "template_version": "2026-09-09.v2.2",
   "rules": {
     "max_anchor_count": 2,
     "max_modifier_count": 3,
@@ -38,7 +38,7 @@
     {"template_id":"RECENT_TRAINING_ARROW_SURFACE_DISTANCE_V2","family":"RECENT","anchor_type":"recent","anchor_fields":["surface_code","distance_m"],"modifier_fields":["training_arrow_code"],"baseline":"same_anchor","enabled":true,"example":"芝1600 × 調教矢印"},
     {"template_id":"RECENT_STABLE_EVAL_SURFACE_DISTANCE_V2","family":"RECENT","anchor_type":"recent","anchor_fields":["surface_code","distance_m"],"modifier_fields":["stable_evaluation_code"],"baseline":"same_anchor","enabled":true,"example":"芝1600 × 厩舎評価"},
     {"template_id":"RECENT_ROTATION_SURFACE_DISTANCE_V2","family":"RECENT","anchor_type":"recent","anchor_fields":["surface_code","distance_m"],"modifier_fields":["rotation_interval"],"baseline":"same_anchor","enabled":true,"example":"芝1600 × ローテ間隔"},
-    {"template_id":"JOCKEY_VENUE_DISTANCE_V2","family":"HUMAN","anchor_type":"jockey","anchor_fields":["jockey_code"],"modifier_fields":["venue_code","distance_m"],"baseline":"human_residual_required","enabled":false,"phase2_note":"Enable only after pre-race horse-quality residual baseline is implemented. Raw jockey rates must not be promoted."},
-    {"template_id":"JOCKEY_TRAINER_PAIR_V1","family":"HUMAN","anchor_type":"jockey_trainer","anchor_fields":["jockey_code","trainer_code"],"modifier_fields":[],"baseline":"human_residual_required","enabled":false,"phase2_note":"Enable only after pre-race horse-quality residual baseline is implemented."}
+    {"template_id":"JOCKEY_VENUE_DISTANCE_V2","family":"HUMAN","anchor_type":"jockey","anchor_fields":["jockey_code"],"modifier_fields":["venue_code","distance_m"],"baseline":"human_residual_v1","enabled":true,"horse_quality_model":"HUMAN_PRE_IDM_EXPANDING_V1","example":"騎手○○ × 東京 × 1600m（馬質補正後）"},
+    {"template_id":"JOCKEY_TRAINER_PAIR_V1","family":"HUMAN","anchor_type":"jockey_trainer","anchor_fields":["jockey_code","trainer_code"],"modifier_fields":[],"baseline":"human_residual_required","enabled":false,"phase2_note":"Horse-quality residual alone does not separate individual jockey/trainer effects; keep disabled until pair residual decomposition is implemented."}
   ]
 }
