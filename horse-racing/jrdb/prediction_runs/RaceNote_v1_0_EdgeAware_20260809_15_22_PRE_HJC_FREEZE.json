@@ -1,1 +1,41 @@
-PLACEHOLDER
+{
+  "status": "PRE_HJC_FREEZE",
+  "result_data_used": false,
+  "targets": ["2026-08-09", "2026-08-15", "2026-08-22"],
+  "control": "v0.2-reconstructed-20260909-a",
+  "control_spec": "horse-racing/jrdb/docs/RaceNote_v1_0_Control_Reconstruction_Freeze_20260909.md",
+  "edge_design": "horse-racing/jrdb/docs/RaceNote_v1_0_EdgeAware_Prediction_Design_Candidate.md",
+  "registry": {
+    "run_id": 34299375131,
+    "active_sha256": "845d3e1078d2b0d98534c4bfb1a25a7b927f2b6d91b16f181b369a8a8bd64be4"
+  },
+  "racenote": {
+    "20260809": {"run_id": 34332774412, "artifact_sha256": "eed639c86333b31aafa4020e0cbc6b9a2385fbb1a02a412a4086b896a55805bb"},
+    "20260815": {"run_id": 34330633197, "artifact_sha256": "1d13b2ef77feec5d24532bc1b0c1f4a01d3b417ccdf0468b065ddd6ba7ff7d69"},
+    "20260822": {"run_id": 34330655183, "artifact_sha256": "1f6bd5aa1cedd05902e3fc5603ce70f24b32ccc49e5f71e952b3327c7c4ef307"}
+  },
+  "paci_sha256": {
+    "20260809": "432703d920b5ac47e8a6485b8b736ffd14e0dfd4350eed8e501f2a2deb3dce8f",
+    "20260815": "a8414371ea655a3aad969c112b3b4b77a40fd8ad4b79af98aa948ef59b558432",
+    "20260822": "1d8ebb184fdd93454d090acaee12d4666f1e8bd4a4b4d0aafad0938abf890f4b"
+  },
+  "edge_matches_sha256": {
+    "20260809": "6b4fe632987593b49b1e21a3ee487862b60b5a207fa51aa850a50fbd422ec25a",
+    "20260815": "0e84400dfc23c5b95b4d3b33899f99b19065d5e537d0eaf1d1b3fe934abcd28c",
+    "20260822": "065164242e039db05b8dfa90cd0f9beed1d04d5bd0b66f69f7a00c3e8881fb4e"
+  },
+  "edge_match_audit": {
+    "20260809": {"runners": 495, "matched_runners": 390, "matches": 685, "previous_resolved": 435, "previous_unresolved": 13},
+    "20260815": {"runners": 487, "matched_runners": 382, "matches": 639, "previous_resolved": 411, "previous_unresolved": 24},
+    "20260822": {"runners": 477, "matched_runners": 366, "matches": 626, "previous_resolved": 427, "previous_unresolved": 9}
+  },
+  "prediction_change_audit": {
+    "20260809": {"races": 36, "v1R_any_order_change": 18, "v1R_axis_change": 1, "v1V_value_role_change": 1},
+    "20260815": {"races": 36, "v1R_any_order_change": 16, "v1R_axis_change": 3, "v1V_value_role_change": 1},
+    "20260822": {"races": 36, "v1R_any_order_change": 12, "v1R_axis_change": 3, "v1V_value_role_change": 0},
+    "total": {"races": 108, "v1R_any_order_change": 46, "v1R_axis_change": 7, "v1V_value_role_change": 2}
+  },
+  "full_prediction_payload_sha256": "a2199ef79bfa8a19cb6ab51a3b1ce709d866f5e4c1b099e2bb6a042bff7ac06b",
+  "compact_prediction_payload_sha256": "1cf9a1cec61d4554b5934a4994928ac0d7772eb47e02e7c5e939595f994852f7",
+  "note": "The full 108-race prediction payload was generated before any target HJC/SED/result acquisition. This manifest cryptographically commits that payload before settlement. Edge matching reproduced the pre-result audited coverage/counts exactly for all three dates."
+}
