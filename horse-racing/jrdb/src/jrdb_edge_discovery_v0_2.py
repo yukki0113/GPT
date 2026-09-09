@@ -9,7 +9,7 @@ from pathlib import Path
 import jrdb_edge_discovery as base
 from jrdb_edge_validation import PolicySelection, select_policy as select_policy_v1
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 DEFAULT_POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -24,13 +24,29 @@ base.ALLOWED_FIELDS.update(V02_FIELDS)
 
 def select_policy_v02(**kwargs):
     family = str(kwargs.get("family") or "").strip().upper()
+    anchor_type = str(kwargs.get("anchor_type") or "").strip().lower()
     catalog = kwargs.get("catalog")
     if family == "RECENT":
         policies = catalog["policies"] if catalog is not None else {}
         pid = "DYNAMIC_RECENT_V2"
         if pid not in policies:
             raise ValueError("RECENT Edge requires DYNAMIC_RECENT_V2 policy")
-        return PolicySelection(pid, policies[pid]["validation_class"], "recent/pre-race state requires rolling validation")
+        return PolicySelection(
+            pid,
+            policies[pid]["validation_class"],
+            "recent/pre-race state requires rolling validation",
+        )
+    if family == "PEDIGREE" and anchor_type in {"broodmare_sire", "broodmare_sire_line"}:
+        forwarded = dict(kwargs)
+        # Maternal-grandsire effects follow the same lifecycle semantics as sire effects.
+        # This is a policy-routing alias only; the actual anchor fields remain unchanged.
+        forwarded["anchor_type"] = "sire"
+        selected = select_policy_v1(**forwarded)
+        return PolicySelection(
+            selected.policy_id,
+            selected.validation_class,
+            "broodmare-sire pedigree lifecycle uses sire lifecycle policy",
+        )
     return select_policy_v1(**kwargs)
 
 
