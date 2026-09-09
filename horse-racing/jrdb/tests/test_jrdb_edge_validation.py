@@ -154,8 +154,10 @@ def test_current_fact_and_paci_matcher_regression_bridge(tmp_path: Path) -> None
 def test_forward_ledger_regression_bridge(tmp_path: Path) -> None:
     cases = [
         ("summary", forward_ledger_tests.test_import_and_cumulative_summary),
+        ("mode", forward_ledger_tests.test_reconstructed_backfill_is_segregated_from_default_summary),
+        ("legacy", forward_ledger_tests.test_missing_mode_in_legacy_audit_is_normalized),
         ("conflict", forward_ledger_tests.test_conflicting_same_day_fails_closed),
-        ("empty", forward_ledger_tests.test_empty_day_requires_explicit_date_and_is_recorded),
+        ("empty", forward_ledger_tests.test_empty_day_requires_explicit_date_and_mode_and_is_recorded),
     ]
     for name, test in cases:
         case = tmp_path / name
@@ -165,6 +167,8 @@ def test_forward_ledger_regression_bridge(tmp_path: Path) -> None:
 
 def test_forward_evaluator_regression_bridge(tmp_path: Path) -> None:
     forward_eval_tests.test_forward_settlement_keeps_sed_postrace_only_and_uses_mart_label_semantics(tmp_path)
+    forward_eval_tests.test_reconstructed_backfill_is_explicitly_stamped(tmp_path)
+    forward_eval_tests.test_invalid_evaluation_mode_is_rejected()
     forward_eval_tests.test_abnormal_result_is_not_eligible(tmp_path)
     forward_eval_tests.test_identity_mismatch_fails_closed(tmp_path)
     forward_eval_tests.test_missing_sed_runner_fails_closed()
