@@ -1,6 +1,6 @@
 # JRDB Newspaper module
 
-Status: REAL-DATA POC ACTIVE / PRODUCTION DELIVERY NOT YET IMPLEMENTED
+Status: REAL-DATA DATA CONTRACT VALIDATED / PWA DISPLAY POC NEXT
 
 このディレクトリは、JRDB PWA向け「自分用競馬新聞」の日次生成・外部source merge・配布契約を独立管理するためのmodule boundaryです。
 
@@ -8,6 +8,7 @@ Status: REAL-DATA POC ACTIVE / PRODUCTION DELIVERY NOT YET IMPLEMENTED
 
 - `../docs/JRDB_PWA_Newspaper_Design_v0_1.md`
 - `../docs/JRDB_Newspaper_Neutral_Dependency_Inventory_v0_1.md`
+- `../docs/JRDB_Newspaper_PoC_20260816_Sapporo11_5plus3_20260909.md`
 - `../schema/jrdb_pwa_newspaper_race_schema_v0_1.json`
 - `../schema/jrdb_pwa_newspaper_manifest_schema_v0_1.json`
 - `.gpt/REQUEST_CONTRACT.md`
@@ -68,9 +69,9 @@ PACI
 
 Synthetic regressionは `.github/workflows/jrdb_common_reader_tests.yml` に組み込み済みです。2026-09-09 run `34305173081` はsuccess。
 
-## 2026-08-16 札幌11R 札幌記念 PACI-only real-data PoC
+## Real-data validation: 2026-08-16 札幌11R 札幌記念
 
-PASS:
+### PACI-only 5-run PASS
 
 - target: `01261811` / 札幌11R / 札幌記念 / 芝2000m / G2 / 16頭
 - 16頭 identity/headcount exact
@@ -80,22 +81,33 @@ PASS:
 - duplicate history identity = 0
 - forbidden `racenote_*` import = 0
 - addons null / Edge empty
-- pretty JSON約251 KB
 
-アドマイヤテラの2025-11-30 ジャパンCは `abnormal_code=3`、着順/通過/時計/上がり/IDMが通常値にならず、ZKBコメントは「スタート直後躓き態勢崩し鞍上が落馬、中止」。この欠損はparser failureではなく競走中止レコードに対応する。
+アドマイヤテラの2025-11-30 ジャパンCは `abnormal_code=3`、ZKBコメントは「スタート直後躓き態勢崩し鞍上が落馬、中止」。time / last3f / IDM等の欠損は競走中止に対応し、parser failureではない。
 
-## Current 5+3 validation
+### Analysis-backed 5+3 PASS
 
-同レースへ共有Analysis Liteを接続し、PACI detailed 5走 + Analysis compact 3走 = 最大8走を正式監査する。
+Issue #614 / run `34307352474`。
 
-- 5 detailed runsのorder/source layerを維持
-- Analysisは最古detailよりさらに古い行だけを対象にする
-- target race/resultは補完対象にならない
-- compact rowはZED/ZKB級の詳細を持つふりをしない
-- Analysis file/size/SHA/quick_check/row count/date spanをauditへ記録
-- detailed/compactのnull分布を分離して監査
+- 16/16頭が8走
+- total history = 128
+- detailed = 80
+- compact = 48
+- Analysis supplemental = 48
+- chronology violation = 0
+- duplicate = 0
+- schema = PASS
+- forbidden RaceNote imports = 0
+- pretty JSON = 307,691 bytes
 
-Acceptance detail: `../docs/JRDB_Newspaper_PoC_20260816_Sapporo11_5plus3_20260909.md`
+Analysis audit:
+
+- 197,492,736 bytes
+- SHA-256 `4df011c74b226ad394a171b71c0841872cb94f3418c8e7f85225a31de89e21b2`
+- quick_check = ok
+- rows = 513,512
+- period = 2016-01-05 .. 2026-08-23
+
+Compact 48 runsでは `final_win_odds` が48/48 null。これは現在のAnalysis Lite全体で当該列がnullであるためで、Newspaper側のparser欠損ではない。6-8走目では人気を利用し、単勝オッズは表示必須にしない。
 
 ## UI order
 
@@ -104,6 +116,15 @@ Acceptance detail: `../docs/JRDB_Newspaper_PoC_20260816_Sapporo11_5plus3_2026090
 ```
 
 1頭1行を基本とし、スマホ横スクロールを前提にします。
+
+PWA display PoC policy:
+
+- default: 3走
+- toggle: 5走 / 8走
+- 1-5 detailedは時計・上がり・IDM・comment詳細へ展開可能
+- 6-8 compactはAnalysisに存在するfieldのみ表示
+- compactのrace_name欠損時は場/R + grade/classへfallback
+- source layer差を内部的に保持し、compactをdetailedと誤表示しない
 
 ## Planned routine request
 
@@ -152,28 +173,28 @@ Gitはcode / schema / docsのみを正本管理します。
 
 ## Implementation status
 
-実装済み:
+完了:
 
 - neutral dependency inventory
 - Newspaper JRDB Base builder synthetic PoC
 - detailed previous 1-5 history projection
-- optional Analysis compact history to total 8
+- Analysis compact 6-8補完
 - race bundle schema alignment
-- schema / as-of / headcount / architecture regression tests
+- schema / as-of / headcount / architecture regression
 - PACI-only 札幌記念 real-data PoC
+- Analysis-backed 5+3 札幌記念 real-data PoC
 - existing JRDB Raw fetch Issueへのoptional Newspaper PoC統合
 
-進行中:
+次:
 
-- Analysis-backed 5+3 札幌記念 real-data PoC
+- PWA newspaper display PoC
+- 3/5/8 toggle
+- sticky 馬番/馬名 + 横スクロールの実機確認
 
 未実装:
 
 - merge engine
 - daily manifest builder
 - Drive save
-- publish workflow
-- PWA newspaper page
+- production publish workflow
 - OPFS newspaper sync
-
-PWA画面実装は、5+3の実データcontractを確認してから開始します。
