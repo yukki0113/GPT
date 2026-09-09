@@ -10,6 +10,7 @@ CREATE TABLE meta_edge_feature_mart_build(
   pre_race_eligible_count INTEGER NOT NULL,
   result_labeled_count INTEGER NOT NULL,
   historical_track_condition_count INTEGER NOT NULL,
+  excluded_obstacle_count INTEGER NOT NULL,
   anomaly_count INTEGER NOT NULL,
   status TEXT NOT NULL CHECK(status IN ('VALID','INVALID')),
   message TEXT
@@ -82,7 +83,7 @@ CREATE TABLE edge_runner_fact(
   label_place_payout INTEGER,
   label_final_win_odds REAL,
   label_final_win_popularity INTEGER,
-  calculation_status TEXT NOT NULL CHECK(calculation_status IN ('ELIGIBLE','NO_RESULT','ABNORMAL','SOURCE_NOT_PRE_RACE')),
+  calculation_status TEXT NOT NULL CHECK(calculation_status IN ('ELIGIBLE','NO_RESULT','ABNORMAL','SOURCE_NOT_PRE_RACE','EXCLUDED_OBSTACLE')),
   PRIMARY KEY(race_key, horse_no)
 );
 
