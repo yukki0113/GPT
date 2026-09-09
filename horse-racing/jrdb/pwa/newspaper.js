@@ -212,9 +212,20 @@ function markHtml(horse) {
 function finishLabel(run) {
   const finish = Number(run.finish);
   const abnormal = text(run.abnormal_code, "0");
-  if ((!finish || finish <= 0) && abnormal !== "0") return "競走中止";
-  if (finish > 0) return `${finish}着${run.field_size ? `/${run.field_size}` : ""}`;
-  return "—";
+  const abnormalLabel = ({
+    "1": "取消",
+    "2": "除外",
+    "3": "競走中止",
+    "4": "失格",
+    "5": "降着",
+    "6": "再騎乗"
+  })[abnormal] || "";
+  if (["1", "2", "3", "4"].includes(abnormal)) return abnormalLabel;
+  if (finish > 0) {
+    const result = `${finish}着${run.field_size ? `/${run.field_size}` : ""}`;
+    return abnormalLabel ? `${result} (${abnormalLabel})` : result;
+  }
+  return abnormalLabel || "—";
 }
 
 function runTitle(run) {
