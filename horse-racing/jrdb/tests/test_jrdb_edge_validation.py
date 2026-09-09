@@ -11,6 +11,7 @@ sys.path.insert(0, str(SRC))
 
 import jrdb_edge_validation as edgeval  # noqa: E402
 import test_build_jrdb_edge_current_facts as current_fact_tests  # noqa: E402
+import test_evaluate_jrdb_edge_forward as forward_eval_tests  # noqa: E402
 import test_jrdb_edge_paci_matcher_integration as paci_matcher_tests  # noqa: E402
 import test_run_jrdb_edge_match_current as current_matcher_tests  # noqa: E402
 
@@ -147,3 +148,10 @@ def test_current_fact_and_paci_matcher_regression_bridge(tmp_path: Path) -> None
     current_matcher_tests.test_run_status_opt_in_and_only_matched_filter(filtered)
 
     current_matcher_tests.test_parse_statuses_normalizes_and_rejects_invalid_values()
+
+
+def test_forward_evaluator_regression_bridge(tmp_path: Path) -> None:
+    forward_eval_tests.test_forward_settlement_keeps_sed_postrace_only_and_uses_mart_label_semantics(tmp_path)
+    forward_eval_tests.test_abnormal_result_is_not_eligible(tmp_path)
+    forward_eval_tests.test_identity_mismatch_fails_closed(tmp_path)
+    forward_eval_tests.test_missing_sed_runner_fails_closed()
