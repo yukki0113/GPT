@@ -1,0 +1,272 @@
+name: JRDB Edge Registry v0.2 build via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_EDGE_REGISTRY_V02]'
+
+jobs:
+  build:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_REGISTRY_V02]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          body = (os.environ.get('ISSUE_BODY') or '').strip()
+          request_id = title[len(prefix):].strip()
+          valid = True
+          error = None
+          request = {}
+          try:
+              if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+                  raise ValueError('invalid request_id')
+              raw = json.loads(body or '{}')
+              if not isinstance(raw, dict):
+                  raise ValueError('Issue body JSON root must be an object')
+              from_year = raw.get('from_year', 2025)
+              to_year = raw.get('to_year', 2025)
+              if isinstance(from_year, bool) or not isinstance(from_year, int):
+                  raise ValueError('from_year must be an integer')
+              if isinstance(to_year, bool) or not isinstance(to_year, int):
+                  raise ValueError('to_year must be an integer')
+              if from_year < 2010 or to_year > 2025 or to_year < from_year:
+                  raise ValueError('year range must be within 2010..2025')
+              registry_version = str(raw.get('registry_version') or request_id)
+              if not re.fullmatch(r'[A-Za-z0-9._-]{1,100}', registry_version):
+                  raise ValueError('invalid registry_version')
+              hash_value = raw.get('hash_archives', False)
+              if not isinstance(hash_value, bool):
+                  raise ValueError('hash_archives must be a JSON boolean')
+              request = {
+                  'request_id': request_id,
+                  'from_year': from_year,
+                  'to_year': to_year,
+                  'registry_version': registry_version,
+                  'hash_archives': hash_value,
+              }
+          except Exception as exc:
+              valid = False
+              error = str(exc)
+              request = {'request_id': request_id if re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id) else 'invalid-request'}
+
+          Path('/tmp/edge_request.json').write_text(
+              json.dumps(request, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          if error:
+              Path('/tmp/edge_request_error.json').write_text(
+                  json.dumps({
+                      'status': 'failure',
+                      'failure_class': 'REQUEST_INVALID',
+                      'error_code': 'REQUEST_VALIDATION_FAILED',
+                      'failed_step': 'request_validation',
+                      'retryable': False,
+                      'message': error,
+                  }, ensure_ascii=False, indent=2), encoding='utf-8'
+              )
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as fh:
+              fh.write(f"valid={'true' if valid else 'false'}\n")
+              fh.write(f"request_id={request['request_id']}\n")
+              if valid:
+                  fh.write(f"from_year={request['from_year']}\n")
+                  fh.write(f"to_year={request['to_year']}\n")
+                  fh.write(f"registry_version={request['registry_version']}\n")
+                  fh.write(f"hash_archives={'true' if request['hash_archives'] else 'false'}\n")
+          PY
+
+      - name: Run v0.1 + v0.2 regression tests
+        id: tests
+        if: steps.request.outputs.valid == 'true'
+        continue-on-error: true
+        run: |
+          set +e
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_edge_validation.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_feature_mart.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_discovery.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_temporal_validator.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_registry.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_statistical_guard.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_publication_manifest.py \
+            horse-racing/jrdb/tests/test_run_jrdb_edge_registry_pipeline.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
+            horse-racing/jrdb/tests/test_evaluate_jrdb_edge_forward.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_v0_2.py \
+            > /tmp/edge_tests_stdout.log 2> /tmp/edge_tests_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Run v0.2 Edge pipeline driver
+        id: driver
+        if: steps.request.outputs.valid == 'true' && steps.tests.outputs.exit_code == '0'
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          HASH_ARG=()
+          if [ '${{ steps.request.outputs.hash_archives }}' = 'true' ]; then
+            HASH_ARG+=(--hash-archives)
+          fi
+          python horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline_v0_2.py \
+            --request-id '${{ steps.request.outputs.request_id }}' \
+            --from-year '${{ steps.request.outputs.from_year }}' \
+            --to-year '${{ steps.request.outputs.to_year }}' \
+            --registry-version '${{ steps.request.outputs.registry_version }}' \
+            --issue-number '${{ github.event.issue.number }}' \
+            --run-id '${{ github.run_id }}' \
+            --head-sha '${{ github.sha }}' \
+            --work-dir /tmp/jrdb_edge \
+            "${HASH_ARG[@]}"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build final workflow result
+        if: always()
+        env:
+          REQUEST_VALID: ${{ steps.request.outputs.valid }}
+          TESTS_EXIT: ${{ steps.tests.outputs.exit_code }}
+          DRIVER_EXIT: ${{ steps.driver.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          report_dir = Path('/tmp/jrdb_edge/report')
+          report_dir.mkdir(parents=True, exist_ok=True)
+          driver_result = report_dir / 'workflow_result.json'
+          request_path = Path('/tmp/edge_request.json')
+          request = json.loads(request_path.read_text(encoding='utf-8')) if request_path.is_file() else {}
+
+          if os.environ.get('REQUEST_VALID') != 'true':
+              error_path = Path('/tmp/edge_request_error.json')
+              result = json.loads(error_path.read_text(encoding='utf-8')) if error_path.is_file() else {
+                  'status': 'failure', 'failure_class': 'REQUEST_INVALID',
+                  'error_code': 'REQUEST_VALIDATION_FAILED', 'failed_step': 'request_validation',
+                  'retryable': False, 'message': 'request validation failed',
+              }
+              result.update({
+                  'schema_version': '0.1', 'run_id': int(os.environ['RUN_ID']),
+                  'head_sha': os.environ['HEAD_SHA'], 'request': request,
+                  'artifact_name': f"jrdb-edge-registry-v02-{request.get('request_id', 'invalid-request')}-{os.environ['RUN_ID']}",
+                  'exit_codes': {},
+              })
+          elif os.environ.get('TESTS_EXIT') != '0':
+              result = {
+                  'schema_version': '0.1', 'status': 'failure',
+                  'run_id': int(os.environ['RUN_ID']), 'head_sha': os.environ['HEAD_SHA'],
+                  'request': request,
+                  'artifact_name': f"jrdb-edge-registry-v02-{request.get('request_id', 'unknown')}-{os.environ['RUN_ID']}",
+                  'exit_codes': {'regression_tests': os.environ.get('TESTS_EXIT', '')},
+                  'failed_step': 'regression_tests', 'failure_class': 'IMPLEMENTATION_ERROR',
+                  'error_code': 'REGRESSION_TESTS_FAILED', 'retryable': False,
+                  'message': 'Edge v0.2 regression tests failed before pipeline execution',
+              }
+          elif driver_result.is_file():
+              result = json.loads(driver_result.read_text(encoding='utf-8'))
+              result['run_id'] = int(os.environ['RUN_ID'])
+              result['head_sha'] = os.environ['HEAD_SHA']
+              result.setdefault('exit_codes', {})['regression_tests'] = 0
+              result['driver_exit_code'] = os.environ.get('DRIVER_EXIT', '')
+          else:
+              result = {
+                  'schema_version': '0.1', 'status': 'failure',
+                  'run_id': int(os.environ['RUN_ID']), 'head_sha': os.environ['HEAD_SHA'],
+                  'request': request,
+                  'artifact_name': f"jrdb-edge-registry-v02-{request.get('request_id', 'unknown')}-{os.environ['RUN_ID']}",
+                  'exit_codes': {'regression_tests': 0, 'driver': os.environ.get('DRIVER_EXIT', '')},
+                  'failed_step': 'pipeline_driver', 'failure_class': 'IMPLEMENTATION_ERROR',
+                  'error_code': 'DRIVER_RESULT_MISSING', 'retryable': False,
+                  'message': 'v0.2 pipeline driver did not emit workflow_result.json',
+              }
+
+          driver_result.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+          Path('/tmp/comment.md').write_text(
+              'JRDB_EDGE_REGISTRY_V02_RESULT\n```json\n' +
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Collect regression logs
+        if: always()
+        run: |
+          mkdir -p /tmp/jrdb_edge/report
+          [ -f /tmp/edge_tests_stdout.log ] && cp /tmp/edge_tests_stdout.log /tmp/jrdb_edge/report/regression_tests_stdout.log || true
+          [ -f /tmp/edge_tests_stderr.log ] && cp /tmp/edge_tests_stderr.log /tmp/jrdb_edge/report/regression_tests_stderr.log || true
+          [ -f /tmp/edge_request_error.json ] && cp /tmp/edge_request_error.json /tmp/jrdb_edge/report/request_error.json || true
+
+      - name: Upload Edge Registry v0.2 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-registry-v02-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: |
+            /tmp/jrdb_edge/out/
+            /tmp/jrdb_edge/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f /tmp/comment.md ]; then
+            gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          fi
+
+      - name: Finalize status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          status="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('/tmp/jrdb_edge/report/workflow_result.json')
+          print(json.loads(p.read_text(encoding='utf-8')).get('status', 'failure') if p.is_file() else 'failure')
+          PY
+          )"
+          if [ "$status" = "success" ]; then
+            gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+            exit 0
+          fi
+          exit 1
