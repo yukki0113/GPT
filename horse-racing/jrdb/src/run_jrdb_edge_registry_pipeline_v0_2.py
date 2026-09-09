@@ -7,7 +7,7 @@ from pathlib import Path
 
 import run_jrdb_edge_registry_pipeline as base
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -39,7 +39,7 @@ base.build_stages = build_stages_v02
 def main() -> int:
     argv = sys.argv[1:]
     if "--template-version" not in argv:
-        argv.extend(["--template-version", "2026-09-09.v2.1"])
+        argv.extend(["--template-version", "2026-09-09.v2.2"])
     return base.main(argv)
 
 
