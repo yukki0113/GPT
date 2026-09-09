@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
-from jrdb_edge_v02_canonical import horse_age_at_race
+from jrdb_edge_v02_canonical import horse_age_at_race, track_condition_bucket
 from build_jrdb_edge_feature_mart_v0_2 import build as build_mart
 import jrdb_edge_discovery_v0_2 as discovery_v02
 import jrdb_edge_matcher_v0_2 as matcher_v02
@@ -23,7 +23,18 @@ def test_horse_age_uses_jra_calendar_age() -> None:
     assert horse_age_at_race("2025-01-05", "2026-01-01") is None
 
 
-def test_v02_catalog_enables_cross_and_recent_but_not_human() -> None:
+def test_track_condition_bucket_collapses_jrdb_speed_subcodes() -> None:
+    assert track_condition_bucket("10") == "1"
+    assert track_condition_bucket("12") == "1"
+    assert track_condition_bucket("20") == "2"
+    assert track_condition_bucket("31") == "3"
+    assert track_condition_bucket("42") == "4"
+    assert track_condition_bucket("3") == "3"
+    assert track_condition_bucket(4) == "4"
+    assert track_condition_bucket("99") is None
+
+
+def test_v02_catalog_enables_cross_recent_and_track_but_not_human() -> None:
     catalog = json.loads((ROOT / "config/jrdb_edge_candidate_templates_v0_2.json").read_text(encoding="utf-8"))
     by_id = {row["template_id"]: row for row in catalog["templates"]}
     assert catalog["rules"]["max_modifier_count"] == 3
@@ -32,6 +43,9 @@ def test_v02_catalog_enables_cross_and_recent_but_not_human() -> None:
     assert by_id["SIRE_VENUE_SURFACE_DISTANCE_V2"]["enabled"] is True
     assert by_id["COURSE_EXACT_FRAME_V2"]["enabled"] is True
     assert by_id["RECENT_UPTREND_SURFACE_DISTANCE_V2"]["enabled"] is True
+    assert by_id["SIRE_TRACK_CONDITION_V2"]["enabled"] is True
+    assert by_id["SIRE_TRACK_CONDITION_V2"]["historical_discovery_only"] is True
+    assert by_id["SIRE_TRACK_CONDITION_V2"]["modifier_fields"] == ["surface_code", "track_condition_bucket"]
     assert by_id["JOCKEY_VENUE_DISTANCE_V2"]["enabled"] is False
     assert by_id["JOCKEY_VENUE_DISTANCE_V2"]["baseline"] == "human_residual_required"
 
@@ -64,26 +78,48 @@ def test_broodmare_sire_routes_to_pedigree_lifecycle_policy() -> None:
     assert selected.validation_class == "LIFECYCLE"
 
 
-def test_v02_matcher_accepts_new_condition_fields() -> None:
-    edge = {
+def test_v02_matcher_accepts_new_condition_fields_and_track_fails_closed_without_current_source() -> None:
+    age_edge = {
         "edge_id": "EDGE-V02",
         "status": "ACTIVE",
         "display_text": "v0.2",
         "polarity": "POSITIVE",
         "conditions": {
             "template_id": "SIRE_AGE_V2",
-            "template_version": "2026-09-09.v2",
+            "template_version": "2026-09-09.v2.1",
             "anchor": {"sire_name": "SIRE"},
             "modifiers": {"horse_age": 2},
         },
     }
     runner = {"race_date": "2026-09-12", "sire_name": "SIRE", "horse_age": 2}
-    assert matcher_v02.edge_matches_runner(edge, runner) is not None
+    assert matcher_v02.edge_matches_runner(age_edge, runner) is not None
+
+    track_edge = {
+        "edge_id": "EDGE-TRACK-V02",
+        "status": "ACTIVE",
+        "display_text": "track",
+        "polarity": "POSITIVE",
+        "conditions": {
+            "template_id": "SIRE_TRACK_CONDITION_V2",
+            "template_version": "2026-09-09.v2.1",
+            "anchor": {"sire_name": "SIRE"},
+            "modifiers": {"surface_code": "1", "track_condition_bucket": "3"},
+        },
+    }
+    assert matcher_v02.edge_matches_runner(track_edge, runner) is None
+    runner_with_pre_race_track = {
+        **runner,
+        "surface_code": "1",
+        "track_condition_bucket": "3",
+    }
+    assert matcher_v02.edge_matches_runner(track_edge, runner_with_pre_race_track) is not None
     assert "horse_age" in matcher_v02.base.CONDITION_FIELDS
+    assert "track_condition_bucket" in matcher_v02.base.CONDITION_FIELDS
     assert "uptrend_code" in stats_base.ALLOWED_FIELDS
+    assert "track_condition_bucket" in stats_base.ALLOWED_FIELDS
 
 
-def test_feature_mart_v02_projects_age_and_recent_fields(tmp_path: Path) -> None:
+def test_feature_mart_v02_projects_age_recent_and_isolated_track_condition(tmp_path: Path) -> None:
     source = tmp_path / "index.sqlite"
     output = tmp_path / "mart.sqlite"
     con = sqlite3.connect(source)
@@ -94,6 +130,14 @@ def test_feature_mart_v02_projects_age_and_recent_fields(tmp_path: Path) -> None
           distance_m,surface_code,turn_code,declared_field_size
         ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
         ("05250101", "2025-01-05", 2025, "05", 1, "PRE_RACE", "BAC", "r", 1600, "1", "1", 12),
+    )
+    # Track condition is stored in the SED-derived race-level result-context table,
+    # separate from runner_result labels/payouts.
+    con.execute(
+        """INSERT INTO race_result_context(
+          race_key,track_condition_code,weather_code,source_member,semantic_hash
+        ) VALUES(?,?,?,?,?)""",
+        ("05250101", "31", "1", "SED250105.txt", "rc"),
     )
     con.execute(
         """INSERT INTO runner_pre(
@@ -120,9 +164,18 @@ def test_feature_mart_v02_projects_age_and_recent_fields(tmp_path: Path) -> None
 
     result = build_mart(source, output, ROOT / "schema/jrdb_edge_feature_mart_schema_v0_2.sql")
     assert result["rows"] == 1
+    assert result["historical_track_condition_rows"] == 1
+    assert result["historical_track_condition_races"] == 1
     out = sqlite3.connect(output)
     row = out.execute(
-        "SELECT horse_age,pre_idm,uptrend_code,training_arrow_code,stable_evaluation_code,frame_no FROM edge_runner_fact"
+        """SELECT horse_age,pre_idm,uptrend_code,training_arrow_code,
+                  stable_evaluation_code,frame_no,track_condition_code,
+                  track_condition_bucket,track_condition_source_class
+           FROM edge_runner_fact"""
+    ).fetchone()
+    meta = out.execute(
+        "SELECT historical_track_condition_count FROM meta_edge_feature_mart_build"
     ).fetchone()
     out.close()
-    assert row == (2, 55.0, "2", "1", "3", 8)
+    assert row == (2, 55.0, "2", "1", "3", 8, "31", "3", "HISTORICAL_RESULT_CONTEXT")
+    assert meta == (1,)
