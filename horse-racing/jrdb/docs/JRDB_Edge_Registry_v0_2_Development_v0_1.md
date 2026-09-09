@@ -11,6 +11,7 @@ v0.1 Full Registryを凍結したまま、次の不足をv0.2で拡張する。
 2. RECENT familyをpre-race情報だけで正式に探索可能にする。
 3. HUMAN familyは馬質補正residual baselineが完成するまでraw成績をEdge化しない。
 4. 条件追加・改廃をtemplate catalog中心で行える状態を維持する。
+5. SED実馬場状態を結果labelから分離して歴史探索へ利用し、current matchingではpre-race sourceが無い限りfail-closedにする。
 
 ## 2. v0.2 first-wave templates
 
@@ -22,6 +23,7 @@ v0.1 Full Registryを凍結したまま、次の不足をv0.2で拡張する。
 - `SIRE_AGE_V2`: sire × horse age
 - `SIRE_VENUE_SURFACE_DISTANCE_V2`: sire × venue × surface × exact distance
 - `BROODMARE_SIRE_SURFACE_DISTANCE_V2`: broodmare sire × surface × exact distance
+- `SIRE_TRACK_CONDITION_V2`: sire × surface × historical track-condition bucket
 - v0.1 PEDIGREE / TRANSITION templatesも継続
 
 ### RECENT
@@ -70,9 +72,42 @@ Index Baseには `pre_idm` 等のpre-race horse-quality proxyがあるため、�
 
 ## 5. Track condition
 
-`父 × 馬場状態` はfirst waveでは実装しない。
+`SIRE_TRACK_CONDITION_V2` をv0.2 first waveへ追加する。
 
-SED確定馬場は結果側情報なのでcurrent Edge conditionには使用禁止。将来、Freeze前に取得できるpre-race馬場sourceを正式契約へ追加した場合にtemplate化する。
+### 5.1 Historical discovery
+
+歴史検証ではSED確定馬場を使用する。Index Baseでは既に
+
+- `race_result_context.track_condition_code` = SED由来のレース単位馬場状態
+- `runner_result` = 着順・払戻等の結果label
+
+が別テーブルになっている。
+
+Feature Mart v0.2 builderは次の二段階を厳守する。
+
+1. **Condition extraction phase**: `race_result_context` だけを読み、race_key単位のtrack-condition snapshotを作る。この段階では `runner_result` を読まない。
+2. **Label phase**: runner facts / result labelsを別queryで読み、先にfreezeしたtrack-condition snapshotをrace_keyで付与する。
+
+これにより「父×馬場状態」の条件作成時点で着順・払戻を参照しない。
+
+### 5.2 Canonical bucket
+
+JRDBの細分コードはサンプル分断を避けるため以下4区分へ正規化する。
+
+- `1` = 良（10/11/12を含む）
+- `2` = 稍重（20/21/22を含む）
+- `3` = 重（30/31/32を含む）
+- `4` = 不良（40/41/42を含む）
+
+templateは芝/ダートを混ぜないよう、`sire × surface_code × track_condition_bucket` とする。
+
+### 5.3 Current / TRUE_FORWARD
+
+SED確定馬場はcurrent Edge conditionには使用禁止。
+
+Registry / matcherは `track_condition_bucket` を理解できるが、current factsにはFreeze前の正式な馬場sourceが契約されるまでこのfieldを入れない。従ってtrack-condition Edgeはcurrent matchingで **fail-closed（不発火）** となる。
+
+将来、発走前に取得可能なcurrent馬場sourceを正式契約へ追加した時点で、同じcanonical bucketへ変換してTRUE_FORWARD matchingを有効化する。
 
 ## 6. Candidate explosion control
 
@@ -105,6 +140,7 @@ v0.1 publicationは変更しない。
 - v0.1 templates / policies / mart schemaは保持
 - v0.2は別config / schema / runnerでbuild可能にする
 - consumerは明示的にv0.2 publicationへ切り替えるまでv0.1を使用可能
+- historical track-condition Edgeはpre-race current sourceが無い限りconsumer current matchingには流れない
 
 ## 9. First-wave implementation files
 
@@ -130,6 +166,7 @@ first waveは以下を満たしたら完了。
 3. 2025-only Registry smoke build success。
 4. 新templateのcandidateが実データで生成される。
 5. RECENT candidateが0件ではないことを確認する。
-6. HUMANは0件のままであることを確認する。
-7. current matcherがv0.2 fieldsをpre-race PACIから照合できる。
-8. Full 2010-2025再build前にcandidate explosion / runtimeを監査する。
+6. `SIRE_TRACK_CONDITION_V2` candidateが0件ではなく、馬場snapshot件数をauditする。
+7. HUMANは0件のままであることを確認する。
+8. current matcherがv0.2 pre-race fieldsを照合でき、track-condition Edgeはcurrent馬場source無しではfail-closedする。
+9. Full 2010-2025再build前にcandidate explosion / runtimeを監査する。
