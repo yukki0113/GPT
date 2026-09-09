@@ -188,7 +188,51 @@
   max-width: 168px;
 }
 
+/* Past-run detail dialog: compact enough for a phone screen and keep close action legible on iOS. */
+.newspaper-dialog {
+  max-height: min(92dvh, 760px);
+  overflow: auto;
+}
+.newspaper-dialog-inner {
+  padding: 12px 14px;
+}
+.newspaper-dialog-header {
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.newspaper-dialog-header strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+.newspaper-dialog-header button {
+  min-height: 32px;
+  padding: 4px 9px;
+  color: #1d1d1f;
+  -webkit-text-fill-color: #1d1d1f;
+  background: #f7f7f7;
+  border-color: #cfcfcf;
+  font-size: 12px;
+  opacity: 1;
+}
+.newspaper-detail-list div {
+  grid-template-columns: 72px minmax(0,1fr);
+  gap: 8px;
+  padding: 5px 0;
+}
+.newspaper-detail-list dt {
+  font-size: 10.5px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.newspaper-detail-list dd {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 @media (max-width: 640px) {
+  .newspaper-dialog {
+    width: calc(100% - 20px);
+  }
   .newspaper-table-v4 th,
   .newspaper-table-v4 td {
     padding-top: 6px;
