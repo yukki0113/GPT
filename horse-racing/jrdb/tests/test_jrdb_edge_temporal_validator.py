@@ -104,3 +104,31 @@ def test_emerging_candidate_cannot_skip_provisional_stage(tmp_path: Path) -> Non
     result = validator.validate_candidate(_mart(tmp_path), candidate, catalog)
     assert result["status"] == "PROVISIONAL"
     assert result["decision"] == "PROVISIONAL"
+
+
+def test_two_of_three_consistency_meets_two_thirds_policy_boundary(tmp_path: Path, monkeypatch) -> None:
+    catalog = json.loads((ROOT / "config/jrdb_edge_validation_policies_v0_1.json").read_text(encoding="utf-8"))
+    candidate = _candidate("LIFECYCLE_SIRE_V1")
+    candidate["as_of_date"] = "2026-08-23"
+    calls = {"count": 0}
+
+    def fake_metrics(*args, **kwargs):
+        calls["count"] += 1
+        lift = 1.20 if calls["count"] != 4 else 0.90
+        return {
+            "sample_n": 150 if calls["count"] == 1 else 30,
+            "unique_horses": 30,
+            "unique_races": 100,
+            "baseline_first_date": "2026-01-01",
+            "largest_horse_sample_share": 0.05,
+            "largest_return_share": 0.10,
+            "performance_lift": lift,
+            "place_roi_vs_baseline": 1.0,
+            "place_roi": 0.8,
+        }
+
+    monkeypatch.setattr(validator, "_metrics", fake_metrics)
+    result = validator.validate_candidate(tmp_path / "edge.sqlite", candidate, catalog)
+    assert result["performance_consistency_ratio"] == 2 / 3
+    assert "PERFORMANCE_TIME_INSTABILITY" not in result["failure_reasons"]
+    assert result["status"] == "ACTIVE"

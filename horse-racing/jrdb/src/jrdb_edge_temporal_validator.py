@@ -323,13 +323,13 @@ def validate_candidate(
             performance_consistency_ratio = sum(
                 _supports(item.get("performance_lift"), performance_signal) for item in slices
             ) / len(slices)
-            if performance_consistency_ratio < float(policy.get("min_same_direction_ratio", 0.0)):
+            if performance_consistency_ratio + 1e-9 < float(policy.get("min_same_direction_ratio", 0.0)):
                 failures.append("PERFORMANCE_TIME_INSTABILITY")
         if slices and value_signal != "NEUTRAL":
             value_consistency_ratio = sum(
                 _supports(item.get("place_roi_vs_baseline"), value_signal) for item in slices
             ) / len(slices)
-            if value_consistency_ratio < float(policy.get("min_same_direction_ratio", 0.0)):
+            if value_consistency_ratio + 1e-9 < float(policy.get("min_same_direction_ratio", 0.0)):
                 failures.append("VALUE_TIME_INSTABILITY")
 
         if validation_class == "DYNAMIC":
