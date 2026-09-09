@@ -44,9 +44,63 @@ th { background: #f7f7f7; }
 .fact-sort-button { width: 100%; min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; font-size: inherit; font-weight: 600; text-align: right; white-space: nowrap; cursor: pointer; }
 .fact-sort-button.active { font-weight: 700; }
 footer { padding: 8px 16px calc(22px + env(safe-area-inset-bottom)); text-align: center; color: #777; }
+
+/* Newspaper PWA display PoC */
+.newspaper-main { width: min(1280px, 100%); }
+.newspaper-import-panel { margin-top: 14px; }
+.newspaper-nav-links { margin-top: 12px; }
+.newspaper-race-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.newspaper-race-heading h2 { margin-bottom: 6px; font-size: 22px; }
+.newspaper-race-subtitle { margin: 0; color: #555; font-size: 14px; line-height: 1.5; }
+.newspaper-history-toggle { display: flex; gap: 6px; flex: 0 0 auto; }
+.newspaper-history-button { min-height: 38px; padding: 7px 10px; font-size: 13px; }
+.newspaper-history-button.active { background: #ececec; border-color: #777; }
+.newspaper-table-card { padding: 12px; }
+.newspaper-scroll-hint { margin: 0 4px 9px; color: #777; font-size: 12px; }
+.newspaper-table-wrap { border: 1px solid #e4e4e4; border-radius: 10px; }
+.newspaper-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 12px; }
+.newspaper-table th, .newspaper-table td { padding: 8px; border-right: 1px solid #ececec; border-bottom: 1px solid #e4e4e4; text-align: left; vertical-align: top; white-space: normal; background: #fff; }
+.newspaper-table thead th { position: sticky; top: 0; z-index: 4; background: #f7f7f7; font-weight: 700; white-space: nowrap; }
+.newspaper-table th:first-child, .newspaper-table td:first-child { position: sticky; left: 0; z-index: 5; background: #fff; }
+.newspaper-table thead th:first-child { z-index: 8; background: #f7f7f7; }
+.newspaper-table .newspaper-horse-no { width: 42px; min-width: 42px; max-width: 42px; text-align: center; font-size: 15px; font-weight: 700; }
+.newspaper-table .newspaper-horse-info { position: sticky; left: 42px; z-index: 4; width: 170px; min-width: 170px; max-width: 170px; background: #fff; box-shadow: 3px 0 5px rgba(0,0,0,.05); }
+.newspaper-table thead .newspaper-horse-info { z-index: 7; background: #f7f7f7; }
+.newspaper-table .newspaper-marks { width: 140px; min-width: 140px; max-width: 140px; }
+.newspaper-table .newspaper-history-head, .newspaper-table .newspaper-history-cell { width: 162px; min-width: 162px; max-width: 162px; }
+.newspaper-table .newspaper-edge { width: 180px; min-width: 180px; max-width: 180px; }
+.newspaper-horse-name { margin-bottom: 4px; font-size: 14px; font-weight: 700; line-height: 1.3; }
+.newspaper-subline { margin-top: 2px; color: #555; line-height: 1.35; }
+.newspaper-mark-line { margin-bottom: 4px; font-weight: 700; }
+.newspaper-run { min-height: 122px; line-height: 1.35; }
+.newspaper-run-top { display: flex; align-items: center; justify-content: space-between; gap: 5px; color: #555; }
+.newspaper-run-title { margin: 3px 0; font-weight: 700; line-height: 1.3; }
+.newspaper-run-result { margin-top: 4px; font-weight: 700; }
+.newspaper-source-pill { display: inline-block; padding: 1px 5px; border: 1px solid #ccc; border-radius: 999px; color: #666; font-size: 10px; white-space: nowrap; }
+.newspaper-run.compact { background: linear-gradient(to bottom, rgba(0,0,0,.025), transparent); }
+.newspaper-abnormal { margin-top: 4px; font-weight: 700; }
+.newspaper-detail-button { min-height: 30px; margin-top: 6px; padding: 4px 8px; font-size: 11px; font-weight: 500; }
+.newspaper-history-empty { color: #aaa; }
+.newspaper-edge-item { margin-bottom: 4px; line-height: 1.35; }
+.newspaper-dialog { width: min(620px, calc(100% - 28px)); max-height: min(80vh, 760px); padding: 0; border: 1px solid #d4d4d4; border-radius: 14px; }
+.newspaper-dialog::backdrop { background: rgba(0,0,0,.32); }
+.newspaper-dialog-inner { padding: 16px; }
+.newspaper-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.newspaper-dialog-header button { min-height: 36px; }
+.newspaper-detail-list { margin: 0; }
+.newspaper-detail-list div { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 10px; padding: 8px 0; border-top: 1px solid #eee; }
+.newspaper-detail-list dt { color: #666; font-size: 12px; }
+.newspaper-detail-list dd { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
+
 @media (max-width: 640px) {
   .status-grid, .filter-grid { grid-template-columns: 1fr; }
   .range-controls { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); }
   .card { padding: 15px; border-radius: 12px; }
   .button-row button, .button-row .link-button { flex: 1 1 140px; }
+  .newspaper-race-heading { display: block; }
+  .newspaper-history-toggle { margin-top: 12px; }
+  .newspaper-history-button { flex: 1 1 0; }
+  .newspaper-table-card { padding: 9px; }
+  .newspaper-table .newspaper-horse-info { width: 150px; min-width: 150px; max-width: 150px; }
+  .newspaper-table .newspaper-history-head, .newspaper-table .newspaper-history-cell { width: 150px; min-width: 150px; max-width: 150px; }
 }
