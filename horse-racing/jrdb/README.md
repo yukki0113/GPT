@@ -34,6 +34,11 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
 - `src/jrdb_edge_validation.py` — Edge Registryのfactor-specific Validation Policy routing / review・expiry判定
 - `src/build_jrdb_edge_feature_mart.py` — Index Base → leakage-safe Edge探索用1レース×1頭Feature Mart
+- `src/jrdb_edge_canonical.py` — Discovery/Forwardで共有するEdge canonical bucket導出
+- `src/build_jrdb_edge_current_facts.py` — PACI + optional Analysis Lite → 開催前canonical runner facts
+- `src/jrdb_edge_matcher.py` — Registry JSONLと開催前runner factsのconsumer-neutral Edge照合
+- `src/run_jrdb_edge_match_current.py` — PACI → current facts → Edge matchesの1コマンド実行
+- `src/build_jrdb_edge_publication_manifest.py` — Edge Registry配布資産のfail-closed manifest生成
 - `src/export_jrdb_eval_race_conditions.py` — Raw BAC → Eval用1レース1行レース条件CSV（Analysis非変更）
 - `src/export_jrdb_eval_dataset.py` — Raw BAC + SED → Eval専用1レース1行統合CSV（Analysis/Core非依存）
 - `src/export_jrdb_eval_horse_results.py` — Raw SED → Eval「全馬データ」結果用1頭1行CSV + audit JSON
@@ -196,6 +201,11 @@ PWA競馬新聞向けの独自指数は、条件集計用Fact Lite / Stats Mart�
 - Registry schema: `schema/jrdb_edge_registry_schema_v0_1.sql`
 - Feature Mart schema: `schema/jrdb_edge_feature_mart_schema_v0_1.sql`
 - Builder: `src/build_jrdb_edge_feature_mart.py`
+- Edge Contract: `docs/JRDB_Edge_Contract_v0_1.md`
+- Current matching: `docs/JRDB_Edge_Current_Matching_v0_1.md`
+- Current facts / Matcher: `src/build_jrdb_edge_current_facts.py` / `src/jrdb_edge_matcher.py`
+- One-command current runner: `src/run_jrdb_edge_match_current.py`
+- Publication manifest schema: `schema/jrdb_edge_publication_manifest_schema_v0_1.json`
 
 ## Eval Raw dataset
 
