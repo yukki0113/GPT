@@ -1,14 +1,16 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v18";
+const CACHE_NAME = "jrdb-pwa-shell-v19";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./fact-lite.html",
+  "./newspaper.html",
   "./style.css",
   "./app.js",
   "./fact-lite.js?v=17",
   "./fact-lite-sort.js?v=18",
+  "./newspaper.js?v=1",
   "./manifest.webmanifest",
   "./vendor/sql-wasm.js",
   "./vendor/sql-wasm.wasm"
@@ -92,6 +94,9 @@ self.addEventListener("fetch", function (event) {
           if (request.mode === "navigate") {
             if (requestUrl.pathname.endsWith("/fact-lite.html")) {
               return caches.match("./fact-lite.html");
+            }
+            if (requestUrl.pathname.endsWith("/newspaper.html")) {
+              return caches.match("./newspaper.html");
             }
             return caches.match("./index.html");
           }
