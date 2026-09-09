@@ -54,6 +54,9 @@ jobs:
               handle.write(f'request_id={request_id}\n')
           PY
 
+      - name: Install test dependency
+        run: python -m pip install --disable-pip-version-check -q pytest
+
       - name: Run frozen logic tests
         run: |
           python -m pytest -q \
