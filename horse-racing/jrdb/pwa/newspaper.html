@@ -41,11 +41,29 @@
         <div id="newspaper-import-status" class="query-status"></div>
       </div>
 
+      <div class="import-panel newspaper-import-panel">
+        <label>
+          Newspaper 1日パッケージJSON
+          <input id="newspaper-day-file" type="file" accept=".json,application/json" />
+        </label>
+        <div class="button-row">
+          <button id="newspaper-day-import" type="button" disabled>1日分を読み込んで端末保存</button>
+          <button id="newspaper-day-clear" type="button" class="secondary" disabled>1日分の保存を削除</button>
+        </div>
+        <div id="newspaper-day-race-wrap" hidden>
+          <label>
+            レース切替
+            <select id="newspaper-day-race-select"></select>
+          </label>
+        </div>
+        <div id="newspaper-day-status" class="query-status"></div>
+      </div>
+
       <div class="button-row newspaper-nav-links">
         <a href="./fact-lite.html" class="link-button">自由条件集計</a>
         <a href="./" class="link-button">Mart版</a>
       </div>
-      <p class="note">PoCでは1レースJSONを手動取込し、OPFSへ保存します。いったん保存すればオフライン再起動でも表示できます。日次manifestによる自動配信は後続実装です。</p>
+      <p class="note">1レースJSONに加え、受入テスト用の1日パッケージJSONを手動取込できます。端末保存後はレースを切り替えてオフラインでも確認できます。日次manifestによる自動配信は後続実装です。</p>
     </section>
 
     <section id="newspaper-race-card" class="card newspaper-race-card" hidden>
@@ -88,6 +106,7 @@
   <footer><small>JRDB 自分用競馬新聞 / PWA display PoC</small></footer>
   <script src="./newspaper.js?v=2"></script>
   <script src="./newspaper-v2.js?v=3"></script>
+  <script src="./newspaper-day.js?v=1"></script>
   <script src="./newspaper-v4.js?v=7"></script>
 </body>
 </html>
