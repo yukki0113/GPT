@@ -1,4 +1,4 @@
-/* Newspaper display v2 overrides */
+/* Newspaper display v3 overrides */
 .newspaper-table .newspaper-frame {
   position: sticky;
   left: 0;
@@ -34,6 +34,22 @@
   width: 158px;
   min-width: 158px;
   max-width: 158px;
+}
+.newspaper-horse-profile {
+  margin-top: 3px;
+  color: #444;
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.newspaper-horse-sire {
+  margin-top: 3px;
+  color: #666;
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .newspaper-mark-grid {
   display: grid;
@@ -89,16 +105,78 @@
 .newspaper-table .frame-6 { background: #5d9f68; color: #fff; }
 .newspaper-table .frame-7 { background: #e59a55; color: #222; }
 .newspaper-table .frame-8 { background: #d783ad; color: #222; }
+
 @media (max-width: 640px) {
+  /* The table uses the screen width; only the data table goes full-bleed. */
+  .newspaper-table-card {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 0;
+    padding-right: 0;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+  .newspaper-scroll-hint {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+  .newspaper-table-wrap {
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+  .newspaper-table th,
+  .newspaper-table td {
+    padding: 7px 5px;
+  }
+  .newspaper-table .newspaper-frame {
+    width: 22px;
+    min-width: 22px;
+    max-width: 22px;
+    padding-left: 1px;
+    padding-right: 1px;
+    font-size: 11px;
+  }
+  .newspaper-table .newspaper-horse-no {
+    left: 22px;
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 13px;
+  }
   .newspaper-table .newspaper-horse-info {
-    left: 74px;
-    width: 138px;
-    min-width: 138px;
-    max-width: 138px;
+    left: 54px;
+    width: 112px;
+    min-width: 112px;
+    max-width: 112px;
+    padding-left: 7px;
+    padding-right: 6px;
+  }
+  .newspaper-horse-name {
+    margin-bottom: 2px;
+    font-size: 12.5px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  .newspaper-horse-profile,
+  .newspaper-horse-sire {
+    font-size: 10px;
   }
   .newspaper-table .newspaper-marks {
-    width: 150px;
-    min-width: 150px;
-    max-width: 150px;
+    width: 142px;
+    min-width: 142px;
+    max-width: 142px;
+  }
+  .newspaper-table .newspaper-history-head,
+  .newspaper-table .newspaper-history-cell {
+    width: 142px;
+    min-width: 142px;
+    max-width: 142px;
+  }
+  .newspaper-run {
+    min-height: 112px;
   }
 }
