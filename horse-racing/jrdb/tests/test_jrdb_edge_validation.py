@@ -10,6 +10,8 @@ SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
 import jrdb_edge_validation as edgeval  # noqa: E402
+import test_build_jrdb_edge_current_facts as current_fact_tests  # noqa: E402
+import test_jrdb_edge_paci_matcher_integration as paci_matcher_tests  # noqa: E402
 
 
 def test_structural_course_uses_calendar_block_policy() -> None:
@@ -116,3 +118,21 @@ def test_registry_schema_parses_and_enforces_core_enums(tmp_path: Path) -> None:
         connection.commit()
     finally:
         connection.close()
+
+
+def test_current_fact_and_paci_matcher_regression_bridge(tmp_path: Path) -> None:
+    current_fact_tests.test_profile_asof_uses_latest_non_future_snapshot()
+    current_fact_tests.test_profile_asof_never_uses_future_only_snapshot()
+    current_fact_tests.test_previous_lookup_uses_exact_kyi_link_without_fallback()
+    current_fact_tests.test_previous_lookup_rejects_same_day_or_future_row()
+    current_fact_tests.test_runner_fact_uses_canonical_transitions_and_degrades_without_history()
+
+    resolved = tmp_path / "resolved"
+    resolved.mkdir()
+    paci_matcher_tests.test_synthetic_paci_to_current_fact_to_transition_edge_match(resolved)
+
+    degraded = tmp_path / "degraded"
+    degraded.mkdir()
+    paci_matcher_tests.test_without_history_source_course_edge_survives_transition_edge_does_not(
+        degraded
+    )
