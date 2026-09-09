@@ -53,6 +53,10 @@ def _match_row(race_key: str, horse_no: int, horse_id: str, edge_id: str,
         },
         "edge_matches": [{
             "edge_id": edge_id,
+            "display_text": edge_id,
+            "registry_version": "phase1-full",
+            "strength_score": 0.8,
+            "confidence_band": "HIGH",
             "polarity": polarity,
             "status": "ACTIVE",
             "evidence": {
@@ -81,6 +85,10 @@ def test_forward_settlement_keeps_sed_postrace_only_and_uses_mart_label_semantic
     outcomes = forward_eval.load_sed_outcomes(sed)
     report, occurrences = forward_eval.evaluate(matches, outcomes)
     assert len(occurrences) == 2
+    assert occurrences[0]["evaluator_version"] == "0.2.0"
+    assert occurrences[0]["registry_version"] == "phase1-full"
+    assert occurrences[0]["strength_score"] == pytest.approx(0.8)
+    assert occurrences[0]["confidence_band"] == "HIGH"
     assert report["overall"]["eligible"] == 2
     assert report["overall"]["win_rate"] == pytest.approx(0.5)
     assert report["overall"]["place_rate"] == pytest.approx(0.5)

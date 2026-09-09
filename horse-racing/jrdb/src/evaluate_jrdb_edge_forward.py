@@ -16,7 +16,7 @@ from typing import Any, Iterable, Mapping
 
 from jrdb_raw import Parser, read_fixed_records
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
 def _iso_date(raw: Any) -> str | None:
@@ -188,6 +188,11 @@ def evaluate(
                 "race_date": actual_date or expected_date or None,
                 "horse_id": actual_horse or expected_horse or None,
                 "edge_id": str(match["edge_id"]),
+                "evaluator_version": VERSION,
+                "display_text": match.get("display_text"),
+                "registry_version": match.get("registry_version"),
+                "strength_score": match.get("strength_score"),
+                "confidence_band": match.get("confidence_band"),
                 "family": evidence.get("family"),
                 "polarity": match.get("polarity"),
                 "status": match.get("status"),
