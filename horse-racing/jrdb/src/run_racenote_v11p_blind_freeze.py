@@ -240,7 +240,10 @@ def validate_edge_artifact(root: Path, request: Mapping[str, Any]) -> tuple[dict
         facts = load_jsonl(facts_path)
         match_rows = load_jsonl(matches_path)
         require(len(facts) == int(day_result.get("runner_rows", -1)), f"Edge {day}: runner row count mismatch")
-        require(len(match_rows) == int(day_result.get("matched_runners", -1)), f"Edge {day}: matched runner count mismatch")
+        require(len(match_rows) == int(day_result.get("runner_rows", -1)), f"Edge {day}: Edge row count mismatch")
+        matched_runners = sum(1 for row in match_rows if row.get("edge_matches"))
+        require(matched_runners == int(day_result.get("matched_runners", -1)),
+                f"Edge {day}: matched runner count mismatch")
         total_matches = sum(len(row.get("edge_matches") or []) for row in match_rows)
         require(total_matches == int(day_result.get("matches", -1)), f"Edge {day}: Edge match count mismatch")
         day_data[day] = {
