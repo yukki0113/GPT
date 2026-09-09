@@ -322,8 +322,20 @@ jobs:
           import json, os, subprocess
           from pathlib import Path
           result=json.loads(Path('/tmp/edge_forward_backfill/result.json').read_text(encoding='utf-8'))
-          result['artifact_name']=f"jrdb-edge-forward-backfill-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}"
-          body='JRDB_EDGE_FORWARD_BACKFILL_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          summary=result.get('combined_summary') or {}
+          compact={
+              'status':result.get('status'),
+              'run_id':result.get('run_id'),
+              'head_sha':result.get('head_sha'),
+              'artifact_name':f"jrdb-edge-forward-backfill-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+              'dates':(result.get('request') or {}).get('dates'),
+              'evaluation_mode':result.get('evaluation_mode'),
+              'ledger_integrity':result.get('ledger_integrity'),
+              'overall':summary.get('overall'),
+              'available_evaluation_modes':summary.get('available_evaluation_modes'),
+              'day_count':len(result.get('days') or {}),
+          }
+          body='JRDB_EDGE_FORWARD_BACKFILL_RESULT\n```json\n'+json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
           subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
           subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
           PY
