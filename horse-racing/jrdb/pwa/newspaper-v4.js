@@ -35,7 +35,7 @@ function newspaperV4BasicInfoHtml(horse) {
     : "";
   const jockey = text(basic.jockey_name, "");
   const sire = text(basic.sire_name, "");
-  const style = NEWSPAPER_STYLE_SHORT[text(basic.running_style_label, "")] || text(basic.running_style_label, "");
+  const style = text(basic.running_style_label, "");
   return `<div class="newspaper-basic-line newspaper-basic-main">${escapeHtml([`${sex}${age}`, weight].filter(Boolean).join(" "))}</div>
     <div class="newspaper-basic-line">${escapeHtml(jockey)}</div>
     <div class="newspaper-basic-line newspaper-basic-sire" title="${escapeHtml(sire)}">${sire ? `父 ${escapeHtml(sire)}` : "—"}</div>
@@ -81,11 +81,15 @@ function newspaperV4RaceClass(run) {
   return grade || klass;
 }
 
+function newspaperV4FinishLabel(run) {
+  return finishLabel(run).replace(/\/\d+/, "");
+}
+
 function newspaperV4ResultLine(run) {
   const parts = [];
-  const finishText = finishLabel(run);
+  const finishText = newspaperV4FinishLabel(run);
   parts.push(`<strong>${escapeHtml(finishText)}</strong>`);
-  if (run.field_size && !finishText.includes(`/${run.field_size}`)) parts.push(`${escapeHtml(text(run.field_size))}頭`);
+  if (run.field_size) parts.push(`${escapeHtml(text(run.field_size))}頭`);
   const pastHorseNo = run.horse_no ?? run.past_horse_no;
   if (pastHorseNo) parts.push(`${escapeHtml(text(pastHorseNo))}番`);
   if (run.final_popularity) parts.push(`${escapeHtml(text(run.final_popularity))}人気`);
@@ -120,14 +124,31 @@ function newspaperV4Last3f(run) {
   return `<span class="newspaper-last3f${rankClass}">上${escapeHtml(number(run.last3f_sec))}${escapeHtml(rankLabel)}</span>`;
 }
 
+function newspaperV4TrackCondition(value) {
+  const raw = text(value, "");
+  const standard = {
+    "速良": "良",
+    "遅良": "良",
+    "速稍重": "稍重",
+    "遅稍重": "稍重",
+    "速重": "重",
+    "遅重": "重",
+    "速不良": "不良",
+    "遅不良": "不良"
+  };
+  return standard[raw] || raw;
+}
+
 function newspaperV4HistoryCellHtml(run, horseIndex, runIndex) {
   if (!run) return `<div class="newspaper-history-empty">—</div>`;
   const compact = run.source_layer === "compact_older_history";
   const datePlace = `${shortDate(run.date)} ${text(run.venue, "")}${run.race_no ? `${run.race_no}R` : ""}`;
   const raceClass = newspaperV4RaceClass(run);
   const raceName = text(run.race_name, "");
-  const track = [text(run.surface, ""), run.distance_m ? `${run.distance_m}m` : "", text(run.track_condition, "")]
+  const surfaceDistance = [text(run.surface, ""), run.distance_m ? `${run.distance_m}m` : ""]
     .filter(Boolean).join("");
+  const track = [surfaceDistance, newspaperV4TrackCondition(run.track_condition)]
+    .filter(Boolean).join(" ");
   const jockeyWeight = [
     text(run.jockey_name, ""),
     run.carried_weight_kg !== null && run.carried_weight_kg !== undefined ? `${number(run.carried_weight_kg)}` : "",
@@ -157,6 +178,27 @@ function newspaperV4HistoryCellHtml(run, horseIndex, runIndex) {
     ${abnormal}${detail}
   </div>`;
 }
+
+showRunDetail = function (horse, run) {
+  dialogTitle.textContent = `${text(horse.basic && horse.basic.horse_name)} / ${shortDate(run.date)} ${text(run.venue, "")}${run.race_no ? `${run.race_no}R` : ""}`;
+  const notes = run.notes || {};
+  const jrdb = run.jrdb_result || {};
+  const noteRows = [
+    ["レース", runTitle(run)],
+    ["結果", newspaperV4FinishLabel(run)],
+    ["パドック", notes.paddock_comment],
+    ["脚元", notes.leg_comment],
+    ["馬具・展開", notes.equipment_comment],
+    ["レースコメント", notes.race_comment],
+    ["素点", jrdb.raw_score],
+    ["ペース", jrdb.pace_score],
+    ["テン指数", jrdb.front_index],
+    ["上がり指数", jrdb.late_index]
+  ].filter(([, value]) => value !== null && value !== undefined && value !== "");
+  dialogBody.innerHTML = `<dl class="newspaper-detail-list">${noteRows.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(text(value))}</dd></div>`).join("")}</dl>`;
+  if (typeof detailDialog.showModal === "function") detailDialog.showModal();
+  else detailDialog.setAttribute("open", "");
+};
 
 renderTable = function () {
   const horses = [...currentBundle.horses].sort((a, b) => Number(a.key.horse_no) - Number(b.key.horse_no));
