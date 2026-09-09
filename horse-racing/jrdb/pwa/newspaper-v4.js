@@ -83,8 +83,9 @@ function newspaperV4RaceClass(run) {
 
 function newspaperV4ResultLine(run) {
   const parts = [];
-  parts.push(`<strong>${escapeHtml(finishLabel(run))}</strong>`);
-  if (run.field_size) parts.push(`${escapeHtml(text(run.field_size))}頭`);
+  const finishText = finishLabel(run);
+  parts.push(`<strong>${escapeHtml(finishText)}</strong>`);
+  if (run.field_size && !finishText.includes(`/${run.field_size}`)) parts.push(`${escapeHtml(text(run.field_size))}頭`);
   const pastHorseNo = run.horse_no ?? run.past_horse_no;
   if (pastHorseNo) parts.push(`${escapeHtml(text(pastHorseNo))}番`);
   if (run.final_popularity) parts.push(`${escapeHtml(text(run.final_popularity))}人気`);
