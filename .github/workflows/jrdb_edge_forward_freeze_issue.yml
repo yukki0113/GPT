@@ -1,0 +1,318 @@
+name: JRDB Edge TRUE_FORWARD Freeze via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_EDGE_FORWARD_FREEZE]'
+
+jobs:
+  freeze:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_FORWARD_FREEZE]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          prefix='[JRDB_EDGE_FORWARD_FREEZE]'
+          title=os.environ['ISSUE_TITLE']
+          request_id=title[len(prefix):].strip()
+          if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('request_id in title must match [A-Za-z0-9._-]{1,96}')
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'date','registry_run_id','registry_artifact_name','registry_sha256'}
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          day=str(req['date']).strip()
+          if not re.fullmatch(r'20\d{6}',day):
+              raise SystemExit('date must be YYYYMMDD')
+          run_id=req['registry_run_id']
+          if not isinstance(run_id,int) or run_id<=0:
+              raise SystemExit('registry_run_id must be a positive integer')
+          artifact=str(req['registry_artifact_name']).strip()
+          if not artifact:
+              raise SystemExit('registry_artifact_name must be non-empty')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          registry_sha=str(req['registry_sha256']).strip().lower()
+          if not sha_re.fullmatch(registry_sha):
+              raise SystemExit('registry_sha256 must be lowercase SHA-256 hex')
+          expected_paci=req.get('expected_paci_sha256')
+          if expected_paci is not None:
+              expected_paci=str(expected_paci).strip().lower()
+              if not sha_re.fullmatch(expected_paci):
+                  raise SystemExit('expected_paci_sha256 must be lowercase SHA-256 hex')
+          analysis_url=req.get('analysis_url')
+          analysis_sha=req.get('analysis_sha256')
+          if (analysis_url is None) != (analysis_sha is None):
+              raise SystemExit('analysis_url and analysis_sha256 must be supplied together')
+          if analysis_url is not None:
+              analysis_url=str(analysis_url).strip()
+              analysis_sha=str(analysis_sha).strip().lower()
+              if not analysis_url.startswith('https://drive.google.com/'):
+                  raise SystemExit('analysis_url must be a Google Drive URL')
+              if not sha_re.fullmatch(analysis_sha):
+                  raise SystemExit('analysis_sha256 must be lowercase SHA-256 hex')
+          statuses=str(req.get('statuses','ACTIVE')).strip().upper()
+          if not statuses:
+              raise SystemExit('statuses must be non-empty')
+          normalized={
+              'request_id':request_id,
+              'date':day,
+              'race_date':f'{day[:4]}-{day[4:6]}-{day[6:]}',
+              'registry_run_id':run_id,
+              'registry_artifact_name':artifact,
+              'registry_sha256':registry_sha,
+              'analysis_url':analysis_url,
+              'analysis_sha256':analysis_sha,
+              'expected_paci_sha256':expected_paci,
+              'statuses':statuses,
+              'evaluation_mode':'TRUE_FORWARD',
+          }
+          Path('/tmp/request.json').write_text(
+              json.dumps(normalized,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as fh:
+              fh.write(f'request_id={request_id}\n')
+              fh.write(f'date={day}\n')
+          PY
+
+      - name: Edge forward regression tests
+        run: |
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py
+
+      - name: Download and verify upstream Registry artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/registry
+          python - <<'PY' > /tmp/registry_env.sh
+          import json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          print(f"REGISTRY_RUN_ID={req['registry_run_id']}")
+          print(f"REGISTRY_ARTIFACT_NAME={req['registry_artifact_name']}")
+          print(f"REGISTRY_SHA256={req['registry_sha256']}")
+          PY
+          source /tmp/registry_env.sh
+          gh run download "$REGISTRY_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$REGISTRY_ARTIFACT_NAME" --dir /tmp/registry
+          mapfile -t candidates < <(find /tmp/registry -type f -name edge_registry_active.jsonl -print)
+          if [ "${#candidates[@]}" -ne 1 ]; then
+            echo "expected exactly one edge_registry_active.jsonl; found ${#candidates[@]}" >&2
+            exit 1
+          fi
+          cp "${candidates[0]}" /tmp/edge_registry_active.jsonl
+          echo "$REGISTRY_SHA256  /tmp/edge_registry_active.jsonl" | sha256sum -c -
+
+      - name: Download and verify optional Analysis Lite
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, shutil, sqlite3, subprocess, zipfile
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          if req.get('analysis_url') is None:
+              Path('/tmp/analysis_coverage.json').write_text(
+                  json.dumps({'source':None,'min_race_date':None,'max_race_date':None,'rows':None})+'\n',encoding='utf-8'
+              )
+              raise SystemExit(0)
+          subprocess.run(['python','-m','pip','install','--disable-pip-version-check','-q','gdown'],check=True)
+          subprocess.run(['gdown',req['analysis_url'],'-O','/tmp/analysis.download'],check=True)
+          src=Path('/tmp/analysis.download')
+          dst=Path('/tmp/jrdb_analysis.sqlite')
+          if zipfile.is_zipfile(src):
+              with zipfile.ZipFile(src) as archive:
+                  bad=archive.testzip()
+                  if bad is not None:
+                      raise SystemExit(f'Analysis ZIP corrupt member: {bad}')
+                  members=[n for n in archive.namelist() if not n.endswith('/') and Path(n).name.lower().endswith(('.sqlite','.bin'))]
+                  if len(members)!=1:
+                      raise SystemExit(f'Analysis ZIP must contain exactly one DB: {members}')
+                  with archive.open(members[0]) as source, dst.open('wb') as target:
+                      shutil.copyfileobj(source,target,1024*1024)
+          else:
+              src.replace(dst)
+          if dst.open('rb').read(16)!=b'SQLite format 3\x00':
+              raise SystemExit('Analysis is not SQLite')
+          digest=hashlib.sha256(dst.read_bytes()).hexdigest()
+          if digest!=req['analysis_sha256']:
+              raise SystemExit(f"Analysis SHA mismatch: expected={req['analysis_sha256']} actual={digest}")
+          connection=sqlite3.connect(dst)
+          try:
+              integrity=connection.execute('PRAGMA integrity_check').fetchone()[0]
+              minimum,maximum,count=connection.execute(
+                  'SELECT MIN(race_date),MAX(race_date),COUNT(*) FROM fact_entry_result_lite'
+              ).fetchone()
+          finally:
+              connection.close()
+          if integrity!='ok':
+              raise SystemExit(f'Analysis integrity_check={integrity}')
+          Path('/tmp/analysis_coverage.json').write_text(
+              json.dumps({'source':'jrdb_analysis.sqlite','min_race_date':minimum,'max_race_date':maximum,'rows':count,'sha256':digest},indent=2)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Fetch pre-race PACI
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          out=Path('/tmp/raw')
+          out.mkdir(parents=True,exist_ok=True)
+          subprocess.run([
+              'python','horse-racing/jrdb/src/fetch_jrdb_paci.py',
+              '--date',req['date'],'--out-dir',str(out)
+          ],check=True)
+          paci=out/f"PACI{req['date'][2:]}.zip"
+          if not paci.is_file():
+              raise SystemExit(f'PACI missing: {paci}')
+          digest=hashlib.sha256(paci.read_bytes()).hexdigest()
+          if req.get('expected_paci_sha256') and digest!=req['expected_paci_sha256']:
+              raise SystemExit(f"PACI SHA mismatch: expected={req['expected_paci_sha256']} actual={digest}")
+          Path('/tmp/paci_sha256.txt').write_text(digest+'\n',encoding='utf-8')
+          PY
+
+      - name: Freeze TRUE_FORWARD matches
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/edge_forward_freeze
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          cmd=[
+              'python','horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py',
+              '--paci',f"/tmp/raw/PACI{req['date'][2:]}.zip",
+              '--registry-jsonl','/tmp/edge_registry_active.jsonl',
+              '--output-dir','/tmp/edge_forward_freeze',
+              '--statuses',req['statuses'],
+              '--expected-race-date',req['race_date'],
+              '--expected-registry-sha256',req['registry_sha256'],
+          ]
+          if req.get('expected_paci_sha256'):
+              cmd.extend(['--expected-paci-sha256',req['expected_paci_sha256']])
+          if req.get('analysis_url'):
+              cmd.extend([
+                  '--analysis-db','/tmp/jrdb_analysis.sqlite',
+                  '--expected-analysis-sha256',req['analysis_sha256'],
+              ])
+          subprocess.run(cmd,check=True)
+          PY
+
+      - name: Build compact freeze result
+        env:
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root=Path('/tmp/edge_forward_freeze')
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          provenance=json.loads((root/'provenance.json').read_text(encoding='utf-8'))
+          result={
+              'status':'success',
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-forward-freeze-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+              'date':req['date'],
+              'race_date':manifest['race_date'],
+              'evaluation_mode':'TRUE_FORWARD',
+              'frozen_at_utc':manifest['frozen_at_utc'],
+              'earliest_post_time_jst':manifest['earliest_post_time_jst'],
+              'pre_race_guard':manifest['pre_race_guard'],
+              'manifest_sha256':hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest(),
+              'matches_sha256':manifest['files']['edge_matches.jsonl']['sha256'],
+              'paci_sha256':provenance['input_sha256']['paci_sha256'],
+              'registry_sha256':provenance['input_sha256']['registry_sha256'],
+              'analysis_sha256':provenance['input_sha256'].get('analysis_sha256'),
+              'registry_run_id':req['registry_run_id'],
+              'registry_artifact_name':req['registry_artifact_name'],
+              'runner_rows':provenance['matcher']['runner_rows'],
+              'matched_runners':provenance['matcher']['matched_runners'],
+              'matches':provenance['matcher']['matches'],
+              'analysis_coverage':provenance['analysis_coverage'],
+          }
+          (root/'result.json').write_text(
+              json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Upload frozen artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-forward-freeze-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/edge_forward_freeze/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          result=json.loads(Path('/tmp/edge_forward_freeze/result.json').read_text(encoding='utf-8'))
+          body='JRDB_EDGE_FORWARD_FREEZE_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          result={
+              'status':'failure',
+              'run_id':int(os.environ['RUN_ID']),
+              'failure_class':'IMPLEMENTATION_ERROR',
+              'error_code':'EDGE_FORWARD_FREEZE_FAILED',
+              'retryable':False,
+              'message':'Inspect the failed Actions step and rebuild the request from latest main; do not blindly rerun.',
+          }
+          body='JRDB_EDGE_FORWARD_FREEZE_FAILURE\n```json\n'+json.dumps(result,indent=2)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          PY
