@@ -26,7 +26,7 @@ from jrdb_edge_canonical import (
 )
 from jrdb_edge_v02_canonical import horse_age_at_race, track_condition_bucket
 
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 SCHEMA_VERSION = "v0.2"
 DEFAULT_SCHEMA = Path(__file__).resolve().parents[1] / "schema/jrdb_edge_feature_mart_schema_v0_2.sql"
 
@@ -60,12 +60,7 @@ def _required_tables(connection: sqlite3.Connection) -> None:
 
 
 def _historical_track_condition_snapshot(connection: sqlite3.Connection) -> dict[str, tuple[str, str]]:
-    """Read only SED-derived race condition context, without runner results.
-
-    The returned mapping is deliberately created before any query touching
-    runner_result. Raw JRDB subcodes are retained for audit while discovery
-    uses the broad 1/2/3/4 bucket.
-    """
+    """Read only SED-derived race condition context, without runner results."""
     snapshot: dict[str, tuple[str, str]] = {}
     for row in connection.execute(
         "SELECT race_key, track_condition_code FROM race_result_context ORDER BY race_key"
@@ -90,12 +85,8 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
     try:
         _required_tables(src)
         out.executescript(schema_path.read_text(encoding="utf-8"))
-
-        # Phase A: condition-only extraction. No runner_result columns are read here.
         track_snapshot = _historical_track_condition_snapshot(src)
 
-        # Phase B: runner facts + result labels. Historical track condition is
-        # attached from the already-isolated race-level snapshot above.
         query = """
         SELECT
           r.race_key, p.horse_no, r.race_date, r.venue_code, r.race_no,
@@ -221,6 +212,12 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
                 "body_weight_pre_kg": row["body_weight_pre_kg"],
                 "body_weight_change_pre_kg": row["body_weight_change_pre_kg"],
                 "condition_class_code": row["condition_class_code"],
+                "horse_quality_rank_pct": None,
+                "horse_quality_bucket": None,
+                "horse_quality_expected_place": None,
+                "horse_quality_place_residual": None,
+                "horse_quality_model_version": None,
+                "horse_quality_model_cutoff_year": None,
                 "profile_asof_date": row["profile_asof_date"],
                 "birth_date": row["birth_date"],
                 "sire_name": row["sire_name"],
