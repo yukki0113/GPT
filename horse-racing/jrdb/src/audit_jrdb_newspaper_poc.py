@@ -5,7 +5,7 @@
 This tool is a consumer-level PoC harness. It resolves the target race from
 (date, venue_code, race_no), builds the Newspaper bundle through
 ``jrdb_newspaper_build``, validates the published JSON Schema, and writes both
-``race.json`` and ``audit.json``.  It deliberately does not import RaceNote.
+``race.json`` and ``audit.json``. It deliberately does not import RaceNote.
 """
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ import argparse
 import ast
 import hashlib
 import json
+import sqlite3
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -20,7 +21,7 @@ from typing import Any
 from jrdb_newspaper_build import build_race_bundle, load_paci
 from jrdb_raw import race_key_parts
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 
 def _nested(row: dict[str, Any], *keys: str) -> Any:
@@ -38,6 +39,33 @@ def _sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def _analysis_metadata(path: Path | None) -> dict[str, Any] | None:
+    if path is None:
+        return None
+    with path.open("rb") as handle:
+        if handle.read(16) != b"SQLite format 3\x00":
+            raise ValueError(f"Analysis is not SQLite: {path}")
+    connection = sqlite3.connect(path)
+    try:
+        quick_check = connection.execute("PRAGMA quick_check").fetchone()[0]
+        if quick_check != "ok":
+            raise ValueError(f"Analysis quick_check failed: {quick_check}")
+        row_count, min_date, max_date = connection.execute(
+            "SELECT COUNT(*), MIN(race_date), MAX(race_date) FROM fact_entry_result_lite"
+        ).fetchone()
+    finally:
+        connection.close()
+    return {
+        "file": path.name,
+        "size_bytes": path.stat().st_size,
+        "sha256": _sha256(path),
+        "quick_check": quick_check,
+        "fact_entry_result_lite_rows": row_count,
+        "min_race_date": min_date,
+        "max_race_date": max_date,
+    }
 
 
 def _resolve_race_key(
@@ -99,12 +127,15 @@ def audit_bundle(
     paci_sha256: str,
     parser_audit: dict[str, int],
     builder_path: Path,
+    analysis_source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     horses = bundle.get("horses") or []
     history_lengths = [len(horse.get("history") or []) for horse in horses]
     layer_counts: Counter[str] = Counter()
     detailed_field_nulls: Counter[str] = Counter()
+    compact_field_nulls: Counter[str] = Counter()
     detailed_count = 0
+    compact_count = 0
 
     detailed_fields = (
         "race_name",
@@ -122,6 +153,21 @@ def audit_bundle(
         "idm",
         "body_weight_kg",
     )
+    compact_fields = (
+        "race_key",
+        "date",
+        "venue_code",
+        "race_no",
+        "class_label",
+        "grade_label",
+        "surface",
+        "distance_m",
+        "track_condition",
+        "finish",
+        "final_popularity",
+        "final_win_odds",
+        "abnormal_code",
+    )
 
     for horse in horses:
         for run in horse.get("history") or []:
@@ -132,6 +178,11 @@ def audit_bundle(
                 for field in detailed_fields:
                     if run.get(field) is None:
                         detailed_field_nulls[field] += 1
+            elif layer == "compact_older_history":
+                compact_count += 1
+                for field in compact_fields:
+                    if run.get(field) is None:
+                        compact_field_nulls[field] += 1
 
     current_field_null_counts = {
         "horse_name": sum(_nested(h, "basic", "horse_name") is None for h in horses),
@@ -207,6 +258,7 @@ def audit_bundle(
             "paci_size_bytes": paci_path.stat().st_size,
             "paci_sha256": paci_sha256,
             "parser_audit": parser_audit,
+            "analysis": analysis_source,
         },
         "race": race,
         "horse_count": len(horses),
@@ -218,9 +270,12 @@ def audit_bundle(
             "horses_with_0": sum(value == 0 for value in history_lengths),
             "horses_with_1_2": sum(1 <= value <= 2 for value in history_lengths),
             "horses_with_3_plus": sum(value >= 3 for value in history_lengths),
+            "horses_with_8": sum(value == 8 for value in history_lengths),
             "layer_counts": dict(layer_counts),
             "detailed_run_count": detailed_count,
             "detailed_field_null_counts": dict(detailed_field_nulls),
+            "compact_run_count": compact_count,
+            "compact_field_null_counts": dict(compact_field_nulls),
             "source_status": source_status,
         },
         "current_field_null_counts": current_field_null_counts,
@@ -256,6 +311,7 @@ def build_and_audit(
             f"PACI SHA mismatch: expected={expected_paci_sha256.lower()} actual={paci_sha256}"
         )
 
+    analysis_source = _analysis_metadata(analysis_path)
     parsed, parser_audit = load_paci(paci_path)
     race_key = _resolve_race_key(
         parsed,
@@ -276,6 +332,7 @@ def build_and_audit(
         paci_sha256=paci_sha256,
         parser_audit=parser_audit,
         builder_path=builder_path,
+        analysis_source=analysis_source,
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
