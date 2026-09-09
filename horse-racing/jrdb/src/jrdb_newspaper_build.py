@@ -582,7 +582,6 @@ def build_race_bundle(
 
     parts = race_key_parts(race_key)
     generated_at = generated_at or dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
-    history_state = "PARTIAL" if diagnostics["previous_unresolved"] else "READY"
     source_status: dict[str, dict[str, Any]] = {
         "jrdb_base": {
             "state": "READY",
@@ -592,7 +591,7 @@ def build_race_bundle(
             "message": None,
         },
         "jrdb_history": {
-            "state": history_state,
+            "state": "READY",
             "source_version": VERSION,
             "generated_at": generated_at,
             "semantic_sha256": None,
@@ -601,6 +600,11 @@ def build_race_bundle(
                 f"unresolved={diagnostics['previous_unresolved']} "
                 f"analysis_added={diagnostics['analysis_compact_added']}"
             ),
+            "coverage_complete": diagnostics["previous_unresolved"] == 0,
+            "expected_count": diagnostics["previous_expected"],
+            "resolved_count": diagnostics["previous_resolved"],
+            "unresolved_count": diagnostics["previous_unresolved"],
+            "supplemental_count": diagnostics["analysis_compact_added"],
         },
     }
     for source in EXTERNAL_SOURCES:
