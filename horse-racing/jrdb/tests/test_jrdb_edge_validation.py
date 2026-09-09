@@ -11,6 +11,7 @@ sys.path.insert(0, str(SRC))
 
 import jrdb_edge_validation as edgeval  # noqa: E402
 import test_build_jrdb_edge_current_facts as current_fact_tests  # noqa: E402
+import test_build_jrdb_edge_forward_ledger as forward_ledger_tests  # noqa: E402
 import test_evaluate_jrdb_edge_forward as forward_eval_tests  # noqa: E402
 import test_jrdb_edge_paci_matcher_integration as paci_matcher_tests  # noqa: E402
 import test_run_jrdb_edge_match_current as current_matcher_tests  # noqa: E402
@@ -148,6 +149,18 @@ def test_current_fact_and_paci_matcher_regression_bridge(tmp_path: Path) -> None
     current_matcher_tests.test_run_status_opt_in_and_only_matched_filter(filtered)
 
     current_matcher_tests.test_parse_statuses_normalizes_and_rejects_invalid_values()
+
+
+def test_forward_ledger_regression_bridge(tmp_path: Path) -> None:
+    cases = [
+        ("summary", forward_ledger_tests.test_import_and_cumulative_summary),
+        ("conflict", forward_ledger_tests.test_conflicting_same_day_fails_closed),
+        ("empty", forward_ledger_tests.test_empty_day_requires_explicit_date_and_is_recorded),
+    ]
+    for name, test in cases:
+        case = tmp_path / name
+        case.mkdir()
+        test(case)
 
 
 def test_forward_evaluator_regression_bridge(tmp_path: Path) -> None:
