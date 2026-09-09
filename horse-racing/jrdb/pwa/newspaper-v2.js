@@ -1,8 +1,17 @@
 "use strict";
 
-/* UI-only Newspaper v2 patch. Base storage/validation remains in newspaper.js v1. */
+/* UI-only Newspaper v3 patch. Base storage/validation remains in newspaper.js v1. */
 const NEWSPAPER_V2_MARK_LABELS = {
   total: "総", idm: "能", info: "情", jockey: "騎", stable: "厩", training: "調", longshot: "穴"
+};
+
+const NEWSPAPER_STYLE_SHORT = {
+  "逃げ": "逃",
+  "先行": "先",
+  "好位差し": "好",
+  "差し": "差",
+  "追込": "追",
+  "自在": "自"
 };
 
 function newspaperV2AddonDisplay(addon, keys) {
@@ -25,6 +34,28 @@ function newspaperV2IlukaComment(addon) {
 function newspaperV2FrameClass(frameNo) {
   const value = Number(frameNo);
   return Number.isInteger(value) && value >= 1 && value <= 8 ? ` frame-${value}` : "";
+}
+
+function newspaperV2HorseInfoHtml(horse) {
+  const basic = horse.basic || {};
+  const sex = text(basic.sex_label, "").replace("セン", "セ");
+  const age = text(basic.age, "");
+  const weight = basic.carried_weight_kg !== null && basic.carried_weight_kg !== undefined
+    ? number(basic.carried_weight_kg)
+    : "";
+  const jockey = text(basic.jockey_name, "");
+  const style = NEWSPAPER_STYLE_SHORT[text(basic.running_style_label, "")] || text(basic.running_style_label, "");
+  const profile = [
+    `${sex}${age}`,
+    weight,
+    jockey,
+    style
+  ].filter(Boolean).join(" ");
+  const sire = text(basic.sire_name, "");
+
+  return `<div class="newspaper-horse-name" title="${escapeHtml(text(basic.horse_name))}">${escapeHtml(text(basic.horse_name))}</div>
+    <div class="newspaper-horse-profile">${escapeHtml(profile)}</div>
+    <div class="newspaper-horse-sire" title="${escapeHtml(sire)}">${escapeHtml(sire)}</div>`;
 }
 
 function newspaperV2MarkHtml(horse, horseIndex) {
@@ -129,7 +160,7 @@ renderTable = function () {
     return `<tr>
       <td class="newspaper-frame${newspaperV2FrameClass(frameNo)}">${escapeHtml(text(frameNo))}</td>
       <td class="newspaper-horse-no">${escapeHtml(text(horse.key && horse.key.horse_no))}</td>
-      <td class="newspaper-horse-info">${horseInfoHtml(horse)}</td>
+      <td class="newspaper-horse-info">${newspaperV2HorseInfoHtml(horse)}</td>
       <td class="newspaper-marks">${newspaperV2MarkHtml(horse, horseIndex)}</td>
       ${historyCells}<td class="newspaper-edge">${edgeHtml(horse)}</td>
     </tr>`;
