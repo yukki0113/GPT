@@ -16,7 +16,15 @@ from typing import Any, Iterable, Mapping
 
 from jrdb_raw import Parser, read_fixed_records
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
+EVALUATION_MODES = {"TRUE_FORWARD", "RECONSTRUCTED_BACKFILL", "LEGACY_UNSPECIFIED"}
+
+
+def normalize_evaluation_mode(value: str) -> str:
+    mode = str(value).strip().upper()
+    if mode not in EVALUATION_MODES:
+        raise ValueError(f"unsupported evaluation_mode: {value}")
+    return mode
 
 
 def _iso_date(raw: Any) -> str | None:
@@ -160,7 +168,10 @@ def summarize_occurrences(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def evaluate(
     match_rows: list[dict[str, Any]],
     outcomes: Mapping[tuple[str, int], Mapping[str, Any]],
+    *,
+    evaluation_mode: str = "TRUE_FORWARD",
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    mode = normalize_evaluation_mode(evaluation_mode)
     occurrences: list[dict[str, Any]] = []
     joined_runners = 0
     abnormal_runners = 0
@@ -189,6 +200,7 @@ def evaluate(
                 "horse_id": actual_horse or expected_horse or None,
                 "edge_id": str(match["edge_id"]),
                 "evaluator_version": VERSION,
+                "evaluation_mode": mode,
                 "display_text": match.get("display_text"),
                 "registry_version": match.get("registry_version"),
                 "strength_score": match.get("strength_score"),
@@ -215,6 +227,7 @@ def evaluate(
     report = {
         "status": "PASS",
         "evaluator_version": VERSION,
+        "evaluation_mode": mode,
         "semantics": "edge-occurrence shadow settlement; 100 JPY hypothetical stake per matched Edge occurrence",
         "runner_audit": {
             "matcher_rows": len(match_rows),
@@ -238,10 +251,11 @@ def run(
     sed_path: str | Path,
     output_json: str | Path,
     audit_jsonl: str | Path | None = None,
+    evaluation_mode: str = "TRUE_FORWARD",
 ) -> dict[str, Any]:
     match_rows = load_match_rows(matches_jsonl)
     outcomes = load_sed_outcomes(sed_path)
-    report, occurrences = evaluate(match_rows, outcomes)
+    report, occurrences = evaluate(match_rows, outcomes, evaluation_mode=evaluation_mode)
     output = Path(output_json)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -260,12 +274,14 @@ def main() -> int:
     parser.add_argument("--sed", required=True, help="Post-race SEDyymmdd.zip used only for settlement")
     parser.add_argument("--output-json", required=True)
     parser.add_argument("--audit-jsonl")
+    parser.add_argument("--evaluation-mode", choices=sorted(EVALUATION_MODES), default="TRUE_FORWARD")
     args = parser.parse_args()
     report = run(
         matches_jsonl=args.matches_jsonl,
         sed_path=args.sed,
         output_json=args.output_json,
         audit_jsonl=args.audit_jsonl,
+        evaluation_mode=args.evaluation_mode,
     )
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
     return 0
