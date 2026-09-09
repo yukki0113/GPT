@@ -1,0 +1,85 @@
+name: JRDB Edge Forward Operations Selftest via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_EDGE_FORWARD_SELFTEST]'
+
+jobs:
+  selftest:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_FORWARD_SELFTEST]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Compile forward drivers
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py \
+            horse-racing/jrdb/src/run_jrdb_edge_forward_settlement.py \
+            horse-racing/jrdb/src/run_jrdb_edge_forward_backfill.py \
+            horse-racing/jrdb/src/evaluate_jrdb_edge_forward.py \
+            horse-racing/jrdb/src/build_jrdb_edge_forward_ledger.py
+
+      - name: Run forward regression suite
+        id: tests
+        run: |
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          result={
+              'status':'success',
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'compile_exit_code':0,
+              'regression_tests_exit_code':0,
+              'evaluation_mode_contract':['TRUE_FORWARD','RECONSTRUCTED_BACKFILL','LEGACY_UNSPECIFIED'],
+          }
+          body='JRDB_EDGE_FORWARD_SELFTEST_RESULT\n```json\n'+json.dumps(result,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          result={
+              'status':'failure',
+              'run_id':int(os.environ['RUN_ID']),
+              'failure_class':'IMPLEMENTATION_ERROR',
+              'error_code':'EDGE_FORWARD_SELFTEST_FAILED',
+              'retryable':False,
+          }
+          body='JRDB_EDGE_FORWARD_SELFTEST_FAILURE\n```json\n'+json.dumps(result,indent=2)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          PY
