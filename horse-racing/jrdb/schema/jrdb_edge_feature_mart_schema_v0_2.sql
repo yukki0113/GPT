@@ -11,6 +11,8 @@ CREATE TABLE meta_edge_feature_mart_build(
   result_labeled_count INTEGER NOT NULL,
   historical_track_condition_count INTEGER NOT NULL,
   excluded_obstacle_count INTEGER NOT NULL,
+  horse_quality_calibrated_count INTEGER NOT NULL,
+  horse_quality_model_version TEXT,
   anomaly_count INTEGER NOT NULL,
   status TEXT NOT NULL CHECK(status IN ('VALID','INVALID')),
   message TEXT
@@ -56,6 +58,12 @@ CREATE TABLE edge_runner_fact(
   body_weight_pre_kg INTEGER,
   body_weight_change_pre_kg INTEGER,
   condition_class_code TEXT,
+  horse_quality_rank_pct REAL,
+  horse_quality_bucket INTEGER,
+  horse_quality_expected_place REAL,
+  horse_quality_place_residual REAL,
+  horse_quality_model_version TEXT,
+  horse_quality_model_cutoff_year INTEGER,
   profile_asof_date TEXT,
   birth_date TEXT,
   sire_name TEXT,
@@ -95,7 +103,9 @@ CREATE INDEX ix_edge_fact_sire_track_condition ON edge_runner_fact(sire_name, su
 CREATE INDEX ix_edge_fact_bms ON edge_runner_fact(broodmare_sire_name, race_date);
 CREATE INDEX ix_edge_fact_sire_age ON edge_runner_fact(sire_name, horse_age, race_date);
 CREATE INDEX ix_edge_fact_jockey ON edge_runner_fact(jockey_code, race_date);
+CREATE INDEX ix_edge_fact_jockey_course ON edge_runner_fact(jockey_code, venue_code, distance_m, race_date);
 CREATE INDEX ix_edge_fact_trainer ON edge_runner_fact(trainer_code, race_date);
 CREATE INDEX ix_edge_fact_human_pair ON edge_runner_fact(jockey_code, trainer_code, race_date);
+CREATE INDEX ix_edge_fact_horse_quality ON edge_runner_fact(horse_quality_bucket, surface_code, declared_field_size, race_date);
 CREATE INDEX ix_edge_fact_recent ON edge_runner_fact(surface_code, distance_m, uptrend_code, training_arrow_code, stable_evaluation_code, rotation_interval, race_date);
 CREATE INDEX ix_edge_fact_transition ON edge_runner_fact(distance_change_bucket, surface_transition, frame_transition, race_date);
