@@ -1,0 +1,217 @@
+name: JRDB Edge Pre-Result Reconstruction via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_EDGE_PRERESULT_RECONSTRUCT]'
+
+jobs:
+  reconstruct:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_PRERESULT_RECONSTRUCT]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          prefix='[JRDB_EDGE_PRERESULT_RECONSTRUCT]'
+          request_id=os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,96}',request_id):
+              raise SystemExit('invalid request_id')
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'dates','analysis_url','analysis_sha256','registry_run_id','registry_artifact_name','registry_sha256','sources'}
+          missing=sorted(required-set(req))
+          if missing: raise SystemExit(f'missing required fields: {missing}')
+          dates=req['dates']
+          if not isinstance(dates,list) or not dates or len(dates)>31: raise SystemExit('dates must be non-empty list <=31')
+          norm=[]
+          for v in dates:
+              d=str(v).strip()
+              if not re.fullmatch(r'20\d{6}',d): raise SystemExit(f'invalid date: {d}')
+              if d in norm: raise SystemExit(f'duplicate date: {d}')
+              norm.append(d)
+          if norm!=sorted(norm): raise SystemExit('dates must be sorted ascending')
+          analysis_url=str(req['analysis_url']).strip()
+          if not analysis_url.startswith('https://drive.google.com/'): raise SystemExit('analysis_url must be Google Drive URL')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          analysis_sha=str(req['analysis_sha256']).strip().lower(); registry_sha=str(req['registry_sha256']).strip().lower()
+          if not sha_re.fullmatch(analysis_sha) or not sha_re.fullmatch(registry_sha): raise SystemExit('invalid SHA-256')
+          run_id=req['registry_run_id']
+          if not isinstance(run_id,int) or run_id<=0: raise SystemExit('registry_run_id must be positive integer')
+          artifact=str(req['registry_artifact_name']).strip()
+          if not artifact: raise SystemExit('registry_artifact_name required')
+          sources=req['sources']
+          if not isinstance(sources,dict) or set(sources)!=set(norm): raise SystemExit('sources keys must exactly equal dates')
+          ns={}
+          for d in norm:
+              row=sources[d]
+              if not isinstance(row,dict): raise SystemExit(f'sources.{d} must be object')
+              paci=str(row.get('paci_sha256','')).strip().lower()
+              if not sha_re.fullmatch(paci): raise SystemExit(f'sources.{d}.paci_sha256 invalid')
+              ns[d]={'paci_sha256':paci}
+          out={'request_id':request_id,'dates':norm,'analysis_url':analysis_url,'analysis_sha256':analysis_sha,
+               'registry_run_id':run_id,'registry_artifact_name':artifact,'registry_sha256':registry_sha,'sources':ns,
+               'evaluation_mode':'PRE_RESULT_RECONSTRUCTION'}
+          Path('/tmp/request.json').write_text(json.dumps(out,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as fh: fh.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Install downloader
+        run: python -m pip install --disable-pip-version-check gdown
+
+      - name: Download and verify Registry
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/registry
+          python - <<'PY' > /tmp/registry_env.sh
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/request.json').read_text())
+          print(f"REGISTRY_RUN_ID={r['registry_run_id']}")
+          print(f"REGISTRY_ARTIFACT_NAME={r['registry_artifact_name']}")
+          print(f"REGISTRY_SHA256={r['registry_sha256']}")
+          PY
+          source /tmp/registry_env.sh
+          gh run download "$REGISTRY_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$REGISTRY_ARTIFACT_NAME" --dir /tmp/registry
+          mapfile -t candidates < <(find /tmp/registry -type f -name edge_registry_active.jsonl -print)
+          [ "${#candidates[@]}" -eq 1 ] || { echo "expected one edge_registry_active.jsonl" >&2; exit 1; }
+          cp "${candidates[0]}" /tmp/edge_registry_active.jsonl
+          echo "$REGISTRY_SHA256  /tmp/edge_registry_active.jsonl" | sha256sum -c -
+
+      - name: Download and verify Analysis Lite
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          r=json.loads(Path('/tmp/request.json').read_text())
+          subprocess.run(['gdown',r['analysis_url'],'-O','/tmp/analysis.download'],check=True)
+          PY
+          python - <<'PY'
+          import hashlib,json,shutil,sqlite3,zipfile
+          from pathlib import Path
+          r=json.loads(Path('/tmp/request.json').read_text())
+          src=Path('/tmp/analysis.download'); dst=Path('/tmp/jrdb_analysis.sqlite')
+          if zipfile.is_zipfile(src):
+              with zipfile.ZipFile(src) as z:
+                  bad=z.testzip()
+                  if bad is not None: raise SystemExit(f'Analysis ZIP corrupt: {bad}')
+                  members=[n for n in z.namelist() if not n.endswith('/') and Path(n).name.lower().endswith(('.sqlite','.bin'))]
+                  if len(members)!=1: raise SystemExit(f'Analysis ZIP must contain one DB: {members}')
+                  with z.open(members[0]) as s,dst.open('wb') as t: shutil.copyfileobj(s,t,1024*1024)
+          else: src.replace(dst)
+          digest=hashlib.sha256(dst.read_bytes()).hexdigest()
+          if digest!=r['analysis_sha256']: raise SystemExit(f'Analysis SHA mismatch expected={r["analysis_sha256"]} actual={digest}')
+          con=sqlite3.connect(dst)
+          try: integrity=con.execute('PRAGMA integrity_check').fetchone()[0]
+          finally: con.close()
+          if integrity!='ok': raise SystemExit(f'Analysis integrity={integrity}')
+          PY
+
+      - name: Fetch exact PACI and run canonical Matcher
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/preresult/days
+          python - <<'PY'
+          import hashlib,json,subprocess
+          from pathlib import Path
+          r=json.loads(Path('/tmp/request.json').read_text())
+          for day in r['dates']:
+              out=Path('/tmp/preresult/days')/day; raw=out/'raw'; out.mkdir(parents=True,exist_ok=True); raw.mkdir(parents=True,exist_ok=True)
+              subprocess.run(['python','horse-racing/jrdb/src/fetch_jrdb_paci.py','--date',day,'--out-dir',str(raw)],check=True)
+              paci=raw/f"PACI{day[2:]}.zip"
+              digest=hashlib.sha256(paci.read_bytes()).hexdigest()
+              if digest!=r['sources'][day]['paci_sha256']: raise SystemExit(f'PACI SHA mismatch {day}: {digest}')
+              matches=out/'edge_matches.jsonl'; facts=out/'current_facts.jsonl'
+              subprocess.run(['python','horse-racing/jrdb/src/run_jrdb_edge_match_current.py',
+                              '--paci',str(paci),'--analysis-db','/tmp/jrdb_analysis.sqlite',
+                              '--registry-jsonl','/tmp/edge_registry_active.jsonl','--output-jsonl',str(matches),
+                              '--facts-jsonl',str(facts),'--statuses','ACTIVE'],check=True)
+          PY
+
+      - name: Build provenance and result
+        env:
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path('/tmp/preresult'); r=json.loads(Path('/tmp/request.json').read_text())
+          days={}
+          for day in r['dates']:
+              d=root/'days'/day; matches=d/'edge_matches.jsonl'; facts=d/'current_facts.jsonl'; paci=d/'raw'/f"PACI{day[2:]}.zip"
+              rows=[json.loads(x) for x in matches.read_text(encoding='utf-8').splitlines() if x.strip()]
+              days[day]={
+                'paci_sha256':hashlib.sha256(paci.read_bytes()).hexdigest(),
+                'matches_sha256':hashlib.sha256(matches.read_bytes()).hexdigest(),
+                'facts_sha256':hashlib.sha256(facts.read_bytes()).hexdigest(),
+                'runner_rows':len(rows),'matched_runners':sum(bool(x.get('edge_matches')) for x in rows),
+                'matches':sum(len(x.get('edge_matches') or []) for x in rows),
+              }
+          result={'status':'success','run_id':int(os.environ['RUN_ID']),'head_sha':os.environ['HEAD_SHA'],
+                  'evaluation_mode':'PRE_RESULT_RECONSTRUCTION','result_data_used':False,'request':r,'days':days}
+          (root/'result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-preresult-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/preresult/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json,os,subprocess
+          from pathlib import Path
+          r=json.loads(Path('/tmp/preresult/result.json').read_text())
+          compact={'status':'success','run_id':r['run_id'],'head_sha':r['head_sha'],
+                   'artifact_name':f"jrdb-edge-preresult-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+                   'evaluation_mode':r['evaluation_mode'],'result_data_used':False,'days':r['days']}
+          body='JRDB_EDGE_PRERESULT_RECONSTRUCT_RESULT\n```json\n'+json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB Edge pre-result reconstruction failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
