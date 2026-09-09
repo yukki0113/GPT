@@ -57,6 +57,28 @@ def test_sire_moves_from_emerging_to_lifecycle() -> None:
 
 
 def test_human_pair_uses_emerging_then_dynamic() -> None:
+    catalog = edgeval.load_policy_catalog()
+    low_sample = edgeval.select_policy(
+        family="HUMAN",
+        anchor_type="jockey_trainer",
+        first_seen_date="2025-01-01",
+        total_n=24,
+        as_of_date="2026-09-09",
+        catalog=catalog,
+    )
+    established = edgeval.select_policy(
+        family="HUMAN",
+        anchor_type="jockey_trainer",
+        first_seen_date="2024-01-01",
+        total_n=90,
+        as_of_date="2026-09-09",
+        catalog=catalog,
+    )
+    assert low_sample.policy_id == "EMERGING_HUMAN_V1"
+    assert established.policy_id == "DYNAMIC_JOCKEY_TRAINER_V1"
+
+
+def test_dynamic_policy_expires_but_structural_does_not() -> None:
     catalog = edgeval.load_policy_catalog()["policies"]
     dynamic = catalog["DYNAMIC_JOCKEY_V1"]
     structural = catalog["STRUCTURAL_COURSE_V1"]
