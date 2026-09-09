@@ -34,6 +34,7 @@ jobs:
           python - <<'PY'
           import json, os, re
           from pathlib import Path
+
           req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
           date = str(req.get('date','')).strip()
           kinds = req.get('kinds') or []
@@ -45,10 +46,47 @@ jobs:
           allowed = {'PACI','SED','HJC'}
           if any(x not in allowed for x in kinds):
               raise SystemExit('supported kinds: PACI, SED, HJC')
-          Path('/tmp/request.json').write_text(json.dumps({'date':date,'kinds':kinds}), encoding='utf-8')
+
+          newspaper = req.get('newspaper_poc')
+          normalized_newspaper = None
+          if newspaper is not None:
+              if not isinstance(newspaper, dict):
+                  raise SystemExit('newspaper_poc must be an object')
+              if 'PACI' not in kinds:
+                  raise SystemExit('newspaper_poc requires PACI in kinds')
+              venue_code = str(newspaper.get('venue_code','')).strip().zfill(2)
+              race_no = newspaper.get('race_no')
+              expected_sha = str(newspaper.get('expected_paci_sha256','')).strip().lower()
+              if venue_code not in {f'{n:02d}' for n in range(1, 11)}:
+                  raise SystemExit('newspaper_poc.venue_code must be 01..10')
+              if not isinstance(race_no, int) or not (1 <= race_no <= 12):
+                  raise SystemExit('newspaper_poc.race_no must be integer 1..12')
+              if expected_sha and not re.fullmatch(r'[0-9a-f]{64}', expected_sha):
+                  raise SystemExit('newspaper_poc.expected_paci_sha256 must be SHA-256 hex')
+              normalized_newspaper = {
+                  'venue_code': venue_code,
+                  'race_no': race_no,
+                  'expected_paci_sha256': expected_sha or None,
+              }
+
+          normalized = {
+              'date': date,
+              'kinds': kinds,
+              'newspaper_poc': normalized_newspaper,
+          }
+          Path('/tmp/request.json').write_text(
+              json.dumps(normalized, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
               f.write(f'date={date}\n')
               f.write(f'artifact_name=jrdb-raw-{date}\n')
+              if normalized_newspaper:
+                  f.write('newspaper_poc=true\n')
+                  f.write(
+                      f"newspaper_artifact=jrdb-newspaper-poc-{date}-{normalized_newspaper['venue_code']}-{normalized_newspaper['race_no']:02d}\n"
+                  )
+              else:
+                  f.write('newspaper_poc=false\n')
           PY
 
       - name: Fetch requested raw ZIPs
@@ -96,8 +134,45 @@ jobs:
                   if bad is not None:
                       raise SystemExit(f'corrupt member in {name}: {bad}')
                   members = zf.namelist()
-              rows.append({'kind':kind,'file_name':name,'size_bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'members':members})
-          Path('/tmp/jrdb_raw/manifest.json').write_text(json.dumps({'date':date,'status':'success','files':rows},ensure_ascii=False,indent=2),encoding='utf-8')
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              if kind == 'PACI' and req.get('newspaper_poc'):
+                  expected = req['newspaper_poc'].get('expected_paci_sha256')
+                  if expected and digest != expected:
+                      raise SystemExit(f'PACI SHA mismatch: expected={expected} actual={digest}')
+              rows.append({'kind':kind,'file_name':name,'size_bytes':path.stat().st_size,'sha256':digest,'members':members})
+          Path('/tmp/jrdb_raw/manifest.json').write_text(
+              json.dumps({'date':date,'status':'success','files':rows},ensure_ascii=False,indent=2),
+              encoding='utf-8'
+          )
+          PY
+
+      - name: Install Newspaper PoC schema validator
+        if: steps.request.outputs.newspaper_poc == 'true'
+        run: python -m pip install --disable-pip-version-check 'jsonschema>=4.22,<5'
+
+      - name: Build and audit Newspaper PoC
+        if: steps.request.outputs.newspaper_poc == 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/newspaper_poc
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          newspaper = req['newspaper_poc']
+          paci = Path('/tmp/jrdb_raw') / f"PACI{req['date'][2:]}.zip"
+          cmd = [
+              'python', 'horse-racing/jrdb/src/audit_jrdb_newspaper_poc.py',
+              '--paci', str(paci),
+              '--date', req['date'],
+              '--venue-code', newspaper['venue_code'],
+              '--race-no', str(newspaper['race_no']),
+              '--output-dir', '/tmp/newspaper_poc',
+          ]
+          if newspaper.get('expected_paci_sha256'):
+              cmd += ['--expected-paci-sha256', newspaper['expected_paci_sha256']]
+          subprocess.run(cmd, check=True)
           PY
 
       - name: Upload raw artifact
@@ -109,6 +184,16 @@ jobs:
           retention-days: 7
           compression-level: 0
 
+      - name: Upload Newspaper PoC artifact
+        if: steps.request.outputs.newspaper_poc == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.newspaper_artifact }}
+          path: /tmp/newspaper_poc/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+
       - name: Comment success and close issue
         if: success()
         env:
@@ -116,13 +201,39 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           RUN_ID: ${{ github.run_id }}
           ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+          NEWSPAPER_POC: ${{ steps.request.outputs.newspaper_poc }}
+          NEWSPAPER_ARTIFACT: ${{ steps.request.outputs.newspaper_artifact }}
         run: |
           python - <<'PY'
           import json, os
           from pathlib import Path
           manifest = json.loads(Path('/tmp/jrdb_raw/manifest.json').read_text(encoding='utf-8'))
-          result = {'status':'success','run_id':int(os.environ['RUN_ID']),'artifact_name':os.environ['ARTIFACT_NAME'],'manifest':manifest}
-          Path('/tmp/comment.md').write_text('JRDB_RAW_FETCH_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n',encoding='utf-8')
+          result = {
+              'status':'success',
+              'run_id':int(os.environ['RUN_ID']),
+              'artifact_name':os.environ['ARTIFACT_NAME'],
+              'manifest':manifest,
+          }
+          if os.environ.get('NEWSPAPER_POC') == 'true':
+              audit = json.loads(Path('/tmp/newspaper_poc/audit.json').read_text(encoding='utf-8'))
+              result['newspaper_poc'] = {
+                  'audit_status': audit.get('status'),
+                  'artifact_name': os.environ.get('NEWSPAPER_ARTIFACT'),
+                  'race_key': audit.get('race_key'),
+                  'race': audit.get('race'),
+                  'horse_count': audit.get('horse_count'),
+                  'history': audit.get('history'),
+                  'current_field_null_counts': audit.get('current_field_null_counts'),
+                  'architecture': audit.get('architecture'),
+                  'chronology': audit.get('chronology'),
+                  'bundle': audit.get('bundle'),
+              }
+          Path('/tmp/comment.md').write_text(
+              'JRDB_RAW_FETCH_RESULT\n```json\n'
+              + json.dumps(result,ensure_ascii=False,indent=2)
+              + '\n```\n',
+              encoding='utf-8'
+          )
           PY
           gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
           gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
