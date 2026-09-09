@@ -10,11 +10,11 @@ import jrdb_edge_statistical_guard as stats
 from apply_jrdb_edge_statistical_guard import apply_guard
 from build_jrdb_edge_registry import export_registry
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 V02_FIELDS = {
     "frame_no", "horse_age", "rotation_interval", "pre_idm", "training_score",
     "stable_score", "uptrend_code", "training_arrow_code", "stable_evaluation_code",
-    "body_weight_pre_kg", "body_weight_change_pre_kg",
+    "body_weight_pre_kg", "body_weight_change_pre_kg", "track_condition_bucket",
 }
 stats.ALLOWED_FIELDS.update(V02_FIELDS)
 
