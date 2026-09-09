@@ -1,0 +1,155 @@
+name: JRDB Newspaper Day via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_NEWSPAPER_DAY_REQUEST]'
+
+jobs:
+  build:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_DAY_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          date = str(req.get('date','')).strip().replace('-', '')
+          analysis_url = str(req.get('analysis_url','')).strip()
+          revision = req.get('revision', 1)
+          if not re.fullmatch(r'20\d{6}', date):
+              raise SystemExit('date must be YYYYMMDD')
+          if analysis_url and not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+          if not isinstance(revision, int) or revision < 1:
+              raise SystemExit('revision must be integer >= 1')
+          normalized = {'date': date, 'analysis_url': analysis_url or None, 'revision': revision}
+          Path('/tmp/request.json').write_text(json.dumps(normalized, ensure_ascii=False, indent=2), encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f'date={date}\n')
+              f.write(f'artifact_name=jrdb-newspaper-day-{date}\n')
+          PY
+
+      - name: Fetch PACI
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_raw
+          python horse-racing/jrdb/src/fetch_jrdb_paci.py --date '${{ steps.request.outputs.date }}' --out-dir /tmp/jrdb_raw
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check gdown
+
+      - name: Download Analysis Lite
+        run: |
+          python - <<'PY'
+          import json, shutil, subprocess, zipfile
+          from pathlib import Path
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          url = req.get('analysis_url')
+          if not url:
+              raise SystemExit(0)
+          output = Path('/tmp/jrdb_analysis.sqlite')
+          downloaded = Path('/tmp/jrdb_analysis.download')
+          subprocess.run(['gdown', url, '-O', str(downloaded)], check=True)
+          if zipfile.is_zipfile(downloaded):
+              with zipfile.ZipFile(downloaded) as archive:
+                  bad = archive.testzip()
+                  if bad is not None:
+                      raise SystemExit(f'Analysis ZIP has bad member: {bad}')
+                  members = [n for n in archive.namelist() if not n.endswith('/') and Path(n).name.lower().endswith(('.sqlite', '.bin'))]
+                  if len(members) != 1:
+                      raise SystemExit(f'Analysis ZIP must contain exactly one database member; found {members}')
+                  with archive.open(members[0]) as source, output.open('wb') as target:
+                      shutil.copyfileobj(source, target, 1024 * 1024)
+              downloaded.unlink()
+          else:
+              downloaded.replace(output)
+          if output.open('rb').read(16) != b'SQLite format 3\x00':
+              raise SystemExit('Analysis download is not SQLite')
+          PY
+
+      - name: Build full day
+        run: |
+          set -euo pipefail
+          DATE='${{ steps.request.outputs.date }}'
+          PACI="/tmp/jrdb_raw/PACI${DATE:2}.zip"
+          CMD=(python horse-racing/jrdb/src/jrdb_newspaper_day_build.py --paci "$PACI" --date "$DATE" --output-dir /tmp/newspaper_day)
+          if [ -f /tmp/jrdb_analysis.sqlite ]; then
+            CMD+=(--analysis /tmp/jrdb_analysis.sqlite)
+          fi
+          "${CMD[@]}"
+
+      - name: Upload Newspaper day artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.artifact_name }}
+          path: /tmp/newspaper_day/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          audit = json.loads(Path('/tmp/newspaper_day/audit.json').read_text(encoding='utf-8'))
+          manifest = json.loads(Path('/tmp/newspaper_day/manifest.json').read_text(encoding='utf-8'))
+          result = {
+              'status': 'success',
+              'run_id': int(os.environ['RUN_ID']),
+              'artifact_name': os.environ['ARTIFACT_NAME'],
+              'audit_status': audit.get('status'),
+              'date': audit.get('date'),
+              'race_count': audit.get('race_count'),
+              'venue_codes': audit.get('venue_codes'),
+              'totals': audit.get('totals'),
+              'history_coverage_complete': audit.get('history_coverage_complete'),
+              'completeness': manifest.get('completeness'),
+          }
+          Path('/tmp/comment.md').write_text(
+              'JRDB_NEWSPAPER_DAY_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB Newspaper day build failed. Workflow run: $RUN_URL"
