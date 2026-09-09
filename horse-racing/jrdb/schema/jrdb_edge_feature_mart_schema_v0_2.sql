@@ -9,6 +9,7 @@ CREATE TABLE meta_edge_feature_mart_build(
   row_count INTEGER NOT NULL,
   pre_race_eligible_count INTEGER NOT NULL,
   result_labeled_count INTEGER NOT NULL,
+  historical_track_condition_count INTEGER NOT NULL,
   anomaly_count INTEGER NOT NULL,
   status TEXT NOT NULL CHECK(status IN ('VALID','INVALID')),
   message TEXT
@@ -29,6 +30,9 @@ CREATE TABLE edge_runner_fact(
   declared_field_size INTEGER,
   source_availability_class TEXT NOT NULL,
   is_pre_race_eligible INTEGER NOT NULL CHECK(is_pre_race_eligible IN (0,1)),
+  track_condition_code TEXT,
+  track_condition_bucket TEXT,
+  track_condition_source_class TEXT CHECK(track_condition_source_class IN ('HISTORICAL_RESULT_CONTEXT') OR track_condition_source_class IS NULL),
   frame_no INTEGER,
   frame_zone TEXT,
   horse_id TEXT,
@@ -84,7 +88,9 @@ CREATE TABLE edge_runner_fact(
 
 CREATE INDEX ix_edge_fact_date ON edge_runner_fact(race_date);
 CREATE INDEX ix_edge_fact_course ON edge_runner_fact(venue_code, surface_code, distance_m, turn_code, frame_zone, frame_no);
+CREATE INDEX ix_edge_fact_track_condition ON edge_runner_fact(surface_code, track_condition_bucket, race_date);
 CREATE INDEX ix_edge_fact_sire ON edge_runner_fact(sire_name, race_date);
+CREATE INDEX ix_edge_fact_sire_track_condition ON edge_runner_fact(sire_name, surface_code, track_condition_bucket, race_date);
 CREATE INDEX ix_edge_fact_bms ON edge_runner_fact(broodmare_sire_name, race_date);
 CREATE INDEX ix_edge_fact_sire_age ON edge_runner_fact(sire_name, horse_age, race_date);
 CREATE INDEX ix_edge_fact_jockey ON edge_runner_fact(jockey_code, race_date);
