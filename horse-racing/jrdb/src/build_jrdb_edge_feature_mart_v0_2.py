@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Build JRDB Edge Feature Mart v0.2 from Index Base v0.1.
 
-Most condition fields are pre-race.  Historical track condition is the explicit
+Most condition fields are pre-race. Historical track condition is the explicit
 exception: it is read first from ``race_result_context`` (SED-derived race
 context) into an isolated race-level snapshot, then result labels are joined in
-a separate query.  This supports historical discovery such as sire x going
+a separate query. This supports historical discovery such as sire x going
 without exposing finish/payout columns to the condition-extraction step.
+
+v0.2 flat-racing Edge discovery is explicitly scoped to turf/dirt. Obstacle
+(surface_code=3) rows are retained for audit but marked ineligible so they do
+not enter either candidate samples or their baselines.
 """
 from __future__ import annotations
 
@@ -22,14 +26,16 @@ from jrdb_edge_canonical import (
 )
 from jrdb_edge_v02_canonical import horse_age_at_race, track_condition_bucket
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 SCHEMA_VERSION = "v0.2"
 DEFAULT_SCHEMA = Path(__file__).resolve().parents[1] / "schema/jrdb_edge_feature_mart_schema_v0_2.sql"
 
 
-def _status(row: sqlite3.Row) -> str:
+def _status(row: sqlite3.Row | dict[str, Any]) -> str:
     if row["source_availability_class"] != "PRE_RACE":
         return "SOURCE_NOT_PRE_RACE"
+    if str(row["surface_code"] or "").strip() == "3":
+        return "EXCLUDED_OBSTACLE"
     if row["label_finish"] is None:
         return "NO_RESULT"
     abnormal = (row["label_abnormal_code"] or "").strip()
@@ -57,7 +63,7 @@ def _historical_track_condition_snapshot(connection: sqlite3.Connection) -> dict
     """Read only SED-derived race condition context, without runner results.
 
     The returned mapping is deliberately created before any query touching
-    runner_result.  Raw JRDB subcodes are retained for audit while discovery
+    runner_result. Raw JRDB subcodes are retained for audit while discovery
     uses the broad 1/2/3/4 bucket.
     """
     snapshot: dict[str, tuple[str, str]] = {}
@@ -85,10 +91,10 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
         _required_tables(src)
         out.executescript(schema_path.read_text(encoding="utf-8"))
 
-        # Phase A: condition-only extraction.  No runner_result columns are read here.
+        # Phase A: condition-only extraction. No runner_result columns are read here.
         track_snapshot = _historical_track_condition_snapshot(src)
 
-        # Phase B: runner facts + result labels.  Historical track condition is
+        # Phase B: runner facts + result labels. Historical track condition is
         # attached from the already-isolated race-level snapshot above.
         query = """
         SELECT
@@ -143,7 +149,7 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
         )
 
         rows = pre_race_eligible = result_labeled = anomalies = 0
-        historical_track_condition_rows = 0
+        historical_track_condition_rows = excluded_obstacle_count = 0
         eligible_labels = win_hits = place_hits = 0
         for row in src.execute(query):
             if row["profile_asof_date"] and row["profile_asof_date"] > row["race_date"]:
@@ -167,6 +173,7 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
                 place_hit = int((row["label_place_payout"] or 0) > 0)
 
             status = _status(row)
+            excluded_obstacle_count += int(status == "EXCLUDED_OBSTACLE")
             is_pre = int(row["source_availability_class"] == "PRE_RACE")
             track = track_snapshot.get(str(row["race_key"]))
             raw_track = track[0] if track else None
@@ -265,12 +272,12 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
             """INSERT INTO meta_edge_feature_mart_build(
               builder_version,schema_version,source_path,built_at,row_count,
               pre_race_eligible_count,result_labeled_count,historical_track_condition_count,
-              anomaly_count,status,message
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+              excluded_obstacle_count,anomaly_count,status,message
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 VERSION, SCHEMA_VERSION, str(source_path), built_at, rows,
                 pre_race_eligible, result_labeled, historical_track_condition_rows,
-                anomalies, "VALID", None,
+                excluded_obstacle_count, anomalies, "VALID", None,
             ),
         )
         out.commit()
@@ -284,6 +291,7 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
             "result_labeled": result_labeled,
             "historical_track_condition_rows": historical_track_condition_rows,
             "historical_track_condition_races": len(track_snapshot),
+            "excluded_obstacle": excluded_obstacle_count,
             "eligible_labels": eligible_labels,
             "win_hits": win_hits,
             "place_hits": place_hits,
