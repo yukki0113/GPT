@@ -78,6 +78,8 @@ def _eligible_signal(edge: Mapping[str, Any], signal_field: str) -> tuple[str, s
     if raw_signal in (None, ""):
         return None
     signal = str(raw_signal).upper()
+    if signal == "NEUTRAL":
+        return None
     if signal not in SIGNALS:
         raise ValueError(f"unsupported {signal_field}: {raw_signal}")
     family = evidence.get("family")
