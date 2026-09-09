@@ -1,0 +1,406 @@
+name: JRDB Edge Registry V2 build via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_EDGE_REGISTRY_BUILD_V2]'
+
+jobs:
+  build:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_REGISTRY_BUILD_V2]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          raw = json.loads((os.environ.get('ISSUE_BODY') or '{}').strip())
+          from_year = int(raw.get('from_year', 2010))
+          to_year = int(raw.get('to_year', 2025))
+          if from_year < 2010 or to_year > 2025 or to_year < from_year:
+              raise SystemExit('year range must be within 2010..2025')
+
+          registry_version = str(raw.get('registry_version') or request_id)
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,100}', registry_version):
+              raise SystemExit('invalid registry_version')
+
+          request = {
+              'request_id': request_id,
+              'from_year': from_year,
+              'to_year': to_year,
+              'registry_version': registry_version,
+              'hash_archives': bool(raw.get('hash_archives', False)),
+          }
+          Path('/tmp/edge_request.json').write_text(
+              json.dumps(request, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as fh:
+              for key in ('request_id', 'from_year', 'to_year', 'registry_version'):
+                  fh.write(f'{key}={request[key]}\n')
+          PY
+
+      - name: Run Edge regression tests
+        id: tests
+        continue-on-error: true
+        run: |
+          set +e
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_edge_validation.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_feature_mart.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_discovery.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_temporal_validator.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_registry.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_statistical_guard.py \
+            > /tmp/edge_tests_stdout.log 2> /tmp/edge_tests_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Prepare directories
+        run: mkdir -p /tmp/jrdb_edge/raw /tmp/jrdb_edge/out /tmp/jrdb_edge/report
+
+      - name: Fetch annual JRDB Raw
+        id: fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year '${{ steps.request.outputs.from_year }}' \
+            --to-year '${{ steps.request.outputs.to_year }}' \
+            --kinds BAC KYI SED UKC \
+            --output-dir /tmp/jrdb_edge/raw \
+            --manifest /tmp/jrdb_edge/report/fetch_manifest.jsonl \
+            --sleep-seconds 1 \
+            --continue-on-error \
+            > /tmp/jrdb_edge/report/fetch_stdout.log 2> /tmp/jrdb_edge/report/fetch_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ -f /tmp/jrdb_edge/raw/fetch_summary.json ]; then
+            cp /tmp/jrdb_edge/raw/fetch_summary.json /tmp/jrdb_edge/report/fetch_summary.json
+          fi
+          exit 0
+
+      - name: Build and audit Index Base
+        id: index
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('/tmp/edge_request.json').read_text(encoding='utf-8'))
+          Path('/tmp/edge_years.txt').write_text(
+              ' '.join(map(str, range(r['from_year'], r['to_year'] + 1))), encoding='utf-8'
+          )
+          PY
+
+          HASH_ARG=()
+          hash_archives="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('/tmp/edge_request.json').read_text(encoding='utf-8'))
+          print('1' if r['hash_archives'] else '0')
+          PY
+          )"
+          if [ "$hash_archives" = "0" ]; then
+            HASH_ARG+=(--no-archive-hash)
+          fi
+
+          read -ra YEARS <<< "$(cat /tmp/edge_years.txt)"
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
+            --raw-root /tmp/jrdb_edge/raw \
+            --years "${YEARS[@]}" \
+            --db /tmp/jrdb_edge/index.sqlite \
+            "${HASH_ARG[@]}" \
+            > /tmp/jrdb_edge/report/index_build_stdout.log 2> /tmp/jrdb_edge/report/index_build_stderr.log
+          build_code=$?
+
+          audit_code=99
+          if [ "$build_code" = "0" ]; then
+            python horse-racing/jrdb/src/audit_jrdb_index_base.py \
+              --db /tmp/jrdb_edge/index.sqlite \
+              --out /tmp/jrdb_edge/report/index_audit.json \
+              > /tmp/jrdb_edge/report/index_audit_stdout.log 2> /tmp/jrdb_edge/report/index_audit_stderr.log
+            audit_code=$?
+          fi
+          echo "build_exit_code=$build_code" >> "$GITHUB_OUTPUT"
+          echo "audit_exit_code=$audit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build Edge Feature Mart
+        id: mart
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/src/build_jrdb_edge_feature_mart.py \
+            --source /tmp/jrdb_edge/index.sqlite \
+            --output /tmp/jrdb_edge/edge_mart.sqlite \
+            > /tmp/jrdb_edge/report/mart_stdout.log 2> /tmp/jrdb_edge/report/mart_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Discover Edge candidates
+        id: discovery
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/src/jrdb_edge_discovery.py \
+            --mart /tmp/jrdb_edge/edge_mart.sqlite \
+            --output /tmp/jrdb_edge/out/edge_candidates.jsonl \
+            > /tmp/jrdb_edge/report/discovery_stdout.log 2> /tmp/jrdb_edge/report/discovery_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build temporal Edge Registry
+        id: registry
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/src/build_jrdb_edge_registry.py \
+            --mart /tmp/jrdb_edge/edge_mart.sqlite \
+            --candidates /tmp/jrdb_edge/out/edge_candidates.jsonl \
+            --registry /tmp/jrdb_edge/out/edge_registry.sqlite \
+            --registry-version '${{ steps.request.outputs.registry_version }}' \
+            --export-jsonl /tmp/jrdb_edge/out/edge_registry_active.jsonl \
+            --export-csv /tmp/jrdb_edge/out/edge_registry_active.csv \
+            --audit-json /tmp/jrdb_edge/out/edge_registry_audit.json \
+            > /tmp/jrdb_edge/report/registry_stdout.log 2> /tmp/jrdb_edge/report/registry_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Apply Phase1 statistical guard
+        id: stat_guard
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/src/apply_jrdb_edge_statistical_guard.py \
+            --mart /tmp/jrdb_edge/edge_mart.sqlite \
+            --registry /tmp/jrdb_edge/out/edge_registry.sqlite \
+            --registry-audit /tmp/jrdb_edge/out/edge_registry_audit.json \
+            --output-jsonl /tmp/jrdb_edge/out/edge_statistical_guard.jsonl \
+            --audit-json /tmp/jrdb_edge/out/edge_statistical_guard_audit.json \
+            --export-jsonl /tmp/jrdb_edge/out/edge_registry_active.jsonl \
+            --export-csv /tmp/jrdb_edge/out/edge_registry_active.csv \
+            > /tmp/jrdb_edge/report/stat_guard_stdout.log 2> /tmp/jrdb_edge/report/stat_guard_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build audit summary
+        id: summary
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/src/report_jrdb_edge_registry.py \
+            --registry /tmp/jrdb_edge/out/edge_registry.sqlite \
+            --output-json /tmp/jrdb_edge/out/edge_registry_summary.json \
+            --output-md /tmp/jrdb_edge/out/edge_registry_summary.md \
+            --top-n 30 \
+            > /tmp/jrdb_edge/report/summary_stdout.log 2> /tmp/jrdb_edge/report/summary_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build workflow result
+        if: always()
+        env:
+          TESTS_EXIT: ${{ steps.tests.outputs.exit_code }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          INDEX_BUILD_EXIT: ${{ steps.index.outputs.build_exit_code }}
+          INDEX_AUDIT_EXIT: ${{ steps.index.outputs.audit_exit_code }}
+          MART_EXIT: ${{ steps.mart.outputs.exit_code }}
+          DISCOVERY_EXIT: ${{ steps.discovery.outputs.exit_code }}
+          REGISTRY_EXIT: ${{ steps.registry.outputs.exit_code }}
+          STAT_GUARD_EXIT: ${{ steps.stat_guard.outputs.exit_code }}
+          SUMMARY_EXIT: ${{ steps.summary.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import ast, hashlib, json, os, sqlite3
+          from pathlib import Path
+
+          request_path = Path('/tmp/edge_request.json')
+          request = json.loads(request_path.read_text(encoding='utf-8')) if request_path.is_file() else {}
+          audit_path = Path('/tmp/jrdb_edge/out/edge_registry_audit.json')
+          audit = json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.is_file() else {}
+          stat_path = Path('/tmp/jrdb_edge/out/edge_statistical_guard_audit.json')
+          stat = json.loads(stat_path.read_text(encoding='utf-8')) if stat_path.is_file() else {}
+          summary_path = Path('/tmp/jrdb_edge/out/edge_registry_summary.json')
+          summary = json.loads(summary_path.read_text(encoding='utf-8')) if summary_path.is_file() else {}
+
+          exits = {
+              'tests': os.environ.get('TESTS_EXIT', ''),
+              'fetch': os.environ.get('FETCH_EXIT', ''),
+              'index_build': os.environ.get('INDEX_BUILD_EXIT', ''),
+              'index_audit': os.environ.get('INDEX_AUDIT_EXIT', ''),
+              'mart': os.environ.get('MART_EXIT', ''),
+              'discovery': os.environ.get('DISCOVERY_EXIT', ''),
+              'registry': os.environ.get('REGISTRY_EXIT', ''),
+              'statistical_guard': os.environ.get('STAT_GUARD_EXIT', ''),
+              'summary': os.environ.get('SUMMARY_EXIT', ''),
+          }
+          status = 'success' if all(v == '0' for v in exits.values()) and audit.get('status') == 'PASS' and stat.get('status') == 'PASS' else 'failure'
+
+          mart_summary = {}
+          mart_log = Path('/tmp/jrdb_edge/report/mart_stdout.log')
+          if mart_log.is_file() and mart_log.stat().st_size:
+              try:
+                  parsed = ast.literal_eval(mart_log.read_text(encoding='utf-8').strip().splitlines()[-1])
+                  for key in ('rows', 'eligible_labels', 'win_hits', 'place_hits', 'win_hit_rate', 'place_hit_rate', 'anomalies'):
+                      if key in parsed:
+                          mart_summary[key] = parsed[key]
+              except Exception:
+                  pass
+
+          final_counts = {}
+          registry_db = Path('/tmp/jrdb_edge/out/edge_registry.sqlite')
+          if registry_db.is_file():
+              con = sqlite3.connect(registry_db)
+              try:
+                  final_counts = {
+                      str(k): int(v)
+                      for k, v in con.execute('SELECT status, COUNT(*) FROM edge_definition GROUP BY status')
+                  }
+              finally:
+                  con.close()
+
+          files = {}
+          for p in sorted(Path('/tmp/jrdb_edge/out').glob('*')) if Path('/tmp/jrdb_edge/out').exists() else []:
+              if p.is_file():
+                  files[p.name] = {
+                      'size_bytes': p.stat().st_size,
+                      'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
+                  }
+
+          artifact_name = f"jrdb-edge-registry-v2-{request.get('request_id', 'unknown')}-{os.environ['RUN_ID']}"
+          result = {
+              'status': status,
+              'run_id': int(os.environ['RUN_ID']),
+              'head_sha': os.environ['HEAD_SHA'],
+              'request': request,
+              'exit_codes': exits,
+              'mart_label_summary': mart_summary,
+              'candidate_count': audit.get('candidate_count'),
+              'prefiltered_out': audit.get('prefiltered_out'),
+              'validated_candidate_count': audit.get('validated_candidate_count'),
+              'stored_edges': audit.get('stored_edges'),
+              'temporal_counts': audit.get('counts'),
+              'final_registry_counts': final_counts,
+              'statistical_guard': {
+                  'bootstrap_evaluated': stat.get('bootstrap_evaluated'),
+                  'downgraded_to_watch': stat.get('downgraded_to_watch'),
+                  'statistical_counts': stat.get('statistical_counts'),
+                  'performance_stat_pass': stat.get('performance_stat_pass'),
+                  'value_stat_pass': stat.get('value_stat_pass'),
+              },
+              'summary': {
+                  'live_edges': summary.get('live_edges'),
+                  'live_polarity_counts': summary.get('live_polarity_counts'),
+                  'live_signal_counts': summary.get('live_signal_counts'),
+                  'live_statistical_pass_counts': summary.get('live_statistical_pass_counts'),
+                  'live_redundancy_group_count': summary.get('live_redundancy_group_count'),
+              },
+              'integrity_check': stat.get('integrity_check') or audit.get('integrity_check'),
+              'artifact_name': artifact_name,
+              'files': files,
+          }
+          Path('/tmp/jrdb_edge/report/workflow_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          Path('/tmp/comment.md').write_text(
+              'JRDB_EDGE_REGISTRY_V2_RESULT\n```json\n' +
+              json.dumps(result, ensure_ascii=False, indent=2) +
+              '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Upload Edge Registry artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-registry-v2-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: |
+            /tmp/jrdb_edge/out/
+            /tmp/jrdb_edge/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f /tmp/comment.md ]; then
+            gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          fi
+
+      - name: Finalize status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TESTS_EXIT: ${{ steps.tests.outputs.exit_code }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          INDEX_BUILD_EXIT: ${{ steps.index.outputs.build_exit_code }}
+          INDEX_AUDIT_EXIT: ${{ steps.index.outputs.audit_exit_code }}
+          MART_EXIT: ${{ steps.mart.outputs.exit_code }}
+          DISCOVERY_EXIT: ${{ steps.discovery.outputs.exit_code }}
+          REGISTRY_EXIT: ${{ steps.registry.outputs.exit_code }}
+          STAT_GUARD_EXIT: ${{ steps.stat_guard.outputs.exit_code }}
+          SUMMARY_EXIT: ${{ steps.summary.outputs.exit_code }}
+        run: |
+          if [ "$TESTS_EXIT" = "0" ] && \
+             [ "$FETCH_EXIT" = "0" ] && \
+             [ "$INDEX_BUILD_EXIT" = "0" ] && \
+             [ "$INDEX_AUDIT_EXIT" = "0" ] && \
+             [ "$MART_EXIT" = "0" ] && \
+             [ "$DISCOVERY_EXIT" = "0" ] && \
+             [ "$REGISTRY_EXIT" = "0" ] && \
+             [ "$STAT_GUARD_EXIT" = "0" ] && \
+             [ "$SUMMARY_EXIT" = "0" ]; then
+            gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+            exit 0
+          fi
+          exit 1
