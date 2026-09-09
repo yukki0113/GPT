@@ -74,7 +74,8 @@ jobs:
             horse-racing/jrdb/tests/test_build_jrdb_edge_feature_mart.py \
             horse-racing/jrdb/tests/test_jrdb_edge_discovery.py \
             horse-racing/jrdb/tests/test_jrdb_edge_temporal_validator.py \
-            horse-racing/jrdb/tests/test_build_jrdb_edge_registry.py
+            horse-racing/jrdb/tests/test_build_jrdb_edge_registry.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_statistical_guard.py
 
       - name: Fetch annual JRDB Raw
         id: fetch
@@ -183,6 +184,24 @@ jobs:
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
 
+      - name: Apply statistical guard
+        id: stat_guard
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/src/apply_jrdb_edge_statistical_guard.py \
+            --mart /tmp/jrdb_edge/edge_mart.sqlite \
+            --registry /tmp/jrdb_edge/out/edge_registry.sqlite \
+            --registry-audit /tmp/jrdb_edge/out/edge_registry_audit.json \
+            --output-jsonl /tmp/jrdb_edge/out/edge_statistical_guard.jsonl \
+            --audit-json /tmp/jrdb_edge/out/edge_statistical_guard_audit.json \
+            --export-jsonl /tmp/jrdb_edge/out/edge_registry_active.jsonl \
+            --export-csv /tmp/jrdb_edge/out/edge_registry_active.csv \
+            > /tmp/jrdb_edge/report/stat_guard_stdout.log 2> /tmp/jrdb_edge/report/stat_guard_stderr.log
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
       - name: Build manifest and workflow result
         if: always()
         env:
@@ -192,15 +211,18 @@ jobs:
           MART_EXIT: ${{ steps.mart.outputs.exit_code }}
           DISCOVERY_EXIT: ${{ steps.discovery.outputs.exit_code }}
           REGISTRY_EXIT: ${{ steps.registry.outputs.exit_code }}
+          STAT_GUARD_EXIT: ${{ steps.stat_guard.outputs.exit_code }}
           RUN_ID: ${{ github.run_id }}
           HEAD_SHA: ${{ github.sha }}
         run: |
           python - <<'PY'
-          import hashlib,json,os
+          import ast, hashlib, json, os, sqlite3
           from pathlib import Path
           request=json.loads(Path('/tmp/edge_request.json').read_text())
           audit_path=Path('/tmp/jrdb_edge/out/edge_registry_audit.json')
           audit=json.loads(audit_path.read_text()) if audit_path.is_file() else {}
+          stat_path=Path('/tmp/jrdb_edge/out/edge_statistical_guard_audit.json')
+          stat=json.loads(stat_path.read_text()) if stat_path.is_file() else {}
           exits={
             'fetch':os.environ.get('FETCH_EXIT',''),
             'index_build':os.environ.get('INDEX_BUILD_EXIT',''),
@@ -208,10 +230,15 @@ jobs:
             'mart':os.environ.get('MART_EXIT',''),
             'discovery':os.environ.get('DISCOVERY_EXIT',''),
             'registry':os.environ.get('REGISTRY_EXIT',''),
+            'statistical_guard':os.environ.get('STAT_GUARD_EXIT',''),
           }
-          status='success' if all(v=='0' for v in exits.values()) and audit.get('status')=='PASS' else 'failure'
+          status='success' if all(v=='0' for v in exits.values()) and audit.get('status')=='PASS' and stat.get('status')=='PASS' else 'failure'
           files={}
-          for name in ['edge_registry.sqlite','edge_registry_active.jsonl','edge_registry_active.csv','edge_registry_audit.json','edge_candidates.jsonl']:
+          for name in [
+            'edge_registry.sqlite','edge_registry_active.jsonl','edge_registry_active.csv',
+            'edge_registry_audit.json','edge_candidates.jsonl',
+            'edge_statistical_guard.jsonl','edge_statistical_guard_audit.json'
+          ]:
             p=Path('/tmp/jrdb_edge/out')/name
             if p.is_file():
               h=hashlib.sha256(p.read_bytes()).hexdigest()
@@ -225,15 +252,45 @@ jobs:
             'files':files,
           }
           Path('/tmp/jrdb_edge/out/manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+
+          final_counts={}
+          registry_db=Path('/tmp/jrdb_edge/out/edge_registry.sqlite')
+          if registry_db.is_file():
+            con=sqlite3.connect(registry_db)
+            try:
+              final_counts={str(k):int(v) for k,v in con.execute('SELECT status,COUNT(*) FROM edge_definition GROUP BY status')}
+            finally:
+              con.close()
+
+          mart_summary={}
+          mart_log=Path('/tmp/jrdb_edge/report/mart_stdout.log')
+          if mart_log.is_file():
+            try:
+              parsed=ast.literal_eval(mart_log.read_text(encoding='utf-8').strip().splitlines()[-1])
+              for key in ('rows','eligible_labels','win_hits','place_hits','win_hit_rate','place_hit_rate','anomalies'):
+                if key in parsed:
+                  mart_summary[key]=parsed[key]
+            except Exception:
+              pass
+
           result={
             'status':status,'run_id':int(os.environ['RUN_ID']),'head_sha':os.environ['HEAD_SHA'],
             'request':request,'exit_codes':exits,
+            'mart_label_summary':mart_summary,
             'candidate_count':audit.get('candidate_count'),
             'prefiltered_out':audit.get('prefiltered_out'),
             'validated_candidate_count':audit.get('validated_candidate_count'),
             'stored_edges':audit.get('stored_edges'),
-            'counts':audit.get('counts'),
-            'integrity_check':audit.get('integrity_check'),
+            'temporal_counts':audit.get('counts'),
+            'final_registry_counts':final_counts,
+            'statistical_guard':{
+              'bootstrap_evaluated':stat.get('bootstrap_evaluated'),
+              'downgraded_to_watch':stat.get('downgraded_to_watch'),
+              'statistical_counts':stat.get('statistical_counts'),
+              'performance_stat_pass':stat.get('performance_stat_pass'),
+              'value_stat_pass':stat.get('value_stat_pass'),
+            },
+            'integrity_check':stat.get('integrity_check') or audit.get('integrity_check'),
             'artifact_name':f"jrdb-edge-registry-{request['request_id']}-{os.environ['RUN_ID']}",
           }
           Path('/tmp/jrdb_edge/report/workflow_result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
@@ -260,11 +317,11 @@ jobs:
           gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
 
       - name: Close successful issue
-        if: always() && steps.fetch.outputs.exit_code == '0' && steps.index.outputs.build_exit_code == '0' && steps.index.outputs.audit_exit_code == '0' && steps.mart.outputs.exit_code == '0' && steps.discovery.outputs.exit_code == '0' && steps.registry.outputs.exit_code == '0'
+        if: always() && steps.fetch.outputs.exit_code == '0' && steps.index.outputs.build_exit_code == '0' && steps.index.outputs.audit_exit_code == '0' && steps.mart.outputs.exit_code == '0' && steps.discovery.outputs.exit_code == '0' && steps.registry.outputs.exit_code == '0' && steps.stat_guard.outputs.exit_code == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
 
       - name: Fail workflow when pipeline failed
-        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.index.outputs.build_exit_code != '0' || steps.index.outputs.audit_exit_code != '0' || steps.mart.outputs.exit_code != '0' || steps.discovery.outputs.exit_code != '0' || steps.registry.outputs.exit_code != '0')
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.index.outputs.build_exit_code != '0' || steps.index.outputs.audit_exit_code != '0' || steps.mart.outputs.exit_code != '0' || steps.discovery.outputs.exit_code != '0' || steps.registry.outputs.exit_code != '0' || steps.stat_guard.outputs.exit_code != '0')
         run: exit 1
