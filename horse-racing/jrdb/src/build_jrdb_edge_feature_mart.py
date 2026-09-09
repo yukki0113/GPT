@@ -8,7 +8,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 SCHEMA_VERSION = "v0.1"
 
 
@@ -70,7 +70,7 @@ def _required_tables(connection: sqlite3.Connection) -> None:
         raise ValueError(f"Index Base is missing required table(s): {sorted(missing)}")
 
 
-def build(source: str | Path, output: str | Path, schema: str | Path) -> dict[str, int | str]:
+def build(source: str | Path, output: str | Path, schema: str | Path) -> dict[str, int | float | str]:
     source_path = Path(source)
     output_path = Path(output)
     schema_path = Path(schema)
@@ -133,6 +133,9 @@ def build(source: str | Path, output: str | Path, schema: str | Path) -> dict[st
         pre_race_eligible = 0
         result_labeled = 0
         anomalies = 0
+        eligible_labels = 0
+        win_hits = 0
+        place_hits = 0
         for row in src.execute(query):
             if row["profile_asof_date"] and row["profile_asof_date"] > row["race_date"]:
                 raise ValueError("profile observation leaks from the future")
@@ -146,8 +149,19 @@ def build(source: str | Path, output: str | Path, schema: str | Path) -> dict[st
             delta = None
             if row["distance_m"] is not None and row["prev1_distance_m"] is not None:
                 delta = int(row["distance_m"]) - int(row["prev1_distance_m"])
-            win_hit = None if row["label_win_payout"] is None else int(row["label_win_payout"] > 0)
-            place_hit = None if row["label_place_payout"] is None else int(row["label_place_payout"] > 0)
+
+            # SED payout fields are TYPE Z: zero is encoded as blank.  A blank payout on
+            # a normally finished runner therefore means a losing 0-yen return, not a
+            # missing observation.  Win hit is determined directly from finish; place
+            # hit uses the settled place payout so the official 2/3-place boundary is
+            # respected without inferring starter-count rules from pre-race field size.
+            if row["label_finish"] is None:
+                win_hit = None
+                place_hit = None
+            else:
+                win_hit = int(int(row["label_finish"]) == 1)
+                place_hit = int((row["label_place_payout"] or 0) > 0)
+
             status = _status(row)
             is_pre = int(row["source_availability_class"] == "PRE_RACE")
             values: tuple[Any, ...] = (
@@ -172,6 +186,23 @@ def build(source: str | Path, output: str | Path, schema: str | Path) -> dict[st
             rows += 1
             pre_race_eligible += is_pre
             result_labeled += int(row["label_finish"] is not None)
+            if status == "ELIGIBLE":
+                eligible_labels += 1
+                win_hits += int(win_hit or 0)
+                place_hits += int(place_hit or 0)
+
+        win_hit_rate = (win_hits / eligible_labels) if eligible_labels else 0.0
+        place_hit_rate = (place_hits / eligible_labels) if eligible_labels else 0.0
+        # Production-scale mart builds should fail closed on obviously broken target
+        # labels.  The bounds are deliberately broad; their purpose is to catch parser
+        # or null-semantics failures such as 100% win/place rates, not to encode a
+        # handicapping assumption.
+        if eligible_labels >= 1000:
+            if not (0.0 < win_hit_rate < 0.25):
+                raise ValueError(f"implausible overall win hit rate: {win_hit_rate:.6f}")
+            if not (win_hit_rate < place_hit_rate < 0.60):
+                raise ValueError(f"implausible overall place hit rate: {place_hit_rate:.6f}")
+
         built_at = dt.datetime.now(dt.timezone.utc).isoformat()
         out.execute(
             """INSERT INTO meta_edge_feature_mart_build(
@@ -192,6 +223,11 @@ def build(source: str | Path, output: str | Path, schema: str | Path) -> dict[st
             "rows": rows,
             "pre_race_eligible": pre_race_eligible,
             "result_labeled": result_labeled,
+            "eligible_labels": eligible_labels,
+            "win_hits": win_hits,
+            "place_hits": place_hits,
+            "win_hit_rate": win_hit_rate,
+            "place_hit_rate": place_hit_rate,
             "anomalies": anomalies,
         }
     finally:
