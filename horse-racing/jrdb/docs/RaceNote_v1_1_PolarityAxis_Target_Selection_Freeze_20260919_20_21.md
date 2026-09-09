@@ -2,13 +2,31 @@
 
 ## Status
 
-**TARGET DATES FROZEN BEFORE TARGET RESULT ACQUISITION**
+**SUPERSEDED / NON-CANONICAL TARGET SELECTION — RETAINED FOR AUDIT ONLY**
 
 Frozen: 2026-09-10
 
 `result_data_used = false`
 
-This file freezes the next evaluation dates for `RaceNote_v1_1_PolarityAxis_Prediction_Design_Candidate.md`
+This file is retained as an audit record of a later alternative target selection. It is **not** the canonical next RaceNote v1.1-P blind block.
+
+Canonical target selection remains:
+
+- `RaceNote_v1_1_P_Target_Selection_20260704_25_26.md`
+- 2026-07-04 / 2026-07-25 / 2026-07-26
+
+The authoritative design/target bridge is:
+
+- `RaceNote_v1_1_Polarity_Gated_Blind_Freeze_Addendum_20260910.md`
+- `RaceNote_v1_1_Polarity_Gated_Axis_Prediction_Design_Candidate.md`
+
+The addendum preserves the earlier 2026-07-04 / 07-25 / 07-26 selection to avoid adding a new researcher degree of freedom after the v1.1-P design refinement. No prediction or settlement process should use this 2026-09-19 / 09-20 / 09-21 file as its target-selection source of truth.
+
+The content below is preserved unchanged as the superseded proposal history.
+
+---
+
+This file froze the later alternative evaluation dates for `RaceNote_v1_1_PolarityAxis_Prediction_Design_Candidate.md`
 under `RaceNote_v1_1_PolarityAxis_Backtest_Protocol.md`.
 
 No target HJC, SED, finish, payout, final odds, final popularity, Edge activation count, or target RaceNote
@@ -57,7 +75,7 @@ Before result acquisition, each supported target race must freeze all three pred
 2. `v1.0-R_frozen`
 3. `v1.1-P_candidate`
 
-The v1.1-P rule is the already preregistered polarity-axis design:
+The v1.1-P rule in this superseded proposal was the earlier preregistered polarity-axis design:
 
 - reuse v1.0 family aggregation through `PerformanceEdgeTier`;
 - collapse the tier to polarity {-1, 0, +1};
@@ -67,7 +85,7 @@ The v1.1-P rule is the already preregistered polarity-axis design:
 - preserve the original v0.2 relative order of the remaining four marks;
 - Value Edge remains shadow annotation only.
 
-No 0.04 eligibility guard or other later alternative rule is part of this block.
+This earlier rule is not the authoritative v1.1-P rule for the canonical 2026-07-04 / 07-25 / 07-26 block.
 
 ## 4. Fixed Registry
 
@@ -142,7 +160,7 @@ exact pre-race Edge Freeze artifact rather than recomputing matches after the ra
 
 ## 9. Primary evaluation
 
-Follow `RaceNote_v1_1_PolarityAxis_Backtest_Protocol.md`.
+Follow `RaceNote_v1_1_PolarityAxis_Backtest_Protocol.md` only as historical context for this superseded proposal.
 
 Primary v1.1-P vs v0.2:
 
