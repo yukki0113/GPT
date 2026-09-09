@@ -10,6 +10,8 @@ JRDB Edge Registryで検証済みの再利用可能Edgeを、開催前の当日�
 この経路はPWA新聞、RaceNote/GPT、独自指数のEdge表示層から共用できるconsumer-neutralな入力・出力契約とする。
 Phase1ではEdge一致を表示・分析へ供給するだけで、Abilityや最終指数へ自動加点しない。
 
+Consumer側の取得・Freeze共有・status利用方針は `docs/JRDB_Edge_Consumer_Integration_v0_1.md` を入口とする。
+
 ## 2. Canonical flow
 
 ```text
@@ -215,6 +217,7 @@ The tests are bridged into the existing JRDB Edge Registry V2 regression suite w
 
 ## 12. Related contracts
 
+- `docs/JRDB_Edge_Consumer_Integration_v0_1.md`
 - `docs/JRDB_Edge_Contract_v0_1.md`
 - `docs/JRDB_Edge_Registry_Phase1_v0_1.md`
 - `src/build_jrdb_edge_current_facts.py`
@@ -223,4 +226,4 @@ The tests are bridged into the existing JRDB Edge Registry V2 regression suite w
 - `src/run_jrdb_edge_match_current.py`
 - `schema/jrdb_edge_publication_manifest_schema_v0_1.json`
 
-This document describes the current matching transport and leakage policy. Edge discovery, validation thresholds, Registry lifecycle, and publication identity remain governed by their respective Phase1 contracts.
+This document describes the current matching transport and leakage policy. Edge discovery, validation thresholds, Registry lifecycle, publication identity, and consumer integration remain governed by their respective contracts.
