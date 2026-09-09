@@ -12,6 +12,7 @@ sys.path.insert(0, str(SRC))
 import jrdb_edge_validation as edgeval  # noqa: E402
 import test_build_jrdb_edge_current_facts as current_fact_tests  # noqa: E402
 import test_jrdb_edge_paci_matcher_integration as paci_matcher_tests  # noqa: E402
+import test_run_jrdb_edge_match_current as current_matcher_tests  # noqa: E402
 
 
 def test_structural_course_uses_calendar_block_policy() -> None:
@@ -136,3 +137,13 @@ def test_current_fact_and_paci_matcher_regression_bridge(tmp_path: Path) -> None
     paci_matcher_tests.test_without_history_source_course_edge_survives_transition_edge_does_not(
         degraded
     )
+
+    orchestrated = tmp_path / "orchestrated"
+    orchestrated.mkdir()
+    current_matcher_tests.test_run_defaults_to_active_and_writes_facts_and_identity(orchestrated)
+
+    filtered = tmp_path / "filtered"
+    filtered.mkdir()
+    current_matcher_tests.test_run_status_opt_in_and_only_matched_filter(filtered)
+
+    current_matcher_tests.test_parse_statuses_normalizes_and_rejects_invalid_values()
