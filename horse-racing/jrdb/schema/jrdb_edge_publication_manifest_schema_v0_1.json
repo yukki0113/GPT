@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "jrdb_edge_publication_manifest_schema_v0_1.json",
+  "title": "JRDB Edge Registry Publication Manifest v0.1",
+  "description": "Fail-closed publication identity and integrity contract for reusable JRDB Edge Registry assets.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_kind",
+    "status",
+    "generated_at",
+    "registry_version",
+    "policy_version",
+    "template_version",
+    "source_scope",
+    "source",
+    "integrity",
+    "registry_counts",
+    "live_edge_count",
+    "statistical_guard",
+    "files"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "artifact_kind": {"const": "jrdb_edge_registry_publication"},
+    "status": {"const": "READY"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "registry_version": {"type": "string", "minLength": 1},
+    "policy_version": {"type": "string", "minLength": 1},
+    "template_version": {"type": "string", "minLength": 1},
+    "source_scope": {"type": "string", "minLength": 1},
+    "source": {"$ref": "#/$defs/source"},
+    "integrity": {"$ref": "#/$defs/integrity"},
+    "registry_counts": {
+      "type": "object",
+      "propertyNames": {
+        "enum": ["WATCH", "PROVISIONAL", "ACTIVE", "REVIEW_DUE", "DECAYING", "EXPIRED", "RETIRED", "REJECTED"]
+      },
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "live_edge_count": {"type": "integer", "minimum": 0},
+    "statistical_guard": {"$ref": "#/$defs/statisticalGuard"},
+    "files": {"$ref": "#/$defs/files"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["issue_number", "run_id", "head_sha", "request_id", "from_year", "to_year"],
+      "properties": {
+        "issue_number": {"type": "integer", "minimum": 1},
+        "run_id": {"type": "integer", "minimum": 1},
+        "head_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "request_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,80}$"},
+        "from_year": {"type": "integer", "minimum": 2010},
+        "to_year": {"type": "integer", "minimum": 2010}
+      },
+      "additionalProperties": false
+    },
+    "integrity": {
+      "type": "object",
+      "required": ["registry_sqlite", "registry_audit", "statistical_guard_audit"],
+      "properties": {
+        "registry_sqlite": {"const": "ok"},
+        "registry_audit": {"const": "PASS"},
+        "statistical_guard_audit": {"const": "PASS"}
+      },
+      "additionalProperties": false
+    },
+    "statisticalGuard": {
+      "type": "object",
+      "required": ["bootstrap_evaluated", "downgraded_to_watch", "performance_stat_pass", "value_stat_pass"],
+      "properties": {
+        "bootstrap_evaluated": {"type": ["integer", "null"], "minimum": 0},
+        "downgraded_to_watch": {"type": ["integer", "null"], "minimum": 0},
+        "performance_stat_pass": {"type": ["integer", "null"], "minimum": 0},
+        "value_stat_pass": {"type": ["integer", "null"], "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "fileMetadata": {
+      "type": "object",
+      "required": ["size_bytes", "sha256"],
+      "properties": {
+        "size_bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "edge_registry.sqlite",
+        "edge_registry_active.jsonl",
+        "edge_registry_active.csv",
+        "edge_registry_audit.json",
+        "edge_statistical_guard.jsonl",
+        "edge_statistical_guard_audit.json",
+        "edge_registry_summary.json",
+        "edge_registry_summary.md"
+      ],
+      "properties": {
+        "edge_registry.sqlite": {"$ref": "#/$defs/fileMetadata"},
+        "edge_registry_active.jsonl": {"$ref": "#/$defs/fileMetadata"},
+        "edge_registry_active.csv": {"$ref": "#/$defs/fileMetadata"},
+        "edge_registry_audit.json": {"$ref": "#/$defs/fileMetadata"},
+        "edge_statistical_guard.jsonl": {"$ref": "#/$defs/fileMetadata"},
+        "edge_statistical_guard_audit.json": {"$ref": "#/$defs/fileMetadata"},
+        "edge_registry_summary.json": {"$ref": "#/$defs/fileMetadata"},
+        "edge_registry_summary.md": {"$ref": "#/$defs/fileMetadata"}
+      },
+      "additionalProperties": false
+    }
+  }
+}
