@@ -9,6 +9,7 @@ from forward_trial_analysis_import import (
     GENUINE,
     ForwardTrialValidationError,
     audit_freeze,
+    initial_backfill_rows,
     metric_block,
     stable_key,
     structure_result,
@@ -23,6 +24,10 @@ class ForwardTrialAnalysisImportTest(unittest.TestCase):
         self.assertEqual(upsert_rows([row], [row]), [row])
         with self.assertRaises(ForwardTrialValidationError):
             upsert_rows([row], [{**row, "value": 2}])
+
+    def test_initial_acceptance_scope_excludes_future_days(self):
+        rows = [{"対象日": "2026-09-01"}, {"対象日": "2026-09-09"}]
+        self.assertEqual(initial_backfill_rows(rows), [rows[0]])
 
     def test_date_mismatch_fails_closed(self):
         with self.assertRaises(ForwardTrialValidationError):

@@ -24,6 +24,15 @@ NON_TARGET_VALUE = "対象外"
 GENUINE = "GENUINE"
 CONTAMINATED = "CONTAMINATED"
 PENDING_AUDIT = "PENDING_AUDIT"
+INITIAL_BACKFILL_DATES = {
+    "2026-09-01",
+    "2026-09-02",
+    "2026-09-03",
+    "2026-09-05",
+    "2026-09-06",
+    "2026-09-07",
+    "2026-09-08",
+}
 
 
 class ForwardTrialValidationError(ValueError):
@@ -501,7 +510,13 @@ def score_validation(rows: Sequence[Mapping[str, object]]) -> list[dict[str, obj
     return [{"集計軸": dimension, "区分": value, **metric_block(selected)} for dimension, value, selected in groups]
 
 
+def initial_backfill_rows(rows: Sequence[Mapping[str, object]]) -> list[Mapping[str, object]]:
+    """Return only the immutable initial acceptance fixture rows."""
+    return [row for row in rows if row.get("対象日") in INITIAL_BACKFILL_DATES]
+
+
 def validate_initial_acceptance(rows: Sequence[Mapping[str, object]]) -> dict[str, object]:
+    rows = initial_backfill_rows(rows)
     raw = target_rows(rows)
     genuine_rows = [row for row in rows if row["forward_status"] == GENUINE]
     genuine = target_rows(genuine_rows)
@@ -580,15 +595,15 @@ def build_payload(manifest_path: Path, process_datetime: str = "") -> dict[str, 
         {"項目": "既知contamination", "内容": "2026-09-03 徳山1R～3R"},
     ]
     audit_headers = ["FT2_ID", "対象日", "会場", "R", "締切予定日時", "予想確定日時", "販売選別確定日時", "freeze監査対象日時", "freeze監査結果", "forward_status", "genuine_forward_flag", "監査備考"]
+    genuine_rows = [r for r in all_rows if r["forward_status"] == GENUINE]
+    total = metric_block(genuine_rows)
     dashboard = [
-        {"セクション": "累計 genuine forward", "指標": "全R件数", "値": len([r for r in all_rows if r["forward_status"] == GENUINE]), "注記": ""},
-        {"セクション": "累計 genuine forward", "指標": "2連単1点対象数", "値": 78, "注記": ""},
-        {"セクション": "累計 genuine forward", "指標": "2連単1点産出率", "値": ratio(78, 333), "注記": ""},
+        {"セクション": "累計 genuine forward", "指標": "全R件数", "値": len(genuine_rows), "注記": ""},
+        {"セクション": "累計 genuine forward", "指標": "2連単1点対象数", "値": total["R数"], "注記": ""},
+        {"セクション": "累計 genuine forward", "指標": "2連単1点産出率", "値": ratio(total["R数"], len(genuine_rows)), "注記": ""},
     ]
-    total = metric_block([r for r in all_rows if r["forward_status"] == GENUINE])
     for key in ("的中数", "的中率", "投資", "回収", "収支", "ROI", "1号艇頭率", "2艇カバー率", "内側率"):
         dashboard.append({"セクション": "累計 genuine forward", "指標": key, "値": total[key], "注記": ""})
-    genuine_rows = [r for r in all_rows if r["forward_status"] == GENUINE]
     for label, metrics in (("有料", class_metric(genuine_rows, "有料")), ("無料", class_metric(genuine_rows, "無料")),
                            ("CSVのみ", class_metric(genuine_rows, "CSVのみ")), ("掲載", published_metric(genuine_rows))):
         dashboard.append({"セクション": "販売", "指標": f"{label} R / 的中率 / ROI", "値": f"{metrics['R数']}R / {metrics['的中率']:.1%} / {metrics['ROI']:.1%}", "注記": ""})
