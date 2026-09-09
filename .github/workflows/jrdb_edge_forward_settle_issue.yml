@@ -1,0 +1,314 @@
+name: JRDB Edge TRUE_FORWARD Settlement via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_EDGE_FORWARD_SETTLE]'
+
+jobs:
+  settle:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_FORWARD_SETTLE]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          prefix='[JRDB_EDGE_FORWARD_SETTLE]'
+          title=os.environ['ISSUE_TITLE']
+          request_id=title[len(prefix):].strip()
+          if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('request_id in title must match [A-Za-z0-9._-]{1,96}')
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'date','freeze_run_id','freeze_artifact_name','freeze_manifest_sha256','matches_sha256'}
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          day=str(req['date']).strip()
+          if not re.fullmatch(r'20\d{6}',day):
+              raise SystemExit('date must be YYYYMMDD')
+          freeze_run=req['freeze_run_id']
+          if not isinstance(freeze_run,int) or freeze_run<=0:
+              raise SystemExit('freeze_run_id must be a positive integer')
+          freeze_artifact=str(req['freeze_artifact_name']).strip()
+          if not freeze_artifact:
+              raise SystemExit('freeze_artifact_name must be non-empty')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          freeze_manifest_sha=str(req['freeze_manifest_sha256']).strip().lower()
+          matches_sha=str(req['matches_sha256']).strip().lower()
+          if not sha_re.fullmatch(freeze_manifest_sha) or not sha_re.fullmatch(matches_sha):
+              raise SystemExit('freeze_manifest_sha256 and matches_sha256 must be lowercase SHA-256 hex')
+          expected_sed=req.get('expected_sed_sha256')
+          if expected_sed is not None:
+              expected_sed=str(expected_sed).strip().lower()
+              if not sha_re.fullmatch(expected_sed):
+                  raise SystemExit('expected_sed_sha256 must be lowercase SHA-256 hex')
+          prior=req.get('previous_ledger')
+          normalized_prior=None
+          if prior is not None:
+              if not isinstance(prior,dict):
+                  raise SystemExit('previous_ledger must be an object')
+              prior_required={'run_id','artifact_name','ledger_sha256'}
+              prior_missing=sorted(prior_required-set(prior))
+              if prior_missing:
+                  raise SystemExit(f'previous_ledger missing fields: {prior_missing}')
+              prior_run=prior['run_id']
+              prior_artifact=str(prior['artifact_name']).strip()
+              prior_sha=str(prior['ledger_sha256']).strip().lower()
+              if not isinstance(prior_run,int) or prior_run<=0 or not prior_artifact or not sha_re.fullmatch(prior_sha):
+                  raise SystemExit('previous_ledger fields are invalid')
+              normalized_prior={'run_id':prior_run,'artifact_name':prior_artifact,'ledger_sha256':prior_sha}
+          normalized={
+              'request_id':request_id,
+              'date':day,
+              'race_date':f'{day[:4]}-{day[4:6]}-{day[6:]}',
+              'freeze_run_id':freeze_run,
+              'freeze_artifact_name':freeze_artifact,
+              'freeze_manifest_sha256':freeze_manifest_sha,
+              'matches_sha256':matches_sha,
+              'expected_sed_sha256':expected_sed,
+              'previous_ledger':normalized_prior,
+              'evaluation_mode':'TRUE_FORWARD',
+          }
+          Path('/tmp/request.json').write_text(
+              json.dumps(normalized,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as fh:
+              fh.write(f'request_id={request_id}\n')
+              fh.write(f'date={day}\n')
+          PY
+
+      - name: Edge forward regression tests
+        run: |
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py
+
+      - name: Download and verify frozen upstream artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/freeze
+          python - <<'PY' > /tmp/freeze_env.sh
+          import json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          print(f"FREEZE_RUN_ID={req['freeze_run_id']}")
+          print(f"FREEZE_ARTIFACT_NAME={req['freeze_artifact_name']}")
+          print(f"FREEZE_MANIFEST_SHA={req['freeze_manifest_sha256']}")
+          print(f"MATCHES_SHA={req['matches_sha256']}")
+          PY
+          source /tmp/freeze_env.sh
+          gh run download "$FREEZE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$FREEZE_ARTIFACT_NAME" --dir /tmp/freeze
+          mapfile -t manifests < <(find /tmp/freeze -type f -name manifest.json -print)
+          mapfile -t matches < <(find /tmp/freeze -type f -name edge_matches.jsonl -not -path '*/inputs/*' -print)
+          if [ "${#manifests[@]}" -ne 1 ] || [ "${#matches[@]}" -ne 1 ]; then
+            echo "freeze artifact must contain exactly one root manifest and matches file" >&2
+            exit 1
+          fi
+          cp "${manifests[0]}" /tmp/freeze_manifest.json
+          cp "${matches[0]}" /tmp/edge_matches.jsonl
+          echo "$FREEZE_MANIFEST_SHA  /tmp/freeze_manifest.json" | sha256sum -c -
+          echo "$MATCHES_SHA  /tmp/edge_matches.jsonl" | sha256sum -c -
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          manifest=json.loads(Path('/tmp/freeze_manifest.json').read_text(encoding='utf-8'))
+          if manifest.get('status')!='PASS' or manifest.get('evaluation_mode')!='TRUE_FORWARD':
+              raise SystemExit('upstream freeze manifest is not successful TRUE_FORWARD')
+          if manifest.get('pre_race_guard')!='PASS':
+              raise SystemExit('upstream freeze pre_race_guard is not PASS')
+          if manifest.get('race_date')!=req['race_date']:
+              raise SystemExit(f"upstream freeze race_date mismatch: {manifest.get('race_date')} != {req['race_date']}")
+          PY
+
+      - name: Fetch post-race SED
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          out=Path('/tmp/raw')
+          out.mkdir(parents=True,exist_ok=True)
+          subprocess.run([
+              'python','horse-racing/jrdb/src/fetch_jrdb_history.py',
+              '--date',req['date'],'--kinds','SED','--output-dir',str(out)
+          ],check=True)
+          sed=out/'SED'/f"SED{req['date'][2:]}.zip"
+          if not sed.is_file():
+              raise SystemExit(f'SED missing: {sed}')
+          digest=hashlib.sha256(sed.read_bytes()).hexdigest()
+          if req.get('expected_sed_sha256') and digest!=req['expected_sed_sha256']:
+              raise SystemExit(f"SED SHA mismatch: expected={req['expected_sed_sha256']} actual={digest}")
+          Path('/tmp/sed_sha256.txt').write_text(digest+'\n',encoding='utf-8')
+          PY
+
+      - name: Restore optional previous TRUE_FORWARD ledger
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/edge_forward_settlement
+          python - <<'PY'
+          import hashlib, json, shutil, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          target=Path('/tmp/edge_forward_settlement/jrdb_edge_forward_ledger.sqlite')
+          prior=req.get('previous_ledger')
+          if prior is None:
+              raise SystemExit(0)
+          root=Path('/tmp/prior_ledger')
+          root.mkdir(parents=True,exist_ok=True)
+          subprocess.run([
+              'gh','run','download',str(prior['run_id']),
+              '--repo',str(__import__('os').environ['GITHUB_REPOSITORY']),
+              '--name',prior['artifact_name'],'--dir',str(root)
+          ],check=True)
+          candidates=list(root.rglob('jrdb_edge_forward_ledger.sqlite'))
+          if len(candidates)!=1:
+              raise SystemExit(f'expected exactly one prior ledger, found {len(candidates)}')
+          digest=hashlib.sha256(candidates[0].read_bytes()).hexdigest()
+          if digest!=prior['ledger_sha256']:
+              raise SystemExit(f"prior ledger SHA mismatch: expected={prior['ledger_sha256']} actual={digest}")
+          shutil.copy2(candidates[0],target)
+          PY
+
+      - name: Settle frozen TRUE_FORWARD matches and append ledger
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          cmd=[
+              'python','horse-racing/jrdb/src/run_jrdb_edge_forward_settlement.py',
+              '--matches-jsonl','/tmp/edge_matches.jsonl',
+              '--freeze-manifest','/tmp/freeze_manifest.json',
+              '--sed',f"/tmp/raw/SED/SED{req['date'][2:]}.zip",
+              '--ledger','/tmp/edge_forward_settlement/jrdb_edge_forward_ledger.sqlite',
+              '--output-dir','/tmp/edge_forward_settlement',
+              '--expected-freeze-manifest-sha256',req['freeze_manifest_sha256'],
+              '--expected-matches-sha256',req['matches_sha256'],
+          ]
+          if req.get('expected_sed_sha256'):
+              cmd.extend(['--expected-sed-sha256',req['expected_sed_sha256']])
+          if req.get('previous_ledger'):
+              cmd.extend(['--expected-ledger-sha256',req['previous_ledger']['ledger_sha256']])
+          subprocess.run(cmd,check=True)
+          PY
+
+      - name: Build compact settlement result
+        env:
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root=Path('/tmp/edge_forward_settlement')
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          provenance=json.loads((root/'provenance.json').read_text(encoding='utf-8'))
+          evaluation=json.loads((root/'forward_evaluation.json').read_text(encoding='utf-8'))
+          ledger_result=json.loads((root/'ledger_result.json').read_text(encoding='utf-8'))
+          result={
+              'status':'success',
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-forward-settlement-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+              'date':req['date'],
+              'race_date':manifest['race_date'],
+              'evaluation_mode':'TRUE_FORWARD',
+              'freeze_run_id':req['freeze_run_id'],
+              'freeze_artifact_name':req['freeze_artifact_name'],
+              'freeze_manifest_sha256':req['freeze_manifest_sha256'],
+              'matches_sha256':req['matches_sha256'],
+              'sed_sha256':provenance['sed_sha256'],
+              'manifest_sha256':hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest(),
+              'ledger_sha256':hashlib.sha256((root/'jrdb_edge_forward_ledger.sqlite').read_bytes()).hexdigest(),
+              'ledger_import':ledger_result.get('import'),
+              'cumulative_summary':ledger_result.get('summary',{}).get('overall'),
+              'evaluation_overall':evaluation.get('overall'),
+              'runner_audit':evaluation.get('runner_audit'),
+              'previous_ledger':req.get('previous_ledger'),
+          }
+          (root/'result.json').write_text(
+              json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Upload settlement artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-forward-settlement-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/edge_forward_settlement/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          result=json.loads(Path('/tmp/edge_forward_settlement/result.json').read_text(encoding='utf-8'))
+          body='JRDB_EDGE_FORWARD_SETTLE_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          result={
+              'status':'failure',
+              'run_id':int(os.environ['RUN_ID']),
+              'failure_class':'IMPLEMENTATION_ERROR',
+              'error_code':'EDGE_FORWARD_SETTLEMENT_FAILED',
+              'retryable':False,
+              'message':'Inspect the failed Actions step and rebuild the request from latest main; do not blindly rerun.',
+          }
+          body='JRDB_EDGE_FORWARD_SETTLE_FAILURE\n```json\n'+json.dumps(result,indent=2)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          PY
