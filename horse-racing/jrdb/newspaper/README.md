@@ -1,6 +1,6 @@
 # JRDB Newspaper module
 
-Status: DESIGN / NO PRODUCTION IMPLEMENTATION YET
+Status: BASE POC IMPLEMENTED / REAL-DATA POC IN PROGRESS
 
 このディレクトリは、JRDB PWA向け「自分用競馬新聞」の日次生成・外部source merge・配布契約を独立管理するためのmodule boundaryです。
 
@@ -9,6 +9,7 @@ Status: DESIGN / NO PRODUCTION IMPLEMENTATION YET
 - `../docs/JRDB_PWA_Newspaper_Design_v0_1.md`
 - `../schema/jrdb_pwa_newspaper_race_schema_v0_1.json`
 - `../schema/jrdb_pwa_newspaper_manifest_schema_v0_1.json`
+- `../docs/JRDB_Newspaper_Neutral_Dependency_Inventory_v0_1.md`
 
 ## Architecture boundary
 
@@ -39,6 +40,31 @@ RaceNote内にNewspaperでも必要な汎用処理が見つかった場合は、
 
 RaceNoteの予想結果・短評そのものは外部addonとして `addons.racenote_prediction` へmerge可能です。これはJRDB Base/history生成への依存とは別責務です。
 
+## Implemented Base PoC
+
+`../src/jrdb_newspaper_build.py` はCommon Readerから直接、1レース1JSONのNewspaper Baseを生成します。
+
+```text
+PACI
+  BAC/KYI/CHA/CYB/UKC -> race/basic/jrdb
+  KYI previous 1-5 + ZED/ZKB -> detailed history
+  optional Analysis Lite -> compact older history up to total 8
+  -> Newspaper race bundle v0.1
+```
+
+実装済みの境界:
+
+- `racenote_*` をimportしない
+- target/future historyをfail-closed
+- BAC declared field sizeとKYI頭数を一致検証
+- horse number一意性を検証
+- history sequenceと`history_date < target_date`を検証
+- Eval / RaceNote prediction / keibailuka / independent indexは未取得時null/PENDING
+- Edgeは未merge時空配列
+- unresolved previous linkは履歴生成失敗と同一視せず、`source_status.jrdb_history` のcoverage metadataで明示
+
+Synthetic regressionは `.github/workflows/jrdb_common_reader_tests.yml` に組み込み済みです。2026-09-09 run `34305173081` はsuccess。
+
 ## UI order
 
 ```text
@@ -63,6 +89,7 @@ RaceNoteの予想結果・短評そのものは外部addonとして `addons.race
 
 - JRDB Raw / PACI fixed-width parse: `../src/jrdb_raw.py`
 - historical Raw access: `../src/jrdb_raw_history.py`
+- Newspaper Base builder: `../src/jrdb_newspaper_build.py`
 - JRDB current race / runner base: BAC / KYI / CHA / CYB / UKC等のpre-race dataをneutral readerから投影
 - history: Newspaper専用projectionをneutral JRDB history/access層の上に実装する
 - Eval: `addons.eval`
@@ -91,11 +118,18 @@ Gitはcode / schema / docsのみを正本管理します。
 
 ## Implementation status
 
+実装済み:
+
+- neutral dependency inventory
+- Newspaper JRDB Base builder synthetic PoC
+- detailed previous 1-5 history projection
+- optional Analysis compact history to total 8
+- race bundle schema alignment
+- schema / as-of / headcount / architecture regression tests
+
 未実装:
 
-- neutral history/access層の不足機能棚卸し
-- newspaper builder
-- newspaper history projection
+- real-data 札幌記念PoCの完了監査
 - merge engine
 - daily manifest builder
 - Drive save
@@ -103,4 +137,4 @@ Gitはcode / schema / docsのみを正本管理します。
 - PWA newspaper page
 - OPFS newspaper sync
 
-最初の実装PoC候補は `2026-08-16 札幌11R 札幌記念` ですが、PoC開始前にRaceNote非依存のneutral dependency graphを確定します。
+最初のreal-data PoCは `2026-08-16 札幌11R 札幌記念`。RaceNote bundleを入力には使わず、PACI/Common Readerを正本経路として検証します。
