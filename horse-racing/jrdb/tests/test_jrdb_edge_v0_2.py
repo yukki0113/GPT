@@ -50,6 +50,20 @@ def test_recent_policy_routes_to_dynamic_recent() -> None:
     assert selected.validation_class == "DYNAMIC"
 
 
+def test_broodmare_sire_routes_to_pedigree_lifecycle_policy() -> None:
+    policies = json.loads((ROOT / "config/jrdb_edge_validation_policies_v0_2.json").read_text(encoding="utf-8"))
+    selected = discovery_v02.select_policy_v02(
+        family="PEDIGREE",
+        anchor_type="broodmare_sire",
+        first_seen_date="2018-01-01",
+        total_n=1000,
+        as_of_date="2025-12-31",
+        catalog=policies,
+    )
+    assert selected.policy_id == "LIFECYCLE_SIRE_V1"
+    assert selected.validation_class == "LIFECYCLE"
+
+
 def test_v02_matcher_accepts_new_condition_fields() -> None:
     edge = {
         "edge_id": "EDGE-V02",
