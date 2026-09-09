@@ -8,6 +8,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="stylesheet" href="./newspaper.css?v=3" />
+  <link rel="stylesheet" href="./newspaper-v4.css?v=4" />
 </head>
 <body>
   <header class="app-header">
@@ -64,7 +65,7 @@
     </section>
 
     <section id="newspaper-table-card" class="card newspaper-table-card" hidden>
-      <div class="newspaper-scroll-hint">横へスクロールして比較できます。枠・馬番・馬情報は固定表示です。</div>
+      <div class="newspaper-scroll-hint">横へスクロールできます。枠・基本情報は左へ消え、馬番・馬名だけ固定表示します。</div>
       <div id="newspaper-table-wrap" class="table-wrap newspaper-table-wrap"></div>
     </section>
 
@@ -87,5 +88,6 @@
   <footer><small>JRDB 自分用競馬新聞 / PWA display PoC</small></footer>
   <script src="./newspaper.js?v=1"></script>
   <script src="./newspaper-v2.js?v=3"></script>
+  <script src="./newspaper-v4.js?v=4"></script>
 </body>
 </html>
