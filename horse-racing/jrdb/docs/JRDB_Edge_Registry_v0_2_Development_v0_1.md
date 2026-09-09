@@ -12,6 +12,7 @@ v0.1 Full Registryを凍結したまま、次の不足をv0.2で拡張する。
 3. HUMAN familyは馬質補正residual baselineが完成するまでraw成績をEdge化しない。
 4. 条件追加・改廃をtemplate catalog中心で行える状態を維持する。
 5. SED実馬場状態を結果labelから分離して歴史探索へ利用し、current matchingではpre-race sourceが無い限りfail-closedにする。
+6. v0.2の通常Edge探索母集団を平地（芝・ダート）に明示的に限定し、障害データをbaselineへ混入させない。
 
 ## 2. v0.2 first-wave templates
 
@@ -90,7 +91,7 @@ Feature Mart v0.2 builderは次の二段階を厳守する。
 
 これにより「父×馬場状態」の条件作成時点で着順・払戻を参照しない。
 
-### 5.2 Canonical bucket
+### 5.2 Canonical bucket / flat scope
 
 JRDBの細分コードはサンプル分断を避けるため以下4区分へ正規化する。
 
@@ -100,6 +101,12 @@ JRDBの細分コードはサンプル分断を避けるため以下4区分へ正
 - `4` = 不良（40/41/42を含む）
 
 templateは芝/ダートを混ぜないよう、`sire × surface_code × track_condition_bucket` とする。
+
+v0.2通常Edgeの対象surfaceは `1=芝` / `2=ダート` のみ。`3=障害` はFeature Martには監査用に保持するが `EXCLUDED_OBSTACLE` とし、candidateとbaselineのどちらにも入れない。
+
+またv0.2 Discoveryはtemplate catalogの `canonical_values` を実際のfilterとして強制する。これにより、たとえば `surface_transition=3->1` や `turn_code=9` のようなcatalog外条件が誤ってRegistryへ入ることを防ぐ。
+
+障害Edgeを将来研究する場合は、平地と同じbaselineへ混ぜず、別template / policyとして明示的に設計する。
 
 ### 5.3 Current / TRUE_FORWARD
 
@@ -154,6 +161,7 @@ v0.1 publicationは変更しない。
 - `src/build_jrdb_edge_current_facts_v0_2.py`
 - `src/jrdb_edge_matcher_v0_2.py`
 - `src/run_jrdb_edge_match_current_v0_2.py`
+- `src/build_jrdb_edge_registry_v0_2.py`
 - `src/run_jrdb_edge_registry_pipeline_v0_2.py`
 - `tests/test_jrdb_edge_v0_2.py`
 
@@ -169,4 +177,5 @@ first waveは以下を満たしたら完了。
 6. `SIRE_TRACK_CONDITION_V2` candidateが0件ではなく、馬場snapshot件数をauditする。
 7. HUMANは0件のままであることを確認する。
 8. current matcherがv0.2 pre-race fieldsを照合でき、track-condition Edgeはcurrent馬場source無しではfail-closedする。
-9. Full 2010-2025再build前にcandidate explosion / runtimeを監査する。
+9. v0.2候補・Registryに `surface_code=3` / noncanonical transition等が残らないことを確認する。
+10. Full 2010-2025再build前にcandidate explosion / runtimeを監査する。
