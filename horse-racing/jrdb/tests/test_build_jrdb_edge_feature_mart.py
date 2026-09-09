@@ -47,11 +47,15 @@ def _source(tmp_path: Path) -> Path:
     c.execute("INSERT INTO race_context VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", ("RCURR", "2026-09-01", "06", 2, 1600, "2", "2", "1", "A3", "", 12, "PRE_RACE"))
     c.execute("INSERT INTO runner_pre VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ("RPREV", 3, 2, "H1", "Horse", "1", "J1", "J", "T1", "T", 55.0, "2", 3, "0"))
     c.execute("INSERT INTO runner_pre VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ("RCURR", 3, 8, "H1", "Horse", "1", "J1", "J", "T1", "T", 55.0, "2", 3, "0"))
+    c.execute("INSERT INTO runner_pre VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ("RCURR", 4, 4, "H2", "Loser", "2", "J2", "J2", "T2", "T2", 54.0, "3", 4, "0"))
     c.execute("INSERT INTO runner_previous_link VALUES (?,?,?,?,?)", ("RCURR", 3, 1, "H120260801", "RPREV"))
     c.execute("INSERT INTO runner_result VALUES (?,?,?,?,?,?,?,?,?)", ("RPREV", 3, "H120260801", 2, "0", 0, 160, 4.5, 2))
     c.execute("INSERT INTO runner_result VALUES (?,?,?,?,?,?,?,?,?)", ("RCURR", 3, "H120260901", 1, "0", 850, 250, 8.5, 5))
+    # SED TYPE-Z payout fields encode a 0-yen loser as blank -> parser None.
+    c.execute("INSERT INTO runner_result VALUES (?,?,?,?,?,?,?,?,?)", ("RCURR", 4, "H220260901", 5, "0", None, None, 12.0, 7))
     c.execute("INSERT INTO horse_profile_observation VALUES (?,?,?,?,?,?)", ("H1", "2026-08-15", "SireA", "1206", "DamSireA", "1503"))
     c.execute("INSERT INTO horse_profile_observation VALUES (?,?,?,?,?,?)", ("H1", "2026-09-10", "LEAK", "9999", "LEAK", "9999"))
+    c.execute("INSERT INTO horse_profile_observation VALUES (?,?,?,?,?,?)", ("H2", "2026-08-20", "SireB", "1301", "DamSireB", "1601"))
     c.commit(); c.close()
     return path
 
@@ -72,6 +76,13 @@ def test_build_uses_only_asof_profile_and_strict_prior_run(tmp_path: Path) -> No
         assert row["frame_transition"] == "INNER->OUTER"
         assert row["label_win_hit"] == 1 and row["label_place_hit"] == 1
         assert row["calculation_status"] == "ELIGIBLE"
+
+        loser = c.execute("SELECT * FROM edge_runner_fact WHERE race_key='RCURR' AND horse_no=4").fetchone()
+        assert loser["label_win_payout"] is None
+        assert loser["label_place_payout"] is None
+        assert loser["label_win_hit"] == 0
+        assert loser["label_place_hit"] == 0
+        assert loser["calculation_status"] == "ELIGIBLE"
     finally:
         c.close()
 
