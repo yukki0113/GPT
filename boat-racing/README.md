@@ -5,6 +5,7 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 ## Current tools
 - `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
 - `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
+- `src/fetch_boatrace_event_meta.py` — BOAT RACE公式日別レース一覧から開催名・グレードを日次Freeze
 - `src/fetch_boatrace_racelist.py` — 出走表取得
 - `src/fetch_boatrace_pre_race_info.py` — 直前情報取得
 - `src/fetch_boatrace_results.py` — 公式結果取得
@@ -72,12 +73,15 @@ python -m unittest discover -s boat-racing/tests -v
 
 正本Googleスプレッドシート内の `FT2_` 接頭辞13タブを、既存台帳とは独立したForwardTrial専用分析台帳として使用します。初回対象は2026-09-01〜2026-09-08の7日・336Rです。
 
-`src/forward_trial_analysis_import.py` は、Drive正本の公式出走表・事前予想・販売選別・結果CSVを日付×会場×R×仕様版で結合し、締切後freezeを削除せず `CONTAMINATED` として真正forward集計から分離します。入力の欠損、日付不一致、キー重複、freeze欠損はfail-closedとし、Google認証や書込み処理は持ちません。
+`src/forward_trial_analysis_import.py` は、Drive正本の公式出走表・事前予想・販売選別・結果CSVと公式開催メタCSVを日付×会場×R×仕様版で結合し、締切後freezeを削除せず `CONTAMINATED` として真正forward集計から分離します。入力の欠損、日付不一致、キー重複、freeze欠損はfail-closedとし、Google認証や書込み処理は持ちません。集計は非空FT2_IDの全明細から毎回全再生成し、全後続監査と既存販売台帳クロスチェックが成功するまで取込状態を完了にしません。
 
 ~~~bash
 python boat-racing/src/forward_trial_analysis_import.py \
   --manifest source_manifest.json \
   --output forward_trial_analysis.json
+python boat-racing/src/fetch_boatrace_event_meta.py \
+  --date 20260909 --venues 児島,大村,尼崎,平和島,鳴門 \
+  --output 20260909_公式開催メタ.csv
 ~~~
 
 13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。

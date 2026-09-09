@@ -24,6 +24,12 @@ NON_TARGET_VALUE = "対象外"
 GENUINE = "GENUINE"
 CONTAMINATED = "CONTAMINATED"
 PENDING_AUDIT = "PENDING_AUDIT"
+IMPORT_IN_PROGRESS = "取込中"
+AGGREGATION_PENDING = "集計再生成待ち"
+NEEDS_REVIEW = "要確認"
+IMPORT_COMPLETE = "完了"
+IMPORT_ERROR = "エラー"
+GRADE_CATEGORIES = {"一般", "G2", "G1", "SG", "その他", "未分類"}
 INITIAL_BACKFILL_DATES = {
     "2026-09-01",
     "2026-09-02",
@@ -75,6 +81,11 @@ def ratio(numerator: int | float, denominator: int | float) -> float | None:
     return numerator / denominator if denominator else None
 
 
+def format_ratio(value: float | None) -> str:
+    """Format optional rates safely for sparse daily sales classes."""
+    return f"{value:.1%}" if value is not None else "-"
+
+
 def key_of(row: Mapping[str, object]) -> tuple[str, str, int]:
     return normalize_date(str(row["日付"])), str(row["会場"]).strip(), int(row["R"])
 
@@ -90,6 +101,38 @@ def unique_index(rows: Iterable[Mapping[str, object]], name: str) -> dict[tuple[
         if key in result:
             raise ForwardTrialValidationError(f"duplicate {name} key: {key}")
         result[key] = row
+    return result
+
+
+def grade_category(value: object) -> str:
+    """Normalize an official event grade without guessing from an event name."""
+    text = str(value or "").strip().upper().replace("Ⅰ", "I")
+    aliases = {"一般": "一般", "IPPAN": "一般", "G2": "G2", "GII": "G2",
+               "G1": "G1", "GI": "G1", "SG": "SG", "G3": "その他", "その他": "その他"}
+    return aliases.get(text, "未分類")
+
+
+def read_grade_meta(path: Path, day: str) -> dict[tuple[str, str], dict[str, str]]:
+    result: dict[tuple[str, str], dict[str, str]] = {}
+    for row in read_csv(path):
+        row_day = normalize_date(str(row.get("対象日") or row.get("日付") or ""))
+        if row_day != day:
+            continue
+        venue = str(row.get("会場", "")).strip()
+        key = (row_day, venue)
+        if not venue or key in result:
+            raise ForwardTrialValidationError(f"duplicate/blank grade metadata key: {key}")
+        source = str(row.get("source", "")).strip()
+        if "BOAT RACE" not in source.upper():
+            raise ForwardTrialValidationError(f"grade metadata must use BOAT RACE official source: {key}")
+        category = grade_category(row.get("グレード大分類") or row.get("開催グレード区分"))
+        result[key] = {
+            "開催グレード": str(row.get("開催グレード", "")).strip(),
+            "グレード大分類": category,
+            "source": source,
+            "source_file": str(row.get("source_file") or row.get("source URL") or "").strip(),
+            "備考": str(row.get("備考", "")).strip(),
+        }
     return result
 
 
@@ -214,11 +257,20 @@ def normalize_day(entry: Mapping[str, object], base: Path) -> tuple[list[dict[st
     assets = {name: entry[name] for name in ("prediction", "sales", "result", "racecard")}
     paths = {name: (base / str(asset["path"])).resolve() for name, asset in assets.items()}
     rows = {name: read_csv(path) for name, path in paths.items()}
+    grade_asset = entry.get("grade_meta")
+    grade_meta = read_grade_meta((base / str(grade_asset["path"])).resolve(), day) if grade_asset else {}
     validate_source_dates(day, *( (name, rows[name]) for name in rows ))
-    if len(rows["prediction"]) != 48 or len(rows["result"]) != 48:
-        raise ForwardTrialValidationError(f"{day}: prediction/result must each contain 48 rows")
-    if len(rows["racecard"]) != 288:
-        raise ForwardTrialValidationError(f"{day}: racecard must contain 288 boat rows")
+    expected_races = len(rows["prediction"])
+    if expected_races == 0 or expected_races != len(rows["result"]):
+        raise ForwardTrialValidationError(
+            f"{day}: prediction/result row count mismatch: "
+            f"prediction={expected_races}, result={len(rows['result'])}"
+        )
+    if len(rows["racecard"]) != expected_races * 6:
+        raise ForwardTrialValidationError(
+            f"{day}: racecard must contain {expected_races * 6} boat rows "
+            f"for {expected_races} prediction races"
+        )
 
     prediction = unique_index(rows["prediction"], "prediction")
     sales = unique_index(rows["sales"], "sales")
@@ -226,10 +278,14 @@ def normalize_day(entry: Mapping[str, object], base: Path) -> tuple[list[dict[st
     racecards: dict[tuple[str, str, int], list[Mapping[str, object]]] = defaultdict(list)
     for row in rows["racecard"]:
         racecards[key_of(row)].append(row)
-    if len(racecards) != 48 or any(len(values) != 6 for values in racecards.values()):
-        raise ForwardTrialValidationError(f"{day}: racecard must resolve to 48 races × 6 boats")
+    if len(racecards) != expected_races or any(len(values) != 6 for values in racecards.values()):
+        raise ForwardTrialValidationError(
+            f"{day}: racecard must resolve to {expected_races} races × 6 boats"
+        )
     if set(prediction) != set(result) or set(prediction) != set(racecards):
         raise ForwardTrialValidationError(f"{day}: prediction/result/racecard keys do not match")
+    if not set(sales).issubset(prediction):
+        raise ForwardTrialValidationError(f"{day}: sales contains keys outside prediction")
 
     prediction_freeze = file_freeze(rows["prediction"], "予想確定日時", "prediction")
     sales_freeze = file_freeze(rows["sales"], "販売選別確定日時", "sales")
@@ -284,10 +340,14 @@ def normalize_day(entry: Mapping[str, object], base: Path) -> tuple[list[dict[st
         main_hit = "○" if str(res.get("主推奨的中", "")).strip() == "的中" else ("対象外" if str(res.get("主推奨的中", "")).strip() in {"", "対象なし"} else "×")
         ranking = rank_from_sales(sale or {}) if target else None
         venue_code = str(card.get("場コード", "")).strip()
+        grade = grade_meta.get((day, venue), {
+            "開催グレード": "", "グレード大分類": "未分類", "source": "",
+            "source_file": "", "備考": "公式開催グレード未取得",
+        })
         full_row = {
             "FT2_ID": stable_key(day, venue, race_no), "対象日": day, "会場": venue, "会場CD": venue_code,
             "R": race_no, "開催何日目": str(pred.get("開催日目", "")).strip(), "レース種別": str(pred.get("レース種別", "")).strip(),
-            "開催グレード": "", "グレード大分類": "未分類", "ルールVer": str(pred.get("ルールVer", "")).strip(),
+            "開催グレード": grade["開催グレード"], "グレード大分類": grade["グレード大分類"], "ルールVer": str(pred.get("ルールVer", "")).strip(),
             "正式判定": formal, "1着軸": axis, "2着本線": second_main, "2着押さえ": second_backup,
             "追加3着候補": str(pred.get("3着候補", "")).strip(), "主推奨券種": str(pred.get("主推奨券種", "")).strip(),
             "主推奨買い目": str(pred.get("主推奨買い目展開後", "")).strip() or str(pred.get("主推奨買い目表記", "")).strip(),
@@ -319,14 +379,14 @@ def normalize_day(entry: Mapping[str, object], base: Path) -> tuple[list[dict[st
         output.append(full_row)
         venues.setdefault(venue, {
             "対象日": day, "会場": venue, "会場CD": venue_code, "開催何日目": full_row["開催何日目"],
-            "開催グレード": "", "グレード大分類": "未分類", "会場選別位置づけ": "会場選別後対象",
-            "source": "racecard/prediction", "source_file": f"{paths['racecard'].name} / {paths['prediction'].name}", "備考": "開催グレード列が原本にないため未分類",
+            "開催グレード": grade["開催グレード"], "グレード大分類": grade["グレード大分類"], "会場選別位置づけ": "会場選別後対象",
+            "source": grade["source"], "source_file": grade["source_file"], "備考": grade["備考"],
         })
 
     duplicate_count = len(output) - len({row["FT2_ID"] for row in output})
     management = {
         "対象日": day, "予想ルールVer": RULE_VERSION, "対象会場数": len(venues), "対象会場一覧": "、".join(sorted(venues)),
-        "全R予定件数": 48, "prediction_file": paths["prediction"].name, "prediction_file_id": str(assets["prediction"]["file_id"]),
+        "全R予定件数": expected_races, "prediction_file": paths["prediction"].name, "prediction_file_id": str(assets["prediction"]["file_id"]),
         "prediction_freeze": prediction_freeze, "rationale_file": "", "rationale_file_id": "", "sales_file": paths["sales"].name,
         "sales_file_id": str(assets["sales"]["file_id"]), "sales_freeze": sales_freeze, "result_file": paths["result"].name,
         "result_file_id": str(assets["result"]["file_id"]), "racecard_file": paths["racecard"].name,
@@ -335,7 +395,7 @@ def normalize_day(entry: Mapping[str, object], base: Path) -> tuple[list[dict[st
         "2連単対象件数": sum(row["2連単1点対象"] == TARGET_VALUE for row in output),
         "genuine件数": sum(row["forward_status"] == GENUINE for row in output),
         "contaminated件数": sum(row["forward_status"] == CONTAMINATED for row in output),
-        "duplicate件数": duplicate_count, "source整合性": "一致", "取込状態": "完了", "取込実行日時": "", "備考": "",
+        "duplicate件数": duplicate_count, "source整合性": "一致", "取込状態": AGGREGATION_PENDING, "取込実行日時": "", "備考": "",
     }
     return output, management, list(venues.values())
 
@@ -444,7 +504,33 @@ def grade_aggregate(rows: Sequence[Mapping[str, object]]) -> list[dict[str, obje
         "2連単1点的中率": row["全適格_的中率"], "ROI": row["全適格_ROI"], "1号艇頭率": row["全適格_1号艇頭率"],
         "2艇カバー率": row["全適格_2艇カバー率"], "内側率": row["全適格_内側率"],
         "有料採用率": row["有料採用率"], "有料ROI": row["有料ROI"],
+        "少数標本警告": "少数標本" if int(row["2連単1点対象数"]) < 30 else "",
     } for row in values]
+
+
+def cumulative_acceptance(rows: Sequence[Mapping[str, object]]) -> dict[str, int]:
+    nonblank = [row for row in rows if str(row.get("FT2_ID", "")).strip()]
+    genuine = [row for row in nonblank if row.get("forward_status") == GENUINE]
+    metric = metric_block(genuine)
+    actual = {"Raw全R": len(nonblank), "genuine全R": len(genuine), "genuine2連単": metric["R数"],
+              "的中": metric["的中数"], "投資": metric["投資"], "回収": metric["回収"],
+              "CONTAMINATED": sum(row.get("forward_status") == CONTAMINATED for row in nonblank),
+              "重複": len(nonblank) - len({row["FT2_ID"] for row in nonblank})}
+    expected = {"Raw全R": 396, "genuine全R": 393, "genuine2連単": 86, "的中": 29,
+                "投資": 8600, "回収": 7910, "CONTAMINATED": 3, "重複": 0}
+    if actual != expected:
+        raise ForwardTrialValidationError(f"0901-0909 acceptance mismatch: actual={actual}, expected={expected}")
+    return actual
+
+
+def completion_state(*, checks: Mapping[str, bool], grade_unresolved: int = 0,
+                     aggregation_error: Exception | None = None) -> str:
+    """The management row may become complete only after every downstream gate."""
+    if aggregation_error is not None:
+        return IMPORT_ERROR
+    if not all(checks.values()) or grade_unresolved:
+        return NEEDS_REVIEW
+    return IMPORT_COMPLETE
 
 
 def structure_aggregate(rows: Sequence[Mapping[str, object]]) -> list[dict[str, object]]:
@@ -570,7 +656,15 @@ def build_payload(manifest_path: Path, process_datetime: str = "") -> dict[str, 
         all_rows = upsert_rows(all_rows, day_rows)
         management.append(day_management)
         venue_meta.extend(day_venues)
-    acceptance = validate_initial_acceptance(all_rows)
+    # The fixed 0901–0908 controls are verified when the complete initial
+    # backfill is supplied.  A later ordinary daily import must not be forced
+    # to include that historical source set.
+    input_dates = {normalize_date(str(entry["date"])) for entry in manifest["dates"]}
+    acceptance = (
+        validate_initial_acceptance(all_rows)
+        if INITIAL_BACKFILL_DATES.issubset(input_dates)
+        else {"status": "skipped", "reason": "initial-backfill sources not included"}
+    )
     daily = daily_aggregate(all_rows)
     venue = group_aggregate(all_rows, ["会場"])
     venue_day = group_aggregate(all_rows, ["会場", "開催何日目"])
@@ -606,7 +700,7 @@ def build_payload(manifest_path: Path, process_datetime: str = "") -> dict[str, 
         dashboard.append({"セクション": "累計 genuine forward", "指標": key, "値": total[key], "注記": ""})
     for label, metrics in (("有料", class_metric(genuine_rows, "有料")), ("無料", class_metric(genuine_rows, "無料")),
                            ("CSVのみ", class_metric(genuine_rows, "CSVのみ")), ("掲載", published_metric(genuine_rows))):
-        dashboard.append({"セクション": "販売", "指標": f"{label} R / 的中率 / ROI", "値": f"{metrics['R数']}R / {metrics['的中率']:.1%} / {metrics['ROI']:.1%}", "注記": ""})
+        dashboard.append({"セクション": "販売", "指標": f"{label} R / 的中率 / ROI", "値": f"{metrics['R数']}R / {format_ratio(metrics['的中率'])} / {format_ratio(metrics['ROI'])}", "注記": ""})
     rankings = [
         ("サンプル数上位", lambda r: r["全R数"]), ("2連単対象産出率上位", lambda r: r["2連単1点産出率"] or -1),
         ("2艇カバー率上位", lambda r: r["全適格_2艇カバー率"] or -1), ("ROI上位", lambda r: r["全適格_ROI"] or -1),
@@ -631,7 +725,31 @@ def build_payload(manifest_path: Path, process_datetime: str = "") -> dict[str, 
         "FT2_Freeze監査": records_to_sheet(all_rows, audit_headers),
         "FT2_ダッシュボード": records_to_sheet(dashboard),
     }
-    return {"sheets": sheets, "acceptance": acceptance, "analysis": {"venues": venue, "venue_days": venue_day, "sales": sales}}
+    latest_day = max(input_dates)
+    unresolved = sum(row["グレード大分類"] == "未分類" for row in venue_meta)
+    checks = {
+        "FT2_ID重複0": len(all_rows) == len({row["FT2_ID"] for row in all_rows}),
+        "日別当日行": any(row["対象日"] == latest_day for row in daily),
+        "Freeze監査全R": len(sheets["FT2_Freeze監査"]["rows"]) == len(all_rows),
+        "dashboard累計": dashboard[0]["値"] == sum(row["forward_status"] == GENUINE for row in all_rows),
+        "会場別合計": sum(row["全R数"] for row in venue) == sum(row["forward_status"] == GENUINE for row in all_rows),
+        "販売区分合計": sum(class_metric([r for r in all_rows if r["forward_status"] == GENUINE], label)["R数"]
+                           for label in ("有料", "無料", "CSVのみ")) == metric_block(genuine_rows)["R数"],
+        "掲載=有料+無料": published_metric(genuine_rows)["R数"] == (
+            class_metric(genuine_rows, "有料")["R数"] + class_metric(genuine_rows, "無料")["R数"]),
+        "grade解決": unresolved == 0,
+        "既存販売台帳クロスチェック": bool(manifest.get("existing_sales_crosscheck", False)),
+    }
+    cumulative = cumulative_acceptance(all_rows) if latest_day == "2026-09-09" and len(all_rows) == 396 else {}
+    state = completion_state(checks=checks, grade_unresolved=unresolved)
+    for row in management:
+        row["取込状態"] = state
+        if state != IMPORT_COMPLETE:
+            row["備考"] = "未完了ゲート: " + "、".join(name for name, ok in checks.items() if not ok)
+    sheets["FT2_取込管理"] = records_to_sheet(management)
+    return {"sheets": sheets, "acceptance": acceptance, "cumulative_acceptance": cumulative,
+            "completion_checks": checks, "grade_unresolved": unresolved,
+            "analysis": {"venues": venue, "venue_days": venue_day, "sales": sales}}
 
 
 def main() -> None:

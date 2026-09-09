@@ -9,6 +9,10 @@ from forward_trial_analysis_import import (
     GENUINE,
     ForwardTrialValidationError,
     audit_freeze,
+    completion_state,
+    cumulative_acceptance,
+    daily_aggregate,
+    grade_category,
     initial_backfill_rows,
     metric_block,
     stable_key,
@@ -16,6 +20,7 @@ from forward_trial_analysis_import import (
     upsert_rows,
     validate_source_dates,
 )
+from fetch_boatrace_event_meta import parse_official_index
 
 
 class ForwardTrialAnalysisImportTest(unittest.TestCase):
@@ -24,6 +29,47 @@ class ForwardTrialAnalysisImportTest(unittest.TestCase):
         self.assertEqual(upsert_rows([row], [row]), [row])
         with self.assertRaises(ForwardTrialValidationError):
             upsert_rows([row], [{**row, "value": 2}])
+
+    def test_detail_success_but_aggregate_failure_never_completes(self):
+        self.assertEqual(completion_state(checks={"detail": True, "daily": False}), "要確認")
+        self.assertEqual(completion_state(checks={"detail": True}, aggregation_error=RuntimeError("boom")), "エラー")
+
+    def test_reimport_is_idempotent_for_counts_and_money(self):
+        row = {"FT2_ID": stable_key("2026-09-09", "鳴門", 1), **self._target("有料", "×", 0)}
+        once = upsert_rows([], [row])
+        twice = upsert_rows(once, [row])
+        self.assertEqual((len(once), metric_block(once)["投資"], metric_block(once)["回収"]),
+                         (len(twice), metric_block(twice)["投資"], metric_block(twice)["回収"]))
+
+    def test_0909_fixture(self):
+        rows = []
+        for i in range(60):
+            formal = "A" if i < 21 else ("B" if i < 50 else "C")
+            target = i < 8
+            rows.append({"対象日": "2026-09-09", "会場": f"v{i // 12}", "正式判定": formal,
+                "1着軸": 1 if i < 8 else 2, "予想軸評価対象": "○" if i < 50 else "対象外",
+                "予想軸1着成功": "○" if i < 30 else "×", "2着候補評価対象_全R": "○" if i < 30 else "対象外",
+                "2着候補2艇カバー_全R": "○" if i < 20 else "×", "2連単1点対象": "対象" if target else "対象外",
+                "2連単1点的中": "×" if target else "対象外", "2連単1点投資額": 100 if target else 0,
+                "2連単1点回収額": 0, "掲載区分": "有料" if i < 6 else ("無料" if i < 8 else "対象外"),
+                "1号艇頭成功": "○" if i < 4 else ("×" if target else "対象外"),
+                "2着候補2艇カバー": "○" if i == 0 else ("×" if i < 4 else "対象外"),
+                "内側1点成功": "×" if i == 0 else "対象外", "forward_status": GENUINE})
+        result = daily_aggregate(rows)[0]
+        self.assertEqual((result["全R数"], result["A数"], result["B数"], result["C数"]), (60, 21, 29, 10))
+        self.assertEqual((result["全適格_R数"], result["全適格_的中数"], result["有料_R数"], result["無料_R数"], result["CSVのみ_R数"]), (8, 0, 6, 2, 0))
+
+    def test_grade_classification_is_fail_closed(self):
+        self.assertEqual(grade_category("G1"), "G1")
+        self.assertEqual(grade_category("G3"), "その他")
+        self.assertEqual(grade_category("unknown"), "未分類")
+        self.assertEqual(completion_state(checks={"all": True}, grade_unresolved=1), "要確認")
+
+    def test_official_grade_parser(self):
+        source = '''<tbody><img alt="大村"><td class="is-G1b"></td>
+        <a href="/owpc/pc/race/raceindex?jcd=24&amp;hd=20260909">海の王者決定戦</a></tbody>'''
+        row = parse_official_index(source, "20260909")[0]
+        self.assertEqual((row["会場"], row["グレード大分類"]), ("大村", "G1"))
 
     def test_initial_acceptance_scope_excludes_future_days(self):
         rows = [{"対象日": "2026-09-01"}, {"対象日": "2026-09-09"}]
@@ -115,6 +161,16 @@ class ForwardTrialAnalysisImportTest(unittest.TestCase):
         self.assertEqual((len(rows), raw["R数"], raw["的中数"], raw["投資"], raw["回収"]), (336, 81, 29, 8100, 7910))
         self.assertEqual((genuine["R数"], genuine["的中数"], genuine["投資"], genuine["回収"]), (78, 29, 7800, 7910))
         self.assertEqual((genuine["1号艇頭成功"], genuine["2艇カバー"], genuine["内側成功"]), (59, 38, 29))
+        for index in range(60):
+            row = self._target("有料" if index < 6 else "無料", "×", 0) if index < 8 else {
+                "2連単1点対象": "対象外", "2連単1点的中": "対象外", "2連単1点投資額": 0,
+                "2連単1点回収額": 0, "掲載区分": "対象外", "1号艇頭成功": "対象外",
+                "2着候補2艇カバー": "対象外", "内側1点成功": "対象外"}
+            row.update({"FT2_ID": f"d9-{index}", "forward_status": GENUINE, "対象日": "2026-09-09"})
+            rows.append(row)
+        self.assertEqual(cumulative_acceptance(rows), {"Raw全R": 396, "genuine全R": 393,
+            "genuine2連単": 86, "的中": 29, "投資": 8600, "回収": 7910,
+            "CONTAMINATED": 3, "重複": 0})
 
     @staticmethod
     def _target(label, hit, payout):
