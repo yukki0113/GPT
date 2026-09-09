@@ -1,0 +1,100 @@
+name: JRDB Edge Pre-Result Reconstruction v0.2
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  reconstruct:
+    if: ${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_PRERESULT_RECONSTRUCT_V2]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Prepare request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import os, re
+          from pathlib import Path
+          prefix = '[JRDB_EDGE_PRERESULT_RECONSTRUCT_V2]'
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('invalid request_id')
+          Path('/tmp/request.json').write_text(os.environ.get('ISSUE_BODY') or '', encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Install downloader
+        run: python -m pip install --disable-pip-version-check -q gdown
+
+      - name: Run result-free reconstruction
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          python horse-racing/jrdb/src/run_jrdb_edge_preresult_reconstruct.py \
+            --request-json /tmp/request.json \
+            --output-dir /tmp/preresult \
+            --repo-root . \
+            --run-id "${{ github.run_id }}" \
+            --head-sha "${{ github.sha }}" \
+            --request-id "${{ steps.request.outputs.request_id }}"
+
+      - name: Upload frozen pre-result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-preresult-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/preresult/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          result = json.loads(Path('/tmp/preresult/result.json').read_text(encoding='utf-8'))
+          compact = {
+              'status': 'success',
+              'run_id': result['run_id'],
+              'head_sha': result['head_sha'],
+              'artifact_name': f"jrdb-edge-preresult-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+              'evaluation_mode': result['evaluation_mode'],
+              'result_data_used': False,
+              'days': result['days'],
+          }
+          body = 'JRDB_EDGE_PRERESULT_RECONSTRUCT_RESULT\n```json\n' + json.dumps(compact, ensure_ascii=False, indent=2, sort_keys=True) + '\n```\n'
+          subprocess.run(['gh', 'issue', 'comment', os.environ['ISSUE_NUMBER'], '--repo', os.environ['GITHUB_REPOSITORY'], '--body', body], check=True)
+          subprocess.run(['gh', 'issue', 'close', os.environ['ISSUE_NUMBER'], '--repo', os.environ['GITHUB_REPOSITORY'], '--reason', 'completed'], check=True)
+          PY
+
+      - name: Comment failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB Edge pre-result reconstruction failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
