@@ -4,7 +4,7 @@ Status: DRAFT / DESIGN ONLY / PWA implementation not started
 
 ## 1. Purpose
 
-スマホ中心で閲覧する「自分用競馬新聞」を、既存JRDB / RaceNote / Eval / Edge / 将来の独自指数を統合する週末実戦用PWA画面として設計する。
+スマホ中心で閲覧する「自分用競馬新聞」を、既存JRDB / Eval / Edge / RaceNote prediction / keibailuka / 将来の独自指数を統合する週末実戦用PWA画面として設計する。
 
 この新聞は一般的な競馬新聞の基本情報と過去走を土台にし、その上へ自分専用の印・Edge・短評等を追加する。
 
@@ -101,10 +101,7 @@ keibailukaは掲載対象なら記号を表示し、押下時に短評をpopover
 
 ### 3.4 Past runs
 
-データ側は最大8走を初期候補とする。
-
-- detailed recent: 最大5走
-- compact older: 最大3走
+データ側は最大8走を初期候補とする。ただしこれは**Newspaper自身の表示要件**であり、RaceNoteの実装契約を継承するものではない。
 
 初期画面は3走だけ表示する。
 
@@ -137,31 +134,76 @@ PWA操作候補:
 
 候補:
 
-- RaceNoteレース短評
-- RaceNote展開コメント
+- RaceNote prediction由来のレース短評 / 展開コメント（addonが存在する場合のみ）
 - JRDB予想ペース
 - JRDBペース / 展開関連指数
 - その他、文章化しなくても有用なレース単位値
 
 JRDBに自然文短評が存在しない場合、無理に生成せず `ラベル: 値` のstructured itemで表示する。
 
-## 5. Source separation
+## 5. Hard architecture boundary
+
+### 5.1 Newspaper is not a RaceNote derivative
+
+NewspaperのJRDB Base/historyはRaceNoteの内部実装から生成しない。
+
+次の依存は禁止する。
+
+```text
+RaceNote v1.0 bundle -> Newspaper Base/history
+src/racenote_jrdb.py -> Newspaper Base
+src/racenote_history_engine.py -> Newspaper history
+その他 src/racenote_* の内部ロジック -> Newspaper JRDB Base/history
+```
+
+採用する依存方向は次とする。
+
+```text
+JRDB Raw / PACI
+  -> neutral JRDB layer
+     - src/jrdb_raw.py
+     - src/jrdb_raw_history.py
+     - Canonical / Analysis等のconsumer-neutral access
+     - 必要に応じて新設するneutral history/helper module
+        -> RaceNote adapter
+        -> Newspaper adapter
+```
+
+### 5.2 Promotion rule for reusable logic
+
+RaceNote内にNewspaperでも必要なロジックが存在する場合、Newspaperから直接importして使わない。
+
+1. その処理が本質的にJRDB汎用責務かを判定する。
+2. 汎用なら `jrdb_*` neutral moduleへ抽出する。
+3. RaceNote側をそのneutral module利用へリファクタする。
+4. RaceNote回帰テストでsemantic behavior不変を確認する。
+5. Newspaperも同じneutral moduleを利用する。
+
+RaceNote固有のschema projection、GPT-facing enrichment、Reader View、prediction handoff等はNewspaper Base/historyへ持ち込まない。
+
+### 5.3 RaceNote prediction is an external addon
+
+RaceNote predictionの**成果物**である印・短評・展開見立ては、Evalやkeibailukaと同じ外部sourceとして `addons.racenote_prediction` にmergeできる。
+
+これはRaceNote内部実装への依存とは別責務であり、JRDB Base/history生成の前提にしない。
+
+## 6. Source separation
 
 新聞は中央統合表示層であり、各sourceの正本責務を奪わない。
 
 ```text
-JRDB PACI / history  -> newspaper JRDB base
-Eval                  -> eval namespace
-RaceNote prediction   -> racenote_prediction namespace
-keibailuka             -> keibailuka namespace
-JRDB Edge Registry     -> edge_matches
-Independent index      -> my_index namespace
+JRDB PACI / neutral history -> newspaper JRDB base
+Eval                         -> eval namespace
+RaceNote prediction output   -> racenote_prediction namespace
+keibailuka                    -> keibailuka namespace
+JRDB Edge Registry            -> edge_matches
+Independent index             -> my_index namespace
 ```
 
 RaceNote v1.0 authoritative bundleはRaceNoteの正本のままとする。
 Eval / blog / prediction結果をRaceNote bundleへ書き戻さない。
 
-## 6. Newspaper Race Bundle
+## 7. Newspaper Race Bundle
 
 配布単位は原則 **1レース1JSON** とする。
 
@@ -190,7 +232,7 @@ horses[]
 
 外部source欠損時もkey / JRDB base / historyを維持し、addonだけnullにする。
 
-## 7. Daily Manifest
+## 8. Daily Manifest
 
 1日分を1巨大JSONに固定せず、日付manifest + race JSON群とする。
 
@@ -221,7 +263,7 @@ manifestは少なくとも次を持つ。
 
 これにより1Rだけaddonが更新された場合も対象race JSONだけを更新可能にする。
 
-## 8. Identity / merge keys
+## 9. Identity / merge keys
 
 外部consumerの基本join key:
 
@@ -239,7 +281,7 @@ horse_id
 
 馬名文字列による推測joinを標準経路にしない。
 
-## 9. Hybrid generation / merge
+## 10. Hybrid generation / merge
 
 理想の日次Work操作は1種類の依頼で何度でも安全に再実行できる形とする。
 
@@ -255,9 +297,9 @@ PACIが存在すればJRDB baseを生成する。
 
 ```text
 PACI
- -> Common Reader
+ -> Common Reader / neutral JRDB modules
  -> race / runner current info
- -> as-of-safe history
+ -> Newspaper-owned as-of-safe history projection
  -> newspaper JRDB base
  -> available addonsを探索
  -> merge
@@ -294,7 +336,7 @@ revision 2
 
 mergeはidempotentとし、同じsource versionを再適用しても意味上の重複を作らない。
 
-## 10. Namespace ownership rule
+## 11. Namespace ownership rule
 
 source間の上書き事故を防ぐ。
 
@@ -307,7 +349,7 @@ source間の上書き事故を防ぐ。
 
 他namespaceの値をmerge時に削除・再解釈しない。
 
-## 11. Edge display contract
+## 12. Edge display contract
 
 JRDB Edge Registryの既存情報を新聞表示へ投影する。
 
@@ -327,22 +369,35 @@ JRDB Edge Registryの既存情報を新聞表示へ投影する。
 
 初期UIではACTIVEを主表示候補とし、PROVISIONAL等を表示する場合は状態を視覚的に区別する。最終policyはEdge Registry側の運用確定後に決める。
 
-## 12. History source policy
+## 13. Newspaper history policy
 
-既存RaceNoteのvalidated production policyを再利用候補とする。
+履歴はNewspaper自身のconsumer contractとして設計する。
+
+初期要件:
 
 ```text
-recent_runs: PACI detailed max 5
-older_runs: Analysis Lite compact max 3
+bundle max history: 8
+initial visible: 3
+all history dates: < target_date
 ```
 
-ただしNewspaper bundleはRaceNote bundleそのものを正本にせず、共通Reader / shared enrichment engine等を再利用するconsumerとして設計する。
+取得は次のneutral情報だけを土台にする。
 
-同じ固定長offsetや独立した過去走解決ロジックを新モジュールへ複製しない。
+- KYIが明示するprevious result/race links
+- `src/jrdb_raw.py`
+- `src/jrdb_raw_history.py`
+- 必要に応じてCanonical / Analysisのneutral historical access
+- 今後抽出するconsumer-neutral history helper
+
+最大8走の具体的なsource構成はneutral dependency inventory後に決める。
+
+既存RaceNoteで「PACI detailed 5 + Analysis compact 3」が実用的だったという知見は**設計参考値**として利用してよいが、Newspaperの実装contractやimport dependencyにはしない。
+
+同じ固定長offsetを新モジュールへ複製しない。履歴解決に必要な汎用機能が不足する場合はneutral層へ追加する。
 
 Historical PoCでは必ず `history_date < target_date` を守る。
 
-## 13. Target-race leakage boundary
+## 14. Target-race leakage boundary
 
 新聞baseは開催前情報で生成する。
 
@@ -356,7 +411,7 @@ Historical PoCでは必ず `history_date < target_date` を守る。
 
 過去走については対象日より前の確定結果を表示可能。
 
-## 14. Drive canonical and PWA delivery
+## 15. Drive canonical and PWA delivery
 
 保存正本候補:
 
@@ -384,7 +439,7 @@ Drive canonical
 
 Gitはcode / schema / docsの正本であり、日次生成JSON自体はGit管理しない。
 
-## 15. PWA offline behavior
+## 16. PWA offline behavior
 
 新聞JSONはSQLite化を必須としない。
 
@@ -400,7 +455,7 @@ Gitはcode / schema / docsの正本であり、日次生成JSON自体はGit管�
 
 日次JSONサイズは実データPoCで測定し、圧縮やSQLite化は必要性が出てから判断する。
 
-## 16. Performance strategy
+## 17. Performance strategy
 
 16頭×最大8走程度は、Fact Lite SQLite全量集計より小さい表示問題と見込むが、実機で測る。
 
@@ -414,12 +469,17 @@ Gitはcode / schema / docsの正本であり、日次生成JSON自体はGit管�
 - day manifestのみ常時保持
 - optional addon欠損を埋めるための追加network callを描画中に発生させない
 
-## 17. Proposed module boundaries
+## 18. Proposed module boundaries
 
 実装時の候補。名前は実装開始時に確定する。
 
 ```text
+# neutral JRDB layer（不足時のみ新設）
+src/jrdb_history_common.py  # name tentative
+
+# Newspaper consumer
 src/newspaper_build.py
+src/newspaper_history.py
 src/newspaper_merge.py
 src/newspaper_publish.py
 schema/jrdb_pwa_newspaper_race_schema_v0_1.json
@@ -428,11 +488,19 @@ pwa/newspaper.html
 pwa/newspaper.js
 ```
 
+`src/newspaper_*` から `src/racenote_*` をimportしないことをarchitecture test / review項目にする。
+
 Work専用スレッドはこのmodule contractを読み、ユーザーが日付だけ指定できる運用を目標とする。
 
-## 18. Validation contract
+## 19. Validation contract
 
 日次生成で最低限確認する。
+
+### Architecture
+
+- Newspaper Base/history import graphに `racenote_*` が存在しない
+- 共通化した汎用処理は `jrdb_*` neutral moduleに置かれている
+- RaceNoteから汎用処理を抽出した場合、RaceNote回帰がPASSしている
 
 ### Base
 
@@ -447,7 +515,7 @@ Work専用スレッドはこのmodule contractを読み、ユーザーが日付�
 
 - 全history date < target date
 - sequence重複なし
-- recent / older重複なし
+- history source重複なし
 - coverageを虚偽に完全履歴と表現しない
 
 ### Merge
@@ -455,7 +523,7 @@ Work専用スレッドはこのmodule contractを読み、ユーザーが日付�
 - source namespace以外を変更しない
 - join key unmatchedを監査
 - duplicate addon keyはエラー
--同一source version再mergeでsemantic result不変
+- 同一source version再mergeでsemantic result不変
 
 ### Distribution
 
@@ -464,9 +532,19 @@ Work専用スレッドはこのmodule contractを読み、ユーザーが日付�
 - manifestのrace countと配布race file数一致
 - publish失敗時に既存current day setを壊さない
 
-## 19. First PoC proposal
+## 20. First PoC proposal
 
-画面実装へ入る前に、既存データが揃っている16頭立ての1Rでnewspaper JSONを生成する。
+画面実装へ入る前に、まず**neutral dependency inventory**を作成する。
+
+確認対象:
+
+1. BAC/KYI/CHA/CYB/UKCの新聞Baseに必要なfieldがCommon Readerで揃うか
+2. previous 1-5の履歴解決がneutral moduleだけで可能か
+3. 6-8走目を補う場合に必要なneutral historical accessは何か
+4. RaceNote内にしかないが本質的に汎用な処理があるか
+5. ある場合、どの単位でneutral層へ格上げするか
+
+その後、既存データが揃っている16頭立ての1RでNewspaper JSONを生成する。
 
 第一候補:
 
@@ -474,12 +552,7 @@ Work専用スレッドはこのmodule contractを読み、ユーザーが日付�
 2026-08-16 札幌11R 札幌記念 16頭
 ```
 
-理由:
-
-- RaceNote history enrichment PoC実績あり
-- 16頭でスマホ新聞の典型的な行数を確認できる
-- 芝2000m重賞で過去走・統計が十分ある
-- 既存RaceNote 8-run bundleサイズ実測がある
+このレースを選ぶ理由はRaceNoteを入力に使うためではなく、過去にデータ量や16頭表示の参考測定があり、比較しやすいため。
 
 PoCで確認する。
 
@@ -490,8 +563,9 @@ PoCで確認する。
 5. iPhone横スクロール
 6. Edge/addon null slot表示
 7. OPFS保存 / 再読込
+8. RaceNote非依存のimport graph
 
-## 20. Deferred decisions
+## 21. Deferred decisions
 
 以下は初期設計で固定しない。
 
