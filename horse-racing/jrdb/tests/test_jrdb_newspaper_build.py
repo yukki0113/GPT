@@ -169,6 +169,10 @@ class NewspaperBuilderTest(unittest.TestCase):
         self.assertEqual(horse["basic"]["sire_name"], "テスト父")
         self.assertEqual([run["date"] for run in horse["history"]], ["2026-08-10", "2026-08-01"])
         self.assertEqual(horse["history"][0]["source_layer"], "detailed_recent_history")
+        self.assertEqual(horse["history"][0]["horse_no"], 3)
+        self.assertIsNone(horse["history"][0]["time_gap_sec"])
+        self.assertIsNone(horse["history"][0]["time_gap_reference"])
+        self.assertIsNone(horse["history"][0]["last3f_rank"])
         self.assertEqual(horse["history"][0]["notes"]["race_comment"], "直線しぶとい")
         self.assertTrue(all(value is None for value in horse["addons"].values()))
         self.assertEqual(horse["edge_matches"], [])
@@ -199,6 +203,10 @@ class NewspaperBuilderTest(unittest.TestCase):
         self.assertEqual([run["sequence"] for run in history], list(range(1, 9)))
         self.assertEqual([run["source_layer"] for run in history[:2]], ["detailed_recent_history"] * 2)
         self.assertEqual([run["source_layer"] for run in history[2:]], ["compact_older_history"] * 6)
+        self.assertTrue(all("horse_no" in run for run in history))
+        self.assertTrue(all("time_gap_sec" in run for run in history))
+        self.assertTrue(all("time_gap_reference" in run for run in history))
+        self.assertTrue(all("last3f_rank" in run for run in history))
         self.assertTrue(all(run["date"] < bundle["race"]["date"] for run in history))
         self.assertEqual(
             bundle["metadata"]["source_status"]["jrdb_history"]["supplemental_count"],

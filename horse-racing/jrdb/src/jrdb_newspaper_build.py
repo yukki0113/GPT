@@ -28,7 +28,7 @@ from jrdb_raw import (
     ymd,
 )
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 VENUES = {
     "01": "札幌", "02": "函館", "03": "福島", "04": "新潟", "05": "東京",
@@ -227,6 +227,14 @@ def _history_from_zed(
             "equipment_codes": zkb.get("equipment_codes") or [],
         }
     carried = _float(zed.get("carried_weight_tenths"))
+    finish = _int(zed.get("finish"))
+    time_gap_sec = _float(zed.get("first_second_time_diff_sec"))
+    time_gap_reference = None
+    if time_gap_sec is not None and finish is not None:
+        if finish == 1:
+            time_gap_reference = "RUNNER_UP"
+        elif finish > 1:
+            time_gap_reference = "WINNER"
     return {
         "sequence": sequence,
         "link_sequence": link_sequence,
@@ -246,15 +254,19 @@ def _history_from_zed(
         "distance_m": _int(zed.get("distance_m")),
         "track_condition": _label(TRACK_CONDITION, zed.get("track_condition_code")),
         "field_size": _int(zed.get("field_size")),
-        "finish": _int(zed.get("finish")),
+        "horse_no": _int(zed.get("horse_no")),
+        "finish": finish,
         "final_popularity": _int(zed.get("final_popularity")),
         "final_win_odds": _float(zed.get("final_win_odds")),
         "jockey_name": zed.get("jockey"),
         "carried_weight_kg": carried / 10.0 if carried is not None else None,
         "corner_positions": list(zed.get("corners") or []),
         "time_sec": _race_time_sec(zed.get("time_raw")),
+        "time_gap_sec": time_gap_sec,
+        "time_gap_reference": time_gap_reference,
         "first3f_sec": _float(zed.get("first3f_sec")),
         "last3f_sec": _float(zed.get("last3f_sec")),
+        "last3f_rank": None,
         "idm": _float(zed.get("idm")),
         "body_weight_kg": _int(zed.get("body_weight_kg")),
         "body_weight_change_kg": _int(zed.get("body_weight_change_kg")),
@@ -328,6 +340,7 @@ def _analysis_history(
             "distance_m": row["distance"],
             "track_condition": _label(TRACK_CONDITION, row["track_condition_code"]),
             "field_size": None,
+            "horse_no": None,
             "finish": row["finish"],
             "final_popularity": row["final_win_popularity"],
             "final_win_odds": row["final_win_odds"],
@@ -335,8 +348,11 @@ def _analysis_history(
             "carried_weight_kg": None,
             "corner_positions": [],
             "time_sec": None,
+            "time_gap_sec": None,
+            "time_gap_reference": None,
             "first3f_sec": None,
             "last3f_sec": None,
+            "last3f_rank": None,
             "idm": None,
             "body_weight_kg": None,
             "body_weight_change_kg": None,
