@@ -62,7 +62,9 @@ function renderDayPackage(value, restore = false) {
   ).join("");
   dayRaceSelectWrap.hidden = false;
   dayClearButton.disabled = false;
-  activateDayRace(ordered[0].race.race_key);
+  const preferredRaceKey = currentBundle && currentBundle.race ? String(currentBundle.race.race_key || "") : "";
+  const initialBundle = ordered.find(bundle => String(bundle.race.race_key) === preferredRaceKey) || ordered[0];
+  activateDayRace(initialBundle.race.race_key);
   const sources = value.manifest.source_status || {};
   const evalState = sources.eval && sources.eval.state === "READY" ? "Eval○" : "Eval—";
   const ilukaState = sources.keibailuka && sources.keibailuka.state === "READY" ? "🐬○" : "🐬—";
@@ -136,4 +138,9 @@ dayClearButton.addEventListener("click", () => clearDayPackage().catch(error => 
   dayStatus.textContent = `日次削除失敗: ${error.message}`;
 }));
 dayRaceSelect.addEventListener("change", () => activateDayRace(dayRaceSelect.value));
-window.addEventListener("load", () => restoreDayPackage().catch(error => console.error(error)));
+window.addEventListener("load", () => {
+  checkOpfs()
+    .then(() => restoreBundle())
+    .then(() => restoreDayPackage())
+    .catch(error => console.error(error));
+});
