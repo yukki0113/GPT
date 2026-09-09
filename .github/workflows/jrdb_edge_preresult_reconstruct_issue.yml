@@ -214,4 +214,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-        run: gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB Edge pre-result reconstruction failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB Edge pre-result reconstruction failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
