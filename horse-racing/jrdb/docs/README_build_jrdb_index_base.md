@@ -237,15 +237,31 @@ Implemented synthetic tests cover:
 
 Initial synthetic regression status: **7/7 PASS**.
 
-A real 2010-2025 full build is still required against the external canonical Raw storage before this base is accepted as a validated research artifact. Synthetic success must not be presented as full historical validation.
+### Accepted real 2010-2025 audit
+
+A full archive-hashed 2010-2025 build was completed by Issue `#276` (`2010-2025-phase-a-final`) and is the accepted real-data validation evidence for this schema/builder generation.
+
+- workflow status: `success`
+- audit status: `PASS`
+- rows (`runner_pre` / matched `runner_result`): **781,161 / 781,161**
+- runner-to-result match rate: **100%**
+- horse-id match rate: **100%**
+- previous links: **2,919,703**, resolved **2,740,251** (**93.8538%**)
+- previous-link sequence 1 resolution: **96.6689%**
+- as-of pedigree/profile coverage: **89.4767%**
+- `CURRENT_RESULT_FALLBACK` races: **53**
+- duplicate business-key check: PASS
+- `PRAGMA integrity_check`: `ok`
+- archive hashes: enabled for the accepted run
+- accepted SQLite SHA-256: `adfb0264fee7cc3debac78e5e836e0c6f832af8796251b82fbfb359dafe9682f`
+
+Issue `#280` independently repeated the same 2010-2025 build/audit with archive hashing disabled for faster execution and reproduced the same row/coverage counts. Therefore downstream RunPerf / Ability / Edge research may use the Index Base as a validated longitudinal source, while preserving the PRE_RACE / CURRENT_RESULT availability boundary.
 
 ## 11. Next phase
 
-After real-data ingestion/audit, Phase B is:
+The validated Index Base feeds multiple research branches rather than one strictly linear next step:
 
-1. build race representative times
-2. rolling ExpectedTime candidates
-3. DayTrackBias
-4. B0/B1/T0/T1/T2/T3 RunPerf candidates
-5. J0/J1 JRDB benchmark comparison
-6. choose the RunPerf target before Ability training begins
+1. RunPerf: race representative times, ExpectedTime, DayTrackBias and RunPerf comparison
+2. Ability: leakage-safe pre-race snapshots and model comparison
+3. Edge Registry: leakage-safe Edge Feature Mart, template discovery and factor-specific temporal validation
+4. JRDB Addition Tests after the independent core is frozen
