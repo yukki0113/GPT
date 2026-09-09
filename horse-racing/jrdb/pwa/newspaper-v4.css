@@ -1,0 +1,227 @@
+/* Newspaper display v4 overrides */
+
+/* Identity columns: frame/basic scroll away; horse number + name remain. */
+.newspaper-table-v4 .newspaper-frame {
+  position: static;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  padding-left: 2px;
+  padding-right: 2px;
+  text-align: center;
+  font-weight: 800;
+}
+.newspaper-table-v4 .newspaper-horse-no {
+  position: sticky;
+  left: 0;
+  z-index: 8;
+  width: 34px;
+  min-width: 34px;
+  max-width: 34px;
+  padding-left: 2px;
+  padding-right: 2px;
+  text-align: center;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+.newspaper-table-v4 .newspaper-horse-name-cell {
+  position: sticky;
+  left: 34px;
+  z-index: 7;
+  width: 104px;
+  min-width: 104px;
+  max-width: 104px;
+  padding-left: 6px;
+  padding-right: 5px;
+  background: #fff;
+  box-shadow: 3px 0 5px rgba(0,0,0,.05);
+}
+.newspaper-table-v4 thead .newspaper-horse-no,
+.newspaper-table-v4 thead .newspaper-horse-name-cell {
+  background: #f7f7f7;
+}
+.newspaper-table-v4 .newspaper-basic-info {
+  position: static;
+  width: 124px;
+  min-width: 124px;
+  max-width: 124px;
+  background: #fff;
+}
+.newspaper-horse-name-only {
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+.newspaper-basic-line {
+  margin-top: 2px;
+  color: #555;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+.newspaper-basic-main { margin-top: 0; color: #333; font-weight: 700; }
+.newspaper-basic-sire {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Two-tier newspaper-style marks: seven very narrow columns. */
+.newspaper-table-v4 .newspaper-mark-group-head {
+  min-width: 230px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: .04em;
+  background: #f2f2f2;
+}
+.newspaper-table-v4 .newspaper-mark-col {
+  padding-left: 2px;
+  padding-right: 2px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 800;
+}
+.newspaper-table-v4 .mark-ability { width: 34px; min-width: 34px; max-width: 34px; }
+.newspaper-table-v4 .mark-training { width: 30px; min-width: 30px; max-width: 30px; }
+.newspaper-table-v4 .mark-jrdb { width: 30px; min-width: 30px; max-width: 30px; }
+.newspaper-table-v4 .mark-eval { width: 36px; min-width: 36px; max-width: 36px; }
+.newspaper-table-v4 .mark-rn { width: 32px; min-width: 32px; max-width: 32px; }
+.newspaper-table-v4 .mark-iluka { width: 30px; min-width: 30px; max-width: 30px; }
+.newspaper-table-v4 .mark-my { width: 38px; min-width: 38px; max-width: 38px; }
+.newspaper-table-v4 .newspaper-mark-head-row th {
+  font-size: 9px;
+  line-height: 1.05;
+  background: #f7f7f7;
+}
+.newspaper-table-v4 thead tr:first-child > th { top: 0; }
+.newspaper-table-v4 thead tr:nth-child(2) > th { top: 31px; }
+
+/* Past-run cells: dense but readable, similar to racing-paper columns. */
+.newspaper-table-v4 .newspaper-history-head,
+.newspaper-table-v4 .newspaper-history-cell {
+  width: 158px;
+  min-width: 158px;
+  max-width: 158px;
+}
+.newspaper-run-v4 {
+  min-height: 132px;
+  line-height: 1.28;
+}
+.newspaper-run-v4 .newspaper-run-top {
+  color: #555;
+  font-size: 10.5px;
+}
+.newspaper-run-race-line {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 3px;
+  min-height: 17px;
+  line-height: 1.25;
+}
+.newspaper-run-race-line strong {
+  flex: 0 0 auto;
+  color: #1548a0;
+  font-size: 11.5px;
+}
+.newspaper-run-race-line span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.newspaper-run-track {
+  margin-top: 3px;
+  color: #444;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+.newspaper-run-result-v4 {
+  margin-top: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.newspaper-run-result-v4 strong { font-size: 13px; }
+.newspaper-run-person,
+.newspaper-run-time,
+.newspaper-run-finish {
+  margin-top: 3px;
+  color: #555;
+  font-size: 10.3px;
+  line-height: 1.3;
+}
+.newspaper-run-time { color: #333; font-weight: 600; }
+.newspaper-run-finish {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+.newspaper-last3f {
+  display: inline-block;
+  padding: 1px 3px;
+  border-radius: 3px;
+  color: #222;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.newspaper-last3f.last3f-rank-1 { background: #fff0a8; }
+.newspaper-last3f.last3f-rank-2 { background: #cfefff; }
+.newspaper-last3f.last3f-rank-3 { background: #d9f0d3; }
+.newspaper-run-v4.compact {
+  background: linear-gradient(to bottom, rgba(0,0,0,.025), transparent);
+}
+.newspaper-run-v4 .newspaper-detail-button {
+  min-height: 25px;
+  margin-top: 4px;
+  padding: 2px 6px;
+  font-size: 9.5px;
+}
+.newspaper-table-v4 .newspaper-edge {
+  width: 168px;
+  min-width: 168px;
+  max-width: 168px;
+}
+
+@media (max-width: 640px) {
+  .newspaper-table-v4 th,
+  .newspaper-table-v4 td {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  .newspaper-table-v4 .newspaper-frame {
+    width: 22px;
+    min-width: 22px;
+    max-width: 22px;
+    font-size: 10px;
+  }
+  .newspaper-table-v4 .newspaper-horse-no {
+    left: 0;
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+  }
+  .newspaper-table-v4 .newspaper-horse-name-cell {
+    left: 32px;
+    width: 103px;
+    min-width: 103px;
+    max-width: 103px;
+  }
+  .newspaper-table-v4 .newspaper-basic-info {
+    width: 118px;
+    min-width: 118px;
+    max-width: 118px;
+  }
+  .newspaper-table-v4 .newspaper-history-head,
+  .newspaper-table-v4 .newspaper-history-cell {
+    width: 154px;
+    min-width: 154px;
+    max-width: 154px;
+  }
+  .newspaper-run-v4 { min-height: 126px; }
+}
