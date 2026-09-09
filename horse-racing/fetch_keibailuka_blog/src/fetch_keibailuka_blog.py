@@ -3,7 +3,7 @@
 
 Recurring use case:
     date + venue order -> discover posts -> parse 1R..12R ->
-    omit no-pick/paid sections -> preserve masked picks as 🤡 -> JSON/TSV.
+    omit no-pick/paid sections -> preserve masked picks as 🤡 -> JSON/TSV/CSV.
 
 The module deliberately prefers Blogger's public feed content over fetching each
 article page. The blog sometimes rate-limits individual article HTML with HTTP
@@ -14,6 +14,7 @@ fallback, not the primary path.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 import sys
@@ -736,12 +737,17 @@ def build_result(
     source_urls: dict[str, str] = {}
     source_methods: dict[str, str] = {}
 
+    by_venue = {result.venue: result for result in results}
+
     for venue in venues:
-        result = next(item for item in results if item.venue == venue)
+        result = by_venue[venue]
         source_urls[venue] = result.source_url
         source_methods[venue] = result.source_method
 
-        for race in result.races:
+    for race_no in range(1, 13):
+        for venue in venues:
+            result = by_venue[venue]
+            race = result.races[race_no - 1]
             if race.status != "included":
                 continue
             entries.append(
@@ -778,7 +784,7 @@ def write_outputs(
     payload: dict[str, Any],
     validation: dict[str, Any],
 ) -> None:
-    """Write JSON, TSV and validation files."""
+    """Write JSON, TSV, CSV and validation files."""
 
     compact = target_date.strftime("%Y%m%d")
     (output_dir / f"keibailuka_{compact}.json").write_text(
@@ -802,6 +808,21 @@ def write_outputs(
         "\n".join(lines) + "\n",
         encoding="utf-8",
     )
+    csv_path = output_dir / f"keibailuka_{compact}.csv"
+    with csv_path.open("w", encoding="utf-8", newline="") as file:
+        writer = csv.writer(file, lineterminator="\n")
+        writer.writerow(["日付", "会場", "R", "馬名", "コメント"])
+        for entry in payload["entries"]:
+            writer.writerow(
+                [
+                    target_date.isoformat(),
+                    str(entry["場所"]),
+                    str(entry["R"]),
+                    str(entry["馬名"] or ""),
+                    normalize_text(str(entry["コメント"])),
+                ]
+            )
+
     (output_dir / "validation_report.json").write_text(
         json.dumps(validation, ensure_ascii=False, indent=2),
         encoding="utf-8",
