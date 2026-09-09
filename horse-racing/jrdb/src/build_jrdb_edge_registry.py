@@ -70,6 +70,20 @@ def _confidence_band(result: Mapping[str, Any]) -> str:
     return "A" if sample_n >= 240 else "B"
 
 
+def _prefilter_candidate(candidate: Mapping[str, Any], policy: Mapping[str, Any]) -> bool:
+    minimum_n = int(policy["watch_min_n"]) if policy["validation_class"] == "EMERGING" else int(policy["min_total_n"])
+    if int(candidate.get("sample_n", 0)) < minimum_n:
+        return False
+    if int(candidate.get("unique_horses", 0)) < int(policy.get("min_unique_horses", 0)):
+        return False
+    if int(candidate.get("unique_races", 0)) < int(policy.get("min_unique_races", 0)):
+        return False
+    approx = candidate.get("largest_return_share_approx")
+    if approx is not None and float(approx) > float(policy.get("max_single_return_share", 1.0)):
+        return False
+    return True
+
+
 def _decision_for_event(status: str) -> str:
     return {
         "ACTIVE": "ACTIVATE",
@@ -117,7 +131,12 @@ def build_registry(
         counts: dict[str, int] = {}
         validation_rows: list[dict[str, Any]] = []
         stored_edges = 0
+        prefiltered_out = 0
         for candidate in candidates:
+            policy = policy_catalog["policies"][candidate["policy_id"]]
+            if not _prefilter_candidate(candidate, policy):
+                prefiltered_out += 1
+                continue
             result = validate_candidate(mart_path, candidate, policy_catalog)
             validation_rows.append({**result, "candidate": dict(candidate)})
             status = result["status"]
@@ -127,7 +146,6 @@ def build_registry(
 
             edge_id = _edge_id(candidate["candidate_id"])
             anchor_id, anchor_name = _anchor_parts(candidate)
-            policy = policy_catalog["policies"][candidate["policy_id"]]
             last_validated_at = candidate["as_of_date"]
             last_date = date.fromisoformat(last_validated_at)
             next_review_at = (last_date + timedelta(days=int(policy["review_days"]))).isoformat()
@@ -253,6 +271,8 @@ def build_registry(
             "status": "PASS",
             "registry_version": registry_version,
             "candidate_count": len(candidates),
+            "prefiltered_out": prefiltered_out,
+            "validated_candidate_count": len(validation_rows),
             "stored_edges": stored_edges,
             "counts": counts,
             "integrity_check": integrity,
@@ -336,8 +356,10 @@ def main() -> int:
     if args.export_jsonl and args.export_csv:
         result["export"] = export_registry(args.registry, args.export_jsonl, args.export_csv)
     if args.audit_json:
+        audit = {key: value for key, value in result.items() if key != "validation_rows"}
+        audit["validation_rows"] = result["validation_rows"]
         Path(args.audit_json).write_text(
-            json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True),
+            json.dumps(audit, ensure_ascii=False, indent=2, sort_keys=True),
             encoding="utf-8",
         )
     printable = {key: value for key, value in result.items() if key != "validation_rows"}
