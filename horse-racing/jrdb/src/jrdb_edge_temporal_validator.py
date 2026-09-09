@@ -98,6 +98,8 @@ def _metrics(
             "sample_n": 0,
             "unique_horses": 0,
             "unique_races": 0,
+            "baseline_first_date": baseline["first_date"] if baseline is not None else None,
+            "baseline_last_date": baseline["last_date"] if baseline is not None else None,
             "performance_lift": None,
             "place_roi_vs_baseline": None,
         }
@@ -128,6 +130,8 @@ def _metrics(
         "win_roi": row["win_roi"],
         "place_roi": row["place_roi"],
         "baseline_sample_n": int(baseline["sample_n"] or 0),
+        "baseline_first_date": baseline["first_date"],
+        "baseline_last_date": baseline["last_date"],
         "baseline_place_rate": baseline["place_rate"],
         "baseline_place_roi": baseline["place_roi"],
         "performance_lift": _ratio(row["place_rate"], baseline["place_rate"]),
@@ -271,7 +275,11 @@ def validate_candidate(
         if performance_signal == "NEUTRAL" and value_signal == "NEUTRAL":
             failures.append("NO_SIGNAL")
 
-        anchor_first = candidate.get("anchor_first_observed_date") or candidate["first_observed_date"]
+        anchor_first = (
+            overall.get("baseline_first_date")
+            or candidate.get("anchor_first_observed_date")
+            or candidate["first_observed_date"]
+        )
         as_of_date = candidate["as_of_date"]
         if validation_class == "STRUCTURAL":
             periods = _calendar_segments(anchor_first, as_of_date, int(policy["segment_years"]))
