@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "jrdb_pwa_newspaper_race_schema_v0_1.json",
+  "title": "JRDB PWA Newspaper Race Bundle v0.1",
+  "description": "Draft per-race delivery contract for the personal newspaper PWA.",
+  "type": "object",
+  "required": ["schema_version", "bundle_kind", "metadata", "race", "race_notes", "horses"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "bundle_kind": {"const": "jrdb_pwa_newspaper_race"},
+    "metadata": {
+      "type": "object",
+      "required": ["generated_at", "revision", "source_status"],
+      "properties": {
+        "generated_at": {"type": "string"},
+        "revision": {"type": "integer", "minimum": 1},
+        "base_snapshot_id": {"type": ["string", "null"]},
+        "source_status": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/sourceState"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "race": {"$ref": "#/$defs/race"},
+    "race_notes": {
+      "type": "object",
+      "required": ["items"],
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/raceNoteItem"}},
+        "racenote_short_comment": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "horses": {"type": "array", "items": {"$ref": "#/$defs/horse"}}
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "sourceState": {
+      "type": "object",
+      "required": ["state"],
+      "properties": {
+        "state": {"enum": ["READY", "PENDING", "NOT_APPLICABLE", "ERROR"]},
+        "source_version": {"type": ["string", "null"]},
+        "generated_at": {"type": ["string", "null"]},
+        "semantic_sha256": {"type": ["string", "null"]},
+        "message": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "race": {
+      "type": "object",
+      "required": ["race_key", "date", "venue_code", "venue", "race_no"],
+      "properties": {
+        "race_key": {"type": "string"},
+        "date": {"type": "string", "format": "date"},
+        "venue_code": {"type": "string"},
+        "venue": {"type": "string"},
+        "meeting": {"type": ["string", "null"]},
+        "race_no": {"type": "integer", "minimum": 1, "maximum": 12},
+        "start_time": {"type": ["string", "null"]},
+        "race_name": {"type": ["string", "null"]},
+        "surface": {"type": ["string", "null"]},
+        "distance_m": {"type": ["integer", "null"]},
+        "turn": {"type": ["string", "null"]},
+        "course_layout": {"type": ["string", "null"]},
+        "class_label": {"type": ["string", "null"]},
+        "grade_label": {"type": ["string", "null"]},
+        "race_type_label": {"type": ["string", "null"]},
+        "weight_rule_label": {"type": ["string", "null"]},
+        "field_size": {"type": ["integer", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "raceNoteItem": {
+      "type": "object",
+      "required": ["source", "label", "value"],
+      "properties": {
+        "source": {"type": "string"},
+        "label": {"type": "string"},
+        "value": {},
+        "unit": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "horse": {
+      "type": "object",
+      "required": ["key", "basic", "jrdb", "addons", "history", "edge_matches"],
+      "properties": {
+        "key": {
+          "type": "object",
+          "required": ["horse_no", "frame_no"],
+          "properties": {
+            "race_horse_key": {"type": ["string", "null"]},
+            "horse_id": {"type": ["string", "null"]},
+            "horse_no": {"type": "integer", "minimum": 1},
+            "frame_no": {"type": ["integer", "null"], "minimum": 1, "maximum": 8}
+          },
+          "additionalProperties": false
+        },
+        "basic": {
+          "type": "object",
+          "required": ["horse_name"],
+          "properties": {
+            "horse_name": {"type": ["string", "null"]},
+            "sex_label": {"type": ["string", "null"]},
+            "age": {"type": ["integer", "null"], "minimum": 0},
+            "carried_weight_kg": {"type": ["number", "null"]},
+            "jockey_name": {"type": ["string", "null"]},
+            "jockey_code": {"type": ["string", "null"]},
+            "trainer_name": {"type": ["string", "null"]},
+            "sire_name": {"type": ["string", "null"]},
+            "dam_name": {"type": ["string", "null"]},
+            "broodmare_sire_name": {"type": ["string", "null"]},
+            "running_style_label": {"type": ["string", "null"]},
+            "distance_fit_label": {"type": ["string", "null"]}
+          },
+          "additionalProperties": true
+        },
+        "jrdb": {
+          "type": "object",
+          "required": ["marks", "ability", "training", "pace"],
+          "properties": {
+            "marks": {"type": "object", "additionalProperties": {"type": ["string", "null"]}},
+            "ability": {"type": "object", "additionalProperties": true},
+            "training": {"type": "object", "additionalProperties": true},
+            "pace": {"type": "object", "additionalProperties": true}
+          },
+          "additionalProperties": true
+        },
+        "addons": {
+          "type": "object",
+          "required": ["eval", "racenote_prediction", "keibailuka", "my_index"],
+          "properties": {
+            "eval": {"type": ["object", "null"]},
+            "racenote_prediction": {"type": ["object", "null"]},
+            "keibailuka": {"type": ["object", "null"]},
+            "my_index": {"type": ["object", "null"]}
+          },
+          "additionalProperties": true
+        },
+        "history": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {"$ref": "#/$defs/historyRun"}
+        },
+        "edge_matches": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/edgeMatch"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "historyRun": {
+      "type": "object",
+      "required": ["sequence", "source_layer", "date"],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1, "maximum": 8},
+        "source_layer": {"enum": ["detailed_recent_history", "compact_older_history"]},
+        "date": {"type": "string", "format": "date"},
+        "venue": {"type": ["string", "null"]},
+        "race_no": {"type": ["integer", "null"], "minimum": 1, "maximum": 12},
+        "race_name": {"type": ["string", "null"]},
+        "class_label": {"type": ["string", "null"]},
+        "grade_label": {"type": ["string", "null"]},
+        "surface": {"type": ["string", "null"]},
+        "distance_m": {"type": ["integer", "null"]},
+        "track_condition": {"type": ["string", "null"]},
+        "field_size": {"type": ["integer", "null"]},
+        "finish": {"type": ["integer", "null"]},
+        "final_popularity": {"type": ["integer", "null"]},
+        "jockey_name": {"type": ["string", "null"]},
+        "carried_weight_kg": {"type": ["number", "null"]},
+        "corner_positions": {"type": "array", "maxItems": 4, "items": {"type": ["integer", "null"]}},
+        "time_sec": {"type": ["number", "null"]},
+        "last3f_sec": {"type": ["number", "null"]},
+        "idm": {"type": ["number", "null"]},
+        "body_weight_kg": {"type": ["integer", "null"]},
+        "body_weight_change_kg": {"type": ["integer", "null"]},
+        "abnormal_code": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "edgeMatch": {
+      "type": "object",
+      "required": ["edge_id", "display_text", "polarity", "status"],
+      "properties": {
+        "edge_id": {"type": "string"},
+        "display_text": {"type": "string"},
+        "polarity": {"enum": ["POSITIVE", "NEGATIVE", "MIXED"]},
+        "status": {"type": "string"},
+        "strength_score": {"type": ["number", "null"]},
+        "confidence_band": {"type": ["string", "null"]},
+        "registry_version": {"type": ["string", "null"]},
+        "evidence": {"type": ["object", "null"]}
+      },
+      "additionalProperties": true
+    }
+  }
+}
