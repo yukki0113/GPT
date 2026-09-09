@@ -8,38 +8,14 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
-VERSION = "0.1.1"
+from jrdb_edge_canonical import (
+    distance_bucket as _distance_bucket,
+    frame_zone as _frame_zone,
+    transition as _transition,
+)
+
+VERSION = "0.1.2"
 SCHEMA_VERSION = "v0.1"
-
-
-def _frame_zone(frame_no: int | None) -> str | None:
-    if frame_no is None:
-        return None
-    if frame_no <= 3:
-        return "INNER"
-    if frame_no <= 6:
-        return "MIDDLE"
-    return "OUTER"
-
-
-def _distance_bucket(delta: int | None) -> str | None:
-    if delta is None:
-        return None
-    if delta <= -400:
-        return "LARGE_SHORTEN"
-    if delta <= -200:
-        return "SHORTEN"
-    if delta < 200:
-        return "SAME_BAND"
-    if delta < 400:
-        return "EXTEND"
-    return "LARGE_EXTEND"
-
-
-def _transition(before: str | None, after: str | None) -> str | None:
-    if not before or not after:
-        return None
-    return f"{before}->{after}"
 
 
 def _status(row: sqlite3.Row) -> str:
