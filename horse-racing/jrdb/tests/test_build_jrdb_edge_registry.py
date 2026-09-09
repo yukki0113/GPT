@@ -18,6 +18,14 @@ def test_registry_builds_active_edge_with_snapshots_and_exports(tmp_path: Path) 
     mart = _mart(tmp_path)
     policies = json.loads((ROOT / "config/jrdb_edge_validation_policies_v0_1.json").read_text(encoding="utf-8"))
     candidate = _candidate("LIFECYCLE_SIRE_V1")
+    candidate.update(
+        {
+            "sample_n": 320,
+            "unique_horses": 320,
+            "unique_races": 320,
+            "largest_return_share_approx": 0.01,
+        }
+    )
     output = tmp_path / "registry.sqlite"
     result = registry.build_registry(
         mart,
@@ -29,6 +37,7 @@ def test_registry_builds_active_edge_with_snapshots_and_exports(tmp_path: Path) 
     )
     assert result["status"] == "PASS"
     assert result["counts"]["ACTIVE"] == 1
+    assert result["prefiltered_out"] == 0
     connection = sqlite3.connect(output)
     try:
         assert connection.execute("SELECT COUNT(*) FROM edge_definition WHERE status='ACTIVE'").fetchone()[0] == 1
