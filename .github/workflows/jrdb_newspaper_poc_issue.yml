@@ -1,0 +1,323 @@
+name: JRDB Newspaper real-data PoC via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_NEWSPAPER_POC_REQUEST]'
+
+jobs:
+  build-poc:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_POC_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          date = str(req.get('date', '')).strip()
+          venue_code = str(req.get('venue_code', '')).strip().zfill(2)
+          race_no = req.get('race_no')
+          raw_run_id = req.get('raw_run_id')
+          artifact_name = str(req.get('artifact_name', '')).strip()
+          paci_sha256 = str(req.get('paci_sha256', '')).strip().lower()
+
+          if not re.fullmatch(r'20\d{6}', date):
+              raise SystemExit('date must be YYYYMMDD')
+          if venue_code not in {f'{n:02d}' for n in range(1, 11)}:
+              raise SystemExit('venue_code must be 01..10')
+          if not isinstance(race_no, int) or not (1 <= race_no <= 12):
+              raise SystemExit('race_no must be integer 1..12')
+          if not isinstance(raw_run_id, int) or raw_run_id <= 0:
+              raise SystemExit('raw_run_id must be a positive integer')
+          if not artifact_name:
+              raise SystemExit('artifact_name is required')
+          if not re.fullmatch(r'[0-9a-f]{64}', paci_sha256):
+              raise SystemExit('paci_sha256 must be lowercase/uppercase SHA-256 hex')
+
+          normalized = {
+              'date': date,
+              'venue_code': venue_code,
+              'race_no': race_no,
+              'raw_run_id': raw_run_id,
+              'artifact_name': artifact_name,
+              'paci_sha256': paci_sha256,
+          }
+          Path('/tmp/newspaper_request.json').write_text(
+              json.dumps(normalized, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f"raw_run_id={raw_run_id}\n")
+              handle.write(f"artifact_name={artifact_name}\n")
+              handle.write(f"output_artifact=jrdb-newspaper-poc-{date}-{venue_code}-{race_no:02d}\n")
+          PY
+
+      - name: Verify upstream run is successful
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RAW_RUN_ID: ${{ steps.request.outputs.raw_run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          run_id = os.environ['RAW_RUN_ID']
+          payload = subprocess.check_output(
+              ['gh', 'api', f'repos/${{ github.repository }}/actions/runs/{run_id}'],
+              text=True,
+          )
+          run = json.loads(payload)
+          if run.get('status') != 'completed' or run.get('conclusion') != 'success':
+              raise SystemExit(
+                  f"upstream run is not successful: status={run.get('status')} conclusion={run.get('conclusion')}"
+              )
+          PY
+
+      - name: Download fixed raw artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RAW_RUN_ID: ${{ steps.request.outputs.raw_run_id }}
+          ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/newspaper_raw
+          gh run download "$RAW_RUN_ID" --repo "${{ github.repository }}" -n "$ARTIFACT_NAME" -D /tmp/newspaper_raw
+          find /tmp/newspaper_raw -maxdepth 3 -type f -print
+
+      - name: Verify PACI transport SHA
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          req = json.loads(Path('/tmp/newspaper_request.json').read_text(encoding='utf-8'))
+          expected_name = f"PACI{req['date'][2:]}.zip"
+          matches = list(Path('/tmp/newspaper_raw').rglob(expected_name))
+          if len(matches) != 1:
+              raise SystemExit(f'expected exactly one {expected_name}, found {len(matches)}')
+          path = matches[0]
+          digest = hashlib.sha256(path.read_bytes()).hexdigest()
+          if digest != req['paci_sha256']:
+              raise SystemExit(f'PACI SHA mismatch: expected={req["paci_sha256"]} actual={digest}')
+          Path('/tmp/paci_path.txt').write_text(str(path), encoding='utf-8')
+          PY
+
+      - name: Install test-only schema validator
+        run: python -m pip install --disable-pip-version-check 'jsonschema>=4.22,<5'
+
+      - name: Build and audit Newspaper real-data bundle
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/newspaper_out
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import ast
+          import hashlib
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          from jsonschema import Draft202012Validator, FormatChecker
+          from jrdb_newspaper_build import build_race_bundle, load_paci
+          from jrdb_raw import race_key_parts
+
+          req = json.loads(Path('/tmp/newspaper_request.json').read_text(encoding='utf-8'))
+          paci = Path(Path('/tmp/paci_path.txt').read_text(encoding='utf-8').strip())
+          parsed, parser_audit = load_paci(paci)
+
+          candidates = []
+          for bac in parsed.get('BAC', []):
+              race_key = str(bac.get('race_key_raw') or '')
+              parts = race_key_parts(race_key)
+              if (
+                  str(bac.get('date_raw') or '') == req['date']
+                  and str(parts.get('venue_code') or '') == req['venue_code']
+                  and parts.get('race_no') == req['race_no']
+              ):
+                  candidates.append(race_key)
+          if len(candidates) != 1:
+              raise SystemExit(f'target BAC identity is not unique: candidates={candidates}')
+          race_key = candidates[0]
+
+          bundle = build_race_bundle(
+              parsed,
+              race_key,
+              source_sha256=req['paci_sha256'],
+          )
+
+          schema = json.loads(
+              Path('horse-racing/jrdb/schema/jrdb_pwa_newspaper_race_schema_v0_1.json').read_text(encoding='utf-8')
+          )
+          validator = Draft202012Validator(schema, format_checker=FormatChecker())
+          schema_errors = sorted(validator.iter_errors(bundle), key=lambda error: list(error.path))
+          if schema_errors:
+              rendered = [f"{list(error.path)}: {error.message}" for error in schema_errors]
+              raise SystemExit('schema validation failed: ' + ' | '.join(rendered[:20]))
+
+          builder_path = Path('horse-racing/jrdb/src/jrdb_newspaper_build.py')
+          tree = ast.parse(builder_path.read_text(encoding='utf-8'))
+          imports = []
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  imports.extend(alias.name for alias in node.names)
+              elif isinstance(node, ast.ImportFrom) and node.module:
+                  imports.append(node.module)
+          forbidden_imports = [name for name in imports if name.startswith('racenote')]
+          if forbidden_imports:
+              raise SystemExit(f'forbidden RaceNote imports: {forbidden_imports}')
+
+          horses = bundle['horses']
+          history_lengths = [len(horse.get('history') or []) for horse in horses]
+          layer_counts = Counter()
+          for horse in horses:
+              for run in horse.get('history') or []:
+                  layer_counts[str(run.get('source_layer') or 'unknown')] += 1
+
+          def nested(row, *keys):
+              value = row
+              for key in keys:
+                  if not isinstance(value, dict):
+                      return None
+                  value = value.get(key)
+              return value
+
+          null_fields = {
+              'sire_name': sum(nested(h, 'basic', 'sire_name') is None for h in horses),
+              'broodmare_sire_name': sum(nested(h, 'basic', 'broodmare_sire_name') is None for h in horses),
+              'running_style_label': sum(nested(h, 'basic', 'running_style_label') is None for h in horses),
+              'idm': sum(nested(h, 'jrdb', 'ability', 'idm') is None for h in horses),
+              'total_index': sum(nested(h, 'jrdb', 'ability', 'total_index') is None for h in horses),
+              'training_index': sum(nested(h, 'jrdb', 'training', 'summary', 'training_index') is None for h in horses),
+          }
+
+          non_null_addons = []
+          non_empty_edges = []
+          for horse in horses:
+              horse_no = nested(horse, 'key', 'horse_no')
+              for source, value in (horse.get('addons') or {}).items():
+                  if value is not None:
+                      non_null_addons.append({'horse_no': horse_no, 'source': source})
+              if horse.get('edge_matches'):
+                  non_empty_edges.append(horse_no)
+          if non_null_addons or non_empty_edges:
+              raise SystemExit(
+                  f'base PoC unexpectedly contains addons/edges: addons={non_null_addons} edges={non_empty_edges}'
+              )
+
+          output = Path('/tmp/newspaper_out/race.json')
+          output.write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          bundle_bytes = output.read_bytes()
+          source_status = bundle['metadata']['source_status']['jrdb_history']
+          audit = {
+              'status': 'PASS',
+              'builder_version': '0.1.0',
+              'source': {
+                  'raw_run_id': req['raw_run_id'],
+                  'artifact_name': req['artifact_name'],
+                  'paci_file': paci.name,
+                  'paci_sha256': req['paci_sha256'],
+                  'parser_audit': parser_audit,
+              },
+              'race': bundle['race'],
+              'race_key': race_key,
+              'horse_count': len(horses),
+              'declared_field_size': bundle['race'].get('field_size'),
+              'history': {
+                  'min_per_horse': min(history_lengths) if history_lengths else 0,
+                  'max_per_horse': max(history_lengths) if history_lengths else 0,
+                  'total_runs': sum(history_lengths),
+                  'horses_with_0': sum(value == 0 for value in history_lengths),
+                  'horses_with_1_2': sum(1 <= value <= 2 for value in history_lengths),
+                  'horses_with_3_plus': sum(value >= 3 for value in history_lengths),
+                  'layer_counts': dict(layer_counts),
+                  'source_status': source_status,
+              },
+              'current_field_null_counts': null_fields,
+              'architecture': {
+                  'forbidden_racenote_imports': forbidden_imports,
+                  'addons_all_null': not non_null_addons,
+                  'edges_all_empty': not non_empty_edges,
+              },
+              'schema_validation': 'PASS',
+              'bundle': {
+                  'size_bytes': len(bundle_bytes),
+                  'sha256': hashlib.sha256(bundle_bytes).hexdigest(),
+              },
+          }
+          Path('/tmp/newspaper_out/audit.json').write_text(
+              json.dumps(audit, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          print(json.dumps(audit, ensure_ascii=False))
+          PY
+
+      - name: Upload Newspaper PoC artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.output_artifact }}
+          path: /tmp/newspaper_out/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          OUTPUT_ARTIFACT: ${{ steps.request.outputs.output_artifact }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          audit = json.loads(Path('/tmp/newspaper_out/audit.json').read_text(encoding='utf-8'))
+          result = {
+              'status': 'success',
+              'audit_status': audit['status'],
+              'run_id': int(os.environ['RUN_ID']),
+              'artifact_name': os.environ['OUTPUT_ARTIFACT'],
+              'source': audit['source'],
+              'race_key': audit['race_key'],
+              'race': audit['race'],
+              'horse_count': audit['horse_count'],
+              'history': audit['history'],
+              'current_field_null_counts': audit['current_field_null_counts'],
+              'architecture': audit['architecture'],
+              'bundle': audit['bundle'],
+          }
+          Path('/tmp/comment.md').write_text(
+              'JRDB_NEWSPAPER_POC_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB Newspaper PoC failed. Workflow run: $RUN_URL"
