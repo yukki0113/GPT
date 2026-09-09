@@ -44,7 +44,12 @@
         "source_version": {"type": ["string", "null"]},
         "generated_at": {"type": ["string", "null"]},
         "semantic_sha256": {"type": ["string", "null"]},
-        "message": {"type": ["string", "null"]}
+        "message": {"type": ["string", "null"]},
+        "coverage_complete": {"type": ["boolean", "null"]},
+        "expected_count": {"type": ["integer", "null"], "minimum": 0},
+        "resolved_count": {"type": ["integer", "null"], "minimum": 0},
+        "unresolved_count": {"type": ["integer", "null"], "minimum": 0},
+        "supplemental_count": {"type": ["integer", "null"], "minimum": 0}
       },
       "additionalProperties": true
     },
@@ -156,8 +161,14 @@
       "required": ["sequence", "source_layer", "date"],
       "properties": {
         "sequence": {"type": "integer", "minimum": 1, "maximum": 8},
+        "link_sequence": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
         "source_layer": {"enum": ["detailed_recent_history", "compact_older_history"]},
+        "source_kind": {"type": ["string", "null"]},
+        "detail_level": {"enum": ["detailed", "compact"]},
+        "race_key": {"type": ["string", "null"]},
+        "result_key": {"type": ["string", "null"]},
         "date": {"type": "string", "format": "date"},
+        "venue_code": {"type": ["string", "null"]},
         "venue": {"type": ["string", "null"]},
         "race_no": {"type": ["integer", "null"], "minimum": 1, "maximum": 12},
         "race_name": {"type": ["string", "null"]},
@@ -169,15 +180,19 @@
         "field_size": {"type": ["integer", "null"]},
         "finish": {"type": ["integer", "null"]},
         "final_popularity": {"type": ["integer", "null"]},
+        "final_win_odds": {"type": ["number", "null"]},
         "jockey_name": {"type": ["string", "null"]},
         "carried_weight_kg": {"type": ["number", "null"]},
         "corner_positions": {"type": "array", "maxItems": 4, "items": {"type": ["integer", "null"]}},
         "time_sec": {"type": ["number", "null"]},
+        "first3f_sec": {"type": ["number", "null"]},
         "last3f_sec": {"type": ["number", "null"]},
         "idm": {"type": ["number", "null"]},
         "body_weight_kg": {"type": ["integer", "null"]},
         "body_weight_change_kg": {"type": ["integer", "null"]},
-        "abnormal_code": {"type": ["string", "null"]}
+        "abnormal_code": {"type": ["string", "null"]},
+        "notes": {"type": ["object", "null"]},
+        "jrdb_result": {"type": ["object", "null"]}
       },
       "additionalProperties": true
     },
