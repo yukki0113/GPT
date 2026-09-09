@@ -6,3 +6,5 @@ GitHub suppresses recursive workflow runs for pushes made by that token, so a su
 `JRDB PWA Pages` even though the Pages workflow listens to `push`.
 
 After Issue-driven PWA code changes, trigger `JRDB PWA Pages` with `workflow_dispatch` or a user-token push.
+
+2026-09-09: direct user-token refresh issued after Newspaper shell v24 update.
