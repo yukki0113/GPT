@@ -4,6 +4,7 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 ## Current tools
 - `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
+- `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
 - `src/fetch_boatrace_racelist.py` — 出走表取得
 - `src/fetch_boatrace_pre_race_info.py` — 直前情報取得
 - `src/fetch_boatrace_results.py` — 公式結果取得
@@ -66,7 +67,6 @@ Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` および G
 python boat-racing/src/ledger_daily_result_import.py --input source.json --output update_plan.json
 python -m unittest discover -s boat-racing/tests -v
 ```
-- `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
 
 ## ForwardTrial analysis ledger
 
@@ -81,5 +81,3 @@ python boat-racing/src/forward_trial_analysis_import.py \
 ~~~
 
 13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
-- `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
-<!-- ForwardTrial tool is listed under Current tools. -->
