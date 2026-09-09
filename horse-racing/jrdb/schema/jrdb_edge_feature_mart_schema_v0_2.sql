@@ -11,7 +11,7 @@ CREATE TABLE meta_edge_feature_mart_build(
   result_labeled_count INTEGER NOT NULL,
   historical_track_condition_count INTEGER NOT NULL,
   excluded_obstacle_count INTEGER NOT NULL,
-  horse_quality_calibrated_count INTEGER NOT NULL,
+  horse_quality_calibrated_count INTEGER NOT NULL DEFAULT 0,
   horse_quality_model_version TEXT,
   anomaly_count INTEGER NOT NULL,
   status TEXT NOT NULL CHECK(status IN ('VALID','INVALID')),
