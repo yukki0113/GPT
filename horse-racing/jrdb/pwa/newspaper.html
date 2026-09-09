@@ -7,6 +7,7 @@
   <title>JRDB 自分用競馬新聞</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./newspaper.css?v=2" />
 </head>
 <body>
   <header class="app-header">
@@ -63,15 +64,20 @@
     </section>
 
     <section id="newspaper-table-card" class="card newspaper-table-card" hidden>
-      <div class="newspaper-scroll-hint">横へスクロールして比較できます。馬番・馬情報は固定表示です。</div>
+      <div class="newspaper-scroll-hint">横へスクロールして比較できます。枠・馬番・馬情報は固定表示です。</div>
       <div id="newspaper-table-wrap" class="table-wrap newspaper-table-wrap"></div>
+    </section>
+
+    <section id="newspaper-notes-card" class="card" hidden>
+      <h2>レース短評</h2>
+      <div id="newspaper-race-notes"></div>
     </section>
   </main>
 
   <dialog id="newspaper-detail-dialog" class="newspaper-dialog">
     <form method="dialog" class="newspaper-dialog-inner">
       <div class="newspaper-dialog-header">
-        <strong id="newspaper-dialog-title">過去走詳細</strong>
+        <strong id="newspaper-dialog-title">詳細</strong>
         <button type="submit" class="secondary">閉じる</button>
       </div>
       <div id="newspaper-dialog-body"></div>
@@ -80,5 +86,6 @@
 
   <footer><small>JRDB 自分用競馬新聞 / PWA display PoC</small></footer>
   <script src="./newspaper.js?v=1"></script>
+  <script src="./newspaper-v2.js?v=2"></script>
 </body>
 </html>
