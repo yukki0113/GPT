@@ -28,6 +28,8 @@ on:
       - 'horse-racing/jrdb/src/export_jrdb_eval_race_conditions.py'
       - 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py'
       - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
+      - 'horse-racing/jrdb/src/jrdb_newspaper_build.py'
+      - 'horse-racing/jrdb/schema/jrdb_pwa_newspaper_race_schema_v0_1.json'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
@@ -44,6 +46,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_raw_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_analysis_history_index.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_newspaper_build.py'
       - '.github/workflows/jrdb_common_reader_tests.yml'
   pull_request:
     paths:
@@ -72,6 +75,8 @@ on:
       - 'horse-racing/jrdb/src/export_jrdb_eval_race_conditions.py'
       - 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py'
       - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
+      - 'horse-racing/jrdb/src/jrdb_newspaper_build.py'
+      - 'horse-racing/jrdb/schema/jrdb_pwa_newspaper_race_schema_v0_1.json'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_racenote_compat.py'
@@ -88,6 +93,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_raw_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_analysis_history_index.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_newspaper_build.py'
       - '.github/workflows/jrdb_common_reader_tests.yml'
   workflow_dispatch:
 
@@ -105,6 +111,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Install test-only schema validator
+        run: python -m pip install --disable-pip-version-check 'jsonschema>=4.22,<5'
 
       - name: Compile common-reader production consumers
         working-directory: horse-racing/jrdb
@@ -132,7 +141,8 @@ jobs:
             src/jrdb_eval_horse_result_adapter.py \
             src/export_jrdb_eval_race_conditions.py \
             src/export_jrdb_eval_dataset.py \
-            src/export_jrdb_eval_horse_results.py
+            src/export_jrdb_eval_horse_results.py \
+            src/jrdb_newspaper_build.py
 
       - name: Run common reader regressions
         working-directory: horse-racing/jrdb/tests
@@ -153,4 +163,5 @@ jobs:
             test_jrdb_analysis_raw_adapter \
             test_jrdb_racenote_raw_adapter \
             test_jrdb_eval_horse_result_adapter \
-            test_racenote_analysis_history_index
+            test_racenote_analysis_history_index \
+            test_jrdb_newspaper_build
