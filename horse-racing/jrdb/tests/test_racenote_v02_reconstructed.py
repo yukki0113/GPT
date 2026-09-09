@@ -15,7 +15,7 @@ def test_normalized_ordinal_higher_is_better_with_ties():
 
 def test_normalized_ordinal_missing_uses_available_median_rank():
     got = v02.normalized_ordinal([100, None, 80, 60, None], higher_better=True)
-    assert got == pytest.approx([0.0, 0.25, 0.5, 0.25, 0.25])
+    assert got == pytest.approx([0.0, 0.25, 0.25, 0.5, 0.25])
 
 
 def test_all_missing_rank_is_neutral():
