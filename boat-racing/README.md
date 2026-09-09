@@ -81,3 +81,5 @@ python boat-racing/src/forward_trial_analysis_import.py \
 ~~~
 
 13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
+- `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
+<!-- ForwardTrial tool is listed under Current tools. -->
