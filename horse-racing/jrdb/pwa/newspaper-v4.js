@@ -160,6 +160,10 @@ function newspaperV4HistoryCellHtml(run, horseIndex, runIndex) {
   const timeGap = newspaperV4TimeGap(run);
   const passage = corners(run);
   const last3f = newspaperV4Last3f(run);
+  const troubleScore = run.jrdb_result && run.jrdb_result.trouble_score;
+  const trouble = !compact && troubleScore !== null && troubleScore !== undefined && Number(troubleScore) !== 0
+    ? `<div class="newspaper-trouble-flag">（不利）</div>`
+    : "";
   const abnormal = text(run.abnormal_code, "0") !== "0"
     ? `<div class="newspaper-abnormal">${escapeHtml(finishLabel(run))}</div>`
     : "";
@@ -175,6 +179,7 @@ function newspaperV4HistoryCellHtml(run, horseIndex, runIndex) {
     ${jockeyWeight ? `<div class="newspaper-run-person">${escapeHtml(jockeyWeight)}</div>` : ""}
     ${!compact && (raceTime || timeGap) ? `<div class="newspaper-run-time">${escapeHtml([raceTime, timeGap].filter(Boolean).join(" / "))}</div>` : ""}
     ${!compact && (passage || last3f) ? `<div class="newspaper-run-finish">${passage ? `<span>通 ${escapeHtml(passage)}</span>` : ""}${last3f}</div>` : ""}
+    ${trouble}
     ${abnormal}${detail}
   </div>`;
 }
