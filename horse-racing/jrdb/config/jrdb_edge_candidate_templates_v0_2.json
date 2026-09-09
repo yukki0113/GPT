@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1",
+  "template_version": "2026-09-09.v2",
+  "rules": {
+    "max_anchor_count": 2,
+    "max_modifier_count": 3,
+    "free_numeric_threshold_search": false,
+    "exact_distance_is_canonical_value": true
+  },
+  "canonical_values": {
+    "surface_code": ["1", "2"],
+    "turn_code": ["1", "2", "3"],
+    "frame_zone": ["INNER", "MIDDLE", "OUTER"],
+    "distance_change_bucket": ["LARGE_SHORTEN", "SHORTEN", "SAME_BAND", "EXTEND", "LARGE_EXTEND"],
+    "surface_transition": ["1->1", "1->2", "2->1", "2->2"],
+    "frame_transition": [
+      "INNER->INNER", "INNER->MIDDLE", "INNER->OUTER",
+      "MIDDLE->INNER", "MIDDLE->MIDDLE", "MIDDLE->OUTER",
+      "OUTER->INNER", "OUTER->MIDDLE", "OUTER->OUTER"
+    ]
+  },
+  "templates": [
+    {"template_id":"COURSE_FRAME_V1","family":"COURSE","anchor_type":"course","anchor_fields":["venue_code","surface_code","distance_m"],"modifier_fields":["frame_zone"],"baseline":"same_anchor","enabled":true,"example":"東京ダ1600 × 外枠"},
+    {"template_id":"COURSE_EXACT_FRAME_V2","family":"COURSE","anchor_type":"course","anchor_fields":["venue_code","surface_code","distance_m"],"modifier_fields":["frame_no"],"baseline":"same_anchor","enabled":true,"example":"東京芝1600 × 8枠"},
+    {"template_id":"SIRE_TURN_DISTANCE_V1","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["turn_code","distance_m"],"baseline":"same_anchor","enabled":true,"example":"○○産駒 × 右回り × 1600m"},
+    {"template_id":"SIRE_SURFACE_DISTANCE_V1","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["surface_code","distance_m"],"baseline":"same_anchor","enabled":true,"example":"○○産駒 × 芝 × 1600m"},
+    {"template_id":"SIRE_LINE_TURN_DISTANCE_V1","family":"PEDIGREE","anchor_type":"sire_line","anchor_fields":["sire_line_code"],"modifier_fields":["turn_code","distance_m"],"baseline":"same_anchor","enabled":true,"example":"○○系 × 右回り × 1600m"},
+    {"template_id":"SIRE_BROODMARE_SIRE_V2","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["broodmare_sire_name"],"baseline":"same_anchor","enabled":true,"example":"父○○ × 母父△△"},
+    {"template_id":"SIRE_AGE_V2","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["horse_age"],"baseline":"same_anchor","enabled":true,"example":"○○産駒 × 2歳"},
+    {"template_id":"SIRE_VENUE_SURFACE_DISTANCE_V2","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["venue_code","surface_code","distance_m"],"baseline":"same_anchor","enabled":true,"example":"○○産駒 × 東京 × 芝 × 1600m"},
+    {"template_id":"BROODMARE_SIRE_SURFACE_DISTANCE_V2","family":"PEDIGREE","anchor_type":"broodmare_sire","anchor_fields":["broodmare_sire_name"],"modifier_fields":["surface_code","distance_m"],"baseline":"same_anchor","enabled":true,"example":"母父○○ × 芝 × 1600m"},
+    {"template_id":"SIRE_DISTANCE_CHANGE_V1","family":"TRANSITION","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["distance_change_bucket"],"baseline":"same_anchor_with_prev1","enabled":true,"example":"○○産駒 × 距離延長"},
+    {"template_id":"SIRE_SURFACE_TRANSITION_V1","family":"TRANSITION","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["surface_transition"],"baseline":"same_anchor_with_prev1","enabled":true,"example":"○○産駒 × ダート替わり"},
+    {"template_id":"SIRE_FRAME_TRANSITION_V1","family":"TRANSITION","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["frame_transition"],"baseline":"same_anchor_with_prev1","enabled":true,"example":"○○産駒 × 内枠から外枠"},
+    {"template_id":"RECENT_UPTREND_SURFACE_DISTANCE_V2","family":"RECENT","anchor_type":"recent","anchor_fields":["surface_code","distance_m"],"modifier_fields":["uptrend_code"],"baseline":"same_anchor","enabled":true,"example":"芝1600 × 上昇度コード"},
+    {"template_id":"RECENT_TRAINING_ARROW_SURFACE_DISTANCE_V2","family":"RECENT","anchor_type":"recent","anchor_fields":["surface_code","distance_m"],"modifier_fields":["training_arrow_code"],"baseline":"same_anchor","enabled":true,"example":"芝1600 × 調教矢印"},
+    {"template_id":"RECENT_STABLE_EVAL_SURFACE_DISTANCE_V2","family":"RECENT","anchor_type":"recent","anchor_fields":["surface_code","distance_m"],"modifier_fields":["stable_evaluation_code"],"baseline":"same_anchor","enabled":true,"example":"芝1600 × 厩舎評価"},
+    {"template_id":"RECENT_ROTATION_SURFACE_DISTANCE_V2","family":"RECENT","anchor_type":"recent","anchor_fields":["surface_code","distance_m"],"modifier_fields":["rotation_interval"],"baseline":"same_anchor","enabled":true,"example":"芝1600 × ローテ間隔"},
+    {"template_id":"JOCKEY_VENUE_DISTANCE_V2","family":"HUMAN","anchor_type":"jockey","anchor_fields":["jockey_code"],"modifier_fields":["venue_code","distance_m"],"baseline":"human_residual_required","enabled":false,"phase2_note":"Enable only after pre-race horse-quality residual baseline is implemented. Raw jockey rates must not be promoted."},
+    {"template_id":"JOCKEY_TRAINER_PAIR_V1","family":"HUMAN","anchor_type":"jockey_trainer","anchor_fields":["jockey_code","trainer_code"],"modifier_fields":[],"baseline":"human_residual_required","enabled":false,"phase2_note":"Enable only after pre-race horse-quality residual baseline is implemented."}
+  ]
+}
