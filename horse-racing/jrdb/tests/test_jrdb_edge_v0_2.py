@@ -10,7 +10,7 @@ SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
 from jrdb_edge_v02_canonical import horse_age_at_race, track_condition_bucket
-from build_jrdb_edge_feature_mart_v0_2 import build as build_mart
+from build_jrdb_edge_feature_mart_v0_2 import build as build_mart, _status as mart_status
 import jrdb_edge_discovery_v0_2 as discovery_v02
 import jrdb_edge_matcher_v0_2 as matcher_v02
 import jrdb_edge_statistical_guard as stats_base
@@ -50,6 +50,42 @@ def test_v02_catalog_enables_cross_recent_and_track_but_not_human() -> None:
     assert by_id["SIRE_TRACK_CONDITION_V2"]["modifier_fields"] == ["surface_code", "track_condition_bucket"]
     assert by_id["JOCKEY_VENUE_DISTANCE_V2"]["enabled"] is False
     assert by_id["JOCKEY_VENUE_DISTANCE_V2"]["baseline"] == "human_residual_required"
+
+
+def test_v02_obstacle_rows_are_retained_but_ineligible() -> None:
+    row = {
+        "source_availability_class": "PRE_RACE",
+        "surface_code": "3",
+        "label_finish": 1,
+        "label_abnormal_code": "0",
+    }
+    assert mart_status(row) == "EXCLUDED_OBSTACLE"
+    schema = (ROOT / "schema/jrdb_edge_feature_mart_schema_v0_2.sql").read_text(encoding="utf-8")
+    assert "EXCLUDED_OBSTACLE" in schema
+
+
+def test_v02_canonical_filter_rejects_obstacle_and_noncanonical_transition() -> None:
+    catalog = json.loads((ROOT / "config/jrdb_edge_candidate_templates_v0_2.json").read_text(encoding="utf-8"))
+    flat_track = {
+        "anchor": {"sire_name": "SIRE"},
+        "modifiers": {"surface_code": "1", "track_condition_bucket": "3"},
+    }
+    obstacle_track = {
+        "anchor": {"sire_name": "SIRE"},
+        "modifiers": {"surface_code": "3", "track_condition_bucket": "3"},
+    }
+    obstacle_transition = {
+        "anchor": {"sire_name": "SIRE"},
+        "modifiers": {"surface_transition": "3->1"},
+    }
+    noncanonical_turn = {
+        "anchor": {"sire_name": "SIRE"},
+        "modifiers": {"turn_code": "9", "distance_m": 1600},
+    }
+    assert discovery_v02._candidate_is_canonical(flat_track, catalog) is True
+    assert discovery_v02._candidate_is_canonical(obstacle_track, catalog) is False
+    assert discovery_v02._candidate_is_canonical(obstacle_transition, catalog) is False
+    assert discovery_v02._candidate_is_canonical(noncanonical_turn, catalog) is False
 
 
 def test_v02_temporal_validator_accepts_all_added_condition_fields() -> None:
@@ -177,6 +213,7 @@ def test_feature_mart_v02_projects_age_recent_and_isolated_track_condition(tmp_p
     assert result["rows"] == 1
     assert result["historical_track_condition_rows"] == 1
     assert result["historical_track_condition_races"] == 1
+    assert result["excluded_obstacle"] == 0
     out = sqlite3.connect(output)
     row = out.execute(
         """SELECT horse_age,pre_idm,uptrend_code,training_arrow_code,
@@ -185,8 +222,8 @@ def test_feature_mart_v02_projects_age_recent_and_isolated_track_condition(tmp_p
            FROM edge_runner_fact"""
     ).fetchone()
     meta = out.execute(
-        "SELECT historical_track_condition_count FROM meta_edge_feature_mart_build"
+        "SELECT historical_track_condition_count,excluded_obstacle_count FROM meta_edge_feature_mart_build"
     ).fetchone()
     out.close()
     assert row == (2, 55.0, "2", "1", "3", 8, "31", "3", "HISTORICAL_RESULT_CONTEXT")
-    assert meta == (1,)
+    assert meta == (1, 0)
