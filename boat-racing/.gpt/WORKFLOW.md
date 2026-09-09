@@ -102,3 +102,14 @@ retry時は以下を必須とする。
 - 日次結果取込では、Google Sheetsへ書き込む前に `boat-racing/src/ledger_daily_result_import.py` で日次原本からJSON更新計画を生成する。対象日・freeze・掲載/CSVのみ/全対象・条件付き構造KPI・失敗構造の検証に失敗した場合は書き込まない。
 - 実装変更時は `python -m unittest discover -s boat-racing/tests -v` を実行し、日跨ぎ対象日・日付不一致停止・freeze保持・掲載分離・条件付きKPI・既存日回帰を確認する。
 
+## ForwardTrial専用分析台帳
+
+- 正本Googleスプレッドシート内の `FT2_` 13タブを既存台帳から独立して運用する。既存タブの削除・列変更・名称変更・計算式変更は行わない。
+- 日次原本はDriveの `racecards` / `predictions` / `sales-selection` / `results` を使用し、予想根拠明細は任意の監査資料とする。
+- 取込前に `forward_trial_analysis_import.py` で日付、48R、会場集合、キー一意性、仕様版、freeze、結果キー一致を検証する。不成立時はシートへ書き込まない。
+- 主キーは `日付×会場×R×仕様版` とし、同一キーは追記せずupsertする。
+- `Raw` は仕様上のForwardTrial対象、`Genuine` はRawかつ締切前freeze、`Published` はGenuineかつ有料または無料とする。CSVのみはPublishedに含めない。
+- freeze日時は日本時間で公式締切予定日時と比較し、締切後または同時刻は `CONTAMINATED` とする。該当行は削除せず監査タブへ残す。
+- 初回再集計（2026-09-01〜09-08）の固定受入値は、全336R、Raw 81R・29的中・投資8,100円・回収7,910円、Genuine 78R・29的中・投資7,800円・回収7,910円、Published 60R・23的中・投資6,000円・回収6,140円、汚染3Rとする。
+- 日次追記後は全R明細、日別、会場別、会場日目別、グレード別、判定構造別、販売選別検証、Score検証、Freeze監査、ダッシュボードを同一正規化データから再生成し、重複0・受入値・対象日値を照合する。
+- 予想ルール・販売ルールの変更判断はこの実装から切り離し、分析台帳は集計・監査に限定する。

@@ -66,3 +66,18 @@ Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` および G
 python boat-racing/src/ledger_daily_result_import.py --input source.json --output update_plan.json
 python -m unittest discover -s boat-racing/tests -v
 ```
+- `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
+
+## ForwardTrial analysis ledger
+
+正本Googleスプレッドシート内の `FT2_` 接頭辞13タブを、既存台帳とは独立したForwardTrial専用分析台帳として使用します。初回対象は2026-09-01〜2026-09-08の7日・336Rです。
+
+`src/forward_trial_analysis_import.py` は、Drive正本の公式出走表・事前予想・販売選別・結果CSVを日付×会場×R×仕様版で結合し、締切後freezeを削除せず `CONTAMINATED` として真正forward集計から分離します。入力の欠損、日付不一致、キー重複、freeze欠損はfail-closedとし、Google認証や書込み処理は持ちません。
+
+~~~bash
+python boat-racing/src/forward_trial_analysis_import.py \
+  --manifest source_manifest.json \
+  --output forward_trial_analysis.json
+~~~
+
+13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
