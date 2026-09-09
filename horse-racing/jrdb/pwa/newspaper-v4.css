@@ -173,6 +173,12 @@
 .newspaper-last3f.last3f-rank-1 { background: #fff0a8; }
 .newspaper-last3f.last3f-rank-2 { background: #cfefff; }
 .newspaper-last3f.last3f-rank-3 { background: #d9f0d3; }
+.newspaper-trouble-flag {
+  margin-top: 2px;
+  color: #8a5200;
+  font-size: 10px;
+  font-weight: 700;
+}
 .newspaper-run-v4.compact {
   background: linear-gradient(to bottom, rgba(0,0,0,.025), transparent);
 }
