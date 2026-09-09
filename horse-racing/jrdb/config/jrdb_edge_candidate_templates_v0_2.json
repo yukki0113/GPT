@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "template_version": "2026-09-09.v2",
+  "template_version": "2026-09-09.v2.1",
   "rules": {
     "max_anchor_count": 2,
     "max_modifier_count": 3,
@@ -11,6 +11,7 @@
     "surface_code": ["1", "2"],
     "turn_code": ["1", "2", "3"],
     "frame_zone": ["INNER", "MIDDLE", "OUTER"],
+    "track_condition_bucket": ["1", "2", "3", "4"],
     "distance_change_bucket": ["LARGE_SHORTEN", "SHORTEN", "SAME_BAND", "EXTEND", "LARGE_EXTEND"],
     "surface_transition": ["1->1", "1->2", "2->1", "2->2"],
     "frame_transition": [
@@ -29,6 +30,7 @@
     {"template_id":"SIRE_AGE_V2","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["horse_age"],"baseline":"same_anchor","enabled":true,"example":"○○産駒 × 2歳"},
     {"template_id":"SIRE_VENUE_SURFACE_DISTANCE_V2","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["venue_code","surface_code","distance_m"],"baseline":"same_anchor","enabled":true,"example":"○○産駒 × 東京 × 芝 × 1600m"},
     {"template_id":"BROODMARE_SIRE_SURFACE_DISTANCE_V2","family":"PEDIGREE","anchor_type":"broodmare_sire","anchor_fields":["broodmare_sire_name"],"modifier_fields":["surface_code","distance_m"],"baseline":"same_anchor","enabled":true,"example":"母父○○ × 芝 × 1600m"},
+    {"template_id":"SIRE_TRACK_CONDITION_V2","family":"PEDIGREE","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["surface_code","track_condition_bucket"],"baseline":"same_anchor","enabled":true,"historical_discovery_only":true,"example":"○○産駒 × 芝 × 重馬場"},
     {"template_id":"SIRE_DISTANCE_CHANGE_V1","family":"TRANSITION","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["distance_change_bucket"],"baseline":"same_anchor_with_prev1","enabled":true,"example":"○○産駒 × 距離延長"},
     {"template_id":"SIRE_SURFACE_TRANSITION_V1","family":"TRANSITION","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["surface_transition"],"baseline":"same_anchor_with_prev1","enabled":true,"example":"○○産駒 × ダート替わり"},
     {"template_id":"SIRE_FRAME_TRANSITION_V1","family":"TRANSITION","anchor_type":"sire","anchor_fields":["sire_name"],"modifier_fields":["frame_transition"],"baseline":"same_anchor_with_prev1","enabled":true,"example":"○○産駒 × 内枠から外枠"},
