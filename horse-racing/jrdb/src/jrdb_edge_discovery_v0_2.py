@@ -9,7 +9,7 @@ from pathlib import Path
 import jrdb_edge_discovery as base
 from jrdb_edge_validation import PolicySelection, select_policy as select_policy_v1
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 DEFAULT_POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -17,7 +17,7 @@ DEFAULT_POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
 V02_FIELDS = {
     "frame_no", "horse_age", "rotation_interval", "pre_idm", "training_score",
     "stable_score", "uptrend_code", "training_arrow_code", "stable_evaluation_code",
-    "body_weight_pre_kg", "body_weight_change_pre_kg",
+    "body_weight_pre_kg", "body_weight_change_pre_kg", "track_condition_bucket",
 }
 base.ALLOWED_FIELDS.update(V02_FIELDS)
 
