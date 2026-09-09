@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Build leakage-safe JRDB Edge Feature Mart v0.2 from Index Base v0.1."""
+"""Build JRDB Edge Feature Mart v0.2 from Index Base v0.1.
+
+Most condition fields are pre-race.  Historical track condition is the explicit
+exception: it is read first from ``race_result_context`` (SED-derived race
+context) into an isolated race-level snapshot, then result labels are joined in
+a separate query.  This supports historical discovery such as sire x going
+without exposing finish/payout columns to the condition-extraction step.
+"""
 from __future__ import annotations
 
 import argparse
@@ -13,9 +20,9 @@ from jrdb_edge_canonical import (
     frame_zone as _frame_zone,
     transition as _transition,
 )
-from jrdb_edge_v02_canonical import horse_age_at_race
+from jrdb_edge_v02_canonical import horse_age_at_race, track_condition_bucket
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 SCHEMA_VERSION = "v0.2"
 DEFAULT_SCHEMA = Path(__file__).resolve().parents[1] / "schema/jrdb_edge_feature_mart_schema_v0_2.sql"
 
@@ -34,6 +41,7 @@ def _status(row: sqlite3.Row) -> str:
 def _required_tables(connection: sqlite3.Connection) -> None:
     required = {
         "race_context",
+        "race_result_context",
         "runner_pre",
         "runner_previous_link",
         "runner_result",
@@ -43,6 +51,24 @@ def _required_tables(connection: sqlite3.Connection) -> None:
     missing = required - existing
     if missing:
         raise ValueError(f"Index Base is missing required table(s): {sorted(missing)}")
+
+
+def _historical_track_condition_snapshot(connection: sqlite3.Connection) -> dict[str, tuple[str, str]]:
+    """Read only SED-derived race condition context, without runner results.
+
+    The returned mapping is deliberately created before any query touching
+    runner_result.  Raw JRDB subcodes are retained for audit while discovery
+    uses the broad 1/2/3/4 bucket.
+    """
+    snapshot: dict[str, tuple[str, str]] = {}
+    for row in connection.execute(
+        "SELECT race_key, track_condition_code FROM race_result_context ORDER BY race_key"
+    ):
+        raw = str(row[1] or "").strip()
+        bucket = track_condition_bucket(raw)
+        if raw and bucket is not None:
+            snapshot[str(row[0])] = (raw, bucket)
+    return snapshot
 
 
 def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_SCHEMA) -> dict[str, int | float | str]:
@@ -58,6 +84,12 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
     try:
         _required_tables(src)
         out.executescript(schema_path.read_text(encoding="utf-8"))
+
+        # Phase A: condition-only extraction.  No runner_result columns are read here.
+        track_snapshot = _historical_track_condition_snapshot(src)
+
+        # Phase B: runner facts + result labels.  Historical track condition is
+        # attached from the already-isolated race-level snapshot above.
         query = """
         SELECT
           r.race_key, p.horse_no, r.race_date, r.venue_code, r.race_no,
@@ -111,6 +143,7 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
         )
 
         rows = pre_race_eligible = result_labeled = anomalies = 0
+        historical_track_condition_rows = 0
         eligible_labels = win_hits = place_hits = 0
         for row in src.execute(query):
             if row["profile_asof_date"] and row["profile_asof_date"] > row["race_date"]:
@@ -135,6 +168,12 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
 
             status = _status(row)
             is_pre = int(row["source_availability_class"] == "PRE_RACE")
+            track = track_snapshot.get(str(row["race_key"]))
+            raw_track = track[0] if track else None
+            track_bucket = track[1] if track else None
+            track_source = "HISTORICAL_RESULT_CONTEXT" if track else None
+            historical_track_condition_rows += int(track is not None)
+
             values: dict[str, Any] = {
                 "race_key": row["race_key"],
                 "horse_no": row["horse_no"],
@@ -150,6 +189,9 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
                 "declared_field_size": row["declared_field_size"],
                 "source_availability_class": row["source_availability_class"],
                 "is_pre_race_eligible": is_pre,
+                "track_condition_code": raw_track,
+                "track_condition_bucket": track_bucket,
+                "track_condition_source_class": track_source,
                 "frame_no": row["frame_no"],
                 "frame_zone": current_zone,
                 "horse_id": row["horse_id"],
@@ -222,11 +264,13 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
         out.execute(
             """INSERT INTO meta_edge_feature_mart_build(
               builder_version,schema_version,source_path,built_at,row_count,
-              pre_race_eligible_count,result_labeled_count,anomaly_count,status,message
-            ) VALUES (?,?,?,?,?,?,?,?,?,?)""",
+              pre_race_eligible_count,result_labeled_count,historical_track_condition_count,
+              anomaly_count,status,message
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 VERSION, SCHEMA_VERSION, str(source_path), built_at, rows,
-                pre_race_eligible, result_labeled, anomalies, "VALID", None,
+                pre_race_eligible, result_labeled, historical_track_condition_rows,
+                anomalies, "VALID", None,
             ),
         )
         out.commit()
@@ -238,6 +282,8 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
             "rows": rows,
             "pre_race_eligible": pre_race_eligible,
             "result_labeled": result_labeled,
+            "historical_track_condition_rows": historical_track_condition_rows,
+            "historical_track_condition_races": len(track_snapshot),
             "eligible_labels": eligible_labels,
             "win_hits": win_hits,
             "place_hits": place_hits,
