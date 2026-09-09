@@ -85,10 +85,12 @@ def test_forward_settlement_keeps_sed_postrace_only_and_uses_mart_label_semantic
     outcomes = forward_eval.load_sed_outcomes(sed)
     report, occurrences = forward_eval.evaluate(matches, outcomes)
     assert len(occurrences) == 2
-    assert occurrences[0]["evaluator_version"] == "0.2.0"
+    assert occurrences[0]["evaluator_version"] == "0.3.0"
+    assert occurrences[0]["evaluation_mode"] == "TRUE_FORWARD"
     assert occurrences[0]["registry_version"] == "phase1-full"
     assert occurrences[0]["strength_score"] == pytest.approx(0.8)
     assert occurrences[0]["confidence_band"] == "HIGH"
+    assert report["evaluation_mode"] == "TRUE_FORWARD"
     assert report["overall"]["eligible"] == 2
     assert report["overall"]["win_rate"] == pytest.approx(0.5)
     assert report["overall"]["place_rate"] == pytest.approx(0.5)
@@ -97,6 +99,27 @@ def test_forward_settlement_keeps_sed_postrace_only_and_uses_mart_label_semantic
     assert report["by_polarity"]["POSITIVE"]["place_hits"] == 1
     assert report["by_polarity"]["NEGATIVE"]["place_hits"] == 0
     assert report["by_review_due"]["True"]["review_due_occurrences"] == 1
+
+
+def test_reconstructed_backfill_is_explicitly_stamped(tmp_path: Path) -> None:
+    sed = tmp_path / "SED260905.zip"
+    _write_sed(sed, [
+        _sed_row(race_key="01262501", horse_no=1, horse_id="23100001", date_raw="20260905",
+                 finish=1, win_payout=350, place_payout=160),
+    ])
+    matches = [_match_row("01262501", 1, "23100001", "EDGE-A", "POSITIVE", "COURSE")]
+    report, occurrences = forward_eval.evaluate(
+        matches,
+        forward_eval.load_sed_outcomes(sed),
+        evaluation_mode="RECONSTRUCTED_BACKFILL",
+    )
+    assert report["evaluation_mode"] == "RECONSTRUCTED_BACKFILL"
+    assert occurrences[0]["evaluation_mode"] == "RECONSTRUCTED_BACKFILL"
+
+
+def test_invalid_evaluation_mode_is_rejected() -> None:
+    with pytest.raises(ValueError, match="unsupported evaluation_mode"):
+        forward_eval.normalize_evaluation_mode("backtest")
 
 
 def test_abnormal_result_is_not_eligible(tmp_path: Path) -> None:
