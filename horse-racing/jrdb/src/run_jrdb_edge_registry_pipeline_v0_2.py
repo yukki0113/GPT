@@ -7,11 +7,18 @@ from pathlib import Path
 
 import run_jrdb_edge_registry_pipeline as base
 
-VERSION = "0.2.6"
+VERSION = "0.2.7"
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
 _BASE_BUILD_STAGES = base.build_stages
+
+# Frozen from Full #827 / run 34442743305. These checks apply only to the
+# canonical 2010-2025 sensitivity run so shorter smoke periods remain valid.
+FULL_SUGGESTIVE_BASELINE_CANDIDATES = 519
+FULL_SUGGESTIVE_BASELINE_CHANNELS = 540
+FULL_SUGGESTIVE_EDGE_SET_SHA256 = "a65138340b905f5bd5650ca773346a3262dcd5a62e0bc823e1e5de0d2cea86f4"
+FULL_SUGGESTIVE_CHANNEL_SET_SHA256 = "bbe29fd342b6a6e9a833612390e4ab39da19b55b2cd9503e26211a5d6fe589b5"
 
 
 def build_stages_v02(request, paths, python):
@@ -91,29 +98,44 @@ def build_stages_v02(request, paths, python):
                     base.FAILURE_CLASS_DOMAIN,
                 )
             )
+
+            sensitivity_command = [
+                python,
+                str(ROOT / "src/research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py"),
+                "--mart",
+                str(paths.mart_db),
+                "--registry",
+                str(paths.out_dir / "edge_registry.sqlite"),
+                "--registry-audit",
+                str(paths.out_dir / "edge_registry_audit.json"),
+                "--baseline-jsonl",
+                str(paths.out_dir / "edge_suggestive_bootstrap_research.jsonl"),
+                "--output-jsonl",
+                str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity.jsonl"),
+                "--audit-json",
+                str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity_audit.json"),
+                "--audit-md",
+                str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity_audit.md"),
+                "--bootstrap-samples",
+                "2000",
+            ]
+            if request.from_year == 2010 and request.to_year == 2025:
+                sensitivity_command.extend(
+                    [
+                        "--expected-baseline-candidates",
+                        str(FULL_SUGGESTIVE_BASELINE_CANDIDATES),
+                        "--expected-baseline-channels",
+                        str(FULL_SUGGESTIVE_BASELINE_CHANNELS),
+                        "--expected-edge-set-sha256",
+                        FULL_SUGGESTIVE_EDGE_SET_SHA256,
+                        "--expected-channel-set-sha256",
+                        FULL_SUGGESTIVE_CHANNEL_SET_SHA256,
+                    ]
+                )
             replaced.append(
                 base.Stage(
                     "suggestive_bootstrap_sensitivity",
-                    (
-                        python,
-                        str(ROOT / "src/research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py"),
-                        "--mart",
-                        str(paths.mart_db),
-                        "--registry",
-                        str(paths.out_dir / "edge_registry.sqlite"),
-                        "--registry-audit",
-                        str(paths.out_dir / "edge_registry_audit.json"),
-                        "--baseline-jsonl",
-                        str(paths.out_dir / "edge_suggestive_bootstrap_research.jsonl"),
-                        "--output-jsonl",
-                        str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity.jsonl"),
-                        "--audit-json",
-                        str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity_audit.json"),
-                        "--audit-md",
-                        str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity_audit.md"),
-                        "--bootstrap-samples",
-                        "2000",
-                    ),
+                    tuple(sensitivity_command),
                     base.FAILURE_CLASS_DOMAIN,
                 )
             )
