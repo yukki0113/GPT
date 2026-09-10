@@ -41,7 +41,7 @@ class RacelistMetadataEnrichmentTest(unittest.TestCase):
         rows = event_meta.parse_official_index(source, "20260904")
         self.assertEqual("G3", rows[0]["グレード大分類"])
 
-    def test_enrich_csv_adds_three_columns_and_preserves_race_type(self) -> None:
+    def test_enrich_csv_adds_two_columns_and_preserves_race_type(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
             path = Path(temporary_dir) / "race.csv"
             columns = ["日付", "会場", "R", "開催日目", "レース種別", "艇番"]
@@ -70,13 +70,13 @@ class RacelistMetadataEnrichmentTest(unittest.TestCase):
                 fieldnames = list(reader.fieldnames or [])
 
             self.assertEqual(
-                ["日付", "会場", "R", "開催日目", "開催グレード", "開催名", "レース名", "レース種別", "艇番"],
+                ["日付", "会場", "R", "開催日目", "開催グレード", "開催名", "レース種別", "艇番"],
                 fieldnames,
             )
             self.assertEqual("G1", rows[0]["開催グレード"])
             self.assertEqual("開設７４周年記念　海の王者決定戦", rows[0]["開催名"])
-            self.assertEqual("準優勝戦", rows[0]["レース名"])
             self.assertEqual("準優勝戦", rows[0]["レース種別"])
+            self.assertNotIn("レース名", rows[0])
 
     def test_build_event_map_fails_closed_when_grade_is_unresolved(self) -> None:
         official = [{
