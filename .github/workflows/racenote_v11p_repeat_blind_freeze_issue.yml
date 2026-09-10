@@ -1,0 +1,219 @@
+name: RaceNote v1.1-P Repeat Blind Freeze
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: racenote-v11p-repeat-blind-freeze
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    if: ${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_REPEAT_BLIND_FREEZE]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Prepare and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import datetime
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = '[RACENOTE_V11P_REPEAT_BLIND_FREEZE]'
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('REQUEST_INVALID: invalid request_id')
+          try:
+              body = json.loads(os.environ.get('ISSUE_BODY') or '')
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'REQUEST_INVALID: body must be JSON: {exc}')
+          if body.get('request_id') != request_id:
+              raise SystemExit('REQUEST_INVALID: title request_id and body request_id differ')
+
+          dates = body.get('dates')
+          if not isinstance(dates, list) or len(dates) != 3:
+              raise SystemExit('REQUEST_INVALID: dates must contain exactly three dates')
+          if len(set(dates)) != 3 or dates != sorted(dates):
+              raise SystemExit('REQUEST_INVALID: dates must be unique and ascending')
+          for day in dates:
+              if not isinstance(day, str) or not re.fullmatch(r'\d{8}', day):
+                  raise SystemExit(f'REQUEST_INVALID: invalid date {day!r}')
+              datetime.datetime.strptime(day, '%Y%m%d')
+
+          if not isinstance(body.get('edge'), dict) or not isinstance(body.get('racenote'), dict):
+              raise SystemExit('REQUEST_INVALID: edge and racenote objects are required')
+          for day in dates:
+              if not isinstance(body['racenote'].get(day), dict):
+                  raise SystemExit(f'REQUEST_INVALID: racenote.{day} is required')
+
+          Path('/tmp/request.json').write_text(
+              json.dumps(body, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Install test dependency
+        run: python -m pip install --disable-pip-version-check -q pytest
+
+      - name: Run frozen logic and repeat-driver tests
+        run: |
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_racenote_v02_reconstructed.py \
+            horse-racing/jrdb/tests/test_racenote_edge_prediction_policy.py \
+            horse-racing/jrdb/tests/test_racenote_edge_prediction_policy_neutral.py \
+            horse-racing/jrdb/tests/test_racenote_v11p_repeat_blind_freeze.py
+
+      - name: Download frozen upstream artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/upstream/edge /tmp/upstream/racenote
+          edge_run="$(jq -r '.edge.run_id' /tmp/request.json)"
+          edge_artifact="$(jq -r '.edge.artifact_name' /tmp/request.json)"
+          gh run download "$edge_run" --repo "$GITHUB_REPOSITORY" --name "$edge_artifact" --dir /tmp/upstream/edge
+          while IFS= read -r day; do
+            run_id="$(jq -r --arg day "$day" '.racenote[$day].run_id' /tmp/request.json)"
+            artifact="$(jq -r --arg day "$day" '.racenote[$day].artifact_name' /tmp/request.json)"
+            mkdir -p "/tmp/upstream/racenote/$day"
+            gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --name "$artifact" --dir "/tmp/upstream/racenote/$day"
+          done < <(jq -r '.dates[]' /tmp/request.json)
+
+      - name: Build PRE_HJC repeat freeze
+        run: |
+          code_head="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/run_racenote_v11p_repeat_blind_freeze.py \
+            --request-json /tmp/request.json \
+            --edge-root /tmp/upstream/edge \
+            --racenote-root /tmp/upstream/racenote \
+            --output-dir /tmp/freeze \
+            --run-id "${{ github.run_id }}" \
+            --head-sha "$code_head"
+
+      - name: Upload freeze artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-v11p-repeat-pre-hjc-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/freeze/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit immutable freeze to main
+        id: commit
+        run: |
+          set -euo pipefail
+          target='horse-racing/jrdb/prediction_runs'
+          mkdir -p "$target"
+          python - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+
+          result = json.loads(Path('/tmp/freeze/result.json').read_text(encoding='utf-8'))
+          target = Path('horse-racing/jrdb/prediction_runs')
+          files = [item['file'] for item in result['day_files'].values()]
+          files.append(result['manifest_file'])
+          for name in files:
+              destination = target / name
+              if destination.exists():
+                  raise SystemExit(
+                      f'DOMAIN_VALIDATION_FAILED: immutable freeze target already exists: {destination}'
+                  )
+          for name in files:
+              shutil.copy2(Path('/tmp/freeze') / name, target / name)
+          Path('/tmp/freeze_file_list.txt').write_text(
+              '\n'.join(files) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+          while IFS= read -r file; do
+            git add "$target/$file"
+          done < /tmp/freeze_file_list.txt
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'freeze(jrdb): RaceNote v1.1-P repeat PRE_HJC'
+          git push origin HEAD:main
+          freeze_commit="$(git rev-parse HEAD)"
+          echo "freeze_commit=$freeze_commit" >> "$GITHUB_OUTPUT"
+
+      - name: Comment success and close Issue
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          RUN_ID: ${{ github.run_id }}
+          FREEZE_COMMIT: ${{ steps.commit.outputs.freeze_commit }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          result = json.loads(Path('/tmp/freeze/result.json').read_text(encoding='utf-8'))
+          compact = {
+              'status': 'success',
+              'freeze_stage': result['freeze_stage'],
+              'result_data_used': False,
+              'request_id': result['request_id'],
+              'run_id': result['run_id'],
+              'code_head_sha': result['head_sha'],
+              'freeze_commit': os.environ['FREEZE_COMMIT'],
+              'artifact_name': f"racenote-v11p-repeat-pre-hjc-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+              'race_count': result['race_count'],
+              'axis_changes': result['axis_changes'],
+              'by_day': result['by_day'],
+              'combined_canonical_payload_sha256': result['combined_canonical_payload_sha256'],
+              'manifest_file': result['manifest_file'],
+              'manifest_sha256': result['manifest_sha256'],
+              'day_files': result['day_files'],
+              'source_hashes': result['source_hashes'],
+              'repeat_driver_version': result['repeat_driver_version'],
+          }
+          body = (
+              'RACENOTE_V11P_REPEAT_BLIND_FREEZE_RESULT\n```json\n'
+              + json.dumps(compact, ensure_ascii=False, indent=2, sort_keys=True)
+              + '\n```\n'
+          )
+          subprocess.run(
+              ['gh', 'issue', 'comment', os.environ['ISSUE_NUMBER'], '--repo', os.environ['GITHUB_REPOSITORY'], '--body', body],
+              check=True,
+          )
+          subprocess.run(
+              ['gh', 'issue', 'close', os.environ['ISSUE_NUMBER'], '--repo', os.environ['GITHUB_REPOSITORY'], '--reason', 'completed'],
+              check=True,
+          )
+          PY
+
+      - name: Comment failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "RACENOTE_V11P_REPEAT_BLIND_FREEZE_RESULT\n\`\`\`json\n{\"status\":\"failure\",\"failure_class\":\"IMPLEMENTATION_OR_DOMAIN_VALIDATION_FAILED\",\"run_id\":$GITHUB_RUN_ID,\"retryable\":false}\n\`\`\`\nRun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
