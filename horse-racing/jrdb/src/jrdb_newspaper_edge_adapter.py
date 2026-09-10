@@ -2,26 +2,30 @@
 # -*- coding: utf-8 -*-
 """Adapt JRDB Edge matcher output for Newspaper ``特注メモ`` consumption.
 
-The adapter is intentionally a display boundary.  It never re-evaluates Edge
-conditions, aggregates strength, or converts ROI into a score.  Exact matcher
+The adapter is intentionally a display boundary. It never re-evaluates Edge
+conditions, aggregates strength, or converts ROI into a score. Exact matcher
 output is validated and normalized so the Newspaper layer can join it by
 ``race_key + race_horse_key + horse_no`` and render only the currently allowed
 serving subset.
 
 Current matcher compatibility:
 - ``status`` is accepted as the legacy spelling of ``registry_status``.
-- ``evidence.performance_signal`` is accepted when the future top-level
-  evidence-level fields are not present.
+- ``evidence.performance_signal`` is accepted when future top-level evidence
+  fields are not present.
 - Missing future fields remain ``None``; they are not silently fabricated.
+- Legacy machine-oriented ``display_text`` is translated only at this display
+  boundary from the already-published structured conditions. Matching itself
+  is never repeated here.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any, Mapping
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 ACTIVE_STATUS = "ACTIVE"
 DISPLAY_PERFORMANCE_SIGNALS = {"POSITIVE", "NEGATIVE"}
@@ -29,6 +33,39 @@ KNOWN_PERFORMANCE_SIGNALS = {"POSITIVE", "NEGATIVE", "NEUTRAL"}
 KNOWN_EVIDENCE_LEVELS = {"CONFIRMED", "SUGGESTIVE", "NONE"}
 KNOWN_PRESENTATION_ROLES = {"PRIMARY", "SECONDARY", "CONFLICT"}
 SIGNED_PREFIXES = ("＋", "+", "－", "-", "−", "±")
+
+VENUE_LABELS = {
+    "01": "札幌",
+    "02": "函館",
+    "03": "福島",
+    "04": "新潟",
+    "05": "東京",
+    "06": "中山",
+    "07": "中京",
+    "08": "京都",
+    "09": "阪神",
+    "10": "小倉",
+}
+SURFACE_LABELS = {"1": "芝", "2": "ダート", "3": "障害"}
+TURN_LABELS = {"1": "右回り", "2": "左回り", "3": "直線"}
+FRAME_ZONE_LABELS = {"INNER": "内枠", "MIDDLE": "中枠", "OUTER": "外枠"}
+DISTANCE_CHANGE_LABELS = {
+    "LARGE_SHORTEN": "大幅距離短縮",
+    "SHORTEN": "距離短縮",
+    "SAME_BAND": "同距離帯",
+    "EXTEND": "距離延長",
+    "LARGE_EXTEND": "大幅距離延長",
+}
+SURFACE_TRANSITION_LABELS = {
+    "1->1": "芝継続",
+    "1->2": "芝→ダート替わり",
+    "2->1": "ダート→芝替わり",
+    "2->2": "ダート継続",
+}
+MACHINE_DISPLAY_PATTERN = re.compile(
+    r"(?:venue_code|surface_code|distance_m|turn_code|frame_zone|"
+    r"distance_change_bucket|surface_transition|frame_transition)="
+)
 
 
 class NewspaperEdgeAdapterError(ValueError):
@@ -56,7 +93,9 @@ def _required_text(value: Any, field: str, context: str) -> str:
 def _positive_int(value: Any, field: str, context: str) -> int:
     """Read a positive integer identity value."""
     if isinstance(value, bool):
-        raise NewspaperEdgeAdapterError(f"{context}: {field} must be a positive integer")
+        raise NewspaperEdgeAdapterError(
+            f"{context}: {field} must be a positive integer"
+        )
     try:
         normalized = int(value)
     except (TypeError, ValueError) as exc:
@@ -64,7 +103,9 @@ def _positive_int(value: Any, field: str, context: str) -> int:
             f"{context}: {field} must be a positive integer"
         ) from exc
     if normalized < 1:
-        raise NewspaperEdgeAdapterError(f"{context}: {field} must be a positive integer")
+        raise NewspaperEdgeAdapterError(
+            f"{context}: {field} must be a positive integer"
+        )
     return normalized
 
 
@@ -113,17 +154,179 @@ def _validate_optional_enum(
         )
 
 
-def _memo_text(display_text: str, performance_signal: str | None) -> str:
-    """Add a display sign only when EdgeDB text does not already contain one."""
-    stripped = display_text.lstrip()
-    if stripped.startswith(SIGNED_PREFIXES):
-        return display_text
+def _strip_display_sign(display_text: str) -> str:
+    """Remove one leading display sign and surrounding whitespace."""
+    stripped = display_text.strip()
+    for prefix in SIGNED_PREFIXES:
+        if stripped.startswith(prefix):
+            return stripped[len(prefix):].strip()
+    return stripped
+
+
+def _frame_transition_label(value: Any) -> str | None:
+    """Translate one canonical frame transition without changing semantics."""
+    normalized = _text(value)
+    if normalized is None or "->" not in normalized:
+        return None
+    previous, current = normalized.split("->", 1)
+    previous_label = FRAME_ZONE_LABELS.get(previous)
+    current_label = FRAME_ZONE_LABELS.get(current)
+    if previous_label is None or current_label is None:
+        return None
+    return f"{previous_label}→{current_label}"
+
+
+def _conditions_from_match(
+    match: Mapping[str, Any],
+) -> tuple[str | None, Mapping[str, Any], Mapping[str, Any]]:
+    """Return template id, anchor, and modifiers from published evidence."""
+    evidence = match.get("evidence")
+    if not isinstance(evidence, Mapping):
+        return None, {}, {}
+
+    conditions = evidence.get("conditions")
+    if not isinstance(conditions, Mapping):
+        return _text(evidence.get("template_id")), {}, {}
+
+    template_id = _text(evidence.get("template_id"))
+    if template_id is None:
+        template_id = _text(conditions.get("template_id"))
+
+    anchor = conditions.get("anchor")
+    modifiers = conditions.get("modifiers")
+    if not isinstance(anchor, Mapping):
+        anchor = {}
+    if not isinstance(modifiers, Mapping):
+        modifiers = {}
+    return template_id, anchor, modifiers
+
+
+def _sire_subject(anchor: Mapping[str, Any]) -> str | None:
+    """Build a sire/sire-line subject from an already-published anchor."""
+    sire_name = _text(anchor.get("sire_name"))
+    if sire_name is not None:
+        return f"{sire_name}産駒"
+
+    sire_line_code = _text(anchor.get("sire_line_code"))
+    if sire_line_code is not None:
+        return f"系統{sire_line_code}"
+    return None
+
+
+def _distance_label(value: Any) -> str | None:
+    """Format a canonical distance as a compact Japanese label."""
+    if value is None or value == "":
+        return None
+    try:
+        distance = int(value)
+    except (TypeError, ValueError):
+        return None
+    if distance <= 0:
+        return None
+    return f"{distance}m"
+
+
+def _course_anchor_label(anchor: Mapping[str, Any]) -> str | None:
+    """Build a human-readable course anchor from published canonical fields."""
+    venue = VENUE_LABELS.get(str(anchor.get("venue_code") or "").zfill(2))
+    surface = SURFACE_LABELS.get(str(anchor.get("surface_code") or ""))
+    distance = _distance_label(anchor.get("distance_m"))
+    if venue is None or surface is None or distance is None:
+        return None
+    return f"{venue}{surface}{distance}"
+
+
+def _human_condition_text(match: Mapping[str, Any]) -> str | None:
+    """Translate known canonical Edge templates into a concise Japanese condition."""
+    template_id, anchor, modifiers = _conditions_from_match(match)
+    if template_id is None:
+        return None
+
+    subject = _sire_subject(anchor)
+
+    if template_id == "COURSE_FRAME_V1":
+        course = _course_anchor_label(anchor)
+        frame = FRAME_ZONE_LABELS.get(str(modifiers.get("frame_zone") or ""))
+        if course is not None and frame is not None:
+            return f"{course}の{frame}"
+        return None
+
+    if template_id == "SIRE_TURN_DISTANCE_V1":
+        turn = TURN_LABELS.get(str(modifiers.get("turn_code") or ""))
+        distance = _distance_label(modifiers.get("distance_m"))
+        if subject is not None and turn is not None and distance is not None:
+            return f"{subject}は{turn}{distance}"
+        return None
+
+    if template_id == "SIRE_SURFACE_DISTANCE_V1":
+        surface = SURFACE_LABELS.get(str(modifiers.get("surface_code") or ""))
+        distance = _distance_label(modifiers.get("distance_m"))
+        if subject is not None and surface is not None and distance is not None:
+            return f"{subject}は{surface}{distance}"
+        return None
+
+    if template_id == "SIRE_LINE_TURN_DISTANCE_V1":
+        turn = TURN_LABELS.get(str(modifiers.get("turn_code") or ""))
+        distance = _distance_label(modifiers.get("distance_m"))
+        if subject is not None and turn is not None and distance is not None:
+            return f"{subject}は{turn}{distance}"
+        return None
+
+    if template_id == "SIRE_DISTANCE_CHANGE_V1":
+        change = DISTANCE_CHANGE_LABELS.get(
+            str(modifiers.get("distance_change_bucket") or "")
+        )
+        if subject is not None and change is not None:
+            return f"{subject}は{change}"
+        return None
+
+    if template_id == "SIRE_SURFACE_TRANSITION_V1":
+        transition = SURFACE_TRANSITION_LABELS.get(
+            str(modifiers.get("surface_transition") or "")
+        )
+        if subject is not None and transition is not None:
+            return f"{subject}は{transition}"
+        return None
+
+    if template_id == "SIRE_FRAME_TRANSITION_V1":
+        transition = _frame_transition_label(modifiers.get("frame_transition"))
+        if subject is not None and transition is not None:
+            return f"{subject}は{transition}"
+        return None
+
+    return None
+
+
+def _memo_text(
+    match: Mapping[str, Any],
+    display_text: str,
+    performance_signal: str | None,
+) -> tuple[str, str]:
+    """Build user-facing condition/memo text without re-evaluating an Edge."""
+    condition_text = _human_condition_text(match)
+
+    if condition_text is None:
+        fallback = _strip_display_sign(display_text)
+        condition_text = fallback
+        if display_text.lstrip().startswith(SIGNED_PREFIXES):
+            return condition_text, display_text
+        if performance_signal == "POSITIVE":
+            return condition_text, f"＋ {display_text}"
+        if performance_signal == "NEGATIVE":
+            return condition_text, f"－ {display_text}"
+        return condition_text, display_text
+
+    # Existing human-authored display_text remains the publication authority.
+    # Translation is used only for the legacy machine-oriented form.
+    if not MACHINE_DISPLAY_PATTERN.search(display_text):
+        human_display = _strip_display_sign(display_text)
+        return human_display, display_text
 
     if performance_signal == "POSITIVE":
-        return f"＋ {display_text}"
+        return condition_text, f"＋ {condition_text}で好走傾向"
     if performance_signal == "NEGATIVE":
-        return f"－ {display_text}"
-    return display_text
+        return condition_text, f"－ {condition_text}で苦戦傾向"
+    return condition_text, condition_text
 
 
 def _serving_decision(
@@ -139,13 +342,10 @@ def _serving_decision(
     if performance_signal not in DISPLAY_PERFORMANCE_SIGNALS:
         return False, "PERFORMANCE_NEUTRAL_OR_MISSING"
 
-    # Future contract: once an explicit evidence level exists, initial
-    # Newspaper serving is CONFIRMED-only.
     if performance_evidence_level is not None:
         if performance_evidence_level != "CONFIRMED":
             return False, "PERFORMANCE_NOT_CONFIRMED"
 
-    # SECONDARY remains available in normalized data but is hidden by default.
     if presentation_role == "SECONDARY":
         return False, "SECONDARY_HIDDEN"
 
@@ -200,11 +400,17 @@ def normalize_match(match: Mapping[str, Any], *, context: str) -> dict[str, Any]
         performance_evidence_level=performance_evidence_level,
         presentation_role=presentation_role,
     )
+    condition_text, memo_text = _memo_text(
+        match,
+        display_text,
+        performance_signal,
+    )
 
     return {
         "edge_id": edge_id,
         "display_text": display_text,
-        "memo_text": _memo_text(display_text, performance_signal),
+        "condition_text": condition_text,
+        "memo_text": memo_text,
         "polarity": _upper_optional(match.get("polarity")),
         "performance_signal": performance_signal,
         "registry_status": registry_status,
