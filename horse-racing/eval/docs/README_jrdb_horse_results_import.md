@@ -55,6 +55,16 @@ I列配列数式の再計算結果を確認
 
 Google Drive Rawの取得とGoogle Sheets更新はChatのGoogle Drive / Sheetsネイティブ操作を使う。Raw ZIPや日次CSVをGitへcommitしない。
 
+## 実行経路
+
+この結果取込は、GitHub上の解析ロジックを参照することだけを理由にIssue / Actionsへ送らない。開始時に次の経路を判定する。
+
+- **A: Read / Audit** — GitHub main、exporterのSHA、既存のcommit/diff、過去runやartifactの確認。Issue不要。
+- **C: Pure Deterministic Execution（通常）** — 対象日SED RawをGoogle Driveから取得でき、通常規模であれば、GitHub mainの `export_jrdb_eval_horse_results.py` をChat/ローカルで実行する。CSV整形、厳密照合、Google Sheets更新、更新後監査も同じローカル処理で行う。
+- **D: Actions-Native Execution** — 対象期間が大きくChat実行に不向き、Raw取得に認証/Secretsが必要、またはimmutableなrun ID・artifact・Actions履歴を監査証跡として残す必要がある場合だけ、検証済みrequestでIssue / Actionsを使用する。
+
+Python・docs・tests等のUTF-8テキストを変更する場合は **B: Git Change** としてGitHubへ直接commitし、`[gpt-git-update]` Issueを通常経路にしない。Dを選ぶ場合のみ、ルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を適用する。
+
 ## 1. Raw解決
 
 対象日 `YYYY-MM-DD` からファイル名を作る。
