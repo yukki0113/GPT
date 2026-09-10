@@ -20,11 +20,17 @@ Python、README、作業手順、依存関係、GitHub Actions WorkflowはGitHub
 
 本体は `src/fetch_keibailuka_blog.py` です。通常入力は対象日と開催場順だけとし、ユーザーへ個別記事URLの探索・提示を求めません。
 
+GitHubのアクセス・更新・Actions利用判定はルート `/.gpt/GITHUB_OPERATION_POLICY.md` を上位方針とします。
+
 ## Acquisition
 
 Blogger公開JSON feedに含まれる本文HTMLを第一選択とします。個別記事ページはHTTP 429になることがあるためfallbackです。
 
 記事探索は公開feed、ブログトップ、月別アーカイブ、ブログ内検索を利用し、検索エンジンのインデックス反映待ちに依存しません。
+
+現行ChatのローカルPython環境は外部hostへのDNS / HTTPアクセスを利用できず、正本moduleをそのままBloggerへ接続して実行できません。そのため、日次のブログ探索・取得・解析・validationは現時点ではActions-Native Executionとして `.github/workflows/keibailuka_chat.yml` を維持します。
+
+この判断理由はSecretsやimmutable freezeではなく、正本moduleの外部HTTP実行環境です。将来Chat側で同一実行が可能になった場合は再棚卸しします。
 
 ## Parsing rules
 
@@ -37,7 +43,7 @@ Blogger公開JSON feedに含まれる本文HTMLを第一選択とします。個
 - 馬名を安全に確定できない場合は推測せずfailure
 - 最終順序は1R→12RのR順、同一R内は依頼された開催場順
 
-Pythonはコメントの意味を変える要約を行いません。長文の軽い要約はChat側の責務です。
+Pythonはコメントの意味を変える要約を行いません。長文の軽い要約はChat側のコードブロック表示に限る責務です。
 
 ## PWA handoff
 
@@ -45,10 +51,23 @@ Pythonはコメントの意味を変える要約を行いません。長文の�
 
 このCSVはPWA新聞の `keibailuka` addonへ渡すsource payloadです。抽出処理はブログ由来情報だけを担当し、JRDB / PWA側のvenue code・horse no等の最終join keyを馬名から推測しません。
 
+PWA用CSVのコメントはmoduleが抽出した原文を維持します。Chat表示で長文を軽く要約してもCSVへ反映しません。
+
+## GitHub routing
+
+- A Read / Audit: latest main、source、workflow、Issue、`KEIBAILUKA_RESULT`、run、artifact metadata、SHA等を直接読む。Issue不要。
+- B Git Change: source / docs / config / workflow等のUTF-8テキスト変更はGitHubへdirect write。`[gpt-git-update]` はfallbackのみ。
+- C Pure Deterministic Execution: 取得済みJSON / entries / TSV / CSVの整形、比較、SHA、row count等はGPTローカルで行う。Issue不要。
+- D Actions-Native Execution: 日次のBlogger探索・取得・解析・validationのみ、現行Chat環境ではIssue / Actionsを使う。
+
+既存runのartifactを回収する行為自体はAであり、そのための追加Issueを作りません。日次artifactは一時成果物であり、immutable freeze /正式監査正本ではありません。
+
 ## Chat execution
 
-標準実行経路は `.github/workflows/keibailuka_chat.yml` です。
+日次取得では、latest mainとworkflow request parserをAで確認してから、`[KEIBAILUKA_REQUEST] <request_id>` Issueを1回だけ作成します。本文JSONに `date` と `venues` を渡します。
 
-Chatが `[KEIBAILUKA_REQUEST] <request_id>` Issueを作成し、本文JSONに `date` と `venues` を渡します。Actions完了後の `KEIBAILUKA_RESULT` コメントを完了通知として利用します。
+Actions完了後の `KEIBAILUKA_RESULT` コメントをAで読み、`fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` の3条件を満たした結果だけを採用します。
+
+成功後のコードブロック整形や固定成果物の比較・検査はCで行います。CSVは同じrunのartifactから直接回収でき、artifact取得だけを目的とした新規Issueは作りません。
 
 日次JSON / TSV / CSV、validation、ログ、artifactはGit管理対象外です。
