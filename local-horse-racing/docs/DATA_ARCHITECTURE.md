@@ -20,48 +20,53 @@ local-horse-racing/
 
 原本ZIP、展開済み大容量CSV、DB、分析出力はGit管理しない。
 
-## Google Drive target layout
+## Google Drive layout
 
-Drive側の実フォルダ作成・権限管理はユーザー側で行う。
-推奨論理構造は次のとおり。
+Driveのデータ正本ルートは `/GPT/NAR/` とする。
+
+- folder URL: `https://drive.google.com/drive/folders/1FPxtdPfLNy1EW_WoGtk9C867b7CfAmfI`
+- folder ID: `1FPxtdPfLNy1EW_WoGtk9C867b7CfAmfI`
+
+2026-09-10時点の実フォルダ構成は次のとおり。
 
 ~~~text
-地方競馬/
+GPT/
 └─ NAR/
-   ├─ raw/
-   │  ├─ monthly/
-   │  │  ├─ race/YYYY/
-   │  │  └─ odds/YYYY/
-   │  └─ daily/
-   │     ├─ race/
-   │     └─ odds/
-   ├─ canonical/
+   ├─ 00_raw/
    │  ├─ race/
-   │  ├─ horse/
-   │  ├─ payout/
    │  └─ odds/
-   ├─ audit/
-   └─ reference/
+   ├─ 10_canonical/
+   ├─ 20_audit/
+   ├─ 30_analysis/
+   └─ data_pdf_manual.pdf
 ~~~
 
-将来、`地方競馬/analysis/` を別途追加してもよいがPhase 0では不要。
+Driveにはソースコードを置かず、NARデータ原本、加工後データ、監査データ、分析成果、およびデータ仕様参照資料だけを置く。
 
 ## Layer responsibilities
 
-### raw
+### 00_raw
 
-NARレスポンスZIPをバイト列のまま保存する不変層。
+NARレスポンスZIPをバイト列のまま保存する不変原本層。
+
+- `00_raw/race/`: レース情報ZIP
+- `00_raw/odds/`: オッズ情報ZIP
+
 同名原本を異なる内容で上書きしない。
 
-### canonical
+### 10_canonical
 
-将来、rawから再生成する型付け・キー付与済みデータ。
+将来、rawから再生成する型付け・キー付与済みの加工後・正規化データ。
 rawが残っていれば削除・再生成できるものとする。
 
-### audit
+### 20_audit
 
 取得元URL、対象年月、取得日時、SHA-256、サイズ、ZIP内ファイル一覧、文字コード観測等を保持する。
 
-### analysis
+### 30_analysis
 
-指数研究、特徴量比較、回収率検証などの成果物。Phase 0対象外。
+指数研究、特徴量比較、回収率検証などの成果物。Phase 0では領域のみ確保する。
+
+### data_pdf_manual.pdf
+
+NAR公式データダウンロード機能説明書の参照コピー。

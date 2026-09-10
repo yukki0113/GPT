@@ -12,8 +12,17 @@
 ## Source of truth
 
 - ソースコード、仕様、スキーマ、テスト: GitHub `yukki0113/GPT` の `local-horse-racing/`
-- NAR原本ZIP: ユーザー管理のGoogle Drive `地方競馬/NAR/raw/`
-- 正規化データ・監査物・分析成果: Google Drive側（作成後）
+- データ資産: Google Drive `/GPT/NAR/`
+- Drive root: `https://drive.google.com/drive/folders/1FPxtdPfLNy1EW_WoGtk9C867b7CfAmfI`
+
+Drive上の役割は次のとおり。
+
+- `00_raw/race/`: NAR公式レース情報ZIPの不変原本
+- `00_raw/odds/`: NAR公式オッズ情報ZIPの不変原本
+- `10_canonical/`: rawから再生成する加工後・正規化データ
+- `20_audit/`: 取得・検証監査データ
+- `30_analysis/`: 将来の分析・研究成果
+- `data_pdf_manual.pdf`: NAR公式データダウンロード説明書
 
 Gitに原本ZIP、大容量CSV、認証情報を置かない。
 

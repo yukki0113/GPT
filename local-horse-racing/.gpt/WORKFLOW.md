@@ -4,22 +4,25 @@
 
 作業開始時はリポジトリ共通 `.gpt/README.md` と `.gpt/ISSUE_REQUEST_CONTRACTS.md`、本ディレクトリの `README.md` / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` を確認する。
 
+Driveデータ正本ルートは `/GPT/NAR/`。
+folder URL: `https://drive.google.com/drive/folders/1FPxtdPfLNy1EW_WoGtk9C867b7CfAmfI`
+
 ## Phase 0 standard flow
 
 1. 対象年月と `race` / `odds` を指定する。
 2. `python -m nar.download.monthly` でNAR公式月次ZIPを取得する。
 3. ZIPとして開けること、想定ファイルが揃うこと、CSVヘッダーが公式スキーマと一致することを検証する。
 4. raw ZIPのSHA-256を算出する。
-5. 指定されたraw保存先へ原本バイト列のまま保存する。
-6. `--audit-dir` 指定時は取得メタデータをJSONで保存する。
+5. raceは `/GPT/NAR/00_raw/race/`、oddsは `/GPT/NAR/00_raw/odds/` へ原本バイト列のまま保存する。
+6. auditを保存する場合は `/GPT/NAR/20_audit/` を使用する。
 7. rawを変更する必要が生じた場合は上書きせず、原因を調査する。
 
 ## Current command
 
 ~~~bash
 cd local-horse-racing
-python -m nar.download.monthly --year YYYY --month M --kind race --output-dir <raw-dir> --audit-dir <audit-dir>
-python -m nar.download.monthly --year YYYY --month M --kind odds --output-dir <raw-dir> --audit-dir <audit-dir>
+python -m nar.download.monthly --year YYYY --month M --kind race --output-dir <drive-root>/GPT/NAR/00_raw/race --audit-dir <drive-root>/GPT/NAR/20_audit
+python -m nar.download.monthly --year YYYY --month M --kind odds --output-dir <drive-root>/GPT/NAR/00_raw/odds --audit-dir <drive-root>/GPT/NAR/20_audit
 ~~~
 
 ## Validation
