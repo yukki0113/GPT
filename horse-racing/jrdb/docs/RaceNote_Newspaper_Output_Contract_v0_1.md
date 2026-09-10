@@ -1,6 +1,6 @@
 # RaceNote -> JRDB Newspaper Output Contract v0.1
 
-Status: **ACTIVE / INITIAL CONTRACT**
+Status: **ACTIVE / INITIAL CONTRACT + BACKWARD-COMPATIBLE HORSE COMMENT EXTENSION**
 
 ## 1. Purpose
 
@@ -13,6 +13,7 @@ RaceNote prediction
   -> PWA handoff CSV v0.1
      -> Newspaper external merger
         -> horses[].addons.racenote_prediction
+           -> optional horse_short_comment for ◎/○/▲
         -> race_notes.racenote_short_comment
 ```
 
@@ -50,6 +51,14 @@ model_version
 source_semantic_sha256
 ```
 
+Backward-compatible optional column:
+
+```text
+horse_short_comment
+```
+
+`horse_short_comment` が存在しない従来v0.1 CSVも引き続き受理する。列が存在する場合は本契約の単馬短評検証を有効にする。
+
 ### Column semantics
 
 | column | contract |
@@ -65,6 +74,7 @@ source_semantic_sha256
 | `prediction_rank` | レース内の全出走馬に1..Nを付与。重複・欠番不可 |
 | `confidence` | `A / B / C`。同一レース内で同値 |
 | `race_short_comment` | レース全体の短評・展開見立て。同一レース内で同値 |
+| `horse_short_comment` | **任意列**。◎○▲の各馬に対する単馬短評。列採用時はrank 1..3で必須、rank 4以降は空欄 |
 | `model_version` | RaceNote prediction model/logic version。同一レース内で同値 |
 | `source_semantic_sha256` | そのレースのRaceNote prediction入力を追跡する64桁SHA-256。同一レース内で同値 |
 
@@ -82,6 +92,17 @@ rank 6以降 -> 空欄
 ```
 
 `prediction_rank` は印対象馬だけでなく全馬へ付ける。
+
+`horse_short_comment` 列を採用する場合は次を固定する。
+
+```text
+rank 1 / ◎ -> comment required
+rank 2 / ○ -> comment required
+rank 3 / ▲ -> comment required
+rank 4以降 -> blank required
+```
+
+レース全体の見立ては `race_short_comment`、上位3頭それぞれの評価理由は `horse_short_comment` として混在させない。
 
 これによりNewspaperは通常表示では印だけを使い、将来の上位N頭表示・比較等ではrankを再生成せず利用できる。
 
@@ -116,6 +137,7 @@ RaceNote CSVはcomplete sourceとして扱うため、対象Newspaper dayに対�
 - rankが各レースで `1..N` の完全順列
 - mark/rank contract一致
 - `confidence / race_short_comment / model_version / source_semantic_sha256` が同一レース内で一意
+- `horse_short_comment` 列ありの場合、◎○▲で非空・△/無印で空欄
 
 不一致時はfail-closedとし、自動補正しない。
 
@@ -130,6 +152,7 @@ RaceNote CSVはcomplete sourceとして扱うため、対象Newspaper dayに対�
       "mark": "◎",
       "prediction_rank": 1,
       "confidence": "B",
+      "horse_short_comment": "<◎○▲のみ。その他はnullまたは省略>",
       "model_version": "<model_version>",
       "source_semantic_sha256": "<64 hex>",
       "source": "RaceNote prediction",
@@ -138,6 +161,8 @@ RaceNote CSVはcomplete sourceとして扱うため、対象Newspaper dayに対�
   }
 }
 ```
+
+`horse_short_comment` 列ありの場合、mergerは `horses[].addons.racenote_prediction.horse_short_comment` へ投影する。Newspaperではコメントを持つRN印（通常は◎○▲）のみタップ可能とし、単馬短評モーダルで表示する。
 
 レース単位短評は各馬へ重複保持せず、次へ1回だけ投影する。
 
@@ -169,6 +194,7 @@ JRDB Base/history、Eval、keibailuka、Edge、MyIndexを変更しない。
 - `semantic_sha256`: race-level `source_semantic_sha256`
 - expected/resolved/unresolved counts
 - handoff filenameをmessage等で追跡可能にする
+- horse comment extension使用時は expected/merged comment countも監査可能にする
 
 Daily manifestではRaceNote handoff全体のrace/horse merge件数とmodel versionを記録する。
 
@@ -189,6 +215,14 @@ Expected acceptance target:
 - horse/race identity mismatch: 0
 
 このファイル自体は日次生成物でありGit正本へcommitしない。契約・merger・testだけをGitで管理する。
+
+Horse comment acceptance sample:
+
+```text
+RaceNote_prediction_20260905_PWA_handoff_v0_1_horse_comment.csv
+```
+
+Expected: 36R / 455頭 / ◎○▲ 108頭に単馬短評 / △・無印347頭は空欄。
 
 ## 9. Change policy
 
