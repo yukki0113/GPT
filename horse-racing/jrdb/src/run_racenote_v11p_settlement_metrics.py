@@ -193,9 +193,13 @@ def payout_for(slots: Sequence[Mapping[str, Any]], ticket: Iterable[int]) -> int
     total = 0
     for slot in slots:
         numbers = slot.get("numbers") or []
-        if any(number is None for number in numbers):
+        # Fixed-length HJC uses null/zero horse numbers for unused payout
+        # slots.  They are source-side padding, not malformed purchase
+        # tickets, so skip them before strict ticket normalization.
+        if not numbers or any(number is None or int(number) <= 0 for number in numbers):
             continue
-        if normalize_ticket(int(number) for number in numbers) == wanted:
+        source_ticket = normalize_ticket(int(number) for number in numbers)
+        if source_ticket == wanted:
             payout = slot.get("payout")
             if isinstance(payout, (int, float)) and payout > 0:
                 total += int(payout)

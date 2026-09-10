@@ -25,6 +25,11 @@ def test_payout_for_is_order_independent_and_sums_duplicate_slots():
     assert sm.payout_for(slots, (1, 3)) == 1200
 
 
+def test_payout_for_ignores_fixed_length_zero_padding_slots():
+    slots = [slot(0, payout=0), slot(0, 0, payout=0), slot(1, payout=250)]
+    assert sm.payout_for(slots, (1,)) == 250
+
+
 def test_ticket_settlement_freezes_q2_q4_and_trio_a6_b5():
     hjc = {
         "win": [slot(1, payout=250)],
