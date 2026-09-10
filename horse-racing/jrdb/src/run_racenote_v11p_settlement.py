@@ -335,7 +335,7 @@ def run(request_path: Path, freeze_root: Path, raw_root: Path, output_root: Path
         sed_map = parse_sed(sed_zip, day, parser)
         day_payload, payout_rows, finish_rows = settle_day(day, freeze_days[day], hjc_map, sed_map)
         day_payload["source"] = {
-            "freeze_day_file_sha256": (freeze_manifest["day_files"][day])["sha256"],
+            "freeze_day_file_sha256": (freeze_manifest["outputs"]["days"][day])["sha256"],
             "raw_run_id": int(request["results"][day]["run_id"]),
             "raw_artifact_name": request["results"][day]["artifact_name"],
             "hjc_sha256": request["results"][day]["hjc_sha256"],
