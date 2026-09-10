@@ -31,7 +31,7 @@ from jrdb_raw import (
 from racenote_jrdb import SURFACE, TRACK_CONDITION
 
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 ZERO_RESULT_KEY = "0" * 16
 
 OUTPUT_COLUMNS = (
@@ -86,17 +86,18 @@ def int_or_none(value: object) -> int | None:
 
 
 def first_previous_result_key(parsed: dict[str, object]) -> str | None:
-    """Return KYI previous-result key 1 without guessing another prior run."""
+    """Return the raw KYI previous-result key 1 without guessing another run.
+
+    JRDB's all-zero key is preserved as source provenance. Whether the horse has
+    a usable previous run is expressed separately by ``previous_lookup_status``.
+    """
     previous = parsed.get("previous")
     if not isinstance(previous, list) or not previous:
         return None
     item = previous[0]
     if not isinstance(item, dict):
         return None
-    key = text_or_none(item.get("result_key"))
-    if key == ZERO_RESULT_KEY:
-        return None
-    return key
+    return text_or_none(item.get("result_key"))
 
 
 def load_races(
@@ -206,24 +207,26 @@ def build_features(paci_path: Path) -> tuple[list[dict[str, object]], dict[str, 
                 seen.add(race_horse_key)
 
                 prev_key = first_previous_result_key(parsed)
-                previous = previous_results.get(prev_key or "")
-                if prev_key is None:
+                previous: dict[str, object] | None = None
+                if prev_key is None or prev_key == ZERO_RESULT_KEY:
                     status = "NO_PREVIOUS"
-                elif previous is None:
-                    status = "LINK_NOT_RESOLVED"
                 else:
-                    previous_date = ymd(text_or_none(previous.get("date_raw")))
-                    if previous_date is None:
-                        raise Phase2PreviousFeatureError(
-                            f"invalid ZED previous date: result_key={prev_key}"
-                        )
-                    if previous_date >= str(race["race_date"]):
-                        raise Phase2PreviousFeatureError(
-                            "previous run is not strictly prior: "
-                            f"result_key={prev_key} previous={previous_date} "
-                            f"current={race['race_date']}"
-                        )
-                    status = "RESOLVED"
+                    previous = previous_results.get(prev_key)
+                    if previous is None:
+                        status = "LINK_NOT_RESOLVED"
+                    else:
+                        previous_date = ymd(text_or_none(previous.get("date_raw")))
+                        if previous_date is None:
+                            raise Phase2PreviousFeatureError(
+                                f"invalid ZED previous date: result_key={prev_key}"
+                            )
+                        if previous_date >= str(race["race_date"]):
+                            raise Phase2PreviousFeatureError(
+                                "previous run is not strictly prior: "
+                                f"result_key={prev_key} previous={previous_date} "
+                                f"current={race['race_date']}"
+                            )
+                        status = "RESOLVED"
 
                 current_distance = int_or_none(race.get("distance_m"))
                 current_surface = text_or_none(race.get("surface_code"))
