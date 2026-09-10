@@ -1,61 +1,147 @@
 # Eval GPT workflow
 
+## 0. GitHub routing policy (2026-09-10)
+
+このプロジェクトでは、処理開始時に「本当にGitHub Actions環境が必要か」を先に判定する。Issue駆動Actionsを一律の標準経路にはしない。
+
+経路は次の4系統とする。
+
+- **A: Read / Audit** — repository/file/commit/issue/workflow/result/artifact metadata/SHA/diff/main状態の確認。GitHub read/search/fetchを直接使い、Issueを作らない。
+- **B: Git Change** — source/test/docs/config/workflow等のUTF-8テキスト変更。最新main、対象path、現内容を確認後、GitHub contents API相当のdirect create/update/deleteでmainへ直接commitする。`[gpt-git-update]` は標準経路としない。
+- **C: Pure Deterministic Execution** — GitHub mainの既存Python/ロジックを、入力がChat/ローカルにあり、Secrets・特別なActions環境・長時間/大容量処理・immutable artifact監査が不要な場合にChat/ローカルで直接実行する。
+- **D: Actions-Native Execution** — Secrets、Actions artifact chain、長時間/大容量、runner固有依存、immutable freeze、監査run、scheduled/third-party reproducibility等が必要な処理。既存Issue/Actions経路を維持する。
+
+A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選んだ場合のみ、ルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を適用する。
+
+## 1. 共通preflight
+
 1. GitHub `main` の最新状態を確認する。
-2. `horse-racing/eval/README.md`、`.gpt/CONTEXT.md`、本ファイル、対象モジュールのdocs、対象Pythonを確認する。
-3. 既存入出力仕様と重要な業務仕様を維持して実行・改修する。
+2. `horse-racing/eval/README.md`、`.gpt/CONTEXT.md`、本ファイル、対象moduleのdocs/Pythonを確認する。
+3. 既存の入出力契約と業務仕様を維持する。
+4. 実行経路A/B/C/Dを決める。DでなければIssueを作らない。
 
-## Eval表画像取得
+## 2. このスレッドの標準: Chatへ直接渡されたEval画像 -> 完成CSV
 
-4. ChatからEval表画像取得を依頼された場合は、原則として `.github/workflows/eval_media_chat.yml` のIssue経路を使用する。
-5. ユーザーから通常は対象日だけを受け取り、Chat側で `@master_eval` の対象投稿を探索して投稿IDを確定する。投稿URLまたは投稿IDが与えられている場合は探索を省略してよい。
-6. 一意の `request_id` を生成し、タイトル `[EVAL_MEDIA_REQUEST] <request_id>` のIssueを作成する。Issue本文はJSONとし、対象日と投稿IDの対応を `targets` で渡す。`dates` + `post_ids` の同数配列も利用できる。
-7. ActionsはIssue作成をトリガーにGit正本の `src/master_eval_media_collector.py` を実行し、投稿ID別のmetadataとmedia、`resolved_request.json`、`validation_report.json`、`run_status.txt` をartifact化する。
-8. Chatは対象Issueの `EVAL_MEDIA_RESULT` コメントを完了通知として読む。`fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を取得工程の成功条件とする。
-9. 結果コメントの `run_id` と `artifact_name` を使ってartifactを回収する。
-10. artifact内の画像をChatが内容確認し、Eval表本体のみ採用する。注意事項・説明・告知画像を除外する。`media_01` がEval表であることは多いが固定仕様として扱わない。
-11. 採用画像を日付が分かる名前に整理し、最終成果物 `eval_YYYYMMDD_YYYYMMDD_Eval表画像.zip` を作成する。通常の土日2日分ならEval表画像2枚を最終ZIPに含める。
-12. `.github/workflows/eval_media_manual.yml` の `workflow_dispatch` は人間操作用の予備経路。Chat/ローカルからの直接Python実行はデバッグ・緊急時の補助経路であり、日常運用の第一選択にしない。
+ユーザーがEval表画像または画像ZIPをChatへ直接渡し、「CSV化」「完成CSV」等を依頼した場合は次を標準とする。
 
-## Chat画像からJRDB事前情報付き完成CSV
-
-13. ユーザーがChatへEval表画像または画像ZIPを直接渡し「CSV化」「画像からCSV」等を依頼した場合、通常はOCR 5列で止めず、JRDB PACI enrichmentまで連続実行して完成CSVを返す。OCRのみが明示された場合は5列CSVで停止してよい。
-14. 直接アップロードされた画像はGitHubへ永続化せず、Chat実行環境でGitHub `main` の `src/extract_eval_table.py` / `src/eval_ocr/` と同等の正本ロジックを使ってOCRする。日付が画像・ファイル名・依頼文から決定できない場合だけ確認する。
-15. OCR成功条件は通常のOCR検証と同じとし、5列 `date,venue,race_no,horse_no,eval` を中間成果物として確定する。複数画像・複数日では全日分を1本の5列CSVへまとめてよい。
-16. 5列CSVのUTF-8テキストをgzip圧縮し、そのbytesをBase64化する。タイトル `[EVAL_PACI_ENRICH_REQUEST] <request_id>` のIssueを作成し、本文をraw JSONで次の契約にする。
-
-```json
-{
-  "eval_csv_gzip_b64": "<gzip+Base64 payload>",
-  "output_name": "eval_YYYYMMDD_enriched.csv",
-  "fail_on_unmatched": true
-}
+```text
+ユーザー画像
+  -> C: GitHub mainのEval OCRロジックをChat/ローカルで実行
+  -> OCR validationを通過した5列CSV
+  -> D: [EVAL_PACI_ENRICH_REQUEST] Issue
+  -> ActionsでJRDB PACIをSecrets認証取得
+  -> enrich_eval_csv_with_paci.py
+  -> 完成CSV + audit artifact
+  -> A: Issue RESULT / run / artifactを直接確認・回収
+  -> ユーザーへ返却
 ```
 
-17. `output_name` は省略可能。単日なら `eval_YYYYMMDD_enriched.csv`、複数日なら `eval_YYYYMMDD_YYYYMMDD_enriched.csv` がworkflow側の既定名となる。通常は `fail_on_unmatched=true` を使う。
-18. `.github/workflows/eval_paci_enrich_chat.yml` はOCR CSV内の日付ごとに `horse-racing/jrdb/src/fetch_jrdb_paci.py` でPACIyymmdd.zipを取得し、`horse-racing/jrdb/src/enrich_eval_csv_with_paci.py` で正式馬名・レース条件・馬単位事前情報を付与する。Analysis Lite / Core / SEDは使用しない。
-19. ChatはIssueの `EVAL_PACI_ENRICH_RESULT` コメントを完了通知として読み、`fetch_exit_code=0`、`enrich_exit_code=0`、`collect_exit_code=0` を通常成功条件とする。さらにsummaryで `joined_horses == input_rows`、`unmatched_horses == 0`、`duplicate_keys == 0` を確認する。
-20. `race_headcount_mismatches` は警告監査であり、0でなければ完成CSVと一緒に内容をユーザーへ明示する。未結合がある場合は推測結合せず、artifactを確認して原因を切り分ける。
-21. 結果コメントの `run_id` と `artifact_name` を使ってartifactを回収し、通常のユーザー返却物はJRDB事前情報付き完成CSVとする。元5列OCR CSV、batch audit、日付別audit/logは監査用補助成果物として扱う。
-22. PACI ZIPをユーザーへ再添付依頼しない。Actions側の `JRDB_USER` / `JRDB_PASSWORD` secretsで取得する。直接アップロード画像そのものをIssue本文やGitへ保存しない。
+### 2.1 OCR工程 = C: Pure Deterministic Execution
 
-## JRA結果取得
+- 対象: `src/extract_eval_table.py` / `src/eval_ocr/`
+- 入力画像はChat/ローカルに存在するものを使用する。
+- 直接アップロードされた画像をGitHubへ永続化しない。
+- 通常の中間CSV契約は `date,venue,race_no,horse_no,eval` の5列。
+- 会場/R/馬番構造、Eval範囲、重複、色順位、tie、manual-review要求等の既存validationを通す。
+- OCR validationがerrorの場合はPACI工程へ進めない。推測補正で通過扱いにしない。
+- OCRのみを明示された場合は5列CSVで停止してよい。
 
-23. ChatからJRA結果取得を依頼された場合は、原則として `.github/workflows/jra_results_chat.yml` のIssue経路を使用する。
-24. 一意の `request_id` を生成し、タイトル `[JRA_RESULTS_REQUEST] <request_id>` のIssueを作成する。Issue本文はJSONで、`dates` または `date_from` + `date_to`、必要に応じて `request_interval_seconds` を指定する。
-25. ActionsはIssue作成をトリガーにGit正本の `src/fetch_jra_daily_results.py` を実行し、`src/validate_jra_results.py` で機械検証する。
-26. Chatは対象Issueのコメントを確認し、`JRA_RESULTS_RESULT` コメントを完了通知として読む。`fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を必須成功条件とする。
-27. 結果コメントの `run_id` と `artifact_name` を使い、必要に応じてartifactを回収する。成果物のユーザー返却が不要な依頼では、検証結果だけを報告してよい。
-28. IssueはActionsが完了時に自動クローズする。失敗時も結果情報を残してクローズし、Chat側で原因を確認する。
-29. `.github/workflows/jra_results_manual.yml` の `workflow_dispatch` は人間操作用の予備経路。Chat/ローカルからの直接Python実行はデバッグ・緊急時の補助経路であり、日常運用の第一選択にしない。
-30. JRA結果CSVでは全行成功、キー重複なし、出走頭数、1〜3着、単勝・複勝等を確認する。
-31. 出走頭数は取消・競走除外前の枠順確定時の頭数を維持する。着順が数値の行だけで数えない。
+OCRはSecretsを使わず、ユーザー入力が手元にあり、通常開催規模ならローカル実行可能なため、Issue/Actionsを標準としない。
 
-## 共通
+### 2.2 PACI取得・enrichment = D: Actions-Native Execution
 
-32. 継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）とする。参照・更新はGoogle Drive / Google Sheetsのネイティブスプレッドシート操作で同一Spreadsheet IDへ直接行う。
-33. 旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットとして扱う。通常運用では `.gpt/tools/gpt_git_binary_tool.py`、`[gpt-git-binary-read]`、`[gpt-git-binary-update]` をEval台帳同期目的に使用しない。
-34. ネイティブGoogleスプレッドシート正本へアクセスできない場合は、旧Drive Excel版やGitHub旧スナップショットを最新と推定せず、正本取得不能として扱う。
-35. 台帳更新時は必要範囲だけをGoogle Sheets上で更新し、数式・書式・既存集計を維持する。Excel書き出し→再アップロードを通常更新経路にしない。
-36. 画像、日次CSV、検証レポート、ログ等の運用成果物は引き続きcommitしない。
-37. PythonやWorkflowを改修した場合は対応READMEも同時に更新する。実動テストを行う場合は、日次成果物をGitへcommitせず、テスト条件と結果だけを記録する。
-38. Eval `全馬データ` へJRDB SED結果を取り込む依頼では、`docs/README_jrdb_horse_results_import.md` を標準手順として、Google Drive Raw取得 → 馬単位CSV/audit生成 → Google Sheets厳密照合・必要セル更新 → 更新後監査まで実行する。
+`[EVAL_PACI_ENRICH_REQUEST]` と `.github/workflows/eval_paci_enrich_chat.yml` は維持する。
+
+理由:
+
+- PACI取得に `JRDB_USER` / `JRDB_PASSWORD` Secretsが必要。
+- JRDB有料原データをChatへ認証情報付きで直接取得させない。
+- PACI取得、結合、audit、artifactを同一run revisionへ固定して追跡できる。
+- 完成CSVの監査runとして `run_id` / artifact / summaryを残す価値がある。
+
+Issue本文は5列OCR CSVをgzip+Base64化したpayloadとし、通常 `fail_on_unmatched=true` を使用する。
+
+成功条件:
+
+- `fetch_exit_code == 0`
+- `enrich_exit_code == 0`
+- `collect_exit_code == 0`
+- `joined_horses == input_rows`
+- `unmatched_horses == 0`
+- `duplicate_keys == 0`
+- `race_headcount_mismatches` は必ず監査し、0でなければ明示する。
+
+PACI ZIPをユーザーへ再添付依頼しない。
+
+## 3. Eval表メディア取得
+
+### 3.1 既に画像がChatへ渡されている場合
+
+画像取得工程は不要。2章のOCRから開始する。
+
+### 3.2 X投稿から新規取得する場合 = 原則 D
+
+`src/master_eval_media_collector.py` と `.github/workflows/eval_media_chat.yml` の `[EVAL_MEDIA_REQUEST]` を維持する。
+
+Secrets必須ではないが、外部投稿の取得結果・metadata・media・validationを同一runのartifactとして残すこと自体が取得時点の監査証跡になるため、通常の収集運用はActions-Nativeとする。
+
+ただし、単発のread確認だけで済み、Chat側で対象画像を既に直接取得できており、immutableな取得artifactが不要ならIssueを追加で作らない。
+
+Actionsを使う場合は `EVAL_MEDIA_RESULT` の `fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を確認し、run/artifactをA: Read/Auditで回収する。
+
+## 4. 既存media artifact -> OCR
+
+従来の `[EVAL_OCR_REQUEST]` / `.github/workflows/eval_ocr_chat.yml` は互換・監査用に残すが、標準経路ではない。
+
+通常は:
+
+1. A: upstream `EVAL_MEDIA_RESULT` とrun/artifactを直接確認する。
+2. artifactを直接回収でき、規模が通常範囲ならChat/ローカルへ展開する。
+3. C: GitHub mainのOCRロジックを直接実行する。
+
+次の場合だけ `[EVAL_OCR_REQUEST]` をDとして使用する。
+
+- artifact chainをGitHub内だけで連結し続ける必要がある。
+- immutable OCR audit runを明示的に残したい。
+- 対象画像が多く、Chat/ローカル実行に不向き。
+- runner側のTesseract環境固定が再現性要件になっている。
+
+## 5. JRA結果取得
+
+`src/fetch_jra_daily_results.py` + `src/validate_jra_results.py` は、Secretsを必要としないためActions専用処理とはみなさない。
+
+- Chat/ローカル環境から必要な外部アクセスが可能で、通常規模かつimmutable runが不要なら C: Pure Deterministic Execution。
+- Chat/ローカルから外部取得できない、長期/大量取得、再現可能な取得run・artifactを残す必要がある場合は D: `[JRA_RESULTS_REQUEST]` / `.github/workflows/jra_results_chat.yml`。
+
+Dを使う場合は `fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を成功条件とする。
+
+出走頭数は取消・競走除外前の枠順確定時頭数を維持する。
+
+## 6. GitHub Read / Audit とGit変更
+
+repository/file/commit/issue/workflow/run/result/SHA/diffの確認はAとして直接行い、確認専用Issueは作成しない。
+
+Python、Markdown、JSON、YAML、tests、workflow等のUTF-8テキスト変更はBとして直接GitHubへ反映する。変更前に必ず:
+
+```text
+latest main -> path存在確認 -> current content -> 必要差分
+```
+
+を確認する。変更後はcommit SHAと必要なCI/差分をAで確認する。
+
+`[gpt-git-update]` は互換fallbackとして残るが、本プロジェクトの標準更新経路ではない。
+
+## 7. 継続台帳
+
+継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）。
+
+- 参照・更新はGoogle Drive / Google Sheetsのnative操作を使用する。
+- 旧Drive Excel版 / GitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショット。
+- 旧Gitバイナリread/updateを台帳同期目的に使わない。
+- 更新時は必要範囲だけ変更し、数式・書式・既存集計を維持する。
+
+Eval `全馬データ` へJRDB SED結果を取り込む場合は `docs/README_jrdb_horse_results_import.md` を標準手順とし、外部Raw取得の認証・大量処理・監査要件に応じてC/Dを判定する。
+
+## 8. Git管理対象外
+
+Eval画像、OCR途中成果物、日次CSV、PACI Raw、検証レポート、実行ログ等の運用成果物は通常commitしない。PythonやWorkflowを変更した場合は対応README/docs/testsも必要に応じて同時更新する。
