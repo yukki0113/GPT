@@ -16,7 +16,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 DEFAULT_Q_LOW = 0.05
 DEFAULT_Q_HIGH = 0.10
 DEFAULT_BOOTSTRAP_SAMPLES = 400
@@ -76,8 +76,8 @@ def _load_population(registry_path: str | Path) -> tuple[str, list[dict[str, Any
         rows = con.execute(
             """
             SELECT d.edge_id, d.family, d.polarity, d.performance_signal, d.value_signal,
-                   d.sample_n, d.unique_horses, d.unique_races,
-                   d.performance_lift, d.place_roi,
+                   m.sample_n, m.unique_horses, m.unique_races,
+                   m.performance_lift, m.place_roi,
                    g.candidate_id, g.hypothesis_family AS template_id,
                    g.temporal_status, g.statistical_status,
                    g.performance_p_value, g.performance_q_value,
@@ -85,6 +85,8 @@ def _load_population(registry_path: str | Path) -> tuple[str, list[dict[str, Any
                    g.bootstrap_samples
             FROM edge_definition AS d
             JOIN edge_statistical_guard AS g ON g.edge_id=d.edge_id
+            JOIN edge_metric_snapshot AS m
+              ON m.edge_id=d.edge_id AND m.slice_kind='ALL'
             WHERE d.status='REJECTED'
               AND g.temporal_status='ACTIVE'
               AND g.statistical_status='WATCH'
