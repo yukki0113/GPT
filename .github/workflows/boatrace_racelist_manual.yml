@@ -71,11 +71,11 @@ jobs:
           )
           PY
 
-      - name: Fetch racelists
+      - name: Fetch racelists with official event metadata
         id: fetch
         continue-on-error: true
         run: |
-          python boat-racing/src/fetch_boatrace_racelist.py --config /tmp/boatrace_racelist_config.json
+          python boat-racing/src/fetch_boatrace_racelist_with_meta.py --config /tmp/boatrace_racelist_config.json
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Write run status
