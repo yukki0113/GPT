@@ -300,7 +300,7 @@ jobs:
         with:
           name: jrdb-analysis-v1-3-win5
           path: |
-            .work/${{ env.OUTPUT_FILENAME }}.zip
+            .work/*.sqlite.zip
             .work/win5_audit.json
             .work/result.json
           if-no-files-found: error
