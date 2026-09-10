@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 def main() -> int:
-    """既存fetcher成功後に開催グレード・開催名・レース名を付与する。"""
+    """既存fetcher成功後に開催グレード・開催名を付与する。"""
     parser = argparse.ArgumentParser(description="BOAT RACE公式出走表を開催メタデータ付きCSVへ保存")
     parser.add_argument("--config", required=True, help="出走表取得設定JSON")
     args = parser.parse_args()
