@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Diagnose statistical-guard WATCH downgrades in a JRDB Edge Registry.
+"""Diagnose statistical-guard rejects in a JRDB Edge Registry.
 
 This module is audit-only. It reproduces the existing q-value and directional
 CI pass conditions but never changes Registry status or validation thresholds.
+It accepts both legacy final WATCH and v0.2 final REJECTED mappings.
 """
 from __future__ import annotations
 
@@ -13,7 +14,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Mapping
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 ACTIVE_Q = 0.05
 PROVISIONAL_Q = 0.10
 
@@ -77,7 +78,8 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
         integrity = con.execute("PRAGMA integrity_check").fetchone()[0]
         rows = con.execute(
             """
-            SELECT d.edge_id, d.family, d.performance_signal, d.value_signal,
+            SELECT d.edge_id, d.family, d.status AS final_status,
+                   d.performance_signal, d.value_signal,
                    g.hypothesis_family AS template_id,
                    g.temporal_status, g.statistical_status,
                    g.performance_q_value, g.value_q_value,
@@ -85,7 +87,7 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
                    g.value_ci_low, g.value_ci_high
             FROM edge_definition AS d
             JOIN edge_statistical_guard AS g ON g.edge_id=d.edge_id
-            WHERE d.status='WATCH'
+            WHERE d.status IN ('WATCH','REJECTED')
               AND g.temporal_status IN ('ACTIVE','PROVISIONAL')
               AND g.statistical_status='WATCH'
             ORDER BY d.edge_id
@@ -98,6 +100,7 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
         temporal: dict[str, Counter[str]] = defaultdict(Counter)
         family: dict[str, Counter[str]] = defaultdict(Counter)
         template: dict[str, Counter[str]] = defaultdict(Counter)
+        final_status: Counter[str] = Counter()
 
         for row in rows:
             temporal_status = str(row["temporal_status"])
@@ -116,12 +119,14 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
             temporal[temporal_status][reason] += 1
             family[str(row["family"])][reason] += 1
             template[str(row["template_id"] or "UNKNOWN_TEMPLATE")][reason] += 1
+            final_status[str(row["final_status"])] += 1
 
         return {
             "audit_version": VERSION,
             "integrity_check": integrity,
             "thresholds": {"ACTIVE": ACTIVE_Q, "PROVISIONAL": PROVISIONAL_Q},
-            "statistical_watch_count": len(rows),
+            "statistical_reject_count": len(rows),
+            "final_status_counts": dict(sorted(final_status.items())),
             "reason_counts": dict(sorted(overall.items())),
             "performance_channel_counts": dict(sorted(performance.items())),
             "value_channel_counts": dict(sorted(value.items())),
@@ -135,10 +140,11 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
 
 def write_markdown(report: Mapping[str, Any], path: str | Path) -> None:
     lines = [
-        "# JRDB Edge Statistical WATCH Audit",
+        "# JRDB Edge Statistical Reject Audit",
         "",
         f"- Integrity: `{report['integrity_check']}`",
-        f"- Statistical WATCH: {report['statistical_watch_count']}",
+        f"- Statistical rejects: {report['statistical_reject_count']}",
+        f"- Final status: `{json.dumps(report['final_status_counts'], ensure_ascii=False, sort_keys=True)}`",
         f"- Reasons: `{json.dumps(report['reason_counts'], ensure_ascii=False, sort_keys=True)}`",
         f"- Performance channel: `{json.dumps(report['performance_channel_counts'], ensure_ascii=False, sort_keys=True)}`",
         f"- Value channel: `{json.dumps(report['value_channel_counts'], ensure_ascii=False, sort_keys=True)}`",
