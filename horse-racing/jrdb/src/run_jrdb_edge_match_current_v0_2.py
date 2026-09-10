@@ -9,7 +9,8 @@ from pathlib import Path
 from build_jrdb_edge_current_facts_v0_2 import build_current_facts
 import jrdb_edge_matcher_v0_2 as matcher
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
+DEFAULT_SERVING_PROFILE = matcher.PROFILE_STANDARD
 
 
 def main() -> int:
@@ -22,8 +23,9 @@ def main() -> int:
     parser.add_argument("--audit-json")
     parser.add_argument(
         "--serving-profile",
-        default=matcher.PROFILE_CONFIRMED_ONLY,
+        default=DEFAULT_SERVING_PROFILE,
         choices=matcher.SERVING_PROFILES,
+        help="v0.2 serving profile. Default: STANDARD; use CONFIRMED_ONLY for strict ACTIVE-only evidence.",
     )
     parser.add_argument(
         "--statuses",
