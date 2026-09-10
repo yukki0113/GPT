@@ -84,16 +84,19 @@ HUMAN and RECENT remain active at exactly the same counts as the previous Full b
 
 The remaining 1,663 WATCH records are exclusively temporal WATCH according to `edge_watch_audit.json`.
 
-## 6. Statistical-reject diagnostics
+## 6. Statistical-reject diagnostics — corrected CI semantics
 
-The new Full artifact reports:
+The production guard performs a q-value prepass before bootstrap evaluation. If a temporal ACTIVE/PROVISIONAL candidate has no non-neutral signal clearing its q threshold, bootstrap is intentionally skipped and CI fields remain null.
 
-- Statistical rejects: `3809`.
-- `ALL_SIGNAL_FDR_AND_CI_FAIL`: `3736` (98.08%).
-- `Q_PASS_BUT_CI_FAIL_PRESENT`: `73` (1.92%).
+Therefore the correct decomposition of the 3,809 statistical rejects is:
+
+- q-value prepass failed; bootstrap CI **not evaluated**: `3736` (98.08%).
+- q-value prepass passed; bootstrap evaluated; final directional-CI gate not cleared: `73` (1.92%).
 - Final temporal WATCH: `1663`.
 
-This preserves the earlier diagnosis that WATCH inflation was not primarily caused by a small number of CI-only failures; most rejected candidates fail both FDR and CI evidence requirements.
+The earlier wording `ALL_SIGNAL_FDR_AND_CI_FAIL` incorrectly treated missing CI as CI failure for q-prepass failures. The audit tool has been corrected to distinguish `FDR_FAIL_CI_NOT_EVALUATED` from an actual evaluated CI failure.
+
+This correction does not change the Full build acceptance or any Registry status. It changes only the interpretation of why most statistical rejects stopped: most were rejected at the FDR prepass and never reached bootstrap evaluation.
 
 ## 7. Acceptance decision
 
@@ -112,4 +115,6 @@ No statistical threshold change is authorized by this audit.
 
 ## 8. Next development point
 
-With status semantics fixed, the next EdgeDB development discussion can return to the remaining product questions: whether the current cross-condition catalog is sufficient, how RECENT/HUMAN should be expanded further, and whether any new candidate templates deserve a controlled v0.2.x / v0.3 experiment. Threshold relaxation should not be the default next action based on this audit.
+With status semantics fixed, the next serving-layer research should evaluate whether a lower-confidence evidence tier can be defined without weakening the CONFIRMED/ACTIVE contract.
+
+Because 3,736 statistical rejects never received bootstrap CI, such a tier must not assume those candidates also failed CI. A defensible experiment should prefilter candidates independently of any favorite example, then explicitly run additional directional bootstrap evaluation for that research-only pool before deciding whether any should become serving-eligible.
