@@ -83,6 +83,8 @@ function newspaperV6ApplyMarkLayout() {
   });
 
   tableWrap.querySelectorAll(".newspaper-racenote-button").forEach(button => {
+    if (button.dataset.racenoteBound === "1") return;
+    button.dataset.racenoteBound = "1";
     button.addEventListener("click", () => {
       const horse = horses[Number(button.dataset.horseIndex)];
       if (horse) newspaperV6ShowRaceNoteDetail(horse);
