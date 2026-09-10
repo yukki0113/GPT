@@ -20,9 +20,12 @@ function newspaperV6ApplyMarkLayout() {
     }
     trainingHead.textContent = "追切";
 
+    const myHead = headRow.querySelector(".mark-my");
+    if (myHead) myHead.textContent = "独自";
+
     const orderedHeads = [
       headRow.querySelector(".mark-ability"),
-      headRow.querySelector(".mark-my"),
+      myHead,
       headRow.querySelector(".mark-eval"),
       trainingHead,
       headRow.querySelector(".mark-jrdb"),
