@@ -86,9 +86,9 @@ def audit(db_path: Path, raw_root: Path | None = None) -> dict[str, Any]:
         presence = {}
         for label, predicate in {
             "horse_id": "horse_id IS NOT NULL AND horse_id<>''",
-            "cha": "cha_record_hash IS NOT NULL",
-            "cyb": "cyb_record_hash IS NOT NULL",
-            "sed": "sed_record_hash IS NOT NULL",
+            "cha": "cha_source_member IS NOT NULL",
+            "cyb": "cyb_source_member IS NOT NULL",
+            "sed": "sed_source_member IS NOT NULL",
             "trainer_code": "trainer_code IS NOT NULL AND trainer_code<>''",
             "rotation_rest": "rotation_interval IS NOT NULL OR days_since_last_run IS NOT NULL",
             "cha_final_segment": "final_segment_sec IS NOT NULL",
@@ -141,6 +141,8 @@ def audit(db_path: Path, raw_root: Path | None = None) -> dict[str, Any]:
         """) or 0)
         source_archive_hash_missing = int(_scalar(db,
             "SELECT COUNT(*) FROM source_archive WHERE archive_sha256 IS NULL OR length(archive_sha256)<>64") or 0)
+        source_record_hash_invalid = int(_scalar(db,
+            "SELECT COUNT(*) FROM training_runner WHERE source_record_hash IS NULL OR length(source_record_hash)<>32") or 0)
 
         index_names = {row[1] for row in db.execute("PRAGMA index_list(training_runner)")}
         required_indices = {
@@ -169,6 +171,7 @@ def audit(db_path: Path, raw_root: Path | None = None) -> dict[str, Any]:
             "outcome_date_ordering": outcome_date_ordering == 0,
             "runperf_provenance": runperf_provenance_missing == 0,
             "source_archive_hashes": source_archive_hash_missing == 0,
+            "source_record_hashes": source_record_hash_invalid == 0,
             "nonfinite_numeric": not nonfinite,
             "market_data_contamination": not contaminated,
             "required_indices": not missing_indices,
@@ -192,6 +195,7 @@ def audit(db_path: Path, raw_root: Path | None = None) -> dict[str, Any]:
                 "outcome_date_ordering": outcome_date_ordering,
                 "runperf_provenance_missing": runperf_provenance_missing,
                 "source_archive_hash_missing": source_archive_hash_missing,
+                "source_record_hash_invalid": source_record_hash_invalid,
                 "nonfinite_numeric": nonfinite,
                 "market_columns": contaminated,
                 "missing_indices": missing_indices,

@@ -195,6 +195,37 @@ jobs:
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           exit 0
 
+      - name: Build LZMA Store transport
+        id: transport
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.stage1b.outputs.exit_code }}' != '0' ]; then
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          python - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          source=Path('/tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite')
+          target=Path('/tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite.zip')
+          with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_LZMA,compresslevel=9) as zf:
+              zf.write(source,arcname=source.name)
+          def sha(path):
+              h=hashlib.sha256()
+              with path.open('rb') as f:
+                  for block in iter(lambda:f.read(1024*1024),b''): h.update(block)
+              return h.hexdigest()
+          with zipfile.ZipFile(target) as zf:
+              bad=zf.testzip()
+          result={'filename':target.name,'size_bytes':target.stat().st_size,'sha256':sha(target),
+                  'compression':'zip_lzma','member':source.name,'payload_size_bytes':source.stat().st_size,
+                  'payload_sha256':sha(source),'zip_integrity':'ok' if bad is None else bad}
+          Path('/tmp/jrdb_training/report/training_research_transport.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+          if bad is not None: raise SystemExit(2)
+          PY
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
       - name: Build workflow result
         if: always()
         env:
@@ -205,6 +236,7 @@ jobs:
           TRAINING_BUILD_EXIT: ${{ steps.training_build.outputs.exit_code }}
           TRAINING_AUDIT_EXIT: ${{ steps.training_audit.outputs.exit_code }}
           STAGE1B_EXIT: ${{ steps.stage1b.outputs.exit_code }}
+          TRANSPORT_EXIT: ${{ steps.transport.outputs.exit_code }}
           RUN_ID: ${{ github.run_id }}
           HEAD_SHA: ${{ github.sha }}
         run: |
@@ -212,7 +244,7 @@ jobs:
           import json,os
           from pathlib import Path
           exits={key:os.environ.get(key+'_EXIT','') for key in
-                 ('FETCH','INDEX_BUILD','INDEX_AUDIT','RUNPERF','TRAINING_BUILD','TRAINING_AUDIT','STAGE1B')}
+                 ('FETCH','INDEX_BUILD','INDEX_AUDIT','RUNPERF','TRAINING_BUILD','TRAINING_AUDIT','STAGE1B','TRANSPORT')}
           audit_path=Path('/tmp/jrdb_training/report/training_research_build_audit.json')
           stage_path=Path('/tmp/jrdb_training/report/training_vertical_stage1b.json')
           audit=json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.is_file() else {}
@@ -235,7 +267,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jrdb-training-research-db-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
-          path: /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite
+          path: /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite.zip
           if-no-files-found: warn
           retention-days: 30
           compression-level: 6
@@ -266,7 +298,8 @@ jobs:
           steps.runperf.outputs.exit_code == '0' &&
           steps.training_build.outputs.exit_code == '0' &&
           steps.training_audit.outputs.exit_code == '0' &&
-          steps.stage1b.outputs.exit_code == '0'
+          steps.stage1b.outputs.exit_code == '0' &&
+          steps.transport.outputs.exit_code == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
@@ -280,5 +313,6 @@ jobs:
            steps.runperf.outputs.exit_code != '0' ||
            steps.training_build.outputs.exit_code != '0' ||
            steps.training_audit.outputs.exit_code != '0' ||
-           steps.stage1b.outputs.exit_code != '0')
+           steps.stage1b.outputs.exit_code != '0' ||
+           steps.transport.outputs.exit_code != '0')
         run: exit 1

@@ -14,7 +14,8 @@ Canonical artifact filename:
 jrdb_training_research_2010_2025_v0_1.sqlite
 ```
 
-The local file is a cache. The accepted frozen artifact is stored under the Google
+The local file is a cache. The accepted frozen artifact is stored as a one-member
+LZMA ZIP transport under the Google
 Drive JRDB research/mart area and registered as `jrdb://training-research/v0.1` in
 the external live Store manifest. Git retains source, schema, tests, build/audit
 contracts, reports, and publication provenance; the SQLite binary is never committed.
@@ -54,7 +55,8 @@ selecting only 2010–2023 and asserting the maximum selected year is 2023.
 - raw-derived CYB pattern facts and separate JRDB CYB processed evaluations;
 - KYI processed training fields retained only for later comparison;
 - result and Official RunPerf labels;
-- row-level member/hash provenance plus build/schema/Git provenance.
+- row-level source-member provenance and a 32-byte composite SHA-256 over all
+  contributing neutral records, plus build/schema/Git provenance in metadata.
 
 Odds, popularity and payouts are excluded. A later Value layer may join market data
 without contaminating this explanatory research base.
@@ -148,4 +150,3 @@ The same central row supports trainer × course/type/rest/effort/pair-work/volum
 one-week-ago-to-final-workout exploration without rebuilding Raw. Stage 2 still needs
 a Controller-frozen multiple-testing, minimum-sample, temporal-validation and
 shrinkage policy before pattern mining begins.
-

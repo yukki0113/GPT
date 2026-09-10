@@ -116,15 +116,7 @@ CREATE TABLE training_runner(
   cha_source_member TEXT,
   cyb_source_member TEXT,
   sed_source_member TEXT,
-  race_record_hash TEXT NOT NULL,
-  kyi_record_hash TEXT NOT NULL,
-  cha_record_hash TEXT,
-  cyb_record_hash TEXT,
-  sed_record_hash TEXT,
-  builder_version TEXT NOT NULL,
-  source_git_commit TEXT NOT NULL,
-  schema_version TEXT NOT NULL,
-  generated_at TEXT NOT NULL,
+  source_record_hash BLOB NOT NULL CHECK(length(source_record_hash)=32),
   PRIMARY KEY(race_key, horse_no)
 );
 

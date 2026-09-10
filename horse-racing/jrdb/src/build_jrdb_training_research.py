@@ -36,6 +36,16 @@ def _scalar(connection: sqlite3.Connection, sql: str) -> object:
     return None if row is None else row[0]
 
 
+def _combined_record_hash(*values: object) -> bytes:
+    """Trace all contributing neutral records with one compact composite digest."""
+    digest = hashlib.sha256()
+    for value in values:
+        text = "" if value is None else str(value)
+        digest.update(len(text).to_bytes(4, "big"))
+        digest.update(text.encode("ascii"))
+    return digest.digest()
+
+
 def build(index_db: Path, official_db: Path, output: Path, schema: Path, source_git_commit: str) -> dict:
     if output.exists():
         raise FileExistsError(f"refusing to overwrite: {output}")
@@ -46,6 +56,7 @@ def build(index_db: Path, official_db: Path, output: Path, schema: Path, source_
 
     generated_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     connection = sqlite3.connect(output)
+    connection.create_function("combined_record_hash", -1, _combined_record_hash, deterministic=True)
     try:
         connection.execute("PRAGMA journal_mode=OFF")
         connection.execute("PRAGMA synchronous=OFF")
@@ -130,8 +141,7 @@ def build(index_db: Path, official_db: Path, output: Path, schema: Path, source_
                    THEN CAST(f.valid_count-s.finish AS REAL)/(f.valid_count-1) ELSE NULL END,
               o.runperf_raw,o.score_status,?, ?,o.score_provenance,
               r.source_kind,r.source_member,p.source_member,w.source_member,y.source_member,s.source_member,
-              r.record_hash,p.record_hash,w.record_hash,y.record_hash,s.record_hash,
-              ?,?,?,?
+              combined_record_hash(r.record_hash,p.record_hash,w.record_hash,y.record_hash,s.record_hash)
             FROM ordered p
             JOIN idx.race_context r USING(race_key)
             LEFT JOIN idx.runner_result s ON s.race_key=p.race_key AND s.horse_no=p.horse_no
@@ -141,7 +151,7 @@ def build(index_db: Path, official_db: Path, output: Path, schema: Path, source_
             LEFT JOIN off.official_runperf o ON o.race_key=p.race_key AND o.horse_no=p.horse_no
             WHERE r.year BETWEEN 2010 AND 2025
             """,
-            (RUNPERF_FORMULA, RUNPERF_VERSION, VERSION, source_git_commit, SCHEMA_VERSION, generated_at),
+            (RUNPERF_FORMULA, RUNPERF_VERSION),
         )
         runner_count = int(_scalar(connection, "SELECT COUNT(*) FROM training_runner"))
         finished_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
