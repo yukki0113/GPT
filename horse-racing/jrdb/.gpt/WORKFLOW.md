@@ -66,6 +66,20 @@ Dを使う場合のみ、下記「Issue駆動Actionsのpreflight」を適用す�
 - Current Facts / Matcherの固定済みローカル入力テスト: **C**
 - PACI等の認証取得を伴うofficial current matching / artifact chain: **D**
 
+### Ability / Debut Ability指数開発での標準適用
+
+- Controller disposition、protocol、source、issue/run/artifact、main HEAD、SHA、既存監査結果の確認: **A**
+- Ability / Debut Abilityのsource/test/docs/schema/config/workflow修正、protocol freeze文書の反映: **B**
+- compile、focused pytest、fixture回帰、固定済み入力に対する決定的な集計・比較・SHA/整合性確認: **C**
+- 既取得済みartifact/SQLite/JSON/CSVだけを入力とする追加metric、差分比較、診断レポート: **C**。正式run証跡が不要なら再度Actionsを起動しない。
+- `jrdb_debut_ability_smoke_issue.yml` 相当のcompile + focused regressionは通常 **C** とし、smokeだけのためにIssueを作成しない。GitHub-hosted runner環境自体の検証が目的の場合のみ **D** を許可する。
+- `JRDB_USER` / `JRDB_PASSWORD` でRawを取得して2010-2023/2025を再構築するAbility/Debut snapshot audit・coverage: **D** — Secrets + 長時間/大容量 +正式監査artifact。
+- 2010-2023 Ability/Debut predictive comparison: **D** — 長時間・大容量のwalk-forward/model gridであり、Controller選択前のcanonical comparison evidenceとしてrun ID / artifactを固定する。
+- 2024-2025 temporal holdout/confirmation: **D** — locked holdoutのimmutable confirmation evidenceとしてActions履歴を必要とする。
+- canonical model/snapshotの正式再監査、再現性freeze、publication/releaseに相当するrun: **D**。
+
+Controllerの設計判断やfreeze決定そのものを文書へ反映するだけなら **B** でよい。対して、その判断の根拠となるcanonical full-history build / comparison / holdout / audit evidenceを新規生成する場合は **D** とする。
+
 RaceNote等の別subsystemは各専用contractを優先し、Edge Registry開発と文脈を混在させない。
 
 ## Issue駆動Actionsのpreflight
