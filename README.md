@@ -7,6 +7,7 @@ ChatGPT / Work と連携して継続開発するプロジェクトのソース�
 - `horse-racing/jrdb/` — 中央競馬・JRDBデータ基盤 / RaceNote
 - `horse-racing/eval/` — 中央競馬・Eval表取得・検証
 - `boat-racing/` — 競艇AI予想の取得・運用ツール
+- `local-horse-racing/` — 地方競馬・NAR公式CSV取得基盤（Phase 0）
 
 ## Legacy
 
