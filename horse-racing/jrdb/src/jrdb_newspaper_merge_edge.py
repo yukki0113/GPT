@@ -18,7 +18,7 @@ from typing import Any
 
 import jrdb_newspaper_edge_adapter as edge_adapter
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
 def _sha_file(path: Path) -> str:
@@ -117,7 +117,7 @@ def merge_edge_day(
                 raise ValueError(f"Edge row missing for exact join key {join_key}")
 
             special_memos = edge_row["special_memos"]
-            horse["edge_matches"] = special_memos
+            horse["special_memos"] = special_memos
             consumed_keys.add(join_key)
             merged_rows += 1
             race_rows += 1
