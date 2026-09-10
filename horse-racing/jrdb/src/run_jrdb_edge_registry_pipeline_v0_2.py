@@ -7,7 +7,7 @@ from pathlib import Path
 
 import run_jrdb_edge_registry_pipeline as base
 
-VERSION = "0.2.4"
+VERSION = "0.2.5"
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -61,6 +61,34 @@ def build_stages_v02(request, paths, python):
                         str(paths.out_dir / "edge_stat_watch_audit.md"),
                     ),
                     base.FAILURE_CLASS_IMPLEMENTATION,
+                )
+            )
+            replaced.append(
+                base.Stage(
+                    "suggestive_bootstrap_research",
+                    (
+                        python,
+                        str(ROOT / "src/research_jrdb_edge_suggestive_bootstrap_v0_1.py"),
+                        "--mart",
+                        str(paths.mart_db),
+                        "--registry",
+                        str(paths.out_dir / "edge_registry.sqlite"),
+                        "--registry-audit",
+                        str(paths.out_dir / "edge_registry_audit.json"),
+                        "--output-jsonl",
+                        str(paths.out_dir / "edge_suggestive_bootstrap_research.jsonl"),
+                        "--audit-json",
+                        str(paths.out_dir / "edge_suggestive_bootstrap_research_audit.json"),
+                        "--audit-md",
+                        str(paths.out_dir / "edge_suggestive_bootstrap_research_audit.md"),
+                        "--q-low",
+                        "0.05",
+                        "--q-high",
+                        "0.10",
+                        "--bootstrap-samples",
+                        "400",
+                    ),
+                    base.FAILURE_CLASS_DOMAIN,
                 )
             )
     return replaced
