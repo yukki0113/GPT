@@ -1,10 +1,13 @@
 # Boat racing GPT workflow
 
 1. READMEと対象ツールのdocsを確認。
-2. 公式サイト側の変更に注意し、既存CSV互換性を維持する。
-3. 改修後は実日付または保存済みfixtureで回帰確認。
-4. キャッシュ、日次成果物、ログ、継続台帳はcommitしない。継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳` を正本とする。
-5. Pythonと対応READMEを同時に更新してcommitする。
+2. GitHub作業は開始時に A: Read / Audit、B: Git Change、C: Pure Deterministic Execution、D: Actions-Native Execution の4系統へ分類し、最短かつ再現可能な経路を選ぶ。
+3. 公式サイト側の変更に注意し、既存CSV互換性を維持する。
+4. 改修後は実日付または保存済みfixtureで回帰確認。
+5. キャッシュ、日次成果物、ログ、継続台帳はcommitしない。継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳` を正本とする。
+6. source / test / docs / config / workflow等のUTF-8テキスト変更は、latest main、path存在、現内容を確認してからGitHub direct create/update/deleteでremote commitを作成する。Git変更だけを目的としたIssueは原則使用しない。
+7. Git正本moduleと必要入力をChat側で取得でき、secret・特殊runner・Actions監査証跡が不要で計算量が許容範囲ならGPTローカル実行を優先する。可能な限り source commit / source file SHA256 / input SHA256 / generated_at / output SHA256 を残す。
+8. IssueはSecrets、認証付き外部取得、Actions artifact chain、長時間・大容量処理、runner環境自体が仕様、immutable freeze、監査run、または正本moduleをChatローカルで同一条件実行できない処理に限定する。
 
 ## 2026-09-01以降の前向き予想試行
 
@@ -37,23 +40,21 @@
 - data Folder ID: `11OtFNwroVbgV8BClzoepTKoa81fQJ-A1`
 - analysis Folder ID: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 
-## Chatでの日次取得実行
+## ChatでのGitHub実行経路判定
 
-- まずGitHub `main` の `boat-racing/` を正本として確認する。
-- Chatからの定型実行は、GitHub Issue経由を標準経路とする。
-- 出走表取得は `.github/workflows/boatrace_racelist_issue.yml` を使用する。
-- Issue title は `[BOATRACE_RACELIST_REQUEST] <request_id>`、Issue本文はraw JSONとする。
-- Workflowは `main` の `boat-racing/src/fetch_boatrace_racelist.py` と `boat-racing/requirements.txt` をそのまま使用し、独自ロジックを別実装しない。
-- Issueコメントの `BOATRACE_RACELIST_RESULT` JSONから `status` / `run_id` / `artifact_name` を取得し、artifactを回収する。
-- artifact内の `resolved_request.json`、`run_status.txt`、`validation_report.json`、取得状況・ログ・CSVを確認してから日常成果物を受け渡す。
-- Request Issueは処理終了後に自動Closeする。
-- 失敗時もartifactとRESULTコメントを残し、診断可能にする。
-- `.github/workflows/boatrace_racelist_manual.yml` は手動フォールバックとして残すが、Chatからの日常実行ではIssue経由を優先する。
+- まずGitHub `main` の `boat-racing/` と対象workflow / docsを正本として確認する。
+- 読み取り、コード検索、commit / issue / workflow / artifact / SHA / run状態確認は A. Read / Audit とし、ChatからGitHub read/searchで直接行う。Issue不要。
+- source / test / docs / config / workflow等のテキスト更新は B. Git Change とし、direct create/update/deleteを使う。Git更新のためのIssueは作らない。
+- CSV整形、JSON join、集計、scoring、metrics、SHA、差分比較、artifact回収後の検証など、Git正本moduleと必要入力をChat側で取得できる処理は C. Pure Deterministic Execution を第一候補とする。
+- BOAT RACE公式サイトへの取得系処理は、正本PythonをChatローカルで同一条件実行でき、公式入力を取得できる場合はCを優先する。ChatローカルのPython実行環境から公式サイトへ通信できず正本fetcherを再現できない場合は D. Actions-Native Execution としてIssue経由Actionsを使用する。
+- Dで出走表取得を行う場合は `.github/workflows/boatrace_racelist_issue.yml`、直前情報取得は `.github/workflows/boatrace_pre_race_issue.yml`、結果取得・予想照合は `.github/workflows/boatrace_results_chat.yml` を使用する。
+- manual workflowは人手での補助経路として残すが、ChatがDを選択した場合はIssue起動を優先する。
+- Actions artifactから回収した後のJSON/CSV整合性検査やSHA計算は、別Actions runを要求する監査仕様がない限りCとしてChatローカルで行う。
 - 日次成果物はGitへcommitしない。
 
 ### Issue request preflight / retry
 
-Issue駆動Actionsでは、ルート `.gpt/README.md` と `.gpt/ISSUE_REQUEST_CONTRACTS.md` を共通正本とし、本節は競艇固有contractを補足する。共通規約と競艇固有規約が競合する場合は、データ意味を変えない範囲で共通のfail-closed / preflight / retry原則を満たし、曖昧なままIssueを作成しない。
+Issue駆動ActionsはD. Actions-Native Executionに限定する。ルート `.gpt/README.md` と `.gpt/ISSUE_REQUEST_CONTRACTS.md` を共通正本とし、本節は競艇固有contractを補足する。共通規約と競艇固有規約が競合する場合は、データ意味を変えない範囲で共通のfail-closed / preflight / retry原則を満たし、曖昧なままIssueを作成しない。
 
 Issue作成前は、必ず最新 `main` の共通contract、本ファイル、対象workflowを確認する。Issueを先に作成して不足項目を後から補う運用は行わない。
 
@@ -70,7 +71,9 @@ Issue作成前は、必ず最新 `main` の共通contract、本ファイル、�
 - downstreamで使用する `run_id` / `artifact_name` は、同RESULTから完全一致で転記する。
 - `status=partial` / `status=failure` は成功扱いにせず、artifactと `validation_report.json`、runのfailed stepを確認して原因分類する。
 
-preflightでは少なくとも title / request_id / JSON parse / `date` / `venues` / `request_interval_seconds` をIssue作成前に検証する。共通 `.gpt/tools/gpt_issue_preflight.py` が当該raw JSON protocolを直接検証できる環境・版ではそれを使用する。未対応の場合は、上記contractを同等に事前検証し、専用validatorが追加された後はvalidatorを優先する。
+直前情報取得をDとして実行する場合のcontractは `boat-racing/docs/直前情報取得_GitHubIssue運用.md` と `.github/workflows/boatrace_pre_race_issue.yml` を正本とする。title prefixは `[BOATRACE_PRE_RACE_REQUEST]`、bodyはraw JSON objectで、`date` / `venue` / `race` / `format` を検証してからIssueを1回だけ作成する。
+
+preflightでは少なくとも title / request_id / JSON parse / 必須キー / 値域をIssue作成前に検証する。upstream artifact chainを使う処理では、さらにupstream run成功、artifact名、SHA、dates / IDs / freeze manifest等を実値照合する。共通 `.gpt/tools/gpt_issue_preflight.py` が当該protocolを直接検証できる環境・版ではそれを使用する。未対応の場合は対象workflow/parserとcontractを読み、同等の事前検証を行う。
 
 retry時は以下を必須とする。
 
