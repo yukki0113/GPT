@@ -12,8 +12,55 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/fetch_keibail
 - 依存: `requirements.txt`
 - Chat用Workflow: `.github/workflows/keibailuka_chat.yml`
 - GPT運用ルール: `.gpt/CONTEXT.md`, `.gpt/WORKFLOW.md`
+- GitHub運用上位方針: `/.gpt/GITHUB_OPERATION_POLICY.md`
 
 日次の解析JSON / TSV / CSV、validation、ログ、artifactはGit管理対象外です。
+
+## GitHub operation routing
+
+2026-09-10以降、GitHubにmoduleがあることだけを理由にIssue / Actionsを選びません。上位方針に従い、処理ごとにA/B/C/Dを判定します。
+
+### A. Read / Audit
+
+次はGitHub read / search / fetchで直接確認し、Issueを作りません。
+
+- latest `main`
+- source / README / `.gpt` / workflow
+- 既存Issue / `KEIBAILUKA_RESULT`
+- run status / artifact metadata / commit / SHA
+- 既存成果物の監査
+
+### B. Git Change
+
+source / docs / config / workflow等のUTF-8テキスト変更は、原則GitHubへdirect create / update / deleteしてremote commitを作ります。
+
+`[gpt-git-update]` Issueは標準経路ではなく、direct writeが利用できない場合だけ互換フォールバックとして使います。
+
+変更前は `latest main -> path存在 -> current content/blob SHA -> 必要差分` の順で確認します。
+
+### C. Pure Deterministic Execution
+
+すでに取得済みの固定入力に対する次の処理は、可能な限りGPTローカルで実行します。
+
+- `KEIBAILUKA_RESULT` / JSON / TSV / CSVの並び替え・比較
+- 5列CSVへの決定的整形
+- SHA-256 / row count / schema確認
+- 固定成果物同士の差分確認
+- 外部HTTPを必要としないfocused test / regression
+
+このため、成功runからコードブロックを整形するだけの処理や、既存entriesから所定の5列CSVを確認・再生成するだけの処理のために、新しいIssue / Actionsを起動しません。
+
+### D. Actions-Native Execution
+
+**日次のブログ探索・取得・解析・validationは、現行Chat環境ではIssue / Actionsを維持します。**
+
+理由は、正本 `src/fetch_keibailuka_blog.py` がBlogger公開feed / blog pageへ直接HTTPアクセスして記事探索から実行する一体型moduleである一方、現行ChatのローカルPython実行環境では外部hostへのDNS / HTTPアクセスが利用できず、正本moduleを同一条件でローカル実行できないためです。
+
+このmoduleではSecretsやimmutable freezeを理由にActionsを使っているわけではありません。将来、Chat側で正本moduleの外部HTTP実行をそのまま再現できる環境になった場合は、あらためてCへの移行可否を判定します。
+
+日次取得のIssue発行前には `/.gpt/GITHUB_OPERATION_POLICY.md` と `/.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflightを適用し、latest main / workflow parser / request JSONを確認してから1回だけ発行します。
+
+既存runのartifactを読むだけの場合はAで直接取得し、artifact取得のためだけに別Issueを作りません。artifactは通常14日保持の一時成果物であり、このプロジェクトではimmutable freeze /正式監査正本とは定義しません。
 
 ## 通常入力
 
@@ -27,17 +74,17 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/fetch_keibail
 例:
 
 ```text
-8/23 のブログの解析をお願いします。
-開催順：新潟→中京→札幌
+9/6 のブログの解析をお願いします。
+開催順：札幌→阪神→中山
 ```
 
 ## CLI
 
 ```bash
 python horse-racing/fetch_keibailuka_blog/src/fetch_keibailuka_blog.py \
-  --date 2026-08-23 \
-  --venues 新潟 中京 札幌 \
-  --output-dir ./output_keibailuka_20260823
+  --date 2026-09-06 \
+  --venues 札幌 阪神 中山 \
+  --output-dir ./output_keibailuka_20260906
 ```
 
 オプション:
@@ -104,10 +151,10 @@ CSVはUTF-8・ヘッダー付きで、日付は `YYYY-MM-DD`、Rは `1R`〜`12R`
 
 ## Chat / GitHub Actions
 
-Chatからの定型解析は `.github/workflows/keibailuka_chat.yml` のIssue経路を標準とします。
+日次の外部取得だけは `.github/workflows/keibailuka_chat.yml` のActions-Native経路を使います。
 
 - Issue title: `[KEIBAILUKA_REQUEST] <request_id>`
-- Issue body: `date` と `venues` を持つJSON
+- Issue body: `date` と `venues` を持つraw JSON
 
 ActionsはGit正本のPythonを実行し、結果JSON / TSV / CSV / validationをartifact化します。完了後、同じIssueへ `KEIBAILUKA_RESULT` コメントを返し、自動クローズします。
 
@@ -117,9 +164,9 @@ ActionsはGit正本のPythonを実行し、結果JSON / TSV / CSV / validation�
 - `validation_exit_code = 0`
 - `validation.validation_status = success`
 
-結果コメントにはsource URL、採用entries、Plain text TSV、run/artifact情報を含めます。通常のChat回答はこの結果コメントから組み立てます。
+通常のChat回答はAで `KEIBAILUKA_RESULT` を読み、成功条件確認後にコードブロックを返します。長文コメントの軽い要約はコードブロック表示側だけで行い、PWA用CSVのコメントはmoduleが抽出した原文を維持します。
 
-通常のChat回答では従来どおりコードブロックを返し、あわせてartifact内の `keibailuka_YYYYMMDD.csv` をCSV成果物として返します。
+CSVは同じrunのartifactから直接回収できます。固定entriesからの形式確認・比較等はCで処理し、新しいIssueは作りません。
 
 ## 実動確認
 
@@ -128,4 +175,4 @@ ActionsはGit正本のPythonを実行し、結果JSON / TSV / CSV / validation�
 - 2026-08-22 新潟→中京→札幌
 - 2026-08-23 新潟→中京→札幌
 
-両日とも個別記事HTMLでは429が起こり得る条件でしたが、Blogger公開feed本文から3場分を取得できました。
+2026-09-06についても、札幌→阪神→中山でR優先順とCSV生成を含む回帰成功を確認済みです。
