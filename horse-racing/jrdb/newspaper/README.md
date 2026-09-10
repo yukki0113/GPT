@@ -12,6 +12,10 @@ Status: V0.1 INITIAL ACCEPTANCE PASS / DAILY PACKAGE + EXTERNAL MERGE VALIDATED
 - `../schema/jrdb_pwa_newspaper_manifest_schema_v0_1.json`
 - `.gpt/WORKFLOW.md`
 - `.gpt/REQUEST_CONTRACT.md`
+- `.gpt/DAILY_WORK_CONTRACT.md`
+- `.gpt/WORK_THREAD_BOOTSTRAP.md`
+
+日次Workの通常運用契約は `.gpt/DAILY_WORK_CONTRACT.md` を正本とし、新しい専用Workスレッドの起動には `.gpt/WORK_THREAD_BOOTSTRAP.md` を使用します。
 
 ## Architecture boundary
 
@@ -74,7 +78,9 @@ Base/historyはCommon Reader / neutral JRDB accessから生成し、最大8走�
 - RaceNote prediction merger: `addons.racenote_prediction` + race-level RaceNote note
 - keibailuka merger: `addons.keibailuka`
 - independent index merger: `addons.my_index`
-- Edge matcher: `edge_matches`
+- Edge matcher input: EdgeDB matcher output
+- current Newspaper Edge display field: `special_memos`
+- legacy Newspaper Edge compatibility field: `edge_matches`
 
 基本join key:
 
@@ -97,12 +103,24 @@ PACIを既に取得できている場合、Newspaper builderを動かすだけ�
 
 ## Routine Work target
 
-専用Workスレッドでは、最終的にユーザーが日付と利用可能な添付だけを渡せば1日JSONを作れる運用を標準とします。
+専用Workスレッドでは、通常ユーザーは次の1文だけを指示します。
 
 ```text
-09/12の競馬新聞用データを生成してください。
-不足入力はLibrary / Driveから回収してください。
+MMDDの競馬新聞用JSONを作成し、アップロードしてください。
 ```
+
+詳細な通常運用契約は `.gpt/DAILY_WORK_CONTRACT.md` を正本とします。
+
+要点:
+
+- 添付 -> File Library -> Drive canonical -> verified artifact の順で入力をresolveする
+- PACI / JRDB RawをBase必須sourceとする
+- Eval / RaceNote prediction / keibailuka / Edge / independent indexはoptional addonとして扱う
+- optional addonが未着でも処理を止めず、その時点の完成JSONを正式revisionとして保存・公開する
+- source状態は `READY / NOT_FOUND / ERROR / NOT_EXPECTED` で報告する
+- 同日更新は既存JSONへの直接追記ではなく、verified inputsから再構成してimmutable revisionを上げる
+- 遅着sourceは次revisionへidempotent mergeし、旧revisionを保持したままcurrent pointerを更新する
+- ユーザーの「アップロード」は通常、Drive canonical保存 -> current更新 -> Current Publish -> Pages反映確認までを含む
 
 標準処理:
 
@@ -110,11 +128,12 @@ PACIを既に取得できている場合、Newspaper builderを動かすだけ�
 2. 添付 / Library / Drive / 既存artifactから入力をresolve
 3. PACIがなければActions-Nativeで公式取得のみ実施
 4. GitHub `main` の正本moduleを取得してローカルで日次Base生成
-5. Eval / RaceNote prediction / keibailuka / Edge / independent indexの利用可能分をmerge
-6. schema / key / headcount / as-of / SHAを監査
+5. 利用可能なEval / RaceNote prediction / keibailuka / Edge / independent indexをmerge
+6. schema / key / headcount / as-of / source coverage / SHA / idempotenceを監査
 7. day-package.jsonを生成
-8. 必要に応じてDrive canonical保存 / publish
-9. READY/PENDING/ERRORと成果物を報告
+8. immutable revisionとしてDrive canonical保存
+9. current pointer更新 / Current Publish / Pages反映
+10. 各sourceの状態と成果物を報告
 
 ローカル生成物には可能な限り `source_commit`, module/source SHA, input SHA, generated_at, output SHAを残し、正本moduleの再現実行であることを追跡可能にします。
 
