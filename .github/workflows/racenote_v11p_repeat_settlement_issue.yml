@@ -1,0 +1,246 @@
+name: RaceNote v1.1-P Repeat Settlement
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: racenote-v11p-repeat-settlement
+  cancel-in-progress: false
+
+jobs:
+  settle:
+    if: ${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_REPEAT_SETTLEMENT]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import datetime
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = '[RACENOTE_V11P_REPEAT_SETTLEMENT]'
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('REQUEST_INVALID: invalid request_id')
+          try:
+              body = json.loads(os.environ.get('ISSUE_BODY') or '')
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'REQUEST_INVALID: invalid JSON: {exc}')
+          if body.get('request_id') != request_id:
+              raise SystemExit('REQUEST_INVALID: title/body request_id mismatch')
+
+          dates = body.get('dates')
+          if not isinstance(dates, list) or len(dates) != 3:
+              raise SystemExit('REQUEST_INVALID: dates must contain exactly three target dates')
+          normalized = []
+          for raw in dates:
+              day = str(raw).strip().replace('-', '')
+              if not re.fullmatch(r'\d{8}', day):
+                  raise SystemExit(f'REQUEST_INVALID: invalid date {raw!r}')
+              datetime.date(int(day[:4]), int(day[4:6]), int(day[6:8]))
+              normalized.append(day)
+          if len(set(normalized)) != 3 or normalized != sorted(normalized):
+              raise SystemExit('REQUEST_INVALID: dates must be unique and ascending')
+          body['dates'] = normalized
+
+          results = body.get('results')
+          if not isinstance(results, dict) or sorted(results) != normalized:
+              raise SystemExit('REQUEST_INVALID: results keys must exactly equal dates')
+          freeze = body.get('freeze')
+          if not isinstance(freeze, dict):
+              raise SystemExit('REQUEST_INVALID: freeze object required')
+          for key in ('freeze_commit', 'manifest_sha256', 'combined_canonical_payload_sha256'):
+              if not freeze.get(key):
+                  raise SystemExit(f'REQUEST_INVALID: freeze.{key} required')
+          for day in normalized:
+              spec = results.get(day)
+              if not isinstance(spec, dict):
+                  raise SystemExit(f'REQUEST_INVALID: results.{day} must be object')
+              for key in ('run_id', 'artifact_name', 'hjc_sha256', 'sed_sha256'):
+                  if spec.get(key) in (None, ''):
+                      raise SystemExit(f'REQUEST_INVALID: results.{day}.{key} required')
+
+          first = normalized[0]
+          parts = [first]
+          for day in normalized[1:]:
+              parts.append(day[6:] if day[:6] == first[:6] else day)
+          date_label = '_'.join(parts)
+
+          Path('/tmp/request.json').write_text(
+              json.dumps(body, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f'request_id={request_id}\n')
+              f.write(f'date_label={date_label}\n')
+          PY
+
+      - name: Install test dependency
+        run: python -m pip install --disable-pip-version-check -q pytest
+
+      - name: Run settlement tests
+        run: |
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_racenote_v11p_settlement.py \
+            horse-racing/jrdb/tests/test_jrdb_hjc_common.py \
+            horse-racing/jrdb/tests/test_racenote_v11p_repeat_settlement.py
+
+      - name: Materialize immutable freeze snapshot
+        run: |
+          set -euo pipefail
+          freeze_commit="$(jq -r '.freeze.freeze_commit' /tmp/request.json)"
+          label="${{ steps.request.outputs.date_label }}"
+          git cat-file -e "${freeze_commit}^{commit}"
+          mkdir -p /tmp/freeze
+          base='horse-racing/jrdb/prediction_runs'
+          while IFS= read -r day; do
+            file="RaceNote_v1_1_Polarity_Gated_${day}_PRE_HJC.json"
+            git show "${freeze_commit}:${base}/${file}" > "/tmp/freeze/${file}"
+          done < <(jq -r '.dates[]' /tmp/request.json)
+          manifest="RaceNote_v1_1_Polarity_Gated_${label}_PRE_HJC_FREEZE.json"
+          git show "${freeze_commit}:${base}/${manifest}" > "/tmp/freeze/${manifest}"
+          expected="$(jq -r '.freeze.manifest_sha256' /tmp/request.json)"
+          actual="$(sha256sum "/tmp/freeze/${manifest}" | awk '{print $1}')"
+          if [ "$actual" != "$expected" ]; then
+            echo "DOMAIN_VALIDATION_FAILED: freeze manifest SHA mismatch" >&2
+            exit 2
+          fi
+
+      - name: Download HJC and SED artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/raw
+          while IFS= read -r day; do
+            run_id="$(jq -r --arg day "$day" '.results[$day].run_id' /tmp/request.json)"
+            artifact="$(jq -r --arg day "$day" '.results[$day].artifact_name' /tmp/request.json)"
+            mkdir -p "/tmp/raw/$day"
+            gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --name "$artifact" --dir "/tmp/raw/$day"
+          done < <(jq -r '.dates[]' /tmp/request.json)
+
+      - name: Build race-level settlement
+        run: |
+          code_head="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/run_racenote_v11p_repeat_settlement.py \
+            --request-json /tmp/request.json \
+            --freeze-root /tmp/freeze \
+            --raw-root /tmp/raw \
+            --output-root /tmp/settlement \
+            --run-id "${{ github.run_id }}" \
+            --head-sha "$code_head"
+
+      - name: Upload settlement artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-v11p-repeat-settlement-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/settlement/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit result-side cache and settlement
+        id: commit
+        run: |
+          set -euo pipefail
+          git pull --rebase origin main
+          label="${{ steps.request.outputs.date_label }}"
+          result_cache='horse-racing/jrdb/result_cache'
+          settlement_runs='horse-racing/jrdb/settlement_runs'
+          mkdir -p "$result_cache" "$settlement_runs"
+
+          outputs=(
+            "$result_cache/RaceNote_v1_1_Polarity_Gated_${label}_HJC_Payouts.csv"
+            "$result_cache/RaceNote_v1_1_Polarity_Gated_${label}_SED_Finish.csv"
+            "$settlement_runs/RaceNote_v1_1_Polarity_Gated_${label}_SETTLEMENT_MANIFEST.json"
+          )
+          while IFS= read -r day; do
+            outputs+=("$settlement_runs/RaceNote_v1_1_Polarity_Gated_${day}_SETTLEMENT.json")
+          done < <(jq -r '.dates[]' /tmp/request.json)
+
+          for target in "${outputs[@]}"; do
+            if [ -e "$target" ]; then
+              echo "DOMAIN_VALIDATION_FAILED: immutable settlement target already exists: $target" >&2
+              exit 2
+            fi
+          done
+
+          cp "/tmp/settlement/result_cache/RaceNote_v1_1_Polarity_Gated_${label}_HJC_Payouts.csv" "$result_cache/"
+          cp "/tmp/settlement/result_cache/RaceNote_v1_1_Polarity_Gated_${label}_SED_Finish.csv" "$result_cache/"
+          cp "/tmp/settlement/settlement_runs/RaceNote_v1_1_Polarity_Gated_${label}_SETTLEMENT_MANIFEST.json" "$settlement_runs/"
+          while IFS= read -r day; do
+            cp "/tmp/settlement/settlement_runs/RaceNote_v1_1_Polarity_Gated_${day}_SETTLEMENT.json" "$settlement_runs/"
+          done < <(jq -r '.dates[]' /tmp/request.json)
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "${outputs[@]}"
+          git commit -m "settle(jrdb): RaceNote v1.1-P repeat ${label}"
+          git push origin HEAD:main
+          echo "settlement_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment success and close Issue
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          SETTLEMENT_COMMIT: ${{ steps.commit.outputs.settlement_commit }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          result = json.loads(Path('/tmp/settlement/result.json').read_text(encoding='utf-8'))
+          result['settlement_commit'] = os.environ['SETTLEMENT_COMMIT']
+          result['artifact_name'] = (
+              f"racenote-v11p-repeat-settlement-{os.environ['REQUEST_ID']}-{result['run_id']}"
+          )
+          body = (
+              'RACENOTE_V11P_REPEAT_SETTLEMENT_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True)
+              + '\n```\n'
+          )
+          subprocess.run(
+              ['gh', 'issue', 'comment', os.environ['ISSUE_NUMBER'], '--repo', os.environ['GITHUB_REPOSITORY'], '--body', body],
+              check=True,
+          )
+          subprocess.run(
+              ['gh', 'issue', 'close', os.environ['ISSUE_NUMBER'], '--repo', os.environ['GITHUB_REPOSITORY'], '--reason', 'completed'],
+              check=True,
+          )
+          PY
+
+      - name: Comment failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "RACENOTE_V11P_REPEAT_SETTLEMENT_RESULT
+          \`\`\`json
+          {\"status\":\"failure\",\"run_id\":$GITHUB_RUN_ID,\"retryable\":false}
+          \`\`\`
+          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
