@@ -1,0 +1,230 @@
+name: RaceNote Edge Prediction Freeze via Issue v0.1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_EDGE_PREDICTION_FREEZE]'
+
+jobs:
+  freeze:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_EDGE_PREDICTION_FREEZE]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          prefix='[RACENOTE_EDGE_PREDICTION_FREEZE]'
+          request_id=os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('invalid request_id')
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          dates=req.get('dates')
+          if not isinstance(dates,list) or not dates or dates!=sorted(dates) or len(set(dates))!=len(dates):
+              raise SystemExit('dates must be a non-empty unique sorted list')
+          if any(not isinstance(d,str) or not re.fullmatch(r'20\d{6}',d) for d in dates):
+              raise SystemExit('dates must use YYYYMMDD')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+
+          racenote=req.get('racenote')
+          if not isinstance(racenote,dict) or set(racenote)!=set(dates):
+              raise SystemExit('racenote keys must exactly equal dates')
+          for day in dates:
+              row=racenote[day]
+              if not isinstance(row,dict): raise SystemExit(f'racenote.{day} must be object')
+              for key in ('issue_number','run_id','artifact_name','artifact_sha256'):
+                  if key not in row: raise SystemExit(f'racenote.{day}.{key} required')
+              if not isinstance(row['issue_number'],int) or row['issue_number']<=0: raise SystemExit(f'racenote.{day}.issue_number invalid')
+              if not isinstance(row['run_id'],int) or row['run_id']<=0: raise SystemExit(f'racenote.{day}.run_id invalid')
+              if not str(row['artifact_name']).strip(): raise SystemExit(f'racenote.{day}.artifact_name invalid')
+              if not sha_re.fullmatch(str(row['artifact_sha256']).lower()): raise SystemExit(f'racenote.{day}.artifact_sha256 invalid')
+
+          edge=req.get('edge')
+          if not isinstance(edge,dict): raise SystemExit('edge must be object')
+          for key in ('issue_number','run_id','artifact_name','artifact_sha256'):
+              if key not in edge: raise SystemExit(f'edge.{key} required')
+          if not isinstance(edge['issue_number'],int) or edge['issue_number']<=0: raise SystemExit('edge.issue_number invalid')
+          if not isinstance(edge['run_id'],int) or edge['run_id']<=0: raise SystemExit('edge.run_id invalid')
+          if not str(edge['artifact_name']).strip(): raise SystemExit('edge.artifact_name invalid')
+          if not sha_re.fullmatch(str(edge['artifact_sha256']).lower()): raise SystemExit('edge.artifact_sha256 invalid')
+
+          registry=req.get('registry')
+          if not isinstance(registry,dict): raise SystemExit('registry must be object')
+          for key in ('issue_number','run_id','artifact_name','active_sha256'):
+              if key not in registry: raise SystemExit(f'registry.{key} required')
+          if not isinstance(registry['issue_number'],int) or registry['issue_number']<=0: raise SystemExit('registry.issue_number invalid')
+          if not isinstance(registry['run_id'],int) or registry['run_id']<=0: raise SystemExit('registry.run_id invalid')
+          if not str(registry['artifact_name']).strip(): raise SystemExit('registry.artifact_name invalid')
+          if not sha_re.fullmatch(str(registry['active_sha256']).lower()): raise SystemExit('registry.active_sha256 invalid')
+
+          out=dict(req)
+          out['request_id']=request_id
+          Path('/tmp/request.json').write_text(json.dumps(out,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as fh:
+              fh.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Verify upstream RESULT contracts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          repo=os.environ['GITHUB_REPOSITORY']
+
+          def latest_result(issue_number, marker):
+              raw=subprocess.check_output(['gh','issue','view',str(issue_number),'--repo',repo,'--json','comments'],text=True)
+              comments=json.loads(raw).get('comments') or []
+              pattern=re.compile(re.escape(marker)+r'\s*```json\s*(\{.*?\})\s*```',re.S)
+              for comment in reversed(comments):
+                  match=pattern.search(comment.get('body') or '')
+                  if match:
+                      return json.loads(match.group(1))
+              raise SystemExit(f'missing {marker} on Issue #{issue_number}')
+
+          for day,row in req['racenote'].items():
+              result=latest_result(row['issue_number'],'RACENOTE_RESULT')
+              if result.get('status')!='success': raise SystemExit(f'RaceNote upstream not success: {day}')
+              if int(result.get('run_id'))!=row['run_id'] or result.get('artifact_name')!=row['artifact_name']:
+                  raise SystemExit(f'RaceNote upstream ref mismatch: {day}')
+              if str(result.get('target_date'))!=day: raise SystemExit(f'RaceNote target date mismatch: {day}')
+
+          edge=latest_result(req['edge']['issue_number'],'JRDB_EDGE_PRERESULT_RECONSTRUCT_RESULT')
+          if edge.get('status')!='success' or edge.get('result_data_used') is not False:
+              raise SystemExit('Edge upstream must be successful and result-free')
+          if int(edge.get('run_id'))!=req['edge']['run_id'] or edge.get('artifact_name')!=req['edge']['artifact_name']:
+              raise SystemExit('Edge upstream ref mismatch')
+          if sorted((edge.get('days') or {}).keys())!=req['dates']:
+              raise SystemExit('Edge upstream dates mismatch')
+
+          registry=latest_result(req['registry']['issue_number'],'JRDB_EDGE_REGISTRY_V2_RESULT')
+          if registry.get('status')!='success' or int(registry.get('run_id'))!=req['registry']['run_id']:
+              raise SystemExit('Registry upstream not success')
+          if registry.get('artifact_name')!=req['registry']['artifact_name']:
+              raise SystemExit('Registry artifact mismatch')
+          active=((registry.get('files') or {}).get('edge_registry_active.jsonl') or {}).get('sha256')
+          if active!=req['registry']['active_sha256']:
+              raise SystemExit('Registry ACTIVE SHA mismatch')
+          PY
+
+      - name: Verify artifact digests and download exact upstream artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          repo=os.environ['GITHUB_REPOSITORY']
+          root=Path('/tmp/inputs'); root.mkdir(parents=True,exist_ok=True)
+
+          def verify_and_download(run_id, name, expected_sha, destination):
+              raw=subprocess.check_output(['gh','api',f'repos/{repo}/actions/runs/{run_id}/artifacts'],text=True)
+              artifacts=[a for a in (json.loads(raw).get('artifacts') or []) if a.get('name')==name and not a.get('expired')]
+              if len(artifacts)!=1: raise SystemExit(f'expected one live artifact {name}; found {len(artifacts)}')
+              digest=str(artifacts[0].get('digest') or '')
+              if digest!=f'sha256:{expected_sha}': raise SystemExit(f'artifact digest mismatch: {name} {digest}')
+              Path(destination).mkdir(parents=True,exist_ok=True)
+              subprocess.run(['gh','run','download',str(run_id),'--repo',repo,'--name',name,'--dir',destination],check=True)
+
+          for day,row in req['racenote'].items():
+              verify_and_download(row['run_id'],row['artifact_name'],row['artifact_sha256'],f'/tmp/inputs/racenote/{day}')
+          edge=req['edge']
+          verify_and_download(edge['run_id'],edge['artifact_name'],edge['artifact_sha256'],'/tmp/inputs/edge')
+
+          local=dict(req)
+          for day in local['dates']:
+              local['racenote'][day]=dict(local['racenote'][day])
+              local['racenote'][day]['path']=f'/tmp/inputs/racenote/{day}'
+          local['edge']=dict(local['edge']); local['edge']['path']='/tmp/inputs/edge'
+          Path('/tmp/local_request.json').write_text(json.dumps(local,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+
+      - name: Run focused unit tests
+        run: |
+          python -m pip install --disable-pip-version-check pytest
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_racenote_v02_reconstructed_control.py \
+            horse-racing/jrdb/tests/test_racenote_edge_prediction_policy.py \
+            horse-racing/jrdb/tests/test_racenote_edge_prediction_policy_neutral.py \
+            horse-racing/jrdb/tests/test_run_racenote_edge_prediction_freeze.py
+
+      - name: Build result-free prediction freeze
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/freeze
+          python horse-racing/jrdb/src/run_racenote_edge_prediction_freeze.py \
+            --request-json /tmp/local_request.json \
+            --output-dir /tmp/freeze | tee /tmp/freeze_result.json
+
+      - name: Upload freeze artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-edge-prediction-freeze-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/freeze/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          summary=json.loads(Path('/tmp/freeze/summary.json').read_text(encoding='utf-8'))
+          freeze_sha=dict(line.split('=',1) for line in Path('/tmp/freeze/FREEZE_SHA256.txt').read_text().splitlines() if '=' in line)
+          compact={
+              'status':'success','run_id':int(os.environ['RUN_ID']),'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"racenote-edge-prediction-freeze-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+              'result_data_used':False,'dates':summary['dates'],'total':summary['total'],'daily':summary['daily'],
+              'join':summary['join'],'anomalies':summary['anomalies'],'changed_rows':summary['changed_rows'],
+              'regression_pass':None if summary['regression'] is None else summary['regression']['pass'],
+              'prediction_payload_sha256':summary['prediction_payload_sha256'],
+              'freeze_manifest_sha256':freeze_sha['freeze_manifest_sha256'],
+          }
+          body='RACENOTE_EDGE_PREDICTION_FREEZE_RESULT\n```json\n'+json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "RaceNote Edge prediction freeze failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
