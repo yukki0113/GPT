@@ -12,6 +12,19 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 詳細仕様は `docs/` を参照してください。日次CSV、キャッシュ、ログ、運用台帳はGit管理対象外です。
 
+## GitHub operation routing (2026-09-10)
+
+GitHub上の資産を用いる作業は、開始時に「本当にGitHub Actions環境が必要か」を判定し、次の4系統から最短かつ再現可能な経路を選ぶ。
+
+- A. Read / Audit: repository / file / commit / issue / workflow結果、コード検索、差分、main、artifact / SHA / run状態の確認はChatからGitHub read/searchで直接行う。Issue不要。
+- B. Git Change: source / test / docs / config / workflow等のUTF-8テキスト変更は、latest main・path・現内容を確認してからGitHub direct create/update/deleteでremote commitを作成する。原則Issue不要。
+- C. Pure Deterministic Execution: Git正本moduleと必要入力をChat側で取得でき、secret・特殊runner・Actions監査証跡が不要で、計算量が許容範囲ならGPTローカル実行を優先する。可能な限り source commit / source file SHA256 / input SHA256 / generated_at / output SHA256 を残す。
+- D. Actions-Native Execution: Secrets、認証付き外部取得、Actions artifact chain、長時間・大容量処理、runner環境が仕様の一部、immutable freeze、settlement等でrun ID / artifact / Actions履歴を監査証跡として固定する必要がある場合、または正本moduleをChatローカルで同一条件実行できない場合のみIssue -> GitHub Actionsを使用する。
+
+BOAT RACE公式サイトへ通信する取得系Pythonについても「Gitにmoduleがある」だけではIssueを使わない。正本PythonをChatローカルで同一実行でき、必要な公式入力を取得できる場合はCを優先する。一方、ChatローカルのPython実行環境から公式サイトへ通信できず、正本fetcherを同一条件で再現できない場合はDとして対応Issue Workflowを使用する。
+
+直前情報取得のD経路は `.github/workflows/boatrace_pre_race_issue.yml`、手動補助経路は `.github/workflows/boatrace_pre_race_manual.yml` とする。Issueを作る場合は事前にlatest main、request contract、必須キー、対象workflowを完全検証し、1 requestにつきIssueは1回だけ発行する。
+
 ## Prediction specs
 
 ### 基礎・履歴仕様
