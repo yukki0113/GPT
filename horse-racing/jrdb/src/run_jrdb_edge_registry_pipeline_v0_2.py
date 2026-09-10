@@ -7,7 +7,7 @@ from pathlib import Path
 
 import run_jrdb_edge_registry_pipeline as base
 
-VERSION = "0.2.3"
+VERSION = "0.2.4"
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -43,6 +43,22 @@ def build_stages_v02(request, paths, python):
                         str(paths.out_dir / "edge_watch_audit.json"),
                         "--output-md",
                         str(paths.out_dir / "edge_watch_audit.md"),
+                    ),
+                    base.FAILURE_CLASS_IMPLEMENTATION,
+                )
+            )
+            replaced.append(
+                base.Stage(
+                    "stat_watch_audit",
+                    (
+                        python,
+                        str(ROOT / "src/audit_jrdb_edge_stat_watch.py"),
+                        "--registry",
+                        str(paths.out_dir / "edge_registry.sqlite"),
+                        "--output-json",
+                        str(paths.out_dir / "edge_stat_watch_audit.json"),
+                        "--output-md",
+                        str(paths.out_dir / "edge_stat_watch_audit.md"),
                     ),
                     base.FAILURE_CLASS_IMPLEMENTATION,
                 )
