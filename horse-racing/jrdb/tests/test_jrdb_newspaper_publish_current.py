@@ -63,7 +63,8 @@ class NewspaperPublishCurrentTest(unittest.TestCase):
             package_path.write_text(json.dumps(day_package(), ensure_ascii=False), encoding="utf-8")
             output = root / "current"
             result = publish(package_path, output)
-            manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+            manifest_path = output / "manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             race_path = output / manifest["races"][0]["path"]
             self.assertEqual(result["status"], "PASS")
             self.assertTrue(race_path.is_file())
@@ -73,6 +74,16 @@ class NewspaperPublishCurrentTest(unittest.TestCase):
                 manifest["races"][0]["sha256"],
             )
             self.assertEqual(race_path.stat().st_size, manifest["races"][0]["size_bytes"])
+
+            race_value = json.loads(race_path.read_text(encoding="utf-8"))
+            expected_race_bytes = (
+                json.dumps(race_value, ensure_ascii=False, separators=(",", ":")) + "\n"
+            ).encode("utf-8")
+            expected_manifest_bytes = (
+                json.dumps(manifest, ensure_ascii=False, separators=(",", ":")) + "\n"
+            ).encode("utf-8")
+            self.assertEqual(race_path.read_bytes(), expected_race_bytes)
+            self.assertEqual(manifest_path.read_bytes(), expected_manifest_bytes)
 
     def test_identity_mismatch_fails_before_replacing_current(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
