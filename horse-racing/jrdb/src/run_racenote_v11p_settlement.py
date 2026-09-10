@@ -80,11 +80,13 @@ def validate_freeze(freeze_root: Path, request: Mapping[str, Any]) -> tuple[dict
     require(manifest.get("freeze_stage") == "PRE_HJC", "freeze_stage must be PRE_HJC")
     require(manifest.get("result_data_used") is False, "freeze must declare result_data_used=false")
     require(tuple(manifest.get("dates") or []) == EXPECTED_DATES, "freeze date set mismatch")
-    require(manifest.get("combined_canonical_payload_sha256") == freeze_spec["combined_canonical_payload_sha256"],
+    outputs = manifest.get("outputs")
+    require(isinstance(outputs, Mapping), "freeze manifest outputs missing")
+    require(outputs.get("combined_canonical_payload_sha256") == freeze_spec["combined_canonical_payload_sha256"],
             "freeze canonical payload SHA mismatch")
 
     day_payloads: dict[str, dict[str, Any]] = {}
-    day_files = manifest.get("day_files") or {}
+    day_files = outputs.get("days") or {}
     for day in EXPECTED_DATES:
         meta = day_files.get(day)
         require(isinstance(meta, Mapping), f"freeze manifest missing day_files.{day}")
