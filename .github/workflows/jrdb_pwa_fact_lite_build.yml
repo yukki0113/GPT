@@ -57,19 +57,19 @@ jobs:
           set -euo pipefail
           python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
             --analysis .pwa_fact/analysis.sqlite \
-            --db ".pwa_fact/jrdb_pwa_fact_lite_${DATA_VERSION}_v0_1.sqlite" \
+            --db ".pwa_fact/jrdb_pwa_fact_lite_${DATA_VERSION}_v0_3.sqlite" \
             | tee .pwa_fact/build_result.txt
 
-          FACT_FILE=".pwa_fact/jrdb_pwa_fact_lite_${DATA_VERSION}_v0_1.sqlite"
+          FACT_FILE=".pwa_fact/jrdb_pwa_fact_lite_${DATA_VERSION}_v0_3.sqlite"
           sha256sum "$FACT_FILE" | tee .pwa_fact/sha256.txt
           ls -lh "$FACT_FILE"
 
       - name: Upload Fact Lite artifact
         uses: actions/upload-artifact@v4
         with:
-          name: jrdb-pwa-fact-lite-${{ env.DATA_VERSION }}-v0-1
+          name: jrdb-pwa-fact-lite-${{ env.DATA_VERSION }}-v0-3
           path: |
-            .pwa_fact/jrdb_pwa_fact_lite_${{ env.DATA_VERSION }}_v0_1.sqlite
+            .pwa_fact/jrdb_pwa_fact_lite_${{ env.DATA_VERSION }}_v0_3.sqlite
             .pwa_fact/build_result.txt
             .pwa_fact/sha256.txt
           if-no-files-found: error
@@ -87,7 +87,7 @@ jobs:
           SHA="$(cat .pwa_fact/sha256.txt)"
           gh issue comment "$ISSUE_NUMBER" \
             --repo "$GITHUB_REPOSITORY" \
-            --body "JRDB PWA Fact Lite build succeeded.\n\nResult: \`${RESULT}\`\n\nSHA-256: \`${SHA}\`\n\nArtifact is attached to this workflow run."
+            --body "JRDB PWA Fact Lite v0.3 build succeeded.\n\nResult: \`${RESULT}\`\n\nSHA-256: \`${SHA}\`\n\nArtifact is attached to this workflow run."
           gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
 
       - name: Report failure
@@ -99,4 +99,4 @@ jobs:
         run: |
           gh issue comment "$ISSUE_NUMBER" \
             --repo "$GITHUB_REPOSITORY" \
-            --body "JRDB PWA Fact Lite build failed. Check the workflow run logs before retrying."
+            --body "JRDB PWA Fact Lite v0.3 build failed. Check the workflow run logs before retrying."
