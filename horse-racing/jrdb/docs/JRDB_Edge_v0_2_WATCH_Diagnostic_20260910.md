@@ -1,6 +1,6 @@
 # JRDB Edge v0.2 WATCH Diagnostic — 2026-09-10
 
-Status: **AUDIT COMPLETE / THRESHOLDS UNCHANGED**
+Status: **AUDIT COMPLETE / THRESHOLDS UNCHANGED / CI SEMANTICS CORRECTED**
 
 ## Scope
 
@@ -21,7 +21,7 @@ Diagnostic implementation:
 - `src/audit_jrdb_edge_stat_watch.py`: FDR / directional bootstrap-CI reason decomposition
 - ACTIVE q threshold: `0.05`
 - PROVISIONAL q threshold: `0.10`
-- directional bootstrap CI must exclude zero
+- directional bootstrap CI must exclude zero after the q-value prepass is cleared
 
 Pipeline smoke after CLI-output fix:
 
@@ -49,32 +49,42 @@ WATCH decomposition:
 - `STAT_DOWNGRADE_FROM_PROVISIONAL`: `142`
 - statistical downgrade total: `3,809` (`69.61%` of WATCH)
 
-## 2. Statistical downgrade reason
+## 2. Statistical downgrade reason — corrected interpretation
+
+The production statistical guard first computes p/q values with bootstrap disabled. It then runs the directional race-date cluster bootstrap only for temporal ACTIVE/PROVISIONAL candidates where at least one non-neutral signal clears the relevant q-value threshold.
+
+Therefore a missing CI on a q-prepass failure means **CI NOT EVALUATED**, not CI failure.
 
 Among the `3,809` statistical-downgrade records:
 
-- `ALL_SIGNAL_FDR_AND_CI_FAIL`: `3,736` (`98.08%`)
-- `Q_PASS_BUT_CI_FAIL_PRESENT`: `73` (`1.92%`)
+- q-value prepass failed; bootstrap CI not evaluated: `3,736` (`98.08%`)
+- q-value prepass passed; bootstrap evaluated; final CI gate not cleared: `73` (`1.92%`)
 - other record-level reasons: `0`
 
-Channel-level counts:
+Bootstrap execution counts:
+
+- `bootstrap_samples=0`: `3,736`
+- `bootstrap_samples=400`: `73`
+
+Channel-level counts under the corrected semantics:
 
 ### Performance
 
-- `FDR_AND_CI_FAIL`: `2,891`
+- `FDR_FAIL_CI_NOT_EVALUATED`: `2,891`
 - `CI_FAIL_ONLY`: `72`
 - `NEUTRAL`: `846`
 
 ### Value
 
-- `FDR_AND_CI_FAIL`: `1,829`
+- `FDR_FAIL_CI_NOT_EVALUATED`: `1,813`
+- `FDR_AND_CI_FAIL` after bootstrap was available through another q-passing channel: `16`
 - `FDR_FAIL_ONLY`: `3`
 - `CI_FAIL_ONLY`: `1`
 - `NEUTRAL`: `1,976`
 
 ## 3. By temporal pre-statistical status
 
-| Temporal status | Both FDR+CI fail | q pass / CI fail | Total |
+| Temporal status | q prepass fail / CI not evaluated | q pass / CI fail | Total |
 |---|---:|---:|---:|
 | ACTIVE | 3,610 | 57 | 3,667 |
 | PROVISIONAL | 126 | 16 | 142 |
@@ -82,7 +92,7 @@ Channel-level counts:
 
 ## 4. By family
 
-| Family | Both FDR+CI fail | q pass / CI fail | Statistical downgrade |
+| Family | q prepass fail / CI not evaluated | q pass / CI fail | Statistical downgrade |
 |---|---:|---:|---:|
 | COURSE | 230 | 12 | 242 |
 | HUMAN | 41 | 3 | 44 |
@@ -109,10 +119,12 @@ Largest statistical-downgrade populations include:
 
 ## 6. Interpretation / decision boundary
 
-The WATCH volume is **not primarily caused by candidates that pass FDR but narrowly fail the bootstrap-CI gate**. `98.08%` of statistical downgrades have all non-neutral signals failing both the FDR and CI conditions.
+The WATCH volume is **not primarily caused by candidates that clear FDR and then narrowly fail the bootstrap-CI gate**. Only `73 / 3,809` (`1.92%`) reach bootstrap and then fail the final directional-CI gate.
 
-Therefore this audit does **not** support relaxing the existing q-value or directional-CI thresholds merely to reduce the visible WATCH count. Doing so would predominantly admit statistically weak candidates and would conflict with the v0.2 development rule to diagnose WATCH before recalibration.
+However, it is incorrect to claim that the other `3,736` records fail both FDR and CI. They fail the q-value prepass and therefore the production guard intentionally does not compute their bootstrap CI.
 
-The next design question is instead whether `temporal WATCH` and `statistical reject/downgrade` should remain represented identically in the Registry/publication layer. Before changing status semantics, publication or storage, the current Registry schema, publication contract, and consumer behavior must be reviewed.
+This correction does not change any Registry status or acceptance threshold. It does change the evidence interpretation for future serving-tier research: candidates outside the ACTIVE q threshold cannot be ranked by their existing CI because no such CI has been computed for most of them.
+
+Therefore this audit still does **not** support relaxing q-value or CI thresholds merely to reduce visible WATCH/REJECTED counts. Any lower-confidence serving layer must explicitly decide whether and for which prefiltered candidates an additional bootstrap evaluation should be performed.
 
 No threshold, Edge status, candidate template, or current-matching rule is changed by this diagnostic.
