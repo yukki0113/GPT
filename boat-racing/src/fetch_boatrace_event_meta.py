@@ -10,7 +10,7 @@ import urllib.request
 from pathlib import Path
 
 OFFICIAL_INDEX = "https://www.boatrace.jp/owpc/pc/race/index?hd={date}"
-GRADE_MAP = {"ippan": "一般", "G2b": "G2", "G1b": "G1", "SGb": "SG", "G3b": "その他"}
+GRADE_MAP = {"ippan": "一般", "G2b": "G2", "G1b": "G1", "SGb": "SG", "G3b": "G3"}
 FIELDS = ["対象日", "会場", "開催グレード", "グレード大分類", "source", "source_file", "備考"]
 
 
