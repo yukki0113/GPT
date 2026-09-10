@@ -17,13 +17,17 @@ def test_classify_channel() -> None:
     assert audit.classify_channel("POSITIVE", 0.04, -0.01, 0.20, "ACTIVE") == "CI_FAIL_ONLY"
     assert audit.classify_channel("NEGATIVE", 0.20, -0.20, -0.01, "ACTIVE") == "FDR_FAIL_ONLY"
     assert audit.classify_channel("NEGATIVE", 0.20, -0.20, 0.01, "ACTIVE") == "FDR_AND_CI_FAIL"
+    assert audit.classify_channel("NEGATIVE", 0.20, None, None, "ACTIVE") == "FDR_FAIL_CI_NOT_EVALUATED"
+    assert audit.classify_channel("POSITIVE", 0.04, None, None, "ACTIVE") == "Q_PASS_CI_NOT_EVALUATED"
     assert audit.classify_channel("POSITIVE", 0.08, 0.01, 0.20, "PROVISIONAL") == "PASS"
 
 
 def test_classify_record() -> None:
+    assert audit.classify_record("FDR_FAIL_CI_NOT_EVALUATED", "NEUTRAL") == "ALL_SIGNAL_FDR_FAIL_CI_NOT_EVALUATED"
     assert audit.classify_record("FDR_AND_CI_FAIL", "NEUTRAL") == "ALL_SIGNAL_FDR_AND_CI_FAIL"
     assert audit.classify_record("CI_FAIL_ONLY", "NEUTRAL") == "Q_PASS_BUT_CI_FAIL_PRESENT"
     assert audit.classify_record("FDR_FAIL_ONLY", "NEUTRAL") == "CI_PASS_BUT_FDR_FAIL_PRESENT"
+    assert audit.classify_record("Q_PASS_CI_NOT_EVALUATED", "NEUTRAL") == "Q_PASS_CI_NOT_EVALUATED_PRESENT"
     assert audit.classify_record("NEUTRAL", "NEUTRAL") == "NO_NON_NEUTRAL_SIGNAL"
 
 
@@ -41,7 +45,8 @@ def test_audit_registry_counts_statistical_watch(tmp_path: Path) -> None:
           temporal_status TEXT, statistical_status TEXT,
           performance_q_value REAL, value_q_value REAL,
           performance_ci_low REAL, performance_ci_high REAL,
-          value_ci_low REAL, value_ci_high REAL
+          value_ci_low REAL, value_ci_high REAL,
+          bootstrap_samples INTEGER
         );
         """
     )
@@ -50,24 +55,24 @@ def test_audit_registry_counts_statistical_watch(tmp_path: Path) -> None:
         ("A", "PEDIGREE", "POSITIVE", "NEUTRAL", "WATCH"),
     )
     con.execute(
-        "INSERT INTO edge_statistical_guard VALUES(?,?,?,?,?,?,?,?,?,?)",
-        ("A", "SIRE_TEST", "ACTIVE", "WATCH", 0.20, None, -0.01, 0.10, None, None),
+        "INSERT INTO edge_statistical_guard VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+        ("A", "SIRE_TEST", "ACTIVE", "WATCH", 0.20, None, None, None, None, None, 0),
     )
     con.execute(
         "INSERT INTO edge_definition VALUES(?,?,?,?,?)",
         ("B", "RECENT", "POSITIVE", "NEUTRAL", "WATCH"),
     )
     con.execute(
-        "INSERT INTO edge_statistical_guard VALUES(?,?,?,?,?,?,?,?,?,?)",
-        ("B", "RECENT_TEST", "PROVISIONAL", "WATCH", 0.08, None, -0.01, 0.10, None, None),
+        "INSERT INTO edge_statistical_guard VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+        ("B", "RECENT_TEST", "PROVISIONAL", "WATCH", 0.08, None, -0.01, 0.10, None, None, 400),
     )
     con.execute(
         "INSERT INTO edge_definition VALUES(?,?,?,?,?)",
         ("C", "COURSE", "POSITIVE", "NEUTRAL", "WATCH"),
     )
     con.execute(
-        "INSERT INTO edge_statistical_guard VALUES(?,?,?,?,?,?,?,?,?,?)",
-        ("C", "COURSE_TEST", "WATCH", "WATCH", 0.50, None, -0.10, 0.10, None, None),
+        "INSERT INTO edge_statistical_guard VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+        ("C", "COURSE_TEST", "WATCH", "WATCH", 0.50, None, None, None, None, None, 0),
     )
     con.commit()
     con.close()
@@ -75,11 +80,12 @@ def test_audit_registry_counts_statistical_watch(tmp_path: Path) -> None:
     report = audit.audit_registry(db)
     assert report["integrity_check"] == "ok"
     assert report["statistical_watch_count"] == 2
+    assert report["bootstrap_sample_counts"] == {"0": 1, "400": 1}
     assert report["reason_counts"] == {
-        "ALL_SIGNAL_FDR_AND_CI_FAIL": 1,
+        "ALL_SIGNAL_FDR_FAIL_CI_NOT_EVALUATED": 1,
         "Q_PASS_BUT_CI_FAIL_PRESENT": 1,
     }
-    assert report["family_reason_counts"]["PEDIGREE"]["ALL_SIGNAL_FDR_AND_CI_FAIL"] == 1
+    assert report["family_reason_counts"]["PEDIGREE"]["ALL_SIGNAL_FDR_FAIL_CI_NOT_EVALUATED"] == 1
     assert report["family_reason_counts"]["RECENT"]["Q_PASS_BUT_CI_FAIL_PRESENT"] == 1
 
 
@@ -97,7 +103,8 @@ def test_main_writes_cli_outputs(tmp_path: Path, monkeypatch) -> None:
           temporal_status TEXT, statistical_status TEXT,
           performance_q_value REAL, value_q_value REAL,
           performance_ci_low REAL, performance_ci_high REAL,
-          value_ci_low REAL, value_ci_high REAL
+          value_ci_low REAL, value_ci_high REAL,
+          bootstrap_samples INTEGER
         );
         """
     )
