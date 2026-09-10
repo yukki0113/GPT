@@ -1,0 +1,190 @@
+name: RaceNote v1.1-P Settlement Metrics
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_V11P_SETTLEMENT]'
+
+concurrency:
+  group: racenote-v11p-settlement
+  cancel-in-progress: false
+
+jobs:
+  settle:
+    if: ${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_SETTLEMENT]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Parse and validate request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          prefix='[RACENOTE_V11P_SETTLEMENT]'
+          title=os.environ['ISSUE_TITLE']
+          request_id=title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('REQUEST_INVALID: invalid request_id')
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          if req.get('request_id') != request_id:
+              raise SystemExit('REQUEST_INVALID: title/body request_id mismatch')
+          if req.get('dates') != ['20260704','20260725','20260726']:
+              raise SystemExit('REQUEST_INVALID: fixed dates mismatch')
+          freeze=req.get('freeze') or {}
+          if not re.fullmatch(r'[0-9a-f]{40}', str(freeze.get('commit') or '')):
+              raise SystemExit('REQUEST_INVALID: freeze.commit must be full git SHA')
+          for key in ('manifest_sha256','combined_canonical_payload_sha256'):
+              if not re.fullmatch(r'[0-9a-f]{64}', str(freeze.get(key) or '')):
+                  raise SystemExit(f'REQUEST_INVALID: freeze.{key} must be SHA-256')
+          edge=req.get('edge') or {}
+          if not edge.get('run_id') or not edge.get('artifact_name'):
+              raise SystemExit('REQUEST_INVALID: edge upstream missing')
+          raw=req.get('raw') or {}
+          for day in req['dates']:
+              spec=raw.get(day) or {}
+              if not spec.get('run_id') or not spec.get('artifact_name'):
+                  raise SystemExit(f'REQUEST_INVALID: raw upstream missing for {day}')
+              for key in ('hjc_sha256','sed_sha256'):
+                  if not re.fullmatch(r'[0-9a-f]{64}', str(spec.get(key) or '')):
+                      raise SystemExit(f'REQUEST_INVALID: raw.{day}.{key} must be SHA-256')
+          Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
+              f.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Run settlement unit tests
+        run: |
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pytest -q horse-racing/jrdb/tests/test_racenote_v11p_settlement_metrics.py
+
+      - name: Materialize exact PRE_HJC freeze commit
+        run: |
+          set -euo pipefail
+          freeze_commit="$(jq -r '.freeze.commit' /tmp/request.json)"
+          git cat-file -e "${freeze_commit}^{commit}"
+          mkdir -p /tmp/freeze
+          base='horse-racing/jrdb/prediction_runs'
+          for file in \
+            RaceNote_v1_1_Polarity_Gated_20260704_PRE_HJC.json \
+            RaceNote_v1_1_Polarity_Gated_20260725_PRE_HJC.json \
+            RaceNote_v1_1_Polarity_Gated_20260726_PRE_HJC.json \
+            RaceNote_v1_1_Polarity_Gated_20260704_25_26_PRE_HJC_FREEZE.json; do
+            git show "${freeze_commit}:${base}/${file}" > "/tmp/freeze/${file}"
+          done
+
+      - name: Download exact settlement upstream artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/upstream/edge /tmp/upstream/raw
+          edge_run="$(jq -r '.edge.run_id' /tmp/request.json)"
+          edge_artifact="$(jq -r '.edge.artifact_name' /tmp/request.json)"
+          gh run download "$edge_run" --repo "$GITHUB_REPOSITORY" --name "$edge_artifact" --dir /tmp/upstream/edge
+          for day in 20260704 20260725 20260726; do
+            run_id="$(jq -r --arg day "$day" '.raw[$day].run_id' /tmp/request.json)"
+            artifact="$(jq -r --arg day "$day" '.raw[$day].artifact_name' /tmp/request.json)"
+            mkdir -p "/tmp/upstream/raw/$day"
+            gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --name "$artifact" --dir "/tmp/upstream/raw/$day"
+          done
+
+      - name: Run deterministic settlement and metrics
+        run: |
+          code_head="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/run_racenote_v11p_settlement_metrics.py \
+            --request-json /tmp/request.json \
+            --freeze-root /tmp/freeze \
+            --raw-root /tmp/upstream/raw \
+            --edge-root /tmp/upstream/edge \
+            --output-dir /tmp/settlement \
+            --run-id "${{ github.run_id }}" \
+            --head-sha "$code_head"
+
+      - name: Upload settlement artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-v11p-settlement-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/settlement/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit settlement records and compact metrics
+        id: commit
+        run: |
+          set -euo pipefail
+          target='horse-racing/jrdb/settlement_runs'
+          mkdir -p "$target"
+          for file in \
+            RaceNote_v1_1_Polarity_Gated_20260704_SETTLED.json \
+            RaceNote_v1_1_Polarity_Gated_20260725_SETTLED.json \
+            RaceNote_v1_1_Polarity_Gated_20260726_SETTLED.json \
+            RaceNote_v1_1_Polarity_Gated_20260704_25_26_METRICS.json \
+            RaceNote_v1_1_Polarity_Gated_20260704_25_26_SETTLEMENT_MANIFEST.json; do
+            if [ -e "$target/$file" ]; then
+              echo "DOMAIN_VALIDATION_FAILED: immutable settlement target exists: $target/$file" >&2
+              exit 2
+            fi
+            cp "/tmp/settlement/$file" "$target/$file"
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$target"
+          git commit -m 'settle(jrdb): RaceNote v1.1-P 20260704 25 26 blind block'
+          git push origin HEAD:main
+          echo "settlement_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment compact result and close Issue
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          RUN_ID: ${{ github.run_id }}
+          SETTLEMENT_COMMIT: ${{ steps.commit.outputs.settlement_commit }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          result=json.loads(Path('/tmp/settlement/result.json').read_text(encoding='utf-8'))
+          compact={
+              'status':'success',
+              'request_id':result['request_id'],
+              'run_id':result['run_id'],
+              'settlement_commit':os.environ['SETTLEMENT_COMMIT'],
+              'artifact_name':f"racenote-v11p-settlement-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+              'race_count':result['race_count'],
+              'metrics_sha256':result['metrics_sha256'],
+              'manifest_sha256':result['manifest_sha256'],
+              'headline':result['headline'],
+              'changed_axis_v11_vs_v02':result['changed_axis_v11_vs_v02'],
+              'polarity_bootstrap_top5':result['polarity_bootstrap'],
+          }
+          body='RACENOTE_V11P_SETTLEMENT_RESULT\n```json\n'+json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "RACENOTE_V11P_SETTLEMENT_RESULT\n\`\`\`json\n{\"status\":\"failure\",\"failure_class\":\"IMPLEMENTATION_OR_DOMAIN_VALIDATION_FAILED\",\"run_id\":$GITHUB_RUN_ID,\"retryable\":false}\n\`\`\`\nRun: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
