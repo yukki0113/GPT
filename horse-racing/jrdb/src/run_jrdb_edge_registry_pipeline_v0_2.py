@@ -7,7 +7,7 @@ from pathlib import Path
 
 import run_jrdb_edge_registry_pipeline as base
 
-VERSION = "0.2.5"
+VERSION = "0.2.6"
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -87,6 +87,32 @@ def build_stages_v02(request, paths, python):
                         "0.10",
                         "--bootstrap-samples",
                         "400",
+                    ),
+                    base.FAILURE_CLASS_DOMAIN,
+                )
+            )
+            replaced.append(
+                base.Stage(
+                    "suggestive_bootstrap_sensitivity",
+                    (
+                        python,
+                        str(ROOT / "src/research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py"),
+                        "--mart",
+                        str(paths.mart_db),
+                        "--registry",
+                        str(paths.out_dir / "edge_registry.sqlite"),
+                        "--registry-audit",
+                        str(paths.out_dir / "edge_registry_audit.json"),
+                        "--baseline-jsonl",
+                        str(paths.out_dir / "edge_suggestive_bootstrap_research.jsonl"),
+                        "--output-jsonl",
+                        str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity.jsonl"),
+                        "--audit-json",
+                        str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity_audit.json"),
+                        "--audit-md",
+                        str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity_audit.md"),
+                        "--bootstrap-samples",
+                        "2000",
                     ),
                     base.FAILURE_CLASS_DOMAIN,
                 )
