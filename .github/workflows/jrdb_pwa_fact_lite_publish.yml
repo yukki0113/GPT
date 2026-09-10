@@ -198,11 +198,12 @@ jobs:
                   'race_id',
                   'prev_distance_delta',
                   'prev_class_code',
+                  'win5_leg_no',
               }
               missing_columns = sorted(required_columns - fact_columns)
               if missing_columns:
                   raise SystemExit(
-                      'Missing Fact Lite v0.2 columns: ' + ', '.join(missing_columns)
+                      'Missing Fact Lite v0.3 columns: ' + ', '.join(missing_columns)
                   )
 
               integrity = connection.execute('PRAGMA integrity_check').fetchone()
@@ -215,7 +216,7 @@ jobs:
               ).fetchone()
               if not meta:
                   raise SystemExit('meta_pwa_fact_build is empty')
-              if str(meta[0]) != '0.2':
+              if str(meta[0]) != '0.3':
                   raise SystemExit(f'unexpected schema_version: {meta[0]}')
 
               actual_rows = connection.execute(
@@ -241,6 +242,10 @@ jobs:
                   "SELECT COUNT(*) FROM fact_stats_entry "
                   "WHERE prev_class_code IS NOT NULL"
               ).fetchone()[0]
+              win5_rows = connection.execute(
+                  "SELECT COUNT(*) FROM fact_stats_entry "
+                  "WHERE win5_leg_no IS NOT NULL"
+              ).fetchone()[0]
           finally:
               connection.close()
 
@@ -260,11 +265,13 @@ jobs:
                   'month_filter': True,
                   'distance_range_filter': True,
                   'race_name_search': True,
+                  'win5_filter': True,
                   'previous_distance_axis': prev_distance_rows > 0,
                   'previous_class_axis': prev_class_rows > 0,
                   'race_name_rows': int(race_name_count),
                   'previous_distance_rows': int(prev_distance_rows),
                   'previous_class_rows': int(prev_class_rows),
+                  'win5_rows': int(win5_rows),
               },
               'download': {
                   'provider': 'github_pages',
@@ -279,6 +286,7 @@ jobs:
               env_file.write(f'RACE_NAME_COUNT={int(race_name_count)}\n')
               env_file.write(f'PREV_DISTANCE_ROWS={int(prev_distance_rows)}\n')
               env_file.write(f'PREV_CLASS_ROWS={int(prev_class_rows)}\n')
+              env_file.write(f'WIN5_ROWS={int(win5_rows)}\n')
           PY
 
           echo "FACT_SIZE=$ACTUAL_SIZE" >> "$GITHUB_ENV"
@@ -351,7 +359,7 @@ jobs:
         run: |
           gh issue comment "$ISSUE_NUMBER" \
             --repo "$GITHUB_REPOSITORY" \
-            --body "Published Fact Lite ${DATA_VERSION}. size=${FACT_SIZE} sha256=${FACT_SHA256} race_names=${RACE_NAME_COUNT} prev_distance=${PREV_DISTANCE_ROWS} prev_class=${PREV_CLASS_ROWS}. Stats Mart distribution remains unchanged."
+            --body "Published Fact Lite ${DATA_VERSION}. size=${FACT_SIZE} sha256=${FACT_SHA256} race_names=${RACE_NAME_COUNT} prev_distance=${PREV_DISTANCE_ROWS} prev_class=${PREV_CLASS_ROWS} win5=${WIN5_ROWS}. Stats Mart distribution remains unchanged."
           gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
 
       - name: Report failure
