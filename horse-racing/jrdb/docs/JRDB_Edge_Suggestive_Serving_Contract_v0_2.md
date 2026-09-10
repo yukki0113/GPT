@@ -1,7 +1,8 @@
 # JRDB Edge SUGGESTIVE Serving Contract v0.2
 
-Status: **DESIGN FROZEN / IMPLEMENTATION IN PROGRESS / SERVING NOT ENABLED**  
+Status: **DESIGN FROZEN / IMPLEMENTED / STANDARD ENABLED**  
 Established: 2026-09-10  
+Activated: 2026-09-11  
 Supersedes: `JRDB_Edge_Suggestive_Serving_Contract_v0_1.md`
 
 ## 1. Purpose
@@ -205,15 +206,17 @@ CONFIRMED rows preserve the existing Statistical Guard CI provenance separately.
 
 ### CONFIRMED_ONLY
 
-Backward-compatible behavior.
+Strict compatibility behavior.
 
 - serve ACTIVE rows only;
 - expose channel-specific CONFIRMED/NONE labels;
 - do not include SUGGESTIVE rows.
 
+This profile remains explicitly selectable after STANDARD activation.
+
 ### STANDARD
 
-Target ordinary v0.2 advisory behavior after acceptance testing.
+Ordinary v0.2 advisory behavior.
 
 - serve ACTIVE CONFIRMED evidence;
 - serve the separately published SUGGESTIVE channels;
@@ -221,11 +224,13 @@ Target ordinary v0.2 advisory behavior after acceptance testing.
 - never describe SUGGESTIVE as statistically confirmed;
 - do not numerically add CONFIRMED and SUGGESTIVE evidence.
 
+As of 2026-09-11, `run_jrdb_edge_match_current_v0_2.py` uses STANDARD as its operational default.
+
+The lower-level `jrdb_edge_matcher_v0_2` library primitives intentionally retain their fail-safe `CONFIRMED_ONLY` default. Embedded callers must opt in to STANDARD explicitly. This prevents a library import/update from silently increasing served evidence while making the normal v0.2 current-runner path STANDARD by default.
+
 ### RESEARCH_ALL
 
 Explicit research-only behavior. It may expose additional states, but it is never the implicit ordinary consumer profile.
-
-STANDARD remains disabled until implementation and acceptance checks pass.
 
 ## 9. Exact matching and leakage boundary
 
@@ -289,22 +294,26 @@ sum ROI/lift across matched Edges
 
 EdgeDB serving remains evidence delivery. Numeric aggregation requires separate TRUE_FORWARD calibration and explicit redundancy handling.
 
-## 13. Implementation sequence
+## 13. Activation acceptance — complete
 
-The sensitivity threshold research is complete. Remaining activation work is implementation/acceptance:
+The v0.2 activation sequence is complete:
 
-1. freeze this v0.2 contract;
-2. implement the sidecar SUGGESTIVE publication builder;
-3. publish `edge_registry_suggestive.jsonl` and `edge_serving_catalog_v0_2.jsonl` with audit hashes;
-4. implement channel-specific evidence fields in the v0.2 matcher;
-5. implement channel-specific redundancy presentation roles;
-6. keep v0.1 matcher and `edge_registry_active.jsonl` backward-compatible;
-7. run focused synthetic regression tests;
-8. run 2025 real-data current-matching smoke;
-9. run Full publication non-regression audit;
-10. only after all checks pass, enable v0.2 STANDARD serving.
+1. v0.2 contract frozen;
+2. sidecar SUGGESTIVE publication builder implemented;
+3. `edge_registry_suggestive.jsonl` and `edge_serving_catalog_v0_2.jsonl` publication implemented with audit hashes;
+4. channel-specific evidence fields implemented in the v0.2 matcher;
+5. channel-specific redundancy presentation roles implemented;
+6. v0.1 matcher and `edge_registry_active.jsonl` kept backward-compatible;
+7. focused synthetic regression tests added;
+8. 2025 real-data publication/current-matching smoke passed;
+9. Full publication non-regression audit passed;
+10. v0.2 STANDARD operational serving enabled on 2026-09-11.
 
-Until step 10, ordinary production behavior remains ACTIVE-only.
+Activation evidence:
+
+- `docs/JRDB_Edge_v0_2_Suggestive_Bootstrap_Sensitivity_Full_Audit_20260910.md`
+- `docs/JRDB_Edge_v0_2_Suggestive_Publication_NonRegression_Audit_20260911.md`
+- Issue `#837` regression smoke: `71 passed`, all v0.2 pipeline stages exit `0`.
 
 ## 14. Change control
 
@@ -325,9 +334,13 @@ Display wording may evolve without a statistical version bump if evidence identi
 - `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_1.md`
 - `docs/JRDB_Edge_v0_2_Suggestive_Bootstrap_Full_Audit_20260910.md`
 - `docs/JRDB_Edge_v0_2_Suggestive_Bootstrap_Sensitivity_Full_Audit_20260910.md`
+- `docs/JRDB_Edge_v0_2_Suggestive_Publication_NonRegression_Audit_20260911.md`
 - `docs/JRDB_Edge_Current_Matching_v0_1.md`
 - `docs/JRDB_Edge_Consumer_Integration_v0_1.md`
 - `src/research_jrdb_edge_suggestive_bootstrap_v0_1.py`
 - `src/research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py`
+- `src/build_jrdb_edge_suggestive_publication_v0_2.py`
+- `src/jrdb_edge_matcher_v0_2.py`
+- `src/run_jrdb_edge_match_current_v0_2.py`
 
 This contract defines EdgeDB serving semantics only. It does not authorize changes to RaceNote prediction logic.
