@@ -7,7 +7,7 @@ from pathlib import Path
 
 import run_jrdb_edge_registry_pipeline as base
 
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -30,6 +30,23 @@ def build_stages_v02(request, paths, python):
         elif stage.name == "statistical_guard":
             command[1] = str(ROOT / "src/apply_jrdb_edge_statistical_guard_v0_2.py")
         replaced.append(base.Stage(stage.name, tuple(command), stage.failure_class, stage.retryable))
+        if stage.name == "summary":
+            replaced.append(
+                base.Stage(
+                    "watch_audit",
+                    (
+                        python,
+                        str(ROOT / "src/audit_jrdb_edge_watch.py"),
+                        "--registry",
+                        str(paths.out_dir / "edge_registry.sqlite"),
+                        "--output-json",
+                        str(paths.out_dir / "edge_watch_audit.json"),
+                        "--output-md",
+                        str(paths.out_dir / "edge_watch_audit.md"),
+                    ),
+                    base.FAILURE_CLASS_IMPLEMENTATION,
+                )
+            )
     return replaced
 
 
