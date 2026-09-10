@@ -1,18 +1,20 @@
 # JRDB Newspaper GPT workflow
 
 1. `README.md` と `.gpt/CONTEXT.md` を確認する。
-2. 親JRDBの `../README.md` / `../.gpt/CONTEXT.md` / `../.gpt/WORKFLOW.md` を確認する。
-3. Newspaper design / schema / current implementationを確認する。
-4. Common Reader / neutral JRDB history/access / external source contractを確認する。
-5. NewspaperのJRDB Base/historyから `racenote_*` moduleを直接importしない。
-6. 固定長offsetやjoin推測をconsumer側へ重複実装しない。新Raw fieldはneutral/Common Readerへ追加する。
-7. JRDB Base生成とexternal addon mergeを分離する。
-8. addon未取得をBase生成失敗とみなさずPENDING/nullで保持する。
-9. mergeはnamespace ownershipとexact-key joinを守り、他source値を変更しない。
-10. historical処理ではtarget date以降の結果を混入させない。
-11. schema / key uniqueness / headcount / history as-of / merge idempotenceを検証する。
-12. 日次生成JSON、JRDB Raw、PACI、秘密情報をGitへcommitしない。
-13. 仕様変更時はdesign/schema/contextを必要範囲で同時更新し、Git `main` を正本とする。
+2. `.gpt/DAILY_WORK_CONTRACT.md` を日次通常運用の正本契約として確認する。
+3. 新規専用Workスレッドでは `.gpt/WORK_THREAD_BOOTSTRAP.md` も確認する。
+4. 親JRDBの `../README.md` / `../.gpt/CONTEXT.md` / `../.gpt/WORKFLOW.md` を確認する。
+5. Newspaper design / schema / current implementationを確認する。
+6. Common Reader / neutral JRDB history/access / external source contractを確認する。
+7. NewspaperのJRDB Base/historyから `racenote_*` moduleを直接importしない。
+8. 固定長offsetやjoin推測をconsumer側へ重複実装しない。新Raw fieldはneutral/Common Readerへ追加する。
+9. JRDB Base生成とexternal addon mergeを分離する。
+10. addon未取得をBase生成失敗とみなさず、source stateを残して処理を継続する。
+11. mergeはnamespace ownershipとexact-key joinを守り、他source値を変更しない。
+12. historical処理ではtarget date以降の結果を混入させない。
+13. schema / key uniqueness / headcount / history as-of / merge idempotenceを検証する。
+14. 日次生成JSON、JRDB Raw、PACI、秘密情報をGitへcommitしない。
+15. 仕様変更時はdesign/schema/contextを必要範囲で同時更新し、Git `main` を正本とする。
 
 ## GitHub routing standard — 2026-09-10
 
@@ -51,6 +53,7 @@ latest main
 - `jrdb_newspaper_build.py`
 - `jrdb_newspaper_day_build.py`
 - `jrdb_newspaper_merge_external.py`
+- `jrdb_newspaper_merge_edge.py`
 - schema validation
 - CSV / JSON join
 - day-package生成
@@ -86,38 +89,74 @@ Pagesのsource変更はBでdirect commitし、そのpushでPages Actionsを起�
 
 ## Newspaper routine route
 
-ユーザーが
+日次Workの詳細契約は `.gpt/DAILY_WORK_CONTRACT.md` を正本とする。
+
+ユーザーが通常、
 
 ```text
-MM/DDの競馬新聞用データを生成してください。
-不足入力は添付またはLibraryから回収してください。
+MMDDの競馬新聞用JSONを作成し、アップロードしてください。
 ```
 
 と依頼した場合の標準:
 
 1. target date確定
-2. 添付 / File Library / Drive / 既存artifactから入力をresolve
-3. PACIが既に取得可能ならそのままCへ進む
-4. PACI未取得かつ公式認証取得が必要ならDでJRDB Raw/PACI取得だけを実行
-5. latest mainのNewspaper正本moduleを取得
-6. Cで日次Base/history生成
-7. 利用可能なEval / RaceNote prediction / keibailuka / Edge / independent indexをCでnamespace-safe merge
-8. Cでschema / key / headcount / as-of / source coverage / SHA監査
-9. Cでday-package.json生成
-10. 必要ならDrive canonicalへ保存
-11. publishが必要なら既定publish/Pages経路を使用
-12. READY/PENDING/ERROR source stateと成果物を報告
+2. current thread attachment -> File Library -> Drive canonical -> verified artifact の順で入力をresolve
+3. 各sourceを `READY / NOT_FOUND / ERROR / NOT_EXPECTED` で管理
+4. PACIが既に取得可能ならそのままCへ進む
+5. PACI未取得かつ公式認証取得が必要ならDでJRDB Raw/PACI取得だけを実行
+6. latest mainのNewspaper正本moduleを取得
+7. Cで日次Base/history生成
+8. 利用可能なEval / RaceNote prediction / keibailuka / Edge / independent indexをCでnamespace-safe merge
+9. optional addonが未着でもBaseが成立する限り処理を継続
+10. Cでschema / key / headcount / as-of / source coverage / SHA / idempotence監査
+11. Cでday-package.json生成
+12. immutable revisionとしてDrive canonicalへ保存
+13. current pointerを新revisionへ更新
+14. publishが必要なら既定Current Publish / Pages経路を使用
+15. 各source stateと成果物、監査、publication状態を報告
 
-同日再実行では同じsource versionを重複付与せず、差分sourceだけを安全に反映する。
+PACI / Base identityが成立しない場合だけHard Stopを許容する。Eval / RaceNote / keibailuka / Edge / independent indexの欠損だけを理由にHard Stopしない。
+
+## Partial completion and revision rule
+
+optional sourceが未着でも、その時点で安全に生成できるday-packageを正式revisionとして保存・公開する。
+
+同日再実行では既存JSONを直接手編集しない。
+
+```text
+previous revision verified inputs
++ newly arrived source
+  -> clean rebuild / idempotent re-merge
+  -> full audit
+  -> next immutable revision
+  -> current pointer update
+  -> republish
+```
+
+旧revisionは削除・上書きしない。同一source versionを重複付与しない。前revisionでREADYだったsourceを欠落させない。
 
 ## External source handling
 
 - Eval完成OCR CSV: deterministic exact-key merge対象
 - keibailuka CSV/JSON: sparse source。exact matchのみmergeし、近似馬名を自動補正しない
 - RaceNote prediction output: `addons.racenote_prediction` とrace-level RaceNote noteのみを所有
-- Edge Registry: `edge_matches` のみを所有
+- independent index: `addons.my_index` を所有。未稼働中は `NOT_EXPECTED` を許容
+- Edge Registry matcher output: Edge側の照合結果のみをconsumer入力とし、Newspaper側でEdge条件を再判定しない
+- new Newspaper package: `special_memos` を現行Edge表示正本とする
+- legacy package: `edge_matches` は後方互換fallbackに限定する
 
 RaceNote prediction成果物の入力契約は別途正式化する。RaceNote本体bundleをNewspaper Base/historyへ流用しない。
+
+## Source-state semantics
+
+- `READY`: 対象日の正しいsourceを発見し、検証・merge完了
+- `NOT_FOUND`: 対象日sourceが未生成・未着・未発見
+- `ERROR`: source候補はあるが日付/schema/key/SHA/内容等の不整合で安全に採用不可
+- `NOT_EXPECTED`: 現在そのsourceが未稼働・運用対象外
+
+optional sourceの `NOT_FOUND / NOT_EXPECTED` はaudit failureではない。
+
+optional sourceの `ERROR` も、そのsourceだけ安全に除外できるなら他sourceで日次処理を完走し、理由を報告する。
 
 ## Dependency boundary
 
@@ -131,6 +170,21 @@ RaceNote-specific implementation
 ```
 
 RaceNote固有のGPT-facing schema enrichment、Reader View、prediction handoffはNewspaper Base/historyへ持ち込まない。ただしpredictionの完成成果物は外部addonとしてmergeしてよい。
+
+## Publication semantics
+
+ユーザーの通常指示にある「アップロード」は、特段の指定がなければ次を含む。
+
+```text
+day-package JSON生成
+-> Drive canonical保存
+-> immutable revision/current metadata更新
+-> Newspaper Current Publish
+-> GitHub Pages反映
+-> success確認
+```
+
+正式publication / PagesはDとして扱う。
 
 ## Actions Issue preflight — D only
 
