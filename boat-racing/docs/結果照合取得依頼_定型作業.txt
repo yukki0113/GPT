@@ -8,32 +8,77 @@
 
 0. 正本の確認
 --------------
-1) GitHub `yukki0113/GPT` の main ブランチを正本とする。
+1) GitHub `yukki0113/GPT` の latest `main` を正本とする。
 2) 次を順に確認する。
    - boat-racing/README.md
    - boat-racing/.gpt/CONTEXT.md
    - boat-racing/.gpt/WORKFLOW.md
    - boat-racing/.gpt/MIGRATION_STATUS.md
+   - .gpt/ISSUE_REQUEST_CONTRACTS.md
    - boat-racing/docs/README_公式結果取得.md
    - boat-racing/src/fetch_boatrace_results.py
-   - .github/workflows/boatrace_results_manual.yml
-3) 日次の事前予想CSV・結果CSV・HTMLキャッシュ・ログ・台帳はGit管理対象外とする。
-4) 過去のWorkスレッド内一時領域や添付ZIPをソース正本として使用しない。
+3) D. Actions-Native Executionを選ぶ場合だけ、追加で次を確認する。
+   - .github/workflows/boatrace_results_chat.yml
+   - 必要に応じて .github/workflows/boatrace_results_manual.yml（人手の補助経路）
+4) 日次の事前予想CSV・結果CSV・HTMLキャッシュ・ログ・台帳はGit管理対象外とする。
+5) 過去のWorkスレッド内一時領域や添付ZIPをソース正本として使用しない。
 
 
-1. 依頼内容の受領・入力確認
-----------------------------
+1. 実行経路の判定
+------------------
+結果取得依頼を受けたら、Issueを先に作成せず、最初にGitHub作業を次の4系統へ分類する。
+
+A. Read / Audit
+- latest main確認
+- README / docs / source / workflow確認
+- commit / issue / workflow run / artifact / SHA確認
+- 既存成果物の監査
+→ ChatからGitHub read/searchで直接実施し、Issue不要。
+
+B. Git Change
+- source / test / docs / config / workflow等のUTF-8テキスト変更
+→ latest main、path存在、現内容を確認し、GitHub direct create/update/deleteでremote commitを作成する。Git変更だけを目的としたIssueは作成しない。
+
+C. Pure Deterministic Execution
+- 入力CSVのUTF-8・必須列・件数・重複検査
+- SHA-256計算
+- gzip+Base64生成
+- JSON serialize
+- 取得済みartifact内CSV / JSON / logの検査
+- 差分比較、的中・ROI等の決定論的集計
+- Git正本moduleをChatローカルで同一条件実行できる場合の結果取得
+→ secret・特殊runner・Actions監査証跡が不要で、必要入力を取得でき、計算量が許容範囲ならIssue不要。
+
+D. Actions-Native Execution
+- ChatローカルのPythonから `https://www.boatrace.jp` へ通信できず、Git正本fetcherを同一条件で実行できない
+- runner環境自体を監査点として残す必要がある
+- settlement入力として run ID / artifact / validation / Actions履歴を監査証跡として固定する必要がある
+- その他、Secrets・artifact chain・長時間/大容量等のActions-native条件がある
+→ fully validated requestを1回だけIssue発行し、GitHub Actionsで実行する。
+
+「GitHubにmoduleがある」ことだけを理由にDを選ばない。
+一方、現在のChatGPTローカルPython実行環境のように外部インターネット通信が利用できない場合、公式結果のネットワーク取得本体はDを選ぶ。
+入力検査・SHA計算・artifact回収後の検証までDへ送らず、A/Cで処理する。
+
+
+2. 依頼内容の受領・入力確認（A / C）
+-------------------------------------
 1) 添付された当日分の事前予想CSVを唯一の処理入力とする。
 2) 入力CSVの全行を対象にし、入力にないレースは追加しない。入力1行につき結果CSVも1行とする。
 3) CSVがUTF-8（BOM有無は不問）であり、見出しの重複・空欄・列数過不足がないことを確認する。
 4) 必須列は `README_公式結果取得.md` および正本Pythonの入力検査に従う。
 5) 日付＋会場＋Rを正規化して重複を検査する。
 6) 主推奨・保険・参考の券種、買い目、点数は入力記載のまま検査し、予想内容を修正・補完しない。
+7) 入力原本のSHA-256を計算して固定する。
+8) CまたはDへ渡す前に、入力件数、対象日、会場順、予想確定日時等の監査情報を確認する。
+
+結果参照後に事前予想CSVを再生成・修正しない。
+元の凍結原本が存在しない場合は、監査復元を原本と同一扱いせず、復元根拠と一致検証範囲を明示する。
 
 
-2. 通常実行経路
-----------------
-Chat実行環境からBOAT RACE公式サイトへHTTPS通信できる場合は、Git正本のPythonを直接実行する。
+3. C. Pure Deterministic Execution
+----------------------------------
+Chat実行環境からBOAT RACE公式サイトへHTTPS通信でき、Git正本のPythonを同一条件で実行できる場合は、GitHub `main` の正本moduleを取得してローカル実行を優先する。
 
 例：
 
@@ -42,101 +87,156 @@ python boat-racing/src/fetch_boatrace_results.py --input "INPUT.csv"
 通常運用では `--limit` を使用しない。
 出力結果は結果CSVと取得ログを監査し、正常終了条件を満たしたものだけを完成物として扱う。
 
+可能な限り、ローカル成果物またはmanifestに次を残す。
 
-3. GitHub Actions代替実行経路
------------------------------
-Chat実行環境から `https://www.boatrace.jp` へ直接通信できない、またはネットワーク制約により安定実行できない場合は、GitHub Actionsを正式な代替実行経路とする。
+- source_commit
+- source_file_sha256
+- input_sha256
+- runner / module version
+- generated_at
+- output_sha256
+
+これにより、Chatが類似処理を再実装したのではなく、指定commitの正本moduleを指定入力へ実行したことを追跡可能にする。
+
+
+4. D. Actions-Native Execution
+------------------------------
+Chatローカルで正本fetcherを同一条件実行できない、または結果取得・照合を監査runとして固定する必要がある場合は、次のIssue起動Workflowを使用する。
 
 使用Workflow：
 
-.github/workflows/boatrace_results_manual.yml
+.github/workflows/boatrace_results_chat.yml
 
-このWorkflowは `workflow_dispatch` で手動実行し、Git main上の以下をそのまま使用する。
+title：
 
-- boat-racing/src/fetch_boatrace_results.py
-- boat-racing/requirements.txt
+[BOATRACE_RESULTS_REQUEST] <request_id>
 
-日次CSVや結果成果物をGitへcommitしない。
+`request_id` は `[A-Za-z0-9._-]{1,80}` に完全一致する一意な値とする。
+
+Issue bodyはMarkdown fenceを付けないraw JSON objectとする。
+GitHub IssueはGit操作の代替ではなく、DのActions実行要求にだけ使用する。
+
+`.github/workflows/boatrace_results_manual.yml` は人手での `workflow_dispatch` 補助経路として残すが、ChatがDを選んだ標準経路ではIssue起動Workflowを優先する。
 
 
-4. Actionsへ事前予想CSVを渡す方法
-----------------------------------
-`workflow_dispatch` はファイルアップロード入力を持たないため、添付された事前予想CSVを gzip 圧縮してBase64化し、文字列入力としてRunnerへ渡す。
+5. D経路のIssue request contract / preflight
+--------------------------------------------
+Issueを作成する前に、latest mainの `.gpt/ISSUE_REQUEST_CONTRACTS.md`、本ファイル、`boatrace_results_chat.yml` のparserを確認する。
 
-Workflow inputs：
+必須項目：
 
 - `input_filename`
-  - 元の事前予想CSVファイル名
+  - basenameのみ
+  - `.csv` で終わること
 - `input_csv_gzip_base64`
-  - 事前予想CSVをgzip圧縮後にBase64化した文字列
+  - 入力CSV原本をgzip圧縮後Base64化した文字列
+
+任意項目：
+
+- `input_sha256`
+  - 64桁lowercase hex
+  - 指定時はRunner復元後の実SHA-256と完全一致必須
 - `timeout_seconds`
-  - 既定20秒
+  - 既定20
+  - 0より大きいnumeric
 - `retry_count`
-  - 既定2回（初回を除く再試行回数）
+  - 既定2
+  - 0以上integer
 - `request_interval_seconds`
-  - 既定1.0秒
+  - 既定1.0
+  - 0以上numeric
 - `unit_stake`
-  - 既定100円
+  - 既定100
+  - 0より大きい100円単位integer
 - `strict`
-  - trueの場合、中止・不成立を含め全行が取得成功でなければWorkflowを失敗扱いにする
+  - 既定false
 
-Base64生成例：
+入力CSVは復元後5 MiB以下、UTF-8（BOM有無不問）、データ行1件以上、対象日は1日だけであること。
+必須列は正本workflow / `README_公式結果取得.md` と完全一致で確認する。
 
-python - <<'PY'
-import base64, gzip
-from pathlib import Path
-p = Path('INPUT.csv')
-print(base64.b64encode(gzip.compress(p.read_bytes())).decode('ascii'))
-PY
+Issue発行前preflight：
 
-Runner上では `/tmp` にCSVを復元する。復元した入力CSVはGit管理領域へ保存しない。
+1) latest mainを取得する。
+2) 対象workflowのrequest parserを確認する。
+3) title prefix / request_idを確認する。
+4) 入力CSVの必須列・対象日・会場・件数・重複を確認する。
+5) 入力原本SHA-256を実値計算する。
+6) gzip+Base64を機械的に生成する。
+7) request bodyをJSON serializerで生成し、再parseできることを確認する。
+8) upstream dependencyがある場合のみ、run成功・artifact名・SHA・dates / IDs等を実値照合する。本結果取得request単体では通常upstream artifact参照を要求しない。
+9) 全項目PASS後にIssueを1回だけ発行する。
+
+禁止：
+- Issueを先に作って後から本文を補完する
+- Markdown fence付きJSONをbodyへ渡す
+- SHA / run ID / artifact名等を推測する
+- failed reason未確認のblind rerun
+- 同一request_idの安易な再利用
+
+retry時はRESULT、artifact、failed step / logを確認して原因分類する。
+`公式未確定` 等のdomain validationは正常なfail-closedとして扱い、結果が未確定なだけなら同一入力原本を保持したまま、必要な待機後にlatest mainを確認し、新しいrequest_idで新規requestを作る。
 
 
-5. Actions上の処理
-------------------
+6. D経路のActions上の処理
+-------------------------
+`boatrace_results_chat.yml` は次を行う。
+
 1) mainをcheckoutする。
 2) Python 3.12をセットアップする。
 3) `pip install -r boat-racing/requirements.txt` を実行する。
-4) workflow_dispatch入力を検査する。
+4) Issue title / raw JSON bodyを検査する。
 5) gzip+Base64から事前予想CSVを `/tmp` に復元する。
-6) CSVの対象日と会場を読み取り、成果物名を決定する。
-7) 正本 `boat-racing/src/fetch_boatrace_results.py` を実行する。
-8) 結果CSV、取得ログ、run_status.txtを `boat-racing/actions_output/` に集約する。
-9) 成果物一式をartifact化する。
-10) Python終了コードが非0ならartifactは残したうえでWorkflowも失敗扱いにする。
+6) `input_sha256` 指定時は復元原本と照合する。
+7) CSVの対象日・会場・行数・必須列を確認し、実行commandを確定する。
+8) 正本 `boat-racing/src/fetch_boatrace_results.py` を実行する。
+9) 結果CSV、取得ログ、`resolved_request.json`、`validation_report.json`、`run_status.txt` を出力する。
+10) 成果物一式をartifact化する。
+11) Issueへ `BOATRACE_RESULTS_RESULT` の機械可読JSONをコメントする。
+12) Request Issueをcloseする。
+13) fetchまたはvalidationが失敗ならartifactを残したうえでWorkflowをfailureにする。
 
 artifact名：
 
-boatrace-results-YYYYMMDD-<github.run_id>
+boatrace-results-<request_id>-<YYYYMMDD>-<github.run_id>
 
 retention-days：14日
 
+正常なRESULTでは少なくとも以下を確認する。
 
-6. Chat側でのartifact回収・検査
--------------------------------
-Actions実行後、Chat側では対象Workflow runを確認し、artifactを取得する。
+- `status = success`
+- `task_exit_code = 0`
+- `validation_exit_code = 0`
+- `validation.validation_status = success`
+
+
+7. Chat側でのArtifact回収・検査（A / C）
+----------------------------------------
+Actions実行後は、別の監査Actionsを起動せず、原則A/Cで対象runとartifactを回収・検査する。
 
 確認対象：
 
+- `resolved_request.json`
+- `validation_report.json`
 - `run_status.txt`
 - `YYYYMMDD_結果_会場....csv`
 - `YYYYMMDD_結果取得ログ_会場....log`
 
 検査内容：
 
-1) run_statusのfetch_exit_code
-2) 入力件数と出力件数の一致
-3) 日付＋会場＋Rの重複、未結合、余剰がないこと
-4) 全行に公式URLが記録されていること
-5) `取得失敗`、`解析失敗`、`入力不正`、`公式未確定` が0件であること
-6) 非0終了時はログ末尾の `未完了対象` とCSVの `取得状態`・`エラー内容` を確認する
+1) `run_status.txt` のrequest_id / issue_number / run_id / head_sha / fetch_exit_code / validation_exit_code
+2) `validation_report.json` のvalidation_status
+3) 入力件数と出力件数の一致
+4) 日付＋会場＋Rの重複、未結合、余剰がないこと
+5) 全行に公式URLが記録されていること
+6) `取得失敗`、`解析失敗`、`入力不正`、`公式未確定` が0件であること
+7) 非0終了時はログ末尾の `未完了対象` とCSVの `取得状態`・`エラー内容` を確認する
+8) artifact名、run ID、head SHAをIssue RESULTと完全一致で確認する
+9) 必要に応じてartifact ZIP / 個別成果物のSHA-256をCで計算する
 
 中止・不成立は通常モードでは公式に明示された終端状態として許容する。`strict=true` の場合は許容しない。
 
-Chat環境のGitHub連携でworkflow_dispatch実行APIが利用できない場合は、GitHub Actions画面から当該Workflowを手動起動し、その後のrun確認・artifact回収をChat側で行う。
 
-
-7. 公式結果取得・照合ルール
+8. 公式結果取得・照合ルール
 ----------------------------
 1) 参照先はBOAT RACE公式ページだけとする。
 2) HTTP 200だけでは成功扱いにせず、会場・日付・Rのページ同一性を確認する。
@@ -149,20 +249,26 @@ Chat環境のGitHub連携でworkflow_dispatch実行APIが利用できない場�
 詳細仕様は `boat-racing/docs/README_公式結果取得.md` と正本Pythonを優先する。
 
 
-8. 成果物とGit管理
+9. 成果物とGit管理
 ------------------
 日常の依頼に対する成果物：
 
 - 結果CSV
 - 取得ログ
 
-Actions経由では監査補助として `run_status.txt` もartifactへ含める。
+D経路では監査補助として次もartifactへ含める。
+
+- resolved_request.json
+- validation_report.json
+- run_status.txt
 
 以下はGitへcommitしない。
 
 - 入力の事前予想CSV
 - 結果CSV
 - 取得ログ
+- resolved_request.json
+- validation_report.json
 - run_status.txt
 - HTMLキャッシュ
 - Excel台帳
@@ -171,10 +277,28 @@ Actions経由では監査補助として `run_status.txt` もartifactへ含め�
 Gitへcommitするのは、正本ソース、README、定型作業手順、Workflow等の再利用可能な資産だけとする。
 
 
-9. ソース改修が必要になった場合
-----------------------------------
-1) GitHub mainを基準に既存CSV互換性を維持して改修する。
-2) Python、対応README、Workflowまたは必要なテストを同時に確認する。
-3) 可能な限り保存済みfixtureまたは実運用データで回帰確認する。
-4) 差分確認後、再利用可能な資産だけをGitHubへ反映する。
-5) 日次成果物はcommitしない。
+10. ソース・docs・workflow改修が必要になった場合（B）
+-------------------------------------------------------
+1) latest mainを確認する。
+2) 対象pathの存在と現在内容、blob SHAを確認する。
+3) 既存CSV互換性を維持して必要差分だけを作る。
+4) Python、対応README、Workflow、必要なテストを同時に確認する。
+5) 可能な限り保存済みfixtureまたは実運用データで回帰確認する。
+6) UTF-8テキスト変更はGitHub direct create/update/deleteでremote commitを作成する。
+7) Git更新のためだけに `[gpt-git-update]` 等のIssueを作成しない。
+8) 同一目的の複数ファイル変更は、利用可能なら1commitへまとめる。
+9) 日次成果物はcommitしない。
+
+
+11. このスレッドの標準経路
+--------------------------
+2026-09-10時点、このスレッドで日次の「090xの結果取得」を依頼された場合は、次を標準とする。
+
+1) A: latest main / docs / workflow確認
+2) C: 添付凍結予想CSVの原本検査・SHA固定・request JSON生成
+3) D: 現在のChatローカルPythonが公式サイトへ通信できないため、`[BOATRACE_RESULTS_REQUEST]` Issueを1回だけ発行し `boatrace_results_chat.yml` を実行
+4) A: RESULT / run / artifact状態確認
+5) C: artifact回収後のCSV / JSON / log / SHA検査
+6) 完成成果物をユーザーへ返す
+
+将来、ChatローカルでGit正本 `fetch_boatrace_results.py` を公式サイトへ同一条件で通信実行でき、かつActions runを監査正本として固定する要件が不要になった場合は、3) をCへ変更してIssueを廃止できる。
