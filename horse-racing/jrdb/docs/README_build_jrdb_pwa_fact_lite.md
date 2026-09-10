@@ -2,7 +2,7 @@
 
 `build_jrdb_pwa_fact_lite.py` は Analysis Lite から、スマホ PWA で自由な `WHERE / GROUP BY` 集計を行うための compact row-level SQLite を生成します。
 
-現行仕様は **v0.2** です。詳細な追加仕様は `README_build_jrdb_pwa_fact_lite_v0_2.md` を参照してください。
+現行builder/schema仕様は **v0.3** です。v0.2までの履歴仕様は `README_build_jrdb_pwa_fact_lite_v0_2.md` を参照してください。
 
 ## Position
 
@@ -16,11 +16,13 @@ Analysis Lite
 
 ## Source / schema
 
-- source: Analysis Lite v1.2 compatible
-- current Fact Lite schema: `schema/jrdb_pwa_fact_lite_schema_v0_2.sql`
+- source: Analysis Lite v1.3 compatible
+- current Fact Lite schema: `schema/jrdb_pwa_fact_lite_schema_v0_3.sql`
 - builder: `src/build_jrdb_pwa_fact_lite.py`
 
-現行 Analysis Lite v1.2 には `race_name` がないため、v0.2 は race name 列がなくても生成可能です。将来 source Analysis に `race_name` が追加された場合、同じbuilderが `dim_race` へ自動収録します。
+v0.3ではAnalysis `fact_entry_result_lite.win5_leg_no` をそのままFact Lite `fact_stats_entry.win5_leg_no` へ引き継ぎます。値は `NULL` または `1..5` とし、PWAの「WIN5対象レースのみ」検索は `win5_leg_no IS NOT NULL` で絞り込みます。
+
+`race_name` はAnalysis側に存在すれば `dim_race` へ収録し、存在しない場合も任意のrace-name lookup SQLiteで補完できます。
 
 ## Grain
 
@@ -40,6 +42,21 @@ Analysis Lite
 - `dim_race` for race-name partial search
 - `prev_distance_delta`
 - `prev_class_code`
+
+## v0.3 addition
+
+- `win5_leg_no`
+- PWA「WIN5対象レースのみ」filter support
+- partial index `ix_pwa_fact_win5` for non-NULL WIN5 rows
+
+### WIN5
+
+Analysis v1.3のBAC由来 `win5_leg_no` を推測せず伝播します。
+
+- `NULL`: WIN5対象外
+- `1..5`: 当日のWIN5何レース目か
+
+PWAはFact Lite v0.2 / v0.3の読み込み互換を持ちます。v0.2配布DBではWIN5 checkboxを無効化し、v0.3同期後に自動的に利用可能とします。
 
 ### Previous distance
 
@@ -78,6 +95,7 @@ Analysis期間外・地方・海外等で前走レースを解決できない場
 - `ix_pwa_fact_course(year, month, venue_code, track_type, distance, track_condition_code)`
 - `ix_pwa_fact_date(race_date_int)`
 - `ix_pwa_fact_race(race_id)`
+- `ix_pwa_fact_win5(win5_leg_no) WHERE win5_leg_no IS NOT NULL`
 
 個別の sire / bms / jockey / popularity / style index は現時点では追加しません。
 
@@ -85,21 +103,22 @@ Analysis期間外・地方・海外等で前走レースを解決できない場
 
 ```bash
 python src/build_jrdb_pwa_fact_lite.py \
-  --analysis ./jrdb_analysis_2016_2026YTD_20260823_v1_2.sqlite \
+  --analysis ./jrdb_analysis_v1_3.sqlite \
   --db ./jrdb_pwa_fact_lite.sqlite
 ```
 
-Builder は source / output row count equality、必須table/column、`PRAGMA integrity_check`、race count、race-name count、previous-distance/class populated rows、output size を確認します。
+Builder は source / output row count equality、必須table/column、`win5_leg_no` 値域、`PRAGMA integrity_check`、race count、race-name count、previous-distance/class populated rows、WIN5 populated rows、output size を確認します。
 
-## Current v0.2 distribution
+## Distribution transition
 
-Current Analysis Lite v1.2から生成した初回v0.2配布物:
+既存のFact Lite v0.2配布物はPWA側で読み込み互換を維持します。Analysis v1.3を入力として次回Fact Lite publishを行うとv0.3へ切り替わり、WIN5検索が有効になります。
+
+直近のv0.2配布実績:
 
 - rows: 513,512
 - size: 62,230,528 bytes（約59.3 MiB）
 - SHA-256: `b5ba7a645f134bec03538fc9d255fc30d626908af4ce939416cea8ac735cd29d`
 - Release tag: `jrdb-pwa-fact-lite-current`
-- race-name search: source Analysis v1.2 に `race_name` がないため未有効
 
 ## Data policy
 
