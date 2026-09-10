@@ -31,6 +31,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install runtime dependencies
+        run: python -m pip install --disable-pip-version-check numpy
+
       - name: Parse fixed-scope request
         id: request
         env:
