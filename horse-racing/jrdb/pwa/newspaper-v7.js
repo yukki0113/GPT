@@ -3,7 +3,9 @@
 /* Newspaper display v7: EdgeDB is exposed only as the user-facing 特注メモ column. */
 
 edgeHtml = function (horse) {
-  const memos = Array.isArray(horse.edge_matches) ? horse.edge_matches : [];
+  const memos = Array.isArray(horse.special_memos)
+    ? horse.special_memos
+    : (Array.isArray(horse.edge_matches) ? horse.edge_matches : []);
   if (!memos.length) return "—";
   return memos.map(memo => {
     const value = memo && memo.memo_text ? memo.memo_text : memo && memo.display_text;
