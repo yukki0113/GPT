@@ -1,0 +1,56 @@
+/* Newspaper display v5 overrides */
+
+/* Six-column mark block: 能力 -> 独自指数 -> Eval -> JRDB -> RN -> 🐬 */
+.newspaper-table-v4 .newspaper-mark-group-head { min-width: 230px; }
+.newspaper-table-v4 .mark-ability { width: 36px; min-width: 36px; max-width: 36px; }
+.newspaper-table-v4 .mark-my { width: 52px; min-width: 52px; max-width: 52px; }
+.newspaper-table-v4 .mark-eval { width: 38px; min-width: 38px; max-width: 38px; }
+.newspaper-table-v4 .mark-jrdb { width: 42px; min-width: 42px; max-width: 42px; }
+.newspaper-table-v4 .mark-rn { width: 32px; min-width: 32px; max-width: 32px; }
+.newspaper-table-v4 .mark-iluka { width: 30px; min-width: 30px; max-width: 30px; }
+.newspaper-table-v4 .newspaper-mark-head-row th { font-size: 9px; }
+
+.newspaper-v5-note-section + .newspaper-v5-note-section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e7e7e7;
+}
+.newspaper-v5-note-section h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.newspaper-v5-race-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 6px;
+}
+.newspaper-v5-race-metric {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 7px;
+  align-items: baseline;
+  padding: 7px 8px;
+  background: #f7f7f7;
+  border-radius: 8px;
+}
+.newspaper-v5-race-metric span {
+  color: #666;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.newspaper-v5-race-metric strong {
+  min-width: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.newspaper-v5-rn-comment {
+  margin: 0;
+  padding: 10px 11px;
+  background: #f7f7f7;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
