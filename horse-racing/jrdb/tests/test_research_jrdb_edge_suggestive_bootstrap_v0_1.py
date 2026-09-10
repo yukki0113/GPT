@@ -36,9 +36,12 @@ def _make_fixture(tmp_path: Path) -> tuple[Path, Path]:
         """
         CREATE TABLE edge_definition(
           edge_id TEXT PRIMARY KEY, family TEXT, polarity TEXT,
-          performance_signal TEXT, value_signal TEXT,
+          performance_signal TEXT, value_signal TEXT, status TEXT
+        );
+        CREATE TABLE edge_metric_snapshot(
+          edge_id TEXT, slice_kind TEXT,
           sample_n INTEGER, unique_horses INTEGER, unique_races INTEGER,
-          performance_lift REAL, place_roi REAL, status TEXT
+          performance_lift REAL, place_roi REAL
         );
         CREATE TABLE edge_statistical_guard(
           edge_id TEXT PRIMARY KEY, candidate_id TEXT,
@@ -49,11 +52,17 @@ def _make_fixture(tmp_path: Path) -> tuple[Path, Path]:
         """
     )
     definitions = [
-        ("E1","PEDIGREE","POSITIVE","POSITIVE","NEUTRAL",300,200,250,1.12,0.98,"REJECTED"),
-        ("E2","PEDIGREE","POSITIVE","POSITIVE","NEUTRAL",300,200,250,1.11,0.97,"REJECTED"),
-        ("E3","TRANSITION","NEGATIVE","NEUTRAL","NEGATIVE",260,180,220,0.90,0.80,"REJECTED"),
+        ("E1","PEDIGREE","POSITIVE","POSITIVE","NEUTRAL","REJECTED"),
+        ("E2","PEDIGREE","POSITIVE","POSITIVE","NEUTRAL","REJECTED"),
+        ("E3","TRANSITION","NEGATIVE","NEUTRAL","NEGATIVE","REJECTED"),
     ]
-    con.executemany("INSERT INTO edge_definition VALUES(?,?,?,?,?,?,?,?,?,?,?)", definitions)
+    con.executemany("INSERT INTO edge_definition VALUES(?,?,?,?,?,?)", definitions)
+    metrics = [
+        ("E1","ALL",300,200,250,1.12,0.98),
+        ("E2","ALL",300,200,250,1.11,0.97),
+        ("E3","ALL",260,180,220,0.90,0.80),
+    ]
+    con.executemany("INSERT INTO edge_metric_snapshot VALUES(?,?,?,?,?,?,?)", metrics)
     guards = [
         ("E1","C1","T1","ACTIVE","WATCH",0.02,0.08,None,None,0),
         ("E2","C2","T1","ACTIVE","WATCH",0.03,0.12,None,None,0),
