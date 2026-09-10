@@ -1,0 +1,167 @@
+name: NAR monthly backfill via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  backfill:
+    if: startsWith(github.event.issue.title, '[NAR_BACKFILL_REQUEST]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse and validate request
+        id: request
+        shell: bash
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import os
+          import re
+
+          body = os.environ.get("ISSUE_BODY", "")
+          values = {}
+          for raw_line in body.splitlines():
+              line = raw_line.strip()
+              if not line or line.startswith("#") or ":" not in line:
+                  continue
+              key, value = line.split(":", 1)
+              values[key.strip()] = value.strip()
+
+          required = ("request_id", "kind", "start_ym", "end_ym")
+          missing = [key for key in required if not values.get(key)]
+          if missing:
+              raise SystemExit(f"missing required field(s): {', '.join(missing)}")
+
+          if values["kind"] not in {"race", "odds"}:
+              raise SystemExit("kind must be race or odds")
+
+          pattern = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
+          if not pattern.fullmatch(values["start_ym"]) or not pattern.fullmatch(values["end_ym"]):
+              raise SystemExit("start_ym and end_ym must use YYYY-MM")
+          if values["start_ym"] > values["end_ym"]:
+              raise SystemExit("start_ym must not be after end_ym")
+
+          delay = values.get("delay_seconds", "1.0")
+          try:
+              delay_value = float(delay)
+          except ValueError as exc:
+              raise SystemExit("delay_seconds must be numeric") from exc
+          if delay_value < 0.5:
+              raise SystemExit("delay_seconds must be >= 0.5 for bulk NAR requests")
+
+          safe_request = re.sub(r"[^A-Za-z0-9._-]", "-", values["request_id"])
+          print(f"request_id={safe_request}")
+          print(f"kind={values['kind']}")
+          print(f"start_ym={values['start_ym']}")
+          print(f"end_ym={values['end_ym']}")
+          print(f"delay_seconds={delay_value}")
+          PY
+
+      - name: Capture source commit
+        id: source
+        shell: bash
+        run: echo "source_commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Run NAR monthly backfill
+        id: backfill
+        working-directory: local-horse-racing
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p "../artifacts/nar_backfill/raw" "../artifacts/nar_backfill/audit"
+          python -m nar.download.backfill \
+            --kind "${{ steps.request.outputs.kind }}" \
+            --start-ym "${{ steps.request.outputs.start_ym }}" \
+            --end-ym "${{ steps.request.outputs.end_ym }}" \
+            --output-dir "../artifacts/nar_backfill/raw" \
+            --manifest-path "../artifacts/nar_backfill/audit/manifest.json" \
+            --delay-seconds "${{ steps.request.outputs.delay_seconds }}" \
+            2>&1 | tee "../artifacts/nar_backfill/run.log"
+
+      - name: Upload backfill artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nar-${{ steps.request.outputs.kind }}-${{ steps.request.outputs.start_ym }}-${{ steps.request.outputs.end_ym }}-${{ steps.request.outputs.request_id }}
+          path: artifacts/nar_backfill/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          KIND: ${{ steps.request.outputs.kind }}
+          START_YM: ${{ steps.request.outputs.start_ym }}
+          END_YM: ${{ steps.request.outputs.end_ym }}
+          ARTIFACT_NAME: nar-${{ steps.request.outputs.kind }}-${{ steps.request.outputs.start_ym }}-${{ steps.request.outputs.end_ym }}-${{ steps.request.outputs.request_id }}
+          BACKFILL_OUTCOME: ${{ steps.backfill.outcome }}
+          SOURCE_COMMIT: ${{ steps.source.outputs.source_commit }}
+        with:
+          script: |
+            const fs = require('fs');
+            let summary = {
+              status: 'failure',
+              failure_class: 'IMPLEMENTATION_ERROR',
+              error_code: 'BACKFILL_DID_NOT_COMPLETE',
+              retryable: false
+            };
+
+            const manifestPath = 'artifacts/nar_backfill/audit/manifest.json';
+            if (fs.existsSync(manifestPath)) {
+              const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+              summary = {
+                status: manifest.download_failures === 0
+                  ? (manifest.validation_warnings === 0 ? 'success' : 'success_with_validation_warnings')
+                  : 'partial_failure',
+                request_id: process.env.REQUEST_ID,
+                kind: process.env.KIND,
+                start_ym: process.env.START_YM,
+                end_ym: process.env.END_YM,
+                requested_months: manifest.requested_months,
+                successful_months: manifest.successful_months,
+                download_failures: manifest.download_failures,
+                validation_warnings: manifest.validation_warnings,
+                total_bytes: manifest.total_bytes,
+                run_id: context.runId,
+                artifact_name: process.env.ARTIFACT_NAME,
+                artifact_retention_days: 7,
+                source_commit: process.env.SOURCE_COMMIT
+              };
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `NAR_BACKFILL_RESULT\n\`\`\`json\n${JSON.stringify(summary, null, 2)}\n\`\`\``
+            });
+
+            if (summary.status === 'success' || summary.status === 'success_with_validation_warnings') {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                state: 'closed',
+                state_reason: 'completed'
+              });
+            }
