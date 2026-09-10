@@ -1,8 +1,19 @@
-# GPT Git Binary Tool
+# GPT Git Binary Tool — Compatibility Wrapper
 
-GitHub `main` と ChatGPT / Work の実行環境の間で、`.xlsx`、`.sqlite`、`.db`、`.zip` 等のGit管理対象バイナリを1コマンドで読み書きする共通CLIです。
+`.gpt/tools/gpt_git_binary_tool.py` は、GitHub正本バイナリのread / updateを既存Issue / Actions経路で自動化する互換CLIです。
 
-既存の Issue -> GitHub Actions 経路は、監査ログ、検証、通知、main反映の実行基盤としてそのまま使用します。このCLIは、その手順を日常作業から隠蔽する薄い操作層です。
+2026-09-10以降、このCLIは**バイナリ操作の無条件な第一選択ではありません**。上位方針 `.gpt/GITHUB_OPERATION_POLICY.md` に従い、まずdirect経路の可否を判定します。
+
+## Routing
+
+```text
+GitHub binary read/update
+  -> 現在のGitHub / connector / Git環境で直接扱えるか確認
+  -> 直接可能: direct経路
+  -> 直接不可能: このCLIまたはbinary Issue fallback
+```
+
+外部ストレージが正本と定義されたファイルには使用しません。正本所在は各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` を確認します。
 
 ## Source
 
@@ -10,136 +21,115 @@ GitHub `main` と ChatGPT / Work の実行環境の間で、`.xlsx`、`.sqlite`�
 .gpt/tools/gpt_git_binary_tool.py
 ```
 
-Python標準ライブラリのみを使用します。外部Pythonパッケージは不要です。
-
 必要条件:
 
 - Python 3.10+
 - GitHub CLI `gh`
 - `gh auth status` が成功する認証済み環境
 
-## Read
+Python側は標準ライブラリのみを使用します。
 
-GitHub `main` 上のバイナリを実ファイルとしてローカルへ取得します。
+## Read
 
 ```bash
 python .gpt/tools/gpt_git_binary_tool.py read \
-  --path "example-project/ledger/example-ledger.xlsx" \
-  --output "/tmp/example-ledger.xlsx"
+  --path "example-project/data/example.sqlite" \
+  --output "/tmp/example.sqlite"
 ```
 
-内部では以下を自動実行します。
+内部では次を行います。
 
 1. `[gpt-git-binary-read]` Issue作成
 2. Actions完了待ち
 3. `GIT_BINARY_READ_RESULT` 解析
-4. Actions artifact取得・展開
+4. artifact取得・展開
 5. `manifest.json` 読み込み
-6. サイズ・SHA-256照合
+6. size / SHA-256照合
 7. 検証済み実ファイルを `--output` へ配置
+
+つまり、**このCLIのread自体もActionsを使います**。direct download / materializeが可能ならそちらを優先します。
 
 既存出力を上書きする場合は `--force` を指定します。
 
 ## Update
 
-ローカルの実ファイルを、検証済みのバイナリ更新経路でGitHub `main` へ反映します。
-
 ```bash
 python .gpt/tools/gpt_git_binary_tool.py update \
-  --file "/tmp/example-ledger.xlsx" \
-  --path "example-project/ledger/example-ledger.xlsx" \
-  --message "chore: update example ledger"
+  --file "/tmp/example.xlsx" \
+  --path "example-project/data/example.xlsx" \
+  --message "chore: update example binary"
 ```
 
-内部では以下を自動実行します。
+内部では次を行います。
 
-1. ローカルファイルのサイズ・SHA-256計算
-2. Base64化
-3. 48,000文字単位で分割
-4. `[gpt-git-binary-update]` Issue作成
-5. 全チャンクコメント登録
-6. `[gpt-git-binary-commit]` 確定コメント
-7. Actions完了待ち
-8. 最終結果のパス・SHA-256照合
-9. main反映commit SHAを返却
+1. local size / SHA-256計算
+2. Base64化・分割
+3. `[gpt-git-binary-update]` Issue作成
+4. chunk comments登録
+5. `[gpt-git-binary-commit]` 投稿
+6. Actions完了待ち
+7. RESULT / SHA確認
+8. main反映commit SHA返却
 
-Issue / Actions側のXLSX構造検証、gitignore、保護パス等の既存ルールはそのまま有効です。
-
-## Project-specific external sources of truth
-
-各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このツールの対象外です。
-
-- Eval継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）です。旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットなので、このCLIで同期・取得しません。
-- 競艇継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）が正本です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このCLIで同期・取得しません。
+これもdirect binary writeが利用できない場合のフォールバックです。
 
 ## Output
 
-成功時は標準出力へJSONを1件返します。
+成功時はJSONを返します。代表field:
 
-Read例:
+Read:
 
 ```json
 {
   "status": "success",
   "operation": "read",
-  "repository": "yukki0113/GPT",
-  "repository_path": "example-project/ledger/example-ledger.xlsx",
-  "local_path": "/tmp/example-ledger.xlsx",
+  "repository_path": "example-project/data/example.sqlite",
+  "local_path": "/tmp/example.sqlite",
   "issue_number": 123,
   "run_id": 456,
   "artifact_name": "...",
-  "size_bytes": 1571685,
+  "size_bytes": 1234,
   "sha256": "...",
   "source_commit": "..."
 }
 ```
 
-Update例:
+Update:
 
 ```json
 {
   "status": "success",
   "operation": "update",
-  "repository": "yukki0113/GPT",
-  "repository_path": "example-project/ledger/example-ledger.xlsx",
-  "local_path": "/tmp/example-ledger.xlsx",
+  "repository_path": "example-project/data/example.xlsx",
   "issue_number": 124,
   "commit_sha": "...",
-  "size_bytes": 1012259,
+  "size_bytes": 1234,
   "sha256": "...",
-  "chunks": 29
+  "chunks": 1
 }
 ```
 
-失敗時は標準エラーへ `status=failure` のJSONを返し、終了コード1になります。
+失敗時は `status=failure` のJSONを標準エラーへ返し、終了コード1です。
+
+## Related protocols
+
+- read fallback: `.gpt/GIT_BINARY_READ_ISSUE.md`
+- update fallback: `.gpt/GIT_BINARY_UPDATE_ISSUE.md`
+- Issue preflight: `.gpt/ISSUE_REQUEST_CONTRACTS.md`
 
 ## GPT / Work rule
 
-認証済み `gh` CLIを実行できる環境では、Git管理バイナリのread/updateについてIssue本文やBase64チャンクをGPTが手作業で組み立てず、このCLIを第一選択にしてください。
+このCLIを使う前に、次の2点を確認します。
 
-```text
-GitHub binary read
-  -> gpt_git_binary_tool.py read
+1. そのファイルは本当にGitHub正本か。
+2. 現在の環境ではdirect read / updateが本当に不可能か。
 
-GitHub binary update
-  -> gpt_git_binary_tool.py update
-```
-
-`gh` CLIを実行できないChat環境では、既存のGitHub Connector + `[gpt-git-binary-read]` / `[gpt-git-binary-update]` 経路をフォールバックとして使用します。
-
-このCLIはIssue/Actionsを廃止するものではありません。Issue番号、Actions run、最終通知、commit SHA等の監査可能性を残したまま、ChatGPT / Work側の推論・ツール呼び出し負担を減らすための操作層です。
+両方を満たす場合にのみ、Issue手順を手作業で組み立てるよりこのCLIを優先します。
 
 ## Tests
-
-ネットワークを使用しない単体テスト:
 
 ```bash
 python -m unittest .gpt/tools/tests/test_gpt_git_binary_tool.py
 ```
 
-テスト対象:
-
-- 危険なリポジトリ相対パスの拒否
-- Read結果JSONの解析
-- Update成功コメントの解析
-- Base64分割・再結合の完全一致
+このCLIは既存互換経路を廃止せず保守するためのものです。新規設計では、Issue / Actionsをバイナリ搬送のためだけに当然視しません。

@@ -1,56 +1,43 @@
-# GPT Git Binary Read Issue Protocol
+# GPT Git Binary Read Issue Protocol — Compatibility Fallback
 
-GitHub `main` 上の `.xlsx`、`.sqlite`、`.zip` など、GitHub Connectorだけでは実ファイルとして直接解析しにくいファイルを、ChatGPT / Work の実行環境へ取り出すための共通経路です。
+この文書は、GitHub正本の `.xlsx` / `.sqlite` / `.db` / `.zip` 等をChatGPT / Workへ実ファイルとして取り出すための**互換フォールバック**です。
+
+上位方針は `.gpt/GITHUB_OPERATION_POLICY.md` を参照してください。
+
+## 標準判断
+
+まず対象ファイルの正本所在を確認します。
+
+- GitHub外が正本: 各プロジェクト定義の外部正本へ直接アクセス
+- GitHubが正本: 現在のGitHub / connector /実行環境で直接read / download / materialize可能か確認
+- 直接取得できない: このIssue / Actions readbackをフォールバックとして使用
+
+「バイナリだから必ずIssue」とはしません。
 
 ## 目的
 
-通常のテキストファイルは GitHub Connector から直接読めます。
-一方、バイナリファイルは GitHub 上に存在していても、そのままExcelやSQLiteとして解析できない場合があります。
+この経路では、Issueを起点にGitHub Actionsがlatest `main` の対象バイナリをartifactへ梱包し、Chat / Workがartifactを取得して実ファイルとして解析します。
 
-この経路では、Issueを起点にGitHub Actionsが最新 `main` の対象ファイルをActions artifactへ梱包します。
-Chat側はworkflow runのartifactを取得し、実ファイルとして解析します。
-
-## External source-of-truth exception
-
-各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このreadback経路の対象外です。GitHubに旧コピーが残っていても最新と推定しません。
-
-- Eval継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）です。旧Google Drive Excel版 `Eval表集計・検証.xlsx`（file ID `1EMuKPhyWIiplohWFWbqnIGNmoXMPe0R_`）およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットなので、このreadback経路でEval台帳を取得しません。
-- 競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットなので、このreadback経路で競艇台帳を取得しません。
-
-## 推奨操作層
-
-認証済み `gh` CLIを実行できる環境では、Issue作成・完了待ち・artifact取得・SHA-256照合を手作業で行わず、次の共通CLIを第一選択にします。
-
-```bash
-python .gpt/tools/gpt_git_binary_tool.py read \
-  --path "example-project/ledger/example-ledger.xlsx" \
-  --output "/tmp/example-ledger.xlsx"
-```
-
-詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
-
-`gh` CLIが利用できないChat環境では、以下のIssueプロトコルを直接使用します。
-
-## Issueタイトル
+## Issue title
 
 ```text
 [gpt-git-binary-read] <short description>
 ```
 
-Issue作成者は `yukki0113` である必要があります。
+Issue authorは `yukki0113` である必要があります。
 
-## Issue本文
+## Issue body
 
 ```text
-path: example-project/ledger/example-ledger.xlsx
-request_id: example-ledger-analysis-20260826
+path: example-project/path/example.sqlite
+request_id: example-read-20260910
 ```
 
-`request_id` は省略可能です。省略時はIssue番号から自動生成します。
+`path` は必須、`request_id` は省略可能です。
 
-## Preflight before Issue creation
+## Preflight
 
-手動でIssueを組み立てる場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` の共通preflight / retry規約を適用します。
+`.gpt/ISSUE_REQUEST_CONTRACTS.md` を適用します。
 
 ```bash
 python .gpt/tools/gpt_issue_preflight.py \
@@ -58,68 +45,58 @@ python .gpt/tools/gpt_issue_preflight.py \
   --body-file /tmp/issue-body.txt
 ```
 
-`path` は必須です。`request_id` を明示する場合は許可文字を満たす一意な値とし、retryでは新しい値を使用します。
+retryではfailed stepを確認し、必要なら新しい `request_id` を使います。
 
-## Actionsの処理
+## Actions processing
 
-1. 最新 `main` をcheckout
-2. 対象パスを検証
-3. 対象ファイルの存在を確認
-4. SHA-256・サイズ・source commitを記録
-5. 元ファイルと `manifest.json` をartifactへ格納
-6. 成功コメントへ `run_id` / `artifact_name` / SHA-256等を返す
-7. 成功時にIssueをClose
-8. 成否コメントの先頭で `@yukki0113` を一度だけメンション
+1. latest `main` checkout
+2. path / security validation
+3. file existence確認
+4. source commit / size / SHA-256記録
+5. 元ファイル + `manifest.json` をartifact化
+6. `GIT_BINARY_READ_RESULT` へ `run_id` / `artifact_name` / SHA等を返却
+7. 成功時Issue close
 
-artifact保持期間は7日です。
+artifactは搬送用の一時物であり、GitHub正本そのものではありません。
 
-## Chat / Work側の回収手順
+## Chat / Work recovery
 
-成功コメントの `GIT_BINARY_READ_RESULT` から `run_id` と `artifact_name` を取得します。
+1. RESULTの `status=success` を確認
+2. `run_id` / `artifact_name` を完全一致で取得
+3. workflow artifact一覧から実在確認
+4. artifact ZIP取得・展開
+5. manifestと実ファイルのsize / SHA-256照合
+6. ファイル形式に応じて解析
 
-その後、GitHub Connectorで
+upstream情報を推測して下流処理を開始しません。
 
-1. 対象workflow runのartifact一覧を取得
-2. `artifact_name` が一致するartifactを特定
-3. artifact ZIPをダウンロード
-4. ZIP内の元ファイルを実行環境へ展開
-5. `manifest.json` のSHA-256と実ファイルのSHA-256を照合
-6. ファイル形式に応じたツールで解析
+## Security boundary
 
-まで行います。
-
-## セキュリティ境界
-
-この経路はリポジトリ全体を原則読み取り対象としますが、以下は拒否します。
+少なくとも以下は拒否対象です。
 
 - `.git/`
 - `.env`
 - `jrdb_secret.py`
-- パス名に `secret` / `credential` / `password` を含むもの
+- path名に `secret` / `credential` / `password` を含むもの
 - `.pem` / `.key` / `.p12` / `.pfx`
-- 絶対パス、`../` を含む危険なパス
+- 絶対パス / `../`
 
-GitHub公開リポジトリに置くべきでない情報は、そもそもこの経路の対象にしないでください。
+## CLI wrapper
 
-## 使い分け
+`.gpt/tools/gpt_git_binary_tool.py read` は、このIssue / Actions手順を包む互換CLIです。
+
+このCLIも内部でIssue / Actionsを使用するため、**現在の環境で直接バイナリ取得できる場合はそちらを優先**します。詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
+
+## Positioning
 
 ```text
-通常テキストを読む
-  → GitHub Connectorで直接取得
+GitHub text read
+  -> A. direct read / fetch
 
-通常テキストを更新
-  → [gpt-git-update]
+GitHub binary read
+  -> direct read / download / materializeが可能なら直接
+  -> 不可能な場合のみ [gpt-git-binary-read]
 
-Git管理バイナリをGitHubへ更新
-  → gpt_git_binary_tool.py update
-     または [gpt-git-binary-update]
-
-GitHub正本のバイナリをChat / Workへ取得
-  → gpt_git_binary_tool.py read
-     または [gpt-git-binary-read]
-
-外部ストレージ正本
-  → プロジェクト定義の外部正本へ直接アクセス
+external source of truth
+  -> project定義の外部正本へ直接
 ```
-
-このreadback経路はGitHub正本を変更しません。Actions artifactは一時的な搬送物です。正本の所在は各プロジェクトのREADME / `.gpt/WORKFLOW.md` に従います。

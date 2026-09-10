@@ -1,27 +1,46 @@
-# GPT Git Update Issue protocol
+# GPT Git Update Issue protocol — Compatibility Fallback
 
-GitHubへ直接commit/pushできないChatGPT / Work環境から、GitHub Issueを経由してリポジトリの更新をmainへ反映するための共通経路です。
+この文書は、`[gpt-git-update]` Issue / Actions経路の**互換・非常時フォールバック仕様**です。
+2026-09-10以降、通常のsource / test / docs / config / workflow等のUTF-8テキスト変更では、この経路を標準としません。
 
-## 基本方針
+上位方針は `.gpt/GITHUB_OPERATION_POLICY.md` を参照してください。
 
-この経路は、特定プロジェクトだけを許可する allowlist 方式ではありません。
+## 標準経路
 
-- リポジトリ配下は原則として更新可能
-- 新規プロジェクト追加時にWorkflowの許可パスを変更する必要はない
-- 業務上の配置ルールやGit管理対象は、各README / `.gpt/WORKFLOW.md` / `.gitignore` を正本とする
-- Actions側では、事故や権限拡大につながる最低限のセキュリティ境界だけを強制する
+通常テキスト変更は次を標準とします。
+
+```text
+latest main確認
+-> path存在確認
+-> 現在内容 / blob SHA確認
+-> 必要差分
+-> GitHub direct create / update / delete
+-> remote commit確認
+```
+
+GitHub APIによるdirect write成功時点でremote branchへcommit済みです。別途 `git push` は不要です。
+
+## このIssue経路を使う場合
+
+次のような例外時に限ります。
+
+- 現在のChat / Work環境でdirect GitHub text writeが利用できない
+- ユーザーに手動pushを依頼する前に、既存Actions互換経路を利用する必要がある
+- 既存運用の再現・監査・保守のため、明示的にこのprotocolを使う
+
+「GitHubにmoduleがある」「以前この経路を使っていた」という理由だけでは選びません。
 
 ## Trigger
 
-Issue title must start with:
+Issue title:
 
 ```text
-[gpt-git-update]
+[gpt-git-update] <description>
 ```
 
-Issue author must be `yukki0113`.
+Issue authorは `yukki0113` である必要があります。
 
-## Body format
+## Body
 
 ```markdown
 commit_message: fix: describe the change
@@ -34,11 +53,9 @@ commit_message: fix: describe the change
 ```
 ```
 
-## Preflight before Issue creation
+## Preflight
 
-Issueを作成する前に `.gpt/ISSUE_REQUEST_CONTRACTS.md` の共通preflight / retry規約を適用します。
-
-可能な環境では以下を実行し、成功してからIssueを作成してください。
+このフォールバックを使う場合も `.gpt/ISSUE_REQUEST_CONTRACTS.md` を適用します。
 
 ```bash
 python .gpt/tools/gpt_issue_preflight.py \
@@ -47,63 +64,65 @@ python .gpt/tools/gpt_issue_preflight.py \
   --repo-root .
 ```
 
-`--repo-root` は最新 `main` をcheckout / pull済みのworking treeを指定します。これによりIssue作成前に `git apply --check` を行い、壊れたdiffやstale patchをActionsへ送るのを防ぎます。
+必須ルール:
 
-patch failure後は旧patchを継ぎ足し修正せず、最新 `main` を再取得してpatchを再生成してください。
+1. latest `main` からpatchを生成する。
+2. diff hunk行数を手作業で推測・編集しない。
+3. `git apply --check` が可能ならIssue作成前に通す。
+4. patch failure後は旧patchを継ぎ足さず、latest mainから再生成する。
+5. failed step未確認のblind rerunをしない。
 
-## Repository scope
+## Repository scope / security
 
-原則として、リポジトリ内の通常ファイルはこの経路から更新可能です。
+この経路は特定プロジェクトallowlistを持たず、原則リポジトリ全体を対象とします。ただしActions側では最低限の保護境界を維持します。
 
-新しいプロジェクトやディレクトリを追加しても、共通Workflow側の許可リスト更新は不要です。
+代表例:
 
-## Protected paths / rejected credential files
-
-Issue経路では、以下を保護対象とします。
-
-- `.github/workflows/` — Workflow自身の自己改変を防ぐため
-- `.git/` — Git内部メタデータ
+- `.github/workflows/` — Issue Workflow自身の自己改変防止
+- `.git/`
 - `.env`
 - `jrdb_secret.py`
-- ファイル名に `secret` / `credential` / `password` を含むもの
-- 秘密鍵・証明書系拡張子 `.pem` / `.key` / `.p12` / `.pfx`
-- 絶対パスや `..` を含む危険なパス
+- path名に `secret` / `credential` / `password` を含むもの
+- `.pem` / `.key` / `.p12` / `.pfx`
+- 絶対パス / `..`
 
-これら以外は、拡張子だけを理由に一律拒否しません。
+**注意:** direct Git Changeの許可範囲と、この互換Issue workflowの保護範囲は同一とは限りません。workflow等の通常テキスト変更はB経路のdirect GitHub writeを優先します。
 
-## Excel / SQLite / ZIP等の扱い
+## Binary
 
-`.xlsx`、`.xls`、`.sqlite`、`.db`、`.zip` 等は、このWorkflowのセキュリティ制約としては一律禁止しません。
+このprotocolはunified diffを適用するテキスト経路です。`.xlsx` / `.sqlite` / `.db` / `.zip` 等のバイナリは搬送できません。
 
-Gitで管理すべきかどうかは、ファイルの役割・保存先・各プロジェクトの運用ルール・`.gitignore` に従います。
+GitHub正本バイナリを直接扱えない場合だけ、以下の互換経路を参照します。
 
-ただし、この `[gpt-git-update]` 経路自体は Issue本文の unified diff を `git apply` するテキスト更新方式です。
-そのため、Excel等のバイナリファイルは「Git管理可能」であっても、このdiff方式では転送できません。
+- `.gpt/GIT_BINARY_READ_ISSUE.md`
+- `.gpt/GIT_BINARY_UPDATE_ISSUE.md`
 
-バイナリファイルは、実装済みの `[gpt-git-binary-update]` 経路を使用してください。
-詳細は `.gpt/GIT_BINARY_UPDATE_ISSUE.md` を参照してください。
+外部ストレージが正本と定義されているファイルは、各プロジェクト文書に従って外部正本へ直接アクセスします。
 
-## Processing
+## Actions processing
 
 1. Checkout latest `main`.
-2. Parse the Issue body.
-3. Validate patch paths against the protected-path rules.
-4. Run `git apply --check`.
-5. Apply the patch.
-6. Run `git diff --check`.
-7. Run `py_compile` for changed Python files.
-8. Commit with the requested commit message.
-9. Rebase onto the latest `origin/main`.
-10. Push to `main`.
-11. Comment the resulting commit SHA and close the Issue.
+2. Parse Issue body.
+3. Validate patch paths.
+4. `git apply --check`.
+5. Apply patch.
+6. `git diff --check`.
+7. changed Pythonの `py_compile`.
+8. Commit.
+9. latest `origin/main` へrebase.
+10. Push `main`.
+11. commit SHAをコメントし成功時Close.
 
-If any step fails, nothing is pushed and the Issue remains open with a link to the failed Actions run.
+失敗時はpushせず、failed runを診断してからrequestを再構築します。
 
-## GPT / Work rule
+## Positioning
 
-When direct GitHub commit/push is unavailable, do not ask the user to manually push ordinary source/documentation changes.
-Create a `[gpt-git-update]` Issue using this protocol and use the Issue/Actions route instead.
+```text
+通常テキスト変更
+  -> B. Git Change / direct GitHub write
 
-変更対象にバイナリファイルが含まれる場合は `.gpt/GIT_BINARY_UPDATE_ISSUE.md` の経路へ切り替えてください。
+[gpt-git-update]
+  -> direct writeが使えない場合の互換フォールバック
+```
 
-古いローカルcommitをそのままpushするのではなく、最新mainを基準として未反映差分を作成してください。
+新規プロジェクト・新規スレッドは、このIssue protocolを標準経路として採用しないでください。

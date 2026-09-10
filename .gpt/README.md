@@ -2,81 +2,137 @@
 
 このリポジトリをGPT / Workから扱う際の共通入口です。
 
-1. 対象プロジェクトを特定する。
-2. そのプロジェクトの `README.md`、`.gpt/CONTEXT.md`、`.gpt/WORKFLOW.md` を読む。
-3. Git上の内容をソース正本として扱う。
-4. 認証情報・有料原データ・大容量成果物をcommitしない。
-5. 改修後はテスト、差分確認、必要なREADME更新を行ってからcommitする。
-6. `legacy/` は明示的な依頼がない限り現行実装として使用しない。
+GitHubアクセス経路の上位正本は `.gpt/GITHUB_OPERATION_POLICY.md` です。2026-09-10以降、**Issue駆動を既定経路にしません**。
 
-## 共通Git搬送経路
+## 作業開始時の基本順序
 
-GPT / Workから通常のソース・Markdownを反映する際、直接`git push`が認証不可なら、必ず`[gpt-git-update]` Issueを作成する。最新main基準のunified diffと`commit_message`をIssue本文へ入れ、Actionsの検証・commit・push・Issue closeを確認する。ローカルcommitをそのままpushしない。バイナリはbinary update経路を使用する。
+1. `.gpt/GITHUB_OPERATION_POLICY.md` を確認する。
+2. 対象プロジェクトを特定する。
+3. 対象プロジェクトの `README.md`、`.gpt/CONTEXT.md`、`.gpt/WORKFLOW.md` を読む。
+4. 最新 `main` と実際の対象source / test / docs / workflowを確認する。
+5. A/B/C/Dのどの経路かを判定してから処理する。
+6. 改修後は差分、必要なtest、README / WORKFLOW整合性を確認する。
+7. `legacy/` は明示的な依頼がない限り現行実装として使用しない。
 
-- 通常テキストの更新: `.gpt/GIT_UPDATE_ISSUE.md` / `[gpt-git-update]`
-- バイナリの更新: `.gpt/GIT_BINARY_UPDATE_ISSUE.md` / `[gpt-git-binary-update]`
-- GitHub上のバイナリをChat / Workへ実ファイルとして取得: `.gpt/GIT_BINARY_READ_ISSUE.md` / `[gpt-git-binary-read]`
-- バイナリread/updateの1コマンド操作: `.gpt/GIT_BINARY_TOOL.md` / `.gpt/tools/gpt_git_binary_tool.py`
-- Issue作成前preflight / retry規約: `.gpt/ISSUE_REQUEST_CONTRACTS.md` / `.gpt/tools/gpt_issue_preflight.py`
-- Google Drive: connected native Google Drive tools / connectorを第一選択とする。Google native Docs/Sheets/Slidesもnative toolsで扱う。Actions Drive bridgeはdeferredであり、標準経路ではない（`tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`）。
+GitHub外を正本とするデータ・台帳・大容量成果物は、各プロジェクト文書の定義を優先します。上位共通文書では個別プロジェクトのfile IDやSpreadsheet IDを固定しません。
 
-認証済み `gh` CLIを実行できる環境では、バイナリread/updateは `.gpt/tools/gpt_git_binary_tool.py` を第一選択とし、Issue本文・Base64チャンク・artifact回収手順をGPTが手作業で組み立てない。
+## GitHub作業の4系統
 
-`gh` CLIを利用できないChat環境では、GitHub Connector + `[gpt-git-binary-read]` / `[gpt-git-binary-update]` をフォールバックとして使用する。
+### A. Read / Audit
 
-GitHub Connectorが `.xlsx` 等の中身を直接展開できない場合でも、GitHub `main` が正本として定義されているファイルについては、ユーザーへ再添付を依頼する前にバイナリread経路を使用する。
+repository / file / commit / issue / workflow / run、コード検索、差分、SHA、artifact metadata等の確認はGitHubから直接行います。
 
-各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGoogle Drive等の外部ストレージが正本と明示されている運用ファイルは、このGitバイナリ搬送ルールの対象外とする。外部正本を優先し、GitHubに残る旧コピーを最新と推定しない。
+```text
+Chat / Work -> GitHub read / search / fetch
+```
 
-現在、競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）とする。旧Google Drive Excel版およびGitHub上の `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットであり、正本として扱わない。
+**Issue不要です。**
 
-中央競馬Eval継続台帳は各プロジェクト側README / `.gpt/WORKFLOW.md` に定義された外部正本を優先する。
+### B. Git Change
 
-## Issue駆動Actionsのpreflight / retry必須ルール
+source / test / docs / config / workflow等のUTF-8テキスト変更は、原則GitHubへ直接remote commitします。
 
-Issue起点のActionsは、Issue作成前に検出できる失敗をrunnerへ送らないことを原則とします。詳細contractは `.gpt/ISSUE_REQUEST_CONTRACTS.md` を正本とします。
+```text
+latest main
+-> path存在確認
+-> 現在内容 / blob SHA確認
+-> 必要差分
+-> direct create / update / delete
+-> remote commit確認
+```
 
-Issue作成前に必ず以下を確認します。
+`create_file` / `update_file` / Git Data API等の成功時点でremote commit済みです。別途 `git push` は不要です。
 
-1. 最新 `main` と対象workflow / project workflow docsを確認する。
-2. title prefix、必須項目、値の型、upstream依存を確認する。
-3. chained workflowではupstreamの最終RESULTが `status=success` であることを確認する。
-4. `run_id` / `artifact_name` / `file_id` 等はRESULTから完全一致で転記し、推測しない。
-5. 可能な環境では `.gpt/tools/gpt_issue_preflight.py` を実行してからIssueを作る。
-6. `[gpt-git-update]` は最新mainからpatchを生成し、`git apply --check` が使える環境では必ず通す。
-7. retry時は旧request / patchをそのまま再実行せず、failed stepを確認して最新main基準でrequestを再構築する。
-8. request_idを持つprotocolではretryごとに新しいrequest_idを使用する。
-9. domain validation failureは盲目的にretryしない。異常を正しく検出したfailは維持する。
+**通常テキスト変更に `[gpt-git-update]` Issueを使いません。**
 
-共通preflight例:
+同一目的の複数ファイルを安全に1commitへまとめられるGit操作が利用可能なら、過度に細分化せず1commitを優先します。
+
+### C. Pure Deterministic Execution
+
+Secrets、Actions固有権限、artifact chain、長時間runner、immutable freeze、正式監査runを必要としない決定的処理は、GitHub正本moduleを取得してGPT側で実行します。
+
+対象例:
+
+- CSV / JSON整形・join・集計
+- scoring / metrics
+- SHA / schema / integrity確認
+- focused unit test / regression
+- 固定入力に対する変換・比較・監査
+
+可能なら `source_commit` / source・input・output SHA / module version / generated_at を残し、再現性を確保します。
+
+### D. Actions-Native Execution
+
+次のようにActions環境そのものが必要な場合だけIssue / Actionsを使用します。
+
+- GitHub Secretsが必要
+- 認証付き外部取得
+- Actions artifact chainが正式仕様
+- 長時間・大容量処理
+- runner環境そのものが仕様・検証対象
+- immutable freeze / publication / release
+- run ID / artifact / Actions履歴を正式監査証跡として固定する必要がある
+
+Dを選んだ場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を必ず適用します。
+
+## Issue駆動Actionsのpreflight / retry
+
+Issue作成前に最低限、次を確認します。
+
+1. latest `main`
+2. workflow request contract / parser
+3. 必須項目・型・accepted values
+4. upstream RESULTの `status=success`
+5. `run_id` / `artifact_name` / file ID等の実在と完全一致
+6. 必要SHA / dates / keys / freeze manifestの一致
+7. requestを機械的にserialize
+8. 全項目PASS後にIssueを1回だけ発行
+
+retryではfailed stepを確認し、旧requestをblind rerunしません。必要なら新しい `request_id` を使います。
+
+共通validator:
 
 ```bash
 python .gpt/tools/gpt_issue_preflight.py \
-  --title "[gpt-git-update] update docs" \
-  --body-file /tmp/issue-body.md \
-  --repo-root .
+  --title "[PREFIX] request" \
+  --body-file /tmp/issue-body.md
 ```
 
-project-specificなsimple `key: value` requestは `--protocol generic --required-key <name>` を繰り返して最低限の必須項目をIssue作成前に検証できます。
+`[gpt-git-update]` 等の互換フォールバックを使う場合も同じcontractを適用します。
+
+## 互換・フォールバック経路
+
+旧Issue/Actions経路は削除せず、直接経路が利用できない場合の互換手段として残します。
+
+- text update fallback: `.gpt/GIT_UPDATE_ISSUE.md`
+- binary read fallback: `.gpt/GIT_BINARY_READ_ISSUE.md`
+- binary update fallback: `.gpt/GIT_BINARY_UPDATE_ISSUE.md`
+- binary Issue wrapper CLI: `.gpt/GIT_BINARY_TOOL.md`
+
+これらを「GitHubにmoduleがあるから」という理由だけで選びません。
+
+GitHub正本バイナリは、まず現在のGitHub / connector /実行環境で直接取得・更新できるか確認し、直接扱えない場合だけbinary fallbackを使います。外部ストレージが正本なら外部正本へ直接アクセスします。
 
 ## run failedの分類
 
-run failureは一律に減らしません。少なくとも以下を区別します。
+run failureは一律に減らしません。
 
-- `REQUEST_INVALID`: Issue本文・必須項目・形式不正。preflightで削減対象。
-- `UPSTREAM_REF_INVALID`: upstream run/artifact/file参照不正。RESULT確認で削減対象。
-- `PATCH_INVALID_OR_STALE`: 壊れたdiff / stale patch。最新mainから再生成。
-- `DOMAIN_VALIDATION_FAILED`: データ異常を正しく検出したfail。fail-closedを維持。
-- `EXTERNAL_TRANSIENT`: 外部通信等。一時retry/backoff対象。
-- `IMPLEMENTATION_ERROR`: 実装・テスト不具合。コード修正対象。
-- `PERMISSION_ERROR`: GitHub App / token / environment権限不備。
-- `CONCURRENCY_CONFLICT`: push / rebase / 同時実行競合。
+- `REQUEST_INVALID`: request本文・必須項目・形式不正。preflightで削減
+- `UPSTREAM_REF_INVALID`: upstream run/artifact/file参照不正
+- `PATCH_INVALID_OR_STALE`: 互換patch経路の壊れた/stale diff
+- `DOMAIN_VALIDATION_FAILED`: データ異常を正しく検出したfail。fail-closed維持
+- `EXTERNAL_TRANSIENT`: 外部通信等。一時retry/backoff対象
+- `IMPLEMENTATION_ERROR`: 実装・test不具合
+- `PERMISSION_ERROR`: GitHub App / token / environment権限不備
+- `CONCURRENCY_CONFLICT`: push / rebase / 同時実行競合
 
-新規・改修workflowでは、可能ならfailure resultへ `failure_class` / `error_code` / `failed_step` / `retryable` を含め、後から機械集計できる形を優先します。
+新規・改修workflowでは、可能ならfailure resultに `failure_class` / `error_code` / `failed_step` / `retryable` を含めます。
 
-## GitHub Actions実行時間監査
+## 共通リファレンス
 
-- job時間 / Private化時のGitHub-hosted runner分数の監査: `.gpt/GITHUB_ACTIONS_JOB_AUDIT.md`
-- CLI: `.gpt/tools/github_actions_job_audit.py`
+- GitHub運用上位方針: `.gpt/GITHUB_OPERATION_POLICY.md`
+- Actions Issue preflight / retry: `.gpt/ISSUE_REQUEST_CONTRACTS.md`
+- GitHub Actions job時間監査: `.gpt/GITHUB_ACTIONS_JOB_AUDIT.md`
+- Google Drive標準経路: connected native Google Drive tools / connector。Actions Drive bridgeはdeferred（`tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`）
 
-月次確認は `python .gpt/tools/github_actions_job_audit.py --month YYYY-MM` を基本とする。
+個別プロジェクトの `.gpt/WORKFLOW.md` に旧「Issueを標準経路とする」記述が残る場合は、Actions-nativeである理由を棚卸しし、本上位方針へ順次寄せます。

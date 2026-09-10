@@ -2,9 +2,12 @@
 
 ## v0.1 routing status
 
-- **Git backend:** PRODUCTION / STANDARD.
+- **Git direct read/write:** PRODUCTION / STANDARD.
+- **Git Issue/Actions transport:** COMPATIBILITY FALLBACK.
 - **Google Drive native connector route:** PRODUCTION / STANDARD FOR CHATGPT-WORK.
 - **Google Drive Actions backend:** DEFERRED / NOT REAL-DRIVE E2E ACCEPTED.
+
+Repository-wide GitHub routing is defined by `.gpt/GITHUB_OPERATION_POLICY.md`. This bridge must not override the A/B/C/D routing decision.
 
 Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. The Actions backend remains in the repository as a future unattended-automation foundation; it is disabled unless repository variable `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` is exactly `true`.
 
@@ -12,24 +15,71 @@ Use connected native Google Drive tools for normal Drive operations. Google Docs
 
 See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` for the architecture decision and safety contract.
 
-## Publishing GPT changes to GitHub
+## GitHub routing
 
-For text/source changes, use the repository-level `[gpt-git-update]` Issue protocol in `.gpt/GIT_UPDATE_ISSUE.md` whenever direct push authentication is unavailable. Build the unified diff from latest `main`; the Action validates, commits and pushes it. Do not push an old local commit. Use `[gpt-git-binary-update]` for binary files.
+Before using any Issue bridge, classify the task:
 
-`python tools/gpt_io/gpt_io.py git read|update ...` is the unified binary entry point. The original `.gpt/tools/gpt_git_binary_tool.py` remains supported unchanged during migration.
+```text
+A. Read / Audit
+  -> GitHub direct read/search/fetch
 
-Before GPT / Work creates an Issue-driven Actions request, follow `.gpt/ISSUE_REQUEST_CONTRACTS.md`. The shared validator is:
+B. Git Change
+  -> UTF-8 source/test/docs/config/workflow via direct create/update/delete
+
+C. Pure Deterministic Execution
+  -> fetch canonical repo module and run locally when secrets/Actions-native evidence are unnecessary
+
+D. Actions-Native Execution
+  -> Issue -> Actions only when secrets, artifact chain, long runner work, immutable freeze, publication or formal run evidence are required
+```
+
+### Publishing GPT text changes to GitHub
+
+For ordinary UTF-8 text/source changes, **do not use `[gpt-git-update]` as the standard route**.
+
+Use:
+
+```text
+latest main
+-> target path / current content / blob SHA
+-> required change only
+-> direct GitHub create/update/delete
+-> remote commit verification
+```
+
+A successful GitHub direct write creates the remote commit; there is no additional local `git push` step.
+
+When multiple interdependent files belong to one logical change, prefer one Git Data API commit when the available Git operation can safely create it. Do not split work merely because an older Issue protocol handled one request at a time.
+
+`.gpt/GIT_UPDATE_ISSUE.md` remains as a compatibility fallback for an environment where direct text write is unavailable. It is not the default publication path.
+
+### Binary Git files
+
+For GitHub-managed binary files, first test whether the current GitHub / connector / Git environment can directly read or write the file. If direct transport is unavailable, the legacy binary route may be used as a fallback:
+
+- `.gpt/GIT_BINARY_READ_ISSUE.md`
+- `.gpt/GIT_BINARY_UPDATE_ISSUE.md`
+- `.gpt/GIT_BINARY_TOOL.md`
+
+`python tools/gpt_io/gpt_io.py git read|update ...` and `.gpt/tools/gpt_git_binary_tool.py` wrap the existing Issue/Actions binary transport. Because they internally create Issues / Actions runs, they are not an unconditional first choice under the 2026-09-10 policy.
+
+External source-of-truth files are never synchronized through Git binary tooling merely because an old Git copy exists. Project README / `.gpt/WORKFLOW.md` decides the source of truth.
+
+## Issue preflight
+
+Only after D. Actions-Native Execution or an explicit compatibility Issue fallback has been selected, follow `.gpt/ISSUE_REQUEST_CONTRACTS.md`.
+
+The shared validator is:
 
 ```bash
 python .gpt/tools/gpt_issue_preflight.py \
-  --title "[gpt-git-update] update docs" \
-  --body-file /tmp/issue-body.md \
-  --repo-root .
+  --title "[PREFIX] request" \
+  --body-file /tmp/issue-body.md
 ```
 
-The implementation lives at `tools/gpt_io/git/issue_preflight.py`. It validates the three common GPT-Git Issue protocols and supports project-specific simple key/value contracts with repeated `--required-key` options. In `[gpt-git-update]` mode, `--repo-root` enables `git apply --check` so malformed or stale patches can be rejected before an Actions run is created.
+The implementation lives at `tools/gpt_io/git/issue_preflight.py`. It validates the common legacy GPT-Git Issue protocols and supports project-specific simple key/value contracts with repeated `--required-key` options.
 
-The deferred Actions implementation retains request validation. Upload never overwrites; move, replace, and trash require a file ID; replace also requires `expected.file_id`.
+Do not create an Issue merely to run a preflight. The routing decision comes first.
 
 ## Google Drive backend
 
@@ -51,3 +101,7 @@ python tools/gpt_io/gpt_io.py gdrive download --request request.json
 ```
 
 `[gpt-gdrive-request]` is for the deferred Actions backend only, not the standard GPT/Work route. Large source bytes use a short-lived Actions artifact referenced by `source_artifact_run_id` and `source_artifact_name`; do not place large Base64 in an Issue and do not commit Drive data to Git.
+
+## Key rule
+
+The I/O bridge is transport infrastructure. It does not choose whether a task belongs in GitHub Actions. Always make the A/B/C/D decision first, then select the narrowest transport needed by that route.

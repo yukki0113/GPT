@@ -1,62 +1,51 @@
-# GPT Git Binary Update Issue protocol
+# GPT Git Binary Update Issue Protocol — Compatibility Fallback
 
-GitHubへ直接commit/pushできないChatGPT / Work環境から、`.xlsx` などテキストdiffでは運べないGit管理対象ファイルをIssue経由で`main`へ反映するための共通経路です。
+この文書は、Git管理対象の `.xlsx` / `.sqlite` / `.db` / `.zip` 等をIssue / Actions経由で `main` へ反映するための**互換フォールバック仕様**です。
 
-通常のテキストファイルは `.gpt/GIT_UPDATE_ISSUE.md` の `[gpt-git-update]` を使用してください。
+上位方針は `.gpt/GITHUB_OPERATION_POLICY.md` を参照してください。
 
-## External source-of-truth exception
+## 標準判断
 
-各プロジェクトのREADME / `.gpt/CONTEXT.md` / `.gpt/WORKFLOW.md` でGitHub外を正本と定義した運用ファイルは、このプロトコルで同期しません。
+まず対象ファイルの正本所在と現在の書き込み能力を確認します。
 
-競艇継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳`（Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`）です。Google Drive旧Excel版および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットであり、このプロトコルの更新対象として扱いません。
+- GitHub外が正本: 各プロジェクト定義の外部正本を更新
+- GitHub正本で直接安全に更新可能: direct Git経路を優先
+- GitHub正本だが直接binary writeが利用できない: このIssue / Actions経路をフォールバックとして使用
 
-## 推奨操作層
-
-認証済み `gh` CLIを実行できる環境では、Base64化、分割コメント、確定コメント、完了待ちを手作業で行わず、次の共通CLIを第一選択にします。
-
-```bash
-python .gpt/tools/gpt_git_binary_tool.py update \
-  --file "/tmp/example-ledger.xlsx" \
-  --path "example-project/ledger/example-ledger.xlsx" \
-  --message "chore: update example ledger"
-```
-
-詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
-
-`gh` CLIが利用できないChat環境では、以下のIssueプロトコルを直接使用します。
+通常のUTF-8テキスト変更にはこのprotocolを使いません。B. Git Changeのdirect create / update / deleteを使用します。
 
 ## Trigger
 
-Issue title must start with:
+Issue title:
 
 ```text
-[gpt-git-binary-update]
+[gpt-git-binary-update] <description>
 ```
 
-Issue author and payload comments must be `yukki0113`.
+Issue author / payload comment authorは `yukki0113` である必要があります。
 
-全チャンク登録後、次のコメントを投稿するとActionsが復元処理を開始します。
+全chunk登録後:
 
 ```text
 [gpt-git-binary-commit]
 ```
 
-## Issue body format
+を投稿すると復元処理を開始します。
+
+## Issue body
 
 ```text
-target_path: example-project/ledger/example.xlsx
-commit_message: chore: update example ledger
-sha256: <64 hex characters>
-size_bytes: <raw file byte count>
-chunks: <number of chunk comments>
+target_path: example-project/path/example.xlsx
+commit_message: chore: update example binary
+sha256: <64 hex>
+size_bytes: <raw byte count>
+chunks: <positive integer>
 encoding: base64
 ```
 
-`target_path` はリポジトリ相対パスです。
+## Preflight
 
-## Preflight before Issue creation
-
-手動でIssue / chunkを組み立てる場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` の共通preflight / retry規約を適用します。
+`.gpt/ISSUE_REQUEST_CONTRACTS.md` を適用します。
 
 ```bash
 python .gpt/tools/gpt_issue_preflight.py \
@@ -64,62 +53,63 @@ python .gpt/tools/gpt_issue_preflight.py \
   --body-file /tmp/issue-body.txt
 ```
 
-`target_path` / `commit_message` / `sha256` / `size_bytes` / `chunks` / `encoding` は全て必須です。SHA-256、size、chunk数はローカル実ファイルから算出し、推測しません。
+`target_path` / `commit_message` / `sha256` / `size_bytes` / `chunks` / `encoding` は必須です。SHA / size / chunk数は実ファイルから算出し、推測しません。
 
-認証済み `gh` CLI がある環境では、この手動preflightより `.gpt/tools/gpt_git_binary_tool.py update` を優先し、Issue / chunk自体をGPTが手組みしません。
-
-## Chunk comment format
-
-Base64文字列を複数コメントに分割して登録できます。
+## Chunk format
 
 ```text
 [gpt-git-binary-chunk 1/3]
 ```
 
-続けてコードブロック内へBase64文字列を登録し、`2/3`, `3/3` と続けます。チャンク番号の欠落・重複・総数不一致は拒否されます。
+に続けてBase64 payloadをコードブロックで登録します。chunk番号の欠落・重複・総数不一致は拒否します。
 
-1コメントあたりのBase64文字列は、GitHubのコメント上限に余裕を持たせるため、おおむね48,000文字以下を推奨します。
+1コメントのBase64文字列はGitHub上限に余裕を持たせ、おおむね48,000文字以下を推奨します。
 
 ## Verification
 
-Actionsはpush前に以下を検証します。
+Actionsはpush前に少なくとも次を検証します。
 
-1. Issue作成者・確定コメント作成者が `yukki0113` であること。
-2. `target_path` が安全なリポジトリ相対パスであること。
-3. `.github/workflows/`, `.git/`, secrets領域、認証情報・秘密鍵類でないこと。
-4. 全Base64チャンクが揃い、番号が一意であること。
-5. 復元後のバイト数が `size_bytes` と一致すること。
-6. 復元後のSHA-256が `sha256` と一致すること。
-7. `.xlsx` の場合、ZIP CRCと主要XLSXエントリ（`[Content_Types].xml`, `xl/workbook.xml`）が正常であること。
-8. 新規ファイルの場合、`.gitignore` により除外されていないこと。
+1. author
+2. repository-relative path / protected path
+3. 全chunkの完全性
+4. raw byte size
+5. SHA-256
+6. `.xlsx` のZIP CRC / workbook主要entry
+7. 新規ファイルの `.gitignore`
 
-既にGit追跡中のファイルは、`.gitignore` に該当していても更新可能です。
+既追跡ファイルは `.gitignore` 該当でも更新できる場合があります。
 
 ## Processing
 
-1. Checkout latest `main`.
-2. Issue bodyからメタ情報を取得。
-3. Issueコメントから全Base64チャンクを取得。
-4. チャンクを順番に結合し、バイナリを復元。
-5. サイズ・SHA-256・必要な形式検証を実施。
-6. 対象パスへ配置。
-7. `git add` / `git commit`。
-8. 最新`origin/main`へrebase。
-9. `main`へpush。
-10. Issueへパス・サイズ・SHA-256・commit SHAをコメントし、成功時Close。
+1. latest `main` checkout
+2. metadata parse
+3. chunk collect / Base64 restore
+4. size / SHA / format validation
+5. target pathへ配置
+6. commit
+7. latest `origin/main` へrebase
+8. push `main`
+9. path / SHA / commit SHAをRESULTへ記録
+10. success時close
 
-失敗時はpushせず、IssueをOpenのまま残します。
+failed step未確認で同じpayloadをblind rerunしません。
 
-## Scope policy
+## CLI wrapper
 
-この経路は特定プロジェクトのallowlistを持ちません。リポジトリ全体を原則対象とし、セキュリティ上保護すべき領域だけを拒否します。
+`.gpt/tools/gpt_git_binary_tool.py update` はこのIssue / Actions手順を自動化する互換CLIです。
 
-`.xlsx`, `.xls`, `.sqlite`, `.db`, `.zip` 等を拡張子だけで禁止しません。Gitで管理すべきかどうかは、各プロジェクトのREADME / `.gpt/WORKFLOW.md` / `.gitignore` の業務ルールに従います。
+CLI内部もIssue / Actionsを使うため、**現在の環境でdirect binary updateが可能ならdirect経路を優先**します。詳細は `.gpt/GIT_BINARY_TOOL.md` を参照してください。
 
-## GPT / Work rule
+## Positioning
 
-直接GitHubへcommit/pushできず、変更対象にGit管理バイナリファイルが含まれる場合、ユーザーへ手動pushを依頼する前にこの経路を使用してください。
+```text
+UTF-8 text change
+  -> B. direct GitHub write
 
-認証済み `gh` CLIを実行できる場合は `.gpt/tools/gpt_git_binary_tool.py update` を使い、GPTがBase64チャンクを手作業で組み立てないでください。
+GitHub-managed binary change
+  -> direct binary writeが可能なら直接
+  -> 不可能な場合のみ [gpt-git-binary-update]
 
-`gh` CLIが利用できない場合のみ、ファイルをBase64化し、SHA-256・バイト数を算出し、Issueとチャンクコメントを登録してから `[gpt-git-binary-commit]` を投稿してください。
+external source of truth
+  -> project定義の外部正本を更新
+```
