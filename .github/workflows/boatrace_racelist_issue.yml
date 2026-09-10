@@ -98,7 +98,7 @@ jobs:
               'output_dir': output_dir,
               'command': [
                   'python',
-                  'boat-racing/src/fetch_boatrace_racelist.py',
+                  'boat-racing/src/fetch_boatrace_racelist_with_meta.py',
                   '--config',
                   config_path,
               ],
@@ -174,17 +174,33 @@ jobs:
           if input_csv.exists():
               with input_csv.open('r', encoding='utf-8-sig', newline='') as file:
                   reader = csv.DictReader(file)
-                  column_count = len(reader.fieldnames or [])
+                  fieldnames = list(reader.fieldnames or [])
+                  column_count = len(fieldnames)
                   rows = list(reader)
               row_count = len(rows)
               expected_rows = len(venues) * 12 * 6
-              if column_count != 19:
-                  errors.append(f'input csv columns={column_count}, expected=19')
+              if column_count != 22:
+                  errors.append(f'input csv columns={column_count}, expected=22')
+              required_metadata = {'開催グレード', '開催名', 'レース名'}
+              missing_metadata_columns = sorted(required_metadata - set(fieldnames))
+              if missing_metadata_columns:
+                  errors.append('missing metadata columns: ' + ', '.join(missing_metadata_columns))
               if row_count != expected_rows:
                   errors.append(f'input csv rows={row_count}, expected={expected_rows}')
               keys = [(r.get('日付',''), r.get('会場',''), r.get('R',''), r.get('艇番','')) for r in rows]
               if len(keys) != len(set(keys)):
                   errors.append('duplicate 日付+会場+R+艇番')
+              for column in required_metadata:
+                  blank_count = sum(not str(r.get(column, '')).strip() for r in rows)
+                  if blank_count:
+                      errors.append(f'blank {column}: {blank_count} rows')
+              inconsistent_race_names = [
+                  f"{r.get('会場')} {r.get('R')}R"
+                  for r in rows
+                  if str(r.get('レース名', '')).strip() != str(r.get('レース種別', '')).strip()
+              ]
+              if inconsistent_race_names:
+                  errors.append('レース名/レース種別 mismatch: ' + ', '.join(inconsistent_race_names[:20]))
 
           success_count = 0
           status_count = 0
@@ -209,6 +225,7 @@ jobs:
               'success_races': success_count,
               'input_rows': row_count,
               'input_columns': column_count,
+              'metadata_columns': ['開催グレード', '開催名', 'レース名'],
               'errors': errors,
               'output_files': [p.name for p in sorted(out.iterdir()) if p.is_file()],
           }
