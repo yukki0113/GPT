@@ -1,4 +1,4 @@
-name: JRDB Newspaper Current Candidate
+name: JRDB Newspaper Current Publish
 
 on:
   push:
@@ -9,17 +9,20 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: "jrdb-newspaper-current-candidate"
+  group: "jrdb-newspaper-current-publish"
   cancel-in-progress: false
 
 env:
   REQUEST_PATH: horse-racing/jrdb/newspaper/publish/current.json
+  NEWSPAPER_RELEASE_TAG: jrdb-newspaper-current
+  NEWSPAPER_RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
+  NEWSPAPER_RELEASE_META: jrdb_newspaper_current_release.json
 
 jobs:
-  build-candidate:
+  publish-current:
     runs-on: ubuntu-latest
 
     steps:
@@ -224,3 +227,101 @@ jobs:
             .publish/candidate-audit.json
           if-no-files-found: error
           retention-days: 7
+
+      - name: Build release cache
+        run: |
+          set -euo pipefail
+
+          tar \
+            --sort=name \
+            --mtime='UTC 1970-01-01' \
+            --owner=0 \
+            --group=0 \
+            --numeric-owner \
+            -C .publish/current \
+            -cJf ".publish/${NEWSPAPER_RELEASE_ARCHIVE}" \
+            .
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          audit = json.loads(Path(".publish/candidate-audit.json").read_text(encoding="utf-8"))
+          archive = Path(".publish") / os.environ["NEWSPAPER_RELEASE_ARCHIVE"]
+          meta = {
+              "schema_version": "0.1",
+              "release_kind": "jrdb_newspaper_current_cache",
+              "date": audit["date"],
+              "revision": audit["revision"],
+              "race_count": audit["race_count"],
+              "request_commit": audit["request_commit"],
+              "source_commit": audit["source_commit"],
+              "source_filename": audit["source_filename"],
+              "source_size_bytes": audit["source_size_bytes"],
+              "source_sha256": audit["source_sha256"],
+              "manifest_sha256": audit["manifest_sha256"],
+              "archive_filename": archive.name,
+              "archive_size_bytes": archive.stat().st_size,
+              "archive_sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
+          }
+          Path(".publish", os.environ["NEWSPAPER_RELEASE_META"]).write_text(
+              json.dumps(meta, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Publish current release cache
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if ! gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$NEWSPAPER_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "JRDB Newspaper current" \
+              --notes "Mutable PWA distribution cache. Canonical day-package remains on Google Drive."
+          fi
+
+          gh release upload "$NEWSPAPER_RELEASE_TAG" \
+            ".publish/${NEWSPAPER_RELEASE_ARCHIVE}" \
+            ".publish/${NEWSPAPER_RELEASE_META}" \
+            .publish/candidate-audit.json \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Verify release cache
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf .release-check
+          mkdir -p .release-check
+
+          gh release download "$NEWSPAPER_RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "$NEWSPAPER_RELEASE_ARCHIVE" \
+            --pattern "$NEWSPAPER_RELEASE_META" \
+            --dir .release-check
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(".release-check")
+          meta = json.loads((root / os.environ["NEWSPAPER_RELEASE_META"]).read_text(encoding="utf-8"))
+          archive = root / os.environ["NEWSPAPER_RELEASE_ARCHIVE"]
+
+          if meta.get("release_kind") != "jrdb_newspaper_current_cache":
+              raise SystemExit("release_kind mismatch after release download")
+          if meta.get("archive_filename") != archive.name:
+              raise SystemExit("archive filename mismatch after release download")
+          if archive.stat().st_size != int(meta.get("archive_size_bytes") or -1):
+              raise SystemExit("archive size mismatch after release download")
+          if hashlib.sha256(archive.read_bytes()).hexdigest() != meta.get("archive_sha256"):
+              raise SystemExit("archive SHA-256 mismatch after release download")
+          PY

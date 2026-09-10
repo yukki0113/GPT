@@ -9,6 +9,13 @@ on:
       - ".github/workflows/jrdb_pwa_pages.yml"
       - ".github/workflows/jrdb_pwa_publish_data.yml"
       - ".github/workflows/jrdb_pwa_fact_lite_publish.yml"
+  workflow_run:
+    workflows:
+      - "JRDB Newspaper Current Publish"
+    types:
+      - completed
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -23,9 +30,13 @@ concurrency:
 env:
   DATA_RELEASE_TAG: jrdb-stats-mart-current
   FACT_RELEASE_TAG: jrdb-pwa-fact-lite-current
+  NEWSPAPER_RELEASE_TAG: jrdb-newspaper-current
+  NEWSPAPER_RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
+  NEWSPAPER_RELEASE_META: jrdb_newspaper_current_release.json
 
 jobs:
   deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -75,6 +86,90 @@ jobs:
             echo "Current Fact Lite release added to Pages artifact."
           else
             echo "No current Fact Lite release yet."
+          fi
+
+          if gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            rm -rf .newspaper-release
+            mkdir -p .newspaper-release
+
+            gh release download "$NEWSPAPER_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "$NEWSPAPER_RELEASE_ARCHIVE" \
+              --pattern "$NEWSPAPER_RELEASE_META" \
+              --dir .newspaper-release
+
+            python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import tarfile
+          from pathlib import Path, PurePosixPath
+
+          root = Path(".newspaper-release")
+          archive = root / os.environ["NEWSPAPER_RELEASE_ARCHIVE"]
+          meta_path = root / os.environ["NEWSPAPER_RELEASE_META"]
+          meta = json.loads(meta_path.read_text(encoding="utf-8"))
+
+          if meta.get("schema_version") != "0.1" or meta.get("release_kind") != "jrdb_newspaper_current_cache":
+              raise SystemExit("invalid Newspaper release metadata")
+          if meta.get("archive_filename") != archive.name:
+              raise SystemExit("Newspaper release archive filename mismatch")
+          if archive.stat().st_size != int(meta.get("archive_size_bytes") or -1):
+              raise SystemExit("Newspaper release archive size mismatch")
+          if hashlib.sha256(archive.read_bytes()).hexdigest() != meta.get("archive_sha256"):
+              raise SystemExit("Newspaper release archive SHA-256 mismatch")
+
+          extract = root / "current"
+          extract.mkdir()
+
+          with tarfile.open(archive, mode="r:xz") as handle:
+              members = handle.getmembers()
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts:
+                      raise SystemExit(f"unsafe Newspaper release member: {member.name}")
+                  if member.issym() or member.islnk():
+                      raise SystemExit(f"link member is not allowed: {member.name}")
+                  if not (member.isdir() or member.isfile()):
+                      raise SystemExit(f"special archive member is not allowed: {member.name}")
+              handle.extractall(extract, filter="data")
+
+          manifest_path = extract / "manifest.json"
+          if not manifest_path.is_file():
+              raise SystemExit("Newspaper release manifest missing")
+          manifest_bytes = manifest_path.read_bytes()
+          if hashlib.sha256(manifest_bytes).hexdigest() != meta.get("manifest_sha256"):
+              raise SystemExit("Newspaper release manifest SHA-256 mismatch")
+
+          manifest = json.loads(manifest_bytes.decode("utf-8"))
+          if manifest.get("date") != meta.get("date") or manifest.get("revision") != meta.get("revision"):
+              raise SystemExit("Newspaper release date/revision mismatch")
+
+          entries = manifest.get("races")
+          if not isinstance(entries, list) or len(entries) != int(meta.get("race_count") or -1):
+              raise SystemExit("Newspaper release race count mismatch")
+
+          for entry in entries:
+              relative = str(entry.get("path") or "")
+              path = PurePosixPath(relative)
+              if path.is_absolute() or ".." in path.parts or len(path.parts) != 2 or path.parts[0] != "races":
+                  raise SystemExit(f"unsafe Newspaper race path: {relative}")
+              race_path = extract / relative
+              if not race_path.is_file():
+                  raise SystemExit(f"Newspaper race file missing: {relative}")
+              data = race_path.read_bytes()
+              if hashlib.sha256(data).hexdigest() != str(entry.get("sha256") or ""):
+                  raise SystemExit(f"Newspaper race SHA mismatch: {relative}")
+              if len(data) != int(entry.get("size_bytes") or -1):
+                  raise SystemExit(f"Newspaper race size mismatch: {relative}")
+          PY
+
+            rm -rf .pages/data/newspaper/current
+            mkdir -p .pages/data/newspaper
+            cp -a .newspaper-release/current .pages/data/newspaper/current
+            echo "Current Newspaper release added to Pages artifact."
+          else
+            echo "No current Newspaper release yet."
           fi
 
       - name: Upload Pages artifact
