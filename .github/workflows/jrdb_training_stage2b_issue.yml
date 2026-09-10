@@ -1,0 +1,197 @@
+name: JRDB Training Pattern Stage2b via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_TRAINING_STAGE2B]'
+  FROZEN_SOURCE_SHA: '58797eddbe5d04d55a7de83d8f8473a4fd7c06cb'
+  DEVELOPMENT_LITE_DRIVE_ID: '1RGRVoUI3utSC3r8Zf5Gk3i9Voq7JZqmj'
+
+jobs:
+  stage2b:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_STAGE2B]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import os,re
+          from pathlib import Path
+          prefix=os.environ['REQUEST_PREFIX']
+          request_id=os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}',request_id):
+              raise SystemExit('invalid request id')
+          Path('/tmp/request_id').write_text(request_id,encoding='utf-8')
+          with Path(os.environ['GITHUB_OUTPUT']).open('a',encoding='utf-8') as handle:
+              handle.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Checkout frozen Stage2b source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.FROZEN_SOURCE_SHA }}
+          fetch-depth: 1
+
+      - name: Verify frozen protocol and source
+        run: |
+          test "$(git rev-parse HEAD)" = "$FROZEN_SOURCE_SHA"
+          grep -F 'Status: **FROZEN FOR DEVELOPMENT-PERIOD VALIDATION**' horse-racing/jrdb/docs/Training_Pattern_Stage2b_Protocol_20260911.md
+          python -m py_compile horse-racing/jrdb/src/analyze_jrdb_training_stage2b.py
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime dependencies
+        run: python -m pip install --disable-pip-version-check numpy pandas scipy scikit-learn gdown
+
+      - name: Fetch development Lite from Drive
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/stage2b/report
+          gdown "https://drive.google.com/uc?id=${DEVELOPMENT_LITE_DRIVE_ID}" -O /tmp/stage2b/development.zip \
+            > /tmp/stage2b/report/fetch_stdout.log 2> /tmp/stage2b/report/fetch_stderr.log
+          code=$?
+          if [ "$code" = 0 ]; then
+            python - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          archive=Path('/tmp/stage2b/development.zip')
+          h=hashlib.sha256()
+          with archive.open('rb') as handle:
+              for block in iter(lambda:handle.read(1024*1024),b''):
+                  h.update(block)
+          with zipfile.ZipFile(archive) as zf:
+              bad=zf.testzip()
+              members=[name for name in zf.namelist() if name.lower().endswith('.sqlite')]
+              if bad is not None:
+                  raise SystemExit(f'bad zip member: {bad}')
+              if len(members)!=1:
+                  raise SystemExit(f'expected one sqlite member, got {members}')
+              zf.extract(members[0],'/tmp/stage2b')
+              Path('/tmp/stage2b/sqlite_path').write_text('/tmp/stage2b/'+members[0],encoding='utf-8')
+          info={'file_size_bytes':archive.stat().st_size,'sha256':h.hexdigest(),'sqlite_member':members[0]}
+          Path('/tmp/stage2b/report/source_transport.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
+          PY
+            code=$?
+          fi
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit development SQLite
+        id: audit
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.fetch.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          python - <<'PY' > /tmp/stage2b/report/sqlite_audit_stdout.log 2> /tmp/stage2b/report/sqlite_audit_stderr.log
+          import json,sqlite3
+          from pathlib import Path
+          path=Path('/tmp/stage2b/sqlite_path').read_text(encoding='utf-8').strip()
+          con=sqlite3.connect(f'file:{path}?mode=ro',uri=True)
+          integrity=con.execute('PRAGMA integrity_check').fetchone()[0]
+          row_count=con.execute('SELECT COUNT(*) FROM training_runner').fetchone()[0]
+          min_year,max_year=con.execute('SELECT MIN(year),MAX(year) FROM training_runner').fetchone()
+          holdout_count=con.execute('SELECT COUNT(*) FROM training_runner WHERE year>=2024').fetchone()[0]
+          duplicate_count=con.execute('SELECT COUNT(*) FROM (SELECT race_key,horse_no,COUNT(*) n FROM training_runner GROUP BY race_key,horse_no HAVING n>1)').fetchone()[0]
+          con.close()
+          result={'integrity':integrity,'row_count':row_count,'min_year':min_year,'max_year':max_year,'holdout_rows':holdout_count,'duplicate_business_keys':duplicate_count}
+          Path('/tmp/stage2b/report/sqlite_audit.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+          print(json.dumps(result))
+          if integrity!='ok' or row_count!=686096 or min_year!=2010 or max_year!=2023 or holdout_count!=0 or duplicate_count!=0:
+              raise SystemExit(2)
+          PY
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Run frozen Stage2b analysis
+        id: analyze
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.audit.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          DB_PATH="$(cat /tmp/stage2b/sqlite_path)"
+          python horse-racing/jrdb/src/analyze_jrdb_training_stage2b.py \
+            --db "$DB_PATH" \
+            --out-json /tmp/stage2b/report/training_pattern_stage2b_result.json \
+            --out-md /tmp/stage2b/report/Training_Pattern_Stage2b_Result_20260911.md \
+            > /tmp/stage2b/report/analyze_stdout.log \
+            2> /tmp/stage2b/report/analyze_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build compact result
+        if: always()
+        env:
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          AUDIT_EXIT: ${{ steps.audit.outputs.exit_code }}
+          ANALYZE_EXIT: ${{ steps.analyze.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          report_path=Path('/tmp/stage2b/report/training_pattern_stage2b_result.json')
+          report=json.loads(report_path.read_text(encoding='utf-8')) if report_path.is_file() else {}
+          exits={'FETCH':os.environ.get('FETCH_EXIT',''),'AUDIT':os.environ.get('AUDIT_EXIT',''),'ANALYZE':os.environ.get('ANALYZE_EXIT','')}
+          status='success' if all(value=='0' for value in exits.values()) and report.get('status')=='success' else 'failure'
+          compact={'status':status,'run_id':int(os.environ['RUN_ID']),'frozen_source_sha':os.environ['FROZEN_SOURCE_SHA'],'exits':exits}
+          if report:
+              compact['population']=report.get('population',{})
+              compact['holdout_guard']=report.get('holdout_guard',{})
+              compact['incremental_decision']=report.get('incremental_decision',{})
+              compact['pooled_metrics']=report.get('metrics',{}).get('pooled',{})
+          text=json.dumps(compact,ensure_ascii=False,indent=2)
+          Path('/tmp/stage2b/report/workflow_result.json').write_text(text,encoding='utf-8')
+          Path('/tmp/comment.md').write_text('JRDB_TRAINING_STAGE2B_RESULT\n```json\n'+text+'\n```\n',encoding='utf-8')
+          PY
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-training-stage2b-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/stage2b/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close successful request
+        if: >-
+          always() &&
+          steps.fetch.outputs.exit_code == '0' &&
+          steps.audit.outputs.exit_code == '0' &&
+          steps.analyze.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Fail workflow when a gate failed
+        if: >-
+          always() &&
+          (steps.fetch.outputs.exit_code != '0' ||
+           steps.audit.outputs.exit_code != '0' ||
+           steps.analyze.outputs.exit_code != '0')
+        run: exit 1
