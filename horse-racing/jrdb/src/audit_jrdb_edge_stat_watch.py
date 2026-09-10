@@ -4,6 +4,10 @@
 This module is audit-only. It reproduces the existing q-value and directional
 CI pass conditions but never changes Registry status or validation thresholds.
 It accepts both legacy final WATCH and v0.2 final REJECTED mappings.
+
+Important: the production guard performs a q-value prepass. Candidates that do
+not clear that prepass are finalized without running the bootstrap, so missing
+CI values for those records mean NOT EVALUATED, not CI failure.
 """
 from __future__ import annotations
 
@@ -14,7 +18,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Mapping
 
-VERSION = "0.2.1"
+VERSION = "0.3.0"
 ACTIVE_Q = 0.05
 PROVISIONAL_Q = 0.10
 
@@ -42,6 +46,9 @@ def classify_channel(
         return "MISSING_Q"
     threshold = ACTIVE_Q if temporal_status == "ACTIVE" else PROVISIONAL_Q
     q_pass = float(q_value) <= threshold
+    ci_available = ci_low is not None and ci_high is not None
+    if not ci_available:
+        return "Q_PASS_CI_NOT_EVALUATED" if q_pass else "FDR_FAIL_CI_NOT_EVALUATED"
     ci_pass = _ci_pass(direction, ci_low, ci_high)
     if q_pass and ci_pass:
         return "PASS"
@@ -58,10 +65,14 @@ def classify_record(performance_reason: str, value_reason: str) -> str:
         return "NO_NON_NEUTRAL_SIGNAL"
     if "MISSING_Q" in reasons:
         return "MISSING_Q_PRESENT"
+    if "Q_PASS_CI_NOT_EVALUATED" in reasons:
+        return "Q_PASS_CI_NOT_EVALUATED_PRESENT"
     if "CI_FAIL_ONLY" in reasons:
         return "Q_PASS_BUT_CI_FAIL_PRESENT"
     if "FDR_FAIL_ONLY" in reasons:
         return "CI_PASS_BUT_FDR_FAIL_PRESENT"
+    if reasons and all(x == "FDR_FAIL_CI_NOT_EVALUATED" for x in reasons):
+        return "ALL_SIGNAL_FDR_FAIL_CI_NOT_EVALUATED"
     if reasons and all(x == "FDR_AND_CI_FAIL" for x in reasons):
         return "ALL_SIGNAL_FDR_AND_CI_FAIL"
     return "OTHER_COMBINATION"
@@ -84,7 +95,8 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
                    g.temporal_status, g.statistical_status,
                    g.performance_q_value, g.value_q_value,
                    g.performance_ci_low, g.performance_ci_high,
-                   g.value_ci_low, g.value_ci_high
+                   g.value_ci_low, g.value_ci_high,
+                   g.bootstrap_samples
             FROM edge_definition AS d
             JOIN edge_statistical_guard AS g ON g.edge_id=d.edge_id
             WHERE d.status IN ('WATCH','REJECTED')
@@ -101,6 +113,7 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
         family: dict[str, Counter[str]] = defaultdict(Counter)
         template: dict[str, Counter[str]] = defaultdict(Counter)
         final_status: Counter[str] = Counter()
+        bootstrap_samples: Counter[str] = Counter()
 
         for row in rows:
             temporal_status = str(row["temporal_status"])
@@ -120,6 +133,7 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
             family[str(row["family"])][reason] += 1
             template[str(row["template_id"] or "UNKNOWN_TEMPLATE")][reason] += 1
             final_status[str(row["final_status"])] += 1
+            bootstrap_samples[str(int(row["bootstrap_samples"] or 0))] += 1
 
         count = len(rows)
         return {
@@ -129,6 +143,7 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
             "statistical_reject_count": count,
             "statistical_watch_count": count,
             "final_status_counts": dict(sorted(final_status.items())),
+            "bootstrap_sample_counts": dict(sorted(bootstrap_samples.items(), key=lambda kv: int(kv[0]))),
             "reason_counts": dict(sorted(overall.items())),
             "performance_channel_counts": dict(sorted(performance.items())),
             "value_channel_counts": dict(sorted(value.items())),
@@ -147,21 +162,25 @@ def write_markdown(report: Mapping[str, Any], path: str | Path) -> None:
         f"- Integrity: `{report['integrity_check']}`",
         f"- Statistical rejects: {report['statistical_reject_count']}",
         f"- Final status: `{json.dumps(report['final_status_counts'], ensure_ascii=False, sort_keys=True)}`",
+        f"- Bootstrap samples: `{json.dumps(report['bootstrap_sample_counts'], ensure_ascii=False, sort_keys=True)}`",
         f"- Reasons: `{json.dumps(report['reason_counts'], ensure_ascii=False, sort_keys=True)}`",
         f"- Performance channel: `{json.dumps(report['performance_channel_counts'], ensure_ascii=False, sort_keys=True)}`",
         f"- Value channel: `{json.dumps(report['value_channel_counts'], ensure_ascii=False, sort_keys=True)}`",
         "",
+        "> `FDR_FAIL_CI_NOT_EVALUATED` means the q-value prepass failed and the production guard intentionally skipped bootstrap CI. It must not be described as a CI failure.",
+        "",
         "## Family",
         "",
-        "| Family | Both FDR+CI fail | q pass / CI fail | CI pass / FDR fail | Other |",
-        "|---|---:|---:|---:|---:|",
+        "| Family | FDR fail / CI not evaluated | q pass / CI fail | CI pass / FDR fail | Both evaluated and fail | Other |",
+        "|---|---:|---:|---:|---:|---:|",
     ]
     for name, counts in report["family_reason_counts"].items():
-        a = counts.get("ALL_SIGNAL_FDR_AND_CI_FAIL", 0)
+        a = counts.get("ALL_SIGNAL_FDR_FAIL_CI_NOT_EVALUATED", 0)
         b = counts.get("Q_PASS_BUT_CI_FAIL_PRESENT", 0)
         c = counts.get("CI_PASS_BUT_FDR_FAIL_PRESENT", 0)
-        other = sum(counts.values()) - a - b - c
-        lines.append(f"| {name} | {a} | {b} | {c} | {other} |")
+        d = counts.get("ALL_SIGNAL_FDR_AND_CI_FAIL", 0)
+        other = sum(counts.values()) - a - b - c - d
+        lines.append(f"| {name} | {a} | {b} | {c} | {d} | {other} |")
     Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
