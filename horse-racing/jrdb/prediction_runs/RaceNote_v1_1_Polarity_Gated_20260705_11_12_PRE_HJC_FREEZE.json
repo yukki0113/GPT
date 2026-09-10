@@ -1,0 +1,158 @@
+{
+  "audit": {
+    "by_day": {
+      "20260705": {
+        "axis_changed": 5,
+        "base_negative": 2,
+        "base_neutral": 21,
+        "base_positive": 13,
+        "confidence_A": 12,
+        "confidence_B": 21,
+        "confidence_C": 3,
+        "expired_edges_excluded": 0,
+        "races": 36,
+        "selected_negative": 2,
+        "selected_neutral": 16,
+        "selected_positive": 18,
+        "top5_with_any_edge": 116,
+        "value_shadow_changes": 0
+      },
+      "20260711": {
+        "axis_changed": 8,
+        "base_negative": 4,
+        "base_neutral": 16,
+        "base_positive": 16,
+        "confidence_A": 12,
+        "confidence_B": 18,
+        "confidence_C": 6,
+        "expired_edges_excluded": 0,
+        "races": 36,
+        "selected_negative": 3,
+        "selected_neutral": 10,
+        "selected_positive": 23,
+        "top5_with_any_edge": 118,
+        "value_shadow_changes": 1
+      },
+      "20260712": {
+        "axis_changed": 5,
+        "base_negative": 4,
+        "base_neutral": 14,
+        "base_positive": 18,
+        "confidence_A": 6,
+        "confidence_B": 21,
+        "confidence_C": 9,
+        "expired_edges_excluded": 0,
+        "races": 36,
+        "selected_negative": 4,
+        "selected_neutral": 9,
+        "selected_positive": 23,
+        "top5_with_any_edge": 128,
+        "value_shadow_changes": 0
+      }
+    },
+    "overall": {
+      "axis_changed": 18,
+      "base_negative": 10,
+      "base_neutral": 51,
+      "base_positive": 47,
+      "confidence_A": 30,
+      "confidence_B": 60,
+      "confidence_C": 18,
+      "expired_edges_excluded": 0,
+      "races": 108,
+      "selected_negative": 9,
+      "selected_neutral": 35,
+      "selected_positive": 64,
+      "top5_with_any_edge": 362,
+      "value_shadow_changes": 1
+    }
+  },
+  "control_version": "v0.2-reconstructed-20260909-a",
+  "dates": [
+    "20260705",
+    "20260711",
+    "20260712"
+  ],
+  "freeze_stage": "PRE_HJC",
+  "head_sha": "e0688cd19e9e74340ed3a7b4db7b88da313d9d93",
+  "leakage_guard": {
+    "allowed": [
+      "pre-race PACI",
+      "as-of-exclusive RaceNote history",
+      "fixed ACTIVE Edge Registry/matches"
+    ],
+    "forbidden_and_not_read": [
+      "HJC",
+      "SED",
+      "finish",
+      "payout",
+      "final odds",
+      "final popularity",
+      "later-dated history"
+    ]
+  },
+  "outputs": {
+    "combined_canonical_payload_sha256": "8dec27b88774524302379be8266a2318bbb2827a1ef251bfd94731d2f9528c44",
+    "days": {
+      "20260705": {
+        "canonical_payload_sha256": "ed079175fe66827ed1a92d2dbfc756493942576c855bda84ccd5182e5432d8b7",
+        "file": "RaceNote_v1_1_Polarity_Gated_20260705_PRE_HJC.json",
+        "races": 36,
+        "sha256": "26b4013b5e7bf1bc258017ca2c282e47abe2db091e2b4b94712ae59a64ad9422"
+      },
+      "20260711": {
+        "canonical_payload_sha256": "01bb466b83f01056a4dccb05eabfd721760d74f67a2c95ff9a8373649c9c5dcb",
+        "file": "RaceNote_v1_1_Polarity_Gated_20260711_PRE_HJC.json",
+        "races": 36,
+        "sha256": "7f5018c92924961b9dadf9277136ef8846611af98aa3aa3d04568ee7cdc09032"
+      },
+      "20260712": {
+        "canonical_payload_sha256": "f5c0f68aa9e09f244903bccb7fb05ddf9d16fcb61a8d5bbbdada37a6142cd5db",
+        "file": "RaceNote_v1_1_Polarity_Gated_20260712_PRE_HJC.json",
+        "races": 36,
+        "sha256": "4b3dd48d37211fe7fd29e2f0d6791d0fa2e834a9703b18da6ad0512f6301e71c"
+      }
+    },
+    "race_count": 108
+  },
+  "policy_version": "1.1-P-gated-0.1",
+  "repeat_driver_version": "racenote-v11p-repeat-blind-freeze-driver-1.0",
+  "request_id": "racenote-v11p-repeat2-20260705-11-12-a",
+  "result_data_used": false,
+  "run_id": 34421860601,
+  "schema_version": "racenote-v11p-blind-freeze-1.0",
+  "source_hashes": {
+    "control_source_sha256": "6907fbb9079888b89aee025eb2665de1678b52c64349ab367cbed0f9d6efa84e",
+    "policy_source_sha256": "5cf829456e09ebd808ae386dc1e84402fa706277cda908a52f9cf6c4a0363134",
+    "repeat_driver_sha256": "0d4c6597b32dd8b0b775da149637922dc02579b69ae7759a99d3ba2d981b19f1",
+    "runner_sha256": "ddc5190a526ffcd69acc699ea4a5f18a1338ecec9aaa47a92db2645ff942560e"
+  },
+  "status": "success",
+  "upstream": {
+    "edge": {
+      "analysis_sha256": "25e9cb29f0d957f484d4f2daec7a8656a9a7ef0435dde09338f31c61be91457a",
+      "artifact_name": "jrdb-edge-preresult-v11p-repeat2-20260705-11-12-a-34421241979",
+      "head_sha": "93a76d0a8d5d8d3f1ae180056cbfcb80c1246b31",
+      "registry_sha256": "845d3e1078d2b0d98534c4bfb1a25a7b927f2b6d91b16f181b369a8a8bd64be4",
+      "result_data_used": false,
+      "run_id": 34421241979
+    },
+    "racenote": {
+      "20260705": {
+        "artifact_name": "racenote-v11p-repeat2-base-20260705-a-34420930894",
+        "inner_zip_sha256": "c7988d644dd0e899bdf68bedf463f33b31a21ee67f9c6382aef66e77dc495590",
+        "run_id": 34420930894
+      },
+      "20260711": {
+        "artifact_name": "racenote-v11p-repeat2-base-20260711-a-34420941190",
+        "inner_zip_sha256": "712e3a47afc0cbfa5bf966c7627763e4dd4a29906683cf63ac9e0a2d4af4c478",
+        "run_id": 34420941190
+      },
+      "20260712": {
+        "artifact_name": "racenote-v11p-repeat2-base-20260712-a-34420950164",
+        "inner_zip_sha256": "7af211a7d8bee9fedc2b11449f8833fd974a697609a0d8adadedca8d3fb065c6",
+        "run_id": 34420950164
+      }
+    }
+  }
+}
