@@ -2,8 +2,7 @@
 """BOAT RACE公式出走表CSVへ開催メタデータを付与する。
 
 公式日別レース一覧から会場ごとの開催名・開催グレードを取得し、既存の
-出走表CSVへ付与する。各Rページから取得済みの「レース種別」は互換性のため
-保持し、新設の「レース名」に同じ公式レースタイトルを保存する。
+出走表CSVへ付与する。各Rページから取得済みの「レース種別」はそのまま保持する。
 """
 from __future__ import annotations
 
@@ -16,7 +15,7 @@ from typing import Any
 
 from fetch_boatrace_event_meta import fetch_event_meta
 
-ADDED_COLUMNS = ["開催グレード", "開催名", "レース名"]
+ADDED_COLUMNS = ["開催グレード", "開催名"]
 INSERT_AFTER = "開催日目"
 
 
@@ -81,12 +80,11 @@ def enrich_csv(path: Path, event_map: dict[str, dict[str, str]]) -> None:
         metadata = event_map.get(venue)
         if metadata is None:
             raise MetadataEnrichmentError(f"{path.name}: {venue} の開催情報がありません")
-        race_name = str(row.get("レース種別", "")).strip()
-        if not race_name:
-            raise MetadataEnrichmentError(f"{path.name}: {venue} {row.get('R', '')}R のレース名が空欄です")
+        race_type = str(row.get("レース種別", "")).strip()
+        if not race_type:
+            raise MetadataEnrichmentError(f"{path.name}: {venue} {row.get('R', '')}R のレース種別が空欄です")
         row["開催グレード"] = metadata["開催グレード"]
         row["開催名"] = metadata["開催名"]
-        row["レース名"] = race_name
 
     temporary = path.with_name(path.name + ".metadata.tmp")
     try:
@@ -122,7 +120,7 @@ def enrich_from_config(config_path: str) -> list[Path]:
 
 def main() -> int:
     """CLIエントリーポイント。"""
-    parser = argparse.ArgumentParser(description="出走表CSVへ公式開催グレード・開催名・レース名を付与")
+    parser = argparse.ArgumentParser(description="出走表CSVへ公式開催グレード・開催名を付与")
     parser.add_argument("--config", required=True, help="出走表取得と同じ設定JSON")
     args = parser.parse_args()
     try:
