@@ -225,6 +225,7 @@ class Parser:
             "field_size": number_field(record, 95, 2),
             "course_code": raw_field(record, 97, 1),
             "meeting_area_code": raw_field(record, 98, 1),
+            "win5_leg_no": number_field(record, 177, 1),
         }
 
     def kyi(self, record: bytes) -> dict[str, Any]:
