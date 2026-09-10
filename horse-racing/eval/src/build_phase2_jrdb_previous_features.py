@@ -31,7 +31,7 @@ from jrdb_raw import (
 from racenote_jrdb import SURFACE, TRACK_CONDITION
 
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 ZERO_RESULT_KEY = "0" * 16
 
 OUTPUT_COLUMNS = (
@@ -252,7 +252,10 @@ def build_features(paci_path: Path) -> tuple[list[dict[str, object]], dict[str, 
 
                 surface_changed: int | None = None
                 if current_surface is not None and previous_surface is not None:
-                    surface_changed = 1 if current_surface != previous_surface else 0
+                    if current_surface != previous_surface:
+                        surface_changed = 1
+                    else:
+                        surface_changed = 0
 
                 row: dict[str, object] = {
                     "race_date": race["race_date"],
