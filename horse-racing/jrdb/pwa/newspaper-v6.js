@@ -53,13 +53,27 @@ function newspaperV6ApplyMarkLayout() {
       : newspaperV5IntrinsicValue(null, "jrdb_base");
     trainingCell.title = training.title || "JRDB追切";
 
+    const rnCell = row.querySelector(".mark-rn");
+    const rnAddon = horse.addons && horse.addons.racenote_prediction
+      ? horse.addons.racenote_prediction
+      : null;
+    const rnMark = text(rnAddon && rnAddon.mark, "");
+    const rnComment = text(rnAddon && rnAddon.horse_short_comment, "");
+    if (rnCell) {
+      if (rnMark && rnComment) {
+        rnCell.innerHTML = `<button type="button" class="newspaper-addon-link newspaper-racenote-button" data-horse-index="${index}" aria-label="${escapeHtml(text(horse.basic && horse.basic.horse_name, ""))}のRaceNote短評">${escapeHtml(rnMark)}</button>`;
+      } else {
+        rnCell.textContent = rnMark || newspaperV5IntrinsicValue(null, "racenote_prediction");
+      }
+    }
+
     const orderedCells = [
       row.querySelector(".mark-ability"),
       row.querySelector(".mark-my"),
       row.querySelector(".mark-eval"),
       trainingCell,
       row.querySelector(".mark-jrdb"),
-      row.querySelector(".mark-rn"),
+      rnCell,
       row.querySelector(".mark-iluka")
     ];
     const anchor = row.querySelector(".newspaper-history-cell") || row.querySelector(".newspaper-edge");
@@ -67,6 +81,30 @@ function newspaperV6ApplyMarkLayout() {
       if (cell && anchor) row.insertBefore(cell, anchor);
     }
   });
+
+  tableWrap.querySelectorAll(".newspaper-racenote-button").forEach(button => {
+    button.addEventListener("click", () => {
+      const horse = horses[Number(button.dataset.horseIndex)];
+      if (horse) newspaperV6ShowRaceNoteDetail(horse);
+    });
+  });
+}
+
+function newspaperV6ShowRaceNoteDetail(horse) {
+  const addon = horse && horse.addons ? horse.addons.racenote_prediction : null;
+  const name = text(horse && horse.basic && horse.basic.horse_name, "");
+  const mark = text(addon && addon.mark, "");
+  const rank = Number(addon && addon.prediction_rank);
+  const confidence = text(addon && addon.confidence, "");
+  const comment = text(addon && addon.horse_short_comment, "");
+  dialogTitle.textContent = `${name} / RaceNote${mark ? ` ${mark}` : ""}`;
+  const meta = [
+    Number.isFinite(rank) && rank > 0 ? `予想順位 ${rank}位` : "",
+    confidence ? `自信度 ${confidence}` : ""
+  ].filter(Boolean).join(" / ");
+  dialogBody.innerHTML = `${meta ? `<p class="newspaper-addon-meta">${escapeHtml(meta)}</p>` : ""}<p class="newspaper-addon-comment">${escapeHtml(comment || "単馬短評なし")}</p>`;
+  if (typeof detailDialog.showModal === "function") detailDialog.showModal();
+  else detailDialog.setAttribute("open", "");
 }
 
 function newspaperV6HorseLabel(horse) {
