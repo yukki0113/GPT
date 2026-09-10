@@ -44,8 +44,11 @@
       </div>
 
       <div class="import-panel newspaper-import-panel">
+        <div class="button-row">
+          <button id="newspaper-day-refresh" type="button">最新データを確認</button>
+        </div>
         <label>
-          Newspaper 1日パッケージJSON
+          手動フォールバック: Newspaper 1日パッケージJSON
           <input id="newspaper-day-file" type="file" accept=".json,application/json" />
         </label>
         <div class="button-row">
@@ -65,7 +68,7 @@
         <a href="./fact-lite.html" class="link-button">自由条件集計</a>
         <a href="./" class="link-button">Mart版</a>
       </div>
-      <p class="note">1レースJSONに加え、受入テスト用の1日パッケージJSONを手動取込できます。端末保存後はレースを切り替えてオフラインでも確認できます。日次manifestによる自動配信は後続実装です。</p>
+      <p class="note">起動時に公開済みの最新日次manifestを確認し、更新があれば全レースを検証後に端末保存します。取得失敗・未公開時は保存済みデータを維持します。手動の1日パッケージJSON取込もフォールバックとして利用できます。</p>
     </section>
 
     <section id="newspaper-race-card" class="card newspaper-race-card" hidden>
@@ -108,7 +111,7 @@
   <footer><small>JRDB 自分用競馬新聞 / PWA display PoC</small></footer>
   <script src="./newspaper.js?v=2"></script>
   <script src="./newspaper-v2.js?v=3"></script>
-  <script src="./newspaper-day.js?v=2"></script>
+  <script src="./newspaper-day.js?v=3"></script>
   <script src="./newspaper-v4.js?v=7"></script>
   <script src="./newspaper-v5.js?v=1"></script>
   <script src="./newspaper-v6.js?v=1"></script>
