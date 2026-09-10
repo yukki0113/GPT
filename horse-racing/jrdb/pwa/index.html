@@ -4,104 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f7f7f7" />
-  <title>JRDB 検証ラボ</title>
+  <meta http-equiv="refresh" content="0; url=./fact-lite.html" />
+  <title>Kenshow_Labo.</title>
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <header class="app-header">
-    <div>
-      <p class="eyebrow">JRDB / Offline PWA</p>
-      <h1>検証ラボ</h1>
-    </div>
-    <div id="network-badge" class="badge">確認中</div>
-  </header>
-
-  <main>
-    <section class="card status-card">
-      <h2>データ状態</h2>
-      <dl class="status-grid">
-        <div><dt>ローカルDB</dt><dd id="db-status">確認中</dd></div>
-        <div><dt>最終同期</dt><dd id="sync-status">未同期</dd></div>
-        <div><dt>配布版</dt><dd id="remote-status">未確認</dd></div>
-        <div><dt>OPFS</dt><dd id="opfs-status">確認中</dd></div>
-        <div><dt>Service Worker</dt><dd id="sw-status">確認中</dd></div>
-      </dl>
-
-      <div class="sync-panel">
-        <div class="button-row">
-          <button id="btn-check-update" type="button" class="secondary" disabled>最新版を確認</button>
-          <button id="btn-sync" type="button" disabled>今すぐ同期</button>
-          <a href="./fact-lite.html" class="link-button">自由条件集計</a>
-          <a href="./newspaper.html" class="link-button">競馬新聞</a>
-        </div>
-        <div id="sync-progress" class="query-status"></div>
-      </div>
-
-      <details class="recovery-panel">
-        <summary>手動取込・復旧</summary>
-        <div class="import-panel">
-          <label>
-            Stats Mart SQLite
-            <input id="sqlite-file" type="file" />
-          </label>
-          <div class="button-row">
-            <button id="btn-import" type="button" disabled>端末へ保存</button>
-            <button id="btn-clear-db" type="button" class="secondary" disabled>端末DBを削除</button>
-          </div>
-        </div>
-        <p class="note">通常利用では自動同期を使います。手動取込は初期導入・非常時の復旧用です。選択後に必須テーブルとintegrity_checkでSQLiteを検証します。</p>
-      </details>
-    </section>
-
-    <section class="card">
-      <h2>条件集計</h2>
-      <div class="filter-grid">
-        <label>年 From<input id="q-year-from" type="number" value="2016" min="2016" max="2026" disabled /></label>
-        <label>年 To<input id="q-year-to" type="number" value="2026" min="2016" max="2026" disabled /></label>
-        <label>
-          競馬場
-          <select id="q-venue" disabled>
-            <option value="">指定なし</option>
-            <option value="01">札幌</option><option value="02">函館</option><option value="03">福島</option><option value="04">新潟</option>
-            <option value="05">東京</option><option value="06">中山</option><option value="07">中京</option><option value="08">京都</option>
-            <option value="09">阪神</option><option value="10">小倉</option>
-          </select>
-        </label>
-        <label>
-          芝 / ダ / 障害
-          <select id="q-track-type" disabled>
-            <option value="">指定なし</option><option value="1">芝</option><option value="2">ダート</option><option value="3">障害</option>
-          </select>
-        </label>
-        <label>距離<input id="q-distance" type="number" step="100" placeholder="例: 1600" disabled /></label>
-        <label>
-          馬場状態
-          <select id="q-track-condition" disabled>
-            <option value="">指定なし</option>
-            <option value="10">良</option><option value="11">速良</option><option value="12">遅良</option>
-            <option value="20">稍重</option><option value="21">速稍重</option><option value="22">遅稍重</option>
-            <option value="30">重</option><option value="31">速重</option><option value="32">遅重</option>
-            <option value="40">不良</option><option value="41">速不良</option><option value="42">遅不良</option>
-          </select>
-        </label>
-        <label>最低出走数<input id="q-min-starts" type="number" value="20" min="1" disabled /></label>
-      </div>
-      <button id="btn-aggregate" type="button" disabled>集計</button>
-      <div id="query-status" class="query-status"></div>
-    </section>
-
-    <section class="card">
-      <div class="tabs" role="tablist" aria-label="集計軸">
-        <button type="button" class="tab active" data-axis="sire" disabled>種牡馬</button>
-        <button type="button" class="tab" data-axis="jockey" disabled>騎手</button>
-        <button type="button" class="tab" data-axis="frame" disabled>枠</button>
-      </div>
-      <div id="result-area"><div class="empty-state">Stats Martを同期すると集計結果を表示します。</div></div>
-    </section>
-  </main>
-
-  <footer><small>JRDB 検証ラボ / GitHub Pages + Offline PWA</small></footer>
-  <script src="./app.js"></script>
+  <p><a href="./fact-lite.html">Kenshow_Labo. 条件別集計を開く</a></p>
+  <script>window.location.replace("./fact-lite.html");</script>
 </body>
 </html>

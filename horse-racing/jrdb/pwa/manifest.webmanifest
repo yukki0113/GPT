@@ -1,8 +1,8 @@
 {
-  "name": "JRDB 検証ラボ",
-  "short_name": "検証ラボ",
-  "description": "JRDB Stats Mart を端末内で利用するオフライン競馬条件集計PWA",
-  "start_url": "./",
+  "name": "Kenshow_Labo.",
+  "short_name": "Kenshow_Labo.",
+  "description": "中央競馬の条件別集計と自分用競馬新聞を利用するオフラインPWA",
+  "start_url": "./fact-lite.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f3f3f3",

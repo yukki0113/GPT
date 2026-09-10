@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v33";
+const CACHE_NAME = "jrdb-pwa-shell-v34";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -11,7 +11,6 @@ const APP_SHELL = [
   "./newspaper-v4.css?v=6",
   "./newspaper-v5.css?v=1",
   "./newspaper-v6.css?v=1",
-  "./app.js",
   "./fact-lite.js?v=17",
   "./fact-lite-sort.js?v=18",
   "./newspaper.js?v=2",
@@ -70,9 +69,8 @@ self.addEventListener("fetch", function (event) {
         return caches.match(request).then(function (cachedResponse) {
           if (cachedResponse) return cachedResponse;
           if (request.mode === "navigate") {
-            if (requestUrl.pathname.endsWith("/fact-lite.html")) return caches.match("./fact-lite.html");
             if (requestUrl.pathname.endsWith("/newspaper.html")) return caches.match("./newspaper.html");
-            return caches.match("./index.html");
+            return caches.match("./fact-lite.html");
           }
           throw new Error("Offline and no cached response");
         });

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f7f7f7" />
-  <title>JRDB 自分用競馬新聞</title>
+  <title>Kenshow_Labo. / 競馬新聞</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="stylesheet" href="./newspaper.css?v=3" />
@@ -14,14 +14,22 @@
 </head>
 <body>
   <header class="app-header">
-    <div>
-      <p class="eyebrow">JRDB / Newspaper PoC</p>
-      <h1>自分用競馬新聞</h1>
-    </div>
+    <details class="app-menu">
+      <summary class="app-menu-trigger" aria-label="メニューを開く">
+        <span class="app-menu-icon" aria-hidden="true">☰</span>
+        <span class="app-brand">Kenshow_Labo.</span>
+      </summary>
+      <nav class="app-menu-panel" aria-label="メインメニュー">
+        <div class="app-menu-section">閲覧</div>
+        <a href="./fact-lite.html" class="app-menu-link">条件別集計</a>
+        <a href="./newspaper.html" class="app-menu-link active" aria-current="page">競馬新聞</a>
+      </nav>
+    </details>
     <div id="newspaper-network-badge" class="badge">確認中</div>
   </header>
 
   <main class="newspaper-main">
+    <h1 class="visually-hidden">競馬新聞</h1>
     <section class="card">
       <h2>新聞データ</h2>
       <dl class="status-grid">
@@ -31,29 +39,9 @@
         <div><dt>表示レース</dt><dd id="newspaper-race-status">未読込</dd></div>
       </dl>
 
-      <div class="import-panel newspaper-import-panel">
-        <label>
-          Newspaper race JSON
-          <input id="newspaper-file" type="file" accept=".json,application/json" />
-        </label>
-        <div class="button-row">
-          <button id="newspaper-import" type="button" disabled>読み込んで端末保存</button>
-          <button id="newspaper-clear" type="button" class="secondary" disabled>端末保存を削除</button>
-        </div>
-        <div id="newspaper-import-status" class="query-status"></div>
-      </div>
-
-      <div class="import-panel newspaper-import-panel">
+      <div class="sync-panel newspaper-sync-panel">
         <div class="button-row">
           <button id="newspaper-day-refresh" type="button">最新データを確認</button>
-        </div>
-        <label>
-          手動フォールバック: Newspaper 1日パッケージJSON
-          <input id="newspaper-day-file" type="file" accept=".json,application/json" />
-        </label>
-        <div class="button-row">
-          <button id="newspaper-day-import" type="button" disabled>1日分を読み込んで端末保存</button>
-          <button id="newspaper-day-clear" type="button" class="secondary" disabled>1日分の保存を削除</button>
         </div>
         <div id="newspaper-day-race-wrap" hidden>
           <label>
@@ -64,11 +52,27 @@
         <div id="newspaper-day-status" class="query-status"></div>
       </div>
 
-      <div class="button-row newspaper-nav-links">
-        <a href="./fact-lite.html" class="link-button">自由条件集計</a>
-        <a href="./" class="link-button">Mart版</a>
+      <details class="recovery-panel newspaper-recovery-panel">
+        <summary>自動取得できない場合の手動取込</summary>
+        <div class="import-panel newspaper-import-panel">
+          <label>
+            Newspaper 1日パッケージJSON
+            <input id="newspaper-day-file" type="file" accept=".json,application/json" />
+          </label>
+          <div class="button-row">
+            <button id="newspaper-day-import" type="button" disabled>ファイルを取り込む</button>
+            <button id="newspaper-day-clear" type="button" class="secondary" disabled hidden>1日分の保存を削除</button>
+          </div>
+        </div>
+        <p class="note">通常は起動時の自動取得を使用します。公開データを取得できない場合だけ、検証済みの1日パッケージJSONを選択してください。</p>
+      </details>
+
+      <div hidden aria-hidden="true">
+        <input id="newspaper-file" type="file" accept=".json,application/json" />
+        <button id="newspaper-import" type="button" disabled>読み込んで端末保存</button>
+        <button id="newspaper-clear" type="button" disabled>端末保存を削除</button>
+        <div id="newspaper-import-status"></div>
       </div>
-      <p class="note">起動時に公開済みの最新日次manifestを確認し、更新があれば全レースを検証後に端末保存します。取得失敗・未公開時は保存済みデータを維持します。手動の1日パッケージJSON取込もフォールバックとして利用できます。</p>
     </section>
 
     <section id="newspaper-race-card" class="card newspaper-race-card" hidden>
@@ -108,7 +112,7 @@
     </form>
   </dialog>
 
-  <footer><small>JRDB 自分用競馬新聞 / PWA display PoC</small></footer>
+  <footer><small>Kenshow_Labo. / 競馬新聞</small></footer>
   <script src="./newspaper.js?v=2"></script>
   <script src="./newspaper-v2.js?v=3"></script>
   <script src="./newspaper-day.js?v=3"></script>
