@@ -9,6 +9,7 @@ Date: 2026-09-10
 - Generic trainer-course score: **DO NOT PROMOTE**
 - Rest interval: **RETAIN AS CORE CONTEXT**
 - Trainer-pattern research: **CONTINUE ONLY WITH STRICT OOT CONFIRMATION**
+- Compact Training Edge candidate: **DEVELOPMENT-PERIOD SCREEN PASSED / NOT FROZEN FOR HOLDOUT YET**
 
 This continuation uses only `jrdb_training_research_2010_2023_development_lite_v0_1.sqlite`.
 
@@ -154,7 +155,61 @@ Therefore:
 - broad rest context is much more robust;
 - same-horse workout vertical comparison retains a small incremental signal.
 
-## 6. Updated controller interpretation
+## 6. Compact Training Edge candidate screen
+
+A compact development-period candidate was screened using only:
+
+1. processed JRDB training features above;
+2. fixed rest buckets;
+3. same-horse `final_self_pct`.
+
+No trainer-specific pattern was included.
+
+For 2018-2023, predictions were generated strictly out-of-time and converted to year-relative deciles.
+
+### 6.1 Pooled OOT deciles
+
+| compact decile | n | mean Performance Delta | median Performance Delta | P(delta > 0) |
+|---:|---:|---:|---:|---:|
+| 1 lowest | 11,280 | -0.05062 | -0.03720 | 28.69% |
+| 2 | 11,275 | -0.03841 | -0.02720 | 33.40% |
+| 3 | 11,277 | -0.03575 | -0.02550 | 34.67% |
+| 4 | 11,275 | -0.03106 | -0.02182 | 36.21% |
+| 5 | 11,277 | -0.02694 | -0.01784 | 38.70% |
+| 6 | 11,275 | -0.02273 | -0.01399 | 40.82% |
+| 7 | 11,275 | -0.01822 | -0.00870 | 43.99% |
+| 8 | 11,277 | -0.01441 | -0.00519 | 46.12% |
+| 9 | 11,275 | -0.00658 | +0.00086 | 50.65% |
+| 10 highest | 11,280 | **+0.00359** | **+0.01091** | **58.74%** |
+
+Top decile minus bottom decile:
+
+- mean Performance Delta spread: **+0.05421**
+- median spread: **+0.04811**
+- positive-delta rate spread: **+30.05 pt**
+
+For comparison, the processed-JRDB-only baseline produced:
+
+- mean spread: **+0.03942**
+- median spread: **+0.03700**
+- positive-rate spread: **+22.77 pt**
+
+### 6.2 Year stability of the highest decile
+
+The compact candidate's top decile had positive mean `performance_delta` in every test year:
+
+| year | top-decile mean delta | P(delta > 0) | top-bottom mean spread | top-bottom positive-rate spread |
+|---:|---:|---:|---:|---:|
+| 2018 | +0.00399 | 57.78% | +0.05535 | +30.49 pt |
+| 2019 | +0.00546 | 60.30% | +0.04935 | +29.08 pt |
+| 2020 | +0.00068 | 57.27% | +0.05673 | +30.24 pt |
+| 2021 | +0.00112 | 56.48% | +0.04997 | +27.24 pt |
+| 2022 | +0.00518 | 60.02% | +0.05561 | +30.92 pt |
+| 2023 | +0.00524 | 60.66% | +0.05766 | +32.15 pt |
+
+This is materially cleaner than the individual raw self-workout effect, because the compact score combines the strong JRDB processed signal, rest context, and the small independent same-horse vertical increment.
+
+## 7. Updated controller interpretation
 
 The evidence now supports a clearer hierarchy for a future Training Edge:
 
@@ -163,6 +218,6 @@ The evidence now supports a clearer hierarchy for a future Training Edge:
 3. **Same-horse comparable-workout vertical feature (`final_self_pct`)** — weak but reproducible incremental signal.
 4. **Trainer interaction patterns** — exploratory; use only individually confirmed or heavily regularized signals. Do not promote pooled retrospective legends.
 
-A reasonable next development step is to build a compact candidate Training Edge from levels 1-3, evaluate it with strictly out-of-time 2018-2023 folds, and only then decide whether any Stage 2 trainer interactions deserve inclusion before freezing a protocol for the unopened 2024-2025 holdout.
+The compact levels 1-3 candidate has now passed a development-period walk-forward screen. Before opening 2024-2025, the exact model protocol, feature list, preprocessing, training window, Ridge alpha, scoring direction, and missing-value handling should be frozen so the holdout is a genuine one-shot confirmation.
 
 No odds, popularity or payout data were used.
