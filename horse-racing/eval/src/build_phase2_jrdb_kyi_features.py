@@ -31,14 +31,16 @@ from jrdb_raw import (
     read_fixed_records,
 )
 from racenote_jrdb import (
+    PACE,
     REST_REASON,
     RUNNING_STYLE,
+    STABLE_EVAL,
     THREE_LEVEL,
     TRAINING_ARROW,
 )
 
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 ZERO_RESULT_KEY = "0" * 16
 
 OUTPUT_COLUMNS = (
@@ -56,12 +58,27 @@ OUTPUT_COLUMNS = (
     "training_index",
     "training_arrow_code",
     "training_arrow_label",
+    "stable_index",
+    "stable_evaluation_code",
+    "stable_evaluation_label",
     "heavy_track_fit_code",
     "heavy_track_fit_label",
     "turf_fit_code",
     "turf_fit_label",
     "dirt_fit_code",
     "dirt_fit_label",
+    "forecast_pace_code",
+    "forecast_pace_label",
+    "expected_front_index",
+    "expected_pace_index",
+    "expected_late_index",
+    "expected_position_index",
+    "expected_front_rank",
+    "expected_pace_rank",
+    "expected_late_rank",
+    "expected_position_rank",
+    "start_index",
+    "late_break_rate",
     "prev_result_key_1",
     "prev_race_key_1",
     "previous_race_date",
@@ -164,6 +181,13 @@ def normalized_stable_entry_date(value: object) -> tuple[str, bool]:
     return normalized, False
 
 
+def dict_value(source: object, key: str) -> object:
+    """Safely return one field from a parsed nested dictionary."""
+    if not isinstance(source, dict):
+        return None
+    return source.get(key)
+
+
 def load_races(
     archive: zipfile.ZipFile,
     parser: Parser,
@@ -242,10 +266,14 @@ def build_feature_row(
 
     running_style_code = text_or_blank(parsed.get("running_style_code"))
     training_arrow_code = text_or_blank(parsed.get("training_arrow_code"))
+    stable_evaluation_code = text_or_blank(parsed.get("stable_evaluation_code"))
     heavy_track_fit_code = text_or_blank(parsed.get("heavy_track_fit_code"))
     turf_fit_code = text_or_blank(parsed.get("turf_fit_code"))
     dirt_fit_code = text_or_blank(parsed.get("dirt_fit_code"))
+    forecast_pace_code = text_or_blank(parsed.get("forecast_pace_code"))
     rest_reason_code = text_or_blank(parsed.get("rest_reason_code"))
+    pace_indices = parsed.get("pace_indices")
+    pace_ranks = parsed.get("pace_ranks")
 
     row: dict[str, object] = {
         "race_date": race["race_date"],
@@ -262,12 +290,27 @@ def build_feature_row(
         "training_index": parsed.get("training_index"),
         "training_arrow_code": training_arrow_code,
         "training_arrow_label": TRAINING_ARROW.get(training_arrow_code, ""),
+        "stable_index": parsed.get("stable_index"),
+        "stable_evaluation_code": stable_evaluation_code,
+        "stable_evaluation_label": STABLE_EVAL.get(stable_evaluation_code, ""),
         "heavy_track_fit_code": heavy_track_fit_code,
         "heavy_track_fit_label": THREE_LEVEL.get(heavy_track_fit_code, ""),
         "turf_fit_code": turf_fit_code,
         "turf_fit_label": THREE_LEVEL.get(turf_fit_code, ""),
         "dirt_fit_code": dirt_fit_code,
         "dirt_fit_label": THREE_LEVEL.get(dirt_fit_code, ""),
+        "forecast_pace_code": forecast_pace_code,
+        "forecast_pace_label": PACE.get(forecast_pace_code, ""),
+        "expected_front_index": dict_value(pace_indices, "front"),
+        "expected_pace_index": dict_value(pace_indices, "pace"),
+        "expected_late_index": dict_value(pace_indices, "late"),
+        "expected_position_index": dict_value(pace_indices, "position"),
+        "expected_front_rank": dict_value(pace_ranks, "front"),
+        "expected_pace_rank": dict_value(pace_ranks, "pace"),
+        "expected_late_rank": dict_value(pace_ranks, "late"),
+        "expected_position_rank": dict_value(pace_ranks, "position"),
+        "start_index": parsed.get("start_index"),
+        "late_break_rate": parsed.get("late_break_rate"),
         "prev_result_key_1": prev_result_key,
         "prev_race_key_1": prev_race_key,
         "previous_race_date": previous_date,
