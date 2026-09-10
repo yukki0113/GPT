@@ -1,0 +1,344 @@
+name: JRDB Analysis WIN5 Migration via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  ISSUE_PREFIX: "[JRDB_ANALYSIS_WIN5_MIGRATE]"
+
+jobs:
+  migrate:
+    if: >-
+      startsWith(github.event.issue.title, '[JRDB_ANALYSIS_WIN5_MIGRATE]') &&
+      github.event.issue.user.login == 'yukki0113'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Parse and validate request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .work
+          python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          body = os.environ.get("ISSUE_BODY", "")
+          values = {}
+          for line in body.splitlines():
+              match = re.match(r"^([a-z_]+):\s*(.+?)\s*$", line)
+              if match:
+                  values[match.group(1)] = match.group(2)
+
+          required = ("drive_file_id", "source_filename", "output_filename")
+          missing = [key for key in required if not values.get(key)]
+          if missing:
+              raise SystemExit("Missing request fields: " + ", ".join(missing))
+
+          source_filename = values["source_filename"]
+          output_filename = values["output_filename"]
+          if not source_filename.endswith(".sqlite.zip"):
+              raise SystemExit("source_filename must end with .sqlite.zip")
+          if not output_filename.endswith(".sqlite"):
+              raise SystemExit("output_filename must end with .sqlite")
+          if "/" in source_filename or "/" in output_filename:
+              raise SystemExit("filenames must not contain path separators")
+
+          env_path = Path(os.environ["GITHUB_ENV"])
+          with env_path.open("a", encoding="utf-8") as handle:
+              handle.write(f"DRIVE_FILE_ID={values['drive_file_id']}\n")
+              handle.write(f"SOURCE_FILENAME={source_filename}\n")
+              handle.write(f"OUTPUT_FILENAME={output_filename}\n")
+          PY
+
+      - name: Run focused WIN5 regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/tests/test_jrdb_analysis_win5.py
+
+      - name: Download current Analysis candidate from Drive
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
+            --output ".work/${SOURCE_FILENAME}"
+          unzip -t ".work/${SOURCE_FILENAME}"
+          mkdir -p .work/source
+          unzip -q ".work/${SOURCE_FILENAME}" -d .work/source
+          mapfile -t sqlite_files < <(find .work/source -type f -name '*.sqlite' -print)
+          if [ "${#sqlite_files[@]}" -ne 1 ]; then
+            echo "Expected exactly one SQLite payload, found ${#sqlite_files[@]}"
+            exit 1
+          fi
+          cp "${sqlite_files[0]}" ".work/${OUTPUT_FILENAME}"
+
+      - name: Validate source Analysis and resolve 2026 race dates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import sqlite3
+          from pathlib import Path
+
+          path = Path('.work') / os.environ['OUTPUT_FILENAME']
+          connection = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
+          try:
+              columns = {
+                  row[1]
+                  for row in connection.execute(
+                      'PRAGMA table_info(fact_entry_result_lite)'
+                  )
+              }
+              required = {
+                  'race_date', 'year', 'race_key', 'horse_no',
+                  'prev_result_key_1', 'prev_race_key_1'
+              }
+              missing = sorted(required - columns)
+              if missing:
+                  raise SystemExit('Missing v1.2 columns: ' + ', '.join(missing))
+              if 'win5_leg_no' in columns:
+                  raise SystemExit('Source already has win5_leg_no')
+
+              integrity = connection.execute('PRAGMA integrity_check').fetchone()[0]
+              if integrity != 'ok':
+                  raise SystemExit(f'Source integrity_check failed: {integrity}')
+
+              rows = int(connection.execute(
+                  'SELECT COUNT(*) FROM fact_entry_result_lite'
+              ).fetchone()[0])
+              dates = [
+                  str(row[0]).replace('-', '')
+                  for row in connection.execute(
+                      'SELECT DISTINCT race_date FROM fact_entry_result_lite '
+                      'WHERE year >= 2026 ORDER BY race_date'
+                  )
+              ]
+              if not dates:
+                  raise SystemExit('No 2026 Analysis race dates found')
+
+              indexes = {
+                  row[1]
+                  for row in connection.execute(
+                      "PRAGMA index_list('fact_entry_result_lite')"
+                  )
+              }
+              if 'ix_analysis_horse_history' not in indexes:
+                  raise SystemExit('Source is not the accepted history-indexed Analysis artifact')
+          finally:
+              connection.close()
+
+          Path('.work/analysis_2026_dates.txt').write_text(
+              '\n'.join(dates) + '\n', encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as handle:
+              handle.write(f'SOURCE_ROW_COUNT={rows}\n')
+              handle.write(f'SOURCE_2026_DATE_COUNT={len(dates)}\n')
+          print({'rows': rows, 'dates_2026': len(dates), 'integrity': 'ok'})
+          PY
+
+      - name: Fetch 2016-2025 annual BAC Raw
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2016 \
+            --to-year 2025 \
+            --kinds BAC \
+            --output-dir .work/raw \
+            --sleep-seconds 0.25
+
+      - name: Fetch 2026 PACI Raw for Analysis dates
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .work/raw/PACI .work/paci_logs
+          while IFS= read -r race_date; do
+            if [ -z "$race_date" ]; then
+              continue
+            fi
+            python horse-racing/jrdb/src/fetch_jrdb_paci.py \
+              --date "$race_date" \
+              --out-dir .work/raw/PACI \
+              --log-file ".work/paci_logs/fetch_${race_date}.log"
+          done < .work/analysis_2026_dates.txt
+
+      - name: Migrate Analysis v1.2 to v1.3 and backfill WIN5
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/upgrade_jrdb_analysis_v1_2_to_v1_3.py \
+            --db ".work/${OUTPUT_FILENAME}" \
+            --raw-root .work/raw \
+            --audit-json .work/win5_audit.json
+
+      - name: Validate migrated Analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import sqlite3
+          from pathlib import Path
+
+          path = Path('.work') / os.environ['OUTPUT_FILENAME']
+          audit = json.loads(Path('.work/win5_audit.json').read_text(encoding='utf-8'))
+          connection = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
+          try:
+              columns = {
+                  row[1]
+                  for row in connection.execute(
+                      'PRAGMA table_info(fact_entry_result_lite)'
+                  )
+              }
+              if 'win5_leg_no' not in columns:
+                  raise SystemExit('win5_leg_no is missing after migration')
+
+              rows = int(connection.execute(
+                  'SELECT COUNT(*) FROM fact_entry_result_lite'
+              ).fetchone()[0])
+              if rows != int(os.environ['SOURCE_ROW_COUNT']):
+                  raise SystemExit(
+                      f'Row count changed: source={os.environ["SOURCE_ROW_COUNT"]} migrated={rows}'
+                  )
+
+              indexes = {
+                  row[1]
+                  for row in connection.execute(
+                      "PRAGMA index_list('fact_entry_result_lite')"
+                  )
+              }
+              if 'ix_analysis_horse_history' not in indexes:
+                  raise SystemExit('ix_analysis_horse_history was not preserved')
+
+              integrity = connection.execute('PRAGMA integrity_check').fetchone()[0]
+              if integrity != 'ok':
+                  raise SystemExit(f'integrity_check failed: {integrity}')
+
+              invalid = int(connection.execute(
+                  'SELECT COUNT(*) FROM fact_entry_result_lite '
+                  'WHERE win5_leg_no IS NOT NULL AND win5_leg_no NOT BETWEEN 1 AND 5'
+              ).fetchone()[0])
+              if invalid != 0:
+                  raise SystemExit(f'Invalid WIN5 values: {invalid}')
+          finally:
+              connection.close()
+
+          digest = hashlib.sha256()
+          with path.open('rb') as handle:
+              for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                  digest.update(chunk)
+          sha256 = digest.hexdigest()
+          size = path.stat().st_size
+
+          if audit['integrity_check'] != 'ok':
+              raise SystemExit('Migration audit integrity_check is not ok')
+          if audit['sequence_anomalies']:
+              raise SystemExit('Migration audit contains WIN5 sequence anomalies')
+
+          result = {
+              'status': 'success',
+              'schema_version': 'v1.3',
+              'output_filename': os.environ['OUTPUT_FILENAME'],
+              'rows': rows,
+              'size_bytes': size,
+              'sha256': sha256,
+              'win5_dates': audit['win5_dates'],
+              'win5_races': audit['win5_races'],
+              'win5_rows': audit['win5_rows'],
+              'leg_distribution_races': audit['leg_distribution_races'],
+              'integrity_check': integrity,
+              'history_index_preserved': True,
+              'source_2026_date_count': int(os.environ['SOURCE_2026_DATE_COUNT']),
+          }
+          Path('.work/result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as handle:
+              handle.write(f'OUTPUT_SHA256={sha256}\n')
+              handle.write(f'OUTPUT_SIZE={size}\n')
+              handle.write(f'WIN5_DATES={audit["win5_dates"]}\n')
+              handle.write(f'WIN5_RACES={audit["win5_races"]}\n')
+              handle.write(f'WIN5_ROWS={audit["win5_rows"]}\n')
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Package migrated Analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd .work
+          zip -9 "${OUTPUT_FILENAME}.zip" "${OUTPUT_FILENAME}" win5_audit.json result.json
+
+      - name: Upload migration artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-analysis-v1-3-win5
+          path: |
+            .work/${{ env.OUTPUT_FILENAME }}.zip
+            .work/win5_audit.json
+            .work/result.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+      - name: Report success
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > .work/comment.md <<EOF
+          JRDB_ANALYSIS_WIN5_MIGRATE_RESULT
+          status: success
+          run_id: ${GITHUB_RUN_ID}
+          artifact_name: jrdb-analysis-v1-3-win5
+          output_filename: ${OUTPUT_FILENAME}
+          rows: ${SOURCE_ROW_COUNT}
+          win5_dates: ${WIN5_DATES}
+          win5_races: ${WIN5_RACES}
+          win5_rows: ${WIN5_ROWS}
+          size_bytes: ${OUTPUT_SIZE}
+          sha256: ${OUTPUT_SHA256}
+          integrity_check: ok
+          history_index_preserved: true
+          EOF
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file .work/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
+
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
+            "JRDB_ANALYSIS_WIN5_MIGRATE_RESULT\nstatus: failure\nrun_id: ${GITHUB_RUN_ID}\nCheck the failed step/logs before retrying."
