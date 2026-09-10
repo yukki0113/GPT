@@ -124,6 +124,8 @@ jobs:
             horse-racing/jrdb/tests/test_evaluate_jrdb_edge_forward.py \
             horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py \
             horse-racing/jrdb/tests/test_jrdb_edge_v0_2.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_suggestive_publication_v0_2.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
             > /tmp/edge_tests_stdout.log 2> /tmp/edge_tests_stderr.log
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
