@@ -45,6 +45,7 @@ def parse_bac(raw: bytes, race_date: str, year: int) -> dict[str, object]:
         "race_condition_code": _text(parsed.get("race_class_code")),
         "track_condition_code": None,
         "grade_code": _text(parsed.get("grade_code")),
+        "win5_leg_no": _int(parsed.get("win5_leg_no")),
     }
 
 
@@ -96,6 +97,7 @@ def parse_sed(raw: bytes, race_date: str, year: int) -> tuple[
         "race_condition_code": None,
         "track_condition_code": _text(parsed.get("track_condition_code")),
         "grade_code": None,
+        "win5_leg_no": None,
     }
     return (race_key, horse_no), result, fallback_race
 
