@@ -20,8 +20,8 @@ Branch: main
 4. boat-racing/src/fetch_boatrace_pre_race_info.py
 5. boat-racing/docs/README_直前情報取得.md
 6. boat-racing/requirements.txt
-7. .github/workflows/boatrace_pre_race_issue.yml
-8. boat-racing/docs/直前情報取得_GitHubIssue運用.md
+7. D経路を使う場合は .github/workflows/boatrace_pre_race_issue.yml
+8. D経路の詳細は boat-racing/docs/直前情報取得_GitHubIssue運用.md
 
 Git管理対象外の日次成果物、過去ログ、キャッシュを正本の代わりに参照しない。
 
@@ -33,13 +33,34 @@ Git管理対象外の日次成果物、過去ログ、キャッシュを正本�
 4. 対象は指定された1レースのみ。
 5. 結果、払戻、オッズ、予想サイト、SNS、結果を示唆する検索結果は取得・参照しない。
 
-標準実行経路
+実行経路の判定
 --------------
-今後のChat運用では、GitHub Issueを標準の実行要求経路とする。
+作業開始時に「本当にGitHub Actions環境が必要か」を判定する。
 
-Chatから workflow_dispatch を直接起動できることを前提としない。
-従来の .github/workflows/boatrace_pre_race_manual.yml は手動実行用の補助経路として残す。
+A. Read / Audit
+- README、Python、Workflow、Issue、run、artifact、SHA等の確認はChatからGitHub read/searchで直接行う。
+- Issue不要。
 
+B. Git Change
+- Python、README、requirements、Workflow、恒常的な作業手順等のUTF-8テキスト変更はGitHub direct create/update/deleteで反映する。
+- 変更前にlatest main、path存在、現内容を確認する。
+- Git更新だけを目的としたIssueは作らない。
+
+C. Pure Deterministic Execution
+- Git正本の fetch_boatrace_pre_race_info.py と必要入力をChat側で取得でき、同一処理をローカルで再現実行できる場合はGPTローカル実行を優先する。
+- secret、特殊runner、Actions監査証跡が不要であることを確認する。
+- 可能な限り source_commit / source_file_sha256 / input_sha256 / generated_at / output_sha256 を残す。
+- artifact回収後のJSON検査、SHA計算、差分比較も、Actions監査run自体が要件でなければCで行う。
+
+D. Actions-Native Execution
+- ChatローカルのPython実行環境からBOAT RACE公式サイトへ通信できず、Git正本fetcherを同一条件で実行できない場合はDとする。
+- DではGitHub Issueから .github/workflows/boatrace_pre_race_issue.yml を起動する。
+- Secrets、artifact chain、特殊runner、長時間・大容量処理、immutable freeze、監査runが必要な場合もDを選ぶ。
+
+現在のChat環境で正本Pythonから公式サイトへの外部通信が利用できない場合、日次の直前情報取得本体はD経路を使用する。一方、Git参照・Git更新・artifact回収後の検査まで一律にIssueへ載せない。
+
+D経路のIssue
+-------------
 Issue title:
 
 [BOATRACE_PRE_RACE_REQUEST] <request_id>
@@ -49,7 +70,7 @@ Issue body は raw JSON とする。
 例:
 
 {
-  "date": "20260825",
+  "date": "20260910",
   "venue": "三国",
   "race": 4,
   "format": "json"
@@ -58,6 +79,19 @@ Issue body は raw JSON とする。
 Workflow:
 
 .github/workflows/boatrace_pre_race_issue.yml
+
+Issue発行前Preflight
+--------------------
+IssueはDと判定した後にだけ発行する。
+
+1. latest mainを確認する。
+2. 対象Workflowのrequest parser / contractを確認する。
+3. request_id、date、venue、race、formatの必須条件と値域を確認する。
+4. upstream dependencyがないことを確認する。存在しないrun ID / artifact名 / SHAを推測しない。
+5. request JSONを機械的にserializeし、Markdown fenceや説明文を混ぜない。
+6. 全項目PASS後にIssueを1回だけ発行する。
+
+retry時はRESULT、artifact、failed step / logを確認し、同じrequestをblind rerunしない。必要なら原因を修正し、新しいrequest_idで新規Issueを作る。
 
 Issue Workflow側の処理
 -----------------------
@@ -135,7 +169,7 @@ fetch_status == success とする必須条件:
 
 実行後の検証
 --------------
-Chat側でもartifact回収後に次を確認する。
+直接実行・Issue Actions実行のどちらでも、最終検査基準は同じとする。
 
 1. JSONがUTF-8で有効である。
 2. fetch_status == success である。
@@ -147,14 +181,14 @@ Chat側でもartifact回収後に次を確認する。
 8. 対象日・RがRequestと一致する。
 9. source URLがBOAT RACE公式 racelist / beforeinfo のみである。
 10. 結果・払戻・オッズ由来の情報が混入していない。
-11. validation_report.json の validation_status を確認する。
-12. run_status.txt の request_id / issue_number / run_id / head_sha / exit code を確認する。
+11. D経路では validation_report.json の validation_status を確認する。
+12. D経路では run_status.txt の request_id / issue_number / run_id / head_sha / exit code を確認する。
 
 ユーザーへの返却
 ------------------
 1. 対象日・会場・Rとfetch_statusを簡潔に報告する。
 2. 6艇の出走表、展示タイム、展示進入/ST、気象が揃ったかを報告する。
-3. artifactから回収・検査した成果物を返却する。
+3. D経路の場合はartifactから回収・検査した成果物を返却する。
 4. 失敗または一部任意項目が未取得の場合は、取得不可項目と理由を短く明記する。
 5. 予想を依頼されていない限り、この作業では予想・買い目・評価を出さない。
 
