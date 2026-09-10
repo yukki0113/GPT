@@ -9,9 +9,10 @@ Output:
   <output>/manifest.json
   <output>/races/*.json
 
-The publisher reserializes each race deterministically, refreshes the manifest
-sha256/size_bytes fields to those exact published bytes, validates race identity,
-and replaces the output directory only after the complete candidate passes.
+The publisher reserializes each race deterministically as compact UTF-8 JSON,
+refreshes the manifest sha256/size_bytes fields to those exact published bytes,
+validates race identity, and replaces the output directory only after the
+complete candidate passes.
 """
 from __future__ import annotations
 
@@ -29,7 +30,7 @@ SAFE_RACE_PATH = re.compile(r"^races/[^/]+\.json$")
 
 
 def json_bytes(value: Any) -> bytes:
-    return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    return (json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
 
 
 def sha256_bytes(data: bytes) -> str:
