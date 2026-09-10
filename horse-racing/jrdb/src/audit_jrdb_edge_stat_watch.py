@@ -14,7 +14,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Mapping
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 ACTIVE_Q = 0.05
 PROVISIONAL_Q = 0.10
 
@@ -121,11 +121,13 @@ def audit_registry(path: str | Path) -> dict[str, Any]:
             template[str(row["template_id"] or "UNKNOWN_TEMPLATE")][reason] += 1
             final_status[str(row["final_status"])] += 1
 
+        count = len(rows)
         return {
             "audit_version": VERSION,
             "integrity_check": integrity,
             "thresholds": {"ACTIVE": ACTIVE_Q, "PROVISIONAL": PROVISIONAL_Q},
-            "statistical_reject_count": len(rows),
+            "statistical_reject_count": count,
+            "statistical_watch_count": count,
             "final_status_counts": dict(sorted(final_status.items())),
             "reason_counts": dict(sorted(overall.items())),
             "performance_channel_counts": dict(sorted(performance.items())),
