@@ -190,7 +190,48 @@ GitHub正本バイナリについては、現在の環境で直接read / write /
 
 branch protection、権限、競合、API制約で安全にまとめられない場合は無理に統合しません。
 
-## 8. Source of truth境界
+## 8. 並列スレッド / concurrent write の安全ルール
+
+複数のChat / Workスレッドが同じ `main` にほぼ同時に変更を反映することを通常状態として想定します。担当プロジェクトや対象ファイルが異なる場合でも、branch HEADは共有されるためcommit競合は起こり得ます。
+
+### 共通原則
+
+- **force push / force ref updateを行わない。**
+- Contents APIで既存ファイルを更新する場合は、変更開始時に取得した対象fileのblob SHAを条件として使用する。
+- Git Data API等で複数ファイルを1commitにまとめる場合は、取得したlatest `main` を親commitとして作成し、branch ref更新はfast-forwardのみとする。
+- commit反映時に `409 Conflict`、non-fast-forward、stale SHA等を検出した場合、既存変更を上書きして解決しない。
+- conflict時はlatest `main` を再取得し、自スレッドの未反映差分だけを最新main上へ再構築してから再試行する。
+- 同一ファイルが他スレッドで更新済みの場合は、最新内容を読み直し、双方の変更意図を保持できることを確認してから更新する。自動的な全置換で他スレッドの変更を消さない。
+
+標準手順:
+
+```text
+変更開始
+-> latest main確認
+-> 対象path / blob SHA / 現在内容確認
+-> 自スレッドの変更作成
+-> 反映
+   -> success: remote commit確認
+   -> conflict / stale: latest main再取得
+      -> 自分の差分だけ再構築
+      -> 再反映
+```
+
+### 別ファイルを変更している場合
+
+内容上のmerge conflictがなくても、別スレッドが先に `main` を進めることがあります。複数ファイルcommitのparentが古くなった場合は、最新mainを親として同じ論理変更を再構築します。古いbranch HEADをforceで戻しません。
+
+### 同一ファイルを変更している場合
+
+古いblob SHAを使った更新が拒否された場合、それは安全装置として扱います。最新fileを再取得して差分を再評価し、先行commitを保持したうえで自分の変更を載せ直します。機械的に旧全文を再送して上書きしません。
+
+### 共通上位層
+
+`.gpt/README.md`、`.gpt/GITHUB_OPERATION_POLICY.md`、共通 `tools/`、共通workflow等は複数プロジェクトから参照されるため、特に競合しやすい共有領域です。個別プロジェクトから変更する必要がある場合も、本節のlatest-main再確認・stale検出・force禁止を必須とします。
+
+競合は「失敗」ではなく、並列変更を安全に直列化するための再読込シグナルとして扱います。
+
+## 9. Source of truth境界
 
 - GitHub: source / test / docs / config / schema等、各プロジェクトがGit正本と定義した資産
 - Google Drive等: 各プロジェクトが外部正本と定義したデータ、台帳、大容量成果物
@@ -198,7 +239,7 @@ branch protection、権限、競合、API制約で安全にまとめられない
 
 上位共通文書に個別プロジェクトのfile ID / Spreadsheet ID /日次データ配置を固定しません。正本の具体的所在は各プロジェクト文書を参照します。
 
-## 9. 作業開始時の読み順
+## 10. 作業開始時の読み順
 
 1. 本書 `.gpt/GITHUB_OPERATION_POLICY.md`
 2. ルート `.gpt/README.md`
@@ -209,7 +250,7 @@ branch protection、権限、競合、API制約で安全にまとめられない
 
 個別プロジェクト文書に旧Issue標準運用が残っている場合は、業務上Actions-nativeである理由がない限り、本書のA/B/C/Dへ棚卸しして更新します。
 
-## 10. 標準原則
+## 11. 標準原則
 
 > **Git更新には原則Issueを使わない。**
 >
@@ -222,5 +263,7 @@ branch protection、権限、競合、API制約で安全にまとめられない
 > **Issue発行前にrequestを完全検証する。**
 >
 > **同一目的の変更は、可能なら1commitにまとめる。**
+>
+> **並列更新ではforceせず、競合時はlatest main上へ自分の差分だけ再構築する。**
 >
 > **作業分割はIssue単位ではなく、論理的な完了点・監査点単位で行う。**
