@@ -17,11 +17,12 @@ def _write_json(path: Path, value: object) -> None:
 
 
 def test_merge_edge_day_projects_special_memos_and_updates_manifest(tmp_path: Path) -> None:
-    """Exact Edge rows become Newspaper special memos and refresh hashes."""
+    """Exact Edge rows become canonical Newspaper special memos and refresh hashes."""
     day_dir = tmp_path / "day"
     races_dir = day_dir / "races"
     races_dir.mkdir(parents=True)
     race_path = races_dir / "race.json"
+    legacy_edge_matches = [{"edge_id": "LEGACY", "display_text": "legacy fallback"}]
     bundle = {
         "schema_version": "0.1",
         "bundle_kind": "jrdb_pwa_newspaper_race",
@@ -30,7 +31,7 @@ def test_merge_edge_day_projects_special_memos_and_updates_manifest(tmp_path: Pa
             {
                 "key": {"race_horse_key": "0126250104", "horse_no": 4},
                 "basic": {"horse_name": "テストホース"},
-                "edge_matches": [],
+                "edge_matches": legacy_edge_matches,
             }
         ],
         "metadata": {"source_status": {}},
@@ -79,14 +80,21 @@ def test_merge_edge_day_projects_special_memos_and_updates_manifest(tmp_path: Pa
     result = merger.merge_edge_day(day_dir, edge_path, output_dir)
 
     merged = json.loads((output_dir / "races" / "race.json").read_text(encoding="utf-8"))
+    horse = merged["horses"][0]
     assert result["status"] == "PASS"
+    assert result["merger_version"] == "0.2.0"
     assert result["merged_rows"] == 1
     assert result["memo_runners"] == 1
     assert result["memo_count"] == 1
-    assert merged["horses"][0]["edge_matches"][0]["memo_text"] == "＋ 好走傾向"
+    assert horse["special_memos"][0]["memo_text"] == "＋ 好走傾向"
+    assert horse["edge_matches"] == legacy_edge_matches
     assert merged["metadata"]["source_status"]["edge"]["state"] == "READY"
 
     manifest = json.loads((output_dir / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["source_status"]["edge"]["state"] == "READY"
     assert manifest["races"][0]["sha256"] != "old"
-    assert (output_dir / "day-package.json").is_file()
+
+    day_package = json.loads((output_dir / "day-package.json").read_text(encoding="utf-8"))
+    packaged_horse = day_package["races"][0]["horses"][0]
+    assert packaged_horse["special_memos"][0]["memo_text"] == "＋ 好走傾向"
+    assert packaged_horse["edge_matches"] == legacy_edge_matches
