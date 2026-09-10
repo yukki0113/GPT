@@ -171,3 +171,8 @@ def main() -> int:
     if args.output_md:
         write_markdown(report, args.output_md)
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
