@@ -7,7 +7,7 @@ from pathlib import Path
 
 import run_jrdb_edge_registry_pipeline as base
 
-VERSION = "0.2.7"
+VERSION = "0.2.8"
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ROOT / "config/jrdb_edge_candidate_templates_v0_2.json"
 POLICIES = ROOT / "config/jrdb_edge_validation_policies_v0_2.json"
@@ -19,6 +19,8 @@ FULL_SUGGESTIVE_BASELINE_CANDIDATES = 519
 FULL_SUGGESTIVE_BASELINE_CHANNELS = 540
 FULL_SUGGESTIVE_EDGE_SET_SHA256 = "a65138340b905f5bd5650ca773346a3262dcd5a62e0bc823e1e5de0d2cea86f4"
 FULL_SUGGESTIVE_CHANNEL_SET_SHA256 = "bbe29fd342b6a6e9a833612390e4ab39da19b55b2cd9503e26211a5d6fe589b5"
+FULL_SUGGESTIVE_RETAINED_CANDIDATES = 437
+FULL_SUGGESTIVE_RETAINED_CHANNELS = 454
 
 
 def build_stages_v02(request, paths, python):
@@ -136,6 +138,37 @@ def build_stages_v02(request, paths, python):
                 base.Stage(
                     "suggestive_bootstrap_sensitivity",
                     tuple(sensitivity_command),
+                    base.FAILURE_CLASS_DOMAIN,
+                )
+            )
+
+            publication_command = [
+                python,
+                str(ROOT / "src/build_jrdb_edge_suggestive_publication_v0_2.py"),
+                "--registry",
+                str(paths.out_dir / "edge_registry.sqlite"),
+                "--sensitivity-jsonl",
+                str(paths.out_dir / "edge_suggestive_bootstrap_sensitivity.jsonl"),
+                "--output-suggestive-jsonl",
+                str(paths.out_dir / "edge_registry_suggestive.jsonl"),
+                "--output-serving-jsonl",
+                str(paths.out_dir / "edge_serving_catalog_v0_2.jsonl"),
+                "--audit-json",
+                str(paths.out_dir / "edge_suggestive_publication_audit.json"),
+            ]
+            if request.from_year == 2010 and request.to_year == 2025:
+                publication_command.extend(
+                    [
+                        "--expected-suggestive-rows",
+                        str(FULL_SUGGESTIVE_RETAINED_CANDIDATES),
+                        "--expected-suggestive-channels",
+                        str(FULL_SUGGESTIVE_RETAINED_CHANNELS),
+                    ]
+                )
+            replaced.append(
+                base.Stage(
+                    "suggestive_publication",
+                    tuple(publication_command),
                     base.FAILURE_CLASS_DOMAIN,
                 )
             )
