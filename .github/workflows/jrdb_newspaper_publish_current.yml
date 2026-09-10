@@ -1,0 +1,226 @@
+name: JRDB Newspaper Current Candidate
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "horse-racing/jrdb/newspaper/publish/current.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "jrdb-newspaper-current-candidate"
+  cancel-in-progress: false
+
+env:
+  REQUEST_PATH: horse-racing/jrdb/newspaper/publish/current.json
+
+jobs:
+  build-candidate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse publish request
+        run: |
+          set -euo pipefail
+          mkdir -p .publish
+
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          path = Path(os.environ["REQUEST_PATH"])
+          if not path.is_file():
+              raise SystemExit(f"request file not found: {path}")
+
+          request = json.loads(path.read_text(encoding="utf-8"))
+          required = {
+              "schema_version",
+              "request_kind",
+              "date",
+              "revision",
+              "drive_file_id",
+              "source_filename",
+              "size_bytes",
+              "sha256",
+              "expected_races",
+              "source_commit",
+          }
+          missing = sorted(required - set(request))
+          if missing:
+              raise SystemExit("missing request fields: " + ", ".join(missing))
+
+          if request["schema_version"] != "0.1":
+              raise SystemExit("schema_version must be 0.1")
+          if request["request_kind"] != "jrdb_newspaper_publish_request":
+              raise SystemExit("request_kind mismatch")
+
+          date = str(request["date"]).strip()
+          if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", date):
+              raise SystemExit("date must be YYYY-MM-DD")
+
+          revision = request["revision"]
+          if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+              raise SystemExit("revision must be a positive integer")
+
+          drive_file_id = str(request["drive_file_id"]).strip()
+          if not re.fullmatch(r"[A-Za-z0-9_-]+", drive_file_id):
+              raise SystemExit("drive_file_id has invalid characters")
+
+          source_filename = str(request["source_filename"]).strip()
+          if not source_filename or "/" in source_filename or "\\" in source_filename or not source_filename.lower().endswith(".json"):
+              raise SystemExit("source_filename must be a JSON basename")
+
+          size_bytes = request["size_bytes"]
+          if not isinstance(size_bytes, int) or isinstance(size_bytes, bool) or size_bytes <= 0:
+              raise SystemExit("size_bytes must be a positive integer")
+
+          sha256 = str(request["sha256"]).strip().lower()
+          if not re.fullmatch(r"[0-9a-f]{64}", sha256):
+              raise SystemExit("sha256 must be 64 lowercase hex characters")
+
+          expected_races = request["expected_races"]
+          if not isinstance(expected_races, int) or isinstance(expected_races, bool) or not 1 <= expected_races <= 36:
+              raise SystemExit("expected_races must be an integer from 1 to 36")
+
+          source_commit = str(request["source_commit"]).strip().lower()
+          if not re.fullmatch(r"[0-9a-f]{40}", source_commit):
+              raise SystemExit("source_commit must be a 40-character commit SHA")
+
+          normalized = {
+              "schema_version": "0.1",
+              "request_kind": "jrdb_newspaper_publish_request",
+              "date": date,
+              "revision": revision,
+              "drive_file_id": drive_file_id,
+              "source_filename": source_filename,
+              "size_bytes": size_bytes,
+              "sha256": sha256,
+              "expected_races": expected_races,
+              "source_commit": source_commit,
+          }
+          Path(".publish/request.normalized.json").write_text(
+              json.dumps(normalized, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n",
+              encoding="utf-8",
+          )
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"REQUEST_DATE={date}\n")
+              env_file.write(f"REQUEST_REVISION={revision}\n")
+              env_file.write(f"DRIVE_FILE_ID={drive_file_id}\n")
+              env_file.write(f"SOURCE_FILENAME={source_filename}\n")
+              env_file.write(f"EXPECTED_SIZE={size_bytes}\n")
+              env_file.write(f"EXPECTED_SHA256={sha256}\n")
+              env_file.write(f"EXPECTED_RACES={expected_races}\n")
+              env_file.write(f"SOURCE_COMMIT={source_commit}\n")
+          PY
+
+      - name: Download day-package from Google Drive
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
+            --output ".publish/${SOURCE_FILENAME}"
+
+      - name: Validate source bytes
+        run: |
+          set -euo pipefail
+          ACTUAL_SIZE="$(stat -c %s ".publish/${SOURCE_FILENAME}")"
+          if [ "$ACTUAL_SIZE" != "$EXPECTED_SIZE" ]; then
+            echo "Size mismatch: expected=$EXPECTED_SIZE actual=$ACTUAL_SIZE"
+            exit 1
+          fi
+
+          ACTUAL_SHA256="$(sha256sum ".publish/${SOURCE_FILENAME}" | awk '{print $1}')"
+          if [ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo "SHA-256 mismatch: expected=$EXPECTED_SHA256 actual=$ACTUAL_SHA256"
+            exit 1
+          fi
+
+      - name: Build current candidate
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_newspaper_publish_current.py \
+            --day-package ".publish/${SOURCE_FILENAME}" \
+            --output-dir .publish/current \
+            > .publish/publish-result.json
+
+      - name: Validate candidate contract
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(Path(".publish/request.normalized.json").read_text(encoding="utf-8"))
+          result = json.loads(Path(".publish/publish-result.json").read_text(encoding="utf-8"))
+          manifest_path = Path(".publish/current/manifest.json")
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+          if result.get("status") != "PASS":
+              raise SystemExit(f"publisher status is not PASS: {result!r}")
+          if result.get("date") != request["date"] or manifest.get("date") != request["date"]:
+              raise SystemExit("published date does not match request")
+          if result.get("revision") != request["revision"] or manifest.get("revision") != request["revision"]:
+              raise SystemExit("published revision does not match request")
+
+          entries = manifest.get("races")
+          if not isinstance(entries, list) or len(entries) != request["expected_races"]:
+              raise SystemExit("published race count does not match request")
+          if result.get("race_count") != request["expected_races"]:
+              raise SystemExit("publisher result race count does not match request")
+
+          for entry in entries:
+              relative_path = str(entry.get("path") or "")
+              race_path = Path(".publish/current") / relative_path
+              if not race_path.is_file():
+                  raise SystemExit(f"published race missing: {relative_path}")
+              data = race_path.read_bytes()
+              actual_sha = hashlib.sha256(data).hexdigest()
+              if actual_sha != str(entry.get("sha256") or ""):
+                  raise SystemExit(f"published race SHA mismatch: {relative_path}")
+              if len(data) != int(entry.get("size_bytes") or -1):
+                  raise SystemExit(f"published race size mismatch: {relative_path}")
+
+          audit = {
+              "schema_version": "0.1",
+              "audit_kind": "jrdb_newspaper_current_candidate_audit",
+              "status": "PASS",
+              "request_commit": os.environ["GITHUB_SHA"],
+              "source_commit": request["source_commit"],
+              "source_filename": request["source_filename"],
+              "source_size_bytes": request["size_bytes"],
+              "source_sha256": request["sha256"],
+              "date": request["date"],
+              "revision": request["revision"],
+              "race_count": request["expected_races"],
+              "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+          }
+          Path(".publish/candidate-audit.json").write_text(
+              json.dumps(audit, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Upload candidate artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-newspaper-current-candidate-${{ env.REQUEST_DATE }}-r${{ env.REQUEST_REVISION }}
+          path: |
+            .publish/current
+            .publish/request.normalized.json
+            .publish/publish-result.json
+            .publish/candidate-audit.json
+          if-no-files-found: error
+          retention-days: 7
