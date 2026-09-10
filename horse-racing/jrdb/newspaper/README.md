@@ -1,6 +1,6 @@
 # JRDB Newspaper module
 
-Status: REAL-DATA DATA CONTRACT VALIDATED / PWA DISPLAY POC NEXT
+Status: V0.1 INITIAL ACCEPTANCE PASS / DAILY PACKAGE + EXTERNAL MERGE VALIDATED
 
 このディレクトリは、JRDB PWA向け「自分用競馬新聞」の日次生成・外部source merge・配布契約を独立管理するためのmodule boundaryです。
 
@@ -8,9 +8,9 @@ Status: REAL-DATA DATA CONTRACT VALIDATED / PWA DISPLAY POC NEXT
 
 - `../docs/JRDB_PWA_Newspaper_Design_v0_1.md`
 - `../docs/JRDB_Newspaper_Neutral_Dependency_Inventory_v0_1.md`
-- `../docs/JRDB_Newspaper_PoC_20260816_Sapporo11_5plus3_20260909.md`
 - `../schema/jrdb_pwa_newspaper_race_schema_v0_1.json`
 - `../schema/jrdb_pwa_newspaper_manifest_schema_v0_1.json`
+- `.gpt/WORKFLOW.md`
 - `.gpt/REQUEST_CONTRACT.md`
 
 ## Architecture boundary
@@ -26,175 +26,108 @@ racenote_history_engine.py -> Newspaper history
 その他 racenote_* の内部ロジック -> Newspaper JRDB base/history
 ```
 
-基本構造は次です。
+基本構造:
 
 ```text
 JRDB Raw / PACI
   -> neutral JRDB layer
-     - src/jrdb_raw.py
-     - src/jrdb_raw_history.py
-     - 必要に応じて新設するneutral history/access modules
-       -> RaceNote adapter
-       -> Newspaper adapter
+     -> Newspaper Base / history
+     -> external addon merge
+        - Eval
+        - RaceNote prediction output
+        - keibailuka
+        - independent index
+        - Edge Registry
 ```
 
-RaceNote内にNewspaperでも必要な汎用処理が見つかった場合は、その処理をそのままNewspaperからimportしません。まずJRDB汎用moduleへ抽出し、RaceNote側もその汎用moduleを使うようにしてから双方で共有します。
+RaceNoteの予想結果・印・短評は外部addonとして `addons.racenote_prediction` とrace-level noteへmergeできます。RaceNote内部実装はNewspaper Base/historyの依存にしません。
 
-RaceNoteの予想結果・短評そのものは外部addonとして `addons.racenote_prediction` へmerge可能です。これはJRDB Base/history生成への依存とは別責務です。
+## Implemented data pipeline
 
-## Implemented Base PoC
+- `../src/jrdb_newspaper_build.py`: 1レースNewspaper Base生成
+- `../src/jrdb_newspaper_day_build.py`: 1日分のmanifest + race JSON群生成
+- `../src/jrdb_newspaper_merge_external.py`: 外部sourceのnamespace-safe merge + day-package生成
+- `../src/audit_jrdb_newspaper_poc.py`: real-data PoC監査
+- `../pwa/newspaper.html`: Newspaper PWA
+- `../pwa/newspaper-day.js`: 1日パッケージ読込・OPFS保存・レース切替
 
-`../src/jrdb_newspaper_build.py` はCommon Readerから直接、1レース1JSONのNewspaper Baseを生成します。
+Base/historyはCommon Reader / neutral JRDB accessから生成し、最大8走を保持します。初期表示3走、切替5走/8走。外部source欠損はBase失敗にせずnull/PENDINGで保持します。
+
+## 2026-09-05 full-day acceptance
+
+2026-09-05の札幌・中山・阪神36Rを用いた1日分実データテストを実施済みです。
+
+- 36R / 455頭を日次生成
+- detailed history + Analysis compact historyを統合
+- Eval完成CSV: 455/455 exact match
+- keibailuka: 22件中20件 exact match、2件は推測補正せずunmatched保持
+- 1日パッケージJSONをiPhoneへ保存
+- 機内モードでレース切替・過去走詳細モーダル表示を確認
+- 外部情報表示を確認
+- 実機で十分に快適な表示速度を確認
+
+この09/05データをv0.1の実機受入基準として扱います。
+
+## External source ownership
+
+- Eval merger: `addons.eval`
+- RaceNote prediction merger: `addons.racenote_prediction` + race-level RaceNote note
+- keibailuka merger: `addons.keibailuka`
+- independent index merger: `addons.my_index`
+- Edge matcher: `edge_matches`
+
+基本join key:
 
 ```text
-PACI
-  BAC/KYI/CHA/CYB/UKC -> race/basic/jrdb
-  KYI previous 1-5 + ZED/ZKB -> detailed_recent_history
-  optional Analysis Lite -> compact_older_history up to total 8
-  -> Newspaper race bundle v0.1
+date + venue_code + race_no + horse_no
 ```
 
-実装済みの境界:
+馬名は照合には使えますが、文字列の近似・推測による自動joinを標準経路にしません。
 
-- `racenote_*` をimportしない
-- target/future historyをfail-closed
-- BAC declared field sizeとKYI頭数を一致検証
-- horse number一意性を検証
-- history sequenceと`history_date < target_date`を検証
-- Eval / RaceNote prediction / keibailuka / independent indexは未取得時null/PENDING
-- Edgeは未merge時空配列
-- unresolved previous linkは履歴生成失敗と同一視せず、`source_status.jrdb_history` のcoverage metadataで明示
+## GitHub routing standard — 2026-09-10
 
-`../src/audit_jrdb_newspaper_poc.py` はreal-data PoC用監査器で、PACI/Analysis provenance、schema、headcount、history layer、chronology、duplicate、RaceNote import、addon/Edge境界を監査します。
+このsubsystemではルート/JRDBのGitHub運用方針に従い、Issue駆動を既定にしません。
 
-Synthetic regressionは `.github/workflows/jrdb_common_reader_tests.yml` に組み込み済みです。2026-09-09 run `34305173081` はsuccess。
+- Read / Audit: GitHub read/search/fetchを直接使用
+- Git Change: UTF-8 source/test/docs/config/workflowはGitHubへdirect commit
+- Pure Deterministic Execution: 取得済みPACI/Analysis/CSV/JSONに対するbuild・merge・schema validation・SHA・集計はGPTローカル実行
+- Actions-Native: JRDB Secretsを使う公式データ取得、長時間/大容量、artifact chain、immutable freeze、正式監査run、Pages deployment等のみ
 
-## Real-data validation: 2026-08-16 札幌11R 札幌記念
+PACIを既に取得できている場合、Newspaper builderを動かすだけのためにIssue / Actionsを起動しません。PACIが未取得で認証取得が必要な場合だけ、ActionsでJRDB公式取得を行い、取得後のbuild/mergeは原則ローカルへ戻します。
 
-### PACI-only 5-run PASS
+## Routine Work target
 
-- target: `01261811` / 札幌11R / 札幌記念 / 芝2000m / G2 / 16頭
-- 16頭 identity/headcount exact
-- detailed history 5走 × 16頭 = 80走
-- previous expected/resolved/unresolved = 80 / 80 / 0
-- chronology violation = 0
-- duplicate history identity = 0
-- forbidden `racenote_*` import = 0
-- addons null / Edge empty
-
-アドマイヤテラの2025-11-30 ジャパンCは `abnormal_code=3`、ZKBコメントは「スタート直後躓き態勢崩し鞍上が落馬、中止」。time / last3f / IDM等の欠損は競走中止に対応し、parser failureではない。
-
-### Analysis-backed 5+3 PASS
-
-Issue #614 / run `34307352474`。
-
-- 16/16頭が8走
-- total history = 128
-- detailed = 80
-- compact = 48
-- Analysis supplemental = 48
-- chronology violation = 0
-- duplicate = 0
-- schema = PASS
-- forbidden RaceNote imports = 0
-- pretty JSON = 307,691 bytes
-
-Analysis audit:
-
-- 197,492,736 bytes
-- SHA-256 `4df011c74b226ad394a171b71c0841872cb94f3418c8e7f85225a31de89e21b2`
-- quick_check = ok
-- rows = 513,512
-- period = 2016-01-05 .. 2026-08-23
-
-Compact 48 runsでは `final_win_odds` が48/48 null。これは現在のAnalysis Lite全体で当該列がnullであるためで、Newspaper側のparser欠損ではない。6-8走目では人気を利用し、単勝オッズは表示必須にしない。
-
-## UI order
-
-```text
-馬情報 -> 印群 -> 過去走 -> Edge
-```
-
-1頭1行を基本とし、スマホ横スクロールを前提にします。
-
-PWA display PoC policy:
-
-- default: 3走
-- toggle: 5走 / 8走
-- 1-5 detailedは時計・上がり・IDM・comment詳細へ展開可能
-- 6-8 compactはAnalysisに存在するfieldのみ表示
-- compactのrace_name欠損時は場/R + grade/classへfallback
-- source layer差を内部的に保持し、compactをdetailedと誤表示しない
-
-## Planned routine request
-
-将来の専用Workスレッドでは、ユーザーが原則として日付だけ指定できる運用を目標とします。
+専用Workスレッドでは、最終的にユーザーが日付と利用可能な添付だけを渡せば1日JSONを作れる運用を標準とします。
 
 ```text
 09/12の競馬新聞用データを生成してください。
+不足入力はLibrary / Driveから回収してください。
 ```
 
-同じ依頼を再実行可能とし、初回はJRDB Baseを生成、後続実行ではその時点で取得可能なEval / RaceNote prediction / keibailuka / Edge / independent indexを安全にmergeします。
+標準処理:
 
-外部sourceが未取得でもJRDB Base生成を妨げず、未取得slotはnull/PENDINGで保持します。
+1. target date確定
+2. 添付 / Library / Drive / 既存artifactから入力をresolve
+3. PACIがなければActions-Nativeで公式取得のみ実施
+4. GitHub `main` の正本moduleを取得してローカルで日次Base生成
+5. Eval / RaceNote prediction / keibailuka / Edge / independent indexの利用可能分をmerge
+6. schema / key / headcount / as-of / SHAを監査
+7. day-package.jsonを生成
+8. 必要に応じてDrive canonical保存 / publish
+9. READY/PENDING/ERRORと成果物を報告
 
-## Source responsibilities
+ローカル生成物には可能な限り `source_commit`, module/source SHA, input SHA, generated_at, output SHAを残し、正本moduleの再現実行であることを追跡可能にします。
 
-- JRDB Raw / PACI fixed-width parse: `../src/jrdb_raw.py`
-- historical Raw access: `../src/jrdb_raw_history.py`
-- Newspaper Base builder: `../src/jrdb_newspaper_build.py`
-- real-data PoC auditor: `../src/audit_jrdb_newspaper_poc.py`
-- JRDB current race / runner base: BAC / KYI / CHA / CYB / UKC等のpre-race dataをneutral readerから投影
-- history: Newspaper専用projectionをneutral JRDB history/access層の上に実装する
-- Analysis Lite: optional compact older-history source。RaceNote-owned storeではない
-- Eval: `addons.eval`
-- RaceNote prediction: `addons.racenote_prediction` + race-level RaceNote note
-- keibailuka: `addons.keibailuka`
-- independent index: `addons.my_index`
-- Edge Registry: `edge_matches`
+## Storage / delivery
 
-RaceNote v1.0、Eval、Edge Registry等の既存source truthはこのmoduleへ移さない。
-
-## Storage / delivery target
-
-日次生成物はGit管理外。
-
-候補:
+日次生成物・JRDB Raw・PACI・秘密情報はGit管理外です。Gitはcode / schema / docsを正本管理します。
 
 ```text
 Drive canonical
-  -> publish workflow
-  -> GitHub Pages data
+  -> publish
+  -> GitHub Pages
   -> PWA
   -> OPFS offline copy
 ```
 
-Gitはcode / schema / docsのみを正本管理します。
-
-## Implementation status
-
-完了:
-
-- neutral dependency inventory
-- Newspaper JRDB Base builder synthetic PoC
-- detailed previous 1-5 history projection
-- Analysis compact 6-8補完
-- race bundle schema alignment
-- schema / as-of / headcount / architecture regression
-- PACI-only 札幌記念 real-data PoC
-- Analysis-backed 5+3 札幌記念 real-data PoC
-- existing JRDB Raw fetch Issueへのoptional Newspaper PoC統合
-
-次:
-
-- PWA newspaper display PoC
-- 3/5/8 toggle
-- sticky 馬番/馬名 + 横スクロールの実機確認
-
-未実装:
-
-- merge engine
-- daily manifest builder
-- Drive save
-- production publish workflow
-- OPFS newspaper sync
+Pages deploymentそのものはGitHub Actions環境を使いますが、PWA source変更はGitHubへdirect commitし、そのpush triggerでPages workflowを起動するのを標準とします。
