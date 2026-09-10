@@ -39,6 +39,9 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/jrdb_edge_matcher.py` — Registry JSONLと開催前runner factsのconsumer-neutral Edge照合
 - `src/run_jrdb_edge_match_current.py` — PACI → current facts → Edge matchesの1コマンド実行
 - `src/build_jrdb_edge_publication_manifest.py` — Edge Registry配布資産のfail-closed manifest生成
+- `src/build_jrdb_training_research.py` — Index Base + Official RunPerfから追い切り研究用1出走1行SQLiteを構築
+- `src/audit_jrdb_training_research.py` — Raw/時系列/coverage/market混入/holdout境界の正式監査
+- `src/analyze_jrdb_training_stage1b.py` — 2013-2023限定の当馬追い切り縦比較Stage 1b
 - `src/export_jrdb_eval_race_conditions.py` — Raw BAC → Eval用1レース1行レース条件CSV（Analysis非変更）
 - `src/export_jrdb_eval_dataset.py` — Raw BAC + SED → Eval専用1レース1行統合CSV（Analysis/Core非依存）
 - `src/export_jrdb_eval_horse_results.py` — Raw SED → Eval「全馬データ」結果用1頭1行CSV + audit JSON
@@ -183,6 +186,11 @@ PWA競馬新聞向けの独自指数は、条件集計用Fact Lite / Stats Mart�
 - `Value` — 独自予測と市場オッズとの差。Ability / Edge には人気・オッズを入れない
 
 2010-2025の長期JRDB履歴を用い、2010-2012 warm-up、2013-2023 development walk-forward、2024-2025 locked holdoutを基本検証構成とする。新馬も血統・調教・騎手・厩舎等の事前情報からAbilityを算出し、既走馬と同じRunPerf尺度へ接続する。
+
+追い切りEdge研究の反復基盤は `JRDB Training Research Base v0.1` とし、
+`training_runner` へCHA/CYB/KYI/SED/Official RunPerfをmarket情報なしで接続する。
+2024-2025の結果は格納可能だが、Controllerによる明示的な開封指示まで予測評価へ使用しない。
+設計・Stage 1b contractは `docs/Training_Research_Base_v0_1.md`。
 
 設計正本:
 

@@ -1,0 +1,281 @@
+name: JRDB Training Research full build via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_TRAINING_RESEARCH]'
+
+jobs:
+  build-audit-stage1b:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_RESEARCH]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout immutable source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse fixed-scope request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import os,re
+          from pathlib import Path
+          prefix=os.environ['REQUEST_PREFIX']
+          request_id=os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}',request_id):
+              raise SystemExit('invalid request id')
+          Path('/tmp/request_id').write_text(request_id,encoding='utf-8')
+          with Path(os.environ['GITHUB_OUTPUT']).open('a',encoding='utf-8') as handle:
+              handle.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Run focused regression and holdout-lock tests
+        run: |
+          python horse-racing/jrdb/tests/test_build_jrdb_index_base_from_raw.py -v
+          python horse-racing/jrdb/tests/test_jrdb_training_research.py -v
+
+      - name: Fetch annual JRDB Raw 2010-2025
+        id: fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_training/raw /tmp/jrdb_training/report
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2010 --to-year 2025 \
+            --kinds BAC KYI SED UKC CHA CYB \
+            --output-dir /tmp/jrdb_training/raw \
+            --manifest /tmp/jrdb_training/report/fetch_manifest.jsonl \
+            --sleep-seconds 1 --continue-on-error \
+            > /tmp/jrdb_training/report/fetch_stdout.log \
+            2> /tmp/jrdb_training/report/fetch_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build audited Index Base
+        id: index_build
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
+            --raw-root /tmp/jrdb_training/raw \
+            --years {2010..2025} \
+            --db /tmp/jrdb_training/index.sqlite \
+            > /tmp/jrdb_training/report/index_build_stdout.log \
+            2> /tmp/jrdb_training/report/index_build_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit Index Base
+        id: index_audit
+        continue-on-error: true
+        run: |
+          set +e
+          if [ ! -f /tmp/jrdb_training/index.sqlite ]; then
+            echo "exit_code=99" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          python horse-racing/jrdb/src/audit_jrdb_index_base.py \
+            --db /tmp/jrdb_training/index.sqlite \
+            --out /tmp/jrdb_training/report/index_base_audit.json --no-db-hash \
+            > /tmp/jrdb_training/report/index_audit_stdout.log \
+            2> /tmp/jrdb_training/report/index_audit_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build Official RunPerf v0.1 chain
+        id: runperf
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.index_audit.outputs.exit_code }}' != '0' ]; then
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          python horse-racing/jrdb/src/build_jrdb_runperf_features.py \
+            --index-db /tmp/jrdb_training/index.sqlite \
+            --out /tmp/jrdb_training/runperf.sqlite --methods EXPANDING \
+            > /tmp/jrdb_training/report/runperf_build_stdout.log \
+            2> /tmp/jrdb_training/report/runperf_build_stderr.log
+          a=$?
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_runperf.py \
+              --db /tmp/jrdb_training/runperf.sqlite \
+              --out /tmp/jrdb_training/report/runperf_audit.json --no-db-hash
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/build_jrdb_official_runperf.py \
+              --runperf-db /tmp/jrdb_training/runperf.sqlite \
+              --out /tmp/jrdb_training/official.sqlite
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_official_runperf.py \
+              --db /tmp/jrdb_training/official.sqlite \
+              --source-runperf-db /tmp/jrdb_training/runperf.sqlite \
+              --out /tmp/jrdb_training/report/official_runperf_audit.json --no-db-hash
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build Training Research Base
+        id: training_build
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.runperf.outputs.exit_code }}' != '0' ]; then
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          python horse-racing/jrdb/src/build_jrdb_training_research.py \
+            --index-db /tmp/jrdb_training/index.sqlite \
+            --official-runperf-db /tmp/jrdb_training/official.sqlite \
+            --out /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite \
+            --source-git-commit '${{ github.sha }}' \
+            --result-json /tmp/jrdb_training/report/training_research_build_result.json \
+            > /tmp/jrdb_training/report/training_build_stdout.log \
+            2> /tmp/jrdb_training/report/training_build_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit Training Research Base
+        id: training_audit
+        continue-on-error: true
+        run: |
+          set +e
+          if [ ! -f /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite ]; then
+            echo "exit_code=99" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          python horse-racing/jrdb/src/audit_jrdb_training_research.py \
+            --db /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite \
+            --raw-root /tmp/jrdb_training/raw \
+            --out /tmp/jrdb_training/report/training_research_build_audit.json \
+            > /tmp/jrdb_training/report/training_audit_stdout.log \
+            2> /tmp/jrdb_training/report/training_audit_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Run Stage 1b on development only
+        id: stage1b
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.training_audit.outputs.exit_code }}' != '0' ]; then
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          python horse-racing/jrdb/src/analyze_jrdb_training_stage1b.py \
+            --db /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite \
+            --out-json /tmp/jrdb_training/report/training_vertical_stage1b.json \
+            --out-md /tmp/jrdb_training/report/Training_Vertical_Stage1b_Official_RunPerf_20260910.md \
+            > /tmp/jrdb_training/report/stage1b_stdout.log \
+            2> /tmp/jrdb_training/report/stage1b_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build workflow result
+        if: always()
+        env:
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          INDEX_BUILD_EXIT: ${{ steps.index_build.outputs.exit_code }}
+          INDEX_AUDIT_EXIT: ${{ steps.index_audit.outputs.exit_code }}
+          RUNPERF_EXIT: ${{ steps.runperf.outputs.exit_code }}
+          TRAINING_BUILD_EXIT: ${{ steps.training_build.outputs.exit_code }}
+          TRAINING_AUDIT_EXIT: ${{ steps.training_audit.outputs.exit_code }}
+          STAGE1B_EXIT: ${{ steps.stage1b.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          exits={key:os.environ.get(key+'_EXIT','') for key in
+                 ('FETCH','INDEX_BUILD','INDEX_AUDIT','RUNPERF','TRAINING_BUILD','TRAINING_AUDIT','STAGE1B')}
+          audit_path=Path('/tmp/jrdb_training/report/training_research_build_audit.json')
+          stage_path=Path('/tmp/jrdb_training/report/training_vertical_stage1b.json')
+          audit=json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.is_file() else {}
+          stage=json.loads(stage_path.read_text(encoding='utf-8')) if stage_path.is_file() else {}
+          status='success' if all(v=='0' for v in exits.values()) and audit.get('status')=='PASS' else 'failure'
+          result={'status':status,'run_id':int(os.environ['RUN_ID']),'head_sha':os.environ['HEAD_SHA'],
+                  'period':'2010-2025','exits':exits,'database':audit.get('database'),
+                  'row_counts':audit.get('row_counts'),'coverage':audit.get('coverage'),
+                  'audit_status':audit.get('status'),'audit_violations':audit.get('violations'),
+                  'stage1b_classification':stage.get('classification'),
+                  'stage1b_population':stage.get('population'),
+                  'stage1b_main':(stage.get('history_sensitivity') or [None,None])[1],
+                  'holdout_guard':stage.get('holdout_guard') or audit.get('holdout_policy')}
+          Path('/tmp/jrdb_training/report/workflow_result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('/tmp/comment.md').write_text('JRDB_TRAINING_RESEARCH_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n',encoding='utf-8')
+          PY
+
+      - name: Upload research database artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-training-research-db-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Upload reports artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-training-research-report-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/jrdb_training/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close successful request
+        if: >-
+          always() &&
+          steps.fetch.outputs.exit_code == '0' &&
+          steps.index_build.outputs.exit_code == '0' &&
+          steps.index_audit.outputs.exit_code == '0' &&
+          steps.runperf.outputs.exit_code == '0' &&
+          steps.training_build.outputs.exit_code == '0' &&
+          steps.training_audit.outputs.exit_code == '0' &&
+          steps.stage1b.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Fail workflow when a gate failed
+        if: >-
+          always() &&
+          (steps.fetch.outputs.exit_code != '0' ||
+           steps.index_build.outputs.exit_code != '0' ||
+           steps.index_audit.outputs.exit_code != '0' ||
+           steps.runperf.outputs.exit_code != '0' ||
+           steps.training_build.outputs.exit_code != '0' ||
+           steps.training_audit.outputs.exit_code != '0' ||
+           steps.stage1b.outputs.exit_code != '0')
+        run: exit 1
