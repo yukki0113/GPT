@@ -178,16 +178,26 @@ def extract_roles(marks: Sequence[Mapping[str, Any]]) -> dict[str, int]:
     require(isinstance(marks, Sequence) and len(marks) >= 5, "policy marks must contain at least five rows")
     singles: dict[str, int] = {}
     deltas: list[int] = []
+    named_deltas: dict[str, int] = {}
     for row in marks:
         mark = row.get("mark")
         horse_no = row.get("horse_no")
         require(isinstance(horse_no, int) and horse_no > 0, f"invalid horse_no in marks: {horse_no!r}")
         if mark in {"◎", "○", "▲"} and mark not in singles:
             singles[str(mark)] = horse_no
+        elif mark in {"△1", "△2"}:
+            require(mark not in named_deltas, f"duplicate canonical delta mark: {mark}")
+            named_deltas[str(mark)] = horse_no
         elif mark == "△":
             deltas.append(horse_no)
-    require(all(m in singles for m in ("◎", "○", "▲")) and len(deltas) >= 2, "marks missing ◎/○/▲/△1/△2")
-    roles = {"honmei": singles["◎"], "taikou": singles["○"], "tanana": singles["▲"], "delta1": deltas[0], "delta2": deltas[1]}
+    require(all(m in singles for m in ("◎", "○", "▲")), "marks missing ◎/○/▲/△1/△2")
+    if named_deltas:
+        require(set(named_deltas) == {"△1", "△2"}, "marks missing ◎/○/▲/△1/△2")
+        delta1, delta2 = named_deltas["△1"], named_deltas["△2"]
+    else:
+        require(len(deltas) >= 2, "marks missing ◎/○/▲/△1/△2")
+        delta1, delta2 = deltas[0], deltas[1]
+    roles = {"honmei": singles["◎"], "taikou": singles["○"], "tanana": singles["▲"], "delta1": delta1, "delta2": delta2}
     require(len(set(roles.values())) == 5, "top-five marks must be five distinct horses")
     return roles
 
