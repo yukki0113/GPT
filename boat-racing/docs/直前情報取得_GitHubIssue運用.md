@@ -2,11 +2,20 @@
 
 ## 目的
 
-ChatからGitHub Actionsの `workflow_dispatch` を直接起動できない場合があるため、直前情報取得の標準実行経路を GitHub Issue 起動方式へ切り替える。
+この文書は、直前情報取得が D. Actions-Native Execution と判定された場合の正式実行経路を定義する。
 
-Issueを実行要求、GitHub Actionsを実行基盤、Issueコメントを制御結果、artifactを成果物返却として扱う。
+GitHubに正本moduleが存在すること自体はIssueを使う理由にしない。正本PythonをChatローカルで同一条件実行でき、必要入力を取得できる場合は C. Pure Deterministic Execution を優先する。
 
-取得ロジック自体はGit正本の `boat-racing/src/fetch_boatrace_pre_race_info.py` をそのまま使用し、Actions専用ロジックへ分岐させない。
+一方、ChatローカルのPython実行環境からBOAT RACE公式サイトへ通信できず、`fetch_boatrace_pre_race_info.py` を同一条件で再現実行できない場合は、GitHub Actions上での外部取得が必要になるため本Issue経路を使用する。
+
+Issueを実行要求、GitHub Actionsを実行基盤、Issueコメントを制御結果、artifactを成果物返却として扱う。取得ロジック自体はGit正本の `boat-racing/src/fetch_boatrace_pre_race_info.py` をそのまま使用し、Actions専用ロジックへ分岐させない。
+
+## GitHub作業の経路
+
+- repository / file / commit / issue / workflow / artifact / SHA / run状態の確認は A. Read / Audit とし、ChatからGitHub read/searchで直接行う。
+- source / test / docs / config / workflow等のUTF-8テキスト変更は B. Git Change とし、direct create/update/deleteを使う。Git更新だけを目的としたIssueは作らない。
+- artifact回収後のJSON検査、SHA計算、差分比較などは、Actions上の監査run自体が要件でない限り C. Pure Deterministic Execution としてChatローカルで行う。
+- 本文書のIssue経路はDの取得本体だけに使用する。
 
 ## 正本
 
@@ -21,7 +30,20 @@ Branch: `main`
 - `boat-racing/docs/直前情報取得依頼_定型作業.txt`
 - `.github/workflows/boatrace_pre_race_issue.yml`
 
-従来の `.github/workflows/boatrace_pre_race_manual.yml` は手動実行用の補助経路として残す。
+従来の `.github/workflows/boatrace_pre_race_manual.yml` は人手での手動実行用の補助経路として残す。
+
+## Issue発行前Preflight
+
+IssueはD判定後にだけ作成し、発行前に次を確認する。
+
+1. latest `main` を取得する。
+2. `.github/workflows/boatrace_pre_race_issue.yml` のrequest parser / contractを確認する。
+3. title prefix、request_id、必須キー `date` / `venue` / `race` / `format` と値域を確認する。
+4. upstream dependencyがないことを確認し、存在しないrun ID / artifact名 / SHAを推測して付けない。
+5. request JSONを機械的にserializeし、Markdown fenceや説明文を混ぜない。
+6. 全項目PASS後にIssueを1回だけ発行する。
+
+失敗時はRESULT、artifact、failed step / logを確認し、同じrequestを盲目的にrerunしない。retryが必要なら原因を修正し、必要に応じて新しいrequest_idで新規Issueを作る。
 
 ## Issue request
 
@@ -36,7 +58,7 @@ Branch: `main`
 例:
 
 ```text
-[BOATRACE_PRE_RACE_REQUEST] 20260825-mikuni-4R-001
+[BOATRACE_PRE_RACE_REQUEST] 20260910-mikuni-4R-001
 ```
 
 ### 本文
@@ -45,7 +67,7 @@ Issue本文は raw JSON とする。
 
 ```json
 {
-  "date": "20260825",
+  "date": "20260910",
   "venue": "三国",
   "race": 4,
   "format": "json"
@@ -125,10 +147,10 @@ BOATRACE_PRE_RACE_RESULT
 
 ```json
 {
-  "request_id": "20260825-mikuni-4R-001",
+  "request_id": "20260910-mikuni-4R-001",
   "status": "success",
   "run_id": 1234567890,
-  "artifact_name": "boatrace-pre-race-20260825-mikuni-4R-001-1234567890",
+  "artifact_name": "boatrace-pre-race-20260910-mikuni-4R-001-1234567890",
   "task_exit_code": "0",
   "validation_exit_code": "0",
   "validation": {},
@@ -138,17 +160,18 @@ BOATRACE_PRE_RACE_RESULT
 
 `status` は `success` / `partial` / `failure` を使用する。
 
-## Chat側の標準運用
+## Chat側のD経路
 
-今後のChat側は原則として次の順で処理する。
+直前情報取得がDと判定された場合は次の順で処理する。
 
 1. Git mainのREADME / CONTEXT / WORKFLOW / 対象Python / Issue Workflowを確認
-2. request_idを生成
-3. raw JSON本文でGitHub Issueを作成
-4. IssueのRESULTコメントを確認
-5. `run_id` / `artifact_name` を取得
-6. Actions artifactを回収
-7. `validation_report.json` と実成果物を再確認
-8. 成果物をユーザーへ返却
+2. Issue発行前Preflightを完了
+3. request_idを生成
+4. raw JSON本文でGitHub Issueを1回だけ作成
+5. IssueのRESULTコメントを確認
+6. `run_id` / `artifact_name` を完全一致で取得
+7. Actions artifactを回収
+8. `validation_report.json` と実成果物をChatローカルで再確認
+9. 成果物をユーザーへ返却
 
-Issue経路が利用できる限り、Chatから `workflow_dispatch` を直接起動することを前提としない。
+D経路ではChatから `workflow_dispatch` を直接起動することを前提としない。
