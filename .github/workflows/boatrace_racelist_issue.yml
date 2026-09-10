@@ -179,12 +179,14 @@ jobs:
                   rows = list(reader)
               row_count = len(rows)
               expected_rows = len(venues) * 12 * 6
-              if column_count != 22:
-                  errors.append(f'input csv columns={column_count}, expected=22')
-              required_metadata = {'開催グレード', '開催名', 'レース名'}
+              if column_count != 21:
+                  errors.append(f'input csv columns={column_count}, expected=21')
+              required_metadata = {'開催グレード', '開催名'}
               missing_metadata_columns = sorted(required_metadata - set(fieldnames))
               if missing_metadata_columns:
                   errors.append('missing metadata columns: ' + ', '.join(missing_metadata_columns))
+              if 'レース名' in fieldnames:
+                  errors.append('unexpected metadata column: レース名')
               if row_count != expected_rows:
                   errors.append(f'input csv rows={row_count}, expected={expected_rows}')
               keys = [(r.get('日付',''), r.get('会場',''), r.get('R',''), r.get('艇番','')) for r in rows]
@@ -194,13 +196,9 @@ jobs:
                   blank_count = sum(not str(r.get(column, '')).strip() for r in rows)
                   if blank_count:
                       errors.append(f'blank {column}: {blank_count} rows')
-              inconsistent_race_names = [
-                  f"{r.get('会場')} {r.get('R')}R"
-                  for r in rows
-                  if str(r.get('レース名', '')).strip() != str(r.get('レース種別', '')).strip()
-              ]
-              if inconsistent_race_names:
-                  errors.append('レース名/レース種別 mismatch: ' + ', '.join(inconsistent_race_names[:20]))
+              blank_race_type = sum(not str(r.get('レース種別', '')).strip() for r in rows)
+              if blank_race_type:
+                  errors.append(f'blank レース種別: {blank_race_type} rows')
 
           success_count = 0
           status_count = 0
@@ -225,7 +223,7 @@ jobs:
               'success_races': success_count,
               'input_rows': row_count,
               'input_columns': column_count,
-              'metadata_columns': ['開催グレード', '開催名', 'レース名'],
+              'metadata_columns': ['開催グレード', '開催名'],
               'errors': errors,
               'output_files': [p.name for p in sorted(out.iterdir()) if p.is_file()],
           }
