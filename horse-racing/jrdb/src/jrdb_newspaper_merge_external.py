@@ -355,6 +355,7 @@ def merge_day(
                     raise ValueError(f"RaceNote race identity mismatch for {key}")
                 horse["addons"]["racenote_prediction"] = {
                     "mark": row["mark"],
+                    "display_value": row["mark"] or "—",
                     "prediction_rank": row["prediction_rank"],
                     "confidence": row["confidence"],
                     "model_version": row["model_version"],
