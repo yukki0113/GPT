@@ -8,6 +8,7 @@ SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
 import jrdb_edge_matcher_v0_2 as matcher
+import run_jrdb_edge_match_current_v0_2 as current_runner
 
 
 def _edge(
@@ -52,7 +53,11 @@ def test_confirmed_only_excludes_suggestive() -> None:
         _edge("S", "REJECTED", "SUGGESTIVE", "POSITIVE", "G", 2),
     ]
 
-    rows = matcher.match_runner(registry, RUNNER)
+    rows = matcher.match_runner(
+        registry,
+        RUNNER,
+        profile=matcher.PROFILE_CONFIRMED_ONLY,
+    )
 
     assert [row["edge_id"] for row in rows] == ["A"]
 
@@ -88,6 +93,10 @@ def test_opposite_direction_is_retained_as_conflict() -> None:
 
     assert {row["presentation"]["performance"]["role"] for row in rows} == {"CONFLICT"}
     assert all(row["presentation"]["performance"]["conflict"] for row in rows)
+
+
+def test_current_runner_operational_default_is_standard() -> None:
+    assert current_runner.DEFAULT_SERVING_PROFILE == matcher.PROFILE_STANDARD
 
 
 def test_legacy_active_publication_remains_compatible() -> None:
