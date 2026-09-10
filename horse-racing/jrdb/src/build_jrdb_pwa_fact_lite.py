@@ -7,8 +7,8 @@ import datetime as dt
 import sqlite3
 from pathlib import Path
 
-VERSION = "0.2.1"
-SCHEMA_VERSION = "0.2"
+VERSION = "0.3.0"
+SCHEMA_VERSION = "0.3"
 
 
 def parse_args() -> argparse.Namespace:
@@ -28,7 +28,7 @@ def parse_args() -> argparse.Namespace:
         default=(
             Path(__file__).resolve().parents[1]
             / "schema"
-            / "jrdb_pwa_fact_lite_schema_v0_2.sql"
+            / "jrdb_pwa_fact_lite_schema_v0_3.sql"
         ),
     )
     return parser.parse_args()
@@ -63,6 +63,7 @@ def validate_source(analysis_path: Path) -> tuple[int, str, str]:
             "track_type",
             "distance",
             "prev_race_key_1",
+            "win5_leg_no",
         }
         missing_columns = sorted(required_columns - columns)
         if missing_columns:
@@ -74,6 +75,15 @@ def validate_source(analysis_path: Path) -> tuple[int, str, str]:
         integrity = connection.execute("PRAGMA integrity_check").fetchone()
         if integrity is None or integrity[0] != "ok":
             raise SystemExit(f"Analysis integrity_check failed: {integrity}")
+
+        invalid_win5 = connection.execute(
+            "SELECT COUNT(*) FROM fact_entry_result_lite "
+            "WHERE win5_leg_no IS NOT NULL AND win5_leg_no NOT BETWEEN 1 AND 5"
+        ).fetchone()[0]
+        if int(invalid_win5) != 0:
+            raise SystemExit(
+                f"Analysis contains invalid win5_leg_no rows: {invalid_win5}"
+            )
 
         row_count = connection.execute(
             "SELECT COUNT(*) FROM fact_entry_result_lite"
@@ -216,7 +226,8 @@ def build_fact(output: sqlite3.Connection) -> None:
           grade_code, frame_no, sex_code, age, sire_id, bms_id,
           sire_line_code, bms_line_code, jockey_id, running_style,
           distance_aptitude, uptrend, training_index, final_win_popularity,
-          finish, win_payout, place_payout, prev_distance_delta, prev_class_code
+          finish, win_payout, place_payout, prev_distance_delta, prev_class_code,
+          win5_leg_no
         )
         SELECT
           CAST(REPLACE(source.race_date, '-', '') AS INTEGER),
@@ -294,6 +305,10 @@ def build_fact(output: sqlite3.Connection) -> None:
             WHEN TRIM(COALESCE(previous.race_condition_code, '')) IN ('15', '16') THEN 6
             WHEN TRIM(COALESCE(previous.race_condition_code, '')) = 'OP' THEN 7
             ELSE 13
+          END,
+          CASE
+            WHEN source.win5_leg_no IS NULL OR source.win5_leg_no = '' THEN NULL
+            ELSE CAST(source.win5_leg_no AS INTEGER)
           END
         FROM analysis.fact_entry_result_lite AS source
         JOIN dim_race AS race ON race.race_key = source.race_key
@@ -405,6 +420,10 @@ def main() -> None:
         "prev_class_rows": output.execute(
             "SELECT COUNT(*) FROM fact_stats_entry "
             "WHERE prev_class_code IS NOT NULL"
+        ).fetchone()[0],
+        "win5_rows": output.execute(
+            "SELECT COUNT(*) FROM fact_stats_entry "
+            "WHERE win5_leg_no IS NOT NULL"
         ).fetchone()[0],
         "sire_count": output.execute("SELECT COUNT(*) FROM dim_sire").fetchone()[0],
         "bms_count": output.execute("SELECT COUNT(*) FROM dim_bms").fetchone()[0],
