@@ -3,6 +3,7 @@
 BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 ## Current tools
+- `src/forward_trial_predict.py` — ForwardTrial_Ver0.1の事前予想・根拠明細・2連単1点販売選別を公式出走表CSVから純粋決定論的に生成
 - `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
 - `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
 - `src/fetch_boatrace_event_meta.py` — BOAT RACE公式日別レース一覧から開催名・グレードを日次Freeze
@@ -37,6 +38,20 @@ BOAT RACE公式サイトへ通信する取得系Pythonについても「Gitにmo
   - `ForwardTrial_Ver0.1`
   - 予想スレッドは日次試行開始時にこの仕様を優先して読む
   - Ver1.2.1を基礎資料としつつ、試行用の決定規則、2連単1点、販売選別、結果遮断を固定
+
+### ForwardTrial日次予想の標準実行経路
+
+公式出走表CSVを取得済みの場合、予想・scoring・販売選別は **C. Pure Deterministic Execution** とし、Chat内で同ロジックを再実装せず、GitHub `main` の `src/forward_trial_predict.py` を取得してGPTローカルで実行する。
+
+```bash
+python boat-racing/src/forward_trial_predict.py \
+  --input 20260910_公式出走表_尼崎_児島_宮島_芦屋_多摩川_大村.csv \
+  --output-dir ./out \
+  --prediction-time '2026-09-10 08:22:00+09:00' \
+  --source-commit <fetched-main-commit>
+```
+
+moduleは24列事前予想CSV、26列予想根拠明細CSV、21列2連単1点販売選別CSVに加え、`source_commit`、source/input/output SHA256、generated_atを持つ実行manifestを生成する。公式出走表の取得自体は、Chatローカルから公式サイトへ同一条件で通信できない場合に限りD. Actions-Native ExecutionとしてIssue / Actionsを使用する。Artifact回収後の検証と予想計算はCへ戻す。
 
 ## Daily data source of truth
 
