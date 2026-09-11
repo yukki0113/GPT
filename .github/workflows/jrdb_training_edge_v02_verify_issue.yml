@@ -1,0 +1,107 @@
+name: JRDB Training Edge v0.2 freeze verification via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verify:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_V02_VERIFY]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout triggering main snapshot
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install scorer dependencies
+        run: python -m pip install --disable-pip-version-check numpy scikit-learn
+
+      - name: Compile v0.2 sources
+        run: |
+          python -m py_compile horse-racing/jrdb/src/bundle_jrdb_daily_year.py
+          python -m py_compile horse-racing/jrdb/src/project_training_edge_v0_2_input.py
+          python -m py_compile horse-racing/jrdb/src/training_edge_v0_2_core.py
+
+      - name: Run deterministic unit tests
+        id: tests
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/jrdb/tests/test_bundle_jrdb_daily_year.py -v
+          a=$?
+          python horse-racing/jrdb/tests/test_project_training_edge_v0_2_input.py -v
+          b=$?
+          python horse-racing/jrdb/tests/test_training_edge_v0_2_core.py -v
+          c=$?
+          echo "bundle_exit=$a" >> "$GITHUB_OUTPUT"
+          echo "projector_exit=$b" >> "$GITHUB_OUTPUT"
+          echo "core_exit=$c" >> "$GITHUB_OUTPUT"
+          if [ "$a" != 0 ] || [ "$b" != 0 ] || [ "$c" != 0 ]; then
+            exit 1
+          fi
+          exit 0
+
+      - name: Comment verification result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUNDLE_EXIT: ${{ steps.tests.outputs.bundle_exit }}
+          PROJECTOR_EXIT: ${{ steps.tests.outputs.projector_exit }}
+          CORE_EXIT: ${{ steps.tests.outputs.core_exit }}
+          HEAD_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          exits = {
+              'bundle_test': os.environ.get('BUNDLE_EXIT', ''),
+              'projector_test': os.environ.get('PROJECTOR_EXIT', ''),
+              'core_test': os.environ.get('CORE_EXIT', ''),
+          }
+          status = 'success' if all(value == '0' for value in exits.values()) else 'failure'
+          result = {
+              'status': status,
+              'run_id': int(os.environ['RUN_ID']),
+              'head_sha': os.environ['HEAD_SHA'],
+              'exits': exits,
+          }
+          text = json.dumps(result, indent=2)
+          Path('/tmp/comment.md').write_text(
+              'JRDB_TRAINING_V02_VERIFY_RESULT\n```json\n' + text + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close successful verification
+        if: >-
+          always() &&
+          steps.tests.outputs.bundle_exit == '0' &&
+          steps.tests.outputs.projector_exit == '0' &&
+          steps.tests.outputs.core_exit == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Fail workflow when tests failed
+        if: >-
+          always() &&
+          (steps.tests.outputs.bundle_exit != '0' ||
+           steps.tests.outputs.projector_exit != '0' ||
+           steps.tests.outputs.core_exit != '0')
+        run: exit 1
