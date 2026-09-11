@@ -24,9 +24,15 @@ from jrdb_edge_canonical import (
     frame_zone as _frame_zone,
     transition as _transition,
 )
-from jrdb_edge_v02_canonical import horse_age_at_race, track_condition_bucket
+from jrdb_edge_v02_canonical import (
+    canonical_stable_evaluation_code,
+    canonical_training_arrow_code,
+    canonical_uptrend_code,
+    horse_age_at_race,
+    track_condition_bucket,
+)
 
-VERSION = "0.2.3"
+VERSION = "0.2.4"
 SCHEMA_VERSION = "v0.2"
 DEFAULT_SCHEMA = Path(__file__).resolve().parents[1] / "schema/jrdb_edge_feature_mart_schema_v0_2.sql"
 
@@ -206,9 +212,9 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
                 "pre_idm": row["pre_idm"],
                 "training_score": row["training_score"],
                 "stable_score": row["stable_score"],
-                "uptrend_code": row["uptrend_code"],
-                "training_arrow_code": row["training_arrow_code"],
-                "stable_evaluation_code": row["stable_evaluation_code"],
+                "uptrend_code": canonical_uptrend_code(row["uptrend_code"]),
+                "training_arrow_code": canonical_training_arrow_code(row["training_arrow_code"]),
+                "stable_evaluation_code": canonical_stable_evaluation_code(row["stable_evaluation_code"]),
                 "body_weight_pre_kg": row["body_weight_pre_kg"],
                 "body_weight_change_pre_kg": row["body_weight_change_pre_kg"],
                 "condition_class_code": row["condition_class_code"],
