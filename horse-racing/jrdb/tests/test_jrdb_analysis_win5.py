@@ -117,6 +117,8 @@ class AnalysisWin5Test(unittest.TestCase):
             self.assertEqual(result["win5_dates"], 1)
             self.assertEqual(result["win5_races"], 5)
             self.assertEqual(result["integrity_check"], "ok")
+            self.assertEqual(result["sequence_anomalies"], [])
+            self.assertEqual(result["incomplete_sequences"], [])
             self.assertEqual(
                 result["leg_distribution_races"],
                 {1: 1, 2: 1, 3: 1, 4: 1, 5: 1},
@@ -131,6 +133,58 @@ class AnalysisWin5Test(unittest.TestCase):
             finally:
                 connection.close()
             self.assertEqual([row[1] for row in rows], [1, 2, 3, 4, 5])
+
+    def test_v12_migration_accepts_incomplete_sequence_as_audit_warning(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            raw_root = root / "raw"
+            bac_dir = raw_root / "BAC"
+            bac_dir.mkdir(parents=True)
+            archive = bac_dir / "BAC_2025.zip"
+
+            records = [
+                make_bac("05259010", "20250101", 1),
+                make_bac("06259011", "20250101", 4),
+            ]
+            with zipfile.ZipFile(archive, "w") as zipped:
+                zipped.writestr("BAC250101.txt", b"\r\n".join(records) + b"\r\n")
+
+            db = root / "analysis.sqlite"
+            schema_v12 = ROOT / "schema" / "jrdb_analysis_schema_v1_2.sql"
+            connection = sqlite3.connect(db)
+            try:
+                connection.executescript(schema_v12.read_text(encoding="utf-8"))
+                connection.execute(
+                    "INSERT INTO fact_entry_result_lite("
+                    "race_date,year,race_key,horse_no"
+                    ") VALUES(?,?,?,?)",
+                    ("2025-01-01", 2025, "05259010", 1),
+                )
+                connection.execute(
+                    "INSERT INTO fact_entry_result_lite("
+                    "race_date,year,race_key,horse_no"
+                    ") VALUES(?,?,?,?)",
+                    ("2025-01-01", 2025, "06259011", 2),
+                )
+                connection.commit()
+            finally:
+                connection.close()
+
+            result = migrate(db, raw_root)
+            self.assertEqual(result["rows_before"], 2)
+            self.assertEqual(result["rows_after"], 2)
+            self.assertEqual(result["sequence_anomalies"], [])
+            self.assertEqual(
+                result["incomplete_sequences"],
+                [
+                    {
+                        "race_date": "2025-01-01",
+                        "present_legs": [1, 4],
+                        "missing_legs": [2, 3, 5],
+                    }
+                ],
+            )
+            self.assertEqual(result["integrity_check"], "ok")
 
 
 if __name__ == "__main__":
