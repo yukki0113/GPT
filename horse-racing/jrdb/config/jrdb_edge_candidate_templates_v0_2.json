@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "template_version": "2026-09-09.v2.2",
+  "template_version": "2026-09-12.v2.3",
   "rules": {
     "max_anchor_count": 2,
     "max_modifier_count": 3,
@@ -12,6 +12,9 @@
     "turn_code": ["1", "2", "3"],
     "frame_zone": ["INNER", "MIDDLE", "OUTER"],
     "track_condition_bucket": ["1", "2", "3", "4"],
+    "uptrend_code": ["1", "2", "3", "4", "5"],
+    "training_arrow_code": ["1", "2", "3", "4", "5"],
+    "stable_evaluation_code": ["1", "2", "3", "4"],
     "distance_change_bucket": ["LARGE_SHORTEN", "SHORTEN", "SAME_BAND", "EXTEND", "LARGE_EXTEND"],
     "surface_transition": ["1->1", "1->2", "2->1", "2->2"],
     "frame_transition": [
