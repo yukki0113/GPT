@@ -13,6 +13,12 @@ Historical sources:
 
 Only race keys that already exist in the Analysis DB are updated. The migration
 does not add or remove fact rows.
+
+Analysis contains completed race/result rows, so a day may legitimately expose
+only part of the original WIN5 sequence when one or more target races were not
+completed/retained in Analysis. Missing leg numbers are therefore audit warnings,
+not migration failures. Duplicate assignments of the same leg number to multiple
+Analysis race keys remain fatal.
 """
 from __future__ import annotations
 
@@ -25,7 +31,7 @@ from pathlib import Path
 
 from jrdb_raw import Parser, iter_archive_records
 
-VERSION = "1.0-production"
+VERSION = "1.0.1-production"
 TARGET_SCHEMA_VERSION = "v1.3"
 SOURCE_SCHEMA_VERSION = "v1.2"
 
@@ -178,10 +184,16 @@ def merge_mapping(target: dict[str, int], source: dict[str, int]) -> None:
         target[race_key] = leg
 
 
-def validate_leg_sequence(
+def audit_leg_sequence(
     connection: sqlite3.Connection,
-) -> tuple[int, list[dict[str, object]]]:
-    """Validate that each WIN5 date contains exactly one leg 1..5 when present."""
+) -> tuple[int, list[dict[str, object]], list[dict[str, object]]]:
+    """Audit daily WIN5 legs without requiring all five legs in Analysis.
+
+    A leg number assigned to more than one Analysis race on the same date is a
+    fatal anomaly. Missing leg numbers are retained as audit warnings because
+    Analysis only contains completed race/result rows and may omit cancelled or
+    otherwise non-completed WIN5 target races.
+    """
     rows = connection.execute(
         """
         SELECT race_date, win5_leg_no, COUNT(DISTINCT race_key)
@@ -196,15 +208,36 @@ def validate_leg_sequence(
     for race_date, leg, race_count in rows:
         by_date.setdefault(str(race_date), {})[int(leg)] = int(race_count)
 
-    anomalies: list[dict[str, object]] = []
-    for race_date, legs in by_date.items():
-        if set(legs) != {1, 2, 3, 4, 5}:
-            anomalies.append({"race_date": race_date, "legs": legs})
-            continue
-        if any(count != 1 for count in legs.values()):
-            anomalies.append({"race_date": race_date, "legs": legs})
+    sequence_anomalies: list[dict[str, object]] = []
+    incomplete_sequences: list[dict[str, object]] = []
+    expected = {1, 2, 3, 4, 5}
 
-    return len(by_date), anomalies
+    for race_date, legs in by_date.items():
+        duplicate_legs = {
+            leg: count
+            for leg, count in legs.items()
+            if count != 1
+        }
+        if duplicate_legs:
+            sequence_anomalies.append(
+                {
+                    "race_date": race_date,
+                    "duplicate_legs": duplicate_legs,
+                    "legs": legs,
+                }
+            )
+
+        missing_legs = sorted(expected - set(legs))
+        if missing_legs:
+            incomplete_sequences.append(
+                {
+                    "race_date": race_date,
+                    "present_legs": sorted(legs),
+                    "missing_legs": missing_legs,
+                }
+            )
+
+    return len(by_date), sequence_anomalies, incomplete_sequences
 
 
 def migrate(db: Path, raw_root: Path) -> dict[str, object]:
@@ -370,7 +403,9 @@ def migrate(db: Path, raw_root: Path) -> dict[str, object]:
                 "GROUP BY win5_leg_no ORDER BY win5_leg_no"
             )
         }
-        win5_dates, sequence_anomalies = validate_leg_sequence(connection)
+        win5_dates, sequence_anomalies, incomplete_sequences = audit_leg_sequence(
+            connection
+        )
         integrity = str(connection.execute("PRAGMA integrity_check").fetchone()[0])
 
         if invalid_values != 0:
@@ -381,7 +416,7 @@ def migrate(db: Path, raw_root: Path) -> dict[str, object]:
             )
         if sequence_anomalies:
             raise RuntimeError(
-                "WIN5 leg sequence anomalies: "
+                "WIN5 duplicate leg anomalies: "
                 + json.dumps(sequence_anomalies[:10], ensure_ascii=False)
             )
         if integrity != "ok":
@@ -401,6 +436,7 @@ def migrate(db: Path, raw_root: Path) -> dict[str, object]:
             "invalid_values": invalid_values,
             "race_level_inconsistency": race_inconsistency,
             "sequence_anomalies": sequence_anomalies,
+            "incomplete_sequences": incomplete_sequences,
             "integrity_check": integrity,
             "source_count": len(sources),
             "sources": sources,
