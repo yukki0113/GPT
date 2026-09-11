@@ -1,0 +1,77 @@
+{
+  "audit": {
+    "confidence_A": 5,
+    "confidence_B": 13,
+    "confidence_C": 6
+  },
+  "axis_changes": 8,
+  "canonical_payload_sha256": "2526b28f2e944f4d0aa755e5d5a1b1c7a51aa18772c45c257a6c5c1be26ceedc",
+  "control_version": "v0.2-reconstructed-20260909-a",
+  "date": "2026-09-12",
+  "edge": {
+    "analysis_sha256": "25e9cb29f0d957f484d4f2daec7a8656a9a7ef0435dde09338f31c61be91457a",
+    "artifact_name": "jrdb-edge-forward-freeze-v11p-true-forward-20260912-edge-b-34603961295",
+    "earliest_post_time_jst": "2026-09-12T09:45:00+09:00",
+    "frozen_at_utc": "2026-09-11T13:23:17.659640+00:00",
+    "issue": 866,
+    "manifest_sha256": "f71f551b74941a5546df1daec7de066f4dff8d3331317ce9523e81e37fa7e7ed",
+    "matches_sha256": "a777c0b1a0c15e55a102bf15fadb5b2b8de241959e89f957a7150720778dbee4",
+    "paci_sha256": "f770e4c1f34b2d2803b0c9a18c2ffcd84ef4959278d011037cbca71ff6b3c150",
+    "pre_race_guard": "PASS",
+    "registry_sha256": "845d3e1078d2b0d98534c4bfb1a25a7b927f2b6d91b16f181b369a8a8bd64be4",
+    "run_id": 34603961295
+  },
+  "evaluation_mode": "TRUE_FORWARD",
+  "freeze_stage": "TRUE_FORWARD_PRE_HJC",
+  "leakage_guard": {
+    "forbidden_and_not_read": [
+      "HJC",
+      "SED",
+      "target finish",
+      "payout",
+      "final odds",
+      "final popularity",
+      "later-dated history"
+    ]
+  },
+  "manifest_file": "RaceNote_v1_1_Polarity_Gated_20260912_TRUE_FORWARD_MANIFEST.json",
+  "manifest_sha256": "35d47739123e48ffccd7668478d4a12b2817a89e8b1fa6a07ee29b7f1c402108",
+  "policy_version": "1.1-P-gated-0.1",
+  "prediction_file": "RaceNote_v1_1_Polarity_Gated_20260912_TRUE_FORWARD_PRE_HJC.json",
+  "prediction_file_sha256": "c49011d54cece9dd8a4b27678a677065c4eb43cb2666317cb3ea61ba52617e92",
+  "race_axes": [
+    {"venue":"中山","race_no":1,"race_key":"06264301","confidence":"B","v0_axis":2,"v11p_axis":9,"axis_changed":true,"marks":[9,2,6,11,1]},
+    {"venue":"中山","race_no":2,"race_key":"06264302","confidence":"B","v0_axis":9,"v11p_axis":9,"axis_changed":false,"marks":[9,10,2,1,4]},
+    {"venue":"中山","race_no":3,"race_key":"06264303","confidence":"C","v0_axis":9,"v11p_axis":9,"axis_changed":false,"marks":[9,10,8,2,5]},
+    {"venue":"中山","race_no":4,"race_key":"06264304","confidence":"C","v0_axis":16,"v11p_axis":16,"axis_changed":false,"marks":[16,2,12,8,7]},
+    {"venue":"中山","race_no":5,"race_key":"06264305","confidence":"B","v0_axis":8,"v11p_axis":8,"axis_changed":false,"marks":[8,6,4,9,7]},
+    {"venue":"中山","race_no":6,"race_key":"06264306","confidence":"B","v0_axis":1,"v11p_axis":7,"axis_changed":true,"marks":[7,1,2,11,3]},
+    {"venue":"中山","race_no":7,"race_key":"06264307","confidence":"B","v0_axis":14,"v11p_axis":14,"axis_changed":false,"marks":[14,3,8,9,4]},
+    {"venue":"中山","race_no":8,"race_key":"06264308","confidence":"C","v0_axis":13,"v11p_axis":13,"axis_changed":false,"marks":[13,8,5,1,11]},
+    {"venue":"中山","race_no":9,"race_key":"06264309","confidence":"C","v0_axis":12,"v11p_axis":10,"axis_changed":true,"marks":[10,12,2,1,13]},
+    {"venue":"中山","race_no":10,"race_key":"06264310","confidence":"B","v0_axis":1,"v11p_axis":1,"axis_changed":false,"marks":[1,10,3,8,9]},
+    {"venue":"中山","race_no":11,"race_key":"06264311","confidence":"C","v0_axis":9,"v11p_axis":10,"axis_changed":true,"marks":[10,9,15,5,13]},
+    {"venue":"中山","race_no":12,"race_key":"06264312","confidence":"B","v0_axis":12,"v11p_axis":14,"axis_changed":true,"marks":[14,12,13,7,8]},
+    {"venue":"阪神","race_no":1,"race_key":"09264301","confidence":"A","v0_axis":1,"v11p_axis":1,"axis_changed":false,"marks":[1,6,2,7,8]},
+    {"venue":"阪神","race_no":2,"race_key":"09264302","confidence":"A","v0_axis":5,"v11p_axis":5,"axis_changed":false,"marks":[5,6,7,1,2]},
+    {"venue":"阪神","race_no":3,"race_key":"09264303","confidence":"B","v0_axis":2,"v11p_axis":2,"axis_changed":false,"marks":[2,7,3,1,4]},
+    {"venue":"阪神","race_no":4,"race_key":"09264304","confidence":"B","v0_axis":13,"v11p_axis":13,"axis_changed":false,"marks":[13,17,6,2,16]},
+    {"venue":"阪神","race_no":5,"race_key":"09264305","confidence":"C","v0_axis":1,"v11p_axis":9,"axis_changed":true,"marks":[9,1,10,7,4]},
+    {"venue":"阪神","race_no":6,"race_key":"09264306","confidence":"B","v0_axis":3,"v11p_axis":3,"axis_changed":false,"marks":[3,8,7,2,4]},
+    {"venue":"阪神","race_no":7,"race_key":"09264307","confidence":"A","v0_axis":4,"v11p_axis":4,"axis_changed":false,"marks":[4,13,7,6,9]},
+    {"venue":"阪神","race_no":8,"race_key":"09264308","confidence":"B","v0_axis":6,"v11p_axis":6,"axis_changed":false,"marks":[6,7,4,1,9]},
+    {"venue":"阪神","race_no":9,"race_key":"09264309","confidence":"B","v0_axis":12,"v11p_axis":4,"axis_changed":true,"marks":[4,12,11,6,2]},
+    {"venue":"阪神","race_no":10,"race_key":"09264310","confidence":"B","v0_axis":7,"v11p_axis":5,"axis_changed":true,"marks":[5,7,2,10,13]},
+    {"venue":"阪神","race_no":11,"race_key":"09264311","confidence":"A","v0_axis":15,"v11p_axis":15,"axis_changed":false,"marks":[15,9,11,12,10]},
+    {"venue":"阪神","race_no":12,"race_key":"09264312","confidence":"A","v0_axis":13,"v11p_axis":13,"axis_changed":false,"marks":[13,14,12,10,6]}
+  ],
+  "race_count": 24,
+  "racenote": {
+    "artifact_name": "racenote-racenote-20260912-final-a-34600793491",
+    "inner_zip_sha256": "af9c0c55974a973a3ba7e913b5477faea2efad00b734e2ab3ce0d9f34ef824cf",
+    "run_id": 34600793491
+  },
+  "result_data_used": false,
+  "schema_version": "racenote-v11p-true-forward-anchor-1.0",
+  "status": "FROZEN_PRE_RESULT"
+}
