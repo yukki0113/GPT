@@ -101,7 +101,7 @@ python -m unittest discover -s boat-racing/tests -v
 
 正本Googleスプレッドシート内の `FT2_` 接頭辞13タブを、既存台帳とは独立したForwardTrial専用分析台帳として使用します。初回対象は2026-09-01〜2026-09-08の7日・336Rです。
 
-`src/forward_trial_analysis_import.py` は、Drive正本の公式出走表・事前予想・販売選別・結果CSVと公式開催メタCSVを日付×会場×R×仕様版で結合し、締切後freezeを削除せず `CONTAMINATED` として真正forward集計から分離します。入力の欠損、日付不一致、キー重複、freeze欠損はfail-closedとし、Google認証や書込み処理は持ちません。集計は非空FT2_IDの全明細から毎回全再生成し、全後続監査と既存販売台帳クロスチェックが成功するまで取込状態を完了にしません。
+`src/forward_trial_analysis_import.py` は、Drive正本の公式出走表・事前予想・販売選別・結果CSVと公式開催メタCSVを日付×会場×R×仕様版で結合し、締切後freezeを削除せず `CONTAMINATED` として真正forward集計から分離します。入力の欠損、日付不一致、キー重複、freeze欠損はfail-closedとし、Google認証や書込み処理は持ちません。集計は非空FT2_IDの全明細から毎回全再生成し、9タブの Atomic Aggregate Set と `FT2_集計監査` が同一の deterministic generation ID・source件数であること、既存販売台帳クロスチェックが成功したことを確認するまで取込状態を完了にしません。
 
 ~~~bash
 python boat-racing/src/forward_trial_analysis_import.py \

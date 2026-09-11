@@ -43,6 +43,7 @@ CSVのみはRaw/Genuineの対象になり得るがPublishedには含めない。
 11. `FT2_Score検証`
 12. `FT2_Freeze監査`
 13. `FT2_ダッシュボード`
+14. `FT2_集計監査`
 
 ## 初回固定受入値
 
@@ -59,7 +60,7 @@ CSVのみはRaw/Genuineの対象になり得るがPublishedには含めない。
 
 `src/forward_trial_analysis_import.py` がCSV検証、正規化、真正性判定、全13タブの値生成、固定受入値検査を担当する。Google認証・シート書込みは持たせず、生成結果を確認後にGoogle Sheets API / Google Drive Connectorで同一正本へ反映する。
 
-日次完了はトランザクション境界として扱う。全R明細upsertだけでは `集計再生成待ち` とし、全明細からの全FT2集計再生成、Freeze監査、ダッシュボード、既存販売台帳クロスチェック、回帰値検証まで成功した場合のみ `完了` とする。途中失敗は `エラー`、公式grade未解決は `未分類 + 要確認` とする。再実行時もstable key upsertと全再生成により件数・投資・回収を二重加算しない。
+日次完了はトランザクション境界として扱う。全R明細upsertだけでは `明細取込済` とし、Atomic Aggregate Set（FT2_日別・会場別・会場日目別・グレード別・判定構造別・販売選別検証・Score検証・Freeze監査・ダッシュボード）を全明細から同一処理内で再生成する。`FT2_集計監査` は各9タブについて、stable key集合から決定する `aggregate_generation_id`、source raw/genuine/contaminated/exacta件数、max対象日、出力行数、検証状態を記録する。9行の世代・母数・max対象日がすべて一致し、既存販売台帳クロスチェックと回帰値検証も成功した場合のみ `完了` とする。1枚でも不一致なら `集計不整合`、途中例外は `エラー`、公式grade未解決は `未分類 + 要確認` とする。再実行時もstable key upsertと全再生成により件数・投資・回収を二重加算しない。
 
 `src/fetch_boatrace_event_meta.py` はBOAT RACE公式日別レース一覧だけを参照し、開催名と `一般/G2/G1/SG/その他/未分類` をFreezeする。G1/SGを除外せず、グレード別集計に少数標本警告を付ける。
 

@@ -9,6 +9,9 @@ from forward_trial_analysis_import import (
     GENUINE,
     ForwardTrialValidationError,
     audit_freeze,
+    aggregate_audit_checks,
+    aggregate_audit_rows,
+    aggregate_generation_id,
     completion_state,
     cumulative_acceptance,
     daily_aggregate,
@@ -33,6 +36,24 @@ class ForwardTrialAnalysisImportTest(unittest.TestCase):
     def test_detail_success_but_aggregate_failure_never_completes(self):
         self.assertEqual(completion_state(checks={"detail": True, "daily": False}), "要確認")
         self.assertEqual(completion_state(checks={"detail": True}, aggregation_error=RuntimeError("boom")), "エラー")
+
+    def test_atomic_aggregate_audit_rejects_one_stale_tab(self):
+        rows = [{"FT2_ID": "a", "対象日": "2026-09-11", "forward_status": GENUINE,
+                 **self._target("有料", "○", 100)}]
+        sheets = {tab: {"rows": []} for tab in (
+            "FT2_日別集計", "FT2_会場別集計", "FT2_会場日目別集計", "FT2_グレード別集計",
+            "FT2_判定構造別集計", "FT2_販売選別検証", "FT2_Score検証", "FT2_Freeze監査", "FT2_ダッシュボード")}
+        audit = aggregate_audit_rows(rows=rows, sheets=sheets, process_datetime="2026-09-11 12:00:00+09:00")
+        self.assertTrue(all(aggregate_audit_checks(audit).values()))
+        audit[-1]["aggregate_generation_id"] = "FT2_AGG_STALE"
+        self.assertFalse(aggregate_audit_checks(audit)["aggregate_generation_id一致"])
+        self.assertEqual(completion_state(checks=aggregate_audit_checks(audit)), "要確認")
+
+    def test_generation_id_is_deterministic_and_key_sensitive(self):
+        first = [{"FT2_ID": "b", "対象日": "2026-09-11"}, {"FT2_ID": "a", "対象日": "2026-09-11"}]
+        second = list(reversed(first))
+        self.assertEqual(aggregate_generation_id(first), aggregate_generation_id(second))
+        self.assertNotEqual(aggregate_generation_id(first), aggregate_generation_id(first + [{"FT2_ID": "c", "対象日": "2026-09-11"}]))
 
     def test_reimport_is_idempotent_for_counts_and_money(self):
         row = {"FT2_ID": stable_key("2026-09-09", "鳴門", 1), **self._target("有料", "×", 0)}

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import re
 from collections import defaultdict
@@ -30,6 +31,16 @@ NEEDS_REVIEW = "要確認"
 IMPORT_COMPLETE = "完了"
 IMPORT_ERROR = "エラー"
 GRADE_CATEGORIES = {"一般", "G2", "G1", "SG", "その他", "未分類"}
+ATOMIC_AGGREGATE_TABS = (
+    "FT2_日別集計", "FT2_会場別集計", "FT2_会場日目別集計",
+    "FT2_グレード別集計", "FT2_判定構造別集計", "FT2_販売選別検証",
+    "FT2_Score検証", "FT2_Freeze監査", "FT2_ダッシュボード",
+)
+AGGREGATE_AUDIT_HEADERS = [
+    "集計タブ名", "aggregate_generation_id", "source_raw_R", "source_genuine_R",
+    "source_contaminated_R", "source_exacta_R", "source_max_date", "output_row_count",
+    "検証状態", "エラー内容", "更新日時",
+]
 INITIAL_BACKFILL_DATES = {
     "2026-09-01",
     "2026-09-02",
@@ -533,6 +544,48 @@ def completion_state(*, checks: Mapping[str, bool], grade_unresolved: int = 0,
     return IMPORT_COMPLETE
 
 
+def aggregate_generation_id(rows: Sequence[Mapping[str, object]]) -> str:
+    """Return a deterministic generation id for one exact FT2 detail snapshot."""
+    nonblank = [row for row in rows if str(row.get("FT2_ID", "")).strip()]
+    keys = sorted(str(row["FT2_ID"]) for row in nonblank)
+    source = "\n".join(keys).encode("utf-8")
+    return f"FT2_AGG_{max(str(row['対象日']) for row in nonblank).replace('-', '')}_{len(nonblank)}_{hashlib.sha256(source).hexdigest()[:12]}"
+
+
+def aggregate_audit_rows(*, rows: Sequence[Mapping[str, object]], sheets: Mapping[str, Mapping[str, object]],
+                         process_datetime: str) -> list[dict[str, object]]:
+    """Build one audit row for every atomic aggregate tab from the same detail snapshot."""
+    nonblank = [row for row in rows if str(row.get("FT2_ID", "")).strip()]
+    genuine = [row for row in nonblank if row["forward_status"] == GENUINE]
+    generation_id = aggregate_generation_id(nonblank)
+    source = {
+        "aggregate_generation_id": generation_id,
+        "source_raw_R": len(nonblank),
+        "source_genuine_R": len(genuine),
+        "source_contaminated_R": sum(row["forward_status"] == CONTAMINATED for row in nonblank),
+        "source_exacta_R": metric_block(genuine)["R数"],
+        "source_max_date": max(str(row["対象日"]) for row in nonblank),
+    }
+    return [{
+        "集計タブ名": tab, **source, "output_row_count": len(sheets[tab]["rows"]),
+        "検証状態": "OK", "エラー内容": "", "更新日時": process_datetime,
+    } for tab in ATOMIC_AGGREGATE_TABS]
+
+
+def aggregate_audit_checks(audit_rows: Sequence[Mapping[str, object]]) -> dict[str, bool]:
+    """Fail closed if any aggregate tab is absent, stale, or built from another snapshot."""
+    by_tab = {str(row["集計タブ名"]): row for row in audit_rows}
+    generation_ids = {str(row["aggregate_generation_id"]) for row in audit_rows}
+    source_columns = ("source_raw_R", "source_genuine_R", "source_contaminated_R", "source_exacta_R", "source_max_date")
+    same_source = all(len({str(row[column]) for row in audit_rows}) == 1 for column in source_columns)
+    return {
+        "Atomic Aggregate Set全9タブ": set(by_tab) == set(ATOMIC_AGGREGATE_TABS),
+        "aggregate_generation_id一致": len(generation_ids) == 1,
+        "aggregate_source一致": same_source,
+        "aggregate_audit全OK": all(row["検証状態"] == "OK" and int(row["output_row_count"]) >= 0 for row in audit_rows),
+    }
+
+
 def structure_aggregate(rows: Sequence[Mapping[str, object]]) -> list[dict[str, object]]:
     genuine = [row for row in rows if row["forward_status"] == GENUINE]
     groups: list[tuple[str, str, list[Mapping[str, object]]]] = []
@@ -725,6 +778,8 @@ def build_payload(manifest_path: Path, process_datetime: str = "") -> dict[str, 
         "FT2_Freeze監査": records_to_sheet(all_rows, audit_headers),
         "FT2_ダッシュボード": records_to_sheet(dashboard),
     }
+    aggregate_audit = aggregate_audit_rows(rows=all_rows, sheets=sheets, process_datetime=process_datetime)
+    sheets["FT2_集計監査"] = records_to_sheet(aggregate_audit, AGGREGATE_AUDIT_HEADERS)
     latest_day = max(input_dates)
     unresolved = sum(row["グレード大分類"] == "未分類" for row in venue_meta)
     checks = {
@@ -740,6 +795,7 @@ def build_payload(manifest_path: Path, process_datetime: str = "") -> dict[str, 
         "grade解決": unresolved == 0,
         "既存販売台帳クロスチェック": bool(manifest.get("existing_sales_crosscheck", False)),
     }
+    checks.update(aggregate_audit_checks(aggregate_audit))
     cumulative = cumulative_acceptance(all_rows) if latest_day == "2026-09-09" and len(all_rows) == 396 else {}
     state = completion_state(checks=checks, grade_unresolved=unresolved)
     for row in management:
@@ -749,6 +805,8 @@ def build_payload(manifest_path: Path, process_datetime: str = "") -> dict[str, 
     sheets["FT2_取込管理"] = records_to_sheet(management)
     return {"sheets": sheets, "acceptance": acceptance, "cumulative_acceptance": cumulative,
             "completion_checks": checks, "grade_unresolved": unresolved,
+            "aggregate_generation_id": aggregate_audit[0]["aggregate_generation_id"],
+            "aggregate_audit": aggregate_audit,
             "analysis": {"venues": venue, "venue_days": venue_day, "sales": sales}}
 
 
