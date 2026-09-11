@@ -68,6 +68,10 @@ A separate acquisition entrypoint was added so the model freeze is not modified:
 
 - `horse-racing/jrdb/src/fetch_jrdb_history_retry403.py`
 
+Acquisition-fix commit:
+
+`a7fac3e13dbff1e4568a25ee66d35d4f1cb19b79`
+
 It imports the canonical fetcher and adds only HTTP 403 to its retryable HTTP-code set.
 
 Regression coverage was added at:
@@ -80,10 +84,18 @@ The test cases freeze the intended semantics:
 - transient 403 -> 200 => normal validated download
 - persistent 403 => hard failure after the retry budget
 
+Regression verification:
+
+- Issue #873
+- Actions run `34618880040`
+- result marker: `JRDB_RETRY403_TEST_RESULT`
+- `status=success`
+- `test_exit=0`
+
 ## OOT integrity guard
 
 The 2026 Training Edge v0.2 OOT rerun must keep model source SHA:
 
 `b0865a25f743d2cda34928a6603266ce520c0ba9`
 
-Only the acquisition entrypoint may differ. The acquisition-fix commit/SHA must be recorded separately in the rerun Evidence. Issue #857 remains an acquisition-failure record until a clean rerun is completed.
+Only the acquisition entrypoint may differ. The acquisition-fix SHA above must be recorded separately in the rerun Evidence. Issue #857 remains an acquisition-failure record until a clean rerun is completed.
