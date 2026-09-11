@@ -1,0 +1,63 @@
+name: JRDB Retry403 Regression Test via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_RETRY403_TEST]'
+
+jobs:
+  test:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_RETRY403_TEST]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Run retry403 regression tests
+        id: test
+        run: |
+          set +e
+          python horse-racing/jrdb/tests/test_fetch_jrdb_history_retry403.py -v
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Comment result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXIT_CODE: ${{ steps.test.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result={
+            'status':'success' if os.environ['EXIT_CODE']=='0' else 'failure',
+            'run_id':int(os.environ['RUN_ID']),
+            'test_exit':os.environ['EXIT_CODE'],
+          }
+          Path('/tmp/comment.md').write_text(
+            'JRDB_RETRY403_TEST_RESULT\n```json\n'+json.dumps(result,indent=2)+'\n```\n',
+            encoding='utf-8',
+          )
+          PY
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          if [ "$EXIT_CODE" = '0' ]; then
+            gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+          fi
+
+      - name: Fail when tests failed
+        if: steps.test.outputs.exit_code != '0'
+        run: exit 1
