@@ -53,6 +53,25 @@ def test_machine_pedigree_display_is_projected_to_japanese() -> None:
     assert memo["display_text"] == raw["display_text"]
 
 
+def test_sire_line_code_is_projected_with_jrdb_master_label() -> None:
+    """Legacy sire-line codes are translated without changing raw evidence."""
+    raw = _legacy_match(
+        edge_id="SIRE-LINE-TURN",
+        display_text="＋ 系統1206は右回り2000mで好走傾向",
+        template_id="SIRE_LINE_TURN_DISTANCE_V1",
+        anchor={"sire_line_code": "1206"},
+        modifiers={"distance_m": 2000, "turn_code": "1"},
+        performance_signal="POSITIVE",
+    )
+
+    memo = adapter.normalize_match(raw, context="test")
+
+    assert memo["condition_text"] == "父系ヘイロー系は右回り2000m"
+    assert memo["memo_text"] == "＋ 父系ヘイロー系は右回り2000mで好走傾向"
+    assert memo["display_text"] == raw["display_text"]
+    assert memo["evidence"] == raw["evidence"]
+
+
 def test_machine_transition_display_is_projected_to_japanese() -> None:
     """Canonical transition codes are translated without rematching the Edge."""
     raw = _legacy_match(
