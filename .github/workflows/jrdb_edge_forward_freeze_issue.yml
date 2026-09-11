@@ -42,23 +42,28 @@ jobs:
           if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
               raise SystemExit('request_id in title must match [A-Za-z0-9._-]{1,96}')
           req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
-          required={'date','registry_run_id','registry_artifact_name','registry_sha256'}
+          required={'date','publication_run_id','publication_artifact_name','publication_sha256'}
           missing=sorted(required-set(req))
           if missing:
               raise SystemExit(f'missing required fields: {missing}')
           day=str(req['date']).strip()
           if not re.fullmatch(r'20\d{6}',day):
               raise SystemExit('date must be YYYYMMDD')
-          run_id=req['registry_run_id']
+          run_id=req['publication_run_id']
           if not isinstance(run_id,int) or run_id<=0:
-              raise SystemExit('registry_run_id must be a positive integer')
-          artifact=str(req['registry_artifact_name']).strip()
+              raise SystemExit('publication_run_id must be a positive integer')
+          artifact=str(req['publication_artifact_name']).strip()
           if not artifact:
-              raise SystemExit('registry_artifact_name must be non-empty')
+              raise SystemExit('publication_artifact_name must be non-empty')
           sha_re=re.compile(r'[0-9a-f]{64}')
-          registry_sha=str(req['registry_sha256']).strip().lower()
-          if not sha_re.fullmatch(registry_sha):
-              raise SystemExit('registry_sha256 must be lowercase SHA-256 hex')
+          publication_sha=str(req['publication_sha256']).strip().lower()
+          if not sha_re.fullmatch(publication_sha):
+              raise SystemExit('publication_sha256 must be lowercase SHA-256 hex')
+          serving_profile=str(req.get('serving_profile','STANDARD')).strip().upper()
+          if serving_profile!='STANDARD':
+              raise SystemExit('operational Edge freeze requires serving_profile=STANDARD')
+          if 'statuses' in req:
+              raise SystemExit('statuses is a legacy ACTIVE-only option and is not accepted by v0.2 STANDARD')
           expected_paci=req.get('expected_paci_sha256')
           if expected_paci is not None:
               expected_paci=str(expected_paci).strip().lower()
@@ -75,20 +80,17 @@ jobs:
                   raise SystemExit('analysis_url must be a Google Drive URL')
               if not sha_re.fullmatch(analysis_sha):
                   raise SystemExit('analysis_sha256 must be lowercase SHA-256 hex')
-          statuses=str(req.get('statuses','ACTIVE')).strip().upper()
-          if not statuses:
-              raise SystemExit('statuses must be non-empty')
           normalized={
               'request_id':request_id,
               'date':day,
               'race_date':f'{day[:4]}-{day[4:6]}-{day[6:]}',
-              'registry_run_id':run_id,
-              'registry_artifact_name':artifact,
-              'registry_sha256':registry_sha,
+              'publication_run_id':run_id,
+              'publication_artifact_name':artifact,
+              'publication_sha256':publication_sha,
+              'serving_profile':'STANDARD',
               'analysis_url':analysis_url,
               'analysis_sha256':analysis_sha,
               'expected_paci_sha256':expected_paci,
-              'statuses':statuses,
               'evaluation_mode':'TRUE_FORWARD',
           }
           Path('/tmp/request.json').write_text(
@@ -104,32 +106,34 @@ jobs:
           python -m pip install --disable-pip-version-check -q pytest
           python -m pytest -q \
             horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
-            horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py
+            horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_v02_recent_code_canonical.py
 
-      - name: Download and verify upstream Registry artifact
+      - name: Download and verify v0.2 serving publication
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p /tmp/registry
-          python - <<'PY' > /tmp/registry_env.sh
+          mkdir -p /tmp/publication
+          python - <<'PY' > /tmp/publication_env.sh
           import json
           from pathlib import Path
           req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
-          print(f"REGISTRY_RUN_ID={req['registry_run_id']}")
-          print(f"REGISTRY_ARTIFACT_NAME={req['registry_artifact_name']}")
-          print(f"REGISTRY_SHA256={req['registry_sha256']}")
+          print(f"PUBLICATION_RUN_ID={req['publication_run_id']}")
+          print(f"PUBLICATION_ARTIFACT_NAME={req['publication_artifact_name']}")
+          print(f"PUBLICATION_SHA256={req['publication_sha256']}")
           PY
-          source /tmp/registry_env.sh
-          gh run download "$REGISTRY_RUN_ID" --repo "$GITHUB_REPOSITORY" \
-            --name "$REGISTRY_ARTIFACT_NAME" --dir /tmp/registry
-          mapfile -t candidates < <(find /tmp/registry -type f -name edge_registry_active.jsonl -print)
+          source /tmp/publication_env.sh
+          gh run download "$PUBLICATION_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$PUBLICATION_ARTIFACT_NAME" --dir /tmp/publication
+          mapfile -t candidates < <(find /tmp/publication -type f -name edge_serving_catalog_v0_2.jsonl -print)
           if [ "${#candidates[@]}" -ne 1 ]; then
-            echo "expected exactly one edge_registry_active.jsonl; found ${#candidates[@]}" >&2
+            echo "expected exactly one edge_serving_catalog_v0_2.jsonl; found ${#candidates[@]}" >&2
             exit 1
           fi
-          cp "${candidates[0]}" /tmp/edge_registry_active.jsonl
-          echo "$REGISTRY_SHA256  /tmp/edge_registry_active.jsonl" | sha256sum -c -
+          cp "${candidates[0]}" /tmp/edge_serving_catalog_v0_2.jsonl
+          echo "$PUBLICATION_SHA256  /tmp/edge_serving_catalog_v0_2.jsonl" | sha256sum -c -
 
       - name: Download and verify optional Analysis Lite
         run: |
@@ -204,7 +208,7 @@ jobs:
           Path('/tmp/paci_sha256.txt').write_text(digest+'\n',encoding='utf-8')
           PY
 
-      - name: Freeze TRUE_FORWARD matches
+      - name: Freeze TRUE_FORWARD v0.2 STANDARD matches
         run: |
           set -euo pipefail
           mkdir -p /tmp/edge_forward_freeze
@@ -215,11 +219,10 @@ jobs:
           cmd=[
               'python','horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py',
               '--paci',f"/tmp/raw/PACI{req['date'][2:]}.zip",
-              '--registry-jsonl','/tmp/edge_registry_active.jsonl',
+              '--serving-catalog-jsonl','/tmp/edge_serving_catalog_v0_2.jsonl',
               '--output-dir','/tmp/edge_forward_freeze',
-              '--statuses',req['statuses'],
               '--expected-race-date',req['race_date'],
-              '--expected-registry-sha256',req['registry_sha256'],
+              '--expected-publication-sha256',req['publication_sha256'],
           ]
           if req.get('expected_paci_sha256'):
               cmd.extend(['--expected-paci-sha256',req['expected_paci_sha256']])
@@ -252,16 +255,18 @@ jobs:
               'date':req['date'],
               'race_date':manifest['race_date'],
               'evaluation_mode':'TRUE_FORWARD',
+              'serving_profile':'STANDARD',
+              'publication_file':'edge_serving_catalog_v0_2.jsonl',
               'frozen_at_utc':manifest['frozen_at_utc'],
               'earliest_post_time_jst':manifest['earliest_post_time_jst'],
               'pre_race_guard':manifest['pre_race_guard'],
               'manifest_sha256':hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest(),
               'matches_sha256':manifest['files']['edge_matches.jsonl']['sha256'],
               'paci_sha256':provenance['input_sha256']['paci_sha256'],
-              'registry_sha256':provenance['input_sha256']['registry_sha256'],
+              'publication_sha256':provenance['input_sha256']['publication_sha256'],
               'analysis_sha256':provenance['input_sha256'].get('analysis_sha256'),
-              'registry_run_id':req['registry_run_id'],
-              'registry_artifact_name':req['registry_artifact_name'],
+              'publication_run_id':req['publication_run_id'],
+              'publication_artifact_name':req['publication_artifact_name'],
               'runner_rows':provenance['matcher']['runner_rows'],
               'matched_runners':provenance['matcher']['matched_runners'],
               'matches':provenance['matcher']['matches'],
