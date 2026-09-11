@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Reconstruct pre-result Edge matching for historical blind prediction freezes.
+"""Reconstruct result-free Edge v0.2 STANDARD matching for historical freezes.
 
-This runner is deliberately result-free: it accepts PACI, Analysis Lite, and a
-published ACTIVE Edge Registry only. It never downloads HJC/SED and never
-settles outcomes.
+This runner accepts PACI, Analysis Lite, and the published v0.2 serving catalog.
+It never downloads HJC/SED and never settles outcomes. The operational matcher
+is fixed to STANDARD and does not apply the legacy ACTIVE-only status filter.
 """
 from __future__ import annotations
 
@@ -23,9 +23,12 @@ from typing import Any
 
 SHA_RE = re.compile(r"[0-9a-f]{64}")
 DATE_RE = re.compile(r"20\d{6}")
+SERVING_PROFILE = "STANDARD"
+PUBLICATION_FILENAME = "edge_serving_catalog_v0_2.jsonl"
 
 
 def sha256_file(path: Path) -> str:
+    """Return SHA-256 for one reconstruction input or output."""
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -34,14 +37,15 @@ def sha256_file(path: Path) -> str:
 
 
 def load_request(path: Path) -> dict[str, Any]:
+    """Validate one result-free reconstruction request."""
     request = json.loads(path.read_text(encoding="utf-8"))
     required = {
         "dates",
         "analysis_url",
         "analysis_sha256",
-        "registry_run_id",
-        "registry_artifact_name",
-        "registry_sha256",
+        "publication_run_id",
+        "publication_artifact_name",
+        "publication_sha256",
         "sources",
     }
     missing = sorted(required - set(request))
@@ -56,18 +60,23 @@ def load_request(path: Path) -> dict[str, Any]:
 
     analysis_url = str(request["analysis_url"]).strip()
     analysis_sha = str(request["analysis_sha256"]).strip().lower()
-    registry_sha = str(request["registry_sha256"]).strip().lower()
+    publication_sha = str(request["publication_sha256"]).strip().lower()
     if not analysis_url.startswith("https://drive.google.com/"):
         raise ValueError("analysis_url must be a Google Drive URL")
-    if not SHA_RE.fullmatch(analysis_sha) or not SHA_RE.fullmatch(registry_sha):
-        raise ValueError("analysis_sha256/registry_sha256 must be lowercase SHA-256")
+    if not SHA_RE.fullmatch(analysis_sha) or not SHA_RE.fullmatch(publication_sha):
+        raise ValueError("analysis_sha256/publication_sha256 must be lowercase SHA-256")
 
-    run_id = request["registry_run_id"]
+    run_id = request["publication_run_id"]
     if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
-        raise ValueError("registry_run_id must be a positive integer")
-    artifact = str(request["registry_artifact_name"]).strip()
+        raise ValueError("publication_run_id must be a positive integer")
+    artifact = str(request["publication_artifact_name"]).strip()
     if not artifact:
-        raise ValueError("registry_artifact_name must be non-empty")
+        raise ValueError("publication_artifact_name must be non-empty")
+    requested_profile = str(request.get("serving_profile", SERVING_PROFILE)).strip().upper()
+    if requested_profile != SERVING_PROFILE:
+        raise ValueError("pre-result reconstruction requires serving_profile=STANDARD")
+    if "statuses" in request:
+        raise ValueError("statuses is a legacy ACTIVE-only option and is not accepted by v0.2 STANDARD")
 
     sources = request["sources"]
     if not isinstance(sources, dict) or set(sources) != set(dates):
@@ -86,43 +95,48 @@ def load_request(path: Path) -> dict[str, Any]:
         "dates": dates,
         "analysis_url": analysis_url,
         "analysis_sha256": analysis_sha,
-        "registry_run_id": run_id,
-        "registry_artifact_name": artifact,
-        "registry_sha256": registry_sha,
+        "publication_run_id": run_id,
+        "publication_artifact_name": artifact,
+        "publication_sha256": publication_sha,
+        "serving_profile": SERVING_PROFILE,
         "sources": normalized_sources,
         "evaluation_mode": "PRE_RESULT_RECONSTRUCTION",
     }
 
 
-def download_registry(request: dict[str, Any], work: Path, repository: str) -> Path:
-    registry_dir = work / "registry"
-    registry_dir.mkdir(parents=True)
+def download_publication(request: dict[str, Any], work: Path, repository: str) -> Path:
+    """Download and verify the official v0.2 serving catalog artifact."""
+    publication_dir = work / "publication"
+    publication_dir.mkdir(parents=True)
     subprocess.run(
         [
             "gh",
             "run",
             "download",
-            str(request["registry_run_id"]),
+            str(request["publication_run_id"]),
             "--repo",
             repository,
             "--name",
-            request["registry_artifact_name"],
+            request["publication_artifact_name"],
             "--dir",
-            str(registry_dir),
+            str(publication_dir),
         ],
         check=True,
     )
-    candidates = list(registry_dir.rglob("edge_registry_active.jsonl"))
+    candidates = list(publication_dir.rglob(PUBLICATION_FILENAME))
     if len(candidates) != 1:
-        raise RuntimeError(f"expected one edge_registry_active.jsonl; found {len(candidates)}")
+        raise RuntimeError(f"expected one {PUBLICATION_FILENAME}; found {len(candidates)}")
     path = candidates[0]
     actual = sha256_file(path)
-    if actual != request["registry_sha256"]:
-        raise RuntimeError(f"Registry SHA mismatch expected={request['registry_sha256']} actual={actual}")
+    if actual != request["publication_sha256"]:
+        raise RuntimeError(
+            f"Publication SHA mismatch expected={request['publication_sha256']} actual={actual}"
+        )
     return path
 
 
 def download_analysis(request: dict[str, Any], work: Path) -> Path:
+    """Download and verify the frozen Analysis Lite input."""
     downloaded = work / "analysis.download"
     subprocess.run(["gdown", request["analysis_url"], "-O", str(downloaded)], check=True)
     database = work / "jrdb_analysis.sqlite"
@@ -157,15 +171,16 @@ def reconstruct_day(
     day: str,
     request: dict[str, Any],
     output_root: Path,
-    registry: Path,
+    publication: Path,
     analysis: Path,
     repo_root: Path,
 ) -> dict[str, Any]:
+    """Rebuild one day using only result-free inputs and STANDARD serving."""
     day_dir = output_root / "days" / day
     raw_dir = day_dir / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
     fetcher = repo_root / "horse-racing/jrdb/src/fetch_jrdb_paci.py"
-    matcher = repo_root / "horse-racing/jrdb/src/run_jrdb_edge_match_current.py"
+    matcher = repo_root / "horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py"
     subprocess.run([sys.executable, str(fetcher), "--date", day, "--out-dir", str(raw_dir)], check=True)
 
     paci = raw_dir / f"PACI{day[2:]}.zip"
@@ -178,6 +193,7 @@ def reconstruct_day(
 
     matches = day_dir / "edge_matches.jsonl"
     facts = day_dir / "current_facts.jsonl"
+    audit = day_dir / "matcher_audit.json"
     subprocess.run(
         [
             sys.executable,
@@ -187,20 +203,30 @@ def reconstruct_day(
             "--analysis-db",
             str(analysis),
             "--registry-jsonl",
-            str(registry),
+            str(publication),
             "--output-jsonl",
             str(matches),
             "--facts-jsonl",
             str(facts),
-            "--statuses",
-            "ACTIVE",
+            "--audit-json",
+            str(audit),
+            "--serving-profile",
+            SERVING_PROFILE,
         ],
         check=True,
     )
 
+    matcher_audit = json.loads(audit.read_text(encoding="utf-8"))
+    if matcher_audit.get("serving_profile") != SERVING_PROFILE:
+        raise RuntimeError(f"matcher serving profile mismatch: {matcher_audit}")
+    if matcher_audit.get("status_filter") is not None:
+        raise RuntimeError(f"STANDARD reconstruction unexpectedly applied a status filter: {matcher_audit}")
+
     rows = [json.loads(line) for line in matches.read_text(encoding="utf-8").splitlines() if line.strip()]
     return {
         "paci_sha256": paci_sha,
+        "publication_sha256": request["publication_sha256"],
+        "serving_profile": SERVING_PROFILE,
         "matches_sha256": sha256_file(matches),
         "facts_sha256": sha256_file(facts),
         "runner_rows": len(rows),
@@ -210,6 +236,7 @@ def reconstruct_day(
 
 
 def main() -> int:
+    """CLI entry point for v0.2 STANDARD pre-result reconstruction."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--request-json", required=True)
     parser.add_argument("--output-dir", required=True)
@@ -227,10 +254,10 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="jrdb-preresult-") as temp:
         work = Path(temp)
-        registry = download_registry(request, work, repository)
+        publication = download_publication(request, work, repository)
         analysis = download_analysis(request, work)
         days = {
-            day: reconstruct_day(day, request, output_root, registry, analysis, repo_root)
+            day: reconstruct_day(day, request, output_root, publication, analysis, repo_root)
             for day in request["dates"]
         }
 
@@ -240,6 +267,8 @@ def main() -> int:
         "head_sha": args.head_sha,
         "request_id": args.request_id,
         "evaluation_mode": "PRE_RESULT_RECONSTRUCTION",
+        "serving_profile": SERVING_PROFILE,
+        "publication_file": PUBLICATION_FILENAME,
         "result_data_used": False,
         "request": request,
         "days": days,
