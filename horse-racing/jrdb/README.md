@@ -9,7 +9,7 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/jrdb_store.py` — Drive live manifestから共有artifactを検証済みlocal cacheへ解決
 - `src/build_jrdb_canonical.py` — Common Reader neutral facts → annual Canonical SQLite materialization
 - `src/jrdb_racenote_raw_adapter.py` — RaceNote historical Raw再構築用projection
-- `src/jrdb_analysis_raw_adapter.py` — Analysis v1.2用projection
+- `src/jrdb_analysis_raw_adapter.py` — Analysis v1.3用projection
 - `src/jrdb_eval_raw_adapter.py` / `src/jrdb_eval_horse_result_adapter.py` — Eval用projection / 結果policy
 - `src/fetch_jrdb_paci.py` — PACI前日一括ZIP取得
 - `src/fetch_jrdb_history.py` — 年次ZIP / 2026年以降の単日ZIP取得
@@ -26,10 +26,11 @@ JRDB関連の取得・RaceNote変換・Core / Analysis / Stats Mart SQLite構築
 - `src/jrdb_ukc.py` — UKC 290-byte固定長parser
 - `src/build_jrdb_core_v1_2.py` — UKC horse profile追加版
 - `src/build_jrdb_core_v1_2_1.py` — v1.2 + KYI枠番 / SED馬場状態を追加
-- `src/build_jrdb_analysis.py` — Core v1.2.1 → Analysis Lite v1.2（reference/regression path）
-- `src/build_jrdb_analysis_from_raw.py` — Raw年次ZIP → Analysis Lite v1.2（production full-rebuild path）
-- `src/update_jrdb_analysis_incremental.py` — PACI+SED または2026+単日Raw → Analysis Lite v1.2 増分置換
+- `src/build_jrdb_analysis.py` — Core v1.2.1 → Analysis Lite（reference/regression path）
+- `src/build_jrdb_analysis_from_raw.py` — Raw年次ZIP → Analysis Lite v1.3（production full-rebuild path）
+- `src/update_jrdb_analysis_incremental.py` — PACI+SED または2026+単日Raw → Analysis Lite v1.3 増分置換
 - `src/upgrade_jrdb_analysis_v1_1_to_v1_2.py` — 既存v1.1 Analysisへprev1/batch管理を追加
+- `src/upgrade_jrdb_analysis_v1_2_to_v1_3.py` — 既存v1.2 AnalysisへBAC WIN5 legを追加・backfill
 - `src/build_jrdb_stats_mart.py` — Analysis Lite → 年次Stats Mart v1.1
 - `src/refresh_jrdb_stats_mart_year.py` — 指定年だけStats Martを再集計・置換
 - `src/jrdb_edge_validation.py` — Edge Registryのfactor-specific Validation Policy routing / review・expiry判定
@@ -117,10 +118,10 @@ v1.0の主要方針:
 - PACI詳細 `recent_runs` 最大5 + Analysis Lite簡略 `older_runs` 最大3
 - 固定8件・キャリア上の完全な直近8戦とはみなさず、`history_coverage.run_layers` でsource/coverageを明示
 - exact distanceを保持し、1000-1400 / 1400-1800 / 1800-2400 / 2500+ の重複距離レンジを追加
-- 1400m / 1800mは隣接レンジへ重複所属、2400mは1800-2400側のみ
+- 1400m / 1800mは隣接レンジへ重複所属、2400mは中距離側のみ
 - `sample_size_band`: none=0 / small=1-19 / moderate=20-49 / sufficient=50+。統計的有意性ではなく説明用母数帯
 - `history_coverage.scope = jrdb_jra_history`。海外所属馬・海外遠征の履歴完全性を推測しない
-- 過去日は常に `as_of_exclusive = target_date`。対象日結果・後日結果を使わない
+- 過去日は常に `as_of_exclusive = target_date`。対象レース結果・後日結果を使わない
 
 詳細は `docs/README_racenote_v1.md` と `docs/README_racenote_request.md` を参照してください。
 
@@ -136,17 +137,31 @@ canonical Raw ZIPs
   └─> Eval dataset exporter       # Eval検証専用、Analysis/Core非依存
 ```
 
-During the season, the recommended manual/ChatGPT path is:
+During the season, the standard completed-race path is:
 
 ```text
 PACIyymmdd.zip + SEDyymmdd.zip
-  -> Analysis incremental replace/add
-  -> refresh current-year Stats Mart
+  -> Analysis v1.3 date-level replace/add
+  -> refresh affected Stats Mart year partition
 ```
 
-PACI supplies BAC/KYI/CYB/UKC. SED supplies completed results, payouts and actual track condition. HJC/TYB are not required by the current Analysis schema.
+PACI supplies BAC/KYI/CYB/UKC. BAC also supplies `win5_leg_no` (NULL or 1-5). SED supplies completed results, payouts and actual track condition. HJC/TYB are not required by the current Analysis schema.
 
 The individual daily-kind layout (`BAC/KYI/SED/CYB/UKC`) remains supported for fetcher-oriented operation.
+
+### Work standard — post-race refresh
+
+開催終了後の定型運用は `.github/workflows/jrdb_post_race_refresh_issue.yml` と `docs/README_post_race_analysis_mart_refresh.md` を標準とする。
+
+ユーザーは Work へ例えば次だけを依頼すればよい。
+
+```text
+0905～0906についてAnalysis差分反映、Martの再発行をお願いします
+```
+
+Work は対象開催日を解決し、Drive `20_mart` の current Analysis / Mart を取得して `[JRDB_POST_RACE_REFRESH]` Issue を起票する。Actions は JRDB Secrets を用いて PACI / SED を取得し、Analysis v1.3 の対象日置換、対象年Stats Mart v1.1再集計、監査、artifact発行まで行う。SUCCESS後の `20_mart` への最終uploadは Work の Google Drive adapter が担当する。
+
+この経路では PWA Fact Lite を自動publishしない。Analysis / Martの更新とPWA publicationは独立する。
 
 At year-end:
 
@@ -159,11 +174,11 @@ rolling Analysis
 
 Core is maintained independently when audit/history/rebuild work requires it. `Core -> Analysis` remains the validated reference/regression path.
 
-## Analysis Lite v1.2
+## Analysis Lite v1.3
 
 Shared schema:
 
-`schema/jrdb_analysis_schema_v1_2.sql`
+`schema/jrdb_analysis_schema_v1_3.sql`
 
 Important fields:
 
@@ -172,8 +187,28 @@ Important fields:
 - `frame_no` = KYI枠番
 - `sire_name` / `broodmare_sire_name` = UKC血統
 - `prev_result_key_1` / `prev_race_key_1` = KYIが明示する前走1リンク
+- `win5_leg_no` = BAC WIN5対象順。非対象はNULL、対象は1～5
 
 All five previous-result links remain in Raw/Core. Routine Analysis keeps prev1 only to preserve remote-delivery size headroom.
+
+Analysis incremental update is idempotent at `race_date` grain: one requested date is atomically replaced by `DELETE -> INSERT`, rather than appending duplicate rows.
+
+### v1.2 -> v1.3 WIN5 production migration
+
+Accepted history-indexed Analysis was migrated from v1.2 to v1.3 using annual BAC for 2016-2025 and PACI BAC for 2026 YTD.
+
+- rows before / after: **513,512 / 513,512**
+- distinct races before / after: **36,846 / 36,846**
+- WIN5 dates: **632**
+- WIN5 races: **3,148**
+- WIN5 runner rows: **44,921**
+- leg distribution: **1=630 / 2=629 / 3=630 / 4=630 / 5=629**
+- invalid WIN5 values: **0**
+- race-level WIN5 inconsistency: **0**
+- `ix_analysis_horse_history`: preserved
+- `PRAGMA integrity_check`: **ok**
+
+Incomplete daily leg sequences caused by cancelled/non-completed races are audit warnings, not fatal errors. Duplicate leg assignment to multiple completed Analysis races on the same date remains fatal.
 
 ## PWA independent index design
 
@@ -245,11 +280,13 @@ Eval OCR 5列CSV + PACIyymmdd.zip
 
 ### Raw -> Analysis v1.2 equivalence
 
+The v1.2 equivalence evidence remains the historical baseline for the pre-WIN5 33-column projection.
+
 - 2016-2020: 243,849 rows × 33 columns, differences 0
 - 2021-2025: 237,778 rows × 33 columns, differences 0
 - combined 2016-2025: **481,627 rows, exact equivalence PASS**
 
-### Analysis Lite v1.2 2016-2025
+### Analysis Lite v1.2 2016-2025 baseline
 
 After prev1 addition, removal of unnecessary prev-key indexes and VACUUM:
 
@@ -274,7 +311,7 @@ Historical pseudo-daily 2025-12-28 test:
 
 ### Real 2026 PACI + SED operational test
 
-Actual `PACI260823.zip` + `SED260823.zip` were parsed and added to the accepted 2016-2025 Analysis v1.2 baseline.
+Actual `PACI260823.zip` + `SED260823.zip` were parsed and added to the accepted 2016-2025 Analysis baseline.
 
 - BAC races: 36
 - KYI/CYB/UKC/SED rows: 466 each
@@ -288,7 +325,7 @@ Actual `PACI260823.zip` + `SED260823.zip` were parsed and added to the accepted 
 
 ### 2026 YTD production backfill through 2026-08-23 — PASS
 
-The accepted 2016-2025 Analysis v1.2 baseline was backfilled from JRDB PACI + SED for every detected 2026 JRA race date through 2026-08-23.
+The accepted 2016-2025 Analysis baseline was backfilled from JRDB PACI + SED for every detected 2026 JRA race date through 2026-08-23.
 
 - detected race dates: **70**
 - PACI: **70 / 70** downloaded and ZIP-validated
@@ -301,9 +338,6 @@ The accepted 2016-2025 Analysis v1.2 baseline was backfilled from JRDB PACI + SE
 - duplicate primary keys: **0**
 - ingest batch: **SUCCESS 70 / ERROR 0**
 - integrity_check: **ok**
-- production file: `jrdb_analysis_2016_2026YTD_20260823_v1_2.sqlite`
-- size: **197,492,736 bytes (~188.34 MiB)**
-- SHA-256: `4df011c74b226ad394a171b71c0841872cb94f3418c8e7f85225a31de89e21b2`
 
 A full Stats Mart rebuilt from this accepted Analysis contains:
 
@@ -314,7 +348,7 @@ A full Stats Mart rebuilt from this accepted Analysis contains:
 - integrity_check: **ok**
 - SHA-256: `116ac151b4ed499e81cfb66cfedc6f68f42c456458e2fa6b3160583633d5d874`
 
-The in-season Analysis is now close to the 200 MiB design target. Continue incremental 2026 updates during the season, then at year-end rebuild the rolling window directly from 2017-2026 Raw and drop 2016.
+The in-season Analysis is close to the 200 MiB design target. Continue incremental 2026 updates during the season, then at year-end rebuild the rolling window directly from 2017-2026 Raw and drop 2016.
 
 ## Rolling operation
 
@@ -345,6 +379,8 @@ There is no requirement to rebuild Core first.
 - `docs/README_build_jrdb_analysis.md`
 - `docs/README_update_jrdb_analysis_incremental.md`
 - `docs/README_build_jrdb_stats_mart.md`
+- `docs/README_post_race_analysis_mart_refresh.md`
+- `docs/JRDB_開催後Analysis_Mart更新_Work引継ぎ_20260911.md`
 - `docs/README_export_jrdb_eval_race_conditions.md`
 - `docs/README_export_jrdb_eval_dataset.md`
 - `docs/README_enrich_eval_csv_with_paci.md`
@@ -358,4 +394,3 @@ Raw ZIP・大容量SQLite・日次生成物もGit管理対象外です。
 ## Validation
 
 既存パッケージの移行時スモークテスト結果は `MIGRATION_MANIFEST.json` を参照してください。
-追加分の検証条件・結果は各READMEと設計書に記録します。
