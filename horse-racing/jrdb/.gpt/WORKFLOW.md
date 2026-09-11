@@ -2,11 +2,12 @@
 
 1. `README.md` と本ディレクトリのCONTEXTを確認。
 2. 対象Pythonと対応README・schema/referenceを確認。
-3. 既存仕様を壊さない範囲で改修。
-4. 可能な範囲で実行テスト / 回帰確認。
-5. 生成物・秘密情報・Rawデータが差分に入っていないことを確認。
-6. README/仕様変更が必要なら同時更新。
-7. Gitへcommitし、以後Git版を正本とする。
+3. 2026 Raw（PACI / SED / HJC）を扱う場合は、`docs/JRDB_2026_Raw_Drive_Reference.md` を確認し、Google Drive上の既存Rawを最優先でresolveする。Drive inventoryを確認せずupstream全日付取得を開始しない。
+4. 既存仕様を壊さない範囲で改修。
+5. 可能な範囲で実行テスト / 回帰確認。
+6. 生成物・秘密情報・Rawデータが差分に入っていないことを確認。
+7. README/仕様変更が必要なら同時更新。
+8. Gitへcommitし、以後Git版を正本とする。
 
 ## GitHub routing standard — 2026-09-10
 
