@@ -1,0 +1,272 @@
+name: JRDB Training Edge v0.2 2026 OOT via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_TRAINING_V02_2026_OOT]'
+  FROZEN_SOURCE_SHA: 'b0865a25f743d2cda34928a6603266ce520c0ba9'
+  OOT_FROM_DATE: '20260101'
+  OOT_TO_DATE: '20260906'
+
+jobs:
+  evaluate:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_V02_2026_OOT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout frozen source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.FROZEN_SOURCE_SHA }}
+          fetch-depth: 1
+
+      - name: Verify frozen checkout
+        run: |
+          test "$(git rev-parse HEAD)" = "$FROZEN_SOURCE_SHA"
+          test -f horse-racing/jrdb/src/training_edge_v0_2_core.py
+          test -f horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py
+          test -f horse-racing/jrdb/config/training_edge_v0_2_calibration.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime dependencies
+        run: python -m pip install --disable-pip-version-check numpy pandas scipy scikit-learn
+
+      - name: Smoke tests
+        run: |
+          python horse-racing/jrdb/tests/test_bundle_jrdb_daily_year.py -v
+          python horse-racing/jrdb/tests/test_project_training_edge_v0_2_input.py -v
+          python horse-racing/jrdb/tests/test_training_edge_v0_2_core.py -v
+
+      - name: Fetch annual JRDB Raw 2010-2025
+        id: annual_fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_v02/raw /tmp/jrdb_v02/report
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2010 --to-year 2025 \
+            --kinds BAC KYI SED UKC CHA CYB \
+            --output-dir /tmp/jrdb_v02/raw \
+            --manifest /tmp/jrdb_v02/report/fetch_annual_manifest.jsonl \
+            --sleep-seconds 1 --continue-on-error \
+            > /tmp/jrdb_v02/report/fetch_annual_stdout.log \
+            2> /tmp/jrdb_v02/report/fetch_annual_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Fetch 2026 daily JRDB Raw through fixed OOT cutoff
+        id: daily_fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_v02/daily
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-date "$OOT_FROM_DATE" --to-date "$OOT_TO_DATE" \
+            --kinds BAC KYI SED UKC CHA CYB \
+            --output-dir /tmp/jrdb_v02/daily \
+            --manifest /tmp/jrdb_v02/report/fetch_daily_manifest.jsonl \
+            --sleep-seconds 1 --continue-on-error \
+            > /tmp/jrdb_v02/report/fetch_daily_stdout.log \
+            2> /tmp/jrdb_v02/report/fetch_daily_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Bundle 2026 daily Raw into annual-compatible archives
+        id: bundle
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.daily_fetch.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          python horse-racing/jrdb/src/bundle_jrdb_daily_year.py \
+            --source-root /tmp/jrdb_v02/daily \
+            --output-root /tmp/jrdb_v02/raw \
+            --year 2026 --kinds BAC KYI SED UKC CHA CYB \
+            --from-date "$OOT_FROM_DATE" --to-date "$OOT_TO_DATE" \
+            --audit-json /tmp/jrdb_v02/report/bundle_2026_audit.json \
+            > /tmp/jrdb_v02/report/bundle_stdout.log \
+            2> /tmp/jrdb_v02/report/bundle_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build audited Index Base 2010-2026
+        id: index
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.annual_fetch.outputs.exit_code }}' != '0' ] || [ '${{ steps.bundle.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
+            --raw-root /tmp/jrdb_v02/raw \
+            --years {2010..2026} \
+            --db /tmp/jrdb_v02/index.sqlite \
+            > /tmp/jrdb_v02/report/index_build_stdout.log \
+            2> /tmp/jrdb_v02/report/index_build_stderr.log
+          a=$?
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_index_base.py \
+              --db /tmp/jrdb_v02/index.sqlite \
+              --out /tmp/jrdb_v02/report/index_audit.json --no-db-hash \
+              > /tmp/jrdb_v02/report/index_audit_stdout.log \
+              2> /tmp/jrdb_v02/report/index_audit_stderr.log
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build Official RunPerf through 2026
+        id: runperf
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.index.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          python horse-racing/jrdb/src/build_jrdb_runperf_features.py \
+            --index-db /tmp/jrdb_v02/index.sqlite \
+            --out /tmp/jrdb_v02/runperf.sqlite --methods EXPANDING \
+            > /tmp/jrdb_v02/report/runperf_build_stdout.log \
+            2> /tmp/jrdb_v02/report/runperf_build_stderr.log
+          a=$?
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_runperf.py \
+              --db /tmp/jrdb_v02/runperf.sqlite \
+              --out /tmp/jrdb_v02/report/runperf_audit.json --no-db-hash \
+              > /tmp/jrdb_v02/report/runperf_audit_stdout.log \
+              2> /tmp/jrdb_v02/report/runperf_audit_stderr.log
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/build_jrdb_official_runperf.py \
+              --runperf-db /tmp/jrdb_v02/runperf.sqlite \
+              --out /tmp/jrdb_v02/official.sqlite \
+              > /tmp/jrdb_v02/report/official_build_stdout.log \
+              2> /tmp/jrdb_v02/report/official_build_stderr.log
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_official_runperf.py \
+              --db /tmp/jrdb_v02/official.sqlite \
+              --source-runperf-db /tmp/jrdb_v02/runperf.sqlite \
+              --out /tmp/jrdb_v02/report/official_audit.json --no-db-hash \
+              > /tmp/jrdb_v02/report/official_audit_stdout.log \
+              2> /tmp/jrdb_v02/report/official_audit_stderr.log
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Project Training Edge v0.2 input 2010-2026
+        id: project
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.runperf.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          python horse-racing/jrdb/src/project_training_edge_v0_2_input.py \
+            --index-db /tmp/jrdb_v02/index.sqlite \
+            --official-db /tmp/jrdb_v02/official.sqlite \
+            --out /tmp/jrdb_v02/training_edge_v02_input.sqlite \
+            --from-year 2010 --to-year 2026 \
+            --source-git-commit "$FROZEN_SOURCE_SHA" \
+            --result-json /tmp/jrdb_v02/report/input_projection.json \
+            > /tmp/jrdb_v02/report/project_stdout.log \
+            2> /tmp/jrdb_v02/report/project_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Evaluate frozen Training Edge v0.2 on 2026 OOT
+        id: evaluate
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.project.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          python horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py \
+            --input-db /tmp/jrdb_v02/training_edge_v02_input.sqlite \
+            --calibration horse-racing/jrdb/config/training_edge_v0_2_calibration.json \
+            --result-json /tmp/jrdb_v02/report/training_edge_v0_2_2026_oot.json \
+            > /tmp/jrdb_v02/report/evaluate_stdout.log \
+            2> /tmp/jrdb_v02/report/evaluate_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build result
+        if: always()
+        env:
+          ANNUAL_FETCH_EXIT: ${{ steps.annual_fetch.outputs.exit_code }}
+          DAILY_FETCH_EXIT: ${{ steps.daily_fetch.outputs.exit_code }}
+          BUNDLE_EXIT: ${{ steps.bundle.outputs.exit_code }}
+          INDEX_EXIT: ${{ steps.index.outputs.exit_code }}
+          RUNPERF_EXIT: ${{ steps.runperf.outputs.exit_code }}
+          PROJECT_EXIT: ${{ steps.project.outputs.exit_code }}
+          EVALUATE_EXIT: ${{ steps.evaluate.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          exits={k:os.environ.get(k+'_EXIT','') for k in ('ANNUAL_FETCH','DAILY_FETCH','BUNDLE','INDEX','RUNPERF','PROJECT','EVALUATE')}
+          eval_path=Path('/tmp/jrdb_v02/report/training_edge_v0_2_2026_oot.json')
+          evaluation=json.loads(eval_path.read_text(encoding='utf-8')) if eval_path.is_file() else {}
+          status='success' if all(v=='0' for v in exits.values()) and evaluation.get('status')=='success' else 'failure'
+          result={
+            'status':status,
+            'run_id':int(os.environ['RUN_ID']),
+            'frozen_source_sha':os.environ['FROZEN_SOURCE_SHA'],
+            'oot_from_date':os.environ['OOT_FROM_DATE'],
+            'oot_to_date':os.environ['OOT_TO_DATE'],
+            'exits':exits,
+            'evaluation':evaluation,
+          }
+          text=json.dumps(result,ensure_ascii=False,indent=2)
+          Path('/tmp/jrdb_v02/report/workflow_result.json').write_text(text,encoding='utf-8')
+          Path('/tmp/comment.md').write_text('JRDB_TRAINING_V02_2026_OOT_RESULT\n```json\n'+text+'\n```\n',encoding='utf-8')
+          PY
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-training-v02-2026-oot-${{ github.run_id }}
+          path: /tmp/jrdb_v02/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close successful request
+        if: >-
+          always() && steps.annual_fetch.outputs.exit_code == '0' &&
+          steps.daily_fetch.outputs.exit_code == '0' && steps.bundle.outputs.exit_code == '0' &&
+          steps.index.outputs.exit_code == '0' && steps.runperf.outputs.exit_code == '0' &&
+          steps.project.outputs.exit_code == '0' && steps.evaluate.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Fail workflow when a gate failed
+        if: >-
+          always() && (steps.annual_fetch.outputs.exit_code != '0' ||
+          steps.daily_fetch.outputs.exit_code != '0' || steps.bundle.outputs.exit_code != '0' ||
+          steps.index.outputs.exit_code != '0' || steps.runperf.outputs.exit_code != '0' ||
+          steps.project.outputs.exit_code != '0' || steps.evaluate.outputs.exit_code != '0')
+        run: exit 1
