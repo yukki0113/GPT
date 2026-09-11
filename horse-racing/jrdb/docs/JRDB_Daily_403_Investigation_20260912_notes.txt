@@ -1,0 +1,2 @@
+Targeted probe should be triggered with an issue title beginning [JRDB_DAILY_403_PROBE].
+The probe uses JRDB Actions secrets, tests the three problematic URLs plus known 200/404 controls, and does not run model evaluation.
