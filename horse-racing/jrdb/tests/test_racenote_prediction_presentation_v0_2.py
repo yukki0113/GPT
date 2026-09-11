@@ -70,6 +70,42 @@ class PresentationV02Test(unittest.TestCase):
             9,
         )
 
+        promoted = result["horse_comment_briefs"][0]["edge_context"]["reader"]
+        displaced = result["horse_comment_briefs"][1]["edge_context"]["reader"]
+        self.assertEqual(promoted["edge_direction"], "プラス")
+        self.assertEqual(promoted["base_evaluation_relation"], "逆転許容圏内")
+        self.assertEqual(promoted["mark_decision"], "Edge比較で◎へ変更")
+        self.assertEqual(displaced["edge_direction"], "マイナス")
+        self.assertEqual(displaced["base_evaluation_relation"], "基礎総合評価1位")
+
+        axis_reader = result["race_comment_brief"]["axis_decision"]["reader"]
+        self.assertEqual(axis_reader["base_evaluation_term"], "基礎総合評価")
+        self.assertEqual(axis_reader["decision"], "◎へ変更")
+        self.assertEqual(axis_reader["base_axis_edge_direction"], "マイナス")
+        self.assertEqual(axis_reader["selected_axis_edge_direction"], "プラス")
+
+    def test_reader_language_contract_covers_horse_and_race_comments(self) -> None:
+        contract = target._reader_language_contract()
+
+        self.assertEqual(contract["applies_to"], ["horse_short_comment", "race_short_comment"])
+        self.assertEqual(contract["preferred_terms"]["good"], "基礎総合評価")
+        self.assertEqual(contract["preferred_terms"]["axis_eligible"], "逆転許容圏内")
+        self.assertEqual(contract["preferred_terms"]["positive_polarity"], "プラス")
+        self.assertEqual(contract["preferred_terms"]["neutral_polarity"], "中立")
+        self.assertEqual(contract["preferred_terms"]["negative_polarity"], "マイナス")
+        self.assertIn("Good", contract["forbidden_reader_terms"])
+        self.assertIn("axis_good_guard", contract["forbidden_reader_terms"])
+        self.assertIn("performance_edge_polarity", contract["forbidden_reader_terms"])
+        self.assertIn(
+            "do_not_double_count_a_base_score_component_as_a_second_independent_reason_after_base_evaluation",
+            contract["reasoning_guards"],
+        )
+
+    def test_reader_edge_direction_accepts_frozen_numeric_polarity(self) -> None:
+        self.assertEqual(target._reader_edge_direction(1), "プラス")
+        self.assertEqual(target._reader_edge_direction(0), "中立")
+        self.assertEqual(target._reader_edge_direction(-1), "マイナス")
+
     def test_inconsistent_axis_changed_fails_closed(self) -> None:
         prediction = {
             "v0_2_control": {"axis_horse_no": 2},
