@@ -1,0 +1,130 @@
+name: JRDB Daily 403 Probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_DAILY_403_PROBE]'
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_DAILY_403_PROBE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Probe JRDB daily URLs
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import os
+          import time
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          base = 'https://jrdb.com/member/datazip'
+          cases = [
+              ('problem_sed_260219', f'{base}/Sed/2026/SED260219.zip'),
+              ('problem_ukc_260219', f'{base}/Ukc/2026/UKC260219.zip'),
+              ('problem_bac_260220', f'{base}/Bac/2026/BAC260220.zip'),
+              ('control_404_bac_260219', f'{base}/Bac/2026/BAC260219.zip'),
+              ('control_404_kyi_260220', f'{base}/Kyi/2026/KYI260220.zip'),
+              ('control_200_bac_260221', f'{base}/Bac/2026/BAC260221.zip'),
+              ('control_200_sed_260221', f'{base}/Sed/2026/SED260221.zip'),
+          ]
+          token = base64.b64encode(
+              f"{os.environ['JRDB_USER']}:{os.environ['JRDB_PASSWORD']}".encode('utf-8')
+          ).decode('ascii')
+          auth = f'Basic {token}'
+
+          def one(label, url, attempt):
+              req = urllib.request.Request(
+                  url,
+                  headers={
+                      'Authorization': auth,
+                      'User-Agent': 'RaceNote-JRDB-403Probe/0.1',
+                      'Accept': 'application/zip,application/octet-stream,*/*',
+                  },
+                  method='GET',
+              )
+              row = {'label': label, 'url': url, 'attempt': attempt}
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      payload = response.read()
+                      row.update({
+                          'status': int(getattr(response, 'status', 200)),
+                          'content_type': response.headers.get('Content-Type'),
+                          'content_length_header': response.headers.get('Content-Length'),
+                          'server': response.headers.get('Server'),
+                          'www_authenticate': response.headers.get('WWW-Authenticate'),
+                          'location': response.headers.get('Location'),
+                          'body_len': len(payload),
+                          'body_sha256': hashlib.sha256(payload).hexdigest(),
+                      })
+              except urllib.error.HTTPError as error:
+                  payload = error.read()
+                  row.update({
+                      'status': int(error.code),
+                      'content_type': error.headers.get('Content-Type') if error.headers else None,
+                      'content_length_header': error.headers.get('Content-Length') if error.headers else None,
+                      'server': error.headers.get('Server') if error.headers else None,
+                      'www_authenticate': error.headers.get('WWW-Authenticate') if error.headers else None,
+                      'location': error.headers.get('Location') if error.headers else None,
+                      'body_len': len(payload),
+                      'body_sha256': hashlib.sha256(payload).hexdigest(),
+                  })
+              except Exception as error:
+                  row.update({'status': 'EXCEPTION', 'error': f'{type(error).__name__}: {error}'})
+              return row
+
+          rows = []
+          for attempt in range(1, 4):
+              for label, url in cases:
+                  rows.append(one(label, url, attempt))
+                  time.sleep(1)
+
+          result = {
+              'status': 'success',
+              'cases': rows,
+          }
+          Path('/tmp/jrdb_403_probe.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Comment probe result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('/tmp/jrdb_403_probe.json').read_text(encoding='utf-8'))
+          Path('/tmp/comment.md').write_text(
+              'JRDB_DAILY_403_PROBE_RESULT\n```json\n' +
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
