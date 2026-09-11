@@ -1,0 +1,521 @@
+name: JRDB Post-Race Analysis Mart Refresh via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  ISSUE_PREFIX: "[JRDB_POST_RACE_REFRESH]"
+
+jobs:
+  refresh:
+    if: >-
+      startsWith(github.event.issue.title, '[JRDB_POST_RACE_REFRESH]') &&
+      github.event.issue.user.login == 'yukki0113'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Parse and validate request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .work/input .work/output .work/raw/PACI .work/logs
+          python - <<'PY'
+          import datetime as dt
+          import os
+          import re
+          from pathlib import Path
+
+          body = os.environ.get("ISSUE_BODY", "")
+          values: dict[str, str] = {}
+          for line in body.splitlines():
+              match = re.match(r"^([a-z_]+):\s*(.+?)\s*$", line)
+              if match:
+                  values[match.group(1)] = match.group(2)
+
+          required = (
+              "request_id",
+              "dates",
+              "analysis_drive_file_id",
+              "analysis_source_filename",
+              "mart_drive_file_id",
+              "mart_source_filename",
+          )
+          missing = [key for key in required if not values.get(key)]
+          if missing:
+              raise SystemExit("Missing request fields: " + ", ".join(missing))
+
+          if not re.fullmatch(r"[A-Za-z0-9._-]+", values["request_id"]):
+              raise SystemExit("request_id contains unsupported characters")
+
+          def validate_filename(value: str, key: str) -> None:
+              if "/" in value or "\\" in value:
+                  raise SystemExit(f"{key} must be a base filename")
+              if not (value.endswith(".sqlite") or value.endswith(".sqlite.zip")):
+                  raise SystemExit(f"{key} must end with .sqlite or .sqlite.zip")
+
+          validate_filename(values["analysis_source_filename"], "analysis_source_filename")
+          validate_filename(values["mart_source_filename"], "mart_source_filename")
+
+          dates: list[dt.date] = []
+          for token in values["dates"].split(","):
+              token = token.strip()
+              if not token:
+                  continue
+              try:
+                  date = dt.datetime.strptime(token, "%Y-%m-%d").date()
+              except ValueError as error:
+                  raise SystemExit(f"Invalid date {token}; expected YYYY-MM-DD") from error
+              dates.append(date)
+          dates = sorted(set(dates))
+          if not dates:
+              raise SystemExit("dates resolved to an empty list")
+          if len(dates) > 10:
+              raise SystemExit("At most 10 race dates may be refreshed in one request")
+
+          years = sorted({date.year for date in dates})
+          Path(".work/dates.txt").write_text(
+              "\n".join(date.isoformat() for date in dates) + "\n",
+              encoding="utf-8",
+          )
+          Path(".work/years.txt").write_text(
+              "\n".join(str(year) for year in years) + "\n",
+              encoding="utf-8",
+          )
+
+          env_path = Path(os.environ["GITHUB_ENV"])
+          with env_path.open("a", encoding="utf-8") as handle:
+              handle.write(f"REQUEST_ID={values['request_id']}\n")
+              handle.write(f"ANALYSIS_DRIVE_FILE_ID={values['analysis_drive_file_id']}\n")
+              handle.write(f"ANALYSIS_SOURCE_FILENAME={values['analysis_source_filename']}\n")
+              handle.write(f"MART_DRIVE_FILE_ID={values['mart_drive_file_id']}\n")
+              handle.write(f"MART_SOURCE_FILENAME={values['mart_source_filename']}\n")
+              handle.write(f"REQUEST_DATE_COUNT={len(dates)}\n")
+              handle.write(f"REQUEST_DATES={','.join(date.isoformat() for date in dates)}\n")
+              handle.write(f"REQUEST_YEARS={','.join(str(year) for year in years)}\n")
+          PY
+
+      - name: Run focused regression checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            horse-racing/jrdb/src/update_jrdb_analysis_incremental.py \
+            horse-racing/jrdb/src/refresh_jrdb_stats_mart_year.py \
+            horse-racing/jrdb/src/fetch_jrdb_paci.py \
+            horse-racing/jrdb/src/fetch_jrdb_history.py
+          python horse-racing/jrdb/tests/test_jrdb_analysis_win5.py
+
+      - name: Download current Analysis and Mart from Drive
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          download_drive_file() {
+            local file_id="$1"
+            local filename="$2"
+            curl --fail --location --retry 3 --retry-delay 2 \
+              "https://drive.usercontent.google.com/download?id=${file_id}&export=download&confirm=t" \
+              --output ".work/input/${filename}"
+          }
+
+          materialize_sqlite() {
+            local source_path="$1"
+            local output_path="$2"
+            local temp_dir="$3"
+            if [[ "${source_path}" == *.zip ]]; then
+              unzip -t "${source_path}"
+              mkdir -p "${temp_dir}"
+              unzip -q "${source_path}" -d "${temp_dir}"
+              mapfile -t sqlite_files < <(find "${temp_dir}" -type f -name '*.sqlite' -print)
+              if [ "${#sqlite_files[@]}" -ne 1 ]; then
+                echo "Expected exactly one SQLite payload in ${source_path}, found ${#sqlite_files[@]}"
+                exit 1
+              fi
+              cp "${sqlite_files[0]}" "${output_path}"
+            else
+              cp "${source_path}" "${output_path}"
+            fi
+          }
+
+          download_drive_file "${ANALYSIS_DRIVE_FILE_ID}" "${ANALYSIS_SOURCE_FILENAME}"
+          download_drive_file "${MART_DRIVE_FILE_ID}" "${MART_SOURCE_FILENAME}"
+          materialize_sqlite ".work/input/${ANALYSIS_SOURCE_FILENAME}" ".work/current_analysis.sqlite" ".work/unzip_analysis"
+          materialize_sqlite ".work/input/${MART_SOURCE_FILENAME}" ".work/current_mart.sqlite" ".work/unzip_mart"
+
+      - name: Validate source databases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import sqlite3
+          from pathlib import Path
+
+          analysis_path = Path(".work/current_analysis.sqlite")
+          mart_path = Path(".work/current_mart.sqlite")
+
+          analysis = sqlite3.connect(f"file:{analysis_path}?mode=ro", uri=True)
+          try:
+              columns = {
+                  row[1]
+                  for row in analysis.execute("PRAGMA table_info(fact_entry_result_lite)")
+              }
+              required = {"race_date", "year", "race_key", "horse_no", "win5_leg_no", "prev_result_key_1", "prev_race_key_1"}
+              missing = sorted(required - columns)
+              if missing:
+                  raise SystemExit("Analysis is not v1.3; missing: " + ", ".join(missing))
+              tables = {
+                  row[0]
+                  for row in analysis.execute("SELECT name FROM sqlite_master WHERE type='table'")
+              }
+              if "meta_analysis_ingest_batch" not in tables:
+                  raise SystemExit("Analysis missing meta_analysis_ingest_batch")
+              indexes = {
+                  row[1]
+                  for row in analysis.execute("PRAGMA index_list('fact_entry_result_lite')")
+              }
+              if "ix_analysis_horse_history" not in indexes:
+                  raise SystemExit("Analysis missing ix_analysis_horse_history")
+              integrity = analysis.execute("PRAGMA integrity_check").fetchone()[0]
+              if integrity != "ok":
+                  raise SystemExit(f"Analysis integrity_check failed: {integrity}")
+              rows_before = int(analysis.execute("SELECT COUNT(*) FROM fact_entry_result_lite").fetchone()[0])
+              max_before = str(analysis.execute("SELECT MAX(race_date) FROM fact_entry_result_lite").fetchone()[0])
+          finally:
+              analysis.close()
+
+          mart = sqlite3.connect(f"file:{mart_path}?mode=ro", uri=True)
+          try:
+              tables = {
+                  row[0]
+                  for row in mart.execute("SELECT name FROM sqlite_master WHERE type='table'")
+              }
+              required_tables = {"mart_sire_yearly", "mart_jockey_yearly", "mart_frame_yearly"}
+              missing_tables = sorted(required_tables - tables)
+              if missing_tables:
+                  raise SystemExit("Mart missing tables: " + ", ".join(missing_tables))
+              integrity = mart.execute("PRAGMA integrity_check").fetchone()[0]
+              if integrity != "ok":
+                  raise SystemExit(f"Mart integrity_check failed: {integrity}")
+          finally:
+              mart.close()
+
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"ANALYSIS_ROWS_BEFORE={rows_before}\n")
+              handle.write(f"ANALYSIS_MAX_BEFORE={max_before}\n")
+          print({"analysis_rows_before": rows_before, "analysis_max_before": max_before})
+          PY
+
+      - name: Fetch PACI and SED for requested race dates
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r race_date; do
+            [ -n "${race_date}" ] || continue
+            compact="${race_date//-/}"
+            python horse-racing/jrdb/src/fetch_jrdb_paci.py \
+              --date "${compact}" \
+              --out-dir .work/raw/PACI \
+              --log-file ".work/logs/fetch_paci_${compact}.log"
+            python horse-racing/jrdb/src/fetch_jrdb_history.py \
+              --date "${compact}" \
+              --kinds SED \
+              --output-dir .work/raw \
+              --sleep-seconds 0
+          done < .work/dates.txt
+
+      - name: Incrementally replace Analysis dates
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r race_date; do
+            [ -n "${race_date}" ] || continue
+            compact="${race_date//-/}"
+            yymmdd="${compact:2:6}"
+            python horse-racing/jrdb/src/update_jrdb_analysis_incremental.py \
+              --db .work/current_analysis.sqlite \
+              --paci ".work/raw/PACI/PACI${yymmdd}.zip" \
+              --sed ".work/raw/SED/SED${yymmdd}.zip" \
+              > ".work/update_${compact}.json"
+          done < .work/dates.txt
+
+      - name: Validate updated Analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import sqlite3
+          from pathlib import Path
+
+          dates = [line.strip() for line in Path(".work/dates.txt").read_text(encoding="utf-8").splitlines() if line.strip()]
+          connection = sqlite3.connect(".work/current_analysis.sqlite")
+          audit_dates = []
+          try:
+              integrity = connection.execute("PRAGMA integrity_check").fetchone()[0]
+              if integrity != "ok":
+                  raise SystemExit(f"Analysis integrity_check failed: {integrity}")
+              indexes = {
+                  row[1]
+                  for row in connection.execute("PRAGMA index_list('fact_entry_result_lite')")
+              }
+              if "ix_analysis_horse_history" not in indexes:
+                  raise SystemExit("ix_analysis_horse_history was not preserved")
+
+              duplicate_count = int(connection.execute(
+                  "SELECT COUNT(*) FROM ("
+                  "SELECT race_key,horse_no,COUNT(*) c FROM fact_entry_result_lite "
+                  "GROUP BY race_key,horse_no HAVING c>1)"
+              ).fetchone()[0])
+              if duplicate_count != 0:
+                  raise SystemExit(f"Analysis duplicate race_key+horse_no groups: {duplicate_count}")
+
+              invalid_win5 = int(connection.execute(
+                  "SELECT COUNT(*) FROM fact_entry_result_lite "
+                  "WHERE win5_leg_no IS NOT NULL AND win5_leg_no NOT BETWEEN 1 AND 5"
+              ).fetchone()[0])
+              if invalid_win5 != 0:
+                  raise SystemExit(f"Invalid WIN5 rows: {invalid_win5}")
+
+              for race_date in dates:
+                  row_count = int(connection.execute(
+                      "SELECT COUNT(*) FROM fact_entry_result_lite WHERE race_date=?",
+                      (race_date,),
+                  ).fetchone()[0])
+                  if row_count == 0:
+                      raise SystemExit(f"No Analysis rows for requested date {race_date}")
+                  latest = connection.execute(
+                      "SELECT status,batch_id,race_count,row_count,replaced_row_count,message "
+                      "FROM meta_analysis_ingest_batch WHERE target_date=? "
+                      "ORDER BY batch_id DESC LIMIT 1",
+                      (race_date,),
+                  ).fetchone()
+                  if latest is None or latest[0] != "SUCCESS":
+                      raise SystemExit(f"Latest ingest is not SUCCESS for {race_date}: {latest}")
+                  audit_dates.append({
+                      "race_date": race_date,
+                      "fact_rows": row_count,
+                      "batch_id": int(latest[1]),
+                      "race_count": int(latest[2]),
+                      "batch_row_count": int(latest[3]),
+                      "replaced_row_count": int(latest[4] or 0),
+                      "message": latest[5],
+                  })
+
+              rows_after = int(connection.execute("SELECT COUNT(*) FROM fact_entry_result_lite").fetchone()[0])
+              max_after = str(connection.execute("SELECT MAX(race_date) FROM fact_entry_result_lite").fetchone()[0])
+              min_year = int(connection.execute("SELECT MIN(year) FROM fact_entry_result_lite").fetchone()[0])
+              max_year = int(connection.execute("SELECT MAX(year) FROM fact_entry_result_lite").fetchone()[0])
+          finally:
+              connection.close()
+
+          Path(".work/analysis_audit.json").write_text(
+              json.dumps({
+                  "rows_before": int(os.environ["ANALYSIS_ROWS_BEFORE"]),
+                  "rows_after": rows_after,
+                  "max_before": os.environ["ANALYSIS_MAX_BEFORE"],
+                  "max_after": max_after,
+                  "requested_dates": audit_dates,
+                  "duplicate_groups": duplicate_count,
+                  "invalid_win5_rows": invalid_win5,
+                  "integrity_check": integrity,
+              }, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"ANALYSIS_ROWS_AFTER={rows_after}\n")
+              handle.write(f"MAX_RACE_DATE={max_after}\n")
+              handle.write(f"MIN_ANALYSIS_YEAR={min_year}\n")
+              handle.write(f"MAX_ANALYSIS_YEAR={max_year}\n")
+          PY
+
+      - name: Refresh Stats Mart target years
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t years < .work/years.txt
+          python horse-racing/jrdb/src/refresh_jrdb_stats_mart_year.py \
+            --analysis .work/current_analysis.sqlite \
+            --mart .work/current_mart.sqlite \
+            --years "${years[@]}" \
+            > .work/mart_refresh.json
+
+      - name: Validate Mart and create publication payloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import shutil
+          import sqlite3
+          import subprocess
+          from pathlib import Path
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open("rb") as handle:
+                  for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          years = [int(line.strip()) for line in Path(".work/years.txt").read_text(encoding="utf-8").splitlines() if line.strip()]
+          mart = sqlite3.connect(".work/current_mart.sqlite")
+          mart_years = []
+          try:
+              integrity = mart.execute("PRAGMA integrity_check").fetchone()[0]
+              if integrity != "ok":
+                  raise SystemExit(f"Mart integrity_check failed: {integrity}")
+              for year in years:
+                  counts = {}
+                  for table in ("mart_sire_yearly", "mart_jockey_yearly", "mart_frame_yearly"):
+                      count = int(mart.execute(f"SELECT COUNT(*) FROM {table} WHERE year=?", (year,)).fetchone()[0])
+                      if count <= 0:
+                          raise SystemExit(f"No {table} rows for refreshed year {year}")
+                      counts[table] = count
+                  mart_years.append({"year": year, **counts})
+          finally:
+              mart.close()
+
+          max_date = os.environ["MAX_RACE_DATE"]
+          max_compact = max_date.replace("-", "")
+          min_year = os.environ["MIN_ANALYSIS_YEAR"]
+          max_year = os.environ["MAX_ANALYSIS_YEAR"]
+          analysis_sqlite_name = f"jrdb_analysis_{min_year}_{max_year}YTD_{max_compact}_v1_3.sqlite"
+          analysis_zip_name = analysis_sqlite_name + ".zip"
+          mart_name = f"jrdb_stats_mart_{min_year}_{max_year}YTD_{max_compact}_v1_1.sqlite"
+
+          output_dir = Path(".work/output")
+          output_dir.mkdir(parents=True, exist_ok=True)
+          analysis_sqlite = output_dir / analysis_sqlite_name
+          mart_output = output_dir / mart_name
+          shutil.copy2(".work/current_analysis.sqlite", analysis_sqlite)
+          shutil.copy2(".work/current_mart.sqlite", mart_output)
+
+          analysis_sqlite_sha = sha256_file(analysis_sqlite)
+          mart_sha = sha256_file(mart_output)
+          subprocess.run(
+              ["zip", "-j", "-9", str(output_dir / analysis_zip_name), str(analysis_sqlite)],
+              check=True,
+          )
+          analysis_zip = output_dir / analysis_zip_name
+          analysis_zip_sha = sha256_file(analysis_zip)
+          analysis_sqlite.unlink()
+
+          analysis_audit = json.loads(Path(".work/analysis_audit.json").read_text(encoding="utf-8"))
+          mart_refresh = json.loads(Path(".work/mart_refresh.json").read_text(encoding="utf-8"))
+          audit = {
+              "request_id": os.environ["REQUEST_ID"],
+              "requested_dates": os.environ["REQUEST_DATES"].split(","),
+              "requested_years": years,
+              "analysis": analysis_audit,
+              "mart": {
+                  "refresh_result": mart_refresh,
+                  "year_counts": mart_years,
+                  "integrity_check": integrity,
+              },
+          }
+          (output_dir / "refresh_audit.json").write_text(
+              json.dumps(audit, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          result = {
+              "status": "success",
+              "request_id": os.environ["REQUEST_ID"],
+              "requested_dates": os.environ["REQUEST_DATES"].split(","),
+              "refreshed_years": years,
+              "max_race_date": max_date,
+              "analysis_rows_before": int(os.environ["ANALYSIS_ROWS_BEFORE"]),
+              "analysis_rows_after": int(os.environ["ANALYSIS_ROWS_AFTER"]),
+              "analysis_output_filename": analysis_zip_name,
+              "analysis_sqlite_sha256": analysis_sqlite_sha,
+              "analysis_zip_sha256": analysis_zip_sha,
+              "analysis_zip_size_bytes": analysis_zip.stat().st_size,
+              "mart_output_filename": mart_name,
+              "mart_sha256": mart_sha,
+              "mart_size_bytes": mart_output.stat().st_size,
+              "mart_year_counts": mart_years,
+              "integrity_check": "ok",
+              "history_index_preserved": True,
+              "invalid_win5_rows": analysis_audit["invalid_win5_rows"],
+              "duplicate_groups": analysis_audit["duplicate_groups"],
+          }
+          (output_dir / "result.json").write_text(
+              json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as handle:
+              handle.write(f"ANALYSIS_OUTPUT_FILENAME={analysis_zip_name}\n")
+              handle.write(f"MART_OUTPUT_FILENAME={mart_name}\n")
+              handle.write(f"ANALYSIS_ZIP_SHA256={analysis_zip_sha}\n")
+              handle.write(f"MART_SHA256={mart_sha}\n")
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload refresh artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-post-race-refresh
+          path: .work/output/*
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
+
+      - name: Report success
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > .work/comment.md <<EOF
+          JRDB_POST_RACE_REFRESH_RESULT
+          status: success
+          run_id: ${GITHUB_RUN_ID}
+          artifact_name: jrdb-post-race-refresh
+          request_id: ${REQUEST_ID}
+          dates: ${REQUEST_DATES}
+          max_race_date: ${MAX_RACE_DATE}
+          analysis_output_filename: ${ANALYSIS_OUTPUT_FILENAME}
+          analysis_rows_before: ${ANALYSIS_ROWS_BEFORE}
+          analysis_rows_after: ${ANALYSIS_ROWS_AFTER}
+          analysis_zip_sha256: ${ANALYSIS_ZIP_SHA256}
+          mart_output_filename: ${MART_OUTPUT_FILENAME}
+          mart_sha256: ${MART_SHA256}
+          integrity_check: ok
+          history_index_preserved: true
+          EOF
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file .work/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"
+
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
+            "JRDB_POST_RACE_REFRESH_RESULT\nstatus: failure\nrun_id: ${GITHUB_RUN_ID}\nCheck the failed step/logs before retrying."
