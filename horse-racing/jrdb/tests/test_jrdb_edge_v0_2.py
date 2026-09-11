@@ -40,7 +40,7 @@ def test_track_condition_bucket_collapses_jrdb_speed_subcodes() -> None:
 def test_v02_catalog_enables_cross_recent_track_and_adjusted_jockey() -> None:
     catalog = json.loads((ROOT / "config/jrdb_edge_candidate_templates_v0_2.json").read_text(encoding="utf-8"))
     by_id = {row["template_id"]: row for row in catalog["templates"]}
-    assert catalog["template_version"] == "2026-09-09.v2.2"
+    assert catalog["template_version"] == "2026-09-12.v2.3"
     assert catalog["rules"]["max_modifier_count"] == 3
     assert by_id["SIRE_BROODMARE_SIRE_V2"]["enabled"] is True
     assert by_id["SIRE_AGE_V2"]["enabled"] is True
@@ -120,10 +120,10 @@ def test_human_quality_calibration_is_prior_year_only(tmp_path: Path) -> None:
 
 
 def test_v02_matcher_accepts_new_condition_fields_and_track_fails_closed_without_current_source() -> None:
-    age_edge = {"edge_id":"EDGE-V02","status":"ACTIVE","display_text":"v0.2","polarity":"POSITIVE","conditions":{"template_id":"SIRE_AGE_V2","template_version":"2026-09-09.v2.2","anchor":{"sire_name":"SIRE"},"modifiers":{"horse_age":2}}}
+    age_edge = {"edge_id":"EDGE-V02","status":"ACTIVE","display_text":"v0.2","polarity":"POSITIVE","conditions":{"template_id":"SIRE_AGE_V2","template_version":"2026-09-12.v2.3","anchor":{"sire_name":"SIRE"},"modifiers":{"horse_age":2}}}
     runner = {"race_date":"2026-09-12","sire_name":"SIRE","horse_age":2}
     assert matcher_v02.edge_matches_runner(age_edge, runner) is not None
-    track_edge = {"edge_id":"EDGE-TRACK-V02","status":"ACTIVE","display_text":"track","polarity":"POSITIVE","conditions":{"template_id":"SIRE_TRACK_CONDITION_V2","template_version":"2026-09-09.v2.2","anchor":{"sire_name":"SIRE"},"modifiers":{"surface_code":"1","track_condition_bucket":"3"}}}
+    track_edge = {"edge_id":"EDGE-TRACK-V02","status":"ACTIVE","display_text":"track","polarity":"POSITIVE","conditions":{"template_id":"SIRE_TRACK_CONDITION_V2","template_version":"2026-09-12.v2.3","anchor":{"sire_name":"SIRE"},"modifiers":{"surface_code":"1","track_condition_bucket":"3"}}}
     assert matcher_v02.edge_matches_runner(track_edge, runner) is None
     assert matcher_v02.edge_matches_runner(track_edge,{**runner,"surface_code":"1","track_condition_bucket":"3"}) is not None
     assert "horse_age" in matcher_v02.base.CONDITION_FIELDS
