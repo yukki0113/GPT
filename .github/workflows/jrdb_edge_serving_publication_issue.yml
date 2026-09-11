@@ -1,0 +1,230 @@
+name: JRDB Edge v0.2 Serving Publication via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_EDGE_SERVING_PUBLICATION]'
+
+jobs:
+  publish:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_SERVING_PUBLICATION]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          prefix='[JRDB_EDGE_SERVING_PUBLICATION]'
+          title=os.environ['ISSUE_TITLE']
+          request_id=title[len(prefix):].strip()
+          if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('invalid request_id')
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'source_run_id','source_artifact_name'}
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          source_run_id=req['source_run_id']
+          if not isinstance(source_run_id,int) or source_run_id<=0:
+              raise SystemExit('source_run_id must be positive integer')
+          source_artifact_name=str(req['source_artifact_name']).strip()
+          if not source_artifact_name:
+              raise SystemExit('source_artifact_name must be non-empty')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          normalized={
+              'request_id':request_id,
+              'source_run_id':source_run_id,
+              'source_artifact_name':source_artifact_name,
+              'registry_sha256':None,
+              'sensitivity_sha256':None,
+              'expected_serving_sha256':None,
+              'expected_suggestive_rows':int(req.get('expected_suggestive_rows',437)),
+              'expected_suggestive_channels':int(req.get('expected_suggestive_channels',454)),
+          }
+          for field in ('registry_sha256','sensitivity_sha256','expected_serving_sha256'):
+              value=req.get(field)
+              if value is None:
+                  continue
+              value=str(value).strip().lower()
+              if not sha_re.fullmatch(value):
+                  raise SystemExit(f'{field} must be lowercase SHA-256 hex')
+              normalized[field]=value
+          if normalized['expected_suggestive_rows']<0 or normalized['expected_suggestive_channels']<0:
+              raise SystemExit('expected counts must be non-negative')
+          Path('/tmp/request.json').write_text(
+              json.dumps(normalized,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as fh:
+              fh.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Download frozen full v0.2 source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/source
+          python - <<'PY' > /tmp/source_env.sh
+          import json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          print(f"SOURCE_RUN_ID={req['source_run_id']}")
+          print(f"SOURCE_ARTIFACT_NAME={req['source_artifact_name']}")
+          PY
+          source /tmp/source_env.sh
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$SOURCE_ARTIFACT_NAME" --dir /tmp/source
+          mapfile -t registries < <(find /tmp/source -type f -name edge_registry.sqlite -print)
+          mapfile -t sensitivity < <(find /tmp/source -type f -name edge_suggestive_bootstrap_sensitivity.jsonl -print)
+          if [ "${#registries[@]}" -ne 1 ] || [ "${#sensitivity[@]}" -ne 1 ]; then
+            echo "expected one registry and one sensitivity input" >&2
+            exit 1
+          fi
+          cp "${registries[0]}" /tmp/edge_registry.sqlite
+          cp "${sensitivity[0]}" /tmp/edge_suggestive_bootstrap_sensitivity.jsonl
+
+      - name: Verify frozen source hashes
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          paths={
+              'registry_sha256':Path('/tmp/edge_registry.sqlite'),
+              'sensitivity_sha256':Path('/tmp/edge_suggestive_bootstrap_sensitivity.jsonl'),
+          }
+          for field,path in paths.items():
+              actual=hashlib.sha256(path.read_bytes()).hexdigest()
+              expected=req.get(field)
+              if expected and actual!=expected:
+                  raise SystemExit(f'{field} mismatch expected={expected} actual={actual}')
+          PY
+
+      - name: Build v0.2 STANDARD serving publication
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/publication
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          cmd=[
+              'python','horse-racing/jrdb/src/build_jrdb_edge_suggestive_publication_v0_2.py',
+              '--registry','/tmp/edge_registry.sqlite',
+              '--sensitivity-jsonl','/tmp/edge_suggestive_bootstrap_sensitivity.jsonl',
+              '--output-suggestive-jsonl','/tmp/publication/edge_registry_suggestive.jsonl',
+              '--output-serving-jsonl','/tmp/publication/edge_serving_catalog_v0_2.jsonl',
+              '--audit-json','/tmp/publication/edge_suggestive_publication_audit.json',
+              '--expected-suggestive-rows',str(req['expected_suggestive_rows']),
+              '--expected-suggestive-channels',str(req['expected_suggestive_channels']),
+          ]
+          subprocess.run(cmd,check=True)
+          PY
+
+      - name: Validate publication contract
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          root=Path('/tmp/publication')
+          audit=json.loads((root/'edge_suggestive_publication_audit.json').read_text(encoding='utf-8'))
+          if audit.get('status')!='PASS':
+              raise SystemExit(f"publication audit status={audit.get('status')}")
+          if audit.get('active_rows')!=2572:
+              raise SystemExit(f"unexpected active_rows={audit.get('active_rows')}")
+          if audit.get('suggestive_rows')!=req['expected_suggestive_rows']:
+              raise SystemExit('suggestive row count mismatch')
+          if audit.get('serving_rows')!=2572+req['expected_suggestive_rows']:
+              raise SystemExit('serving row count mismatch')
+          if audit.get('suggestive_total_channels')!=req['expected_suggestive_channels']:
+              raise SystemExit('suggestive channel count mismatch')
+          serving=root/'edge_serving_catalog_v0_2.jsonl'
+          actual=hashlib.sha256(serving.read_bytes()).hexdigest()
+          if audit.get('serving_catalog_sha256')!=actual:
+              raise SystemExit('audit/catalog SHA mismatch')
+          if req.get('expected_serving_sha256') and actual!=req['expected_serving_sha256']:
+              raise SystemExit(
+                  f"serving SHA mismatch expected={req['expected_serving_sha256']} actual={actual}"
+              )
+          result={
+              'status':'PASS',
+              'serving_profile':'STANDARD',
+              'publication_file':'edge_serving_catalog_v0_2.jsonl',
+              'serving_catalog_sha256':actual,
+              'serving_rows':audit['serving_rows'],
+              'active_rows':audit['active_rows'],
+              'suggestive_rows':audit['suggestive_rows'],
+              'suggestive_total_channels':audit['suggestive_total_channels'],
+              'registry_sha256':audit['registry_sha256'],
+              'sensitivity_sha256':audit['sensitivity_sha256'],
+              'suggestive_sha256':audit['suggestive_sha256'],
+          }
+          (root/'publication_result.json').write_text(
+              json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Upload official serving publication
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-serving-v02-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/publication/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          result=json.loads(Path('/tmp/publication/publication_result.json').read_text(encoding='utf-8'))
+          result.update({
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-serving-v02-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+          })
+          body='JRDB_EDGE_SERVING_PUBLICATION_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge v0.2 serving publication failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
