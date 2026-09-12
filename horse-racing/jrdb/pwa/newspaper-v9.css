@@ -1,0 +1,43 @@
+/* Newspaper display v9: Eval analysis links keep the existing narrow Eval column. */
+
+.newspaper-table-v4 .newspaper-eval-analysis-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+  font: inherit;
+  line-height: 1;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.newspaper-table-v4 .newspaper-eval-analysis-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+
+.newspaper-eval-analysis-title {
+  margin: 2px 0 10px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.newspaper-eval-analysis-comment {
+  margin: 0 0 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.newspaper-eval-analysis-meta {
+  margin-top: 4px;
+}
+
+.newspaper-eval-analysis-meta dd {
+  overflow-wrap: anywhere;
+}
