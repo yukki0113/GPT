@@ -17,13 +17,20 @@ class NewspaperEvalAnalysisPwaTest(unittest.TestCase):
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
         script = (PWA_ROOT / "newspaper-v9.js").read_text(encoding="utf-8")
+        stylesheet = (PWA_ROOT / "newspaper-v9.css").read_text(encoding="utf-8")
 
-        self.assertIn('./newspaper-v9.css?v=1', html)
+        self.assertIn('./newspaper-v9.css?v=2', html)
         self.assertIn('./newspaper-v9.js?v=1', html)
-        self.assertIn('./newspaper-v9.css?v=1', service_worker)
+        self.assertIn('./newspaper-v9.css?v=2', service_worker)
         self.assertIn('./newspaper-v9.js?v=1', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v42"', service_worker)
         self.assertEqual(html.count('id="newspaper-detail-dialog"'), 1)
         self.assertNotIn('createElement("dialog")', script)
+        self.assertIn('.newspaper-iluka-button,', stylesheet)
+        self.assertIn('.newspaper-eval-analysis-link {', stylesheet)
+        self.assertIn('color: #007aff;', stylesheet)
+        self.assertIn('text-decoration: underline;', stylesheet)
+        self.assertIn('text-decoration-style: solid;', stylesheet)
 
     def test_eval_analysis_layer_has_no_condition_logic(self) -> None:
         script = (PWA_ROOT / "newspaper-v9.js").read_text(encoding="utf-8")
