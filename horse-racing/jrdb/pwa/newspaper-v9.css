@@ -1,5 +1,15 @@
 /* Newspaper display v9: Eval analysis links keep the existing narrow Eval column. */
 
+.newspaper-table-v4 .newspaper-iluka-button,
+.newspaper-table-v4 .newspaper-eval-analysis-link {
+  color: #007aff;
+  -webkit-text-fill-color: #007aff;
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
 .newspaper-table-v4 .newspaper-eval-analysis-link {
   display: inline-flex;
   align-items: center;
@@ -7,14 +17,8 @@
   min-width: 28px;
   min-height: 28px;
   padding: 0;
-  color: inherit;
-  -webkit-text-fill-color: currentColor;
   font: inherit;
   line-height: 1;
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
 }
 
 .newspaper-table-v4 .newspaper-eval-analysis-link:focus-visible {
