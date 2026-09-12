@@ -18,6 +18,9 @@ def test_registry_builds_active_edge_with_snapshots_and_exports(tmp_path: Path) 
     mart = _mart(tmp_path)
     policies = json.loads((ROOT / "config/jrdb_edge_validation_policies_v0_1.json").read_text(encoding="utf-8"))
     candidate = _candidate("LIFECYCLE_SIRE_V1")
+    # Registry v0.2 renders production display text fail-closed, so this
+    # persistence/export regression must use a real supported template id.
+    candidate["template_id"] = "SIRE_TURN_DISTANCE_V1"
     candidate.update(
         {
             "sample_n": 320,
