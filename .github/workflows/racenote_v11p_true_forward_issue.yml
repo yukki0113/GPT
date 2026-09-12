@@ -1,0 +1,188 @@
+name: RaceNote v1.1-P TRUE_FORWARD freeze via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+jobs:
+  freeze:
+    if: startsWith(github.event.issue.title, '[RACENOTE_TRUE_FORWARD_FREEZE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      ISSUE_BODY: ${{ github.event.issue.body }}
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        id: request
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          raw = json.loads(os.environ['ISSUE_BODY'])
+          required = [
+              'request_id', 'date',
+              'racenote_run_id', 'racenote_artifact_name', 'racenote_inner_zip_sha256',
+              'edge_run_id', 'edge_artifact_name',
+              'publication_run_id', 'publication_artifact_name', 'publication_sha256',
+              'serving_profile', 'analysis_sha256',
+          ]
+          missing = [key for key in required if raw.get(key) in (None, '')]
+          if missing:
+              raise SystemExit('missing required fields: ' + ', '.join(missing))
+          if raw['serving_profile'] != 'STANDARD':
+              raise SystemExit('serving_profile must be STANDARD')
+          date_text = str(raw['date'])
+          if len(date_text) != 8 or not date_text.isdigit():
+              raise SystemExit('date must be YYYYMMDD')
+          Path('work').mkdir(exist_ok=True)
+          Path('work/raw_request.json').write_text(
+              json.dumps(raw, ensure_ascii=False, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          outputs = {
+              'request_id': str(raw['request_id']),
+              'date': date_text,
+              'racenote_run_id': str(raw['racenote_run_id']),
+              'racenote_artifact_name': str(raw['racenote_artifact_name']),
+              'edge_run_id': str(raw['edge_run_id']),
+              'edge_artifact_name': str(raw['edge_artifact_name']),
+          }
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              for key, value in outputs.items():
+                  handle.write(f'{key}={value}\n')
+          PY
+
+      - name: Download authoritative source artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work/racenote work/edge
+          gh run download "${{ steps.request.outputs.racenote_run_id }}" \
+            -R "${GITHUB_REPOSITORY}" \
+            -n "${{ steps.request.outputs.racenote_artifact_name }}" \
+            -D work/racenote
+          gh run download "${{ steps.request.outputs.edge_run_id }}" \
+            -R "${GITHUB_REPOSITORY}" \
+            -n "${{ steps.request.outputs.edge_artifact_name }}" \
+            -D work/edge
+          find work/racenote -maxdepth 2 -type f -print
+          find work/edge -maxdepth 2 -type f -print
+
+      - name: Build runner request
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          raw = json.loads(Path('work/raw_request.json').read_text(encoding='utf-8'))
+          request = {
+              'request_id': raw['request_id'],
+              'date': raw['date'],
+              'racenote': {
+                  'run_id': raw['racenote_run_id'],
+                  'artifact_name': raw['racenote_artifact_name'],
+                  'inner_zip_sha256': raw['racenote_inner_zip_sha256'],
+              },
+              'edge': {
+                  'run_id': raw['edge_run_id'],
+                  'artifact_name': raw['edge_artifact_name'],
+                  'publication_run_id': raw['publication_run_id'],
+                  'publication_artifact_name': raw['publication_artifact_name'],
+                  'publication_sha256': raw['publication_sha256'],
+                  'serving_profile': raw['serving_profile'],
+                  'analysis_sha256': raw['analysis_sha256'],
+              },
+          }
+          for key in ('manifest_sha256', 'matches_sha256', 'paci_sha256'):
+              value = raw.get(key)
+              if value:
+                  request['edge'][key] = value
+          Path('work/request.json').write_text(
+              json.dumps(request, ensure_ascii=False, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Run focused TRUE_FORWARD tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pytest -q horse-racing/jrdb/tests/test_racenote_v11p_true_forward_day.py
+
+      - name: Freeze RaceNote v1.1-P predictions
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work/output
+          python horse-racing/jrdb/src/run_racenote_v11p_true_forward_day.py \
+            --request-json work/request.json \
+            --racenote-root work/racenote \
+            --edge-root work/edge \
+            --output-dir work/output \
+            --run-id "${GITHUB_RUN_ID}" \
+            --head-sha "${GITHUB_SHA}"
+
+      - name: Upload immutable freeze artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-true-forward-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: work/output/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment success result
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' > work/comment.md
+          import json
+          from pathlib import Path
+          result = json.loads(Path('work/output/result.json').read_text(encoding='utf-8'))
+          result['artifact_name'] = 'racenote-true-forward-' + result['request_id'] + '-' + str(result['run_id'])
+          print('RACENOTE_TRUE_FORWARD_RESULT')
+          print('```json')
+          print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+          print('```')
+          PY
+          gh issue comment "${ISSUE_NUMBER}" -R "${GITHUB_REPOSITORY}" --body-file work/comment.md
+          gh issue close "${ISSUE_NUMBER}" -R "${GITHUB_REPOSITORY}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        shell: bash
+        run: |
+          set +e
+          cat > work/failure.md <<EOF
+          RACENOTE_TRUE_FORWARD_RESULT
+          \`\`\`json
+          {"status":"failure","run_id":${GITHUB_RUN_ID},"head_sha":"${GITHUB_SHA}","failure_class":"TRUE_FORWARD_FREEZE_FAILED"}
+          \`\`\`
+          EOF
+          gh issue comment "${ISSUE_NUMBER}" -R "${GITHUB_REPOSITORY}" --body-file work/failure.md
+          gh issue close "${ISSUE_NUMBER}" -R "${GITHUB_REPOSITORY}" --reason "not planned"
