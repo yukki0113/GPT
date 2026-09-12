@@ -17,7 +17,7 @@ SHA_C = "c" * 64
 
 
 def request_payload() -> dict:
-    """Return a minimal valid TRUE_FORWARD day request."""
+    """Return a minimal valid TRUE_FORWARD day request using STANDARD publication."""
     return {
         "request_id": "true-forward-test",
         "date": "20260912",
@@ -29,20 +29,41 @@ def request_payload() -> dict:
         "edge": {
             "run_id": 202,
             "artifact_name": "edge-forward-test",
-            "registry_sha256": SHA_B,
+            "publication_run_id": 303,
+            "publication_artifact_name": "edge-serving-standard-test",
+            "publication_sha256": SHA_B,
+            "serving_profile": "STANDARD",
             "analysis_sha256": SHA_C,
         },
     }
 
 
-def test_normalize_request_accepts_one_day_and_validates_hashes():
+def test_normalize_request_accepts_standard_publication_and_validates_hashes():
     request = forward.normalize_request(request_payload())
     assert request["date"] == "20260912"
+    assert request["edge"]["serving_profile"] == "STANDARD"
 
     bad = request_payload()
     bad["racenote"]["inner_zip_sha256"] = "short"
     with pytest.raises(ValueError, match="inner_zip_sha256"):
         forward.normalize_request(bad)
+
+    bad_profile = request_payload()
+    bad_profile["edge"]["serving_profile"] = "CONFIRMED_ONLY"
+    with pytest.raises(ValueError, match="STANDARD"):
+        forward.normalize_request(bad_profile)
+
+
+def test_normalize_request_keeps_legacy_registry_backward_compatible():
+    request = request_payload()
+    edge = request["edge"]
+    edge.pop("publication_run_id")
+    edge.pop("publication_artifact_name")
+    edge.pop("publication_sha256")
+    edge.pop("serving_profile")
+    edge["registry_sha256"] = SHA_B
+    normalized = forward.normalize_request(request)
+    assert normalized["edge"]["registry_sha256"] == SHA_B
 
 
 def test_racenote_manifest_accepts_current_or_future_but_rejects_past():
@@ -70,7 +91,7 @@ def test_racenote_manifest_accepts_current_or_future_but_rejects_past():
         forward.validate_racenote_manifest(manifest, "20260912")
 
 
-def test_validate_edge_artifact_requires_true_forward_guard(tmp_path):
+def test_validate_edge_artifact_requires_true_forward_guard_and_standard_source(tmp_path):
     facts_path = tmp_path / "current_facts.jsonl"
     matches_path = tmp_path / "edge_matches.jsonl"
     facts_path.write_text(json.dumps({"race_key": "r1", "horse_no": 1}) + "\n", encoding="utf-8")
@@ -85,6 +106,11 @@ def test_validate_edge_artifact_requires_true_forward_guard(tmp_path):
         "race_date": "2026-09-12",
         "frozen_at_utc": "2026-09-11T00:00:00+00:00",
         "earliest_post_time_jst": "2026-09-12T10:00:00+09:00",
+        "serving_profile": "STANDARD",
+        "provenance": {
+            "serving_profile": "STANDARD",
+            "input_sha256": {"publication_sha256": SHA_B},
+        },
     }
     manifest_path = tmp_path / "manifest.json"
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
@@ -97,7 +123,11 @@ def test_validate_edge_artifact_requires_true_forward_guard(tmp_path):
         "race_date": "2026-09-12",
         "run_id": 202,
         "artifact_name": "edge-forward-test",
-        "registry_sha256": SHA_B,
+        "publication_run_id": 303,
+        "publication_artifact_name": "edge-serving-standard-test",
+        "publication_file": "edge_serving_catalog_v0_2.jsonl",
+        "publication_sha256": SHA_B,
+        "serving_profile": "STANDARD",
         "analysis_sha256": SHA_C,
         "paci_sha256": "d" * 64,
         "manifest_sha256": forward.historical.sha256_file(manifest_path),
@@ -113,6 +143,7 @@ def test_validate_edge_artifact_requires_true_forward_guard(tmp_path):
     spec = request_payload()["edge"]
     validated, facts, match_rows = forward.validate_edge_artifact(tmp_path, "20260912", spec)
     assert validated["pre_race_guard"] == "PASS"
+    assert validated["serving_profile"] == "STANDARD"
     assert len(facts) == 1
     assert len(match_rows) == 1
 
@@ -144,7 +175,11 @@ def test_run_supports_realized_variable_race_count(tmp_path, monkeypatch):
         "manifest_sha256": "3" * 64,
         "matches_sha256": "4" * 64,
         "paci_sha256": "5" * 64,
-        "registry_sha256": SHA_B,
+        "publication_run_id": 303,
+        "publication_artifact_name": "edge-serving-standard-test",
+        "publication_file": "edge_serving_catalog_v0_2.jsonl",
+        "publication_sha256": SHA_B,
+        "serving_profile": "STANDARD",
         "analysis_sha256": SHA_C,
         "frozen_at_utc": "2026-09-11T00:00:00+00:00",
         "earliest_post_time_jst": "2026-09-12T10:00:00+09:00",
@@ -189,7 +224,7 @@ def test_run_supports_realized_variable_race_count(tmp_path, monkeypatch):
         racenote_root=str(tmp_path / "rn"),
         edge_root=str(tmp_path / "edge"),
         output_dir=str(output_dir),
-        run_id=303,
+        run_id=404,
         head_sha="head-sha",
     )
     result = forward.run(args)
@@ -198,5 +233,7 @@ def test_run_supports_realized_variable_race_count(tmp_path, monkeypatch):
     assert result["axis_changes"] == 1
     assert result["evaluation_mode"] == "TRUE_FORWARD"
     assert result["result_data_used"] is False
-    assert (output_dir / result["prediction_file"]).is_file()
+    prediction = json.loads((output_dir / result["prediction_file"]).read_text(encoding="utf-8"))
+    assert prediction["edge_freeze"]["serving_profile"] == "STANDARD"
+    assert prediction["edge_freeze"]["publication_sha256"] == SHA_B
     assert (output_dir / result["manifest_file"]).is_file()

@@ -29,9 +29,11 @@ import racenote_edge_prediction_policy as edge_policy
 import racenote_v02_reconstructed as control
 import run_racenote_v11p_blind_freeze as historical
 
-VERSION = "racenote-v11p-true-forward-day-1.0"
+VERSION = "racenote-v11p-true-forward-day-1.1"
 FREEZE_STAGE = "TRUE_FORWARD_PRE_HJC"
 ALLOWED_TEMPORAL_MODES = {"current", "future"}
+EDGE_STANDARD_PROFILE = "STANDARD"
+EDGE_STANDARD_PUBLICATION_FILE = "edge_serving_catalog_v0_2.jsonl"
 
 
 def require(condition: bool, message: str) -> None:
@@ -75,10 +77,23 @@ def normalize_request(raw: Any) -> dict[str, Any]:
         require(racenote.get(key) not in (None, ""), f"racenote.{key} is required")
     require(len(str(racenote["inner_zip_sha256"])) == 64, "racenote.inner_zip_sha256 must be SHA-256")
 
-    for key in ("run_id", "artifact_name", "registry_sha256", "analysis_sha256"):
+    for key in ("run_id", "artifact_name", "analysis_sha256"):
         require(edge.get(key) not in (None, ""), f"edge.{key} is required")
-    require(len(str(edge["registry_sha256"])) == 64, "edge.registry_sha256 must be SHA-256")
     require(len(str(edge["analysis_sha256"])) == 64, "edge.analysis_sha256 must be SHA-256")
+
+    publication_sha = edge.get("publication_sha256")
+    registry_sha = edge.get("registry_sha256")
+    require(
+        publication_sha not in (None, "") or registry_sha not in (None, ""),
+        "edge.publication_sha256 or edge.registry_sha256 is required",
+    )
+    if publication_sha not in (None, ""):
+        for key in ("publication_run_id", "publication_artifact_name", "serving_profile"):
+            require(edge.get(key) not in (None, ""), f"edge.{key} is required for publication input")
+        require(len(str(publication_sha)) == 64, "edge.publication_sha256 must be SHA-256")
+        require(edge.get("serving_profile") == EDGE_STANDARD_PROFILE, "edge.serving_profile must be STANDARD")
+    if registry_sha not in (None, ""):
+        require(len(str(registry_sha)) == 64, "edge.registry_sha256 must be SHA-256")
 
     for optional_sha in ("manifest_sha256", "matches_sha256", "paci_sha256"):
         value = edge.get(optional_sha)
@@ -151,6 +166,39 @@ def load_racenote_day(root: Path, day: str, spec: Mapping[str, Any]) -> tuple[di
     return outer_manifest, loaded
 
 
+def _validate_edge_source_contract(
+    result: Mapping[str, Any],
+    manifest: Mapping[str, Any],
+    spec: Mapping[str, Any],
+) -> None:
+    """Validate either the current STANDARD publication source or legacy registry source."""
+    publication_sha = spec.get("publication_sha256")
+    if publication_sha not in (None, ""):
+        require(result.get("serving_profile") == EDGE_STANDARD_PROFILE, "Edge serving_profile is not STANDARD")
+        require(result.get("publication_file") == EDGE_STANDARD_PUBLICATION_FILE, "Edge publication_file mismatch")
+        require(result.get("publication_sha256") == publication_sha, "Edge publication SHA mismatch")
+        require(
+            int(result.get("publication_run_id", -1)) == int(spec["publication_run_id"]),
+            "Edge publication_run_id mismatch",
+        )
+        require(
+            result.get("publication_artifact_name") == spec["publication_artifact_name"],
+            "Edge publication_artifact_name mismatch",
+        )
+        require(manifest.get("serving_profile") == EDGE_STANDARD_PROFILE, "Edge manifest serving_profile mismatch")
+        provenance = manifest.get("provenance")
+        require(isinstance(provenance, Mapping), "Edge manifest provenance is missing")
+        require(provenance.get("serving_profile") == EDGE_STANDARD_PROFILE, "Edge provenance serving_profile mismatch")
+        input_sha = provenance.get("input_sha256")
+        require(isinstance(input_sha, Mapping), "Edge provenance input_sha256 is missing")
+        require(input_sha.get("publication_sha256") == publication_sha, "Edge manifest publication SHA mismatch")
+        return
+
+    registry_sha = spec.get("registry_sha256")
+    require(registry_sha not in (None, ""), "legacy Edge registry SHA is missing")
+    require(result.get("registry_sha256") == registry_sha, "Edge registry SHA mismatch")
+
+
 def validate_edge_artifact(root: Path, day: str, spec: Mapping[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
     """Validate one canonical Edge TRUE_FORWARD freeze artifact."""
     result_path = root / "result.json"
@@ -171,7 +219,6 @@ def validate_edge_artifact(root: Path, day: str, spec: Mapping[str, Any]) -> tup
     require(result.get("race_date") == iso_date(day), "Edge race_date mismatch")
     require(int(result.get("run_id", -1)) == int(spec["run_id"]), "Edge run_id mismatch")
     require(result.get("artifact_name") == spec["artifact_name"], "Edge artifact_name mismatch")
-    require(result.get("registry_sha256") == spec["registry_sha256"], "Edge registry SHA mismatch")
     require(result.get("analysis_sha256") == spec["analysis_sha256"], "Edge Analysis SHA mismatch")
 
     manifest_sha = historical.sha256_file(manifest_path)
@@ -193,6 +240,7 @@ def validate_edge_artifact(root: Path, day: str, spec: Mapping[str, Any]) -> tup
     require(manifest.get("race_date") == iso_date(day), "Edge manifest race_date mismatch")
     require(manifest.get("frozen_at_utc") == result.get("frozen_at_utc"), "Edge frozen_at mismatch")
     require(manifest.get("earliest_post_time_jst") == result.get("earliest_post_time_jst"), "Edge earliest-post mismatch")
+    _validate_edge_source_contract(result, manifest, spec)
 
     facts = historical.load_jsonl(facts_path)
     match_rows = historical.load_jsonl(matches_path)
@@ -203,6 +251,31 @@ def validate_edge_artifact(root: Path, day: str, spec: Mapping[str, Any]) -> tup
     require(matched_runners == int(result.get("matched_runners", -1)), "Edge matched_runners mismatch")
     require(total_matches == int(result.get("matches", -1)), "Edge match count mismatch")
     return result, facts, match_rows
+
+
+def edge_source_provenance(edge_result: Mapping[str, Any]) -> dict[str, Any]:
+    """Return the immutable Edge source identity without changing scoring semantics."""
+    provenance = {
+        "edge_run_id": int(edge_result["run_id"]),
+        "edge_artifact_name": edge_result["artifact_name"],
+        "edge_manifest_sha256": edge_result["manifest_sha256"],
+        "edge_matches_sha256": edge_result["matches_sha256"],
+        "paci_sha256": edge_result["paci_sha256"],
+        "analysis_sha256": edge_result["analysis_sha256"],
+        "edge_frozen_at_utc": edge_result["frozen_at_utc"],
+        "earliest_post_time_jst": edge_result["earliest_post_time_jst"],
+        "pre_race_guard": edge_result["pre_race_guard"],
+    }
+    publication_sha = edge_result.get("publication_sha256")
+    if publication_sha not in (None, ""):
+        provenance["serving_profile"] = edge_result["serving_profile"]
+        provenance["publication_file"] = edge_result["publication_file"]
+        provenance["publication_sha256"] = publication_sha
+        provenance["publication_run_id"] = int(edge_result["publication_run_id"])
+        provenance["publication_artifact_name"] = edge_result["publication_artifact_name"]
+    else:
+        provenance["registry_sha256"] = edge_result["registry_sha256"]
+    return provenance
 
 
 def add_audit(target: Counter[str], values: Mapping[str, int]) -> None:
@@ -230,16 +303,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "racenote_run_id": int(request["racenote"]["run_id"]),
         "racenote_artifact_name": request["racenote"]["artifact_name"],
         "racenote_inner_zip_sha256": request["racenote"]["inner_zip_sha256"],
-        "edge_run_id": int(request["edge"]["run_id"]),
-        "edge_artifact_name": request["edge"]["artifact_name"],
-        "edge_manifest_sha256": edge_result["manifest_sha256"],
-        "edge_matches_sha256": edge_result["matches_sha256"],
-        "paci_sha256": edge_result["paci_sha256"],
-        "registry_sha256": edge_result["registry_sha256"],
-        "analysis_sha256": edge_result["analysis_sha256"],
-        "edge_frozen_at_utc": edge_result["frozen_at_utc"],
-        "earliest_post_time_jst": edge_result["earliest_post_time_jst"],
-        "pre_race_guard": edge_result["pre_race_guard"],
+        **edge_source_provenance(edge_result),
         "as_of_exclusive": iso_date(day),
     }
 
@@ -261,6 +325,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     require(len(races) == int(racenote_manifest["bundle_count"]), "RaceNote race count changed during scoring")
     require(sum(len(rows) for rows in fact_groups.values()) == len(facts), "Edge fact grouping lost runners")
 
+    edge_freeze = edge_source_provenance(edge_result)
     day_payload = {
         "schema_version": VERSION,
         "freeze_stage": FREEZE_STAGE,
@@ -269,18 +334,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "date": iso_date(day),
         "control_version": control.VERSION,
         "policy_version": edge_policy.VERSION,
-        "edge_freeze": {
-            "run_id": int(edge_result["run_id"]),
-            "artifact_name": edge_result["artifact_name"],
-            "frozen_at_utc": edge_result["frozen_at_utc"],
-            "earliest_post_time_jst": edge_result["earliest_post_time_jst"],
-            "pre_race_guard": edge_result["pre_race_guard"],
-            "manifest_sha256": edge_result["manifest_sha256"],
-            "matches_sha256": edge_result["matches_sha256"],
-            "paci_sha256": edge_result["paci_sha256"],
-            "registry_sha256": edge_result["registry_sha256"],
-            "analysis_sha256": edge_result["analysis_sha256"],
-        },
+        "edge_freeze": edge_freeze,
         "racenote": {
             "run_id": int(request["racenote"]["run_id"]),
             "artifact_name": request["racenote"]["artifact_name"],
@@ -323,7 +377,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "racenote": day_payload["racenote"],
         "audit": {"races": len(races), **dict(sorted(race_audit.items()))},
         "leakage_guard": {
-            "allowed": ["pre-race PACI", "as-of-exclusive RaceNote history", "fixed Phase1 ACTIVE Edge TRUE_FORWARD freeze"],
+            "allowed": [
+                "pre-race PACI",
+                "as-of-exclusive RaceNote history",
+                "fixed Edge TRUE_FORWARD freeze from STANDARD serving catalog",
+                "ACTIVE-only mark-changing policy within v1.1-P",
+            ],
             "forbidden_and_not_read": ["HJC", "SED", "finish", "payout", "final odds", "final popularity", "later-dated history"],
         },
     }
