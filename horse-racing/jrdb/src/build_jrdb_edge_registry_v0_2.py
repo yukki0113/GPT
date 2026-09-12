@@ -42,9 +42,21 @@ _ORIG_BUILD_REGISTRY = base.build_registry
 
 
 def _load_jockey_labels(mart_path: str | Path) -> dict[str, str]:
-    """Resolve each jockey code to its latest pre-race name in the Feature Mart."""
+    """Resolve each jockey code to its latest pre-race name in the Feature Mart.
+
+    Older synthetic/test Feature Marts predate ``jockey_name``.  In that case,
+    keep the previous behavior by returning no display-label overrides rather
+    than failing Registry construction.
+    """
     connection = sqlite3.connect(mart_path)
     try:
+        columns = {
+            str(row[1])
+            for row in connection.execute("PRAGMA table_info(edge_runner_fact)").fetchall()
+        }
+        if "jockey_name" not in columns:
+            return {}
+
         rows = connection.execute(
             """
             SELECT DISTINCT current.jockey_code,
