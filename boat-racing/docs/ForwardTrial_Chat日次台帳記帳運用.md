@@ -24,10 +24,13 @@ Drive・Google Sheets・Actions RESULTを読み直して判断する。
 
 ## 実行経路
 
-この処理は **D. Actions-Native Execution** である。理由はGoogle service-account secret、
-認証付きDrive読み取り、Google Sheets書き込み、immutable freeze、Actions run/artifactを
-正式監査証跡として残す必要があるためである。Chat/WorkがCSVを手で転記・集計して完了にしては
-ならない。
+Workでは、Driveの種別別フォルダから4原本を取得し、GitHub `main` の決定論moduleで
+書込計画を生成したうえで、接続済みGoogle Sheetsへ直接書込み・read-backする経路を標準とする。
+書込み中は `集計再生成中` とし、全監査成功後だけ `完了` とする。CSVの手計算やセル単位の
+場当たり的転記を完了扱いにしてはならない。
+
+`GPT_GDRIVE_SERVICE_ACCOUNT_JSON` が利用可能な環境では、Issue / Actionsを代替監査経路として
+使用できる。Secret未設定時は失敗Issueを繰り返さず、Work直結経路へ切り替える。
 
 | Component | Role |
 | --- | --- |
