@@ -1,212 +1,186 @@
-# JRDB 検証ラボ PWA
+# JRDB / Kenshow_Labo PWA
 
-JRDBデータをスマホ端末へ保存し、競馬場など通信が不安定な場所でも条件集計できるオフライン PWA のフロントエンド正本です。
+`horse-racing/jrdb/pwa/` は、JRDB系の配布済みデータをブラウザで閲覧・集計する **consumer / presentation layer** の正本です。
 
-## Deployment
+このPWAは、JRDB Raw・Analysis・Eval・Edge・RaceNoteの条件や判定を再実装する場所ではありません。上流で確定・監査されたデータを受け取り、ブラウザで安全に同期・保存・表示することを責務とします。
 
-GitHub Pages は GitHub Actions 方式を使用します。
+スレッド移動や会話量上限後にPWA保守を再開する場合は、まず `.gpt/HANDOFF.md` を確認してください。
 
-- source: `horse-racing/jrdb/pwa/`
-- UI workflow: `.github/workflows/jrdb_pwa_pages.yml`
-- Stats Mart data publish workflow: `.github/workflows/jrdb_pwa_publish_data.yml`
-- Fact Lite publish workflow: `.github/workflows/jrdb_pwa_fact_lite_publish.yml`
-- target branch: `main`
-- default Pages URL: `https://yukki0113.github.io/GPT/`
-- Fact Lite PoC: `https://yukki0113.github.io/GPT/fact-lite.html`
+## Core principles
 
-`pwa/**` または Pages workflow が `main` で更新されると自動デプロイします。
+1. **PWAはconsumerであり、研究ロジックを再計算しない**
+   - EvalのH1/H2等の条件判定、WATCH/MATCHの意味付けはEval側の責務。
+   - Edge条件のmatching / serving判定はEdge側の責務。
+   - RaceNote予想や印の決定はRaceNote prediction側の責務。
+2. **配布物と正本を分離する**
+   - Analysis / Stats Mart / Fact Lite等の大容量正本はGit管理外。
+   - GitHub Release / Pages上のSQLite・JSONはconsumer向け配布キャッシュ。
+3. **manifest / SHA / schemaを見て同期する**
+   - READMEへ動的なFile ID、最新SHA、最新データ世代を固定しない。
+   - 現在値はRelease asset / manifest / Newspaper current pointerから毎回確認する。
+4. **fail-safeで切り替える**
+   - 新データ取得・検証に失敗した場合、利用可能な既存ローカルデータを壊さない。
+5. **UI変更でデータ意味論を変えない**
+   - 色、リンク、モーダル等は表示上の affordance であり、推奨・確度・買い判断をPWA側で付加しない。
 
-## Current phase
+## Main surfaces
 
-OPFS / sql.js / remote manifest / 安全な自動同期をiOS実機で確認済みです。
+| 画面 | 主データ | 位置づけ |
+| --- | --- | --- |
+| `fact-lite.html` 条件別集計 | **Fact Lite** | 通常の自由条件集計の主DB |
+| `newspaper.html` 競馬新聞 | **Newspaper current day package** | 当日新聞の閲覧・addon表示 |
+| Stats Mart | Stats Mart SQLite | 重い集計・将来拡張用の補助データ |
 
-自由条件集計の主DB候補を **Fact Lite v0.2** とし、Stats Mart は将来必要になる重い集計だけを補助する位置づけへ寄せています。
+通常の「条件別集計」を最新開催まで進めるために必要なのは、開催後に更新したAnalysisから **Fact Liteを再生成・検証・配布すること**です。Stats Mart更新は分析資産として重要ですが、通常の条件別集計PWA更新の必須条件ではありません。
 
-Fact Liteは1出走1行を保持するため、条件を重ねても同一SQLite上で自由に `WHERE / GROUP BY` できます。
+## Module map
 
-実装済み:
+### 条件別集計
 
-- mobile-first UI
-- Web App Manifest
-- Service Worker / app shell cache
-- online / offline 表示
-- OPFS 永続保存・自動復元
-- sql.js 1.14.1 + WASM の同一origin配信
-- remote manifest による最新版確認
-- size / SHA-256 / schema / required tables / integrity validation
-- `incoming.sqlite` / `previous.sqlite` / `current.sqlite` による安全な全量差し替え
-- GitHub Release を利用したGit非管理の配布キャッシュ
-- Google Drive -> Issue -> Actions -> Release -> Pages artifact の配布経路
-- Fact Lite集計軸: 種牡馬 / 騎手 / 枠 / 脚質 / 年齢 / 性別 / 人気 / 前走距離 / 前走クラス
-- 検索条件: 年From-To / 月From-To / 競馬場 / 芝ダ障害 / 距離From-To / 馬場状態 / クラス / レース名 / 最低出走数 / 障害レース除外
-- 年 / 月 / 距離のFrom-Toは同一行で横並び表示
-- レース名部分一致UI（source dataのrace_name有無で自動有効化）
-- 勝率 / 複勝率 / 単勝回収率 / 複勝回収率表示
-- 対象 / 出走 / 勝率 / 複勝率 / 単回 / 複回の列ソート
-- 検索条件クリア
+- `fact-lite.html` — UI shell
+- `fact-lite.js` — Fact Lite同期・query・表示の基礎
+- `fact-lite-v3.js` — Fact Lite v0.3互換層 / WIN5 filter
+- `fact-lite-sort.js` — 集計結果sort
+- `../src/build_jrdb_pwa_fact_lite.py` — Analysis -> Fact Lite builder
+- `../schema/jrdb_pwa_fact_lite_schema_v0_3.sql` — current schema
+- `../docs/README_build_jrdb_pwa_fact_lite.md` — build / validation contract
 
-### Month range semantics
+### 競馬新聞
 
-- Fromのみ: 指定月以上
-- Toのみ: 指定月以下
-- From <= To: 範囲内
-- From > To: 年またぎ扱い。例 `11月 -> 2月` は11,12,1,2月
+- `newspaper.html` — UI shell / shared dialog
+- `newspaper-day.js` — current day package取得・切替
+- `newspaper-v4.js` 以降 — 新聞表の段階的な表示互換・override
+- `newspaper-v6.js` — RaceNoteコメント等の既存dialog利用
+- `newspaper-v7.js` — 特注メモ表示
+- `newspaper-v8.js` — source status表示拡張
+- `newspaper-v9.js` / `newspaper-v9.css` — Eval分析コメントリンク・modal表示
+- `../src/jrdb_newspaper_merge_external.py` — Eval / RaceNote / keibailuka merge
+- `../src/jrdb_newspaper_merge_edge.py` — Edge merge
+- `../src/jrdb_newspaper_edge_adapter.py` — Edge reader-facing display boundary
+- `../newspaper/.gpt/HANDOFF.md` — Newspaper専用の引継ぎ正本
 
-### Previous-distance axis
+既存の `newspaper-vN.js/css` は後方互換を維持するためのlayerです。理由なく大規模統合・全面書換えせず、現在のoverride順と回帰テストを確認して最小差分で変更します。
 
-`current_distance - previous_distance` をFact生成時に派生します。
+### 共通
 
-- 正: 距離延長
-- 0: 同距離
-- 負: 距離短縮
-- NULL: 前走不明
+- `service-worker.js` — static app shell cache。`/data/` はcache対象外
+- `manifest.webmanifest` — PWA manifest
+- `style.css` — 共通UI
+- `SYNC_PROVIDER.md` — データ配布・browser同期
+- `DEPLOYMENT_TRIGGER.md` — Pages deployの入口と完了判定
 
-### Previous-class axis
+## Fact Lite current contract
 
-前走 `grade_code` / `race_condition_code` から、新馬・未勝利・1勝・2勝・3勝・オープン・L・G3・G2・G1等へ分類します。Analysis内で前走を解決できない場合は推測せず「前走不明」です。
+current schemaは **v0.3** です。PWAは旧v0.2も読める後方互換を維持しますが、新機能は実データのschema / capabilityを確認して有効化します。
 
-PWA集計では「オープン」と「L」を同一カテゴリ `OP・L` としてGROUP BY前に統合します。元SQLiteのコード値は変更しません。
+v0.3の主要追加は `fact_stats_entry.win5_leg_no` です。
 
-### Current-class filter
+- WIN5対象外: `NULL`
+- WIN5対象: `1..5`
+- UIの「WIN5対象レースのみ」はdefault OFF
+- ON時の条件は `win5_leg_no IS NOT NULL`
+- v0.2等でcolumn / capabilityがない場合はcheckboxを無効化
+- PWA側でWIN5対象レースを日付・レース番号から推測しない
 
-現走の `grade_code` / `race_condition_code` を前走クラスと同じ分類規則で、新馬・未勝利・1勝・2勝・3勝・オープン・L・G3・G2・G1等へ分類し、検索条件として利用します。
+Fact Liteは1出走1行を保持し、年/月/場/芝ダ障害/距離/馬場/クラス/レース名/最低出走数/WIN5等を同一SQLite上で絞り込み、種牡馬・騎手・枠・脚質・年齢・性別・人気・前走距離・前走クラス等を集計します。
 
-Fact Lite v0.2 SQLiteには両列が既に収録されているため、この検索条件追加だけではSQLite再生成を必要としません。たとえば `東京 / 芝 / 1600m / 2勝クラス` を指定し、集計軸を「脚質」にするとクラス限定の脚質傾向を確認できます。
+レース名は配布時のBAC lookupを利用します。前走距離・前走クラスをAnalysis内で解決できない場合は推測せず不明扱いです。
 
-### Popularity and previous-distance axes
+## Newspaper display contracts
 
-集計軸「人気」は1〜9人気を個別カテゴリ、10番人気以下を `10～` にまとめます。人気は検索条件としては持たせません。
+### Eval analysis comment
 
-旧表示名「距離変化」は「前走距離」へ変更し、内部区分（距離延長 / 同距離 / 距離短縮 / 前走不明）は維持します。
+Eval研究側が条件判定・注目馬選定・`status / codes / title / comment / version / asof` を確定します。Newspaper mergerはexact joinで透過的に `addons.eval.analysis` へ格納し、PWAは受け取った情報を表示するだけです。
 
-### Result sorting
+PWAの現在動作:
 
-デフォルト順は集計軸ごとに次の規則を使います。
+- `analysis.comment` がnull / 空: Eval値を従来どおり通常表示
+- comment非空: **Eval値そのものだけ**をリンク化
+- linkはイルカ列と同じ青字 + 下線
+- 既存 `newspaper-detail-dialog` を共用
+- title / comment / codes / status / version / asofを表示
+- PWAにH1/H2条件式を持たない
+- WATCHを買い推奨へ変換しない
+- MATCHを的中保証として扱わない
 
-- 種牡馬 / 騎手: 出走数の多い順
-- 枠: 1枠から8枠、不明は最後
-- 脚質: 逃げ / 先行 / 好位差し / 差し / 追込 / 自在 / 不明
-- 年齢: 若い順、不明は最後
-- 性別: 牡 / 牝 / セン / 不明
-- 人気: 1人気から9人気、`10～`、不明
-- 前走距離: 距離延長 / 同距離 / 距離短縮 / 前走不明
-- 前走クラス: 新馬 / 未出走 / 未勝利 / 1勝 / 2勝 / 3勝 / OP・L / G3 / G2 / G1 / その他重賞 / その他 / 前走不明
+旧日次JSONや旧Eval CSV由来の `analysis` なしデータも正常表示します。
 
-`対象` / `出走` / `勝率` / `複勝率` / `単回` / `複回` の見出しをタップすると、その列で昇順・降順を切り替えます。枠・脚質・年齢などのカテゴリ軸では `対象` の昇順がデフォルト順に相当するため、指標列で並べ替えた後も `対象` をタップして自然順へ戻せます。種牡馬・騎手を含め全候補を集計したうえで並べ替え、画面表示は上位200件までとします。集計軸を切り替えた場合は、その軸のデフォルト順へ戻します。
+### Edge / 特注メモ
 
-脚質の未定義値はGROUP BY前に `不明` 相当へ正規化し、元コードがNULL/0等に分かれていても表示は1行へ統合します。
+PWA / NewspaperはEdge matcher / serving結果をconsumerとして表示します。PWA側でEdge条件を再match・再評価せず、reader-facing translationとaudit情報の表示境界を守ります。
 
-## Race-name search status
+## Distribution channels
 
-Analysis Lite v1.2自体には `race_name` 列がないため、現行 Fact Lite v0.2.1は配布時にBAC由来のrace-name lookupを併用して `dim_race.race_name` へ収録します。現行配布では9,920レースのレース名を利用できます。
+大容量データはGitへcommitしません。current配布tagは固定名で、asset内容を世代更新します。
 
-PWA側はSQLite内の実データを検出してレース名入力欄を自動有効化し、部分一致で絞り込みます。
+| channel | Release tag | Pages path |
+| --- | --- | --- |
+| Stats Mart | `jrdb-stats-mart-current` | `/data/` |
+| Fact Lite | `jrdb-pwa-fact-lite-current` | `/data/fact-lite/` |
+| Newspaper | `jrdb-newspaper-current` | `/data/newspaper/current/` |
 
-## Real-device validation
+**full-site Pages artifactの組み立て正本は `.github/workflows/jrdb_pwa_pages.yml` (`JRDB PWA Pages`)** です。このworkflowはstatic PWAと3系統のcurrent Releaseを集約して配布します。
 
-### Stats Mart
+データ別publisher:
 
-2026-08-26 に iOS版Google Chromeで Stats Mart v1.1 を検証しました。
+- Stats Mart: `.github/workflows/jrdb_pwa_publish_data.yml`
+- Fact Lite: `.github/workflows/jrdb_pwa_fact_lite_publish.yml`
+- Newspaper: Newspaper Current Publish workflow
 
-- SQLite size: 約53.6 MiB
-- OPFS保存: 成功
-- 保存体感: 約1〜2秒
-- ページ再起動後のOPFS自動復元: 成功
-- 種牡馬 / 騎手 / 枠の集計: 成功
-- 条件変更: 成功
-- 機内モードでのPWA起動: 成功
-- 機内モードでのOPFS復元・集計: 成功
+詳細と既知のpartial-deploy注意点は `SYNC_PROVIDER.md` / `DEPLOYMENT_TRIGGER.md` を参照してください。
 
-### Fact Lite v0.1 baseline
+## Browser sync / offline
 
-2026-08-27、iOS版Google Chromeで検証しました。
+PWAはオンライン時にPages上のmanifestを確認し、ローカルmetadataと比較して必要な場合だけ新版を取得します。
 
-- rows: 513,512
-- SQLite size: 49,700,864 bytes（約47.4 MiB）
-- 初回取得・読込体感: 約2〜3秒
-- OPFS保存・自動復元: 成功
-- 全期間集計:
-  - 種牡馬: 約370 ms
-  - 母父: 約348 ms
-  - 騎手: 約310 ms
-- 東京・芝・1600m:
-  - 種牡馬: 約65 ms
-  - 母父: 約65 ms
-  - 騎手: 約62 ms
-- 東京・芝・1600m・3歳・牡・1〜3人気・先行:
-  - 該当0件
-  - 約52 ms
-- 全期間集計では一瞬の待機感はあるが、実用上ストレスになる水準ではないことを確認
-
-この結果を根拠に、Fact Liteを自由条件集計の主DB候補とします。
-
-### Fact Lite v0.2 current-class filter
-
-2026-08-27、iOS版Google Chromeで `東京 / 芝 / 1600m / 2勝クラス -> 脚質` の集計を実行し、正常動作と実用上問題ないレスポンスを確認しました。
-
-## Current Fact Lite v0.2 distribution
-
-現行Analysis Lite v1.2から生成・配布済み:
-
-- data version: `2016_2026YTD_20260823_v0_2_1`
-- rows: 513,512
-- size: `62,423,040 bytes`（約59.5 MiB）
-- SHA-256: `279374cbd5e1e26f5d51b2cc03e5126c28c05d88da7a844b775c977dcec004ca`
-- schema version: `0.2`
-- Release tag: `jrdb-pwa-fact-lite-current`
-- race-name search: race-name lookupを併用し9,920レースで有効
-
-v0.2のクラス検索についてiOS実機で正常動作・実用上問題ないレスポンスを確認済みです。
-
-## Distribution flow
-
-大容量SQLiteはGitへcommitしません。
+SQLite系の基本:
 
 ```text
-Google Drive Analysis / Stats Mart
-  -> dedicated Issue
-  -> GitHub Actions
-  -> build / size / SHA-256 / SQLite validation
-  -> GitHub Release asset (distribution cache)
-  -> GitHub Pages artifact /data/
-  -> PWA manifest sync
+remote manifest
+  -> download incoming
+  -> size / SHA-256 / schema / table / integrity validation
+  -> incoming -> previous/current
   -> OPFS current.sqlite
 ```
 
-Google Drive File IDは世代更新で変わり得るためGitへ固定しません。Issue本文だけでその時点のFile IDとartifact metadataを渡します。
+検証失敗時はcurrentを維持します。Service Workerはstatic app shellをcacheしますが、`/data/` はcacheしません。オフラインのSQLite利用はOPFSを使用します。
 
-通常のPWAコード更新時は `.github/workflows/jrdb_pwa_pages.yml` が現行Release assetをPages artifactへ再同梱するため、UI更新で配布DBが消えない構成です。
+## Deployment completion
 
-詳細は `SYNC_PROVIDER.md` を参照してください。
+PWA変更・データ更新を「完了」とする際は、commitやRelease更新だけで判断しません。
 
-## Local sync behavior
+最低限:
 
-PWA起動時はネットワークより先に OPFS `current.sqlite` を復元します。
+1. latest `main` の対象sourceを確認
+2. 必要なtest / validationを通す
+3. current Release / manifestが想定世代か確認
+4. **`JRDB PWA Pages` がfull-site artifactを成功deployしたことを確認**
+5. 必要に応じてiPhone実機でlayout / tap / offline / syncを確認
 
-v0.2 UIがv0.1保存DBを検出した場合は旧DBを利用状態にせず、オンラインならmanifest確認後にv0.2を自動同期します。
-
-オンライン時のみmanifestを確認し、ローカル metadata の SHA-256 と比較します。
-
-- 同一SHA-256: 再ダウンロードしない
-- 新版: 配布SQLiteを取得
-- 取得後: size / SHA-256 / SQLite validation
-- validation成功: incoming -> previous/current の順で切替
-- validation失敗: current.sqlite を維持
-
-Service Workerは `/data/` をキャッシュしません。オフライン利用は OPFS の current.sqlite を使います。
-
-## Current Stats Mart distribution artifact
-
-- source filename: `jrdb_stats_mart_2016_2026YTD_20260823_v1_1.sqlite`
-- size: `56,254,464 bytes`
-- SHA-256: `1d1798315646996991487c6e0cd5ee40ab330da58a8f77f6950694959a2b9f50`
-- required tables: PASS
-- `PRAGMA integrity_check`: `ok`
-- Release tag: `jrdb-stats-mart-current`
+コード更新経路・データpublisherごとのtrigger差は `DEPLOYMENT_TRIGGER.md` を正本とします。
 
 ## Data policy
 
-JRDB Raw、Analysis Lite、Stats Mart、Fact Lite の生成正本は引き続き Git 管理外です。
-GitHub Release / GitHub Pages artifact に置くSQLiteは **PWA配信用キャッシュ** であり、Git正本ではありません。
+- JRDB Raw、Analysis、Stats Mart、Fact Lite等の生成正本はGit管理外
+- source / schema / contract / workflow / PWA codeはGitHub `main`
+- Release / Pages artifactは配布cacheであり研究正本ではない
+- Drive File ID、current SHA、current data version等の動的値をREADMEへ固定しない
 
-詳細設計は `../docs/JRDB_PWA_Offline_Sync_Design.md`、実配布方式は `SYNC_PROVIDER.md` を参照してください。
+## Thread restart / handoff
+
+新しいChat / Workへ移る場合は次の順で読みます。
+
+1. `pwa/.gpt/HANDOFF.md`
+2. `pwa/README.md`
+3. `pwa/SYNC_PROVIDER.md`
+4. `pwa/DEPLOYMENT_TRIGGER.md`
+5. 対象consumerの正本
+   - 条件別集計: `../docs/README_build_jrdb_pwa_fact_lite.md`
+   - 競馬新聞: `../newspaper/.gpt/HANDOFF.md`
+6. latest `main` / current Release / manifest / Pages runを再確認
+
+再開時の推奨文:
+
+> `horse-racing/jrdb/pwa/.gpt/HANDOFF.md` と参照先のGit正本を確認し、Kenshow_Labo PWA保守スレッドとして継続してください。
+
+過去の固定SHA、File ID、Issue番号、run IDは履歴証跡としてのみ扱い、現在値を推測しません。
