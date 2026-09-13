@@ -1,51 +1,96 @@
 # Eval image -> PACI enriched CSV (Chat)
 
-日常開催でユーザーがEval表画像をChatへ直接渡す場合の標準経路です。
+## Status
+
+**Compatibility / legacy combined path.**
+
+2026-09-10以降、ChatへEval表画像が直接渡される通常運用では、このcombined Issue workflowを標準経路にしません。
+
+現在の正本フローは `horse-racing/eval/README.md`、`.gpt/WORKFLOW.md`、`.gpt/HANDOFF.md` を参照してください。
 
 ```text
 Eval表画像
-  -> Eval OCR 5列CSV
-  -> 対象日PACIyymmdd.zip取得
+  -> C: Chat/ローカルでGitHub mainのEval OCRを直接実行
+  -> OCR validation PASS
+  -> 5列CSV
+  -> D: [EVAL_PACI_ENRICH_REQUEST]
+  -> Actions Secretsで対象日PACI取得
   -> JRDB PACI enrichment
-  -> 開催前完成CSV
+  -> 完成CSV + audit artifact
 ```
 
-GitHub Actions workflow: `.github/workflows/eval_image_enrich_chat.yml`
+OCRにSecretsやActions固有環境は不要なため、画像Base64搬送のためだけにIssueを起こしません。一方、PACI取得は `JRDB_USER` / `JRDB_PASSWORD` Secretsを必要とするためActions-Nativeを維持します。
 
-Issue title:
+## Release gate
+
+PACI joinの成功はOCR品質の証明ではありません。正式完成条件は次です。
 
 ```text
-[EVAL_IMAGE_ENRICH_REQUEST] <request_id>
+ocr_validation_status == ok
+AND
+paci_join_validation_status == success
 ```
 
-Issue本文JSON:
+OCRの固定色順位、2/9再読、manual review等は `docs/OCR_Validation_Contract.md` を正本とします。
+
+## Current standard PACI path
+
+Workflow:
+
+```text
+.github/workflows/eval_paci_enrich_chat.yml
+```
+
+Issue:
+
+```text
+[EVAL_PACI_ENRICH_REQUEST] <request_id>
+```
+
+Issue本文はOCR済み5列CSVをgzip+Base64化して渡します。
 
 ```json
 {
-  "date": "2026-08-29",
-  "image_ext": "jpg",
-  "expected_venues": 3,
-  "output_name": "eval_20260829_enriched.csv",
+  "eval_csv_gzip_b64": "<gzip+Base64 five-column CSV>",
+  "output_name": "eval_YYYYMMDD_enriched.csv",
   "fail_on_unmatched": true
 }
 ```
 
-画像本体はGitへcommitせず、IssueコメントへBase64 chunkとして搬送します。
-各chunkは次の形式です。
+通常成功条件:
 
 ```text
-EVAL_IMAGE_CHUNK 1/N
-<base64>
+fetch_exit_code == 0
+enrich_exit_code == 0
+collect_exit_code == 0
+joined_horses == input_rows
+unmatched_horses == 0
+duplicate_keys == 0
 ```
 
-全chunk登録後、次のコメントを追加するとworkflowを開始します。
+`race_headcount_mismatches` は必ず監査します。
+
+## Legacy combined workflow
+
+次の資産は互換性・非常時のためrepositoryに残っています。
 
 ```text
-EVAL_IMAGE_PAYLOAD_READY
+.github/workflows/eval_image_enrich_chat.yml
+[EVAL_IMAGE_ENRICH_REQUEST]
 ```
 
-workflowはchunkを再構成し、Git正本の `horse-racing/eval/src/extract_eval_table.py` を実行します。OCR成功後、`horse-racing/jrdb/src/fetch_jrdb_paci.py` で対象日PACIを取得し、`horse-racing/jrdb/src/enrich_eval_csv_with_paci.py` で正式馬名・開催前JRDB情報を付与します。
+旧方式は画像をBase64 chunkでIssueコメントへ搬送し、Actions内でOCRからPACI enrichmentまで連続実行します。
 
-成功条件はOCR、PACI取得、enrichment、artifact収集がすべてexit code 0であることです。通常運用では `fail_on_unmatched=true` とし、PACI未結合馬が1頭でもあれば失敗にします。
+現在この経路を使うのは、たとえば次のようにcombined Actions run自体を明示的に監査証跡として必要とする場合に限ります。
 
-artifactには完成enriched CSV、OCR 5列CSV、OCR validation JSON、PACI enrichment audit JSON、ログを含めます。画像そのものはartifactへ含めません。
+- Chat/ローカルでOCR runtimeを用意できない
+- 画像搬送からOCR/PACIまで1つのimmutable Actions runへ固定する要件がある
+- runner側Tesseract環境そのものを再現性要件とする
+
+単に「ユーザーがChatへ画像を添付して完成CSVが欲しい」という通常依頼では使用しません。
+
+## Artifacts / Git policy
+
+ユーザー画像、OCR途中CSV、完成CSV、validation JSON、PACI Raw、ログ等の日次成果物は通常Gitへcommitしません。
+
+標準経路ではユーザー画像自体をGitHubへ永続化せず、PACI Issueへ渡すのはOCR済み5列CSV payloadのみです。
