@@ -184,3 +184,43 @@ Updated: 2026-09-13
 - 新スレッドで会話履歴がないと再開できない事象が発生した場合
 
 引継ぎに必要な情報は会話メモリだけに残さず、再現可能な範囲をGit正本へ戻す。
+
+
+## 10. CSV原本保存・月次圧縮
+
+日次CSVの原本保存は、予想・結果・台帳とは別の保全工程として扱う。目的は完成済み原本をGoogle Driveへ安全に保存し、保存漏れを監査することであり、CSV内容の生成・修正・結合は行わない。
+
+### 対象と探索順
+
+- 対象日CSVは、会話添付 → ChatGPT Library → 参照可能な競艇note販売の日次成果物の順に探索する。
+- GitHub main は仕様・コード・台帳等の正本であり、日次CSVがGitにないことを未生成の根拠にしない。
+- 対象日は作成日時だけでなく、CSVの対象日・ファイル名・内容・当日の運用から判定する。
+- 公式出走表、事前予想、予想根拠明細、販売選別、結果、正式な補助CSVを候補とする。log、xlsx、md、HTMLキャッシュは通常の「CSV一式」には含めない。
+- 原本が見つからない場合は再生成せず、未発見として報告する。
+
+### Drive区分
+
+data親フォルダ配下の既存区分を維持する。
+
+- racecards: 1zg77_EqlcQon0bPmQK-nSKfzMhKWIscV
+- predictions: 1ZHNpPyVQPjs4UvWLhc5ocXFCwLF_ybY2
+- prediction-rationales: 10dqQg2aPBtBNnJkPwuPVPZ2dx8mQzUzi
+- sales-selection: 1mgsmcJXrKJtjYX8DbAGLsdqSdt5JWRrS
+- results: 1P60LF55o1P_1QUqdRd_cqAqLyDidTRUw
+
+アップロード前に対象区分の既存ファイルを確認する。同名・同一内容は保存済みとして再アップロードしない。同名で内容が異なる可能性がある場合は上書き・削除をせず、正式版の根拠を確認できなければ競合として報告する。アップロード後もDrive上の存在を再確認してから完了とする。
+
+### 月次ZIP化
+
+月次ZIP化と元CSV削除は、ユーザーが月・区分・削除を明示した場合だけ実行する。
+
+1. 対象月・対象区分のCSVを全件列挙し、同名重複・既存ZIPを確認する。
+2. CSVのバイト列・ファイル名を変更せず、区分ごとに YYYYMM_区分CSV原本.zip を作成する。
+3. ZIPテストと収録件数照合を行う。
+4. 同じDrive区分へZIPをアップロードし、Drive上の存在を再確認する。
+5. 確認済みZIPに収録された元CSVだけを削除する。
+6. 最後に対象月CSV残存数とZIP存在を再確認する。
+
+既存ZIPを新しい内容で上書きしない。ZIP確認前の削除、収録漏れがある月の一括削除、原本CSVの変換・再保存は禁止する。
+
+この工程はGoogle Drive直接操作で完結するため、通常はA/C相当でありGitHub Issue/Actionsを使わない。
