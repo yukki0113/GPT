@@ -20,7 +20,13 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 Chat / Workの会話量上限やスレッド移動に備えた引継ぎ入口は [`boat-racing/.gpt/HANDOFF.md`](.gpt/HANDOFF.md) です。
 
-新しいスレッドでは、過去会話の要約だけを前提にせず、latest `main` を確認したうえで `README.md` → `.gpt/CONTEXT.md` → `.gpt/HANDOFF.md` → `.gpt/WORKFLOW.md` → 対象 `docs/` / `src/` の順に確認してください。日次の変動状態はHANDOFFへ固定せず、Drive / Google Sheets / GitHub Actionsの正本から再取得します。
+新しいスレッドでは、過去会話の要約だけを前提にせず、latest `main` を確認したうえで `README.md` → `.gpt/CONTEXT.md` → `.gpt/HANDOFF.md` → `.gpt/WORKFLOW.md` → 対象 `docs/` / `src/` の順に確認してください。日次の変動状態はHANDOFFへ固定せず、Drive / Google Sheets / 必要な場合のみGitHub Actionsの正本から再取得します。
+
+### 司令室・会場選別・Shadow研究
+
+司令室、日次会場選別、仕様改訂候補の研究を引き継ぐ場合は [`docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md`](docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md) も参照してください。
+
+この文書では、会場選別を購入レース決定ではなく探索母集団設計として扱うこと、全R構造・2連単適格・販売選別を分けて評価すること、SG/G1や開催日目を機械的に除外しないこと、ControlとShadowを混ぜないこと、台帳未完了日は最新の真正完了世代までを使うことを固定しています。
 
 ## GitHub operation routing (2026-09-10)
 
@@ -122,7 +128,7 @@ python -m unittest discover -s boat-racing/tests -v
 
 ## ForwardTrial analysis ledger
 
-正本Googleスプレッドシート内の `FT2_` 接頭辞13タブを、既存台帳とは独立したForwardTrial専用分析台帳として使用します。初回対象は2026-09-01〜2026-09-08の7日・336Rです。
+正本Googleスプレッドシート内の `FT2_` 接頭辞14タブを、既存台帳とは独立したForwardTrial専用分析台帳として使用します。初回対象は2026-09-01〜2026-09-08の7日・336Rです。
 
 `src/forward_trial_analysis_import.py` は、Drive正本の公式出走表・事前予想・販売選別・結果CSVと公式開催メタCSVを日付×会場×R×仕様版で結合し、締切後freezeを削除せず `CONTAMINATED` として真正forward集計から分離します。入力の欠損、日付不一致、キー重複、freeze欠損はfail-closedとし、Google認証や書込み処理は持ちません。集計は非空FT2_IDの全明細から毎回全再生成し、9タブの Atomic Aggregate Set と `FT2_集計監査` が同一の deterministic generation ID・source件数であること、既存販売台帳クロスチェックが成功したことを確認するまで取込状態を完了にしません。
 
@@ -135,12 +141,12 @@ python boat-racing/src/fetch_boatrace_event_meta.py \
   --output 20260909_公式開催メタ.csv
 ~~~
 
-13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
+14タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
 
 ## Workからの日次台帳記帳
 
 日次台帳記帳は、WorkがDriveの種別別フォルダから racecard / prediction / sales-selection / result の4原本を固定し、GitHub `main` の決定論moduleでstable-key upsertとAtomic Aggregate Setを生成して、接続済みGoogle Sheetsへ直接書込み・read-backする。
 
-Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、およびGitHub ActionsからのGoogle Drive / Sheetsアクセスは使用しない。Issue / Actionsを台帳記帳の経路として起動しない。
+Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、およびGitHub ActionsからのGoogle Drive / Sheetsアクセスは使用しない。Issue / Actionsを台帳記帳の経路として起動しない。旧 `run_forward_trial_chat_import.py` および旧台帳import workflowを現行経路として扱わない。
 
 書込み中は `集計再生成中` とし、`FT2_全R明細`、Atomic Aggregate Set 9タブ、`FT2_集計監査`、既存販売台帳mirror、重複0、式エラー0のread-backが一致した後にだけ `FT2_取込管理=完了` とする。
