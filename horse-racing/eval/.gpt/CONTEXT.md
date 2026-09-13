@@ -30,7 +30,13 @@ Eval画像、OCR途中成果物、日次取得CSV、検証レポート、ログ�
 8. Discovery特徴を同一標本のまま正式Forward条件へ昇格させない。
 9. PWA/Newspaperは研究条件を再実装せず、Eval側contractが判定・analysis commentを所有する。
 
-OCR詳細は `docs/OCR_Validation_Contract.md`、研究詳細は `docs/Eval_Phase2_JRDB_*_v0_1.md`、PWA責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とします。
+OCR詳細は `docs/OCR_Validation_Contract.md` を正本とします。Phase2のcurrent contractsは:
+
+- `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`
+- `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`
+- `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
+
+PWA責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とします。
 
 ## GitHub execution routing — 2026-09-10
 
@@ -98,9 +104,9 @@ X投稿から新規に取得し、取得時点のmetadata/media/validationを同
 
 事前特徴module:
 
-- `src/build_phase2_jrdb_kyi_features.py`
-- `src/build_phase2_jrdb_training_features.py`
-- `src/build_phase2_jrdb_previous_features.py`
+- `src/build_phase2_jrdb_kyi_features.py` — current contract `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`
+- `src/build_phase2_jrdb_training_features.py` — current contract `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`
+- `src/build_phase2_jrdb_previous_features.py` — current contract `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
 - `src/build_phase2_jrdb_feature_bundle.py`
 
 KYIをrunner identityの基準とし、CHA/CYBはLEFT JOIN、前走はKYI result key -> PACI ZED exact-link。推測fallbackを行わない。
