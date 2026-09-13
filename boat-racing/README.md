@@ -80,6 +80,13 @@ moduleは24列事前予想CSV、26列予想根拠明細CSV、21列2連単1点販
 - URL: `https://drive.google.com/drive/folders/19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 - バックテスト結果、結果参照前固定、比較資料、仕様改訂判断などを保存
 
+
+## CSV original preservation and monthly compaction
+
+日次CSVの原本保存・保存漏れ監査は、Git/ActionsではなくGoogle Driveを直接正本として扱う。対象日CSVは添付、ChatGPT Library、参照可能な日次成果物の順に探索し、内容を変更・再生成せずに対応区分へ保存する。アップロード前後にDriveの同名・内容・存在を確認し、未発見・競合は推測で補完せず報告する。
+
+月次ZIP化と元CSV削除は、明示的な依頼がある場合だけ実施する。ZIPの収録件数・整合性・Drive上の存在を確認できた元CSVだけを削除する。再開時の詳細手順、対象フォルダ、既存ZIPとの扱いは .gpt/HANDOFF.md を参照する。
+
 ## Ledger source of truth
 
 継続台帳の正本は **Googleスプレッドシート `競艇note販売運用台帳`** とします。
