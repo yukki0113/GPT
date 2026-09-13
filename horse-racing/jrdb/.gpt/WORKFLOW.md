@@ -1,12 +1,29 @@
 # JRDB GPT workflow
 
-1. `README.md` と本ディレクトリのCONTEXTを確認。
-2. 対象Pythonと対応README・schema/referenceを確認。
+Last reviewed: 2026-09-13
+
+## Thread restart bootstrap
+
+会話量上限・スレッド分割・担当変更後は、作業開始前に次を確認する。
+
+1. `README.md`
+2. `.gpt/HANDOFF.md`
+3. `.gpt/CONTEXT.md`
+4. `.gpt/WORKFLOW.md`（この文書）
+5. latest `main` HEAD
+6. 対象subsystemのcurrent contract / audit / source / focused tests
+
+過去handoff、古いIssue本文、日付付きaudit、固定SHAを単独でcurrent truthとしない。latest source + current contractが優先する。
+
+## Standard preflight
+
+1. `README.md` / HANDOFF / CONTEXTを確認。
+2. 対象Pythonと対応README・schema/reference/contractを確認。
 3. 2026 Raw（PACI / SED / HJC）を扱う場合は、`docs/JRDB_2026_Raw_Drive_Reference.md` を確認し、Google Drive上の既存Rawを最優先でresolveする。Drive inventoryを確認せずupstream全日付取得を開始しない。
 4. 既存仕様を壊さない範囲で改修。
 5. 可能な範囲で実行テスト / 回帰確認。
 6. 生成物・秘密情報・Rawデータが差分に入っていないことを確認。
-7. README/仕様変更が必要なら同時更新。
+7. entrypoint / default / contract / subsystem boundaryが変わる場合、README / CONTEXT / HANDOFF / dedicated contractの更新要否を同時確認。
 8. Gitへcommitし、以後Git版を正本とする。
 
 ## GitHub routing standard — 2026-09-10
@@ -29,6 +46,8 @@ source/test/docs/config等のUTF-8テキスト変更は、原則としてGitHub�
 4. 必要差分
 
 変更後は対象fileをreadbackし、必要なfocused test / regressionをCまたは既存CIで確認する。`[gpt-git-update]` Issueは標準経路としない。
+
+複数fileを連続更新する間にmainが進んだ場合は、次のwrite前にlatest mainと対象blobを再確認し、他commitを上書きしない。
 
 ### C. Pure Deterministic Execution
 
@@ -57,15 +76,51 @@ Secrets、Actions固有権限、Actions artifact chain、長時間・大容量ru
 
 Dを使う場合のみ、下記「Issue駆動Actionsのpreflight」を適用する。
 
-### Edge Registryでの標準適用
+### Edge Registry / EdgeDBでの標準適用
 
 - Registry/source/docs/configの参照、Issue/run/artifact/SHA確認: **A**
-- Edge RegistryのPython/test/docs/config修正: **B**
+- Edge Registry / v0.2 matcher / current facts / publicationのPython/test/docs/config修正: **B**
 - 既存Registry artifactに対するWATCH/statistical audit、focused tests: **C**
-- 2025-only real-data smoke build（Raw取得を含む）: **D** — JRDB Secrets + artifact監査を使用
+- fixed current facts / matcher / newspaper adapterの決定的回帰: **C**
+- 2025-only real-data smoke build（Raw取得を含む）: **D** — JRDB Secrets + artifact監査
 - Full 2010-2025 Registry rebuild: **D** — Secrets + 長時間/大容量 + publication artifact
-- Current Facts / Matcherの固定済みローカル入力テスト: **C**
 - PACI等の認証取得を伴うofficial current matching / artifact chain: **D**
+
+Current operational boundary:
+
+- ordinary `run_jrdb_edge_match_current_v0_2.py` defaultは `STANDARD`
+- low-level `jrdb_edge_matcher_v0_2.py` defaultは意図的に `CONFIRMED_ONLY`
+- SUGGESTIVEはRegistry ACTIVEへ昇格させない
+- Performance / Valueを混ぜない
+- consumerでEdge条件を再実装しない
+
+詳細は `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md` を優先する。
+
+### RaceNote / Newspaper / presentationでの標準適用
+
+- RaceNote / Newspaper / PWA source、schema、contract、current publish metadataの確認: **A**
+- reader-facing wording、adapter、merge、presentation、schema/docs/testのUTF-8修正: **B**
+- fixed fixtureでのmerge、join、presentation、reader-language regression: **C**
+- JRDB Secretsを使うPACI取得を含む正式RaceNote生成、immutable freeze、publication chain: **D**
+
+責務境界:
+
+- RaceNote converter / Reader Viewはpredictionを実装しない
+- `racenote_prediction_presentation_v0_2.py` はfrozen decisionを説明するだけで印を再計算しない
+- NewspaperはEdge matcher outputをconsumeし、Edge条件を再計算しない
+- `jrdb_newspaper_edge_adapter.py` はdisplay boundaryでありmatching semanticsを変更しない
+- reader-facing文言は `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` を参照する
+
+表示だけの修正でEdge threshold / eligibility / Registry status / prediction markを変えない。
+
+### Post-race Analysis / Mart / Fact Liteでの標準適用
+
+- current Analysis/Mart/Fact Liteの世代、schema、manifest、Drive/Git publication状態確認: **A**
+- updater / builder / validator / docs / workflowのテキスト修正: **B**
+- 既取得PACI/SED/Analysisを使う差分生成・validation・row count・integrity確認: 条件がCを満たす場合 **C**
+- JRDB認証取得、formal artifact chain、Release/Pages publicationを伴う開催後正式更新: **D**
+
+開催後は `Analysis update -> canonical save/validation -> Stats Mart refresh -> Fact Lite regenerate/validate/publish -> condition-summary PWA update` を一つの運用世代として扱う。Analysisだけを更新して後続PWAを旧世代に残さない。
 
 ### Ability / Debut Ability指数開発での標準適用
 
@@ -81,7 +136,28 @@ Dを使う場合のみ、下記「Issue駆動Actionsのpreflight」を適用す�
 
 Controllerの設計判断やfreeze決定そのものを文書へ反映するだけなら **B** でよい。対して、その判断の根拠となるcanonical full-history build / comparison / holdout / audit evidenceを新規生成する場合は **D** とする。
 
-RaceNote等の別subsystemは各専用contractを優先し、Edge Registry開発と文脈を混在させない。
+RaceNote、EdgeDB、Eval、Training等のsubsystemは各専用contractを優先し、別subsystemのロジックを暗黙に混在させない。
+
+## Documentation synchronization rule
+
+次の変更は、sourceだけで終わらせずdocumentation impactを確認する。
+
+- operational defaultの変更
+- normal entrypointの変更
+- source-of-truthの変更
+- schema / join identity / leakage boundaryの変更
+- Edge evidence semantics / serving profileの変更
+- presentation responsibility boundaryの変更
+- post-race generation chainの変更
+
+役割分担:
+
+- `README.md`: durable architecture / project entry
+- `.gpt/HANDOFF.md`: new-thread bootstrap / current operational defaults
+- `.gpt/CONTEXT.md`: persistent domain context
+- `.gpt/WORKFLOW.md`: execution routing
+- `docs/*Contract*.md`: subsystem-specific normative semantics
+- dated audit: verification evidence, not permanent operational default
 
 ## Issue駆動Actionsのpreflight
 
