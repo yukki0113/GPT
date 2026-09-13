@@ -9,6 +9,19 @@
   "factor_set_version": "FSET-Gen0.1",
   "forecast_schema": "schema/racenote_forecast_gen0_schema_v0_1.json",
   "pre_result_guard": "src/racenote_forecast_gen0_guard.py",
+  "sample_manifest_builder": "src/build_racenote_gen0_sample_manifest.py",
+  "sample_contract": "docs/racenote/FORECAST_GEN0_SAMPLE_QUEUE_v0_1.md",
+  "sample_policy": {
+    "source": "JRDB Analysis Lite v1.3 / fact_entry_result_lite",
+    "primary_count": 50,
+    "reserve_count": 20,
+    "max_per_date": 3,
+    "min_surface_share": 0.3,
+    "eligible_track_types": ["1", "2"],
+    "excluded_track_types": ["3"],
+    "result_columns_selected": false,
+    "default_execution_chunk": 5
+  },
   "generation_target_races": 50,
   "evaluation_modes": [
     "BLINDED_HISTORICAL",
@@ -28,8 +41,9 @@
   ],
   "tabs": {
     "README": "運用説明",
-    "設定": "現行version・ファクター集合",
-    "世代管理": "50R単位のgeneration管理",
+    "設定": "現行version・ファクター集合・sampling policy",
+    "世代管理": "50R単位のgenerationとmanifest管理",
+    "対象Rキュー": "固定PRIMARY/RESERVE問題集と進行状態",
     "予想Freeze": "結果取得前のrace-level予想正本",
     "馬別評価": "結果取得前のrunner-level比較根拠",
     "ファクター使用": "結果取得前のfactor usage記録",
