@@ -231,5 +231,115 @@ JRDB codeの意味はマスタコード定義を参照し、数字だけをreade
 - 読者表示と監査rawを分離すること
 - post-race更新後にFact Lite/PWAまで同一世代へ進めること
 - GitHub Actionsを使うべき作業とChatで直接行う作業の違い
+- 明示的な日次PACI/SED/HJC取得依頼を、既存Raw再利用と区別して安全に実行できること
 
 この項目のどれかが将来変わった場合、source変更だけで終わらせず、README / CONTEXT / HANDOFF / current RaceNote docs / contractのどこへ反映すべきかを同時に確認してください。
+
+## 12. Daily JRDB Raw acquisition / delivery thread
+
+この運用は、ユーザーからの短い依頼、たとえば「0913のPACIを取得」「0905・0906のSEDを取得」に対して、JRDB公式Rawを取得・検証し、ユーザーへinner ZIPを返す定型作業を想定する。
+
+### Scope and intent
+
+- 明示的に「PACI / SED / HJCを取得してください」と依頼された場合は、**fresh official acquisition request** と解釈する。
+- この場合は `docs/JRDB_2026_Raw_Drive_Reference.md` の「既存Drive Rawを優先する」という下流処理向け再利用原則より、ユーザーのfresh取得意図を優先し、JRDB upstreamをRoute Dで取得する。
+- 一方、Analysis / Eval / RaceNote / research等の処理が「入力として2026 Rawを必要とする」だけなら、Drive inventoryを先にresolveし、既存Rawを再利用する。
+- ユーザーが明示的にDrive再利用を指定した場合は、その指定を優先する。
+- Raw取得スレッドでは、RaceNote生成、Analysis更新、Stats Mart更新、Edge matching、Eval enrichment等を**自動で続行しない**。追加依頼がある場合だけ別工程へ進む。
+
+### Source / workflow
+
+- PACI downloader: `src/fetch_jrdb_paci.py`
+- SED / HJC daily downloader: `src/fetch_jrdb_history.py`
+- Actions entrypoint: `.github/workflows/jrdb_raw_fetch_issue.yml`
+- Issue prefix: `[JRDB_RAW_FETCH_REQUEST]`
+- Secrets: `JRDB_USER`, `JRDB_PASSWORD`
+
+PACIは `fetch_jrdb_paci.py --date YYYYMMDD --out-dir <dir>`、SED/HJCは `fetch_jrdb_history.py --date YYYYMMDD --kinds <KIND> --output-dir <dir>` が正本CLI。
+
+### Request contract
+
+Issue bodyはraw JSON。
+
+```json
+{
+  "date": "YYYYMMDD",
+  "kinds": ["PACI"]
+}
+```
+
+同一日の複数kindを取得する場合は、可能なら1 Issueへまとめる。
+
+```json
+{
+  "date": "YYYYMMDD",
+  "kinds": ["PACI", "SED"]
+}
+```
+
+異なる日付は別requestとする。
+
+Issue作成前にはlatest mainと `.github/workflows/jrdb_raw_fetch_issue.yml` のparser / accepted kindsを確認する。request JSONは機械的にserializeし、余計なMarkdown fenceをIssue bodyへ混ぜない。
+
+### Success contract
+
+成功コメントmarker:
+
+```text
+JRDB_RAW_FETCH_RESULT
+```
+
+最低限、次を確認する。
+
+- top-level `status == "success"`
+- `manifest.date` が依頼日と一致
+- requested `kind` が全てmanifestに存在
+- `file_name` が対象kind/dateと一致
+- `size_bytes > 0`
+- `sha256` が64桁hex
+- `members` が空でない
+- `run_id` と `artifact_name` が取得可能
+
+### Artifact recovery and local validation
+
+Actions artifactは搬送用outer ZIPであり、ユーザーへ返す標準成果物はその中のrequested inner ZIP。
+
+現在のworkflow layout:
+
+- PACI: artifact展開rootに `PACIyymmdd.zip`
+- SED: artifact内 `SED/SEDyymmdd.zip`
+- HJC: artifact内 `HJC/HJCyymmdd.zip`
+
+artifact回収後、Chat側で次をPure Deterministic Executionとして行う。
+
+1. outer artifactを展開
+2. requested inner ZIPを特定
+3. ZIPとして読めることを確認
+4. `zipfile.testzip()` 相当でcorrupt memberがないことを確認
+5. member一覧を確認
+6. local file sizeをmanifest `size_bytes` と照合
+7. local SHA-256をmanifest `sha256` と照合
+8. ユーザー向けに `/mnt/data/<inner ZIP名>` 等へflattenして返却
+
+ユーザーへ通常返すのは `PACIyymmdd.zip` / `SEDyymmdd.zip` / `HJCyymmdd.zip` であり、`jrdb-raw-YYYYMMDD.zip` outer artifactではない。
+
+### Failure / retry rule
+
+- generic failure commentだけを見て「未公開」「データなし」と推測しない。
+- failed step / job logを確認し、認証、HTTP status、parser、ZIP validation、artifact upload等のどこで失敗したかを特定する。
+- `404` 等、upstream不在を直接示す観測がある場合だけ、その事実を報告する。
+- 同一requestをblind rerunしない。latest mainとfailed stepを確認してからretryする。
+- retry時も、取得そのもの以外の確認・SHA比較・ZIP検査のために追加Issueを作らない。
+
+### Delivery report
+
+正常時の最終報告は簡潔でよいが、最低限次を含める。
+
+- 対象日 / kind
+- inner ZIPへのダウンロードリンク
+- ZIP破損検査結果
+- member数またはmember確認済みである旨
+- SHA-256
+- Actions manifestとの一致
+
+このsectionは、日次Raw取得専用スレッドへ引っ越した際に、過去会話を参照しなくても同じ安全な取得・検証・返却手順を再現するための運用正本とする。
