@@ -3,15 +3,23 @@
 BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 ## Current tools
+- `src/fetch_boatrace_racelist_with_meta.py` — 公式出走表取得後に開催名・開催グレード付与まで連結する標準入口
+- `src/fetch_boatrace_racelist.py` — 出走表取得
+- `src/fetch_boatrace_event_meta.py` — BOAT RACE公式日別レース一覧から開催名・グレードを日次Freeze
+- `src/enrich_boatrace_racelist_metadata.py` — 既存の公式出走表CSVへ開催名・開催グレードを付与
+- `src/fetch_boatrace_pre_race_info.py` — 直前情報取得
 - `src/forward_trial_predict.py` — ForwardTrial_Ver0.1の事前予想・根拠明細・2連単1点販売選別を公式出走表CSVから純粋決定論的に生成
+- `src/fetch_boatrace_results.py` — 公式結果取得・事前予想照合
 - `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
 - `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
-- `src/fetch_boatrace_event_meta.py` — BOAT RACE公式日別レース一覧から開催名・グレードを日次Freeze
-- `src/fetch_boatrace_racelist.py` — 出走表取得
-- `src/fetch_boatrace_pre_race_info.py` — 直前情報取得
-- `src/fetch_boatrace_results.py` — 公式結果取得
 
 詳細仕様は `docs/` を参照してください。日次CSV、キャッシュ、ログ、運用台帳はGit管理対象外です。
+
+## Thread handoff
+
+Chat / Workの会話量上限やスレッド移動に備えた引継ぎ入口は [`boat-racing/.gpt/HANDOFF.md`](.gpt/HANDOFF.md) です。
+
+新しいスレッドでは、過去会話の要約だけを前提にせず、latest `main` を確認したうえで `README.md` → `.gpt/CONTEXT.md` → `.gpt/HANDOFF.md` → `.gpt/WORKFLOW.md` → 対象 `docs/` / `src/` の順に確認してください。日次の変動状態はHANDOFFへ固定せず、Drive / Google Sheets / GitHub Actionsの正本から再取得します。
 
 ## GitHub operation routing (2026-09-10)
 
