@@ -67,7 +67,7 @@ horse-racing/eval/ledger/Eval表集計・検証.xlsx
 - Phase2 post-race: `backfill_phase2_sed.py`
 - `全馬データ` 結果取込: `docs/README_jrdb_horse_results_import.md` + `export_jrdb_eval_horse_results.py` + native Google Sheets
 
-workflow file自体は歴史的再現・旧artifact参照のため残っているが、新規requestを発行しない。
+workflow fileは現在もrepositoryに存在するが、新規の現行運用requestを発行しない。
 
 ## 4. Manual workflows
 
