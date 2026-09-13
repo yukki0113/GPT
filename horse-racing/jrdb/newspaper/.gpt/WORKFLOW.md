@@ -11,10 +11,11 @@
 9. JRDB Base生成とexternal addon mergeを分離する。
 10. addon未取得をBase生成失敗とみなさず、source stateを残して処理を継続する。
 11. mergeはnamespace ownershipとexact-key joinを守り、他source値を変更しない。
-12. historical処理ではtarget date以降の結果を混入させない。
-13. schema / key uniqueness / headcount / history as-of / merge idempotenceを検証する。
-14. 日次生成JSON、JRDB Raw、PACI、秘密情報をGitへcommitしない。
-15. 仕様変更時はdesign/schema/contextを必要範囲で同時更新し、Git `main` を正本とする。
+12. Eval PWA提出CSVの分析列はEval側の判定済み出力として透過格納し、Newspaper/PWAで条件・status・コードを再判定しない。
+13. historical処理ではtarget date以降の結果を混入させない。
+14. schema / key uniqueness / headcount / history as-of / merge idempotenceを検証する。
+15. 日次生成JSON、JRDB Raw、PACI、秘密情報をGitへcommitしない。
+16. 仕様変更時はdesign/schema/contextを必要範囲で同時更新し、Git `main` を正本とする。
 
 ## GitHub routing standard — 2026-09-10
 
