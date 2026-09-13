@@ -9,9 +9,7 @@
 
 Repository-wide GitHub routing is defined by `.gpt/GITHUB_OPERATION_POLICY.md`. This bridge must not override the A/B/C/D routing decision.
 
-Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. The Actions backend remains in the repository as a future unattended-automation foundation; it is disabled unless repository variable `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` is exactly `true`.
-
-`GPT_GDRIVE_SERVICE_ACCOUNT_JSON` is not a standard setup requirement. The current JSON-key implementation is deferred because the environment's key-creation policy does not permit adopting long-lived Service Account keys. If unattended Actions-to-Drive automation becomes necessary, reopen the backend with GitHub Actions OIDC, Google Workload Identity Federation, and short-lived Service Account impersonation credentials.
+Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. The Actions backend is retained only as inactive compatibility code. Do not enable it and do not configure `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` or `GPT_GDRIVE_AUTOMATION_ROOT_ID`. Google Drive / Docs / Sheets operations use the connected native tools only.
 
 See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` for the architecture decision and safety contract.
 
