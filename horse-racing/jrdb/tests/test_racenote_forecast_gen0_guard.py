@@ -109,6 +109,20 @@ def test_complete_runner_set_and_unique_factor_usage_pass() -> None:
     assert audit["factor_usage_identity_unique"] is True
 
 
+def test_guarded_projection_records_completeness_in_freeze_audit() -> None:
+    """The ledger audit row preserves all-runner and factor-identity checks."""
+    rows = guard.to_guarded_ledger_rows(
+        _frozen(),
+        _source_horses(),
+    )
+    freeze_audit = rows["Freeze監査"][0]
+    assert freeze_audit["source_runner_count"] == 2
+    assert freeze_audit["forecast_runner_count"] == 2
+    assert freeze_audit["factor_usage_count"] == 2
+    assert freeze_audit["runner_coverage_match"] is True
+    assert freeze_audit["factor_usage_identity_unique"] is True
+
+
 def test_missing_source_runner_is_rejected() -> None:
     """GPT cannot silently omit a runner from all-runner comparison."""
     frozen = _frozen()
