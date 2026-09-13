@@ -13,12 +13,24 @@
 
 A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選んだ場合のみ、ルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を適用する。
 
-## 1. 共通preflight
+## 1. 新規スレッド / 共通preflight
 
-1. GitHub `main` の最新状態を確認する。
-2. `horse-racing/eval/README.md`、`.gpt/CONTEXT.md`、本ファイル、対象moduleのdocs/Pythonを確認する。
-3. 既存の入出力契約と業務仕様を維持する。
-4. 実行経路A/B/C/Dを決める。DでなければIssueを作らない。
+会話履歴が無い新規スレッドでも復元できるよう、次を順に確認する。
+
+1. repository root `.gpt/GITHUB_OPERATION_POLICY.md`
+2. GitHub `main` の最新状態
+3. `horse-racing/eval/README.md`
+4. `.gpt/CONTEXT.md`
+5. 本 `.gpt/WORKFLOW.md`
+6. `.gpt/HANDOFF.md`
+7. 対象moduleのdocs / source / tests / workflow
+8. OCRなら `docs/OCR_Validation_Contract.md`
+9. Phase2なら該当 `docs/Eval_Phase2_JRDB_*_v0_1.md`
+10. PWAコメントなら `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
+
+そのうえで既存入出力仕様と業務仕様を維持し、実行経路A/B/C/Dを決める。DでなければIssueを作らない。
+
+過去スレッドの記憶だけでmodule名・条件・run IDを補完しない。GitHub正本または外部正本を再確認する。
 
 ## 2. このスレッドの標準: Chatへ直接渡されたEval画像 -> 完成CSV
 
@@ -26,6 +38,7 @@ A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選ん
 
 ```text
 ユーザー画像
+  -> A: latest main / contract確認
   -> C: GitHub mainのEval OCRロジックをChat/ローカルで実行
   -> OCR validationを通過した5列CSV
   -> D: [EVAL_PACI_ENRICH_REQUEST] Issue
@@ -42,9 +55,15 @@ A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選ん
 - 入力画像はChat/ローカルに存在するものを使用する。
 - 直接アップロードされた画像をGitHubへ永続化しない。
 - 通常の中間CSV契約は `date,venue,race_no,horse_no,eval` の5列。
+- R番号はパネル位置、馬番は行位置。馬名文字列はOCRしない。
 - 会場/R/馬番構造、Eval範囲、重複、色順位、tie、manual-review要求等の既存validationを通す。
+- 色順位は `red -> blue -> orange -> green -> yellow` の画像凡例固定。OCR値から推定しない。
+- `9x` 等の2/9先頭桁疑義、着色1桁、色順位矛盾等は独立再読する。機械置換しない。
+- `requires_review` が1件でも残ればformal completion pathを停止する。
 - OCR validationがerrorの場合はPACI工程へ進めない。推測補正で通過扱いにしない。
 - OCRのみを明示された場合は5列CSVで停止してよい。
+
+OCR release gateは `docs/OCR_Validation_Contract.md` を正本とする。PACI join成功をOCR品質の代用にしてはいけない。
 
 OCRはSecretsを使わず、ユーザー入力が手元にあり、通常開催規模ならローカル実行可能なため、Issue/Actionsを標準としない。
 
@@ -72,6 +91,8 @@ Issue本文は5列OCR CSVをgzip+Base64化したpayloadとし、通常 `fail_on_
 - `race_headcount_mismatches` は必ず監査し、0でなければ明示する。
 
 PACI ZIPをユーザーへ再添付依頼しない。
+
+通常ユーザー返却名は `YYYYMMDD_Eval_完成CSV.csv`。OCR 5列CSV / OCR validation / PACI auditは監査用補助成果物として併せて保持できる。
 
 ## 3. Eval表メディア取得
 
@@ -106,7 +127,37 @@ Actionsを使う場合は `EVAL_MEDIA_RESULT` の `fetch_exit_code=0`、`validat
 - 対象画像が多く、Chat/ローカル実行に不向き。
 - runner側のTesseract環境固定が再現性要件になっている。
 
-## 5. JRA結果取得
+`.github/workflows/eval_image_enrich_chat.yml` / `[EVAL_IMAGE_ENRICH_REQUEST]` は旧combined compatibility経路。Chatへ画像が直接添付される通常運用では使用しない。現在の標準はC: direct OCR + D: PACI enrichment。
+
+## 5. Phase2 research
+
+Phase2事前特徴の固定長parseはJRDB common parser/adapterへ委譲し、Eval側でBYTE offsetを再定義しない。
+
+### 5.1 Pre-race components
+
+- `src/build_phase2_jrdb_kyi_features.py` — KYI事前特徴。current-race結果を読まない。
+- `src/build_phase2_jrdb_training_features.py` — KYI identity setへCHA/CYBをLEFT JOIN。CHA/CYB欠損馬をrunner setから落とさない。
+- `src/build_phase2_jrdb_previous_features.py` — KYI `previous[0].result_key` とPACI ZED `result_key` を完全一致。fallback禁止。
+- `src/build_phase2_jrdb_feature_bundle.py` — 3componentを `race_horse_key` で1対1結合し、identity/source/version不一致をerrorにする。
+
+current-race SED、確定着順、確定人気・オッズ、払戻等をForward事前特徴へ混入させない。具体的なschema / availability class / semanticは各 `docs/Eval_Phase2_JRDB_*_v0_1.md` を正本とする。
+
+KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は別概念。値が一致する前提にせず、それぞれ保持する。
+
+### 5.2 Post-race layer
+
+- `src/backfill_phase2_sed.py` — SED結果時点layer。
+- `docs/Phase2_SED_Backfill_20260908.md` — 既存backfill監査。
+
+事前特徴と結果layerを混在させない。
+
+### 5.3 Research / PWA boundary
+
+Discovery結果を同一標本のまま正式購入条件へ昇格させない。
+
+PWA analysis列・WATCH/MATCH・analysis code/commentの責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とする。PWA/Newspaper側で研究条件を再実装しない。
+
+## 6. JRA結果取得
 
 `src/fetch_jra_daily_results.py` + `src/validate_jra_results.py` は、Secretsを必要としないためActions専用処理とはみなさない。
 
@@ -117,7 +168,7 @@ Dを使う場合は `fetch_exit_code=0`、`validation_exit_code=0`、`validation
 
 出走頭数は取消・競走除外前の枠順確定時頭数を維持する。
 
-## 6. GitHub Read / Audit とGit変更
+## 7. GitHub Read / Audit とGit変更
 
 repository/file/commit/issue/workflow/run/result/SHA/diffの確認はAとして直接行い、確認専用Issueは作成しない。
 
@@ -131,7 +182,7 @@ latest main -> path存在確認 -> current content -> 必要差分
 
 `[gpt-git-update]` は互換fallbackとして残るが、本プロジェクトの標準更新経路ではない。
 
-## 7. 継続台帳
+## 8. 継続台帳
 
 継続台帳の正本はネイティブGoogleスプレッドシート `Eval表集計・検証`（Spreadsheet ID `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`）。
 
@@ -142,6 +193,31 @@ latest main -> path存在確認 -> current content -> 必要差分
 
 Eval `全馬データ` へJRDB SED結果を取り込む場合は `docs/README_jrdb_horse_results_import.md` を標準手順とし、外部Raw取得の認証・大量処理・監査要件に応じてC/Dを判定する。
 
-## 8. Git管理対象外
+Canonical Keyを文字列化する場合は `開催日|場|R|馬番` の区切り付き形式を使用し、可変桁の単純連結をしない。
+
+## 9. スレッド引っ越し / interruption
+
+通常の週次完成CSV作業は、latest main + `.gpt/HANDOFF.md` + 当日画像があれば新スレッドで再開可能とする。過去チャット全文を前提にしない。
+
+途中状態を引き継ぐ場合は、最低限次を圧縮して残す。
+
+```text
+対象日
+入力画像/ZIP
+OCR実行済みか
+OCR validation status
+5列CSV reference
+PACI Issue/request_id
+PACI run_id/artifact_name
+完成CSV生成済みか
+未解決manual review/error
+Git source commit/SHA
+```
+
+不明なrun/artifact/statusを推測しない。GitHubからA: Read/Auditで再確認する。
+
+## 10. Git管理対象外
 
 Eval画像、OCR途中成果物、日次CSV、PACI Raw、検証レポート、実行ログ等の運用成果物は通常commitしない。PythonやWorkflowを変更した場合は対応README/docs/testsも必要に応じて同時更新する。
+
+思想、標準経路、canonical key、release gate、主要module責務が変わった場合はREADME / CONTEXT / WORKFLOW / HANDOFFの整合性を同時に監査する。
