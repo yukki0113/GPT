@@ -72,6 +72,10 @@ Updated: 2026-09-13
   - 日次結果取込の検証・集計・Google Sheets反映前JSON更新計画生成。
 - `src/forward_trial_analysis_import.py`
   - ForwardTrial専用分析台帳の正規化・真正性監査・全再集計データ生成。
+- `src/forward_trial_chat_ledger.py`
+  - 日次台帳用stable-key upsert、FT2全再集計、既存販売台帳mirrorの純粋な書込計画を生成。
+- `src/run_forward_trial_chat_import.py`
+  - 認証済みDrive取得、Google Sheets write/read-back、完了判定を実行。
 
 実装の役割はREADMEと各module/docを正本とし、この一覧だけでCLIや列仕様を推測しない。
 
@@ -104,6 +108,16 @@ Updated: 2026-09-13
 ### 事前予想
 
 公式出走表のfreezeを入力とし、`forward_trial_predict.py` で事前予想・根拠・販売選別を生成する。結果参照前に確定する。
+
+日次予想の標準ユーザー向け成果物は、同一freeze時点の次の3CSVとする。
+
+1. 24列の事前予想CSV
+2. 26列の予想根拠明細CSV（全R×6艇）
+3. 21列の2連単1点販売選別CSV
+
+予想根拠明細は任意説明資料ではなく、事前予想と同時点で固定する正本日次成果物である。通常は3CSVをそろえて返す。`forward_trial_predict.py` が生成する実行manifestは監査・再現性の補助物であり、通常のユーザー向け3成果物には数えない。
+
+結果参照前に一時的に表示対象を減らした場合でも、正本保存では事前予想・予想根拠・販売選別の整合性を維持する。結果参照後に欠落した根拠を新規予想として再生成してはならない。根拠CSVの再出力が必要な場合は、結果未参照であること、同一入力・同一freeze・既存予想との一致を確認できる場合に限る。
 
 ### 公式結果取得・予想照合
 
@@ -183,6 +197,7 @@ Updated: 2026-09-13
 - 対象作業の担当境界
 - 使用module / workflow
 - 入力原本の所在とSHA
+- 日次予想では3CSV（事前予想・予想根拠・販売選別）のfreeze整合性
 - Dの場合はrequest/run/artifactの対応
 - 未完了状態がある場合は、GitHub Issue / Actions / Drive / Sheetsの正本から再判定する
 
@@ -198,10 +213,10 @@ Updated: 2026-09-13
 - 主要moduleの追加・廃止・役割変更
 - GitHub実行経路やIssue contract変更
 - 結果取得と台帳記帳の担当境界変更
+- 日次予想の標準成果物・freeze運用変更
 - 新スレッドで会話履歴がないと再開できない事象が発生した場合
 
 引継ぎに必要な情報は会話メモリだけに残さず、再現可能な範囲をGit正本へ戻す。
-
 
 ## 10. CSV原本保存・月次圧縮
 
