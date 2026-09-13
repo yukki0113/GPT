@@ -54,9 +54,21 @@ def previous_result_year(key: str) -> int:
 
 
 def write_fixed_member(rows: list[bytes]) -> bytes:
+    """Write canonical CRLF records without duplicating existing terminators.
+
+    ``iter_archive_records`` may return either a body-only fixed record or a
+    published-length record that already includes CRLF. Historical PACI
+    reconstruction must normalize both representations to exactly one CRLF per
+    record; otherwise a 184-byte BAC row can become 186 bytes and the common
+    reader cannot split the rebuilt member.
+    """
     if not rows:
         return b""
-    return b"\r\n".join(rows) + b"\r\n"
+    bodies: list[bytes] = []
+    for row in rows:
+        body = row.removesuffix(b"\r\n")
+        bodies.append(body)
+    return b"\r\n".join(bodies) + b"\r\n"
 
 
 def build_paci_equivalent(
