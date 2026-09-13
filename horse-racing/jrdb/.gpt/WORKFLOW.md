@@ -11,9 +11,11 @@ Last reviewed: 2026-09-13
 3. `.gpt/CONTEXT.md`
 4. `.gpt/WORKFLOW.md`（この文書）
 5. latest `main` HEAD
-6. 対象subsystemのcurrent contract / audit / source / focused tests
+6. 対象subsystemのcurrent guide / contract / audit / source / focused tests
 
-過去handoff、古いIssue本文、日付付きaudit、固定SHAを単独でcurrent truthとしない。latest source + current contractが優先する。
+RaceNote作業では追加で `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` を読む。旧決定論的予想系を扱う場合だけ `docs/racenote/legacy/README.md` も確認する。
+
+過去handoff、古いIssue本文、日付付きaudit、固定SHAを単独でcurrent truthとしない。latest source + current guide/contractを優先する。
 
 ## Standard preflight
 
@@ -23,7 +25,7 @@ Last reviewed: 2026-09-13
 4. 既存仕様を壊さない範囲で改修。
 5. 可能な範囲で実行テスト / 回帰確認。
 6. 生成物・秘密情報・Rawデータが差分に入っていないことを確認。
-7. entrypoint / default / contract / subsystem boundaryが変わる場合、README / CONTEXT / HANDOFF / dedicated contractの更新要否を同時確認。
+7. entrypoint / default / contract / subsystem boundary / current-vs-legacy boundaryが変わる場合、README / CONTEXT / HANDOFF / dedicated docsの更新要否を同時確認。
 8. Gitへcommitし、以後Git版を正本とする。
 
 ## GitHub routing standard — 2026-09-10
@@ -60,6 +62,7 @@ Secrets、Actions固有権限、Actions artifact chain、長時間・大容量ru
 - SHA-256 / schema / row-count / integrity確認
 - WATCH理由分解等のaudit-only処理
 - 固定入力に対する変換・JOIN・レポート生成
+- fixed fixture / frozen inputに対するRaceNote / Edge / Newspaperのdeterministic validation
 
 同一処理を「Issueを投げるためだけ」にActionsへ送らない。
 
@@ -96,22 +99,63 @@ Current operational boundary:
 
 詳細は `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md` を優先する。
 
-### RaceNote / Newspaper / presentationでの標準適用
+### RaceNote Forecast Gen0での標準適用
 
-- RaceNote / Newspaper / PWA source、schema、contract、current publish metadataの確認: **A**
-- reader-facing wording、adapter、merge、presentation、schema/docs/testのUTF-8修正: **B**
-- fixed fixtureでのmerge、join、presentation、reader-language regression: **C**
-- JRDB Secretsを使うPACI取得を含む正式RaceNote生成、immutable freeze、publication chain: **D**
+Current prediction researchは **RaceNote Forecast Gen0**。作業開始時に `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` を確認する。
+
+- current forecast方針、prediction record、self-audit guidance、docs/schema/testのUTF-8変更: **B**
+- validated Reader View / frozen fixture等の既取得pre-race入力だけを使う比較、prediction-record validation、hash / leakage / freeze-format検証: 正式run証跡が不要なら **C**
+- JRDB Secretsを使うsource取得、正式なimmutable pre-result freeze、Actions artifact chain、formal TRUE_FORWARD evidenceを必要とする実行: **D**
+- Gen0の一回の研究・レビューをIssue/Actionsへ送ること自体を目的化しない。要件がA/B/Cで満たせるならDへ送らない。
+
+Current Gen0 boundary:
+
+- RaceNote authoritative bundle / Reader Viewはfacts / evidence / provenanceでありprediction modelではない
+- GPTがRaceNote全体を横比較してforecastする
+- fixed weight / single score / single gateをcurrent defaultにしない
+- result acquisitionはprediction freezeより後
+- 改善は原則として約50R等のまとまりでreading error / overvaluation / undervaluation / uncertaintyを監査する
+- EdgeDBを使う場合もPerformance / Value、CONFIRMED / SUGGESTIVE、overlapを区別し、単一Edgeで機械的に軸を決めない
+- Eval / keibailuka等のexternal sourceをRaceNote-only Gen0へ暗黙に混ぜない
+
+### RaceNote legacy prediction / presentationでの標準適用
+
+次はhistorical reproducibility / benchmark用legacy prediction logicとして扱う。
+
+- v0.2 control baseline
+- v1.1-P gated prediction
+- `src/racenote_edge_prediction_policy.py`
+- `src/run_racenote_v11p_true_forward_day.py`
+- v1.1-P TRUE_FORWARD freeze / workflow
+- v1.1-P frozen marksを入力とするpresentation
+
+旧資産の参照・監査: **A**。互換性を保つsource/docs/test修正: **B**。既取得freezeを使う再現・差分監査: **C**。旧formal runの再生成にSecrets / immutable run evidenceが必要なら **D**。
+
+LegacyからGen0へ再利用してよいのは、pre-race guard、as-of validation、source identity、hash、immutable freeze、result-after-freeze、prediction/presentation immutable check等の**検証インフラ**。次の旧decision ruleはcurrent Gen0へ暗黙に持ち込まない。
+
+- top5固定候補
+- Good差 `<= 0.04`
+- stronger Edge polarityによる機械的な◎昇格
+- v1.1-P順位の無条件継承
+
+詳細は `docs/racenote/legacy/README.md`。`src/racenote_prediction_presentation_v0_2.py` と `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` は既存consumer / historical v1.1-P freezeの表示互換として扱い、Gen0 prediction policyの根拠にしない。
+
+### Newspaper / PWAでの標準適用
+
+- Newspaper / PWA source、schema、contract、current publish metadataの確認: **A**
+- reader-facing wording、adapter、merge、schema/docs/testのUTF-8修正: **B**
+- fixed fixtureでのmerge、join、reader-language regression: **C**
+- JRDB Secretsを使うsource取得を含む正式day package生成、immutable publication chain: **D**
 
 責務境界:
 
-- RaceNote converter / Reader Viewはpredictionを実装しない
-- `racenote_prediction_presentation_v0_2.py` はfrozen decisionを説明するだけで印を再計算しない
 - NewspaperはEdge matcher outputをconsumeし、Edge条件を再計算しない
 - `jrdb_newspaper_edge_adapter.py` はdisplay boundaryでありmatching semanticsを変更しない
-- reader-facing文言は `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` を参照する
+- internal code / raw condition / Edge IDはaudit可能に保持し、ordinary reader-facing proseでは必要に応じて翻訳する
+- PWA / Newspaperのdelivery都合でForecast policyを決めない。forecastは先にfreezeし、consumerは安定したoutput contractを表示する
+- 表示だけの修正でEdge threshold / eligibility / Registry status / prediction markを変えない
 
-表示だけの修正でEdge threshold / eligibility / Registry status / prediction markを変えない。
+既存v1.1-P frozen predictionを表示する場合のreader wordingは `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` を参照する。
 
 ### Post-race Analysis / Mart / Fact Liteでの標準適用
 
@@ -136,7 +180,7 @@ Current operational boundary:
 
 Controllerの設計判断やfreeze決定そのものを文書へ反映するだけなら **B** でよい。対して、その判断の根拠となるcanonical full-history build / comparison / holdout / audit evidenceを新規生成する場合は **D** とする。
 
-RaceNote、EdgeDB、Eval、Training等のsubsystemは各専用contractを優先し、別subsystemのロジックを暗黙に混在させない。
+RaceNote、EdgeDB、Eval、Training等のsubsystemは各専用guide/contractを優先し、別subsystemのロジックを暗黙に混在させない。
 
 ## Documentation synchronization rule
 
@@ -147,6 +191,7 @@ RaceNote、EdgeDB、Eval、Training等のsubsystemは各専用contractを優先�
 - source-of-truthの変更
 - schema / join identity / leakage boundaryの変更
 - Edge evidence semantics / serving profileの変更
+- current prediction direction / current-vs-legacy boundaryの変更
 - presentation responsibility boundaryの変更
 - post-race generation chainの変更
 
@@ -156,6 +201,9 @@ RaceNote、EdgeDB、Eval、Training等のsubsystemは各専用contractを優先�
 - `.gpt/HANDOFF.md`: new-thread bootstrap / current operational defaults
 - `.gpt/CONTEXT.md`: persistent domain context
 - `.gpt/WORKFLOW.md`: execution routing
+- `docs/racenote/README.md`: current RaceNote development direction
+- `docs/racenote/FORECAST_GEN0_PLAN.md`: current Forecast research cycle
+- `docs/racenote/legacy/README.md`: historical deterministic prediction boundary
 - `docs/*Contract*.md`: subsystem-specific normative semantics
 - dated audit: verification evidence, not permanent operational default
 
