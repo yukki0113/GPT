@@ -27,10 +27,10 @@ from forward_trial_chat_ledger import build_atomic_payload, values_rows
 
 DEFAULT_SPREADSHEET_ID = "1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM"
 SOURCE_KINDS = {
-    "prediction": "事前予想",
-    "sales": "販売選別",
-    "result": "結果",
-    "racecard": "公式出走表",
+    "prediction": {"marker": "事前予想", "folder_id": "1ZHNpPyVQPjs4UvWLhc5ocXFCwLF_ybY2"},
+    "sales": {"marker": "販売選別", "folder_id": "1mgsmcJXrKJtjYX8DbAGLsdqSdt5JWRrS"},
+    "result": {"marker": "結果", "folder_id": "1P60LF55o1P_1QUqdRd_cqAqLyDidTRUw"},
+    "racecard": {"marker": "公式出走表", "folder_id": "1zg77_EqlcQon0bPmQK-nSKfzMhKWIscV"},
 }
 CURRENT_SHEETS = (
     "FT2_全R明細", "FT2_取込管理", "FT2_開催メタ", "販売記事台帳", "販売掲載明細",
@@ -58,31 +58,40 @@ def services(credentials):
             build("sheets", "v4", credentials=credentials, cache_discovery=False))
 
 
-def list_source_files(drive, folder_id: str, target_date: str) -> list[dict[str, object]]:
-    query = f"'{folder_id}' in parents and trashed = false and name contains '{target_date}'"
-    response = drive.files().list(q=query, fields="files(id,name,mimeType,modifiedTime,size,md5Checksum)",
-                                  orderBy="modifiedTime desc", pageSize=1000).execute()
-    return list(response.get("files", []))
+def list_source_files(drive, target_date: str) -> dict[str, list[dict[str, object]]]:
+    """List date-matched CSV candidates in each canonical source-kind folder."""
+    files_by_kind: dict[str, list[dict[str, object]]] = {}
+    for kind, definition in SOURCE_KINDS.items():
+        folder_id = str(definition["folder_id"])
+        query = f"'{folder_id}' in parents and trashed = false and name contains '{target_date}'"
+        response = drive.files().list(
+            q=query, fields="files(id,name,mimeType,modifiedTime,size,md5Checksum)",
+            orderBy="modifiedTime desc", pageSize=1000).execute()
+        files_by_kind[kind] = list(response.get("files", []))
+    return files_by_kind
 
 
-def resolve_source_files(files: Sequence[Mapping[str, object]], target_date: str,
+def resolve_source_files(files_by_kind: Mapping[str, Sequence[Mapping[str, object]]], target_date: str,
                          explicit_ids: Mapping[str, str] | None = None) -> dict[str, dict[str, object]]:
-    """Resolve exactly one immutable CSV per source kind; ambiguity fails closed."""
+    """Resolve one CSV per kind from its own canonical folder; fail closed on ambiguity."""
     explicit_ids = explicit_ids or {}
-    by_id = {str(item["id"]): item for item in files}
     resolved: dict[str, dict[str, object]] = {}
-    for kind, marker in SOURCE_KINDS.items():
+    for kind, definition in SOURCE_KINDS.items():
+        files = files_by_kind.get(kind, [])
+        by_id = {str(item["id"]): item for item in files}
         requested_id = str(explicit_ids.get(kind, "")).strip()
         if requested_id:
             if requested_id not in by_id:
-                raise ForwardTrialValidationError(f"explicit {kind} file is not in the source folder")
+                raise ForwardTrialValidationError(f"explicit {kind} file is not in its canonical source folder")
             candidates = [by_id[requested_id]]
         else:
+            marker = str(definition["marker"])
             candidates = [item for item in files if marker in str(item.get("name", ""))]
             if kind == "prediction":
                 candidates = [item for item in candidates if "根拠" not in str(item.get("name", ""))]
         candidates = [item for item in candidates
-                      if str(item.get("name", "")).startswith(target_date) and str(item.get("name", "")).lower().endswith(".csv")]
+                      if str(item.get("name", "")).startswith(target_date)
+                      and str(item.get("name", "")).lower().endswith(".csv")]
         if len(candidates) != 1:
             names = [str(item.get("name", "")) for item in candidates]
             raise ForwardTrialValidationError(f"{kind} source must resolve to exactly one CSV: {names}")
@@ -90,7 +99,6 @@ def resolve_source_files(files: Sequence[Mapping[str, object]], target_date: str
     if len({item["id"] for item in resolved.values()}) != 4:
         raise ForwardTrialValidationError("the four source assets must have distinct file IDs")
     return resolved
-
 
 def download_sources(drive, resolved: Mapping[str, Mapping[str, object]], directory: Path) -> dict[str, Path]:
     """Download sources and record content SHA256 values."""
@@ -233,8 +241,8 @@ def run_import(date: str, folder_id: str, spreadsheet_id: str,
     process_datetime = datetime.now().astimezone().isoformat(timespec="seconds")
     with tempfile.TemporaryDirectory(prefix="ft2-chat-import-") as temporary:
         directory = Path(temporary)
-        files = list_source_files(drive, folder_id, date)
-        resolved = resolve_source_files(files, date, explicit_ids)
+        files_by_kind = list_source_files(drive, date)
+        resolved = resolve_source_files(files_by_kind, date, explicit_ids)
         paths = download_sources(drive, resolved, directory)
         manifest = {"existing_sales_crosscheck": True, "dates": [{
             "date": date,
@@ -269,7 +277,7 @@ def run_import(date: str, folder_id: str, spreadsheet_id: str,
 def main() -> None:
     parser = argparse.ArgumentParser(description="Import one immutable FT2 day into the canonical Google Sheet")
     parser.add_argument("--date", required=True)
-    parser.add_argument("--folder-id", required=True)
+    parser.add_argument("--folder-id", required=True, help="canonical data root; retained for request compatibility")
     parser.add_argument("--spreadsheet-id", default=DEFAULT_SPREADSHEET_ID)
     parser.add_argument("--file-ids-json", help="optional JSON mapping prediction/sales/result/racecard to Drive IDs")
     parser.add_argument("--output", required=True)
