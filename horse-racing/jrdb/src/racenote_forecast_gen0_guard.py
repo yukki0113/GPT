@@ -115,6 +115,15 @@ def audit_forecast_input_completeness(
                     f"factor_usage[{index}] references non-source horse_no: {horse_no}"
                 )
 
+        if scope == "RACE" and horse_no is not None:
+            raise ForecastGuardError(
+                f"factor_usage[{index}] RACE scope must not include horse_no"
+            )
+        if scope == "HORSE" and horse_no is None:
+            raise ForecastGuardError(
+                f"factor_usage[{index}] HORSE scope requires horse_no"
+            )
+
         identity = (factor_code, scope, horse_no)
         if identity in factor_identities:
             raise ForecastGuardError(
