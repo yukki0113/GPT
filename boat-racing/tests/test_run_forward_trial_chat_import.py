@@ -10,13 +10,21 @@ from run_forward_trial_chat_import import resolve_source_files
 
 class RunForwardTrialChatImportTest(unittest.TestCase):
     def _files(self):
-        return [
-            {"id": "prediction-file-id", "name": "20260912_事前予想_ForwardTrial_Ver0.1.csv"},
-            {"id": "sales-file-id", "name": "20260912_2連単1点販売選別_ForwardTrial_Ver0.1.csv"},
-            {"id": "result-file-id", "name": "20260912_結果.csv"},
-            {"id": "racecard-file-id", "name": "20260912_公式出走表.csv"},
-            {"id": "rationale-file-id", "name": "20260912_予想根拠.csv"},
-        ]
+        return {
+            "prediction": [
+                {"id": "prediction-file-id", "name": "20260912_事前予想_ForwardTrial_Ver0.1.csv"},
+                {"id": "rationale-file-id", "name": "20260912_予想根拠.csv"},
+            ],
+            "sales": [
+                {"id": "sales-file-id", "name": "20260912_2連単1点販売選別_ForwardTrial_Ver0.1.csv"},
+            ],
+            "result": [
+                {"id": "result-file-id", "name": "20260912_結果.csv"},
+            ],
+            "racecard": [
+                {"id": "racecard-file-id", "name": "20260912_公式出走表.csv"},
+            ],
+        }
 
     def test_discovers_one_source_per_kind(self):
         resolved = resolve_source_files(self._files(), "20260912")
@@ -24,7 +32,8 @@ class RunForwardTrialChatImportTest(unittest.TestCase):
         self.assertEqual(resolved["prediction"]["id"], "prediction-file-id")
 
     def test_ambiguous_source_fails_closed(self):
-        files = self._files() + [{"id": "result-file-id-2", "name": "20260912_結果_copy.csv"}]
+        files = self._files()
+        files["result"].append({"id": "result-file-id-2", "name": "20260912_結果_copy.csv"})
         with self.assertRaises(ForwardTrialValidationError):
             resolve_source_files(files, "20260912")
 
