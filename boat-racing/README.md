@@ -140,7 +140,7 @@ python boat-racing/src/fetch_boatrace_event_meta.py \
 
 ## Chatからの日次台帳記帳
 
-通常Chatからの「YYYYMMDDの台帳記帳」は、`[BOATRACE_LEDGER_IMPORT] <request_id>` Issueを1件だけ作成して `.github/workflows/boatrace_ledger_import_issue.yml` を起動する。Google service-account secret、Drive immutable Freeze、Google Sheets書込み、Actions run/artifactを正式監査証跡として必要とするため、この作業は **D. Actions-Native Execution** とする。
+Workからの「YYYYMMDDの台帳記帳」は、Driveの種別別フォルダ（racecards / predictions / sales-selection / results）から4原本を取得し、GitHub `main` の決定論moduleでstable-key upsertとAtomic Aggregate Setを生成したうえで、接続済みGoogle Sheetsへ直接書込み・read-backする経路を標準とする。書込み中は `集計再生成中`、全監査成功後だけ `完了` とする。GitHub Actionsのservice-account secretが利用可能な場合は、`[BOATRACE_LEDGER_IMPORT] <request_id>` Issueと `.github/workflows/boatrace_ledger_import_issue.yml` を代替の監査経路として使用できる。
 
 `src/forward_trial_chat_ledger.py` はstable-key upsert、FT2の全再集計、既存販売台帳mirrorを純粋な書込計画として生成し、`src/run_forward_trial_chat_import.py` が認証済みDrive取得、Sheets write/read-back、完了確定を担当する。明細だけを書いた時点では完了にせず、Atomic Aggregate Set 9タブ、`FT2_集計監査`、既存販売台帳、数式エラー0をread-backしてからだけ `FT2_取込管理=完了` とする。
 
