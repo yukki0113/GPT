@@ -12,6 +12,8 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 - `src/fetch_boatrace_results.py` — 公式結果取得・事前予想照合
 - `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
 - `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
+- `src/forward_trial_chat_ledger.py` — 日次台帳用stable-key upsert、FT2全再集計、既存販売台帳mirrorの純粋な書込計画を生成
+- `src/run_forward_trial_chat_import.py` — 認証済みDrive取得、Google Sheets write/read-back、完了判定を実行
 
 詳細仕様は `docs/` を参照してください。日次CSV、キャッシュ、ログ、運用台帳はGit管理対象外です。
 
@@ -59,7 +61,15 @@ python boat-racing/src/forward_trial_predict.py \
   --source-commit <fetched-main-commit>
 ```
 
-moduleは24列事前予想CSV、26列予想根拠明細CSV、21列2連単1点販売選別CSVに加え、`source_commit`、source/input/output SHA256、generated_atを持つ実行manifestを生成する。公式出走表の取得自体は、Chatローカルから公式サイトへ同一条件で通信できない場合に限りD. Actions-Native ExecutionとしてIssue / Actionsを使用する。Artifact回収後の検証と予想計算はCへ戻す。
+日次予想の標準ユーザー向け成果物は、結果参照前に同一freezeで確定した次の3CSVとする。
+
+1. `YYYYMMDD_事前予想_<会場...>_ForwardTrial_Ver0.1.csv` — 24列
+2. `YYYYMMDD_予想根拠明細_<会場...>_ForwardTrial_Ver0.1.csv` — 26列、全R×6艇
+3. `YYYYMMDD_2連単1点販売選別_<会場...>_ForwardTrial_Ver0.1.csv` — 21列
+
+予想根拠明細は説明用の任意出力ではなく、事前予想と同じfreeze時点の正本日次成果物として保存する。通常は3CSVをそろえて返す。ユーザーが一時的に表示物を絞るよう明示した場合でも、結果参照前の正本保存では3資産の整合性を維持する。
+
+moduleの通常CLIは上記3CSVに加え、`source_commit`、source/input/output SHA256、generated_atを持つ実行manifestも生成する。manifestは監査・再現性の補助物であり、通常のユーザー向け日次成果物3点には数えない。公式出走表の取得自体は、Chatローカルから公式サイトへ同一条件で通信できない場合に限りD. Actions-Native ExecutionとしてIssue / Actionsを使用する。Artifact回収後の検証と予想計算はCへ戻す。
 
 ## Daily data source of truth
 
@@ -79,7 +89,6 @@ moduleは24列事前予想CSV、26列予想根拠明細CSV、21列2連単1点販
 - Folder ID: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 - URL: `https://drive.google.com/drive/folders/19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 - バックテスト結果、結果参照前固定、比較資料、仕様改訂判断などを保存
-
 
 ## CSV original preservation and monthly compaction
 
@@ -128,7 +137,6 @@ python boat-racing/src/fetch_boatrace_event_meta.py \
 ~~~
 
 13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
-
 
 ## Chatからの日次台帳記帳
 
