@@ -8,9 +8,11 @@ Google Sheet through the Drive/Sheets connector.
 
 from __future__ import annotations
 
+from collections import Counter
 from typing import Any, Mapping, Sequence
 
 DEFAULT_CHUNK_SIZE = 5
+DEFAULT_MAX_PER_DATE = 3
 ALLOWED_STATUSES = {
     "READY",
     "SOURCE_READY",
@@ -69,6 +71,10 @@ def validate_queue_row(row: Mapping[str, Any]) -> dict[str, Any]:
     normalized["manifest_id"] = _text(row.get("manifest_id"), "manifest_id")
     normalized["generation_id"] = _text(row.get("generation_id"), "generation_id")
     normalized["race_key"] = _text(row.get("race_key"), "race_key")
+    normalized["race_date"] = _text(row.get("race_date"), "race_date")
+    normalized["surface_code"] = _text(row.get("surface_code"), "surface_code")
+    if normalized["surface_code"] not in {"1", "2"}:
+        raise QueueStateError(f"unsupported surface_code: {normalized['surface_code']}")
     normalized["sample_order"] = _order(row.get("sample_order"))
     normalized["sample_role"] = _text(row.get("sample_role"), "sample_role").upper()
     if normalized["sample_role"] not in {"PRIMARY", "RESERVE"}:
@@ -125,16 +131,38 @@ def transition_row(
     return normalized
 
 
+def _effective_date_counts(
+    rows: Sequence[Mapping[str, Any]],
+    excluded_race_key: str,
+) -> Counter[str]:
+    """Count dates in the effective 50R set after removing one failed primary."""
+    counts: Counter[str] = Counter()
+    for row in rows:
+        if row["race_key"] == excluded_race_key:
+            continue
+        if row["sample_role"] == "PRIMARY":
+            if row["queue_status"] != "SKIPPED_TECH":
+                counts[row["race_date"]] += 1
+            continue
+        if row["sample_role"] == "RESERVE" and row["queue_status"] != "RESERVE":
+            counts[row["race_date"]] += 1
+    return counts
+
+
 def technical_replacement(
     rows: Sequence[Mapping[str, Any]],
     failed_race_key: str,
     skip_reason: str,
+    max_per_date: int = DEFAULT_MAX_PER_DATE,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Skip one technical failure and promote the first unused reserve.
+    """Skip a technical failure and promote a structure-preserving reserve.
 
-    Replacement eligibility is intentionally unrelated to prediction quality or
-    outcome. The caller must provide a concrete technical reason.
+    Replacement is allowed only before forecast starts. The promoted reserve must
+    have the same turf/dirt code as the failed PRIMARY and must not make the
+    effective sample exceed the same-date cap.
     """
+    if max_per_date <= 0:
+        raise QueueStateError("max_per_date must be positive")
     failed_key = _text(failed_race_key, "failed_race_key")
     reason = _text(skip_reason, "skip_reason")
     normalized_rows = [validate_queue_row(row) for row in rows]
@@ -148,14 +176,20 @@ def technical_replacement(
     if failed["queue_status"] not in {"READY", "SOURCE_READY"}:
         raise QueueStateError("technical replacement must occur before forecast starts")
 
+    date_counts = _effective_date_counts(normalized_rows, failed_key)
     reserves = [
         row
         for row in normalized_rows
-        if row["sample_role"] == "RESERVE" and row["queue_status"] == "RESERVE"
+        if row["sample_role"] == "RESERVE"
+        and row["queue_status"] == "RESERVE"
+        and row["surface_code"] == failed["surface_code"]
+        and date_counts[row["race_date"]] < max_per_date
     ]
     reserves.sort(key=lambda row: row["sample_order"])
     if not reserves:
-        raise QueueStateError("no unused RESERVE race remains")
+        raise QueueStateError(
+            "no unused RESERVE race preserves surface and date-cap constraints"
+        )
 
     skipped = transition_row(
         failed,
