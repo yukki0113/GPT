@@ -241,3 +241,13 @@ data親フォルダ配下の既存区分を維持する。
 既存ZIPを新しい内容で上書きしない。ZIP確認前の削除、収録漏れがある月の一括削除、原本CSVの変換・再保存は禁止する。
 
 この工程はGoogle Drive直接操作で完結するため、通常はA/C相当でありGitHub Issue/Actionsを使わない。
+
+## 11. Chat日次台帳記帳の再開契約
+
+日次の「台帳記帳」は、結果取得とは別の完結工程である。最新 `main` の `docs/ForwardTrial_Chat日次台帳記帳運用.md`、`.github/workflows/boatrace_ledger_import_issue.yml`、`src/forward_trial_analysis_import.py`、`src/forward_trial_chat_ledger.py`、`src/run_forward_trial_chat_import.py` を確認する。
+
+- Chatは対象日を受けたら、Driveのracecard / prediction / sales-selection / resultを正本として確認し、候補が複数なら4 file IDを明示した `[BOATRACE_LEDGER_IMPORT]` Issueを一度だけ発行する。
+- Google認証・immutable freeze・Sheets書込み・run/artifact監査が必要なのでD. Actions-Native Executionを維持する。Chat/Workの手転記や会話内の集計を完了扱いにしない。
+- 完了の根拠は、Issue RESULTの `status=success`、`FT2_取込管理`、`FT2_集計監査` の9タブ同一generation/source、read-back検証の一致である。明細存在、日別集計の最新日、取込管理の表示だけでは不十分である。
+- 予想、販売選別、freeze、結果は再評価・再ランキングしない。frozen列差異、grade未解決、世代差、件数差はfail-closedとする。
+- 通常は処理完了まで途中報告を出さず、実ブロッカーまたは最終完了時にだけ報告する。最新の対象日・run ID・累計値はこのHANDOFFに固定せず、Drive / Sheets / RESULTから再取得する。
