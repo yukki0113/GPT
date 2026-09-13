@@ -3,6 +3,13 @@
 ## Status
 Active。競艇AI予想運用のための公式出走表・予想・販売選別・結果取得・検証を管理します。
 
+## Thread continuity
+
+会話量上限やスレッド移動時の再開入口は `boat-racing/.gpt/HANDOFF.md` とする。
+新しいChat / Workスレッドでは、過去会話だけを前提にせず、latest `main` の `README.md` → 本CONTEXT → `HANDOFF.md` → `WORKFLOW.md` → 対象 `docs/` / `src/` を確認する。
+
+結果取得、台帳記帳、ForwardTrial分析は担当工程を分離する。公式結果取得スレッドは結果CSV・取得ログの生成と監査までを担当し、ネイティブGoogleスプレッドシートへの台帳記帳は別工程とする。
+
 ## Source of truth
 
 Python、README、予想仕様書はGit `main` を正本とする。
@@ -28,6 +35,7 @@ Google Drive `analysis`:
 - バックテスト、結果参照前固定、検証集計、仕様改訂判断を保存
 
 予想・販売選別の確定前は当該日の `results` を参照しない。
+結果取得時に当該スレッドへ事前予想CSVがない場合は、対象日が明示されているならGoogle Drive `data/predictions` のfreeze済み正本を検索する。対象日・会場集合・仕様版で一意に確定できない場合は推測しない。結果参照後の予想再生成は禁止する。
 
 ## Ledger source of truth
 
