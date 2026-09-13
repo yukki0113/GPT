@@ -12,6 +12,7 @@ horse-racing/jrdb/newspaper/.gpt/CONTEXT.md
 horse-racing/jrdb/newspaper/.gpt/WORKFLOW.md
 horse-racing/jrdb/newspaper/.gpt/DAILY_WORK_CONTRACT.md
 horse-racing/jrdb/newspaper/.gpt/REQUEST_CONTRACT.md
+horse-racing/jrdb/newspaper/.gpt/HANDOFF.md
 ```
 
 必要に応じて親JRDBのREADME / CONTEXT / WORKFLOW、Newspaper schema、現行builder / merger / publish workflowも確認してください。
@@ -63,6 +64,8 @@ PACIを中心とするneutral JRDB layerからNewspaper Base / historyを生成�
 RaceNoteは完成済みprediction outputだけをaddonとして取り込み、RaceNote bundleやRaceNote内部ロジックをNewspaper Base/historyへ依存させないでください。
 
 EdgeDBはEdge側のmatcher結果を入力とし、Newspaper側でEdge条件を再判定しないでください。新規packageは `special_memos` を正本表示フィールドとし、旧 `edge_matches` は過去package互換に限定します。
+
+Evalについては、canonicalな `YYYYMMDD_Eval_PWA提出CSV_v0_1.csv` があれば旧Eval完成CSVより優先します。分析6列はEval側の判定済み出力であり、Newspaperは `addons.eval.analysis` へ透過格納するだけです。`NONE / WATCH / MATCH`、H1/H2、注目馬選定を再判定しません。詳細は `horse-racing/eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を確認してください。
 
 ## 4. 入力探索順
 
