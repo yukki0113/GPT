@@ -28,7 +28,7 @@ from build_phase2_jrdb_training_features import (
 )
 
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 IDENTITY_COLUMNS = ("race_key", "horse_no", "race_horse_key")
 COMMON_PROVENANCE_COLUMNS = (
     "source_availability_class",
@@ -39,6 +39,22 @@ COMMON_PROVENANCE_COLUMNS = (
 
 class Phase2FeatureBundleError(RuntimeError):
     """Raised when component feature tables cannot be merged one-to-one."""
+
+
+def is_missing_value(value: object) -> bool:
+    """Return whether a component value represents an absent value."""
+    if value is None:
+        return True
+    if isinstance(value, str) and value == "":
+        return True
+    return False
+
+
+def component_values_equal(left: object, right: object) -> bool:
+    """Compare component values while treating blank and None as the same missing value."""
+    if is_missing_value(left) and is_missing_value(right):
+        return True
+    return left == right
 
 
 def index_rows(
@@ -87,7 +103,7 @@ def copy_component_fields(
         if column in COMMON_PROVENANCE_COLUMNS:
             continue
         if column in output:
-            if output[column] != component_row.get(column):
+            if not component_values_equal(output[column], component_row.get(column)):
                 raise Phase2FeatureBundleError(
                     f"conflicting component field: {column} "
                     f"base={output[column]!r} other={component_row.get(column)!r}"
