@@ -29,12 +29,14 @@ pre-race source resolve
   -> horse-to-horse comparison
   -> prediction draft
   -> pre-result self-audit
+  -> deterministic validation / hash
   -> immutable freeze
+  -> Google Sheets readback
   -> result acquisition
   -> post-race evaluation
 ```
 
-結果取得をprediction freezeより前へ置かない。
+結果取得をprediction freezeおよびledger readbackより前へ置かない。
 
 ## 3. Prediction inputs
 
@@ -69,7 +71,28 @@ pre-race source resolve
 
 単一index、単一Edge、単一コメントだけで結論を固定しない。
 
-## 4. Forecast record
+## 4. Initial factor set
+
+初期factor setは `FSET-Gen0.1` の10ファクター。
+
+1. F01 基礎能力
+2. F02 条件適性
+3. F03 展開・位置取り
+4. F04 調教・状態
+5. F05 近走内容
+6. F06 長期履歴・条件実績
+7. F07 騎手・厩舎
+8. F08 血統
+9. F09 枠・条件統計
+10. F10 事前市場情報
+
+これは固定weightではない。
+
+GPTはレースごとに重要度を変え、不要なfactorを軽視してよい。どのfactorを重視・軽視したかは予想内容とは別に研究メタデータとして記録する。
+
+詳細は `FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md`。
+
+## 5. Forecast record
 
 各予想は結果取得前に、少なくとも次を記録する。
 
@@ -80,24 +103,32 @@ pre-race source resolve
 - race_no
 - race_key
 - source version / semantic hash
-- forecast generation version (`RaceNote Forecast Gen0`)
+- forecast generation version
+- evaluation mode (`BLINDED_HISTORICAL / TRUE_FORWARD`)
 
 ### Race reading
 
 - race shape summary
 - expected pace / position picture
 - important condition factors
+- primary factor codes
+- de-emphasized factor codes
 
 ### Horse comparison
 
-各主要候補について:
+全馬について:
 
 - horse_no / horse_name
+- GPT rank
+- mark
 - strengths
 - risks
-- evidence used
+- evidence summary
 - evidence conflicts
 - comparison against nearby rivals
+- factor codes
+
+各馬を読むが、保存するのは監査用のreason summaryでありprivate chain-of-thoughtではない。
 
 ### Final prediction
 
@@ -106,15 +137,17 @@ pre-race source resolve
 - confidence A / B / C
 - concise reason for the axis
 - alternatives / upset candidates where appropriate
+- uncertainty summary
 
 confidenceは的中確率ではなく、**入力coverageとevidence整合性に対する予想時点の確信度**とする。
 
-## 5. Pre-result self-audit
+## 6. Pre-result self-audit
 
 freeze前にGPT自身が予想を監査する。
 
 最低限、次を確認する。
 
+- 全馬を見たか
 - レース条件を先に読んだか
 - 単一indexへ引っ張られていないか
 - 能力と展開を分けて評価したか
@@ -124,11 +157,12 @@ freeze前にGPT自身が予想を監査する。
 - contradictory evidenceを消していないか
 - 人気 / base oddsだけで順位を決めていないか
 - 各馬を独立採点しただけでなく横比較したか
+- ◎の負け筋を確認したか
 - target result / final odds / post-race情報を見ていないか
 
-監査によって予想を修正した場合、修正理由もfreeze前記録へ残す。
+監査によって予想を修正した場合、Freezeするのは修正後の最終予想だけとする。
 
-## 6. Freeze
+## 7. Freeze
 
 prediction freezeはresult acquisitionより先に完了させる。
 
@@ -137,26 +171,64 @@ freezeでは最低限:
 - prediction body
 - input identity / semantic hash
 - generation version
+- factor set version
 - created_at
 - pre-race guard status
+- result visibility status
 - prediction hash
+- frozen_at
 
 を固定する。
 
-既存TRUE_FORWARD資産のhash / provenance / immutable recordの考え方は再利用してよい。
+`src/racenote_forecast_gen0.py` はこの境界をdeterministicに検証する。
 
-ただし、旧v1.1-Pの印決定ロジック自体をGen0へ持ち込まない。
+禁止result field、pre-race guard不成立、結果visible、mark/axis内部不整合、hash不整合はfail closedとする。
 
-## 7. Post-race evaluation
+既存TRUE_FORWARD資産のhash / provenance / immutable recordの考え方は再利用するが、旧v1.1-Pの印決定ロジック自体をGen0へ持ち込まない。
+
+## 8. Google Sheets ledger
+
+継続台帳はネイティブGoogle Sheet `RaceNote Forecast Gen0 検証台帳`。
+
+正本config:
+
+`config/racenote_forecast_gen0_ledger_v0_1.json`
+
+Google SheetsはChatGPTのDrive / Sheets connectorから直接read / writeする。RaceNote sourceへGoogle API clientやcredentialを持ち込まない。
+
+pre-resultでは:
+
+- `予想Freeze`
+- `馬別評価`
+- `ファクター使用`
+- `Freeze監査`
+
+を同一transactionで記帳する。
+
+post-resultでは:
+
+- `結果_馬別`
+- `振返り`
+- `ファクター検証`
+- `Freeze監査`
+
+を更新する。
+
+詳細は `FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md`。
+
+## 9. Post-race evaluation
 
 結果取得後は「当たった / 外れた」だけで終わらせない。
+
+`src/racenote_forecast_gen0_evaluation.py` は結果identity、freeze-before-resultを検証し、◎着順・winner mark・印内捕捉等の客観指標を作る。
 
 ### Outcome
 
 - ◎着順
-- ○▲△着順
+- ◎勝利
 - winnerをどこまで評価できていたか
 - 上位候補の順位整合性
+- 印内の上位3着捕捉
 - 必要に応じて馬券評価。ただしprediction evaluationとは分ける
 
 ### Reading audit
@@ -172,11 +244,37 @@ freezeでは最低限:
 
 について、予想時点の根拠と結果後の事実を比較する。
 
+### Factor audit
+
+予想時に記録したfactor usageへ対し:
+
+- HELPFUL
+- NEUTRAL
+- MISLEADING
+- UNRESOLVED
+
+および:
+
+- OVER
+- UNDER
+- APPROPRIATE
+- NA
+
+を記録する。
+
 結果を知った後の後付け説明でprediction recordを書き換えない。
 
-## 8. Improvement unit
+## 10. Improvement unit
 
 原則として**約50Rを1改善単位**とする。
+
+初期generation:
+
+- `Gen0-G000`
+- `RaceNote-Forecast-Gen0.1`
+- `FSET-Gen0.1`
+- initial mode: `BLINDED_HISTORICAL`
+- target: 50R
 
 1Rごとの結果で即座にweight・ルール・reading orderを変更しない。
 
@@ -187,6 +285,8 @@ freezeでは最低限:
 - confidence別成績
 - favorite / mid-price / longshot等の市場帯別傾向
 - surface / distance / class別傾向
+- factor別 `HELPFUL / MISLEADING`
+- factor別 `OVER / UNDER`
 - reading-error category件数
 - recurring overvaluation / undervaluation
 - missing-data起因の失敗
@@ -194,7 +294,7 @@ freezeでは最低限:
 
 50Rは絶対値ではなく、過学習を避けてまとまった傾向を見るための初期運用単位である。
 
-## 9. Change discipline
+## 11. Change discipline
 
 改善案は次の3種類へ分ける。
 
@@ -220,11 +320,13 @@ RaceNote authoritative factsを変える場合は、prediction都合だけで意
 
 これはGen0の自然言語比較とは分け、独立version・blind test・forward testで評価する。
 
-## 10. Relationship with EdgeDB
+旧方式の成績が良かったことだけを理由にcurrent Gen0をv1.1-Pへ戻さない。
 
-EdgeDBは有用なhistorical evidence sourceになり得るが、Gen0では旧v1.1-PのようにEdge polarityだけで機械的に軸を入れ替えない。
+## 12. Relationship with EdgeDB
 
-Edgeを使う場合も:
+EdgeDBは有用なhistorical evidence sourceになり得るが、Gen0 core factor setでは旧v1.1-PのようにEdge polarityだけで機械的に軸を入れ替えない。
+
+Edgeを使う別実験では:
 
 - Performance / Valueを区別する
 - CONFIRMED / SUGGESTIVEを区別する
@@ -234,13 +336,13 @@ Edgeを使う場合も:
 
 という既存EdgeDB contractを守る。
 
-## 11. Relationship with external sources
+## 13. Relationship with external sources
 
 Eval、keibailuka、その他外部sourceはRaceNote単独Gen0へ暗黙に混ぜない。
 
 併用研究を行う場合はsource別に記録し、RaceNote-only predictionとの比較が可能な状態を保つ。
 
-## 12. Initial acceptance target
+## 14. Initial acceptance target
 
 Gen0初期段階の成功条件は「高い的中率を宣言できること」ではない。
 
@@ -250,6 +352,8 @@ Gen0初期段階の成功条件は「高い的中率を宣言できること」�
 - 同じRaceNote evidenceから一貫した比較理由を残せる
 - predictionとpost-race解説を混同しない
 - 予想根拠を後から監査できる
+- Google Sheetsへtransaction単位で記帳できる
+- factor usageとpost-race factor reviewをjoinできる
 - 一定R単位で失敗パターンを集約できる
 - 改善前後のversion差を追跡できる
 
