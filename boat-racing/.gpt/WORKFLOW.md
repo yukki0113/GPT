@@ -1,144 +1,292 @@
 # Boat racing GPT workflow
 
-1. README、`.gpt/HANDOFF.md`、対象ツールのdocsを確認。
-2. GitHub作業は開始時に A: Read / Audit、B: Git Change、C: Pure Deterministic Execution、D: Actions-Native Execution の4系統へ分類し、最短かつ再現可能な経路を選ぶ。
-3. 公式サイト側の変更に注意し、既存CSV互換性を維持する。
-4. 改修後は実日付または保存済みfixtureで回帰確認。
-5. キャッシュ、日次成果物、ログ、継続台帳はcommitしない。継続台帳はネイティブGoogleスプレッドシート `競艇note販売運用台帳` を正本とする。
-6. source / test / docs / config / workflow等のUTF-8テキスト変更は、latest main、path存在、現内容を確認してからGitHub direct create/update/deleteでremote commitを作成する。Git変更だけを目的としたIssueは原則使用しない。
-7. Git正本moduleと必要入力をChat側で取得でき、secret・特殊runner・Actions監査証跡が不要で計算量が許容範囲ならGPTローカル実行を優先する。可能な限り source commit / source file SHA256 / input SHA256 / generated_at / output SHA256 を残す。
-8. IssueはSecrets、認証付き外部取得、Actions artifact chain、長時間・大容量処理、runner環境自体が仕様、immutable freeze、監査run、または正本moduleをChatローカルで同一条件実行できない処理に限定する。
+Updated: 2026-09-13
 
-## 2026-09-01以降の前向き予想試行
+## 1. 開始時の確認
 
-日次予想を依頼された場合は、GitHub `main` の以下を開始時に確認する。
+新しいChat / Workスレッド、または会話量上限による引越し後は、過去会話の要約だけを前提にせず latest `main` を確認し、原則として次を読む。
 
 1. `boat-racing/README.md`
 2. `boat-racing/.gpt/CONTEXT.md`
 3. `boat-racing/.gpt/HANDOFF.md`
-4. `boat-racing/.gpt/WORKFLOW.md`
-5. `boat-racing/docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
-6. `boat-racing/docs/競艇AI予想_事前予想仕様書_Ver1.2.1.md`
+4. 本 `WORKFLOW.md`
+5. 対象工程の `docs/` / `src/`
+6. D. Actions-Native Executionを使う場合だけ対象 `.github/workflows/`
 
-`ForwardTrial_Ver0.1` の日次処理順は以下とする。
+司令室・会場選別・仕様改訂研究では、さらに `docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md` を読む。
 
-1. Google Drive `data/racecards` の当該日公式出走表だけを取得する。ユーザーが当該日の公式出走表CSVを添付している場合は、その添付原本を入力候補として優先し、対象日・会場集合・件数・必須列を検証する。
-2. 当該日の `results`、既存結果台帳、外部予想、SNS、展示・直前情報を参照しない。
-3. GitHub `main` の `src/forward_trial_predict.py` を正本moduleとして、`ForwardTrial_Ver0.1` で全対象Rの事前予想を新規生成する。Chat内に別実装を作らない。
-4. 24列事前予想CSVと26列予想根拠明細CSVを同一freeze時点で確定する。予想根拠明細は任意説明資料ではなく日次正本成果物とする。
-5. 正式A・1号艇軸の対象から2連単1点を仕様通り生成する。
-6. 2連単1点専用販売スコアを計算し、21列販売選別CSVの有料・無料・CSVのみを結果参照前に固定する。
-7. 標準ユーザー向け成果物は、事前予想CSV・予想根拠明細CSV・販売選別CSVの3ファイルとする。moduleが生成するmanifestは監査・再現性の補助物であり、この3点には数えない。
-8. 日次原本をGoogle Drive `data` の対応フォルダへ保存する。ユーザーが表示物を一時的に絞った場合でも、正本保存では3CSVの整合性を維持する。
-9. 予想・販売選別の固定後、結果参照前に、出走表CSVの公式 `締切時刻` と `予想確定日時` / `販売選別確定日時` をレース単位で照合する。freeze日時が締切予定日時以後のレースは、予想・買い目・販売順位・掲載区分を変更せず `締切後freeze` として監査記録し、真正forward集計から分離する。この監査では結果ページを参照しない。
-10. 検証用の固定スナップショットが必要な場合はGoogle Drive `analysis` へ保存する。
-11. ここまで完了してから当該日の結果を参照する。
-12. 結果確認後に予想、予想根拠、2連単1点、販売スコア、掲載区分を再生成・変更しない。
-13. 結果測定では全対象と掲載群を分離し、的中率、ROI、1号艇1着率、2艇カバー率、内側1点的中率を記録する。掲載群は有料+無料のみとし、CSVのみは全対象には含めるが掲載成績へは含めない。
-14. 構造KPIは条件付き分母とする。1号艇頭成功時のみ2着候補2艇カバーを評価し、2艇カバー成功時のみ内側1点成功を評価する。前段失敗時は後段を `対象外` とし、分母へ入れない。
+日次の最新対象日、累計成績、記帳済み最終日、直近run ID等は本書へ固定せず、Google Drive / Google Sheets / GitHub Actionsの各正本から再取得する。
 
-日次Google Drive正本:
+## 2. GitHub作業の経路選択
 
-- data Folder ID: `11OtFNwroVbgV8BClzoepTKoa81fQJ-A1`
-- analysis Folder ID: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
+GitHubを使う作業は開始時に次の4系統へ分類する。
 
-## ChatでのGitHub実行経路判定
+- **A. Read / Audit**
+  - repository / file / commit / issue / workflow / artifact / SHA / run状態の確認。
+  - Issue不要。
+- **B. Git Change**
+  - source / test / docs / config / workflow等のUTF-8テキスト変更。
+  - latest main、path存在、現内容を確認してdirect create/update/deleteする。
+  - Git変更だけを目的としたIssueは作らない。
+- **C. Pure Deterministic Execution**
+  - Git正本moduleと必要入力をChat側で取得でき、secret・特殊runner・Actions監査証跡が不要な処理。
+  - CSV/JSON整形、join、集計、scoring、SHA、差分、artifact回収後の検証等は原則C。
+- **D. Actions-Native Execution**
+  - Secrets、認証付き外部取得、Actions artifact chain、長時間・大容量、runner依存、immutable freeze、監査run、またはChatローカルで正本moduleを同一条件実行できない処理。
+  - fully validated requestをIssueで1回だけ起動する。
 
-- まずGitHub `main` の `boat-racing/` と対象workflow / docsを正本として確認する。
-- 読み取り、コード検索、commit / issue / workflow / artifact / SHA / run状態確認は A. Read / Audit とし、ChatからGitHub read/searchで直接行う。Issue不要。
-- source / test / docs / config / workflow等のテキスト更新は B. Git Change とし、direct create/update/deleteを使う。Git更新のためのIssueは作らない。
-- CSV整形、JSON join、集計、scoring、metrics、SHA、差分比較、artifact回収後の検証など、Git正本moduleと必要入力をChat側で取得できる処理は C. Pure Deterministic Execution を第一候補とする。
-- BOAT RACE公式サイトへの取得系処理は、正本PythonをChatローカルで同一条件実行でき、公式入力を取得できる場合はCを優先する。ChatローカルのPython実行環境から公式サイトへ通信できず正本fetcherを再現できない場合は D. Actions-Native Execution としてIssue経由Actionsを使用する。
-- Dで出走表取得を行う場合は `.github/workflows/boatrace_racelist_issue.yml`、直前情報取得は `.github/workflows/boatrace_pre_race_issue.yml`、結果取得・予想照合は `.github/workflows/boatrace_results_chat.yml` を使用する。
-- manual workflowは人手での補助経路として残すが、ChatがDを選択した場合はIssue起動を優先する。
-- Actions artifactから回収した後のJSON/CSV整合性検査やSHA計算は、別Actions runを要求する監査仕様がない限りCとしてChatローカルで行う。
-- 日次成果物はGitへcommitしない。
+「GitHubにmoduleがある」ことだけを理由にDを選ばない。
 
-### Issue request preflight / retry
+### 現行D経路
 
-Issue駆動ActionsはD. Actions-Native Executionに限定する。ルート `.gpt/README.md` と `.gpt/ISSUE_REQUEST_CONTRACTS.md` を共通正本とし、本節は競艇固有contractを補足する。共通規約と競艇固有規約が競合する場合は、データ意味を変えない範囲で共通のfail-closed / preflight / retry原則を満たし、曖昧なままIssueを作成しない。
+BOAT RACE公式取得をChatローカルで正本fetcherと同一条件再現できない場合は、次を使用できる。
 
-Issue作成前は、必ず最新 `main` の共通contract、本ファイル、対象workflowを確認する。Issueを先に作成して不足項目を後から補う運用は行わない。
+- 出走表取得: `.github/workflows/boatrace_racelist_issue.yml`
+- 直前情報取得: `.github/workflows/boatrace_pre_race_issue.yml`
+- 結果取得・予想照合: `.github/workflows/boatrace_results_chat.yml`
 
-`[BOATRACE_RACELIST_REQUEST]` のrequest contractは以下とする。
+manual workflowは人手補助経路として扱う。
 
-- title: `[BOATRACE_RACELIST_REQUEST] <request_id>`
-- `request_id`: `[A-Za-z0-9._-]{1,80}` に完全一致する一意な値。
-- body: Markdown fenceを付けないraw JSON object。
-- required `date`: `YYYYMMDD` 形式で、実在する暦日。
-- required `venues`: 1件以上のarray。各要素はobjectで、`name` / `code` / `day` を必須とする。値は対象workflow / fetcherへ渡す実値を使用し、推測で補完しない。
-- optional `request_interval_seconds`: numeric、`0 <= value <= 60`。省略時は `1.0`。
-- upstream dependency: なし。別workflowの `run_id` / `artifact_name` / `file_id` を推測して付与しない。
-- success marker: Issueコメントの `BOATRACE_RACELIST_RESULT` JSONで `status=success`。
-- downstreamで使用する `run_id` / `artifact_name` は、同RESULTから完全一致で転記する。
-- `status=partial` / `status=failure` は成功扱いにせず、artifactと `validation_report.json`、runのfailed stepを確認して原因分類する。
+**台帳記帳はD経路ではない。** Googleサービスアカウントおよび台帳記帳用Issue / Actions経路は廃止済みであり、起動しない。
 
-直前情報取得をDとして実行する場合のcontractは `boat-racing/docs/直前情報取得_GitHubIssue運用.md` と `.github/workflows/boatrace_pre_race_issue.yml` を正本とする。title prefixは `[BOATRACE_PRE_RACE_REQUEST]`、bodyはraw JSON objectで、`date` / `venue` / `race` / `format` を検証してからIssueを1回だけ作成する。
+### Issue preflight / retry
 
-preflightでは少なくとも title / request_id / JSON parse / 必須キー / 値域をIssue作成前に検証する。upstream artifact chainを使う処理では、さらにupstream run成功、artifact名、SHA、dates / IDs / freeze manifest等を実値照合する。共通 `.gpt/tools/gpt_issue_preflight.py` が当該protocolを直接検証できる環境・版ではそれを使用する。未対応の場合は対象workflow/parserとcontractを読み、同等の事前検証を行う。
+Dを使用する場合は、ルート `.gpt/README.md`、`.gpt/ISSUE_REQUEST_CONTRACTS.md`、対象workflow/parser、競艇固有docsをIssue作成前に確認する。
 
-retry時は以下を必須とする。
+- title / request_id / JSON parse / 必須キー / 値域 / upstream実値を事前検証する。
+- Issueを先に作り、不足項目を後から補わない。
+- `status=partial` / `failure` を成功扱いしない。
+- retryはRESULT / artifact / failed stepを確認し、原因分類後に行う。
+- `REQUEST_INVALID` は本文を修正する。
+- `DOMAIN_VALIDATION_FAILED` は正常なfail-closedとして同一入力を盲目的に再実行しない。
+- implementation / permission / concurrency問題はrequest再送だけで解決しない。
+- 新requestでは旧run ID / artifact名を使い回さない。
 
-1. RESULT、artifact、failed step / logを確認し、共通failure taxonomyに沿って原因を分類する。
-2. `REQUEST_INVALID` はIssue本文を修正してから再作成する。
-3. `EXTERNAL_TRANSIENT` は同一Issueの盲目的rerunではなく、必要なbackoff後に最新 `main` を確認し、新しい `request_id` で新規requestを作成する。
-4. `DOMAIN_VALIDATION_FAILED` は正常なfail-closedとして扱い、同一入力を盲目的にretryしない。
-5. `IMPLEMENTATION_ERROR` / `PERMISSION_ERROR` / `CONCURRENCY_CONFLICT` はrequest再送だけで解決しようとせず、実装・権限・競合原因を修正する。
-6. retryで旧requestの `run_id` / `artifact_name` 等を使い回さず、新しいRESULTが発生した場合はその値へ完全一致で更新する。
+## 3. 正本
 
-## Google Sheets台帳正本の更新・取得
+### GitHub
 
-- 継続台帳の正本はネイティブGoogleスプレッドシート `競艇note販売運用台帳` とする。
+Python、tests、README、予想仕様、運用文書、workflowは `yukki0113/GPT` `main` を正本とする。
+
+### Google Drive data
+
+Folder ID: `11OtFNwroVbgV8BClzoepTKoa81fQJ-A1`
+
+日次原本:
+
+- `racecards`
+- `predictions`
+- `prediction-rationales`
+- `sales-selection`
+- `results`
+
+日次成果物、ログ、HTMLキャッシュをGitへcommitしない。
+
+### Google Drive analysis
+
+Folder ID: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
+
+バックテスト、結果参照前固定、比較資料、仕様改訂判断を保存する。
+
+### Google Sheets ledger
+
+ネイティブGoogleスプレッドシート `競艇note販売運用台帳` を継続台帳の正本とする。
+
 - Spreadsheet ID: `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`
-- URL: `https://docs.google.com/spreadsheets/d/1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM/edit`
-- タイムゾーンは `Asia/Tokyo` とする。
-- Chat / Workで台帳を解析する場合はGoogle Sheets API / Google Drive Connectorで正本を直接参照する。
-- 更新時は同一ネイティブGoogleスプレッドシートへ直接反映し、必要なキー照合・既存データ不変確認・数式エラー確認を行う。
-- `販売記事台帳` の `対象日` は、現在日付や結果取込の実行日から生成しない。記事ID `YYYYMMDD`、対象データID、`販売掲載明細` の日付を照合して確定し、これらが不一致なら自動補正せず不整合として停止・報告する。
-- `販売記事台帳` の `予想確定日時` / `販売選別確定日時` は事前freeze原本の日時を保持し、結果取込日時で上書きしない。集約行へ転記する場合は当該日の予想・販売選別原本から取得し、複数の異なるfreeze値がある場合は現在時刻で補完せず不整合として報告する。
-- 日跨ぎ後に結果取込・台帳記帳を実行しても、システムの現在日付・現在時刻は `対象日` / `予想確定日時` / `販売選別確定日時` の生成元に使用しない。処理実行日時は変更履歴・取込ログ・監査記録にのみ使用する。
-- ForwardTrialの `掲載対象投資額` / `掲載対象払戻額` / `掲載対象収支` / `掲載対象回収率` および販売記事台帳の全掲載成績は、有料+無料のみを対象とする。CSVのみはForwardTrial全対象成績には含めるが掲載成績には含めない。
-- ForwardTrialの構造KPIは条件付き分母で記録し、失敗構造は `的中` / `1号艇頭失敗` / `2着候補2艇外` / `内側1点選択ミス` / `返還` / `対象外` を使用する。1号艇頭失敗時の2着候補カバー・内側1点、2着候補2艇外時の内側1点は `対象外` とする。
-- 出走表CSVの公式 `締切時刻` とfreeze日時を照合し、締切後freezeのレースはデータを削除・改変せず監査注記を残し、真正forward集計から分離する。
-- ForwardTrial結果取込後は、少なくとも `記事ID→対象日`、`明細日付→対象日`、`事前freeze→販売記事台帳freeze`、`有料+無料→全掲載成績`、`全対象→ForwardTrial集計`、構造KPIの条件付き分母を相互再集計して一致確認してから完了とする。
-- Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` と GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットとして扱い、通常運用では参照・更新しない。
-- `.gpt/tools/gpt_git_binary_tool.py`、`[gpt-git-binary-read]`、`[gpt-git-binary-update]` はGit管理バイナリ用の共通補助経路として残すが、この台帳の同期には使用しない。
-- Googleスプレッドシート正本へアクセスできない場合は、旧Excelを最新と推定せず正本取得不能として扱う。
-- 日次結果取込では、Google Sheetsへ書き込む前に `boat-racing/src/ledger_daily_result_import.py` で日次原本からJSON更新計画を生成する。対象日・freeze・掲載/CSVのみ/全対象・条件付き構造KPI・失敗構造の検証に失敗した場合は書き込まない。
-- 実装変更時は `python -m unittest discover -s boat-racing/tests -v` を実行し、日跨ぎ対象日・日付不一致停止・freeze保持・掲載分離・条件付きKPI・既存日回帰を確認する。
+- timezone: `Asia/Tokyo`
 
-## ForwardTrial専用分析台帳
+Drive旧Excel版およびGitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットであり、通常運用へフォールバックしない。
 
-- 正本Googleスプレッドシート内の `FT2_` 13タブを既存台帳から独立して運用する。既存タブの削除・列変更・名称変更・計算式変更は行わない。
-- 日次原本はDriveの `racecards` / `predictions` / `sales-selection` / `results` を使用し、予想根拠明細は任意の監査資料とする。
-- 取込前に `forward_trial_analysis_import.py` で日付、対象全R件数、会場集合、キー一意性、仕様版、freeze、結果キー一致を検証する。不成立時はシートへ書き込まない。
-- 主キーは `日付×会場×R×仕様版` とし、同一キーは追記せずupsertする。
-- `Raw` は仕様上のForwardTrial対象、`Genuine` はRawかつ締切前freeze、`Published` はGenuineかつ有料または無料とする。CSVのみはPublishedに含めない。
-- freeze日時は日本時間で公式締切予定日時と比較し、締切後または同時刻は `CONTAMINATED` とする。該当行は削除せず監査タブへ残す。
-- 初回再集計（2026-09-01〜09-08）の固定受入値は、全336R、Raw 81R・29的中・投資8,100円・回収7,910円、Genuine 78R・29的中・投資7,800円・回収7,910円、Published 60R・23的中・投資6,000円・回収6,140円、汚染3Rとする。
-- 日次処理は、原本preflight、正規化、source/date/key/freeze監査、全R明細upsert、開催メタ、Freeze監査、日別、会場別、会場日目別、グレード別、判定構造別、販売選別、Score、ダッシュボード、既存販売台帳クロスチェック、回帰値検証の順とする。
-- `FT2_日別集計`、`FT2_会場別集計`、`FT2_会場日目別集計`、`FT2_グレード別集計`、`FT2_判定構造別集計`、`FT2_販売選別検証`、`FT2_Score検証`、`FT2_Freeze監査`、`FT2_ダッシュボード` は **Atomic Aggregate Set** とする。全R明細更新後は9タブを同一処理で、全GENUINE明細から上書き再生成する。一部タブだけの更新・前日値への加算は禁止する。
-- `FT2_集計監査` に各9タブの deterministic `aggregate_generation_id`、source raw/genuine/contaminated/exacta件数、max対象日、出力行数、検証状態を記録する。9行のgeneration IDとsource件数が一致しない場合は `集計不整合` とし、完了にしない。
-- 集計タブは前日値への加算を禁止し、毎回 `FT2_全R明細` の非空 `FT2_ID` を正本として全再生成する。物理最終行や空き行を件数判定に使わない。
-- `FT2_取込管理.取込状態` は `取込中` → `明細取込済` → `集計再生成中` と遷移し、Atomic Aggregate Set、集計監査、既存販売台帳クロスチェック、受入値検証がすべて成功した場合だけ `完了` とする。1タブでも世代・母数・書込が不一致なら `集計不整合`、実行例外は `エラー`、grade未解決等は `要確認` とする。
-- 再実行はstable key upsertと全再生成によりidempotentとし、非空FT2_ID件数、販売明細件数、投資額、回収額を増加させない。
-- 開催グレードは `fetch_boatrace_event_meta.py` でBOAT RACE公式日別レース一覧から取得し、日次Freeze資産として開催名、グレード大分類、source URLを保存する。推測は禁止し、未取得は `未分類` のまま `要確認` とする。G1/SGも除外せず分析軸へ含める。
-- 完了前に当日の日別行、当日全RのFreeze監査、ダッシュボード累計、会場別合計、販売区分合計、掲載=有料+無料、既存販売台帳重複指標、数式エラーなしを機械検証する。
-- 予想ルール・販売ルールの変更判断はこの実装から切り離し、分析台帳は集計・監査に限定する。
+## 4. 2026-09-01以降のForwardTrial
 
-## CSV原本保存・月次ZIP化
+現行Controlは `ForwardTrial_Ver0.1`。
 
-- 日次CSV原本の保存漏れ監査は、Google Driveを直接参照して行う。GitHub main にCSVが存在しないことを未生成の根拠にしない。
-- 原本は会話添付、ChatGPT Library、参照可能な日次成果物の順に探索し、内容・列・文字コード・ファイル名を変更せずに保存する。見つからないファイルは再生成しない。
-- アップロード前に既存同名・内容を確認し、アップロード後にDrive上の存在を再確認する。同名異内容は上書きせず競合として扱う。
-- 月次ZIP化と元CSV削除は明示依頼時のみ行う。ZIPテスト、収録件数、Drive上の存在を確認できた後に、収録済み元CSVだけを削除する。
-- 対象フォルダID、探索順、命名、再開時の詳細は .gpt/HANDOFF.md を正本とする。
+開始時に読む仕様:
 
-## Chat起動の日次台帳記帳
+1. `docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
+2. `docs/競艇AI予想_事前予想仕様書_Ver1.2.1.md`
 
-- 日次台帳記帳は `[BOATRACE_LEDGER_IMPORT] <request_id>` Issueと `.github/workflows/boatrace_ledger_import_issue.yml` を使うD. Actions-Native Executionである。理由はGoogle service-account secret、Drive immutable Freeze、Sheets write、run/artifact監査証跡を必要とするため。
-- Issue本文はraw JSONで `date`、`source_folder_id`、正本 `spreadsheet_id`、複数候補がある場合の4 `file_ids` を持つ。workflowが一意解決できない原本は推測せずfail-closedとする。
-- workflowは `forward_trial_analysis_import.py` → `forward_trial_chat_ledger.py` → `run_forward_trial_chat_import.py` を実行し、Chat内に別の転記・集計ロジックを作らない。
-- 対象日はwrite/read-back中 `集計再生成中` とし、Atomic Aggregate Set 9タブの同一generation/source、FT2_ID重複0、既存販売台帳mirror、formula error 0が確認できた場合だけ `完了` とする。
-- 新スレッドでは会話履歴の途中状態を使わず、対象日のDrive 4資産、`FT2_取込管理`、`FT2_集計監査`、`FT2_全R明細`、Issue RESULT/artifactを読み直す。通常の途中返信はせず、実ブロッカーまたは完了時だけ報告する。
-- 成功条件はIssueコメントの `<!-- BOATRACE_LEDGER_IMPORT_RESULT -->` JSONで `status=success`。artifact `boatrace-ledger-result-<run_id>` は90日保持する。failureはblind rerunせず、failure_class / error_code / failed stepを確認する。
+前者を優先し、後者は基礎・履歴仕様とする。
+
+### 情報遮断
+
+事前予想・販売選別のfreeze前に、当該日の以下を参照しない。
+
+- results
+- 確定着順 / 払戻 / オッズ
+- 展示 / 直前気象
+- 外部予想 / SNS
+- 結果を示唆する検索結果・結果台帳
+
+結果参照後にA/B/C、軸、相手、買い目、販売Score、販売順位、掲載区分を再生成・変更しない。
+
+### 日次予想
+
+公式出走表CSVを取得済みなら、予想はCとして `src/forward_trial_predict.py` を使用する。Chat内に別ロジックを再実装しない。
+
+結果参照前に同一freezeで次の3CSVを固定する。
+
+1. 24列 事前予想CSV
+2. 26列 予想根拠明細CSV（全R×6艇）
+3. 21列 2連単1点販売選別CSV
+
+moduleのmanifestは監査補助物であり、通常のユーザー向け3成果物には数えない。
+
+予想・販売freeze後、結果参照前に公式 `締切時刻` とfreeze日時をレース単位で比較する。freezeが締切予定日時以後なら予想を変更せず `CONTAMINATED` として真正forward集計から分離する。
+
+### Control / Shadow
+
+単日の結果でControlを途中変更しない。改善候補は別version / Shadowとして結果参照前に定義・freezeし、Controlを上書きしない。
+
+会場選別、Shadow-S、PairGate、OpponentScore研究の運用原則は `docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md` を参照する。
+
+## 5. 会場選別
+
+会場選別は購入レース決定ではなく、当日どの会場の全RをForwardTrialへ通すかを決める探索母集団設計とする。
+
+- 全R構造 / 2連単適格 / 販売選別を分けて評価する。
+- 新規・未検証会場を適度に探索する。
+- 開催日目やSG/G1を機械的に除外しない。
+- 会場特性は補助・タイブレークに限定する。
+- 締切時刻を会場選別には使わない。
+- 少数標本・単日結果だけで昇格/降格しない。
+- 無料枠不足を理由に弱いレースを強制採用せず、必要なら探索母集団を広げる。
+
+台帳が直近日まで完全更新されていない場合は、`FT2_取込管理` と `FT2_集計監査` で確認できる最新の真正完了世代までを根拠とし、未完了日の成績を手計算で正式評価へ混ぜない。
+
+## 6. 結果取得
+
+`src/fetch_boatrace_results.py` を中心に、freeze済み事前予想と公式結果を照合する。
+
+- 結果取得工程は結果CSV・取得ログの生成と監査まで。
+- Google Sheets台帳記帳は別工程。
+- 対象日だけが示され、予想CSVがスレッドにない場合はDrive `predictions` のfreeze済み正本を検索する。
+- 対象日・会場集合・仕様版で一意に決められなければ推測しない。
+- 結果取得のために事前予想を再生成しない。
+
+Dを使った場合はrequest ID、Issue、run、artifact、head SHA、input SHA、validationを追跡可能にする。
+
+## 7. Google Sheets台帳の基本不変条件
+
+- `対象日` を現在日付や処理実行日から生成しない。
+- 予想確定日時 / 販売選別確定日時を結果取込時刻で上書きしない。
+- 日跨ぎ後でもcurrent datetimeを対象日やfreezeの生成元に使わない。
+- Published / 掲載成績は有料+無料のみ。CSVのみを混ぜない。
+- 構造KPIは条件付き分母とする。
+- 失敗構造は `的中` / `1号艇頭失敗` / `2着候補2艇外` / `内側1点選択ミス` / `返還` / `対象外`。
+- 締切後freeze行は削除せず監査に残し、Genuineから分離する。
+- Google Sheetsへ書込む前に日次原本・stable key・freeze・source整合性を検証する。
+
+## 8. ForwardTrial専用分析台帳
+
+`FT2_全R明細` を派生集計の唯一の正本とする。物理最終行ではなく非空 `FT2_ID` をデータ件数として扱う。
+
+主キーは `日付×会場×R×仕様版`。同一キーは追記せずupsertする。
+
+集計層:
+
+- Raw: ForwardTrial対象
+- Genuine: Rawかつ締切前freeze
+- Published: Genuineかつ有料または無料
+
+### Atomic Aggregate Set
+
+次の9タブは1世代として扱う。
+
+1. `FT2_日別集計`
+2. `FT2_会場別集計`
+3. `FT2_会場日目別集計`
+4. `FT2_グレード別集計`
+5. `FT2_判定構造別集計`
+6. `FT2_販売選別検証`
+7. `FT2_Score検証`
+8. `FT2_Freeze監査`
+9. `FT2_ダッシュボード`
+
+全R明細更新後は9タブを全GENUINE明細から上書き全再生成する。前日値への加算、一部タブだけの通常更新は禁止する。
+
+`FT2_集計監査` に各9タブの deterministic `aggregate_generation_id`、source raw/genuine/contaminated/exacta件数、max対象日、出力行数、検証状態を記録する。
+
+9タブのgeneration / source件数が一致しない場合は `集計不整合` とする。
+
+開催グレードはBOAT RACE公式日別レース一覧からFreezeし、未取得は推測せず `未分類 + 要確認`。G1/SGは除外せず分析軸にする。
+
+## 9. 日次台帳記帳の標準経路
+
+日次台帳記帳は結果取得とは別の完結工程とし、**Work / 接続済みGoogle Drive・Google Sheetsの直結経路**を標準とする。
+
+Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、旧台帳import Issue / Actions、旧 `run_forward_trial_chat_import.py` は使用しない。
+
+開始時に読む:
+
+- `docs/ForwardTrial_Chat日次台帳記帳運用.md`
+- `src/forward_trial_analysis_import.py`
+- `src/forward_trial_chat_ledger.py`
+
+標準手順:
+
+1. Driveの種別別フォルダから対象日のracecard / prediction / sales-selection / resultを特定し、4 file IDを固定する。
+2. 対象日、会場集合、仕様版、キー、freeze、sourceをfail-closedで検証する。
+3. `forward_trial_analysis_import.py` で正規化・真正性・grade/freeze監査用データを生成する。
+4. `forward_trial_chat_ledger.py` で既存Sheets値と合わせ、stable-key upsert、Atomic Aggregate Set全再生成、既存販売台帳mirrorの決定論的書込計画を作る。
+5. 接続済みGoogle Sheetsへ直接writeする。本体write中は `集計再生成中`。
+6. `FT2_全R明細`、Atomic Aggregate Set、`FT2_集計監査`、既存販売台帳mirrorをread-backする。
+7. FT2_ID重複0、9タブ同一generation/source、掲載=有料+無料、grade整合、formula error 0を確認する。
+8. 全条件成立後にのみ `FT2_取込管理=完了` とする。
+
+1タブでも世代・母数・書込に不一致があれば `集計不整合`、grade未解決等は `要確認`、例外は `エラー` とする。
+
+再実行はstable-key upsertと全再生成でidempotentとし、件数・投資・回収を二重加算しない。
+
+明細が存在する、日別集計に当日がある、`FT2_取込管理` に文字列 `完了` がある、という単独条件だけで完了扱いしない。
+
+## 10. CSV原本保存・月次圧縮
+
+日次CSV原本保存は生成・台帳とは別の保全工程とする。
+
+- 会話添付 → ChatGPT Library → 参照可能な日次成果物の順に探索する。
+- 見つからない原本を再生成しない。
+- Driveの対応種別へ内容を変更せず保存する。
+- 同名・同内容は再アップロードしない。
+- 同名異内容は上書きせず競合として扱う。
+- 月次ZIP化と元CSV削除はユーザーの明示依頼時だけ行う。
+- ZIPテスト、収録件数、Drive上の存在を確認してから収録済み元CSVだけを削除する。
+
+詳細は `.gpt/HANDOFF.md` を参照する。
+
+## 11. 改修時の回帰確認
+
+コード変更時は対象moduleのtestsに加え、必要に応じて次を実行する。
+
+```bash
+python -m unittest discover -s boat-racing/tests -v
+```
+
+最低限、次を回帰確認する。
+
+- 対象日・日跨ぎ
+- freeze保持
+- source/date/key不一致fail-closed
+- 掲載とCSVのみの分離
+- 条件付き構造KPI
+- stable-key idempotency
+- Atomic Aggregate Set同一generation
+- 既存日不変
+
+文書だけの変更ではPythonテスト実行は必須としないが、記載path・module・workflowの存在と、README / CONTEXT / HANDOFF / WORKFLOW間の矛盾がないことを確認する。
+
+## 12. スレッド引越し時の完了基準
+
+新しいスレッドが会話履歴なしでも、次を正本から復元できる状態を維持する。
+
+- current prediction spec
+- Git / Drive / Sheetsのsource of truth
+- 工程境界
+- 使用module / workflow
+- 日次成果物のfreeze原則
+- 台帳の完了判定
+- 会場選別の思想
+- Control / Shadowの分離
+- 未完了日をどの正本から再判定するか
+
+新スレッドで過去会話がないと再開できない情報が判明した場合は、会話メモリだけに残さず `HANDOFF.md` または対象docsへ戻す。
