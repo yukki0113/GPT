@@ -119,6 +119,23 @@ Updated: 2026-09-13
 
 `forward_trial_analysis_import.py` でDrive正本を結合し、`FT2_` 系を全再生成・監査する。部分加算ではなくAtomic Aggregate Setを同一世代で更新する。
 
+## 6A. 出走表取得スレッドの標準再開手順
+
+出走表取得専用スレッドへ引っ越した場合は、会話履歴ではなく次の手順で復元する。
+
+1. latest `main` と本HANDOFFを確認する。
+2. `docs/出走表取得依頼_定型作業.txt`、`docs/README_出走表取得.md`、`src/fetch_boatrace_racelist_with_meta.py` を確認する。
+3. ユーザー指定の日付・会場名・2桁会場CD・開催日目を確定する。表の `位置づけ` は取得requestへ混入させない。
+4. C/Dを判定する。ChatローカルからBOAT RACE公式サイトへ正本fetcherと同一条件で通信できない場合はDとする。
+5. Dの場合は `.github/workflows/boatrace_racelist_issue.yml` のrequest parserを確認し、`[BOATRACE_RACELIST_REQUEST] <request_id>` Issueを1回だけ発行する。
+6. Issueコメントの `BOATRACE_RACELIST_RESULT`、workflow run、artifactをAで回収する。
+7. 正常完了条件として、72R等の期待R数一致、`input_rows = 会場数×12×6`、21列、`開催グレード` / `開催名` 非空、`レース名` 不在、`レース種別` 非空、`errors=[]`、run successを確認する。
+8. artifact ZIPは内部作業用に解凍し、通常のユーザー向け完成物は `YYYYMMDD_公式出走表_<会場...>.csv` の21列予想入力CSV単体とする。
+9. 原本CSV、取得状況CSV、ログ、validation report、ZIP自体は、障害解析・監査を求められた場合だけ提示する。
+10. ChatGPT Libraryへ保存操作を実行・確認できない環境では「Library保存済み」と報告せず、このスレッドからCSV単体を取得できる状態にする。
+
+未完了requestの状態は会話中の「待機中」「実行中」を正本とせず、Issue / Actions / artifactから再判定する。日次の直近run IDや対象日をHANDOFFへ固定しない。
+
 ## 7. 結果取得スレッドの標準再開手順
 
 結果取得専用スレッドへ引っ越した場合は、会話履歴ではなく次の手順で復元する。
