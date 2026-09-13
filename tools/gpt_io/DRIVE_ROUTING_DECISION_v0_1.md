@@ -8,7 +8,7 @@ External I/O Bridge 001--003 introduced a common package, Git bridge compatibili
 
 For v0.1, ChatGPT/Work uses the connected native Google Drive connector as the production-standard route for Drive files. Google Docs, Sheets, and Slides use their native tools. GitHub-tracked content continues to use the Git Issue/Actions bridge or direct authenticated Git operations.
 
-The Actions Drive backend in `gdrive/` is retained but is **DEFERRED**, **NOT PRODUCTION-ACCEPTED**, and **NOT THE STANDARD ROUTE**. Its Issue workflow is disabled by default; it runs only when repository variable `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` is exactly `true`.
+The Actions Drive backend in `gdrive/` is **DISCONTINUED FOR OPERATION**, **NOT PRODUCTION-ACCEPTED**, and **NOT THE STANDARD ROUTE**. Do not enable its Issue workflow and do not configure a Google service-account Secret.
 
 ## Rationale and security
 
@@ -22,7 +22,7 @@ The connector does not decide whether GitHub, Drive, or a Google native file is 
 
 ## Future reopening
 
-Reopen Actions-to-Drive work only for a concrete unattended or high-volume need. Prefer GitHub Actions OIDC, Google Workload Identity Federation, and short-lived Service Account impersonation. Do not make long-lived JSON keys the default.
+No reopening is planned. Any future reconsideration requires an explicit new decision; do not create or store long-lived Google service-account keys for this repository.
 
 ## Compatibility
 
