@@ -1,6 +1,6 @@
 # Eval表活用
 
-中央競馬のEval表取得・OCR・検証・JRDB事前情報付与を支援するPythonツール群です。
+中央競馬のEval表取得・OCR・検証・JRDB事前情報付与、Phase2研究、結果取込を支援するツール群です。
 
 ## Source of truth
 
@@ -14,6 +14,32 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 - Chat / WorkからはGoogle Drive / Google Sheetsのnative操作で直接参照・更新する。
 - 旧Google Drive Excel版およびGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットであり、最新台帳として使用しない。
 
+## 新しいChat / Workスレッドのbootstrap
+
+会話履歴へ依存せず再開できるよう、開始時は次の順で確認します。
+
+1. repository root `.gpt/GITHUB_OPERATION_POLICY.md`
+2. 本 `README.md`
+3. `.gpt/CONTEXT.md`
+4. `.gpt/WORKFLOW.md`
+5. `.gpt/HANDOFF.md`
+6. 対象処理の `docs/` と実source/tests/workflow
+
+`.gpt/HANDOFF.md` に、プロジェクトの思想、weekly画像→完成CSVのrelease gate、主要module map、Phase2のリーケージ境界、スレッド引っ越し時の最小引継ぎをまとめています。
+
+## Core principles
+
+- **PACI join success != OCR correctness.** PACIはidentity/key整合を検証するがEval OCR値の正しさは保証しない。
+- 正式完成条件は `OCR validation == ok AND PACI join validation == success`。
+- 順位色は画像凡例の固定順 `red -> blue -> orange -> green -> yellow` を正本とし、OCR数値から色順位を推定しない。
+- 0905で確認した `2` / `9` 先頭桁誤読等は独立再読し、根拠が弱ければmanual reviewでfail-closedにする。
+- OCR中間CSVは `date,venue,race_no,horse_no,eval` の5列。馬名文字列はOCRせず、JRDB PACIからcanonical keyで付与する。
+- Phase2の事前特徴と結果時点データを分離し、current-race SED・確定結果等をForward事前特徴へ混入させない。
+- JRDB固定長BYTE位置はJRDB common parser/adapterを正本とし、Eval側へ局所複製しない。
+- Discoveryで見つかった特徴を同一標本のまま正式購入条件へ昇格させない。
+
+詳細は `.gpt/HANDOFF.md`、`docs/OCR_Validation_Contract.md`、各Phase2 contractを参照してください。
+
 ## GitHub運用ルーティング — 2026-09-10
 
 Issue / GitHub Actionsを一律の標準経路にはしません。処理開始時に「GitHub Actions環境が本当に必要か」を判定し、次の4系統から選びます。
@@ -22,22 +48,44 @@ Issue / GitHub Actionsを一律の標準経路にはしません。処理開始�
 |---|---|---|
 | A: Read / Audit | GitHub上の状態確認 | main、file、commit、Issue RESULT、run、artifact metadata、SHA、diff確認 |
 | B: Git Change | UTF-8テキスト変更 | Python、tests、README、`.gpt/`、workflowのdirect update/create/delete |
-| C: Pure Deterministic Execution | Secrets等が不要な既存ロジックの直接実行 | Chatへ渡されたEval画像のOCR/validation |
+| C: Pure Deterministic Execution | Secrets等が不要な既存ロジックの直接実行 | Chatへ渡されたEval画像のOCR/validation、固定入力の変換・監査 |
 | D: Actions-Native Execution | Secrets、artifact chain、長時間/大容量、immutable freeze、監査run等 | JRDB PACI認証取得+enrichment、取得時点をartifact固定するEval media collection |
 
 A/B/Cで完結する処理のためだけにIssueを作成しません。DでIssue/Actionsを使用するときだけ、ルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を適用します。
 
 ## Current tools
 
+### Weekly / OCR
+
 - `src/master_eval_media_collector.py` — X上のEval表メディア収集
 - `src/extract_eval_table.py` — Eval表画像を5列CSVへ変換するOCR親CLI
-- `src/eval_ocr/` — 表構造検出・会場OCR・数値OCR・色検証・CSV出力
+- `src/eval_ocr/layout_detector.py` — 会場/Rパネル・表構造検出
+- `src/eval_ocr/japanese_ocr.py` — 会場ヘッダーOCR
+- `src/eval_ocr/numeric_ocr.py` — Eval数値OCR、digit repair、独立再読、cell audit
+- `src/eval_ocr/color_detector.py` — Eval順位色分類
+- `src/eval_ocr/pipeline.py` — OCR/color統合と色矛盾による再読
+- `src/eval_ocr/validator.py` — 構造・値域・キー・色順位・manual reviewのrelease gate
 - `src/fetch_jra_daily_results.py` — JRA日次結果・払戻取得
 - `src/validate_jra_results.py` — JRA結果CSVの機械検証
-- `../jrdb/src/enrich_eval_csv_with_paci.py` — Eval OCR 5列CSVへJRDB PACI事前情報を付与
-- `../jrdb/src/export_jrdb_eval_horse_results.py` — JRDB SED Raw → 「全馬データ」結果用1頭1行CSV + audit JSON
 
-各ツールの詳細は `docs/` を参照してください。
+### JRDB integration
+
+- `../jrdb/src/fetch_jrdb_paci.py` — 認証付きPACI取得
+- `../jrdb/src/enrich_eval_csv_with_paci.py` — Eval OCR 5列CSVへJRDB PACI事前情報を付与
+- `../jrdb/src/export_jrdb_eval_horse_results.py` — JRDB SED Raw → `全馬データ` 結果用1頭1行CSV + audit JSON
+
+### Phase2 pre-race research
+
+- `src/build_phase2_jrdb_kyi_features.py` — KYI事前特徴
+- `src/build_phase2_jrdb_training_features.py` — CHA/CYB調教・仕上特徴
+- `src/build_phase2_jrdb_previous_features.py` — KYI previous result key -> PACI ZED exact-link前走特徴
+- `src/build_phase2_jrdb_feature_bundle.py` — 上記3componentを1頭1行へ統合
+
+### Post-race / research backfill
+
+- `src/backfill_phase2_sed.py` — Phase2へSED結果時点情報をbackfill
+
+各ツールの詳細は `docs/`、責務一覧は `.gpt/HANDOFF.md` を参照してください。
 
 ## このスレッドの標準: Eval画像 -> 完成CSV
 
@@ -45,6 +93,7 @@ A/B/Cで完結する処理のためだけにIssueを作成しません。DでIss
 
 ```text
 ユーザー画像
+  -> A: latest main / contract確認
   -> C: Chat/ローカルでGitHub mainのEval OCRを実行
   -> OCR validation PASS
   -> 5列 date,venue,race_no,horse_no,eval
@@ -66,7 +115,7 @@ OCRは `src/extract_eval_table.py` を親CLIとして行います。
 - 会場名ヘッダーは日本語OCR
 - Evalは数値専用OCR
 - 色付き上位セル・同色tie・固定色順位とEval大小をvalidation
-- date + venue + race_no + horse_no の重複、1〜12R構造、Eval 0〜100等を検証
+- `date + venue + race_no + horse_no` の重複、1〜12R構造、Eval 0〜100等を検証
 - OCR auditで再読候補やmanual review要否を確認
 
 通常出力CSVの契約は5列です。
@@ -129,6 +178,20 @@ X投稿から新規取得し、取得時点のmetadata/media/validationを監査
 - immutable OCR audit runを残す必要がある
 - 多数画像・長時間処理でChat/ローカル実行に不向き
 - GitHub runner上のTesseract環境固定が再現性要件
+
+`.github/workflows/eval_image_enrich_chat.yml` / `[EVAL_IMAGE_ENRICH_REQUEST]` は旧combined compatibility経路です。現在のChat直接画像運用の標準は **C: direct OCR + D: PACI enrichment** であり、画像Base64 chunkをIssueへ搬送するcombined workflowを通常使用しません。
+
+## Phase2 research boundary
+
+Phase2事前研究ではPACI由来の開催前情報を利用します。
+
+- KYI: 当日リスク・適性・休養・調教判断等
+- CHA/CYB: 本追切・調教分析・仕上過程
+- ZED: KYIが明示する前走result keyをexact-linkした既走履歴
+
+current-race SED、確定着順・人気・オッズ・払戻等は事前特徴に使用しません。結果backfillは別レイヤーです。
+
+具体的なschema / availability / semantic contractは `docs/Eval_Phase2_JRDB_*_v0_1.md` を正本とします。研究条件やPWA analysis codeの定義は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` 等の契約へ置き、READMEへ複製して二重管理しません。
 
 ## JRA結果取得
 
