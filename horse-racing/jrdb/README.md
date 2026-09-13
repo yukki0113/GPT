@@ -34,6 +34,7 @@
 | EdgeDB STANDARD activation | `docs/JRDB_Edge_v0_2_STANDARD_Activation_Audit_20260911.md` |
 | RaceNoteコメント表示 | `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` |
 | 開催後Analysis/Mart更新 | `docs/README_post_race_analysis_mart_refresh.md` |
+| PWA / 条件別集計 / Newspaper表示運用 | `pwa/.gpt/HANDOFF.md` + `pwa/README.md` |
 
 ## Source of truth
 
@@ -219,6 +220,8 @@ PACI + Analysis history
 joinの中心は `race_key / race_horse_key / horse_no`。Newspaper側でEdge条件を再判定しません。
 
 PWA / Newspaperの都合でForecast policyを変更しません。まずfrozen prediction contractを作り、その出力をconsumerが表示します。
+
+PWAの表示・同期・配布・スレッド再開は `pwa/.gpt/HANDOFF.md` を入口とし、Newspaperの日次生成・source mergeは `newspaper/.gpt/HANDOFF.md` を入口とします。
 
 ### Eval / training research
 
