@@ -14,11 +14,16 @@ Last reviewed: 2026-09-13
 4. `horse-racing/eval/.gpt/WORKFLOW.md`
 5. 本 `HANDOFF.md`
 6. OCRを扱う場合 `docs/OCR_Validation_Contract.md`
-7. Phase2研究を扱う場合、該当する `docs/Eval_Phase2_JRDB_*_v0_1.md`
+7. Phase2研究を扱う場合:
+   - `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`
+   - `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`
+   - `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
 8. PWA分析コメントを扱う場合 `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 9. 結果取込を扱う場合 `docs/README_jrdb_horse_results_import.md`
 
 その後、必ずlatest `main` の対象source / tests / workflowを実物確認する。READMEだけを見てsourceを推測しない。
+
+version付きcontractとsource `VERSION` / output schemaが一致しない場合は、古いdocumentへsourceを合わせず、実装・tests・docsを監査してcurrent contractを確定する。
 
 ## 2. プロジェクトの中心思想
 
@@ -181,13 +186,13 @@ PACI enrichmentはAnalysis Lite / Core SQLite / current-race SEDを依存先に�
 
 ### 5.3 Phase2 pre-race research
 
-| module | responsibility |
-|---|---|
-| `src/build_phase2_jrdb_kyi_features.py` | KYI事前特徴。休養、脚質、調教指数/矢印、適性、枠、入厩、事前馬体重等 |
-| `src/build_phase2_jrdb_training_features.py` | KYI identity setへCHA/CYBをLEFT JOIN。追切・仕上・調教量等 |
-| `src/build_phase2_jrdb_previous_features.py` | KYI前走result key -> PACI ZED exact-link。距離/芝ダ/前走馬場等 |
-| `src/build_phase2_jrdb_feature_bundle.py` | 上記3componentをrace_horse_keyで1対1統合しaudit |
-| `tests/test_build_phase2_jrdb_*` | component/bundle契約の回帰test |
+| module | responsibility | current contract |
+|---|---|---|
+| `src/build_phase2_jrdb_kyi_features.py` | KYI事前特徴。休養、脚質、調教/厩舎判断、適性、予想ペース、展開index/rank、スタート関連、入厩、事前馬体重等 | `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md` |
+| `src/build_phase2_jrdb_training_features.py` | KYI identity setへCHA/CYBをLEFT JOIN。追切・仕上・調教量等 | `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md` |
+| `src/build_phase2_jrdb_previous_features.py` | KYI前走result key -> PACI ZED exact-link。距離/芝ダ/前走馬場等 | `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md` |
+| `src/build_phase2_jrdb_feature_bundle.py` | 上記3componentをrace_horse_keyで1対1統合しaudit | component contractsを合成 |
+| `tests/test_build_phase2_jrdb_*` | component/bundle契約の回帰test | tests |
 
 KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は別概念。片方へ統合しない。
 
@@ -206,7 +211,7 @@ KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は別�
 
 - `docs/OCR_Validation_Contract.md` — OCR安全性・固定色・2/9再読・release gate
 - `docs/README_0905_OCR_FIX.md` — 2026-09-05障害の要約
-- `docs/Eval_Phase2_JRDB_KYI_Features_v0_1.md` — KYI事前特徴
+- `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md` — KYI事前特徴の現行contract
 - `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md` — CHA/CYB事前特徴
 - `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md` — 前走exact-link特徴
 - `docs/Phase2_SED_Backfill_20260908.md` — 結果時点SED backfill監査
