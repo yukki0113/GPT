@@ -10,6 +10,7 @@
   "forecast_schema": "schema/racenote_forecast_gen0_schema_v0_1.json",
   "pre_result_guard": "src/racenote_forecast_gen0_guard.py",
   "sample_manifest_builder": "src/build_racenote_gen0_sample_manifest.py",
+  "queue_state_helper": "src/racenote_forecast_gen0_queue.py",
   "sample_contract": "docs/racenote/FORECAST_GEN0_SAMPLE_QUEUE_v0_1.md",
   "sample_policy": {
     "source": "JRDB Analysis Lite v1.3 / fact_entry_result_lite",
