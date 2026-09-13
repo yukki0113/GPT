@@ -55,6 +55,14 @@ PWA提出CSVは完成CSVを置換するものではない。完成CSVは既存�
 
 `Eval_PWA_Analysis_Comment_Contract_v0_1.md` の責務境界どおり、研究条件を再実装しない。
 
+2026-09-13時点のconsumer実装参照先は次。将来version layerが増えた場合はlatest `main` の読み込み順を実物確認する。
+
+- `horse-racing/jrdb/src/jrdb_newspaper_merge_external.py` — Eval完成CSV / PWA提出CSVをexact joinし、analysis列を `addons.eval.analysis` へ正規化
+- `horse-racing/jrdb/pwa/newspaper-v9.js` — `analysis.comment` が非空の馬だけEval値をリンク化し、既存dialogへ分析内容を表示
+- `horse-racing/jrdb/pwa/newspaper.html` — Newspaper display layerの読み込み順と共通dialog
+
+Eval側文書へconsumer内部仕様を複製しない。上記pathは責務境界を追跡する入口として扱う。
+
 ## 4. Canonical key
 
 PWA提出生成時のoverlay joinは次を使用する。
@@ -176,6 +184,7 @@ PWA提出CSVを返すときは、CSVリンクだけで終了せず、スレッ�
 5. `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 6. 本書
 7. `src/build_eval_pwa_submission.py` とtests
+8. 必要なら上記Newspaper/PWA consumer参照先のlatest main
 
 進行中の開催を引き継ぐ場合は最低限次を残す。
 
