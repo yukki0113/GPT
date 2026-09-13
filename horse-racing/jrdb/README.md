@@ -12,7 +12,7 @@
 2. `.gpt/HANDOFF.md` — 現在の運用default・禁止事項・再開チェックリスト
 3. `.gpt/CONTEXT.md` — データ正本・subsystem別の永続context
 4. `.gpt/WORKFLOW.md` — GitHub / Actions / deterministic executionの経路選択
-5. 対象subsystemの `docs/*Contract*.md` / current audit / source module
+5. 対象subsystemのcurrent docs / contract / audit / source module
 6. **必ず最新 `main` を再確認**してから変更する
 
 古い引継ぎ文書、過去audit、過去Issue、固定SHAは履歴証跡です。現在仕様の判定は、最新main上のsource + current contract + current operational documentを優先します。
@@ -27,6 +27,9 @@
 | 実行経路・Git運用 | `.gpt/WORKFLOW.md` |
 | JRDB Raw固定長解釈 | `src/jrdb_raw.py` + `docs/JRDB_Common_Raw_Reader_v0_1.md` |
 | RaceNote正式仕様 | `docs/README_racenote_v1.md` / `docs/README_racenote_request.md` |
+| RaceNote現行開発方針 | `docs/racenote/README.md` |
+| RaceNote Forecast Gen0研究計画 | `docs/racenote/FORECAST_GEN0_PLAN.md` |
+| RaceNote旧予想系境界 | `docs/racenote/legacy/README.md` |
 | EdgeDB v0.2 serving | `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md` |
 | EdgeDB STANDARD activation | `docs/JRDB_Edge_v0_2_STANDARD_Activation_Audit_20260911.md` |
 | RaceNoteコメント表示 | `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` |
@@ -107,7 +110,7 @@ Canonical SQLiteはRawを置換する正本ではなく、反復・横断アク�
 
 開催後の標準フローは、結果を使ってAnalysisを差分更新し、その更新済みAnalysisを正本保存・検証した後、Stats MartとFact Liteを再生成・検証・配布してconsumerを同一世代へ進めます。Analysisだけ更新してPWAを旧世代に残さないことを運用原則とします。
 
-### RaceNote
+### RaceNote data layer
 
 - `src/racenote_request.py` — 統一request入口
 - `src/racenote_jrdb.py` — PACI -> base RaceNote v0.2
@@ -117,6 +120,30 @@ Canonical SQLiteはRawを置換する正本ではなく、反復・横断アク�
 - `src/resolve_racenote_archive_release.py` — compatible archive resolver
 
 GPT-facing正式bundleはRaceNote v1.0。Archiveは高速delivery cacheでありRaw/Coreを置換しません。
+
+RaceNote authoritative bundleはfacts / evidence / provenanceを担当し、予想印・結果を内部へ混ぜません。
+
+### RaceNote Forecast Gen0
+
+現在のRaceNote予想研究の正本方針は `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` です。
+
+RaceNote Forecast Gen0では、RaceNote v1.0 / Reader ViewをGPTが読み、レース条件・能力・適性・展開・調教状態・近走・長期履歴・補助統計・coverageを横比較して予想します。
+
+固定weightや単一の決定論的gateをcurrent defaultにせず、次の順で改善します。
+
+```text
+pre-race evidence
+  -> GPT comparison / prediction
+  -> pre-result self-audit
+  -> immutable freeze
+  -> result acquisition
+  -> post-race reading audit
+  -> 約50R単位の改善
+```
+
+`docs/RaceNote_Prediction_Handoff_v0_1.md` はGPT prediction layerの原点として引き続き重要です。
+
+旧v0.2 control / v1.1-P gated policyは再現性・比較研究のため保持しますが、現行Gen0の予想ロジックではありません。詳細は `docs/racenote/legacy/README.md` を参照してください。
 
 ### EdgeDB v0.2
 
@@ -154,10 +181,12 @@ run_jrdb_edge_match_current_v0_2.py
 
 通常v0.2 consumer inputは `edge_serving_catalog_v0_2.jsonl`。詳細条件はServing Contractを優先します。
 
-### RaceNote prediction presentation
+### Legacy RaceNote prediction presentation
 
 - `src/racenote_prediction_presentation.py` — base presentation evidence
 - `src/racenote_prediction_presentation_v0_2.py` — frozen Edge axis decisionを読者向け説明へ投影
+
+これらは既存consumer / historical v1.1-P freezeを説明する表示資産として保持します。**v1.1-Pの軸決定を現行Gen0へ持ち込む入口ではありません。**
 
 表示層は予想を再計算しません。
 
@@ -188,6 +217,8 @@ PACI + Analysis history
 `jrdb_newspaper_edge_adapter.py` は **display boundary** です。matcher結果の意味を変更せず、structured evidenceを人間向け表示へ翻訳します。Raw `display_text` / evidenceはaudit用に保持します。
 
 joinの中心は `race_key / race_horse_key / horse_no`。Newspaper側でEdge条件を再判定しません。
+
+PWA / Newspaperの都合でForecast policyを変更しません。まずfrozen prediction contractを作り、その出力をconsumerが表示します。
 
 ### Eval / training research
 
@@ -238,5 +269,7 @@ latest main source
   + current audit
   > historical handoff / old design / old issue
 ```
+
+RaceNote旧予想系は `docs/racenote/legacy/README.md` で論理分離します。既存import / workflow / historical reproducibilityを壊さないため、現時点では物理移動しません。
 
 旧JRA-VAN版は `horse-racing/legacy/` の凍結資産で、現行JRDB実装とは分離します。
