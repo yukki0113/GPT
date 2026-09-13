@@ -235,3 +235,14 @@ Newspaper mergeでは既存のEval exact join監査を維持する。
 - analysis version: `phase2-comment-v0.1`
 
 列追加・status意味変更・JSON mapping変更時はversionを上げる。
+
+## 13. Daily operation reference
+
+日次の「完成CSV -> analysis overlay -> PWA提出CSV -> スレッド簡潔サマリ」は次を運用正本とする。
+
+- `Eval_PWA_Submission_Daily_Operation_v0_1.md`
+- `../src/build_eval_pwa_submission.py`
+
+`build_eval_pwa_submission.py` はcondition codeの研究判定を所有しない。研究側が作成した注目馬overlayを、完成CSVへexact mergeして6列契約・監査を実現するtransport moduleとする。
+
+PWA提出CSVを返すときは、詳細候補一覧をスレッドへ全件展開するのではなく、最高Eval・主要code件数・3～5頭程度の目立つ馬・データ警告を簡潔に併記する。詳細閲覧面はPWAのEvalリンク/モーダルとする。
