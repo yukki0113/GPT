@@ -9,8 +9,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from jrdb_racenote_raw_adapter import build_paci_equivalent  # noqa: E402
-from jrdb_raw import BODY_LENGTHS  # noqa: E402
+from jrdb_racenote_raw_adapter import build_paci_equivalent, write_fixed_member  # noqa: E402
+from jrdb_raw import BODY_LENGTHS, split_fixed_records  # noqa: E402
 
 
 def put(row: bytearray, offset: int, width: int, value: str) -> None:
@@ -39,6 +39,26 @@ def write_annual(root: Path, kind: str, year: int, yymmdd: str, rows: list[bytes
 
 
 class RaceNoteRawAdapterTest(unittest.TestCase):
+    def test_write_fixed_member_does_not_duplicate_existing_crlf(self) -> None:
+        """A published-length row remains one valid fixed record."""
+        body = b"0" * BODY_LENGTHS["BAC"]
+        full = body + b"\r\n"
+        payload = write_fixed_member([full, full])
+
+        self.assertEqual(184 * 2, len(payload))
+        self.assertEqual([full, full], split_fixed_records(payload, "BAC"))
+
+    def test_write_fixed_member_adds_crlf_to_body_rows(self) -> None:
+        """Body-only rows are normalized to published-length records."""
+        body = b"0" * BODY_LENGTHS["BAC"]
+        payload = write_fixed_member([body, body])
+
+        self.assertEqual(184 * 2, len(payload))
+        self.assertEqual(
+            [body + b"\r\n", body + b"\r\n"],
+            split_fixed_records(payload, "BAC"),
+        )
+
     def test_reconstructs_target_and_explicit_previous_rows(self) -> None:
         target_key = "06245911"
         previous_result_key = "1710412820241221"
