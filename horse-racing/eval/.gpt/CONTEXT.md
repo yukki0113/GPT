@@ -6,6 +6,8 @@ Active。Eval表の画像取得、OCR/検証、JRDB事前情報付与、Phase2�
 
 スレッド引っ越し用のdurable bootstrapは `.gpt/HANDOFF.md` を参照してください。過去チャット全文を前提にせず、latest main + project docs + 対象入力から再開できる状態を維持します。
 
+repositoryに残る旧workflowのcurrent/legacy判定は `docs/LEGACY_COMPATIBILITY_PATHS.md` を参照してください。workflow fileが存在するだけで現行標準と判断しません。
+
 ## Source of truth
 
 Python、README、作業手順、依存関係、GitHub Actions WorkflowはGitHub `yukki0113/GPT` の `main` を正本とします。
@@ -64,6 +66,8 @@ ChatへユーザーがEval表画像を直接渡す通常運用では、OCRはC: 
 既存 `[EVAL_OCR_REQUEST]` / `.github/workflows/eval_ocr_chat.yml` は、GitHub内artifact chain、immutable OCR audit、多数画像、runner側Tesseract環境固定が必要な場合のD経路として残す。
 
 旧 `.github/workflows/eval_image_enrich_chat.yml` / `[EVAL_IMAGE_ENRICH_REQUEST]` はcombined compatibility経路であり、通常のChat直接画像処理の第一選択ではない。
+
+旧 `.github/workflows/eval_jrdb_dataset_issue.yml` / `[EVAL_JRDB_DATASET]` はrepository旧xlsx ledgerを入力とするretired経路であり、native Google Sheetsを正本とする現在運用では使用しない。
 
 ## Chat画像 -> 完成CSV
 
