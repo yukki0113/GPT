@@ -74,8 +74,6 @@ Updated: 2026-09-13
   - ForwardTrial専用分析台帳の正規化・真正性監査・全再集計データ生成。
 - `src/forward_trial_chat_ledger.py`
   - 日次台帳用stable-key upsert、FT2全再集計、既存販売台帳mirrorの純粋な書込計画を生成。
-- `src/run_forward_trial_chat_import.py`
-  - 認証済みDrive取得、Google Sheets write/read-back、完了判定を実行。
 
 実装の役割はREADMEと各module/docを正本とし、この一覧だけでCLIや列仕様を推測しない。
 
@@ -263,7 +261,7 @@ data親フォルダ配下の既存区分を維持する。
 
 - Workは対象日を受けたら、Driveの種別別フォルダにあるracecard / prediction / sales-selection / resultを正本として確認し、4 file IDを固定する。
 - GitHub `main` の決定論moduleでstable-key upsertと全再集計を生成し、接続済みGoogle Sheetsへ直接書込み・read-backする。手計算やセル単位の場当たり的転記を完了扱いにしない。
-- Actionsの `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` が利用可能な場合は、4 file IDを明示した `[BOATRACE_LEDGER_IMPORT]` Issueを代替監査経路として使用できる。Secret未設定時は失敗Issueを繰り返さず、Work直結経路を使用する。
+- Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、およびGitHub ActionsからのGoogle Drive / Sheetsアクセスは断念・廃止した。台帳記帳でIssue / Actionsを起動しない。
 - 完了の根拠は、Issue RESULTの `status=success`、`FT2_取込管理`、`FT2_集計監査` の9タブ同一generation/source、read-back検証の一致である。明細存在、日別集計の最新日、取込管理の表示だけでは不十分である。
 - 予想、販売選別、freeze、結果は再評価・再ランキングしない。frozen列差異、grade未解決、世代差、件数差はfail-closedとする。
 - 通常は処理完了まで途中報告を出さず、実ブロッカーまたは最終完了時にだけ報告する。最新の対象日・run ID・累計値はこのHANDOFFに固定せず、Drive / Sheets / RESULTから再取得する。
