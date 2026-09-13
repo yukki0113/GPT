@@ -7,6 +7,8 @@
   "current_generation_id": "Gen0-G000",
   "forecast_version": "RaceNote-Forecast-Gen0.1",
   "factor_set_version": "FSET-Gen0.1",
+  "forecast_schema": "schema/racenote_forecast_gen0_schema_v0_1.json",
+  "pre_result_guard": "src/racenote_forecast_gen0_guard.py",
   "generation_target_races": 50,
   "evaluation_modes": [
     "BLINDED_HISTORICAL",
@@ -34,7 +36,7 @@
     "結果_馬別": "Freeze後に取得するrunner result",
     "振返り": "race-level post-race evaluation",
     "ファクター検証": "factor usageのpost-race evaluation",
-    "Freeze監査": "hash・freeze-before-result監査",
+    "Freeze監査": "hash・freeze-before-result・runner coverage・factor identity監査",
     "条件別集計": "generation内集計",
     "ダッシュボード": "運用状況の要約",
     "変更履歴": "generation間の変更記録"
