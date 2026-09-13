@@ -135,14 +135,24 @@ GPT review:
 
 ### `Freeze監査`
 
-hash整合と結果取得順を監査する。
+hash整合、結果取得順、source runner coverage、factor usage identityを監査する。
 
 最低条件:
 
 - `pre_race_guard_status = PASS`
 - `result_visibility_status = HIDDEN`
 - prediction hash再計算一致
-- `frozen_at < result_acquired_at`
+- RaceNote sourceの全出走馬とforecast horse setが完全一致
+- factor usage identity `(factor_code, scope, horse_no)` が一意
+- result取得後は `frozen_at < result_acquired_at`
+
+coverage auditとして次を保存する。
+
+- `source_runner_count`
+- `forecast_runner_count`
+- `factor_usage_count`
+- `runner_coverage_match`
+- `factor_usage_identity_unique`
 
 ### `条件別集計`
 
@@ -202,16 +212,18 @@ Gen0初期50Rは原則このmodeから開始する。
 1. `設定` / `世代管理` をread
 2. as-of-safe RaceNoteを取得
 3. source identity / semantic SHAを検証
-4. GPTが予想
-5. structured forecast payloadを作る
-6. `src/racenote_forecast_gen0.py`相当のvalidationを通す
-7. `pre_race_guard_status=PASS` / `result_visibility_status=HIDDEN`を確認
-8. prediction hashを生成
-9. Freeze
-10. duplicateがないことを確認
-11. `予想Freeze + 馬別評価 + ファクター使用 + Freeze監査`を同一batchでwrite
-12. readbackで`forecast_id / prediction_hash / row count`を確認
-13. **ここまで成功するまで結果を取得しない**
+4. 同一sourceからrunner identity listを保持
+5. GPTが全馬を比較して予想
+6. structured forecast payloadを作る
+7. `src/racenote_forecast_gen0.py` のvalidationを通す
+8. `pre_race_guard_status=PASS` / `result_visibility_status=HIDDEN`を確認
+9. prediction hashを生成してFreeze
+10. `src/racenote_forecast_gen0_guard.py` でsource runner coverage / factor identityを検証
+11. `to_guarded_ledger_rows()` でpre-result rowsを生成
+12. `forecast_id` / `race_key + generation_id` のduplicateがないことをSheetで確認
+13. `予想Freeze + 馬別評価 + ファクター使用 + Freeze監査`を同一batchでwrite
+14. readbackで`forecast_id / prediction_hash / source_runner_count / row count`を確認
+15. **ここまで成功するまで結果を取得しない**
 
 Google Sheets batchUpdateは同一transactionにまとめ、途中tabだけ更新した状態を作らない。
 
@@ -266,17 +278,24 @@ Gen0-G000
 
 ## 11. Implementation references
 
+- `schema/racenote_forecast_gen0_schema_v0_1.json`
+  - pre-result structured payload schema
 - `src/racenote_forecast_gen0.py`
   - pre-result validation
   - result leakage guard
   - prediction hash
   - Freeze
-  - pre-result ledger row projection
+  - base pre-result ledger row projection
+- `src/racenote_forecast_gen0_guard.py`
+  - source runner coverage validation
+  - factor usage identity validation
+  - guarded pre-result ledger projection
 - `src/racenote_forecast_gen0_evaluation.py`
   - freeze-before-result audit
   - result identity validation
   - objective outcome calculation
   - post-race review row projection
 - `tests/test_racenote_forecast_gen0.py`
+- `tests/test_racenote_forecast_gen0_guard.py`
 - `tests/test_racenote_forecast_gen0_evaluation.py`
 - `config/racenote_forecast_gen0_ledger_v0_1.json`
