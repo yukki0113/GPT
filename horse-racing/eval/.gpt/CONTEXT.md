@@ -2,7 +2,7 @@
 
 ## Status
 
-Active。Eval表の画像取得、OCR/検証、JRDB事前情報付与、Phase2研究、結果取得、台帳更新を支援する領域です。
+Active。Eval表の画像取得、OCR/検証、JRDB事前情報付与、Phase2研究、PWA提出、結果取得、台帳更新を支援する領域です。
 
 スレッド引っ越し用のdurable bootstrapは `.gpt/HANDOFF.md` を参照してください。過去チャット全文を前提にせず、latest main + project docs + 対象入力から再開できる状態を維持します。
 
@@ -31,6 +31,8 @@ Eval画像、OCR途中成果物、日次取得CSV、検証レポート、ログ�
 7. JRDB固定長BYTE位置はJRDB common parser / adapterを正本とし、Eval側へ複製しない。
 8. Discovery特徴を同一標本のまま正式Forward条件へ昇格させない。
 9. PWA/Newspaperは研究条件を再実装せず、Eval側contractが判定・analysis commentを所有する。
+10. PWA提出CSVは完成CSVからの派生成果物とし、既存列を変更しない。注目馬判定は研究側、exact merge・6列付与・auditはtransport module、詳細表示はPWAの責務とする。
+11. PWA提出CSV返却時はCSVリンクだけで終わらせず、最高Eval・主要code件数・目立つ馬・極端値/警告を簡潔にスレッドへ併記する。
 
 OCR詳細は `docs/OCR_Validation_Contract.md` を正本とします。Phase2のcurrent contractsは:
 
@@ -38,7 +40,7 @@ OCR詳細は `docs/OCR_Validation_Contract.md` を正本とします。Phase2の
 - `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`
 - `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
 
-PWA責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とします。
+PWA責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`、日次PWA提出運用は `docs/Eval_PWA_Submission_Daily_Operation_v0_1.md` を正本とします。
 
 ## GitHub execution routing — 2026-09-10
 
@@ -94,6 +96,21 @@ PACI取得には `JRDB_USER` / `JRDB_PASSWORD` Secretsが必要なため、`.git
 
 通常成功条件は `joined_horses == input_rows`、`unmatched_horses == 0`、`duplicate_keys == 0`。`race_headcount_mismatches` は必ず監査する。
 
+## 完成CSV -> PWA提出CSV
+
+PWA連携を行う通常運用では、完成CSVの後にEval研究側が注目馬analysis overlayを作り、`src/build_eval_pwa_submission.py` で `YYYYMMDD_Eval_PWA提出CSV_v0_1.csv` を生成する。
+
+- builderはH1/H2等の研究条件を判定しない。
+- overlayは `date + venue_code + race_no + horse_no` でexact mergeする。
+- sourceに無いoverlay keyは推測せずfail-closed。
+- 完成CSVの既存列値・行数・canonical keyを維持する。
+- 6つのanalysis列とauditだけを追加する。
+- 同値tie等で順位定義が曖昧な場合、便宜的tie-breakを正式condition codeへしない。
+
+詳細は `docs/Eval_PWA_Submission_Daily_Operation_v0_1.md`。
+
+返却時は最高Eval、主要analysis code件数、目立つ馬3～5頭、極端値/警告をスレッドへ簡潔に併記し、全候補の詳細はPWAモーダルを主な閲覧面とする。
+
 ## Eval表画像取得
 
 本体は `src/master_eval_media_collector.py`。
@@ -118,6 +135,8 @@ KYIをrunner identityの基準とし、CHA/CYBはLEFT JOIN、前走はKYI result
 current-race SED・確定結果は事前特徴へ使用しない。`src/backfill_phase2_sed.py` は結果時点layerとして分離する。
 
 KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は意味が異なるため統合しない。
+
+bundle mergeでは欠損表現の `""` と `None` は同じmissingとして扱うが、非欠損値のcomponent conflictはerrorにする。
 
 ## JRA結果取得
 
