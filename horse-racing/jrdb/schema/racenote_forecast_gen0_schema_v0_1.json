@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yukki0113/GPT/horse-racing/jrdb/schema/racenote_forecast_gen0_schema_v0_1.json",
+  "title": "RaceNote Forecast Gen0 pre-result payload v0.1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "generation_id",
+    "target_date",
+    "venue",
+    "race_no",
+    "race_key",
+    "evaluation_mode",
+    "source",
+    "forecast_created_at",
+    "pre_race_guard_status",
+    "result_visibility_status",
+    "race_reading",
+    "horses",
+    "factor_usage",
+    "final_prediction"
+  ],
+  "properties": {
+    "forecast_id": {"type": "string", "minLength": 1},
+    "generation_id": {"type": "string", "minLength": 1},
+    "target_date": {"type": "string", "format": "date"},
+    "venue": {"type": "string", "minLength": 1},
+    "race_no": {"type": "integer", "minimum": 1},
+    "race_key": {"type": "string", "minLength": 1},
+    "evaluation_mode": {
+      "enum": ["BLINDED_HISTORICAL", "TRUE_FORWARD"]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "reader_view_version", "semantic_sha256", "artifact_ref"],
+      "properties": {
+        "schema": {"type": "string", "minLength": 1},
+        "reader_view_version": {"type": "string", "minLength": 1},
+        "semantic_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        },
+        "artifact_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "forecast_created_at": {"type": "string", "format": "date-time"},
+    "pre_race_guard_status": {"const": "PASS"},
+    "result_visibility_status": {"const": "HIDDEN"},
+    "race_reading": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "shape_summary",
+        "expected_pace",
+        "important_condition_factors",
+        "primary_factor_codes",
+        "de_emphasized_factor_codes"
+      ],
+      "properties": {
+        "shape_summary": {"type": "string", "minLength": 1},
+        "expected_pace": {"type": "string", "minLength": 1},
+        "important_condition_factors": {"type": "string", "minLength": 1},
+        "primary_factor_codes": {"$ref": "#/$defs/factorCodeArray"},
+        "de_emphasized_factor_codes": {"$ref": "#/$defs/factorCodeArray"}
+      }
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/horseForecast"}
+    },
+    "factor_usage": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/factorUsage"}
+    },
+    "final_prediction": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "axis_horse_no",
+        "confidence",
+        "axis_reason",
+        "uncertainty_summary"
+      ],
+      "properties": {
+        "axis_horse_no": {"type": "integer", "minimum": 1},
+        "confidence": {"enum": ["A", "B", "C"]},
+        "axis_reason": {"type": "string", "minLength": 1},
+        "uncertainty_summary": {"type": "string", "minLength": 1},
+        "alternatives": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "$defs": {
+    "factorCode": {
+      "enum": ["F01", "F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09", "F10"]
+    },
+    "factorCodeArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/factorCode"}
+    },
+    "horseForecast": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "horse_no",
+        "horse_name",
+        "gpt_rank",
+        "mark",
+        "primary_factor_codes",
+        "supporting_factor_codes",
+        "risk_factor_codes"
+      ],
+      "properties": {
+        "horse_no": {"type": "integer", "minimum": 1},
+        "horse_name": {"type": "string", "minLength": 1},
+        "gpt_rank": {"type": "integer", "minimum": 1},
+        "mark": {"enum": ["◎", "○", "▲", "△", ""]},
+        "strengths": {"type": "string"},
+        "risks": {"type": "string"},
+        "evidence_summary": {"type": "string"},
+        "evidence_conflicts": {"type": "string"},
+        "relative_comparison": {"type": "string"},
+        "primary_factor_codes": {"$ref": "#/$defs/factorCodeArray"},
+        "supporting_factor_codes": {"$ref": "#/$defs/factorCodeArray"},
+        "risk_factor_codes": {"$ref": "#/$defs/factorCodeArray"},
+        "ability_reading": {"type": "string"},
+        "suitability_reading": {"type": "string"},
+        "pace_position_reading": {"type": "string"},
+        "condition_training_reading": {"type": "string"},
+        "recent_form_reading": {"type": "string"},
+        "history_reading": {"type": "string"},
+        "context_reading": {"type": "string"},
+        "uncertainty": {"type": "string"}
+      }
+    },
+    "factorUsage": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["factor_code", "scope", "importance", "direction", "role"],
+      "properties": {
+        "factor_code": {"$ref": "#/$defs/factorCode"},
+        "scope": {"enum": ["RACE", "HORSE"]},
+        "horse_no": {"type": ["integer", "null"], "minimum": 1},
+        "importance": {"enum": ["HIGH", "MEDIUM", "LOW", "NOT_USED"]},
+        "direction": {"enum": ["POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL"]},
+        "role": {"enum": ["PRIMARY", "SUPPORT", "RISK", "DEEMPHASIZED"]},
+        "judgment_summary": {"type": "string"},
+        "evidence_summary": {"type": "string"},
+        "evidence_ref": {"type": "string"},
+        "pre_result_note": {"type": "string"}
+      }
+    }
+  }
+}
