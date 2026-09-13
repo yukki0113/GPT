@@ -132,3 +132,32 @@ def audit_forecast_input_completeness(
         "factor_usage_identity_unique": True,
         "audit_status": "PASS",
     }
+
+
+def to_guarded_ledger_rows(
+    frozen_forecast: Mapping[str, Any],
+    source_horses: Sequence[Mapping[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+    """Project frozen rows only after all-runner input completeness passes.
+
+    The returned structure is the normal Gen0 pre-result ledger projection with
+    the completeness-audit fields merged into its single ``Freeze監査`` row.
+    """
+    completeness = audit_forecast_input_completeness(
+        frozen_forecast,
+        source_horses,
+    )
+    ledger_rows = gen0.to_ledger_rows(frozen_forecast)
+    freeze_rows = ledger_rows.get("Freeze監査", [])
+    if len(freeze_rows) != 1:
+        raise ForecastGuardError("Freeze監査 projection must contain exactly one row")
+
+    freeze_row = freeze_rows[0]
+    freeze_row["source_runner_count"] = completeness["source_runner_count"]
+    freeze_row["forecast_runner_count"] = completeness["forecast_runner_count"]
+    freeze_row["factor_usage_count"] = completeness["factor_usage_count"]
+    freeze_row["runner_coverage_match"] = completeness["runner_coverage_match"]
+    freeze_row["factor_usage_identity_unique"] = completeness[
+        "factor_usage_identity_unique"
+    ]
+    return ledger_rows
