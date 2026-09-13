@@ -42,7 +42,9 @@ def _database() -> sqlite3.Connection:
             race_index += 1
             venue_code = f"{((day - 1) % 10) + 1:02d}"
             surface_code = "1" if race_index % 2 else "2"
-            race_key = f"{venue_code}25{day % 10}{race_no:02d}"[-8:]
+            meeting = ((day - 1) // 8) + 1
+            meeting_day = ((day - 1) % 8) + 1
+            race_key = f"{venue_code}25{meeting}{meeting_day:X}{race_no:02d}"
             for horse_no in range(1, 7):
                 connection.execute(
                     """
@@ -72,7 +74,7 @@ def _database() -> sqlite3.Connection:
                 )
 
     for race_no in range(1, 6):
-        race_key = f"052590{race_no:02d}"[-8:]
+        race_key = f"052511{race_no:02d}"
         for horse_no in range(1, 7):
             connection.execute(
                 """
