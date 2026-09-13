@@ -1,6 +1,6 @@
 # Eval表活用
 
-中央競馬のEval表取得・OCR・検証・JRDB事前情報付与、Phase2研究、結果取込を支援するツール群です。
+中央競馬のEval表取得・OCR・検証・JRDB事前情報付与、Phase2研究、PWA提出、結果取込を支援するツール群です。
 
 ## Source of truth
 
@@ -25,7 +25,7 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 5. `.gpt/HANDOFF.md`
 6. 対象処理の `docs/` と実source/tests/workflow
 
-`.gpt/HANDOFF.md` に、プロジェクトの思想、weekly画像→完成CSVのrelease gate、主要module map、Phase2のリーケージ境界、スレッド引っ越し時の最小引継ぎをまとめています。
+`.gpt/HANDOFF.md` に、プロジェクトの思想、weekly画像→完成CSVのrelease gate、主要module map、Phase2のリーケージ境界、PWA提出、スレッド引っ越し時の最小引継ぎをまとめています。
 
 ## Core principles
 
@@ -37,8 +37,10 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 - Phase2の事前特徴と結果時点データを分離し、current-race SED・確定結果等をForward事前特徴へ混入させない。
 - JRDB固定長BYTE位置はJRDB common parser/adapterを正本とし、Eval側へ局所複製しない。
 - Discoveryで見つかった特徴を同一標本のまま正式購入条件へ昇格させない。
+- PWA/Newspaperは研究条件を再実装せず、Eval研究側が注目馬・analysis code/commentを所有する。
+- PWA提出CSVは完成CSVから派生し、既存Eval/PACI列を変更しない。
 
-詳細は `.gpt/HANDOFF.md`、`docs/OCR_Validation_Contract.md`、各Phase2 contractを参照してください。
+詳細は `.gpt/HANDOFF.md`、`docs/OCR_Validation_Contract.md`、各Phase2 contract、`docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を参照してください。
 
 ## GitHub運用ルーティング — 2026-09-10
 
@@ -48,7 +50,7 @@ Issue / GitHub Actionsを一律の標準経路にはしません。処理開始�
 |---|---|---|
 | A: Read / Audit | GitHub上の状態確認 | main、file、commit、Issue RESULT、run、artifact metadata、SHA、diff確認 |
 | B: Git Change | UTF-8テキスト変更 | Python、tests、README、`.gpt/`、workflowのdirect update/create/delete |
-| C: Pure Deterministic Execution | Secrets等が不要な既存ロジックの直接実行 | Chatへ渡されたEval画像のOCR/validation、固定入力の変換・監査 |
+| C: Pure Deterministic Execution | Secrets等が不要な既存ロジックの直接実行 | Chatへ渡されたEval画像のOCR/validation、PWA提出CSV build、固定入力の変換・監査 |
 | D: Actions-Native Execution | Secrets、artifact chain、長時間/大容量、immutable freeze、監査run等 | JRDB PACI認証取得+enrichment、取得時点をartifact固定するEval media collection |
 
 A/B/Cで完結する処理のためだけにIssueを作成しません。DでIssue/Actionsを使用するときだけ、ルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を適用します。
@@ -81,15 +83,23 @@ A/B/Cで完結する処理のためだけにIssueを作成しません。DでIss
 - `src/build_phase2_jrdb_previous_features.py` — KYI previous result key -> PACI ZED exact-link前走特徴
 - `src/build_phase2_jrdb_feature_bundle.py` — 上記3componentを1頭1行へ統合
 
+### PWA submission
+
+- `src/build_eval_pwa_submission.py` — 研究側analysis overlayを完成CSVへexact mergeし、6つのanalysis列・auditを持つPWA提出CSVを生成
+- `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` — analysis列、WATCH/MATCH、Newspaper/PWA責務境界
+- `docs/Eval_PWA_Submission_Daily_Operation_v0_1.md` — 日次生成、監査、スレッド簡潔サマリ運用
+
+条件判定・コメント内容はEval研究側が所有し、`build_eval_pwa_submission.py` 自体へH1/H2等の研究ロジックを埋め込みません。
+
 ### Post-race / research backfill
 
 - `src/backfill_phase2_sed.py` — Phase2へSED結果時点情報をbackfill
 
 各ツールの詳細は `docs/`、責務一覧は `.gpt/HANDOFF.md` を参照してください。
 
-## このスレッドの標準: Eval画像 -> 完成CSV
+## このスレッドの標準: Eval画像 -> 完成CSV -> PWA提出CSV
 
-ユーザーがChatへEval表画像または画像ZIPを直接渡して「完成CSV」「CSV化」を依頼した場合の標準フローです。
+ユーザーがChatへEval表画像または画像ZIPを直接渡して「完成CSV」「CSV化」を依頼した場合の標準フローです。完成CSV取得後、PWA連携を行う通常運用ではPWA提出CSVも派生生成します。
 
 ```text
 ユーザー画像
@@ -102,8 +112,14 @@ A/B/Cで完結する処理のためだけにIssueを作成しません。DでIss
   -> enrich_eval_csv_with_paci.py
   -> 完成CSV + audit artifact
   -> A: RESULT/run/artifactを直接確認・回収
+  -> C: Eval研究側で注目馬analysis overlayを作成
+  -> build_eval_pwa_submission.py
+  -> YYYYMMDD_Eval_PWA提出CSV_v0_1.csv + audit
+  -> スレッドへ簡潔な当日分析サマリ
   -> ユーザーへ返却
 ```
+
+OCRのみ、または完成CSVのみを明示された場合は、その段階で停止して構いません。
 
 ### OCR = C: Pure Deterministic Execution
 
@@ -155,6 +171,27 @@ duplicate_keys == 0
 ```
 
 `race_headcount_mismatches` は必ず監査し、0でなければ完成CSVと併せて明示します。PACI ZIPをユーザーへ再添付依頼しません。
+
+### PWA submission = C: Pure Deterministic Execution
+
+完成CSVが得られた後、研究側で注目馬とanalysis commentを確定し、`src/build_eval_pwa_submission.py` でPWA提出CSVを生成します。
+
+標準ファイル名:
+
+```text
+YYYYMMDD_Eval_PWA提出CSV_v0_1.csv
+```
+
+analysis contractは `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`、日次手順は `docs/Eval_PWA_Submission_Daily_Operation_v0_1.md` を正本とします。
+
+PWA提出CSV返却時は、スレッドにも次を短く併記します。
+
+- 当日最高Evalと必要なら上位3～5頭
+- WATCH/MATCH・主要analysis code件数
+- 特に目立つ馬3～5頭程度
+- `Eval97` のような極端値や明瞭なデータ警告
+
+全対象馬の詳細コメントは通常スレッドへ全件展開せず、PWAのEvalリンク→モーダルを主な閲覧面とします。
 
 ## Eval表メディア取得
 
