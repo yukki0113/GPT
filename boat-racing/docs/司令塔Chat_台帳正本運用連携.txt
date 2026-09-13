@@ -1,4 +1,6 @@
-【競艇note販売台帳の正本運用変更】
+【競艇note販売台帳の正本運用・司令塔連携】
+
+Updated: 2026-09-13
 
 競艇note販売の継続台帳は、ネイティブGoogleスプレッドシートを正本として運用します。
 
@@ -8,9 +10,16 @@ Spreadsheet ID: 1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM
 URL: https://docs.google.com/spreadsheets/d/1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM/edit
 タイムゾーン: Asia/Tokyo
 
-日次の予想CSV・販売選別ファイル・結果CSVはGit管理外の入力物です。
-台帳更新担当は、Googleスプレッドシート正本へ当日分を差分追記し、キー照合・既存データ不変確認・数式エラー確認後、同一スプレッドシートへ反映します。
+日次の公式出走表・事前予想・販売選別・結果CSVはGit管理外のGoogle Drive正本です。
+
+台帳記帳担当は、対象日のDrive 4原本を固定し、GitHub `main` の `forward_trial_analysis_import.py` と `forward_trial_chat_ledger.py` を使ってstable-key upsertとFT2全再集計の書込計画を生成し、接続済みGoogle Sheetsへ直接反映します。
+
+FT2派生集計は前日値への差分加算ではなく、`FT2_全R明細` の全真正明細からAtomic Aggregate Set 9タブを同一generationで全再生成します。`FT2_集計監査` のgeneration/source件数、FT2_ID重複0、既存販売台帳mirror、数式エラー0のread-backが一致した後だけ `FT2_取込管理=完了` とします。
+
+Googleサービスアカウントおよび台帳記帳用Issue / GitHub Actions経路は廃止済みです。旧 `run_forward_trial_chat_import.py` や旧台帳import workflowを起動・復元しません。
 
 Google Driveに残る旧Excel版 `競艇note販売運用台帳.xlsx` および GitHub `boat-racing/ledger/競艇note販売運用台帳.xlsx` は移行前スナップショットです。通常運用で最新台帳として参照・更新せず、正本へアクセスできない場合も旧Excelへフォールバックしません。
+
+司令塔で会場選別・予想検証を行う場合は、日別集計だけで最新と判断せず `FT2_取込管理` と `FT2_集計監査` の真正完了世代を確認します。未完了日の成績は正式な会場評価へ手計算で補完しません。
 
 台帳の参照・分析はGoogle Sheets API / Google Drive Connectorによる直接アクセスを優先し、GitHubバイナリread/update経路はこの台帳には使用しません。
