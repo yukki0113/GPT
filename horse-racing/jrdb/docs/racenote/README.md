@@ -73,7 +73,9 @@ Presentation policy != result evaluation
 - `docs/RaceNote_Prediction_Handoff_v0_1.md` のGPT prediction原則
 - `docs/racenote/FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md` の現行予想者契約
 - `src/racenote_forecast_gen0.py` のpre-result validation / freeze / hash / ledger projection
+- `src/racenote_forecast_gen0_guard.py` のsource runner coverage / factor identity guard
 - `src/racenote_forecast_gen0_evaluation.py` のpost-result join / evaluation projection
+- `schema/racenote_forecast_gen0_schema_v0_1.json` のpre-result payload schema
 - `docs/racenote/FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md` のGoogle Sheets台帳契約
 - pre-race guard / provenance / freeze / hash / result-after-freeze の研究基盤
 - `FORECAST_GEN0_PLAN.md` に定義するGen0検証サイクル
@@ -125,14 +127,15 @@ Presentation policy != result evaluation
 
 比較対象として履歴は残すが、改善判断はGen0自身の予想記録と結果監査から行う。
 
-## 7. Forecast / ledger / delivery separation
+## 7. Forecast / guard / ledger / delivery separation
 
-RaceNote Forecastの評価と、継続研究台帳と、PWA / Newspaperへの配布は別責務とする。
+RaceNote Forecastの評価と、研究完全性guardと、継続研究台帳と、PWA / Newspaperへの配布は別責務とする。
 
 ```text
 RaceNote evidence
   -> GPT Forecast
-  -> immutable prediction freeze
+  -> deterministic validation / freeze
+  -> source completeness guard
   -> Google Sheets research ledger
   -> result join / evaluation
   -> generation improvement
@@ -140,6 +143,8 @@ RaceNote evidence
 frozen prediction
   -> presentation / PWA / newspaper
 ```
+
+`src/racenote_forecast_gen0_guard.py` は予想を評価・変更しない。RaceNote sourceの全出走馬がforecastへ存在することと、factor usage identityが一意であることだけを確認する。
 
 Google Sheetsはprediction modelではない。台帳は予想時点の判断と結果後の評価を分離して保存する。
 
@@ -162,12 +167,15 @@ as-of-safe RaceNote
   -> pre-result self-audit
   -> deterministic validation
   -> hash / freeze
-  -> ledger readback
+  -> source runner completeness guard
+  -> guarded ledger write / readback
   -> result acquisition
   -> result join
   -> GPT post-race review
   -> factor review
 ```
+
+結果を取得するのはguarded ledger writeとreadbackの後だけとする。
 
 50R終了後にgeneration analysisを行い、改善案を変更履歴へ記録して次generationへ進む。
 
@@ -188,6 +196,7 @@ latest main source / current contract
 
 - `FORECAST_GEN0_PLAN.md` — 現行Gen0の研究計画
 - `FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md` — GPTが1Rを予想する現行契約
+- `FORECAST_GEN0_INPUT_GUARD_v0_1.md` — 全馬coverage / factor identity guard
 - `FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md` — Google Sheets台帳とtransaction契約
 - `legacy/README.md` — 旧決定論的予想系の扱い
 - `../RaceNote_Prediction_Handoff_v0_1.md` — GPT prediction layerの原点
@@ -198,9 +207,12 @@ latest main source / current contract
 Implementation:
 
 - `../../src/racenote_forecast_gen0.py`
+- `../../src/racenote_forecast_gen0_guard.py`
 - `../../src/racenote_forecast_gen0_evaluation.py`
+- `../../schema/racenote_forecast_gen0_schema_v0_1.json`
 - `../../config/racenote_forecast_gen0_ledger_v0_1.json`
 - `../../tests/test_racenote_forecast_gen0.py`
+- `../../tests/test_racenote_forecast_gen0_guard.py`
 - `../../tests/test_racenote_forecast_gen0_evaluation.py`
 
 ## 11. Development rule
