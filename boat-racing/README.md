@@ -128,3 +128,12 @@ python boat-racing/src/fetch_boatrace_event_meta.py \
 ~~~
 
 13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
+
+
+## Chatからの日次台帳記帳
+
+通常Chatからの「YYYYMMDDの台帳記帳」は、`[BOATRACE_LEDGER_IMPORT] <request_id>` Issueを1件だけ作成して `.github/workflows/boatrace_ledger_import_issue.yml` を起動する。Google service-account secret、Drive immutable Freeze、Google Sheets書込み、Actions run/artifactを正式監査証跡として必要とするため、この作業は **D. Actions-Native Execution** とする。
+
+`src/forward_trial_chat_ledger.py` はstable-key upsert、FT2の全再集計、既存販売台帳mirrorを純粋な書込計画として生成し、`src/run_forward_trial_chat_import.py` が認証済みDrive取得、Sheets write/read-back、完了確定を担当する。明細だけを書いた時点では完了にせず、Atomic Aggregate Set 9タブ、`FT2_集計監査`、既存販売台帳、数式エラー0をread-backしてからだけ `FT2_取込管理=完了` とする。
+
+実行contract、スレッド移行時の再開、完了報告は [`docs/ForwardTrial_Chat日次台帳記帳運用.md`](docs/ForwardTrial_Chat日次台帳記帳運用.md) を正本とする。
