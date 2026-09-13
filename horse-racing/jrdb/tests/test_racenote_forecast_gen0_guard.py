@@ -140,6 +140,15 @@ def test_factor_usage_for_non_source_runner_is_rejected() -> None:
         guard.audit_forecast_input_completeness(frozen, _source_horses())
 
 
+def test_race_scope_factor_usage_cannot_have_horse_number() -> None:
+    """RACE scope remains distinct from HORSE scope for post-race joins."""
+    frozen = _frozen()
+    frozen["factor_usage"][0]["horse_no"] = 1
+    frozen["prediction_hash"] = gen0.compute_prediction_hash(frozen)
+    with pytest.raises(guard.ForecastGuardError, match="RACE scope must not include horse_no"):
+        guard.audit_forecast_input_completeness(frozen, _source_horses())
+
+
 def test_duplicate_factor_usage_identity_is_rejected() -> None:
     """Duplicate factor records cannot create ambiguous post-race joins."""
     frozen = _frozen()
