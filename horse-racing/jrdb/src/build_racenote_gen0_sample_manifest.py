@@ -18,7 +18,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 SOURCE_TABLE = "fact_entry_result_lite"
 DEFAULT_PRIMARY_COUNT = 50
 DEFAULT_RESERVE_COUNT = 20
@@ -61,7 +61,7 @@ def _sha256_text(value: str) -> str:
 
 
 def validate_source_schema(connection: sqlite3.Connection) -> None:
-    """Fail closed unless Analysis Lite exposes the required structural fields."""
+    """Fail closed unless Analysis Lite exposes required structural fields."""
     rows = connection.execute(f"PRAGMA table_info({SOURCE_TABLE})").fetchall()
     if not rows:
         raise SampleManifestError(f"missing source table: {SOURCE_TABLE}")
@@ -78,8 +78,9 @@ def load_candidates(
 ) -> list[dict[str, Any]]:
     """Load one structural row per flat race without reading outcome values.
 
-    JRDB track_type follows the BAC surface code: 1=芝, 2=ダート, 3=障害.
-    Restricting to 1/2 excludes obstacle races before randomization.
+    JRDB BAC surface code is 1=芝, 2=ダート, 3=障害. Only 1/2 are eligible.
+    The source table contains post-race columns, but this query never selects or
+    filters by their values.
     """
     validate_source_schema(connection)
     clauses = [
@@ -161,8 +162,10 @@ def _surface_targets(
     min_surface_share: float,
 ) -> dict[str, int]:
     """Derive mild turf/dirt stratification while respecting pool proportions."""
-    if count <= 0:
-        raise SampleManifestError("count must be positive")
+    if count == 0:
+        return {"1": 0, "2": 0}
+    if count < 0:
+        raise SampleManifestError("count must not be negative")
     if not 0 <= min_surface_share <= 0.5:
         raise SampleManifestError("min_surface_share must be between 0 and 0.5")
 
@@ -211,30 +214,34 @@ def _rank_candidates(
 
 
 def _select_with_date_cap(
-    ranked: Mapping[str, Sequence[Mapping[str, Any]]],
-    targets: Mapping[str, int],
+    candidates: Sequence[Mapping[str, Any]],
+    seed: str,
+    count: int,
     max_per_date: int,
-) -> list[dict[str, Any]]:
-    """Select exact surface quotas while limiting same-date concentration."""
+    min_surface_share: float,
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    """Select one deterministic sample with exact surface quotas and date cap."""
+    if count == 0:
+        return [], {"1": 0, "2": 0}
     if max_per_date <= 0:
         raise SampleManifestError("max_per_date must be positive")
 
+    targets = _surface_targets(candidates, count, min_surface_share)
+    ranked = _rank_candidates(candidates, seed)
     positions = {"1": 0, "2": 0}
     selected_counts = {"1": 0, "2": 0}
     date_counts: Counter[str] = Counter()
     selected: list[dict[str, Any]] = []
 
-    while sum(selected_counts.values()) < sum(targets.values()):
+    while len(selected) < count:
         available_surfaces = [
             code
             for code in ("1", "2")
-            if selected_counts[code] < int(targets[code])
+            if selected_counts[code] < targets[code]
         ]
-        if not available_surfaces:
-            break
         available_surfaces.sort(
             key=lambda code: (
-                selected_counts[code] / int(targets[code]),
+                selected_counts[code] / targets[code],
                 code,
             )
         )
@@ -242,12 +249,14 @@ def _select_with_date_cap(
         added = False
         for surface_code in available_surfaces:
             rows = ranked[surface_code]
-            while positions[surface_code] < len(rows):
-                candidate = dict(rows[positions[surface_code]])
-                positions[surface_code] += 1
+            scan_position = positions[surface_code]
+            while scan_position < len(rows):
+                candidate = dict(rows[scan_position])
+                scan_position += 1
                 race_date = str(candidate["race_date"])
                 if date_counts[race_date] >= max_per_date:
                     continue
+                positions[surface_code] = scan_position
                 selected.append(candidate)
                 selected_counts[surface_code] += 1
                 date_counts[race_date] += 1
@@ -259,7 +268,7 @@ def _select_with_date_cap(
             raise SampleManifestError(
                 "sampling constraints cannot be satisfied; relax max_per_date or date range"
             )
-    return selected
+    return selected, targets
 
 
 def build_manifest(
@@ -271,24 +280,37 @@ def build_manifest(
     max_per_date: int = DEFAULT_MAX_PER_DATE,
     min_surface_share: float = DEFAULT_MIN_SURFACE_SHARE,
 ) -> dict[str, Any]:
-    """Build the immutable primary+reserve race problem set."""
-    total_count = primary_count + reserve_count
-    targets = _surface_targets(candidates, total_count, min_surface_share)
-    ranked = _rank_candidates(candidates, seed)
-    selected = _select_with_date_cap(ranked, targets, max_per_date)
-    selected.sort(key=lambda item: (item["sample_score"], item["race_key"]))
+    """Build the immutable 50R primary set plus technical replacement reserves."""
+    primary, primary_targets = _select_with_date_cap(
+        candidates,
+        seed=f"{seed}|PRIMARY",
+        count=primary_count,
+        max_per_date=max_per_date,
+        min_surface_share=min_surface_share,
+    )
+    primary_keys = {str(row["race_key"]) for row in primary}
+    remaining = [
+        row for row in candidates if str(row["race_key"]) not in primary_keys
+    ]
+    reserve, reserve_targets = _select_with_date_cap(
+        remaining,
+        seed=f"{seed}|RESERVE",
+        count=reserve_count,
+        max_per_date=max_per_date,
+        min_surface_share=min_surface_share,
+    )
 
     races: list[dict[str, Any]] = []
-    for index, raw_row in enumerate(selected, 1):
+    combined = [("PRIMARY", row) for row in primary]
+    combined.extend(("RESERVE", row) for row in reserve)
+    for index, (role, raw_row) in enumerate(combined, 1):
         row = dict(raw_row)
         row.pop("sample_score", None)
-        role = "PRIMARY" if index <= primary_count else "RESERVE"
-        queue_status = "READY" if role == "PRIMARY" else "RESERVE"
         row.update(
             {
                 "sample_order": index,
                 "sample_role": role,
-                "queue_status": queue_status,
+                "queue_status": "READY" if role == "PRIMARY" else "RESERVE",
                 "replacement_for": "",
                 "skip_reason": "",
             }
@@ -324,7 +346,8 @@ def build_manifest(
             "flat_track_types": ["1", "2"],
             "obstacle_track_type_excluded": "3",
             "result_columns_selected": False,
-            "surface_targets": targets,
+            "primary_surface_targets": primary_targets,
+            "reserve_surface_targets": reserve_targets,
         },
     }
 
