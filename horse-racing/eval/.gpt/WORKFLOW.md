@@ -29,7 +29,9 @@ A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選ん
    - `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`
    - `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`
    - `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
-10. PWAコメントなら `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
+10. PWAコメントなら:
+   - `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
+   - `docs/Eval_PWA_Submission_Daily_Operation_v0_1.md`
 
 そのうえで既存入出力仕様と業務仕様を維持し、実行経路A/B/C/Dを決める。DでなければIssueを作らない。
 
@@ -37,9 +39,9 @@ A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選ん
 
 version付きcontractと実source `VERSION` / schemaが食い違う場合は、古いcontractへ実装を推測で合わせず、source/tests/docsを監査してcurrent contractを更新する。
 
-## 2. このスレッドの標準: Chatへ直接渡されたEval画像 -> 完成CSV
+## 2. このスレッドの標準: Chatへ直接渡されたEval画像 -> 完成CSV -> PWA提出CSV
 
-ユーザーがEval表画像または画像ZIPをChatへ直接渡し、「CSV化」「完成CSV」等を依頼した場合は次を標準とする。
+ユーザーがEval表画像または画像ZIPをChatへ直接渡し、「CSV化」「完成CSV」等を依頼した場合は次を標準とする。PWA連携を行う通常運用では完成CSVの後にPWA提出CSVまで派生生成する。
 
 ```text
 ユーザー画像
@@ -51,8 +53,14 @@ version付きcontractと実source `VERSION` / schemaが食い違う場合は、�
   -> enrich_eval_csv_with_paci.py
   -> 完成CSV + audit artifact
   -> A: Issue RESULT / run / artifactを直接確認・回収
+  -> C: Eval研究側で注目馬analysis overlayを作成
+  -> C: build_eval_pwa_submission.py
+  -> YYYYMMDD_Eval_PWA提出CSV_v0_1.csv + audit
+  -> 簡潔な当日分析サマリ
   -> ユーザーへ返却
 ```
+
+OCRのみ、または完成CSVのみを明示された場合はその段階で停止してよい。
 
 ### 2.1 OCR工程 = C: Pure Deterministic Execution
 
@@ -99,6 +107,49 @@ PACI ZIPをユーザーへ再添付依頼しない。
 
 通常ユーザー返却名は `YYYYMMDD_Eval_完成CSV.csv`。OCR 5列CSV / OCR validation / PACI auditは監査用補助成果物として併せて保持できる。
 
+### 2.3 PWA提出CSV = C: Pure Deterministic Execution
+
+完成CSVの既存列は変更せず、研究側analysis overlayを `src/build_eval_pwa_submission.py` でexact mergeする。
+
+責務分離:
+
+- 研究側: 注目馬選定、condition code、WATCH/MATCH、title/comment、as-of
+- builder: canonical key exact merge、6列付与、NONE補完、整合validation、audit
+- Newspaper/PWA: contractどおり透過格納・表示。条件再判定は禁止
+
+正本:
+
+- `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
+- `docs/Eval_PWA_Submission_Daily_Operation_v0_1.md`
+
+標準出力名:
+
+```text
+YYYYMMDD_Eval_PWA提出CSV_v0_1.csv
+```
+
+最低audit:
+
+```text
+source_rows == output_rows
+source canonical keys == output canonical keys
+existing source columns unchanged
+unknown analysis key == 0
+NONE -> comment blank
+WATCH/MATCH -> codes/title/comment/version/asof present
+```
+
+Eval順位条件で同値tie等の定義が完成CSVだけから一意に再現できない場合、馬番順等の便宜的tie-breakを正式条件として採用しない。current research contract / ledger定義を確認し、未解決ならcondition codeを保留する。
+
+PWA提出CSV返却時は、CSVリンクだけで終わらせず次を短くスレッドへ併記する。
+
+- 当日最高Eval、必要なら上位3～5頭
+- WATCH/MATCH・主要code件数
+- 目立つ馬3～5頭程度
+- `Eval97` 等の極端値、またはデータ警告
+
+全候補の詳細説明は通常PWAモーダルへ任せる。
+
 ## 3. Eval表メディア取得
 
 ### 3.1 既に画像がChatへ渡されている場合
@@ -143,7 +194,7 @@ Phase2事前特徴の固定長parseはJRDB common parser/adapterへ委譲し、E
 - `src/build_phase2_jrdb_kyi_features.py` — KYI事前特徴。current contractは `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`。current-race結果を読まない。
 - `src/build_phase2_jrdb_training_features.py` — KYI identity setへCHA/CYBをLEFT JOIN。contractは `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`。CHA/CYB欠損馬をrunner setから落とさない。
 - `src/build_phase2_jrdb_previous_features.py` — KYI `previous[0].result_key` とPACI ZED `result_key` を完全一致。contractは `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`。fallback禁止。
-- `src/build_phase2_jrdb_feature_bundle.py` — 3componentを `race_horse_key` で1対1結合し、identity/source/version不一致をerrorにする。
+- `src/build_phase2_jrdb_feature_bundle.py` — 3componentを `race_horse_key` で1対1結合し、identity/source/version不一致をerrorにする。blank/Noneは同一missingとして正規化する。
 
 current-race SED、確定着順、確定人気・オッズ、払戻等をForward事前特徴へ混入させない。
 
@@ -160,7 +211,7 @@ KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は別�
 
 Discovery結果を同一標本のまま正式購入条件へ昇格させない。
 
-PWA analysis列・WATCH/MATCH・analysis code/commentの責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とする。PWA/Newspaper側で研究条件を再実装しない。
+PWA analysis列・WATCH/MATCH・analysis code/commentの責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とする。日次生成・監査・スレッド要約は `docs/Eval_PWA_Submission_Daily_Operation_v0_1.md` を正本とする。PWA/Newspaper側で研究条件を再実装しない。
 
 ## 6. JRA結果取得
 
@@ -202,7 +253,7 @@ Canonical Keyを文字列化する場合は `開催日|場|R|馬番` の区切�
 
 ## 9. スレッド引っ越し / interruption
 
-通常の週次完成CSV作業は、latest main + `.gpt/HANDOFF.md` + 当日画像があれば新スレッドで再開可能とする。過去チャット全文を前提にしない。
+通常の週次作業は、latest main + `.gpt/HANDOFF.md` + 当日画像または完成CSVがあれば新スレッドで再開可能とする。過去チャット全文を前提にしない。
 
 途中状態を引き継ぐ場合は、最低限次を圧縮して残す。
 
@@ -215,6 +266,14 @@ OCR validation status
 PACI Issue/request_id
 PACI run_id/artifact_name
 完成CSV生成済みか
+完成CSV reference
+PWA analysis contract/version
+analysis as-of
+analysis overlay生成済みか
+PWA提出CSV生成済みか
+highlighted_rows / code_counts
+未解決tie/rank review
+スレッド簡潔サマリ返却済みか
 未解決manual review/error
 Git source commit/SHA
 ```
