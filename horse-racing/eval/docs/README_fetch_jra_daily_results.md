@@ -27,6 +27,8 @@ GitHub `yukki0113/GPT` の `main` ブランチにある以下を正本としま�
 
 日次CSV、検証レポート、ログ等の実行成果物はGitへcommitしません。
 
+GitHub実行経路はroot `.gpt/GITHUB_OPERATION_POLICY.md` と `horse-racing/eval/.gpt/WORKFLOW.md` を上位正本とします。
+
 ## 取得元
 
 Yahoo!スポーツの競馬ページを利用します。
@@ -158,19 +160,44 @@ python horse-racing/eval/src/validate_jra_results.py \
 
 validatorは、列不足・空CSV・失敗行・キー重複・出走頭数異常・単勝/複勝欠損・成功行のエラー詳細混入・1〜3着欠損を検査します。
 
-## Chat標準経路: GitHub Issue → Actions
+## 実行経路 — C / D を開始時に判定
 
-日常のChat運用では `.github/workflows/jra_results_chat.yml` を使用します。Chat実行環境からYahoo!スポーツへ直接通信する必要はありません。
+この処理はSecretsを必要としないため、Issue / Actions専用処理ではありません。
 
-ChatはGitHub Issueを作成します。
+### C: Pure Deterministic Execution（通常可能なら優先）
 
-タイトル:
+次を満たす場合、GitHub mainのfetcher/validatorをChat/ローカルで直接実行します。
+
+- 実行環境から取得先へ外部アクセス可能
+- 対象期間が通常規模
+- GitHub Actions run ID / artifactを正式監査証跡として固定する必要がない
+
+```text
+A: latest main / source確認
+-> C: fetch_jra_daily_results.py
+-> C: validate_jra_results.py
+-> validation PASS
+-> 必要な成果物を返却/台帳処理
+```
+
+「GitHubにworkflowが存在する」ことだけを理由にIssueを作りません。
+
+### D: Actions-Native Execution
+
+次の場合は `.github/workflows/jra_results_chat.yml` / `[JRA_RESULTS_REQUEST]` を使用します。
+
+- Chat/ローカル環境から取得先へ到達できない
+- 長期・大量取得でrunner実行が適切
+- 取得/validation結果をimmutableなActions run / artifactとして監査保存したい
+- 後続がActions artifact chainを正式に参照する
+
+Issue title:
 
 ```text
 [JRA_RESULTS_REQUEST] <request_id>
 ```
 
-本文は生のJSONとします。期間指定例:
+期間指定例:
 
 ```json
 {
@@ -189,67 +216,54 @@ ChatはGitHub Issueを作成します。
 }
 ```
 
-`request_id` はChat側で毎回一意に生成します。
+D経路ではIssue作成前に `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を適用します。
 
-処理内容:
+Actions処理:
 
 1. Issue作成イベントでActions起動
-2. `main` をcheckout
-3. `horse-racing/eval/requirements.txt` を導入
-4. Git正本の `fetch_jra_daily_results.py` を実行
-5. `validate_jra_results.py` でCSVを検証
-6. CSV、`validation_report.json`、`run_status.txt`、`resolved_request.json` をartifact化
-7. 同じIssueへ `JRA_RESULTS_RESULT` コメントを投稿
-8. Issueを自動クローズ
+2. `main` checkout
+3. requirements導入
+4. fetcher実行
+5. validator実行
+6. CSV / validation / run status / resolved requestをartifact化
+7. `JRA_RESULTS_RESULT` コメント
+8. Issue close
 
-結果コメントには少なくとも以下が含まれます。
+成功条件:
 
-- `request_id`
-- `run_id`
-- `artifact_name`
-- `fetch_exit_code`
-- `validation_exit_code`
-- validatorのJSON結果
+```text
+fetch_exit_code == 0
+validation_exit_code == 0
+validation.validation_status == success
+```
 
-Chatは `fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を成功条件とします。
+artifact保持期間はworkflow設定に従います。日次成果物はGitへcommitしません。
 
-artifact保持期間は14日です。日次成果物はGitへcommitしません。
+### 実動確認履歴
 
-### 実動確認
+2026-08-22〜2026-08-23で旧来のChat Issue経路を実動確認済みです。
 
-2026-08-22〜2026-08-23でChat専用Issue経路を実動確認済みです。
-
-- 72行取得
-- 72行成功
-- 失敗0
-- 重複0
+- 72行取得 / 72行成功
+- 失敗0 / 重複0
 - 出走頭数異常0
-- 単勝欠損0
-- 複勝欠損0
+- 単勝・複勝欠損0
 - 1〜3着欠損0
 - validation成功
-- artifact生成確認
-- 結果コメント投稿確認
-- Issue自動クローズ確認
+- artifact / result comment / auto close確認
+
+この履歴はD経路が動作することの証跡であり、「今後も常にDを使う」という意味ではありません。
 
 ## 予備経路
 
-### 人間向け workflow_dispatch
-
-`.github/workflows/jra_results_manual.yml` はGitHub UIからの手動実行用に残します。日常のChat運用では使用しません。
-
-### 直接Python実行
-
-Chat/ローカル実行環境からの直接Python実行は、デバッグ・緊急時の補助経路です。Chatの外部通信制約に左右されるため、日常運用の第一選択にはしません。
+`.github/workflows/jra_results_manual.yml` はGitHub UIからの手動実行用です。通常はC/D判定後の適切な経路を使います。
 
 ## Chatスレッドでの標準運用
 
-1. GitHub `main` の最新状態と関連READMEを確認
-2. 一意の `request_id` を生成
-3. 専用Issueを作成
-4. 対象Issueの `JRA_RESULTS_RESULT` コメントを確認
-5. 終了コードとvalidator結果を判定
-6. 必要な場合のみ `run_id` からartifactを回収
-7. ユーザーへ結果を報告
-8. 日次成果物はGitへcommitしない
-9. ソース・Workflow変更時のみ、実動テスト・README更新・commitを行う
+1. latest main、project README / WORKFLOW / HANDOFFを確認
+2. Cで直接実行可能か判定
+3. Cならfetch + validationを直接完結
+4. Dが必要ならpreflight後に一意request_idでIssueを1回発行
+5. DではRESULT / run / artifactをA: Read / Auditで確認
+6. validation結果を必ず判定
+7. 日次成果物はGitへcommitしない
+8. source/workflow仕様変更時はdocs/testsと整合させる
