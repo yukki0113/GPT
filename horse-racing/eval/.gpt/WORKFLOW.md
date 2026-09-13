@@ -25,12 +25,17 @@ A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選ん
 6. `.gpt/HANDOFF.md`
 7. 対象moduleのdocs / source / tests / workflow
 8. OCRなら `docs/OCR_Validation_Contract.md`
-9. Phase2なら該当 `docs/Eval_Phase2_JRDB_*_v0_1.md`
+9. Phase2なら current contracts:
+   - `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`
+   - `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`
+   - `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
 10. PWAコメントなら `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 
 そのうえで既存入出力仕様と業務仕様を維持し、実行経路A/B/C/Dを決める。DでなければIssueを作らない。
 
 過去スレッドの記憶だけでmodule名・条件・run IDを補完しない。GitHub正本または外部正本を再確認する。
+
+version付きcontractと実source `VERSION` / schemaが食い違う場合は、古いcontractへ実装を推測で合わせず、source/tests/docsを監査してcurrent contractを更新する。
 
 ## 2. このスレッドの標準: Chatへ直接渡されたEval画像 -> 完成CSV
 
@@ -135,12 +140,12 @@ Phase2事前特徴の固定長parseはJRDB common parser/adapterへ委譲し、E
 
 ### 5.1 Pre-race components
 
-- `src/build_phase2_jrdb_kyi_features.py` — KYI事前特徴。current-race結果を読まない。
-- `src/build_phase2_jrdb_training_features.py` — KYI identity setへCHA/CYBをLEFT JOIN。CHA/CYB欠損馬をrunner setから落とさない。
-- `src/build_phase2_jrdb_previous_features.py` — KYI `previous[0].result_key` とPACI ZED `result_key` を完全一致。fallback禁止。
+- `src/build_phase2_jrdb_kyi_features.py` — KYI事前特徴。current contractは `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`。current-race結果を読まない。
+- `src/build_phase2_jrdb_training_features.py` — KYI identity setへCHA/CYBをLEFT JOIN。contractは `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`。CHA/CYB欠損馬をrunner setから落とさない。
+- `src/build_phase2_jrdb_previous_features.py` — KYI `previous[0].result_key` とPACI ZED `result_key` を完全一致。contractは `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`。fallback禁止。
 - `src/build_phase2_jrdb_feature_bundle.py` — 3componentを `race_horse_key` で1対1結合し、identity/source/version不一致をerrorにする。
 
-current-race SED、確定着順、確定人気・オッズ、払戻等をForward事前特徴へ混入させない。具体的なschema / availability class / semanticは各 `docs/Eval_Phase2_JRDB_*_v0_1.md` を正本とする。
+current-race SED、確定着順、確定人気・オッズ、払戻等をForward事前特徴へ混入させない。
 
 KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は別概念。値が一致する前提にせず、それぞれ保持する。
 
