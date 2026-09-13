@@ -73,6 +73,8 @@ JRDB BACの固定長定義に従う。
 
 距離・class・開催場を均等割りしない。Gen0で細かく人工的な標本設計を入れすぎないためである。
 
+PRIMARY 50RとRESERVE 20Rは別々に層化抽出し、PRIMARY本体の芝/ダート比率が予備枠の並びに左右されないようにする。
+
 ## 5. Reproducibility
 
 samplerはcandidate poolをstable orderで読み、次を保存する。
@@ -110,7 +112,12 @@ RESERVE 20Rは最初から別に固定する。予備を使ってよいのは、
 - GPTが自信を持てない
 - 予想後に結果が悪かった
 
-置換時はPRIMARY rowを `SKIPPED_TECH`、最もsample_orderの小さい未使用RESERVEを `READY` とし、`replacement_for` と `skip_reason` を記録する。
+置換時はPRIMARY rowを `SKIPPED_TECH` とし、未使用RESERVEのうち次を満たす最小sample_orderを `READY` へ昇格する。
+
+1. failed PRIMARYと同じ `surface_code`（芝/ダート構成を維持）
+2. 昇格後もeffective sampleの同一開催日3R上限を超えない
+
+`replacement_for` と `skip_reason` を必ず記録する。
 
 ## 7. Google Sheets queue
 
@@ -187,7 +194,9 @@ READY / SOURCE_READY
 ## 11. Implementation
 
 - `src/build_racenote_gen0_sample_manifest.py`
+- `src/racenote_forecast_gen0_queue.py`
 - `tests/test_build_racenote_gen0_sample_manifest.py`
+- `tests/test_racenote_forecast_gen0_queue.py`
 - `config/racenote_forecast_gen0_ledger_v0_1.json`
 - `FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md`
 - Google Sheets `対象Rキュー`
