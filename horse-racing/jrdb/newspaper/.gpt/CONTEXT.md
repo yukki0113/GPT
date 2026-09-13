@@ -1,7 +1,9 @@
 # JRDB Newspaper project context
 
 ## Status
-REAL-DATA POC ACTIVE. PACI-only 札幌記念 PoC is PASS; Analysis-backed 5+3 PoC is the current validation step. Merger / publisher / PWA page are not implemented yet.
+OPERATIONAL。日次Base/history生成、external merge、Edge merge、immutable Drive revision、Current Publish、GitHub Pages/PWA deliveryまで実装・運用済みです。
+
+この文書内の札幌記念PoCや5+3 PoCは受入証跡です。現在の運用判断はlatest mainのsource、`DAILY_WORK_CONTRACT.md`、`HANDOFF.md`、対象日のverified inputを優先します。
 
 ## Goal
 スマホ中心の自分用競馬新聞を、JRDB Base + optional external addonsのハイブリッド日次bundleとして生成・配布する。
@@ -16,6 +18,10 @@ UI meaning order:
 - JRDB fixed-width parse: `../../src/jrdb_raw.py`
 - JRDB historical Raw access: `../../src/jrdb_raw_history.py`
 - Newspaper Base builder: `../../src/jrdb_newspaper_build.py`
+- Newspaper day builder: `../../src/jrdb_newspaper_day_build.py`
+- external addon merger: `../../src/jrdb_newspaper_merge_external.py`
+- Edge merger / display adapter: `../../src/jrdb_newspaper_merge_edge.py` / `../../src/jrdb_newspaper_edge_adapter.py`
+- current publisher: `../../src/jrdb_newspaper_publish_current.py`
 - real-data PoC auditor: `../../src/audit_jrdb_newspaper_poc.py`
 - Newspaper design: `../../docs/JRDB_PWA_Newspaper_Design_v0_1.md`
 - Neutral dependency inventory: `../../docs/JRDB_Newspaper_Neutral_Dependency_Inventory_v0_1.md`
@@ -23,6 +29,8 @@ UI meaning order:
 - Race bundle schema: `../../schema/jrdb_pwa_newspaper_race_schema_v0_1.json`
 - Daily manifest draft schema: `../../schema/jrdb_pwa_newspaper_manifest_schema_v0_1.json`
 - Issue request contract: `REQUEST_CONTRACT.md`
+- thread restart handoff: `HANDOFF.md`
+- Eval analysis contract: `../../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 - RaceNote source truth remains RaceNote v1.0. Newspaper does not replace or mutate it.
 - Edge source truth remains JRDB Edge Registry.
 - Eval / keibailuka / independent index remain separate source systems.
@@ -119,11 +127,11 @@ Rules:
 - Analysis file/size/SHA/quick_check/row count/date spanをauditへ残す
 - detailed/compact null distributionsを分離する
 
-## Routine target
-将来のWork運用では、ユーザーの通常依頼を次の形まで簡略化する。
+## Routine operation
+日次Workでは、ユーザーの通常依頼を次の形まで簡略化する。
 
 ```text
-MM/DDの競馬新聞用データを生成してください。
+MMDDの競馬新聞用JSONを作成し、アップロードしてください。
 ```
 
 実行はhybrid / idempotentとする。
@@ -131,8 +139,10 @@ MM/DDの競馬新聞用データを生成してください。
 - PACIがあればJRDB Baseを生成する
 - Analysis Liteが利用可能ならolder compact historyへ使用できる
 - external addonが利用可能ならmergeする
-- unavailable addonはPENDING/nullのまま保持する
+- unavailable addonは`NOT_FOUND` / `ERROR` / `NOT_EXPECTED`として保持する
 - 同じ日付への再実行で新たに利用可能になったaddonだけを安全に反映する
+
+「アップロード」は、Drive canonical保存、immutable revision、`publish/current.json`更新、Current Publish、Pages success確認までを含みます。
 
 ## Merge ownership
 - JRDB: race / basic / jrdb / history
@@ -140,7 +150,7 @@ MM/DDの競馬新聞用データを生成してください。
 - RaceNote prediction: addons.racenote_prediction and owned race note fields
 - keibailuka: addons.keibailuka
 - independent index: addons.my_index
-- Edge matcher: edge_matches
+- Edge matcher: `special_memos`（旧`edge_matches`はread fallback）
 
 各consumerは他source namespaceを上書きしない。
 
@@ -153,6 +163,18 @@ date + venue_code + race_no + horse_no
 
 JRDB内ではrace_key / race_horse_key / horse_idも保持する。
 馬名推測joinを標準化しない。
+
+## Eval PWA analysis submission
+
+canonicalな `YYYYMMDD_Eval_PWA提出CSV_v0_1.csv` がある日は、旧Eval完成CSVより優先します。分析6列はEval側の判定済み出力であり、Newspaperはexact join後に `addons.eval.analysis` へ透過格納します。
+
+- `eval_analysis_codes` は`;`区切りからJSON arrayへ変換する
+- コメントなしは`analysis: null`
+- `NONE / WATCH / MATCH`、H1/H2、注目馬選定、コメントをNewspaper/PWA側で再判定・補正しない
+- Evalは`date + venue_code + race_no + horse_no`、horse_name完全一致、`join_status == MATCHED`を監査する
+- auditにmerged rows、analysis comment rows、`NONE / WATCH / MATCH`の受領件数を残す
+
+旧形式のEval完成CSVは引き続き有効です。分析列のcontract違反は推測補正せず、Evalだけ安全に除外できる場合は`ERROR`として他sourceの処理を継続します。
 
 ## History
 Newspaperの履歴要件はNewspaper自身のcontractとして定義する。
@@ -168,17 +190,20 @@ Newspaperの履歴要件はNewspaper自身のcontractとして定義する。
 
 既存RaceNoteで得られた5+3 / 8走の知見は設計参考にはできるが、実装依存・契約依存にはしない。
 
-## Issue entrypoint for current PoC
+## Actions entrypoint
 
-Current real-data PoC uses `[JRDB_RAW_FETCH_REQUEST]` with optional `newspaper_poc`. Exact contract is `REQUEST_CONTRACT.md`. Root `.gpt/ISSUE_REQUEST_CONTRACTS.md` preflight/retry rules apply.
+PACI未取得でJRDB認証が必要な場合だけ、`[JRDB_RAW_FETCH_REQUEST]`を使用します。取得済みPACI/CSV/JSONに対する日次build、merge、auditはdeterministic local executionです。正式publish/PagesはCurrent Publish契約に従います。
 
 ## Distribution
 日次生成JSONはGitへ入れない。Driveを保存正本候補とし、PWA配布面はGitHub Pages data + manifest、端末側はOPFSを第一候補とする。
 
-## Deferred
+## Current boundaries
 - live/final odds
 - 当日最終馬体重
 - 勝負服画像
 - 10走以上
-- Edge status表示policy
 - 独自指数計算
+
+## Restart rule
+
+スレッド移動時は `README.md` -> `HANDOFF.md` -> `CONTEXT.md` -> `WORKFLOW.md` -> `DAILY_WORK_CONTRACT.md` -> `REQUEST_CONTRACT.md` -> latest main source/schema -> target-date inputs の順で確認します。古いIssue、PoC、固定SHAをcurrent truthとみなさないでください。
