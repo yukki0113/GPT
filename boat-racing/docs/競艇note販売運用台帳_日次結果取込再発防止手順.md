@@ -68,6 +68,6 @@
 
 ## 7. Chat経路の完了判定
 
-`ForwardTrial_Ver0.1` の通常日次記帳は、Google service-account、Drive immutable Freeze、Sheets read-back、Actions artifactを必要とするため、`[BOATRACE_LEDGER_IMPORT]` IssueからActionsで完結する。詳細なrequest contractとスレッド移行時の再開手順は `ForwardTrial_Chat日次台帳記帳運用.md` を正本とする。
+`ForwardTrial_Ver0.1` の通常日次記帳はWork直結経路で完結する。Driveの種別別フォルダから4原本を固定し、決定論moduleで書込計画を生成後、接続済みGoogle Sheetsへ直接書込み・read-backする。Google service-account、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、Issue / Actions経路は今後使用しない。詳細手順は `ForwardTrial_Chat日次台帳記帳運用.md` を正本とする。
 
 明細の書込み、日別集計の更新、または取込管理の単独表示を完了根拠にしない。Atomic Aggregate Set 9タブ、`FT2_集計監査`、既存販売台帳mirror、数式エラー0のread-back後だけ完了とする。
