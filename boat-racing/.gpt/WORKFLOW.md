@@ -132,3 +132,13 @@ retry時は以下を必須とする。
 - アップロード前に既存同名・内容を確認し、アップロード後にDrive上の存在を再確認する。同名異内容は上書きせず競合として扱う。
 - 月次ZIP化と元CSV削除は明示依頼時のみ行う。ZIPテスト、収録件数、Drive上の存在を確認できた後に、収録済み元CSVだけを削除する。
 - 対象フォルダID、探索順、命名、再開時の詳細は .gpt/HANDOFF.md を正本とする。
+
+
+## Chat起動の日次台帳記帳
+
+- 日次台帳記帳は `[BOATRACE_LEDGER_IMPORT] <request_id>` Issueと `.github/workflows/boatrace_ledger_import_issue.yml` を使うD. Actions-Native Executionである。理由はGoogle service-account secret、Drive immutable Freeze、Sheets write、run/artifact監査証跡を必要とするため。
+- Issue本文はraw JSONで `date`、`source_folder_id`、正本 `spreadsheet_id`、複数候補がある場合の4 `file_ids` を持つ。workflowが一意解決できない原本は推測せずfail-closedとする。
+- workflowは `forward_trial_analysis_import.py` → `forward_trial_chat_ledger.py` → `run_forward_trial_chat_import.py` を実行し、Chat内に別の転記・集計ロジックを作らない。
+- 対象日はwrite/read-back中 `集計再生成中` とし、Atomic Aggregate Set 9タブの同一generation/source、FT2_ID重複0、既存販売台帳mirror、formula error 0が確認できた場合だけ `完了` とする。
+- 新スレッドでは会話履歴の途中状態を使わず、対象日のDrive 4資産、`FT2_取込管理`、`FT2_集計監査`、`FT2_全R明細`、Issue RESULT/artifactを読み直す。通常の途中返信はせず、実ブロッカーまたは完了時だけ報告する。
+- 成功条件はIssueコメントの `<!-- BOATRACE_LEDGER_IMPORT_RESULT -->` JSONで `status=success`。artifact `boatrace-ledger-result-<run_id>` は90日保持する。failureはblind rerunせず、failure_class / error_code / failed stepを確認する。
