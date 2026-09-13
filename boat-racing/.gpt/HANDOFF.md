@@ -257,11 +257,11 @@ data親フォルダ配下の既存区分を維持する。
 
 ## 11. Chat日次台帳記帳の再開契約
 
-日次の「台帳記帳」は、結果取得とは別の完結工程である。最新 `main` の `docs/ForwardTrial_Chat日次台帳記帳運用.md`、`.github/workflows/boatrace_ledger_import_issue.yml`、`src/forward_trial_analysis_import.py`、`src/forward_trial_chat_ledger.py`、`src/run_forward_trial_chat_import.py` を確認する。
+日次の「台帳記帳」は、結果取得とは別の完結工程である。最新 `main` の `docs/ForwardTrial_Chat日次台帳記帳運用.md`、`src/forward_trial_analysis_import.py`、`src/forward_trial_chat_ledger.py` を確認する。
 
 - Workは対象日を受けたら、Driveの種別別フォルダにあるracecard / prediction / sales-selection / resultを正本として確認し、4 file IDを固定する。
 - GitHub `main` の決定論moduleでstable-key upsertと全再集計を生成し、接続済みGoogle Sheetsへ直接書込み・read-backする。手計算やセル単位の場当たり的転記を完了扱いにしない。
 - Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、およびGitHub ActionsからのGoogle Drive / Sheetsアクセスは断念・廃止した。台帳記帳でIssue / Actionsを起動しない。
-- 完了の根拠は、Issue RESULTの `status=success`、`FT2_取込管理`、`FT2_集計監査` の9タブ同一generation/source、read-back検証の一致である。明細存在、日別集計の最新日、取込管理の表示だけでは不十分である。
+- 完了の根拠は、`FT2_取込管理`、`FT2_集計監査`の9タブ同一generation/source、read-back検証の一致である。明細存在、日別集計の最新日、取込管理の表示だけでは不十分である。
 - 予想、販売選別、freeze、結果は再評価・再ランキングしない。frozen列差異、grade未解決、世代差、件数差はfail-closedとする。
-- 通常は処理完了まで途中報告を出さず、実ブロッカーまたは最終完了時にだけ報告する。最新の対象日・run ID・累計値はこのHANDOFFに固定せず、Drive / Sheets / RESULTから再取得する。
+- 通常は処理完了まで途中報告を出さず、実ブロッカーまたは最終完了時にだけ報告する。最新の対象日・累計値はこのHANDOFFに固定せず、Drive / Sheetsから再取得する。
