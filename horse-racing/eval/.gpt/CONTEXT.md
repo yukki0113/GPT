@@ -2,7 +2,9 @@
 
 ## Status
 
-Active。Eval表の画像取得、OCR/検証、JRDB事前情報付与、結果取得、台帳更新を支援する領域です。
+Active。Eval表の画像取得、OCR/検証、JRDB事前情報付与、Phase2研究、結果取得、台帳更新を支援する領域です。
+
+スレッド引っ越し用のdurable bootstrapは `.gpt/HANDOFF.md` を参照してください。過去チャット全文を前提にせず、latest main + project docs + 対象入力から再開できる状態を維持します。
 
 ## Source of truth
 
@@ -15,6 +17,20 @@ Eval画像、OCR途中成果物、日次取得CSV、検証レポート、ログ�
 - Spreadsheet ID: `1XBOYZrtJFLfY0Q3EmLfImJvughyXdAvdsLnmix8hgo0`
 - Chat / WorkではGoogle Drive / Google Sheetsのnative操作で直接参照・更新する。
 - 旧Google Drive Excel版とGitHub `horse-racing/eval/ledger/Eval表集計・検証.xlsx` は移行前スナップショットであり、最新台帳として扱わない。
+
+## Durable principles
+
+1. PACI joinはidentity/key整合を示すだけで、Eval OCR値の正しさを保証しない。
+2. 正式完成条件は `OCR validation == ok AND PACI join validation == success`。
+3. Eval順位色は画像凡例の固定順 `red -> blue -> orange -> green -> yellow`。OCR値から推定しない。
+4. 0905で確認した2/9先頭桁誤読等は独立再読し、根拠不足ならmanual reviewでfail-closed。
+5. OCR中間契約は `date,venue,race_no,horse_no,eval`。馬名文字列はOCRせずPACIから付与する。
+6. Phase2事前特徴へcurrent-race結果時点データを混ぜない。結果backfillは別layer。
+7. JRDB固定長BYTE位置はJRDB common parser / adapterを正本とし、Eval側へ複製しない。
+8. Discovery特徴を同一標本のまま正式Forward条件へ昇格させない。
+9. PWA/Newspaperは研究条件を再実装せず、Eval側contractが判定・analysis commentを所有する。
+
+OCR詳細は `docs/OCR_Validation_Contract.md`、研究詳細は `docs/Eval_Phase2_JRDB_*_v0_1.md`、PWA責務境界は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とします。
 
 ## GitHub execution routing — 2026-09-10
 
@@ -33,11 +49,15 @@ DでIssueを作る場合のみ、ルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` の
 
 馬名セル画像は行存在判定に使用するが馬名文字列のOCRは行わない。会場名ヘッダーOCR、Eval数値OCR、色付き上位セル・同色tie・固定色順位とEval大小のvalidationを維持する。
 
+`numeric_ocr.py` はstack OCR、digit component repair、独立再読、cell auditを担当する。`pipeline.py` は色矛盾を独立情報として二段階再読へ使い、`validator.py` は構造・値域・キー・色順位・manual reviewをfail-closed gateとして評価する。
+
 正式馬名・レース属性・馬属性は後段のJRDB PACI enrichmentが `date + venue + race_no + horse_no` をキーに付与する。
 
 ChatへユーザーがEval表画像を直接渡す通常運用では、OCRはC: Pure Deterministic Executionとし、GitHub mainの正本ロジックをChat/ローカルで実行する。OCR validationがerrorならPACI enrichmentへ進めない。
 
 既存 `[EVAL_OCR_REQUEST]` / `.github/workflows/eval_ocr_chat.yml` は、GitHub内artifact chain、immutable OCR audit、多数画像、runner側Tesseract環境固定が必要な場合のD経路として残す。
+
+旧 `.github/workflows/eval_image_enrich_chat.yml` / `[EVAL_IMAGE_ENRICH_REQUEST]` はcombined compatibility経路であり、通常のChat直接画像処理の第一選択ではない。
 
 ## Chat画像 -> 完成CSV
 
@@ -47,6 +67,7 @@ ChatへユーザーがEval表画像を直接渡す通常運用では、OCRはC: 
 
 ```text
 ユーザー画像
+  -> A: latest main / contract確認
   -> C: Chat/ローカルでGitHub mainのOCRロジックを使用
   -> OCR validation PASS
   -> 5列OCR CSV
@@ -72,6 +93,21 @@ PACI取得には `JRDB_USER` / `JRDB_PASSWORD` Secretsが必要なため、`.git
 X投稿から新規に取得し、取得時点のmetadata/media/validationを同一runのartifactへ固定する運用では、`.github/workflows/eval_media_chat.yml` / `[EVAL_MEDIA_REQUEST]` をDとして維持する。これは外部投稿の取得物をimmutableな監査証跡として扱うため。
 
 単発のRead確認で既に画像を直接取得できておりartifact固定が不要なら、追加Issueを作らない。
+
+## Phase2 research
+
+事前特徴module:
+
+- `src/build_phase2_jrdb_kyi_features.py`
+- `src/build_phase2_jrdb_training_features.py`
+- `src/build_phase2_jrdb_previous_features.py`
+- `src/build_phase2_jrdb_feature_bundle.py`
+
+KYIをrunner identityの基準とし、CHA/CYBはLEFT JOIN、前走はKYI result key -> PACI ZED exact-link。推測fallbackを行わない。
+
+current-race SED・確定結果は事前特徴へ使用しない。`src/backfill_phase2_sed.py` は結果時点layerとして分離する。
+
+KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は意味が異なるため統合しない。
 
 ## JRA結果取得
 
