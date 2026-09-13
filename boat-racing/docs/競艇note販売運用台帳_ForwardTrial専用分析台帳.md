@@ -70,3 +70,10 @@ python boat-racing/src/forward_trial_analysis_import.py \
   --output forward_trial_analysis.json
 python -m unittest discover -s boat-racing/tests -v
 ~~~
+
+
+## Chat起動の恒久取込
+
+認証付きの通常日次取込は `forward_trial_chat_ledger.py` と `run_forward_trial_chat_import.py` を通じて `.github/workflows/boatrace_ledger_import_issue.yml` から実行する。前者は既存明細とのfrozen列比較、stable-key upsert、全派生集計、既存販売台帳mirrorを純粋に組み立て、後者だけがDrive/Sheets認証とread-backを担当する。
+
+本体write中の状態は `集計再生成中` とする。Atomic Aggregate Set 9タブのgeneration/source件数、既存販売台帳mirror、FT2_ID重複0、数式エラー0をread-backしてから最小writeで `完了` を確定する。途中例外、世代差、grade未解決、frozen列差異は完了にしない。新スレッドでの再開は `ForwardTrial_Chat日次台帳記帳運用.md` の正本確認手順に従い、会話中の途中状態から推測しない。
