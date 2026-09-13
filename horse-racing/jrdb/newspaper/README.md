@@ -1,6 +1,6 @@
 # JRDB Newspaper module
 
-Status: V0.1 INITIAL ACCEPTANCE PASS / DAILY PACKAGE + EXTERNAL MERGE VALIDATED
+Status: OPERATIONAL / DAILY PACKAGE + EXTERNAL MERGE + CURRENT PUBLISH + PWA DELIVERY
 
 このディレクトリは、JRDB PWA向け「自分用競馬新聞」の日次生成・外部source merge・配布契約を独立管理するためのmodule boundaryです。
 
@@ -14,8 +14,12 @@ Status: V0.1 INITIAL ACCEPTANCE PASS / DAILY PACKAGE + EXTERNAL MERGE VALIDATED
 - `.gpt/REQUEST_CONTRACT.md`
 - `.gpt/DAILY_WORK_CONTRACT.md`
 - `.gpt/WORK_THREAD_BOOTSTRAP.md`
+- `.gpt/HANDOFF.md`
+- `../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 
 日次Workの通常運用契約は `.gpt/DAILY_WORK_CONTRACT.md` を正本とし、新しい専用Workスレッドの起動には `.gpt/WORK_THREAD_BOOTSTRAP.md` を使用します。
+
+会話量上限やスレッド移動からの再開には `.gpt/HANDOFF.md` を使用します。日付付きの過去auditや固定SHAは証跡であり、current truthにはしません。再開時は必ずlatest mainのcontractとsourceを優先します。
 
 ## Architecture boundary
 
@@ -51,11 +55,27 @@ RaceNoteの予想結果・印・短評は外部addonとして `addons.racenote_p
 - `../src/jrdb_newspaper_build.py`: 1レースNewspaper Base生成
 - `../src/jrdb_newspaper_day_build.py`: 1日分のmanifest + race JSON群生成
 - `../src/jrdb_newspaper_merge_external.py`: 外部sourceのnamespace-safe merge + day-package生成
+- `../src/jrdb_newspaper_merge_edge.py`: Edge matcher出力のexact merge
+- `../src/jrdb_newspaper_edge_adapter.py`: Edge evidenceのreader-facing表示変換
+- `../src/jrdb_newspaper_publish_current.py`: Drive canonicalからCurrent Publish候補を検証・配布
 - `../src/audit_jrdb_newspaper_poc.py`: real-data PoC監査
 - `../pwa/newspaper.html`: Newspaper PWA
 - `../pwa/newspaper-day.js`: 1日パッケージ読込・OPFS保存・レース切替
+- `../pwa/newspaper-v9.js`: Eval分析コメントを持つEval値だけのモーダル表示
 
 Base/historyはCommon Reader / neutral JRDB accessから生成し、最大8走を保持します。初期表示3走、切替5走/8走。外部source欠損はBase失敗にせずnull/PENDINGで保持します。
+
+## Eval PWA analysis comment
+
+Eval側が条件判定・注目馬選定・コメント作成を所有します。Newspaperは `YYYYMMDD_Eval_PWA提出CSV_v0_1.csv` をexact joinして、分析6列を `addons.eval.analysis` へ透過的に格納するだけです。
+
+- `eval_analysis_codes` は `;` 区切りをJSON arrayへ変換する
+- コメントなしは `analysis: null`
+- `NONE / WATCH / MATCH` をNewspaper/PWA側で再判定・独自解釈しない
+- `date + venue_code + race_no + horse_no`、horse_name完全一致、`join_status == MATCHED` の監査を維持する
+- auditではEval merged rows、analysis comment rows、status別件数を記録する
+
+詳細契約は `../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を優先します。旧形式のEval完成CSVも利用可能で、その場合は `analysis: null` とします。
 
 ## 2026-09-05 full-day acceptance
 
