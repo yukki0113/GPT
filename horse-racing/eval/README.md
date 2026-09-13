@@ -191,7 +191,13 @@ Phase2事前研究ではPACI由来の開催前情報を利用します。
 
 current-race SED、確定着順・人気・オッズ・払戻等は事前特徴に使用しません。結果backfillは別レイヤーです。
 
-具体的なschema / availability / semantic contractは `docs/Eval_Phase2_JRDB_*_v0_1.md` を正本とします。研究条件やPWA analysis codeの定義は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` 等の契約へ置き、READMEへ複製して二重管理しません。
+現行contractは以下を正本とします。
+
+- `docs/Eval_Phase2_JRDB_KYI_Features_v0_2.md`
+- `docs/Eval_Phase2_JRDB_Training_Features_v0_1.md`
+- `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
+
+研究条件やPWA analysis codeの定義は `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` 等の契約へ置き、READMEへ複製して二重管理しません。
 
 ## JRA結果取得
 
