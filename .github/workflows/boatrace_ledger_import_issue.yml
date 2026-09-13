@@ -18,7 +18,7 @@ env:
 jobs:
   import:
     if: >
-      github.event.issue.user.login == 'yukki0113' &&
+      github.event.issue.author_association == 'OWNER' &&
       startsWith(github.event.issue.title, '[BOATRACE_LEDGER_IMPORT]')
     runs-on: ubuntu-latest
     env:
