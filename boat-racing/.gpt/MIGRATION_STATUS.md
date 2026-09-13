@@ -3,7 +3,7 @@
 Updated: 2026-09-13
 Status: COMPLETE
 
-## Gitへ移行済み
+## 1. Gitへ移行済みの運用正本
 
 ### Project / GPT operation
 
@@ -29,6 +29,11 @@ Status: COMPLETE
 - `boat-racing/docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
 - `boat-racing/docs/競艇note販売運用台帳_日次結果取込再発防止手順.md`
 - `boat-racing/docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`
+- `boat-racing/docs/ForwardTrial_Chat日次台帳記帳運用.md`
+- `boat-racing/docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md`
+- `boat-racing/docs/司令塔Chat_台帳正本運用連携.txt`
+- `boat-racing/docs/競艇_会場特性マスタ_Ver0.1.md`
+- `boat-racing/docs/競艇_会場特性×Ver1.2.1_336R検証_Ver0.1.md`
 
 ### Python modules
 
@@ -41,8 +46,9 @@ Status: COMPLETE
 - `boat-racing/src/fetch_boatrace_results.py`
 - `boat-racing/src/ledger_daily_result_import.py`
 - `boat-racing/src/forward_trial_analysis_import.py`
+- `boat-racing/src/forward_trial_chat_ledger.py`
 
-### GitHub Actions
+### GitHub Actions — 現役取得経路
 
 - `.github/workflows/boatrace_racelist_manual.yml`
 - `.github/workflows/boatrace_racelist_issue.yml`
@@ -51,77 +57,91 @@ Status: COMPLETE
 - `.github/workflows/boatrace_results_manual.yml`
 - `.github/workflows/boatrace_results_chat.yml`
 
-## 移行状態
+## 2. 廃止済みの台帳記帳経路
 
-競艇取得運用に必要なPython本体、README、GPT向け運用資料、定型作業手順、ForwardTrial予想・結果取込・分析実装、Python依存関係、GitHub Actions実行経路はGitへ移行済み。
+Googleサービスアカウント / `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` を使ってGitHub ActionsからGoogle Drive / Sheetsへ書き込む台帳記帳経路は廃止済み。
 
-今後は `yukki0113/GPT` の `main` ブランチ配下 `boat-racing/` と `.github/workflows/` を正本として参照する。
-過去の添付ZIPやWorkスレッド内の一時作業領域は、Git正本の代わりとして使用しない。
+以下を現行正本として扱わない。
 
-会話量上限やスレッド引越し時は `boat-racing/.gpt/HANDOFF.md` を再開入口とする。変動する日次状態や累計値を会話メモリだけで復元せず、Google Drive、ネイティブGoogle Sheets、GitHub Issue / Actionsの正本から再取得する。
+- 旧 `run_forward_trial_chat_import.py`
+- 旧 `boatrace_ledger_import_issue.yml`
+- `[BOATRACE_LEDGER_IMPORT]` Issueを使う日次台帳記帳
+- 旧Issue RESULT / artifactを完了判定の必須条件とする運用
 
-作業開始時は、少なくとも以下を確認する。
+日次台帳記帳の現行標準は、Work / 接続済みGoogle Drive・Google Sheetsと、Git正本の `forward_trial_analysis_import.py` / `forward_trial_chat_ledger.py` を組み合わせる直結経路である。
 
-1. `boat-racing/README.md`
-2. `boat-racing/.gpt/CONTEXT.md`
-3. `boat-racing/.gpt/HANDOFF.md`
-4. `boat-racing/.gpt/WORKFLOW.md`
-5. `boat-racing/.gpt/MIGRATION_STATUS.md`
-6. 対象作業の `docs/` と `src/` の対応ファイル
-7. D. Actions-Native Executionを使用する場合だけ対応するIssue起動Workflow
+## 3. 移行状態
 
-## Python依存関係
+競艇取得・予想・結果・台帳・分析・司令室運用に必要なPython本体、README、GPT向け運用資料、定型作業手順、ForwardTrial実装、Python依存関係、必要な取得系GitHub ActionsはGitへ移行済み。
+
+今後は `yukki0113/GPT` の `main` 配下 `boat-racing/` と、必要な取得系 `.github/workflows/` を正本として参照する。
+
+過去の添付ZIP、Workスレッド内の一時作業領域、会話メモリだけをGit正本の代わりに使用しない。
+
+## 4. スレッド引越し
+
+会話量上限やスレッド移動時は `boat-racing/.gpt/HANDOFF.md` を再開入口とする。
+
+作業開始時は原則として以下を確認する。
+
+1. latest `main`
+2. `boat-racing/README.md`
+3. `boat-racing/.gpt/CONTEXT.md`
+4. `boat-racing/.gpt/HANDOFF.md`
+5. `boat-racing/.gpt/WORKFLOW.md`
+6. 対象作業の `docs/` / `src/`
+7. D. Actions-Native Executionを使用する場合だけ対象workflow
+
+司令室・会場選別・仕様研究では `ForwardTrial_司令室運用・会場選別・Shadow検証.md` も読む。
+
+変動する日次状態や累計値はGit文書へ固定せず、Google Drive / Google Sheets / 必要な場合のみGitHub Actionsの正本から再取得する。
+
+## 5. Python依存関係
 
 取得ツール全体では `boat-racing/requirements.txt` を使用する。
 直前情報取得を単独で扱う場合は `boat-racing/requirements_直前情報取得.txt` も使用できる。
 
-現在の取得ツールで必要な主な外部パッケージ:
+主な外部パッケージ:
 
 - `requests`
 - `beautifulsoup4`
 - `lxml`
 
-## GitHub運用経路 2026-09-10
+## 6. GitHub運用経路
 
-GitHub作業は毎回、次の4系統へ分類する。
+2026-09-10以降、GitHub作業は毎回次の4系統へ分類する。
 
-- A. Read / Audit: repository / file / commit / issue / workflow / artifact / SHA / run状態の確認。ChatからGitHub read/searchで直接実施し、Issue不要。
-- B. Git Change: source / test / docs / config / workflow等のUTF-8テキスト変更。latest main、path、現内容を確認してGitHub direct create/update/deleteでremote commitを作成し、Issue不要。
-- C. Pure Deterministic Execution: Git正本moduleと必要入力をChat側で取得でき、secret・特殊runner・Actions監査証跡が不要で計算量が許容範囲ならGPTローカル実行を優先する。artifact回収後のJSON/CSV検査、SHA計算、差分比較も原則C。
-- D. Actions-Native Execution: Secrets、認証付き外部取得、artifact chain、長時間・大容量処理、特殊runner、immutable freeze、監査run、または正本moduleをChatローカルで同一条件実行できない場合に限定してIssue -> GitHub Actionsを使用する。
+- A. Read / Audit
+- B. Git Change
+- C. Pure Deterministic Execution
+- D. Actions-Native Execution
 
-「GitHubにmoduleがある」ことだけを理由にIssue / Actionsを使わない。
+Read/AuditとGitテキスト変更のためだけにIssueを作らない。
 
-## 取得系のActions-Native経路
+BOAT RACE公式サイトへの取得系処理は、正本PythonをChatローカルで同一条件実行できる場合はCを優先し、不可能な場合にのみDを使う。
 
-BOAT RACE公式サイトへの取得系処理も、正本PythonをChatローカルで同一条件実行でき、必要な公式入力を取得できる場合はCを優先する。
-
-ChatローカルのPython実行環境からBOAT RACE公式サイトへ通信できず、正本fetcherを再現できない場合はDとし、次のIssue起動Workflowを使用する。
+現役D経路:
 
 - 出走表取得: `.github/workflows/boatrace_racelist_issue.yml`
 - 直前情報取得: `.github/workflows/boatrace_pre_race_issue.yml`
 - 結果取得・予想照合: `.github/workflows/boatrace_results_chat.yml`
 
-直前情報取得のIssue prefixは `[BOATRACE_PRE_RACE_REQUEST]`。Issue本文はraw JSONとし、`date` / `venue` / `race` / `format` を対象workflow/parserと照合してから1回だけ発行する。
+Issue発行前はlatest main、request contract、workflow/parser、必須キー、upstream実値を検証し、失敗時にblind rerunしない。
 
-Issue発行前はlatest main、request contract、必須キー、upstream dependency、artifact / SHA / dates / IDs等の実値を必要範囲で完全検証する。失敗時はRESULT、artifact、failed step / logを確認し、同一requestのblind rerunを行わない。
+## 7. 日次成果物と外部正本
 
-成果物はartifactへ保存し、Issueコメントの機械可読RESULTから `status` / `run_id` / `artifact_name` / exit code / validation をChat側で取得する。処理終了後はRequest IssueをCloseする。
+Git対象外の日次資産はGoogle Drive / Google Sheetsを正本とする。
 
-`workflow_dispatch` のmanual Workflowは人手での補助経路として残すが、ChatがDを選択した場合はIssue起動を優先する。
-
-## 日次成果物と外部正本
-
-Git対象外の日次資産は、Google Drive / Google Sheets側を正本とする。
-
-- Google Drive `data`: Folder ID `11OtFNwroVbgV8BClzoepTKoa81fQJ-A1`
+- Google Drive `data`: `11OtFNwroVbgV8BClzoepTKoa81fQJ-A1`
   - `racecards` / `predictions` / `prediction-rationales` / `sales-selection` / `results`
-- Google Drive `analysis`: Folder ID `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
-- Google Sheets `競艇note販売運用台帳`: Spreadsheet ID `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`
+- Google Drive `analysis`: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
+- Google Sheets `競艇note販売運用台帳`: `1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`
 
 結果取得工程は結果CSV・取得ログの生成と監査までとし、Google Sheets台帳記帳・ForwardTrial分析更新は別工程とする。
 
-## Git対象外
+台帳記帳はstable-key upsert + Atomic Aggregate Set全再生成 + `FT2_集計監査` read-backを1論理作業として完結させる。
+
+## 8. Git対象外
 
 以下は引き続きGit管理対象外とする。
 
@@ -137,15 +157,12 @@ Git対象外の日次資産は、Google Drive / Google Sheets側を正本とす�
 
 これらはGit正本のソース・仕様の代わりとして参照しない。
 
-## 運用上の注意
+## 9. 継続保守
 
-- ソース参照・改修時は、まずGitの `main` 最新状態を確認する。
-- 公式サイト側の構造変更により改修が必要な場合は、既存出力互換性を維持する。
-- 改修時はPythonと対応READMEを同時に更新する。
-- Workflow変更時も正本PythonのCLI互換性を確認する。
-- Git更新のためだけにIssueを作成しない。
-- IssueはD. Actions-Native Executionの実行要求に限定する。
-- Issue本文をshellへ直接展開せず、JSON解析・型検証後に引数listとして実行する。
+- ソース参照・改修時は最新 `main` を確認する。
+- 公式サイト変更時も既存出力互換性を維持する。
+- Python改修時は対応README / docs / testsへの影響を確認する。
+- workflow変更時は正本PythonのCLI互換性を確認する。
 - 可能な限り実日付または保存済みfixtureで回帰確認する。
 - 日次成果物、ログ、キャッシュ、台帳はcommitしない。
 - 新しいスレッドで過去会話がないと再開できない情報が判明した場合は、会話メモリだけに残さず `HANDOFF.md` または対象docsへ戻す。
