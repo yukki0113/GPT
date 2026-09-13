@@ -64,3 +64,10 @@
 - 0906の構造KPIが 10/14 → 6/10 → 4/6 になる
 - 頭失敗行の後段が 対象外
 - 旧失敗ラベルが新規行に残らない
+
+
+## 7. Chat経路の完了判定
+
+`ForwardTrial_Ver0.1` の通常日次記帳は、Google service-account、Drive immutable Freeze、Sheets read-back、Actions artifactを必要とするため、`[BOATRACE_LEDGER_IMPORT]` IssueからActionsで完結する。詳細なrequest contractとスレッド移行時の再開手順は `ForwardTrial_Chat日次台帳記帳運用.md` を正本とする。
+
+明細の書込み、日別集計の更新、または取込管理の単独表示を完了根拠にしない。Atomic Aggregate Set 9タブ、`FT2_集計監査`、既存販売台帳mirror、数式エラー0のread-back後だけ完了とする。
