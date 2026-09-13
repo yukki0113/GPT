@@ -81,6 +81,23 @@ artifactには通常、以下を含めます。
 
 `.github/workflows/boatrace_racelist_manual.yml` は手動フォールバックとして残し、同じメタデータ付き標準入口を使用します。
 
+### Actions完了判定
+
+Issueコメントの `BOATRACE_RACELIST_RESULT` とrunを照合し、少なくとも次を満たして初めて正常完了とします。
+
+- `status == success`
+- `task_exit_code == 0`
+- `validation_exit_code == 0`
+- `success_races == expected_races`
+- `input_rows == 対象会場数 × 12 × 6`
+- `input_columns == 21`
+- `metadata_columns` が `開催グレード`, `開催名`
+- `errors == []`
+- workflow run conclusionがsuccess
+- RESULT記載artifactが実在し、期限切れでない
+
+RESULT待ちの途中状態では、処理時間だけを理由に同一日・同一会場の重複Issueを作りません。状態を再確認し、failure / partialの場合はfailed step、artifact、validation reportを確認して原因を分類します。
+
 ## 出力
 
 指定フォルダへ以下を都度上書き再生成します（追記しません）。
@@ -90,11 +107,44 @@ artifactには通常、以下を含めます。
 - `日付_出走表取得状況_会場.csv`: 1レース1行の取得結果
 - `日付_出走表取得ログ_会場.log`: HTTP状態、再試行、HTTP/解析所要時間、検査の記録
 
+### 日常運用でユーザーへ渡す成果物
+
+Actions artifactは監査・診断用の複数ファイルを保持しますが、日常の出走表取得スレッドでユーザーへ渡す完成物は **21列の予想入力CSV単体** とします。
+
+標準の受け渡し手順は次です。
+
+1. artifact ZIPを内部作業用に回収する。
+2. ZIPを解凍する。
+3. `YYYYMMDD_公式出走表_<会場...>.csv` を予想入力CSVとして特定する。
+4. 対象日・会場集合・行数・21列を再確認する。
+5. 通常回答では予想入力CSV単体をこのスレッドへ出力する。
+
+原本CSV、取得状況CSV、ログ、`resolved_request.json`、`validation_report.json`、ZIPそのものは、障害解析や監査を求められた場合だけ提示します。
+
+ChatGPT Libraryへ実際に保存できる機能が利用可能なら予想入力CSVを保存して構いません。ただし、その操作を実行・確認できない環境では「Libraryへ保存済み」と報告しません。その場合もこのスレッドから予想入力CSV単体を取得できる状態にします。
+
+長期の原本保存先はGitではなくGoogle Drive `data/racecards` です。Drive保存は出走表取得とは別の保全工程として扱います。
+
 ## 取得不能時
 
 取得状況CSVの`取得状態`、`不足項目`、`エラー内容`とログを確認してください。必須項目が空欄なら成功扱いにしません。出走表本体が正常でも開催グレード・開催名を公式日別一覧から解決できない場合は、メタデータ付与工程を失敗として成功扱いにしません。
 
 HTTP 200でも本文・HTML形式・出走表構造・会場・場コード・日付・開催日目を検査し、取り違えや空ページを成功扱いにしません。PC版を解析できない場合はスマホ版を取得します。
+
+## スレッド引越し時の再開
+
+会話量上限などで出走表取得スレッドを移動した場合、過去会話だけに依存せず latest `main` の次を確認します。
+
+1. `boat-racing/README.md`
+2. `boat-racing/.gpt/CONTEXT.md`
+3. `boat-racing/.gpt/HANDOFF.md`
+4. `boat-racing/.gpt/WORKFLOW.md`
+5. `boat-racing/docs/出走表取得依頼_定型作業.txt`
+6. 本README
+7. `boat-racing/src/fetch_boatrace_racelist_with_meta.py`
+8. D経路なら `.github/workflows/boatrace_racelist_issue.yml`
+
+未完了requestがある場合は会話中の「実行中」「待機中」という記述を現在状態とみなさず、Issueコメント、Actions run、artifactを再取得して状態を復元します。日次の最新run IDや直近対象日は文書へ固定せず、GitHub正本から都度確認します。
 
 ## 公式サイト構造が変わった場合
 
