@@ -2,7 +2,8 @@
 
 The module has no Google authentication.  It validates and normalizes source
 assets, produces all FT2 sheet payloads, and fails closed on conflicting keys,
-dates, or Freeze facts.  Google Sheets writes remain a Work-side operation.
+dates, or Freeze facts. Google Sheets writes are performed by the separate
+Chat/Actions transaction adapter.
 """
 
 from __future__ import annotations
@@ -121,6 +122,24 @@ def grade_category(value: object) -> str:
     aliases = {"一般": "一般", "IPPAN": "一般", "G2": "G2", "GII": "G2",
                "G1": "G1", "GI": "G1", "SG": "SG", "G3": "その他", "その他": "その他"}
     return aliases.get(text, "未分類")
+
+
+def grade_from_official_racecard(card: Mapping[str, object], asset: Mapping[str, object]) -> dict[str, str]:
+    """Use grade fields frozen in the official racecard without inference."""
+    event_name = str(card.get("開催名", "")).strip()
+    category = grade_category(card.get("開催グレード"))
+    if not event_name or category == "未分類":
+        return {
+            "開催グレード": "", "グレード大分類": "未分類", "source": "",
+            "source_file": "", "備考": "公式開催グレード未取得",
+        }
+    return {
+        "開催グレード": event_name,
+        "グレード大分類": category,
+        "source": "BOAT RACE オフィシャルウェブサイト",
+        "source_file": str(asset.get("file_id", "")).strip(),
+        "備考": "公式出走表Freezeから取得",
+    }
 
 
 def read_grade_meta(path: Path, day: str) -> dict[tuple[str, str], dict[str, str]]:
@@ -351,10 +370,7 @@ def normalize_day(entry: Mapping[str, object], base: Path) -> tuple[list[dict[st
         main_hit = "○" if str(res.get("主推奨的中", "")).strip() == "的中" else ("対象外" if str(res.get("主推奨的中", "")).strip() in {"", "対象なし"} else "×")
         ranking = rank_from_sales(sale or {}) if target else None
         venue_code = str(card.get("場コード", "")).strip()
-        grade = grade_meta.get((day, venue), {
-            "開催グレード": "", "グレード大分類": "未分類", "source": "",
-            "source_file": "", "備考": "公式開催グレード未取得",
-        })
+        grade = grade_meta.get((day, venue)) or grade_from_official_racecard(card, assets["racecard"])
         full_row = {
             "FT2_ID": stable_key(day, venue, race_no), "対象日": day, "会場": venue, "会場CD": venue_code,
             "R": race_no, "開催何日目": str(pred.get("開催日目", "")).strip(), "レース種別": str(pred.get("レース種別", "")).strip(),
@@ -496,8 +512,8 @@ def group_aggregate(rows: Sequence[Mapping[str, object]], keys: Sequence[str]) -
             base[f"{label}採用率"] = ratio(metrics["R数"], base["2連単1点対象数"])
             base[f"{label}的中率"] = metrics["的中率"]
             base[f"{label}ROI"] = metrics["ROI"]
-        scores = [float(item["販売スコア"]) for item in target_rows(values) if item["販売スコア"] is not None]
-        separations = [float(item["2着候補分離度"]) for item in target_rows(values) if item["2着候補分離度"] is not None]
+        scores = [value for item in target_rows(values) if (value := as_float(item["販売スコア"])) is not None]
+        separations = [value for item in target_rows(values) if (value := as_float(item["2着候補分離度"])) is not None]
         base["平均販売スコア"] = sum(scores) / len(scores) if scores else None
         base["平均2着候補分離度"] = sum(separations) / len(separations) if separations else None
         base["genuine対象日数"] = len({item["対象日"] for item in values})
@@ -622,19 +638,29 @@ def sales_validation(rows: Sequence[Mapping[str, object]]) -> list[dict[str, obj
     ]
     rank_bands = [("1～3位", 1, 3), ("4～6位", 4, 6), ("7～9位", 7, 9), ("10位以下", 10, 10**9)]
     for label, low, high in rank_bands:
-        groups.append(("販売順位帯", label, [row for row in genuine if row["販売順位"] is not None and low <= int(row["販売順位"]) <= high]))
+        groups.append(("販売順位帯", label, [
+            row for row in genuine
+            if (rank := as_int(row["販売順位"])) is not None and low <= rank <= high
+        ]))
     return [{"集計軸": dimension, "区分": value, **metric_block(selected)} for dimension, value, selected in groups]
 
 
 def score_validation(rows: Sequence[Mapping[str, object]]) -> list[dict[str, object]]:
     genuine = [row for row in rows if row["forward_status"] == GENUINE and row["2連単1点対象"] == TARGET_VALUE]
     groups: list[tuple[str, str, list[Mapping[str, object]]]] = []
-    for score in sorted({row["販売スコア"] for row in genuine if row["販売スコア"] is not None}):
-        groups.append(("販売スコア", str(score), [row for row in genuine if row["販売スコア"] == score]))
+    scores = {score for row in genuine if (score := as_float(row["販売スコア"])) is not None}
+    for score in sorted(scores):
+        groups.append(("販売スコア", str(score), [row for row in genuine if as_float(row["販売スコア"]) == score]))
+    def separation_matches(value: object, lower: float | None, upper: float | None) -> bool:
+        parsed = as_float(value)
+        if parsed is None:
+            return False
+        return (lower is None or parsed >= lower) and (upper is None or parsed < upper)
+
     buckets = [
-        ("<0.08", lambda value: value is not None and float(value) < 0.08),
-        ("0.08以上0.15未満", lambda value: value is not None and 0.08 <= float(value) < 0.15),
-        ("0.15以上", lambda value: value is not None and float(value) >= 0.15),
+        ("<0.08", lambda value: separation_matches(value, None, 0.08)),
+        ("0.08以上0.15未満", lambda value: separation_matches(value, 0.08, 0.15)),
+        ("0.15以上", lambda value: separation_matches(value, 0.15, None)),
     ]
     for label, predicate in buckets:
         groups.append(("2着候補分離度", label, [row for row in genuine if predicate(row["2着候補分離度"])]))
