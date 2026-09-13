@@ -1,0 +1,42 @@
+{
+  "version": "0.1",
+  "status": "CURRENT",
+  "spreadsheet_id": "1z9TJQJ61WEcrVSDxhAWP9D48plP1ixU0hCH-QGZrhnU",
+  "spreadsheet_title": "RaceNote Forecast Gen0 検証台帳",
+  "folder_id": "1hWBtTRj4aHiFXAkln3qxjW_g7b1FUeoO",
+  "current_generation_id": "Gen0-G000",
+  "forecast_version": "RaceNote-Forecast-Gen0.1",
+  "factor_set_version": "FSET-Gen0.1",
+  "generation_target_races": 50,
+  "evaluation_modes": [
+    "BLINDED_HISTORICAL",
+    "TRUE_FORWARD"
+  ],
+  "factors": [
+    {"code": "F01", "name": "基礎能力"},
+    {"code": "F02", "name": "条件適性"},
+    {"code": "F03", "name": "展開・位置取り"},
+    {"code": "F04", "name": "調教・状態"},
+    {"code": "F05", "name": "近走内容"},
+    {"code": "F06", "name": "長期履歴・条件実績"},
+    {"code": "F07", "name": "騎手・厩舎"},
+    {"code": "F08", "name": "血統"},
+    {"code": "F09", "name": "枠・条件統計"},
+    {"code": "F10", "name": "事前市場情報"}
+  ],
+  "tabs": {
+    "README": "運用説明",
+    "設定": "現行version・ファクター集合",
+    "世代管理": "50R単位のgeneration管理",
+    "予想Freeze": "結果取得前のrace-level予想正本",
+    "馬別評価": "結果取得前のrunner-level比較根拠",
+    "ファクター使用": "結果取得前のfactor usage記録",
+    "結果_馬別": "Freeze後に取得するrunner result",
+    "振返り": "race-level post-race evaluation",
+    "ファクター検証": "factor usageのpost-race evaluation",
+    "Freeze監査": "hash・freeze-before-result監査",
+    "条件別集計": "generation内集計",
+    "ダッシュボード": "運用状況の要約",
+    "変更履歴": "generation間の変更記録"
+  }
+}
