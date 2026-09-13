@@ -39,6 +39,8 @@ Gen0では、`docs/RaceNote_Prediction_Handoff_v0_1.md` にある原点へ戻り
 
 固定weightや単一スコアを先に置かず、RaceNoteに収録された具体的evidenceを比較して予想を作る。
 
+現行の予想者契約は `FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md`。初期factor set `FSET-Gen0.1` は10ファクターを持つが、weightは固定せずレースごとにGPTが重要度を変える。
+
 将来weightやモデルを導入する場合も、先にblinded / TRUE_FORWARDの検証を行い、独立したprediction model versionとして管理する。
 
 ## 3. Authoritative boundary
@@ -69,8 +71,14 @@ Presentation policy != result evaluation
 - `src/racenote_reader_zip.py`
 - RaceNote Archive / as-of-safe historical delivery
 - `docs/RaceNote_Prediction_Handoff_v0_1.md` のGPT prediction原則
+- `docs/racenote/FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md` の現行予想者契約
+- `src/racenote_forecast_gen0.py` のpre-result validation / freeze / hash / ledger projection
+- `src/racenote_forecast_gen0_evaluation.py` のpost-result join / evaluation projection
+- `docs/racenote/FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md` のGoogle Sheets台帳契約
 - pre-race guard / provenance / freeze / hash / result-after-freeze の研究基盤
 - `FORECAST_GEN0_PLAN.md` に定義するGen0検証サイクル
+
+継続研究台帳はネイティブGoogle Sheet `RaceNote Forecast Gen0 検証台帳`。Spreadsheet IDは `config/racenote_forecast_gen0_ledger_v0_1.json` を正本とし、ChatGPTのGoogle Drive / Sheets connectorから直接読み書きする。
 
 ### Legacy prediction logic
 
@@ -117,23 +125,53 @@ Presentation policy != result evaluation
 
 比較対象として履歴は残すが、改善判断はGen0自身の予想記録と結果監査から行う。
 
-## 7. Forecast / delivery separation
+## 7. Forecast / ledger / delivery separation
 
-RaceNote Forecastの評価と、PWA / Newspaperへの配布は別責務とする。
-
-予想研究では、まず1R単位でGPTが根拠を持って比較できることを優先する。
-
-その後、安定した出力contractをPWA / Newspaperがconsumeする。
-
-consumer都合でprediction policyを歪めない。
+RaceNote Forecastの評価と、継続研究台帳と、PWA / Newspaperへの配布は別責務とする。
 
 ```text
-Forecast quality
-  -> frozen prediction contract
-     -> presentation / PWA / newspaper
+RaceNote evidence
+  -> GPT Forecast
+  -> immutable prediction freeze
+  -> Google Sheets research ledger
+  -> result join / evaluation
+  -> generation improvement
+
+frozen prediction
+  -> presentation / PWA / newspaper
 ```
 
-## 8. Source priority
+Google Sheetsはprediction modelではない。台帳は予想時点の判断と結果後の評価を分離して保存する。
+
+PWA / Newspaperのconsumer都合でprediction policyを歪めない。
+
+## 8. Gen0 initial operation
+
+初期generationは `Gen0-G000`。
+
+- forecast version: `RaceNote-Forecast-Gen0.1`
+- factor set: `FSET-Gen0.1`
+- target: 原則50R
+- initial evaluation mode: `BLINDED_HISTORICAL`
+
+1R lifecycle:
+
+```text
+as-of-safe RaceNote
+  -> GPT prediction
+  -> pre-result self-audit
+  -> deterministic validation
+  -> hash / freeze
+  -> ledger readback
+  -> result acquisition
+  -> result join
+  -> GPT post-race review
+  -> factor review
+```
+
+50R終了後にgeneration analysisを行い、改善案を変更履歴へ記録して次generationへ進む。
+
+## 9. Source priority
 
 現行仕様の判断は次の順を優先する。
 
@@ -146,19 +184,31 @@ latest main source / current contract
 
 日付付きIssue番号や一時run IDをcurrent truthとして固定しない。
 
-## 9. Related documents
+## 10. Related documents
 
 - `FORECAST_GEN0_PLAN.md` — 現行Gen0の研究計画
+- `FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md` — GPTが1Rを予想する現行契約
+- `FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md` — Google Sheets台帳とtransaction契約
 - `legacy/README.md` — 旧決定論的予想系の扱い
 - `../RaceNote_Prediction_Handoff_v0_1.md` — GPT prediction layerの原点
 - `../README_racenote_v1.md` — RaceNote v1 data specification
 - `../README_racenote_request.md` — request / delivery contract
 - `../RaceNote_Presentation_Comment_Contract_v0_2.md` — 既存presentation contract。legacy予想との関係に注意
 
-## 10. Development rule
+Implementation:
+
+- `../../src/racenote_forecast_gen0.py`
+- `../../src/racenote_forecast_gen0_evaluation.py`
+- `../../config/racenote_forecast_gen0_ledger_v0_1.json`
+- `../../tests/test_racenote_forecast_gen0.py`
+- `../../tests/test_racenote_forecast_gen0_evaluation.py`
+
+## 11. Development rule
 
 RaceNoteで新しい予想アイデアを試すときは、いきなりproductionの印決定へ埋め込まない。
 
 まずprediction recordへ根拠を残し、結果を見る前にfreezeし、一定レース数でまとめて結果監査する。
 
 改善は「当たった外れた1R」への追従ではなく、複数レースのevidence reading error / overvaluation / undervaluation / uncertainty calibrationを見て行う。
+
+結果後の改善は`予想Freeze / 馬別評価 / ファクター使用`を上書きせず、`振返り / ファクター検証 / 変更履歴`へ別recordとして残す。
