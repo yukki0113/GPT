@@ -20,6 +20,7 @@ Last reviewed: 2026-09-13
    - `docs/Eval_Phase2_JRDB_Previous_Features_v0_1.md`
 8. PWA分析コメントを扱う場合 `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 9. 結果取込を扱う場合 `docs/README_jrdb_horse_results_import.md`
+10. repositoryに残る旧workflowを判断する場合 `docs/LEGACY_COMPATIBILITY_PATHS.md`
 
 その後、必ずlatest `main` の対象source / tests / workflowを実物確認する。READMEだけを見てsourceを推測しない。
 
@@ -156,7 +157,7 @@ EvalでDを維持する代表例:
 3. `[EVAL_OCR_REQUEST]` — 通常標準ではない。GitHub内artifact chain、runner Tesseract固定、多数画像、明示的なimmutable OCR runが必要な場合のみ。
 4. `[JRA_RESULTS_REQUEST]` — 直接取得不可、長期/大量、正式取得runが必要な場合のみ。通常規模で直接実行可能ならC。
 
-`.github/workflows/eval_image_enrich_chat.yml` は旧combined compatibility経路。Chatへ画像が直接添付される現在の通常運用では使用せず、C OCR + D PACI enrichmentを標準とする。
+`.github/workflows/eval_image_enrich_chat.yml` は旧combined compatibility経路。`.github/workflows/eval_jrdb_dataset_issue.yml` は旧GitHub xlsx ledgerを読むretired経路。詳細は `docs/LEGACY_COMPATIBILITY_PATHS.md`。Chatへ画像が直接添付される現在の通常運用ではC OCR + D PACI enrichmentを標準とする。
 
 ## 5. 主要module map
 
@@ -202,7 +203,7 @@ KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は別�
 |---|---|
 | `src/backfill_phase2_sed.py` | Phase2研究行へSED結果を結果時点layerとしてbackfill |
 | `../jrdb/src/export_jrdb_eval_horse_results.py` | Google Sheets `全馬データ` 向け1頭1行結果CSV + audit |
-| `src/fetch_jra_daily_results.py` | JRA公式日次結果/払戻取得 |
+| `src/fetch_jra_daily_results.py` | JRA日次結果/払戻取得（現行取得元はYahoo!スポーツ） |
 | `src/validate_jra_results.py` | JRA結果機械validation |
 
 台帳正本はネイティブGoogle Sheets `Eval表集計・検証`。GitHub旧xlsxや旧Drive Excelを最新と推定しない。
@@ -218,6 +219,7 @@ KYI `training_index`、CHA `cha_workout_index`、CYB `cyb_workout_index` は別�
 - `docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` — Eval研究側/Newspaper/PWAの責務境界とanalysis列契約
 - `docs/README_jrdb_horse_results_import.md` — `全馬データ` 結果取込
 - `docs/README_master_eval_media_collector.md` — X画像収集
+- `docs/LEGACY_COMPATIBILITY_PATHS.md` — repositoryに残る旧/互換workflowのcurrent/legacy判定
 
 研究条件・analysis codeの具体定義は各contractを正本とし、このhandoffへ複製しない。条件更新時の二重管理を避ける。
 
