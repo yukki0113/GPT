@@ -13,7 +13,6 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 - `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
 - `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
 - `src/forward_trial_chat_ledger.py` — 日次台帳用stable-key upsert、FT2全再集計、既存販売台帳mirrorの純粋な書込計画を生成
-- `src/run_forward_trial_chat_import.py` — 認証済みDrive取得、Google Sheets write/read-back、完了判定を実行
 
 詳細仕様は `docs/` を参照してください。日次CSV、キャッシュ、ログ、運用台帳はGit管理対象外です。
 
@@ -138,10 +137,10 @@ python boat-racing/src/fetch_boatrace_event_meta.py \
 
 13タブの定義、集計層、固定受入値は [`docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md`](docs/競艇note販売運用台帳_ForwardTrial専用分析台帳.md) を参照してください。
 
-## Chatからの日次台帳記帳
+## Workからの日次台帳記帳
 
-Workからの「YYYYMMDDの台帳記帳」は、Driveの種別別フォルダ（racecards / predictions / sales-selection / results）から4原本を取得し、GitHub `main` の決定論moduleでstable-key upsertとAtomic Aggregate Setを生成したうえで、接続済みGoogle Sheetsへ直接書込み・read-backする経路を標準とする。書込み中は `集計再生成中`、全監査成功後だけ `完了` とする。GitHub Actionsのservice-account secretが利用可能な場合は、`[BOATRACE_LEDGER_IMPORT] <request_id>` Issueと `.github/workflows/boatrace_ledger_import_issue.yml` を代替の監査経路として使用できる。
+日次台帳記帳は、WorkがDriveの種別別フォルダから racecard / prediction / sales-selection / result の4原本を固定し、GitHub `main` の決定論moduleでstable-key upsertとAtomic Aggregate Setを生成して、接続済みGoogle Sheetsへ直接書込み・read-backする。
 
-`src/forward_trial_chat_ledger.py` はstable-key upsert、FT2の全再集計、既存販売台帳mirrorを純粋な書込計画として生成し、`src/run_forward_trial_chat_import.py` が認証済みDrive取得、Sheets write/read-back、完了確定を担当する。明細だけを書いた時点では完了にせず、Atomic Aggregate Set 9タブ、`FT2_集計監査`、既存販売台帳、数式エラー0をread-backしてからだけ `FT2_取込管理=完了` とする。
+Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、およびGitHub ActionsからのGoogle Drive / Sheetsアクセスは使用しない。Issue / Actionsを台帳記帳の経路として起動しない。
 
-実行contract、スレッド移行時の再開、完了報告は [`docs/ForwardTrial_Chat日次台帳記帳運用.md`](docs/ForwardTrial_Chat日次台帳記帳運用.md) を正本とする。
+書込み中は `集計再生成中` とし、`FT2_全R明細`、Atomic Aggregate Set 9タブ、`FT2_集計監査`、既存販売台帳mirror、重複0、式エラー0のread-backが一致した後にだけ `FT2_取込管理=完了` とする。
