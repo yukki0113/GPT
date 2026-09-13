@@ -1,6 +1,6 @@
 # JRDB Newspaper Daily Work Contract
 
-Status: OPERATIONAL CONTRACT / 2026-09-11
+Status: OPERATIONAL CONTRACT / 2026-09-13
 
 この文書は、専用Workスレッドから中央競馬の「競馬新聞」日次JSONを生成・保存・公開する通常運用の正本契約です。
 
@@ -33,6 +33,27 @@ Workは対象日を確定し、利用可能な入力を自律的に探索・検�
 - Eval
 - RaceNote prediction output
 - EdgeDB matcher output
+
+### Eval PWA analysis submission
+
+Evalのcanonical sourceとして、従来の完成CSVに加えて次を受け入れます。
+
+```text
+YYYYMMDD_Eval_PWA提出CSV_v0_1.csv
+```
+
+このCSVに分析6列がある場合は、同日の旧Eval完成CSVより、検証済みのPWA提出CSVを優先します。
+
+- `eval_analysis_status`
+- `eval_analysis_codes`
+- `eval_analysis_title`
+- `eval_analysis_comment`
+- `eval_analysis_version`
+- `eval_analysis_asof`
+
+Eval側が注目馬選定、条件判定、`NONE / WATCH / MATCH` の意味、H1/H2等のコード、コメント内容を所有します。Newspaperは分析列を削除・補正・再判定せず、`addons.eval.analysis` へ透過的に格納します。`eval_analysis_codes` だけは入力contractどおり`;`区切りからJSON arrayへ変換します。
+
+PWA提出CSVのanalysis contract違反は推測補正しません。Evalだけ安全に除外できる場合はEvalを`ERROR`として他sourceを継続し、Baseを停止させません。詳細は `../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とします。
 
 独自指数は開発中で当面ファイルが存在しない運用を許容し、通常は `NOT_EXPECTED` として扱います。
 
@@ -206,6 +227,14 @@ previous revisionで使用したverified inputs
 - output SHA-256
 - merge idempotence for same revision inputs
 
+Eval PWA提出CSVを採用した場合は、追加で次を監査します。
+
+- Eval merged rows
+- analysis comment rows
+- `NONE / WATCH / MATCH` 件数
+- commentなしは `analysis: null`
+- commentありはtitle/comment/version/asofが非空、codesに空要素なし
+
 optional sourceの未着はaudit failureではなく、source stateとして記録します。
 
 ## 11. Publication semantics
@@ -264,6 +293,8 @@ Pages: SUCCESS
 Pending:
 - keibailuka: target-date source not found
 ```
+
+Eval PWA提出CSVを使用した場合は、Eval行に `analysis comments` と `NONE / WATCH / MATCH` の受領集計を追記します。これは受領データの集計だけであり、条件判定の再計算ではありません。
 
 `ERROR` がある場合は、該当source、理由、他sourceを含む日次処理を完走できたかを明示します。
 
