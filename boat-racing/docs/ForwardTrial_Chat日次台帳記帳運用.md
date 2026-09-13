@@ -16,7 +16,7 @@ Drive・Google Sheets・Actions RESULTを読み直して判断する。
 | コード・テスト・workflow・文書 | GitHub `main` | 実行前に最新内容を確認 |
 | 日次入力 | Google Drive `data` folder `11OtFNwroVbgV8BClzoepTKoa81fQJ-A1` | racecard / prediction / sales / result の4資産 |
 | 継続台帳 | Google Sheets `競艇note販売運用台帳` (`1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM`) | 旧Excelは使わない |
-| 完了記録 | 対象IssueのRESULTと90日artifact、`FT2_取込管理`、`FT2_集計監査` | 3者を照合 |
+| 完了記録 | `FT2_取込管理` と `FT2_集計監査` のWork read-back | 同一世代・件数を照合 |
 
 結果取込では、事前予想、A/B/C、1着軸、2着本線/押さえ、2連単1点買い目、販売Score、
 販売順位、有料/無料/CSV区分、prediction/sales freeze、結果値を変更しない。既存frozen列と
@@ -29,44 +29,16 @@ Workでは、Driveの種別別フォルダから4原本を取得し、GitHub `ma
 書込み中は `集計再生成中` とし、全監査成功後だけ `完了` とする。CSVの手計算やセル単位の
 場当たり的転記を完了扱いにしてはならない。
 
-`GPT_GDRIVE_SERVICE_ACCOUNT_JSON` が利用可能な環境では、Issue / Actionsを代替監査経路として
-使用できる。Secret未設定時は失敗Issueを繰り返さず、Work直結経路へ切り替える。
+Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、およびGitHub ActionsからのGoogle Drive / Sheetsアクセスは断念・廃止した。台帳記帳にIssue / Actionsを用いない。
 
 | Component | Role |
 | --- | --- |
 | `forward_trial_analysis_import.py` | CSV preflight、正規化、freeze/grade監査、集計値生成 |
 | `forward_trial_chat_ledger.py` | stable-key upsert、FT2全再集計、既存販売台帳mirrorの純粋な書込計画 |
-| `run_forward_trial_chat_import.py` | Drive download/SHA、Sheets write/read-back、完了確定 |
-| `boatrace_ledger_import_issue.yml` | request validation、テスト、上記adapter実行、RESULT/artifact保存 |
 
-## Chatからの起動契約
+## Workの開始契約
 
-Issue title:
-
-```text
-[BOATRACE_LEDGER_IMPORT] <request_id>
-```
-
-`request_id` は `[A-Za-z0-9._-]{1,80}` の一意な値とし、本文はMarkdown fenceなしのraw JSON objectとする。
-
-```json
-{
-  "date": "YYYYMMDD",
-  "source_folder_id": "11OtFNwroVbgV8BClzoepTKoa81fQJ-A1",
-  "spreadsheet_id": "1gEAYJ90Zv3HDi5gh_at0jDWEQrgCSB5tIywJFZjXcFM",
-  "file_ids": {
-    "prediction": "Drive file ID",
-    "sales": "Drive file ID",
-    "result": "Drive file ID",
-    "racecard": "Drive file ID"
-  },
-  "dry_run": false
-}
-```
-
-`date` と `source_folder_id` は必須。folder内で4資産が日付付きCSVとして各1件に一意解決する場合だけ
-`file_ids` を省略できる。複数候補、暫定版、同名版がある場合は、Driveで確認した4 IDをすべて指定する。
-IDや会場集合は推測しない。`dry_run=true` は書き込みを行わず、完了記録にも使わない。
+対象日ごとにDriveの種別別フォルダから4原本のfile IDを固定する。候補が複数ある場合は推測せず停止する。Workが決定論moduleの書込計画を生成し、接続済みGoogle Sheetsへ直接反映する。
 
 ## 1回の処理で完了と認める条件
 
@@ -85,17 +57,15 @@ idempotentでなければならず、件数・投資・回収を加算しない�
 
 ## スレッド移行時の再開手順
 
-1. GitHub `main` の README、`.gpt/CONTEXT.md`、`.gpt/WORKFLOW.md`、本書、workflowを読む。
+1. GitHub `main` の README、`.gpt/CONTEXT.md`、`.gpt/WORKFLOW.md`、本書を読む。
 2. 対象日のDrive 4資産とfile IDを取得し、必要ならIssue本文を再構築する。
 3. `FT2_取込管理`、`FT2_集計監査`、`FT2_全R明細`を読む。明細の存在や日別集計の最新日だけで完了判定しない。
-4. 既存IssueがあればRESULTコメントとartifactを確認する。`status=success` がない実行は完了として扱わない。
-5. failureならfailure_classとfailed stepを確認し、原本不整合は修正まで停止、外部一時障害は新しいrequest_idで再試行する。blind rerunは禁止。
-6. 作業を継続して完了条件を満たしたときだけ最終報告する。
+4. `FT2_取込管理`、`FT2_集計監査`、`FT2_全R明細`をread-backし、同一generation・件数・重複0を確認する。
+5. 原本不整合は修正まで停止し、Work直結経路で完了条件を満たしたときだけ最終報告する。
 
 ## 最終報告の最低内容
 
 - 対象日、4 Drive file IDとSHA256
-- Actions run ID / artifact名 / RESULT status
 - `aggregate_generation_id` とAtomic Aggregate Set 9タブの監査結果
 - Raw / Genuine / CONTAMINATED / duplicate、2連単の件数・的中・投資・回収
 - 有料・無料・CSVのみ・掲載の件数とROI
