@@ -5,9 +5,9 @@ Last reviewed: 2026-09-13
 
 ## 1. Purpose
 
-RaceNote Forecast Gen0の予想・Freeze・結果・振返り・generation改善を、ネイティブGoogle Sheets上で直接管理する。
+RaceNote Forecast Gen0の対象R固定、予想、Freeze、結果、振返り、generation改善を、ネイティブGoogle Sheets上で直接管理する。
 
-この台帳は「当たり外れの成績表」だけではない。結果取得前にGPTが何を重視し、各馬をどう比較し、どの不確実性を残して予想したかを固定し、結果取得後に別レコードとして検証するための研究台帳である。
+この台帳は単なる成績表ではない。結果取得前に「どのレースを予想対象として固定したか」「GPTが何を重視し、各馬をどう比較したか」を保存し、結果取得後に別レコードとして検証する研究台帳である。
 
 ## 2. Authoritative ledger
 
@@ -15,8 +15,6 @@ RaceNote Forecast Gen0の予想・Freeze・結果・振返り・generation改善
 - Spreadsheet ID: `1z9TJQJ61WEcrVSDxhAWP9D48plP1ixU0hCH-QGZrhnU`
 - Parent folder ID: `1hWBtTRj4aHiFXAkln3qxjW_g7b1FUeoO`
 - Google Sheets timezone: `Asia/Tokyo`
-
-このSpreadsheet IDは日次artifact IDではなく、継続研究台帳のstable identityとしてGit configへ保持する。
 
 正本config:
 
@@ -28,15 +26,7 @@ ChatGPT運用ではGoogle Drive / Google Sheets connectorから台帳を直接�
 
 RaceNote本体へGoogle API client、OAuth token、service account key、Drive secretを追加しない。
 
-標準操作:
-
-- current generation / factor set確認: `設定`, `世代管理` を直接read
-- duplicate確認: `forecast_id`, `race_key + generation_id` をSheet内で検索
-- pre-result write: Google Sheets batch update
-- post-result write: Google Sheets batch update
-- generation analysis: Sheetsの対象行を直接readして集計・GPT分析
-
-Gitはschema / validation / freeze / row contractを持ち、Google Sheetsは継続運用データを持つ。
+Gitはsampling / schema / validation / freeze / queue transition / row contractを持ち、Google Sheetsは継続運用データを持つ。
 
 ## 4. Tab model
 
@@ -46,60 +36,79 @@ Gitはschema / validation / freeze / row contractを持ち、Google Sheetsは継
 
 ### `設定`
 
-current generation、forecast version、factor set version、初期factor定義、freeze不変条件を保持する。
+current generation、forecast version、factor set version、sampling policy、freeze不変条件を保持する。
 
 ### `世代管理`
 
-約50R単位のgenerationを管理する。
+約50R単位のgenerationとsampling manifest identityを管理する。
 
 主キー: `generation_id`
 
-初期generation:
+主要sampling列:
 
-`Gen0-G000`
+- manifest_id
+- manifest_sha256
+- sample_seed
+- candidate_pool_sha256
+- primary_count
+- reserve_count
+
+### `対象Rキュー`
+
+**generation開始前に固定した問題集と進行状態。**
+
+PRIMARY 50R + RESERVE 20Rをmanifest単位で保存する。
+
+主要列:
+
+- manifest_id / manifest_sha256
+- generation_id
+- sample_order
+- sample_role (`PRIMARY / RESERVE`)
+- queue_status
+- race_date / venue / race_no / race_key
+- surface / distance / class code / runner_count
+- replacement_for / skip_reason
+- forecast_id
+- source_ready_status
+- started_at / frozen_at / evaluated_at
+
+このtabは進行管理であり、予想内容の正本ではない。
 
 ### `予想Freeze`
 
-**結果取得前のrace-level予想正本。**
-
-1 race = 1 row。
+結果取得前のrace-level予想正本。1 race = 1 row。
 
 主要identity:
 
-- `forecast_id`
-- `generation_id`
-- `race_key`
-- `source_semantic_sha256`
-- `prediction_hash`
+- forecast_id
+- generation_id
+- race_key
+- source_semantic_sha256
+- prediction_hash
 
-この行はFreeze後に予想内容を上書きしない。
+Freeze後に予想内容を上書きしない。
 
 ### `馬別評価`
 
-結果取得前のrunner-level評価。
+結果取得前のrunner-level評価。1 forecast × 1 horse = 1 row。
 
-1 forecast × 1 horse = 1 row。
-
-長い内部chain-of-thoughtは保存しない。保存するのは監査可能な短いreason summary / evidence summary / risk / relative comparisonである。
+長い内部chain-of-thoughtは保存せず、監査可能な短いreason / evidence / risk / relative comparisonを保存する。
 
 ### `ファクター使用`
 
 GPTが予想時にファクターをどう扱ったかを構造化して保存する。
 
-- `importance`: `HIGH / MEDIUM / LOW / NOT_USED`
-- `direction`: `POSITIVE / NEGATIVE / MIXED / NEUTRAL`
-- `role`: `PRIMARY / SUPPORT / RISK / DEEMPHASIZED`
-- `scope`: `RACE / HORSE`
+- importance: `HIGH / MEDIUM / LOW / NOT_USED`
+- direction: `POSITIVE / NEGATIVE / MIXED / NEUTRAL`
+- role: `PRIMARY / SUPPORT / RISK / DEEMPHASIZED`
+- scope: `RACE / HORSE`
 
-これらは点数ではない。GPTがそのレースでどの材料を重く・軽く読んだかを後から研究する観測メタデータである。
+これらは点数ではなく、GPTの読み方を後から研究する観測メタデータである。
 
 ### `結果_馬別`
 
-Freeze成功後にのみ追記するofficial result。
-
-1 race × 1 horse = 1 row。
-
-結果を`予想Freeze`や`馬別評価`へ追記しない。
+Freeze成功後にのみ追記するofficial result。結果を予想タブへ追記しない。
 
 ### `振返り`
 
@@ -127,11 +136,11 @@ GPT review:
 
 `ファクター使用`の事前記録と結果後の評価を結びつける。
 
-- `post_relevance`: `HELPFUL / NEUTRAL / MISLEADING / UNRESOLVED`
-- `over_under_eval`: `OVER / UNDER / APPROPRIATE / NA`
-- `evidence_quality`: `GOOD / MIXED / POOR / UNRESOLVED`
+- post_relevance: `HELPFUL / NEUTRAL / MISLEADING / UNRESOLVED`
+- over_under_eval: `OVER / UNDER / APPROPRIATE / NA`
+- evidence_quality: `GOOD / MIXED / POOR / UNRESOLVED`
 
-「F03が外れたからF03を廃止」のような1R追従には使わない。generation単位で繰り返し傾向を見る。
+1Rの結果だけでファクターを廃止・強化しない。
 
 ### `Freeze監査`
 
@@ -139,34 +148,24 @@ hash整合、結果取得順、source runner coverage、factor usage identityを
 
 最低条件:
 
-- `pre_race_guard_status = PASS`
-- `result_visibility_status = HIDDEN`
+- pre_race_guard_status = PASS
+- result_visibility_status = HIDDEN
 - prediction hash再計算一致
-- RaceNote sourceの全出走馬とforecast horse setが完全一致
+- source全出走馬とforecast horse setが完全一致
 - factor usage identity `(factor_code, scope, horse_no)` が一意
 - result取得後は `frozen_at < result_acquired_at`
 
-coverage auditとして次を保存する。
-
-- `source_runner_count`
-- `forecast_runner_count`
-- `factor_usage_count`
-- `runner_coverage_match`
-- `factor_usage_identity_unique`
-
 ### `条件別集計`
 
-generation評価で再生成する集計用tab。正本明細は上記raw tabsであり、このtabはderived outputとする。
+generation評価で再生成するderived集計。
 
 ### `ダッシュボード`
 
-運用進捗の簡易表示。的中率だけをモデル採否基準にしない。
+Freeze / evaluationに加え、PRIMARY件数、READY件数、RESERVE件数、技術SKIP件数を表示する。
 
 ### `変更履歴`
 
-generation間で何を変えたかを記録する。
-
-「前の方が成績が良かったので旧方式へ戻した」はcurrent方針として採用しない。変更理由はGen0自身のreading auditから説明できること。
+generation間の変更と基盤bug fixを記録する。
 
 ## 5. Initial factor set
 
@@ -185,117 +184,168 @@ generation間で何を変えたかを記録する。
 | F09 | 枠・条件統計 |
 | F10 | 事前市場情報 |
 
-固定weightは持たない。
+固定weightは持たない。GPTは各レースで重要度を変えてよい。
 
-GPTは各レースで重要度を変えてよい。事前市場情報はRaceNoteに含まれる開催前base odds / rankのみを指し、target race final odds / final popularityではない。
+## 6. Sampling contract
 
-factor setを変更する場合は同じgenerationを上書きせず、versionと変更履歴を更新する。
+現行sampling仕様は `FORECAST_GEN0_SAMPLE_QUEUE_v0_1.md` を正本とする。
 
-## 6. Evaluation modes
+Gen0-G000 default:
+
+- source: JRDB Analysis Lite v1.3 `fact_entry_result_lite`
+- PRIMARY: 50R
+- RESERVE: 20R
+- 障害 `track_type=3` 除外
+- 芝/ダート各30%以上の軽い層化
+- PRIMARY / RESERVEとも同一開催日3R上限
+- result / final odds / payout列をselectionへ使用しない
+- seed / candidate pool hash / manifest hashを固定
+- 標準実行チャンク: 5R
+
+PRIMARY / RESERVEはgeneration予想開始前に一括固定する。
+
+## 7. Queue state contract
+
+標準遷移:
+
+```text
+READY
+ -> SOURCE_READY
+ -> IN_PROGRESS
+ -> FROZEN
+ -> RESULT_JOINED
+ -> EVALUATED
+```
+
+RESERVEは通常 `RESERVE` のまま。prediction開始前の技術欠損時だけ `READY` へ昇格できる。
+
+技術欠損:
+
+```text
+READY / SOURCE_READY -> SKIPPED_TECH
+RESERVE -> READY
+```
+
+予備昇格はfailed PRIMARYと同じsurface_codeを選び、昇格後も同一開催日3R上限を維持する。
+
+予想難易度、自信度、人気構成、結果を理由とした差替は禁止。
+
+queue transitionのdeterministic helper:
+
+`src/racenote_forecast_gen0_queue.py`
+
+## 8. Evaluation modes
 
 ### `BLINDED_HISTORICAL`
 
-過去JRDBデータからtarget resultとtarget date以降の情報を遮断した再現予想。
-
-Gen0初期50Rは原則このmodeから開始する。
+過去JRDBデータからtarget resultとtarget date以降の情報を遮断した再現予想。Gen0初期50Rは原則このmode。
 
 ### `TRUE_FORWARD`
 
 実開催前に予想・Freezeし、開催後に結果を取得する真正forward。
 
-両modeを同じ列で混ぜず、`evaluation_mode`を必ず記録する。
+## 9. Generation initialization transaction
 
-## 7. Pre-result transaction
+1. `設定 / 世代管理`をread
+2. historical Analysis Lite SQLiteをresolve
+3. `build_racenote_gen0_sample_manifest.py`でcandidate poolを構築
+4. 障害を除外し、結果列非参照を確認
+5. seed付きでPRIMARY50R + RESERVE20Rを固定
+6. manifest_id / manifest_sha256 / candidate_pool_sha256を生成
+7. `世代管理`へmanifest identityをwrite
+8. `対象Rキュー`へ70Rを同一batchでwrite
+9. readbackで70R、PRIMARY50、RESERVE20、manifest hashを確認
+10. ここまで完了してから最初の予想チャンクへ進む
 
-1Rについて次の順序を固定する。
+## 10. Forecast chunk transaction
 
-1. `設定` / `世代管理` をread
-2. as-of-safe RaceNoteを取得
-3. source identity / semantic SHAを検証
-4. 同一sourceからrunner identity listを保持
-5. GPTが全馬を比較して予想
-6. structured forecast payloadを作る
-7. `src/racenote_forecast_gen0.py` のvalidationを通す
-8. `pre_race_guard_status=PASS` / `result_visibility_status=HIDDEN`を確認
-9. prediction hashを生成してFreeze
-10. `src/racenote_forecast_gen0_guard.py` でsource runner coverage / factor identityを検証
-11. `to_guarded_ledger_rows()` でpre-result rowsを生成
-12. `forecast_id` / `race_key + generation_id` のduplicateがないことをSheetで確認
-13. `予想Freeze + 馬別評価 + ファクター使用 + Freeze監査`を同一batchでwrite
-14. readbackで`forecast_id / prediction_hash / source_runner_count / row count`を確認
-15. **ここまで成功するまで結果を取得しない**
+標準5R。
 
-Google Sheets batchUpdateは同一transactionにまとめ、途中tabだけ更新した状態を作らない。
+1. `対象Rキュー`からsample_order順に次のREADY最大5Rを取得
+2. 各Rについて個別にas-of-safe RaceNoteをresolve
+3. source validation成功なら `SOURCE_READY`
+4. 1Rだけをcurrent forecast unitとしてGPTが全馬比較
+5. structured payload validation
+6. pre-race guard / result hidden確認
+7. prediction hash生成 / Freeze
+8. source runner coverage / factor identity guard
+9. `予想Freeze + 馬別評価 + ファクター使用 + Freeze監査`を同一batchでwrite
+10. readback後にqueue rowを `FROZEN` へ進める
+11. 次Rへ進む
 
-## 8. Post-result transaction
+チャンク中は前Rの結果を取得しない。前Rの予想内容から新ルールを作らない。
 
-1. frozen forecastを台帳からread
-2. `prediction_hash`を再監査
-3. official resultを取得
-4. `result_acquired_at > frozen_at`を検証
-5. 全出走馬identityを突合
+技術欠損時は `SKIPPED_TECH` とし、contractに従うRESERVEを昇格する。
+
+## 11. Post-result transaction
+
+5R等のチャンクがすべてFreezeした後、結果処理を行ってよい。
+
+1. frozen forecastをread
+2. prediction_hash再監査
+3. official result取得
+4. `result_acquired_at > frozen_at`検証
+5. 全出走馬identity突合
 6. `結果_馬別`へwrite
-7. GPTが事後reviewを行う
-8. `振返り + ファクター検証 + Freeze監査更新`を同一batchでwrite
-9. readback
+7. GPT事後review
+8. `振返り + ファクター検証 + Freeze監査更新`をwrite
+9. queue rowを `RESULT_JOINED -> EVALUATED` へ進める
+10. readback
 
-事後reviewによって`予想Freeze / 馬別評価 / ファクター使用`を書き換えない。
+事後reviewで予想正本を書き換えない。
 
-## 9. Generation cycle
-
-初期targetは約50R。
+## 12. Generation cycle
 
 ```text
 Gen0-G000
-  -> 50R blinded forecast/freeze
-  -> 50R result join/evaluation
-  -> generation analysis
-  -> change proposal
-  -> change history
-  -> Gen0-G001
+ -> fixed 50R problem set
+ -> 1R forecasts, normally 5R chunks
+ -> 50R freeze/evaluation
+ -> generation analysis
+ -> change proposal/history
+ -> Gen0-G001
 ```
 
-1R単位でframeworkを修正しない。
+50R終了までforecast framework / factor setを変更しない。
 
-50R到達前でも、result leakage、schema破損、入力欠落など研究成立を妨げる実装バグは修正してよい。その場合はprediction logic変更とbug fixを変更履歴で区別する。
+result leakage、schema破損、source identity defect等の研究成立を妨げるbugは途中修正可。ただしprediction logic changeとは分けて変更履歴へ残す。
 
-## 10. Generation analysis
+## 13. Generation analysis
 
-最低限、次を見る。
+最低限:
 
 - ◎成績 / 印内捕捉
 - confidence別
-- 芝ダ / 距離 / class等の条件別
+- 芝ダ / 距離 / class別
 - primary factor別
-- `HELPFUL / MISLEADING`
-- `OVER / UNDER`
+- HELPFUL / MISLEADING
+- OVER / UNDER
 - failure category
 - data coverage不足
 - contradictory evidence処理
-- 予想が単一indexの言い換えになっていないか
+- 単一indexの言い換えになっていないか
 
-成績が良い旧deterministic policyへ戻すための比較ではなく、GPT Forecast Gen0の読み方を改善するために使う。
+旧deterministic policyへ戻すためではなく、GPT Forecast Gen0の読み方を改善するために使う。
 
-## 11. Implementation references
+## 14. Implementation references
 
+- `src/build_racenote_gen0_sample_manifest.py`
+  - result-blind race candidate query
+  - deterministic seed sampling
+  - PRIMARY / RESERVE manifest
+  - queue row projection
+- `src/racenote_forecast_gen0_queue.py`
+  - READY chunk selection
+  - state transition validation
+  - technical reserve replacement
 - `schema/racenote_forecast_gen0_schema_v0_1.json`
-  - pre-result structured payload schema
 - `src/racenote_forecast_gen0.py`
-  - pre-result validation
-  - result leakage guard
-  - prediction hash
-  - Freeze
-  - base pre-result ledger row projection
 - `src/racenote_forecast_gen0_guard.py`
-  - source runner coverage validation
-  - factor usage identity validation
-  - guarded pre-result ledger projection
 - `src/racenote_forecast_gen0_evaluation.py`
-  - freeze-before-result audit
-  - result identity validation
-  - objective outcome calculation
-  - post-race review row projection
+- `tests/test_build_racenote_gen0_sample_manifest.py`
+- `tests/test_racenote_forecast_gen0_queue.py`
 - `tests/test_racenote_forecast_gen0.py`
 - `tests/test_racenote_forecast_gen0_guard.py`
 - `tests/test_racenote_forecast_gen0_evaluation.py`
 - `config/racenote_forecast_gen0_ledger_v0_1.json`
+- `FORECAST_GEN0_SAMPLE_QUEUE_v0_1.md`
