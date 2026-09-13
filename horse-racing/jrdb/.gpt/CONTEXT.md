@@ -8,8 +8,9 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 この文書はsubsystemをまたいで保持したい **永続context** を担当します。会話量上限やスレッド移動時の短い再開情報は `.gpt/HANDOFF.md`、実行経路は `.gpt/WORKFLOW.md` を優先して併読します。
 
 ## Thread restart rule
-- 新スレッドでは `README.md` → `.gpt/HANDOFF.md` → `.gpt/CONTEXT.md` → `.gpt/WORKFLOW.md` → latest main → 対象contract/source の順で確認する。
-- この文書に日付付き実績が残っていても、operational defaultはlatest source + current contractで再確認する。
+- 新スレッドでは `README.md` → `.gpt/HANDOFF.md` → `.gpt/CONTEXT.md` → `.gpt/WORKFLOW.md` → latest main → 対象current docs/contract/source の順で確認する。
+- RaceNote開発では `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` もcurrent guideとして読む。legacy確認時のみ `docs/racenote/legacy/README.md` を追加確認する。
+- この文書に日付付き実績が残っていても、operational defaultはlatest source + current guide/contractで再確認する。
 - 古いhandoff / Issue / audit / fixed SHAを単独でcurrent truthとみなさない。
 
 ## Source of truth
@@ -73,20 +74,33 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - 履歴coverageのscopeは `jrdb_jra_history`。海外所属馬・海外遠征について海外戦の完全収録を推測せず、`history_coverage` / `run_layers` を根拠に解釈する。
 - 過去日では `as_of_exclusive = target_date` を強制し、対象レース結果および対象日以降の結果を利用しない。
 
-## RaceNote Reader View / GPT prediction handoff
+## RaceNote Reader View / GPT handoff
 - 正式なsource artifactは引き続きRaceNote v1.0 `race_bundle_*.json`。Reader Viewはsource of truthを置換しない。
 - `src/racenote_reader_view.py` はv1.0を可逆なReader View v0.1へ変換する。field omission / prediction / scoringは行わず、同一のcontextをhoistしてcompact JSON化する。
 - `src/racenote_reader_zip.py` はGPT-side consumer adapter。標準 `[RACENOTE_REQUEST]` artifactをGPTが回収した後に実行し、正本bundle bytesを保持したまま `reader_view_*.json` を追加した別ZIPを生成する。
 - Reader Viewは必ず `source_semantic_sha256` とround-trip validationで検証する。検証不能ならReader Viewを予想入力として採用しない。
 - 2026-09-08 real-data E2E（2024-12-28中山11R）では、正本264,682 bytes → Reader View 134,621 bytes（49.14%削減）、semantic SHA完全一致、正本raw bytes完全保存を確認。証跡は `docs/RaceNote_Reader_View_E2E_20260908.md`。
 - Prediction logic remains outside RaceNote converter/router/Reader View。RaceNoteは観測データとprovenanceを渡し、最終的な比較・印・買い目判断はprediction layerの責務とする。
-- ユーザーが「MM/DDの○○N Rを予想して」のように1R予想を依頼した場合、GPTは原則として追加のartifact path入力をユーザーへ求めず、次を一連の定型処理として実施する。
-  1. Google Driveアダプタで現行Analysis Lite / Stats Martをresolveする。
-  2. 標準 `[RACENOTE_REQUEST]` を実行して対象1Rの正式RaceNote v1.0 artifactを取得する。
-  3. GPT-side Reader ZIP adapterでReader Viewを生成・round-trip検証する。
-  4. `reader_view_*.json` を第一読込対象にし、必要な詳細確認時のみ対応する `race_bundle_*.json` を参照する。
-  5. RaceNote内のas-of-safeな事前情報だけを根拠に予想を組み立てる。過去レースでも対象結果を先に参照しない。
-- 予想結果の標準表現・印・買い目・confidence policyはRaceNoteデータ契約とは別versionで定義する。RaceNoteへ暗黙のスコアリング規則を追加しない。
+- 1R予想では、Google Driveから現行Analysis/Martをresolveし、正式RaceNote v1.0を取得、Reader Viewをround-trip検証し、as-of-safeな事前情報を第一入力として読む。必要な詳細確認時だけ正本bundleへ戻る。
+
+## RaceNote Forecast Gen0 — current prediction research
+- current guide: `docs/racenote/README.md`。
+- current research plan: `docs/racenote/FORECAST_GEN0_PLAN.md`。
+- origin reference: `docs/RaceNote_Prediction_Handoff_v0_1.md`。
+- RaceNote authoritative bundle / Reader Viewはfacts / evidence / provenanceを担当し、prediction policyを内部へ埋め込まない。
+- Gen0ではGPTがレース条件、基礎能力、今回条件適性、展開、調教・状態、近走、長期履歴、補助統計、coverage / conflicting evidence / uncertaintyを横比較して予想する。
+- fixed weightや単一score/gateを先にcurrent defaultへ置かない。model/ruleを試す場合はGen0自然言語比較と分離し、独立version・blind / TRUE_FORWARDで評価する。
+- one-race lifecycleは `pre-race source resolve -> validation -> GPT evidence reading -> comparison -> prediction draft -> pre-result self-audit -> immutable freeze -> result acquisition -> post-race evaluation` の順。結果取得をfreezeより前へ置かない。
+- 改善は1Rの勝敗へ即追従せず、原則約50Rを初期改善単位としてreading error / overvaluation / undervaluation / uncertainty / input不足をまとめて監査する。
+- EdgeDBをGen0で使う場合もPerformance / Value、CONFIRMED / SUGGESTIVE、overlapを区別し、単一Edgeだけで結論を固定しない。
+- Eval / keibailuka等の外部sourceをRaceNote-only Gen0へ暗黙に混ぜない。併用時はsource別に記録して比較可能性を維持する。
+
+## RaceNote legacy deterministic prediction boundary
+- v0.2 control baseline / v1.1-P gated prediction / `src/racenote_edge_prediction_policy.py` / `src/run_racenote_v11p_true_forward_day.py` と関連freezeはhistorical reproducibility / benchmark用legacy prediction logic。
+- Gen0へ次を隠れた決定規則として持ち込まない: top5固定候補、Good差 `<= 0.04`、stronger Edge polarityによる機械的◎昇格、v1.1-P順位の無条件継承。
+- legacy資産は旧予想再現、TRUE_FORWARD監査、比較研究、downstream compatibilityのため保持する。現時点では物理移動しない。
+- pre-race guard、as-of validation、source identity、hash、immutable freeze、result-after-freeze、prediction/presentation immutable check等の研究インフラはcurrent Gen0でも再利用してよい。旧prediction ruleと研究インフラを分ける。
+- 詳細は `docs/racenote/legacy/README.md`。
 
 ## RaceNote Archive production
 - `RaceNote Archive` は過去RaceNoteの大量・反復取得用historical base delivery cache。詳細は `docs/RaceNote_Archive_Design_v0_1.md`、SQLite schemaは `schema/racenote_archive_schema_v1_0.sql`。
@@ -96,9 +110,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - ArchiveはRaw/Coreを置換しない。Raw/Coreはaudit/rebuild source truthのまま、Archiveは高速delivery層だけを担当する。
 - 大容量Archive shardはGit外。固定命名 `jrdb_racenote_archive_YYYYMM_v1_0.sqlite`、Release tag `jrdb-racenote-archive-YYYYMM-v1.0`。Gitへ個別のDrive URL / File IDを固定しない。
 - publishable条件は `full_month`、authoritative expected identity完全一致、source provenanceあり、SQLite/full bundle validation PASS。partial/test shardはproduction backendで拒否する。
-- 2025-08 shardは360R identity完全一致・360/360 full scan PASSで公開済み。2025-08-24新潟11RではArchive経路とannual Raw fallbackのfinal v1.0 semantic SHA-256一致を確認済み。
 - 通常 `[RACENOTE_REQUEST]` から対象月Releaseの自動resolution → Archive利用まで実データで確認済み。利用者がArchive path/tagを指定する必要はない。
-- 初期coverage拡張候補はAnalysis Lite通常利用期間に合わせ2016年以降。月次追加時も同じpublication contractを維持する。
 
 ## EdgeDB v0.2 current serving
 - current serving contract: `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md`。
@@ -125,14 +137,14 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - `src/jrdb_edge_matcher_v0_2.py`
 - `src/run_jrdb_edge_match_current_v0_2.py`
 
-## RaceNote prediction presentation / reader language
-- `src/racenote_prediction_presentation_v0_2.py` はfrozen prediction / Edge axis decisionを説明用evidenceへ投影するpresentation layerで、印・順位・Edge判定を再計算しない。
-- current contractは `docs/RaceNote_Presentation_Comment_Contract_v0_2.md`。
+## Existing v1.1-P presentation / reader language
+- `src/racenote_prediction_presentation_v0_2.py` はfreeze済みv1.1-P prediction / Edge axis decisionを説明用evidenceへ投影するpresentation layerで、印・順位・Edge判定を再計算しない。
+- contractは `docs/RaceNote_Presentation_Comment_Contract_v0_2.md`。既存consumer / historical freezeの表示互換として保持する。
 - ordinary reader wordingでは、internal `good` を `基礎総合評価`、axis eligibilityを `逆転許容圏内/圏外`、Performance Edge polarityを `プラス/中立/マイナス` として表現する。
 - `Good`, `base_good`, `axis_good_guard`, `performance_edge_polarity`, `family_vote_sum`, raw `POSITIVE/NEUTRAL/NEGATIVE` 等を説明なしで通常コメントへ露出させない。
 - 各馬コメントは馬固有の強み・リスク・表示印の説明を中心にし、race-wideの軸逆転mechanicsはレース短評側が担当する。
 - `good`は複合基礎評価。JRDBゴール予測などbase scoreへ含まれるcomponentを、Edge比較後の別の独立voteとして二重加算・二重説明しない。
-- raw score gap、guard threshold、family vote、Edge IDはaudit/detail用には保持してよい。通常短評では必要なく露出しない。
+- このpresentation contractはv1.1-PをGen0のcurrent prediction policyへ戻す根拠ではない。current Gen0でも「presentationがfrozen predictionを書き換えない」という境界だけは継承する。
 
 ## Newspaper / PWA Edge consumer boundary
 - main flow: `PACI + Analysis history -> Edge Current Facts -> Edge Matcher -> edge_matches.jsonl -> Newspaper merge -> PWA / special memo`。
@@ -143,6 +155,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - 系統code等はJRDB masterで解決できる場合に表示名へ変換する。unknown codeに意味を捏造しない。
 - 表示修正はmatching semantics、q threshold、eligibility、raw conditionを変更しない。
 - sourceを修正しても既発行day packageは自動で書き変わらない。必要な場合はgeneration/publishを明示的に更新する。
+- PWA / Newspaperのdelivery都合でForecast policyを変更しない。安定したfrozen prediction contractをconsumerが表示する。
 
 主要module:
 - `src/jrdb_newspaper_build.py`
@@ -157,6 +170,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - historical/current leakageを許さない。
 - data transport層をprediction modelへ変質させない。
 - internal codeや機械語を通常reader-facing proseへ無説明で出さない。
+- legacy v1.1-P decision gateをGen0へ暗黙に持ち込まない。
 - contract変更が必要な統計threshold / evidence semantics / publication meaningを、表示修正の名目で変更しない。
 - frozen artifactで十分な監査にFull rebuildを習慣的に起動しない。
 
