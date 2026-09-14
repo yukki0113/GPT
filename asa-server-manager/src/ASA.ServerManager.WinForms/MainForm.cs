@@ -21,7 +21,7 @@ public sealed class MainForm : Form
         MinimumSize = new Size(1100, 700);
         ClientSize = new Size(1280, 800);
         AutoScaleMode = AutoScaleMode.Dpi;
-        System.Drawing.Icon? applicationIcon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+        System.Drawing.Icon? applicationIcon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
         if (applicationIcon is not null)
         {
             Icon = applicationIcon;
