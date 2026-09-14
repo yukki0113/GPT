@@ -119,6 +119,7 @@ public sealed class DiagnosticsView : UserControl
             return;
         }
         _operationInProgress = true;
+        _statusStore.ClearLastError();
         SetButtons(false);
         try
         {
@@ -199,6 +200,12 @@ public sealed class DiagnosticsView : UserControl
         builder.AppendLine($"LAN IP: {ValueOrDash(snapshot.LanIpv4)}");
         builder.AppendLine($"Hamachi IP: {ValueOrDash(snapshot.HamachiIpv4)}");
         builder.AppendLine($"Last ErrorCode: {ValueOrDash(snapshot.LastErrorCode)}");
+        if (snapshot.SteamCmd is not null)
+        {
+            string exitCode = snapshot.SteamCmd.ExitCode?.ToString() ?? "-";
+            builder.AppendLine($"SteamCMD ExitCode: {exitCode}");
+            builder.AppendLine($"SteamCMD summary: {snapshot.SteamCmd.Summary}");
+        }
         return builder.ToString();
     }
 

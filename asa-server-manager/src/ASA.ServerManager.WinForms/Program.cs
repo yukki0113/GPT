@@ -53,10 +53,11 @@ internal static class Program
         NetworkInfoService networkInfoService = new NetworkInfoService(logger);
         RconClient rconClient = new RconClient();
         SystemOperationDelay delay = new SystemOperationDelay();
+        ApplicationStatusStore statusStore = new ApplicationStatusStore();
         ServerOrchestrator serverOrchestrator = new ServerOrchestrator(
             settingsRepository,
             secretRepository,
-            new SteamCmdService(httpClient, logger),
+            new SteamCmdService(httpClient, logger, statusStore),
             new AsaProcessService(logger),
             rconClient,
             saver,
@@ -68,7 +69,6 @@ internal static class Program
             elevationLauncher,
             networkInfoService,
             new FirewallRequirementsBuilder());
-        ApplicationStatusStore statusStore = new ApplicationStatusStore();
         SavedBackupService savedBackupService = new SavedBackupService(backupDirectory, logger);
         ManualBackupCoordinator backupCoordinator = new ManualBackupCoordinator(serverOrchestrator, settingsRepository, secretRepository, rconClient, savedBackupService, delay);
         FileLogService logFileService = new FileLogService(logDirectory);

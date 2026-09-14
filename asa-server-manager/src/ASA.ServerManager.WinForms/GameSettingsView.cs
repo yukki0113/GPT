@@ -186,6 +186,7 @@ public sealed class GameSettingsView : UserControl
         {
             return;
         }
+        _statusStore.ClearLastError();
         CommitGridEdits();
         SetBusy(true, "INIから設定を読み込んでいます。");
         OperationResult result = await _service.ImportFromIniAsync(_workspace, CancellationToken.None);
@@ -210,6 +211,7 @@ public sealed class GameSettingsView : UserControl
         {
             return;
         }
+        _statusStore.ClearLastError();
         SetBusy(true, "INIをバックアップして保存しています。");
         OperationResult result = await _service.SaveToIniAsync(_workspace, CancellationToken.None);
         if (!result.Succeeded)

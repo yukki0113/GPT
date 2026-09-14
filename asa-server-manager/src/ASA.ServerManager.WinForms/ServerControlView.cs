@@ -83,10 +83,13 @@ public sealed class ServerControlView : UserControl
         _stop.Click += StopButton_Click;
         buttons.Controls.AddRange([_start, _stop]);
         _progressText.AutoSize = true;
+        _progressText.Name = "OperationProgressText";
         _progressText.Text = "現在の操作: 待機中";
         _progressBar.Dock = DockStyle.Top;
+        _progressBar.Name = "OperationProgressBar";
         _progressBar.Style = ProgressBarStyle.Blocks;
         _lastError.AutoSize = true;
+        _lastError.Name = "LastErrorLabel";
         _lastError.ForeColor = Color.Firebrick;
         _lastError.MaximumSize = new Size(1050, 0);
         _lastError.Text = "最後のエラー: -";
@@ -149,6 +152,7 @@ public sealed class ServerControlView : UserControl
 
     private async Task ExecuteOperationAsync(Func<IProgress<OperationProgress>?, CancellationToken, Task<OperationResult>> operation)
     {
+        BeginOperation();
         _operationInProgress = true;
         ApplyBusyState();
         try
@@ -171,6 +175,13 @@ public sealed class ServerControlView : UserControl
             _progressBar.Value = 0;
             await RefreshSnapshotAsync();
         }
+    }
+
+    /// <summary>新しい操作に古いエラー表示を持ち越さないよう初期化します。</summary>
+    internal void BeginOperation()
+    {
+        _statusStore.ClearLastError();
+        _lastError.Text = "最後のエラー: -";
     }
 
     private async Task RefreshSnapshotAsync()
@@ -212,7 +223,7 @@ public sealed class ServerControlView : UserControl
         }
     }
 
-    private void UpdateProgress(OperationProgress progress)
+    internal void UpdateProgress(OperationProgress progress)
     {
         _progressText.Text = "現在の操作: " + progress.UserMessage;
         _progressBar.Style = ProgressBarStyle.Marquee;

@@ -34,6 +34,18 @@ public sealed class WinFormsStartupSmokeTests
                     Assert.InRange(button.Width, 150, 220);
                     Assert.InRange(button.Height, 40, 50);
                 });
+                statusStore.Record(OperationResult.Failure("old", errorCode: "OLD_ERROR"));
+                serverControl.BeginOperation();
+                Label lastError = Assert.Single(FindControls<Label>(serverControl).Where(label => label.Name == "LastErrorLabel"));
+                Assert.Equal("最後のエラー: -", lastError.Text);
+                Assert.Null(statusStore.GetLastErrorCode());
+
+                serverControl.UpdateProgress(new OperationProgress("UPDATING", "ASA Dedicated Serverを更新しています（59.3%）", 59));
+                ProgressBar progressBar = Assert.Single(FindControls<ProgressBar>(serverControl).Where(bar => bar.Name == "OperationProgressBar"));
+                Assert.Equal(ProgressBarStyle.Blocks, progressBar.Style);
+                Assert.Equal(59, progressBar.Value);
+                serverControl.UpdateProgress(new OperationProgress("UPDATING", "SteamCMD処理中... 最終応答 15:12:34", null));
+                Assert.Equal(ProgressBarStyle.Marquee, progressBar.Style);
             }
             using (BasicSettingsView basicSettings = new BasicSettingsView(basicSettingsService, orchestrator, statusStore, folderPickerService))
             {

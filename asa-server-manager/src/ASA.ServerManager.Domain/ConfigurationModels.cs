@@ -120,7 +120,16 @@ public sealed class DiagnosticsSnapshot
     public string? HamachiIpv4 { get; init; }
     public string? CurrentLogPath { get; init; }
     public string? LastErrorCode { get; init; }
+    public SteamCmdDiagnostics? SteamCmd { get; init; }
     public IReadOnlyList<string> LogLines { get; init; } = [];
+}
+
+/// <summary>最後に実行したSteamCMDの秘密情報を含まない診断情報です。</summary>
+public sealed class SteamCmdDiagnostics
+{
+    public int? ExitCode { get; init; }
+    public required string Summary { get; init; }
+    public DateTimeOffset CompletedAt { get; init; } = DateTimeOffset.UtcNow;
 }
 
 /// <summary>ASA Server Managerが必要とする受信Firewall設定です。</summary>

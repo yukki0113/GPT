@@ -195,6 +195,7 @@ public sealed class BasicSettingsView : UserControl
 
     private async void SaveButton_Click(object? sender, EventArgs eventArgs)
     {
+        _statusStore.ClearLastError();
         _errors.Clear();
         SetBusy(true, "入力内容を確認しています。");
         ServerSnapshot snapshot = await _serverOrchestrator.GetSnapshotAsync(CancellationToken.None);

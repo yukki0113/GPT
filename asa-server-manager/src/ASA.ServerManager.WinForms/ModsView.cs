@@ -158,6 +158,7 @@ public sealed class ModsView : UserControl
 
     private async void Save_Click(object? sender, EventArgs eventArgs)
     {
+        _statusStore.ClearLastError();
         CommitGridEdits();
         SetBusy(true, "MOD設定を保存しています。");
         OperationResult<IReadOnlyList<ModDefinition>> result = await _service.SaveAsync(ToDefinitions(), CancellationToken.None);

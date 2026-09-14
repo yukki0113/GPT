@@ -7,6 +7,16 @@ public sealed class ApplicationStatusStore : IApplicationStatusStore
 {
     private readonly object _syncRoot = new object();
     private string? _lastErrorCode;
+    private SteamCmdDiagnostics? _steamCmdDiagnostics;
+
+    /// <inheritdoc />
+    public void ClearLastError()
+    {
+        lock (_syncRoot)
+        {
+            _lastErrorCode = null;
+        }
+    }
 
     /// <inheritdoc />
     public void Record(OperationResult result)
@@ -27,6 +37,24 @@ public sealed class ApplicationStatusStore : IApplicationStatusStore
         lock (_syncRoot)
         {
             return _lastErrorCode;
+        }
+    }
+
+    /// <inheritdoc />
+    public void RecordSteamCmdDiagnostics(SteamCmdDiagnostics diagnostics)
+    {
+        lock (_syncRoot)
+        {
+            _steamCmdDiagnostics = diagnostics;
+        }
+    }
+
+    /// <inheritdoc />
+    public SteamCmdDiagnostics? GetSteamCmdDiagnostics()
+    {
+        lock (_syncRoot)
+        {
+            return _steamCmdDiagnostics;
         }
     }
 }
@@ -185,6 +213,7 @@ public sealed class DiagnosticsService
             HamachiIpv4 = server.Network?.HamachiIpv4,
             CurrentLogPath = logResult.Value.Path,
             LastErrorCode = _statusStore.GetLastErrorCode(),
+            SteamCmd = _statusStore.GetSteamCmdDiagnostics(),
             LogLines = logResult.Value.Lines
         };
         return OperationResult<DiagnosticsSnapshot>.Success(snapshot);

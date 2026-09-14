@@ -205,6 +205,7 @@ internal sealed class FakeSteamService : ISteamCmdService
     internal OperationResult UpdateResult { get; set; } = OperationResult.Success();
     public Task<OperationResult> EnsureInstalledAsync(string steamCmdPath, IProgress<OperationProgress>? progress, CancellationToken cancellationToken) { EnsureCalls++; return Task.FromResult(EnsureResult); }
     public Task<OperationResult> UpdateAsaServerAsync(string steamCmdPath, string dedicatedServerPath, IProgress<OperationProgress>? progress, CancellationToken cancellationToken) { UpdateCalls++; return Task.FromResult(UpdateResult); }
+    public Task<OperationResult> RepairAsaServerAsync(string steamCmdPath, string dedicatedServerPath, IProgress<OperationProgress>? progress, CancellationToken cancellationToken) { return Task.FromResult(OperationResult.Success()); }
 }
 
 internal sealed class FakeProcessService : IAsaProcessService

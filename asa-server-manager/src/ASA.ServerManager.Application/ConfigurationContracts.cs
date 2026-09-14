@@ -89,6 +89,9 @@ public interface ISteamCmdService
 
     /// <summary>ASA Dedicated Serverを更新します。</summary>
     Task<OperationResult> UpdateAsaServerAsync(string steamCmdPath, string dedicatedServerPath, IProgress<OperationProgress>? progress, CancellationToken cancellationToken);
+
+    /// <summary>validateを付けてASA Dedicated Serverを修復します。</summary>
+    Task<OperationResult> RepairAsaServerAsync(string steamCmdPath, string dedicatedServerPath, IProgress<OperationProgress>? progress, CancellationToken cancellationToken);
 }
 
 /// <summary>ASAプロセスの起動と状態照会を行います。</summary>
@@ -154,9 +157,18 @@ public interface ILogFileService
 /// <summary>画面間で最後の利用者向けエラー状態を共有します。</summary>
 public interface IApplicationStatusStore
 {
+    /// <summary>新しい操作の開始時に以前のエラーを消去します。</summary>
+    void ClearLastError();
+
     /// <summary>最後の操作結果を記録します。</summary>
     void Record(OperationResult result);
 
+    /// <summary>最後のSteamCMD診断結果を記録します。</summary>
+    void RecordSteamCmdDiagnostics(SteamCmdDiagnostics diagnostics);
+
     /// <summary>最後のエラーコードを返します。</summary>
     string? GetLastErrorCode();
+
+    /// <summary>最後のSteamCMD診断結果を返します。</summary>
+    SteamCmdDiagnostics? GetSteamCmdDiagnostics();
 }
