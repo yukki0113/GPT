@@ -10,6 +10,19 @@ public sealed class SteamCmdServiceTests
     private const string SuccessMarker = "Success! App '2430930' fully installed.";
 
     [Fact]
+    public void BuildStartInfo_UsesUtf8ForStdoutAndStderr()
+    {
+        ProcessStartInfo startInfo = SteamCmdService.BuildStartInfo("C:\\SteamCMD\\steamcmd.exe", "C:\\ASA", validate: false);
+
+        Assert.True(startInfo.RedirectStandardOutput);
+        Assert.True(startInfo.RedirectStandardError);
+        Assert.NotNull(startInfo.StandardOutputEncoding);
+        Assert.NotNull(startInfo.StandardErrorEncoding);
+        Assert.Equal("utf-8", startInfo.StandardOutputEncoding.WebName);
+        Assert.Equal("utf-8", startInfo.StandardErrorEncoding.WebName);
+    }
+
+    [Fact]
     public async Task ExitZeroAndServerExecutableExists_Succeeds()
     {
         using SteamCmdFixture fixture = new SteamCmdFixture(serverExecutableExists: true);
@@ -18,6 +31,45 @@ public sealed class SteamCmdServiceTests
         OperationResult result = await fixture.Service.UpdateAsaServerAsync(fixture.SteamRoot, fixture.ServerRoot, null, CancellationToken.None);
 
         Assert.True(result.Succeeded);
+    }
+
+    [Fact]
+    public async Task JapaneseStdout_IsPreservedInLogCapture()
+    {
+        using SteamCmdFixture fixture = new SteamCmdFixture(serverExecutableExists: true);
+        string line = "更新を確認中...";
+        fixture.Runner.Results.Enqueue(new FakeSteamCmdResult(0, [new FakeSteamCmdLine("stdout", line)]));
+
+        OperationResult result = await fixture.Service.UpdateAsaServerAsync(fixture.SteamRoot, fixture.ServerRoot, null, CancellationToken.None);
+
+        Assert.True(result.Succeeded);
+        Assert.Contains(fixture.Logger.Information, message => message == "SteamCMD [stdout] " + line);
+    }
+
+    [Fact]
+    public async Task JapaneseStderr_IsPreservedInLogCapture()
+    {
+        using SteamCmdFixture fixture = new SteamCmdFixture(serverExecutableExists: true);
+        string line = "インストール状態を確認中...";
+        fixture.Runner.Results.Enqueue(new FakeSteamCmdResult(0, [new FakeSteamCmdLine("stderr", line)]));
+
+        OperationResult result = await fixture.Service.UpdateAsaServerAsync(fixture.SteamRoot, fixture.ServerRoot, null, CancellationToken.None);
+
+        Assert.True(result.Succeeded);
+        Assert.Contains(fixture.Logger.Information, message => message == "SteamCMD [stderr] " + line);
+    }
+
+    [Fact]
+    public async Task EnglishStdout_IsPreservedInLogCapture()
+    {
+        using SteamCmdFixture fixture = new SteamCmdFixture(serverExecutableExists: true);
+        string line = "Success! App '2430930' already up to date.";
+        fixture.Runner.Results.Enqueue(new FakeSteamCmdResult(0, [new FakeSteamCmdLine("stdout", line)]));
+
+        OperationResult result = await fixture.Service.UpdateAsaServerAsync(fixture.SteamRoot, fixture.ServerRoot, null, CancellationToken.None);
+
+        Assert.True(result.Succeeded);
+        Assert.Contains(fixture.Logger.Information, message => message == "SteamCMD [stdout] " + line);
     }
 
     [Fact]

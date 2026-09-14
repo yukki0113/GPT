@@ -213,6 +213,8 @@ public sealed class SteamCmdService : ISteamCmdService
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardOutputEncoding = new UTF8Encoding(false),
+            StandardErrorEncoding = new UTF8Encoding(false),
             CreateNoWindow = true
         };
         startInfo.ArgumentList.Add("+force_install_dir");
