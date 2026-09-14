@@ -24,6 +24,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>Resources\ASA_Server_Manager.ico</ApplicationIcon>
   </PropertyGroup>
 
 </Project>

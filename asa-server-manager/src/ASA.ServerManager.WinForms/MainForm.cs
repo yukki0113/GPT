@@ -21,6 +21,11 @@ public sealed class MainForm : Form
         MinimumSize = new Size(1100, 700);
         ClientSize = new Size(1280, 800);
         AutoScaleMode = AutoScaleMode.Dpi;
+        System.Drawing.Icon? applicationIcon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+        if (applicationIcon is not null)
+        {
+            Icon = applicationIcon;
+        }
 
         TabControl tabs = new TabControl { Dock = DockStyle.Fill };
         tabs.TabPages.Add(CreateTab("サーバー操作", new ServerControlView(serverOrchestrator, statusStore)));
