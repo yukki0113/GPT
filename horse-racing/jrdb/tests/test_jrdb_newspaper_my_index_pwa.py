@@ -18,9 +18,9 @@ class NewspaperMyIndexPwaTest(unittest.TestCase):
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
         script = (PWA_ROOT / "newspaper-v10.js").read_text(encoding="utf-8")
 
-        self.assertIn('./newspaper-v10.js?v=1', html)
-        self.assertIn('./newspaper-v10.js?v=1', service_worker)
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v43"', service_worker)
+        self.assertIn('./newspaper-v10.js?v=2', html)
+        self.assertIn('./newspaper-v10.js?v=2', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v44"', service_worker)
         self.assertIn('"training_edge_index"', script)
         self.assertIn('sources.my_index', script)
         self.assertIn('"指数○"', script)
@@ -62,8 +62,14 @@ vm.runInContext(source, context);
 const supplied = {{ addons: {{ my_index: {{ training_edge_index: 80.9 }} }} }};
 if (context.newspaperV10MyIndexValue(supplied) !== "80.9") throw new Error("training_edge_index missing");
 
-const missing = {{ addons: {{ my_index: {{ training_edge_index: null }} }} }};
-if (context.newspaperV10MyIndexValue(missing) !== "—") throw new Error("null index should be dash");
+const nullSupplied = {{ addons: {{ my_index: {{ training_edge_index: null }} }} }};
+if (context.newspaperV10MyIndexValue(nullSupplied) !== "") throw new Error("null index should be blank");
+
+const emptySupplied = {{ addons: {{ my_index: {{ training_edge_index: "" }} }} }};
+if (context.newspaperV10MyIndexValue(emptySupplied) !== "") throw new Error("empty index should be blank");
+
+const explicitNullWithLegacy = {{ addons: {{ my_index: {{ training_edge_index: null, index: 47.4 }} }} }};
+if (context.newspaperV10MyIndexValue(explicitNullWithLegacy) !== "") throw new Error("explicit null must not fall back to legacy value");
 
 const legacy = {{ addons: {{ my_index: {{ index: 47.4 }} }} }};
 if (context.newspaperV10MyIndexValue(legacy) !== "47.4") throw new Error("legacy fallback missing");
