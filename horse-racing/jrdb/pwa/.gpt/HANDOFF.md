@@ -126,6 +126,32 @@ PWA表示rule:
 - `newspaper-v9.css`
 - `../tests/test_jrdb_newspaper_eval_analysis_pwa.py`
 
+## Independent index / Training Edge invariants
+
+独自指数は上流で算出済みの値をPWAがそのまま表示する。PWA側で指数を再計算・順位化・標準化・合成しない。
+
+canonical horse addon:
+
+```json
+{
+  "addons": {
+    "my_index": {
+      "training_edge_index": 80.9
+    }
+  }
+}
+```
+
+- preferred value: `addons.my_index.training_edge_index`
+- legacy fallback: `display_value / index / score / value`
+- null / missing / non-numeric -> `—`
+- day manifest source status: `source_status.my_index.state`
+- `READY` -> day summary `指数○`
+- source CSV standard columns: `date, venue_code, race_no, horse_no, training_edge_index`
+- CSV exact join / duplicate detection / audit / source_status creationはNewspaper生成側の責務
+- current PWA layer: `newspaper-v10.js`
+- focused test: `../tests/test_jrdb_newspaper_my_index_pwa.py`
+
 ## Edge display invariants
 
 PWAはEdge outputを表示するconsumerです。
@@ -258,26 +284,3 @@ Fact Lite / Stats Mart data更新:
 - publisher validation
 - current Release更新
 - full Pages recomposition
-- browser/manifest sync確認
-
-Newspaper更新:
-
-- immutable revision / audit
-- current publish
-- Newspaper Release更新
-- full Pages success
-- 必要に応じて当日表示確認
-
-## Dynamic state rule
-
-このhandoffに次の値が書かれていてもcurrent stateとは見なしません。
-
-- Drive File ID
-- artifact ID
-- run ID
-- current SHA-256
-- current size
-- data version
-- revision number
-
-これらはlatest Release / manifest / pointer / workflow runから取得します。
