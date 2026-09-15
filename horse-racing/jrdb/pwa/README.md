@@ -54,6 +54,7 @@
 - `newspaper-v7.js` — 特注メモ表示
 - `newspaper-v8.js` — source status表示拡張
 - `newspaper-v9.js` / `newspaper-v9.css` — Eval分析コメントリンク・modal表示
+- `newspaper-v10.js` — 独自指数（Training Edge）表示とsource status
 - `../src/jrdb_newspaper_merge_external.py` — Eval / RaceNote / keibailuka merge
 - `../src/jrdb_newspaper_merge_edge.py` — Edge merge
 - `../src/jrdb_newspaper_edge_adapter.py` — Edge reader-facing display boundary
@@ -104,6 +105,31 @@ PWAの現在動作:
 - MATCHを的中保証として扱わない
 
 旧日次JSONや旧Eval CSV由来の `analysis` なしデータも正常表示します。
+
+### 独自指数 / Training Edge
+
+PWAは上流で算出済みの独自指数を **再計算せずそのまま表示**します。canonicalな馬単位JSONは次を使用します。
+
+```json
+{
+  "addons": {
+    "my_index": {
+      "training_edge_index": 80.9
+    }
+  }
+}
+```
+
+表示rule:
+
+- preferred field: `addons.my_index.training_edge_index`
+- 旧互換: `display_value / index / score / value`
+- null / 欠損 / 非数値: `—`
+- 数値はPWAの通常指数表示と同じ1桁小数表示
+- 日次manifestは `source_status.my_index.state` を使用し、`READY` のとき概要欄を `指数○` とする
+- PWA側で順位化、標準化、percentile、加重、他指数との合成を行わない
+
+元CSVの標準列は `date, venue_code, race_no, horse_no, training_edge_index`。CSVからNewspaper day packageへのexact join・source_status・auditはNewspaper生成側の責務であり、PWAは完成JSONだけをconsumerとして扱います。
 
 ### Edge / 特注メモ
 
