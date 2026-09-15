@@ -184,7 +184,7 @@ jobs:
           a=$?
 
           if [ "$a" = 0 ]; then
-            python horse-racing/jrdb/src/bundle_jrdb_replay_year.py \
+            python horse-racing/jrdb/src/bundle_jrdb_daily_year.py \
               --source-root /tmp/jrdb_replay/daily \
               --output-root /tmp/jrdb_replay/raw \
               --year 2026 --kinds SED \
