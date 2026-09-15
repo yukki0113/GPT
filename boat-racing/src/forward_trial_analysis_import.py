@@ -219,8 +219,17 @@ def audit_freeze(prediction_freeze: str, sales_freeze: str, cutoff: str) -> tupl
 
 
 def parse_finish(value: str) -> tuple[int | None, int | None]:
-    boats = [as_int(item) for item in str(value).split("-") if item.strip()]
-    return (boats[0] if boats else None, boats[1] if len(boats) > 1 else None)
+    """Read the first two placings without collapsing later dead heats.
+
+    The confirmed finish remains untouched in the FT2 detail row. A
+    third-place dead heat such as 3-6-1=2-4-5 keeps both official
+    3連単 outcomes in the result record, while 2連単 evaluation uses the
+    unique first and second boats 3-6.
+    """
+    placings = [item.strip() for item in str(value).split("-") if item.strip()]
+    first = as_int(placings[0]) if placings else None
+    second = as_int(placings[1]) if len(placings) > 1 else None
+    return first, second
 
 
 def parse_bet(value: str) -> tuple[int, int] | None:
