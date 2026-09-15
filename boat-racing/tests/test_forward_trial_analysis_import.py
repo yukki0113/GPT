@@ -18,6 +18,7 @@ from forward_trial_analysis_import import (
     grade_category,
     initial_backfill_rows,
     metric_block,
+    parse_finish,
     stable_key,
     structure_result,
     upsert_rows,
@@ -132,6 +133,9 @@ class ForwardTrialAnalysisImportTest(unittest.TestCase):
         statuses = [audit_freeze(freeze, freeze, f"2026-09-03 {cutoff}:00+09:00")[3]
                     for cutoff in ("08:44", "09:10", "09:39", "10:05")]
         self.assertEqual(statuses, [CONTAMINATED, CONTAMINATED, CONTAMINATED, GENUINE])
+
+    def test_parse_finish_keeps_later_dead_heat_in_source_without_breaking_exacta(self):
+        self.assertEqual(parse_finish("3-6-1=2-4-5"), (3, 6))
 
     def test_0908_regression_shape(self):
         rows = [self._target("有料", "○", payout) for payout in (250, 240, 280, 200)]
