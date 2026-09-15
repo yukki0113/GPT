@@ -30,6 +30,10 @@ from evaluate_training_edge_v0_2_oot import (
     _materialize_b,
     _materialize_time_aware,
 )
+from fingerprint_training_edge_v0_2_runtime import (
+    fingerprint as build_runtime_fingerprint,
+    validate_fingerprint,
+)
 from training_edge_v0_2_core import (
     VERSION as CORE_VERSION,
     build_c_model,
@@ -39,13 +43,18 @@ from training_edge_v0_2_core import (
     training_edge_percentile,
 )
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 CSV_COLUMNS = (
     "date",
     "venue_code",
     "race_no",
     "horse_no",
     "training_edge_index",
+)
+DEFAULT_RUNTIME_FINGERPRINT = (
+    Path(__file__).resolve().parents[1]
+    / "config"
+    / "training_edge_v0_2_runtime_fingerprint.json"
 )
 
 
@@ -144,6 +153,26 @@ def _display_index(value: float) -> str:
     """Round the PWA-facing percentile to exactly one decimal, half-up."""
     rounded = Decimal(str(float(value))).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
     return format(rounded, ".1f")
+
+
+def verify_runtime_fingerprint(input_db: Path, expected_path: Path) -> dict[str, Any]:
+    """Verify that the 2013-2025 fit population/runtime matches the frozen reference."""
+    if not expected_path.is_file():
+        raise FileNotFoundError(expected_path)
+    expected = json.loads(expected_path.read_text(encoding="utf-8"))
+    actual = build_runtime_fingerprint(input_db)
+    validate_fingerprint(actual, expected)
+    return {
+        "status": "PASS",
+        "expected_path": str(expected_path),
+        "expected_sha256": _sha256(expected_path),
+        "training_eligible_n": actual["training_eligible_n"],
+        "training_semantic_sha256": actual["training_semantic_sha256"],
+        "c_training_prediction_sha256": actual["c_training_prediction_sha256"],
+        "cab_training_prediction_sha256": actual["cab_training_prediction_sha256"],
+        "runtime_packages": actual["runtime_packages"],
+        "guard": actual["guard"],
+    }
 
 
 def score_day(
@@ -299,17 +328,23 @@ def main() -> None:
     parser.add_argument("--input-db", type=Path, required=True)
     parser.add_argument("--index-db", type=Path, required=True)
     parser.add_argument("--calibration", type=Path, required=True)
+    parser.add_argument("--runtime-fingerprint", type=Path, default=DEFAULT_RUNTIME_FINGERPRINT)
     parser.add_argument("--date", required=True, help="YYYYMMDD or YYYY-MM-DD")
     parser.add_argument("--out-csv", type=Path, required=True)
     parser.add_argument("--audit-json", type=Path, required=True)
     args = parser.parse_args()
 
+    runtime_guard = verify_runtime_fingerprint(
+        input_db=args.input_db,
+        expected_path=args.runtime_fingerprint,
+    )
     rows, audit = score_day(
         input_db=args.input_db,
         index_db=args.index_db,
         calibration_path=args.calibration,
         target_date=args.date,
     )
+    audit["runtime_fingerprint"] = runtime_guard
     write_csv(rows, args.out_csv)
     audit["output"] = {
         "csv": str(args.out_csv),
