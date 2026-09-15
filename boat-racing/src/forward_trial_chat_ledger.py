@@ -383,8 +383,11 @@ def build_atomic_payload(existing_detail: Sequence[Mapping[str, object]], daily_
     }
     checks.update(aggregate_audit_checks(audit))
     state = IMPORT_COMPLETE if all(checks.values()) else NEEDS_REVIEW
+    incoming_management_dates = {
+        str(row.get("対象日")) for row in sheet_rows(management_sheet)
+    } if management_sheet else set()
     for row in management:
-        if str(row.get("対象日")) == latest_day:
+        if str(row.get("対象日")) in incoming_management_dates:
             row["取込状態"] = state
             row["備考"] = "" if state == IMPORT_COMPLETE else "未完了ゲート: " + "、".join(name for name, ok in checks.items() if not ok)
     if management_sheet:
