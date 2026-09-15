@@ -47,6 +47,22 @@ class ForwardTrialChatLedgerTest(unittest.TestCase):
         payload = build_atomic_payload([], daily, "2026-09-13 00:00:00+09:00", False)
         self.assertEqual(payload["state"], "要確認")
 
+    def test_all_days_in_one_transaction_get_the_same_complete_state(self):
+        first = self._row("20260912_戸田_1_ForwardTrial_Ver0.1", "2026-09-12")
+        second = self._row("20260913_戸田_1_ForwardTrial_Ver0.1", "2026-09-13")
+        daily = {
+            "sheets": {
+                "FT2_全R明細": records_to_sheet([first, second], FT2_HEADERS),
+                "FT2_取込管理": records_to_sheet(
+                    [{"対象日": "2026-09-12"}, {"対象日": "2026-09-13"}],
+                    ["対象日", "取込状態", "備考"],
+                ),
+            }
+        }
+        payload = build_atomic_payload([], daily, "2026-09-14 00:00:00+09:00", True)
+        rows = payload["sheets"]["FT2_取込管理"]["rows"]
+        self.assertEqual([row[1] for row in rows], ["完了", "完了"])
+
     def test_batch_builder_grows_small_grid_before_writing(self):
         row = self._row("20260912_戸田_1_ForwardTrial_Ver0.1")
         daily = {"sheets": {"FT2_全R明細": records_to_sheet([row], FT2_HEADERS)}}
