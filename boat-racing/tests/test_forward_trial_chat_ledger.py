@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from forward_trial_analysis_import import FT2_HEADERS, GENUINE, records_to_sheet
 from forward_trial_chat_ledger import (
     build_atomic_payload, build_batch_requests, legacy_detail_row,
-    upsert_daily_detail, values_rows,
+    non_regression_audit, upsert_daily_detail, values_rows,
 )
 
 
@@ -81,6 +81,13 @@ class ForwardTrialChatLedgerTest(unittest.TestCase):
         with self.assertRaises(Exception):
             upsert_daily_detail([row], [changed])
 
+    def test_repair_can_rebind_only_source_provenance_ids(self):
+        row = self._row("20260912_戸田_1_ForwardTrial_Ver0.1")
+        rebound = dict(row)
+        rebound["prediction_source_file_id"] = "drive-file-id"
+        self.assertEqual(upsert_daily_detail([row], [rebound], allow_provenance_rebind=True)[0]
+                         ["prediction_source_file_id"], "drive-file-id")
+
     def test_legacy_mapping_keeps_csv_out_of_published_money(self):
         row = self._row("20260912_戸田_1_ForwardTrial_Ver0.1")
         row["掲載区分"] = "CSVのみ"
@@ -97,6 +104,43 @@ class ForwardTrialChatLedgerTest(unittest.TestCase):
         articles = payload["sheets"]["販売記事台帳"]["rows"]
         self.assertEqual(len(articles), 1)
         self.assertEqual(articles[0][0], "20260912")
+
+    def test_missing_prior_date_fails_non_regression_guard(self):
+        before = [self._row("a", "2026-09-11"), self._row("b", "2026-09-12")]
+        audit = non_regression_audit(before, before[:1], before[:1], "daily_append")
+        self.assertEqual(audit["missing_dates"], "2026-09-12")
+        self.assertEqual(audit["non_regression_check"], "NON_REGRESSION_VIOLATION")
+        self.assertFalse(audit["completion_ok"])
+
+    def test_partial_prior_date_fails_with_date_row_count_regression(self):
+        before = [self._row(f"a{index}", "2026-09-11") for index in range(72)]
+        after = before[:31]
+        audit = non_regression_audit(before, after, after, "daily_append")
+        self.assertEqual(audit["regressed_dates"], "2026-09-11")
+        self.assertEqual(audit["date_row_count_check"], "DATE_ROW_COUNT_REGRESSION")
+
+    def test_source_total_reduction_fails_with_non_regression_violation(self):
+        before = [self._row(f"a{index}", "2026-09-11") for index in range(684)]
+        after = before[:643]
+        audit = non_regression_audit(before, after, after, "daily_append")
+        self.assertEqual(audit["non_regression_check"], "NON_REGRESSION_VIOLATION")
+        self.assertFalse(audit["completion_ok"])
+
+    def test_normal_append_and_same_day_rerun_are_idempotently_accepted(self):
+        before = [self._row("a", "2026-09-14")]
+        incoming = [self._row("b", "2026-09-15")]
+        appended = upsert_daily_detail(before, incoming)
+        self.assertEqual(non_regression_audit(before, appended, incoming, "daily_append")["non_regression_check"], "OK")
+        self.assertEqual(non_regression_audit(appended, appended, incoming, "daily_append")["non_regression_check"], "OK")
+
+    def test_repair_mode_requires_a_reason_and_records_changed_keys(self):
+        before = [self._row("a", "2026-09-11"), self._row("b", "2026-09-12")]
+        after = before[:1]
+        blocked = non_regression_audit(before, after, after, "repair_rebuild")
+        self.assertFalse(blocked["completion_ok"])
+        repaired = non_regression_audit(before, after, after, "repair_rebuild", repair_reason="official source rebuild")
+        self.assertTrue(repaired["completion_ok"])
+        self.assertEqual(repaired["execution_mode"], "repair_rebuild")
 
 
 if __name__ == "__main__":
