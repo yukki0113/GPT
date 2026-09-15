@@ -87,21 +87,35 @@ jobs:
           mkdir -p /tmp/jrdb_drive_preflight/paci /tmp/jrdb_drive_preflight/sed /tmp/jrdb_drive_preflight/report
 
           gdown "$PACI_FOLDER_URL" --json --quiet \
-            > /tmp/jrdb_drive_preflight/report/paci_inventory.json 2> /tmp/jrdb_drive_preflight/report/paci_inventory.stderr
+            > /tmp/jrdb_drive_preflight/report/paci_inventory.json \
+            2> /tmp/jrdb_drive_preflight/report/paci_inventory.stderr
           a=$?
           if [ "$a" = 0 ]; then
             gdown "$SED_FOLDER_URL" --json --quiet \
-              > /tmp/jrdb_drive_preflight/report/sed_inventory.json 2> /tmp/jrdb_drive_preflight/report/sed_inventory.stderr
+              > /tmp/jrdb_drive_preflight/report/sed_inventory.json \
+              2> /tmp/jrdb_drive_preflight/report/sed_inventory.stderr
             a=$?
           fi
           if [ "$a" = 0 ]; then
-            gdown "$PACI_FOLDER_URL" -O /tmp/jrdb_drive_preflight/paci \
-              > /tmp/jrdb_drive_preflight/report/paci_download.log 2>&1
+            python horse-racing/jrdb/src/download_public_drive_inventory.py \
+              --inventory /tmp/jrdb_drive_preflight/report/paci_inventory.json \
+              --output-dir /tmp/jrdb_drive_preflight/paci \
+              --prefix PACI --year 2026 --to-date "$OOT_TO_DATE" \
+              --max-attempts 6 --base-sleep-seconds 1.5 \
+              --audit-json /tmp/jrdb_drive_preflight/report/paci_download_audit.json \
+              > /tmp/jrdb_drive_preflight/report/paci_download.log \
+              2> /tmp/jrdb_drive_preflight/report/paci_download.stderr
             a=$?
           fi
           if [ "$a" = 0 ]; then
-            gdown "$SED_FOLDER_URL" -O /tmp/jrdb_drive_preflight/sed \
-              > /tmp/jrdb_drive_preflight/report/sed_download.log 2>&1
+            python horse-racing/jrdb/src/download_public_drive_inventory.py \
+              --inventory /tmp/jrdb_drive_preflight/report/sed_inventory.json \
+              --output-dir /tmp/jrdb_drive_preflight/sed \
+              --prefix SED --year 2026 --to-date "$OOT_TO_DATE" \
+              --max-attempts 6 --base-sleep-seconds 1.5 \
+              --audit-json /tmp/jrdb_drive_preflight/report/sed_download_audit.json \
+              > /tmp/jrdb_drive_preflight/report/sed_download.log \
+              2> /tmp/jrdb_drive_preflight/report/sed_download.stderr
             a=$?
           fi
           echo "exit_code=$a" >> "$GITHUB_OUTPUT"
