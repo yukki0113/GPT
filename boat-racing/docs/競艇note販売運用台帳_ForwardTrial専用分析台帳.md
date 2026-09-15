@@ -65,7 +65,7 @@ CSVのみはRaw/Genuineの対象になり得るがPublishedには含めない。
 
 `FT2_全R明細` 更新後は、9タブを全GENUINE明細から同一処理で上書き再生成する。一部だけの更新、前日集計値への差分加算を通常運用にしない。
 
-`FT2_集計監査` は各9タブについて、stable key集合から決定する `aggregate_generation_id`、source raw/genuine/contaminated/exacta件数、max対象日、出力行数、検証状態を記録する。9行のgeneration / source件数 / max対象日が一致しない場合は `集計不整合` とし、完了にしない。
+`FT2_集計監査` は各9タブについて、stable key集合から決定する `aggregate_generation_id`、source raw/genuine/contaminated/exacta件数、max対象日、出力行数、検証状態を記録する。さらに直前完了世代、当日取込値、期待累計、`missing_dates`、`regressed_dates`、Non-Regression Guard、実行modeを記録する。9行のgeneration / source件数 / max対象日が一致しない場合、または通常の `daily_append` でsource件数・既存日件数・対象日集合が縮退した場合は `集計不整合` とし、完了にしない。
 
 ## 初回固定受入値
 
