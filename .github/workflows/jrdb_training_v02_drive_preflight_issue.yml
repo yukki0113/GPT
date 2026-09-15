@@ -1,0 +1,283 @@
+name: JRDB Training Edge v0.2 Drive-first preflight via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_TRAINING_V02_DRIVE_PREFLIGHT]'
+  HISTORY_FILE_ID: '13YKKbOgS7KCkXzKtU93XtCPWt1wPqosk'
+  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/12lmU6_NZF24ixrB7MMMzzvcBNzbhQTr0'
+  SED_FOLDER_URL: 'https://drive.google.com/drive/folders/1ywucQ_84OgnSzJG6_HXa_M8KWWkVOTa4'
+  OOT_TO_DATE: '20260913'
+
+jobs:
+  preflight:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_V02_DRIVE_PREFLIGHT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install preflight dependencies
+        run: python -m pip install --disable-pip-version-check 'gdown==6.2.0' pytest
+
+      - name: Test PACI annual bridge
+        id: unit
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_drive_preflight/report
+          python -m pytest -q horse-racing/jrdb/tests/test_bundle_jrdb_paci_year.py \
+            > /tmp/jrdb_drive_preflight/report/paci_bridge_test.log 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Download existing history bundle from public Drive
+        id: history
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_drive_preflight/history /tmp/jrdb_drive_preflight/report
+          gdown "$HISTORY_FILE_ID" \
+            -O /tmp/jrdb_drive_preflight/history/jrdb_history_2010_2025.zip \
+            > /tmp/jrdb_drive_preflight/report/history_download.log 2>&1
+          code=$?
+          if [ "$code" = 0 ]; then
+            python - <<'PY' > /tmp/jrdb_drive_preflight/report/history_zip_audit.json
+          import hashlib, json, zipfile
+          from pathlib import Path
+          path=Path('/tmp/jrdb_drive_preflight/history/jrdb_history_2010_2025.zip')
+          digest=hashlib.sha256(path.read_bytes()).hexdigest()
+          with zipfile.ZipFile(path) as z:
+              bad=z.testzip()
+              names=z.namelist()
+          print(json.dumps({
+              'status':'PASS' if bad is None else 'FAIL',
+              'size_bytes':path.stat().st_size,
+              'sha256':digest,
+              'bad_member':bad,
+              'member_count':len(names),
+              'members':names,
+          },ensure_ascii=False,indent=2))
+          PY
+            code=$?
+          fi
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Resolve and download 2026 PACI and SED Drive folders
+        id: drive
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_drive_preflight/paci /tmp/jrdb_drive_preflight/sed /tmp/jrdb_drive_preflight/report
+
+          gdown "$PACI_FOLDER_URL" --json --quiet \
+            > /tmp/jrdb_drive_preflight/report/paci_inventory.json 2> /tmp/jrdb_drive_preflight/report/paci_inventory.stderr
+          a=$?
+          if [ "$a" = 0 ]; then
+            gdown "$SED_FOLDER_URL" --json --quiet \
+              > /tmp/jrdb_drive_preflight/report/sed_inventory.json 2> /tmp/jrdb_drive_preflight/report/sed_inventory.stderr
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            gdown "$PACI_FOLDER_URL" -O /tmp/jrdb_drive_preflight/paci \
+              > /tmp/jrdb_drive_preflight/report/paci_download.log 2>&1
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            gdown "$SED_FOLDER_URL" -O /tmp/jrdb_drive_preflight/sed \
+              > /tmp/jrdb_drive_preflight/report/sed_download.log 2>&1
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit 2026 Drive inventory and build annual-compatible Raw
+        id: bundle
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.drive.outputs.exit_code }}' != '0' ] || [ '${{ steps.unit.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          mkdir -p /tmp/jrdb_drive_preflight/paci_flat /tmp/jrdb_drive_preflight/daily/SED /tmp/jrdb_drive_preflight/raw2026
+          find /tmp/jrdb_drive_preflight/paci -type f -name 'PACI26????.zip' -exec cp '{}' /tmp/jrdb_drive_preflight/paci_flat/ ';'
+          find /tmp/jrdb_drive_preflight/sed -type f -name 'SED26????.zip' -exec cp '{}' /tmp/jrdb_drive_preflight/daily/SED/ ';'
+
+          python - <<'PY' > /tmp/jrdb_drive_preflight/report/drive_date_audit.json
+          import datetime as dt, json, re, zipfile
+          from pathlib import Path
+          cutoff=dt.datetime.strptime('20260913','%Y%m%d').date()
+          def dates(root, prefix):
+              out={}
+              rx=re.compile(rf'^{prefix}(\d{{6}})\.zip$',re.I)
+              for path in Path(root).glob(f'{prefix}26????.zip'):
+                  m=rx.fullmatch(path.name)
+                  if not m:
+                      continue
+                  date=dt.datetime.strptime('20'+m.group(1),'%Y%m%d').date()
+                  if date > cutoff:
+                      continue
+                  with zipfile.ZipFile(path) as z:
+                      bad=z.testzip()
+                  if bad is not None:
+                      raise SystemExit(f'corrupt {path}: {bad}')
+                  out[date.isoformat()]=path.name
+              return out
+          paci=dates('/tmp/jrdb_drive_preflight/paci_flat','PACI')
+          sed=dates('/tmp/jrdb_drive_preflight/daily/SED','SED')
+          paci_dates=set(paci)
+          sed_dates=set(sed)
+          result={
+              'cutoff':'2026-09-13',
+              'paci_count':len(paci),
+              'sed_count':len(sed),
+              'common_count':len(paci_dates & sed_dates),
+              'paci_only':sorted(paci_dates-sed_dates),
+              'sed_only':sorted(sed_dates-paci_dates),
+              'latest_common':max(paci_dates & sed_dates) if paci_dates & sed_dates else None,
+          }
+          print(json.dumps(result,ensure_ascii=False,indent=2))
+          if result['paci_only'] or result['sed_only'] or result['latest_common'] != '2026-09-13':
+              raise SystemExit(3)
+          PY
+          a=$?
+
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/bundle_jrdb_paci_year.py \
+              --source-dir /tmp/jrdb_drive_preflight/paci_flat \
+              --output-root /tmp/jrdb_drive_preflight/raw2026 \
+              --year 2026 --kinds BAC KYI UKC CHA CYB \
+              --to-date "$OOT_TO_DATE" \
+              --audit-json /tmp/jrdb_drive_preflight/report/paci_bundle_audit.json \
+              > /tmp/jrdb_drive_preflight/report/paci_bundle_stdout.log \
+              2> /tmp/jrdb_drive_preflight/report/paci_bundle_stderr.log
+            a=$?
+          fi
+
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/bundle_jrdb_daily_year.py \
+              --source-root /tmp/jrdb_drive_preflight/daily \
+              --output-root /tmp/jrdb_drive_preflight/raw2026 \
+              --year 2026 --kinds SED \
+              --to-date "$OOT_TO_DATE" \
+              --audit-json /tmp/jrdb_drive_preflight/report/sed_bundle_audit.json \
+              > /tmp/jrdb_drive_preflight/report/sed_bundle_stdout.log \
+              2> /tmp/jrdb_drive_preflight/report/sed_bundle_stderr.log
+            a=$?
+          fi
+
+          if [ "$a" = 0 ]; then
+            python - <<'PY' > /tmp/jrdb_drive_preflight/report/raw2026_audit.json
+          import hashlib, json, zipfile
+          from pathlib import Path
+          result={}
+          for kind in ('BAC','KYI','SED','UKC','CHA','CYB'):
+              path=Path('/tmp/jrdb_drive_preflight/raw2026')/kind/f'{kind}_2026.zip'
+              if not path.is_file():
+                  raise SystemExit(f'missing {path}')
+              h=hashlib.sha256()
+              with path.open('rb') as f:
+                  for block in iter(lambda:f.read(1024*1024),b''):
+                      h.update(block)
+              with zipfile.ZipFile(path) as z:
+                  bad=z.testzip()
+                  names=z.namelist()
+              if bad is not None:
+                  raise SystemExit(f'bad member {bad} in {path}')
+              result[kind]={
+                  'size_bytes':path.stat().st_size,
+                  'sha256':h.hexdigest(),
+                  'member_count':len(names),
+                  'first_member':names[0] if names else None,
+                  'last_member':names[-1] if names else None,
+              }
+          print(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+            a=$?
+          fi
+
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build preflight result
+        if: always()
+        env:
+          UNIT_EXIT: ${{ steps.unit.outputs.exit_code }}
+          HISTORY_EXIT: ${{ steps.history.outputs.exit_code }}
+          DRIVE_EXIT: ${{ steps.drive.outputs.exit_code }}
+          BUNDLE_EXIT: ${{ steps.bundle.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          exits={key:os.environ.get(key+'_EXIT','') for key in ('UNIT','HISTORY','DRIVE','BUNDLE')}
+          def load(name):
+              path=Path('/tmp/jrdb_drive_preflight/report')/name
+              return json.loads(path.read_text(encoding='utf-8')) if path.is_file() else None
+          status='success' if all(v=='0' for v in exits.values()) else 'failure'
+          result={
+              'status':status,
+              'run_id':int(os.environ['RUN_ID']),
+              'oot_to_date':'20260913',
+              'exits':exits,
+              'history':load('history_zip_audit.json'),
+              'drive_dates':load('drive_date_audit.json'),
+              'raw2026':load('raw2026_audit.json'),
+          }
+          text=json.dumps(result,ensure_ascii=False,indent=2)
+          Path('/tmp/jrdb_drive_preflight/report/workflow_result.json').write_text(text,encoding='utf-8')
+          Path('/tmp/comment.md').write_text('JRDB_TRAINING_V02_DRIVE_PREFLIGHT_RESULT\n```json\n'+text+'\n```\n',encoding='utf-8')
+          PY
+
+      - name: Upload preflight report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-training-v02-drive-preflight-${{ github.run_id }}
+          path: /tmp/jrdb_drive_preflight/report/
+          retention-days: 30
+          if-no-files-found: warn
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close successful preflight
+        if: >-
+          always() && steps.unit.outputs.exit_code == '0' &&
+          steps.history.outputs.exit_code == '0' &&
+          steps.drive.outputs.exit_code == '0' &&
+          steps.bundle.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Fail workflow when preflight gate failed
+        if: >-
+          always() && (steps.unit.outputs.exit_code != '0' ||
+          steps.history.outputs.exit_code != '0' ||
+          steps.drive.outputs.exit_code != '0' ||
+          steps.bundle.outputs.exit_code != '0')
+        run: exit 1
