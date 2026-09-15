@@ -63,10 +63,12 @@ def test_bundle_extracts_requested_kinds_without_changing_bytes(tmp_path: Path) 
     for kind in bundler.DEFAULT_KINDS:
         annual = output / kind / f"{kind}_2026.zip"
         assert annual.exists()
+        first_member = f"{kind}260104.TXT"
+        second_member = f"{kind}260105.TXT"
         with zipfile.ZipFile(annual) as archive:
-            assert archive.namelist() == [f"{kind}260104.txt", f"{kind}260105.txt"]
-            assert archive.read(f"{kind}260104.txt") == f"{kind.lower()}-0104\n".encode()
-            assert archive.read(f"{kind}260105.txt") == f"{kind.lower()}-0105\n".encode()
+            assert archive.namelist() == [first_member, second_member]
+            assert archive.read(first_member) == f"{kind.lower()}-0104\n".encode()
+            assert archive.read(second_member) == f"{kind.lower()}-0105\n".encode()
 
 
 def test_bundle_fails_on_member_date_mismatch(tmp_path: Path) -> None:
