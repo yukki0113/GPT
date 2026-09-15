@@ -12,6 +12,16 @@ Date: 2026-09-15
 
 The implementation is ready for the first genuinely pre-race business date after the 2026-09-13 OOT cutoff. Readiness here means the deterministic production path and handoff contract are implemented and tested; it does not mean the first live forward CSV has already been produced.
 
+## Work-thread handoff
+
+Daily generation, operational replay validation, artifact/audit retention, and Newspaper/PWA handoff are moved to a dedicated Work thread.
+
+Canonical handoff document:
+
+`horse-racing/jrdb/docs/Training_Edge_v0_2_Work_Handoff_20260915.md`
+
+The first Work-thread validation is a retrospective operational replay for `2026-09-13`. It must emulate the pre-race boundary by using PACI through 2026-09-13 while excluding SED 2026-09-13 from the scoring input. This replay is not a new holdout and not the first live forward day. The production fail-closed rule that rejects a target date whose SED already exists must not be weakened for the replay.
+
 ## Implemented
 
 - pre-race daily scorer: `src/score_training_edge_v0_2_daily.py`
