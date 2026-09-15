@@ -1,0 +1,492 @@
+name: JRDB Training Edge v0.2 Daily Forward via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_TRAINING_V02_DAILY]'
+  FROZEN_SPEC_COMMIT: '1ae1b424597d391fdca57c8fe826d99df123221b'
+  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/12lmU6_NZF24ixrB7MMMzzvcBNzbhQTr0'
+  SED_FOLDER_URL: 'https://drive.google.com/drive/folders/1ywucQ_84OgnSzJG6_HXa_M8KWWkVOTa4'
+
+jobs:
+  score:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_V02_DAILY]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout execution plumbing
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import re
+
+          body = os.environ.get('ISSUE_BODY') or ''
+          try:
+              payload = json.loads(body)
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}')
+          target = str(payload.get('date') or '').strip()
+          if not re.fullmatch(r'20\d{6}', target):
+              raise SystemExit('date must be YYYYMMDD')
+          parsed = dt.datetime.strptime(target, '%Y%m%d').date()
+          if parsed.year != 2026:
+              raise SystemExit('current v0.2 daily workflow supports 2026 only')
+          short = target[2:]
+          iso = parsed.isoformat()
+          output = os.environ['GITHUB_OUTPUT']
+          with open(output, 'a', encoding='utf-8') as handle:
+              handle.write(f'target_date={target}\n')
+              handle.write(f'target_iso={iso}\n')
+              handle.write(f'target_short={short}\n')
+          print(json.dumps({'target_date': target, 'target_iso': iso}, ensure_ascii=False))
+          PY
+
+      - name: Verify frozen scientific assets
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/src/training_edge_v0_2_core.py")" = 'fd54df516520a38bbeba895f08a510ebeffa16f8'
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py")" = 'ee19330559720b148636a451ef6ea8182e766157'
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/config/training_edge_v0_2_calibration.json")" = '8c0dfb83824c3ddf5aabe4488b50746435acbe62'
+          test "$(git hash-object horse-racing/jrdb/src/training_edge_v0_2_core.py)" = 'fd54df516520a38bbeba895f08a510ebeffa16f8'
+          test "$(git hash-object horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py)" = 'ee19330559720b148636a451ef6ea8182e766157'
+          test "$(git hash-object horse-racing/jrdb/config/training_edge_v0_2_calibration.json)" = '8c0dfb83824c3ddf5aabe4488b50746435acbe62'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime dependencies
+        run: python -m pip install --disable-pip-version-check 'gdown==6.2.0' pytest numpy pandas scipy scikit-learn
+
+      - name: Daily scorer tests
+        run: |
+          python -m pytest -q horse-racing/jrdb/tests/test_training_edge_v0_2_core.py
+          python -m pytest -q horse-racing/jrdb/tests/test_score_training_edge_v0_2_daily.py
+
+      - name: Fetch audited annual JRDB Raw 2010-2025
+        id: annual_fetch
+        continue-on-error: true
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_daily/raw /tmp/jrdb_daily/report /tmp/jrdb_daily/output
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2010 --to-year 2025 \
+            --kinds BAC KYI SED UKC CHA CYB \
+            --output-dir /tmp/jrdb_daily/raw \
+            --manifest /tmp/jrdb_daily/report/fetch_annual_manifest.jsonl \
+            --sleep-seconds 1 --continue-on-error \
+            > /tmp/jrdb_daily/report/fetch_annual_stdout.log \
+            2> /tmp/jrdb_daily/report/fetch_annual_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Resolve and download 2026 Drive inputs
+        id: drive
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.request.outputs.target_date }}
+          TARGET_SHORT: ${{ steps.request.outputs.target_short }}
+        run: |
+          set +e
+          mkdir -p /tmp/jrdb_daily/paci /tmp/jrdb_daily/sed /tmp/jrdb_daily/report
+          gdown "$PACI_FOLDER_URL" --json --quiet \
+            > /tmp/jrdb_daily/report/paci_inventory.json \
+            2> /tmp/jrdb_daily/report/paci_inventory.stderr
+          a=$?
+          if [ "$a" = 0 ]; then
+            gdown "$SED_FOLDER_URL" --json --quiet \
+              > /tmp/jrdb_daily/report/sed_inventory.json \
+              2> /tmp/jrdb_daily/report/sed_inventory.stderr
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/download_public_drive_inventory.py \
+              --inventory /tmp/jrdb_daily/report/paci_inventory.json \
+              --output-dir /tmp/jrdb_daily/paci \
+              --prefix PACI --year 2026 --to-date "$TARGET_DATE" \
+              --max-attempts 6 --base-sleep-seconds 1.5 \
+              --audit-json /tmp/jrdb_daily/report/paci_download_audit.json \
+              > /tmp/jrdb_daily/report/paci_download.log \
+              2> /tmp/jrdb_daily/report/paci_download.stderr
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/download_public_drive_inventory.py \
+              --inventory /tmp/jrdb_daily/report/sed_inventory.json \
+              --output-dir /tmp/jrdb_daily/sed \
+              --prefix SED --year 2026 --to-date "$TARGET_DATE" \
+              --max-attempts 6 --base-sleep-seconds 1.5 \
+              --audit-json /tmp/jrdb_daily/report/sed_download_audit.json \
+              > /tmp/jrdb_daily/report/sed_download.log \
+              2> /tmp/jrdb_daily/report/sed_download.stderr
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            target_paci=$(find /tmp/jrdb_daily/paci -type f -name "PACI${TARGET_SHORT}.zip" -print -quit)
+            if [ -z "$target_paci" ]; then
+              echo "target PACI is missing: PACI${TARGET_SHORT}.zip" >&2
+              a=4
+            fi
+          fi
+          if [ "$a" = 0 ]; then
+            target_sed=$(find /tmp/jrdb_daily/sed -type f -name "SED${TARGET_SHORT}.zip" -print -quit)
+            if [ -n "$target_sed" ]; then
+              echo "target SED already exists; refusing non-forward score: $target_sed" >&2
+              a=5
+            fi
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Bundle 2026 pre-race and settled history
+        id: bundle
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.request.outputs.target_date }}
+        run: |
+          set +e
+          if [ '${{ steps.drive.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          mkdir -p /tmp/jrdb_daily/paci_flat /tmp/jrdb_daily/daily/SED /tmp/jrdb_daily/raw
+          find /tmp/jrdb_daily/paci -type f -name 'PACI26????.zip' -exec cp '{}' /tmp/jrdb_daily/paci_flat/ ';'
+          find /tmp/jrdb_daily/sed -type f -name 'SED26????.zip' -exec cp '{}' /tmp/jrdb_daily/daily/SED/ ';'
+
+          python horse-racing/jrdb/src/bundle_jrdb_paci_year.py \
+            --source-dir /tmp/jrdb_daily/paci_flat \
+            --output-root /tmp/jrdb_daily/raw \
+            --year 2026 --kinds BAC KYI UKC CHA CYB \
+            --to-date "$TARGET_DATE" \
+            --audit-json /tmp/jrdb_daily/report/paci_bundle_audit.json \
+            > /tmp/jrdb_daily/report/paci_bundle_stdout.log \
+            2> /tmp/jrdb_daily/report/paci_bundle_stderr.log
+          a=$?
+
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/bundle_jrdb_daily_year.py \
+              --source-root /tmp/jrdb_daily/daily \
+              --output-root /tmp/jrdb_daily/raw \
+              --year 2026 --kinds SED \
+              --to-date "$TARGET_DATE" \
+              --audit-json /tmp/jrdb_daily/report/sed_bundle_audit.json \
+              > /tmp/jrdb_daily/report/sed_bundle_stdout.log \
+              2> /tmp/jrdb_daily/report/sed_bundle_stderr.log
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build audited Index Base through target PACI
+        id: index
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.annual_fetch.outputs.exit_code }}' != '0' ] || [ '${{ steps.bundle.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
+            --raw-root /tmp/jrdb_daily/raw \
+            --years {2010..2026} \
+            --db /tmp/jrdb_daily/index.sqlite \
+            > /tmp/jrdb_daily/report/index_build_stdout.log \
+            2> /tmp/jrdb_daily/report/index_build_stderr.log
+          a=$?
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_index_base.py \
+              --db /tmp/jrdb_daily/index.sqlite \
+              --out /tmp/jrdb_daily/report/index_audit.json --no-db-hash \
+              > /tmp/jrdb_daily/report/index_audit_stdout.log \
+              2> /tmp/jrdb_daily/report/index_audit_stderr.log
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build Official RunPerf through latest settled SED
+        id: runperf
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.index.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/build_jrdb_runperf_features.py \
+            --index-db /tmp/jrdb_daily/index.sqlite \
+            --out /tmp/jrdb_daily/runperf.sqlite --methods EXPANDING \
+            > /tmp/jrdb_daily/report/runperf_build_stdout.log \
+            2> /tmp/jrdb_daily/report/runperf_build_stderr.log
+          a=$?
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_runperf.py \
+              --db /tmp/jrdb_daily/runperf.sqlite \
+              --out /tmp/jrdb_daily/report/runperf_audit.json --no-db-hash \
+              > /tmp/jrdb_daily/report/runperf_audit_stdout.log \
+              2> /tmp/jrdb_daily/report/runperf_audit_stderr.log
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/build_jrdb_official_runperf.py \
+              --runperf-db /tmp/jrdb_daily/runperf.sqlite \
+              --out /tmp/jrdb_daily/official.sqlite \
+              > /tmp/jrdb_daily/report/official_build_stdout.log \
+              2> /tmp/jrdb_daily/report/official_build_stderr.log
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/audit_jrdb_official_runperf.py \
+              --db /tmp/jrdb_daily/official.sqlite \
+              --source-runperf-db /tmp/jrdb_daily/runperf.sqlite \
+              --out /tmp/jrdb_daily/report/official_audit.json --no-db-hash \
+              > /tmp/jrdb_daily/report/official_audit_stdout.log \
+              2> /tmp/jrdb_daily/report/official_audit_stderr.log
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Project Training Edge v0.2 input
+        id: project
+        continue-on-error: true
+        run: |
+          set +e
+          if [ '${{ steps.runperf.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/project_training_edge_v0_2_input.py \
+            --index-db /tmp/jrdb_daily/index.sqlite \
+            --official-db /tmp/jrdb_daily/official.sqlite \
+            --out /tmp/jrdb_daily/training_edge_v02_input.sqlite \
+            --from-year 2010 --to-year 2026 \
+            --source-git-commit "$FROZEN_SPEC_COMMIT" \
+            --result-json /tmp/jrdb_daily/report/input_projection.json \
+            > /tmp/jrdb_daily/report/project_stdout.log \
+            2> /tmp/jrdb_daily/report/project_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Score frozen Training Edge v0.2 target day
+        id: score
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.request.outputs.target_date }}
+        run: |
+          set +e
+          if [ '${{ steps.project.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python horse-racing/jrdb/src/score_training_edge_v0_2_daily.py \
+            --input-db /tmp/jrdb_daily/training_edge_v02_input.sqlite \
+            --index-db /tmp/jrdb_daily/index.sqlite \
+            --calibration horse-racing/jrdb/config/training_edge_v0_2_calibration.json \
+            --date "$TARGET_DATE" \
+            --out-csv "/tmp/jrdb_daily/output/独自指数_${TARGET_DATE}.csv" \
+            --audit-json /tmp/jrdb_daily/output/training_edge_v0_2_daily_audit.json \
+            > /tmp/jrdb_daily/report/score_stdout.log \
+            2> /tmp/jrdb_daily/report/score_stderr.log
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Validate five-column handoff
+        id: validate
+        continue-on-error: true
+        env:
+          TARGET_DATE: ${{ steps.request.outputs.target_date }}
+          TARGET_ISO: ${{ steps.request.outputs.target_iso }}
+        run: |
+          set +e
+          if [ '${{ steps.score.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python - <<'PY' > /tmp/jrdb_daily/report/handoff_validation.json
+          import csv
+          import json
+          import os
+          import re
+          import sqlite3
+          from pathlib import Path
+
+          target = os.environ['TARGET_DATE']
+          target_iso = os.environ['TARGET_ISO']
+          path = Path(f'/tmp/jrdb_daily/output/独自指数_{target}.csv')
+          with path.open(encoding='utf-8-sig', newline='') as handle:
+              reader = csv.DictReader(handle)
+              fields = reader.fieldnames
+              rows = list(reader)
+          expected_fields = ['date', 'venue_code', 'race_no', 'horse_no', 'training_edge_index']
+          if fields != expected_fields:
+              raise SystemExit(f'field mismatch: {fields}')
+          keys = set()
+          nonblank = 0
+          for row in rows:
+              if row['date'] != target_iso:
+                  raise SystemExit(f'date mismatch: {row}')
+              key = (row['date'], row['venue_code'], int(row['race_no']), int(row['horse_no']))
+              if key in keys:
+                  raise SystemExit(f'duplicate output key: {key}')
+              keys.add(key)
+              value = row['training_edge_index']
+              if value:
+                  if re.fullmatch(r'\d{1,3}\.\d', value) is None:
+                      raise SystemExit(f'index format mismatch: {value!r}')
+                  numeric = float(value)
+                  if not 0.0 <= numeric <= 100.0:
+                      raise SystemExit(f'index out of range: {numeric}')
+                  nonblank += 1
+
+          connection = sqlite3.connect('/tmp/jrdb_daily/index.sqlite')
+          try:
+              runner_count = connection.execute(
+                  "SELECT COUNT(*) FROM runner_pre p JOIN race_context r USING(race_key) WHERE r.race_date=?",
+                  (target_iso,),
+              ).fetchone()[0]
+          finally:
+              connection.close()
+          if len(rows) != int(runner_count):
+              raise SystemExit(f'row count mismatch: csv={len(rows)} index={runner_count}')
+          result = {
+              'status': 'PASS',
+              'date': target_iso,
+              'row_count': len(rows),
+              'nonblank_index_count': nonblank,
+              'blank_index_count': len(rows) - nonblank,
+              'unique_key_count': len(keys),
+              'decimal_places': 1,
+          }
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build workflow result
+        if: always()
+        env:
+          TARGET_DATE: ${{ steps.request.outputs.target_date }}
+          TARGET_ISO: ${{ steps.request.outputs.target_iso }}
+          ANNUAL_FETCH_EXIT: ${{ steps.annual_fetch.outputs.exit_code }}
+          DRIVE_EXIT: ${{ steps.drive.outputs.exit_code }}
+          BUNDLE_EXIT: ${{ steps.bundle.outputs.exit_code }}
+          INDEX_EXIT: ${{ steps.index.outputs.exit_code }}
+          RUNPERF_EXIT: ${{ steps.runperf.outputs.exit_code }}
+          PROJECT_EXIT: ${{ steps.project.outputs.exit_code }}
+          SCORE_EXIT: ${{ steps.score.outputs.exit_code }}
+          VALIDATE_EXIT: ${{ steps.validate.outputs.exit_code }}
+          RUN_ID: ${{ github.run_id }}
+          EXECUTION_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          exits = {
+              key: os.environ.get(key + '_EXIT', '')
+              for key in ('ANNUAL_FETCH', 'DRIVE', 'BUNDLE', 'INDEX', 'RUNPERF', 'PROJECT', 'SCORE', 'VALIDATE')
+          }
+          report_root = Path('/tmp/jrdb_daily/report')
+          output_root = Path('/tmp/jrdb_daily/output')
+          target = os.environ.get('TARGET_DATE', '')
+
+          def load(path: Path):
+              if not path.is_file():
+                  return None
+              return json.loads(path.read_text(encoding='utf-8'))
+
+          csv_path = output_root / f'独自指数_{target}.csv'
+          audit = load(output_root / 'training_edge_v0_2_daily_audit.json') or {}
+          validation = load(report_root / 'handoff_validation.json') or {}
+          status = 'success' if all(value == '0' for value in exits.values()) and validation.get('status') == 'PASS' else 'failure'
+          csv_sha = None
+          if csv_path.is_file():
+              csv_sha = hashlib.sha256(csv_path.read_bytes()).hexdigest()
+          result = {
+              'status': status,
+              'run_id': int(os.environ['RUN_ID']),
+              'execution_sha': os.environ['EXECUTION_SHA'],
+              'frozen_spec_commit': os.environ['FROZEN_SPEC_COMMIT'],
+              'date': os.environ.get('TARGET_ISO'),
+              'exits': exits,
+              'target_result_guard': 'target SED must be absent',
+              'csv': {
+                  'name': csv_path.name,
+                  'sha256': csv_sha,
+              },
+              'score_summary': {
+                  key: audit.get(key)
+                  for key in ('scorer_version', 'core_version', 'training_eligible_n', 'target_runner_n', 'target_eligible_n', 'target_ineligible_n')
+              },
+              'validation': validation,
+          }
+          report_root.mkdir(parents=True, exist_ok=True)
+          (report_root / 'workflow_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          comment = 'JRDB_TRAINING_V02_DAILY_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```\n'
+          Path('/tmp/comment.md').write_text(comment, encoding='utf-8')
+          PY
+
+      - name: Upload daily forward artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-training-edge-v02-daily-${{ steps.request.outputs.target_date }}-${{ github.run_id }}
+          path: |
+            /tmp/jrdb_daily/output
+            /tmp/jrdb_daily/report
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+
+      - name: Close successful request
+        if: steps.validate.outputs.exit_code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Fail workflow when a gate failed
+        if: >-
+          steps.annual_fetch.outputs.exit_code != '0' ||
+          steps.drive.outputs.exit_code != '0' ||
+          steps.bundle.outputs.exit_code != '0' ||
+          steps.index.outputs.exit_code != '0' ||
+          steps.runperf.outputs.exit_code != '0' ||
+          steps.project.outputs.exit_code != '0' ||
+          steps.score.outputs.exit_code != '0' ||
+          steps.validate.outputs.exit_code != '0'
+        run: exit 1
