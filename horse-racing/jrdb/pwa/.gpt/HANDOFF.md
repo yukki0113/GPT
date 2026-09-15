@@ -192,6 +192,17 @@ publisher success
 
 この制約は将来refactorされる可能性があるため、再開時は必ずcurrent workflow sourceを確認してください。
 
+## Current data retention
+
+Analysis LiteのDrive正本とFact Lite配布物は、通常**current世代のみ**を保持する。
+
+1. 新Analysisを所定の共有Driveフォルダへuploadする。
+2. filename・size・SHA-256・ZIP/SQLite検査を再fetchで確認する。
+3. Fact Liteのschema/integrity/SHA検証、current Release更新、Pages配布を成功させる。
+4. この三段階がすべて成功した後だけ、直前のDrive Analysisを削除する。
+
+Fact Lite Releaseはcurrent assetを置換する。旧Fact Liteを別のDrive保管や旧Release assetとして積み増さない。いずれかが失敗した場合は旧currentを維持し、原因を修正してから再公開する。
+
 ## Browser/offline invariants
 
 - static app shell: Service Worker cache
