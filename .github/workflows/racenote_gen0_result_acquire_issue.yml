@@ -1,0 +1,194 @@
+name: RaceNote Gen0 Result Acquire
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: racenote-gen0-result-acquire
+  cancel-in-progress: false
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_GEN0_RESULT_ACQUIRE]'
+
+jobs:
+  acquire:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_GEN0_RESULT_ACQUIRE]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = '[RACENOTE_GEN0_RESULT_ACQUIRE]'
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,96}', request_id):
+              raise SystemExit('REQUEST_INVALID: invalid request_id')
+
+          body = json.loads(os.environ.get('ISSUE_BODY') or '')
+          if body.get('request_id') != request_id:
+              raise SystemExit('REQUEST_INVALID: title/body request_id mismatch')
+
+          sources = body.get('sources')
+          races = body.get('races')
+          if not isinstance(sources, dict) or not sources:
+              raise SystemExit('REQUEST_INVALID: sources must be a non-empty object')
+          if not isinstance(races, list) or not races:
+              raise SystemExit('REQUEST_INVALID: races must be a non-empty list')
+          if len(races) > 20:
+              raise SystemExit('REQUEST_INVALID: at most 20 races per request')
+
+          for year, source in sources.items():
+              if not re.fullmatch(r'20\d{2}|19\d{2}', str(year)):
+                  raise SystemExit(f'REQUEST_INVALID: invalid source year {year}')
+              if not isinstance(source, dict):
+                  raise SystemExit(f'REQUEST_INVALID: source {year} must be an object')
+              run_id = source.get('run_id')
+              artifact_name = source.get('artifact_name')
+              if not isinstance(run_id, int) or run_id <= 0:
+                  raise SystemExit(f'REQUEST_INVALID: invalid run_id for {year}')
+              if not isinstance(artifact_name, str) or not artifact_name:
+                  raise SystemExit(f'REQUEST_INVALID: invalid artifact_name for {year}')
+
+          Path('/tmp/request.json').write_text(
+              json.dumps(body, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f'request_id={request_id}\n')
+          PY
+
+      - name: Download annual raw artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/raw
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          repository = os.environ['GITHUB_REPOSITORY']
+          for year, source in sorted(request['sources'].items()):
+              destination = Path('/tmp/raw') / str(year)
+              destination.mkdir(parents=True, exist_ok=True)
+              subprocess.run(
+                  [
+                      'gh',
+                      'run',
+                      'download',
+                      str(source['run_id']),
+                      '--repo',
+                      repository,
+                      '--name',
+                      source['artifact_name'],
+                      '--dir',
+                      str(destination),
+                  ],
+                  check=True,
+              )
+          PY
+
+      - name: Extract requested SED and HJC results
+        run: |
+          python horse-racing/jrdb/src/racenote_gen0_result_acquire.py \
+            --request-json /tmp/request.json \
+            --raw-root /tmp/raw \
+            --output-json /tmp/result.json
+
+      - name: Upload result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-gen0-result-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/result.json
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          result = json.loads(Path('/tmp/result.json').read_text(encoding='utf-8'))
+          result['run_id'] = int(os.environ['GITHUB_RUN_ID'])
+          result['artifact_name'] = (
+              f"racenote-gen0-result-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}"
+          )
+          compact = json.dumps(result, ensure_ascii=False, separators=(',', ':'))
+          body = 'RACENOTE_GEN0_RESULT_ACQUIRE_RESULT\n```json\n' + compact + '\n```\n'
+          subprocess.run(
+              [
+                  'gh',
+                  'issue',
+                  'comment',
+                  os.environ['ISSUE_NUMBER'],
+                  '--repo',
+                  os.environ['GITHUB_REPOSITORY'],
+                  '--body',
+                  body,
+              ],
+              check=True,
+          )
+          subprocess.run(
+              [
+                  'gh',
+                  'issue',
+                  'close',
+                  os.environ['ISSUE_NUMBER'],
+                  '--repo',
+                  os.environ['GITHUB_REPOSITORY'],
+                  '--reason',
+                  'completed',
+              ],
+              check=True,
+          )
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "RACENOTE_GEN0_RESULT_ACQUIRE_RESULT
+          \`\`\`json
+          {\"status\":\"failure\",\"run_id\":$GITHUB_RUN_ID}
+          \`\`\`
+          Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
