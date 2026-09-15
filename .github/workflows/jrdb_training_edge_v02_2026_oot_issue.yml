@@ -10,9 +10,11 @@ permissions:
 
 env:
   REQUEST_PREFIX: '[JRDB_TRAINING_V02_2026_OOT]'
-  FROZEN_SOURCE_SHA: 'b0865a25f743d2cda34928a6603266ce520c0ba9'
+  FROZEN_SPEC_COMMIT: '1ae1b424597d391fdca57c8fe826d99df123221b'
+  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/12lmU6_NZF24ixrB7MMMzzvcBNzbhQTr0'
+  SED_FOLDER_URL: 'https://drive.google.com/drive/folders/1ywucQ_84OgnSzJG6_HXa_M8KWWkVOTa4'
   OOT_FROM_DATE: '20260101'
-  OOT_TO_DATE: '20260906'
+  OOT_TO_DATE: '20260913'
 
 jobs:
   evaluate:
@@ -23,18 +25,26 @@ jobs:
     timeout-minutes: 360
 
     steps:
-      - name: Checkout frozen source
+      - name: Checkout execution plumbing
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.FROZEN_SOURCE_SHA }}
-          fetch-depth: 1
+          fetch-depth: 0
 
-      - name: Verify frozen checkout
+      - name: Verify frozen scientific assets
         run: |
-          test "$(git rev-parse HEAD)" = "$FROZEN_SOURCE_SHA"
-          test -f horse-racing/jrdb/src/training_edge_v0_2_core.py
-          test -f horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py
-          test -f horse-racing/jrdb/config/training_edge_v0_2_calibration.json
+          set -euo pipefail
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/src/training_edge_v0_2_core.py")" = 'fd54df516520a38bbeba895f08a510ebeffa16f8'
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/src/project_training_edge_v0_2_input.py")" = 'a8e38fffc3e426fcd85042fcd7d55765cb0b3e65'
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py")" = 'ee19330559720b148636a451ef6ea8182e766157'
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/config/training_edge_v0_2_calibration.json")" = '8c0dfb83824c3ddf5aabe4488b50746435acbe62'
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/tests/test_training_edge_v0_2_core.py")" = 'bfa42afc8c1bbae56c94856cc11aaa75361e5bd1'
+          test "$(git rev-parse "$FROZEN_SPEC_COMMIT:horse-racing/jrdb/tests/test_project_training_edge_v0_2_input.py")" = '47dda84a5dfaebe261670b34a9394c826df91864'
+          test "$(git hash-object horse-racing/jrdb/src/training_edge_v0_2_core.py)" = 'fd54df516520a38bbeba895f08a510ebeffa16f8'
+          test "$(git hash-object horse-racing/jrdb/src/project_training_edge_v0_2_input.py)" = 'a8e38fffc3e426fcd85042fcd7d55765cb0b3e65'
+          test "$(git hash-object horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py)" = 'ee19330559720b148636a451ef6ea8182e766157'
+          test "$(git hash-object horse-racing/jrdb/config/training_edge_v0_2_calibration.json)" = '8c0dfb83824c3ddf5aabe4488b50746435acbe62'
+          test "$(git hash-object horse-racing/jrdb/tests/test_training_edge_v0_2_core.py)" = 'bfa42afc8c1bbae56c94856cc11aaa75361e5bd1'
+          test "$(git hash-object horse-racing/jrdb/tests/test_project_training_edge_v0_2_input.py)" = '47dda84a5dfaebe261670b34a9394c826df91864'
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -42,15 +52,16 @@ jobs:
           python-version: '3.12'
 
       - name: Install runtime dependencies
-        run: python -m pip install --disable-pip-version-check numpy pandas scipy scikit-learn
+        run: python -m pip install --disable-pip-version-check 'gdown==6.2.0' pytest numpy pandas scipy scikit-learn
 
       - name: Smoke tests
         run: |
+          python -m pytest -q horse-racing/jrdb/tests/test_bundle_jrdb_paci_year.py
           python horse-racing/jrdb/tests/test_bundle_jrdb_daily_year.py -v
           python horse-racing/jrdb/tests/test_project_training_edge_v0_2_input.py -v
           python horse-racing/jrdb/tests/test_training_edge_v0_2_core.py -v
 
-      - name: Fetch annual JRDB Raw 2010-2025
+      - name: Fetch audited annual JRDB Raw 2010-2025
         id: annual_fetch
         continue-on-error: true
         env:
@@ -70,41 +81,175 @@ jobs:
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Fetch 2026 daily JRDB Raw through fixed OOT cutoff
-        id: daily_fetch
+      - name: Resolve and download frozen 2026 Drive inputs
+        id: drive
         continue-on-error: true
-        env:
-          JRDB_USER: ${{ secrets.JRDB_USER }}
-          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
           set +e
-          mkdir -p /tmp/jrdb_v02/daily
-          python horse-racing/jrdb/src/fetch_jrdb_history.py \
-            --from-date "$OOT_FROM_DATE" --to-date "$OOT_TO_DATE" \
-            --kinds BAC KYI SED UKC CHA CYB \
-            --output-dir /tmp/jrdb_v02/daily \
-            --manifest /tmp/jrdb_v02/report/fetch_daily_manifest.jsonl \
-            --sleep-seconds 1 --continue-on-error \
-            > /tmp/jrdb_v02/report/fetch_daily_stdout.log \
-            2> /tmp/jrdb_v02/report/fetch_daily_stderr.log
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          mkdir -p /tmp/jrdb_v02/paci /tmp/jrdb_v02/sed /tmp/jrdb_v02/report
+          gdown "$PACI_FOLDER_URL" --json --quiet \
+            > /tmp/jrdb_v02/report/paci_inventory.json \
+            2> /tmp/jrdb_v02/report/paci_inventory.stderr
+          a=$?
+          if [ "$a" = 0 ]; then
+            gdown "$SED_FOLDER_URL" --json --quiet \
+              > /tmp/jrdb_v02/report/sed_inventory.json \
+              2> /tmp/jrdb_v02/report/sed_inventory.stderr
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/download_public_drive_inventory.py \
+              --inventory /tmp/jrdb_v02/report/paci_inventory.json \
+              --output-dir /tmp/jrdb_v02/paci \
+              --prefix PACI --year 2026 --to-date "$OOT_TO_DATE" \
+              --max-attempts 6 --base-sleep-seconds 1.5 \
+              --audit-json /tmp/jrdb_v02/report/paci_download_audit.json \
+              > /tmp/jrdb_v02/report/paci_download.log \
+              2> /tmp/jrdb_v02/report/paci_download.stderr
+            a=$?
+          fi
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/download_public_drive_inventory.py \
+              --inventory /tmp/jrdb_v02/report/sed_inventory.json \
+              --output-dir /tmp/jrdb_v02/sed \
+              --prefix SED --year 2026 --to-date "$OOT_TO_DATE" \
+              --max-attempts 6 --base-sleep-seconds 1.5 \
+              --audit-json /tmp/jrdb_v02/report/sed_download_audit.json \
+              > /tmp/jrdb_v02/report/sed_download.log \
+              2> /tmp/jrdb_v02/report/sed_download.stderr
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Bundle 2026 daily Raw into annual-compatible archives
+      - name: Bundle and verify frozen 2026 annual Raw
         id: bundle
         continue-on-error: true
         run: |
           set +e
-          if [ '${{ steps.daily_fetch.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
-          python horse-racing/jrdb/src/bundle_jrdb_daily_year.py \
-            --source-root /tmp/jrdb_v02/daily \
-            --output-root /tmp/jrdb_v02/raw \
-            --year 2026 --kinds BAC KYI SED UKC CHA CYB \
-            --from-date "$OOT_FROM_DATE" --to-date "$OOT_TO_DATE" \
-            --audit-json /tmp/jrdb_v02/report/bundle_2026_audit.json \
-            > /tmp/jrdb_v02/report/bundle_stdout.log \
-            2> /tmp/jrdb_v02/report/bundle_stderr.log
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          if [ '${{ steps.drive.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          mkdir -p /tmp/jrdb_v02/paci_flat /tmp/jrdb_v02/daily/SED /tmp/jrdb_v02/raw
+          find /tmp/jrdb_v02/paci -type f -name 'PACI26????.zip' -exec cp '{}' /tmp/jrdb_v02/paci_flat/ ';'
+          find /tmp/jrdb_v02/sed -type f -name 'SED26????.zip' -exec cp '{}' /tmp/jrdb_v02/daily/SED/ ';'
+
+          python - <<'PY' > /tmp/jrdb_v02/report/drive_date_audit.json
+          import datetime as dt
+          import json
+          import re
+          import zipfile
+          from pathlib import Path
+
+          cutoff = dt.datetime.strptime('20260913', '%Y%m%d').date()
+
+          def collect_dates(root: str, prefix: str) -> dict[str, str]:
+              result = {}
+              pattern = re.compile(rf'^{prefix}(\d{{6}})\.zip$', re.I)
+              for path in Path(root).glob(f'{prefix}26????.zip'):
+                  match = pattern.fullmatch(path.name)
+                  if match is None:
+                      continue
+                  date_value = dt.datetime.strptime('20' + match.group(1), '%Y%m%d').date()
+                  if date_value > cutoff:
+                      continue
+                  with zipfile.ZipFile(path) as archive:
+                      bad = archive.testzip()
+                  if bad is not None:
+                      raise SystemExit(f'corrupt {path}: {bad}')
+                  result[date_value.isoformat()] = path.name
+              return result
+
+          paci = collect_dates('/tmp/jrdb_v02/paci_flat', 'PACI')
+          sed = collect_dates('/tmp/jrdb_v02/daily/SED', 'SED')
+          paci_dates = set(paci)
+          sed_dates = set(sed)
+          common = paci_dates & sed_dates
+          result = {
+              'cutoff': '2026-09-13',
+              'paci_count': len(paci),
+              'sed_count': len(sed),
+              'common_count': len(common),
+              'paci_only': sorted(paci_dates - sed_dates),
+              'sed_only': sorted(sed_dates - paci_dates),
+              'latest_common': max(common) if common else None,
+          }
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          if result['paci_only'] or result['sed_only'] or result['latest_common'] != '2026-09-13':
+              raise SystemExit(3)
+          PY
+          a=$?
+
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/bundle_jrdb_paci_year.py \
+              --source-dir /tmp/jrdb_v02/paci_flat \
+              --output-root /tmp/jrdb_v02/raw \
+              --year 2026 --kinds BAC KYI UKC CHA CYB \
+              --to-date "$OOT_TO_DATE" \
+              --audit-json /tmp/jrdb_v02/report/paci_bundle_audit.json \
+              > /tmp/jrdb_v02/report/paci_bundle_stdout.log \
+              2> /tmp/jrdb_v02/report/paci_bundle_stderr.log
+            a=$?
+          fi
+
+          if [ "$a" = 0 ]; then
+            python horse-racing/jrdb/src/bundle_jrdb_daily_year.py \
+              --source-root /tmp/jrdb_v02/daily \
+              --output-root /tmp/jrdb_v02/raw \
+              --year 2026 --kinds SED \
+              --to-date "$OOT_TO_DATE" \
+              --audit-json /tmp/jrdb_v02/report/sed_bundle_audit.json \
+              > /tmp/jrdb_v02/report/sed_bundle_stdout.log \
+              2> /tmp/jrdb_v02/report/sed_bundle_stderr.log
+            a=$?
+          fi
+
+          if [ "$a" = 0 ]; then
+            python - <<'PY' > /tmp/jrdb_v02/report/raw2026_audit.json
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          expected = {
+              'BAC': 'f495cf3036cb4f129ea07bb805668c2ff276e8c695800d3e109e6771e224f9f8',
+              'KYI': '7ca1a1eeea1835d0148cf20b409ebc7fcd7c7ba0c1a115d1f71a9fea9431c462',
+              'SED': '07e231282e6b5d86d9085a83dcc9de1e836a0ea6bff1af47732bdc45af83ebed',
+              'UKC': 'c5f09d979d34db816723cf63f44afaf34243f95b94085a776de1f77371871413',
+              'CHA': '164804bf36930e94399fbee384259270e8d309bbf54f6bb7b86d7c82f442ca29',
+              'CYB': 'e15ea92e4dcb4faffcb094a261d9d49d8d28185e06e62ecf26a8766247b19fd2',
+          }
+          result = {}
+          for kind, expected_sha in expected.items():
+              path = Path('/tmp/jrdb_v02/raw') / kind / f'{kind}_2026.zip'
+              if not path.is_file():
+                  raise SystemExit(f'missing {path}')
+              digest = hashlib.sha256()
+              with path.open('rb') as handle:
+                  for block in iter(lambda: handle.read(1024 * 1024), b''):
+                      digest.update(block)
+              actual_sha = digest.hexdigest()
+              with zipfile.ZipFile(path) as archive:
+                  bad = archive.testzip()
+                  names = archive.namelist()
+              if bad is not None:
+                  raise SystemExit(f'bad member {bad} in {path}')
+              if actual_sha != expected_sha:
+                  raise SystemExit(f'SHA mismatch {kind}: {actual_sha} != {expected_sha}')
+              result[kind] = {
+                  'size_bytes': path.stat().st_size,
+                  'sha256': actual_sha,
+                  'member_count': len(names),
+                  'first_member': names[0] if names else None,
+                  'last_member': names[-1] if names else None,
+              }
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+            a=$?
+          fi
+
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
           exit 0
 
       - name: Build audited Index Base 2010-2026
@@ -112,7 +257,10 @@ jobs:
         continue-on-error: true
         run: |
           set +e
-          if [ '${{ steps.annual_fetch.outputs.exit_code }}' != '0' ] || [ '${{ steps.bundle.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ '${{ steps.annual_fetch.outputs.exit_code }}' != '0' ] || [ '${{ steps.bundle.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
             --raw-root /tmp/jrdb_v02/raw \
             --years {2010..2026} \
@@ -136,7 +284,10 @@ jobs:
         continue-on-error: true
         run: |
           set +e
-          if [ '${{ steps.index.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ '${{ steps.index.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           python horse-racing/jrdb/src/build_jrdb_runperf_features.py \
             --index-db /tmp/jrdb_v02/index.sqlite \
             --out /tmp/jrdb_v02/runperf.sqlite --methods EXPANDING \
@@ -176,13 +327,16 @@ jobs:
         continue-on-error: true
         run: |
           set +e
-          if [ '${{ steps.runperf.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ '${{ steps.runperf.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           python horse-racing/jrdb/src/project_training_edge_v0_2_input.py \
             --index-db /tmp/jrdb_v02/index.sqlite \
             --official-db /tmp/jrdb_v02/official.sqlite \
             --out /tmp/jrdb_v02/training_edge_v02_input.sqlite \
             --from-year 2010 --to-year 2026 \
-            --source-git-commit "$FROZEN_SOURCE_SHA" \
+            --source-git-commit "$FROZEN_SPEC_COMMIT" \
             --result-json /tmp/jrdb_v02/report/input_projection.json \
             > /tmp/jrdb_v02/report/project_stdout.log \
             2> /tmp/jrdb_v02/report/project_stderr.log
@@ -194,7 +348,10 @@ jobs:
         continue-on-error: true
         run: |
           set +e
-          if [ '${{ steps.project.outputs.exit_code }}' != '0' ]; then echo 'exit_code=98' >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ '${{ steps.project.outputs.exit_code }}' != '0' ]; then
+            echo 'exit_code=98' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           python horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py \
             --input-db /tmp/jrdb_v02/training_edge_v02_input.sqlite \
             --calibration horse-racing/jrdb/config/training_edge_v0_2_calibration.json \
@@ -208,33 +365,58 @@ jobs:
         if: always()
         env:
           ANNUAL_FETCH_EXIT: ${{ steps.annual_fetch.outputs.exit_code }}
-          DAILY_FETCH_EXIT: ${{ steps.daily_fetch.outputs.exit_code }}
+          DRIVE_EXIT: ${{ steps.drive.outputs.exit_code }}
           BUNDLE_EXIT: ${{ steps.bundle.outputs.exit_code }}
           INDEX_EXIT: ${{ steps.index.outputs.exit_code }}
           RUNPERF_EXIT: ${{ steps.runperf.outputs.exit_code }}
           PROJECT_EXIT: ${{ steps.project.outputs.exit_code }}
           EVALUATE_EXIT: ${{ steps.evaluate.outputs.exit_code }}
           RUN_ID: ${{ github.run_id }}
+          EXECUTION_SHA: ${{ github.sha }}
         run: |
           python - <<'PY'
-          import json, os
+          import json
+          import os
           from pathlib import Path
-          exits={k:os.environ.get(k+'_EXIT','') for k in ('ANNUAL_FETCH','DAILY_FETCH','BUNDLE','INDEX','RUNPERF','PROJECT','EVALUATE')}
-          eval_path=Path('/tmp/jrdb_v02/report/training_edge_v0_2_2026_oot.json')
-          evaluation=json.loads(eval_path.read_text(encoding='utf-8')) if eval_path.is_file() else {}
-          status='success' if all(v=='0' for v in exits.values()) and evaluation.get('status')=='success' else 'failure'
-          result={
-            'status':status,
-            'run_id':int(os.environ['RUN_ID']),
-            'frozen_source_sha':os.environ['FROZEN_SOURCE_SHA'],
-            'oot_from_date':os.environ['OOT_FROM_DATE'],
-            'oot_to_date':os.environ['OOT_TO_DATE'],
-            'exits':exits,
-            'evaluation':evaluation,
+
+          exits = {
+              key: os.environ.get(key + '_EXIT', '')
+              for key in ('ANNUAL_FETCH', 'DRIVE', 'BUNDLE', 'INDEX', 'RUNPERF', 'PROJECT', 'EVALUATE')
           }
-          text=json.dumps(result,ensure_ascii=False,indent=2)
-          Path('/tmp/jrdb_v02/report/workflow_result.json').write_text(text,encoding='utf-8')
-          Path('/tmp/comment.md').write_text('JRDB_TRAINING_V02_2026_OOT_RESULT\n```json\n'+text+'\n```\n',encoding='utf-8')
+          report_root = Path('/tmp/jrdb_v02/report')
+
+          def load(name: str):
+              path = report_root / name
+              if not path.is_file():
+                  return None
+              return json.loads(path.read_text(encoding='utf-8'))
+
+          evaluation = load('training_edge_v0_2_2026_oot.json') or {}
+          status = 'success' if all(value == '0' for value in exits.values()) and evaluation.get('status') == 'success' else 'failure'
+          result = {
+              'status': status,
+              'run_id': int(os.environ['RUN_ID']),
+              'execution_sha': os.environ['EXECUTION_SHA'],
+              'frozen_spec_commit': os.environ['FROZEN_SPEC_COMMIT'],
+              'input_route': {
+                  'history_2010_2025': 'authenticated_annual_JRDB_reconstruction',
+                  'oot_2026': 'public_Drive_PACI_SED_issue_952_contract',
+              },
+              'oot_from_date': os.environ['OOT_FROM_DATE'],
+              'oot_to_date': os.environ['OOT_TO_DATE'],
+              'exits': exits,
+              'drive_dates': load('drive_date_audit.json'),
+              'raw2026': load('raw2026_audit.json'),
+              'input_projection': load('input_projection.json'),
+              'evaluation': evaluation,
+          }
+          text = json.dumps(result, ensure_ascii=False, indent=2)
+          report_root.mkdir(parents=True, exist_ok=True)
+          (report_root / 'workflow_result.json').write_text(text, encoding='utf-8')
+          Path('/tmp/comment.md').write_text(
+              'JRDB_TRAINING_V02_2026_OOT_RESULT\n```json\n' + text + '\n```\n',
+              encoding='utf-8',
+          )
           PY
 
       - name: Upload report artifact
@@ -256,7 +438,7 @@ jobs:
       - name: Close successful request
         if: >-
           always() && steps.annual_fetch.outputs.exit_code == '0' &&
-          steps.daily_fetch.outputs.exit_code == '0' && steps.bundle.outputs.exit_code == '0' &&
+          steps.drive.outputs.exit_code == '0' && steps.bundle.outputs.exit_code == '0' &&
           steps.index.outputs.exit_code == '0' && steps.runperf.outputs.exit_code == '0' &&
           steps.project.outputs.exit_code == '0' && steps.evaluate.outputs.exit_code == '0'
         env:
@@ -266,7 +448,7 @@ jobs:
       - name: Fail workflow when a gate failed
         if: >-
           always() && (steps.annual_fetch.outputs.exit_code != '0' ||
-          steps.daily_fetch.outputs.exit_code != '0' || steps.bundle.outputs.exit_code != '0' ||
+          steps.drive.outputs.exit_code != '0' || steps.bundle.outputs.exit_code != '0' ||
           steps.index.outputs.exit_code != '0' || steps.runperf.outputs.exit_code != '0' ||
           steps.project.outputs.exit_code != '0' || steps.evaluate.outputs.exit_code != '0')
         run: exit 1
