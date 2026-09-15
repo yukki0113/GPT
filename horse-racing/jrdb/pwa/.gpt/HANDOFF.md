@@ -144,7 +144,9 @@ canonical horse addon:
 
 - preferred value: `addons.my_index.training_edge_index`
 - legacy fallback: `display_value / index / score / value`
-- null / missing / non-numeric -> `—`
+- `addons.my_index` missing（source未取込） -> `—`
+- explicit `training_edge_index: null` / empty（source取込済み・指数なし） -> **空欄**
+- `training_edge_index` が明示された場合はnullでもlegacy fallbackへ落とさない
 - day manifest source status: `source_status.my_index.state`
 - `READY` -> day summary `指数○`
 - source CSV standard columns: `date, venue_code, race_no, horse_no, training_edge_index`
