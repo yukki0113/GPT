@@ -1,6 +1,6 @@
 # ForwardTrial Chat日次台帳記帳運用
 
-Updated: 2026-09-13
+Updated: 2026-09-16
 
 ## 目的
 
@@ -50,9 +50,12 @@ Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、およ�
 3. `FT2_開催メタ` と `FT2_Freeze監査` を更新した。公式gradeが未解決なら `未分類 + 要確認` とし、完了にしない。
 4. Atomic Aggregate Setの9タブ（日別、会場別、会場日目別、グレード別、判定構造別、販売選別検証、Score検証、Freeze監査、ダッシュボード）を、全明細から同一処理で再生成した。
 5. `FT2_集計監査` の9行で `aggregate_generation_id`、raw/genuine/contaminated/exacta件数、max対象日、検証状態が一致した。
-6. 販売記事台帳・販売掲載明細・既存販売派生集計をmirrorし、掲載は有料+無料のみでCSVのみを混ぜていない。
-7. Sheets read-backで行数、FT2_ID重複0、9タブ世代、数式エラー0を確認した。
-8. 上記すべての後にだけ `FT2_取込管理.取込状態` を `完了` にする。
+6. `daily_append` では、直前完了世代と比べて source raw/genuine/exacta件数、対象日集合、既存日のgenuine件数が縮退していない。新規日追加時は当日取込値を加えた期待累計値とも一致した。
+7. `missing_dates` と `regressed_dates` が空で、Non-Regression Guardが `OK` である。
+8. 修復が必要なときだけ `repair_rebuild` を使い、理由・前後件数・変更stable key・処理者/時刻を監査へ記録した。結果確認後のfreeze内容を書換える用途には使わない。
+9. 販売記事台帳・販売掲載明細・既存販売派生集計をmirrorし、掲載は有料+無料のみでCSVのみを混ぜていない。
+10. Sheets read-backで行数、FT2_ID重複0、9タブ世代、数式エラー0を確認した。
+11. 上記すべての後にだけ `FT2_取込管理.取込状態` を `完了` にする。
 
 本体writeの間は `集計再生成中` を使用する。ひとつでも失敗した場合は完了を付けず、
 `集計不整合`、`要確認`、または`エラー`を使う。再実行はstable-key upsertと全再生成で
