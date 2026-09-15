@@ -161,6 +161,12 @@ Analysisだけ最新化し、条件別集計PWAを旧Analysis世代に残さな�
 
 認証済みJRDB取得・正式artifact chain・publication証跡が必要な部分は `.gpt/WORKFLOW.md` の Route D を使います。既取得入力だけで完結する検証・集計はRoute Cを優先します。
 
+### Current artifact retention
+
+Analysis LiteのDrive正本は**current世代だけ**を通常保持する。新Analysisを所定の共有フォルダへuploadし、filename・size・SHA-256・ZIP/SQLite検査を再確認したうえでFact Lite/PWA公開が成功した場合、直前のcurrent Analysisを削除する。失敗時は旧currentを残し、切替を行わない。
+
+Stats MartやRaw、監査artifact、RaceNote Archiveなど、再現性のため明示的に保持する資産にはこの削除規則を適用しない。
+
 ## 7. Stable data rules
 
 - Fixed-length interpretation: `src/jrdb_raw.py`
