@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from fingerprint_training_edge_v0_2_runtime import (  # noqa: E402
-    _display if False else _prediction_hash,
+    _prediction_hash,
     validate_fingerprint,
 )
 
