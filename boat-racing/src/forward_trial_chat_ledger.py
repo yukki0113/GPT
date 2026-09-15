@@ -61,6 +61,9 @@ FROZEN_COLUMNS = (
     "掲載区分", "販売選別確定日時", "確定着順", "2連単公式払戻",
     "prediction_source_file_id", "sales_source_file_id", "result_source_file_id",
 )
+PROVENANCE_REBIND_COLUMNS = {
+    "prediction_source_file_id", "sales_source_file_id", "result_source_file_id",
+}
 
 
 def sheet_rows(sheet: Mapping[str, object]) -> list[dict[str, object]]:
@@ -84,7 +87,8 @@ def values_rows(values: Sequence[Sequence[object]]) -> list[dict[str, object]]:
 
 
 def upsert_daily_detail(existing: Sequence[Mapping[str, object]],
-                        incoming: Sequence[Mapping[str, object]]) -> list[dict[str, object]]:
+                        incoming: Sequence[Mapping[str, object]],
+                        allow_provenance_rebind: bool = False) -> list[dict[str, object]]:
     """Replace a repeated day only when every immutable frozen value agrees."""
     by_id = {str(row["FT2_ID"]): dict(row) for row in existing}
     for source in incoming:
@@ -94,10 +98,99 @@ def upsert_daily_detail(existing: Sequence[Mapping[str, object]],
         if current:
             conflicts = [column for column in FROZEN_COLUMNS
                          if not equivalent_value(current.get(column), candidate.get(column))]
+            if allow_provenance_rebind:
+                conflicts = [column for column in conflicts if column not in PROVENANCE_REBIND_COLUMNS]
             if conflicts:
                 raise ForwardTrialValidationError(f"frozen FT2 conflict {row_id}: {conflicts}")
         by_id[row_id] = candidate
     return [by_id[key] for key in sorted(by_id)]
+
+
+def source_snapshot(rows: Sequence[Mapping[str, object]]) -> dict[str, object]:
+    nonblank = [row for row in rows if str(row.get("FT2_ID", "")).strip()]
+    genuine = [row for row in nonblank if row.get("forward_status") == GENUINE]
+    return {
+        "raw": len(nonblank),
+        "genuine": len(genuine),
+        "contaminated": sum(row.get("forward_status") == "CONTAMINATED" for row in nonblank),
+        "exacta": metric_block(genuine)["R数"],
+        "max_date": max((str(row["対象日"]) for row in nonblank), default=""),
+        "date_set": {str(row["対象日"]) for row in nonblank},
+        "daily_genuine": {
+            day: sum(row.get("forward_status") == GENUINE for row in nonblank if str(row["対象日"]) == day)
+            for day in {str(row["対象日"]) for row in nonblank}
+        },
+    }
+
+
+def non_regression_audit(existing: Sequence[Mapping[str, object]], current: Sequence[Mapping[str, object]],
+                         incoming: Sequence[Mapping[str, object]], execution_mode: str,
+                         previous_generation_id: str = "", repair_reason: str = "",
+                         repair_operator: str = "forward_trial_chat_ledger",
+                         previous_snapshot: Mapping[str, object] | None = None) -> dict[str, object]:
+    """Compare the rebuilt source detail with the previous completed snapshot."""
+    observed_before, after = source_snapshot(existing), source_snapshot(current)
+    # A caller may supply the prior completed audit values.  This catches a
+    # stale or already-truncated current-detail export before it is accepted as
+    # the next daily baseline.  Date-level checks still use observed detail.
+    before = dict(observed_before)
+    if previous_snapshot:
+        for name in ("raw", "genuine", "contaminated", "exacta", "max_date"):
+            if previous_snapshot.get(name) not in (None, ""):
+                before[name] = previous_snapshot[name]
+    new_rows = [row for row in incoming if str(row["対象日"]) not in before["date_set"]]
+    new = source_snapshot(new_rows)
+    missing = sorted(before["date_set"] - after["date_set"])
+    regressed = sorted(
+        day for day, count in before["daily_genuine"].items()
+        if after["daily_genuine"].get(day, 0) < count
+    )
+    expected_raw = int(before["raw"]) + new["raw"]
+    expected_genuine = int(before["genuine"]) + new["genuine"]
+    expected_exacta = int(before["exacta"]) + new["exacta"]
+    normal_ok = (
+        after["raw"] >= int(before["raw"])
+        and after["genuine"] >= int(before["genuine"])
+        and after["exacta"] >= int(before["exacta"])
+        and not missing and not regressed
+        and (not new_rows or after["max_date"] >= str(before["max_date"]))
+        and after["raw"] == expected_raw
+        and after["genuine"] == expected_genuine
+        and after["exacta"] == expected_exacta
+    )
+    before_by_id = {str(row["FT2_ID"]): row for row in existing}
+    incoming_ids = {str(row["FT2_ID"]) for row in incoming}
+    changed = sorted(str(row["FT2_ID"]) for row in current if str(row["FT2_ID"]) in incoming_ids
+                     and (str(row["FT2_ID"]) not in before_by_id or row != before_by_id[str(row["FT2_ID"])]))
+    count_decreased = (after["raw"] < int(before["raw"]) or after["genuine"] < int(before["genuine"])
+                       or after["exacta"] < int(before["exacta"]))
+    if count_decreased:
+        status = "NON_REGRESSION_VIOLATION"
+    elif missing:
+        status = "MISSING_DATES"
+    elif not normal_ok:
+        status = "INCREMENT_MISMATCH"
+    else:
+        status = "OK"
+    repair_ok = execution_mode == "repair_rebuild" and bool(repair_reason.strip())
+    return {
+        "previous_generation_id": previous_generation_id,
+        "previous_source_raw_R": before["raw"], "previous_source_genuine_R": before["genuine"],
+        "previous_source_contaminated_R": before["contaminated"], "previous_source_exacta_R": before["exacta"],
+        "previous_max_target_date": before["max_date"],
+        "current_day_raw_R": source_snapshot(incoming)["raw"],
+        "current_day_genuine_R": source_snapshot(incoming)["genuine"],
+        "current_day_exacta_R": source_snapshot(incoming)["exacta"],
+        "expected_current_raw_R": expected_raw, "expected_current_genuine_R": expected_genuine,
+        "expected_current_exacta_R": expected_exacta, "missing_dates": ",".join(missing),
+        "regressed_dates": ",".join(regressed), "non_regression_check": "OK" if (normal_ok or repair_ok) else status,
+        "date_row_count_check": "DATE_ROW_COUNT_REGRESSION" if regressed else "OK",
+        "execution_mode": execution_mode, "repair_reason": repair_reason,
+        "repair_before": f"raw={before['raw']};genuine={before['genuine']};exacta={before['exacta']}",
+        "repair_after": f"raw={after['raw']};genuine={after['genuine']};exacta={after['exacta']}",
+        "repair_changed_stable_keys": ",".join(changed), "repair_operator": repair_operator,
+        "normal_ok": normal_ok, "completion_ok": normal_ok or repair_ok,
+    }
 
 
 def equivalent_value(left: object, right: object) -> bool:
@@ -305,10 +398,14 @@ def build_atomic_payload(existing_detail: Sequence[Mapping[str, object]], daily_
                          existing_management: Sequence[Mapping[str, object]] = (),
                          existing_meta: Sequence[Mapping[str, object]] = (),
                          existing_articles: Sequence[Mapping[str, object]] = (),
-                         existing_legacy_detail: Sequence[Mapping[str, object]] = ()) -> dict[str, object]:
+                         existing_legacy_detail: Sequence[Mapping[str, object]] = (),
+                         execution_mode: str = "daily_append", repair_reason: str = "",
+                         previous_generation_id: str = "", repair_operator: str = "forward_trial_chat_ledger",
+                         previous_snapshot: Mapping[str, object] | None = None) -> dict[str, object]:
     """Upsert daily rows and rebuild the complete transaction from source detail."""
     incoming = sheet_rows(daily_payload["sheets"]["FT2_全R明細"])
-    detail = upsert_daily_detail(existing_detail, incoming)
+    detail = upsert_daily_detail(existing_detail, incoming,
+                                 allow_provenance_rebind=execution_mode == "repair_rebuild")
     latest_day = max(str(row["対象日"]) for row in incoming)
     daily = daily_aggregate(detail)
     venue = group_aggregate(detail, ["会場"])
@@ -327,6 +424,15 @@ def build_atomic_payload(existing_detail: Sequence[Mapping[str, object]], daily_
         "FT2_ダッシュボード": records_to_sheet(dashboard),
     }
     audit = aggregate_audit_rows(rows=detail, sheets=sheets, process_datetime=process_datetime)
+    regression = non_regression_audit(
+        existing_detail, detail, incoming, execution_mode, previous_generation_id, repair_reason,
+        repair_operator, previous_snapshot,
+    )
+    for row in audit:
+        row.update({key: value for key, value in regression.items() if key != "normal_ok"})
+        if not regression["completion_ok"]:
+            row["検証状態"] = "NG"
+            row["エラー内容"] = regression["non_regression_check"]
     sheets["FT2_集計監査"] = records_to_sheet(audit, AGGREGATE_AUDIT_HEADERS)
 
     management_sheet = daily_payload["sheets"].get("FT2_取込管理")
@@ -345,15 +451,17 @@ def build_atomic_payload(existing_detail: Sequence[Mapping[str, object]], daily_
     if meta_sheet:
         sheets["FT2_開催メタ"] = records_to_sheet(meta, list(meta_sheet["headers"]))
 
-    legacy_incoming = [legacy_detail_row(row) for row in incoming]
-    legacy_detail = keyed_upsert(existing_legacy_detail, legacy_incoming, ["データID"])
-    article_current = {str(row.get("記事ID")): row for row in existing_articles}.get(latest_day.replace("-", ""))
+    # Rebuild the legacy mirrors from all FT2 source rows, never from a partial
+    # day payload.  This is what makes a reconstructed source self-consistent.
+    legacy_incoming = [legacy_detail_row(row) for row in detail]
+    legacy_detail = legacy_incoming
+    article_by_id = {str(row.get("記事ID")): row for row in existing_articles}
     # The existing-sales ledger retains the day even if every race is correctly
     # classified as contaminated. Genuine-only filtering belongs to the FT2
     # performance aggregates, not to the stable daily article key.
-    day_rows = [row for row in detail if row["対象日"] == latest_day]
-    article = article_row(day_rows, article_current)
-    articles = keyed_upsert(existing_articles, [article], ["記事ID"])
+    articles = [article_row([row for row in detail if row["対象日"] == day],
+                            article_by_id.get(day.replace("-", "")))
+                for day in sorted({str(row["対象日"]) for row in detail})]
     sheets.update({
         "販売記事台帳": records_to_sheet(articles, ARTICLE_HEADERS),
         "販売掲載明細": records_to_sheet(legacy_detail, LEGACY_DETAIL_HEADERS),
@@ -379,9 +487,21 @@ def build_atomic_payload(existing_detail: Sequence[Mapping[str, object]], daily_
         "販売区分合計": sum(class_metric(genuine, label)["R数"] for label in ("有料", "無料", "CSVのみ")) == metric_block(genuine)["R数"],
         "掲載=有料+無料": published_metric(genuine)["R数"] == class_metric(genuine, "有料")["R数"] + class_metric(genuine, "無料")["R数"],
         "grade解決": all(row["グレード大分類"] != "未分類" for row in incoming),
-        "既存販売台帳クロスチェック": existing_sales_crosscheck and len(legacy_incoming) == len(incoming),
+        "既存販売台帳クロスチェック": existing_sales_crosscheck and len(legacy_incoming) == len(detail),
     }
     checks.update(aggregate_audit_checks(audit))
+    checks["Non-Regression Guard"] = regression["completion_ok"]
+    checks["過去日消失0"] = not regression["missing_dates"]
+    checks["同日件数縮退0"] = not regression["regressed_dates"]
+    checks["期待累計値一致"] = (
+        regression["current_day_raw_R"] == 0
+        or execution_mode == "repair_rebuild"
+        or (
+            regression["expected_current_raw_R"] == len(detail)
+            and regression["expected_current_genuine_R"] == len(genuine)
+            and regression["expected_current_exacta_R"] == metric_block(genuine)["R数"]
+        )
+    )
     state = IMPORT_COMPLETE if all(checks.values()) else NEEDS_REVIEW
     incoming_management_dates = {
         str(row.get("対象日")) for row in sheet_rows(management_sheet)
@@ -393,7 +513,7 @@ def build_atomic_payload(existing_detail: Sequence[Mapping[str, object]], daily_
     if management_sheet:
         sheets["FT2_取込管理"] = records_to_sheet(management, list(management_sheet["headers"]))
     return {"target_date": latest_day, "state": state, "sheets": sheets, "completion_checks": checks,
-            "aggregate_generation_id": audit[0]["aggregate_generation_id"]}
+            "aggregate_generation_id": audit[0]["aggregate_generation_id"], "non_regression": regression}
 
 
 def cell_value(value: object) -> dict[str, object]:
@@ -447,11 +567,19 @@ def main() -> None:
     parser.add_argument("--daily-payload", required=True)
     parser.add_argument("--process-datetime", required=True)
     parser.add_argument("--existing-sales-crosscheck", action="store_true")
+    parser.add_argument("--execution-mode", choices=("daily_append", "repair_rebuild"), default="daily_append")
+    parser.add_argument("--repair-reason", default="")
+    parser.add_argument("--previous-generation-id", default="")
+    parser.add_argument("--repair-operator", default="forward_trial_chat_ledger")
+    parser.add_argument("--previous-source-snapshot-json",
+                        help="optional JSON object from the prior completed aggregate audit")
     parser.add_argument("--sheet-metadata-json")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     current = json.loads(Path(args.current_sheet_values).read_text(encoding="utf-8"))
     daily_payload = json.loads(Path(args.daily_payload).read_text(encoding="utf-8"))
+    previous_snapshot = (json.loads(Path(args.previous_source_snapshot_json).read_text(encoding="utf-8"))
+                         if args.previous_source_snapshot_json else None)
 
     def rows(title: str) -> list[dict[str, object]]:
         return values_rows(current.get(title, {}).get("values", []))
@@ -459,6 +587,8 @@ def main() -> None:
     payload = build_atomic_payload(
         rows("FT2_全R明細"), daily_payload, args.process_datetime, args.existing_sales_crosscheck,
         rows("FT2_取込管理"), rows("FT2_開催メタ"), rows("販売記事台帳"), rows("販売掲載明細"),
+        args.execution_mode, args.repair_reason, args.previous_generation_id,
+        args.repair_operator, previous_snapshot,
     )
     if args.sheet_metadata_json:
         metadata = json.loads(Path(args.sheet_metadata_json).read_text(encoding="utf-8"))
