@@ -123,6 +123,24 @@ def source_snapshot(rows: Sequence[Mapping[str, object]]) -> dict[str, object]:
     }
 
 
+def previous_completed_snapshot(audit_rows: Sequence[Mapping[str, object]]) -> tuple[str, dict[str, object] | None]:
+    """Read the last normal completed source baseline from aggregate audit rows."""
+    candidates = [row for row in audit_rows
+                  if str(row.get("検証状態", "")) == "OK"
+                  and str(row.get("non_regression_check", "OK")) == "OK"]
+    if not candidates:
+        return "", None
+    latest = max(candidates, key=lambda row: (str(row.get("更新日時", "")), str(row.get("aggregate_generation_id", ""))))
+    fields = {
+        "raw": as_int(latest.get("source_raw_R"), 0) or 0,
+        "genuine": as_int(latest.get("source_genuine_R"), 0) or 0,
+        "contaminated": as_int(latest.get("source_contaminated_R"), 0) or 0,
+        "exacta": as_int(latest.get("source_exacta_R"), 0) or 0,
+        "max_date": str(latest.get("source_max_date", "")),
+    }
+    return str(latest.get("aggregate_generation_id", "")), fields
+
+
 def non_regression_audit(existing: Sequence[Mapping[str, object]], current: Sequence[Mapping[str, object]],
                          incoming: Sequence[Mapping[str, object]], execution_mode: str,
                          previous_generation_id: str = "", repair_reason: str = "",
@@ -583,6 +601,12 @@ def main() -> None:
 
     def rows(title: str) -> list[dict[str, object]]:
         return values_rows(current.get(title, {}).get("values", []))
+
+    audit_generation, audit_snapshot = previous_completed_snapshot(rows("FT2_集計監査"))
+    if previous_snapshot is None:
+        previous_snapshot = audit_snapshot
+    if not args.previous_generation_id:
+        args.previous_generation_id = audit_generation
 
     payload = build_atomic_payload(
         rows("FT2_全R明細"), daily_payload, args.process_datetime, args.existing_sales_crosscheck,
