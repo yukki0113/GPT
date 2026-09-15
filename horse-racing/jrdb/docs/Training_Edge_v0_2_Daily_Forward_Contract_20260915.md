@@ -9,6 +9,7 @@ Date: 2026-09-15
 - `FORWARD_MODE = ACTIVE_AFTER_2026-09-13`
 - `POST_OOT_RETUNING = PROHIBITED`
 - `MARKET_FIELDS = PROHIBITED`
+- `RUNTIME_FINGERPRINT = FROZEN`
 - `PRODUCTION_DEPLOYMENT = NOT_AUTOMATICALLY_AUTHORIZED`
 
 This document defines the operational path that produces one pre-race Training Edge index file for a JRA business date. It does not change the scientific v0.2 model.
@@ -18,6 +19,14 @@ Scientific source of truth:
 - `Training_Edge_v0_2_Freeze_20260915.md`
 - Freeze commit `1ae1b424597d391fdca57c8fe826d99df123221b`
 - `Training_Edge_v0_2_2026_OOT_Evidence_20260915.md`
+
+Operational runtime source of truth:
+
+- `config/training_edge_v0_2_runtime_fingerprint.json`
+- runtime-freeze Issue `#975`
+- runtime-freeze run `34933935199`
+- runtime-freeze execution SHA `16f53078af35cce4de9d951e3924b0c02a598967`
+- source boundary: 2010-2025 only; no 2026 rows
 
 ## 1. Daily boundary
 
@@ -81,6 +90,8 @@ Every daily CSV must be accompanied by a machine-readable audit JSON containing,
 
 The audit also records source hashes, scorer/core versions, fit-year guard, target date, and confirms that target result and market fields are not required/used.
 
+The daily CLI must additionally record the runtime-fingerprint validation result. No CSV is written when the runtime guard fails.
+
 ## 4. Frozen scoring semantics
 
 The daily scorer imports the frozen v0.2 assets rather than copying or redefining them:
@@ -105,11 +116,31 @@ The score is:
 
 and the reader-facing index is the frozen development percentile transform of that raw value.
 
-## 5. Forward integrity guards
+## 5. Runtime fingerprint freeze
+
+The scientific model Freeze fixes feature/model semantics. The runtime fingerprint additionally freezes the operational realization of the 2013-2025 fit population.
+
+The expected runtime values were generated once from 2010-2025 only, before daily forward use:
+
+- eligible fit rows: `256701`;
+- fit date range: `2013-01-05` through `2025-12-28`;
+- semantic SHA-256: `4c59926f41cb213a924285743ffa5c923c5f08b2c0a1fa7b042cd633aa1c5d33`;
+- C training-prediction SHA-256: `7a30ceb98e2f3bbad281f1aae88611cf51d503ef12eca4d0f639ca859becbe87`;
+- CAB training-prediction SHA-256: `33d483132623ef8fd714e439702ad000dd3854be4674dc8c053137b9ff3ef250`;
+- prediction normalization: 12 decimals;
+- NumPy `2.5.3`;
+- pandas `3.0.5`;
+- SciPy `1.18.1`;
+- scikit-learn `1.9.1`.
+
+`src/score_training_edge_v0_2_daily.py` runs this validation before daily scoring. A mismatch in the fit rows, semantic inputs, fitted C/CAB predictions, or numerical package versions is a hard failure. This is an operational reproducibility guard, not a new model-selection step.
+
+## 6. Forward integrity guards
 
 A formal forward daily run must fail closed when any of the following occurs:
 
 - frozen scientific asset hash mismatch;
+- runtime fingerprint mismatch;
 - target PACI is absent;
 - target-day SED/result is already present in the input acquisition path;
 - target date is absent from Index Base / projection;
@@ -120,7 +151,7 @@ A formal forward daily run must fail closed when any of the following occurs:
 
 This preserves a genuine pre-result forward record.
 
-## 6. Current reference execution route
+## 7. Current reference execution route
 
 Entrypoint:
 
@@ -148,6 +179,7 @@ target date
   -> build Index Base
   -> build EXPANDING RunPerf + Official RunPerf
   -> project Training Edge v0.2 input
+  -> verify frozen 2013-2025 runtime fingerprint
   -> fit frozen 2013-2025 C and CAB models
   -> score target pre-race rows
   -> frozen development percentile
@@ -159,7 +191,7 @@ target date
 
 The first implementation intentionally uses this full deterministic path as the reference oracle. Incremental state caching can be added later as an execution optimization, not as a new model.
 
-## 7. Newspaper / PWA responsibility boundary
+## 8. Newspaper / PWA responsibility boundary
 
 This module does not modify the Newspaper JSON itself.
 
@@ -173,7 +205,7 @@ The consumer must not:
 - fill an ineligible blank with an inferred value;
 - change the one-decimal value after handoff except normal string/number serialization preserving the same numeric value.
 
-## 8. Post-race forward ledger
+## 9. Post-race forward ledger
 
 After SED becomes available, the result may be joined into a separate forward-validation ledger. The daily pre-race CSV and audit remain immutable evidence.
 
