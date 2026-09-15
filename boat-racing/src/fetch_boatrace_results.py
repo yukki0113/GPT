@@ -233,6 +233,58 @@ def find_table_by_headers(doc, required: set[str]):
     return None
 
 
+def numeric_finish_groups(result: OfficialResult) -> list[tuple[int, list[str]]]:
+    """数値着順を同着グループ単位に正規化し、競走順位の飛び方も検証する。"""
+    grouped: dict[int, list[str]] = {}
+    for row in result.finish_rows:
+        rank_text = unicodedata.normalize("NFKC", str(row.get("rank", ""))).strip()
+        boat = str(row.get("boat", "")).strip()
+        if not re.fullmatch(r"[1-6]", rank_text):
+            continue
+        if not re.fullmatch(r"[1-6]", boat):
+            continue
+        rank = int(rank_text)
+        grouped.setdefault(rank, []).append(boat)
+
+    groups: list[tuple[int, list[str]]] = []
+    occupied = 0
+    for rank in sorted(grouped):
+        expected_rank = occupied + 1
+        if rank != expected_rank:
+            raise ParseError(
+                f"着順表の順位遷移が不正です: rank={rank}, expected={expected_rank}")
+        boats = sorted(grouped[rank], key=int)
+        groups.append((rank, boats))
+        occupied += len(boats)
+    return groups
+
+
+def serialize_finish_order(result: OfficialResult) -> str:
+    """同着を =、順位グループ間を - で表現する。例: 3-6-1=2-4-5。"""
+    groups = numeric_finish_groups(result)
+    return "-".join("=".join(boats) for _, boats in groups)
+
+
+def expected_ordered_finish_bets(result: OfficialResult, ticket_type: str) -> set[str]:
+    """同着を考慮し、確定着順から成立する2連単/3連単の全組合せを生成する。"""
+    if ticket_type not in ORDERED_TYPES:
+        raise InputError(f"順序付き券種ではありません: {ticket_type}")
+
+    remaining = ARITY[ticket_type]
+    prefixes: list[tuple[str, ...]] = [tuple()]
+    for _, boats in numeric_finish_groups(result):
+        if remaining <= 0:
+            break
+        take = min(len(boats), remaining)
+        variants = list(itertools.permutations(boats, take))
+        prefixes = [prefix + variant for prefix in prefixes for variant in variants]
+        remaining -= take
+
+    if remaining > 0:
+        return set()
+    return {canonical_bet(ticket_type, boats) for boats in prefixes}
+
+
 def validate_page_identity(doc, expected_venue: str, expected_date: datetime,
                            expected_race: int, expected_url: str) -> tuple[str, str, int]:
     venues = [normalize_space(x) for x in doc.xpath(
@@ -274,7 +326,6 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
     result = OfficialResult(venue=venue, date_label=date_label, race_no=race_no)
 
     finish_table = find_table_by_headers(doc, {"着", "枠", "ボートレーサー"})
-    numeric_finishes: list[tuple[int, str]] = []
     if finish_table is not None:
         for row in finish_table.xpath(".//tbody/tr"):
             cells = row.xpath("./td")
@@ -285,9 +336,6 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
             if not re.fullmatch(r"[1-6]", boat):
                 continue
             result.finish_rows.append({"rank": rank, "boat": boat})
-            rank_ascii = unicodedata.normalize("NFKC", rank)
-            if re.fullmatch(r"[1-6]", rank_ascii):
-                numeric_finishes.append((int(rank_ascii), boat))
             if "欠" in rank:
                 result.absent_boats.append(boat)
             if "失" in rank or "妨" in rank:
@@ -298,10 +346,8 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
     finish_boats = [x["boat"] for x in result.finish_rows]
     if len(finish_boats) != len(set(finish_boats)):
         raise ParseError(f"着順表に同一艇が重複しています: {finish_boats}")
-    numeric_ranks = [x[0] for x in numeric_finishes]
-    if len(numeric_ranks) != len(set(numeric_ranks)):
-        raise ParseError(f"着順表に同一着順が重複しています: {numeric_ranks}")
-    result.finish_order = [boat for _, boat in sorted(numeric_finishes)]
+    finish_groups = numeric_finish_groups(result)
+    result.finish_order = [boat for _, boats in finish_groups for boat in boats]
 
     payout_table = find_table_by_headers(doc, {"勝式", "組番", "払戻金"})
     if payout_table is not None:
@@ -496,6 +542,23 @@ def payout_map(result: OfficialResult, ticket_type: str) -> dict[str, int]:
     return {x["combination"]: x["payout"] for x in result.payouts.get(ticket_type, [])}
 
 
+def ordered_payout_consistency_error(result: OfficialResult) -> str:
+    """同着を含む確定着順と、公式の順序付き払戻組番が一致するか検証する。"""
+    for ticket_type in ("2連単", "3連単"):
+        if ticket_type in result.special_payouts:
+            continue
+        expected = expected_ordered_finish_bets(result, ticket_type)
+        actual = set(payout_map(result, ticket_type))
+        if not expected:
+            return f"確定着順から{ticket_type}組番を生成できません"
+        if expected != actual:
+            expected_text = "／".join(sorted(expected))
+            actual_text = "／".join(sorted(actual))
+            return (f"確定着順と公式{ticket_type}が不一致: "
+                    f"expected={expected_text}, actual={actual_text}")
+    return ""
+
+
 def bet_includes_refunded_boat(bet: str, refunded_boats: list[str]) -> bool:
     boats = re.findall(r"[1-6]", bet)
     return any(x in refunded_boats for x in boats)
@@ -578,9 +641,7 @@ def result_status(result: OfficialResult) -> str:
         return "解析失敗"
     if len(result.finish_order) < 3:
         return "解析失敗"
-    official_trifecta = payout_map(result, "3連単")
-    expected_trifecta = canonical_bet("3連単", result.finish_order[:3])
-    if expected_trifecta not in official_trifecta:
+    if ordered_payout_consistency_error(result):
         return "解析失敗"
     return "取得成功"
 
@@ -588,7 +649,7 @@ def result_status(result: OfficialResult) -> str:
 def fill_result(output: dict[str, str], row: dict[str, str], fetched: FetchData,
                 result: OfficialResult, args) -> None:
     output.update({
-        "確定着順": "-".join(result.finish_order),
+        "確定着順": serialize_finish_order(result),
         "着順詳細": "／".join(f"{x['rank']}:{x['boat']}" for x in result.finish_rows),
         "返還艇": ",".join(result.refunded_boats),
         "欠場艇": ",".join(result.absent_boats),
@@ -635,9 +696,9 @@ def fill_result(output: dict[str, str], row: dict[str, str], fetched: FetchData,
                    if (x == "確定着順" and len(result.finish_order) < 3) or
                    (x != "確定着順" and not result.payouts.get(x)
                     and x not in result.special_payouts)]
-        expected = canonical_bet("3連単", result.finish_order[:3]) if len(result.finish_order) >= 3 else ""
-        if expected and expected not in payout_map(result, "3連単"):
-            output["エラー内容"] = f"確定着順上位3艇と公式3連単が不一致: 着順={expected}"
+        consistency_error = ordered_payout_consistency_error(result)
+        if consistency_error:
+            output["エラー内容"] = consistency_error
         else:
             output["エラー内容"] = "公式確定結果の必須項目不足: " + ",".join(missing)
 
