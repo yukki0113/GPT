@@ -1,0 +1,103 @@
+name: JRDB Training v0.2 History Schema Probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_TRAINING_V02_HISTORY_SCHEMA]'
+  HISTORY_FILE_ID: '13YKKbOgS7KCkXzKtU93XtCPWt1wPqosk'
+  HISTORY_ZIP_SHA256: '0c84c8082d155b3d6dc206dbc3e215ac98d1cfc1bc92e3a4de06866a6d90b8be'
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_V02_HISTORY_SCHEMA]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install gdown
+        run: python -m pip install --disable-pip-version-check gdown==5.2.0
+
+      - name: Download and verify frozen history bundle
+        run: |
+          mkdir -p /tmp/jrdb_history_probe
+          gdown --id "$HISTORY_FILE_ID" -O /tmp/jrdb_history_probe/history.zip
+          printf '%s  %s\n' "$HISTORY_ZIP_SHA256" /tmp/jrdb_history_probe/history.zip | sha256sum -c -
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          source = Path('/tmp/jrdb_history_probe/history.zip')
+          target = Path('/tmp/jrdb_history_probe')
+          with zipfile.ZipFile(source) as archive:
+              bad = archive.testzip()
+              if bad is not None:
+                  raise SystemExit(f'bad zip member: {bad}')
+              members = archive.namelist()
+              if members != ['jrdb_history_2010_2025.sqlite']:
+                  raise SystemExit(f'unexpected members: {members}')
+              archive.extractall(target)
+          PY
+
+      - name: Probe SQLite schema without model evaluation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+          import sqlite3
+
+          path = Path('/tmp/jrdb_history_probe/jrdb_history_2010_2025.sqlite')
+          connection = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
+          try:
+              integrity = connection.execute('PRAGMA integrity_check').fetchone()[0]
+              tables = [row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")]
+              details = {}
+              for table in tables:
+                  columns = [row[1] for row in connection.execute(f'PRAGMA table_info("{table}")')]
+                  details[table] = columns
+              result = {
+                  'status': 'PASS' if integrity == 'ok' else 'FAIL',
+                  'integrity_check': integrity,
+                  'sqlite_size_bytes': path.stat().st_size,
+                  'tables': tables,
+                  'columns': details,
+                  'contains_training_runner': 'training_runner' in tables,
+                  'contains_race_context': 'race_context' in tables,
+                  'contains_runner_result': 'runner_result' in tables,
+                  'contains_runner_runperf_features': 'runner_runperf_features' in tables,
+                  'contains_official_runperf': 'official_runperf' in tables,
+              }
+          finally:
+              connection.close()
+          text = json.dumps(result, ensure_ascii=False, indent=2)
+          Path('/tmp/jrdb_history_probe/result.json').write_text(text, encoding='utf-8')
+          Path('/tmp/comment.md').write_text('JRDB_TRAINING_V02_HISTORY_SCHEMA_RESULT\n```json\n' + text + '\n```\n', encoding='utf-8')
+          print(text)
+          PY
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close request
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
