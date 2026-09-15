@@ -13,7 +13,14 @@ function newspaperV10MyIndexValue(horse) {
   const addon = newspaperV10MyIndexAddon(horse);
   if (!addon) return "—";
 
-  for (const key of ["training_edge_index", "display_value", "index", "score", "value"]) {
+  if (Object.prototype.hasOwnProperty.call(addon, "training_edge_index")) {
+    const supplied = addon.training_edge_index;
+    if (supplied === null || supplied === undefined || supplied === "") return "";
+    const numeric = Number(supplied);
+    return Number.isFinite(numeric) ? number(numeric) : "";
+  }
+
+  for (const key of ["display_value", "index", "score", "value"]) {
     const value = addon[key];
     if (value === null || value === undefined || value === "") continue;
     const numeric = Number(value);
