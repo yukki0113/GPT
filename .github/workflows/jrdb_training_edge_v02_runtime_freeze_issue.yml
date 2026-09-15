@@ -185,17 +185,7 @@ jobs:
             2> /tmp/jrdb_runtime/report/fingerprint_stderr.log
           a=$?
           if [ "$a" = 0 ]; then
-            python - <<'PY'
-          import json
-          from pathlib import Path
-          path = Path('/tmp/jrdb_runtime/report/training_edge_v0_2_runtime_fingerprint.json')
-          value = json.loads(path.read_text(encoding='utf-8'))
-          if value.get('training_eligible_n') != 256701:
-              raise SystemExit(f"unexpected fit count: {value.get('training_eligible_n')}")
-          guard = value.get('guard') or {}
-          if guard.get('max_fit_year') != 2025 or guard.get('contains_2026_rows') is not False:
-              raise SystemExit(f'unsafe runtime fingerprint guard: {guard}')
-          PY
+            python -c "import json,pathlib; p=pathlib.Path('/tmp/jrdb_runtime/report/training_edge_v0_2_runtime_fingerprint.json'); v=json.loads(p.read_text(encoding='utf-8')); g=v.get('guard') or {}; assert v.get('training_eligible_n') == 256701, v.get('training_eligible_n'); assert g.get('max_fit_year') == 2025, g; assert g.get('contains_2026_rows') is False, g"
             a=$?
           fi
           echo "exit_code=$a" >> "$GITHUB_OUTPUT"
