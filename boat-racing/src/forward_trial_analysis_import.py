@@ -41,6 +41,13 @@ AGGREGATE_AUDIT_HEADERS = [
     "集計タブ名", "aggregate_generation_id", "source_raw_R", "source_genuine_R",
     "source_contaminated_R", "source_exacta_R", "source_max_date", "output_row_count",
     "検証状態", "エラー内容", "更新日時",
+    "previous_generation_id", "previous_source_raw_R", "previous_source_genuine_R",
+    "previous_source_contaminated_R", "previous_source_exacta_R", "previous_max_target_date",
+    "current_day_raw_R", "current_day_genuine_R", "current_day_exacta_R",
+    "expected_current_raw_R", "expected_current_genuine_R", "expected_current_exacta_R",
+    "missing_dates", "regressed_dates", "non_regression_check", "date_row_count_check", "execution_mode",
+    "repair_reason", "repair_before", "repair_after", "repair_changed_stable_keys",
+    "repair_operator",
 ]
 INITIAL_BACKFILL_DATES = {
     "2026-09-01",
