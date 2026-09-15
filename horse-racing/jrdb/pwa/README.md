@@ -124,7 +124,9 @@ PWAは上流で算出済みの独自指数を **再計算せずそのまま表�
 
 - preferred field: `addons.my_index.training_edge_index`
 - 旧互換: `display_value / index / score / value`
-- null / 欠損 / 非数値: `—`
+- `addons.my_index` 自体が無い（source未取込）: `—`
+- `training_edge_index` が明示的にnull / 空（source取込済みだが指数なし）: **空欄**
+- `training_edge_index` が明示されている場合、nullでも旧互換fieldへfallbackしない
 - 数値はPWAの通常指数表示と同じ1桁小数表示
 - 日次manifestは `source_status.my_index.state` を使用し、`READY` のとき概要欄を `指数○` とする
 - PWA側で順位化、標準化、percentile、加重、他指数との合成を行わない
