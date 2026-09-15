@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from forward_trial_analysis_import import FT2_HEADERS, GENUINE, records_to_sheet
 from forward_trial_chat_ledger import (
     build_atomic_payload, build_batch_requests, legacy_detail_row,
-    non_regression_audit, upsert_daily_detail, values_rows,
+    non_regression_audit, previous_completed_snapshot, upsert_daily_detail, values_rows,
 )
 
 
@@ -141,6 +141,17 @@ class ForwardTrialChatLedgerTest(unittest.TestCase):
         repaired = non_regression_audit(before, after, after, "repair_rebuild", repair_reason="official source rebuild")
         self.assertTrue(repaired["completion_ok"])
         self.assertEqual(repaired["execution_mode"], "repair_rebuild")
+
+    def test_previous_completed_snapshot_uses_latest_normal_audit_generation(self):
+        generation, snapshot = previous_completed_snapshot([
+            {"aggregate_generation_id": "old", "更新日時": "2026-09-14", "検証状態": "OK",
+             "non_regression_check": "OK", "source_raw_R": 684, "source_genuine_R": 681,
+             "source_contaminated_R": 3, "source_exacta_R": 140, "source_max_date": "2026-09-13"},
+            {"aggregate_generation_id": "failed", "更新日時": "2026-09-15", "検証状態": "NG",
+             "non_regression_check": "NON_REGRESSION_VIOLATION"},
+        ])
+        self.assertEqual(generation, "old")
+        self.assertEqual(snapshot["raw"], 684)
 
 
 if __name__ == "__main__":
