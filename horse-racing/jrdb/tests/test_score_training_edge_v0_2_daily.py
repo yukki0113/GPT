@@ -12,7 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from evaluate_training_edge_v0_2_oot import SOURCE_COLUMNS  # noqa: E402
-from score_training_edge_v0_2_daily import _display_index, score_day  # noqa: E402
+from fingerprint_training_edge_v0_2_runtime import fingerprint  # noqa: E402
+from score_training_edge_v0_2_daily import (  # noqa: E402
+    _display_index,
+    score_day,
+    verify_runtime_fingerprint,
+)
 from training_edge_v0_2_core import VERSION as CORE_VERSION  # noqa: E402
 
 
@@ -196,3 +201,24 @@ def test_score_day_outputs_complete_five_column_population(tmp_path: Path) -> No
     assert audit["guard"]["fit_max_year"] == 2025
     assert audit["guard"]["target_result_required"] is False
     assert audit["display_contract"]["decimal_places"] == 1
+
+
+def test_runtime_fingerprint_guard_passes_exact_and_rejects_drift(tmp_path: Path) -> None:
+    input_db = tmp_path / "input.sqlite"
+    _build_projection(input_db)
+    expected = fingerprint(input_db)
+    expected_path = tmp_path / "runtime.json"
+    expected_path.write_text(json.dumps(expected), encoding="utf-8")
+
+    result = verify_runtime_fingerprint(input_db, expected_path)
+    assert result["status"] == "PASS"
+    assert result["training_eligible_n"] == expected["training_eligible_n"]
+
+    expected["training_semantic_sha256"] = "0" * 64
+    expected_path.write_text(json.dumps(expected), encoding="utf-8")
+    try:
+        verify_runtime_fingerprint(input_db, expected_path)
+    except ValueError as exc:
+        assert "training_semantic_sha256" in str(exc)
+    else:
+        raise AssertionError("daily runtime fingerprint drift must fail closed")
