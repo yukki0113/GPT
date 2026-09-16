@@ -21,36 +21,41 @@ Python、README、予想仕様書、運用文書はGit `main` を正本とする
 
 ### Active prediction specs
 
-2026-09-16の運用決定以降、新規の結果未参照日では `ForwardTrial_Ver0.2-alpha1` をActive prediction ruleとする。
+2026-09-17以降の新規・結果未参照日では、**Control / Shadow並行運用**を現行標準とする。
+
+- Control: `ForwardTrial_Ver0.1`
+- Shadow: `ForwardTrial_Ver0.2-alpha1`
 
 開始時に以下を確認する。
 
-1. `boat-racing/docs/ForwardTrial_Ver0.2-alpha1_Active運用_20260916.md`
-2. `boat-racing/src/forward_trial_v02_alpha_predict.py`
-3. `boat-racing/docs/ForwardTrial_Ver0.2_alpha_Shadow運用_20260916.md`
-4. `boat-racing/docs/ForwardTrial_Ver0.2_alpha_Design_20260916.md`
-5. `boat-racing/docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
-6. `boat-racing/docs/競艇AI予想_事前予想仕様書_Ver1.2.1.md`
+1. `boat-racing/docs/ForwardTrial_0917以降_Control_Shadow並行運用_20260916.md`
+2. `boat-racing/src/forward_trial_predict.py`
+3. `boat-racing/src/forward_trial_v02_alpha_shadow.py`
+4. `boat-racing/docs/ForwardTrial_Ver0.2_alpha_Shadow運用_20260916.md`
+5. `boat-racing/docs/ForwardTrial_Ver0.2_alpha_Design_20260916.md`
+6. `boat-racing/docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
+7. `boat-racing/docs/競艇AI予想_事前予想仕様書_Ver1.2.1.md`
 
-Active実装はv0.1のA/B/C判定・1着軸・InnerPickを継承し、OpponentScore以降をOS-alpha1、Q0 Pair-risk Gate、4項目販売Score、日次商品量ルールへ変更する。日次標準成果物は事前予想・予想根拠・販売選別の3CSVとし、結果参照前に同一freezeで確定する。
+Controlは従来どおりVer0.1を正式運用として維持する。Shadowは同一のFreeze済み公式出走表から結果参照前に別version・別資産として生成し、Controlを上書きしない。
 
-過去に `ForwardTrial_Ver0.1` でFreeze済みの予想・販売選別・結果・台帳実績は遡及変更しない。研究用Shadow/dry replayをv0.2 genuine forward成績へ算入しない。
+ShadowはVer0.1の1着軸/A-B-C判定とInnerPickを据え置き、OpponentScoreのみOS-alpha1（全国0.35 / 当地0.15 / ST0.05 / モーター0.15 / 今節0.15 / 級別0.15）へ変更する。Q0は `2着候補分離度<0.08 AND 軸警戒なし AND 比較支持項目数!=4` としnote非掲載。販売Scoreは全国勝率差>=0.50、分離度>=0.08、InnerPick相手2〜4号艇、本線一致の4項目各+1。CSVのみは使用せず、掲載外は非掲載とする。
 
-README / HANDOFF / WORKFLOWに旧v0.1をActiveとする記述が残っている場合は、本節と `ForwardTrial_Ver0.2-alpha1_Active運用_20260916.md` を現行Active prediction ruleとして優先し、履歴文書のv0.1記述は過去Controlの説明として扱う。
+Shadowの商品量はQ0通過候補数に応じ、6Rなら有料4/無料2、7Rなら5/2、8Rなら5/3、9Rなら6/3、10R以上なら7/3。5R以下は通常販売見送り。合計掲載は6〜10R。
 
-### Deadline publication gate
+2026-09-16中に作成された `ForwardTrial_Ver0.2-alpha1_Active運用_20260916.md` と `forward_trial_v02_alpha_predict.py` は昇格検討履歴として保持するが、0917以降の日次標準経路には使用しない。
 
-`ForwardTrial_Ver0.2-alpha1` の日次販売選別では、公式出走表の `締切時刻` と `販売選別確定日時` を結果参照前に比較する。
+過去にFreeze済みのControl資産・結果・台帳実績は遡及変更しない。0916以前のv0.2-alpha1 research / dry replay / Active昇格試行を0917以降のShadow genuine forward成績へ算入しない。
 
-- `販売選別確定日時 < 公式締切時刻` のQ0非該当2連単1点対象だけを有料・無料の掲載順位へ参加させる。
-- 締切時刻に到達済み・締切後の対象は有料・無料に掲載せず `非掲載` として検証用に保持する。
-- Q0該当も `非掲載` とする。
-- Q0非該当かつ締切前候補数が5R以下なら通常販売見送り。
-- 6R以上はv0.2-alpha1の商品量表に従い、有料4〜7R・無料2〜3R、掲載上限10Rとする。
-- `CSVのみ` はv0.2-alpha1では使用しない。
-- 予想判定、2連単1点対象、買い目、販売Score、freeze時刻は結果参照後に変更しない。
+### Deadline / genuine gate
 
-詳細は `docs/ForwardTrial_Ver0.2-alpha1_Active運用_20260916.md` を正本とする。
+Control / Shadowとも、公式出走表の `締切時刻` と各系統のfreeze時刻を結果参照前に比較する。
+
+- 締切時刻より前にFreezeされたものだけをgenuine forwardとして扱う。
+- 締切時刻到達済み・締切後にFreezeされた系統はそのレースを `CONTAMINATED` としてgenuine集計から除外する。
+- 有料・無料掲載にも締切済みレースを含めない。
+- Control / Shadowの予想判定・買い目・Score・freeze時刻は結果参照後に変更しない。
+
+詳細は `docs/ForwardTrial_0917以降_Control_Shadow並行運用_20260916.md` を正本とする。
 
 ### Commander / venue selection
 
