@@ -1,5 +1,5 @@
 dataset:
-  name: training_research
+  name: training_research_runner
 
 # Paths are resolved from this config directory. Replace these placeholders in
 # the runtime copy or generate a project-specific config in the staging job.
@@ -11,7 +11,7 @@ source:
 
 target:
   format: parquet
-  path: ../../../../runtime/jrdb_training_research.parquet
+  path: ../../../../runtime/training_research/v0.1/build-<build_id>/training_runner.parquet
   compression: zstd
   partition_by: []
 
@@ -27,4 +27,8 @@ validation:
   range_columns: [race_date, year, official_runperf_raw]
 
 audit:
-  path: ../../../../runtime/jrdb_training_research.audit.json
+  path: ../../../../runtime/training_research/v0.1/build-<build_id>/conversion_audit.json
+
+# The formal migration runner also materializes development, outcome-locked
+# holdout, and source_archive assets in the same immutable generation.  This
+# generic config remains the shared data-storage contract for training_runner.
