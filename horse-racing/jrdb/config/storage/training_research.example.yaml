@@ -1,0 +1,30 @@
+dataset:
+  name: training_research
+
+# Paths are resolved from this config directory. Replace these placeholders in
+# the runtime copy or generate a project-specific config in the staging job.
+source:
+  format: sqlite
+  path: ../../../../runtime/jrdb_training_research.sqlite
+  table: training_runner
+  batch_size: 50000
+
+target:
+  format: parquet
+  path: ../../../../runtime/jrdb_training_research.parquet
+  compression: zstd
+  partition_by: []
+
+keys:
+  canonical: [race_key, horse_no]
+
+sort_by: [race_date, race_key, horse_no]
+
+validation:
+  require_unique_key: true
+  require_row_count_match: true
+  non_null_columns: [race_date, year, data_split, race_key, horse_no]
+  range_columns: [race_date, year, official_runperf_raw]
+
+audit:
+  path: ../../../../runtime/jrdb_training_research.audit.json

@@ -1,0 +1,34 @@
+{
+  "status": "success",
+  "dataset": "jrdb_training_research_2010_2023_development_lite_v0_1",
+  "rows": 686096,
+  "columns": 67,
+  "canonical_key": ["race_key", "horse_no"],
+  "validation": {
+    "row_count_match": true,
+    "schema_match": true,
+    "duplicate_key_count": 0,
+    "sample_match": true,
+    "tests": {"passed": 10, "failed": 0}
+  },
+  "storage_bytes": {
+    "sqlite_original": 325054464,
+    "sqlite_original_zip_deflate": 87883009,
+    "sqlite_no_index": 187670528,
+    "sqlite_no_index_zip_deflate9": 53747748,
+    "sqlite_no_index_zip_lzma": 32912742,
+    "parquet_zstd": 25434132,
+    "parquet_snappy": 29733641,
+    "parquet_year_zstd": 27279897
+  },
+  "warm_median_ms": {
+    "count_all": {"sqlite_original": 2.766, "parquet_zstd": 4.420, "parquet_snappy": 4.222, "parquet_year_zstd": 7.345},
+    "count_2023": {"sqlite_original": 50.071, "parquet_zstd": 4.168, "parquet_snappy": 4.193, "parquet_year_zstd": 3.239},
+    "selected_columns_filter": {"sqlite_original": 16.426, "parquet_zstd": 6.444, "parquet_snappy": 7.179, "parquet_year_zstd": 4.927},
+    "workout_group_by": {"sqlite_original": 321.106, "parquet_zstd": 7.313, "parquet_snappy": 6.632, "parquet_year_zstd": 13.143},
+    "horse_history": {"sqlite_original": 0.140, "parquet_zstd": 10.196, "parquet_snappy": 12.644, "parquet_year_zstd": 13.426},
+    "canonical_key_lookup": {"sqlite_original": 0.005, "parquet_zstd": 6.409, "parquet_snappy": 6.414, "parquet_year_zstd": 11.040},
+    "multi_filter_aggregate": {"sqlite_original": 357.355, "parquet_zstd": 7.863, "parquet_snappy": 7.348, "parquet_year_zstd": 9.947}
+  },
+  "decision": "ADOPT_UNPARTITIONED_PARQUET_ZSTD_FOR_ANALYTICAL_MART_KEEP_SQLITE_FOR_INDEXED_POINT_LOOKUP"
+}

@@ -1,0 +1,83 @@
+name: Common data storage
+
+on:
+  workflow_dispatch:
+    inputs:
+      config_path:
+        description: Repository-relative YAML config; leave blank to run tests only
+        required: false
+        type: string
+      run_benchmark:
+        description: Run benchmark block after a successful conversion
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/data-storage/requirements.txt
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt pytest
+
+      - name: Dependency check
+        env:
+          PYTHONPATH: tools/data-storage
+        run: python -m data_storage check-deps
+
+      - name: Tests
+        env:
+          PYTHONPATH: tools/data-storage
+        run: python -m pytest tools/data-storage/tests -q
+
+      - name: Validate config path
+        if: inputs.config_path != ''
+        env:
+          CONFIG_PATH: ${{ inputs.config_path }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          root = Path.cwd().resolve()
+          path = (root / os.environ['CONFIG_PATH']).resolve()
+          if root not in path.parents or not path.is_file() or path.suffix not in {'.yaml', '.yml'}:
+              raise SystemExit('config_path must be an existing YAML file inside the checkout')
+          PY
+
+      - name: Convert and validate
+        if: inputs.config_path != ''
+        env:
+          PYTHONPATH: tools/data-storage
+        run: python -m data_storage run-config "${{ inputs.config_path }}" | tee data-storage-result.json
+
+      - name: Benchmark
+        if: inputs.config_path != '' && inputs.run_benchmark
+        env:
+          PYTHONPATH: tools/data-storage
+        run: python -m data_storage benchmark "${{ inputs.config_path }}" --output data-storage-benchmark.json
+
+      - name: Upload reports and generated Parquet
+        if: inputs.config_path != '' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-storage-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            data-storage-result.json
+            data-storage-benchmark.json
+            **/*.audit.json
+            **/*.parquet
+

@@ -1,0 +1,23 @@
+dataset:
+  name: example
+source:
+  format: sqlite
+  path: ./source.sqlite
+  table: records
+  columns: [event_date, entity_id, value]
+target:
+  format: parquet
+  path: ./output/example.parquet
+  compression: zstd
+  partition_by: []
+keys:
+  canonical: [event_date, entity_id]
+sort_by: [event_date, entity_id]
+validation:
+  require_unique_key: true
+  require_row_count_match: true
+  non_null_columns: [event_date, entity_id]
+  range_columns: [event_date, value]
+audit:
+  path: ./output/example.audit.json
+
