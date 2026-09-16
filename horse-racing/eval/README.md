@@ -36,6 +36,7 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 - OCR中間CSVは `date,venue,race_no,horse_no,eval` の5列。馬名文字列はOCRせず、JRDB PACIからcanonical keyで付与する。
 - Phase2の事前特徴と結果時点データを分離し、current-race SED・確定結果等をForward事前特徴へ混入させない。
 - JRDB固定長BYTE位置はJRDB common parser/adapterを正本とし、Eval側へ局所複製しない。
+- SEDの確定単勝人気順位は公式フィールドのみを使用し、通常確定走者で欠損した場合はPhase2 backfillをfail-closedにする。
 - Discoveryで見つかった特徴を同一標本のまま正式購入条件へ昇格させない。
 - PWA/Newspaperは研究条件を再実装せず、Eval研究側が注目馬・analysis code/commentを所有する。
 - PWA提出CSVは完成CSVから派生し、既存Eval/PACI列を変更しない。
@@ -94,6 +95,7 @@ A/B/Cで完結する処理のためだけにIssueを作成しません。DでIss
 ### Post-race / research backfill
 
 - `src/backfill_phase2_sed.py` — Phase2へSED結果時点情報をbackfill
+- `docs/Eval_Phase2_SED_Popularity_Contract.md` — 公式人気順位、fail-closed監査、Forward境界
 
 各ツールの詳細は `docs/`、責務一覧は `.gpt/HANDOFF.md` を参照してください。
 
