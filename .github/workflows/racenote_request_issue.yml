@@ -79,6 +79,15 @@ jobs:
           if not mart_url.startswith('https://drive.google.com/'):
               raise SystemExit('mart_url must be a Google Drive URL')
 
+          support_artifact_run_id = request.get('support_artifact_run_id')
+          support_artifact_name = str(request.get('support_artifact_name') or '').strip() or None
+          if support_artifact_run_id is not None:
+              support_artifact_run_id = int(support_artifact_run_id)
+              if support_artifact_run_id <= 0:
+                  raise SystemExit('support_artifact_run_id must be positive')
+          if (support_artifact_run_id is None) != (support_artifact_name is None):
+              raise SystemExit('support_artifact_run_id and support_artifact_name must be supplied together')
+
           stats_window_years = int(request.get('stats_window_years', 5))
           if not 1 <= stats_window_years <= 10:
               raise SystemExit('stats_window_years must be 1..10')
@@ -106,6 +115,8 @@ jobs:
               'race': race,
               'analysis_url': analysis_url,
               'mart_url': mart_url,
+              'support_artifact_run_id': support_artifact_run_id,
+              'support_artifact_name': support_artifact_name,
               'raw_urls': normalized_raw_urls,
               'stats_window_years': stats_window_years,
               'output_dir': output_dir,
@@ -122,9 +133,12 @@ jobs:
           PY
 
       - name: Download Analysis, Mart and supplied Raw cache
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           python - <<'PY'
           import json
+          import os
           import shutil
           import subprocess
           import zipfile
@@ -132,11 +146,15 @@ jobs:
 
           request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
 
-          def download_sqlite(url: str, output: Path, label: str) -> None:
-              downloaded = output.with_suffix(output.suffix + '.download')
-              subprocess.run(['gdown', url, '-O', str(downloaded)], check=True)
-              if zipfile.is_zipfile(downloaded):
-                  with zipfile.ZipFile(downloaded) as archive:
+          def validate_sqlite(output: Path, label: str) -> None:
+              with output.open('rb') as handle:
+                  header = handle.read(16)
+              if header != b'SQLite format 3\x00':
+                  raise SystemExit(f'{label} is not a SQLite database: {output}')
+
+          def materialize_sqlite(source: Path, output: Path, label: str) -> None:
+              if zipfile.is_zipfile(source):
+                  with zipfile.ZipFile(source) as archive:
                       bad_member = archive.testzip()
                       if bad_member is not None:
                           raise SystemExit(f'{label} ZIP has bad member: {bad_member}')
@@ -148,19 +166,53 @@ jobs:
                           raise SystemExit(
                               f'{label} ZIP must contain exactly one SQLite member; found {members}'
                           )
-                      with archive.open(members[0]) as source, output.open('wb') as target:
-                          shutil.copyfileobj(source, target, 1024 * 1024)
-                  downloaded.unlink()
+                      with archive.open(members[0]) as input_file, output.open('wb') as target:
+                          shutil.copyfileobj(input_file, target, 1024 * 1024)
               else:
-                  downloaded.replace(output)
+                  shutil.copy2(source, output)
+              validate_sqlite(output, label)
 
-              with output.open('rb') as handle:
-                  header = handle.read(16)
-              if header != b'SQLite format 3\x00':
-                  raise SystemExit(f'{label} download is not a SQLite database')
+          def download_sqlite(url: str, output: Path, label: str) -> None:
+              downloaded = output.with_suffix(output.suffix + '.download')
+              subprocess.run(['gdown', url, '-O', str(downloaded)], check=True)
+              materialize_sqlite(downloaded, output, label)
+              downloaded.unlink(missing_ok=True)
 
-          download_sqlite(request['analysis_url'], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis')
-          download_sqlite(request['mart_url'], Path('/tmp/jrdb_stats_mart.sqlite'), 'Stats Mart')
+          support_run_id = request.get('support_artifact_run_id')
+          support_artifact_name = request.get('support_artifact_name')
+          if support_run_id is not None and support_artifact_name:
+              support_root = Path('/tmp/racenote_support_artifact')
+              subprocess.run(
+                  [
+                      'gh', 'run', 'download', str(support_run_id),
+                      '--repo', os.environ['GITHUB_REPOSITORY'],
+                      '--name', str(support_artifact_name),
+                      '--dir', str(support_root),
+                  ],
+                  check=True,
+              )
+              analysis_candidates = sorted(
+                  list(support_root.rglob('jrdb_analysis_*.sqlite.zip'))
+                  + list(support_root.rglob('jrdb_analysis_*.sqlite'))
+              )
+              mart_candidates = sorted(support_root.rglob('jrdb_stats_mart_*.sqlite'))
+              if len(analysis_candidates) != 1:
+                  raise SystemExit(
+                      f'support artifact must contain exactly one Analysis candidate; found {analysis_candidates}'
+                  )
+              if len(mart_candidates) != 1:
+                  raise SystemExit(
+                      f'support artifact must contain exactly one Stats Mart candidate; found {mart_candidates}'
+                  )
+              materialize_sqlite(
+                  analysis_candidates[0], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis support artifact'
+              )
+              materialize_sqlite(
+                  mart_candidates[0], Path('/tmp/jrdb_stats_mart.sqlite'), 'Stats Mart support artifact'
+              )
+          else:
+              download_sqlite(request['analysis_url'], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis')
+              download_sqlite(request['mart_url'], Path('/tmp/jrdb_stats_mart.sqlite'), 'Stats Mart')
 
           raw_dir = Path(request['raw_dir'])
           for key, url in request['raw_urls'].items():
