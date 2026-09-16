@@ -13,6 +13,7 @@ sys.path.insert(0,str(ROOT/"src"))
 from analyze_jrdb_training_stage1b import analyze
 from audit_jrdb_training_research import audit
 from build_jrdb_training_research import build
+from migrate_jrdb_training_research_parquet import migrate
 
 
 class TrainingResearchTest(unittest.TestCase):
@@ -81,6 +82,21 @@ class TrainingResearchTest(unittest.TestCase):
             self.assertFalse(evidence["holdout_guard"]["opened"])
             self.assertEqual(evidence["population"]["source_rows_2010_2023"],14)
             self.assertGreater(evidence["population"]["primary_min3"],0)
+
+    def test_parquet_generation_preserves_rows_provenance_and_holdout_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            index,official=self._sources(root)
+            source=root/"training.sqlite"
+            build(index,official,source,ROOT/"schema/jrdb_training_research_schema_v0_1.sql","a"*40)
+            result=migrate(source,root/"training_research" ,"test-build")
+            self.assertEqual(result["status"],"SUCCESS")
+            self.assertTrue((root/"training_research"/"current.json").is_file())
+            self.assertTrue(result["audit"]["source_record_hash"]["pass"])
+            self.assertTrue(result["scientific_regression"]["pass"])
+            locked=result["audit"]["holdout"]["locked_contract"]
+            self.assertEqual((locked["min_year"],locked["max_year"]),(2024,2025))
+            self.assertNotIn("official_runperf_raw",locked["columns"])
 
 
 if __name__=="__main__":
