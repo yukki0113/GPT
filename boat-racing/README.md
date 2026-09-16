@@ -13,6 +13,7 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 - `src/ledger_daily_result_import.py` — ForwardTrial日次結果取込の検証・集計・JSON更新計画生成
 - `src/forward_trial_analysis_import.py` — ForwardTrial専用分析台帳の正規化・真正性監査・再集計データ生成
 - `src/forward_trial_chat_ledger.py` — 日次台帳用stable-key upsert、FT2全再集計、既存販売台帳mirrorの純粋な書込計画を生成
+- `src/monthly_parquet_archive.py` — 月締めCSVをschema厳密・文字列保持でZSTD level 3 Parquetとmanifestへ変換・検証
 
 詳細仕様は `docs/` を参照してください。日次CSV、キャッシュ、ログ、運用台帳はGit管理対象外です。
 
@@ -95,11 +96,11 @@ moduleの通常CLIは上記3CSVに加え、`source_commit`、source/input/output
 - URL: `https://drive.google.com/drive/folders/19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 - バックテスト結果、結果参照前固定、比較資料、仕様改訂判断などを保存
 
-## CSV original preservation and monthly compaction
+## CSV原本保存と月締めParquet
 
 日次CSVの原本保存・保存漏れ監査は、Git/ActionsではなくGoogle Driveを直接正本として扱う。対象日CSVは添付、ChatGPT Library、参照可能な日次成果物の順に探索し、内容を変更・再生成せずに対応区分へ保存する。アップロード前後にDriveの同名・内容・存在を確認し、未発見・競合は推測で補完せず報告する。
 
-月次ZIP化と元CSV削除は、明示的な依頼がある場合だけ実施する。ZIPの収録件数・整合性・Drive上の存在を確認できた元CSVだけを削除する。再開時の詳細手順、対象フォルダ、既存ZIPとの扱いは .gpt/HANDOFF.md を参照する。
+当月は日次CSVを作業正本として維持する。月締め後の長期保存正本は、family × month × schema hashごとのZSTD level 3 Parquetとmanifestであり、月次CSV ZIPは長期正本ではない。Parquetは全元CSV列をstringとして保持し、必須`source_csv`で出所を追跡する。Drive upload・再取得・Lossless/key検証・manifest uploadの全PASS後だけ、対象月の日次CSVとZIPを削除できる。DuckDBはParquetを読む分析用で、`.duckdb`は正本にしない。詳細は[`docs/Parquet月締め運用.md`](docs/Parquet月締め運用.md)。
 
 ## Ledger source of truth
 
