@@ -21,27 +21,36 @@ Python、README、予想仕様書、運用文書はGit `main` を正本とする
 
 ### Active prediction specs
 
-2026-09-01以降の前向き試行では、以下を開始時に確認する。
+2026-09-16の運用決定以降、新規の結果未参照日では `ForwardTrial_Ver0.2-alpha1` をActive prediction ruleとする。
 
-1. `boat-racing/docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
-2. `boat-racing/docs/競艇AI予想_事前予想仕様書_Ver1.2.1.md`
+開始時に以下を確認する。
 
-`ForwardTrial_Ver0.1` では1を優先し、2を基礎・履歴仕様として参照する。
+1. `boat-racing/docs/ForwardTrial_Ver0.2-alpha1_Active運用_20260916.md`
+2. `boat-racing/src/forward_trial_v02_alpha_predict.py`
+3. `boat-racing/docs/ForwardTrial_Ver0.2_alpha_Shadow運用_20260916.md`
+4. `boat-racing/docs/ForwardTrial_Ver0.2_alpha_Design_20260916.md`
+5. `boat-racing/docs/競艇AI予想_2連単1点前向き試行仕様書_Ver0.1.md`
+6. `boat-racing/docs/競艇AI予想_事前予想仕様書_Ver1.2.1.md`
 
-ControlのA/B/C、相手、2連単1点、販売Score、順位、掲載区分は結果参照後に変更しない。仕様改訂候補はControlへ直接混ぜず、結果前freezeした別version / Shadowとして管理する。
+Active実装はv0.1のA/B/C判定・1着軸・InnerPickを継承し、OpponentScore以降をOS-alpha1、Q0 Pair-risk Gate、4項目販売Score、日次商品量ルールへ変更する。日次標準成果物は事前予想・予想根拠・販売選別の3CSVとし、結果参照前に同一freezeで確定する。
+
+過去に `ForwardTrial_Ver0.1` でFreeze済みの予想・販売選別・結果・台帳実績は遡及変更しない。研究用Shadow/dry replayをv0.2 genuine forward成績へ算入しない。
+
+README / HANDOFF / WORKFLOWに旧v0.1をActiveとする記述が残っている場合は、本節と `ForwardTrial_Ver0.2-alpha1_Active運用_20260916.md` を現行Active prediction ruleとして優先し、履歴文書のv0.1記述は過去Controlの説明として扱う。
 
 ### Deadline publication gate
 
-2026-09-15以降の新規予想では、予想・販売スコア計算後、結果参照前に `src/forward_trial_deadline_gate.py` を適用する。
+`ForwardTrial_Ver0.2-alpha1` の日次販売選別では、公式出走表の `締切時刻` と `販売選別確定日時` を結果参照前に比較する。
 
-- 公式出走表の `締切時刻` と販売選別CSVの `販売選別確定日時` を比較する。
-- `販売選別確定日時 < 公式締切時刻` の2連単1点対象だけを有料・無料の掲載順位へ参加させる。
-- 締切時刻に到達済みの2連単1点対象は、有料・無料には掲載せず `CSVのみ` として検証用に保持する。
-- 締切済みを除いた候補だけで販売順位を詰め直し、1〜6位を有料、7〜9位を無料、10位以下をCSVのみとする。
-- 予想判定、2連単1点対象、販売スコア、freeze時刻は変更しない。
-- 過去に固定済みの日次CSVは遡及修正しない。
+- `販売選別確定日時 < 公式締切時刻` のQ0非該当2連単1点対象だけを有料・無料の掲載順位へ参加させる。
+- 締切時刻に到達済み・締切後の対象は有料・無料に掲載せず `非掲載` として検証用に保持する。
+- Q0該当も `非掲載` とする。
+- Q0非該当かつ締切前候補数が5R以下なら通常販売見送り。
+- 6R以上はv0.2-alpha1の商品量表に従い、有料4〜7R・無料2〜3R、掲載上限10Rとする。
+- `CSVのみ` はv0.2-alpha1では使用しない。
+- 予想判定、2連単1点対象、買い目、販売Score、freeze時刻は結果参照後に変更しない。
 
-詳細は `docs/ForwardTrial_締切時刻掲載ゲート運用.md` を正本とする。
+詳細は `docs/ForwardTrial_Ver0.2-alpha1_Active運用_20260916.md` を正本とする。
 
 ### Commander / venue selection
 
