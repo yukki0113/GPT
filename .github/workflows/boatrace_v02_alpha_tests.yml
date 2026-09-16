@@ -4,9 +4,12 @@ on:
   push:
     paths:
       - 'boat-racing/src/forward_trial_predict.py'
+      - 'boat-racing/src/forward_trial_deadline_gate.py'
       - 'boat-racing/src/forward_trial_v02_alpha_shadow.py'
+      - 'boat-racing/src/forward_trial_v02_alpha_predict.py'
       - 'boat-racing/tests/test_forward_trial_predict.py'
       - 'boat-racing/tests/test_forward_trial_v02_alpha_shadow.py'
+      - 'boat-racing/tests/test_forward_trial_v02_alpha_predict.py'
       - '.github/workflows/boatrace_v02_alpha_tests.yml'
   workflow_dispatch:
 
@@ -18,10 +21,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run Control and alpha Shadow tests
+      - name: Run Control, alpha Shadow, and active alpha1 tests
         working-directory: boat-racing
         run: |
           python -m unittest \
             tests.test_forward_trial_predict \
             tests.test_forward_trial_v02_alpha_shadow \
+            tests.test_forward_trial_v02_alpha_predict \
             -v
