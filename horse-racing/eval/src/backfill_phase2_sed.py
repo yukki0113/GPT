@@ -72,6 +72,26 @@ def normalized_payouts(parsed: dict[str, object]) -> tuple[object, object, str]:
         return (parsed.get("win_payout") or 0, parsed.get("place_payout") or 0, "MATCH_NORMAL")
     return (field_or_blank(parsed.get("win_payout")), field_or_blank(parsed.get("place_payout")), "MATCH_ABNORMAL")
 
+def final_win_popularity_expected(parsed: dict[str, object]) -> bool:
+    """Return whether a normal runner with final odds must carry official popularity."""
+    if str(parsed.get("abnormal_code") or "") != "0":
+        return False
+    try:
+        return float(parsed.get("final_win_odds") or 0) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def track_final_win_popularity(stats: Counter, parsed: dict[str, object]) -> None:
+    """Count the fail-closed popularity coverage guard from official SED fields only."""
+    if not final_win_popularity_expected(parsed):
+        return
+    stats["final_win_popularity_expected"] += 1
+    if parsed.get("final_popularity") is None:
+        stats["final_win_popularity_missing"] += 1
+    else:
+        stats["final_win_popularity_filled"] += 1
+
 
 def read_ledger(path: Path) -> list[dict[str, object]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -152,6 +172,7 @@ def build_rows(ledger: list[dict[str, object]], sed: dict[tuple[str, str, int, i
         stats["matched"] += 1
         if row.get("final_win_odds") is not None: stats["win_odds_filled"] += 1
         if row.get("final_popularity") is not None: stats["win_popularity_filled"] += 1
+        track_final_win_popularity(stats, row)
         if row.get("body_weight_kg") is not None: stats["body_weight_filled"] += 1
         if row.get("body_weight_change_kg") is not None: stats["body_weight_change_filled"] += 1
         if str(row.get("abnormal_code") or "") != "0": stats["abnormal_rows"] += 1
@@ -222,17 +243,24 @@ def main() -> int:
         "duplicate_sed_keys": sum(duplicate_sed.values()),
         "name_mismatch_rows": stats["name_mismatch"], "win_odds_filled": stats["win_odds_filled"],
         "win_popularity_filled": stats["win_popularity_filled"],
+        "final_win_popularity_expected": stats["final_win_popularity_expected"],
+        "final_win_popularity_filled": stats["final_win_popularity_filled"],
+        "final_win_popularity_missing": stats["final_win_popularity_missing"],
+        "final_win_popularity_fill_rate": (
+            stats["final_win_popularity_filled"] / stats["final_win_popularity_expected"]
+            if stats["final_win_popularity_expected"] else 1.0
+        ),
         "win_payout_normalized": stats["matched"] - stats["abnormal_rows"],
         "place_payout_crosschecked": stats["place_payout_crosschecked"],
         "place_payout_mismatches": stats["place_payout_mismatches"],
         "body_weight_filled": stats["body_weight_filled"],
         "body_weight_change_filled": stats["body_weight_change_filled"],
         "abnormal_rows": stats["abnormal_rows"], "refunded_or_nonstandard_rows": stats["abnormal_rows"],
-        "status": "success" if not unmatched and not duplicate_sed else "partial",
+        "status": "success" if not unmatched and not duplicate_sed and not stats["final_win_popularity_missing"] else "partial",
     }
     (args.out_dir / "eval_phase2_sed_backfill_audit_20260908.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(audit, ensure_ascii=False))
-    return 0
+    return 0 if audit["status"] == "success" else 1
 
 
 if __name__ == "__main__":
