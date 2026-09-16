@@ -1,24 +1,26 @@
 # ForwardTrial Ver0.2-alpha1 Active運用
 
 Date: 2026-09-16  
-Status: **Active for new result-unseen daily predictions**
+Status: **SUPERSEDED — promotion attempt only / do not use for daily standard execution**
 
-## 1. 適用開始
+> 2026-09-16中の昇格検討履歴として保持する。0917以降の現行標準は `ForwardTrial_0917以降_Control_Shadow並行運用_20260916.md` に従い、Control=`ForwardTrial_Ver0.1`、Shadow=`ForwardTrial_Ver0.2-alpha1` を同一公式出走表から別資産として結果参照前に並行Freezeする。本書および `forward_trial_v02_alpha_predict.py` を日次標準経路として使用しない。
 
-今後の新規日次予想は `ForwardTrial_Ver0.2-alpha1` を使用する。
+## 1. 当時の適用案
 
-過去に `ForwardTrial_Ver0.1` でFreeze済みの予想・販売選別・結果・台帳実績は遡及変更しない。
+当時は新規日次予想を `ForwardTrial_Ver0.2-alpha1` 単独Activeへ昇格する案として作成した。
+
+過去に `ForwardTrial_Ver0.1` でFreeze済みの予想・販売選別・結果・台帳実績は遡及変更しない方針だった。
 `ForwardTrial_Ver0.2_alpha_Design_20260916.md` と `ForwardTrial_Ver0.2_alpha_Shadow運用_20260916.md` は研究・昇格前履歴として保存する。
 
-## 2. 正本実装
+## 2. 当時の正本実装案
 
-- Active daily predictor: `boat-racing/src/forward_trial_v02_alpha_predict.py`
+- Active daily predictor候補: `boat-racing/src/forward_trial_v02_alpha_predict.py`
 - v0.1基礎判定実装: `boat-racing/src/forward_trial_predict.py`
 - alpha1研究層実装: `boat-racing/src/forward_trial_v02_alpha_shadow.py`
 - 締切時刻parser: `boat-racing/src/forward_trial_deadline_gate.py`
 - Active tests: `boat-racing/tests/test_forward_trial_v02_alpha_predict.py`
 
-日次予想ではChat内に別ロジックを作らず、latest `main` のActive predictorをC. Pure Deterministic Executionで使用する。
+以後の実運用では `forward_trial_v02_alpha_predict.py` を単独Activeとして使用しない。
 
 ## 3. 継承する規則
 
@@ -101,37 +103,27 @@ Q0非該当・締切前候補数により以下を適用する。
 
 `CSVのみ` はv0.2-alpha1では使用しない。掲載外は `非掲載`、候補5R以下の日は `販売見送り` とする。
 
-## 9. 標準成果物
+## 9. 当時の単独Active成果物案
 
-通常ユーザー向け成果物は従来どおり3CSVとする。
+単独Active案では3CSVを想定していた。
 
-1. `YYYYMMDD_事前予想_<会場...>_ForwardTrial_Ver0.2-alpha1.csv` — 24列互換
-2. `YYYYMMDD_予想根拠明細_<会場...>_ForwardTrial_Ver0.2-alpha1.csv` — 26列互換、全R×6艇
-3. `YYYYMMDD_2連単1点販売選別_<会場...>_ForwardTrial_Ver0.2-alpha1.csv` — 21列互換
+1. `YYYYMMDD_事前予想_<会場...>_ForwardTrial_Ver0.2-alpha1.csv`
+2. `YYYYMMDD_予想根拠明細_<会場...>_ForwardTrial_Ver0.2-alpha1.csv`
+3. `YYYYMMDD_2連単1点販売選別_<会場...>_ForwardTrial_Ver0.2-alpha1.csv`
 
-24列/26列の相手関連項目・フラグはOS-alpha1で計算したPairを保存する。
-販売選別CSVは既存21列互換を維持し、Q0・締切済み・日次掲載上限外の理由は `選別理由` へ記録する。
-
-v0.2-alpha1では旧 `内部販売評価` のS/A/A-を販売判断に使用しないため、Active predictorでは互換列として空欄を保持する。
-
-manifestは監査・再現性補助であり、通常のユーザー向け3成果物には数えない。
+この単独Active成果物案は0917以降の標準ではない。現行はControl資産とShadow資産を別々にFreezeする。
 
 ## 10. genuine forward境界
 
-`ForwardTrial_Ver0.2-alpha1` のgenuine forwardは、このActive運用決定後、結果未参照の公式出走表からActive predictorでFreezeした日から開始する。
+本書による単独Active genuine開始は採用しない。
 
-- 2026-09-01〜2026-09-15のv0.1 Control実績はv0.2へ遡及変換しない
-- 2026-09-15 dry replay等の研究値はv0.2 genuine成績に算入しない
-- 結果参照後の再ランキング・買い目変更・掲載区分変更は禁止
+0917以降のgenuine境界は `ForwardTrial_0917以降_Control_Shadow並行運用_20260916.md` に従う。
 
-## 11. 日次実行
+- Control: `ForwardTrial_Ver0.1`
+- Shadow: `ForwardTrial_Ver0.2-alpha1`
+- 同一公式出走表から結果参照前に別資産Freeze
+- 0916以前のdry replay / research / 単独Active昇格試行はShadow genuine成績に算入しない
 
-```bash
-python boat-racing/src/forward_trial_v02_alpha_predict.py \
-  --input <YYYYMMDD_公式出走表_....csv> \
-  --output-dir <out> \
-  --prediction-time '<YYYY-MM-DD HH:MM:SS+09:00>' \
-  --source-commit <latest-main-sha>
-```
+## 11. 現行参照先
 
-実行前にlatest main、本書、Active predictorのversionを確認する。
+`boat-racing/docs/ForwardTrial_0917以降_Control_Shadow並行運用_20260916.md`
