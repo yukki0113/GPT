@@ -12,7 +12,8 @@
 ## Source of truth
 
 - ソースコード、仕様、スキーマ、テスト: GitHub `yukki0113/GPT` の `local-horse-racing/`
-- データ資産: Google Drive `/GPT/NAR/`
+- 共通Parquet / DuckDB処理: GitHub `yukki0113/GPT` の `tools/data-storage/`
+- データ資産: Google Drive `/GPT/local-horse-racing/`
 - Drive root: `https://drive.google.com/drive/folders/1FPxtdPfLNy1EW_WoGtk9C867b7CfAmfI`
 
 Drive上の役割は次のとおり。
@@ -25,6 +26,16 @@ Drive上の役割は次のとおり。
 - `data_pdf_manual.pdf`: NAR公式データダウンロード説明書
 
 Gitに原本ZIP、大容量CSV、認証情報を置かない。
+
+## Shared data-storage policy
+
+Parquet / DuckDBを使う処理を追加する場合は `tools/data-storage/` を共通基盤として優先利用する。
+
+- durable analytical dataはParquetを基本とする。
+- DuckDBはParquetを直接queryするin-process engineとして利用し、persistent `.duckdb` はデフォルト正本にしない。
+- conversion / validation / query / benchmark / auditは共通実装をimportまたはCLI経由で利用し、各Projectで同等処理を再実装しない。
+- local-horse-racing固有のcolumns / keys / partitions / validation rulesはProject側に定義する。
+- 共通toolの詳細は `tools/data-storage/README.md` を参照する。
 
 ## Data source
 
