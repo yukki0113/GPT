@@ -240,7 +240,7 @@ Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、旧台�
 
 明細が存在する、日別集計に当日がある、`FT2_取込管理` に文字列 `完了` がある、という単独条件だけで完了扱いしない。
 
-## 10. CSV原本保存・月次圧縮
+## 10. CSV原本保存・月締めParquet
 
 日次CSV原本保存は生成・台帳とは別の保全工程とする。
 
@@ -249,8 +249,11 @@ Googleサービスアカウント、`GPT_GDRIVE_SERVICE_ACCOUNT_JSON`、旧台�
 - Driveの対応種別へ内容を変更せず保存する。
 - 同名・同内容は再アップロードしない。
 - 同名異内容は上書きせず競合として扱う。
-- 月次ZIP化と元CSV削除はユーザーの明示依頼時だけ行う。
-- ZIPテスト、収録件数、Drive上の存在を確認してから収録済み元CSVだけを削除する。
+- 当月はCSVを作業正本とし、日次Parquet化しない。
+- 閉鎖月は`src/monthly_parquet_archive.py`でfamily × month × schema hashのZSTD level 3 Parquetとmanifestを生成する。schema差は統合せず、全元列はstring、`source_csv`は必須。
+- Parquet生成、manifest、Lossless、業務キー、SHA、Drive upload、Drive存在、再取得・読込、manifest uploadの全PASSを確認して初めて`cleanup_ready=true`とする。
+- `cleanup_ready`でない月のCSV/ZIPは削除しない。修正版は対象月CSVから新generationを再生成し、行単位編集しない。
+- 詳細な命名・Drive配置・状態管理は`docs/Parquet月締め運用.md`を参照する。
 
 詳細は `.gpt/HANDOFF.md` を参照する。
 
