@@ -66,6 +66,10 @@ Google Drive `analysis`:
 - Folder ID: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 - バックテスト、結果参照前固定、検証集計、仕様改訂判断を保存
 
+### Monthly long-term storage
+
+日次CSVは当月だけの作業正本。閉鎖月の長期保存正本はfamily × month × schema hash単位のZSTD level 3 Parquetとmanifestである。schemaは厳密に分離し、元CSVの全値をstringのまま保持、必須`source_csv`で追跡する。Drive upload・再取得・Lossless/key検証・manifest uploadの全PASS前にCSV/ZIPを削除しない。DuckDBは分析エンジンであり正本ではない。実行・修正版generation・cleanup gateは`docs/Parquet月締め運用.md`を正本とする。
+
 予想・販売選別の確定前は当該日の `results` を参照しない。
 結果取得時に当該スレッドへ事前予想CSVがない場合は、対象日が明示されているならGoogle Drive `data/predictions` のfreeze済み正本を検索する。対象日・会場集合・仕様版で一意に確定できない場合は推測しない。結果参照後の予想再生成は禁止する。
 
