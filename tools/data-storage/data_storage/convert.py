@@ -58,7 +58,17 @@ def _sqlite_schema(connection: sqlite3.Connection, table: str, columns: list[str
         if selected is not None and name not in selected:
             continue
         upper = (declared or "").upper()
-        dtype = next((value for key, value in SQLITE_TYPES.items() if key in upper), pa.string())
+        dtype = next((value for key, value in SQLITE_TYPES.items() if key in upper), None)
+        # CREATE TABLE AS SELECT (used for safe, short-lived projections) does
+        # not retain declared SQLite types. Recover the concrete storage class so
+        # BLOB provenance columns remain binary rather than being coerced to text.
+        if dtype is None:
+            sample = connection.execute(
+                f"SELECT typeof({quote_identifier(name)}) FROM {quote_identifier(table)} "
+                f"WHERE {quote_identifier(name)} IS NOT NULL LIMIT 1"
+            ).fetchone()
+            storage_class = sample[0] if sample else "text"
+            dtype = {"integer": pa.int64(), "real": pa.float64(), "blob": pa.binary(), "null": pa.string()}.get(storage_class, pa.string())
         fields.append(pa.field(name, dtype, nullable=not bool(not_null)))
     if selected and selected != {field.name for field in fields}:
         missing = sorted(selected - {field.name for field in fields})
