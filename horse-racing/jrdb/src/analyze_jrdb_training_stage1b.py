@@ -11,7 +11,6 @@ import bisect
 import datetime as dt
 import json
 import math
-import sqlite3
 import statistics
 from collections import defaultdict
 from pathlib import Path
@@ -82,35 +81,60 @@ def _fixed_quintile(value: float) -> int:
     return min(5, int(value*5)+1)
 
 
-def _load(db_path: Path) -> list[sqlite3.Row]:
-    db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    db.row_factory = sqlite3.Row
-    try:
-        rows = db.execute("""
+def _load(source_path: Path, input_format: str = "auto") -> list[dict[str, Any]]:
+    """Read the locked development population from SQLite or Parquet.
+
+    The analysis deliberately owns the holdout assertion as a second guard; the
+    default Parquet artifact also omits holdout rows physically.
+    """
+    selected_format = input_format
+    if selected_format == "auto":
+        selected_format = "parquet" if source_path.suffix.lower() == ".parquet" else "sqlite"
+    sql = """
           SELECT race_date,year,race_key,horse_no,horse_id,course_code,furlong_count,
                  final_segment_sec,official_runperf_raw,runperf_score_status
           FROM training_runner
           WHERE year BETWEEN 2010 AND 2023
           ORDER BY race_date,race_key,horse_no
-        """).fetchall()
-        if rows and max(int(row["year"]) for row in rows)>2023:
-            raise RuntimeError("holdout guard failed")
-        return rows
-    finally:
-        db.close()
+        """
+    if selected_format == "sqlite":
+        import sqlite3
+        db = sqlite3.connect(f"file:{source_path}?mode=ro", uri=True)
+        db.row_factory = sqlite3.Row
+        try:
+            rows = [dict(row) for row in db.execute(sql).fetchall()]
+        finally:
+            db.close()
+    elif selected_format == "parquet":
+        try:
+            from data_storage.query import connect_parquet
+        except ImportError as exc:
+            raise RuntimeError("Parquet input requires tools/data-storage on PYTHONPATH") from exc
+        db = connect_parquet(source_path, "training_runner")
+        try:
+            cursor = db.execute(sql)
+            names = [item[0] for item in cursor.description]
+            rows = [dict(zip(names, values)) for values in cursor.fetchall()]
+        finally:
+            db.close()
+    else:
+        raise ValueError(f"unsupported input format: {input_format}")
+    if rows and max(int(row["year"]) for row in rows)>2023:
+        raise RuntimeError("holdout guard failed")
+    return rows
 
 
-def analyze(db_path: Path) -> dict[str, Any]:
-    source_rows = _load(db_path)
+def analyze(db_path: Path, input_format: str = "auto") -> dict[str, Any]:
+    source_rows = _load(db_path, input_format)
     workout_history: dict[tuple[str,str,int],list[float]] = defaultdict(list)
     last_comparable: dict[tuple[str,str,int],float] = {}
     perf_history: dict[str,list[float]] = defaultdict(list)
     observations: list[dict[str, Any]] = []
 
     current_date = None
-    pending: list[sqlite3.Row] = []
+    pending: list[dict[str, Any]] = []
 
-    def process_day(day_rows: list[sqlite3.Row]) -> None:
+    def process_day(day_rows: list[dict[str, Any]]) -> None:
         for row in day_rows:
             horse = str(row["horse_id"] or "")
             course = str(row["course_code"] or "")
@@ -265,11 +289,12 @@ def render_markdown(report: dict[str, Any]) -> str:
 
 def main() -> None:
     parser=argparse.ArgumentParser()
-    parser.add_argument("--db",type=Path,required=True)
+    parser.add_argument("--db",type=Path,required=True, help="SQLite or Parquet Training Research input")
+    parser.add_argument("--input-format", choices=("auto", "sqlite", "parquet"), default="auto")
     parser.add_argument("--out-json",type=Path,required=True)
     parser.add_argument("--out-md",type=Path,required=True)
     args=parser.parse_args()
-    report=analyze(args.db)
+    report=analyze(args.db, args.input_format)
     args.out_json.parent.mkdir(parents=True,exist_ok=True)
     args.out_json.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
     args.out_md.write_text(render_markdown(report),encoding="utf-8")
