@@ -10,10 +10,11 @@
 4. 本ディレクトリの `.gpt/CONTEXT.md`
 5. 本ディレクトリの `.gpt/WORKFLOW.md`
 6. 対象source / test / docs / workflow
+7. Parquet / DuckDB処理を扱う場合はリポジトリ共通 `tools/data-storage/README.md`
 
 `.gpt/ISSUE_REQUEST_CONTRACTS.md` は Actions-native 実行（下記D）を選ぶ場合に確認する。
 
-Driveデータ正本ルートは `/GPT/NAR/`。
+Driveデータ正本ルートは `/GPT/local-horse-racing/`。
 folder URL: `https://drive.google.com/drive/folders/1FPxtdPfLNy1EW_WoGtk9C867b7CfAmfI`
 
 ## GitHub operation policy
@@ -46,8 +47,11 @@ GitHub正本moduleと必要入力をGPT側で取得でき、secret・特殊runne
 
 - NAR ZIP / CSVのschema・row-count・SHA・integrity確認
 - 固定入力に対するCSV / JSON整形・join・集計
+- Parquet変換・validation・DuckDB query・benchmark（`tools/data-storage/` を利用）
 - focused unit test / regression
 - 既存成果物の比較・監査
+
+Parquet / DuckDB処理は、原則として共通 `tools/data-storage/` のmodule / CLIを利用し、local-horse-racing側で同等実装をコピーしない。Project固有のcolumns / keys / partitions / validation rulesだけをProject側へ定義する。
 
 正本moduleと同等の処理を独自再実装して置き換えず、可能なら source commit / input SHA / output SHA / module version等を残す。
 
@@ -73,24 +77,32 @@ Dを選ぶ場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` に従ってIssue発行前
 2. `python -m nar.download.monthly` でNAR公式月次ZIPを取得する。
 3. ZIPとして開けること、想定ファイルが揃うこと、CSVヘッダーが公式スキーマと一致することを検証する。
 4. raw ZIPのSHA-256を算出する。
-5. raceは `/GPT/NAR/00_raw/race/`、oddsは `/GPT/NAR/00_raw/odds/` へ原本バイト列のまま保存する。
-6. auditを保存する場合は `/GPT/NAR/20_audit/` を使用する。
+5. raceは `/GPT/local-horse-racing/00_raw/race/`、oddsは `/GPT/local-horse-racing/00_raw/odds/` へ原本バイト列のまま保存する。
+6. auditを保存する場合は `/GPT/local-horse-racing/20_audit/` を使用する。
 7. rawを変更する必要が生じた場合は上書きせず、原因を調査する。
 
 ## Current command
 
 ~~~bash
 cd local-horse-racing
-python -m nar.download.monthly --year YYYY --month M --kind race --output-dir <drive-root>/GPT/NAR/00_raw/race --audit-dir <drive-root>/GPT/NAR/20_audit
-python -m nar.download.monthly --year YYYY --month M --kind odds --output-dir <drive-root>/GPT/NAR/00_raw/odds --audit-dir <drive-root>/GPT/NAR/20_audit
+python -m nar.download.monthly --year YYYY --month M --kind race --output-dir <drive-root>/GPT/local-horse-racing/00_raw/race --audit-dir <drive-root>/GPT/local-horse-racing/20_audit
+python -m nar.download.monthly --year YYYY --month M --kind odds --output-dir <drive-root>/GPT/local-horse-racing/00_raw/odds --audit-dir <drive-root>/GPT/local-horse-racing/20_audit
 ~~~
 
 ## Validation
+
+Project固有のPhase 0 test:
 
 ~~~bash
 cd local-horse-racing
 python -m unittest discover -s tests -v
 python -m py_compile nar/download/*.py nar/schema/*.py
+~~~
+
+Parquet / DuckDB共通toolを利用する処理では、必要に応じて共通testも実行する。
+
+~~~bash
+PYTHONPATH=tools/data-storage .venv-data-storage/bin/python -m pytest tools/data-storage/tests -q
 ~~~
 
 ## Scope stop
