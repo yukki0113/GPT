@@ -24,7 +24,7 @@ NAR（地方競馬全国協会）の公式CSVを一次データ源とし、Web�
 
 ## Quick start
 
-プロジェクトルートで実行します。Driveの論理ルートは `/GPT/NAR/` です。
+プロジェクトルートで実行します。Driveの論理ルートは `/GPT/local-horse-racing/` です。
 
 ~~~bash
 cd local-horse-racing
@@ -32,11 +32,11 @@ python -m nar.download.monthly \
   --year 2026 \
   --month 9 \
   --kind race \
-  --output-dir /path/to/Drive/GPT/NAR/00_raw/race \
-  --audit-dir /path/to/Drive/GPT/NAR/20_audit
+  --output-dir /path/to/Drive/GPT/local-horse-racing/00_raw/race \
+  --audit-dir /path/to/Drive/GPT/local-horse-racing/20_audit
 ~~~
 
-オッズは `--kind odds` に変更し、出力先を `/path/to/Drive/GPT/NAR/00_raw/odds` にします。
+オッズは `--kind odds` に変更し、出力先を `/path/to/Drive/GPT/local-horse-racing/00_raw/odds` にします。
 
 このコマンドはNARから受け取ったZIPを加工せず保存します。同名ファイルが既に存在する場合、内容が同一なら再書き込みせず、内容が異なる場合は原本の上書きを拒否します。
 
@@ -45,13 +45,25 @@ python -m nar.download.monthly \
 Drive root: `https://drive.google.com/drive/folders/1FPxtdPfLNy1EW_WoGtk9C867b7CfAmfI`
 
 - Git: コード、仕様、スキーマ、テスト、運用ルール
-- Google Drive `/GPT/NAR/00_raw/race`: NAR公式レース情報ZIPの不変原本
-- Google Drive `/GPT/NAR/00_raw/odds`: NAR公式オッズ情報ZIPの不変原本
-- Google Drive `/GPT/NAR/10_canonical`: rawから再生成する加工後・正規化データ
-- Google Drive `/GPT/NAR/20_audit`: 取得日時、SHA-256、サイズ、ZIP内ファイル一覧など
-- Google Drive `/GPT/NAR/30_analysis`: 将来の指数研究・検証成果
+- Google Drive `/GPT/local-horse-racing/00_raw/race`: NAR公式レース情報ZIPの不変原本
+- Google Drive `/GPT/local-horse-racing/00_raw/odds`: NAR公式オッズ情報ZIPの不変原本
+- Google Drive `/GPT/local-horse-racing/10_canonical`: rawから再生成する加工後・正規化データ
+- Google Drive `/GPT/local-horse-racing/20_audit`: 取得日時、SHA-256、サイズ、ZIP内ファイル一覧など
+- Google Drive `/GPT/local-horse-racing/30_analysis`: 将来の指数研究・検証成果
 
 GitにはNAR原本ZIPや大容量CSVをcommitしません。
+
+## Shared Parquet / DuckDB tooling
+
+Parquet / DuckDBを使う加工・検証・query・benchmarkは、リポジトリ共通の `tools/data-storage/` を標準実装として利用します。
+
+- durable analytical dataはParquetを基本とする。
+- DuckDBはParquetを直接queryするin-process engineとして利用し、永続 `.duckdb` ファイルを必須としない。
+- CSV / SQLiteからParquetへの変換、schema / row-count / canonical-key / NULL等の検証、audit JSON、DuckDB query、benchmarkは共通toolを再利用する。
+- local-horse-racing固有の列、キー、partition、validation条件はプロジェクト側のconfig / schemaに置き、共通toolのPython実装をコピーしない。
+- 共通toolの仕様・test方法は `tools/data-storage/README.md` を正本とする。
+
+Phase 0ではcanonical変換自体はまだ標準フローに含めません。次Phaseで導入する場合は、まず `tools/data-storage/` をimport / CLI利用する方式を第一候補とします。
 
 ## Documents
 
