@@ -232,6 +232,7 @@ PWAの表示・同期・配布・スレッド再開は `pwa/.gpt/HANDOFF.md` を
 - `src/build_jrdb_training_research.py`
 - `src/audit_jrdb_training_research.py`
 - `src/analyze_jrdb_training_stage1b.py`
+- `src/migrate_jrdb_training_research_parquet.py` — immutable Parquet generation and SQLite/Parquet scientific regression
 
 Evalや追い切り研究はそれぞれ独立した検証contractを持ち、RaceNote/Edgeへ暗黙にロジックを混入させません。
 
