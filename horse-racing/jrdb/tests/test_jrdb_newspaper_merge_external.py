@@ -255,7 +255,222 @@ def _write_racenote(
         ])
 
 
+def _write_my_index(
+    path: Path,
+    *,
+    rows: list[dict] | None = None,
+) -> None:
+    fields = [
+        "date", "venue_code", "race_no", "horse_no",
+        "training_edge_index",
+    ]
+    if rows is None:
+        rows = [
+            {
+                "date": "2026-09-05", "venue_code": "01",
+                "race_no": 1, "horse_no": 1,
+                "training_edge_index": "80.9",
+            },
+            {
+                "date": "2026-09-05", "venue_code": "01",
+                "race_no": 1, "horse_no": 2,
+                "training_edge_index": "",
+            },
+        ]
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 class NewspaperExternalMergeTest(unittest.TestCase):
+    def test_my_index_absent_preserves_backward_compatibility(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            output = root / "merged"
+            merge_day(_write_day(root), output, revision=2)
+            bundle = json.loads(
+                (output / "races/01_01_01262501.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            audit = json.loads((output / "audit.json").read_text(encoding="utf-8"))
+
+        self.assertIsNone(bundle["horses"][0]["addons"]["my_index"])
+        self.assertIsNone(audit["external_merge"]["my_index"])
+
+    def test_my_index_merges_numeric_null_and_zero_with_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            day = _write_day(root)
+            source = root / "独自指数_20260905.csv"
+            _write_my_index(source)
+            output = root / "merged"
+            result = merge_day(day, output, revision=2, my_index_csv=source)
+            bundle = json.loads(
+                (output / "races/01_01_01262501.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+            audit = json.loads((output / "audit.json").read_text(encoding="utf-8"))
+
+        first = bundle["horses"][0]["addons"]["my_index"]
+        second = bundle["horses"][1]["addons"]["my_index"]
+        self.assertEqual(first["training_edge_index"], 80.9)
+        self.assertIsNone(second["training_edge_index"])
+        self.assertEqual(first["source"], "Training Edge")
+        self.assertEqual(result["my_index"]["merged_rows"], 2)
+        self.assertEqual(result["my_index"]["value_rows"], 1)
+        self.assertEqual(result["my_index"]["null_rows"], 1)
+        self.assertEqual(audit["external_merge"]["my_index"]["merged_rows"], 2)
+        self.assertEqual(manifest["source_status"]["my_index"]["state"], "READY")
+        self.assertEqual(result["per_race"][0]["my_index_nulls"], 1)
+
+    def test_my_index_zero_is_a_number_not_null(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            source = root / "index.csv"
+            _write_my_index(source, rows=[
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "0"},
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 2, "training_edge_index": ""},
+            ])
+            output = root / "merged"
+            result = merge_day(_write_day(root), output, revision=2, my_index_csv=source)
+            bundle = json.loads((output / "races/01_01_01262501.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(bundle["horses"][0]["addons"]["my_index"]["training_edge_index"], 0.0)
+        self.assertEqual(result["my_index"]["value_rows"], 1)
+        self.assertEqual(result["my_index"]["null_rows"], 1)
+
+    def test_my_index_duplicate_key_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            source = root / "index.csv"
+            _write_my_index(source, rows=[
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "1"},
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "2"},
+            ])
+            with self.assertRaisesRegex(ValueError, "duplicate Training Edge key"):
+                merge_day(_write_day(root), root / "merged", revision=2, my_index_csv=source)
+
+    def test_my_index_missing_or_extra_row_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            day = _write_day(root)
+            missing = root / "missing.csv"
+            _write_my_index(missing, rows=[
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "1"},
+            ])
+            with self.assertRaisesRegex(ValueError, "Training Edge row missing"):
+                merge_day(day, root / "missing-out", revision=2, my_index_csv=missing)
+
+            extra = root / "extra.csv"
+            _write_my_index(extra, rows=[
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "1"},
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 2, "training_edge_index": "2"},
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 3, "training_edge_index": "3"},
+            ])
+            with self.assertRaisesRegex(ValueError, "rows not consumed"):
+                merge_day(day, root / "extra-out", revision=2, my_index_csv=extra)
+
+    def test_my_index_rejects_invalid_index_and_exact_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            day = _write_day(root)
+            invalid = root / "invalid.csv"
+            _write_my_index(invalid, rows=[
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "not-a-number"},
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 2, "training_edge_index": "2"},
+            ])
+            with self.assertRaisesRegex(ValueError, "training_edge_index"):
+                merge_day(day, root / "invalid-out", revision=2, my_index_csv=invalid)
+
+            mismatch = root / "mismatch.csv"
+            _write_my_index(mismatch, rows=[
+                {"date": "2026-09-06", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "1"},
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 2, "training_edge_index": "2"},
+            ])
+            with self.assertRaisesRegex(ValueError, "Training Edge row missing"):
+                merge_day(day, root / "mismatch-out", revision=2, my_index_csv=mismatch)
+
+            non_finite = root / "non-finite.csv"
+            _write_my_index(non_finite, rows=[
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 1, "training_edge_index": "NaN"},
+                {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                 "horse_no": 2, "training_edge_index": "2"},
+            ])
+            with self.assertRaisesRegex(ValueError, "non-finite"):
+                merge_day(day, root / "nan-out", revision=2, my_index_csv=non_finite)
+
+    def test_my_index_race_venue_and_horse_mismatches_fail_closed(self) -> None:
+        for field, replacement in (("venue_code", "02"), ("race_no", 2), ("horse_no", 3)):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as tmp_name:
+                root = Path(tmp_name)
+                rows = [
+                    {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                     "horse_no": 1, "training_edge_index": "1"},
+                    {"date": "2026-09-05", "venue_code": "01", "race_no": 1,
+                     "horse_no": 2, "training_edge_index": "2"},
+                ]
+                rows[0][field] = replacement
+                source = root / "index.csv"
+                _write_my_index(source, rows=rows)
+                with self.assertRaisesRegex(ValueError, "Training Edge row missing"):
+                    merge_day(_write_day(root), root / "merged", revision=2, my_index_csv=source)
+
+    def test_my_index_remerge_preserves_semantic_result(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            source = root / "index.csv"
+            _write_my_index(source)
+            day = _write_day(root)
+            first = root / "first"
+            second = root / "second"
+            first_result = merge_day(day, first, revision=2, my_index_csv=source)
+            second_result = merge_day(day, second, revision=2, my_index_csv=source)
+            first_bundle = json.loads((first / "races/01_01_01262501.json").read_text(encoding="utf-8"))
+            second_bundle = json.loads((second / "races/01_01_01262501.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(first_result["my_index"], second_result["my_index"])
+        self.assertEqual(
+            [horse["addons"]["my_index"] for horse in first_bundle["horses"]],
+            [horse["addons"]["my_index"] for horse in second_bundle["horses"]],
+        )
+
+    def test_my_index_coexists_with_eval_and_racenote(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            day = _write_day(root)
+            eval_csv = root / "eval.csv"
+            racenote_csv = root / "racenote.csv"
+            index_csv = root / "index.csv"
+            _write_eval(eval_csv, with_analysis=False)
+            _write_racenote(racenote_csv)
+            _write_my_index(index_csv)
+            output = root / "merged"
+            merge_day(
+                day, output, revision=2, eval_csv=eval_csv,
+                racenote_csv=racenote_csv, my_index_csv=index_csv,
+            )
+            bundle = json.loads((output / "races/01_01_01262501.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(bundle["horses"][0]["addons"]["eval"]["eval"], 52)
+        self.assertEqual(bundle["horses"][0]["addons"]["racenote_prediction"]["mark"], "○")
+        self.assertEqual(bundle["horses"][0]["addons"]["my_index"]["training_edge_index"], 80.9)
     def test_eval_legacy_csv_is_backward_compatible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_name:
             root = Path(tmp_name)

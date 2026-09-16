@@ -19,6 +19,7 @@
 PACI / Base
   -> day build
   -> Eval (PWA submission preferred)
+  -> Training Edge / 独自指数 (available day only)
   -> RaceNote prediction
   -> keibailuka
   -> Edge matcher output
@@ -39,6 +40,7 @@ PACI / Base
 | Source | Newspaperの責務 | 禁止事項 |
 | --- | --- | --- |
 | Eval PWA提出CSV | exact joinと`addons.eval.analysis`への透過格納 | 条件、WATCH/MATCH、H1/H2、コメントの再判定・補正 |
+| Training Edge CSV | `--my-index-csv`で全馬exact joinし、numeric/nullを`addons.my_index`へ透過格納 | 再計算・補正・丸め・順位化、null行の除外、近似join |
 | RaceNote prediction | 完成handoffのnamespace merge | Base/historyへのRaceNote内部実装依存 |
 | keibailuka | sparse exact match | 馬名の近似・自動補正 |
 | EdgeDB | matcher outputを`special_memos`へexact merge | Edge条件の再実装・再判定 |
@@ -49,6 +51,7 @@ Eval PWA提出CSVは旧Eval完成CSVより優先する。analysis列が無い旧
 
 - Base date、race count、runner headcount、canonical key一意性
 - Eval/RaceNote exact join、keibailuka sparse coverage、Edge full exact join
+- Training Edge CSV使用時は全馬exact join、merged/value/null件数、CSV extra/missing=0
 - history `as_of < target_date`、schema、SHA-256、same-input merge idempotence
 - Eval提出CSVではcomment行数と`NONE / WATCH / MATCH`受領件数
 - Drive保存済み、`current.json`更新済み、Current Publish success、Pages success

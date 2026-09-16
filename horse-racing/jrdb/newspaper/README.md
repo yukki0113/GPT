@@ -65,6 +65,19 @@ RaceNoteの予想結果・印・短評は外部addonとして `addons.racenote_p
 
 Base/historyはCommon Reader / neutral JRDB accessから生成し、最大8走を保持します。初期表示3走、切替5走/8走。外部source欠損はBase失敗にせずnull/PENDINGで保持します。
 
+## Training Edge / 独自指数
+
+Training Edgeの日次handoff `独自指数_YYYYMMDD.csv` は、`--my-index-csv` で取り込みます。必須列は `date,venue_code,race_no,horse_no,training_edge_index` です。
+
+- `date + venue_code + race_no + horse_no` の全馬exact joinのみを許容する
+- 数値は再計算・補正・丸め・順位化せず透過格納する
+- CSVに行がある空欄値は `addons.my_index.training_edge_index: null` として保持する
+- CSV自体が未指定のときだけ `addons.my_index` は追加しない
+- duplicate / missing / extra / 非数値・非finite値はfail-closedとする
+- auditには merged/value/null 件数、raceごとの同件数、manifestには `source_status.my_index` を残す
+
+この区別によりPWAは、addonなしを `—`、明示nullを空欄、数値を指数値として表示できます。NewspaperはTraining Edgeの算出ロジックを所有しません。
+
 ## Eval PWA analysis comment
 
 Eval側が条件判定・注目馬選定・コメント作成を所有します。Newspaperは `YYYYMMDD_Eval_PWA提出CSV_v0_1.csv` をexact joinして、分析6列を `addons.eval.analysis` へ透過的に格納するだけです。

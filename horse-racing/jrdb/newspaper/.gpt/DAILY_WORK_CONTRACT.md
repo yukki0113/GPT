@@ -55,7 +55,17 @@ Eval側が注目馬選定、条件判定、`NONE / WATCH / MATCH` の意味、H1
 
 PWA提出CSVのanalysis contract違反は推測補正しません。Evalだけ安全に除外できる場合はEvalを`ERROR`として他sourceを継続し、Baseを停止させません。詳細は `../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を正本とします。
 
-独自指数は開発中で当面ファイルが存在しない運用を許容し、通常は `NOT_EXPECTED` として扱います。
+### Training Edge / 独自指数
+
+対象日のverified `独自指数_YYYYMMDD.csv` が見つかった場合は、`jrdb_newspaper_merge_external.py --my-index-csv` へ渡します。必須列は次です。
+
+```text
+date,venue_code,race_no,horse_no,training_edge_index
+```
+
+独自指数はcomplete all-horse sourceです。`date + venue_code + race_no + horse_no` の全馬exact joinを要求し、CSV extra row・Newspaper missing row・duplicate key・非数値/非finite値はfail-closedとします。`training_edge_index` の空欄行も有効なCSV行であり、`addons.my_index.training_edge_index: null` を明示してmergeします。空欄行を未取込扱いにしたり、`0` をnull扱いにしたりしません。
+
+Newspaperは値の再計算・補正・丸め・順位化・他指数との合成を行いません。source未発見日はoptional addonとして `NOT_FOUND`（運用上対象外なら `NOT_EXPECTED`）を記録し、Baseを停止させません。取り込んだ日はauditへ merged/value/null件数とper-race内訳、manifest/race statusへ `my_index: READY` を残します。
 
 RaceNoteは完成済みprediction outputのみをaddonとして利用し、RaceNote bundleやRaceNote内部実装をNewspaper Base/historyへ流用しません。
 
@@ -150,7 +160,7 @@ Eval       READY
 RaceNote   READY
 keibailuka NOT_FOUND
 EdgeDB     READY
-my_index   NOT_EXPECTED
+my_index   NOT_FOUND
 ```
 
 この状態でも日次JSONを生成・Drive保存・公開します。

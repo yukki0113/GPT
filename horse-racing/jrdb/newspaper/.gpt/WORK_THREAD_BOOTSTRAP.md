@@ -59,7 +59,7 @@ PACIを中心とするneutral JRDB layerからNewspaper Base / historyを生成�
 - RaceNote prediction output
 - EdgeDB matcher output
 
-独自指数は現在開発中のため、当面ファイルが存在しなくても正常です。その場合は `NOT_EXPECTED` としてください。
+対象日のverified `独自指数_YYYYMMDD.csv` があれば、`--my-index-csv` で取り込みます。独自指数は全馬exact sourceであり、空欄値の行も `addons.my_index.training_edge_index: null` として保持します。未着は `NOT_FOUND`、運用対象外だけ `NOT_EXPECTED` としてください。指数の再計算・補正・丸め・順位化、近似joinは行いません。
 
 RaceNoteは完成済みprediction outputだけをaddonとして取り込み、RaceNote bundleやRaceNote内部ロジックをNewspaper Base/historyへ依存させないでください。
 
@@ -159,7 +159,7 @@ Eval       READY
 RaceNote   READY
 keibailuka NOT_FOUND
 EdgeDB     READY
-my_index   NOT_EXPECTED
+my_index   NOT_FOUND
 ```
 
 であっても、その時点で作れる日次JSONを生成し、正式revisionとしてDrive保存・公開してください。
@@ -266,7 +266,7 @@ Eval: READY
 RaceNote: READY
 keibailuka: NOT_FOUND
 EdgeDB: READY
-independent index: NOT_EXPECTED
+independent index: NOT_FOUND
 
 36R / NNN頭
 schema/key/headcount/as-of監査: PASS

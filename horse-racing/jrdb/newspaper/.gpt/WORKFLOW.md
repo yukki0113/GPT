@@ -141,7 +141,7 @@ previous revision verified inputs
 - Eval完成OCR CSV: deterministic exact-key merge対象
 - keibailuka CSV/JSON: sparse source。exact matchのみmergeし、近似馬名を自動補正しない
 - RaceNote prediction output: `addons.racenote_prediction` とrace-level RaceNote noteのみを所有
-- independent index: `addons.my_index` を所有。未稼働中は `NOT_EXPECTED` を許容
+- independent index: `addons.my_index` を所有。`独自指数_YYYYMMDD.csv` がverifiedなら`--my-index-csv`で全馬exact mergeし、numeric/nullを透過格納する。未着は`NOT_FOUND`、運用対象外だけ`NOT_EXPECTED`を許容
 - Edge Registry matcher output: Edge側の照合結果のみをconsumer入力とし、Newspaper側でEdge条件を再判定しない
 - new Newspaper package: `special_memos` を現行Edge表示正本とする
 - legacy package: `edge_matches` は後方互換fallbackに限定する
