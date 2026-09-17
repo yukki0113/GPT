@@ -59,6 +59,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - Stats Mart: `src/build_jrdb_stats_mart.py` / `src/refresh_jrdb_stats_mart_year.py`。
 - PWA condition-summary Fact Lite: `src/build_jrdb_pwa_fact_lite.py`。
 - 開催後は **Analysis更新だけで完了扱いにしない**。更新済みAnalysisを正本保存・検証し、affected Stats Martを更新した後、同じ更新済みAnalysisからFact Liteを再生成・検証・配布し、条件別集計PWAを同一世代へ進める。
+- Analysis canonicalはyear-object ZSTD Parquet v1.3。`current.json`の切替前に全量監査、Drive再取得、compatibility SQLite materializationを必須とする。PWAはSQLite/sql.js/OPFSのまま。
 - JRDB認証取得、formal artifact chain、immutable publication証跡が必要な工程は `.gpt/WORKFLOW.md` のRoute D。既取得入力だけで完結する集計・監査はRoute Cを優先する。
 - 詳細は `docs/README_post_race_analysis_mart_refresh.md` とcurrent workflow/sourceを確認する。
 
