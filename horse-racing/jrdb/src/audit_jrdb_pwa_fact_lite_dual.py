@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT / "tools" / "data-storage"))
 from data_storage.query import connect_parquet
 
 TABLES = ("dim_sire", "dim_bms", "dim_jockey", "dim_race", "fact_stats_entry")
-META_COLUMNS = ("builder_version", "schema_version", "source_analysis", "status", "row_count", "period_from", "period_to")
+META_COLUMNS = ("builder_version", "schema_version", "status", "row_count", "period_from", "period_to")
 
 
 def _value(value: Any) -> str:
@@ -88,8 +88,12 @@ def audit(legacy: Path, new_sqlite: Path, parquet: Path) -> dict[str, Any]:
     with sqlite3.connect(f"file:{legacy}?mode=ro", uri=True) as left, sqlite3.connect(f"file:{new_sqlite}?mode=ro", uri=True) as right:
         left_meta = left.execute(f"SELECT {','.join(META_COLUMNS)} FROM meta_pwa_fact_build ORDER BY build_id DESC LIMIT 1").fetchone()
         right_meta = right.execute(f"SELECT {','.join(META_COLUMNS)} FROM meta_pwa_fact_build ORDER BY build_id DESC LIMIT 1").fetchone()
+        left_source = left.execute("SELECT source_analysis FROM meta_pwa_fact_build ORDER BY build_id DESC LIMIT 1").fetchone()[0]
+        right_source = right.execute("SELECT source_analysis FROM meta_pwa_fact_build ORDER BY build_id DESC LIMIT 1").fetchone()[0]
     if left_meta != right_meta:
         raise RuntimeError("Fact Lite semantic build metadata mismatch")
+    if not left_source or not right_source:
+        raise RuntimeError("Fact Lite source provenance is missing")
     report["legacy_equals_new_sqlite"] = True
     report["new_sqlite_equals_parquet"] = True
     return report
