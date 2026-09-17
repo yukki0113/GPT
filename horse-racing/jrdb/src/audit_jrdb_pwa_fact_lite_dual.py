@@ -46,7 +46,7 @@ def _digest(cursor: Any, columns: list[str]) -> tuple[int, str]:
 
 
 def _sqlite_table(path: Path, table: str, columns: list[str]) -> tuple[int, str]:
-    order = ",".join(f'"{item}"' for item in columns)
+    order = ",".join(f'"{item}" NULLS FIRST' for item in columns)
     selected = ",".join(f'"{item}"' for item in columns)
     with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
         actual = [row[1] for row in db.execute(f'PRAGMA table_info("{table}")')]
@@ -61,7 +61,7 @@ def _parquet_table(directory: Path, table: str, columns: list[str]) -> tuple[int
         actual = [row[0] for row in connection.execute("DESCRIBE data").fetchall()]
         if actual != columns:
             raise RuntimeError(f"Parquet schema mismatch: {table}")
-        order = ",".join(f'"{item}"' for item in columns)
+        order = ",".join(f'"{item}" NULLS FIRST' for item in columns)
         selected = ",".join(f'"{item}"' for item in columns)
         return _digest(connection.execute(f"SELECT {selected} FROM data ORDER BY {order}"), columns)
     finally:
