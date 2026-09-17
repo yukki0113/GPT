@@ -161,7 +161,7 @@ Analysisだけ最新化し、条件別集計PWAを旧Analysis世代に残さな�
 
 Storage boundary (v1.3 / v0.3 logical schemas are unchanged):
 
-- Analysis Parquet is the analytical canonical after dual-format cutover; its year objects, metadata and manifest are immutable.
+- Analysis Parquet is the analytical canonical; its year objects, metadata and manifest are immutable. `current.json` advances only after a PASS candidate and retains one rollback generation.
 - Analysis SQLite is a compatibility materialization, never an independently updated second canonical.
 - Fact Lite SQLite remains the current PWA/sql.js/OPFS delivery artifact.
 - Fact Lite Parquet is a parallel DuckDB-built shadow candidate only.
@@ -369,4 +369,3 @@ artifact回収後、Chat側で次をPure Deterministic Executionとして行う�
   is the required Legacy SQLite == New SQLite == Parquet gate.
 - Do not change `jrdb-pwa-fact-lite-current`, Pages, sql.js, or OPFS until an
   explicit real-data audit and publication cutover has passed.
-
