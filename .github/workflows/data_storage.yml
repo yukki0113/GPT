@@ -7,10 +7,13 @@ on:
       - "tools/data-storage/**"
       - "horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py"
       - "horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py"
+      - "horse-racing/jrdb/src/rollback_jrdb_analysis_parquet_current.py"
+      - "horse-racing/jrdb/src/publish_jrdb_fact_lite_parquet.py"
       - "horse-racing/jrdb/src/build_jrdb_pwa_fact_lite_dual.py"
       - "horse-racing/jrdb/src/audit_jrdb_pwa_fact_lite_dual.py"
       - "horse-racing/jrdb/tests/test_jrdb_analysis_parquet.py"
       - ".github/workflows/data_storage.yml"
+      - ".github/workflows/jrdb_analysis_parquet_canonical_issue.yml"
   workflow_dispatch:
     inputs:
       config_path:
@@ -92,4 +95,3 @@ jobs:
             data-storage-benchmark.json
             **/*.audit.json
             **/*.parquet
-
