@@ -150,6 +150,20 @@ def _assert_holdout_locked(path: Path) -> dict[str, Any]:
     return {"pass": True, "columns": columns, "min_year": years[0], "max_year": years[1], "row_count": years[2]}
 
 
+def _parquet_period(path: Path, column: str) -> dict[str, str | None]:
+    """Return the actual min/max period represented by one Parquet asset."""
+    from data_storage.query import connect_parquet
+    db = connect_parquet(path)
+    try:
+        lower, upper = db.execute(f'SELECT MIN("{column}"), MAX("{column}") FROM data').fetchone()
+    finally:
+        db.close()
+    return {
+        "period_from": None if lower is None else str(lower),
+        "period_to": None if upper is None else str(upper),
+    }
+
+
 def _compare_values(left: Any, right: Any, path: str = "root") -> list[str]:
     if isinstance(left, float) or isinstance(right, float):
         if left is None or right is None or abs(float(left) - float(right)) > 1e-12:
@@ -203,6 +217,12 @@ def migrate(source: Path, output_root: Path, build_id: str, delete_source: bool 
         if differences:
             raise RuntimeError(f"scientific regression failed: {differences[:5]}")
         assets: dict[str, dict[str, Any]] = {}
+        period_columns = {
+            "training_runner.parquet": "race_date",
+            "training_development.parquet": "race_date",
+            "training_holdout_locked.parquet": "race_date",
+            "source_archive.parquet": "source_year",
+        }
         for filename, result in {
             "training_runner.parquet": runner, "training_development.parquet": development,
             "training_holdout_locked.parquet": holdout, "source_archive.parquet": archive,
@@ -211,10 +231,13 @@ def migrate(source: Path, output_root: Path, build_id: str, delete_source: bool 
             validation = result["validation"]
             assets[filename] = {"filename": filename, "size_bytes": path.stat().st_size, "sha256": _sha256(path),
                                 "row_count": validation["row_count_target"], "schema_hash": validation["schema_hash"],
-                                "period_from": None, "period_to": None}
+                                **_parquet_period(path, period_columns[filename])}
+        source_build = dict(metadata["build"])
+        source_build_id = source_build.pop("build_id", None)
         manifest = {"artifact_type": "jrdb_training_research", "schema_version": "v0.1", "storage_format": "parquet",
-                    "storage_version": VERSION, "canonical_key": CANONICAL_KEY, "build_id": build_id,
-                    **metadata["build"], "source_sqlite": before, "assets": assets,
+                    "storage_version": VERSION, "canonical_key": CANONICAL_KEY,
+                    "generation_id": build_id, "source_build_id": source_build_id,
+                    **source_build, "source_sqlite": before, "assets": assets,
                     "logical_uris": {"jrdb://training-research/v0.1": "training_runner.parquet",
                                      "jrdb://training-research/v0.1/development": "training_development.parquet",
                                      "jrdb://training-research/v0.1/holdout-locked": "training_holdout_locked.parquet"}}
@@ -225,7 +248,7 @@ def migrate(source: Path, output_root: Path, build_id: str, delete_source: bool 
         (destination / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (destination / "conversion_audit.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (destination / "scientific_regression.json").write_text(json.dumps(scientific, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        (output_root.resolve() / "current.json").write_text(json.dumps({"status": "SUCCESS", "build_id": build_id, "manifest": f"build-{build_id}/manifest.json"}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (output_root.resolve() / "current.json").write_text(json.dumps({"status": "SUCCESS", "build_id": build_id, "generation_id": build_id, "manifest": f"build-{build_id}/manifest.json"}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         if delete_source:
             source.unlink()
             audit["source_deletion"] = {"performed": True, **before}
