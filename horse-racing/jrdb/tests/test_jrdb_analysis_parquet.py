@@ -62,4 +62,15 @@ class AnalysisParquetTest(unittest.TestCase):
    new=root/"new.sqlite"; pq=root/"fact-parquet"; build_dual(glob,new,pq,ROOT/"schema/jrdb_pwa_fact_lite_schema_v0_3.sql")
    self.assertTrue(audit_fact_lite(legacy,new,pq)["legacy_equals_new_sqlite"])
 
+ def test_fact_lite_preserves_blank_race_name_lookup(self):
+  with tempfile.TemporaryDirectory() as d:
+   root=Path(d); src=root/"analysis.sqlite"; schema=ROOT/"schema/jrdb_analysis_schema_v1_3.sql"; c=sqlite3.connect(src);c.executescript(schema.read_text())
+   c.execute("INSERT INTO meta_analysis_build(builder_version,schema_version,status,row_count) VALUES('x','v1.3','SUCCESS',1)");c.execute("INSERT INTO meta_analysis_ingest_batch(target_date,builder_version,schema_version,started_at,status,row_count) VALUES('2025-01-01','x','v1.3','now','SUCCESS',1)")
+   c.execute("INSERT INTO fact_entry_result_lite(race_date,year,venue_code,race_no,track_type,distance,race_key,horse_no,horse_id,horse_name) VALUES('2025-01-01',2025,'05',1,'1',1600,'05250101',1,'H','Horse')");c.commit();c.close()
+   names=root/"race_names.sqlite"; lookup=sqlite3.connect(names);lookup.execute("CREATE TABLE race_name_lookup(race_key TEXT, race_name TEXT)");lookup.execute("INSERT INTO race_name_lookup VALUES('05250101','')");lookup.commit();lookup.close()
+   legacy=root/"legacy.sqlite"; subprocess.run([sys.executable,str(ROOT/"src"/"build_jrdb_pwa_fact_lite.py"),"--analysis",str(src),"--race-names",str(names),"--db",str(legacy)],check=True)
+   migrate(src,root/"store","g1"); glob=root/"store"/"objects"/"fact_entry_result_lite"/"**"/"*.parquet"
+   new=root/"new.sqlite"; pq=root/"fact-parquet"; build_dual(glob,new,pq,ROOT/"schema/jrdb_pwa_fact_lite_schema_v0_3.sql",names)
+   self.assertTrue(audit_fact_lite(legacy,new,pq)["legacy_equals_new_sqlite"])
+
 if __name__=="__main__":unittest.main()
