@@ -12,6 +12,7 @@ on:
   workflow_run:
     workflows:
       - "JRDB Newspaper Current Publish"
+      - "JRDB PWA Fact Lite Publish"
     types:
       - completed
     branches:
