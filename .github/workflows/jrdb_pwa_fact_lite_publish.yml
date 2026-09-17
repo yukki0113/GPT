@@ -61,6 +61,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [ -n "${ANALYSIS_PARQUET_BUNDLE_FILE_ID:-}" ]; then
+            python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+          fi
           curl --fail --location --retry 3 --retry-delay 2 \
             "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
             --output ".fact_publish/${SOURCE_FILENAME}"
@@ -191,7 +194,6 @@ jobs:
           set -euo pipefail
           FACT_FILE=".fact_publish/jrdb_pwa_fact_lite.sqlite"
           if [ -n "${ANALYSIS_PARQUET_GLOB:-}" ]; then
-            python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
             python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
               --analysis .fact_publish/analysis.sqlite \
               --race-names .fact_publish/race_names.sqlite \
