@@ -41,11 +41,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p stage parquet audit
+          mapfile -t files < <(find input -type f -name '2016*_race.zip' -print | sort)
+          printf '2016 input files (%s):\n' "${#files[@]}"
+          printf '%s\n' "${files[@]}"
+          test "${#files[@]}" -eq 12
           args=()
-          for f in input/raw/2016*_race.zip; do
+          for f in "${files[@]}"; do
             args+=(--input "$f")
           done
-          test "${#args[@]}" -eq 12
           python -m nar.canonical.build \
             "${args[@]}" \
             --staging-dir stage \
