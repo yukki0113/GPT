@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v44";
+const CACHE_NAME = "jrdb-pwa-shell-v45";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -15,6 +15,7 @@ const APP_SHELL = [
   "./fact-lite.js?v=17",
   "./fact-lite-v3.js?v=1",
   "./fact-lite-sort.js?v=18",
+  "./fact-lite-duckdb.js?v=1",
   "./newspaper.js?v=2",
   "./newspaper-v2.js?v=3",
   "./newspaper-day.js?v=3",
@@ -27,7 +28,10 @@ const APP_SHELL = [
   "./newspaper-v10.js?v=2",
   "./manifest.webmanifest",
   "./vendor/sql-wasm.js",
-  "./vendor/sql-wasm.wasm"
+  "./vendor/sql-wasm.wasm",
+  "./vendor/duckdb/duckdb-browser.mjs",
+  "./vendor/duckdb/duckdb-browser-mvp.worker.js",
+  "./vendor/duckdb/duckdb-mvp.wasm"
 ];
 
 self.addEventListener("install", function (event) {

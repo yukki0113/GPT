@@ -451,7 +451,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf .pages
-          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite
+          mkdir -p .pages/vendor/duckdb .pages/data .pages/data/fact-lite
           cp -a horse-racing/jrdb/pwa/. .pages/
 
           curl --fail --location --retry 3 \
@@ -460,6 +460,18 @@ jobs:
           curl --fail --location --retry 3 \
             https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm \
             --output .pages/vendor/sql-wasm.wasm
+
+          # Fact Lite's future Parquet consumer is single-thread DuckDB-Wasm.
+          # Keep these static assets local to Pages; no browser CDN dependency.
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.32.0/dist/duckdb-browser.mjs \
+            --output .pages/vendor/duckdb/duckdb-browser.mjs
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.32.0/dist/duckdb-browser-mvp.worker.js \
+            --output .pages/vendor/duckdb/duckdb-browser-mvp.worker.js
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.32.0/dist/duckdb-mvp.wasm \
+            --output .pages/vendor/duckdb/duckdb-mvp.wasm
 
           if gh release view "$MART_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release download "$MART_RELEASE_TAG" \

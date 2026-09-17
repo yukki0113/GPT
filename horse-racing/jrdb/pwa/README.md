@@ -41,6 +41,7 @@
 - `fact-lite.js` — Fact Lite同期・query・表示の基礎
 - `fact-lite-v3.js` — Fact Lite v0.3互換層 / WIN5 filter
 - `fact-lite-sort.js` — 集計結果sort
+- `fact-lite-duckdb.js` — Parquet manifestを検証し、single-thread DuckDB-Wasmへ6 relationを登録する移行基盤。現段階ではSQLite consumerを切り替えない
 - `../src/build_jrdb_pwa_fact_lite.py` — Analysis -> Fact Lite builder
 - `../schema/jrdb_pwa_fact_lite_schema_v0_3.sql` — current schema
 - `../docs/README_build_jrdb_pwa_fact_lite.md` — build / validation contract
@@ -172,6 +173,8 @@ remote manifest
 ```
 
 検証失敗時はcurrentを維持します。Service Workerはstatic app shellをcacheしますが、`/data/` はcacheしません。オフラインのSQLite利用はOPFSを使用します。
+
+Parquet / DuckDB-Wasm移行基盤は、Pages同一originの `current.json → manifest → manifest.tables` だけを解決します。DuckDB-Wasm 1.32.0はsingle-threadのMVP bundleをPages artifactへ同梱し、固定6 relationを作成します。現段階では既存SQLite consumer・OPFS構成を維持し、generation単位OPFS cacheと集計query adapterの導入後に切り替えます。
 
 ## Deployment completion
 
