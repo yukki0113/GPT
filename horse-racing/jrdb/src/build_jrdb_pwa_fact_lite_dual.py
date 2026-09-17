@@ -49,9 +49,16 @@ def build(analysis_glob:Path,sqlite_out:Path,parquet_dir:Path,schema:Path,race_n
  c.execute("CREATE TABLE race_lookup(race_key VARCHAR, race_name VARCHAR)")
  if lookup:c.executemany("INSERT INTO race_lookup VALUES (?,?)",lookup)
  if "race_name" in columns:
-  c.execute("CREATE TABLE dim_race AS SELECT row_number() over(order by s.race_key)::INTEGER id,s.race_key,coalesce(max(nullif(trim(s.race_name),'')),max(l.race_name)) race_name FROM source s LEFT JOIN race_lookup l USING(race_key) GROUP BY s.race_key")
+  c.execute("""CREATE TABLE dim_race AS
+   WITH source_race AS (
+    SELECT race_key, max(nullif(trim(race_name),'')) AS race_name
+    FROM source GROUP BY race_key
+   )
+   SELECT row_number() over(order by s.race_key)::INTEGER AS id,
+          s.race_key, coalesce(s.race_name,l.race_name) AS race_name
+   FROM source_race s LEFT JOIN race_lookup l USING(race_key)""")
  else:
-  c.execute("CREATE TABLE dim_race AS SELECT row_number() over(order by s.race_key)::INTEGER id,s.race_key,max(l.race_name) race_name FROM (SELECT DISTINCT race_key FROM source) s LEFT JOIN race_lookup l USING(race_key) GROUP BY s.race_key")
+  c.execute("CREATE TABLE dim_race AS SELECT row_number() over(order by s.race_key)::INTEGER id,s.race_key,l.race_name FROM (SELECT DISTINCT race_key FROM source) s LEFT JOIN race_lookup l USING(race_key)")
  c.execute("""CREATE TABLE fact_stats_entry AS
  SELECT cast(replace(s.race_date,'-','') as INTEGER) AS race_date_int,s.year,cast(substr(s.race_date,6,2) as INTEGER) AS month,cast(s.venue_code as INTEGER) AS venue_code,s.race_no,r.id AS race_id,cast(s.track_type as INTEGER) AS track_type,s.distance,s.race_condition_code,nullif(s.track_condition_code,'')::INTEGER AS track_condition_code,coalesce(nullif(s.grade_code,''),'0')::INTEGER AS grade_code,s.frame_no,nullif(s.sex_code,'')::INTEGER AS sex_code,s.age,si.id AS sire_id,b.id AS bms_id,nullif(s.sire_line_code,'')::INTEGER AS sire_line_code,nullif(s.broodmare_sire_line_code,'')::INTEGER AS bms_line_code,j.id AS jockey_id,nullif(s.running_style,'')::INTEGER AS running_style,nullif(s.distance_aptitude,'')::INTEGER AS distance_aptitude,nullif(s.uptrend,'')::INTEGER AS uptrend,cast(s.training_index as INTEGER) AS training_index,s.final_win_popularity,s.finish,s.win_payout,s.place_payout,case when p.distance is null or s.distance is null then null else s.distance-p.distance end AS prev_distance_delta,
  case when p.race_key is null then null when trim(coalesce(p.grade_code,''))='1' then 11 when trim(coalesce(p.grade_code,''))='2' then 10 when trim(coalesce(p.grade_code,''))='3' then 9 when trim(coalesce(p.grade_code,''))='4' then 12 when trim(coalesce(p.grade_code,''))='6' then 8 when trim(coalesce(p.race_condition_code,''))='A1' then 1 when trim(coalesce(p.race_condition_code,''))='A2' then 2 when trim(coalesce(p.race_condition_code,''))='A3' then 3 when trim(coalesce(p.race_condition_code,'')) in ('04','05') then 4 when trim(coalesce(p.race_condition_code,'')) in ('08','09','10') then 5 when trim(coalesce(p.race_condition_code,'')) in ('15','16') then 6 when trim(coalesce(p.race_condition_code,''))='OP' then 7 else 13 end AS prev_class_code,s.win5_leg_no
