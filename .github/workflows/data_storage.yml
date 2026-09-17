@@ -40,7 +40,9 @@ jobs:
       - name: Tests
         env:
           PYTHONPATH: tools/data-storage
-        run: python -m pytest tools/data-storage/tests -q
+        run: |
+          python -m pytest tools/data-storage/tests -q
+          python -m unittest horse-racing/jrdb/tests/test_jrdb_analysis_parquet.py
 
       - name: Validate config path
         if: inputs.config_path != ''
