@@ -2,7 +2,7 @@ name: One-off stale issue reclassification 20260917
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 permissions:
   contents: read
