@@ -38,6 +38,9 @@ def write_json(path: str | Path, value: Any) -> None:
 
 
 def parquet_glob(path: str | Path) -> str:
-    target = Path(path).resolve()
+    raw = str(path)
+    if any(token in raw for token in ("*", "?", "[")):
+        return raw
+    target = Path(raw).resolve()
     return str(target) if target.is_file() else str(target / "**" / "*.parquet")
 
