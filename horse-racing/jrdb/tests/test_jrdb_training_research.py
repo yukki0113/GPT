@@ -98,6 +98,19 @@ class TrainingResearchTest(unittest.TestCase):
             self.assertEqual((locked["min_year"],locked["max_year"]),(2024,2025))
             self.assertNotIn("official_runperf_raw",locked["columns"])
 
+            manifest=result["manifest"]
+            self.assertEqual(manifest["generation_id"],"test-build")
+            self.assertEqual(manifest["source_build_id"],1)
+            self.assertNotIn("build_id",manifest)
+            self.assertEqual(manifest["assets"]["training_runner.parquet"]["period_from"],"2010-01-01")
+            self.assertEqual(manifest["assets"]["training_runner.parquet"]["period_to"],"2025-01-01")
+            self.assertEqual(manifest["assets"]["training_development.parquet"]["period_from"],"2010-01-01")
+            self.assertEqual(manifest["assets"]["training_development.parquet"]["period_to"],"2023-01-01")
+            self.assertEqual(manifest["assets"]["training_holdout_locked.parquet"]["period_from"],"2024-01-01")
+            self.assertEqual(manifest["assets"]["training_holdout_locked.parquet"]["period_to"],"2025-01-01")
+            self.assertEqual(manifest["assets"]["source_archive.parquet"]["period_from"],"2010")
+            self.assertEqual(manifest["assets"]["source_archive.parquet"]["period_to"],"2025")
+
 
 if __name__=="__main__":
     unittest.main()
