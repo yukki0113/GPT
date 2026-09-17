@@ -1,6 +1,16 @@
 name: Common data storage
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/data-storage/**"
+      - "horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py"
+      - "horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py"
+      - "horse-racing/jrdb/src/build_jrdb_pwa_fact_lite_dual.py"
+      - "horse-racing/jrdb/src/audit_jrdb_pwa_fact_lite_dual.py"
+      - "horse-racing/jrdb/tests/test_jrdb_analysis_parquet.py"
+      - ".github/workflows/data_storage.yml"
   workflow_dispatch:
     inputs:
       config_path:
