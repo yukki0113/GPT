@@ -58,6 +58,24 @@ class FactLiteParquetPackageTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "(size|SHA-256)"):
                 PACKAGE.verify_package(package_root)
 
+    def test_package_accepts_full_equivalence_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            parquet_dir, audit = self._make_inputs(root)
+            compact = json.loads(audit.read_text(encoding="utf-8"))
+            full = {
+                "status": "PASS",
+                "tables": {
+                    table: {"rows": rows}
+                    for table, rows in compact["table_rows"].items()
+                },
+                "legacy_equals_new_sqlite": True,
+                "new_sqlite_equals_parquet": True,
+            }
+            audit.write_text(json.dumps(full), encoding="utf-8")
+            result = PACKAGE.package_generation(parquet_dir, audit, "20260913", root / "package")
+            self.assertEqual(result["asset_count"], 6)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -89,6 +89,14 @@ def package_generation(
         raise RuntimeError("Fact Lite equivalence audit is not PASS")
     audit_rows = audit.get("table_rows")
     if not isinstance(audit_rows, dict):
+        tables = audit.get("tables")
+        if isinstance(tables, dict):
+            audit_rows = {
+                table: entry.get("rows")
+                for table, entry in tables.items()
+                if isinstance(entry, dict) and "rows" in entry
+            }
+    if not isinstance(audit_rows, dict):
         raise RuntimeError("equivalence audit table_rows is required")
 
     generation_id = f"fact-lite-v0_3-{data_version}"
