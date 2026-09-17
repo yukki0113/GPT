@@ -108,6 +108,9 @@ Canonical SQLiteはRawを置換する正本ではなく、反復・横断アク�
 - `src/build_jrdb_stats_mart.py` — Analysis -> Stats Mart
 - `src/refresh_jrdb_stats_mart_year.py` — 対象年partition更新
 - `src/build_jrdb_pwa_fact_lite.py` — 条件別集計PWA用Fact Lite
+- `src/migrate_jrdb_analysis_parquet.py` — immutable year-object Analysis Parquet shadow migration
+- `src/materialize_jrdb_analysis_sqlite.py` — compatibility SQLite from an Analysis Parquet manifest
+- `src/build_jrdb_pwa_fact_lite_dual.py` — one DuckDB logical Fact Lite relation to SQLite + Parquet
 
 開催後の標準フローは、結果を使ってAnalysisを差分更新し、その更新済みAnalysisを正本保存・検証した後、Stats MartとFact Liteを再生成・検証・配布してconsumerを同一世代へ進めます。Analysisだけ更新してPWAを旧世代に残さないことを運用原則とします。
 
