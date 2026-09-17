@@ -1,6 +1,6 @@
 # JRDB thread handoff
 
-Last reviewed: 2026-09-13
+Last reviewed: 2026-09-17
 
 この文書は、会話量上限・スレッド分割・担当変更後に **現在のJRDBプロジェクトを短時間で安全に再開するためのbootstrap** です。
 
@@ -158,6 +158,14 @@ completed race results
 ```
 
 Analysisだけ最新化し、条件別集計PWAを旧Analysis世代に残さないことを標準とします。
+
+Storage boundary (v1.3 / v0.3 logical schemas are unchanged):
+
+- Analysis Parquet is the analytical canonical after dual-format cutover; its year objects, metadata and manifest are immutable.
+- Analysis SQLite is a compatibility materialization, never an independently updated second canonical.
+- Fact Lite SQLite remains the current PWA/sql.js/OPFS delivery artifact.
+- Fact Lite Parquet is a parallel DuckDB-built shadow candidate only.
+- DuckDB-Wasm and direct browser Parquet reads remain future scope.
 
 認証済みJRDB取得・正式artifact chain・publication証跡が必要な部分は `.gpt/WORKFLOW.md` の Route D を使います。既取得入力だけで完結する検証・集計はRoute Cを優先します。
 
