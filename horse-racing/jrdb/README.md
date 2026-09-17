@@ -280,3 +280,12 @@ latest main source
 RaceNote旧予想系は `docs/racenote/legacy/README.md` で論理分離します。既存import / workflow / historical reproducibilityを壊さないため、現時点では物理移動しません。
 
 旧JRA-VAN版は `horse-racing/legacy/` の凍結資産で、現行JRDB実装とは分離します。
+## Storage transition status (2026-09-17)
+
+Analysis v1.3 has a fail-closed SQLite-to-Parquet **shadow** migration path.
+During the shadow and audit gates, SQLite remains the operational source and
+the PWA remains unchanged.  The target architecture is Analysis Parquet as the
+canonical analytical store, an Analysis SQLite compatibility materialization,
+and Fact Lite v0.3 SQLite plus Parquet from one DuckDB logical relation.
+Neither browser Parquet nor DuckDB-Wasm is in scope for this transition.
+
