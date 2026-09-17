@@ -1,0 +1,224 @@
+name: Local horse racing 2017-2025 canonical validation
+
+on:
+  push:
+    paths:
+      - '.github/workflows/local_horse_racing_2017_2025_canonical_validation.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/data-storage/requirements.txt
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+          python -m pip install --disable-pip-version-check pytest
+
+      - name: Run project and shared regression tests
+        env:
+          PYTHONPATH: local-horse-racing:tools/data-storage
+        run: |
+          python -m unittest discover -s local-horse-racing/tests -v
+          python -m pytest tools/data-storage/tests -q
+
+  validate:
+    name: validate-${{ matrix.year }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        year: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/data-storage/requirements.txt
+
+      - name: Install shared storage dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+
+      - name: Download historical NAR backfill artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nar-race-2016-01-2025-12-nar-race-201601-202512-20260911
+          github-token: ${{ github.token }}
+          repository: yukki0113/GPT
+          run-id: 34512016674
+          path: input
+
+      - name: Build canonical Parquet for ${{ matrix.year }}
+        env:
+          PYTHONPATH: local-horse-racing:tools/data-storage
+          YEAR: ${{ matrix.year }}
+        run: |
+          set -euo pipefail
+          mkdir -p stage parquet audit
+          mapfile -t files < <(find input -type f -name "${YEAR}*_race.zip" -print | sort)
+          printf '%s input files (%s):\n' "$YEAR" "${#files[@]}"
+          printf '%s\n' "${files[@]}"
+          test "${#files[@]}" -eq 12
+          args=()
+          for f in "${files[@]}"; do
+            args+=(--input "$f")
+          done
+          python -m nar.canonical.build \
+            "${args[@]}" \
+            --staging-dir stage \
+            --parquet-dir parquet \
+            --audit-dir audit \
+            --validate-asof \
+            > build_output.json
+
+      - name: Validate real-data canonical output for ${{ matrix.year }}
+        env:
+          PYTHONPATH: local-horse-racing:tools/data-storage
+          YEAR: ${{ matrix.year }}
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+
+          import duckdb
+
+          year = int(os.environ['YEAR'])
+          summary = json.loads(Path('stage/control/build_summary.json').read_text(encoding='utf-8'))
+          assert summary['status'] == 'success', summary
+          assert summary['monthly_zip_count'] == 12, summary['monthly_zip_count']
+
+          expected_tables = {
+              'pre_race', 'pre_runner', 'pre_runner_history_snapshot',
+              'post_race_result', 'post_runner_result', 'post_payout',
+              'control_race_status'
+          }
+          assert set(summary['row_counts']) == expected_tables
+          for name in expected_tables:
+              assert summary['row_counts'][name] > 0, (name, summary['row_counts'][name])
+
+          banned_pre_runner = {'finish_position', 'finish_time_seconds', 'final_3f_seconds', 'popularity'}
+          with Path('stage/pre_runner.csv').open(encoding='utf-8-sig', newline='') as fh:
+              header = next(csv.reader(fh))
+          assert not (banned_pre_runner & set(header)), banned_pre_runner & set(header)
+
+          report = summary['leakage_validation']
+          assert report and report.get('status') == 'evidence_only', report
+          for field in (
+              'overall_record_raw', 'jockey_record_raw', 'venue_record_raw',
+              'venue_distance_record_raw', 'best_time_seconds', 'best_time_good_seconds'
+          ):
+              item = report['fields'][field]
+              checked = item.get('matched_pairs', 0) + item.get('mismatched_pairs', 0)
+              assert checked > 0, (field, item)
+
+          con = duckdb.connect()
+          table_paths = {
+              'pre_race': 'parquet/pre/race/**/*.parquet',
+              'pre_runner': 'parquet/pre/runner/**/*.parquet',
+              'pre_runner_history_snapshot': 'parquet/pre/runner_history_snapshot/**/*.parquet',
+              'post_race_result': 'parquet/post/race_result/**/*.parquet',
+              'post_runner_result': 'parquet/post/runner_result/**/*.parquet',
+              'post_payout': 'parquet/post/payout/**/*.parquet',
+              'control_race_status': 'parquet/control/race_status/**/*.parquet',
+          }
+          parquet_counts = {}
+          for name, path in table_paths.items():
+              count = con.execute(
+                  "select count(*) from read_parquet(?, hive_partitioning=true)", [path]
+              ).fetchone()[0]
+              parquet_counts[name] = count
+              assert count == summary['row_counts'][name], (name, count, summary['row_counts'][name])
+
+          status_rows = con.execute(
+              "select status, count(*) from read_parquet('parquet/control/race_status/**/*.parquet', hive_partitioning=true) group by status order by status"
+          ).fetchall()
+          leakage_rows = con.execute(
+              "select leakage_status, count(*) from read_parquet('parquet/pre/runner_history_snapshot/**/*.parquet', hive_partitioning=true) group by leakage_status order by leakage_status"
+          ).fetchall()
+          assert leakage_rows == [('PENDING_VALIDATION', summary['row_counts']['pre_runner_history_snapshot'])], leakage_rows
+
+          output = {
+              'status': 'success',
+              'source_year': year,
+              'monthly_zip_count': summary['monthly_zip_count'],
+              'row_counts': summary['row_counts'],
+              'parquet_row_counts': parquet_counts,
+              'race_status_counts': dict(status_rows),
+              'historical_reconciliation': summary.get('historical_reconciliation'),
+              'leakage_validation': report,
+          }
+          Path('validation_report.json').write_text(
+              json.dumps(output, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          print(json.dumps(output, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload ${{ matrix.year }} validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-horse-racing-${{ matrix.year }}-canonical-validation
+          path: |
+            parquet/
+            audit/
+            stage/control/
+            validation_report.json
+            build_output.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  notify:
+    if: always()
+    needs: [regression, validate]
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Post aggregate result to tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: '1045'
+          REGRESSION_RESULT: ${{ needs.regression.result }}
+          VALIDATION_RESULT: ${{ needs.validate.result }}
+        run: |
+          set -euo pipefail
+          run_url="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          if [[ "$REGRESSION_RESULT" == "success" && "$VALIDATION_RESULT" == "success" ]]; then
+            overall="SUCCESS"
+          else
+            overall="ATTENTION REQUIRED"
+          fi
+          body=$(cat <<EOF
+          2017-2025 canonical validation finished.
+
+          - Overall: **${overall}**
+          - Regression tests: **${REGRESSION_RESULT}**
+          - Year matrix aggregate: **${VALIDATION_RESULT}**
+          - Workflow run: ${run_url}
+
+          Year-specific artifacts are attached to the workflow run. Please return to the ChatGPT project thread for the final audit before treating the 2017-2025 backfill as formally accepted.
+          EOF
+          )
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$body"
