@@ -14,9 +14,9 @@ Analysis Lite
 
 ## Dual-format transition boundary
 
-The current PWA delivery artifact remains Fact Lite SQLite v0.3.  A parallel
-builder exists for migration audit: Analysis Parquet -> DuckDB logical
-relations -> Fact Lite SQLite and Fact Lite Parquet.  Its Parquet output is
+The current PWA delivery artifact remains Fact Lite SQLite v0.3. The production
+builder input is the validated Analysis Parquet generation: DuckDB logical
+relations -> Fact Lite SQLite and Fact Lite Parquet. Its Parquet output is
 not included in the browser manifest.  Before any publish workflow switches
 to the new SQLite output, run the full three-way audit with
 `audit_jrdb_pwa_fact_lite_dual.py`; a failed audit must retain the current
@@ -133,4 +133,3 @@ Builder は source / output row count equality、必須table/column、`win5_leg_
 ## Data policy
 
 大容量Fact Lite SQLiteはGit管理しません。Gitにはschema / builder / workflow / docsだけを置き、生成物はRelease / Pages配布キャッシュとして扱います。
-
