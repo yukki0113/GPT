@@ -9,8 +9,9 @@
 3. 本ディレクトリの `README.md`
 4. 本ディレクトリの `.gpt/CONTEXT.md`
 5. 本ディレクトリの `.gpt/WORKFLOW.md`
-6. 対象source / test / docs / workflow
-7. Parquet / DuckDB処理を扱う場合はリポジトリ共通 `tools/data-storage/README.md`
+6. `docs/CANONICAL_DATA_SPEC.md`
+7. 対象source / test / docs / workflow
+8. Parquet / DuckDB処理を扱う場合はリポジトリ共通 `tools/data-storage/README.md`
 
 `.gpt/ISSUE_REQUEST_CONTRACTS.md` は Actions-native 実行（下記D）を選ぶ場合に確認する。
 
@@ -46,12 +47,14 @@ GitHub正本moduleと必要入力をGPT側で取得でき、secret・特殊runne
 対象例:
 
 - NAR ZIP / CSVのschema・row-count・SHA・integrity確認
+- canonical parser / splitterの実行
+- field catalog / race status / as-of evidence生成
 - 固定入力に対するCSV / JSON整形・join・集計
 - Parquet変換・validation・DuckDB query・benchmark（`tools/data-storage/` を利用）
 - focused unit test / regression
 - 既存成果物の比較・監査
 
-Parquet / DuckDB処理は、原則として共通 `tools/data-storage/` のmodule / CLIを利用し、local-horse-racing側で同等実装をコピーしない。Project固有のcolumns / keys / partitions / validation rulesだけをProject側へ定義する。
+Parquet / DuckDB処理は、原則として共通 `tools/data-storage/` のmodule / CLIを利用し、local-horse-racing側で同等実装をコピーしない。Project固有のcolumns / keys / partitions / as-of rulesだけをProject側へ定義する。
 
 正本moduleと同等の処理を独自再実装して置き換えず、可能なら source commit / input SHA / output SHA / module version等を残す。
 
@@ -71,7 +74,7 @@ Dを選ぶ場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` に従ってIssue発行前
 - 先行変更を保持したまま、自スレッドの未反映差分だけを最新内容上へ再構築する。
 - 古い全文の機械的再送で他スレッドの変更を上書きしない。
 
-## Phase 0 standard flow
+## Phase 0 raw standard flow
 
 1. 対象年月と `race` / `odds` を指定する。
 2. `python -m nar.download.monthly` でNAR公式月次ZIPを取得する。
@@ -81,7 +84,22 @@ Dを選ぶ場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` に従ってIssue発行前
 6. auditを保存する場合は `/GPT/local-horse-racing/20_audit/` を使用する。
 7. rawを変更する必要が生じた場合は上書きせず、原因を調査する。
 
-## Current command
+## Phase 1 canonical standard flow
+
+1. raw race ZIPを読み、公式headerを再検証する。
+2. `nar.canonical.field_catalog` に従い `PRE_SAFE` / `PRE_ASOF_PENDING` / `POST_ONLY` を分離する。
+3. `nar.canonical.parser` で `pre_race` / `pre_runner` / `pre_runner_history_snapshot` / `post_race_result` / `post_runner_result` / `post_payout` / `control_race_status` を生成する。
+4. history snapshotは常に `PENDING_VALIDATION` で開始し、モデル特徴量へ自動露出しない。
+5. `nar.canonical.leakage.validate_history_asof` で累積成績・最高タイムの前走→次走更新整合を検証する。
+6. staging CSVからParquetへ変換する場合は `nar.canonical.storage` 経由で `tools/data-storage/data_storage.runner.run_config` を利用する。
+7. ParquetはZSTD、`race_year` Hive partition、canonical key unique / row count / schema / NULL validationを基本とする。
+8. canonicalとauditはDriveへ保存する。staging CSVは再生成可能な一時物であり長期正本にしない。
+9. 広期間as-of監査が完了するまで `PRE_ASOF_PENDING` を `VERIFIED_ASOF` 相当へ昇格しない。
+10. バックテスト・モデルはraw / postを特徴量入力として直接参照しない。
+
+## Commands
+
+Raw取得:
 
 ~~~bash
 cd local-horse-racing
@@ -89,29 +107,54 @@ python -m nar.download.monthly --year YYYY --month M --kind race --output-dir <d
 python -m nar.download.monthly --year YYYY --month M --kind odds --output-dir <drive-root>/GPT/local-horse-racing/00_raw/odds --audit-dir <drive-root>/GPT/local-horse-racing/20_audit
 ~~~
 
+Canonical staging + as-of evidence:
+
+~~~bash
+cd local-horse-racing
+PYTHONPATH=. python -m nar.canonical.build \
+  --input <monthly-race.zip-or-year-wrapper.zip> \
+  --staging-dir <staging-dir> \
+  --validate-asof
+~~~
+
+Canonical Parquet:
+
+~~~bash
+# repository root
+PYTHONPATH="local-horse-racing:tools/data-storage" \
+python -m nar.canonical.build \
+  --input <monthly-race.zip-or-year-wrapper.zip> \
+  --staging-dir <staging-dir> \
+  --parquet-dir <drive-root>/GPT/local-horse-racing/10_canonical \
+  --audit-dir <drive-root>/GPT/local-horse-racing/20_audit/canonical \
+  --validate-asof
+~~~
+
 ## Validation
 
-Project固有のPhase 0 test:
+Project tests:
 
 ~~~bash
 cd local-horse-racing
 python -m unittest discover -s tests -v
-python -m py_compile nar/download/*.py nar/schema/*.py
+python -m py_compile nar/download/*.py nar/schema/*.py nar/canonical/*.py
 ~~~
 
-Parquet / DuckDB共通toolを利用する処理では、必要に応じて共通testも実行する。
+共有Parquet / DuckDB tool tests:
 
 ~~~bash
 PYTHONPATH=tools/data-storage .venv-data-storage/bin/python -m pytest tools/data-storage/tests -q
 ~~~
 
-## Scope stop
+実データsmokeではまず1か月等の小範囲でrow count、race status、as-of evidenceを確認し、その後に年単位・10年単位へ広げる。
 
-以下はユーザーが明示的に次Phaseへ進めるまで実装しない。
+## Current scope stop
 
-- 全期間バックフィル
-- canonical DB / parquet等への変換
-- 馬・騎手・調教師の名寄せ
-- as-of特徴量
+以下は別途明示的に進めるまで実装しない。
+
+- `PRE_ASOF_PENDING` の無監査自動昇格
+- 馬・騎手・調教師の完全な恒久ID名寄せ
+- 派生as-of特徴量の量産
 - 指数・モデル・予想
-- 自動定期実行
+- odds市場期待値ロジック
+- 自動定期実行・販売運用
