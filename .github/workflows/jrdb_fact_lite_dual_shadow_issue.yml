@@ -1,0 +1,79 @@
+name: JRDB Fact Lite dual-format shadow audit
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: startsWith(github.event.issue.title, '[JRDB_FACT_LITE_DUAL_SHADOW]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/data-storage/requirements.txt
+      - name: Validate request and install dependencies
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p .fact_shadow
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          request=json.loads(os.environ['ISSUE_BODY'])
+          required={'drive_file_id','source_filename','generation_id'}
+          if required-set(request): raise SystemExit('missing request fields')
+          if not re.fullmatch(r'[A-Za-z0-9_-]{10,}',str(request['drive_file_id'])): raise SystemExit('invalid drive_file_id')
+          if not re.fullmatch(r'jrdb_analysis_[A-Za-z0-9_.-]+\.sqlite\.zip',str(request['source_filename'])): raise SystemExit('invalid source_filename')
+          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{2,127}',str(request['generation_id'])): raise SystemExit('invalid generation_id')
+          Path('.fact_shadow/request.json').write_text(json.dumps(request),encoding='utf-8')
+          PY
+          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+      - name: Download Analysis SQLite
+        run: |
+          set -euo pipefail
+          id="$(python -c 'import json; print(json.load(open(".fact_shadow/request.json"))["drive_file_id"])')"
+          name="$(python -c 'import json; print(json.load(open(".fact_shadow/request.json"))["source_filename"])')"
+          curl --fail --location --retry 3 "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" --output ".fact_shadow/${name}"
+          unzip -t ".fact_shadow/${name}"
+          unzip -q ".fact_shadow/${name}" -d .fact_shadow/unzip
+          mapfile -t files < <(find .fact_shadow/unzip -type f -name '*.sqlite' -print)
+          test "${#files[@]}" -eq 1
+          cp "${files[0]}" .fact_shadow/analysis.sqlite
+      - name: Build Analysis Parquet and Fact Lite twins
+        env:
+          PYTHONPATH: tools/data-storage
+        run: |
+          set -euo pipefail
+          generation="$(python -c 'import json; print(json.load(open(".fact_shadow/request.json"))["generation_id"])')"
+          python horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py --source-sqlite .fact_shadow/analysis.sqlite --output-root .fact_shadow/analysis-parquet --generation-id "$generation"
+          python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py --analysis .fact_shadow/analysis.sqlite --db .fact_shadow/fact-legacy.sqlite
+          python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite_dual.py --analysis-parquet '.fact_shadow/analysis-parquet/objects/fact_entry_result_lite/**/*.parquet' --sqlite-out .fact_shadow/fact-new.sqlite --parquet-dir .fact_shadow/fact-parquet
+          python horse-racing/jrdb/src/audit_jrdb_pwa_fact_lite_dual.py --legacy-sqlite .fact_shadow/fact-legacy.sqlite --new-sqlite .fact_shadow/fact-new.sqlite --parquet-dir .fact_shadow/fact-parquet --output .fact_shadow/equivalence_audit.json
+      - name: Upload audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-fact-lite-dual-shadow-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            .fact_shadow/equivalence_audit.json
+            .fact_shadow/analysis-parquet/generations/**
+            .fact_shadow/fact-parquet/**
+            .fact_shadow/fact-legacy.sqlite
+            .fact_shadow/fact-new.sqlite
+      - name: Comment result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: `JRDB Fact Lite dual shadow finished. Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\nNo release, Pages, or PWA pointer was changed.`});
+
