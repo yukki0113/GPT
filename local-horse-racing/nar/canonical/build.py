@@ -9,7 +9,8 @@ import zipfile
 
 from .field_catalog import catalog_rows
 from .leakage import validate_history_asof
-from .parser import CanonicalBatch, parse_monthly_race_zip
+from .parser import CanonicalBatch
+from .reconciliation import parse_monthly_race_zip_reconciled
 from .schema import TABLE_SPECS
 from .storage import materialize_parquet
 
@@ -53,6 +54,7 @@ def build_staging(inputs: list[Path], output_dir: Path, *, validate_asof: bool =
     writers: dict = {}
     month_count = 0
     row_counts = {name: 0 for name in TABLE_SPECS}
+    reconciled_race_count = 0
     history_rows: list[dict] = []
     result_rows: list[dict] = []
     try:
@@ -60,8 +62,13 @@ def build_staging(inputs: list[Path], output_dir: Path, *, validate_asof: bool =
             _ensure_writer(writers, output_dir, table_name)
         for input_path in inputs:
             for source_name, content in iter_monthly_race_zips(input_path):
-                batch: CanonicalBatch = parse_monthly_race_zip(content, source_name)
+                batch: CanonicalBatch = parse_monthly_race_zip_reconciled(content, source_name)
                 month_count += 1
+                reconciled_race_count += sum(
+                    1
+                    for row in batch.tables["control_race_status"]
+                    if str(row.get("reason") or "").startswith("racelist_missing_horselist_present")
+                )
                 for table_name, rows in batch.tables.items():
                     _write_rows(writers, output_dir, table_name, rows)
                     row_counts[table_name] += len(rows)
@@ -88,6 +95,9 @@ def build_staging(inputs: list[Path], output_dir: Path, *, validate_asof: bool =
         "status": "success",
         "monthly_zip_count": month_count,
         "row_counts": row_counts,
+        "historical_reconciliation": {
+            "racelist_missing_horselist_present_races": reconciled_race_count,
+        },
         "field_catalog": str(field_catalog_path),
         "leakage_validation": leakage_report,
     }
