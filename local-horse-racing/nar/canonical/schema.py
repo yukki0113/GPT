@@ -16,7 +16,7 @@ class TableSpec:
 BASE_RACE = {
     "race_id": "string",
     "race_date": "date32",
-    "race_year": "int16",
+    "race_year": "int64",
     "venue": "string",
     "race_no": "int16",
 }
