@@ -1,0 +1,85 @@
+name: JRDB Analysis Parquet canonical generation
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  generate:
+    if: startsWith(github.event.issue.title, '[JRDB_ANALYSIS_PARQUET_CANONICAL]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/data-storage/requirements.txt
+      - name: Validate request and install dependencies
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          request=json.loads(os.environ['ISSUE_BODY'])
+          required={'drive_file_id','source_filename','generation_id'}
+          if required-set(request): raise SystemExit('missing request fields')
+          if not re.fullmatch(r'[A-Za-z0-9_-]{10,}',str(request['drive_file_id'])): raise SystemExit('invalid drive_file_id')
+          if not re.fullmatch(r'jrdb_analysis_[A-Za-z0-9_.-]+\.sqlite\.zip',str(request['source_filename'])): raise SystemExit('invalid source_filename')
+          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{2,127}',str(request['generation_id'])): raise SystemExit('invalid generation_id')
+          Path('.canonical-request.json').write_text(json.dumps(request),encoding='utf-8')
+          PY
+          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+      - name: Build and validate canonical candidate
+        env:
+          PYTHONPATH: tools/data-storage
+        run: |
+          set -euo pipefail
+          request=.canonical-request.json
+          file_id="$(python -c 'import json; print(json.load(open("'"$request"'"))["drive_file_id"])')"
+          filename="$(python -c 'import json; print(json.load(open("'"$request"'"))["source_filename"])')"
+          generation="$(python -c 'import json; print(json.load(open("'"$request"'"))["generation_id"])')"
+          mkdir -p .canonical/unzip .canonical/store
+          curl --fail --location --retry 3 "https://drive.usercontent.google.com/download?id=${file_id}&export=download&confirm=t" --output ".canonical/${filename}"
+          unzip -t ".canonical/${filename}"
+          unzip -q ".canonical/${filename}" -d .canonical/unzip
+          mapfile -t sqlite_files < <(find .canonical/unzip -type f -name '*.sqlite' -print)
+          test "${#sqlite_files[@]}" -eq 1
+          cp "${sqlite_files[0]}" .canonical/analysis.sqlite
+          python horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py --source-sqlite .canonical/analysis.sqlite --output-root .canonical/store --generation-id "$generation" --promote --result-json .canonical/result.json
+          python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py --manifest ".canonical/store/generations/${generation}/manifest.json" --out .canonical/analysis-compatibility.sqlite
+          python - <<'PY'
+          import json, sqlite3
+          p='.canonical/analysis-compatibility.sqlite'
+          with sqlite3.connect(f'file:{p}?mode=ro',uri=True) as c:
+              if c.execute('PRAGMA integrity_check').fetchone()[0] != 'ok': raise SystemExit('compatibility SQLite failed integrity check')
+          result=json.load(open('.canonical/result.json'))
+          if result['audit']['status'] != 'PASS' or result['pointer']['status'] != 'CURRENT': raise SystemExit('canonical gate failed')
+          PY
+          tar -C .canonical/store -cJf .canonical/analysis-parquet-canonical.tar.xz .
+      - name: Upload candidate artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-analysis-parquet-canonical-${{ github.run_id }}
+          retention-days: 14
+          compression-level: 0
+          path: |
+            .canonical/analysis-parquet-canonical.tar.xz
+            .canonical/analysis-compatibility.sqlite
+            .canonical/result.json
+      - name: Report result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+        with:
+          script: |
+            const outcome = process.env.JOB_STATUS === 'success' ? 'passed' : 'failed';
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: `JRDB Analysis Parquet canonical candidate ${outcome}. Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\nDrive current is unchanged until the round-trip upload gate completes.`});
