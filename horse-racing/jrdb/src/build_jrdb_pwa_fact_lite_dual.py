@@ -18,7 +18,8 @@ def write_sqlite(conn, out:Path, schema:Path, source:str)->dict:
  try:
   started=dt.datetime.now().isoformat(timespec="seconds")
   row_count=conn.execute("SELECT count(*) FROM fact_stats_entry").fetchone()[0]; period=conn.execute("SELECT min(race_date_int),max(race_date_int) FROM fact_stats_entry").fetchone()
-  db.execute("INSERT INTO meta_pwa_fact_build(builder_version,schema_version,source_analysis,started_at,status,row_count,period_from,period_to) VALUES(?,?,?,?,?,?,?,?)",(VERSION,"0.3",source,started,"RUNNING",row_count,str(period[0]),str(period[1])))
+  period_text=tuple(f"{str(value)[:4]}-{str(value)[4:6]}-{str(value)[6:8]}" for value in period)
+  db.execute("INSERT INTO meta_pwa_fact_build(builder_version,schema_version,source_analysis,started_at,status,row_count,period_from,period_to) VALUES(?,?,?,?,?,?,?,?)",(VERSION,"0.3",source,started,"RUNNING",row_count,*period_text))
   for table in TABLES:
    cols=[x[0] for x in conn.execute(f"DESCRIBE {table}").fetchall()]; rows=conn.execute(f"SELECT * FROM {table}").fetchall(); db.executemany(f'INSERT INTO {table} ({",".join(cols)}) VALUES ({",".join("?" for _ in cols)})',rows)
   db.execute("UPDATE meta_pwa_fact_build SET finished_at=?,status='SUCCESS'",(dt.datetime.now().isoformat(timespec="seconds"),));db.commit()
@@ -57,7 +58,7 @@ def build(analysis_glob:Path,sqlite_out:Path,parquet_dir:Path,schema:Path,race_n
  FROM source s join dim_race r using(race_key) left join dim_sire si on si.name=s.sire_name left join dim_bms b on b.name=s.broodmare_sire_name left join dim_jockey j on j.name=s.jockey_name left join (select race_key,max(distance) distance,max(race_condition_code) race_condition_code,max(grade_code) grade_code from source group by race_key) p on p.race_key=s.prev_race_key_1""")
  counts=write_sqlite(c,sqlite_out,schema,str(analysis_glob));parquet_dir.mkdir(parents=True)
  for table in (*TABLES,"meta_pwa_fact_build"):
-  if table=="meta_pwa_fact_build": c.execute("CREATE OR REPLACE TABLE meta_pwa_fact_build AS SELECT 1 build_id,? builder_version,'0.3' schema_version,? source_analysis, now() started_at, now() finished_at,'SUCCESS' status, count(*)::BIGINT row_count,min(race_date_int)::VARCHAR period_from,max(race_date_int)::VARCHAR period_to FROM fact_stats_entry",[VERSION,str(analysis_glob)])
+  if table=="meta_pwa_fact_build": c.execute("CREATE OR REPLACE TABLE meta_pwa_fact_build AS SELECT 1 build_id,? builder_version,'0.3' schema_version,? source_analysis, now() started_at, now() finished_at,'SUCCESS' status, count(*)::BIGINT row_count,strftime(strptime(min(race_date_int)::VARCHAR,'%Y%m%d'),'%Y-%m-%d') period_from,strftime(strptime(max(race_date_int)::VARCHAR,'%Y%m%d'),'%Y-%m-%d') period_to FROM fact_stats_entry",[VERSION,str(analysis_glob)])
   c.execute(f"COPY {table} TO {q(str(parquet_dir/(table+'.parquet')))} (FORMAT PARQUET, COMPRESSION ZSTD)")
  audit={"status":"PASS","logical_relation":"DuckDB","table_rows":counts,"sqlite":str(sqlite_out),"parquet":str(parquet_dir)};(parquet_dir/"equivalence_audit.json").write_text(json.dumps(audit,indent=2)+"\n")
  return audit
