@@ -15,6 +15,7 @@ import shutil
 import sqlite3
 import sys
 import tempfile
+import base64
 from pathlib import Path
 from typing import Any
 
@@ -64,6 +65,54 @@ def parquet_rows(path: Path, cols: list[str]) -> list[tuple]:
     try: return c.execute(f"SELECT {names} FROM data ORDER BY {order}").fetchall()
     finally: c.close()
 
+def canonical_value(value: Any) -> str:
+    """Serialize cross-engine values without relying on physical Arrow types."""
+    if value is None:
+        return "N:"
+    if isinstance(value, bytes):
+        return "B:" + base64.b64encode(value).decode("ascii")
+    if isinstance(value, float):
+        return "F:" + format(value, ".17g")
+    return "S:" + str(value)
+
+def canonical_digest(cursor: Any, columns: list[str]) -> tuple[int, str]:
+    """Return a deterministic all-row digest from an already canonically sorted cursor."""
+    digest = hashlib.sha256()
+    digest.update(("|".join(columns) + "\n").encode("utf-8"))
+    rows = 0
+    while batch := cursor.fetchmany(10_000):
+        for row in batch:
+            digest.update("\x1f".join(canonical_value(value) for value in row).encode("utf-8"))
+            digest.update(b"\n")
+            rows += 1
+    return rows, digest.hexdigest()
+
+def equivalent_table(sqlite_path: Path, parquet_path: Path, table: str, order_by: list[str]) -> dict[str, Any]:
+    """Fail closed unless the full logical table is identical in SQLite and Parquet."""
+    with sqlite3.connect(f"file:{sqlite_path}?mode=ro", uri=True) as source:
+        source_columns = table_columns(source, table)
+        quoted_columns = ",".join(f'"{column}"' for column in source_columns)
+        order = ",".join(f'"{column}"' for column in order_by)
+        sqlite_rows, sqlite_hash = canonical_digest(
+            source.execute(f'SELECT {quoted_columns} FROM "{table}" ORDER BY {order}'),
+            source_columns,
+        )
+    target = connect_parquet(parquet_path)
+    try:
+        parquet_columns = [row[0] for row in target.execute("DESCRIBE data").fetchall()]
+        if source_columns != parquet_columns:
+            raise RuntimeError(f"schema mismatch: {table}")
+        quoted_columns = ",".join(f'"{column}"' for column in parquet_columns)
+        order = ",".join(f'"{column}"' for column in order_by)
+        parquet_rows_count, parquet_hash = canonical_digest(
+            target.execute(f"SELECT {quoted_columns} FROM data ORDER BY {order}"), parquet_columns
+        )
+    finally:
+        target.close()
+    if (sqlite_rows, sqlite_hash) != (parquet_rows_count, parquet_hash):
+        raise RuntimeError(f"row-level mismatch: {table}")
+    return {"rows": sqlite_rows, "canonical_row_hash": sqlite_hash, "schema": source_columns}
+
 def migrate(source: Path, root: Path, generation_id: str) -> dict[str, Any]:
     source=source.resolve(); gen=root.resolve()/"generations"/generation_id
     if gen.exists(): raise FileExistsError(gen)
@@ -85,16 +134,19 @@ def migrate(source: Path, root: Path, generation_id: str) -> dict[str, Any]:
                 candidate=tmp/f"{year}.parquet"; report=convert_table(staged,FACT,candidate,["race_date",*KEY],list(KEY))
                 digest=sha(candidate); destination=objects/f"year={year}"/f"{digest}.parquet"; destination.parent.mkdir(parents=True,exist_ok=True)
                 if not destination.exists(): shutil.copy2(candidate,destination)
-                left=sql_rows(source,FACT,columns,f"WHERE year={int(year)}"); right=parquet_rows(destination,columns)
-                if left!=right: raise RuntimeError(f"row-level mismatch: year={year}")
-                parts.append({"year":year,"sha256":digest,"rows":len(left),"size_bytes":destination.stat().st_size,"relative_path":str(destination.relative_to(root))})
-                audits.append({"year":year,"row_level_equivalence":True,"validation":report["validation"]})
+                comparison=equivalent_table(staged,destination,FACT,["race_date",*KEY])
+                parts.append({"year":year,"sha256":digest,"rows":comparison["rows"],"size_bytes":destination.stat().st_size,"relative_path":str(destination.relative_to(root))})
+                audits.append({"year":year,"row_level_equivalence":True,"canonical_row_hash":comparison["canonical_row_hash"],"validation":report["validation"]})
             metas={}
             for table in META:
                 staged=tmp/f"{table}.sqlite"; temp_table(source,table,f"SELECT * FROM source.{table}",staged)
                 candidate=tmp/f"{table}.parquet"; report=convert_table(staged,table,candidate,[],[]); digest=sha(candidate); dest=metadata/f"{table}-{digest}.parquet"; dest.parent.mkdir(parents=True,exist_ok=True)
                 if not dest.exists(): shutil.copy2(candidate,dest)
-                metas[table]={"sha256":digest,"rows":source_meta[table],"relative_path":str(dest.relative_to(root)),"validation":report["validation"]}
+                comparison=equivalent_table(
+                    staged, dest, table,
+                    ["build_id"] if table == "meta_analysis_build" else ["batch_id"],
+                )
+                metas[table]={"sha256":digest,"rows":source_meta[table],"relative_path":str(dest.relative_to(root)),"canonical_row_hash":comparison["canonical_row_hash"],"validation":report["validation"]}
         with sqlite3.connect(f"file:{source}?mode=ro",uri=True) as c:
             total=scalar(c,f"SELECT COUNT(*) FROM {FACT}"); period=c.execute(f"SELECT MIN(race_date),MAX(race_date) FROM {FACT}").fetchone()
             nulls={x:scalar(c,f"SELECT COUNT(*) FROM {FACT} WHERE \"{x}\" IS NULL") for x in NULL_COLUMNS}
@@ -116,3 +168,4 @@ def main() -> None:
     if a.result_json: a.result_json.write_text(json.dumps(r,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps({"status":"SUCCESS",**r["pointer"]},ensure_ascii=False))
 if __name__=="__main__": main()
+
