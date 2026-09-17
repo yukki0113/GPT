@@ -1,7 +1,8 @@
 # ForwardTrial Ver0.2-alpha1 Shadow運用
 
 Date: 2026-09-16  
-Status: **Implementation-ready / not yet genuine forward**
+Updated: 2026-09-18  
+Status: **Genuine forward active from 2026-09-17**
 
 Controlは引き続き `ForwardTrial_Ver0.1`。本ShadowはControlを上書きしない。
 
@@ -43,6 +44,8 @@ A/B/C判定、1着軸決定、InnerPick（本線/押さえの内側艇）はCont
 AND 軸警戒 = なし
 AND 比較支持項目数 != 4
 ```
+
+`2着候補分離度` はControl仕様と同じく、相手Score順位の **2位Score - 3位Score** とする。
 
 Q0は内部記録するがnote非掲載。
 
@@ -87,7 +90,7 @@ Shadow確定前に以下を参照しない。
 
 ## 4. 日次Freeze手順
 
-真正forwardとして数える最初の日から、結果参照前に以下を実行・保存する。
+真正forwardとして数える日について、結果参照前に以下を実行・保存する。
 
 1. 会場選別を確定
 2. 公式出走表CSVをFreeze
@@ -150,7 +153,27 @@ ControlとShadowを別々に集計する。最低限:
 
 Shadowで相手Pairが変わっていないレースと変わったレースを分離し、OpponentScore変更そのものの寄与を測る。
 
-## 8. Promotion禁止事項
+## 8. Shadow台帳
+
+2026-09-17のgenuine forward開始に合わせ、ネイティブGoogle Sheets正本 `競艇note販売運用台帳` に以下のShadow専用タブを追加した。
+
+- `FT2_Shadow対象明細`
+  - Shadowの2連単1点対象Rを1R1行で保持する。
+  - stable keyは原則 `SH_YYYYMMDD_会場_R_ShadowVer`。
+  - ShadowのPair、分離度、Q0、販売Score、順位、掲載区分、freeze、結果、Pair cover、1点的中、投資・回収、genuine状態、source file IDを保持する。
+- `FT2_Shadow日別集計`
+  - genuine Shadowの日次成績を保持する。
+  - Control対比として、全A/BのPair cover、2連単対象内Pair cover、掲載/Q0/有料/無料/非掲載の成績を記録する。
+
+### 分離原則
+
+`FT2_全R明細` と既存Atomic Aggregate Set 9タブは **Control `ForwardTrial_Ver0.1` 専用**とする。
+
+Shadow行を `FT2_全R明細` へ追加しない。Shadow集計を既存Control generationのsource件数へ混ぜない。Shadow台帳更新によってControlの `aggregate_generation_id`、raw/genuine/contaminated/exacta件数を変更しない。
+
+Shadowは上記2タブで独立して真正forward履歴を積む。将来Ver0.2へ正式昇格する場合も、Control履歴を遡及置換しない。
+
+## 9. Promotion禁止事項
 
 - retrospective 9/1〜9/15をShadow forward成績へ算入しない
 - 1〜数日のROIだけでVer0.2へ昇格しない
@@ -158,7 +181,7 @@ Shadowで相手Pairが変わっていないレースと変わったレースを�
 - 商品本数を合わせるためQ0を有料/無料へ昇格しない
 - 5R以下の日に通常価格商品を自動生成しない
 
-## 9. 実装監査状況
+## 10. 実装監査状況
 
 2026-09-16時点:
 
@@ -172,8 +195,16 @@ Shadowで相手Pairが変わっていないレースと変わったレースを�
   - 有料7R / 無料3R
 - 2026-09-15 三国1Rは実運用Controlでは締切後freezeでCONTAMINATED。上記dry replayはロジック再現でありgenuine Shadow成績ではない。
 
-## 10. 次回開始条件
+## 11. Genuine forward開始
 
-次回の結果未参照日について、会場選別・公式出走表Freeze後に本ShadowをControlと同時にFreezeした時点を `ForwardTrial_Ver0.2-alpha1` genuine forward開始点とする。
+`ForwardTrial_Ver0.2-alpha1` は **2026-09-17** を真正forward開始日とする。
 
-開始前にmain HEAD、CI成功、Shadow version、重み、Q0式、商品量表が本書と一致することを確認する。
+2026-09-17:
+- 6会場72R
+- Control / Shadowとも 2026-09-16 22:29+09:00 freeze
+- Shadow 2連単対象9R
+- Q0 3R / Q0通過6R
+- 有料4R / 無料2R / 非掲載3R
+- 全9対象R genuine
+
+結果後の初日評価は `FT2_Shadow対象明細` / `FT2_Shadow日別集計` を正本とし、以後同じロジックを変更せず積み上げる。
