@@ -27,14 +27,19 @@ def write_sqlite(conn, out:Path, schema:Path, source:str)->dict:
  finally:db.close()
  return {t:conn.execute(f"SELECT count(*) FROM {t}").fetchone()[0] for t in TABLES}
 
-def load_race_names(path: Path | None) -> list[tuple[str, str]]:
+def load_race_names(path: Path | None) -> list[tuple[str, str | None]]:
  if path is None:return []
  with sqlite3.connect(f"file:{path}?mode=ro",uri=True) as db:
   table=db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='race_name_lookup'").fetchone()
   if table is None:raise RuntimeError("race_name_lookup was not found")
   columns={row[1] for row in db.execute("PRAGMA table_info(race_name_lookup)")}
   if {"race_key","race_name"}-columns:raise RuntimeError("invalid race_name_lookup schema")
-  return [(str(row[0]),str(row[1])) for row in db.execute("SELECT race_key,race_name FROM race_name_lookup WHERE trim(coalesce(race_name,''))<>'' ORDER BY race_key")]
+  # Preserve empty strings as-is.  The established SQLite builder retains an
+  # empty lookup value, so dropping it would turn it into NULL in dim_race.
+  return [
+   (str(row[0]), None if row[1] is None else str(row[1]))
+   for row in db.execute("SELECT race_key,race_name FROM race_name_lookup ORDER BY race_key")
+  ]
 
 def build(analysis_glob:Path,sqlite_out:Path,parquet_dir:Path,schema:Path,race_names:Path|None=None)->dict:
  if sqlite_out.exists() or parquet_dir.exists():raise FileExistsError("refusing overwrite")
@@ -72,4 +77,3 @@ def build(analysis_glob:Path,sqlite_out:Path,parquet_dir:Path,schema:Path,race_n
 def main():
  p=argparse.ArgumentParser();p.add_argument("--analysis-parquet",type=Path,required=True);p.add_argument("--sqlite-out",type=Path,required=True);p.add_argument("--parquet-dir",type=Path,required=True);p.add_argument("--race-names",type=Path);p.add_argument("--schema",type=Path,default=Path(__file__).resolve().parents[1]/"schema"/"jrdb_pwa_fact_lite_schema_v0_3.sql");a=p.parse_args();print(build(a.analysis_parquet,a.sqlite_out,a.parquet_dir,a.schema,a.race_names))
 if __name__=="__main__":main()
-
