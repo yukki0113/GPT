@@ -357,3 +357,16 @@ artifact回収後、Chat側で次をPure Deterministic Executionとして行う�
 - Actions manifestとの一致
 
 このsectionは、日次Raw取得専用スレッドへ引っ越した際に、過去会話を参照しなくても同じ安全な取得・検証・返却手順を再現するための運用正本とする。
+## Analysis / Fact Lite dual-format transition
+
+- `migrate_jrdb_analysis_parquet.py` creates immutable year-level ZSTD
+  objects, preserves the two Analysis metadata tables, and writes only
+  `shadow_current.json` after full logical equality checks.
+- `materialize_jrdb_analysis_sqlite.py` is the compatibility route back from a
+  validated Parquet manifest; it is not an independent update path.
+- `build_jrdb_pwa_fact_lite_dual.py` produces PWA-compatible SQLite and a
+  Parquet twin from one DuckDB relation.  `audit_jrdb_pwa_fact_lite_dual.py`
+  is the required Legacy SQLite == New SQLite == Parquet gate.
+- Do not change `jrdb-pwa-fact-lite-current`, Pages, sql.js, or OPFS until an
+  explicit real-data audit and publication cutover has passed.
+
