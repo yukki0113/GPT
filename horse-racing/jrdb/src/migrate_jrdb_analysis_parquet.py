@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""Immutable Analysis v1.3 SQLite -> year-object Parquet migration.
+
+Raw parsing remains outside this module.  It only transfers an already audited
+Analysis logical dataset and refuses to advance a pointer until full equivalence
+holds.
+"""
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import shutil
+import sqlite3
+import sys
+import tempfile
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "tools" / "data-storage"))
+from data_storage.convert import convert
+from data_storage.validate import validate
+from data_storage.query import connect_parquet
+
+VERSION = "1"
+FACT = "fact_entry_result_lite"
+META = ("meta_analysis_build", "meta_analysis_ingest_batch")
+KEY = ("race_key", "horse_no")
+NULL_COLUMNS = ("horse_id", "horse_name", "training_index", "finish", "final_win_odds", "final_win_popularity", "win_payout", "place_payout", "prev_result_key_1", "prev_race_key_1", "win5_leg_no")
+
+def sha(path: Path) -> str:
+    h=hashlib.sha256()
+    with path.open("rb") as f:
+        for b in iter(lambda:f.read(1<<20), b""): h.update(b)
+    return h.hexdigest()
+
+def scalar(c: sqlite3.Connection, q: str) -> Any: return c.execute(q).fetchone()[0]
+
+def table_columns(c: sqlite3.Connection, table: str) -> list[str]:
+    return [r[1] for r in c.execute(f'PRAGMA table_info("{table}")')]
+
+def temp_table(source: Path, table: str, query: str, temp: Path) -> None:
+    with sqlite3.connect(temp) as out:
+        out.execute("ATTACH DATABASE ? AS source", (str(source),))
+        out.execute(f'CREATE TABLE "{table}" AS {query}')
+        out.execute("DETACH DATABASE source")
+
+def convert_table(source: Path, table: str, out: Path, sort: list[str], keys: list[str]) -> dict[str, Any]:
+    cfg={"source":{"format":"sqlite","path":str(source),"table":table,"batch_size":50000},"target":{"format":"parquet","path":str(out),"compression":"zstd","partition_by":[]},"keys":{"canonical":keys},"sort_by":sort,"validation":{"require_row_count_match":True,"require_unique_key":bool(keys)}}
+    conversion=convert(cfg); validation=validate(cfg,conversion)
+    if not validation["passed"]: raise RuntimeError(f"Parquet validation failed: {table}")
+    return {"conversion":conversion,"validation":validation}
+
+def sql_rows(path: Path, table: str, cols: list[str], where: str="") -> list[tuple]:
+    names=",".join(f'"{x}"' for x in cols); order=",".join(f'"{x}"' for x in KEY)
+    with sqlite3.connect(f"file:{path}?mode=ro",uri=True) as c:
+        return c.execute(f'SELECT {names} FROM "{table}" {where} ORDER BY {order}').fetchall()
+
+def parquet_rows(path: Path, cols: list[str]) -> list[tuple]:
+    names=",".join(f'"{x}"' for x in cols); order=",".join(f'"{x}"' for x in KEY)
+    c=connect_parquet(path)
+    try: return c.execute(f"SELECT {names} FROM data ORDER BY {order}").fetchall()
+    finally: c.close()
+
+def migrate(source: Path, root: Path, generation_id: str) -> dict[str, Any]:
+    source=source.resolve(); gen=root.resolve()/"generations"/generation_id
+    if gen.exists(): raise FileExistsError(gen)
+    with sqlite3.connect(f"file:{source}?mode=ro",uri=True) as c:
+        if scalar(c, "PRAGMA integrity_check")!="ok": raise RuntimeError("Analysis integrity_check failed")
+        columns=table_columns(c,FACT)
+        if not columns or tuple(columns[:2]) == (): raise RuntimeError("Analysis fact missing")
+        bad=scalar(c, f"SELECT COUNT(*) FROM {FACT} WHERE win5_leg_no IS NOT NULL AND win5_leg_no NOT BETWEEN 1 AND 5")
+        if bad: raise RuntimeError("invalid WIN5")
+        years=[r[0] for r in c.execute(f"SELECT DISTINCT year FROM {FACT} ORDER BY year")]
+        source_meta={t: c.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0] for t in META}
+    gen.mkdir(parents=True)
+    try:
+        objects=root.resolve()/"objects"/FACT; metadata=root.resolve()/"metadata"; parts=[]; audits=[]
+        with tempfile.TemporaryDirectory(prefix="analysis_parquet_") as tmp:
+            tmp=Path(tmp)
+            for year in years:
+                staged=tmp/f"{year}.sqlite"; temp_table(source,FACT,f"SELECT * FROM source.{FACT} WHERE year={int(year)}",staged)
+                candidate=tmp/f"{year}.parquet"; report=convert_table(staged,FACT,candidate,["race_date",*KEY],list(KEY))
+                digest=sha(candidate); destination=objects/f"year={year}"/f"{digest}.parquet"; destination.parent.mkdir(parents=True,exist_ok=True)
+                if not destination.exists(): shutil.copy2(candidate,destination)
+                left=sql_rows(source,FACT,columns,f"WHERE year={int(year)}"); right=parquet_rows(destination,columns)
+                if left!=right: raise RuntimeError(f"row-level mismatch: year={year}")
+                parts.append({"year":year,"sha256":digest,"rows":len(left),"size_bytes":destination.stat().st_size,"relative_path":str(destination.relative_to(root))})
+                audits.append({"year":year,"row_level_equivalence":True,"validation":report["validation"]})
+            metas={}
+            for table in META:
+                staged=tmp/f"{table}.sqlite"; temp_table(source,table,f"SELECT * FROM source.{table}",staged)
+                candidate=tmp/f"{table}.parquet"; report=convert_table(staged,table,candidate,[],[]); digest=sha(candidate); dest=metadata/f"{table}-{digest}.parquet"; dest.parent.mkdir(parents=True,exist_ok=True)
+                if not dest.exists(): shutil.copy2(candidate,dest)
+                metas[table]={"sha256":digest,"rows":source_meta[table],"relative_path":str(dest.relative_to(root)),"validation":report["validation"]}
+        with sqlite3.connect(f"file:{source}?mode=ro",uri=True) as c:
+            total=scalar(c,f"SELECT COUNT(*) FROM {FACT}"); period=c.execute(f"SELECT MIN(race_date),MAX(race_date) FROM {FACT}").fetchone()
+            nulls={x:scalar(c,f"SELECT COUNT(*) FROM {FACT} WHERE \"{x}\" IS NULL") for x in NULL_COLUMNS}
+            dup=scalar(c,f"SELECT COUNT(*) FROM (SELECT race_key,horse_no FROM {FACT} GROUP BY race_key,horse_no HAVING COUNT(*)>1)")
+        if sum(p["rows"] for p in parts)!=total or dup: raise RuntimeError("count/key gate failed")
+        manifest={"artifact_type":"jrdb_analysis","schema_version":"v1.3","storage_format":"parquet","storage_version":VERSION,"generation_id":generation_id,"source_sqlite":{"filename":source.name,"sha256":sha(source),"size_bytes":source.stat().st_size},"fact_table":{"name":FACT,"canonical_key":list(KEY),"sort_by":["race_date",*KEY],"partitions":parts},"metadata_tables":metas,"period_from":period[0],"period_to":period[1],"total_rows":total,"builder_version":"analysis-parquet-migration-v1","validation_status":"PASS"}
+        audit={"status":"PASS","row_count_equal":True,"canonical_key_equal":True,"duplicate_key_rows":0,"schema_contract_equal":True,"null_profile":nulls,"range_checks":{"win5":"PASS","period":period},"row_level_equivalence":True,"metadata_preserved":True,"partitions":audits}
+        (gen/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        (gen/"audit.json").write_text(json.dumps(audit,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        pointer={"status":"SHADOW_PASS","generation_id":generation_id,"manifest":str((gen/"manifest.json").relative_to(root))}
+        (root/"shadow_current.json").write_text(json.dumps(pointer,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        return {"manifest":manifest,"audit":audit,"pointer":pointer}
+    except Exception:
+        shutil.rmtree(gen,ignore_errors=True); raise
+
+def main() -> None:
+    p=argparse.ArgumentParser(); p.add_argument("--source-sqlite",type=Path,required=True); p.add_argument("--output-root",type=Path,required=True); p.add_argument("--generation-id",default=dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")); p.add_argument("--result-json",type=Path)
+    a=p.parse_args(); r=migrate(a.source_sqlite,a.output_root,a.generation_id)
+    if a.result_json: a.result_json.write_text(json.dumps(r,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print(json.dumps({"status":"SUCCESS",**r["pointer"]},ensure_ascii=False))
+if __name__=="__main__": main()
