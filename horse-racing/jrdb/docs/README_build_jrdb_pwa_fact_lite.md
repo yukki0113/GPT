@@ -12,6 +12,16 @@ Analysis Lite
   └─> PWA Fact Lite    # 自由条件集計の主DB候補
 ```
 
+## Dual-format transition boundary
+
+The current PWA delivery artifact remains Fact Lite SQLite v0.3.  A parallel
+builder exists for migration audit: Analysis Parquet -> DuckDB logical
+relations -> Fact Lite SQLite and Fact Lite Parquet.  Its Parquet output is
+not included in the browser manifest.  Before any publish workflow switches
+to the new SQLite output, run the full three-way audit with
+`audit_jrdb_pwa_fact_lite_dual.py`; a failed audit must retain the current
+release unchanged.
+
 2026-08-27 のiOS Chrome実機検証では、Fact Lite v0.1（約47.4 MiB）の初回読込は体感2〜3秒、全期間の種牡馬 / 母父 / 騎手集計は約310〜370ms、東京芝1600mでは約62〜65msでした。この結果から、自由条件集計は Fact Lite を主DBとし、Stats Mart は必要な重い処理だけ補助する方向を採用候補とします。
 
 ## Source / schema
@@ -123,3 +133,4 @@ Builder は source / output row count equality、必須table/column、`win5_leg_
 ## Data policy
 
 大容量Fact Lite SQLiteはGit管理しません。Gitにはschema / builder / workflow / docsだけを置き、生成物はRelease / Pages配布キャッシュとして扱います。
+
