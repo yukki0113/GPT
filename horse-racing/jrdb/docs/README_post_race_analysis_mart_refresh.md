@@ -33,3 +33,11 @@ index dffe421..d458f1a 100644
 +```
 +
 +Fact Lite publish workflowはAnalysisからFact Lite v0.3を再生成し、schema、identity/lookup、WIN5、SHA-256、size、integrityを検証する。成功時だけ `jrdb-pwa-fact-lite-current` ReleaseとGitHub Pages `/data/` manifestを更新し、PWAのOPFS同期対象を切替える。
+## Parquet transition guard
+
+Until the dual-format migration has passed its real-data gate, the post-race
+workflow continues to update Analysis SQLite.  The migration path must then
+produce and validate an Analysis Parquet shadow generation before a future
+canonical pointer change.  A failed candidate never changes an Analysis or
+Fact Lite current pointer, and PWA publication remains SQLite-only.
+
