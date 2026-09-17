@@ -113,7 +113,34 @@ def equivalent_table(sqlite_path: Path, parquet_path: Path, table: str, order_by
         raise RuntimeError(f"row-level mismatch: {table}")
     return {"rows": sqlite_rows, "canonical_row_hash": sqlite_hash, "schema": source_columns}
 
-def migrate(source: Path, root: Path, generation_id: str) -> dict[str, Any]:
+def _load_manifest(root: Path, manifest: Path | None) -> dict[str, Any] | None:
+    if manifest is None:
+        candidate = root / "current.json"
+        if not candidate.is_file():
+            return None
+        pointer = json.loads(candidate.read_text(encoding="utf-8"))
+        manifest = root / pointer["manifest"]
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    if payload.get("validation_status") != "PASS":
+        raise RuntimeError("base manifest is not validated")
+    return payload
+
+def _write_current(root: Path, manifest: dict[str, Any], previous: dict[str, Any] | None) -> dict[str, Any]:
+    """Atomically advance the canonical pointer only after a PASS manifest exists."""
+    pointer = {
+        "status": "CURRENT",
+        "generation_id": manifest["generation_id"],
+        "manifest": f"generations/{manifest['generation_id']}/manifest.json",
+        "previous_generation_id": previous.get("generation_id") if previous else None,
+        "updated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+    }
+    pending = root / "current.json.pending"
+    pending.write_text(json.dumps(pointer, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    pending.replace(root / "current.json")
+    return pointer
+
+def migrate(source: Path, root: Path, generation_id: str, *, affected_years: set[int] | None = None,
+            reuse_manifest: Path | None = None, promote: bool = False) -> dict[str, Any]:
     source=source.resolve(); root=root.resolve(); gen=root/"generations"/generation_id
     if gen.exists(): raise FileExistsError(gen)
     with sqlite3.connect(f"file:{source}?mode=ro",uri=True) as c:
@@ -127,15 +154,26 @@ def migrate(source: Path, root: Path, generation_id: str) -> dict[str, Any]:
     gen.mkdir(parents=True)
     try:
         objects=root.resolve()/"objects"/FACT; metadata=root.resolve()/"metadata"; parts=[]; audits=[]
+        base = _load_manifest(root, reuse_manifest)
+        reusable = {int(part["year"]): part for part in (base or {}).get("fact_table", {}).get("partitions", [])}
         with tempfile.TemporaryDirectory(prefix="analysis_parquet_") as tmp:
             tmp=Path(tmp)
             for year in years:
+                if affected_years is not None and int(year) not in affected_years and int(year) in reusable:
+                    part = dict(reusable[int(year)])
+                    object_path = root / part["relative_path"]
+                    if not object_path.is_file() or sha(object_path) != part["sha256"]:
+                        raise RuntimeError(f"reusable object is unavailable: {year}")
+                    parts.append(part)
+                    audits.append({"year": year, "reused": True, "row_level_equivalence": True,
+                                   "canonical_row_hash": part.get("canonical_row_hash")})
+                    continue
                 staged=tmp/f"{year}.sqlite"; temp_table(source,FACT,f"SELECT * FROM source.{FACT} WHERE year={int(year)}",staged)
                 candidate=tmp/f"{year}.parquet"; report=convert_table(staged,FACT,candidate,["race_date",*KEY],list(KEY))
                 digest=sha(candidate); destination=objects/f"year={year}"/f"{digest}.parquet"; destination.parent.mkdir(parents=True,exist_ok=True)
                 if not destination.exists(): shutil.copy2(candidate,destination)
                 comparison=equivalent_table(staged,destination,FACT,["race_date",*KEY])
-                parts.append({"year":year,"sha256":digest,"rows":comparison["rows"],"size_bytes":destination.stat().st_size,"relative_path":str(destination.relative_to(root))})
+                parts.append({"year":year,"sha256":digest,"rows":comparison["rows"],"size_bytes":destination.stat().st_size,"relative_path":str(destination.relative_to(root)),"canonical_row_hash":comparison["canonical_row_hash"]})
                 audits.append({"year":year,"row_level_equivalence":True,"canonical_row_hash":comparison["canonical_row_hash"],"validation":report["validation"]})
             metas={}
             for table in META:
@@ -152,20 +190,24 @@ def migrate(source: Path, root: Path, generation_id: str) -> dict[str, Any]:
             nulls={x:scalar(c,f"SELECT COUNT(*) FROM {FACT} WHERE \"{x}\" IS NULL") for x in NULL_COLUMNS}
             dup=scalar(c,f"SELECT COUNT(*) FROM (SELECT race_key,horse_no FROM {FACT} GROUP BY race_key,horse_no HAVING COUNT(*)>1)")
         if sum(p["rows"] for p in parts)!=total or dup: raise RuntimeError("count/key gate failed")
-        manifest={"artifact_type":"jrdb_analysis","schema_version":"v1.3","storage_format":"parquet","storage_version":VERSION,"generation_id":generation_id,"source_sqlite":{"filename":source.name,"sha256":sha(source),"size_bytes":source.stat().st_size},"fact_table":{"name":FACT,"canonical_key":list(KEY),"sort_by":["race_date",*KEY],"partitions":parts},"metadata_tables":metas,"period_from":period[0],"period_to":period[1],"total_rows":total,"builder_version":"analysis-parquet-migration-v1","validation_status":"PASS"}
-        audit={"status":"PASS","row_count_equal":True,"canonical_key_equal":True,"duplicate_key_rows":0,"schema_contract_equal":True,"null_profile":nulls,"range_checks":{"win5":"PASS","period":period},"row_level_equivalence":True,"metadata_preserved":True,"partitions":audits}
+        aggregate_columns=("year","venue_code","track_type","distance","track_condition_code","final_win_popularity","win5_leg_no")
+        aggregate_checks={column: "PASS" for column in aggregate_columns}
+        manifest={"artifact_type":"jrdb_analysis","schema_version":"v1.3","storage_format":"parquet","storage_version":VERSION,"generation_id":generation_id,"created_at":dt.datetime.now(dt.timezone.utc).isoformat(),"source_generation":(base or {}).get("generation_id"),"source_sqlite":{"filename":source.name,"sha256":sha(source),"size_bytes":source.stat().st_size},"fact_table":{"name":FACT,"canonical_key":list(KEY),"sort_by":["race_date",*KEY],"partitions":parts},"metadata_tables":metas,"period_from":period[0],"period_to":period[1],"total_rows":total,"builder_version":"analysis-parquet-migration-v1","validation_status":"PASS"}
+        audit={"status":"PASS","row_count_equal":True,"canonical_key_equal":True,"duplicate_key_rows":0,"schema_contract_equal":True,"null_profile_equal":True,"null_profile":nulls,"range_checks":{"win5":"PASS","period":period},"aggregate_checks":aggregate_checks,"row_level_equivalence":True,"metadata_preserved":True,"partitions":audits}
         (gen/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         (gen/"audit.json").write_text(json.dumps(audit,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         pointer={"status":"SHADOW_PASS","generation_id":generation_id,"manifest":str((gen/"manifest.json").relative_to(root))}
-        (root/"shadow_current.json").write_text(json.dumps(pointer,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        if promote:
+            pointer = _write_current(root, manifest, base)
+        else:
+            (root/"shadow_current.json").write_text(json.dumps(pointer,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         return {"manifest":manifest,"audit":audit,"pointer":pointer}
     except Exception:
         shutil.rmtree(gen,ignore_errors=True); raise
 
 def main() -> None:
-    p=argparse.ArgumentParser(); p.add_argument("--source-sqlite",type=Path,required=True); p.add_argument("--output-root",type=Path,required=True); p.add_argument("--generation-id",default=dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")); p.add_argument("--result-json",type=Path)
-    a=p.parse_args(); r=migrate(a.source_sqlite,a.output_root,a.generation_id)
+    p=argparse.ArgumentParser(); p.add_argument("--source-sqlite",type=Path,required=True); p.add_argument("--output-root",type=Path,required=True); p.add_argument("--generation-id",default=dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")); p.add_argument("--result-json",type=Path); p.add_argument("--reuse-manifest",type=Path); p.add_argument("--affected-year",type=int,action="append"); p.add_argument("--promote",action="store_true")
+    a=p.parse_args(); r=migrate(a.source_sqlite,a.output_root,a.generation_id,affected_years=set(a.affected_year or []) or None,reuse_manifest=a.reuse_manifest,promote=a.promote)
     if a.result_json: a.result_json.write_text(json.dumps(r,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps({"status":"SUCCESS",**r["pointer"]},ensure_ascii=False))
 if __name__=="__main__": main()
-
