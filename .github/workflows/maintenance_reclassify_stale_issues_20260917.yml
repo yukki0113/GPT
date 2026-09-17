@@ -1,0 +1,97 @@
+name: One-off stale issue reclassification 20260917
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  reclassify:
+    if: github.event.issue.title == '[MAINTENANCE_RECLASSIFY_STALE_ISSUES_20260917_RUN]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reclassify issues closed by the prior cleanup
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          TRIGGER_ISSUE: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t targets < <(
+            gh api --paginate \
+              "/repos/${REPOSITORY}/issues?state=closed&per_page=100&since=2026-09-17T08:30:00Z" \
+              --jq '.[]
+                | select(has("pull_request") | not)
+                | select(.number < 1050)
+                | select(.number != 1045)
+                | select(.state_reason == "not_planned")
+                | select(.closed_at >= "2026-09-17T08:32:39Z" and .closed_at <= "2026-09-17T08:35:34Z")
+                | .number'
+          )
+
+          completed_count=0
+          not_planned_count=0
+          duplicate_count=0
+          failed_count=0
+          target_count=0
+
+          for issue_number in "${targets[@]}"; do
+            target_count=$((target_count + 1))
+            issue_json="$(gh api "/repos/${REPOSITORY}/issues/${issue_number}")"
+            title="$(jq -r '.title // ""' <<<"${issue_json}")"
+            body="$(jq -r '.body // ""' <<<"${issue_json}")"
+            comments="$(gh api --paginate "/repos/${REPOSITORY}/issues/${issue_number}/comments?per_page=100" --jq '.[].body' || true)"
+            combined="$(printf '%s\n%s\n%s\n' "${title}" "${body}" "${comments}" | tr '[:upper:]' '[:lower:]')"
+
+            success=0
+            failure=0
+            retryish=0
+
+            if grep -Eqi 'status["[:space:]:=_-]*(pass|success)|validation_status["[:space:]:=_-]*success|completed successfully|finished|passed|successfully|pushed to main|commit[[:space:]:]+[0-9a-f]{7,40}|upload(ed)? successfully|publish(ed)? successfully|canonical candidate passed|migration finished|dual shadow finished' <<<"${combined}"; then
+              success=1
+            fi
+
+            if grep -Eqi 'status["[:space:]:=_-]*(fail|failure)|failed|error:|timed out|timeout|validation failed|publish failed|migration failed|apply --check failed' <<<"${combined}"; then
+              failure=1
+            fi
+
+            if grep -Eqi '(^|[^a-z0-9])(retry|second retry|final retry|r[2-9]|v[2-9]|rerun|diagnostic)([^a-z0-9]|$)' <<<"${title}"; then
+              retryish=1
+            fi
+
+            reason="completed"
+            if (( success == 1 )); then
+              reason="completed"
+            elif (( failure == 1 )); then
+              reason="not_planned"
+            elif (( retryish == 1 )); then
+              reason="duplicate"
+            else
+              reason="completed"
+            fi
+
+            if gh api --method PATCH "/repos/${REPOSITORY}/issues/${issue_number}" -f state=closed -f state_reason="${reason}" >/dev/null; then
+              case "${reason}" in
+                completed) completed_count=$((completed_count + 1)) ;;
+                not_planned) not_planned_count=$((not_planned_count + 1)) ;;
+                duplicate) duplicate_count=$((duplicate_count + 1)) ;;
+              esac
+            else
+              failed_count=$((failed_count + 1))
+            fi
+            sleep 0.15
+          done
+
+          summary="Reclassification finished. Targets: ${target_count}. completed: ${completed_count}. not_planned: ${not_planned_count}. duplicate: ${duplicate_count}. failed: ${failed_count}. #1045 remained open."
+          gh issue comment "${TRIGGER_ISSUE}" --repo "${REPOSITORY}" --body "${summary}"
+
+          if (( failed_count > 0 )); then
+            exit 1
+          fi
+
+          gh api --method PATCH "/repos/${REPOSITORY}/issues/${TRIGGER_ISSUE}" -f state=closed -f state_reason=completed >/dev/null
