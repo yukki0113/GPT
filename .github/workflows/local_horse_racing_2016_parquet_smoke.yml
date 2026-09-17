@@ -1,0 +1,150 @@
+name: Local horse racing 2016 Parquet smoke
+
+on:
+  push:
+    paths:
+      - '.github/workflows/local_horse_racing_2016_parquet_smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/data-storage/requirements.txt
+
+      - name: Install shared storage dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+
+      - name: Download historical NAR backfill artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nar-race-2016-01-2025-12-nar-race-201601-202512-20260911
+          github-token: ${{ github.token }}
+          repository: yukki0113/GPT
+          run-id: 34512016674
+          path: input
+
+      - name: Build 2016 canonical Parquet
+        env:
+          PYTHONPATH: local-horse-racing:tools/data-storage
+        run: |
+          set -euo pipefail
+          mkdir -p stage parquet audit
+          args=()
+          for f in input/raw/2016*_race.zip; do
+            args+=(--input "$f")
+          done
+          test "${#args[@]}" -eq 12
+          python -m nar.canonical.build \
+            "${args[@]}" \
+            --staging-dir stage \
+            --parquet-dir parquet \
+            --audit-dir audit \
+            --validate-asof \
+            > build_output.json
+
+      - name: Validate 2016 real-data smoke
+        env:
+          PYTHONPATH: local-horse-racing:tools/data-storage
+        run: |
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+          import duckdb
+
+          summary = json.loads(Path('stage/control/build_summary.json').read_text(encoding='utf-8'))
+          assert summary['status'] == 'success', summary
+          assert summary['monthly_zip_count'] == 12, summary['monthly_zip_count']
+
+          expected_tables = {
+              'pre_race', 'pre_runner', 'pre_runner_history_snapshot',
+              'post_race_result', 'post_runner_result', 'post_payout',
+              'control_race_status'
+          }
+          assert set(summary['row_counts']) == expected_tables
+          assert summary['row_counts']['pre_race'] > 14000
+          assert summary['row_counts']['pre_runner'] > 140000
+          assert summary['row_counts']['post_payout'] > 160000
+
+          banned_pre_runner = {'finish_position', 'finish_time_seconds', 'final_3f_seconds', 'popularity'}
+          with Path('stage/pre_runner.csv').open(encoding='utf-8-sig', newline='') as fh:
+              header = next(csv.reader(fh))
+          assert not (banned_pre_runner & set(header)), banned_pre_runner & set(header)
+
+          report = summary['leakage_validation']
+          assert report and 'fields' in report
+          for field in ('overall_record_raw', 'jockey_record_raw', 'venue_record_raw',
+                        'venue_distance_record_raw', 'best_time_seconds', 'best_time_good_seconds'):
+              item = report['fields'][field]
+              checked = item.get('matched_pairs', 0) + item.get('mismatched_pairs', 0)
+              assert checked > 0, (field, item)
+
+          con = duckdb.connect()
+          table_paths = {
+              'pre_race': 'parquet/pre/race/**/*.parquet',
+              'pre_runner': 'parquet/pre/runner/**/*.parquet',
+              'pre_runner_history_snapshot': 'parquet/pre/runner_history_snapshot/**/*.parquet',
+              'post_race_result': 'parquet/post/race_result/**/*.parquet',
+              'post_runner_result': 'parquet/post/runner_result/**/*.parquet',
+              'post_payout': 'parquet/post/payout/**/*.parquet',
+              'control_race_status': 'parquet/control/race_status/**/*.parquet',
+          }
+          parquet_counts = {}
+          for name, path in table_paths.items():
+              count = con.execute(
+                  "select count(*) from read_parquet(?, hive_partitioning=true)", [path]
+              ).fetchone()[0]
+              parquet_counts[name] = count
+              assert count == summary['row_counts'][name], (name, count, summary['row_counts'][name])
+
+          status_rows = con.execute(
+              "select status, count(*) from read_parquet('parquet/control/race_status/**/*.parquet', hive_partitioning=true) group by status order by status"
+          ).fetchall()
+          leakage_rows = con.execute(
+              "select leakage_status, count(*) from read_parquet('parquet/pre/runner_history_snapshot/**/*.parquet', hive_partitioning=true) group by leakage_status order by leakage_status"
+          ).fetchall()
+          assert leakage_rows == [('PENDING_VALIDATION', summary['row_counts']['pre_runner_history_snapshot'])], leakage_rows
+
+          output = {
+              'status': 'success',
+              'source_year': 2016,
+              'monthly_zip_count': summary['monthly_zip_count'],
+              'row_counts': summary['row_counts'],
+              'parquet_row_counts': parquet_counts,
+              'race_status_counts': dict(status_rows),
+              'historical_reconciliation': summary.get('historical_reconciliation'),
+              'leakage_validation': report,
+          }
+          Path('smoke_report.json').write_text(json.dumps(output, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(output, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Run focused project and shared tests
+        env:
+          PYTHONPATH: local-horse-racing:tools/data-storage
+        run: |
+          python -m unittest discover -s local-horse-racing/tests -v
+          python -m pytest tools/data-storage/tests -q
+
+      - name: Upload smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-horse-racing-2016-parquet-smoke
+          path: |
+            parquet/
+            audit/
+            stage/control/
+            smoke_report.json
+            build_output.json
+          retention-days: 7
