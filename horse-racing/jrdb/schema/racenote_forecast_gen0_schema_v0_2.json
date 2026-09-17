@@ -19,9 +19,10 @@
     "evaluation_mode": {"enum": ["BLINDED_HISTORICAL", "TRUE_FORWARD"]},
     "source": {
       "type": "object",
-      "required": ["schema", "source_semantic_sha256", "independent_semantic_sha256", "artifact_ref", "firewall_version"],
+      "required": ["schema", "reader_view_version", "source_semantic_sha256", "independent_semantic_sha256", "artifact_ref", "firewall_version"],
       "properties": {
         "schema": {"type": "string"},
+        "reader_view_version": {"type": "string", "minLength": 1},
         "source_semantic_sha256": {"$ref": "#/$defs/sha256"},
         "independent_semantic_sha256": {"$ref": "#/$defs/sha256"},
         "artifact_ref": {"type": "string", "minLength": 1},
