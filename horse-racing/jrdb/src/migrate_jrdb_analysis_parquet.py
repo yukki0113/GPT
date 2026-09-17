@@ -114,7 +114,7 @@ def equivalent_table(sqlite_path: Path, parquet_path: Path, table: str, order_by
     return {"rows": sqlite_rows, "canonical_row_hash": sqlite_hash, "schema": source_columns}
 
 def migrate(source: Path, root: Path, generation_id: str) -> dict[str, Any]:
-    source=source.resolve(); gen=root.resolve()/"generations"/generation_id
+    source=source.resolve(); root=root.resolve(); gen=root/"generations"/generation_id
     if gen.exists(): raise FileExistsError(gen)
     with sqlite3.connect(f"file:{source}?mode=ro",uri=True) as c:
         if scalar(c, "PRAGMA integrity_check")!="ok": raise RuntimeError("Analysis integrity_check failed")
