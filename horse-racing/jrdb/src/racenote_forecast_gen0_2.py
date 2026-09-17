@@ -36,11 +36,18 @@ FACTOR_NAMES = {
     "E01": "EdgeDB performance signal",
 }
 
+LEDGER_IMPORTANCE = {
+    "STRONG": "HIGH",
+    "MEDIUM": "MEDIUM",
+    "WEAK": "LOW",
+    "NOT_USED": "NOT_USED",
+}
+
 ALLOWED_MARKS = {"◎", "○", "▲", "△", ""}
 ALLOWED_CONFIDENCE = {"A", "B", "C"}
 ALLOWED_EVALUATION_MODES = {"BLINDED_HISTORICAL", "TRUE_FORWARD"}
 ALLOWED_DIRECTION = {"POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL", "NONE"}
-ALLOWED_IMPACT = {"STRONG", "MEDIUM", "WEAK", "NOT_USED"}
+ALLOWED_IMPACT = set(LEDGER_IMPORTANCE)
 ALLOWED_EVIDENCE_QUALITY = {"GOOD", "MIXED", "POOR", "MISSING"}
 ALLOWED_SCOPE = {"RACE", "HORSE"}
 FORBIDDEN_RESULT_KEYS = {
@@ -281,6 +288,7 @@ def validate_forecast(payload: Mapping[str, Any]) -> dict[str, Any]:
     generation_id = _text(src.get("generation_id", DEFAULT_GENERATION_ID), "generation_id")
     source = dict(_mapping(src.get("source"), "source"))
     source["schema"] = _text(source.get("schema"), "source.schema")
+    source["reader_view_version"] = _text(source.get("reader_view_version"), "source.reader_view_version")
     source["independent_semantic_sha256"] = _sha(source.get("independent_semantic_sha256"), "source.independent_semantic_sha256")
     source["source_semantic_sha256"] = _sha(source.get("source_semantic_sha256"), "source.source_semantic_sha256")
     source["artifact_ref"] = _text(source.get("artifact_ref"), "source.artifact_ref")
@@ -499,7 +507,7 @@ def to_ledger_rows(frozen: Mapping[str, Any]) -> dict[str, list[dict[str, Any]]]
         factor_rows.append({
             "forecast_id": row["forecast_id"], "generation_id": row["generation_id"], "race_key": row["race_key"],
             "horse_no": "" if f.get("horse_no") is None else f["horse_no"], "factor_code": f["factor_code"],
-            "factor_name": f["factor_name"], "scope": f["scope"], "importance": f["impact"],
+            "factor_name": f["factor_name"], "scope": f["scope"], "importance": LEDGER_IMPORTANCE[f["impact"]],
             "direction": f["direction"], "role": str(f.get("role", "SUPPORT")),
             "judgment_summary": str(f.get("judgment_summary", "")), "evidence_summary": str(f.get("evidence_summary", "")),
             "evidence_ref": str(f.get("evidence_ref", "")), "pre_result_note": str(f.get("pre_result_note", "")),
@@ -511,7 +519,7 @@ def to_ledger_rows(frozen: Mapping[str, Any]) -> dict[str, list[dict[str, Any]]]
     freeze_row = {
         "forecast_id": row["forecast_id"], "generation_id": row["generation_id"], "target_date": row["target_date"],
         "venue": row["venue"], "race_no": row["race_no"], "race_key": row["race_key"], "source_schema": row["source"]["schema"],
-        "reader_view_version": row["source"].get("firewall_version", ""), "source_semantic_sha256": row["source"]["source_semantic_sha256"],
+        "reader_view_version": row["source"]["reader_view_version"], "source_semantic_sha256": row["source"]["source_semantic_sha256"],
         "source_artifact_ref": row["source"]["artifact_ref"], "forecast_version": row["forecast_version"],
         "factor_set_version": row["factor_set_version"], "forecast_created_at": row["forecast_created_at"],
         "pre_race_guard_status": row["pre_race_guard_status"], "result_visibility_status": row["result_visibility_status"],
@@ -524,7 +532,7 @@ def to_ledger_rows(frozen: Mapping[str, Any]) -> dict[str, list[dict[str, Any]]]
         "confidence": row["final_prediction"]["confidence"], "axis_reason": row["final_prediction"]["axis_reason"],
         "uncertainty_summary": row["final_prediction"].get("uncertainty_reasons", ""), "alternatives": str(row["final_prediction"].get("alternatives", "")),
         "prediction_hash": row["prediction_hash"], "freeze_status": row["freeze_status"], "frozen_at": row["frozen_at"],
-        "notes": f'base_snapshot_hash={row["base_snapshot_hash"]}', "evaluation_mode": row["evaluation_mode"],
+        "notes": f'base_snapshot_hash={row["base_snapshot_hash"]}; firewall_version={row["source"]["firewall_version"]}', "evaluation_mode": row["evaluation_mode"],
     }
     return {"予想Freeze": [freeze_row], "馬別評価": horse_rows, "ファクター使用": factor_rows, "Freeze監査": [audit], "確率評価": prob_rows, "EdgeDB補正": edge_rows}
 
