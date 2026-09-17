@@ -1,0 +1,289 @@
+name: RaceNote Gen0 sample manifest
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_GEN0_SAMPLE]'
+
+jobs:
+  build-sample:
+    if: >
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_GEN0_SAMPLE]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install downloader
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ['ISSUE_TITLE']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          try:
+              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          analysis_url = str(request.get('analysis_url', '')).strip()
+          generation_id = str(request.get('generation_id', '')).strip()
+          seed = str(request.get('seed', '')).strip()
+          expected_pool = str(request.get('expected_candidate_pool_sha256', '')).strip().lower()
+          if not analysis_url.startswith('https://drive.google.com/'):
+              raise SystemExit('analysis_url must be a Google Drive URL')
+          if not re.fullmatch(r'Gen0-G\d{3,}', generation_id):
+              raise SystemExit('invalid generation_id')
+          if not seed:
+              raise SystemExit('seed is required')
+          if expected_pool and not re.fullmatch(r'[0-9a-f]{64}', expected_pool):
+              raise SystemExit('expected_candidate_pool_sha256 must be 64 lowercase hex chars')
+
+          normalized = {
+              'request_id': request_id,
+              'analysis_url': analysis_url,
+              'generation_id': generation_id,
+              'seed': seed,
+              'expected_candidate_pool_sha256': expected_pool or None,
+              'primary_count': int(request.get('primary_count', 50)),
+              'reserve_count': int(request.get('reserve_count', 20)),
+              'max_per_date': int(request.get('max_per_date', 3)),
+              'min_surface_share': float(request.get('min_surface_share', 0.30)),
+              'date_from': request.get('date_from'),
+              'date_to': request.get('date_to'),
+          }
+          if normalized['primary_count'] != 50 or normalized['reserve_count'] != 20:
+              raise SystemExit('Gen0 production preflight requires primary_count=50 and reserve_count=20')
+          if normalized['max_per_date'] != 3:
+              raise SystemExit('Gen0 production preflight requires max_per_date=3')
+          if abs(normalized['min_surface_share'] - 0.30) > 1e-12:
+              raise SystemExit('Gen0 production preflight requires min_surface_share=0.30')
+
+          Path('/tmp/request.json').write_text(
+              json.dumps(normalized, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Download and materialize Analysis SQLite
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import shutil
+          import subprocess
+          import zipfile
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          downloaded = Path('/tmp/analysis.download')
+          sqlite_path = Path('/tmp/jrdb_analysis.sqlite')
+          subprocess.run(['gdown', request['analysis_url'], '-O', str(downloaded)], check=True)
+
+          if zipfile.is_zipfile(downloaded):
+              with zipfile.ZipFile(downloaded) as archive:
+                  bad = archive.testzip()
+                  if bad is not None:
+                      raise SystemExit(f'Analysis ZIP has bad member: {bad}')
+                  members = [
+                      name for name in archive.namelist()
+                      if not name.endswith('/') and Path(name).name.lower().endswith('.sqlite')
+                  ]
+                  if len(members) != 1:
+                      raise SystemExit(f'Analysis ZIP must contain exactly one SQLite member: {members}')
+                  with archive.open(members[0]) as source, sqlite_path.open('wb') as target:
+                      shutil.copyfileobj(source, target, 1024 * 1024)
+          else:
+              shutil.copy2(downloaded, sqlite_path)
+
+          if sqlite_path.read_bytes()[:16] != b'SQLite format 3\x00':
+              raise SystemExit('materialized Analysis is not SQLite')
+
+          def sha256(path: Path) -> str:
+              digest = hashlib.sha256()
+              with path.open('rb') as handle:
+                  for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          Path('/tmp/source_integrity.json').write_text(
+              json.dumps({
+                  'download_sha256': sha256(downloaded),
+                  'sqlite_sha256': sha256(sqlite_path),
+                  'sqlite_size_bytes': sqlite_path.stat().st_size,
+              }, indent=2) + '\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Build immutable sample manifest
+        run: |
+          set -euo pipefail
+          mkdir -p output/racenote-gen0-sample
+          args=(
+            --db /tmp/jrdb_analysis.sqlite
+            --generation-id "$(python -c "import json;print(json.load(open('/tmp/request.json'))['generation_id'])")"
+            --seed "$(python -c "import json;print(json.load(open('/tmp/request.json'))['seed'])")"
+            --out-manifest output/racenote-gen0-sample/sample_manifest.json
+            --out-queue-csv output/racenote-gen0-sample/queue.csv
+            --primary-count 50
+            --reserve-count 20
+            --max-per-date 3
+            --min-surface-share 0.30
+          )
+          date_from=$(python -c "import json;print(json.load(open('/tmp/request.json')).get('date_from') or '')")
+          date_to=$(python -c "import json;print(json.load(open('/tmp/request.json')).get('date_to') or '')")
+          if [ -n "$date_from" ]; then args+=(--date-from "$date_from"); fi
+          if [ -n "$date_to" ]; then args+=(--date-to "$date_to"); fi
+          python horse-racing/jrdb/src/build_racenote_gen0_sample_manifest.py "${args[@]}" | tee /tmp/sampler_stdout.txt
+
+      - name: Audit sample
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          import sqlite3
+          from collections import Counter
+          from pathlib import Path
+          import build_racenote_gen0_sample_manifest as sampler
+
+          request = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          manifest_path = Path('output/racenote-gen0-sample/sample_manifest.json')
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          integrity = json.loads(Path('/tmp/source_integrity.json').read_text(encoding='utf-8'))
+
+          with sqlite3.connect('/tmp/jrdb_analysis.sqlite') as connection:
+              sampler.validate_source_schema(connection)
+              candidates = sampler.load_candidates(
+                  connection,
+                  request.get('date_from'),
+                  request.get('date_to'),
+              )
+              schema_columns = [row[1] for row in connection.execute(
+                  f'PRAGMA table_info({sampler.SOURCE_TABLE})'
+              ).fetchall()]
+
+          races = manifest['races']
+          primary = [r for r in races if r['sample_role'] == 'PRIMARY']
+          reserve = [r for r in races if r['sample_role'] == 'RESERVE']
+          checks = {}
+          checks['sampler_version_0_1_1'] = manifest['version'] == '0.1.1'
+          checks['generation_matches'] = manifest['generation_id'] == request['generation_id']
+          checks['seed_matches'] = manifest['seed'] == request['seed']
+          checks['primary_50'] = len(primary) == 50
+          checks['reserve_20'] = len(reserve) == 20
+          checks['unique_70'] = len({r['race_key'] for r in races}) == 70
+          checks['flat_only'] = all(str(r['surface_code']) in {'1','2'} for r in races)
+          checks['result_columns_selected_false'] = manifest['selection_policy']['result_columns_selected'] is False
+
+          def role_checks(rows):
+              dates = Counter(str(r['race_date']) for r in rows)
+              surfaces = Counter(str(r['surface_code']) for r in rows)
+              return {
+                  'max_races_per_date': max(dates.values()) if dates else 0,
+                  'surface_counts': dict(sorted(surfaces.items())),
+                  'date_cap_ok': not dates or max(dates.values()) <= 3,
+                  'surface_share_ok': all(surfaces.get(code, 0) / len(rows) >= 0.30 for code in ('1','2')),
+              }
+
+          primary_audit = role_checks(primary)
+          reserve_audit = role_checks(reserve)
+          checks['primary_date_cap'] = primary_audit['date_cap_ok']
+          checks['reserve_date_cap'] = reserve_audit['date_cap_ok']
+          checks['primary_surface_share'] = primary_audit['surface_share_ok']
+          checks['reserve_surface_share'] = reserve_audit['surface_share_ok']
+
+          expected_pool = request.get('expected_candidate_pool_sha256')
+          pool_match = None if not expected_pool else manifest['candidate_pool_sha256'] == expected_pool
+          if expected_pool:
+              checks['candidate_pool_matches_expected'] = pool_match
+
+          forbidden_manifest_keys = {
+              'finish_position', 'rank', 'final_odds', 'odds', 'popularity',
+              'payout', 'win_payout', 'place_payout', 'result', 'winner'
+          }
+          observed_keys = set().union(*(set(r.keys()) for r in races)) if races else set()
+          checks['no_forbidden_manifest_keys'] = not (observed_keys & forbidden_manifest_keys)
+
+          audit = {
+              'status': 'PASS' if all(checks.values()) else 'FAIL',
+              'request_id': request['request_id'],
+              'generation_id': manifest['generation_id'],
+              'seed': manifest['seed'],
+              'sampler_version': manifest['version'],
+              'source_table': sampler.SOURCE_TABLE,
+              'source_integrity': integrity,
+              'source_schema_column_count': len(schema_columns),
+              'candidate_count': len(candidates),
+              'candidate_pool_sha256': manifest['candidate_pool_sha256'],
+              'expected_candidate_pool_sha256': expected_pool,
+              'candidate_pool_matches_expected': pool_match,
+              'manifest_id': manifest['manifest_id'],
+              'manifest_sha256': manifest['manifest_sha256'],
+              'primary': primary_audit,
+              'reserve': reserve_audit,
+              'checks': checks,
+          }
+          Path('output/racenote-gen0-sample/preflight_audit.json').write_text(
+              json.dumps(audit, ensure_ascii=False, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          if audit['status'] != 'PASS':
+              raise SystemExit(json.dumps(audit, ensure_ascii=False, indent=2))
+          print(json.dumps(audit, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload preflight artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-gen0-sample-${{ github.event.issue.number }}-${{ github.run_id }}
+          path: output/racenote-gen0-sample/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          audit_path = Path('output/racenote-gen0-sample/preflight_audit.json')
+          if audit_path.exists():
+              audit = json.loads(audit_path.read_text(encoding='utf-8'))
+              body = 'RACENOTE_GEN0_SAMPLE_RESULT\n```json\n' + json.dumps(audit, ensure_ascii=False, indent=2) + '\n```'
+          else:
+              body = 'RACENOTE_GEN0_SAMPLE_RESULT\n```json\n{"status":"FAIL","error":"preflight_audit.json was not produced"}\n```'
+          Path('/tmp/comment.md').write_text(body + '\n', encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
