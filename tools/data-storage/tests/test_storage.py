@@ -11,6 +11,7 @@ import pytest
 from data_storage.benchmark import benchmark
 from data_storage.config import load_config
 from data_storage.query import execute_query
+from data_storage.common import parquet_glob
 from data_storage.runner import run_config
 from data_storage.errors import ConfigError
 
@@ -111,3 +112,9 @@ def test_existing_target_fails_closed(tmp_path: Path):
     assert run_config(config)["status"] == "success"
     with pytest.raises(ConfigError, match="target already exists"):
         run_config(config)
+
+
+def test_explicit_parquet_glob_is_preserved(tmp_path: Path):
+    pattern = str(tmp_path / "objects" / "**" / "*.parquet")
+    assert parquet_glob(pattern) == pattern
+
