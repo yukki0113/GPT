@@ -8,6 +8,11 @@ from .schema import TABLE_SPECS, TableSpec
 def make_storage_config(csv_path: Path, target_root: Path, audit_root: Path, spec: TableSpec) -> dict:
     target = target_root / spec.relative_path
     audit = audit_root / (spec.name + ".audit.json")
+    partition_columns = set(spec.partition_by)
+    # DuckDB read_parquet(..., hive_partitioning=true) exposes Hive partition columns
+    # after physical Parquet columns. Keep exact-column validation enabled, but expect
+    # that deterministic logical order instead of the staging CSV order.
+    expected_columns = [name for name in spec.schema if name not in partition_columns] + list(spec.partition_by)
     return {
         "dataset": {"name": f"local-horse-racing.{spec.name}"},
         "source": {
@@ -29,7 +34,7 @@ def make_storage_config(csv_path: Path, target_root: Path, audit_root: Path, spe
             "require_unique_key": True,
             "require_row_count_match": True,
             "non_null_columns": list(spec.non_null_columns),
-            "expected_columns": list(spec.schema),
+            "expected_columns": expected_columns,
         },
         "audit": {"path": str(audit)},
     }
