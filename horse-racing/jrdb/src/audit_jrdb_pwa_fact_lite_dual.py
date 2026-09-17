@@ -72,6 +72,33 @@ def _columns(path: Path, table: str) -> list[str]:
     with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
         return [row[1] for row in db.execute(f'PRAGMA table_info("{table}")')]
 
+def _first_sqlite_difference(
+    left_path: Path, right_path: Path, table: str, columns: list[str]
+) -> dict[str, Any]:
+    order = ",".join(f'"{item}" NULLS FIRST' for item in columns)
+    selected = ",".join(f'"{item}"' for item in columns)
+    query = f'SELECT {selected} FROM "{table}" ORDER BY {order}'
+    with sqlite3.connect(f"file:{left_path}?mode=ro", uri=True) as left, sqlite3.connect(
+        f"file:{right_path}?mode=ro", uri=True
+    ) as right:
+        ordinal = 0
+        left_cursor, right_cursor = left.execute(query), right.execute(query)
+        while True:
+            left_row, right_row = left_cursor.fetchone(), right_cursor.fetchone()
+            if left_row == right_row:
+                if left_row is None:
+                    return {"ordinal": ordinal, "equal": True}
+                ordinal += 1
+                continue
+            return {
+                "ordinal": ordinal,
+                "legacy": None if left_row is None else [_value(value) for value in left_row],
+                "new_sqlite": None
+                if right_row is None
+                else [_value(value) for value in right_row],
+            }
+
+
 
 def audit(legacy: Path, new_sqlite: Path, parquet: Path) -> dict[str, Any]:
     report: dict[str, Any] = {"status": "PASS", "tables": {}}
@@ -81,7 +108,11 @@ def audit(legacy: Path, new_sqlite: Path, parquet: Path) -> dict[str, Any]:
         new_value = _sqlite_table(new_sqlite, table, columns)
         parquet_value = _parquet_table(parquet, table, columns)
         if legacy_value != new_value:
-            raise RuntimeError(f"Legacy SQLite != new SQLite: {table}")
+            detail = _first_sqlite_difference(legacy, new_sqlite, table, columns)
+            raise RuntimeError(
+                f"Legacy SQLite != new SQLite: {table}; "
+                f"first_difference={json.dumps(detail, ensure_ascii=False)}"
+            )
         if new_value != parquet_value:
             raise RuntimeError(f"new SQLite != Parquet: {table}")
         report["tables"][table] = {"rows": legacy_value[0], "canonical_row_hash": legacy_value[1]}
