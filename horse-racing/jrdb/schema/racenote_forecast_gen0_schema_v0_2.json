@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yukki0113/GPT/horse-racing/jrdb/schema/racenote_forecast_gen0_schema_v0_2.json",
+  "title": "RaceNote Forecast Gen0.2 pre-result payload v0.2",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "generation_id", "target_date", "venue", "race_no", "race_key",
+    "evaluation_mode", "source", "input_firewall", "edge_source",
+    "forecast_created_at", "pre_race_guard_status", "result_visibility_status",
+    "race_reading", "horses", "factor_usage", "final_prediction"
+  ],
+  "properties": {
+    "generation_id": {"type": "string", "minLength": 1},
+    "target_date": {"type": "string", "format": "date"},
+    "venue": {"type": "string", "minLength": 1},
+    "race_no": {"type": "integer", "minimum": 1},
+    "race_key": {"type": "string", "minLength": 1},
+    "evaluation_mode": {"enum": ["BLINDED_HISTORICAL", "TRUE_FORWARD"]},
+    "source": {
+      "type": "object",
+      "required": ["schema", "source_semantic_sha256", "independent_semantic_sha256", "artifact_ref", "firewall_version"],
+      "properties": {
+        "schema": {"type": "string"},
+        "source_semantic_sha256": {"$ref": "#/$defs/sha256"},
+        "independent_semantic_sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_ref": {"type": "string", "minLength": 1},
+        "firewall_version": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "input_firewall": {
+      "type": "object",
+      "required": ["jrdb_consensus_visibility_status", "market_visibility_status", "training_edge_forecast_status", "independent_view_audit_status"],
+      "properties": {
+        "jrdb_consensus_visibility_status": {"const": "HIDDEN"},
+        "market_visibility_status": {"const": "HIDDEN"},
+        "training_edge_forecast_status": {"const": "NOT_USED"},
+        "independent_view_audit_status": {"const": "PASS"}
+      },
+      "additionalProperties": true
+    },
+    "edge_source": {
+      "type": "object",
+      "required": ["status", "performance_only", "value_signal_visibility_status", "asof_status"],
+      "properties": {
+        "status": {"enum": ["USED", "NO_MATCH", "UNAVAILABLE"]},
+        "performance_only": {"const": true},
+        "value_signal_visibility_status": {"const": "HIDDEN_FROM_FORECAST"},
+        "asof_status": {"enum": ["PASS", "NOT_APPLICABLE"]},
+        "matcher_version": {"type": "string"},
+        "catalog_ref": {"type": "string"},
+        "catalog_semantic_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": true
+    },
+    "forecast_created_at": {"type": "string", "format": "date-time"},
+    "pre_race_guard_status": {"const": "PASS"},
+    "result_visibility_status": {"const": "HIDDEN"},
+    "race_reading": {
+      "type": "object",
+      "required": ["shape_summary", "expected_pace", "important_condition_factors", "primary_factor_codes", "de_emphasized_factor_codes"],
+      "properties": {
+        "shape_summary": {"type": "string"},
+        "expected_pace": {"type": "string"},
+        "important_condition_factors": {"type": "string"},
+        "primary_factor_codes": {"$ref": "#/$defs/factorCodes"},
+        "de_emphasized_factor_codes": {"$ref": "#/$defs/factorCodes"}
+      },
+      "additionalProperties": true
+    },
+    "horses": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/horse"}},
+    "factor_usage": {"type": "array", "items": {"$ref": "#/$defs/factorUsage"}},
+    "final_prediction": {
+      "type": "object",
+      "required": ["axis_horse_no", "confidence", "axis_reason", "evidence_uncertainty", "uncertainty_reasons"],
+      "properties": {
+        "axis_horse_no": {"type": "integer", "minimum": 1},
+        "confidence": {"enum": ["A", "B", "C"]},
+        "axis_reason": {"type": "string", "minLength": 1},
+        "evidence_uncertainty": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+        "uncertainty_reasons": {"type": "string"},
+        "alternatives": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "factorCode": {"enum": ["F01", "F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09", "E01"]},
+    "factorCodes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/factorCode"}},
+    "prob": {"type": "number", "minimum": 0, "maximum": 1},
+    "horse": {
+      "type": "object",
+      "required": ["horse_no", "horse_name", "base_rank", "final_rank", "mark", "p_win_base", "p_top2_base", "p_top3_base", "p_win_final", "p_top2_final", "p_top3_final", "primary_factor_codes", "supporting_factor_codes", "risk_factor_codes", "edge_overlay"],
+      "properties": {
+        "horse_no": {"type": "integer", "minimum": 1},
+        "horse_name": {"type": "string", "minLength": 1},
+        "base_rank": {"type": "integer", "minimum": 1},
+        "final_rank": {"type": "integer", "minimum": 1},
+        "mark": {"enum": ["◎", "○", "▲", "△", ""]},
+        "p_win_base": {"$ref": "#/$defs/prob"},
+        "p_top2_base": {"$ref": "#/$defs/prob"},
+        "p_top3_base": {"$ref": "#/$defs/prob"},
+        "p_win_final": {"$ref": "#/$defs/prob"},
+        "p_top2_final": {"$ref": "#/$defs/prob"},
+        "p_top3_final": {"$ref": "#/$defs/prob"},
+        "primary_factor_codes": {"$ref": "#/$defs/factorCodes"},
+        "supporting_factor_codes": {"$ref": "#/$defs/factorCodes"},
+        "risk_factor_codes": {"$ref": "#/$defs/factorCodes"},
+        "edge_overlay": {
+          "type": "object",
+          "required": ["matched_edge_ids", "edge_families", "performance_signal_summary", "edge_adjustment_direction", "edge_adjustment_reason", "axis_changed_due_to_edge"],
+          "properties": {
+            "matched_edge_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "edge_families": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "performance_signal_summary": {"type": "string"},
+            "edge_adjustment_direction": {"enum": ["POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL", "NONE"]},
+            "edge_adjustment_reason": {"type": "string"},
+            "axis_changed_due_to_edge": {"type": "boolean"}
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "factorUsage": {
+      "type": "object",
+      "required": ["factor_code", "scope", "impact", "direction", "evidence_quality"],
+      "properties": {
+        "factor_code": {"$ref": "#/$defs/factorCode"},
+        "scope": {"enum": ["RACE", "HORSE"]},
+        "horse_no": {"type": ["integer", "null"], "minimum": 1},
+        "impact": {"enum": ["STRONG", "MEDIUM", "WEAK", "NOT_USED"]},
+        "direction": {"enum": ["POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL"]},
+        "evidence_quality": {"enum": ["GOOD", "MIXED", "POOR", "MISSING"]}
+      },
+      "additionalProperties": true
+    }
+  }
+}
