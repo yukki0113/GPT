@@ -17,6 +17,9 @@ concurrency:
 env:
   ISSUE_PREFIX: "[JRDB_PWA_FACT_LITE_PUBLISH]"
   FACT_RELEASE_TAG: jrdb-pwa-fact-lite-current
+  FACT_PARQUET_RELEASE_TAG: jrdb-pwa-fact-lite-parquet-current
+  FACT_PARQUET_RELEASE_ARCHIVE: jrdb_pwa_fact_lite_parquet_current.tar.xz
+  FACT_PARQUET_RELEASE_META: jrdb_pwa_fact_lite_parquet_current_release.json
   MART_RELEASE_TAG: jrdb-stats-mart-current
 
 jobs:
@@ -364,6 +367,67 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --clobber
 
+      - name: Package Fact Lite Parquet generation for browser delivery
+        if: env.ANALYSIS_PARQUET_GLOB != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=tools/data-storage python horse-racing/jrdb/src/package_jrdb_pwa_fact_lite_parquet.py package \
+            --parquet-dir .fact_publish/fact-parquet \
+            --equivalence-audit .fact_publish/equivalence_audit.json \
+            --data-version "$DATA_VERSION" \
+            --output-root .fact_publish/fact-parquet-release \
+            | tee .fact_publish/fact_parquet_package_result.json
+
+          tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
+            -cJf ".fact_publish/${FACT_PARQUET_RELEASE_ARCHIVE}" \
+            -C .fact_publish/fact-parquet-release current.json generations
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          package = json.loads(Path('.fact_publish/fact_parquet_package_result.json').read_text(encoding='utf-8'))
+          archive = Path('.fact_publish') / os.environ['FACT_PARQUET_RELEASE_ARCHIVE']
+          release = {
+              'schema_version': '0.1',
+              'release_kind': 'jrdb_fact_lite_parquet_current_cache',
+              'generation_id': package['generation_id'],
+              'archive_filename': archive.name,
+              'archive_size_bytes': archive.stat().st_size,
+              'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
+              'manifest_path': package['manifest_path'],
+              'manifest_size_bytes': package['manifest_size_bytes'],
+              'manifest_sha256': package['manifest_sha256'],
+              'asset_count': package['asset_count'],
+              'asset_size_bytes': package['asset_size_bytes'],
+          }
+          Path('.fact_publish', os.environ['FACT_PARQUET_RELEASE_META']).write_text(
+              json.dumps(release, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Publish Fact Lite Parquet release
+        if: env.ANALYSIS_PARQUET_GLOB != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh release view "$FACT_PARQUET_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$FACT_PARQUET_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "JRDB PWA Fact Lite Parquet current" \
+              --notes "Immutable Fact Lite Parquet browser-delivery cache. The generation manifest is authoritative; this Release is not the long-term data source of truth."
+          fi
+          gh release upload "$FACT_PARQUET_RELEASE_TAG" \
+            ".fact_publish/${FACT_PARQUET_RELEASE_ARCHIVE}" \
+            ".fact_publish/${FACT_PARQUET_RELEASE_META}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
       - name: Retain Fact Lite Parquet candidate
         if: env.ANALYSIS_PARQUET_GLOB != ''
         uses: actions/upload-artifact@v4
@@ -373,11 +437,14 @@ jobs:
           path: |
             .fact_publish/fact-parquet/**
             .fact_publish/equivalence_audit.json
+            .fact_publish/fact-parquet-release/**
+            .fact_publish/${{ env.FACT_PARQUET_RELEASE_ARCHIVE }}
+            .fact_publish/${{ env.FACT_PARQUET_RELEASE_META }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Prepare Pages artifact with both data sources
+      - name: Prepare Pages artifact with staged Fact Lite Parquet data
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -404,6 +471,12 @@ jobs:
 
           cp .fact_publish/jrdb_pwa_fact_lite.sqlite .pages/data/fact-lite/jrdb_pwa_fact_lite.sqlite
           cp .fact_publish/manifest.json .pages/data/fact-lite/manifest.json
+
+          if [ -d .fact_publish/fact-parquet-release ]; then
+            mkdir -p .pages/data/fact-lite-parquet
+            cp -a .fact_publish/fact-parquet-release/current.json .pages/data/fact-lite-parquet/current.json
+            cp -a .fact_publish/fact-parquet-release/generations .pages/data/fact-lite-parquet/generations
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

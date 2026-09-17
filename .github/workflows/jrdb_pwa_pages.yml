@@ -30,6 +30,9 @@ concurrency:
 env:
   DATA_RELEASE_TAG: jrdb-stats-mart-current
   FACT_RELEASE_TAG: jrdb-pwa-fact-lite-current
+  FACT_PARQUET_RELEASE_TAG: jrdb-pwa-fact-lite-parquet-current
+  FACT_PARQUET_RELEASE_ARCHIVE: jrdb_pwa_fact_lite_parquet_current.tar.xz
+  FACT_PARQUET_RELEASE_META: jrdb_pwa_fact_lite_parquet_current_release.json
   NEWSPAPER_RELEASE_TAG: jrdb-newspaper-current
   NEWSPAPER_RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
   NEWSPAPER_RELEASE_META: jrdb_newspaper_current_release.json
@@ -56,7 +59,7 @@ jobs:
           set -euo pipefail
 
           rm -rf .pages
-          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite
+          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite .pages/data/fact-lite-parquet
           cp -a horse-racing/jrdb/pwa/. .pages/
 
           curl --fail --location --retry 3 \
@@ -86,6 +89,60 @@ jobs:
             echo "Current Fact Lite release added to Pages artifact."
           else
             echo "No current Fact Lite release yet."
+          fi
+
+          if gh release view "$FACT_PARQUET_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            rm -rf .fact-parquet-release
+            mkdir -p .fact-parquet-release
+            gh release download "$FACT_PARQUET_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "$FACT_PARQUET_RELEASE_ARCHIVE" \
+              --pattern "$FACT_PARQUET_RELEASE_META" \
+              --dir .fact-parquet-release
+
+            python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import tarfile
+          from pathlib import Path, PurePosixPath
+
+          root = Path('.fact-parquet-release')
+          archive = root / os.environ['FACT_PARQUET_RELEASE_ARCHIVE']
+          meta = json.loads((root / os.environ['FACT_PARQUET_RELEASE_META']).read_text(encoding='utf-8'))
+          if meta.get('schema_version') != '0.1' or meta.get('release_kind') != 'jrdb_fact_lite_parquet_current_cache':
+              raise SystemExit('invalid Fact Lite Parquet release metadata')
+          if meta.get('archive_filename') != archive.name:
+              raise SystemExit('Fact Lite Parquet archive filename mismatch')
+          if archive.stat().st_size != int(meta.get('archive_size_bytes') or -1):
+              raise SystemExit('Fact Lite Parquet archive size mismatch')
+          if hashlib.sha256(archive.read_bytes()).hexdigest() != str(meta.get('archive_sha256') or ''):
+              raise SystemExit('Fact Lite Parquet archive SHA-256 mismatch')
+
+          extract = root / 'current'
+          extract.mkdir()
+          with tarfile.open(archive, mode='r:xz') as handle:
+              members = handle.getmembers()
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or '..' in path.parts or member.issym() or member.islnk():
+                      raise SystemExit(f'unsafe Fact Lite Parquet archive member: {member.name}')
+                  if not (member.isdir() or member.isfile()):
+                      raise SystemExit(f'unsupported Fact Lite Parquet archive member: {member.name}')
+              handle.extractall(extract, filter='data')
+          PY
+
+            PYTHONPATH=tools/data-storage python horse-racing/jrdb/src/package_jrdb_pwa_fact_lite_parquet.py verify \
+              --package-root .fact-parquet-release/current \
+              | tee .fact-parquet-release/verification.json
+
+            rm -rf .pages/data/fact-lite-parquet
+            mkdir -p .pages/data/fact-lite-parquet
+            cp -a .fact-parquet-release/current/current.json .pages/data/fact-lite-parquet/current.json
+            cp -a .fact-parquet-release/current/generations .pages/data/fact-lite-parquet/generations
+            echo "Current Fact Lite Parquet generation added to Pages artifact."
+          else
+            echo "No staged Fact Lite Parquet release yet; SQLite PWA delivery remains unchanged."
           fi
 
           if gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
