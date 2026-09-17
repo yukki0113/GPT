@@ -48,6 +48,7 @@ def _forecast():
         "evaluation_mode": "BLINDED_HISTORICAL",
         "source": {
             "schema": "1.0",
+            "reader_view_version": "0.1",
             "source_semantic_sha256": "a" * 64,
             "independent_semantic_sha256": "b" * 64,
             "artifact_ref": "test",
@@ -86,7 +87,7 @@ def _forecast():
         "factor_usage": [{
             "factor_code": "E01",
             "scope": "RACE",
-            "impact": "MEDIUM",
+            "impact": "STRONG",
             "direction": "MIXED",
             "evidence_quality": "GOOD",
             "role": "SUPPORT",
@@ -110,6 +111,9 @@ def test_freeze_probability_and_edge_projection():
     assert len(rows["確率評価"]) == 3
     assert len(rows["EdgeDB補正"]) == 3
     assert rows["予想Freeze"][0]["axis_horse_no"] == 2
+    assert rows["予想Freeze"][0]["reader_view_version"] == "0.1"
+    assert "firewall_version=Gen0.2-Firewall-0.1" in rows["予想Freeze"][0]["notes"]
+    assert rows["ファクター使用"][0]["importance"] == "HIGH"
     assert g.audit_frozen_forecast(frozen)["audit_status"] == "PASS"
 
 
