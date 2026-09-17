@@ -52,6 +52,9 @@ jobs:
               env_file.write(f"DRIVE_FILE_ID={request['drive_file_id']}\n")
               env_file.write(f"SOURCE_FILENAME={request['source_filename']}\n")
               env_file.write(f"DATA_VERSION={request['data_version']}\n")
+              parquet_bundle = str(request.get("analysis_parquet_bundle_file_id") or "").strip()
+              if parquet_bundle:
+                  env_file.write(f"ANALYSIS_PARQUET_BUNDLE_FILE_ID={parquet_bundle}\n")
           PY
 
       - name: Download Analysis Lite from Google Drive
@@ -74,6 +77,22 @@ jobs:
             cp "${sqlite_files[0]}" .fact_publish/analysis.sqlite
           else
             cp ".fact_publish/${SOURCE_FILENAME}" .fact_publish/analysis.sqlite
+          fi
+
+          # After canonical cutover, the bundle contains current.json, the
+          # immutable Parquet objects and manifest. SQLite is materialized only
+          # for the legacy comparison and BAC lookup builder.
+          if [ -n "${ANALYSIS_PARQUET_BUNDLE_FILE_ID:-}" ]; then
+            curl --fail --location --retry 3 --retry-delay 2 \
+              "https://drive.usercontent.google.com/download?id=${ANALYSIS_PARQUET_BUNDLE_FILE_ID}&export=download&confirm=t" \
+              --output .fact_publish/analysis-parquet.tar.xz
+            mkdir -p .fact_publish/analysis-parquet
+            tar -xJf .fact_publish/analysis-parquet.tar.xz -C .fact_publish/analysis-parquet
+            manifest="$(python -c 'import json; from pathlib import Path; root=Path(".fact_publish/analysis-parquet"); p=json.loads((root/"current.json").read_text()); print(root/p["manifest"])')"
+            python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py \
+              --manifest "$manifest" --out .fact_publish/analysis-from-parquet.sqlite
+            mv .fact_publish/analysis-from-parquet.sqlite .fact_publish/analysis.sqlite
+            echo "ANALYSIS_PARQUET_GLOB=.fact_publish/analysis-parquet/objects/fact_entry_result_lite/**/*.parquet" >> "$GITHUB_ENV"
           fi
 
       - name: Resolve BAC periods from Analysis
@@ -171,11 +190,30 @@ jobs:
         run: |
           set -euo pipefail
           FACT_FILE=".fact_publish/jrdb_pwa_fact_lite.sqlite"
-          python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
-            --analysis .fact_publish/analysis.sqlite \
-            --race-names .fact_publish/race_names.sqlite \
-            --db "$FACT_FILE" \
-            | tee .fact_publish/build_result.txt
+          if [ -n "${ANALYSIS_PARQUET_GLOB:-}" ]; then
+            python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+            python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
+              --analysis .fact_publish/analysis.sqlite \
+              --race-names .fact_publish/race_names.sqlite \
+              --db .fact_publish/fact-legacy.sqlite
+            PYTHONPATH=tools/data-storage python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite_dual.py \
+              --analysis-parquet "$ANALYSIS_PARQUET_GLOB" \
+              --race-names .fact_publish/race_names.sqlite \
+              --sqlite-out "$FACT_FILE" \
+              --parquet-dir .fact_publish/fact-parquet \
+              | tee .fact_publish/build_result.txt
+            PYTHONPATH=tools/data-storage python horse-racing/jrdb/src/audit_jrdb_pwa_fact_lite_dual.py \
+              --legacy-sqlite .fact_publish/fact-legacy.sqlite \
+              --new-sqlite "$FACT_FILE" \
+              --parquet-dir .fact_publish/fact-parquet \
+              --output .fact_publish/equivalence_audit.json
+          else
+            python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py \
+              --analysis .fact_publish/analysis.sqlite \
+              --race-names .fact_publish/race_names.sqlite \
+              --db "$FACT_FILE" \
+              | tee .fact_publish/build_result.txt
+          fi
 
           ACTUAL_SIZE="$(stat -c %s "$FACT_FILE")"
           ACTUAL_SHA256="$(sha256sum "$FACT_FILE" | awk '{print $1}')"
@@ -323,6 +361,16 @@ jobs:
             .fact_publish/manifest.json \
             --repo "$GITHUB_REPOSITORY" \
             --clobber
+
+      - name: Retain Fact Lite Parquet candidate
+        if: env.ANALYSIS_PARQUET_GLOB != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-fact-lite-parquet-${{ env.DATA_VERSION }}
+          retention-days: 14
+          path: |
+            .fact_publish/fact-parquet/**
+            .fact_publish/equivalence_audit.json
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
