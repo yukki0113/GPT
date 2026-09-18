@@ -16,7 +16,16 @@ jobs:
       startsWith(github.event.issue.title, '[JRDB_LEGACY_FAMILY_YEAR_REQUEST]')
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      GPT_GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GPT_GDRIVE_SERVICE_ACCOUNT_JSON }}
+      GPT_GDRIVE_AUTOMATION_ROOT_ID: ${{ secrets.GPT_GDRIVE_AUTOMATION_ROOT_ID }}
     steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
       - name: Parse request
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
@@ -28,154 +37,66 @@ jobs:
           family=str(req.get('family','')).upper()
           year=int(req.get('year',0))
           workers=int(req.get('workers',4))
+          drive_folder_id=str(req.get('drive_folder_id','')).strip()
           if family not in {'ZED','ZKB'}:
               raise SystemExit('family must be ZED or ZKB')
           if year < 2010 or year > 2025:
               raise SystemExit('year must be 2010..2025')
           if not 1 <= workers <= 6:
               raise SystemExit('workers must be 1..6')
+          if not drive_folder_id:
+              raise SystemExit('drive_folder_id is required')
           Path('/tmp/request.json').write_text(
-              json.dumps({'family':family,'year':year,'workers':workers}), encoding='utf-8'
+              json.dumps({'family':family,'year':year,'workers':workers,'drive_folder_id':drive_folder_id}),
+              encoding='utf-8'
           )
           PY
 
-      - name: Install LZH reader
-        run: python -m pip install --disable-pip-version-check 'libarchive-c>=5,<6'
+      - name: Install dependencies
+        run: |
+          python -m pip install --disable-pip-version-check 'libarchive-c>=5,<6'
+          python -m pip install --disable-pip-version-check google-api-python-client google-auth
 
-      - name: Build annual ZIP from legacy daily sources
+      - name: Build annual ZIP
         env:
           JRDB_USER: ${{ secrets.JRDB_USER }}
           JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
+          family=$(python -c "import json;print(json.load(open('/tmp/request.json'))['family'])")
+          year=$(python -c "import json;print(json.load(open('/tmp/request.json'))['year'])")
+          workers=$(python -c "import json;print(json.load(open('/tmp/request.json'))['workers'])")
+          python horse-racing/jrdb/src/build_legacy_family_year.py \
+            --family "$family" --year "$year" --workers "$workers" --output-dir /tmp/out
+
+      - name: Upload annual ZIP to Drive
+        run: |
           python - <<'PY'
-          import base64
-          import concurrent.futures
-          import hashlib
-          import io
           import json
-          import os
-          import re
-          import time
-          import urllib.error
-          import urllib.request
-          import zipfile
           from pathlib import Path
-          import libarchive
-
           req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
-          family=req['family']; year=req['year']; workers=req['workers']
-          dir_name={'ZED':'Zed','ZKB':'Zkb'}[family]
-          root=Path('/tmp/out'); root.mkdir(parents=True,exist_ok=True)
-          token=base64.b64encode(
-              f"{os.environ['JRDB_USER']}:{os.environ['JRDB_PASSWORD']}".encode()
-          ).decode()
-          auth=f'Basic {token}'
-
-          def get_bytes(url, attempts=7):
-              for attempt in range(attempts):
-                  request=urllib.request.Request(url,headers={
-                      'Authorization':auth,
-                      'User-Agent':'JRDB-Legacy-YearBuilder/0.2',
-                      'Accept':'application/zip,application/octet-stream,*/*',
-                  })
-                  try:
-                      with urllib.request.urlopen(request,timeout=60) as response:
-                          return response.read(), int(getattr(response,'status',200))
-                  except urllib.error.HTTPError as error:
-                      if error.code in {429,500,502,503,504} and attempt < attempts-1:
-                          retry_after=error.headers.get('Retry-After') if error.headers else None
-                          try:
-                              wait=float(retry_after) if retry_after else min(60.0, 5.0*(2**attempt))
-                          except ValueError:
-                              wait=min(60.0, 5.0*(2**attempt))
-                          time.sleep(max(2.0,wait))
-                          continue
-                      raise
-
-          bac_url=f'https://jrdb.com/member/datazip/Bac/BAC_{year}.zip'
-          bac_payload,_=get_bytes(bac_url)
-          dates=[]
-          with zipfile.ZipFile(io.BytesIO(bac_payload)) as zf:
-              if zf.testzip() is not None:
-                  raise SystemExit('BAC calendar ZIP is corrupt')
-              for name in zf.namelist():
-                  m=re.fullmatch(r'BAC(\d{6})\.txt',Path(name).name,re.I)
-                  if m:
-                      dates.append(f'20{m.group(1)}')
-          dates=sorted(set(dates))
-          if not dates:
-              raise SystemExit('no race dates found in BAC annual ZIP')
-
-          def fetch_one(date):
-              lzh_name=f'{family}{date[2:]}.lzh'
-              url=f'https://jrdb.com/member/data/{dir_name}/{lzh_name}'
-              try:
-                  payload,status=get_bytes(url)
-              except urllib.error.HTTPError as error:
-                  return {'date':date,'url':url,'status':error.code}
-              source_sha=hashlib.sha256(payload).hexdigest()
-              members=[]
-              try:
-                  with libarchive.memory_reader(payload) as archive:
-                      for entry in archive:
-                          if entry.isdir:
-                              continue
-                          data=b''.join(entry.get_blocks())
-                          members.append((Path(entry.pathname).name,data))
-              except Exception as error:
-                  return {'date':date,'url':url,'status':'EXTRACT_ERROR','error':f'{type(error).__name__}: {error}'}
-              expected=f'{family}{date[2:]}.txt'
-              matches=[(n,b) for n,b in members if n.upper()==expected.upper()]
-              if len(matches)!=1:
-                  return {'date':date,'url':url,'status':'EXTRACT_MISMATCH','members':[n for n,_ in members]}
-              txt_name,txt_bytes=matches[0]
-              return {
-                  'date':date,'url':url,'status':status,
-                  'source_size_bytes':len(payload),'source_sha256':source_sha,
-                  'txt_name':txt_name,'txt_size_bytes':len(txt_bytes),
-                  'txt_sha256':hashlib.sha256(txt_bytes).hexdigest(),'txt_bytes':txt_bytes,
-              }
-
-          with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
-              rows=list(pool.map(fetch_one,dates))
-          rows=sorted(rows,key=lambda x:x['date'])
-          failures=[r for r in rows if r.get('status')!=200]
-          manifest_sources=[{k:v for k,v in r.items() if k!='txt_bytes'} for r in rows]
-          if failures:
-              manifest={
-                  'status':'failure','family':family,'year':year,
-                  'race_date_count':len(dates),'failure_count':len(failures),
-                  'failures':[{k:v for k,v in r.items() if k!='txt_bytes'} for r in failures],
-                  'sources':manifest_sources,
-              }
-              (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
-              sample=', '.join(f"{r['date']}:{r.get('status')}" for r in failures[:10])
-              raise SystemExit(f'failures={len(failures)} sample={sample}')
-
-          out=root/f'{family}_{year}.zip'
-          with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
-              for row in rows:
-                  zf.writestr(row['txt_name'],row['txt_bytes'])
-          with zipfile.ZipFile(out) as zf:
-              bad=zf.testzip(); names=zf.namelist()
-          if bad is not None or len(names)!=len(dates):
-              raise SystemExit(f'annual ZIP validation failed: bad={bad} count={len(names)}/{len(dates)}')
-          manifest={
-              'status':'success','family':family,'year':year,
-              'race_date_count':len(dates),'file_name':out.name,
-              'size_bytes':out.stat().st_size,
-              'sha256':hashlib.sha256(out.read_bytes()).hexdigest(),
-              'member_count':len(names),'sources':manifest_sources,
+          family=req['family']; year=req['year']
+          drive_req={
+              'operation':'upload',
+              'request_id':f'{family.lower()}-{year}-raw-upload',
+              'local_path':f'/tmp/out/{family}_{year}.zip',
+              'parent_folder_id':req['drive_folder_id'],
+              'filename':f'{family}_{year}.zip',
+              'mime_type':'application/zip',
+              'verify':True,
+              'format_validation':'zip',
           }
-          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('/tmp/drive-request.json').write_text(json.dumps(drive_req),encoding='utf-8')
           PY
+          python tools/gpt_io/gpt_io.py gdrive upload --request /tmp/drive-request.json > /tmp/drive-result.json
 
-      - name: Upload artifact
+      - name: Upload audit artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jrdb-legacy-family-year-${{ github.event.issue.number }}
-          path: /tmp/out/
+          path: |
+            /tmp/out/
+            /tmp/drive-result.json
           if-no-files-found: warn
           retention-days: 7
           compression-level: 0
@@ -191,11 +112,15 @@ jobs:
           import json, os
           from pathlib import Path
           m=json.loads(Path('/tmp/out/manifest.json').read_text(encoding='utf-8'))
+          d=json.loads(Path('/tmp/drive-result.json').read_text(encoding='utf-8'))
           result={
-              'status':'success','run_id':int(os.environ['RUN_ID']),
+              'status':'success',
+              'run_id':int(os.environ['RUN_ID']),
               'artifact_name':f"jrdb-legacy-family-year-{os.environ['ISSUE_NUMBER']}",
               'family':m['family'],'year':m['year'],'file_name':m['file_name'],
               'member_count':m['member_count'],'size_bytes':m['size_bytes'],'sha256':m['sha256'],
+              'drive_file_id':d.get('destination',{}).get('id'),
+              'drive_round_trip_verified':d.get('provenance',{}).get('round_trip_verified',False),
           }
           Path('/tmp/comment.md').write_text(
               'JRDB_LEGACY_FAMILY_YEAR_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n',
@@ -212,4 +137,4 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB legacy family year build failed. Workflow run: $RUN_URL"
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB legacy family year build/upload failed. Workflow run: $RUN_URL"
