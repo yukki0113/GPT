@@ -48,17 +48,30 @@ def _relative(root: Path, value: object, label: str) -> Path:
     return resolved
 
 
-def _validate_asset(root: Path, entry: dict[str, Any], label: str) -> dict[str, Any]:
+def _validate_asset(
+    root: Path, entry: dict[str, Any], label: str, *, allow_missing_size: bool = False
+) -> dict[str, Any]:
     path = _relative(root, entry.get("relative_path"), f"{label}.relative_path")
     if not path.is_file():
         raise AnalysisParquetCurrentError(f"Missing {label}: {path}")
     size = entry.get("size_bytes")
+    # The initial v1.3 Parquet migration omitted ``size_bytes`` for metadata
+    # objects, while retaining their content SHA-256.  Accept that one
+    # historical shape only: the file must still exist and match its declared
+    # digest, and all newly-produced manifests must declare the byte size.
+    if size is None and allow_missing_size:
+        size = path.stat().st_size
     if not isinstance(size, int) or size < 0 or path.stat().st_size != size:
         raise AnalysisParquetCurrentError(f"Size mismatch: {label}")
     expected = entry.get("sha256")
     if not isinstance(expected, str) or len(expected) != 64 or _sha256(path) != expected:
         raise AnalysisParquetCurrentError(f"SHA-256 mismatch: {label}")
-    return {"path": path, "rows": entry.get("rows"), "sha256": expected}
+    return {
+        "path": path,
+        "rows": entry.get("rows"),
+        "sha256": expected,
+        "size_bytes": size,
+    }
 
 
 def validate_generation(root: Path, manifest_path: Path) -> dict[str, Any]:
@@ -99,11 +112,19 @@ def validate_generation(root: Path, manifest_path: Path) -> dict[str, Any]:
     metadata = manifest.get("metadata_tables")
     if not isinstance(metadata, dict) or set(metadata) != METADATA_TABLES:
         raise AnalysisParquetCurrentError("Unexpected metadata table set")
+    legacy_v1 = manifest.get("storage_version") == "1"
     for name in sorted(METADATA_TABLES):
         entry = metadata[name]
         if not isinstance(entry, dict):
             raise AnalysisParquetCurrentError(f"Invalid metadata entry: {name}")
-        assets.append(_validate_asset(root, entry, name))
+        assets.append(
+            _validate_asset(
+                root,
+                entry,
+                name,
+                allow_missing_size=legacy_v1,
+            )
+        )
     return {"generation_id": manifest.get("generation_id"), "manifest": manifest_path, "rows": rows, "assets": assets}
 
 
