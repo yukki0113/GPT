@@ -6,12 +6,14 @@ Updated: 2026-09-13
 
 新しいChat / Workスレッド、または会話量上限による引越し後は、過去会話の要約だけを前提にせず latest `main` を確認し、原則として次を読む。
 
-1. `boat-racing/README.md`
-2. `boat-racing/.gpt/CONTEXT.md`
-3. `boat-racing/.gpt/HANDOFF.md`
-4. 本 `WORKFLOW.md`
-5. 対象工程の `docs/` / `src/`
-6. D. Actions-Native Executionを使う場合だけ対象 `.github/workflows/`
+1. repository root `.gpt/GITHUB_OPERATION_POLICY.md`
+2. repository root `.gpt/README.md`
+3. `boat-racing/README.md`
+4. `boat-racing/.gpt/CONTEXT.md`
+5. `boat-racing/.gpt/HANDOFF.md`
+6. 本 `WORKFLOW.md`
+7. 対象工程の `docs/` / `src/`
+8. D. Actions-Native Executionを使う場合だけ対象 `.github/workflows/`
 
 司令室・会場選別・仕様改訂研究では、さらに `docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md` を読む。
 
@@ -48,6 +50,8 @@ BOAT RACE公式取得をChatローカルで正本fetcherと同一条件再現で
 manual workflowは人手補助経路として扱う。
 
 **台帳記帳はD経路ではない。** Googleサービスアカウントおよび台帳記帳用Issue / Actions経路は廃止済みであり、起動しない。
+
+Google Driveの搬送も同様に、connected native Google Drive connector / native toolsを標準とする。`[gpt-gdrive-request]`、`.github/workflows/gpt_gdrive_request_issue.yml`、`tools/gpt_io/gdrive/` は通常運用で使用しない。GitHub artifactをDriveへ保存する場合も、artifactを取得してnative Drive connectorへ渡す。上位正本は repository root `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`。
 
 ### Issue preflight / retry
 
