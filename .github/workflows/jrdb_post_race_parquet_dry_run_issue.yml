@@ -128,18 +128,19 @@ jobs:
       - name: Package non-promoted handoff artifact
         run: |
           set -euo pipefail
+          mkdir -p .postrace/handoff
           tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
-            -cJf .postrace/analysis-parquet-candidate.tar.xz \
+            -cJf .postrace/handoff/analysis-parquet-candidate.tar.xz \
             -C .postrace/analysis-parquet current.json shadow_current.json generations objects metadata
+          cp .postrace/candidate_result.json .postrace/handoff/candidate_result.json
+          cp .postrace/update_*.json .postrace/handoff/
       - uses: actions/upload-artifact@v4
         with:
           name: jrdb-post-race-parquet-candidate-${{ github.run_id }}
           retention-days: 14
           compression-level: 0
-          path: |
-            .postrace/analysis-parquet-candidate.tar.xz
-            .postrace/candidate_result.json
-            .postrace/update_*.json
+          if-no-files-found: error
+          path: .postrace/handoff
       - name: Report result
         if: always()
         uses: actions/github-script@v7
