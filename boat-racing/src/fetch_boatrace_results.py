@@ -147,7 +147,6 @@ class OfficialResult:
     special_payouts: dict[str, int] = field(default_factory=dict)
     unestablished_ticket_types: set[str] = field(default_factory=set)
     unestablished_payouts: dict[str, int] = field(default_factory=dict)
-    payout_parse_diagnostics: list[str] = field(default_factory=list)
     refunded_boats: list[str] = field(default_factory=list)
     absent_boats: list[str] = field(default_factory=list)
     disqualified_boats: list[str] = field(default_factory=list)
@@ -446,7 +445,7 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
                 continue
 
             special_match = re.search(
-                r"特払い[^0-9]*([0-9][0-9,]*)\s*円?", row_signal_text
+                r"特払(?:い)?[^0-9]*([0-9][0-9,]*)\s*円?", row_signal_text
             )
             if special_match:
                 special_payout = parse_money(special_match.group(1))
@@ -459,12 +458,6 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
                 result.special_payouts[current_type] = special_payout
                 continue
 
-            if maybe_type and not boats:
-                payout_text = text_of(payout_nodes[0]) if payout_nodes else ""
-                result.payout_parse_diagnostics.append(
-                    f"{current_type}:text={row_text!r},attrs={attribute_text!r},"
-                    f"payout_text={payout_text!r},payout={payout!r}"
-                )
             if payout is None:
                 continue
             if payout <= 0:
@@ -847,13 +840,7 @@ def fill_result(output: dict[str, str], row: dict[str, str], fetched: FetchData,
         if consistency_error:
             output["エラー内容"] = consistency_error
         else:
-            diagnostic = (
-                " | payout_rows=" + " || ".join(result.payout_parse_diagnostics)
-                if result.payout_parse_diagnostics else ""
-            )
-            output["エラー内容"] = (
-                "公式確定結果の必須項目不足: " + ",".join(missing) + diagnostic
-            )
+            output["エラー内容"] = "公式確定結果の必須項目不足: " + ",".join(missing)
 
 
 def read_input(path: Path) -> tuple[list[str], list[dict[str, str]]]:
