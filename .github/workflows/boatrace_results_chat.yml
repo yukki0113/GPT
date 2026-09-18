@@ -26,7 +26,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install -r boat-racing/requirements.txt
+        run: pip install -r boat-racing/requirements-results.txt
 
       - name: Parse request and restore input CSV
         env:
@@ -105,11 +105,14 @@ jobs:
           timeout = float(request.get('timeout_seconds', 20))
           retry = int(request.get('retry_count', 2))
           interval = float(request.get('request_interval_seconds', 1.0))
+          parallel_venues = int(request.get('parallel_venues', 3))
           unit_stake = int(request.get('unit_stake', 100))
           strict = bool(request.get('strict', False))
 
           if timeout <= 0 or retry < 0 or interval < 0 or unit_stake <= 0 or unit_stake % 100:
               raise SystemExit('timeout>0, retry>=0, interval>=0, unit_stake>0 and unit_stake%100==0 are required')
+          if parallel_venues not in {1, 2, 3}:
+              raise SystemExit('parallel_venues must be 1, 2, or 3')
 
           dates = []
           venues = []
@@ -145,6 +148,8 @@ jobs:
               '--timeout', str(timeout),
               '--retry', str(retry),
               '--interval', str(interval),
+              '--parallel-venues', str(parallel_venues),
+              '--no-cache-write',
               '--unit-stake', str(unit_stake),
           ]
           if strict:
@@ -158,6 +163,9 @@ jobs:
               'input_rows': len(rows),
               'target_date': target_date,
               'venues': venues,
+              'parallel_venues': parallel_venues,
+              'request_interval_seconds': interval,
+              'cache_write': False,
               'output_dir': str(output_dir),
               'output_path': str(output_path),
               'log_path': str(log_path),
