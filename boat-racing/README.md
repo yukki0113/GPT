@@ -21,7 +21,7 @@ BOAT RACE公式情報を利用する取得・運用Pythonツール群です。
 
 Chat / Workの会話量上限やスレッド移動に備えた引継ぎ入口は [`boat-racing/.gpt/HANDOFF.md`](.gpt/HANDOFF.md) です。
 
-新しいスレッドでは、過去会話の要約だけを前提にせず、latest `main` を確認したうえで `README.md` → `.gpt/CONTEXT.md` → `.gpt/HANDOFF.md` → `.gpt/WORKFLOW.md` → 対象 `docs/` / `src/` の順に確認してください。日次の変動状態はHANDOFFへ固定せず、Drive / Google Sheets / 必要な場合のみGitHub Actionsの正本から再取得します。
+新しいスレッドでは、過去会話の要約だけを前提にせず、latest `main` を確認したうえで **repository root `.gpt/GITHUB_OPERATION_POLICY.md` → repository root `.gpt/README.md` → `boat-racing/README.md` → `.gpt/CONTEXT.md` → `.gpt/HANDOFF.md` → `.gpt/WORKFLOW.md` → 対象 `docs/` / `src/`** の順に確認してください。日次の変動状態はHANDOFFへ固定せず、Drive / Google Sheets / 必要な場合のみGitHub Actionsの正本から再取得します。
 
 ### 司令室・会場選別・Shadow研究
 
@@ -30,6 +30,8 @@ Chat / Workの会話量上限やスレッド移動に備えた引継ぎ入口は
 この文書では、会場選別を購入レース決定ではなく探索母集団設計として扱うこと、全R構造・2連単適格・販売選別を分けて評価すること、SG/G1や開催日目を機械的に除外しないこと、ControlとShadowを混ぜないこと、台帳未完了日は最新の真正完了世代までを使うことを固定しています。
 
 ## GitHub operation routing (2026-09-10)
+
+上位正本は repository root `.gpt/GITHUB_OPERATION_POLICY.md` と `.gpt/README.md`。Google Drive搬送経路は repository root `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` を正本とし、connected native Google Drive connector / native toolsを標準とする。`[gpt-gdrive-request]` / Actions Drive bridgeは通常運用で使用しない。
 
 GitHub上の資産を用いる作業は、開始時に「本当にGitHub Actions環境が必要か」を判定し、次の4系統から最短かつ再現可能な経路を選ぶ。
 
