@@ -1,4 +1,12 @@
 import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs";
+import {
+  FACT_PARQUET_REQUIRED_TABLES,
+  FACT_STATS_ENTRY_REQUIRED_COLUMNS,
+  asSafeFactLiteRelativePath,
+  validateFactLiteParquetAsset,
+  validateFactLiteParquetCurrent,
+  validateFactLiteParquetManifest
+} from "./fact-lite-parquet-contract.mjs";
 
 // This is deliberately a single-thread bundle.  The Fact Lite PWA must work
 // without cross-origin isolation, including on iPhone Safari.
@@ -12,14 +20,6 @@ const FACT_PARQUET_OPFS_DIR = "jrdb-fact-lite";
 // SQLite still owns metadata.json until the consumer cutover.  Keeping this
 // sidecar prevents the staged Parquet cache from changing the live reader.
 const FACT_PARQUET_METADATA = "parquet-metadata.json";
-const FACT_PARQUET_REQUIRED_TABLES = [
-  "fact_stats_entry",
-  "dim_sire",
-  "dim_bms",
-  "dim_jockey",
-  "dim_race",
-  "meta_pwa_fact_build"
-];
 
 function fail(message) {
   throw new Error("Fact Lite Parquet: " + message);
@@ -34,11 +34,7 @@ function quoteLiteral(value) {
 }
 
 function asSafeRelativePath(value, label) {
-  const text = String(value || "");
-  if (!text || text.startsWith("/") || text.includes("\\") || text.split("/").includes("..")) {
-    fail(label + " が不正です");
-  }
-  return text;
+  return asSafeFactLiteRelativePath(value, label);
 }
 
 async function getDirectory(root, pathParts, create) {
@@ -78,13 +74,6 @@ async function readOpfsFile(directory, relativePath) {
   }
 }
 
-async function sha256Hex(bytes) {
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest))
-    .map(function (value) { return value.toString(16).padStart(2, "0"); })
-    .join("");
-}
-
 async function loadParquetMetadata(root) {
   const bytes = await readOpfsFile(root, FACT_PARQUET_METADATA);
   if (!bytes) return null;
@@ -105,56 +94,12 @@ async function saveParquetMetadata(root, metadata) {
   await writeOpfsFile(root, FACT_PARQUET_METADATA, bytes);
 }
 
-export function validateFactLiteParquetManifest(manifest, expectedGenerationId) {
-  if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
-    fail("manifest JSON objectが必要です");
-  }
-  const expected = {
-    artifact_type: "jrdb_fact_lite",
-    schema_version: "v0.3",
-    storage_format: "parquet",
-    storage_version: "1",
-    validation_status: "PASS"
-  };
-  Object.entries(expected).forEach(function ([key, value]) {
-    if (manifest[key] !== value) fail("manifest " + key + " が未対応です");
-  });
-  if (!manifest.generation_id || manifest.generation_id !== expectedGenerationId) {
-    fail("manifest generation_id がcurrentと一致しません");
-  }
-  if (!manifest.tables || typeof manifest.tables !== "object" || Array.isArray(manifest.tables)) {
-    fail("manifest tables がありません");
-  }
-  if (Object.keys(manifest.tables).length !== FACT_PARQUET_REQUIRED_TABLES.length) {
-    fail("manifest table set が不正です");
-  }
-  FACT_PARQUET_REQUIRED_TABLES.forEach(function (table) {
-    const entry = manifest.tables[table];
-    if (!entry || typeof entry !== "object") fail("必須tableがありません: " + table);
-    asSafeRelativePath(entry.path, table + ".path");
-    if (!Number.isInteger(Number(entry.size_bytes)) || Number(entry.size_bytes) < 0) {
-      fail(table + ".size_bytes が不正です");
-    }
-    if (!/^[a-f0-9]{64}$/i.test(String(entry.sha256 || ""))) {
-      fail(table + ".sha256 が不正です");
-    }
-    if (!Number.isInteger(Number(entry.rows)) || Number(entry.rows) < 0) {
-      fail(table + ".rows が不正です");
-    }
-  });
-  return manifest;
-}
-
 export async function fetchFactLiteParquetCurrent(fetchImpl = fetch) {
   const response = await fetchImpl(FACT_PARQUET_CURRENT_URL, { cache: "no-store" });
   if (!response.ok) fail("current.json HTTP " + response.status);
   const current = await response.json();
-  if (!current || current.status !== "CURRENT" || !current.generation_id) {
-    fail("current.json が不正です");
-  }
-  const manifestPath = asSafeRelativePath(current.manifest, "current.manifest");
-  const expectedPath = "generations/" + current.generation_id + "/manifest.json";
-  if (manifestPath !== expectedPath) fail("current.json manifest path が不正です");
+  validateFactLiteParquetCurrent(current);
+  const manifestPath = current.manifest;
 
   const manifestUrl = new URL(manifestPath, new URL(FACT_PARQUET_CURRENT_URL, window.location.href));
   const manifestResponse = await fetchImpl(manifestUrl, { cache: "no-store" });
@@ -190,10 +135,7 @@ async function readCachedFactLiteParquetGeneration(root, generationId) {
     const entry = manifest.tables[table];
     const bytes = await readOpfsFile(root, generationRelativePath(generationId, entry.path));
     if (!bytes) fail("cache Parquetがありません: " + table);
-    if (bytes.byteLength !== Number(entry.size_bytes)) fail("cache size不一致: " + table);
-    if (await sha256Hex(bytes) !== String(entry.sha256).toLowerCase()) {
-      fail("cache SHA-256不一致: " + table);
-    }
+    await validateFactLiteParquetAsset(table, entry, bytes);
     files[table] = bytes;
   }
   return { generationId, manifest, files };
@@ -220,7 +162,7 @@ async function validateDuckDbCachedGeneration(cached) {
       }
       const factSchema = await connection.query("SELECT * FROM fact_stats_entry LIMIT 0");
       const columns = new Set(factSchema.schema.fields.map(function (field) { return field.name; }));
-      ["month", "race_id", "prev_distance_delta", "prev_class_code", "win5_leg_no"].forEach(function (column) {
+      FACT_STATS_ENTRY_REQUIRED_COLUMNS.forEach(function (column) {
         if (!columns.has(column)) fail("Fact Lite必須列がありません: " + column);
       });
     } finally {
@@ -292,10 +234,7 @@ export async function synchronizeFactLiteParquetCache(fetchImpl = fetch) {
     const response = await fetchImpl(new URL(entry.path, remote.manifestUrl), { cache: "no-store" });
     if (!response.ok) fail("Parquet HTTP " + response.status + ": " + table);
     const bytes = new Uint8Array(await response.arrayBuffer());
-    if (bytes.byteLength !== Number(entry.size_bytes)) fail("download size不一致: " + table);
-    if (await sha256Hex(bytes) !== String(entry.sha256).toLowerCase()) {
-      fail("download SHA-256不一致: " + table);
-    }
+    await validateFactLiteParquetAsset(table, entry, bytes);
     files[table] = bytes;
   }
 
@@ -327,32 +266,25 @@ export async function synchronizeFactLiteParquetCache(fetchImpl = fetch) {
   return { updated: true, cached, metadata: nextMetadata };
 }
 
-export async function openFactLiteDuckDb(resolved, logger = new duckdb.VoidLogger()) {
+export async function openFactLiteDuckDb(resolved, logger = new duckdb.VoidLogger(), fetchImpl = fetch) {
   if (!resolved || !resolved.manifest || !resolved.manifestUrl) fail("解決済みmanifestが必要です");
-  const worker = new Worker(FACT_DUCKDB_BUNDLE.mainWorker);
-  const database = new duckdb.AsyncDuckDB(logger, worker);
-  try {
-    await database.instantiate(FACT_DUCKDB_BUNDLE.mainModule);
-    const connection = await database.connect();
-    try {
-      for (const table of FACT_PARQUET_REQUIRED_TABLES) {
-        const entry = resolved.manifest.tables[table];
-        const fileName = "fact-lite/" + resolved.manifest.generation_id + "/" + entry.path;
-        const fileUrl = new URL(entry.path, resolved.manifestUrl).toString();
-        await database.registerFileURL(fileName, fileUrl, duckdb.DuckDBDataProtocol.HTTP, false);
-        await connection.query(
-          "CREATE OR REPLACE VIEW " + quoteIdentifier(table) +
-          " AS SELECT * FROM read_parquet(" + quoteLiteral(fileName) + ")"
-        );
-      }
-    } finally {
-      await connection.close();
-    }
-    return database;
-  } catch (error) {
-    await database.terminate();
-    throw error;
+  validateFactLiteParquetManifest(resolved.manifest, resolved.manifest.generation_id);
+  const files = {};
+  for (const table of FACT_PARQUET_REQUIRED_TABLES) {
+    const entry = resolved.manifest.tables[table];
+    const response = await fetchImpl(new URL(entry.path, resolved.manifestUrl), { cache: "no-store" });
+    if (!response.ok) fail("Parquet HTTP " + response.status + ": " + table);
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    await validateFactLiteParquetAsset(table, entry, bytes);
+    files[table] = bytes;
   }
+  const candidate = {
+    generationId: resolved.manifest.generation_id,
+    manifest: resolved.manifest,
+    files
+  };
+  await validateDuckDbCachedGeneration(candidate);
+  return openFactLiteDuckDbFromCache(candidate, logger);
 }
 
 export const FactLiteDuckDb = Object.freeze({
@@ -364,7 +296,8 @@ export const FactLiteDuckDb = Object.freeze({
   openCached: openFactLiteDuckDbFromCache,
   restoreCache: restoreFactLiteParquetCache,
   synchronizeCache: synchronizeFactLiteParquetCache,
-  validateManifest: validateFactLiteParquetManifest
+  validateManifest: validateFactLiteParquetManifest,
+  validateCurrent: validateFactLiteParquetCurrent
 });
 
 window.JRDBFactLiteDuckDB = FactLiteDuckDb;

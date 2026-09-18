@@ -288,4 +288,10 @@ the PWA remains unchanged. Analysis Parquet is the canonical analytical store;
 Analysis SQLite is materialized from the validated Parquet manifest as a
 compatibility artifact. Fact Lite v0.3 SQLite plus Parquet are emitted from
 one DuckDB logical relation.
-Neither browser Parquet nor DuckDB-Wasm is in scope for this transition.
+The staged Fact Lite browser runtime resolves only `current.json` and its
+generation manifest. Before an OPFS generation pointer is changed it rejects
+wrong artifact/schema/storage metadata, unknown or missing table names, unsafe
+paths, malformed size/SHA/row fields, asset size/SHA mismatches, DuckDB row
+count mismatches, and a missing minimum `fact_stats_entry` schema. It keeps the
+previous generation pointer on every such failure. The live SQLite reader is
+unchanged until the later consumer-cutover phase.
