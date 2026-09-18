@@ -15,7 +15,9 @@ import re
 import sys
 import time
 from collections import Counter
-from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass, field
+from threading import Lock
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
@@ -69,21 +71,24 @@ class FetchResult:
 
 @dataclass
 class RequestStartLimiter:
-    """HTTPリクエスト開始時刻どうしの最小間隔を保証する。"""
+    """全会場でHTTPリクエスト開始時刻どうしの最小間隔を保証する。"""
 
     interval_seconds: float
     last_started_at: float | None = None
+    lock: Lock = field(default_factory=Lock, init=False, repr=False)
 
     def wait_until_ready(self) -> float:
-        waited = 0.0
-        now = time.monotonic()
-        if self.last_started_at is not None:
-            remaining = self.interval_seconds - (now - self.last_started_at)
-            if remaining > 0:
-                time.sleep(remaining)
-                waited = remaining
-        self.last_started_at = time.monotonic()
-        return waited
+        """並列worker間でも共有できるよう、開始時刻の判定と更新を直列化する。"""
+        with self.lock:
+            waited = 0.0
+            now = time.monotonic()
+            if self.last_started_at is not None:
+                remaining = self.interval_seconds - (now - self.last_started_at)
+                if remaining > 0:
+                    time.sleep(remaining)
+                    waited = remaining
+            self.last_started_at = time.monotonic()
+            return waited
 
 
 @dataclass
@@ -92,6 +97,24 @@ class TimingStats:
     http_seconds: float = 0.0
     parse_seconds: float = 0.0
     rate_limit_wait_seconds: float = 0.0
+
+    def add(self, other: "TimingStats") -> None:
+        """会場worker単位の計測値を全体値へ加算する。"""
+        self.request_count += other.request_count
+        self.http_seconds += other.http_seconds
+        self.parse_seconds += other.parse_seconds
+        self.rate_limit_wait_seconds += other.rate_limit_wait_seconds
+
+
+@dataclass
+class VenueFetchResult:
+    """1会場12Rの取得結果を、入力順へ戻すためのまとまりとして保持する。"""
+
+    venue_index: int
+    rows: list[dict[str, str]]
+    reports: list[dict[str, str]]
+    retry_total: int
+    timing: TimingStats
 
 
 def clean(value: Any) -> str:
@@ -419,6 +442,109 @@ def collect_race(
     return rows, report, retries
 
 
+def build_session() -> requests.Session:
+    """workerごとに独立したHTTP Sessionを生成する。"""
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) BoatraceRacelistFetcher/1.0",
+        "Accept-Language": "ja-JP,ja;q=0.9",
+    })
+    return session
+
+
+def collect_venue(
+    date: str,
+    venue_index: int,
+    venue_count: int,
+    venue: dict[str, Any],
+    logger: logging.Logger,
+    delay: float,
+    limiter: RequestStartLimiter,
+    print_lock: Lock,
+) -> VenueFetchResult:
+    """1会場12Rを直列取得する。会場workerどうしだけを並列化する。"""
+    session = build_session()
+    timing = TimingStats()
+    rows_all: list[dict[str, str]] = []
+    reports: list[dict[str, str]] = []
+    retry_total = 0
+    try:
+        with print_lock:
+            print(
+                f"\n[{venue_index}/{venue_count}会場] {venue['name']}（場コード {str(venue['code']).zfill(2)}・{venue['day']}）を開始",
+                flush=True,
+            )
+        for rno in range(1, 13):
+            with print_lock:
+                print(f"  [{venue['name']} {rno}R] 取得中...", end="", flush=True)
+            rows, report, retries = collect_race(
+                session, date, venue, rno, logger, delay, limiter, timing
+            )
+            rows_all.extend(rows)
+            reports.append(report)
+            retry_total += retries
+            detail = f"{report['取得状態']} / {report['取得艇数']}艇 / {report['PC版取得']}"
+            if report["スマホ版取得"] != "未使用":
+                detail += f" / スマホ版: {report['スマホ版取得']}"
+            if report["不足項目"]:
+                detail += f" / 不足: {report['不足項目']}"
+            with print_lock:
+                print(f" 完了（{detail}）", flush=True)
+        with print_lock:
+            print(
+                f"  → {venue['name']} 出力対象の取得完了（成功 {sum(x['取得状態'] == '成功' for x in reports)}/12レース）",
+                flush=True,
+            )
+        return VenueFetchResult(venue_index, rows_all, reports, retry_total, timing)
+    finally:
+        session.close()
+
+
+def collect_venues(
+    date: str,
+    venues: list[dict[str, Any]],
+    logger: logging.Logger,
+    delay: float,
+    parallel_venues: int,
+) -> tuple[list[dict[str, str]], list[dict[str, str]], int, TimingStats]:
+    """最大parallel_venues会場を並列取得し、成果物は元の会場順へ戻す。"""
+    limiter = RequestStartLimiter(delay)
+    print_lock = Lock()
+    results_by_index: dict[int, VenueFetchResult] = {}
+    worker_count = min(parallel_venues, len(venues))
+
+    with ThreadPoolExecutor(max_workers=worker_count, thread_name_prefix="boatrace-venue") as executor:
+        futures = [
+            executor.submit(
+                collect_venue,
+                date,
+                venue_index,
+                len(venues),
+                venue,
+                logger,
+                delay,
+                limiter,
+                print_lock,
+            )
+            for venue_index, venue in enumerate(venues, start=1)
+        ]
+        for future in as_completed(futures):
+            result = future.result()
+            results_by_index[result.venue_index] = result
+
+    rows_all: list[dict[str, str]] = []
+    reports_all: list[dict[str, str]] = []
+    retry_total = 0
+    timing = TimingStats()
+    for venue_index in range(1, len(venues) + 1):
+        result = results_by_index[venue_index]
+        rows_all.extend(result.rows)
+        reports_all.extend(result.reports)
+        retry_total += result.retry_total
+        timing.add(result.timing)
+    return rows_all, reports_all, retry_total, timing
+
+
 def validate(rows: list[dict[str, str]], reports: list[dict[str, str]], venue_count: int) -> list[str]:
     errors: list[str] = []
     if len(reports) != venue_count * 12: errors.append(f"レース数が不正: {len(reports)}")
@@ -484,6 +610,13 @@ def load_config(args: argparse.Namespace) -> dict[str, Any]:
         raise ValueError("request_interval_seconds は0以上の数値で指定してください") from exc
     if not 0 <= delay <= 60:
         raise ValueError("request_interval_seconds は0以上60以下で指定してください")
+    try:
+        parallel_venues = int(config.get("parallel_venues", 3))
+    except (TypeError, ValueError) as exc:
+        raise ValueError("parallel_venues は1〜3の整数で指定してください") from exc
+    if parallel_venues not in {1, 2, 3}:
+        raise ValueError("parallel_venues は1〜3の整数で指定してください")
+    config["parallel_venues"] = parallel_venues
     return config
 
 
@@ -501,32 +634,27 @@ def main() -> int:
     log_path = output / f"{date}_出走表取得ログ_{names}.log"
     # CSVと同様、同一設定での再実行は前回分へ追記せず再生成する。
     logging.basicConfig(filename=log_path, filemode="w", encoding="utf-8", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    logger = logging.getLogger("boatrace"); logger.info("開始 date=%s venues=%s", date, venues)
-    session = requests.Session(); session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) BoatraceRacelistFetcher/1.0", "Accept-Language": "ja-JP,ja;q=0.9"})
+    logger = logging.getLogger("boatrace")
     delay = float(config.get("request_interval_seconds", 1.0))
-    limiter = RequestStartLimiter(delay)
-    timing = TimingStats()
+    parallel_venues = int(config.get("parallel_venues", 3))
+    logger.info(
+        "開始 date=%s venues=%s parallel_venues=%s request_interval_seconds=%s",
+        date, venues, parallel_venues, delay,
+    )
     run_started = time.monotonic()
-    raw_rows: list[dict[str, str]] = []; reports: list[dict[str, str]] = []; retry_total = 0
     total_races = len(venues) * 12
     print("=" * 60, flush=True)
     print("BOAT RACE公式出走表 CSV取得を開始します", flush=True)
     print(f"対象日: {date} / 会場数: {len(venues)} / レース数: {total_races}", flush=True)
-    print(f"※ 各レースは順番に取得し、HTTPリクエスト開始間隔を最低{delay:g}秒に保ちます。", flush=True)
+    print(
+        f"※ 会場単位で最大{min(parallel_venues, len(venues))}並列、各会場内は1R→12Rの順で取得します。",
+        flush=True,
+    )
+    print(f"※ 全会場共通でHTTPリクエスト開始間隔を最低{delay:g}秒に保ちます。", flush=True)
     print("=" * 60, flush=True)
-    for venue_index, venue in enumerate(venues, start=1):
-        print(f"\n[{venue_index}/{len(venues)}会場] {venue['name']}（場コード {str(venue['code']).zfill(2)}・{venue['day']}日目）を開始", flush=True)
-        for rno in range(1, 13):
-            current = (venue_index - 1) * 12 + rno
-            print(f"  [{current}/{total_races}] {venue['name']} {rno}R を取得中...", end="", flush=True)
-            rows, report, retries = collect_race(session, date, venue, rno, logger, delay, limiter, timing)
-            raw_rows.extend(rows); reports.append(report); retry_total += retries
-            detail = f"{report['取得状態']} / {report['取得艇数']}艇 / {report['PC版取得']}"
-            if report["スマホ版取得"] != "未使用": detail += f" / スマホ版: {report['スマホ版取得']}"
-            if report["不足項目"]: detail += f" / 不足: {report['不足項目']}"
-            print(f" 完了（{detail}）", flush=True)
-        venue_reports = reports[-12:]
-        print(f"  → {venue['name']} 出力対象の取得完了（成功 {sum(x['取得状態'] == '成功' for x in venue_reports)}/12レース）", flush=True)
+    raw_rows, reports, retry_total, timing = collect_venues(
+        date, venues, logger, delay, parallel_venues
+    )
     errors = validate(raw_rows, reports, len(venues))
     for error in errors: logger.error("検査失敗: %s", error)
     input_rows = [{**row, "コース別成績": ""} for row in raw_rows]
