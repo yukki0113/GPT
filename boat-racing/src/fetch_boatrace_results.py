@@ -16,14 +16,15 @@ import tempfile
 import time
 import unicodedata
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from threading import Lock
 from typing import Iterable
-from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urlparse
-from urllib.request import Request, urlopen
 
+import requests
 from lxml import html
 
 
@@ -87,6 +88,51 @@ class FetchData:
     http_status: int
     sha256: str
     source: str
+
+
+@dataclass
+class RequestStartLimiter:
+    """全workerでHTTPリクエスト開始時刻どうしの最小間隔を保証する。"""
+
+    interval_seconds: float
+    last_started_at: float | None = None
+    lock: Lock = field(default_factory=Lock, init=False, repr=False)
+
+    def wait_until_ready(self) -> float:
+        """開始時刻の判定と更新を直列化し、全worker共通の間隔を守る。"""
+        with self.lock:
+            waited = 0.0
+            now = time.monotonic()
+            if self.last_started_at is not None:
+                remaining = self.interval_seconds - (now - self.last_started_at)
+                if remaining > 0:
+                    time.sleep(remaining)
+                    waited = remaining
+            self.last_started_at = time.monotonic()
+            return waited
+
+
+@dataclass
+class TimingStats:
+    request_count: int = 0
+    http_seconds: float = 0.0
+    parse_seconds: float = 0.0
+    rate_limit_wait_seconds: float = 0.0
+
+    def add(self, other: "TimingStats") -> None:
+        """会場worker単位の計測値を全体値へ加算する。"""
+        self.request_count += other.request_count
+        self.http_seconds += other.http_seconds
+        self.parse_seconds += other.parse_seconds
+        self.rate_limit_wait_seconds += other.rate_limit_wait_seconds
+
+
+@dataclass
+class VenueProcessResult:
+    venue_index: int
+    outputs: list[tuple[int, dict[str, str]]]
+    source_counts: Counter[str]
+    timing: TimingStats
 
 
 @dataclass
@@ -485,58 +531,96 @@ def load_cache(html_path: Path, meta_path: Path, expected_url: str) -> FetchData
     return FetchData(content, expected_url, fetched_at, http_status, digest, "cache")
 
 
-def fetch_official(url: str, html_path: Path, meta_path: Path, timeout: float,
-                   retry: int) -> FetchData:
-    last_exc: Exception | None = None
+def build_session() -> requests.Session:
+    """会場workerごとに独立したHTTP Sessionを生成する。"""
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": USER_AGENT,
+        "Accept": "text/html",
+        "Accept-Language": "ja-JP,ja;q=0.9",
+    })
+    return session
+
+
+def fetch_official(session: requests.Session, url: str, html_path: Path, meta_path: Path,
+                   timeout: float, retry: int, limiter: RequestStartLimiter,
+                   timing: TimingStats, cache_write: bool) -> FetchData:
+    """全worker共通Limiterを通して公式ページを取得する。"""
+    last_error = ""
     attempts_made = 0
+    retryable_status = {408, 425, 429, 500, 502, 503, 504}
     for attempt in range(retry + 1):
         attempts_made = attempt + 1
+        rate_limit_wait = limiter.wait_until_ready()
+        timing.rate_limit_wait_seconds += rate_limit_wait
+        request_started = time.monotonic()
         try:
-            request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
-            with urlopen(request, timeout=timeout) as response:
-                content = response.read(MAX_HTML_BYTES + 1)
-                status = int(response.status)
-                final_url = response.url
-                content_type = response.headers.get("Content-Type", "")
+            response = session.get(url, timeout=timeout, allow_redirects=True)
+            elapsed = time.monotonic() - request_started
+            timing.request_count += 1
+            timing.http_seconds += elapsed
+            status = int(response.status_code)
+            final_url = response.url
+            content_type = response.headers.get("Content-Type", "")
+            content = response.content
             fetched_at = now_jst()
+
             if status != 200:
-                raise URLError(f"HTTP {status}")
-            if "text/html" not in content_type.lower():
-                raise URLError(f"Content-TypeがHTMLではありません: {content_type}")
-            if final_url != url:
-                raise URLError(f"公式URLからリダイレクトされました: {final_url}")
-            if len(content) > MAX_HTML_BYTES:
-                raise URLError(f"公式ページの応答が上限を超えました: {len(content)} bytes超")
-            digest = hashlib.sha256(content).hexdigest()
-            if not content:
-                raise URLError("公式ページの応答本文が空です")
-            meta = {"url": url, "fetched_at": fetched_at, "http_status": status,
-                    "sha256": digest, "byte_length": len(content)}
-            # HTMLを先に、メタデータを後に原子的置換する。中断時に世代がずれても、
-            # 次回のSHA-256/byte_length検査で必ず失敗し、誤って成功扱いしない。
-            atomic_write_bytes(html_path, content)
-            atomic_write_text(meta_path, json.dumps(meta, ensure_ascii=False, indent=2))
-            return FetchData(content, url, fetched_at, status, digest, "network")
-        except HTTPError as exc:
-            last_exc = exc
-            if exc.code not in {408, 425, 429, 500, 502, 503, 504}:
+                last_error = f"HTTP {status}"
+                if status not in retryable_status:
+                    break
+            elif "text/html" not in content_type.lower():
+                last_error = f"Content-TypeがHTMLではありません: {content_type}"
                 break
-            if attempt < retry:
-                time.sleep(min(2 ** attempt, 8))
-        except (URLError, TimeoutError, OSError) as exc:
-            last_exc = exc
-            if attempt < retry:
-                time.sleep(min(2 ** attempt, 8))
-    raise URLError(f"公式ページ取得失敗（{attempts_made}回試行）: {last_exc}")
+            elif final_url != url:
+                last_error = f"公式URLからリダイレクトされました: {final_url}"
+                break
+            elif len(content) > MAX_HTML_BYTES:
+                last_error = f"公式ページの応答が上限を超えました: {len(content)} bytes超"
+                break
+            elif not content:
+                last_error = "公式ページの応答本文が空です"
+                break
+            else:
+                digest = hashlib.sha256(content).hexdigest()
+                if cache_write:
+                    meta = {
+                        "url": url,
+                        "fetched_at": fetched_at,
+                        "http_status": status,
+                        "sha256": digest,
+                        "byte_length": len(content),
+                    }
+                    # ローカル再解析用cacheは従来どおり原子的に保存する。
+                    atomic_write_bytes(html_path, content)
+                    atomic_write_text(
+                        meta_path, json.dumps(meta, ensure_ascii=False, indent=2)
+                    )
+                return FetchData(content, url, fetched_at, status, digest, "network")
+        except requests.RequestException as exc:
+            elapsed = time.monotonic() - request_started
+            timing.request_count += 1
+            timing.http_seconds += elapsed
+            last_error = f"{type(exc).__name__}: {exc}"
+
+        if attempt < retry:
+            time.sleep(min(2 ** attempt, 8))
+
+    raise requests.RequestException(
+        f"公式ページ取得失敗（{attempts_made}回試行）: {last_error}"
+    )
 
 
-def acquire(url: str, html_path: Path, meta_path: Path, args) -> FetchData:
+def acquire(session: requests.Session, url: str, html_path: Path, meta_path: Path,
+            args, limiter: RequestStartLimiter, timing: TimingStats) -> FetchData:
     if args.cache_only:
         return load_cache(html_path, meta_path, url)
     if args.use_cache and html_path.exists() and meta_path.exists():
         return load_cache(html_path, meta_path, url)
-    return fetch_official(url, html_path, meta_path, args.timeout, args.retry)
-
+    return fetch_official(
+        session, url, html_path, meta_path, args.timeout, args.retry,
+        limiter, timing, not args.no_cache_write
+    )
 
 def payout_map(result: OfficialResult, ticket_type: str) -> dict[str, int]:
     return {x["combination"]: x["payout"] for x in result.payouts.get(ticket_type, [])}
@@ -782,7 +866,18 @@ def build_parser() -> argparse.ArgumentParser:
     modes.add_argument("--cache-only", action="store_true", help="キャッシュのみで再解析")
     parser.add_argument("--timeout", type=float, default=20.0)
     parser.add_argument("--retry", type=int, default=2)
-    parser.add_argument("--interval", type=float, default=1.0)
+    parser.add_argument(
+        "--interval", type=float, default=1.0,
+        help="全worker共通のHTTPリクエスト開始最小間隔（秒）"
+    )
+    parser.add_argument(
+        "--parallel-venues", type=int, default=3,
+        help="会場単位の最大並列数（1〜3）"
+    )
+    parser.add_argument(
+        "--no-cache-write", action="store_true",
+        help="ネットワーク取得HTMLのcache保存を省略する"
+    )
     parser.add_argument("--unit-stake", type=int, default=100)
     parser.add_argument("--strict", action="store_true",
                         help="公式未確定・中止・不成立も終了コード非0にする")
@@ -793,10 +888,145 @@ def build_parser() -> argparse.ArgumentParser:
 def validate_args(args) -> None:
     if args.timeout <= 0 or args.retry < 0 or args.interval < 0 or args.unit_stake <= 0:
         raise InputError("timeout/retry/interval/unit-stake の値が不正です")
+    if args.parallel_venues not in {1, 2, 3}:
+        raise InputError("parallel-venuesは1〜3で指定してください")
     if args.unit_stake % 100 != 0:
         raise InputError("unit-stakeは100円単位で指定してください")
     if args.limit is not None and args.limit <= 0:
         raise InputError("limitは1以上で指定してください")
+
+
+def process_row(
+    row_index: int,
+    row: dict[str, str],
+    normalized: tuple[str, str, int] | None,
+    key_error: str,
+    duplicates: set[tuple[str, str, int]],
+    args,
+    session: requests.Session,
+    limiter: RequestStartLimiter,
+    timing: TimingStats,
+    logger: logging.Logger,
+) -> tuple[dict[str, str], str]:
+    """1Rを取得・解析する。HTTP開始間隔は共有Limiterが制御する。"""
+    checked_at = now_jst()
+    url = ""
+    output = blank_output(row, url, checked_at)
+    normalized_key_value = normalized
+    key_raw = normalized_key_value or (
+        normalize_space(row.get("日付", "")),
+        normalize_space(row.get("会場", "")),
+        normalize_space(row.get("R", "")),
+    )
+    source = ""
+    try:
+        if normalized_key_value is None:
+            raise InputError(key_error)
+        date_value = parse_date(row.get("日付", ""))
+        venue = row.get("会場", "").strip()
+        if venue not in VENUE_CODES:
+            raise InputError(f"未対応の会場名です: {venue!r}")
+        race_no = parse_race_no(row.get("R", ""))
+        url = official_url(date_value, VENUE_CODES[venue], race_no)
+        output["公式URL"] = url
+        if normalized_key_value in duplicates:
+            raise InputError("日付＋会場＋Rが重複しています")
+
+        # 公式取得前に買い目構造と点数を検証する。
+        empty_result = OfficialResult()
+        evaluate_section(
+            row.get("主推奨券種", ""), row.get("主推奨買い目展開後", ""),
+            row.get("主推奨点数", ""), empty_result, args.unit_stake
+        )
+        evaluate_section(
+            row.get("保険券種", ""), row.get("保険買い目", ""),
+            row.get("保険点数", ""), empty_result, args.unit_stake
+        )
+        evaluate_section(
+            row.get("参考券種", ""), row.get("参考買い目", ""),
+            None, empty_result, args.unit_stake
+        )
+
+        html_path, meta_path = cache_paths(
+            args.cache_dir, date_value, VENUE_CODES[venue], race_no
+        )
+        logger.info("対象=%s %s %sR 公式URL=%s", row["日付"], venue, race_no, url)
+        fetched = acquire(
+            session, url, html_path, meta_path, args, limiter, timing
+        )
+        source = fetched.source
+        output.update({
+            "HTTPステータス": str(fetched.http_status),
+            "HTTP取得日時": fetched.fetched_at,
+            "HTML_SHA256": fetched.sha256,
+        })
+        parse_started = time.monotonic()
+        result = parse_official_html(
+            fetched.content, venue, date_value, race_no, url
+        )
+        fill_result(output, row, fetched, result, args)
+        timing.parse_seconds += time.monotonic() - parse_started
+        logger.info(
+            "HTTP=%d 取得日時=%s source=%s 解析結果=%s 状態=%s エラー=%s",
+            fetched.http_status, fetched.fetched_at, fetched.source,
+            output["確定着順"], output["取得状態"], output["エラー内容"]
+        )
+    except InputError as exc:
+        output["取得状態"] = "入力不正"
+        output["エラー内容"] = str(exc)
+        logger.error("対象=%s 状態=入力不正 エラー=%s", key_raw, exc)
+    except (requests.RequestException, TimeoutError, OSError, FileNotFoundError) as exc:
+        output["取得状態"] = "取得失敗"
+        output["エラー内容"] = str(exc)
+        logger.error("対象=%s URL=%s 状態=取得失敗 エラー=%s", key_raw, url, exc)
+    except (ParseError, ValueError, json.JSONDecodeError) as exc:
+        output["取得状態"] = "解析失敗"
+        output["エラー内容"] = str(exc)
+        logger.error("対象=%s URL=%s 状態=解析失敗 エラー=%s", key_raw, url, exc)
+    except Exception as exc:  # 不明な例外も成功扱いにしない。
+        output["取得状態"] = "解析失敗"
+        output["エラー内容"] = f"未処理例外: {type(exc).__name__}: {exc}"
+        logger.exception("対象=%s URL=%s 状態=解析失敗", key_raw, url)
+    output["結果確認日時"] = now_jst()
+    return output, source
+
+
+def process_venue(
+    venue_index: int,
+    row_indexes: list[int],
+    rows: list[dict[str, str]],
+    normalized_keys: list[tuple[str, str, int] | None],
+    key_errors: dict[int, str],
+    duplicates: set[tuple[str, str, int]],
+    args,
+    limiter: RequestStartLimiter,
+    logger: logging.Logger,
+) -> VenueProcessResult:
+    """1会場内は入力順に直列処理し、会場workerどうしだけを並列化する。"""
+    session = build_session()
+    timing = TimingStats()
+    source_counts: Counter[str] = Counter()
+    outputs: list[tuple[int, dict[str, str]]] = []
+    try:
+        for row_index in row_indexes:
+            output, source = process_row(
+                row_index,
+                rows[row_index],
+                normalized_keys[row_index],
+                key_errors.get(row_index, ""),
+                duplicates,
+                args,
+                session,
+                limiter,
+                timing,
+                logger,
+            )
+            outputs.append((row_index, output))
+            if source:
+                source_counts[source] += 1
+        return VenueProcessResult(venue_index, outputs, source_counts, timing)
+    finally:
+        session.close()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -816,18 +1046,31 @@ def main(argv: list[str] | None = None) -> int:
     logger = configure_logging(log_path)
     started_at = now_jst()
     rows = all_rows[:args.limit] if args.limit else all_rows
-    logger.info("実行開始日時=%s 入力ファイル=%s 入力行数=%d 処理行数=%d",
-                started_at, args.input, len(all_rows), len(rows))
-    mode = ("cache-only" if args.cache_only else "use-cache" if args.use_cache
-            else "refresh" if args.refresh else "network")
-    logger.info("取得モード=%s timeout=%.1f retry=%d interval=%.1f unit_stake=%d",
-                mode, args.timeout, args.retry, args.interval, args.unit_stake)
+    logger.info(
+        "実行開始日時=%s 入力ファイル=%s 入力行数=%d 処理行数=%d",
+        started_at, args.input, len(all_rows), len(rows)
+    )
+    mode = (
+        "cache-only" if args.cache_only else
+        "use-cache" if args.use_cache else
+        "refresh" if args.refresh else "network"
+    )
+    logger.info(
+        "取得モード=%s timeout=%.1f retry=%d interval=%.1f parallel_venues=%d "
+        "cache_write=%s unit_stake=%d",
+        mode, args.timeout, args.retry, args.interval, args.parallel_venues,
+        "off" if args.no_cache_write else "on", args.unit_stake
+    )
     if args.limit:
         logger.warning("開発確認モード --limit=%d: 全件成果物ではありません", args.limit)
 
     def normalized_key(row):
-        return (parse_date(row.get("日付", "")).strftime("%Y-%m-%d"),
-                normalize_space(row.get("会場", "")), parse_race_no(row.get("R", "")))
+        return (
+            parse_date(row.get("日付", "")).strftime("%Y-%m-%d"),
+            normalize_space(row.get("会場", "")),
+            parse_race_no(row.get("R", "")),
+        )
+
     normalized_keys: list[tuple[str, str, int] | None] = []
     key_errors: dict[int, str] = {}
     for index, row in enumerate(rows):
@@ -837,73 +1080,47 @@ def main(argv: list[str] | None = None) -> int:
             normalized_keys.append(None)
             key_errors[index] = str(exc)
     valid_keys = [x for x in normalized_keys if x is not None]
-    duplicates = {k for k, count in Counter(valid_keys).items() if count > 1}
-    outputs: list[dict[str, str]] = []
-    source_counts: Counter[str] = Counter()
-    for index, row in enumerate(rows, 1):
-        checked_at = now_jst()
-        url = ""
-        output = blank_output(row, url, checked_at)
-        normalized = normalized_keys[index - 1]
-        key_raw = normalized or (
-            normalize_space(row.get("日付", "")), normalize_space(row.get("会場", "")),
-            normalize_space(row.get("R", "")))
-        try:
-            if normalized is None:
-                raise InputError(key_errors[index - 1])
-            date_value = parse_date(row.get("日付", ""))
-            venue = row.get("会場", "").strip()
-            if venue not in VENUE_CODES:
-                raise InputError(f"未対応の会場名です: {venue!r}")
-            race_no = parse_race_no(row.get("R", ""))
-            url = official_url(date_value, VENUE_CODES[venue], race_no)
-            output["公式URL"] = url
-            if key_raw in duplicates:
-                raise InputError("日付＋会場＋Rが重複しています")
-            # 公式取得前に買い目構造と点数を検証する。
-            empty_result = OfficialResult()
-            evaluate_section(row.get("主推奨券種", ""), row.get("主推奨買い目展開後", ""),
-                             row.get("主推奨点数", ""), empty_result, args.unit_stake)
-            evaluate_section(row.get("保険券種", ""), row.get("保険買い目", ""),
-                             row.get("保険点数", ""), empty_result, args.unit_stake)
-            evaluate_section(row.get("参考券種", ""), row.get("参考買い目", ""),
-                             None, empty_result, args.unit_stake)
+    duplicates = {key for key, count in Counter(valid_keys).items() if count > 1}
 
-            html_path, meta_path = cache_paths(args.cache_dir, date_value,
-                                               VENUE_CODES[venue], race_no)
-            logger.info("対象=%s %s %sR 公式URL=%s", row["日付"], venue, race_no, url)
-            fetched = acquire(url, html_path, meta_path, args)
-            source_counts[fetched.source] += 1
-            output.update({"HTTPステータス": str(fetched.http_status),
-                           "HTTP取得日時": fetched.fetched_at,
-                           "HTML_SHA256": fetched.sha256})
-            result = parse_official_html(fetched.content, venue, date_value, race_no, url)
-            fill_result(output, row, fetched, result, args)
-            logger.info("HTTP=%d 取得日時=%s source=%s 解析結果=%s 状態=%s エラー=%s",
-                        fetched.http_status, fetched.fetched_at, fetched.source,
-                        output["確定着順"], output["取得状態"], output["エラー内容"])
-        except InputError as exc:
-            output["取得状態"] = "入力不正"
-            output["エラー内容"] = str(exc)
-            logger.error("対象=%s 状態=入力不正 エラー=%s", key_raw, exc)
-        except (HTTPError, URLError, TimeoutError, OSError, FileNotFoundError) as exc:
-            output["取得状態"] = "取得失敗"
-            output["エラー内容"] = str(exc)
-            logger.error("対象=%s URL=%s 状態=取得失敗 エラー=%s", key_raw, url, exc)
-        except (ParseError, ValueError, json.JSONDecodeError) as exc:
-            output["取得状態"] = "解析失敗"
-            output["エラー内容"] = str(exc)
-            logger.error("対象=%s URL=%s 状態=解析失敗 エラー=%s", key_raw, url, exc)
-        except Exception as exc:  # 不明な例外も成功扱いにしない。
-            output["取得状態"] = "解析失敗"
-            output["エラー内容"] = f"未処理例外: {type(exc).__name__}: {exc}"
-            logger.exception("対象=%s URL=%s 状態=解析失敗", key_raw, url)
-        output["結果確認日時"] = now_jst()
-        outputs.append(output)
-        # キャッシュ読込後には待機しない。ネットワーク取得後だけアクセス間隔を置く。
-        if (index < len(rows) and output.get("HTTP取得日時")
-                and fetched.source == "network" and args.interval):
-            time.sleep(args.interval)
+    # 元のCSVで最初に現れた会場順を保ったまま、会場単位のworkerへ分配する。
+    venue_groups: dict[str, list[int]] = {}
+    for row_index, row in enumerate(rows):
+        venue_key = normalize_space(row.get("会場", ""))
+        venue_groups.setdefault(venue_key, []).append(row_index)
+
+    limiter = RequestStartLimiter(args.interval)
+    outputs_by_index: dict[int, dict[str, str]] = {}
+    source_counts: Counter[str] = Counter()
+    timing = TimingStats()
+    run_started = time.monotonic()
+    worker_count = min(args.parallel_venues, max(1, len(venue_groups)))
+    with ThreadPoolExecutor(
+        max_workers=worker_count, thread_name_prefix="boatrace-result-venue"
+    ) as executor:
+        futures = []
+        for venue_index, row_indexes in enumerate(venue_groups.values(), start=1):
+            futures.append(executor.submit(
+                process_venue,
+                venue_index,
+                row_indexes,
+                rows,
+                normalized_keys,
+                key_errors,
+                duplicates,
+                args,
+                limiter,
+                logger,
+            ))
+        for future in as_completed(futures):
+            result = future.result()
+            for row_index, output in result.outputs:
+                outputs_by_index[row_index] = output
+            source_counts.update(result.source_counts)
+            timing.add(result.timing)
+
+    # 並列完了順ではなく、Freeze CSVと同一の行順へ必ず戻す。
+    outputs = [outputs_by_index[index] for index in range(len(rows))]
+    run_seconds = time.monotonic() - run_started
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     temporary_output: Path | None = None
@@ -945,22 +1162,39 @@ def main(argv: list[str] | None = None) -> int:
     if args.strict:
         audit_ok = audit_ok and all(x["取得状態"] == "取得成功" for x in outputs)
 
-    logger.info("成功件数=%d 中止件数=%d 不成立件数=%d 公式未確定件数=%d "
-                "取得失敗件数=%d 解析失敗件数=%d 入力不正件数=%d",
-                status_counts["取得成功"], status_counts["開催中止"],
-                status_counts["レース不成立"], status_counts["公式未確定"],
-                status_counts["取得失敗"], status_counts["解析失敗"],
-                status_counts["入力不正"])
-    logger.info("出力ファイル=%s 出力件数=%d 公式URL記録件数=%d 重複件数=%d "
-                "未結合件数=%d 余剰件数=%d 仮データ生成機能=未実装 結果固定値使用機能=未実装",
-                output_path, len(outputs), url_count, len(duplicates), len(unjoined), len(surplus))
-    logger.info("取得元件数=network:%d cache:%d", source_counts["network"], source_counts["cache"])
+    logger.info(
+        "成功件数=%d 中止件数=%d 不成立件数=%d 公式未確定件数=%d "
+        "取得失敗件数=%d 解析失敗件数=%d 入力不正件数=%d",
+        status_counts["取得成功"], status_counts["開催中止"],
+        status_counts["レース不成立"], status_counts["公式未確定"],
+        status_counts["取得失敗"], status_counts["解析失敗"],
+        status_counts["入力不正"]
+    )
+    logger.info(
+        "出力ファイル=%s 出力件数=%d 公式URL記録件数=%d 重複件数=%d "
+        "未結合件数=%d 余剰件数=%d 仮データ生成機能=未実装 結果固定値使用機能=未実装",
+        output_path, len(outputs), url_count, len(duplicates), len(unjoined), len(surplus)
+    )
+    logger.info(
+        "取得元件数=network:%d cache:%d",
+        source_counts["network"], source_counts["cache"]
+    )
+    logger.info(
+        "timing_summary requests=%d http_seconds=%.3f parse_seconds=%.3f "
+        "rate_limit_wait_seconds=%.3f run_seconds=%.3f parallel_venues=%d",
+        timing.request_count, timing.http_seconds, timing.parse_seconds,
+        timing.rate_limit_wait_seconds, run_seconds, worker_count
+    )
+
     def race_label(value: str) -> str:
         normalized_value = unicodedata.normalize("NFKC", str(value or "")).strip().upper()
         return normalized_value if normalized_value.endswith("R") else f"{normalized_value}R"
 
-    failed = [f"{x['日付']} {x['会場']} {race_label(x['R'])}:{x['取得状態']}:{x['エラー内容']}"
-              for x in outputs if x["取得状態"] in {"取得失敗", "解析失敗", "入力不正", "公式未確定"}]
+    failed = [
+        f"{x['日付']} {x['会場']} {race_label(x['R'])}:{x['取得状態']}:{x['エラー内容']}"
+        for x in outputs
+        if x["取得状態"] in {"取得失敗", "解析失敗", "入力不正", "公式未確定"}
+    ]
     if failed:
         logger.error("未完了対象=%s", " | ".join(failed))
     logger.info("実行終了日時=%s %s", now_jst(), "正常終了" if audit_ok else "異常終了")
