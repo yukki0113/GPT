@@ -26,6 +26,8 @@ class FactLiteParquetCutoverTest(unittest.TestCase):
         self.assertIn(".pages/data/fact-lite-parquet/current.json", source)
         self.assertIn("test ! -e .pages/data/fact-lite/jrdb_pwa_fact_lite.sqlite", source)
         self.assertIn("Stats Mart still uses sql.js", source)
+        self.assertIn("@duckdb/duckdb-wasm@1.32.0", source)
+        self.assertIn(".pages/vendor/duckdb/duckdb-mvp.wasm", source)
 
     def test_shell_has_only_current_fact_lite_runtime_assets(self) -> None:
         html = (PWA / "fact-lite.html").read_text(encoding="utf-8")
