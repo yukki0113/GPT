@@ -262,6 +262,34 @@ branch protection、権限、競合、API制約で安全にまとめられない
 
 上位共通文書に個別プロジェクトのfile ID / Spreadsheet ID /日次データ配置を固定しません。正本の具体的所在は各プロジェクト文書を参照します。
 
+### 9.1 Google Drive transport routing — Actions bridge is frozen
+
+Google Driveへのread / write / upload / downloadは、**connected native Google Drive connector / native toolsをproduction-standard route** とします。
+
+`.github/workflows/gpt_gdrive_request_issue.yml`、`tools/gpt_io/gdrive/`、`[gpt-gdrive-request]` は互換・将来実装用の残存資産であり、**通常運用では使用しません**。
+
+禁止事項:
+
+- `[gpt-gdrive-request]` Issueを通常運用で発行しない。
+- `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` を有効化しない。
+- `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` 等の長期Service Account keyを通常運用のために作成・設定しない。
+- GitHub Actions artifactをDriveへ搬送するためだけにActions Drive bridgeをchainしない。
+- workflow / adapterがrepositoryに存在することを「利用可能な標準経路」と解釈しない。
+
+GitHub Actions artifactをDriveへ保存する必要がある場合の標準経路:
+
+```text
+GitHub artifact
+-> GitHub connector / direct artifact download
+-> Chat / runtime file reference
+-> connected native Google Drive connector
+-> destination folder
+```
+
+Google Docs / Sheets / Slidesは各native toolを使用します。
+
+正本判断は `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` とします。同文書はActions Drive backendを **DISCONTINUED FOR OPERATION / NOT PRODUCTION-ACCEPTED / NOT THE STANDARD ROUTE** と定義しています。将来再開する場合は、明示的な新decisionが必要です。
+
 ## 10. 作業開始時の読み順
 
 1. 本書 `.gpt/GITHUB_OPERATION_POLICY.md`
