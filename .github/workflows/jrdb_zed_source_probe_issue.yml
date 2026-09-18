@@ -1,0 +1,81 @@
+name: JRDB ZED Source Probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_ZED_SOURCE_PROBE]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe candidate JRDB sources
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          python - <<'PY'
+          import base64, json, os, urllib.error, urllib.request
+          from pathlib import Path
+
+          base = 'https://jrdb.com/member'
+          candidates = [
+              f'{base}/datazip/Paci/PACI_2025.zip',
+              f'{base}/datazip/Paci/2025/PACI_2025.zip',
+              f'{base}/datazip/Paci/PACI2025.zip',
+              f'{base}/datazip/Jrdb/JRDB_2025.zip',
+              f'{base}/datazip/Jrdb/2025/JRDB_2025.zip',
+              f'{base}/datazip/Jrdb/JRDB2025.zip',
+              f'{base}/datazip/JRDB/JRDB_2025.zip',
+              f'{base}/datazip/JRDB/2025/JRDB_2025.zip',
+              f'{base}/datazip/Zed/2025/ZED250105.lzh',
+              f'{base}/datazip/Zed/ZED250105.lzh',
+              f'{base}/data/Zed/2025/ZED250105.lzh',
+              f'{base}/data/Zed/ZED250105.lzh',
+          ]
+          token = base64.b64encode(
+              f"{os.environ['JRDB_USER']}:{os.environ['JRDB_PASSWORD']}".encode()
+          ).decode()
+          rows=[]
+          for url in candidates:
+              req=urllib.request.Request(url,headers={
+                  'Authorization':f'Basic {token}',
+                  'User-Agent':'JRDB-ZED-SourceProbe/0.1',
+                  'Accept':'*/*',
+                  'Range':'bytes=0-0',
+              })
+              try:
+                  with urllib.request.urlopen(req,timeout=20) as r:
+                      chunk=r.read(64)
+                      rows.append({
+                          'url':url,
+                          'status':getattr(r,'status',200),
+                          'content_type':r.headers.get('Content-Type'),
+                          'content_length':r.headers.get('Content-Length'),
+                          'content_range':r.headers.get('Content-Range'),
+                          'prefix_hex':chunk[:16].hex(),
+                      })
+              except urllib.error.HTTPError as e:
+                  rows.append({'url':url,'status':e.code})
+              except Exception as e:
+                  rows.append({'url':url,'status':'EXCEPTION','error':f'{type(e).__name__}: {e}'})
+          result={'status':'success','results':rows}
+          Path('/tmp/probe.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Comment result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          body='JRDB_ZED_SOURCE_PROBE_RESULT\n```json\n'+Path('/tmp/probe.json').read_text()+'\n```\n'
+          Path('/tmp/comment.md').write_text(body,encoding='utf-8')
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
