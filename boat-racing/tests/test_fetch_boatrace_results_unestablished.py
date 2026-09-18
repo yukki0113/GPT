@@ -111,6 +111,20 @@ class FetchBoatRaceResultsPartialUnestablishedTest(unittest.TestCase):
         self.assertEqual(evaluated["hit"], "的中")
         self.assertEqual(evaluated["payout"], 7670)
 
+    def test_abbreviated_special_payout_label_is_accepted(self):
+        race_date = datetime(2026, 9, 18)
+        url = official_url(race_date, "03", 11)
+        content = partial_unestablished_html().replace(
+            b'<td><img alt="\xe4\xb8\x8d\xe6\x88\x90\xe7\xab\x8b"></td><td><span class="is-payout1">100\xe5\x86\x86</span></td>',
+            b'<td>\xe7\x89\xb9\xe6\x89\x95</td><td><span class="is-payout1">70\xe5\x86\x86</span></td>',
+        )
+        result = parse_official_html(content, "江戸川", race_date, 11, url)
+
+        self.assertEqual(result_status(result), "取得成功")
+        self.assertNotIn("2連複", result.unestablished_ticket_types)
+        self.assertEqual(result.special_payouts["2連複"], 70)
+        self.assertEqual(serialize_payouts(result, "2連複"), ("特払い", "70"))
+
 
 if __name__ == "__main__":
     unittest.main()
