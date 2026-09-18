@@ -79,6 +79,13 @@ jobs:
           if not 0 <= interval <= 60:
               raise SystemExit('request_interval_seconds must be between 0 and 60')
 
+          try:
+              parallel_venues = int(request.get('parallel_venues', 3))
+          except (TypeError, ValueError) as exc:
+              raise SystemExit('parallel_venues must be an integer from 1 to 3') from exc
+          if parallel_venues not in (1, 2, 3):
+              raise SystemExit('parallel_venues must be an integer from 1 to 3')
+
           output_dir = f'boat-racing/output_issue/{request_id}'
           config_path = '/tmp/boatrace_racelist_config.json'
           config = {
@@ -86,6 +93,7 @@ jobs:
               'venues': venues,
               'output_dir': output_dir,
               'request_interval_seconds': interval,
+              'parallel_venues': parallel_venues,
           }
           Path(config_path).write_text(
               json.dumps(config, ensure_ascii=False, indent=2),
