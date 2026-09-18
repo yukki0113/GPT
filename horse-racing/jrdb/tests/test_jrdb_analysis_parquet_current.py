@@ -66,3 +66,17 @@ class AnalysisParquetCurrentTest(unittest.TestCase):
         manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
         with self.assertRaisesRegex(AnalysisParquetCurrentError, "total row count"):
             resolve_current(root)
+
+    def test_accepts_only_v1_missing_metadata_size_when_sha_matches(self) -> None:
+        root = self.make_root()
+        manifest_path = root / "generations/g1/manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["storage_version"] = "1"
+        del manifest["metadata_tables"]["meta_analysis_build"]["size_bytes"]
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        self.assertEqual(resolve_current(root)["generation_id"], "g1")
+
+        manifest["storage_version"] = "2"
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        with self.assertRaisesRegex(AnalysisParquetCurrentError, "Size mismatch"):
+            resolve_current(root)
