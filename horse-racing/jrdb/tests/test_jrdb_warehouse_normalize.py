@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from jrdb_raw import BODY_LENGTHS  # noqa: E402
 from jrdb_warehouse_normalize import (  # noqa: E402
@@ -16,8 +17,10 @@ from jrdb_warehouse_normalize import (  # noqa: E402
     PROVENANCE_COLUMNS,
     RawProvenance,
     canonical_key_columns,
+    normalize_hjc_record,
     normalize_record,
 )
+from test_jrdb_hjc_common import sample_body  # noqa: E402
 
 
 def put(row: bytearray, start: int, width: int, value: str) -> None:
@@ -131,6 +134,40 @@ class WarehouseNormalizeTest(unittest.TestCase):
         self.assertEqual(skb["result_date"], "2026-08-30")
         self.assertEqual(skb["tokki_code_1"], zkb["tokki_code_1"])
         self.assertEqual(canonical_key_columns("ZKB"), ("result_key",))
+
+    def test_ukc_preserves_each_snapshot_key_without_latest_only_collapse(self) -> None:
+        source = row(
+            "UKC", (1, 8, "20231001"), (9, 36, "テストホース"), (45, 1, "1"),
+            (158, 8, "20230301"), (166, 4, "2010"), (269, 8, "20260829"),
+        )
+        actual = normalize_record("UKC", source, provenance())
+        self.assertEqual(actual["horse_id"], "20231001")
+        self.assertEqual(actual["data_date"], "20260829")
+        self.assertEqual(actual["data_date_iso"], "2026-08-29")
+        self.assertEqual(actual["birth_date_iso"], "2023-03-01")
+        self.assertIn("semantic_hash", actual)
+        self.assertEqual(canonical_key_columns("UKC"), ("horse_id", "data_date"))
+
+    def test_hjc_emits_race_and_all_payout_slots_with_shared_provenance(self) -> None:
+        source = sample_body()
+        race, payouts = normalize_hjc_record(source, provenance())
+        self.assertEqual(race["race_key_raw"], "06244901")
+        self.assertEqual(race["source_record_sha256"], hashlib.sha256(source).hexdigest())
+        self.assertEqual(len(payouts), 36)
+        self.assertEqual(payouts[0]["bet_type"], "win")
+        self.assertEqual(payouts[0]["slot_no"], 1)
+        self.assertEqual(payouts[0]["combination_raw"], "04")
+        self.assertEqual(payouts[0]["horse_no_1"], 4)
+        self.assertEqual(payouts[0]["payout"], 750)
+        blank_win = payouts[1]
+        self.assertEqual(blank_win["slot_no"], 2)
+        self.assertEqual(blank_win["combination_raw"], "00")
+        self.assertEqual(blank_win["payout"], 0)
+        trifecta = next(item for item in payouts if item["bet_type"] == "trifecta" and item["slot_no"] == 1)
+        self.assertEqual((trifecta["horse_no_1"], trifecta["horse_no_2"], trifecta["horse_no_3"]), (4, 12, 15))
+        self.assertEqual(trifecta["source_record_sha256"], race["source_record_sha256"])
+        self.assertEqual(canonical_key_columns("HJC_RACE"), ("race_key_raw",))
+        self.assertEqual(canonical_key_columns("HJC_PAYOUT"), ("race_key_raw", "bet_type", "slot_no"))
 
     def test_contract_rejects_unimplemented_family_and_invalid_ordinal(self) -> None:
         self.assertEqual(canonical_key_columns("BAC"), ("race_key_raw",))
