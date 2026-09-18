@@ -98,11 +98,45 @@ class WarehouseNormalizeTest(unittest.TestCase):
         self.assertEqual(cyb["course_count_wood"], 3)
         self.assertEqual(cyb["comment_date"], "2026-08-28")
 
+    def test_sed_and_zed_keep_alias_semantics_but_their_own_grains(self) -> None:
+        source = row(
+            "SED", (1, 8, "0526A101"), (9, 2, "03"), (11, 8, "20231001"),
+            (19, 8, "20260830"), (141, 2, "02"), (186, 3, " 68"),
+            (309, 2, "03"), (371, 4, "1540"),
+        )
+        sed = normalize_record("SED", source, provenance())
+        zed = normalize_record("ZED", source, provenance())
+        self.assertEqual(sed["result_key"], "2023100120260830")
+        self.assertEqual(sed["metric_raw_score"], 68)
+        self.assertEqual(sed["corner_1"], 3)
+        self.assertEqual(sed["race_date"], "2026-08-30")
+        self.assertEqual(sed["start_time"], "15:40")
+        self.assertEqual(sed["metric_raw_score"], zed["metric_raw_score"])
+        self.assertEqual(canonical_key_columns("SED"), ("race_key_raw", "horse_no"))
+        self.assertEqual(canonical_key_columns("ZED"), ("result_key",))
+
+    def test_skb_and_zkb_flatten_codes_and_preserve_blank_slots(self) -> None:
+        source = row(
+            "SKB", (11, 8, "20231001"), (19, 8, "20260830"), (27, 3, "033"),
+            (45, 3, "001"), (69, 3, "101"), (78, 3, "102"),
+        )
+        skb = normalize_record("SKB", source, provenance())
+        zkb = normalize_record("ZKB", source, provenance())
+        self.assertEqual(skb["result_key"], "2023100120260830")
+        self.assertEqual(skb["tokki_code_1"], "033")
+        self.assertEqual(skb["tokki_code_2"], "")
+        self.assertEqual(skb["equipment_code_1"], "001")
+        self.assertEqual(skb["leg_code_overall"], "101")
+        self.assertEqual(skb["leg_code_left_front"], "102")
+        self.assertEqual(skb["result_date"], "2026-08-30")
+        self.assertEqual(skb["tokki_code_1"], zkb["tokki_code_1"])
+        self.assertEqual(canonical_key_columns("ZKB"), ("result_key",))
+
     def test_contract_rejects_unimplemented_family_and_invalid_ordinal(self) -> None:
         self.assertEqual(canonical_key_columns("BAC"), ("race_key_raw",))
         self.assertEqual(CANONICAL_KEYS["CYB"], ("race_horse_key",))
         with self.assertRaises(ValueError):
-            canonical_key_columns("SED")
+            canonical_key_columns("HJC")
         with self.assertRaises(ValueError):
             normalize_record("BAC", b"record", RawProvenance("x.zip", "x.txt", 0))
 
