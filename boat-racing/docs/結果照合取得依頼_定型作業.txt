@@ -145,6 +145,11 @@ Issueを作成する前に、latest mainの `.gpt/ISSUE_REQUEST_CONTRACTS.md`、
 - `request_interval_seconds`
   - 既定1.0
   - 0以上numeric
+  - 全会場worker共通のHTTPリクエスト開始最小間隔
+- `parallel_venues`
+  - 既定3
+  - 1 / 2 / 3 のinteger
+  - 会場単位の最大worker数。各会場内は入力順に直列
 - `unit_stake`
   - 既定100
   - 0より大きい100円単位integer
@@ -183,13 +188,13 @@ retry時はRESULT、artifact、failed step / logを確認して原因分類す�
 
 1) mainをcheckoutする。
 2) Python 3.12をセットアップする。
-3) `pip install -r boat-racing/requirements.txt` を実行する。
+3) `pip install -r boat-racing/requirements-results.txt` を実行する。
 4) Issue title / raw JSON bodyを検査する。
 5) gzip+Base64から事前予想CSVを `/tmp` に復元する。
 6) `input_sha256` 指定時は復元原本と照合する。
 7) CSVの対象日・会場・行数・必須列を確認し、実行commandを確定する。
-8) 正本 `boat-racing/src/fetch_boatrace_results.py` を実行する。
-9) 結果CSV、取得ログ、`resolved_request.json`、`validation_report.json`、`run_status.txt` を出力する。
+8) 正本 `boat-racing/src/fetch_boatrace_results.py` を、標準 `parallel_venues=3`・全worker共通の開始間隔Limiter・`--no-cache-write` で実行する。HTTPクライアントは結果ページで実績のあるurllibを使用する。
+9) 並列完了順にかかわらず入力CSV順へ戻した結果CSV、取得ログ、`resolved_request.json`、`validation_report.json`、`run_status.txt` を出力する。
 10) 成果物一式をartifact化する。
 11) Issueへ `BOATRACE_RESULTS_RESULT` の機械可読JSONをコメントする。
 12) Request Issueをcloseする。
