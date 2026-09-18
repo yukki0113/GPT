@@ -174,7 +174,9 @@ remote manifest
 
 検証失敗時はcurrentを維持します。Service Workerはstatic app shellをcacheしますが、`/data/` はcacheしません。オフラインのSQLite利用はOPFSを使用します。
 
-Parquet / DuckDB-Wasm移行基盤は、Pages同一originの `current.json → manifest → manifest.tables` だけを解決します。DuckDB-Wasm 1.32.0はsingle-threadのMVP bundleをPages artifactへ同梱し、固定6 relationを作成します。現段階では既存SQLite consumer・OPFS構成を維持し、generation単位OPFS cacheと集計query adapterの導入後に切り替えます。
+Parquet / DuckDB-Wasm移行基盤は、Pages同一originの `current.json → manifest → manifest.tables` だけを解決します。DuckDB-Wasm 1.32.0はsingle-threadのMVP bundleをPages artifactへ同梱し、固定6 relationを作成します。
+
+Parquet cacheはOPFSの `jrdb-fact-lite/generations/<generation_id>/` に、manifestとmanifest記載のassetだけを保存します。新世代は全assetのsize/SHA-256、DuckDB relation、必須column、row countを通過するまで `current_generation` を切り替えません。移行段階中は既存SQLite readerと衝突しないよう、Parquet側は `parquet-metadata.json` を使用します。consumer切替時にgeneration metadataへ統合します。
 
 ## Deployment completion
 

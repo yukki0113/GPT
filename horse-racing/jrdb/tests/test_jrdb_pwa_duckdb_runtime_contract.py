@@ -20,6 +20,16 @@ class FactLiteDuckDbRuntimeContractTest(unittest.TestCase):
         self.assertIn('await database.registerFileURL', source)
         self.assertIn('CREATE OR REPLACE VIEW', source)
 
+    def test_runtime_has_fail_closed_generation_cache_contract(self) -> None:
+        source = RUNTIME.read_text(encoding="utf-8")
+        self.assertIn('const FACT_PARQUET_METADATA = "parquet-metadata.json"', source)
+        self.assertIn('generations/" + generationId', source)
+        self.assertIn('download SHA-256不一致', source)
+        self.assertIn('cache SHA-256不一致', source)
+        self.assertIn('await database.registerFileBuffer', source)
+        self.assertIn('await validateDuckDbCachedGeneration(cached)', source)
+        self.assertIn('current_generation: candidate.generationId', source)
+
     def test_publish_workflow_vendors_exact_runtime_assets(self) -> None:
         workflow = WORKFLOW.read_text(encoding="utf-8")
         base = "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.32.0/dist/"
