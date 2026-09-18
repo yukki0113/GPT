@@ -476,7 +476,7 @@ def collect_venue(
             )
         for rno in range(1, 13):
             with print_lock:
-                print(f"  [{venue['name']} {rno}R] 取得中...", end="", flush=True)
+                print(f"  [{venue['name']} {rno}R] 取得開始", flush=True)
             rows, report, retries = collect_race(
                 session, date, venue, rno, logger, delay, limiter, timing
             )
@@ -489,7 +489,7 @@ def collect_venue(
             if report["不足項目"]:
                 detail += f" / 不足: {report['不足項目']}"
             with print_lock:
-                print(f" 完了（{detail}）", flush=True)
+                print(f"  [{venue['name']} {rno}R] 完了（{detail}）", flush=True)
         with print_lock:
             print(
                 f"  → {venue['name']} 出力対象の取得完了（成功 {sum(x['取得状態'] == '成功' for x in reports)}/12レース）",
