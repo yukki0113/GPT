@@ -10,12 +10,14 @@ Last reviewed: 2026-09-17
 
 新スレッドでは次の順に確認します。
 
-1. `horse-racing/jrdb/README.md`
-2. `horse-racing/jrdb/.gpt/HANDOFF.md`（この文書）
-3. `horse-racing/jrdb/.gpt/CONTEXT.md`
-4. `horse-racing/jrdb/.gpt/WORKFLOW.md`
-5. latest `main` HEAD
-6. 対象subsystemのcurrent docs / contract / audit / source / focused tests
+1. repository root `.gpt/GITHUB_OPERATION_POLICY.md`
+2. repository root `.gpt/README.md`
+3. `horse-racing/jrdb/README.md`
+4. `horse-racing/jrdb/.gpt/HANDOFF.md`（この文書）
+5. `horse-racing/jrdb/.gpt/CONTEXT.md`
+6. `horse-racing/jrdb/.gpt/WORKFLOW.md`
+7. latest `main` HEAD
+8. 対象subsystemのcurrent docs / contract / audit / source / focused tests
 
 RaceNote開発を再開する場合は、追加で次を読む。
 
@@ -260,6 +262,10 @@ JRDB codeの意味はマスタコード定義を参照し、数字だけをreade
 - 一方、Analysis / Eval / RaceNote / research等の処理が「入力として2026 Rawを必要とする」だけなら、Drive inventoryを先にresolveし、既存Rawを再利用する。
 - ユーザーが明示的にDrive再利用を指定した場合は、その指定を優先する。
 - Raw取得スレッドでは、RaceNote生成、Analysis更新、Stats Mart更新、Edge matching、Eval enrichment等を**自動で続行しない**。追加依頼がある場合だけ別工程へ進む。
+- 取得済みRaw / annualized ZIP / Actions artifactをGoogle Driveへ保存する場合は、**connected native Google Drive connectorを使う**。
+- `[gpt-gdrive-request]` / `gpt_gdrive_request_issue.yml` / Actions Drive backendは凍結済みで、通常運用では使用しない。
+- GitHub artifact -> Driveは「artifact取得 -> Chat/runtime file reference -> native Drive connector」の順で搬送し、Drive bridge用Issueを作成しない。
+- Drive routingの上位正本は repository root `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`。
 
 ### Source / workflow
 
