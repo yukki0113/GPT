@@ -12,6 +12,8 @@ class PostRaceParquetDryRunWorkflowTest(unittest.TestCase):
         self.assertIn("run_jrdb_analysis_post_race_incremental.py", workflow)
         self.assertIn("build_jrdb_analysis_post_race_parquet_candidate.py", workflow)
         self.assertIn("non-promoted candidate only", workflow)
+        self.assertIn("if-no-files-found: error", workflow)
+        self.assertIn(".postrace/handoff", workflow)
         self.assertNotIn("publish_jrdb_analysis_parquet_drive_generation.py", workflow)
         self.assertNotIn("publish_jrdb_fact_lite_parquet.py", workflow)
 
