@@ -1,0 +1,72 @@
+name: JRDB Legacy Source Probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_LEGACY_SOURCE_PROBE]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install archive reader
+        run: python -m pip install --disable-pip-version-check 'libarchive-c>=5,<6'
+      - name: Probe requested source
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import base64, hashlib, io, json, os, urllib.error, urllib.request, zipfile
+          from pathlib import Path
+          import libarchive
+          req=json.loads((os.environ.get('ISSUE_BODY') or '{}').strip())
+          date=str(req.get('date',''))
+          family=str(req.get('family','ZED')).upper()
+          if len(date)!=8 or not date.isdigit() or family not in {'ZED','ZKB'}:
+              raise SystemExit('invalid request')
+          directory={'ZED':'Zed','ZKB':'Zkb'}[family]
+          url=f'https://jrdb.com/member/data/{directory}/{family}{date[2:]}.lzh'
+          token=base64.b64encode(f"{os.environ['JRDB_USER']}:{os.environ['JRDB_PASSWORD']}".encode()).decode()
+          request=urllib.request.Request(url,headers={'Authorization':f'Basic {token}','User-Agent':'JRDB-Legacy-Probe/0.2','Accept':'*/*'})
+          row={'url':url,'date':date,'family':family}
+          try:
+              with urllib.request.urlopen(request,timeout=30) as response:
+                  payload=response.read()
+                  row.update({'http_status':int(getattr(response,'status',200)),'content_type':response.headers.get('Content-Type'),'content_length_header':response.headers.get('Content-Length'),'size_bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest(),'prefix_hex':payload[:64].hex()})
+          except urllib.error.HTTPError as error:
+              row['http_status']=error.code
+              payload=error.read()
+              row['body_prefix_hex']=payload[:64].hex()
+          if row.get('http_status')==200:
+              row['zipfile_is_zip']=zipfile.is_zipfile(io.BytesIO(payload))
+              try:
+                  members=[]
+                  with libarchive.memory_reader(payload) as archive:
+                      for entry in archive:
+                          if not entry.isdir:
+                              members.append(entry.pathname)
+                  row['libarchive_ok']=True
+                  row['members']=members
+              except Exception as error:
+                  row['libarchive_ok']=False
+                  row['libarchive_error']=f'{type(error).__name__}: {error}'
+          Path('/tmp/probe.json').write_text(json.dumps(row,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Comment result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          Path('/tmp/comment.md').write_text('JRDB_LEGACY_SOURCE_PROBE_RESULT\n```json\n'+Path('/tmp/probe.json').read_text()+'\n```\n',encoding='utf-8')
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
