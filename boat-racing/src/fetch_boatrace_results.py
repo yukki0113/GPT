@@ -145,6 +145,8 @@ class OfficialResult:
     finish_rows: list[dict] = field(default_factory=list)
     payouts: dict[str, list[dict]] = field(default_factory=dict)
     special_payouts: dict[str, int] = field(default_factory=dict)
+    unestablished_ticket_types: set[str] = field(default_factory=set)
+    unestablished_payouts: dict[str, int] = field(default_factory=dict)
     refunded_boats: list[str] = field(default_factory=list)
     absent_boats: list[str] = field(default_factory=list)
     disqualified_boats: list[str] = field(default_factory=list)
@@ -413,7 +415,25 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
             if not current_type:
                 continue
             row_text = text_of(row)
-            special_match = re.search(r"特払い[^0-9]*([0-9][0-9,]*)\s*円?", row_text)
+            attribute_text = " ".join(
+                str(value) for value in row.xpath(".//@alt | .//@title | .//@value")
+            )
+            row_signal_text = normalize_space(f"{row_text} {attribute_text}")
+            if "不成立" in row_signal_text:
+                result.unestablished_ticket_types.add(current_type)
+                payout_nodes = row.xpath(
+                    './/*[contains(concat(" ", normalize-space(@class), " "), " is-payout1 ")]'
+                )
+                if payout_nodes:
+                    try:
+                        result.unestablished_payouts[current_type] = parse_money(
+                            text_of(payout_nodes[0])
+                        )
+                    except ParseError:
+                        pass
+                continue
+
+            special_match = re.search(r"特払い[^0-9]*([0-9][0-9,]*)\s*円?", row_signal_text)
             if special_match:
                 payout = parse_money(special_match.group(1))
                 if payout <= 0:
@@ -451,6 +471,12 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
                 f"公式払戻に同一組番が重複しています: 券種={ticket_type}, 組番={combinations}")
         if ticket_type in result.special_payouts:
             raise ParseError(f"通常払戻と特払いが同一勝式に併存しています: 券種={ticket_type}")
+        if ticket_type in result.unestablished_ticket_types:
+            raise ParseError(f"通常払戻と不成立が同一勝式に併存しています: 券種={ticket_type}")
+
+    for ticket_type in result.special_payouts:
+        if ticket_type in result.unestablished_ticket_types:
+            raise ParseError(f"特払いと不成立が同一勝式に併存しています: 券種={ticket_type}")
 
     refund_table = find_table_by_headers(doc, {"返還"})
     if refund_table is not None:
@@ -466,10 +492,15 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
     result_text = normalize_space(" ".join(
         text_of(x) for x in (finish_table, payout_table, remarks_table) if x is not None))
     result.cancelled = "中止" in result.remarks or "レース中止" in result_text
-    # 公式結果ページでは、レース不成立時に備考ではなく各勝式の組番欄へ
-    # 「不成立」と表示されるケースがある。そのためページ全体の公式表示を判定する。
-    result.invalid = "不成立" in result_text
-    result.determined = bool(result.finish_order and (result.payouts or result.special_payouts))
+
+    # 「不成立」はレース全体ではなく券種単位でも発生する。
+    # 全7券種が不成立のときだけレース全体の不成立として扱う。
+    required_ticket_types = {"3連単", "3連複", "2連単", "2連複", "拡連複", "単勝", "複勝"}
+    result.invalid = required_ticket_types.issubset(result.unestablished_ticket_types)
+    result.determined = bool(
+        result.finish_order
+        and (result.payouts or result.special_payouts or result.unestablished_ticket_types)
+    )
     return result
 
 
@@ -625,7 +656,8 @@ def payout_map(result: OfficialResult, ticket_type: str) -> dict[str, int]:
 def ordered_payout_consistency_error(result: OfficialResult) -> str:
     """同着を含む確定着順と、公式の順序付き払戻組番が一致するか検証する。"""
     for ticket_type in ("2連単", "3連単"):
-        if ticket_type in result.special_payouts:
+        if (ticket_type in result.special_payouts
+                or ticket_type in result.unestablished_ticket_types):
             continue
         expected = expected_ordered_finish_bets(result, ticket_type)
         actual = set(payout_map(result, ticket_type))
@@ -657,7 +689,10 @@ def evaluate_section(ticket_type_value: str, bet_text: str, point_text: str | No
         if declared_points != len(bets):
             raise InputError(f"点数不一致: CSV={declared_points}, 展開後={len(bets)}")
     planned = len(bets) * unit_stake
-    if all_refunded:
+    ticket_unestablished = bool(
+        ticket_type and ticket_type in result.unestablished_ticket_types
+    )
+    if all_refunded or ticket_unestablished:
         refunded_bets = bets
     else:
         refunded_bets = [x for x in bets if bet_includes_refunded_boat(x, result.refunded_boats)]
@@ -666,7 +701,11 @@ def evaluate_section(ticket_type_value: str, bet_text: str, point_text: str | No
     official = payout_map(result, ticket_type) if ticket_type else {}
     hits = [x for x in valid_bets if x in official]
     special_payout = result.special_payouts.get(ticket_type) if ticket_type else None
-    if special_payout is not None and valid_bets:
+    if ticket_unestablished and bets:
+        hit_state = "返還"
+        hit_bets = refunded_bets
+        hit_payout = 0
+    elif special_payout is not None and valid_bets:
         hit_state = "特払い"
         hit_bets = valid_bets
         hit_payout = len(valid_bets) * special_payout * unit_stake // 100
@@ -689,6 +728,9 @@ def serialize_payouts(result: OfficialResult, ticket_type: str) -> tuple[str, st
     rows = result.payouts.get(ticket_type, [])
     if not rows and ticket_type in result.special_payouts:
         return "特払い", str(result.special_payouts[ticket_type])
+    if not rows and ticket_type in result.unestablished_ticket_types:
+        payout = result.unestablished_payouts.get(ticket_type)
+        return "不成立", "" if payout is None else str(payout)
     return ("／".join(x["combination"] for x in rows),
             "／".join(str(x["payout"]) for x in rows))
 
@@ -696,6 +738,9 @@ def serialize_payouts(result: OfficialResult, ticket_type: str) -> tuple[str, st
 def serialize_combined_payouts(result: OfficialResult, ticket_type: str) -> str:
     if not result.payouts.get(ticket_type) and ticket_type in result.special_payouts:
         return f"特払い:{result.special_payouts[ticket_type]}"
+    if not result.payouts.get(ticket_type) and ticket_type in result.unestablished_ticket_types:
+        payout = result.unestablished_payouts.get(ticket_type)
+        return "不成立" if payout is None else f"不成立:{payout}"
     return "／".join(f"{x['combination']}:{x['payout']}" for x in result.payouts.get(ticket_type, []))
 
 
@@ -716,8 +761,12 @@ def result_status(result: OfficialResult) -> str:
     if not result.determined:
         return "公式未確定"
     required = ("3連単", "3連複", "2連単", "2連複", "拡連複", "単勝", "複勝")
-    if any(not result.payouts.get(x) and x not in result.special_payouts
-           for x in required):
+    if any(
+        not result.payouts.get(x)
+        and x not in result.special_payouts
+        and x not in result.unestablished_ticket_types
+        for x in required
+    ):
         return "解析失敗"
     if len(result.finish_order) < 3:
         return "解析失敗"
@@ -775,7 +824,8 @@ def fill_result(output: dict[str, str], row: dict[str, str], fetched: FetchData,
         missing = [x for x in ("確定着順", "3連単", "3連複", "2連単", "2連複", "拡連複", "単勝", "複勝")
                    if (x == "確定着順" and len(result.finish_order) < 3) or
                    (x != "確定着順" and not result.payouts.get(x)
-                    and x not in result.special_payouts)]
+                    and x not in result.special_payouts
+                    and x not in result.unestablished_ticket_types)]
         consistency_error = ordered_payout_consistency_error(result)
         if consistency_error:
             output["エラー内容"] = consistency_error
