@@ -1,6 +1,6 @@
 # Boat racing thread handoff
 
-Updated: 2026-09-13
+Updated: 2026-09-18
 
 このファイルは、Chat / Workのスレッドが長大化して引っ越した場合に、会話履歴へ依存せず `boat-racing` プロジェクトを再開するための入口です。
 
@@ -91,6 +91,8 @@ Google Driveのread / write / upload / downloadは connected native Google Drive
   - ForwardTrialの事前予想・根拠明細・2連単1点販売選別を決定論的に生成。
 - `src/fetch_boatrace_results.py`
   - BOAT RACE公式結果取得と事前予想照合。
+  - 会場単位で最大3 workerを並列化し、各会場内は入力順に直列処理する。
+  - 全worker共通のHTTP開始Limiterで `request_interval_seconds`（標準1秒）以上を維持し、並列完了後も結果CSVはFreeze入力順へ戻す。
 - `src/ledger_daily_result_import.py`
   - 日次結果取込の基礎検証・JSON更新計画生成。
 - `src/forward_trial_analysis_import.py`
@@ -146,6 +148,8 @@ freeze済み公式出走表を入力に `forward_trial_predict.py` を使う。�
 ### 公式結果取得・予想照合
 
 `fetch_boatrace_results.py` でfreeze済み事前予想と公式結果を照合する。この工程では台帳を書き換えない。
+
+性能運用は、会場worker最大3並列・会場内直列とし、全worker共通でHTTPリクエスト開始間隔を標準1秒以上に制限する。Actions経路では使い捨てrunnerのHTML cache書込みを省略し、結果取得専用requirementsを使う。アクセス頻度を上げるための無制限並列化はしない。
 
 標準資料:
 
