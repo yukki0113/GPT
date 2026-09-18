@@ -8,12 +8,14 @@ Updated: 2026-09-13
 
 latest `main` を確認し、原則として次の順に読む。
 
-1. `boat-racing/README.md`
-2. `boat-racing/.gpt/CONTEXT.md`
-3. 本 `HANDOFF.md`
-4. `boat-racing/.gpt/WORKFLOW.md`
-5. 対象作業の `docs/` と `src/`
-6. D. Actions-Native Executionを使う場合だけ対象 `.github/workflows/`
+1. repository root `.gpt/GITHUB_OPERATION_POLICY.md`
+2. repository root `.gpt/README.md`
+3. `boat-racing/README.md`
+4. `boat-racing/.gpt/CONTEXT.md`
+5. 本 `HANDOFF.md`
+6. `boat-racing/.gpt/WORKFLOW.md`
+7. 対象作業の `docs/` と `src/`
+8. D. Actions-Native Executionを使う場合だけ対象 `.github/workflows/`
 
 司令室・会場選別・仕様研究の場合は `docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md` も読む。
 
@@ -51,6 +53,8 @@ Folder ID: `19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 - timezone: `Asia/Tokyo`
 
 Drive/Gitの旧Excel台帳は移行前スナップショットであり、正本へフォールバックしない。
+
+Google Driveのread / write / upload / downloadは connected native Google Drive connector / native toolsを標準とする。`[gpt-gdrive-request]` / Actions Drive bridgeは凍結済みで通常運用では使用しない。Drive routingの上位正本は repository root `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`。
 
 ## 3. 現在の前向き試行
 
