@@ -1,42 +1,33 @@
-commit 793ab455dd0261c88fdb628241fa4af991dcd80b
-Author: Codex <codex@openai.com>
-Date:   Fri Sep 11 02:24:57 2026 -0400
+# JRDB 開催後 Analysis / Mart / Fact Lite 更新
 
-    Extend post-race flow through Fact Lite publication
+## 正本と責務
 
-diff --git a/horse-racing/jrdb/docs/README_post_race_analysis_mart_refresh.md b/horse-racing/jrdb/docs/README_post_race_analysis_mart_refresh.md
-index dffe421..d458f1a 100644
---- a/horse-racing/jrdb/docs/README_post_race_analysis_mart_refresh.md
-+++ b/horse-racing/jrdb/docs/README_post_race_analysis_mart_refresh.md
-@@ -10,7 +10,7 @@
- 0905～0906についてAnalysis差分反映、Martの再発行をお願いします
- ```
- 
--Work はこの自然文から対象開催日を解決し、Google Drive `20_mart` の現行 Analysis / Stats Mart を確認したうえで、Actions-native workflow を起動する。
-+Work はこの自然文から対象開催日を解決し、Google Drive `20_mart` の現行 Analysis / Stats Mart を確認したうえで、Actions-native workflow を起動する。更新済みAnalysisをDrive正本へ保存・再検証した後、Fact Lite v0.3の再生成・検証・PWA配布も続けて行う。
- 
- ## なぜ Actions-Native か
- 
-@@ -155,4 +155,14 @@ Actions SUCCESS 後、Work は以下を続けて実施する。
- 7. 旧 artifact は明示指示なしに削除しない
- 8. 最終報告で対象日・row count・Mart件数・SHA・Drive file ID を返す
- 
--PWA publication はこの contract の責務外。Analysis / Mart を更新しても PWA Fact Lite / OPFS を自動更新しない。
-+## Fact Lite / PWA publication
-+
-+Analysis/Mart refreshの成功後、Workは更新済みAnalysis ZIPをGoogle Drive `20_mart` へ正本保存し、file ID・filename・sizeを再fetch確認する。その確認済みAnalysisを入力に `[JRDB_PWA_FACT_LITE_PUBLISH]` Issueを起票する。
-+
-+JSON request:
-+
-+```json
-+{"drive_file_id":"<saved Analysis id>","source_filename":"<saved Analysis filename>","data_version":"<unique data-through version>"}
-+```
-+
-+Fact Lite publish workflowはAnalysisからFact Lite v0.3を再生成し、schema、identity/lookup、WIN5、SHA-256、size、integrityを検証する。成功時だけ `jrdb-pwa-fact-lite-current` ReleaseとGitHub Pages `/data/` manifestを更新し、PWAのOPFS同期対象を切替える。
-## Parquet canonical guard
+Analysisの正本はGoogle Drive上のimmutable Parquet generationであり、`current.json`だけが現行generationを指す。SQLiteはPACI + SEDの既存差分ロジックとStats Mart集計のための一時materializationに限定する。Analysis SQLite ZIPをDrive正本、Fact Lite入力、PWA配布物へ戻してはならない。
 
-The post-race workflow updates the existing SQLite only as a transient parser
-workspace. It then produces and validates an Analysis Parquet candidate,
-re-fetches the Drive generation, and only then advances `current.json`. A
-failed candidate never changes an Analysis or Fact Lite current pointer, and
-PWA publication remains SQLite-only.
+Fact Liteの通常配布・PWA runtimeはParquet / DuckDB-Wasmである。Stats MartがSQLiteの間だけ、更新済みAnalysis Parquetから一時SQLiteを作成して対象年をrefreshする。
+
+## 固定順序
+
+1. DriveのAnalysis `current.json`とmanifestを取得し、SHA-256、size、schema、canonical key、row countを検証する。
+2. `materialize_jrdb_analysis_sqlite.py`で一時SQLiteを作る。
+3. `run_jrdb_analysis_post_race_incremental.py`でPACI + SEDの対象日だけを置換し、対象外行不変・as-of・canonical keyを監査する。
+4. `build_jrdb_analysis_post_race_parquet_candidate.py`で新しいshadow generationを作る。ここでは`current.json`を変更しない。
+5. generation assetをDriveへ保存し、別途再取得したrootでmanifest・asset SHA・size・row count・auditを検証する。
+6. `publish_jrdb_analysis_parquet_drive_generation.py`でのみAnalysis `current.json`を原子的に切り替える。
+7. 切替後のParquetから一時SQLiteを作り、Stats Martの対象年をrefresh・検証する。
+8. 新Analysis Parquet bundleだけを入力にFact Lite Parquet generationを発行・監査し、Fact Lite current、GitHub Pages、PWAを更新する。
+
+いずれかのgateに失敗した場合、Analysis / Fact Lite / Pagesのcurrentは直前の正常generationを維持する。未参照の候補assetは残ってもよいが、既存generationを編集・上書きしてはならない。
+
+## 実装状態
+
+Parquet resolver、temporary SQLite materialization、日付置換監査、candidate生成、Drive round-trip promotion、Fact LiteのParquet-only入力は実装済みである。新しい開催後workflowによる実データdry-runと、Stats MartからPagesまでの通し実行がGreenになるまでは、旧`jrdb_post_race_refresh_issue.yml`を新正本更新に用いない。
+
+## 完了報告
+
+- 対象日、前後Analysis generation ID、Analysis row countと対象日row count
+- canonical key重複・as-of・対象外行不変の監査
+- Drive再取得のmanifest / SHA / size検証
+- Stats Mart対象年の件数・integrity
+- Fact Lite generation ID、6 relation監査、Pages deployment
+- PWAでの新generation検出、通常検索、オフライン検索
