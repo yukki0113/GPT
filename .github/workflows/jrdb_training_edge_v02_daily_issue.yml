@@ -76,7 +76,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install runtime dependencies
-        run: python -m pip install --disable-pip-version-check 'gdown==6.2.0' pytest numpy pandas scipy scikit-learn
+        run: python -m pip install --disable-pip-version-check 'gdown==6.2.0' pytest 'numpy==2.5.3' 'pandas==3.0.5' 'scipy==1.18.1' 'scikit-learn==1.9.1'
 
       - name: Daily scorer tests
         run: |
