@@ -11,7 +11,7 @@ permissions:
 env:
   REQUEST_PREFIX: '[JRDB_TRAINING_V02_REPLAY]'
   FROZEN_SPEC_COMMIT: '1ae1b424597d391fdca57c8fe826d99df123221b'
-  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/12lmU6_NZF24ixrB7MMMzzvcBNzbhQTr0'
+  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/1zFajenPU5jxInZCcmqZzkgiaYil3MD8r'
   SED_FOLDER_URL: 'https://drive.google.com/drive/folders/1ywucQ_84OgnSzJG6_HXa_M8KWWkVOTa4'
 
 jobs:
