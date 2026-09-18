@@ -1,0 +1,70 @@
+name: JRDB Analysis Parquet post-race tests
+
+on:
+  push:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_analysis_parquet_current.py'
+      - 'horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py'
+      - 'horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py'
+      - 'horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/src/publish_jrdb_analysis_parquet_drive_generation.py'
+      - 'horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_analysis_parquet_current.py'
+      - 'horse-racing/jrdb/tests/test_materialize_jrdb_analysis_sqlite.py'
+      - 'horse-racing/jrdb/tests/test_run_jrdb_analysis_post_race_incremental.py'
+      - 'horse-racing/jrdb/tests/test_build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/tests/test_publish_jrdb_analysis_parquet_drive_generation.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_pwa_fact_lite_parquet_input_workflow.py'
+      - '.github/workflows/jrdb_analysis_parquet_post_race_tests.yml'
+      - '.github/workflows/jrdb_pwa_fact_lite_publish.yml'
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_analysis_parquet_current.py'
+      - 'horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py'
+      - 'horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py'
+      - 'horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/src/publish_jrdb_analysis_parquet_drive_generation.py'
+      - 'horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_analysis_parquet_current.py'
+      - 'horse-racing/jrdb/tests/test_materialize_jrdb_analysis_sqlite.py'
+      - 'horse-racing/jrdb/tests/test_run_jrdb_analysis_post_race_incremental.py'
+      - 'horse-racing/jrdb/tests/test_build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/tests/test_publish_jrdb_analysis_parquet_drive_generation.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_pwa_fact_lite_parquet_input_workflow.py'
+      - '.github/workflows/jrdb_analysis_parquet_post_race_tests.yml'
+      - '.github/workflows/jrdb_pwa_fact_lite_publish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Parquet test dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+      - name: Compile production modules
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/jrdb_analysis_parquet_current.py \
+            horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py \
+            horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py \
+            horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py \
+            horse-racing/jrdb/src/publish_jrdb_analysis_parquet_drive_generation.py
+      - name: Run post-race Parquet regressions
+        working-directory: horse-racing/jrdb/tests
+        env:
+          PYTHONPATH: ../src:../../../tools/data-storage
+        run: |
+          python -m unittest -v \
+            test_jrdb_analysis_parquet_current \
+            test_materialize_jrdb_analysis_sqlite \
+            test_run_jrdb_analysis_post_race_incremental \
+            test_build_jrdb_analysis_post_race_parquet_candidate \
+            test_publish_jrdb_analysis_parquet_drive_generation \
+            test_jrdb_pwa_fact_lite_parquet_input_workflow
