@@ -82,7 +82,7 @@ jobs:
           cp .fact-lite-vendor/node_modules/@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm \
             .pages/vendor/duckdb/duckdb-mvp.wasm
           cp .fact-lite-vendor/node_modules/apache-arrow/Arrow.es2015.min.js \
-            .pages/vendor/duckdb/apache-arrow.mjs
+            .pages/vendor/duckdb/apache-arrow.umd.js
 
           if gh release view "$DATA_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release download "$DATA_RELEASE_TAG" \
@@ -151,7 +151,7 @@ jobs:
           test -s .pages/vendor/duckdb/duckdb-browser.mjs
           test -s .pages/vendor/duckdb/duckdb-browser-mvp.worker.js
           test -s .pages/vendor/duckdb/duckdb-mvp.wasm
-          test -s .pages/vendor/duckdb/apache-arrow.mjs
+          test -s .pages/vendor/duckdb/apache-arrow.umd.js
           echo "Current Fact Lite Parquet generation added to Pages artifact."
 
           if gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then

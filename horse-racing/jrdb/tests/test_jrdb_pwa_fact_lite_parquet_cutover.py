@@ -28,7 +28,7 @@ class FactLiteParquetCutoverTest(unittest.TestCase):
         self.assertIn("Stats Mart still uses sql.js", source)
         self.assertIn("@duckdb/duckdb-wasm@1.32.0 apache-arrow@17.0.0", source)
         self.assertIn(".pages/vendor/duckdb/duckdb-mvp.wasm", source)
-        self.assertIn(".pages/vendor/duckdb/apache-arrow.mjs", source)
+        self.assertIn(".pages/vendor/duckdb/apache-arrow.umd.js", source)
 
     def test_shell_has_only_current_fact_lite_runtime_assets(self) -> None:
         html = (PWA / "fact-lite.html").read_text(encoding="utf-8")
@@ -36,10 +36,11 @@ class FactLiteParquetCutoverTest(unittest.TestCase):
         self.assertIn("./fact-lite.js?v=19", html)
         self.assertIn("./fact-lite-v3.js?v=3", html)
         self.assertIn("./fact-lite-sort.js?v=19", html)
-        self.assertIn('"apache-arrow":"./vendor/duckdb/apache-arrow.mjs"', html)
+        self.assertIn('"apache-arrow":"./fact-lite-arrow-bridge.mjs"', html)
+        self.assertIn("./vendor/duckdb/apache-arrow.umd.js", html)
         self.assertNotIn("fact-lite-parquet-status", html)
-        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v51"', worker)
-        self.assertIn("./vendor/duckdb/apache-arrow.mjs", worker)
+        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v52"', worker)
+        self.assertIn("./vendor/duckdb/apache-arrow.umd.js", worker)
         self.assertNotIn("fact-lite-parquet-status", worker)
 
 
