@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 
-MODULE_PATH = Path(__file__).with_name("build_jrdb_analysis_post_race_parquet_candidate.py")
+MODULE_PATH = Path(__file__).resolve().parents[1] / "src" / "build_jrdb_analysis_post_race_parquet_candidate.py"
 SPEC = importlib.util.spec_from_file_location("candidate_module", MODULE_PATH)
 assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
