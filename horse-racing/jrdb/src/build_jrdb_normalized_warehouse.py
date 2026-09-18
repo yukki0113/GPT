@@ -14,6 +14,7 @@ import os
 import re
 import shutil
 import sys
+import time
 import zipfile
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -145,7 +146,7 @@ def _write_content_addressed(rows: Sequence[dict[str, Any]], output_root: Path, 
     schema_hash = _schema_hash(table.schema)
     temp_dir = output_root / ".partial"
     temp_dir.mkdir(parents=True, exist_ok=True)
-    temp_path = temp_dir / f"{relation}-{year}-{os.getpid()}-{datetime.now().timestamp_ns()}.parquet"
+    temp_path = temp_dir / f"{relation}-{year}-{os.getpid()}-{time.time_ns()}.parquet"
     try:
         pq.write_table(table, temp_path, compression=COMPRESSION, write_statistics=True)
         digest = sha256_file(temp_path)
