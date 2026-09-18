@@ -1,6 +1,6 @@
 # Boat racing GPT workflow
 
-Updated: 2026-09-13
+Updated: 2026-09-18
 
 ## 1. 開始時の確認
 
@@ -163,6 +163,9 @@ moduleのmanifestは監査補助物であり、通常のユーザー向け3成�
 `src/fetch_boatrace_results.py` を中心に、freeze済み事前予想と公式結果を照合する。
 
 - 結果取得工程は結果CSV・取得ログの生成と監査まで。
+- 標準は会場単位最大3 worker、各会場内は入力順直列。全worker共通のLimiterでHTTPリクエスト開始間隔を最低1秒（request指定値）に保つ。
+- workerごとにHTTP Sessionを再利用し、並列完了後のCSVはFreeze入力順へ復元する。
+- Actions経路は `requirements-results.txt` を使用し、使い捨てrunnerへのHTML cache書込みを省略する。ローカルcache機能自体は維持する。
 - Google Sheets台帳記帳は別工程。
 - 対象日だけが示され、予想CSVがスレッドにない場合はDrive `predictions` のfreeze済み正本を検索する。
 - 対象日・会場集合・仕様版で一意に決められなければ推測しない。
