@@ -90,6 +90,17 @@ Issue作成前に最低限、次を確認します。
 
 retryではfailed stepを確認し、旧requestをblind rerunしません。必要なら新しい `request_id` を使います。
 
+### Failed Issueのclose
+
+Actions / request系Issueがfailedで終わっても、役目を終えたIssueをopenのまま残しません。retry・代替経路・後続工程の実態を確認し、作業の終端処理としてcloseまで行います。
+
+- 後続retryで同一目的が解決済み: `Close / not_planned` または `duplicate`
+- 古い `[gpt-git-update]` でmainへ反映済み: `Close / completed`
+- 古いsmoke / audit / fetch / requestで後続工程まで完了済み: `Close / completed`
+- failedのままだが別経路・新世代workflow / requestへ移行済み: `Close / not_planned`
+
+必要に応じて後続Issue、成功run、反映commit、移行先workflowをcloseコメントへ残し、open backlogは「現在対応が必要なIssue」に保ちます。詳細判断は `.gpt/GITHUB_OPERATION_POLICY.md` の「Failed Issueの終端処理」を正本とします。
+
 共通validator:
 
 ```bash
