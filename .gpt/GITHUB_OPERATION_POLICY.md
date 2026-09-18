@@ -160,6 +160,29 @@ Dを選んだ場合、Issue作成前に以下を確認します。
 
 同じrequestを理由確認なしでrerunしません。
 
+### 4.1 Failed Issueの終端処理
+
+GitHub Actions / request系Issueがfailedで終了した場合、**openのまま放置しません**。
+failed Issueそのものの役割と後続処理の実態を確認し、然るべき `state_reason` でcloseします。
+
+標準判断:
+
+| 状況 | close時の扱い |
+|---|---|
+| failed後、後続retry Issue / runで同一目的が解決済み | `Close / not_planned` または `duplicate` |
+| 古い `[gpt-git-update]` Issueで変更がすでにmainへ反映済み | `Close / completed` |
+| 古いsmoke / audit / fetch / request Issueで後続工程まで完了済み | `Close / completed` |
+| failedのままだが、別経路・新世代workflow・新requestへ移行済み | `Close / not_planned` |
+
+運用ルール:
+
+- 後続retryが正式な置換Issueとして同一目的を引き継いだ場合、旧Issueは `duplicate` または `not_planned` とする。
+- failed Issue内で当初の目的自体が最終的に達成済みと確認できる場合は `completed` としてよい。
+- 別経路・新世代へ廃止移行したIssueを「いつか直すかもしれない」という理由だけでopenに残さない。
+- close時は必要に応じて、後続Issue番号、成功run、反映commit、移行先workflow等をコメントし、なぜcloseしたか追跡可能にする。
+- failed / stale / superseded Issueの整理もGitHub監査の一部とし、open backlogを「現在対応が必要なもの」に保つ。
+- retryや代替処理の成功確認後は、その作業の完了時点で旧failed Issueのcloseまでを同一作業の終端処理として扱う。
+
 ## 5. Binary fileの扱い
 
 `.xlsx` / `.sqlite` / `.db` / `.zip` 等は、まず対象プロジェクトの正本所在を確認します。GitHub外が正本なら外部正本へ直接アクセスし、GitHub旧コピーを最新と推定しません。
@@ -265,5 +288,7 @@ branch protection、権限、競合、API制約で安全にまとめられない
 > **同一目的の変更は、可能なら1commitにまとめる。**
 >
 > **並列更新ではforceせず、競合時はlatest main上へ自分の差分だけ再構築する。**
+>
+> **failedで役目を終えたIssueはopenのまま放置せず、実態に応じたstate reasonでcloseする。**
 >
 > **作業分割はIssue単位ではなく、論理的な完了点・監査点単位で行う。**
