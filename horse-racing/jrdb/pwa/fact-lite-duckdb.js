@@ -11,9 +11,12 @@ import {
 // This is deliberately a single-thread bundle.  The Fact Lite PWA must work
 // without cross-origin isolation, including on iPhone Safari.
 const FACT_DUCKDB_VERSION = "1.32.0";
+const FACT_DUCKDB_VENDOR_URL = new URL("./vendor/duckdb/", window.location.href);
 const FACT_DUCKDB_BUNDLE = {
-  mainModule: "./vendor/duckdb/duckdb-mvp.wasm",
-  mainWorker: "./vendor/duckdb/duckdb-browser-mvp.worker.js"
+  // AsyncDuckDB passes the module URL into a worker. These must be absolute:
+  // a relative URL would be resolved against the worker script itself.
+  mainModule: new URL("duckdb-mvp.wasm", FACT_DUCKDB_VENDOR_URL).href,
+  mainWorker: new URL("duckdb-browser-mvp.worker.js", FACT_DUCKDB_VENDOR_URL).href
 };
 const FACT_PARQUET_CURRENT_URL = "./data/fact-lite-parquet/current.json";
 const FACT_PARQUET_OPFS_DIR = "jrdb-fact-lite";
