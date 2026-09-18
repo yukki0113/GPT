@@ -419,24 +419,44 @@ def parse_official_html(content: bytes, expected_venue: str, expected_date: date
                 str(value) for value in row.xpath(".//@alt | .//@title | .//@value")
             )
             row_signal_text = normalize_space(f"{row_text} {attribute_text}")
-            if "不成立" in row_signal_text:
+            number_nodes = row.xpath(
+                './/*[contains(concat(" ", normalize-space(@class), " "), " numberSet1_number ")]'
+            )
+            boats = [text_of(x) for x in number_nodes if re.fullmatch(r"[1-6]", text_of(x))]
+            payout_nodes = row.xpath(
+                './/*[contains(concat(" ", normalize-space(@class), " "), " is-payout1 ")]'
+            )
+            payout: int | None = None
+            if payout_nodes:
+                try:
+                    payout = parse_money(text_of(payout_nodes[0]))
+                except ParseError:
+                    payout = None
+
+            # 公式の券種単位不成立は「不成立」の明示に加え、
+            # 組番なし＋100円返還として返るケースもある。
+            unestablished = "不成立" in row_signal_text
+            if (not unestablished and maybe_type and not boats and payout == 100):
+                unestablished = True
+            if unestablished:
                 result.unestablished_ticket_types.add(current_type)
-                payout_nodes = row.xpath(
-                    './/*[contains(concat(" ", normalize-space(@class), " "), " is-payout1 ")]'
-                )
-                if payout_nodes:
-                    try:
-                        result.unestablished_payouts[current_type] = parse_money(
-                            text_of(payout_nodes[0])
-                        )
-                    except ParseError:
-                        pass
+                if payout is not None:
+                    result.unestablished_payouts[current_type] = payout
                 continue
 
             special_match = re.search(r"特払い[^0-9]*([0-9][0-9,]*)\s*円?", row_signal_text)
             if special_match:
                 payout = parse_money(special_match.group(1))
                 if payout <= 0:
+                    raise ParseError(
+                        f"公式特払いが0円以下です: 券種={current_type}, 払戻={payout}")
+                if current_type in result.special_payouts:
+                    raise ParseError(f"公式特払いが重複しています: 券種={current_type}")
+                result.special_payouts[current_type] = payout
+                continue
+            if payout is None:
+                continue
+            if payout <= 0:
                     raise ParseError(
                         f"公式特払いが0円以下です: 券種={current_type}, 払戻={payout}")
                 if current_type in result.special_payouts:
