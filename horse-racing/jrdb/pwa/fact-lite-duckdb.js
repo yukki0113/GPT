@@ -20,8 +20,7 @@ const FACT_DUCKDB_BUNDLE = {
 };
 const FACT_PARQUET_CURRENT_URL = "./data/fact-lite-parquet/current.json";
 const FACT_PARQUET_OPFS_DIR = "jrdb-fact-lite";
-// SQLite still owns metadata.json until the consumer cutover.  Keeping this
-// sidecar prevents the staged Parquet cache from changing the live reader.
+// The Parquet reader owns this generation metadata sidecar in OPFS.
 const FACT_PARQUET_METADATA = "parquet-metadata.json";
 
 function fail(message) {
