@@ -20,12 +20,16 @@ WAREHOUSE_SCHEMA_VERSION = "v1"
 WAREHOUSE_NORMALIZER_VERSION = "0.1.0"
 RAW_SOURCE_KIND = "jrdb_raw_fixed_width"
 
-IMPLEMENTED_FAMILIES = ("BAC", "KYI", "CHA", "CYB")
+IMPLEMENTED_FAMILIES = ("BAC", "KYI", "CHA", "CYB", "SED", "SKB", "ZED", "ZKB")
 CANONICAL_KEYS: dict[str, tuple[str, ...]] = {
     "BAC": ("race_key_raw",),
     "KYI": ("race_key_raw", "horse_no"),
     "CHA": ("race_horse_key",),
     "CYB": ("race_horse_key",),
+    "SED": ("race_key_raw", "horse_no"),
+    "SKB": ("result_key",),
+    "ZED": ("result_key",),
+    "ZKB": ("result_key",),
 }
 
 PROVENANCE_COLUMNS = (
@@ -131,6 +135,28 @@ def _flatten_cyb(payload: Mapping[str, Any]) -> dict[str, Any]:
     return row
 
 
+def _flatten_sed(payload: Mapping[str, Any]) -> dict[str, Any]:
+    row = {key: value for key, value in payload.items() if key not in {"metrics", "corners"}}
+    for key, value in payload["metrics"].items():
+        row[f"metric_{key}"] = value
+    for index, value in enumerate(payload["corners"], start=1):
+        row[f"corner_{index}"] = value
+    return row
+
+
+def _flatten_skb(payload: Mapping[str, Any]) -> dict[str, Any]:
+    row = {key: value for key, value in payload.items() if key not in {
+        "tokki_codes", "equipment_codes", "leg_codes",
+    }}
+    for index, value in enumerate(payload["tokki_codes"], start=1):
+        row[f"tokki_code_{index}"] = value
+    for index, value in enumerate(payload["equipment_codes"], start=1):
+        row[f"equipment_code_{index}"] = value
+    for key, value in payload["leg_codes"].items():
+        row[f"leg_code_{key}"] = value
+    return row
+
+
 def flatten_parser_row(family: str, payload: Mapping[str, Any]) -> dict[str, Any]:
     """Flatten only parser-owned nested shapes into stable v1 columns."""
     normalized = family.upper()
@@ -142,6 +168,10 @@ def flatten_parser_row(family: str, payload: Mapping[str, Any]) -> dict[str, Any
         return _flatten_cha(payload)
     if normalized == "CYB":
         return _flatten_cyb(payload)
+    if normalized in {"SED", "ZED"}:
+        return _flatten_sed(payload)
+    if normalized in {"SKB", "ZKB"}:
+        return _flatten_skb(payload)
     canonical_key_columns(normalized)  # raises the contract error above
     raise AssertionError("unreachable")
 
@@ -156,8 +186,13 @@ def _add_safe_normalized_fields(family: str, row: dict[str, Any]) -> None:
         row["workout_date"] = ymd(row.get("date_raw"))
     elif normalized == "CYB":
         row["comment_date"] = ymd(row.get("comment_date_raw"))
+    elif normalized in {"SED", "ZED"}:
+        row["race_date"] = ymd(row.get("date_raw"))
+        row["start_time"] = hhmm(row.get("start_time_raw"))
     elif normalized == "KYI":
         row["stable_entry_date"] = ymd(row.get("stable_entry_date_raw"))
+    elif normalized in {"SKB", "ZKB"}:
+        row["result_date"] = ymd(str(row.get("result_key") or "")[-8:])
 
     race_key_value = row.get("race_key_raw")
     if race_key_value is None and row.get("race_horse_key"):
