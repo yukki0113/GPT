@@ -184,7 +184,7 @@ def migrate(source: Path, root: Path, generation_id: str, *, affected_years: set
                     staged, dest, table,
                     ["build_id"] if table == "meta_analysis_build" else ["batch_id"],
                 )
-                metas[table]={"sha256":digest,"rows":source_meta[table],"relative_path":str(dest.relative_to(root)),"canonical_row_hash":comparison["canonical_row_hash"],"validation":report["validation"]}
+                metas[table]={"sha256":digest,"rows":source_meta[table],"size_bytes":dest.stat().st_size,"relative_path":str(dest.relative_to(root)),"canonical_row_hash":comparison["canonical_row_hash"],"validation":report["validation"]}
         with sqlite3.connect(f"file:{source}?mode=ro",uri=True) as c:
             total=scalar(c,f"SELECT COUNT(*) FROM {FACT}"); period=c.execute(f"SELECT MIN(race_date),MAX(race_date) FROM {FACT}").fetchone()
             nulls={x:scalar(c,f"SELECT COUNT(*) FROM {FACT} WHERE \"{x}\" IS NULL") for x in NULL_COLUMNS}
