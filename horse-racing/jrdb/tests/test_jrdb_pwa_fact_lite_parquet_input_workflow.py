@@ -11,6 +11,8 @@ class FactLiteParquetWorkflowTest(unittest.TestCase):
         self.assertIn('required = ["analysis_parquet_bundle_file_id", "data_version"]', workflow)
         self.assertIn("--analysis-root .fact_publish/analysis-parquet", workflow)
         self.assertIn("source_analysis_generation", workflow)
+        self.assertIn("analysis-current-parquet", workflow)
+        self.assertNotIn("analysis-parquet/objects/fact_entry_result_lite/**/*.parquet", workflow)
         self.assertNotIn('required = ["drive_file_id", "source_filename", "data_version"]', workflow)
         self.assertNotIn("DRIVE_FILE_ID", workflow)
         self.assertNotIn("SOURCE_FILENAME", workflow)
