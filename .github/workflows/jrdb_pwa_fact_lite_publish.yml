@@ -44,62 +44,51 @@ jobs:
           python - <<'PY'
           import json
           import os
+          import re
 
           request = json.loads(os.environ["ISSUE_BODY"])
-          required = ["drive_file_id", "source_filename", "data_version"]
-          missing = [key for key in required if key not in request]
+          required = ["analysis_parquet_bundle_file_id", "data_version"]
+          missing = [key for key in required if not str(request.get(key) or "").strip()]
           if missing:
               raise SystemExit("Missing request fields: " + ", ".join(missing))
+          parquet_bundle = str(request["analysis_parquet_bundle_file_id"]).strip()
+          if not re.fullmatch(r"[A-Za-z0-9_-]{10,}", parquet_bundle):
+              raise SystemExit("analysis_parquet_bundle_file_id is invalid")
+          data_version = str(request["data_version"]).strip()
+          if not re.fullmatch(r"\d{8}", data_version):
+              raise SystemExit("data_version must be YYYYMMDD")
 
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
-              env_file.write(f"DRIVE_FILE_ID={request['drive_file_id']}\n")
-              env_file.write(f"SOURCE_FILENAME={request['source_filename']}\n")
-              env_file.write(f"DATA_VERSION={request['data_version']}\n")
-              parquet_bundle = str(request.get("analysis_parquet_bundle_file_id") or "").strip()
-              if parquet_bundle:
-                  env_file.write(f"ANALYSIS_PARQUET_BUNDLE_FILE_ID={parquet_bundle}\n")
+              env_file.write(f"DATA_VERSION={data_version}\n")
+              env_file.write(f"ANALYSIS_PARQUET_BUNDLE_FILE_ID={parquet_bundle}\n")
           PY
 
-      - name: Download Analysis Lite from Google Drive
+      - name: Download current Analysis Parquet bundle from Google Drive
         shell: bash
         run: |
           set -euo pipefail
-          if [ -n "${ANALYSIS_PARQUET_BUNDLE_FILE_ID:-}" ]; then
-            python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
-          fi
-          curl --fail --location --retry 3 --retry-delay 2 \
-            "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
-            --output ".fact_publish/${SOURCE_FILENAME}"
+          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+          curl --fail --location --retry 3 --retry-delay 2             "https://drive.usercontent.google.com/download?id=${ANALYSIS_PARQUET_BUNDLE_FILE_ID}&export=download&confirm=t"             --output .fact_publish/analysis-parquet.tar.xz
+          mkdir -p .fact_publish/analysis-parquet
+          tar -xJf .fact_publish/analysis-parquet.tar.xz -C .fact_publish/analysis-parquet
+          python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py             --analysis-root .fact_publish/analysis-parquet             --out .fact_publish/analysis.sqlite             | tee .fact_publish/analysis_materialization.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
 
-          if [[ "${SOURCE_FILENAME}" == *.zip ]]; then
-            unzip -t ".fact_publish/${SOURCE_FILENAME}"
-            mkdir -p .fact_publish/analysis_unzip
-            unzip -q ".fact_publish/${SOURCE_FILENAME}" -d .fact_publish/analysis_unzip
-            mapfile -t sqlite_files < <(find .fact_publish/analysis_unzip -type f -name '*.sqlite' -print)
-            if [ "${#sqlite_files[@]}" -ne 1 ]; then
-              echo "Expected exactly one Analysis SQLite payload, found ${#sqlite_files[@]}"
-              exit 1
-            fi
-            cp "${sqlite_files[0]}" .fact_publish/analysis.sqlite
-          else
-            cp ".fact_publish/${SOURCE_FILENAME}" .fact_publish/analysis.sqlite
-          fi
-
-          # After canonical cutover, the bundle contains current.json, the
-          # immutable Parquet objects and manifest. SQLite is materialized only
-          # for the legacy comparison and BAC lookup builder.
-          if [ -n "${ANALYSIS_PARQUET_BUNDLE_FILE_ID:-}" ]; then
-            curl --fail --location --retry 3 --retry-delay 2 \
-              "https://drive.usercontent.google.com/download?id=${ANALYSIS_PARQUET_BUNDLE_FILE_ID}&export=download&confirm=t" \
-              --output .fact_publish/analysis-parquet.tar.xz
-            mkdir -p .fact_publish/analysis-parquet
-            tar -xJf .fact_publish/analysis-parquet.tar.xz -C .fact_publish/analysis-parquet
-            manifest="$(python -c 'import json; from pathlib import Path; root=Path(".fact_publish/analysis-parquet"); p=json.loads((root/"current.json").read_text()); print(root/p["manifest"])')"
-            python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py \
-              --manifest "$manifest" --out .fact_publish/analysis-from-parquet.sqlite
-            mv .fact_publish/analysis-from-parquet.sqlite .fact_publish/analysis.sqlite
-            echo "ANALYSIS_PARQUET_GLOB=.fact_publish/analysis-parquet/objects/fact_entry_result_lite/**/*.parquet" >> "$GITHUB_ENV"
-          fi
+          root = Path(".fact_publish/analysis-parquet")
+          current = json.loads((root / "current.json").read_text(encoding="utf-8"))
+          generation = str(current.get("generation_id") or "")
+          if not generation:
+              raise SystemExit("Analysis Parquet current generation is missing")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as env_file:
+              env_file.write(f"ANALYSIS_GENERATION_ID={generation}\n")
+              env_file.write(
+                  "ANALYSIS_PARQUET_GLOB="
+                  ".fact_publish/analysis-parquet/objects/fact_entry_result_lite/**/*.parquet\n"
+              )
+          PY
 
       - name: Resolve BAC periods from Analysis
         shell: bash
@@ -315,7 +304,7 @@ jobs:
               'period_from': str(meta[1]),
               'period_to': str(meta[2]),
               'rows': int(meta[3]),
-              'source_filename': os.environ['SOURCE_FILENAME'],
+              'source_analysis_generation': os.environ['ANALYSIS_GENERATION_ID'],
               'size': size,
               'sha256': sha,
               'capabilities': {
