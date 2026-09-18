@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
+import hashlib
+import sys
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from jrdb_raw import BODY_LENGTHS  # noqa: E402
+from jrdb_warehouse_normalize import (  # noqa: E402
+    CANONICAL_KEYS,
+    PROVENANCE_COLUMNS,
+    RawProvenance,
+    canonical_key_columns,
+    normalize_record,
+)
+
+
+def put(row: bytearray, start: int, width: int, value: str) -> None:
+    encoded = value.encode("cp932")
+    if len(encoded) > width:
+        raise ValueError(value)
+    row[start - 1 : start - 1 + width] = encoded.ljust(width, b" ")
+
+
+def row(kind: str, *fields: tuple[int, int, str]) -> bytes:
+    value = bytearray(b" " * BODY_LENGTHS[kind])
+    for field in fields:
+        put(value, *field)
+    return bytes(value)
+
+
+def provenance() -> RawProvenance:
+    return RawProvenance(
+        source_archive_name="BAC_2026.zip",
+        source_archive_sha256="a" * 64,
+        source_member="BAC260830.txt",
+        source_member_date="2026-08-30",
+        source_record_ordinal=7,
+        source_member_sha256="b" * 64,
+        warehouse_ingested_at="2026-09-18T00:00:00+00:00",
+    )
+
+
+class WarehouseNormalizeTest(unittest.TestCase):
+    def test_bac_preserves_raw_codes_and_adds_only_safe_normalizations(self) -> None:
+        source = row(
+            "BAC", (1, 8, "0526A101"), (9, 8, "20260830"), (17, 4, "1540"),
+            (21, 4, "1600"), (25, 1, "1"), (30, 2, "OP"),
+        )
+        actual = normalize_record("bac", source, provenance())
+        self.assertEqual(actual["race_key_raw"], "0526A101")
+        self.assertEqual(actual["day_raw"], "1")
+        self.assertEqual(actual["race_class_code"], "OP")
+        self.assertEqual(actual["race_date"], "2026-08-30")
+        self.assertEqual(actual["post_time"], "15:40")
+        self.assertEqual(actual["source_record_sha256"], hashlib.sha256(source).hexdigest())
+        self.assertTrue(all(column in actual for column in PROVENANCE_COLUMNS))
+
+    def test_kyi_flattens_parser_nested_fields_without_offset_logic(self) -> None:
+        source = row(
+            "KYI", (1, 8, "0526A101"), (9, 2, "03"), (204, 16, "2023100120260810"),
+            (284, 8, "0526A001"), (327, 1, "A"), (359, 5, "10.5"),
+            (453, 2, "04"), (502, 3, "033"), (562, 8, "20260801"),
+        )
+        actual = normalize_record("KYI", source, provenance())
+        self.assertEqual(actual["horse_no"], 3)
+        self.assertEqual(actual["prev_result_key_1"], "2023100120260810")
+        self.assertEqual(actual["prev_race_key_1"], "0526A001")
+        self.assertEqual(actual["mark_total"], "A")
+        self.assertEqual(actual["pace_index_front"], 10.5)
+        self.assertEqual(actual["pace_rank_front"], 4)
+        self.assertEqual(actual["trait_code_1"], "033")
+        self.assertEqual(actual["stable_entry_date"], "2026-08-01")
+        self.assertNotIn("previous", actual)
+
+    def test_cha_and_cyb_flatten_nested_parser_shapes(self) -> None:
+        cha = normalize_record(
+            "CHA",
+            row("CHA", (1, 8, "0526A101"), (9, 2, "03"), (13, 8, "20260829"), (29, 3, "123"), (47, 3, "321"), (50, 1, "A")),
+            provenance(),
+        )
+        cyb = normalize_record(
+            "CYB",
+            row("CYB", (1, 8, "0526A101"), (9, 2, "03"), (14, 2, "02"), (16, 2, "03"), (78, 8, "20260828")),
+            provenance(),
+        )
+        self.assertEqual(cha["race_horse_key"], "0526A10103")
+        self.assertEqual(cha["clock_front"], 12.3)
+        self.assertEqual(cha["clock_index_total"], 321)
+        self.assertEqual(cha["pair_result_code"], "A")
+        self.assertEqual(cha["workout_date"], "2026-08-29")
+        self.assertEqual(cyb["course_count_slope"], 2)
+        self.assertEqual(cyb["course_count_wood"], 3)
+        self.assertEqual(cyb["comment_date"], "2026-08-28")
+
+    def test_contract_rejects_unimplemented_family_and_invalid_ordinal(self) -> None:
+        self.assertEqual(canonical_key_columns("BAC"), ("race_key_raw",))
+        self.assertEqual(CANONICAL_KEYS["CYB"], ("race_horse_key",))
+        with self.assertRaises(ValueError):
+            canonical_key_columns("SED")
+        with self.assertRaises(ValueError):
+            normalize_record("BAC", b"record", RawProvenance("x.zip", "x.txt", 0))
+
+
+if __name__ == "__main__":
+    unittest.main()
