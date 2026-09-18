@@ -6,7 +6,7 @@ Active。競艇AI予想運用のための公式出走表・予想・販売選別
 ## Thread continuity
 
 会話量上限やスレッド移動時の再開入口は `boat-racing/.gpt/HANDOFF.md` とする。
-新しいChat / Workスレッドでは、過去会話だけを前提にせず、latest `main` の `README.md` → 本CONTEXT → `HANDOFF.md` → `WORKFLOW.md` → 対象 `docs/` / `src/` を確認する。
+新しいChat / Workスレッドでは、過去会話だけを前提にせず、latest `main` を確認したうえで **repository root `.gpt/GITHUB_OPERATION_POLICY.md` → repository root `.gpt/README.md` → `boat-racing/README.md` → 本CONTEXT → `HANDOFF.md` → `WORKFLOW.md` → 対象 `docs/` / `src/`** を確認する。
 
 司令室・会場選別・仕様研究を引き継ぐ場合は、さらに `boat-racing/docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md` を読む。
 
