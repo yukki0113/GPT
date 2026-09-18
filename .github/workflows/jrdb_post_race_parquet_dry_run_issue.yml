@@ -1,0 +1,155 @@
+name: JRDB Post-Race Parquet dry run
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  dry-run:
+    if: >-
+      startsWith(github.event.issue.title, '[JRDB_POST_RACE_PARQUET_DRY_RUN]') &&
+      github.event.issue.user.login == 'yukki0113'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Parse and validate request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p .postrace/raw/PACI .postrace/raw/SED .postrace/logs
+          python - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          request = json.loads(os.environ['ISSUE_BODY'])
+          required = {'request_id', 'dates', 'analysis_parquet_bundle_file_id', 'generation_id'}
+          missing = sorted(key for key in required if not request.get(key))
+          if missing:
+              raise SystemExit('Missing request fields: ' + ', '.join(missing))
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', str(request['request_id'])):
+              raise SystemExit('Invalid request_id')
+          if not re.fullmatch(r'[A-Za-z0-9_-]{10,}', str(request['analysis_parquet_bundle_file_id'])):
+              raise SystemExit('Invalid analysis_parquet_bundle_file_id')
+          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{2,127}', str(request['generation_id'])):
+              raise SystemExit('Invalid generation_id')
+          values = request['dates']
+          if not isinstance(values, list) or not values:
+              raise SystemExit('dates must be a non-empty JSON array')
+          dates = []
+          for value in values:
+              try:
+                  dates.append(dt.date.fromisoformat(str(value)))
+              except ValueError as error:
+                  raise SystemExit(f'Invalid race date: {value}') from error
+          dates = sorted(set(dates))
+          if len(dates) > 10:
+              raise SystemExit('At most 10 race dates may be refreshed at once')
+          Path('.postrace/request.json').write_text(json.dumps(request, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          Path('.postrace/dates.txt').write_text('\n'.join(date.isoformat() for date in dates) + '\n', encoding='utf-8')
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as env:
+              env.write(f"REQUEST_ID={request['request_id']}\n")
+              env.write(f"ANALYSIS_PARQUET_BUNDLE_FILE_ID={request['analysis_parquet_bundle_file_id']}\n")
+              env.write(f"GENERATION_ID={request['generation_id']}\n")
+              env.write('AFFECTED_YEARS=' + ' '.join(sorted({str(date.year) for date in dates})) + '\n')
+          PY
+      - name: Install Parquet dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+      - name: Download and validate current Analysis Parquet bundle
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://drive.usercontent.google.com/download?id=${ANALYSIS_PARQUET_BUNDLE_FILE_ID}&export=download&confirm=t" \
+            --output .postrace/analysis-parquet.tar.xz
+          mkdir -p .postrace/analysis-parquet
+          tar -xJf .postrace/analysis-parquet.tar.xz -C .postrace/analysis-parquet
+          python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py \
+            --analysis-root .postrace/analysis-parquet \
+            --out .postrace/analysis-before.sqlite \
+            | tee .postrace/analysis_before_materialization.json
+          mv .postrace/analysis-before.sqlite .postrace/analysis-work.sqlite
+      - name: Fetch PACI and SED
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r race_date; do
+            compact="${race_date//-/}"
+            yymmdd="${compact:2:6}"
+            python horse-racing/jrdb/src/fetch_jrdb_paci.py --date "$compact" --out-dir .postrace/raw/PACI --log-file ".postrace/logs/paci_${compact}.log"
+            python horse-racing/jrdb/src/fetch_jrdb_history.py --date "$compact" --kinds SED --output-dir .postrace/raw --sleep-seconds 0
+            test -s ".postrace/raw/PACI/PACI${yymmdd}.zip"
+            test -s ".postrace/raw/SED/SED${yymmdd}.zip"
+          done < .postrace/dates.txt
+      - name: Replace requested dates in temporary SQLite
+        run: |
+          set -euo pipefail
+          while IFS= read -r race_date; do
+            compact="${race_date//-/}"
+            yymmdd="${compact:2:6}"
+            python horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py \
+              --db .postrace/analysis-work.sqlite \
+              --paci ".postrace/raw/PACI/PACI${yymmdd}.zip" \
+              --sed ".postrace/raw/SED/SED${yymmdd}.zip" \
+              > ".postrace/update_${compact}.json"
+          done < .postrace/dates.txt
+      - name: Build and validate immutable shadow candidate
+        run: |
+          set -euo pipefail
+          args=()
+          for year in $AFFECTED_YEARS; do args+=(--affected-year "$year"); done
+          python horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py \
+            --source-sqlite .postrace/analysis-work.sqlite \
+            --analysis-root .postrace/analysis-parquet \
+            --generation-id "$GENERATION_ID" \
+            "${args[@]}" \
+            --result-json .postrace/candidate_result.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('.postrace/candidate_result.json').read_text(encoding='utf-8'))
+          if result.get('status') != 'CANDIDATE_PASS':
+              raise SystemExit('candidate generation is not PASS')
+          PY
+      - name: Package non-promoted handoff artifact
+        run: |
+          set -euo pipefail
+          tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
+            -cJf .postrace/analysis-parquet-candidate.tar.xz \
+            -C .postrace/analysis-parquet current.json shadow_current.json generations objects metadata
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-post-race-parquet-candidate-${{ github.run_id }}
+          retention-days: 14
+          compression-level: 0
+          path: |
+            .postrace/analysis-parquet-candidate.tar.xz
+            .postrace/candidate_result.json
+            .postrace/update_*.json
+      - name: Report result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const passed = '${{ job.status }}' === 'success';
+            const state = passed ? 'passed' : 'failed';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `JRDB Post-Race Parquet dry run ${state}. Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\nThis workflow creates a non-promoted candidate only. Analysis current, Stats Mart, Fact Lite, and Pages remain unchanged.`
+            });
