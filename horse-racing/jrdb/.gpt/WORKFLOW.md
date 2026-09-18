@@ -6,12 +6,14 @@ Last reviewed: 2026-09-13
 
 会話量上限・スレッド分割・担当変更後は、作業開始前に次を確認する。
 
-1. `README.md`
-2. `.gpt/HANDOFF.md`
-3. `.gpt/CONTEXT.md`
-4. `.gpt/WORKFLOW.md`（この文書）
-5. latest `main` HEAD
-6. 対象subsystemのcurrent guide / contract / audit / source / focused tests
+1. repository root `.gpt/GITHUB_OPERATION_POLICY.md`
+2. repository root `.gpt/README.md`
+3. `horse-racing/jrdb/README.md`
+4. `.gpt/HANDOFF.md`
+5. `.gpt/CONTEXT.md`
+6. `.gpt/WORKFLOW.md`（この文書）
+7. latest `main` HEAD
+8. 対象subsystemのcurrent guide / contract / audit / source / focused tests
 
 RaceNote作業では追加で `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` を読む。旧決定論的予想系を扱う場合だけ `docs/racenote/legacy/README.md` も確認する。
 
@@ -78,6 +80,19 @@ Secrets、Actions固有権限、Actions artifact chain、長時間・大容量ru
 - GitHub-hosted環境そのものを検証対象とする処理
 
 Dを使う場合のみ、下記「Issue駆動Actionsのpreflight」を適用する。
+
+### Google Drive routing — do not use Actions Drive bridge
+
+JRDBのRaw / Analysis / Fact Lite / research asset等をGoogle Driveへ保存・取得する場合も、repository rootのDrive routing decisionを優先する。
+
+- production-standard: connected native Google Drive connector / native tools
+- frozen / prohibited for normal operation: `[gpt-gdrive-request]` / `.github/workflows/gpt_gdrive_request_issue.yml` / `tools/gpt_io/gdrive/`
+- GitHub Actions artifactをDriveへ保存する場合は、GitHub connectorでartifactを取得し、native Google Drive connectorへ渡す。
+- Actions artifact -> Driveの搬送だけを理由にDrive bridge Issueを作らない。
+- repositoryにworkflowが残っていても、それはcompatibility / future implementation assetであり、current operational permissionではない。
+- `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` やService Account Secretを有効化・設定しない。
+
+正本: repository root `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`。
 
 ### Edge Registry / EdgeDBでの標準適用
 
