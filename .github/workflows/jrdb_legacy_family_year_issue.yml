@@ -16,9 +16,6 @@ jobs:
       startsWith(github.event.issue.title, '[JRDB_LEGACY_FAMILY_YEAR_REQUEST]')
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    env:
-      GPT_GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GPT_GDRIVE_SERVICE_ACCOUNT_JSON }}
-      GPT_GDRIVE_AUTOMATION_ROOT_ID: ${{ secrets.GPT_GDRIVE_AUTOMATION_ROOT_ID }}
     steps:
       - name: Checkout latest main
         uses: actions/checkout@v4
@@ -37,17 +34,14 @@ jobs:
           family=str(req.get('family','')).upper()
           year=int(req.get('year',0))
           workers=int(req.get('workers',4))
-          drive_folder_id=str(req.get('drive_folder_id','')).strip()
           if family not in {'ZED','ZKB'}:
               raise SystemExit('family must be ZED or ZKB')
           if year < 2010 or year > 2025:
               raise SystemExit('year must be 2010..2025')
           if not 1 <= workers <= 6:
               raise SystemExit('workers must be 1..6')
-          if not drive_folder_id:
-              raise SystemExit('drive_folder_id is required')
           Path('/tmp/request.json').write_text(
-              json.dumps({'family':family,'year':year,'workers':workers,'drive_folder_id':drive_folder_id}),
+              json.dumps({'family':family,'year':year,'workers':workers}),
               encoding='utf-8'
           )
           PY
@@ -55,7 +49,6 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --disable-pip-version-check 'libarchive-c>=5,<6'
-          python -m pip install --disable-pip-version-check google-api-python-client google-auth
 
       - name: Build annual ZIP
         env:
@@ -68,35 +61,12 @@ jobs:
           python horse-racing/jrdb/src/build_legacy_family_year.py \
             --family "$family" --year "$year" --workers "$workers" --output-dir /tmp/out
 
-      - name: Upload annual ZIP to Drive
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
-          family=req['family']; year=req['year']
-          drive_req={
-              'operation':'upload',
-              'request_id':f'{family.lower()}-{year}-raw-upload',
-              'local_path':f'/tmp/out/{family}_{year}.zip',
-              'parent_folder_id':req['drive_folder_id'],
-              'filename':f'{family}_{year}.zip',
-              'mime_type':'application/zip',
-              'verify':True,
-              'format_validation':'zip',
-          }
-          Path('/tmp/drive-request.json').write_text(json.dumps(drive_req),encoding='utf-8')
-          PY
-          python tools/gpt_io/gpt_io.py gdrive upload --request /tmp/drive-request.json > /tmp/drive-result.json
-
       - name: Upload audit artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jrdb-legacy-family-year-${{ github.event.issue.number }}
-          path: |
-            /tmp/out/
-            /tmp/drive-result.json
+          path: /tmp/out/
           if-no-files-found: warn
           retention-days: 7
           compression-level: 0
@@ -112,15 +82,12 @@ jobs:
           import json, os
           from pathlib import Path
           m=json.loads(Path('/tmp/out/manifest.json').read_text(encoding='utf-8'))
-          d=json.loads(Path('/tmp/drive-result.json').read_text(encoding='utf-8'))
           result={
               'status':'success',
               'run_id':int(os.environ['RUN_ID']),
               'artifact_name':f"jrdb-legacy-family-year-{os.environ['ISSUE_NUMBER']}",
               'family':m['family'],'year':m['year'],'file_name':m['file_name'],
               'member_count':m['member_count'],'size_bytes':m['size_bytes'],'sha256':m['sha256'],
-              'drive_file_id':d.get('destination',{}).get('id'),
-              'drive_round_trip_verified':d.get('provenance',{}).get('round_trip_verified',False),
           }
           Path('/tmp/comment.md').write_text(
               'JRDB_LEGACY_FAMILY_YEAR_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n',
@@ -137,4 +104,4 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB legacy family year build/upload failed. Workflow run: $RUN_URL"
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB legacy family year build failed. Workflow run: $RUN_URL"
