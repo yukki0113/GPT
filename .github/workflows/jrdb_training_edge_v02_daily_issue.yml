@@ -2,7 +2,7 @@ name: JRDB Training Edge v0.2 Daily Forward via Issue
 
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 
 permissions:
   contents: read
