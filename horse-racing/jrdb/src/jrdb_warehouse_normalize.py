@@ -20,7 +20,10 @@ WAREHOUSE_SCHEMA_VERSION = "v1"
 WAREHOUSE_NORMALIZER_VERSION = "0.1.0"
 RAW_SOURCE_KIND = "jrdb_raw_fixed_width"
 
-IMPLEMENTED_FAMILIES = ("BAC", "KYI", "CHA", "CYB", "SED", "SKB", "ZED", "ZKB")
+IMPLEMENTED_FAMILIES = ("BAC", "KYI", "CHA", "CYB", "SED", "SKB", "ZED", "ZKB", "UKC")
+HJC_BET_TYPES = (
+    "win", "place", "frame_quinella", "quinella", "wide", "exacta", "trio", "trifecta",
+)
 CANONICAL_KEYS: dict[str, tuple[str, ...]] = {
     "BAC": ("race_key_raw",),
     "KYI": ("race_key_raw", "horse_no"),
@@ -30,6 +33,9 @@ CANONICAL_KEYS: dict[str, tuple[str, ...]] = {
     "SKB": ("result_key",),
     "ZED": ("result_key",),
     "ZKB": ("result_key",),
+    "UKC": ("horse_id", "data_date"),
+    "HJC_RACE": ("race_key_raw",),
+    "HJC_PAYOUT": ("race_key_raw", "bet_type", "slot_no"),
 }
 
 PROVENANCE_COLUMNS = (
@@ -172,6 +178,8 @@ def flatten_parser_row(family: str, payload: Mapping[str, Any]) -> dict[str, Any
         return _flatten_sed(payload)
     if normalized in {"SKB", "ZKB"}:
         return _flatten_skb(payload)
+    if normalized == "UKC":
+        return dict(payload)
     canonical_key_columns(normalized)  # raises the contract error above
     raise AssertionError("unreachable")
 
@@ -193,6 +201,9 @@ def _add_safe_normalized_fields(family: str, row: dict[str, Any]) -> None:
         row["stable_entry_date"] = ymd(row.get("stable_entry_date_raw"))
     elif normalized in {"SKB", "ZKB"}:
         row["result_date"] = ymd(str(row.get("result_key") or "")[-8:])
+    elif normalized == "UKC":
+        row["birth_date_iso"] = ymd(row.get("birth_date"))
+        row["data_date_iso"] = ymd(row.get("data_date"))
 
     race_key_value = row.get("race_key_raw")
     if race_key_value is None and row.get("race_horse_key"):
@@ -218,3 +229,41 @@ def normalize_record(
     _add_safe_normalized_fields(normalized, row)
     row.update(provenance.as_row(record))
     return row
+
+
+def normalize_hjc_record(
+    record: bytes,
+    provenance: RawProvenance,
+    *,
+    parser: Parser | None = None,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Split one HJC Raw row into its race and fixed-capacity payout relations.
+
+    Every payout slot is emitted, including blank and zero-payout slots.  This
+    preserves the capacity and ordinal of the original HJC record and makes
+    later filtering a consumer decision rather than an irreversible ingest
+    decision.
+    """
+    parsed = (parser or Parser()).hjc(record)
+    source = provenance.as_row(record)
+    race_key_raw = parsed["race_key_raw"]
+    race_row: dict[str, Any] = {"race_key_raw": race_key_raw, **source}
+    race_row.update(race_key_parts(race_key_raw))
+
+    payout_rows: list[dict[str, Any]] = []
+    for bet_type in HJC_BET_TYPES:
+        for slot_no, slot in enumerate(parsed[bet_type], start=1):
+            numbers = list(slot["numbers"])
+            payout_row: dict[str, Any] = {
+                "race_key_raw": race_key_raw,
+                "bet_type": bet_type,
+                "slot_no": slot_no,
+                "combination_raw": slot["combination_raw"],
+                "horse_no_1": numbers[0] if len(numbers) > 0 else None,
+                "horse_no_2": numbers[1] if len(numbers) > 1 else None,
+                "horse_no_3": numbers[2] if len(numbers) > 2 else None,
+                "payout": slot["payout"],
+                **source,
+            }
+            payout_rows.append(payout_row)
+    return race_row, payout_rows
