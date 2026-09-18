@@ -5,13 +5,13 @@ import unittest
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from fetch_boatrace_results import (
     InputError,
     RequestStartLimiter,
     TimingStats,
-    build_session,
     fetch_official,
     validate_args,
 )
@@ -19,19 +19,19 @@ from fetch_boatrace_results import (
 
 class FakeResponse:
     def __init__(self, url):
-        self.status_code = 200
+        self.status = 200
         self.url = url
-        self.content = b"<html><body>ok</body></html>"
         self.headers = {"Content-Type": "text/html; charset=utf-8"}
+        self.content = b"<html><body>ok</body></html>"
 
+    def __enter__(self):
+        return self
 
-class FakeSession:
-    def __init__(self):
-        self.calls = []
+    def __exit__(self, exc_type, exc_value, traceback):
+        return False
 
-    def get(self, url, timeout, allow_redirects):
-        self.calls.append((url, timeout, allow_redirects, time.monotonic()))
-        return FakeResponse(url)
+    def read(self, _limit):
+        return self.content
 
 
 class FetchBoatRaceResultsParallelTest(unittest.TestCase):
@@ -51,30 +51,32 @@ class FetchBoatRaceResultsParallelTest(unittest.TestCase):
 
     def test_fetch_can_skip_ephemeral_cache_writes(self):
         url = "https://www.boatrace.jp/owpc/pc/race/raceresult?rno=1&jcd=04&hd=20260917"
-        session = FakeSession()
         limiter = RequestStartLimiter(0)
         timing = TimingStats()
 
         with tempfile.TemporaryDirectory() as directory:
             html_path = Path(directory) / "1R.html"
             meta_path = Path(directory) / "1R.meta.json"
-            fetched = fetch_official(
-                session,
-                url,
-                html_path,
-                meta_path,
-                timeout=20,
-                retry=0,
-                limiter=limiter,
-                timing=timing,
-                cache_write=False,
-            )
+            with patch(
+                "fetch_boatrace_results.urlopen",
+                return_value=FakeResponse(url),
+            ) as mocked_urlopen:
+                fetched = fetch_official(
+                    url,
+                    html_path,
+                    meta_path,
+                    timeout=20,
+                    retry=0,
+                    limiter=limiter,
+                    timing=timing,
+                    cache_write=False,
+                )
 
             self.assertEqual(fetched.http_status, 200)
             self.assertEqual(timing.request_count, 1)
             self.assertFalse(html_path.exists())
             self.assertFalse(meta_path.exists())
-            self.assertEqual(len(session.calls), 1)
+            mocked_urlopen.assert_called_once()
 
     def test_parallel_venues_is_limited_to_three(self):
         base = {
@@ -89,14 +91,6 @@ class FetchBoatRaceResultsParallelTest(unittest.TestCase):
 
         with self.assertRaises(InputError):
             validate_args(SimpleNamespace(**base, parallel_venues=4))
-
-    def test_worker_session_has_result_fetch_headers(self):
-        session = build_session()
-        try:
-            self.assertIn("BOATRACEOfficialResultAudit", session.headers["User-Agent"])
-            self.assertEqual(session.headers["Accept"], "text/html")
-        finally:
-            session.close()
 
 
 if __name__ == "__main__":
