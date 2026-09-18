@@ -16,6 +16,7 @@ class FactLiteDuckDbRuntimeContractTest(unittest.TestCase):
         self.assertIn('duckdb-browser-mvp.worker.js', source)
         self.assertIn('new URL("duckdb-mvp.wasm", FACT_DUCKDB_VENDOR_URL).href', source)
         self.assertIn('new URL("duckdb-browser-mvp.worker.js", FACT_DUCKDB_VENDOR_URL).href', source)
+        self.assertIn('database.registerFileBuffer(fileName, bytes.slice())', source)
         contract = PARQUET_CONTRACT.read_text(encoding="utf-8")
         self.assertIn('artifact_type: "jrdb_fact_lite"', contract)
         self.assertIn('storage_format: "parquet"', contract)

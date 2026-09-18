@@ -190,7 +190,10 @@ export async function openFactLiteDuckDbFromCache(cached, logger = new duckdb.Vo
         const bytes = cached.files[table];
         if (!(bytes instanceof Uint8Array)) fail("cache bytesが不正です: " + table);
         const fileName = "fact-lite/" + cached.generationId + "/" + entry.path;
-        await database.registerFileBuffer(fileName, bytes);
+        // registerFileBuffer transfers its ArrayBuffer into the worker. Keep
+        // the cached generation intact because validation opens it once and
+        // the active query database opens the same generation again.
+        await database.registerFileBuffer(fileName, bytes.slice());
         await connection.query(
           "CREATE OR REPLACE VIEW " + quoteIdentifier(table) +
           " AS SELECT * FROM read_parquet(" + quoteLiteral(fileName) + ")"

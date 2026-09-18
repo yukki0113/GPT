@@ -39,7 +39,7 @@ class FactLiteParquetCutoverTest(unittest.TestCase):
         self.assertIn('"apache-arrow":"./fact-lite-arrow-bridge.mjs"', html)
         self.assertIn("./vendor/duckdb/apache-arrow.umd.js", html)
         self.assertNotIn("fact-lite-parquet-status", html)
-        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v53"', worker)
+        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v54"', worker)
         self.assertIn("./vendor/duckdb/apache-arrow.umd.js", worker)
         self.assertNotIn("fact-lite-parquet-status", worker)
 
