@@ -52,7 +52,7 @@ mm/dd について、下記の会場の出走表の取得をお願いします�
    - title: `[BOATRACE_RACELIST_REQUEST] <request_id>`
    - body: Markdown fenceを付けないraw JSON object
    - required: `date`, `venues[].name`, `venues[].code`, `venues[].day`
-   - optional: `request_interval_seconds`（通常1.0）
+   - optional: `request_interval_seconds`（通常1.0）、`parallel_venues`（通常3、許容1〜3）
 5) RESULTが返らない途中状態では、重複Issueを早期に作成せず、既存Issue / runの状態をAで再確認する。
 
 
@@ -66,7 +66,13 @@ mm/dd について、下記の会場の出走表の取得をお願いします�
 4) `fetch_boatrace_event_meta.py` / `enrich_boatrace_racelist_metadata.py` で公式日別レース一覧から会場ごとの開催グレード・開催名を付与する。
 5) 公式から安全に解決できない値を推測補完しない。
 6) 展示、直前情報、オッズ、人気、結果、払戻、外部予想は参照・混入させない。
-7) 公式サイトへの負荷を抑えるため通常取得は直列とし、`request_interval_seconds` を守る。Retry-After / backoffを尊重する。
+7) 公式サイトへの負荷を抑えつつ待ち時間を短縮するため、会場単位で最大3並列とする。
+   - 各会場内の1R〜12Rは直列
+   - 全workerで1つのRequestStartLimiterを共有し、`request_interval_seconds` を全体で守る
+   - HTTP Sessionは会場workerごとに分離する
+   - 完了順に関係なくCSVは依頼時の会場順・R順へ戻す
+   - 障害切り分け時は `parallel_venues=1` で完全直列へ戻せる
+   - Retry-After / backoff、PC→スマホfallbackは従来どおり尊重する。
 
 
 4. 現行CSV仕様
