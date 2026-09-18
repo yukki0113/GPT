@@ -1,11 +1,11 @@
 "use strict";
 
 /*
- * The aggregation screen talks only to this small query contract.  sql.js is
- * an interim implementation; the DuckDB implementation has the same result
- * shape and parameter semantics.  Keeping this boundary free of DOM/OPFS
- * concerns lets the later consumer cutover replace the engine without
- * changing filters, labels, or rendered values.
+ * The aggregation screen talks only to this small query contract. DuckDB-Wasm
+ * is the Fact Lite runtime; the retained sql.js adapter is for query-contract
+ * regression tests and is not selected by the Fact Lite page. Keeping this
+ * boundary free of DOM/OPFS concerns preserves filters, labels, and rendered
+ * values across storage-engine tests.
  */
 (function (root) {
   function fail(message) {

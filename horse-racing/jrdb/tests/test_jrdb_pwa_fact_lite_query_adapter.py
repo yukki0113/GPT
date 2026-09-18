@@ -18,8 +18,9 @@ class FactLiteQueryAdapterContractTest(unittest.TestCase):
 
     def test_win5_capability_uses_adapter_not_pragma(self) -> None:
         source = V3.read_text(encoding="utf-8")
-        self.assertIn("return factQueryAdapterFor(database, adapter).tableColumns(tableName)", source)
+        self.assertIn("return factQueryAdapterFor(adapter).tableColumns(tableName)", source)
         self.assertNotIn("PRAGMA table_info", source)
+        self.assertNotIn("createSqlJs", source)
         self.assertIn("f.win5_leg_no IS NOT NULL", source)
 
     def test_adapter_provides_sqlite_and_duckdb_implementations(self) -> None:

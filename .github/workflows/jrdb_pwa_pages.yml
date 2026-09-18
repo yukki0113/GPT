@@ -30,7 +30,6 @@ concurrency:
 
 env:
   DATA_RELEASE_TAG: jrdb-stats-mart-current
-  FACT_RELEASE_TAG: jrdb-pwa-fact-lite-current
   FACT_PARQUET_RELEASE_TAG: jrdb-pwa-fact-lite-parquet-current
   FACT_PARQUET_RELEASE_ARCHIVE: jrdb_pwa_fact_lite_parquet_current.tar.xz
   FACT_PARQUET_RELEASE_META: jrdb_pwa_fact_lite_parquet_current_release.json
@@ -60,9 +59,10 @@ jobs:
           set -euo pipefail
 
           rm -rf .pages
-          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite .pages/data/fact-lite-parquet
+          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite-parquet
           cp -a horse-racing/jrdb/pwa/. .pages/
 
+          # Stats Mart still uses sql.js. Fact Lite is Parquet/DuckDB-only.
           curl --fail --location --retry 3 \
             https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js \
             --output .pages/vendor/sql-wasm.js
@@ -81,27 +81,19 @@ jobs:
             echo "No current Stats Mart release yet."
           fi
 
-          if gh release view "$FACT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release download "$FACT_RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --pattern "jrdb_pwa_fact_lite.sqlite" \
-              --pattern "manifest.json" \
-              --dir .pages/data/fact-lite
-            echo "Current Fact Lite release added to Pages artifact."
-          else
-            echo "No current Fact Lite release yet."
+          if ! gh release view "$FACT_PARQUET_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Current Fact Lite Parquet release is required for Pages deployment." >&2
+            exit 1
           fi
+          rm -rf .fact-parquet-release
+          mkdir -p .fact-parquet-release
+          gh release download "$FACT_PARQUET_RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "$FACT_PARQUET_RELEASE_ARCHIVE" \
+            --pattern "$FACT_PARQUET_RELEASE_META" \
+            --dir .fact-parquet-release
 
-          if gh release view "$FACT_PARQUET_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            rm -rf .fact-parquet-release
-            mkdir -p .fact-parquet-release
-            gh release download "$FACT_PARQUET_RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --pattern "$FACT_PARQUET_RELEASE_ARCHIVE" \
-              --pattern "$FACT_PARQUET_RELEASE_META" \
-              --dir .fact-parquet-release
-
-            python - <<'PY'
+          python - <<'PY'
           import hashlib
           import json
           import os
@@ -133,18 +125,16 @@ jobs:
               handle.extractall(extract, filter='data')
           PY
 
-            PYTHONPATH=tools/data-storage python horse-racing/jrdb/src/package_jrdb_pwa_fact_lite_parquet.py verify \
+          PYTHONPATH=tools/data-storage python horse-racing/jrdb/src/package_jrdb_pwa_fact_lite_parquet.py verify \
               --package-root .fact-parquet-release/current \
               | tee .fact-parquet-release/verification.json
 
-            rm -rf .pages/data/fact-lite-parquet
-            mkdir -p .pages/data/fact-lite-parquet
-            cp -a .fact-parquet-release/current/current.json .pages/data/fact-lite-parquet/current.json
-            cp -a .fact-parquet-release/current/generations .pages/data/fact-lite-parquet/generations
-            echo "Current Fact Lite Parquet generation added to Pages artifact."
-          else
-            echo "No staged Fact Lite Parquet release yet; SQLite PWA delivery remains unchanged."
-          fi
+          rm -rf .pages/data/fact-lite-parquet
+          mkdir -p .pages/data/fact-lite-parquet
+          cp -a .fact-parquet-release/current/current.json .pages/data/fact-lite-parquet/current.json
+          cp -a .fact-parquet-release/current/generations .pages/data/fact-lite-parquet/generations
+          test ! -e .pages/data/fact-lite/jrdb_pwa_fact_lite.sqlite
+          echo "Current Fact Lite Parquet generation added to Pages artifact."
 
           if gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             rm -rf .newspaper-release

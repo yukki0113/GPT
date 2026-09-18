@@ -1,141 +1,55 @@
 "use strict";
 
-/* Fact Lite v0.3 compatibility: WIN5 filter with v0.2 read compatibility. */
+/* Fact Lite v0.3 capability layer.  The active engine is DuckDB-Wasm. */
 
-const FACT_SUPPORTED_SCHEMA_VERSIONS = new Set(["0.2", "0.3"]);
+const FACT_SUPPORTED_SCHEMA_VERSIONS = new Set(["0.3", "v0.3"]);
 let factHasWin5LegNo = false;
 
-function factQueryAdapterFor(database, adapter) {
-  if (adapter) return adapter;
-  if (database === factDb && factQueryAdapter) return factQueryAdapter;
-  return window.JRDBFactLiteQueryAdapters.createSqlJs(database);
+function factQueryAdapterFor(adapter) {
+  const resolved = adapter || factQueryAdapter;
+  if (!resolved) throw new Error("Fact Lite query adapterがありません");
+  return resolved;
 }
 
-async function factTableColumns(database, tableName, adapter) {
-  return factQueryAdapterFor(database, adapter).tableColumns(tableName);
+async function factTableColumns(tableName, adapter) {
+  return factQueryAdapterFor(adapter).tableColumns(tableName);
 }
 
-async function factLatestSchemaVersion(database, adapter) {
-  const result = await factQueryAdapterFor(database, adapter).query(
-    "SELECT schema_version FROM meta_pwa_fact_build " +
-    "ORDER BY build_id DESC LIMIT 1"
+async function factLatestSchemaVersion(adapter) {
+  const rows = await factQueryAdapterFor(adapter).query(
+    "SELECT schema_version FROM meta_pwa_fact_build ORDER BY build_id DESC LIMIT 1"
   );
-  if (result.length === 0) {
-    return "";
-  }
-  return String(result[0].schema_version);
+  return rows.length ? String(rows[0].schema_version) : "";
 }
 
 validateFactDatabaseObject = async function (database, adapter) {
-  const queryAdapter = factQueryAdapterFor(database, adapter);
-  const requiredTables = [
-    "fact_stats_entry",
-    "dim_sire",
-    "dim_bms",
-    "dim_jockey",
-    "dim_race",
-    "meta_pwa_fact_build"
-  ];
+  const queryAdapter = factQueryAdapterFor(adapter);
+  const requiredTables = ["fact_stats_entry", "dim_sire", "dim_bms", "dim_jockey", "dim_race", "meta_pwa_fact_build"];
   const tableNames = await queryAdapter.tableNames();
-
   requiredTables.forEach(function (tableName) {
-    if (!tableNames.has(tableName)) {
-      throw new Error("必須テーブルがありません: " + tableName);
-    }
+    if (!tableNames.has(tableName)) throw new Error("必須テーブルがありません: " + tableName);
   });
-
-  const factColumns = await factTableColumns(database, "fact_stats_entry", queryAdapter);
-  ["month", "race_id", "prev_distance_delta", "prev_class_code"].forEach(
-    function (columnName) {
-      if (!factColumns.has(columnName)) {
-        throw new Error("Fact Lite必須列がありません: " + columnName);
-      }
-    }
-  );
-
-  const schemaVersion = await factLatestSchemaVersion(database, queryAdapter);
-  if (!FACT_SUPPORTED_SCHEMA_VERSIONS.has(schemaVersion)) {
-    throw new Error("未対応Fact Lite schemaです: " + schemaVersion);
-  }
-  if (schemaVersion === "0.3" && !factColumns.has("win5_leg_no")) {
-    throw new Error("Fact Lite v0.3列がありません: win5_leg_no");
-  }
-
-  if (!(await queryAdapter.integrityCheck())) {
-    throw new Error("Fact Lite integrity check が ok ではありません");
-  }
-};
-
-validateFactManifest = function (manifest) {
-  const required = [
-    "artifact_type",
-    "schema_version",
-    "data_version",
-    "size",
-    "sha256",
-    "download"
-  ];
-
-  required.forEach(function (key) {
-    if (!Object.prototype.hasOwnProperty.call(manifest, key)) {
-      throw new Error("manifest必須項目がありません: " + key);
-    }
+  const factColumns = await factTableColumns("fact_stats_entry", queryAdapter);
+  ["month", "race_id", "prev_distance_delta", "prev_class_code", "win5_leg_no"].forEach(function (columnName) {
+    if (!factColumns.has(columnName)) throw new Error("Fact Lite必須列がありません: " + columnName);
   });
-
-  if (manifest.artifact_type !== "jrdb_pwa_fact_lite") {
-    throw new Error("artifact_typeが不正です");
-  }
-  if (!FACT_SUPPORTED_SCHEMA_VERSIONS.has(String(manifest.schema_version))) {
-    throw new Error("未対応schema_versionです: " + manifest.schema_version);
-  }
-  if (!manifest.download.path) {
-    throw new Error("download.pathがありません");
-  }
+  const schemaVersion = await factLatestSchemaVersion(queryAdapter);
+  if (!FACT_SUPPORTED_SCHEMA_VERSIONS.has(schemaVersion)) throw new Error("未対応Fact Lite schemaです: " + schemaVersion);
+  return database;
 };
 
 function installFactWin5Filter() {
-  const minimumStartsInput = document.getElementById("fact-min-starts");
   const jumpCheckbox = document.getElementById("fact-exclude-jumps");
-  if (!minimumStartsInput || !jumpCheckbox) {
-    return;
-  }
-
-  const jumpLabel = jumpCheckbox.closest("label");
-  if (!jumpLabel) {
-    return;
-  }
-
-  let checkbox = document.getElementById("fact-win5-only");
-  if (!checkbox) {
-    const label = document.createElement("label");
-    label.className = "fact-checkbox-field";
-
-    checkbox = document.createElement("input");
-    checkbox.id = "fact-win5-only";
-    checkbox.type = "checkbox";
-    checkbox.checked = false;
-    checkbox.disabled = true;
-
-    const text = document.createElement("span");
-    text.textContent = "WIN5対象レースのみ";
-
-    label.appendChild(checkbox);
-    label.appendChild(text);
-    jumpLabel.insertAdjacentElement("beforebegin", label);
-  }
+  const checkbox = document.getElementById("fact-win5-only");
+  if (!jumpCheckbox || !checkbox) return;
 
   async function refreshWin5Capability() {
     factHasWin5LegNo = false;
-    if (factQueryAdapter) {
-      factHasWin5LegNo = (await factTableColumns(factDb, "fact_stats_entry")).has(
-        "win5_leg_no"
-      );
-    }
-
+    if (factQueryAdapter) factHasWin5LegNo = (await factTableColumns("fact_stats_entry")).has("win5_leg_no");
     checkbox.disabled = !factDb || !factHasWin5LegNo;
     if (!factHasWin5LegNo) {
       checkbox.checked = false;
-      checkbox.title = "Fact Lite v0.3配布後に利用できます";
+      checkbox.title = "WIN5列を含むParquet generationが必要です";
     } else {
       checkbox.removeAttribute("title");
     }
@@ -144,24 +58,16 @@ function installFactWin5Filter() {
   const originalBuildFactWhere = buildFactWhere;
   buildFactWhere = function () {
     const result = originalBuildFactWhere();
-    if (checkbox.checked && factHasWin5LegNo) {
-      result.clauses.push("f.win5_leg_no IS NOT NULL");
-    }
+    if (checkbox.checked && factHasWin5LegNo) result.clauses.push("f.win5_leg_no IS NOT NULL");
     return result;
   };
-
   const originalClearFactFilters = clearFactFilters;
-  clearFactFilters = function () {
-    checkbox.checked = false;
-    originalClearFactFilters();
-  };
-
+  clearFactFilters = function () { checkbox.checked = false; originalClearFactFilters(); };
   const originalSetFactDbLoaded = setFactDbLoaded;
   setFactDbLoaded = async function (source, size, metadata) {
     await originalSetFactDbLoaded(source, size, metadata);
     await refreshWin5Capability();
   };
-
   void refreshWin5Capability();
 }
 

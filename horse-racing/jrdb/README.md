@@ -293,5 +293,10 @@ generation manifest. Before an OPFS generation pointer is changed it rejects
 wrong artifact/schema/storage metadata, unknown or missing table names, unsafe
 paths, malformed size/SHA/row fields, asset size/SHA mismatches, DuckDB row
 count mismatches, and a missing minimum `fact_stats_entry` schema. It keeps the
-previous generation pointer on every such failure. The live SQLite reader is
-unchanged until the later consumer-cutover phase.
+previous generation pointer on every such failure. Fact Lite is now the
+consumer-cutover target: it resolves the Pages-hosted `current.json` and
+generation manifest, validates every Parquet asset, and opens only the
+verified OPFS generation with DuckDB-Wasm. Pages no longer ships a Fact Lite
+SQLite release and Fact Lite has no SQLite runtime fallback. Rollback is
+performed by returning Pages to the prior verified generation. The shared
+sql.js vendor remains only for the independent Stats Mart screen.
