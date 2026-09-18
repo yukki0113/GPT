@@ -43,6 +43,22 @@
       </div>
     </section>
 
+    <section class="card" aria-labelledby="fact-parquet-status-heading">
+      <h2 id="fact-parquet-status-heading">Parquet移行診断</h2>
+      <dl class="status-grid">
+        <div><dt>Parquet cache</dt><dd id="fact-parquet-cache-status">確認中</dd></div>
+        <div><dt>DuckDB</dt><dd id="fact-parquet-engine-status">確認中</dd></div>
+        <div><dt>Parquet配布版</dt><dd id="fact-parquet-remote-status">未確認</dd></div>
+      </dl>
+      <div class="sync-panel">
+        <div class="button-row">
+          <button id="fact-btn-parquet-check" type="button" class="secondary" disabled>Parquet配布版を確認</button>
+          <button id="fact-btn-parquet-sync" type="button" disabled>Parquetを同期</button>
+        </div>
+        <div id="fact-parquet-progress" class="query-status"></div>
+      </div>
+    </section>
+
     <section class="card">
       <h2>条件</h2>
       <div class="filter-grid">
@@ -150,6 +166,7 @@
 
   <footer><small>Kenshow_Labo. / 条件別集計</small></footer>
   <script type="module" src="./fact-lite-duckdb.js?v=2"></script>
+  <script type="module" src="./fact-lite-parquet-status.mjs?v=1"></script>
   <script src="./fact-lite-query-adapter.js?v=1"></script>
   <script src="./fact-lite.js?v=18"></script>
   <script src="./fact-lite-v3.js?v=2"></script>

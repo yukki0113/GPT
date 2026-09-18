@@ -203,7 +203,8 @@ export async function openFactLiteDuckDbFromCache(cached, logger = new duckdb.Vo
   }
 }
 
-export async function restoreFactLiteParquetCache() {
+export async function restoreFactLiteParquetCache(onProgress) {
+  if (onProgress) onProgress("cache");
   let root;
   try {
     root = await getFactParquetRoot(false);
@@ -214,16 +215,20 @@ export async function restoreFactLiteParquetCache() {
   const metadata = await loadParquetMetadata(root);
   if (!metadata || !metadata.current_generation) return null;
   const cached = await readCachedFactLiteParquetGeneration(root, metadata.current_generation);
+  if (onProgress) onProgress("duckdb");
   await validateDuckDbCachedGeneration(cached);
   return { cached, metadata };
 }
 
-export async function synchronizeFactLiteParquetCache(fetchImpl = fetch) {
+export async function synchronizeFactLiteParquetCache(fetchImpl = fetch, onProgress) {
   const root = await getFactParquetRoot(true);
   const metadata = await loadParquetMetadata(root);
+  if (onProgress) onProgress("manifest");
   const remote = await fetchFactLiteParquetCurrent(fetchImpl);
   if (metadata && metadata.current_generation === remote.current.generation_id) {
+    if (onProgress) onProgress("cache");
     const cached = await readCachedFactLiteParquetGeneration(root, metadata.current_generation);
+    if (onProgress) onProgress("duckdb");
     await validateDuckDbCachedGeneration(cached);
     return { updated: false, cached, metadata };
   }
@@ -231,6 +236,7 @@ export async function synchronizeFactLiteParquetCache(fetchImpl = fetch) {
   const files = {};
   for (const table of FACT_PARQUET_REQUIRED_TABLES) {
     const entry = remote.manifest.tables[table];
+    if (onProgress) onProgress("download", table);
     const response = await fetchImpl(new URL(entry.path, remote.manifestUrl), { cache: "no-store" });
     if (!response.ok) fail("Parquet HTTP " + response.status + ": " + table);
     const bytes = new Uint8Array(await response.arrayBuffer());
@@ -254,6 +260,7 @@ export async function synchronizeFactLiteParquetCache(fetchImpl = fetch) {
     new TextEncoder().encode(JSON.stringify(candidate.manifest, null, 2) + "\n")
   );
   const cached = await readCachedFactLiteParquetGeneration(root, candidate.generationId);
+  if (onProgress) onProgress("duckdb");
   await validateDuckDbCachedGeneration(cached);
   const nextMetadata = {
     current_generation: candidate.generationId,
