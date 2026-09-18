@@ -10,7 +10,7 @@ import shutil
 from pathlib import Path
 
 
-MODULE_PATH = Path(__file__).with_name("publish_jrdb_analysis_parquet_drive_generation.py")
+MODULE_PATH = Path(__file__).resolve().parents[1] / "src" / "publish_jrdb_analysis_parquet_drive_generation.py"
 SPEC = importlib.util.spec_from_file_location("drive_publish_module", MODULE_PATH)
 assert SPEC and SPEC.loader
 
