@@ -117,3 +117,8 @@ Until that happens:
 - implementation readiness is confirmed;
 - scientific v0.2 remains frozen;
 - no live-forward result claim is made.
+
+
+## PACI input location update — 2026-09-18
+
+Daily Forward and replay 2026 PACI inventory is now the public Drive folder `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r`. The former folder `12lmU6_NZF24ixrB7MMMzzvcBNzbhQTr0` is retired for this route. The daily workflow must use the new folder; SED location is unchanged.
