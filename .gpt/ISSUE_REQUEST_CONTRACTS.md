@@ -115,6 +115,27 @@ retryの標準手順:
 7. 新しい `request_id` が必要なprotocolでは新規IDを使う。
 8. 同一内容をblind rerunしない。
 
+### 5.1 Failed Issue closure contract
+
+retryや代替処理を含む一連の作業は、成功runの確認だけで終了しません。元のfailed Issueが役目を終えた場合は、実態に応じた `state_reason` でcloseするところまでを終端処理とします。
+
+| 状況 | close時の扱い |
+| --- | --- |
+| failed後、後続retry Issue / runで同一目的が解決済み | `Close / not_planned` または `duplicate` |
+| 古い `[gpt-git-update]` Issueで変更がすでにmainへ反映済み | `Close / completed` |
+| 古いsmoke / audit / fetch / request Issueで後続工程まで完了済み | `Close / completed` |
+| failedのままだが、別経路・新世代workflow・新requestへ移行済み | `Close / not_planned` |
+
+補足:
+
+- 置換retryが正式に同一目的を引き継いだ旧Issueは、`duplicate` または `not_planned` とする。
+- 当初目的そのものが最終的に達成済みと確認できる場合は `completed` としてよい。
+- stale / supersededなIssueを「将来使うかもしれない」という理由だけでopenに残さない。
+- 必要に応じて、後続Issue番号、成功run、反映commit、移行先workflowをcloseコメントへ残す。
+- open backlogは「現在対応が必要なIssue」を表す状態に保つ。
+
+上位判断は `.gpt/GITHUB_OPERATION_POLICY.md` の「Failed Issueの終端処理」を正本とします。
+
 ## 6. Failure taxonomy
 
 | failure_class | 意味 | 基本対応 |
