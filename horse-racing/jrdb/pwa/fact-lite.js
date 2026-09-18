@@ -34,8 +34,11 @@ const POPULARITY_EXPRESSION = "CASE WHEN f.final_win_popularity BETWEEN 1 AND 9 
 const DISTANCE_CHANGE_EXPRESSION = "CASE WHEN f.prev_distance_delta IS NULL THEN 'unknown' WHEN f.prev_distance_delta > 0 THEN 'extend' WHEN f.prev_distance_delta = 0 THEN 'same' ELSE 'shorten' END";
 const RACE_CLASS_EXPRESSION = "CASE WHEN f.grade_code = 1 THEN 11 WHEN f.grade_code = 2 THEN 10 WHEN f.grade_code = 3 THEN 9 WHEN f.grade_code = 4 THEN 12 WHEN f.grade_code = 6 THEN 8 WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'A1' THEN 1 WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'A2' THEN 2 WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'A3' THEN 3 WHEN TRIM(COALESCE(f.race_condition_code, '')) IN ('04', '05') THEN 4 WHEN TRIM(COALESCE(f.race_condition_code, '')) IN ('08', '09', '10') THEN 5 WHEN TRIM(COALESCE(f.race_condition_code, '')) IN ('15', '16') THEN 6 WHEN TRIM(COALESCE(f.race_condition_code, '')) = 'OP' THEN 7 ELSE 13 END";
 const FACT_AXIS_CONFIG = {
-  sire: { label: "種牡馬", select: "s.name", group: "f.sire_id", joins: "LEFT JOIN dim_sire AS s ON s.id = f.sire_id" },
-  jockey: { label: "騎手", select: "j.name", group: "f.jockey_id", joins: "LEFT JOIN dim_jockey AS j ON j.id = f.jockey_id" },
+  // DuckDB enforces GROUP BY semantics. Keep the former SQLite grouping key
+  // (the dimension ID) and select the associated display label without
+  // merging distinct IDs that happen to share a name.
+  sire: { label: "種牡馬", select: "ANY_VALUE(s.name)", group: "f.sire_id", joins: "LEFT JOIN dim_sire AS s ON s.id = f.sire_id" },
+  jockey: { label: "騎手", select: "ANY_VALUE(j.name)", group: "f.jockey_id", joins: "LEFT JOIN dim_jockey AS j ON j.id = f.jockey_id" },
   frame: { label: "枠", select: "f.frame_no", group: "f.frame_no", joins: "" },
   style: { label: "脚質", select: "f.running_style", group: "f.running_style", joins: "" },
   age: { label: "年齢", select: "f.age", group: "f.age", joins: "" },

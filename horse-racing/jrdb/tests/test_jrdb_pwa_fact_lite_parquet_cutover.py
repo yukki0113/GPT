@@ -33,13 +33,13 @@ class FactLiteParquetCutoverTest(unittest.TestCase):
     def test_shell_has_only_current_fact_lite_runtime_assets(self) -> None:
         html = (PWA / "fact-lite.html").read_text(encoding="utf-8")
         worker = (PWA / "service-worker.js").read_text(encoding="utf-8")
-        self.assertIn("./fact-lite.js?v=19", html)
+        self.assertIn("./fact-lite.js?v=20", html)
         self.assertIn("./fact-lite-v3.js?v=3", html)
         self.assertIn("./fact-lite-sort.js?v=19", html)
         self.assertIn('"apache-arrow":"./fact-lite-arrow-bridge.mjs"', html)
         self.assertIn("./vendor/duckdb/apache-arrow.umd.js", html)
         self.assertNotIn("fact-lite-parquet-status", html)
-        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v54"', worker)
+        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v55"', worker)
         self.assertIn("./vendor/duckdb/apache-arrow.umd.js", worker)
         self.assertNotIn("fact-lite-parquet-status", worker)
 
