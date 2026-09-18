@@ -3169,6 +3169,90 @@
       "folder_id": "1IshMV7r57O8HdsIN1o9pZyXU6YXJxEso",
       "archives": [
         {
+          "archive_name": "HJC_2010.zip",
+          "drive_id": "1YmyTM6vlaW0Z_giwSZRUTf5sYhyd8SBb",
+          "size_bytes": 239804,
+          "modified_time": "2026-09-18T08:14:05.390Z",
+          "mime_type": "application/zip",
+          "archive_sha256": null,
+          "checksum_status": "UNAVAILABLE_FROM_DRIVE_LISTING",
+          "member_count": null,
+          "member_count_status": "UNAVAILABLE_WITHOUT_ARCHIVE_READ",
+          "archive_class": "annual",
+          "year": 2010,
+          "daily_date": null
+        },
+        {
+          "archive_name": "HJC_2011.zip",
+          "drive_id": "17EFvmMw5Di6n6ZCaTIhFzSw8x4KA5o3p",
+          "size_bytes": 238404,
+          "modified_time": "2026-09-18T08:14:11.954Z",
+          "mime_type": "application/zip",
+          "archive_sha256": null,
+          "checksum_status": "UNAVAILABLE_FROM_DRIVE_LISTING",
+          "member_count": null,
+          "member_count_status": "UNAVAILABLE_WITHOUT_ARCHIVE_READ",
+          "archive_class": "annual",
+          "year": 2011,
+          "daily_date": null
+        },
+        {
+          "archive_name": "HJC_2012.zip",
+          "drive_id": "1N9JKREVS09tbKyWSN1UqohjqUcwApVk-",
+          "size_bytes": 240321,
+          "modified_time": "2026-09-18T08:14:21.669Z",
+          "mime_type": "application/zip",
+          "archive_sha256": null,
+          "checksum_status": "UNAVAILABLE_FROM_DRIVE_LISTING",
+          "member_count": null,
+          "member_count_status": "UNAVAILABLE_WITHOUT_ARCHIVE_READ",
+          "archive_class": "annual",
+          "year": 2012,
+          "daily_date": null
+        },
+        {
+          "archive_name": "HJC_2013.zip",
+          "drive_id": "116eT7UeW__otOKptcfMSetOnBJsSgL5B",
+          "size_bytes": 240633,
+          "modified_time": "2026-09-18T08:14:30.733Z",
+          "mime_type": "application/zip",
+          "archive_sha256": null,
+          "checksum_status": "UNAVAILABLE_FROM_DRIVE_LISTING",
+          "member_count": null,
+          "member_count_status": "UNAVAILABLE_WITHOUT_ARCHIVE_READ",
+          "archive_class": "annual",
+          "year": 2013,
+          "daily_date": null
+        },
+        {
+          "archive_name": "HJC_2014.zip",
+          "drive_id": "125r-xMRSkj1TnB6MCRGTWRJ04PxM1awi",
+          "size_bytes": 241767,
+          "modified_time": "2026-09-18T08:14:39.035Z",
+          "mime_type": "application/zip",
+          "archive_sha256": null,
+          "checksum_status": "UNAVAILABLE_FROM_DRIVE_LISTING",
+          "member_count": null,
+          "member_count_status": "UNAVAILABLE_WITHOUT_ARCHIVE_READ",
+          "archive_class": "annual",
+          "year": 2014,
+          "daily_date": null
+        },
+        {
+          "archive_name": "HJC_2015.zip",
+          "drive_id": "1lOpiYFeT4p9dn17jNrPntnpwHn20awES",
+          "size_bytes": 240538,
+          "modified_time": "2026-09-18T08:14:50.145Z",
+          "mime_type": "application/zip",
+          "archive_sha256": null,
+          "checksum_status": "UNAVAILABLE_FROM_DRIVE_LISTING",
+          "member_count": null,
+          "member_count_status": "UNAVAILABLE_WITHOUT_ARCHIVE_READ",
+          "archive_class": "annual",
+          "year": 2015,
+          "daily_date": null
+        },
+        {
           "archive_name": "HJC_2016.zip",
           "drive_id": "1zzCN1dFc9QKOds8TnW0uDtemjpKssSgR",
           "size_bytes": 240164,
@@ -3341,6 +3425,6 @@
   "notes": [
     "Archive SHA-256 and ZIP member counts require archive download/read and are intentionally recorded as unavailable in this metadata-only inventory.",
     "All target family folders present in canonical 00_raw are represented from metadata-only listings.",
-    "HJC has annual archives only for 2016-2025 plus one 2026 daily archive."
+    "HJC has annual archives for 2010-2025 plus one 2026 daily archive."
   ]
 }
