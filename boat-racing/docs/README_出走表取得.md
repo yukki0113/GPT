@@ -34,11 +34,21 @@ BOAT RACE公式サイトのPC版出走表をHTTP取得して解析し、失敗�
 
 開催グレード・開催名は推測せず、公式日別レース一覧で解決できなければメタデータ付与を失敗として終了コード2を返します。G3は `G3` として分類します。
 
-### リクエスト間隔と処理時間ログ
+### リクエスト間隔・会場並列化・処理時間ログ
 
-`request_interval_seconds` は、出走表取得時のHTTPリクエスト開始時刻どうしの最小間隔として扱います。標準値は1.0秒です。
+`request_interval_seconds` は、出走表取得時のHTTPリクエスト開始時刻どうしの**全会場共通の最小間隔**として扱います。標準値は1.0秒です。
 
-一時的なHTTPエラー・通信例外の再試行時は、`Retry-After` と指数バックオフを優先します。通常取得は直列のままです。
+2026-09-18の性能監査で、6会場72Rの取得時間約679秒のうちHTTP待ちが約675秒を占め、HTML解析は約4秒、1秒レート制限待ちはほぼ0秒であることを確認しました。このため標準取得は会場単位の限定並列へ変更しています。
+
+- `parallel_venues`: 同時に処理する会場数。標準値3、許容値1〜3
+- 各会場内: 1R→12Rを従来どおり直列取得
+- 会場間: 最大3会場を並列取得
+- HTTP開始間隔: すべてのworkerで1つの `RequestStartLimiter` を共有し、`request_interval_seconds` を全体で厳守
+- HTTP Session: workerごとに独立
+- CSV出力順: 並列完了順ではなく、requestの会場順→1R〜12R順へ復元
+- `parallel_venues=1` を指定すると従来相当の完全直列へ戻せる
+
+一時的なHTTPエラー・通信例外の再試行時は、`Retry-After` と指数バックオフを従来どおり優先します。PC版失敗時のスマホ版fallbackも変更しません。
 
 ## Chatからの標準実行（GitHub Issue経由）
 
@@ -61,11 +71,12 @@ Issue本文例:
     {"name": "常滑", "code": "08", "day": "4日目"},
     {"name": "三国", "code": "10", "day": "2日目"}
   ],
-  "request_interval_seconds": 1.0
+  "request_interval_seconds": 1.0,
+  "parallel_venues": 3
 }
 ```
 
-WorkflowはIssue本文をJSONとして検証し、Git正本の `boat-racing/src/fetch_boatrace_racelist_with_meta.py` を実行します。Issue本文をshellへ直接展開せず、解決済み設定を `resolved_request.json` に保存します。
+WorkflowはIssue本文をJSONとして検証し、Git正本の `boat-racing/src/fetch_boatrace_racelist_with_meta.py` を実行します。`parallel_venues` は省略時3、指定時1〜3のみ許可します。Issue本文をshellへ直接展開せず、解決済み設定を `resolved_request.json` に保存します。
 
 Actions側の出力検査では、予想入力CSVが21列であること、`開催グレード` / `開催名` が存在して全行非空であること、`レース名` 列が追加されていないこと、既存 `レース種別` が非空であることを確認します。
 
