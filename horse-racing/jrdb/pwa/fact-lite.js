@@ -178,6 +178,7 @@ const PREVIOUS_CLASS_LABELS = {
 
 let FACT_SQL = null;
 let factDb = null;
+let factQueryAdapter = null;
 let factLocalMetadata = null;
 let factRemoteManifest = null;
 let factSyncInProgress = false;
@@ -290,7 +291,8 @@ async function factSha256Hex(bytes) {
     .join("");
 }
 
-function validateFactDatabaseObject(database) {
+async function validateFactDatabaseObject(database, adapter) {
+  const queryAdapter = adapter || window.JRDBFactLiteQueryAdapters.createSqlJs(database);
   const requiredTables = [
     "fact_stats_entry",
     "dim_sire",
@@ -299,16 +301,7 @@ function validateFactDatabaseObject(database) {
     "dim_race",
     "meta_pwa_fact_build"
   ];
-  const tableResult = database.exec(
-    "SELECT name FROM sqlite_master WHERE type='table'"
-  );
-  const tableNames = new Set();
-
-  if (tableResult.length > 0) {
-    tableResult[0].values.forEach(function (row) {
-      tableNames.add(row[0]);
-    });
-  }
+  const tableNames = await queryAdapter.tableNames();
 
   requiredTables.forEach(function (tableName) {
     if (!tableNames.has(tableName)) {
@@ -316,13 +309,7 @@ function validateFactDatabaseObject(database) {
     }
   });
 
-  const factInfo = database.exec("PRAGMA table_info(fact_stats_entry)");
-  const factColumns = new Set();
-  if (factInfo.length > 0) {
-    factInfo[0].values.forEach(function (row) {
-      factColumns.add(row[1]);
-    });
-  }
+  const factColumns = await queryAdapter.tableColumns("fact_stats_entry");
 
   ["month", "race_id", "prev_distance_delta", "prev_class_code"].forEach(
     function (columnName) {
@@ -332,33 +319,28 @@ function validateFactDatabaseObject(database) {
     }
   );
 
-  const meta = database.exec(
+  const meta = await queryAdapter.query(
     "SELECT schema_version FROM meta_pwa_fact_build " +
     "ORDER BY build_id DESC LIMIT 1"
   );
   if (
     meta.length === 0 ||
-    meta[0].values.length === 0 ||
-    String(meta[0].values[0][0]) !== FACT_SCHEMA_VERSION
+    String(meta[0].schema_version) !== FACT_SCHEMA_VERSION
   ) {
     throw new Error("Fact Lite v0.2ではない保存DBです");
   }
 
-  const integrity = database.exec("PRAGMA integrity_check");
-  if (
-    integrity.length === 0 ||
-    integrity[0].values.length === 0 ||
-    integrity[0].values[0][0] !== "ok"
-  ) {
+  if (!(await queryAdapter.integrityCheck())) {
     throw new Error("SQLite integrity_check が ok ではありません");
   }
 }
 
-function openFactDatabase(bytes) {
+async function openFactDatabase(bytes) {
   const candidate = new FACT_SQL.Database(bytes);
+  const candidateAdapter = window.JRDBFactLiteQueryAdapters.createSqlJs(candidate);
 
   try {
-    validateFactDatabaseObject(candidate);
+    await validateFactDatabaseObject(candidate, candidateAdapter);
   } catch (error) {
     candidate.close();
     throw error;
@@ -368,28 +350,30 @@ function openFactDatabase(bytes) {
     factDb.close();
   }
   factDb = candidate;
-  refreshFactLocalCapabilities();
+  factQueryAdapter = candidateAdapter;
+  await refreshFactLocalCapabilities();
 }
 
-function validateFactBytes(bytes) {
+async function validateFactBytes(bytes) {
   const temporary = new FACT_SQL.Database(bytes);
+  const temporaryAdapter = window.JRDBFactLiteQueryAdapters.createSqlJs(temporary);
   try {
-    validateFactDatabaseObject(temporary);
+    await validateFactDatabaseObject(temporary, temporaryAdapter);
   } finally {
     temporary.close();
   }
 }
 
-function refreshFactLocalCapabilities() {
+async function refreshFactLocalCapabilities() {
   factHasRaceNames = false;
 
-  if (factDb) {
-    const result = factDb.exec(
-      "SELECT COUNT(*) FROM dim_race " +
+  if (factQueryAdapter) {
+    const result = await factQueryAdapter.query(
+      "SELECT COUNT(*) AS race_name_count FROM dim_race " +
       "WHERE TRIM(COALESCE(race_name, '')) <> ''"
     );
-    if (result.length > 0 && result[0].values.length > 0) {
-      factHasRaceNames = Number(result[0].values[0][0]) > 0;
+    if (result.length > 0) {
+      factHasRaceNames = Number(result[0].race_name_count) > 0;
     }
   }
 
@@ -410,7 +394,7 @@ function formatFactBytes(bytes) {
   return (bytes / (1024 * 1024)).toFixed(1) + " MiB";
 }
 
-function setFactDbLoaded(source, size, metadata) {
+async function setFactDbLoaded(source, size, metadata) {
   factDbStatus.textContent = "読込済み / " + formatFactBytes(size);
   if (metadata && metadata.data_version) {
     factSyncStatus.textContent = source + " / " + metadata.data_version;
@@ -426,7 +410,7 @@ function setFactDbLoaded(source, size, metadata) {
   factTabs.forEach(function (tab) {
     tab.disabled = false;
   });
-  refreshFactLocalCapabilities();
+  await refreshFactLocalCapabilities();
 }
 
 function validateFactManifest(manifest) {
@@ -465,10 +449,10 @@ async function restoreFactDatabase() {
 
   factDbStatus.textContent = "復元中...";
   try {
-    openFactDatabase(stored.bytes);
+    await openFactDatabase(stored.bytes);
     factLocalMetadata = await loadFactMetadata();
-    setFactDbLoaded("OPFSから復元", stored.size, factLocalMetadata);
-    runFactAggregation();
+    await setFactDbLoaded("OPFSから復元", stored.size, factLocalMetadata);
+    await runFactAggregation();
     return true;
   } catch (error) {
     console.warn("Fact Lite restore requires refresh", error);
@@ -476,6 +460,7 @@ async function restoreFactDatabase() {
     factSyncProgress.textContent =
       "保存済みDBはv0.2互換ではないため、オンライン時に最新版へ更新します。";
     factDb = null;
+    factQueryAdapter = null;
     return false;
   }
 }
@@ -568,7 +553,7 @@ async function syncFactFromRemote() {
     if (hash !== factRemoteManifest.sha256) {
       throw new Error("SHA-256不一致");
     }
-    validateFactBytes(bytes);
+    await validateFactBytes(bytes);
 
     const oldCurrent = await readFactFile(FACT_CURRENT);
     if (oldCurrent) {
@@ -591,11 +576,11 @@ async function syncFactFromRemote() {
     };
     await saveFactMetadata(metadata);
 
-    openFactDatabase(bytes);
-    setFactDbLoaded("自動同期", bytes.byteLength, metadata);
+    await openFactDatabase(bytes);
+    await setFactDbLoaded("自動同期", bytes.byteLength, metadata);
     factRemoteStatus.textContent = "最新版 / " + factRemoteManifest.data_version;
     factSyncProgress.textContent = "同期完了。Fact Lite v0.2を利用できます。";
-    runFactAggregation();
+    await runFactAggregation();
   } catch (error) {
     console.error("Fact Lite sync failed", error);
     await removeFactFile(FACT_INCOMING);
@@ -774,24 +759,14 @@ function renderFactResults(rows) {
   factResultArea.innerHTML = html;
 }
 
-function runFactAggregation() {
-  if (!factDb) {
+async function runFactAggregation() {
+  if (!factQueryAdapter) {
     return;
   }
 
   const started = performance.now();
   const query = buildFactQuery();
-  const statement = factDb.prepare(query.sql);
-  const rows = [];
-
-  try {
-    statement.bind(query.params);
-    while (statement.step()) {
-      rows.push(statement.getAsObject());
-    }
-  } finally {
-    statement.free();
-  }
+  const rows = await factQueryAdapter.query(query.sql, query.params);
 
   renderFactResults(rows);
   const elapsed = performance.now() - started;
@@ -808,7 +783,7 @@ function configureFactTabs() {
         item.classList.remove("active");
       });
       tab.classList.add("active");
-      runFactAggregation();
+      void runFactAggregation();
     });
   });
 }
@@ -826,7 +801,7 @@ function clearFactFilters() {
   factRaceClass.value = "";
   factRaceName.value = "";
   factMinStarts.value = "20";
-  runFactAggregation();
+  void runFactAggregation();
 }
 
 async function initializeFactLite() {
@@ -859,7 +834,7 @@ factCheckButton.addEventListener("click", function () {
   checkFactManifest(false);
 });
 factSyncButton.addEventListener("click", syncFactFromRemote);
-factAggregateButton.addEventListener("click", runFactAggregation);
+factAggregateButton.addEventListener("click", function () { void runFactAggregation(); });
 factClearButton.addEventListener("click", clearFactFilters);
 window.addEventListener("online", function () {
   updateFactNetworkStatus();

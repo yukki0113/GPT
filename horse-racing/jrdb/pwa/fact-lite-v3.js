@@ -5,29 +5,29 @@
 const FACT_SUPPORTED_SCHEMA_VERSIONS = new Set(["0.2", "0.3"]);
 let factHasWin5LegNo = false;
 
-function factTableColumns(database, tableName) {
-  const result = database.exec(`PRAGMA table_info(${tableName})`);
-  const columns = new Set();
-  if (result.length > 0) {
-    result[0].values.forEach(function (row) {
-      columns.add(String(row[1]));
-    });
-  }
-  return columns;
+function factQueryAdapterFor(database, adapter) {
+  if (adapter) return adapter;
+  if (database === factDb && factQueryAdapter) return factQueryAdapter;
+  return window.JRDBFactLiteQueryAdapters.createSqlJs(database);
 }
 
-function factLatestSchemaVersion(database) {
-  const result = database.exec(
+async function factTableColumns(database, tableName, adapter) {
+  return factQueryAdapterFor(database, adapter).tableColumns(tableName);
+}
+
+async function factLatestSchemaVersion(database, adapter) {
+  const result = await factQueryAdapterFor(database, adapter).query(
     "SELECT schema_version FROM meta_pwa_fact_build " +
     "ORDER BY build_id DESC LIMIT 1"
   );
-  if (result.length === 0 || result[0].values.length === 0) {
+  if (result.length === 0) {
     return "";
   }
-  return String(result[0].values[0][0]);
+  return String(result[0].schema_version);
 }
 
-validateFactDatabaseObject = function (database) {
+validateFactDatabaseObject = async function (database, adapter) {
+  const queryAdapter = factQueryAdapterFor(database, adapter);
   const requiredTables = [
     "fact_stats_entry",
     "dim_sire",
@@ -36,16 +36,7 @@ validateFactDatabaseObject = function (database) {
     "dim_race",
     "meta_pwa_fact_build"
   ];
-  const tableResult = database.exec(
-    "SELECT name FROM sqlite_master WHERE type='table'"
-  );
-  const tableNames = new Set();
-
-  if (tableResult.length > 0) {
-    tableResult[0].values.forEach(function (row) {
-      tableNames.add(row[0]);
-    });
-  }
+  const tableNames = await queryAdapter.tableNames();
 
   requiredTables.forEach(function (tableName) {
     if (!tableNames.has(tableName)) {
@@ -53,7 +44,7 @@ validateFactDatabaseObject = function (database) {
     }
   });
 
-  const factColumns = factTableColumns(database, "fact_stats_entry");
+  const factColumns = await factTableColumns(database, "fact_stats_entry", queryAdapter);
   ["month", "race_id", "prev_distance_delta", "prev_class_code"].forEach(
     function (columnName) {
       if (!factColumns.has(columnName)) {
@@ -62,7 +53,7 @@ validateFactDatabaseObject = function (database) {
     }
   );
 
-  const schemaVersion = factLatestSchemaVersion(database);
+  const schemaVersion = await factLatestSchemaVersion(database, queryAdapter);
   if (!FACT_SUPPORTED_SCHEMA_VERSIONS.has(schemaVersion)) {
     throw new Error("未対応Fact Lite schemaです: " + schemaVersion);
   }
@@ -70,13 +61,8 @@ validateFactDatabaseObject = function (database) {
     throw new Error("Fact Lite v0.3列がありません: win5_leg_no");
   }
 
-  const integrity = database.exec("PRAGMA integrity_check");
-  if (
-    integrity.length === 0 ||
-    integrity[0].values.length === 0 ||
-    integrity[0].values[0][0] !== "ok"
-  ) {
-    throw new Error("SQLite integrity_check が ok ではありません");
+  if (!(await queryAdapter.integrityCheck())) {
+    throw new Error("Fact Lite integrity check が ok ではありません");
   }
 };
 
@@ -138,10 +124,10 @@ function installFactWin5Filter() {
     jumpLabel.insertAdjacentElement("beforebegin", label);
   }
 
-  function refreshWin5Capability() {
+  async function refreshWin5Capability() {
     factHasWin5LegNo = false;
-    if (factDb) {
-      factHasWin5LegNo = factTableColumns(factDb, "fact_stats_entry").has(
+    if (factQueryAdapter) {
+      factHasWin5LegNo = (await factTableColumns(factDb, "fact_stats_entry")).has(
         "win5_leg_no"
       );
     }
@@ -171,12 +157,12 @@ function installFactWin5Filter() {
   };
 
   const originalSetFactDbLoaded = setFactDbLoaded;
-  setFactDbLoaded = function (source, size, metadata) {
-    originalSetFactDbLoaded(source, size, metadata);
-    refreshWin5Capability();
+  setFactDbLoaded = async function (source, size, metadata) {
+    await originalSetFactDbLoaded(source, size, metadata);
+    await refreshWin5Capability();
   };
 
-  refreshWin5Capability();
+  void refreshWin5Capability();
 }
 
 installFactWin5Filter();
