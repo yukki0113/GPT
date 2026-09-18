@@ -78,51 +78,69 @@ def race_dates(year: int, auth: str) -> list[str]:
 
 
 def fetch_one(family: str, date: str, auth: str) -> dict:
+    """Fetch and extract one legacy LZH, retrying transient archive corruption."""
     directory = FAMILY_DIR[family]
     archive_name = f"{family}{date[2:]}.lzh"
     url = f"https://jrdb.com/member/data/{directory}/{archive_name}"
-    try:
-        payload = get_bytes(url, auth)
-    except urllib.error.HTTPError as error:
-        return {"date": date, "url": url, "status": error.code}
+    last_error: dict | None = None
 
-    members: list[tuple[str, bytes]] = []
-    try:
-        with libarchive.memory_reader(payload) as archive:
-            for entry in archive:
-                if entry.isdir:
-                    continue
-                members.append((Path(entry.pathname).name, b"".join(entry.get_blocks())))
-    except Exception as error:
+    for extract_attempt in range(3):
+        try:
+            payload = get_bytes(url, auth)
+        except urllib.error.HTTPError as error:
+            return {"date": date, "url": url, "status": error.code}
+
+        members: list[tuple[str, bytes]] = []
+        try:
+            with libarchive.memory_reader(payload) as archive:
+                for entry in archive:
+                    if entry.isdir:
+                        continue
+                    members.append((Path(entry.pathname).name, b"".join(entry.get_blocks())))
+        except Exception as error:
+            last_error = {
+                "date": date,
+                "url": url,
+                "status": "EXTRACT_ERROR",
+                "error": f"{type(error).__name__}: {error}",
+                "source_size_bytes": len(payload),
+                "source_sha256": sha256_bytes(payload),
+            }
+            if extract_attempt < 2:
+                time.sleep(2.0 * (extract_attempt + 1))
+                continue
+            return last_error
+
+        expected = f"{family}{date[2:]}.txt"
+        matches = [(name, data) for name, data in members if name.upper() == expected.upper()]
+        if len(matches) != 1:
+            last_error = {
+                "date": date,
+                "url": url,
+                "status": "EXTRACT_MISMATCH",
+                "members": [name for name, _ in members],
+                "source_size_bytes": len(payload),
+                "source_sha256": sha256_bytes(payload),
+            }
+            if extract_attempt < 2:
+                time.sleep(2.0 * (extract_attempt + 1))
+                continue
+            return last_error
+
+        txt_name, txt_bytes = matches[0]
         return {
             "date": date,
             "url": url,
-            "status": "EXTRACT_ERROR",
-            "error": f"{type(error).__name__}: {error}",
+            "status": 200,
+            "source_size_bytes": len(payload),
+            "source_sha256": sha256_bytes(payload),
+            "txt_name": txt_name,
+            "txt_size_bytes": len(txt_bytes),
+            "txt_sha256": sha256_bytes(txt_bytes),
+            "txt_bytes": txt_bytes,
         }
 
-    expected = f"{family}{date[2:]}.txt"
-    matches = [(name, data) for name, data in members if name.upper() == expected.upper()]
-    if len(matches) != 1:
-        return {
-            "date": date,
-            "url": url,
-            "status": "EXTRACT_MISMATCH",
-            "members": [name for name, _ in members],
-        }
-
-    txt_name, txt_bytes = matches[0]
-    return {
-        "date": date,
-        "url": url,
-        "status": 200,
-        "source_size_bytes": len(payload),
-        "source_sha256": sha256_bytes(payload),
-        "txt_name": txt_name,
-        "txt_size_bytes": len(txt_bytes),
-        "txt_sha256": sha256_bytes(txt_bytes),
-        "txt_bytes": txt_bytes,
-    }
+    return last_error or {"date": date, "url": url, "status": "UNKNOWN_ERROR"}
 
 
 def main() -> int:
