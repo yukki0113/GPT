@@ -46,7 +46,7 @@ jobs:
           if not isinstance(kinds, list) or not kinds:
               raise SystemExit('kinds must be a non-empty list')
           kinds = [str(x).upper() for x in kinds]
-          allowed = {'BAC','KYI','SED','SKB','CYB','CHA','UKC','KKA','HJC','ZED','ZKB'}
+          allowed = {'BAC','KYI','SED','SKB','CYB','CHA','UKC','KKA','HJC'}
           if any(kind not in allowed for kind in kinds):
               raise SystemExit('unsupported JRDB kind')
           if sleep_seconds < 0:
