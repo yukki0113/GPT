@@ -41,7 +41,7 @@
 - `fact-lite.js` — Fact Lite同期・query・表示の基礎
 - `fact-lite-v3.js` — Fact Lite v0.3互換層 / WIN5 filter
 - `fact-lite-sort.js` — 集計結果sort
-- `fact-lite-duckdb.js` — Parquet manifestを検証し、single-thread DuckDB-Wasmへ6 relationを登録する移行基盤。現段階ではSQLite consumerを切り替えない
+- `fact-lite-duckdb.js` — Parquet manifestを検証し、single-thread DuckDB-Wasmへ6 relationを登録するFact Liteの本番reader
 - `../src/build_jrdb_pwa_fact_lite.py` — Analysis -> Fact Lite builder
 - `../schema/jrdb_pwa_fact_lite_schema_v0_3.sql` — current schema
 - `../docs/README_build_jrdb_pwa_fact_lite.md` — build / validation contract
@@ -84,7 +84,7 @@ v0.3の主要追加は `fact_stats_entry.win5_leg_no` です。
 - v0.2等でcolumn / capabilityがない場合はcheckboxを無効化
 - PWA側でWIN5対象レースを日付・レース番号から推測しない
 
-Fact Liteは1出走1行を保持し、年/月/場/芝ダ障害/距離/馬場/クラス/レース名/最低出走数/WIN5等を同一SQLite上で絞り込み、種牡馬・騎手・枠・脚質・年齢・性別・人気・前走距離・前走クラス等を集計します。
+Fact Liteは1出走1行を保持し、年/月/場/芝ダ障害/距離/馬場/クラス/レース名/最低出走数/WIN5等をDuckDB上で絞り込み、種牡馬・騎手・枠・脚質・年齢・性別・人気・前走距離・前走クラス等を集計します。
 
 レース名は配布時のBAC lookupを利用します。前走距離・前走クラスをAnalysis内で解決できない場合は推測せず不明扱いです。
 
@@ -172,11 +172,11 @@ remote manifest
   -> OPFS current.sqlite
 ```
 
-検証失敗時はcurrentを維持します。Service Workerはstatic app shellをcacheしますが、`/data/` はcacheしません。オフラインのSQLite利用はOPFSを使用します。
+検証失敗時はcurrentを維持します。Service Workerはstatic app shellをcacheしますが、`/data/` はcacheしません。オフラインのParquet利用はOPFSを使用します。
 
-Parquet / DuckDB-Wasm移行基盤は、Pages同一originの `current.json → manifest → manifest.tables` だけを解決します。DuckDB-Wasm 1.32.0はsingle-threadのMVP bundleをPages artifactへ同梱し、固定6 relationを作成します。
+Fact Liteの本番readerは、Pages同一originの `current.json → manifest → manifest.tables` だけを解決します。DuckDB-Wasm 1.32.0はsingle-threadのMVP bundleをPages artifactへ同梱し、固定6 relationを作成します。
 
-Parquet cacheはOPFSの `jrdb-fact-lite/generations/<generation_id>/` に、manifestとmanifest記載のassetだけを保存します。新世代は全assetのsize/SHA-256、DuckDB relation、必須column、row countを通過するまで `current_generation` を切り替えません。移行段階中は既存SQLite readerと衝突しないよう、Parquet側は `parquet-metadata.json` を使用します。consumer切替時にgeneration metadataへ統合します。
+Parquet cacheはOPFSの `jrdb-fact-lite/generations/<generation_id>/` に、manifestとmanifest記載のassetだけを保存します。新世代は全assetのsize/SHA-256、DuckDB relation、必須column、row countを通過するまで `current_generation` を切り替えません。検証失敗時は既存のcurrent generationを維持します。
 
 ## Deployment completion
 
