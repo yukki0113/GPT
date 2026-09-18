@@ -32,6 +32,8 @@ DEFAULT_DIR_MAP = {
     "UKC": "Ukc",
     "KKA": "Kka",
     "HJC": "Hjc",
+    "ZED": "Zed",
+    "ZKB": "Zkb",
 }
 DEFAULT_KINDS = tuple(DEFAULT_DIR_MAP)
 DEFAULT_MAX_RETRIES = 5
