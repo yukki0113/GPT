@@ -22,9 +22,10 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from threading import Lock
 from typing import Iterable
+from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urlparse
+from urllib.request import Request, urlopen
 
-import requests
 from lxml import html
 
 
@@ -531,94 +532,89 @@ def load_cache(html_path: Path, meta_path: Path, expected_url: str) -> FetchData
     return FetchData(content, expected_url, fetched_at, http_status, digest, "cache")
 
 
-def build_session() -> requests.Session:
-    """会場workerごとに独立したHTTP Sessionを生成する。"""
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": USER_AGENT,
-        "Accept": "text/html",
-        "Accept-Language": "ja-JP,ja;q=0.9",
-    })
-    return session
-
-
-def fetch_official(session: requests.Session, url: str, html_path: Path, meta_path: Path,
+def fetch_official(url: str, html_path: Path, meta_path: Path,
                    timeout: float, retry: int, limiter: RequestStartLimiter,
                    timing: TimingStats, cache_write: bool) -> FetchData:
-    """全worker共通Limiterを通して公式ページを取得する。"""
-    last_error = ""
+    """全worker共通Limiterを通し、従来互換のurllibで公式ページを取得する。"""
+    last_exc: Exception | None = None
     attempts_made = 0
-    retryable_status = {408, 425, 429, 500, 502, 503, 504}
     for attempt in range(retry + 1):
         attempts_made = attempt + 1
         rate_limit_wait = limiter.wait_until_ready()
         timing.rate_limit_wait_seconds += rate_limit_wait
         request_started = time.monotonic()
         try:
-            response = session.get(url, timeout=timeout, allow_redirects=True)
+            request = Request(
+                url,
+                headers={
+                    "User-Agent": USER_AGENT,
+                    "Accept": "text/html",
+                    "Accept-Language": "ja-JP,ja;q=0.9",
+                },
+            )
+            with urlopen(request, timeout=timeout) as response:
+                content = response.read(MAX_HTML_BYTES + 1)
+                status = int(response.status)
+                final_url = response.url
+                content_type = response.headers.get("Content-Type", "")
             elapsed = time.monotonic() - request_started
             timing.request_count += 1
             timing.http_seconds += elapsed
-            status = int(response.status_code)
-            final_url = response.url
-            content_type = response.headers.get("Content-Type", "")
-            content = response.content
             fetched_at = now_jst()
 
             if status != 200:
-                last_error = f"HTTP {status}"
-                if status not in retryable_status:
-                    break
-            elif "text/html" not in content_type.lower():
-                last_error = f"Content-TypeがHTMLではありません: {content_type}"
-                break
-            elif final_url != url:
-                last_error = f"公式URLからリダイレクトされました: {final_url}"
-                break
-            elif len(content) > MAX_HTML_BYTES:
-                last_error = f"公式ページの応答が上限を超えました: {len(content)} bytes超"
-                break
-            elif not content:
-                last_error = "公式ページの応答本文が空です"
-                break
-            else:
-                digest = hashlib.sha256(content).hexdigest()
-                if cache_write:
-                    meta = {
-                        "url": url,
-                        "fetched_at": fetched_at,
-                        "http_status": status,
-                        "sha256": digest,
-                        "byte_length": len(content),
-                    }
-                    # ローカル再解析用cacheは従来どおり原子的に保存する。
-                    atomic_write_bytes(html_path, content)
-                    atomic_write_text(
-                        meta_path, json.dumps(meta, ensure_ascii=False, indent=2)
-                    )
-                return FetchData(content, url, fetched_at, status, digest, "network")
-        except requests.RequestException as exc:
+                raise URLError(f"HTTP {status}")
+            if "text/html" not in content_type.lower():
+                raise URLError(f"Content-TypeがHTMLではありません: {content_type}")
+            if final_url != url:
+                raise URLError(f"公式URLからリダイレクトされました: {final_url}")
+            if len(content) > MAX_HTML_BYTES:
+                raise URLError(f"公式ページの応答が上限を超えました: {len(content)} bytes超")
+            if not content:
+                raise URLError("公式ページの応答本文が空です")
+
+            digest = hashlib.sha256(content).hexdigest()
+            if cache_write:
+                meta = {
+                    "url": url,
+                    "fetched_at": fetched_at,
+                    "http_status": status,
+                    "sha256": digest,
+                    "byte_length": len(content),
+                }
+                # ローカル再解析用cacheは従来どおり原子的に保存する。
+                atomic_write_bytes(html_path, content)
+                atomic_write_text(
+                    meta_path, json.dumps(meta, ensure_ascii=False, indent=2)
+                )
+            return FetchData(content, url, fetched_at, status, digest, "network")
+        except HTTPError as exc:
             elapsed = time.monotonic() - request_started
             timing.request_count += 1
             timing.http_seconds += elapsed
-            last_error = f"{type(exc).__name__}: {exc}"
+            last_exc = exc
+            if exc.code not in {408, 425, 429, 500, 502, 503, 504}:
+                break
+        except (URLError, TimeoutError, OSError) as exc:
+            elapsed = time.monotonic() - request_started
+            timing.request_count += 1
+            timing.http_seconds += elapsed
+            last_exc = exc
 
         if attempt < retry:
             time.sleep(min(2 ** attempt, 8))
 
-    raise requests.RequestException(
-        f"公式ページ取得失敗（{attempts_made}回試行）: {last_error}"
-    )
+    raise URLError(f"公式ページ取得失敗（{attempts_made}回試行）: {last_exc}")
 
 
-def acquire(session: requests.Session, url: str, html_path: Path, meta_path: Path,
-            args, limiter: RequestStartLimiter, timing: TimingStats) -> FetchData:
+def acquire(url: str, html_path: Path, meta_path: Path, args,
+            limiter: RequestStartLimiter, timing: TimingStats) -> FetchData:
     if args.cache_only:
         return load_cache(html_path, meta_path, url)
     if args.use_cache and html_path.exists() and meta_path.exists():
         return load_cache(html_path, meta_path, url)
     return fetch_official(
-        session, url, html_path, meta_path, args.timeout, args.retry,
+        url, html_path, meta_path, args.timeout, args.retry,
         limiter, timing, not args.no_cache_write
     )
 
@@ -903,7 +899,6 @@ def process_row(
     key_error: str,
     duplicates: set[tuple[str, str, int]],
     args,
-    session: requests.Session,
     limiter: RequestStartLimiter,
     timing: TimingStats,
     logger: logging.Logger,
@@ -952,7 +947,7 @@ def process_row(
         )
         logger.info("対象=%s %s %sR 公式URL=%s", row["日付"], venue, race_no, url)
         fetched = acquire(
-            session, url, html_path, meta_path, args, limiter, timing
+            url, html_path, meta_path, args, limiter, timing
         )
         source = fetched.source
         output.update({
@@ -975,7 +970,7 @@ def process_row(
         output["取得状態"] = "入力不正"
         output["エラー内容"] = str(exc)
         logger.error("対象=%s 状態=入力不正 エラー=%s", key_raw, exc)
-    except (requests.RequestException, TimeoutError, OSError, FileNotFoundError) as exc:
+    except (HTTPError, URLError, TimeoutError, OSError, FileNotFoundError) as exc:
         output["取得状態"] = "取得失敗"
         output["エラー内容"] = str(exc)
         logger.error("対象=%s URL=%s 状態=取得失敗 エラー=%s", key_raw, url, exc)
@@ -1003,30 +998,25 @@ def process_venue(
     logger: logging.Logger,
 ) -> VenueProcessResult:
     """1会場内は入力順に直列処理し、会場workerどうしだけを並列化する。"""
-    session = build_session()
     timing = TimingStats()
     source_counts: Counter[str] = Counter()
     outputs: list[tuple[int, dict[str, str]]] = []
-    try:
-        for row_index in row_indexes:
-            output, source = process_row(
-                row_index,
-                rows[row_index],
-                normalized_keys[row_index],
-                key_errors.get(row_index, ""),
-                duplicates,
-                args,
-                session,
-                limiter,
-                timing,
-                logger,
-            )
-            outputs.append((row_index, output))
-            if source:
-                source_counts[source] += 1
-        return VenueProcessResult(venue_index, outputs, source_counts, timing)
-    finally:
-        session.close()
+    for row_index in row_indexes:
+        output, source = process_row(
+            row_index,
+            rows[row_index],
+            normalized_keys[row_index],
+            key_errors.get(row_index, ""),
+            duplicates,
+            args,
+            limiter,
+            timing,
+            logger,
+        )
+        outputs.append((row_index, output))
+        if source:
+            source_counts[source] += 1
+    return VenueProcessResult(venue_index, outputs, source_counts, timing)
 
 
 def main(argv: list[str] | None = None) -> int:
