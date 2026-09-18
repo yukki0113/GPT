@@ -75,6 +75,7 @@ jobs:
           python - <<'PY'
           import json
           import os
+          import shutil
           from pathlib import Path
 
           root = Path(".fact_publish/analysis-parquet")
@@ -82,11 +83,33 @@ jobs:
           generation = str(current.get("generation_id") or "")
           if not generation:
               raise SystemExit("Analysis Parquet current generation is missing")
+          manifest_path = root / "generations" / generation / "manifest.json"
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          partitions = manifest.get("fact_table", {}).get("partitions")
+          if not isinstance(partitions, list) or not partitions:
+              raise SystemExit("Analysis Parquet current manifest has no partitions")
+
+          # A bundle retains immutable objects from prior generations.  Build
+          # Fact Lite from precisely the current manifest's objects, never a
+          # broad objects/** glob that can read an obsolete partition twice.
+          current_objects = Path(".fact_publish/analysis-current-parquet")
+          current_objects.mkdir(parents=True, exist_ok=False)
+          for partition in partitions:
+              relative = partition.get("relative_path") if isinstance(partition, dict) else None
+              if not isinstance(relative, str):
+                  raise SystemExit("Analysis Parquet partition path is invalid")
+              source = (root / relative).resolve()
+              if root.resolve() not in (source, *source.parents) or not source.is_file():
+                  raise SystemExit(f"Analysis Parquet partition is unavailable: {relative}")
+              target = current_objects / source.name
+              if target.exists():
+                  raise SystemExit(f"Duplicate Analysis Parquet partition object: {source.name}")
+              shutil.copyfile(source, target)
           with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as env_file:
               env_file.write(f"ANALYSIS_GENERATION_ID={generation}\n")
               env_file.write(
                   "ANALYSIS_PARQUET_GLOB="
-                  ".fact_publish/analysis-parquet/objects/fact_entry_result_lite/**/*.parquet\n"
+                  ".fact_publish/analysis-current-parquet/*.parquet\n"
               )
           PY
 
