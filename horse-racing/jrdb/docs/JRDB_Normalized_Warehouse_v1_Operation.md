@@ -39,6 +39,7 @@ HJCは `hjc_race` と `hjc_payout` の2 relationです。`hjc_payout`はblank/ze
 
 - UKCの業務キーは `horse_id + data_date` のままです。同一キーでRaw本体ハッシュも同一の行だけを1業務行に集約し、すべてのRaw行は `ukc_source_record_lineage` に provenance とともに残します。異なるRaw本体が同一業務キーに衝突した場合は停止します。
 - ZED/ZKBはローリング履歴スナップショットです。同じ `result_key` が複数の配信日に再掲・訂正されるため、Warehouseのキーは `result_key + source_member_date` です。消費側で最新版を必要とする場合も、Warehouseではなく明示的なas-of選択で決定します。
+- BACも通常はレース単位ですが、年次Rawには翌配信で同一レースを訂正再掲する実例があります。そのためWarehouseのキーは `race_key_raw + source_member_date` とし、最新版選択は消費側の明示的なas-of条件に委ねます。
 
 ## Gate
 
