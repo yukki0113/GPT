@@ -48,7 +48,7 @@ class AllFamilyNormalizerContractTest(unittest.TestCase):
         records = fixture_records()
         expected_grains = {
             "BAC": ("race_key_raw", "source_member_date"), "KYI": ("race_key_raw", "horse_no"),
-            "CHA": ("race_horse_key",), "CYB": ("race_horse_key",),
+            "CHA": ("race_horse_key", "source_member_date"), "CYB": ("race_horse_key",),
             "SED": ("race_key_raw", "horse_no"), "SKB": ("result_key",),
             "ZED": ("result_key", "source_member_date"),
             "ZKB": ("result_key", "source_member_date"),
