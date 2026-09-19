@@ -33,7 +33,8 @@ CANONICAL_KEYS: dict[str, tuple[str, ...]] = {
     # CHA likewise has occasional later-member corrections for an existing
     # runner.  Delivery date is part of the lossless Warehouse snapshot grain.
     "CHA": ("race_horse_key", "source_member_date"),
-    "CYB": ("race_horse_key",),
+    # CYB carries later-member comment corrections for an existing runner.
+    "CYB": ("race_horse_key", "source_member_date"),
     "SED": ("race_key_raw", "horse_no"),
     "SKB": ("result_key",),
     # ZED/ZKB are rolling historical snapshots.  The same result_key is
