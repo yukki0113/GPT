@@ -30,7 +30,9 @@ CANONICAL_KEYS: dict[str, tuple[str, ...]] = {
     # rather than arbitrarily retaining one Raw body.
     "BAC": ("race_key_raw", "source_member_date"),
     "KYI": ("race_key_raw", "horse_no"),
-    "CHA": ("race_horse_key",),
+    # CHA likewise has occasional later-member corrections for an existing
+    # runner.  Delivery date is part of the lossless Warehouse snapshot grain.
+    "CHA": ("race_horse_key", "source_member_date"),
     "CYB": ("race_horse_key",),
     "SED": ("race_key_raw", "horse_no"),
     "SKB": ("result_key",),
