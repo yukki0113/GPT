@@ -30,8 +30,9 @@ jobs:
           REQUESTED: ${{ github.event_name == 'workflow_dispatch' && inputs.families || github.event.issue.body }}
           FAMILY: ${{ matrix.family }}
         run: |
-          request=",$(echo "$REQUESTED" | tr '[:lower:]' '[:upper:]'),"
-          if [ "$(echo "$REQUESTED" | tr '[:upper:]' '[:lower:]')" = all ] || [[ "$request" == *",$FAMILY,"* ]]; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
+          requested="$(printf '%s\n' "$REQUESTED" | head -n1 | tr '[:lower:]' '[:upper:]' | tr -d '[:space:]')"
+          request=",$requested,"
+          if [ "$requested" = ALL ] || [[ "$request" == *",$FAMILY,"* ]]; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
       - uses: actions/setup-python@v5
         if: steps.select.outputs.run == 'true'
         with: {python-version: '3.12'}
