@@ -18,13 +18,23 @@ from build_jrdb_normalized_warehouse import ArchiveSpec, build_generation
 from jrdb_warehouse_normalize import IMPLEMENTED_FAMILIES
 
 
-def load_archive_specs(inventory_path: Path, raw_root: Path) -> list[ArchiveSpec]:
+def load_archive_specs(
+    inventory_path: Path,
+    raw_root: Path,
+    *,
+    families: set[str] | None = None,
+) -> list[ArchiveSpec]:
     """Return every target annual archive after fail-closed local checks."""
     inventory: dict[str, Any] = json.loads(inventory_path.read_text(encoding="utf-8"))
-    expected_families = set(IMPLEMENTED_FAMILIES) | {"HJC"}
+    all_target_families = set(IMPLEMENTED_FAMILIES) | {"HJC"}
+    expected_families = families or all_target_families
+    unknown = expected_families - all_target_families
+    if unknown:
+        raise ValueError(f"unsupported Warehouse families: {sorted(unknown)}")
     by_family = {str(item.get("family", "")).upper(): item for item in inventory.get("families", [])}
-    if set(by_family) != expected_families:
-        raise ValueError(f"inventory target families differ: {sorted(by_family)}")
+    missing = expected_families - set(by_family)
+    if missing:
+        raise ValueError(f"inventory target families missing: {sorted(missing)}")
 
     specs: list[ArchiveSpec] = []
     for family in sorted(expected_families):
@@ -64,8 +74,10 @@ def main() -> int:
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--generation-id", required=True)
     parser.add_argument("--source-git-commit", required=True)
+    parser.add_argument("--family", action="append", help="target family; repeatable, default: all inventory targets")
     args = parser.parse_args()
-    specs = load_archive_specs(args.inventory, args.raw_root)
+    requested = {family.upper() for family in args.family} if args.family else None
+    specs = load_archive_specs(args.inventory, args.raw_root, families=requested)
     result = build_generation(specs, args.output_root, args.generation_id, args.source_git_commit)
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
