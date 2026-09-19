@@ -6,10 +6,16 @@ on:
         description: 'all or comma-separated family names'
         required: true
         default: all
+  issues:
+    types: [opened]
 permissions:
   contents: read
 jobs:
   family:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.user.login == 'yukki0113' &&
+       startsWith(github.event.issue.title, '[JRDB_WAREHOUSE_FAMILY]'))
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
@@ -21,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: select
         env:
-          REQUESTED: ${{ inputs.families }}
+          REQUESTED: ${{ github.event_name == 'workflow_dispatch' && inputs.families || github.event.issue.body }}
           FAMILY: ${{ matrix.family }}
         run: |
           request=",$(echo "$REQUESTED" | tr '[:lower:]' '[:upper:]'),"
