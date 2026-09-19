@@ -56,6 +56,21 @@ STORAGE_FORMAT = "parquet"
 COMPRESSION = "zstd"
 BUILDER_VERSION = "0.2.0"
 
+# These checks are Warehouse-integrity evidence, not a consumer join contract.
+# Raw deliveries can legitimately omit optional companion files or a race header;
+# those cases are recorded as source-observed gaps rather than invented away.
+_CROSS_FAMILY_CHECKS = (
+    ("kyi_to_bac_race", "kyi", "bac", ("race_key_raw",), "SOURCE_CONDITIONAL_CONTEXT"),
+    ("cha_to_kyi_runner", "cha", "kyi", ("race_horse_key",), "OPTIONAL_ENRICHMENT"),
+    ("cyb_to_kyi_runner", "cyb", "kyi", ("race_horse_key",), "OPTIONAL_ENRICHMENT"),
+    ("sed_to_kyi_runner", "sed", "kyi", ("race_key_raw", "horse_no"), "SETTLEMENT_COUNTERPART"),
+    ("skb_to_sed_result", "skb", "sed", ("result_key",), "OPTIONAL_RESULT_EXTENSION"),
+    (
+        "zkb_to_zed_snapshot", "zkb", "zed",
+        ("result_key", "source_member_date"), "OPTIONAL_HISTORY_EXTENSION",
+    ),
+)
+
 
 def storage_runtime_available() -> bool:
     """Whether the shared ``tools/data-storage`` Parquet runtime is installed."""
@@ -231,6 +246,91 @@ def _write_content_addressed(rows: Sequence[dict[str, Any]], output_root: Path, 
             temp_path.unlink()
 
 
+def _sql_identifier(value: str) -> str:
+    return '"' + value.replace('"', '""') + '"'
+
+
+def _parquet_list_literal(paths: Sequence[Path]) -> str:
+    """Return a DuckDB list literal for immutable, local manifest assets."""
+    return "[" + ", ".join(json.dumps(str(path)) for path in paths) + "]"
+
+
+def _audit_cross_family_relations(
+    manifest_entries: Sequence[dict[str, Any]], output_root: Path,
+) -> dict[str, Any]:
+    """Record Warehouse link coverage without inferring missing source data."""
+    _require_storage_runtime()
+    paths_by_relation: dict[str, list[Path]] = defaultdict(list)
+    for entry in manifest_entries:
+        paths_by_relation[str(entry["family"])].append(output_root / str(entry["relative_path"]))
+
+    available = sorted(paths_by_relation)
+    if not available:
+        return {"status": "NOT_APPLICABLE", "checks": []}
+    connection = connect_parquet(paths_by_relation[available[0]][0], view_name="warehouse_anchor")
+    try:
+        for relation, paths in paths_by_relation.items():
+            connection.execute(
+                f"CREATE VIEW {_sql_identifier(relation)} AS SELECT * FROM read_parquet("
+                f"{_parquet_list_literal(paths)}, hive_partitioning=true, union_by_name=true)"
+            )
+        checks: list[dict[str, Any]] = []
+        for name, child, parent, columns, availability_class in _CROSS_FAMILY_CHECKS:
+            if child not in paths_by_relation or parent not in paths_by_relation:
+                checks.append({
+                    "name": name,
+                    "child_relation": child,
+                    "parent_relation": parent,
+                    "key_columns": list(columns),
+                    "availability_class": availability_class,
+                    "status": "NOT_APPLICABLE",
+                    "passed": True,
+                    "reason": "relation_not_present_in_generation",
+                })
+                continue
+            keys = ", ".join(_sql_identifier(column) for column in columns)
+            predicates = " AND ".join(
+                f"child.{_sql_identifier(column)} = parent.{_sql_identifier(column)}"
+                for column in columns
+            )
+            non_null = " AND ".join(
+                f"{_sql_identifier(column)} IS NOT NULL" for column in columns
+            )
+            child_key_count = connection.execute(
+                f"SELECT COUNT(*) FROM (SELECT DISTINCT {keys} FROM {_sql_identifier(child)} WHERE {non_null})"
+            ).fetchone()[0]
+            parent_key_count = connection.execute(
+                f"SELECT COUNT(*) FROM (SELECT DISTINCT {keys} FROM {_sql_identifier(parent)} WHERE {non_null})"
+            ).fetchone()[0]
+            child_keys = ", ".join(f"child.{_sql_identifier(column)}" for column in columns)
+            unmatched_sql = (
+                f"SELECT {child_keys} FROM (SELECT DISTINCT {keys} FROM {_sql_identifier(child)} WHERE {non_null}) child "
+                f"LEFT JOIN (SELECT DISTINCT {keys} FROM {_sql_identifier(parent)} WHERE {non_null}) parent "
+                f"ON {predicates} WHERE parent.{_sql_identifier(columns[0])} IS NULL"
+            )
+            unmatched_count = connection.execute(f"SELECT COUNT(*) FROM ({unmatched_sql})").fetchone()[0]
+            samples = [list(row) for row in connection.execute(
+                f"{unmatched_sql} ORDER BY {child_keys} LIMIT 10"
+            ).fetchall()]
+            checks.append({
+                "name": name,
+                "child_relation": child,
+                "parent_relation": parent,
+                "key_columns": list(columns),
+                "availability_class": availability_class,
+                "child_distinct_key_count": child_key_count,
+                "parent_distinct_key_count": parent_key_count,
+                "unmatched_child_key_count": unmatched_count,
+                "sample_unmatched_child_keys": samples,
+                "status": "PASS" if unmatched_count == 0 else "OBSERVED_SOURCE_GAP",
+                "passed": True,
+            })
+    finally:
+        connection.close()
+    has_gap = any(item["status"] == "OBSERVED_SOURCE_GAP" for item in checks)
+    return {"status": "PASS_WITH_REPORTED_SOURCE_GAPS" if has_gap else "PASS", "checks": checks}
+
+
 def _normalize_partition(specs: Sequence[ArchiveSpec], ingested_at: str) -> tuple[dict[str, list[dict[str, Any]]], dict[str, int]]:
     family = specs[0].normalized_family()
     year = specs[0].year
@@ -331,6 +431,7 @@ def build_generation(
             manifest_entries.append(entry)
             audits.append(audit)
     status = "PASS" if all(item["passed"] for item in audits) else "FAILED"
+    cross_family = _audit_cross_family_relations(manifest_entries, output_root)
     manifest = {
         "artifact_type": ARTIFACT_TYPE,
         "warehouse_schema_version": WAREHOUSE_SCHEMA_VERSION,
@@ -350,6 +451,7 @@ def build_generation(
         "created_at": ingested_at,
         "status": status,
         "relations": audits,
+        "cross_family": cross_family,
         "current_updated": False,
     }
     generation_dir = output_root / "generations" / generation_id

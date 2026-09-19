@@ -90,6 +90,10 @@ class AllFamilyWarehouseE2ETest(unittest.TestCase):
                 "ukc_source_record_lineage", "hjc_race", "hjc_payout",
             })
             self.assertEqual(next(asset for asset in result["manifest"]["assets"] if asset["family"] == "hjc_payout")["row_count"], 36)
+            cross_family = result["audit"]["cross_family"]
+            self.assertEqual(cross_family["status"], "PASS")
+            self.assertTrue(all(item["passed"] for item in cross_family["checks"]))
+            self.assertTrue(all(item["unmatched_child_key_count"] == 0 for item in cross_family["checks"]))
             self.assertFalse((root / "warehouse" / "current.json").exists())
             self.assertEqual({path: hashlib.sha256(path.read_bytes()).hexdigest() for path in before_hashes}, before_hashes)
 

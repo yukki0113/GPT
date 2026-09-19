@@ -45,6 +45,8 @@ The rerun then established that ZED and ZKB are rolling historical snapshots rat
 
 ## Result
 
-`PASS` — local 2025 ten-family generation `pilot-2025-ukc-lineage-v1` completed on 2026-09-19.
+`PASS` — local 2025 ten-family generation `pilot-2025-cross-family-v1` completed on 2026-09-19.
 
-All relation audits passed: record-length checks, canonical-key checks, provenance checks and HJC 36-slot expansion. This is a local pilot only: no Drive Warehouse publication, `current.json` update, consumer switch, or Raw mutation occurred. The next gates are cross-family audit implementation, full 2010–2025 build, Drive upload/re-fetch validation, and only then `current.json` publication.
+All relation audits passed: record-length checks, canonical-key checks, provenance checks and HJC 36-slot expansion. Cross-family checks passed for CHA→KYI, CYB→KYI, SED→KYI, SKB→SED and ZKB→ZED. KYI→BAC reports 53 unmatched race keys as `OBSERVED_SOURCE_GAP` (not fabricated or silently discarded); this is recorded as `SOURCE_CONDITIONAL_CONTEXT` with representative keys in `audit.json`.
+
+This is a local pilot only: no Drive Warehouse publication, `current.json` update, consumer switch, or Raw mutation occurred. The next gates are full 2010–2025 build, Drive upload/re-fetch validation, and only then `current.json` publication.
