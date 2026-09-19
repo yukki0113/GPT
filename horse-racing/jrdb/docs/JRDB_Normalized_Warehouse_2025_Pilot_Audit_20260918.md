@@ -43,6 +43,8 @@ The completed rerun produced 47,219 UKC business rows and 47,239 lineage rows. T
 
 The rerun then established that ZED and ZKB are rolling historical snapshots rather than one-row result masters. In the 2025 archives, repeated `result_key` values occur across later delivery members; 1,983 ZED keys and 1,482 ZKB keys contain more than one Raw body hash. `result_key + source_member_date` is unique in both families, so this is the Warehouse grain. This preserves delivery-time corrections without choosing an arbitrary latest row.
 
+The full-history preflight also found BAC correction re-delivery in 2013: 24 race keys were reissued in the next source-member date with a different Raw body hash. BAC therefore uses `race_key_raw + source_member_date` as its Warehouse grain, preserving the correction history without selecting an implicit latest row.
+
 ## Result
 
 `PASS` — local 2025 ten-family generation `pilot-2025-cross-family-v1` completed on 2026-09-19.
