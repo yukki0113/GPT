@@ -51,9 +51,13 @@ jobs:
           if r['manifest']['status']!='PASS' or r['audit']['status']!='PASS': raise SystemExit('family audit failed')
           Path('/tmp/warehouse/publish_request.json').write_text(json.dumps({'status':'PASS','family':os.environ['FAMILY'],'generation_id':r['manifest']['generation_id']},indent=2)+'\n')
           PY
+          rm -rf /tmp/warehouse/raw
       - if: steps.select.outputs.run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: jrdb-warehouse-family-${{ matrix.family }}-${{ github.run_id }}
-          path: /tmp/warehouse
+          path: |
+            /tmp/warehouse/output
+            /tmp/warehouse/report
+            /tmp/warehouse/publish_request.json
           retention-days: 14
