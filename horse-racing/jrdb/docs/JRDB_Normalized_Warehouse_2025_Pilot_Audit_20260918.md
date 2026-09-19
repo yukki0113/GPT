@@ -45,6 +45,8 @@ The rerun then established that ZED and ZKB are rolling historical snapshots rat
 
 The full-history preflight also found BAC correction re-delivery in 2013: 24 race keys were reissued in the next source-member date with a different Raw body hash. BAC therefore uses `race_key_raw + source_member_date` as its Warehouse grain, preserving the correction history without selecting an implicit latest row.
 
+CHA has the same historical delivery behavior (339 runner keys in 2013 and 146 in 2018); its grain is therefore `race_horse_key + source_member_date`.
+
 ## Result
 
 `PASS` — local 2025 ten-family generation `pilot-2025-cross-family-v1` completed on 2026-09-19.
