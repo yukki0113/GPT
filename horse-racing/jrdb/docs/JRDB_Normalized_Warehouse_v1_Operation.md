@@ -35,9 +35,14 @@ python horse-racing/jrdb/src/build_jrdb_normalized_warehouse.py \
 
 HJCは `hjc_race` と `hjc_payout` の2 relationです。`hjc_payout`はblank/zeroを含む36 slotすべてを保持します。
 
+## 重複・スナップショット方針
+
+- UKCの業務キーは `horse_id + data_date` のままです。同一キーでRaw本体ハッシュも同一の行だけを1業務行に集約し、すべてのRaw行は `ukc_source_record_lineage` に provenance とともに残します。異なるRaw本体が同一業務キーに衝突した場合は停止します。
+- ZED/ZKBはローリング履歴スナップショットです。同じ `result_key` が複数の配信日に再掲・訂正されるため、Warehouseのキーは `result_key + source_member_date` です。消費側で最新版を必要とする場合も、Warehouseではなく明示的なas-of選択で決定します。
+
 ## Gate
 
-ビルダーは固定長不正、canonical key重複、key/provenance欠損で停止します。`current.json`は生成処理では一切更新しません。
+ビルダーは固定長不正、canonical key重複、key/provenance欠損、UKCの内容相違キー衝突で停止します。`current.json`は生成処理では一切更新しません。
 
 実データの正本公開は、次の順序でのみ行います。
 

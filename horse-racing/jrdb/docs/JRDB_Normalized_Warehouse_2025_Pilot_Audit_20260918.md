@@ -16,9 +16,9 @@
 - The first run exposed a Python compatibility defect in the temporary Parquet file name (`datetime.timestamp_ns`). It was replaced with `time.time_ns`.
 - Builder and all-family fixture tests passed after the correction.
 
-## Fail-closed audit result
+## UKC duplicate review and lossless policy
 
-The real-data build stopped before publication because UKC 2025 violates the current canonical-key contract:
+The first run stopped before publication because UKC 2025 has duplicate business keys:
 
 | Check | Result |
 | --- | --- |
@@ -30,10 +30,21 @@ The real-data build stopped before publication because UKC 2025 violates the cur
 
 Examples occur in `UKC251213.txt` and `UKC251214.txt`; each duplicate pair has distinct source record ordinals and the same `source_record_sha256`.
 
-No row was dropped and the canonical key was not silently changed. The implementation request requires the source delivery structure to be reviewed and the canonical grain or an explicit lossless duplicate policy to be defined before conversion resumes.
+No row was dropped and the business key was not changed. The accepted lossless policy is:
+
+- retain `horse_id + data_date` as the UKC business key;
+- collapse only rows with the same business key and the same `source_record_sha256`;
+- retain every Raw occurrence in `ukc_source_record_lineage`, keyed by archive hash/member/ordinal;
+- fail closed if one UKC business key has more than one Raw body hash.
+
+The completed rerun produced 47,219 UKC business rows and 47,239 lineage rows. The lineage audit records 47,219 `CANONICAL` and 20 `EXACT_SOURCE_DUPLICATE` rows.
+
+## ZED/ZKB rolling-snapshot review
+
+The rerun then established that ZED and ZKB are rolling historical snapshots rather than one-row result masters. In the 2025 archives, repeated `result_key` values occur across later delivery members; 1,983 ZED keys and 1,482 ZKB keys contain more than one Raw body hash. `result_key + source_member_date` is unique in both families, so this is the Warehouse grain. This preserves delivery-time corrections without choosing an arbitrary latest row.
 
 ## Result
 
-`BLOCKED_BY_UKC_DUPLICATE_GRAIN`
+`PASS` — local 2025 ten-family generation `pilot-2025-ukc-lineage-v1` completed on 2026-09-19.
 
-The frozen Raw inventory is complete. The remaining gate is a documented UKC duplicate-handling decision; after that, rerun this same 2025 ten-family pilot before any full historical build.
+All relation audits passed: record-length checks, canonical-key checks, provenance checks and HJC 36-slot expansion. This is a local pilot only: no Drive Warehouse publication, `current.json` update, consumer switch, or Raw mutation occurred. The next gates are cross-family audit implementation, full 2010–2025 build, Drive upload/re-fetch validation, and only then `current.json` publication.

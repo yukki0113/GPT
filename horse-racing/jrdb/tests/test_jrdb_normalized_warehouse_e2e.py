@@ -50,7 +50,8 @@ class AllFamilyNormalizerContractTest(unittest.TestCase):
             "BAC": ("race_key_raw",), "KYI": ("race_key_raw", "horse_no"),
             "CHA": ("race_horse_key",), "CYB": ("race_horse_key",),
             "SED": ("race_key_raw", "horse_no"), "SKB": ("result_key",),
-            "ZED": ("result_key",), "ZKB": ("result_key",),
+            "ZED": ("result_key", "source_member_date"),
+            "ZKB": ("result_key", "source_member_date"),
             "UKC": ("horse_id", "data_date"),
         }
         for family, keys in expected_grains.items():
@@ -85,7 +86,8 @@ class AllFamilyWarehouseE2ETest(unittest.TestCase):
             result = build_generation(specs, root / "warehouse", "all-family-e2e", "deadbeef", created_at="2026-09-18T00:00:00+00:00")
             self.assertEqual(result["manifest"]["status"], "PASS")
             self.assertEqual({asset["family"] for asset in result["manifest"]["assets"]}, {
-                "bac", "kyi", "cha", "cyb", "sed", "skb", "zed", "zkb", "ukc", "hjc_race", "hjc_payout",
+                "bac", "kyi", "cha", "cyb", "sed", "skb", "zed", "zkb", "ukc",
+                "ukc_source_record_lineage", "hjc_race", "hjc_payout",
             })
             self.assertEqual(next(asset for asset in result["manifest"]["assets"] if asset["family"] == "hjc_payout")["row_count"], 36)
             self.assertFalse((root / "warehouse" / "current.json").exists())

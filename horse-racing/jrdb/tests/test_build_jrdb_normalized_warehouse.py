@@ -19,6 +19,7 @@ from build_jrdb_normalized_warehouse import (  # noqa: E402
     storage_runtime_available,
 )
 from test_jrdb_hjc_common import sample_body  # noqa: E402
+from test_jrdb_raw_common import make_ukc  # noqa: E402
 from test_jrdb_warehouse_normalize import row  # noqa: E402
 
 
@@ -63,6 +64,70 @@ class NormalizedWarehouseBuilderTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 build_generation([ArchiveSpec("BAC", 2026, archive)], root / "warehouse", "duplicate-test", "deadbeef")
             self.assertFalse((root / "warehouse" / "generations" / "duplicate-test").exists())
+
+    def test_ukc_exact_duplicates_are_collapsed_with_complete_lineage(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            body = make_ukc()
+            archive = self._zip(
+                root / "UKC_2026.zip",
+                {"UKC260830.txt": body + b"\r\n" + body + b"\r\n"},
+            )
+            result = build_generation(
+                [ArchiveSpec("UKC", 2026, archive)],
+                root / "warehouse", "ukc-lineage-test", "deadbeef",
+                created_at="2026-09-18T00:00:00+00:00",
+            )
+            assets = {asset["family"]: asset for asset in result["manifest"]["assets"]}
+            self.assertEqual(assets["ukc"]["row_count"], 1)
+            self.assertEqual(assets["ukc_source_record_lineage"]["row_count"], 2)
+            self.assertEqual(assets["ukc"]["source_record_count"], 2)
+            self.assertEqual(assets["ukc"]["exact_source_duplicate_count"], 1)
+            lineage_audit = next(
+                item for item in result["audit"]["relations"]
+                if item["relation"] == "ukc_source_record_lineage"
+            )
+            self.assertEqual(lineage_audit["duplicate_class_counts"], {
+                "CANONICAL": 1,
+                "EXACT_SOURCE_DUPLICATE": 1,
+            })
+
+    def test_ukc_conflicting_bodies_at_same_business_key_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            first = make_ukc()
+            second = bytearray(first)
+            second[44] = ord("2")  # Sex is non-key data; fixed-width remains valid.
+            archive = self._zip(
+                root / "UKC_2026.zip",
+                {"UKC260830.txt": first + b"\r\n" + bytes(second) + b"\r\n"},
+            )
+            with self.assertRaisesRegex(ValueError, "different Raw bodies"):
+                build_generation(
+                    [ArchiveSpec("UKC", 2026, archive)],
+                    root / "warehouse", "ukc-conflict-test", "deadbeef",
+                )
+            self.assertFalse((root / "warehouse" / "generations" / "ukc-conflict-test").exists())
+
+    def test_zed_repeated_result_is_preserved_as_delivery_snapshots(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            body = row(
+                "ZED", (1, 8, "0526A101"), (9, 2, "03"),
+                (11, 8, "20231001"), (19, 8, "20260830"),
+            )
+            archive = self._zip(root / "ZED_2026.zip", {
+                "ZED260830.txt": body + b"\r\n",
+                "ZED260906.txt": body + b"\r\n",
+            })
+            result = build_generation(
+                [ArchiveSpec("ZED", 2026, archive)],
+                root / "warehouse", "zed-snapshot-test", "deadbeef",
+                created_at="2026-09-18T00:00:00+00:00",
+            )
+            asset = result["manifest"]["assets"][0]
+            self.assertEqual(asset["row_count"], 2)
+            self.assertEqual(asset["canonical_key"], ["result_key", "source_member_date"])
 
 
 if __name__ == "__main__":

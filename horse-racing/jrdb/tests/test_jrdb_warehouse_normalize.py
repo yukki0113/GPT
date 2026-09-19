@@ -116,7 +116,7 @@ class WarehouseNormalizeTest(unittest.TestCase):
         self.assertEqual(sed["start_time"], "15:40")
         self.assertEqual(sed["metric_raw_score"], zed["metric_raw_score"])
         self.assertEqual(canonical_key_columns("SED"), ("race_key_raw", "horse_no"))
-        self.assertEqual(canonical_key_columns("ZED"), ("result_key",))
+        self.assertEqual(canonical_key_columns("ZED"), ("result_key", "source_member_date"))
 
     def test_skb_and_zkb_flatten_codes_and_preserve_blank_slots(self) -> None:
         source = row(
@@ -133,7 +133,7 @@ class WarehouseNormalizeTest(unittest.TestCase):
         self.assertEqual(skb["leg_code_left_front"], "102")
         self.assertEqual(skb["result_date"], "2026-08-30")
         self.assertEqual(skb["tokki_code_1"], zkb["tokki_code_1"])
-        self.assertEqual(canonical_key_columns("ZKB"), ("result_key",))
+        self.assertEqual(canonical_key_columns("ZKB"), ("result_key", "source_member_date"))
 
     def test_ukc_preserves_each_snapshot_key_without_latest_only_collapse(self) -> None:
         source = row(

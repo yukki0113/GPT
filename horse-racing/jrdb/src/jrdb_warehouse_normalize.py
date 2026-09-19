@@ -17,7 +17,7 @@ from typing import Any, Mapping
 from jrdb_raw import Parser, VERSION as PARSER_VERSION, hhmm, race_key_parts, ymd
 
 WAREHOUSE_SCHEMA_VERSION = "v1"
-WAREHOUSE_NORMALIZER_VERSION = "0.1.0"
+WAREHOUSE_NORMALIZER_VERSION = "0.2.0"
 RAW_SOURCE_KIND = "jrdb_raw_fixed_width"
 
 IMPLEMENTED_FAMILIES = ("BAC", "KYI", "CHA", "CYB", "SED", "SKB", "ZED", "ZKB", "UKC")
@@ -31,9 +31,17 @@ CANONICAL_KEYS: dict[str, tuple[str, ...]] = {
     "CYB": ("race_horse_key",),
     "SED": ("race_key_raw", "horse_no"),
     "SKB": ("result_key",),
-    "ZED": ("result_key",),
-    "ZKB": ("result_key",),
+    # ZED/ZKB are rolling historical snapshots.  The same result_key is
+    # legitimately re-delivered (and sometimes corrected) on later member
+    # dates, so the Warehouse grain includes the delivery date.
+    "ZED": ("result_key", "source_member_date"),
+    "ZKB": ("result_key", "source_member_date"),
     "UKC": ("horse_id", "data_date"),
+    "UKC_SOURCE_RECORD_LINEAGE": (
+        "source_archive_sha256",
+        "source_member",
+        "source_record_ordinal",
+    ),
     "HJC_RACE": ("race_key_raw",),
     "HJC_PAYOUT": ("race_key_raw", "bet_type", "slot_no"),
 }

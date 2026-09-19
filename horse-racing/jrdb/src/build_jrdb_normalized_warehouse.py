@@ -54,7 +54,7 @@ from jrdb_warehouse_normalize import (  # noqa: E402
 ARTIFACT_TYPE = "jrdb_normalized_warehouse"
 STORAGE_FORMAT = "parquet"
 COMPRESSION = "zstd"
-BUILDER_VERSION = "0.1.0"
+BUILDER_VERSION = "0.2.0"
 
 
 def storage_runtime_available() -> bool:
@@ -127,7 +127,7 @@ def _audit_rows(relation: str, rows: Sequence[dict[str, Any]]) -> dict[str, Any]
     null_keys = {column: sum(1 for row in rows if row.get(column) is None) for column in keys}
     counter = Counter(tuple(row.get(column) for column in keys) for row in rows)
     duplicates = sum(count - 1 for count in counter.values() if count > 1)
-    return {
+    result = {
         "relation": relation,
         "row_count": len(rows),
         "canonical_key": list(keys),
@@ -136,6 +136,55 @@ def _audit_rows(relation: str, rows: Sequence[dict[str, Any]]) -> dict[str, Any]
         "missing_provenance_counts": missing_provenance,
         "passed": duplicates == 0 and not any(null_keys.values()) and not any(missing_provenance.values()),
     }
+    if relation == "ukc_source_record_lineage":
+        result["duplicate_class_counts"] = dict(sorted(Counter(
+            row.get("duplicate_class") for row in rows
+        ).items()))
+    return result
+
+
+def _normalize_ukc_duplicates(
+    rows: Sequence[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], int]:
+    """Collapse only byte-identical UKC rows while retaining source lineage.
+
+    The UKC business grain remains ``horse_id + data_date``.  A collision at
+    that grain is safe to collapse only when every source record has the same
+    byte hash.  Each original Raw record is represented by one lineage row.
+    """
+    key_columns = canonical_key_columns("UKC")
+    grouped: dict[tuple[Any, ...], list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped[tuple(row.get(column) for column in key_columns)].append(row)
+
+    logical_rows: list[dict[str, Any]] = []
+    lineage_rows: list[dict[str, Any]] = []
+    exact_duplicate_count = 0
+    for key, candidates in grouped.items():
+        body_hashes = {row["source_record_sha256"] for row in candidates}
+        if len(body_hashes) != 1:
+            raise ValueError(
+                "UKC business-key collision contains different Raw bodies: "
+                f"key={key!r}, source_record_sha256={sorted(body_hashes)!r}"
+            )
+        logical = candidates[0]
+        logical_rows.append(logical)
+        for index, source in enumerate(candidates):
+            lineage = {
+                "horse_id": logical["horse_id"],
+                "data_date": logical["data_date"],
+                "logical_source_record_sha256": logical["source_record_sha256"],
+                "duplicate_class": "CANONICAL" if index == 0 else "EXACT_SOURCE_DUPLICATE",
+            }
+            lineage.update({column: source.get(column) for column in PROVENANCE_COLUMNS})
+            lineage_rows.append(lineage)
+        exact_duplicate_count += len(candidates) - 1
+
+    if len(lineage_rows) != len(rows):
+        raise RuntimeError("UKC lineage count does not equal Raw source record count")
+    if len(logical_rows) + exact_duplicate_count != len(rows):
+        raise RuntimeError("UKC logical row plus exact duplicate count does not equal Raw source count")
+    return logical_rows, lineage_rows, exact_duplicate_count
 
 
 def _write_content_addressed(rows: Sequence[dict[str, Any]], output_root: Path, relation: str, year: int) -> dict[str, Any]:
@@ -227,11 +276,21 @@ def _normalize_partition(specs: Sequence[ArchiveSpec], ingested_at: str) -> tupl
         raise ValueError(f"fixed-record length errors: {dict(record_length_errors)}")
     if source_record_count == 0:
         raise ValueError(f"{family}/{year} contained no records")
-    return relations, {
+    source_counts = {
         "source_archive_count": len(specs),
         "source_member_count": source_member_count,
         "source_record_count": source_record_count,
     }
+    if family == "UKC":
+        logical, lineage, exact_duplicates = _normalize_ukc_duplicates(relations["ukc"])
+        relations["ukc"] = logical
+        relations["ukc_source_record_lineage"] = lineage
+        source_counts.update({
+            "ukc_logical_row_count": len(logical),
+            "ukc_lineage_row_count": len(lineage),
+            "exact_source_duplicate_count": exact_duplicates,
+        })
+    return relations, source_counts
 
 
 def build_generation(
