@@ -25,7 +25,10 @@ HJC_BET_TYPES = (
     "win", "place", "frame_quinella", "quinella", "wide", "exacta", "trio", "trifecta",
 )
 CANONICAL_KEYS: dict[str, tuple[str, ...]] = {
-    "BAC": ("race_key_raw",),
+    # BAC is normally a race master, but annual Raw includes occasional
+    # next-delivery corrections for the same race.  Preserve those snapshots
+    # rather than arbitrarily retaining one Raw body.
+    "BAC": ("race_key_raw", "source_member_date"),
     "KYI": ("race_key_raw", "horse_no"),
     "CHA": ("race_horse_key",),
     "CYB": ("race_horse_key",),
