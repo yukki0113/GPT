@@ -171,6 +171,7 @@ class WarehouseNormalizeTest(unittest.TestCase):
 
     def test_contract_rejects_unimplemented_family_and_invalid_ordinal(self) -> None:
         self.assertEqual(canonical_key_columns("BAC"), ("race_key_raw", "source_member_date"))
+        self.assertEqual(canonical_key_columns("CHA"), ("race_horse_key", "source_member_date"))
         self.assertEqual(CANONICAL_KEYS["CYB"], ("race_horse_key",))
         with self.assertRaises(ValueError):
             canonical_key_columns("HJC")
