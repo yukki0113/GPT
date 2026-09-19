@@ -38,7 +38,8 @@ jobs:
       - if: steps.select.outputs.run == 'true'
         run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt requests
       - if: steps.select.outputs.run == 'true'
-        env: {FAMILY: ${{ matrix.family }}}
+        env:
+          FAMILY: ${{ matrix.family }}
         run: |
           mkdir -p /tmp/warehouse/raw /tmp/warehouse/report
           python horse-racing/jrdb/src/stage_jrdb_warehouse_family_raw.py --inventory horse-racing/jrdb/config/jrdb_frozen_raw_inventory_20260918.json --family "$FAMILY" --output-root /tmp/warehouse/raw --receipt /tmp/warehouse/report/raw_receipt.json
