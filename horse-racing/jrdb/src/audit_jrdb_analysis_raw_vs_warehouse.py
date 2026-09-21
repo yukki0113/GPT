@@ -6,12 +6,14 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import zipfile
 from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 from jrdb_analysis_warehouse_adapter import WarehouseAnalysisReader
-from update_jrdb_analysis_incremental import FACT_COLUMNS, parse_date, parse_day
+from update_jrdb_analysis_incremental import FACT_COLUMNS, _parse_lines, parse_date, parse_day
+from jrdb_raw import read_fixed_records
 
 KEY = ("race_key", "horse_no")
 
@@ -74,9 +76,48 @@ def _asset_roots(values: list[str]) -> dict[str, Path]:
     return roots
 
 
+def _annual_roots(values: list[str]) -> dict[str, Path]:
+    """Parse repeatable ``KIND=/frozen/KIND_YYYY.zip`` values."""
+    archives: dict[str, Path] = {}
+    for value in values:
+        kind, separator, path = value.partition("=")
+        if not separator or kind.upper() not in {"BAC", "KYI", "SED", "CYB", "UKC"} or not path:
+            raise ValueError("--annual-raw requires BAC|KYI|SED|CYB|UKC=/frozen/archive.zip")
+        archives[kind.upper()] = Path(path)
+    if set(archives) != {"BAC", "KYI", "SED", "CYB", "UKC"}:
+        raise ValueError("--annual-raw requires exactly BAC,KYI,SED,CYB,UKC archives")
+    return archives
+
+
+def parse_annual_day(archives: Mapping[str, Path], date: dt.date) -> tuple[list[tuple], dict[str, Any]]:
+    """Read the same dated members directly from frozen annual Raw archives."""
+    suffix = date.strftime("%y%m%d")
+    lines: dict[str, list[bytes]] = {}
+    for kind, path in archives.items():
+        with zipfile.ZipFile(path) as archive:
+            expected = f"{kind}{suffix}.TXT"
+            members = [name for name in archive.namelist() if Path(name).name.upper() == expected]
+            if len(members) != 1:
+                raise RuntimeError(f"{path}: expected exactly one {expected}, found {len(members)}")
+            if archive.testzip() is not None:
+                raise RuntimeError(f"{path}: ZIP CRC failure")
+            lines[kind] = read_fixed_records(archive, members[0], kind)
+            if not lines[kind]:
+                raise RuntimeError(f"{path}: no valid {kind} records for {suffix}")
+    rows, meta = _parse_lines(lines, date)
+    meta.update({
+        "source_mode": "annual-raw-direct",
+        "source_manifest": {kind: str(path) for kind, path in archives.items()},
+        "source_member_date": date.isoformat(),
+    })
+    return rows, meta
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--raw-root", type=Path, required=True)
+    parser.add_argument("--raw-root", type=Path)
+    parser.add_argument("--annual-raw", action="append", default=[],
+                        help="repeatable KIND=/frozen/KIND_YYYY.zip; exact dated members are read")
     parser.add_argument("--date", required=True)
     parser.add_argument("--warehouse-current", type=Path, required=True)
     parser.add_argument("--asset-root", action="append", required=True)
@@ -85,7 +126,13 @@ def main() -> None:
     args = parser.parse_args()
     date = parse_date(args.date)
     member_date = parse_date(args.source_member_date) if args.source_member_date else None
-    raw_rows, raw_meta = parse_day(args.raw_root, date)
+    if bool(args.raw_root) == bool(args.annual_raw):
+        parser.error("use exactly one of --raw-root or --annual-raw")
+    if args.annual_raw:
+        raw_rows, raw_meta = parse_annual_day(_annual_roots(args.annual_raw), date)
+        member_date = date
+    else:
+        raw_rows, raw_meta = parse_day(args.raw_root, date)
     reader = WarehouseAnalysisReader(args.warehouse_current, asset_roots=_asset_roots(args.asset_root))
     warehouse_rows, warehouse_meta = reader.parse_day(date, source_member_date=member_date)
     warehouse_repeat, _ = reader.parse_day(date, source_member_date=member_date)
