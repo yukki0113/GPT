@@ -1,0 +1,78 @@
+Historical入力経路監査結果
+Date: 2026-09-21
+Project: JRDB / RL-T / Training Research
+
+[結論]
+2010–2025 JRDB Historical の正式標準入力方針は JRDB Warehouse とする。
+
+ただし現時点では、RL-T / Training Research 系の upstream はまだ annual Raw 2010–2025 を直接取得して
+Index Base を再構築しているため、Warehouseへの即時切替は実施していない。
+
+理由は、Warehouse normalized Parquet から existing Index Base schema へ変換する正式互換adapterと、
+Raw-vs-Warehouse同値監査がまだ存在しないため。
+未監査のまま差し替えると BAC/CHA/CYB の訂正スナップショット選択、UKC as-of 等の意味論を
+変える可能性がある。
+
+[既にWarehouse標準化済み]
+Analysis historical 2010–2025:
+Warehouse current -> DuckDB reader -> Analysis
+
+正式multi-year dual-read auditはPASS済み。
+2026 Analysisは従来どおり PACI + SED / Raw direct。
+
+[旧Historical Raw参照が残る主経路]
+.github/workflows/jrdb_training_edge_v02_daily_issue.yml
+.github/workflows/jrdb_training_edge_v02_replay_issue.yml
+.github/workflows/jrdb_training_edge_v02_runtime_freeze_issue.yml
+.github/workflows/jrdb_training_edge_v02_2026_oot_issue.yml
+.github/workflows/jrdb_training_research_issue.yml
+
+典型経路:
+annual Raw 2010–2025
+ -> build_jrdb_index_base_from_raw.py
+ -> Index Base SQLite
+ -> RunPerf
+ -> Official RunPerf
+ -> Training Edge projection / Training Research
+
+[Training Research保存形式]
+Training Research analytical canonical は Parquet ZSTD へ移行済み。
+normal development input は training_development.parquet (2010–2023)。
+これはstorage canonicalの移行であり、upstream Historical sourceがWarehouseになったことを意味しない。
+
+[必要作業]
+1. Warehouse -> existing Index Base schema の互換adapterを実装。
+2. Raw annual 2010–2025 と Warehouse 2010–2025 のIndex Base全論理同値監査。
+3. RunPerf / Official RunPerf / Training Research / Stage1b / frozen RL-T runtime fingerprint の非回帰確認。
+4. 全PASS後に daily/replay/training-research のHistorical segmentのみWarehouseへ切替。
+5. Historical Raw direct は rollback/audit用として明示的に残す。
+6. 2026 PACI/SED/Raw routeは変更しない。
+
+[重要な同値対象]
+race_context
+race_result_context
+runner_pre
+runner_previous_link
+runner_result
+workout_main
+training_analysis
+horse_profile_observation
+
+schema, row count, canonical key, duplicate, all values, NULL/blank,
+record_hash, canonical row hash, representative aggregate, idempotence を比較する。
+
+[切替判定]
+HISTORICAL_POLICY = WAREHOUSE_STANDARD
+ANALYSIS_CUTOVER = PASS
+RL_T_CUTOVER = BLOCKED_PENDING_INDEX_BASE_EQUIVALENCE
+TRAINING_RESEARCH_UPSTREAM_CUTOVER = BLOCKED_PENDING_INDEX_BASE_EQUIVALENCE
+2026_DAILY_ROUTE = UNCHANGED
+RAW_HISTORICAL_ROUTE = RETAIN_FOR_ROLLBACK_AND_AUDIT
+
+[科学仕様]
+RL-T v0.2のfeature/target/Ridge alpha/preprocessing/calibration/eligibility/runtime fingerprintは変更しない。
+2010–2023 DEVELOPMENT、2024–2025 HOLDOUT境界を維持する。
+2026既知結果を再調整に使用しない。
+
+詳細実装依頼:
+horse-racing/jrdb/docs/RL_T_Historical_Warehouse_Migration_Work_Request_20260921.md
