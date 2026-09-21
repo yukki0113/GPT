@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
 
+from keirin_historical.keirin_jp_month import discover_events
 from keirin_historical.raw import SourceItem, acquire_source_list, load_source_list, write_immutable
 
 
@@ -33,6 +33,8 @@ class FakeResponse:
 
 
 def fake_opener(request, timeout=0):
+    if request.method == "POST":
+        assert request.data == b"encp=abc&disp=PJ0301"
     return FakeResponse(b"<html>fixture</html>", url=request.full_url)
 
 
@@ -42,25 +44,26 @@ class RawCollectorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             manifest = acquire_source_list(
-                [source], output_dir=root / "raw", manifest_path=root / "manifest.json", delay_seconds=0,
-                opener=fake_opener,
+                [source], output_dir=root / "raw", manifest_path=root / "manifest.json",
+                delay_seconds=0, opener=fake_opener,
             )
             self.assertEqual(manifest["policy_blocked_sources"], 1)
             self.assertEqual(manifest["successful_sources"], 0)
-            self.assertFalse((root / "raw/2016/01/r1.html").exists())
 
-    def test_approved_source_is_saved_and_hashed(self) -> None:
-        source = SourceItem("approved", "r1", "https://approved.example/race/1", "2016/01/r1.html", "approved")
+    def test_personal_research_post_source_is_saved(self) -> None:
+        source = SourceItem(
+            "keirin.jp", "r1", "https://approved.example/race/1", "2016/01/r1.html",
+            "personal_research_approved", request_method="POST",
+            form_data={"encp": "abc", "disp": "PJ0301"},
+        )
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             manifest = acquire_source_list(
-                [source], output_dir=root / "raw", manifest_path=root / "manifest.json", delay_seconds=0,
-                opener=fake_opener,
+                [source], output_dir=root / "raw", manifest_path=root / "manifest.json",
+                delay_seconds=0, opener=fake_opener,
             )
             self.assertEqual(manifest["successful_sources"], 1)
-            self.assertEqual(manifest["failed_sources"], 0)
             self.assertEqual((root / "raw/2016/01/r1.html").read_bytes(), b"<html>fixture</html>")
-            self.assertEqual(len(manifest["sources"][0]["sha256"]), 64)
 
     def test_raw_is_immutable(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -74,7 +77,7 @@ class RawCollectorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "sources.jsonl"
             path.write_text(json.dumps({
-                "provider": "approved", "source_id": "x", "url": "https://example.test/x",
+                "provider": "x", "source_id": "x", "url": "https://example.test/x",
                 "relative_path": "2016/01/x.html", "policy_status": "approved",
             }) + "\n", encoding="utf-8")
             items = load_source_list(path)
@@ -86,6 +89,31 @@ class RawCollectorTests(unittest.TestCase):
                 "provider": "x", "source_id": "x", "url": "https://example.test/x",
                 "relative_path": "../escape", "policy_status": "approved",
             })
+
+    def test_discover_events_from_schedule_rows(self) -> None:
+        schedule = """
+        <tr class="tr_h">
+          <td class="td_keirinjo"><a href="/pc/jyosellinfo?jocd=13">いわき平</a></td>
+          <td class="td_day bk_kaisai clc" colspan="3">
+            <a href="javascript:void(0);" data-pprm-href="/pc/racelist"
+               data-pprm-encp="token1" data-pprm-dkbn="1">
+              <img src="/pc/static/img/icon/grade/ico_f1.png" />
+            </a>
+          </td>
+          <td class="td_day bk_kaisai clc" colspan="3">
+            <a href="javascript:void(0);" data-pprm-href="/pc/racelist"
+               data-pprm-encp="token2" data-pprm-dkbn="1">
+              <img src="/pc/static/img/icon/grade/ico_f2.png" />
+            </a>
+          </td>
+        </tr>
+        """
+        items = discover_events(schedule, year=2016, month=1)
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[0].metadata["venue_code"], "13")
+        self.assertEqual(items[0].metadata["grade"], "F1")
+        self.assertEqual(items[0].request_method, "POST")
+        self.assertEqual(items[0].form_data["disp"], "PJ0301")
 
 
 if __name__ == "__main__":

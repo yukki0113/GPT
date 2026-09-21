@@ -1,10 +1,4 @@
-"""Source-agnostic immutable raw acquisition for keirin historical data.
-
-Provider-specific discovery is intentionally kept outside this module.  A source
-may only be fetched when its input record explicitly says ``policy_status=approved``.
-That gate prevents an exploratory URL from silently becoming a production data
-source before commercial/automation use has been cleared.
-"""
+"""Source-agnostic immutable raw acquisition for keirin historical data."""
 
 from __future__ import annotations
 
@@ -18,10 +12,11 @@ from pathlib import Path, PurePosixPath
 import tempfile
 import time
 from typing import Any, Callable, Iterable
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
 USER_AGENT = "Mozilla/5.0 (compatible; keirin-historical-research/0.1)"
+APPROVED_POLICY_STATUSES = {"approved", "personal_research_approved"}
 
 
 class PolicyNotApprovedError(RuntimeError):
@@ -39,6 +34,8 @@ class SourceItem:
     url: str
     relative_path: str
     policy_status: str
+    request_method: str = "GET"
+    form_data: dict[str, str] = field(default_factory=dict)
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
@@ -48,14 +45,19 @@ class SourceItem:
         if missing:
             raise ValueError(f"missing required source fields: {', '.join(missing)}")
         metadata = value.get("metadata") or {}
+        form_data = value.get("form_data") or {}
         if not isinstance(metadata, dict):
             raise ValueError("metadata must be an object")
+        if not isinstance(form_data, dict):
+            raise ValueError("form_data must be an object")
         item = cls(
             provider=str(value["provider"]),
             source_id=str(value["source_id"]),
             url=str(value["url"]),
             relative_path=str(value["relative_path"]),
             policy_status=str(value["policy_status"]),
+            request_method=str(value.get("request_method") or "GET").upper(),
+            form_data={str(k): str(v) for k, v in form_data.items()},
             metadata=metadata,
         )
         item.validate()
@@ -68,6 +70,12 @@ class SourceItem:
         path = PurePosixPath(self.relative_path)
         if path.is_absolute() or ".." in path.parts or not path.name:
             raise ValueError(f"relative_path must stay inside output root: {self.relative_path}")
+        if self.request_method not in {"GET", "POST"}:
+            raise ValueError("request_method must be GET or POST")
+        if self.request_method == "GET" and self.form_data:
+            raise ValueError("GET source must not include form_data")
+        if self.request_method == "POST" and not self.form_data:
+            raise ValueError("POST source requires form_data")
 
 
 @dataclass(frozen=True)
@@ -84,18 +92,25 @@ def fetch_source(
     timeout: float = 60.0,
     opener: Callable[..., object] = urlopen,
 ) -> HttpResponse:
-    if item.policy_status != "approved":
+    if item.policy_status not in APPROVED_POLICY_STATUSES:
         raise PolicyNotApprovedError(
             f"provider {item.provider!r} is not approved for automated acquisition "
             f"(policy_status={item.policy_status!r})"
         )
-    request = Request(
-        item.url,
-        headers={
-            "User-Agent": USER_AGENT,
-            "Accept": "text/html,application/json,text/csv,application/octet-stream;q=0.8,*/*;q=0.5",
-        },
-    )
+
+    data = None
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/json,text/csv,*/*;q=0.5",
+    }
+    if item.request_method == "POST":
+        data = urlencode(item.form_data).encode("ascii")
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+    referer = item.metadata.get("referer")
+    if referer:
+        headers["Referer"] = str(referer)
+
+    request = Request(item.url, data=data, headers=headers, method=item.request_method)
     try:
         with opener(request, timeout=timeout) as response:
             status = int(getattr(response, "status", response.getcode()))

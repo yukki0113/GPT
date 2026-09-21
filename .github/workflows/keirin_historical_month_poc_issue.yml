@@ -1,0 +1,94 @@
+name: Keirin Historical Month PoC via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  collect:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[KEIRIN_MONTH_POC]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import os, re
+          from pathlib import Path
+          body = os.environ.get("ISSUE_BODY", "")
+          def get(key, default):
+              m = re.search(rf"(?mi)^\s*{re.escape(key)}\s*:\s*(.+?)\s*$", body)
+              return m.group(1).strip() if m else default
+          year = int(get("year", "2016"))
+          month = int(get("month", "1"))
+          delay = float(get("delay_seconds", "3.0"))
+          if delay < 2.0:
+              raise SystemExit("delay_seconds must be >= 2.0")
+          Path("/tmp/request.env").write_text(
+              f"YEAR={year}\nMONTH={month}\nDELAY={delay}\n", encoding="utf-8"
+          )
+          PY
+          cat /tmp/request.env >> "$GITHUB_ENV"
+
+      - name: Run focused tests
+        working-directory: keirin
+        run: |
+          PYTHONPATH=. python -m unittest discover -s tests -v
+          python -m py_compile keirin_historical/*.py
+
+      - name: Collect one month
+        working-directory: keirin
+        run: |
+          mkdir -p /tmp/keirin-poc/raw /tmp/keirin-poc/audit
+          PYTHONPATH=. python -m keirin_historical.keirin_jp_month             --year "$YEAR"             --month "$MONTH"             --output-dir /tmp/keirin-poc/raw             --audit-dir /tmp/keirin-poc/audit             --delay-seconds "$DELAY"
+
+      - name: Upload PoC artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-historical-month-poc-${{ github.event.issue.number }}
+          path: /tmp/keirin-poc
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path(f"/tmp/keirin-poc/audit/{int(os.environ['YEAR']):04d}{int(os.environ['MONTH']):02d}_summary.json")
+          if p.exists():
+              result = json.loads(p.read_text(encoding="utf-8"))
+          else:
+              result = {"status": "failure", "error": "summary_not_created"}
+          Path("/tmp/comment.md").write_text(
+              "KEIRIN_MONTH_POC_RESULT\n~~~json\n" +
+              json.dumps(result, ensure_ascii=False, indent=2) +
+              "\n~~~\n", encoding="utf-8"
+          )
+          PY
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close completed issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
