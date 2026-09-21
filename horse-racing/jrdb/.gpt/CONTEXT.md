@@ -186,3 +186,10 @@ The JRDB Warehouse pointer contract is **not** the pre-existing NAR `CURRENT.jso
 It accepts `jrdb_normalized_warehouse_v1_2010_2025_g20260921`: BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/HJC/UKC, 2010–2025, 192 Parquet references. Final manifest/audit status is PASS, duplicate object references are zero, and canonical-key/provenance/schema checks are recorded in the final audit. The final generation references existing staging immutable objects; it did not copy, regenerate, or reupload family Parquet.
 
 Canonical finalization code: `src/finalize_jrdb_warehouse_from_staging.py`. Operational contract: `docs/JRDB_Normalized_Warehouse_Operation_v1.md`. Consumer migration remains out of scope until separately authorized.
+
+
+## Analysis historical Warehouse input boundary — 2026-09-21
+
+A Warehouse Analysis reader and dual-read auditor are available, but there is no production cutover yet. They resolve only the dedicated accepted JRDB Warehouse current generation, project normalized BAC/KYI/SED/CYB/UKC rows into the unchanged Analysis Lite v1.3 logical columns, and require exact Raw-direct equivalence (row count, key, schema, null/blank, all logical values, row hash, representative query, idempotence).
+
+The accepted Warehouse spans 2010–2025. Current 2026 PACI/SED Raw updates remain Raw-direct because that coverage is absent and PACI daily is out of scope. Do not modify any Analysis current pointer until a same-delivery historical audit PASS has been recorded. See `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
