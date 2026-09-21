@@ -385,3 +385,10 @@ artifact回収後、Chat側で次をPure Deterministic Executionとして行う�
 - Resume/read order: JRDB `current.json` → referenced final `manifest.json` and `audit.json` → family staging only for provenance/evidence.
 - The finalizer is `src/finalize_jrdb_warehouse_from_staging.py`; operations contract is `docs/JRDB_Normalized_Warehouse_Operation_v1.md`.
 - Do not regenerate, copy, or reupload accepted family Parquet. PACI/Analysis/RaceNote/Eval/backtest consumer cutover is a separate subsequent task.
+
+
+## Analysis input: Warehouse dual-read staged — 2026-09-21
+
+Historical Warehouse-to-Analysis code is staged, not yet promoted. The reader (`src/jrdb_analysis_warehouse_adapter.py`) and non-mutating equivalence audit (`src/audit_jrdb_analysis_raw_vs_warehouse.py`) preserve the existing Analysis schema and Raw adapter semantics. Use the dedicated 2010–2025 Warehouse pointer only.
+
+Do **not** switch the normal 2026 PACI/Raw incremental path: the accepted historical Warehouse has no 2026 coverage and PACI daily is explicitly out of scope. A historical date may use `update_jrdb_analysis_incremental.py --warehouse-current ...` only after the exact Raw-direct vs Warehouse audit is PASS for the same source delivery. Raw-direct remains the rollback/audit path. Contract: `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
