@@ -7,7 +7,8 @@ Temporal routing and scope routing are independent.
 Backends:
 - current/future: JRDB PACI
 - past: resolved publishable RaceNote Archive first
-- past fallback: 2026+ JRDB PACI / <=2025 annual Raw reconstruction
+- historical rebuild (2010-2025): accepted JRDB Warehouse Parquet
+- historical Raw: explicit audit/rollback and 2010 boundary fallback only
 - Archive discovery remains outside this router; this module receives only a resolved local shard.
 
 Historical enrichment always uses as_of_exclusive=target_date.
@@ -29,6 +30,10 @@ import racenote_archive_backend as archive_backend
 from jrdb_raw import Parser as CommonRawParser
 from jrdb_raw import iter_archive_records, race_key as raw_race_key, result_key as raw_result_key
 from jrdb_racenote_raw_adapter import build_paci_equivalent as build_common_historical_paci
+from jrdb_racenote_warehouse_reader import (
+    WarehouseRaceNoteReader,
+    WarehouseRaceNoteReaderError,
+)
 from jrdb_store import StoreError, StoreResolver, manifest_path_from_args
 
 HERE = Path(__file__).resolve().parent
@@ -94,6 +99,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--store-offline", action="store_true", help="Resolve Store artifacts from verified cache only")
     parser.add_argument("--raw-dir", type=Path, default=None, help="Historical Raw cache/root")
     parser.add_argument(
+        "--warehouse-current", type=Path, default=None,
+        help="Accepted dedicated JRDB Warehouse current.json (required for 2010-2025 rebuild)",
+    )
+    parser.add_argument(
+        "--warehouse-asset-root", action="append", default=[], metavar="FAMILY=PATH",
+        help="Verified local immutable asset root; repeat for BAC,KYI,CHA,CYB,ZED,ZKB",
+    )
+    parser.add_argument(
         "--archive",
         type=Path,
         default=None,
@@ -121,9 +134,9 @@ def normalize_request(args: argparse.Namespace) -> RaceNoteRequest:
 
 def build_plan(request: RaceNoteRequest) -> dict:
     """Return a machine-readable execution plan before I/O."""
-    use_annual_raw = request.temporal_mode == "past" and request.target_date.year <= 2025
-    if use_annual_raw:
-        base_backend = "historical_raw_cache_or_fetch"
+    use_historical_warehouse = request.temporal_mode == "past" and request.target_date.year <= 2025
+    if use_historical_warehouse:
+        base_backend = "historical_warehouse"
     else:
         base_backend = "paci"
     return {
@@ -144,7 +157,8 @@ def build_plan(request: RaceNoteRequest) -> dict:
         },
         "historical_backend_policy": {
             "preferred": "racenote_archive",
-            "fallback_through_2025": "historical_raw_cache_or_fetch",
+            "rebuild_2010_2025": "historical_warehouse",
+            "raw_fallback_2010": "explicit_boundary_or_rollback_only",
             "fallback_from_2026": "paci",
             "raw_is_not_normal_daily_query_path": True,
         },
@@ -336,7 +350,7 @@ def iter_records(zip_path: Path, prefix: str) -> Iterable[bytes]:
 def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Path, destination: Path, force_fetch: bool) -> dict:
     """Build target-date PACI-equivalent input from annual Raw.
 
-    BAC/KYI/CHA/CYB are selected by target race key. SED/SKB are selected only by
+    BAC/KYI/CHA/CYB are selected by target race key. ZED/ZKB are selected only by
     previous-result keys explicitly carried by selected KYI rows.
     """
     try:
@@ -353,59 +367,49 @@ def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Pat
     except ValueError as exc:
         raise RaceNoteRequestError(str(exc)) from exc
 
-    year = request.target_date.year
-    race_keys = target_race_keys(analysis, request)
-    selected: dict[str, list[bytes]] = {"BAC": [], "KYI": [], "CHA": [], "CYB": []}
-    for kind in selected:
-        for line in iter_records(annual_zip(raw_dir, kind, year), kind):
-            if line[:8] in race_keys:
-                selected[kind].append(line)
-    if not selected["BAC"] or not selected["KYI"]:
-        raise RaceNoteRequestError("Historical reconstruction found no BAC/KYI records")
 
-    previous_result_keys: set[bytes] = set()
-    for line in selected["KYI"]:
-        for start, end in PREV_RESULT_SLICES:
-            key = line[start:end].strip()
-            if key and key != b"0" * 16:
-                previous_result_keys.add(key)
+def warehouse_asset_roots(values: list[str]) -> dict[str, Path]:
+    """Parse the explicit verified immutable asset-root contract."""
+    roots: dict[str, Path] = {}
+    for value in values:
+        if "=" not in value:
+            raise RaceNoteRequestError("--warehouse-asset-root must be FAMILY=PATH")
+        family, path = value.split("=", 1)
+        family = family.strip().upper()
+        if not family or not path:
+            raise RaceNoteRequestError("--warehouse-asset-root must be FAMILY=PATH")
+        roots[family] = Path(path)
+    required = {"BAC", "KYI", "CHA", "CYB", "ZED", "ZKB"}
+    missing = sorted(required - set(roots))
+    if missing:
+        raise RaceNoteRequestError(f"Warehouse asset roots missing: {missing}")
+    return roots
 
-    previous_years: set[int] = set()
-    for key in previous_result_keys:
-        try:
-            previous_years.add(int(key[-8:-4].decode("ascii")))
-        except (UnicodeDecodeError, ValueError):
-            continue
-    if previous_result_keys and not previous_years:
-        raise RaceNoteRequestError("Could not resolve previous-result years from KYI keys")
 
-    for previous_year in sorted(previous_years):
-        ensure_historical_raw(previous_year, raw_dir, force_fetch, ["SED", "SKB"])
-
-    zed: list[bytes] = []
-    zkb: list[bytes] = []
-    for previous_year in sorted(previous_years):
-        for line in iter_records(annual_zip(raw_dir, "SED", previous_year), "SED"):
-            if line[10:26].strip() in previous_result_keys:
-                zed.append(line)
-        for line in iter_records(annual_zip(raw_dir, "SKB", previous_year), "SKB"):
-            if line[10:26].strip() in previous_result_keys:
-                zkb.append(line)
-
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    short_date = request.target_date.strftime("%y%m%d")
-    with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-        for kind in ("BAC", "KYI", "CHA", "CYB"):
-            archive.writestr(f"{kind}{short_date}.txt", b"\r\n".join(selected[kind]) + b"\r\n")
-        archive.writestr(f"ZED{short_date}.txt", b"\r\n".join(zed) + (b"\r\n" if zed else b""))
-        archive.writestr(f"ZKB{short_date}.txt", b"\r\n".join(zkb) + (b"\r\n" if zkb else b""))
-
-    return {
-        "race_key_count": len(race_keys),
-        "record_counts": {**{kind: len(rows) for kind, rows in selected.items()}, "ZED": len(zed), "ZKB": len(zkb)},
-        "previous_result_key_count": len(previous_result_keys),
-        "previous_result_years": sorted(previous_years),
-    }
+def build_historical_warehouse_base(
+    request: RaceNoteRequest,
+    current: Path | None,
+    asset_root_values: list[str],
+    output_dir: Path,
+) -> tuple[Path, dict]:
+    """Materialize unchanged RaceNote v0.2 bundles from accepted Parquet only."""
+    if current is None:
+        raise RaceNoteRequestError(
+            "2010-2025 historical rebuild requires --warehouse-current; "
+            "Raw is reserved for explicit audit/rollback or 2010 boundary fallback"
+        )
+    try:
+        reader = WarehouseRaceNoteReader(current, asset_roots=warehouse_asset_roots(asset_root_values))
+        bundles, evidence = reader.build(request.target_date, source_member_date=request.target_date)
+    except WarehouseRaceNoteReaderError as exc:
+        raise RaceNoteRequestError(str(exc)) from exc
+    bundle_dir = output_dir / f"RaceNote_{request.compact_date}"
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+    for bundle in bundles.values():
+        race = bundle["race"]
+        path = bundle_dir / f"race_bundle_{request.compact_date}_{race['venue']}{race['race_no']}R.json"
+        path.write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return bundle_dir, evidence
 
 
 def fetch_paci(request: RaceNoteRequest, work_dir: Path, force: bool) -> Path:
@@ -518,31 +522,44 @@ def main() -> int:
     if base_dir is not None:
         plan["base_backend"] = "racenote_archive"
     else:
-        use_annual_raw = (
+        use_historical_warehouse = (
             request.temporal_mode == "past"
             and request.target_date.year <= 2025
         )
-        if use_annual_raw:
-            raw_dir = args.raw_dir if args.raw_dir is not None else request_root / "raw_cache"
-            ensure_historical_raw(
-                request.target_date.year,
-                raw_dir,
-                args.force_fetch,
-                ["BAC", "KYI", "CHA", "CYB"],
-            )
-            paci_path = request_root / f"PACI_REBUILT_{request.compact_date}.zip"
-            reconstruction = build_historical_paci(
-                raw_dir,
-                request,
-                analysis,
-                paci_path,
-                args.force_fetch,
-            )
-            plan["base_backend"] = "historical_raw_cache_or_fetch"
+        if use_historical_warehouse:
+            try:
+                base_dir, reconstruction = build_historical_warehouse_base(
+                    request,
+                    args.warehouse_current,
+                    args.warehouse_asset_root,
+                    work_dir,
+                )
+                plan["base_backend"] = "historical_warehouse"
+            except RaceNoteRequestError as exc:
+                # The only automatic Raw route retained for historical rebuilds
+                # is the documented pre-2010 previous-result boundary.  A
+                # caller must explicitly provide Raw; no credentialed fetch or
+                # silent backend downgrade occurs here.
+                boundary = "out-of-coverage previous-result keys" in str(exc)
+                if not (boundary and args.raw_dir is not None):
+                    raise
+                ensure_historical_raw(
+                    request.target_date.year,
+                    args.raw_dir,
+                    args.force_fetch,
+                    ["BAC", "KYI", "CHA", "CYB"],
+                )
+                paci_path = request_root / f"PACI_REBUILT_{request.compact_date}.zip"
+                reconstruction = build_historical_paci(
+                    args.raw_dir, request, analysis, paci_path, args.force_fetch,
+                )
+                reconstruction["fallback_reason"] = "pre_2010_previous_result_boundary"
+                plan["base_backend"] = "historical_raw_boundary_fallback"
+                base_dir = convert_base(paci_path, request, work_dir)
         else:
             paci_path = fetch_paci(request, request_root, args.force_fetch)
             plan["base_backend"] = "paci"
-        base_dir = convert_base(paci_path, request, work_dir)
+            base_dir = convert_base(paci_path, request, work_dir)
 
     backend_resolution = {
         "used_backend": plan["base_backend"],
