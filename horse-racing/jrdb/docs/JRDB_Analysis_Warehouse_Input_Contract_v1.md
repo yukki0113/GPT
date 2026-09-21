@@ -25,3 +25,22 @@ Before `update_jrdb_analysis_incremental.py --warehouse-current ...` is used for
 Only then may the Warehouse input mode replace the historical Raw-direct invocation. The Raw-direct mode remains implemented for rollback and future audit. The update semantics are unchanged: a temporary Analysis SQLite is replaced only for the target date, then the existing candidate/validation/publish chain governs any Analysis current-pointer promotion.
 
 No feature, value correction, Analysis schema/version, Warehouse generation, historical Parquet asset, PACI daily input, RaceNote, Eval, or backtest behavior is changed by this adapter.
+
+
+## Accepted operating split — 2026-09-21
+
+The formal multi-year dual-read audit is PASS. Historical Analysis rebuild/backfill for **2010–2025** now uses Warehouse input as the standard path:
+
+```
+dedicated JRDB Warehouse current -> DuckDB reader -> Analysis
+```
+
+The Raw daily mode rejects a historical date unless `--allow-historical-raw` is supplied explicitly for rollback/audit. The Warehouse reader derives its coverage from the accepted manifest and rejects an uncovered date with a PACI/Raw instruction.
+
+For **2026**, the standard path remains unchanged:
+
+```
+PACI + SED / Raw direct -> Analysis
+```
+
+This split is intentional. No PACI normalization, Analysis logical schema, Analysis current pointer, Warehouse generation, or consumer subsystem changed as part of the cutover. Audit evidence: `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
