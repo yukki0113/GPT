@@ -327,3 +327,10 @@ The formal Raw-direct versus Warehouse dual-read audit passed for seven represen
 For **2010–2025 historical backfill and rebuild**, the standard Analysis input is the dedicated JRDB Warehouse current generation through `jrdb_analysis_warehouse_adapter.py`. Historical Raw-direct input remains available only for rollback and audit, requiring the explicit `--allow-historical-raw` boundary. For **2026 current daily operation**, PACI/SED Raw-direct remains the standard path. The Warehouse reader rejects dates outside its accepted 2010–2025 coverage, so it cannot request 2026 data accidentally.
 
 See `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md` and `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
+
+
+## RaceNote Historical Warehouse (Phase 1)
+
+Historical RaceNote rebuilds for 2010–2025 use the accepted dedicated JRDB Warehouse current pointer and immutable Parquet assets. The existing RaceNote normalizer and v0.2 bundle schema are unchanged. The Raw route remains only for audit, rollback, and the explicit 2010 pre-coverage previous-result boundary; it is not a silent fallback. 2026 daily/current requests remain the PACI/Raw route.
+
+See [RaceNote Historical Warehouse Operation](docs/RaceNote_Historical_Warehouse_Operation_v1.md) and the [dual-read audit](docs/RaceNote_Historical_Warehouse_Dual_Read_Audit_20260922.md).
