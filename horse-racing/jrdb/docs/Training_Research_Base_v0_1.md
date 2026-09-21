@@ -102,22 +102,33 @@ Issue prefix:
 [JRDB_TRAINING_RESEARCH] <request_id>
 ```
 
+The current workflow still uses SQLite as an internal build/regression
+materialization, then publishes Parquet as the analytical canonical. Until the
+separate Historical Warehouse cutover gate passes, its historical source step remains
+the Raw reference route.
+
 The workflow performs:
 
 1. focused Common Reader/Index Base and holdout-lock tests;
-2. annual Raw fetch for BAC/KYI/CHA/CYB/SED/UKC, 2010–2025;
+2. historical source acquisition for 2010–2025 (currently Raw reference route; planned Warehouse cutover is separately gated);
 3. Index Base build and audit;
 4. Official RunPerf v0.1 build and audit;
-5. Training Research Base build;
-6. Raw/SQLite/chronology/provenance/coverage/market audit;
-7. Stage 1b development-only evidence generation;
-8. separate SQLite and report artifact upload.
+5. transient SQLite Training Research Base build;
+6. chronology/provenance/coverage/market audit on that build;
+7. Stage 1b build-time regression evidence generation;
+8. immutable Parquet ZSTD generation materialization;
+9. Parquet manifest / conversion audit / scientific regression output and artifact publication.
 
-`training_research_build_audit.json` includes Raw ZIP integrity, fixed-record-length
-errors, duplicate business keys, identity joins, missing identity, future training
-dates, chronology, Official RunPerf provenance, CHA/CYB/trainer/rest coverage,
-year/split counts, nonfinite values, market contamination, indices, and the holdout
-policy marker.
+The transient SQLite file is not a normal research input and is not the long-term
+analytical canonical. Normal research resolves the current Parquet generation and
+uses `training_development.parquet` through DuckDB.
+
+`training_research_build_audit.json` includes source integrity, duplicate business
+keys, identity joins, missing identity, future training dates, chronology, Official
+RunPerf provenance, CHA/CYB/trainer/rest coverage, year/split counts, nonfinite
+values, market contamination, indices, and the holdout policy marker. Parquet
+publication adds `manifest.json`, `conversion_audit.json`, and
+`scientific_regression.json`.
 
 ## Stage 1b frozen analysis contract
 
