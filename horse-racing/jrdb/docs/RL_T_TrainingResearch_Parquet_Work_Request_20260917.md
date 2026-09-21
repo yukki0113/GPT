@@ -138,13 +138,11 @@ Stage 2b は v0.2 設計根拠となった historical evidence であるため�
 
 ### 3.4 Documentation
 
-少なくとも以下を更新する。
+`horse-racing/jrdb/docs/Training_Research_Base_v0_1.md` の canonical storage 記述は
+2026-09-21 時点ですでに Parquet / DuckDB 方針へ更新済み。今回の再監査では、
+build workflow の説明に残っていた「SQLite artifact upload」等の旧表現のみ追加修正した。
 
-`horse-racing/jrdb/docs/Training_Research_Base_v0_1.md`
-
-現在は「reusable SQLite research layer」「canonical artifact = `.sqlite`」「LZMA ZIP transport」等の旧運用記述が残っている。
-
-文書では historical build architecture と current storage canonical を区別して記載すること。
+Work 実装完了時は、その後の実装内容と矛盾がないことを再確認すること。
 
 current policy:
 
@@ -210,3 +208,69 @@ HOLDOUT = 2024–2025; development reader must not select it
 - tests / workflow run ID / conclusion
 - 今後通常研究で使う canonical path / resolver
 - 意図的に残した legacy SQLite compatibility があれば、その理由
+
+
+## 8. 再監査追記 — 2026-09-21
+
+この依頼書を current main に対して再監査した結果、依頼は **引き続き有効**。
+
+### 8.1 追加確認結果
+
+- `analyze_jrdb_training_stage1b.py`
+  - Parquet入力対応済み。
+  - DuckDB / `tools/data-storage` reader を利用可能。
+  - 2010–2023 selection と `max year <= 2023` guard を維持。
+  - 変更不要。
+- `analyze_jrdb_training_stage2b.py`
+  - 依然として `sqlite3.connect` / `PRAGMA table_info` / `pd.read_sql_query` / `--db` 前提。
+  - 本Workの主実装対象。
+- `.github/workflows/jrdb_training_stage2b_issue.yml`
+  - 削除済み Development Lite Drive ID `1RGRVoUI3utSC3r8Zf5Gk3i9Voq7JZqmj` を参照。
+  - ZIP展開、SQLite integrity check、`--db` 実行に固定。
+  - normal rerun route としては成立しない。
+- `.github/workflows/jrdb_training_research_issue.yml`
+  - 内部 build materialization として SQLite を使うが、最後に Parquet canonical generation を生成する。
+  - この内部SQLiteは今回の削除対象ではない。
+- RL-T daily / replay / OOT / runtime freeze の `index.sqlite`、`official.sqlite`、
+  `training_edge_v02_input.sqlite` 等は Training Research canonical の直読みではなく、
+  既存パイプラインの一時 materialization。
+  - Training Research Parquet移行だけを理由に変更しない。
+- historical `evaluate_training_edge_v0_1_holdout.py` 等のSQLite依存は frozen evidence /
+  historical reproduction の一部であり、通常研究readerの移行とは分離する。
+
+### 8.2 この再監査で直接修正したもの
+
+- `docs/Training_Research_Base_v0_1.md`
+  - current canonical = Parquet ZSTD / DuckDB を維持。
+  - build-time transient SQLite と published analytical canonical を明確に分離。
+  - artifact publication の旧SQLite表現を Parquet generation / manifest / audit に修正。
+- `config/storage/training_research.example.yaml`
+  - SQLite source は **migration/build-time conversion example only** と明記。
+  - normal research は `training_development.parquet` + DuckDB であることを明記。
+
+### 8.3 Historical Warehouse移行との分離
+
+2026-09-21 時点で、2010–2025 Historical input を JRDB Warehouseへ切り替える別Workが進行中。
+
+参照:
+`docs/RL_T_Historical_Warehouse_Migration_Work_Request_20260921.md`
+
+このParquet consumer cutoverとHistorical Warehouse upstream cutoverを一つの変更で同時に実施しないこと。
+本依頼では **Training Research analytical reader / Stage 2b の storage plumbing** のみを扱う。
+
+Warehouse側は Raw-vs-Warehouse Index Base equivalence gate をPASSしてから別途切替する。
+
+### 8.4 現在の残作業
+
+```text
+STAGE1B_PARQUET_READER = READY
+TRAINING_RESEARCH_CANONICAL_DOC = ALIGNED
+STORAGE_EXAMPLE_ROLE = CLARIFIED
+STAGE2B_PARQUET_READER = PENDING
+STAGE2B_PARQUET_WORKFLOW = PENDING
+STAGE2B_HISTORICAL_REGRESSION = PENDING
+FROZEN_RL_T_SCIENCE_CHANGE = NONE
+```
+
+したがって、次にWorkで実施する作業は **Stage 2b reader + Parquet-backed rerun route +
+historical evidence regression** に限定してよい。
