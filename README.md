@@ -8,6 +8,7 @@ ChatGPT / Work と連携して継続開発するプロジェクトのソース�
 - `horse-racing/eval/` — 中央競馬・Eval表取得・検証
 - `boat-racing/` — 競艇AI予想の取得・運用ツール
 - `local-horse-racing/` — 地方競馬・NAR公式CSV取得基盤
+- `shared-projects/hoshigaruna-katsitore/` — 「欲しがるな、勝ち取れ」3人共同の中央競馬予想・研究Project
 
 ## Legacy
 
