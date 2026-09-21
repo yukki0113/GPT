@@ -313,3 +313,8 @@ GPT/horse-racing/10_warehouse/jrdb/v1/current.json
 This pointer is separate from the existing NAR canonical `CURRENT.json` and must not replace it. The accepted generation `jrdb_normalized_warehouse_v1_2010_2025_g20260921` covers BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/HJC/UKC for 2010–2025 (192 assets). Its final manifest references the published family staging Parquet objects immutably; no family asset was copied, regenerated, or reuploaded for finalization.
 
 The finalizer is `src/finalize_jrdb_warehouse_from_staging.py`; its contract and future write order are documented in `docs/JRDB_Normalized_Warehouse_Operation_v1.md`. PACI daily normalization and consumer cutover remain separate work.
+
+
+### Analysis historical Warehouse reader
+
+The historical Warehouse reader and Raw-vs-Warehouse equivalence auditor are available under `src/jrdb_analysis_warehouse_adapter.py` and `src/audit_jrdb_analysis_raw_vs_warehouse.py`. They preserve the Analysis Lite v1.3 schema and exist behind an explicit input mode; normal 2026 PACI/Raw incremental operation is unchanged because the accepted Warehouse covers only 2010–2025. The promotion gate and rollback boundary are defined in `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
