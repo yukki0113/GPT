@@ -1,0 +1,33 @@
+name: JRDB RaceNote Warehouse compatibility tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_racenote_warehouse_adapter.py'
+      - '.github/workflows/jrdb_racenote_warehouse_tests.yml'
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_racenote_warehouse_adapter.py'
+      - '.github/workflows/jrdb_racenote_warehouse_tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile adapter
+        working-directory: horse-racing/jrdb
+        run: python -m py_compile src/jrdb_racenote_warehouse_adapter.py
+      - name: Run focused RaceNote Warehouse compatibility tests
+        working-directory: horse-racing/jrdb/tests
+        run: python -m unittest -v test_jrdb_racenote_warehouse_adapter
