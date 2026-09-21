@@ -15,7 +15,10 @@ from jrdb_raw import Parser, iter_archive_records, race_key, result_key
 
 _COMMON = Parser()
 BASE_KINDS = ("BAC", "KYI", "CHA", "CYB")
-HISTORY_KINDS = ("SED", "SKB")
+# RaceNote consumes the PACI result/note records.  SED/SKB are distinct
+# historical source families and must not be substituted: ZED/ZKB preserve
+# the exact body/notes semantics consumed by the existing normalizer.
+HISTORY_KINDS = ("ZED", "ZKB")
 
 
 def annual_zip(raw_dir: Path, kind: str, year: int) -> Path:
@@ -110,10 +113,10 @@ def build_paci_equivalent(
     zed: list[bytes] = []
     zkb: list[bytes] = []
     for year in sorted(previous_years):
-        for _member, record in iter_archive_records(annual_zip(raw_dir, "SED", year), "SED"):
+        for _member, record in iter_archive_records(annual_zip(raw_dir, "ZED", year), "ZED"):
             if result_key(record) in previous_keys:
                 zed.append(record)
-        for _member, record in iter_archive_records(annual_zip(raw_dir, "SKB", year), "SKB"):
+        for _member, record in iter_archive_records(annual_zip(raw_dir, "ZKB", year), "ZKB"):
             if result_key(record) in previous_keys:
                 zkb.append(record)
 
