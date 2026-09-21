@@ -1,0 +1,114 @@
+name: Keirin Historical Source Probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[KEIRIN_HISTORICAL_PROBE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Probe official KEIRIN.JP historical pages
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import re
+          import time
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          urls = [
+              ("schedule_201601", "https://keirin.jp/pc/raceschedule?scym=01&scyy=2016"),
+              ("iwakidaira_program_20160102", "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=13&KST=20160102"),
+              ("iwakidaira_result_20160102_r1", "https://keirin.jp/pc/dfw/dataplaza/guest/raceresult?KCD=13&KBI=20160102&RNO=1"),
+          ]
+
+          rows = []
+          for index, (label, url) in enumerate(urls):
+              req = urllib.request.Request(
+                  url,
+                  headers={
+                      "User-Agent": "Mozilla/5.0 (compatible; keirin-historical-research/0.1)",
+                      "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+                  },
+                  method="GET",
+              )
+              row = {"label": label, "url": url}
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      body = response.read()
+                      text = body.decode("utf-8", errors="replace")
+                      row.update({
+                          "status": int(getattr(response, "status", 200)),
+                          "final_url": response.geturl(),
+                          "content_type": response.headers.get("Content-Type"),
+                          "body_len": len(body),
+                          "sha256": hashlib.sha256(body).hexdigest(),
+                          "title": (re.search(r"<title[^>]*>(.*?)</title>", text, re.I | re.S).group(1).strip()
+                                    if re.search(r"<title[^>]*>(.*?)</title>", text, re.I | re.S) else None),
+                          "form_actions": re.findall(r"<form[^>]+action=[\"']([^\"']+)", text, re.I)[:10],
+                          "href_samples": re.findall(r"href=[\"']([^\"']+)", text, re.I)[:30],
+                          "contains_raceprogram": "raceprogram" in text.lower(),
+                          "contains_raceresult": "raceresult" in text.lower(),
+                          "contains_20160102": "20160102" in text,
+                          "text_sample": re.sub(r"\\s+", " ", re.sub(r"<[^>]+>", " ", text))[:1200],
+                      })
+                      Path(f"/tmp/{label}.html").write_bytes(body)
+              except urllib.error.HTTPError as error:
+                  body = error.read()
+                  row.update({
+                      "status": int(error.code),
+                      "content_type": error.headers.get("Content-Type") if error.headers else None,
+                      "body_len": len(body),
+                      "sha256": hashlib.sha256(body).hexdigest(),
+                      "error": f"HTTPError: {error}",
+                  })
+              except Exception as error:
+                  row.update({"status": "EXCEPTION", "error": f"{type(error).__name__}: {error}"})
+              rows.append(row)
+              if index + 1 < len(urls):
+                  time.sleep(2.0)
+
+          result = {"status": "success", "request_count": len(rows), "delay_seconds": 2.0, "rows": rows}
+          Path("/tmp/keirin_probe.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload probe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-historical-probe
+          path: |
+            /tmp/keirin_probe.json
+            /tmp/*.html
+          retention-days: 7
+
+      - name: Comment result and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo 'KEIRIN_HISTORICAL_PROBE_RESULT'
+            echo '~~~json'
+            cat /tmp/keirin_probe.json
+            echo '~~~'
+          } > /tmp/comment.md
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
