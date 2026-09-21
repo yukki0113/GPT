@@ -200,3 +200,10 @@ The accepted Warehouse spans 2010–2025. Current 2026 PACI/SED Raw updates rema
 The formal dual-read audit accepted the dedicated JRDB normalized Warehouse as the standard **historical** Analysis input. For 2010–2025 rebuilds/backfills, resolve the JRDB Warehouse current pointer and use `jrdb_analysis_warehouse_adapter.py`; keep historical Raw-direct only as an explicit rollback/audit route. The comparison covered seven deliveries across 2010/2018/2025 (2,866 rows), including count, keys, schema, NULL/blank semantics, all 34 Analysis columns, canonical hashes, representative queries, and repeat-run idempotence.
 
 The 2026 daily route remains PACI/SED Raw-direct. The Warehouse reader is coverage-guarded to 2010–2025 and rejects 2026, preventing an accidental year-boundary cutover. This did not change either the Warehouse current pointer or any existing Analysis current pointer. Normative contract: `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`; evidence: `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
+
+
+## RaceNote Historical Warehouse Phase 1 (2026-09-22)
+
+Contract: RaceNote historical rebuilds (2010–2025) resolve the accepted dedicated JRDB Warehouse current pointer and its immutable Parquet assets, then use the existing RaceNote normalizer unchanged. `racenote_request.py` requires an explicit local current file and verified roots for BAC/KYI/CHA/CYB/ZED/ZKB; 2026 remains the PACI/Raw route. Raw is retained for audit, rollback, and the explicit 2010 previous-result boundary only.
+
+Formal dual-read PASS: 2018-12-28 (24 races / 368 horses / 1,184 previous-result keys) and 2025-12-28 (24 races / 356 horses / 1,160 previous-result keys). Gates: row count, primary keys, schema, NULL/blank semantics, all logical values, Archive semantic hash, repeated-read determinism, idempotence. The 2010 KYI scan found 65,835 references to 2009 result keys; those require recorded Raw fallback because Warehouse coverage begins in 2010.
