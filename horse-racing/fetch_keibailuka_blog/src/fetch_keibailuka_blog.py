@@ -562,7 +562,8 @@ def classify_race(
             "paid_lead",
         )
 
-    if "🤡" in combined:
+    masked_cta = any("noteにスキボタン" in line and "馬名を表示" in line for line in section_lines)
+    if "🤡" in combined or masked_cta:
         return RacePick(
             venue,
             race_no,
