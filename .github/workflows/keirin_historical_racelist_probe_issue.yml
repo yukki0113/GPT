@@ -1,0 +1,91 @@
+name: Keirin Historical RaceList Probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[KEIRIN_RACELIST_PROBE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Probe one official historical racelist transition
+        run: |
+          python - <<'PY'
+          import hashlib, json, re, urllib.parse, urllib.request
+          from pathlib import Path
+
+          url = "https://keirin.jp/pc/racelist"
+          data = urllib.parse.urlencode({
+              "encp": "TR06ZSFqlBMpMqFkeFQrGEIJfl27AX1kB2jBh9G6u8k",
+              "disp": "PJ0301",
+          }).encode("ascii")
+          req = urllib.request.Request(
+              url,
+              data=data,
+              headers={
+                  "User-Agent": "Mozilla/5.0 (compatible; keirin-historical-research/0.1)",
+                  "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  "Referer": "https://keirin.jp/pc/raceschedule?scym=01&scyy=2016",
+              },
+              method="POST",
+          )
+          with urllib.request.urlopen(req, timeout=30) as response:
+              body = response.read()
+              text = body.decode("utf-8", errors="replace")
+
+          def contexts(needle, radius=450, limit=15):
+              out = []
+              low = text.lower()
+              start = 0
+              while len(out) < limit:
+                  idx = low.find(needle.lower(), start)
+                  if idx < 0:
+                      break
+                  out.append(text[max(0, idx-radius):idx+radius])
+                  start = idx + len(needle)
+              return out
+
+          result = {
+              "status": "success",
+              "http_status": 200,
+              "final_url": response.geturl(),
+              "body_len": len(body),
+              "sha256": hashlib.sha256(body).hexdigest(),
+              "title": (re.search(r"<title[^>]*>(.*?)</title>", text, re.I | re.S).group(1).strip()
+                        if re.search(r"<title[^>]*>(.*?)</title>", text, re.I | re.S) else None),
+              "hrefs": re.findall(r"href=[\"']([^\"']+)", text, re.I)[:80],
+              "pprm_hrefs": re.findall(r"data-pprm-href=[\"']([^\"']+)", text, re.I)[:80],
+              "encp_values": re.findall(r"data-pprm-encp=[\"']([^\"']+)", text, re.I)[:80],
+              "race_contexts": contexts("R"),
+              "result_contexts": contexts("result"),
+              "racecard_contexts": contexts("racecard"),
+              "pprm_contexts": contexts("data-pprm"),
+          }
+          Path("/tmp/keirin_racelist_probe.json").write_text(
+              json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8"
+          )
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Comment result and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo 'KEIRIN_RACELIST_PROBE_RESULT'
+            echo '~~~json'
+            cat /tmp/keirin_racelist_probe.json
+            echo '~~~'
+          } > /tmp/comment.md
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
