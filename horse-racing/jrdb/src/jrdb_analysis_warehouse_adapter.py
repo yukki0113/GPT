@@ -141,6 +141,7 @@ class WarehouseAnalysisReader:
         self.assets = list(self.manifest.get("assets", []))
         if not self.assets:
             raise WarehouseAnalysisError("final Warehouse manifest has no assets")
+        self.covered_years = {int(asset["year"]) for asset in self.assets if asset.get("year") is not None}
 
     @staticmethod
     def _read_json(path: Path) -> dict[str, Any]:
@@ -221,6 +222,11 @@ class WarehouseAnalysisReader:
         the comparison to the same Raw delivery as the Raw-direct side; without
         it, the final Warehouse's deterministic canonical first row is used.
         """
+        if date.year not in self.covered_years:
+            raise WarehouseAnalysisError(
+                f"{date}: outside accepted historical Warehouse coverage "
+                f"{min(self.covered_years)}-{max(self.covered_years)}; use the PACI/Raw path"
+            )
         year = date.year
         bac = self._for_member(self._relation_rows("bac", year, "race_date = ?", [date.isoformat()]), source_member_date)
         sed = self._for_member(self._relation_rows("sed", year, "race_date = ?", [date.isoformat()]), source_member_date)
