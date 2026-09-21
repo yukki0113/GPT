@@ -8,21 +8,24 @@
 
 ## Canonical source
 
-正本はProject Google Drive上の次のCSVとする。
+正本はProject Google Drive上のGoogleスプレッドシートとする。
 
-- file: `回顧馬.csv`
-- Drive file ID: `1PLKLRwmwG5lIuzdfk6ABbCahwzNQEjBo`
-- URL: `https://drive.google.com/file/d/1PLKLRwmwG5lIuzdfk6ABbCahwzNQEjBo/view`
+- file: `回顧馬`
+- Spreadsheet ID: `1h6hceLYBXFkUlfOiMMjMhStIs21GwDWyyzj0_Kdsuus`
+- sheet: `回顧馬`
+- URL: `https://docs.google.com/spreadsheets/d/1h6hceLYBXFkUlfOiMMjMhStIs21GwDWyyzj0_Kdsuus/edit`
 
-GitHubへCSV内容の複製正本は作らない。
+GitHubへ同内容の複製正本は作らない。
 本書は保存先・書式・更新条件・参照ルールの運用契約を正本とする。
 
-## CSV contract
+旧CSV `回顧馬_旧CSV_2026-09-21.csv` は移行時点の退避用であり、以後の正本ではない。
 
-ヘッダは次の3列で固定する。
+## Sheet contract
 
-```csv
-日付,馬名,コメント
+列は次の3列で固定する。
+
+```text
+日付 | 馬名 | コメント
 ```
 
 1つの回顧内容を1行として扱う。
@@ -31,11 +34,10 @@ GitHubへCSV内容の複製正本は作らない。
 - 馬名: 対象馬名。
 - コメント: まきば本人の回顧内容。意味を変える要約やGPT独自評価を混ぜない。
 - 日付が示されていない回顧は、日付を推測せず空欄にする。
-- ASCII comma、double quote、改行を含む値は通常のCSV escapingを行う。
 
 ## Automatic capture in Makiba chat
 
-まきばの個人チャットで、まきば本人が馬名と回顧内容を明確に提示した場合、そのメッセージを処理する同一ターンで正本CSVへ反映する。
+まきばの個人チャットで、まきば本人が馬名と回顧内容を明確に提示した場合、そのメッセージを処理する同一ターンで正本Sheetへ反映する。
 
 例:
 
@@ -56,54 +58,33 @@ ChatGPTは別チャットをバックグラウンド監視できないため、�
 
 追記時は次を守る。
 
-1. まず現在のCSVを読み、既存内容を保持する。
+1. まず現在のSheetを読み、既存内容を確認する。
 2. `日付 + 馬名 + コメント` が完全一致する既存行は二重登録しない。
-3. 新規回顧は原則appendする。
+3. 新規回顧は最終データ行の次へappendする。
 4. 明示的な訂正依頼があった場合のみ、対象行の修正として扱う。
 5. GPT独自の推測日付、評価、補足コメントを台帳へ追加しない。
 6. Drive更新に失敗した場合は保存済みと扱わず、そのチャット内で失敗を明示する。
+7. 更新後は追加行を再読込して保存結果を確認する。
 
-## Native Drive write transport
-
-通常CSVはGoogle Sheets APIで直接セル追記できないため、Project Google Drive上のnative Google Sheetを**書き込みバッファ**として利用する。
-
-- buffer file: `_system_回顧馬_csv_buffer`
-- buffer Spreadsheet ID: `1h6hceLYBXFkUlfOiMMjMhStIs21GwDWyyzj0_Kdsuus`
-- bufferは正本ではない。検索・新聞連携では参照しない。
-
-更新手順:
-
-1. 正本 `回顧馬.csv` を毎回読み直す。
-2. CSVをparseし、今回追加する行をmergeして重複排除する。
-3. buffer SheetのA:Cを現在のmerge結果で置き換える。
-4. buffer Sheetを `text/csv` でexportする。
-5. exportで得たruntime file referenceを使い、Drive `files.update` 相当で正本file ID `1PLKLRwmwG5lIuzdfk6ABbCahwzNQEjBo` のbytesを置き換える。
-6. 更新後に正本CSVを再読込し、header・既存行・追加行がすべて存在することを確認する。
-7. 検証失敗時は保存成功と扱わない。
-
-同時更新対策として、書き込み直前にも正本を再読込する。
-最初のread以降に正本が変化していた場合は、最新内容に今回の行だけを再mergeしてから更新する。
-更新後の再検証で欠落を検出した場合も、最新正本から再mergeする。
-
-このtransportはProject標準のnative Google Drive connectorだけで完結し、GitHub Actions / Service Account bridgeは使用しない。
+Google Sheetsのnative cell update / append経路を使用し、CSV exportや全ファイル再生成を標準経路にしない。
 
 ## Read / lookup rules
 
-まきばが「前に言った馬」「過去の回顧馬」「○○のメモ」等を検索する場合、このCSVを第一参照先とする。
+まきばが「前に言った馬」「過去の回顧馬」「○○のメモ」等を検索する場合、このSheetを第一参照先とする。
 
 - 馬名をキーに該当行を取得する。
 - 複数日付のメモがある場合は全件保持する。
-- チャット履歴は補助情報として利用できるが、保存済み回顧についてはCSVを正本とする。
-- CSVにないことだけを理由に「まきばが評価していない」と断定しない。
+- チャット履歴は補助情報として利用できるが、保存済み回顧についてはこのSheetを正本とする。
+- Sheetにないことだけを理由に「まきばが評価していない」と断定しない。
 
 ## Newspaper / integration rules
 
-競馬新聞や統合予想等で出走馬と回顧情報を紐付ける場合、馬名をキーにこのCSVを参照する。
+競馬新聞や統合予想等で出走馬と回顧情報を紐付ける場合、馬名をキーにこのSheetを参照する。
 
 該当回顧を利用した場合は、内容が「まきば由来」であることを保持する。
 GPTによる整理・要約を行う場合も、本人発言とGPT整理を混同しない。
 
 ## Source integrity
 
-このCSVはProjectの共有原本として扱う。
+このSheetはProjectの共有原本として扱う。
 共有権限、誤更新、重複、文字化け等に異常が見つかった場合は、正本の整合性問題として管理室で扱う。
