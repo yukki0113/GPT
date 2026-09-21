@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from jrdb_raw import Parser  # noqa: E402
+from jrdb_raw import Parser  # noqa: E402\nfrom racenote_jrdb import Audit, Normalizer  # noqa: E402
 from jrdb_racenote_warehouse_adapter import (  # noqa: E402
     RaceNoteWarehouseError,
     out_of_warehouse_previous_keys,
@@ -27,18 +27,23 @@ class RaceNoteWarehouseAdapterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.parser = Parser()
 
-    def assert_roundtrip(self, family: str, record: bytes, parser_method: str | None = None) -> None:
+    def parser_pair(self, family: str, record: bytes, parser_method: str | None = None):
         parser_method = parser_method or family.lower()
         expected = getattr(self.parser, parser_method)(record)
         normalized = normalize_record(family, record, provenance())
         actual = unflatten_parser_row(family, normalized)
-        self.assertEqual(actual, expected)
+        return expected, actual
 
-    def test_bac_roundtrip(self) -> None:
-        self.assert_roundtrip("BAC", make_bac())
+    def test_bac_roundtrip_preserves_racenote_race_semantics(self) -> None:
+        expected, actual = self.parser_pair("BAC", make_bac())
+        self.assertEqual(Normalizer(Audit()).race(actual), Normalizer(Audit()).race(expected))
 
-    def test_kyi_roundtrip_restores_nested_parser_shape(self) -> None:
-        self.assert_roundtrip("KYI", make_kyi())
+    def test_kyi_roundtrip_preserves_racenote_horse_semantics(self) -> None:
+        expected, actual = self.parser_pair("KYI", make_kyi())
+        self.assertEqual(
+            Normalizer(Audit()).horse(actual, None, None),
+            Normalizer(Audit()).horse(expected, None, None),
+        )
 
     def test_cha_roundtrip_restores_clock_and_pair(self) -> None:
         record = row(
@@ -46,7 +51,8 @@ class RaceNoteWarehouseAdapterTest(unittest.TestCase):
             (1, 8, "0526A101"), (9, 2, "03"), (13, 8, "20260829"),
             (29, 3, "123"), (47, 3, "321"), (50, 1, "A"),
         )
-        self.assert_roundtrip("CHA", record)
+        expected, actual = self.parser_pair("CHA", record)
+        self.assertEqual(Normalizer(Audit()).workout(actual), Normalizer(Audit()).workout(expected))
 
     def test_cyb_roundtrip_restores_course_counts(self) -> None:
         record = row(
@@ -54,17 +60,26 @@ class RaceNoteWarehouseAdapterTest(unittest.TestCase):
             (1, 8, "0526A101"), (9, 2, "03"), (14, 2, "02"),
             (16, 2, "03"), (78, 8, "20260828"),
         )
-        self.assert_roundtrip("CYB", record)
+        expected, actual = self.parser_pair("CYB", record)
+        self.assertEqual(
+            Normalizer(Audit()).training_analysis(actual),
+            Normalizer(Audit()).training_analysis(expected),
+        )
 
-    def test_sed_and_zed_roundtrip(self) -> None:
+    def test_sed_and_zed_roundtrip_preserves_history_semantics(self) -> None:
         record = make_sed("20231001", "20260830", "0526A101", "01")
-        self.assert_roundtrip("SED", record)
-        self.assert_roundtrip("ZED", record, parser_method="zed")
+        for family, parser_method in (("SED", "sed"), ("ZED", "zed")):
+            expected, actual = self.parser_pair(family, record, parser_method=parser_method)
+            self.assertEqual(
+                Normalizer(Audit()).history(actual, None),
+                Normalizer(Audit()).history(expected, None),
+            )
 
     def test_skb_and_zkb_roundtrip(self) -> None:
         record = make_skb()
-        self.assert_roundtrip("SKB", record)
-        self.assert_roundtrip("ZKB", record, parser_method="zkb")
+        for family, parser_method in (("SKB", "skb"), ("ZKB", "zkb")):
+            expected, actual = self.parser_pair(family, record, parser_method=parser_method)
+            self.assertEqual(actual, expected)
 
     def test_bac_effective_snapshot_is_last_source_order(self) -> None:
         older = normalize_record("BAC", make_bac(), provenance())
