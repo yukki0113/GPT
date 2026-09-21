@@ -9,7 +9,7 @@ semantics above that neutral parse layer.
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import Any
+from typing import Mapping
 
 from jrdb_raw import Parser, race_key_parts, ymd
 
@@ -44,9 +44,8 @@ def _venue_and_race(race_key_raw: object) -> tuple[str, int | None]:
     return _text(parts.get("venue_code")), _int(parts.get("race_no"))
 
 
-def parse_bac_eval(raw: bytes) -> dict[str, object]:
-    """Return the existing Eval BAC race-condition projection."""
-    parsed = _COMMON.bac(raw)
+def project_bac_eval_parsed(parsed: Mapping[str, object]) -> dict[str, object]:
+    """Project one parser/Warehouse BAC logical row to the Eval race contract."""
     venue_code, race_no = _venue_and_race(parsed.get("race_key_raw"))
     return {
         "race_date": _iso_date(parsed.get("date_raw")),
@@ -68,9 +67,11 @@ def parse_bac_eval(raw: bytes) -> dict[str, object]:
     }
 
 
-def parse_sed_race_eval(raw: bytes) -> dict[str, object]:
-    """Return race-common result fields from one SED record."""
-    parsed = _COMMON.sed(raw)
+def parse_bac_eval(raw: bytes) -> dict[str, object]:
+    """Return the existing Eval BAC race-condition projection from Raw bytes."""
+    return project_bac_eval_parsed(_COMMON.bac(raw))
+def project_sed_race_eval_parsed(parsed: Mapping[str, object]) -> dict[str, object]:
+    """Project one parser/Warehouse SED row to race-common Eval fields."""
     venue_code, race_no = _venue_and_race(parsed.get("race_key_raw"))
     return {
         "race_date": _iso_date(parsed.get("date_raw")),
@@ -91,6 +92,9 @@ def parse_sed_race_eval(raw: bytes) -> dict[str, object]:
     }
 
 
+def parse_sed_race_eval(raw: bytes) -> dict[str, object]:
+    """Return race-common result fields from one Raw SED record."""
+    return project_sed_race_eval_parsed(_COMMON.sed(raw))
 def decimal_text(value: object) -> str:
     """Preserve the legacy Eval CSV decimal text convention."""
     if value is None or value == "":
@@ -104,9 +108,8 @@ def int_or_blank(value: object) -> int | str:
     return "" if parsed is None else parsed
 
 
-def parse_sed_horse_eval(raw: bytes) -> dict[str, object]:
-    """Return the raw horse-level fields needed by Eval result import."""
-    parsed = _COMMON.sed(raw)
+def project_sed_horse_eval_parsed(parsed: Mapping[str, object]) -> dict[str, object]:
+    """Project one parser/Warehouse SED row to Eval horse-result input fields."""
     venue_code, race_no = _venue_and_race(parsed.get("race_key_raw"))
     return {
         "race_date": _iso_date(parsed.get("date_raw")),
@@ -120,3 +123,8 @@ def parse_sed_horse_eval(raw: bytes) -> dict[str, object]:
         "final_place_odds_lower": decimal_text(parsed.get("final_place_odds_lower")),
         "place_payout": int_or_blank(parsed.get("place_payout")),
     }
+
+
+def parse_sed_horse_eval(raw: bytes) -> dict[str, object]:
+    """Return the horse-level Eval result fields from one Raw SED record."""
+    return project_sed_horse_eval_parsed(_COMMON.sed(raw))
