@@ -28,6 +28,19 @@ GitHubは、再利用可能かつテキスト中心の技術資産を正本と�
 - 分析成果物
 - Gitに置く必要のない日次資産
 
+### 2.1 まきば回顧馬台帳
+
+まきばの回顧馬台帳はGoogle Drive側を正本とする。
+
+- file: `回顧馬.csv`
+- Drive file ID: `1PLKLRwmwG5lIuzdfk6ABbCahwzNQEjBo`
+- header: `日付,馬名,コメント`
+
+GitHubへ同内容のCSVコピーを正本として置かない。
+GitHub側は `docs/MAKIBA_REVIEW_HORSES.md` に保存形式・更新条件・参照契約のみを保持する。
+
+このCSVは過去回顧馬検索、次走確認、競馬新聞等への紐付け時の共有原本として扱う。
+
 ## 3. Externally managed sources
 
 Project外部で管理されるsourceが存在してよい。
