@@ -1,6 +1,15 @@
 dataset:
   name: training_research_runner
 
+# MIGRATION / BUILD-TIME CONVERSION EXAMPLE ONLY.
+# This config describes the transient SQLite -> Parquet conversion boundary used
+# while materializing an immutable Training Research generation. It is not the
+# normal research reader configuration.
+#
+# Normal research resolves the current Training Research generation and reads
+# training_development.parquet (2010-2023) with DuckDB. Do not restore a deleted
+# Development Lite SQLite/ZIP as an operational dependency.
+#
 # Paths are resolved from this config directory. Replace these placeholders in
 # the runtime copy or generate a project-specific config in the staging job.
 source:
