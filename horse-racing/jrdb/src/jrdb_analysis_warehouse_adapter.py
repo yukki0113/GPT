@@ -170,6 +170,15 @@ class WarehouseAnalysisReader:
             raise WarehouseAnalysisError(f"manifest has no {relation}/{year} asset")
         return paths
 
+    def _asset_sha256s(self, relation: str, year: int) -> list[str]:
+        """Return manifest-bound object hashes for Analysis ingest provenance."""
+        values = [str(asset.get("sha256")) for asset in self.assets
+                  if str(asset.get("family", "")).lower() == relation.lower()
+                  and int(asset.get("year", -1)) == year]
+        if not values or any(len(value) != 64 for value in values):
+            raise WarehouseAnalysisError(f"manifest SHA evidence missing for {relation}/{year}")
+        return values
+
     def _relation_rows(self, relation: str, year: int, where: str = "", params: list[object] | None = None) -> list[dict[str, Any]]:
         try:
             import duckdb  # deferred: pure projection tests need no DuckDB
@@ -268,4 +277,5 @@ class WarehouseAnalysisReader:
         if not rows:
             raise WarehouseAnalysisError(f"{date}: no joinable Warehouse Analysis rows")
         asset_refs = {relation: [str(path) for path in self._paths(relation, year)] for relation in REQUIRED_RELATIONS}
-        return rows, {"source_mode": "warehouse", "source_generation_id": self.current["generation_id"], "source_member_date": source_member_date.isoformat() if source_member_date else None, "source_manifest": asset_refs, "race_count": len({row[10] for row in rows}), "row_count": len(rows), "missing_profile_rows": missing_profiles, "fact_columns": list(FACT_COLUMNS)}
+        asset_hashes = {relation: self._asset_sha256s(relation, year) for relation in REQUIRED_RELATIONS}
+        return rows, {"source_mode": "warehouse", "source_generation_id": self.current["generation_id"], "source_member_date": source_member_date.isoformat() if source_member_date else None, "source_manifest": asset_refs, "source_sha256s": asset_hashes, "race_count": len({row[10] for row in rows}), "row_count": len(rows), "missing_profile_rows": missing_profiles, "fact_columns": list(FACT_COLUMNS)}
