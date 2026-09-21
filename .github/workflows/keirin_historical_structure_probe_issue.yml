@@ -1,0 +1,100 @@
+name: Keirin Historical Structure Probe via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[KEIRIN_STRUCTURE_PROBE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Probe schedule structure
+        run: |
+          python - <<'PY'
+          import hashlib, json, re, time, urllib.parse, urllib.request
+          from pathlib import Path
+
+          UA = "Mozilla/5.0 (compatible; keirin-historical-research/0.1)"
+          def fetch(url):
+              req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,*/*;q=0.8"})
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  body = response.read()
+                  return response.geturl(), response.headers.get("Content-Type"), body
+
+          base = "https://keirin.jp/pc/raceschedule?scym=01&scyy=2016"
+          final_url, ctype, body = fetch(base)
+          html = body.decode("utf-8", errors="replace")
+          scripts = re.findall(r"<script[^>]+src=[\"']([^\"']+)", html, re.I)
+          relevant_scripts = [s for s in scripts if "PJ0201" in s or "raceschedule" in s.lower()]
+
+          def contexts(text, needle, radius=500, limit=12):
+              out = []
+              lower = text.lower()
+              start = 0
+              while len(out) < limit:
+                  idx = lower.find(needle.lower(), start)
+                  if idx < 0:
+                      break
+                  out.append(text[max(0, idx-radius):idx+radius])
+                  start = idx + len(needle)
+              return out
+
+          result = {
+              "status": "success",
+              "schedule": {
+                  "url": final_url,
+                  "content_type": ctype,
+                  "body_len": len(body),
+                  "sha256": hashlib.sha256(body).hexdigest(),
+                  "scripts": scripts,
+                  "relevant_scripts": relevant_scripts,
+                  "racelist_contexts": contexts(html, "/pc/racelist"),
+                  "onclick_contexts": contexts(html, "onclick"),
+                  "jocd_contexts": contexts(html, "jocd"),
+                  "year_2016_contexts": contexts(html, "2016"),
+              },
+              "script_details": [],
+          }
+
+          for src in relevant_scripts[:2]:
+              time.sleep(2.0)
+              url = urllib.parse.urljoin("https://keirin.jp", src)
+              s_final, s_ctype, s_body = fetch(url)
+              text = s_body.decode("utf-8", errors="replace")
+              result["script_details"].append({
+                  "url": s_final,
+                  "content_type": s_ctype,
+                  "body_len": len(s_body),
+                  "sha256": hashlib.sha256(s_body).hexdigest(),
+                  "racelist_contexts": contexts(text, "racelist"),
+                  "jocd_contexts": contexts(text, "jocd"),
+                  "kaisai_contexts": contexts(text, "kaisai"),
+              })
+
+          Path("/tmp/keirin_structure_probe.json").write_text(
+              json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8"
+          )
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Comment result and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo 'KEIRIN_STRUCTURE_PROBE_RESULT'
+            echo '~~~json'
+            cat /tmp/keirin_structure_probe.json
+            echo '~~~'
+          } > /tmp/comment.md
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
