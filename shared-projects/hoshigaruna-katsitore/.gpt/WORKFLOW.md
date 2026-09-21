@@ -83,6 +83,18 @@ GPTの整理結果を、メンバー本人の発言として書き換えない�
 
 詳細は `.gpt/DATA_BOUNDARY.md` を参照する。
 
+### 6.1 まきば回顧馬台帳
+
+まきばが個人チャットで挙げる回顧馬は、Project Google Drive上の `回顧馬.csv` を正本とする。
+
+- Drive file ID: `1PLKLRwmwG5lIuzdfk6ABbCahwzNQEjBo`
+- header: `日付,馬名,コメント`
+- 過去回顧馬の検索、次走確認、競馬新聞等への紐付けではこのCSVを第一参照先とする。
+- まきばの個人チャットで明確な回顧馬・回顧コメントが提示された場合、その発言を処理する同一ターンで正本へ反映する。
+- ChatGPTは別チャットをバックグラウンド監視しないため、ここでの自動追記は「対象メッセージを処理する応答ターン中のDrive更新」を指す。
+
+詳細な更新・重複排除・参照ルールは `docs/MAKIBA_REVIEW_HORSES.md` を正本とする。
+
 ## 7. Evolution
 
 初期段階では共通prediction schemaを急いで固定しない。
