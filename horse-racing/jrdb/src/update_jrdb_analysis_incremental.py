@@ -310,6 +310,38 @@ def update_date(
     return update_rows(conn, date, rows, meta)
 
 
+def update_warehouse_date(
+    conn: sqlite3.Connection,
+    warehouse_current: Path,
+    asset_roots: dict[str, Path],
+    date: dt.date,
+    *,
+    source_member_date: dt.date | None = None,
+) -> dict[str, object]:
+    """Replace one completed date from an accepted JRDB Warehouse generation.
+
+    Raw-direct update_date remains available for rollback and audits. The
+    Warehouse reader has no fixed-width interpretation; it returns the same
+    FACT_COLUMNS tuples and blank/null conventions as parse_day.
+    """
+    from jrdb_analysis_warehouse_adapter import WarehouseAnalysisReader
+
+    reader = WarehouseAnalysisReader(warehouse_current, asset_roots=asset_roots)
+    rows, meta = reader.parse_day(date, source_member_date=source_member_date)
+    return update_rows(conn, date, rows, meta)
+
+
+def parse_asset_roots(values: list[str]) -> dict[str, Path]:
+    """Parse repeatable FAMILY=/local/staging/root CLI values."""
+    roots: dict[str, Path] = {}
+    for value in values:
+        family, separator, root = value.partition("=")
+        if not separator or not family or not root:
+            raise ValueError("--asset-root requires FAMILY=/local/staging/root")
+        roots[family.upper()] = Path(root)
+    return roots
+
+
 def main() -> None:
     """Run one or more Analysis Lite v1.3 incremental updates."""
     parser = argparse.ArgumentParser()
@@ -318,15 +350,25 @@ def main() -> None:
     parser.add_argument("--dates", nargs="+")
     parser.add_argument("--paci", type=Path, help="PACIyymmdd.zip; use together with --sed")
     parser.add_argument("--sed", type=Path, help="SEDyymmdd.zip; use together with --paci")
+    parser.add_argument("--warehouse-current", type=Path,
+                        help="dedicated JRDB Warehouse current.json; use with --dates and --asset-root")
+    parser.add_argument("--asset-root", action="append", default=[],
+                        help="repeatable FAMILY=/local/staging/root for Warehouse immutable assets")
+    parser.add_argument("--warehouse-source-member-date",
+                        help="strict Raw-delivery date (YYYYMMDD) for dual-read/rollback identity")
     args = parser.parse_args()
 
+    warehouse_mode = args.warehouse_current is not None or bool(args.asset_root)
     daily_mode = args.raw_root is not None or args.dates is not None
     paci_mode = args.paci is not None or args.sed is not None
-    if daily_mode and paci_mode:
-        parser.error("Use either --raw-root/--dates or --paci/--sed, not both")
+    if sum((bool(daily_mode), bool(paci_mode), bool(warehouse_mode))) > 1:
+        parser.error("Use exactly one of Raw daily, PACI+SED, or Warehouse input")
     if paci_mode:
         if args.paci is None or args.sed is None:
             parser.error("PACI mode requires both --paci and --sed")
+    elif warehouse_mode:
+        if args.warehouse_current is None or not args.dates or not args.asset_root:
+            parser.error("Warehouse mode requires --warehouse-current, --dates and --asset-root")
     elif args.raw_root is None or not args.dates:
         parser.error("Daily-kind mode requires --raw-root and --dates")
 
@@ -337,6 +379,14 @@ def main() -> None:
         if paci_mode:
             date, rows, meta = parse_paci_sed(args.paci, args.sed)
             output.append(update_rows(conn, date, rows, meta))
+        elif warehouse_mode:
+            roots = parse_asset_roots(args.asset_root)
+            member_date = parse_date(args.warehouse_source_member_date) if args.warehouse_source_member_date else None
+            for value in args.dates:
+                output.append(update_warehouse_date(
+                    conn, args.warehouse_current, roots, parse_date(value),
+                    source_member_date=member_date,
+                ))
         else:
             for value in args.dates:
                 output.append(update_date(conn, args.raw_root, parse_date(value)))
