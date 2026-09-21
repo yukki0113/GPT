@@ -1,5 +1,11 @@
 # JRDB Training Research Parquet Operation v0.1
 
+> Current status — 2026-09-21  
+> Parquet ZSTD canonical cutover is complete. Normal research resolves the current
+> generation and reads `training_development.parquet` (2010–2023) with DuckDB.
+> The SQLite source shown in the build command below is a transient regeneration /
+> migration input only, not an analytical canonical or a normal research dependency.
+
 ## Canonical storage
 
 The long-term analytical canonical is an immutable Parquet ZSTD generation.
