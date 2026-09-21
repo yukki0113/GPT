@@ -85,11 +85,12 @@ GPTの整理結果を、メンバー本人の発言として書き換えない�
 
 ### 6.1 まきば回顧馬台帳
 
-まきばが個人チャットで挙げる回顧馬は、Project Google Drive上の `回顧馬.csv` を正本とする。
+まきばが個人チャットで挙げる回顧馬は、Project Google Drive上のGoogleスプレッドシート `回顧馬` を正本とする。
 
-- Drive file ID: `1PLKLRwmwG5lIuzdfk6ABbCahwzNQEjBo`
-- header: `日付,馬名,コメント`
-- 過去回顧馬の検索、次走確認、競馬新聞等への紐付けではこのCSVを第一参照先とする。
+- Spreadsheet ID: `1h6hceLYBXFkUlfOiMMjMhStIs21GwDWyyzj0_Kdsuus`
+- sheet: `回顧馬`
+- columns: `日付,馬名,コメント`
+- 過去回顧馬の検索、次走確認、競馬新聞等への紐付けではこのSheetを第一参照先とする。
 - まきばの個人チャットで明確な回顧馬・回顧コメントが提示された場合、その発言を処理する同一ターンで正本へ反映する。
 - ChatGPTは別チャットをバックグラウンド監視しないため、ここでの自動追記は「対象メッセージを処理する応答ターン中のDrive更新」を指す。
 
