@@ -356,10 +356,12 @@ def main() -> None:
                         help="repeatable FAMILY=/local/staging/root for Warehouse immutable assets")
     parser.add_argument("--warehouse-source-member-date",
                         help="strict Raw-delivery date (YYYYMMDD) for dual-read/rollback identity")
+    parser.add_argument("--allow-historical-raw", action="store_true",
+                        help="allow <=2025 Raw daily input only for rollback/audit; Warehouse is standard")
     args = parser.parse_args()
 
     warehouse_mode = args.warehouse_current is not None or bool(args.asset_root)
-    daily_mode = args.raw_root is not None or args.dates is not None
+    daily_mode = args.raw_root is not None
     paci_mode = args.paci is not None or args.sed is not None
     if sum((bool(daily_mode), bool(paci_mode), bool(warehouse_mode))) > 1:
         parser.error("Use exactly one of Raw daily, PACI+SED, or Warehouse input")
@@ -371,6 +373,8 @@ def main() -> None:
             parser.error("Warehouse mode requires --warehouse-current, --dates and --asset-root")
     elif args.raw_root is None or not args.dates:
         parser.error("Daily-kind mode requires --raw-root and --dates")
+    elif not args.allow_historical_raw and any(parse_date(value).year <= 2025 for value in args.dates):
+        parser.error("Historical (<=2025) Raw input is rollback/audit only; use Warehouse or --allow-historical-raw")
 
     conn = sqlite3.connect(args.db)
     try:
