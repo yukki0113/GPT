@@ -318,3 +318,12 @@ The finalizer is `src/finalize_jrdb_warehouse_from_staging.py`; its contract and
 ### Analysis historical Warehouse reader
 
 The historical Warehouse reader and Raw-vs-Warehouse equivalence auditor are available under `src/jrdb_analysis_warehouse_adapter.py` and `src/audit_jrdb_analysis_raw_vs_warehouse.py`. They preserve the Analysis Lite v1.3 schema and exist behind an explicit input mode; normal 2026 PACI/Raw incremental operation is unchanged because the accepted Warehouse covers only 2010–2025. The promotion gate and rollback boundary are defined in `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
+
+
+### Accepted Analysis input split (2026-09-21)
+
+The formal Raw-direct versus Warehouse dual-read audit passed for seven representative deliveries across 2010, 2018, and 2025 (2,866 rows total). It compared row count, primary key, schema, NULL/blank semantics, all 34 logical Analysis columns, canonical row hash, representative query, and same-day idempotence.
+
+For **2010–2025 historical backfill and rebuild**, the standard Analysis input is the dedicated JRDB Warehouse current generation through `jrdb_analysis_warehouse_adapter.py`. Historical Raw-direct input remains available only for rollback and audit, requiring the explicit `--allow-historical-raw` boundary. For **2026 current daily operation**, PACI/SED Raw-direct remains the standard path. The Warehouse reader rejects dates outside its accepted 2010–2025 coverage, so it cannot request 2026 data accidentally.
+
+See `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md` and `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
