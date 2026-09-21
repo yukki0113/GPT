@@ -1,0 +1,209 @@
+name: Eval Historical Warehouse Audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[EVAL_HISTORICAL_WAREHOUSE_AUDIT]'
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[EVAL_HISTORICAL_WAREHOUSE_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          request_id = str(req.get('request_id') or '').strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+          if int(req.get('from_year', 0)) != 2010 or int(req.get('to_year', 0)) != 2025:
+              raise SystemExit('formal Eval audit requires exact 2010-2025 coverage')
+          for key in ('current_id', 'manifest_id'):
+              if not re.fullmatch(r'[A-Za-z0-9_-]{10,}', str(req.get(key) or '')):
+                  raise SystemExit(f'invalid {key}')
+          families = req.get('families') or {}
+          for family in ('BAC', 'SED'):
+              spec = families.get(family) or {}
+              for mode in ('raw', 'warehouse'):
+                  rows = spec.get(mode) or {}
+                  expected_years = {str(year) for year in range(2010, 2026)}
+                  if set(rows) != expected_years:
+                      raise SystemExit(f'{family}.{mode} must contain 2010-2025 exactly')
+                  for year, item in rows.items():
+                      if not isinstance(item, dict):
+                          raise SystemExit(f'{family}.{mode}.{year} must be object')
+                      if not re.fullmatch(r'[A-Za-z0-9_-]{10,}', str(item.get('id') or '')):
+                          raise SystemExit(f'invalid Drive id: {family}.{mode}.{year}')
+                      if not re.fullmatch(r'[0-9a-f]{64}', str(item.get('sha256') or '').lower()):
+                          raise SystemExit(f'invalid sha256: {family}.{mode}.{year}')
+          Path('/tmp/request.json').write_text(json.dumps(req, ensure_ascii=False, indent=2), encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f'request_id={request_id}\n')
+              handle.write(f'artifact_name=eval-historical-warehouse-audit-{request_id}\n')
+          PY
+
+      - name: Install audit dependencies
+        run: python -m pip install --disable-pip-version-check 'duckdb>=1.0,<2' 'gdown>=5,<6'
+
+      - name: Download immutable evidence
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+
+          req = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          root = Path('/tmp/eval_historical_audit')
+          root.mkdir(parents=True, exist_ok=True)
+
+          def download(file_id, path):
+              path.parent.mkdir(parents=True, exist_ok=True)
+              subprocess.run(['gdown', '--id', file_id, '-O', str(path)], check=True)
+
+          download(req['current_id'], root / 'current.json')
+          download(req['manifest_id'], root / 'manifest.json')
+
+          for family in ('BAC', 'SED'):
+              for year in range(2010, 2026):
+                  raw = req['families'][family]['raw'][str(year)]
+                  raw_path = root / 'raw' / family / f'{family}_{year}.zip'
+                  download(raw['id'], raw_path)
+                  raw_sha = hashlib.sha256(raw_path.read_bytes()).hexdigest()
+                  if raw_sha != raw['sha256'].lower():
+                      raise SystemExit(f'Raw SHA mismatch {family}/{year}: {raw_sha}')
+
+                  wh = req['families'][family]['warehouse'][str(year)]
+                  wh_path = root / 'warehouse' / family / 'objects' / family.lower() / f'year={year}' / f"{wh['sha256'].lower()}.parquet"
+                  download(wh['id'], wh_path)
+                  wh_sha = hashlib.sha256(wh_path.read_bytes()).hexdigest()
+                  if wh_sha != wh['sha256'].lower():
+                      raise SystemExit(f'Warehouse SHA mismatch {family}/{year}: {wh_sha}')
+          PY
+
+      - name: Run full 2010-2025 dual-read audit
+        id: audit
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/eval_historical_audit/output
+          python horse-racing/jrdb/src/audit_jrdb_eval_raw_vs_warehouse.py \
+            --current /tmp/eval_historical_audit/current.json \
+            --manifest /tmp/eval_historical_audit/manifest.json \
+            --warehouse-bac-root /tmp/eval_historical_audit/warehouse/BAC \
+            --warehouse-sed-root /tmp/eval_historical_audit/warehouse/SED \
+            --raw-bac-dir /tmp/eval_historical_audit/raw/BAC \
+            --raw-sed-dir /tmp/eval_historical_audit/raw/SED \
+            --from-year 2010 --to-year 2025 \
+            --output /tmp/eval_historical_audit/output/audit.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Build compact summary
+        id: summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report_path = Path('/tmp/eval_historical_audit/output/audit.json')
+          if report_path.exists():
+              report = json.loads(report_path.read_text(encoding='utf-8'))
+          else:
+              report = {'status': 'FAIL', 'error': 'audit.json missing'}
+          summary = {
+              'status': report.get('status'),
+              'source_generation_id': report.get('source_generation_id'),
+              'summary': report.get('summary'),
+              'warehouse_2026_guard': report.get('warehouse_2026_guard'),
+              'warehouse_repeat_read_idempotent': report.get('warehouse_repeat_read_idempotent'),
+              'error': report.get('error'),
+          }
+          Path('/tmp/eval_historical_audit/output/summary.json').write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f"status={summary.get('status') or 'FAIL'}\n")
+          PY
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.artifact_name }}
+          path: /tmp/eval_historical_audit/output/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
+          AUDIT_EXIT: ${{ steps.audit.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          summary_path = Path('/tmp/eval_historical_audit/output/summary.json')
+          summary = json.loads(summary_path.read_text(encoding='utf-8')) if summary_path.exists() else {'status':'FAIL'}
+          payload = {
+              'request_id': os.environ.get('REQUEST_ID'),
+              'status': summary.get('status') or 'FAIL',
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': os.environ.get('ARTIFACT_NAME'),
+              'audit_exit_code': os.environ.get('AUDIT_EXIT'),
+              **summary,
+          }
+          Path('/tmp/result.md').write_text(
+              'EVAL_HISTORICAL_WAREHOUSE_AUDIT_RESULT\n```json\n'
+              + json.dumps(payload, ensure_ascii=False, indent=2)
+              + '\n```\n', encoding='utf-8'
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          AUDIT_STATUS: ${{ steps.summary.outputs.status }}
+        run: |
+          if [ "$AUDIT_STATUS" = "PASS" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason not_planned
+          fi
+
+      - name: Fail workflow when audit fails
+        if: always()
+        env:
+          AUDIT_STATUS: ${{ steps.summary.outputs.status }}
+        run: test "$AUDIT_STATUS" = "PASS"
