@@ -210,3 +210,20 @@ The consumer must not:
 After SED becomes available, the result may be joined into a separate forward-validation ledger. The daily pre-race CSV and audit remain immutable evidence.
 
 Post-race evaluation may summarize forward performance over accumulated races, but may not retune v0.2 and then reuse those same races as fresh evidence.
+
+
+## 10. Historical Warehouse migration status — 2026-09-21
+
+Project policy now designates JRDB Warehouse as the standard Historical input for
+2010–2025. The frozen RL-T/Training Edge scientific semantics do not change.
+
+The current daily workflow still reconstructs its 2010–2025 segment from annual Raw.
+That Historical segment must not be switched by path substitution alone. Cutover is
+gated on a Warehouse-to-existing-Index-Base compatibility adapter plus formal
+Raw-vs-Warehouse logical equivalence and downstream runtime-fingerprint non-regression.
+Until that gate passes, Raw remains the reference/rollback/audit route.
+
+The 2026 route remains exactly as defined above: target PACI plus settled SED/Raw.
+No 2026 PACI normalization or scientific/model change is authorized by this migration.
+
+See: `docs/RL_T_Historical_Warehouse_Migration_Work_Request_20260921.md`.
