@@ -63,6 +63,30 @@ ChatGPTは別チャットをバックグラウンド監視できないため、�
 5. GPT独自の推測日付、評価、補足コメントを台帳へ追加しない。
 6. Drive更新に失敗した場合は保存済みと扱わず、そのチャット内で失敗を明示する。
 
+## Native Drive write transport
+
+通常CSVはGoogle Sheets APIで直接セル追記できないため、Project Google Drive上のnative Google Sheetを**書き込みバッファ**として利用する。
+
+- buffer file: `_system_回顧馬_csv_buffer`
+- buffer Spreadsheet ID: `1h6hceLYBXFkUlfOiMMjMhStIs21GwDWyyzj0_Kdsuus`
+- bufferは正本ではない。検索・新聞連携では参照しない。
+
+更新手順:
+
+1. 正本 `回顧馬.csv` を毎回読み直す。
+2. CSVをparseし、今回追加する行をmergeして重複排除する。
+3. buffer SheetのA:Cを現在のmerge結果で置き換える。
+4. buffer Sheetを `text/csv` でexportする。
+5. exportで得たruntime file referenceを使い、Drive `files.update` 相当で正本file ID `1PLKLRwmwG5lIuzdfk6ABbCahwzNQEjBo` のbytesを置き換える。
+6. 更新後に正本CSVを再読込し、header・既存行・追加行がすべて存在することを確認する。
+7. 検証失敗時は保存成功と扱わない。
+
+同時更新対策として、書き込み直前にも正本を再読込する。
+最初のread以降に正本が変化していた場合は、最新内容に今回の行だけを再mergeしてから更新する。
+更新後の再検証で欠落を検出した場合も、最新正本から再mergeする。
+
+このtransportはProject標準のnative Google Drive connectorだけで完結し、GitHub Actions / Service Account bridgeは使用しない。
+
 ## Read / lookup rules
 
 まきばが「前に言った馬」「過去の回顧馬」「○○のメモ」等を検索する場合、このCSVを第一参照先とする。
