@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from jrdb_raw import Parser  # noqa: E402\nfrom racenote_jrdb import Audit, Normalizer  # noqa: E402
+from jrdb_raw import Parser  # noqa: E402
+from racenote_jrdb import Audit, Normalizer  # noqa: E402
 from jrdb_racenote_warehouse_adapter import (  # noqa: E402
     RaceNoteWarehouseError,
     out_of_warehouse_previous_keys,
