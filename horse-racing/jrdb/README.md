@@ -300,3 +300,16 @@ verified OPFS generation with DuckDB-Wasm. Pages no longer ships a Fact Lite
 SQLite release and Fact Lite has no SQLite runtime fallback. Rollback is
 performed by returning Pages to the prior verified generation. The shared
 sql.js vendor remains only for the independent Stats Mart screen.
+
+
+## Historical normalized Warehouse
+
+JRDB historical normalized Parquet warehouse is accepted in a dedicated Drive namespace:
+
+```
+GPT/horse-racing/10_warehouse/jrdb/v1/current.json
+```
+
+This pointer is separate from the existing NAR canonical `CURRENT.json` and must not replace it. The accepted generation `jrdb_normalized_warehouse_v1_2010_2025_g20260921` covers BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/HJC/UKC for 2010–2025 (192 assets). Its final manifest references the published family staging Parquet objects immutably; no family asset was copied, regenerated, or reuploaded for finalization.
+
+The finalizer is `src/finalize_jrdb_warehouse_from_staging.py`; its contract and future write order are documented in `docs/JRDB_Normalized_Warehouse_Operation_v1.md`. PACI daily normalization and consumer cutover remain separate work.
