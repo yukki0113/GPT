@@ -2,32 +2,45 @@
 
 ## Status and purpose
 
-`JRDB Training Research Base v0.1` is the reusable SQLite research layer for
+`JRDB Training Research Base v0.1` is the reusable training research layer for
 same-horse workout comparison, trainer-specific patterns, rest/training-process
 patterns, and later comparison with JRDB processed workout evaluations.
 
+The current analytical canonical is an immutable Parquet ZSTD generation read with
+DuckDB. SQLite remains an implementation detail for historical build/regression
+plumbing only; it is not the published analytical canonical.
+
 It is not an Ability model, a production Edge formula, or a Value layer.
 
-Canonical artifact filename:
+Current canonical layout:
 
 ```text
-jrdb_training_research_2010_2025_v0_1.sqlite
+20_mart/training_research/v0.1/build-<id>/
+  training_runner.parquet
+  training_development.parquet
+  training_holdout_locked.parquet
+  source_archive.parquet
+  manifest.json
+  conversion_audit.json
+  scientific_regression.json
 ```
 
-The local file is a cache. The accepted frozen artifact is stored as a one-member
-LZMA ZIP transport under the Google
-Drive JRDB research/mart area and registered as `jrdb://training-research/v0.1` in
-the external live Store manifest. Git retains source, schema, tests, build/audit
-contracts, reports, and publication provenance; the SQLite binary is never committed.
+Normal research uses `training_development.parquet` (2010–2023) through DuckDB.
+The 2024–2025 HOLDOUT boundary remains unchanged. Historical SQLite artifacts and
+Freeze provenance remain valid historical evidence but are no longer the operational
+analytical canonical.
 
 ## Source and chronology
 
 ```text
-annual JRDB Raw 2010-2025
-  -> Common JRDB Reader (fixed-width authority)
+historical source policy (2010-2025): JRDB Warehouse
+  -> Warehouse-to-Index-Base compatibility layer (pending formal equivalence gate)
   -> Index Base neutral materialization
-  -> Official RunPerf v0.1 (T1|EXPANDING|RAW)
+  -> Official RunPerf v0.1
   -> Training Research Base v0.1
+
+current implementation until that gate passes:
+annual JRDB Raw 2010-2025 -> Index Base -> Official RunPerf -> Training Research
 ```
 
 The training builder does not parse Raw offsets. It projects the audited Index Base,
@@ -150,3 +163,17 @@ The same central row supports trainer × course/type/rest/effort/pair-work/volum
 one-week-ago-to-final-workout exploration without rebuilding Raw. Stage 2 still needs
 a Controller-frozen multiple-testing, minimum-sample, temporal-validation and
 shrinkage policy before pattern mining begins.
+
+
+## Historical Warehouse migration status — 2026-09-21
+
+The project-level historical source policy is now JRDB Warehouse for 2010–2025.
+Analysis has already passed formal Raw-vs-Warehouse dual-read and is Warehouse-standard.
+Training Research / RL-T upstream is **not yet cut over** because an exact
+Warehouse-to-existing-Index-Base compatibility adapter and formal equivalence audit are
+still required. Until that gate passes, the existing Raw route remains only as the
+reference/rollback path and must not be removed. 2026 PACI/SED/Raw daily semantics are
+out of scope and unchanged.
+
+Implementation request:
+`docs/RL_T_Historical_Warehouse_Migration_Work_Request_20260921.md`
