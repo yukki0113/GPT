@@ -239,3 +239,14 @@ RaceNote、EdgeDB、Eval、Training等のsubsystemは各専用guide/contractを�
 - GitHub Connectorでバイナリを直接読めないことを理由に、GitHub正本が存在するファイルの再添付をユーザーへ依頼しない。
 - 詳細はルート `.gpt/GIT_BINARY_TOOL.md`、`.gpt/GIT_BINARY_READ_ISSUE.md`、`.gpt/GIT_BINARY_UPDATE_ISSUE.md` を参照する。
 - readback artifactは搬送用の一時物であり、正本はGitHub `main` 上の対象ファイルとする。
+
+
+### Historical Analysis input selection — 2026-09-21
+
+- For a **2010–2025 historical backfill or rebuild**, use the dedicated JRDB Warehouse `current.json` and `jrdb_analysis_warehouse_adapter.py`. It is the accepted standard input after the formal dual-read PASS.
+- Use historical Raw-direct only for rollback or audit, with the explicit `--allow-historical-raw` switch. Do not silently select it as the normal historical path.
+- For **2026 current daily updates**, keep the existing PACI/SED Raw-direct incremental route. PACI daily normalization remains separate scope.
+- The Warehouse reader must reject dates outside its accepted 2010–2025 coverage. Do not attempt to satisfy a 2026 request from Warehouse.
+- Do not alter the JRDB Warehouse current pointer, historical Warehouse Parquet, or the existing Analysis current pointer as part of this routing choice.
+
+The formal comparison and exact gates are recorded in `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`; the normative contract is `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
