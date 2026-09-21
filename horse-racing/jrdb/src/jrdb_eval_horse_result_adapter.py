@@ -5,16 +5,15 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from jrdb_eval_raw_adapter import parse_sed_horse_eval
+from jrdb_eval_raw_adapter import parse_sed_horse_eval, project_sed_horse_eval_parsed
 
 
-def project_eval_horse_result(
-    raw: bytes,
+def project_eval_horse_result_from_base(
+    base: Mapping[str, object],
     venue_labels: Mapping[str, str],
     abnormality_labels: Mapping[str, str],
 ) -> dict[str, object]:
-    """Return the legacy Eval horse-result row except source provenance fields."""
-    base = parse_sed_horse_eval(raw)
+    """Apply the stable Eval horse-result policy to an already projected SED row."""
     race_no = base.get("race_no")
     horse_no = base.get("horse_no")
     finish_position = base.get("finish_position")
@@ -71,3 +70,25 @@ def project_eval_horse_result(
         "final_place_odds_lower": base["final_place_odds_lower"],
         "final_place_odds_upper": "",
     }
+
+
+def project_eval_horse_result_from_parsed(
+    parsed: Mapping[str, object],
+    venue_labels: Mapping[str, str],
+    abnormality_labels: Mapping[str, str],
+) -> dict[str, object]:
+    """Apply the existing Eval policy to one common-parser/Warehouse SED row."""
+    return project_eval_horse_result_from_base(
+        project_sed_horse_eval_parsed(parsed), venue_labels, abnormality_labels
+    )
+
+
+def project_eval_horse_result(
+    raw: bytes,
+    venue_labels: Mapping[str, str],
+    abnormality_labels: Mapping[str, str],
+) -> dict[str, object]:
+    """Return the legacy Eval horse-result row except source provenance fields."""
+    return project_eval_horse_result_from_base(
+        parse_sed_horse_eval(raw), venue_labels, abnormality_labels
+    )
