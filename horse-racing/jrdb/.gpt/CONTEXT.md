@@ -193,3 +193,10 @@ Canonical finalization code: `src/finalize_jrdb_warehouse_from_staging.py`. Oper
 A Warehouse Analysis reader and dual-read auditor are available, but there is no production cutover yet. They resolve only the dedicated accepted JRDB Warehouse current generation, project normalized BAC/KYI/SED/CYB/UKC rows into the unchanged Analysis Lite v1.3 logical columns, and require exact Raw-direct equivalence (row count, key, schema, null/blank, all logical values, row hash, representative query, idempotence).
 
 The accepted Warehouse spans 2010–2025. Current 2026 PACI/SED Raw updates remain Raw-direct because that coverage is absent and PACI daily is out of scope. Do not modify any Analysis current pointer until a same-delivery historical audit PASS has been recorded. See `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
+
+
+## Analysis input operating split — accepted 2026-09-21
+
+The formal dual-read audit accepted the dedicated JRDB normalized Warehouse as the standard **historical** Analysis input. For 2010–2025 rebuilds/backfills, resolve the JRDB Warehouse current pointer and use `jrdb_analysis_warehouse_adapter.py`; keep historical Raw-direct only as an explicit rollback/audit route. The comparison covered seven deliveries across 2010/2018/2025 (2,866 rows), including count, keys, schema, NULL/blank semantics, all 34 Analysis columns, canonical hashes, representative queries, and repeat-run idempotence.
+
+The 2026 daily route remains PACI/SED Raw-direct. The Warehouse reader is coverage-guarded to 2010–2025 and rejects 2026, preventing an accidental year-boundary cutover. This did not change either the Warehouse current pointer or any existing Analysis current pointer. Normative contract: `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`; evidence: `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
