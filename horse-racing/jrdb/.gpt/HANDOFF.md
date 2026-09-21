@@ -405,3 +405,12 @@ The formal dual-read gate is PASS: seven Raw deliveries across 2010, 2018, and 2
 - Neither the JRDB Warehouse pointer nor the existing Analysis current pointer changed in this cutover.
 
 Operational contract: `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`. Formal evidence: `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
+
+
+## RaceNote Historical Warehouse Phase 1 — 2026-09-22
+
+- Historical RaceNote rebuild input is now the accepted JRDB Warehouse generation `jrdb_normalized_warehouse_v1_2010_2025_g20260921`, resolved through the dedicated JRDB current contract; do not use or alter any NAR pointer.
+- `jrdb_racenote_warehouse_reader.py` reads immutable Parquet via DuckDB and feeds the unchanged `racenote_jrdb.BundleBuilder`. `audit_jrdb_racenote_raw_vs_warehouse.py` is the formal dual-read gate.
+- 2018-12-28 and 2025-12-28 passed row/key/schema/NULL-blank/all-logical-value/semantic-hash/repeated-read/idempotence checks. The Raw audit must use `ZED/ZKB`, not `SED/SKB` substitutions.
+- The 2010 KYI archive has 65,835 references to 2009 results (and older references); keep the explicit Raw boundary fallback and provenance. Never silently downgrade other historical Warehouse requests to Raw.
+- 2026 current daily remains PACI/Raw. Warehouse coverage is fail-closed at 2010–2025.
