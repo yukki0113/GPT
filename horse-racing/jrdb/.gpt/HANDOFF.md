@@ -392,3 +392,16 @@ artifact回収後、Chat側で次をPure Deterministic Executionとして行う�
 Historical Warehouse-to-Analysis code is staged, not yet promoted. The reader (`src/jrdb_analysis_warehouse_adapter.py`) and non-mutating equivalence audit (`src/audit_jrdb_analysis_raw_vs_warehouse.py`) preserve the existing Analysis schema and Raw adapter semantics. Use the dedicated 2010–2025 Warehouse pointer only.
 
 Do **not** switch the normal 2026 PACI/Raw incremental path: the accepted historical Warehouse has no 2026 coverage and PACI daily is explicitly out of scope. A historical date may use `update_jrdb_analysis_incremental.py --warehouse-current ...` only after the exact Raw-direct vs Warehouse audit is PASS for the same source delivery. Raw-direct remains the rollback/audit path. Contract: `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
+
+
+## Analysis input: accepted Historical / Current split — 2026-09-21
+
+The formal dual-read gate is PASS: seven Raw deliveries across 2010, 2018, and 2025, 2,866 rows total, with equality of row count, primary key, schema, NULL/blank semantics, all 34 logical columns, canonical row hashes, representative queries, and repeated same-day replacement.
+
+- **2010–2025 historical backfill/rebuild:** dedicated JRDB Warehouse `current.json` → Warehouse Analysis reader → unchanged Analysis Lite v1.3 output.
+- **2026 current daily update:** PACI / SED Raw-direct → existing Analysis path; this remains unchanged.
+- Historical Raw-direct is retained for rollback/audit only and needs explicit `--allow-historical-raw`.
+- The Warehouse reader rejects dates outside the accepted 2010–2025 coverage; do not use it for 2026.
+- Neither the JRDB Warehouse pointer nor the existing Analysis current pointer changed in this cutover.
+
+Operational contract: `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`. Formal evidence: `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
