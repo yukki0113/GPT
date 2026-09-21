@@ -207,7 +207,10 @@ def out_of_warehouse_previous_keys(kyi_rows: list[Mapping[str, Any]]) -> list[st
     """Identify the 2010 boundary that prevents strict SED/SKB Raw-route replay."""
     values: set[str] = set()
     for row in kyi_rows:
-        parsed = unflatten_kyi(row)
+        # Warehouse rows are flattened; the Raw adapter already exposes the
+        # parser-owned ``previous`` list.  Accept both representations so the
+        # boundary audit uses one exact predicate on either input path.
+        parsed = row if isinstance(row.get("previous"), list) else unflatten_kyi(row)
         for previous in parsed["previous"]:
             key = str(previous.get("result_key") or "")
             year = previous_result_year(key)
