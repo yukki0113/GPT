@@ -375,3 +375,13 @@ artifact回収後、Chat側で次をPure Deterministic Executionとして行う�
   is the required Legacy SQLite == New SQLite == Parquet gate.
 - Do not change `jrdb-pwa-fact-lite-current`, Pages, sql.js, or OPFS until an
   explicit real-data audit and publication cutover has passed.
+
+
+## JRDB normalized Warehouse finalization — 2026-09-21
+
+- Dedicated pointer: Drive `GPT/horse-racing/10_warehouse/jrdb/v1/current.json`.
+- It is independent of NAR canonical `CURRENT.json`; never overwrite or consume that pointer as JRDB state.
+- Accepted generation: `jrdb_normalized_warehouse_v1_2010_2025_g20260921`, 10 families, 2010–2025, 192 immutable staging-object references; final audit PASS and duplicate object count 0.
+- Resume/read order: JRDB `current.json` → referenced final `manifest.json` and `audit.json` → family staging only for provenance/evidence.
+- The finalizer is `src/finalize_jrdb_warehouse_from_staging.py`; operations contract is `docs/JRDB_Normalized_Warehouse_Operation_v1.md`.
+- Do not regenerate, copy, or reupload accepted family Parquet. PACI/Analysis/RaceNote/Eval/backtest consumer cutover is a separate subsequent task.
