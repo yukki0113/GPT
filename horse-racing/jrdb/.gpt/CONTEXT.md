@@ -177,3 +177,12 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 
 ## Important
 旧JRA-VAN版の検証ラボは `horse-racing/legacy/` の凍結資産であり、現行実装とは分離します。
+
+
+## JRDB historical normalized Warehouse: accepted state (2026-09-21)
+
+The JRDB Warehouse pointer contract is **not** the pre-existing NAR `CURRENT.json`. The only current pointer for this Warehouse is Drive `GPT/horse-racing/10_warehouse/jrdb/v1/current.json`.
+
+It accepts `jrdb_normalized_warehouse_v1_2010_2025_g20260921`: BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/HJC/UKC, 2010–2025, 192 Parquet references. Final manifest/audit status is PASS, duplicate object references are zero, and canonical-key/provenance/schema checks are recorded in the final audit. The final generation references existing staging immutable objects; it did not copy, regenerate, or reupload family Parquet.
+
+Canonical finalization code: `src/finalize_jrdb_warehouse_from_staging.py`. Operational contract: `docs/JRDB_Normalized_Warehouse_Operation_v1.md`. Consumer migration remains out of scope until separately authorized.
