@@ -208,6 +208,9 @@ Forecast Gen0は依然としてGPTが予想を作成し、コードはvalidation
 - `FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md` — Google Sheets台帳とtransaction契約
 - `legacy/README.md` — 旧決定論的予想系の扱い
 - `../RaceNote_Prediction_Handoff_v0_1.md` — GPT prediction layerの原点
+- `FORECAST_GEN0_GPT_PRODUCER_OPERATION_v0_1.md` — Firewallで隔離した
+  RaceNoteからGPTの構造化判断をGen0 validator/freezeへ引き渡す実装契約。
+  scorer代用はしない。
 - `../README_racenote_v1.md` — RaceNote v1 data specification
 - `../README_racenote_request.md` — request / delivery contract
 - `../RaceNote_Historical_Warehouse_Operation_v1.md` — Warehouse routing / controlled E2E contract
