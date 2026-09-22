@@ -63,4 +63,4 @@ These remain Archive-program work.  They do not invalidate the accepted Warehous
 
 ## Commit
 
-Commit SHA: `525a83caf6fa08d977bbc321449b8d70d836e14f` (the commit is amended once to include this self-reference).
+Implementation commit SHA: `3f2915f7bdb0044192b8c30bebe913888a848925`.
