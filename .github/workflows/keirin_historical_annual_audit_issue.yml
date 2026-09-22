@@ -1,0 +1,104 @@
+name: Keirin Historical Annual Audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  collect:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[KEIRIN_ANNUAL_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import os, re
+          from pathlib import Path
+          body = os.environ.get("ISSUE_BODY", "")
+          def get(key, default):
+              m = re.search(rf"(?mi)^\s*{re.escape(key)}\s*:\s*(.+?)\s*$", body)
+              return m.group(1).strip() if m else default
+          year = int(get("year", "2016"))
+          start_month = int(get("start_month", "1"))
+          end_month = int(get("end_month", "12"))
+          delay = float(get("delay_seconds", "3.0"))
+          inter = float(get("inter_month_delay_seconds", "10.0"))
+          if delay < 2.0:
+              raise SystemExit("delay_seconds must be >= 2.0")
+          Path("/tmp/request.env").write_text(
+              f"YEAR={year}\nSTART_MONTH={start_month}\nEND_MONTH={end_month}\nDELAY={delay}\nINTER={inter}\n",
+              encoding="utf-8",
+          )
+          PY
+          cat /tmp/request.env >> "$GITHUB_ENV"
+
+      - name: Validate code
+        working-directory: keirin
+        run: |
+          PYTHONPATH=. python -m unittest discover -s tests -v
+          python -m py_compile keirin_historical/*.py
+
+      - name: Run annual audit sequentially
+        working-directory: keirin
+        run: |
+          mkdir -p /tmp/keirin-annual/raw /tmp/keirin-annual/audit
+          PYTHONPATH=. python -m keirin_historical.keirin_jp_year \
+            --year "$YEAR" \
+            --start-month "$START_MONTH" \
+            --end-month "$END_MONTH" \
+            --output-dir /tmp/keirin-annual/raw \
+            --audit-dir /tmp/keirin-annual/audit \
+            --delay-seconds "$DELAY" \
+            --inter-month-delay-seconds "$INTER"
+
+      - name: Upload annual artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-historical-annual-audit-${{ github.event.issue.number }}
+          path: /tmp/keirin-annual
+          retention-days: 14
+
+      - name: Comment annual result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path(f"/tmp/keirin-annual/audit/{int(os.environ['YEAR']):04d}_annual_summary.json")
+          if p.exists():
+              result = json.loads(p.read_text(encoding="utf-8"))
+          else:
+              result = {"status": "failure", "error": "annual_summary_not_created"}
+          Path("/tmp/comment.md").write_text(
+              "KEIRIN_ANNUAL_AUDIT_RESULT\n~~~json\n" +
+              json.dumps(result, ensure_ascii=False, indent=2) +
+              "\n~~~\n", encoding="utf-8"
+          )
+          PY
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close successful issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
