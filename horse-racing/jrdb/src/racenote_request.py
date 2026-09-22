@@ -112,6 +112,14 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional resolved publishable monthly RaceNote Archive shard for past requests",
     )
+    parser.add_argument(
+        "--bypass-archive-for-audit",
+        action="store_true",
+        help=(
+            "Audit-only: do not use a supplied Archive shard. Historical requests "
+            "must then prove the accepted Warehouse backend was used."
+        ),
+    )
     parser.add_argument("--output", type=Path, default=Path("output_racenote_request"))
     parser.add_argument("--stats-window-years", type=int, default=5)
     parser.add_argument("--plan-only", action="store_true")
@@ -501,6 +509,7 @@ def main() -> int:
     request = normalize_request(args)
     plan = build_plan(request)
     plan["archive_candidate_supplied"] = args.archive is not None
+    plan["archive_bypassed_for_audit"] = bool(args.bypass_archive_for_audit)
     print(json.dumps(plan, ensure_ascii=False, indent=2))
     if args.plan_only:
         return 0
@@ -513,11 +522,21 @@ def main() -> int:
     final_dir.mkdir(parents=True, exist_ok=True)
 
     reconstruction: dict | None = None
-    base_dir, archive_resolution = try_archive_base(
-        args.archive,
-        request,
-        work_dir / "archive_base",
-    )
+    if args.bypass_archive_for_audit:
+        if not (request.temporal_mode == "past" and request.target_date.year <= 2025):
+            raise RaceNoteRequestError(
+                "--bypass-archive-for-audit is limited to 2010-2025 past Warehouse audits"
+            )
+        base_dir, archive_resolution = None, {
+            "status": "bypassed_for_historical_warehouse_audit",
+            "archive_path": None,
+        }
+    else:
+        base_dir, archive_resolution = try_archive_base(
+            args.archive,
+            request,
+            work_dir / "archive_base",
+        )
 
     if base_dir is not None:
         plan["base_backend"] = "racenote_archive"

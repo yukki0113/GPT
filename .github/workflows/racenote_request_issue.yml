@@ -29,7 +29,7 @@ jobs:
       - name: Install Drive downloader
         run: |
           python -m pip install --upgrade pip
-          python -m pip install gdown
+          python -m pip install gdown duckdb
 
       - name: Parse request
         env:
@@ -105,6 +105,37 @@ jobs:
                   raise SystemExit(f'raw_urls[{key}] must be a Google Drive URL')
               normalized_raw_urls[key] = url
 
+          warehouse_audit = request.get('warehouse_audit')
+          if warehouse_audit is not None:
+              if not isinstance(warehouse_audit, dict):
+                  raise SystemExit('warehouse_audit must be an object')
+              if int(target_date[:4]) > 2025:
+                  raise SystemExit('warehouse_audit is limited to 2010-2025')
+              current_url = str(warehouse_audit.get('current_url') or '').strip()
+              manifest_url = str(warehouse_audit.get('manifest_url') or '').strip()
+              if not current_url.startswith('https://drive.google.com/'):
+                  raise SystemExit('warehouse_audit.current_url must be a Google Drive URL')
+              if not manifest_url.startswith('https://drive.google.com/'):
+                  raise SystemExit('warehouse_audit.manifest_url must be a Google Drive URL')
+              asset_urls = warehouse_audit.get('asset_urls') or {}
+              required_assets = warehouse_audit.get('required_assets') or []
+              if not isinstance(asset_urls, dict) or not isinstance(required_assets, list):
+                  raise SystemExit('warehouse_audit asset_urls/required_assets have invalid types')
+              for relative_path, url in asset_urls.items():
+                  if not isinstance(relative_path, str) or not relative_path.startswith('objects/'):
+                      raise SystemExit(f'invalid warehouse asset path: {relative_path!r}')
+                  if not str(url).startswith('https://drive.google.com/'):
+                      raise SystemExit(f'warehouse asset URL must be Google Drive: {relative_path}')
+              for item in required_assets:
+                  if not re.fullmatch(r'(BAC|KYI|CHA|CYB|ZED|ZKB)=20(?:1\d|2[0-5])', str(item)):
+                      raise SystemExit(f'invalid warehouse required asset: {item!r}')
+              warehouse_audit = {
+                  'current_url': current_url,
+                  'manifest_url': manifest_url,
+                  'asset_urls': {str(k): str(v) for k, v in asset_urls.items()},
+                  'required_assets': [str(x) for x in required_assets],
+              }
+
           output_dir = f'horse-racing/jrdb/output_issue/{request_id}'
           raw_dir = f'{output_dir}/raw_cache'
           resolved = {
@@ -118,6 +149,7 @@ jobs:
               'support_artifact_run_id': support_artifact_run_id,
               'support_artifact_name': support_artifact_name,
               'raw_urls': normalized_raw_urls,
+              'warehouse_audit': warehouse_audit,
               'stats_window_years': stats_window_years,
               'output_dir': output_dir,
               'raw_dir': raw_dir,
@@ -141,6 +173,7 @@ jobs:
           import os
           import shutil
           import subprocess
+          import sys
           import zipfile
           from pathlib import Path
 
@@ -220,6 +253,21 @@ jobs:
               destination = raw_dir / kind / f'{kind}_{year}.zip'
               destination.parent.mkdir(parents=True, exist_ok=True)
               subprocess.run(['gdown', url, '-O', str(destination)], check=True)
+
+          warehouse = request.get('warehouse_audit')
+          if warehouse:
+              command = [
+                  sys.executable,
+                  'horse-racing/jrdb/src/materialize_racenote_warehouse_assets.py',
+                  '--current-url', warehouse['current_url'],
+                  '--manifest-url', warehouse['manifest_url'],
+                  '--output-root', '/tmp/jrdb_warehouse',
+              ]
+              for relative_path, url in sorted(warehouse['asset_urls'].items()):
+                  command.extend(['--asset-url', f'{relative_path}={url}'])
+              for item in warehouse['required_assets']:
+                  command.extend(['--required-asset', item])
+              subprocess.run(command, check=True)
           PY
 
       - name: Resolve publishable monthly Archive
@@ -239,6 +287,15 @@ jobs:
           request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
           target_date = datetime.strptime(request['date'], '%Y%m%d').date()
           result_path = Path('/tmp/archive_resolution.json')
+
+          if request.get('warehouse_audit') is not None:
+              result = {
+                  'status': 'bypassed_for_historical_warehouse_audit',
+                  'target_month': request['date'][:6],
+                  'archive_path': None,
+              }
+              result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+              raise SystemExit(0)
 
           if target_date >= date.today():
               result = {
@@ -303,6 +360,17 @@ jobs:
           if request['race'] is not None:
               command.extend(['--race', str(request['race'])])
 
+          if request.get('warehouse_audit') is not None:
+              command.extend([
+                  '--warehouse-current', '/tmp/jrdb_warehouse/current.json',
+                  '--bypass-archive-for-audit',
+              ])
+              for family in ('BAC', 'KYI', 'CHA', 'CYB', 'ZED', 'ZKB'):
+                  command.extend([
+                      '--warehouse-asset-root',
+                      f'{family}=/tmp/jrdb_warehouse/assets/{family}',
+                  ])
+
           archive_result_path = Path('/tmp/archive_resolution.json')
           if archive_result_path.is_file():
               archive_result = json.loads(archive_result_path.read_text(encoding='utf-8'))
@@ -313,6 +381,21 @@ jobs:
                       command.extend(['--archive', str(archive_path)])
 
           completed = subprocess.run(command, check=False)
+          if completed.returncode == 0 and request.get('warehouse_audit') is not None:
+              manifests = sorted(Path(request['output_dir']).rglob('request_manifest.json'))
+              if len(manifests) != 1:
+                  raise SystemExit(f'expected exactly one request manifest, found {manifests}')
+              manifest = json.loads(manifests[0].read_text(encoding='utf-8'))
+              if manifest.get('backend_resolution', {}).get('used_backend') != 'historical_warehouse':
+                  raise SystemExit('Warehouse audit did not use historical_warehouse backend')
+              materialized = json.loads(Path('/tmp/jrdb_warehouse/materialization_report.json').read_text(encoding='utf-8'))
+              subprocess.run([
+                  sys.executable,
+                  'horse-racing/jrdb/src/audit_racenote_historical_warehouse_e2e.py',
+                  '--run-dir', str(Path(request['output_dir']) / request['date']),
+                  '--generation-id', str(materialized['generation_id']),
+                  '--report', str(Path(request['output_dir']) / 'historical_warehouse_e2e_audit.json'),
+              ], check=True)
           raise SystemExit(completed.returncode)
           PY
           code=$?
