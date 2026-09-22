@@ -36,7 +36,7 @@ CREATE TABLE race_bundle (
     field_size INTEGER,
     base_schema_version TEXT NOT NULL,
     source_mode TEXT NOT NULL CHECK (
-        source_mode IN ('paci', 'annual_raw_reconstruction')
+        source_mode IN ('paci', 'annual_raw_reconstruction', 'warehouse')
     ),
     source_ref TEXT,
     bundle_zlib BLOB NOT NULL,

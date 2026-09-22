@@ -435,7 +435,10 @@ def write_fixed_member(rows: list[bytes]) -> bytes:
     """Return CRLF-terminated fixed-width member bytes."""
     if not rows:
         return b""
-    return b"\r\n".join(rows) + b"\r\n"
+    # ``iter_archive_records`` yields physical lines from annual ZIP members.
+    # Some of those lines already include CRLF; preserve the fixed-width body
+    # and normalize the member boundary exactly once for the PACI converter.
+    return b"\r\n".join(row.rstrip(b"\r\n") for row in rows) + b"\r\n"
 
 
 def write_daily_paci(

@@ -60,6 +60,11 @@ class WarehouseRaceNoteReader:
         self.assets = list(self.manifest.get("assets") or [])
         self.asset_roots = {str(k).upper(): Path(v) for k, v in asset_roots.items()}
         self.covered_years = {int(x["year"]) for x in self.assets if x.get("year") is not None}
+        # A full-month build visits each calendar date, while the immutable
+        # Parquet partition is annual.  Cache only the in-process decoded
+        # rows so repeated dates retain exactly the same projection/order
+        # without rescanning the same multi-million-row history partitions.
+        self._row_cache: dict[tuple[str, int], list[dict[str, Any]]] = {}
 
     @staticmethod
     def _json(path: Path) -> dict[str, Any]:
@@ -84,6 +89,10 @@ class WarehouseRaceNoteReader:
         return paths
 
     def _rows(self, relation: str, year: int) -> list[dict[str, Any]]:
+        cache_key = (relation, year)
+        cached = self._row_cache.get(cache_key)
+        if cached is not None:
+            return cached
         try:
             import duckdb
         except ImportError as exc:
@@ -94,7 +103,9 @@ class WarehouseRaceNoteReader:
             marks = ", ".join("?" for _ in paths)
             cursor = con.execute(f"SELECT * FROM read_parquet([{marks}], union_by_name=true)", [str(x) for x in paths])
             names = [x[0] for x in cursor.description]
-            return [dict(zip(names, row)) for row in cursor.fetchall()]
+            rows = [dict(zip(names, row)) for row in cursor.fetchall()]
+            self._row_cache[cache_key] = rows
+            return rows
         finally:
             con.close()
 

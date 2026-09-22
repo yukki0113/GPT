@@ -209,6 +209,22 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     validation = json.loads(validation_report.read_text(encoding="utf-8"))
     if not validation.get("publishable") or validation.get("status") != "PASS":
         raise WarehouseMonthBuildError("canonical Archive validation did not produce a publishable PASS shard")
+    # The child builder validates before returning.  Re-open the immutable
+    # output here as well: the Warehouse route must never report a semantic
+    # success if its final SQLite has been replaced, truncated, or lost while
+    # unwinding the parent process.
+    try:
+        with sqlite3.connect(args.archive_output) as archive_connection:
+            actual_rows = int(archive_connection.execute("SELECT COUNT(*) FROM race_bundle").fetchone()[0])
+            source_rows = int(archive_connection.execute("SELECT COUNT(*) FROM source_input").fetchone()[0])
+            integrity = archive_connection.execute("PRAGMA integrity_check").fetchone()[0]
+    except sqlite3.Error as exc:
+        raise WarehouseMonthBuildError(f"final Warehouse Archive readback failed: {exc}") from exc
+    if integrity != "ok" or actual_rows != len(index.races) or source_rows <= 0:
+        raise WarehouseMonthBuildError(
+            "final Warehouse Archive readback mismatch: "
+            f"integrity={integrity!r} rows={actual_rows}/{len(index.races)} source_inputs={source_rows}"
+        )
     summary = {
         "status": "PASS", "input_backend": "jrdb_warehouse", "target_month": target_month,
         "warehouse_generation_id": reader.manifest["generation_id"], "expected_race_count": len(index.races),
