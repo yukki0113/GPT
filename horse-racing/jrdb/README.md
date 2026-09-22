@@ -329,8 +329,10 @@ For **2010–2025 historical backfill and rebuild**, the standard Analysis input
 See `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md` and `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`.
 
 
-## RaceNote Historical Warehouse (Phase 1)
+## RaceNote Historical Warehouse (Phase 1 / Phase 2)
 
 Historical RaceNote rebuilds for 2010–2025 use the accepted dedicated JRDB Warehouse current pointer and immutable Parquet assets. The existing RaceNote normalizer and v0.2 bundle schema are unchanged. The Raw route remains only for audit, rollback, and the explicit 2010 pre-coverage previous-result boundary; it is not a silent fallback. 2026 daily/current requests remain the PACI/Raw route.
 
 See [RaceNote Historical Warehouse Operation](docs/RaceNote_Historical_Warehouse_Operation_v1.md) and the [dual-read audit](docs/RaceNote_Historical_Warehouse_Dual_Read_Audit_20260922.md).
+
+For new Archive shards and annual Archive backfills, 2010--2025 use `build_racenote_archive_month_from_warehouse.py` and `backfill_racenote_archive_year.py` with the accepted Warehouse current pointer plus materialized immutable asset roots. `build_racenote_archive_month_from_raw.py` remains rollback/audit/dual-read/legacy-only. The only allowed Raw input during a Warehouse build is the explicitly recorded 2010 pre-coverage ZED/ZKB boundary. The Archive format, full scan, publishability and immutable Release behavior are unchanged; 2026 PACI/Raw daily handling is not part of this cutover. See [Archive Backfill Operation](docs/RaceNote_Archive_Backfill_Operation.md).

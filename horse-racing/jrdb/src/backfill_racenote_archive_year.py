@@ -2,8 +2,10 @@
 """Backfill one historical year of monthly RaceNote Archive releases.
 
 The driver downloads no Analysis artifact by itself. A validated Analysis Lite
-SQLite is supplied by the caller. Monthly Archive builds share one annual Raw
-cache so BAC/KYI/CHA/CYB/SED/SKB packs are fetched only when missing.
+SQLite and a materialized accepted Warehouse generation are supplied by the
+caller.  New 2010--2025 Archive months therefore use the canonical Warehouse
+reader; Raw is retained only for audit/rollback and the explicit 2010
+pre-coverage previous-result seam.
 
 Existing compatible publishable monthly releases are resolved and validated,
 then skipped. Missing months are built, full-scan validated and published as
@@ -29,7 +31,7 @@ import racenote_archive
 import resolve_racenote_archive_release as release_resolver
 
 HERE = Path(__file__).resolve().parent
-MONTH_BUILDER = HERE / "build_racenote_archive_month_with_daily_repair.py"
+MONTH_BUILDER = HERE / "build_racenote_archive_month_from_warehouse.py"
 
 
 class YearBackfillError(RuntimeError):
@@ -43,7 +45,10 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--year", type=int, required=True)
     parser.add_argument("--analysis", type=Path, required=True)
-    parser.add_argument("--raw-dir", type=Path, required=True)
+    parser.add_argument("--warehouse-current", type=Path, required=True)
+    parser.add_argument("--warehouse-asset-root", action="append", default=[], metavar="FAMILY=PATH")
+    parser.add_argument("--boundary-raw-dir", type=Path, default=None,
+                        help="2010-only pre-coverage ZED/ZKB Raw cache")
     parser.add_argument("--work-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--report-root", type=Path, required=True)
@@ -76,7 +81,7 @@ def sha256_file(path: Path) -> str:
 def validate_inputs(args: argparse.Namespace) -> tuple[str, str]:
     """Validate stable request fields and return version forms."""
     if not 2010 <= args.year <= 2025:
-        raise YearBackfillError("--year must be between 2010 and 2025 for annual Raw mode")
+        raise YearBackfillError("--year must be between 2010 and 2025 for the Historical Warehouse mode")
     if not args.analysis.is_file():
         raise YearBackfillError(f"Analysis Lite not found: {args.analysis}")
     connection = sqlite3.connect(args.analysis)
@@ -86,6 +91,10 @@ def validate_inputs(args: argparse.Namespace) -> tuple[str, str]:
             raise YearBackfillError(f"Analysis Lite integrity_check failed: {row}")
     finally:
         connection.close()
+    if not args.warehouse_current.is_file():
+        raise YearBackfillError(f"Warehouse current pointer not found: {args.warehouse_current}")
+    if len(args.warehouse_asset_root) != 6:
+        raise YearBackfillError("six --warehouse-asset-root FAMILY=PATH values are required")
 
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", args.repo.strip()):
         raise YearBackfillError("--repo must be owner/repository")
@@ -247,10 +256,10 @@ def publish_release(
         f"- archive_schema_version: {archive_version}\n"
         "- coverage: full_month\n"
         "- publication_status: publishable\n"
-        "- source: annual Raw reconstruction\n"
+        "- source: accepted JRDB Historical Warehouse\n"
         f"- converter_git_sha: {converter_git_sha}\n\n"
         "The SQLite shard is a delivery cache for base RaceNote v0.2 only.\n"
-        "Raw/Core remain the audit and rebuild source of truth.\n",
+        "Raw/Core remain rollback, audit, 2010-boundary and legacy-reproduction inputs.\n",
         encoding="utf-8",
     )
 
@@ -319,8 +328,8 @@ def build_and_publish_month(
         target_month,
         "--analysis",
         str(args.analysis),
-        "--raw-dir",
-        str(args.raw_dir),
+        "--warehouse-current",
+        str(args.warehouse_current),
         "--work-dir",
         str(month_work),
         "--archive-output",
@@ -328,13 +337,18 @@ def build_and_publish_month(
         "--converter-git-sha",
         args.converter_git_sha,
         "--source-ref",
-        f"annual-raw-{target_month}",
-        "--fetch-missing",
+        f"warehouse-{target_month}",
         "--validation-report",
         str(month_output / "archive_validation.json"),
         "--summary",
         str(month_output / "month_build_summary.json"),
     ]
+    for value in args.warehouse_asset_root:
+        builder_command.extend(["--warehouse-asset-root", value])
+    if args.year == 2010:
+        if args.boundary_raw_dir is None:
+            raise YearBackfillError("2010 Warehouse backfill requires --boundary-raw-dir")
+        builder_command.extend(["--boundary-raw-dir", str(args.boundary_raw_dir)])
     run(builder_command)
 
     shutil.copy2(month_work / "expected_race_index.json", month_output / "expected_race_index.json")
@@ -389,7 +403,6 @@ def backfill(args: argparse.Namespace) -> dict:
     archive_version, version_file = validate_inputs(args)
     available = available_months(args.analysis, args.year)
     months = requested_months(args.months, available)
-    args.raw_dir.mkdir(parents=True, exist_ok=True)
     args.work_root.mkdir(parents=True, exist_ok=True)
     args.output_root.mkdir(parents=True, exist_ok=True)
     args.report_root.mkdir(parents=True, exist_ok=True)
@@ -399,6 +412,7 @@ def backfill(args: argparse.Namespace) -> dict:
         "year": args.year,
         "archive_version": archive_version,
         "converter_git_sha": args.converter_git_sha,
+        "input_backend": "jrdb_warehouse",
         "requested_months": [f"{month:02d}" for month in months],
         "analysis_race_counts": {
             f"{month:02d}": available[month] for month in months

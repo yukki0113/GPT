@@ -107,11 +107,37 @@ class WarehouseRaceNoteReader:
             raise WarehouseRaceNoteReaderError(f"no Warehouse rows for source_member_date={day:%Y%m%d}")
         return matches
 
-    def boundary_previous_keys(self, year: int) -> list[str]:
+    def boundary_previous_keys(
+        self,
+        year: int,
+        *,
+        race_keys: Iterable[str] | None = None,
+        source_member_date: dt.date | None = None,
+    ) -> list[str]:
+        """Return only the explicit pre-coverage keys for a requested scope."""
         require_historical_year(year)
-        return out_of_warehouse_previous_keys(self._rows("kyi", year))
+        rows = self._member(self._rows("kyi", year), source_member_date)
+        if race_keys is not None:
+            selected = {str(value) for value in race_keys}
+            rows = [row for row in rows if _text(row.get("race_key_raw")) in selected]
+        return out_of_warehouse_previous_keys(rows)
 
-    def build(self, day: dt.date, *, race_keys: Iterable[str] | None = None, source_member_date: dt.date | None = None) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+    def build(
+        self,
+        day: dt.date,
+        *,
+        race_keys: Iterable[str] | None = None,
+        source_member_date: dt.date | None = None,
+        boundary_history: Mapping[str, list[dict[str, Any]]] | None = None,
+    ) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+        """Build base bundles from Warehouse, with an explicit 2010 history seam.
+
+        ``boundary_history`` is deliberately limited to parser-shaped ZED/ZKB
+        rows whose result years are before Warehouse coverage.  It must be
+        supplied by a caller that records the exact Raw files/keys in its
+        provenance.  This is not a fallback for target BAC/KYI/CHA/CYB rows and
+        never downgrades an otherwise covered day to Raw.
+        """
         year = require_historical_year(day.year)
         keys = {str(x) for x in race_keys or []}
         bac = self._member(self._rows("bac", year), source_member_date)
@@ -125,8 +151,14 @@ class WarehouseRaceNoteReader:
         if not bac or not kyi:
             raise WarehouseRaceNoteReaderError(f"{day}: no Warehouse BAC/KYI rows")
         boundary = out_of_warehouse_previous_keys(kyi)
-        if boundary:
-            raise WarehouseRaceNoteReaderError(f"{day}: out-of-coverage previous-result keys require explicit Raw boundary fallback: {boundary[:5]}")
+        if boundary and day.year != 2010:
+            raise WarehouseRaceNoteReaderError(
+                f"{day}: out-of-coverage previous-result keys outside the 2010 boundary: {boundary[:5]}"
+            )
+        if boundary and boundary_history is None:
+            raise WarehouseRaceNoteReaderError(
+                f"{day}: out-of-coverage previous-result keys require explicit Raw boundary fallback: {boundary[:5]}"
+            )
         previous = {_text(item.get("result_key")) for row in kyi for item in unflatten_parser_row("KYI", row).get("previous", []) if _text(item.get("result_key")) and _text(item.get("result_key")) != "0"*16}
         parsed = {"BAC":select_raw_compatible_rows("BAC", bac), "KYI":select_raw_compatible_rows("KYI", kyi)}
         for relation, family in (("cha","CHA"),("cyb","CYB")):
@@ -135,18 +167,30 @@ class WarehouseRaceNoteReader:
         previous_years = sorted(
             {previous_result_year(value) for value in previous if previous_result_year(value) is not None}
         )
+        boundary_counts: dict[str, int] = {"ZED": 0, "ZKB": 0}
         for relation, family in (("zed","ZED"),("zkb","ZKB")):
-            rows: list[dict[str, Any]] = []
+            warehouse_rows: list[dict[str, Any]] = []
+            raw_rows: list[dict[str, Any]] = []
             for source_year in previous_years:
                 if source_year not in self.covered_years:
-                    raise WarehouseRaceNoteReaderError(
-                        f"{day}: previous-result year {source_year} not in accepted Warehouse coverage"
-                    )
-                rows.extend(
+                    if source_year >= 2010 or boundary_history is None:
+                        raise WarehouseRaceNoteReaderError(
+                            f"{day}: previous-result year {source_year} not in accepted Warehouse coverage"
+                        )
+                    selected_raw = [
+                        row for row in boundary_history.get(family, [])
+                        if _text(row.get("result_key")) in previous
+                    ]
+                    raw_rows.extend(selected_raw)
+                    boundary_counts[family] += len(selected_raw)
+                    continue
+                warehouse_rows.extend(
                     x for x in self._rows(relation, source_year)
                     if _text(x.get("result_key")) in previous
                 )
-            parsed[family] = select_raw_compatible_rows(family, rows)
+            # Raw history precedes Warehouse rows by source year, matching the
+            # annual reconstruction's first-wins handling of ZED/ZKB records.
+            parsed[family] = raw_rows + select_raw_compatible_rows(family, warehouse_rows)
         audit = Audit()
         builder = BundleBuilder(parsed, audit)
         horses: dict[str, list[dict[str, Any]]] = {}
@@ -155,4 +199,13 @@ class WarehouseRaceNoteReader:
         bundles = {_text(row["race_key_raw"]): builder.build(row, horses.get(_text(row["race_key_raw"]), [])) for row in parsed["BAC"]}
         if audit.bundle_errors:
             raise WarehouseRaceNoteReaderError("; ".join(audit.bundle_errors))
-        return bundles, {"generation_id":self.manifest["generation_id"],"race_count":len(bundles),"record_counts":{k:len(v) for k,v in parsed.items()},"joins":dict(builder.join),"previous_result_years":previous_years,"boundary_fallback_required":False}
+        return bundles, {
+            "generation_id": self.manifest["generation_id"],
+            "race_count": len(bundles),
+            "record_counts": {k: len(v) for k, v in parsed.items()},
+            "joins": dict(builder.join),
+            "previous_result_years": previous_years,
+            "boundary_fallback_required": bool(boundary),
+            "boundary_previous_result_keys": boundary,
+            "boundary_raw_record_counts": boundary_counts,
+        }

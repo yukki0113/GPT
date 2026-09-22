@@ -5,12 +5,24 @@ on:
     branches: [main]
     paths:
       - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_reader.py'
+      - 'horse-racing/jrdb/src/build_racenote_archive_month_from_warehouse.py'
+      - 'horse-racing/jrdb/src/audit_racenote_archive_raw_vs_warehouse.py'
+      - 'horse-racing/jrdb/src/build_racenote_archive.py'
+      - 'horse-racing/jrdb/src/backfill_racenote_archive_year.py'
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_warehouse_adapter.py'
+      - 'horse-racing/jrdb/tests/test_racenote_archive_warehouse.py'
       - '.github/workflows/jrdb_racenote_warehouse_tests.yml'
   pull_request:
     paths:
       - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_reader.py'
+      - 'horse-racing/jrdb/src/build_racenote_archive_month_from_warehouse.py'
+      - 'horse-racing/jrdb/src/audit_racenote_archive_raw_vs_warehouse.py'
+      - 'horse-racing/jrdb/src/build_racenote_archive.py'
+      - 'horse-racing/jrdb/src/backfill_racenote_archive_year.py'
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_warehouse_adapter.py'
+      - 'horse-racing/jrdb/tests/test_racenote_archive_warehouse.py'
       - '.github/workflows/jrdb_racenote_warehouse_tests.yml'
   workflow_dispatch:
 
@@ -25,9 +37,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Compile adapter
+      - name: Compile Warehouse Archive path
         working-directory: horse-racing/jrdb
-        run: python -m py_compile src/jrdb_racenote_warehouse_adapter.py
+        run: python -m py_compile src/jrdb_racenote_warehouse_adapter.py src/jrdb_racenote_warehouse_reader.py src/build_racenote_archive_month_from_warehouse.py src/audit_racenote_archive_raw_vs_warehouse.py src/backfill_racenote_archive_year.py
       - name: Run focused RaceNote Warehouse compatibility tests
         working-directory: horse-racing/jrdb/tests
-        run: python -m unittest -v test_jrdb_racenote_warehouse_adapter
+        run: python -m unittest -v test_jrdb_racenote_warehouse_adapter test_racenote_archive_warehouse

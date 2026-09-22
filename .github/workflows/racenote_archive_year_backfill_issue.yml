@@ -29,7 +29,7 @@ jobs:
       - name: Install Drive downloader
         run: |
           python -m pip install --upgrade pip
-          python -m pip install gdown
+          python -m pip install gdown duckdb
 
       - name: Parse request
         env:
@@ -56,6 +56,13 @@ jobs:
           if not analysis_url.startswith('https://drive.google.com/'):
               raise SystemExit('analysis_url must be a Google Drive URL')
 
+          warehouse_root_url = str(request.get('warehouse_root_url', '')).strip()
+          if not warehouse_root_url.startswith('https://drive.google.com/'):
+              raise SystemExit('warehouse_root_url must be a Google Drive folder URL')
+          boundary_raw_root_url = str(request.get('boundary_raw_root_url', '')).strip()
+          if year == 2010 and not boundary_raw_root_url.startswith('https://drive.google.com/'):
+              raise SystemExit('2010 requires boundary_raw_root_url (controlled pre-2010 ZED/ZKB Raw folder)')
+
           archive_version = str(request.get('archive_version', '1.0')).strip()
           if not re.fullmatch(r'\d+\.\d+', archive_version):
               raise SystemExit('archive_version must be major.minor')
@@ -79,6 +86,8 @@ jobs:
               'request_id': request_id,
               'year': year,
               'analysis_url': analysis_url,
+              'warehouse_root_url': warehouse_root_url,
+              'boundary_raw_root_url': boundary_raw_root_url,
               'archive_version': archive_version,
               'months': months,
           }
@@ -92,6 +101,55 @@ jobs:
               file.write(f'TARGET_YEAR={year}\n')
               file.write(f'ARCHIVE_VERSION={archive_version}\n')
               file.write(f'MONTHS_TEXT={months_text}\n')
+          PY
+
+      - name: Materialize accepted JRDB Warehouse once
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racenote_archive_year/warehouse
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/racenote_archive_year_request.json').read_text(encoding='utf-8'))
+          subprocess.run(
+              ['gdown', '--folder', request['warehouse_root_url'], '-O', '/tmp/racenote_archive_year/warehouse'],
+              check=True,
+          )
+          candidates = list(Path('/tmp/racenote_archive_year/warehouse').rglob('current.json'))
+          if len(candidates) != 1:
+              raise SystemExit(f'expected exactly one Warehouse current.json, got {candidates}')
+          current = candidates[0]
+          value = json.loads(current.read_text(encoding='utf-8'))
+          manifest = current.parent / str(value.get('manifest', ''))
+          if value.get('artifact_type') != 'jrdb_normalized_warehouse_current' or value.get('status') != 'accepted' or not manifest.is_file():
+              raise SystemExit('materialized Warehouse is not an accepted current/manifest pair')
+          generation = json.loads(manifest.read_text(encoding='utf-8'))
+          missing_assets = [
+              str(asset.get('relative_path'))
+              for asset in generation.get('assets', [])
+              if not (current.parent / str(asset.get('relative_path'))).is_file()
+          ]
+          if missing_assets:
+              raise SystemExit(f'materialized Warehouse is incomplete: {missing_assets[:5]}')
+          with Path('/tmp/racenote_archive_year/warehouse.env').open('w', encoding='utf-8') as file:
+              file.write(f'WAREHOUSE_CURRENT={current}\n')
+              file.write(f'WAREHOUSE_ROOT={current.parent}\n')
+          if request['year'] == 2010:
+              boundary_output = Path('/tmp/racenote_archive_year/boundary_raw')
+              subprocess.run(['gdown', '--folder', request['boundary_raw_root_url'], '-O', str(boundary_output)], check=True)
+              zed = list(boundary_output.rglob('ZED_2009.zip'))
+              zkb = list(boundary_output.rglob('ZKB_2009.zip'))
+              if not zed or not zkb:
+                  raise SystemExit('boundary Raw materialization lacks required ZED_2009.zip/ZKB_2009.zip')
+              # Both annual files must be below one Raw-cache root so the
+              # builder can resolve <root>/ZED and <root>/ZKB deterministically.
+              root = zed[0].parent.parent
+              if not (root / 'ZKB' / 'ZKB_2009.zip').is_file():
+                  raise SystemExit('boundary Raw folders do not share a cache root')
+              with Path('/tmp/racenote_archive_year/warehouse.env').open('a', encoding='utf-8') as file:
+                  file.write(f'BOUNDARY_RAW_ROOT={root}\n')
           PY
 
       - name: Download Analysis Lite once
@@ -121,16 +179,16 @@ jobs:
         run: |
           set +e
           mkdir -p \
-            /tmp/racenote_archive_year/raw \
             /tmp/racenote_archive_year/work \
             /tmp/racenote_archive_year/output \
             /tmp/racenote_archive_year/report
 
+          source /tmp/racenote_archive_year/warehouse.env
           command=(
             python horse-racing/jrdb/src/backfill_racenote_archive_year.py
             --year "$TARGET_YEAR"
             --analysis /tmp/jrdb_analysis.sqlite
-            --raw-dir /tmp/racenote_archive_year/raw
+            --warehouse-current "$WAREHOUSE_CURRENT"
             --work-root /tmp/racenote_archive_year/work
             --output-root /tmp/racenote_archive_year/output
             --report-root /tmp/racenote_archive_year/report/months
@@ -139,6 +197,12 @@ jobs:
             --converter-git-sha "$GITHUB_SHA"
             --summary /tmp/racenote_archive_year/report/year_backfill_summary.json
           )
+          for family in BAC KYI CHA CYB ZED ZKB; do
+            command+=(--warehouse-asset-root "$family=$WAREHOUSE_ROOT")
+          done
+          if [ "$TARGET_YEAR" = "2010" ]; then
+            command+=(--boundary-raw-dir "$BOUNDARY_RAW_ROOT")
+          fi
           if [ -n "$MONTHS_TEXT" ]; then
             command+=(--months "$MONTHS_TEXT")
           fi

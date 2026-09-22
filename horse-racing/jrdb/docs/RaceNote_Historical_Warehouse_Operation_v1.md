@@ -11,10 +11,17 @@
 
 `racenote_request.py` requires `--warehouse-current` plus verified local immutable `--warehouse-asset-root FAMILY=PATH` values for BAC/KYI/CHA/CYB/ZED/ZKB. The current file must be the accepted dedicated JRDB pointer and must agree with its final manifest.
 
+## Archive / backfill contract (Phase 2)
+
+- New Historical Archive shards and `backfill_racenote_archive_year.py` use `build_racenote_archive_month_from_warehouse.py`; the existing Archive schema, `full_month`/`publishable` checks, full scan, Release naming and immutable existing shards are unchanged.
+- A backfill supplies the accepted `--warehouse-current` and six materialized immutable `--warehouse-asset-root FAMILY=PATH` roots.  The builder records Warehouse asset SHA-256 values in its source manifest and does not create, copy or update Warehouse Parquet.
+- Existing publishable Release shards continue to be resolver-validated and skipped.  The legacy annual Raw builders remain available only for rollback, audit, dual-read, 2010 boundary input and legacy immutable reproduction.
+- The Warehouse Archive builder rejects 2026+; daily PACI/Raw Archive handling and all current-day orchestration are unchanged.
+
 ## Boundary fallback
 
-A 2010 target may cite results before 2010. The reader stops with a boundary error; a caller may proceed only by explicitly supplying `--raw-dir`. The output provenance records `pre_2010_previous_result_boundary`. No other Warehouse read failure may downgrade to Raw.
+A 2010 target may cite results before 2010. The caller must explicitly supply `--boundary-raw-dir`; only the matched pre-2010 ZED/ZKB rows are parsed and included alongside Warehouse target rows. The source manifest records every boundary file SHA-256, result-key count and raw-row count. No other Warehouse read failure may downgrade to Raw.
 
 ## Audit gate
 
-Use `audit_jrdb_racenote_raw_vs_warehouse.py` against frozen Raw and verified immutable assets before modifying reader logic. Compare logical bundles under Archive's semantic hash rule (only `metadata.generated_at` is excluded), plus rows, keys, schema, NULL/blank semantics, all logical values, joins, deterministic reread, and idempotence.
+Use `audit_racenote_archive_raw_vs_warehouse.py` against frozen Raw and verified immutable assets before a production Archive cutover. Compare full-month archive schema, race identities/counts, every bundle semantic SHA, source provenance, full scan and independent repeated Warehouse-build determinism. The required representative months are 2018, 2025 and a 2010 boundary month.

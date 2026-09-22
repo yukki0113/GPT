@@ -23,7 +23,7 @@ import racenote_archive as archive
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_SCHEMA = HERE.parent / "schema" / "racenote_archive_schema_v1_0.sql"
-SOURCE_MODES = ("paci", "annual_raw_reconstruction")
+SOURCE_MODES = ("paci", "annual_raw_reconstruction", "warehouse")
 COVERAGE_MODES = ("partial", "full_month")
 SHA256_PATTERN = re.compile(r"[0-9a-fA-F]{64}")
 SOURCE_REF_PATTERN = re.compile(r"[A-Za-z0-9._-]{1,120}")

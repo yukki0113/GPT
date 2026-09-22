@@ -93,22 +93,19 @@ Archiveを解決できない、対象月が未整備、validationで拒否され
  -> ZIP
 ```
 
-2025年以前:
+2010--2025:
 
 ```text
 <=2025 historical date
- -> annual Raw
- -> target-date BAC/KYI/CHA/CYBだけ抽出
- -> KYI prev1-5が明示するSED/SKBだけ抽出
- -> PACI-equivalent ZIPを再構成
- -> racenote_jrdb.py
+ -> accepted JRDB Warehouse current
+ -> RaceNote Warehouse reader / adapter
  -> Analysis Lite (race_date < target_date)
  -> Stats Mart as-of aggregation
  -> selected bundles
  -> ZIP
 ```
 
-Raw fallbackはArchive未整備期間・Archive validation失敗時の互換経路であり、Raw/Core自体は引き続き監査・再生成用のsource of truthです。
+Raw fallbackはArchive未整備期間のrollback/audit用互換経路です。Warehouse coverage内での自動Raw downgradeは行いません。2010の2009以前previous-result参照だけは、該当ZED/ZKBの明示Raw boundary fallbackをprovenance付きで許可します。
 
 ## RaceNote Archive distribution / resolution
 
@@ -156,7 +153,7 @@ tag名だけでは採用せず、SQLite metadataを最終判定根拠にしま�
 ```text
 [RACENOTE_ARCHIVE_PUBLISH] <request_id>
  -> Analysis Liteからauthoritative monthly race identityを生成
- -> annual Rawからfull-month base v0.2を再構築
+ -> accepted JRDB Warehouseからfull-month base v0.2を再構築
  -> identity exact match
  -> 360/360等のfull scan validation
  -> publishable確認
