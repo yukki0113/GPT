@@ -1,0 +1,170 @@
+name: Keirin Historical Crossyear Structure Audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[KEIRIN_CROSSYEAR_STRUCTURE_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Audit representative years
+        run: |
+          python - <<'PY'
+          import hashlib, html, json, re, time, urllib.parse, urllib.request
+          from pathlib import Path
+
+          UA = "Mozilla/5.0 (compatible; keirin-historical-research/0.1)"
+          targets = [(2017,1),(2017,7),(2020,1),(2020,7),(2023,1),(2023,7),(2025,1),(2025,7)]
+
+          def fetch(req):
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  b = r.read()
+                  return int(getattr(r, "status", 200)), r.geturl(), r.headers.get("Content-Type"), b
+
+          def get(url):
+              return fetch(urllib.request.Request(
+                  url,
+                  headers={"User-Agent": UA, "Accept": "text/html,application/xhtml+xml,*/*;q=0.8"},
+                  method="GET",
+              ))
+
+          def post(url, data, referer):
+              body = urllib.parse.urlencode(data).encode("ascii")
+              return fetch(urllib.request.Request(
+                  url,
+                  data=body,
+                  headers={
+                      "User-Agent": UA,
+                      "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+                      "Content-Type": "application/x-www-form-urlencoded",
+                      "Referer": referer,
+                  },
+                  method="POST",
+              ))
+
+          def clean_text(v):
+              return html.unescape(re.sub(r"<[^>]+>", "", v)).strip()
+
+          rows = []
+          for idx, (year, month) in enumerate(targets):
+              schedule_url = f"https://keirin.jp/pc/raceschedule?scym={month:02d}&scyy={year}"
+              s_status, s_final, s_ctype, s_body = get(schedule_url)
+              s_text = s_body.decode("utf-8", errors="replace")
+
+              event_cells = re.findall(
+                  r'<td\b[^>]*class=["\'][^"\']*bk_kaisai[^"\']*["\'][^>]*>(.*?)</td>',
+                  s_text, re.I | re.S
+              )
+              tokens = []
+              for cell in event_cells:
+                  m = re.search(
+                      r'data-pprm-href=["\']/pc/racelist["\'][^>]*'
+                      r'data-pprm-encp=["\']([^"\']+)["\'][^>]*'
+                      r'data-pprm-dkbn=["\'](\d+)["\']',
+                      cell, re.I | re.S
+                  )
+                  if m:
+                      tokens.append((m.group(1), m.group(2), cell))
+
+              item = {
+                  "year": year,
+                  "month": month,
+                  "schedule_status": s_status,
+                  "schedule_body_len": len(s_body),
+                  "schedule_sha256": hashlib.sha256(s_body).hexdigest(),
+                  "event_tokens": len(tokens),
+                  "schedule_has_racelist": "/pc/racelist" in s_text,
+                  "schedule_has_pprm_encp": "data-pprm-encp" in s_text,
+              }
+
+              if tokens:
+                  encp, dkbn, cell = tokens[0]
+                  disp = "PJ0301" if dkbn == "1" else "PJ0302"
+                  r_status, r_final, r_ctype, r_body = post(
+                      "https://keirin.jp/pc/racelist",
+                      {"encp": encp, "disp": disp},
+                      schedule_url,
+                  )
+                  r_text = r_body.decode("utf-8", errors="replace")
+                  item.update({
+                      "racelist_status": r_status,
+                      "racelist_body_len": len(r_body),
+                      "racelist_sha256": hashlib.sha256(r_body).hexdigest(),
+                      "has_json_PJ0301": "jsonData['PJ0301']" in r_text or 'jsonData["PJ0301"]' in r_text,
+                      "has_json_PJ0305": "jsonData['PJ0305']" in r_text or 'jsonData["PJ0305"]' in r_text,
+                      "has_json_PJ0306": "jsonData['PJ0306']" in r_text or 'jsonData["PJ0306"]' in r_text,
+                      "has_result_list_button": "hhbtnResultList" in r_text,
+                      "has_entry_list_button": "hhbtnSyusouList" in r_text,
+                      "has_race_no_list": "raceNoDataList" in r_text,
+                      "has_player_number": "numPlayer" in r_text,
+                      "has_result_cd": "resultCd" in r_text,
+                      "has_raceresult_div": 'id="raceresult"' in r_text,
+                      "title": (re.search(r"<title[^>]*>(.*?)</title>", r_text, re.I|re.S).group(1).strip()
+                                if re.search(r"<title[^>]*>(.*?)</title>", r_text, re.I|re.S) else None),
+                  })
+              else:
+                  item["racelist_status"] = None
+              rows.append(item)
+
+              if idx + 1 < len(targets):
+                  time.sleep(3.0)
+
+          structural_keys = [
+              "schedule_has_racelist","schedule_has_pprm_encp","racelist_status",
+              "has_json_PJ0301","has_json_PJ0305","has_json_PJ0306",
+              "has_result_list_button","has_entry_list_button","has_race_no_list",
+              "has_player_number","has_result_cd","has_raceresult_div"
+          ]
+          baseline = rows[0]
+          for row in rows:
+              row["matches_2017_01_structure"] = all(row.get(k) == baseline.get(k) for k in structural_keys)
+
+          result = {
+              "status": "success",
+              "targets": len(rows),
+              "all_schedule_200": all(r["schedule_status"] == 200 for r in rows),
+              "all_racelist_200": all(r.get("racelist_status") == 200 for r in rows),
+              "all_structure_match": all(r["matches_2017_01_structure"] for r in rows),
+              "rows": rows,
+          }
+          Path("/tmp/keirin_crossyear_structure.json").write_text(
+              json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8"
+          )
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-crossyear-structure-audit
+          path: /tmp/keirin_crossyear_structure.json
+          retention-days: 14
+
+      - name: Comment result and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo 'KEIRIN_CROSSYEAR_STRUCTURE_AUDIT_RESULT'
+            echo '~~~json'
+            cat /tmp/keirin_crossyear_structure.json
+            echo '~~~'
+          } > /tmp/comment.md
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
