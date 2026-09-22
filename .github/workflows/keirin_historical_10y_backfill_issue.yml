@@ -1,0 +1,211 @@
+name: Keirin Historical 10Y Backfill via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  collect:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[KEIRIN_10Y_BACKFILL]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        year: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Validate code
+        working-directory: keirin
+        run: |
+          PYTHONPATH=. python -m unittest discover -s tests -v
+          python -m py_compile keirin_historical/*.py
+
+      - name: Collect full year sequentially
+        id: collect
+        working-directory: keirin
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/keirin-${{ matrix.year }}/raw /tmp/keirin-${{ matrix.year }}/audit
+          set +e
+          PYTHONPATH=. python -m keirin_historical.keirin_jp_year             --year "${{ matrix.year }}"             --start-month 1             --end-month 12             --output-dir "/tmp/keirin-${{ matrix.year }}/raw"             --audit-dir "/tmp/keirin-${{ matrix.year }}/audit"             --delay-seconds 3.0             --inter-month-delay-seconds 10.0
+          ec=$?
+          echo "exit_code=$ec" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build year handoff
+        if: always()
+        env:
+          YEAR: ${{ matrix.year }}
+          EXIT_CODE: ${{ steps.collect.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          year = int(os.environ["YEAR"])
+          src = Path(f"/tmp/keirin-{year}/audit/{year}_annual_summary.json")
+          if src.exists():
+              data = json.loads(src.read_text(encoding="utf-8"))
+          else:
+              data = {
+                  "status": "failure",
+                  "year": year,
+                  "error": "annual_summary_not_created",
+                  "discovered_events": 0,
+                  "successful_events": 0,
+                  "failed_events": 0,
+                  "overall_coverage": 0.0,
+              }
+          data["collector_exit_code"] = int(os.environ.get("EXIT_CODE") or 99)
+          out = Path(f"/tmp/keirin-{year}/YEAR_HANDOFF.json")
+          out.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps(data, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload yearly Raw and audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-historical-${{ matrix.year }}
+          path: /tmp/keirin-${{ matrix.year }}
+          retention-days: 30
+          compression-level: 6
+
+      - name: Upload yearly summary artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-summary-${{ matrix.year }}
+          path: /tmp/keirin-${{ matrix.year }}/YEAR_HANDOFF.json
+          retention-days: 30
+
+      - name: Comment yearly result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YEAR: ${{ matrix.year }}
+        run: |
+          {
+            echo "KEIRIN_10Y_YEAR_RESULT ${YEAR}"
+            echo '~~~json'
+            cat "/tmp/keirin-${YEAR}/YEAR_HANDOFF.json"
+            echo '~~~'
+          } > /tmp/year-comment.md
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/year-comment.md
+
+  aggregate:
+    if: always() && startsWith(github.event.issue.title, '[KEIRIN_10Y_BACKFILL]')
+    needs: collect
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Download yearly summaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: keirin-summary-*
+          path: /tmp/summaries
+          merge-multiple: false
+
+      - name: Aggregate 2016-2025 result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          years = [{
+              "status": "success",
+              "year": 2016,
+              "discovered_events": 755,
+              "successful_events": 755,
+              "failed_events": 0,
+              "overall_coverage": 1.0,
+              "source": "verified_issue_1186",
+              "raw_artifact_source": "issue_1186_existing_artifact"
+          }]
+
+          for year in range(2017, 2026):
+              candidates = list(Path("/tmp/summaries").glob(f"keirin-summary-{year}/YEAR_HANDOFF.json"))
+              if not candidates:
+                  years.append({
+                      "status": "failure",
+                      "year": year,
+                      "discovered_events": 0,
+                      "successful_events": 0,
+                      "failed_events": 0,
+                      "overall_coverage": 0.0,
+                      "error": "summary_artifact_missing",
+                  })
+                  continue
+              years.append(json.loads(candidates[0].read_text(encoding="utf-8")))
+
+          discovered = sum(int(y.get("discovered_events", 0)) for y in years)
+          successful = sum(int(y.get("successful_events", 0)) for y in years)
+          failed = sum(int(y.get("failed_events", 0)) for y in years)
+          failed_years = [int(y["year"]) for y in years if y.get("status") != "success"]
+          result = {
+              "status": "success" if not failed_years else "partial_failure",
+              "range": "2016-2025",
+              "years": len(years),
+              "discovered_events": discovered,
+              "successful_events": successful,
+              "failed_events": failed,
+              "overall_coverage": successful / discovered if discovered else 0.0,
+              "failed_years": failed_years,
+              "drive_upload_status": "not_attempted_in_actions_no_repo_drive_credentials",
+              "drive_upload_required_for_success": False,
+              "drive_root_folder_id": "1Ai2sOLnjKskNb2I7KVPI1zYvnybd5UBq",
+              "artifact_retention_days": 30,
+              "year_results": years,
+          }
+          Path("/tmp/KEIRIN_10Y_SUMMARY.json").write_text(
+              json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload ten-year summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-10y-summary
+          path: /tmp/KEIRIN_10Y_SUMMARY.json
+          retention-days: 30
+
+      - name: Comment final result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo 'KEIRIN_10Y_BACKFILL_RESULT'
+            echo '~~~json'
+            cat /tmp/KEIRIN_10Y_SUMMARY.json
+            echo '~~~'
+          } > /tmp/final-comment.md
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/final-comment.md
+
+      - name: Close if acquisition succeeded
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          status="$(python -c 'import json; print(json.load(open("/tmp/KEIRIN_10Y_SUMMARY.json"))["status"])')"
+          if [ "$status" = "success" ]; then
+            gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+          else
+            echo "Backfill has failures; leaving issue open for repair."
+          fi
