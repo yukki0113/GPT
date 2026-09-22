@@ -15,13 +15,19 @@ KEIRIN.JPへの確認結果を受け、Historical取得・非公開保存・個�
 ユーザー指定の競輪専用フォルダ:
 - root: `1Ai2sOLnjKskNb2I7KVPI1zYvnybd5UBq`
 - `00_raw`: Raw原本
+  - `backfill_archives`: `1dNVxRqowGH8uYuYHnjpnEOAL3I0oOVmx`
 - `10_canonical`: 将来のCanonical Parquet
 - `20_audit`: source list / manifest / validation
+  - `backfill_summaries`: `1xyvr0g1T9rTFgirEmx8vlw50ERfH3hQk`
 - `30_analysis`: 将来の研究出力
 
-GitHub Actions側にGoogle Drive認証経路が無いため、Drive転送は取得成功条件に含めない。
-Raw取得が成功しDrive転送だけ未実施/失敗の場合でも、全ロールバックはしない。
-GitHub artifactを30日保持し、後続でDriveへ手動または別経路転送可能とする。
+取得成功とDrive転送成否は分離する。Raw取得が成功しDrive転送だけ失敗した場合でも全ロールバックしない。
+
+2026-09-22、GitHub artifact -> ChatGPT connector handoff -> Google Driveの経路で10年資産のDrive移送を完了。
+- `00_raw/backfill_archives`: 2016〜2025の年別ZIP 10本
+- `20_audit/backfill_summaries`: 2017〜2025年次summary ZIP 9本 + 10年summary ZIP 1本
+- 年別Raw ZIPのDrive上サイズをGitHub artifact metadataと突合済み
+- GitHub artifactの保持期限はバックアップ/再取得用であり、Driveを長期正本とする
 
 ## Phase 0 raw acquisition
 
@@ -40,7 +46,7 @@ GitHub artifactを30日保持し、後続でDriveへ手動または別経路転�
 
 標準アクセス間隔は3秒。月切替時は10秒。
 
-## 2016 verification
+## Verification / 10-year backfill
 
 2016-01 one-month PoC:
 - discovered 60
@@ -61,24 +67,29 @@ Cross-year structure audit:
 - all racelist POST HTTP 200
 - all major structure match = true
 
-## 10-year backfill
-
-2016はIssue #1186の取得済み成果を再利用し、2017〜2025を新規取得する。
+2016〜2025 full backfill:
+- Issue #1189: Close / completed
+- years: 10
+- discovered events: 8,464
+- successful events: 8,464
+- failed events: 0
+- overall coverage: 100%
+- failed years: none
 
 Workflow:
 `.github/workflows/keirin_historical_10y_backfill_issue.yml`
 
 方式:
-- year matrix 2017..2025
+- 2016はIssue #1186の取得済み成果を再利用
+- 2017〜2025を新規取得
 - `max-parallel: 1`
 - 各年12か月を逐次
 - 開催間隔3秒
 - 月間切替10秒
 - fail-fast false
 - 年ごとRaw + audit artifact
-- 30日保持
 - 最後に2016既存実績と統合して10年summaryを生成
-- Drive uploadは成功条件から分離
+- Drive uploadは取得成功条件から分離
 
 ## Raw collector
 
@@ -101,9 +112,8 @@ Workflow:
 
 ## Next gate
 
-1. 2016〜2025 backfill完了を確認する。
-2. GitHub artifactsをDrive `00_raw` / `20_audit` へ転送する。
-3. Raw HTMLからpre / postを物理分離するCanonical parserを実装する。
-4. Canonical Parquet / DuckDBへ移行する。
-5. ライン/並び情報のcoverageを別途監査する。
-6. 独自予想印・指数等の有料販売は commercial_output_pending のまま、販売開始前に追加確認する。
+1. Raw HTMLからpre / postを物理分離するCanonical parserを実装する。
+2. Canonical Parquet / DuckDBへ移行する。
+3. ライン/並び情報のcoverageを別途監査する。
+4. Canonical生成後にRaw->Canonical件数・キー・欠損・結果リーク監査を行う。
+5. 独自予想印・指数等の有料販売は commercial_output_pending のまま、販売開始前に追加確認する。
