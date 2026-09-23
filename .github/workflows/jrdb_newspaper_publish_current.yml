@@ -285,12 +285,15 @@ jobs:
               --notes "Mutable PWA distribution cache. Canonical day-package remains on Google Drive."
           fi
 
+          for asset in "$NEWSPAPER_RELEASE_ARCHIVE" "$NEWSPAPER_RELEASE_META" candidate-audit.json; do
+            gh release delete-asset "$NEWSPAPER_RELEASE_TAG" "$asset" \
+              --repo "$GITHUB_REPOSITORY" --yes >/dev/null 2>&1 || true
+          done
           gh release upload "$NEWSPAPER_RELEASE_TAG" \
             ".publish/${NEWSPAPER_RELEASE_ARCHIVE}" \
             ".publish/${NEWSPAPER_RELEASE_META}" \
             .publish/candidate-audit.json \
-            --repo "$GITHUB_REPOSITORY" \
-            --clobber
+            --repo "$GITHUB_REPOSITORY"
 
       - name: Verify release cache
         env:
@@ -324,4 +327,13 @@ jobs:
               raise SystemExit("archive size mismatch after release download")
           if hashlib.sha256(archive.read_bytes()).hexdigest() != meta.get("archive_sha256"):
               raise SystemExit("archive SHA-256 mismatch after release download")
+
+          import tarfile
+          with tarfile.open(archive, mode="r:xz") as handle:
+              member = handle.extractfile("./manifest.json") or handle.extractfile("manifest.json")
+              if member is None:
+                  raise SystemExit("manifest missing from release archive")
+              manifest_sha256 = hashlib.sha256(member.read()).hexdigest()
+          if manifest_sha256 != meta.get("manifest_sha256"):
+              raise SystemExit("manifest SHA-256 mismatch after release download")
           PY
