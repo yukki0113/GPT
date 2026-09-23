@@ -1,0 +1,62 @@
+name: JRDB Edge Parquet compatibility tests
+
+on:
+  push:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_edge_analysis_history.py'
+      - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts.py'
+      - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py'
+      - 'horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py'
+      - 'horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py'
+      - 'horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py'
+      - '.github/workflows/jrdb_edge_forward_freeze_issue.yml'
+      - '.github/workflows/jrdb_edge_parquet_tests.yml'
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_edge_analysis_history.py'
+      - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts.py'
+      - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py'
+      - 'horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py'
+      - 'horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py'
+      - 'horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py'
+      - '.github/workflows/jrdb_edge_forward_freeze_issue.yml'
+      - '.github/workflows/jrdb_edge_parquet_tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+      - name: Compile Edge Parquet modules
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/jrdb_edge_analysis_history.py \
+            horse-racing/jrdb/src/build_jrdb_edge_current_facts.py \
+            horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py \
+            horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py \
+            horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py
+      - name: Run Edge Parquet regressions
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_v02_recent_code_canonical.py
