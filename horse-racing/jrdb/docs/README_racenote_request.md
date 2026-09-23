@@ -35,6 +35,10 @@ Store ResolverはDrive live manifestのsize/SHA-256を検証し、ローカル�
 
 Store設計は `docs/JRDB_Store_Resolver_v0_1.md` を正本とします。
 
+## Current Historical source note — 2026-09-23
+
+For 2010–2025 direct historical rebuilds, current `racenote_request.py` is Warehouse-standard. Historical Raw is reserved for explicit rollback/audit and the provenance-recorded pre-2010 previous-result boundary. Publishable Archive remains a preferred delivery cache when available; legacy Raw-oriented Actions/backfill plumbing is technical debt rather than the canonical source contract.
+
 ## Temporal routing
 
 日付判定と対象範囲判定を分離します。
