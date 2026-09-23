@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 GENERATION = "jrdb_normalized_warehouse_v1_2010_2025_g20260921"
-FAMILIES = ("BAC","KYI","CHA","CYB","SED","SKB","ZED","ZKB","HJC","UKC")
+FAMILIES = ("BAC","KYI","CHA","CYB","SED","SKB","ZED","ZKB","HJC","UKC")\nRELATIONS = {\n    "BAC": {"bac"}, "KYI": {"kyi"}, "CHA": {"cha"}, "CYB": {"cyb"},\n    "SED": {"sed"}, "SKB": {"skb"}, "ZED": {"zed"}, "ZKB": {"zkb"},\n    "UKC": {"ukc", "ukc_source_record_lineage"},\n    "HJC": {"hjc_payout", "hjc_race"},\n}
 
 def download(file_id: str, out: Path) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -63,7 +63,7 @@ def main() -> int:
     if audit.get("generation_id") != GENERATION or audit.get("status") != "PASS":
         raise SystemExit("accepted audit gate failed")
     assets = manifest.get("assets") or []
-    expected = [x for x in assets if str(x.get("family","")).upper() in FAMILIES]
+    expected = [x for x in assets if str(x.get("family","")).lower() in {r for rs in RELATIONS.values() for r in rs}]
     if len(expected) != 192:
         raise SystemExit(f"expected 192 Warehouse assets, got {len(expected)}")
 
@@ -76,7 +76,7 @@ def main() -> int:
             marker_data = json.loads(marker.read_text(encoding="utf-8"))
             if marker_data.get("status") not in (None, "PASS", "COMPLETE"):
                 raise SystemExit(f"{family} completion marker is not PASS")
-        family_expected = [x for x in expected if str(x["family"]).upper() == family]
+        family_expected = [x for x in expected if str(x["family"]).lower() in RELATIONS[family]]
         family_root = a.output_root / family
         family_root.mkdir(parents=True, exist_ok=True)
         rows = []
