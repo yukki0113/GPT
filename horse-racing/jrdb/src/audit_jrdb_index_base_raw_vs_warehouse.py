@@ -182,7 +182,9 @@ def _asset_roots(values: list[str]) -> dict[str, Path]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--raw-root", type=Path, required=True)
-    parser.add_argument("--warehouse-current", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--warehouse-current", type=Path)
+    source.add_argument("--warehouse-manifest", type=Path)
     parser.add_argument("--asset-root", action="append", required=True)
     parser.add_argument("--years", nargs="+", type=int, required=True)
     parser.add_argument(
@@ -193,7 +195,11 @@ def main() -> None:
     parser.add_argument("--audit-json", type=Path)
     args = parser.parse_args()
 
-    reader = WarehouseIndexBaseReader(args.warehouse_current, asset_roots=_asset_roots(args.asset_root))
+    reader = WarehouseIndexBaseReader(
+        args.warehouse_current,
+        manifest=args.warehouse_manifest,
+        asset_roots=_asset_roots(args.asset_root),
+    )
     with tempfile.TemporaryDirectory(prefix="jrdb-index-base-dual-") as temp:
         root = Path(temp)
         raw_db = root / "raw.sqlite"
