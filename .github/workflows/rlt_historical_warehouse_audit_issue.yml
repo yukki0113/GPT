@@ -45,6 +45,10 @@ jobs:
           req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
           request_id = str(req.get('request_id') or '').strip()
           required = ('BAC','KYI','CHA','CYB','SED','UKC')
+          years = [int(y) for y in (req.get('years') or list(range(2010, 2026)))]
+          if not years or years != sorted(set(years)) or any(y < 2010 or y > 2025 for y in years):
+              raise SystemExit('years must be a unique sorted subset of 2010-2025')
+          req['years'] = years
           if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
               raise SystemExit('invalid request_id')
           if req.get('generation_id') != 'jrdb_normalized_warehouse_v1_2010_2025_g20260921':
@@ -124,16 +128,19 @@ jobs:
           JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
           mkdir -p /tmp/rlt_historical_audit/raw /tmp/rlt_historical_audit/report
-          python horse-racing/jrdb/src/fetch_jrdb_history.py             --from-year 2010 --to-year 2025             --kinds BAC KYI CHA CYB SED UKC             --output-dir /tmp/rlt_historical_audit/raw             --manifest /tmp/rlt_historical_audit/report/raw_fetch_manifest.jsonl             --sleep-seconds 0.5 --max-retries 4 --retry-backoff-seconds 2             > /tmp/rlt_historical_audit/report/raw_fetch_stdout.log             2> /tmp/rlt_historical_audit/report/raw_fetch_stderr.log
+          FROM_YEAR="$(python -c "import json;d=json.load(open('/tmp/rlt_historical_audit/request.json'));print(min(d['years']))")"
+          TO_YEAR="$(python -c "import json;d=json.load(open('/tmp/rlt_historical_audit/request.json'));print(max(d['years']))")"
+          python horse-racing/jrdb/src/fetch_jrdb_history.py             --from-year "$FROM_YEAR" --to-year "$TO_YEAR"             --kinds BAC KYI CHA CYB SED UKC             --output-dir /tmp/rlt_historical_audit/raw             --manifest /tmp/rlt_historical_audit/report/raw_fetch_manifest.jsonl             --sleep-seconds 0.5 --max-retries 4 --retry-backoff-seconds 2             > /tmp/rlt_historical_audit/report/raw_fetch_stdout.log             2> /tmp/rlt_historical_audit/report/raw_fetch_stderr.log
 
       - name: Prepare original staging archive names
         run: |
           python - <<'PY'
-          import os
+          import json, os
           from pathlib import Path
           root=Path('/tmp/rlt_historical_audit')
+          req=json.loads((root/'request.json').read_text(encoding='utf-8'))
           for family in ('BAC','KYI','CHA','CYB','SED','UKC'):
-              for year in range(2010,2026):
+              for year in req['years']:
                   source=root/'raw'/family/f'{family}_{year}.zip'
                   if not source.is_file():
                       raise SystemExit(f'missing fetched Raw: {source}')
@@ -168,6 +175,7 @@ jobs:
           created_at=os.environ['CREATED_AT']
           generation=os.environ['GEN']
           root=Path(os.environ['ROOT'])
+          req=json.loads((root/'request.json').read_text(encoding='utf-8'))
 
           from build_jrdb_normalized_warehouse import ArchiveSpec, build_generation
 
@@ -177,7 +185,7 @@ jobs:
                   year=year,
                   path=root/'rebuild_input'/family/str(year)/f'{family}.zip',
               )
-              for year in range(2010,2026)
+              for year in req['years']
           ]
           result=build_generation(
               specs,
@@ -202,6 +210,8 @@ jobs:
 
           root=Path('/tmp/rlt_historical_audit')
           final=json.loads((root/'final'/'manifest.json').read_text(encoding='utf-8'))
+          req=json.loads((root/'request.json').read_text(encoding='utf-8'))
+          selected_years=set(req['years'])
           relation_map={
               'BAC':{'bac'}, 'KYI':{'kyi'}, 'CHA':{'cha'}, 'CYB':{'cyb'},
               'SED':{'sed'}, 'UKC':{'ukc','ukc_source_record_lineage'},
@@ -212,11 +222,11 @@ jobs:
               rebuilt=json.loads((root/'rebuild_report'/f'{family}.json').read_text(encoding='utf-8'))
               expected={
                   (a['family'],int(a['year'])):a for a in final['assets']
-                  if a['family'] in relations and 2010<=int(a['year'])<=2025
+                  if a['family'] in relations and int(a['year']) in selected_years
               }
               actual={
                   (a['family'],int(a['year'])):a for a in rebuilt['assets']
-                  if a['family'] in relations and 2010<=int(a['year'])<=2025
+                  if a['family'] in relations and int(a['year']) in selected_years
               }
               keys_ok=set(expected)==set(actual)
               details={}
@@ -257,7 +267,8 @@ jobs:
         run: |
           set +e
           ROOT=/tmp/rlt_historical_audit
-          python horse-racing/jrdb/src/audit_jrdb_index_base_raw_vs_warehouse.py             --raw-root "$ROOT/raw"             --warehouse-manifest "$ROOT/final/manifest.json"             --asset-root "BAC=$ROOT/rebuilt/BAC"             --asset-root "KYI=$ROOT/rebuilt/KYI"             --asset-root "CHA=$ROOT/rebuilt/CHA"             --asset-root "CYB=$ROOT/rebuilt/CYB"             --asset-root "SED=$ROOT/rebuilt/SED"             --asset-root "UKC=$ROOT/rebuilt/UKC"             --years {2010..2025}             --audit-json "$ROOT/output/audit.json"
+          YEARS="$(python -c "import json;print(' '.join(map(str,json.load(open('$ROOT/request.json'))['years'])))")"
+          python horse-racing/jrdb/src/audit_jrdb_index_base_raw_vs_warehouse.py             --raw-root "$ROOT/raw"             --warehouse-manifest "$ROOT/final/manifest.json"             --asset-root "BAC=$ROOT/rebuilt/BAC"             --asset-root "KYI=$ROOT/rebuilt/KYI"             --asset-root "CHA=$ROOT/rebuilt/CHA"             --asset-root "CYB=$ROOT/rebuilt/CYB"             --asset-root "SED=$ROOT/rebuilt/SED"             --asset-root "UKC=$ROOT/rebuilt/UKC"             --years $YEARS             --audit-json "$ROOT/output/audit.json"
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit $code
