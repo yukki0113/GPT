@@ -16,7 +16,7 @@ def download(file_id: str, out: Path) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = out.with_suffix(out.suffix + ".part")
     tmp.unlink(missing_ok=True)
-    subprocess.run(["gdown", "--id", file_id, "-O", str(tmp), "--quiet"], check=True)
+    subprocess.run(["gdown", file_id, "-O", str(tmp), "--quiet"], check=True)
     tmp.replace(out)
 
 def sha256(path: Path) -> str:
@@ -30,7 +30,7 @@ def folder_download(folder_id: str, out: Path) -> None:
     out.mkdir(parents=True, exist_ok=True)
     subprocess.run([
         "gdown", "--folder", f"https://drive.google.com/drive/folders/{folder_id}",
-        "-O", str(out), "--remaining-ok", "--quiet",
+        "-O", str(out), "--quiet",
     ], check=True)
 
 def main() -> int:
