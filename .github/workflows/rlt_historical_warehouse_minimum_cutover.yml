@@ -1,0 +1,140 @@
+name: RL-T Historical Warehouse Minimum Cutover
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  cutover:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RL_T_HISTORICAL_WAREHOUSE_CUTOVER]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install exact Warehouse runtime
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'duckdb==1.1.3' 'pyarrow==25.0.1' 'PyYAML==6.0.3' \
+            'requests==2.34.2' 'gdown==6.2.0' \
+            'numpy==2.5.3' 'pandas==3.0.5' 'scipy==1.18.1' 'scikit-learn==1.9.1'
+          PYTHONPATH=tools/data-storage python -m data_storage check-deps
+      - name: Parse request
+        id: request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          if req.get('generation_id') != 'jrdb_normalized_warehouse_v1_2010_2025_g20260921':
+              raise SystemExit('unexpected accepted generation')
+          for k in ('manifest_id','audit_id'):
+              if not re.fullmatch(r'[A-Za-z0-9_-]{10,}',str(req.get(k) or '')):
+                  raise SystemExit(f'invalid {k}')
+          folders=req.get('staging_folder_ids') or {}
+          required=('BAC','KYI','CHA','CYB','SED','SKB','ZED','ZKB','HJC','UKC')
+          if set(folders)!=set(required):
+              raise SystemExit('staging_folder_ids must contain all 10 families')
+          if int(req.get('from_year',2010))!=2010 or int(req.get('to_year',2025))!=2025:
+              raise SystemExit('minimum cutover requires 2010..2025')
+          Path('/tmp/rlt_cutover').mkdir(parents=True,exist_ok=True)
+          Path('/tmp/rlt_cutover/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2),encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as h:
+              h.write('request_id='+str(req.get('request_id') or 'rlt-cutover')+'\\n')
+          PY
+      - name: Materialize accepted immutable Warehouse
+        id: warehouse
+        run: |
+          set -euo pipefail
+          ROOT=/tmp/rlt_cutover
+          ARGS=()
+          while IFS= read -r line; do ARGS+=(--asset-root "$line"); done < <(
+            python - <<'PY'
+          import json
+          d=json.load(open('/tmp/rlt_cutover/request.json'))
+          for f,i in d['staging_folder_ids'].items(): print(f+'='+i)
+          PY
+          )
+          python horse-racing/jrdb/src/materialize_jrdb_warehouse_from_drive.py \
+            --manifest-id "$(python -c "import json;print(json.load(open('$ROOT/request.json'))['manifest_id'])")" \
+            --audit-id "$(python -c "import json;print(json.load(open('$ROOT/request.json'))['audit_id'])")" \
+            --output-root "$ROOT/warehouse" "\${ARGS[@]}" \
+            --result-json "$ROOT/report/warehouse_materialization.json"
+      - name: Fetch Raw only for equivalence audit
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          ROOT=/tmp/rlt_cutover
+          mkdir -p "$ROOT/raw" "$ROOT/report"
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2010 --to-year 2025 \
+            --kinds BAC KYI CHA CYB SED UKC \
+            --output-dir "$ROOT/raw" \
+            --manifest "$ROOT/report/raw_fetch_manifest.jsonl" \
+            --sleep-seconds 0.5 --max-retries 4 --retry-backoff-seconds 2
+      - name: Build record-hash audit compatibility
+        run: |
+          python horse-racing/jrdb/src/build_jrdb_index_base_record_hash_compat.py \
+            --raw-root /tmp/rlt_cutover/raw --years $(seq 2010 2025) \
+            --output-root /tmp/rlt_cutover/record_hash_compat
+      - name: Run minimum cutover gates
+        id: gates
+        env:
+          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
+        run: |
+          set +e
+          ROOT=/tmp/rlt_cutover
+          ARGS=()
+          while IFS= read -r line; do ARGS+=(--asset-root "$ROOT/warehouse/$line"); done < <(
+            python - <<'PY'
+          for f in ('BAC','KYI','CHA','CYB','SED','SKB','ZED','ZKB','HJC','UKC'): print(f)
+          PY
+          )
+          python horse-racing/jrdb/src/run_rl_t_historical_warehouse_minimum_cutover.py \
+            --warehouse-manifest "$ROOT/warehouse/manifest.json" \
+            "\${ARGS[@]}" \
+            --raw-root "$ROOT/raw" \
+            --record-hash-compat-manifest "$ROOT/record_hash_compat/manifest.json" \
+            --work-root "$ROOT/work" \
+            --source-git-commit "$GITHUB_SHA" \
+            --result-json "$ROOT/report/cutover_result.json"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/rlt_cutover/report/cutover_result.json')
+          result=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status':'FAIL'}
+          Path('/tmp/result.md').write_text('RL_T_HISTORICAL_WAREHOUSE_CUTOVER_RESULT\\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          PY
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/result.md
+      - name: Upload cutover evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-historical-warehouse-cutover-${{ github.run_id }}
+          path: /tmp/rlt_cutover/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Fail closed
+        if: always()
+        run: test '${{ steps.gates.outputs.exit_code }}' = '0'
