@@ -149,15 +149,9 @@
   </main>
 
   <footer><small>Kenshow_Labo. / 条件別集計</small></footer>
-  <script src="./vendor/duckdb/apache-arrow.umd.js"></script>
-  <script type="importmap">
-    {"imports":{"apache-arrow":"./fact-lite-arrow-bridge.mjs"}}
-  </script>
-  <script type="module" src="./fact-lite-duckdb.js?v=6"></script>
-  <script src="./fact-lite-query-adapter.js?v=1"></script>
-  <script src="./fact-lite.js?v=20"></script>
-  <script src="./fact-lite-v3.js?v=3"></script>
-  <script src="./fact-lite-sort.js?v=19"></script>
+  <script src="./fact-lite.js?v=21"></script>
+  <script src="./fact-lite-v3.js?v=4"></script>
+  <script src="./fact-lite-sort.js?v=20"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js", { scope: "./" })
