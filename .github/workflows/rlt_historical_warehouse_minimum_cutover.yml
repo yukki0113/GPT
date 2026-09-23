@@ -69,7 +69,7 @@ jobs:
           python horse-racing/jrdb/src/materialize_jrdb_warehouse_from_drive.py \
             --manifest-id "$(python -c "import json;print(json.load(open('$ROOT/request.json'))['manifest_id'])")" \
             --audit-id "$(python -c "import json;print(json.load(open('$ROOT/request.json'))['audit_id'])")" \
-            --output-root "$ROOT/warehouse" "\${ARGS[@]}" \
+            --output-root "$ROOT/warehouse" "${ARGS[@]}" \
             --result-json "$ROOT/report/warehouse_materialization.json"
       - name: Fetch Raw only for equivalence audit
         env:
@@ -105,7 +105,7 @@ jobs:
           )
           python horse-racing/jrdb/src/run_rl_t_historical_warehouse_minimum_cutover.py \
             --warehouse-manifest "$ROOT/warehouse/manifest.json" \
-            "\${ARGS[@]}" \
+            "${ARGS[@]}" \
             --raw-root "$ROOT/raw" \
             --record-hash-compat-manifest "$ROOT/record_hash_compat/manifest.json" \
             --work-root "$ROOT/work" \
