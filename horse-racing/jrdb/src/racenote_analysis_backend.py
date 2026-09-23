@@ -156,6 +156,9 @@ class DuckDBParquetAnalysisBackend:
         }
 
     def execute(self, sql: str, parameters: list[Any] | tuple[Any, ...] = ()) -> Result:
+        # The engine keeps its stable logical table name; Parquet exposes one
+        # validated DuckDB view for that logical table.
+        sql = sql.replace(TABLE, "analysis_fact")
         return Result(self.connection.execute(sql, parameters))
 
     def close(self) -> None:
