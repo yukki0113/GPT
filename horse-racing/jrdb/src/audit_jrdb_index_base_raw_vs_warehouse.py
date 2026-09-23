@@ -88,6 +88,53 @@ def _record_hash_profile(columns: list[str], rows: list[tuple]) -> dict[str, Any
     }
 
 
+def _column_diagnostics(
+    table: str,
+    columns: list[str],
+    raw_rows: list[tuple],
+    wh_rows: list[tuple],
+    *,
+    sample_limit: int = 5,
+) -> dict[str, Any]:
+    key_columns = KEYS[table]
+    key_indexes = [columns.index(name) for name in key_columns]
+    raw_keys = [tuple(row[i] for i in key_indexes) for row in raw_rows]
+    wh_keys = [tuple(row[i] for i in key_indexes) for row in wh_rows]
+    keys_equal = raw_keys == wh_keys
+    result: dict[str, Any] = {
+        "key_columns": list(key_columns),
+        "ordered_keys_equal": keys_equal,
+        "mismatch_counts": {},
+        "samples": {},
+    }
+    if not keys_equal:
+        raw_set = set(raw_keys)
+        wh_set = set(wh_keys)
+        result["raw_only_key_count"] = len(raw_set - wh_set)
+        result["warehouse_only_key_count"] = len(wh_set - raw_set)
+        result["raw_only_key_samples"] = [list(item) for item in sorted(raw_set - wh_set)[:sample_limit]]
+        result["warehouse_only_key_samples"] = [list(item) for item in sorted(wh_set - raw_set)[:sample_limit]]
+        return result
+
+    for idx, column in enumerate(columns):
+        count = 0
+        samples: list[dict[str, Any]] = []
+        for row_no, (raw_row, wh_row) in enumerate(zip(raw_rows, wh_rows)):
+            if raw_row[idx] == wh_row[idx]:
+                continue
+            count += 1
+            if len(samples) < sample_limit:
+                samples.append({
+                    "key": list(raw_keys[row_no]),
+                    "raw": raw_row[idx],
+                    "warehouse": wh_row[idx],
+                })
+        if count:
+            result["mismatch_counts"][column] = count
+            result["samples"][column] = samples
+    return result
+
+
 def _representative(table: str, columns: list[str], rows: list[tuple]) -> dict[str, Any]:
     index = {name: columns.index(name) for name in columns}
     out: dict[str, Any] = {"rows": len(rows)}
@@ -139,6 +186,12 @@ def compare_databases(raw_db: Path, warehouse_db: Path, warehouse_repeat_db: Pat
                     "warehouse": _representative(table, wh_cols, wh_rows),
                 },
                 "idempotence_equal": wh_hash == repeat_hash,
+                "column_diagnostics": _column_diagnostics(
+                    table,
+                    raw_cols,
+                    raw_rows,
+                    wh_rows,
+                ) if raw_cols == wh_cols and len(raw_rows) == len(wh_rows) else None,
             }
             table_result["pass"] = all(
                 table_result[key]
