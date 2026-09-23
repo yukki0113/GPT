@@ -5,7 +5,7 @@ This is a read-only consumer: it downloads immutable Parquet objects and
 sidecars, never rebuilds or uploads Warehouse assets.
 """
 from __future__ import annotations
-import argparse, hashlib, json, shutil, subprocess
+import argparse, hashlib, json, shutil, subprocess, time
 from pathlib import Path
 from typing import Any
 
@@ -39,14 +39,23 @@ def folder_download(folder_id: str, out: Path) -> None:
         "-O", str(out), "--quiet",
     ]
     last = None
-    for attempt in range(1, 4):
+    # Folder listings are occasionally transiently unavailable from Drive.
+    # Keep the immutable source and verification rules unchanged; only retry
+    # the read-only folder materialization with bounded exponential backoff.
+    max_attempts = 8
+    for attempt in range(1, max_attempts + 1):
         proc = subprocess.run(cmd, check=False)
         if proc.returncode == 0:
             return
         last = proc.returncode
-        if attempt < 3:
-            import time
-            time.sleep(3 * attempt)
+        if attempt < max_attempts:
+            delay = min(60, 5 * (2 ** (attempt - 1)))
+            print(
+                f"Drive folder materialization attempt {attempt}/{max_attempts} "
+                f"failed for {folder_id}; retrying in {delay}s",
+                flush=True,
+            )
+            time.sleep(delay)
     raise subprocess.CalledProcessError(last or 1, cmd)
 
 def main() -> int:
