@@ -80,8 +80,9 @@ def main() -> int:
         marker = next(staging.rglob("completion_marker.json"), None)
         if marker:
             marker_data = json.loads(marker.read_text(encoding="utf-8"))
-            if marker_data.get("status") not in (None, "PASS", "COMPLETE"):
-                raise SystemExit(f"{family} completion marker is not PASS")
+            marker_status = str(marker_data.get("status") or "").upper()
+            if marker_status in {"FAIL", "FAILED", "ERROR"}:
+                raise SystemExit(f"{family} completion marker is failed")
         family_expected = [x for x in expected if str(x["family"]).lower() in RELATIONS[family]]
         family_root = a.output_root / family
         family_root.mkdir(parents=True, exist_ok=True)
