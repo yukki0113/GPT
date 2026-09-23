@@ -153,6 +153,12 @@ jobs:
                       shutil.copy2(source,target)
           PY
 
+      - name: Build legacy record-hash compatibility sidecar
+        run: |
+          ROOT=/tmp/rlt_historical_audit
+          YEARS="$(python -c "import json;print(' '.join(map(str,json.load(open('$ROOT/request.json'))['years'])))")"
+          python horse-racing/jrdb/src/build_jrdb_index_base_record_hash_compat.py             --raw-root "$ROOT/raw"             --years $YEARS             --output-root "$ROOT/record_hash_compat"
+
       - name: Rebuild accepted Warehouse assets from frozen semantics
         id: rebuild
         run: |
@@ -268,7 +274,7 @@ jobs:
           set +e
           ROOT=/tmp/rlt_historical_audit
           YEARS="$(python -c "import json;print(' '.join(map(str,json.load(open('$ROOT/request.json'))['years'])))")"
-          python horse-racing/jrdb/src/audit_jrdb_index_base_raw_vs_warehouse.py             --raw-root "$ROOT/raw"             --warehouse-manifest "$ROOT/final/manifest.json"             --asset-root "BAC=$ROOT/rebuilt/BAC"             --asset-root "KYI=$ROOT/rebuilt/KYI"             --asset-root "CHA=$ROOT/rebuilt/CHA"             --asset-root "CYB=$ROOT/rebuilt/CYB"             --asset-root "SED=$ROOT/rebuilt/SED"             --asset-root "UKC=$ROOT/rebuilt/UKC"             --years $YEARS             --audit-json "$ROOT/output/audit.json"
+          python horse-racing/jrdb/src/audit_jrdb_index_base_raw_vs_warehouse.py             --raw-root "$ROOT/raw"             --warehouse-manifest "$ROOT/final/manifest.json"             --asset-root "BAC=$ROOT/rebuilt/BAC"             --asset-root "KYI=$ROOT/rebuilt/KYI"             --asset-root "CHA=$ROOT/rebuilt/CHA"             --asset-root "CYB=$ROOT/rebuilt/CYB"             --asset-root "SED=$ROOT/rebuilt/SED"             --asset-root "UKC=$ROOT/rebuilt/UKC"             --record-hash-compat-manifest "$ROOT/record_hash_compat/manifest.json"             --years $YEARS             --audit-json "$ROOT/output/audit.json"
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit $code
@@ -313,6 +319,7 @@ jobs:
             /tmp/rlt_historical_audit/output/
             /tmp/rlt_historical_audit/report/
             /tmp/rlt_historical_audit/rebuild_report/
+            /tmp/rlt_historical_audit/record_hash_compat/
           if-no-files-found: warn
           retention-days: 14
 
