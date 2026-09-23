@@ -1,3 +1,13 @@
+## Current Drive / source map — 2026-09-23
+
+- New JRDB root: `GPT/horse-racing`.
+- Raw: `00_raw`.
+- Historical normalized canonical: `10_warehouse/jrdb/v1/current.json`.
+- New marts: `20_mart`.
+- Old top-level Drive `GPT/JRDB` remains only for legacy Analysis/Fact Lite/Stats/store compatibility; do not delete yet.
+- `local-horse-racing` is NAR scope, not the JRDB Warehouse.
+- Current placement audit: `docs/JRDB_Source_of_Truth_and_Storage_Map_20260923.md`.
+
 # JRDB thread handoff
 
 Last reviewed: 2026-09-23
