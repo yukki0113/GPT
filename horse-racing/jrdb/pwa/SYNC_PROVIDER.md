@@ -14,7 +14,6 @@ PWAは上流データの意味を再計算せず、manifest / SHA / schema / aud
 | --- | --- | --- | --- |
 | Stats Mart | `jrdb-stats-mart-current` | `./data/` | 補助集計DB |
 | Fact Lite | `jrdb-pwa-fact-lite-current` | `./data/fact-lite/` | 条件別集計の主DB |
-| Fact Lite Parquet（検証資産） | `jrdb-pwa-fact-lite-parquet-current` | `./data/fact-lite-parquet/` | 同値監査・研究用。条件別集計browserの通常入力ではない |
 | Newspaper | `jrdb-newspaper-current` | `./data/newspaper/current/` | 当日競馬新聞 |
 
 Release tag名は固定ですが、assetのdata version / SHA / sizeは世代更新されます。README等に現在値を固定せず、実行時にmanifest / release metadataを確認します。
@@ -46,7 +45,7 @@ updated / validated Analysis on Google Drive
 
 Fact Lite v0.3 publisherは少なくとも `win5_leg_no`、schema version、row count、race-name lookup、previous-distance / previous-class、WIN5 rows、SHA、size、SQLite integrityを検証します。
 
-Fact Lite ParquetはSQLiteとの同値監査や上流処理の検証資産として残る場合がありますが、条件別集計browserの通常入力にはしません。browser deliveryの正式経路は `jrdb-pwa-fact-lite-current` の単一SQLite + manifestです。上流のAnalysisはParquet正本を維持し、そこからFact Lite SQLiteを再生成します。Parquet browser releaseの恒久的な二重配布は採用しません。
+上流のAnalysisはParquet正本を維持し、publisherはcurrent manifestに列挙されたpartitionだけからFact Lite SQLiteを再生成します。browser deliveryの正式経路は `jrdb-pwa-fact-lite-current` の単一SQLite + manifestです。Parquet / DuckDB-Wasm資産を同値監査・開発検証として保持することはありますが、browser Release、Pages staging、通常runtimeには含めません。
 
 ### Newspaper
 
@@ -76,19 +75,7 @@ horse-racing/jrdb/pwa/ static shell
 
 したがって、consumer全体の配布完了判定は「個別Releaseが更新された」だけではなく、**そのcurrent Release群を含む `JRDB PWA Pages` の成功**まで確認します。
 
-## Known operational limitation: partial publisher deploy
-
-2026-09時点のworkflow構成では、Stats Mart publisherとFact Lite publisher自身にもPages deploy stepがありますが、そこで組み立てるartifactはfull-site構成ではありません。
-
-- `JRDB PWA Publish Data`: static + Stats Mart中心。Fact Lite / Newspaperをfull-site同様には同梱しない
-- `JRDB PWA Fact Lite Publish`: static + Stats Mart + Fact Lite中心。Newspaperをfull-site同様には同梱しない
-- `JRDB PWA Pages`: static + Stats Mart + Fact Lite + Newspaperを集約するfull-site recomposer
-
-また、`JRDB PWA Pages` の `workflow_run` 自動triggerは現在 `JRDB Newspaper Current Publish` 完了を対象としており、Stats Mart / Fact Lite publisher完了そのものは同じ形ではtriggerされません。
-
-そのためStats Mart / Fact Lite更新後は、**個別publisherのPages成功だけを最終完了と見なさず、続けてfull `JRDB PWA Pages` の実行・成功を確認してください。** 必要なら `workflow_dispatch` またはPages workflowが発火する正規経路を使用します。
-
-これは現在の運用上の既知制約であり、将来publisherからpartial Pages deployを外してfull recomposerへ一本化するrefactor候補です。現時点のsourceを確認せず「すでに一本化済み」と仮定しません。
+Fact Lite publisherはReleaseのみを更新し、Pagesをpartial deployしません。successful `JRDB PWA Fact Lite Publish` は`workflow_run`でfull `JRDB PWA Pages` を起動します。Stats Martは旧思想の補助資産として既存経路を維持しますが、条件別集計の更新完了はFact Lite SQLite Releaseとfull-site Pagesの両方の成功で判定します。
 
 ## Browser flow: SQLite channels
 
