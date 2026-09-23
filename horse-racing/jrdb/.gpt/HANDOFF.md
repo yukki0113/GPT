@@ -1,6 +1,6 @@
 # JRDB thread handoff
 
-Last reviewed: 2026-09-17
+Last reviewed: 2026-09-23
 
 この文書は、会話量上限・スレッド分割・担当変更後に **現在のJRDBプロジェクトを短時間で安全に再開するためのbootstrap** です。
 
@@ -67,6 +67,10 @@ JRDB Raw / PACI
 - Performance-positiveを「馬券妙味あり」と言い換えない
 - CONFIRMED / SUGGESTIVEやoverlap Edgeのstrength・ROI・lift・qを加算しない
 - current matchingはpre-race exact match。SED結果、着順、払戻、最終オッズ等を混入させない
+- Edge current factsのAnalysis history正本はAnalysis v1.3 Parquet current generation。`src/jrdb_edge_analysis_history.py` がvalidated currentをDuckDBでexact lookupする
+- SQLite Analysisはrollback / compatibility / equivalence audit専用。通常のEdge current matchingで独立正本として使わない
+- TRUE_FORWARD FreezeではAnalysis bundle内 `current.json` が指すgenerationを固定し、generation ID / manifest SHAをprovenanceへ残す
+- 2026-09-19実データでSQLite compatibilityとParquet currentの `current_facts.jsonl` / `edge_matches.jsonl` がbyte-identicalであることをIssue #1197 / run 35814265623で確認済み
 - consumer側でEdge条件を再実装しない
 - v0.1 matcherはbackward compatibility資産。v0.2仕様を直接混ぜない
 
