@@ -10,7 +10,7 @@ This change set implements the fail-closed operational path, but does not claim 
 
 - Main before: `53e52914aceb3fbb8ed7b1dfc4d3877d24923028`
 - Implementation branch: `codex/rl-t-minimum-cutover-20260923`
-- Latest implementation commit: `0b2966af754c69d7b93240b7e130387f3db43848`
+- Latest implementation commit: `889548ae95ae8838083058e7363cfa6ddb929c6f`
 - Accepted generation: `jrdb_normalized_warehouse_v1_2010_2025_g20260921`
 - Historical coverage: 2010–2025
 - Warehouse mode: immutable accepted Parquet staging references
