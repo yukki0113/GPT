@@ -36,6 +36,7 @@ from jrdb_racenote_warehouse_reader import (
 )
 from jrdb_store import StoreError, StoreResolver, manifest_path_from_args
 from racenote_analysis_backend import AnalysisBackendError, open_analysis_backend
+from racenote_history_enrichment import enrich_production_many
 
 HERE = Path(__file__).resolve().parent
 FETCH_PACI = HERE / "fetch_jrdb_paci.py"
@@ -481,6 +482,36 @@ def enrich_bundle(bundle: Path, analysis: Path, analysis_backend: str, output_di
     return target
 
 
+def enrich_bundles_shared(
+    bundles: list[Path],
+    analysis: Path,
+    analysis_backend: str,
+    output_dir: Path,
+    stats_window_years: int,
+) -> list[Path]:
+    """Enrich a request in one process with one validated backend connection."""
+    bases = [json.loads(path.read_text(encoding="utf-8")) for path in bundles]
+    backend = open_analysis_backend(
+        analysis_root=analysis if analysis_backend == "parquet" else None,
+        analysis_db=analysis if analysis_backend == "sqlite" else None,
+        backend=analysis_backend,
+    )
+    try:
+        enriched_items = enrich_production_many(bases, backend, None, stats_window_years)
+        outputs: list[Path] = []
+        for bundle, (enriched, _warnings) in zip(bundles, enriched_items):
+            target = output_dir / bundle.name
+            metadata = enriched.setdefault("metadata", {}).setdefault("history_enrichment", {})
+            metadata["analysis_backend"] = backend.source_info.get("backend", "sqlite")
+            metadata["analysis_source"] = {**backend.source_info, **backend.metrics()}
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(enriched, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            outputs.append(target)
+        return outputs
+    finally:
+        backend.close()
+
+
 def package_output(
     output_dir: Path,
     request: RaceNoteRequest,
@@ -584,16 +615,20 @@ def main() -> int:
         "archive": archive_resolution,
     }
     selected = select_bundles(base_dir, request)
-    generated = [
-        enrich_bundle(
-            bundle,
+    if analysis_backend == "parquet":
+        generated = enrich_bundles_shared(
+            selected,
             analysis,
             analysis_backend,
             final_dir,
             args.stats_window_years,
         )
-        for bundle in selected
-    ]
+    else:
+        # Keep the compatibility route as the legacy per-bundle comparator.
+        generated = [
+            enrich_bundle(bundle, analysis, analysis_backend, final_dir, args.stats_window_years)
+            for bundle in selected
+        ]
     zip_path = package_output(
         final_dir,
         request,
