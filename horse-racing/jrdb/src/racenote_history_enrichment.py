@@ -34,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Production RaceNote v1.0 history enrichment")
     parser.add_argument("--bundle", type=Path, required=True)
     parser.add_argument("--analysis", type=Path, required=True)
-    parser.add_argument("--mart", type=Path, required=True)
+    parser.add_argument("--mart", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--stats-window-years",
@@ -59,8 +59,7 @@ def production_metadata(
         "stats_window_years": stats_window_years,
         "as_of_exclusive": race_date,
         "future_leakage_policy": (
-            "prior completed years from Stats Mart; target year from Analysis Lite "
-            "with race_date < target_date"
+            "all rolling statistics from JRDB Analysis canonical with race_date < target_date"
         ),
         "distance_range_policy": {
             "ranges": [dict(item) for item in engine.DISTANCE_RANGE_DEFINITIONS],
@@ -116,19 +115,16 @@ def main() -> int:
     base = json.loads(args.bundle.read_text(encoding="utf-8"))
 
     analysis = sqlite3.connect(args.analysis)
-    mart = sqlite3.connect(args.mart)
     analysis.row_factory = sqlite3.Row
-    mart.row_factory = sqlite3.Row
     try:
         enriched, warnings = enrich_production(
             base,
             analysis,
-            mart,
+            None,
             args.stats_window_years,
         )
     finally:
         analysis.close()
-        mart.close()
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

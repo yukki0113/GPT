@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add Analysis Lite / Stats Mart history enrichment to a RaceNote bundle."""
+"""Add Analysis-canonical history enrichment to a RaceNote bundle."""
 from __future__ import annotations
 
 import argparse
@@ -287,16 +287,21 @@ def mart_prior(
     distance_where_sql: str,
     distance_parameters: list[int],
 ) -> tuple[int, int, int]:
-    """Aggregate prior completed years from Stats Mart."""
+    """Aggregate prior completed years directly from Analysis canonical.
+
+    table is retained only for call compatibility with the frozen engine
+    surface; the active query never reads Stats Mart.
+    """
+    del table
     if year_end < year_start:
         return 0, 0, 0
     row = connection.execute(
         f"""
         SELECT
-            COALESCE(SUM(starts), 0),
-            COALESCE(SUM(wins), 0),
-            COALESCE(SUM(top3), 0)
-        FROM {table}
+            COUNT(*),
+            SUM(CASE WHEN finish = 1 THEN 1 ELSE 0 END),
+            SUM(CASE WHEN finish BETWEEN 1 AND 3 THEN 1 ELSE 0 END)
+        FROM {TABLE}
         WHERE year BETWEEN ? AND ?
           AND venue_code=?
           AND track_type=?
@@ -357,13 +362,13 @@ def as_of_summary(
     distance_parameters: list[int],
     years: int,
 ) -> dict:
-    """Build an as-of-safe Mart + Analysis statistic."""
+    """Build an as-of-safe Analysis-canonical statistic."""
     year = int(race_date[:4])
     year_start = year - years + 1
     prior = mart_prior(
-        mart,
+        analysis,
         mart_table,
-        mart_column,
+        analysis_column,
         dimension_value,
         year_start,
         year - 1,
@@ -389,7 +394,7 @@ def as_of_summary(
             "period": f"{year_start}-{year}YTD",
             "as_of_exclusive": race_date,
             "track_condition_scope": "all_conditions",
-            "source": "Stats Mart prior years + Analysis Lite target-year YTD",
+            "source": "JRDB Analysis canonical (as-of-exclusive)",
         }
     )
     return output
@@ -584,8 +589,7 @@ def enrich(
         "stats_window_years": years,
         "as_of_exclusive": race_date,
         "future_leakage_policy": (
-            "prior completed years from Stats Mart; target year from Analysis Lite "
-            "with race_date < target_date"
+            "all rolling statistics from JRDB Analysis canonical with race_date < target_date"
         ),
         "distance_range_policy": {
             "ranges": [dict(item) for item in DISTANCE_RANGE_DEFINITIONS],
@@ -720,7 +724,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--bundle", required=True)
     parser.add_argument("--analysis", required=True)
-    parser.add_argument("--mart", required=True)
+    parser.add_argument("--mart", help=argparse.SUPPRESS)
     parser.add_argument("--output-dir", default="./racenote_history_poc")
     parser.add_argument("--stats-window-years", type=int, default=5)
     args = parser.parse_args()
@@ -732,9 +736,7 @@ def main() -> None:
     base_metrics = metrics(base)
 
     analysis = sqlite3.connect(args.analysis)
-    mart = sqlite3.connect(args.mart)
     analysis.row_factory = sqlite3.Row
-    mart.row_factory = sqlite3.Row
 
     variants: dict[str, dict] = {}
     try:
@@ -742,7 +744,7 @@ def main() -> None:
             enriched, warnings = enrich(
                 base,
                 analysis,
-                mart,
+                None,
                 older_limit,
                 args.stats_window_years,
             )
@@ -767,7 +769,6 @@ def main() -> None:
             }
     finally:
         analysis.close()
-        mart.close()
 
     comparison = {
         "poc_version": "0.2",

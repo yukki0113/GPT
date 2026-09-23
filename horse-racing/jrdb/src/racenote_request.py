@@ -93,7 +93,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--race", type=int, default=None, help="Optional race number; requires venue")
     parser.add_argument("--today", default=None, help="Router-date override for tests")
     parser.add_argument("--analysis", type=Path, default=None, help="Optional explicit Analysis Lite SQLite")
-    parser.add_argument("--mart", type=Path, default=None, help="Optional explicit Stats Mart SQLite")
+    parser.add_argument("--mart", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--store-manifest", type=Path, default=None, help="JRDB Store manifest; falls back to JRDB_STORE_MANIFEST")
     parser.add_argument("--store-cache", type=Path, default=None, help="Optional JRDB Store cache root")
     parser.add_argument("--store-offline", action="store_true", help="Resolve Store artifacts from verified cache only")
@@ -151,7 +151,8 @@ def build_plan(request: RaceNoteRequest) -> dict:
         "base_backend": base_backend,
         "enrichment": {
             "analysis": True,
-            "stats_mart": True,
+            "stats_mart": False,
+            "stats_mart_required": False,
             "as_of_exclusive": request.target_date.isoformat(),
             "future_leakage_rule": "Never use target-date result rows or later rows.",
         },
@@ -182,17 +183,22 @@ def validate_sqlite(path: Path, label: str) -> None:
     finally:
         connection.close()
 
-def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, Path, dict]:
-    """Resolve Analysis/Mart explicitly or through the shared JRDB Store."""
+def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, None, dict]:
+    """Resolve the required Analysis canonical source.
+
+    --mart is retained as a deprecated CLI compatibility option, but it is
+    intentionally ignored and never resolved, validated, or downloaded.
+    """
     analysis = args.analysis
-    mart = args.mart
-    if analysis is not None and mart is not None:
-        validate_sqlite(analysis, "Analysis Lite")
-        validate_sqlite(mart, "Stats Mart")
-        return analysis, mart, {
-            "mode": "explicit_paths",
+    deprecated_mart = getattr(args, "mart", None)
+    if analysis is not None:
+        validate_sqlite(analysis, "Analysis canonical")
+        return analysis, None, {
+            "mode": "explicit_path",
             "analysis": "explicit",
-            "stats_mart": "explicit",
+            "stats_mart": False,
+            "stats_mart_required": False,
+            "deprecated_mart_ignored": deprecated_mart is not None,
         }
 
     try:
@@ -201,32 +207,23 @@ def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, Path, di
             manifest_path,
             cache_root=args.store_cache,
         )
-        analysis_source = "explicit"
-        mart_source = "explicit"
-        if analysis is None:
-            analysis = resolver.resolve(
-                "jrdb://analysis/current",
-                offline=args.store_offline,
-            )
-            analysis_source = "jrdb://analysis/current"
-        if mart is None:
-            mart = resolver.resolve(
-                "jrdb://stats/current",
-                offline=args.store_offline,
-            )
-            mart_source = "jrdb://stats/current"
+        analysis = resolver.resolve(
+            "jrdb://analysis/current",
+            offline=args.store_offline,
+        )
     except StoreError as exc:
         raise RaceNoteRequestError(f"JRDB Store resolution failed: {exc}") from exc
 
-    if analysis is None or mart is None:
-        raise RaceNoteRequestError("Analysis Lite / Stats Mart resolution is incomplete")
-    validate_sqlite(analysis, "Analysis Lite")
-    validate_sqlite(mart, "Stats Mart")
-    return analysis, mart, {
+    if analysis is None:
+        raise RaceNoteRequestError("Analysis canonical resolution is incomplete")
+    validate_sqlite(analysis, "Analysis canonical")
+    return analysis, None, {
         "mode": "store_manifest",
         "manifest_file": manifest_path.name,
-        "analysis": analysis_source,
-        "stats_mart": mart_source,
+        "analysis": "jrdb://analysis/current",
+        "stats_mart": False,
+        "stats_mart_required": False,
+        "deprecated_mart_ignored": deprecated_mart is not None,
     }
 
 
@@ -451,12 +448,12 @@ def select_bundles(bundle_dir: Path, request: RaceNoteRequest) -> list[Path]:
     return selected
 
 
-def enrich_bundle(bundle: Path, analysis: Path, mart: Path, output_dir: Path, stats_window_years: int) -> Path:
+def enrich_bundle(bundle: Path, analysis: Path, output_dir: Path, stats_window_years: int) -> Path:
     """Add production Analysis/Mart enrichment and write a stable v1.0 bundle."""
     target = output_dir / bundle.name
     command = [
         sys.executable, str(ENRICHER), "--bundle", str(bundle), "--analysis", str(analysis),
-        "--mart", str(mart), "--output", str(target), "--stats-window-years", str(stats_window_years),
+        "--output", str(target), "--stats-window-years", str(stats_window_years),
     ]
     run(command)
     if not target.is_file():
@@ -505,7 +502,7 @@ def main() -> int:
     if args.plan_only:
         return 0
 
-    analysis, mart, enrichment_resolution = resolve_enrichment_sources(args)
+    analysis, _deprecated_mart, enrichment_resolution = resolve_enrichment_sources(args)
     plan["enrichment_source_resolution"] = enrichment_resolution
     request_root = args.output / request.compact_date
     work_dir = request_root / "work"
@@ -570,7 +567,6 @@ def main() -> int:
         enrich_bundle(
             bundle,
             analysis,
-            mart,
             final_dir,
             args.stats_window_years,
         )

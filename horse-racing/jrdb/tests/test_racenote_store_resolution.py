@@ -27,7 +27,7 @@ def make_sqlite(path: Path) -> None:
 
 def args_for(
     analysis: Path | None,
-    mart: Path | None,
+    mart: Path | None = None,
     manifest: Path | None = None,
     offline: bool = False,
 ) -> argparse.Namespace:
@@ -41,41 +41,29 @@ def args_for(
 
 
 class RaceNoteStoreResolutionTest(unittest.TestCase):
-    def test_explicit_paths_preserve_legacy_behavior(self) -> None:
+    def test_explicit_analysis_path_does_not_require_or_validate_mart(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            analysis = root / "analysis.sqlite"
-            mart = root / "mart.sqlite"
+            analysis = Path(temp_dir) / "analysis.sqlite"
             make_sqlite(analysis)
-            make_sqlite(mart)
-
-            with patch.object(
-                racenote_request.StoreResolver,
-                "from_file",
-            ) as from_file:
+            with patch.object(racenote_request.StoreResolver, "from_file") as from_file:
                 resolved_analysis, resolved_mart, report = (
-                    racenote_request.resolve_enrichment_sources(
-                        args_for(analysis, mart)
-                    )
+                    racenote_request.resolve_enrichment_sources(args_for(analysis, None))
                 )
-
             self.assertEqual(resolved_analysis, analysis)
-            self.assertEqual(resolved_mart, mart)
-            self.assertEqual(report["mode"], "explicit_paths")
+            self.assertIsNone(resolved_mart)
+            self.assertFalse(report["stats_mart"])
+            self.assertFalse(report["stats_mart_required"])
             from_file.assert_not_called()
 
-    def test_store_resolves_both_missing_artifacts(self) -> None:
+    def test_store_resolves_analysis_only(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             analysis = root / "analysis.sqlite"
-            mart = root / "mart.sqlite"
             manifest = root / "manifest.json"
             make_sqlite(analysis)
-            make_sqlite(mart)
             manifest.write_text("{}", encoding="utf-8")
-
             resolver = MagicMock()
-            resolver.resolve.side_effect = [analysis, mart]
+            resolver.resolve.return_value = analysis
             with patch.object(
                 racenote_request.StoreResolver,
                 "from_file",
@@ -86,54 +74,29 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                         args_for(None, None, manifest, offline=True)
                     )
                 )
-
             self.assertEqual(resolved_analysis, analysis)
-            self.assertEqual(resolved_mart, mart)
-            self.assertEqual(report["mode"], "store_manifest")
+            self.assertIsNone(resolved_mart)
             self.assertEqual(report["analysis"], "jrdb://analysis/current")
-            self.assertEqual(report["stats_mart"], "jrdb://stats/current")
+            self.assertFalse(report["stats_mart"])
             from_file.assert_called_once_with(manifest, cache_root=None)
-            self.assertEqual(
-                resolver.resolve.call_args_list[0].args,
-                ("jrdb://analysis/current",),
-            )
-            self.assertTrue(resolver.resolve.call_args_list[0].kwargs["offline"])
-            self.assertEqual(
-                resolver.resolve.call_args_list[1].args,
-                ("jrdb://stats/current",),
+            resolver.resolve.assert_called_once_with(
+                "jrdb://analysis/current",
+                offline=True,
             )
 
-    def test_store_resolves_only_missing_mart(self) -> None:
+    def test_deprecated_mart_is_ignored(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             analysis = root / "analysis.sqlite"
             mart = root / "mart.sqlite"
-            manifest = root / "manifest.json"
             make_sqlite(analysis)
             make_sqlite(mart)
-            manifest.write_text("{}", encoding="utf-8")
-
-            resolver = MagicMock()
-            resolver.resolve.return_value = mart
-            with patch.object(
-                racenote_request.StoreResolver,
-                "from_file",
-                return_value=resolver,
-            ):
-                resolved_analysis, resolved_mart, report = (
-                    racenote_request.resolve_enrichment_sources(
-                        args_for(analysis, None, manifest)
-                    )
-                )
-
-            self.assertEqual(resolved_analysis, analysis)
-            self.assertEqual(resolved_mart, mart)
-            self.assertEqual(report["analysis"], "explicit")
-            self.assertEqual(report["stats_mart"], "jrdb://stats/current")
-            resolver.resolve.assert_called_once_with(
-                "jrdb://stats/current",
-                offline=False,
+            resolved_analysis, resolved_mart, report = (
+                racenote_request.resolve_enrichment_sources(args_for(analysis, mart))
             )
+            self.assertEqual(resolved_analysis, analysis)
+            self.assertIsNone(resolved_mart)
+            self.assertTrue(report["deprecated_mart_ignored"])
 
     def test_store_error_maps_to_racenote_error(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -158,9 +121,7 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                 racenote_request.RaceNoteRequestError,
                 "Store manifest is required",
             ):
-                racenote_request.resolve_enrichment_sources(
-                    args_for(None, None)
-                )
+                racenote_request.resolve_enrichment_sources(args_for(None, None))
 
 
 if __name__ == "__main__":
