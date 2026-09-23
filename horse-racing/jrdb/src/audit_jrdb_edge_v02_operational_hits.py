@@ -16,6 +16,12 @@ from typing import Any, Iterable, Mapping
 
 VERSION = "0.1.0"
 MEANINGFUL = {"POSITIVE", "NEGATIVE"}
+SEMANTIC_TEMPLATE_PAIRS = (
+    ("COURSE_FRAME_V1", "COURSE_EXACT_FRAME_V2", "exact_frame_refines_frame_zone"),
+    ("SIRE_SURFACE_DISTANCE_V1", "SIRE_VENUE_SURFACE_DISTANCE_V2", "venue_refines_surface_distance"),
+    ("SIRE_SURFACE_DISTANCE_V1", "SIRE_TURN_DISTANCE_V1", "shared_sire_distance_siblings"),
+    ("SIRE_DISTANCE_CHANGE_V1", "SIRE_SURFACE_TRANSITION_V1", "transition_siblings"),
+)
 
 
 class OperationalAuditError(RuntimeError):
@@ -146,6 +152,10 @@ def audit(paths: Iterable[Path]) -> dict[str, Any]:
     family_pairs: collections.Counter[str] = collections.Counter()
     evidence_levels: collections.Counter[str] = collections.Counter()
     condition_cardinality: collections.Counter[int] = collections.Counter()
+    semantic_pair_counts: dict[str, collections.Counter[str]] = {
+        label: collections.Counter()
+        for _, _, label in SEMANTIC_TEMPLATE_PAIRS
+    }
     day_summary: dict[str, collections.Counter[str]] = collections.defaultdict(
         collections.Counter
     )
@@ -196,6 +206,23 @@ def audit(paths: Iterable[Path]) -> dict[str, Any]:
 
         templates = sorted({_template(m) for m in pm})
         families = sorted({_family(m) for m in pm})
+
+        by_template: dict[str, list[Mapping[str, Any]]] = collections.defaultdict(list)
+        for match in pm:
+            by_template[_template(match)].append(match)
+        for left_template, right_template, label in SEMANTIC_TEMPLATE_PAIRS:
+            for left in by_template.get(left_template, []):
+                for right in by_template.get(right_template, []):
+                    left_signal = _signal(left, "performance")
+                    right_signal = _signal(right, "performance")
+                    semantic_pair_counts[label]["cooccurrences"] += 1
+                    if left_signal == right_signal:
+                        semantic_pair_counts[label]["same_direction"] += 1
+                    else:
+                        semantic_pair_counts[label]["opposite_direction"] += 1
+                    semantic_pair_counts[label][
+                        f"{left_signal}->{right_signal}"
+                    ] += 1
         for a, b in itertools.combinations(templates, 2):
             template_pairs[f"{a} x {b}"] += 1
         for a, b in itertools.combinations(families, 2):
@@ -311,6 +338,10 @@ def audit(paths: Iterable[Path]) -> dict[str, Any]:
         "family_frequency": _counter_dict(family_freq),
         "top_template_cooccurrence": _top_counter(template_pairs),
         "top_family_cooccurrence": _top_counter(family_pairs),
+        "semantic_template_pairs": {
+            label: _counter_dict(counter)
+            for label, counter in semantic_pair_counts.items()
+        },
         "high_hit_examples": sorted(
             high_hit_examples,
             key=lambda row: (-int(row["performance_hits"]), str(row["race_horse_key"])),
@@ -420,7 +451,21 @@ def markdown(result: Mapping[str, Any]) -> str:
 
     lines += [
         "",
-        "## 8. 5件以上ヒットしたrunner例",
+        "## 8. 主要な意味的重複候補",
+        "",
+        "| 関係 | 共起 | 同方向 | 逆方向 |",
+        "|---|---:|---:|---:|",
+    ]
+    for label, counts in result["semantic_template_pairs"].items():
+        lines.append(
+            f"| {label} | {counts.get('cooccurrences', 0):,} | "
+            f"{counts.get('same_direction', 0):,} | "
+            f"{counts.get('opposite_direction', 0):,} |"
+        )
+
+    lines += [
+        "",
+        "## 9. 5件以上ヒットしたrunner例",
         "",
         "| 日付 | race_key | 馬番 | +/- | group数 | primary/conflict | Template |",
         "|---|---|---:|---|---:|---:|---|",
@@ -434,7 +479,7 @@ def markdown(result: Mapping[str, Any]) -> str:
 
     lines += [
         "",
-        "## 9. この監査でまだ決めないこと",
+        "## 10. この監査でまだ決めないこと",
         "",
         "- +件数と-件数を足し引きして最終scoreを作らない",
         "- 2,773件を一括削除しない",
