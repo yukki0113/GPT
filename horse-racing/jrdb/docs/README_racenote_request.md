@@ -6,7 +6,7 @@ src/racenote_request.py is the unified operational entrypoint.
 
     RaceNote request
       -> PACI or accepted Historical Warehouse base
-      -> JRDB Analysis canonical enrichment
+      -> JRDB Analysis Parquet current (DuckDB, as-of-exclusive) enrichment
       -> selected RaceNote v1.0 bundles
       -> ZIP / GPT downstream
 
@@ -23,16 +23,18 @@ Stats Mart is a frozen legacy cache. It remains for old research, builders, sche
 
 ## CLI
 
-Normal usage passes Analysis only:
+Normal usage passes the verified Analysis Parquet current root:
 
     python horse-racing/jrdb/src/racenote_request.py \
       --date 20260923 \
-      --analysis ./jrdb_analysis.sqlite \
+      --analysis-root ./jrdb_analysis_parquet \
+      --analysis-backend parquet \
       --output ./output_racenote_request
 
---mart is a hidden deprecated compatibility option. It is ignored, never resolved, validated, downloaded, or passed to enrichment. New commands must not use it.
-
-Store-managed operation resolves only jrdb://analysis/current. jrdb://stats/current is not a RaceNote input.
+--analysis is a hidden SQLite compatibility option. It is available only with
+--analysis-backend sqlite for audit, equivalence, or explicit rollback. Production
+does not materialize SQLite and does not automatically fall back to it.
+--mart remains a hidden deprecated option and is ignored.
 
 ## GitHub Actions request
 
@@ -51,7 +53,7 @@ Issue body:
       "race": 11
     }
 
-analysis_url is required. mart_url is a deprecated extra field accepted for old callers, ignored, and never downloaded. The workflow materializes Analysis only, preserves supplied Raw cache and Archive resolution, runs the Router without --mart, uploads the normal artifact, comments the machine-readable result, and closes the Issue.
+analysis_url is required and must identify the immutable Analysis Parquet archive containing current.json and the verified generation assets. The workflow downloads and validates that archive, preserves supplied Raw cache and Archive resolution, runs the Router with --analysis-root and --analysis-backend parquet, uploads the normal artifact, comments the machine-readable result, and closes the Issue. SQLite Analysis archives are not accepted on the normal path.
 
 ## Historical and as-of rules
 
@@ -59,6 +61,6 @@ Target date and later result rows are excluded from history. Warehouse historica
 
 ## Verification contract
 
-Focused tests prove explicit Analysis without Stats Mart, Analysis-only Store resolution, deprecated mart compatibility, false/not_required Stats Mart metadata, TRUE_FORWARD compatibility, and workflow absence of Stats Mart download/materialization or Router --mart invocation.
+Focused tests prove native Parquet current resolution, manifest/SHA/canonical-key validation, strict as-of exclusion of target and future rows, SQLite compatibility isolation, false/not_required Stats Mart metadata, and workflow absence of SQLite materialization on the production path.
 
-Phase B may optimize internal Analysis storage access, including native Parquet. Phase A does not change RaceNote output schema, forecast semantics, historical Warehouse meaning, or legacy asset retention.
+Phase B does not change RaceNote output schema, forecast semantics, historical Warehouse meaning, or legacy asset retention. The completion markers are RACENOTE_PHASE_B_PARQUET_NATIVE=PASS, RACENOTE_ANALYSIS_BACKEND=PARQUET_DUCKDB, RACENOTE_SQLITE_MATERIALIZATION_REQUIRED=false, RACENOTE_STATS_MART_ACTIVE_DEPENDENCY=false, RACENOTE_HISTORICAL_BACKEND=HISTORICAL_WAREHOUSE, RACENOTE_2026_BACKEND=PACI, and RACENOTE_OUTPUT_SEMANTICS_UNCHANGED=true.
