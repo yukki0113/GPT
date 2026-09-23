@@ -19,10 +19,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import sqlite3
 from pathlib import Path
 
 import racenote_history_engine as engine
+from racenote_analysis_backend import AnalysisBackendError, open_analysis_backend
 
 SCHEMA_VERSION = "1.0"
 OLDER_RUNS_LIMIT = 3
@@ -33,7 +33,9 @@ def parse_args() -> argparse.Namespace:
     """Parse production enrichment CLI arguments."""
     parser = argparse.ArgumentParser(description="Production RaceNote v1.0 history enrichment")
     parser.add_argument("--bundle", type=Path, required=True)
-    parser.add_argument("--analysis", type=Path, required=True)
+    parser.add_argument("--analysis-root", type=Path, default=None)
+    parser.add_argument("--analysis", type=Path, default=None, help=argparse.SUPPRESS)
+    parser.add_argument("--analysis-backend", choices=("parquet", "sqlite"), default="parquet")
     parser.add_argument("--mart", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
@@ -82,8 +84,8 @@ def production_metadata(
 
 def enrich_production(
     base: dict,
-    analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
+    analysis: object,
+    mart: object,
     stats_window_years: int,
 ) -> tuple[dict, list[str]]:
     """Build one stable RaceNote v1.0 bundle from the validated enrichment engine."""
@@ -114,17 +116,27 @@ def main() -> int:
     args = parse_args()
     base = json.loads(args.bundle.read_text(encoding="utf-8"))
 
-    analysis = sqlite3.connect(args.analysis)
-    analysis.row_factory = sqlite3.Row
     try:
+        analysis = open_analysis_backend(
+            analysis_root=args.analysis_root,
+            analysis_db=args.analysis,
+            backend=args.analysis_backend,
+        )
         enriched, warnings = enrich_production(
             base,
             analysis,
             None,
             args.stats_window_years,
         )
+        enriched.setdefault("metadata", {})["history_enrichment"]["analysis_backend"] = (
+            analysis.source_info.get("backend", "sqlite")
+        )
+        enriched["metadata"]["history_enrichment"]["analysis_source"] = analysis.source_info
+    except AnalysisBackendError as error:
+        raise SystemExit(str(error)) from error
     finally:
-        analysis.close()
+        if "analysis" in locals():
+            analysis.close()
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
