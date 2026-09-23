@@ -63,9 +63,9 @@ def main() -> int:
     if audit.get("generation_id") != GENERATION or audit.get("status") != "PASS":
         raise SystemExit("accepted audit gate failed")
     assets = manifest.get("assets") or []
-    expected = {(str(x["family"]).upper(), int(x["year"])): x for x in assets}
+    expected = [x for x in assets if str(x.get("family","")).upper() in FAMILIES]
     if len(expected) != 192:
-        raise SystemExit(f"expected 192 family/year assets, got {len(expected)}")
+        raise SystemExit(f"expected 192 Warehouse assets, got {len(expected)}")
 
     checks = {}
     for family, folder_id in roots.items():
@@ -76,11 +76,12 @@ def main() -> int:
             marker_data = json.loads(marker.read_text(encoding="utf-8"))
             if marker_data.get("status") not in (None, "PASS", "COMPLETE"):
                 raise SystemExit(f"{family} completion marker is not PASS")
-        family_expected = {k: v for k, v in expected.items() if k[0] == family}
+        family_expected = [x for x in expected if str(x["family"]).upper() == family]
         family_root = a.output_root / family
         family_root.mkdir(parents=True, exist_ok=True)
         rows = []
-        for (fam, year), spec in sorted(family_expected.items()):
+        for spec in sorted(family_expected, key=lambda x: (int(x["year"]), str(x["relative_path"]))):
+            year = int(spec["year"])
             rel = Path(spec["relative_path"])
             source = next((x for x in staging.rglob(rel.name) if x.is_file()), None)
             if source is None:
