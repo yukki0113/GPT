@@ -73,20 +73,20 @@ class RaceNoteRawAdapterTest(unittest.TestCase):
         cha = record("CHA", target_key)
         cyb = record("CYB", target_key)
 
-        sed = record("SED", "06245810")
-        put(sed, 10, 8, "17104128")
-        put(sed, 18, 8, "20241221")
+        zed = record("ZED", "06245810")
+        put(zed, 10, 8, "17104128")
+        put(zed, 18, 8, "20241221")
 
-        skb = record("SKB", "06245810")
-        put(skb, 10, 8, "17104128")
-        put(skb, 18, 8, "20241221")
+        zkb = record("ZKB", "06245810")
+        put(zkb, 10, 8, "17104128")
+        put(zkb, 18, 8, "20241221")
 
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             for kind, row in (("BAC", bac), ("KYI", kyi), ("CHA", cha), ("CYB", cyb)):
                 write_annual(root, kind, 2024, "241228", [bytes(row)])
-            write_annual(root, "SED", 2024, "241221", [bytes(sed)])
-            write_annual(root, "SKB", 2024, "241221", [bytes(skb)])
+            write_annual(root, "ZED", 2024, "241221", [bytes(zed)])
+            write_annual(root, "ZKB", 2024, "241221", [bytes(zkb)])
 
             output = root / "historical_paci.zip"
             ensured: list[tuple[int, tuple[str, ...]]] = []
@@ -112,8 +112,8 @@ class RaceNoteRawAdapterTest(unittest.TestCase):
             with zipfile.ZipFile(output) as archive:
                 self.assertEqual(bytes(bac), archive.read("BAC241228.txt").splitlines()[0])
                 self.assertEqual(bytes(kyi), archive.read("KYI241228.txt").splitlines()[0])
-                self.assertEqual(bytes(sed), archive.read("ZED241228.txt").splitlines()[0])
-                self.assertEqual(bytes(skb), archive.read("ZKB241228.txt").splitlines()[0])
+                self.assertEqual(bytes(zed), archive.read("ZED241228.txt").splitlines()[0])
+                self.assertEqual(bytes(zkb), archive.read("ZKB241228.txt").splitlines()[0])
 
 
 if __name__ == "__main__":
