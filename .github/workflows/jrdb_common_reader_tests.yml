@@ -176,4 +176,4 @@ jobs:
       - name: Run RaceNote Phase A regressions
         working-directory: horse-racing/jrdb/tests
         run: |
-          pytest -q             test_racenote_analysis_only_enrichment.py             test_racenote_request_workflow_contract.py             test_racenote_v11p_true_forward_day.py
+          PYTHONPATH=../src pytest -q test_racenote_analysis_only_enrichment.py test_racenote_request_workflow_contract.py test_racenote_v11p_true_forward_day.py
