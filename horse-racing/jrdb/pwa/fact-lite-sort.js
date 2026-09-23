@@ -383,8 +383,8 @@ function installFactJumpExclusionFilter() {
   };
 
   const originalSetFactDbLoaded = setFactDbLoaded;
-  setFactDbLoaded = async function (source, size, metadata) {
-    await originalSetFactDbLoaded(source, size, metadata);
+  setFactDbLoaded = function (source, size, metadata) {
+    originalSetFactDbLoaded(source, size, metadata);
     checkbox.disabled = false;
   };
 
