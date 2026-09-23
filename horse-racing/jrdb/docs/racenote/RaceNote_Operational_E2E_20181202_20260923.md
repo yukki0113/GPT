@@ -2,6 +2,8 @@
 
 Status: **PRE-FLIGHT PASS / FULL-DAY GPT DECISION PENDING**
 
+Implementation commit: `38ae2bab688e4614404b5f0cf1c4be9060e7d617`
+
 ## Inputs
 
 - Historical Warehouse generation: `jrdb_normalized_warehouse_v1_2010_2025_g20260921`
