@@ -85,7 +85,6 @@ jobs:
           curl --fail --location --retry 3 \
             "https://drive.usercontent.google.com/download?id=$WAREHOUSE_MANIFEST_DRIVE_FILE_ID&export=download&confirm=t" \
             -o /tmp/warehouse/manifest.json
-          echo "$WAREHOUSE_MANIFEST_SHA256  /tmp/warehouse/manifest.json" | sha256sum -c -
           python - <<'PY'
           import hashlib, json, os
           current=json.load(open('/tmp/warehouse/current.json'))
@@ -96,7 +95,15 @@ jobs:
               raise SystemExit('Warehouse current generation mismatch')
           if manifest.get('status')!='PASS' or manifest.get('generation_id')!=current.get('generation_id'):
               raise SystemExit('Warehouse manifest/current mismatch')
-          digest=hashlib.sha256(open('/tmp/warehouse/manifest.json','rb').read()).hexdigest()
+          digest=hashlib.sha256(
+              json.dumps(
+                  manifest,ensure_ascii=False,sort_keys=True,separators=(',',':')
+              ).encode('utf-8')
+          ).hexdigest()
+          if digest!=os.environ['WAREHOUSE_MANIFEST_SHA256']:
+              raise SystemExit(
+                  f"Warehouse canonical manifest SHA mismatch expected={os.environ['WAREHOUSE_MANIFEST_SHA256']} actual={digest}"
+              )
           if digest!=current.get('manifest_sha256'):
               raise SystemExit(
                   f"Warehouse current manifest SHA mismatch current={current.get('manifest_sha256')} actual={digest}"
