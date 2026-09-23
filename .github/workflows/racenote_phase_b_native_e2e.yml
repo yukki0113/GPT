@@ -1,0 +1,210 @@
+name: RaceNote Phase B native Parquet E2E
+
+on:
+  push:
+    branches: [codex/racenote-phaseb-parquet-native-cutover]
+    paths:
+      - '.github/workflows/racenote_phase_b_native_e2e.yml'
+      - 'horse-racing/jrdb/src/racenote_analysis_backend.py'
+      - 'horse-racing/jrdb/src/racenote_history_enrichment.py'
+      - 'horse-racing/jrdb/src/racenote_request.py'
+      - 'horse-racing/jrdb/src/jrdb_analysis_parquet_current.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+      TARGET_DATE: '20181202'
+      ANALYSIS_BUNDLE_ID: '1K5NvOxcMdYB-V0ZhqqHdsT69TvBrmie2'
+      WAREHOUSE_GENERATION: 'jrdb_normalized_warehouse_v1_2010_2025_g20260921'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown -r tools/data-storage/requirements.txt
+      - name: Materialize and verify accepted current inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rn/analysis /tmp/rn/wh/generations/"$WAREHOUSE_GENERATION" /tmp/rn/assets
+          gdown "https://drive.google.com/file/d/$ANALYSIS_BUNDLE_ID/view" -O /tmp/rn/analysis.tar.xz
+          tar -xJf /tmp/rn/analysis.tar.xz -C /tmp/rn/analysis
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          root=Path('/tmp/rn/analysis')
+          report=resolve_current(root)
+          if report['generation_id'] != 'analysis-v1_3-canonical-20260917-01':
+              raise SystemExit(f"unexpected accepted current generation: {report['generation_id']}")
+          Path('/tmp/rn/analysis_validation.json').write_text(json.dumps({
+              'status':'PASS','generation_id':report['generation_id'],
+              'manifest':str(report['manifest']),'rows':report['rows'],
+              'asset_count':len(report['assets']),
+              'assets':[{'path':str(item['path'].relative_to(root)),'rows':item['rows'],'sha256':item['sha256'],'size_bytes':item['size_bytes']} for item in report['assets']],
+          },ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+          python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py \
+            --analysis-root /tmp/rn/analysis --out /tmp/rn/analysis-compat.sqlite
+          python - <<'PY'
+          import sqlite3
+          target='2018-12-02'
+          result_columns=('finish','abnormal_code','final_win_odds','final_win_popularity','win_payout','place_payout')
+          with sqlite3.connect('/tmp/rn/analysis-compat.sqlite') as db:
+              db.execute('UPDATE fact_entry_result_lite SET ' + ','.join(f'{column}=NULL' for column in result_columns) + ' WHERE race_date>=?',(target,))
+              db.commit()
+              leaked=db.execute('SELECT COUNT(*) FROM fact_entry_result_lite WHERE race_date=? AND (' + ' OR '.join(f'{column} IS NOT NULL' for column in result_columns) + ')',(target,)).fetchone()[0]
+              if leaked: raise SystemExit(f'legacy as-of projection retains {leaked} target outcome values')
+              db.execute('VACUUM')
+          PY
+          gdown 'https://drive.google.com/file/d/1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN/view' -O /tmp/rn/wh/generations/"$WAREHOUSE_GENERATION"/manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          generation='jrdb_normalized_warehouse_v1_2010_2025_g20260921'
+          Path('/tmp/rn/wh/current.json').write_text(json.dumps({
+            'artifact_type':'jrdb_normalized_warehouse_current','status':'accepted',
+            'generation_id':generation,'manifest':f'generations/{generation}/manifest.json'
+          },indent=2)+'\n',encoding='utf-8')
+          PY
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          assets={
+            'BAC':[('2018','62304fcab54dc98006f041394faf265a65e76d6946b8c399867da7e8be4e1861','1N1olCniTMiLyvXp8KoNq99PrXzVA_pZQ')],
+            'KYI':[('2018','7747b6c1aa8be2215ea8e57b0515bd527adf0db21a349b2c8a80606438332b9d','1Z7OzJfJ536O-_90X3Hcr-M08td4i3GW-')],
+            'CHA':[('2018','c4aac8015f9305c13278b8bdfd4914f525dbe8fa1a58a979e1a7dc790b669b49','1PxYBUllmnAWh2Kf68-pF0d9yKqOyKp-w')],
+            'CYB':[('2018','6476f25d038032a53f0f7f5c1da27be5f310e5172e1f1181453046c6387caa45','1Dee-P6OZbrsCZ_ESIWQPM1BZQ3rlM8kH')],
+            'ZED':[('2017','2386d540c509adbc4728f20073a5f8904318b805beb9115fd9ecba8c994703ce','1jklJA7avDCd5_rBrF5ULnUzEfNBfDEZF'),('2018','c05f16799f088b28decc3725928c5b80f16ac96eefc49c0cf801f2c8fd3ba0b2','1yzN0SotxydGOc2v87SVza9hp3XV_daQ2')],
+            'ZKB':[('2017','5546839a4af381116929df676960a12fae5c66cc3ed48c3a4a0cf8860eb71cba','1PRJpOmJ1L4WEiLolBtrmoc2uRr9OJ1pr'),('2018','05bddacb4e0b3ece2437331ed77494fba0138135826ad01b96565fc514dcc173','1pJ8Ndo4z3hv8b4Mnm8AtmqNB8hIQSVac')],
+          }
+          for family, rows in assets.items():
+            for year, sha, file_id in rows:
+              output=Path('/tmp/rn/assets')/family/'objects'/family.lower()/f'year={year}'/f'{sha}.parquet'
+              output.parent.mkdir(parents=True,exist_ok=True)
+              subprocess.run(['gdown',f'https://drive.google.com/file/d/{file_id}/view','-O',str(output)],check=True)
+          PY
+      - name: Run legacy SQLite and native Parquet full-day routes
+        run: |
+          set -euo pipefail
+          COMMON=(
+            --date "$TARGET_DATE" --raw-dir /tmp/rn/raw
+            --warehouse-current /tmp/rn/wh/current.json
+            --warehouse-asset-root BAC=/tmp/rn/assets/BAC
+            --warehouse-asset-root KYI=/tmp/rn/assets/KYI
+            --warehouse-asset-root CHA=/tmp/rn/assets/CHA
+            --warehouse-asset-root CYB=/tmp/rn/assets/CYB
+            --warehouse-asset-root ZED=/tmp/rn/assets/ZED
+            --warehouse-asset-root ZKB=/tmp/rn/assets/ZKB
+          )
+          python horse-racing/jrdb/src/racenote_request.py "${COMMON[@]}" \
+            --analysis /tmp/rn/analysis-compat.sqlite --analysis-backend sqlite --output /tmp/rn/legacy
+          python horse-racing/jrdb/src/racenote_request.py "${COMMON[@]}" \
+            --analysis-root /tmp/rn/analysis --analysis-backend parquet --output /tmp/rn/parquet
+      - name: Audit semantic equivalence, as-of safety, and benchmark
+        run: |
+          python - <<'PY'
+          import hashlib, json, subprocess, sys, time
+          from pathlib import Path
+          from racenote_analysis_backend import open_analysis_backend
+          from racenote_history_enrichment import enrich_production
+
+          target='2018-12-02'
+          outcome_fields={'finish','abnormal_code','final_win_odds','final_win_popularity','win_payout','place_payout'}
+          excluded={'generated_at','analysis_source','analysis_backend'}
+
+          def load(path):
+              return json.loads(path.read_text(encoding='utf-8'))
+          def normalize(value):
+              if isinstance(value,list): return [normalize(item) for item in value]
+              if not isinstance(value,dict): return value
+              return {key:normalize(item) for key,item in value.items() if key not in excluded}
+          def digest(value):
+              return hashlib.sha256(json.dumps(normalize(value),ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          def inspect(root, expected_backend):
+              run=Path(root)/'20181202'/'bundles'
+              manifest=load(run/'request_manifest.json')
+              request=manifest['request']
+              if request['base_backend']!='historical_warehouse': raise SystemExit('historical warehouse backend was not selected')
+              names=manifest['bundles']
+              if len(names)!=36 or manifest['bundle_count']!=36: raise SystemExit('expected 36 bundles')
+              hashes={}; runners=warnings=leaks=0
+              for name in names:
+                  bundle=load(run/name); hashes[name]=digest(bundle)
+                  history=bundle.get('metadata',{}).get('history_enrichment',{})
+                  if history.get('warning_count') not in (0,None): warnings += int(history['warning_count'])
+                  if expected_backend=='parquet_duckdb' and history.get('analysis_backend')!='parquet_duckdb':
+                      raise SystemExit(f'{name}: backend provenance mismatch')
+                  for horse in bundle.get('horses',[]):
+                      runners += 1
+                      for key in ('recent_runs','older_runs'):
+                          for item in horse.get(key,[]):
+                              date=str(item.get('date') or item.get('race',{}).get('date') or '')
+                              if date >= target: leaks += 1
+                      profile=horse.get('historical_profile') or {}
+                      if profile and profile.get('as_of_exclusive') != target: leaks += 1
+              return {'hashes':hashes,'runners':runners,'warnings':warnings,'future_leakage':leaks,'manifest':manifest}
+          legacy=inspect('/tmp/rn/legacy','sqlite')
+          native=inspect('/tmp/rn/parquet','parquet_duckdb')
+          if native['runners']!=501 or legacy['runners']!=501: raise SystemExit(f"runner mismatch: legacy={legacy['runners']} native={native['runners']}")
+          if native['warnings'] or legacy['warnings'] or native['future_leakage'] or legacy['future_leakage']: raise SystemExit('warnings or future leakage detected')
+          if legacy['hashes']!=native['hashes']: raise SystemExit('semantic equivalence mismatch')
+          plan=subprocess.check_output([sys.executable,'horse-racing/jrdb/src/racenote_request.py','--date','20260923','--today','20260923','--analysis-root','/tmp/rn/analysis','--plan-only'],text=True)
+          plan_json=json.loads(plan)
+          if plan_json['base_backend']!='paci': raise SystemExit('2026 PACI plan regression')
+          def benchmark(kind, source):
+              cold_start=time.perf_counter()
+              backend=open_analysis_backend(analysis_root=source if kind=='parquet' else None,analysis_db=source if kind=='sqlite' else None,backend=kind)
+              cold=time.perf_counter()-cold_start
+              bundles=[load(Path('/tmp/rn/legacy/20181202/bundles')/name) for name in legacy['manifest']['bundles']]
+              one_start=time.perf_counter(); enrich_production(bundles[0],backend,None,5); one=time.perf_counter()-one_start
+              day_start=time.perf_counter()
+              for bundle in bundles: enrich_production(bundle,backend,None,5)
+              full_day=time.perf_counter()-day_start
+              row=backend.execute('SELECT horse_id,sire_name,jockey_name,frame_no,race_date,venue_code,track_type,distance FROM fact_entry_result_lite WHERE race_date<? LIMIT 1',[target]).fetchone()
+              timings={}
+              for label,column in [('horse','horse_id'),('sire','sire_name'),('jockey','jockey_name'),('frame','frame_no')]:
+                  start=time.perf_counter()
+                  for _ in range(5):
+                      backend.execute(f'SELECT COUNT(*) FROM fact_entry_result_lite WHERE {column}=? AND race_date<?',[row[column],target]).fetchone()
+                  timings[label+'_query_5x_seconds']=time.perf_counter()-start
+              info=dict(backend.source_info); backend.close()
+              return {'cold_start_seconds':cold,'one_race_enrichment_seconds':one,'full_day_enrichment_seconds':full_day,**timings,'source':info}
+          benchmark_result={'legacy_sqlite':benchmark('sqlite','/tmp/rn/analysis-compat.sqlite'),'parquet_duckdb':benchmark('parquet','/tmp/rn/analysis')}
+          report={
+            'RACENOTE_PHASE_B_PARQUET_NATIVE':'PASS',
+            'RACENOTE_ANALYSIS_BACKEND':'PARQUET_DUCKDB',
+            'RACENOTE_SQLITE_MATERIALIZATION_REQUIRED':False,
+            'RACENOTE_SEMANTIC_EQUIVALENCE':'PASS',
+            'RACENOTE_FULL_DAY_E2E':'PASS',
+            'analysis_current':load(Path('/tmp/rn/analysis_validation.json')),
+            'legacy':{key:value for key,value in legacy.items() if key!='hashes'},
+            'native':{key:value for key,value in native.items() if key!='hashes'},
+            'semantic_bundle_hashes':native['hashes'],
+            'benchmark':benchmark_result,
+            'plan_2026':{'base_backend':plan_json['base_backend']},
+          }
+          Path('/tmp/rn/racenote_phase_b_e2e_report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - name: Run related Phase B tests
+        working-directory: horse-racing/jrdb/tests
+        run: |
+          python -m unittest -v test_racenote_analysis_parquet_backend test_jrdb_analysis_parquet_current test_materialize_jrdb_analysis_sqlite
+      - name: Upload Phase B evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-phase-b-native-e2e-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            /tmp/rn/analysis_validation.json
+            /tmp/rn/racenote_phase_b_e2e_report.json
