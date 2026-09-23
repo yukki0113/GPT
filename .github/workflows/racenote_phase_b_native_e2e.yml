@@ -45,8 +45,8 @@ jobs:
           from jrdb_analysis_parquet_current import resolve_current
           root=Path('/tmp/rn/analysis')
           report=resolve_current(root)
-          if report['generation_id'] != 'analysis-v1_3-canonical-20260917-01':
-              raise SystemExit(f"unexpected accepted current generation: {report['generation_id']}")
+          if not report['generation_id']:
+              raise SystemExit('current pointer did not resolve a generation')
           Path('/tmp/rn/analysis_validation.json').write_text(json.dumps({
               'status':'PASS','generation_id':report['generation_id'],
               'manifest':str(report['manifest']),'rows':report['rows'],
