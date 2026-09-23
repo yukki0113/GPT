@@ -514,18 +514,52 @@ def materialize_year_rows(rows: Mapping[str, Iterable[Mapping[str, Any]]]) -> Ye
 class WarehouseIndexBaseReader:
     """Resolve an accepted final manifest and expose yearly normalized relations."""
 
-    def __init__(self, current: Path, *, asset_roots: Mapping[str, Path]) -> None:
-        self.current_path = Path(current)
-        self.current = json.loads(self.current_path.read_text(encoding="utf-8"))
-        if self.current.get("artifact_type") != "jrdb_normalized_warehouse_current" or self.current.get("status") != "accepted":
-            raise WarehouseIndexBaseError("JRDB current pointer is not accepted")
-        manifest_rel = self.current.get("manifest")
-        if not isinstance(manifest_rel, str) or not manifest_rel.endswith("/manifest.json"):
-            raise WarehouseIndexBaseError("JRDB current pointer has no manifest")
-        self.manifest_path = self.current_path.parent / manifest_rel
-        self.manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
-        if self.manifest.get("generation_id") != self.current.get("generation_id") or self.manifest.get("status") != "PASS":
-            raise WarehouseIndexBaseError("JRDB current/manifest generation mismatch")
+    def __init__(
+        self,
+        current: Path | None = None,
+        *,
+        manifest: Path | None = None,
+        asset_roots: Mapping[str, Path],
+    ) -> None:
+        if (current is None) == (manifest is None):
+            raise WarehouseIndexBaseError("supply exactly one of current or manifest")
+
+        if current is not None:
+            self.current_path = Path(current)
+            self.current = json.loads(self.current_path.read_text(encoding="utf-8"))
+            if (
+                self.current.get("artifact_type") != "jrdb_normalized_warehouse_current"
+                or self.current.get("status") != "accepted"
+            ):
+                raise WarehouseIndexBaseError("JRDB current pointer is not accepted")
+            manifest_rel = self.current.get("manifest")
+            if not isinstance(manifest_rel, str) or not manifest_rel.endswith("/manifest.json"):
+                raise WarehouseIndexBaseError("JRDB current pointer has no manifest")
+            self.manifest_path = self.current_path.parent / manifest_rel
+            self.manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
+            if (
+                self.manifest.get("generation_id") != self.current.get("generation_id")
+                or self.manifest.get("status") != "PASS"
+            ):
+                raise WarehouseIndexBaseError("JRDB current/manifest generation mismatch")
+        else:
+            self.current_path = None
+            self.manifest_path = Path(manifest)
+            self.manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
+            if (
+                self.manifest.get("artifact_type") != "jrdb_normalized_warehouse_final_generation"
+                or self.manifest.get("status") != "PASS"
+                or not self.manifest.get("generation_id")
+            ):
+                raise WarehouseIndexBaseError("JRDB final manifest is not accepted/PASS")
+            self.current = {
+                "artifact_type": "jrdb_normalized_warehouse_current",
+                "status": "accepted",
+                "generation_id": self.manifest.get("generation_id"),
+                "manifest": str(self.manifest_path),
+                "audit_mode": "explicit_final_manifest",
+            }
+
         self.asset_roots = {str(k).upper(): Path(v) for k, v in asset_roots.items()}
         self.assets = list(self.manifest.get("assets", []))
         if not self.assets:
