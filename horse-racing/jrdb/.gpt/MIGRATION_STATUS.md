@@ -1,3 +1,15 @@
+# CURRENT STORAGE / HISTORICAL INPUT STATUS — 2026-09-23
+
+> This block supersedes older path/source-of-truth statements below when they conflict. The remainder is retained as migration history/evidence.
+>
+> - Git code/schema/current docs: `horse-racing/jrdb/` on `main`.
+> - Historical normalized canonical (2010–2025): `GPT/horse-racing/10_warehouse/jrdb/v1/current.json`.
+> - Raw/reproducibility: `GPT/horse-racing/00_raw` plus retained legacy Raw where still explicitly required.
+> - New consumer marts: `GPT/horse-racing/20_mart`.
+> - Old top-level `GPT/JRDB` remains active for legacy Analysis/Fact Lite/Stats/store compatibility; do not delete yet.
+> - RaceNote direct Historical rebuild is Warehouse-standard; full Archive backfill plumbing is technical debt.
+> - RL-T / Training Edge Historical workflow cutover remains pending Index Base equivalence; 2026 PACI/SED stays Raw-direct.
+
 # JRDB Git migration status
 
 Updated: 2026-09-07
