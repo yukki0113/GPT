@@ -111,6 +111,35 @@ def enrich_production(
     return enriched, warnings
 
 
+def enrich_production_many(
+    bases: list[dict],
+    analysis: object,
+    mart: object,
+    stats_window_years: int,
+) -> list[tuple[dict, list[str]]]:
+    """Enrich a request's bundles using shared bulk SQL aggregates."""
+    enriched_items = engine.enrich_many(
+        bases,
+        analysis,
+        mart,
+        OLDER_RUNS_LIMIT,
+        stats_window_years,
+    )
+    output: list[tuple[dict, list[str]]] = []
+    for base, (enriched, warnings) in zip(bases, enriched_items):
+        metadata = enriched.setdefault("metadata", {})
+        metadata.pop("history_enrichment_poc", None)
+        metadata["history_enrichment"] = production_metadata(
+            base.get("schema_version"),
+            enriched["race"]["date"],
+            stats_window_years,
+            warnings,
+        )
+        enriched["schema_version"] = SCHEMA_VERSION
+        output.append((enriched, warnings))
+    return output
+
+
 def main() -> int:
     """Enrich one base RaceNote bundle and write stable v1.0 JSON."""
     args = parse_args()
@@ -132,6 +161,7 @@ def main() -> int:
             analysis.source_info.get("backend", "sqlite")
         )
         enriched["metadata"]["history_enrichment"]["analysis_source"] = analysis.source_info
+        enriched["metadata"]["history_enrichment"]["analysis_source"].update(analysis.metrics())
     except AnalysisBackendError as error:
         raise SystemExit(str(error)) from error
     finally:
