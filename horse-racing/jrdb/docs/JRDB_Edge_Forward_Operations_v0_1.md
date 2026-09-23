@@ -10,7 +10,7 @@ JRDB Edge Registryを2026以降で、時間方向を壊さずに日次運用す�
 本番Forwardは必ず次の2工程に分ける。
 
 ```text
-published Registry + pre-race PACI + optional Analysis history
+v0.2 STANDARD serving catalog + pre-race PACI + canonical Analysis Parquet current
   -> TRUE_FORWARD Freeze
   -> immutable edge_matches.jsonl / manifest
 
@@ -50,16 +50,23 @@ JSON object。
 Required:
 
 - `date`: `YYYYMMDD`
-- `registry_run_id`: successful Registry build run ID
-- `registry_artifact_name`: exact successful Registry artifact name
-- `registry_sha256`: exact SHA-256 of `edge_registry_active.jsonl`
+- `publication_run_id`: successful v0.2 serving publication run ID
+- `publication_artifact_name`: exact serving publication artifact name
+- `publication_sha256`: exact SHA-256 of `edge_serving_catalog_v0_2.jsonl`
+
+Analysis history (normal route):
+
+- `analysis_bundle_drive_file_id`: Drive上の `analysis-parquet-current.tar.xz`
+- `analysis_generation_id`: bundle内 `current.json` が指すexact generation
+- `analysis_manifest_sha256`: exact current generation manifest SHA-256（既知なら指定）
+- `analysis_bundle_sha256`: bundle SHA-256（既知なら指定）
 
 Optional:
 
-- `analysis_url`: Google Drive Analysis Lite URL
-- `analysis_sha256`: Analysis SQLite SHA-256。`analysis_url`と必ず同時指定
-- `expected_paci_sha256`: 既知PACI snapshotを再現するときだけ指定
-- `statuses`: default `ACTIVE`
+- `expected_paci_sha256`: 既知PACI snapshotを固定するとき指定
+- rollback / compatibility時のみ `analysis_url + analysis_sha256` でSQLiteを指定できる
+
+通常運用では `serving_profile=STANDARD` 固定。legacy `statuses=ACTIVE` は受理しない。SQLite Analysisは正本ではなくrollback / compatibility入力だけとする。
 
 ### Time guard
 
@@ -81,7 +88,7 @@ TRUE_FORWARDを名乗る条件をコードで強制する。
 - `provenance.json`
 - `manifest.json`
 - exact PACI copy
-- exact published Registry JSONL copy
+- exact published `edge_serving_catalog_v0_2.jsonl` copy
 
 `manifest.json`には次を固定する。
 
@@ -89,9 +96,11 @@ TRUE_FORWARDを名乗る条件をコードで強制する。
 - `frozen_at_utc`
 - `earliest_post_time_jst`
 - `pre_race_guard = PASS`
-- PACI / Registry / optional Analysis SHA-256
+- PACI / serving catalog SHA-256
+- Analysis Parquet generation ID / manifest SHA-256 / coverage（利用時）
+- legacy SQLite compatibility SHA-256（rollback利用時のみ）
 - `edge_matches.jsonl` SHA-256
-- matcher version / current facts version / registry version
+- matcher version / current facts version / serving profile
 
 Success marker:
 
@@ -100,6 +109,37 @@ JRDB_EDGE_FORWARD_FREEZE_RESULT
 ```
 
 Downstream Settlementは、このRESULTの`run_id` / `artifact_name` / `manifest_sha256` / `matches_sha256`を完全一致で転記する。推測しない。
+
+## 1.1 Analysis Parquet cutover (2026-09-23)
+
+Edge current matchingのAnalysis history正本は、Analysis v1.3 Parquet current generationへ切り替えた。
+
+主要module:
+
+- `src/jrdb_edge_analysis_history.py`
+- `src/build_jrdb_edge_current_facts.py`
+- `src/build_jrdb_edge_current_facts_v0_2.py`
+- `src/run_jrdb_edge_match_current_v0_2.py`
+- `src/audit_jrdb_edge_analysis_parquet_equivalence.py`
+
+PACI/KYIが持つexact previous-race linkの意味論、distance/surface/frame transition、STANDARD matcher、serving catalogは変更していない。
+
+実データ移行監査:
+
+- Issue: `#1197`
+- run: `35814265623`
+- PACI: 2026-09-19, SHA-256 `d33689fe060b2d0b4d3ecb194fa32bc2164804c7d40d483e49282a995d58b7d0`
+- Analysis generation: `analysis-v1_3-dryrun-20260918-03`
+- rows: `516,061`, coverage: `2016-01-05..2026-09-13`
+- runner rows: `287`
+- matched runners: `247`
+- Edge matches: `667`
+- SQLite / Parquet current facts SHA-256: `2afc159b9a0b2d5b6be4681605211e4fed737d014f4e4db3b14ddc087a4d9e82`
+- SQLite / Parquet matches SHA-256: `80439c61bc360832788854189dcb0a16b74e25cd4c4a476f600c985511bb1b83`
+- facts byte-identical: `true`
+- matches byte-identical: `true`
+
+したがってSQLite compatibility artifactは通常入力から降格し、rollback / equivalence audit用にだけ残す。
 
 ## 2. TRUE_FORWARD Settlement
 
@@ -239,17 +279,18 @@ Tests cover at least:
 ```text
 A. 開催前
 1. latest main確認
-2. latest successful published Registry RESULT確認
-3. PACI取得可能後、最初の発走より前にFREEZE Issue作成
-4. FREEZE RESULT status=success / pre_race_guard=PASS確認
-5. run/artifact/manifest SHA/matches SHAをFreeze正本として固定
+2. latest successful v0.2 STANDARD serving publication RESULT確認
+3. Drive上のAnalysis Parquet current bundleをresolveし、bundle内 `current.json` / generation manifestを検証
+4. PACI取得可能後、最初の発走より前にFREEZE Issue作成
+5. FREEZE RESULT status=success / pre_race_guard=PASS / analysis_source=PARQUET確認
+6. run/artifact/manifest SHA/matches SHA / Analysis generation IDをFreeze正本として固定
 
 B. レース後
-6. Freeze RESULTからSETTLE requestを構築
-7. 前回TRUE_FORWARD ledgerがあればprevious_ledgerをexact chain
-8. SETTLE Issue作成
-9. SED exact settlement / ledger import成功確認
-10. SETTLE RESULTを次開催日のprevious_ledger正本とする
+7. Freeze RESULTからSETTLE requestを構築
+8. 前回TRUE_FORWARD ledgerがあればprevious_ledgerをexact chain
+9. SETTLE Issue作成
+10. SED exact settlement / ledger import成功確認
+11. SETTLE RESULTを次開催日のprevious_ledger正本とする
 ```
 
 Freezeを当日前に実行できなかった開催日は、後からTRUE_FORWARDへ補完しない。必要ならBACKFILLへ回す。
