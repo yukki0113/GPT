@@ -80,6 +80,7 @@ jobs:
           python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
           PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python -m pytest -q \
             horse-racing/jrdb/tests/test_audit_jrdb_edge_v02_operational_hits.py \
+            horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py \
             horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py \
             horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py
 
