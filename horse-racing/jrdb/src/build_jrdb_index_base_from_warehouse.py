@@ -175,7 +175,9 @@ def _asset_roots(values: list[str]) -> dict[str, Path]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--warehouse-current", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--warehouse-current", type=Path)
+    source.add_argument("--warehouse-manifest", type=Path)
     parser.add_argument("--asset-root", action="append", required=True)
     parser.add_argument("--years", nargs="+", type=int, required=True)
     parser.add_argument("--db", type=Path, required=True)
@@ -185,7 +187,11 @@ def main() -> None:
         default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_index_base_schema_v0_1.sql",
     )
     args = parser.parse_args()
-    reader = WarehouseIndexBaseReader(args.warehouse_current, asset_roots=_asset_roots(args.asset_root))
+    reader = WarehouseIndexBaseReader(
+        args.warehouse_current,
+        manifest=args.warehouse_manifest,
+        asset_roots=_asset_roots(args.asset_root),
+    )
     result = build(reader, args.years, args.db, args.schema)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
