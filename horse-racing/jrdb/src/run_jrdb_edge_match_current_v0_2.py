@@ -10,7 +10,7 @@ from typing import Sequence
 from build_jrdb_edge_current_facts_v0_2 import build_current_facts
 import jrdb_edge_matcher_v0_2 as matcher
 
-VERSION = "0.2.3"
+VERSION = "0.2.4"
 DEFAULT_SERVING_PROFILE = matcher.PROFILE_STANDARD
 
 
@@ -36,6 +36,7 @@ def run(
     registry_jsonl: str | Path,
     output_jsonl: str | Path,
     analysis_db: str | Path | None = None,
+    analysis_root: str | Path | None = None,
     facts_jsonl: str | Path | None = None,
     audit_json: str | Path | None = None,
     serving_profile: str = DEFAULT_SERVING_PROFILE,
@@ -54,7 +55,11 @@ def run(
         if not normalized_statuses or bad:
             raise ValueError(f"unsupported status(es): {bad}")
 
-    facts, audit = build_current_facts(paci_path, analysis_db)
+    facts, audit = build_current_facts(
+        paci_path,
+        analysis_db=analysis_db,
+        analysis_root=analysis_root,
+    )
     registry = matcher.load_registry(registry_jsonl)
     output: list[dict[str, object]] = []
 
@@ -111,7 +116,9 @@ def main() -> int:
     """CLI entry point for the operational v0.2 current matcher."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--paci", required=True)
-    parser.add_argument("--analysis-db")
+    history = parser.add_mutually_exclusive_group()
+    history.add_argument("--analysis-db")
+    history.add_argument("--analysis-root")
     parser.add_argument("--registry-jsonl", required=True)
     parser.add_argument("--output-jsonl", required=True)
     parser.add_argument("--facts-jsonl")
@@ -132,6 +139,7 @@ def main() -> int:
     summary = run(
         paci_path=args.paci,
         analysis_db=args.analysis_db,
+        analysis_root=args.analysis_root,
         registry_jsonl=args.registry_jsonl,
         output_jsonl=args.output_jsonl,
         facts_jsonl=args.facts_jsonl,
