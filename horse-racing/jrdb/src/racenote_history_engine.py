@@ -724,7 +724,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--bundle", required=True)
     parser.add_argument("--analysis", required=True)
-    parser.add_argument("--mart", required=True)
+    parser.add_argument("--mart", help=argparse.SUPPRESS)
     parser.add_argument("--output-dir", default="./racenote_history_poc")
     parser.add_argument("--stats-window-years", type=int, default=5)
     args = parser.parse_args()
@@ -736,9 +736,7 @@ def main() -> None:
     base_metrics = metrics(base)
 
     analysis = sqlite3.connect(args.analysis)
-    mart = sqlite3.connect(args.mart)
     analysis.row_factory = sqlite3.Row
-    mart.row_factory = sqlite3.Row
 
     variants: dict[str, dict] = {}
     try:
@@ -746,7 +744,7 @@ def main() -> None:
             enriched, warnings = enrich(
                 base,
                 analysis,
-                mart,
+                None,
                 older_limit,
                 args.stats_window_years,
             )
@@ -771,7 +769,6 @@ def main() -> None:
             }
     finally:
         analysis.close()
-        mart.close()
 
     comparison = {
         "poc_version": "0.2",

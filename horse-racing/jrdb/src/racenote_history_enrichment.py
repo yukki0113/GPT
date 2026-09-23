@@ -120,7 +120,7 @@ def main() -> int:
         enriched, warnings = enrich_production(
             base,
             analysis,
-            mart,
+            None,
             args.stats_window_years,
         )
     finally:
