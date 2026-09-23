@@ -278,22 +278,18 @@ jobs:
         run: |
           set -euo pipefail
 
-          if ! gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release create "$NEWSPAPER_RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "JRDB Newspaper current" \
-              --notes "Mutable PWA distribution cache. Canonical day-package remains on Google Drive."
+          # Replace the fixed cache Release atomically at the Release level
+          # after candidate validation; do not leave an old archive/meta pair.
+          if gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
           fi
-
-          for asset in "$NEWSPAPER_RELEASE_ARCHIVE" "$NEWSPAPER_RELEASE_META" candidate-audit.json; do
-            gh release delete-asset "$NEWSPAPER_RELEASE_TAG" "$asset" \
-              --repo "$GITHUB_REPOSITORY" --yes >/dev/null 2>&1 || true
-          done
-          gh release upload "$NEWSPAPER_RELEASE_TAG" \
+          gh release create "$NEWSPAPER_RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "JRDB Newspaper current" \
+            --notes "Mutable PWA distribution cache. Canonical day-package remains on Google Drive." \
             ".publish/${NEWSPAPER_RELEASE_ARCHIVE}" \
             ".publish/${NEWSPAPER_RELEASE_META}" \
-            .publish/candidate-audit.json \
-            --repo "$GITHUB_REPOSITORY"
+            .publish/candidate-audit.json
 
       - name: Verify release cache
         env:
