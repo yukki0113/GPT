@@ -118,7 +118,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install test-only schema validator
-        run: python -m pip install --disable-pip-version-check 'jsonschema>=4.22,<5'
+        run: python -m pip install --disable-pip-version-check 'jsonschema>=4.22,<5' pytest
 
       - name: Compile common-reader production consumers
         working-directory: horse-racing/jrdb
@@ -160,9 +160,6 @@ jobs:
             test_jrdb_hjc_common \
             test_jrdb_store \
             test_racenote_store_resolution \
-            test_racenote_analysis_only_enrichment \
-            test_racenote_request_workflow_contract \
-            test_racenote_v11p_true_forward_day \
             test_racenote_reader_view \
             test_jrdb_canonical_builder \
             test_jrdb_pwa_race_names_common \
@@ -175,3 +172,8 @@ jobs:
             test_jrdb_eval_horse_result_adapter \
             test_racenote_analysis_history_index \
             test_jrdb_newspaper_build
+
+      - name: Run RaceNote Phase A regressions
+        working-directory: horse-racing/jrdb/tests
+        run: |
+          pytest -q             test_racenote_analysis_only_enrichment.py             test_racenote_request_workflow_contract.py             test_racenote_v11p_true_forward_day.py
