@@ -116,16 +116,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/warehouse/families
-          gdown --folder --remaining-ok --no-cookies \
+          gdown --folder --no-cookies \
             "https://drive.google.com/drive/folders/$BAC_STAGING_FOLDER_ID" \
             -O /tmp/warehouse/families/BAC
-          gdown --folder --remaining-ok --no-cookies \
+          gdown --folder --no-cookies \
             "https://drive.google.com/drive/folders/$KYI_STAGING_FOLDER_ID" \
             -O /tmp/warehouse/families/KYI
-          gdown --folder --remaining-ok --no-cookies \
+          gdown --folder --no-cookies \
             "https://drive.google.com/drive/folders/$SED_STAGING_FOLDER_ID" \
             -O /tmp/warehouse/families/SED
-          gdown --folder --remaining-ok --no-cookies \
+          gdown --folder --no-cookies \
             "https://drive.google.com/drive/folders/$UKC_STAGING_FOLDER_ID" \
             -O /tmp/warehouse/families/UKC
           python - <<'PY'
