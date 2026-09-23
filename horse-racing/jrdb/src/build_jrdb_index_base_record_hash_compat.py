@@ -34,7 +34,7 @@ WAREHOUSE_GENERATION = "jrdb_normalized_warehouse_v1_2010_2025_g20260921"
 
 def _canonical_members(zf: zipfile.ZipFile, family: str) -> list[str]:
     import re
-    pattern = re.compile(rf"^{family}\d{6}\.txt$", re.IGNORECASE)
+    pattern = re.compile(rf"^{family}\d{{6}}\.txt$", re.IGNORECASE)
     return sorted(
         [name for name in zf.namelist() if pattern.fullmatch(Path(name).name)],
         key=lambda name: Path(name).name.upper(),
