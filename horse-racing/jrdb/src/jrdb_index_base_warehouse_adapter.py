@@ -553,30 +553,34 @@ class WarehouseIndexBaseReader:
         if year < MIN_YEAR or year > MAX_YEAR or year not in self.covered_years:
             raise WarehouseIndexBaseError(f"{year}: outside accepted 2010-2025 Warehouse coverage")
         try:
-            import duckdb
+            from data_storage.query import connect_parquet
         except ImportError as exc:
-            raise WarehouseIndexBaseError("Warehouse Index Base reader requires duckdb") from exc
+            raise WarehouseIndexBaseError(
+                "Warehouse Index Base reader requires the shared tools/data-storage runtime"
+            ) from exc
         rows: dict[str, list[dict[str, Any]]] = {}
         evidence: dict[str, Any] = {}
-        connection = duckdb.connect(":memory:")
-        try:
-            for family in ALL_FAMILIES:
-                resolved = self._asset(family, year)
-                if resolved is None:
-                    rows[family] = []
-                    continue
-                path, asset = resolved
-                cursor = connection.execute("SELECT * FROM read_parquet(?) ORDER BY source_member, source_record_ordinal", [str(path)])
+        for family in ALL_FAMILIES:
+            resolved = self._asset(family, year)
+            if resolved is None:
+                rows[family] = []
+                continue
+            path, asset = resolved
+            connection = connect_parquet(path)
+            try:
+                cursor = connection.execute(
+                    "SELECT * FROM data ORDER BY source_member, source_record_ordinal"
+                )
                 names = [item[0] for item in cursor.description]
                 rows[family] = [dict(zip(names, values)) for values in cursor.fetchall()]
-                evidence[family] = {
-                    "path": str(path),
-                    "sha256": _text(asset.get("sha256")),
-                    "size_bytes": _int(asset.get("size_bytes")),
-                    "row_count": len(rows[family]),
-                }
-        finally:
-            connection.close()
+            finally:
+                connection.close()
+            evidence[family] = {
+                "path": str(path),
+                "sha256": _text(asset.get("sha256")),
+                "size_bytes": _int(asset.get("size_bytes")),
+                "row_count": len(rows[family]),
+            }
         return rows, evidence
 
     def load_year(self, year: int) -> tuple[YearData, dict[str, Any]]:
