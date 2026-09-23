@@ -15,8 +15,9 @@ from zoneinfo import ZoneInfo
 
 from jrdb_raw import Parser, ReaderAudit, canonical_members, read_fixed_records, ymd
 import run_jrdb_edge_match_current_v0_2 as current_match
+from jrdb_analysis_parquet_current import resolve_current
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 EVALUATION_MODE = "TRUE_FORWARD"
 SERVING_PROFILE = current_match.DEFAULT_SERVING_PROFILE
 JST = ZoneInfo("Asia/Tokyo")
@@ -39,10 +40,52 @@ def _verify_sha(path: str | Path, expected: str | None, label: str) -> str:
     return actual
 
 
-def _analysis_coverage(path: str | Path | None) -> dict[str, Any]:
-    """Return the Analysis Lite coverage used by the pre-race facts builder."""
-    if path is None:
-        return {"source": None, "min_race_date": None, "max_race_date": None, "rows": None}
+def _analysis_source_info(
+    *,
+    analysis_db: str | Path | None,
+    analysis_root: str | Path | None,
+    expected_generation_id: str | None = None,
+    expected_manifest_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Validate and describe the exact Analysis history source used by Edge."""
+    if analysis_db is not None and analysis_root is not None:
+        raise FreezeError("Specify only one of analysis_db or analysis_root")
+    if analysis_root is not None:
+        root = Path(analysis_root).resolve()
+        report = resolve_current(root)
+        generation_id = str(report.get("generation_id") or "")
+        if expected_generation_id and generation_id != expected_generation_id:
+            raise FreezeError(
+                f"Analysis generation mismatch: expected={expected_generation_id} actual={generation_id}"
+            )
+        manifest = Path(report["manifest"])
+        manifest_sha256 = _sha256(manifest)
+        if expected_manifest_sha256 and manifest_sha256 != expected_manifest_sha256.lower():
+            raise FreezeError(
+                "Analysis manifest SHA-256 mismatch: "
+                f"expected={expected_manifest_sha256.lower()} actual={manifest_sha256}"
+            )
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        return {
+            "source": "PARQUET",
+            "path": str(root),
+            "generation_id": generation_id,
+            "manifest": str(manifest.relative_to(root)),
+            "manifest_sha256": manifest_sha256,
+            "min_race_date": payload.get("period_from"),
+            "max_race_date": payload.get("period_to"),
+            "rows": int(report["rows"]),
+        }
+    if analysis_db is None:
+        return {
+            "source": None,
+            "generation_id": None,
+            "manifest_sha256": None,
+            "min_race_date": None,
+            "max_race_date": None,
+            "rows": None,
+        }
+    path = Path(analysis_db)
     connection = sqlite3.connect(path)
     try:
         integrity = connection.execute("PRAGMA integrity_check").fetchone()[0]
@@ -54,12 +97,14 @@ def _analysis_coverage(path: str | Path | None) -> dict[str, Any]:
     if integrity != "ok":
         raise FreezeError(f"Analysis integrity_check={integrity}")
     return {
-        "source": str(Path(path).name),
+        "source": "SQLITE_COMPATIBILITY",
+        "path": str(path.name),
+        "generation_id": None,
+        "manifest_sha256": None,
         "min_race_date": row[0],
         "max_race_date": row[1],
         "rows": int(row[2]),
     }
-
 
 def _parse_post_datetime(race_date: str, raw_time: Any) -> datetime:
     """Parse one BAC scheduled post time strictly in JST."""
@@ -167,10 +212,13 @@ def run(
     serving_catalog_jsonl: str | Path,
     output_dir: str | Path,
     analysis_db: str | Path | None = None,
+    analysis_root: str | Path | None = None,
     expected_race_date: str | None = None,
     expected_paci_sha256: str | None = None,
     expected_publication_sha256: str | None = None,
     expected_analysis_sha256: str | None = None,
+    expected_analysis_generation_id: str | None = None,
+    expected_analysis_manifest_sha256: str | None = None,
     frozen_at_utc: datetime | None = None,
 ) -> dict[str, Any]:
     """Freeze the official v0.2 STANDARD serving result before the first post."""
@@ -182,6 +230,9 @@ def run(
     paci = Path(paci_path)
     publication = Path(serving_catalog_jsonl)
     analysis = Path(analysis_db) if analysis_db is not None else None
+    analysis_parquet = Path(analysis_root) if analysis_root is not None else None
+    if analysis is not None and analysis_parquet is not None:
+        raise FreezeError("Specify only one of analysis_db or analysis_root")
     for label, path in (("PACI", paci), ("Serving catalog", publication)):
         if not path.is_file():
             raise FreezeError(f"{label} input not found: {path}")
@@ -192,13 +243,25 @@ def run(
         )
     if analysis is not None and not analysis.is_file():
         raise FreezeError(f"Analysis input not found: {analysis}")
+    if analysis_parquet is not None and not analysis_parquet.is_dir():
+        raise FreezeError(f"Analysis Parquet root not found: {analysis_parquet}")
+
+    analysis_info = _analysis_source_info(
+        analysis_db=analysis,
+        analysis_root=analysis_parquet,
+        expected_generation_id=expected_analysis_generation_id,
+        expected_manifest_sha256=expected_analysis_manifest_sha256,
+    )
 
     input_sha = {
         "paci_sha256": _verify_sha(paci, expected_paci_sha256, "PACI"),
         "publication_sha256": _verify_sha(publication, expected_publication_sha256, "Serving catalog"),
         "analysis_sha256": (
-            _verify_sha(analysis, expected_analysis_sha256, "Analysis") if analysis is not None else None
+            _verify_sha(analysis, expected_analysis_sha256, "Analysis SQLite compatibility")
+            if analysis is not None
+            else None
         ),
+        "analysis_manifest_sha256": analysis_info.get("manifest_sha256"),
     }
     race_date, earliest_post_jst, race_count = _paci_schedule(paci)
     if expected_race_date and race_date != expected_race_date:
@@ -212,6 +275,7 @@ def run(
     matcher_summary = current_match.run(
         paci_path=paci,
         analysis_db=analysis,
+        analysis_root=analysis_parquet,
         registry_jsonl=publication,
         output_jsonl=matches_jsonl,
         facts_jsonl=facts_jsonl,
@@ -243,7 +307,7 @@ def run(
         "scheduled_races": race_count,
         "pre_race_guard": "PASS",
         "input_sha256": input_sha,
-        "analysis_coverage": _analysis_coverage(analysis),
+        "analysis_coverage": analysis_info,
         "matcher": matcher_summary,
         "semantics": (
             "v0.2 STANDARD serving-catalog matcher output frozen before earliest scheduled post; "
@@ -274,22 +338,29 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--paci", required=True)
     parser.add_argument("--serving-catalog-jsonl", required=True)
-    parser.add_argument("--analysis-db")
+    history = parser.add_mutually_exclusive_group()
+    history.add_argument("--analysis-db")
+    history.add_argument("--analysis-root")
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--expected-race-date")
     parser.add_argument("--expected-paci-sha256")
     parser.add_argument("--expected-publication-sha256")
     parser.add_argument("--expected-analysis-sha256")
+    parser.add_argument("--expected-analysis-generation-id")
+    parser.add_argument("--expected-analysis-manifest-sha256")
     args = parser.parse_args()
     result = run(
         paci_path=args.paci,
         serving_catalog_jsonl=args.serving_catalog_jsonl,
         analysis_db=args.analysis_db,
+        analysis_root=args.analysis_root,
         output_dir=args.output_dir,
         expected_race_date=args.expected_race_date,
         expected_paci_sha256=args.expected_paci_sha256,
         expected_publication_sha256=args.expected_publication_sha256,
         expected_analysis_sha256=args.expected_analysis_sha256,
+        expected_analysis_generation_id=args.expected_analysis_generation_id,
+        expected_analysis_manifest_sha256=args.expected_analysis_manifest_sha256,
     )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
