@@ -336,20 +336,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if ! gh release view "$FACT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release create "$FACT_RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "JRDB PWA Fact Lite current" \
-              --notes "PWA Fact Lite SQLite delivery cache. Generated from the current Analysis Parquet generation plus BAC race-name lookup; not a Git-tracked canonical data artifact."
+          # A fixed Release tag is a mutable cache. Recreate its Release only
+          # after the candidate has passed all validation, so old and new
+          # assets can never be mixed by an asset-level overwrite.
+          if gh release view "$FACT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$FACT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
           fi
-          for asset in jrdb_pwa_fact_lite.sqlite manifest.json; do
-            gh release delete-asset "$FACT_RELEASE_TAG" "$asset" \
-              --repo "$GITHUB_REPOSITORY" --yes >/dev/null 2>&1 || true
-          done
-          gh release upload "$FACT_RELEASE_TAG" \
+          gh release create "$FACT_RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "JRDB PWA Fact Lite current" \
+            --notes "PWA Fact Lite SQLite delivery cache. Generated from the current Analysis Parquet generation plus BAC race-name lookup; not a Git-tracked canonical data artifact." \
             .fact_publish/jrdb_pwa_fact_lite.sqlite \
-            .fact_publish/manifest.json \
-            --repo "$GITHUB_REPOSITORY"
+            .fact_publish/manifest.json
 
           rm -rf .fact_publish/release-check
           mkdir -p .fact_publish/release-check
