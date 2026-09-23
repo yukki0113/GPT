@@ -80,6 +80,34 @@ jobs:
                   raise SystemExit('analysis_url must be a Google Drive URL')
               if not sha_re.fullmatch(analysis_sha):
                   raise SystemExit('analysis_sha256 must be lowercase SHA-256 hex')
+
+          analysis_bundle_id=req.get('analysis_bundle_drive_file_id')
+          analysis_generation_id=req.get('analysis_generation_id')
+          analysis_bundle_sha=req.get('analysis_bundle_sha256')
+          analysis_manifest_sha=req.get('analysis_manifest_sha256')
+          parquet_requested=analysis_bundle_id is not None or analysis_generation_id is not None
+          if parquet_requested and (analysis_bundle_id is None or analysis_generation_id is None):
+              raise SystemExit(
+                  'analysis_bundle_drive_file_id and analysis_generation_id must be supplied together'
+              )
+          if parquet_requested and analysis_url is not None:
+              raise SystemExit('Parquet Analysis and legacy SQLite Analysis are mutually exclusive')
+          if analysis_bundle_id is not None:
+              analysis_bundle_id=str(analysis_bundle_id).strip()
+              analysis_generation_id=str(analysis_generation_id).strip()
+              if not re.fullmatch(r'[A-Za-z0-9_-]{10,}',analysis_bundle_id):
+                  raise SystemExit('invalid analysis_bundle_drive_file_id')
+              if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{2,127}',analysis_generation_id):
+                  raise SystemExit('invalid analysis_generation_id')
+              if analysis_bundle_sha is not None:
+                  analysis_bundle_sha=str(analysis_bundle_sha).strip().lower()
+                  if not sha_re.fullmatch(analysis_bundle_sha):
+                      raise SystemExit('analysis_bundle_sha256 must be lowercase SHA-256 hex')
+              if analysis_manifest_sha is not None:
+                  analysis_manifest_sha=str(analysis_manifest_sha).strip().lower()
+                  if not sha_re.fullmatch(analysis_manifest_sha):
+                      raise SystemExit('analysis_manifest_sha256 must be lowercase SHA-256 hex')
+
           normalized={
               'request_id':request_id,
               'date':day,
@@ -88,6 +116,10 @@ jobs:
               'publication_artifact_name':artifact,
               'publication_sha256':publication_sha,
               'serving_profile':'STANDARD',
+              'analysis_bundle_drive_file_id':analysis_bundle_id,
+              'analysis_generation_id':analysis_generation_id,
+              'analysis_bundle_sha256':analysis_bundle_sha,
+              'analysis_manifest_sha256':analysis_manifest_sha,
               'analysis_url':analysis_url,
               'analysis_sha256':analysis_sha,
               'expected_paci_sha256':expected_paci,
@@ -104,7 +136,10 @@ jobs:
       - name: Edge forward regression tests
         run: |
           python -m pip install --disable-pip-version-check -q pytest
-          python -m pytest -q \
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py \
             horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
             horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py \
             horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
@@ -135,19 +170,85 @@ jobs:
           cp "${candidates[0]}" /tmp/edge_serving_catalog_v0_2.jsonl
           echo "$PUBLICATION_SHA256  /tmp/edge_serving_catalog_v0_2.jsonl" | sha256sum -c -
 
-      - name: Download and verify optional Analysis Lite
+      - name: Download and verify Analysis history
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
         run: |
           set -euo pipefail
           python - <<'PY'
-          import hashlib, json, shutil, sqlite3, subprocess, zipfile
+          import hashlib, json, shutil, sqlite3, subprocess, sys, tarfile, zipfile
           from pathlib import Path
+
           req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
-          if req.get('analysis_url') is None:
+
+          if req.get('analysis_bundle_drive_file_id'):
+              bundle=Path('/tmp/analysis-parquet-current.tar.xz')
+              url=(
+                  'https://drive.usercontent.google.com/download?id='
+                  + req['analysis_bundle_drive_file_id']
+                  + '&export=download&confirm=t'
+              )
+              subprocess.run(
+                  ['curl','--fail','--location','--retry','3',url,'--output',str(bundle)],
+                  check=True,
+              )
+              bundle_sha=hashlib.sha256(bundle.read_bytes()).hexdigest()
+              if req.get('analysis_bundle_sha256') and bundle_sha!=req['analysis_bundle_sha256']:
+                  raise SystemExit(
+                      f"Analysis bundle SHA mismatch: expected={req['analysis_bundle_sha256']} actual={bundle_sha}"
+                  )
+              root=Path('/tmp/analysis_parquet')
+              root.mkdir(parents=True,exist_ok=True)
+              with tarfile.open(bundle,'r:xz') as archive:
+                  members=archive.getmembers()
+                  for member in members:
+                      target=(root/member.name).resolve()
+                      if root.resolve() not in (target,*target.parents):
+                          raise SystemExit(f'unsafe Analysis tar member: {member.name}')
+                  archive.extractall(root)
+
+              from jrdb_analysis_parquet_current import resolve_current
+              report=resolve_current(root)
+              generation=str(report.get('generation_id') or '')
+              if generation!=req['analysis_generation_id']:
+                  raise SystemExit(
+                      f"Analysis generation mismatch: expected={req['analysis_generation_id']} actual={generation}"
+                  )
+              manifest=Path(report['manifest'])
+              manifest_sha=hashlib.sha256(manifest.read_bytes()).hexdigest()
+              if req.get('analysis_manifest_sha256') and manifest_sha!=req['analysis_manifest_sha256']:
+                  raise SystemExit(
+                      f"Analysis manifest SHA mismatch: expected={req['analysis_manifest_sha256']} actual={manifest_sha}"
+                  )
+              payload=json.loads(manifest.read_text(encoding='utf-8'))
+              coverage={
+                  'source':'PARQUET',
+                  'generation_id':generation,
+                  'manifest_sha256':manifest_sha,
+                  'bundle_sha256':bundle_sha,
+                  'min_race_date':payload.get('period_from'),
+                  'max_race_date':payload.get('period_to'),
+                  'rows':int(report['rows']),
+              }
               Path('/tmp/analysis_coverage.json').write_text(
-                  json.dumps({'source':None,'min_race_date':None,'max_race_date':None,'rows':None})+'\n',encoding='utf-8'
+                  json.dumps(coverage,indent=2,sort_keys=True)+'\n',encoding='utf-8'
               )
               raise SystemExit(0)
-          subprocess.run(['python','-m','pip','install','--disable-pip-version-check','-q','gdown'],check=True)
+
+          if req.get('analysis_url') is None:
+              Path('/tmp/analysis_coverage.json').write_text(
+                  json.dumps({
+                      'source':None,'generation_id':None,'manifest_sha256':None,
+                      'min_race_date':None,'max_race_date':None,'rows':None
+                  },indent=2,sort_keys=True)+'\n',encoding='utf-8'
+              )
+              raise SystemExit(0)
+
+          # Legacy rollback/compatibility route only.
+          subprocess.run(
+              ['python','-m','pip','install','--disable-pip-version-check','-q','gdown'],
+              check=True,
+          )
           subprocess.run(['gdown',req['analysis_url'],'-O','/tmp/analysis.download'],check=True)
           src=Path('/tmp/analysis.download')
           dst=Path('/tmp/jrdb_analysis.sqlite')
@@ -156,7 +257,10 @@ jobs:
                   bad=archive.testzip()
                   if bad is not None:
                       raise SystemExit(f'Analysis ZIP corrupt member: {bad}')
-                  members=[n for n in archive.namelist() if not n.endswith('/') and Path(n).name.lower().endswith(('.sqlite','.bin'))]
+                  members=[
+                      n for n in archive.namelist()
+                      if not n.endswith('/') and Path(n).name.lower().endswith(('.sqlite','.bin'))
+                  ]
                   if len(members)!=1:
                       raise SystemExit(f'Analysis ZIP must contain exactly one DB: {members}')
                   with archive.open(members[0]) as source, dst.open('wb') as target:
@@ -167,7 +271,9 @@ jobs:
               raise SystemExit('Analysis is not SQLite')
           digest=hashlib.sha256(dst.read_bytes()).hexdigest()
           if digest!=req['analysis_sha256']:
-              raise SystemExit(f"Analysis SHA mismatch: expected={req['analysis_sha256']} actual={digest}")
+              raise SystemExit(
+                  f"Analysis SHA mismatch: expected={req['analysis_sha256']} actual={digest}"
+              )
           connection=sqlite3.connect(dst)
           try:
               integrity=connection.execute('PRAGMA integrity_check').fetchone()[0]
@@ -179,10 +285,12 @@ jobs:
           if integrity!='ok':
               raise SystemExit(f'Analysis integrity_check={integrity}')
           Path('/tmp/analysis_coverage.json').write_text(
-              json.dumps({'source':'jrdb_analysis.sqlite','min_race_date':minimum,'max_race_date':maximum,'rows':count,'sha256':digest},indent=2)+'\n',encoding='utf-8'
+              json.dumps({
+                  'source':'SQLITE_COMPATIBILITY','generation_id':None,
+                  'min_race_date':minimum,'max_race_date':maximum,'rows':count,'sha256':digest
+              },indent=2,sort_keys=True)+'\n',encoding='utf-8'
           )
           PY
-
       - name: Fetch pre-race PACI
         env:
           JRDB_USER: ${{ secrets.JRDB_USER }}
@@ -226,7 +334,16 @@ jobs:
           ]
           if req.get('expected_paci_sha256'):
               cmd.extend(['--expected-paci-sha256',req['expected_paci_sha256']])
-          if req.get('analysis_url'):
+          if req.get('analysis_bundle_drive_file_id'):
+              cmd.extend([
+                  '--analysis-root','/tmp/analysis_parquet',
+                  '--expected-analysis-generation-id',req['analysis_generation_id'],
+              ])
+              if req.get('analysis_manifest_sha256'):
+                  cmd.extend([
+                      '--expected-analysis-manifest-sha256',req['analysis_manifest_sha256'],
+                  ])
+          elif req.get('analysis_url'):
               cmd.extend([
                   '--analysis-db','/tmp/jrdb_analysis.sqlite',
                   '--expected-analysis-sha256',req['analysis_sha256'],
@@ -265,6 +382,9 @@ jobs:
               'paci_sha256':provenance['input_sha256']['paci_sha256'],
               'publication_sha256':provenance['input_sha256']['publication_sha256'],
               'analysis_sha256':provenance['input_sha256'].get('analysis_sha256'),
+              'analysis_manifest_sha256':provenance['input_sha256'].get('analysis_manifest_sha256'),
+              'analysis_generation_id':provenance['analysis_coverage'].get('generation_id'),
+              'analysis_source':provenance['analysis_coverage'].get('source'),
               'publication_run_id':req['publication_run_id'],
               'publication_artifact_name':req['publication_artifact_name'],
               'runner_rows':provenance['matcher']['runner_rows'],
