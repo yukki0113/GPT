@@ -40,7 +40,7 @@ class RowMapping(dict):
         self._values = values
 
     def __getitem__(self, key: object) -> Any:
-        if isinstance(key, int):
+        if isinstance(key, (int, slice)):
             return self._values[key]
         return super().__getitem__(key)
 
