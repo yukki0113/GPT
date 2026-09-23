@@ -18,21 +18,19 @@ jobs:
     timeout-minutes: 360
 
     steps:
-      - name: Checkout latest main
+      - name: Checkout latest main with history
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 1
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
-          cache-dependency-path: tools/data-storage/requirements.txt
 
-      - name: Install shared storage runtime and authenticated Drive client
+      - name: Install exact Warehouse runtime
         run: |
-          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt google-api-python-client google-auth
+          python -m pip install --disable-pip-version-check             'duckdb==1.1.3' 'pyarrow==25.0.1' 'PyYAML==6.0.3' 'requests==2.34.2'
           PYTHONPATH=tools/data-storage python -m data_storage check-deps
 
       - name: Parse formal request
@@ -54,12 +52,16 @@ jobs:
           for key in ('manifest_id','audit_id'):
               if not re.fullmatch(r'[A-Za-z0-9_-]{10,}', str(req.get(key) or '')):
                   raise SystemExit(f'invalid {key}')
-          stages = req.get('staging_folders') or {}
-          if set(stages) != set(required):
-              raise SystemExit('staging_folders must contain BAC/KYI/CHA/CYB/SED/UKC exactly')
-          for family, file_id in stages.items():
-              if not re.fullmatch(r'[A-Za-z0-9_-]{10,}', str(file_id)):
-                  raise SystemExit(f'invalid staging folder id: {family}')
+          builds = req.get('family_builds') or {}
+          if set(builds) != set(required):
+              raise SystemExit('family_builds must contain BAC/KYI/CHA/CYB/SED/UKC exactly')
+          for family, spec in builds.items():
+              if not re.fullmatch(r'[0-9a-f]{40}', str(spec.get('source_git_commit') or '')):
+                  raise SystemExit(f'invalid source_git_commit: {family}')
+              if not str(spec.get('created_at') or '').endswith('+00:00'):
+                  raise SystemExit(f'invalid created_at: {family}')
+              if not str(spec.get('generation_id') or '').startswith('historical-warehouse-staging-'):
+                  raise SystemExit(f'invalid staging generation_id: {family}')
           root = Path('/tmp/rlt_historical_audit')
           (root/'output').mkdir(parents=True, exist_ok=True)
           (root/'request.json').write_text(json.dumps(req, ensure_ascii=False, indent=2), encoding='utf-8')
@@ -67,136 +69,184 @@ jobs:
               h.write(f'request_id={request_id}\n')
           PY
 
-      - name: Discover and download exact evidence through authenticated Drive API
-        id: download
-        env:
-          GPT_GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GPT_GDRIVE_SERVICE_ACCOUNT_JSON }}
-          GPT_GDRIVE_AUTOMATION_ROOT_ID: ${{ secrets.GPT_GDRIVE_AUTOMATION_ROOT_ID }}
+      - name: Download accepted final manifest and audit
         run: |
           python - <<'PY'
-          import hashlib, json, time
+          import json, time
           from pathlib import Path
-          from tools.gpt_io.gdrive import gdrive_api as api
+          import requests
 
-          root = Path('/tmp/rlt_historical_audit')
-          req = json.loads((root/'request.json').read_text(encoding='utf-8'))
-          expected_generation = req['generation_id']
-          service, automation_root = api.load_service()
+          root=Path('/tmp/rlt_historical_audit')
+          req=json.loads((root/'request.json').read_text(encoding='utf-8'))
 
-          def sha256(path):
-              h = hashlib.sha256()
-              with path.open('rb') as f:
-                  for block in iter(lambda: f.read(1024*1024), b''):
-                      h.update(block)
-              return h.hexdigest()
-
-          def guarded_download(file_id, path, expected_sha=None, attempts=5):
-              api.assert_under_root(service, str(file_id), automation_root)
+          def download(file_id, path, attempts=5):
               path.parent.mkdir(parents=True, exist_ok=True)
-              last = None
-              for attempt in range(1, attempts + 1):
-                  path.unlink(missing_ok=True)
+              last=None
+              for attempt in range(1, attempts+1):
+                  part=path.with_suffix(path.suffix+'.part')
+                  part.unlink(missing_ok=True)
                   try:
-                      meta = api.download(service, str(file_id), path, force=True)
-                      actual = str(meta['sha256']).lower()
-                      if expected_sha is None or actual == str(expected_sha).lower():
-                          return meta
-                      last = f'SHA mismatch actual={actual}'
+                      with requests.get(
+                          'https://drive.usercontent.google.com/download',
+                          params={'id':file_id,'export':'download','confirm':'t'},
+                          stream=True, timeout=(20,180),
+                      ) as response:
+                          response.raise_for_status()
+                          with part.open('wb') as h:
+                              for block in response.iter_content(1024*1024):
+                                  if block: h.write(block)
+                      part.replace(path)
+                      return
                   except Exception as exc:
-                      last = repr(exc)
-                  if attempt < attempts:
-                      time.sleep(min(30, 2 ** attempt))
-              raise SystemExit(f'authenticated Drive download failed after {attempts} attempts id={file_id}: {last}')
+                      last=repr(exc)
+                      part.unlink(missing_ok=True)
+                      if attempt<attempts: time.sleep(min(20, 2**attempt))
+              raise SystemExit(f'final evidence download failed id={file_id}: {last}')
 
-          def child(parent_id, name):
-              rows = [x for x in api.list_children(service, parent_id) if x.get('name') == name]
-              if len(rows) != 1:
-                  raise SystemExit(f'expected one child {name!r} under {parent_id}, got {len(rows)}')
-              return rows[0]
-
-          guarded_download(req['manifest_id'], root/'final'/'manifest.json')
-          guarded_download(req['audit_id'], root/'final'/'audit.json')
-          manifest = json.loads((root/'final'/'manifest.json').read_text(encoding='utf-8'))
-          audit = json.loads((root/'final'/'audit.json').read_text(encoding='utf-8'))
-
-          if manifest.get('artifact_type') != 'jrdb_normalized_warehouse_final_generation':
+          download(req['manifest_id'], root/'final'/'manifest.json')
+          download(req['audit_id'], root/'final'/'audit.json')
+          manifest=json.loads((root/'final'/'manifest.json').read_text(encoding='utf-8'))
+          audit=json.loads((root/'final'/'audit.json').read_text(encoding='utf-8'))
+          if manifest.get('artifact_type')!='jrdb_normalized_warehouse_final_generation':
               raise SystemExit('unexpected final manifest type')
-          if manifest.get('generation_id') != expected_generation or manifest.get('status') != 'PASS':
-              raise SystemExit('final manifest is not accepted PASS generation')
-          if audit.get('generation_id') != expected_generation or audit.get('status') != 'PASS':
-              raise SystemExit('final audit is not PASS for accepted generation')
+          if manifest.get('generation_id')!=req['generation_id'] or manifest.get('status')!='PASS':
+              raise SystemExit('accepted final manifest gate failed')
+          if audit.get('generation_id')!=req['generation_id'] or audit.get('status')!='PASS':
+              raise SystemExit('accepted final audit gate failed')
           if audit.get('year_coverage') != [2010, 2025]:
-              raise SystemExit('unexpected Warehouse coverage')
+              raise SystemExit('accepted final audit coverage mismatch')
+          PY
 
-          required = ('BAC','KYI','CHA','CYB','SED','UKC')
-          assets = {
-              (str(a.get('family') or '').upper(), int(a['year'])): a
-              for a in manifest.get('assets') or []
-              if str(a.get('family') or '').upper() in required and 2010 <= int(a['year']) <= 2025
-          }
-          expected_keys = {(family, year) for family in required for year in range(2010, 2026)}
-          if set(assets) != expected_keys:
-              raise SystemExit('final manifest does not contain exact required 6x16 asset set')
+      - name: Fetch original annual JRDB Raw from upstream
+        id: raw
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/rlt_historical_audit/raw /tmp/rlt_historical_audit/report
+          python horse-racing/jrdb/src/fetch_jrdb_history.py             --from-year 2010 --to-year 2025             --kinds BAC KYI CHA CYB SED UKC             --output-dir /tmp/rlt_historical_audit/raw             --manifest /tmp/rlt_historical_audit/report/raw_fetch_manifest.jsonl             --sleep-seconds 0.5 --max-retries 4 --retry-backoff-seconds 2             > /tmp/rlt_historical_audit/report/raw_fetch_stdout.log             2> /tmp/rlt_historical_audit/report/raw_fetch_stderr.log
 
-          staging_map = {}
-          download_audit = {}
-          for family in required:
-              stage_id = req['staging_folders'][family]
-              api.assert_under_root(service, stage_id, automation_root)
-              receipt_meta = child(stage_id, 'raw_receipt.json')
-              objects_meta = child(stage_id, 'objects')
+      - name: Prepare original staging archive names
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          root=Path('/tmp/rlt_historical_audit')
+          for family in ('BAC','KYI','CHA','CYB','SED','UKC'):
+              for year in range(2010,2026):
+                  source=root/'raw'/family/f'{family}_{year}.zip'
+                  if not source.is_file():
+                      raise SystemExit(f'missing fetched Raw: {source}')
+                  target=root/'rebuild_input'/family/str(year)/f'{family}.zip'
+                  target.parent.mkdir(parents=True,exist_ok=True)
+                  try:
+                      os.link(source,target)
+                  except OSError:
+                      import shutil
+                      shutil.copy2(source,target)
+          PY
 
-              receipt_path = root/'receipts'/f'{family}.json'
-              guarded_download(receipt_meta['id'], receipt_path)
-              receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
-              if receipt.get('status') != 'PASS' or receipt.get('family') != family:
-                  raise SystemExit(f'{family}: invalid raw receipt')
-              raw_by_year = {int(a['year']): a for a in receipt.get('archives') or []}
-              if set(raw_by_year) != set(range(2010, 2026)):
-                  raise SystemExit(f'{family}: Raw receipt coverage mismatch')
+      - name: Rebuild accepted Warehouse assets from frozen semantics
+        id: rebuild
+        run: |
+          set -euo pipefail
+          ROOT=/tmp/rlt_historical_audit
+          mkdir -p "$ROOT/rebuild_report" "$ROOT/rebuilt"
+          for FAMILY in BAC KYI CHA CYB SED UKC; do
+            COMMIT="$(python -c "import json;print(json.load(open('$ROOT/request.json'))['family_builds']['$FAMILY']['source_git_commit'])")"
+            CREATED_AT="$(python -c "import json;print(json.load(open('$ROOT/request.json'))['family_builds']['$FAMILY']['created_at'])")"
+            GEN="$(python -c "import json;print(json.load(open('$ROOT/request.json'))['family_builds']['$FAMILY']['generation_id'])")"
+            WORKTREE="$ROOT/source-$FAMILY"
+            git worktree add --detach "$WORKTREE" "$COMMIT"
 
-              fam_folder = child(objects_meta['id'], family.lower())
-              year_folders = {
-                  int(x['name'].split('=',1)[1]): x
-                  for x in api.list_children(service, fam_folder['id'])
-                  if str(x.get('name') or '').startswith('year=')
-              }
-              if set(year_folders) != set(range(2010, 2026)):
-                  raise SystemExit(f'{family}: Warehouse year-folder coverage mismatch')
+            FAMILY="$FAMILY" COMMIT="$COMMIT" CREATED_AT="$CREATED_AT" GEN="$GEN" WORKTREE="$WORKTREE" ROOT="$ROOT"             PYTHONPATH="$WORKTREE/horse-racing/jrdb/src:$WORKTREE/tools/data-storage"             python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
 
-              wh_root = root/'warehouse'/family
-              staging_map[family] = str(wh_root)
-              family_audit = {'years': {}}
-              for year in range(2010, 2026):
-                  raw = raw_by_year[year]
-                  raw_path = root/'raw'/family/f'{family}_{year}.zip'
-                  guarded_download(raw['drive_id'], raw_path, raw['sha256'])
+          family=os.environ['FAMILY']
+          commit=os.environ['COMMIT']
+          created_at=os.environ['CREATED_AT']
+          generation=os.environ['GEN']
+          root=Path(os.environ['ROOT'])
 
-                  asset = assets[(family, year)]
-                  expected_name = Path(str(asset['relative_path'])).name
-                  parquet_meta = child(year_folders[year]['id'], expected_name)
-                  wh_path = wh_root / str(asset['relative_path'])
-                  guarded_download(parquet_meta['id'], wh_path, asset['sha256'])
-                  family_audit['years'][str(year)] = {
-                      'raw_id': raw['drive_id'],
-                      'raw_sha256': raw['sha256'],
-                      'warehouse_id': parquet_meta['id'],
-                      'warehouse_sha256': asset['sha256'],
-                  }
-              download_audit[family] = family_audit
+          from build_jrdb_normalized_warehouse import ArchiveSpec, build_generation
 
-          (root/'staging_map.json').write_text(
-              json.dumps(staging_map, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          specs=[
+              ArchiveSpec(
+                  family=family,
+                  year=year,
+                  path=root/'rebuild_input'/family/str(year)/f'{family}.zip',
+              )
+              for year in range(2010,2026)
+          ]
+          result=build_generation(
+              specs,
+              root/'rebuilt'/family,
+              generation,
+              commit,
+              created_at=created_at,
           )
-          (root/'output'/'download_audit.json').write_text(
-              json.dumps({
-                  'status':'PASS',
-                  'generation_id':expected_generation,
-                  'transport':'authenticated_google_drive_api',
-                  'families':download_audit,
-              }, ensure_ascii=False, indent=2) + '\n',
+          (root/'rebuild_report'/f'{family}.json').write_text(
+              json.dumps(result['manifest'],ensure_ascii=False,indent=2,sort_keys=True)+'\n',
               encoding='utf-8',
           )
+          PY
+            git worktree remove --force "$WORKTREE"
+          done
+
+      - name: Verify rebuilt Warehouse is byte-identical to accepted assets
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root=Path('/tmp/rlt_historical_audit')
+          final=json.loads((root/'final'/'manifest.json').read_text(encoding='utf-8'))
+          relation_map={
+              'BAC':{'bac'}, 'KYI':{'kyi'}, 'CHA':{'cha'}, 'CYB':{'cyb'},
+              'SED':{'sed'}, 'UKC':{'ukc','ukc_source_record_lineage'},
+          }
+          checks={}
+          all_pass=True
+          for family, relations in relation_map.items():
+              rebuilt=json.loads((root/'rebuild_report'/f'{family}.json').read_text(encoding='utf-8'))
+              expected={
+                  (a['family'],int(a['year'])):a for a in final['assets']
+                  if a['family'] in relations and 2010<=int(a['year'])<=2025
+              }
+              actual={
+                  (a['family'],int(a['year'])):a for a in rebuilt['assets']
+                  if a['family'] in relations and 2010<=int(a['year'])<=2025
+              }
+              keys_ok=set(expected)==set(actual)
+              details={}
+              if keys_ok:
+                  for key in sorted(expected):
+                      e,a=expected[key],actual[key]
+                      fields=('sha256','size_bytes','row_count','schema_hash','canonical_key','relative_path')
+                      equal={field:a.get(field)==e.get(field) for field in fields}
+                      details[f'{key[0]}:{key[1]}']=equal
+                      if not all(equal.values()): all_pass=False
+              else:
+                  all_pass=False
+              checks[family]={
+                  'key_set_equal':keys_ok,
+                  'expected_asset_count':len(expected),
+                  'actual_asset_count':len(actual),
+                  'asset_fields':details,
+              }
+
+          report={
+              'status':'PASS' if all_pass else 'FAIL',
+              'accepted_generation_id':final.get('generation_id'),
+              'comparison':'rebuilt_at_original_source_commit_and_created_at_vs_accepted_manifest',
+              'families':checks,
+          }
+          (root/'output'/'warehouse_rebuild_equivalence.json').write_text(
+              json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'
+          )
+          if not all_pass:
+              raise SystemExit('rebuilt Warehouse does not exactly match accepted manifest')
           PY
 
       - name: Run full 2010-2025 Index Base dual-read audit
@@ -207,14 +257,7 @@ jobs:
         run: |
           set +e
           ROOT=/tmp/rlt_historical_audit
-          BAC_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['BAC'])")"
-          KYI_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['KYI'])")"
-          CHA_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['CHA'])")"
-          CYB_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['CYB'])")"
-          SED_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['SED'])")"
-          UKC_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['UKC'])")"
-
-          python horse-racing/jrdb/src/audit_jrdb_index_base_raw_vs_warehouse.py             --raw-root "$ROOT/raw"             --warehouse-manifest "$ROOT/final/manifest.json"             --asset-root "BAC=$BAC_ROOT"             --asset-root "KYI=$KYI_ROOT"             --asset-root "CHA=$CHA_ROOT"             --asset-root "CYB=$CYB_ROOT"             --asset-root "SED=$SED_ROOT"             --asset-root "UKC=$UKC_ROOT"             --years {2010..2025}             --audit-json "$ROOT/output/audit.json"
+          python horse-racing/jrdb/src/audit_jrdb_index_base_raw_vs_warehouse.py             --raw-root "$ROOT/raw"             --warehouse-manifest "$ROOT/final/manifest.json"             --asset-root "BAC=$ROOT/rebuilt/BAC"             --asset-root "KYI=$ROOT/rebuilt/KYI"             --asset-root "CHA=$ROOT/rebuilt/CHA"             --asset-root "CYB=$ROOT/rebuilt/CYB"             --asset-root "SED=$ROOT/rebuilt/SED"             --asset-root "UKC=$ROOT/rebuilt/UKC"             --years {2010..2025}             --audit-json "$ROOT/output/audit.json"
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit $code
@@ -226,26 +269,28 @@ jobs:
           python - <<'PY'
           import json, os
           from pathlib import Path
-          root = Path('/tmp/rlt_historical_audit')
-          path = root/'output'/'audit.json'
-          report = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {
-              'status':'FAIL','error':'audit.json missing before dual-read completion'
+          root=Path('/tmp/rlt_historical_audit')
+          audit_path=root/'output'/'audit.json'
+          rebuild_path=root/'output'/'warehouse_rebuild_equivalence.json'
+          audit=json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.exists() else {}
+          rebuild=json.loads(rebuild_path.read_text(encoding='utf-8')) if rebuild_path.exists() else {}
+          tables=audit.get('tables') or {}
+          status='PASS' if rebuild.get('status')=='PASS' and audit.get('status')=='PASS' else 'FAIL'
+          summary={
+              'status':status,
+              'warehouse_rebuild_equivalence':rebuild.get('status'),
+              'source_generation_id':audit.get('source_generation_id'),
+              'years':audit.get('years'),
+              'table_pass':{k:v.get('pass') for k,v in tables.items()},
+              'row_counts':{k:v.get('row_count') for k,v in tables.items()},
+              'integrity':audit.get('integrity'),
+              'audit_error':audit.get('error'),
           }
-          tables = report.get('tables') or {}
-          summary = {
-              'status': report.get('status') or 'FAIL',
-              'source_generation_id': report.get('source_generation_id'),
-              'years': report.get('years'),
-              'table_pass': {k: v.get('pass') for k,v in tables.items()},
-              'row_counts': {k: v.get('row_count') for k,v in tables.items()},
-              'integrity': report.get('integrity'),
-              'error': report.get('error'),
-          }
-          out = root/'output'/'summary.json'
-          out.parent.mkdir(parents=True, exist_ok=True)
-          out.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          (root/'output'/'summary.json').write_text(
+              json.dumps(summary,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'
+          )
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as h:
-              h.write(f"status={summary['status']}\n")
+              h.write(f"status={status}\n")
           PY
 
       - name: Upload audit artifact
@@ -253,7 +298,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rlt-historical-warehouse-audit-${{ github.run_id }}
-          path: /tmp/rlt_historical_audit/output/
+          path: |
+            /tmp/rlt_historical_audit/output/
+            /tmp/rlt_historical_audit/report/
+            /tmp/rlt_historical_audit/rebuild_report/
           if-no-files-found: warn
           retention-days: 14
 
@@ -267,13 +315,13 @@ jobs:
           python - <<'PY'
           import json, os
           from pathlib import Path
-          p = Path('/tmp/rlt_historical_audit/output/summary.json')
-          summary = json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status':'FAIL'}
-          payload = {**summary, 'run_id': int(os.environ['GITHUB_RUN_ID']),
-                     'audit_exit_code': os.environ.get('AUDIT_EXIT')}
+          p=Path('/tmp/rlt_historical_audit/output/summary.json')
+          summary=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status':'FAIL'}
+          payload={**summary,'run_id':int(os.environ['GITHUB_RUN_ID']),
+                   'audit_exit_code':os.environ.get('AUDIT_EXIT')}
           Path('/tmp/result.md').write_text(
               'RL_T_HISTORICAL_WAREHOUSE_AUDIT_RESULT\n```json\n'
-              + json.dumps(payload, ensure_ascii=False, indent=2) + '\n```\n',
+              +json.dumps(payload,ensure_ascii=False,indent=2)+'\n```\n',
               encoding='utf-8',
           )
           PY
