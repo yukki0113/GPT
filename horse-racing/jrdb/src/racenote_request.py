@@ -191,7 +191,12 @@ def validate_sqlite(path: Path, label: str) -> None:
 def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, None, dict]:
     """Resolve one verified Analysis source without automatic fallback."""
     deprecated_mart = getattr(args, "mart", None)
-    source = args.analysis_root if args.analysis_backend == "parquet" else args.analysis
+    backend_name = getattr(args, "analysis_backend", None)
+    if backend_name is None:
+        backend_name = "sqlite" if getattr(args, "analysis", None) is not None else "parquet"
+    analysis_root = getattr(args, "analysis_root", None)
+    analysis_db = getattr(args, "analysis", None)
+    source = analysis_root if backend_name == "parquet" else analysis_db
     if source is None:
         try:
             manifest_path = manifest_path_from_args(args.store_manifest)
@@ -203,18 +208,18 @@ def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, None, di
         raise RaceNoteRequestError("Analysis canonical resolution is incomplete")
     try:
         backend = open_analysis_backend(
-            analysis_root=source if args.analysis_backend == "parquet" else None,
-            analysis_db=source if args.analysis_backend == "sqlite" else None,
-            backend=args.analysis_backend,
+            analysis_root=source if backend_name == "parquet" else None,
+            analysis_db=source if backend_name == "sqlite" else None,
+            backend=backend_name,
         )
         source_info = dict(backend.source_info)
         backend.close()
     except AnalysisBackendError as exc:
         raise RaceNoteRequestError(str(exc)) from exc
     return source, None, {
-        "mode": "explicit_path" if args.analysis_root or args.analysis else "store_manifest",
+        "mode": "explicit_path" if analysis_root or analysis_db else "store_manifest",
         "analysis": str(source),
-        "analysis_backend": "parquet_duckdb" if args.analysis_backend == "parquet" else "sqlite_compatibility",
+        "analysis_backend": "parquet_duckdb" if backend_name == "parquet" else "sqlite_compatibility",
         "stats_mart": False,
         "stats_mart_required": False,
         "sqlite_materialization_required": False,
