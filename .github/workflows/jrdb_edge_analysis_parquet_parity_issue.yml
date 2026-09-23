@@ -1,0 +1,162 @@
+name: JRDB Edge Analysis Parquet parity via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  parity:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_ANALYSIS_PARQUET_PARITY]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'date','paci_drive_file_id','analysis_bundle_drive_file_id','analysis_generation_id','analysis_compat_drive_file_id','publication_run_id','publication_artifact_name','publication_sha256'}
+          missing=sorted(required-set(req))
+          if missing: raise SystemExit(f'missing required fields: {missing}')
+          if not re.fullmatch(r'20\\d{6}',str(req['date'])): raise SystemExit('date must be YYYYMMDD')
+          if not isinstance(req['publication_run_id'],int) or req['publication_run_id']<=0: raise SystemExit('bad publication_run_id')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          if not sha_re.fullmatch(str(req['publication_sha256']).lower()): raise SystemExit('bad publication_sha256')
+          if req.get('paci_sha256') is not None and not sha_re.fullmatch(str(req['paci_sha256']).lower()): raise SystemExit('bad paci_sha256')
+          Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\\n',encoding='utf-8')
+          with open(os.environ['GITHUB_ENV'],'a',encoding='utf-8') as f:
+              for key in ['date','paci_drive_file_id','paci_sha256','analysis_bundle_drive_file_id','analysis_generation_id','analysis_compat_drive_file_id','publication_run_id','publication_artifact_name','publication_sha256']:
+                  value=req.get(key)
+                  f.write(f'{key.upper()}={"" if value is None else value}\\n')
+          PY
+      - name: Install dependencies and run focused regressions
+        run: |
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python -m pytest -q horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py
+      - name: Download and validate inputs
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 "https://drive.usercontent.google.com/download?id=$PACI_DRIVE_FILE_ID&export=download&confirm=t" -o /tmp/PACI.zip
+          if [ -n "$PACI_SHA256" ]; then echo "$PACI_SHA256  /tmp/PACI.zip" | sha256sum -c -; fi
+          curl --fail --location --retry 3 "https://drive.usercontent.google.com/download?id=$ANALYSIS_BUNDLE_DRIVE_FILE_ID&export=download&confirm=t" -o /tmp/analysis-parquet-current.tar.xz
+          mkdir -p /tmp/analysis_parquet
+          tar -xJf /tmp/analysis-parquet-current.tar.xz -C /tmp/analysis_parquet
+          curl --fail --location --retry 3 "https://drive.usercontent.google.com/download?id=$ANALYSIS_COMPAT_DRIVE_FILE_ID&export=download&confirm=t" -o /tmp/analysis-compat.zip
+          unzip -t /tmp/analysis-compat.zip
+          mapfile -t dbs < <(unzip -Z1 /tmp/analysis-compat.zip | grep -Ei '\\.(sqlite|bin)$')
+          test "${#dbs[@]}" -eq 1
+          unzip -p /tmp/analysis-compat.zip "${dbs[0]}" > /tmp/analysis-compatibility.sqlite
+          python - <<'PY'
+          import hashlib, json, os, sqlite3, zipfile
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          with zipfile.ZipFile('/tmp/PACI.zip') as z:
+              bad=z.testzip()
+              if bad: raise SystemExit(f'PACI corrupt member: {bad}')
+          report=resolve_current(Path('/tmp/analysis_parquet'))
+          if report['generation_id']!=os.environ['ANALYSIS_GENERATION_ID']:
+              raise SystemExit(f"generation mismatch: {report['generation_id']}")
+          manifest=Path(report['manifest'])
+          with sqlite3.connect('file:/tmp/analysis-compatibility.sqlite?mode=ro',uri=True) as c:
+              if c.execute('PRAGMA integrity_check').fetchone()[0] != 'ok': raise SystemExit('compatibility SQLite failed integrity_check')
+              minimum,maximum,rows=c.execute('SELECT MIN(race_date),MAX(race_date),COUNT(*) FROM fact_entry_result_lite').fetchone()
+          payload={
+              'paci_sha256':hashlib.sha256(Path('/tmp/PACI.zip').read_bytes()).hexdigest(),
+              'analysis_bundle_sha256':hashlib.sha256(Path('/tmp/analysis-parquet-current.tar.xz').read_bytes()).hexdigest(),
+              'analysis_generation_id':report['generation_id'],
+              'analysis_manifest_sha256':hashlib.sha256(manifest.read_bytes()).hexdigest(),
+              'analysis_parquet_rows':report['rows'],
+              'analysis_compat_zip_sha256':hashlib.sha256(Path('/tmp/analysis-compat.zip').read_bytes()).hexdigest(),
+              'analysis_compat_sqlite_sha256':hashlib.sha256(Path('/tmp/analysis-compatibility.sqlite').read_bytes()).hexdigest(),
+              'analysis_compat_rows':rows,'analysis_compat_min_race_date':minimum,'analysis_compat_max_race_date':maximum,
+          }
+          Path('/tmp/input_audit.json').write_text(json.dumps(payload,indent=2,sort_keys=True)+'\\n',encoding='utf-8')
+          PY
+      - name: Download serving catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/publication
+          gh run download "$PUBLICATION_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$PUBLICATION_ARTIFACT_NAME" --dir /tmp/publication
+          mapfile -t catalogs < <(find /tmp/publication -type f -name edge_serving_catalog_v0_2.jsonl -print)
+          test "${#catalogs[@]}" -eq 1
+          cp "${catalogs[0]}" /tmp/edge_serving_catalog_v0_2.jsonl
+          echo "$PUBLICATION_SHA256  /tmp/edge_serving_catalog_v0_2.jsonl" | sha256sum -c -
+      - name: Run parity audit
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          mkdir -p /tmp/parity
+          python horse-racing/jrdb/src/audit_jrdb_edge_analysis_parquet_parity.py --paci /tmp/PACI.zip --serving-catalog-jsonl /tmp/edge_serving_catalog_v0_2.jsonl --analysis-db /tmp/analysis-compatibility.sqlite --analysis-root /tmp/analysis_parquet --output-dir /tmp/parity
+          cp /tmp/request.json /tmp/input_audit.json /tmp/parity/
+      - name: Build compact result
+        env:
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          audit=json.load(open('/tmp/parity/parity_audit.json'))
+          inputs=json.load(open('/tmp/input_audit.json'))
+          result={
+              'status':audit['status'],'run_id':int(os.environ['RUN_ID']),'head_sha':os.environ['HEAD_SHA'],
+              'date':os.environ['DATE'],'evaluation_mode':'HISTORICAL_INPUT_PARITY_AUDIT','result_data_used':False,
+              'serving_profile':'STANDARD','facts_byte_identical':audit['facts_byte_identical'],'matches_byte_identical':audit['matches_byte_identical'],
+              'facts_sha256':audit['facts_sha256'],'matches_sha256':audit['matches_sha256'],
+              'sqlite_summary':audit['sqlite_summary'],'parquet_summary':audit['parquet_summary'],'inputs':inputs,
+          }
+          Path('/tmp/parity/result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\\n',encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-analysis-parquet-parity-${{ github.run_id }}
+          path: /tmp/parity/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          r=json.load(open('/tmp/parity/result.json'))
+          body='JRDB_EDGE_ANALYSIS_PARQUET_PARITY_RESULT\\n```json\\n'+json.dumps(r,ensure_ascii=False,indent=2,sort_keys=True)+'\\n```\\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          r={'status':'failure','run_id':int(os.environ['RUN_ID']),'evaluation_mode':'HISTORICAL_INPUT_PARITY_AUDIT','result_data_used':False,'message':'Do not promote Parquet Edge input until parity passes.'}
+          body='JRDB_EDGE_ANALYSIS_PARQUET_PARITY_FAILURE\\n```json\\n'+json.dumps(r,indent=2)+'\\n```\\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          PY
