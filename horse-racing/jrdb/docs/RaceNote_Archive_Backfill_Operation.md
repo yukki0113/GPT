@@ -1,5 +1,8 @@
 # RaceNote Archive backfill operation
 
+> **CURRENT STATUS — 2026-09-23:** this documents the existing legacy Raw-oriented annual backfill implementation. It is retained for audit/rollback compatibility and is not the current 2010–2025 Historical source-of-truth contract. New Historical reads use the accepted JRDB Warehouse.
+
+
 RaceNote Archiveのhistorical coverageを年単位で拡張する運用メモです。
 
 ## Goal
