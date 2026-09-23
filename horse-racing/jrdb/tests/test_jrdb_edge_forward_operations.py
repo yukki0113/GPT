@@ -32,6 +32,52 @@ def test_true_forward_guard_accepts_only_before_earliest_post() -> None:
         )
 
 
+
+def test_parquet_analysis_source_info_is_generation_pinned(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = tmp_path / "analysis"
+    manifest = root / "generations" / "g1" / "manifest.json"
+    manifest.parent.mkdir(parents=True)
+    manifest.write_text(
+        json.dumps(
+            {
+                "period_from": "2010-01-05",
+                "period_to": "2026-09-20",
+                "total_rows": 12345,
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        freeze,
+        "resolve_current",
+        lambda _: {"generation_id": "g1", "manifest": manifest, "rows": 12345},
+    )
+    digest = _sha(manifest)
+    info = freeze._analysis_source_info(
+        analysis_db=None,
+        analysis_root=root,
+        expected_generation_id="g1",
+        expected_manifest_sha256=digest,
+    )
+    assert info == {
+        "source": "PARQUET",
+        "path": str(root.resolve()),
+        "generation_id": "g1",
+        "manifest": "generations/g1/manifest.json",
+        "manifest_sha256": digest,
+        "min_race_date": "2010-01-05",
+        "max_race_date": "2026-09-20",
+        "rows": 12345,
+    }
+    with pytest.raises(freeze.FreezeError, match="generation mismatch"):
+        freeze._analysis_source_info(
+            analysis_db=None,
+            analysis_root=root,
+            expected_generation_id="g2",
+        )
+
 def test_post_time_parser_is_strict() -> None:
     parsed = freeze._parse_post_datetime("2026-09-12", "1005")
     assert parsed.isoformat() == "2026-09-12T10:05:00+09:00"
