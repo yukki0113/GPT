@@ -10,7 +10,13 @@ from pathlib import Path
 from typing import Any
 
 GENERATION = "jrdb_normalized_warehouse_v1_2010_2025_g20260921"
-FAMILIES = ("BAC","KYI","CHA","CYB","SED","SKB","ZED","ZKB","HJC","UKC")\nRELATIONS = {\n    "BAC": {"bac"}, "KYI": {"kyi"}, "CHA": {"cha"}, "CYB": {"cyb"},\n    "SED": {"sed"}, "SKB": {"skb"}, "ZED": {"zed"}, "ZKB": {"zkb"},\n    "UKC": {"ukc", "ukc_source_record_lineage"},\n    "HJC": {"hjc_payout", "hjc_race"},\n}
+FAMILIES = ("BAC","KYI","CHA","CYB","SED","SKB","ZED","ZKB","HJC","UKC")
+RELATIONS = {
+    "BAC": {"bac"}, "KYI": {"kyi"}, "CHA": {"cha"}, "CYB": {"cyb"},
+    "SED": {"sed"}, "SKB": {"skb"}, "ZED": {"zed"}, "ZKB": {"zkb"},
+    "UKC": {"ukc", "ukc_source_record_lineage"},
+    "HJC": {"hjc_payout", "hjc_race"},
+}
 
 def download(file_id: str, out: Path) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
