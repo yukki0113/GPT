@@ -12,15 +12,28 @@ Analysis Lite
   └─> PWA Fact Lite    # 自由条件集計の主DB候補
 ```
 
-## Parquet delivery boundary
+## Delivery boundary
 
-The current PWA delivery artifact is Fact Lite Parquet v0.3. The production
-builder input is the validated Analysis Parquet generation, and the browser
-delivery route is `current.json → generation manifest → manifest tables`.
-DuckDB-Wasm is the Fact Lite reader. Before publication, run the full
-three-way audit with `audit_jrdb_pwa_fact_lite_dual.py`; a failed audit must
-retain the current release unchanged. Fact Lite SQLite is neither a normal
-runtime dependency nor a fallback path.
+Analysis is the immutable **Parquet** canonical dataset. The Fact Lite
+publisher first materializes only the Parquet files listed by Analysis
+`current.json` and its generation manifest, then builds one v0.3 SQLite file.
+It must never use a broad `objects/**/*.parquet` glob, because a retained old
+partition could be read together with the current generation.
+
+The production browser delivery artifact is **Fact Lite SQLite v0.3**:
+
+```text
+Analysis Parquet current manifest
+  -> Fact Lite SQLite build / fail-closed validation
+  -> jrdb-pwa-fact-lite-current Release
+  -> JRDB PWA Pages
+  -> sql.js + OPFS current.sqlite
+```
+
+The Release has only `jrdb_pwa_fact_lite.sqlite` and `manifest.json` as the
+current browser contract. Parquet / DuckDB-Wasm builders and tests may remain
+as migration or development assets, but are not generated, released, staged
+to Pages, or loaded by the normal condition-aggregation PWA.
 
 2026-08-27 のiOS Chrome実機検証では、Fact Lite v0.1（約47.4 MiB）の初回読込は体感2〜3秒、全期間の種牡馬 / 母父 / 騎手集計は約310〜370ms、東京芝1600mでは約62〜65msでした。この結果から、自由条件集計は Fact Lite を主DBとし、Stats Mart は必要な重い処理だけ補助する方向を採用候補とします。
 
@@ -113,23 +126,16 @@ Analysis期間外・地方・海外等で前走レースを解決できない場
 
 ```bash
 python src/build_jrdb_pwa_fact_lite.py \
-  --analysis ./jrdb_analysis_v1_3.sqlite \
+  --analysis ./analysis-current-materialized.sqlite \
   --db ./jrdb_pwa_fact_lite.sqlite
 ```
 
-Builder は source / output row count equality、必須table/column、`win5_leg_no` 値域、`PRAGMA integrity_check`、race count、race-name count、previous-distance/class populated rows、WIN5 populated rows、output size を確認します。
+production workflowでは、Analysis current manifestのpartitionをmaterializeしたSQLiteを上記入力として使います。Builder / publisher はsource / output row count equality、必須table/column、`win5_leg_no` 値域、`PRAGMA integrity_check`、race count、race-name count、previous-distance/class populated rows、WIN5 populated rows、output size / SHA-256を確認します。いずれかが失敗した場合はcurrent Releaseを置換しません。
 
 ## Distribution transition
 
-既存のFact Lite v0.2配布物はPWA側で読み込み互換を維持します。Analysis v1.3を入力として次回Fact Lite publishを行うとv0.3へ切り替わり、WIN5検索が有効になります。
-
-直近のv0.2配布実績:
-
-- rows: 513,512
-- size: 62,230,528 bytes（約59.3 MiB）
-- SHA-256: `b5ba7a645f134bec03538fc9d255fc30d626908af4ce939416cea8ac735cd29d`
-- Release tag: `jrdb-pwa-fact-lite-current`
+既存のFact Lite v0.2配布物はPWA側で読み込み互換を維持します。Analysis v1.3を入力として次回Fact Lite publishを行うとv0.3へ切り替わり、WIN5検索が有効になります。現在の期間・rows・SHAは固定文書ではなくcurrent Releaseの`manifest.json`から確認します。
 
 ## Data policy
 
-大容量Fact Lite SQLiteはGit管理しません。Gitにはschema / builder / workflow / docsだけを置き、生成物はRelease / Pages配布キャッシュとして扱います。
+大容量Fact Lite SQLiteはGit管理しません。Gitにはschema / builder / workflow / docsだけを置き、生成物はRelease / Pages配布キャッシュとして扱います。full `JRDB PWA Pages` が最新Releaseを取り込んで成功するまで、PWA更新は完了ではありません。
