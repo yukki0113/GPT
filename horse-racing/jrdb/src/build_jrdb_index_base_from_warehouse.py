@@ -179,6 +179,7 @@ def main() -> None:
     source.add_argument("--warehouse-current", type=Path)
     source.add_argument("--warehouse-manifest", type=Path)
     parser.add_argument("--asset-root", action="append", required=True)
+    parser.add_argument("--record-hash-compat-manifest", type=Path)
     parser.add_argument("--years", nargs="+", type=int, required=True)
     parser.add_argument("--db", type=Path, required=True)
     parser.add_argument(
@@ -191,6 +192,7 @@ def main() -> None:
         args.warehouse_current,
         manifest=args.warehouse_manifest,
         asset_roots=_asset_roots(args.asset_root),
+        record_hash_compat_manifest=args.record_hash_compat_manifest,
     )
     result = build(reader, args.years, args.db, args.schema)
     print(json.dumps(result, ensure_ascii=False, indent=2))
