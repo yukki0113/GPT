@@ -93,7 +93,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--race", type=int, default=None, help="Optional race number; requires venue")
     parser.add_argument("--today", default=None, help="Router-date override for tests")
     parser.add_argument("--analysis", type=Path, default=None, help="Optional explicit Analysis Lite SQLite")
-    parser.add_argument("--mart", type=Path, default=None, help="Optional explicit Stats Mart SQLite")
+    parser.add_argument("--mart", type=Path, default=None, help="Deprecated compatibility option; ignored. RaceNote stats use Analysis canonical.")
     parser.add_argument("--store-manifest", type=Path, default=None, help="JRDB Store manifest; falls back to JRDB_STORE_MANIFEST")
     parser.add_argument("--store-cache", type=Path, default=None, help="Optional JRDB Store cache root")
     parser.add_argument("--store-offline", action="store_true", help="Resolve Store artifacts from verified cache only")
