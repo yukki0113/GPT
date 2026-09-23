@@ -292,7 +292,8 @@ def target_race_keys(analysis: Path, request: RaceNoteRequest, backend_name: str
             analysis_db=analysis if backend_name == "sqlite" else None,
             backend=backend_name,
         )
-        rows = backend.execute(sql.replace("fact_entry_result_lite", "analysis_fact"), parameters).fetchall()
+        table = "analysis_fact" if backend_name == "parquet" else "fact_entry_result_lite"
+        rows = backend.execute(sql.replace("fact_entry_result_lite", table), parameters).fetchall()
     except AnalysisBackendError as exc:
         raise RaceNoteRequestError(str(exc)) from exc
     finally:
