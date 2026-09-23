@@ -7,7 +7,7 @@ contract:
 
 - detailed PACI recent history: up to 5 runs
 - compact Analysis Lite older history: up to 3 runs
-- as-of-safe horse / sire / jockey / frame summaries
+- as-of-safe horse / sire / jockey / frame summaries from Analysis canonical
 - overlapping distance ranges
 - sample-size bands
 - explicit history coverage / run-layer metadata
@@ -34,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Production RaceNote v1.0 history enrichment")
     parser.add_argument("--bundle", type=Path, required=True)
     parser.add_argument("--analysis", type=Path, required=True)
-    parser.add_argument("--mart", type=Path, required=True)
+    parser.add_argument("--mart", type=Path, default=None, help="Deprecated compatibility input; ignored")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--stats-window-years",
@@ -59,8 +59,7 @@ def production_metadata(
         "stats_window_years": stats_window_years,
         "as_of_exclusive": race_date,
         "future_leakage_policy": (
-            "prior completed years from Stats Mart; target year from Analysis Lite "
-            "with race_date < target_date"
+            "rolling stats window from Analysis canonical with race_date < target_date"
         ),
         "distance_range_policy": {
             "ranges": [dict(item) for item in engine.DISTANCE_RANGE_DEFINITIONS],
@@ -116,9 +115,8 @@ def main() -> int:
     base = json.loads(args.bundle.read_text(encoding="utf-8"))
 
     analysis = sqlite3.connect(args.analysis)
-    mart = sqlite3.connect(args.mart)
     analysis.row_factory = sqlite3.Row
-    mart.row_factory = sqlite3.Row
+    mart = None
     try:
         enriched, warnings = enrich_production(
             base,
@@ -128,7 +126,8 @@ def main() -> int:
         )
     finally:
         analysis.close()
-        mart.close()
+        if mart is not None:
+            mart.close()
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
