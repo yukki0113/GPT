@@ -34,7 +34,7 @@ WAREHOUSE_GENERATION = "jrdb_normalized_warehouse_v1_2010_2025_g20260921"
 
 def _canonical_members(zf: zipfile.ZipFile, family: str) -> list[str]:
     import re
-    pattern = re.compile(rf"^{family}\\d{{6}}\\.txt$", re.IGNORECASE)
+    pattern = re.compile(rf"^{family}\d{6}\.txt$", re.IGNORECASE)
     return sorted(
         [name for name in zf.namelist() if pattern.fullmatch(Path(name).name)],
         key=lambda name: Path(name).name.upper(),
@@ -71,8 +71,7 @@ def build(raw_root: Path, years: list[int], output_root: Path) -> dict[str, Any]
     output_root.mkdir(parents=True, exist_ok=True)
     assets: list[dict[str, Any]] = []
     for family in FAMILIES:
-        rows = _rows(raw_root, family, years)
-        path = output_root / f"{family.lower()}.parquet"
+        rows = _rows(raw_root, family, years)\n        if not rows:\n            raise ValueError(f"{family}: compatibility sidecar has no rows")\n        path = output_root / f"{family.lower()}.parquet"
         table = pa.Table.from_pylist(rows)
         pq.write_table(table, path, compression="zstd", write_statistics=True)
         assets.append({
