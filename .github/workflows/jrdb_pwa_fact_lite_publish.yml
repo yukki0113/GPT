@@ -342,11 +342,34 @@ jobs:
               --title "JRDB PWA Fact Lite current" \
               --notes "PWA Fact Lite SQLite delivery cache. Generated from the current Analysis Parquet generation plus BAC race-name lookup; not a Git-tracked canonical data artifact."
           fi
+          for asset in jrdb_pwa_fact_lite.sqlite manifest.json; do
+            gh release delete-asset "$FACT_RELEASE_TAG" "$asset" \
+              --repo "$GITHUB_REPOSITORY" --yes >/dev/null 2>&1 || true
+          done
           gh release upload "$FACT_RELEASE_TAG" \
             .fact_publish/jrdb_pwa_fact_lite.sqlite \
             .fact_publish/manifest.json \
+            --repo "$GITHUB_REPOSITORY"
+
+          rm -rf .fact_publish/release-check
+          mkdir -p .fact_publish/release-check
+          gh release download "$FACT_RELEASE_TAG" \
             --repo "$GITHUB_REPOSITORY" \
-            --clobber
+            --pattern "jrdb_pwa_fact_lite.sqlite" \
+            --pattern "manifest.json" \
+            --dir .fact_publish/release-check
+          test "$(sha256sum .fact_publish/release-check/jrdb_pwa_fact_lite.sqlite | awk '{print $1}')" = "$FACT_SHA256"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          manifest = json.loads(Path('.fact_publish/release-check/manifest.json').read_text(encoding='utf-8'))
+          if int(manifest.get('size') or -1) != int(os.environ['FACT_SIZE']):
+              raise SystemExit('released Fact Lite SQLite size does not match build')
+          if manifest.get('sha256') != os.environ['FACT_SHA256']:
+              raise SystemExit('released Fact Lite SQLite SHA-256 does not match build')
+          PY
 
       - name: Close successful request
         if: success()
