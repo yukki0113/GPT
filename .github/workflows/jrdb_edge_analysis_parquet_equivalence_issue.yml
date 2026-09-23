@@ -1,0 +1,214 @@
+name: JRDB Edge Analysis Parquet equivalence via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_ANALYSIS_PARQUET_EQ]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          prefix='[JRDB_EDGE_ANALYSIS_PARQUET_EQ]'
+          request_id=os.environ['ISSUE_TITLE'][len(prefix):].strip()
+          if not request_id or not re.fullmatch(r'[A-Za-z0-9._-]{1,96}',request_id):
+              raise SystemExit('invalid request_id')
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+              'paci_drive_file_id','paci_sha256',
+              'analysis_bundle_drive_file_id','analysis_generation_id','analysis_manifest_sha256',
+              'compatibility_sqlite_drive_file_id',
+              'publication_run_id','publication_artifact_name','publication_sha256',
+          }
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          id_re=re.compile(r'[A-Za-z0-9_-]{10,}')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          for field in (
+              'paci_drive_file_id','analysis_bundle_drive_file_id','compatibility_sqlite_drive_file_id'
+          ):
+              value=str(req[field]).strip()
+              if not id_re.fullmatch(value):
+                  raise SystemExit(f'invalid {field}')
+              req[field]=value
+          for field in ('paci_sha256','analysis_manifest_sha256','publication_sha256'):
+              value=str(req[field]).strip().lower()
+              if not sha_re.fullmatch(value):
+                  raise SystemExit(f'invalid {field}')
+              req[field]=value
+          generation=str(req['analysis_generation_id']).strip()
+          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{2,127}',generation):
+              raise SystemExit('invalid analysis_generation_id')
+          req['analysis_generation_id']=generation
+          if not isinstance(req['publication_run_id'],int) or req['publication_run_id']<=0:
+              raise SystemExit('publication_run_id must be positive integer')
+          req['publication_artifact_name']=str(req['publication_artifact_name']).strip()
+          req['request_id']=request_id
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Download fixed inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          def drive(file_id, output):
+              url=f'https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t'
+              subprocess.run(
+                  ['curl','--fail','--location','--retry','3',url,'--output',output],
+                  check=True,
+              )
+          drive(req['paci_drive_file_id'],'/tmp/paci.zip')
+          drive(req['analysis_bundle_drive_file_id'],'/tmp/analysis-parquet-current.tar.xz')
+          drive(req['compatibility_sqlite_drive_file_id'],'/tmp/analysis-compatibility.zip')
+          PY
+          mkdir -p /tmp/publication
+          PUB_RUN="$(python -c 'import json;print(json.load(open("/tmp/request.json"))["publication_run_id"])')"
+          PUB_NAME="$(python -c 'import json;print(json.load(open("/tmp/request.json"))["publication_artifact_name"])')"
+          gh run download "$PUB_RUN" --repo "$GITHUB_REPOSITORY" --name "$PUB_NAME" --dir /tmp/publication
+
+      - name: Verify and prepare inputs
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, shutil, tarfile, zipfile
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          paci=Path('/tmp/paci.zip')
+          paci_sha=hashlib.sha256(paci.read_bytes()).hexdigest()
+          if paci_sha!=req['paci_sha256']:
+              raise SystemExit(f"PACI SHA mismatch: expected={req['paci_sha256']} actual={paci_sha}")
+
+          parquet_root=Path('/tmp/analysis_parquet')
+          parquet_root.mkdir(parents=True,exist_ok=True)
+          with tarfile.open('/tmp/analysis-parquet-current.tar.xz','r:xz') as archive:
+              for member in archive.getmembers():
+                  target=(parquet_root/member.name).resolve()
+                  if parquet_root.resolve() not in (target,*target.parents):
+                      raise SystemExit(f'unsafe tar member: {member.name}')
+              archive.extractall(parquet_root)
+          report=resolve_current(parquet_root)
+          if report['generation_id']!=req['analysis_generation_id']:
+              raise SystemExit(
+                  f"generation mismatch: expected={req['analysis_generation_id']} actual={report['generation_id']}"
+              )
+          manifest=Path(report['manifest'])
+          manifest_sha=hashlib.sha256(manifest.read_bytes()).hexdigest()
+          if manifest_sha!=req['analysis_manifest_sha256']:
+              raise SystemExit(
+                  f"manifest SHA mismatch: expected={req['analysis_manifest_sha256']} actual={manifest_sha}"
+              )
+
+          src=Path('/tmp/analysis-compatibility.zip')
+          dst=Path('/tmp/analysis-compatibility.sqlite')
+          if not zipfile.is_zipfile(src):
+              raise SystemExit('compatibility artifact is not ZIP')
+          with zipfile.ZipFile(src) as archive:
+              bad=archive.testzip()
+              if bad is not None:
+                  raise SystemExit(f'compatibility ZIP corrupt member: {bad}')
+              members=[
+                  n for n in archive.namelist()
+                  if not n.endswith('/') and Path(n).name.lower().endswith(('.sqlite','.bin'))
+              ]
+              if len(members)!=1:
+                  raise SystemExit(f'compatibility ZIP must contain exactly one DB: {members}')
+              with archive.open(members[0]) as source, dst.open('wb') as target:
+                  shutil.copyfileobj(source,target,1024*1024)
+
+          candidates=list(Path('/tmp/publication').rglob('edge_serving_catalog_v0_2.jsonl'))
+          if len(candidates)!=1:
+              raise SystemExit(f'expected one serving catalog; found {len(candidates)}')
+          serving=Path('/tmp/edge_serving_catalog_v0_2.jsonl')
+          shutil.copy2(candidates[0],serving)
+          serving_sha=hashlib.sha256(serving.read_bytes()).hexdigest()
+          if serving_sha!=req['publication_sha256']:
+              raise SystemExit(
+                  f"publication SHA mismatch: expected={req['publication_sha256']} actual={serving_sha}"
+              )
+          PY
+
+      - name: Run SQLite vs Parquet Edge equivalence audit
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          mkdir -p /tmp/audit
+          python horse-racing/jrdb/src/audit_jrdb_edge_analysis_parquet_equivalence.py \
+            --paci /tmp/paci.zip \
+            --serving-catalog-jsonl /tmp/edge_serving_catalog_v0_2.jsonl \
+            --analysis-db /tmp/analysis-compatibility.sqlite \
+            --analysis-root /tmp/analysis_parquet \
+            --output-json /tmp/audit/result.json
+
+      - name: Upload audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-analysis-parquet-equivalence-${{ github.run_id }}
+          path: /tmp/audit/result.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          result=json.loads(Path('/tmp/audit/result.json').read_text(encoding='utf-8'))
+          result['run_id']=int(os.environ['RUN_ID'])
+          body='JRDB_EDGE_ANALYSIS_PARQUET_EQ_RESULT\n'+json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge Analysis Parquet equivalence audit failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
