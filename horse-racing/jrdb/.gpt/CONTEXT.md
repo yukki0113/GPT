@@ -1,6 +1,6 @@
 # JRDB project context
 
-Last reviewed: 2026-09-13
+Last reviewed: 2026-09-23
 
 ## Status
 Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系です。
@@ -126,6 +126,9 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - redundancy group内でもstrength / ROI / lift / q-value等を加算しない。same-directionはevidence level/specificityによるpresentation role、opposite directionはCONFLICTとして保持する。
 - EdgeDB servingはevidence delivery。automatic additive point scoreは別calibration contractなしには許可しない。
 - current facts / matchingはexact-match・pre-race only。fuzzy matching、推測前走、対象結果、最終オッズ、後日履歴を混入させない。
+- Edge current matchingのAnalysis履歴は、通常はvalidated Analysis v1.3 Parquet `current.json` / immutable generationを直接参照する。`src/jrdb_edge_analysis_history.py` がDuckDB lookupを担当する。
+- Analysis SQLiteはEdgeの通常正本ではなくrollback / compatibility / equivalence audit用途。storage migrationのためにtransition意味論・matcher・serving thresholdを変えない。
+- 2026-09-19 PACIでParquet currentとcompatibility SQLiteを同一STANDARD catalogへ通し、current facts / matchesのbyte identityをIssue #1197 / run 35814265623で確認済み。
 - v0.1 matcher / legacy ACTIVE publicationはbackward compatibility資産として保持し、v0.2実装のために意味を書き換えない。
 
 主要module:
