@@ -1,0 +1,264 @@
+name: JRDB Edge v0.2 operational audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V02_OPERATIONAL_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          historical=req.get('historical_artifacts')
+          replay=req.get('replay')
+          if not isinstance(historical,list) or not historical:
+              raise SystemExit('historical_artifacts must be a non-empty list')
+          if not isinstance(replay,dict):
+              raise SystemExit('replay must be an object')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          for item in historical:
+              required={'date','run_id','artifact_name','matches_sha256'}
+              missing=sorted(required-set(item))
+              if missing: raise SystemExit(f'historical item missing {missing}')
+              if not re.fullmatch(r'20\d{6}',str(item['date'])):
+                  raise SystemExit('historical date must be YYYYMMDD')
+              if not isinstance(item['run_id'],int) or item['run_id']<=0:
+                  raise SystemExit('historical run_id must be positive')
+              if not sha_re.fullmatch(str(item['matches_sha256']).lower()):
+                  raise SystemExit('invalid historical matches_sha256')
+          required={
+              'date','paci_drive_file_id','paci_sha256',
+              'analysis_bundle_drive_file_id','analysis_generation_id',
+              'analysis_manifest_sha256',
+              'publication_run_id','publication_artifact_name','publication_sha256'
+          }
+          missing=sorted(required-set(replay))
+          if missing: raise SystemExit(f'replay missing {missing}')
+          if not re.fullmatch(r'20\d{6}',str(replay['date'])):
+              raise SystemExit('replay date must be YYYYMMDD')
+          for field in ('paci_sha256','analysis_manifest_sha256','publication_sha256'):
+              if not sha_re.fullmatch(str(replay[field]).lower()):
+                  raise SystemExit(f'invalid replay {field}')
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',
+              encoding='utf-8'
+          )
+          PY
+
+      - name: Install dependencies and focused tests
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python -m pytest -q \
+            horse-racing/jrdb/tests/test_audit_jrdb_edge_v02_operational_hits.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py
+
+      - name: Download frozen historical match artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/matches
+          python - <<'PY'
+          import hashlib, json, os, shutil, subprocess
+          from pathlib import Path
+          req=json.load(open('/tmp/request.json'))
+          for item in req['historical_artifacts']:
+              date=str(item['date'])
+              root=Path('/tmp')/f"artifact-{date}"
+              root.mkdir(parents=True,exist_ok=True)
+              subprocess.run([
+                  'gh','run','download',str(item['run_id']),
+                  '--repo',os.environ['GITHUB_REPOSITORY'],
+                  '--name',str(item['artifact_name']),
+                  '--dir',str(root),
+              ],check=True)
+              candidates=list(root.rglob('edge_matches.jsonl'))
+              if len(candidates)!=1:
+                  raise SystemExit(f'{date}: expected one edge_matches.jsonl, got {len(candidates)}')
+              digest=hashlib.sha256(candidates[0].read_bytes()).hexdigest()
+              expected=str(item['matches_sha256']).lower()
+              if digest!=expected:
+                  raise SystemExit(f'{date}: matches SHA mismatch expected={expected} actual={digest}')
+              shutil.copy2(candidates[0],Path('/tmp/matches')/f'{date}.jsonl')
+          PY
+
+      - name: Reconstruct result-free 20260919 match input from Parquet
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, subprocess, tarfile
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+
+          req=json.load(open('/tmp/request.json'))['replay']
+          def drive(file_id: str, out: Path):
+              url=f'https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t'
+              subprocess.run(['curl','--fail','--location','--retry','3',url,'--output',str(out)],check=True)
+
+          paci=Path('/tmp/replay-paci.zip')
+          drive(str(req['paci_drive_file_id']),paci)
+          paci_sha=hashlib.sha256(paci.read_bytes()).hexdigest()
+          if paci_sha!=str(req['paci_sha256']).lower():
+              raise SystemExit(f'PACI SHA mismatch: {paci_sha}')
+
+          bundle=Path('/tmp/analysis-parquet-current.tar.xz')
+          drive(str(req['analysis_bundle_drive_file_id']),bundle)
+          root=Path('/tmp/analysis_parquet')
+          root.mkdir(parents=True,exist_ok=True)
+          with tarfile.open(bundle,'r:xz') as archive:
+              for member in archive.getmembers():
+                  target=(root/member.name).resolve()
+                  if root.resolve() not in (target,*target.parents):
+                      raise SystemExit(f'unsafe tar member: {member.name}')
+              archive.extractall(root)
+
+          report=resolve_current(root)
+          if report['generation_id']!=req['analysis_generation_id']:
+              raise SystemExit(
+                  f"Analysis generation mismatch expected={req['analysis_generation_id']} actual={report['generation_id']}"
+              )
+          manifest=Path(report['manifest'])
+          manifest_sha=hashlib.sha256(manifest.read_bytes()).hexdigest()
+          if manifest_sha!=str(req['analysis_manifest_sha256']).lower():
+              raise SystemExit(
+                  f"Analysis manifest SHA mismatch expected={req['analysis_manifest_sha256']} actual={manifest_sha}"
+              )
+
+          pub=Path('/tmp/replay-publication')
+          pub.mkdir(exist_ok=True)
+          subprocess.run([
+              'gh','run','download',str(req['publication_run_id']),
+              '--repo',os.environ['GITHUB_REPOSITORY'],
+              '--name',str(req['publication_artifact_name']),
+              '--dir',str(pub),
+          ],check=True)
+          catalogs=list(pub.rglob('edge_serving_catalog_v0_2.jsonl'))
+          if len(catalogs)!=1:
+              raise SystemExit(f'expected one serving catalog, got {len(catalogs)}')
+          catalog=Path('/tmp/edge_serving_catalog_v0_2.jsonl')
+          catalog.write_bytes(catalogs[0].read_bytes())
+          pub_sha=hashlib.sha256(catalog.read_bytes()).hexdigest()
+          if pub_sha!=str(req['publication_sha256']).lower():
+              raise SystemExit(
+                  f"publication SHA mismatch expected={req['publication_sha256']} actual={pub_sha}"
+              )
+
+          Path('/tmp/replay_input.json').write_text(json.dumps({
+              'date':req['date'],
+              'paci_sha256':paci_sha,
+              'analysis_generation_id':report['generation_id'],
+              'analysis_manifest_sha256':manifest_sha,
+              'publication_sha256':pub_sha,
+              'result_data_used':False,
+          },indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+          python horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py \
+            --paci /tmp/replay-paci.zip \
+            --analysis-root /tmp/analysis_parquet \
+            --registry-jsonl /tmp/edge_serving_catalog_v0_2.jsonl \
+            --serving-profile STANDARD \
+            --output-jsonl /tmp/matches/20260919.jsonl \
+            --facts-jsonl /tmp/replay-facts.jsonl \
+            --audit-json /tmp/replay-matcher-audit.json
+
+      - name: Run operational audit
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/audit
+          python horse-racing/jrdb/src/audit_jrdb_edge_v02_operational_hits.py \
+            --matches-jsonl /tmp/matches/20260912.jsonl \
+            --matches-jsonl /tmp/matches/20260913.jsonl \
+            --matches-jsonl /tmp/matches/20260919.jsonl \
+            --output-json /tmp/audit/audit.json \
+            --output-md /tmp/audit/audit.md
+          cp /tmp/request.json /tmp/replay_input.json /tmp/replay-matcher-audit.json /tmp/audit/
+
+      - name: Upload operational audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v02-operational-audit-${{ github.run_id }}
+          path: /tmp/audit/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Comment result and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          audit=json.load(open('/tmp/audit/audit.json'))
+          pm=audit['performance_pm']
+          result={
+              'status':'PASS',
+              'run_id':int(os.environ['RUN_ID']),
+              'days':audit['days'],
+              'runners':audit['runners'],
+              'matched_runners':audit['matched_runners'],
+              'total_matches':audit['total_matches'],
+              'performance_matches':pm['matches'],
+              'positive_matches':pm['positive_matches'],
+              'negative_matches':pm['negative_matches'],
+              'mixed_direction_runners':pm['mixed_direction_runners'],
+              'mixed_direction_rate_pm_matched':pm['mixed_direction_rate_pm_matched'],
+              'runners_with_3plus':pm['runners_with_3plus'],
+              'runners_with_5plus':pm['runners_with_5plus'],
+              'runners_with_6plus':pm['runners_with_6plus'],
+              'parent_child_runners':audit['condition_nesting']['runners_with_parent_child_relation'],
+              'parent_child_pairs':audit['condition_nesting']['parent_child_pairs'],
+              'multi_group_runners':audit['existing_redundancy']['runners_with_multiple_groups'],
+              'artifact_name':f"jrdb-edge-v02-operational-audit-{os.environ['RUN_ID']}",
+          }
+          body='JRDB_EDGE_V02_OPERATIONAL_AUDIT_RESULT\n'+json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge v0.2 operational audit failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
