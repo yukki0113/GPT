@@ -120,7 +120,11 @@ def validate_racenote_manifest(manifest: Mapping[str, Any], day: str) -> None:
     enrichment = request.get("enrichment")
     require(isinstance(enrichment, Mapping), "RaceNote enrichment is missing")
     require(enrichment.get("analysis") is True, "RaceNote analysis enrichment is required")
-    require(enrichment.get("stats_mart") is True, "RaceNote stats_mart enrichment is required")
+    stats_mart = enrichment.get("stats_mart", False)
+    require(
+        stats_mart in (False, None, "false", "not_required"),
+        "RaceNote stats_mart must be false/not_required when present",
+    )
     require(enrichment.get("as_of_exclusive") == target_iso, "RaceNote as_of_exclusive mismatch")
 
     bundle_count = int(manifest.get("bundle_count", -1))

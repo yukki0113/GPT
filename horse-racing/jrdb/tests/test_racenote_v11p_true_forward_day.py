@@ -74,7 +74,7 @@ def test_racenote_manifest_accepts_current_or_future_but_rejects_past():
             "base_backend": "paci",
             "enrichment": {
                 "analysis": True,
-                "stats_mart": True,
+                "stats_mart": False,
                 "as_of_exclusive": "2026-09-12",
             },
         },
@@ -82,6 +82,13 @@ def test_racenote_manifest_accepts_current_or_future_but_rejects_past():
         "bundles": [f"race_{index}.json" for index in range(24)],
     }
     forward.validate_racenote_manifest(manifest, "20260912")
+
+    manifest["request"]["enrichment"].pop("stats_mart")
+    forward.validate_racenote_manifest(manifest, "20260912")
+    manifest["request"]["enrichment"]["stats_mart"] = True
+    with pytest.raises(ValueError, match="stats_mart"):
+        forward.validate_racenote_manifest(manifest, "20260912")
+    manifest["request"]["enrichment"]["stats_mart"] = False
 
     manifest["request"]["temporal_mode"] = "current"
     forward.validate_racenote_manifest(manifest, "20260912")

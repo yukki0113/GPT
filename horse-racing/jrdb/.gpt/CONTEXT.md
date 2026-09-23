@@ -28,7 +28,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 ## Source of truth
 - Python / SQL / schema / docs: このGitディレクトリのlatest `main`
 - JRDB Raw ZIP / PACI: データ原典 / reproducibility source
-- Analysis Lite / Stats Mart / annual Canonical / research DB等の共有大容量artifact: Google Drive上の検証済み成果物。GPT運用ではGoogle Driveアダプタから都度resolveする
+- Analysis canonical / annual Warehouse / research DB等の共有大容量artifact: Google Drive上の検証済み成果物。Stats Martはlegacy-only資産として必要時のみ明示的に扱う
 - `src/jrdb_store.py`: local/CLI向けの任意のlogical resolver / verified cache。GPT標準のDrive連携層ではない
 - RaceNote Archive: immutable GitHub Release asset + release metadata
 - 秘密情報: 環境変数 / GitHub Secrets / ローカル `jrdb_secret.py`。Gitへ保存しない
@@ -49,12 +49,11 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - P0 production migrationは2026-09-06完了。回帰CIは `.github/workflows/jrdb_common_reader_tests.yml`。
 
 ## External artifact acquisition / Google Drive
-- GPTがRaceNoteを生成する際のAnalysis Lite / Stats Mart等のGoogle Drive取得は、ChatGPTのGoogle Driveアダプタを使用する。
+- GPTがRaceNoteを生成する際のAnalysis canonicalのGoogle Drive取得は、ChatGPTのGoogle Driveアダプタを使用する。Stats MartはRaceNoteのactive pathではresolveしない。
 - GPTは必要時にDriveを検索・fetchして現行artifactをresolveし、検証できたDrive URLを既存 `[RACENOTE_REQUEST]` 契約へ渡す。
 - RaceNote本体へ新しいDrive bridge、Drive API client、恒久File ID依存を追加しない。
 - 変動するDrive File IDをGitの運用正本として固定しない。E2E証跡で使用したID/URLは監査記録としてのみ扱う。
 - `src/jrdb_store.py` と `JRDB_STORE_MANIFEST` はlocal/CLI互換用途として残すが、GPTの標準Drive取得経路にはしない。
-- AnalysisとStats Martを組み合わせる場合はschema互換性・対象期間・data versionを確認する。
 - 過去時点を再現する分析では、対象日以降の結果が混入しないようas-of条件を必ず設ける。現行YTD Martを過去レースへそのまま適用しない。
 - RaceNote ArchiveはDriveとは別に、固定命名のimmutable GitHub Release assetとrelease metadataを探索indexとして使用する。Router本体へRelease URLを固定せず、`src/resolve_racenote_archive_release.py` が対象月のlatest compatible publishable shardを解決してローカルpathだけをRouterへ渡す。
 
@@ -78,7 +77,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 ## RaceNote request entrypoint
 - RaceNote取得は `src/racenote_request.py` を統一入口とする。ユーザー/GPTは原則として対象日、任意の開催場、任意のRだけを指定し、過去/当日/未来のsource分岐はrouter内部で行う。
 - JRDB Secretsや正式artifact chainを必要とするGPT定型実行は `[RACENOTE_REQUEST]` Issue → GitHub Actions → artifact回収のActions-native経路を使う。詳細は `docs/README_racenote_request.md`。
-- GPT運用ではAnalysis/MartをGoogle Driveアダプタでresolveして既存Issue契約のURLへ渡す。Routerの `--store-manifest` はlocal/CLI互換経路として扱う。
+- GPT運用ではAnalysis canonicalをGoogle Driveアダプタでresolveして既存Issue契約のURLへ渡す。Routerの `--store-manifest` はlocal/CLI互換経路として扱う。Stats Martはrequest inputではない。
 - GPT-facingな正式RaceNote bundleはschema v1.0。`src/racenote_jrdb.py` のbase v0.2を `src/racenote_history_enrichment.py` でenrichし、`schema/racenote_bundle_schema_v1_0.json` に従う。正式仕様は `docs/README_racenote_v1.md`。
 - enrichmentロジックの正本は `src/racenote_history_engine.py`。production `src/racenote_history_enrichment.py` と検証用 `src/racenote_history_enrichment_poc.py` は同じneutral engineを利用し、productionからPoC moduleへの依存は持たない。
 - v1.0の履歴はPACI詳細 `recent_runs` 最大5 + Analysis Lite簡略 `older_runs` 最大3。固定8件・キャリア上の完全な直近8戦とはみなさず、`history_coverage.run_layers` を併せて解釈する。
@@ -94,7 +93,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - Reader Viewは必ず `source_semantic_sha256` とround-trip validationで検証する。検証不能ならReader Viewを予想入力として採用しない。
 - 2026-09-08 real-data E2E（2024-12-28中山11R）では、正本264,682 bytes → Reader View 134,621 bytes（49.14%削減）、semantic SHA完全一致、正本raw bytes完全保存を確認。証跡は `docs/RaceNote_Reader_View_E2E_20260908.md`。
 - Prediction logic remains outside RaceNote converter/router/Reader View。RaceNoteは観測データとprovenanceを渡し、最終的な比較・印・買い目判断はprediction layerの責務とする。
-- 1R予想では、Google Driveから現行Analysis/Martをresolveし、正式RaceNote v1.0を取得、Reader Viewをround-trip検証し、as-of-safeな事前情報を第一入力として読む。必要な詳細確認時だけ正本bundleへ戻る。
+- 1R予想では、Google Driveから現行Analysis canonicalをresolveし、正式RaceNote v1.0を取得、Reader Viewをround-trip検証し、as-of-safeな事前情報を第一入力として読む。必要な詳細確認時だけ正本bundleへ戻る。
 
 ## RaceNote Forecast Gen0 — current prediction research
 - current guide: `docs/racenote/README.md`。
@@ -117,7 +116,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 
 ## RaceNote Archive production
 - `RaceNote Archive` は過去RaceNoteの大量・反復取得用historical base delivery cache。詳細は `docs/RaceNote_Archive_Design_v0_1.md`、SQLite schemaは `schema/racenote_archive_schema_v1_0.sql`。
-- Archiveへ保存するのは **base RaceNote v0.2** のみ。Analysis Lite / Stats Mart enrichment済みfinal v1.0は保存しない。request時にcurrent production enrichmentを適用してfinal v1.0を生成する。
+- Archiveへ保存するのは **base RaceNote v0.2** のみ。Analysis canonical enrichment済みfinal v1.0は保存しない。request時にcurrent production enrichmentを適用してfinal v1.0を生成する。
 - Archive schema v1.0はRaceNote bundle schema v1.0とは別version軸。1暦月1 SQLite、1race=1 zlib-compressed JSON BLOB、lookup keyは `race_date + venue_code + race_no`。
 - 過去requestはpublishable full-month Archiveを優先し、Archive未整備・resolver失敗・validation拒否時は既存safe fallback（2026+ PACI / <=2025 annual Raw reconstruction）を維持する。
 - ArchiveはRaw/Coreを置換しない。Raw/Coreはaudit/rebuild source truthのまま、Archiveは高速delivery層だけを担当する。

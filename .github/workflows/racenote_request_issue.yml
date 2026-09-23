@@ -73,11 +73,8 @@ jobs:
                   raise SystemExit('race must be 1..12')
 
           analysis_url = str(request.get('analysis_url', '')).strip()
-          mart_url = str(request.get('mart_url', '')).strip()
           if not analysis_url.startswith('https://drive.google.com/'):
               raise SystemExit('analysis_url must be a Google Drive URL')
-          if not mart_url.startswith('https://drive.google.com/'):
-              raise SystemExit('mart_url must be a Google Drive URL')
 
           support_artifact_run_id = request.get('support_artifact_run_id')
           support_artifact_name = str(request.get('support_artifact_name') or '').strip() or None
@@ -114,7 +111,6 @@ jobs:
               'venue': venue,
               'race': race,
               'analysis_url': analysis_url,
-              'mart_url': mart_url,
               'support_artifact_run_id': support_artifact_run_id,
               'support_artifact_name': support_artifact_name,
               'raw_urls': normalized_raw_urls,
@@ -132,7 +128,7 @@ jobs:
               file.write(f'RAW_DIR={raw_dir}\n')
           PY
 
-      - name: Download Analysis, Mart and supplied Raw cache
+      - name: Download Analysis and supplied Raw cache
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -195,24 +191,15 @@ jobs:
                   list(support_root.rglob('jrdb_analysis_*.sqlite.zip'))
                   + list(support_root.rglob('jrdb_analysis_*.sqlite'))
               )
-              mart_candidates = sorted(support_root.rglob('jrdb_stats_mart_*.sqlite'))
               if len(analysis_candidates) != 1:
                   raise SystemExit(
                       f'support artifact must contain exactly one Analysis candidate; found {analysis_candidates}'
                   )
-              if len(mart_candidates) != 1:
-                  raise SystemExit(
-                      f'support artifact must contain exactly one Stats Mart candidate; found {mart_candidates}'
-                  )
               materialize_sqlite(
                   analysis_candidates[0], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis support artifact'
               )
-              materialize_sqlite(
-                  mart_candidates[0], Path('/tmp/jrdb_stats_mart.sqlite'), 'Stats Mart support artifact'
-              )
           else:
               download_sqlite(request['analysis_url'], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis')
-              download_sqlite(request['mart_url'], Path('/tmp/jrdb_stats_mart.sqlite'), 'Stats Mart')
 
           raw_dir = Path(request['raw_dir'])
           for key, url in request['raw_urls'].items():
@@ -293,7 +280,6 @@ jobs:
               'python', 'horse-racing/jrdb/src/racenote_request.py',
               '--date', request['date'],
               '--analysis', '/tmp/jrdb_analysis.sqlite',
-              '--mart', '/tmp/jrdb_stats_mart.sqlite',
               '--raw-dir', request['raw_dir'],
               '--output', request['output_dir'],
               '--stats-window-years', str(request['stats_window_years']),
