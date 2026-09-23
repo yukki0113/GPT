@@ -18,7 +18,7 @@ from jrdb_edge_v02_canonical import (
 )
 from jrdb_raw import Parser, ReaderAudit
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 
 
 def _int(value: Any) -> int | None:
@@ -49,10 +49,16 @@ def _text(value: Any) -> str | None:
 
 
 def build_current_facts(
-    paci_path: str | Path, analysis_db: str | Path | None = None
+    paci_path: str | Path,
+    analysis_db: str | Path | None = None,
+    analysis_root: str | Path | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Build v0.2 current facts and canonicalize documented categorical codes."""
-    rows, audit = base.build_current_facts(paci_path, analysis_db)
+    rows, audit = base.build_current_facts(
+        paci_path,
+        analysis_db=analysis_db,
+        analysis_root=analysis_root,
+    )
     by_key = {str(row["race_horse_key"]): row for row in rows}
     profiles: dict[str, list[Mapping[str, Any]]] = {}
     entry_extra: dict[str, dict[str, Any]] = {}
@@ -134,11 +140,17 @@ def main() -> int:
     """Build v0.2 current facts from PACI and optional Analysis history."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--paci", required=True)
-    parser.add_argument("--analysis-db")
+    history = parser.add_mutually_exclusive_group()
+    history.add_argument("--analysis-db")
+    history.add_argument("--analysis-root")
     parser.add_argument("--output-jsonl", required=True)
     parser.add_argument("--audit-json")
     args = parser.parse_args()
-    rows, audit = build_current_facts(args.paci, args.analysis_db)
+    rows, audit = build_current_facts(
+        args.paci,
+        analysis_db=args.analysis_db,
+        analysis_root=args.analysis_root,
+    )
     with Path(args.output_jsonl).open("w", encoding="utf-8", newline="\n") as handle:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
