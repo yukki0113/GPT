@@ -44,6 +44,9 @@ class RowMapping(dict):
             return self._values[key]
         return super().__getitem__(key)
 
+    def __iter__(self):
+        return iter(self._values)
+
 
 class Result:
     def __init__(self, cursor: Any):
