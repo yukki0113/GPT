@@ -37,6 +37,9 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_hjc_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
+      - 'horse-racing/jrdb/tests/test_racenote_v11p_true_forward_day.py'
+      - 'horse-racing/jrdb/tests/test_racenote_request_workflow_contract.py'
+      - 'horse-racing/jrdb/tests/test_racenote_analysis_only_enrichment.py'
       - 'horse-racing/jrdb/tests/test_racenote_reader_view.py'
       - 'horse-racing/jrdb/tests/test_jrdb_canonical_builder.py'
       - 'horse-racing/jrdb/tests/test_jrdb_pwa_race_names_common.py'
@@ -157,6 +160,9 @@ jobs:
             test_jrdb_hjc_common \
             test_jrdb_store \
             test_racenote_store_resolution \
+            test_racenote_analysis_only_enrichment \
+            test_racenote_request_workflow_contract \
+            test_racenote_v11p_true_forward_day \
             test_racenote_reader_view \
             test_jrdb_canonical_builder \
             test_jrdb_pwa_race_names_common \
