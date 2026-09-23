@@ -11,6 +11,8 @@ Repository-wide GitHub routing is defined by `.gpt/GITHUB_OPERATION_POLICY.md`. 
 
 Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. The Actions backend is retained only as inactive compatibility code. Do not enable it and do not configure `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` or `GPT_GDRIVE_AUTOMATION_ROOT_ID`. Google Drive / Docs / Sheets operations use the connected native tools only.
 
+When a supplied Drive folder URL is rejected by a connector list action, do not infer missing access or ask for reauthentication from that error alone. Extract its folder ID, verify folder metadata by ID, then list children with `'<folder_id>' in parents and trashed = false`. This is the standard fallback for URL argument-binding failures.
+
 See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` for the architecture decision and safety contract.
 
 ## GitHub routing
