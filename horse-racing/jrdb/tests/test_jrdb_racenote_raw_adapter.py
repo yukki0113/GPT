@@ -103,7 +103,7 @@ class RaceNoteRawAdapterTest(unittest.TestCase):
             self.assertEqual(1, report["race_key_count"])
             self.assertEqual(1, report["previous_result_key_count"])
             self.assertEqual([2024], report["previous_result_years"])
-            self.assertEqual([(2024, ("SED", "SKB"))], ensured)
+            self.assertEqual([(2024, ("ZED", "ZKB"))], ensured)
             self.assertEqual(
                 {"BAC": 1, "KYI": 1, "CHA": 1, "CYB": 1, "ZED": 1, "ZKB": 1},
                 report["record_counts"],
