@@ -94,7 +94,7 @@ def build(raw_root: Path, years: list[int], output_root: Path) -> dict[str, Any]
         "status": "PASS",
     }
     (output_root / "manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\\n",
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     return manifest
