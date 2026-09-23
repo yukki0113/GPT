@@ -72,6 +72,8 @@ class SQLiteAnalysisBackend:
             raise AnalysisBackendError(f"Analysis SQLite not found: {self.path}")
         self.connection = sqlite3.connect(f"file:{self.path}?mode=ro", uri=True)
         self.connection.row_factory = sqlite3.Row
+        self.query_count = 0
+        self.parquet_scan_count = 0
         columns = {row[1] for row in self.connection.execute(f"PRAGMA table_info({TABLE})")}
         missing = REQUIRED_COLUMNS - columns
         if missing:
@@ -96,7 +98,11 @@ class SQLiteAnalysisBackend:
         }
 
     def execute(self, sql: str, parameters: list[Any] | tuple[Any, ...] = ()) -> Any:
+        self.query_count += 1
         return self.connection.execute(sql, parameters)
+
+    def metrics(self) -> dict[str, int]:
+        return {"query_count": self.query_count, "parquet_scan_count": 0}
 
     def close(self) -> None:
         self.connection.close()
@@ -121,6 +127,8 @@ class DuckDBParquetAnalysisBackend:
         except ImportError as error:
             raise AnalysisBackendError("duckdb is required for PARQUET_DUCKDB") from error
         self.connection = duckdb.connect(":memory:")
+        self.query_count = 0
+        self.parquet_scan_count = 0
         quoted = ",".join("'" + str(path).replace("'", "''") + "'" for path in paths)
         try:
             self.connection.execute(
@@ -162,7 +170,16 @@ class DuckDBParquetAnalysisBackend:
         # The engine keeps its stable logical table name; Parquet exposes one
         # validated DuckDB view for that logical table.
         sql = sql.replace(TABLE, "analysis_fact")
+        self.query_count += 1
+        if "analysis_fact" in sql:
+            self.parquet_scan_count += 1
         return Result(self.connection.execute(sql, parameters))
+
+    def metrics(self) -> dict[str, int]:
+        return {
+            "query_count": self.query_count,
+            "parquet_scan_count": self.parquet_scan_count,
+        }
 
     def close(self) -> None:
         self.connection.close()
