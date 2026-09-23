@@ -41,7 +41,7 @@
 - `fact-lite.js` — Fact Lite同期・query・表示の基礎
 - `fact-lite-v3.js` — Fact Lite v0.3互換層 / WIN5 filter
 - `fact-lite-sort.js` — 集計結果sort
-- `fact-lite-duckdb.js` — Parquet manifestを検証し、single-thread DuckDB-Wasmへ6 relationを登録するFact Liteの本番reader
+- `fact-lite-duckdb.js` — Parquet直読PoC/検証資産。現在の条件別集計ページではloadしない
 - `../src/build_jrdb_pwa_fact_lite.py` — Analysis -> Fact Lite builder
 - `../schema/jrdb_pwa_fact_lite_schema_v0_3.sql` — current schema
 - `../docs/README_build_jrdb_pwa_fact_lite.md` — build / validation contract
@@ -84,7 +84,7 @@ v0.3の主要追加は `fact_stats_entry.win5_leg_no` です。
 - v0.2等でcolumn / capabilityがない場合はcheckboxを無効化
 - PWA側でWIN5対象レースを日付・レース番号から推測しない
 
-Fact Liteは1出走1行を保持し、年/月/場/芝ダ障害/距離/馬場/クラス/レース名/最低出走数/WIN5等をDuckDB上で絞り込み、種牡馬・騎手・枠・脚質・年齢・性別・人気・前走距離・前走クラス等を集計します。
+Fact Liteは1出走1行を保持する配布用SQLiteです。年/月/場/芝ダ障害/距離/馬場/クラス/レース名/最低出走数/WIN5等をブラウザ内のsql.jsで絞り込み、種牡馬・騎手・枠・脚質・年齢・性別・人気・前走距離・前走クラス等を集計します。上流のAnalysis正本はParquetのまま維持し、Fact Lite SQLiteはそこから再生成可能なconsumer向け配布cacheとして扱います。
 
 レース名は配布時のBAC lookupを利用します。前走距離・前走クラスをAnalysis内で解決できない場合は推測せず不明扱いです。
 
@@ -172,11 +172,9 @@ remote manifest
   -> OPFS current.sqlite
 ```
 
-検証失敗時はcurrentを維持します。Service Workerはstatic app shellをcacheしますが、`/data/` はcacheしません。オフラインのParquet利用はOPFSを使用します。
+検証失敗時はcurrentを維持します。Service Workerはstatic app shellをcacheしますが、`/data/` はcacheしません。Fact Lite SQLiteはOPFSの `current.sqlite` に保存し、再読み込み・オフライン時はローカルDBを先に復元します。
 
-Fact Liteの本番readerは、Pages同一originの `current.json → manifest → manifest.tables` だけを解決します。DuckDB-Wasm 1.32.0はsingle-threadのMVP bundleをPages artifactへ同梱し、固定6 relationを作成します。
-
-Parquet cacheはOPFSの `jrdb-fact-lite/generations/<generation_id>/` に、manifestとmanifest記載のassetだけを保存します。新世代は全assetのsize/SHA-256、DuckDB relation、必須column、row countを通過するまで `current_generation` を切り替えません。検証失敗時は既存のcurrent generationを維持します。
+Fact Liteの本番readerは `./data/fact-lite/manifest.json` を確認し、配布SQLiteのsize / SHA-256 / schema / required tables / `PRAGMA integrity_check` を通過した場合だけOPFSの `incoming.sqlite → previous.sqlite / current.sqlite` を切り替えます。Analysis ParquetやFact Lite Parquetをブラウザから直接読むことは現在の本番contractではありません。
 
 ## Deployment completion
 
