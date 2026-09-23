@@ -81,6 +81,11 @@ def _race_time_sec(value: Any) -> float | None:
 
 
 def _record_hash(row: Mapping[str, Any]) -> str:
+    legacy = _text(row.get("legacy_record_hash"))
+    if legacy:
+        if len(legacy) != 64:
+            raise WarehouseIndexBaseError("Warehouse legacy_record_hash is invalid")
+        return legacy
     value = _text(row.get("source_record_sha256"))
     if len(value) != 64:
         raise WarehouseIndexBaseError("Warehouse source_record_sha256 is missing")
@@ -520,6 +525,7 @@ class WarehouseIndexBaseReader:
         *,
         manifest: Path | None = None,
         asset_roots: Mapping[str, Path],
+        record_hash_compat_manifest: Path | None = None,
     ) -> None:
         if (current is None) == (manifest is None):
             raise WarehouseIndexBaseError("supply exactly one of current or manifest")
@@ -565,6 +571,22 @@ class WarehouseIndexBaseReader:
         if not self.assets:
             raise WarehouseIndexBaseError("Warehouse manifest has no assets")
         self.covered_years = sorted({int(a["year"]) for a in self.assets if a.get("year") is not None})
+        self.record_hash_compat_manifest_path = (
+            Path(record_hash_compat_manifest) if record_hash_compat_manifest else None
+        )
+        self.record_hash_compat: dict[str, Any] | None = None
+        if self.record_hash_compat_manifest_path is not None:
+            compat = json.loads(
+                self.record_hash_compat_manifest_path.read_text(encoding="utf-8")
+            )
+            if (
+                compat.get("artifact_type") != "jrdb_index_base_record_hash_compat"
+                or compat.get("status") != "PASS"
+                or compat.get("source_warehouse_generation_id")
+                != self.current.get("generation_id")
+            ):
+                raise WarehouseIndexBaseError("record-hash compatibility manifest mismatch")
+            self.record_hash_compat = compat
 
     def _asset(self, family: str, year: int) -> tuple[Path, dict[str, Any]] | None:
         matches = [a for a in self.assets if _text(a.get("family")).upper() == family.upper() and int(a.get("year", -1)) == year]
@@ -615,6 +637,58 @@ class WarehouseIndexBaseReader:
                 "size_bytes": _int(asset.get("size_bytes")),
                 "row_count": len(rows[family]),
             }
+
+            if self.record_hash_compat is not None:
+                matches = [
+                    item
+                    for item in self.record_hash_compat.get("assets", [])
+                    if _text(item.get("family")).upper() == family.upper()
+                ]
+                if len(matches) != 1:
+                    raise WarehouseIndexBaseError(
+                        f"record-hash compatibility asset missing/ambiguous: {family}"
+                    )
+                compat_path = (
+                    self.record_hash_compat_manifest_path.parent
+                    / _text(matches[0].get("relative_path"))
+                )
+                if not compat_path.is_file():
+                    raise WarehouseIndexBaseError(
+                        f"record-hash compatibility asset missing: {compat_path}"
+                    )
+                compat_connection = connect_parquet(compat_path)
+                try:
+                    compat_rows = compat_connection.execute(
+                        "SELECT source_member, source_record_ordinal, legacy_record_hash "
+                        "FROM data WHERE year = ?",
+                        [year],
+                    ).fetchall()
+                finally:
+                    compat_connection.close()
+                compat_map = {
+                    (_text(member), _int(ordinal)): _text(value)
+                    for member, ordinal, value in compat_rows
+                }
+                if len(compat_map) != len(compat_rows):
+                    raise WarehouseIndexBaseError(
+                        f"duplicate record-hash compatibility keys: {family}/{year}"
+                    )
+                missing = 0
+                for item in rows[family]:
+                    key = (
+                        _text(item.get("source_member")),
+                        _int(item.get("source_record_ordinal")),
+                    )
+                    value = compat_map.get(key)
+                    if value is None:
+                        missing += 1
+                    else:
+                        item["legacy_record_hash"] = value
+                if missing:
+                    raise WarehouseIndexBaseError(
+                        f"record-hash compatibility misses {missing} rows: {family}/{year}"
+                    )
+                evidence[family]["record_hash_compat_path"] = str(compat_path)
         return rows, evidence
 
     def load_year(self, year: int) -> tuple[YearData, dict[str, Any]]:
