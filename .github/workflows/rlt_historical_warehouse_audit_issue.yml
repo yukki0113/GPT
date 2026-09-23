@@ -30,9 +30,9 @@ jobs:
           cache: pip
           cache-dependency-path: tools/data-storage/requirements.txt
 
-      - name: Install shared storage runtime and downloader
+      - name: Install shared storage runtime and authenticated Drive client
         run: |
-          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt 'gdown==5.2.2'
+          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt google-api-python-client google-auth
           PYTHONPATH=tools/data-storage python -m data_storage check-deps
 
       - name: Parse formal request
@@ -67,18 +67,21 @@ jobs:
               h.write(f'request_id={request_id}\n')
           PY
 
-      - name: Discover immutable staging IDs and download exact evidence
+      - name: Discover and download exact evidence through authenticated Drive API
         id: download
+        env:
+          GPT_GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GPT_GDRIVE_SERVICE_ACCOUNT_JSON }}
+          GPT_GDRIVE_AUTOMATION_ROOT_ID: ${{ secrets.GPT_GDRIVE_AUTOMATION_ROOT_ID }}
         run: |
           python - <<'PY'
           import hashlib, json, time
           from pathlib import Path
-
-          import gdown
+          from tools.gpt_io.gdrive import gdrive_api as api
 
           root = Path('/tmp/rlt_historical_audit')
           req = json.loads((root/'request.json').read_text(encoding='utf-8'))
           expected_generation = req['generation_id']
+          service, automation_root = api.load_service()
 
           def sha256(path):
               h = hashlib.sha256()
@@ -87,38 +90,35 @@ jobs:
                       h.update(block)
               return h.hexdigest()
 
-          def download(file_id, path, expected_sha=None, attempts=5):
+          def guarded_download(file_id, path, expected_sha=None, attempts=5):
+              api.assert_under_root(service, str(file_id), automation_root)
               path.parent.mkdir(parents=True, exist_ok=True)
               last = None
               for attempt in range(1, attempts + 1):
-                  if path.exists():
-                      path.unlink()
+                  path.unlink(missing_ok=True)
                   try:
-                      result = gdown.download(
-                          id=str(file_id),
-                          output=str(path),
-                          quiet=True,
-                          use_cookies=False,
-                      )
-                  except Exception as exc:
-                      result = None
-                      last = repr(exc)
-                  if result and path.is_file():
-                      actual = sha256(path)
-                      if expected_sha is None or actual == expected_sha.lower():
-                          return actual
+                      meta = api.download(service, str(file_id), path, force=True)
+                      actual = str(meta['sha256']).lower()
+                      if expected_sha is None or actual == str(expected_sha).lower():
+                          return meta
                       last = f'SHA mismatch actual={actual}'
-                  elif last is None:
-                      last = 'gdown returned no output'
+                  except Exception as exc:
+                      last = repr(exc)
                   if attempt < attempts:
                       time.sleep(min(30, 2 ** attempt))
-              raise SystemExit(f'download failed after {attempts} attempts id={file_id}: {last}')
+              raise SystemExit(f'authenticated Drive download failed after {attempts} attempts id={file_id}: {last}')
 
-          download(req['manifest_id'], root/'final'/'manifest.json')
-          download(req['audit_id'], root/'final'/'audit.json')
+          def child(parent_id, name):
+              rows = [x for x in api.list_children(service, parent_id) if x.get('name') == name]
+              if len(rows) != 1:
+                  raise SystemExit(f'expected one child {name!r} under {parent_id}, got {len(rows)}')
+              return rows[0]
 
+          guarded_download(req['manifest_id'], root/'final'/'manifest.json')
+          guarded_download(req['audit_id'], root/'final'/'audit.json')
           manifest = json.loads((root/'final'/'manifest.json').read_text(encoding='utf-8'))
           audit = json.loads((root/'final'/'audit.json').read_text(encoding='utf-8'))
+
           if manifest.get('artifact_type') != 'jrdb_normalized_warehouse_final_generation':
               raise SystemExit('unexpected final manifest type')
           if manifest.get('generation_id') != expected_generation or manifest.get('status') != 'PASS':
@@ -139,41 +139,15 @@ jobs:
               raise SystemExit('final manifest does not contain exact required 6x16 asset set')
 
           staging_map = {}
-          discovery_audit = {}
+          download_audit = {}
           for family in required:
-              probe_dir = root/'probe'/family
-              probe_dir.mkdir(parents=True, exist_ok=True)
-              listed = gdown.download_folder(
-                  id=req['staging_folders'][family],
-                  output=str(probe_dir) + '/',
-                  quiet=True,
-                  use_cookies=False,
-                  skip_download=True,
-              )
-              if not listed:
-                  raise SystemExit(f'{family}: staging discovery returned no files')
-              entries = [
-                  {'id': item.id, 'path': str(item.path).replace('\\','/')}
-                  for item in listed
-              ]
+              stage_id = req['staging_folders'][family]
+              api.assert_under_root(service, stage_id, automation_root)
+              receipt_meta = child(stage_id, 'raw_receipt.json')
+              objects_meta = child(stage_id, 'objects')
 
-              def find_suffix(suffix):
-                  wanted = str(suffix).replace('\\\\','/').lstrip('/')
-                  matches = [
-                      e for e in entries
-                      if e['path'] == wanted or e['path'].endswith('/' + wanted)
-                  ]
-                  if len(matches) != 1:
-                      sample = [e['path'] for e in entries[:10]]
-                      raise SystemExit(
-                          f'{family}: expected one staging entry ending {wanted}, '
-                          f'got {len(matches)}; sample={sample}'
-                      )
-                  return matches[0]
-
-              receipt_entry = find_suffix('raw_receipt.json')
               receipt_path = root/'receipts'/f'{family}.json'
-              download(receipt_entry['id'], receipt_path)
+              guarded_download(receipt_meta['id'], receipt_path)
               receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
               if receipt.get('status') != 'PASS' or receipt.get('family') != family:
                   raise SystemExit(f'{family}: invalid raw receipt')
@@ -181,26 +155,35 @@ jobs:
               if set(raw_by_year) != set(range(2010, 2026)):
                   raise SystemExit(f'{family}: Raw receipt coverage mismatch')
 
+              fam_folder = child(objects_meta['id'], family.lower())
+              year_folders = {
+                  int(x['name'].split('=',1)[1]): x
+                  for x in api.list_children(service, fam_folder['id'])
+                  if str(x.get('name') or '').startswith('year=')
+              }
+              if set(year_folders) != set(range(2010, 2026)):
+                  raise SystemExit(f'{family}: Warehouse year-folder coverage mismatch')
+
               wh_root = root/'warehouse'/family
               staging_map[family] = str(wh_root)
-              family_audit = {'listed_files': len(entries), 'years': {}}
+              family_audit = {'years': {}}
               for year in range(2010, 2026):
                   raw = raw_by_year[year]
                   raw_path = root/'raw'/family/f'{family}_{year}.zip'
-                  download(raw['drive_id'], raw_path, str(raw['sha256']))
+                  guarded_download(raw['drive_id'], raw_path, raw['sha256'])
 
                   asset = assets[(family, year)]
-                  relative = str(asset['relative_path']).replace('\\','/')
-                  wh_entry = find_suffix(relative)
-                  wh_path = wh_root / relative
-                  download(wh_entry['id'], wh_path, str(asset['sha256']))
+                  expected_name = Path(str(asset['relative_path'])).name
+                  parquet_meta = child(year_folders[year]['id'], expected_name)
+                  wh_path = wh_root / str(asset['relative_path'])
+                  guarded_download(parquet_meta['id'], wh_path, asset['sha256'])
                   family_audit['years'][str(year)] = {
                       'raw_id': raw['drive_id'],
                       'raw_sha256': raw['sha256'],
-                      'warehouse_id': wh_entry['id'],
+                      'warehouse_id': parquet_meta['id'],
                       'warehouse_sha256': asset['sha256'],
                   }
-              discovery_audit[family] = family_audit
+              download_audit[family] = family_audit
 
           (root/'staging_map.json').write_text(
               json.dumps(staging_map, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
@@ -209,7 +192,8 @@ jobs:
               json.dumps({
                   'status':'PASS',
                   'generation_id':expected_generation,
-                  'families':discovery_audit,
+                  'transport':'authenticated_google_drive_api',
+                  'families':download_audit,
               }, ensure_ascii=False, indent=2) + '\n',
               encoding='utf-8',
           )
