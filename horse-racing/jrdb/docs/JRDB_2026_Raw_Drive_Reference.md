@@ -18,11 +18,18 @@
 
 ## Drive roots
 
+Current canonical Drive root for JRDB Raw assets is:
+
+`GPT/horse-racing/00_raw`
+
+The older top-level `JRDB/00_raw` tree is a compatibility/legacy operational store. Do not add new path contracts against that older parent. Existing assets there must not be deleted until their consumers are independently cut over.
+
+
 ### PACI
 
 Google Drive folder:
 
-`https://drive.google.com/drive/folders/12lmU6_NZF24ixrB7MMMzzvcBNzbhQTr0`
+`https://drive.google.com/drive/folders/1zFajenPU5jxInZCcmqZzkgiaYil3MD8r`
 
 日次命名:
 
@@ -42,7 +49,7 @@ PACI ZIPには少なくとも次の固定長Rawが同梱される。
 
 Google Drive folder:
 
-`https://drive.google.com/drive/folders/1ywucQ_84OgnSzJG6_HXa_M8KWWkVOTa4`
+`https://drive.google.com/drive/folders/1mm6sU8-skS7K2XYHm2citcorUVyMyL58`
 
 日次命名:
 
