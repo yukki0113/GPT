@@ -32,6 +32,8 @@
 | RaceNote旧予想系境界 | `docs/racenote/legacy/README.md` |
 | EdgeDB v0.2 serving | `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md` |
 | EdgeDB STANDARD activation | `docs/JRDB_Edge_v0_2_STANDARD_Activation_Audit_20260911.md` |
+| EdgeDB v0.3 operational audit | `docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md` |
+| EdgeDB v0.3 shadow design | `docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md` |
 | RaceNoteコメント表示 | `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` |
 | 開催後Analysis/Mart更新 | `docs/README_post_race_analysis_mart_refresh.md` |
 | PWA / 条件別集計 / Newspaper表示運用 | `pwa/.gpt/HANDOFF.md` + `pwa/README.md` |
@@ -184,6 +186,17 @@ run_jrdb_edge_match_current_v0_2.py
 - v0.1 matcherはbackward compatibility用として保持し、v0.2仕様を混入させない
 
 通常v0.2 consumer inputは `edge_serving_catalog_v0_2.jsonl`。詳細条件はServing Contractを優先します。
+
+#### EdgeDB v0.3 shadow research
+
+Production defaultはまだv0.2 STANDARDです。v0.3は、実運用で確認された過剰ヒット・+/-混在・semantic overlapを解消し、EdgeDBを「市場が見落としやすい複雑・多重条件」へ戻すためのshadow redesignです。
+
+- 実運用監査: `docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md`
+- 設計: `docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md`
+- semantic hierarchy config: `config/jrdb_edge_semantic_hierarchy_v0_3.json`
+- v0.2 density audit code: `src/audit_jrdb_edge_v02_operational_hits.py`
+
+v0.3ではlower-orderなContextとincremental Niche candidateを分離し、childをnearest parent / parent-complementに対して再評価します。PerformanceとValueは引き続き別channelで、独立した+/- evidenceを任意weightでnet score化しません。v0.2 servingは比較・rollback用に保持します。
 
 ### Legacy RaceNote prediction presentation
 
