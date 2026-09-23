@@ -11,8 +11,8 @@ permissions:
 env:
   REQUEST_PREFIX: '[JRDB_TRAINING_V02_DRIVE_PREFLIGHT]'
   HISTORY_FILE_ID: '13YKKbOgS7KCkXzKtU93XtCPWt1wPqosk'
-  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/12lmU6_NZF24ixrB7MMMzzvcBNzbhQTr0'
-  SED_FOLDER_URL: 'https://drive.google.com/drive/folders/1ywucQ_84OgnSzJG6_HXa_M8KWWkVOTa4'
+  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/1zFajenPU5jxInZCcmqZzkgiaYil3MD8r'
+  SED_FOLDER_URL: 'https://drive.google.com/drive/folders/1mm6sU8-skS7K2XYHm2citcorUVyMyL58'
   OOT_TO_DATE: '20260913'
 
 jobs:
