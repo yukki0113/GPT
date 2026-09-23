@@ -42,6 +42,13 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _canonical_json_sha256(value: Any) -> str:
+    payload = json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def _load_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -573,7 +580,8 @@ def run(
         "version": VERSION,
         "mode": "SHADOW_ONLY",
         "warehouse_generation_id": manifest.get("generation_id"),
-        "warehouse_manifest_sha256": _sha256(warehouse_manifest),
+        "warehouse_manifest_sha256": _canonical_json_sha256(manifest),
+        "warehouse_manifest_file_sha256": _sha256(warehouse_manifest),
         "serving_catalog_sha256": _sha256(serving_catalog),
         "fact_rows": fact_count,
         "fact_period_from": fact_min,
