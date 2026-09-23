@@ -19,7 +19,15 @@ from jrdb_store import StoreError  # noqa: E402
 def make_sqlite(path: Path) -> None:
     connection = sqlite3.connect(path)
     try:
-        connection.execute("CREATE TABLE t (x INTEGER)")
+        # The compatibility backend deliberately validates the canonical
+        # Analysis contract; use a minimal but contract-complete fixture.
+        connection.execute(
+            "CREATE TABLE fact_entry_result_lite ("
+            "race_date TEXT, year INTEGER, venue_code TEXT, race_no INTEGER, "
+            "track_type TEXT, distance INTEGER, race_key BLOB, horse_no INTEGER, "
+            "horse_id TEXT, frame_no INTEGER, sire_name TEXT, jockey_name TEXT, "
+            "finish INTEGER, final_win_odds REAL, final_win_popularity INTEGER)"
+        )
         connection.commit()
     finally:
         connection.close()
@@ -30,6 +38,7 @@ def args_for(
     mart: Path | None = None,
     manifest: Path | None = None,
     offline: bool = False,
+    analysis_backend: str | None = None,
 ) -> argparse.Namespace:
     return argparse.Namespace(
         analysis=analysis,
@@ -37,6 +46,7 @@ def args_for(
         store_manifest=manifest,
         store_cache=None,
         store_offline=offline,
+        analysis_backend=analysis_backend,
     )
 
 
@@ -71,12 +81,18 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
             ) as from_file:
                 resolved_analysis, resolved_mart, report = (
                     racenote_request.resolve_enrichment_sources(
-                        args_for(None, None, manifest, offline=True)
+                        args_for(
+                            None,
+                            None,
+                            manifest,
+                            offline=True,
+                            analysis_backend="sqlite",
+                        )
                     )
                 )
             self.assertEqual(resolved_analysis, analysis)
             self.assertIsNone(resolved_mart)
-            self.assertEqual(report["analysis"], "jrdb://analysis/current")
+            self.assertEqual(report["analysis"], str(analysis))
             self.assertFalse(report["stats_mart"])
             from_file.assert_called_once_with(manifest, cache_root=None)
             resolver.resolve.assert_called_once_with(
