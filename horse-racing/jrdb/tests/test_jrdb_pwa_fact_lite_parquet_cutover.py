@@ -27,7 +27,10 @@ class FactLiteSqliteDeliveryTest(unittest.TestCase):
         self.assertIn('--pattern "jrdb_pwa_fact_lite.sqlite"', source)
         self.assertIn("--dir .pages/data/fact-lite", source)
         self.assertIn("Current Fact Lite release added to Pages artifact.", source)
-        self.assertIn("No staged Fact Lite Parquet release yet; SQLite PWA delivery remains unchanged.", source)
+        self.assertIn("Fact Lite SQLite SHA-256 mismatch", source)
+        self.assertNotIn("FACT_PARQUET_RELEASE_TAG", source)
+        self.assertNotIn("fact-lite-parquet", source)
+        self.assertNotIn("duckdb-wasm", source)
 
     def test_shell_loads_only_sqlite_fact_lite_runtime(self) -> None:
         html = (PWA / "fact-lite.html").read_text(encoding="utf-8")
