@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from jrdb_edge_canonical import derive_transition_features
+from jrdb_edge_analysis_history import AnalysisHistoryError, open_analysis_history
 from jrdb_raw import (
     Parser,
     ReaderAudit,
@@ -20,7 +21,7 @@ from jrdb_raw import (
     ymd,
 )
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 ANALYSIS_TABLE = "fact_entry_result_lite"
 ANALYSIS_REQUIRED_COLUMNS = {
     "race_key", "race_date", "horse_no", "horse_id", "track_type", "distance", "frame_no"
@@ -96,6 +97,33 @@ def lookup_previous_fact(
         "distance_m": _int(row[2]),
         "frame_no": _int(row[3]),
     }
+
+
+def lookup_previous_fact_source(
+    source: Any,
+    *,
+    prev_race_key: str | None,
+    horse_id: str | None,
+    target_date: str,
+) -> tuple[str, dict[str, Any] | None]:
+    """Resolve the exact KYI previous link through the selected Analysis backend."""
+    if not prev_race_key:
+        return "NO_LINK", None
+    if source is None:
+        return "NO_HISTORY_SOURCE", None
+    if not horse_id:
+        return "NO_HORSE_ID", None
+    try:
+        previous = source.lookup(
+            prev_race_key=prev_race_key,
+            horse_id=horse_id,
+            target_date=target_date,
+        )
+    except AnalysisHistoryError as error:
+        raise CurrentFactError(str(error)) from error
+    if previous is None:
+        return "LINK_NOT_RESOLVED", None
+    return "RESOLVED", previous
 
 
 def select_profile_asof(
@@ -192,9 +220,11 @@ def _records(
 
 
 def build_current_facts(
-    paci_path: str | Path, analysis_db: str | Path | None = None
+    paci_path: str | Path,
+    analysis_db: str | Path | None = None,
+    analysis_root: str | Path | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Parse PACI and optionally enrich exact prev1 facts from Analysis Lite."""
+    """Parse PACI and enrich exact prev1 facts from SQLite or canonical Parquet."""
     audit = ReaderAudit()
     parser = Parser(audit)
     races: dict[str, dict[str, Any]] = {}
@@ -255,11 +285,13 @@ def build_current_facts(
     if audit.record_length_errors:
         raise CurrentFactError(f"PACI fixed-record length error: {dict(audit.record_length_errors)}")
 
-    if analysis_db is not None and not Path(analysis_db).is_file():
-        raise CurrentFactError(f"Analysis Lite DB not found: {analysis_db}")
-    analysis = sqlite3.connect(analysis_db) if analysis_db is not None else None
-    if analysis is not None:
-        validate_analysis(analysis)
+    try:
+        analysis = open_analysis_history(
+            analysis_db=analysis_db,
+            analysis_root=analysis_root,
+        )
+    except AnalysisHistoryError as error:
+        raise CurrentFactError(str(error)) from error
     try:
         output: list[dict[str, Any]] = []
         counters: Counter[str] = Counter()
@@ -273,7 +305,7 @@ def build_current_facts(
             profile_status, profile = select_profile_asof(
                 profiles.get(str(entry.get("horse_id") or ""), []), str(race["race_date"])
             )
-            previous_status, previous = lookup_previous_fact(
+            previous_status, previous = lookup_previous_fact_source(
                 analysis,
                 prev_race_key=_text(entry.get("prev1_race_key")),
                 horse_id=_text(entry.get("horse_id")),
@@ -292,6 +324,11 @@ def build_current_facts(
             "builder_version": VERSION,
             "races": len(races),
             "runner_rows": len(output),
+            "analysis_history": (
+                dict(analysis.source_info)
+                if analysis is not None
+                else {"kind": "NONE", "generation_id": None}
+            ),
             **dict(sorted(counters.items())),
         }
         return output, summary
@@ -303,10 +340,16 @@ def build_current_facts(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--paci", required=True)
-    parser.add_argument("--analysis-db")
+    history = parser.add_mutually_exclusive_group()
+    history.add_argument("--analysis-db")
+    history.add_argument("--analysis-root")
     parser.add_argument("--output-jsonl", required=True)
     args = parser.parse_args()
-    rows, summary = build_current_facts(args.paci, args.analysis_db)
+    rows, summary = build_current_facts(
+        args.paci,
+        analysis_db=args.analysis_db,
+        analysis_root=args.analysis_root,
+    )
     with Path(args.output_jsonl).open("w", encoding="utf-8", newline="\n") as handle:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
