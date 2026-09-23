@@ -34,10 +34,20 @@ def sha256(path: Path) -> str:
 
 def folder_download(folder_id: str, out: Path) -> None:
     out.mkdir(parents=True, exist_ok=True)
-    subprocess.run([
+    cmd = [
         "gdown", "--folder", f"https://drive.google.com/drive/folders/{folder_id}",
         "-O", str(out), "--quiet",
-    ], check=True)
+    ]
+    last = None
+    for attempt in range(1, 4):
+        proc = subprocess.run(cmd, check=False)
+        if proc.returncode == 0:
+            return
+        last = proc.returncode
+        if attempt < 3:
+            import time
+            time.sleep(3 * attempt)
+    raise subprocess.CalledProcessError(last or 1, cmd)
 
 def main() -> int:
     p = argparse.ArgumentParser()
