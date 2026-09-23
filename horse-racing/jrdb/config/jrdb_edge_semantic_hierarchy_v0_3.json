@@ -1,0 +1,120 @@
+{
+  "schema_version": "0.1",
+  "design_version": "v0.3-shadow-20260924.1",
+  "mode": "SHADOW_ONLY",
+  "philosophy": "Surface market-underreflected, complex or multi-condition incremental evidence; keep broad statistical knowledge as Context.",
+  "rules": {
+    "production_v02_unchanged": true,
+    "performance_value_channels_separate": true,
+    "arbitrary_net_scoring": false,
+    "literal_specificity_alone_is_not_niche": true,
+    "child_requires_parent_relative_audit": true,
+    "independent_opposite_axes_return_mixed": true
+  },
+  "deterministic_derivations": {
+    "frame_zone_from_frame_no": {
+      "1": "INNER",
+      "2": "INNER",
+      "3": "INNER",
+      "4": "MIDDLE",
+      "5": "MIDDLE",
+      "6": "MIDDLE",
+      "7": "OUTER",
+      "8": "OUTER"
+    }
+  },
+  "virtual_contexts": [
+    {
+      "context_id": "SIRE_DISTANCE_CONTEXT_V3",
+      "family": "PEDIGREE",
+      "fields": [
+        "sire_name",
+        "distance_m"
+      ],
+      "reader_facing": false,
+      "purpose": "Latent lower-order parent for sire surface-distance and sire turn-distance children."
+    }
+  ],
+  "hierarchies": [
+    {
+      "hierarchy_id": "COURSE_FRAME_HIERARCHY_V3",
+      "parent_template": "COURSE_FRAME_V1",
+      "child_template": "COURSE_EXACT_FRAME_V2",
+      "relation": "DETERMINISTIC_REFINEMENT",
+      "derivation": "frame_zone_from_frame_no",
+      "comparison": "CHILD_VS_PARENT_COMPLEMENT",
+      "serving_policy": "CHILD_ONLY_IF_INCREMENTAL_PASS_PARENT_CONTEXT_ONLY"
+    },
+    {
+      "hierarchy_id": "SIRE_SURFACE_DISTANCE_HIERARCHY_V3",
+      "parent_context": "SIRE_DISTANCE_CONTEXT_V3",
+      "child_template": "SIRE_SURFACE_DISTANCE_V1",
+      "relation": "LOWER_ORDER_CONTEXT",
+      "comparison": "CHILD_VS_PARENT_COMPLEMENT",
+      "serving_policy": "CHILD_ONLY_IF_INCREMENTAL_PASS_PARENT_CONTEXT_ONLY"
+    },
+    {
+      "hierarchy_id": "SIRE_TURN_DISTANCE_HIERARCHY_V3",
+      "parent_context": "SIRE_DISTANCE_CONTEXT_V3",
+      "child_template": "SIRE_TURN_DISTANCE_V1",
+      "relation": "LOWER_ORDER_CONTEXT",
+      "comparison": "CHILD_VS_PARENT_COMPLEMENT",
+      "serving_policy": "CHILD_ONLY_IF_INCREMENTAL_PASS_PARENT_CONTEXT_ONLY"
+    },
+    {
+      "hierarchy_id": "SIRE_VENUE_SURFACE_DISTANCE_HIERARCHY_V3",
+      "parent_template": "SIRE_SURFACE_DISTANCE_V1",
+      "child_template": "SIRE_VENUE_SURFACE_DISTANCE_V2",
+      "relation": "VENUE_REFINEMENT",
+      "comparison": "CHILD_VS_PARENT_COMPLEMENT",
+      "serving_policy": "CHILD_ONLY_IF_INCREMENTAL_PASS_PARENT_CONTEXT_ONLY"
+    }
+  ],
+  "orthogonal_groups": [
+    {
+      "group_id": "SIRE_TRANSITION_AXES_V3",
+      "templates": [
+        "SIRE_DISTANCE_CHANGE_V1",
+        "SIRE_SURFACE_TRANSITION_V1",
+        "SIRE_FRAME_TRANSITION_V1"
+      ],
+      "initial_policy": "KEEP_SEPARATE",
+      "note": "Operational audit showed material opposite-direction cooccurrence between distance and surface transitions."
+    },
+    {
+      "group_id": "RECENT_AXES_V3",
+      "templates": [
+        "RECENT_UPTREND_SURFACE_DISTANCE_V2",
+        "RECENT_TRAINING_ARROW_SURFACE_DISTANCE_V2",
+        "RECENT_STABLE_EVAL_SURFACE_DISTANCE_V2",
+        "RECENT_ROTATION_SURFACE_DISTANCE_V2"
+      ],
+      "initial_policy": "KEEP_SEPARATE"
+    }
+  ],
+  "unresolved_templates": [
+    "SIRE_LINE_TURN_DISTANCE_V1",
+    "SIRE_BROODMARE_SIRE_V2",
+    "SIRE_AGE_V2",
+    "BROODMARE_SIRE_SURFACE_DISTANCE_V2",
+    "SIRE_TRACK_CONDITION_V2",
+    "JOCKEY_VENUE_DISTANCE_V2"
+  ],
+  "shadow_classes": [
+    "CONTEXT_ONLY",
+    "INCREMENTAL_PERFORMANCE",
+    "INCREMENTAL_VALUE",
+    "INCREMENTAL_DUAL",
+    "ORTHOGONAL",
+    "INSUFFICIENT"
+  ],
+  "evidence_reference": {
+    "operational_audit_issue": 1230,
+    "operational_audit_run_id": 35885211521,
+    "operational_audit_days": [
+      "2026-09-12",
+      "2026-09-13",
+      "2026-09-19"
+    ]
+  }
+}
