@@ -14,7 +14,7 @@ PWAは上流データの意味を再計算せず、manifest / SHA / schema / aud
 | --- | --- | --- | --- |
 | Stats Mart | `jrdb-stats-mart-current` | `./data/` | 補助集計DB |
 | Fact Lite | `jrdb-pwa-fact-lite-current` | `./data/fact-lite/` | 条件別集計の主DB |
-| Fact Lite Parquet（移行中） | `jrdb-pwa-fact-lite-parquet-current` | `./data/fact-lite-parquet/` | DuckDB-Wasm切替前の世代配布基盤 |
+| Fact Lite Parquet（検証資産） | `jrdb-pwa-fact-lite-parquet-current` | `./data/fact-lite-parquet/` | 同値監査・研究用。条件別集計browserの通常入力ではない |
 | Newspaper | `jrdb-newspaper-current` | `./data/newspaper/current/` | 当日競馬新聞 |
 
 Release tag名は固定ですが、assetのdata version / SHA / sizeは世代更新されます。README等に現在値を固定せず、実行時にmanifest / release metadataを確認します。
@@ -46,9 +46,7 @@ updated / validated Analysis on Google Drive
 
 Fact Lite v0.3 publisherは少なくとも `win5_leg_no`、schema version、row count、race-name lookup、previous-distance / previous-class、WIN5 rows、SHA、size、SQLite integrityを検証します。
 
-Parquet browser-delivery基盤は、同一Fact Lite buildのfail-closed equivalence auditがPASSのときだけ、別current Releaseへimmutable generation packageとして公開します。Pagesは `current.json → generation manifest → manifest.tables[*].path` の順に配置し、ブラウザがDriveを直接読むことやJS側のParquet filename固定は認めません。
-
-この経路はPWAのDuckDB-Wasm consumer切替までの一時的な移行共存です。現時点のSQLite consumerを壊さないために残しているもので、恒久的な二重配布方針ではありません。
+Fact Lite ParquetはSQLiteとの同値監査や上流処理の検証資産として残る場合がありますが、条件別集計browserの通常入力にはしません。browser deliveryの正式経路は `jrdb-pwa-fact-lite-current` の単一SQLite + manifestです。上流のAnalysisはParquet正本を維持し、そこからFact Lite SQLiteを再生成します。Parquet browser releaseの恒久的な二重配布は採用しません。
 
 ### Newspaper
 
