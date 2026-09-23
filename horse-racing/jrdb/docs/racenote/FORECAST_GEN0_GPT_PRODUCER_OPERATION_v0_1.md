@@ -1,6 +1,6 @@
 # RaceNote Forecast Gen0 GPT Producer Operation v0.1
 
-Status: IMPLEMENTED / E2E credential-gated
+Status: IMPLEMENTED / FULL-DAY HISTORICAL E2E PASS
 
 `racenote_forecast_gen0_producer.py` is the explicit boundary between a
 RaceNote v1.0 bundle and the existing Gen0 validation/freeze implementation.
@@ -38,8 +38,19 @@ not a fallback score.  It must contain all Gen0 fields required by
 ## Operational restriction
 
 For a historical E2E, first materialize the accepted Warehouse generation and
-produce RaceNote with `used_backend=historical_warehouse`.  Use only a Stats
-Mart and Analysis input whose dates are strictly before the target date.  A
-missing GPT credential/approved execution, missing production historical Stats
-asset, or any input identity mismatch is a fail-closed E2E failure; it must not
-fall back to a legacy scorer, Raw, or a fixture and be reported as PASS.
+produce RaceNote with `used_backend=historical_warehouse`. Historical
+enrichment uses the canonical Analysis input only. Rolling horse/sire/jockey/
+frame statistics are calculated directly from Analysis with
+`race_date < target_date`; Stats Mart is a frozen legacy cache and is not an
+active RaceNote dependency.
+
+A missing approved GPT execution, missing canonical Analysis input, or any
+input identity mismatch is a fail-closed E2E failure. It must not fall back to
+a legacy scorer, fixed weights, Raw (except the documented pre-2010 boundary),
+or a fixture and be reported as PASS.
+
+The 2018-12-02 operational full-day E2E passed 36 races / 501 runners through
+INDEPENDENT request generation, GPT decision materialization, producer,
+validator, freeze/hash audit, source-runner guard, day-package generation, and
+the strict Newspaper/PWA identity handoff audit. Evidence is recorded in
+`RaceNote_Operational_E2E_20181202_20260923.md`.
