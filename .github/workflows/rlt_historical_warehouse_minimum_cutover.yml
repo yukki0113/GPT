@@ -1,7 +1,7 @@
 name: RL-T Historical Warehouse Minimum Cutover
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 permissions:
   contents: read
   issues: write
