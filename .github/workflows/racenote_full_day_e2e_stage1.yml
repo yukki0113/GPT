@@ -1,0 +1,113 @@
+name: RaceNote 2018-12-02 full-day E2E stage1
+
+on:
+  push:
+    branches: [codex/racenote-e2e-20260922]
+    paths:
+      - .github/workflows/racenote_full_day_e2e_stage1.yml
+
+permissions:
+  contents: read
+
+jobs:
+  stage1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install --upgrade pip gdown duckdb
+      - name: Materialize accepted inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rn/input /tmp/rn/wh/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921 /tmp/rn/raw
+          gdown 'https://drive.google.com/file/d/11pxZhWFD03KO37qqpfNWeDx50CkemDrZ/view' -O /tmp/rn/input/analysis.zip
+          unzip -q /tmp/rn/input/analysis.zip -d /tmp/rn/input/analysis
+          ANALYSIS=$(find /tmp/rn/input/analysis -type f -name '*.sqlite' | head -1)
+          test -n "$ANALYSIS"
+          python horse-racing/jrdb/src/materialize_jrdb_analysis_asof_sqlite.py --source "$ANALYSIS" --target-date 2018-12-02 --out /tmp/rn/asof.sqlite --audit /tmp/rn/asof_audit.json
+          python horse-racing/jrdb/src/build_jrdb_stats_mart.py --analysis /tmp/rn/asof.sqlite --db /tmp/rn/stats.sqlite
+          gdown 'https://drive.google.com/file/d/1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN/view' -O /tmp/rn/wh/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921/manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/rn/wh/current.json')
+          p.write_text(json.dumps({
+            "artifact_type":"jrdb_normalized_warehouse_current",
+            "status":"accepted",
+            "generation_id":"jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+            "manifest":"generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921/manifest.json"
+          },indent=2)+"\n")
+          PY
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          assets = {
+            "BAC": [("2018","62304fcab54dc98006f041394faf265a65e76d6946b8c399867da7e8be4e1861","1N1olCniTMiLyvXp8KoNq99PrXzVA_pZQ")],
+            "KYI": [("2018","7747b6c1aa8be2215ea8e57b0515bd527adf0db21a349b2c8a80606438332b9d","1Z7OzJfJ536O-_90X3Hcr-M08td4i3GW-")],
+            "CHA": [("2018","c4aac8015f9305c13278b8bdfd4914f525dbe8fa1a58a979e1a7dc790b669b49","1PxYBUllmnAWh2Kf68-pF0d9yKqOyKp-w")],
+            "CYB": [("2018","6476f25d038032a53f0f7f5c1da27be5f310e5172e1f1181453046c6387caa45","1Dee-P6OZbrsCZ_ESIWQPM1BZQ3rlM8kH")],
+            "ZED": [
+              ("2017","2386d540c509adbc4728f20073a5f8904318b805beb9115fd9ecba8c994703ce","1jklJA7avDCd5_rBrF5ULnUzEfNBfDEZF"),
+              ("2018","c05f16799f088b28decc3725928c5b80f16ac96eefc49c0cf801f2c8fd3ba0b2","1yzN0SotxydGOc2v87SVza9hp3XV_daQ2")],
+            "ZKB": [
+              ("2017","5546839a4af381116929df676960a12fae5c66cc3ed48c3a4a0cf8860eb71cba","1PRJpOmJ1L4WEiLolBtrmoc2uRr9OJ1pr"),
+              ("2018","05bddacb4e0b3ece2437331ed77494fba0138135826ad01b96565fc514dcc173","1pJ8Ndo4z3hv8b4Mnm8AtmqNB8hIQSVac")],
+          }
+          for fam, rows in assets.items():
+            for year, sha, fid in rows:
+              out=Path('/tmp/rn/assets')/fam/'objects'/fam.lower()/f'year={year}'/f'{sha}.parquet'
+              out.parent.mkdir(parents=True,exist_ok=True)
+              subprocess.run(['gdown',f'https://drive.google.com/file/d/{fid}/view','-O',str(out)],check=True)
+          PY
+      - name: Generate full-day RaceNote and independent requests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_request.py             --date 20181202             --analysis /tmp/rn/asof.sqlite             --mart /tmp/rn/stats.sqlite             --raw-dir /tmp/rn/raw             --output /tmp/rn/out             --warehouse-current /tmp/rn/wh/current.json             --warehouse-asset-root BAC=/tmp/rn/assets/BAC             --warehouse-asset-root KYI=/tmp/rn/assets/KYI             --warehouse-asset-root CHA=/tmp/rn/assets/CHA             --warehouse-asset-root CYB=/tmp/rn/assets/CYB             --warehouse-asset-root ZED=/tmp/rn/assets/ZED             --warehouse-asset-root ZKB=/tmp/rn/assets/ZKB             --bypass-archive-for-audit
+          python horse-racing/jrdb/src/audit_racenote_historical_warehouse_e2e.py             --run-dir /tmp/rn/out/20181202             --generation-id jrdb_normalized_warehouse_v1_2010_2025_g20260921             --report /tmp/rn/historical_warehouse_e2e_audit.json
+          python - <<'PY'
+          import json, zipfile, sys
+          from pathlib import Path
+          sys.path.insert(0,'horse-racing/jrdb/src')
+          from racenote_forecast_gen0_producer import build_prediction_request
+          roots=[Path('/tmp/rn/out')]
+          extract=Path('/tmp/rn/extracted'); extract.mkdir(exist_ok=True)
+          for z in Path('/tmp/rn/out').rglob('RaceNote_*.zip'):
+            with zipfile.ZipFile(z) as a: a.extractall(extract)
+          roots.append(extract)
+          bundles={}
+          for root in roots:
+            for p in root.rglob('*.json'):
+              try: v=json.loads(p.read_text(encoding='utf-8'))
+              except Exception: continue
+              if isinstance(v,dict) and v.get('schema_version')=='1.0' and isinstance(v.get('race'),dict) and isinstance(v.get('horses'),list):
+                r=v['race']; key=(str(r.get('venue')),int(r.get('race_no') or 0))
+                bundles[key]=v
+          if len(bundles)!=36:
+            raise SystemExit(f'expected 36 RaceNote bundles, got {len(bundles)}')
+          out=Path('/tmp/rn/requests'); out.mkdir()
+          total=0
+          manifest=[]
+          for (venue,race_no), bundle in sorted(bundles.items()):
+            req=build_prediction_request(bundle)
+            total += len(req['expected_runners'])
+            name=f"{venue}_{race_no:02d}.request.json"
+            (out/name).write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+            manifest.append({"file":name,"venue":venue,"race_no":race_no,"runners":len(req['expected_runners']),"independent_semantic_sha256":req['independent_semantic_sha256']})
+          if total!=501: raise SystemExit(f'expected 501 runners, got {total}')
+          Path('/tmp/rn/stage1_manifest.json').write_text(json.dumps({"status":"PASS","race_count":36,"runner_count":501,"requests":manifest},ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Upload stage1 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-20181202-full-day-independent-requests
+          path: |
+            /tmp/rn/requests/
+            /tmp/rn/stage1_manifest.json
+            /tmp/rn/asof_audit.json
+            /tmp/rn/historical_warehouse_e2e_audit.json
+          retention-days: 14
