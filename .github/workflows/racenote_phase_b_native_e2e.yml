@@ -117,7 +117,7 @@ jobs:
           import hashlib, json, subprocess, sys, time
           from pathlib import Path
           from racenote_analysis_backend import open_analysis_backend
-          from racenote_history_enrichment import enrich_production
+          from racenote_history_enrichment import enrich_production, enrich_production_many
 
           target='2018-12-02'
           outcome_fields={'finish','abnormal_code','final_win_odds','final_win_popularity','win_payout','place_payout'}
@@ -139,9 +139,13 @@ jobs:
               names=manifest['bundles']
               if len(names)!=36 or manifest['bundle_count']!=36: raise SystemExit('expected 36 bundles')
               hashes={}; runners=warnings=leaks=0
+              query_counts=[]; scan_counts=[]
               for name in names:
                   bundle=load(run/name); hashes[name]=digest(bundle)
                   history=bundle.get('metadata',{}).get('history_enrichment',{})
+                  source=history.get('analysis_source',{})
+                  if source.get('query_count') is not None: query_counts.append(int(source['query_count']))
+                  if source.get('parquet_scan_count') is not None: scan_counts.append(int(source['parquet_scan_count']))
                   if history.get('warning_count') not in (0,None): warnings += int(history['warning_count'])
                   if expected_backend=='parquet_duckdb' and history.get('analysis_backend')!='parquet_duckdb':
                       raise SystemExit(f'{name}: backend provenance mismatch')
@@ -153,7 +157,12 @@ jobs:
                               if date >= target: leaks += 1
                       profile=horse.get('historical_profile') or {}
                       if profile and profile.get('as_of_exclusive') != target: leaks += 1
-              return {'hashes':hashes,'runners':runners,'warnings':warnings,'future_leakage':leaks,'manifest':manifest}
+              metrics={}
+              if query_counts:
+                  metrics['sql_query_count']=query_counts[0] if expected_backend=='parquet_duckdb' else sum(query_counts)
+              if scan_counts:
+                  metrics['parquet_scan_count']=scan_counts[0] if expected_backend=='parquet_duckdb' else sum(scan_counts)
+              return {'hashes':hashes,'runners':runners,'warnings':warnings,'future_leakage':leaks,'manifest':manifest,**metrics}
           legacy=inspect('/tmp/rn/legacy','sqlite')
           native=inspect('/tmp/rn/parquet','parquet_duckdb')
           if native['runners']!=501 or legacy['runners']!=501: raise SystemExit(f"runner mismatch: legacy={legacy['runners']} native={native['runners']}")
@@ -169,7 +178,10 @@ jobs:
               bundles=[load(Path('/tmp/rn/legacy/20181202/bundles')/name) for name in legacy['manifest']['bundles']]
               one_start=time.perf_counter(); enrich_production(bundles[0],backend,None,5); one=time.perf_counter()-one_start
               day_start=time.perf_counter()
-              for bundle in bundles: enrich_production(bundle,backend,None,5)
+              if kind=='parquet':
+                  enrich_production_many(bundles,backend,None,5)
+              else:
+                  for bundle in bundles: enrich_production(bundle,backend,None,5)
               full_day=time.perf_counter()-day_start
               row=backend.execute('SELECT horse_id,sire_name,jockey_name,frame_no,race_date,venue_code,track_type,distance FROM fact_entry_result_lite WHERE race_date<? LIMIT 1',[target]).fetchone()
               timings={}
@@ -178,8 +190,8 @@ jobs:
                   for _ in range(5):
                       backend.execute(f'SELECT COUNT(*) FROM fact_entry_result_lite WHERE {column}=? AND race_date<?',[row[column],target]).fetchone()
                   timings[label+'_query_5x_seconds']=time.perf_counter()-start
-              info=dict(backend.source_info); backend.close()
-              return {'cold_start_seconds':cold,'one_race_enrichment_seconds':one,'full_day_enrichment_seconds':full_day,**timings,'source':info}
+              info=dict(backend.source_info); info.update(backend.metrics()); backend.close()
+              return {'cold_start_seconds':cold,'one_race_enrichment_seconds':one,'full_day_enrichment_seconds':full_day,'e2e_total_seconds':cold+full_day,**timings,'source':info}
           benchmark_result={'legacy_sqlite':benchmark('sqlite','/tmp/rn/analysis-compat.sqlite'),'parquet_duckdb':benchmark('parquet','/tmp/rn/analysis')}
           report={
             'RACENOTE_PHASE_B_PARQUET_NATIVE':'PASS',
