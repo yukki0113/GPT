@@ -48,14 +48,17 @@ PWA code / CSS / HTML / Service Worker / PWA docsをdirect Git updateした場�
 
 このためNewspaper current更新は、current Release更新後にfull-site Pagesへ自動連携する経路を持ちます。
 
-### 3. `workflow_dispatch`
+### 3. Fact Lite publish completion
+
+`workflow_run` で `JRDB PWA Fact Lite Publish` のsuccessful completionを受けて再構成します。Fact Lite publisher自身はReleaseだけを更新し、partial Pages deployを行いません。
+
+### 4. `workflow_dispatch`
 
 手動・明示再構成用です。
 
 次の場合に使用します。
 
 - current Releaseは更新済みだがfull-site Pagesが新世代を取り込んでいない
-- publisher側のpartial Pages deploy後にfull-siteを明示再構成したい
 - trigger抑止・経路差で自動runが発生しなかった
 - deploy状態を再確認したい
 
@@ -81,19 +84,9 @@ Analysisを取得しFact Liteをbuild / validate / Release更新します。
 
 Newspaper subsystemのcurrent publish workflowを使用します。正本は `../newspaper/.gpt/HANDOFF.md` と `../newspaper/.gpt/WORKFLOW.md` を参照してください。
 
-## Important: publisher deploy is not full-site proof
+## Important: Release is not full-site proof
 
-現在、Fact Lite publisherとStats Mart publisher自身にもPages deploy stepがあります。
-
-しかし、そのartifact構成は `JRDB PWA Pages` のfull-site artifactと同一ではありません。
-
-- Stats Mart publisher: Fact Lite / Newspaperをfull-site同様には含めない
-- Fact Lite publisher: Newspaperをfull-site同様には含めない
-- `JRDB PWA Pages`: 3 current Releasesをまとめる
-
-さらに、`JRDB PWA Pages` のcurrent `workflow_run` triggerはNewspaper publisher完了を対象とし、Fact Lite / Stats Mart publisher完了は同じ自動trigger対象ではありません。
-
-よって **Fact Lite / Stats Martの配布更新後は、個別publisher successだけで作業を閉じない** でください。current Release更新を確認したうえでfull `JRDB PWA Pages` を走らせ、その成功を確認します。
+Fact Lite publisherはSQLite Releaseを更新し、`JRDB PWA Pages` がそのsuccessを受けてfull-site artifactを組み立てます。よって **Fact Lite配布更新はRelease successだけで作業を閉じず、downstream full Pages successまで確認**してください。Stats Martは既存の補助channelとして独自運用を維持します。
 
 ## GitHub token / trigger caution
 
