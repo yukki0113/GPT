@@ -84,6 +84,41 @@ JRDB Raw / PACI
 - consumer側でEdge条件を再実装しない
 - v0.1 matcherはbackward compatibility資産。v0.2仕様を直接混ぜない
 
+### EdgeDB v0.3 shadow redesign — 2026-09-24
+
+Production defaultは引き続き **v0.2 STANDARD**。v0.3はshadow research onlyで、Newspaper / RaceNote production servingへ未接続。
+
+Original goal:
+
+- 市場が見落としている、または複雑・多重でまだ市場に十分反映されていない条件を発見し、出馬表へ自動突合する
+- broad statistical contextとreader-facing Niche / Market Edgeを同一視しない
+
+Formal operational audit:
+
+- Issue #1230 / run 35885211521
+- 対象: 2026-09-12, 09-13, 09-19
+- 917runner中 Performance +/-一致 751 (81.9%)
+- + / -同時一致 269runner、Performance一致runner内35.8%
+- 5件以上68runner、6件以上32runner
+- 複数redundancy group 562runner
+- COURSE_FRAME_V1 / COURSE_EXACT_FRAME_V2は234回共起し234回同方向
+
+Current v0.3 references:
+
+- operational audit: `docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md`
+- shadow design: `docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md`
+- semantic map: `config/jrdb_edge_semantic_hierarchy_v0_3.json`
+- audit code: `src/audit_jrdb_edge_v02_operational_hits.py`
+
+Design boundary:
+
+- v0.2 Registry / STANDARD servingを破壊・上書きしない
+- Context parentとincremental childを分離する
+- childはnearest parent / parent-complementに対する追加効果をshadow監査してからNiche候補にする
+- PerformanceとValueを別channelのまま保持
+- 独立axisの+ / -が残る場合は任意net scoreへ加算せずMIXED
+- 次工程はsemantic parent mapを用いたparent-relative metric shadow audit
+
 ## 4. RaceNote current prediction direction
 
 RaceNote authoritative bundleは観測データとprovenanceを渡す層です。Reader Viewもprediction modelではありません。
