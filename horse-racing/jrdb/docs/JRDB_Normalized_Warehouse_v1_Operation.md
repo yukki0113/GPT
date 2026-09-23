@@ -1,5 +1,9 @@
 # JRDB Normalized Warehouse v1 運用手順
 
+> **STATUS: LEGACY BUILD PROCEDURE / REFERENCE ONLY**  
+> Current operational authority is `JRDB_Normalized_Warehouse_Operation_v1.md` and the accepted Drive pointer `GPT/horse-racing/10_warehouse/jrdb/v1/current.json`.
+
+
 ## 範囲
 
 この資産は凍結済み `00_raw` のJRDB固定長ZIPを、family × yearのZSTD Parquetへ正規化するためのものです。PACI、consumer切替、PWA、Raw削除は含みません。
@@ -44,7 +48,7 @@ HJCは `hjc_race` と `hjc_payout` の2 relationです。`hjc_payout`はblank/ze
 
 ## Gate
 
-ビルダーは固定長不正、canonical key重複、key/provenance欠損、UKCの内容相違キー衝突で停止します。`audit.json`にはBAC/KYI/CHA/CYB/SED/SKB/ZED/ZKBの関係キーについて、件数・未解決キー（最大10例）・availability classを記録します。Raw配信由来と確認できるギャップは `OBSERVED_SOURCE_GAP` として報告し、データを補完・推測して解消しません。`current.json`は生成処理では一切更新しま; canonical key includes source_member_date for correction snapshotsせん。
+ビルダーは固定長不正、canonical key重複、key/provenance欠損、UKCの内容相違キー衝突で停止します。`audit.json`にはBAC/KYI/CHA/CYB/SED/SKB/ZED/ZKBの関係キーについて、件数・未解決キー（最大10例）・availability classを記録します。Raw配信由来と確認できるギャップは `OBSERVED_SOURCE_GAP` として報告し、データを補完・推測して解消しません。`current.json` は生成処理では一切更新しません。
 
 実データの正本公開は、次の順序でのみ行います。
 
