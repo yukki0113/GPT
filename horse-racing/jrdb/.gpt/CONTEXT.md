@@ -2,6 +2,18 @@
 
 Last reviewed: 2026-09-23
 
+## Current storage precedence — 2026-09-23
+
+When older dated sections conflict with this block, this block wins for current storage/source routing.
+
+- New JRDB Drive root: `GPT/horse-racing`.
+- Raw/reproducibility: `GPT/horse-racing/00_raw`.
+- Historical normalized canonical: `GPT/horse-racing/10_warehouse/jrdb/v1/current.json`.
+- New derived marts: `GPT/horse-racing/20_mart`.
+- Old top-level Drive `GPT/JRDB` is legacy operational compatibility and must not be deleted yet.
+- `local-horse-racing` is NAR/local-racing scope, not JRDB Warehouse.
+- Cross-layer placement audit: `docs/JRDB_Source_of_Truth_and_Storage_Map_20260923.md`.
+
 ## Status
 Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系です。
 
