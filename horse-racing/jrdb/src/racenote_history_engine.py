@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add Analysis Lite / Stats Mart history enrichment to a RaceNote bundle."""
+"""Add as-of-safe Analysis history enrichment to a RaceNote bundle."""
 from __future__ import annotations
 
 import argparse
@@ -275,53 +275,25 @@ def older_runs(
     ]
 
 
-def mart_prior(
-    connection: sqlite3.Connection,
-    table: str,
-    dimension_column: str,
-    dimension_value: object,
-    year_start: int,
-    year_end: int,
-    venue_code: str,
-    track_type: str,
-    distance_where_sql: str,
-    distance_parameters: list[int],
-) -> tuple[int, int, int]:
-    """Aggregate prior completed years from Stats Mart."""
-    if year_end < year_start:
-        return 0, 0, 0
-    row = connection.execute(
-        f"""
-        SELECT
-            COALESCE(SUM(starts), 0),
-            COALESCE(SUM(wins), 0),
-            COALESCE(SUM(top3), 0)
-        FROM {table}
-        WHERE year BETWEEN ? AND ?
-          AND venue_code=?
-          AND track_type=?
-          AND {distance_where_sql}
-          AND {dimension_column}=?
-        """,
-        [year_start, year_end, venue_code, track_type]
-        + distance_parameters
-        + [dimension_value],
-    ).fetchone()
-    return tuple(int(value or 0) for value in row)
-
-
-def current_year(
+def analysis_window_summary(
     connection: sqlite3.Connection,
     analysis_column: str,
     dimension_value: object,
-    year: int,
     race_date: str,
     venue_code: str,
     track_type: str,
     distance_where_sql: str,
     distance_parameters: list[int],
-) -> tuple[int, int, int]:
-    """Aggregate target-year rows before the target date from Analysis Lite."""
+    years: int,
+) -> dict:
+    """Aggregate the rolling RaceNote stats window directly from Analysis.
+
+    Stats Mart was only a pre-aggregation cache. Analysis is canonical; every
+    contributing row is strictly before the target date, so historical runs
+    remain blinded/as-of-safe without a Mart dependency.
+    """
+    year = int(race_date[:4])
+    year_start = year - years + 1
     row = connection.execute(
         f"""
         SELECT
@@ -329,23 +301,32 @@ def current_year(
             SUM(CASE WHEN finish = 1 THEN 1 ELSE 0 END),
             SUM(CASE WHEN finish BETWEEN 1 AND 3 THEN 1 ELSE 0 END)
         FROM {TABLE}
-        WHERE year=?
+        WHERE year BETWEEN ? AND ?
           AND race_date<?
           AND venue_code=?
           AND track_type=?
           AND {distance_where_sql}
           AND {analysis_column}=?
         """,
-        [year, race_date, venue_code, track_type]
+        [year_start, year, race_date, venue_code, track_type]
         + distance_parameters
         + [dimension_value],
     ).fetchone()
-    return tuple(int(value or 0) for value in row)
+    output = summary(row[0] or 0, row[1] or 0, row[2] or 0)
+    output.update(
+        {
+            "period": f"{year_start}-{year}YTD",
+            "as_of_exclusive": race_date,
+            "track_condition_scope": "all_conditions",
+            "source": "JRDB Analysis canonical",
+        }
+    )
+    return output
 
 
 def as_of_summary(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
+    mart: sqlite3.Connection | None,
     mart_table: str,
     mart_column: str,
     analysis_column: str,
@@ -357,47 +338,23 @@ def as_of_summary(
     distance_parameters: list[int],
     years: int,
 ) -> dict:
-    """Build an as-of-safe Mart + Analysis statistic."""
-    year = int(race_date[:4])
-    year_start = year - years + 1
-    prior = mart_prior(
-        mart,
-        mart_table,
-        mart_column,
-        dimension_value,
-        year_start,
-        year - 1,
-        venue_code,
-        track_type,
-        distance_where_sql,
-        distance_parameters,
-    )
-    target_year = current_year(
+    """Compatibility wrapper: stats are now calculated from Analysis only."""
+    return analysis_window_summary(
         analysis,
         analysis_column,
         dimension_value,
-        year,
         race_date,
         venue_code,
         track_type,
         distance_where_sql,
         distance_parameters,
+        years,
     )
-    output = summary(*(prior[index] + target_year[index] for index in range(3)))
-    output.update(
-        {
-            "period": f"{year_start}-{year}YTD",
-            "as_of_exclusive": race_date,
-            "track_condition_scope": "all_conditions",
-            "source": "Stats Mart prior years + Analysis Lite target-year YTD",
-        }
-    )
-    return output
 
 
 def exact_stat(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
+    mart: sqlite3.Connection | None,
     mart_table: str,
     mart_column: str,
     analysis_column: str,
@@ -427,7 +384,7 @@ def exact_stat(
 
 def range_stats(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
+    mart: sqlite3.Connection | None,
     mart_table: str,
     mart_column: str,
     analysis_column: str,
@@ -465,7 +422,7 @@ def range_stats(
 
 def statistic_with_ranges(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
+    mart: sqlite3.Connection | None,
     mart_table: str,
     mart_column: str,
     analysis_column: str,
@@ -563,7 +520,7 @@ def build_history_coverage(
 def enrich(
     base: dict,
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
+    mart: sqlite3.Connection | None,
     older_limit: int,
     years: int,
 ) -> tuple[dict, list[str]]:
@@ -584,8 +541,7 @@ def enrich(
         "stats_window_years": years,
         "as_of_exclusive": race_date,
         "future_leakage_policy": (
-            "prior completed years from Stats Mart; target year from Analysis Lite "
-            "with race_date < target_date"
+            "rolling stats window from Analysis canonical with race_date < target_date"
         ),
         "distance_range_policy": {
             "ranges": [dict(item) for item in DISTANCE_RANGE_DEFINITIONS],
@@ -720,7 +676,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--bundle", required=True)
     parser.add_argument("--analysis", required=True)
-    parser.add_argument("--mart", required=True)
+    parser.add_argument("--mart", default=None, help="Deprecated compatibility option; ignored. Stats are derived from Analysis canonical.")
     parser.add_argument("--output-dir", default="./racenote_history_poc")
     parser.add_argument("--stats-window-years", type=int, default=5)
     args = parser.parse_args()
@@ -732,9 +688,8 @@ def main() -> None:
     base_metrics = metrics(base)
 
     analysis = sqlite3.connect(args.analysis)
-    mart = sqlite3.connect(args.mart)
+    mart = None
     analysis.row_factory = sqlite3.Row
-    mart.row_factory = sqlite3.Row
 
     variants: dict[str, dict] = {}
     try:
@@ -767,7 +722,6 @@ def main() -> None:
             }
     finally:
         analysis.close()
-        mart.close()
 
     comparison = {
         "poc_version": "0.2",
@@ -788,7 +742,7 @@ def main() -> None:
         "notes": [
             "8runs = PACI recent_runs (up to 5) + Analysis older_runs (up to 3).",
             "10runs = PACI recent_runs (up to 5) + Analysis older_runs (up to 5).",
-            "Stats use all track conditions; target-year rows are recalculated from Analysis before target date to prevent future leakage.",
+            "Stats use Analysis canonical only, all track conditions, and race_date < target_date to prevent future leakage.",
             "Exact-distance statistics are preserved and target-relevant distance_ranges are appended.",
             "1400m and 1800m intentionally belong to both adjacent ranges; 2400m is middle only and long distance begins at 2500m.",
         ],

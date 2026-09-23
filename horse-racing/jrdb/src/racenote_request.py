@@ -93,7 +93,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--race", type=int, default=None, help="Optional race number; requires venue")
     parser.add_argument("--today", default=None, help="Router-date override for tests")
     parser.add_argument("--analysis", type=Path, default=None, help="Optional explicit Analysis Lite SQLite")
-    parser.add_argument("--mart", type=Path, default=None, help="Optional explicit Stats Mart SQLite")
+    parser.add_argument("--mart", type=Path, default=None, help="Deprecated compatibility option; ignored. RaceNote stats use Analysis canonical.")
     parser.add_argument("--store-manifest", type=Path, default=None, help="JRDB Store manifest; falls back to JRDB_STORE_MANIFEST")
     parser.add_argument("--store-cache", type=Path, default=None, help="Optional JRDB Store cache root")
     parser.add_argument("--store-offline", action="store_true", help="Resolve Store artifacts from verified cache only")
@@ -111,6 +111,14 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help="Optional resolved publishable monthly RaceNote Archive shard for past requests",
+    )
+    parser.add_argument(
+        "--bypass-archive-for-audit",
+        action="store_true",
+        help=(
+            "Audit-only: do not use a supplied Archive shard. Historical requests "
+            "must then prove the accepted Warehouse backend was used."
+        ),
     )
     parser.add_argument("--output", type=Path, default=Path("output_racenote_request"))
     parser.add_argument("--stats-window-years", type=int, default=5)
@@ -151,7 +159,7 @@ def build_plan(request: RaceNoteRequest) -> dict:
         "base_backend": base_backend,
         "enrichment": {
             "analysis": True,
-            "stats_mart": True,
+            "stats_mart": False,
             "as_of_exclusive": request.target_date.isoformat(),
             "future_leakage_rule": "Never use target-date result rows or later rows.",
         },
@@ -182,51 +190,35 @@ def validate_sqlite(path: Path, label: str) -> None:
     finally:
         connection.close()
 
-def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, Path, dict]:
-    """Resolve Analysis/Mart explicitly or through the shared JRDB Store."""
+def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, Path | None, dict]:
+    """Resolve canonical Analysis; Stats Mart is no longer required."""
     analysis = args.analysis
-    mart = args.mart
-    if analysis is not None and mart is not None:
-        validate_sqlite(analysis, "Analysis Lite")
-        validate_sqlite(mart, "Stats Mart")
-        return analysis, mart, {
+    if analysis is not None:
+        validate_sqlite(analysis, "Analysis")
+        return analysis, None, {
             "mode": "explicit_paths",
             "analysis": "explicit",
-            "stats_mart": "explicit",
+            "stats_mart": "not_required",
         }
 
     try:
         manifest_path = manifest_path_from_args(args.store_manifest)
-        resolver = StoreResolver.from_file(
-            manifest_path,
-            cache_root=args.store_cache,
+        resolver = StoreResolver.from_file(manifest_path, cache_root=args.store_cache)
+        analysis = resolver.resolve(
+            "jrdb://analysis/current",
+            offline=args.store_offline,
         )
-        analysis_source = "explicit"
-        mart_source = "explicit"
-        if analysis is None:
-            analysis = resolver.resolve(
-                "jrdb://analysis/current",
-                offline=args.store_offline,
-            )
-            analysis_source = "jrdb://analysis/current"
-        if mart is None:
-            mart = resolver.resolve(
-                "jrdb://stats/current",
-                offline=args.store_offline,
-            )
-            mart_source = "jrdb://stats/current"
     except StoreError as exc:
         raise RaceNoteRequestError(f"JRDB Store resolution failed: {exc}") from exc
 
-    if analysis is None or mart is None:
-        raise RaceNoteRequestError("Analysis Lite / Stats Mart resolution is incomplete")
-    validate_sqlite(analysis, "Analysis Lite")
-    validate_sqlite(mart, "Stats Mart")
-    return analysis, mart, {
+    if analysis is None:
+        raise RaceNoteRequestError("Analysis resolution is incomplete")
+    validate_sqlite(analysis, "Analysis")
+    return analysis, None, {
         "mode": "store_manifest",
         "manifest_file": manifest_path.name,
-        "analysis": analysis_source,
-        "stats_mart": mart_source,
+        "analysis": "jrdb://analysis/current",
+        "stats_mart": "not_required",
     }
 
 
@@ -451,12 +443,12 @@ def select_bundles(bundle_dir: Path, request: RaceNoteRequest) -> list[Path]:
     return selected
 
 
-def enrich_bundle(bundle: Path, analysis: Path, mart: Path, output_dir: Path, stats_window_years: int) -> Path:
-    """Add production Analysis/Mart enrichment and write a stable v1.0 bundle."""
+def enrich_bundle(bundle: Path, analysis: Path, mart: Path | None, output_dir: Path, stats_window_years: int) -> Path:
+    """Add production Analysis enrichment and write a stable v1.0 bundle."""
     target = output_dir / bundle.name
     command = [
         sys.executable, str(ENRICHER), "--bundle", str(bundle), "--analysis", str(analysis),
-        "--mart", str(mart), "--output", str(target), "--stats-window-years", str(stats_window_years),
+        "--output", str(target), "--stats-window-years", str(stats_window_years),
     ]
     run(command)
     if not target.is_file():
@@ -501,6 +493,7 @@ def main() -> int:
     request = normalize_request(args)
     plan = build_plan(request)
     plan["archive_candidate_supplied"] = args.archive is not None
+    plan["archive_bypassed_for_audit"] = bool(args.bypass_archive_for_audit)
     print(json.dumps(plan, ensure_ascii=False, indent=2))
     if args.plan_only:
         return 0
@@ -513,11 +506,21 @@ def main() -> int:
     final_dir.mkdir(parents=True, exist_ok=True)
 
     reconstruction: dict | None = None
-    base_dir, archive_resolution = try_archive_base(
-        args.archive,
-        request,
-        work_dir / "archive_base",
-    )
+    if args.bypass_archive_for_audit:
+        if not (request.temporal_mode == "past" and request.target_date.year <= 2025):
+            raise RaceNoteRequestError(
+                "--bypass-archive-for-audit is limited to 2010-2025 past Warehouse audits"
+            )
+        base_dir, archive_resolution = None, {
+            "status": "bypassed_for_historical_warehouse_audit",
+            "archive_path": None,
+        }
+    else:
+        base_dir, archive_resolution = try_archive_base(
+            args.archive,
+            request,
+            work_dir / "archive_base",
+        )
 
     if base_dir is not None:
         plan["base_backend"] = "racenote_archive"

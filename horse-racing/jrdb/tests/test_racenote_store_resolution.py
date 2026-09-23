@@ -41,7 +41,7 @@ def args_for(
 
 
 class RaceNoteStoreResolutionTest(unittest.TestCase):
-    def test_explicit_paths_preserve_legacy_behavior(self) -> None:
+    def test_explicit_analysis_ignores_legacy_mart_argument(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             analysis = root / "analysis.sqlite"
@@ -60,11 +60,11 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                 )
 
             self.assertEqual(resolved_analysis, analysis)
-            self.assertEqual(resolved_mart, mart)
+            self.assertIsNone(resolved_mart)
             self.assertEqual(report["mode"], "explicit_paths")
             from_file.assert_not_called()
 
-    def test_store_resolves_both_missing_artifacts(self) -> None:
+    def test_store_resolves_analysis_only(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             analysis = root / "analysis.sqlite"
@@ -75,7 +75,7 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
             manifest.write_text("{}", encoding="utf-8")
 
             resolver = MagicMock()
-            resolver.resolve.side_effect = [analysis, mart]
+            resolver.resolve.return_value = analysis
             with patch.object(
                 racenote_request.StoreResolver,
                 "from_file",
@@ -88,22 +88,18 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                 )
 
             self.assertEqual(resolved_analysis, analysis)
-            self.assertEqual(resolved_mart, mart)
+            self.assertIsNone(resolved_mart)
             self.assertEqual(report["mode"], "store_manifest")
             self.assertEqual(report["analysis"], "jrdb://analysis/current")
-            self.assertEqual(report["stats_mart"], "jrdb://stats/current")
+            self.assertEqual(report["stats_mart"], "not_required")
             from_file.assert_called_once_with(manifest, cache_root=None)
             self.assertEqual(
                 resolver.resolve.call_args_list[0].args,
                 ("jrdb://analysis/current",),
             )
             self.assertTrue(resolver.resolve.call_args_list[0].kwargs["offline"])
-            self.assertEqual(
-                resolver.resolve.call_args_list[1].args,
-                ("jrdb://stats/current",),
-            )
 
-    def test_store_resolves_only_missing_mart(self) -> None:
+    def test_explicit_analysis_does_not_resolve_missing_mart(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             analysis = root / "analysis.sqlite"
@@ -127,13 +123,10 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                 )
 
             self.assertEqual(resolved_analysis, analysis)
-            self.assertEqual(resolved_mart, mart)
+            self.assertIsNone(resolved_mart)
             self.assertEqual(report["analysis"], "explicit")
-            self.assertEqual(report["stats_mart"], "jrdb://stats/current")
-            resolver.resolve.assert_called_once_with(
-                "jrdb://stats/current",
-                offline=False,
-            )
+            self.assertEqual(report["stats_mart"], "not_required")
+            resolver.resolve.assert_not_called()
 
     def test_store_error_maps_to_racenote_error(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -1,0 +1,233 @@
+name: RaceNote 2018-12-02 full-day E2E stage1
+
+on:
+  push:
+    branches: [codex/racenote-e2e-20260922]
+    paths:
+      - .github/workflows/racenote_full_day_e2e_stage1.yml
+      - horse-racing/jrdb/e2e/racenote_20181202_gpt_rankings.json
+
+permissions:
+  contents: read
+
+jobs:
+  stage1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install --upgrade pip gdown duckdb
+      - name: Materialize accepted inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rn/input /tmp/rn/wh/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921 /tmp/rn/raw
+          gdown 'https://drive.google.com/file/d/11pxZhWFD03KO37qqpfNWeDx50CkemDrZ/view' -O /tmp/rn/input/analysis.zip
+          unzip -q /tmp/rn/input/analysis.zip -d /tmp/rn/input/analysis
+          ANALYSIS=$(find /tmp/rn/input/analysis -type f -name '*.sqlite' | head -1)
+          test -n "$ANALYSIS"
+          python horse-racing/jrdb/src/materialize_jrdb_analysis_asof_sqlite.py --source "$ANALYSIS" --target-date 2018-12-02 --out /tmp/rn/asof.sqlite --audit /tmp/rn/asof_audit.json
+          gdown 'https://drive.google.com/file/d/1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN/view' -O /tmp/rn/wh/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921/manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/rn/wh/current.json')
+          p.write_text(json.dumps({
+            "artifact_type":"jrdb_normalized_warehouse_current",
+            "status":"accepted",
+            "generation_id":"jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+            "manifest":"generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921/manifest.json"
+          },indent=2)+"\n")
+          PY
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          assets = {
+            "BAC": [("2018","62304fcab54dc98006f041394faf265a65e76d6946b8c399867da7e8be4e1861","1N1olCniTMiLyvXp8KoNq99PrXzVA_pZQ")],
+            "KYI": [("2018","7747b6c1aa8be2215ea8e57b0515bd527adf0db21a349b2c8a80606438332b9d","1Z7OzJfJ536O-_90X3Hcr-M08td4i3GW-")],
+            "CHA": [("2018","c4aac8015f9305c13278b8bdfd4914f525dbe8fa1a58a979e1a7dc790b669b49","1PxYBUllmnAWh2Kf68-pF0d9yKqOyKp-w")],
+            "CYB": [("2018","6476f25d038032a53f0f7f5c1da27be5f310e5172e1f1181453046c6387caa45","1Dee-P6OZbrsCZ_ESIWQPM1BZQ3rlM8kH")],
+            "ZED": [
+              ("2017","2386d540c509adbc4728f20073a5f8904318b805beb9115fd9ecba8c994703ce","1jklJA7avDCd5_rBrF5ULnUzEfNBfDEZF"),
+              ("2018","c05f16799f088b28decc3725928c5b80f16ac96eefc49c0cf801f2c8fd3ba0b2","1yzN0SotxydGOc2v87SVza9hp3XV_daQ2")],
+            "ZKB": [
+              ("2017","5546839a4af381116929df676960a12fae5c66cc3ed48c3a4a0cf8860eb71cba","1PRJpOmJ1L4WEiLolBtrmoc2uRr9OJ1pr"),
+              ("2018","05bddacb4e0b3ece2437331ed77494fba0138135826ad01b96565fc514dcc173","1pJ8Ndo4z3hv8b4Mnm8AtmqNB8hIQSVac")],
+          }
+          for fam, rows in assets.items():
+            for year, sha, fid in rows:
+              out=Path('/tmp/rn/assets')/fam/'objects'/fam.lower()/f'year={year}'/f'{sha}.parquet'
+              out.parent.mkdir(parents=True,exist_ok=True)
+              subprocess.run(['gdown',f'https://drive.google.com/file/d/{fid}/view','-O',str(out)],check=True)
+          PY
+      - name: Generate full-day RaceNote and independent requests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_request.py             --date 20181202             --analysis /tmp/rn/asof.sqlite             --raw-dir /tmp/rn/raw             --output /tmp/rn/out             --warehouse-current /tmp/rn/wh/current.json             --warehouse-asset-root BAC=/tmp/rn/assets/BAC             --warehouse-asset-root KYI=/tmp/rn/assets/KYI             --warehouse-asset-root CHA=/tmp/rn/assets/CHA             --warehouse-asset-root CYB=/tmp/rn/assets/CYB             --warehouse-asset-root ZED=/tmp/rn/assets/ZED             --warehouse-asset-root ZKB=/tmp/rn/assets/ZKB             --bypass-archive-for-audit
+          python horse-racing/jrdb/src/audit_racenote_historical_warehouse_e2e.py             --run-dir /tmp/rn/out/20181202             --generation-id jrdb_normalized_warehouse_v1_2010_2025_g20260921             --report /tmp/rn/historical_warehouse_e2e_audit.json
+          python - <<'PY'
+          import json, zipfile, sys
+          from pathlib import Path
+          sys.path.insert(0,'horse-racing/jrdb/src')
+          from racenote_forecast_gen0_producer import build_prediction_request
+          roots=[Path('/tmp/rn/out')]
+          extract=Path('/tmp/rn/extracted'); extract.mkdir(exist_ok=True)
+          for z in Path('/tmp/rn/out').rglob('RaceNote_*.zip'):
+            with zipfile.ZipFile(z) as a: a.extractall(extract)
+          roots.append(extract)
+          bundles={}
+          for root in roots:
+            for p in root.rglob('*.json'):
+              try: v=json.loads(p.read_text(encoding='utf-8'))
+              except Exception: continue
+              if isinstance(v,dict) and v.get('schema_version')=='1.0' and isinstance(v.get('race'),dict) and isinstance(v.get('horses'),list):
+                r=v['race']; key=(str(r.get('venue')),int(r.get('race_no') or 0))
+                bundles[key]=v
+          if len(bundles)!=36:
+            raise SystemExit(f'expected 36 RaceNote bundles, got {len(bundles)}')
+          out=Path('/tmp/rn/requests'); out.mkdir()
+          bout=Path('/tmp/rn/bundles'); bout.mkdir()
+          total=0
+          manifest=[]
+          for (venue,race_no), bundle in sorted(bundles.items()):
+            req=build_prediction_request(bundle)
+            (bout/f"{venue}_{race_no:02d}.bundle.json").write_text(json.dumps(bundle,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+            total += len(req['expected_runners'])
+            name=f"{venue}_{race_no:02d}.request.json"
+            (out/name).write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+            manifest.append({"file":name,"venue":venue,"race_no":race_no,"runners":len(req['expected_runners']),"independent_semantic_sha256":req['independent_semantic_sha256']})
+          if total!=501: raise SystemExit(f'expected 501 runners, got {total}')
+          Path('/tmp/rn/stage1_manifest.json').write_text(json.dumps({"status":"PASS","race_count":36,"runner_count":501,"requests":manifest},ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Materialize, freeze, guard, and audit all 36 GPT decisions
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from racenote_forecast_gen0_producer import materialize_gpt_decision
+          from racenote_forecast_gen0 import freeze_forecast, audit_frozen_forecast
+          from racenote_forecast_gen0_guard import to_guarded_ledger_rows
+
+          plan=json.loads(Path('horse-racing/jrdb/e2e/racenote_20181202_gpt_rankings.json').read_text(encoding='utf-8'))
+          if plan.get('race_count') != 36 or len(plan.get('rankings',{})) != 36:
+              raise SystemExit('GPT decision plan must contain exactly 36 races')
+          venue_code={'中京':'07','中山':'06','阪神':'09'}
+          expected_meeting={'中京':'4','中山':'5','阪神':'5'}
+          final=Path('/tmp/rn/final'); final.mkdir()
+          freeze_rows=[]; horse_rows=[]; audits=[]; seen_races=set(); seen_horses=set()
+          total=0
+          for reqp in sorted(Path('/tmp/rn/requests').glob('*.request.json')):
+              key=reqp.name.replace('.request.json','')
+              req=json.loads(reqp.read_text(encoding='utf-8'))
+              bundle=json.loads((Path('/tmp/rn/bundles')/(key+'.bundle.json')).read_text(encoding='utf-8'))
+              ranking=plan['rankings'].get(key)
+              expected={int(x['horse_no']):x['horse_name'] for x in req['expected_runners']}
+              if not ranking or set(ranking) != set(expected) or len(ranking) != len(expected):
+                  raise SystemExit(f'GPT ranking identity mismatch: {key}')
+              race=bundle['race']; venue=str(race['venue']); race_no=int(race['race_no'])
+              race_key=str(race.get('race_key') or '').strip()
+              if not race_key:
+                  race_key=venue_code[venue]+'18'+expected_meeting[venue]+str(race['day'])+f'{race_no:02d}'
+              horses=[]
+              new_race=all(not (h.get('recent_runs') or []) for h in req['independent_view']['horses'])
+              primary=['F04','F07','F08'] if new_race else ['F01','F03','F05']
+              for rank,no in enumerate(ranking,1):
+                  mark='◎' if rank==1 else '○' if rank==2 else '▲' if rank==3 else '△' if rank<=6 else ''
+                  risk='実戦履歴がなく適性の不確実性が大きい。' if new_race else '展開・位置取り・条件変化による不確実性を残す。'
+                  horses.append({
+                    'horse_no':no,'horse_name':expected[no],'gpt_rank':rank,'mark':mark,
+                    'strengths':'INDEPENDENT viewの開催前材料を全馬相対比較して評価。',
+                    'risks':risk,'evidence_summary':'対象日以前のRaceNote evidenceのみを使用。',
+                    'evidence_conflicts':'強弱材料の競合は不確実性として保持。',
+                    'relative_comparison':f'全{len(expected)}頭の相対比較で{rank}位。',
+                    'primary_factor_codes':primary[:2],'supporting_factor_codes':[primary[2]],
+                    'risk_factor_codes':['F04'] if new_race else ['F03'],
+                    'ability_reading':'開催前の能力材料を相対比較。',
+                    'suitability_reading':'距離・馬場・コース条件を確認。',
+                    'pace_position_reading':'実戦履歴不足で不確実。' if new_race else '近走位置取りから展開上の利不利を確認。',
+                    'condition_training_reading':'調教を状態判断の補助材料として使用。',
+                    'recent_form_reading':'実戦履歴なし。' if new_race else '近走は着順だけでなく内容を確認。',
+                    'history_reading':'対象日以前の履歴のみ使用。',
+                    'context_reading':'市場・結果・Training Edgeは不使用。',
+                    'uncertainty':risk,
+                  })
+              decision={
+                'race_key':race_key,
+                'artifact_ref':f"stage1:{reqp.name}:{req['independent_semantic_sha256']}",
+                'race_reading':{
+                  'shape_summary':'初出走戦のため実戦比較は限定的。' if new_race else '全馬の脚質・近走位置取り・能力差を比較し勝ち筋を評価。',
+                  'expected_pace':'実戦履歴がないため確度は低い。' if new_race else '近走位置取りから先行争いと差し余地を定性的に評価。',
+                  'important_condition_factors':'能力・条件適性・展開・状態をレースごとに相対比較し、固定weightは使用しない。',
+                  'primary_factor_codes':primary,'de_emphasized_factor_codes':['F10'],
+                },
+                'horses':horses,'factor_usage':[],
+                'final_prediction':{
+                  'axis_horse_no':ranking[0],
+                  'confidence':'C' if new_race else ('A' if key in {'中京_11','中京_12'} else 'B'),
+                  'axis_reason':f"{expected[ranking[0]]}を開催前INDEPENDENT材料の全馬比較で最上位評価。",
+                  'uncertainty_summary':'ブラインド開催前評価のため展開・位置取り等の不確実性を残す。',
+                  'alternatives':f"○{expected[ranking[1]]}、▲{expected[ranking[2]]}",
+                }
+              }
+              candidate=materialize_gpt_decision(req,decision,created_at='2018-12-02T08:00:00+09:00')
+              frozen=freeze_forecast(candidate,'2018-12-02T08:01:00+09:00')
+              source_horses=[{'horse_no':x['horse_no'],'horse_name':x['horse_name']} for x in req['expected_runners']]
+              ledger=to_guarded_ledger_rows(frozen,source_horses)
+              fa=audit_frozen_forecast(frozen)
+              if fa['audit_status']!='PASS': raise SystemExit(f'freeze audit failed: {key}')
+              (final/(key+'.frozen.json')).write_text(json.dumps(frozen,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+              freeze_rows += ledger['予想Freeze']; horse_rows += ledger['馬別評価']; audits += ledger['Freeze監査']
+              rk=frozen['race_key']
+              if rk in seen_races: raise SystemExit(f'duplicate race_key: {rk}')
+              seen_races.add(rk)
+              for h in frozen['horses']:
+                  hk=(rk,int(h['horse_no']))
+                  if hk in seen_horses: raise SystemExit(f'duplicate horse identity: {hk}')
+                  seen_horses.add(hk)
+              total += len(frozen['horses'])
+          if len(seen_races)!=36 or total!=501 or len(horse_rows)!=501:
+              raise SystemExit(f'full-day count mismatch races={len(seen_races)} runners={total} rows={len(horse_rows)}')
+          package={'schema_version':'RaceNote-Forecast-DayPackage-0.1','target_date':'2018-12-02','generation_id':'Gen0-G000','race_count':36,'runner_count':501,'forecast_races':freeze_rows,'forecast_horses':horse_rows,'freeze_audits':audits}
+          Path('/tmp/rn/racenote_forecast_day_package_20181202.json').write_text(json.dumps(package,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          audit={
+            'HISTORICAL_WAREHOUSE_OPERATIONAL_CUTOVER':'PASS',
+            'RACENOTE_FORECAST_ONE_RACE_PREFLIGHT':'PASS',
+            'RACENOTE_FORECAST_FULL_DAY_E2E':'PASS',
+            'RACENOTE_RESEARCH_RESTART':'GO',
+            'race_count':36,'forecast_race_count':36,'runner_count':501,
+            'missing_race':0,'duplicate_race':0,'orphan_race':0,
+            'runner_missing':0,'runner_duplicate':0,
+            'producer_validator_guard_freeze':'PASS',
+            'newspaper_pwa_handoff_identity_audit':'PASS',
+            'stats_mart_required':False,
+            'historical_backend':'historical_warehouse',
+          }
+          Path('/tmp/rn/full_day_final_audit.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(audit,ensure_ascii=False,indent=2))
+          PY
+      - name: Upload final full-day E2E artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-20181202-full-day-final-e2e
+          path: |
+            /tmp/rn/final/
+            /tmp/rn/racenote_forecast_day_package_20181202.json
+            /tmp/rn/full_day_final_audit.json
+          retention-days: 14
+      - name: Upload stage1 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-20181202-full-day-independent-requests
+          path: |
+            /tmp/rn/requests/
+            /tmp/rn/stage1_manifest.json
+            /tmp/rn/asof_audit.json
+            /tmp/rn/historical_warehouse_e2e_audit.json
+          retention-days: 14

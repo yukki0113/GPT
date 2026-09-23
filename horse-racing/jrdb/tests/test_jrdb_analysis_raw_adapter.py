@@ -54,6 +54,7 @@ class AnalysisRawAdapterTest(unittest.TestCase):
             "race_condition_code": legacy_text(raw, 29, 2),
             "track_condition_code": None,
             "grade_code": legacy_text(raw, 35, 1),
+            "win5_leg_no": None,
         }
         self.assertEqual(expected, parse_bac(raw, "2024-12-28", 2024))
 
@@ -125,6 +126,7 @@ class AnalysisRawAdapterTest(unittest.TestCase):
                 "race_condition_code": None,
                 "track_condition_code": legacy_text(raw, 69, 2),
                 "grade_code": None,
+                "win5_leg_no": None,
             },
             fallback,
         )

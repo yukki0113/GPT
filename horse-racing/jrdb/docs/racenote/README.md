@@ -1,7 +1,7 @@
 # RaceNote development guide
 
 Status: CURRENT
-Last reviewed: 2026-09-13
+Last reviewed: 2026-09-22
 
 ## 1. Purpose
 
@@ -192,7 +192,15 @@ latest main source / current contract
 
 日付付きIssue番号や一時run IDをcurrent truthとして固定しない。
 
-## 10. Related documents
+## 10. Historical Warehouse operational route
+
+2010–2025のHistorical rebuildは、accepted JRDB Historical Warehouse generationを標準入力にする。通常requestのArchive優先は維持するが、Archive不在時のrebuildはWarehouse readerを通し、2011–2025で失敗した場合にRawへsilent fallbackしない。2026以降の日次処理は引き続きPACI/Rawであり、Warehouseを要求しない。
+
+実運用Workflowのcontrolled E2Eでは、Archive bypassを明示し、verified local Warehouse asset rootsを`racenote_request.py`へ渡す。`used_backend=historical_warehouse`、immutable generation一致、全R/全馬、as-of/future-leakage、join、再生成性を`audit_racenote_historical_warehouse_e2e.py`でfail-closedに監査する。詳細は`../RaceNote_Historical_Warehouse_Operation_v1.md`を正とする。
+
+Forecast Gen0は依然としてGPTが予想を作成し、コードはvalidation/freeze/guardを担当する。この入力生成責務を既存の決定論的legacy scorerやPWA consumerへ暗黙に移してはならない。
+
+## 11. Related documents
 
 - `FORECAST_GEN0_PLAN.md` — 現行Gen0の研究計画
 - `FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md` — GPTが1Rを予想する現行契約
@@ -200,8 +208,12 @@ latest main source / current contract
 - `FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md` — Google Sheets台帳とtransaction契約
 - `legacy/README.md` — 旧決定論的予想系の扱い
 - `../RaceNote_Prediction_Handoff_v0_1.md` — GPT prediction layerの原点
+- `FORECAST_GEN0_GPT_PRODUCER_OPERATION_v0_1.md` — Firewallで隔離した
+  RaceNoteからGPTの構造化判断をGen0 validator/freezeへ引き渡す実装契約。
+  scorer代用はしない。
 - `../README_racenote_v1.md` — RaceNote v1 data specification
 - `../README_racenote_request.md` — request / delivery contract
+- `../RaceNote_Historical_Warehouse_Operation_v1.md` — Warehouse routing / controlled E2E contract
 - `../RaceNote_Presentation_Comment_Contract_v0_2.md` — 既存presentation contract。legacy予想との関係に注意
 
 Implementation:
@@ -215,7 +227,7 @@ Implementation:
 - `../../tests/test_racenote_forecast_gen0_guard.py`
 - `../../tests/test_racenote_forecast_gen0_evaluation.py`
 
-## 11. Development rule
+## 12. Development rule
 
 RaceNoteで新しい予想アイデアを試すときは、いきなりproductionの印決定へ埋め込まない。
 
