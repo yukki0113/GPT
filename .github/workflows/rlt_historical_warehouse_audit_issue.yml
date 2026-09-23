@@ -158,12 +158,20 @@ jobs:
               ]
 
               def find_suffix(suffix):
-                  matches = [e for e in entries if e['path'].endswith(suffix)]
+                  wanted = str(suffix).replace('\\\\','/').lstrip('/')
+                  matches = [
+                      e for e in entries
+                      if e['path'] == wanted or e['path'].endswith('/' + wanted)
+                  ]
                   if len(matches) != 1:
-                      raise SystemExit(f'{family}: expected one staging entry ending {suffix}, got {len(matches)}')
+                      sample = [e['path'] for e in entries[:10]]
+                      raise SystemExit(
+                          f'{family}: expected one staging entry ending {wanted}, '
+                          f'got {len(matches)}; sample={sample}'
+                      )
                   return matches[0]
 
-              receipt_entry = find_suffix('/raw_receipt.json')
+              receipt_entry = find_suffix('raw_receipt.json')
               receipt_path = root/'receipts'/f'{family}.json'
               download(receipt_entry['id'], receipt_path)
               receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
@@ -183,7 +191,7 @@ jobs:
 
                   asset = assets[(family, year)]
                   relative = str(asset['relative_path']).replace('\\','/')
-                  wh_entry = find_suffix('/' + relative)
+                  wh_entry = find_suffix(relative)
                   wh_path = wh_root / relative
                   download(wh_entry['id'], wh_path, str(asset['sha256']))
                   family_audit['years'][str(year)] = {
