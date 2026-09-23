@@ -203,18 +203,14 @@ current Releases
 
 full-site Pages workflowが最終的なconsumer配布artifactを作ります。
 
-## Known operational limitation
+## Pages completion rule
 
-2026-09時点のsourceでは、Stats Mart publisher / Fact Lite publisherにも独自Pages deployがありますが、full `JRDB PWA Pages` と同じ3データchannelをすべて同梱するわけではありません。
-
-また、full Pagesの`workflow_run` triggerはNewspaper publish完了を対象としており、Fact Lite / Stats Mart publish完了を同じ形ではfollowしていません。
-
-したがってFact Lite / Stats Mart更新後は:
+Fact Lite publisherはSQLite Releaseのみを更新します。successful completionはfull Pagesの`workflow_run` triggerになり、partial Pages deployを行いません。したがってFact Lite更新後は:
 
 ```text
-publisher success
--> current Release確認
--> full JRDB PWA Pages再構成
+Fact Lite SQLite publisher success
+-> current Release / manifest確認
+-> workflow_runでfull JRDB PWA Pages再構成
 -> Pages success確認
 ```
 
@@ -228,7 +224,7 @@ Analysis LiteのDrive正本とFact Lite配布物は、通常**current世代の�
 
 1. 新Analysisを所定の共有Driveフォルダへuploadする。
 2. filename・size・SHA-256・ZIP/SQLite検査を再fetchで確認する。
-3. Fact Liteのschema/integrity/SHA検証、current Release更新、Pages配布を成功させる。
+3. Fact Liteのschema/integrity/SHA検証、current Release更新、full Pages配布を成功させる。
 4. この三段階がすべて成功した後だけ、直前のDrive Analysisを削除する。
 
 Fact Lite Releaseはcurrent assetを置換する。旧Fact Liteを別のDrive保管や旧Release assetとして積み増さない。いずれかが失敗した場合は旧currentを維持し、原因を修正してから再公開する。
