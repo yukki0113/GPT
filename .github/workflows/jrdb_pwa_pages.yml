@@ -31,9 +31,6 @@ concurrency:
 env:
   DATA_RELEASE_TAG: jrdb-stats-mart-current
   FACT_RELEASE_TAG: jrdb-pwa-fact-lite-current
-  FACT_PARQUET_RELEASE_TAG: jrdb-pwa-fact-lite-parquet-current
-  FACT_PARQUET_RELEASE_ARCHIVE: jrdb_pwa_fact_lite_parquet_current.tar.xz
-  FACT_PARQUET_RELEASE_META: jrdb_pwa_fact_lite_parquet_current_release.json
   NEWSPAPER_RELEASE_TAG: jrdb-newspaper-current
   NEWSPAPER_RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
   NEWSPAPER_RELEASE_META: jrdb_newspaper_current_release.json
@@ -60,7 +57,7 @@ jobs:
           set -euo pipefail
 
           rm -rf .pages
-          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite .pages/data/fact-lite-parquet
+          mkdir -p .pages/vendor .pages/data .pages/data/fact-lite
           cp -a horse-racing/jrdb/pwa/. .pages/
 
           curl --fail --location --retry 3 \
@@ -87,63 +84,45 @@ jobs:
               --pattern "jrdb_pwa_fact_lite.sqlite" \
               --pattern "manifest.json" \
               --dir .pages/data/fact-lite
-            echo "Current Fact Lite release added to Pages artifact."
-          else
-            echo "No current Fact Lite release yet."
-          fi
-
-          if gh release view "$FACT_PARQUET_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            rm -rf .fact-parquet-release
-            mkdir -p .fact-parquet-release
-            gh release download "$FACT_PARQUET_RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --pattern "$FACT_PARQUET_RELEASE_ARCHIVE" \
-              --pattern "$FACT_PARQUET_RELEASE_META" \
-              --dir .fact-parquet-release
-
             python - <<'PY'
           import hashlib
           import json
-          import os
-          import tarfile
-          from pathlib import Path, PurePosixPath
+          import sqlite3
+          from pathlib import Path
 
-          root = Path('.fact-parquet-release')
-          archive = root / os.environ['FACT_PARQUET_RELEASE_ARCHIVE']
-          meta = json.loads((root / os.environ['FACT_PARQUET_RELEASE_META']).read_text(encoding='utf-8'))
-          if meta.get('schema_version') != '0.1' or meta.get('release_kind') != 'jrdb_fact_lite_parquet_current_cache':
-              raise SystemExit('invalid Fact Lite Parquet release metadata')
-          if meta.get('archive_filename') != archive.name:
-              raise SystemExit('Fact Lite Parquet archive filename mismatch')
-          if archive.stat().st_size != int(meta.get('archive_size_bytes') or -1):
-              raise SystemExit('Fact Lite Parquet archive size mismatch')
-          if hashlib.sha256(archive.read_bytes()).hexdigest() != str(meta.get('archive_sha256') or ''):
-              raise SystemExit('Fact Lite Parquet archive SHA-256 mismatch')
+          root = Path('.pages/data/fact-lite')
+          database = root / 'jrdb_pwa_fact_lite.sqlite'
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          if manifest.get('artifact_type') != 'jrdb_pwa_fact_lite':
+              raise SystemExit('invalid Fact Lite SQLite artifact type')
+          if str(manifest.get('schema_version')) != '0.3':
+              raise SystemExit('invalid Fact Lite SQLite schema version')
+          if database.stat().st_size != int(manifest.get('size') or -1):
+              raise SystemExit('Fact Lite SQLite size mismatch')
+          if hashlib.sha256(database.read_bytes()).hexdigest() != str(manifest.get('sha256') or ''):
+              raise SystemExit('Fact Lite SQLite SHA-256 mismatch')
 
-          extract = root / 'current'
-          extract.mkdir()
-          with tarfile.open(archive, mode='r:xz') as handle:
-              members = handle.getmembers()
-              for member in members:
-                  path = PurePosixPath(member.name)
-                  if path.is_absolute() or '..' in path.parts or member.issym() or member.islnk():
-                      raise SystemExit(f'unsafe Fact Lite Parquet archive member: {member.name}')
-                  if not (member.isdir() or member.isfile()):
-                      raise SystemExit(f'unsupported Fact Lite Parquet archive member: {member.name}')
-              handle.extractall(extract, filter='data')
+          connection = sqlite3.connect(f'file:{database}?mode=ro', uri=True)
+          try:
+              required = {'fact_stats_entry', 'dim_sire', 'dim_bms', 'dim_jockey', 'dim_race', 'meta_pwa_fact_build'}
+              present = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+              if missing := sorted(required - present):
+                  raise SystemExit('Fact Lite SQLite missing tables: ' + ', '.join(missing))
+              columns = {row[1] for row in connection.execute('PRAGMA table_info(fact_stats_entry)')}
+              if missing := sorted({'month', 'race_id', 'prev_distance_delta', 'prev_class_code', 'win5_leg_no'} - columns):
+                  raise SystemExit('Fact Lite SQLite missing columns: ' + ', '.join(missing))
+              integrity = connection.execute('PRAGMA integrity_check').fetchone()
+              if not integrity or integrity[0] != 'ok':
+                  raise SystemExit(f'Fact Lite SQLite integrity failure: {integrity}')
+              actual_rows = int(connection.execute('SELECT COUNT(*) FROM fact_stats_entry').fetchone()[0])
+          finally:
+              connection.close()
+          if actual_rows != int(manifest.get('rows') or -1):
+              raise SystemExit('Fact Lite SQLite row count mismatch')
           PY
-
-            PYTHONPATH=tools/data-storage python horse-racing/jrdb/src/package_jrdb_pwa_fact_lite_parquet.py verify \
-              --package-root .fact-parquet-release/current \
-              | tee .fact-parquet-release/verification.json
-
-            rm -rf .pages/data/fact-lite-parquet
-            mkdir -p .pages/data/fact-lite-parquet
-            cp -a .fact-parquet-release/current/current.json .pages/data/fact-lite-parquet/current.json
-            cp -a .fact-parquet-release/current/generations .pages/data/fact-lite-parquet/generations
-            echo "Current Fact Lite Parquet generation added to Pages artifact."
+            echo "Current Fact Lite release added to Pages artifact."
           else
-            echo "No staged Fact Lite Parquet release yet; SQLite PWA delivery remains unchanged."
+            echo "No current Fact Lite release yet."
           fi
 
           if gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
