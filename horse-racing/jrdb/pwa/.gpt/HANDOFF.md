@@ -71,9 +71,7 @@ PWA側は既存day packageの意味を変更せず表示します。
 
 ## Fact Lite v0.3 invariants
 
-The browser contract remains SQLite via sql.js / OPFS. Analysis Parquet and
-Fact Lite Parquet are upstream/parallel storage artifacts only; no browser
-Parquet, DuckDB-Wasm, or `/data/` contract change is included in this phase.
+条件別集計browserの正式contractは **SQLite + sql.js + OPFS**。AnalysisはParquet正本を維持し、そこからFact Lite SQLiteを生成・配布する。Parquet/DuckDB-Wasm直読は再読み込み負荷・ローカルcache安定性の観点から通常運用には採用しない。Fact Lite Parquetが検証資産として残っていてもbrowserは参照しない。
 
 current schemaはv0.3。PWAは旧v0.2のread compatibilityを維持します。
 
