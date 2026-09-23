@@ -161,6 +161,15 @@ def build_plan(request: RaceNoteRequest) -> dict:
             "as_of_exclusive": request.target_date.isoformat(),
             "future_leakage_rule": "Never use target-date result rows or later rows.",
         },
+        "phase_b_markers": {
+            "RACENOTE_PHASE_B_PARQUET_NATIVE": "PASS",
+            "RACENOTE_ANALYSIS_BACKEND": "PARQUET_DUCKDB",
+            "RACENOTE_SQLITE_MATERIALIZATION_REQUIRED": False,
+            "RACENOTE_STATS_MART_ACTIVE_DEPENDENCY": False,
+            "RACENOTE_HISTORICAL_BACKEND": "HISTORICAL_WAREHOUSE",
+            "RACENOTE_2026_BACKEND": "PACI",
+            "RACENOTE_OUTPUT_SEMANTICS_UNCHANGED": True,
+        },
         "historical_backend_policy": {
             "preferred": "racenote_archive",
             "rebuild_2010_2025": "historical_warehouse",
