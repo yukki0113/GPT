@@ -119,11 +119,29 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/warehouse/families /tmp/warehouse/cache /tmp/warehouse/materialization-audit
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source=json.load(open('/tmp/warehouse/manifest.json'))
+          for family in ('BAC','KYI','SED','UKC'):
+              assets=[
+                  item for item in source.get('assets',[])
+                  if str(item.get('family') or '').upper()==family
+              ]
+              if len(assets)!=16:
+                  raise SystemExit(f'{family}: expected 16 canonical manifest assets, got {len(assets)}')
+              subset=dict(source)
+              subset['assets']=assets
+              Path(f'/tmp/warehouse/manifest-{family}.json').write_text(
+                  json.dumps(subset,ensure_ascii=False,indent=2,sort_keys=True)+'\n',
+                  encoding='utf-8'
+              )
+          PY
           for family in BAC KYI SED UKC; do
             folder_var="${family}_STAGING_FOLDER_ID"
             folder_id="${!folder_var}"
             python -m data_storage materialize-manifest \
-              --manifest /tmp/warehouse/manifest.json \
+              --manifest "/tmp/warehouse/manifest-$family.json" \
               --output-root "/tmp/warehouse/families/$family" \
               --cache-dir /tmp/warehouse/cache \
               --audit "/tmp/warehouse/materialization-audit/$family.json" \
