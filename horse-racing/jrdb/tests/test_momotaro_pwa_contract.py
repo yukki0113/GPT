@@ -63,6 +63,14 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('id="prediction-refresh" type="button"', html)
         self.assertIn('<div class="button-row" hidden>', html)
 
+    def test_prediction_column_widths_are_compact(self) -> None:
+        css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
+
+        self.assertIn(".momotaro-newspaper-table .mark-ryota", css)
+        self.assertIn("width:32px", css)
+        self.assertIn(".momotaro-newspaper-table .mark-iluka", css)
+        self.assertIn("width:34px", css)
+
     def test_browser_storage_is_isolated(self) -> None:
         newspaper = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
         fact_lite = (MOMOTARO_ROOT / "fact-lite.html").read_text(encoding="utf-8")
@@ -73,7 +81,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v5"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v6"', service_worker)
 
 
 if __name__ == "__main__":
