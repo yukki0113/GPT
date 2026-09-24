@@ -206,8 +206,18 @@ def main() -> None:
         )
         kyi_rows = parse_family_zip(paci_path, "KYI")
         sed_rows = parse_family_zip(sed_path, "SED")
+        race_date = f"20{date[:2]}-{date[2:4]}-{date[4:6]}"
+        for row in kyi_rows:
+            row["_forward_race_date"] = race_date
+        for row in sed_rows:
+            row["_forward_race_date"] = race_date
         all_kyi.extend(kyi_rows)
         all_sed.extend(sed_rows)
+        if len(kyi_rows) != len(sed_rows):
+            raise RuntimeError(
+                f"daily KYI/SED row mismatch {date}: "
+                f"KYI={len(kyi_rows)} SED={len(sed_rows)}"
+            )
         source_audit.append(
             {
                 "date_compact": date,
@@ -247,7 +257,7 @@ def main() -> None:
     kyi_by_name = {}
     kyi_same_race = defaultdict(list)
     for row in all_kyi:
-        race_date = "20" + str(row.get("year_yy") or "") + "-" + str(row.get("race_key_raw") or "")[2:4] + "-" + str(row.get("race_key_raw") or "")[4:6]
+        race_date = str(row.get("_forward_race_date") or "")
         venue_code = str(row.get("venue_code") or "").zfill(2)
         race_no = to_int(row.get("race_no"))
         horse_name = normalize_name(row.get("horse_name"))
