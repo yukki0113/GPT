@@ -17,6 +17,7 @@ from jrdb_postrace_review_context import (
     build_race_context,
 )
 from jrdb_postrace_review_standard import (
+    BASELINE_VERSION,
     adjusted_standard_time_seconds,
     build_asof_class_standard_curve,
     class_equivalent,
@@ -407,6 +408,7 @@ def build_review_day(
                 ),
                 "class_curve_monotonic": race_class.get("curve_monotonic"),
                 "pace_shape": work["pace_shape"],
+                "baseline_version": BASELINE_VERSION,
                 "review_schema_version": REVIEW_SCHEMA_VERSION,
                 "review_logic_version": REVIEW_LOGIC_VERSION,
             }
@@ -501,6 +503,7 @@ def build_review_day(
                     ),
                     "performance_label": "UNKNOWN",
                     "reason_codes_json": "[]",
+                    "baseline_version": BASELINE_VERSION,
                     "review_schema_version": REVIEW_SCHEMA_VERSION,
                     "review_logic_version": REVIEW_LOGIC_VERSION,
                 }
@@ -528,6 +531,7 @@ def build_review_day(
             "missing_standard_race_count": missing_standard_count,
             "missing_day_adjustment_race_count": missing_day_adjustment_count,
             "low_pace_sample_race_count": low_pace_sample_count,
+            "baseline_version": BASELINE_VERSION,
             "review_schema_version": REVIEW_SCHEMA_VERSION,
             "review_logic_version": REVIEW_LOGIC_VERSION,
         },
