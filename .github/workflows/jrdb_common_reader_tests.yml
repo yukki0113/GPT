@@ -17,6 +17,7 @@ on:
       - 'horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py'
       - 'horse-racing/jrdb/src/build_jrdb_pwa_race_names.py'
       - 'horse-racing/jrdb/src/jrdb_analysis_raw_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_analysis_warehouse_adapter.py'
       - 'horse-racing/jrdb/src/update_jrdb_analysis_incremental.py'
       - 'horse-racing/jrdb/src/build_jrdb_analysis_from_raw.py'
       - 'horse-racing/jrdb/src/upgrade_jrdb_analysis_v1_1_to_v1_2.py'
@@ -47,6 +48,7 @@ on:
       - 'horse-racing/jrdb/tests/test_enrich_eval_csv_with_paci.py'
       - 'horse-racing/jrdb/tests/test_jrdb_index_base_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_raw_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_analysis_warehouse_adapter_bulk.py'
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_raw_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_warehouse_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
@@ -136,6 +138,7 @@ jobs:
             src/build_jrdb_index_base_from_raw.py \
             src/build_jrdb_pwa_race_names.py \
             src/jrdb_analysis_raw_adapter.py \
+            src/jrdb_analysis_warehouse_adapter.py \
             src/update_jrdb_analysis_incremental.py \
             src/build_jrdb_analysis_from_raw.py \
             src/upgrade_jrdb_analysis_v1_1_to_v1_2.py \
@@ -167,6 +170,7 @@ jobs:
             test_enrich_eval_csv_with_paci \
             test_jrdb_index_base_adapter \
             test_jrdb_analysis_raw_adapter \
+            test_jrdb_analysis_warehouse_adapter_bulk \
             test_jrdb_racenote_raw_adapter \
             test_jrdb_racenote_warehouse_adapter \
             test_jrdb_eval_horse_result_adapter \
