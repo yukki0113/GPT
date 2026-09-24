@@ -112,14 +112,12 @@ def enrich_production(
 def enrich_production_many(
     bases: list[dict],
     analysis: object,
-    mart: object,
     stats_window_years: int,
 ) -> list[tuple[dict, list[str]]]:
     """Enrich a request's bundles using shared bulk SQL aggregates."""
     enriched_items = engine.enrich_many(
         bases,
         analysis,
-        None,
         OLDER_RUNS_LIMIT,
         stats_window_years,
     )
