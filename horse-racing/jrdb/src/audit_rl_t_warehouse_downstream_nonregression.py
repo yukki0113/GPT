@@ -8,7 +8,10 @@ from typing import Any, Iterable
 DB_TABLES = {
     "runperf": ("race_runperf_observation","race_expected_time","race_day_track_bias","runner_runperf_features"),
     "official": ("runperf_coefficient_snapshot","official_runperf"),
-    "training": ("source_archive","training_runner"),
+    # source_archive is provenance, not a scientific relation. Raw records annual
+    # ZIP identity while Warehouse records immutable Parquet identity, so exact
+    # equality is neither expected nor required for the RL-T non-regression gate.
+    "training": ("training_runner",),
 }
 EXCLUDED_COLUMNS = {"runperf_coefficient_snapshot": {"created_at"}}
 FINGERPRINT_FIELDS = (
