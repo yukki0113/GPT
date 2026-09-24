@@ -66,6 +66,17 @@ class HistoricalHelpersTest(unittest.TestCase):
         self.assertEqual(race.status, "parse_error")
         self.assertIsNone(race.horse)
 
+
+    def test_empty_section_is_excluded(self):
+        race = classify_race(
+            "中山",
+            9,
+            "",
+            [],
+        )
+        self.assertEqual(race.status, "excluded")
+        self.assertEqual(race.exclusion_reason, "empty_section")
+
     def test_month_range_is_inclusive(self):
         months = iter_months(parse_month("2024-11"), parse_month("2025-02"))
         self.assertEqual(
