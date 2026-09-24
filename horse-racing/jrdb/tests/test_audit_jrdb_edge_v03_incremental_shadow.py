@@ -115,3 +115,24 @@ def test_empty_parent_complement_is_insufficient() -> None:
     result = target._evaluate_edge(candidate, agg)
     assert result["shadow_class"] == "INSUFFICIENT"
     assert result["reason"] == "EMPTY_PARENT_COMPLEMENT"
+
+def test_performance_alignment_bucket_keeps_neutral_separate() -> None:
+    same = {
+        "current_performance_signal": "POSITIVE",
+        "metrics": {"incremental_performance_direction": "POSITIVE"},
+        "direction_alignment": {"performance_matches_current": True},
+    }
+    opposite = {
+        "current_performance_signal": "POSITIVE",
+        "metrics": {"incremental_performance_direction": "NEGATIVE"},
+        "direction_alignment": {"performance_matches_current": False},
+    }
+    neutral = {
+        "current_performance_signal": "POSITIVE",
+        "metrics": {"incremental_performance_direction": "NEUTRAL"},
+        "direction_alignment": {"performance_matches_current": False},
+    }
+    assert target._performance_alignment_bucket(same) == "performance_same"
+    assert target._performance_alignment_bucket(opposite) == "performance_opposite"
+    assert target._performance_alignment_bucket(neutral) == "performance_neutral"
+
