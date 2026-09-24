@@ -220,3 +220,9 @@ Body:
 
 Historical artifactは搬送・監査用の一時成果物です。Chatがartifactを確認し、月単位のSHA / row count / key uniquenessを検証してGoogle Sheets台帳へ転記した時点で、台帳側をaccepted canonicalとします。隠し馬は `馬名_raw=🤡` を保持し、実馬名が別途確認できた場合のみ `馬名_resolved` に追記します。
 
+### Ledger-row comment transport
+
+成功月はartifactに加えて、Issueへ `KEIBAILUKA_HISTORICAL_LEDGER_ROWS` コメントを出す。1コメント最大80行に分割し、metadataに `month / chunk_index / chunk_count / month_row_count / ledger_csv_sha256 / source_commit` を持たせる。TSV列はGoogle Sheets `イルカ明細` の13列と完全一致する。
+
+通常のChat転記はこのコメントをGitHub connectorで読み、chunk順に結合し、Google Sheetsへ一括pasteする。artifactはSHA/manifest監査用に維持するが、大量行の搬送にローカルファイルbridgeを必須としない。
+

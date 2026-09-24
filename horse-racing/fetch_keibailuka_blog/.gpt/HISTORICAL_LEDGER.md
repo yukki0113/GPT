@@ -127,3 +127,8 @@ Run at most three ordinary Chat requests:
 ```
 
 If the 2024-2026 sample is insufficient for research, add 2023 with the same workflow; no source-code change is required.
+
+## Comment transport
+
+成功月は `KEIBAILUKA_HISTORICAL_LEDGER_ROWS` Issueコメントにも台帳13列TSVを出力する。最大80行/chunkで、`chunk_index` 順に結合する。これを通常のChat→Google Sheets転記経路とし、artifactはmanifest / SHA監査の根拠として併存させる。
+

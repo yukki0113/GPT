@@ -226,6 +226,102 @@ jobs:
             --repo "${{ github.repository }}" \
             --body-file /tmp/result_comment.md
 
+      - name: Comment ledger-ready monthly rows
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import csv
+          import io
+          import json
+          import os
+          import subprocess
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          output_dir = Path(os.environ['OUTPUT_DIR'])
+          manifest_path = output_dir / 'historical_batch_manifest.json'
+          if not manifest_path.exists():
+              raise SystemExit(0)
+
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          run_id = str(os.environ['GITHUB_RUN_ID'])
+          imported_at = datetime.now(timezone.utc).isoformat(timespec='seconds')
+          header = [
+              'key', '日付', '会場', 'R', '馬名_raw', '馬名_resolved',
+              'コメント', 'masked_flag', 'source_url', 'source_method',
+              'source_month', 'source_run_id', 'imported_at',
+          ]
+
+          for month_info in manifest.get('months', []):
+              if month_info.get('validation_status') != 'success':
+                  continue
+              month = str(month_info['month'])
+              compact = month.replace('-', '')
+              ledger_path = (
+                  output_dir / compact / f'keibailuka_month_{compact}_ledger.csv'
+              )
+              with ledger_path.open(encoding='utf-8', newline='') as file:
+                  source_rows = list(csv.DictReader(file))
+
+              rows = []
+              for row in source_rows:
+                  key = f"{row['日付']}|{row['会場']}|{row['R']}"
+                  rows.append([
+                      key,
+                      row['日付'],
+                      row['会場'],
+                      row['R'],
+                      row['馬名_raw'],
+                      '',
+                      row['コメント'],
+                      row['masked_flag'],
+                      row['source_url'],
+                      row['source_method'],
+                      row['source_month'],
+                      run_id,
+                      imported_at,
+                  ])
+
+              chunks = [rows[i:i + 80] for i in range(0, len(rows), 80)] or [[]]
+              for index, chunk in enumerate(chunks, start=1):
+                  buffer = io.StringIO()
+                  writer = csv.writer(buffer, delimiter='\t', lineterminator='\n')
+                  writer.writerow(header)
+                  writer.writerows(chunk)
+                  metadata = {
+                      'month': month,
+                      'chunk_index': index,
+                      'chunk_count': len(chunks),
+                      'chunk_rows': len(chunk),
+                      'month_row_count': month_info.get('row_count'),
+                      'ledger_csv_sha256': month_info.get('outputs', {}).get(
+                          'ledger_csv_sha256'
+                      ),
+                      'source_commit': month_info.get('source_commit'),
+                  }
+                  body = (
+                      'KEIBAILUKA_HISTORICAL_LEDGER_ROWS\n'
+                      + '```json\n'
+                      + json.dumps(metadata, ensure_ascii=False, indent=2)
+                      + '\n```\n'
+                      + '```text\n'
+                      + buffer.getvalue()
+                      + '```\n'
+                  )
+                  subprocess.run(
+                      [
+                          'gh', 'issue', 'comment',
+                          os.environ['ISSUE_NUMBER'],
+                          '--repo', os.environ['GITHUB_REPOSITORY'],
+                          '--body', body,
+                      ],
+                      check=True,
+                  )
+          PY
+
       - name: Close request issue
         if: always()
         env:

@@ -157,3 +157,9 @@ Artifact受入:
 
 台帳詳細は `.gpt/HISTORICAL_LEDGER.md` を正本とする。通常運用にWorkスレッドは不要。
 
+### Ledger-row comment transport
+
+成功月はartifactに加えて、Issueへ `KEIBAILUKA_HISTORICAL_LEDGER_ROWS` コメントを出す。1コメント最大80行に分割し、metadataに `month / chunk_index / chunk_count / month_row_count / ledger_csv_sha256 / source_commit` を持たせる。TSV列はGoogle Sheets `イルカ明細` の13列と完全一致する。
+
+通常のChat転記はこのコメントをGitHub connectorで読み、chunk順に結合し、Google Sheetsへ一括pasteする。artifactはSHA/manifest監査用に維持するが、大量行の搬送にローカルファイルbridgeを必須としない。
+
