@@ -30,6 +30,18 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn('./newspaper-v4.css?v=9', html)
         self.assertIn('./newspaper-v4.js?v=8', html)
 
+    def test_personal_history_selector_remains_3_5_8(self) -> None:
+        html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
+        script = (PWA_ROOT / "newspaper.js").read_text(encoding="utf-8")
+        renderer = (PWA_ROOT / "newspaper-v4.js").read_text(encoding="utf-8")
+
+        self.assertIn('data-history-count="3"', html)
+        self.assertIn('data-history-count="5"', html)
+        self.assertIn('data-history-count="8"', html)
+        self.assertIn("historyCount = Number(button.dataset.historyCount)", script)
+        self.assertIn("renderTable();", script)
+        self.assertIn("Array.from({ length: historyCount }", renderer)
+
     def test_momotaro_opts_in_during_turn_3(self) -> None:
         html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
         script = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
@@ -65,6 +77,18 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
             "newspaperV4Last3f(run)",
         ):
             self.assertIn(token, script)
+
+    def test_detail_dialog_is_reachable_from_both_surfaces(self) -> None:
+        personal = (PWA_ROOT / "newspaper-v4.js").read_text(encoding="utf-8")
+        momotaro = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
+        personal_html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
+        momotaro_html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
+
+        self.assertIn('class="newspaper-detail-button newspaper-detail-button-compact"', personal)
+        self.assertIn("showRunDetail(horse, horse.history[Number(button.dataset.runIndex)])", personal)
+        self.assertIn("showRunDetail(horse, horse.history[Number(button.dataset.runIndex)])", momotaro)
+        self.assertIn('id="newspaper-detail-dialog"', personal_html)
+        self.assertIn('id="newspaper-detail-dialog"', momotaro_html)
 
     def test_detail_dialog_keeps_information_removed_from_compact_cell(self) -> None:
         script = (PWA_ROOT / "newspaper-v4.js").read_text(encoding="utf-8")
