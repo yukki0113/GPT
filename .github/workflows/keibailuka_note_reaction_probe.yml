@@ -1,0 +1,82 @@
+name: keibailuka-note-reaction-probe
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: startsWith(github.event.issue.title, '[KEIBAILUKA_NOTE_PROBE]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe public note metadata
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, os, re, urllib.request
+
+          req = json.loads(os.environ.get("ISSUE_BODY") or "{}")
+          note_key = str(req.get("note_key") or "").strip()
+          if not re.fullmatch(r"n[0-9a-f]+", note_key):
+              raise SystemExit("invalid note_key")
+
+          ua = {"User-Agent": "Mozilla/5.0", "Accept": "application/json,text/html;q=0.9,*/*;q=0.8"}
+          def get(url):
+              request = urllib.request.Request(url, headers=ua)
+              with urllib.request.urlopen(request, timeout=20) as response:
+                  return response.read().decode("utf-8", errors="replace")
+
+          api_raw = get(f"https://note.com/api/v3/notes/{note_key}")
+          payload = json.loads(api_raw)
+
+          matches = []
+          def walk(value, path="$"):
+              if isinstance(value, dict):
+                  for k, v in value.items():
+                      child = f"{path}.{k}"
+                      if re.search(r"(like|reaction|message)", str(k), re.I):
+                          if isinstance(v, (str, int, float, bool)) or v is None:
+                              matches.append({"path": child, "value": v})
+                          elif isinstance(v, list):
+                              matches.append({"path": child, "type": "list", "length": len(v), "preview": v[:10]})
+                          elif isinstance(v, dict):
+                              matches.append({"path": child, "type": "object", "keys": list(v.keys())[:30]})
+                      walk(v, child)
+              elif isinstance(value, list):
+                  for i, item in enumerate(value):
+                      walk(item, f"{path}[{i}]")
+          walk(payload)
+
+          html = get(f"https://note.com/keibailuka/n/{note_key}")
+          terms = {}
+          for term in ("reaction", "like", "スキ", "thank"):
+              terms[term] = len(re.findall(term, html, re.I))
+
+          result = {
+              "note_key": note_key,
+              "api_top_keys": list(payload.keys()),
+              "data_keys": list((payload.get("data") or {}).keys()) if isinstance(payload.get("data"), dict) else [],
+              "metadata_matches": matches[:100],
+              "html_term_counts": terms,
+              "write_action_performed": False
+          }
+
+          body = "KEIBAILUKA_NOTE_PROBE_RESULT\n```json\n" + json.dumps(result, ensure_ascii=False, indent=2) + "\n```"
+          data = json.dumps({"body": body}).encode()
+          request = urllib.request.Request(
+              f"https://api.github.com/repos/{os.environ['GH_REPO']}/issues/{os.environ['ISSUE_NUMBER']}/comments",
+              data=data,
+              headers={"Authorization": f"Bearer {os.environ['GH_TOKEN']}", "Accept": "application/vnd.github+json", "Content-Type": "application/json"},
+              method="POST",
+          )
+          with urllib.request.urlopen(request, timeout=20):
+              pass
+          PY
