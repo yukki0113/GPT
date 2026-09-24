@@ -26,6 +26,8 @@ class FactLiteSqlitePublishWorkflowTest(unittest.TestCase):
         self.assertIn('"JRDB PWA Fact Lite Publish"', workflow)
         self.assertIn("github.event.workflow_run.conclusion == 'success'", workflow)
         self.assertIn("Fact Lite SQLite SHA-256 mismatch", workflow)
+        self.assertIn("download_release_assets", workflow)
+        self.assertIn("sleep $((attempt * 10))", workflow)
         self.assertNotIn("FACT_PARQUET_RELEASE_TAG", workflow)
         self.assertNotIn("fact-lite-parquet", workflow)
 
