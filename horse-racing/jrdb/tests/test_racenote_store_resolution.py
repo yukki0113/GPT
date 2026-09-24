@@ -35,14 +35,12 @@ def make_sqlite(path: Path) -> None:
 
 def args_for(
     analysis: Path | None,
-    mart: Path | None = None,
     manifest: Path | None = None,
     offline: bool = False,
     analysis_backend: str | None = None,
 ) -> argparse.Namespace:
     return argparse.Namespace(
         analysis=analysis,
-        mart=mart,
         store_manifest=manifest,
         store_cache=None,
         store_offline=offline,
@@ -56,11 +54,8 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
             analysis = Path(temp_dir) / "analysis.sqlite"
             make_sqlite(analysis)
             with patch.object(racenote_request.StoreResolver, "from_file") as from_file:
-                resolved_analysis, resolved_mart, report = (
-                    racenote_request.resolve_enrichment_sources(args_for(analysis, None))
-                )
+                resolved_analysis, report = racenote_request.resolve_enrichment_sources(args_for(analysis))
             self.assertEqual(resolved_analysis, analysis)
-            self.assertIsNone(resolved_mart)
             self.assertFalse(report["stats_mart"])
             self.assertFalse(report["stats_mart_required"])
             from_file.assert_not_called()
@@ -79,19 +74,10 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                 "from_file",
                 return_value=resolver,
             ) as from_file:
-                resolved_analysis, resolved_mart, report = (
-                    racenote_request.resolve_enrichment_sources(
-                        args_for(
-                            None,
-                            None,
-                            manifest,
-                            offline=True,
-                            analysis_backend="sqlite",
-                        )
-                    )
+                resolved_analysis, report = racenote_request.resolve_enrichment_sources(
+                    args_for(None, manifest, offline=True, analysis_backend="sqlite")
                 )
             self.assertEqual(resolved_analysis, analysis)
-            self.assertIsNone(resolved_mart)
             self.assertEqual(report["analysis"], str(analysis))
             self.assertFalse(report["stats_mart"])
             from_file.assert_called_once_with(manifest, cache_root=None)
@@ -100,19 +86,16 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                 offline=True,
             )
 
-    def test_deprecated_mart_is_ignored(self) -> None:
+    def test_current_resolver_has_no_mart_contract(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            analysis = root / "analysis.sqlite"
-            mart = root / "mart.sqlite"
+            analysis = Path(temp_dir) / "analysis.sqlite"
             make_sqlite(analysis)
-            make_sqlite(mart)
-            resolved_analysis, resolved_mart, report = (
-                racenote_request.resolve_enrichment_sources(args_for(analysis, mart))
+            resolved_analysis, report = racenote_request.resolve_enrichment_sources(
+                args_for(analysis)
             )
             self.assertEqual(resolved_analysis, analysis)
-            self.assertIsNone(resolved_mart)
-            self.assertTrue(report["deprecated_mart_ignored"])
+            self.assertFalse(report["stats_mart"])
+            self.assertNotIn("deprecated_mart_ignored", report)
 
     def test_store_error_maps_to_racenote_error(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -128,7 +111,7 @@ class RaceNoteStoreResolutionTest(unittest.TestCase):
                     "JRDB Store resolution failed: broken manifest",
                 ):
                     racenote_request.resolve_enrichment_sources(
-                        args_for(None, None, manifest)
+                        args_for(None, manifest)
                     )
 
     def test_missing_manifest_is_clear_when_store_is_required(self) -> None:
