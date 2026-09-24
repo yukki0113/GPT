@@ -42,7 +42,7 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
 
 ## Surfaces
 
-- `newspaper.html`: 既存Newspaper runtimeを共有、過去走3走固定、桃太郎3人欄を追加
+- `newspaper.html`: 既存Newspaper runtimeを共有、過去走5走固定、桃太郎3人欄を追加
 - `predictions.html`: りょーたS / おーじ回顧馬 / イルカの一覧
 - `fact-lite.html`: 既存Fact Lite runtimeと配布SQLiteを共有、OPFSだけ桃太郎専用
 
