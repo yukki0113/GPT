@@ -8,10 +8,17 @@ on:
       - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py'
       - 'horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py'
       - 'horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py'
+      - 'horse-racing/jrdb/src/audit_jrdb_edge_v03_incremental_shadow.py'
+      - 'horse-racing/jrdb/src/validate_jrdb_edge_semantic_hierarchy_v0_3.py'
+      - 'tools/data-storage/data_storage/materialize.py'
+      - 'tools/data-storage/tests/test_materialize.py'
       - 'horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py'
       - 'horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py'
       - 'horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py'
+      - 'horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_incremental_shadow.py'
+      - 'horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py'
       - '.github/workflows/jrdb_edge_forward_freeze_issue.yml'
+      - '.github/workflows/jrdb_edge_v03_incremental_shadow_issue.yml'
       - '.github/workflows/jrdb_edge_parquet_tests.yml'
   pull_request:
     paths:
@@ -20,10 +27,17 @@ on:
       - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py'
       - 'horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py'
       - 'horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py'
+      - 'horse-racing/jrdb/src/audit_jrdb_edge_v03_incremental_shadow.py'
+      - 'horse-racing/jrdb/src/validate_jrdb_edge_semantic_hierarchy_v0_3.py'
+      - 'tools/data-storage/data_storage/materialize.py'
+      - 'tools/data-storage/tests/test_materialize.py'
       - 'horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py'
       - 'horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py'
       - 'horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py'
+      - 'horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_incremental_shadow.py'
+      - 'horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py'
       - '.github/workflows/jrdb_edge_forward_freeze_issue.yml'
+      - '.github/workflows/jrdb_edge_v03_incremental_shadow_issue.yml'
       - '.github/workflows/jrdb_edge_parquet_tests.yml'
   workflow_dispatch:
 
@@ -49,7 +63,10 @@ jobs:
             horse-racing/jrdb/src/build_jrdb_edge_current_facts.py \
             horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py \
             horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py \
-            horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py
+            horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py \
+            horse-racing/jrdb/src/audit_jrdb_edge_v03_incremental_shadow.py \
+            horse-racing/jrdb/src/validate_jrdb_edge_semantic_hierarchy_v0_3.py \
+            tools/data-storage/data_storage/materialize.py
       - name: Run Edge Parquet regressions
         env:
           PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
@@ -59,4 +76,7 @@ jobs:
             horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py \
             horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
             horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
-            horse-racing/jrdb/tests/test_jrdb_edge_v02_recent_code_canonical.py
+            horse-racing/jrdb/tests/test_jrdb_edge_v02_recent_code_canonical.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_incremental_shadow.py \
+            horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py \
+            tools/data-storage/tests/test_materialize.py
