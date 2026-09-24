@@ -494,7 +494,7 @@ def enrich_bundles_shared(
         backend=analysis_backend,
     )
     try:
-        enriched_items = enrich_production_many(bases, backend, None, stats_window_years)
+        enriched_items = enrich_production_many(bases, backend, stats_window_years)
         outputs: list[Path] = []
         for bundle, (enriched, _warnings) in zip(bundles, enriched_items):
             target = output_dir / bundle.name
