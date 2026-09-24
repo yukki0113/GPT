@@ -149,22 +149,28 @@ Representative row counts:
 
 ## Full 2010–2025 gate
 
-Formal full-period audit is running under:
+Formal full-period audit completed PASS under:
 
 - Issue #1280
 - workflow: `rlt_historical_warehouse_audit_issue.yml`
 - run: `36042308232`
+- audit exit code: 0
+- Warehouse rebuild equivalence: PASS
+- Raw vs Warehouse Index Base: all 8 tables PASS
+- SQLite integrity: raw / warehouse / warehouse_repeat all `ok`
 
-The workflow:
+Full-period row counts:
 
-1. validates accepted final manifest/audit
-2. refetches original annual JRDB Raw
-3. builds legacy record-hash compatibility sidecar
-4. rebuilds Warehouse using frozen original semantics
-5. verifies rebuilt Warehouse is byte-identical to accepted assets
-6. runs full 2010–2025 Raw vs Warehouse Index Base dual-read
+- race_context: 55,268
+- race_result_context: 55,268
+- runner_pre: 781,161
+- runner_previous_link: 3,905,805
+- runner_result: 781,161
+- workout_main: 781,161
+- training_analysis: 781,161
+- horse_profile_observation: 780,835
 
-No production cutover is authorized until this run returns PASS.
+This closes the Historical Index Base equivalence gate. Production cutover still waits for the downstream non-regression gate.
 
 ## Downstream non-regression gate
 
@@ -202,8 +208,8 @@ WAREHOUSE_REBUILD_EQUIVALENCE         = PASS
 WAREHOUSE_TO_INDEX_BASE_ADAPTER       = IMPLEMENTED
 LEGACY_RECORD_HASH_COMPATIBILITY      = IMPLEMENTED
 REPRESENTATIVE_INDEX_BASE_EQUIVALENCE = PASS
-FULL_2010_2025_INDEX_BASE_EQUIVALENCE = RUNNING
-DOWNSTREAM_NONREGRESSION              = READY_NOT_RUN
+FULL_2010_2025_INDEX_BASE_EQUIVALENCE = PASS
+DOWNSTREAM_NONREGRESSION              = RUNNING
 RL_T_PRODUCTION_CUTOVER               = NOT_PERFORMED
 TRAINING_RESEARCH_UPSTREAM_CUTOVER    = NOT_PERFORMED
 2026_DAILY_ROUTE                      = UNCHANGED
@@ -235,3 +241,17 @@ On any mismatch:
 - resolve and rerun the failed gate
 
 No RL-T scientific semantics or 2026 daily semantics are changed by this migration.
+
+
+## Downstream execution status — 2026-09-25
+
+The formal downstream non-regression gate is now running:
+
+- Issue #1294
+- workflow: `rlt_historical_warehouse_downstream_issue.yml`
+- run: `36046318450`
+
+It will revalidate the accepted Warehouse and full Index Base equivalence before comparing
+RunPerf / Official RunPerf / Training Research / Stage1b / frozen RL-T v0.2 fingerprint.
+
+No production cutover has been performed yet.
