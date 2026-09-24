@@ -64,6 +64,7 @@
 - `newspaper.html` — UI shell / shared dialog
 - `newspaper-day.js` — current day package取得・切替
 - `newspaper-v4.js` 以降 — 新聞表の段階的な表示互換・override
+- `NEWSPAPER_HISTORY_COMPACT.md` — 個人/桃太郎で共有する過去走compact表示の設計・段階導入記録
 - `newspaper-v6.js` — RaceNoteコメント等の既存dialog利用
 - `newspaper-v7.js` — 特注メモ表示
 - `newspaper-v8.js` — source status表示拡張
@@ -102,6 +103,21 @@ Fact Liteは1出走1行を保持する配布用SQLiteです。年/月/場/芝ダ
 レース名は配布時のBAC lookupを利用します。前走距離・前走クラスをAnalysis内で解決できない場合は推測せず不明扱いです。
 
 ## Newspaper display contracts
+
+### Past-run compact display
+
+過去走のcompact表示は `newspaper-v4.js/css` の共有runtimeで提供する。
+
+- config: `JRDB_PWA_CONFIG.newspaperHistoryDisplayMode`
+- `standard`: 従来表示
+- `compact`: 比較用の高密度表示
+- 未指定時は `standard` へfail-safe
+- 個人Kenshow_LaboはTurn 2で `compact` を先行有効化
+- 桃太郎はTurn 3まで未有効化
+- compactで省略した詳細は既存の過去走dialogへ保持
+
+詳細設計は `NEWSPAPER_HISTORY_COMPACT.md` を参照する。
+
 
 ### Eval analysis comment
 
