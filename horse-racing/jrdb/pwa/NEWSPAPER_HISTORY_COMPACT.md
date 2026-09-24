@@ -5,7 +5,7 @@
 - Turn 1: completed
 - Turn 2: completed
 - Turn 3: completed
-- Turn 4: not started
+- Turn 4: tuning pass 1 implemented / device verification pending
 - Turn 5: not started
 
 This document is the durable design record for the shared Newspaper past-run compact display.
@@ -92,10 +92,13 @@ Momotaro Newspaper:
 Shared current values:
 
 - desktop/tablet compact history width: 124px
-- phone width at max-width 640px: 120px
+- phone width at max-width 640px: 94px
+- phone horse-number width: 28px
+- phone horse-name width: 82px
+- phone basic-info width: 76px
 - compact padding and font metrics are controlled by CSS custom properties
 
-The exact final phone density remains subject to Turn 4 real-device adjustment.
+Turn 4 tuning pass 1 used the iPhone screenshot as the reference. The previous 120px phone history width was insufficient for the requested four-column-at-zoom target.
 
 ## Detail preservation
 
@@ -122,11 +125,29 @@ It must not delete Momotaro caches or other same-origin cache namespaces.
 
 Turn 3では桃太郎専用のhistory幅上書きは追加しない。共有スマホ幅120pxを基準にし、実機での視認性・4走同時認識の調整はTurn 4で行う。
 
+## Turn 4
+
+iPhone実機スクリーンショットを基準に、mobile compactを再調整した。
+
+変更:
+
+- history: 120px -> 94px
+- horse number: 32px -> 28px
+- horse name: 103px -> 82px
+- basic info: 118px -> 76px
+- compact時のbasic infoは父・脚質を省略し、性齢/斤量・騎手を優先
+- compact historyのfont / line-height / paddingを一段圧縮
+- 桃太郎の予想group headerは共有230pxを継承せず、実際の4列合計に合わせ130pxへ固定
+
+桃太郎の各予想列幅 32 / 32 / 32 / 34px は変更しない。
+
+このpassは実機スクショからの調整であり、最終的な4走同時視認は再度iPhoneで確認する。必要ならTurn 4 pass 2として数px単位で追い込む。
+
 ## Next turn
 
-Turn 4:
+Turn 4 device verification / Turn 5:
 
-- iPhone実機で通常倍率・縮小時を確認
-- 4走程度が同時に認識できるか確認
-- レース名、着順、時計、上がりの潰れを確認
-- 必要な場合だけ共有CSS変数または桃太郎surface差分を数px単位で調整
+- 更新後のiPhoneスクリーンショット確認
+- 4走程度の同時視認性確認
+- 文字潰れ・詳細button・race name ellipsis確認
+- 問題がなければTurn 5で最終回帰・運用確定
