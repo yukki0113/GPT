@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v57";
+const CACHE_NAME = "jrdb-pwa-shell-v58";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -8,7 +8,7 @@ const APP_SHELL = [
   "./newspaper.html",
   "./style.css",
   "./newspaper.css?v=3",
-  "./newspaper-v4.css?v=6",
+  "./newspaper-v4.css?v=7",
   "./newspaper-v5.css?v=1",
   "./newspaper-v6.css?v=1",
   "./newspaper-v9.css?v=2",
@@ -18,7 +18,7 @@ const APP_SHELL = [
   "./newspaper.js?v=3",
   "./newspaper-v2.js?v=3",
   "./newspaper-day.js?v=4",
-  "./newspaper-v4.js?v=7",
+  "./newspaper-v4.js?v=8",
   "./newspaper-v5.js?v=1",
   "./newspaper-v6.js?v=1",
   "./newspaper-v7.js?v=4",
@@ -44,7 +44,12 @@ self.addEventListener("activate", function (event) {
     caches.keys().then(function (cacheNames) {
       return Promise.all(
         cacheNames.map(function (cacheName) {
-          if (cacheName === CACHE_NAME) return Promise.resolve(false);
+          if (cacheName === CACHE_NAME) {
+            return Promise.resolve(false);
+          }
+          if (!cacheName.startsWith("jrdb-pwa-shell-")) {
+            return Promise.resolve(false);
+          }
           return caches.delete(cacheName);
         })
       );
