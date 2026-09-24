@@ -473,6 +473,39 @@ day_track_adjustment_confidence
 review_logic_version
 ```
 
+### Pace reference reconstruction
+
+SED's first3f/last3f values are horse-level observations. Do not treat the fastest horse closing split as the race closing 3F.
+
+Use the leader-gap fields to reconstruct race-level reference sectionals from multiple horses.
+
+For each valid horse:
+
+```text
+opening_candidate =
+  horse_first3f_sec
+  - first3f_leader_diff_sec
+```
+
+At the first-3F point, this estimates the elapsed time of the leader. The race opening reference is the robust median of valid candidates.
+
+For the closing reference, first derive the horse's finish deficit from own time:
+
+```text
+finish_gap_sec =
+  horse_time_sec
+  - winner_time_sec
+
+closing_candidate =
+  last3f_leader_diff_sec
+  + horse_last3f_sec
+  - finish_gap_sec
+```
+
+This estimates the winner's finish time measured from the moment the leader reached the last-3F point. The race closing reference is the robust median of valid candidates.
+
+Persist candidate count and dispersion. If candidates disagree beyond an audited tolerance, confidence is lowered or the reference remains NULL.
+
 ### Pace shape
 
 Define the signed balance so that a larger positive value means a more front-loaded race:
@@ -483,7 +516,7 @@ pace_balance_sec =
   - first3f_reference_sec
 ```
 
-When the opening 3F is faster than the closing 3F, this value is positive. This sign convention is normative.
+When the reconstructed opening 3F is faster than the reconstructed closing 3F, this value is positive. This sign convention is normative.
 
 Do not compare the raw balance across unrelated distances.
 
