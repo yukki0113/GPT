@@ -35,7 +35,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         script = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
 
         self.assertIn("過去5走", html)
-                self.assertNotIn('data-history-count="8"', html)
+        self.assertNotIn('data-history-count="8"', html)
         self.assertIn("historyCount = 5", script)
         self.assertIn('{ length: 5 }', script)
         self.assertIn("3人の予想・短評", html)
