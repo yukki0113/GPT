@@ -15,6 +15,7 @@ from jrdb_postrace_review_standard import (  # noqa: E402
     class_equivalent,
     day_track_adjustment_seconds,
     estimate_day_track_adjustment,
+    leave_one_out_day_track_adjustments,
     normalized_time_delta_per_1000m,
     standard_confidence,
 )
@@ -66,6 +67,44 @@ class JrdbPostRaceReviewStandardTest(unittest.TestCase):
         self.assertEqual(result["distance_count"], 2)
         self.assertAlmostEqual(
             float(result["adjustment_per_1000m_sec"]),
+            -0.5625,
+        )
+
+    def test_leave_one_out_day_adjustment_excludes_target_race(self) -> None:
+        races = [
+            {
+                "race_key": "R1",
+                "actual_time_sec": 95.0,
+                "standard_time_sec": 96.0,
+                "distance_m": 1600,
+            },
+            {
+                "race_key": "R2",
+                "actual_time_sec": 71.4,
+                "standard_time_sec": 72.0,
+                "distance_m": 1200,
+            },
+            {
+                "race_key": "R3",
+                "actual_time_sec": 119.2,
+                "standard_time_sec": 120.0,
+                "distance_m": 2000,
+            },
+        ]
+
+        result = leave_one_out_day_track_adjustments(races)
+
+        self.assertEqual(result["R1"]["race_count"], 2)
+        self.assertAlmostEqual(
+            float(result["R1"]["adjustment_per_1000m_sec"]),
+            -0.45,
+        )
+        self.assertAlmostEqual(
+            float(result["R2"]["adjustment_per_1000m_sec"]),
+            -0.5125,
+        )
+        self.assertAlmostEqual(
+            float(result["R3"]["adjustment_per_1000m_sec"]),
             -0.5625,
         )
 
