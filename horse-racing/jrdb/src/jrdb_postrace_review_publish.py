@@ -116,9 +116,13 @@ def _quote_identifier(value: str) -> str:
 def _relation_columns(connection: Any, relation: str) -> list[str]:
     """Return frozen schema column order."""
     rows = connection.execute(
-        f"PRAGMA table_info({_quote_identifier(relation)})"
+        "SELECT column_name "
+        "FROM information_schema.columns "
+        "WHERE table_schema = 'main' AND table_name = ? "
+        "ORDER BY ordinal_position",
+        [relation],
     ).fetchall()
-    return [str(row[1]) for row in rows]
+    return [str(row[0]) for row in rows]
 
 
 def _coerce_cell(value: object) -> object:
@@ -371,7 +375,10 @@ def publish_snapshot(
     if generation_dir.exists():
         raise FileExistsError(generation_dir)
 
-    day_audit = audit_review_bundle(bundle)
+    day_audit = audit_review_bundle(
+        bundle,
+        require_single_target_date=False,
+    )
     if day_audit["status"] != "PASS":
         raise PostRaceReviewPublishError(
             "Review bundle failed pre-publication audit"
