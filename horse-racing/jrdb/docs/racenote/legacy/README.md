@@ -1,4 +1,72 @@
-# RaceNote legacy prediction assets
+# RaceNote legacy asset boundary
+
+STATUS: LEGACY / AUDIT-ONLY
+CURRENT: docs/racenote/README.md
+
+This document is the repository boundary for retained legacy assets. They remain for
+historical reproducibility, settlement/freeze audit, rollback investigation, benchmark
+comparison, or compatibility support. They are not the current RaceNote prediction or
+storage path.
+
+## Current production invariants
+
+- Analysis backend: Parquet/DuckDB.
+- Historical backend: accepted Historical Warehouse.
+- 2026 backend: PACI.
+- Stats Mart is not a RaceNote dependency.
+- Analysis SQLite is compatibility/audit/rollback only; no silent fallback.
+- Archive is an optional immutable delivery cache, not the historical rebuild source.
+- Forecast Gen0 is current; legacy deterministic prediction must not be fed into Gen0.
+- Raw direct is explicit audit/rollback/boundary fallback only.
+
+## Retained inventory beyond prediction modules
+
+### Stats Mart / deprecated mart layer
+
+- src/build_jrdb_stats_mart.py
+- src/refresh_jrdb_stats_mart_year.py
+- schema/jrdb_stats_mart_schema_v1.sql
+- schema/jrdb_stats_mart_schema_v1_1.sql
+- docs/README_build_jrdb_stats_mart.md
+- docs/README_post_race_analysis_mart_refresh.md
+
+These assets are retained for historical reproducibility only. Current RaceNote derives
+rolling statistics directly from Analysis Parquet using DuckDB SQL bulk aggregation. Do not
+add Stats Mart inputs to the current router, workflow, or enrichment contract.
+
+### Archive delivery cache
+
+- src/racenote_archive.py
+- src/racenote_archive_backend.py
+- src/resolve_racenote_archive_release.py
+- src/build_racenote_archive*.py
+- src/backfill_racenote_archive_year.py
+- Archive publish/backfill workflows and design documents
+
+Archive status is OPTIONAL CACHE / NOT CANONICAL SOURCE. If an archive shard is absent or
+rejected, the router rebuilds from the accepted Historical Warehouse for 2010-2025.
+Archive maintenance workflows are not current request workflows.
+
+### SQLite Analysis compatibility
+
+- src/materialize_jrdb_analysis_sqlite.py
+
+This materializer is retained for equivalence audit, rollback, and explicit legacy consumers.
+It is not a RaceNote production prerequisite. Production defaults to Parquet/DuckDB and does
+not silently fall back to SQLite.
+
+## Import and operation boundary
+
+- Current request/router/enrichment code may depend on current adapters and the current
+  Parquet backend only.
+- Legacy prediction modules must not be imported by racenote_forecast_gen0*.py.
+- Legacy runners should be invoked only through explicit/manual legacy workflows.
+- Deletion requires separate authorization after current imports, workflows, docs, tests,
+  rollback need, and reproducibility need are all proven to be zero.
+
+---
+
+## Historical prediction assets
 
 Status: HISTORICAL / REPRODUCIBILITY
 Last reviewed: 2026-09-13

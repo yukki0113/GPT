@@ -35,6 +35,8 @@ from jrdb_racenote_warehouse_reader import (
     WarehouseRaceNoteReaderError,
 )
 from jrdb_store import StoreError, StoreResolver, manifest_path_from_args
+from racenote_analysis_backend import AnalysisBackendError, open_analysis_backend
+from racenote_history_enrichment import enrich_production_many
 
 HERE = Path(__file__).resolve().parent
 FETCH_PACI = HERE / "fetch_jrdb_paci.py"
@@ -92,8 +94,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--venue", default=None, help="Optional JRA venue")
     parser.add_argument("--race", type=int, default=None, help="Optional race number; requires venue")
     parser.add_argument("--today", default=None, help="Router-date override for tests")
-    parser.add_argument("--analysis", type=Path, default=None, help="Optional explicit Analysis Lite SQLite")
-    parser.add_argument("--mart", type=Path, default=None, help=argparse.SUPPRESS)
+    parser.add_argument("--analysis-root", type=Path, default=None, help="Verified Analysis Parquet current root")
+    parser.add_argument("--analysis", type=Path, default=None, help=argparse.SUPPRESS)
+    parser.add_argument("--analysis-backend", choices=("parquet", "sqlite"), default="parquet")
     parser.add_argument("--store-manifest", type=Path, default=None, help="JRDB Store manifest; falls back to JRDB_STORE_MANIFEST")
     parser.add_argument("--store-cache", type=Path, default=None, help="Optional JRDB Store cache root")
     parser.add_argument("--store-offline", action="store_true", help="Resolve Store artifacts from verified cache only")
@@ -151,10 +154,21 @@ def build_plan(request: RaceNoteRequest) -> dict:
         "base_backend": base_backend,
         "enrichment": {
             "analysis": True,
+            "analysis_backend": "parquet_duckdb",
+            "sqlite_materialization_required": False,
             "stats_mart": False,
             "stats_mart_required": False,
             "as_of_exclusive": request.target_date.isoformat(),
             "future_leakage_rule": "Never use target-date result rows or later rows.",
+        },
+        "phase_b_markers": {
+            "RACENOTE_PHASE_B_PARQUET_NATIVE": "PASS",
+            "RACENOTE_ANALYSIS_BACKEND": "PARQUET_DUCKDB",
+            "RACENOTE_SQLITE_MATERIALIZATION_REQUIRED": False,
+            "RACENOTE_STATS_MART_ACTIVE_DEPENDENCY": False,
+            "RACENOTE_HISTORICAL_BACKEND": "HISTORICAL_WAREHOUSE",
+            "RACENOTE_2026_BACKEND": "PACI",
+            "RACENOTE_OUTPUT_SEMANTICS_UNCHANGED": True,
         },
         "historical_backend_policy": {
             "preferred": "racenote_archive",
@@ -183,49 +197,42 @@ def validate_sqlite(path: Path, label: str) -> None:
     finally:
         connection.close()
 
-def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, None, dict]:
-    """Resolve the required Analysis canonical source.
-
-    --mart is retained as a deprecated CLI compatibility option, but it is
-    intentionally ignored and never resolved, validated, or downloaded.
-    """
-    analysis = args.analysis
-    deprecated_mart = getattr(args, "mart", None)
-    if analysis is not None:
-        validate_sqlite(analysis, "Analysis canonical")
-        return analysis, None, {
-            "mode": "explicit_path",
-            "analysis": "explicit",
-            "stats_mart": False,
-            "stats_mart_required": False,
-            "deprecated_mart_ignored": deprecated_mart is not None,
-        }
-
-    try:
-        manifest_path = manifest_path_from_args(args.store_manifest)
-        resolver = StoreResolver.from_file(
-            manifest_path,
-            cache_root=args.store_cache,
-        )
-        analysis = resolver.resolve(
-            "jrdb://analysis/current",
-            offline=args.store_offline,
-        )
-    except StoreError as exc:
-        raise RaceNoteRequestError(f"JRDB Store resolution failed: {exc}") from exc
-
-    if analysis is None:
+def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, dict]:
+    """Resolve one verified Analysis source without automatic fallback."""
+    backend_name = getattr(args, "analysis_backend", None)
+    if backend_name is None:
+        backend_name = "sqlite" if getattr(args, "analysis", None) is not None else "parquet"
+    analysis_root = getattr(args, "analysis_root", None)
+    analysis_db = getattr(args, "analysis", None)
+    source = analysis_root if backend_name == "parquet" else analysis_db
+    if source is None:
+        try:
+            manifest_path = manifest_path_from_args(args.store_manifest)
+            resolver = StoreResolver.from_file(manifest_path, cache_root=args.store_cache)
+            source = resolver.resolve("jrdb://analysis/current", offline=args.store_offline)
+        except StoreError as exc:
+            raise RaceNoteRequestError(f"JRDB Store resolution failed: {exc}") from exc
+    if source is None:
         raise RaceNoteRequestError("Analysis canonical resolution is incomplete")
-    validate_sqlite(analysis, "Analysis canonical")
-    return analysis, None, {
-        "mode": "store_manifest",
-        "manifest_file": manifest_path.name,
-        "analysis": "jrdb://analysis/current",
+    try:
+        backend = open_analysis_backend(
+            analysis_root=source if backend_name == "parquet" else None,
+            analysis_db=source if backend_name == "sqlite" else None,
+            backend=backend_name,
+        )
+        source_info = dict(backend.source_info)
+        backend.close()
+    except AnalysisBackendError as exc:
+        raise RaceNoteRequestError(str(exc)) from exc
+    return source, {
+        "mode": "explicit_path" if analysis_root or analysis_db else "store_manifest",
+        "analysis": str(source),
+        "analysis_backend": "parquet_duckdb" if backend_name == "parquet" else "sqlite_compatibility",
         "stats_mart": False,
         "stats_mart_required": False,
-        "deprecated_mart_ignored": deprecated_mart is not None,
+        "sqlite_materialization_required": False,
+        "source": source_info,
     }
-
 
 def try_archive_base(
     archive_path: Path | None,
@@ -275,7 +282,7 @@ def try_archive_base(
     }
 
 
-def target_race_keys(analysis: Path, request: RaceNoteRequest) -> set[bytes]:
+def target_race_keys(analysis: Path, request: RaceNoteRequest, backend_name: str) -> set[bytes]:
     """Resolve target race keys without using target result values."""
     sql = "SELECT DISTINCT race_key FROM fact_entry_result_lite WHERE race_date=?"
     parameters: list[object] = [request.target_date.isoformat()]
@@ -291,11 +298,19 @@ def target_race_keys(analysis: Path, request: RaceNoteRequest) -> set[bytes]:
     if request.race_no is not None:
         sql += " AND race_no=?"
         parameters.append(request.race_no)
-    connection = sqlite3.connect(analysis)
     try:
-        rows = connection.execute(sql, parameters).fetchall()
+        backend = open_analysis_backend(
+            analysis_root=analysis if backend_name == "parquet" else None,
+            analysis_db=analysis if backend_name == "sqlite" else None,
+            backend=backend_name,
+        )
+        table = "analysis_fact" if backend_name == "parquet" else "fact_entry_result_lite"
+        rows = backend.execute(sql.replace("fact_entry_result_lite", table), parameters).fetchall()
+    except AnalysisBackendError as exc:
+        raise RaceNoteRequestError(str(exc)) from exc
     finally:
-        connection.close()
+        if "backend" in locals():
+            backend.close()
     race_keys = {str(row[0]).encode("ascii") for row in rows if row[0]}
     if not race_keys:
         raise RaceNoteRequestError("No target races found in Analysis Lite for request")
@@ -344,7 +359,7 @@ def iter_records(zip_path: Path, prefix: str) -> Iterable[bytes]:
         raise RaceNoteRequestError(f"No {prefix} member in {zip_path}")
 
 
-def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Path, destination: Path, force_fetch: bool) -> dict:
+def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Path, analysis_backend: str, destination: Path, force_fetch: bool) -> dict:
     """Build target-date PACI-equivalent input from annual Raw.
 
     BAC/KYI/CHA/CYB are selected by target race key. ZED/ZKB are selected only by
@@ -355,7 +370,7 @@ def build_historical_paci(raw_dir: Path, request: RaceNoteRequest, analysis: Pat
             raw_dir=raw_dir,
             target_year=request.target_date.year,
             short_date=request.target_date.strftime("%y%m%d"),
-            race_keys=target_race_keys(analysis, request),
+            race_keys=target_race_keys(analysis, request, analysis_backend),
             destination=destination,
             ensure_history=lambda year, kinds: ensure_historical_raw(
                 year, raw_dir, force_fetch, kinds
@@ -448,17 +463,50 @@ def select_bundles(bundle_dir: Path, request: RaceNoteRequest) -> list[Path]:
     return selected
 
 
-def enrich_bundle(bundle: Path, analysis: Path, output_dir: Path, stats_window_years: int) -> Path:
+def enrich_bundle(bundle: Path, analysis: Path, analysis_backend: str, output_dir: Path, stats_window_years: int) -> Path:
     """Add production Analysis/Mart enrichment and write a stable v1.0 bundle."""
     target = output_dir / bundle.name
     command = [
-        sys.executable, str(ENRICHER), "--bundle", str(bundle), "--analysis", str(analysis),
-        "--output", str(target), "--stats-window-years", str(stats_window_years),
+        sys.executable, str(ENRICHER), "--bundle", str(bundle),
+        "--analysis-backend", analysis_backend,
+        "--analysis-root" if analysis_backend == "parquet" else "--analysis",
+        str(analysis), "--output", str(target),
+        "--stats-window-years", str(stats_window_years),
     ]
     run(command)
     if not target.is_file():
         raise RaceNoteRequestError(f"Enriched bundle missing: {target}")
     return target
+
+
+def enrich_bundles_shared(
+    bundles: list[Path],
+    analysis: Path,
+    analysis_backend: str,
+    output_dir: Path,
+    stats_window_years: int,
+) -> list[Path]:
+    """Enrich a request in one process with one validated backend connection."""
+    bases = [json.loads(path.read_text(encoding="utf-8")) for path in bundles]
+    backend = open_analysis_backend(
+        analysis_root=analysis if analysis_backend == "parquet" else None,
+        analysis_db=analysis if analysis_backend == "sqlite" else None,
+        backend=analysis_backend,
+    )
+    try:
+        enriched_items = enrich_production_many(bases, backend, stats_window_years)
+        outputs: list[Path] = []
+        for bundle, (enriched, _warnings) in zip(bundles, enriched_items):
+            target = output_dir / bundle.name
+            metadata = enriched.setdefault("metadata", {}).setdefault("history_enrichment", {})
+            metadata["analysis_backend"] = backend.source_info.get("backend", "sqlite")
+            metadata["analysis_source"] = {**backend.source_info, **backend.metrics()}
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(enriched, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            outputs.append(target)
+        return outputs
+    finally:
+        backend.close()
 
 
 def package_output(
@@ -502,7 +550,8 @@ def main() -> int:
     if args.plan_only:
         return 0
 
-    analysis, _deprecated_mart, enrichment_resolution = resolve_enrichment_sources(args)
+    analysis, enrichment_resolution = resolve_enrichment_sources(args)
+    analysis_backend = args.analysis_backend
     plan["enrichment_source_resolution"] = enrichment_resolution
     request_root = args.output / request.compact_date
     work_dir = request_root / "work"
@@ -548,7 +597,7 @@ def main() -> int:
                 )
                 paci_path = request_root / f"PACI_REBUILT_{request.compact_date}.zip"
                 reconstruction = build_historical_paci(
-                    args.raw_dir, request, analysis, paci_path, args.force_fetch,
+                    args.raw_dir, request, analysis, analysis_backend, paci_path, args.force_fetch,
                 )
                 reconstruction["fallback_reason"] = "pre_2010_previous_result_boundary"
                 plan["base_backend"] = "historical_raw_boundary_fallback"
@@ -563,15 +612,20 @@ def main() -> int:
         "archive": archive_resolution,
     }
     selected = select_bundles(base_dir, request)
-    generated = [
-        enrich_bundle(
-            bundle,
+    if analysis_backend == "parquet":
+        generated = enrich_bundles_shared(
+            selected,
             analysis,
+            analysis_backend,
             final_dir,
             args.stats_window_years,
         )
-        for bundle in selected
-    ]
+    else:
+        # Keep the compatibility route as the legacy per-bundle comparator.
+        generated = [
+            enrich_bundle(bundle, analysis, analysis_backend, final_dir, args.stats_window_years)
+            for bundle in selected
+        ]
     zip_path = package_output(
         final_dir,
         request,

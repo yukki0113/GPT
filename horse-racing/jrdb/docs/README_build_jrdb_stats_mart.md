@@ -1,3 +1,6 @@
+STATUS: LEGACY / HISTORICAL REPRODUCIBILITY ONLY
+DO NOT USE FOR CURRENT RACENOTE
+
 # JRDB Stats Mart Builder v1.1
 
 `build_jrdb_stats_mart.py` creates compact yearly pre-aggregated statistics from one or more non-overlapping Analysis Lite shards.

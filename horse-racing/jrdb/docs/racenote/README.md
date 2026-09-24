@@ -2,6 +2,19 @@
 
 ## 1. Current architecture
 
+Current production path:
+
+    2010-2025 accepted Historical Warehouse / 2026 PACI
+      -> RaceNote base bundle
+      -> Analysis Parquet canonical
+      -> DuckDB direct enrichment
+      -> RaceNote v1.0 bundle
+      -> Forecast Gen0 / Freeze / Guard / downstream delivery
+
+Stats Mart is legacy-only. Analysis SQLite is explicit audit/rollback compatibility only.
+Archive is an optional immutable delivery cache and is never the historical source of truth.
+
+
 RaceNote is a facts/evidence/provenance layer for GPT comparison and prediction.
 
     PACI / Historical Warehouse
@@ -31,7 +44,10 @@ All history statistics are computed as-of-exclusive from Analysis canonical. Exi
 
 ## 4. Legacy boundary
 
-v0.2 control, v1.1-P gated prediction, Edge policy, and related frozen outputs remain historical reproducibility/benchmark assets. Their prediction meaning is not changed by this Phase A cutover. Only RaceNote input compatibility may be updated where required.
+The complete retained-asset inventory and import boundary is docs/racenote/legacy/README.md.
+v0.2 control, v1.1-P gated prediction, Edge policy, and related frozen outputs remain
+historical reproducibility/benchmark assets. They are not current Forecast Gen0 logic,
+and their output is not an automatic fallback or current prediction input.
 
 ## 5. Operating rules
 

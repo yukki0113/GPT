@@ -1,3 +1,6 @@
+STATUS: HISTORICAL / LEGACY / SUPERSEDED FOR RACENOTE CURRENT
+CURRENT: docs/racenote/README.md
+
 # JRDB 開催後 Analysis / Fact Lite / Pages 更新
 
 ## 正本と責務

@@ -32,9 +32,6 @@ def test_prior_and_target_year_stats_read_analysis_only():
 
     result = engine.as_of_summary(
         analysis=analysis,
-        mart=None,
-        mart_table="ignored_legacy_table",
-        mart_column="ignored_legacy_column",
         analysis_column="sire_name",
         dimension_value="Sire-A",
         race_date="2025-06-01",

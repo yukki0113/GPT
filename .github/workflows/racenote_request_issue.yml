@@ -30,6 +30,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install gdown
+          python -m pip install -r tools/data-storage/requirements.txt
 
       - name: Parse request
         env:
@@ -128,7 +129,7 @@ jobs:
               file.write(f'RAW_DIR={raw_dir}\n')
           PY
 
-      - name: Download Analysis and supplied Raw cache
+      - name: Download Analysis Parquet current and supplied Raw cache
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -137,69 +138,51 @@ jobs:
           import os
           import shutil
           import subprocess
-          import zipfile
+          import tarfile
           from pathlib import Path
 
           request = json.loads(Path('/tmp/racenote_request.json').read_text(encoding='utf-8'))
+          analysis_root = Path('/tmp/jrdb_analysis_parquet')
+          analysis_root.mkdir(parents=True, exist_ok=True)
 
-          def validate_sqlite(output: Path, label: str) -> None:
-              with output.open('rb') as handle:
-                  header = handle.read(16)
-              if header != b'SQLite format 3\x00':
-                  raise SystemExit(f'{label} is not a SQLite database: {output}')
-
-          def materialize_sqlite(source: Path, output: Path, label: str) -> None:
-              if zipfile.is_zipfile(source):
-                  with zipfile.ZipFile(source) as archive:
-                      bad_member = archive.testzip()
-                      if bad_member is not None:
-                          raise SystemExit(f'{label} ZIP has bad member: {bad_member}')
-                      members = [
-                          name for name in archive.namelist()
-                          if not name.endswith('/') and Path(name).name.lower().endswith('.sqlite')
-                      ]
-                      if len(members) != 1:
-                          raise SystemExit(
-                              f'{label} ZIP must contain exactly one SQLite member; found {members}'
-                          )
-                      with archive.open(members[0]) as input_file, output.open('wb') as target:
-                          shutil.copyfileobj(input_file, target, 1024 * 1024)
-              else:
-                  shutil.copy2(source, output)
-              validate_sqlite(output, label)
-
-          def download_sqlite(url: str, output: Path, label: str) -> None:
-              downloaded = output.with_suffix(output.suffix + '.download')
-              subprocess.run(['gdown', url, '-O', str(downloaded)], check=True)
-              materialize_sqlite(downloaded, output, label)
-              downloaded.unlink(missing_ok=True)
+          def extract_parquet_archive(source: Path) -> None:
+              if not tarfile.is_tarfile(source):
+                  raise SystemExit(f'Analysis source must be a Parquet tar archive: {source}')
+              with tarfile.open(source, 'r:*') as archive:
+                  members = [member for member in archive.getmembers() if member.isfile()]
+                  if any(Path(member.name).is_absolute() or '..' in Path(member.name).parts for member in members):
+                      raise SystemExit('Analysis archive contains an unsafe path')
+                  archive.extractall(analysis_root, filter='data')
+              if not (analysis_root / 'current.json').is_file():
+                  candidates = list(analysis_root.rglob('current.json'))
+                  if len(candidates) != 1:
+                      raise SystemExit('Analysis archive must contain exactly one current.json')
+                  candidate = candidates[0]
+                  for item in candidate.parent.iterdir():
+                      target = analysis_root / item.name
+                      if target.exists():
+                          raise SystemExit(f'Analysis archive layout collision: {target}')
+                      shutil.move(str(item), target)
+                  shutil.rmtree(candidate.parent, ignore_errors=True)
 
           support_run_id = request.get('support_artifact_run_id')
           support_artifact_name = request.get('support_artifact_name')
           if support_run_id is not None and support_artifact_name:
               support_root = Path('/tmp/racenote_support_artifact')
               subprocess.run(
-                  [
-                      'gh', 'run', 'download', str(support_run_id),
-                      '--repo', os.environ['GITHUB_REPOSITORY'],
-                      '--name', str(support_artifact_name),
-                      '--dir', str(support_root),
-                  ],
+                  ['gh', 'run', 'download', str(support_run_id), '--repo',
+                   os.environ['GITHUB_REPOSITORY'], '--name', str(support_artifact_name),
+                   '--dir', str(support_root)],
                   check=True,
               )
-              analysis_candidates = sorted(
-                  list(support_root.rglob('jrdb_analysis_*.sqlite.zip'))
-                  + list(support_root.rglob('jrdb_analysis_*.sqlite'))
-              )
-              if len(analysis_candidates) != 1:
-                  raise SystemExit(
-                      f'support artifact must contain exactly one Analysis candidate; found {analysis_candidates}'
-                  )
-              materialize_sqlite(
-                  analysis_candidates[0], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis support artifact'
-              )
+              candidates = sorted(support_root.rglob('analysis-parquet-canonical.tar.xz'))
+              if len(candidates) != 1:
+                  raise SystemExit(f'support artifact must contain one Parquet candidate; found {candidates}')
+              extract_parquet_archive(candidates[0])
           else:
-              download_sqlite(request['analysis_url'], Path('/tmp/jrdb_analysis.sqlite'), 'Analysis')
+              downloaded = Path('/tmp/jrdb_analysis_parquet.tar.xz')
+              subprocess.run(['gdown', request['analysis_url'], '-O', str(downloaded)], check=True)
+              extract_parquet_archive(downloaded)
 
           raw_dir = Path(request['raw_dir'])
           for key, url in request['raw_urls'].items():
@@ -279,7 +262,8 @@ jobs:
           command = [
               'python', 'horse-racing/jrdb/src/racenote_request.py',
               '--date', request['date'],
-              '--analysis', '/tmp/jrdb_analysis.sqlite',
+              '--analysis-root', '/tmp/jrdb_analysis_parquet',
+              '--analysis-backend', 'parquet',
               '--raw-dir', request['raw_dir'],
               '--output', request['output_dir'],
               '--stats-window-years', str(request['stats_window_years']),

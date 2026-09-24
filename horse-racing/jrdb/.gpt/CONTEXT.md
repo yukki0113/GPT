@@ -28,7 +28,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 ## Source of truth
 - Python / SQL / schema / docs: このGitディレクトリのlatest `main`
 - JRDB Raw ZIP / PACI: データ原典 / reproducibility source
-- Analysis canonical / annual Warehouse / research DB等の共有大容量artifact: Google Drive上の検証済み成果物。Stats Martはlegacy-only資産として必要時のみ明示的に扱う
+- Analysis canonical / annual Warehouse / research DB等の共有大容量artifact: Google Drive上の検証済み成果物。Stats MartはRaceNote current pathから除外されたlegacy-only資産として必要時のみ明示的に扱う
 - `src/jrdb_store.py`: local/CLI向けの任意のlogical resolver / verified cache。GPT標準のDrive連携層ではない
 - RaceNote Archive: immutable GitHub Release asset + release metadata
 - 秘密情報: 環境変数 / GitHub Secrets / ローカル `jrdb_secret.py`。Gitへ保存しない
@@ -69,10 +69,10 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - incremental date replacement: `src/update_jrdb_analysis_incremental.py`。対象日を `DELETE -> INSERT` で原子的に置換し、append重複を避ける。
 - Stats Mart: `src/build_jrdb_stats_mart.py` / `src/refresh_jrdb_stats_mart_year.py`。
 - PWA condition-summary Fact Lite: `src/build_jrdb_pwa_fact_lite.py`。
-- 開催後は **Analysis更新だけで完了扱いにしない**。更新済みAnalysisを正本保存・検証し、affected Stats Martを更新した後、同じ更新済みAnalysisからFact Liteを再生成・検証・配布し、条件別集計PWAを同一世代へ進める。
-- Analysis canonicalはyear-object ZSTD Parquet v1.3。`current.json`の切替前に全量監査、Drive再取得、compatibility SQLite materializationを必須とする。PWAはSQLite/sql.js/OPFSのまま。
+- 開催後のRaceNote更新は、検証済みAnalysis Parquet generationを正本として行う。Stats Mart refreshはRaceNote current pathの完了条件ではない。Fact Lite/PWA更新はそれぞれのcurrent contractに従う。
+- Analysis canonicalはyear-object ZSTD Parquet v1.3。RaceNoteはcurrent.jsonで解決したgenerationをDuckDB directで読む。Analysis SQLite materializationはRaceNoteのproduction prerequisiteではなく、equivalence/audit/rollback用に限定する。
 - JRDB認証取得、formal artifact chain、immutable publication証跡が必要な工程は `.gpt/WORKFLOW.md` のRoute D。既取得入力だけで完結する集計・監査はRoute Cを優先する。
-- 詳細は `docs/README_post_race_analysis_mart_refresh.md` とcurrent workflow/sourceを確認する。
+- 旧Stats Mart更新手順は historical/legacy asset であり、RaceNote current operationには使用しない。current workflow/sourceと `docs/racenote/legacy/README.md` を確認する。
 
 ## RaceNote request entrypoint
 - RaceNote取得は `src/racenote_request.py` を統一入口とする。ユーザー/GPTは原則として対象日、任意の開催場、任意のRだけを指定し、過去/当日/未来のsource分岐はrouter内部で行う。
@@ -116,7 +116,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 
 ## RaceNote Archive production
 - `RaceNote Archive` は過去RaceNoteの大量・反復取得用historical base delivery cache。詳細は `docs/RaceNote_Archive_Design_v0_1.md`、SQLite schemaは `schema/racenote_archive_schema_v1_0.sql`。
-- Archiveへ保存するのは **base RaceNote v0.2** のみ。Analysis canonical enrichment済みfinal v1.0は保存しない。request時にcurrent production enrichmentを適用してfinal v1.0を生成する。
+- Archive status: OPTIONAL CACHE / NOT CANONICAL SOURCE。Archiveへ保存するのは **base RaceNote v0.2** のみ。Analysis canonical enrichment済みfinal v1.0は保存しない。request時にcurrent production enrichmentを適用してfinal v1.0を生成する。
 - Archive schema v1.0はRaceNote bundle schema v1.0とは別version軸。1暦月1 SQLite、1race=1 zlib-compressed JSON BLOB、lookup keyは `race_date + venue_code + race_no`。
 - 過去requestはpublishable full-month Archiveを優先し、Archive未整備・resolver失敗・validation拒否時は既存safe fallback（2026+ PACI / <=2025 annual Raw reconstruction）を維持する。
 - ArchiveはRaw/Coreを置換しない。Raw/Coreはaudit/rebuild source truthのまま、Archiveは高速delivery層だけを担当する。
