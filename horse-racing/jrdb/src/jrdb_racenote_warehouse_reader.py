@@ -83,20 +83,73 @@ class WarehouseRaceNoteReader:
                 raise WarehouseRaceNoteReaderError(f"missing immutable asset: {path}")
         return paths
 
+    def _rows_on(
+        self,
+        connection: Any,
+        relation: str,
+        years: Iterable[int],
+        where: str = "",
+        params: list[object] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Read one logical relation across one or more annual Parquet objects.
+
+        The caller owns the DuckDB connection so a RaceNote build can reuse one
+        connection for all families. Filtering is expressed in DuckDB before
+        rows cross into Python, which avoids materializing whole annual
+        relations just to retain a small set of race/result keys.
+        """
+        normalized_years = sorted({int(year) for year in years})
+        if not normalized_years:
+            return []
+        paths = [
+            path
+            for year in normalized_years
+            for path in self._paths(relation, year)
+        ]
+        marks = ", ".join("?" for _ in paths)
+        query = f"SELECT * FROM read_parquet([{marks}], union_by_name=true)"
+        if where:
+            query += " WHERE " + where
+        values = [str(path) for path in paths] + list(params or [])
+        cursor = connection.execute(query, values)
+        names = [item[0] for item in cursor.description]
+        return [dict(zip(names, row)) for row in cursor.fetchall()]
+
     def _rows(self, relation: str, year: int) -> list[dict[str, Any]]:
+        """Compatibility wrapper for one-off annual relation reads."""
         try:
             import duckdb
         except ImportError as exc:
             raise WarehouseRaceNoteReaderError("RaceNote Warehouse reader requires duckdb") from exc
-        paths = self._paths(relation, year)
-        con = duckdb.connect(":memory:")
+        connection = duckdb.connect(":memory:")
         try:
-            marks = ", ".join("?" for _ in paths)
-            cursor = con.execute(f"SELECT * FROM read_parquet([{marks}], union_by_name=true)", [str(x) for x in paths])
-            names = [x[0] for x in cursor.description]
-            return [dict(zip(names, row)) for row in cursor.fetchall()]
+            return self._rows_on(connection, relation, [year])
         finally:
-            con.close()
+            connection.close()
+
+    @staticmethod
+    def _replace_filter_table(
+        connection: Any,
+        table: str,
+        values: Iterable[str],
+    ) -> None:
+        """Replace a small temporary key table used by bulk semi-joins."""
+        rows = [
+            (value,)
+            for value in sorted({str(value) for value in values if str(value)})
+        ]
+        connection.execute(f'DROP TABLE IF EXISTS "{table}"')
+        connection.execute(f'CREATE TEMP TABLE "{table}" (value VARCHAR PRIMARY KEY)')
+        if rows:
+            connection.executemany(f'INSERT INTO "{table}" VALUES (?)', rows)
+
+    @staticmethod
+    def _member_date_where(day: dt.date) -> tuple[str, list[object]]:
+        """Build a tolerant SQL predicate equivalent to Python date compaction."""
+        return (
+            "replace(CAST(source_member_date AS VARCHAR), '-', '') = ?",
+            [day.strftime("%Y%m%d")],
+        )
 
     @staticmethod
     def _member(rows: Iterable[dict[str, Any]], day: dt.date | None) -> list[dict[str, Any]]:
@@ -111,48 +164,225 @@ class WarehouseRaceNoteReader:
         require_historical_year(year)
         return out_of_warehouse_previous_keys(self._rows("kyi", year))
 
-    def build(self, day: dt.date, *, race_keys: Iterable[str] | None = None, source_member_date: dt.date | None = None) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+    def build(
+        self,
+        day: dt.date,
+        *,
+        race_keys: Iterable[str] | None = None,
+        source_member_date: dt.date | None = None,
+    ) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+        """Build one historical RaceNote day with bulk Parquet filtering."""
         year = require_historical_year(day.year)
-        keys = {str(x) for x in race_keys or []}
-        bac = self._member(self._rows("bac", year), source_member_date)
-        if keys:
-            bac = [x for x in bac if _text(x.get("race_key_raw")) in keys]
-        else:
-            bac = [x for x in bac if _text(x.get("race_date")) == day.isoformat()]
-            keys = {_text(x.get("race_key_raw")) for x in bac}
-        kyi = self._member(self._rows("kyi", year), source_member_date)
-        kyi = [x for x in kyi if _text(x.get("race_key_raw")) in keys]
-        if not bac or not kyi:
-            raise WarehouseRaceNoteReaderError(f"{day}: no Warehouse BAC/KYI rows")
-        boundary = out_of_warehouse_previous_keys(kyi)
-        if boundary:
-            raise WarehouseRaceNoteReaderError(f"{day}: out-of-coverage previous-result keys require explicit Raw boundary fallback: {boundary[:5]}")
-        previous = {_text(item.get("result_key")) for row in kyi for item in unflatten_parser_row("KYI", row).get("previous", []) if _text(item.get("result_key")) and _text(item.get("result_key")) != "0"*16}
-        parsed = {"BAC":select_raw_compatible_rows("BAC", bac), "KYI":select_raw_compatible_rows("KYI", kyi)}
-        for relation, family in (("cha","CHA"),("cyb","CYB")):
-            rows = [x for x in self._rows(relation, year) if _text(x.get("race_horse_key"))[:8] in keys]
-            parsed[family] = _raw_archive_order(rows, family)
-        previous_years = sorted(
-            {previous_result_year(value) for value in previous if previous_result_year(value) is not None}
-        )
-        for relation, family in (("zed","ZED"),("zkb","ZKB")):
-            rows: list[dict[str, Any]] = []
+        requested_keys = {str(value) for value in race_keys or [] if str(value)}
+
+        try:
+            import duckdb
+        except ImportError as exc:
+            raise WarehouseRaceNoteReaderError(
+                "RaceNote Warehouse reader requires duckdb"
+            ) from exc
+
+        connection = duckdb.connect(":memory:")
+        try:
+            # Preserve strict delivery-date semantics. With source_member_date,
+            # fetch that delivery once and apply an explicit race subset after
+            # the delivery check so previous failure behavior remains intact.
+            if source_member_date is not None:
+                member_where, member_params = self._member_date_where(
+                    source_member_date
+                )
+                bac = self._member(
+                    self._rows_on(
+                        connection,
+                        "bac",
+                        [year],
+                        member_where,
+                        member_params,
+                    ),
+                    source_member_date,
+                )
+            elif requested_keys:
+                self._replace_filter_table(
+                    connection,
+                    "target_race_keys",
+                    requested_keys,
+                )
+                bac = self._rows_on(
+                    connection,
+                    "bac",
+                    [year],
+                    "EXISTS ("
+                    "SELECT 1 FROM target_race_keys t "
+                    "WHERE t.value = race_key_raw"
+                    ")",
+                )
+            else:
+                bac = self._rows_on(
+                    connection,
+                    "bac",
+                    [year],
+                    "race_date = ?",
+                    [day.isoformat()],
+                )
+
+            if requested_keys:
+                keys = set(requested_keys)
+                bac = [
+                    row
+                    for row in bac
+                    if _text(row.get("race_key_raw")) in keys
+                ]
+            else:
+                bac = [
+                    row
+                    for row in bac
+                    if _text(row.get("race_date")) == day.isoformat()
+                ]
+                keys = {
+                    _text(row.get("race_key_raw"))
+                    for row in bac
+                    if _text(row.get("race_key_raw"))
+                }
+
+            self._replace_filter_table(connection, "target_race_keys", keys)
+
+            if source_member_date is not None:
+                member_where, member_params = self._member_date_where(
+                    source_member_date
+                )
+                kyi = self._member(
+                    self._rows_on(
+                        connection,
+                        "kyi",
+                        [year],
+                        member_where,
+                        member_params,
+                    ),
+                    source_member_date,
+                )
+                kyi = [
+                    row
+                    for row in kyi
+                    if _text(row.get("race_key_raw")) in keys
+                ]
+            else:
+                kyi = self._rows_on(
+                    connection,
+                    "kyi",
+                    [year],
+                    "EXISTS ("
+                    "SELECT 1 FROM target_race_keys t "
+                    "WHERE t.value = race_key_raw"
+                    ")",
+                )
+
+            if not bac or not kyi:
+                raise WarehouseRaceNoteReaderError(
+                    f"{day}: no Warehouse BAC/KYI rows"
+                )
+
+            boundary = out_of_warehouse_previous_keys(kyi)
+            if boundary:
+                raise WarehouseRaceNoteReaderError(
+                    f"{day}: out-of-coverage previous-result keys require "
+                    f"explicit Raw boundary fallback: {boundary[:5]}"
+                )
+
+            previous = {
+                _text(item.get("result_key"))
+                for row in kyi
+                for item in unflatten_parser_row("KYI", row).get("previous", [])
+                if _text(item.get("result_key"))
+                and _text(item.get("result_key")) != "0" * 16
+            }
+            parsed = {
+                "BAC": select_raw_compatible_rows("BAC", bac),
+                "KYI": select_raw_compatible_rows("KYI", kyi),
+            }
+
+            race_where = (
+                "EXISTS ("
+                "SELECT 1 FROM target_race_keys t "
+                "WHERE t.value = substr(race_horse_key, 1, 8)"
+                ")"
+            )
+            for relation, family in (("cha", "CHA"), ("cyb", "CYB")):
+                relation_rows = self._rows_on(
+                    connection,
+                    relation,
+                    [year],
+                    race_where,
+                )
+                parsed[family] = _raw_archive_order(relation_rows, family)
+
+            previous_years = sorted(
+                {
+                    previous_result_year(value)
+                    for value in previous
+                    if previous_result_year(value) is not None
+                }
+            )
             for source_year in previous_years:
                 if source_year not in self.covered_years:
                     raise WarehouseRaceNoteReaderError(
-                        f"{day}: previous-result year {source_year} not in accepted Warehouse coverage"
+                        f"{day}: previous-result year {source_year} not in "
+                        "accepted Warehouse coverage"
                     )
-                rows.extend(
-                    x for x in self._rows(relation, source_year)
-                    if _text(x.get("result_key")) in previous
+
+            self._replace_filter_table(
+                connection,
+                "target_result_keys",
+                previous,
+            )
+            result_where = (
+                "EXISTS ("
+                "SELECT 1 FROM target_result_keys t "
+                "WHERE t.value = result_key"
+                ")"
+            )
+            for relation, family in (("zed", "ZED"), ("zkb", "ZKB")):
+                relation_rows = self._rows_on(
+                    connection,
+                    relation,
+                    previous_years,
+                    result_where,
                 )
-            parsed[family] = select_raw_compatible_rows(family, rows)
+                parsed[family] = select_raw_compatible_rows(
+                    family,
+                    relation_rows,
+                )
+        finally:
+            connection.close()
+
         audit = Audit()
         builder = BundleBuilder(parsed, audit)
         horses: dict[str, list[dict[str, Any]]] = {}
         for row in parsed["KYI"]:
-            horses.setdefault(_text(row.get("race_key_raw")), []).append(row)
-        bundles = {_text(row["race_key_raw"]): builder.build(row, horses.get(_text(row["race_key_raw"]), [])) for row in parsed["BAC"]}
+            horses.setdefault(
+                _text(row.get("race_key_raw")),
+                [],
+            ).append(row)
+
+        bundles = {
+            _text(row["race_key_raw"]): builder.build(
+                row,
+                horses.get(_text(row["race_key_raw"]), []),
+            )
+            for row in parsed["BAC"]
+        }
         if audit.bundle_errors:
-            raise WarehouseRaceNoteReaderError("; ".join(audit.bundle_errors))
-        return bundles, {"generation_id":self.manifest["generation_id"],"race_count":len(bundles),"record_counts":{k:len(v) for k,v in parsed.items()},"joins":dict(builder.join),"previous_result_years":previous_years,"boundary_fallback_required":False}
+            raise WarehouseRaceNoteReaderError(
+                "; ".join(audit.bundle_errors)
+            )
+
+        return bundles, {
+            "generation_id": self.manifest["generation_id"],
+            "race_count": len(bundles),
+            "record_counts": {
+                family: len(rows)
+                for family, rows in parsed.items()
+            },
+            "joins": dict(builder.join),
+            "previous_result_years": previous_years,
+            "boundary_fallback_required": False,
+        }
