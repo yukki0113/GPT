@@ -60,12 +60,23 @@ jobs:
           for term in ("reaction", "like", "スキ", "thank"):
               terms[term] = len(re.findall(term, html, re.I))
 
+          html_matches = []
+          for pattern in (
+              r'like_appeal_(?:text|image)[^<>{}]{0,300}',
+              r'reaction_(?:text|image(?:_url)?)[^<>{}]{0,300}',
+          ):
+              for match in re.finditer(pattern, html, re.I):
+                  snippet = re.sub(r'\\s+', ' ', match.group(0)).strip()
+                  if snippet not in html_matches:
+                      html_matches.append(snippet[:400])
+
           result = {
               "note_key": note_key,
               "api_top_keys": list(payload.keys()),
               "data_keys": list((payload.get("data") or {}).keys()) if isinstance(payload.get("data"), dict) else [],
               "metadata_matches": matches[:100],
               "html_term_counts": terms,
+              "html_reaction_snippets": html_matches[:50],
               "write_action_performed": False
           }
 
