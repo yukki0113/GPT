@@ -53,3 +53,28 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
 - 桃太郎3人の `addons.momotaro` へコピーしない
 - 新聞では `りょーた / おーじ / けんしょー / 🐬` の4列で表示する
 - 🐬の表示・短評dialogはKenshow_Labo個人PWAと同じ既存consumer semanticsを再利用する
+
+
+## 公開データ投影
+
+桃太郎新聞はKenshow_Labo用Newspaper JSONをブラウザから直接参照しない。
+
+Pages構築時に build_momotaro_newspaper_projection.py で専用projectionを生成し、
+momotaro/data/newspaper/current/ から読む。
+
+公開projectionのallowlist:
+
+- JRDB/base新聞情報
+- 過去走
+- addons.keibailuka
+- addons.momotaro
+
+明示的に除外:
+
+- addons.eval
+- addons.racenote_prediction
+- addons.my_index
+- edge_matches
+- 元Newspaper auditの詳細
+
+したがって、桃太郎PWAへ個人用addonを表示しないだけでなく、桃太郎側が取得する新聞JSON自体にも個人用addonを含めない。
