@@ -10,6 +10,28 @@ const NEWSPAPER_V4_TRAINING_ARROW = {
   "デキ落ち": "↓"
 };
 
+const NEWSPAPER_V4_HISTORY_MODE_STANDARD = "standard";
+const NEWSPAPER_V4_HISTORY_MODE_COMPACT = "compact";
+
+/**
+ * Shared Newspaper history presentation mode.
+ * The renderer stays shared; each surface opts in through JRDB_PWA_CONFIG.
+ */
+function newspaperV4HistoryDisplayMode() {
+  const config = window.JRDB_PWA_CONFIG || {};
+  if (config.newspaperHistoryDisplayMode === NEWSPAPER_V4_HISTORY_MODE_COMPACT) {
+    return NEWSPAPER_V4_HISTORY_MODE_COMPACT;
+  }
+  return NEWSPAPER_V4_HISTORY_MODE_STANDARD;
+}
+
+function newspaperV4HistoryTableClass() {
+  if (newspaperV4HistoryDisplayMode() === NEWSPAPER_V4_HISTORY_MODE_COMPACT) {
+    return "newspaper-history-compact";
+  }
+  return "newspaper-history-standard";
+}
+
 function newspaperV4TrainingValue(horse) {
   const training = horse.jrdb && horse.jrdb.training ? horse.jrdb.training : {};
   const summary = training.summary || {};
@@ -139,7 +161,7 @@ function newspaperV4TrackCondition(value) {
   return standard[raw] || raw;
 }
 
-function newspaperV4HistoryCellHtml(run, horseIndex, runIndex) {
+function newspaperV4HistoryCellStandardHtml(run, horseIndex, runIndex) {
   if (!run) return `<div class="newspaper-history-empty">—</div>`;
   const compact = run.source_layer === "compact_older_history";
   const datePlace = `${shortDate(run.date)} ${text(run.venue, "")}${run.race_no ? `${run.race_no}R` : ""}`;
@@ -184,13 +206,130 @@ function newspaperV4HistoryCellHtml(run, horseIndex, runIndex) {
   </div>`;
 }
 
+
+/**
+ * Dense history projection for phone/tablet newspaper viewing.
+ * Detailed source data remains available through the existing detail dialog.
+ */
+function newspaperV4HistoryCellCompactHtml(run, horseIndex, runIndex) {
+  if (!run) {
+    return '<div class="newspaper-history-empty">—</div>';
+  }
+
+  const compactSource = run.source_layer === "compact_older_history";
+  const datePlace = shortDate(run.date) + " " + text(run.venue, "");
+  const raceNo = run.race_no ? text(run.race_no, "") + "R" : "";
+  const raceClass = newspaperV4RaceClass(run);
+  const raceName = text(run.race_name, "");
+  const surfaceDistance = [text(run.surface, ""), run.distance_m ? text(run.distance_m, "") + "m" : ""]
+    .filter(Boolean).join("");
+  const track = [surfaceDistance, newspaperV4TrackCondition(run.track_condition)]
+    .filter(Boolean).join(" ");
+  let raceTime = "";
+  if (run.time_sec !== null && run.time_sec !== undefined && Number(run.time_sec) > 0) {
+    raceTime = formatRaceTime(run.time_sec);
+  }
+  const passage = corners(run);
+  const last3f = newspaperV4Last3f(run);
+  const troubleScore = run.jrdb_result && run.jrdb_result.trouble_score;
+  let trouble = "";
+  if (!compactSource && troubleScore !== null && troubleScore !== undefined && Number(troubleScore) !== 0) {
+    trouble = '<span class="newspaper-trouble-flag">不利</span>';
+  }
+  let abnormal = "";
+  if (text(run.abnormal_code, "0") !== "0") {
+    abnormal = '<span class="newspaper-abnormal">' + escapeHtml(newspaperV4FinishLabel(run)) + '</span>';
+  }
+  let detail = "";
+  if (hasDetail(run)) {
+    detail = '<button type="button" class="newspaper-detail-button newspaper-detail-button-compact" ' +
+      'data-horse-index="' + horseIndex + '" data-run-index="' + runIndex + '">詳細</button>';
+  }
+
+  let classLabel = "";
+  if (raceClass) {
+    classLabel = '<strong>' + escapeHtml(raceClass) + '</strong>';
+  }
+  let raceNameLabel = "";
+  if (raceName) {
+    raceNameLabel = '<span title="' + escapeHtml(raceName) + '">' + escapeHtml(raceName) + '</span>';
+  }
+  let sourcePill = "";
+  if (compactSource) {
+    sourcePill = '<span class="newspaper-source-pill">簡易</span>';
+  }
+  let passageMarkup = "";
+  if (passage) {
+    passageMarkup = '<span>通 ' + escapeHtml(passage) + '</span>';
+  }
+  let timeMarkup = "";
+  if (raceTime) {
+    timeMarkup = '<strong class="newspaper-run-compact-time">' + escapeHtml(raceTime) + '</strong>';
+  }
+
+  return '<div class="newspaper-run newspaper-run-v4 newspaper-run-v4-compact ' +
+    (compactSource ? "compact" : "detailed") + '">' +
+    '<div class="newspaper-run-top newspaper-run-compact-top">' +
+      '<span>' + escapeHtml([datePlace, raceNo].filter(Boolean).join(" ")) + '</span>' +
+      '<span class="newspaper-run-compact-actions">' + sourcePill + detail + '</span>' +
+    '</div>' +
+    '<div class="newspaper-run-race-line newspaper-run-compact-race">' +
+      classLabel + raceNameLabel +
+    '</div>' +
+    '<div class="newspaper-run-result-v4 newspaper-run-compact-result">' +
+      newspaperV4ResultLine(run) +
+    '</div>' +
+    '<div class="newspaper-run-compact-track">' +
+      '<span>' + escapeHtml(track || "—") + '</span>' + timeMarkup +
+    '</div>' +
+    '<div class="newspaper-run-finish newspaper-run-compact-finish">' +
+      passageMarkup + last3f +
+    '</div>' +
+    '<div class="newspaper-run-compact-flags">' + trouble + abnormal + '</div>' +
+  '</div>';
+}
+
+function newspaperV4HistoryCellHtml(run, horseIndex, runIndex) {
+  if (newspaperV4HistoryDisplayMode() === NEWSPAPER_V4_HISTORY_MODE_COMPACT) {
+    return newspaperV4HistoryCellCompactHtml(run, horseIndex, runIndex);
+  }
+  return newspaperV4HistoryCellStandardHtml(run, horseIndex, runIndex);
+}
+
 showRunDetail = function (horse, run) {
   dialogTitle.textContent = `${text(horse.basic && horse.basic.horse_name)} / ${shortDate(run.date)} ${text(run.venue, "")}${run.race_no ? `${run.race_no}R` : ""}`;
   const notes = run.notes || {};
   const jrdb = run.jrdb_result || {};
+  const track = [
+    text(run.surface, ""),
+    run.distance_m ? text(run.distance_m, "") + "m" : "",
+    newspaperV4TrackCondition(run.track_condition)
+  ].filter(Boolean).join(" ");
+  let raceTime = null;
+  if (run.time_sec !== null && run.time_sec !== undefined && Number(run.time_sec) > 0) {
+    raceTime = formatRaceTime(run.time_sec);
+  }
+  let last3f = null;
+  if (run.last3f_sec !== null && run.last3f_sec !== undefined) {
+    last3f = number(run.last3f_sec);
+    const rank = Number(run.last3f_rank ?? run.last3f_time_rank);
+    if (Number.isInteger(rank) && rank > 0) {
+      last3f += " / " + rank + "位";
+    }
+  }
   const noteRows = [
     ["レース", runTitle(run)],
     ["結果", newspaperV4FinishLabel(run)],
+    ["人気", run.final_popularity ? text(run.final_popularity) + "人気" : null],
+    ["条件", track || null],
+    ["走破時計", raceTime],
+    ["着差", newspaperV4TimeGap(run) || null],
+    ["通過", corners(run) || null],
+    ["上がり3F", last3f],
+    ["騎手", run.jockey_name],
+    ["斤量", run.carried_weight_kg !== null && run.carried_weight_kg !== undefined ? number(run.carried_weight_kg) + "kg" : null],
+    ["馬体重", newspaperV4BodyWeight(run) || null],
+    ["IDM", run.idm],
     ["パドック", notes.paddock_comment],
     ["脚元", notes.leg_comment],
     ["馬具・展開", notes.equipment_comment],
@@ -225,7 +364,7 @@ renderTable = function () {
     </tr>`;
   }).join("");
 
-  tableWrap.innerHTML = `<table class="newspaper-table newspaper-table-v4">
+  tableWrap.innerHTML = `<table class="newspaper-table newspaper-table-v4 ${newspaperV4HistoryTableClass()}">
     <thead>
       <tr>
         <th class="newspaper-frame" rowspan="2">枠</th>
