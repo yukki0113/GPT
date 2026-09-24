@@ -124,3 +124,8 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 - 🐬は source label を 🐬 とし、馬番 + 馬名 + コメントを表示する。
 - りょーた confidence=S は「次走注目S」と表示する。
 - 王子 review_horse=true は「回顧馬」と表示する。
+
+
+印列幅:
+- りょ / 王子 / けん: 32px
+- 🐬: 34px
