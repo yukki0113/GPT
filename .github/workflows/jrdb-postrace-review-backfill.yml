@@ -82,9 +82,19 @@ jobs:
           if audit.get('generation_id') != generation or audit.get('status') != 'PASS':
               raise SystemExit('Warehouse audit mismatch or not PASS')
 
-          digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
-          if digest != str(current.get('manifest_sha256') or ''):
-              raise SystemExit('Warehouse manifest SHA mismatch')
+          def canonical_sha(value):
+              encoded = json.dumps(
+                  value,
+                  ensure_ascii=False,
+                  sort_keys=True,
+                  separators=(',', ':'),
+              ).encode('utf-8')
+              return hashlib.sha256(encoded).hexdigest()
+
+          if canonical_sha(manifest) != str(current.get('manifest_sha256') or ''):
+              raise SystemExit('Warehouse manifest canonical SHA mismatch')
+          if canonical_sha(audit) != str(current.get('final_audit_sha256') or ''):
+              raise SystemExit('Warehouse final audit canonical SHA mismatch')
           PY
 
       - name: Download required immutable Warehouse roots
