@@ -53,6 +53,12 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Run Momotaro focused tests
+        run: |
+          python -m unittest discover \
+            -s horse-racing/jrdb/tests \
+            -p 'test_*momotaro*.py'
+
       - name: Prepare Pages artifact
         env:
           GH_TOKEN: ${{ github.token }}
