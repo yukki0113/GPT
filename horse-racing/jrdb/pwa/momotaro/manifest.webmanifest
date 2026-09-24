@@ -1,0 +1,11 @@
+{
+  "name": "桃太郎新聞",
+  "short_name": "桃太郎新聞",
+  "description": "仲良し3人の予想とJRDB新聞、条件別集計をまとめたPWA",
+  "start_url": "./newspaper.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f3f3",
+  "theme_color": "#f7f7f7",
+  "lang": "ja"
+}
