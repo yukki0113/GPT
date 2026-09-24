@@ -581,3 +581,503 @@ def publish_snapshot(
     except Exception:
         shutil.rmtree(generation_dir, ignore_errors=True)
         raise
+
+
+
+def _database_relation_schema(connection: Any, relation: str) -> list[tuple[str, str]]:
+    """Return ordered physical column name/type pairs for one relation."""
+    rows = connection.execute(
+        "SELECT column_name, data_type "
+        "FROM information_schema.columns "
+        "WHERE table_schema = 'main' AND table_name = ? "
+        "ORDER BY ordinal_position",
+        [relation],
+    ).fetchall()
+    return [(str(row[0]), str(row[1]).upper()) for row in rows]
+
+
+def _reference_relation_schemas(duckdb_module: Any) -> dict[str, list[tuple[str, str]]]:
+    """Build the frozen v0.1 relation schemas from the canonical SQL."""
+    connection = duckdb_module.connect(":memory:")
+    try:
+        connection.execute(_load_schema_sql())
+        return {
+            relation: _database_relation_schema(connection, relation)
+            for relation in RELATIONS
+        }
+    finally:
+        connection.close()
+
+
+def _database_snapshot_audit(connection: Any, duckdb_module: Any) -> dict[str, object]:
+    """Audit one staged full snapshot before immutable publication."""
+    hard_errors: list[dict[str, object]] = []
+    warnings: list[dict[str, object]] = []
+    row_counts: dict[str, int] = {}
+    expected_schemas = _reference_relation_schemas(duckdb_module)
+
+    for relation in RELATIONS:
+        actual_schema = _database_relation_schema(connection, relation)
+        expected_schema = expected_schemas[relation]
+        if actual_schema != expected_schema:
+            hard_errors.append(
+                {
+                    "code": "SCHEMA_MISMATCH",
+                    "relation": relation,
+                    "expected": expected_schema,
+                    "actual": actual_schema,
+                }
+            )
+            continue
+
+        count = int(
+            connection.execute(
+                f"SELECT COUNT(*) FROM {_quote_identifier(relation)}"
+            ).fetchone()[0]
+        )
+        row_counts[relation] = count
+        if relation in REQUIRED_RELATIONS and count == 0:
+            hard_errors.append(
+                {
+                    "code": "EMPTY_REQUIRED_RELATION",
+                    "relation": relation,
+                }
+            )
+
+        duplicate_count = _key_duplicate_count(connection, relation)
+        if duplicate_count:
+            hard_errors.append(
+                {
+                    "code": "DUPLICATE_KEY",
+                    "relation": relation,
+                    "count": duplicate_count,
+                }
+            )
+
+        required_keys = RELATION_KEYS[relation]
+        missing_expression = " OR ".join(
+            f"{_quote_identifier(column)} IS NULL"
+            for column in required_keys
+        )
+        missing_count = int(
+            connection.execute(
+                f"SELECT COUNT(*) FROM {_quote_identifier(relation)} "
+                f"WHERE {missing_expression}"
+            ).fetchone()[0]
+        )
+        if missing_count:
+            hard_errors.append(
+                {
+                    "code": "MISSING_KEY",
+                    "relation": relation,
+                    "count": missing_count,
+                }
+            )
+
+        version_count = int(
+            connection.execute(
+                f"SELECT COUNT(*) FROM {_quote_identifier(relation)} "
+                "WHERE review_schema_version <> ? "
+                "OR review_logic_version <> ?",
+                [REVIEW_SCHEMA_VERSION, REVIEW_LOGIC_VERSION],
+            ).fetchone()[0]
+        ) if "review_schema_version" in {
+            item[0] for item in actual_schema
+        } else 0
+        if version_count:
+            hard_errors.append(
+                {
+                    "code": "VERSION_CONTRACT_MISMATCH",
+                    "relation": relation,
+                    "count": version_count,
+                }
+            )
+
+        if "baseline_version" in {item[0] for item in actual_schema}:
+            baseline_count = int(
+                connection.execute(
+                    f"SELECT COUNT(*) FROM {_quote_identifier(relation)} "
+                    "WHERE baseline_version <> ?",
+                    [BASELINE_VERSION],
+                ).fetchone()[0]
+            )
+            if baseline_count:
+                hard_errors.append(
+                    {
+                        "code": "BASELINE_VERSION_MISMATCH",
+                        "relation": relation,
+                        "count": baseline_count,
+                    }
+                )
+
+        numeric_columns = [
+            name
+            for name, data_type in actual_schema
+            if data_type in {
+                "DOUBLE",
+                "FLOAT",
+                "REAL",
+                "DECIMAL",
+            }
+        ]
+        nonfinite_count = 0
+        for column in numeric_columns:
+            value = int(
+                connection.execute(
+                    f"SELECT COUNT(*) FROM {_quote_identifier(relation)} "
+                    f"WHERE {_quote_identifier(column)} IS NOT NULL "
+                    f"AND NOT isfinite({_quote_identifier(column)})"
+                ).fetchone()[0]
+            )
+            nonfinite_count += value
+        if nonfinite_count:
+            hard_errors.append(
+                {
+                    "code": "NONFINITE_NUMERIC",
+                    "relation": relation,
+                    "count": nonfinite_count,
+                }
+            )
+
+    if not hard_errors:
+        context_only = int(
+            connection.execute(
+                "SELECT COUNT(*) FROM ("
+                "SELECT race_key FROM fact_race_context "
+                "EXCEPT SELECT race_key FROM fact_race_review"
+                ")"
+            ).fetchone()[0]
+        )
+        review_only = int(
+            connection.execute(
+                "SELECT COUNT(*) FROM ("
+                "SELECT race_key FROM fact_race_review "
+                "EXCEPT SELECT race_key FROM fact_race_context"
+                ")"
+            ).fetchone()[0]
+        )
+        if context_only or review_only:
+            hard_errors.append(
+                {
+                    "code": "RACE_RELATION_KEY_MISMATCH",
+                    "context_only_count": context_only,
+                    "review_only_count": review_only,
+                }
+            )
+
+        orphan_count = int(
+            connection.execute(
+                "SELECT COUNT(*) "
+                "FROM fact_horse_performance h "
+                "LEFT JOIN fact_race_review r USING (race_key) "
+                "WHERE r.race_key IS NULL"
+            ).fetchone()[0]
+        )
+        if orphan_count:
+            hard_errors.append(
+                {
+                    "code": "ORPHAN_HORSE_RACE",
+                    "count": orphan_count,
+                }
+            )
+
+        leakage_count = int(
+            connection.execute(
+                "SELECT COUNT(*) FROM fact_race_review "
+                "WHERE standard_sample_end_date IS NOT NULL "
+                "AND standard_sample_end_date >= race_date"
+            ).fetchone()[0]
+        )
+        if leakage_count:
+            hard_errors.append(
+                {
+                    "code": "STANDARD_FUTURE_LEAKAGE",
+                    "count": leakage_count,
+                }
+            )
+
+    missing_standard = int(
+        connection.execute(
+            "SELECT COUNT(*) FROM fact_race_review "
+            "WHERE historical_standard_time_sec IS NULL"
+        ).fetchone()[0]
+    ) if row_counts.get("fact_race_review", 0) else 0
+    if missing_standard:
+        warnings.append(
+            {
+                "code": "MISSING_TIME_STANDARD",
+                "count": missing_standard,
+            }
+        )
+
+    no_day_adjustment = int(
+        connection.execute(
+            "SELECT COUNT(*) FROM fact_race_review "
+            "WHERE NOT day_adjustment_applied"
+        ).fetchone()[0]
+    ) if row_counts.get("fact_race_review", 0) else 0
+    if no_day_adjustment:
+        warnings.append(
+            {
+                "code": "DAY_ADJUSTMENT_NOT_APPLIED",
+                "count": no_day_adjustment,
+            }
+        )
+
+    no_pace = int(
+        connection.execute(
+            "SELECT COUNT(*) FROM fact_race_context "
+            "WHERE pace_shape IS NULL"
+        ).fetchone()[0]
+    ) if row_counts.get("fact_race_context", 0) else 0
+    if no_pace:
+        warnings.append(
+            {
+                "code": "PACE_CLASSIFICATION_UNAVAILABLE",
+                "count": no_pace,
+            }
+        )
+
+    period = connection.execute(
+        "SELECT MIN(race_date), MAX(race_date) FROM fact_race_review"
+    ).fetchone()
+    period_from = period[0].isoformat() if period and period[0] is not None else None
+    period_to = period[1].isoformat() if period and period[1] is not None else None
+
+    return {
+        "status": "PASS" if not hard_errors else "FAIL",
+        "review_schema_version": REVIEW_SCHEMA_VERSION,
+        "review_logic_version": REVIEW_LOGIC_VERSION,
+        "baseline_version": BASELINE_VERSION,
+        "period_from": period_from,
+        "period_to": period_to,
+        "row_counts": row_counts,
+        "hard_error_count": len(hard_errors),
+        "warning_count": len(warnings),
+        "hard_errors": hard_errors,
+        "warnings": warnings,
+    }
+
+
+def publish_database_snapshot(
+    database_path: Path,
+    root: Path,
+    generation_id: str,
+    *,
+    source_provenance: Mapping[str, object],
+    promote: bool = False,
+    complete_snapshot: bool = False,
+) -> dict[str, object]:
+    """Publish a pre-staged Review DuckDB without loading the snapshot in memory."""
+    try:
+        import duckdb
+    except ImportError as exc:
+        raise PostRaceReviewPublishError(
+            "Review database publisher requires duckdb"
+        ) from exc
+
+    if promote and not complete_snapshot:
+        raise PostRaceReviewPublishError(
+            "canonical promotion requires complete_snapshot=True"
+        )
+
+    database_path = Path(database_path).resolve()
+    if not database_path.is_file():
+        raise FileNotFoundError(database_path)
+
+    root = Path(root).resolve()
+    generation_dir = root / "generations" / generation_id
+    if generation_dir.exists():
+        raise FileExistsError(generation_dir)
+
+    previous = _load_current_manifest(root)
+    generation_dir.mkdir(parents=True)
+
+    connection = duckdb.connect(str(database_path), read_only=True)
+    try:
+        database_audit = _database_snapshot_audit(connection, duckdb)
+        if database_audit["status"] != "PASS":
+            raise PostRaceReviewPublishError(
+                "Review database failed pre-publication audit"
+            )
+
+        relation_manifest: dict[str, object] = {}
+        partition_audits: list[dict[str, object]] = []
+
+        with tempfile.TemporaryDirectory(
+            prefix="jrdb_postrace_review_publish_"
+        ) as temporary:
+            temp_root = Path(temporary)
+
+            for relation in RELATIONS:
+                total_rows = int(
+                    connection.execute(
+                        f"SELECT COUNT(*) FROM {_quote_identifier(relation)}"
+                    ).fetchone()[0]
+                )
+                years = [
+                    int(row[0])
+                    for row in connection.execute(
+                        f"SELECT DISTINCT EXTRACT(YEAR FROM race_date)::INTEGER "
+                        f"FROM {_quote_identifier(relation)} "
+                        "WHERE race_date IS NOT NULL ORDER BY 1"
+                    ).fetchall()
+                ]
+
+                partitions: list[dict[str, object]] = []
+                for year in years:
+                    expected_rows = int(
+                        connection.execute(
+                            f"SELECT COUNT(*) FROM {_quote_identifier(relation)} "
+                            f"WHERE EXTRACT(YEAR FROM race_date) = {year}"
+                        ).fetchone()[0]
+                    )
+                    candidate = temp_root / f"{relation}-{year}.parquet"
+                    _write_parquet(
+                        connection,
+                        relation,
+                        year,
+                        candidate,
+                    )
+                    validation = _parquet_validation(
+                        connection,
+                        relation,
+                        candidate,
+                        expected_rows,
+                    )
+                    digest = _sha256(candidate)
+                    destination = (
+                        root
+                        / "objects"
+                        / relation
+                        / f"year={year}"
+                        / f"{digest}.parquet"
+                    )
+                    destination.parent.mkdir(
+                        parents=True,
+                        exist_ok=True,
+                    )
+                    if destination.exists():
+                        if _sha256(destination) != digest:
+                            raise PostRaceReviewPublishError(
+                                f"content-address collision: {destination}"
+                            )
+                    else:
+                        shutil.copy2(candidate, destination)
+
+                    copied_validation = _parquet_validation(
+                        connection,
+                        relation,
+                        destination,
+                        expected_rows,
+                    )
+                    if copied_validation != validation:
+                        raise PostRaceReviewPublishError(
+                            f"{relation}/{year}: copied object re-read mismatch"
+                        )
+
+                    partition = {
+                        "year": year,
+                        "rows": expected_rows,
+                        "sha256": digest,
+                        "size_bytes": destination.stat().st_size,
+                        "relative_path": str(
+                            destination.relative_to(root)
+                        ),
+                    }
+                    partitions.append(partition)
+                    partition_audits.append(
+                        {
+                            "relation": relation,
+                            "year": year,
+                            "status": "PASS",
+                            **validation,
+                            "sha256": digest,
+                        }
+                    )
+
+                relation_manifest[relation] = {
+                    "canonical_key": list(RELATION_KEYS[relation]),
+                    "sort_by": list(RELATION_SORT[relation]),
+                    "total_rows": total_rows,
+                    "partitions": partitions,
+                }
+
+        hash_material = [
+            f"{item['relation']}|{item['year']}|{item['sha256']}"
+            for item in sorted(
+                partition_audits,
+                key=lambda item: (
+                    str(item["relation"]),
+                    int(item["year"]),
+                ),
+            )
+        ]
+        snapshot_object_hash = hashlib.sha256(
+            ("\n".join(hash_material) + "\n").encode("utf-8")
+        ).hexdigest()
+
+        created_at = dt.datetime.now(dt.timezone.utc).isoformat()
+        manifest = {
+            "artifact_type": ARTIFACT_TYPE,
+            "schema_version": REVIEW_SCHEMA_VERSION,
+            "review_logic_version": REVIEW_LOGIC_VERSION,
+            "baseline_version": BASELINE_VERSION,
+            "storage_format": "parquet",
+            "compression": "zstd",
+            "storage_version": STORAGE_VERSION,
+            "generation_id": generation_id,
+            "created_at": created_at,
+            "complete_snapshot": bool(complete_snapshot),
+            "source_provenance": dict(source_provenance),
+            "period_from": database_audit["period_from"],
+            "period_to": database_audit["period_to"],
+            "relations": relation_manifest,
+            "snapshot_object_hash": snapshot_object_hash,
+            "validation_status": "PASS",
+        }
+        generation_audit = {
+            "status": "PASS",
+            "review_schema_version": REVIEW_SCHEMA_VERSION,
+            "review_logic_version": REVIEW_LOGIC_VERSION,
+            "baseline_version": BASELINE_VERSION,
+            "database_audit": database_audit,
+            "partition_audits": partition_audits,
+        }
+
+        manifest_path = generation_dir / "manifest.json"
+        audit_path = generation_dir / "audit.json"
+        manifest_path.write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        audit_path.write_text(
+            json.dumps(generation_audit, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+        pointer: dict[str, object]
+        if promote:
+            pointer = _promote_current(root, manifest, previous)
+        else:
+            pointer = {
+                "status": "SHADOW_PASS",
+                "artifact_type": ARTIFACT_TYPE,
+                "generation_id": generation_id,
+                "manifest": str(manifest_path.relative_to(root)),
+            }
+            (root / "shadow_current.json").write_text(
+                json.dumps(pointer, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+        return {
+            "manifest": manifest,
+            "audit": generation_audit,
+            "pointer": pointer,
+        }
+    except Exception:
+        shutil.rmtree(generation_dir, ignore_errors=True)
+        raise
+    finally:
+        connection.close()
