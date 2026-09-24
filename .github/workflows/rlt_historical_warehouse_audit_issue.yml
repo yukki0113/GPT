@@ -127,10 +127,26 @@ jobs:
           JRDB_USER: ${{ secrets.JRDB_USER }}
           JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
-          mkdir -p /tmp/rlt_historical_audit/raw /tmp/rlt_historical_audit/report
-          FROM_YEAR="$(python -c "import json;d=json.load(open('/tmp/rlt_historical_audit/request.json'));print(min(d['years']))")"
-          TO_YEAR="$(python -c "import json;d=json.load(open('/tmp/rlt_historical_audit/request.json'));print(max(d['years']))")"
-          python horse-racing/jrdb/src/fetch_jrdb_history.py             --from-year "$FROM_YEAR" --to-year "$TO_YEAR"             --kinds BAC KYI CHA CYB SED UKC             --output-dir /tmp/rlt_historical_audit/raw             --manifest /tmp/rlt_historical_audit/report/raw_fetch_manifest.jsonl             --sleep-seconds 0.5 --max-retries 4 --retry-backoff-seconds 2             > /tmp/rlt_historical_audit/report/raw_fetch_stdout.log             2> /tmp/rlt_historical_audit/report/raw_fetch_stderr.log
+          set -euo pipefail
+          ROOT=/tmp/rlt_historical_audit
+          mkdir -p "$ROOT/raw" "$ROOT/report"
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          root=Path('/tmp/rlt_historical_audit')
+          req=json.loads((root/'request.json').read_text(encoding='utf-8'))
+          for year in req['years']:
+              cmd=[
+                  'python','horse-racing/jrdb/src/fetch_jrdb_history.py',
+                  '--from-year',str(year),'--to-year',str(year),
+                  '--kinds','BAC','KYI','CHA','CYB','SED','UKC',
+                  '--output-dir',str(root/'raw'),
+                  '--manifest',str(root/'report'/f'raw_fetch_manifest_{year}.jsonl'),
+                  '--sleep-seconds','0.5','--max-retries','4','--retry-backoff-seconds','2',
+              ]
+              with (root/'report'/f'raw_fetch_{year}.log').open('w',encoding='utf-8') as log:
+                  subprocess.run(cmd,check=True,stdout=log,stderr=subprocess.STDOUT,env=os.environ.copy())
+          PY
 
       - name: Prepare original staging archive names
         run: |
