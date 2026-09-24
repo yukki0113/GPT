@@ -1,0 +1,318 @@
+name: JRDB Momotaro Newspaper Current Publish
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[MOMOTARO_NEWSPAPER_PUBLISH_REQUEST]'
+  MOMOTARO_RELEASE_TAG: jrdb-momotaro-newspaper-current
+  MOMOTARO_RELEASE_ARCHIVE: jrdb_momotaro_newspaper_current.tar.xz
+  MOMOTARO_RELEASE_META: jrdb_momotaro_newspaper_current_release.json
+
+jobs:
+  publish:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[MOMOTARO_NEWSPAPER_PUBLISH_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/momotaro-request
+
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          request = json.loads((os.environ.get("ISSUE_BODY") or "").strip())
+
+          date = str(request.get("date") or "").strip()
+          if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", date):
+              raise SystemExit("date must be YYYY-MM-DD")
+
+          base_run_id = request.get("base_run_id")
+          if not isinstance(base_run_id, int) or isinstance(base_run_id, bool) or base_run_id <= 0:
+              raise SystemExit("base_run_id must be a positive integer")
+
+          artifact_name = str(request.get("artifact_name") or "").strip()
+          if not re.fullmatch(r"jrdb-newspaper-day-20\d{6}", artifact_name):
+              raise SystemExit("artifact_name must be jrdb-newspaper-day-YYYYMMDD")
+
+          revision = request.get("revision", 1)
+          if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+              raise SystemExit("revision must be integer >= 1")
+
+          entries = request.get("keibailuka_entries")
+          if not isinstance(entries, list):
+              raise SystemExit("keibailuka_entries must be an array")
+
+          normalized_entries = []
+          for index, item in enumerate(entries, start=1):
+              if not isinstance(item, dict):
+                  raise SystemExit(f"keibailuka entry {index} must be an object")
+              venue = str(item.get("venue") or "").strip()
+              race_no = item.get("race_no")
+              horse_name = str(item.get("horse_name") or "").strip()
+              comment = str(item.get("comment") or "").strip()
+              source_url = item.get("source_url")
+              if not venue:
+                  raise SystemExit(f"keibailuka entry {index}: venue is blank")
+              if not isinstance(race_no, int) or isinstance(race_no, bool) or not 1 <= race_no <= 12:
+                  raise SystemExit(f"keibailuka entry {index}: race_no is invalid")
+              if not horse_name or not comment:
+                  raise SystemExit(f"keibailuka entry {index}: horse_name/comment is blank")
+              normalized_entries.append({
+                  "venue": venue,
+                  "race_no": race_no,
+                  "horse_name": horse_name,
+                  "comment": comment,
+                  "source_url": source_url,
+              })
+
+          normalized = {
+              "date": date,
+              "base_run_id": base_run_id,
+              "artifact_name": artifact_name,
+              "revision": revision,
+              "keibailuka_entries": normalized_entries,
+          }
+          Path("/tmp/momotaro-request/request.json").write_text(
+              json.dumps(normalized, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          Path("/tmp/momotaro-request/keibailuka.json").write_text(
+              json.dumps({"entries": normalized_entries}, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"REQUEST_DATE={date}\n")
+              env_file.write(f"BASE_RUN_ID={base_run_id}\n")
+              env_file.write(f"BASE_ARTIFACT_NAME={artifact_name}\n")
+              env_file.write(f"REQUEST_REVISION={revision}\n")
+          PY
+
+      - name: Download audited base day artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/base-day
+          mkdir -p /tmp/base-day
+          gh run download "$BASE_RUN_ID"             --repo "${{ github.repository }}"             --name "$BASE_ARTIFACT_NAME"             --dir /tmp/base-day
+
+      - name: Validate base day identity
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/base-day")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          audit = json.loads((root / "audit.json").read_text(encoding="utf-8"))
+
+          if manifest.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit("base manifest date mismatch")
+          if audit.get("status") != "PASS":
+              raise SystemExit("base audit is not PASS")
+          if not audit.get("history_coverage_complete"):
+              raise SystemExit("base history coverage is incomplete")
+
+          expected = int((manifest.get("completeness") or {}).get("expected_races") or 0)
+          ready = int((manifest.get("completeness") or {}).get("ready_races") or 0)
+          if expected <= 0 or expected != ready:
+              raise SystemExit("base race completeness mismatch")
+          PY
+
+      - name: Merge shared Iluka source
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/merged-day
+          python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/base-day             --output-dir /tmp/merged-day             --keibailuka-json /tmp/momotaro-request/keibailuka.json             --revision "$REQUEST_REVISION"             > /tmp/momotaro-request/merge-result.json
+
+      - name: Build sanitized Momotaro projection
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/momotaro-current
+          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             > /tmp/momotaro-request/projection-result.json
+
+      - name: Validate Momotaro current
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/momotaro-current")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          audit = json.loads((root / "audit.json").read_text(encoding="utf-8"))
+          merge_result = json.loads(
+              Path("/tmp/momotaro-request/merge-result.json").read_text(encoding="utf-8")
+          )
+
+          if manifest.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit("Momotaro manifest date mismatch")
+          if audit.get("status") != "PASS":
+              raise SystemExit("Momotaro projection audit is not PASS")
+          if (manifest.get("projection") or {}).get("kind") != "momotaro_newspaper_public":
+              raise SystemExit("Momotaro projection marker missing")
+
+          source_status = manifest.get("source_status") or {}
+          allowed_status = {"jrdb_base", "jrdb_history", "keibailuka", "momotaro"}
+          unexpected_status = sorted(set(source_status) - allowed_status)
+          if unexpected_status:
+              raise SystemExit(f"private source status leaked: {unexpected_status}")
+
+          iluka_result = merge_result.get("keibailuka") or {}
+          targeted = int(iluka_result.get("targeted") or 0)
+          merged = int(iluka_result.get("merged") or 0)
+          unmatched = int(iluka_result.get("unmatched") or 0)
+          if targeted != merged + unmatched:
+              raise SystemExit("Iluka targeted/merged/unmatched mismatch")
+
+          projected_iluka = 0
+          for entry in manifest.get("races") or []:
+              bundle = json.loads((root / entry["path"]).read_text(encoding="utf-8"))
+              for horse in bundle.get("horses") or []:
+                  addons = horse.get("addons") or {}
+                  unexpected_addons = sorted(set(addons) - {"keibailuka", "momotaro"})
+                  if unexpected_addons:
+                      raise SystemExit(f"private addon leaked: {unexpected_addons}")
+                  if horse.get("edge_matches"):
+                      raise SystemExit("Edge data leaked into Momotaro projection")
+                  if addons.get("keibailuka") is not None:
+                      projected_iluka += 1
+
+          if projected_iluka != merged:
+              raise SystemExit(
+                  f"projected Iluka count mismatch: projected={projected_iluka} merged={merged}"
+              )
+
+          summary = {
+              "date": manifest["date"],
+              "revision": manifest.get("revision"),
+              "race_count": len(manifest.get("races") or []),
+              "iluka_targeted": targeted,
+              "iluka_merged": merged,
+              "iluka_unmatched": unmatched,
+              "unmatched_entries": iluka_result.get("unmatched_entries") or [],
+          }
+          Path("/tmp/momotaro-request/validation-summary.json").write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Build release cache
+        run: |
+          set -euo pipefail
+
+          tar             --sort=name             --mtime='UTC 1970-01-01'             --owner=0             --group=0             --numeric-owner             -C /tmp/momotaro-current             -cJf "/tmp/momotaro-request/$MOMOTARO_RELEASE_ARCHIVE"             .
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/momotaro-request")
+          current = Path("/tmp/momotaro-current")
+          archive = root / os.environ["MOMOTARO_RELEASE_ARCHIVE"]
+          manifest_path = current / "manifest.json"
+          validation = json.loads((root / "validation-summary.json").read_text(encoding="utf-8"))
+
+          meta = {
+              "schema_version": "0.1",
+              "release_kind": "jrdb_momotaro_newspaper_current_cache",
+              "date": validation["date"],
+              "revision": validation["revision"],
+              "race_count": validation["race_count"],
+              "iluka_targeted": validation["iluka_targeted"],
+              "iluka_merged": validation["iluka_merged"],
+              "iluka_unmatched": validation["iluka_unmatched"],
+              "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+              "archive_filename": archive.name,
+              "archive_size_bytes": archive.stat().st_size,
+              "archive_sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
+              "source_run_id": int(os.environ["BASE_RUN_ID"]),
+              "source_artifact": os.environ["BASE_ARTIFACT_NAME"],
+          }
+          (root / os.environ["MOMOTARO_RELEASE_META"]).write_text(
+              json.dumps(meta, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Publish Momotaro current release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "$MOMOTARO_RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release delete "$MOMOTARO_RELEASE_TAG" --repo "${{ github.repository }}" --yes
+          fi
+
+          gh release create "$MOMOTARO_RELEASE_TAG"             --repo "${{ github.repository }}"             --title "JRDB Momotaro Newspaper current"             --notes "Mutable public cache for the isolated Momotaro Newspaper PWA."             "/tmp/momotaro-request/$MOMOTARO_RELEASE_ARCHIVE"             "/tmp/momotaro-request/$MOMOTARO_RELEASE_META"             /tmp/momotaro-request/validation-summary.json
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary = json.loads(
+              Path("/tmp/momotaro-request/validation-summary.json").read_text(encoding="utf-8")
+          )
+          result = {
+              "status": "success",
+              "run_id": int(os.environ["RUN_ID"]),
+          }
+          result.update(summary)
+          Path("/tmp/momotaro-request/comment.md").write_text(
+              "MOMOTARO_NEWSPAPER_PUBLISH_RESULT\n"
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --body-file /tmp/momotaro-request/comment.md
+          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --body "Momotaro Newspaper publish failed. Workflow run: $RUN_URL"
+          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason not_planned
