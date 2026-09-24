@@ -7,6 +7,9 @@ import math
 import statistics
 from collections.abc import Iterable, Mapping
 
+BASELINE_VERSION = "asof-median-loo-v0.1"
+
+
 CLASS_NUMERIC = {
     "NEWCOMER": 0.0,
     "MAIDEN": 1.0,
