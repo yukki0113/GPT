@@ -78,3 +78,34 @@ momotaro/data/newspaper/current/ から読む。
 - 元Newspaper auditの詳細
 
 したがって、桃太郎PWAへ個人用addonを表示しないだけでなく、桃太郎側が取得する新聞JSON自体にも個人用addonを含めない。
+
+
+## 3人予想CSV
+
+日次の3人予想は疎なCSVとして扱う。全馬を埋める必要はない。
+
+current配布チャネル:
+
+- Release tag: jrdb-momotaro-predictions-current
+- asset: momotaro_predictions.csv
+
+必須列:
+
+```text
+date,venue_code,race_no,horse_no,horse_name,member,mark,confidence,review_horse,comment
+```
+
+memberは次の3人だけを許可する。
+
+- ryota / りょーた
+- oji / おーじ
+- kenshow / けんしょー
+
+exact joinは date + venue_code + race_no + horse_no + member で行い、
+horse_nameも一致を必須とする。重複・別日・未消費行はfail-closed。
+
+用途例:
+
+- りょーたの confidence=S -> 予想一覧の「りょーた S」
+- おーじの review_horse=true -> 予想一覧の「おーじ 回顧馬」
+- mark / comment -> 新聞の3人印・3人短評
