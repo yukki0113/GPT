@@ -1,7 +1,8 @@
 "use strict";
 
-const NEWSPAPER_OPFS_DIR = "jrdb-newspaper";
-const NEWSPAPER_OPFS_FILE = "current.json";
+const NEWSPAPER_RUNTIME_CONFIG = window.JRDB_PWA_CONFIG || {};
+const NEWSPAPER_OPFS_DIR = NEWSPAPER_RUNTIME_CONFIG.newspaperOpfsDir || "jrdb-newspaper";
+const NEWSPAPER_OPFS_FILE = NEWSPAPER_RUNTIME_CONFIG.newspaperOpfsFile || "current.json";
 
 const networkBadge = document.getElementById("newspaper-network-badge");
 const localStatus = document.getElementById("newspaper-local-status");
