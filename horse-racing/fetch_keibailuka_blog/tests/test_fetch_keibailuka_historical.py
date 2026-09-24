@@ -67,6 +67,41 @@ class HistoricalHelpersTest(unittest.TestCase):
         self.assertIsNone(race.horse)
 
 
+
+    def test_split_venue_and_race_heading_is_recovered(self):
+        from fetch_keibailuka_blog import parse_race_lines
+
+        lines = [
+            "阪神1R サンダーアラート",
+            "前走は外枠から序盤外回しで。",
+            "阪神2R ラテライト",
+            "末脚毎回安定。",
+            "阪神3R ペイドラロワール",
+            "前走は前に入られてポジション下がる。",
+            "阪神4R インターアーバン",
+            "前走は内枠響く形。",
+            "阪神5R",
+            "該当無し",
+            "阪神6R",
+            "該当無し",
+            "阪神",
+            "7R コンタンゴ",
+            "前走はブリンカーで前にいけた。",
+            "阪神8R",
+            "該当無し",
+            "阪神9R",
+            "該当無し",
+            "阪神10R ワーズワース",
+            "前走は外回りすぎ。",
+            "阪神11R スターターン",
+            "前走は砂嫌がるシーンあり。",
+            "阪神12R",
+            "該当無し",
+        ]
+        races = parse_race_lines(lines, "阪神")
+        self.assertEqual([race.race_no for race in races], list(range(1, 13)))
+        self.assertEqual(races[6].horse, "コンタンゴ")
+
     def test_empty_section_is_excluded(self):
         race = classify_race(
             "中山",
