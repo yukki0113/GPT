@@ -315,7 +315,9 @@ standard_id
 venue_code
 surface_code
 distance_m
+course_code
 age_group
+race_month
 race_class_group
 sample_start_date
 sample_end_date
@@ -366,12 +368,18 @@ Before production promotion, distribution audit may revise these thresholds only
 
 ### Fallback hierarchy
 
+Class identity is never replaced by an adjacent class. A CLASS_1 sample must not silently become the standard for CLASS_2.
+
 Preferred order:
 
-1. venue x surface x distance x age_group x class
-2. venue x surface x distance x class
-3. venue x surface x distance x adjacent class
-4. surface x distance x class
+1. venue x surface x distance x course x age_group x race_month x class
+2. venue x surface x distance x age_group x race_month x class
+3. venue x surface x distance x age_group x class
+4. venue x surface x distance x class
+5. surface x distance x age_group x class
+6. surface x distance x class
+
+Month is retained where sample size allows because 2yo/3yo class ability changes materially through the season. Course and month are dropped before age/class identity when sample size is insufficient.
 
 Persist:
 
