@@ -1,0 +1,187 @@
+name: JRDB Edge v0.3 B2b frozen gate via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  gate:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V03_B2B_GATE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+              'b2a_run_id','b2a_artifact_name',
+              'b2a_statistical_edges_sha256','b2a_summary_sha256',
+              'policy_blob_sha'
+          }
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          sha256_re=re.compile(r'[0-9a-f]{64}')
+          sha1_re=re.compile(r'[0-9a-f]{40}')
+          for field in ('b2a_statistical_edges_sha256','b2a_summary_sha256'):
+              if not sha256_re.fullmatch(str(req[field]).lower()):
+                  raise SystemExit(f'invalid {field}')
+          if not sha1_re.fullmatch(str(req['policy_blob_sha']).lower()):
+              raise SystemExit('invalid policy_blob_sha')
+          if not isinstance(req['b2a_run_id'],int) or req['b2a_run_id']<=0:
+              raise SystemExit('b2a_run_id must be positive')
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',
+              encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as f:
+              for key,value in req.items():
+                  if isinstance(value,(str,int)):
+                      f.write(f'{key.upper()}={value}\n')
+          PY
+
+      - name: Verify frozen policy and focused tests
+        run: |
+          set -euo pipefail
+          POLICY_PATH=horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json
+          ACTUAL_BLOB="$(git rev-parse "HEAD:$POLICY_PATH")"
+          test "$ACTUAL_BLOB" = "$POLICY_BLOB_SHA"
+          python -m pip install --disable-pip-version-check -q pytest
+          PYTHONPATH=horse-racing/jrdb/src python -m pytest -q \
+            horse-racing/jrdb/tests/test_apply_jrdb_edge_v03_statistical_gates_shadow.py
+
+      - name: Download and verify Stage-B2a artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/b2a
+          gh run download "$B2A_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$B2A_ARTIFACT_NAME" --dir /tmp/b2a
+          mapfile -t statistical < <(find /tmp/b2a -type f -name statistical_edges.jsonl -print)
+          mapfile -t summaries < <(find /tmp/b2a -type f -name summary.json -print)
+          test "${#statistical[@]}" -eq 1
+          test "${#summaries[@]}" -eq 1
+          cp "${statistical[0]}" /tmp/b2a_statistical_edges.jsonl
+          cp "${summaries[0]}" /tmp/b2a_summary.json
+          echo "$B2A_STATISTICAL_EDGES_SHA256  /tmp/b2a_statistical_edges.jsonl" | sha256sum -c -
+          echo "$B2A_SUMMARY_SHA256  /tmp/b2a_summary.json" | sha256sum -c -
+          python - <<'PY'
+          import json
+          summary=json.load(open('/tmp/b2a_summary.json'))
+          if summary.get('status')!='PASS':
+              raise SystemExit('Stage-B2a summary is not PASS')
+          if summary.get('stage')!='B2A_STATISTICAL_DIAGNOSTICS':
+              raise SystemExit('Stage-B2a stage mismatch')
+          if summary.get('mode')!='SHADOW_ONLY':
+              raise SystemExit('Stage-B2a mode mismatch')
+          if summary.get('threshold_policy')!='NOT_FROZEN':
+              raise SystemExit('Stage-B2a threshold policy mismatch')
+          PY
+
+      - name: Apply frozen Stage-B2b Performance gate
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/gate
+          python horse-racing/jrdb/src/apply_jrdb_edge_v03_statistical_gates_shadow.py \
+            --policy horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json \
+            --b2a-jsonl /tmp/b2a_statistical_edges.jsonl \
+            --b2a-summary /tmp/b2a_summary.json \
+            --output-jsonl /tmp/gate/gated_edges.jsonl \
+            --output-summary /tmp/gate/summary.json
+          cp /tmp/request.json /tmp/gate/request.json
+          cp /tmp/b2a_summary.json /tmp/gate/b2a_summary.json
+          cp horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json \
+            /tmp/gate/gate_policy.json
+
+      - name: Upload frozen gate audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v03-b2b-gate-${{ github.run_id }}
+          path: /tmp/gate/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          result=json.load(open('/tmp/gate/summary.json'))
+          compact={
+              'status':result['status'],
+              'stage':result['stage'],
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-v03-b2b-gate-{os.environ['RUN_ID']}",
+              'policy_id':result['policy_id'],
+              'policy_sha256':result['policy_sha256'],
+              'input_rows':result['input_rows'],
+              'shadow_class_counts':result['shadow_class_counts'],
+              'incremental_performance_pass':result['incremental_performance_pass'],
+              'incremental_performance_pass_rate':result['incremental_performance_pass_rate'],
+              'pass_template_counts':result['pass_template_counts'],
+              'pass_direction_counts':result['pass_direction_counts'],
+              'pass_reversal_vs_v02':result['pass_reversal_vs_v02'],
+              'failed_check_counts':result['failed_check_counts'],
+              'value_gate':result['value_gate'],
+              'threshold_policy':result['threshold_policy'],
+              'mode':'SHADOW_ONLY',
+          }
+          body='JRDB_EDGE_V03_B2B_GATE_RESULT\n'+json.dumps(
+              compact,ensure_ascii=False,indent=2,sort_keys=True
+          )
+          subprocess.run(
+              ['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',
+               os.environ['GITHUB_REPOSITORY'],'--body',body],
+              check=True
+          )
+          subprocess.run(
+              ['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',
+               os.environ['GITHUB_REPOSITORY'],'--reason','completed'],
+              check=True
+          )
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge v0.3 Stage-B2b frozen gate failed. No production serving was changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
