@@ -174,6 +174,248 @@ def build_time_standard(values: Iterable[object]) -> dict[str, object]:
     }
 
 
+def _iso_date(value: object) -> str | None:
+    """Normalize one ISO-like date into YYYY-MM-DD."""
+    text = str(value or "").strip()
+    digits = "".join(character for character in text if character.isdigit())
+    if len(digits) != 8:
+        return None
+    try:
+        import datetime as dt
+
+        parsed = dt.date(
+            int(digits[:4]),
+            int(digits[4:6]),
+            int(digits[6:8]),
+        )
+    except ValueError:
+        return None
+    return parsed.isoformat()
+
+
+def _month(value: object) -> int | None:
+    """Return month from one valid date."""
+    normalized = _iso_date(value)
+    if normalized is None:
+        return None
+    return int(normalized[5:7])
+
+
+def _value(row: Mapping[str, object], field: str) -> object:
+    """Read one normalized standard-key field."""
+    if field == "age_group":
+        value = row.get("age_group")
+        if value is not None and str(value).strip():
+            return value
+        return row.get("race_type_code")
+    if field == "race_month":
+        value = row.get("race_month")
+        if value is not None:
+            return value
+        return _month(row.get("race_date"))
+    if field == "race_class_group":
+        value = row.get("race_class_group")
+        if value is not None and str(value).strip():
+            return value
+        return row.get("declared_class_group")
+    return row.get(field)
+
+
+STANDARD_SCOPES: tuple[tuple[str, ...], ...] = (
+    (
+        "venue_code",
+        "surface_code",
+        "distance_m",
+        "course_code",
+        "age_group",
+        "race_month",
+        "race_class_group",
+    ),
+    (
+        "venue_code",
+        "surface_code",
+        "distance_m",
+        "age_group",
+        "race_month",
+        "race_class_group",
+    ),
+    (
+        "venue_code",
+        "surface_code",
+        "distance_m",
+        "age_group",
+        "race_class_group",
+    ),
+    (
+        "venue_code",
+        "surface_code",
+        "distance_m",
+        "race_class_group",
+    ),
+    (
+        "surface_code",
+        "distance_m",
+        "age_group",
+        "race_class_group",
+    ),
+    (
+        "surface_code",
+        "distance_m",
+        "race_class_group",
+    ),
+)
+
+
+def select_asof_time_standard(
+    samples: Iterable[Mapping[str, object]],
+    target: Mapping[str, object],
+    minimum_sample_count: int = 10,
+) -> dict[str, object]:
+    """Select an as-of-safe winner-time standard with explicit fallback scope."""
+    if minimum_sample_count < 1:
+        raise ValueError("minimum_sample_count must be at least 1")
+
+    target_date = _iso_date(target.get("race_date"))
+    if target_date is None:
+        raise ValueError("target race_date is required")
+
+    eligible: list[Mapping[str, object]] = []
+    for sample in samples:
+        sample_date = _iso_date(sample.get("race_date"))
+        if sample_date is None or sample_date >= target_date:
+            continue
+        winner_time = _finite_positive(sample.get("winner_time_sec"))
+        if winner_time is None:
+            continue
+        eligible.append(sample)
+
+    broadest_nonempty: tuple[int, tuple[str, ...], list[Mapping[str, object]]] | None = None
+
+    for scope_level, fields in enumerate(STANDARD_SCOPES, start=1):
+        target_values = [_value(target, field) for field in fields]
+        if any(value is None or str(value).strip() == "" for value in target_values):
+            continue
+
+        matched: list[Mapping[str, object]] = []
+        for sample in eligible:
+            is_match = True
+            for field, target_value in zip(fields, target_values):
+                sample_value = _value(sample, field)
+                if str(sample_value) != str(target_value):
+                    is_match = False
+                    break
+            if is_match:
+                matched.append(sample)
+
+        if matched:
+            broadest_nonempty = (scope_level, fields, matched)
+        if len(matched) < minimum_sample_count:
+            continue
+
+        times = [sample.get("winner_time_sec") for sample in matched]
+        summary = build_time_standard(times)
+        dates = sorted(
+            date
+            for date in (_iso_date(sample.get("race_date")) for sample in matched)
+            if date is not None
+        )
+        summary.update(
+            {
+                "scope_level": scope_level,
+                "scope_fields": list(fields),
+                "sample_start_date": dates[0] if dates else None,
+                "sample_end_date": dates[-1] if dates else None,
+                "target_race_date": target_date,
+            }
+        )
+        return summary
+
+    if broadest_nonempty is not None:
+        scope_level, fields, matched = broadest_nonempty
+        times = [sample.get("winner_time_sec") for sample in matched]
+        summary = build_time_standard(times)
+        dates = sorted(
+            date
+            for date in (_iso_date(sample.get("race_date")) for sample in matched)
+            if date is not None
+        )
+        summary.update(
+            {
+                "scope_level": scope_level,
+                "scope_fields": list(fields),
+                "sample_start_date": dates[0] if dates else None,
+                "sample_end_date": dates[-1] if dates else None,
+                "target_race_date": target_date,
+            }
+        )
+        return summary
+
+    return {
+        "sample_count": 0,
+        "median_winner_time_sec": None,
+        "trimmed_mean_winner_time_sec": None,
+        "p10_time_sec": None,
+        "p25_time_sec": None,
+        "p50_time_sec": None,
+        "p75_time_sec": None,
+        "p90_time_sec": None,
+        "mad_time_sec": None,
+        "stddev_time_sec": None,
+        "standard_time_sec": None,
+        "standard_method": "median",
+        "confidence": "FALLBACK",
+        "scope_level": None,
+        "scope_fields": None,
+        "sample_start_date": None,
+        "sample_end_date": None,
+        "target_race_date": target_date,
+    }
+
+
+def build_asof_class_standard_curve(
+    samples: Iterable[Mapping[str, object]],
+    target: Mapping[str, object],
+    minimum_sample_count: int = 10,
+) -> dict[str, dict[str, object]]:
+    """Build class-specific standards for one target condition without class fallback."""
+    materialized = list(samples)
+    result: dict[str, dict[str, object]] = {}
+
+    for class_group in CLASS_NUMERIC:
+        class_target = dict(target)
+        class_target["race_class_group"] = class_group
+        standard = select_asof_time_standard(
+            materialized,
+            class_target,
+            minimum_sample_count=minimum_sample_count,
+        )
+        result[class_group] = standard
+
+    return result
+
+
+def percentile_rank(
+    historical_values: Iterable[object],
+    target_value: object,
+) -> float | None:
+    """Return an empirical 0-100 percentile where larger target values rank higher."""
+    target = _finite(target_value)
+    if target is None:
+        return None
+
+    cleaned: list[float] = []
+    for value in historical_values:
+        parsed = _finite(value)
+        if parsed is not None:
+            cleaned.append(parsed)
+    if not cleaned:
+        return None
+
+    below = sum(1 for value in cleaned if value < target)
+    equal = sum(1 for value in cleaned if math.isclose(value, target, abs_tol=1e-12))
+    return 100.0 * (float(below) + 0.5 * float(equal)) / float(len(cleaned))
+
+
 def normalized_time_delta_per_1000m(
     actual_time_sec: object,
     standard_time_sec: object,
