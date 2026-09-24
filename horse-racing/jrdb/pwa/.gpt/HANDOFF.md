@@ -172,10 +172,12 @@ PWAはEdge outputを表示するconsumerです。
 - durable design: `../NEWSPAPER_HISTORY_COMPACT.md`
 - config: `JRDB_PWA_CONFIG.newspaperHistoryDisplayMode`
 - default: `standard`
-- personal Kenshow_Labo: `compact` enabled
-- Momotaro: Turn 2時点では未有効化。Turn 3で適用する
+- personal Kenshow_Labo: `compact` enabled / 3・5・8走切替
+- Momotaro: `compact` enabled / 5走固定
+- smartphone history width: 94pxを実用上の下限として確定
+- compactで省略した情報は既存の詳細dialogへ保持
 - JSON schema / PACI / history生成は変更しない
-- compactから省略した情報は詳細dialogへ保持する
+- 回帰正本: `tests/test_newspaper_compact_history_pwa.py` + `tests/test_momotaro_pwa_contract.py`
 
 ## Layered Newspaper frontend
 
