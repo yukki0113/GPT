@@ -36,7 +36,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--analysis-root", type=Path, default=None)
     parser.add_argument("--analysis", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--analysis-backend", choices=("parquet", "sqlite"), default="parquet")
-    parser.add_argument("--mart", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--stats-window-years",
@@ -85,7 +84,6 @@ def production_metadata(
 def enrich_production(
     base: dict,
     analysis: object,
-    mart: object,
     stats_window_years: int,
 ) -> tuple[dict, list[str]]:
     """Build one stable RaceNote v1.0 bundle from the validated enrichment engine."""
@@ -93,7 +91,7 @@ def enrich_production(
     enriched, warnings = engine.enrich(
         base,
         analysis,
-        mart,
+        None,
         OLDER_RUNS_LIMIT,
         stats_window_years,
     )
@@ -121,7 +119,7 @@ def enrich_production_many(
     enriched_items = engine.enrich_many(
         bases,
         analysis,
-        mart,
+        None,
         OLDER_RUNS_LIMIT,
         stats_window_years,
     )
@@ -154,7 +152,6 @@ def main() -> int:
         enriched, warnings = enrich_production(
             base,
             analysis,
-            None,
             args.stats_window_years,
         )
         enriched.setdefault("metadata", {})["history_enrichment"]["analysis_backend"] = (
