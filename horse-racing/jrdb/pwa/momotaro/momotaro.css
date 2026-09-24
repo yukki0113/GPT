@@ -16,3 +16,16 @@
   padding-left:2px;
   padding-right:2px;
 }
+
+.momotaro-newspaper-table .newspaper-mark-group-head{
+  width:130px;
+  min-width:130px;
+  max-width:130px;
+}
+@media(max-width:640px){
+  .momotaro-newspaper-table .newspaper-mark-group-head{
+    width:130px;
+    min-width:130px;
+    max-width:130px;
+  }
+}
