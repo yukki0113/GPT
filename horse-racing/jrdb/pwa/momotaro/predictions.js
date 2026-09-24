@@ -1,6 +1,6 @@
 "use strict";
 
-const PREDICTION_CURRENT_BASE = "../data/newspaper/current/";
+const PREDICTION_CURRENT_BASE = "./data/newspaper/current/";
 const predictionStatus = document.getElementById("prediction-status");
 const predictionList = document.getElementById("prediction-list");
 const predictionRefresh = document.getElementById("prediction-refresh");
