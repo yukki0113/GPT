@@ -630,9 +630,10 @@ Confidence labels:
 
 Rules:
 
-- JRDB late-break evidence + observed early backward position may support CONFIRMED/LIKELY.
+- The supplied SED specification identifies the JRDB late-break field but does not define a documented numeric threshold/scale for CONFIRMED/LIKELY classification.
+- Therefore v0.1 persists the raw JRDB late-break metric and validates its empirical distribution before assigning threshold-based start-delay confidence.
 - Position sequence alone must not assert a gate delay.
-- Sequence such as 8 -> 2 -> 2 -> 3 -> 9 supports a strong early recovery / move-then-fade observation, but cause must remain UNKNOWN unless start evidence exists.
+- Sequence such as 8 -> 2 -> 2 -> 3 -> 9 supports a strong early recovery / move-then-fade observation, but cause must remain UNKNOWN unless independently calibrated start evidence exists.
 
 Reader-facing wording must distinguish:
 
@@ -779,7 +780,21 @@ performance_residual =
   - expected_performance
 ```
 
-Expected performance may use only pre-existing / pre-race-capable historical ability and race-context controls. It must not use a leakage feature derived from the same target result.
+Bias construction is two-pass.
+
+```text
+Pass A
+  prior-date Review / historical ability
+      -> expected performance for today's runners
+
+Pass B
+  today's actual performance - pre-day expected performance
+      -> same-day lane/style/frame residuals
+      -> shrink toward recent-meeting/historical prior
+      -> horse-level bias context
+```
+
+Expected performance may use only evidence whose race date is strictly before the bias target date. It must not use a leakage feature derived from the same target result. Horses without a usable pre-day expectation may contribute to descriptive Level A but not to adjusted Level B.
 
 Recommended initial control set:
 
