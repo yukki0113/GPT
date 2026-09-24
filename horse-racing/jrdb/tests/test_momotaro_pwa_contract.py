@@ -26,6 +26,9 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperV2IlukaComment(iluka)', script)
         self.assertIn('newspaperV2ShowIlukaDetail(horse)', script)
         self.assertIn('colspan="4">予想</th>', script)
+        self.assertIn('mark-ryota">りょ</th>', script)
+        self.assertIn('mark-oji">王子</th>', script)
+        self.assertIn('mark-kenshow">けん</th>', script)
 
     def test_history_and_short_comment_contract(self) -> None:
         html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
@@ -38,6 +41,28 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn("3人の予想・短評", html)
         self.assertIn('heading.textContent === "RaceNote短評"', script)
 
+    def test_operational_controls_are_hidden(self) -> None:
+        html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
+
+        self.assertIn('<dl class="status-grid" hidden>', html)
+        self.assertIn('<details class="recovery-panel newspaper-recovery-panel" hidden>', html)
+        self.assertIn('id="newspaper-source-status" class="query-status" hidden', html)
+        self.assertIn('<div class="button-row" hidden>', html)
+
+    def test_prediction_list_groups_by_race_and_uses_basic_horse_name(self) -> None:
+        html = (MOMOTARO_ROOT / "predictions.html").read_text(encoding="utf-8")
+        script = (MOMOTARO_ROOT / "predictions.js").read_text(encoding="utf-8")
+
+        self.assertIn('const basic = horse.basic || {};', script)
+        self.assertIn('horse_name: predictionText(basic.horse_name, "")', script)
+        self.assertIn('function groupVisibleRows()', script)
+        self.assertIn('class="momotaro-race-card"', script)
+        self.assertIn('source: "🐬"', script)
+        self.assertIn('signal: "次走注目S"', script)
+        self.assertIn('data-filter="keibailuka">🐬</button>', html)
+        self.assertIn('id="prediction-refresh" type="button"', html)
+        self.assertIn('<div class="button-row" hidden>', html)
+
     def test_browser_storage_is_isolated(self) -> None:
         newspaper = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
         fact_lite = (MOMOTARO_ROOT / "fact-lite.html").read_text(encoding="utf-8")
@@ -48,7 +73,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v4"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v5"', service_worker)
 
 
 if __name__ == "__main__":
