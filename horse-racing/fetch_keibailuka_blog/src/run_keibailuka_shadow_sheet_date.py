@@ -113,6 +113,24 @@ def main() -> None:
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    summary_lines = [
+        "# keibailuka Shadow Score Smoke v0.1",
+        "",
+        f"- rule_id: {result['rule_id']}",
+        f"- date: {result['date']}",
+        f"- status: {result['status']}",
+        f"- ledger rows: {len(selected)}",
+        f"- normal rows: {result['normal_rows']}",
+        f"- matched rows: {result['matched_rows']}",
+        f"- unmatched rows: {result['unmatched_rows']}",
+        f"- ambiguous rows: {result['ambiguous_rows']}",
+        f"- candidate count: {result['candidate_count']}",
+        f"- decision uses result data: {result['decision_uses_result_data']}",
+    ]
+    (output_dir / "summary.md").write_text(
+        "\n".join(summary_lines) + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
