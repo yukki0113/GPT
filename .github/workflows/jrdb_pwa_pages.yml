@@ -10,10 +10,12 @@ on:
       - ".github/workflows/jrdb_pwa_pages.yml"
       - ".github/workflows/jrdb_pwa_publish_data.yml"
       - ".github/workflows/jrdb_pwa_fact_lite_publish.yml"
+      - ".github/workflows/jrdb_momotaro_newspaper_publish_issue.yml"
   workflow_run:
     workflows:
       - "JRDB Newspaper Current Publish"
       - "JRDB PWA Fact Lite Publish"
+      - "JRDB Momotaro Newspaper Current Publish"
     types:
       - completed
     branches:
@@ -37,6 +39,9 @@ env:
   NEWSPAPER_RELEASE_META: jrdb_newspaper_current_release.json
   MOMOTARO_PREDICTION_RELEASE_TAG: jrdb-momotaro-predictions-current
   MOMOTARO_PREDICTION_ASSET: momotaro_predictions.csv
+  MOMOTARO_NEWSPAPER_RELEASE_TAG: jrdb-momotaro-newspaper-current
+  MOMOTARO_NEWSPAPER_RELEASE_ARCHIVE: jrdb_momotaro_newspaper_current.tar.xz
+  MOMOTARO_NEWSPAPER_RELEASE_META: jrdb_momotaro_newspaper_current_release.json
 
 jobs:
   deploy:
@@ -237,6 +242,79 @@ jobs:
             echo "Current Newspaper release and Momotaro public projection added to Pages artifact."
           else
             echo "No current Newspaper release yet."
+          fi
+
+          if gh release view "$MOMOTARO_NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            rm -rf .momotaro-release
+            mkdir -p .momotaro-release
+
+            gh release download "$MOMOTARO_NEWSPAPER_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "$MOMOTARO_NEWSPAPER_RELEASE_ARCHIVE" \
+              --pattern "$MOMOTARO_NEWSPAPER_RELEASE_META" \
+              --dir .momotaro-release
+
+            python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import tarfile
+          from pathlib import Path, PurePosixPath
+
+          root = Path(".momotaro-release")
+          archive = root / os.environ["MOMOTARO_NEWSPAPER_RELEASE_ARCHIVE"]
+          meta_path = root / os.environ["MOMOTARO_NEWSPAPER_RELEASE_META"]
+          meta = json.loads(meta_path.read_text(encoding="utf-8"))
+
+          if meta.get("schema_version") != "0.1":
+              raise SystemExit("invalid Momotaro release schema")
+          if meta.get("release_kind") != "jrdb_momotaro_newspaper_current_cache":
+              raise SystemExit("invalid Momotaro release kind")
+          if meta.get("archive_filename") != archive.name:
+              raise SystemExit("Momotaro release archive filename mismatch")
+          if archive.stat().st_size != int(meta.get("archive_size_bytes") or -1):
+              raise SystemExit("Momotaro release archive size mismatch")
+          if hashlib.sha256(archive.read_bytes()).hexdigest() != meta.get("archive_sha256"):
+              raise SystemExit("Momotaro release archive SHA-256 mismatch")
+
+          extract = root / "current"
+          extract.mkdir()
+          with tarfile.open(archive, mode="r:xz") as handle:
+              members = handle.getmembers()
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts:
+                      raise SystemExit(f"unsafe Momotaro release member: {member.name}")
+                  if member.issym() or member.islnk():
+                      raise SystemExit(f"Momotaro link member is not allowed: {member.name}")
+                  if not (member.isdir() or member.isfile()):
+                      raise SystemExit(f"Momotaro special archive member is not allowed: {member.name}")
+              handle.extractall(extract, filter="data")
+
+          manifest_path = extract / "manifest.json"
+          if not manifest_path.is_file():
+              raise SystemExit("Momotaro release manifest missing")
+          manifest_bytes = manifest_path.read_bytes()
+          if hashlib.sha256(manifest_bytes).hexdigest() != meta.get("manifest_sha256"):
+              raise SystemExit("Momotaro manifest SHA-256 mismatch")
+
+          manifest = json.loads(manifest_bytes.decode("utf-8"))
+          if manifest.get("date") != meta.get("date") or manifest.get("revision") != meta.get("revision"):
+              raise SystemExit("Momotaro release date/revision mismatch")
+          if (manifest.get("projection") or {}).get("kind") != "momotaro_newspaper_public":
+              raise SystemExit("Momotaro projection marker missing")
+
+          entries = manifest.get("races")
+          if not isinstance(entries, list) or len(entries) != int(meta.get("race_count") or -1):
+              raise SystemExit("Momotaro release race count mismatch")
+          PY
+
+            rm -rf .pages/momotaro/data/newspaper/current
+            mkdir -p .pages/momotaro/data/newspaper
+            cp -a .momotaro-release/current .pages/momotaro/data/newspaper/current
+            echo "Independent Momotaro Newspaper release added to Pages artifact."
+          else
+            echo "No independent Momotaro Newspaper release yet; using fallback projection if available."
           fi
 
       - name: Upload Pages artifact
