@@ -1,110 +1,237 @@
-# RL-T / RaceLift Historical Warehouse Cutover Audit — 2026-09-22
+# RL-T / RaceLift Historical Warehouse Cutover Audit — updated 2026-09-25
 
 ## Decision
 
 2010–2025 JRDB Historical の正式標準入力方針は JRDB Normalized Warehouse v1。
 
-ただし本監査時点では、Index Base の Raw-direct vs Warehouse 実データ完全同値ゲートをまだ PASS として確定していないため、production workflow の切替は行わない。
+accepted generation は `jrdb_normalized_warehouse_v1_2010_2025_g20260921` のまま変更しない。
 
-2026 日次 PACI / SED / Raw direct、既存 Index Base schema、RunPerf / Official RunPerf、Training Edge v0.2 / RL-T scientific semantics、calibration、runtime fingerprint、HOLDOUT境界は変更していない。
+2026 日次 PACI / SED / Raw direct、既存 Index Base schema、RunPerf / Official RunPerf、
+Training Edge v0.2 / RL-T scientific semantics、calibration、runtime fingerprint、
+HOLDOUT 境界は変更しない。
 
-## Confirmed source state
+production workflow の Historical 入力切替は、2010–2025 全期間 Index Base dual-read
+および downstream non-regression が PASS した後にのみ行う。
 
-Accepted Warehouse:
-- generation_id: jrdb_normalized_warehouse_v1_2010_2025_g20260921
+## Confirmed Warehouse state
+
+- generation_id: `jrdb_normalized_warehouse_v1_2010_2025_g20260921`
 - coverage: 2010–2025
 - families: BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/HJC/UKC
 - asset_count: 192
 - final audit: PASS
 - duplicate_object_count: 0
 
-The generation references immutable staging Parquet objects. The corresponding family staging also retains Raw receipts with annual source Drive IDs / sizes / SHA-256, so a same-origin Raw-vs-Warehouse audit is possible without refetching JRDB upstream.
+Formal retry r5/r6 では、JRDB upstream から原本 Raw を再取得し、
+各 family を original source commit / created_at で再生成した結果、
+accepted manifest に対して SHA-256 / size / row_count / schema_hash /
+canonical_key / relative_path が byte-identical であることを確認した。
 
-## Historical path audit
+したがって accepted Warehouse 自体の欠損・破損・重複は原因ではない。
 
-RL-T / Training Research historically rebuilds the Index Base through:
-annual Raw -> build_jrdb_index_base_from_raw.py -> Index Base v0.1 -> RunPerf -> Official RunPerf -> Training Research / RL-T.
+## Historical Index Base path
 
-This route still exists and must not remain the normal 2010–2025 input after cutover.
+Legacy route:
 
-The Raw builder has consumer-specific selection semantics that must be reproduced:
-- BAC later-date correction selection
-- CHA/CYB canonical race-date snapshot selection
-- non-identical duplicate rejection
-- SED fallback race context
-- UKC snapshot/as-of observations
-- record_hash = SHA-256 of the original Raw record
+```text
+annual Raw
+  -> build_jrdb_index_base_from_raw.py
+  -> Index Base v0.1
+  -> RunPerf
+  -> Official RunPerf
+  -> Training Research / RL-T
+```
 
-Therefore direct file-path substitution is not sufficient.
+Warehouse route:
 
-## Implementation added
+```text
+accepted Historical Warehouse
+  -> jrdb_index_base_warehouse_adapter.py
+  -> unchanged Index Base v0.1
+  -> unchanged downstream scientific chain
+```
 
-1. src/jrdb_index_base_warehouse_adapter.py
-   - no fixed-width offsets
-   - maps normalized Warehouse columns into unchanged Index Base v0.1 rows
-   - source_record_sha256 -> existing record_hash
-   - reproduces BAC / CHA / CYB correction selection
-   - rejects years outside 2010–2025
-   - reads immutable Parquet with DuckDB
+Raw route は cutover 後も rollback / audit 用として保持する。
 
-2. src/build_jrdb_index_base_from_warehouse.py
-   - builds the existing jrdb_index_base_schema_v0_1.sql shape
-   - records Warehouse generation / asset SHA evidence in metadata
-   - Historical-only coverage guard
+## Formal mismatch diagnosis
 
-3. src/audit_jrdb_index_base_raw_vs_warehouse.py
-   - builds Raw and Warehouse Index Base independently
-   - compares all eight logical tables:
-     race_context
-     race_result_context
-     runner_pre
-     runner_previous_link
-     runner_result
-     workout_main
-     training_analysis
-     horse_profile_observation
-   - checks schema/order, row counts, logical values via deterministic canonical hash,
-     NULL/blank semantics, record_hash profile, representative aggregates,
-     SQLite integrity and repeated Warehouse-build idempotence
-   - FAIL exits non-zero
+Initial full dual-read audit returned FAIL for six tables:
 
-Implementation commits:
-- 0533311a02cc1692bad995ab5b4ed038111f97a5
-- 3d36e45528919a9a3203a84513290f9b34ce8a71
-- 52d69dafbb1a7878d4da478956569fdab46ff375
+- race_context
+- runner_pre
+- runner_result
+- workout_main
+- training_analysis
+- horse_profile_observation
 
-## Existing evidence reused
+The following two tables already passed:
 
-The Analysis subsystem has already completed a separate Raw-vs-Warehouse dual-read PASS for representative 2010/2018/2025 deliveries and is Warehouse-standard for Historical Analysis. That confirms the accepted Warehouse is operationally consumable, but it is not sufficient to waive the Index Base-specific gate because Index Base carries additional fields and correction semantics.
+- race_result_context
+- runner_previous_link
+
+Column-level diagnostics proved that, for every failing table:
+
+- primary/canonical keys matched
+- row counts matched
+- schema matched
+- NULL/blank semantics matched
+- representative aggregates matched
+- all logical columns matched
+- the only differing column was `record_hash`
+
+### Root cause
+
+Legacy Raw Index Base uses:
+
+```python
+zf.read(member).splitlines()
+sha256(record_body)
+```
+
+Therefore CR/LF is removed before the legacy `record_hash` is calculated.
+
+Normalized Warehouse uses Common Raw Reader fixed blocks and records
+`source_record_sha256` for the record exactly as ingested. When the published
+fixed length includes CR/LF, that hash includes those bytes.
+
+Thus the mismatch was provenance representation only, not a logical-data mismatch.
+
+## Compatibility implementation
+
+A generation-bound compatibility sidecar was added:
+
+`src/build_jrdb_index_base_record_hash_compat.py`
+
+It stores:
+
+- year
+- source_member
+- source_record_ordinal
+- legacy_record_hash = SHA-256(record body after splitlines)
+
+Warehouse adapter accepts the sidecar and uses `legacy_record_hash` only when
+projecting the unchanged Index Base `record_hash` field.
+
+The normalized Warehouse Parquet itself is not modified.
+
+Relevant implementation:
+
+- `src/jrdb_index_base_warehouse_adapter.py`
+- `src/build_jrdb_index_base_from_warehouse.py`
+- `src/audit_jrdb_index_base_raw_vs_warehouse.py`
+- `src/build_jrdb_index_base_record_hash_compat.py`
+
+The auditor also emits column-level mismatch counts and samples.
+
+## Representative real-data PASS
+
+Issue #1270 / Actions run `35956420745`:
+
+- years: 2010 / 2018 / 2025
+- Warehouse rebuild equivalence: PASS
+- Raw vs Warehouse Index Base: PASS
+- SQLite integrity: PASS
+- repeat Warehouse build idempotence: PASS
+- audit exit code: 0
+
+All eight Index Base tables passed.
+
+Representative row counts:
+
+- race_context: 10,363
+- race_result_context: 10,363
+- runner_pre: 146,607
+- runner_previous_link: 733,035
+- runner_result: 146,607
+- workout_main: 146,607
+- training_analysis: 146,607
+- horse_profile_observation: 145,942
+
+## Full 2010–2025 gate
+
+Formal full-period audit is running under:
+
+- Issue #1280
+- workflow: `rlt_historical_warehouse_audit_issue.yml`
+- run: `36042308232`
+
+The workflow:
+
+1. validates accepted final manifest/audit
+2. refetches original annual JRDB Raw
+3. builds legacy record-hash compatibility sidecar
+4. rebuilds Warehouse using frozen original semantics
+5. verifies rebuilt Warehouse is byte-identical to accepted assets
+6. runs full 2010–2025 Raw vs Warehouse Index Base dual-read
+
+No production cutover is authorized until this run returns PASS.
+
+## Downstream non-regression gate
+
+The downstream comparison path has been implemented in advance:
+
+- `src/run_rl_t_warehouse_downstream_nonregression.py`
+- `src/audit_rl_t_warehouse_downstream_nonregression.py`
+- `.github/workflows/rlt_historical_warehouse_downstream_issue.yml`
+
+It independently builds Raw-route and Warehouse-route:
+
+1. Index Base 2010–2025
+2. RunPerf EXPANDING
+3. Official RunPerf
+4. Training Research
+5. Training Stage1b
+6. Training Edge v0.2 frozen runtime fingerprint
+
+Then it compares scientific relations and frozen fingerprint fields.
+
+`Training Research.source_archive` is intentionally excluded from scientific
+equality because Raw and Warehouse are different provenance media by design.
+`training_runner`, including its combined source record hash, remains part of
+the strict non-regression comparison.
+
+The Warehouse fingerprint is also validated against the frozen expected
+`training_edge_v0_2_runtime_fingerprint.json`.
 
 ## Current formal gate
 
-HISTORICAL_POLICY = WAREHOUSE_STANDARD
-WAREHOUSE_GENERATION = ACCEPTED_PASS
-WAREHOUSE_TO_INDEX_BASE_ADAPTER = IMPLEMENTED
-INDEX_BASE_DUAL_READ_AUDITOR = IMPLEMENTED
-INDEX_BASE_REAL_DATA_EQUIVALENCE = NOT_YET_FORMALLY_PASSED
-RL_T_PRODUCTION_CUTOVER = NOT_PERFORMED
-TRAINING_RESEARCH_UPSTREAM_CUTOVER = NOT_PERFORMED
-2026_DAILY_ROUTE = UNCHANGED
-RAW_HISTORICAL_ROUTE = RETAINED_FOR_ROLLBACK_AND_AUDIT
-
-Reason:
-The current Chat runtime does not provide a DuckDB/Parquet execution dependency, so the newly implemented formal auditor could not be executed here against the complete 2010–2025 asset set. The accepted Warehouse Parquet and matching Raw receipts were inspected through Drive, and representative object/source identities were confirmed, but that is not treated as equivalent to a full Index Base table-level PASS.
+```text
+HISTORICAL_POLICY                     = WAREHOUSE_STANDARD
+WAREHOUSE_GENERATION                  = ACCEPTED_PASS
+WAREHOUSE_REBUILD_EQUIVALENCE         = PASS
+WAREHOUSE_TO_INDEX_BASE_ADAPTER       = IMPLEMENTED
+LEGACY_RECORD_HASH_COMPATIBILITY      = IMPLEMENTED
+REPRESENTATIVE_INDEX_BASE_EQUIVALENCE = PASS
+FULL_2010_2025_INDEX_BASE_EQUIVALENCE = RUNNING
+DOWNSTREAM_NONREGRESSION              = READY_NOT_RUN
+RL_T_PRODUCTION_CUTOVER               = NOT_PERFORMED
+TRAINING_RESEARCH_UPSTREAM_CUTOVER    = NOT_PERFORMED
+2026_DAILY_ROUTE                      = UNCHANGED
+RAW_HISTORICAL_ROUTE                  = ROLLBACK_AUDIT_ONLY_AFTER_CUTOVER
+```
 
 ## Cutover rule
 
-Do not switch the current daily/replay/research workflows until the auditor returns PASS on the agreed real-data gate.
+On full Index Base PASS:
 
-On PASS:
+- run downstream non-regression
+- require unchanged eligible fit population
+- require unchanged Training Research semantics
+- require unchanged Stage1b outputs
+- require unchanged frozen C / CAB prediction fingerprints
+- retain 2024–2025 HOLDOUT exclusion and all market-field exclusions
+
+Only after all of those gates PASS:
+
 - 2010–2025 Historical -> Warehouse -> unchanged Index Base schema
 - 2026 -> PACI / SED / Raw direct unchanged
-- Raw Historical remains explicit rollback/audit only
-- downstream RunPerf / Official RunPerf / Training Research / frozen RL-T fingerprint non-regression must then be checked before final production promotion
+- Historical Raw -> rollback/audit only
 
 On any mismatch:
+
 - no cutover
 - preserve Raw route
-- record affected table/key/column and resolve before retry
+- record affected table/key/column
+- resolve and rerun the failed gate
 
-No scientific semantics or 2026 daily semantics were changed by this work.
+No RL-T scientific semantics or 2026 daily semantics are changed by this migration.
