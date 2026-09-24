@@ -150,9 +150,9 @@ renderTable = function () {
         historyTopHeaders +
       '</tr>' +
       '<tr class="newspaper-mark-head-row">' +
-        '<th class="newspaper-mark-col mark-ryota">りょーた</th>' +
-        '<th class="newspaper-mark-col mark-oji">おーじ</th>' +
-        '<th class="newspaper-mark-col mark-kenshow">けんしょー</th>' +
+        '<th class="newspaper-mark-col mark-ryota">りょ</th>' +
+        '<th class="newspaper-mark-col mark-oji">王子</th>' +
+        '<th class="newspaper-mark-col mark-kenshow">けん</th>' +
         '<th class="newspaper-mark-col mark-iluka">🐬</th>' +
       '</tr>' +
     '</thead>' +
