@@ -88,6 +88,28 @@ jobs:
             https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.wasm \
             --output .pages/vendor/sql-wasm.wasm
 
+          download_release_assets() {
+            local tag="$1"
+            local destination="$2"
+            shift 2
+            local attempt
+            for attempt in 1 2 3 4 5 6; do
+              rm -rf "$destination"
+              mkdir -p "$destination"
+              if gh release download "$tag" \\
+                --repo "$GITHUB_REPOSITORY" \\
+                "$@" \\
+                --dir "$destination"; then
+                return 0
+              fi
+              if [ "$attempt" -lt 6 ]; then
+                sleep $((attempt * 10))
+              fi
+            done
+            echo "Release assets did not become available: $tag" >&2
+            return 1
+          }
+
           if gh release view "$DATA_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release download "$DATA_RELEASE_TAG" \
               --repo "$GITHUB_REPOSITORY" \
@@ -100,11 +122,9 @@ jobs:
           fi
 
           if gh release view "$FACT_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release download "$FACT_RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --pattern "jrdb_pwa_fact_lite.sqlite" \
-              --pattern "manifest.json" \
-              --dir .pages/data/fact-lite
+            download_release_assets "$FACT_RELEASE_TAG" .pages/data/fact-lite \\
+              --pattern "jrdb_pwa_fact_lite.sqlite" \\
+              --pattern "manifest.json"
             python - <<'PY'
           import hashlib
           import json
@@ -150,11 +170,9 @@ jobs:
             rm -rf .newspaper-release
             mkdir -p .newspaper-release
 
-            gh release download "$NEWSPAPER_RELEASE_TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --pattern "$NEWSPAPER_RELEASE_ARCHIVE" \
-              --pattern "$NEWSPAPER_RELEASE_META" \
-              --dir .newspaper-release
+            download_release_assets "$NEWSPAPER_RELEASE_TAG" .newspaper-release \\
+              --pattern "$NEWSPAPER_RELEASE_ARCHIVE" \\
+              --pattern "$NEWSPAPER_RELEASE_META"
 
             python - <<'PY'
           import hashlib
