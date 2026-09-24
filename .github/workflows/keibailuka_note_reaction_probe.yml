@@ -70,6 +70,56 @@ jobs:
                   if snippet not in html_matches:
                       html_matches.append(snippet[:400])
 
+          reversible = bool(req.get("reversible_like_probe", False))
+          reversible_result = None
+          if reversible:
+              client_code = ("0123456789abcdef" * 4)[:64]
+              like_url = f"https://note.com/api/v3/notes/{note_key}/likes"
+              post_data = b"{}"
+              post_req = urllib.request.Request(
+                  like_url,
+                  data=post_data,
+                  headers={
+                      "User-Agent": ua["User-Agent"],
+                      "Accept": "application/json",
+                      "Content-Type": "application/json",
+                      "X-Note-Client-Code": client_code,
+                  },
+                  method="POST",
+              )
+              post_status = None
+              post_body = ""
+              delete_status = None
+              try:
+                  try:
+                      with urllib.request.urlopen(post_req, timeout=20) as response:
+                          post_status = response.status
+                          post_body = response.read().decode("utf-8", errors="replace")
+                  except urllib.error.HTTPError as exc:
+                      post_status = exc.code
+                      post_body = exc.read().decode("utf-8", errors="replace")
+                  if post_status in (200, 201):
+                      delete_req = urllib.request.Request(
+                          like_url,
+                          headers={
+                              "User-Agent": ua["User-Agent"],
+                              "Accept": "application/json",
+                              "X-Note-Client-Code": client_code,
+                          },
+                          method="DELETE",
+                      )
+                      try:
+                          with urllib.request.urlopen(delete_req, timeout=20) as response:
+                              delete_status = response.status
+                      except urllib.error.HTTPError as exc:
+                          delete_status = exc.code
+              finally:
+                  reversible_result = {
+                      "post_status": post_status,
+                      "post_json": json.loads(post_body) if post_body.strip().startswith("{") else post_body[:500],
+                      "delete_status": delete_status,
+                  }
+
           result = {
               "note_key": note_key,
               "api_top_keys": list(payload.keys()),
@@ -77,7 +127,8 @@ jobs:
               "metadata_matches": matches[:100],
               "html_term_counts": terms,
               "html_reaction_snippets": html_matches[:50],
-              "write_action_performed": False
+              "reversible_like_probe": reversible_result,
+              "write_action_performed": bool(reversible and reversible_result and reversible_result.get("post_status") in (200, 201))
           }
 
           body = "KEIBAILUKA_NOTE_PROBE_RESULT\n```json\n" + json.dumps(result, ensure_ascii=False, indent=2) + "\n```"
