@@ -27,7 +27,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         config_position = html.index('newspaperHistoryDisplayMode: "compact"')
         runtime_position = html.index('<script src="./newspaper.js?v=3"></script>')
         self.assertLess(config_position, runtime_position)
-        self.assertIn('./newspaper-v4.css?v=7', html)
+        self.assertIn('./newspaper-v4.css?v=8', html)
         self.assertIn('./newspaper-v4.js?v=8', html)
 
     def test_momotaro_opts_in_during_turn_3(self) -> None:
@@ -37,16 +37,18 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn('newspaperHistoryDisplayMode: "compact"', html)
         self.assertIn('historyCount = 5', script)
         self.assertIn('newspaperV4HistoryTableClass()', script)
-        self.assertIn('../newspaper-v4.css?v=7', html)
+        self.assertIn('../newspaper-v4.css?v=8', html)
         self.assertIn('../newspaper-v4.js?v=8', html)
 
     def test_compact_layout_uses_shared_dense_width_contract(self) -> None:
         css = (PWA_ROOT / "newspaper-v4.css").read_text(encoding="utf-8")
 
         self.assertIn("--newspaper-history-compact-width: 124px", css)
-        self.assertIn("--newspaper-history-compact-width: 120px", css)
+        self.assertIn("--newspaper-history-compact-width: 94px", css)
         self.assertIn(".newspaper-table-v4.newspaper-history-compact", css)
         self.assertIn(".newspaper-run-v4-compact", css)
+        self.assertIn("width: 82px", css)
+        self.assertIn("width: 76px", css)
 
     def test_compact_cell_keeps_primary_race_information(self) -> None:
         script = (PWA_ROOT / "newspaper-v4.js").read_text(encoding="utf-8")
@@ -78,9 +80,9 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v58"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v59"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
-        self.assertIn('"./newspaper-v4.css?v=7"', service_worker)
+        self.assertIn('"./newspaper-v4.css?v=8"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=8"', service_worker)
 
 
