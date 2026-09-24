@@ -189,6 +189,7 @@ def audit_review_bundle(
     bundle: Mapping[str, object],
     *,
     expected_target_date: str | None = None,
+    require_single_target_date: bool = True,
 ) -> dict[str, object]:
     """Audit a Review bundle and return PASS/FAIL plus hard/soft evidence."""
     hard_errors: list[dict[str, object]] = []
@@ -337,7 +338,7 @@ def audit_review_bundle(
                 "expected_target_date": expected_date,
             }
         )
-    if len(observed_dates) > 1:
+    if require_single_target_date and len(observed_dates) > 1:
         hard_errors.append(
             {
                 "code": "MULTIPLE_TARGET_DATES",
