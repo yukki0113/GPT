@@ -35,6 +35,16 @@ class HistoricalHelpersTest(unittest.TestCase):
         self.assertEqual(race.horse, "🤡")
         self.assertNotIn("noteにスキボタン", race.comment)
 
+    def test_hiragana_no_selection_is_excluded(self):
+        race = classify_race(
+            "東京",
+            3,
+            "",
+            ["該当なし"],
+        )
+        self.assertEqual(race.status, "excluded")
+        self.assertEqual(race.exclusion_reason, "no_selection")
+
     def test_split_header_horse_name_is_recovered(self):
         race = classify_race(
             "札幌",

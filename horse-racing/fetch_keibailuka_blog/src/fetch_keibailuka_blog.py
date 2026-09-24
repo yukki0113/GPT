@@ -548,7 +548,7 @@ def classify_race(
     section_lines = trim_footer(section_lines)
     combined = " ".join([horse_tail, *section_lines])
 
-    if "該当無し" in combined:
+    if re.search(r"該当(?:無し|なし)", combined):
         return RacePick(
             venue,
             race_no,

@@ -25,6 +25,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode, urljoin
 
+from bs4 import BeautifulSoup
+
 from fetch_keibailuka_blog import (
     ARTICLE_PHRASE,
     BASE_URL,
@@ -33,12 +35,14 @@ from fetch_keibailuka_blog import (
     build_result,
     build_session,
     build_validation,
+    body_lines,
     canonicalize_article_url,
     extract_feed_entry,
     fetch_article_html,
     fetch_response,
     normalize_text,
     parse_source,
+    select_article_body,
 )
 
 SCHEMA_VERSION = "keibailuka-historical-v0.1"
@@ -224,6 +228,17 @@ def discover_month_sources(
     return sources, errors, scanned_entries
 
 
+def source_debug_lines(source: ArticleSource, html: str) -> list[str]:
+    """Return the exact normalized visible lines used to diagnose parser failures."""
+
+    if source.embedded_html is not None:
+        soup = BeautifulSoup(source.embedded_html, "html.parser")
+        return body_lines(soup)
+
+    soup = BeautifulSoup(html, "html.parser")
+    return body_lines(select_article_body(soup))
+
+
 def write_csv(path: Path, header: list[str], rows: list[list[Any]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as file:
         writer = csv.writer(file, lineterminator="\n")
@@ -266,15 +281,37 @@ def process_month(
         venues = [source.venue for source in day_sources]
         results = []
         source_by_venue = {source.venue: source for source in day_sources}
+        debug_by_venue: dict[str, dict[str, Any]] = {}
 
         for source in day_sources:
+            html = ""
             try:
-                html = ""
                 if source.embedded_html is None:
                     html = fetch_article_html(session, source.url, timeout, interval)
+                debug_by_venue[source.venue] = {
+                    "source_url": source.url,
+                    "source_method": source.source_method,
+                    "article_title": source.title,
+                    "lines": source_debug_lines(source, html),
+                }
                 results.append(parse_source(source, html, race_date))
             except Exception as exc:
                 errors.append(f"{race_date} {source.venue}: {exc}")
+                if source.venue not in debug_by_venue:
+                    try:
+                        debug_by_venue[source.venue] = {
+                            "source_url": source.url,
+                            "source_method": source.source_method,
+                            "article_title": source.title,
+                            "lines": source_debug_lines(source, html),
+                        }
+                    except Exception as debug_exc:
+                        debug_by_venue[source.venue] = {
+                            "source_url": source.url,
+                            "source_method": source.source_method,
+                            "article_title": source.title,
+                            "debug_error": str(debug_exc),
+                        }
 
         if len(results) != len(day_sources):
             day_reports.append(
@@ -283,6 +320,7 @@ def process_month(
                     "venues": venues,
                     "validation_status": "failure",
                     "errors": ["one or more articles failed before validation"],
+                    "debug_articles": debug_by_venue,
                 }
             )
             continue
@@ -295,6 +333,11 @@ def process_month(
                 "validation_status": validation["validation_status"],
                 "venue_reports": validation["venue_reports"],
                 "errors": validation["errors"],
+                **(
+                    {"debug_articles": debug_by_venue}
+                    if validation["validation_status"] != "success"
+                    else {}
+                ),
             }
         )
         if validation["validation_status"] != "success":
