@@ -63,6 +63,8 @@ jobs:
             fi
             echo
             echo "artifact: keibailuka-research-${ISSUE_NUMBER}"
+            echo "run_id: ${{ github.run_id }}"
+            echo "research_outcome: ${{ steps.research.outcome }}"
           } > /tmp/comment.md
           gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
           if [ "${{ steps.research.outcome }}" = "success" ]; then
