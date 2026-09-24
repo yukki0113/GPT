@@ -230,6 +230,59 @@ def estimate_day_track_adjustment(
     }
 
 
+def leave_one_out_day_track_adjustments(
+    races: Iterable[Mapping[str, object]],
+    race_key_field: str = "race_key",
+) -> dict[str, dict[str, object]]:
+    """Estimate one LOO day adjustment for every supplied race.
+
+    Each target race is excluded from the residual sample used to correct that
+    same race. The caller groups input by one date, venue and surface.
+    """
+    materialized = list(races)
+    residual_by_index: list[float | None] = []
+    keys: list[str] = []
+
+    for index, race in enumerate(materialized):
+        key = str(race.get(race_key_field) or "").strip()
+        if not key:
+            key = f"__row_{index}"
+        keys.append(key)
+        residual_by_index.append(
+            normalized_time_delta_per_1000m(
+                race.get("actual_time_sec"),
+                race.get("standard_time_sec"),
+                race.get("distance_m"),
+            )
+        )
+
+    if len(set(keys)) != len(keys):
+        raise ValueError("race keys must be unique for leave-one-out adjustment")
+
+    result: dict[str, dict[str, object]] = {}
+    for target_index, key in enumerate(keys):
+        others = [
+            residual
+            for index, residual in enumerate(residual_by_index)
+            if index != target_index and residual is not None
+        ]
+        if not others:
+            result[key] = {
+                "race_count": 0,
+                "adjustment_per_1000m_sec": None,
+                "residual_mad_sec": None,
+            }
+            continue
+
+        result[key] = {
+            "race_count": len(others),
+            "adjustment_per_1000m_sec": float(statistics.median(others)),
+            "residual_mad_sec": median_absolute_deviation(others),
+        }
+
+    return result
+
+
 def day_track_adjustment_seconds(
     adjustment_per_1000m_sec: object,
     distance_m: object,
