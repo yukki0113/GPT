@@ -383,6 +383,64 @@ class HistoricalReviewWarehouseReader:
         finally:
             connection.close()
 
+    def read_year(
+        self,
+        year: int,
+    ) -> tuple[list[dict[str, object]], dict[str, object]]:
+        """Return one accepted Warehouse year's unified Review source rows."""
+        if not HISTORICAL_YEAR_FROM <= year <= HISTORICAL_YEAR_TO:
+            raise PostRaceReviewSourceError(
+                f"{year}: outside accepted historical Review Warehouse coverage "
+                f"{HISTORICAL_YEAR_FROM}-{HISTORICAL_YEAR_TO}"
+            )
+
+        sed = self._rows("sed", year)
+        if not sed:
+            raise PostRaceReviewSourceError(
+                f"{year}: no Warehouse SED rows"
+            )
+
+        race_keys = {
+            _text(row.get("race_key_raw"))
+            for row in sed
+            if _text(row.get("race_key_raw"))
+        }
+
+        kyi = [
+            row
+            for row in self._rows("kyi", year)
+            if _text(row.get("race_key_raw")) in race_keys
+        ]
+        bac = [
+            row
+            for row in self._rows("bac", year)
+            if _text(row.get("race_key_raw")) in race_keys
+        ]
+
+        rows = build_review_input_rows(sed, kyi, bac)
+        if not rows:
+            raise PostRaceReviewSourceError(
+                f"{year}: no Review source rows"
+            )
+
+        dates = sorted(
+            {
+                _text(row.get("race_date"))
+                for row in rows
+                if _text(row.get("race_date"))
+            }
+        )
+        return rows, {
+            "source_mode": "historical_warehouse",
+            "source_generation_id": self.current.get("generation_id"),
+            "year": year,
+            "period_from": dates[0] if dates else None,
+            "period_to": dates[-1] if dates else None,
+            "race_count": len({row["race_key"] for row in rows}),
+            "row_count": len(rows),
+            "relations": list(REQUIRED_RELATIONS),
+        }
+
     def read_day(self, day: dt.date) -> tuple[list[dict[str, object]], dict[str, object]]:
         """Return one historical day's unified Review input rows and provenance."""
         if not HISTORICAL_YEAR_FROM <= day.year <= HISTORICAL_YEAR_TO:
