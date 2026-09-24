@@ -582,6 +582,58 @@ def main() -> None:
                 }
             )
 
+    primary_focus_rows_output = []
+    for condition_name, condition in focus_conditions.items():
+        for tag in tag_order:
+            rows_for_tag = [
+                row
+                for row in bettable
+                if condition(row) and row.get("primary_reason") == tag
+            ]
+            total_metric = metric(rows_for_tag)
+            year_2024 = metric([row for row in rows_for_tag if row["year"] == 2024])
+            year_2025 = metric([row for row in rows_for_tag if row["year"] == 2025])
+            primary_focus_rows_output.append(
+                {
+                    "condition": condition_name,
+                    "reason_id": tag,
+                    "reason_label": reason_labels[tag],
+                    "N": total_metric["N"],
+                    "win_rate_pct": total_metric["win_rate_pct"],
+                    "place_rate_pct": total_metric["place_rate_pct"],
+                    "win_roi_pct": total_metric["win_roi_pct"],
+                    "place_roi_pct": total_metric["place_roi_pct"],
+                    "N_2024": year_2024["N"],
+                    "win_roi_2024": year_2024["win_roi_pct"],
+                    "place_roi_2024": year_2024["place_roi_pct"],
+                    "N_2025": year_2025["N"],
+                    "win_roi_2025": year_2025["win_roi_pct"],
+                    "place_roi_2025": year_2025["place_roi_pct"],
+                }
+            )
+
+    overlap_tags = ["traffic_path", "pace_flow", "surface", "distance"]
+    overlap_rows_output = []
+    for condition_name, condition in focus_conditions.items():
+        for index, left_tag in enumerate(overlap_tags):
+            for right_tag in overlap_tags[index + 1:]:
+                pair_rows = [
+                    row
+                    for row in bettable
+                    if condition(row)
+                    and left_tag in row.get("reason_tags", [])
+                    and right_tag in row.get("reason_tags", [])
+                ]
+                pair_metric = metric(pair_rows)
+                overlap_rows_output.append(
+                    {
+                        "condition": condition_name,
+                        "left_reason": reason_labels[left_tag],
+                        "right_reason": reason_labels[right_tag],
+                        **pair_metric,
+                    }
+                )
+
     write_csv(output_dir / "join_unmatched.csv", unmatched)
     write_csv(
         output_dir / "join_unmatched_diagnostic.csv",
@@ -591,6 +643,14 @@ def main() -> None:
     write_csv(output_dir / "payout_unit_audit.csv", payout_audit)
     write_csv(output_dir / "reason_metrics.csv", reason_metric_rows)
     write_csv(output_dir / "reason_focus_metrics.csv", focus_rows_output)
+    write_csv(
+        output_dir / "primary_reason_focus_metrics.csv",
+        primary_focus_rows_output,
+    )
+    write_csv(
+        output_dir / "focus_tag_overlap_metrics.csv",
+        overlap_rows_output,
+    )
 
     summary_path = output_dir / "summary.json"
     summary_path.write_text(
