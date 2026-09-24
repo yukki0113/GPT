@@ -242,7 +242,7 @@ def _parquet_validation(
     """Re-read one object and validate row count, schema and unique keys."""
     safe_path = str(path).replace("'", "''")
     description = connection.execute(
-        f"DESCRIBE SELECT * FROM read_parquet('{safe_path}')"
+        f"DESCRIBE SELECT * FROM read_parquet('{safe_path}', hive_partitioning=false)"
     ).fetchall()
     parquet_columns = [str(row[0]) for row in description]
     schema_columns = _relation_columns(connection, relation)
@@ -253,7 +253,7 @@ def _parquet_validation(
 
     row_count = int(
         connection.execute(
-            f"SELECT COUNT(*) FROM read_parquet('{safe_path}')"
+            f"SELECT COUNT(*) FROM read_parquet('{safe_path}', hive_partitioning=false)"
         ).fetchone()[0]
     )
     if row_count != expected_rows:
@@ -267,7 +267,7 @@ def _parquet_validation(
         connection.execute(
             "SELECT COUNT(*) FROM ("
             f"SELECT {group}, COUNT(*) AS n "
-            f"FROM read_parquet('{safe_path}') "
+            f"FROM read_parquet('{safe_path}', hive_partitioning=false) "
             f"GROUP BY {group} HAVING COUNT(*) > 1"
             ")"
         ).fetchone()[0]
