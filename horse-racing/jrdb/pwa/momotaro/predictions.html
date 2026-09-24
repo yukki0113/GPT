@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f7f7" />
+  <title>桃太郎新聞 / 予想一覧</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="./momotaro.css" />
+</head>
+<body>
+  <header class="app-header">
+    <details class="app-menu">
+      <summary class="app-menu-trigger" aria-label="メニューを開く"><span class="app-menu-icon">☰</span><span class="app-brand">桃太郎新聞</span></summary>
+      <nav class="app-menu-panel" aria-label="メインメニュー">
+        <div class="app-menu-section">閲覧</div>
+        <a href="./newspaper.html" class="app-menu-link">新聞</a>
+        <a href="./predictions.html" class="app-menu-link active" aria-current="page">予想一覧</a>
+        <a href="./fact-lite.html" class="app-menu-link">条件別集計</a>
+      </nav>
+    </details>
+    <div id="prediction-network-badge" class="badge">確認中</div>
+  </header>
+  <main>
+    <h1 class="visually-hidden">予想一覧</h1>
+    <section class="card">
+      <h2>今日の予想一覧</h2>
+      <div class="momotaro-tabs" role="group" aria-label="表示対象">
+        <button type="button" data-filter="all">すべて</button>
+        <button type="button" data-filter="ryota-s">りょーた S</button>
+        <button type="button" data-filter="oji-review">おーじ 回顧馬</button>
+        <button type="button" data-filter="keibailuka">イルカ</button>
+      </div>
+      <div class="button-row"><button id="prediction-refresh" type="button">最新データを確認</button></div>
+      <div id="prediction-status" class="query-status"></div>
+    </section>
+    <section class="card"><div id="prediction-list"><div class="empty-state">データを確認してください。</div></div></section>
+  </main>
+  <footer><small>桃太郎新聞 / 予想一覧</small></footer>
+  <script src="./predictions.js?v=1"></script>
+  <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js", {scope:"./"}).catch(console.error);</script>
+</body>
+</html>
