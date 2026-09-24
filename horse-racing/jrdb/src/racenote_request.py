@@ -97,7 +97,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--analysis-root", type=Path, default=None, help="Verified Analysis Parquet current root")
     parser.add_argument("--analysis", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--analysis-backend", choices=("parquet", "sqlite"), default="parquet")
-    parser.add_argument("--mart", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--store-manifest", type=Path, default=None, help="JRDB Store manifest; falls back to JRDB_STORE_MANIFEST")
     parser.add_argument("--store-cache", type=Path, default=None, help="Optional JRDB Store cache root")
     parser.add_argument("--store-offline", action="store_true", help="Resolve Store artifacts from verified cache only")
@@ -198,9 +197,8 @@ def validate_sqlite(path: Path, label: str) -> None:
     finally:
         connection.close()
 
-def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, None, dict]:
+def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, dict]:
     """Resolve one verified Analysis source without automatic fallback."""
-    deprecated_mart = getattr(args, "mart", None)
     backend_name = getattr(args, "analysis_backend", None)
     if backend_name is None:
         backend_name = "sqlite" if getattr(args, "analysis", None) is not None else "parquet"
@@ -226,14 +224,13 @@ def resolve_enrichment_sources(args: argparse.Namespace) -> tuple[Path, None, di
         backend.close()
     except AnalysisBackendError as exc:
         raise RaceNoteRequestError(str(exc)) from exc
-    return source, None, {
+    return source, {
         "mode": "explicit_path" if analysis_root or analysis_db else "store_manifest",
         "analysis": str(source),
         "analysis_backend": "parquet_duckdb" if backend_name == "parquet" else "sqlite_compatibility",
         "stats_mart": False,
         "stats_mart_required": False,
         "sqlite_materialization_required": False,
-        "deprecated_mart_ignored": deprecated_mart is not None,
         "source": source_info,
     }
 
@@ -553,7 +550,7 @@ def main() -> int:
     if args.plan_only:
         return 0
 
-    analysis, _deprecated_mart, enrichment_resolution = resolve_enrichment_sources(args)
+    analysis, enrichment_resolution = resolve_enrichment_sources(args)
     analysis_backend = args.analysis_backend
     plan["enrichment_source_resolution"] = enrichment_resolution
     request_root = args.output / request.compact_date
