@@ -9,6 +9,7 @@ on:
       - 'horse-racing/jrdb/src/racenote_history_enrichment.py'
       - 'horse-racing/jrdb/src/racenote_request.py'
       - 'horse-racing/jrdb/tests/test_racenote_analysis_parquet_backend.py'
+      - 'horse-racing/jrdb/tests/test_racenote_current_architecture_contract.py'
       - '.github/workflows/racenote_phase_b_parquet_tests.yml'
   pull_request:
     paths:
@@ -37,4 +38,4 @@ jobs:
         run: python -m py_compile horse-racing/jrdb/src/racenote_analysis_backend.py horse-racing/jrdb/src/racenote_history_engine.py horse-racing/jrdb/src/racenote_history_enrichment.py horse-racing/jrdb/src/racenote_request.py
       - name: Run Phase B focused tests
         working-directory: horse-racing/jrdb/tests
-        run: python -m unittest -v test_racenote_analysis_parquet_backend
+        run: python -m unittest -v test_racenote_analysis_parquet_backend test_racenote_current_architecture_contract
