@@ -5,7 +5,7 @@
 - Turn 1: completed
 - Turn 2: completed
 - Turn 3: completed
-- Turn 4: tuning pass 1 implemented / device verification pending
+- Turn 4: completed at practical mobile density limit
 - Turn 5: not started
 
 This document is the durable design record for the shared Newspaper past-run compact display.
@@ -141,13 +141,14 @@ iPhone実機スクリーンショットを基準に、mobile compactを再調整
 
 桃太郎の各予想列幅 32 / 32 / 32 / 34px は変更しない。
 
-このpassは実機スクショからの調整であり、最終的な4走同時視認は再度iPhoneで確認する。必要ならTurn 4 pass 2として数px単位で追い込む。
+Turn 4 pass 2では、94px幅を維持したままcompact内のfont size / line-heightを一段下げ、文字の衝突を抑えた。
+
+実機上はこれ以上history幅を削ると可読性とタップ操作の劣化が大きくなるため、94pxを実用上の下限とする。友人共有時の案内も「現行compactがスマホ縦持ちでの実用上の限界」とする。
 
 ## Next turn
 
-Turn 4 device verification / Turn 5:
+Turn 5:
 
-- 更新後のiPhoneスクリーンショット確認
-- 4走程度の同時視認性確認
-- 文字潰れ・詳細button・race name ellipsis確認
-- 問題がなければTurn 5で最終回帰・運用確定
+- 最終回帰確認
+- 個人3/5/8切替、桃太郎5走固定、詳細dialogの回帰確認
+- 運用文書の最終確定
