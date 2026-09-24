@@ -32,7 +32,7 @@ def _bundle() -> dict[str, object]:
                 "field_size": 10,
                 "pace_shape": "FRONT_LOADED",
                 "review_schema_version": "v0.1",
-                "review_logic_version": "v0.1.0",
+                "review_logic_version": "v0.1.1",
             }
         ],
         "fact_race_review": [
@@ -49,7 +49,7 @@ def _bundle() -> dict[str, object]:
                 "class_curve_monotonic": True,
                 "baseline_version": "asof-median-loo-v0.1",
                 "review_schema_version": "v0.1",
-                "review_logic_version": "v0.1.0",
+                "review_logic_version": "v0.1.1",
             }
         ],
         "fact_horse_performance": [
@@ -65,7 +65,7 @@ def _bundle() -> dict[str, object]:
                 "finish": 1,
                 "baseline_version": "asof-median-loo-v0.1",
                 "review_schema_version": "v0.1",
-                "review_logic_version": "v0.1.0",
+                "review_logic_version": "v0.1.1",
             }
         ],
     }
