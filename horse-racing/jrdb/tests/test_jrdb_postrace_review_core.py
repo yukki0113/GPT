@@ -36,6 +36,8 @@ from jrdb_postrace_review import (  # noqa: E402
     frontness,
     lane_bucket,
     normalize_class_group,
+    opening_reference_candidate_seconds,
+    closing_reference_candidate_seconds,
     pace_balance_seconds,
     parse_sed_time_seconds,
     position_dynamics,
@@ -115,6 +117,22 @@ class JrdbPostRaceReviewCoreTest(unittest.TestCase):
         self.assertAlmostEqual(closing_gain_seconds(0.3, 0.8), -0.5)
         self.assertIsNone(closing_gain_seconds(None, 0.3))
         self.assertIsNone(closing_gain_seconds(-0.1, 0.3))
+
+    def test_race_sectional_reference_candidates(self) -> None:
+        self.assertAlmostEqual(
+            float(opening_reference_candidate_seconds(35.4, 0.8)),
+            34.6,
+        )
+        self.assertAlmostEqual(
+            float(closing_reference_candidate_seconds(34.2, 1.2, 0.3)),
+            35.1,
+        )
+        self.assertIsNone(
+            opening_reference_candidate_seconds(0.5, 0.8)
+        )
+        self.assertIsNone(
+            closing_reference_candidate_seconds(34.2, -0.1, 0.3)
+        )
 
     def test_corner_frontness_preserves_missing_values(self) -> None:
         values = corner_frontness([8, 2, None, 3], 10)
