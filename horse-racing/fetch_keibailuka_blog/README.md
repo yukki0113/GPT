@@ -176,3 +176,47 @@ CSVは同じrunのartifactから直接回収できます。固定entriesから�
 - 2026-08-23 新潟→中京→札幌
 
 2026-09-06についても、札幌→阪神→中山でR優先順とCSV生成を含む回帰成功を確認済みです。
+
+## Historical / 月次研究データ取得
+
+成績・ROI・人気別・JRDB結合等の研究用に、日次取得とは別に月次Historical取得を用意します。通常運用でWorkスレッドは不要です。
+
+- Historical本体: `src/fetch_keibailuka_historical.py`
+- focused test: `tests/test_fetch_keibailuka_historical.py`
+- workflow: `.github/workflows/keibailuka_historical_chat.yml`
+- 台帳契約: `.gpt/HISTORICAL_LEDGER.md`
+- 台帳正本: Google Sheets `keibailuka Historical 検証台帳` (`1bAN-nlwEBcg3qtr7SyhPkluRqiTBY2sDU2QkSbRB2jM`)
+
+Historical側は日次parserを複製せず、`fetch_keibailuka_blog.py` のArticleSource / parse_source / validation / result builderを再利用します。ブログ表記変更に対するparser修正を日次とHistoricalで二重管理しません。
+
+### Historical Issue contract
+
+Title:
+
+```text
+[KEIBAILUKA_HISTORICAL_REQUEST] <request_id>
+```
+
+Body:
+
+```json
+{
+  "start_month": "2024-01",
+  "end_month": "2024-12",
+  "request_interval_seconds": 0.8,
+  "timeout_seconds": 20.0
+}
+```
+
+- `end_month` 省略時は1か月だけ取得
+- 1 requestは最大12か月
+- 対象月のBlogger公開feedをページングし、`全レース中の強き不利馬達` の対象記事を全件探索
+- 発見した各記事を1R〜12Rでfail-closed validation
+- 外部HTTPが必要なため、Historical取得もD. Actions-Native Execution
+- 成功月は月次CSV / ledger CSV / manifestをartifactへ出力
+- batch全体は `historical_batch_manifest.json` を生成
+
+初期研究窓は `2024-01` 以降とします。サンプル不足時は同じコード・契約のまま `2023-01` まで拡張できます。
+
+Historical artifactは搬送・監査用の一時成果物です。Chatがartifactを確認し、月単位のSHA / row count / key uniquenessを検証してGoogle Sheets台帳へ転記した時点で、台帳側をaccepted canonicalとします。隠し馬は `馬名_raw=🤡` を保持し、実馬名が別途確認できた場合のみ `馬名_resolved` に追記します。
+

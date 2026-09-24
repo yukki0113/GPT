@@ -1,0 +1,244 @@
+name: keibailuka-historical-chat
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[KEIBAILUKA_HISTORICAL_REQUEST]'
+
+jobs:
+  fetch:
+    if: startsWith(github.event.issue.title, '[KEIBAILUKA_HISTORICAL_REQUEST]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r horse-racing/fetch_keibailuka_blog/requirements.txt
+
+      - name: Run focused tests
+        run: >-
+          python -m unittest discover
+          -s horse-racing/fetch_keibailuka_blog/tests
+          -p 'test_fetch_keibailuka_historical.py'
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from datetime import datetime
+          from pathlib import Path
+
+          prefix = '[KEIBAILUKA_HISTORICAL_REQUEST]'
+          title = os.environ['ISSUE_TITLE']
+          if not title.startswith(prefix):
+              raise SystemExit('Unexpected issue title')
+
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('Invalid request_id in issue title')
+
+          body = (os.environ.get('ISSUE_BODY') or '').strip()
+          try:
+              request = json.loads(body)
+          except json.JSONDecodeError as exc:
+              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+
+          def parse_month(name, value):
+              text = str(value or '').strip()
+              try:
+                  return text, datetime.strptime(text, '%Y-%m')
+              except ValueError as exc:
+                  raise SystemExit(f'{name} must be YYYY-MM') from exc
+
+          start_text, start = parse_month('start_month', request.get('start_month'))
+          end_text, end = parse_month('end_month', request.get('end_month', start_text))
+          if end < start:
+              raise SystemExit('end_month must be >= start_month')
+          span = (end.year - start.year) * 12 + (end.month - start.month) + 1
+          if span > 12:
+              raise SystemExit('historical request may contain at most 12 months')
+
+          interval = float(request.get('request_interval_seconds', 0.8))
+          timeout = float(request.get('timeout_seconds', 20.0))
+          if interval < 0:
+              raise SystemExit('request_interval_seconds must be >= 0')
+          if timeout <= 0:
+              raise SystemExit('timeout_seconds must be > 0')
+
+          output_dir = f'horse-racing/fetch_keibailuka_blog/output_historical_{request_id}'
+          command = [
+              'python',
+              'horse-racing/fetch_keibailuka_blog/src/fetch_keibailuka_historical.py',
+              '--start-month', start_text,
+              '--end-month', end_text,
+              '--output-dir', output_dir,
+              '--interval', str(interval),
+              '--timeout', str(timeout),
+          ]
+          config = {
+              'request_id': request_id,
+              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'start_month': start_text,
+              'end_month': end_text,
+              'month_count': span,
+              'request_interval_seconds': interval,
+              'timeout_seconds': timeout,
+              'output_dir': output_dir,
+              'command': command,
+          }
+          Path('/tmp/keibailuka_historical_config.json').write_text(
+              json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as file:
+              file.write(f'REQUEST_ID={request_id}\n')
+              file.write(f'START_MONTH={start_text}\n')
+              file.write(f'END_MONTH={end_text}\n')
+              file.write(f'OUTPUT_DIR={output_dir}\n')
+          PY
+
+      - name: Save resolved request
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          cp /tmp/keibailuka_historical_config.json "$OUTPUT_DIR/resolved_request.json"
+
+      - name: Fetch and parse historical blog
+        id: fetch
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(
+              Path('/tmp/keibailuka_historical_config.json').read_text(encoding='utf-8')
+          )
+          completed = subprocess.run(config['command'], check=False)
+          raise SystemExit(completed.returncode)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Validate historical batch
+        id: validate
+        if: always()
+        continue-on-error: true
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          manifest_path = Path(os.environ['OUTPUT_DIR']) / 'historical_batch_manifest.json'
+          if not manifest_path.exists():
+              raise SystemExit(2)
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          if manifest.get('validation_status') != 'success':
+              raise SystemExit(2)
+          raise SystemExit(0)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write run status
+        if: always()
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          {
+            echo "request_id=$REQUEST_ID"
+            echo "issue_number=${{ github.event.issue.number }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "head_sha=${{ github.sha }}"
+            echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
+            echo "validation_exit_code=${{ steps.validate.outputs.exit_code }}"
+          } > "$OUTPUT_DIR/run_status.txt"
+
+      - name: Upload outputs
+        id: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keibailuka-historical-${{ env.REQUEST_ID }}-${{ github.run_id }}
+          path: ${{ env.OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Comment machine-readable result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          VALIDATE_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output_dir = Path(os.environ['OUTPUT_DIR'])
+          manifest_path = output_dir / 'historical_batch_manifest.json'
+          if manifest_path.exists():
+              manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          else:
+              manifest = {'validation_status': 'failure', 'errors': ['manifest unavailable']}
+
+          result = {
+              'request_id': os.environ['REQUEST_ID'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': f"keibailuka-historical-{os.environ['REQUEST_ID']}-{os.environ['GITHUB_RUN_ID']}",
+              'start_month': os.environ['START_MONTH'],
+              'end_month': os.environ['END_MONTH'],
+              'fetch_exit_code': os.environ.get('FETCH_EXIT', ''),
+              'validation_exit_code': os.environ.get('VALIDATE_EXIT', ''),
+              'validation_status': manifest.get('validation_status'),
+              'successful_months': manifest.get('successful_months', []),
+              'failed_months': manifest.get('failed_months', []),
+              'totals': manifest.get('totals', {}),
+          }
+          body = 'KEIBAILUKA_HISTORICAL_RESULT\n```json\n' + json.dumps(
+              result, ensure_ascii=False, indent=2
+          ) + '\n```\n'
+          Path('/tmp/result_comment.md').write_text(body, encoding='utf-8')
+          PY
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file /tmp/result_comment.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          VALIDATE_EXIT: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          if [ "$FETCH_EXIT" = "0" ] && [ "$VALIDATE_EXIT" = "0" ]; then
+            gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason completed
+          else
+            gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --reason "not planned"
+          fi
+
+      - name: Fail workflow when fetch or validation failed
+        if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
+        run: exit 1

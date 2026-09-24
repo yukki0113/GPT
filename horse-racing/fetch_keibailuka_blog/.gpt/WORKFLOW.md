@@ -107,3 +107,53 @@ Issue作成前に次を確認する。
 3. 外部HTTP不要のtestは可能ならCで実行する。
 4. 実日付のBlogger取得を含む回帰が必要な場合だけDでIssueを1回発行し、1R〜12R構造、除外判定、🤡保持、R優先順、CSV列・日付を確認する。
 5. 日次JSON / TSV / CSV、validation、ログ、artifactはGitへcommitしない。
+
+## D. Historical / 月次取得
+
+HistoricalもBlogger外部HTTPを必要とするため、現行Chat環境ではActions-Nativeとする。ただし日次Issueを大量発行せず、月範囲を1 requestにまとめる。
+
+Issue:
+
+```text
+[KEIBAILUKA_HISTORICAL_REQUEST] <request_id>
+```
+
+Body:
+
+```json
+{
+  "start_month": "2024-01",
+  "end_month": "2024-12",
+  "request_interval_seconds": 0.8,
+  "timeout_seconds": 20.0
+}
+```
+
+Preflight:
+
+1. latest main
+2. `.github/workflows/keibailuka_historical_chat.yml` のparser
+3. `start_month` / optional `end_month` が `YYYY-MM`
+4. end >= start
+5. inclusive span <= 12 months
+6. interval >= 0
+7. timeout > 0
+8. request JSONを機械serialize
+9. 同一期間を既に `取込管理` でsuccess受入済みなら重複取得・重複取込を避ける
+
+Actionsは月ごとにBlogger feedをページングし、対象記事を全件探索する。発見した各記事は日次正本parserで解析し、各記事1R〜12R・included/excluded・parse errorをfail-closed検証する。
+
+Success result markerは `KEIBAILUKA_HISTORICAL_RESULT`。batch successは `fetch_exit_code=0`、`validation_exit_code=0`、`validation_status=success` を必須とする。
+
+Artifact受入:
+
+1. RESULTのexact `run_id + artifact_name` でartifactをAで回収
+2. `historical_batch_manifest.json` と各 `month_manifest.json` を読む
+3. 成功月ごとにledger CSVのrow count / SHA-256 / `日付+会場+R` uniquenessを確認
+4. Google Sheets `keibailuka Historical 検証台帳` の `取込管理` に同月successが無いことを確認
+5. `イルカ明細` に追記し、続けて `取込管理` にaccepted success行を1件追記
+6. failed monthは台帳へ入れない。multi-monthで一部failureなら成功月だけ受け入れ、failed monthだけ新request_idで再取得
+7. `馬名_raw=🤡` は保持し、確認済み実馬名だけ `馬名_resolved` に追記
+
+台帳詳細は `.gpt/HISTORICAL_LEDGER.md` を正本とする。通常運用にWorkスレッドは不要。
+

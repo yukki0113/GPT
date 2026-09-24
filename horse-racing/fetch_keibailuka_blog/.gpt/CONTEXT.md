@@ -71,3 +71,20 @@ Actions完了後の `KEIBAILUKA_RESULT` コメントをAで読み、`fetch_exit_
 成功後のコードブロック整形や固定成果物の比較・検査はCで行います。CSVは同じrunのartifactから直接回収でき、artifact取得だけを目的とした新規Issueは作りません。
 
 日次JSON / TSV / CSV、validation、ログ、artifactはGit管理対象外です。
+
+## Historical research acquisition
+
+成績・ROI・人気別・JRDB等との後段研究用に、Historical取得経路を持ちます。抽出段階ではJRDBに依存せず、ブログ公開情報の原票を作る責務だけを持ちます。
+
+- runner: `src/fetch_keibailuka_historical.py`
+- workflow: `.github/workflows/keibailuka_historical_chat.yml`
+- Issue prefix: `[KEIBAILUKA_HISTORICAL_REQUEST]`
+- 1 request最大12か月
+- 初期取得範囲: 2024-01〜現在
+- 必要時は2023-01まで同一コードで拡張
+- parser / validationは日次正本 `fetch_keibailuka_blog.py` を再利用
+
+Historicalのaccepted ledger正本はGoogle Sheets `keibailuka Historical 検証台帳`、Spreadsheet ID `1bAN-nlwEBcg3qtr7SyhPkluRqiTBY2sDU2QkSbRB2jM` です。GitHub Actions artifactは一時搬送物で、月次manifest・CSV SHA・row count・主キー重複をChatが監査して台帳へ受け入れます。
+
+`馬名_raw` は抽出値を不変保持し、隠し馬は `🤡` のまま残します。実馬名が確認できた場合は `馬名_resolved` にのみ追記します。通常のHistorical取得・監査・台帳転記にWorkスレッドを要求しません。
+
