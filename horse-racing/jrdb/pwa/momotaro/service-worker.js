@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "momotaro-newspaper-shell-v6";
+const CACHE_NAME = "momotaro-newspaper-shell-v7";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,7 +9,7 @@ const APP_SHELL = [
   "./fact-lite.html",
   "./manifest.webmanifest",
   "./momotaro.css?v=3",
-  "./momotaro.js?v=5",
+  "./momotaro.js?v=6",
   "./predictions.js?v=2",
   "../style.css",
   "../newspaper.css?v=3",
