@@ -108,7 +108,7 @@ renderTable = function () {
     (a, b) => Number(a.key.horse_no) - Number(b.key.horse_no)
   );
   const historyTopHeaders = Array.from(
-    { length: 3 },
+    { length: 5 },
     (_, index) => '<th class="newspaper-history-head" rowspan="2">' + (index + 1) + '走前</th>'
   ).join("");
 
@@ -116,7 +116,7 @@ renderTable = function () {
     const history = horse.history || [];
     const frameNo = horse.key ? horse.key.frame_no : null;
     const historyCells = Array.from(
-      { length: 3 },
+      { length: 5 },
       (_, runIndex) =>
         '<td class="newspaper-history-cell">' +
         newspaperV4HistoryCellHtml(history[runIndex], horseIndex, runIndex) +
@@ -256,7 +256,7 @@ function applyMomotaroRaceNotesLayout() {
 
 const momotaroBaseRenderBundle = renderBundle;
 renderBundle = function () {
-  historyCount = 3;
+  historyCount = 5;
   momotaroBaseRenderBundle();
   renderMomotaroFriends();
   applyMomotaroRaceNotesLayout();
