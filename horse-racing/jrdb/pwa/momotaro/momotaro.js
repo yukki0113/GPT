@@ -235,9 +235,31 @@ function renderMomotaroFriends() {
   card.hidden = false;
 }
 
+/**
+ * 個人PWAのRaceNote短評は桃太郎では表示せず、JRDBレース情報だけ補助表示する。
+ * 短評の主表示は3人の予想・短評カードに統一する。
+ */
+function applyMomotaroRaceNotesLayout() {
+  const card = document.getElementById("newspaper-notes-card");
+  const target = document.getElementById("newspaper-race-notes");
+  if (!card || !target) return;
+
+  const title = card.querySelector("h2");
+  if (title) title.textContent = "レース情報";
+
+  const sections = Array.from(target.querySelectorAll(".newspaper-v5-note-section"));
+  sections.forEach(function (section) {
+    const heading = section.querySelector("h3");
+    if (heading && heading.textContent === "RaceNote短評") {
+      section.remove();
+    }
+  });
+}
+
 const momotaroBaseRenderBundle = renderBundle;
 renderBundle = function () {
   historyCount = 3;
   momotaroBaseRenderBundle();
   renderMomotaroFriends();
+  applyMomotaroRaceNotesLayout();
 };
