@@ -167,3 +167,43 @@ Artifact受入:
 
 Historical ledger import is append-only. Do not calculate a future empty row and later write to that fixed row. Before each month import, re-read existing `イルカ明細.key` and `取込管理`, then append only missing keys using Sheets `appendCells`. After write, verify total keys == unique keys. If a month control row exists but detail count is below its accepted manifest count, repair by appending the missing key set only; do not overwrite neighboring months.
 
+
+
+## Shadow Forward / keibailuka × KYI
+
+2026-09-25以降、研究候補 `KBI_SURFACE_BASEPOP_6_9_V01` をshadow forwardで扱う。
+
+正本:
+- `research/comment_reason_tags_v0_1.json`
+- `research/surface_basepop_6_9_shadow_v0_1.json`
+- scorer: `src/score_keibailuka_shadow_v01.py`
+
+判定条件は固定:
+1. 🤡を除外
+2. `comment-reason-v0.1` で主理由が `surface`
+3. KYI `base_win_rank` が6〜9位
+
+`base_win_rank` は「基準人気順位」であり実市場人気ではない。「最終6〜9人気」の同義語として扱わない。
+
+### Pre-race boundary
+
+shadow candidate生成時は以下を使用禁止:
+- SED `final_popularity`
+- SED `final_win_odds`
+- `finish`
+- `win_payout`
+- `place_payout`
+
+settlement時にのみSEDを結合し、N / 的中率 / ROIを更新する。
+
+2026-01-04〜2026-09-22は既に探索・OOT確認に使用済みであり、freeze後Forwardへ再利用しない。今後の条件変更は既存rule_idを書換えず、新rule_id / versionで別検証とする。
+
+### Shadow scorer smoke
+
+実データsmokeは2026-09-22で実施済み:
+- Issue #1296 / run 36047592635
+- normal 4 / matched 4 / unmatched 0 / ambiguous 0
+- candidate 0
+- result-data dependencyなし
+
+日次イルカCSVと当日PACIが揃った後、`score_keibailuka_shadow_v01.py` で候補を生成する。候補が0頭でも正常結果として記録する。
