@@ -19,7 +19,7 @@ Historical routing remains:
 - Raw: explicit rollback/audit and documented 2010 previous-result boundary fallback only
 - Archive: optional publishable delivery cache; absence does not stop a Warehouse rebuild
 
-Stats Mart is a frozen legacy cache. It remains for old research, builders, schemas, and reproducibility, but is not an active RaceNote dependency.
+Stats Mart is a frozen legacy cache retained for old research, builders, schemas, and reproducibility; it is not an active RaceNote dependency. See docs/racenote/legacy/README.md.
 
 ## CLI
 
@@ -34,7 +34,7 @@ Normal usage passes the verified Analysis Parquet current root:
 --analysis is a hidden SQLite compatibility option. It is available only with
 --analysis-backend sqlite for audit, equivalence, or explicit rollback. Production
 does not materialize SQLite and does not automatically fall back to it.
---mart remains a hidden deprecated option and is ignored.
+The current RaceNote CLI has no --mart option. Stats Mart is legacy-only and is not an input to the current request or enrichment path.
 
 ## GitHub Actions request
 
