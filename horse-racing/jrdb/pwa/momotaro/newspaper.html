@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f7f7" />
+  <title>桃太郎新聞</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./momotaro.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../newspaper.css?v=3" />
+  <link rel="stylesheet" href="../newspaper-v4.css?v=6" />
+  <link rel="stylesheet" href="../newspaper-v5.css?v=1" />
+  <link rel="stylesheet" href="../newspaper-v6.css?v=1" />
+  <link rel="stylesheet" href="../newspaper-v9.css?v=2" />
+</head>
+<body>
+  <header class="app-header">
+    <details class="app-menu">
+      <summary class="app-menu-trigger" aria-label="メニューを開く">
+        <span class="app-menu-icon" aria-hidden="true">☰</span>
+        <span class="app-brand">桃太郎新聞</span>
+      </summary>
+      <nav class="app-menu-panel" aria-label="メインメニュー">
+        <div class="app-menu-section">閲覧</div>
+        <a href="./newspaper.html" class="app-menu-link active" aria-current="page">新聞</a>
+        <a href="./predictions.html" class="app-menu-link">予想一覧</a>
+        <a href="./fact-lite.html" class="app-menu-link">条件別集計</a>
+      </nav>
+    </details>
+    <div id="newspaper-network-badge" class="badge">確認中</div>
+  </header>
+
+  <main class="newspaper-main">
+    <h1 class="visually-hidden">競馬新聞</h1>
+    <section class="card">
+      <h2>新聞データ</h2>
+      <dl class="status-grid">
+        <div><dt>端末保存</dt><dd id="newspaper-local-status">確認中</dd></div>
+        <div><dt>OPFS</dt><dd id="newspaper-opfs-status">確認中</dd></div>
+        <div><dt>Service Worker</dt><dd id="newspaper-sw-status">確認中</dd></div>
+        <div><dt>表示レース</dt><dd id="newspaper-race-status">未読込</dd></div>
+      </dl>
+
+      <div class="sync-panel newspaper-sync-panel">
+        <div class="button-row">
+          <button id="newspaper-day-refresh" type="button">最新データを確認</button>
+        </div>
+        <div id="newspaper-day-race-wrap" hidden>
+          <label>
+            レース切替
+            <select id="newspaper-day-race-select"></select>
+          </label>
+        </div>
+        <div id="newspaper-day-status" class="query-status"></div>
+      </div>
+
+      <details class="recovery-panel newspaper-recovery-panel">
+        <summary>自動取得できない場合の手動取込</summary>
+        <div class="import-panel newspaper-import-panel">
+          <label>
+            Newspaper 1日パッケージJSON
+            <input id="newspaper-day-file" type="file" accept=".json,application/json" />
+          </label>
+          <div class="button-row">
+            <button id="newspaper-day-import" type="button" disabled>ファイルを取り込む</button>
+            <button id="newspaper-day-clear" type="button" class="secondary" disabled hidden>1日分の保存を削除</button>
+          </div>
+        </div>
+        <p class="note">通常は起動時の自動取得を使用します。公開データを取得できない場合だけ、検証済みの1日パッケージJSONを選択してください。</p>
+      </details>
+
+      <div hidden aria-hidden="true">
+        <input id="newspaper-file" type="file" accept=".json,application/json" />
+        <button id="newspaper-import" type="button" disabled>読み込んで端末保存</button>
+        <button id="newspaper-clear" type="button" disabled>端末保存を削除</button>
+        <div id="newspaper-import-status"></div>
+      </div>
+    </section>
+
+    <section id="newspaper-race-card" class="card newspaper-race-card" hidden>
+      <div class="newspaper-race-heading">
+        <div>
+          <p id="newspaper-race-meta" class="eyebrow"></p>
+          <h2 id="newspaper-race-title"></h2>
+          <p id="newspaper-race-subtitle" class="newspaper-race-subtitle"></p>
+        </div>
+        <div class="newspaper-history-toggle" aria-label="過去走は3走固定"><span>過去3走</span></div>
+      </div>
+      <div id="newspaper-source-status" class="query-status"></div>
+    </section>
+
+    <section id="newspaper-table-card" class="card newspaper-table-card" hidden>
+      <div id="newspaper-table-wrap" class="table-wrap newspaper-table-wrap"></div>
+    </section>
+
+    <section id="momotaro-friends-card" class="card" hidden>
+      <h2>みんなの予想・短評</h2>
+      <div id="momotaro-friends"></div>
+    </section>
+
+    <section id="newspaper-notes-card" class="card" hidden>
+      <h2>レース情報・短評</h2>
+      <div id="newspaper-race-notes"></div>
+    </section>
+  </main>
+
+  <dialog id="newspaper-detail-dialog" class="newspaper-dialog">
+    <form method="dialog" class="newspaper-dialog-inner">
+      <div class="newspaper-dialog-header">
+        <strong id="newspaper-dialog-title">詳細</strong>
+        <button type="submit" class="secondary">閉じる</button>
+      </div>
+      <div id="newspaper-dialog-body"></div>
+    </form>
+  </dialog>
+
+  <footer><small>桃太郎新聞</small></footer>
+  <script>
+    window.JRDB_PWA_CONFIG = {
+      newspaperOpfsDir: "momotaro-newspaper",
+      newspaperOpfsFile: "current.json",
+      newspaperDayOpfsFile: "current-day.json",
+      newspaperCurrentBase: "../data/newspaper/current/"
+    };
+  </script>
+  <script src="../newspaper.js?v=3"></script>
+  <script src="../newspaper-v2.js?v=3"></script>
+  <script src="../newspaper-day.js?v=4"></script>
+  <script src="../newspaper-v4.js?v=7"></script>
+  <script src="../newspaper-v5.js?v=1"></script>
+  <script src="../newspaper-v6.js?v=1"></script>
+  <script src="../newspaper-v7.js?v=4"></script>
+  <script src="../newspaper-v8.js?v=1"></script>
+  <script src="../newspaper-v9.js?v=1"></script>
+  <script src="../newspaper-v10.js?v=2"></script>
+  <script src="./momotaro.js?v=1"></script>
+  <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js", {scope:"./"}).catch(console.error);</script>
+</body>
+</html>
