@@ -919,7 +919,7 @@ class BulkEnrichmentIndex:
         return output, warnings
 
 
-def enrich_many(bases: list[dict], analysis: object, mart: object, older_limit: int, years: int) -> list[tuple[dict, list[str]]]:
+def enrich_many(bases: list[dict], analysis: object, older_limit: int, years: int) -> list[tuple[dict, list[str]]]:
     """Enrich one request's bundles with shared DuckDB bulk scans."""
     if not bases:
         return []
