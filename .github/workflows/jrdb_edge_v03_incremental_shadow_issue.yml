@@ -73,7 +73,8 @@ jobs:
           python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
           PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python -m pytest -q \
             horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_incremental_shadow.py \
-            horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py
+            horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py \
+            tools/data-storage/tests/test_materialize.py
 
       - name: Download and validate Warehouse current + manifest
         run: |
@@ -112,29 +113,41 @@ jobs:
               raise SystemExit('unexpected Warehouse asset reference mode')
           PY
 
-      - name: Download immutable Warehouse family staging
+      - name: Materialize immutable Warehouse families from manifest
+        env:
+          PYTHONPATH: tools/data-storage
         run: |
           set -euo pipefail
-          mkdir -p /tmp/warehouse/families
-          gdown --folder --no-cookies \
-            "https://drive.google.com/drive/folders/$BAC_STAGING_FOLDER_ID" \
-            -O /tmp/warehouse/families/BAC
-          gdown --folder --no-cookies \
-            "https://drive.google.com/drive/folders/$KYI_STAGING_FOLDER_ID" \
-            -O /tmp/warehouse/families/KYI
-          gdown --folder --no-cookies \
-            "https://drive.google.com/drive/folders/$SED_STAGING_FOLDER_ID" \
-            -O /tmp/warehouse/families/SED
-          gdown --folder --no-cookies \
-            "https://drive.google.com/drive/folders/$UKC_STAGING_FOLDER_ID" \
-            -O /tmp/warehouse/families/UKC
+          mkdir -p /tmp/warehouse/families /tmp/warehouse/cache /tmp/warehouse/materialization-audit
+          for family in BAC KYI SED UKC; do
+            folder_var="${family}_STAGING_FOLDER_ID"
+            folder_id="${!folder_var}"
+            python -m data_storage materialize-manifest \
+              --manifest /tmp/warehouse/manifest.json \
+              --output-root "/tmp/warehouse/families/$family" \
+              --cache-dir /tmp/warehouse/cache \
+              --audit "/tmp/warehouse/materialization-audit/$family.json" \
+              --folder "$family=$folder_id" \
+              --folder-label "$family" \
+              --backend auto
+          done
           python - <<'PY'
+          import json
           from pathlib import Path
           for family in ('BAC','KYI','SED','UKC'):
-              files=list((Path('/tmp/warehouse/families')/family).rglob('*.parquet'))
+              root=Path('/tmp/warehouse/families')/family
+              files=list(root.rglob('*.parquet'))
+              audit=json.load(open(Path('/tmp/warehouse/materialization-audit')/f'{family}.json'))
+              if audit.get('status')!='PASS':
+                  raise SystemExit(f'{family}: materialization audit failed')
+              if audit.get('verified_count')!=16 or audit.get('expected_asset_count')!=16:
+                  raise SystemExit(
+                      f"{family}: expected 16 verified assets, "
+                      f"got verified={audit.get('verified_count')} expected={audit.get('expected_asset_count')}"
+                  )
               if len(files)!=16:
                   raise SystemExit(f'{family}: expected 16 parquet assets, got {len(files)}')
-              print(f'{family}: {len(files)} parquet files, {sum(p.stat().st_size for p in files)} bytes')
+              print(f'{family}: {len(files)} verified parquet files, {sum(p.stat().st_size for p in files)} bytes')
           PY
 
       - name: Download v0.2 STANDARD serving catalog
