@@ -361,8 +361,8 @@
 @media (max-width: 640px) {
   .newspaper-table-v4 {
     --newspaper-history-compact-width: 94px;
-    --newspaper-history-compact-font-size: 8.8px;
-    --newspaper-history-compact-line-height: 1.14;
+    --newspaper-history-compact-font-size: 8.2px;
+    --newspaper-history-compact-line-height: 1.12;
     --newspaper-history-compact-padding-x: 2px;
     --newspaper-history-compact-padding-y: 2px;
   }
@@ -405,12 +405,12 @@
     padding-right: 3px;
   }
   .newspaper-table-v4.newspaper-history-compact .newspaper-horse-name-only {
-    font-size: 10.5px;
-    line-height: 1.18;
+    font-size: 9.8px;
+    line-height: 1.16;
   }
   .newspaper-table-v4.newspaper-history-compact .newspaper-basic-line {
-    font-size: 8.5px;
-    line-height: 1.18;
+    font-size: 8.1px;
+    line-height: 1.16;
   }
   .newspaper-table-v4.newspaper-history-compact .newspaper-basic-sire,
   .newspaper-table-v4.newspaper-history-compact .newspaper-basic-info .newspaper-basic-line:last-child {
@@ -428,31 +428,41 @@
   }
   .newspaper-run-v4-compact .newspaper-run-compact-top {
     min-height: 15px;
-    font-size: 8.2px;
+    font-size: 7.7px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-race {
     min-height: 12px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-race strong {
-    font-size: 9px;
+    font-size: 8.4px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-race span {
-    font-size: 8.7px;
+    font-size: 8.2px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-result {
-    font-size: 8.7px;
+    font-size: 8.2px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-result strong {
-    font-size: 10px;
+    font-size: 9.4px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-track {
-    font-size: 8.5px;
+    font-size: 8px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-time {
-    font-size: 8.7px;
+    font-size: 8.2px;
   }
   .newspaper-run-v4-compact .newspaper-run-compact-finish,
   .newspaper-run-v4-compact .newspaper-last3f {
-    font-size: 8.3px;
+    font-size: 7.9px;
+  }
+  .newspaper-table-v4.newspaper-history-compact .newspaper-history-head {
+    padding-left: 1px;
+    padding-right: 1px;
+    font-size: 8.7px;
+  }
+  .newspaper-run-v4-compact .newspaper-detail-button-compact {
+    min-height: 16px;
+    padding: 1px 3px;
+    font-size: 7.3px;
   }
 }
