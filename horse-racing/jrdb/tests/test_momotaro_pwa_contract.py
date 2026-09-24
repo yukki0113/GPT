@@ -40,7 +40,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('{ length: 5 }', script)
         self.assertIn('newspaperHistoryDisplayMode: "compact"', html)
         self.assertIn('newspaperV4HistoryTableClass()', script)
-        self.assertIn('momotaro-newspaper-table ${newspaperV4HistoryTableClass()}', script)
+        self.assertIn("momotaro-newspaper-table ' + newspaperV4HistoryTableClass()", script)
         self.assertIn("3人の予想・短評", html)
         self.assertIn('heading.textContent === "RaceNote短評"', script)
 
