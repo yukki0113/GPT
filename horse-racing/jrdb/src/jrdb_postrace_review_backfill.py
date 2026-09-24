@@ -255,8 +255,18 @@ class RollingReviewHistory:
         if target is None or not values:
             return None
 
-        left = bisect.bisect_left(values, target)
-        right = bisect.bisect_right(values, target)
+        tolerance = max(
+            1e-12,
+            1e-9 * abs(target),
+        )
+        left = bisect.bisect_left(
+            values,
+            target - tolerance,
+        )
+        right = bisect.bisect_right(
+            values,
+            target + tolerance,
+        )
         equal = right - left
         return 100.0 * (
             float(left) + 0.5 * float(equal)
