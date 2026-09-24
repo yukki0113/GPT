@@ -45,10 +45,9 @@ All history statistics are computed as-of-exclusive from Analysis canonical. Exi
 ## 4. Legacy boundary
 
 The complete retained-asset inventory and import boundary is docs/racenote/legacy/README.md.
-
-## 4a. Legacy boundary
-
-v0.2 control, v1.1-P gated prediction, Edge policy, and related frozen outputs remain historical reproducibility/benchmark assets. Their prediction meaning is not changed by this Phase A cutover. Only RaceNote input compatibility may be updated where required.
+v0.2 control, v1.1-P gated prediction, Edge policy, and related frozen outputs remain
+historical reproducibility/benchmark assets. They are not current Forecast Gen0 logic,
+and their output is not an automatic fallback or current prediction input.
 
 ## 5. Operating rules
 
