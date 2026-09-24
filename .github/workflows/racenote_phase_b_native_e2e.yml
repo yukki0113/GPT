@@ -2,7 +2,7 @@ name: RaceNote Phase B native Parquet E2E
 
 on:
   push:
-    branches: [codex/racenote-phaseb-parquet-native-cutover]
+    branches: [main, codex/racenote-phaseb-parquet-native-cutover]
   pull_request:
     paths:
       - '.github/workflows/racenote_phase_b_native_e2e.yml'
