@@ -11,12 +11,15 @@ sys.path.insert(0, str(SRC))
 
 from jrdb_postrace_review_standard import (  # noqa: E402
     adjusted_standard_time_seconds,
+    build_asof_class_standard_curve,
     build_time_standard,
     class_equivalent,
     day_track_adjustment_seconds,
     estimate_day_track_adjustment,
     leave_one_out_day_track_adjustments,
     normalized_time_delta_per_1000m,
+    percentile_rank,
+    select_asof_time_standard,
     standard_confidence,
 )
 
@@ -36,6 +39,155 @@ class JrdbPostRaceReviewStandardTest(unittest.TestCase):
         self.assertEqual(standard_confidence(10), "LOW")
         self.assertEqual(standard_confidence(30), "MEDIUM")
         self.assertEqual(standard_confidence(100), "HIGH")
+
+    def test_select_asof_standard_excludes_future_and_keeps_class(self) -> None:
+        samples = [
+            {
+                "race_date": "2023-03-05",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "MAIDEN",
+                "winner_time_sec": 95.8,
+            },
+            {
+                "race_date": "2024-03-03",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "MAIDEN",
+                "winner_time_sec": 95.4,
+            },
+            {
+                "race_date": "2024-03-24",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "MAIDEN",
+                "winner_time_sec": 95.2,
+            },
+            {
+                "race_date": "2026-03-01",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "MAIDEN",
+                "winner_time_sec": 90.0,
+            },
+            {
+                "race_date": "2024-03-10",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "CLASS_1",
+                "winner_time_sec": 94.0,
+            },
+        ]
+        target = {
+            "race_date": "2025-03-15",
+            "venue_code": "05",
+            "surface_code": "1",
+            "distance_m": 1600,
+            "course_code": "1",
+            "race_type_code": "12",
+            "declared_class_group": "MAIDEN",
+        }
+
+        result = select_asof_time_standard(
+            samples,
+            target,
+            minimum_sample_count=3,
+        )
+
+        self.assertEqual(result["sample_count"], 3)
+        self.assertEqual(result["scope_level"], 1)
+        self.assertEqual(result["sample_end_date"], "2024-03-24")
+        self.assertAlmostEqual(float(result["standard_time_sec"]), 95.4)
+
+    def test_standard_falls_back_by_scope_not_adjacent_class(self) -> None:
+        samples = [
+            {
+                "race_date": "2023-03-05",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "MAIDEN",
+                "winner_time_sec": 95.8,
+            },
+            {
+                "race_date": "2024-03-03",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "MAIDEN",
+                "winner_time_sec": 95.4,
+            },
+            {
+                "race_date": "2024-03-24",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "MAIDEN",
+                "winner_time_sec": 95.2,
+            },
+            {
+                "race_date": "2024-03-10",
+                "venue_code": "05",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "course_code": "1",
+                "race_type_code": "12",
+                "declared_class_group": "CLASS_1",
+                "winner_time_sec": 94.0,
+            },
+        ]
+        target = {
+            "race_date": "2025-03-15",
+            "venue_code": "05",
+            "surface_code": "1",
+            "distance_m": 1600,
+            "course_code": "2",
+            "race_type_code": "12",
+            "declared_class_group": "MAIDEN",
+        }
+
+        result = select_asof_time_standard(
+            samples,
+            target,
+            minimum_sample_count=3,
+        )
+        curve = build_asof_class_standard_curve(
+            samples,
+            target,
+            minimum_sample_count=3,
+        )
+
+        self.assertEqual(result["scope_level"], 2)
+        self.assertEqual(result["sample_count"], 3)
+        self.assertEqual(curve["CLASS_1"]["sample_count"], 1)
+        self.assertNotEqual(
+            curve["CLASS_1"]["standard_time_sec"],
+            curve["MAIDEN"]["standard_time_sec"],
+        )
+
+    def test_percentile_rank_is_high_for_larger_front_loaded_balance(self) -> None:
+        self.assertAlmostEqual(percentile_rank([-1.0, 0.0, 1.0, 2.0], 1.5), 75.0)
 
     def test_normalized_day_adjustment(self) -> None:
         self.assertAlmostEqual(
