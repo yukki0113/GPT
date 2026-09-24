@@ -118,6 +118,7 @@ def build_historical_race_samples(
 def _pace_history(
     historical_samples: list[dict[str, object]],
     target: Mapping[str, object],
+    minimum_sample_count: int,
 ) -> tuple[list[float], int]:
     """Return as-of pace-balance peers, exact venue first then cross-venue."""
     target_date = _text(target.get("race_date"))
@@ -143,9 +144,11 @@ def _pace_history(
         if _text(sample.get("venue_code")) == venue:
             exact.append(balance)
 
-    if exact:
+    if len(exact) >= minimum_sample_count:
         return exact, 1
-    return broad, 2
+    if broad:
+        return broad, 2
+    return exact, 1
 
 
 def _effective_class_curve(
@@ -175,6 +178,7 @@ def build_review_day(
     *,
     minimum_standard_sample_count: int = 10,
     minimum_pace_sample_count: int = 10,
+    minimum_day_adjustment_race_count: int = 2,
 ) -> dict[str, object]:
     """Build one completed day's Review foundation without publication side effects."""
     target_materialized = list(target_rows)
@@ -227,6 +231,7 @@ def build_review_day(
         pace_values, pace_scope_level = _pace_history(
             historical_samples,
             first,
+            minimum_pace_sample_count,
         )
         pace_percentile = percentile_rank(
             pace_values,
@@ -301,10 +306,14 @@ def build_review_day(
         adjustment_per_1000m = _finite(
             loo.get("adjustment_per_1000m_sec")
         )
-        adjustment_sec = day_track_adjustment_seconds(
+        adjustment_candidate_sec = day_track_adjustment_seconds(
             adjustment_per_1000m,
             first.get("distance_m"),
         )
+        adjustment_sec = None
+        loo_race_count = _int(loo.get("race_count")) or 0
+        if loo_race_count >= minimum_day_adjustment_race_count:
+            adjustment_sec = adjustment_candidate_sec
 
         historical_standard = _finite(standard.get("standard_time_sec"))
         effective_standard = historical_standard
@@ -378,8 +387,10 @@ def build_review_day(
                 "standard_sample_start_date": standard.get("sample_start_date"),
                 "standard_sample_end_date": standard.get("sample_end_date"),
                 "day_adjustment_per_1000m_sec": adjustment_per_1000m,
+                "day_adjustment_candidate_sec": adjustment_candidate_sec,
                 "day_track_adjustment_sec": adjustment_sec,
-                "day_adjustment_race_count": loo.get("race_count"),
+                "day_adjustment_race_count": loo_race_count,
+                "minimum_day_adjustment_race_count": minimum_day_adjustment_race_count,
                 "day_adjustment_residual_mad_sec": loo.get(
                     "residual_mad_sec"
                 ),
@@ -448,6 +459,7 @@ def build_review_day(
                     ),
                     "historical_standard_time_sec": historical_standard,
                     "adjusted_standard_time_sec": effective_standard,
+                    "day_adjustment_candidate_sec": adjustment_candidate_sec,
                     "day_track_adjustment_sec": adjustment_sec,
                     "day_adjustment_applied": adjustment_applied,
                     "horse_adjusted_delta_sec": horse_delta,
