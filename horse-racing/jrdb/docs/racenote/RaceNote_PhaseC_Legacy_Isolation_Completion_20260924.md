@@ -2,9 +2,10 @@
 
 Date: 2026-09-24  
 Repository: `yukki0113/GPT`  
-Branch: `codex/racenote-phaseb-parquet-native-cutover`  
-PR: #1224  
-Validation commit: `a9f86a1d4429fb18b27b219bfc12d7b3c103bef6`
+Branch: `main`  
+PR: #1224 (merged)  
+Merge commit: `f76bb84cd747010621382d28555d0d8ff87b3e99`  
+Post-merge CI trigger commit: `ed17f059835e72e42bd1728afc07bcfd2eda3d3b`
 
 ## Result
 
@@ -18,6 +19,7 @@ RACENOTE_LEGACY_PREDICTION_ISOLATED=true
 RACENOTE_ARCHIVE_ROLE=OPTIONAL_CACHE
 RACENOTE_CURRENT_DOCS_SINGLE_SOURCE_OF_TRUTH=true
 RACENOTE_FULL_DAY_E2E=PASS
+RACENOTE_MIGRATION_PROJECT=COMPLETE
 ```
 
 The zero-reference markers above apply to the current production request/router/enrichment
@@ -102,14 +104,23 @@ Measured in the same Actions run:
 The single-race and point-query microbenchmarks remain slower on Parquet, while the primary
 full-day use case is substantially faster. The benchmark does not use SQLite fallback.
 
+## Post-merge main validation
+
+- Main merge: PR #1224 merged at `f76bb84cd747010621382d28555d0d8ff87b3e99`.
+- JRDB Common Reader tests: PASS (Actions run `35951430449`).
+- RaceNote Phase B Parquet native tests: PASS (Actions run `35951430462`).
+- RaceNote Full-day E2E: PASS on main commit `ed17f059835e72e42bd1728afc07bcfd2eda3d3b` (Actions run `35951462233`, evidence artifact `10788509858`).
+- Current architecture guard: PASS as part of the focused Phase B validation.
+
 ## CI
 
 - RaceNote Phase B Parquet native tests: PASS.
 - Current architecture guard: PASS.
 - Common Reader tests: PASS.
 - Real-data Phase B native E2E and related tests: PASS.
-- Actions run: https://github.com/yukki0113/GPT/actions/runs/35949412838
-- Evidence artifact: https://github.com/yukki0113/GPT/actions/runs/35949412838/artifacts/10788186953
+- Pre-merge Actions run: https://github.com/yukki0113/GPT/actions/runs/35949412838
+- Post-merge main Actions run: https://github.com/yukki0113/GPT/actions/runs/35951462233
+- Post-merge evidence artifact: https://github.com/yukki0113/GPT/actions/runs/35951462233/artifacts/10788509858
 
 ## Retained technical debt
 
