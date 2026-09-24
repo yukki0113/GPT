@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "horse-racing/jrdb/pwa/**"
+      - "horse-racing/jrdb/src/build_momotaro_newspaper_projection.py"
       - ".github/workflows/jrdb_pwa_pages.yml"
       - ".github/workflows/jrdb_pwa_publish_data.yml"
       - ".github/workflows/jrdb_pwa_fact_lite_publish.yml"
@@ -204,7 +205,13 @@ jobs:
             rm -rf .pages/data/newspaper/current
             mkdir -p .pages/data/newspaper
             cp -a .newspaper-release/current .pages/data/newspaper/current
-            echo "Current Newspaper release added to Pages artifact."
+
+            rm -rf .pages/momotaro/data/newspaper/current
+            python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py \
+              --day-dir .pages/data/newspaper/current \
+              --output-dir .pages/momotaro/data/newspaper/current
+
+            echo "Current Newspaper release and Momotaro public projection added to Pages artifact."
           else
             echo "No current Newspaper release yet."
           fi
