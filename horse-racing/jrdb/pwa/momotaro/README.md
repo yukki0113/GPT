@@ -1,5 +1,7 @@
 # 桃太郎新聞 PWA
 
+予想の提出・整形・表示運用の正本は [OPERATIONS.md](./OPERATIONS.md) とする。
+
 Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した公開surfaceです。
 
 ## 公開境界
@@ -104,11 +106,11 @@ memberは次の3人だけを許可する。
 exact joinは date + venue_code + race_no + horse_no + member で行い、
 horse_nameも一致を必須とする。重複・別日・未消費行はfail-closed。
 
-用途例:
+用途の詳細は OPERATIONS.md を正本とする。
 
-- りょーたの confidence=S -> 予想一覧の「りょーた S」
-- おーじの review_horse=true -> 予想一覧の「おーじ 回顧馬」
-- mark / comment -> 新聞の3人印・3人短評
+- りょーた: 各Rの通常印は新聞列へ表示。特注馬は review_horse=true + comment としてリンク化し、予想一覧にも掲載する。
+- おーじ: 回顧該当馬のみ review_horse=true + comment として、🐬と同様に新聞リンク + 予想一覧へ掲載する。
+- けんしょー: RaceNote完成まで保留。JRDB印転記は暫定案であり正式運用ではない。
 
 
 ## 表示方針
