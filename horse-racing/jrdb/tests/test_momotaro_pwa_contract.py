@@ -75,6 +75,8 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn("width:34px", css)
         self.assertIn(".momotaro-newspaper-table .newspaper-mark-group-head", css)
         self.assertIn("min-width:130px", css)
+        self.assertIn(".newspaper-main [hidden]", css)
+        self.assertIn("display:none !important", css)
 
     def test_browser_storage_is_isolated(self) -> None:
         newspaper = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
@@ -84,11 +86,11 @@ class MomotaroPwaContractTest(unittest.TestCase):
 
         self.assertIn('newspaperOpfsDir: "momotaro-newspaper"', newspaper)
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
-        self.assertIn('../newspaper-v4.css?v=8', newspaper)
+        self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v9"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v10"', service_worker)
 
 
 if __name__ == "__main__":
