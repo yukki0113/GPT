@@ -43,8 +43,7 @@ jobs:
       - name: Install storage runtime
         run: |
           python -m pip install --disable-pip-version-check \
-            -r tools/data-storage/requirements.txt \
-            'gdown>=5,<6'
+            -r tools/data-storage/requirements.txt
           PYTHONPATH=tools/data-storage python -m data_storage check-deps
 
       - name: Download accepted Warehouse evidence
@@ -363,7 +362,7 @@ jobs:
           else
             gh issue close "$ISSUE_NUMBER" \
               --repo "$GITHUB_REPOSITORY" \
-              --reason not_planned
+              --reason "not planned"
           fi
 
       - name: Fail unless backfill and verification passed
