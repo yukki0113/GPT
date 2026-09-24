@@ -42,7 +42,7 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
 
 ## Surfaces
 
-- `newspaper.html`: 既存Newspaper runtimeを共有、過去走5走固定、桃太郎3人欄を追加
+- `newspaper.html`: 既存Newspaper runtimeを共有、過去走5走固定、共有compact historyを使用、桃太郎3人欄を追加
 - `predictions.html`: りょーたS / おーじ回顧馬 / イルカの一覧
 - `fact-lite.html`: 既存Fact Lite runtimeと配布SQLiteを共有、OPFSだけ桃太郎専用
 
@@ -116,6 +116,8 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 ## 表示方針
 
 新聞:
+- 過去走は共有 `newspaper-v4` compact rendererを使用し、5走固定とする。
+- history幅は個人PWAと同じ共有値を基準とし、桃太郎固有の固定幅コピーを持たない。
 - 運用用の取得状態、source status、手動取込UIは桃太郎側では非表示。
 - 印見出しはスマホ幅を優先し、りょ / 王子 / けん / 🐬 とする。
 - 自動取得処理自体は維持し、利用者に運用UIを見せない。
