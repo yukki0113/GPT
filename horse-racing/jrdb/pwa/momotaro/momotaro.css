@@ -29,3 +29,7 @@
     max-width:130px;
   }
 }
+
+.newspaper-main [hidden]{
+  display:none !important;
+}
