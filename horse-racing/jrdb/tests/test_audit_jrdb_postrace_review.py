@@ -25,7 +25,7 @@ def _bundle() -> dict[str, object]:
                 "race_date": "2025-03-15",
                 "pace_shape": "FRONT_LOADED",
                 "review_schema_version": "v0.1",
-                "review_logic_version": "v0.1.0",
+                "review_logic_version": "v0.1.1",
             }
         ],
         "fact_race_review": [
@@ -37,7 +37,7 @@ def _bundle() -> dict[str, object]:
                 "day_adjustment_applied": True,
                 "class_curve_monotonic": True,
                 "review_schema_version": "v0.1",
-                "review_logic_version": "v0.1.0",
+                "review_logic_version": "v0.1.1",
             }
         ],
         "fact_horse_performance": [
@@ -47,7 +47,7 @@ def _bundle() -> dict[str, object]:
                 "horse_no": 1,
                 "race_date": "2025-03-15",
                 "review_schema_version": "v0.1",
-                "review_logic_version": "v0.1.0",
+                "review_logic_version": "v0.1.1",
             },
             {
                 "race_key": "T001",
@@ -55,7 +55,7 @@ def _bundle() -> dict[str, object]:
                 "horse_no": 2,
                 "race_date": "2025-03-15",
                 "review_schema_version": "v0.1",
-                "review_logic_version": "v0.1.0",
+                "review_logic_version": "v0.1.1",
             },
         ],
     }
