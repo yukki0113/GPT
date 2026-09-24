@@ -112,8 +112,10 @@ Fact Liteは1出走1行を保持する配布用SQLiteです。年/月/場/芝ダ
 - `standard`: 従来表示
 - `compact`: 比較用の高密度表示
 - 未指定時は `standard` へfail-safe
-- 個人Kenshow_LaboはTurn 2で `compact` を先行有効化
-- 桃太郎はTurn 3まで未有効化
+- 個人Kenshow_Labo / 桃太郎新聞の両方で `compact` を有効化済み
+- 個人Kenshow_Laboは3/5/8走切替を維持
+- 桃太郎新聞は5走固定
+- スマホcompact history幅は94pxを実用上の下限とする
 - compactで省略した詳細は既存の過去走dialogへ保持
 
 詳細設計は `NEWSPAPER_HISTORY_COMPACT.md` を参照する。
