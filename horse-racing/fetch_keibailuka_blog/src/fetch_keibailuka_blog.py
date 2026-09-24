@@ -560,6 +560,19 @@ def classify_race(
 
     if (
         not normalize_text(horse_tail.replace("🐬", ""))
+        and not section_lines
+    ):
+        return RacePick(
+            venue,
+            race_no,
+            None,
+            "",
+            "excluded",
+            "empty_section",
+        )
+
+    if (
+        not normalize_text(horse_tail.replace("🐬", ""))
         and section_lines
         and normalize_text(section_lines[0]) == "新馬戦"
     ):
