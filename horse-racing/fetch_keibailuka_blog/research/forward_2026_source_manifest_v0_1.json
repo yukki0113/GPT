@@ -1,0 +1,971 @@
+{
+  "artifact_type": "keibailuka_2026_forward_source_manifest",
+  "version": "v0.1",
+  "frozen_at": "2026-09-25",
+  "source_note": "Google Drive canonical daily PACI and SED folders; 80 common race dates through 2026-09-22.",
+  "paci_folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
+  "sed_folder_id": "1mm6sU8-skS7K2XYHm2citcorUVyMyL58",
+  "date_count": 80,
+  "dates": {
+    "260104": {
+      "paci": {
+        "file_id": "1OYtJki-HN2ObyyX1_LyaoS03ZeK6WypR",
+        "file_name": "PACI260104.zip",
+        "size_bytes": 350331
+      },
+      "sed": {
+        "file_id": "1K7Hmhn92prVGqKqs63m_Hj_xLnwVesgS",
+        "file_name": "SED260104.zip",
+        "size_bytes": 40189
+      }
+    },
+    "260105": {
+      "paci": {
+        "file_id": "1fpzUkGnpFiqcKaIe8HeFUrxTgPm7S96V",
+        "file_name": "PACI260105.zip",
+        "size_bytes": 362772
+      },
+      "sed": {
+        "file_id": "1TWsfoRN87EhSJE5mHWFA_0lIfkXmETda",
+        "file_name": "SED260105.zip",
+        "size_bytes": 42691
+      }
+    },
+    "260110": {
+      "paci": {
+        "file_id": "1i7SbHhB9AHMF6hxEoacinf-1eLS0nSEi",
+        "file_name": "PACI260110.zip",
+        "size_bytes": 389983
+      },
+      "sed": {
+        "file_id": "16f3t3WqMpDYYohqHpaRN-CL9IuDWdNOj",
+        "file_name": "SED260110.zip",
+        "size_bytes": 42861
+      }
+    },
+    "260111": {
+      "paci": {
+        "file_id": "1PYMEkJKMAgMsNhp498WH2sr4Np4iGBDS",
+        "file_name": "PACI260111.zip",
+        "size_bytes": 406094
+      },
+      "sed": {
+        "file_id": "1AzKrNGUUuQKtb8ab1wjBcg0sZnOjfbSo",
+        "file_name": "SED260111.zip",
+        "size_bytes": 45348
+      }
+    },
+    "260112": {
+      "paci": {
+        "file_id": "1qDPhWZ-JJq_Nsh_eo3GkvyCOPG7W2pYf",
+        "file_name": "PACI260112.zip",
+        "size_bytes": 395730
+      },
+      "sed": {
+        "file_id": "1viK9ynutUPLuAqEAln55x0tuNEBAHu7K",
+        "file_name": "SED260112.zip",
+        "size_bytes": 46567
+      }
+    },
+    "260117": {
+      "paci": {
+        "file_id": "1GT4E19fLPlUDCCTkalCB-Wb2dvvjc5bS",
+        "file_name": "PACI260117.zip",
+        "size_bytes": 372979
+      },
+      "sed": {
+        "file_id": "1QOLXH75Pa9uncdJMzSppi6L8UTftST8F",
+        "file_name": "SED260117.zip",
+        "size_bytes": 40716
+      }
+    },
+    "260118": {
+      "paci": {
+        "file_id": "1SRs8prms4BEh-ck9yKcBx1AXXH-l8PqI",
+        "file_name": "PACI260118.zip",
+        "size_bytes": 386864
+      },
+      "sed": {
+        "file_id": "1lc2-bCmxr0eVJJxDjNMaMzFEVHjHW1W2",
+        "file_name": "SED260118.zip",
+        "size_bytes": 44844
+      }
+    },
+    "260124": {
+      "paci": {
+        "file_id": "1x0wM1mze9Z_EZub_lytRVO7si0i06YbZ",
+        "file_name": "PACI260124.zip",
+        "size_bytes": 547629
+      },
+      "sed": {
+        "file_id": "1IQaT8VLPsvl-ESm6FQcDAapXL10cDZ-c",
+        "file_name": "SED260124.zip",
+        "size_bytes": 60169
+      }
+    },
+    "260125": {
+      "paci": {
+        "file_id": "1NPM8Ei44sSuy30XxUzOeGhb7HYg9TRqs",
+        "file_name": "PACI260125.zip",
+        "size_bytes": 557266
+      },
+      "sed": {
+        "file_id": "1D74BGErjzXNxIi-byV1x-Up7r_Em9Xym",
+        "file_name": "SED260125.zip",
+        "size_bytes": 64334
+      }
+    },
+    "260131": {
+      "paci": {
+        "file_id": "1PNzvuUMKxj9bX1S5laeSdMQ8QHoqNbo-",
+        "file_name": "PACI260131.zip",
+        "size_bytes": 571225
+      },
+      "sed": {
+        "file_id": "1Y6eLhAXpRW3rt49RgRXxGbvDAtcpnDai",
+        "file_name": "SED260131.zip",
+        "size_bytes": 60980
+      }
+    },
+    "260201": {
+      "paci": {
+        "file_id": "1BFF9xF92is3FOQnnC9pvJP-102DadRev",
+        "file_name": "PACI260201.zip",
+        "size_bytes": 566612
+      },
+      "sed": {
+        "file_id": "1pPDKVLcNDzWvuLvdWU0zgg8jbBE0dm0Q",
+        "file_name": "SED260201.zip",
+        "size_bytes": 63599
+      }
+    },
+    "260207": {
+      "paci": {
+        "file_id": "158Vmwgtiwhja3gMGTN0GMnq85IZ33TWR",
+        "file_name": "PACI260207.zip",
+        "size_bytes": 477681
+      },
+      "sed": {
+        "file_id": "1LmLvNYiK-_RJZ5TCQCHhqMeVe_LYiQ2C",
+        "file_name": "SED260207.zip",
+        "size_bytes": 52627
+      }
+    },
+    "260208": {
+      "paci": {
+        "file_id": "1P0ryqql5V_Q5XWYJ36InOGtpr8txRvcl",
+        "file_name": "PACI260208.zip",
+        "size_bytes": 205418
+      },
+      "sed": {
+        "file_id": "1ze70_t6eP6bWRTlJ0vMDxL-SHY4DcZYd",
+        "file_name": "SED260208.zip",
+        "size_bytes": 22674
+      }
+    },
+    "260210": {
+      "paci": {
+        "file_id": "1isbVe1WJ9RdK4Wus0gk4KtlRcJZIBtIU",
+        "file_name": "PACI260210.zip",
+        "size_bytes": 342403
+      },
+      "sed": {
+        "file_id": "1HcbapDWlbmfrfB_4Lsf6yIlmPIjFxi52",
+        "file_name": "SED260210.zip",
+        "size_bytes": 41548
+      }
+    },
+    "260214": {
+      "paci": {
+        "file_id": "1wDSdaRiNmUpq5BL0X6xbQJZdZzz8DdSG",
+        "file_name": "PACI260214.zip",
+        "size_bytes": 607928
+      },
+      "sed": {
+        "file_id": "1sZkrQX9DG0dhySOYy-dQ-7zy1yvjfoVA",
+        "file_name": "SED260214.zip",
+        "size_bytes": 62823
+      }
+    },
+    "260215": {
+      "paci": {
+        "file_id": "1KI9USCd9lgkJFGDKcP79C1uv4im58zF7",
+        "file_name": "PACI260215.zip",
+        "size_bytes": 595408
+      },
+      "sed": {
+        "file_id": "1a6jMd-1UT1jB7UEBIrdN5Av0ZWN5yiCJ",
+        "file_name": "SED260215.zip",
+        "size_bytes": 63665
+      }
+    },
+    "260221": {
+      "paci": {
+        "file_id": "1icHG-MI3sR5hEfgIrT8Do3AUfNlIIzNK",
+        "file_name": "PACI260221.zip",
+        "size_bytes": 602845
+      },
+      "sed": {
+        "file_id": "11y1oyMDWYSRnD5-Sa_-IxYmW0KvvQbgy",
+        "file_name": "SED260221.zip",
+        "size_bytes": 62701
+      }
+    },
+    "260222": {
+      "paci": {
+        "file_id": "1wtPYlenggLDlN8XWzPR37mGM6DAH4gIE",
+        "file_name": "PACI260222.zip",
+        "size_bytes": 580636
+      },
+      "sed": {
+        "file_id": "1IuA7z_PM7r5K3xI7oMZdkXwUQ7JpNOmk",
+        "file_name": "SED260222.zip",
+        "size_bytes": 61905
+      }
+    },
+    "260228": {
+      "paci": {
+        "file_id": "1TrC_GDxfEoJh6vd840Cd-qRbtcEkJlcI",
+        "file_name": "PACI260228.zip",
+        "size_bytes": 620056
+      },
+      "sed": {
+        "file_id": "1bAEpky91aZrxLlbezomXQ1riGbK56Zy1",
+        "file_name": "SED260228.zip",
+        "size_bytes": 62300
+      }
+    },
+    "260301": {
+      "paci": {
+        "file_id": "1EUmxWYb_42ayQjkIjV1PK59jgq6KY4so",
+        "file_name": "PACI260301.zip",
+        "size_bytes": 617340
+      },
+      "sed": {
+        "file_id": "1Qh4My3SMyDazYQ6bf8uyY8omJtTRRm_o",
+        "file_name": "SED260301.zip",
+        "size_bytes": 64786
+      }
+    },
+    "260307": {
+      "paci": {
+        "file_id": "1qbv3ckRVS44LQxsItSAzRUoEfEclIfAc",
+        "file_name": "PACI260307.zip",
+        "size_bytes": 392834
+      },
+      "sed": {
+        "file_id": "1vB52SsVbpHcfqvyPT5IPvBXnd4wns3Nf",
+        "file_name": "SED260307.zip",
+        "size_bytes": 42151
+      }
+    },
+    "260308": {
+      "paci": {
+        "file_id": "1ydPYqJr69NFTeooJdDMhY_RHY4co2KqY",
+        "file_name": "PACI260308.zip",
+        "size_bytes": 370503
+      },
+      "sed": {
+        "file_id": "1bqTgsCEMxCgFKkqyY_TpWuwTRWRbTf6q",
+        "file_name": "SED260308.zip",
+        "size_bytes": 42561
+      }
+    },
+    "260314": {
+      "paci": {
+        "file_id": "1wlR74Nlxqu-Z_kzjW9ecMZjrdNYC3Lyw",
+        "file_name": "PACI260314.zip",
+        "size_bytes": 585897
+      },
+      "sed": {
+        "file_id": "1qgZCXCIhrGYh7QXF_RSTFj8HwMWi1j4c",
+        "file_name": "SED260314.zip",
+        "size_bytes": 61167
+      }
+    },
+    "260315": {
+      "paci": {
+        "file_id": "1WSrJiv0h3LrqGDdgtg_VfrLKpXjw-59h",
+        "file_name": "PACI260315.zip",
+        "size_bytes": 604373
+      },
+      "sed": {
+        "file_id": "15brmGO7BOlzc4MMtbrb9LrQQi2zEOKFX",
+        "file_name": "SED260315.zip",
+        "size_bytes": 65374
+      }
+    },
+    "260321": {
+      "paci": {
+        "file_id": "1fXMZVGnGRKCQ0PWMiM-90kbWd1DAAQ43",
+        "file_name": "PACI260321.zip",
+        "size_bytes": 564618
+      },
+      "sed": {
+        "file_id": "1Tp18dLkrePcwTRB1CyzDKAA5dYvnGs76",
+        "file_name": "SED260321.zip",
+        "size_bytes": 60786
+      }
+    },
+    "260322": {
+      "paci": {
+        "file_id": "10h_nQ-WGYpZzvnGqtVgwQvU3MNLjZZ-v",
+        "file_name": "PACI260322.zip",
+        "size_bytes": 598868
+      },
+      "sed": {
+        "file_id": "1u6b7PiFJfLaieqRWAU_Oc7Dm9uF4-zOI",
+        "file_name": "SED260322.zip",
+        "size_bytes": 63820
+      }
+    },
+    "260328": {
+      "paci": {
+        "file_id": "1x7EHSCUss6UJEStk0jGNnntF8LxD0umq",
+        "file_name": "PACI260328.zip",
+        "size_bytes": 559119
+      },
+      "sed": {
+        "file_id": "1DHR8sX2U88h6DPiMQJUOZDOuS8FURiYy",
+        "file_name": "SED260328.zip",
+        "size_bytes": 59903
+      }
+    },
+    "260329": {
+      "paci": {
+        "file_id": "1XzmfFNsUWku-H46WU0vTcH01qG6DEYtI",
+        "file_name": "PACI260329.zip",
+        "size_bytes": 579926
+      },
+      "sed": {
+        "file_id": "1u61G0hJZ2c4xFWIjDvwTB75qkaUJZFvS",
+        "file_name": "SED260329.zip",
+        "size_bytes": 62597
+      }
+    },
+    "260404": {
+      "paci": {
+        "file_id": "1VWtzbHr_IReNnKFjtWtlrgJGzXfawk9g",
+        "file_name": "PACI260404.zip",
+        "size_bytes": 383245
+      },
+      "sed": {
+        "file_id": "1Sxu0YNa6tc32L_Tt_-i4AnocTFj1UzBN",
+        "file_name": "SED260404.zip",
+        "size_bytes": 41639
+      }
+    },
+    "260405": {
+      "paci": {
+        "file_id": "1OWip5b2bzOoQlkOgpxiZOVx5ldZ_SD2-",
+        "file_name": "PACI260405.zip",
+        "size_bytes": 417568
+      },
+      "sed": {
+        "file_id": "1-1iJPpGWCG80mscKt-1GsLv1umjTSMzr",
+        "file_name": "SED260405.zip",
+        "size_bytes": 44472
+      }
+    },
+    "260411": {
+      "paci": {
+        "file_id": "10L6Sc7Zn-0-KuYOzzfLJJIrapa0AY87R",
+        "file_name": "PACI260411.zip",
+        "size_bytes": 607177
+      },
+      "sed": {
+        "file_id": "1hATBLj6XXizTOIDuyZ2WkGRiXXl8s5US",
+        "file_name": "SED260411.zip",
+        "size_bytes": 62192
+      }
+    },
+    "260412": {
+      "paci": {
+        "file_id": "1RkEd_1Esdo4YsDueTIOGbSrLiumGCuCy",
+        "file_name": "PACI260412.zip",
+        "size_bytes": 610795
+      },
+      "sed": {
+        "file_id": "1MFmwiloNHY6LNlrSqidCqapOquQXwZkv",
+        "file_name": "SED260412.zip",
+        "size_bytes": 64744
+      }
+    },
+    "260418": {
+      "paci": {
+        "file_id": "1X8ji2H0bHc5udmSqId79eynjSobwB4W7",
+        "file_name": "PACI260418.zip",
+        "size_bytes": 555534
+      },
+      "sed": {
+        "file_id": "1IgLfgFyS8iRFNGmFlzftNgB54dOocBmi",
+        "file_name": "SED260418.zip",
+        "size_bytes": 58814
+      }
+    },
+    "260419": {
+      "paci": {
+        "file_id": "18V9mmmMIIWZIC-v7smrgnX5G12oBSAe6",
+        "file_name": "PACI260419.zip",
+        "size_bytes": 580862
+      },
+      "sed": {
+        "file_id": "1pSkk-QFA0QRnbqPM3awLOkWF7Ai4YuRa",
+        "file_name": "SED260419.zip",
+        "size_bytes": 61510
+      }
+    },
+    "260425": {
+      "paci": {
+        "file_id": "11zUlBcTMQEsfnwbBP7WojFEyClTqTjji",
+        "file_name": "PACI260425.zip",
+        "size_bytes": 581775
+      },
+      "sed": {
+        "file_id": "1FYsua9dVt0uQOrI0fYPa5x7cre4f39OZ",
+        "file_name": "SED260425.zip",
+        "size_bytes": 60794
+      }
+    },
+    "260426": {
+      "paci": {
+        "file_id": "1fIZf32j5cKoBhpOgMd3ue055etsifKOX",
+        "file_name": "PACI260426.zip",
+        "size_bytes": 638299
+      },
+      "sed": {
+        "file_id": "1Ke5Qkgx-eNLPYVnqzBd9TKraBcCTWvM7",
+        "file_name": "SED260426.zip",
+        "size_bytes": 64583
+      }
+    },
+    "260502": {
+      "paci": {
+        "file_id": "1O6S2VcL-XbC59fPe0xgYLUGn-vSIzMKw",
+        "file_name": "PACI260502.zip",
+        "size_bytes": 580262
+      },
+      "sed": {
+        "file_id": "1Jr6W4JG5zGOkWW41w8LzKhRl55ghEsNG",
+        "file_name": "SED260502.zip",
+        "size_bytes": 59427
+      }
+    },
+    "260503": {
+      "paci": {
+        "file_id": "1n1r_m169U5FzZQluA_PjJ3q0QfnusQYQ",
+        "file_name": "PACI260503.zip",
+        "size_bytes": 628308
+      },
+      "sed": {
+        "file_id": "1GzgVx_obcjj-1n_CTyqShS35NN57CNN6",
+        "file_name": "SED260503.zip",
+        "size_bytes": 62698
+      }
+    },
+    "260509": {
+      "paci": {
+        "file_id": "1UcaDWcLGwQMbWJ40wwYAskrNDGqraPjn",
+        "file_name": "PACI260509.zip",
+        "size_bytes": 597825
+      },
+      "sed": {
+        "file_id": "1PqXAcbaOzlfK2r7SKW473o09CH0YXeme",
+        "file_name": "SED260509.zip",
+        "size_bytes": 59481
+      }
+    },
+    "260510": {
+      "paci": {
+        "file_id": "1qwWppnmLWpSqN-479u5yISRp8yQjq_RX",
+        "file_name": "PACI260510.zip",
+        "size_bytes": 601362
+      },
+      "sed": {
+        "file_id": "1wCtDgy6apj6uX8L4QBxocZELFdixty0z",
+        "file_name": "SED260510.zip",
+        "size_bytes": 63025
+      }
+    },
+    "260516": {
+      "paci": {
+        "file_id": "1AMaONXFE-9JUDcb4Lzrmm2RYyO1le3e5",
+        "file_name": "PACI260516.zip",
+        "size_bytes": 584430
+      },
+      "sed": {
+        "file_id": "1mhmh87OJh93uc2sOspA-ROvHZvCdglIU",
+        "file_name": "SED260516.zip",
+        "size_bytes": 58725
+      }
+    },
+    "260517": {
+      "paci": {
+        "file_id": "12hBCuRJyXWTcuhrqhUSKNGYwoh3gizYO",
+        "file_name": "PACI260517.zip",
+        "size_bytes": 592815
+      },
+      "sed": {
+        "file_id": "1AWOtDje2IxDS7_q8ZZviBh3PKVWAZRF4",
+        "file_name": "SED260517.zip",
+        "size_bytes": 61383
+      }
+    },
+    "260523": {
+      "paci": {
+        "file_id": "1vpQ1Bc4JRyXdLDzmhQbp0u5c7BwbjKx7",
+        "file_name": "PACI260523.zip",
+        "size_bytes": 663608
+      },
+      "sed": {
+        "file_id": "1sdxNjQ-FwEw3oFCtRBGyWpqPAcRCvpAh",
+        "file_name": "SED260523.zip",
+        "size_bytes": 64420
+      }
+    },
+    "260524": {
+      "paci": {
+        "file_id": "1erzdIYnQCRThKuGxjKOYAjHUTORs1gdO",
+        "file_name": "PACI260524.zip",
+        "size_bytes": 652662
+      },
+      "sed": {
+        "file_id": "1fZQlM4grKsxIbwqCK1qEPhmeUkLt7EIj",
+        "file_name": "SED260524.zip",
+        "size_bytes": 64528
+      }
+    },
+    "260530": {
+      "paci": {
+        "file_id": "142FYbNOJ4GJs-TbebZJmhATohRKYs7Ri",
+        "file_name": "PACI260530.zip",
+        "size_bytes": 435861
+      },
+      "sed": {
+        "file_id": "14bHNobbtcX8akLkOHj_uuOomdCi3ZvE0",
+        "file_name": "SED260530.zip",
+        "size_bytes": 43142
+      }
+    },
+    "260531": {
+      "paci": {
+        "file_id": "1kg7qxyHFDkriJVEWLdIYK5652WDZw3PM",
+        "file_name": "PACI260531.zip",
+        "size_bytes": 427901
+      },
+      "sed": {
+        "file_id": "1qmJ5kxAm2JEbdCujy4sYZQufWqoKarSA",
+        "file_name": "SED260531.zip",
+        "size_bytes": 45141
+      }
+    },
+    "260606": {
+      "paci": {
+        "file_id": "1r8lFGGSBVwd9gMEPmnjRtshB0frG7bVH",
+        "file_name": "PACI260606.zip",
+        "size_bytes": 370959
+      },
+      "sed": {
+        "file_id": "1ifQt5YgOWo9x6y3njRifb2ROo9h7HJEC",
+        "file_name": "SED260606.zip",
+        "size_bytes": 40385
+      }
+    },
+    "260607": {
+      "paci": {
+        "file_id": "1_PtkQ1k1yGlrPQs_h-MXCgopbtG3t-Uf",
+        "file_name": "PACI260607.zip",
+        "size_bytes": 421089
+      },
+      "sed": {
+        "file_id": "1LrLSnO_gnSSv14QMDzZCvLIJ7m7SlnXl",
+        "file_name": "SED260607.zip",
+        "size_bytes": 45705
+      }
+    },
+    "260613": {
+      "paci": {
+        "file_id": "1YN5jmdw2eYawyO_Of8CFNfCPvoU9mFvo",
+        "file_name": "PACI260613.zip",
+        "size_bytes": 565617
+      },
+      "sed": {
+        "file_id": "1aOXm_asrOWp-GndKxqLpMrvcp29xaSci",
+        "file_name": "SED260613.zip",
+        "size_bytes": 60205
+      }
+    },
+    "260614": {
+      "paci": {
+        "file_id": "13TPezY-QTGcj3f76Rc8EAMPMJRtoQHy_",
+        "file_name": "PACI260614.zip",
+        "size_bytes": 567014
+      },
+      "sed": {
+        "file_id": "1yFjYEDYjisNWHlNVu86qiFWKkbUBj5rs",
+        "file_name": "SED260614.zip",
+        "size_bytes": 61636
+      }
+    },
+    "260620": {
+      "paci": {
+        "file_id": "1d_nId9qgIT-j7EUgBGLJVmcyYEUwztYd",
+        "file_name": "PACI260620.zip",
+        "size_bytes": 569304
+      },
+      "sed": {
+        "file_id": "1Ku9peU3MA0fOMJ0UJYxXT-QAiJm1sVWb",
+        "file_name": "SED260620.zip",
+        "size_bytes": 61133
+      }
+    },
+    "260621": {
+      "paci": {
+        "file_id": "1BQvobFc6mv5aD1u-M4pcAI5dS_iitx1x",
+        "file_name": "PACI260621.zip",
+        "size_bytes": 572270
+      },
+      "sed": {
+        "file_id": "1kwPq1eccjmcMpmlffZRR5Tg7J1CvKetX",
+        "file_name": "SED260621.zip",
+        "size_bytes": 62816
+      }
+    },
+    "260627": {
+      "paci": {
+        "file_id": "1pevJHvSdoRXzddlsUzNKxiZgWDMZ4fgQ",
+        "file_name": "PACI260627.zip",
+        "size_bytes": 511365
+      },
+      "sed": {
+        "file_id": "1UXssZc3axXYmxJjfQ0u1mUilt4qBQLHl",
+        "file_name": "SED260627.zip",
+        "size_bytes": 55654
+      }
+    },
+    "260628": {
+      "paci": {
+        "file_id": "1apbG67c5SldS-5fKfCzBnl31czMBW3wi",
+        "file_name": "PACI260628.zip",
+        "size_bytes": 519357
+      },
+      "sed": {
+        "file_id": "15jy0x9tSiU-DMD7wO9RfhhbgZCRm7u_W",
+        "file_name": "SED260628.zip",
+        "size_bytes": 59733
+      }
+    },
+    "260704": {
+      "paci": {
+        "file_id": "1sXdAVwfgPiiaZBybvu7EREB2bYvEySys",
+        "file_name": "PACI260704.zip",
+        "size_bytes": 520179
+      },
+      "sed": {
+        "file_id": "1tpRTsWHEZ6VghP_oxEJWlMDQ131kuqky",
+        "file_name": "SED260704.zip",
+        "size_bytes": 57440
+      }
+    },
+    "260705": {
+      "paci": {
+        "file_id": "1F8ofy42jalxJoVBVvsqqa0YOXRuEiehH",
+        "file_name": "PACI260705.zip",
+        "size_bytes": 524271
+      },
+      "sed": {
+        "file_id": "1hq94yDUSN-cHwOC4nrlCiBiWXi-v3WbP",
+        "file_name": "SED260705.zip",
+        "size_bytes": 60579
+      }
+    },
+    "260711": {
+      "paci": {
+        "file_id": "1jt0HzTZ_gZIHGMvL9RojFlcIZq807BUq",
+        "file_name": "PACI260711.zip",
+        "size_bytes": 551529
+      },
+      "sed": {
+        "file_id": "1wIVaVaB8495Dq8AZP0gTjVJEaTrP3YiQ",
+        "file_name": "SED260711.zip",
+        "size_bytes": 57324
+      }
+    },
+    "260712": {
+      "paci": {
+        "file_id": "1H4f_9N2IidouoD0MfXP1JnbK2Xgf-pJd",
+        "file_name": "PACI260712.zip",
+        "size_bytes": 528008
+      },
+      "sed": {
+        "file_id": "1OROqNNv_ywxvCsXXKUfYHEMiyhEDQZAA",
+        "file_name": "SED260712.zip",
+        "size_bytes": 60488
+      }
+    },
+    "260718": {
+      "paci": {
+        "file_id": "1qNgjAhHqdEUVwNRZGRK60rAj28U7jGu9",
+        "file_name": "PACI260718.zip",
+        "size_bytes": 532830
+      },
+      "sed": {
+        "file_id": "1eHPl4G6hVZPytZPt_tP7G-bLKoAXPSGq",
+        "file_name": "SED260718.zip",
+        "size_bytes": 57748
+      }
+    },
+    "260719": {
+      "paci": {
+        "file_id": "18uopE4WrWTo4aAhlXZtlYJu4IyrWe7Mv",
+        "file_name": "PACI260719.zip",
+        "size_bytes": 561250
+      },
+      "sed": {
+        "file_id": "1xBT4wxeWu1RiVzIHB3crKag8hoX5HOAe",
+        "file_name": "SED260719.zip",
+        "size_bytes": 61966
+      }
+    },
+    "260725": {
+      "paci": {
+        "file_id": "1BRL1kcQ-4tQyqE_GMfDgs04DUcPcvboM",
+        "file_name": "PACI260725.zip",
+        "size_bytes": 499197
+      },
+      "sed": {
+        "file_id": "1Fu3kS53lbmJG0QuyXTy55yVOcVccoV2X",
+        "file_name": "SED260725.zip",
+        "size_bytes": 54985
+      }
+    },
+    "260726": {
+      "paci": {
+        "file_id": "1KH_KVIoDK21zmgQAqKXoAJG78Djzzn7T",
+        "file_name": "PACI260726.zip",
+        "size_bytes": 516347
+      },
+      "sed": {
+        "file_id": "1ZTxIKWlyO9Xz01nztZ-KmmR4-pS89iFj",
+        "file_name": "SED260726.zip",
+        "size_bytes": 57827
+      }
+    },
+    "260801": {
+      "paci": {
+        "file_id": "1kySK0AycsjHSmJn4HVbaGuYkb-2mqYf7",
+        "file_name": "PACI260801.zip",
+        "size_bytes": 520370
+      },
+      "sed": {
+        "file_id": "1amO9LEgFfpnYdh0oNJxYCcNwA9t0oDEn",
+        "file_name": "SED260801.zip",
+        "size_bytes": 55941
+      }
+    },
+    "260802": {
+      "paci": {
+        "file_id": "1mQ1Lwg4X4q-ZElBvQ8CS80bFAwstyLfe",
+        "file_name": "PACI260802.zip",
+        "size_bytes": 526504
+      },
+      "sed": {
+        "file_id": "1xT4Mkz77UNkGLeWU6Njme8jEyh99rYL5",
+        "file_name": "SED260802.zip",
+        "size_bytes": 60169
+      }
+    },
+    "260808": {
+      "paci": {
+        "file_id": "1TYMIvH1Z_PnsVNuB7dTNt5EH6GbJfLHv",
+        "file_name": "PACI260808.zip",
+        "size_bytes": 521995
+      },
+      "sed": {
+        "file_id": "1XcWtb-0P0eCMYAofGVmJcKYLPQY-9flh",
+        "file_name": "SED260808.zip",
+        "size_bytes": 56518
+      }
+    },
+    "260809": {
+      "paci": {
+        "file_id": "1nFDh_qBSQHnHiJYcQGS_0skLd7nkh-m6",
+        "file_name": "PACI260809.zip",
+        "size_bytes": 580375
+      },
+      "sed": {
+        "file_id": "10wWLXyxluDcd0ziEoig1XNc67ETWsSAU",
+        "file_name": "SED260809.zip",
+        "size_bytes": 62238
+      }
+    },
+    "260815": {
+      "paci": {
+        "file_id": "1iHMThJdliG1i1FEuVK8fSEc3W2Hxg9bI",
+        "file_name": "PACI260815.zip",
+        "size_bytes": 546208
+      },
+      "sed": {
+        "file_id": "152tlfg1gsyP_eXzcam6hiUpa_ArdEPtU",
+        "file_name": "SED260815.zip",
+        "size_bytes": 57402
+      }
+    },
+    "260816": {
+      "paci": {
+        "file_id": "1ilv_oKuaYkIYRKdZI-3e6mP1gc2GapyS",
+        "file_name": "PACI260816.zip",
+        "size_bytes": 558207
+      },
+      "sed": {
+        "file_id": "1Oc4K4gImdAkMuL7jYZLWgg1ab9RQiBTe",
+        "file_name": "SED260816.zip",
+        "size_bytes": 62035
+      }
+    },
+    "260822": {
+      "paci": {
+        "file_id": "13gmBW5B8PDuYD9msVZjtcdWc0YfuuphA",
+        "file_name": "PACI260822.zip",
+        "size_bytes": 531571
+      },
+      "sed": {
+        "file_id": "1pGQTJQoYzIeiegM0TaqfSug5ECVMs-vo",
+        "file_name": "SED260822.zip",
+        "size_bytes": 58146
+      }
+    },
+    "260823": {
+      "paci": {
+        "file_id": "1QQg-Kh6TsJs7WP6IcTDpJMe4Nell-mEr",
+        "file_name": "PACI260823.zip",
+        "size_bytes": 529673
+      },
+      "sed": {
+        "file_id": "1N7qbcBAsjQ-BMSPV52hpxrk1mSF3-IeJ",
+        "file_name": "SED260823.zip",
+        "size_bytes": 59402
+      }
+    },
+    "260829": {
+      "paci": {
+        "file_id": "1JsDVyoLZ7gydBQqqujvTJ5u0orpWOk8D",
+        "file_name": "PACI260829.zip",
+        "size_bytes": 548709
+      },
+      "sed": {
+        "file_id": "1HQTCSHWTlXNEdG6Df9rpa-k4WV0Cdeqx",
+        "file_name": "SED260829.zip",
+        "size_bytes": 33598
+      }
+    },
+    "260830": {
+      "paci": {
+        "file_id": "1sAjg1OHZEPlsLvTvRsjNK2fB_Kr7mE_O",
+        "file_name": "PACI260830.zip",
+        "size_bytes": 550743
+      },
+      "sed": {
+        "file_id": "1l1oHgEfST2UijLksFTAt7S0ITulirsGV",
+        "file_name": "SED260830.zip",
+        "size_bytes": 32945
+      }
+    },
+    "260905": {
+      "paci": {
+        "file_id": "1nAZsvZT3pFSeCvuIbYyzqo7L230HV9Zv",
+        "file_name": "PACI260905.zip",
+        "size_bytes": 496152
+      },
+      "sed": {
+        "file_id": "1_SO1RlmVCcbLceA_ol_BIQG0GvjTE25R",
+        "file_name": "SED260905.zip",
+        "size_bytes": 31224
+      }
+    },
+    "260906": {
+      "paci": {
+        "file_id": "1w7Qo4WpH8TcTtCTXEAK-qv3CH5Sa2BNU",
+        "file_name": "PACI260906.zip",
+        "size_bytes": 586537
+      },
+      "sed": {
+        "file_id": "1V5vSW7DPjrqFgCLCzilM4JE0IvZrbORj",
+        "file_name": "SED260906.zip",
+        "size_bytes": 33355
+      }
+    },
+    "260912": {
+      "paci": {
+        "file_id": "1IM8xl7FNLz02E6jZz0UOAZrxX2gpiZC_",
+        "file_name": "PACI260912.zip",
+        "size_bytes": 356295
+      },
+      "sed": {
+        "file_id": "17PO0IAt0q-rOOXPqC_c6osT0NDg9xzp9",
+        "file_name": "SED260912.zip",
+        "size_bytes": 22140
+      }
+    },
+    "260913": {
+      "paci": {
+        "file_id": "110iUUdb3un4BGdbSG5AUOVXjKJ4PVAoJ",
+        "file_name": "PACI260913.zip",
+        "size_bytes": 373617
+      },
+      "sed": {
+        "file_id": "1THuVx90xpL4CTahrilmRAxY5EGiWijqS",
+        "file_name": "SED260913.zip",
+        "size_bytes": 22015
+      }
+    },
+    "260919": {
+      "paci": {
+        "file_id": "1AL3Ua_2WY_NlKfMloSOinbzVZVRmjgNi",
+        "file_name": "PACI260919.zip",
+        "size_bytes": 301712
+      },
+      "sed": {
+        "file_id": "1CAU1uUx6dQqOZBZAKFPnvfGEjvcCWCfm",
+        "file_name": "SED260919.zip",
+        "size_bytes": 20415
+      }
+    },
+    "260920": {
+      "paci": {
+        "file_id": "14HiihawoEMU7kAA6OZ9mzQMwtJ2bckE0",
+        "file_name": "PACI260920.zip",
+        "size_bytes": 367715
+      },
+      "sed": {
+        "file_id": "114LnlTzt7E4m0i908VbRBnLgl35e-YB4",
+        "file_name": "SED260920.zip",
+        "size_bytes": 23269
+      }
+    },
+    "260921": {
+      "paci": {
+        "file_id": "1dRo6fYQkKaj905FJHjUzhQMNrxXc8KZk",
+        "file_name": "PACI260921.zip",
+        "size_bytes": 172863
+      },
+      "sed": {
+        "file_id": "1s0kX7w9cwjNJSNmVEQ4jOku1UjavHG7A",
+        "file_name": "SED260921.zip",
+        "size_bytes": 11358
+      }
+    },
+    "260922": {
+      "paci": {
+        "file_id": "1VdkTE06TwBIWt2vxi98qGgft6jIfwzIv",
+        "file_name": "PACI260922.zip",
+        "size_bytes": 183922
+      },
+      "sed": {
+        "file_id": "1czsagH5BtgovpaCTzWimgMUdo7l1m5YE",
+        "file_name": "SED260922.zip",
+        "size_bytes": 11796
+      }
+    }
+  }
+}
