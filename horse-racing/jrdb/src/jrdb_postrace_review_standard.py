@@ -414,9 +414,19 @@ def percentile_rank(
     if not cleaned:
         return None
 
-    below = sum(1 for value in cleaned if value < target)
-    equal = sum(1 for value in cleaned if math.isclose(value, target, abs_tol=1e-12))
-    return 100.0 * (float(below) + 0.5 * float(equal)) / float(len(cleaned))
+    equal_flags = [
+        math.isclose(value, target, abs_tol=1e-12)
+        for value in cleaned
+    ]
+    below = sum(
+        1
+        for value, is_equal in zip(cleaned, equal_flags)
+        if value < target and not is_equal
+    )
+    equal = sum(1 for is_equal in equal_flags if is_equal)
+    return 100.0 * (
+        float(below) + 0.5 * float(equal)
+    ) / float(len(cleaned))
 
 
 def normalized_time_delta_per_1000m(
