@@ -508,6 +508,25 @@ def _evaluate_edge(
     }
 
 
+def _performance_alignment_bucket(row: Mapping[str, Any]) -> str | None:
+    direction = row.get("direction_alignment")
+    if not isinstance(direction, Mapping):
+        return None
+    if direction.get("performance_matches_current") is True:
+        return "performance_same"
+    metrics = row.get("metrics")
+    incremental = (
+        str(metrics.get("incremental_performance_direction") or "").upper()
+        if isinstance(metrics, Mapping)
+        else ""
+    )
+    if incremental in PM:
+        return "performance_opposite"
+    if incremental == "NEUTRAL":
+        return "performance_neutral"
+    return "performance_unassessed"
+
+
 def run(
     *,
     warehouse_manifest: Path,
@@ -568,12 +587,9 @@ def run(
                 "0" if n == 0 else "<20" if n < 20 else "20-49" if n < 50 else
                 "50-99" if n < 100 else "100+"
             ] += 1
-        direction = row.get("direction_alignment")
-        if isinstance(direction, Mapping):
-            align[
-                "performance_same" if direction.get("performance_matches_current")
-                else "performance_opposite"
-            ] += 1
+        alignment_bucket = _performance_alignment_bucket(row)
+        if alignment_bucket is not None:
+            align[alignment_bucket] += 1
 
     summary = {
         "status": "PASS",
