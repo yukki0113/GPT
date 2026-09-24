@@ -1,8 +1,8 @@
 "use strict";
 
 /* Full-day package delivery: published current-day auto refresh + manual fallback import. */
-const NEWSPAPER_DAY_OPFS_FILE = "current-day.json";
-const NEWSPAPER_CURRENT_BASE = "./data/newspaper/current/";
+const NEWSPAPER_DAY_OPFS_FILE = NEWSPAPER_RUNTIME_CONFIG.newspaperDayOpfsFile || "current-day.json";
+const NEWSPAPER_CURRENT_BASE = NEWSPAPER_RUNTIME_CONFIG.newspaperCurrentBase || "./data/newspaper/current/";
 const dayFileInput = document.getElementById("newspaper-day-file");
 const dayImportButton = document.getElementById("newspaper-day-import");
 const dayRefreshButton = document.getElementById("newspaper-day-refresh");
