@@ -176,12 +176,12 @@ jobs:
               backend=open_analysis_backend(analysis_root=source if kind=='parquet' else None,analysis_db=source if kind=='sqlite' else None,backend=kind)
               cold=time.perf_counter()-cold_start
               bundles=[load(Path('/tmp/rn/legacy/20181202/bundles')/name) for name in legacy['manifest']['bundles']]
-              one_start=time.perf_counter(); enrich_production(bundles[0],backend,None,5); one=time.perf_counter()-one_start
+              one_start=time.perf_counter(); enrich_production(bundles[0],backend,5); one=time.perf_counter()-one_start
               day_start=time.perf_counter()
               if kind=='parquet':
-                  enrich_production_many(bundles,backend,None,5)
+                  enrich_production_many(bundles,backend,5)
               else:
-                  for bundle in bundles: enrich_production(bundle,backend,None,5)
+                  for bundle in bundles: enrich_production(bundle,backend,5)
               full_day=time.perf_counter()-day_start
               row=backend.execute('SELECT horse_id,sire_name,jockey_name,frame_no,race_date,venue_code,track_type,distance FROM fact_entry_result_lite WHERE race_date<? LIMIT 1',[target]).fetchone()
               timings={}
