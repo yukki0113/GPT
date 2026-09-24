@@ -649,15 +649,29 @@ def parse_race_lines(
 
     for index, line in enumerate(lines):
         match = RACE_HEADER_RE.fullmatch(line)
-        if match is None or match.group(1) != venue:
-            continue
-        headers.append(
-            (
-                index,
-                int(match.group(2)),
-                normalize_text(match.group(3) or ""),
+        if match is not None and match.group(1) == venue:
+            headers.append(
+                (
+                    index,
+                    int(match.group(2)),
+                    normalize_text(match.group(3) or ""),
+                )
             )
-        )
+            continue
+
+        # Blogger occasionally splits a race heading into two visible strings,
+        # e.g. "阪神" followed by "7R コンタンゴ". Recover only this exact,
+        # adjacent venue + race pattern.
+        if line == venue and index + 1 < len(lines):
+            split_match = re.fullmatch(r"(1[0-2]|[1-9])R(?:\s+(.*))?", lines[index + 1])
+            if split_match is not None:
+                headers.append(
+                    (
+                        index,
+                        int(split_match.group(1)),
+                        normalize_text(split_match.group(2) or ""),
+                    )
+                )
 
     race_numbers = [item[1] for item in headers]
     if race_numbers != list(range(1, 13)):
