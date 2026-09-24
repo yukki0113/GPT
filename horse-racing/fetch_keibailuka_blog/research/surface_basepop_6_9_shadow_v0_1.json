@@ -1,0 +1,74 @@
+{
+  "artifact_type": "keibailuka_shadow_forward_rule",
+  "rule_id": "KBI_SURFACE_BASEPOP_6_9_V01",
+  "version": "0.1",
+  "frozen_at": "2026-09-25",
+  "status": "SHADOW_FORWARD_CANDIDATE",
+  "forward_boundary": {
+    "historical_evidence_through": "2026-09-22",
+    "live_evaluation": "only races after freeze; do not refit from 2026-01-04..2026-09-22"
+  },
+  "source_contract": {
+    "keibailuka_reason_tag_version": "comment-reason-v0.1",
+    "reason_field": "primary_reason",
+    "reason_value": "surface",
+    "jrdb_family": "KYI",
+    "jrdb_field": "base_win_rank",
+    "jrdb_japanese_label": "基準人気順位",
+    "jrdb_market_popularity": false,
+    "settlement_family": "SED"
+  },
+  "executable_condition": {
+    "all": [
+      "馬名_raw != 🤡",
+      "primary_reason == surface",
+      "base_win_rank >= 6",
+      "base_win_rank <= 9"
+    ],
+    "prohibited_at_decision_time": [
+      "SED.final_popularity",
+      "SED.final_win_odds",
+      "finish",
+      "win_payout",
+      "place_payout"
+    ]
+  },
+  "evidence": {
+    "historical_2024_2025": {
+      "N": 82,
+      "win_roi_pct": 138.659,
+      "place_roi_pct": 82.073,
+      "final_6_9_share_pct": 64.634
+    },
+    "oot_2026_through_20260922": {
+      "N": 25,
+      "win_roi_pct": 326.8,
+      "place_roi_pct": 128.8,
+      "final_6_9_share_pct": 64
+    },
+    "post_result_reference_final_popularity_6_9": {
+      "historical_2024_2025": {
+        "N": 81,
+        "win_roi_pct": 149.877,
+        "place_roi_pct": 85.309
+      },
+      "oot_2026_through_20260922": {
+        "N": 25,
+        "win_roi_pct": 280,
+        "place_roi_pct": 134.8
+      }
+    }
+  },
+  "guardrails": [
+    "Do not widen the base_win_rank band using 2026 results.",
+    "Do not call base_win_rank actual market popularity.",
+    "Keep SHADOW_FORWARD status until new post-freeze races accumulate.",
+    "Always report N, hit rates and ROI.",
+    "Do not infer hidden 🤡 horse names."
+  ],
+  "audit": {
+    "issue": 1295,
+    "run_id": 36046531421,
+    "result": "success"
+  }
+}
