@@ -34,10 +34,10 @@ class MomotaroPwaContractTest(unittest.TestCase):
         html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
         script = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
 
-        self.assertIn("過去3走", html)
-        self.assertNotIn('data-history-count="5"', html)
-        self.assertNotIn('data-history-count="8"', html)
-        self.assertIn("historyCount = 3", script)
+        self.assertIn("過去5走", html)
+                self.assertNotIn('data-history-count="8"', html)
+        self.assertIn("historyCount = 5", script)
+        self.assertIn('{ length: 5 }', script)
         self.assertIn("3人の予想・短評", html)
         self.assertIn('heading.textContent === "RaceNote短評"', script)
 
@@ -81,7 +81,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v6"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v7"', service_worker)
 
 
 if __name__ == "__main__":
