@@ -95,8 +95,8 @@ jobs:
           mkdir -p "$ROOT"
 
           for FAMILY in BAC KYI SED; do
-            ID_VAR="STAGING_${{FAMILY}_ID"
-            ID="${{!ID_VAR}"
+            ID_VAR="STAGING_${FAMILY}_ID"
+            ID="${!ID_VAR}"
             mkdir -p "$ROOT/$FAMILY"
             gdown --folder "https://drive.google.com/drive/folders/$ID" -O "$ROOT/$FAMILY"
           done
@@ -200,7 +200,7 @@ jobs:
         if: always()
         continue-on-error: true
         env:
-          GENERATION_ID: ${{{ steps.backfill.outputs.generation_id }}
+          GENERATION_ID: ${{ steps.backfill.outputs.generation_id }}
         run: |
           set +e
           python - <<'PY'
@@ -305,7 +305,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: jrdb-postrace-review-v0-1-${{{ github.run_id }}
+          name: jrdb-postrace-review-v0-1-${{ github.run_id }}
           path: /tmp/jrdb_postrace_review/output/
           if-no-files-found: warn
           compression-level: 0
@@ -314,10 +314,10 @@ jobs:
       - name: Comment compact result
         if: always()
         env:
-          GH_TOKEN: ${{{ github.token }}
-          ISSUE_NUMBER: ${{{ github.event.issue.number }}
-          BACKFILL_EXIT: ${{{ steps.backfill.outputs.exit_code }}
-          VERIFY_EXIT: ${{{ steps.verify.outputs.exit_code }}
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          BACKFILL_EXIT: ${{ steps.backfill.outputs.exit_code }}
+          VERIFY_EXIT: ${{ steps.verify.outputs.exit_code }}
         run: |
           python - <<'PY'
           import json
@@ -352,9 +352,9 @@ jobs:
       - name: Close request issue
         if: always()
         env:
-          GH_TOKEN: ${{{ github.token }}
-          ISSUE_NUMBER: ${{{ github.event.issue.number }}
-          VERIFY_EXIT: ${{{ steps.verify.outputs.exit_code }}
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          VERIFY_EXIT: ${{ steps.verify.outputs.exit_code }}
         run: |
           if [ "$VERIFY_EXIT" = "0" ]; then
             gh issue close "$ISSUE_NUMBER" \
@@ -369,8 +369,8 @@ jobs:
       - name: Fail unless backfill and verification passed
         if: always()
         env:
-          BACKFILL_EXIT: ${{{ steps.backfill.outputs.exit_code }}
-          VERIFY_EXIT: ${{{ steps.verify.outputs.exit_code }}
+          BACKFILL_EXIT: ${{ steps.backfill.outputs.exit_code }}
+          VERIFY_EXIT: ${{ steps.verify.outputs.exit_code }}
         run: |
           test "$BACKFILL_EXIT" = "0"
           test "$VERIFY_EXIT" = "0"
