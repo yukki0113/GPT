@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1",
+  "policy_id": "jrdb_edge_v03_b2b_performance_gate_20260925",
+  "mode": "SHADOW_ONLY",
+  "source": {
+    "b2a_run_id": 36043241600,
+    "b2a_artifact_name": "jrdb-edge-v03-statistical-shadow-36043241600",
+    "statistical_edges_sha256": "b4cfdc321a7bb2fad35c80c748597fb391f94ab1f52047b89eb9d2b935136b0e",
+    "summary_sha256": "c7d913c074d3ef02233333b38947a7afda97e825343dfcf26bb6869f87edf114"
+  },
+  "performance_gate": {
+    "multiple_testing": {
+      "method": "BENJAMINI_HOCHBERG_GLOBAL",
+      "q_max": 0.05
+    },
+    "bootstrap": {
+      "method": "YEAR_STRATIFIED_NONPARAMETRIC_BERNOULLI",
+      "confidence": 0.95,
+      "require_ci_excludes_zero_in_full_direction": true
+    },
+    "temporal": {
+      "yearly_min_child_n": 10,
+      "yearly_min_parent_complement_n": 10,
+      "min_eligible_years": 6,
+      "min_full_period_same_direction_fraction": 0.6666666666666666,
+      "recent_eligible_year_count": 4,
+      "min_recent_same_direction_fraction": 0.75
+    },
+    "effect_size": {
+      "minimum_absolute_place_rate_diff": null,
+      "policy": "NO_ARBITRARY_EFFECT_SIZE_FLOOR"
+    },
+    "alignment": {
+      "require_same_direction_as_v02": false,
+      "reversal_incremental_edges_allowed": true
+    }
+  },
+  "value_gate": {
+    "status": "DEFERRED_FAIL_CLOSED",
+    "promote_incremental_value": false,
+    "promote_incremental_dual": false,
+    "reason": "B2a Value diagnostics are descriptive; no inferential ROI gate has been frozen."
+  },
+  "classification": {
+    "performance_pass": "INCREMENTAL_PERFORMANCE",
+    "insufficient_temporal_coverage": "INSUFFICIENT",
+    "sufficient_but_gate_fail": "CONTEXT_ONLY"
+  },
+  "production_protection": {
+    "production_v02_unchanged": true,
+    "newspaper_racenote_routes_unchanged": true,
+    "shadow_catalog_only": true
+  },
+  "rationale": {
+    "q_max": "Global FDR 0.05 controls the family of current child hypotheses; 144/735 B2a rows were <=0.05.",
+    "bootstrap": "All q<=0.05 rows also excluded zero at 95% bootstrap CI; requiring both freezes agreement between analytic and resampling evidence.",
+    "yearly_min_n": "Sensitivity retained 100 candidates at n=5, 94 at n=10, and only 59 at n=20 under the final temporal structure. n=10 removes sparse-year signs without the sharp n=20 loss.",
+    "min_eligible_years": "At yearly n>=10, requiring 4/6/8 eligible years retained 111/94/64 candidates under the final direction rules; six years is the middle stability point.",
+    "full_period_fraction": "Two-thirds is an interpretable supermajority and preserves stable recent reversals rather than requiring agreement with v0.2.",
+    "recent_fraction": "Three of the four most recent eligible years must agree with the full-history incremental direction."
+  }
+}
