@@ -226,6 +226,44 @@ def closing_gain_seconds(
     return last3f_gap - finish_gap
 
 
+def opening_reference_candidate_seconds(
+    first3f_sec: object,
+    first3f_leader_diff_sec: object,
+) -> float | None:
+    """Reconstruct the leader's opening-3F elapsed time from one horse."""
+    first3f = _finite_float(first3f_sec)
+    leader_gap = _finite_float(first3f_leader_diff_sec)
+    if first3f is None or leader_gap is None:
+        return None
+    if first3f <= 0.0 or leader_gap < 0.0:
+        return None
+
+    candidate = first3f - leader_gap
+    if candidate <= 0.0:
+        return None
+    return candidate
+
+
+def closing_reference_candidate_seconds(
+    last3f_sec: object,
+    last3f_leader_diff_sec: object,
+    finish_gap_sec: object,
+) -> float | None:
+    """Reconstruct the race closing reference from one horse's observations."""
+    last3f = _finite_float(last3f_sec)
+    leader_gap = _finite_float(last3f_leader_diff_sec)
+    finish_gap = _finite_float(finish_gap_sec)
+    if last3f is None or leader_gap is None or finish_gap is None:
+        return None
+    if last3f <= 0.0 or leader_gap < 0.0 or finish_gap < 0.0:
+        return None
+
+    candidate = leader_gap + last3f - finish_gap
+    if candidate <= 0.0:
+        return None
+    return candidate
+
+
 def corner_frontness(
     corners: Sequence[object] | None,
     field_size: object,
