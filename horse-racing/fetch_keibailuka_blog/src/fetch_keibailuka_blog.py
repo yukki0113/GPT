@@ -528,6 +528,15 @@ def clean_comment(lines: list[str]) -> str:
     return normalize_text(" ".join(parts))
 
 
+def looks_like_split_horse_name(value: str) -> bool:
+    """Return True only for a conservative JRA horse-name-like line."""
+
+    candidate = normalize_text(value.replace("🐬", ""))
+    if not candidate or len(candidate) > 24:
+        return False
+    return re.fullmatch(r"[ァ-ヶー・A-Za-z0-9０-９]+", candidate) is not None
+
+
 def classify_race(
     venue: str,
     race_no: int,
@@ -574,6 +583,15 @@ def classify_race(
         )
 
     horse = normalize_text(horse_tail.replace("🐬", ""))
+    comment_lines = section_lines
+    if (
+        not horse
+        and len(section_lines) >= 2
+        and looks_like_split_horse_name(section_lines[0])
+    ):
+        horse = normalize_text(section_lines[0].replace("🐬", ""))
+        comment_lines = section_lines[1:]
+
     if not horse:
         return RacePick(
             venue,
@@ -588,7 +606,7 @@ def classify_race(
         venue,
         race_no,
         horse,
-        clean_comment(section_lines),
+        clean_comment(comment_lines),
         "included",
         None,
     )

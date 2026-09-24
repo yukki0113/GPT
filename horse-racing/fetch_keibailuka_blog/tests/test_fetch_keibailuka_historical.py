@@ -35,6 +35,27 @@ class HistoricalHelpersTest(unittest.TestCase):
         self.assertEqual(race.horse, "🤡")
         self.assertNotIn("noteにスキボタン", race.comment)
 
+    def test_split_header_horse_name_is_recovered(self):
+        race = classify_race(
+            "札幌",
+            8,
+            "",
+            ["オリンポスカズマ", "短縮してからの内容悪くはない。ハマれば。"],
+        )
+        self.assertEqual(race.status, "included")
+        self.assertEqual(race.horse, "オリンポスカズマ")
+        self.assertEqual(race.comment, "短縮してからの内容悪くはない。ハマれば。")
+
+    def test_comment_only_is_not_guessed_as_horse(self):
+        race = classify_race(
+            "東京",
+            3,
+            "",
+            ["勝ち馬強い", "次も期待"],
+        )
+        self.assertEqual(race.status, "parse_error")
+        self.assertIsNone(race.horse)
+
     def test_month_range_is_inclusive(self):
         months = iter_months(parse_month("2024-11"), parse_month("2025-02"))
         self.assertEqual(
