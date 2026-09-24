@@ -1,0 +1,117 @@
+name: keibailuka-historical-analysis
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+jobs:
+  analyze:
+    if: startsWith(github.event.issue.title, '[KEIBAILUKA_ANALYSIS_REQUEST]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests duckdb==1.1.3
+
+      - name: Save request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          mkdir -p /tmp/keibailuka_analysis
+          printf '%s' "$ISSUE_BODY" > /tmp/keibailuka_analysis/request.json
+
+      - name: Run analysis
+        id: analyze
+        continue-on-error: true
+        run: |
+          set +e
+          python horse-racing/fetch_keibailuka_blog/src/analyze_keibailuka_historical.py \
+            --request-json /tmp/keibailuka_analysis/request.json \
+            --output-dir /tmp/keibailuka_analysis/output \
+            > /tmp/keibailuka_analysis/stdout.txt 2> /tmp/keibailuka_analysis/stderr.txt
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload analysis artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keibailuka-analysis-${{ github.run_id }}
+          path: |
+            /tmp/keibailuka_analysis/output
+            /tmp/keibailuka_analysis/request.json
+            /tmp/keibailuka_analysis/stdout.txt
+            /tmp/keibailuka_analysis/stderr.txt
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          EXIT_CODE: ${{ steps.analyze.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          import urllib.request
+
+          out = Path('/tmp/keibailuka_analysis/output/summary.json')
+          payload = None
+          if out.exists():
+              payload = json.loads(out.read_text(encoding='utf-8'))
+          result = {
+              'run_id': int(os.environ['RUN_ID']),
+              'artifact_name': f"keibailuka-analysis-{os.environ['RUN_ID']}",
+              'exit_code': os.environ.get('EXIT_CODE') or 'unknown',
+              'analysis_status': 'success' if os.environ.get('EXIT_CODE') == '0' and payload else 'failure',
+              'summary': payload,
+          }
+          body = 'KEIBAILUKA_ANALYSIS_RESULT\n```json\n' + json.dumps(result, ensure_ascii=False, indent=2) + '\n```'
+          data = json.dumps({'body': body}).encode()
+          req = urllib.request.Request(
+              f"https://api.github.com/repos/{os.environ['GH_REPO']}/issues/{os.environ['ISSUE_NUMBER']}/comments",
+              data=data,
+              headers={'Authorization': f"Bearer {os.environ['GH_TOKEN']}", 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'},
+              method='POST',
+          )
+          urllib.request.urlopen(req, timeout=30).read()
+          PY
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          EXIT_CODE: ${{ steps.analyze.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          ok = os.environ.get('EXIT_CODE') == '0'
+          data = json.dumps({'state':'closed','state_reason':'completed' if ok else 'not_planned'}).encode()
+          req = urllib.request.Request(
+              f"https://api.github.com/repos/{os.environ['GH_REPO']}/issues/{os.environ['ISSUE_NUMBER']}",
+              data=data,
+              headers={'Authorization': f"Bearer {os.environ['GH_TOKEN']}", 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'},
+              method='PATCH',
+          )
+          urllib.request.urlopen(req, timeout=30).read()
+          PY
+
+      - name: Fail workflow when analysis failed
+        if: always()
+        run: test "${{ steps.analyze.outputs.exit_code }}" = "0"
