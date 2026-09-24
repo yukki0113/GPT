@@ -83,7 +83,31 @@ def main():
         if mc==0: unmatched.append(p)
         elif mc==1: matched.append(rr[0])
         else: ambiguous.extend(rr)
-    # Diagnostic only: capture same-race SED candidates for unmatched picks; baseline matching is unchanged.\n    unmatched_diag=[]\n    for p in unmatched:\n        dq=f"""SELECT CAST(horse_no AS INTEGER) horse_no, TRIM(CAST(horse_name AS VARCHAR)) horse_name, finish, abnormal_code\n              FROM {sed}\n             WHERE CAST(race_date AS VARCHAR)=?\n               AND LPAD(CAST(venue_code AS VARCHAR),2,'0')=?\n               AND CAST(race_no AS INTEGER)=?\n             ORDER BY CAST(horse_no AS INTEGER)"""\n        cand=con.execute(dq,[p["race_date"],p["venue_code"],p["race_no"]]).fetchall()\n        def normname(s):\n            return unicodedata.normalize("NFKC",str(s or "")).replace("　","").replace(" ","").strip()\n        target=normname(p["horse_name"])\n        scored=[]\n        for hn,name,finish,abn in cand:\n            nn=normname(name); sim=difflib.SequenceMatcher(None,target,nn).ratio() if target and nn else 0.0\n            scored.append((sim,hn,str(name).strip(),finish,abn))\n        scored.sort(reverse=True,key=lambda x:x[0])\n        top=scored[0] if scored else (0.0,None,None,None,None)\n        unmatched_diag.append({**p,"same_race_candidate_count":len(cand),\n            "best_similarity":round(top[0],4),"best_horse_no":top[1],"best_candidate":top[2],\n            "best_finish":top[3],"best_abnormal_code":top[4],\n            "same_race_horses":" | ".join(f"{hn}:{name}" for _,hn,name,_,_ in scored)})\n\n    normal=lambda r:r.get("abnormal_code") in (None,"",0,"0")
+    # Diagnostic only: capture same-race SED candidates for unmatched picks; baseline matching is unchanged.
+    unmatched_diag=[]
+    for p in unmatched:
+        dq=f"""SELECT CAST(horse_no AS INTEGER) horse_no, TRIM(CAST(horse_name AS VARCHAR)) horse_name, finish, abnormal_code
+              FROM {sed}
+             WHERE CAST(race_date AS VARCHAR)=?
+               AND LPAD(CAST(venue_code AS VARCHAR),2,'0')=?
+               AND CAST(race_no AS INTEGER)=?
+             ORDER BY CAST(horse_no AS INTEGER)"""
+        cand=con.execute(dq,[p["race_date"],p["venue_code"],p["race_no"]]).fetchall()
+        def normname(s):
+            return unicodedata.normalize("NFKC",str(s or "")).replace("　","").replace(" ","").strip()
+        target=normname(p["horse_name"])
+        scored=[]
+        for hn,name,finish,abn in cand:
+            nn=normname(name); sim=difflib.SequenceMatcher(None,target,nn).ratio() if target and nn else 0.0
+            scored.append((sim,hn,str(name).strip(),finish,abn))
+        scored.sort(reverse=True,key=lambda x:x[0])
+        top=scored[0] if scored else (0.0,None,None,None,None)
+        unmatched_diag.append({**p,"same_race_candidate_count":len(cand),
+            "best_similarity":round(top[0],4),"best_horse_no":top[1],"best_candidate":top[2],
+            "best_finish":top[3],"best_abnormal_code":top[4],
+            "same_race_horses":" | ".join(f"{hn}:{name}" for _,hn,name,_,_ in scored)})
+
+    normal=lambda r:r.get("abnormal_code") in (None,"",0,"0")
     bet=[r for r in matched if normal(r)]; abnormal=[r for r in matched if not normal(r)]
 
     audit=[]
