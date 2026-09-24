@@ -68,6 +68,8 @@ jobs:
             -p 'test_newspaper_compact_history_pwa.py'
           node --check horse-racing/jrdb/pwa/newspaper-v4.js
           node --check horse-racing/jrdb/pwa/service-worker.js
+          node --check horse-racing/jrdb/pwa/momotaro/momotaro.js
+          node --check horse-racing/jrdb/pwa/momotaro/service-worker.js
 
       - name: Prepare Pages artifact
         env:
