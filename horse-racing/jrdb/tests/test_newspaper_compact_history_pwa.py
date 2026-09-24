@@ -30,10 +30,15 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn('./newspaper-v4.css?v=7', html)
         self.assertIn('./newspaper-v4.js?v=8', html)
 
-    def test_momotaro_has_not_been_opted_in_during_turn_2(self) -> None:
+    def test_momotaro_opts_in_during_turn_3(self) -> None:
         html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
+        script = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
 
-        self.assertNotIn('newspaperHistoryDisplayMode: "compact"', html)
+        self.assertIn('newspaperHistoryDisplayMode: "compact"', html)
+        self.assertIn('historyCount = 5', script)
+        self.assertIn('newspaperV4HistoryTableClass()', script)
+        self.assertIn('../newspaper-v4.css?v=7', html)
+        self.assertIn('../newspaper-v4.js?v=8', html)
 
     def test_compact_layout_uses_shared_dense_width_contract(self) -> None:
         css = (PWA_ROOT / "newspaper-v4.css").read_text(encoding="utf-8")
