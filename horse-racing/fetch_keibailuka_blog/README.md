@@ -230,3 +230,50 @@ Historical artifactは搬送・監査用の一時成果物です。Chatがartifa
 
 複数Chatスレッドから同じ台帳を更新しても既存行を上書きしないよう、Historical受入は固定行への `pasteData` ではなく **既存keyとの差分 + `appendCells`** を標準とします。書込み後は全 `key` の重複監査を必須とし、月次件数がmanifestより少ない場合は不足keyだけを再appendして修復します。
 
+
+
+## Research shadow forward v0.1
+
+2026-09-25 に Historical / OOT 研究から、次の **shadow forward候補** を凍結した。
+
+- rule id: `KBI_SURFACE_BASEPOP_6_9_V01`
+- contract: `research/surface_basepop_6_9_shadow_v0_1.json`
+- reason tag: `comment-reason-v0.1`
+- 条件:
+  - `馬名_raw != 🤡`
+  - イルカコメントの `primary_reason == surface`（馬場・芝ダート系）
+  - JRDB KYI `base_win_rank`（基準人気順位）が6〜9位
+- status: `SHADOW_FORWARD_CANDIDATE`
+
+`base_win_rank` はJRDBの**基準人気順位**であり、JRAの実市場人気・SEDの最終人気ではない。最終人気を事前判定に使ってはならない。
+
+研究監査:
+- 2024+2025: N=82 / 単勝ROI 138.659% / 複勝ROI 82.073%
+- 2026-01-04〜2026-09-22 OOT: N=25 / 単勝ROI 326.8% / 複勝ROI 128.8%
+- `base_win_rank=6..9` が最終6〜9人気になる割合は馬場系で約61〜67%
+
+これは購入Edge確定ではなく、2026-09-25 freeze後の新規開催で条件を変更せず観測する。
+
+結果データを読まない日次scorer:
+
+```bash
+python horse-racing/fetch_keibailuka_blog/src/score_keibailuka_shadow_v01.py \
+  --keibailuka-csv keibailuka_YYYYMMDD.csv \
+  --paci PACIYYMMDD.zip \
+  --output-dir ./shadow_YYYYMMDD
+```
+
+主成果物:
+- `shadow_result.json`
+- `shadow_candidates.csv`
+- `shadow_audit_rows.csv`
+- `unmatched.csv`
+- `ambiguous.csv`
+
+判定時に参照してよいのはイルカコメント理由とKYI事前データだけ。SEDの `final_popularity` / `final_win_odds` / 着順 / 払戻はsettlementまで参照禁止。
+
+2026-09-22実データsmoke:
+- Issue #1296 / run 36047592635
+- normal 4 / matched 4 / unmatched 0 / ambiguous 0
+- candidate 0
+- `decision_uses_result_data=false`
