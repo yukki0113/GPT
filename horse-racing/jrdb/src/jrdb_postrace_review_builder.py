@@ -439,6 +439,14 @@ def build_review_day(
             output = dict(horse)
             output.update(
                 {
+                    "race_date": first.get("race_date"),
+                    "venue_code": first.get("venue_code"),
+                    "surface_code": first.get("surface_code"),
+                    "distance_m": first.get("distance_m"),
+                    "field_size": first.get("field_size"),
+                    "declared_class_group": first.get(
+                        "declared_class_group"
+                    ),
                     "horse_id": source.get("horse_id"),
                     "horse_name": source.get("horse_name"),
                     "frame_no": source.get("frame_no"),
