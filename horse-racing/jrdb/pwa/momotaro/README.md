@@ -27,7 +27,7 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
         "review_horse": true,
         "comment": "回顧・短評"
       },
-      "friend3": {
+      "kenshow": {
         "mark": "▲",
         "comment": "短評"
       }
@@ -43,3 +43,13 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
 - `newspaper.html`: 既存Newspaper runtimeを共有、過去走3走固定、桃太郎3人欄を追加
 - `predictions.html`: りょーたS / おーじ回顧馬 / イルカの一覧
 - `fact-lite.html`: 既存Fact Lite runtimeと配布SQLiteを共有、OPFSだけ桃太郎専用
+
+
+## イルカ列
+
+🐬は3人の予想とは別の共通外部参考情報として扱う。
+
+- source: `addons.keibailuka`
+- 桃太郎3人の `addons.momotaro` へコピーしない
+- 新聞では `りょーた / おーじ / けんしょー / 🐬` の4列で表示する
+- 🐬の表示・短評dialogはKenshow_Labo個人PWAと同じ既存consumer semanticsを再利用する
