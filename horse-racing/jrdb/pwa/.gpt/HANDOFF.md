@@ -165,6 +165,18 @@ PWAはEdge outputを表示するconsumerです。
 - reader-facing表示とraw/audit情報を混同しない
 - 特注メモ表示のためにEdge strength等を独自scoreへ加算しない
 
+## Shared compact past-run display
+
+過去走の高密度表示は `newspaper-v4.js/css` の共有runtimeで実装する。
+
+- durable design: `../NEWSPAPER_HISTORY_COMPACT.md`
+- config: `JRDB_PWA_CONFIG.newspaperHistoryDisplayMode`
+- default: `standard`
+- personal Kenshow_Labo: `compact` enabled
+- Momotaro: Turn 2時点では未有効化。Turn 3で適用する
+- JSON schema / PACI / history生成は変更しない
+- compactから省略した情報は詳細dialogへ保持する
+
 ## Layered Newspaper frontend
 
 Newspaper frontendは `newspaper.js` と複数の `newspaper-vN.js/css` overrideで進化しています。
