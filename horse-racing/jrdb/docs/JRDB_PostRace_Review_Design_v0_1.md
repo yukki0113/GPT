@@ -240,13 +240,28 @@ JRDB-derived metrics must remain distinguishable from self-derived Review fields
 
 `time_raw` must be normalized through one explicit parser.
 
+JRDB SED fixed-length specification defines the 4-byte value as:
+
+- byte 1: minutes
+- bytes 2-4: seconds in 0.1-second units
+
+Therefore:
+
+```text
+time_sec =
+  int(time_raw[0]) * 60
+  + int(time_raw[1:4]) / 10
+```
+
+Example: `1123 -> 72.3 sec`.
+
 Output:
 
 `time_sec REAL NULL`
 
-Invalid / blank / abnormal result time is NULL. Do not impute.
+Blank, non-4-digit, malformed, or seconds-part >= 60.0 values are invalid and produce NULL. Abnormal-result applicability is evaluated separately; do not impute.
 
-The parser must have characterization tests covering representative minute/second encodings found in SED.
+The parser must have characterization tests for valid, blank, malformed, and invalid-seconds values.
 
 ## 9. Class taxonomy
 
@@ -266,6 +281,24 @@ OTHER
 ```
 
 The mapping must be a dedicated config or function and must preserve the original JRDB `race_class_code` and `grade_code`.
+
+Initial v0.1 mapping from JRDB master definitions:
+
+```text
+A1 -> NEWCOMER
+A2 -> NEWCOMER
+A3 -> MAIDEN
+04 / 05 -> CLASS_1
+08 / 09 / 10 -> CLASS_2
+15 / 16 -> CLASS_3
+OP -> OPEN
+
+grade 1 -> G1
+grade 2 -> G2
+grade 3 -> G3
+```
+
+Grade G1/G2/G3 takes precedence over the broad race-class group. Other codes remain `OTHER` unless a later explicitly documented mapping is added.
 
 Do not overwrite JRDB source codes.
 
@@ -430,7 +463,17 @@ review_logic_version
 
 ### Pace shape
 
-Do not compare raw first3f-last3f across unrelated distances.
+Define the signed balance so that a larger positive value means a more front-loaded race:
+
+```text
+pace_balance_sec =
+  last3f_reference_sec
+  - first3f_reference_sec
+```
+
+When the opening 3F is faster than the closing 3F, this value is positive. This sign convention is normative.
+
+Do not compare the raw balance across unrelated distances.
 
 Build historical distribution by suitable venue/surface/distance scope and map `pace_balance_sec` to percentile.
 
