@@ -135,7 +135,6 @@ renderTable = function () {
       contributorCells +
       momotaroIlukaCell(horse, horseIndex) +
       historyCells +
-      '<td class="newspaper-edge">' + edgeHtml(horse) + '</td>' +
       '</tr>';
   }).join("");
 
@@ -149,7 +148,6 @@ renderTable = function () {
         '<th class="newspaper-basic-info" rowspan="2">基本</th>' +
         '<th class="newspaper-mark-group-head" colspan="4">予想</th>' +
         historyTopHeaders +
-        '<th class="newspaper-edge" rowspan="2">Edge</th>' +
       '</tr>' +
       '<tr class="newspaper-mark-head-row">' +
         '<th class="newspaper-mark-col mark-ryota">りょーた</th>' +
