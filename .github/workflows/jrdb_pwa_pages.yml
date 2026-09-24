@@ -35,6 +35,8 @@ env:
   NEWSPAPER_RELEASE_TAG: jrdb-newspaper-current
   NEWSPAPER_RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
   NEWSPAPER_RELEASE_META: jrdb_newspaper_current_release.json
+  MOMOTARO_PREDICTION_RELEASE_TAG: jrdb-momotaro-predictions-current
+  MOMOTARO_PREDICTION_ASSET: momotaro_predictions.csv
 
 jobs:
   deploy:
@@ -206,10 +208,25 @@ jobs:
             mkdir -p .pages/data/newspaper
             cp -a .newspaper-release/current .pages/data/newspaper/current
 
+            MOMOTARO_ARGS=()
+            if gh release view "$MOMOTARO_PREDICTION_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              rm -rf .momotaro-predictions
+              mkdir -p .momotaro-predictions
+              gh release download "$MOMOTARO_PREDICTION_RELEASE_TAG" \
+                --repo "$GITHUB_REPOSITORY" \
+                --pattern "$MOMOTARO_PREDICTION_ASSET" \
+                --dir .momotaro-predictions
+              MOMOTARO_ARGS+=(--momotaro-csv ".momotaro-predictions/$MOMOTARO_PREDICTION_ASSET")
+              echo "Current Momotaro prediction source found."
+            else
+              echo "No current Momotaro prediction source yet; publishing safe empty member columns."
+            fi
+
             rm -rf .pages/momotaro/data/newspaper/current
             python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py \
               --day-dir .pages/data/newspaper/current \
-              --output-dir .pages/momotaro/data/newspaper/current
+              --output-dir .pages/momotaro/data/newspaper/current \
+              "${MOMOTARO_ARGS[@]}"
 
             echo "Current Newspaper release and Momotaro public projection added to Pages artifact."
           else
