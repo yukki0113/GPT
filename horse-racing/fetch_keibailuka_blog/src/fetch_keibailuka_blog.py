@@ -558,6 +558,20 @@ def classify_race(
             "no_selection",
         )
 
+    if (
+        not normalize_text(horse_tail.replace("🐬", ""))
+        and section_lines
+        and normalize_text(section_lines[0]) == "新馬戦"
+    ):
+        return RacePick(
+            venue,
+            race_no,
+            None,
+            "",
+            "excluded",
+            "new_horse_race",
+        )
+
     paid_url = any(
         "note.com/keibailuka/n/" in line for line in section_lines
     )
