@@ -50,7 +50,7 @@ class RaceNoteParquetBackendTest(unittest.TestCase):
 
             backend = DuckDBParquetAnalysisBackend(root)
             try:
-                result = engine.as_of_summary(backend, None, "ignored", "ignored", "sire_name", "Sire-A", "2025-06-01", "06", "1", "distance=?", [1600], 5)
+                result = engine.as_of_summary(backend, "sire_name", "Sire-A", "2025-06-01", "06", "1", "distance=?", [1600], 5)
                 self.assertEqual(result["starts"], 2)
                 self.assertEqual(result["wins"], 2)
                 target = backend.execute("SELECT finish FROM analysis_fact WHERE race_key=?", ["target"]).fetchone()
