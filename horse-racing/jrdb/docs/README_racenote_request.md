@@ -19,7 +19,7 @@ Historical routing remains:
 - Raw: explicit rollback/audit and documented 2010 previous-result boundary fallback only
 - Archive: optional publishable delivery cache; absence does not stop a Warehouse rebuild
 
-Stats Mart is a frozen legacy cache retained for old research, builders, schemas, and reproducibility; it is not an active RaceNote dependency. See docs/racenote/legacy/README.md.
+Stats Mart is a frozen legacy cache retained for old research, builders, schemas, and reproducibility; it is not an active RaceNote dependency. See docs/racenote/legacy/README.md. Analysis SQLite compatibility is not a RaceNote production prerequisite.
 
 ## CLI
 
