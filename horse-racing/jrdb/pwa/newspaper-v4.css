@@ -1,5 +1,13 @@
 /* Newspaper display v4 overrides */
 
+.newspaper-table-v4 {
+  --newspaper-history-compact-width: 124px;
+  --newspaper-history-compact-font-size: 9.5px;
+  --newspaper-history-compact-line-height: 1.18;
+  --newspaper-history-compact-padding-x: 4px;
+  --newspaper-history-compact-padding-y: 4px;
+}
+
 /* Identity columns: frame/basic scroll away; horse number + name remain. */
 .newspaper-table-v4 .newspaper-frame {
   position: static;
@@ -194,6 +202,121 @@
   max-width: 168px;
 }
 
+
+/* Shared compact past-run mode. Surfaces opt in through JRDB_PWA_CONFIG. */
+.newspaper-table-v4.newspaper-history-compact .newspaper-history-head,
+.newspaper-table-v4.newspaper-history-compact .newspaper-history-cell {
+  width: var(--newspaper-history-compact-width);
+  min-width: var(--newspaper-history-compact-width);
+  max-width: var(--newspaper-history-compact-width);
+}
+
+.newspaper-table-v4.newspaper-history-compact .newspaper-history-cell {
+  padding:
+    var(--newspaper-history-compact-padding-y)
+    var(--newspaper-history-compact-padding-x);
+}
+
+.newspaper-run-v4-compact {
+  min-height: 104px;
+  font-size: var(--newspaper-history-compact-font-size);
+  line-height: var(--newspaper-history-compact-line-height);
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  min-height: 18px;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.newspaper-run-v4-compact .newspaper-detail-button-compact {
+  min-height: 18px;
+  margin: 0;
+  padding: 1px 4px;
+  font-size: 8px;
+  line-height: 1;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-race {
+  gap: 3px;
+  min-height: 14px;
+  margin-top: 2px;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-race strong {
+  font-size: 10px;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-race span {
+  font-size: 9.5px;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-result {
+  margin-top: 2px;
+  font-size: 9.5px;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-result strong {
+  font-size: 11px;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-track {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3px;
+  margin-top: 2px;
+  color: #444;
+  font-size: 9.3px;
+  white-space: nowrap;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-time {
+  color: #222;
+  font-size: 9.5px;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-finish {
+  min-height: 15px;
+  margin-top: 2px;
+  gap: 3px;
+  font-size: 9px;
+}
+
+.newspaper-run-v4-compact .newspaper-last3f {
+  padding: 0 2px;
+  font-size: 9px;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-flags {
+  display: flex;
+  gap: 3px;
+  margin-top: 1px;
+  min-height: 12px;
+  align-items: center;
+}
+
+.newspaper-run-v4-compact .newspaper-run-compact-flags:empty {
+  display: none;
+}
+
+.newspaper-run-v4-compact .newspaper-trouble-flag,
+.newspaper-run-v4-compact .newspaper-abnormal {
+  margin-top: 0;
+  font-size: 8.5px;
+}
+
 /* Past-run detail dialog: compact enough for a phone screen and keep close action legible on iOS. */
 .newspaper-dialog {
   max-height: min(92dvh, 760px);
@@ -236,6 +359,12 @@
 }
 
 @media (max-width: 640px) {
+  .newspaper-table-v4 {
+    --newspaper-history-compact-width: 120px;
+    --newspaper-history-compact-font-size: 9.3px;
+    --newspaper-history-compact-padding-x: 3px;
+    --newspaper-history-compact-padding-y: 3px;
+  }
   .newspaper-dialog {
     width: calc(100% - 20px);
   }
