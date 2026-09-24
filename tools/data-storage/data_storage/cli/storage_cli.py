@@ -43,6 +43,37 @@ def parser() -> argparse.ArgumentParser:
     query = commands.add_parser("query")
     query.add_argument("path")
     query.add_argument("sql")
+
+    materialize = commands.add_parser(
+        "materialize-manifest",
+        help="materialize content-addressed assets from a manifest and Drive/source indexes",
+    )
+    materialize.add_argument("--manifest", required=True)
+    materialize.add_argument("--output-root", required=True)
+    materialize.add_argument("--audit")
+    materialize.add_argument("--cache-dir")
+    materialize.add_argument(
+        "--folder",
+        action="append",
+        default=[],
+        metavar="LABEL=FOLDER_ID",
+        help="supplement manifest folder refs with a public Google Drive folder",
+    )
+    materialize.add_argument(
+        "--folder-label",
+        action="append",
+        default=[],
+        help="materialize only selected manifest folder labels; repeatable",
+    )
+    materialize.add_argument(
+        "--source-index",
+        action="append",
+        default=[],
+        help="JSON source index with path plus file_id/url/local_path entries; repeatable",
+    )
+    materialize.add_argument("--backend", choices=("auto", "direct", "gdown"), default="auto")
+    materialize.add_argument("--timeout-seconds", type=int, default=180)
+    materialize.add_argument("--retries", type=int, default=2)
     return root
 
 
@@ -53,6 +84,24 @@ def main(argv: list[str] | None = None) -> int:
             result = dependency_report()
             _emit(result)
             return 0 if result.get("status") == "success" else 2
+        if args.command == "materialize-manifest":
+            from ..materialize import materialize_manifest
+
+            result = materialize_manifest(
+                args.manifest,
+                output_root=args.output_root,
+                audit_path=args.audit,
+                cache_dir=args.cache_dir,
+                explicit_folders=args.folder,
+                source_indexes=args.source_index,
+                folder_labels=args.folder_label,
+                backend=args.backend,
+                timeout_seconds=args.timeout_seconds,
+                retries=args.retries,
+            )
+            _emit(result)
+            return 0
+
         dependencies = dependency_report()
         if dependencies["status"] != "success":
             _emit(dependencies)
