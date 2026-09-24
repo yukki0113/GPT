@@ -13,6 +13,7 @@ SRC = ROOT / "src"
 DOCS = ROOT / "docs"
 CURRENT_ROUTER = (SRC / "racenote_request.py").read_text(encoding="utf-8")
 CURRENT_ENRICHMENT = (SRC / "racenote_history_enrichment.py").read_text(encoding="utf-8")
+CURRENT_ENGINE = (SRC / "racenote_history_engine.py").read_text(encoding="utf-8")
 CURRENT_GUIDE = (DOCS / "racenote" / "README.md").read_text(encoding="utf-8")
 REQUEST_GUIDE = (DOCS / "README_racenote_request.md").read_text(encoding="utf-8")
 LEGACY_GUIDE = (DOCS / "racenote" / "legacy" / "README.md").read_text(encoding="utf-8")
@@ -28,6 +29,14 @@ def test_current_router_has_no_mart_option_or_silent_sqlite_fallback() -> None:
 def test_current_enrichment_cli_has_no_mart_option() -> None:
     assert 'add_argument("--mart"' not in CURRENT_ENRICHMENT
     assert 'analysis_backend", choices=("parquet", "sqlite"), default="parquet"' in CURRENT_ENRICHMENT
+
+
+def test_current_history_engine_is_analysis_only() -> None:
+    for token in ("--mart", "mart", "mart_table", "mart_column", "mart_prior"):
+        assert token not in CURRENT_ENGINE
+    assert "def analysis_prior_summary(" in CURRENT_ENGINE
+    assert "def enrich(" in CURRENT_ENGINE
+    assert "def enrich_many(" in CURRENT_ENGINE
 
 
 def test_current_docs_define_one_architecture_and_archive_role() -> None:
