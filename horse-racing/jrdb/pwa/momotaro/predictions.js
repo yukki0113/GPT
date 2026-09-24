@@ -28,10 +28,9 @@ function predictionPublishedUrl(path) {
 function extractIluka(addons) {
   const value = addons && addons.keibailuka ? addons.keibailuka : null;
   if (!value) return null;
-  const label = predictionText(value.display_value || value.label || value.mark || value.value, "");
   const comment = predictionText(value.comment || value.memo || value.title, "");
-  if (!label && !comment) return null;
-  return { label: label || "対象", comment: comment };
+  if (!comment) return null;
+  return { comment: comment };
 }
 
 function collectRows(bundle) {
@@ -40,15 +39,15 @@ function collectRows(bundle) {
   (bundle.horses || []).forEach(function (horse) {
     const addons = horse.addons || {};
     const momotaro = addons.momotaro || {};
-    const identity = horse.identity || {};
+    const basic = horse.basic || {};
     const key = horse.key || {};
     const base = {
       race_key: predictionText(race.race_key, ""),
       venue: predictionText(race.venue, ""),
-      race_no: predictionText(race.race_no, ""),
+      race_no: Number(race.race_no || 0),
       race_name: predictionText(race.race_name, ""),
-      horse_no: predictionText(key.horse_no, ""),
-      horse_name: predictionText(identity.horse_name, "")
+      horse_no: Number(key.horse_no || 0),
+      horse_name: predictionText(basic.horse_name, "")
     };
 
     const ryota = momotaro.ryota || {};
@@ -56,7 +55,8 @@ function collectRows(bundle) {
       rows.push(Object.assign({}, base, {
         type: "ryota-s",
         source: "りょーた",
-        label: "自信度 S",
+        source_order: 2,
+        signal: "次走注目S",
         mark: predictionText(ryota.mark, ""),
         comment: predictionText(ryota.comment, "")
       }));
@@ -66,8 +66,9 @@ function collectRows(bundle) {
     if (oji.review_horse === true) {
       rows.push(Object.assign({}, base, {
         type: "oji-review",
-        source: "おーじ",
-        label: "回顧馬",
+        source: "王子",
+        source_order: 3,
+        signal: "回顧馬",
         mark: predictionText(oji.mark, ""),
         comment: predictionText(oji.comment, "")
       }));
@@ -77,8 +78,9 @@ function collectRows(bundle) {
     if (iluka) {
       rows.push(Object.assign({}, base, {
         type: "keibailuka",
-        source: "イルカ",
-        label: iluka.label,
+        source: "🐬",
+        source_order: 1,
+        signal: "",
         mark: "",
         comment: iluka.comment
       }));
@@ -87,25 +89,89 @@ function collectRows(bundle) {
   return rows;
 }
 
-function renderPredictionRows() {
+function groupVisibleRows() {
   const visible = activePredictionFilter === "all"
     ? predictionRows
     : predictionRows.filter(function (row) { return row.type === activePredictionFilter; });
 
-  if (visible.length === 0) {
+  const races = new Map();
+  visible.forEach(function (row) {
+    const raceKey = row.race_key || row.venue + "-" + row.race_no;
+    if (!races.has(raceKey)) {
+      races.set(raceKey, {
+        race_key: raceKey,
+        venue: row.venue,
+        race_no: row.race_no,
+        race_name: row.race_name,
+        rows: []
+      });
+    }
+    races.get(raceKey).rows.push(row);
+  });
+
+  return Array.from(races.values()).sort(function (left, right) {
+    if (left.venue !== right.venue) return left.venue.localeCompare(right.venue, "ja");
+    return Number(left.race_no) - Number(right.race_no);
+  });
+}
+
+function renderSourceGroup(rows) {
+  const sorted = [...rows].sort(function (left, right) {
+    if (left.source_order !== right.source_order) return left.source_order - right.source_order;
+    return Number(left.horse_no) - Number(right.horse_no);
+  });
+
+  const sourceBuckets = new Map();
+  sorted.forEach(function (row) {
+    if (!sourceBuckets.has(row.source)) sourceBuckets.set(row.source, []);
+    sourceBuckets.get(row.source).push(row);
+  });
+
+  return Array.from(sourceBuckets.entries()).map(function (entry) {
+    const source = entry[0];
+    const items = entry[1];
+    const itemHtml = items.map(function (row) {
+      const horseLine =
+        predictionEscape(row.horse_no + "番 " + row.horse_name) +
+        (row.signal ? '<span class="momotaro-signal">：' + predictionEscape(row.signal) + '</span>' : "");
+      const mark = row.mark ? '<span class="momotaro-list-mark">' + predictionEscape(row.mark) + '</span>' : "";
+      const comment = row.comment
+        ? '<div class="momotaro-prediction-comment">' + predictionEscape(row.comment) + '</div>'
+        : "";
+
+      return '<div class="momotaro-prediction-item">' +
+        '<div class="momotaro-prediction-horse">' + mark + horseLine + '</div>' +
+        comment +
+        '</div>';
+    }).join("");
+
+    return '<section class="momotaro-source-group">' +
+      '<div class="momotaro-source-label">' + predictionEscape(source) + '</div>' +
+      itemHtml +
+      '</section>';
+  }).join("");
+}
+
+function renderPredictionRows() {
+  const races = groupVisibleRows();
+
+  if (races.length === 0) {
     predictionList.innerHTML = '<div class="empty-state">該当する予想データはありません。</div>';
     return;
   }
 
-  predictionList.innerHTML = visible.map(function (row) {
-    const raceTitle = predictionEscape(row.venue + " " + row.race_no + "R" + (row.race_name ? " " + row.race_name : ""));
-    const horse = predictionEscape(row.horse_no + " " + row.horse_name);
-    const mark = row.mark ? " / " + predictionEscape(row.mark) : "";
-    return '<article class="momotaro-horse-card">' +
-      '<div class="query-status">' + raceTitle + '</div>' +
-      '<strong>' + predictionEscape(row.source) + " " + predictionEscape(row.label) + mark + '</strong>' +
-      '<div>' + horse + '</div>' +
-      (row.comment ? '<div class="momotaro-comment">' + predictionEscape(row.comment) + '</div>' : '') +
+  predictionList.innerHTML = races.map(function (race) {
+    const raceTitle = predictionEscape(race.venue + " " + race.race_no + "R");
+    const raceName = race.race_name
+      ? '<div class="momotaro-race-name">' + predictionEscape(race.race_name) + '</div>'
+      : "";
+
+    return '<article class="momotaro-race-card">' +
+      '<header class="momotaro-race-header">' +
+        '<strong>' + raceTitle + '</strong>' +
+        raceName +
+      '</header>' +
+      renderSourceGroup(race.rows) +
       '</article>';
   }).join("");
 }
@@ -151,6 +217,9 @@ function updatePredictionNetwork() {
 predictionFilters.forEach(function (button) {
   button.addEventListener("click", function () {
     activePredictionFilter = button.dataset.filter || "all";
+    predictionFilters.forEach(function (target) {
+      target.classList.toggle("active", target === button);
+    });
     renderPredictionRows();
   });
 });
