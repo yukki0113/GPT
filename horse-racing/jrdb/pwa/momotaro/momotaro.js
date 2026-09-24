@@ -139,7 +139,7 @@ renderTable = function () {
   }).join("");
 
   tableWrap.innerHTML =
-    '<table class="newspaper-table newspaper-table-v4 momotaro-newspaper-table">' +
+    '<table class="newspaper-table newspaper-table-v4 momotaro-newspaper-table ${newspaperV4HistoryTableClass()}">' +
     '<thead>' +
       '<tr>' +
         '<th class="newspaper-frame" rowspan="2">枠</th>' +
