@@ -91,7 +91,6 @@ def enrich_production(
     enriched, warnings = engine.enrich(
         base,
         analysis,
-        None,
         OLDER_RUNS_LIMIT,
         stats_window_years,
     )
