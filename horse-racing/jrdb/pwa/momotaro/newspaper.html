@@ -34,8 +34,8 @@
   <main class="newspaper-main">
     <h1 class="visually-hidden">競馬新聞</h1>
     <section class="card">
-      <h2>新聞データ</h2>
-      <dl class="status-grid">
+      <h2 class="visually-hidden">新聞データ</h2>
+      <dl class="status-grid" hidden>
         <div><dt>端末保存</dt><dd id="newspaper-local-status">確認中</dd></div>
         <div><dt>OPFS</dt><dd id="newspaper-opfs-status">確認中</dd></div>
         <div><dt>Service Worker</dt><dd id="newspaper-sw-status">確認中</dd></div>
@@ -43,7 +43,7 @@
       </dl>
 
       <div class="sync-panel newspaper-sync-panel">
-        <div class="button-row">
+        <div class="button-row" hidden>
           <button id="newspaper-day-refresh" type="button">最新データを確認</button>
         </div>
         <div id="newspaper-day-race-wrap" hidden>
@@ -52,10 +52,10 @@
             <select id="newspaper-day-race-select"></select>
           </label>
         </div>
-        <div id="newspaper-day-status" class="query-status"></div>
+        <div id="newspaper-day-status" class="query-status" hidden></div>
       </div>
 
-      <details class="recovery-panel newspaper-recovery-panel">
+      <details class="recovery-panel newspaper-recovery-panel" hidden>
         <summary>自動取得できない場合の手動取込</summary>
         <div class="import-panel newspaper-import-panel">
           <label>
@@ -87,7 +87,7 @@
         </div>
         <div class="newspaper-history-toggle" aria-label="過去走は3走固定"><span>過去3走</span></div>
       </div>
-      <div id="newspaper-source-status" class="query-status"></div>
+      <div id="newspaper-source-status" class="query-status" hidden></div>
     </section>
 
     <section id="newspaper-table-card" class="card newspaper-table-card" hidden>
@@ -134,7 +134,7 @@
   <script src="../newspaper-v8.js?v=1"></script>
   <script src="../newspaper-v9.js?v=1"></script>
   <script src="../newspaper-v10.js?v=2"></script>
-  <script src="./momotaro.js?v=4"></script>
+  <script src="./momotaro.js?v=5"></script>
   <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js", {scope:"./"}).catch(console.error);</script>
 </body>
 </html>
