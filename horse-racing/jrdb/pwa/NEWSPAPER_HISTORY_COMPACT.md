@@ -4,7 +4,7 @@
 
 - Turn 1: completed
 - Turn 2: completed
-- Turn 3: not started
+- Turn 3: completed
 - Turn 4: not started
 - Turn 5: not started
 
@@ -81,9 +81,11 @@ window.JRDB_PWA_CONFIG = {
 
 Momotaro Newspaper:
 
-- shared renderer is available
-- compact mode is not enabled yet
-- activation and Momotaro-specific width balance belong to Turn 3
+- Turn 3で shared compact renderer を有効化
+- 5走固定を維持
+- 桃太郎独自tableにも `newspaperV4HistoryTableClass()` を付与
+- 予想4列（りょ / 王子 / けん / 🐬）とcompact historyを同一tableで共存
+- history幅はTurn 3では共通値を使用し、実機の微調整はTurn 4へ残す
 
 ## Compact sizing
 
@@ -107,11 +109,24 @@ The personal Service Worker must delete only old `jrdb-pwa-shell-*` caches.
 
 It must not delete Momotaro caches or other same-origin cache namespaces.
 
+## Turn 3
+
+桃太郎新聞も `newspaperHistoryDisplayMode: "compact"` を指定し、共有compact rendererへ切り替えた。
+
+桃太郎固有差分は次に限定する。
+
+- 過去走は5走固定
+- 予想列は りょ / 王子 / けん / 🐬
+- 予想列幅は 32 / 32 / 32 / 34px
+- history cell本体は個人PWAと同じ共有renderer / CSSを利用
+
+Turn 3では桃太郎専用のhistory幅上書きは追加しない。共有スマホ幅120pxを基準にし、実機での視認性・4走同時認識の調整はTurn 4で行う。
+
 ## Next turn
 
-Turn 3:
+Turn 4:
 
-- opt Momotaro into the shared compact renderer
-- retain Momotaro fixed five-run display
-- verify prediction columns and five compact history columns coexist
-- adjust Momotaro-specific horizontal balance only where necessary
+- iPhone実機で通常倍率・縮小時を確認
+- 4走程度が同時に認識できるか確認
+- レース名、着順、時計、上がりの潰れを確認
+- 必要な場合だけ共有CSS変数または桃太郎surface差分を数px単位で調整
