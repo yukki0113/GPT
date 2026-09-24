@@ -53,9 +53,9 @@ jobs:
           FINAL="$ROOT/warehouse/generations/$WAREHOUSE_GENERATION_ID"
           mkdir -p "$FINAL"
 
-          gdown --id "$WAREHOUSE_CURRENT_ID" -O "$ROOT/warehouse/current.json"
-          gdown --id "$WAREHOUSE_MANIFEST_ID" -O "$FINAL/manifest.json"
-          gdown --id "$WAREHOUSE_AUDIT_ID" -O "$FINAL/audit.json"
+          gdown "$WAREHOUSE_CURRENT_ID" -O "$ROOT/warehouse/current.json"
+          gdown "$WAREHOUSE_MANIFEST_ID" -O "$FINAL/manifest.json"
+          gdown "$WAREHOUSE_AUDIT_ID" -O "$FINAL/audit.json"
 
           python - <<'PY'
           import hashlib
