@@ -275,9 +275,8 @@ def older_runs(
     ]
 
 
-def mart_prior(
+def analysis_prior_summary(
     connection: sqlite3.Connection,
-    table: str,
     dimension_column: str,
     dimension_value: object,
     year_start: int,
@@ -287,12 +286,7 @@ def mart_prior(
     distance_where_sql: str,
     distance_parameters: list[int],
 ) -> tuple[int, int, int]:
-    """Aggregate prior completed years directly from Analysis canonical.
-
-    table is retained only for call compatibility with the frozen engine
-    surface; the active query never reads Stats Mart.
-    """
-    del table
+    """Aggregate prior completed years directly from Analysis canonical."""
     if year_end < year_start:
         return 0, 0, 0
     row = connection.execute(
@@ -350,9 +344,6 @@ def current_year(
 
 def as_of_summary(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
-    mart_table: str,
-    mart_column: str,
     analysis_column: str,
     dimension_value: object,
     race_date: str,
@@ -365,9 +356,8 @@ def as_of_summary(
     """Build an as-of-safe Analysis-canonical statistic."""
     year = int(race_date[:4])
     year_start = year - years + 1
-    prior = mart_prior(
+    prior = analysis_prior_summary(
         analysis,
-        mart_table,
         analysis_column,
         dimension_value,
         year_start,
@@ -402,9 +392,6 @@ def as_of_summary(
 
 def exact_stat(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
-    mart_table: str,
-    mart_column: str,
     analysis_column: str,
     dimension_value: object,
     race_date: str,
@@ -416,9 +403,6 @@ def exact_stat(
     """Build the existing exact-distance statistic."""
     return as_of_summary(
         analysis,
-        mart,
-        mart_table,
-        mart_column,
         analysis_column,
         dimension_value,
         race_date,
@@ -432,9 +416,6 @@ def exact_stat(
 
 def range_stats(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
-    mart_table: str,
-    mart_column: str,
     analysis_column: str,
     dimension_value: object,
     race_date: str,
@@ -451,9 +432,6 @@ def range_stats(
         item.update(
             as_of_summary(
                 analysis,
-                mart,
-                mart_table,
-                mart_column,
                 analysis_column,
                 dimension_value,
                 race_date,
@@ -470,9 +448,6 @@ def range_stats(
 
 def statistic_with_ranges(
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
-    mart_table: str,
-    mart_column: str,
     analysis_column: str,
     dimension_value: object,
     race_date: str,
@@ -484,9 +459,6 @@ def statistic_with_ranges(
     """Preserve exact-distance fields and append distance_ranges."""
     output = exact_stat(
         analysis,
-        mart,
-        mart_table,
-        mart_column,
         analysis_column,
         dimension_value,
         race_date,
@@ -497,9 +469,6 @@ def statistic_with_ranges(
     )
     output["distance_ranges"] = range_stats(
         analysis,
-        mart,
-        mart_table,
-        mart_column,
         analysis_column,
         dimension_value,
         race_date,
@@ -568,7 +537,6 @@ def build_history_coverage(
 def enrich(
     base: dict,
     analysis: sqlite3.Connection,
-    mart: sqlite3.Connection,
     older_limit: int,
     years: int,
 ) -> tuple[dict, list[str]]:
@@ -659,9 +627,6 @@ def enrich(
             "sire": (
                 statistic_with_ranges(
                     analysis,
-                    mart,
-                    "mart_sire_yearly",
-                    "sire_name",
                     "sire_name",
                     sire,
                     race_date,
@@ -676,9 +641,6 @@ def enrich(
             "jockey": (
                 statistic_with_ranges(
                     analysis,
-                    mart,
-                    "mart_jockey_yearly",
-                    "jockey_name",
                     "jockey_name",
                     jockey,
                     race_date,
@@ -696,9 +658,6 @@ def enrich(
     for frame_no in range(1, 9):
         frame_stat = statistic_with_ranges(
             analysis,
-            mart,
-            "mart_frame_yearly",
-            "frame_no",
             "frame_no",
             frame_no,
             race_date,
@@ -938,7 +897,6 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--bundle", required=True)
     parser.add_argument("--analysis", required=True)
-    parser.add_argument("--mart", help=argparse.SUPPRESS)
     parser.add_argument("--output-dir", default="./racenote_history_poc")
     parser.add_argument("--stats-window-years", type=int, default=5)
     args = parser.parse_args()
@@ -958,7 +916,6 @@ def main() -> None:
             enriched, warnings = enrich(
                 base,
                 analysis,
-                None,
                 older_limit,
                 args.stats_window_years,
             )
