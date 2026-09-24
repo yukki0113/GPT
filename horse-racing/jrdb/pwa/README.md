@@ -23,6 +23,19 @@
 5. **UI変更でデータ意味論を変えない**
    - 色、リンク、モーダル等は表示上の affordance であり、推奨・確度・買い判断をPWA側で付加しない。
 
+## Multi-site surfaces
+
+同じ配布基盤から複数PWAを公開してよいが、公開surfaceの境界は分離する。
+
+- `Kenshow_Labo`: `pwa/` 直下。個人用surface。
+- `桃太郎新聞`: `pwa/momotaro/`。友人共有用の独立surface。
+- 桃太郎は独自manifest / Service Worker scope / OPFS namespaceを持つ。
+- Newspaper / Fact Liteの検証済み配布データと表示runtimeは共有してよい。
+- 桃太郎固有予想は `addons.momotaro` に閉じ、Kenshow固有addonや画面を上書きしない。
+- 桃太郎側からKenshow固有画面へのナビゲーションを設けない。
+
+詳細は `momotaro/README.md` を参照する。
+
 ## Main surfaces
 
 | 画面 | 主データ | 位置づけ |
