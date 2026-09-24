@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse,csv,hashlib,io,json,re,tempfile
+import argparse,csv,hashlib,io,json,re,tempfile,difflib,unicodedata
 from collections import defaultdict
 from pathlib import Path
 from urllib.parse import quote
@@ -83,7 +83,7 @@ def main():
         if mc==0: unmatched.append(p)
         elif mc==1: matched.append(rr[0])
         else: ambiguous.extend(rr)
-    normal=lambda r:r.get("abnormal_code") in (None,"",0,"0")
+    # Diagnostic only: capture same-race SED candidates for unmatched picks; baseline matching is unchanged.\n    unmatched_diag=[]\n    for p in unmatched:\n        dq=f"""SELECT CAST(horse_no AS INTEGER) horse_no, TRIM(CAST(horse_name AS VARCHAR)) horse_name, finish, abnormal_code\n              FROM {sed}\n             WHERE CAST(race_date AS VARCHAR)=?\n               AND LPAD(CAST(venue_code AS VARCHAR),2,'0')=?\n               AND CAST(race_no AS INTEGER)=?\n             ORDER BY CAST(horse_no AS INTEGER)"""\n        cand=con.execute(dq,[p["race_date"],p["venue_code"],p["race_no"]]).fetchall()\n        def normname(s):\n            return unicodedata.normalize("NFKC",str(s or "")).replace("　","").replace(" ","").strip()\n        target=normname(p["horse_name"])\n        scored=[]\n        for hn,name,finish,abn in cand:\n            nn=normname(name); sim=difflib.SequenceMatcher(None,target,nn).ratio() if target and nn else 0.0\n            scored.append((sim,hn,str(name).strip(),finish,abn))\n        scored.sort(reverse=True,key=lambda x:x[0])\n        top=scored[0] if scored else (0.0,None,None,None,None)\n        unmatched_diag.append({**p,"same_race_candidate_count":len(cand),\n            "best_similarity":round(top[0],4),"best_horse_no":top[1],"best_candidate":top[2],\n            "best_finish":top[3],"best_abnormal_code":top[4],\n            "same_race_horses":" | ".join(f"{hn}:{name}" for _,hn,name,_,_ in scored)})\n\n    normal=lambda r:r.get("abnormal_code") in (None,"",0,"0")
     bet=[r for r in matched if normal(r)]; abnormal=[r for r in matched if not normal(r)]
 
     audit=[]
@@ -104,7 +104,7 @@ def main():
     obs=[("<3",lambda o:o is not None and o<3),("3〜4.9",lambda o:o is not None and 3<=o<5),("5〜9.9",lambda o:o is not None and 5<=o<10),("10〜19.9",lambda o:o is not None and 10<=o<20),("20〜49.9",lambda o:o is not None and 20<=o<50),("50+",lambda o:o is not None and o>=50)]
     for n,f in obs:summary["by_win_odds"][n]=metric([r for r in bet if f(fn(r.get("final_win_odds")))])
 
-    write_csv(out/"join_unmatched.csv",unmatched); write_csv(out/"join_ambiguous.csv",ambiguous); write_csv(out/"payout_unit_audit.csv",audit)
+    write_csv(out/"join_unmatched.csv",unmatched); write_csv(out/"join_unmatched_diagnostic.csv",unmatched_diag); write_csv(out/"join_ambiguous.csv",ambiguous); write_csv(out/"payout_unit_audit.csv",audit)
     (out/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2,default=str),encoding="utf-8")
     def fm(v):return "-" if v is None else (f"{v:.2f}" if isinstance(v,float) else str(v))
     sp=summary["source_population"]; lines=["# keibailuka Historical Research 2024-2025","",
