@@ -178,6 +178,46 @@ class JrdbPostRaceReviewAuditTest(unittest.TestCase):
         self.assertIn("DAY_ADJUSTMENT_NOT_APPLIED", codes)
         self.assertIn("PACE_CLASSIFICATION_UNAVAILABLE", codes)
 
+    def test_multi_day_snapshot_can_be_audited_explicitly(self) -> None:
+        bundle = _bundle()
+        context_rows = bundle["fact_race_context"]
+        race_rows = bundle["fact_race_review"]
+        horse_rows = bundle["fact_horse_performance"]
+        assert isinstance(context_rows, list)
+        assert isinstance(race_rows, list)
+        assert isinstance(horse_rows, list)
+
+        second_context = copy.deepcopy(context_rows[0])
+        second_context["race_key"] = "T002"
+        second_context["race_date"] = "2025-03-16"
+        context_rows.append(second_context)
+
+        second_race = copy.deepcopy(race_rows[0])
+        second_race["race_key"] = "T002"
+        second_race["race_date"] = "2025-03-16"
+        race_rows.append(second_race)
+
+        second_horse = copy.deepcopy(horse_rows[0])
+        second_horse["race_key"] = "T002"
+        second_horse["race_horse_key"] = "T00201"
+        second_horse["race_date"] = "2025-03-16"
+        horse_rows.append(second_horse)
+
+        daily = audit_review_bundle(bundle)
+        snapshot = audit_review_bundle(
+            bundle,
+            require_single_target_date=False,
+        )
+
+        self.assertEqual(daily["status"], "FAIL")
+        self.assertTrue(
+            any(
+                error["code"] == "MULTIPLE_TARGET_DATES"
+                for error in daily["hard_errors"]
+            )
+        )
+        self.assertEqual(snapshot["status"], "PASS")
+
     def test_wrong_review_version_fails(self) -> None:
         bundle = _bundle()
         context_rows = bundle["fact_race_context"]
