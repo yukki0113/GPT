@@ -343,6 +343,14 @@ v0.1 default:
 
 `standard_time_sec = median(winner_time_sec)`
 
+Historical Review rows must use an as-of-safe baseline:
+
+```text
+baseline_sample_end_date < target_race_date
+```
+
+No future race may contribute to a historical race's persisted standard. This is mandatory because Review is intended for RL / RaceNote forward evaluation. Early-history rows without sufficient prior samples fall back explicitly or remain low-confidence/NULL; future data must not be borrowed to fill them.
+
 Store trimmed mean and distribution statistics for audit, but do not silently switch methods.
 
 ### Initial confidence bands
@@ -399,6 +407,10 @@ Day adjustment grain:
 Estimator:
 
 `median(delta_per_1000m)`
+
+For each target race's persisted Review value, use leave-one-race-out (LOO) estimation: exclude that target race from the same-day residual set before calculating its day adjustment. Persist the inclusive daily estimate separately for descriptive audit if useful, but do not use a race's own time to correct itself.
+
+When LOO evidence is insufficient, use an explicit low-confidence/fallback path rather than silently reverting to the inclusive estimate.
 
 Target-race adjustment:
 
@@ -829,6 +841,8 @@ Persist:
 - confidence
 
 Do not present n=1-2 same-day observations as a confident bias.
+
+When a same-day bias is applied back to an individual horse, prefer leave-one-race-out bucket estimation so the target race does not materially create the bias used to judge itself. Inclusive same-day bucket summaries may still be stored as descriptive audit evidence.
 
 ## 24. fact_track_bias
 
