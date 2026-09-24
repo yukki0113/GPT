@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gpt-data-storage"
-version = "0.1.0"
-description = "Project-neutral Parquet and DuckDB conversion, validation, and benchmark tools"
+version = "0.2.0"
+description = "Project-neutral Parquet/DuckDB storage and manifest-driven asset materialization tools"
 requires-python = ">=3.10"
 dependencies = [
   "duckdb==1.1.3",
   "pyarrow>=18,<26",
   "PyYAML>=6,<7",
+  "gdown>=6.1,<7",
 ]
 
 [project.scripts]
