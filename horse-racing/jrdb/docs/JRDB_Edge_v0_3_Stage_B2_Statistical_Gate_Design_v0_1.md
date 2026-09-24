@@ -174,3 +174,70 @@ Throughout Stage-B2:
 - Newspaper / RaceNote production routes are unchanged.
 - no arbitrary Performance + Value score is introduced.
 - same semantic parent/child evidence is not added together.
+
+## 7. Stage-B2a observed distribution
+
+Official Stage-B2a run:
+
+- Issue: #1282
+- run: `36043241600`
+- artifact: `jrdb-edge-v03-statistical-shadow-36043241600`
+- input / output rows: 735 / 735
+- mode: `SHADOW_ONLY`
+
+Observed Performance diagnostics:
+
+- 95% bootstrap CI excludes zero: 306
+- global BH q <= 0.01: 53
+- global BH q <= 0.05: 144
+- global BH q <= 0.10: 215
+- q > 0.10: 520
+
+Observed temporal sensitivity under the final candidate structure:
+
+- yearly minimum n=5 -> 100 candidates
+- yearly minimum n=10 -> 94 candidates
+- yearly minimum n=20 -> 59 candidates
+
+For yearly minimum n=10, changing minimum eligible years from 4 / 6 / 8 retained 111 / 94 / 64 candidates after the direction-stability rules.
+
+Value concentration remained mostly moderate:
+
+- max single payout share <= 10%: 453 / 735
+- 10-25%: 237
+- 25-50%: 44
+- >50%: 1
+
+These diagnostics justify freezing Performance gates separately while keeping Value fail-closed.
+
+## 8. Stage-B2b frozen Performance policy
+
+Frozen policy file:
+
+`horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json`
+
+Performance is classified as `INCREMENTAL_PERFORMANCE` only when all of the following pass:
+
+1. global Benjamini-Hochberg q <= 0.05;
+2. 95% year-stratified Bernoulli bootstrap CI excludes zero in the full-history incremental direction;
+3. calendar-year temporal eligibility uses child n >= 10 and parent-complement n >= 10;
+4. at least 6 eligible years exist;
+5. at least two-thirds of eligible years agree with the full-history incremental direction;
+6. at least 3 of the 4 most recent eligible years agree with that direction.
+
+No arbitrary minimum absolute place-rate difference is added.
+
+Agreement with v0.2 direction is **not** a gate. A statistically and temporally supported parent-relative reversal remains eligible and is explicitly flagged as a reversal.
+
+Classification when Performance does not pass:
+
+- temporal coverage below 6 eligible years -> `INSUFFICIENT`;
+- otherwise -> `CONTEXT_ONLY` / incremental gate fail.
+
+Value remains:
+
+`DEFERRED_FAIL_CLOSED`
+
+Therefore Stage-B2b cannot emit `INCREMENTAL_VALUE` or `INCREMENTAL_DUAL`.
+
+The frozen B2b policy is still shadow research policy. It does not alter v0.2 STANDARD production serving.
