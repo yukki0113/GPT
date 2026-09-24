@@ -168,6 +168,213 @@ def frame_bucket(frame_no: object) -> str | None:
     return f"FRAME_{frame}"
 
 
+def style_bucket(race_running_style_code: object) -> str | None:
+    """Keep JRDB observed race-running-style code as an exact category."""
+    value = _finite(race_running_style_code)
+    if value is None or not value.is_integer():
+        return None
+    code = int(value)
+    if code < 1 or code > 6:
+        return None
+    return f"STYLE_{code}"
+
+
+def time_performance_signal(
+    horse_adjusted_delta_per_1000m: object,
+) -> float | None:
+    """Convert time residual into a high-is-better performance signal."""
+    value = _finite(horse_adjusted_delta_per_1000m)
+    if value is None:
+        return None
+    return -value
+
+
+def _last3f_relative_by_horse(
+    rows: Iterable[dict[str, object]],
+) -> dict[str, float]:
+    """Return high-is-better last3F signal relative to each race median."""
+    materialized = list(rows)
+    by_race: dict[str, list[dict[str, object]]] = {}
+    for row in materialized:
+        race_key = str(row.get("race_key") or "").strip()
+        if not race_key:
+            continue
+        by_race.setdefault(race_key, []).append(row)
+
+    result: dict[str, float] = {}
+    for race_rows in by_race.values():
+        values: list[float] = []
+        for row in race_rows:
+            value = _finite(row.get("last3f_sec"))
+            if value is not None and value > 0.0:
+                values.append(value)
+        if not values:
+            continue
+        center = float(statistics.median(values))
+        for row in race_rows:
+            key = str(row.get("race_horse_key") or "").strip()
+            value = _finite(row.get("last3f_sec"))
+            if key and value is not None and value > 0.0:
+                result[key] = center - value
+    return result
+
+
+def _bias_bucket(
+    row: dict[str, object],
+    dimension: str,
+) -> str | None:
+    """Return one exact Review bias bucket."""
+    if dimension == "lane":
+        return preferred_lane_bucket(
+            row.get("fourth_corner_lane_bucket"),
+            row.get("course_lane_bucket"),
+        )
+    if dimension == "style":
+        return style_bucket(row.get("race_running_style_code"))
+    if dimension == "frame":
+        return frame_bucket(row.get("frame_no"))
+    raise ValueError(f"unsupported bias dimension: {dimension}")
+
+
+def build_descriptive_track_bias(
+    horse_rows: Iterable[dict[str, object]],
+    expected_performance_by_horse: dict[str, float] | None = None,
+) -> list[dict[str, object]]:
+    """Build same-day descriptive/adjusted bias summaries.
+
+    The input should already be one date x venue x surface. Raw summaries are
+    always available when observations exist. Adjusted residual summaries are
+    emitted only for horses with a supplied pre-day expected performance.
+    """
+    materialized = list(horse_rows)
+    if not materialized:
+        return []
+
+    identities = {
+        (
+            str(row.get("race_date") or "").strip(),
+            str(row.get("venue_code") or "").strip(),
+            str(row.get("surface_code") or "").strip(),
+        )
+        for row in materialized
+    }
+    if len(identities) != 1:
+        raise ValueError(
+            "track bias input must be one race_date x venue x surface"
+        )
+    race_date, venue_code, surface_code = next(iter(identities))
+
+    last3f_relative = _last3f_relative_by_horse(materialized)
+    dimensions = ("lane", "style", "frame")
+    grouped: dict[
+        tuple[str, str],
+        dict[str, list[float]],
+    ] = {}
+
+    for row in materialized:
+        horse_key = str(row.get("race_horse_key") or "").strip()
+        raw_signal = time_performance_signal(
+            row.get("horse_adjusted_delta_per_1000m")
+        )
+        expected = None
+        if expected_performance_by_horse is not None and horse_key:
+            expected = expected_performance_by_horse.get(horse_key)
+        adjusted = performance_residual(raw_signal, expected)
+
+        for dimension in dimensions:
+            bucket = _bias_bucket(row, dimension)
+            if bucket is None:
+                continue
+            values = grouped.setdefault(
+                (dimension, bucket),
+                {
+                    "raw_time": [],
+                    "last3f_relative": [],
+                    "adjusted": [],
+                },
+            )
+            if raw_signal is not None:
+                values["raw_time"].append(raw_signal)
+            relative = last3f_relative.get(horse_key)
+            if relative is not None:
+                values["last3f_relative"].append(relative)
+            if adjusted is not None:
+                values["adjusted"].append(adjusted)
+
+    output: list[dict[str, object]] = []
+    for dimension, bucket in sorted(grouped):
+        values = grouped[(dimension, bucket)]
+        raw_summary = summarize_residuals(values["raw_time"])
+        last3f_summary = summarize_residuals(values["last3f_relative"])
+        adjusted_summary = summarize_residuals(values["adjusted"])
+
+        output.append(
+            {
+                "race_date": race_date,
+                "venue_code": venue_code,
+                "surface_code": surface_code,
+                "bias_dimension": dimension,
+                "bias_bucket": bucket,
+                "same_day_sample_count": raw_summary["sample_count"],
+                "raw_time_performance_median": raw_summary["median_residual"],
+                "raw_time_performance_mean": raw_summary["mean_residual"],
+                "raw_last3f_relative_median": last3f_summary[
+                    "median_residual"
+                ],
+                "raw_last3f_sample_count": last3f_summary["sample_count"],
+                "adjusted_performance_residual": adjusted_summary[
+                    "median_residual"
+                ],
+                "adjusted_sample_count": adjusted_summary["sample_count"],
+            }
+        )
+    return output
+
+
+def leave_one_race_out_bias_estimate(
+    horse_rows: Iterable[dict[str, object]],
+    *,
+    target_race_key: str,
+    dimension: str,
+    bucket: str,
+    expected_performance_by_horse: dict[str, float],
+    prior_estimate: object = None,
+    prior_strength: object = 0.0,
+) -> dict[str, object]:
+    """Estimate adjusted bucket bias excluding every horse in the target race."""
+    residuals: list[float] = []
+    for row in horse_rows:
+        if str(row.get("race_key") or "").strip() == target_race_key:
+            continue
+        if _bias_bucket(row, dimension) != bucket:
+            continue
+
+        horse_key = str(row.get("race_horse_key") or "").strip()
+        expected = expected_performance_by_horse.get(horse_key)
+        actual = time_performance_signal(
+            row.get("horse_adjusted_delta_per_1000m")
+        )
+        residual = performance_residual(actual, expected)
+        if residual is not None:
+            residuals.append(residual)
+
+    summary = summarize_residuals(residuals)
+    shrunk = shrink_estimate(
+        summary["median_residual"],
+        int(summary["sample_count"]),
+        prior_estimate,
+        prior_strength,
+    )
+    return {
+        "loo_sample_count": summary["sample_count"],
+        "loo_adjusted_residual": summary["median_residual"],
+        "loo_adjusted_mad": summary["mad_residual"],
+        "shrunk_bias_score": shrunk["shrunk_estimate"],
+        "same_day_weight": shrunk["same_day_weight"],
+        "prior_weight": shrunk["prior_weight"],
+    }
+
+
 def preferred_lane_bucket(
     fourth_corner_lane_bucket: object,
     course_lane_bucket: object,
