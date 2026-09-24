@@ -45,9 +45,10 @@ class MomotaroPwaContractTest(unittest.TestCase):
         service_worker = (MOMOTARO_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
         self.assertIn('newspaperOpfsDir: "momotaro-newspaper"', newspaper)
+        self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v3"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v4"', service_worker)
 
 
 if __name__ == "__main__":
