@@ -1,0 +1,52 @@
+{
+  "version": "comment-reason-v0.1",
+  "multi_label": true,
+  "description": "keibailuka Historical 2024-2025 comment reason tags. Frozen before formal reason-level ROI analysis.",
+  "tags": [
+    {
+      "id": "traffic_path",
+      "label": "詰まり・進路",
+      "patterns": ["詰まり", "つまり", "詰ま", "進路", "窮屈", "直線不利", "不利", "動けず", "前が壁", "被されて下が", "スムーズじゃない", "捌け", "さばけ"]
+    },
+    {
+      "id": "wide_post",
+      "label": "外回し・枠",
+      "patterns": ["外回", "外々", "外を回", "ぶん回", "大外", "外枠", "外3", "外４", "外4", "外先行", "外から", "外で厳"]
+    },
+    {
+      "id": "start",
+      "label": "出遅れ・スタート",
+      "patterns": ["出遅", "スタート", "ダッシュつか", "後手", "出負け"]
+    },
+    {
+      "id": "pace_flow",
+      "label": "展開・ペース",
+      "patterns": ["ハイペース", "ドスロー", "スロー", "ペース", "展開", "前止ま", "前潰", "差しの展開", "先行争い", "前しんど"]
+    },
+    {
+      "id": "surface",
+      "label": "馬場・芝ダート",
+      "patterns": ["馬場", "芝", "ダート", "砂被", "湿った", "道悪", "重馬場", "良馬場", "バイアス", "内伸", "外差し"]
+    },
+    {
+      "id": "distance",
+      "label": "距離変更",
+      "patterns": ["距離", "延長", "短縮"]
+    },
+    {
+      "id": "level_opponent",
+      "label": "相手関係・レベル",
+      "patterns": ["相手", "レベル", "勝ち馬強", "一頭強", "重賞", "クラス", "比較"]
+    },
+    {
+      "id": "weight",
+      "label": "斤量・減量",
+      "patterns": ["斤量", "減量"]
+    },
+    {
+      "id": "condition",
+      "label": "休み明け・状態",
+      "patterns": ["休み明け", "叩き", "調教", "追切", "状態"]
+    }
+  ]
+}
