@@ -163,3 +163,7 @@ Artifact受入:
 
 通常のChat転記はこのコメントをGitHub connectorで読み、chunk順に結合し、Google Sheetsへ一括pasteする。artifactはSHA/manifest監査用に維持するが、大量行の搬送にローカルファイルbridgeを必須としない。
 
+### Google Sheets concurrent-write rule
+
+Historical ledger import is append-only. Do not calculate a future empty row and later write to that fixed row. Before each month import, re-read existing `イルカ明細.key` and `取込管理`, then append only missing keys using Sheets `appendCells`. After write, verify total keys == unique keys. If a month control row exists but detail count is below its accepted manifest count, repair by appending the missing key set only; do not overwrite neighboring months.
+

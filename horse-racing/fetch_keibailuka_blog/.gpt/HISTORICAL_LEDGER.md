@@ -132,3 +132,19 @@ If the 2024-2026 sample is insufficient for research, add 2023 with the same wor
 
 成功月は `KEIBAILUKA_HISTORICAL_LEDGER_ROWS` Issueコメントにも台帳13列TSVを出力する。最大80行/chunkで、`chunk_index` 順に結合する。これを通常のChat→Google Sheets転記経路とし、artifactはmanifest / SHA監査の根拠として併存させる。
 
+## Concurrency-safe Google Sheets acceptance
+
+Google SheetsへのHistorical受入は **append-only** とする。既存データ末尾の行番号を先に計算して `pasteData` / 固定rowIndexで書き込んではならない。複数Chatスレッドが同じ台帳を同時更新すると、読み取り後に別スレッドが追記した行を上書きするため。
+
+受入手順:
+
+1. 書込み直前に `取込管理` の accepted month と `イルカ明細.key` を再読込する。
+2. source monthの全行について、既存 `key` を除いた不足行だけを作る。
+3. 不足行は Google Sheets batchUpdate の `appendCells` で `イルカ明細` 末尾へ追加する。
+4. `取込管理` も固定行へ書かず、未登録月だけ `appendCells` する。
+5. 書込み後に `key` の総件数とunique件数を再読込し、重複0を必須確認する。
+6. 同一月の `取込管理.status=success` が既にある場合でも、明細件数がmanifestの `month_row_count` と一致するか確認する。不足があれば source ledger comments / artifactから **不足keyだけ** appendしてrepairする。
+7. 競合が起きても既存行を削除・上書きせず、canonical sourceとの集合差分でrepairする。
+
+原則として `pasteData` は新規空シートの初期化以外には使用しない。
+

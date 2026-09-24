@@ -226,3 +226,7 @@ Historical artifactは搬送・監査用の一時成果物です。Chatがartifa
 
 通常のChat転記はこのコメントをGitHub connectorで読み、chunk順に結合し、Google Sheetsへ一括pasteする。artifactはSHA/manifest監査用に維持するが、大量行の搬送にローカルファイルbridgeを必須としない。
 
+### 台帳の並行書込み安全性
+
+複数Chatスレッドから同じ台帳を更新しても既存行を上書きしないよう、Historical受入は固定行への `pasteData` ではなく **既存keyとの差分 + `appendCells`** を標準とします。書込み後は全 `key` の重複監査を必須とし、月次件数がmanifestより少ない場合は不足keyだけを再appendして修復します。
+
