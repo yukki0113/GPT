@@ -53,6 +53,10 @@ jobs:
             python horse-racing/fetch_keibailuka_blog/src/audit_keibailuka_popularity_proxy.py \
               --request-json /tmp/request.json \
               --output-dir /tmp/keibailuka-research | tee /tmp/summary.txt
+          elif [ "$MODE" = "shadow_score_smoke_v01" ]; then
+            python horse-racing/fetch_keibailuka_blog/src/run_keibailuka_shadow_sheet_date.py \
+              --request-json /tmp/request.json \
+              --output-dir /tmp/keibailuka-research | tee /tmp/summary.txt
           else
             python horse-racing/fetch_keibailuka_blog/src/analyze_keibailuka_historical.py \
               --request-json /tmp/request.json \
