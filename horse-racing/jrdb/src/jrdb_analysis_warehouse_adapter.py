@@ -180,21 +180,62 @@ class WarehouseAnalysisReader:
             raise WarehouseAnalysisError(f"manifest SHA evidence missing for {relation}/{year}")
         return values
 
-    def _relation_rows(self, relation: str, year: int, where: str = "", params: list[object] | None = None) -> list[dict[str, Any]]:
+    def _relation_rows_on(
+        self,
+        connection: Any,
+        relation: str,
+        year: int,
+        where: str = "",
+        params: list[object] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Read one relation using an existing DuckDB connection.
+
+        Callers that need several related Warehouse relations should share one
+        connection and push target predicates into DuckDB instead of repeatedly
+        opening DuckDB and materializing whole annual Parquet relations.
+        """
+        paths = self._paths(relation, year)
+        placeholders = ", ".join("?" for _ in paths)
+        query = f"SELECT * FROM read_parquet([{placeholders}], union_by_name=true)"
+        if where:
+            query += " WHERE " + where
+        values = [str(path) for path in paths] + list(params or [])
+        return _as_dicts(connection, query, values)
+
+    def _relation_rows(
+        self,
+        relation: str,
+        year: int,
+        where: str = "",
+        params: list[object] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Compatibility wrapper for callers that read one relation only."""
         try:
             import duckdb  # deferred: pure projection tests need no DuckDB
         except ImportError as exc:
             raise WarehouseAnalysisError("Warehouse reader requires duckdb") from exc
-        paths = self._paths(relation, year)
         connection = duckdb.connect(":memory:")
         try:
-            placeholders = ", ".join("?" for _ in paths)
-            query = f"SELECT * FROM read_parquet([{placeholders}], union_by_name=true)"
-            if where:
-                query += " WHERE " + where
-            return _as_dicts(connection, query, [str(path) for path in paths] + list(params or []))
+            return self._relation_rows_on(connection, relation, year, where, params)
         finally:
             connection.close()
+
+    @staticmethod
+    def _replace_filter_table(connection: Any, table: str, values: Iterable[str]) -> None:
+        """Replace a small temporary key table used for bulk semi-joins."""
+        rows = [(value,) for value in sorted({str(value) for value in values if str(value)})]
+        connection.execute(f'DROP TABLE IF EXISTS "{table}"')
+        connection.execute(f'CREATE TEMP TABLE "{table}" (value VARCHAR PRIMARY KEY)')
+        if rows:
+            connection.executemany(f'INSERT INTO "{table}" VALUES (?)', rows)
+
+    @staticmethod
+    def _member_date_where(member_date: dt.date) -> tuple[str, list[object]]:
+        """Return a tolerant SQL predicate equivalent to Python date compaction."""
+        return (
+            "replace(CAST(source_member_date AS VARCHAR), '-', '') = ?",
+            [member_date.strftime("%Y%m%d")],
+        )
 
     @staticmethod
     def _for_member(rows: Iterable[dict[str, Any]], member_date: dt.date | None) -> list[dict[str, Any]]:
@@ -228,21 +269,88 @@ class WarehouseAnalysisReader:
                 f"{min(self.covered_years)}-{max(self.covered_years)}; use the PACI/Raw path"
             )
         year = date.year
-        bac = self._for_member(self._relation_rows("bac", year, "race_date = ?", [date.isoformat()]), source_member_date)
-        sed = self._for_member(self._relation_rows("sed", year, "race_date = ?", [date.isoformat()]), source_member_date)
-        bac = self._first(bac, ("race_key_raw", "source_member_date"))
-        sed = self._first(sed, ("race_key_raw", "horse_no"))
-        race_keys = {_text(row.get("race_key_raw")) for row in bac + sed}
-        if not race_keys:
-            raise WarehouseAnalysisError(f"{date}: no Warehouse BAC/SED rows")
-        # DuckDB parameter arrays differ across releases; fetch the yearly
-        # immutable partitions then constrain in Python for portability.
-        kyi = self._for_member(self._relation_rows("kyi", year), source_member_date)
-        cyb = self._for_member(self._relation_rows("cyb", year), source_member_date)
-        ukc = self._for_member(self._relation_rows("ukc", year), source_member_date)
-        kyi = self._first((row for row in kyi if _text(row.get("race_key_raw")) in race_keys), ("race_key_raw", "horse_no"))
-        cyb = self._first((row for row in cyb if _text(row.get("race_horse_key"))[:8] in race_keys), ("race_horse_key", "source_member_date"))
-        ukc = self._first(ukc, ("horse_id", "data_date"))
+        try:
+            import duckdb
+        except ImportError as exc:
+            raise WarehouseAnalysisError("Warehouse reader requires duckdb") from exc
+
+        connection = duckdb.connect(":memory:")
+        try:
+            bac = self._for_member(
+                self._relation_rows_on(
+                    connection,
+                    "bac",
+                    year,
+                    "race_date = ?",
+                    [date.isoformat()],
+                ),
+                source_member_date,
+            )
+            sed = self._for_member(
+                self._relation_rows_on(
+                    connection,
+                    "sed",
+                    year,
+                    "race_date = ?",
+                    [date.isoformat()],
+                ),
+                source_member_date,
+            )
+            bac = self._first(bac, ("race_key_raw", "source_member_date"))
+            sed = self._first(sed, ("race_key_raw", "horse_no"))
+            race_keys = {_text(row.get("race_key_raw")) for row in bac + sed}
+            race_keys.discard("")
+            if not race_keys:
+                raise WarehouseAnalysisError(f"{date}: no Warehouse BAC/SED rows")
+
+            self._replace_filter_table(connection, "target_race_keys", race_keys)
+            if source_member_date is None:
+                kyi = self._relation_rows_on(
+                    connection,
+                    "kyi",
+                    year,
+                    "EXISTS (SELECT 1 FROM target_race_keys t WHERE t.value = race_key_raw)",
+                )
+                cyb = self._relation_rows_on(
+                    connection,
+                    "cyb",
+                    year,
+                    "EXISTS (SELECT 1 FROM target_race_keys t WHERE t.value = substr(race_horse_key, 1, 8))",
+                )
+            else:
+                member_where, member_params = self._member_date_where(source_member_date)
+                kyi = self._relation_rows_on(connection, "kyi", year, member_where, member_params)
+                cyb = self._relation_rows_on(connection, "cyb", year, member_where, member_params)
+            kyi = self._for_member(kyi, source_member_date)
+            cyb = self._for_member(cyb, source_member_date)
+            kyi = self._first(
+                (row for row in kyi if _text(row.get("race_key_raw")) in race_keys),
+                ("race_key_raw", "horse_no"),
+            )
+            cyb = self._first(
+                (row for row in cyb if _text(row.get("race_horse_key"))[:8] in race_keys),
+                ("race_horse_key", "source_member_date"),
+            )
+
+            horse_ids = {_text(row.get("blood_registration_no")) for row in kyi}
+            horse_ids.discard("")
+            self._replace_filter_table(connection, "target_horse_ids", horse_ids)
+            if source_member_date is None:
+                ukc = self._relation_rows_on(
+                    connection,
+                    "ukc",
+                    year,
+                    "EXISTS (SELECT 1 FROM target_horse_ids t WHERE t.value = horse_id)",
+                )
+            else:
+                member_where, member_params = self._member_date_where(source_member_date)
+                ukc = self._relation_rows_on(connection, "ukc", year, member_where, member_params)
+            ukc = self._for_member(ukc, source_member_date)
+            if source_member_date is not None:
+                ukc = [row for row in ukc if _text(row.get("horse_id")) in horse_ids]
+            ukc = self._first(ukc, ("horse_id", "data_date"))
+        finally:
+            connection.close()
 
         races: dict[str, dict[str, object]] = {}
         entries: dict[tuple[str, int | None], dict[str, object]] = {}
