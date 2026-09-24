@@ -57,7 +57,7 @@ def odds_band(v):
 
 def write_csv(path, rows, fields):
     with open(path,'w',encoding='utf-8-sig',newline='') as f:
-        w=csv.DictWriter(f,fieldnames=fields)
+        w=csv.DictWriter(f,fieldnames=fields,extrasaction='ignore')
         w.writeheader()
         w.writerows(rows)
 
