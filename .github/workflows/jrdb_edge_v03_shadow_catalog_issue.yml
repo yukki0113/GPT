@@ -1,0 +1,201 @@
+name: JRDB Edge v0.3 Stage-C shadow catalog via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  build:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V03_SHADOW_CATALOG]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+              'v02_run_id','v02_artifact_name','v02_catalog_sha256',
+              'b1_run_id','b1_artifact_name','b1_jsonl_sha256',
+              'b2b_run_id','b2b_artifact_name','b2b_jsonl_sha256','b2b_summary_sha256'
+          }
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          for field in (
+              'v02_catalog_sha256','b1_jsonl_sha256',
+              'b2b_jsonl_sha256','b2b_summary_sha256'
+          ):
+              if not sha_re.fullmatch(str(req[field]).lower()):
+                  raise SystemExit(f'invalid {field}')
+          for field in ('v02_run_id','b1_run_id','b2b_run_id'):
+              if not isinstance(req[field],int) or req[field] <= 0:
+                  raise SystemExit(f'{field} must be positive')
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',
+              encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as f:
+              for key,value in req.items():
+                  if isinstance(value,(str,int)):
+                      f.write(f'{key.upper()}={value}\n')
+          PY
+
+      - name: Focused tests
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest
+          PYTHONPATH=horse-racing/jrdb/src python -m pytest -q \
+            horse-racing/jrdb/tests/test_build_jrdb_edge_v03_shadow_catalog.py
+
+      - name: Download immutable upstream artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v02 /tmp/b1 /tmp/b2b
+          gh run download "$V02_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$V02_ARTIFACT_NAME" --dir /tmp/v02
+          gh run download "$B1_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$B1_ARTIFACT_NAME" --dir /tmp/b1
+          gh run download "$B2B_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$B2B_ARTIFACT_NAME" --dir /tmp/b2b
+
+          mapfile -t v02_catalog < <(find /tmp/v02 -type f -name edge_serving_catalog_v0_2.jsonl -print)
+          mapfile -t b1_jsonl < <(find /tmp/b1 -type f -name incremental_edges.jsonl -print)
+          mapfile -t b2b_jsonl < <(find /tmp/b2b -type f -name gated_edges.jsonl -print)
+          mapfile -t b2b_summary < <(find /tmp/b2b -type f -name summary.json -print)
+          test "${#v02_catalog[@]}" -eq 1
+          test "${#b1_jsonl[@]}" -eq 1
+          test "${#b2b_jsonl[@]}" -eq 1
+          test "${#b2b_summary[@]}" -eq 1
+
+          cp "${v02_catalog[0]}" /tmp/v02_catalog.jsonl
+          cp "${b1_jsonl[0]}" /tmp/b1_incremental_edges.jsonl
+          cp "${b2b_jsonl[0]}" /tmp/b2b_gated_edges.jsonl
+          cp "${b2b_summary[0]}" /tmp/b2b_summary.json
+
+          echo "$V02_CATALOG_SHA256  /tmp/v02_catalog.jsonl" | sha256sum -c -
+          echo "$B1_JSONL_SHA256  /tmp/b1_incremental_edges.jsonl" | sha256sum -c -
+          echo "$B2B_JSONL_SHA256  /tmp/b2b_gated_edges.jsonl" | sha256sum -c -
+          echo "$B2B_SUMMARY_SHA256  /tmp/b2b_summary.json" | sha256sum -c -
+
+          python - <<'PY'
+          import json
+          summary=json.load(open('/tmp/b2b_summary.json'))
+          if summary.get('status')!='PASS':
+              raise SystemExit('B2b summary is not PASS')
+          if summary.get('stage')!='B2B_FROZEN_PERFORMANCE_GATE':
+              raise SystemExit('B2b stage mismatch')
+          if summary.get('mode')!='SHADOW_ONLY':
+              raise SystemExit('B2b mode mismatch')
+          if summary.get('threshold_policy')!='FROZEN_B2B_PERFORMANCE_ONLY':
+              raise SystemExit('B2b threshold policy mismatch')
+          if summary.get('value_gate')!='DEFERRED_FAIL_CLOSED':
+              raise SystemExit('B2b Value gate must remain fail-closed')
+          PY
+
+      - name: Build isolated v0.3 shadow catalog
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/catalog
+          python horse-racing/jrdb/src/build_jrdb_edge_v03_shadow_catalog.py \
+            --v02-catalog /tmp/v02_catalog.jsonl \
+            --b1-jsonl /tmp/b1_incremental_edges.jsonl \
+            --b2b-jsonl /tmp/b2b_gated_edges.jsonl \
+            --output-registry /tmp/catalog/edge_shadow_registry_v0_3.jsonl \
+            --output-serving /tmp/catalog/edge_serving_catalog_v0_3_shadow.jsonl \
+            --output-summary /tmp/catalog/summary.json
+          cp /tmp/request.json /tmp/catalog/request.json
+          cp /tmp/b2b_summary.json /tmp/catalog/b2b_summary.json
+          cp horse-racing/jrdb/config/jrdb_edge_semantic_hierarchy_v0_3.json \
+            /tmp/catalog/semantic_hierarchy.json
+          cp horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json \
+            /tmp/catalog/statistical_gate_policy.json
+
+      - name: Upload Stage-C shadow catalog
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v03-shadow-catalog-${{ github.run_id }}
+          path: /tmp/catalog/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          result=json.load(open('/tmp/catalog/summary.json'))
+          compact={
+              'status':result['status'],
+              'stage':result['stage'],
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-v03-shadow-catalog-{os.environ['RUN_ID']}",
+              'v02_rows':result['v02_rows'],
+              'shadow_registry_rows':result['shadow_registry_rows'],
+              'shadow_serving_rows':result['shadow_serving_rows'],
+              'shadow_class_counts':result['shadow_class_counts'],
+              'serving_class_counts':result['serving_class_counts'],
+              'incremental_reversal_count':result['incremental_reversal_count'],
+              'value_policy':result['value_policy'],
+              'mode':'SHADOW_ONLY',
+              'production_serving_changed':False,
+          }
+          body='JRDB_EDGE_V03_SHADOW_CATALOG_RESULT\n'+json.dumps(
+              compact,ensure_ascii=False,indent=2,sort_keys=True
+          )
+          subprocess.run(
+              ['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',
+               os.environ['GITHUB_REPOSITORY'],'--body',body],
+              check=True
+          )
+          subprocess.run(
+              ['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',
+               os.environ['GITHUB_REPOSITORY'],'--reason','completed'],
+              check=True
+          )
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge v0.3 Stage-C shadow catalog build failed. v0.2 STANDARD production serving was not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
