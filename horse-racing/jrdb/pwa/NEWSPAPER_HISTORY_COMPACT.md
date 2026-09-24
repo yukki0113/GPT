@@ -6,7 +6,7 @@
 - Turn 2: completed
 - Turn 3: completed
 - Turn 4: completed at practical mobile density limit
-- Turn 5: not started
+- Turn 5: completed
 
 This document is the durable design record for the shared Newspaper past-run compact display.
 
@@ -145,10 +145,27 @@ Turn 4 pass 2では、94px幅を維持したままcompact内のfont size / line-
 
 実機上はこれ以上history幅を削ると可読性とタップ操作の劣化が大きくなるため、94pxを実用上の下限とする。友人共有時の案内も「現行compactがスマホ縦持ちでの実用上の限界」とする。
 
-## Next turn
+## Turn 5
 
-Turn 5:
+最終回帰と運用確定を実施した。
 
-- 最終回帰確認
-- 個人3/5/8切替、桃太郎5走固定、詳細dialogの回帰確認
-- 運用文書の最終確定
+確認対象:
+
+- 個人Kenshow_Laboの3/5/8走切替
+- 桃太郎新聞の5走固定
+- 両surfaceのshared compact renderer利用
+- compact過去走から既存detail dialogへの導線
+- compactで省略した詳細情報のdialog保持
+- 桃太郎予想4列との共存
+- 個人 / 桃太郎のService Worker cache namespace分離
+- Pages focused tests / JavaScript syntax validation / full-site deploy
+
+運用確定:
+
+- shared compact history rendererを正式運用とする
+- smartphone history widthは94pxを実用上の下限とする
+- これ以上の横幅圧縮は原則行わず、必要な改善は表示項目整理またはdetail dialog側で行う
+- 個人は3/5/8走切替、桃太郎は5走固定を維持する
+- PACI / Newspaper JSON schema / history生成契約は今回のUI改修では変更しない
+
+今後この表示を変更する場合は、`test_newspaper_compact_history_pwa.py` と `test_momotaro_pwa_contract.py` を同時に更新し、JRDB PWA Pagesの成功deployまで確認する。
