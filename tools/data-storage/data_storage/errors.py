@@ -15,3 +15,6 @@ class ConfigError(StorageError):
 class ValidationError(StorageError):
     status = "VALIDATION_FAILED"
 
+
+class MaterializationError(StorageError):
+    status = "MATERIALIZATION_FAILED"
