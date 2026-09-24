@@ -1,0 +1,376 @@
+name: JRDB Post-Race Review Historical Backfill
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_POSTRACE_REVIEW_BACKFILL]'
+  WAREHOUSE_GENERATION_ID: 'jrdb_normalized_warehouse_v1_2010_2025_g20260921'
+  WAREHOUSE_CURRENT_ID: '1uB0IQecWNKNn_ASZx4_0MhlWNXUmFrYA'
+  WAREHOUSE_MANIFEST_ID: '1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN'
+  WAREHOUSE_AUDIT_ID: '1XQBLSyCgnRddoCNoXziF2Hmx-9kSP04X'
+  STAGING_BAC_ID: '1y1iiQAZP1aMSvlax_VZRAZalFPf6u_xG'
+  STAGING_KYI_ID: '1SUU_Ls6DcNlYTXHC-_LTEI-CsCYpazIn'
+  STAGING_SED_ID: '1mf7LvwOsE4W3hi9xbrE8dtrmGKO8HEFL'
+
+jobs:
+  backfill:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_POSTRACE_REVIEW_BACKFILL]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/data-storage/requirements.txt
+
+      - name: Install storage runtime
+        run: |
+          python -m pip install --disable-pip-version-check \
+            -r tools/data-storage/requirements.txt \
+            'gdown>=5,<6'
+          PYTHONPATH=tools/data-storage python -m data_storage check-deps
+
+      - name: Download accepted Warehouse evidence
+        run: |
+          set -euo pipefail
+          ROOT=/tmp/jrdb_postrace_review
+          FINAL="$ROOT/warehouse/generations/$WAREHOUSE_GENERATION_ID"
+          mkdir -p "$FINAL"
+
+          gdown --id "$WAREHOUSE_CURRENT_ID" -O "$ROOT/warehouse/current.json"
+          gdown --id "$WAREHOUSE_MANIFEST_ID" -O "$FINAL/manifest.json"
+          gdown --id "$WAREHOUSE_AUDIT_ID" -O "$FINAL/audit.json"
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path('/tmp/jrdb_postrace_review/warehouse')
+          generation = os.environ['WAREHOUSE_GENERATION_ID']
+          current = json.loads((root / 'current.json').read_text(encoding='utf-8'))
+          manifest_path = root / 'generations' / generation / 'manifest.json'
+          audit_path = root / 'generations' / generation / 'audit.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          audit = json.loads(audit_path.read_text(encoding='utf-8'))
+
+          if current.get('artifact_type') != 'jrdb_normalized_warehouse_current':
+              raise SystemExit('unexpected Warehouse current artifact type')
+          if current.get('status') != 'accepted':
+              raise SystemExit('Warehouse current is not accepted')
+          if current.get('generation_id') != generation:
+              raise SystemExit('Warehouse current generation mismatch')
+          if manifest.get('generation_id') != generation or manifest.get('status') != 'PASS':
+              raise SystemExit('Warehouse manifest mismatch or not PASS')
+          if audit.get('generation_id') != generation or audit.get('status') != 'PASS':
+              raise SystemExit('Warehouse audit mismatch or not PASS')
+
+          digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+          if digest != str(current.get('manifest_sha256') or ''):
+              raise SystemExit('Warehouse manifest SHA mismatch')
+          PY
+
+      - name: Download required immutable Warehouse roots
+        run: |
+          set -euo pipefail
+          ROOT=/tmp/jrdb_postrace_review/staging
+          mkdir -p "$ROOT"
+
+          for FAMILY in BAC KYI SED; do
+            ID_VAR="STAGING_${{FAMILY}_ID"
+            ID="${{!ID_VAR}"
+            mkdir -p "$ROOT/$FAMILY"
+            gdown --folder "https://drive.google.com/drive/folders/$ID" -O "$ROOT/$FAMILY"
+          done
+
+      - name: Resolve and verify Warehouse objects
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path('/tmp/jrdb_postrace_review')
+          generation = os.environ['WAREHOUSE_GENERATION_ID']
+          manifest = json.loads(
+              (
+                  root / 'warehouse' / 'generations' / generation / 'manifest.json'
+              ).read_text(encoding='utf-8')
+          )
+
+          staging_map = {}
+          for family in ('BAC', 'KYI', 'SED'):
+              base = root / 'staging' / family
+              candidates = [
+                  path.parent
+                  for path in base.rglob('raw_receipt.json')
+                  if (path.parent / 'objects').is_dir()
+              ]
+              if len(candidates) != 1:
+                  raise SystemExit(
+                      f'{family}: unique staging root not found: {candidates}'
+                  )
+              staging_map[family] = str(candidates[0])
+
+          expected_years = set(range(2010, 2026))
+          seen = {family: set() for family in staging_map}
+
+          for asset in manifest.get('assets') or []:
+              family = str(asset.get('family') or '').upper()
+              if family not in staging_map:
+                  continue
+              year = int(asset.get('year'))
+              if year not in expected_years:
+                  continue
+
+              path = Path(staging_map[family]) / str(asset.get('relative_path') or '')
+              if not path.is_file():
+                  raise SystemExit(f'{family}/{year}: missing object: {path}')
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              if digest != str(asset.get('sha256') or '').lower():
+                  raise SystemExit(f'{family}/{year}: object SHA mismatch')
+              seen[family].add(year)
+
+          for family, years in seen.items():
+              if years != expected_years:
+                  raise SystemExit(
+                      f'{family}: unexpected coverage: {sorted(years)}'
+                  )
+
+          (root / 'staging_map.json').write_text(
+              json.dumps(staging_map, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Run 2010-2025 Review backfill
+        id: backfill
+        continue-on-error: true
+        env:
+          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
+        run: |
+          set +e
+          ROOT=/tmp/jrdb_postrace_review
+          mkdir -p "$ROOT/work" "$ROOT/output"
+
+          BAC_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['BAC'])")"
+          KYI_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['KYI'])")"
+          SED_ROOT="$(python -c "import json;print(json.load(open('$ROOT/staging_map.json'))['SED'])")"
+          GENERATION_ID="jrdb_postrace_review_v0_1_2010_2025_g$GITHUB_RUN_ID"
+          echo "generation_id=$GENERATION_ID" >> "$GITHUB_OUTPUT"
+
+          python horse-racing/jrdb/src/jrdb_postrace_review_backfill.py \
+            --warehouse-current "$ROOT/warehouse/current.json" \
+            --asset-root "BAC=$BAC_ROOT" \
+            --asset-root "KYI=$KYI_ROOT" \
+            --asset-root "SED=$SED_ROOT" \
+            --years {2010..2025} \
+            --staging-database "$ROOT/work/review.duckdb" \
+            --output-root "$ROOT/output/postrace_review/v0_1" \
+            --generation-id "$GENERATION_ID" \
+            --promote \
+            --complete-snapshot \
+            --summary-json "$ROOT/output/backfill_summary.json"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Verify generated Review snapshot
+        id: verify
+        if: always()
+        continue-on-error: true
+        env:
+          GENERATION_ID: ${{{ steps.backfill.outputs.generation_id }}
+        run: |
+          set +e
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path('/tmp/jrdb_postrace_review/output')
+          review = root / 'postrace_review' / 'v0_1'
+          compact = {
+              'status': 'FAIL',
+              'generation_id': os.environ.get('GENERATION_ID') or None,
+          }
+
+          try:
+              current = json.loads(
+                  (review / 'current.json').read_text(encoding='utf-8')
+              )
+              manifest = json.loads(
+                  (review / current['manifest']).read_text(encoding='utf-8')
+              )
+              audit = json.loads(
+                  (
+                      review
+                      / 'generations'
+                      / manifest['generation_id']
+                      / 'audit.json'
+                  ).read_text(encoding='utf-8')
+              )
+              summary = json.loads(
+                  (root / 'backfill_summary.json').read_text(encoding='utf-8')
+              )
+
+              if current.get('status') != 'CURRENT':
+                  raise RuntimeError('Review current pointer is not CURRENT')
+              if manifest.get('validation_status') != 'PASS':
+                  raise RuntimeError('Review manifest is not PASS')
+              if audit.get('status') != 'PASS':
+                  raise RuntimeError('Review audit is not PASS')
+              if manifest.get('complete_snapshot') is not True:
+                  raise RuntimeError('Review snapshot is not complete')
+              if (
+                  manifest.get('source_provenance', {}).get('warehouse_generation_id')
+                  != os.environ['WAREHOUSE_GENERATION_ID']
+              ):
+                  raise RuntimeError('Review source generation mismatch')
+              if str(manifest.get('period_from') or '')[:4] != '2010':
+                  raise RuntimeError('Review period does not start in 2010')
+              if str(manifest.get('period_to') or '')[:4] != '2025':
+                  raise RuntimeError('Review period does not end in 2025')
+
+              relations = manifest.get('relations') or {}
+              required = {
+                  'fact_race_context',
+                  'fact_race_review',
+                  'fact_horse_performance',
+                  'fact_track_bias',
+              }
+              if set(relations) != required:
+                  raise RuntimeError(
+                      f'unexpected Review relations: {sorted(relations)}'
+                  )
+
+              compact = {
+                  'status': 'PASS',
+                  'generation_id': manifest.get('generation_id'),
+                  'warehouse_generation_id': os.environ['WAREHOUSE_GENERATION_ID'],
+                  'period_from': manifest.get('period_from'),
+                  'period_to': manifest.get('period_to'),
+                  'snapshot_object_hash': manifest.get('snapshot_object_hash'),
+                  'row_counts': {
+                      name: value.get('total_rows')
+                      for name, value in relations.items()
+                  },
+                  'database_warning_count': (
+                      audit.get('database_audit') or {}
+                  ).get('warning_count'),
+                  'database_warnings': (
+                      audit.get('database_audit') or {}
+                  ).get('warnings'),
+                  'days_processed': summary.get('days_processed'),
+                  'prior_race_samples': summary.get('prior_race_samples'),
+              }
+          except Exception as exc:
+              compact['error'] = str(exc)
+
+          path = root / 'compact_summary.json'
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(
+              json.dumps(compact, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+          if compact.get('status') != 'PASS':
+              raise SystemExit(1)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload Review snapshot artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-postrace-review-v0-1-${{{ github.run_id }}
+          path: /tmp/jrdb_postrace_review/output/
+          if-no-files-found: warn
+          compression-level: 0
+          retention-days: 30
+
+      - name: Comment compact result
+        if: always()
+        env:
+          GH_TOKEN: ${{{ github.token }}
+          ISSUE_NUMBER: ${{{ github.event.issue.number }}
+          BACKFILL_EXIT: ${{{ steps.backfill.outputs.exit_code }}
+          VERIFY_EXIT: ${{{ steps.verify.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/jrdb_postrace_review/output/compact_summary.json')
+          if path.is_file():
+              summary = json.loads(path.read_text(encoding='utf-8'))
+          else:
+              summary = {
+                  'status': 'FAIL',
+                  'error': 'compact_summary.json missing',
+              }
+
+          summary['run_id'] = int(os.environ['GITHUB_RUN_ID'])
+          summary['backfill_exit_code'] = os.environ.get('BACKFILL_EXIT')
+          summary['verify_exit_code'] = os.environ.get('VERIFY_EXIT')
+
+          Path('/tmp/review_result.md').write_text(
+              'JRDB_POSTRACE_REVIEW_BACKFILL_RESULT\n```json\n'
+              + json.dumps(summary, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file /tmp/review_result.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{{ github.token }}
+          ISSUE_NUMBER: ${{{ github.event.issue.number }}
+          VERIFY_EXIT: ${{{ steps.verify.outputs.exit_code }}
+        run: |
+          if [ "$VERIFY_EXIT" = "0" ]; then
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason not_planned
+          fi
+
+      - name: Fail unless backfill and verification passed
+        if: always()
+        env:
+          BACKFILL_EXIT: ${{{ steps.backfill.outputs.exit_code }}
+          VERIFY_EXIT: ${{{ steps.verify.outputs.exit_code }}
+        run: |
+          test "$BACKFILL_EXIT" = "0"
+          test "$VERIFY_EXIT" = "0"
