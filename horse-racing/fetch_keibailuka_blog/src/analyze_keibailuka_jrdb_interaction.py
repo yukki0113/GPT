@@ -9,11 +9,21 @@ import json
 import re
 import subprocess
 import tempfile
+import sys
+import zipfile
 from collections import defaultdict
 from pathlib import Path
 from urllib.parse import quote
 
 import requests
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+JRDB_SRC = REPOSITORY_ROOT / "horse-racing" / "jrdb" / "src"
+if str(JRDB_SRC) not in sys.path:
+    sys.path.insert(0, str(JRDB_SRC))
+
+from jrdb_raw import ReaderAudit, canonical_members, read_fixed_records
+from jrdb_warehouse_normalize import RawProvenance, normalize_record
 
 from analyze_keibailuka_historical import (
     VENUE_CODES,
@@ -85,6 +95,64 @@ def verify_sha(path: Path, expected_sha: str) -> None:
         )
 
 
+def load_kyi_raw_zip(path: Path, expected_rows: int) -> list[dict]:
+    rows = []
+    with zipfile.ZipFile(path) as zipped:
+        members = canonical_members(zipped, "KYI")
+        if not members:
+            raise RuntimeError(f"no canonical KYI members in {path.name}")
+        for member in members:
+            audit = ReaderAudit()
+            records = read_fixed_records(zipped, member, "KYI", audit)
+            if audit.record_length_errors:
+                raise RuntimeError(
+                    f"KYI fixed-record length errors in {path.name}/{member}: "
+                    f"{dict(audit.record_length_errors)}"
+                )
+            for ordinal, record in enumerate(records, start=1):
+                normalized = normalize_record(
+                    "KYI",
+                    record,
+                    RawProvenance(
+                        source_archive_name=path.name,
+                        source_member=member,
+                        source_record_ordinal=ordinal,
+                    ),
+                )
+                rows.append(
+                    {
+                        "race_key_raw": normalized.get("race_key_raw"),
+                        "horse_no": normalized.get("horse_no"),
+                        "horse_name": normalized.get("horse_name"),
+                        "idm": normalized.get("idm"),
+                        "total_index": normalized.get("total_index"),
+                        "base_win_rank": normalized.get("base_win_rank"),
+                        "base_win_odds": normalized.get("base_win_odds"),
+                        "longshot_index": normalized.get("longshot_index"),
+                        "running_style_code": normalized.get("running_style_code"),
+                        "distance_fit_code": normalized.get("distance_fit_code"),
+                        "improvement_code": normalized.get("improvement_code"),
+                        "heavy_track_fit_code": normalized.get("heavy_track_fit_code"),
+                        "turf_fit_code": normalized.get("turf_fit_code"),
+                        "dirt_fit_code": normalized.get("dirt_fit_code"),
+                        "forecast_pace_code": normalized.get("forecast_pace_code"),
+                        "pace_rank_front": normalized.get("pace_rank_front"),
+                        "pace_rank_pace": normalized.get("pace_rank_pace"),
+                        "pace_rank_late": normalized.get("pace_rank_late"),
+                        "pace_rank_position": normalized.get("pace_rank_position"),
+                    }
+                )
+    if len(rows) != expected_rows:
+        raise RuntimeError(
+            f"KYI row count mismatch for {path.name}: "
+            f"expected={expected_rows} actual={len(rows)}"
+        )
+    keys = [(row["race_key_raw"], row["horse_no"]) for row in rows]
+    if len(keys) != len(set(keys)):
+        raise RuntimeError(f"KYI canonical key duplicate detected in {path.name}")
+    return rows
+
+
 def fetch_sheet_rows(spreadsheet_id: str, sheet_name: str) -> list[dict[str, str]]:
     url = (
         f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/gviz/tq"
@@ -138,13 +206,33 @@ def main() -> None:
         request.get("sed_2025_sha"),
     )
 
-    kyi_staging = temporary_dir / "kyi_staging"
-    download_drive_folder(request["kyi_staging_folder_id"], kyi_staging)
+    kyi_raw_2024 = temporary_dir / "KYI_2024.zip"
+    kyi_raw_2025 = temporary_dir / "KYI_2025.zip"
+    download_drive(request["kyi_raw_2024_id"], kyi_raw_2024)
+    download_drive(request["kyi_raw_2025_id"], kyi_raw_2025)
 
-    kyi_2024 = find_unique(kyi_staging, request["kyi_2024_filename"])
-    kyi_2025 = find_unique(kyi_staging, request["kyi_2025_filename"])
-    verify_sha(kyi_2024, request["kyi_2024_sha"])
-    verify_sha(kyi_2025, request["kyi_2025_sha"])
+    if kyi_raw_2024.stat().st_size != int(request["kyi_raw_2024_size"]):
+        raise RuntimeError(
+            f"KYI 2024 raw size mismatch: {kyi_raw_2024.stat().st_size}"
+        )
+    if kyi_raw_2025.stat().st_size != int(request["kyi_raw_2025_size"]):
+        raise RuntimeError(
+            f"KYI 2025 raw size mismatch: {kyi_raw_2025.stat().st_size}"
+        )
+
+    kyi_rows = []
+    kyi_rows.extend(
+        load_kyi_raw_zip(
+            kyi_raw_2024,
+            int(request["kyi_2024_expected_rows"]),
+        )
+    )
+    kyi_rows.extend(
+        load_kyi_raw_zip(
+            kyi_raw_2025,
+            int(request["kyi_2025_expected_rows"]),
+        )
+    )
 
     spreadsheet_id = request["spreadsheet_id"]
     source_rows = fetch_sheet_rows(
@@ -258,14 +346,59 @@ def main() -> None:
         )
         + "], union_by_name=true)"
     )
-    kyi = (
-        "read_parquet(["
-        + ",".join(
-            json.dumps(path.as_posix())
-            for path in (kyi_2024, kyi_2025)
+    connection.execute(
+        """
+        CREATE TABLE kyi_rows(
+            race_key_raw VARCHAR,
+            horse_no BIGINT,
+            horse_name VARCHAR,
+            idm DOUBLE,
+            total_index DOUBLE,
+            base_win_rank BIGINT,
+            base_win_odds DOUBLE,
+            longshot_index BIGINT,
+            running_style_code VARCHAR,
+            distance_fit_code VARCHAR,
+            improvement_code VARCHAR,
+            heavy_track_fit_code VARCHAR,
+            turf_fit_code VARCHAR,
+            dirt_fit_code VARCHAR,
+            forecast_pace_code VARCHAR,
+            pace_rank_front BIGINT,
+            pace_rank_pace BIGINT,
+            pace_rank_late BIGINT,
+            pace_rank_position BIGINT
         )
-        + "], union_by_name=true)"
+        """
     )
+    connection.executemany(
+        "INSERT INTO kyi_rows VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+            (
+                row.get("race_key_raw"),
+                row.get("horse_no"),
+                row.get("horse_name"),
+                row.get("idm"),
+                row.get("total_index"),
+                row.get("base_win_rank"),
+                row.get("base_win_odds"),
+                row.get("longshot_index"),
+                row.get("running_style_code"),
+                row.get("distance_fit_code"),
+                row.get("improvement_code"),
+                row.get("heavy_track_fit_code"),
+                row.get("turf_fit_code"),
+                row.get("dirt_fit_code"),
+                row.get("forecast_pace_code"),
+                row.get("pace_rank_front"),
+                row.get("pace_rank_pace"),
+                row.get("pace_rank_late"),
+                row.get("pace_rank_position"),
+            )
+            for row in kyi_rows
+        ],
+    )
+    kyi = "kyi_rows"
 
     # SED remains the settlement source.  KYI is joined only after the
     # historical pick has been resolved to an exact race_key_raw + horse_no.
@@ -369,6 +502,14 @@ def main() -> None:
     summary = {
         "schema_version": "keibailuka-jrdb-interaction-v0.1",
         "reason_tag_version": reason_definitions["version"],
+        "kyi_source": {
+            "mode": "frozen_raw_reparse",
+            "raw_2024_id": request["kyi_raw_2024_id"],
+            "raw_2025_id": request["kyi_raw_2025_id"],
+            "expected_rows_2024": int(request["kyi_2024_expected_rows"]),
+            "expected_rows_2025": int(request["kyi_2025_expected_rows"]),
+            "parsed_rows_total": len(kyi_rows),
+        },
         "population": {
             "source_picks": len(picks),
             "sed_joined_bettable": len(bettable),
