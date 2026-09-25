@@ -1,0 +1,54 @@
+{
+  "artifact_type": "jrdb_index_base_record_hash_compat_drive_package_set",
+  "version": "1",
+  "source_warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+  "drive_folder_id": "1fQF6uyAhJ7TDNRwfhb54Kt--j0q_Qj40",
+  "canonical_manifest_path": "horse-racing/jrdb/config/jrdb_index_base_record_hash_compat_v1.json",
+  "packages": {
+    "BAC": {
+      "drive_file_id": "1Sg5krkPDEo6msPjAB-50_aI4K-J5cCey",
+      "file_name": "bac.parquet.zip",
+      "sha256": "67136100c2cfa23dd7ac5e072bf79c985367842010f178af4c45222e7f5dc4e2",
+      "source_artifact_id": 10843997863
+    },
+    "KYI": {
+      "drive_file_id": "1T6Q6R2x5mfqZT9Nr0DGGD7t1AyT3_nHG",
+      "file_name": "kyi.parquet.zip",
+      "sha256": "4f3d386da200a02361cca7986fb9dd56e9165d80b0eb1ab65ee1bfd4ea9daf6d",
+      "source_artifact_id": 10843743508
+    },
+    "SED": {
+      "drive_file_id": "1g4zzelPqUHfUsOyBAB0Mh-99ChP4TG5S",
+      "file_name": "sed.parquet.zip",
+      "sha256": "d4cb1a67a8dd826ab0e998797dd5de7dcd2f6cdf028cf8ab00f5f51b5c4babc3",
+      "source_artifact_id": 10843634037
+    },
+    "UKC": {
+      "drive_file_id": "1KLW2PUbdfgwTwr1CqVjquH4plsJntSmE",
+      "file_name": "ukc.parquet.zip",
+      "sha256": "7a2abc6bcfdd7f46cd88731919dbb4fe4e7b95e618a3b7ed7f92e0c6638377b1",
+      "source_artifact_id": 10843948175
+    },
+    "CHA": {
+      "drive_file_id": "1dII-YwMEvwyfUE4xSATPuqFQ2wvhr-Oj",
+      "file_name": "cha.parquet.zip",
+      "sha256": "6c82ef101a075426b21e44d1bd042c89a8dd68675fab70101bd69f7f3c0fd868",
+      "source_artifact_id": 10843888459
+    },
+    "CYB": {
+      "drive_file_id": "1Ch5RsjtZzc0VAB6AJs4Z_s6i0o4WhSgY",
+      "file_name": "cyb.parquet.zip",
+      "sha256": "a8e977757b417cdcd159390328a5605f2903b180952f9b02f5f2623fe02baf48",
+      "source_artifact_id": 10844002796
+    }
+  },
+  "manifest_package": {
+    "drive_file_id": "1QSWKMeFlOY3PCf6TboHuBV6qmtWJg3P5",
+    "file_name": "manifest.json.zip",
+    "sha256": "d863a405642aa1ae54aacb532171385aa7c79b718b6cf7abaa8db86e94e5a63f",
+    "source_artifact_id": 10843808464
+  },
+  "source_split_run_id": 36087009991,
+  "source_export_run_id": 36086214247,
+  "status": "PASS"
+}
