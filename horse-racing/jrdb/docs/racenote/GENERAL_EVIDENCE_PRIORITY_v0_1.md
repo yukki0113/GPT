@@ -271,11 +271,17 @@ silently injected into Gen0.2.
 Any future activation using this priority policy must use a new forecast
 version / generation contract.
 
-Likely next research sequence:
+Current downstream sequence:
 
     General Evidence v0.1
-      -> Pairwise Comparison v0.1
-      -> Scenario Robustness v0.1
+      -> Pairwise Comparison v0.1 [IMPLEMENTED CONTRACT]
+      -> Scenario Robustness v0.1 [NEXT]
       -> Forecast next-generation contract
       -> Independent Freeze
       -> post-Freeze consensus / market / value
+
+Pairwise contract:
+
+- `src/racenote_pairwise_comparison.py`
+- `schema/racenote_pairwise_comparison_schema_v0_1.json`
+- `docs/racenote/PAIRWISE_COMPARISON_v0_1.md`
