@@ -66,7 +66,7 @@ function showMomotaroContributorDetail(horse, contributor) {
   ].filter(Boolean).join(" / ");
   dialogBody.innerHTML =
     (meta ? '<p class="newspaper-addon-meta">' + escapeHtml(meta) + '</p>' : "") +
-    '<p class="newspaper-addon-comment">' + escapeHtml(comment || "短評なし") + '</p>';
+    (comment ? '<p class="newspaper-addon-comment">' + escapeHtml(comment) + '</p>' : "");
 
   if (typeof detailDialog.showModal === "function") {
     detailDialog.showModal();
@@ -99,14 +99,19 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
 
   const value = momotaroPrediction(horse, contributor.key);
   const mark = text(value.mark, "");
+  const confidence = text(value.confidence, "");
   const comment = text(value.comment, "");
   const display = mark || "";
+  const ryotaConfidenceTarget =
+    contributor.key === "ryota" &&
+    mark === "◎" &&
+    Boolean(confidence);
 
-  if (comment) {
+  if (comment || ryotaConfidenceTarget) {
     return '<td class="newspaper-mark-col mark-momotaro mark-' + escapeHtml(contributor.key) + '">' +
       '<button type="button" class="newspaper-addon-link momotaro-contributor-button" ' +
       'data-horse-index="' + horseIndex + '" data-contributor-key="' + escapeHtml(contributor.key) + '" ' +
-      'aria-label="' + escapeHtml(text(horse && horse.basic && horse.basic.horse_name, "")) + "の" + escapeHtml(contributor.label) + '短評">' +
+      'aria-label="' + escapeHtml(text(horse && horse.basic && horse.basic.horse_name, "")) + "の" + escapeHtml(contributor.label) + '詳細">' +
       escapeHtml(display || "・") + '</button></td>';
   }
 
