@@ -135,6 +135,15 @@ def test_replay_uses_same_facts_shadow_direction_and_absorption(tmp_path: Path) 
     assert result["v03"]["incremental_reversal_matches"] == 2
     assert result["context_absorption"]["template_counts"] == {"COURSE_FRAME_V1": 1}
     assert result["production_serving_changed"] is False
+    replay_row = json.loads(out_matches.read_text(encoding="utf-8").splitlines()[0])
+    presentation = replay_row["edge_matches"][0]["v03_shadow"]["presentation"]
+    assert presentation["contract"] == "V03_SHADOW_PRESENTATION"
+    assert presentation["performance_signal"] == "NEGATIVE"
+
+
+def test_shadow_display_text_overrides_legacy_polarity() -> None:
+    assert target._shadow_display_text({"display_text": "－ legacy"}, "POSITIVE") == "＋ legacy"
+    assert target._shadow_display_text({"display_text": "＋ legacy"}, "NEGATIVE") == "－ legacy"
 
 
 def test_key_mismatch_fails_closed() -> None:
