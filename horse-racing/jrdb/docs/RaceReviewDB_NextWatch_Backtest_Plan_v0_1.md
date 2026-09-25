@@ -1001,3 +1001,227 @@ Next turn:
 Turn 5 - interpretable Discovery combinations, with source-finish-conditioned
 baselines and explicit hidden-value defeat rules. Freeze candidate definitions
 before any Holdout evaluation.
+
+
+## 23. Turn 5 execution checkpoint
+
+Status:
+
+CANDIDATE_RULES_FROZEN
+
+Execution date:
+
+2026-09-25
+
+Successful workflow:
+
+- run_id: 36110362625
+- Issue: #1358
+- result: PASS
+
+Input:
+
+- Turn3 checkpoint Drive file ID:
+  1LXlUZ4dhCmoRSDPyJZcAhF-SpHvGroMg
+- Discovery rows:
+  8,619
+- Holdout consulted:
+  false
+
+Matched Discovery baselines:
+
+- ALL:
+  N=8,619, top3=23.33%, top5=38.48%
+- FINISH_GE4:
+  N=6,493, top3=17.23%, top5=31.36%
+- FINISH_GE6:
+  N=4,983, top3=14.33%, top5=26.85%
+- FINISH_LE3:
+  N=2,126, top3=41.96%, top5=60.25%
+
+Frozen thresholds:
+
+- performance_signal_q80:
+  -0.09305555555555287
+- performance_signal_q90:
+  0.16777149321267684
+- last3f_pct_strong:
+  80
+- last3f_pct_elite:
+  90
+- position_gain_strong:
+  0.25
+- last3f_vs_prior3_improvement:
+  10
+- performance_vs_prior3_improvement:
+  0.5
+- trouble_score_strong:
+  2
+
+Promotion guardrails used for Holdout-candidate freezing:
+
+- minimum Discovery N:
+  30
+- primary:
+  matched-baseline top3 lift >= 5 percentage points
+  AND matched-baseline top5 lift >= 3 percentage points
+- secondary:
+  matched-baseline top3 lift >= 4 percentage points
+  AND average finish improvement better than matched baseline
+
+Tested rules:
+
+18
+
+Frozen Holdout candidates:
+
+11
+
+Hidden-value candidates:
+
+- HV01:
+  4着以下 + performance_signal 上位20%
+  N=763
+  top3=27.65%
+  matched baseline=17.23%
+  lift=+10.42 pp
+
+- HV02:
+  6着以下 + performance_signal 上位20%
+  N=400
+  top3=24.50%
+  matched baseline=14.33%
+  lift=+10.17 pp
+  average finish improvement=+0.86
+
+- HV03:
+  4着以下 + 上がり速度percentile 90以上
+  N=647
+  top3=22.87%
+  matched baseline=17.23%
+  lift=+5.64 pp
+
+- HV05:
+  4着以下 + performance上位20% + 上がり80以上
+  N=257
+  top3=31.91%
+  matched baseline=17.23%
+  lift=+14.67 pp
+  top5=49.81%
+  top5 lift=+18.45 pp
+
+- HV06:
+  6着以下 + performance上位20% + 上がり80以上
+  N=100
+  top3=28.00%
+  matched baseline=14.33%
+  lift=+13.67 pp
+  top5=40.00%
+  top5 lift=+13.15 pp
+  average finish improvement=+0.63
+
+- HV07:
+  4着以下 + 強い位置取り改善 + 上がり80以上
+  N=315
+  top3=22.86%
+  matched baseline=17.23%
+  lift=+5.62 pp
+
+- HV11:
+  4着以下 + performance上位20% + 自身過去3走比改善
+  N=469
+  top3=22.81%
+  matched baseline=17.23%
+  lift=+5.58 pp
+
+- HV12:
+  6着以下 + performance上位20% + 自身過去3走比改善
+  N=253
+  top3=21.34%
+  matched baseline=14.33%
+  lift=+7.02 pp
+  average finish improvement=+0.66
+
+- HV13:
+  4着以下 + performance上位10% + 上がり90以上
+  N=63
+  top3=25.40%
+  matched baseline=17.23%
+  lift=+8.16 pp
+
+Persistence candidates:
+
+- P01:
+  1-3着 + performance上位20%
+  N=961
+  top3=47.97%
+  matched baseline=41.96%
+  lift=+6.01 pp
+
+- P03:
+  1-3着 + performance上位20% + 上がり80以上
+  N=606
+  top3=48.35%
+  matched baseline=41.96%
+  lift=+6.39 pp
+
+Rejected / exploratory examples:
+
+- HV15:
+  4着以下 + JRDB強い不利 + 上がり80以上
+  N=8
+  top3=50.00%
+  matched-baseline lift=+32.77 pp
+  status=INSUFFICIENT_SAMPLE
+
+- HV14:
+  6着以下 + performance上位10% + 上がり90以上
+  N=20
+  top3=25.00%
+  matched-baseline lift=+10.67 pp
+  status=INSUFFICIENT_SAMPLE
+
+Interpretation:
+
+Discovery provides a real hidden-value signal candidate rather than merely
+rediscovering source finishing position. In particular, strong RaceReviewDB
+performance among horses finishing 6th or worse remains materially above the
+same 6th-or-worse population baseline, and combining performance with strong
+last-3F increases the concentration further.
+
+These findings are Discovery-only. They are not accepted S/A rules until
+Holdout validation passes without threshold changes.
+
+Frozen rule contract:
+
+- next_watch_candidate_rules_frozen.json
+- rule_version:
+  next-watch-rules-discovery-v0.1
+- holdout_consulted:
+  false
+
+Checkpoint artifact:
+
+- Drive file:
+  RaceReviewDB_NextWatch_Turn5_g36110362625.zip
+- Drive file ID:
+  1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr
+- contained files:
+  next_watch_rule_discovery.parquet
+  next_watch_candidate_rules_frozen.json
+  turn5_audit.json
+
+Hashes:
+
+- discovery rule result:
+  c760e8069440cf77bd6bc99458c31c399a37de6ce4ff5af5a50f498b3b15d649
+- frozen rule contract:
+  07ca97658fcbfc8d0e7a5f0c8da17e3da49cc90523918606bd2a99ba1e862e4a
+
+Next turn:
+
+Turn 6 - Holdout validation.
+
+Before evaluating rule performance, Turn 6 must first enforce the right-censoring
+policy documented in Turn 3. Frozen conditions and thresholds above must not be
+changed based on Holdout outcomes.
