@@ -268,15 +268,15 @@ Forecast Gen0.2 remains an implemented, non-activated historical contract.
 The 2026-09-25 trend-first redesign is materially different and must not be
 silently injected into Gen0.2.
 
-Any future activation using this priority policy must use a new forecast
-version / generation contract.
+This priority policy is now bound to `RaceNote-Forecast-Gen0.3`.
+Gen0.2 remains an unactivated pre-redesign reference.
 
 Current downstream sequence:
 
     General Evidence v0.1
       -> Pairwise Comparison v0.1 [IMPLEMENTED CONTRACT]
       -> Scenario Robustness v0.1 [IMPLEMENTED CONTRACT]
-      -> Forecast next-generation contract [NEXT]
+      -> RaceNote-Forecast-Gen0.3 [IMPLEMENTED CONTRACT]
       -> Independent Freeze
       -> post-Freeze consensus / market / value
 
@@ -291,3 +291,9 @@ Scenario Robustness contract:
 - `src/racenote_scenario_robustness.py`
 - `schema/racenote_scenario_robustness_schema_v0_1.json`
 - `docs/racenote/SCENARIO_ROBUSTNESS_v0_1.md`
+
+Forecast Gen0.3 contract:
+
+- `src/racenote_forecast_gen0_3.py`
+- `schema/racenote_forecast_gen0_schema_v0_3.json`
+- `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`

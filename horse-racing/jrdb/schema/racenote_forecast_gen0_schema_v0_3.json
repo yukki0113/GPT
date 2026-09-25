@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_forecast_gen0_schema_v0_3.json",
+  "title": "RaceNote Forecast Gen0.3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "forecast_version",
+    "evidence_policy_version",
+    "generation_id",
+    "forecast_id",
+    "target",
+    "source_chain",
+    "firewall",
+    "pairwise_order",
+    "scenario_axis_robustness",
+    "base_order",
+    "final_order",
+    "horses",
+    "forecast_created_at",
+    "result_visibility_status",
+    "freeze_status",
+    "post_freeze_open_order"
+  ],
+  "properties": {
+    "forecast_version": {
+      "const": "RaceNote-Forecast-Gen0.3"
+    },
+    "evidence_policy_version": {
+      "const": "TrendFirst-RR-Pairwise-Scenario-v0.1"
+    },
+    "generation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "forecast_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target": {
+      "type": "object"
+    },
+    "source_chain": {
+      "type": "object",
+      "required": [
+        "general_evidence_sha256",
+        "pairwise_audit_sha256",
+        "scenario_audit_sha256"
+      ],
+      "properties": {
+        "general_evidence_sha256": {"$ref": "#/$defs/sha256"},
+        "pairwise_audit_sha256": {"$ref": "#/$defs/sha256"},
+        "scenario_audit_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "firewall": {
+      "type": "object",
+      "required": [
+        "current_jrdb_consensus_visible",
+        "current_market_visible",
+        "edge_value_visible",
+        "training_edge_visible",
+        "target_result_visible"
+      ],
+      "properties": {
+        "current_jrdb_consensus_visible": {"const": false},
+        "current_market_visible": {"const": false},
+        "edge_value_visible": {"const": false},
+        "training_edge_visible": {"const": false},
+        "target_result_visible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "pairwise_order": {"$ref": "#/$defs/order"},
+    "scenario_axis_robustness": {
+      "enum": ["ROBUST", "CONDITIONAL", "FRAGILE"]
+    },
+    "base_order": {"$ref": "#/$defs/order"},
+    "final_order": {"$ref": "#/$defs/order"},
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/horse"}
+    },
+    "forecast_created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "result_visibility_status": {
+      "const": "HIDDEN"
+    },
+    "freeze_status": {
+      "enum": ["UNFROZEN", "FROZEN"]
+    },
+    "prediction_hash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "frozen_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "post_freeze_open_order": {
+      "const": [
+        "JRDB_CONSENSUS",
+        "MARKET",
+        "EDGE_VALUE",
+        "RL_VALUE",
+        "BET_PLAN"
+      ]
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "order": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "prob": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "edgeMatch": {
+      "type": "object",
+      "required": [
+        "edge_id",
+        "family",
+        "performance_evidence_level",
+        "signal",
+        "presentation_role",
+        "conflict",
+        "redundancy_group_id"
+      ],
+      "properties": {
+        "edge_id": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "performance_evidence_level": {
+          "enum": ["CONFIRMED", "SUGGESTIVE"]
+        },
+        "signal": {
+          "enum": ["POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL"]
+        },
+        "presentation_role": {
+          "enum": ["PRIMARY", "SECONDARY", "CONFLICT"]
+        },
+        "conflict": {"type": "boolean"},
+        "redundancy_group_id": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "edgePerformance": {
+      "type": "object",
+      "required": [
+        "status",
+        "profile",
+        "matches",
+        "adjustment_direction",
+        "adjustment_reason"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["USED", "NO_MATCH", "UNAVAILABLE"]
+        },
+        "profile": {"type": "string"},
+        "matches": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/edgeMatch"}
+        },
+        "adjustment_direction": {
+          "enum": ["POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL", "NONE"]
+        },
+        "adjustment_reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "horse": {
+      "type": "object",
+      "required": [
+        "horse_no",
+        "horse_name",
+        "base_rank",
+        "final_rank",
+        "mark",
+        "p_win_base",
+        "p_top2_base",
+        "p_top3_base",
+        "p_win_final",
+        "p_top2_final",
+        "p_top3_final",
+        "primary_reason",
+        "secondary_support",
+        "main_concern",
+        "why_above_next",
+        "scenario_adjustment_reason",
+        "edge_performance"
+      ],
+      "properties": {
+        "horse_no": {"type": "integer", "minimum": 1},
+        "horse_name": {"type": "string"},
+        "base_rank": {"type": "integer", "minimum": 1},
+        "final_rank": {"type": "integer", "minimum": 1},
+        "mark": {"enum": ["◎", "○", "▲", "△", ""]},
+        "p_win_base": {"$ref": "#/$defs/prob"},
+        "p_top2_base": {"$ref": "#/$defs/prob"},
+        "p_top3_base": {"$ref": "#/$defs/prob"},
+        "p_win_final": {"$ref": "#/$defs/prob"},
+        "p_top2_final": {"$ref": "#/$defs/prob"},
+        "p_top3_final": {"$ref": "#/$defs/prob"},
+        "primary_reason": {"type": "string", "minLength": 1},
+        "secondary_support": {"type": "string"},
+        "main_concern": {"type": "string", "minLength": 1},
+        "why_above_next": {"type": "string"},
+        "scenario_adjustment_reason": {"type": "string"},
+        "edge_performance": {"$ref": "#/$defs/edgePerformance"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

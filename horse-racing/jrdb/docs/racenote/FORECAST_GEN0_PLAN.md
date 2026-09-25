@@ -1,13 +1,12 @@
 # RaceNote Forecast Gen0 plan
 
-Status: CURRENT RESEARCH PLAN / TREND-FIRST AMENDMENT ACTIVE
+Status: CURRENT RESEARCH PLAN / GEN0.3 CONTRACT FINALIZED
 Last reviewed: 2026-09-25
 
-> 2026-09-25 amendment: the next forecast-generation research order is
-> `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
-> The older FSET-Gen0.1 ordering below is retained for Gen0-G000 audit and
-> historical continuity, not as the reading order for the next activation.
-> See `GENERAL_EVIDENCE_PRIORITY_v0_1.md`.
+> Current next-generation contract: `RaceNote-Forecast-Gen0.3`.
+> Planned first activation: `Gen0-G001`.
+> Reading priority: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
+> Gen0.2 was implemented but never activated and is retained as reference only.
 
 ## 1. Goal
 
@@ -46,36 +45,49 @@ pre-race source resolve
 
 ## 3. Prediction inputs
 
-基本入力はRaceNote authoritative bundle / validated Reader Viewとする。
+Gen0.3 Independent Forecastの入力順は固定する。
 
-`docs/RaceNote_Prediction_Handoff_v0_1.md` のreading orderを基準に、最低限以下を確認する。
+```text
+RaceNote INDEPENDENT view
+  -> General Evidence
+  -> Pairwise Comparison
+  -> Scenario Robustness
+  -> Base Forecast
+  -> EdgeDB Performance-only overlay
+  -> Final Forecast
+  -> Freeze
+```
 
-### Race level
+### Pre-Freeze allowed
 
-- surface / distance
-- course layout / turn
-- class / grade / race conditions
-- field size
-- weight rule
-- race trends
-- pace structure
+Race level:
 
-### Horse level
+- surface / distance / course layout / turn / class / grade / field size
+- as-of-safe frame / running-style / other historical trends
+- independent Race Structure reconstructed from prior corner positions
 
-- basic / ability
-- IDM / total index等のJRDB事前評価
-- surface / distance / track fit
-- running style / forecast position
-- pace-related indices
-- training / condition
-- recent detailed runs
-- historical profile / older runs
-- same course / same distance / same surface
-- jockey / sire / frame等のcontext statistics
-- JRDB事前market情報
-- coverage / missing / contradictory evidence
+Horse level:
 
-単一index、単一Edge、単一コメントだけで結論を固定しない。
+- same surface / same distance / same venue / distance-range history
+- RaceReview historical running-content evidence
+- prior-run IDM as Ability Anchor
+- recent detailed runs / older history / coverage
+- jockey / sire / frame context
+- pre-race factual rotation / weight / raw workout evidence allowed by firewall
+- EdgeDB Performance evidence after Base Forecast only
+
+### Pre-Freeze forbidden
+
+- current JRDB IDM / total composite / marks
+- current JRDB forecast running style / forecast pace / forecast finish order
+- current odds / popularity / market ranks
+- EdgeDB Value channel
+- RL / Value
+- Training Edge
+- target result / payout / final odds
+
+Current JRDB consensus and market may be opened only after immutable Forecast
+Freeze. They may evaluate the frozen prediction but must not mutate it.
 
 ## 4. Initial factor set
 
@@ -92,11 +104,12 @@ DATA_TREND
 
 したがってF01基礎能力を先頭だから最重要、と解釈してはならない。
 
-2026-09-25時点で `Pairwise Comparison v0.1` と
-`Scenario Robustness v0.1` の監査契約も実装済み。
-次世代では全馬独立採点だけで順位を作らず、最終順位の境界となる馬同士を
-直接比較し、「なぜ上か」「何なら逆転するか」を記録したうえで、
-SLOW / MEDIUM / FAST の3展開で軸の頑健性を確認する。
+2026-09-25時点で `General Evidence v0.1`、
+`Pairwise Comparison v0.1`、`Scenario Robustness v0.1`、
+`RaceNote-Forecast-Gen0.3` まで実装済み。
+次世代では全馬独立採点だけで順位を作らず、直接比較と逆転条件を記録し、
+SLOW / MEDIUM / FAST の3展開で軸の頑健性を確認したうえでBase Forecastを
+作る。EdgeDBはその後にPerformance channelだけを補助Evidenceとして使う。
 
 初期factor setは `FSET-Gen0.1` の10ファクター。
 
@@ -205,7 +218,7 @@ freezeでは最低限:
 
 を固定する。
 
-`src/racenote_forecast_gen0.py` はこの境界をdeterministicに検証する。
+`src/racenote_forecast_gen0_3.py` がGen0.3のsource-chain / probability / mark / Edge Performance / freeze境界をdeterministicに検証する。
 
 禁止result field、pre-race guard不成立、結果visible、mark/axis内部不整合、hash不整合はfail closedとする。
 
@@ -217,7 +230,7 @@ freezeでは最低限:
 
 正本config:
 
-`config/racenote_forecast_gen0_ledger_v0_1.json`
+`config/racenote_forecast_gen0_ledger_v0_3.json`
 
 Google SheetsはChatGPTのDrive / Sheets connectorから直接read / writeする。RaceNote sourceへGoogle API clientやcredentialを持ち込まない。
 

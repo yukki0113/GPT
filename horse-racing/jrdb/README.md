@@ -1,4 +1,4 @@
-# JRDB project
+\nCurrent next-generation Forecast contract: `RaceNote-Forecast-Gen0.3`; planned first activation `Gen0-G001`. Gen0.2 was never activated and is reference-only.\n# JRDB project
 
 中央競馬予想で使用するJRDB系の取得・解析・RaceNote・EdgeDB・競馬新聞/PWA・研究資産を管理する現行プロジェクトです。
 

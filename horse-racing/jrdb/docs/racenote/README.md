@@ -51,8 +51,11 @@ remains post-Freeze because current popularity is market information.
 
 Do not introduce fixed weights or a single score as an implicit current
 default. Keep prediction policy, presentation policy, and result evaluation
-separate. Gen0.2 remains implemented but non-activated; the trend-first
-redesign requires a new forecast version rather than silently mutating Gen0.2.
+separate.
+
+The trend-first redesign is now finalized as **RaceNote-Forecast-Gen0.3**.
+Gen0.2 was never activated and is retained only as a pre-redesign reference.
+The planned first activation remains `Gen0-G001`, now using Gen0.3.
 
 ## 3. Current data boundaries
 
@@ -120,8 +123,20 @@ Scenario Robustness v0.1 is also implemented:
 
 It tests SLOW / MEDIUM / FAST pace scenarios, derives whether the Pairwise
 axis is ROBUST / CONDITIONAL / FRAGILE, and records horse-by-horse rank
-sensitivity without automatically replacing the Pairwise order. The next
-research stage is the new trend-first Forecast contract.
+sensitivity without automatically replacing the Pairwise order.
+
+The next-generation Forecast contract is now implemented:
+
+- `src/racenote_forecast_gen0_3.py`
+- `src/racenote_edge_performance_adapter.py`
+- `schema/racenote_forecast_gen0_schema_v0_3.json`
+- `config/racenote_forecast_gen0_ledger_v0_3.json`
+- `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
+
+Gen0.3 consumes General Evidence -> Pairwise -> Scenario -> Base Forecast,
+then allows only EdgeDB Performance evidence to adjust the final forecast.
+JRDB consensus, current market, Edge Value, RL/Value and Bet Plan remain
+post-Freeze layers.
 
 ## 5. Legacy boundary
 

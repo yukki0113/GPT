@@ -1,17 +1,22 @@
 # RaceNote Forecast Gen0.2 Implementation Status — 2026-09-17
 
-Status: IMPLEMENTED_NOT_ACTIVATED
+Status: IMPLEMENTED / NEVER ACTIVATED / SUPERSEDED BY GEN0.3
 
 ## 1. Purpose
 
 Gen0-G000 / RaceNote-Forecast-Gen0.1 の50R検証後に確定したGen0.2方針を、Gen0.1を変更せず別versionとして実装した記録。
 
-Planned activation:
+Historical planned activation (cancelled before activation):
 
 - generation: `Gen0-G001`
 - forecast: `RaceNote-Forecast-Gen0.2`
 - factor set: `FSET-Gen0.2`
 - firewall: `Gen0.2-Firewall-0.1`
+
+2026-09-25: Gen0.2 was superseded before activation by
+`RaceNote-Forecast-Gen0.3`. No Gen0.2 sample manifest or frozen Gen0-G001
+forecast was created. `Gen0-G001` is now reserved for the first Gen0.3
+activation.
 
 Gen0-G001のsample manifestはまだ作成していない。台帳のcurrent generation / current forecast versionはGen0-G000 / Gen0.1のまま。
 
