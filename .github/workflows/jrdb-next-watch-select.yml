@@ -1,0 +1,50 @@
+name: RaceReviewDB Next-Watch Select
+
+on:
+  workflow_dispatch:
+    inputs:
+      race_date:
+        description: Completed JRA source race date YYYY-MM-DD
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  select:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check 'duckdb==1.1.3' 'gdown>=6.1,<7'
+
+      - name: Download canonical inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/next_watch
+          gdown '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/next_watch/RaceReviewDB_CURRENT.zip
+          gdown '1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr' -O /tmp/next_watch/Turn5.zip
+
+      - name: Select next-watch horses
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/next_watch/output
+          python horse-racing/jrdb/src/jrdb_next_watch_select.py             --date '${{ inputs.race_date }}'             --current-zip /tmp/next_watch/RaceReviewDB_CURRENT.zip             --turn5-zip /tmp/next_watch/Turn5.zip             --work-root /tmp/next_watch/work             --output-json /tmp/next_watch/output/next_watch_${{ inputs.race_date }}.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RaceReviewDB-next-watch-select-${{ inputs.race_date }}-${{ github.run_id }}
+          path: /tmp/next_watch/output/
+          retention-days: 30
+          compression-level: 0
