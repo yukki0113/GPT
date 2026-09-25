@@ -1,0 +1,89 @@
+{
+  "artifact_type": "jrdb_warehouse_drive_object_index_family",
+  "version": "v1",
+  "generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+  "family": "ukc",
+  "root_id": "1Tg9blpyDg96vxv2cGY-8eM5iNorSZJPR",
+  "objects": {
+    "ae5548b3c2c429489c242b91d7fed60ae1729ece42048485c592f262acc2375b.parquet": {
+      "file_id": "1Vkmi1NmYgxXxEZPAMAHDIotXPAkT3tj9",
+      "year": 2025,
+      "size_bytes": 3190820
+    },
+    "92d9d37e198feafe1031db8567e2f2690cbee3727b2f22b363660bc1675f33e0.parquet": {
+      "file_id": "1E6h5bcBgTJjDM11ujmfRfmQ6cxvLlbqG",
+      "year": 2024,
+      "size_bytes": 3176150
+    },
+    "7f37d308db0e41f4ba652acf4cb9c62d7755d03307cf56b74453f7a820db2ae5.parquet": {
+      "file_id": "1Yapoh1Hos0et32zm2YDw7CLDRHvhZKVE",
+      "year": 2023,
+      "size_bytes": 3208894
+    },
+    "a921364bb73fe9af78afd3d1fc565122f863717436a8f0beb842a3283ca52eef.parquet": {
+      "file_id": "1hq9Lf7QKXbhYCLV3FZAQamf-xRAAmbYW",
+      "year": 2022,
+      "size_bytes": 3181715
+    },
+    "0c311e04e8105fd17427a16e977435cf727a5cbdc9221b80d0583eab09a9e08e.parquet": {
+      "file_id": "17X4bbbTFpweYY2-DGFStrN1mkW2GyVVQ",
+      "year": 2021,
+      "size_bytes": 3229916
+    },
+    "cade07268de98758d43a180217a6ed89be53aec8129f4b3325efe904f8a27dc2.parquet": {
+      "file_id": "1_jBnKk1d7ESAf55_qDW__YxWy996LhyM",
+      "year": 2020,
+      "size_bytes": 3250729
+    },
+    "7a0792fbf11fa8000e4543b1e9f680c9fcd102c522b0f15308f22e18eff53f6e.parquet": {
+      "file_id": "1sRwRlBij4pvhvZ5fNNHP9uZ5jmDDFc-L",
+      "year": 2019,
+      "size_bytes": 3194632
+    },
+    "3770eaa17fc0f0c6c55f435a884edb41280f4510ea1ebee3736abf4fe21935ca.parquet": {
+      "file_id": "1jS0tj4r8KJoyfkJAUwdDv7YsVyQatF-a",
+      "year": 2018,
+      "size_bytes": 3271646
+    },
+    "f6e9ef7f50ef0c852ec370c6b56d41af7616b16e639bcef222938fe5e8400adb.parquet": {
+      "file_id": "1z607Met-uZBEKCjaDx2mYUwEgLSypPEx",
+      "year": 2017,
+      "size_bytes": 3283660
+    },
+    "2121a0f41e4d565797ffb10d41912fa332ad138b6b6cd275955ec244710ed4ea.parquet": {
+      "file_id": "1E9f6T5y5PLwXVZ44bfLHYzyqXpuWNys-",
+      "year": 2016,
+      "size_bytes": 3341477
+    },
+    "24b62e9b033c01e6ae7b20f8365ab0a9df584684e2df8d9a35b7c933c9590030.parquet": {
+      "file_id": "1LpJSZzFYUYQhzD-8VNOByf5JC-tUMmtC",
+      "year": 2015,
+      "size_bytes": 3318117
+    },
+    "7ec14a13a848260e72f6cc7fb536d998039012ab11961c820534ae8ff623720b.parquet": {
+      "file_id": "13QMomNd5QanQOHc6_FMJwpeceYHrsfU0",
+      "year": 2014,
+      "size_bytes": 3329268
+    },
+    "9c079ae0355556e0a5a9a44a663ac1fca38372c7d8d632d58afa636f49576752.parquet": {
+      "file_id": "1b7wjjyLcry5Dpm0Wj8TeBkHwGpcpHHmw",
+      "year": 2013,
+      "size_bytes": 3341515
+    },
+    "93e47ab480f2592a506172cb4a0c3600fb812677bfc695934232cc9f37e5bbb4.parquet": {
+      "file_id": "19qcC18RD5Iu_sxTtGT9_eHOw91qJwEcE",
+      "year": 2012,
+      "size_bytes": 3324711
+    },
+    "2a8d64c2a940f887e1a2292cfc3a49dad448327854be32d54246059034f3b7b5.parquet": {
+      "file_id": "12EiONB2Jcu2YFN4-QsRTjkAjP4aFV7Hj",
+      "year": 2011,
+      "size_bytes": 3285489
+    },
+    "ec2015af293c754fcbcee4a4cb93022b70eb09d7255b89dd4d9a25574c455433.parquet": {
+      "file_id": "1t0zQtrWuSmwR4eKq-IAJS71O6ZWtNfVk",
+      "year": 2010,
+      "size_bytes": 3350238
+    }
+  }
+}
