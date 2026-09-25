@@ -34,7 +34,9 @@ jobs:
 
       - name: Compile Review modules
         run: |
-          python -m compileall -q             horse-racing/jrdb/src/jrdb_postrace_review.py             horse-racing/jrdb/src/jrdb_postrace_review_source.py             horse-racing/jrdb/src/jrdb_postrace_review_standard.py             horse-racing/jrdb/src/jrdb_postrace_review_context.py             horse-racing/jrdb/src/jrdb_postrace_review_bias.py             horse-racing/jrdb/src/jrdb_postrace_review_builder.py             horse-racing/jrdb/src/audit_jrdb_postrace_review.py             horse-racing/jrdb/src/jrdb_postrace_review_publish.py
+          python -m compileall -q             horse-racing/jrdb/src/jrdb_postrace_review.py             horse-racing/jrdb/src/jrdb_postrace_review_source.py             horse-racing/jrdb/src/jrdb_postrace_review_standard.py             horse-racing/jrdb/src/jrdb_postrace_review_context.py             horse-racing/jrdb/src/jrdb_postrace_review_bias.py             horse-racing/jrdb/src/jrdb_postrace_review_builder.py             horse-racing/jrdb/src/audit_jrdb_postrace_review.py             horse-racing/jrdb/src/jrdb_postrace_review_publish.py \
+            horse-racing/jrdb/src/jrdb_postrace_review_incremental.py \
+            horse-racing/jrdb/src/jrdb_postrace_review_reader.py
 
       - name: Run Review unit tests
         run: |
