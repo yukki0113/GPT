@@ -104,6 +104,7 @@ jobs:
               member = str(item.get("member") or "").strip()
               mark = str(item.get("mark") or "").strip()
               confidence = str(item.get("confidence") or "").strip()
+              tag = str(item.get("tag") or "").strip()
               review_horse = item.get("review_horse", False)
               comment = str(item.get("comment") or "").strip()
 
@@ -136,6 +137,7 @@ jobs:
                   "member": member,
                   "mark": mark,
                   "confidence": confidence,
+                  "tag": tag,
                   "review_horse": review_horse,
                   "comment": comment,
               })
@@ -172,6 +174,7 @@ jobs:
                           "member",
                           "mark",
                           "confidence",
+                          "tag",
                           "review_horse",
                           "comment",
                       ],
