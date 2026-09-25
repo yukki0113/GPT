@@ -7,11 +7,13 @@ on:
       - 'horse-racing/jrdb/src/racenote_racereview_current.py'
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/src/racenote_edge_performance_adapter.py'
       - 'horse-racing/jrdb/src/racenote_forecast_gen0_3.py'
       - 'horse-racing/jrdb/schema/racenote_general_evidence_schema_v0_1.json'
+      - 'horse-racing/jrdb/schema/racenote_all_runner_synthesis_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_pairwise_comparison_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_forecast_gen0_schema_v0_3.json'
@@ -19,6 +21,7 @@ on:
       - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
+      - 'horse-racing/jrdb/tests/test_racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/tests/test_racenote_edge_performance_adapter.py'
@@ -29,11 +32,13 @@ on:
       - 'horse-racing/jrdb/src/racenote_racereview_current.py'
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/src/racenote_edge_performance_adapter.py'
       - 'horse-racing/jrdb/src/racenote_forecast_gen0_3.py'
       - 'horse-racing/jrdb/schema/racenote_general_evidence_schema_v0_1.json'
+      - 'horse-racing/jrdb/schema/racenote_all_runner_synthesis_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_pairwise_comparison_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_forecast_gen0_schema_v0_3.json'
@@ -41,6 +46,7 @@ on:
       - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
+      - 'horse-racing/jrdb/tests/test_racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/tests/test_racenote_edge_performance_adapter.py'
@@ -65,6 +71,7 @@ jobs:
           python -m py_compile src/racenote_racereview_current.py
           python -m py_compile src/racenote_racereview_adapter.py
           python -m py_compile src/racenote_general_evidence.py
+          python -m py_compile src/racenote_all_runner_synthesis.py
           python -m py_compile src/racenote_pairwise_comparison.py
           python -m py_compile src/racenote_scenario_robustness.py
           python -m py_compile src/racenote_edge_performance_adapter.py
@@ -73,6 +80,7 @@ jobs:
         working-directory: horse-racing/jrdb
         run: |
           python -m json.tool schema/racenote_general_evidence_schema_v0_1.json >/dev/null
+          python -m json.tool schema/racenote_all_runner_synthesis_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_pairwise_comparison_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_scenario_robustness_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_forecast_gen0_schema_v0_3.json >/dev/null
@@ -84,6 +92,7 @@ jobs:
             horse-racing/jrdb/tests/test_racenote_racereview_current.py \
             horse-racing/jrdb/tests/test_racenote_racereview_adapter.py \
             horse-racing/jrdb/tests/test_racenote_general_evidence.py \
+            horse-racing/jrdb/tests/test_racenote_all_runner_synthesis.py \
             horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py \
             horse-racing/jrdb/tests/test_racenote_scenario_robustness.py \
             horse-racing/jrdb/tests/test_racenote_edge_performance_adapter.py \

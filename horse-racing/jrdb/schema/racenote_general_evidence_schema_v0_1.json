@@ -245,7 +245,7 @@
         "contract_version"
       ],
       "properties": {
-        "name": {"const": "PAIRWISE_COMPARISON"},
+        "name": {"const": "ALL_RUNNER_SYNTHESIS"},
         "required_read_order": {
           "const": [
             "DATA_TREND",
@@ -255,7 +255,7 @@
         },
         "status": {"const": "CONTRACT_IMPLEMENTED"},
         "contract_version": {
-          "const": "TrendFirst-Pairwise-v0.1"
+          "const": "FullField-Draft-v0.1"
         }
       },
       "additionalProperties": false

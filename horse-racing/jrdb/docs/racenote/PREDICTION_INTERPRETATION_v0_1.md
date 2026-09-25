@@ -266,7 +266,27 @@ concern_case:
 
 これは Pairwise 前の整理であり、最終評価ではない。
 
-## 9. Pairwise reading
+## 9. All-Runner Synthesis
+
+Prediction Interpretationは各馬単体のpre-readであり、
+それ自体では順位を決めない。
+
+次に全馬分を同時に読み、
+
+- positive case
+- concern case
+- confidence
+- mixed / contradiction
+- Ability floor / ceiling context
+
+を横並びで比較してdraft orderを作る。
+
+この工程の正本は
+`docs/racenote/ALL_RUNNER_SYNTHESIS_v0_1.md`。
+
+draft orderは最終予想ではなく、Pairwiseへ渡す比較仮説である。
+
+## 10. Pairwise reading
 
 Pairwise request は両馬の Prediction Interpretation を先に読む。
 
@@ -290,7 +310,7 @@ Pairwise では必ず:
 
 Ability が Trend / RR を覆す場合は override reason が必須。
 
-## 10. Prediction case semantics
+## 11. Prediction case semantics
 
 Interpretation は次の component を提示できる。
 
@@ -309,7 +329,7 @@ Concern examples:
 
 component の個数を score にしてはならない。
 
-## 11. Short comment relationship
+## 12. Short comment relationship
 
 短評は将来、同じ Evidence から生成する。
 
@@ -330,7 +350,7 @@ component の個数を score にしてはならない。
 
 短評だけの別ロジックを作らない。
 
-## 12. Market boundary
+## 13. Market boundary
 
 current popularity / odds は Interpretation に入れない。
 
@@ -344,7 +364,7 @@ current popularity / odds は Interpretation に入れない。
 
 である。
 
-## 13. Canonical implementation
+## 14. Canonical implementation
 
 - `src/racenote_horse_evidence_card.py`
 - `src/racenote_general_evidence.py`

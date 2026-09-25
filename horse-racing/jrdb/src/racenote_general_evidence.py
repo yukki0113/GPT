@@ -1508,10 +1508,10 @@ def build_general_evidence(
             key=lambda horse: int(horse["horse_no"]),
         ),
         "next_stage": {
-            "name": "PAIRWISE_COMPARISON",
+            "name": "ALL_RUNNER_SYNTHESIS",
             "required_read_order": list(DECISION_ORDER),
             "status": "CONTRACT_IMPLEMENTED",
-            "contract_version": "TrendFirst-Pairwise-v0.1",
+            "contract_version": "FullField-Draft-v0.1",
         },
     }
 

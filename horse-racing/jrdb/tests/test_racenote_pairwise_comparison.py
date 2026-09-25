@@ -15,9 +15,11 @@ from racenote_pairwise_comparison import (  # noqa: E402
     PAIRWISE_SCHEMA_VERSION,
     PairwiseComparisonError,
     build_comparison_request,
+    build_comparison_request_from_synthesis,
     required_pair_keys,
     semantic_sha256,
     validate_pairwise_comparison,
+    validate_pairwise_comparison_from_synthesis,
 )
 
 
@@ -199,6 +201,36 @@ def _general_evidence() -> dict[str, object]:
             "status": "CONTRACT_IMPLEMENTED",
             "contract_version": "TrendFirst-Pairwise-v0.1",
         },
+    }
+
+
+def _synthesis_audit(
+    general: dict[str, object],
+) -> dict[str, object]:
+    return {
+        "audit_schema_version": "RaceNote-All-Runner-Synthesis-Audit-0.1",
+        "status": "PASS",
+        "general_evidence_sha256": semantic_sha256(general),
+        "target": copy.deepcopy(general["target"]),
+        "policy": {
+            "numeric_score_used": False,
+            "current_market_visible": False,
+            "current_jrdb_consensus_visible": False,
+            "training_edge_visible": False,
+            "ability_may_be_primary_basis": False,
+            "draft_order_is_final_forecast": False,
+            "pairwise_required_after_synthesis": True,
+        },
+        "draft_order": [3, 1, 2, 4],
+        "high_priority_boundaries": [
+            {
+                "upper_horse_no": 3,
+                "lower_horse_no": 1,
+                "priority_reason_codes": [
+                    "LOWER_LOW_CONFIDENCE",
+                ],
+            }
+        ],
     }
 
 
@@ -486,6 +518,135 @@ class RaceNotePairwiseComparisonTest(unittest.TestCase):
             build_comparison_request(
                 general,
                 [1, 2, 3, 4],
+            )
+
+    def test_canonical_pairwise_validation_binds_synthesis(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        payload = _valid_payload()
+        payload["all_runner_synthesis_sha256"] = semantic_sha256(
+            synthesis
+        )
+        payload["draft_order"] = list(synthesis["draft_order"])
+
+        audit = validate_pairwise_comparison_from_synthesis(
+            general,
+            synthesis,
+            payload,
+        )
+
+        self.assertEqual(
+            audit["all_runner_synthesis_sha256"],
+            semantic_sha256(synthesis),
+        )
+        self.assertEqual(
+            audit["draft_source"]["kind"],
+            "ALL_RUNNER_SYNTHESIS",
+        )
+
+    def test_canonical_pairwise_rejects_reauthored_draft_order(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        payload = _valid_payload()
+        payload["all_runner_synthesis_sha256"] = semantic_sha256(
+            synthesis
+        )
+        payload["draft_order"] = [1, 3, 2, 4]
+
+        with self.assertRaises(PairwiseComparisonError):
+            validate_pairwise_comparison_from_synthesis(
+                general,
+                synthesis,
+                payload,
+            )
+
+    def test_canonical_pairwise_rejects_synthesis_hash_mismatch(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        payload = _valid_payload()
+        payload["all_runner_synthesis_sha256"] = "0" * 64
+        payload["draft_order"] = list(synthesis["draft_order"])
+
+        with self.assertRaises(PairwiseComparisonError):
+            validate_pairwise_comparison_from_synthesis(
+                general,
+                synthesis,
+                payload,
+            )
+
+    def test_canonical_request_uses_audited_synthesis_order(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+
+        request = build_comparison_request_from_synthesis(
+            general,
+            synthesis,
+        )
+
+        self.assertEqual(
+            request["draft_order"],
+            [3, 1, 2, 4],
+        )
+        self.assertEqual(
+            request["draft_source"]["kind"],
+            "ALL_RUNNER_SYNTHESIS",
+        )
+        self.assertTrue(
+            request["instructions"][
+                "draft_order_must_not_be_reauthored"
+            ]
+        )
+        priorities = {
+            tuple(sorted((pair["horse_a"], pair["horse_b"]))):
+            pair["comparison_priority"]
+            for pair in request["required_pairs_for_draft"]
+        }
+        self.assertEqual(priorities[(1, 3)], "HIGH")
+
+    def test_synthesis_hash_mismatch_fails_closed(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        synthesis["general_evidence_sha256"] = "0" * 64
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request_from_synthesis(
+                general,
+                synthesis,
+            )
+
+    def test_synthesis_market_visibility_fails_closed(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        synthesis["policy"]["current_market_visible"] = True
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request_from_synthesis(
+                general,
+                synthesis,
+            )
+
+    def test_synthesis_ability_first_policy_fails_closed(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        synthesis["policy"]["ability_may_be_primary_basis"] = True
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request_from_synthesis(
+                general,
+                synthesis,
+            )
+
+    def test_nonadjacent_high_priority_boundary_fails_closed(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        synthesis["high_priority_boundaries"][0][
+            "lower_horse_no"
+        ] = 4
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request_from_synthesis(
+                general,
+                synthesis,
             )
 
     def test_request_builder_does_not_choose_winners(self) -> None:

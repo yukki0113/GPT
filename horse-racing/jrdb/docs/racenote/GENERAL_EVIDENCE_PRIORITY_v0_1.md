@@ -238,7 +238,27 @@ then verifies the underlying raw lanes.
 
 See `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`.
 
-## 9. Comparison rules
+## 9. All-Runner Synthesis
+
+General Evidenceの直接のnext stageは
+`ALL_RUNNER_SYNTHESIS` とする。
+
+Prediction Interpretationを全馬分まとめて読み、
+
+- complete draft order
+- per-horse confidence
+- primary lane
+- positive / concern components
+- adjacent boundary priority
+
+を作る。
+
+Ability-only primary orderingは禁止する。
+
+canonical contract:
+`docs/racenote/ALL_RUNNER_SYNTHESIS_v0_1.md`.
+
+## 10. Comparison rules
 
 The Pairwise Comparison contract must read lanes in this order:
 
@@ -259,7 +279,7 @@ Rules:
 
 No numeric weights are authorized by v0.1.
 
-## 10. Short-comment relationship
+## 11. Short-comment relationship
 
 Short comments should ultimately explain the same evidence used in prediction.
 
@@ -282,7 +302,7 @@ Or:
 
 The renderer is future work. v0.1 only preserves structured comment evidence.
 
-## 11. Version boundary
+## 12. Version boundary
 
 Forecast Gen0.2 remains an implemented, non-activated historical contract.
 

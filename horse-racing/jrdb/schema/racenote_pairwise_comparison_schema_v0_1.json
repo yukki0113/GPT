@@ -25,6 +25,10 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
+    "all_runner_synthesis_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
     "target": {
       "type": "object",
       "required": ["date", "venue", "race_no", "race_name"],

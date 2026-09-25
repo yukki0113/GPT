@@ -806,6 +806,183 @@ def validate_pairwise_comparison(
     }
 
 
+def _validated_synthesis_draft(
+    general_evidence: Mapping[str, object],
+    synthesis_audit: Mapping[str, object],
+) -> tuple[list[int], list[dict[str, object]]]:
+    """Validate All-Runner Synthesis audit as the canonical draft source."""
+    if (
+        _text(synthesis_audit.get("audit_schema_version"))
+        != "RaceNote-All-Runner-Synthesis-Audit-0.1"
+    ):
+        raise PairwiseComparisonError(
+            "unsupported All-Runner Synthesis audit"
+        )
+    if _text(synthesis_audit.get("status")) != "PASS":
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis audit must PASS"
+        )
+
+    expected_hash = semantic_sha256(general_evidence)
+    if (
+        _text(synthesis_audit.get("general_evidence_sha256")).lower()
+        != expected_hash
+    ):
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis is not bound to General Evidence"
+        )
+
+    general_target = _mapping(
+        general_evidence.get("target"),
+        "general_evidence.target",
+    )
+    synthesis_target = _mapping(
+        synthesis_audit.get("target"),
+        "synthesis.target",
+    )
+    if _target_key(general_target) != _target_key(synthesis_target):
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis target mismatch"
+        )
+
+    policy = _mapping(
+        synthesis_audit.get("policy"),
+        "synthesis.policy",
+    )
+    if policy.get("numeric_score_used") is not False:
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis numeric score is forbidden"
+        )
+    if policy.get("current_market_visible") is not False:
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis must keep market hidden"
+        )
+    if (
+        policy.get("current_jrdb_consensus_visible")
+        is not False
+    ):
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis must keep JRDB consensus hidden"
+        )
+    if policy.get("training_edge_visible") is not False:
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis must keep Training Edge hidden"
+        )
+    if policy.get("ability_may_be_primary_basis") is not False:
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis cannot be Ability-first"
+        )
+    if policy.get("pairwise_required_after_synthesis") is not True:
+        raise PairwiseComparisonError(
+            "All-Runner Synthesis must require Pairwise"
+        )
+
+    runner_nos = set(_runner_index(general_evidence))
+    draft_order = _normalize_order(
+        synthesis_audit.get("draft_order"),
+        "synthesis.draft_order",
+        runner_nos,
+    )
+
+    raw_boundaries = _list(
+        synthesis_audit.get("high_priority_boundaries", []),
+        "synthesis.high_priority_boundaries",
+    )
+    boundaries: list[dict[str, object]] = []
+    adjacent = {
+        _pair_key(draft_order[index], draft_order[index + 1])
+        for index in range(len(draft_order) - 1)
+    }
+    for index, raw_boundary in enumerate(raw_boundaries, start=1):
+        boundary = _mapping(
+            raw_boundary,
+            f"synthesis.high_priority_boundaries[{index}]",
+        )
+        upper = _positive_int(
+            boundary.get("upper_horse_no"),
+            f"synthesis.high_priority_boundaries[{index}].upper_horse_no",
+        )
+        lower = _positive_int(
+            boundary.get("lower_horse_no"),
+            f"synthesis.high_priority_boundaries[{index}].lower_horse_no",
+        )
+        if _pair_key(upper, lower) not in adjacent:
+            raise PairwiseComparisonError(
+                "high-priority synthesis boundary must be adjacent"
+            )
+        raw_codes = boundary.get("priority_reason_codes", [])
+        reason_codes = [
+            _text(value)
+            for value in _list(
+                raw_codes,
+                f"synthesis.high_priority_boundaries[{index}].priority_reason_codes",
+            )
+            if _text(value)
+        ]
+        boundaries.append(
+            {
+                "upper_horse_no": upper,
+                "lower_horse_no": lower,
+                "priority_reason_codes": reason_codes,
+            }
+        )
+
+    return draft_order, boundaries
+
+
+def build_comparison_request_from_synthesis(
+    general_evidence: Mapping[str, object],
+    synthesis_audit: Mapping[str, object],
+) -> dict[str, object]:
+    """Build the canonical Pairwise request from audited full-field synthesis."""
+    draft_order, high_priority_boundaries = _validated_synthesis_draft(
+        general_evidence,
+        synthesis_audit,
+    )
+    request = build_comparison_request(
+        general_evidence,
+        draft_order,
+    )
+
+    high_priority_pairs = {
+        _pair_key(
+            int(item["upper_horse_no"]),
+            int(item["lower_horse_no"]),
+        )
+        for item in high_priority_boundaries
+    }
+    for pair in request["required_pairs_for_draft"]:
+        key = _pair_key(
+            int(pair["horse_a"]),
+            int(pair["horse_b"]),
+        )
+        pair["comparison_priority"] = (
+            "HIGH"
+            if key in high_priority_pairs
+            else "STANDARD"
+        )
+
+    request["all_runner_synthesis_sha256"] = semantic_sha256(
+        synthesis_audit
+    )
+    request["draft_source"] = {
+        "kind": "ALL_RUNNER_SYNTHESIS",
+        "audit_schema_version": _text(
+            synthesis_audit.get("audit_schema_version")
+        ),
+        "high_priority_boundaries": copy.deepcopy(
+            high_priority_boundaries
+        ),
+    }
+    request["instructions"][
+        "draft_order_must_not_be_reauthored"
+    ] = True
+    request["instructions"][
+        "high_priority_boundaries_require_explicit_attention"
+    ] = True
+    return request
+
+
 def build_comparison_request(
     general_evidence: Mapping[str, object],
     draft_order: list[int],
@@ -915,6 +1092,54 @@ def build_comparison_request(
     }
 
 
+def validate_pairwise_comparison_from_synthesis(
+    general_evidence: Mapping[str, object],
+    synthesis_audit: Mapping[str, object],
+    payload: Mapping[str, object],
+) -> dict[str, object]:
+    """Validate canonical Pairwise output against audited full-field synthesis."""
+    draft_order, high_priority_boundaries = _validated_synthesis_draft(
+        general_evidence,
+        synthesis_audit,
+    )
+
+    expected_synthesis_hash = semantic_sha256(synthesis_audit)
+    actual_synthesis_hash = _text(
+        payload.get("all_runner_synthesis_sha256")
+    ).lower()
+    if actual_synthesis_hash != expected_synthesis_hash:
+        raise PairwiseComparisonError(
+            "Pairwise payload is not bound to All-Runner Synthesis"
+        )
+
+    runner_nos = set(_runner_index(general_evidence))
+    payload_draft = _normalize_order(
+        payload.get("draft_order"),
+        "payload.draft_order",
+        runner_nos,
+    )
+    if payload_draft != draft_order:
+        raise PairwiseComparisonError(
+            "Pairwise draft_order must equal audited Synthesis draft_order"
+        )
+
+    audit = validate_pairwise_comparison(
+        general_evidence,
+        payload,
+    )
+    audit["all_runner_synthesis_sha256"] = expected_synthesis_hash
+    audit["draft_source"] = {
+        "kind": "ALL_RUNNER_SYNTHESIS",
+        "audit_schema_version": _text(
+            synthesis_audit.get("audit_schema_version")
+        ),
+        "high_priority_boundaries": copy.deepcopy(
+            high_priority_boundaries
+        ),
+    }
+    return audit
+
+
 def main() -> int:
     """Validate one authored Pairwise Comparison payload."""
     parser = argparse.ArgumentParser()
@@ -929,6 +1154,15 @@ def main() -> int:
         required=True,
     )
     parser.add_argument(
+        "--all-runner-synthesis-audit",
+        type=Path,
+        required=False,
+        help=(
+            "Canonical path: bind Pairwise to audited All-Runner Synthesis. "
+            "Omit only for legacy replay/compatibility."
+        ),
+    )
+    parser.add_argument(
         "--output-audit",
         type=Path,
         required=True,
@@ -941,10 +1175,22 @@ def main() -> int:
     comparison = json.loads(
         args.comparison.read_text(encoding="utf-8")
     )
-    audit = validate_pairwise_comparison(
-        general_evidence,
-        comparison,
-    )
+    if args.all_runner_synthesis_audit is not None:
+        synthesis_audit = json.loads(
+            args.all_runner_synthesis_audit.read_text(
+                encoding="utf-8"
+            )
+        )
+        audit = validate_pairwise_comparison_from_synthesis(
+            general_evidence,
+            synthesis_audit,
+            comparison,
+        )
+    else:
+        audit = validate_pairwise_comparison(
+            general_evidence,
+            comparison,
+        )
 
     args.output_audit.parent.mkdir(
         parents=True,
