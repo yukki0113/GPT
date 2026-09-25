@@ -256,6 +256,22 @@ def main() -> int:
         ]
         _run(warehouse_command, environment, log_handle)
 
+        index_audit_path = args.work_root / "index_base_equivalence.json"
+        _run(
+            [
+                "python",
+                "horse-racing/jrdb/src/audit_jrdb_index_base_db_equivalence.py",
+                "--left",
+                str(raw_index),
+                "--right",
+                str(warehouse_index),
+                "--out",
+                str(index_audit_path),
+            ],
+            environment,
+            log_handle,
+        )
+
         raw_outputs = _pipeline(
             "raw",
             raw_index,
@@ -308,6 +324,7 @@ def main() -> int:
             log_handle,
         )
 
+    index_audit = json.loads(index_audit_path.read_text(encoding="utf-8"))
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
     raw_expected = _expected_fingerprint_compare(
         raw_outputs["fingerprint"],
@@ -318,7 +335,8 @@ def main() -> int:
         args.expected_fingerprint,
     )
     overall_pass = (
-        audit.get("status") == "PASS"
+        index_audit.get("status") == "PASS"
+        and audit.get("status") == "PASS"
         and raw_expected["pass"]
         and warehouse_expected["pass"]
     )
@@ -329,6 +347,7 @@ def main() -> int:
         "source_mode_warehouse": "accepted_historical_warehouse",
         "warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
         "record_hash_compatibility": "legacy_body_sha256_sidecar",
+        "index_base_audit": index_audit,
         "downstream_audit": audit,
         "raw_expected_fingerprint": raw_expected,
         "warehouse_expected_fingerprint": warehouse_expected,
