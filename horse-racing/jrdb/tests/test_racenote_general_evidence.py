@@ -112,7 +112,27 @@ def _independent() -> dict[str, object]:
                         25.3,
                         "sufficient",
                     ),
-                }
+                },
+                "running_style": {
+                    "1": {
+                        "label": "逃げ",
+                        **_stat(
+                            50,
+                            14.0,
+                            34.0,
+                            "sufficient",
+                        ),
+                    },
+                    "3": {
+                        "label": "差し",
+                        **_stat(
+                            120,
+                            8.0,
+                            25.0,
+                            "sufficient",
+                        ),
+                    },
+                },
             },
         },
         "horses": [
@@ -493,6 +513,26 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         self.assertEqual(
             second_same_distance["direction"],
             "NEGATIVE",
+        )
+
+    def test_race_trend_sources_separate_pre_and_post_freeze(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        context = result["race_data_context"]
+
+        self.assertEqual(
+            context["trend_sources_v0_1"],
+            ["FRAME", "RUNNING_STYLE"],
+        )
+        self.assertNotIn(
+            "POPULARITY",
+            context["independent_future_trend_sources"],
+        )
+        self.assertEqual(
+            context["post_freeze_trend_sources"],
+            ["POPULARITY"],
         )
 
     def test_population_trends_keep_sample_size_visible(self) -> None:
