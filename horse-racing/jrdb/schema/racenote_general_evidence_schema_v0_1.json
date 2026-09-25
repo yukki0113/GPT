@@ -99,7 +99,8 @@
         "conditions",
         "available_trends",
         "trend_sources_v0_1",
-        "future_trend_sources",
+        "independent_future_trend_sources",
+        "post_freeze_trend_sources",
         "policy"
       ],
       "properties": {
@@ -109,7 +110,11 @@
           "type": "array",
           "items": {"type": "string"}
         },
-        "future_trend_sources": {
+        "independent_future_trend_sources": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "post_freeze_trend_sources": {
           "type": "array",
           "items": {"type": "string"}
         },
