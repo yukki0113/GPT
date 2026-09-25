@@ -91,7 +91,7 @@ DATA_TREND includes:
 
 Simple ability is retained as an anchor only and cannot auto-rank horses.
 
-## 4. Independent Race Structure
+## 5. Independent Race Structure
 
 Race Structure is reconstructed only from historical pre-race-visible evidence.
 
