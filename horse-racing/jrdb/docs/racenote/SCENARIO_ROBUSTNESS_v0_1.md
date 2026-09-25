@@ -22,7 +22,7 @@ Scenario Robustnessも予想スコアではない。
     General Evidence
       -> Pairwise Comparison
       -> Scenario Robustness
-      -> next-generation Forecast contract
+      -> RaceNote-Forecast-Gen0.3
       -> Independent Freeze
       -> post-Freeze market / value
 
