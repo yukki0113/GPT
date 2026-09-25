@@ -1,6 +1,7 @@
 # RaceNote Gen0.3 four-race blind E2E review
 
 Date: 2026-09-25
+Scope: post-freeze engineering review
 
 ## 1. Cohort
 
@@ -9,128 +10,94 @@ Date: 2026-09-25
 - Gen0-G003: 2026-09-12 阪神11R チャレンジカップ
 - Gen0-G004: 2026-09-12 阪神10R 竹田城ステークス
 
-Every result was opened only after Forecast Freeze passed.
+All target results were opened only after Forecast Freeze PASS.
 
-## 2. New field evidence status
+## 2. Gen0-G004 frozen forecast
 
-`field_evidence_summary` was added after Gen0-G003 exposed a field where all runners lacked directional Data Trend and RaceReview evidence.
+Final order:
+`5,2,10,15,13,12,9,7,3,4,6,14,8,11,1`
 
-Status values:
-- FULL_TOP_LANE_EVIDENCE
-- PARTIAL_TOP_LANE_EVIDENCE
-- ABILITY_FALLBACK_ONLY
-- INSUFFICIENT
+Marks:
+- ◎ 5 パシアンジャン
+- ○ 2 ペンナヴェローチェ
+- ▲ 10 レヴァンテシチー
+- △ 15 ルクスフレンジー
+- △ 13 タガノマカシヤ
+- △ 12 ポルポラジール
 
-The status is descriptive only:
-- may_auto_rank = false
-- may_auto_change_marks = false
+Forecast ID: `20260912_阪神_10_Gen0-G004`
+Prediction hash: `9d2c2a2cc893c9a176c2858b1af9185ded4728853fa88c5f1a8b3ad0256d471d`
+Freeze audit: PASS
 
-## 3. Gen0-G003 Challenge Cup
+Pre-freeze evidence mode:
+- field_evidence_summary = ABILITY_FALLBACK_ONLY
+- Data Trend directional runners = 0
+- RaceReview directional runners = 0
+- Ability Anchor available for all runners
 
-Pre-Freeze field status:
-`ABILITY_FALLBACK_ONLY`
+Scenario:
+- axis horse 5
+- axis_robustness = ROBUST
+- SLOW/MEDIUM/FAST all retain horse 5 at rank 1
+- ROBUST means scenario-order stability only; it does not upgrade fallback evidence quality
 
-Frozen order head:
-`10,15,8,7,...`
+## 3. Post-freeze result
 
-Actual top three:
-`15,8,7`
+Actual podium:
+1. 5 パシアンジャン
+2. 2 ペンナヴェローチェ
+3. 10 レヴァンテシチー
 
-Observed:
-- actual top-three set was forecast ranks 2/3/4
-- top-three overlap = 3/3
-- frozen axis 10 finished 11th
+The frozen top3 exactly matched the actual top3 in exact order.
+Axis horse 5 won.
+Observed race pace was MEDIUM.
 
-This showed that Ability fallback could identify a useful top cluster while a forced axis could still fail.
+## 4. Two ABILITY_FALLBACK_ONLY races
 
-## 4. Gen0-G004 Takedajo Stakes
+Challenge Cup / Gen0-G003:
+- evidence mode = ABILITY_FALLBACK_ONLY
+- axis robustness = CONDITIONAL
+- forecast top4 contained all actual podium horses
+- forecast top3 vs actual top3 overlap = 2/3
+- axis horse forecast rank 1 -> actual 11
 
-Pre-Freeze field status:
-`ABILITY_FALLBACK_ONLY`
+Takeda Castle Stakes / Gen0-G004:
+- evidence mode = ABILITY_FALLBACK_ONLY
+- axis robustness = ROBUST
+- forecast top3 = actual top3 exactly
+- axis horse forecast rank 1 -> actual 1
 
-Frozen order head:
-`5,2,10,15,...`
+Current hypothesis only:
+`field evidence coverage` and `scenario axis robustness` may need to be read together when describing axis confidence.
 
-Actual top three:
-`5,2,10`
+This is not yet a ranking rule and not calibration evidence. Sample size is only two fallback races.
 
-Observed:
-- exact top-three order = 3/3
-- frozen axis 5 won
-- rank 2 horse 2 finished second
-- rank 3 horse 10 finished third
+## 5. Four-race directional findings
 
-Therefore the Challenge Cup axis miss does not reproduce as a general Ability-fallback axis failure.
+Hatsukaze exposed horse-level historical-position variability.
+All Comers exposed FRONT/FORWARD aggregate ambiguity.
+Challenge Cup exposed candidate-set quality vs single-axis confidence under fallback evidence.
+Takeda Castle Stakes shows that fallback evidence can also produce a fully correct top cluster and axis when scenario ordering is robust.
 
-## 5. Consequence for mark/confidence design
+Therefore the current evidence does not support either of these simplistic conclusions:
+- `ABILITY_FALLBACK_ONLY means weak forecast`
+- `ABILITY_FALLBACK_ONLY means Ability ranking is sufficient`
 
-Current evidence does NOT justify:
-- banning ◎ in ABILITY_FALLBACK_ONLY races
-- automatically flattening all marks
-- automatically replacing the top horse
-- changing Ability ranking weights from these two races
+Instead, fallback mode should remain an evidence-quality label, while Scenario robustness remains a separate order-stability label.
 
-Current evidence DOES justify:
-- exposing that the entire field is Ability fallback
-- keeping this information visible to Forecast authoring and audit
-- separating evidence-quality status from scenario robustness
+## 6. Current decision
 
-In particular:
+Keep ranking logic unchanged.
+Do not introduce Ability weights or mark suppression from these samples.
 
-`scenario_axis_robustness = ROBUST`
+Continue tracking per race:
+- field_evidence_summary.status
+- scenario_axis_robustness
+- winner forecast rank
+- top3 overlap
+- top4/top5 podium coverage
+- axis actual rank
+- actual pace when independently available
 
-means the axis is stable across SLOW/MEDIUM/FAST scenario ordering. It does not mean the preferred evidence lanes are rich.
-
-`field_evidence_summary.status = ABILITY_FALLBACK_ONLY`
-
-means the top two preferred evidence lanes provide no directional runner evidence. It does not mean the axis must fail.
-
-Both dimensions are required.
-
-## 6. Position representation continues to hold
-
-Gen0-G004 pre-race Race Structure:
-- FRONT = 4
-- FORWARD = 6
-- MID = 2
-- BACK = 2
-- UNKNOWN = 1
-- MULTI_BAND = 12/15
-
-Actual top-three positions again show why tendency is not exact tactical commitment:
-- 5 had historical FORWARD/MULTI_BAND and raced 1-1-1-1
-- 2 had historical FORWARD/SINGLE_BAND and raced 6-5-5-4
-- 10 had historical UNKNOWN/MULTI_BAND and raced 8-7-8-7
-
-The position-variability and composition extensions remain appropriate descriptive context.
-
-## 7. Current decision
-
-Keep:
-- historical position variability fields
-- race-level position composition
-- front_or_forward_count_is_not_lead_contest_count
-- field_evidence_summary
-- ABILITY_FALLBACK_ONLY as descriptive evidence quality
-
-Do not change yet:
-- pace-pressure formula
-- mark assignment contract
-- rank generation contract
-- probability calibration
-- Ability weights
-
-## 8. Next phase
-
-Continue blind E2E across races with both:
-- top-lane evidence available
-- ABILITY_FALLBACK_ONLY
-
-Collect enough cases to separate:
-1. evidence coverage quality
-2. scenario robustness
-3. ranking accuracy
-4. probability calibration
-5. mark/axis reliability
-
-Only then change Forecast confidence or mark semantics.
+Research question for the next blind cohort:
+Does `ABILITY_FALLBACK_ONLY + ROBUST` repeatedly yield stronger axis performance than `ABILITY_FALLBACK_ONLY + CONDITIONAL`, while candidate-set quality remains useful in both?
