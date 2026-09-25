@@ -1225,3 +1225,81 @@ Turn 6 - Holdout validation.
 Before evaluating rule performance, Turn 6 must first enforce the right-censoring
 policy documented in Turn 3. Frozen conditions and thresholds above must not be
 changed based on Holdout outcomes.
+
+
+## 24. Turn 6 maturity gate result
+
+Status:
+
+HOLDOUT_VALIDATION_BLOCKED_MATURITY
+
+Execution date:
+
+2026-09-25
+
+Observed formal Holdout gate:
+
+- Turn3 observation horizon:
+  2026-09-22
+- Holdout start:
+  2026-08-01
+- maturity rule:
+  Discovery-only 90th percentile of observed days_to_next_start
+- Discovery q90:
+  77 days
+- Discovery q95:
+  91 days
+- q90 mature-source cutoff at the current horizon:
+  2026-07-07
+- formally mature Holdout rows:
+  0
+
+Interpretation:
+
+No 2026 Holdout source row is mature under the pre-committed q90 policy yet.
+Therefore the frozen 11 Turn-5 candidate rules must not be graded as S/A from
+the currently observed 2026-08 through 2026-09 next-start subset.
+
+Using only horses that have already returned by 2026-09-22 would condition the
+evaluation on quick return and create the exact right-censoring / selection bias
+the Turn-3 gate was designed to prevent.
+
+The result is not rule failure. It is an unavailable formal Holdout.
+
+Holdout outcomes were not used to retune any Turn-5 threshold.
+
+Earliest formal q90 readiness:
+
+- Holdout first source date:
+  2026-08-01
+- q90 maturity requirement:
+  77 days
+- minimum observation horizon:
+  2026-10-17
+
+The formal Turn-6 Holdout validation must be rerun after RaceReviewDB CURRENT
+contains completed results through at least 2026-10-17 (or the next available
+completed JRA date after that point).
+
+Frozen assets remain unchanged:
+
+- Turn-5 rules Drive ID:
+  1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr
+- rule_version:
+  next-watch-rules-discovery-v0.1
+- frozen rule count:
+  11
+
+Execution evidence:
+
+- workflow run:
+  36111295006
+- generated audit initially reported zero mature Holdout rows; this semantic
+  result is recorded here as BLOCKED_MATURITY rather than a successful
+  validation.
+
+Next action:
+
+Do not proceed to formal S/A promotion or market-value validation from the
+censored 2026 Holdout. Preserve the frozen rules and rerun Turn 6 when the
+minimum observation horizon is available.
