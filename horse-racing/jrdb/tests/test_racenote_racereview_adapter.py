@@ -14,6 +14,7 @@ from racenote_racereview_adapter import (  # noqa: E402
     RaceReviewAdapterError,
     build_racereview_evidence,
 )
+from racenote_jrdb import Audit, Normalizer  # noqa: E402
 
 
 class FakeRaceReviewReader:
@@ -135,7 +136,90 @@ def _history_row(
     }
 
 
+def _normalizer_raw() -> dict[str, Any]:
+    return {
+        "frame_no": 1,
+        "horse_no": 3,
+        "blood_registration_no": "11223344",
+        "horse_name": "IDテスト",
+        "jockey": "テスト騎手",
+        "carried_weight_tenths": 560,
+        "apprentice_code": "",
+        "trainer": "テスト調教師",
+        "trainer_base": "美浦",
+        "blinker_code": "",
+        "idm": 50,
+        "total_index": 50,
+        "running_style_code": "2",
+        "distance_fit_code": "2",
+        "turf_fit_code": "",
+        "dirt_fit_code": "",
+        "heavy_track_fit_code": "",
+        "jrdb_class_code": "",
+        "improvement_code": "3",
+        "rotation_interval": 3,
+        "stable_evaluation_code": "3",
+        "farm_name": None,
+        "farm_rank": "",
+        "farm_index_rank": None,
+        "rest_reason_code": "",
+        "trait_codes": [],
+        "start_index": None,
+        "late_break_rate": None,
+        "forecast_pace_code": "M",
+        "pace_indices": {
+            "front": None,
+            "pace": None,
+            "late": None,
+            "position": None,
+        },
+        "pace_ranks": {
+            "front": None,
+            "pace": None,
+            "late": None,
+            "position": None,
+        },
+        "forecast_positions": {
+            "mid": (None, None, ""),
+            "last3f": (None, None, ""),
+            "finish": (None, None, ""),
+        },
+        "symbol_code": "0",
+        "training_index": None,
+        "training_arrow_code": "3",
+        "base_win_odds": None,
+        "base_win_rank": None,
+        "base_place_odds": None,
+        "base_place_rank": None,
+        "jockey_index": None,
+        "info_index": None,
+        "stable_index": None,
+        "longshot_index": None,
+        "jockey_expected_top2_rate": None,
+        "marks": {
+            "total": "0",
+            "idm": "0",
+            "info": "0",
+            "jockey": "0",
+            "stable": "0",
+            "training": "0",
+            "longshot": "0",
+        },
+    }
+
+
 class RaceNoteRaceReviewAdapterTest(unittest.TestCase):
+    def test_racenote_normalizer_preserves_blood_registration_number(self) -> None:
+        horse = Normalizer(Audit()).horse(
+            _normalizer_raw(),
+            None,
+            None,
+        )
+        self.assertEqual(
+            horse["basic"]["horse_id"],
+            "11223344",
+        )
+
     def test_builds_asof_sidecar_with_stable_identity(self) -> None:
         histories = {
             "12345678": [
