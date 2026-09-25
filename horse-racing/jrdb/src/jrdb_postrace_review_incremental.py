@@ -255,7 +255,7 @@ def _read_parquet_rows(
         return []
     marks = ", ".join("?" for _ in paths)
     query = (
-        f"SELECT * FROM read_parquet([{marks}], union_by_name=true) "
+        f"SELECT * FROM read_parquet([{marks}], union_by_name=true, hive_partitioning=false) "
         + query_suffix
     )
     cursor = connection.execute(
@@ -347,7 +347,7 @@ def stage_current_database(
             marks = ", ".join("?" for _ in paths)
             connection.execute(
                 f"INSERT INTO {relation} "
-                f"SELECT * FROM read_parquet([{marks}], union_by_name=true)",
+                f"SELECT * FROM read_parquet([{marks}], union_by_name=true, hive_partitioning=false)",
                 [str(path) for path in paths],
             )
         connection.commit()
