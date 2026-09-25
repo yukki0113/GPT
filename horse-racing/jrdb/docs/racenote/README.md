@@ -174,6 +174,10 @@ General Evidence, Pairwise, Scenario, or the actual Edge Performance overlay.
 Scenario risks cannot be omitted, and future short-comment evidence must be a
 subset of the traced Forecast evidence.
 
+Real-data dry-run audit:
+
+- `docs/racenote/GEN0_3_REALDATA_DRYRUN_HATSUKAZE_20260913.md`
+
 The next-generation Forecast contract is now implemented:
 
 - `src/racenote_forecast_gen0_3.py`
