@@ -124,6 +124,7 @@ RaceNoteの予想運用が完成するまでの暫定運用として、JRDB総�
 - モーダルリンクにしない
 - 予想一覧には掲載しない
 - `addons.momotaro.kenshow` へコピーしない
+- 表示時に `horse.jrdb.marks.total` を直接参照し、配布データへ別名保存しない
 
 これはRaceNote完成までの暫定表示であり、けんしょー独自予想として確定したものではない。
 RaceNote運用確定時に置き換える。
