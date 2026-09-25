@@ -334,6 +334,18 @@ def _rr_card(
         "horse_id": horse_id,
         "history_status": "AVAILABLE",
         "card_scope": "RACEREVIEW_HISTORY_V0_1",
+        "source_run_contexts": [
+            {
+                "run_ref": "0626a101@2026-09-20",
+                "race_date": "2026-09-20",
+                "venue_code": "06",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "field_size": 12,
+                "finish": 5,
+                "pace_shape": "FRONT_LOADED",
+            }
+        ] if hidden else [],
         "primary_positive": [],
         "supporting_positive": [],
         "concerns": [],
@@ -519,6 +531,79 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         self.assertEqual(
             second_same_distance["direction"],
             "NEGATIVE",
+        )
+
+    def test_prediction_interpretation_keeps_small_sample_direction(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        interpretation = result["horses"][0][
+            "prediction_interpretation"
+        ]
+        trend = interpretation["data_trend"]
+
+        self.assertEqual(trend["state"], "MIXED")
+        self.assertEqual(
+            trend["best_directional_sample_band"],
+            "small",
+        )
+        self.assertTrue(trend["small_sample_only"])
+        self.assertIn(
+            "DATA_TREND_MIXED_SUPPORT",
+            interpretation["positive_case_components"],
+        )
+        self.assertIn(
+            "DATA_TREND_MIXED_CONCERN",
+            interpretation["concern_case_components"],
+        )
+        self.assertTrue(
+            interpretation["policy"][
+                "sample_size_changes_confidence_not_direction"
+            ]
+        )
+
+    def test_racereview_hidden_strength_and_target_overlap_are_visible(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        interpretation = result["horses"][0][
+            "prediction_interpretation"
+        ]
+        review = interpretation["racereview"]
+
+        self.assertEqual(review["state"], "HIDDEN_STRENGTH")
+        self.assertEqual(
+            review["transferability"]["state"],
+            "EXACT_SURFACE_DISTANCE_PRESENT",
+        )
+        self.assertEqual(
+            review["transferability"][
+                "exact_surface_distance_count"
+            ],
+            1,
+        )
+        self.assertIn(
+            "RACEREVIEW_SUPPORT",
+            interpretation["positive_case_components"],
+        )
+
+    def test_ability_anchor_cannot_create_upgrade_or_downgrade_by_itself(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        ability = result["horses"][1][
+            "prediction_interpretation"
+        ]["ability_anchor"]
+
+        self.assertEqual(ability["role"], "AVAILABLE_ANCHOR")
+        self.assertFalse(
+            ability["may_create_upgrade_by_itself"]
+        )
+        self.assertFalse(
+            ability["may_create_downgrade_by_itself"]
         )
 
     def test_race_trend_sources_separate_pre_and_post_freeze(self) -> None:
