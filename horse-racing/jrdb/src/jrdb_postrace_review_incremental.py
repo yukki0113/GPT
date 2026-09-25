@@ -195,11 +195,23 @@ def extract_current_zip(
 
 def parse_paci_archive(
     archive: Path,
+    sed_archive: Path | None = None,
 ) -> dict[str, list[dict[str, object]]]:
-    """Parse BAC/KYI/SED members from one PACI archive into Review input rows."""
+    """Parse one completed Review input pair.
+
+    PACI supplies BAC/KYI pre-race context. Completed SED result rows normally
+    come from the separate canonical SED archive. For unit fixtures only,
+    sed_archive may be omitted and SED is then read from the PACI archive.
+    """
     archive = Path(archive).resolve()
     if not archive.is_file():
         raise FileNotFoundError(archive)
+
+    resolved_sed = archive
+    if sed_archive is not None:
+        resolved_sed = Path(sed_archive).resolve()
+        if not resolved_sed.is_file():
+            raise FileNotFoundError(resolved_sed)
 
     bac_rows: list[dict[str, object]] = []
     kyi_rows: list[dict[str, object]] = []
@@ -209,12 +221,12 @@ def parse_paci_archive(
         bac_rows.append(_PARSER.bac(raw))
     for _member, raw in iter_archive_records(archive, "KYI"):
         kyi_rows.append(_PARSER.kyi(raw))
-    for _member, raw in iter_archive_records(archive, "SED"):
+    for _member, raw in iter_archive_records(resolved_sed, "SED"):
         sed_rows.append(_PARSER.sed(raw))
 
     if not sed_rows:
         raise RaceReviewIncrementalError(
-            f"{archive.name}: no SED result rows"
+            f"{resolved_sed.name}: no SED result rows"
         )
 
     rows = build_review_input_rows(
@@ -243,6 +255,73 @@ def parse_paci_archive(
         )
         for race_date, date_rows in sorted(by_date.items())
     }
+
+
+def _archive_date(path: Path, prefix: str) -> str:
+    """Return YYYY-MM-DD from canonical PACI/SED daily archive names."""
+    name = Path(path).name.upper()
+    expected = prefix.upper()
+    if not name.startswith(expected) or not name.endswith(".ZIP"):
+        raise RaceReviewIncrementalError(
+            f"unexpected {prefix} archive name: {Path(path).name}"
+        )
+    digits = name[len(expected) : -4]
+    if len(digits) != 6 or not digits.isdigit():
+        raise RaceReviewIncrementalError(
+            f"unexpected {prefix} archive date: {Path(path).name}"
+        )
+    return _normalize_archive_date(digits)
+
+
+def _normalize_archive_date(yymmdd: str) -> str:
+    parsed = dt.date(
+        2000 + int(yymmdd[:2]),
+        int(yymmdd[2:4]),
+        int(yymmdd[4:6]),
+    )
+    return parsed.isoformat()
+
+
+def pair_result_archives(
+    paci_archives: Sequence[Path],
+    sed_archives: Sequence[Path] | None,
+) -> list[tuple[Path, Path | None]]:
+    """Pair PACI and canonical SED archives by race date."""
+    paci_by_date: dict[str, Path] = {}
+    for archive in paci_archives:
+        race_date = _archive_date(Path(archive), "PACI")
+        if race_date in paci_by_date:
+            raise RaceReviewIncrementalError(
+                f"duplicate PACI date: {race_date}"
+            )
+        paci_by_date[race_date] = Path(archive)
+
+    if sed_archives is None:
+        return [
+            (paci_by_date[race_date], None)
+            for race_date in sorted(paci_by_date)
+        ]
+
+    sed_by_date: dict[str, Path] = {}
+    for archive in sed_archives:
+        race_date = _archive_date(Path(archive), "SED")
+        if race_date in sed_by_date:
+            raise RaceReviewIncrementalError(
+                f"duplicate SED date: {race_date}"
+            )
+        sed_by_date[race_date] = Path(archive)
+
+    if set(paci_by_date) != set(sed_by_date):
+        raise RaceReviewIncrementalError(
+            "PACI/SED date coverage mismatch: "
+            f"paci_only={sorted(set(paci_by_date) - set(sed_by_date))} "
+            f"sed_only={sorted(set(sed_by_date) - set(paci_by_date))}"
+        )
+
+    return [
+        (paci_by_date[race_date], sed_by_date[race_date])
+        for race_date in sorted(paci_by_date)
+    ]
 
 
 def _read_parquet_rows(
@@ -419,6 +498,7 @@ def incremental_update(
     *,
     current_root: Path,
     paci_archives: Sequence[Path],
+    sed_archives: Sequence[Path] | None = None,
     staging_database: Path,
     output_root: Path,
     generation_id: str,
@@ -444,17 +524,29 @@ def incremental_update(
 
     staged_dates: dict[str, list[dict[str, object]]] = {}
     source_archives: list[dict[str, object]] = []
-    for archive in paci_archives:
-        parsed = parse_paci_archive(archive)
+    pairs = pair_result_archives(
+        paci_archives,
+        sed_archives,
+    )
+    for paci_archive, sed_archive in pairs:
+        parsed = parse_paci_archive(
+            paci_archive,
+            sed_archive,
+        )
         for race_date, rows in parsed.items():
             if race_date in staged_dates:
                 raise RaceReviewIncrementalError(
-                    f"duplicate target date across PACI archives: {race_date}"
+                    f"duplicate target date across result inputs: {race_date}"
                 )
             staged_dates[race_date] = rows
         source_archives.append(
             {
-                "file_name": Path(archive).name,
+                "paci_file_name": Path(paci_archive).name,
+                "sed_file_name": (
+                    Path(sed_archive).name
+                    if sed_archive is not None
+                    else None
+                ),
                 "dates": sorted(parsed),
             }
         )
@@ -572,6 +664,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--current-zip", type=Path)
     parser.add_argument("--work-root", type=Path, required=True)
     parser.add_argument("--paci", type=Path, action="append", required=True)
+    parser.add_argument("--sed", type=Path, action="append")
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--generation-id", required=True)
     parser.add_argument("--summary-json", type=Path)
@@ -597,6 +690,7 @@ def main() -> int:
     result = incremental_update(
         current_root=current_root,
         paci_archives=args.paci,
+        sed_archives=args.sed,
         staging_database=staging_database,
         output_root=args.output_root,
         generation_id=args.generation_id,
