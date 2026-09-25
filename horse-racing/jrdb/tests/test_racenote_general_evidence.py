@@ -1,0 +1,590 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
+import sys
+import unittest
+from pathlib import Path
+
+SRC = Path(__file__).resolve().parents[1] / "src"
+sys.path.insert(0, str(SRC))
+
+from racenote_general_evidence import (  # noqa: E402
+    GeneralEvidenceError,
+    build_general_evidence,
+)
+
+
+def _summary(
+    starts: int,
+    wins: int,
+    top3: int,
+    win_rate: float,
+    top3_rate: float,
+    band: str,
+) -> dict[str, object]:
+    return {
+        "starts": starts,
+        "wins": wins,
+        "top3": top3,
+        "win_rate": win_rate,
+        "top3_rate": top3_rate,
+        "sample_size_band": band,
+    }
+
+
+def _stat(
+    starts: int,
+    win_rate: float,
+    top3_rate: float,
+    band: str,
+) -> dict[str, object]:
+    wins = int(round(starts * win_rate / 100.0))
+    top3 = int(round(starts * top3_rate / 100.0))
+    return {
+        **_summary(
+            starts,
+            wins,
+            top3,
+            win_rate,
+            top3_rate,
+            band,
+        ),
+        "distance_ranges": [],
+    }
+
+
+def _recent_run(
+    date: str,
+    idm: float,
+    finish: int,
+) -> dict[str, object]:
+    return {
+        "race": {
+            "date": date,
+            "venue": "中山",
+            "race_no": 8,
+            "surface": "芝",
+            "distance_m": 1600,
+            "class": "2勝クラス",
+            "grade": "",
+        },
+        "result": {
+            "finish": finish,
+        },
+        "performance": {
+            "idm": idm,
+        },
+    }
+
+
+def _independent() -> dict[str, object]:
+    return {
+        "view_kind": "INDEPENDENT",
+        "policy": {
+            "current_jrdb_consensus_visible": False,
+            "current_market_visible": False,
+            "training_edge_visible": False,
+        },
+        "race": {
+            "date": "2026-09-25",
+            "venue": "中山",
+            "race_no": 11,
+            "race_name": "テストステークス",
+            "surface": "芝",
+            "distance_m": 1600,
+            "turn": "右",
+            "course_layout": "外",
+            "race_type": "3歳以上",
+            "class": "3勝クラス",
+            "field_size": 2,
+            "race_trends": {
+                "frame": {
+                    "2": _stat(
+                        80,
+                        12.5,
+                        31.2,
+                        "sufficient",
+                    ),
+                    "6": _stat(
+                        75,
+                        9.3,
+                        25.3,
+                        "sufficient",
+                    ),
+                }
+            },
+        },
+        "horses": [
+            {
+                "basic": {
+                    "frame_no": 2,
+                    "horse_no": 1,
+                    "horse_id": "12345678",
+                    "horse_name": "トレンドエース",
+                    "jockey": "騎手A",
+                    "trainer": "厩舎A",
+                    "carried_weight_kg": 57.0,
+                },
+                "condition_facts": {
+                    "rotation_interval": 3,
+                },
+                "recent_runs": [
+                    _recent_run("2026-09-20", 60.0, 4),
+                    _recent_run("2026-08-30", 56.0, 2),
+                    _recent_run("2026-08-02", 58.0, 5),
+                ],
+                "older_runs": [],
+                "historical_profile": {
+                    "source": "JRDB Analysis Lite",
+                    "source_window_start": "2010-01-01",
+                    "as_of_exclusive": "2026-09-25",
+                    "career": _summary(
+                        10,
+                        2,
+                        3,
+                        20.0,
+                        30.0,
+                        "small",
+                    ),
+                    "same_surface": _summary(
+                        8,
+                        2,
+                        3,
+                        25.0,
+                        37.5,
+                        "small",
+                    ),
+                    "same_distance": _summary(
+                        4,
+                        2,
+                        3,
+                        50.0,
+                        75.0,
+                        "small",
+                    ),
+                    "distance_ranges": [
+                        {
+                            "min_m": 1400,
+                            "max_m": 1800,
+                            **_summary(
+                                6,
+                                2,
+                                3,
+                                33.3,
+                                50.0,
+                                "small",
+                            ),
+                        }
+                    ],
+                    "same_venue": _summary(
+                        5,
+                        1,
+                        1,
+                        20.0,
+                        20.0,
+                        "small",
+                    ),
+                },
+                "history_coverage": {
+                    "observed_history": "present",
+                },
+                "stats": {
+                    "sire": _stat(
+                        100,
+                        11.0,
+                        29.0,
+                        "sufficient",
+                    ),
+                    "jockey": _stat(
+                        60,
+                        15.0,
+                        35.0,
+                        "sufficient",
+                    ),
+                },
+            },
+            {
+                "basic": {
+                    "frame_no": 6,
+                    "horse_no": 2,
+                    "horse_id": "87654321",
+                    "horse_name": "アビリティ型",
+                    "jockey": "騎手B",
+                    "trainer": "厩舎B",
+                    "carried_weight_kg": 57.0,
+                },
+                "condition_facts": {
+                    "rotation_interval": 4,
+                },
+                "recent_runs": [
+                    _recent_run("2026-09-14", 64.0, 1),
+                    _recent_run("2026-08-16", 63.0, 1),
+                ],
+                "older_runs": [],
+                "historical_profile": {
+                    "source": "JRDB Analysis Lite",
+                    "source_window_start": "2010-01-01",
+                    "as_of_exclusive": "2026-09-25",
+                    "career": _summary(
+                        8,
+                        3,
+                        5,
+                        37.5,
+                        62.5,
+                        "small",
+                    ),
+                    "same_surface": _summary(
+                        7,
+                        3,
+                        5,
+                        42.9,
+                        71.4,
+                        "small",
+                    ),
+                    "same_distance": _summary(
+                        2,
+                        0,
+                        0,
+                        0.0,
+                        0.0,
+                        "small",
+                    ),
+                    "distance_ranges": [],
+                    "same_venue": _summary(
+                        2,
+                        0,
+                        1,
+                        0.0,
+                        50.0,
+                        "small",
+                    ),
+                },
+                "history_coverage": {
+                    "observed_history": "present",
+                },
+                "stats": {
+                    "sire": _stat(
+                        90,
+                        8.0,
+                        23.0,
+                        "sufficient",
+                    ),
+                    "jockey": _stat(
+                        55,
+                        10.0,
+                        28.0,
+                        "sufficient",
+                    ),
+                },
+            },
+        ],
+    }
+
+
+def _rr_card(
+    horse_no: int,
+    horse_name: str,
+    horse_id: str,
+    *,
+    hidden: bool,
+) -> dict[str, object]:
+    hidden_status = "NONE"
+    hidden_confidence = "NONE"
+    hidden_codes: list[str] = []
+    hidden_ids: list[str] = []
+    hidden_refs: list[str] = []
+
+    if hidden:
+        hidden_status = "CANDIDATE"
+        hidden_confidence = "MEDIUM"
+        hidden_codes = ["RESULT_UNDERRATES_TIME"]
+        hidden_ids = ["HEC:1:RESULT_UNDERRATES_TIME"]
+        hidden_refs = ["0626a101@2026-09-20"]
+
+    return {
+        "horse_no": horse_no,
+        "horse_name": horse_name,
+        "horse_id": horse_id,
+        "history_status": "AVAILABLE",
+        "card_scope": "RACEREVIEW_HISTORY_V0_1",
+        "primary_positive": [],
+        "supporting_positive": [],
+        "concerns": [],
+        "mixed_context": [],
+        "profile": {
+            "hidden_strength": {
+                "status": hidden_status,
+                "confidence": hidden_confidence,
+                "reason_codes": hidden_codes,
+                "evidence_ids": hidden_ids,
+                "source_run_refs": hidden_refs,
+            },
+            "fragile_form": {
+                "status": "NONE",
+                "confidence": "NONE",
+                "reason_codes": [],
+                "evidence_ids": [],
+                "source_run_refs": [],
+            },
+            "contradiction": {
+                "status": "NONE",
+                "conflict_codes": [],
+            },
+            "repeatability_source": "RACEREVIEW_HISTORY",
+        },
+        "uncertainties": [],
+        "comment_evidence": {
+            "status": "READY",
+            "positive_codes": [],
+            "concern_codes": [],
+            "mixed_codes": [],
+            "source_evidence_ids": [],
+            "prose_generation_status": "NOT_GENERATED_V0_1",
+        },
+    }
+
+
+def _rr_cards() -> dict[str, object]:
+    return {
+        "card_schema_version": "RaceNote-Horse-Evidence-Card-0.1",
+        "card_logic_version": "RaceReview-Card-v0.1",
+        "target": {
+            "date": "2026-09-25",
+            "venue": "中山",
+            "race_no": 11,
+            "race_name": "テストステークス",
+        },
+        "source": {
+            "kind": "RaceReviewDB",
+            "generation_id": "review-test",
+            "review_schema_version": "v0.1",
+            "review_logic_version": "review-test-v1",
+            "baseline_version": "baseline-test-v1",
+            "adapter_version": "0.1",
+            "evidence_schema_version": "RaceReview-Evidence-0.1",
+        },
+        "policy": {
+            "market_visibility_status": "HIDDEN_NOT_CONSUMED",
+            "jrdb_current_consensus_status": "HIDDEN_NOT_CONSUMED",
+            "training_edge_status": "NOT_CONSUMED",
+            "score_status": "NO_ADDITIVE_SCORE",
+            "comment_prose_status": "NOT_GENERATED",
+            "hidden_strength_semantics": (
+                "HISTORICAL_RESULT_VS_CONTENT_ONLY"
+            ),
+            "fragile_form_semantics": (
+                "HISTORICAL_RESULT_VS_CONTENT_ONLY"
+            ),
+        },
+        "horses": [
+            _rr_card(
+                1,
+                "トレンドエース",
+                "12345678",
+                hidden=True,
+            ),
+            _rr_card(
+                2,
+                "アビリティ型",
+                "87654321",
+                hidden=False,
+            ),
+        ],
+    }
+
+
+class RaceNoteGeneralEvidenceTest(unittest.TestCase):
+    def test_priority_policy_is_trend_first(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+
+        self.assertEqual(
+            result["priority_policy"]["relation"],
+            "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR",
+        )
+        self.assertEqual(
+            result["priority_policy"]["decision_order"],
+            [
+                "DATA_TREND",
+                "RACEREVIEW",
+                "ABILITY_ANCHOR",
+            ],
+        )
+        self.assertIsNone(
+            result["priority_policy"]["numeric_weights"]
+        )
+        self.assertFalse(
+            result["priority_policy"]["rules"][
+                "ability_may_auto_rank"
+            ]
+        )
+
+    def test_data_trend_lane_precedes_higher_raw_ability(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+
+        first = result["horses"][0]
+        second = result["horses"][1]
+
+        first_lanes = first["evidence_lanes"]
+        second_lanes = second["evidence_lanes"]
+
+        self.assertEqual(
+            first_lanes["data_trend"]["priority_rank"],
+            1,
+        )
+        self.assertEqual(
+            first_lanes["racereview"]["priority_rank"],
+            2,
+        )
+        self.assertEqual(
+            first_lanes["ability_anchor"]["priority_rank"],
+            3,
+        )
+
+        self.assertEqual(
+            first_lanes["ability_anchor"]["profile"]["peak"],
+            60.0,
+        )
+        self.assertEqual(
+            second_lanes["ability_anchor"]["profile"]["peak"],
+            64.0,
+        )
+        self.assertFalse(
+            second_lanes["ability_anchor"]["policy"][
+                "may_auto_rank"
+            ]
+        )
+
+        observations = first_lanes["data_trend"][
+            "horse_history"
+        ]["observations"]
+        same_distance = next(
+            item
+            for item in observations
+            if item["code"] == "SAME_DISTANCE"
+        )
+        self.assertEqual(
+            same_distance["direction"],
+            "POSITIVE",
+        )
+        self.assertEqual(
+            same_distance["delta_pp"]["top3_rate"],
+            45.0,
+        )
+        self.assertEqual(
+            same_distance["sample_size_band"],
+            "small",
+        )
+
+        second_observations = second_lanes["data_trend"][
+            "horse_history"
+        ]["observations"]
+        second_same_distance = next(
+            item
+            for item in second_observations
+            if item["code"] == "SAME_DISTANCE"
+        )
+        self.assertEqual(
+            second_same_distance["direction"],
+            "NEGATIVE",
+        )
+
+    def test_population_trends_keep_sample_size_visible(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+
+        lane = result["horses"][0]["evidence_lanes"][
+            "data_trend"
+        ]
+        frame = lane["population_context"]["frame"]
+        sire = lane["population_context"]["sire"]
+        jockey = lane["population_context"]["jockey"]
+
+        self.assertEqual(frame["sample_size_band"], "sufficient")
+        self.assertEqual(sire["sample_size_band"], "sufficient")
+        self.assertEqual(
+            jockey["sample_size_band"],
+            "sufficient",
+        )
+
+    def test_ability_anchor_is_historical_and_descriptive(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        anchor = result["horses"][0]["evidence_lanes"][
+            "ability_anchor"
+        ]
+
+        self.assertEqual(anchor["observed_count"], 3)
+        self.assertEqual(anchor["profile"]["latest"], 60.0)
+        self.assertEqual(anchor["profile"]["peak"], 60.0)
+        self.assertEqual(
+            anchor["profile"]["typical_median"],
+            58.0,
+        )
+        self.assertEqual(anchor["profile"]["minimum"], 56.0)
+        self.assertEqual(anchor["profile"]["mad"], 2.0)
+        self.assertFalse(
+            anchor["policy"]["current_entry_idm_used"]
+        )
+        self.assertFalse(
+            anchor["policy"]["current_total_index_used"]
+        )
+
+    def test_racereview_signal_is_preserved_as_second_lane(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        rr = result["horses"][0]["evidence_lanes"][
+            "racereview"
+        ]
+
+        self.assertEqual(rr["priority_rank"], 2)
+        self.assertEqual(
+            rr["profile"]["hidden_strength"]["status"],
+            "CANDIDATE",
+        )
+
+    def test_target_mismatch_fails_closed(self) -> None:
+        cards = _rr_cards()
+        cards["target"]["race_no"] = 10
+
+        with self.assertRaises(GeneralEvidenceError):
+            build_general_evidence(
+                _independent(),
+                cards,
+            )
+
+    def test_horse_identity_mismatch_fails_closed(self) -> None:
+        cards = _rr_cards()
+        cards["horses"][0]["horse_id"] = "99999999"
+
+        with self.assertRaises(GeneralEvidenceError):
+            build_general_evidence(
+                _independent(),
+                cards,
+            )
+
+    def test_market_visibility_fails_closed(self) -> None:
+        independent = _independent()
+        independent["policy"]["current_market_visible"] = True
+
+        with self.assertRaises(GeneralEvidenceError):
+            build_general_evidence(
+                independent,
+                _rr_cards(),
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()
