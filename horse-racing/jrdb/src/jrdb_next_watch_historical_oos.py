@@ -592,6 +592,7 @@ def main() -> int:
             },
             "status_counts": status_counts,
             "rules": final_rules,
+            "period_results": rows,
             "hard_errors": [],
         }
         if int(source_audit[0]) != int(source_audit[1]):
