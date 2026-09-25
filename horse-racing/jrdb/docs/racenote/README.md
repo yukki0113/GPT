@@ -70,11 +70,22 @@ All history statistics are computed as-of-exclusive from Analysis canonical. Exi
 
 ## 4. RaceReviewDB historical review evidence
 
-RaceReviewDB may be consumed through the additive sidecar adapter
-`src/racenote_racereview_adapter.py`. The adapter joins by JRDB blood
-registration number (`horse.basic.horse_id`), queries history with
+RaceReviewDB is consumed through the additive sidecar adapter
+`src/racenote_racereview_adapter.py`. Normal operation resolves the stable
+Drive CURRENT through `src/racenote_racereview_current.py` and caches the
+validated generation locally before opening it with the read-only
+`RaceReviewReader`. Audit/replay may still point the adapter at an already
+extracted immutable generation root.
+
+The adapter joins by JRDB blood registration number
+(`horse.basic.horse_id`), queries history with
 `race_date < target_date`, and emits only the stable v0.1 Review fields
 needed for historical evidence.
+
+Current consumer contract:
+
+- `docs/racenote/RACEREVIEW_CURRENT_CONSUMER_v0_1.md`
+- stable Drive file ID: `1UwNfrupMTHRPhkzULPvClGre4MWz2TFg`
 
 The adapter is implemented but is not an automatic Forecast-generation
 activation. It does not mutate the authoritative RaceNote v1.0 bundle, does

@@ -43,7 +43,33 @@ Planned generation:
 
 Current live/ledger generation remains Gen0-G000 until explicit activation.
 
-## 3. General Evidence
+## 3. RaceReviewDB operational input
+
+Normal RaceReview evidence input resolves the accepted operational CURRENT:
+
+```text
+stable Drive RaceReviewDB_CURRENT.zip
+  -> RaceReview CURRENT resolver
+  -> RaceReviewReader
+  -> RaceNote RaceReview adapter
+  -> Horse Evidence Card
+  -> General Evidence
+```
+
+Stable Drive file ID:
+
+`1UwNfrupMTHRPhkzULPvClGre4MWz2TFg`
+
+RaceNote records the consumed RaceReviewDB `generation_id` and resolver
+provenance. It joins history by JRDB blood registration number and enforces
+`race_date < target_date`. Name fallback and same-day Review are forbidden.
+
+The resolver is an artifact-delivery boundary only; it does not change Review
+semantics or Forecast priority.
+
+See `docs/racenote/RACEREVIEW_CURRENT_CONSUMER_v0_1.md`.
+
+## 4. General Evidence
 
 General Evidence v0.1 supplies three ordered lanes:
 
@@ -65,7 +91,7 @@ DATA_TREND includes:
 
 Simple ability is retained as an anchor only and cannot auto-rank horses.
 
-## 4. Independent Race Structure
+## 5. Independent Race Structure
 
 Race Structure is reconstructed only from historical pre-race-visible evidence.
 
@@ -92,7 +118,7 @@ The following are explicitly not consumed:
 
 Race Structure is context, not a deterministic pace prediction.
 
-## 5. Pairwise Comparison
+## 6. Pairwise Comparison
 
 Pairwise Comparison v0.1 validates authored relative judgments.
 
@@ -115,7 +141,7 @@ Every pair records:
 If lower-priority evidence overrides protected higher-priority evidence, an
 explicit override reason is required.
 
-## 6. Scenario Robustness
+## 7. Scenario Robustness
 
 Scenario Robustness v0.1 requires:
 
@@ -137,7 +163,7 @@ Scenario order does not mechanically replace Pairwise order.
 Any base-rank change relative to Pairwise must have a scenario adjustment
 reason.
 
-## 7. Base Forecast
+## 8. Base Forecast
 
 Base Forecast is the independent forecast before EdgeDB.
 
@@ -165,7 +191,7 @@ Validation checks:
 - firewall
 - Pairwise / Scenario consistency
 
-## 8. EdgeDB performance overlay
+## 9. EdgeDB performance overlay
 
 Only EdgeDB performance evidence may alter the Base Forecast.
 
@@ -205,7 +231,7 @@ performance evidence and an explicit adjustment reason.
 Edge count is not a score. Redundant Edge matches must not act as independent
 votes.
 
-## 9. Final Forecast
+## 10. Final Forecast
 
 Every runner stores:
 
@@ -235,7 +261,7 @@ Validation requires:
 
 Marks are not a betting rule.
 
-## 10. Freeze
+## 11. Freeze
 
 Forecast must freeze before current consensus/market/value is opened.
 
@@ -250,7 +276,7 @@ A frozen forecast is re-hashable.
 
 Post-Freeze layers may open only when freeze audit PASSes.
 
-## 11. Firewall
+## 12. Firewall
 
 Before Freeze, Gen0.3 forbids:
 
@@ -265,7 +291,7 @@ Before Freeze, Gen0.3 forbids:
 Historical performance and historical race results are legitimate evidence when
 strictly prior to target date.
 
-## 12. Post-Freeze order
+## 13. Post-Freeze order
 
 Open in this order:
 
@@ -277,7 +303,7 @@ Open in this order:
 
 These layers may evaluate or price the frozen prediction but may not mutate it.
 
-## 13. Short comments
+## 14. Short comments
 
 The future reader-facing comment should be derived from the same forecast
 record:
@@ -295,7 +321,7 @@ Example:
 
 No unrelated post-hoc reason should be generated after the result.
 
-## 14. Activation gate
+## 15. Activation gate
 
 Implementation does not itself activate Gen0-G001.
 
@@ -308,8 +334,10 @@ Before activation:
 5. run formal pre-result Freeze;
 6. keep Gen0-G000 immutable.
 
-## 15. Canonical assets
+## 16. Canonical assets
 
+- src/racenote_racereview_current.py
+- src/racenote_racereview_adapter.py
 - src/racenote_general_evidence.py
 - src/racenote_pairwise_comparison.py
 - src/racenote_scenario_robustness.py
