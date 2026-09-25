@@ -510,3 +510,11 @@ Operational contract: `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`. Forma
 - 2018-12-28 and 2025-12-28 passed row/key/schema/NULL-blank/all-logical-value/semantic-hash/repeated-read/idempotence checks. The Raw audit must use `ZED/ZKB`, not `SED/SKB` substitutions.
 - The 2010 KYI archive has 65,835 references to 2009 results (and older references); keep the explicit Raw boundary fallback and provenance. Never silently downgrade other historical Warehouse requests to Raw.
 - 2026 current daily remains PACI/Raw. Warehouse coverage is fail-closed at 2010–2025.
+
+
+RaceNote Gen0.3 real-data dry run (2026-09-25):
+
+- `docs/racenote/GEN0_3_REALDATA_DRYRUN_HATSUKAZE_20260913.md`
+- 2026-09-13 中山10R 初風SをFreezeまで完走。
+- result-open後の1R結果は不振だったため、単発結果で重み調整はしない。
+- next research: Trend materiality / MIXED conflict detail / Ability floor guard study / Scenario provenance.
