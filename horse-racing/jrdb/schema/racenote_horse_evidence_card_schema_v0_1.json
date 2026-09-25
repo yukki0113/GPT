@@ -252,6 +252,7 @@
         "horse_id",
         "history_status",
         "card_scope",
+        "source_run_contexts",
         "primary_positive",
         "supporting_positive",
         "concerns",
@@ -269,6 +270,33 @@
         },
         "card_scope": {
           "const": "RACEREVIEW_HISTORY_V0_1"
+        },
+        "source_run_contexts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "run_ref",
+              "race_date",
+              "venue_code",
+              "surface_code",
+              "distance_m",
+              "field_size",
+              "finish",
+              "pace_shape"
+            ],
+            "properties": {
+              "run_ref": {"type": "string", "minLength": 1},
+              "race_date": {"type": "string", "format": "date"},
+              "venue_code": {"type": "string"},
+              "surface_code": {"type": "string"},
+              "distance_m": {},
+              "field_size": {},
+              "finish": {},
+              "pace_shape": {"type": "string"}
+            },
+            "additionalProperties": false
+          }
         },
         "primary_positive": {
           "type": "array",
