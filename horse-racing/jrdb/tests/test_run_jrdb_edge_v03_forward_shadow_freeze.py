@@ -67,6 +67,19 @@ def test_write_shadow_matches_uses_v03_shadow_direction(tmp_path: Path) -> None:
     assert match["v03_shadow"]["presentation"]["performance_signal"]=="NEGATIVE"
 
 
+def test_expected_scheduled_races_fails_closed_on_partial_snapshot() -> None:
+    manifest={"provenance":{"scheduled_races":1}}
+    try:
+        target._assert_expected_scheduled_races(manifest,24)
+    except target.ShadowFreezeError as exc:
+        assert "expected=24 actual=1" in str(exc)
+    else:
+        raise AssertionError("expected ShadowFreezeError")
+    assert target._assert_expected_scheduled_races(
+        {"provenance":{"scheduled_races":24}},24
+    )==24
+
+
 def test_shadow_catalog_sha_is_exact(tmp_path: Path) -> None:
     path=tmp_path/"x"
     path.write_bytes(b"abc")
