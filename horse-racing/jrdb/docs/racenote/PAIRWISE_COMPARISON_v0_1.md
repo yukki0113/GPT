@@ -32,21 +32,25 @@ GPTがGeneral Evidenceを読んで作った比較判断を、deterministic valid
 
 Pairwiseでは最終順位の境界ごとに理由を残す。
 
-## 3. Two-stage ordering
+## 3. Synthesis-bound ordering
 
-GPTはまずGeneral Evidenceを全馬分読んでdraft orderを作る。
+canonical routeでは、GPTが直接draft orderをPairwiseへ渡さない。
 
-draft orderは最終予想ではない。
-
-次にrequired pairを直接比較し、必要なら順序を入れ替える。
-
-    all-runner read
+    General Evidence
+      -> Prediction Interpretation
+      -> All-Runner Synthesis Audit
       -> draft order
       -> required pairwise checks
       -> final order
       -> Scenario Robustness
 
-validatorはdraftからfinalへの移動も記録する。
+All-Runner Synthesisは全馬coverage、順位の連続性、primary lane、
+positive / concern component、uncertainty boundaryを監査する。
+
+PairwiseはSynthesis auditのsemantic hashとdraft orderへbindされる。
+Synthesis後にdraft orderを再作文した場合はfail closed。
+
+legacyの直接draft-order routeはreplay / compatibility用として残す。
 
 ## 4. Required comparisons
 
@@ -68,7 +72,7 @@ final orderがdraftから変わった場合、final orderに対してrequired pa
 
 ## 5. Prediction Interpretation first
 
-Pairwise requestには両馬の `PredictionInterpretation-v0.1` を含める。
+Pairwise requestにはSynthesisで確定したdraft orderと、両馬の `PredictionInterpretation-v0.1` を含める。
 
 比較時はまずInterpretation profileで、
 
