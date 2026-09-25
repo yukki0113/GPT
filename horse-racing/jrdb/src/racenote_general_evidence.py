@@ -700,12 +700,26 @@ def _review_transferability(
     raw_contexts = lane.get("source_run_contexts")
     contexts: list[dict[str, object]] = []
 
+    if not selected_refs:
+        return {
+            "state": "UNKNOWN",
+            "selected_source_run_count": 0,
+            "exact_surface_distance_count": 0,
+            "partial_exact_match_count": 0,
+            "runs": [],
+            "policy": {
+                "distance_tolerance_not_invented": True,
+                "venue_code_match_not_inferred_v0_1": True,
+                "pace_shape_is_context_not_transfer_score": True,
+            },
+        }
+
     if isinstance(raw_contexts, list):
         for raw_context in raw_contexts:
             if not isinstance(raw_context, Mapping):
                 continue
             run_ref = _text(raw_context.get("run_ref"))
-            if selected_refs and run_ref not in selected_refs:
+            if run_ref not in selected_refs:
                 continue
 
             source_surface = RR_SURFACE_NAMES.get(
