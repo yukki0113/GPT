@@ -333,13 +333,13 @@ def build_candidate(
         nulls = connection.execute(
             """
             SELECT
-              SUM(performance_signal IS NULL),
-              SUM(last3f_speed_percentile IS NULL),
-              SUM(closing_gain_sec IS NULL),
-              SUM(prior3_performance_mean IS NULL),
-              SUM(prior5_performance_mean IS NULL),
-              SUM(prior3_last3f_pct_mean IS NULL),
-              SUM(prior5_closing_gain_mean IS NULL)
+              SUM(CASE WHEN performance_signal IS NULL THEN 1 ELSE 0 END),
+              SUM(CASE WHEN last3f_speed_percentile IS NULL THEN 1 ELSE 0 END),
+              SUM(CASE WHEN closing_gain_sec IS NULL THEN 1 ELSE 0 END),
+              SUM(CASE WHEN prior3_performance_mean IS NULL THEN 1 ELSE 0 END),
+              SUM(CASE WHEN prior5_performance_mean IS NULL THEN 1 ELSE 0 END),
+              SUM(CASE WHEN prior3_last3f_pct_mean IS NULL THEN 1 ELSE 0 END),
+              SUM(CASE WHEN prior5_closing_gain_mean IS NULL THEN 1 ELSE 0 END)
             FROM read_parquet(?)
             """,
             [str(output_path)],
