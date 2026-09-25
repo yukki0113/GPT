@@ -28,7 +28,7 @@
       <h2>今日の予想一覧</h2>
       <div class="momotaro-tabs" role="group" aria-label="表示対象">
         <button type="button" data-filter="all" class="active">すべて</button>
-        <button type="button" data-filter="ryota-s">りょーた</button>
+        <button type="button" data-filter="ryota-confidence">りょーた</button>
         <button type="button" data-filter="oji-review">王子</button>
         <button type="button" data-filter="kenshow-analysis">けん</button>
         <button type="button" data-filter="keibailuka">🐬</button>
@@ -39,7 +39,7 @@
     <section class="card"><div id="prediction-list"><div class="empty-state">データを確認してください。</div></div></section>
   </main>
   <footer><small>桃太郎新聞 / 予想一覧</small></footer>
-  <script src="./predictions.js?v=4"></script>
+  <script src="./predictions.js?v=5"></script>
   <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js", {scope:"./"}).catch(console.error);</script>
 </body>
 </html>
