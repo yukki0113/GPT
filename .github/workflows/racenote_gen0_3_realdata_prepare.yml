@@ -22,6 +22,11 @@ on:
         required: false
         default: '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
         type: string
+      race_day_facts_json:
+        description: Optional independent pre-result race-day facts JSON
+        required: false
+        default: '{}'
+        type: string
 
 permissions:
   actions: read
@@ -66,6 +71,7 @@ jobs:
           INPUT_SOURCE_ARTIFACT_NAME: ${{ inputs.source_artifact_name }}
           INPUT_BUNDLE_NAME: ${{ inputs.bundle_name }}
           INPUT_RACEREVIEW_DRIVE_FILE_ID: ${{ inputs.racereview_drive_file_id }}
+          INPUT_RACE_DAY_FACTS_JSON: ${{ inputs.race_day_facts_json }}
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -98,6 +104,12 @@ jobs:
                   request.get('racereview_drive_file_id')
                   or '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
               ).strip()
+              race_day_facts = request.get('race_day_facts')
+              if race_day_facts is not None:
+                  if not isinstance(race_day_facts, dict):
+                      raise SystemExit(
+                          'race_day_facts must be an object'
+                      )
           else:
               request_id = 'manual-' + os.environ.get('GITHUB_RUN_ID', 'run')
               source_run_id = (
@@ -113,6 +125,22 @@ jobs:
                   os.environ.get('INPUT_RACEREVIEW_DRIVE_FILE_ID')
                   or '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
               ).strip()
+              raw_race_day_facts = (
+                  os.environ.get('INPUT_RACE_DAY_FACTS_JSON')
+                  or '{}'
+              ).strip()
+              try:
+                  race_day_facts = json.loads(raw_race_day_facts)
+              except json.JSONDecodeError as exc:
+                  raise SystemExit(
+                      f'race_day_facts_json must be JSON: {exc}'
+                  ) from exc
+              if race_day_facts == {}:
+                  race_day_facts = None
+              elif not isinstance(race_day_facts, dict):
+                  raise SystemExit(
+                      'race_day_facts_json must be an object'
+                  )
 
           if not re.fullmatch(r'\d+', source_run_id):
               raise SystemExit('source_run_id must be numeric')
@@ -135,11 +163,22 @@ jobs:
               'source_artifact_name': source_artifact_name,
               'bundle_name': bundle_name,
               'racereview_drive_file_id': racereview_drive_file_id,
+              'race_day_facts': race_day_facts,
           }
           Path('/tmp/gen03_prepare_request.json').write_text(
               json.dumps(resolved, ensure_ascii=False, indent=2) + '\n',
               encoding='utf-8',
           )
+          if race_day_facts is not None:
+              Path('/tmp/race_day_facts.json').write_text(
+                  json.dumps(
+                      race_day_facts,
+                      ensure_ascii=False,
+                      indent=2,
+                  ) + '\n',
+                  encoding='utf-8',
+              )
+
           with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
               f.write(f'SOURCE_RUN_ID={resolved["source_run_id"]}\n')
               f.write(
@@ -154,6 +193,10 @@ jobs:
                   + '\n'
               )
               f.write(f'REQUEST_ID={resolved["request_id"]}\n')
+              if race_day_facts is None:
+                  f.write('HAS_RACE_DAY_FACTS=false\n')
+              else:
+                  f.write('HAS_RACE_DAY_FACTS=true\n')
           print(json.dumps(resolved, ensure_ascii=False))
           PY
 
@@ -214,6 +257,20 @@ jobs:
           python horse-racing/jrdb/src/racenote_gen0_2_input_firewall.py \
             "/tmp/racenote_bundle/$BUNDLE_NAME" \
             --output-dir /tmp/racenote_prepare/firewall
+          test -s /tmp/racenote_prepare/firewall/independent_view.json
+
+      - name: Attach independent race-day facts
+        if: env.HAS_RACE_DAY_FACTS == 'true'
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+            python horse-racing/jrdb/src/racenote_race_day_facts.py \
+              --independent-view /tmp/racenote_prepare/firewall/independent_view.json \
+              --race-day-facts /tmp/race_day_facts.json \
+              --output /tmp/racenote_prepare/firewall/independent_view_with_race_day_facts.json
+          mv \
+            /tmp/racenote_prepare/firewall/independent_view_with_race_day_facts.json \
+            /tmp/racenote_prepare/firewall/independent_view.json
           test -s /tmp/racenote_prepare/firewall/independent_view.json
 
       - name: Download and extract RaceReviewDB CURRENT
@@ -352,6 +409,12 @@ jobs:
               },
               'hidden_strength_horse_nos': [],
               'fragile_form_horse_nos': [],
+              'race_day_facts_status': (
+                  general['race_data_context']['race_day_facts']['status']
+              ),
+              'race_day_facts_source_kind': (
+                  general['race_data_context']['race_day_facts']['source_kind']
+              ),
               'next_stage': general['next_stage'],
           }
 
@@ -446,6 +509,12 @@ jobs:
               'runner_count': summary.get('runner_count'),
               'racereview_generation_id': summary.get(
                   'racereview_generation_id'
+              ),
+              'race_day_facts_status': summary.get(
+                  'race_day_facts_status'
+              ),
+              'race_day_facts_source_kind': summary.get(
+                  'race_day_facts_source_kind'
               ),
           }
           Path('/tmp/gen03_prepare_comment.md').write_text(
