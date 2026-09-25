@@ -1221,6 +1221,10 @@ def _historical_position_profile(
 
     tendency = "UNKNOWN"
     confidence = "LOW"
+    dominant_band_count = 0
+    dominant_share = None
+    distinct_band_count = 0
+    variability_status = "UNAVAILABLE"
     if observations:
         ordered = sorted(
             counts.items(),
@@ -1232,6 +1236,21 @@ def _historical_position_profile(
             for band, count in ordered
             if count == top_count
         ]
+        dominant_band_count = top_count
+        dominant_share = round(
+            float(top_count) / float(len(observations)),
+            3,
+        )
+        distinct_band_count = sum(
+            1
+            for count in counts.values()
+            if count > 0
+        )
+        variability_status = (
+            "SINGLE_BAND"
+            if distinct_band_count == 1
+            else "MULTI_BAND"
+        )
         if len(tied) == 1:
             tendency = top_band
         if len(observations) >= 4:
@@ -1246,11 +1265,16 @@ def _historical_position_profile(
         "band_counts": counts,
         "tendency": tendency,
         "confidence": confidence if observations else "NONE",
+        "dominant_band_count": dominant_band_count,
+        "dominant_share": dominant_share,
+        "distinct_band_count": distinct_band_count,
+        "variability_status": variability_status,
         "observations": observations,
         "policy": {
             "current_jrdb_running_style_used": False,
             "current_jrdb_pace_prediction_used": False,
             "exact_today_position_is_not_predicted": True,
+            "historical_tendency_is_not_position_commitment": True,
         },
     }
 
