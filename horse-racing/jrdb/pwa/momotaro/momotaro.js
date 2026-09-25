@@ -51,13 +51,18 @@ function showMomotaroContributorDetail(horse, contributor) {
   const horseName = text(horse && horse.basic && horse.basic.horse_name, "");
   const mark = text(value.mark, "");
   const confidence = text(value.confidence, "");
+  const tag = text(value.tag, "");
   const comment = text(value.comment, "");
   const review = value.review_horse === true && contributor.key === "ryota" ? "特注" : "";
+  const displayMark = contributor.key === "kenshow"
+    ? (momotaroKenshowTemporaryMark(horse) || (comment ? "注" : ""))
+    : mark;
 
-  dialogTitle.textContent = horseName + " / " + contributor.label + (mark ? " " + mark : "");
+  dialogTitle.textContent = horseName + " / " + contributor.label + (displayMark ? " " + displayMark : "");
   const meta = [
     confidence ? "自信度 " + confidence : "",
-    review
+    review,
+    contributor.key === "kenshow" ? tag : ""
   ].filter(Boolean).join(" / ");
   dialogBody.innerHTML =
     (meta ? '<p class="newspaper-addon-meta">' + escapeHtml(meta) + '</p>' : "") +
@@ -75,9 +80,21 @@ function showMomotaroContributorDetail(horse, contributor) {
  */
 function momotaroContributorCell(horse, horseIndex, contributor) {
   if (contributor.key === "kenshow") {
+    const value = momotaroPrediction(horse, contributor.key);
+    const comment = text(value.comment, "");
+    const jrdbMark = momotaroKenshowTemporaryMark(horse);
+    const display = jrdbMark || (comment ? "注" : "");
+
+    if (comment) {
+      return '<td class="newspaper-mark-col mark-momotaro mark-kenshow">' +
+        '<button type="button" class="newspaper-addon-link momotaro-contributor-button" ' +
+        'data-horse-index="' + horseIndex + '" data-contributor-key="kenshow" ' +
+        'aria-label="' + escapeHtml(text(horse && horse.basic && horse.basic.horse_name, "")) + 'のけんしょー不利分析">' +
+        escapeHtml(display) + '</button></td>';
+    }
+
     return '<td class="newspaper-mark-col mark-momotaro mark-kenshow">' +
-      escapeHtml(momotaroKenshowTemporaryMark(horse)) +
-      '</td>';
+      escapeHtml(display) + '</td>';
   }
 
   const value = momotaroPrediction(horse, contributor.key);
@@ -214,6 +231,7 @@ function renderMomotaroFriends() {
 
   const horsesWithPredictions = currentBundle.horses.filter(function (horse) {
     return MOMOTARO_CONTRIBUTORS.some(function (entry) {
+      if (entry.key === "kenshow") return false;
       return momotaroHasPrediction(momotaroPrediction(horse, entry.key));
     });
   });
@@ -227,7 +245,9 @@ function renderMomotaroFriends() {
   const rows = horsesWithPredictions.map(function (horse) {
     const horseNo = horse && horse.key ? horse.key.horse_no : "";
     const horseName = horse && horse.basic ? horse.basic.horse_name : "";
-    const contributors = MOMOTARO_CONTRIBUTORS.map(function (entry) {
+    const contributors = MOMOTARO_CONTRIBUTORS.filter(function (entry) {
+      return entry.key !== "kenshow";
+    }).map(function (entry) {
       const value = momotaroPrediction(horse, entry.key);
       const mark = text(value.mark, "");
       const confidence = text(value.confidence, "");
