@@ -92,6 +92,19 @@ def _general_evidence() -> dict[str, object]:
                             "DIRECTION_PLUS_SAMPLE_SIZE_BEFORE_POPULATION_CONTEXT"
                         ),
                     },
+                    "race_structure": {
+                        "pace_pressure": "MEDIUM",
+                        "horse_historical_position": {
+                            "tendency": "FORWARD",
+                        },
+                        "running_style_trend_available": True,
+                        "reading_rule": (
+                            "RACE_STRUCTURE_IS_RELATIVE_CONTEXT_NOT_AUTOMATIC_DIRECTION"
+                        ),
+                        "policy": {
+                            "no_automatic_style_mapping_v0_1": True,
+                        },
+                    },
                     "racereview": {
                         "state": "SUPPORTIVE",
                         "hidden_strength_status": "NONE",
@@ -164,6 +177,16 @@ def _general_evidence() -> dict[str, object]:
             "training_edge_visible": False,
         },
         "race_data_context": {},
+        "race_structure": {
+            "structure_version": "IndependentRaceStructure-v0.1",
+            "status": "AVAILABLE",
+            "pace_pressure": "MEDIUM",
+            "front_or_forward_tendency_count": 2,
+            "known_position_profile_count": 4,
+            "runner_count": 4,
+            "horses": [],
+            "policy": {},
+        },
         "horses": horses,
         "next_stage": {
             "name": "PAIRWISE_COMPARISON",
