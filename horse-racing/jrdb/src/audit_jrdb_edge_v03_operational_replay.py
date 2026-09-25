@@ -85,6 +85,15 @@ def _v03_signal(match: Mapping[str, Any], channel: str) -> str:
     return str(shadow.get(f"{channel}_signal") or "NEUTRAL").upper()
 
 
+def _shadow_display_text(edge: Mapping[str, Any], signal: str) -> str:
+    """Build a v0.3 shadow-only display label without rewriting v0.2 provenance."""
+    symbol = {"POSITIVE": "＋", "NEGATIVE": "－", "NEUTRAL": "・"}.get(signal, "・")
+    original = str(edge.get("display_text") or "").strip()
+    if original[:1] in {"＋", "－", "+", "-"}:
+        original = original[1:].lstrip()
+    return f"{symbol} {original}".rstrip()
+
+
 def _v03_cluster(match: Mapping[str, Any]) -> str:
     shadow = match.get("v03_shadow")
     if isinstance(shadow, Mapping):
@@ -116,6 +125,15 @@ def _match_shadow(registry: Iterable[Mapping[str, Any]], runner: Mapping[str, An
         if base_match is None:
             continue
         shadow = dict(edge.get("v03_shadow") or {})
+        performance_signal = str(shadow.get("performance_signal") or "NEUTRAL").upper()
+        shadow["presentation"] = {
+            "contract": "V03_SHADOW_PRESENTATION",
+            "performance_signal": performance_signal,
+            "polarity_symbol": {"POSITIVE": "＋", "NEGATIVE": "－", "NEUTRAL": "・"}.get(
+                performance_signal, "・"
+            ),
+            "display_text": _shadow_display_text(edge, performance_signal),
+        }
         base_match["v03_shadow"] = shadow
         base_match["redundancy_group_id"] = edge.get("redundancy_group_id")
         evidence = base_match.setdefault("evidence", {})
