@@ -891,11 +891,60 @@ def _review_interpretation(
     }
 
 
+def _race_structure_interpretation(
+    race: Mapping[str, object],
+    race_structure: Mapping[str, object],
+    horse_no: int,
+) -> dict[str, object]:
+    """Expose race-shape context without auto-mapping it to a verdict."""
+    horse_position: dict[str, object] = {}
+    raw_horses = race_structure.get("horses")
+    if isinstance(raw_horses, list):
+        for raw_horse in raw_horses:
+            if not isinstance(raw_horse, Mapping):
+                continue
+            try:
+                candidate_no = int(raw_horse.get("horse_no"))
+            except (TypeError, ValueError):
+                continue
+            if candidate_no != horse_no:
+                continue
+            raw_position = raw_horse.get("historical_position")
+            if isinstance(raw_position, Mapping):
+                horse_position = copy.deepcopy(dict(raw_position))
+            break
+
+    race_trends = race.get("race_trends")
+    running_style_available = False
+    if isinstance(race_trends, Mapping):
+        raw_style = race_trends.get("running_style")
+        if isinstance(raw_style, Mapping) and raw_style:
+            running_style_available = True
+
+    return {
+        "pace_pressure": _text(
+            race_structure.get("pace_pressure")
+        ).upper() or "UNKNOWN",
+        "horse_historical_position": horse_position,
+        "running_style_trend_available": running_style_available,
+        "reading_rule": (
+            "RACE_STRUCTURE_IS_RELATIVE_CONTEXT_NOT_AUTOMATIC_DIRECTION"
+        ),
+        "policy": {
+            "historical_position_not_current_jrdb_style": True,
+            "no_automatic_style_mapping_v0_1": True,
+            "pairwise_interpretation_required": True,
+        },
+    }
+
+
 def _prediction_interpretation(
     race: Mapping[str, object],
     data_lane: Mapping[str, object],
     rr_lane: Mapping[str, object],
     ability_lane: Mapping[str, object],
+    race_structure: Mapping[str, object],
+    horse_no: int,
 ) -> dict[str, object]:
     """Build one non-scoring interpretation profile for Pairwise reading."""
     trend = _trend_interpretation(data_lane)
@@ -929,6 +978,11 @@ def _prediction_interpretation(
     return {
         "interpretation_version": "PredictionInterpretation-v0.1",
         "data_trend": trend,
+        "race_structure": _race_structure_interpretation(
+            race,
+            race_structure,
+            horse_no,
+        ),
         "racereview": review,
         "ability_anchor": {
             "role": ability_role,
@@ -1343,10 +1397,19 @@ def build_general_evidence(
             "independent view contains no horses"
         )
 
+    normalized_horses = [
+        _mapping(
+            raw_horse,
+            "independent.horse",
+        )
+        for raw_horse in raw_horses
+    ]
+    race_structure = _race_structure(normalized_horses)
+
     output_horses: list[dict[str, object]] = []
     seen: set[int] = set()
 
-    for index, raw_horse in enumerate(raw_horses, start=1):
+    for index, raw_horse in enumerate(normalized_horses, start=1):
         horse = _mapping(
             raw_horse,
             f"independent.horses[{index}]",
@@ -1402,6 +1465,8 @@ def build_general_evidence(
                     data_lane,
                     review_lane,
                     ability_lane,
+                    race_structure,
+                    horse_no,
                 ),
                 "comparison_status": "NOT_YET_PAIRWISE_COMPARED",
             }
@@ -1437,15 +1502,7 @@ def build_general_evidence(
             "training_edge_visible": False,
         },
         "race_data_context": _race_data_context(race),
-        "race_structure": _race_structure(
-            [
-                _mapping(
-                    raw_horse,
-                    "independent.horse",
-                )
-                for raw_horse in raw_horses
-            ]
-        ),
+        "race_structure": race_structure,
         "horses": sorted(
             output_horses,
             key=lambda horse: int(horse["horse_no"]),
