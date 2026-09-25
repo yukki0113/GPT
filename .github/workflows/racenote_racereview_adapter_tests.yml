@@ -6,23 +6,33 @@ on:
     paths:
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_horse_evidence_card.py'
+      - 'horse-racing/jrdb/src/racenote_general_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_history_engine.py'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/schema/racenote_racereview_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_horse_evidence_card_schema_v0_1.json'
+      - 'horse-racing/jrdb/schema/racenote_general_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_bundle_schema_v1_0.json'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_horse_evidence_card.py'
+      - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
+      - 'horse-racing/jrdb/tests/test_racenote_analysis_only_enrichment.py'
       - '.github/workflows/racenote_racereview_adapter_tests.yml'
   pull_request:
     paths:
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_horse_evidence_card.py'
+      - 'horse-racing/jrdb/src/racenote_general_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_history_engine.py'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/schema/racenote_racereview_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_horse_evidence_card_schema_v0_1.json'
+      - 'horse-racing/jrdb/schema/racenote_general_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_bundle_schema_v1_0.json'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_horse_evidence_card.py'
+      - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
+      - 'horse-racing/jrdb/tests/test_racenote_analysis_only_enrichment.py'
       - '.github/workflows/racenote_racereview_adapter_tests.yml'
   workflow_dispatch:
 
@@ -37,20 +47,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install focused test dependency
+        run: python -m pip install pytest
       - name: Compile RaceReview evidence modules
         working-directory: horse-racing/jrdb
         run: |
           python -m py_compile src/racenote_racereview_adapter.py
           python -m py_compile src/racenote_horse_evidence_card.py
+          python -m py_compile src/racenote_general_evidence.py
+          python -m py_compile src/racenote_history_engine.py
           python -m py_compile src/racenote_jrdb.py
       - name: Validate JSON schemas
         working-directory: horse-racing/jrdb
         run: |
           python -m json.tool schema/racenote_racereview_evidence_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_horse_evidence_card_schema_v0_1.json >/dev/null
+          python -m json.tool schema/racenote_general_evidence_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_bundle_schema_v1_0.json >/dev/null
       - name: Run focused RaceReview evidence tests
         working-directory: horse-racing/jrdb/tests
         run: |
           python -m unittest -v test_racenote_racereview_adapter
           python -m unittest -v test_racenote_horse_evidence_card
+          python -m unittest -v test_racenote_general_evidence
+          PYTHONPATH=../src python -m pytest -q test_racenote_analysis_only_enrichment.py

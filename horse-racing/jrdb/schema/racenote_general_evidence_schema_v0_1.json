@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_general_evidence_schema_v0_1.json",
+  "title": "RaceNote General Evidence v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "general_schema_version",
+    "general_logic_version",
+    "target",
+    "priority_policy",
+    "firewall",
+    "race_data_context",
+    "horses",
+    "next_stage"
+  ],
+  "properties": {
+    "general_schema_version": {
+      "const": "RaceNote-General-Evidence-0.1"
+    },
+    "general_logic_version": {
+      "const": "TrendFirst-RR-AbilityAnchor-v0.1"
+    },
+    "target": {
+      "type": "object",
+      "required": ["date", "venue", "race_no", "race_name"],
+      "properties": {
+        "date": {"type": "string", "format": "date"},
+        "venue": {"type": "string"},
+        "race_no": {"type": "integer", "minimum": 1},
+        "race_name": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "priority_policy": {
+      "type": "object",
+      "required": [
+        "relation",
+        "decision_order",
+        "numeric_weights",
+        "rules"
+      ],
+      "properties": {
+        "relation": {
+          "const": "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR"
+        },
+        "decision_order": {
+          "const": [
+            "DATA_TREND",
+            "RACEREVIEW",
+            "ABILITY_ANCHOR"
+          ]
+        },
+        "numeric_weights": {"type": "null"},
+        "rules": {
+          "type": "object",
+          "required": [
+            "data_trend_read_first",
+            "racereview_read_second",
+            "ability_anchor_read_last",
+            "ability_may_auto_rank",
+            "lower_priority_override_requires_reason",
+            "higher_priority_missing_is_not_negative",
+            "small_sample_must_remain_visible",
+            "contradictions_must_be_preserved"
+          ],
+          "properties": {
+            "data_trend_read_first": {"const": true},
+            "racereview_read_second": {"const": true},
+            "ability_anchor_read_last": {"const": true},
+            "ability_may_auto_rank": {"const": false},
+            "lower_priority_override_requires_reason": {"const": true},
+            "higher_priority_missing_is_not_negative": {"const": true},
+            "small_sample_must_remain_visible": {"const": true},
+            "contradictions_must_be_preserved": {"const": true}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "firewall": {
+      "type": "object",
+      "required": [
+        "current_jrdb_consensus_visible",
+        "current_market_visible",
+        "training_edge_visible"
+      ],
+      "properties": {
+        "current_jrdb_consensus_visible": {"const": false},
+        "current_market_visible": {"const": false},
+        "training_edge_visible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "race_data_context": {
+      "type": "object",
+      "required": [
+        "conditions",
+        "available_trends",
+        "trend_sources_v0_1",
+        "independent_future_trend_sources",
+        "post_freeze_trend_sources",
+        "policy"
+      ],
+      "properties": {
+        "conditions": {"type": "object"},
+        "available_trends": {"type": "object"},
+        "trend_sources_v0_1": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "independent_future_trend_sources": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "post_freeze_trend_sources": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "policy": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/horse"}
+    },
+    "next_stage": {
+      "type": "object",
+      "required": ["name", "required_read_order", "status"],
+      "properties": {
+        "name": {"const": "PAIRWISE_COMPARISON"},
+        "required_read_order": {
+          "const": [
+            "DATA_TREND",
+            "RACEREVIEW",
+            "ABILITY_ANCHOR"
+          ]
+        },
+        "status": {"const": "NOT_IMPLEMENTED_IN_V0_1"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "trendObservation": {
+      "type": "object",
+      "required": [
+        "code",
+        "label",
+        "direction",
+        "sample_size_band",
+        "condition",
+        "career_baseline",
+        "delta_pp",
+        "interpretation_status"
+      ],
+      "properties": {
+        "code": {"type": "string"},
+        "label": {"type": "string"},
+        "direction": {
+          "enum": ["POSITIVE", "NEGATIVE", "NEUTRAL", "UNKNOWN"]
+        },
+        "sample_size_band": {
+          "enum": ["none", "small", "moderate", "sufficient"]
+        },
+        "condition": {"type": "object"},
+        "career_baseline": {"type": "object"},
+        "delta_pp": {"type": "object"},
+        "interpretation_status": {
+          "const": "OBSERVED_RATE_DIFFERENCE_NOT_CAUSAL"
+        }
+      },
+      "additionalProperties": false
+    },
+    "horseHistory": {
+      "type": "object",
+      "required": ["status", "observations", "source"],
+      "properties": {
+        "status": {"enum": ["AVAILABLE", "UNAVAILABLE"]},
+        "source": {"type": ["string", "null"]},
+        "source_window_start": {"type": "string"},
+        "as_of_exclusive": {"type": "string"},
+        "career": {"type": "object"},
+        "observations": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/trendObservation"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "statContext": {
+      "type": "object",
+      "required": ["code", "status"],
+      "properties": {
+        "code": {"type": "string"},
+        "status": {"enum": ["AVAILABLE", "UNAVAILABLE"]},
+        "frame_no": {},
+        "sample_size_band": {
+          "enum": ["none", "small", "moderate", "sufficient"]
+        },
+        "summary": {"type": "object"},
+        "interpretation_status": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "dataTrend": {
+      "type": "object",
+      "required": [
+        "priority_rank",
+        "priority_relation",
+        "horse_history",
+        "population_context",
+        "policy"
+      ],
+      "properties": {
+        "priority_rank": {"const": 1},
+        "priority_relation": {"const": "HIGHEST"},
+        "horse_history": {"$ref": "#/$defs/horseHistory"},
+        "population_context": {
+          "type": "object",
+          "required": ["frame", "sire", "jockey"],
+          "properties": {
+            "frame": {"$ref": "#/$defs/statContext"},
+            "sire": {"$ref": "#/$defs/statContext"},
+            "jockey": {"$ref": "#/$defs/statContext"}
+          },
+          "additionalProperties": false
+        },
+        "policy": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "raceReview": {
+      "type": "object",
+      "required": [
+        "priority_rank",
+        "priority_relation",
+        "card_scope",
+        "primary_positive",
+        "supporting_positive",
+        "concerns",
+        "mixed_context",
+        "profile",
+        "uncertainties",
+        "comment_evidence"
+      ],
+      "properties": {
+        "priority_rank": {"const": 2},
+        "priority_relation": {"const": "SECOND"},
+        "card_scope": {"type": "string"},
+        "primary_positive": {"type": "array"},
+        "supporting_positive": {"type": "array"},
+        "concerns": {"type": "array"},
+        "mixed_context": {"type": "array"},
+        "profile": {"type": "object"},
+        "uncertainties": {"type": "array"},
+        "comment_evidence": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "abilityAnchor": {
+      "type": "object",
+      "required": [
+        "priority_rank",
+        "priority_relation",
+        "status",
+        "observed_count",
+        "observations",
+        "profile",
+        "policy"
+      ],
+      "properties": {
+        "priority_rank": {"const": 3},
+        "priority_relation": {"const": "ANCHOR_ONLY"},
+        "status": {"enum": ["AVAILABLE", "UNAVAILABLE"]},
+        "observed_count": {"type": "integer", "minimum": 0},
+        "observations": {"type": "array"},
+        "profile": {
+          "type": "object",
+          "required": [
+            "latest",
+            "peak",
+            "typical_median",
+            "minimum",
+            "mad"
+          ]
+        },
+        "policy": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "horse": {
+      "type": "object",
+      "required": [
+        "horse_no",
+        "horse_name",
+        "horse_id",
+        "current_facts",
+        "evidence_lanes",
+        "comparison_status"
+      ],
+      "properties": {
+        "horse_no": {"type": "integer", "minimum": 1},
+        "horse_name": {"type": "string"},
+        "horse_id": {"type": "string"},
+        "current_facts": {"type": "object"},
+        "evidence_lanes": {
+          "type": "object",
+          "required": [
+            "data_trend",
+            "racereview",
+            "ability_anchor"
+          ],
+          "properties": {
+            "data_trend": {"$ref": "#/$defs/dataTrend"},
+            "racereview": {"$ref": "#/$defs/raceReview"},
+            "ability_anchor": {"$ref": "#/$defs/abilityAnchor"}
+          },
+          "additionalProperties": false
+        },
+        "comparison_status": {
+          "const": "NOT_YET_PAIRWISE_COMPARED"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
