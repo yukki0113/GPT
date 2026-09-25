@@ -131,6 +131,11 @@ The full-field draft layer is now implemented:
 - `schema/racenote_all_runner_synthesis_schema_v0_1.json`
 - `docs/racenote/ALL_RUNNER_SYNTHESIS_v0_1.md`
 
+The authoring request is built by
+`build_synthesis_request(general)`. It carries every runner's Interpretation
+but deliberately leaves draft rank, confidence, primary lane, and reasons
+unset, so the request builder itself cannot choose an order.
+
 All-Runner Synthesis reads every runner's Prediction Interpretation and authors
 a complete draft order without numeric scoring. It validates full-field
 coverage, forbids Ability-only primary ordering, and derives HIGH-priority

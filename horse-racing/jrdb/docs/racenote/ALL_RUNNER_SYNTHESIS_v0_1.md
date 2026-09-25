@@ -60,7 +60,36 @@ Firewall:
 - current JRDB consensus hidden
 - Training Edge hidden
 
-## 5. Per-horse synthesis
+## 5. Authoring request
+
+`build_synthesis_request(general)` は、
+General EvidenceからGPT authoring用requestを作る。
+
+request builderは順位を決めない。
+
+各馬について:
+
+- horse_no / horse_name
+- PredictionInterpretation-v0.1
+- race-level context
+
+を渡し、以下は空欄のままにする。
+
+- draft_rank
+- confidence
+- primary_lane
+- positive_components
+- concern_components
+- ability_context_used
+- draft_reason
+- main_uncertainty
+
+したがってrequest生成時点で、
+馬番順・Ability順・positive数順などの暗黙rankingは入らない。
+
+GPTは全馬を読んだ後にauthor_fieldsを埋める。
+
+## 6. Per-horse synthesis
 
 各馬は次を持つ。
 
@@ -78,7 +107,7 @@ main_uncertainty
 
 draft rankは1〜Nを全馬ちょうど1回ずつ使用する。
 
-## 6. Primary lane
+## 7. Primary lane
 
 許可:
 
@@ -94,7 +123,7 @@ draft rankは1〜Nを全馬ちょうど1回ずつ使用する。
 Abilityはfloor / ceiling確認として使用できるが、
 それだけをprimary basisにしてdraft順位を作らない。
 
-## 7. Component provenance
+## 8. Component provenance
 
 positive_components / concern_components は
 Prediction Interpretationに実際に存在するcomponentだけを参照できる。
@@ -117,21 +146,21 @@ Concern:
 
 存在しないcomponentを新しく書くとfail closed。
 
-## 8. Mixed
+## 9. Mixed
 
 primary_lane=MIXEDの場合は、
 DATA_TRENDとRACEREVIEWの両方を含む必要がある。
 
 片側だけのEvidenceをMIXEDと呼んで優先順位ルールを迂回しない。
 
-## 9. Uncertainty
+## 10. Uncertainty
 
 directional componentが1件もない馬は
 primary_lane=UNCERTAINTYを使う。
 
 「データがない」を負材料へ変換しない。
 
-## 10. Ability context
+## 11. Ability context
 
 `ability_context_used` は、
 Ability Anchorを地力の確認に使ったかを残す。
@@ -154,7 +183,7 @@ peak IDMが一番高いからdraft 1位
 
 はv0.1では許可しない。
 
-## 11. Boundary audit
+## 12. Boundary audit
 
 draft orderの全adjacent pairについてboundaryを作る。
 
@@ -170,7 +199,7 @@ comparison_priority:
 - STANDARD
 - HIGH
 
-## 12. HIGH boundary derivation
+## 13. HIGH boundary derivation
 
 以下を含む境界はHIGHになる。
 
@@ -186,7 +215,7 @@ HIGHをSTANDARDとして隠すことはできない。
 HIGHだから順位を自動で逆転させるわけではない。
 Pairwiseで重点的に直接比較する、という意味。
 
-## 13. Draft order semantics
+## 14. Draft order semantics
 
 draft orderはForecastではない。
 
@@ -198,7 +227,7 @@ All-Runner Synthesis draft
 
 Pairwiseで順位が入れ替わることを前提とする。
 
-## 14. Pairwise binding
+## 15. Pairwise binding
 
 canonical Pairwise route:
 
@@ -220,7 +249,7 @@ Pairwise payloadは:
 
 Synthesis後にdraft orderを勝手に書き換えるとfail closed。
 
-## 15. Legacy route
+## 16. Legacy route
 
 旧:
 
@@ -241,7 +270,7 @@ CLIでは:
 
 を渡す経路をcanonicalとする。
 
-## 16. Relationship to short comments
+## 17. Relationship to short comments
 
 All-Runner Synthesisのdraft_reasonは、
 最終短評の直接sourceにはしない。
@@ -255,7 +284,7 @@ All-Runner Synthesisのdraft_reasonは、
 
 を後から監査する材料になる。
 
-## 17. No score
+## 18. No score
 
 v0.1で禁止:
 
@@ -266,7 +295,7 @@ v0.1で禁止:
 - fixed point conversion
 - market/popularity use
 
-## 18. Canonical implementation
+## 19. Canonical implementation
 
 - `src/racenote_all_runner_synthesis.py`
 - `schema/racenote_all_runner_synthesis_schema_v0_1.json`
