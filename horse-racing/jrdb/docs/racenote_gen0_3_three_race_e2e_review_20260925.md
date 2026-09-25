@@ -39,11 +39,23 @@ Frozen forecast ranks for those horses:
 - 8: rank 3
 - 7: rank 4
 
-Top-three set overlap was therefore 3/3.
+Forecast-top3 vs actual-top3 overlap was 2/3 (15 and 8).
+All actual podium horses were nevertheless contained in the forecast top4 (15, 8, 7).
 
 However, frozen axis horse 10 タガノデュード finished 11th.
 
-## 4. Evidence condition before Freeze
+
+## 4. Scenario interpretation
+
+The observed race pace was reported as MEDIUM.
+The authored SLOW scenario happened to move horse 15 above horse 10, but this must not be treated as a correct causal explanation because the actual race was not SLOW.
+
+Therefore:
+- do not credit the SLOW scenario as a winner-prediction success
+- do not tune SLOW logic toward this result
+- record the stronger finding instead: the candidate cluster was useful while the single-axis choice was weak
+
+## 5. Evidence condition before Freeze
 
 The important property of this race was already visible before result opening:
 
@@ -56,7 +68,7 @@ Pairwise retained Data Trend and RaceReview as UNKNOWN and used Ability Anchor o
 
 This produced a useful top cluster, but the contract still required a complete order and allowed a hard axis mark even though the field had no directional evidence in the two preferred lanes.
 
-## 5. New field-level evidence coverage
+## 6. New field-level evidence coverage
 
 General Evidence now exposes `field_evidence_summary`.
 
@@ -99,7 +111,7 @@ Prepare smoke:
 - run `36117553062`
 - status PASS
 
-## 6. Position representation across three races
+## 7. Position representation across three races
 
 Three races now support the same conservative statement:
 
@@ -111,7 +123,7 @@ Challenge Cup again had a highly variable field: 15/16 runners were MULTI_BAND, 
 
 The richer representation is useful, but no new numeric pace-pressure formula is justified yet.
 
-## 7. Current design decision
+## 8. Current design decision
 
 Adopt now:
 - horse-level position variability metadata
@@ -127,7 +139,7 @@ Do not adopt yet:
 - automatic removal of the axis mark
 - calibrated probability transformation based on three races
 
-## 8. Next research question
+## 9. Next research question
 
 The next blind cohort should test whether `ABILITY_FALLBACK_ONLY` repeatedly shows:
 - useful broad/top-cluster identification
