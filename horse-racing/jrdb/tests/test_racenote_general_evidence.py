@@ -519,6 +519,19 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             same_distance["sample_size_band"],
             "small",
         )
+        self.assertEqual(
+            same_distance["redundancy_group_id"],
+            "DISTANCE",
+        )
+        distance_range = next(
+            item
+            for item in observations
+            if item["code"] == "DISTANCE_RANGE_1"
+        )
+        self.assertEqual(
+            distance_range["redundancy_group_id"],
+            "DISTANCE",
+        )
 
         second_observations = second_lanes["data_trend"][
             "horse_history"
@@ -606,6 +619,34 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             ability["may_create_downgrade_by_itself"]
         )
 
+    def test_rr_transferability_does_not_invent_distance_tolerance(self) -> None:
+        cards = _rr_cards()
+        cards["horses"][0]["source_run_contexts"][0][
+            "distance_m"
+        ] = 1800
+
+        result = build_general_evidence(
+            _independent(),
+            cards,
+        )
+        transfer = result["horses"][0][
+            "prediction_interpretation"
+        ]["racereview"]["transferability"]
+
+        self.assertEqual(
+            transfer["state"],
+            "PARTIAL_EXACT_MATCH_PRESENT",
+        )
+        self.assertEqual(
+            transfer["exact_surface_distance_count"],
+            0,
+        )
+        self.assertTrue(
+            transfer["policy"][
+                "distance_tolerance_not_invented"
+            ]
+        )
+
     def test_race_trend_sources_separate_pre_and_post_freeze(self) -> None:
         result = build_general_evidence(
             _independent(),
@@ -683,6 +724,45 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         )
         self.assertFalse(
             structure["policy"]["current_jrdb_forecast_pace_used"]
+        )
+
+    def test_prediction_interpretation_exposes_race_structure_without_auto_direction(self) -> None:
+        independent = _independent()
+        independent["horses"][0]["recent_runs"] = [
+            _recent_run(
+                "2026-09-20",
+                60.0,
+                4,
+                corners=[1, 1, 2, 2],
+            ),
+            _recent_run(
+                "2026-08-30",
+                56.0,
+                2,
+                corners=[2, 2, 2, 2],
+            ),
+        ]
+        result = build_general_evidence(
+            independent,
+            _rr_cards(),
+        )
+        structure = result["horses"][0][
+            "prediction_interpretation"
+        ]["race_structure"]
+
+        self.assertIn(
+            structure["pace_pressure"],
+            {"LOW", "MEDIUM", "HIGH", "UNKNOWN"},
+        )
+        self.assertEqual(
+            structure["horse_historical_position"]["tendency"],
+            "FRONT",
+        )
+        self.assertTrue(
+            structure["running_style_trend_available"]
+        )
+        self.assertTrue(
+            structure["policy"]["no_automatic_style_mapping_v0_1"]
         )
 
     def test_population_trends_keep_sample_size_visible(self) -> None:
