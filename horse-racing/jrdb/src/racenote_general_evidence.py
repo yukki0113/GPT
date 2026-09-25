@@ -1464,6 +1464,92 @@ def _race_data_context(
     }
 
 
+def _field_evidence_summary(
+    horses: list[Mapping[str, object]],
+) -> dict[str, object]:
+    """Summarize field-wide directional evidence coverage descriptively."""
+    directional_trend_states = {
+        "SUPPORTIVE",
+        "OPPOSED",
+        "MIXED",
+    }
+    directional_review_states = {
+        "HIDDEN_STRENGTH",
+        "SUPPORTIVE",
+        "FRAGILE_FORM",
+        "CAUTION",
+        "MIXED",
+    }
+
+    trend_directional = 0
+    review_directional = 0
+    top_lane_directional = 0
+    ability_available = 0
+    ability_only = 0
+
+    for horse in horses:
+        interpretation = horse.get("prediction_interpretation")
+        if not isinstance(interpretation, Mapping):
+            continue
+
+        trend = interpretation.get("data_trend")
+        review = interpretation.get("racereview")
+        ability = interpretation.get("ability_anchor")
+
+        trend_state = ""
+        review_state = ""
+        ability_role = ""
+        if isinstance(trend, Mapping):
+            trend_state = _text(trend.get("state")).upper()
+        if isinstance(review, Mapping):
+            review_state = _text(review.get("state")).upper()
+        if isinstance(ability, Mapping):
+            ability_role = _text(ability.get("role")).upper()
+
+        has_trend = trend_state in directional_trend_states
+        has_review = review_state in directional_review_states
+        has_top_lane = has_trend or has_review
+        has_ability = ability_role == "AVAILABLE_ANCHOR"
+
+        if has_trend:
+            trend_directional += 1
+        if has_review:
+            review_directional += 1
+        if has_top_lane:
+            top_lane_directional += 1
+        if has_ability:
+            ability_available += 1
+        if not has_top_lane and has_ability:
+            ability_only += 1
+
+    runner_count = len(horses)
+    if top_lane_directional == runner_count and runner_count:
+        status = "FULL_TOP_LANE_EVIDENCE"
+    elif top_lane_directional > 0:
+        status = "PARTIAL_TOP_LANE_EVIDENCE"
+    elif ability_available > 0:
+        status = "ABILITY_FALLBACK_ONLY"
+    else:
+        status = "INSUFFICIENT"
+
+    return {
+        "status": status,
+        "runner_count": runner_count,
+        "data_trend_directional_runner_count": trend_directional,
+        "racereview_directional_runner_count": review_directional,
+        "top_lane_directional_runner_count": top_lane_directional,
+        "ability_available_runner_count": ability_available,
+        "ability_only_runner_count": ability_only,
+        "policy": {
+            "descriptive_only": True,
+            "may_auto_rank": False,
+            "may_auto_change_marks": False,
+            "mixed_context_only_is_not_directional": True,
+            "ability_fallback_is_not_top_lane_evidence": True,
+        },
+    }
+
+
 def build_general_evidence(
     independent_view: Mapping[str, object],
     rr_cards: Mapping[str, object],
@@ -1598,6 +1684,9 @@ def build_general_evidence(
         },
         "race_data_context": _race_data_context(race),
         "race_structure": race_structure,
+        "field_evidence_summary": _field_evidence_summary(
+            output_horses
+        ),
         "horses": sorted(
             output_horses,
             key=lambda horse: int(horse["horse_no"]),
