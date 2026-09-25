@@ -221,6 +221,22 @@ class RaceNoteHorseEvidenceCardTest(unittest.TestCase):
             "NO_ADDITIVE_SCORE",
         )
         card = payload["horses"][0]
+        self.assertEqual(
+            card["source_run_contexts"][0]["run_ref"],
+            "0626a101@2026-09-20",
+        )
+        self.assertEqual(
+            card["source_run_contexts"][0]["surface_code"],
+            "1",
+        )
+        self.assertEqual(
+            card["source_run_contexts"][0]["distance_m"],
+            1600,
+        )
+        self.assertEqual(
+            card["source_run_contexts"][0]["pace_shape"],
+            "FRONT_LOADED",
+        )
         hidden = card["profile"]["hidden_strength"]
         self.assertEqual(hidden["status"], "CANDIDATE")
         self.assertEqual(hidden["confidence"], "HIGH")

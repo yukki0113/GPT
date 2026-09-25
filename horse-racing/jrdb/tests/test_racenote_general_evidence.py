@@ -334,6 +334,18 @@ def _rr_card(
         "horse_id": horse_id,
         "history_status": "AVAILABLE",
         "card_scope": "RACEREVIEW_HISTORY_V0_1",
+        "source_run_contexts": [
+            {
+                "run_ref": "0626a101@2026-09-20",
+                "race_date": "2026-09-20",
+                "venue_code": "06",
+                "surface_code": "1",
+                "distance_m": 1600,
+                "field_size": 12,
+                "finish": 5,
+                "pace_shape": "FRONT_LOADED",
+            }
+        ] if hidden else [],
         "primary_positive": [],
         "supporting_positive": [],
         "concerns": [],
@@ -507,6 +519,19 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             same_distance["sample_size_band"],
             "small",
         )
+        self.assertEqual(
+            same_distance["redundancy_group_id"],
+            "DISTANCE",
+        )
+        distance_range = next(
+            item
+            for item in observations
+            if item["code"] == "DISTANCE_RANGE_1"
+        )
+        self.assertEqual(
+            distance_range["redundancy_group_id"],
+            "DISTANCE",
+        )
 
         second_observations = second_lanes["data_trend"][
             "horse_history"
@@ -519,6 +544,107 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         self.assertEqual(
             second_same_distance["direction"],
             "NEGATIVE",
+        )
+
+    def test_prediction_interpretation_keeps_small_sample_direction(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        interpretation = result["horses"][0][
+            "prediction_interpretation"
+        ]
+        trend = interpretation["data_trend"]
+
+        self.assertEqual(trend["state"], "MIXED")
+        self.assertEqual(
+            trend["best_directional_sample_band"],
+            "small",
+        )
+        self.assertTrue(trend["small_sample_only"])
+        self.assertIn(
+            "DATA_TREND_MIXED_SUPPORT",
+            interpretation["positive_case_components"],
+        )
+        self.assertIn(
+            "DATA_TREND_MIXED_CONCERN",
+            interpretation["concern_case_components"],
+        )
+        self.assertTrue(
+            interpretation["policy"][
+                "sample_size_changes_confidence_not_direction"
+            ]
+        )
+
+    def test_racereview_hidden_strength_and_target_overlap_are_visible(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        interpretation = result["horses"][0][
+            "prediction_interpretation"
+        ]
+        review = interpretation["racereview"]
+
+        self.assertEqual(review["state"], "HIDDEN_STRENGTH")
+        self.assertEqual(
+            review["transferability"]["state"],
+            "EXACT_SURFACE_DISTANCE_PRESENT",
+        )
+        self.assertEqual(
+            review["transferability"][
+                "exact_surface_distance_count"
+            ],
+            1,
+        )
+        self.assertIn(
+            "RACEREVIEW_SUPPORT",
+            interpretation["positive_case_components"],
+        )
+
+    def test_ability_anchor_cannot_create_upgrade_or_downgrade_by_itself(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        ability = result["horses"][1][
+            "prediction_interpretation"
+        ]["ability_anchor"]
+
+        self.assertEqual(ability["role"], "AVAILABLE_ANCHOR")
+        self.assertFalse(
+            ability["may_create_upgrade_by_itself"]
+        )
+        self.assertFalse(
+            ability["may_create_downgrade_by_itself"]
+        )
+
+    def test_rr_transferability_does_not_invent_distance_tolerance(self) -> None:
+        cards = _rr_cards()
+        cards["horses"][0]["source_run_contexts"][0][
+            "distance_m"
+        ] = 1800
+
+        result = build_general_evidence(
+            _independent(),
+            cards,
+        )
+        transfer = result["horses"][0][
+            "prediction_interpretation"
+        ]["racereview"]["transferability"]
+
+        self.assertEqual(
+            transfer["state"],
+            "PARTIAL_EXACT_MATCH_PRESENT",
+        )
+        self.assertEqual(
+            transfer["exact_surface_distance_count"],
+            0,
+        )
+        self.assertTrue(
+            transfer["policy"][
+                "distance_tolerance_not_invented"
+            ]
         )
 
     def test_race_trend_sources_separate_pre_and_post_freeze(self) -> None:
@@ -600,6 +726,45 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             structure["policy"]["current_jrdb_forecast_pace_used"]
         )
 
+    def test_prediction_interpretation_exposes_race_structure_without_auto_direction(self) -> None:
+        independent = _independent()
+        independent["horses"][0]["recent_runs"] = [
+            _recent_run(
+                "2026-09-20",
+                60.0,
+                4,
+                corners=[1, 1, 2, 2],
+            ),
+            _recent_run(
+                "2026-08-30",
+                56.0,
+                2,
+                corners=[2, 2, 2, 2],
+            ),
+        ]
+        result = build_general_evidence(
+            independent,
+            _rr_cards(),
+        )
+        structure = result["horses"][0][
+            "prediction_interpretation"
+        ]["race_structure"]
+
+        self.assertIn(
+            structure["pace_pressure"],
+            {"LOW", "MEDIUM", "HIGH", "UNKNOWN"},
+        )
+        self.assertEqual(
+            structure["horse_historical_position"]["tendency"],
+            "FRONT",
+        )
+        self.assertTrue(
+            structure["running_style_trend_available"]
+        )
+        self.assertTrue(
+            structure["policy"]["no_automatic_style_mapping_v0_1"]
+        )
+
     def test_population_trends_keep_sample_size_visible(self) -> None:
         result = build_general_evidence(
             _independent(),
@@ -644,6 +809,18 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         self.assertFalse(
             anchor["policy"]["current_total_index_used"]
         )
+
+    def test_no_selected_rr_evidence_keeps_transferability_unknown(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        transfer = result["horses"][1][
+            "prediction_interpretation"
+        ]["racereview"]["transferability"]
+
+        self.assertEqual(transfer["state"], "UNKNOWN")
+        self.assertEqual(transfer["selected_source_run_count"], 0)
 
     def test_racereview_signal_is_preserved_as_second_lane(self) -> None:
         result = build_general_evidence(

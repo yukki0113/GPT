@@ -51,6 +51,7 @@ def _general_evidence() -> dict[str, object]:
                         "priority_rank": 2,
                         "priority_relation": "SECOND",
                         "card_scope": "RACEREVIEW_HISTORY_V0_1",
+                        "source_run_contexts": [],
                         "primary_positive": [],
                         "supporting_positive": [],
                         "concerns": [],
@@ -75,6 +76,77 @@ def _general_evidence() -> dict[str, object]:
                         "policy": {
                             "may_auto_rank": False,
                         },
+                    },
+                },
+                "prediction_interpretation": {
+                    "interpretation_version": "PredictionInterpretation-v0.1",
+                    "data_trend": {
+                        "state": "SUPPORTIVE",
+                        "positive": [],
+                        "negative": [],
+                        "neutral": [],
+                        "unknown": [],
+                        "best_directional_sample_band": "small",
+                        "small_sample_only": True,
+                        "population_contexts": [],
+                        "reading_rule": (
+                            "DIRECTION_PLUS_SAMPLE_SIZE_BEFORE_POPULATION_CONTEXT"
+                        ),
+                    },
+                    "race_structure": {
+                        "pace_pressure": "MEDIUM",
+                        "horse_historical_position": {
+                            "tendency": "FORWARD",
+                        },
+                        "running_style_trend_available": True,
+                        "reading_rule": (
+                            "RACE_STRUCTURE_IS_RELATIVE_CONTEXT_NOT_AUTOMATIC_DIRECTION"
+                        ),
+                        "policy": {
+                            "no_automatic_style_mapping_v0_1": True,
+                        },
+                    },
+                    "racereview": {
+                        "state": "SUPPORTIVE",
+                        "hidden_strength_status": "NONE",
+                        "fragile_form_status": "NONE",
+                        "contradiction_status": "NONE",
+                        "repeatability_codes": [],
+                        "transferability": {
+                            "state": "UNKNOWN",
+                            "selected_source_run_count": 0,
+                            "exact_surface_distance_count": 0,
+                            "partial_exact_match_count": 0,
+                            "runs": [],
+                            "policy": {},
+                        },
+                        "reading_rule": (
+                            "CONTENT_FIRST_THEN_REPEATABILITY_THEN_TARGET_OVERLAP"
+                        ),
+                    },
+                    "ability_anchor": {
+                        "role": "AVAILABLE_ANCHOR",
+                        "may_create_upgrade_by_itself": False,
+                        "may_create_downgrade_by_itself": False,
+                        "profile": {
+                            "latest": peak,
+                            "peak": peak,
+                            "typical_median": peak,
+                            "minimum": peak,
+                            "mad": 0.0,
+                        },
+                    },
+                    "positive_case_components": [
+                        "DATA_TREND_SUPPORT"
+                    ],
+                    "concern_case_components": [],
+                    "pairwise_reading_order": [
+                        "DATA_TREND",
+                        "RACEREVIEW",
+                        "ABILITY_ANCHOR",
+                    ],
+                    "policy": {
+                        "no_numeric_score": True,
                     },
                 },
                 "comparison_status": "NOT_YET_PAIRWISE_COMPARED",
@@ -106,10 +178,26 @@ def _general_evidence() -> dict[str, object]:
             "training_edge_visible": False,
         },
         "race_data_context": {},
+        "race_structure": {
+            "structure_version": "IndependentRaceStructure-v0.1",
+            "status": "AVAILABLE",
+            "pace_pressure": "MEDIUM",
+            "front_or_forward_tendency_count": 2,
+            "known_position_profile_count": 4,
+            "runner_count": 4,
+            "horses": [],
+            "policy": {},
+        },
         "horses": horses,
         "next_stage": {
             "name": "PAIRWISE_COMPARISON",
-            "status": "NOT_IMPLEMENTED_IN_V0_1",
+            "required_read_order": [
+                "DATA_TREND",
+                "RACEREVIEW",
+                "ABILITY_ANCHOR",
+            ],
+            "status": "CONTRACT_IMPLEMENTED",
+            "contract_version": "TrendFirst-Pairwise-v0.1",
         },
     }
 
@@ -378,6 +466,28 @@ class RaceNotePairwiseComparisonTest(unittest.TestCase):
                 payload,
             )
 
+    def test_pairwise_requires_prediction_interpretation(self) -> None:
+        general = _general_evidence()
+        del general["horses"][0]["prediction_interpretation"]
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request(
+                general,
+                [1, 2, 3, 4],
+            )
+
+    def test_pairwise_rejects_ability_only_upgrade_policy(self) -> None:
+        general = _general_evidence()
+        general["horses"][0]["prediction_interpretation"][
+            "ability_anchor"
+        ]["may_create_upgrade_by_itself"] = True
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request(
+                general,
+                [1, 2, 3, 4],
+            )
+
     def test_request_builder_does_not_choose_winners(self) -> None:
         general = _general_evidence()
         request = build_comparison_request(
@@ -391,7 +501,29 @@ class RaceNotePairwiseComparisonTest(unittest.TestCase):
         self.assertTrue(
             request["instructions"]["do_not_use_market"]
         )
+        self.assertTrue(
+            request["instructions"][
+                "use_prediction_interpretation_first"
+            ]
+        )
+        self.assertTrue(
+            request["instructions"][
+                "verify_interpretation_against_evidence_lanes"
+            ]
+        )
         for pair in request["required_pairs_for_draft"]:
+            self.assertEqual(
+                pair["horse_a_interpretation"][
+                    "interpretation_version"
+                ],
+                "PredictionInterpretation-v0.1",
+            )
+            self.assertEqual(
+                pair["horse_b_interpretation"][
+                    "interpretation_version"
+                ],
+                "PredictionInterpretation-v0.1",
+            )
             author_fields = pair["author_fields"]
             self.assertIsNone(author_fields["preference"])
             self.assertIsNone(author_fields["decisive_lane"])

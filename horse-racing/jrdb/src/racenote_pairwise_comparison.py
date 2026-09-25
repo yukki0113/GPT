@@ -17,6 +17,7 @@ validated RaceNote General Evidence view. This validator enforces:
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 from collections.abc import Mapping
@@ -115,6 +116,56 @@ def _target_key(value: Mapping[str, object]) -> tuple[str, str, int]:
     return date_text, venue, race_no
 
 
+def _validate_prediction_interpretation(
+    horse: Mapping[str, object],
+    field: str,
+) -> None:
+    """Validate the deterministic pre-read required by current Pairwise."""
+    interpretation = _mapping(
+        horse.get("prediction_interpretation"),
+        f"{field}.prediction_interpretation",
+    )
+    if (
+        _text(interpretation.get("interpretation_version"))
+        != "PredictionInterpretation-v0.1"
+    ):
+        raise PairwiseComparisonError(
+            f"{field} has unsupported Prediction Interpretation"
+        )
+
+    raw_order = _list(
+        interpretation.get("pairwise_reading_order"),
+        f"{field}.prediction_interpretation.pairwise_reading_order",
+    )
+    order = tuple(_text(item) for item in raw_order)
+    if order != LANE_ORDER:
+        raise PairwiseComparisonError(
+            f"{field} Interpretation reading order changed unexpectedly"
+        )
+
+    ability = _mapping(
+        interpretation.get("ability_anchor"),
+        f"{field}.prediction_interpretation.ability_anchor",
+    )
+    if ability.get("may_create_upgrade_by_itself") is not False:
+        raise PairwiseComparisonError(
+            f"{field} allows Ability-only upgrade"
+        )
+    if ability.get("may_create_downgrade_by_itself") is not False:
+        raise PairwiseComparisonError(
+            f"{field} allows Ability-only downgrade"
+        )
+
+    policy = _mapping(
+        interpretation.get("policy"),
+        f"{field}.prediction_interpretation.policy",
+    )
+    if policy.get("no_numeric_score") is not True:
+        raise PairwiseComparisonError(
+            f"{field} Interpretation must remain non-scoring"
+        )
+
+
 def _runner_index(
     general_evidence: Mapping[str, object],
 ) -> dict[int, Mapping[str, object]]:
@@ -137,6 +188,10 @@ def _runner_index(
         horse_no = _positive_int(
             horse.get("horse_no"),
             f"general_evidence.horses[{index}].horse_no",
+        )
+        _validate_prediction_interpretation(
+            horse,
+            f"general_evidence.horses[{index}]",
         )
         if horse_no in output:
             raise PairwiseComparisonError(
@@ -779,6 +834,18 @@ def build_comparison_request(
                 "horse_b_name": _text(
                     runner_index[horse_b].get("horse_name")
                 ),
+                "horse_a_interpretation": copy.deepcopy(
+                    runner_index[horse_a].get(
+                        "prediction_interpretation",
+                        {},
+                    )
+                ),
+                "horse_b_interpretation": copy.deepcopy(
+                    runner_index[horse_b].get(
+                        "prediction_interpretation",
+                        {},
+                    )
+                ),
                 "required_lane_order": list(LANE_ORDER),
                 "author_fields": {
                     "lane_judgments": {
@@ -837,6 +904,8 @@ def build_comparison_request(
         "required_pairs_for_draft": pair_requests,
         "instructions": {
             "read_order": list(LANE_ORDER),
+            "use_prediction_interpretation_first": True,
+            "verify_interpretation_against_evidence_lanes": True,
             "do_not_score": True,
             "do_not_use_market": True,
             "do_not_use_current_jrdb_consensus": True,

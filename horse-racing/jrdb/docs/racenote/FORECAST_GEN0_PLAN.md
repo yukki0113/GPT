@@ -95,6 +95,12 @@ Freeze. They may evaluate the frozen prediction but must not mutate it.
 
 次世代のreading orderはfactor番号順ではなく、次のEvidence lane順とする。
 
+General EvidenceからPairwiseへ入る直前に
+`PredictionInterpretation-v0.1` を作る。
+これはTrend / RR / Abilityのraw Evidenceを非加点で整理するpre-readであり、
+順位・印・確率は決定しない。PairwiseはInterpretationを先に読み、
+その後raw Evidence laneを再確認する。
+
 ```text
 DATA_TREND
   -> RACEREVIEW

@@ -267,6 +267,7 @@
       "required": [
         "code",
         "label",
+        "redundancy_group_id",
         "direction",
         "sample_size_band",
         "condition",
@@ -277,6 +278,9 @@
       "properties": {
         "code": {"type": "string"},
         "label": {"type": "string"},
+        "redundancy_group_id": {
+          "enum": ["SURFACE", "DISTANCE", "VENUE"]
+        },
         "direction": {
           "enum": ["POSITIVE", "NEGATIVE", "NEUTRAL", "UNKNOWN"]
         },
@@ -356,6 +360,7 @@
         "priority_rank",
         "priority_relation",
         "card_scope",
+        "source_run_contexts",
         "primary_positive",
         "supporting_positive",
         "concerns",
@@ -368,6 +373,10 @@
         "priority_rank": {"const": 2},
         "priority_relation": {"const": "SECOND"},
         "card_scope": {"type": "string"},
+        "source_run_contexts": {
+          "type": "array",
+          "items": {"type": "object"}
+        },
         "primary_positive": {"type": "array"},
         "supporting_positive": {"type": "array"},
         "concerns": {"type": "array"},
@@ -409,6 +418,192 @@
       },
       "additionalProperties": false
     },
+    "trendInterpretation": {
+      "type": "object",
+      "required": [
+        "state",
+        "positive",
+        "negative",
+        "neutral",
+        "unknown",
+        "best_directional_sample_band",
+        "small_sample_only",
+        "population_contexts",
+        "reading_rule"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "SUPPORTIVE",
+            "OPPOSED",
+            "MIXED",
+            "NEUTRAL_OR_UNKNOWN",
+            "INSUFFICIENT"
+          ]
+        },
+        "positive": {"type": "array"},
+        "negative": {"type": "array"},
+        "neutral": {"type": "array"},
+        "unknown": {"type": "array"},
+        "best_directional_sample_band": {
+          "enum": ["none", "small", "moderate", "sufficient"]
+        },
+        "small_sample_only": {"type": "boolean"},
+        "population_contexts": {"type": "array"},
+        "reading_rule": {
+          "const": "DIRECTION_PLUS_SAMPLE_SIZE_BEFORE_POPULATION_CONTEXT"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reviewTransferability": {
+      "type": "object",
+      "required": [
+        "state",
+        "selected_source_run_count",
+        "exact_surface_distance_count",
+        "partial_exact_match_count",
+        "runs",
+        "policy"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "EXACT_SURFACE_DISTANCE_PRESENT",
+            "PARTIAL_EXACT_MATCH_PRESENT",
+            "NO_EXACT_TARGET_MATCH",
+            "UNKNOWN"
+          ]
+        },
+        "selected_source_run_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exact_surface_distance_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "partial_exact_match_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runs": {"type": "array"},
+        "policy": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "reviewInterpretation": {
+      "type": "object",
+      "required": [
+        "state",
+        "hidden_strength_status",
+        "fragile_form_status",
+        "contradiction_status",
+        "repeatability_codes",
+        "transferability",
+        "reading_rule"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "HIDDEN_STRENGTH",
+            "FRAGILE_FORM",
+            "MIXED",
+            "SUPPORTIVE",
+            "CAUTION",
+            "MIXED_CONTEXT_ONLY",
+            "INSUFFICIENT"
+          ]
+        },
+        "hidden_strength_status": {"type": "string"},
+        "fragile_form_status": {"type": "string"},
+        "contradiction_status": {"type": "string"},
+        "repeatability_codes": {"type": "array"},
+        "transferability": {
+          "$ref": "#/$defs/reviewTransferability"
+        },
+        "reading_rule": {
+          "const": "CONTENT_FIRST_THEN_REPEATABILITY_THEN_TARGET_OVERLAP"
+        }
+      },
+      "additionalProperties": false
+    },
+    "predictionInterpretation": {
+      "type": "object",
+      "required": [
+        "interpretation_version",
+        "data_trend",
+        "race_structure",
+        "racereview",
+        "ability_anchor",
+        "positive_case_components",
+        "concern_case_components",
+        "pairwise_reading_order",
+        "policy"
+      ],
+      "properties": {
+        "interpretation_version": {
+          "const": "PredictionInterpretation-v0.1"
+        },
+        "data_trend": {
+          "$ref": "#/$defs/trendInterpretation"
+        },
+        "race_structure": {
+          "type": "object",
+          "required": [
+            "pace_pressure",
+            "horse_historical_position",
+            "running_style_trend_available",
+            "reading_rule",
+            "policy"
+          ],
+          "properties": {
+            "pace_pressure": {
+              "enum": ["LOW", "MEDIUM", "HIGH", "UNKNOWN"]
+            },
+            "horse_historical_position": {"type": "object"},
+            "running_style_trend_available": {"type": "boolean"},
+            "reading_rule": {
+              "const": "RACE_STRUCTURE_IS_RELATIVE_CONTEXT_NOT_AUTOMATIC_DIRECTION"
+            },
+            "policy": {"type": "object"}
+          },
+          "additionalProperties": false
+        },
+        "racereview": {
+          "$ref": "#/$defs/reviewInterpretation"
+        },
+        "ability_anchor": {
+          "type": "object",
+          "required": [
+            "role",
+            "may_create_upgrade_by_itself",
+            "may_create_downgrade_by_itself",
+            "profile"
+          ],
+          "properties": {
+            "role": {
+              "enum": ["AVAILABLE_ANCHOR", "UNAVAILABLE"]
+            },
+            "may_create_upgrade_by_itself": {"const": false},
+            "may_create_downgrade_by_itself": {"const": false},
+            "profile": {"type": "object"}
+          },
+          "additionalProperties": false
+        },
+        "positive_case_components": {"type": "array"},
+        "concern_case_components": {"type": "array"},
+        "pairwise_reading_order": {
+          "const": [
+            "DATA_TREND",
+            "RACEREVIEW",
+            "ABILITY_ANCHOR"
+          ]
+        },
+        "policy": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
     "horse": {
       "type": "object",
       "required": [
@@ -417,6 +612,7 @@
         "horse_id",
         "current_facts",
         "evidence_lanes",
+        "prediction_interpretation",
         "comparison_status"
       ],
       "properties": {
@@ -437,6 +633,9 @@
             "ability_anchor": {"$ref": "#/$defs/abilityAnchor"}
           },
           "additionalProperties": false
+        },
+        "prediction_interpretation": {
+          "$ref": "#/$defs/predictionInterpretation"
         },
         "comparison_status": {
           "const": "NOT_YET_PAIRWISE_COMPARED"

@@ -154,6 +154,36 @@ def _run_ref(run: Mapping[str, object]) -> str:
     return f"{race_key}@{race_date}"
 
 
+def _source_run_contexts(
+    runs: list[Mapping[str, object]],
+) -> list[dict[str, object]]:
+    """Preserve source-run conditions needed for later transferability reading."""
+    contexts: list[dict[str, object]] = []
+    for run in runs:
+        contexts.append(
+            {
+                "run_ref": _run_ref(run),
+                "race_date": _date_text(run.get("race_date")),
+                "venue_code": _text(run.get("venue_code")),
+                "surface_code": _text(run.get("surface_code")),
+                "distance_m": run.get("distance_m"),
+                "field_size": run.get("field_size"),
+                "finish": run.get("finish"),
+                "pace_shape": _text(
+                    _family(run, "pace").get("pace_shape")
+                ).upper(),
+            }
+        )
+    contexts.sort(
+        key=lambda item: (
+            str(item["race_date"]),
+            str(item["run_ref"]),
+        ),
+        reverse=True,
+    )
+    return contexts
+
+
 def _field_size(run: Mapping[str, object]) -> int | None:
     """Return a valid field size when available."""
     value = run.get("field_size")
@@ -979,6 +1009,7 @@ def _horse_card(
         "horse_id": _text(horse.get("horse_id")),
         "history_status": _text(horse.get("history_status")),
         "card_scope": "RACEREVIEW_HISTORY_V0_1",
+        "source_run_contexts": _source_run_contexts(runs),
         **partitioned,
         "profile": {
             "hidden_strength": hidden_strength,

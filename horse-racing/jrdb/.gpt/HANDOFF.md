@@ -127,7 +127,16 @@ Design boundary:
 >
 > Pre-Freeze chain:
 > `General Evidence -> Pairwise -> Scenario -> Base Forecast -> EdgeDB Performance-only -> Final Forecast -> Freeze`.
-> Reading priority: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
+> Reading priority: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY
+
+Prediction reading layer (2026-09-25):
+
+- `PredictionInterpretation-v0.1` is embedded per horse in General Evidence.
+- It organizes trend direction + sample size + redundancy, Race Structure,
+  RaceReview hidden/fragile/repeatability/target overlap, and Ability Anchor.
+- It does not score or rank.
+- Pairwise reads Interpretation first, then verifies raw Evidence lanes.
+- canonical doc: `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`.`.
 > JRDB consensus / market / Edge Value / RL-Value / Bet Plan open only after
 > immutable Freeze PASS. Training Edge is not a Forecast input.
 > Canonical contract:
