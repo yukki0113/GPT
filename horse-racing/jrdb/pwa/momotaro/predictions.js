@@ -51,12 +51,13 @@ function collectRows(bundle) {
     };
 
     const ryota = momotaro.ryota || {};
-    if (predictionText(ryota.confidence, "").toUpperCase() === "S") {
+    const ryotaConfidence = predictionText(ryota.confidence, "").toUpperCase();
+    if (ryotaConfidence) {
       rows.push(Object.assign({}, base, {
-        type: "ryota-s",
+        type: "ryota-confidence",
         source: "りょーた",
         source_order: 2,
-        signal: "次走注目S",
+        signal: "自信度" + ryotaConfidence,
         mark: predictionText(ryota.mark, ""),
         comment: predictionText(ryota.comment, "")
       }));
