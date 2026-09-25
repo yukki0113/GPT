@@ -131,7 +131,19 @@ Design boundary:
 > JRDB consensus / market / Edge Value / RL-Value / Bet Plan open only after
 > immutable Freeze PASS. Training Edge is not a Forecast input.
 > Canonical contract:
-> `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`.
+> `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
+
+RaceReviewDB consumer default (2026-09-25):
+
+- operational source: stable Drive `RaceReviewDB_CURRENT.zip`
+- stable file ID: `1UwNfrupMTHRPhkzULPvClGre4MWz2TFg`
+- resolver: `src/racenote_racereview_current.py`
+- normal adapter CLI uses `--racereview-current-cache`
+- `--racereview-root` is retained for audit/replay only
+- join: JRDB blood registration number; no name fallback
+- as-of: `race_date < target_date`
+- consumer contract: `docs/racenote/RACEREVIEW_CURRENT_CONSUMER_v0_1.md`
+.
 
 
 RaceNote authoritative bundleは観測データとprovenanceを渡す層です。Reader Viewもprediction modelではありません。
