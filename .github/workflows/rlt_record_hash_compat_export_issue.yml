@@ -1,0 +1,122 @@
+name: RL-T Record Hash Compatibility Export
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  export:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RL_T_RECORD_HASH_COMPAT_EXPORT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install sidecar runtime
+        run: python -m pip install --disable-pip-version-check 'pyarrow==25.0.1'
+
+      - name: Fetch original annual JRDB Raw 2010-2025
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          mkdir -p /tmp/rlt_hash_compat/raw /tmp/rlt_hash_compat/report
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2010 --to-year 2025 \
+            --kinds BAC KYI CHA CYB SED UKC \
+            --output-dir /tmp/rlt_hash_compat/raw \
+            --manifest /tmp/rlt_hash_compat/report/raw_fetch_manifest.jsonl \
+            --sleep-seconds 0.5 --max-retries 4 --retry-backoff-seconds 2 \
+            > /tmp/rlt_hash_compat/report/raw_fetch_stdout.log \
+            2> /tmp/rlt_hash_compat/report/raw_fetch_stderr.log
+
+      - name: Build immutable compatibility sidecar
+        run: |
+          python horse-racing/jrdb/src/build_jrdb_index_base_record_hash_compat.py \
+            --raw-root /tmp/rlt_hash_compat/raw \
+            --years $(seq 2010 2025) \
+            --output-root /tmp/rlt_hash_compat/export \
+            > /tmp/rlt_hash_compat/report/build_stdout.log
+
+      - name: Verify sidecar manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          root = Path('/tmp/rlt_hash_compat/export')
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          if manifest.get('status') != 'PASS':
+              raise SystemExit('sidecar status is not PASS')
+          if manifest.get('source_warehouse_generation_id') != 'jrdb_normalized_warehouse_v1_2010_2025_g20260921':
+              raise SystemExit('sidecar generation mismatch')
+          if manifest.get('years') != list(range(2010, 2026)):
+              raise SystemExit('sidecar years mismatch')
+          if set(manifest.get('families') or []) != {'BAC','KYI','CHA','CYB','SED','UKC'}:
+              raise SystemExit('sidecar families mismatch')
+          for asset in manifest['assets']:
+              path = root / asset['relative_path']
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              if digest != asset['sha256']:
+                  raise SystemExit('sidecar sha mismatch: ' + asset['family'])
+          PY
+
+      - name: Upload canonical sidecar candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-record-hash-compat-${{ github.run_id }}
+          path: /tmp/rlt_hash_compat/export/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Comment export summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m = json.loads(Path('/tmp/rlt_hash_compat/export/manifest.json').read_text(encoding='utf-8'))
+          result = {
+              'status': 'PASS',
+              'artifact_type': m['artifact_type'],
+              'version': m['version'],
+              'source_warehouse_generation_id': m['source_warehouse_generation_id'],
+              'years': [2010, 2025],
+              'assets': [
+                  {
+                      'family': a['family'],
+                      'row_count': a['row_count'],
+                      'sha256': a['sha256'],
+                      'relative_path': a['relative_path'],
+                  }
+                  for a in m['assets']
+              ],
+          }
+          Path('/tmp/result.md').write_text(
+              'RL_T_RECORD_HASH_COMPAT_EXPORT_RESULT\n' + json.dumps(result, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result.md
+
+      - name: Close request issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
