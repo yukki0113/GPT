@@ -64,19 +64,27 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('class="momotaro-race-card"', script)
         self.assertIn('source: "🐬"', script)
         self.assertIn('signal: "次走注目S"', script)
+        self.assertNotIn('signal: "回顧馬"', script)
         self.assertIn('data-filter="keibailuka">🐬</button>', html)
         self.assertIn('id="prediction-refresh" type="button"', html)
         self.assertIn('<div class="button-row" hidden>', html)
+
+    def test_momotaro_stylesheet_loads_after_shared_newspaper_styles(self) -> None:
+        html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
+
+        shared_position = html.index('../newspaper-v9.css?v=2')
+        momotaro_position = html.index('./momotaro.css?v=6')
+        self.assertLess(shared_position, momotaro_position)
 
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
 
         self.assertIn(".momotaro-newspaper-table .mark-ryota", css)
-        self.assertIn("width:32px", css)
+        self.assertIn("width:24px", css)
         self.assertIn(".momotaro-newspaper-table .mark-iluka", css)
-        self.assertIn("width:34px", css)
+        self.assertIn("width:26px", css)
         self.assertIn(".momotaro-newspaper-table .newspaper-mark-group-head", css)
-        self.assertIn("min-width:130px", css)
+        self.assertIn("min-width:98px", css)
         self.assertIn(".newspaper-main [hidden]", css)
         self.assertIn("display:none !important", css)
 
@@ -92,7 +100,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v10"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v11"', service_worker)
 
 
 if __name__ == "__main__":
