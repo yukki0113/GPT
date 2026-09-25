@@ -67,6 +67,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('signal: "次走注目S"', script)
         self.assertNotIn('signal: "回顧馬"', script)
         self.assertNotIn('"回顧馬"', newspaper_script)
+        self.assertIn('data-filter="kenshow-analysis">けん</button>', html)
         self.assertIn('data-filter="keibailuka">🐬</button>', html)
         self.assertIn('id="prediction-refresh" type="button"', html)
         self.assertIn('<div class="button-row" hidden>', html)
@@ -87,7 +88,8 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('const mark = text(marks.total, "");', script)
         self.assertIn("MOMOTARO_KENSHOW_JRDB_MARKS.has(mark)", script)
         self.assertIn('contributor.key === "kenshow"', script)
-        self.assertNotIn('type: "kenshow"', predictions)
+        self.assertIn('momotaroKenshowTemporaryMark(horse) || (comment ? "注" : "")', script)
+        self.assertIn('type: "kenshow-analysis"', predictions)
         self.assertNotIn('source: "けんしょー"', predictions)
 
     def test_prediction_column_widths_are_compact(self) -> None:
@@ -115,7 +117,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('./momotaro.js?v=9', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v12"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v13"', service_worker)
 
 
 if __name__ == "__main__":
