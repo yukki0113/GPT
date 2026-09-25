@@ -86,7 +86,7 @@ def _trend_profile(horse: Mapping[str, object]) -> dict[str, object]:
 
     directional = [
         item for item in signals
-        if item["direction"] in {"SUPPORTIVE", "OPPOSED"}
+        if item["direction"] in {"POSITIVE", "NEGATIVE"}
     ]
 
     win_support = sorted(
