@@ -11,6 +11,7 @@
     "priority_policy",
     "firewall",
     "race_data_context",
+    "race_structure",
     "horses",
     "next_stage"
   ],
@@ -119,6 +120,114 @@
           "items": {"type": "string"}
         },
         "policy": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "race_structure": {
+      "type": "object",
+      "required": [
+        "structure_version",
+        "status",
+        "pace_pressure",
+        "front_or_forward_tendency_count",
+        "known_position_profile_count",
+        "runner_count",
+        "horses",
+        "policy"
+      ],
+      "properties": {
+        "structure_version": {
+          "const": "IndependentRaceStructure-v0.1"
+        },
+        "status": {
+          "enum": ["AVAILABLE", "INSUFFICIENT_HISTORY"]
+        },
+        "pace_pressure": {
+          "enum": ["LOW", "MEDIUM", "HIGH", "UNKNOWN"]
+        },
+        "front_or_forward_tendency_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "known_position_profile_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runner_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "horses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "horse_no",
+              "horse_name",
+              "historical_position"
+            ],
+            "properties": {
+              "horse_no": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "horse_name": {
+                "type": "string"
+              },
+              "historical_position": {
+                "type": "object",
+                "required": [
+                  "status",
+                  "source",
+                  "observed_run_count",
+                  "band_counts",
+                  "tendency",
+                  "confidence",
+                  "observations",
+                  "policy"
+                ],
+                "properties": {
+                  "status": {
+                    "enum": ["AVAILABLE", "UNAVAILABLE"]
+                  },
+                  "source": {
+                    "const": "RECENT_RUN_CORNER_HISTORY_ONLY"
+                  },
+                  "observed_run_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "band_counts": {
+                    "type": "object"
+                  },
+                  "tendency": {
+                    "enum": [
+                      "FRONT",
+                      "FORWARD",
+                      "MID",
+                      "BACK",
+                      "UNKNOWN"
+                    ]
+                  },
+                  "confidence": {
+                    "enum": ["NONE", "LOW", "MEDIUM", "HIGH"]
+                  },
+                  "observations": {
+                    "type": "array"
+                  },
+                  "policy": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "policy": {
+          "type": "object"
+        }
       },
       "additionalProperties": false
     },
