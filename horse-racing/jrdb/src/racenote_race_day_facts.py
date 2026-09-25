@@ -18,6 +18,7 @@ from pathlib import Path
 
 ALLOWED_KEYS = {
     "source_kind",
+    "source_url",
     "as_of",
     "weather",
     "track_condition",
@@ -83,6 +84,12 @@ def validate_race_day_facts(
             "source_kind is too long"
         )
 
+    source_url = _text(raw.get("source_url"))
+    if len(source_url) > 500:
+        raise RaceDayFactsError(
+            "source_url is too long"
+        )
+
     as_of = _text(raw.get("as_of"))
     if not as_of:
         raise RaceDayFactsError(
@@ -107,6 +114,7 @@ def validate_race_day_facts(
 
     return {
         "source_kind": source_kind,
+        "source_url": source_url or None,
         "as_of": as_of,
         "weather": weather or None,
         "track_condition": track_condition or None,
