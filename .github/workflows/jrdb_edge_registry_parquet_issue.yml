@@ -1,0 +1,160 @@
+name: JRDB Edge Registry Parquet migration via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  migrate:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_REGISTRY_PARQUET]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'source_run_id','source_artifact_name','expected_serving_sha256','generation_id'}
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          if not isinstance(req['source_run_id'],int) or req['source_run_id']<=0:
+              raise SystemExit('source_run_id must be positive')
+          if not re.fullmatch(r'[0-9a-f]{64}',str(req['expected_serving_sha256']).lower()):
+              raise SystemExit('invalid expected_serving_sha256')
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,120}',str(req['generation_id'])):
+              raise SystemExit('invalid generation_id')
+          Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n')
+          with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as f:
+              for key,value in req.items():
+                  if isinstance(value,(str,int)):
+                      f.write(f'{key.upper()}={value}\n')
+          PY
+
+      - name: Install dependencies and focused tests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          python -m pytest -q horse-racing/jrdb/tests/test_jrdb_edge_registry_parquet.py
+
+      - name: Download frozen v0.2 Registry artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/source
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY"             --name "$SOURCE_ARTIFACT_NAME" --dir /tmp/source
+          mapfile -t registries < <(find /tmp/source -type f -name edge_registry.sqlite -print)
+          mapfile -t catalogs < <(find /tmp/source -type f -name edge_serving_catalog_v0_2.jsonl -print)
+          test "${#registries[@]}" -eq 1
+          test "${#catalogs[@]}" -eq 1
+          cp "${registries[0]}" /tmp/edge_registry.sqlite
+          cp "${catalogs[0]}" /tmp/edge_serving_catalog_v0_2.jsonl
+          echo "$EXPECTED_SERVING_SHA256  /tmp/edge_serving_catalog_v0_2.jsonl" | sha256sum -c -
+
+      - name: Build Registry Parquet generation
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/canonical/registry/v0.2 /tmp/audit
+          python horse-racing/jrdb/src/build_jrdb_edge_registry_parquet_generation.py             --sqlite /tmp/edge_registry.sqlite             --output-root /tmp/canonical/registry/v0.2             --generation-id "$GENERATION_ID"             --serving-jsonl /tmp/edge_serving_catalog_v0_2.jsonl             --result-json /tmp/audit/generation.json
+
+      - name: Full Registry SQLite vs Parquet equivalence gate
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/audit_jrdb_edge_registry_parquet_equivalence.py             --sqlite /tmp/edge_registry.sqlite             --parquet-root "/tmp/canonical/registry/v0.2/generations/$GENERATION_ID"             --output /tmp/audit/equivalence.json
+          python - <<'PY'
+          import datetime,json,os
+          from pathlib import Path
+          root=Path('/tmp/canonical/registry/v0.2')
+          pointer={
+              'status':'CURRENT',
+              'generation_id':os.environ['GENERATION_ID'],
+              'manifest':f"generations/{os.environ['GENERATION_ID']}/manifest.json",
+              'previous_generation_id':None,
+              'updated_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          }
+          (root/'current.json').write_text(json.dumps(pointer,ensure_ascii=False,indent=2)+'\n')
+          PY
+          cp /tmp/request.json /tmp/audit/request.json
+
+      - name: Upload migration candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-registry-parquet-${{ github.run_id }}
+          path: |
+            /tmp/canonical/registry/v0.2/
+            /tmp/audit/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json,os,subprocess
+          eq=json.load(open('/tmp/audit/equivalence.json'))
+          gen=json.load(open('/tmp/audit/generation.json'))
+          compact={
+              'status':'PASS',
+              'stage':'REGISTRY_PARQUET_CANDIDATE',
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-registry-parquet-{os.environ['RUN_ID']}",
+              'generation_id':os.environ['GENERATION_ID'],
+              'table_rows':gen['table_rows'],
+              'manifest_sha256':gen['manifest_sha256'],
+              'serving_sha256':gen['serving_sha256'],
+              'equivalence_status':eq['status'],
+              'production_serving_changed':False,
+              'drive_promoted':False,
+          }
+          body='JRDB_EDGE_REGISTRY_PARQUET_RESULT\n'+json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',
+                          os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',
+                          os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "Edge Registry Parquet migration candidate failed closed. No production serving was changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
