@@ -170,6 +170,18 @@ def extract_google_drive_file_id(url: str) -> str | None:
     return None
 
 
+def _dedupe_source_entries(entries: Iterable[SourceEntry]) -> list[SourceEntry]:
+    output: list[SourceEntry] = []
+    seen: set[tuple[str, str | None, str | None, str | None, str | None]] = set()
+    for entry in entries:
+        identity = (entry.path, entry.url, entry.file_id, entry.local_path, entry.root_label)
+        if identity in seen:
+            continue
+        seen.add(identity)
+        output.append(entry)
+    return output
+
+
 def list_public_google_drive_folder(
     folder_id: str,
     *,
@@ -202,7 +214,6 @@ def list_public_google_drive_folder(
     if not isinstance(payload, list):
         raise MaterializationError(f"Drive folder listing is not a list for {label}/{folder_id}")
     entries: list[SourceEntry] = []
-    seen_entries: set[tuple[str, str | None, str | None, str | None, str | None]] = set()
     for item in payload:
         if not isinstance(item, Mapping):
             continue
@@ -211,12 +222,8 @@ def list_public_google_drive_folder(
         file_id = extract_google_drive_file_id(url_value or "")
         if not path or not file_id:
             continue
-        entry = SourceEntry(path=path, url=url_value, file_id=file_id, root_label=label.upper())
-        identity = (entry.path, entry.url, entry.file_id, entry.local_path, entry.root_label)
-        if identity in seen_entries:
-            continue
-        seen_entries.add(identity)
-        entries.append(entry)
+        entries.append(SourceEntry(path=path, url=url_value, file_id=file_id, root_label=label.upper()))
+    entries = _dedupe_source_entries(entries)
     if not entries:
         raise MaterializationError(f"Drive folder listing returned no files for {label}/{folder_id}")
     return entries
