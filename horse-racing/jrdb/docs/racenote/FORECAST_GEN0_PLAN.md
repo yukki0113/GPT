@@ -95,11 +95,15 @@ Freeze. They may evaluate the frozen prediction but must not mutate it.
 
 次世代のreading orderはfactor番号順ではなく、次のEvidence lane順とする。
 
-General EvidenceからPairwiseへ入る直前に
+General EvidenceからAll-Runner Synthesisへ入る直前に
 `PredictionInterpretation-v0.1` を作る。
 これはTrend / RR / Abilityのraw Evidenceを非加点で整理するpre-readであり、
 順位・印・確率は決定しない。PairwiseはInterpretationを先に読み、
 その後raw Evidence laneを再確認する。
+
+その後 `All-Runner Synthesis v0.1` で全馬を一度に横比較し、
+non-scoringのdraft orderと重点Pairwise境界を作る。
+新規運用ではdraft orderをPairwiseへ直接手渡ししない。
 
 ```text
 DATA_TREND
