@@ -368,7 +368,7 @@ Example:
 
 No unrelated post-hoc reason should be generated after the result.
 
-## 16. Activation gate
+## 17. Activation gate
 
 Implementation does not itself activate Gen0-G001.
 
