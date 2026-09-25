@@ -51,6 +51,7 @@ def _general_evidence() -> dict[str, object]:
                         "priority_rank": 2,
                         "priority_relation": "SECOND",
                         "card_scope": "RACEREVIEW_HISTORY_V0_1",
+                        "source_run_contexts": [],
                         "primary_positive": [],
                         "supporting_positive": [],
                         "concerns": [],
@@ -190,7 +191,13 @@ def _general_evidence() -> dict[str, object]:
         "horses": horses,
         "next_stage": {
             "name": "PAIRWISE_COMPARISON",
-            "status": "NOT_IMPLEMENTED_IN_V0_1",
+            "required_read_order": [
+                "DATA_TREND",
+                "RACEREVIEW",
+                "ABILITY_ANCHOR",
+            ],
+            "status": "CONTRACT_IMPLEMENTED",
+            "contract_version": "TrendFirst-Pairwise-v0.1",
         },
     }
 
