@@ -100,6 +100,7 @@ jobs:
           import subprocess
           import time
           import zipfile
+          from concurrent.futures import ThreadPoolExecutor, as_completed
           from pathlib import Path
 
           root = Path('/tmp/race_review_smoke')
@@ -210,49 +211,57 @@ jobs:
               'failures': [],
           }
 
+          tasks = []
           for kind in ('PACI', 'SED'):
               tsv = root / (kind.lower() + '.tsv')
               for line in tsv.read_text(encoding='utf-8').splitlines():
                   name, file_id = line.split('\t')
-                  target = files_root / name
+                  tasks.append((kind, name, file_id))
 
-                  method, attempts = download(
-                      name,
-                      file_id,
-                      target,
-                  )
-                  if method is None:
-                      summary['status'] = 'FAIL'
-                      summary['failures'].append({
+          def acquire_one(task):
+              kind, name, file_id = task
+              target = files_root / name
+              method, attempts = download(
+                  name,
+                  file_id,
+                  target,
+              )
+              if method is None:
+                  return {
+                      'ok': False,
+                      'failure': {
                           'kind': kind,
                           'name': name,
                           'file_id': file_id,
                           'reason': 'download_failed_all_methods',
                           'attempts': attempts,
-                      })
-                      continue
+                      },
+                  }
 
-                  try:
-                      member_count = validate_members(
-                          kind,
-                          name,
-                          target,
-                      )
-                  except Exception as exc:
-                      summary['status'] = 'FAIL'
-                      summary['failures'].append({
+              try:
+                  member_count = validate_members(
+                      kind,
+                      name,
+                      target,
+                  )
+              except Exception as exc:
+                  return {
+                      'ok': False,
+                      'failure': {
                           'kind': kind,
                           'name': name,
                           'file_id': file_id,
                           'reason': str(exc),
                           'method': method,
-                      })
-                      continue
+                      },
+                  }
 
-                  digest = hashlib.sha256(
-                      target.read_bytes()
-                  ).hexdigest()
-                  summary['files'].append({
+              digest = hashlib.sha256(
+                  target.read_bytes()
+              ).hexdigest()
+              return {
+                  'ok': True,
+                  'file': {
                       'kind': kind,
                       'name': name,
                       'file_id': file_id,
@@ -260,7 +269,28 @@ jobs:
                       'size_bytes': target.stat().st_size,
                       'sha256': digest,
                       'member_count': member_count,
-                  })
+                  },
+              }
+
+          with ThreadPoolExecutor(max_workers=8) as executor:
+              future_map = {
+                  executor.submit(acquire_one, task): task
+                  for task in tasks
+              }
+              for future in as_completed(future_map):
+                  result = future.result()
+                  if result['ok']:
+                      summary['files'].append(result['file'])
+                  else:
+                      summary['status'] = 'FAIL'
+                      summary['failures'].append(result['failure'])
+
+          summary['files'].sort(
+              key=lambda item: (item['kind'], item['name'])
+          )
+          summary['failures'].sort(
+              key=lambda item: (item['kind'], item['name'])
+          )
 
           summary['paci_count'] = sum(
               1 for item in summary['files']
