@@ -17,6 +17,7 @@ validated RaceNote General Evidence view. This validator enforces:
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 from collections.abc import Mapping
