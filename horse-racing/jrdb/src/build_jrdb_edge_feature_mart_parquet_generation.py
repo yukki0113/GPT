@@ -79,7 +79,7 @@ def build_generation(
     }
     conversion = convert(config)
     validation = validate(config, conversion)
-    if validation.get("status") != "PASS":
+    if validation.get("status") != "success" or validation.get("passed") is not True:
         audit_path.write_text(
             json.dumps({"status": "FAIL", "conversion": conversion, "validation": validation},
                        ensure_ascii=False, indent=2, sort_keys=True) + "\n",
