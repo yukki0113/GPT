@@ -533,6 +533,7 @@
       "required": [
         "interpretation_version",
         "data_trend",
+        "race_structure",
         "racereview",
         "ability_anchor",
         "positive_case_components",
@@ -546,6 +547,28 @@
         },
         "data_trend": {
           "$ref": "#/$defs/trendInterpretation"
+        },
+        "race_structure": {
+          "type": "object",
+          "required": [
+            "pace_pressure",
+            "horse_historical_position",
+            "running_style_trend_available",
+            "reading_rule",
+            "policy"
+          ],
+          "properties": {
+            "pace_pressure": {
+              "enum": ["LOW", "MEDIUM", "HIGH", "UNKNOWN"]
+            },
+            "horse_historical_position": {"type": "object"},
+            "running_style_trend_available": {"type": "boolean"},
+            "reading_rule": {
+              "const": "RACE_STRUCTURE_IS_RELATIVE_CONTEXT_NOT_AUTOMATIC_DIRECTION"
+            },
+            "policy": {"type": "object"}
+          },
+          "additionalProperties": false
         },
         "racereview": {
           "$ref": "#/$defs/reviewInterpretation"
