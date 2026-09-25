@@ -204,3 +204,79 @@ Future integration can expose:
 - matched_rule_ids
 
 as downstream features for RaceNote / RL.
+
+
+## 11. Reverse lookup from future PACI
+
+The operational system also supports the inverse workflow:
+
+future PACI entrants
+->
+stable horse_id from KYI blood registration number
+->
+most recent completed flat JRA start before the target date
+->
+reconstruct the frozen Next-Watch source features at that previous start
+->
+apply the same hidden-value S/A rules
+
+This allows requests such as:
+
+- "取得したPACIを基にS/A相当の出走馬がいるか確認して"
+- "明日の出走馬の中に次走注目馬がいるか見て"
+
+Implementation:
+
+- horse-racing/jrdb/src/jrdb_next_watch_reverse.py
+
+PACI identity:
+
+- KYI blood registration number is used as horse_id
+- horse-name joins are prohibited
+- horses with no usable previous RaceReviewDB start remain unclassified
+
+Reverse grading is identical to normal operational grading:
+
+- S:
+  HV05/HV13 match OR at least two frozen hidden-value rule matches
+- A:
+  at least one frozen hidden-value rule match and not S
+- no forced minimum count
+
+### Reverse smoke test
+
+PACI:
+
+- PACI260926.zip
+- Drive ID:
+  1PSYw6uL2Gx-rbtcJsgsGFZZNGTnMc4od
+
+Target race date:
+
+- 2026-09-26
+
+Workflow run:
+
+- 36130085663
+
+Entrants:
+
+- 313
+
+Result:
+
+- S:
+  18
+- A:
+  22
+- no usable prior history:
+  60
+
+Artifact:
+
+- RaceReviewDB_NextWatch_Reverse_2026-09-26_g36130085663.zip
+- Drive file ID:
+  1-uMaG1uK8WQ-6v9oVqGcbnBwbGJVGCyg
+
+The reverse workflow reads only completed prior starts from RaceReviewDB. It
+does not use any target-race result.
