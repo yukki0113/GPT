@@ -104,15 +104,15 @@ concerns, mixed context, repeatability, hidden-strength candidates,
 fragile-form candidates, contradiction, uncertainty, and comment evidence.
 It does not score horses and remains non-active for Forecast generation.
 
-Prediction reading is now normalized before Pairwise through:
+Prediction reading is normalized before full-field synthesis through:
 
 - `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`
 - `PredictionInterpretation-v0.1` embedded per horse in General Evidence
 
 This layer does not score or rank. It preserves directional trend evidence,
 sample size, trend redundancy, Race Structure, RaceReview repeatability and
-target-condition overlap, plus Ability Anchor context. Pairwise reads this
-profile first and then verifies the raw Evidence lanes.
+target-condition overlap, plus Ability Anchor context. All-Runner Synthesis
+reads every profile before Pairwise verifies the important ranking boundaries.
 
 The next aggregation layer is also implemented as a research input:
 
@@ -124,6 +124,19 @@ This layer joins Independent RaceNote evidence with the RaceReview Horse
 Evidence Card and enforces the ordinal reading policy
 `DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR`. It does not create rankings,
 marks, or probabilities.
+
+The full-field draft layer is now implemented:
+
+- `src/racenote_all_runner_synthesis.py`
+- `schema/racenote_all_runner_synthesis_schema_v0_1.json`
+- `docs/racenote/ALL_RUNNER_SYNTHESIS_v0_1.md`
+
+All-Runner Synthesis reads every runner's Prediction Interpretation and authors
+a complete draft order without numeric scoring. It validates full-field
+coverage, forbids Ability-only primary ordering, and derives HIGH-priority
+adjacent boundaries from low confidence, mixed evidence, small-sample-only
+evidence, and RaceReview contradiction. The draft is not a Forecast; it is
+bound by hash and passed to Pairwise for direct comparison.
 
 The downstream Pairwise Comparison research contract is also implemented:
 
@@ -164,7 +177,7 @@ The next-generation Forecast contract is now implemented:
 - `config/racenote_forecast_gen0_ledger_v0_3.json`
 - `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
 
-Gen0.3 consumes General Evidence -> Pairwise -> Scenario -> Base Forecast,
+Gen0.3 consumes General Evidence -> All-Runner Synthesis -> Pairwise -> Scenario -> Base Forecast,
 then allows only EdgeDB Performance evidence to adjust the final forecast.
 JRDB consensus, current market, Edge Value, RL/Value and Bet Plan remain
 post-Freeze layers.
