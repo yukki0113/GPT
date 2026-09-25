@@ -11,7 +11,7 @@ from typing import Any
 import audit_jrdb_edge_v03_operational_replay as stage_d
 import run_jrdb_edge_forward_freeze as v02_freeze
 
-VERSION = "0.1.0-stage-e"
+VERSION = "0.1.1-stage-e"
 EVALUATION_MODE = "TRUE_FORWARD_SHADOW"
 
 
@@ -21,6 +21,24 @@ class ShadowFreezeError(RuntimeError):
 
 def _sha256(path: str | Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def _assert_expected_scheduled_races(manifest: dict[str, Any], expected: int | None) -> int:
+    """Fail closed when PACI is only a partial target-day snapshot."""
+    provenance = manifest.get("provenance")
+    if not isinstance(provenance, dict):
+        raise ShadowFreezeError("freeze manifest provenance missing")
+    actual = provenance.get("scheduled_races")
+    if not isinstance(actual, int) or actual <= 0:
+        raise ShadowFreezeError(f"invalid PACI scheduled_races: {actual!r}")
+    if expected is not None:
+        if expected <= 0:
+            raise ShadowFreezeError(f"expected_scheduled_races must be positive: {expected}")
+        if actual != expected:
+            raise ShadowFreezeError(
+                f"PACI scheduled race count mismatch: expected={expected} actual={actual}"
+            )
+    return actual
 
 
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -90,6 +108,7 @@ def run(
     expected_v03_sha256: str | None = None,
     expected_analysis_generation_id: str | None = None,
     expected_analysis_manifest_sha256: str | None = None,
+    expected_scheduled_races: int | None = None,
 ) -> dict[str, Any]:
     output=Path(output_dir)
     output.mkdir(parents=True,exist_ok=True)
@@ -114,6 +133,10 @@ def run(
         expected_analysis_generation_id=expected_analysis_generation_id,
         expected_analysis_manifest_sha256=expected_analysis_manifest_sha256,
     )
+    actual_scheduled_races=_assert_expected_scheduled_races(
+        base["manifest"],
+        expected_scheduled_races,
+    )
 
     facts=output/"current_facts.jsonl"
     shadow_matches=output/"edge_matches_v0_3_shadow.jsonl"
@@ -129,6 +152,11 @@ def run(
 
     provenance=json.loads((output/"provenance.json").read_text(encoding="utf-8"))
     provenance["evaluation_mode"]=EVALUATION_MODE
+    provenance["stage_e_completeness"]={
+        "status":"PASS",
+        "expected_scheduled_races":expected_scheduled_races,
+        "actual_scheduled_races":actual_scheduled_races,
+    }
     provenance["v03_shadow"]={
         "mode":"SHADOW_ONLY",
         "catalog_file":"edge_serving_catalog_v0_3_shadow.jsonl",
@@ -159,6 +187,8 @@ def run(
         "frozen_at_utc":provenance["frozen_at_utc"],
         "earliest_post_time_jst":provenance["earliest_post_time_jst"],
         "pre_race_guard":"PASS",
+        "scheduled_races":actual_scheduled_races,
+        "expected_scheduled_races":expected_scheduled_races,
         "result_data_used":False,
         "v02":base["matcher"],
         "v03":shadow_summary,
@@ -187,6 +217,7 @@ def main() -> int:
     parser.add_argument("--expected-v03-sha256")
     parser.add_argument("--expected-analysis-generation-id")
     parser.add_argument("--expected-analysis-manifest-sha256")
+    parser.add_argument("--expected-scheduled-races",type=int)
     args=parser.parse_args()
     result=run(
         paci_path=args.paci,
@@ -201,6 +232,7 @@ def main() -> int:
         expected_v03_sha256=args.expected_v03_sha256,
         expected_analysis_generation_id=args.expected_analysis_generation_id,
         expected_analysis_manifest_sha256=args.expected_analysis_manifest_sha256,
+        expected_scheduled_races=args.expected_scheduled_races,
     )
     print(json.dumps(result,ensure_ascii=False,sort_keys=True))
     return 0
