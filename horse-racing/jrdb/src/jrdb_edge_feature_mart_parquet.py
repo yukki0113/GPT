@@ -131,7 +131,8 @@ def resolve_current(root: Path) -> dict[str, Any]:
 def connect_current(root: Path) -> tuple[duckdb.DuckDBPyConnection, dict[str, Any]]:
     report = resolve_current(root)
     con = duckdb.connect()
-    con.execute("CREATE VIEW edge_runner_fact AS SELECT * FROM read_parquet(?)", [str(report["fact_path"])])
+    literal = str(report["fact_path"]).replace("'", "''")
+    con.execute(f"CREATE VIEW edge_runner_fact AS SELECT * FROM read_parquet('{literal}')")
     return con, report
 
 
