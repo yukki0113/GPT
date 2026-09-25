@@ -43,8 +43,10 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperHistoryDisplayMode: "compact"', html)
         self.assertIn('newspaperV4HistoryTableClass()', script)
         self.assertIn("momotaro-newspaper-table ' + newspaperV4HistoryTableClass()", script)
-        self.assertIn("3人の予想・短評", html)
+        self.assertNotIn("3人の予想・短評", html)
         self.assertIn('heading.textContent === "RaceNote短評"', script)
+        self.assertNotIn("renderMomotaroFriends", script)
+        self.assertNotIn('id="momotaro-friends-card"', html)
 
     def test_operational_controls_are_hidden(self) -> None:
         html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
@@ -114,10 +116,10 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
-        self.assertIn('./momotaro.js?v=10', newspaper)
+        self.assertIn('./momotaro.js?v=11', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v13"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v14"', service_worker)
 
 
 if __name__ == "__main__":
