@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_scenario_robustness_schema_v0_1.json",
+  "title": "RaceNote Scenario Robustness v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_schema_version",
+    "scenario_contract_version",
+    "pairwise_audit_sha256",
+    "target",
+    "scenarios",
+    "conclusion"
+  ],
+  "properties": {
+    "scenario_schema_version": {
+      "const": "RaceNote-Scenario-Robustness-0.1"
+    },
+    "scenario_contract_version": {
+      "const": "Pace3-Scenario-v0.1"
+    },
+    "pairwise_audit_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "target": {
+      "type": "object",
+      "required": ["date", "venue", "race_no", "race_name"],
+      "properties": {
+        "date": {"type": "string"},
+        "venue": {"type": "string", "minLength": 1},
+        "race_no": {"type": "integer", "minimum": 1},
+        "race_name": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/scenario"}
+    },
+    "conclusion": {
+      "type": "object",
+      "required": [
+        "pairwise_axis_status",
+        "main_risk_scenario_ids",
+        "summary"
+      ],
+      "properties": {
+        "pairwise_axis_status": {
+          "enum": ["ROBUST", "CONDITIONAL", "FRAGILE"]
+        },
+        "main_risk_scenario_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["SLOW", "MEDIUM", "FAST"]
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "scenario": {
+      "type": "object",
+      "required": [
+        "scenario_id",
+        "pace",
+        "assumption_summary",
+        "order",
+        "changed_from_pairwise",
+        "scenario_summary",
+        "key_reason_codes",
+        "triggered_reversal_conditions"
+      ],
+      "properties": {
+        "scenario_id": {
+          "enum": ["SLOW", "MEDIUM", "FAST"]
+        },
+        "pace": {
+          "enum": ["SLOW", "MEDIUM", "FAST"]
+        },
+        "assumption_summary": {
+          "type": "string"
+        },
+        "order": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "changed_from_pairwise": {
+          "type": "boolean"
+        },
+        "scenario_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "triggered_reversal_conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
