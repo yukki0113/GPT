@@ -52,12 +52,19 @@ function collectRows(bundle) {
 
     const ryota = momotaro.ryota || {};
     const ryotaConfidence = predictionText(ryota.confidence, "").toUpperCase();
-    if (ryotaConfidence) {
+    const ryotaTag = predictionText(ryota.tag, "");
+    const ryotaSpecial = ryota.review_horse === true;
+    if (ryotaConfidence || ryotaSpecial) {
+      const ryotaSignals = [];
+      if (ryotaConfidence) ryotaSignals.push("自信度" + ryotaConfidence);
+      if (ryotaTag) ryotaSignals.push(ryotaTag);
+      else if (ryotaSpecial) ryotaSignals.push("次走注目");
+
       rows.push(Object.assign({}, base, {
-        type: "ryota-confidence",
+        type: "ryota",
         source: "りょーた",
         source_order: 2,
-        signal: "自信度" + ryotaConfidence,
+        signal: ryotaSignals.join(" / "),
         mark: predictionText(ryota.mark, ""),
         comment: predictionText(ryota.comment, "")
       }));
