@@ -719,12 +719,62 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         second = structure["horses"][1]["historical_position"]
         self.assertEqual(first["tendency"], "FRONT")
         self.assertEqual(second["tendency"], "MID")
+        self.assertEqual(first["dominant_band_count"], 3)
+        self.assertEqual(first["dominant_share"], 1.0)
+        self.assertEqual(first["distinct_band_count"], 1)
+        self.assertEqual(first["variability_status"], "SINGLE_BAND")
+        self.assertEqual(second["dominant_band_count"], 2)
+        self.assertEqual(second["dominant_share"], 1.0)
+        self.assertEqual(second["distinct_band_count"], 1)
+        self.assertEqual(second["variability_status"], "SINGLE_BAND")
         self.assertFalse(
             first["policy"]["current_jrdb_running_style_used"]
+        )
+        self.assertTrue(
+            first["policy"][
+                "historical_tendency_is_not_position_commitment"
+            ]
         )
         self.assertFalse(
             structure["policy"]["current_jrdb_forecast_pace_used"]
         )
+
+    def test_historical_position_profile_exposes_variability(self) -> None:
+        independent = _independent()
+        independent["horses"][0]["recent_runs"] = [
+            _recent_run(
+                "2026-09-20",
+                60.0,
+                4,
+                corners=[1, 1, 2, 2],
+            ),
+            _recent_run(
+                "2026-08-30",
+                56.0,
+                2,
+                corners=[2, 2, 2, 2],
+            ),
+            _recent_run(
+                "2026-08-02",
+                58.0,
+                5,
+                corners=[8, 8, 8, 8],
+            ),
+        ]
+
+        result = build_general_evidence(
+            independent,
+            _rr_cards(),
+        )
+        profile = result["race_structure"]["horses"][0][
+            "historical_position"
+        ]
+
+        self.assertEqual(profile["tendency"], "FRONT")
+        self.assertEqual(profile["dominant_band_count"], 2)
+        self.assertEqual(profile["dominant_share"], 0.667)
+        self.assertEqual(profile["distinct_band_count"], 2)
+        self.assertEqual(profile["variability_status"], "MULTI_BAND")
 
     def test_prediction_interpretation_exposes_race_structure_without_auto_direction(self) -> None:
         independent = _independent()
