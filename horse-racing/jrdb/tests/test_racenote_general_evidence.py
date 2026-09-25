@@ -810,6 +810,18 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             anchor["policy"]["current_total_index_used"]
         )
 
+    def test_no_selected_rr_evidence_keeps_transferability_unknown(self) -> None:
+        result = build_general_evidence(
+            _independent(),
+            _rr_cards(),
+        )
+        transfer = result["horses"][1][
+            "prediction_interpretation"
+        ]["racereview"]["transferability"]
+
+        self.assertEqual(transfer["state"], "UNKNOWN")
+        self.assertEqual(transfer["selected_source_run_count"], 0)
+
     def test_racereview_signal_is_preserved_as_second_lane(self) -> None:
         result = build_general_evidence(
             _independent(),
