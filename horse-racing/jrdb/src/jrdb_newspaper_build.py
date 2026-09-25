@@ -289,6 +289,155 @@ def _history_from_zed(
     }
 
 
+def _analysis_history_item(
+    row: sqlite3.Row,
+    *,
+    sequence: int,
+) -> dict[str, Any]:
+    """Project one Analysis Lite row into compact Newspaper history."""
+    return {
+        "sequence": sequence,
+        "link_sequence": None,
+        "source_layer": "compact_older_history",
+        "source_kind": "analysis_compact",
+        "detail_level": "compact",
+        "race_key": row["race_key"],
+        "result_key": None,
+        "date": row["race_date"],
+        "venue_code": row["venue_code"],
+        "venue": VENUES.get(
+            _text(row["venue_code"]),
+            _text(row["venue_code"]) or None,
+        ),
+        "race_no": row["race_no"],
+        "race_name": None,
+        "class_label": _label(RACE_CLASS, row["race_condition_code"]),
+        "grade_label": _label(GRADE, row["grade_code"]),
+        "surface": _label(SURFACE, row["track_type"]),
+        "distance_m": row["distance"],
+        "track_condition": _label(
+            TRACK_CONDITION,
+            row["track_condition_code"],
+        ),
+        "field_size": None,
+        "horse_no": None,
+        "finish": row["finish"],
+        "final_popularity": row["final_win_popularity"],
+        "final_win_odds": row["final_win_odds"],
+        "jockey_name": None,
+        "carried_weight_kg": None,
+        "corner_positions": [],
+        "time_sec": None,
+        "time_gap_sec": None,
+        "time_gap_reference": None,
+        "first3f_sec": None,
+        "last3f_sec": None,
+        "last3f_rank": None,
+        "idm": None,
+        "body_weight_kg": None,
+        "body_weight_change_kg": None,
+        "abnormal_code": row["abnormal_code"],
+        "notes": None,
+        "jrdb_result": {
+            "running_style_code": row["running_style"],
+            "training_index": row["training_index"],
+        },
+    }
+
+
+def _analysis_history_many(
+    analysis_path: Path,
+    requests: dict[str, tuple[str, int, int]],
+) -> dict[str, list[dict[str, Any]]]:
+    """Read compact older history for all runners in one SQLite query.
+
+    Each request maps horse_id to before, limit, and start_sequence values.
+    A small temporary request table preserves runner-specific cutoffs and
+    limits while one window query ranks history independently for every horse.
+    """
+    normalized = {
+        horse_id: (before, int(limit), int(start_sequence))
+        for horse_id, (before, limit, start_sequence) in requests.items()
+        if horse_id and before and int(limit) > 0
+    }
+    output = {horse_id: [] for horse_id in normalized}
+    if not normalized:
+        return output
+
+    connection = sqlite3.connect(analysis_path)
+    connection.row_factory = sqlite3.Row
+    try:
+        connection.execute(
+            """
+            CREATE TEMP TABLE newspaper_history_request(
+              horse_id TEXT PRIMARY KEY,
+              before_date TEXT NOT NULL,
+              limit_count INTEGER NOT NULL,
+              start_sequence INTEGER NOT NULL
+            )
+            """
+        )
+        connection.executemany(
+            """
+            INSERT INTO newspaper_history_request(
+              horse_id, before_date, limit_count, start_sequence
+            ) VALUES(?,?,?,?)
+            """,
+            [
+                (horse_id, before, limit, start_sequence)
+                for horse_id, (before, limit, start_sequence)
+                in normalized.items()
+            ],
+        )
+        rows = connection.execute(
+            """
+            WITH ranked AS (
+              SELECT
+                request.horse_id AS request_horse_id,
+                request.limit_count,
+                request.start_sequence,
+                history.race_key,
+                history.race_date,
+                history.venue_code,
+                history.race_no,
+                history.track_type,
+                history.distance,
+                history.race_condition_code,
+                history.track_condition_code,
+                history.grade_code,
+                history.running_style,
+                history.training_index,
+                history.finish,
+                history.abnormal_code,
+                history.final_win_odds,
+                history.final_win_popularity,
+                ROW_NUMBER() OVER (
+                  PARTITION BY request.horse_id
+                  ORDER BY history.race_date DESC, history.race_no DESC
+                ) AS history_rank
+              FROM newspaper_history_request AS request
+              JOIN fact_entry_result_lite AS history
+                ON history.horse_id = request.horse_id
+               AND history.race_date < request.before_date
+            )
+            SELECT *
+            FROM ranked
+            WHERE history_rank <= limit_count
+            ORDER BY request_horse_id, history_rank
+            """
+        ).fetchall()
+    finally:
+        connection.close()
+
+    for row in rows:
+        horse_id = _text(row["request_horse_id"])
+        sequence = int(row["start_sequence"]) + int(row["history_rank"]) - 1
+        output.setdefault(horse_id, []).append(
+            _analysis_history_item(row, sequence=sequence)
+        )
+    return output
+
+
 def _analysis_history(
     analysis_path: Path,
     horse_id: str,
@@ -297,73 +446,11 @@ def _analysis_history(
     limit: int,
     start_sequence: int,
 ) -> list[dict[str, Any]]:
-    """Read compact older history directly from shared Analysis Lite."""
-    if limit <= 0 or not horse_id:
-        return []
-    connection = sqlite3.connect(analysis_path)
-    connection.row_factory = sqlite3.Row
-    try:
-        rows = connection.execute(
-            """
-            SELECT race_key, race_date, venue_code, race_no, track_type, distance,
-                   race_condition_code, track_condition_code, grade_code,
-                   running_style, training_index, finish, abnormal_code,
-                   final_win_odds, final_win_popularity
-            FROM fact_entry_result_lite
-            WHERE horse_id=? AND race_date<?
-            ORDER BY race_date DESC, race_no DESC
-            LIMIT ?
-            """,
-            (horse_id, before, limit),
-        ).fetchall()
-    finally:
-        connection.close()
-
-    output: list[dict[str, Any]] = []
-    for offset, row in enumerate(rows):
-        output.append({
-            "sequence": start_sequence + offset,
-            "link_sequence": None,
-            "source_layer": "compact_older_history",
-            "source_kind": "analysis_compact",
-            "detail_level": "compact",
-            "race_key": row["race_key"],
-            "result_key": None,
-            "date": row["race_date"],
-            "venue_code": row["venue_code"],
-            "venue": VENUES.get(_text(row["venue_code"]), _text(row["venue_code"]) or None),
-            "race_no": row["race_no"],
-            "race_name": None,
-            "class_label": _label(RACE_CLASS, row["race_condition_code"]),
-            "grade_label": _label(GRADE, row["grade_code"]),
-            "surface": _label(SURFACE, row["track_type"]),
-            "distance_m": row["distance"],
-            "track_condition": _label(TRACK_CONDITION, row["track_condition_code"]),
-            "field_size": None,
-            "horse_no": None,
-            "finish": row["finish"],
-            "final_popularity": row["final_win_popularity"],
-            "final_win_odds": row["final_win_odds"],
-            "jockey_name": None,
-            "carried_weight_kg": None,
-            "corner_positions": [],
-            "time_sec": None,
-            "time_gap_sec": None,
-            "time_gap_reference": None,
-            "first3f_sec": None,
-            "last3f_sec": None,
-            "last3f_rank": None,
-            "idm": None,
-            "body_weight_kg": None,
-            "body_weight_change_kg": None,
-            "abnormal_code": row["abnormal_code"],
-            "notes": None,
-            "jrdb_result": {
-                "running_style_code": row["running_style"],
-                "training_index": row["training_index"],
-            },
-        })
-    return output
+    """Compatibility wrapper for a single compact-history request."""
+    return _analysis_history_many(
+        analysis_path,
+        {horse_id: (before, limit, start_sequence)},
+    ).get(horse_id, [])
 
 
 def _history_for_runner(
@@ -372,7 +459,6 @@ def _history_for_runner(
     target_date_raw: str,
     zed_index: dict[str, dict[str, Any]],
     zkb_index: dict[str, dict[str, Any]],
-    analysis_path: Path | None,
     diagnostics: Counter[str],
 ) -> list[dict[str, Any]]:
     history: list[dict[str, Any]] = []
@@ -410,18 +496,6 @@ def _history_for_runner(
             link_sequence=link_sequence,
         ))
 
-    if analysis_path is not None and len(history) < 8:
-        before = history[-1]["date"] if history else ymd(target_date_raw)
-        if before:
-            older = _analysis_history(
-                analysis_path,
-                _text(runner.get("blood_registration_no")),
-                before=before,
-                limit=8 - len(history),
-                start_sequence=len(history) + 1,
-            )
-            diagnostics["analysis_compact_added"] += len(older)
-            history.extend(older)
     return history[:8]
 
 
@@ -575,17 +649,43 @@ def build_race_bundle(
     profiles = _profile_index(parsed.get("UKC", []), target_date_raw)
 
     diagnostics: Counter[str] = Counter()
-    horses: list[dict[str, Any]] = []
+    histories: list[list[dict[str, Any]]] = []
+    analysis_requests: dict[str, tuple[str, int, int]] = {}
+
     for runner in runners:
-        horse_id = _text(runner.get("blood_registration_no"))
         history = _history_for_runner(
             runner,
             target_date_raw=target_date_raw,
             zed_index=zed_index,
             zkb_index=zkb_index,
-            analysis_path=analysis_path,
             diagnostics=diagnostics,
         )
+        histories.append(history)
+        if analysis_path is None or len(history) >= 8:
+            continue
+        horse_id = _text(runner.get("blood_registration_no"))
+        before = history[-1]["date"] if history else target_date
+        if horse_id and before:
+            analysis_requests[horse_id] = (
+                before,
+                8 - len(history),
+                len(history) + 1,
+            )
+
+    compact_history: dict[str, list[dict[str, Any]]] = {}
+    if analysis_path is not None and analysis_requests:
+        compact_history = _analysis_history_many(
+            analysis_path,
+            analysis_requests,
+        )
+
+    horses: list[dict[str, Any]] = []
+    for runner, history in zip(runners, histories):
+        horse_id = _text(runner.get("blood_registration_no"))
+        older = compact_history.get(horse_id, [])
+        if older:
+            diagnostics["analysis_compact_added"] += len(older)
+            history.extend(older)
         race_horse = _text(runner.get("race_horse_key"))
         horses.append(_runner_row(
             runner,
@@ -593,7 +693,7 @@ def build_race_bundle(
             profile=profiles.get(horse_id),
             cha=cha_index.get(race_horse),
             cyb=cyb_index.get(race_horse),
-            history=history,
+            history=history[:8],
         ))
 
     parts = race_key_parts(race_key)
