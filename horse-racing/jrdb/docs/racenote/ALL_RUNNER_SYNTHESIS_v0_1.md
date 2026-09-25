@@ -107,7 +107,7 @@ main_uncertainty
 
 draft rankは1〜Nを全馬ちょうど1回ずつ使用する。
 
-## 6. Primary lane
+## 7. Primary lane
 
 許可:
 
