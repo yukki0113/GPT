@@ -466,6 +466,28 @@ class RaceNotePairwiseComparisonTest(unittest.TestCase):
                 payload,
             )
 
+    def test_pairwise_requires_prediction_interpretation(self) -> None:
+        general = _general_evidence()
+        del general["horses"][0]["prediction_interpretation"]
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request(
+                general,
+                [1, 2, 3, 4],
+            )
+
+    def test_pairwise_rejects_ability_only_upgrade_policy(self) -> None:
+        general = _general_evidence()
+        general["horses"][0]["prediction_interpretation"][
+            "ability_anchor"
+        ]["may_create_upgrade_by_itself"] = True
+
+        with self.assertRaises(PairwiseComparisonError):
+            build_comparison_request(
+                general,
+                [1, 2, 3, 4],
+            )
+
     def test_request_builder_does_not_choose_winners(self) -> None:
         general = _general_evidence()
         request = build_comparison_request(
