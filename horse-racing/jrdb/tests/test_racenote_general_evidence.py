@@ -647,6 +647,46 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             ]
         )
 
+    def test_race_day_facts_require_explicit_pre_result_source(self) -> None:
+        independent = _independent()
+        independent["race"]["race_day_facts"] = {
+            "source_kind": "PRE_RACE_INDEPENDENT",
+            "as_of": "2026-09-25T10:00:00+09:00",
+            "weather": "雨",
+            "track_condition": "重",
+            "result_independent": True,
+        }
+
+        result = build_general_evidence(
+            independent,
+            _rr_cards(),
+        )
+        facts = result["race_data_context"]["race_day_facts"]
+
+        self.assertEqual(facts["status"], "AVAILABLE")
+        self.assertEqual(facts["weather"], "雨")
+        self.assertEqual(facts["track_condition"], "重")
+        self.assertFalse(facts["policy"]["may_auto_rank"])
+
+    def test_race_day_facts_reject_result_dependent_source(self) -> None:
+        independent = _independent()
+        independent["race"]["race_day_facts"] = {
+            "source_kind": "RESULT_DERIVED",
+            "weather": "雨",
+            "track_condition": "重",
+            "result_independent": False,
+        }
+
+        result = build_general_evidence(
+            independent,
+            _rr_cards(),
+        )
+        facts = result["race_data_context"]["race_day_facts"]
+
+        self.assertEqual(facts["status"], "UNAVAILABLE")
+        self.assertIsNone(facts["weather"])
+        self.assertIsNone(facts["track_condition"])
+
     def test_race_trend_sources_separate_pre_and_post_freeze(self) -> None:
         result = build_general_evidence(
             _independent(),
@@ -654,6 +694,10 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         )
         context = result["race_data_context"]
 
+        self.assertEqual(
+            context["race_day_facts"]["status"],
+            "UNAVAILABLE",
+        )
         self.assertEqual(
             context["trend_sources_v0_1"],
             ["FRAME", "RUNNING_STYLE"],
