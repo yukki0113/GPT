@@ -37,14 +37,29 @@ jobs:
           req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
           date = str(req.get('date','')).strip().replace('-', '')
           analysis_url = str(req.get('analysis_url','')).strip()
+          paci_drive_file_id = str(req.get('paci_drive_file_id','')).strip()
+          paci_filename = str(req.get('paci_filename','')).strip()
           revision = req.get('revision', 1)
           if not re.fullmatch(r'20\d{6}', date):
               raise SystemExit('date must be YYYYMMDD')
           if analysis_url and not analysis_url.startswith('https://drive.google.com/'):
               raise SystemExit('analysis_url must be a Google Drive URL')
+          if paci_drive_file_id and not re.fullmatch(r'[A-Za-z0-9_-]+', paci_drive_file_id):
+              raise SystemExit('paci_drive_file_id has invalid characters')
+          expected_paci_filename = f'PACI{date[2:]}.zip'
+          if paci_filename and paci_filename != expected_paci_filename:
+              raise SystemExit(f'paci_filename must be {expected_paci_filename}')
+          if paci_drive_file_id and not paci_filename:
+              paci_filename = expected_paci_filename
           if not isinstance(revision, int) or revision < 1:
               raise SystemExit('revision must be integer >= 1')
-          normalized = {'date': date, 'analysis_url': analysis_url or None, 'revision': revision}
+          normalized = {
+              'date': date,
+              'analysis_url': analysis_url or None,
+              'paci_drive_file_id': paci_drive_file_id or None,
+              'paci_filename': paci_filename or None,
+              'revision': revision,
+          }
           Path('/tmp/request.json').write_text(json.dumps(normalized, ensure_ascii=False, indent=2), encoding='utf-8')
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
               f.write(f'date={date}\n')
@@ -58,7 +73,34 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/jrdb_raw
-          python horse-racing/jrdb/src/fetch_jrdb_paci.py --date '${{ steps.request.outputs.date }}' --out-dir /tmp/jrdb_raw
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          date = request['date']
+          drive_id = request.get('paci_drive_file_id')
+          filename = request.get('paci_filename') or f'PACI{date[2:]}.zip'
+          target = Path('/tmp/jrdb_raw') / filename
+
+          if drive_id:
+              url = f'https://drive.usercontent.google.com/download?id={drive_id}&export=download&confirm=t'
+              subprocess.run([
+                  'curl', '--fail', '--location', '--retry', '3', '--retry-delay', '2',
+                  url, '--output', str(target)
+              ], check=True)
+          else:
+              subprocess.run([
+                  'python', 'horse-racing/jrdb/src/fetch_jrdb_paci.py',
+                  '--date', date,
+                  '--out-dir', '/tmp/jrdb_raw'
+              ], check=True)
+
+          if not target.is_file() or target.stat().st_size <= 0:
+              raise SystemExit(f'PACI file missing or empty: {target}')
+          PY
 
       - name: Install dependencies
         run: python -m pip install --disable-pip-version-check gdown
