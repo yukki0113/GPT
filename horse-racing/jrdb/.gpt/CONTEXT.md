@@ -111,12 +111,18 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 Prediction reading layer (2026-09-25):
 
 - `PredictionInterpretation-v0.1` is embedded per horse in General Evidence.
+- `RaceNote-All-Runner-Synthesis-0.1` is the canonical full-field draft layer.
+- It authors a complete non-scoring draft order after reading every runner.
+- Ability cannot be the primary ordering basis.
+- low-confidence / mixed / small-sample / RR-contradiction adjacent boundaries become HIGH Pairwise priorities.
+- canonical Pairwise request and validation bind to the Synthesis semantic hash and draft order.
+- canonical doc: `docs/racenote/ALL_RUNNER_SYNTHESIS_v0_1.md`.
 - It organizes trend direction + sample size + redundancy, Race Structure,
   RaceReview hidden/fragile/repeatability/target overlap, and Ability Anchor.
 - It does not score or rank.
 - Pairwise reads Interpretation first, then verifies raw Evidence lanes.
 - canonical doc: `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`.`.
-- pre-Freeze chain: General Evidence -> Pairwise -> Scenario -> Base Forecast -> EdgeDB Performance-only -> Final Forecast -> Freeze.
+- pre-Freeze chain: General Evidence -> All-Runner Synthesis -> Pairwise -> Scenario -> Base Forecast -> EdgeDB Performance-only -> Final Forecast -> Freeze.
 - current JRDB consensus / current market / Edge Value / RL-Value / Bet Plan are post-Freeze only; Training Edge is excluded from Forecast.
 - canonical contract: `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
 
