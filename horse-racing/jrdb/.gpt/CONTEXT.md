@@ -1,3 +1,10 @@
+
+- Forecast reason provenance uses `RaceNote-Decision-Trace-0.1`.
+- Decision Trace binds primary / secondary / concern prose to real Trend / RR /
+  Ability / Race Structure / Scenario / Edge evidence.
+- Scenario risks are derived and cannot be omitted.
+- short-comment evidence must be a subset of Decision Trace.
+- canonical doc: `docs/racenote/DECISION_TRACE_v0_1.md`.
 # JRDB project context
 
 Last reviewed: 2026-09-23
