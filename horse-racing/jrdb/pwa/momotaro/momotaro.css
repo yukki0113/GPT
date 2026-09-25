@@ -3,33 +3,42 @@
 .momotaro-newspaper-table .mark-ryota,
 .momotaro-newspaper-table .mark-oji,
 .momotaro-newspaper-table .mark-kenshow{
-  width:32px;
-  min-width:32px;
-  max-width:32px;
+  width:24px;
+  min-width:24px;
+  max-width:24px;
   padding-left:2px;
   padding-right:2px;
 }
 .momotaro-newspaper-table .mark-iluka{
-  width:34px;
-  min-width:34px;
-  max-width:34px;
+  width:26px;
+  min-width:26px;
+  max-width:26px;
   padding-left:2px;
   padding-right:2px;
 }
 
 .momotaro-newspaper-table .newspaper-mark-group-head{
-  width:130px;
-  min-width:130px;
-  max-width:130px;
+  width:98px;
+  min-width:98px;
+  max-width:98px;
 }
 @media(max-width:640px){
   .momotaro-newspaper-table .newspaper-mark-group-head{
-    width:130px;
-    min-width:130px;
-    max-width:130px;
+    width:98px;
+    min-width:98px;
+    max-width:98px;
   }
 }
 
 .newspaper-main [hidden]{
   display:none !important;
+}
+
+.momotaro-newspaper-table .newspaper-mark-col{
+  padding-left:1px;
+  padding-right:1px;
+}
+.momotaro-newspaper-table .newspaper-addon-link{
+  padding-left:1px;
+  padding-right:1px;
 }
