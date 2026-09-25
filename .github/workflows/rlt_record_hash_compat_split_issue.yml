@@ -1,0 +1,119 @@
+name: RL-T Record Hash Compatibility Split
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  split:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RL_T_RECORD_HASH_COMPAT_SPLIT]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download accepted compatibility artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/rlt_hash_split
+          gh run download 36086214247 \
+            --repo "${{ github.repository }}" \
+            --name rlt-record-hash-compat-36086214247 \
+            --dir /tmp/rlt_hash_split
+
+      - name: Verify against frozen canonical manifest
+        run: |
+          cp horse-racing/jrdb/config/jrdb_index_base_record_hash_compat_v1.json /tmp/rlt_hash_split/canonical_manifest.json
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          root=Path('/tmp/rlt_hash_split')
+          expected=json.loads((root/'canonical_manifest.json').read_text(encoding='utf-8'))
+          produced=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          if produced != expected:
+              raise SystemExit('produced sidecar manifest differs from frozen canonical manifest')
+          for asset in expected['assets']:
+              path=root/asset['relative_path']
+              if not path.is_file():
+                  raise SystemExit('missing '+str(path))
+              digest=hashlib.sha256(path.read_bytes()).hexdigest()
+              if digest!=asset['sha256']:
+                  raise SystemExit('sha mismatch '+asset['family'])
+          PY
+
+      - name: Upload BAC package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hash-compat-bac-${{ github.run_id }}
+          path: /tmp/rlt_hash_split/bac.parquet
+          retention-days: 30
+      - name: Upload KYI package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hash-compat-kyi-${{ github.run_id }}
+          path: /tmp/rlt_hash_split/kyi.parquet
+          retention-days: 30
+      - name: Upload SED package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hash-compat-sed-${{ github.run_id }}
+          path: /tmp/rlt_hash_split/sed.parquet
+          retention-days: 30
+      - name: Upload UKC package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hash-compat-ukc-${{ github.run_id }}
+          path: /tmp/rlt_hash_split/ukc.parquet
+          retention-days: 30
+      - name: Upload CHA package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hash-compat-cha-${{ github.run_id }}
+          path: /tmp/rlt_hash_split/cha.parquet
+          retention-days: 30
+      - name: Upload CYB package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hash-compat-cyb-${{ github.run_id }}
+          path: /tmp/rlt_hash_split/cyb.parquet
+          retention-days: 30
+      - name: Upload manifest package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hash-compat-manifest-${{ github.run_id }}
+          path: /tmp/rlt_hash_split/manifest.json
+          retention-days: 30
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          echo 'RL_T_RECORD_HASH_COMPAT_SPLIT_RESULT: completed; see split artifacts for six families plus manifest.' > /tmp/result.md
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result.md
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason "not planned"
+          fi
