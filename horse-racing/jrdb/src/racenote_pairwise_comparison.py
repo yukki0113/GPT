@@ -1092,6 +1092,54 @@ def build_comparison_request(
     }
 
 
+def validate_pairwise_comparison_from_synthesis(
+    general_evidence: Mapping[str, object],
+    synthesis_audit: Mapping[str, object],
+    payload: Mapping[str, object],
+) -> dict[str, object]:
+    """Validate canonical Pairwise output against audited full-field synthesis."""
+    draft_order, high_priority_boundaries = _validated_synthesis_draft(
+        general_evidence,
+        synthesis_audit,
+    )
+
+    expected_synthesis_hash = semantic_sha256(synthesis_audit)
+    actual_synthesis_hash = _text(
+        payload.get("all_runner_synthesis_sha256")
+    ).lower()
+    if actual_synthesis_hash != expected_synthesis_hash:
+        raise PairwiseComparisonError(
+            "Pairwise payload is not bound to All-Runner Synthesis"
+        )
+
+    runner_nos = set(_runner_index(general_evidence))
+    payload_draft = _normalize_order(
+        payload.get("draft_order"),
+        "payload.draft_order",
+        runner_nos,
+    )
+    if payload_draft != draft_order:
+        raise PairwiseComparisonError(
+            "Pairwise draft_order must equal audited Synthesis draft_order"
+        )
+
+    audit = validate_pairwise_comparison(
+        general_evidence,
+        payload,
+    )
+    audit["all_runner_synthesis_sha256"] = expected_synthesis_hash
+    audit["draft_source"] = {
+        "kind": "ALL_RUNNER_SYNTHESIS",
+        "audit_schema_version": _text(
+            synthesis_audit.get("audit_schema_version")
+        ),
+        "high_priority_boundaries": copy.deepcopy(
+            high_priority_boundaries
+        ),
+    }
+    return audit
+
+
 def main() -> int:
     """Validate one authored Pairwise Comparison payload."""
     parser = argparse.ArgumentParser()
