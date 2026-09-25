@@ -366,17 +366,27 @@ def _needs_lower_priority_override(
     lane_judgments: Mapping[str, Mapping[str, object]],
     decisive_lane: str,
 ) -> tuple[bool, list[str]]:
-    """Detect contrary higher-priority evidence."""
-    if decisive_lane not in LANE_PRIORITY:
-        return False, []
+    """Detect protected higher-priority evidence that favors the loser.
 
-    decisive_priority = LANE_PRIORITY[decisive_lane]
+    DATA_TREND is always protected unless it is itself decisive.
+    RACEREVIEW is also protected when the declared decision is based on the
+    lower ABILITY_ANCHOR lane.  MIXED / UNCERTAINTY decisions must still
+    explain choosing against either DATA_TREND or RACEREVIEW so those labels
+    cannot be used to bypass the trend-first policy.
+    """
+    protected_lanes: list[str] = []
+
+    if decisive_lane == "DATA_TREND":
+        protected_lanes = []
+    elif decisive_lane == "RACEREVIEW":
+        protected_lanes = ["DATA_TREND"]
+    elif decisive_lane == "ABILITY_ANCHOR":
+        protected_lanes = ["DATA_TREND", "RACEREVIEW"]
+    else:
+        protected_lanes = ["DATA_TREND", "RACEREVIEW"]
+
     contrary_lanes: list[str] = []
-
-    for lane_name in LANE_ORDER:
-        lane_priority = LANE_PRIORITY[lane_name]
-        if lane_priority >= decisive_priority:
-            continue
+    for lane_name in protected_lanes:
         lane = lane_judgments[lane_name]
         relation = _text(lane.get("relation")).upper()
         stance = _relation_for_horse(
