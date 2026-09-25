@@ -96,6 +96,13 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - 1R予想では、Google Driveから現行Analysis canonicalをresolveし、正式RaceNote v1.0を取得、Reader Viewをround-trip検証し、as-of-safeな事前情報を第一入力として読む。必要な詳細確認時だけ正本bundleへ戻る。
 
 ## RaceNote Forecast Gen0 — current prediction research
+
+- 2026-09-25: next-generation contract finalized as **RaceNote-Forecast-Gen0.3**; planned first activation is **Gen0-G001**.
+- Gen0.2 was implemented but never activated and is retained as a pre-redesign reference.
+- Gen0.3 reading policy: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
+- pre-Freeze chain: General Evidence -> Pairwise -> Scenario -> Base Forecast -> EdgeDB Performance-only -> Final Forecast -> Freeze.
+- current JRDB consensus / current market / Edge Value / RL-Value / Bet Plan are post-Freeze only; Training Edge is excluded from Forecast.
+- canonical contract: `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`.
 - current guide: `docs/racenote/README.md`。
 - current research plan: `docs/racenote/FORECAST_GEN0_PLAN.md`。
 - origin reference: `docs/RaceNote_Prediction_Handoff_v0_1.md`。
