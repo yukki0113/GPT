@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_racereview_evidence_schema_v0_1.json",
+  "title": "RaceNote RaceReviewDB Evidence Sidecar v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_schema_version",
+    "adapter_version",
+    "source",
+    "target",
+    "policy",
+    "horses"
+  ],
+  "properties": {
+    "evidence_schema_version": {
+      "const": "RaceReview-Evidence-0.1"
+    },
+    "adapter_version": {
+      "const": "0.1"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "kind",
+        "generation_id",
+        "period_from",
+        "period_to",
+        "review_schema_version",
+        "review_logic_version",
+        "baseline_version"
+      ],
+      "properties": {
+        "kind": {"const": "RaceReviewDB"},
+        "generation_id": {"type": "string", "minLength": 1},
+        "period_from": {"type": "string"},
+        "period_to": {"type": "string"},
+        "review_schema_version": {"type": "string"},
+        "review_logic_version": {"type": "string"},
+        "baseline_version": {"type": "string"},
+        "row_counts": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "target": {
+      "type": "object",
+      "required": ["date", "venue", "race_no", "race_name"],
+      "properties": {
+        "date": {"type": "string", "format": "date"},
+        "venue": {"type": "string"},
+        "race_no": {"type": "integer", "minimum": 1},
+        "race_name": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "as_of_exclusive",
+        "horse_identity",
+        "name_fallback",
+        "stable_fields_only",
+        "performance_label_status",
+        "reason_codes_status",
+        "track_bias_status",
+        "market_visibility_status"
+      ],
+      "properties": {
+        "as_of_exclusive": {"const": true},
+        "horse_identity": {
+          "const": "JRDB_BLOOD_REGISTRATION_NO"
+        },
+        "name_fallback": {"const": false},
+        "stable_fields_only": {"const": true},
+        "performance_label_status": {
+          "const": "NOT_USED_UNSTABLE"
+        },
+        "reason_codes_status": {
+          "const": "NOT_USED_UNSTABLE"
+        },
+        "track_bias_status": {
+          "const": "NOT_USED_UNCALIBRATED_V0_1"
+        },
+        "market_visibility_status": {
+          "const": "NOT_APPLICABLE"
+        }
+      },
+      "additionalProperties": false
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/horse"}
+    }
+  },
+  "$defs": {
+    "numberOrNull": {
+      "type": ["number", "null"]
+    },
+    "integerOrNull": {
+      "type": ["integer", "null"]
+    },
+    "ability": {
+      "type": "object",
+      "properties": {
+        "declared_class_group": {},
+        "time_class_equivalent": {},
+        "time_class_equivalent_numeric": {"$ref": "#/$defs/numberOrNull"},
+        "horse_adjusted_delta_sec": {"$ref": "#/$defs/numberOrNull"},
+        "horse_adjusted_delta_per_1000m": {
+          "$ref": "#/$defs/numberOrNull"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pace": {
+      "type": "object",
+      "properties": {
+        "pace_shape": {}
+      },
+      "additionalProperties": false
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "corner1_frontness": {"$ref": "#/$defs/numberOrNull"},
+        "corner2_frontness": {"$ref": "#/$defs/numberOrNull"},
+        "corner3_frontness": {"$ref": "#/$defs/numberOrNull"},
+        "corner4_frontness": {"$ref": "#/$defs/numberOrNull"},
+        "early_position_gain": {"$ref": "#/$defs/numberOrNull"},
+        "middle_position_gain": {"$ref": "#/$defs/numberOrNull"},
+        "late_position_gain": {"$ref": "#/$defs/numberOrNull"},
+        "overall_position_gain": {"$ref": "#/$defs/numberOrNull"}
+      },
+      "additionalProperties": false
+    },
+    "finish": {
+      "type": "object",
+      "properties": {
+        "last3f_rank": {"$ref": "#/$defs/integerOrNull"},
+        "last3f_speed_percentile": {"$ref": "#/$defs/numberOrNull"},
+        "closing_gain_sec": {"$ref": "#/$defs/numberOrNull"},
+        "winner_gap_sec": {"$ref": "#/$defs/numberOrNull"}
+      },
+      "additionalProperties": false
+    },
+    "trouble": {
+      "type": "object",
+      "required": ["calibration_status"],
+      "properties": {
+        "calibration_status": {
+          "const": "RAW_ONLY_UNCALIBRATED"
+        },
+        "jrdb_track_diff": {"$ref": "#/$defs/numberOrNull"},
+        "jrdb_pace_score": {"$ref": "#/$defs/numberOrNull"},
+        "jrdb_late_break_score": {"$ref": "#/$defs/numberOrNull"},
+        "jrdb_position_score": {"$ref": "#/$defs/numberOrNull"},
+        "jrdb_trouble_score": {"$ref": "#/$defs/numberOrNull"},
+        "jrdb_prev_trouble_score": {"$ref": "#/$defs/numberOrNull"},
+        "jrdb_mid_trouble_score": {"$ref": "#/$defs/numberOrNull"},
+        "jrdb_late_trouble_score": {"$ref": "#/$defs/numberOrNull"}
+      },
+      "additionalProperties": false
+    },
+    "run": {
+      "type": "object",
+      "required": [
+        "race_key",
+        "race_date",
+        "finish",
+        "families",
+        "review_tags"
+      ],
+      "properties": {
+        "race_key": {},
+        "race_date": {},
+        "finish": {},
+        "families": {
+          "type": "object",
+          "required": [
+            "ability",
+            "pace",
+            "position",
+            "finish",
+            "trouble"
+          ],
+          "properties": {
+            "ability": {"$ref": "#/$defs/ability"},
+            "pace": {"$ref": "#/$defs/pace"},
+            "position": {"$ref": "#/$defs/position"},
+            "finish": {"$ref": "#/$defs/finish"},
+            "trouble": {"$ref": "#/$defs/trouble"}
+          },
+          "additionalProperties": false
+        },
+        "review_tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "observed_runs",
+        "requested_runs",
+        "coverage_status",
+        "pattern_counts",
+        "repeated_patterns",
+        "hidden_strength_signals",
+        "fragile_form_signals",
+        "composite_signal_status"
+      ],
+      "properties": {
+        "observed_runs": {"type": "integer", "minimum": 0},
+        "requested_runs": {"type": "integer", "minimum": 1},
+        "coverage_status": {
+          "enum": ["NONE", "PARTIAL", "FULL"]
+        },
+        "pattern_counts": {"type": "object"},
+        "repeated_patterns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tag", "count"],
+            "properties": {
+              "tag": {"type": "string"},
+              "count": {"type": "integer", "minimum": 2}
+            },
+            "additionalProperties": false
+          }
+        },
+        "hidden_strength_signals": {"type": "array"},
+        "fragile_form_signals": {"type": "array"},
+        "composite_signal_status": {
+          "const": "NOT_DERIVED_V0_1"
+        }
+      },
+      "additionalProperties": false
+    },
+    "horse": {
+      "type": "object",
+      "required": [
+        "horse_no",
+        "horse_name",
+        "horse_id",
+        "history_status",
+        "runs",
+        "profile"
+      ],
+      "properties": {
+        "horse_no": {"type": "integer", "minimum": 1},
+        "horse_name": {"type": "string"},
+        "horse_id": {"type": "string"},
+        "history_status": {
+          "enum": ["AVAILABLE", "NO_HISTORY", "NO_HORSE_ID"]
+        },
+        "runs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/run"}
+        },
+        "profile": {"$ref": "#/$defs/profile"}
+      },
+      "additionalProperties": false
+    }
+  }
+}
