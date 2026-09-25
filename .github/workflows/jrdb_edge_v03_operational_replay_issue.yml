@@ -253,6 +253,7 @@ jobs:
               'artifact_name':f"jrdb-edge-v03-operational-replay-{os.environ['RUN_ID']}",
               'days':r['days'],'v02':r['v02'],'v03':r['v03'],'delta':r['delta'],
               'context_absorption':r['context_absorption'],
+              'channel_normalization':r['channel_normalization'],
               'mode':'SHADOW_ONLY','production_serving_changed':False,
           }
           body='JRDB_EDGE_V03_OPERATIONAL_REPLAY_RESULT\n'+json.dumps(
