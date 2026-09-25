@@ -1,0 +1,83 @@
+name: RL-T Record Hash Compatibility Direct Smoke
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  smoke:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RL_T_RECORD_HASH_COMPAT_DIRECT_SMOKE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check 'requests==2.34.2'
+
+      - name: Materialize canonical compatibility sidecars directly
+        run: |
+          mkdir -p /tmp/rlt_hash_direct/report
+          python horse-racing/jrdb/src/materialize_jrdb_index_base_record_hash_compat_set.py \
+            --package-set horse-racing/jrdb/config/jrdb_index_base_record_hash_compat_drive_set_v1.json \
+            --canonical-manifest horse-racing/jrdb/config/jrdb_index_base_record_hash_compat_v1.json \
+            --output-root /tmp/rlt_hash_direct/compat \
+            --result-json /tmp/rlt_hash_direct/report/result.json
+
+      - name: Verify six-family coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/rlt_hash_direct/report/result.json').read_text(encoding='utf-8'))
+          if r.get('status')!='PASS' or r.get('asset_count')!=6:
+              raise SystemExit('compat direct materialization failed')
+          if {a['family'] for a in r['assets']}!={'BAC','KYI','SED','UKC','CHA','CYB'}:
+              raise SystemExit('compat family coverage mismatch')
+          PY
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/rlt_hash_direct/report/result.json')
+          if p.exists():
+              r=json.loads(p.read_text(encoding='utf-8'))
+              result={'status':r.get('status'),'asset_count':r.get('asset_count'),'families':[a['family'] for a in r.get('assets',[])]}
+          else:
+              result={'status':'FAIL','message':'result missing'}
+          Path('/tmp/result.md').write_text('RL_T_RECORD_HASH_COMPAT_DIRECT_SMOKE_RESULT\n'+json.dumps(result,indent=2),encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result.md
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason "not planned"
+          fi
