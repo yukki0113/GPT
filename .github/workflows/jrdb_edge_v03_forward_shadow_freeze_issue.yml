@@ -41,7 +41,8 @@ jobs:
               'date',
               'v02_publication_run_id','v02_publication_artifact_name','v02_publication_sha256',
               'v03_stage_c_run_id','v03_stage_c_artifact_name','v03_catalog_sha256',
-              'analysis_bundle_drive_file_id','analysis_generation_id','analysis_manifest_sha256'
+              'analysis_bundle_drive_file_id','analysis_generation_id','analysis_manifest_sha256',
+              'expected_scheduled_races'
           }
           missing=sorted(required-set(req))
           if missing: raise SystemExit(f'missing required fields: {missing}')
@@ -57,6 +58,8 @@ jobs:
               raise SystemExit('invalid v02_publication_run_id')
           if not isinstance(req['v03_stage_c_run_id'],int) or req['v03_stage_c_run_id']<=0:
               raise SystemExit('invalid v03_stage_c_run_id')
+          if not isinstance(req['expected_scheduled_races'],int) or req['expected_scheduled_races']<=0:
+              raise SystemExit('invalid expected_scheduled_races')
           req['mode']='SHADOW_ONLY'
           req['result_data_used']=False
           Path('/tmp/request.json').write_text(
@@ -182,6 +185,7 @@ jobs:
             --expected-v03-sha256 "$(python -c "import json; print(json.load(open('/tmp/request.json'))['v03_catalog_sha256'])")" \
             --expected-analysis-generation-id "$(python -c "import json; print(json.load(open('/tmp/request.json'))['analysis_generation_id'])")" \
             --expected-analysis-manifest-sha256 "$(python -c "import json; print(json.load(open('/tmp/request.json'))['analysis_manifest_sha256'])")" \
+            --expected-scheduled-races "$(python -c "import json; print(json.load(open('/tmp/request.json'))['expected_scheduled_races'])")" \
             --output-dir /tmp/stage_e
           cp /tmp/request.json /tmp/stage_e/request.json
           cp /tmp/analysis_resolution.json /tmp/stage_e/analysis_resolution.json
@@ -220,6 +224,8 @@ jobs:
               'race_date':result['race_date'],
               'evaluation_mode':result['evaluation_mode'],
               'pre_race_guard':result['pre_race_guard'],
+              'scheduled_races':result['scheduled_races'],
+              'expected_scheduled_races':result['expected_scheduled_races'],
               'result_data_used':result['result_data_used'],
               'frozen_at_utc':result['frozen_at_utc'],
               'earliest_post_time_jst':result['earliest_post_time_jst'],
