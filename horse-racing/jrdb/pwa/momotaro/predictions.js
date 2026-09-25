@@ -74,6 +74,18 @@ function collectRows(bundle) {
       }));
     }
 
+    const kenshow = momotaro.kenshow || {};
+    if (predictionText(kenshow.comment, "")) {
+      rows.push(Object.assign({}, base, {
+        type: "kenshow-analysis",
+        source: "けんしょー",
+        source_order: 4,
+        signal: predictionText(kenshow.tag, "不利分析"),
+        mark: predictionText(kenshow.mark, ""),
+        comment: predictionText(kenshow.comment, "")
+      }));
+    }
+
     const iluka = extractIluka(addons);
     if (iluka) {
       rows.push(Object.assign({}, base, {
