@@ -1,0 +1,289 @@
+name: JRDB Newspaper Skeleton Publish
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_NEWSPAPER_SKELETON_PUBLISH_REQUEST]'
+  PERSONAL_RELEASE_TAG: jrdb-newspaper-current
+  PERSONAL_RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
+  PERSONAL_RELEASE_META: jrdb_newspaper_current_release.json
+  MOMOTARO_RELEASE_TAG: jrdb-momotaro-newspaper-current
+  MOMOTARO_RELEASE_ARCHIVE: jrdb_momotaro_newspaper_current.tar.xz
+  MOMOTARO_RELEASE_META: jrdb_momotaro_newspaper_current_release.json
+
+jobs:
+  publish:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_SKELETON_PUBLISH_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/skeleton-request
+
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          request = json.loads((os.environ.get("ISSUE_BODY") or "").strip())
+          date = str(request.get("date") or "").strip()
+          if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", date):
+              raise SystemExit("date must be YYYY-MM-DD")
+
+          base_run_id = request.get("base_run_id")
+          if not isinstance(base_run_id, int) or isinstance(base_run_id, bool) or base_run_id <= 0:
+              raise SystemExit("base_run_id must be a positive integer")
+
+          artifact_name = str(request.get("artifact_name") or "").strip()
+          expected = "jrdb-newspaper-day-" + date.replace("-", "")
+          if artifact_name != expected:
+              raise SystemExit(f"artifact_name must be {expected}")
+
+          revision = request.get("revision", 1)
+          if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+              raise SystemExit("revision must be integer >= 1")
+
+          normalized = {
+              "date": date,
+              "base_run_id": base_run_id,
+              "artifact_name": artifact_name,
+              "revision": revision,
+          }
+          Path("/tmp/skeleton-request/request.json").write_text(
+              json.dumps(normalized, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"REQUEST_DATE={date}\n")
+              env_file.write(f"BASE_RUN_ID={base_run_id}\n")
+              env_file.write(f"BASE_ARTIFACT_NAME={artifact_name}\n")
+              env_file.write(f"REQUEST_REVISION={revision}\n")
+          PY
+
+      - name: Download audited day artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/base-day
+          mkdir -p /tmp/base-day
+          gh run download "$BASE_RUN_ID"             --repo "${{ github.repository }}"             --name "$BASE_ARTIFACT_NAME"             --dir /tmp/base-day
+
+      - name: Validate base day
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/base-day")
+          audit = json.loads((root / "audit.json").read_text(encoding="utf-8"))
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+
+          if audit.get("status") != "PASS":
+              raise SystemExit("base audit is not PASS")
+          if not audit.get("history_coverage_complete"):
+              raise SystemExit("base history coverage is incomplete")
+          if manifest.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit("base manifest date mismatch")
+          expected = int((manifest.get("completeness") or {}).get("expected_races") or 0)
+          ready = int((manifest.get("completeness") or {}).get("ready_races") or 0)
+          if expected <= 0 or expected != ready:
+              raise SystemExit("base race completeness mismatch")
+          if not (root / "day-package.json").is_file():
+              raise SystemExit("day-package.json missing")
+          PY
+
+      - name: Build personal current
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/personal-current
+          python horse-racing/jrdb/src/jrdb_newspaper_publish_current.py             --day-package /tmp/base-day/day-package.json             --output-dir /tmp/personal-current             > /tmp/skeleton-request/personal-result.json
+
+      - name: Build Momotaro public projection
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/momotaro-current
+          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/base-day             --output-dir /tmp/momotaro-current             > /tmp/skeleton-request/momotaro-result.json
+
+      - name: Validate outputs
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          date = os.environ["REQUEST_DATE"]
+          personal = Path("/tmp/personal-current")
+          momotaro = Path("/tmp/momotaro-current")
+
+          personal_manifest = json.loads((personal / "manifest.json").read_text(encoding="utf-8"))
+          momotaro_manifest = json.loads((momotaro / "manifest.json").read_text(encoding="utf-8"))
+          momotaro_audit = json.loads((momotaro / "audit.json").read_text(encoding="utf-8"))
+
+          if personal_manifest.get("date") != date:
+              raise SystemExit("personal date mismatch")
+          if momotaro_manifest.get("date") != date:
+              raise SystemExit("Momotaro date mismatch")
+          if momotaro_audit.get("status") != "PASS":
+              raise SystemExit("Momotaro audit is not PASS")
+          if (momotaro_manifest.get("projection") or {}).get("kind") != "momotaro_newspaper_public":
+              raise SystemExit("Momotaro projection marker missing")
+
+          allowed_status = {"jrdb_base", "jrdb_history", "keibailuka", "momotaro"}
+          unexpected_status = sorted(set(momotaro_manifest.get("source_status") or {}) - allowed_status)
+          if unexpected_status:
+              raise SystemExit(f"private source status leaked: {unexpected_status}")
+
+          for entry in momotaro_manifest.get("races") or []:
+              bundle = json.loads((momotaro / entry["path"]).read_text(encoding="utf-8"))
+              for horse in bundle.get("horses") or []:
+                  addons = horse.get("addons") or {}
+                  unexpected_addons = sorted(set(addons) - {"keibailuka", "momotaro"})
+                  if unexpected_addons:
+                      raise SystemExit(f"private addon leaked: {unexpected_addons}")
+                  if horse.get("edge_matches"):
+                      raise SystemExit("Edge data leaked into Momotaro projection")
+
+          summary = {
+              "date": date,
+              "revision": personal_manifest.get("revision"),
+              "race_count": len(personal_manifest.get("races") or []),
+              "personal_status": "PASS",
+              "momotaro_status": "PASS",
+          }
+          Path("/tmp/skeleton-request/validation-summary.json").write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Build release caches
+        run: |
+          set -euo pipefail
+
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/personal-current             -cJf "/tmp/skeleton-request/$PERSONAL_RELEASE_ARCHIVE" .
+
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/momotaro-current             -cJf "/tmp/skeleton-request/$MOMOTARO_RELEASE_ARCHIVE" .
+
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          request_root = Path("/tmp/skeleton-request")
+          summary = json.loads((request_root / "validation-summary.json").read_text(encoding="utf-8"))
+
+          def write_meta(kind, current_dir, archive_name, meta_name):
+              current = Path(current_dir)
+              archive = request_root / archive_name
+              manifest = current / "manifest.json"
+              meta = {
+                  "schema_version": "0.1",
+                  "release_kind": kind,
+                  "date": summary["date"],
+                  "revision": summary["revision"],
+                  "race_count": summary["race_count"],
+                  "manifest_sha256": hashlib.sha256(manifest.read_bytes()).hexdigest(),
+                  "archive_filename": archive.name,
+                  "archive_size_bytes": archive.stat().st_size,
+                  "archive_sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
+                  "source_run_id": int(os.environ["BASE_RUN_ID"]),
+                  "source_artifact": os.environ["BASE_ARTIFACT_NAME"],
+              }
+              (request_root / meta_name).write_text(
+                  json.dumps(meta, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n",
+                  encoding="utf-8",
+              )
+
+          write_meta(
+              "jrdb_newspaper_current_cache",
+              "/tmp/personal-current",
+              os.environ["PERSONAL_RELEASE_ARCHIVE"],
+              os.environ["PERSONAL_RELEASE_META"],
+          )
+          write_meta(
+              "jrdb_momotaro_newspaper_current_cache",
+              "/tmp/momotaro-current",
+              os.environ["MOMOTARO_RELEASE_ARCHIVE"],
+              os.environ["MOMOTARO_RELEASE_META"],
+          )
+          PY
+
+      - name: Publish both current releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          for TAG in "$PERSONAL_RELEASE_TAG" "$MOMOTARO_RELEASE_TAG"; do
+            if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+              gh release delete "$TAG" --repo "${{ github.repository }}" --yes
+            fi
+          done
+
+          gh release create "$PERSONAL_RELEASE_TAG"             --repo "${{ github.repository }}"             --title "JRDB Newspaper current"             --notes "Mutable PWA distribution cache built from an audited PACI skeleton."             "/tmp/skeleton-request/$PERSONAL_RELEASE_ARCHIVE"             "/tmp/skeleton-request/$PERSONAL_RELEASE_META"
+
+          gh release create "$MOMOTARO_RELEASE_TAG"             --repo "${{ github.repository }}"             --title "JRDB Momotaro Newspaper current"             --notes "Mutable public Momotaro cache built from an audited PACI skeleton."             "/tmp/skeleton-request/$MOMOTARO_RELEASE_ARCHIVE"             "/tmp/skeleton-request/$MOMOTARO_RELEASE_META"             /tmp/skeleton-request/validation-summary.json
+
+      - name: Comment success and close issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary = json.loads(
+              Path("/tmp/skeleton-request/validation-summary.json").read_text(encoding="utf-8")
+          )
+          result = {"status": "success", "run_id": int(os.environ["RUN_ID"])}
+          result.update(summary)
+          Path("/tmp/skeleton-request/comment.md").write_text(
+              "JRDB_NEWSPAPER_SKELETON_PUBLISH_RESULT\n"
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --body-file /tmp/skeleton-request/comment.md
+          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --body "JRDB Newspaper skeleton publish failed. Workflow run: $RUN_URL"
+          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason not_planned
