@@ -1286,6 +1286,18 @@ def _race_structure(
     profiles: list[dict[str, object]] = []
     front_like = 0
     known = 0
+    tendency_counts = {
+        "FRONT": 0,
+        "FORWARD": 0,
+        "MID": 0,
+        "BACK": 0,
+        "UNKNOWN": 0,
+    }
+    variability_counts = {
+        "SINGLE_BAND": 0,
+        "MULTI_BAND": 0,
+        "UNAVAILABLE": 0,
+    }
 
     for horse in horses:
         basic = horse.get("basic")
@@ -1297,6 +1309,15 @@ def _race_structure(
         )
         profile = _historical_position_profile(horse)
         tendency = _text(profile.get("tendency")).upper()
+        if tendency not in tendency_counts:
+            tendency = "UNKNOWN"
+        tendency_counts[tendency] += 1
+        variability = _text(
+            profile.get("variability_status")
+        ).upper()
+        if variability not in variability_counts:
+            variability = "UNAVAILABLE"
+        variability_counts[variability] += 1
         if tendency != "UNKNOWN":
             known += 1
         if tendency in {"FRONT", "FORWARD"}:
@@ -1323,6 +1344,8 @@ def _race_structure(
         "status": "AVAILABLE" if known else "INSUFFICIENT_HISTORY",
         "pace_pressure": pressure,
         "front_or_forward_tendency_count": front_like,
+        "position_tendency_counts": tendency_counts,
+        "position_variability_counts": variability_counts,
         "known_position_profile_count": known,
         "runner_count": len(horses),
         "horses": sorted(
@@ -1334,6 +1357,7 @@ def _race_structure(
             "current_jrdb_running_style_used": False,
             "current_jrdb_forecast_pace_used": False,
             "pace_pressure_is_context_not_prediction": True,
+            "front_or_forward_count_is_not_lead_contest_count": True,
         },
     }
 
