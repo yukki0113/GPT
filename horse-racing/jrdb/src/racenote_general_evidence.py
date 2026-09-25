@@ -658,6 +658,14 @@ def _identity_check(
         )
 
 
+def _rotation_interval(horse: Mapping[str, object]) -> object:
+    """Return current factual rotation interval without processed condition."""
+    condition = horse.get("condition_facts")
+    if not isinstance(condition, Mapping):
+        return None
+    return condition.get("rotation_interval")
+
+
 def _race_data_context(
     race: Mapping[str, object],
 ) -> dict[str, object]:
@@ -688,13 +696,17 @@ def _race_data_context(
     if isinstance(race_trends, Mapping):
         trends = copy.deepcopy(dict(race_trends))
 
+    trend_sources: list[str] = []
+    if "frame" in trends:
+        trend_sources.append("FRAME")
+    if "running_style" in trends:
+        trend_sources.append("RUNNING_STYLE")
+
     return {
         "conditions": conditions,
         "available_trends": trends,
-        "trend_sources_v0_1": ["FRAME"],
+        "trend_sources_v0_1": trend_sources,
         "independent_future_trend_sources": [
-            "RUNNING_STYLE",
-            "SIRE_PATTERN",
             "PACE_PATTERN",
             "TRACK_CONDITION",
             "COURSE_LAYOUT",
@@ -778,14 +790,8 @@ def build_general_evidence(
                     "carried_weight_kg": basic.get(
                         "carried_weight_kg"
                     ),
-                    "rotation_interval": (
-                        horse.get("condition_facts", {})
-                        .get("rotation_interval")
-                        if isinstance(
-                            horse.get("condition_facts"),
-                            Mapping,
-                        )
-                        else None
+                    "rotation_interval": _rotation_interval(
+                        horse
                     ),
                 },
                 "evidence_lanes": {
