@@ -1,0 +1,167 @@
+name: RaceNote semantic author research v0.3
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_SEMANTIC_AUTHOR_V03]'
+
+jobs:
+  build:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_SEMANTIC_AUTHOR_V03]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          prefix = os.environ['REQUEST_PREFIX']
+          title = os.environ.get('ISSUE_TITLE') or ''
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          body = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          values = {
+              'request_id': request_id,
+              'packet_run_id': int(body['packet_run_id']),
+              'packet_artifact_name': str(body['packet_artifact_name']),
+          }
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
+              for key, value in values.items():
+                  f.write(f"{key.upper()}={value}\n")
+          PY
+
+      - name: Download result-hidden packet artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/input
+          gh run download "$PACKET_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$PACKET_ARTIFACT_NAME" \
+            --dir /tmp/input
+
+      - name: Compile
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_semantic_author_research_v0_3.py
+
+      - name: Author semantic candidate order
+        id: build
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/output
+          python horse-racing/jrdb/src/racenote_semantic_author_research_v0_3.py \
+            --input-root /tmp/input \
+            --output-root /tmp/output
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-semantic-author-v03-${{ github.run_id }}
+          path: /tmp/output/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          BUILD_EXIT: ${{ steps.build.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/output/semantic_author_day_summary.json')
+          if path.is_file():
+              summary = json.loads(path.read_text(encoding='utf-8'))
+          else:
+              summary = {'status': 'FAIL', 'race_count': None}
+
+          result = {
+              'status': summary.get('status', 'FAIL'),
+              'race_count': summary.get('race_count'),
+              'axis_changed_count': summary.get('axis_changed_count'),
+              'author_version': summary.get('author_version'),
+              'result_visibility_status': summary.get(
+                  'result_visibility_status'
+              ),
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'artifact_name': (
+                  'racenote-semantic-author-v03-'
+                  + os.environ['GITHUB_RUN_ID']
+              ),
+              'build_exit_code': os.environ.get('BUILD_EXIT'),
+          }
+          Path('/tmp/comment.md').write_text(
+              'RACENOTE_SEMANTIC_AUTHOR_V03_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file /tmp/comment.md
+
+      - name: Close
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          BUILD_EXIT: ${{ steps.build.outputs.exit_code }}
+        run: |
+          if [ "$BUILD_EXIT" = "0" ]; then
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason "not planned"
+          fi
+
+      - name: Fail unless passed
+        if: always()
+        env:
+          BUILD_EXIT: ${{ steps.build.outputs.exit_code }}
+        run: test "$BUILD_EXIT" = "0"
