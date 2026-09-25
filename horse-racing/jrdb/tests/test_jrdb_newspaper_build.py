@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 import zipfile
+from unittest.mock import patch
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
@@ -20,7 +21,7 @@ SCHEMA = PROJECT_ROOT / "schema" / "jrdb_pwa_newspaper_race_schema_v0_1.json"
 sys.path.insert(0, str(SRC))
 sys.path.insert(0, str(TEST_ROOT))
 
-from jrdb_newspaper_build import build_from_paci  # noqa: E402
+from jrdb_newspaper_build import build_from_paci, build_race_bundle  # noqa: E402
 from test_jrdb_raw_common import (  # noqa: E402
     blank,
     make_bac,
@@ -211,6 +212,151 @@ class NewspaperBuilderTest(unittest.TestCase):
         self.assertEqual(
             bundle["metadata"]["source_status"]["jrdb_history"]["supplemental_count"],
             6,
+        )
+
+    def test_analysis_history_is_bulk_loaded_once_for_multiple_runners(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            analysis = Path(tmp_name) / "analysis.sqlite"
+            connection = sqlite3.connect(analysis)
+            try:
+                connection.execute(
+                    """
+                    CREATE TABLE fact_entry_result_lite(
+                      race_key TEXT,
+                      race_date TEXT,
+                      venue_code TEXT,
+                      race_no INTEGER,
+                      track_type TEXT,
+                      distance INTEGER,
+                      race_condition_code TEXT,
+                      track_condition_code TEXT,
+                      grade_code TEXT,
+                      running_style TEXT,
+                      training_index REAL,
+                      finish INTEGER,
+                      abnormal_code TEXT,
+                      final_win_odds REAL,
+                      final_win_popularity INTEGER,
+                      horse_id TEXT
+                    )
+                    """
+                )
+                rows = []
+                for horse_id in ("20231001", "20231002"):
+                    for index, date in enumerate(
+                        [
+                            "2026-08-20",
+                            "2026-08-05",
+                            "2026-07-20",
+                            "2026-06-20",
+                            "2026-05-20",
+                            "2026-04-20",
+                            "2026-03-20",
+                            "2026-02-20",
+                            "2026-01-20",
+                        ],
+                        start=1,
+                    ):
+                        rows.append(
+                            (
+                                f"05{index:06d}",
+                                date,
+                                "05",
+                                index,
+                                "1",
+                                1600,
+                                "OP",
+                                "10",
+                                "3",
+                                "2",
+                                10.0 + index,
+                                index,
+                                "0",
+                                3.0 + index,
+                                index,
+                                horse_id,
+                            )
+                        )
+                connection.executemany(
+                    """
+                    INSERT INTO fact_entry_result_lite(
+                      race_key, race_date, venue_code, race_no, track_type,
+                      distance, race_condition_code, track_condition_code,
+                      grade_code, running_style, training_index, finish,
+                      abnormal_code, final_win_odds, final_win_popularity,
+                      horse_id
+                    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                    """,
+                    rows,
+                )
+                connection.commit()
+            finally:
+                connection.close()
+
+            parsed = {
+                "BAC": [{
+                    "race_key_raw": RACE_KEY,
+                    "date_raw": TARGET_DATE,
+                    "field_size": "2",
+                }],
+                "KYI": [
+                    {
+                        "race_key_raw": RACE_KEY,
+                        "race_horse_key": f"{RACE_KEY}01",
+                        "horse_no": "01",
+                        "blood_registration_no": "20231001",
+                        "cancel_flag": "0",
+                        "previous": [{"result_key": "2023100120260810"}],
+                    },
+                    {
+                        "race_key_raw": RACE_KEY,
+                        "race_horse_key": f"{RACE_KEY}02",
+                        "horse_no": "02",
+                        "blood_registration_no": "20231002",
+                        "cancel_flag": "0",
+                        "previous": [],
+                    },
+                ],
+                "CHA": [],
+                "CYB": [],
+                "ZED": [{
+                    "result_key": "2023100120260810",
+                    "race_key_raw": "0526A001",
+                    "date_raw": "20260810",
+                    "horse_no": "01",
+                }],
+                "ZKB": [],
+                "UKC": [],
+            }
+
+            real_connect = sqlite3.connect
+            with patch(
+                "jrdb_newspaper_build.sqlite3.connect",
+                wraps=real_connect,
+            ) as connect_mock:
+                bundle = build_race_bundle(
+                    parsed,
+                    RACE_KEY,
+                    analysis_path=analysis,
+                    generated_at="2026-08-29T12:00:00+00:00",
+                )
+
+        self.assertEqual(connect_mock.call_count, 1)
+        self.assertEqual(len(bundle["horses"]), 2)
+
+        first_history = bundle["horses"][0]["history"]
+        second_history = bundle["horses"][1]["history"]
+        self.assertEqual(len(first_history), 8)
+        self.assertEqual(len(second_history), 8)
+        self.assertEqual(first_history[0]["date"], "2026-08-10")
+        self.assertNotIn(
+            "2026-08-20",
+            [item["date"] for item in first_history],
+        )
+        self.assertEqual(second_history[0]["date"], "2026-08-20")
+        self.assertEqual(
+            bundle["metadata"]["source_status"]["jrdb_history"]["supplemental_count"],
+            15,
         )
 
     def test_target_date_history_contamination_fails_closed(self) -> None:
