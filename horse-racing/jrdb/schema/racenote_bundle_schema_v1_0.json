@@ -183,6 +183,10 @@
         "basic": {
           "type": "object",
           "required": ["horse_no"],
+          "properties": {
+            "horse_no": {"type": "integer", "minimum": 1},
+            "horse_id": {"type": ["string", "null"]}
+          },
           "additionalProperties": true
         },
         "recent_runs": {
