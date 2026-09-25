@@ -126,3 +126,43 @@ That snapshot is explicitly non-canonical for Stage-E because the frozen target 
 The Stage-E driver/workflow therefore requires `expected_scheduled_races=24` and rejects partial PACI snapshots.
 
 2026-09-26 is also re-frozen under the same 24-race completeness guard so both target days use one contract.
+
+## 8. Stage-E execution status
+
+### 2026-09-26 — CANONICAL FULL-DAY FREEZE
+
+- Issue: #1367
+- run: 36111540251
+- artifact: `jrdb-edge-v03-forward-shadow-1367-36111540251`
+- status: PASS
+- expected scheduled races: 24
+- actual scheduled races: 24
+- pre-race guard: PASS
+- result data used: false
+- frozen at UTC: 2026-09-25T08:11:23.408374+00:00
+- earliest scheduled post JST: 2026-09-26T09:45:00+09:00
+- manifest SHA-256: `767b542b07fbad1f61c199c42113d486fc1efec5b22246cd2692ded0bcb66f0b`
+- v0.2 runner rows: 313
+- v0.2 matched runners / matches: 262 / 708
+- v0.3 matched runners / matches: 220 / 408
+- v0.3 incremental reversal occurrences: 2
+- v0.3 presentation overrides: 26
+- production serving changed: false
+
+The earlier #1360/#1362 artifacts are retained as audit history. #1367 is the canonical 2026-09-26 Stage-E freeze because it uses the explicit full-day 24-race completeness guard.
+
+### 2026-09-27 — WAITING FOR FULL PACI
+
+- early snapshot Issue: #1363 — non-canonical
+- completeness-guard retry Issue: #1369
+- run: 36111632789
+- PACI fetch: success
+- full-day gate: fail closed
+- observed scheduled races: 1
+- expected scheduled races: 24
+- exact rejection: `PACI scheduled race count mismatch: expected=24 actual=1`
+- Issue #1369 closed as `not_planned` because the immutable input was not yet a complete target-day snapshot
+- no Stage-E artifact accepted
+- production serving changed: false
+
+The 2026-09-27 target remains frozen. Retry is allowed only when the upstream PACI represents the complete frozen 24-race day; no race/date substitution is permitted after results are known.
