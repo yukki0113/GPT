@@ -782,6 +782,9 @@ def _horse(
         "why_above_next": _text(horse.get("why_above_next")),
         "scenario_adjustment_reason": scenario_reason,
         "edge_performance": edge,
+        "decision_trace": copy.deepcopy(
+            horse.get("decision_trace")
+        ),
     }
 
 
@@ -883,6 +886,24 @@ def validate_forecast(
     if set(final_rank_map.values()) != expected_ranks:
         raise ForecastGen03Error("final ranks must be contiguous")
 
+    pairwise_support = _pairwise_support_map(pairwise)
+    scenario_codes, scenario_risks = _scenario_trace_maps(
+        scenario
+    )
+    for horse in horses:
+        horse_no = int(horse["horse_no"])
+        horse["decision_trace"] = _decision_trace(
+            horse.get("decision_trace"),
+            horse_no,
+            general=general,
+            pairwise_support=pairwise_support,
+            scenario_codes=scenario_codes,
+            scenario_risks=scenario_risks,
+            edge=horse["edge_performance"],
+            final_rank=int(horse["final_rank"]),
+            final_order=final_order,
+        )
+
     pairwise_rank = {horse_no: rank for rank, horse_no in enumerate(pairwise_order, 1)}
     for horse in horses:
         horse_no = int(horse["horse_no"])
@@ -926,6 +947,25 @@ def validate_forecast(
             raise ForecastGen03Error("primary_reason required")
         if not _text(horse.get("main_concern")):
             raise ForecastGen03Error("main_concern required")
+        trace = _mapping(
+            horse.get("decision_trace"),
+            "horse.decision_trace",
+        )
+        if (
+            _text(horse.get("secondary_support"))
+            and trace.get("secondary", {}).get("lane") == "NONE"
+        ):
+            raise ForecastGen03Error(
+                "secondary_support prose requires traced secondary evidence"
+            )
+        if (
+            _text(horse.get("why_above_next"))
+            and int(horse["final_rank"]) < len(horses)
+            and not trace.get("pairwise_support_horse_nos")
+        ):
+            raise ForecastGen03Error(
+                "why_above_next requires direct Pairwise support"
+            )
 
     created_at = _text(payload.get("forecast_created_at"))
     _datetime(created_at, "forecast_created_at")
