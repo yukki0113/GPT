@@ -6,6 +6,20 @@ const MOMOTARO_CONTRIBUTORS = [
   { key: "kenshow", label: "けんしょー" }
 ];
 
+const MOMOTARO_KENSHOW_JRDB_MARKS = new Set(["◎", "○", "▲", "注"]);
+
+/**
+ * RaceNote運用確定までの暫定表示。
+ * JRDB総合印のうち ◎ / ○ / ▲ / 注 だけを、けん列へそのまま転記する。
+ * addon化・短評化・予想一覧化はしない。
+ */
+function momotaroKenshowTemporaryMark(horse) {
+  const jrdb = horse && horse.jrdb ? horse.jrdb : {};
+  const marks = jrdb.marks || {};
+  const mark = text(marks.total, "");
+  return MOMOTARO_KENSHOW_JRDB_MARKS.has(mark) ? mark : "";
+}
+
 /**
  * 桃太郎専用予想addonを返す。
  * upstream未提供時は空objectを返し、既存新聞の意味論は変更しない。
@@ -60,6 +74,12 @@ function showMomotaroContributorDetail(horse, contributor) {
  * 桃太郎の人物印セルを生成する。
  */
 function momotaroContributorCell(horse, horseIndex, contributor) {
+  if (contributor.key === "kenshow") {
+    return '<td class="newspaper-mark-col mark-momotaro mark-kenshow">' +
+      escapeHtml(momotaroKenshowTemporaryMark(horse)) +
+      '</td>';
+  }
+
   const value = momotaroPrediction(horse, contributor.key);
   const mark = text(value.mark, "");
   const comment = text(value.comment, "");
