@@ -104,6 +104,16 @@ concerns, mixed context, repeatability, hidden-strength candidates,
 fragile-form candidates, contradiction, uncertainty, and comment evidence.
 It does not score horses and remains non-active for Forecast generation.
 
+Prediction reading is now normalized before Pairwise through:
+
+- `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`
+- `PredictionInterpretation-v0.1` embedded per horse in General Evidence
+
+This layer does not score or rank. It preserves directional trend evidence,
+sample size, trend redundancy, Race Structure, RaceReview repeatability and
+target-condition overlap, plus Ability Anchor context. Pairwise reads this
+profile first and then verifies the raw Evidence lanes.
+
 The next aggregation layer is also implemented as a research input:
 
 - `src/racenote_general_evidence.py`
