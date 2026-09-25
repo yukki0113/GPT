@@ -9,7 +9,6 @@ permissions:
   issues: write
 
 env:
-  REQUEST_PREFIX: '[JRDB_RACE_REVIEW_INCREMENTAL]'
   RACEREVIEW_CURRENT_DRIVE_ID: '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
 
 jobs:
@@ -36,7 +35,7 @@ jobs:
 
       - name: Install storage runtime
         run: |
-          python -m pip install --disable-pip-version-check             -r tools/data-storage/requirements.txt
+          python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
           PYTHONPATH=tools/data-storage python -m data_storage check-deps
 
       - name: Parse request PACI list
@@ -88,211 +87,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/race_review_input
-          gdown "$RACEREVIEW_CURRENT_DRIVE_ID"             -O /tmp/race_review_input/RaceReviewDB_CURRENT.zip
+          gdown "$RACEREVIEW_CURRENT_DRIVE_ID" -O /tmp/race_review_input/RaceReviewDB_CURRENT.zip
           test -s /tmp/race_review_input/RaceReviewDB_CURRENT.zip
 
       - name: Download requested PACI archives
         run: |
           set -euo pipefail
           mkdir -p /tmp/race_review_input/paci
-          while IFS=
-      - name: Run RaceReviewDB incremental update
-        id: update
-        continue-on-error: true
-        env:
-          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
-        run: |
-          set +e
-          ROOT=/tmp/race_review
-          mkdir -p "$ROOT/work" "$ROOT/output"
-
-          PACI_ARGS=()
           while IFS=$'\t' read -r NAME FILE_ID; do
-            PACI_ARGS+=(--paci "/tmp/race_review_input/paci/$NAME")
-          done < /tmp/race_review_request/paci.tsv
-
-          GENERATION_ID="jrdb_race_review_v0_1_incremental_g$GITHUB_RUN_ID"
-          echo "generation_id=$GENERATION_ID" >> "$GITHUB_OUTPUT"
-
-          python horse-racing/jrdb/src/jrdb_postrace_review_incremental.py             --current-zip /tmp/race_review_input/RaceReviewDB_CURRENT.zip             --work-root "$ROOT/work"             "${PACI_ARGS[@]}"             --output-root "$ROOT/output/postrace_review/v0_1"             --generation-id "$GENERATION_ID"             --summary-json "$ROOT/output/incremental_summary.json"
-          code=$?
-          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
-          exit $code
-
-      - name: Verify generated CURRENT
-        id: verify
-        if: always()
-        continue-on-error: true
-        env:
-          GENERATION_ID: ${{ steps.update.outputs.generation_id }}
-        run: |
-          set +e
-          python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          root = Path('/tmp/race_review/output')
-          review = root / 'postrace_review' / 'v0_1'
-          compact = {
-              'status': 'FAIL',
-              'generation_id': os.environ.get('GENERATION_ID') or None,
-          }
-
-          try:
-              summary = json.loads(
-                  (root / 'incremental_summary.json').read_text(encoding='utf-8')
-              )
-              current = json.loads(
-                  (review / 'current.json').read_text(encoding='utf-8')
-              )
-              manifest = json.loads(
-                  (review / current['manifest']).read_text(encoding='utf-8')
-              )
-              audit = json.loads(
-                  (
-                      review
-                      / 'generations'
-                      / manifest['generation_id']
-                      / 'audit.json'
-                  ).read_text(encoding='utf-8')
-              )
-
-              if current.get('status') != 'CURRENT':
-                  raise RuntimeError('new current pointer is not CURRENT')
-              if manifest.get('validation_status') != 'PASS':
-                  raise RuntimeError('new manifest is not PASS')
-              if audit.get('status') != 'PASS':
-                  raise RuntimeError('new audit is not PASS')
-              if summary.get('status') != 'PASS':
-                  raise RuntimeError('incremental summary is not PASS')
-              if manifest.get('generation_id') != summary.get('generation_id'):
-                  raise RuntimeError('generation mismatch')
-              if manifest.get('period_to') != summary.get('period_to'):
-                  raise RuntimeError('period_to mismatch')
-
-              requested = []
-              for line in Path(
-                  '/tmp/race_review_request/paci.tsv'
-              ).read_text(encoding='utf-8').splitlines():
-                  name, _file_id = line.split('\t')
-                  requested.append(
-                      '20' + name[4:6] + '-' + name[6:8] + '-' + name[8:10]
-                  )
-              requested.sort()
-
-              if summary.get('target_dates') != requested:
-                  raise RuntimeError(
-                      f'target date mismatch: {summary.get("target_dates")} != {requested}'
-                  )
-              if manifest.get('period_to') != requested[-1]:
-                  raise RuntimeError(
-                      f'new CURRENT period_to does not reach {requested[-1]}'
-                  )
-
-              compact = {
-                  'status': 'PASS',
-                  'generation_id': summary.get('generation_id'),
-                  'previous_generation_id': summary.get(
-                      'previous_generation_id'
-                  ),
-                  'previous_period_to': summary.get('previous_period_to'),
-                  'period_to': summary.get('period_to'),
-                  'target_dates': summary.get('target_dates'),
-                  'updates': summary.get('updates'),
-                  'snapshot_object_hash': manifest.get(
-                      'snapshot_object_hash'
-                  ),
-                  'row_counts': {
-                      name: meta.get('total_rows')
-                      for name, meta in (manifest.get('relations') or {}).items()
-                  },
-                  'database_warnings': (
-                      audit.get('database_audit') or {}
-                  ).get('warnings'),
-              }
-          except Exception as exc:
-              compact['error'] = str(exc)
-
-          path = root / 'compact_summary.json'
-          path.parent.mkdir(parents=True, exist_ok=True)
-          path.write_text(
-              json.dumps(compact, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8',
-          )
-          if compact.get('status') != 'PASS':
-              raise SystemExit(1)
-          PY
-          code=$?
-          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
-          exit $code
-
-      - name: Upload next RaceReviewDB snapshot
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: RaceReviewDB-next-${{ github.run_id }}
-          path: /tmp/race_review/output/
-          if-no-files-found: warn
-          compression-level: 0
-          retention-days: 30
-
-      - name: Comment compact result
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          UPDATE_EXIT: ${{ steps.update.outputs.exit_code }}
-          VERIFY_EXIT: ${{ steps.verify.outputs.exit_code }}
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          path = Path('/tmp/race_review/output/compact_summary.json')
-          if path.is_file():
-              summary = json.loads(path.read_text(encoding='utf-8'))
-          else:
-              summary = {
-                  'status': 'FAIL',
-                  'error': 'compact_summary.json missing',
-              }
-          summary['run_id'] = int(os.environ['GITHUB_RUN_ID'])
-          summary['update_exit_code'] = os.environ.get('UPDATE_EXIT')
-          summary['verify_exit_code'] = os.environ.get('VERIFY_EXIT')
-          Path('/tmp/race_review_result.md').write_text(
-              'JRDB_RACE_REVIEW_INCREMENTAL_RESULT\n```json\n'
-              + json.dumps(summary, ensure_ascii=False, indent=2)
-              + '\n```\n',
-              encoding='utf-8',
-          )
-          PY
-
-          gh issue comment "$ISSUE_NUMBER"             --repo "$GITHUB_REPOSITORY"             --body-file /tmp/race_review_result.md
-
-      - name: Close request issue
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          VERIFY_EXIT: ${{ steps.verify.outputs.exit_code }}
-        run: |
-          if [ "$VERIFY_EXIT" = "0" ]; then
-            gh issue close "$ISSUE_NUMBER"               --repo "$GITHUB_REPOSITORY"               --reason completed
-          else
-            gh issue close "$ISSUE_NUMBER"               --repo "$GITHUB_REPOSITORY"               --reason "not planned"
-          fi
-
-      - name: Fail unless update and verification passed
-        if: always()
-        env:
-          UPDATE_EXIT: ${{ steps.update.outputs.exit_code }}
-          VERIFY_EXIT: ${{ steps.verify.outputs.exit_code }}
-        run: |
-          test "$UPDATE_EXIT" = "0"
-          test "$VERIFY_EXIT" = "0"
-\t' read -r NAME FILE_ID; do
             TARGET="/tmp/race_review_input/paci/$NAME"
             success=0
             for attempt in 1 2 3 4; do
@@ -329,7 +131,13 @@ jobs:
           GENERATION_ID="jrdb_race_review_v0_1_incremental_g$GITHUB_RUN_ID"
           echo "generation_id=$GENERATION_ID" >> "$GITHUB_OUTPUT"
 
-          python horse-racing/jrdb/src/jrdb_postrace_review_incremental.py             --current-zip /tmp/race_review_input/RaceReviewDB_CURRENT.zip             --work-root "$ROOT/work"             "${PACI_ARGS[@]}"             --output-root "$ROOT/output/postrace_review/v0_1"             --generation-id "$GENERATION_ID"             --summary-json "$ROOT/output/incremental_summary.json"
+          python horse-racing/jrdb/src/jrdb_postrace_review_incremental.py \
+            --current-zip /tmp/race_review_input/RaceReviewDB_CURRENT.zip \
+            --work-root "$ROOT/work" \
+            "${PACI_ARGS[@]}" \
+            --output-root "$ROOT/output/postrace_review/v0_1" \
+            --generation-id "$GENERATION_ID" \
+            --summary-json "$ROOT/output/incremental_summary.json"
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit $code
@@ -408,16 +216,12 @@ jobs:
               compact = {
                   'status': 'PASS',
                   'generation_id': summary.get('generation_id'),
-                  'previous_generation_id': summary.get(
-                      'previous_generation_id'
-                  ),
+                  'previous_generation_id': summary.get('previous_generation_id'),
                   'previous_period_to': summary.get('previous_period_to'),
                   'period_to': summary.get('period_to'),
                   'target_dates': summary.get('target_dates'),
                   'updates': summary.get('updates'),
-                  'snapshot_object_hash': manifest.get(
-                      'snapshot_object_hash'
-                  ),
+                  'snapshot_object_hash': manifest.get('snapshot_object_hash'),
                   'row_counts': {
                       name: meta.get('total_rows')
                       for name, meta in (manifest.get('relations') or {}).items()
@@ -484,7 +288,9 @@ jobs:
           )
           PY
 
-          gh issue comment "$ISSUE_NUMBER"             --repo "$GITHUB_REPOSITORY"             --body-file /tmp/race_review_result.md
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file /tmp/race_review_result.md
 
       - name: Close request issue
         if: always()
@@ -494,9 +300,13 @@ jobs:
           VERIFY_EXIT: ${{ steps.verify.outputs.exit_code }}
         run: |
           if [ "$VERIFY_EXIT" = "0" ]; then
-            gh issue close "$ISSUE_NUMBER"               --repo "$GITHUB_REPOSITORY"               --reason completed
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason completed
           else
-            gh issue close "$ISSUE_NUMBER"               --repo "$GITHUB_REPOSITORY"               --reason "not planned"
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason "not planned"
           fi
 
       - name: Fail unless update and verification passed
