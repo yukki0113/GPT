@@ -45,10 +45,19 @@ def _write_shadow_matches(
     rows=[]
     matches=0
     matched_runners=0
+    reversal_matches=0
+    presentation_overrides=0
     for runner in facts:
         found=stage_d._match_shadow(registry,runner)
         matches+=len(found)
         matched_runners+=bool(found)
+        for match in found:
+            shadow=match.get("v03_shadow") or {}
+            if shadow.get("is_reversal_vs_v02"):
+                reversal_matches+=1
+            presentation=shadow.get("presentation") or {}
+            if presentation.get("display_text") and presentation.get("display_text")!=match.get("display_text"):
+                presentation_overrides+=1
         key={
             field:runner.get(field)
             for field in stage_d.v02.base.IDENTITY_FIELDS
@@ -62,6 +71,8 @@ def _write_shadow_matches(
         "runner_rows":len(facts),
         "matched_runners":matched_runners,
         "matches":matches,
+        "incremental_reversal_matches":reversal_matches,
+        "presentation_overrides":presentation_overrides,
     }
 
 
@@ -126,6 +137,9 @@ def run(
         "runner_rows":shadow_summary["runner_rows"],
         "matched_runners":shadow_summary["matched_runners"],
         "matches":shadow_summary["matches"],
+        "incremental_reversal_matches":shadow_summary["incremental_reversal_matches"],
+        "presentation_overrides":shadow_summary["presentation_overrides"],
+        "presentation_contract":"V03_SHADOW_PRESENTATION",
         "result_data_used":False,
     }
     provenance["semantics"]=(
