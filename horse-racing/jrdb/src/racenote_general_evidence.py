@@ -692,11 +692,15 @@ def _race_data_context(
         "conditions": conditions,
         "available_trends": trends,
         "trend_sources_v0_1": ["FRAME"],
-        "future_trend_sources": [
-            "POPULARITY",
+        "independent_future_trend_sources": [
             "RUNNING_STYLE",
             "SIRE_PATTERN",
             "PACE_PATTERN",
+            "TRACK_CONDITION",
+            "COURSE_LAYOUT",
+        ],
+        "post_freeze_trend_sources": [
+            "POPULARITY",
         ],
         "policy": {
             "available_trend_data_precedes_ability_anchor": True,
