@@ -42,6 +42,14 @@ TRACK_CONDITION = {
     "42": "遅不良",
 }
 GRADE = {"1": "G1", "2": "G2", "3": "G3", "4": "重賞", "5": "特別", "6": "L"}
+RUNNING_STYLE = {
+    "1": "逃げ",
+    "2": "先行",
+    "3": "差し",
+    "4": "追込",
+    "5": "好位差し",
+    "6": "自在",
+}
 TABLE = "fact_entry_result_lite"
 
 # RaceNote distance ranges intentionally overlap at 1400m and 1800m.
@@ -668,7 +676,28 @@ def enrich(
         )
         if frame_stat["starts"]:
             frames[str(frame_no)] = frame_stat
-    output["race"]["race_trends"] = {"frame": frames}
+    running_styles: dict[str, dict] = {}
+    for style_code, style_label in RUNNING_STYLE.items():
+        style_stat = statistic_with_ranges(
+            analysis,
+            "running_style",
+            style_code,
+            race_date,
+            venue_code,
+            track_type,
+            distance,
+            years,
+        )
+        if style_stat["starts"]:
+            running_styles[style_code] = {
+                "label": style_label,
+                **style_stat,
+            }
+
+    output["race"]["race_trends"] = {
+        "frame": frames,
+        "running_style": running_styles,
+    }
     return output, warnings
 
 
@@ -786,6 +815,37 @@ class BulkEnrichmentIndex:
                 self._add(grouped, (row[0], str(row[1]), str(row[2]), int(row[3] or 0)), row[5:8])
             self.dimension_aggregates[column] = grouped
 
+        # Running-style trends are race-level historical evidence.
+        # They must not depend on the target horse's current JRDB running-style
+        # classification, because that belongs to current consensus.
+        style_rows = self.analysis.execute(
+            f"""
+            SELECT running_style, venue_code, track_type, distance, year,
+                   COUNT(*),
+                   SUM(CASE WHEN finish=1 THEN 1 ELSE 0 END),
+                   SUM(CASE WHEN finish BETWEEN 1 AND 3 THEN 1 ELSE 0 END)
+            FROM {TABLE}
+            WHERE race_date<? AND year>=?
+              AND running_style IS NOT NULL
+              AND running_style<>''
+            GROUP BY running_style, venue_code, track_type, distance, year
+            """,
+            [self.race_date, self.year_start],
+        ).fetchall()
+        style_grouped: dict[tuple, tuple[int, int, int]] = {}
+        for row in style_rows:
+            self._add(
+                style_grouped,
+                (
+                    str(row[0]),
+                    str(row[1]),
+                    str(row[2]),
+                    int(row[3] or 0),
+                ),
+                row[5:8],
+            )
+        self.dimension_aggregates["running_style"] = style_grouped
+
     def _horse_summary(self, horse_id: str, predicate) -> dict:
         counts = (0, 0, 0)
         for track_type, venue_code, distance, year, starts, wins, top3 in self.horse_aggregates.get(horse_id, []):
@@ -874,7 +934,26 @@ class BulkEnrichmentIndex:
             stat = self._stat("frame_no", frame_no, venue_code, track_type, distance, race_date)
             if stat["starts"]:
                 frames[str(frame_no)] = stat
-        output["race"]["race_trends"] = {"frame": frames}
+        running_styles: dict[str, dict] = {}
+        for style_code, style_label in RUNNING_STYLE.items():
+            style_stat = self._stat(
+                "running_style",
+                style_code,
+                venue_code,
+                track_type,
+                distance,
+                race_date,
+            )
+            if style_stat["starts"]:
+                running_styles[style_code] = {
+                    "label": style_label,
+                    **style_stat,
+                }
+
+        output["race"]["race_trends"] = {
+            "frame": frames,
+            "running_style": running_styles,
+        }
         return output, warnings
 
 
