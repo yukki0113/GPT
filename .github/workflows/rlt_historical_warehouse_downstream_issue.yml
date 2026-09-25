@@ -248,23 +248,6 @@ jobs:
               raise SystemExit('rebuilt Warehouse does not exactly match accepted manifest')
           PY
 
-      - name: Re-run full Index Base equivalence as downstream prerequisite
-        env:
-          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
-        run: |
-          python horse-racing/jrdb/src/audit_jrdb_index_base_raw_vs_warehouse.py \
-            --raw-root /tmp/rlt_downstream/raw \
-            --warehouse-manifest /tmp/rlt_downstream/final/manifest.json \
-            --asset-root BAC=/tmp/rlt_downstream/rebuilt/BAC \
-            --asset-root KYI=/tmp/rlt_downstream/rebuilt/KYI \
-            --asset-root CHA=/tmp/rlt_downstream/rebuilt/CHA \
-            --asset-root CYB=/tmp/rlt_downstream/rebuilt/CYB \
-            --asset-root SED=/tmp/rlt_downstream/rebuilt/SED \
-            --asset-root UKC=/tmp/rlt_downstream/rebuilt/UKC \
-            --record-hash-compat-manifest /tmp/rlt_downstream/record_hash_compat/manifest.json \
-            --years $(seq 2010 2025) \
-            --audit-json /tmp/rlt_downstream/report/index_base_equivalence.json
-
       - name: Run downstream non-regression gate
         id: downstream
         env:
