@@ -225,8 +225,14 @@ A successful audit sets:
 
     next_stage = SCENARIO_ROBUSTNESS / READY
 
-Scenario Robustness will ask whether the top comparison survives plausible
-race shapes rather than simply accepting one expected scenario.
+Scenario Robustness v0.1 is now implemented:
+
+- `src/racenote_scenario_robustness.py`
+- `schema/racenote_scenario_robustness_schema_v0_1.json`
+- `docs/racenote/SCENARIO_ROBUSTNESS_v0_1.md`
+
+It tests whether the Pairwise axis survives SLOW / MEDIUM / FAST pace
+scenarios rather than accepting one expected scenario.
 
 ## 13. Short-comment relationship
 
