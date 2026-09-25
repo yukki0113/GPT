@@ -1,0 +1,200 @@
+name: RaceNote Gen0.3 day author
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_GEN03_DAY_AUTHOR]'
+
+jobs:
+  author-day:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_GEN03_DAY_AUTHOR]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          title = os.environ.get('ISSUE_TITLE') or ''
+          prefix = os.environ['REQUEST_PREFIX']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          prepare_run_id = int(request.get('prepare_run_id') or 0)
+          prepare_artifact_name = str(
+              request.get('prepare_artifact_name') or ''
+          ).strip()
+          frozen_at = str(request.get('frozen_at') or '').strip()
+
+          if prepare_run_id <= 0:
+              raise SystemExit('prepare_run_id must be positive')
+          if not prepare_artifact_name:
+              raise SystemExit('prepare_artifact_name is required')
+          if not frozen_at:
+              raise SystemExit('frozen_at is required')
+
+          resolved = {
+              'request_id': request_id,
+              'prepare_run_id': prepare_run_id,
+              'prepare_artifact_name': prepare_artifact_name,
+              'frozen_at': frozen_at,
+          }
+          Path('/tmp/day_author_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
+              f.write(f"REQUEST_ID={request_id}\n")
+              f.write(f"PREPARE_RUN_ID={prepare_run_id}\n")
+              f.write(f"PREPARE_ARTIFACT_NAME={prepare_artifact_name}\n")
+              f.write(f"FROZEN_AT={frozen_at}\n")
+          PY
+
+      - name: Download day prepare artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/day_prepare
+          gh run download "$PREPARE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$PREPARE_ARTIFACT_NAME" \
+            --dir /tmp/day_prepare
+          test -s /tmp/day_prepare/day_prepare_summary.json
+
+      - name: Compile rehearsal author
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_gen0_3_day_rehearsal_author.py
+
+      - name: Author and freeze all races
+        id: author
+        continue-on-error: true
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set +e
+          mkdir -p /tmp/day_author
+          python horse-racing/jrdb/src/racenote_gen0_3_day_rehearsal_author.py \
+            --prepared-root /tmp/day_prepare \
+            --output-root /tmp/day_author \
+            --frozen-at "$FROZEN_AT"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload day author artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-gen0-3-day-author-${{ github.run_id }}
+          path: /tmp/day_author/
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          AUTHOR_EXIT: ${{ steps.author.outputs.exit_code }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(
+              Path('/tmp/day_author_request.json').read_text(encoding='utf-8')
+          )
+          summary_path = Path('/tmp/day_author/day_freeze_summary.json')
+          if summary_path.is_file():
+              summary = json.loads(summary_path.read_text(encoding='utf-8'))
+          else:
+              summary = {
+                  'status': 'FAIL',
+                  'race_count': None,
+                  'profile_version': None,
+              }
+          result = {
+              'request_id': request['request_id'],
+              'status': summary.get('status', 'FAIL'),
+              'race_count': summary.get('race_count'),
+              'profile_version': summary.get('profile_version'),
+              'frozen_at': request['frozen_at'],
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'artifact_name': (
+                  'racenote-gen0-3-day-author-'
+                  + os.environ['GITHUB_RUN_ID']
+              ),
+              'author_exit_code': os.environ.get('AUTHOR_EXIT'),
+          }
+          Path('/tmp/day_author_comment.md').write_text(
+              'RACENOTE_GEN03_DAY_AUTHOR_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file /tmp/day_author_comment.md
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          AUTHOR_EXIT: ${{ steps.author.outputs.exit_code }}
+        run: |
+          if [ "$AUTHOR_EXIT" = "0" ]; then
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason "not planned"
+          fi
+
+      - name: Fail unless day author passed
+        if: always()
+        env:
+          AUTHOR_EXIT: ${{ steps.author.outputs.exit_code }}
+        run: |
+          test "$AUTHOR_EXIT" = "0"
