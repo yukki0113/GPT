@@ -1524,3 +1524,66 @@ Turn 7 - market-value audit.
 The ability-prediction signal is now historically supported. The next question
 is whether next-start popularity / odds already price that signal. Market-value
 analysis must remain separate from the ability classification.
+
+
+## 25. Operationalization checkpoint
+
+Status:
+
+NEXT_WATCH_V0_1_OPERATIONAL
+
+Execution date:
+
+2026-09-25
+
+Operational interface:
+
+- request a completed JRA source date
+- run the canonical selector
+- return S/A next-start attention horses
+- allow zero candidates
+- do not force list length
+
+Canonical selector:
+
+- horse-racing/jrdb/src/jrdb_next_watch_select.py
+
+Operational contract:
+
+- horse-racing/jrdb/docs/RaceReviewDB_NextWatch_Operation_v0_1.md
+
+Standard grading:
+
+- S:
+  HV05/HV13 match OR at least two hidden-value frozen-rule matches
+- A:
+  at least one hidden-value frozen-rule match and not S
+- persistence-only P01/P03:
+  excluded from standard S/A
+
+Smoke test:
+
+- source date:
+  2026-09-22
+- run:
+  36115281667
+- source starts:
+  147
+- S:
+  4
+- A:
+  10
+- result:
+  PASS
+- Drive artifact:
+  16bm8KNyDewqaakzpwkbrNUZUPuDUqf5B
+
+The normal chat request is:
+
+"xx/xxの次走注目馬をお願いします"
+
+The assistant resolves the source date, executes the selector, and returns the
+S/A list with concise matched-rule reasons.
+
+The intended role is an additive evidence layer for RaceNote / RL rather than a
+standalone profitability system.
