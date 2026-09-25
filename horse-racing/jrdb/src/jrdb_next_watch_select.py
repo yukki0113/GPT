@@ -183,16 +183,30 @@ def main() -> int:
         FROM hp_valid
         """)
 
-        rows = connection.execute("""
+        rule_exprs: list[str] = []
+        rule_ids: list[str] = []
+        for rule in hidden_rules:
+            rule_id = str(rule["rule_id"])
+            condition = str(rule["condition"])
+            rule_ids.append(rule_id)
+            rule_exprs.append(
+                f"CASE WHEN {condition} THEN TRUE ELSE FALSE END AS match_{rule_id}"
+            )
+
+        rule_sql = ",\n          ".join(rule_exprs)
+        query = f"""
         SELECT
           *,
           performance_signal - prior3_performance_mean AS performance_vs_prior3,
-          last3f_speed_percentile - prior3_last3f_pct_mean AS last3f_pct_vs_prior3
+          last3f_speed_percentile - prior3_last3f_pct_mean AS last3f_pct_vs_prior3,
+          {rule_sql}
         FROM featured
         WHERE race_date = CAST(? AS DATE)
         ORDER BY race_key, horse_no
-        """, [args.date]).fetchall()
-        cols = [d[0] for d in connection.description]
+        """
+        cursor = connection.execute(query, [args.date])
+        rows = cursor.fetchall()
+        cols = [d[0] for d in cursor.description]
 
         if not rows:
             result = {
@@ -215,27 +229,11 @@ def main() -> int:
         candidates: list[dict[str, object]] = []
         for values in rows:
             item = dict(zip(cols, values))
-            matched: list[str] = []
-            for rule in hidden_rules:
-                condition = str(rule["condition"])
-                # Evaluate rule against the selected race_horse_key via the same frozen SQL.
-                matched_row = connection.execute(
-                    f"""
-                    SELECT COUNT(*)
-                    FROM (
-                      SELECT
-                        *,
-                        performance_signal - prior3_performance_mean AS performance_vs_prior3,
-                        last3f_speed_percentile - prior3_last3f_pct_mean AS last3f_pct_vs_prior3
-                      FROM featured
-                      WHERE race_horse_key = ?
-                    ) x
-                    WHERE {condition}
-                    """,
-                    [item["race_horse_key"]],
-                ).fetchone()
-                if matched_row and int(matched_row[0]) > 0:
-                    matched.append(str(rule["rule_id"]))
+            matched = [
+                rule_id
+                for rule_id in rule_ids
+                if bool(item.get(f"match_{rule_id}"))
+            ]
 
             if not matched:
                 continue
