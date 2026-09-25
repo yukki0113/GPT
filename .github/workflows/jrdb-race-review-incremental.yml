@@ -118,81 +118,13 @@ jobs:
       - name: Download requested PACI and SED archives
         run: |
           set -euo pipefail
-          mkdir -p /tmp/race_review_input/paci /tmp/race_review_input/sed
-
-          download_one() {
-            NAME="$1"
-            FILE_ID="$2"
-            TARGET="$3"
-
-            rm -f "$TARGET"
-
-            for attempt in 1 2; do
-              if gdown "$FILE_ID" -O "$TARGET"                 && test -s "$TARGET"                 && python -m zipfile -t "$TARGET" >/dev/null 2>&1; then
-                return 0
-              fi
-              echo "gdown retry: $NAME attempt=$attempt" >&2
-              rm -f "$TARGET"
-              sleep $((attempt * 2))
-            done
-
-            URL1="https://drive.usercontent.google.com/download?id=$FILE_ID&export=download&confirm=t"
-            if curl --fail --location --silent --show-error               --retry 5 --retry-all-errors               --connect-timeout 20 --max-time 180               "$URL1" -o "$TARGET"               && test -s "$TARGET"               && python -m zipfile -t "$TARGET" >/dev/null 2>&1; then
-              return 0
-            fi
-
-            rm -f "$TARGET"
-            URL2="https://drive.google.com/uc?export=download&id=$FILE_ID&confirm=t"
-            if curl --fail --location --silent --show-error               --retry 5 --retry-all-errors               --connect-timeout 20 --max-time 180               "$URL2" -o "$TARGET"               && test -s "$TARGET"               && python -m zipfile -t "$TARGET" >/dev/null 2>&1; then
-              return 0
-            fi
-
-            rm -f "$TARGET"
-            return 1
-          }
-
-          validate_members() {
-            KIND="$1"
-            NAME="$2"
-            TARGET="$3"
-            python - "$KIND" "$NAME" "$TARGET" <<'PY'
-          import sys
-          import zipfile
-
-          kind, name, target = sys.argv[1:4]
-          if kind == 'PACI':
-              date = name[4:10]
-              required = {f'BAC{date}.txt', f'KYI{date}.txt'}
-          else:
-              date = name[3:9]
-              required = {f'SED{date}.txt'}
-
-          with zipfile.ZipFile(target) as archive:
-              members = set(archive.namelist())
-          missing = sorted(required - members)
-          if missing:
-              raise SystemExit(
-                  f'{name}: missing required ZIP members: {missing}'
-              )
-          PY
-          }
-
-          download_list() {
-            KIND="$1"
-            TSV="$2"
-            DEST="$3"
-            while IFS=$'\t' read -r NAME FILE_ID; do
-              TARGET="$DEST/$NAME"
-              if ! download_one "$NAME" "$FILE_ID" "$TARGET"; then
-                echo "Drive download failed after all methods: $NAME ($FILE_ID)" >&2
-                exit 1
-              fi
-              validate_members "$KIND" "$NAME" "$TARGET"
-            done < "$TSV"
-          }
-
-          download_list             PACI             /tmp/race_review_request/paci.tsv             /tmp/race_review_input/paci
-          download_list             SED             /tmp/race_review_request/sed.tsv             /tmp/race_review_input/sed
+          PYTHONPATH=horse-racing/jrdb/src \
+            python horse-racing/jrdb/src/jrdb_postrace_review_acquire.py \
+              --paci-tsv /tmp/race_review_request/paci.tsv \
+              --sed-tsv /tmp/race_review_request/sed.tsv \
+              --output-root /tmp/race_review_input \
+              --workers 8 \
+              --summary-json /tmp/race_review_input/acquisition_summary.json
 
       - name: Run RaceReviewDB incremental update
         id: update
