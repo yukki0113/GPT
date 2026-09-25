@@ -70,4 +70,4 @@ jobs:
           python -m unittest -v test_racenote_racereview_adapter
           python -m unittest -v test_racenote_horse_evidence_card
           python -m unittest -v test_racenote_general_evidence
-          python -m pytest -q test_racenote_analysis_only_enrichment.py
+          PYTHONPATH=../src python -m pytest -q test_racenote_analysis_only_enrichment.py
