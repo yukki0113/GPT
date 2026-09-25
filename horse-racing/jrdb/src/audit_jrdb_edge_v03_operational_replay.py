@@ -74,6 +74,10 @@ def _v02_signal(match: Mapping[str, Any], channel: str) -> str:
     return str(evidence.get(f"{channel}_signal") or "NEUTRAL").upper()
 
 
+def _v02_level(match: Mapping[str, Any], channel: str) -> str:
+    return str(match.get(f"{channel}_evidence_level") or "NONE").upper()
+
+
 def _v03_signal(match: Mapping[str, Any], channel: str) -> str:
     shadow = match.get("v03_shadow")
     if not isinstance(shadow, Mapping):
@@ -142,6 +146,8 @@ def _summarize_runner_rows(rows: list[dict[str, Any]], *, shadow: bool) -> dict[
     matched = pm_matched = mixed = value_matched = reversal_matches = 0
     total_matches = performance_matches = value_matches = 0
     target_pm_matches = 0
+    signal_with_level_none = 0
+    non_target_signal_with_level_none = 0
     for row in rows:
         matches = row["matches"]
         fn = _v03_signal if shadow else _v02_signal
@@ -163,6 +169,15 @@ def _summarize_runner_rows(rows: list[dict[str, Any]], *, shadow: bool) -> dict[
             _template_from_match(m) in TARGET_TEMPLATES and fn(m, "performance") in PM
             for m in matches
         )
+        if not shadow:
+            for match in matches:
+                if _v02_signal(match, "performance") not in PM:
+                    continue
+                if _v02_level(match, "performance") != "NONE":
+                    continue
+                signal_with_level_none += 1
+                if _template_from_match(match) not in TARGET_TEMPLATES:
+                    non_target_signal_with_level_none += 1
         if shadow:
             clusters = {_v03_cluster(m) for m in matches if fn(m, "performance") in PM}
             cluster_counts.append(len(clusters))
@@ -190,6 +205,11 @@ def _summarize_runner_rows(rows: list[dict[str, Any]], *, shadow: bool) -> dict[
         "value_matches": value_matches,
         "value_matched_runners": value_matched,
     }
+    if not shadow:
+        summary.update({
+            "performance_signal_with_evidence_level_none": signal_with_level_none,
+            "non_target_performance_signal_with_evidence_level_none": non_target_signal_with_level_none,
+        })
     if shadow:
         summary.update({
             "semantic_cluster_mean": statistics.fmean(cluster_counts) if cluster_counts else 0.0,
@@ -300,6 +320,13 @@ def run(
         "context_absorption": {
             "target_performance_matches": sum(absorbed_total.values()),
             "template_counts": dict(sorted(absorbed_total.items())),
+        },
+        "channel_normalization": {
+            "v02_performance_signal_with_evidence_level_none":
+                v02_summary["performance_signal_with_evidence_level_none"],
+            "non_target_performance_signal_with_evidence_level_none":
+                v02_summary["non_target_performance_signal_with_evidence_level_none"],
+            "contract": "V03_ORTHOGONAL_PERFORMANCE_NEUTRAL_WHEN_EVIDENCE_LEVEL_NONE",
         },
         "per_day": per_day,
         "production_serving_changed": False,
