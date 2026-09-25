@@ -90,7 +90,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('contributor.key === "kenshow"', script)
         self.assertIn('momotaroKenshowTemporaryMark(horse) || (comment ? "注" : "")', script)
         self.assertIn('type: "kenshow-analysis"', predictions)
-        self.assertNotIn('source: "けんしょー"', predictions)
+        self.assertIn('source: "けんしょー"', predictions)
 
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
@@ -114,7 +114,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
-        self.assertIn('./momotaro.js?v=9', newspaper)
+        self.assertIn('./momotaro.js?v=10', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
         self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v13"', service_worker)
