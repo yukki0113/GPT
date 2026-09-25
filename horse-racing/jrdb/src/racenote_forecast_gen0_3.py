@@ -30,6 +30,25 @@ ALLOWED_MARKS = {"◎", "○", "▲", "△", ""}
 ALLOWED_EDGE_LEVELS = {"CONFIRMED", "SUGGESTIVE"}
 ALLOWED_EDGE_SIGNALS = {"POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL"}
 ALLOWED_EDGE_ROLES = {"PRIMARY", "SECONDARY", "CONFLICT"}
+DECISION_TRACE_VERSION = "RaceNote-Decision-Trace-0.1"
+TRACE_LANES = {
+    "DATA_TREND",
+    "RACEREVIEW",
+    "ABILITY_ANCHOR",
+    "RACE_STRUCTURE",
+    "SCENARIO",
+    "EDGE_PERFORMANCE",
+    "UNCERTAINTY",
+    "MIXED",
+    "NONE",
+}
+ABILITY_TRACE_CODES = {
+    "ABILITY_LATEST",
+    "ABILITY_PEAK",
+    "ABILITY_TYPICAL",
+    "ABILITY_MINIMUM",
+    "ABILITY_CONSISTENCY",
+}
 FORBIDDEN_EDGE_KEYS = {
     "value_evidence_level",
     "value_signal",
@@ -270,6 +289,459 @@ def _edge_overlay(
     }
 
 
+def _general_horse(
+    general: Mapping[str, object],
+    horse_no: int,
+) -> Mapping[str, object]:
+    """Return one runner from validated General Evidence."""
+    raw_horses = _list(general.get("horses"), "general.horses")
+    for index, raw_horse in enumerate(raw_horses, start=1):
+        horse = _mapping(raw_horse, f"general.horses[{index}]")
+        if _positive_int(
+            horse.get("horse_no"),
+            f"general.horses[{index}].horse_no",
+        ) == horse_no:
+            return horse
+    raise ForecastGen03Error(
+        f"General Evidence missing horse_no={horse_no}"
+    )
+
+
+def _general_trace_codes(
+    general_horse: Mapping[str, object],
+) -> dict[str, set[str]]:
+    """Collect traceable pre-Freeze evidence identifiers by lane."""
+    result: dict[str, set[str]] = {
+        "DATA_TREND": set(),
+        "RACEREVIEW": set(),
+        "ABILITY_ANCHOR": set(),
+        "RACE_STRUCTURE": set(),
+        "UNCERTAINTY": set(),
+    }
+
+    lanes = general_horse.get("evidence_lanes")
+    if not isinstance(lanes, Mapping):
+        raise ForecastGen03Error(
+            "General Evidence horse lacks evidence_lanes"
+        )
+
+    data_lane = lanes.get("data_trend")
+    if isinstance(data_lane, Mapping):
+        history = data_lane.get("horse_history")
+        if isinstance(history, Mapping):
+            observations = history.get("observations")
+            if isinstance(observations, list):
+                for raw_item in observations:
+                    if not isinstance(raw_item, Mapping):
+                        continue
+                    code = _text(raw_item.get("code"))
+                    if code:
+                        result["DATA_TREND"].add(code)
+        population = data_lane.get("population_context")
+        if isinstance(population, Mapping):
+            for raw_context in population.values():
+                if not isinstance(raw_context, Mapping):
+                    continue
+                if _text(raw_context.get("status")).upper() != "AVAILABLE":
+                    continue
+                code = _text(raw_context.get("code"))
+                if code:
+                    result["DATA_TREND"].add(code)
+
+    ability_lane = lanes.get("ability_anchor")
+    if isinstance(ability_lane, Mapping):
+        profile = ability_lane.get("profile")
+        if isinstance(profile, Mapping):
+            ability_fields = (
+                ("latest", "ABILITY_LATEST"),
+                ("peak", "ABILITY_PEAK"),
+                ("typical_median", "ABILITY_TYPICAL"),
+                ("minimum", "ABILITY_MINIMUM"),
+                ("mad", "ABILITY_CONSISTENCY"),
+            )
+            for field, code in ability_fields:
+                if profile.get(field) is not None:
+                    result["ABILITY_ANCHOR"].add(code)
+
+    rr_lane = lanes.get("racereview")
+    if isinstance(rr_lane, Mapping):
+        for field in (
+            "primary_positive",
+            "supporting_positive",
+            "concerns",
+            "mixed_context",
+        ):
+            raw_items = rr_lane.get(field)
+            if not isinstance(raw_items, list):
+                continue
+            for raw_item in raw_items:
+                if not isinstance(raw_item, Mapping):
+                    continue
+                code = _text(raw_item.get("code"))
+                if code:
+                    result["RACEREVIEW"].add(code)
+
+        profile = rr_lane.get("profile")
+        if isinstance(profile, Mapping):
+            for signal_name in ("hidden_strength", "fragile_form"):
+                signal = profile.get(signal_name)
+                if not isinstance(signal, Mapping):
+                    continue
+                raw_codes = signal.get("reason_codes")
+                if not isinstance(raw_codes, list):
+                    continue
+                for raw_code in raw_codes:
+                    code = _text(raw_code)
+                    if code:
+                        result["RACEREVIEW"].add(code)
+
+        uncertainties = rr_lane.get("uncertainties")
+        if isinstance(uncertainties, list):
+            for raw_uncertainty in uncertainties:
+                if not isinstance(raw_uncertainty, Mapping):
+                    continue
+                code = _text(raw_uncertainty.get("code"))
+                if code:
+                    result["UNCERTAINTY"].add(code)
+
+    interpretation = general_horse.get("prediction_interpretation")
+    if isinstance(interpretation, Mapping):
+        structure = interpretation.get("race_structure")
+        if isinstance(structure, Mapping):
+            pressure = _text(structure.get("pace_pressure")).upper()
+            if pressure and pressure != "UNKNOWN":
+                result["RACE_STRUCTURE"].add(
+                    f"PACE_PRESSURE_{pressure}"
+                )
+            position = structure.get("horse_historical_position")
+            if isinstance(position, Mapping):
+                tendency = _text(position.get("tendency")).upper()
+                if tendency and tendency != "UNKNOWN":
+                    result["RACE_STRUCTURE"].add(
+                        f"POSITION_TENDENCY_{tendency}"
+                    )
+
+    return result
+
+
+def _pairwise_support_map(
+    pairwise: Mapping[str, object],
+) -> dict[int, set[int]]:
+    """Map preferred horses to directly beaten pairwise opponents."""
+    output: dict[int, set[int]] = {}
+    raw_comparisons = pairwise.get("comparisons")
+    if not isinstance(raw_comparisons, list):
+        return output
+
+    for raw_comparison in raw_comparisons:
+        if not isinstance(raw_comparison, Mapping):
+            continue
+        preferred_raw = raw_comparison.get("preferred_horse_no")
+        horse_a_raw = raw_comparison.get("horse_a")
+        horse_b_raw = raw_comparison.get("horse_b")
+        try:
+            preferred = int(preferred_raw)
+            horse_a = int(horse_a_raw)
+            horse_b = int(horse_b_raw)
+        except (TypeError, ValueError):
+            continue
+        if preferred == horse_a:
+            loser = horse_b
+        elif preferred == horse_b:
+            loser = horse_a
+        else:
+            continue
+        output.setdefault(preferred, set()).add(loser)
+
+    return output
+
+
+def _scenario_trace_maps(
+    scenario: Mapping[str, object],
+) -> tuple[dict[int, set[str]], dict[int, set[str]]]:
+    """Return per-horse scenario reason codes and adverse scenario IDs."""
+    reason_codes: dict[int, set[str]] = {}
+    adverse_ids: dict[int, set[str]] = {}
+
+    pairwise_ranks: dict[int, int] = {}
+    raw_sensitivity = scenario.get("horse_sensitivity")
+    if isinstance(raw_sensitivity, list):
+        for raw_item in raw_sensitivity:
+            if not isinstance(raw_item, Mapping):
+                continue
+            try:
+                horse_no = int(raw_item.get("horse_no"))
+                pairwise_rank = int(raw_item.get("pairwise_rank"))
+            except (TypeError, ValueError):
+                continue
+            pairwise_ranks[horse_no] = pairwise_rank
+            ranks = raw_item.get("scenario_ranks")
+            if isinstance(ranks, Mapping):
+                for scenario_id, raw_rank in ranks.items():
+                    try:
+                        rank = int(raw_rank)
+                    except (TypeError, ValueError):
+                        continue
+                    if rank > pairwise_rank:
+                        adverse_ids.setdefault(horse_no, set()).add(
+                            _text(scenario_id).upper()
+                        )
+
+    raw_scenarios = scenario.get("scenarios")
+    if isinstance(raw_scenarios, list):
+        for raw_scenario in raw_scenarios:
+            if not isinstance(raw_scenario, Mapping):
+                continue
+            scenario_id = _text(
+                raw_scenario.get("scenario_id")
+            ).upper()
+            raw_codes = raw_scenario.get("key_reason_codes")
+            codes = []
+            if isinstance(raw_codes, list):
+                codes = [
+                    _text(raw_code)
+                    for raw_code in raw_codes
+                    if _text(raw_code)
+                ]
+            raw_order = raw_scenario.get("order")
+            if not isinstance(raw_order, list):
+                continue
+            for raw_horse_no in raw_order:
+                try:
+                    horse_no = int(raw_horse_no)
+                except (TypeError, ValueError):
+                    continue
+                if scenario_id:
+                    reason_codes.setdefault(horse_no, set()).add(
+                        f"SCENARIO_{scenario_id}"
+                    )
+                reason_codes.setdefault(horse_no, set()).update(codes)
+
+    return reason_codes, adverse_ids
+
+
+def _trace_reason(
+    raw: object,
+    field: str,
+    allowed_codes: Mapping[str, set[str]],
+    *,
+    allow_none: bool,
+) -> dict[str, object]:
+    """Validate one primary/secondary/concern trace reason."""
+    item = _mapping(raw, field)
+    lane = _text(item.get("lane")).upper()
+    if lane not in TRACE_LANES:
+        raise ForecastGen03Error(f"{field}.lane is invalid")
+    if lane == "NONE" and not allow_none:
+        raise ForecastGen03Error(f"{field}.lane cannot be NONE")
+
+    raw_codes = _list(
+        item.get("evidence_codes"),
+        f"{field}.evidence_codes",
+    )
+    codes: list[str] = []
+    for raw_code in raw_codes:
+        code = _text(raw_code)
+        if code and code not in codes:
+            codes.append(code)
+
+    if lane == "NONE":
+        if codes:
+            raise ForecastGen03Error(
+                f"{field} NONE lane must have no evidence codes"
+            )
+        return {
+            "lane": "NONE",
+            "evidence_codes": [],
+        }
+
+    if not codes:
+        raise ForecastGen03Error(
+            f"{field} requires at least one evidence code"
+        )
+
+    permitted = allowed_codes.get(lane, set())
+    unknown = [
+        code
+        for code in codes
+        if code not in permitted
+    ]
+    if unknown:
+        raise ForecastGen03Error(
+            f"{field} references unavailable evidence codes: {unknown}"
+        )
+
+    return {
+        "lane": lane,
+        "evidence_codes": codes,
+    }
+
+
+def _decision_trace(
+    raw: object,
+    horse_no: int,
+    *,
+    general: Mapping[str, object],
+    pairwise_support: Mapping[int, set[int]],
+    scenario_codes: Mapping[int, set[str]],
+    scenario_risks: Mapping[int, set[str]],
+    edge: Mapping[str, object],
+    final_rank: int,
+    final_order: list[int],
+    pairwise_rank: int,
+) -> dict[str, object]:
+    """Validate evidence provenance for one authored Forecast reason set."""
+    trace = _mapping(
+        raw,
+        f"horse[{horse_no}].decision_trace",
+    )
+    if (
+        _text(trace.get("trace_version"))
+        != DECISION_TRACE_VERSION
+    ):
+        raise ForecastGen03Error(
+            f"horse[{horse_no}] decision trace version mismatch"
+        )
+
+    general_horse = _general_horse(general, horse_no)
+    allowed_codes = _general_trace_codes(general_horse)
+    allowed_codes["SCENARIO"] = set(
+        scenario_codes.get(horse_no, set())
+    )
+
+    actual_edge_ids = {
+        _text(match.get("edge_id"))
+        for match in edge.get("matches", [])
+        if isinstance(match, Mapping)
+        and _text(match.get("edge_id"))
+    }
+    allowed_codes["EDGE_PERFORMANCE"] = set(actual_edge_ids)
+    allowed_codes["MIXED"] = set().union(
+        *[
+            codes
+            for lane, codes in allowed_codes.items()
+            if lane not in {"MIXED", "NONE"}
+        ]
+    )
+
+    primary = _trace_reason(
+        trace.get("primary"),
+        f"horse[{horse_no}].decision_trace.primary",
+        allowed_codes,
+        allow_none=False,
+    )
+    secondary = _trace_reason(
+        trace.get("secondary"),
+        f"horse[{horse_no}].decision_trace.secondary",
+        allowed_codes,
+        allow_none=True,
+    )
+    concern = _trace_reason(
+        trace.get("concern"),
+        f"horse[{horse_no}].decision_trace.concern",
+        allowed_codes,
+        allow_none=False,
+    )
+
+    raw_pairwise = _list(
+        trace.get("pairwise_support_horse_nos"),
+        f"horse[{horse_no}].decision_trace.pairwise_support_horse_nos",
+    )
+    pairwise_horses: list[int] = []
+    actual_support = pairwise_support.get(horse_no, set())
+    for raw_opponent in raw_pairwise:
+        opponent = _positive_int(
+            raw_opponent,
+            f"horse[{horse_no}].decision_trace.pairwise_support_horse_nos",
+        )
+        if opponent not in actual_support:
+            raise ForecastGen03Error(
+                f"horse[{horse_no}] trace references unsupported pairwise win "
+                f"over horse_no={opponent}"
+            )
+        if opponent not in pairwise_horses:
+            pairwise_horses.append(opponent)
+
+    if (
+        final_rank == 1
+        and pairwise_rank == 1
+        and len(final_order) >= 2
+    ):
+        runner_up = int(final_order[1])
+        if runner_up not in pairwise_horses:
+            raise ForecastGen03Error(
+                "Pairwise axis retained at rank 1 must cite direct "
+                "Pairwise support against final rank 2"
+            )
+
+    raw_risks = _list(
+        trace.get("scenario_risk_ids"),
+        f"horse[{horse_no}].decision_trace.scenario_risk_ids",
+    )
+    risks: list[str] = []
+    actual_risks = scenario_risks.get(horse_no, set())
+    for raw_risk in raw_risks:
+        risk = _text(raw_risk).upper()
+        if risk and risk not in risks:
+            risks.append(risk)
+    if set(risks) != set(actual_risks):
+        raise ForecastGen03Error(
+            f"horse[{horse_no}] scenario_risk_ids must match derived risks "
+            f"{sorted(actual_risks)}"
+        )
+
+    raw_edge_ids = _list(
+        trace.get("edge_ids"),
+        f"horse[{horse_no}].decision_trace.edge_ids",
+    )
+    edge_ids: list[str] = []
+    for raw_edge_id in raw_edge_ids:
+        edge_id = _text(raw_edge_id)
+        if edge_id and edge_id not in edge_ids:
+            edge_ids.append(edge_id)
+    if not set(edge_ids).issubset(actual_edge_ids):
+        raise ForecastGen03Error(
+            f"horse[{horse_no}] decision trace has unknown Edge IDs"
+        )
+    if edge.get("status") == "USED" and not edge_ids:
+        raise ForecastGen03Error(
+            f"horse[{horse_no}] used Edge evidence but trace has no edge_ids"
+        )
+
+    raw_comment_codes = _list(
+        trace.get("comment_evidence_codes"),
+        f"horse[{horse_no}].decision_trace.comment_evidence_codes",
+    )
+    comment_codes: list[str] = []
+    trace_codes = set(
+        primary["evidence_codes"]
+        + secondary["evidence_codes"]
+        + concern["evidence_codes"]
+        + edge_ids
+    )
+    for raw_code in raw_comment_codes:
+        code = _text(raw_code)
+        if code and code not in comment_codes:
+            comment_codes.append(code)
+    if not set(comment_codes).issubset(trace_codes):
+        raise ForecastGen03Error(
+            f"horse[{horse_no}] comment evidence must be a subset "
+            "of traced decision evidence"
+        )
+
+    return {
+        "trace_version": DECISION_TRACE_VERSION,
+        "primary": primary,
+        "secondary": secondary,
+        "concern": concern,
+        "pairwise_support_horse_nos": pairwise_horses,
+        "scenario_risk_ids": risks,
+        "edge_ids": edge_ids,
+        "comment_evidence_codes": comment_codes,
+        "short_comment_status": "SOURCE_READY",
+    }
+
+
 def _horse(
     raw: object,
     index: int,
@@ -330,6 +802,9 @@ def _horse(
         "why_above_next": _text(horse.get("why_above_next")),
         "scenario_adjustment_reason": scenario_reason,
         "edge_performance": edge,
+        "decision_trace": copy.deepcopy(
+            horse.get("decision_trace")
+        ),
     }
 
 
@@ -431,6 +906,25 @@ def validate_forecast(
     if set(final_rank_map.values()) != expected_ranks:
         raise ForecastGen03Error("final ranks must be contiguous")
 
+    pairwise_support = _pairwise_support_map(pairwise)
+    scenario_codes, scenario_risks = _scenario_trace_maps(
+        scenario
+    )
+    for horse in horses:
+        horse_no = int(horse["horse_no"])
+        horse["decision_trace"] = _decision_trace(
+            horse.get("decision_trace"),
+            horse_no,
+            general=general,
+            pairwise_support=pairwise_support,
+            scenario_codes=scenario_codes,
+            scenario_risks=scenario_risks,
+            edge=horse["edge_performance"],
+            final_rank=int(horse["final_rank"]),
+            final_order=final_order,
+            pairwise_rank=pairwise_order.index(horse_no) + 1,
+        )
+
     pairwise_rank = {horse_no: rank for rank, horse_no in enumerate(pairwise_order, 1)}
     for horse in horses:
         horse_no = int(horse["horse_no"])
@@ -474,6 +968,36 @@ def validate_forecast(
             raise ForecastGen03Error("primary_reason required")
         if not _text(horse.get("main_concern")):
             raise ForecastGen03Error("main_concern required")
+        trace = _mapping(
+            horse.get("decision_trace"),
+            "horse.decision_trace",
+        )
+        if (
+            _text(horse.get("secondary_support"))
+            and trace.get("secondary", {}).get("lane") == "NONE"
+        ):
+            raise ForecastGen03Error(
+                "secondary_support prose requires traced secondary evidence"
+            )
+        if (
+            _text(horse.get("why_above_next"))
+            and int(horse["final_rank"]) < len(horses)
+        ):
+            next_horse_no = int(
+                final_order[int(horse["final_rank"])]
+            )
+            pairwise_support_nos = set(
+                trace.get("pairwise_support_horse_nos", [])
+            )
+            edge_ids = trace.get("edge_ids", [])
+            if (
+                next_horse_no not in pairwise_support_nos
+                and not edge_ids
+            ):
+                raise ForecastGen03Error(
+                    "why_above_next requires direct Pairwise support "
+                    "against the next horse or traced Edge evidence"
+                )
 
     created_at = _text(payload.get("forecast_created_at"))
     _datetime(created_at, "forecast_created_at")

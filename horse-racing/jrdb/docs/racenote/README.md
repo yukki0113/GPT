@@ -146,6 +146,16 @@ It tests SLOW / MEDIUM / FAST pace scenarios, derives whether the Pairwise
 axis is ROBUST / CONDITIONAL / FRAGILE, and records horse-by-horse rank
 sensitivity without automatically replacing the Pairwise order.
 
+Forecast reason provenance is enforced by:
+
+- `docs/racenote/DECISION_TRACE_v0_1.md`
+- `RaceNote-Decision-Trace-0.1` embedded per Forecast horse
+
+Primary / secondary / concern reasons may reference only evidence that exists in
+General Evidence, Pairwise, Scenario, or the actual Edge Performance overlay.
+Scenario risks cannot be omitted, and future short-comment evidence must be a
+subset of the traced Forecast evidence.
+
 The next-generation Forecast contract is now implemented:
 
 - `src/racenote_forecast_gen0_3.py`

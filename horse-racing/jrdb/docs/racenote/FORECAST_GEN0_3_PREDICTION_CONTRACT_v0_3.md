@@ -323,7 +323,34 @@ Open in this order:
 
 These layers may evaluate or price the frozen prediction but may not mutate it.
 
-## 15. Short comments
+## 15. Decision Trace
+
+Every Forecast horse must include
+`RaceNote-Decision-Trace-0.1`.
+
+It binds the authored Forecast reasons to actual upstream evidence:
+
+- primary evidence lane / codes
+- secondary evidence lane / codes
+- concern evidence lane / codes
+- direct Pairwise support
+- derived Scenario risk IDs
+- used Edge IDs
+- comment evidence codes
+
+Forecast rejects unknown evidence codes, hidden Scenario risks, unsupported
+Pairwise claims, and Edge use without an Edge ID trace.
+
+If `secondary_support` prose is non-empty, secondary trace must exist.
+If `why_above_next` prose is non-empty, direct Pairwise support against the
+next horse or traced Edge evidence is required.
+
+Decision Trace is part of the immutable Forecast hash.
+
+Canonical document:
+`docs/racenote/DECISION_TRACE_v0_1.md`.
+
+## 16. Short comments
 
 The future reader-facing comment should be derived from the same forecast
 record:
@@ -341,7 +368,7 @@ Example:
 
 No unrelated post-hoc reason should be generated after the result.
 
-## 16. Activation gate
+## 17. Activation gate
 
 Implementation does not itself activate Gen0-G001.
 
@@ -354,14 +381,14 @@ Before activation:
 5. run formal pre-result Freeze;
 6. keep Gen0-G000 immutable.
 
-## 17. Canonical assets
+## 18. Canonical assets
 
 - src/racenote_racereview_current.py
 - src/racenote_racereview_adapter.py
 - src/racenote_general_evidence.py
 - src/racenote_pairwise_comparison.py
 - src/racenote_scenario_robustness.py
-- src/racenote_forecast_gen0_3.py
+- src/racenote_forecast_gen0_3.py\n- docs/racenote/DECISION_TRACE_v0_1.md
 - schema/racenote_general_evidence_schema_v0_1.json
 - schema/racenote_pairwise_comparison_schema_v0_1.json
 - schema/racenote_scenario_robustness_schema_v0_1.json

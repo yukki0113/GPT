@@ -21,6 +21,83 @@ from racenote_forecast_gen0_3 import (  # noqa: E402
 )
 
 
+def _general_horse(
+    horse_no: int,
+    name: str,
+) -> dict[str, object]:
+    return {
+        "horse_no": horse_no,
+        "horse_name": name,
+        "horse_id": f"H{horse_no}",
+        "evidence_lanes": {
+            "data_trend": {
+                "horse_history": {
+                    "observations": [
+                        {
+                            "code": "SAME_DISTANCE",
+                            "direction": "POSITIVE",
+                            "sample_size_band": "small",
+                            "redundancy_group_id": "DISTANCE",
+                        }
+                    ]
+                },
+                "population_context": {
+                    "frame": {
+                        "code": "FRAME_TREND",
+                        "status": "AVAILABLE",
+                    },
+                    "sire": {
+                        "code": "SIRE_TREND",
+                        "status": "AVAILABLE",
+                    },
+                    "jockey": {
+                        "code": "JOCKEY_TREND",
+                        "status": "AVAILABLE",
+                    },
+                },
+            },
+            "racereview": {
+                "primary_positive": [
+                    {
+                        "code": "RESULT_UNDERRATES_TIME",
+                    }
+                ],
+                "supporting_positive": [],
+                "concerns": [],
+                "mixed_context": [],
+                "profile": {
+                    "hidden_strength": {
+                        "reason_codes": [
+                            "RESULT_UNDERRATES_TIME"
+                        ]
+                    },
+                    "fragile_form": {
+                        "reason_codes": []
+                    },
+                },
+                "uncertainties": [],
+            },
+            "ability_anchor": {
+                "profile": {
+                    "latest": 60.0,
+                    "peak": 62.0,
+                    "typical_median": 59.0,
+                    "minimum": 55.0,
+                    "mad": 2.0,
+                }
+            },
+        },
+        "prediction_interpretation": {
+            "race_structure": {
+                "pace_pressure": "MEDIUM",
+                "horse_historical_position": {
+                    "tendency": "FORWARD",
+                },
+            }
+        },
+    }
+
+
 def _general() -> dict[str, object]:
     return {
         "general_schema_version": "RaceNote-General-Evidence-0.1",
@@ -58,9 +135,9 @@ def _general() -> dict[str, object]:
             "policy": {},
         },
         "horses": [
-            {"horse_no": 1, "horse_name": "A"},
-            {"horse_no": 2, "horse_name": "B"},
-            {"horse_no": 3, "horse_name": "C"},
+            _general_horse(1, "A"),
+            _general_horse(2, "B"),
+            _general_horse(3, "C"),
         ],
         "next_stage": {
             "name": "PAIRWISE_COMPARISON",
@@ -88,6 +165,23 @@ def _pairwise(general: dict[str, object]) -> dict[str, object]:
             "training_edge_visible": False,
         },
         "final_order": [1, 2, 3],
+        "comparisons": [
+            {
+                "horse_a": 1,
+                "horse_b": 2,
+                "preferred_horse_no": 1,
+            },
+            {
+                "horse_a": 2,
+                "horse_b": 3,
+                "preferred_horse_no": 2,
+            },
+            {
+                "horse_a": 1,
+                "horse_b": 3,
+                "preferred_horse_no": 1,
+            },
+        ],
     }
 
 
@@ -101,7 +195,52 @@ def _scenario(
         "target": copy.deepcopy(pairwise["target"]),
         "axis_robustness": "ROBUST",
         "pairwise_recheck_recommended": False,
-        "scenarios": [],
+        "horse_sensitivity": [
+            {
+                "horse_no": 1,
+                "pairwise_rank": 1,
+                "scenario_ranks": {
+                    "SLOW": 1,
+                    "MEDIUM": 1,
+                    "FAST": 1,
+                },
+            },
+            {
+                "horse_no": 2,
+                "pairwise_rank": 2,
+                "scenario_ranks": {
+                    "SLOW": 2,
+                    "MEDIUM": 2,
+                    "FAST": 2,
+                },
+            },
+            {
+                "horse_no": 3,
+                "pairwise_rank": 3,
+                "scenario_ranks": {
+                    "SLOW": 3,
+                    "MEDIUM": 3,
+                    "FAST": 3,
+                },
+            },
+        ],
+        "scenarios": [
+            {
+                "scenario_id": "SLOW",
+                "order": [1, 2, 3],
+                "key_reason_codes": ["PACE_SLOW"],
+            },
+            {
+                "scenario_id": "MEDIUM",
+                "order": [1, 2, 3],
+                "key_reason_codes": ["PACE_MEDIUM"],
+            },
+            {
+                "scenario_id": "FAST",
+                "order": [1, 2, 3],
+                "key_reason_codes": ["PACE_FAST"],
+            },
+        ],
     }
 
 
@@ -161,6 +300,35 @@ def _horse(
         "why_above_next": "条件Evidenceで一歩上。",
         "scenario_adjustment_reason": "",
         "edge_performance": _edge_none(),
+        "decision_trace": {
+            "trace_version": "RaceNote-Decision-Trace-0.1",
+            "primary": {
+                "lane": "DATA_TREND",
+                "evidence_codes": ["SAME_DISTANCE"],
+            },
+            "secondary": {
+                "lane": "RACEREVIEW",
+                "evidence_codes": [
+                    "RESULT_UNDERRATES_TIME"
+                ],
+            },
+            "concern": {
+                "lane": "SCENARIO",
+                "evidence_codes": ["SCENARIO_FAST"],
+            },
+            "pairwise_support_horse_nos": (
+                [2] if horse_no == 1
+                else [3] if horse_no == 2
+                else []
+            ),
+            "scenario_risk_ids": [],
+            "edge_ids": [],
+            "comment_evidence_codes": [
+                "SAME_DISTANCE",
+                "RESULT_UNDERRATES_TIME",
+                "SCENARIO_FAST",
+            ],
+        },
     }
 
 
@@ -209,6 +377,18 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
         self.assertEqual(result["pairwise_order"], [1, 2, 3])
         self.assertEqual(result["scenario_axis_robustness"], "ROBUST")
         self.assertFalse(result["firewall"]["edge_value_visible"])
+        self.assertEqual(
+            result["horses"][0]["decision_trace"][
+                "short_comment_status"
+            ],
+            "SOURCE_READY",
+        )
+        self.assertEqual(
+            result["horses"][0]["decision_trace"]["primary"][
+                "evidence_codes"
+            ],
+            ["SAME_DISTANCE"],
+        )
         self.assertEqual(
             result["post_freeze_open_order"],
             [
@@ -279,6 +459,78 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
                 payload,
             )
 
+    def test_unknown_decision_evidence_code_fails_closed(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["decision_trace"]["primary"][
+            "evidence_codes"
+        ] = ["NOT_REAL_EVIDENCE"]
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
+    def test_axis_trace_requires_direct_pairwise_support_vs_runner_up(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["decision_trace"][
+            "pairwise_support_horse_nos"
+        ] = [3]
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
+    def test_scenario_risk_trace_must_match_actual_rank_drop(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        scenario["horse_sensitivity"][0]["scenario_ranks"][
+            "FAST"
+        ] = 2
+        scenario["scenarios"][2]["order"] = [2, 1, 3]
+        payload = _payload(general, pairwise, scenario)
+        payload["source_chain"]["scenario_audit_sha256"] = semantic_sha256(
+            scenario
+        )
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
+    def test_comment_evidence_must_be_subset_of_decision_trace(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["decision_trace"][
+            "comment_evidence_codes"
+        ].append("ABILITY_PEAK")
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
     def test_edge_performance_can_justify_final_rank_change(self) -> None:
         general = _general()
         pairwise = _pairwise(general)
@@ -289,10 +541,12 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
         payload["horses"][0]["mark"] = "○"
         payload["horses"][0]["p_win_final"] = 0.35
         payload["horses"][0]["edge_performance"] = _edge_positive("E-A")
+        payload["horses"][0]["decision_trace"]["edge_ids"] = ["E-A"]
         payload["horses"][1]["final_rank"] = 1
         payload["horses"][1]["mark"] = "◎"
         payload["horses"][1]["p_win_final"] = 0.45
         payload["horses"][1]["edge_performance"] = _edge_positive("E-B")
+        payload["horses"][1]["decision_trace"]["edge_ids"] = ["E-B"]
         payload["horses"][2]["p_win_final"] = 0.20
 
         result = validate_forecast(
@@ -302,6 +556,21 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
             payload,
         )
         self.assertEqual(result["final_order"], [2, 1, 3])
+
+    def test_used_edge_requires_edge_id_in_decision_trace(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["edge_performance"] = _edge_positive("E1")
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
 
     def test_pairwise_rank_change_to_base_requires_scenario_reason(self) -> None:
         general = _general()
