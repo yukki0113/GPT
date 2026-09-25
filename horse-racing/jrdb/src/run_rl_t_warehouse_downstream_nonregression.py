@@ -48,7 +48,6 @@ def _pipeline(
     index_db: Path,
     root: Path,
     source_git_commit: str,
-    expected_fingerprint: Path,
     environment: dict[str, str],
     log_handle: Any,
 ) -> dict[str, Path]:
@@ -153,8 +152,6 @@ def _pipeline(
             str(edge_input),
             "--out",
             str(fingerprint),
-            "--expected",
-            str(expected_fingerprint),
         ],
         environment,
         log_handle,
@@ -167,6 +164,32 @@ def _pipeline(
         "stage1b": stage1b,
         "edge_input": edge_input,
         "fingerprint": fingerprint,
+    }
+
+
+def _expected_fingerprint_compare(actual_path: Path, expected_path: Path) -> dict[str, Any]:
+    """Compare one produced fingerprint with the frozen operational contract."""
+    fields = (
+        "core_version",
+        "training_period",
+        "training_eligible_n",
+        "training_semantic_sha256",
+        "prediction_normalization_decimals",
+        "c_training_prediction_sha256",
+        "cab_training_prediction_sha256",
+        "runtime_packages",
+    )
+    actual = json.loads(actual_path.read_text(encoding="utf-8"))
+    expected = json.loads(expected_path.read_text(encoding="utf-8"))
+    differences = {
+        field: {"actual": actual.get(field), "expected": expected.get(field)}
+        for field in fields
+        if actual.get(field) != expected.get(field)
+    }
+    return {
+        "pass": not differences,
+        "differences": differences,
+        "actual": {field: actual.get(field) for field in fields},
     }
 
 
@@ -238,7 +261,6 @@ def main() -> int:
             raw_index,
             args.work_root,
             args.source_git_commit,
-            args.expected_fingerprint,
             environment,
             log_handle,
         )
@@ -247,7 +269,6 @@ def main() -> int:
             warehouse_index,
             args.work_root,
             args.source_git_commit,
-            args.expected_fingerprint,
             environment,
             log_handle,
         )
@@ -288,14 +309,29 @@ def main() -> int:
         )
 
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    raw_expected = _expected_fingerprint_compare(
+        raw_outputs["fingerprint"],
+        args.expected_fingerprint,
+    )
+    warehouse_expected = _expected_fingerprint_compare(
+        warehouse_outputs["fingerprint"],
+        args.expected_fingerprint,
+    )
+    overall_pass = (
+        audit.get("status") == "PASS"
+        and raw_expected["pass"]
+        and warehouse_expected["pass"]
+    )
     result = {
-        "status": audit.get("status"),
+        "status": "PASS" if overall_pass else "FAIL",
         "years": [2010, 2025],
         "source_mode_raw": "legacy_raw_audit_only",
         "source_mode_warehouse": "accepted_historical_warehouse",
         "warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
         "record_hash_compatibility": "legacy_body_sha256_sidecar",
         "downstream_audit": audit,
+        "raw_expected_fingerprint": raw_expected,
+        "warehouse_expected_fingerprint": warehouse_expected,
         "expected_fingerprint": str(args.expected_fingerprint),
         "log": str(log_path),
     }
