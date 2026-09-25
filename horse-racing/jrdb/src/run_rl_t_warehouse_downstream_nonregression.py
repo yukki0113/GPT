@@ -59,6 +59,8 @@ def _pipeline(
     training_result = root / f"{label}_training_research_result.json"
     stage1b = root / f"{label}_stage1b.json"
     stage1b_md = root / f"{label}_stage1b.md"
+    edge_input = root / f"{label}_training_edge_input.sqlite"
+    edge_input_result = root / f"{label}_training_edge_input_result.json"
     fingerprint = root / f"{label}_fingerprint.json"
 
     _run(
@@ -124,9 +126,31 @@ def _pipeline(
     _run(
         [
             "python",
+            "horse-racing/jrdb/src/project_training_edge_v0_2_input.py",
+            "--index-db",
+            str(index_db),
+            "--official-db",
+            str(official),
+            "--out",
+            str(edge_input),
+            "--from-year",
+            "2010",
+            "--to-year",
+            "2025",
+            "--source-git-commit",
+            source_git_commit,
+            "--result-json",
+            str(edge_input_result),
+        ],
+        environment,
+        log_handle,
+    )
+    _run(
+        [
+            "python",
             "horse-racing/jrdb/src/fingerprint_training_edge_v0_2_runtime.py",
             "--input-db",
-            str(training),
+            str(edge_input),
             "--out",
             str(fingerprint),
             "--expected",
@@ -141,6 +165,7 @@ def _pipeline(
         "official": official,
         "training": training,
         "stage1b": stage1b,
+        "edge_input": edge_input,
         "fingerprint": fingerprint,
     }
 
