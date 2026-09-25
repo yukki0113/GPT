@@ -1,0 +1,279 @@
+name: JRDB Edge v0.3 Stage-D operational replay via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  replay:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V03_OPERATIONAL_REPLAY]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          historical=req.get('historical_artifacts')
+          replay=req.get('replay')
+          stage_c=req.get('stage_c')
+          if not isinstance(historical,list) or len(historical)!=2:
+              raise SystemExit('historical_artifacts must contain exactly 20260912 and 20260913')
+          if not isinstance(replay,dict) or not isinstance(stage_c,dict):
+              raise SystemExit('replay and stage_c must be objects')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          dates=[]
+          for item in historical:
+              required={'date','run_id','artifact_name','facts_sha256','matches_sha256'}
+              missing=sorted(required-set(item))
+              if missing: raise SystemExit(f'historical item missing {missing}')
+              dates.append(str(item['date']))
+              for field in ('facts_sha256','matches_sha256'):
+                  if not sha_re.fullmatch(str(item[field]).lower()):
+                      raise SystemExit(f'invalid historical {field}')
+          if sorted(dates)!=['20260912','20260913']:
+              raise SystemExit(f'unexpected historical dates: {dates}')
+          required={
+              'date','paci_drive_file_id','paci_sha256',
+              'analysis_bundle_drive_file_id','analysis_generation_id','analysis_manifest_sha256',
+              'v02_run_id','v02_artifact_name','v02_catalog_sha256'
+          }
+          missing=sorted(required-set(replay))
+          if missing: raise SystemExit(f'replay missing {missing}')
+          if str(replay['date'])!='20260919':
+              raise SystemExit('replay date must be 20260919')
+          for field in ('paci_sha256','analysis_manifest_sha256','v02_catalog_sha256'):
+              if not sha_re.fullmatch(str(replay[field]).lower()):
+                  raise SystemExit(f'invalid replay {field}')
+          required={'run_id','artifact_name','catalog_sha256','summary_sha256'}
+          missing=sorted(required-set(stage_c))
+          if missing: raise SystemExit(f'stage_c missing {missing}')
+          for field in ('catalog_sha256','summary_sha256'):
+              if not sha_re.fullmatch(str(stage_c[field]).lower()):
+                  raise SystemExit(f'invalid stage_c {field}')
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Install dependencies and focused tests
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python -m pytest -q \
+            horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_operational_replay.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py
+
+      - name: Download frozen 20260912 and 20260913 facts and v0.2 matches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/replay
+          python - <<'PY'
+          import hashlib, json, os, shutil, subprocess
+          from pathlib import Path
+          req=json.load(open('/tmp/request.json'))
+          for item in req['historical_artifacts']:
+              date=str(item['date'])
+              root=Path('/tmp')/f'artifact-{date}'
+              root.mkdir(parents=True,exist_ok=True)
+              subprocess.run([
+                  'gh','run','download',str(item['run_id']),
+                  '--repo',os.environ['GITHUB_REPOSITORY'],
+                  '--name',str(item['artifact_name']),'--dir',str(root),
+              ],check=True)
+              facts=list(root.rglob('current_facts.jsonl'))
+              matches=list(root.rglob('edge_matches.jsonl'))
+              if len(facts)!=1 or len(matches)!=1:
+                  raise SystemExit(f'{date}: expected one facts and one matches file')
+              for path,field in ((facts[0],'facts_sha256'),(matches[0],'matches_sha256')):
+                  digest=hashlib.sha256(path.read_bytes()).hexdigest()
+                  if digest!=str(item[field]).lower():
+                      raise SystemExit(f'{date}: {field} mismatch expected={item[field]} actual={digest}')
+              shutil.copy2(facts[0],Path('/tmp/replay')/f'{date}-facts.jsonl')
+              shutil.copy2(matches[0],Path('/tmp/replay')/f'{date}-v02.jsonl')
+          PY
+
+      - name: Reconstruct result-free 20260919 Current Facts and v0.2 matches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, subprocess, tarfile
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          req=json.load(open('/tmp/request.json'))['replay']
+          def drive(file_id: str, out: Path):
+              url=f'https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t'
+              subprocess.run(['curl','--fail','--location','--retry','3',url,'--output',str(out)],check=True)
+          paci=Path('/tmp/replay-paci.zip')
+          drive(str(req['paci_drive_file_id']),paci)
+          paci_sha=hashlib.sha256(paci.read_bytes()).hexdigest()
+          if paci_sha!=str(req['paci_sha256']).lower():
+              raise SystemExit(f'PACI SHA mismatch: {paci_sha}')
+          bundle=Path('/tmp/analysis-parquet-current.tar.xz')
+          drive(str(req['analysis_bundle_drive_file_id']),bundle)
+          root=Path('/tmp/analysis_parquet')
+          root.mkdir(parents=True,exist_ok=True)
+          with tarfile.open(bundle,'r:xz') as archive:
+              for member in archive.getmembers():
+                  target=(root/member.name).resolve()
+                  if root.resolve() not in (target,*target.parents):
+                      raise SystemExit(f'unsafe tar member: {member.name}')
+              archive.extractall(root)
+          report=resolve_current(root)
+          if report['generation_id']!=req['analysis_generation_id']:
+              raise SystemExit('Analysis generation mismatch')
+          manifest=Path(report['manifest'])
+          manifest_sha=hashlib.sha256(manifest.read_bytes()).hexdigest()
+          if manifest_sha!=str(req['analysis_manifest_sha256']).lower():
+              raise SystemExit('Analysis manifest SHA mismatch')
+          pub=Path('/tmp/v02-publication'); pub.mkdir(exist_ok=True)
+          subprocess.run([
+              'gh','run','download',str(req['v02_run_id']),
+              '--repo',os.environ['GITHUB_REPOSITORY'],
+              '--name',str(req['v02_artifact_name']),'--dir',str(pub),
+          ],check=True)
+          catalogs=list(pub.rglob('edge_serving_catalog_v0_2.jsonl'))
+          if len(catalogs)!=1: raise SystemExit('expected one v0.2 catalog')
+          catalog=Path('/tmp/v02_catalog.jsonl'); catalog.write_bytes(catalogs[0].read_bytes())
+          digest=hashlib.sha256(catalog.read_bytes()).hexdigest()
+          if digest!=str(req['v02_catalog_sha256']).lower():
+              raise SystemExit('v0.2 catalog SHA mismatch')
+          PY
+          python horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py \
+            --paci /tmp/replay-paci.zip \
+            --analysis-root /tmp/analysis_parquet \
+            --registry-jsonl /tmp/v02_catalog.jsonl \
+            --serving-profile STANDARD \
+            --output-jsonl /tmp/replay/20260919-v02.jsonl \
+            --facts-jsonl /tmp/replay/20260919-facts.jsonl \
+            --audit-json /tmp/replay/20260919-v02-audit.json
+
+      - name: Download and verify Stage-C shadow catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, shutil, subprocess
+          from pathlib import Path
+          req=json.load(open('/tmp/request.json'))['stage_c']
+          root=Path('/tmp/stage-c'); root.mkdir(exist_ok=True)
+          subprocess.run([
+              'gh','run','download',str(req['run_id']),
+              '--repo',os.environ['GITHUB_REPOSITORY'],
+              '--name',str(req['artifact_name']),'--dir',str(root),
+          ],check=True)
+          catalogs=list(root.rglob('edge_serving_catalog_v0_3_shadow.jsonl'))
+          summaries=list(root.rglob('summary.json'))
+          if len(catalogs)!=1 or len(summaries)!=1:
+              raise SystemExit('Stage-C artifact files missing/ambiguous')
+          for path,field in ((catalogs[0],'catalog_sha256'),(summaries[0],'summary_sha256')):
+              digest=hashlib.sha256(path.read_bytes()).hexdigest()
+              if digest!=str(req[field]).lower():
+                  raise SystemExit(f'Stage-C {field} mismatch expected={req[field]} actual={digest}')
+          summary=json.load(open(summaries[0]))
+          if summary.get('status')!='PASS' or summary.get('mode')!='SHADOW_ONLY':
+              raise SystemExit('Stage-C summary contract mismatch')
+          if summary.get('production_serving_changed') is not False:
+              raise SystemExit('Stage-C production protection mismatch')
+          shutil.copy2(catalogs[0],'/tmp/replay/v03-shadow-catalog.jsonl')
+          shutil.copy2(summaries[0],'/tmp/replay/stage-c-summary.json')
+          PY
+
+      - name: Run Stage-D operational replay
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/audit
+          python horse-racing/jrdb/src/audit_jrdb_edge_v03_operational_replay.py \
+            --day '20260912|/tmp/replay/20260912-facts.jsonl|/tmp/replay/20260912-v02.jsonl' \
+            --day '20260913|/tmp/replay/20260913-facts.jsonl|/tmp/replay/20260913-v02.jsonl' \
+            --day '20260919|/tmp/replay/20260919-facts.jsonl|/tmp/replay/20260919-v02.jsonl' \
+            --shadow-catalog /tmp/replay/v03-shadow-catalog.jsonl \
+            --output-matches /tmp/audit/v03_shadow_matches.jsonl \
+            --output-summary /tmp/audit/summary.json
+          cp /tmp/request.json /tmp/audit/request.json
+          cp /tmp/replay/stage-c-summary.json /tmp/audit/stage-c-summary.json
+          cp /tmp/replay/20260919-v02-audit.json /tmp/audit/20260919-v02-audit.json
+
+      - name: Upload Stage-D replay audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v03-operational-replay-${{ github.run_id }}
+          path: /tmp/audit/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          r=json.load(open('/tmp/audit/summary.json'))
+          compact={
+              'status':r['status'],'stage':r['stage'],'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-v03-operational-replay-{os.environ['RUN_ID']}",
+              'days':r['days'],'v02':r['v02'],'v03':r['v03'],'delta':r['delta'],
+              'context_absorption':r['context_absorption'],
+              'mode':'SHADOW_ONLY','production_serving_changed':False,
+          }
+          body='JRDB_EDGE_V03_OPERATIONAL_REPLAY_RESULT\n'+json.dumps(
+              compact,ensure_ascii=False,indent=2,sort_keys=True
+          )
+          subprocess.run([
+              'gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',
+              os.environ['GITHUB_REPOSITORY'],'--body',body
+          ],check=True)
+          subprocess.run([
+              'gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',
+              os.environ['GITHUB_REPOSITORY'],'--reason','completed'
+          ],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge v0.3 Stage-D operational replay failed. v0.2 STANDARD production serving was not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
