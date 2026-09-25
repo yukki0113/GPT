@@ -91,7 +91,27 @@ DATA_TREND includes:
 
 Simple ability is retained as an anchor only and cannot auto-rank horses.
 
-## 5. Independent Race Structure
+## 5. Prediction Interpretation
+
+Before Pairwise, each runner receives `PredictionInterpretation-v0.1`.
+
+The profile organizes, without scoring:
+
+- DATA_TREND direction and sample size;
+- redundant trend families;
+- Race Structure context;
+- RaceReview hidden-strength / fragile-form / contradiction;
+- RaceReview repeatability and exact target-condition overlap;
+- Ability Anchor as floor / ceiling context;
+- positive / concern case components.
+
+Pairwise reads this profile first, then verifies raw Evidence lanes.
+Interpretation itself cannot create final rank, mark or probability.
+
+Canonical document:
+`docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`.
+
+## 6. Independent Race Structure
 
 Race Structure is reconstructed only from historical pre-race-visible evidence.
 
@@ -141,7 +161,7 @@ Every pair records:
 If lower-priority evidence overrides protected higher-priority evidence, an
 explicit override reason is required.
 
-## 7. Scenario Robustness
+## 8. Scenario Robustness
 
 Scenario Robustness v0.1 requires:
 
@@ -163,7 +183,7 @@ Scenario order does not mechanically replace Pairwise order.
 Any base-rank change relative to Pairwise must have a scenario adjustment
 reason.
 
-## 8. Base Forecast
+## 9. Base Forecast
 
 Base Forecast is the independent forecast before EdgeDB.
 
@@ -191,7 +211,7 @@ Validation checks:
 - firewall
 - Pairwise / Scenario consistency
 
-## 9. EdgeDB performance overlay
+## 10. EdgeDB performance overlay
 
 Only EdgeDB performance evidence may alter the Base Forecast.
 
@@ -231,7 +251,7 @@ performance evidence and an explicit adjustment reason.
 Edge count is not a score. Redundant Edge matches must not act as independent
 votes.
 
-## 10. Final Forecast
+## 11. Final Forecast
 
 Every runner stores:
 
@@ -261,7 +281,7 @@ Validation requires:
 
 Marks are not a betting rule.
 
-## 11. Freeze
+## 12. Freeze
 
 Forecast must freeze before current consensus/market/value is opened.
 
@@ -276,7 +296,7 @@ A frozen forecast is re-hashable.
 
 Post-Freeze layers may open only when freeze audit PASSes.
 
-## 12. Firewall
+## 13. Firewall
 
 Before Freeze, Gen0.3 forbids:
 
@@ -291,7 +311,7 @@ Before Freeze, Gen0.3 forbids:
 Historical performance and historical race results are legitimate evidence when
 strictly prior to target date.
 
-## 13. Post-Freeze order
+## 14. Post-Freeze order
 
 Open in this order:
 
@@ -303,7 +323,7 @@ Open in this order:
 
 These layers may evaluate or price the frozen prediction but may not mutate it.
 
-## 14. Short comments
+## 15. Short comments
 
 The future reader-facing comment should be derived from the same forecast
 record:
@@ -321,7 +341,7 @@ Example:
 
 No unrelated post-hoc reason should be generated after the result.
 
-## 15. Activation gate
+## 16. Activation gate
 
 Implementation does not itself activate Gen0-G001.
 
@@ -334,7 +354,7 @@ Before activation:
 5. run formal pre-result Freeze;
 6. keep Gen0-G000 immutable.
 
-## 16. Canonical assets
+## 17. Canonical assets
 
 - src/racenote_racereview_current.py
 - src/racenote_racereview_adapter.py
