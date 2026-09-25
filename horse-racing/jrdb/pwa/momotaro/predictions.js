@@ -68,7 +68,7 @@ function collectRows(bundle) {
         type: "oji-review",
         source: "王子",
         source_order: 3,
-        signal: "回顧馬",
+        signal: "",
         mark: predictionText(oji.mark, ""),
         comment: predictionText(oji.comment, "")
       }));
