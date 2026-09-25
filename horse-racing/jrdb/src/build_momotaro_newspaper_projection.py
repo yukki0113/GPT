@@ -122,6 +122,7 @@ def load_predictions(
         member = MEMBER_ALIASES.get(member_raw)
         mark = str(row.get("mark") or "").strip()
         confidence = str(row.get("confidence") or "").strip()
+        tag = str(row.get("tag") or "").strip()
         comment = str(row.get("comment") or "").strip()
 
         try:
@@ -180,6 +181,7 @@ def load_predictions(
             "member": member,
             "mark": mark,
             "confidence": confidence,
+            "tag": tag,
             "review_horse": review_horse,
             "comment": comment,
         }
@@ -246,6 +248,7 @@ def project_horse(
         momotaro[member] = {
             "mark": row["mark"] or None,
             "confidence": row["confidence"] or None,
+            "tag": row["tag"] or None,
             "review_horse": row["review_horse"],
             "comment": row["comment"] or None,
         }
