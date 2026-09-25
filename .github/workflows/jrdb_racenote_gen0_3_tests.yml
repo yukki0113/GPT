@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'horse-racing/jrdb/src/racenote_racereview_current.py'
+      - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
@@ -14,6 +16,8 @@ on:
       - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_forecast_gen0_schema_v0_3.json'
       - 'horse-racing/jrdb/config/racenote_forecast_gen0_ledger_v0_3.json'
+      - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
+      - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
@@ -22,6 +26,8 @@ on:
       - '.github/workflows/jrdb_racenote_gen0_3_tests.yml'
   pull_request:
     paths:
+      - 'horse-racing/jrdb/src/racenote_racereview_current.py'
+      - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
@@ -32,6 +38,8 @@ on:
       - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_forecast_gen0_schema_v0_3.json'
       - 'horse-racing/jrdb/config/racenote_forecast_gen0_ledger_v0_3.json'
+      - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
+      - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
@@ -54,6 +62,8 @@ jobs:
       - name: Compile Gen0.3 modules
         working-directory: horse-racing/jrdb
         run: |
+          python -m py_compile src/racenote_racereview_current.py
+          python -m py_compile src/racenote_racereview_adapter.py
           python -m py_compile src/racenote_general_evidence.py
           python -m py_compile src/racenote_pairwise_comparison.py
           python -m py_compile src/racenote_scenario_robustness.py
