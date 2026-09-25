@@ -46,6 +46,12 @@ SAMPLE_BAND_ORDER = {
     "sufficient": 3,
 }
 
+RR_SURFACE_NAMES = {
+    "1": "芝",
+    "2": "ダート",
+    "3": "障害",
+}
+
 
 class GeneralEvidenceError(RuntimeError):
     """Raised when general RaceNote evidence cannot be built safely."""
@@ -532,12 +538,395 @@ def _ability_anchor(
     }
 
 
+def _trend_interpretation(
+    lane: Mapping[str, object],
+) -> dict[str, object]:
+    """Summarize directional trend evidence without creating a score."""
+    history = lane.get("horse_history")
+    observations: list[Mapping[str, object]] = []
+    if isinstance(history, Mapping):
+        raw = history.get("observations")
+        if isinstance(raw, list):
+            observations = [
+                item
+                for item in raw
+                if isinstance(item, Mapping)
+            ]
+
+    positive: list[dict[str, object]] = []
+    negative: list[dict[str, object]] = []
+    neutral: list[dict[str, object]] = []
+    unknown: list[dict[str, object]] = []
+    directional_bands: list[str] = []
+
+    for item in observations:
+        projected = {
+            "code": _text(item.get("code")),
+            "label": _text(item.get("label")),
+            "sample_size_band": _sample_band(item),
+            "delta_pp": copy.deepcopy(item.get("delta_pp")),
+        }
+        direction = _text(item.get("direction")).upper()
+        if direction == "POSITIVE":
+            positive.append(projected)
+            directional_bands.append(projected["sample_size_band"])
+        elif direction == "NEGATIVE":
+            negative.append(projected)
+            directional_bands.append(projected["sample_size_band"])
+        elif direction == "NEUTRAL":
+            neutral.append(projected)
+        else:
+            unknown.append(projected)
+
+    if positive and negative:
+        state = "MIXED"
+    elif positive:
+        state = "SUPPORTIVE"
+    elif negative:
+        state = "OPPOSED"
+    elif observations:
+        state = "NEUTRAL_OR_UNKNOWN"
+    else:
+        state = "INSUFFICIENT"
+
+    best_sample_band = "none"
+    if directional_bands:
+        best_sample_band = max(
+            directional_bands,
+            key=lambda band: SAMPLE_BAND_ORDER.get(band, 0),
+        )
+
+    small_sample_only = False
+    if directional_bands:
+        small_sample_only = all(
+            SAMPLE_BAND_ORDER.get(band, 0)
+            <= SAMPLE_BAND_ORDER["small"]
+            for band in directional_bands
+        )
+
+    population = lane.get("population_context")
+    available_contexts: list[dict[str, object]] = []
+    if isinstance(population, Mapping):
+        for key in ("frame", "sire", "jockey"):
+            raw_context = population.get(key)
+            if not isinstance(raw_context, Mapping):
+                continue
+            if _text(raw_context.get("status")).upper() != "AVAILABLE":
+                continue
+            available_contexts.append(
+                {
+                    "code": _text(raw_context.get("code")),
+                    "sample_size_band": _sample_band(raw_context),
+                    "role": "RELATIVE_CONTEXT_NOT_STANDALONE_DIRECTION",
+                }
+            )
+
+    return {
+        "state": state,
+        "positive": positive,
+        "negative": negative,
+        "neutral": neutral,
+        "unknown": unknown,
+        "best_directional_sample_band": best_sample_band,
+        "small_sample_only": small_sample_only,
+        "population_contexts": available_contexts,
+        "reading_rule": (
+            "DIRECTION_PLUS_SAMPLE_SIZE_BEFORE_POPULATION_CONTEXT"
+        ),
+    }
+
+
+def _review_source_refs(
+    lane: Mapping[str, object],
+) -> list[str]:
+    """Collect unique source runs from selected RaceReview evidence."""
+    refs: list[str] = []
+    for field in (
+        "primary_positive",
+        "supporting_positive",
+        "concerns",
+        "mixed_context",
+    ):
+        raw_items = lane.get(field)
+        if not isinstance(raw_items, list):
+            continue
+        for raw_item in raw_items:
+            if not isinstance(raw_item, Mapping):
+                continue
+            raw_refs = raw_item.get("source_run_refs")
+            if not isinstance(raw_refs, list):
+                continue
+            for raw_ref in raw_refs:
+                ref = _text(raw_ref)
+                if ref and ref not in refs:
+                    refs.append(ref)
+    return refs
+
+
+def _review_transferability(
+    race: Mapping[str, object],
+    lane: Mapping[str, object],
+) -> dict[str, object]:
+    """Describe exact target-condition overlap for Review source runs."""
+    target_surface = _text(race.get("surface"))
+    target_distance = race.get("distance_m")
+    try:
+        target_distance_int = int(target_distance)
+    except (TypeError, ValueError):
+        target_distance_int = None
+
+    selected_refs = set(_review_source_refs(lane))
+    raw_contexts = lane.get("source_run_contexts")
+    contexts: list[dict[str, object]] = []
+
+    if isinstance(raw_contexts, list):
+        for raw_context in raw_contexts:
+            if not isinstance(raw_context, Mapping):
+                continue
+            run_ref = _text(raw_context.get("run_ref"))
+            if selected_refs and run_ref not in selected_refs:
+                continue
+
+            source_surface = RR_SURFACE_NAMES.get(
+                _text(raw_context.get("surface_code"))
+            )
+            source_distance = raw_context.get("distance_m")
+            try:
+                source_distance_int = int(source_distance)
+            except (TypeError, ValueError):
+                source_distance_int = None
+
+            same_surface: bool | None = None
+            if target_surface and source_surface:
+                same_surface = target_surface == source_surface
+
+            same_distance: bool | None = None
+            if (
+                target_distance_int is not None
+                and source_distance_int is not None
+            ):
+                same_distance = (
+                    target_distance_int == source_distance_int
+                )
+
+            contexts.append(
+                {
+                    "run_ref": run_ref,
+                    "race_date": _text(raw_context.get("race_date")),
+                    "same_surface": same_surface,
+                    "same_distance": same_distance,
+                    "source_surface": source_surface,
+                    "source_distance_m": source_distance_int,
+                    "pace_shape": _text(
+                        raw_context.get("pace_shape")
+                    ).upper(),
+                }
+            )
+
+    exact = [
+        item
+        for item in contexts
+        if item["same_surface"] is True
+        and item["same_distance"] is True
+    ]
+    partial = [
+        item
+        for item in contexts
+        if (
+            item["same_surface"] is True
+            or item["same_distance"] is True
+        )
+        and item not in exact
+    ]
+
+    if exact:
+        state = "EXACT_SURFACE_DISTANCE_PRESENT"
+    elif partial:
+        state = "PARTIAL_EXACT_MATCH_PRESENT"
+    elif contexts:
+        state = "NO_EXACT_TARGET_MATCH"
+    else:
+        state = "UNKNOWN"
+
+    return {
+        "state": state,
+        "selected_source_run_count": len(contexts),
+        "exact_surface_distance_count": len(exact),
+        "partial_exact_match_count": len(partial),
+        "runs": contexts,
+        "policy": {
+            "distance_tolerance_not_invented": True,
+            "venue_code_match_not_inferred_v0_1": True,
+            "pace_shape_is_context_not_transfer_score": True,
+        },
+    }
+
+
+def _review_interpretation(
+    race: Mapping[str, object],
+    lane: Mapping[str, object],
+) -> dict[str, object]:
+    """Summarize RaceReview prediction meaning without ranking the horse."""
+    profile = lane.get("profile")
+    if not isinstance(profile, Mapping):
+        profile = {}
+
+    hidden = profile.get("hidden_strength")
+    fragile = profile.get("fragile_form")
+    contradiction = profile.get("contradiction")
+    hidden_status = ""
+    fragile_status = ""
+    contradiction_status = ""
+    if isinstance(hidden, Mapping):
+        hidden_status = _text(hidden.get("status")).upper()
+    if isinstance(fragile, Mapping):
+        fragile_status = _text(fragile.get("status")).upper()
+    if isinstance(contradiction, Mapping):
+        contradiction_status = _text(
+            contradiction.get("status")
+        ).upper()
+
+    primary = lane.get("primary_positive")
+    support = lane.get("supporting_positive")
+    concerns = lane.get("concerns")
+    mixed = lane.get("mixed_context")
+    positive_count = (
+        len(primary) if isinstance(primary, list) else 0
+    ) + (
+        len(support) if isinstance(support, list) else 0
+    )
+    concern_count = len(concerns) if isinstance(concerns, list) else 0
+    mixed_count = len(mixed) if isinstance(mixed, list) else 0
+
+    if (
+        contradiction_status == "MIXED"
+        or (
+            hidden_status == "CANDIDATE"
+            and fragile_status == "CANDIDATE"
+        )
+    ):
+        state = "MIXED"
+    elif hidden_status == "CANDIDATE":
+        state = "HIDDEN_STRENGTH"
+    elif fragile_status == "CANDIDATE":
+        state = "FRAGILE_FORM"
+    elif positive_count and concern_count:
+        state = "MIXED"
+    elif positive_count:
+        state = "SUPPORTIVE"
+    elif concern_count:
+        state = "CAUTION"
+    elif mixed_count:
+        state = "MIXED_CONTEXT_ONLY"
+    else:
+        state = "INSUFFICIENT"
+
+    repeated_codes: list[str] = []
+    for field in (
+        "primary_positive",
+        "supporting_positive",
+        "concerns",
+        "mixed_context",
+    ):
+        raw_items = lane.get(field)
+        if not isinstance(raw_items, list):
+            continue
+        for raw_item in raw_items:
+            if not isinstance(raw_item, Mapping):
+                continue
+            if _text(raw_item.get("priority")) != "REPEATABILITY":
+                continue
+            code = _text(raw_item.get("code"))
+            if code and code not in repeated_codes:
+                repeated_codes.append(code)
+
+    return {
+        "state": state,
+        "hidden_strength_status": hidden_status or "NONE",
+        "fragile_form_status": fragile_status or "NONE",
+        "contradiction_status": contradiction_status or "NONE",
+        "repeatability_codes": repeated_codes,
+        "transferability": _review_transferability(
+            race,
+            lane,
+        ),
+        "reading_rule": (
+            "CONTENT_FIRST_THEN_REPEATABILITY_THEN_TARGET_OVERLAP"
+        ),
+    }
+
+
+def _prediction_interpretation(
+    race: Mapping[str, object],
+    data_lane: Mapping[str, object],
+    rr_lane: Mapping[str, object],
+    ability_lane: Mapping[str, object],
+) -> dict[str, object]:
+    """Build one non-scoring interpretation profile for Pairwise reading."""
+    trend = _trend_interpretation(data_lane)
+    review = _review_interpretation(race, rr_lane)
+
+    positive_components: list[str] = []
+    concern_components: list[str] = []
+
+    if trend["state"] == "SUPPORTIVE":
+        positive_components.append("DATA_TREND_SUPPORT")
+    elif trend["state"] == "OPPOSED":
+        concern_components.append("DATA_TREND_OPPOSITION")
+    elif trend["state"] == "MIXED":
+        positive_components.append("DATA_TREND_MIXED_SUPPORT")
+        concern_components.append("DATA_TREND_MIXED_CONCERN")
+
+    review_state = str(review["state"])
+    if review_state in {"HIDDEN_STRENGTH", "SUPPORTIVE"}:
+        positive_components.append("RACEREVIEW_SUPPORT")
+    if review_state in {"FRAGILE_FORM", "CAUTION"}:
+        concern_components.append("RACEREVIEW_CONCERN")
+    if review_state == "MIXED":
+        positive_components.append("RACEREVIEW_MIXED_SUPPORT")
+        concern_components.append("RACEREVIEW_MIXED_CONCERN")
+
+    ability_status = _text(ability_lane.get("status")).upper()
+    ability_role = "AVAILABLE_ANCHOR"
+    if ability_status != "AVAILABLE":
+        ability_role = "UNAVAILABLE"
+
+    return {
+        "interpretation_version": "PredictionInterpretation-v0.1",
+        "data_trend": trend,
+        "racereview": review,
+        "ability_anchor": {
+            "role": ability_role,
+            "may_create_upgrade_by_itself": False,
+            "may_create_downgrade_by_itself": False,
+            "profile": copy.deepcopy(
+                ability_lane.get("profile", {})
+            ),
+        },
+        "positive_case_components": positive_components,
+        "concern_case_components": concern_components,
+        "pairwise_reading_order": list(DECISION_ORDER),
+        "policy": {
+            "no_numeric_score": True,
+            "no_positive_evidence_count_voting": True,
+            "sample_size_changes_confidence_not_direction": True,
+            "rr_repeatability_matters": True,
+            "rr_target_overlap_is_transferability_context": True,
+            "ability_is_floor_ceiling_anchor": True,
+            "final_upgrade_or_downgrade_requires_pairwise": True,
+        },
+    }
+
+
 def _rr_lane(card: Mapping[str, object]) -> dict[str, object]:
     """Project the RaceReview card as the second-priority lane."""
     return {
         "priority_rank": 2,
         "priority_relation": "SECOND",
         "card_scope": _text(card.get("card_scope")),
+        "source_run_contexts": copy.deepcopy(
+            card.get("source_run_contexts", [])
+        ),
         "primary_positive": copy.deepcopy(
             card.get("primary_positive", [])
         ),
@@ -972,6 +1361,12 @@ def build_general_evidence(
                     "racereview": _rr_lane(rr_card),
                     "ability_anchor": _ability_anchor(horse),
                 },
+                "prediction_interpretation": _prediction_interpretation(
+                    race,
+                    _data_trend_lane(race, horse),
+                    _rr_lane(rr_card),
+                    _ability_anchor(horse),
+                ),
                 "comparison_status": "NOT_YET_PAIRWISE_COMPARED",
             }
         )
