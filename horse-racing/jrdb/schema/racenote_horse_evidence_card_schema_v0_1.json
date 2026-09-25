@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_horse_evidence_card_schema_v0_1.json",
+  "title": "RaceNote Horse Evidence Card v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "card_schema_version",
+    "card_logic_version",
+    "target",
+    "source",
+    "policy",
+    "horses"
+  ],
+  "properties": {
+    "card_schema_version": {
+      "const": "RaceNote-Horse-Evidence-Card-0.1"
+    },
+    "card_logic_version": {
+      "const": "RaceReview-Card-v0.1"
+    },
+    "target": {
+      "type": "object",
+      "required": ["date", "venue", "race_no", "race_name"],
+      "properties": {
+        "date": {"type": "string", "format": "date"},
+        "venue": {"type": "string"},
+        "race_no": {"type": "integer", "minimum": 1},
+        "race_name": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "kind",
+        "generation_id",
+        "review_schema_version",
+        "review_logic_version",
+        "baseline_version",
+        "adapter_version",
+        "evidence_schema_version"
+      ],
+      "properties": {
+        "kind": {"const": "RaceReviewDB"},
+        "generation_id": {"type": "string"},
+        "review_schema_version": {"type": "string"},
+        "review_logic_version": {"type": "string"},
+        "baseline_version": {"type": "string"},
+        "adapter_version": {"type": "string"},
+        "evidence_schema_version": {
+          "const": "RaceReview-Evidence-0.1"
+        }
+      },
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "market_visibility_status",
+        "jrdb_current_consensus_status",
+        "training_edge_status",
+        "score_status",
+        "comment_prose_status",
+        "hidden_strength_semantics",
+        "fragile_form_semantics"
+      ],
+      "properties": {
+        "market_visibility_status": {
+          "const": "HIDDEN_NOT_CONSUMED"
+        },
+        "jrdb_current_consensus_status": {
+          "const": "HIDDEN_NOT_CONSUMED"
+        },
+        "training_edge_status": {
+          "const": "NOT_CONSUMED"
+        },
+        "score_status": {
+          "const": "NO_ADDITIVE_SCORE"
+        },
+        "comment_prose_status": {
+          "const": "NOT_GENERATED"
+        },
+        "hidden_strength_semantics": {
+          "const": "HISTORICAL_RESULT_VS_CONTENT_ONLY"
+        },
+        "fragile_form_semantics": {
+          "const": "HISTORICAL_RESULT_VS_CONTENT_ONLY"
+        }
+      },
+      "additionalProperties": false
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/horse"}
+    }
+  },
+  "$defs": {
+    "evidenceItem": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "code",
+        "family",
+        "direction",
+        "priority",
+        "strength",
+        "evidence_quality",
+        "redundancy_group_id",
+        "source_run_refs",
+        "facts"
+      ],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1},
+        "code": {"type": "string", "minLength": 1},
+        "family": {
+          "enum": [
+            "ABILITY",
+            "FINISH",
+            "POSITION",
+            "PACE_POSITION"
+          ]
+        },
+        "direction": {
+          "enum": ["POSITIVE", "NEGATIVE", "MIXED"]
+        },
+        "priority": {
+          "enum": [
+            "REPEATABILITY",
+            "DIRECT_PERFORMANCE",
+            "CONTEXTUAL"
+          ]
+        },
+        "strength": {
+          "enum": ["STRONG", "MEDIUM", "WEAK"]
+        },
+        "evidence_quality": {
+          "enum": ["GOOD", "MIXED", "POOR"]
+        },
+        "redundancy_group_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_run_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "facts": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "signal": {
+      "type": "object",
+      "required": [
+        "status",
+        "confidence",
+        "reason_codes",
+        "evidence_ids",
+        "source_run_refs"
+      ],
+      "properties": {
+        "status": {"enum": ["NONE", "CANDIDATE"]},
+        "confidence": {
+          "enum": ["NONE", "LOW", "MEDIUM", "HIGH"]
+        },
+        "reason_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        },
+        "evidence_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        },
+        "source_run_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "contradiction": {
+      "type": "object",
+      "required": ["status", "conflict_codes"],
+      "properties": {
+        "status": {"enum": ["NONE", "MIXED"]},
+        "conflict_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "uncertainty": {
+      "type": "object",
+      "required": ["code", "severity"],
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["LOW", "MEDIUM", "HIGH"]}
+      },
+      "additionalProperties": false
+    },
+    "commentEvidence": {
+      "type": "object",
+      "required": [
+        "status",
+        "positive_codes",
+        "concern_codes",
+        "mixed_codes",
+        "source_evidence_ids",
+        "prose_generation_status"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["READY", "LIMITED", "INSUFFICIENT"]
+        },
+        "positive_codes": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "concern_codes": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "mixed_codes": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "source_evidence_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "prose_generation_status": {
+          "const": "NOT_GENERATED_V0_1"
+        }
+      },
+      "additionalProperties": false
+    },
+    "horse": {
+      "type": "object",
+      "required": [
+        "horse_no",
+        "horse_name",
+        "horse_id",
+        "history_status",
+        "card_scope",
+        "primary_positive",
+        "supporting_positive",
+        "concerns",
+        "mixed_context",
+        "profile",
+        "uncertainties",
+        "comment_evidence"
+      ],
+      "properties": {
+        "horse_no": {"type": "integer", "minimum": 1},
+        "horse_name": {"type": "string"},
+        "horse_id": {"type": "string"},
+        "history_status": {
+          "enum": ["AVAILABLE", "NO_HISTORY", "NO_HORSE_ID"]
+        },
+        "card_scope": {
+          "const": "RACEREVIEW_HISTORY_V0_1"
+        },
+        "primary_positive": {
+          "type": "array",
+          "maxItems": 2,
+          "items": {"$ref": "#/$defs/evidenceItem"}
+        },
+        "supporting_positive": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidenceItem"}
+        },
+        "concerns": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidenceItem"}
+        },
+        "mixed_context": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidenceItem"}
+        },
+        "profile": {
+          "type": "object",
+          "required": [
+            "hidden_strength",
+            "fragile_form",
+            "contradiction",
+            "repeatability_source"
+          ],
+          "properties": {
+            "hidden_strength": {"$ref": "#/$defs/signal"},
+            "fragile_form": {"$ref": "#/$defs/signal"},
+            "contradiction": {"$ref": "#/$defs/contradiction"},
+            "repeatability_source": {
+              "const": "RACEREVIEW_HISTORY"
+            }
+          },
+          "additionalProperties": false
+        },
+        "uncertainties": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/uncertainty"}
+        },
+        "comment_evidence": {
+          "$ref": "#/$defs/commentEvidence"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
