@@ -371,7 +371,7 @@ def _lane_judgments(
 
 
 def _preferred_from_relation(relation: str, a_no: int, b_no: int) -> int | None:
-     if relation == "A":
+    if relation == "A":
         return a_no
     if relation == "B":
         return b_no
