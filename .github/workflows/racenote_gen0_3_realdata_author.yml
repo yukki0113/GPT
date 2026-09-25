@@ -1,0 +1,567 @@
+name: RaceNote Gen0.3 real-data author validation
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_GEN03_AUTHOR]'
+
+jobs:
+  validate:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_GEN03_AUTHOR]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse author request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          title = os.environ.get('ISSUE_TITLE') or ''
+          prefix = os.environ['REQUEST_PREFIX']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          try:
+              request = json.loads(
+                  (os.environ.get('ISSUE_BODY') or '').strip()
+              )
+          except json.JSONDecodeError as exc:
+              raise SystemExit(
+                  f'Issue body must be raw JSON: {exc}'
+              ) from exc
+          if not isinstance(request, dict):
+              raise SystemExit('request body must be an object')
+
+          stage = str(request.get('stage') or '').strip().upper()
+          if stage not in {'SYNTHESIS', 'PAIRWISE', 'SCENARIO', 'FORECAST'}:
+              raise SystemExit(f'unsupported stage: {stage}')
+
+          prepare_run_id = str(
+              request.get('prepare_run_id') or ''
+          ).strip()
+          prepare_artifact_name = str(
+              request.get('prepare_artifact_name') or ''
+          ).strip()
+          if not re.fullmatch(r'\d+', prepare_run_id):
+              raise SystemExit('prepare_run_id must be numeric')
+          if not prepare_artifact_name:
+              raise SystemExit('prepare_artifact_name is required')
+
+          previous_run_id = str(
+              request.get('previous_run_id') or ''
+          ).strip()
+          previous_artifact_name = str(
+              request.get('previous_artifact_name') or ''
+          ).strip()
+          if stage != 'SYNTHESIS':
+              if not re.fullmatch(r'\d+', previous_run_id):
+                  raise SystemExit(
+                      'previous_run_id is required for this stage'
+                  )
+              if not previous_artifact_name:
+                  raise SystemExit(
+                      'previous_artifact_name is required for this stage'
+                  )
+
+          payload = request.get('payload')
+          if not isinstance(payload, dict):
+              raise SystemExit('payload must be an object')
+
+          resolved = {
+              'request_id': request_id,
+              'stage': stage,
+              'prepare_run_id': int(prepare_run_id),
+              'prepare_artifact_name': prepare_artifact_name,
+              'previous_run_id': (
+                  int(previous_run_id)
+                  if previous_run_id
+                  else None
+              ),
+              'previous_artifact_name': (
+                  previous_artifact_name or None
+              ),
+              'payload': payload,
+              'frozen_at': request.get('frozen_at'),
+          }
+          Path('/tmp/author_request.json').write_text(
+              json.dumps(
+                  resolved,
+                  ensure_ascii=False,
+                  indent=2,
+              ) + '\n',
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open(
+              'a',
+              encoding='utf-8',
+          ) as handle:
+              handle.write(f'AUTHOR_STAGE={stage}\n')
+              handle.write(
+                  f'PREPARE_RUN_ID={resolved["prepare_run_id"]}\n'
+              )
+              handle.write(
+                  'PREPARE_ARTIFACT_NAME='
+                  + prepare_artifact_name
+                  + '\n'
+              )
+              if resolved['previous_run_id'] is not None:
+                  handle.write(
+                      'PREVIOUS_RUN_ID='
+                      + str(resolved['previous_run_id'])
+                      + '\n'
+                  )
+                  handle.write(
+                      'PREVIOUS_ARTIFACT_NAME='
+                      + previous_artifact_name
+                      + '\n'
+                  )
+              handle.write(f'REQUEST_ID={request_id}\n')
+          print(
+              json.dumps(
+                  {
+                      'request_id': request_id,
+                      'stage': stage,
+                      'prepare_run_id': int(prepare_run_id),
+                      'previous_run_id': resolved['previous_run_id'],
+                  },
+                  ensure_ascii=False,
+              )
+          )
+          PY
+
+      - name: Download prepared evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/prepare
+          gh run download "$PREPARE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$PREPARE_ARTIFACT_NAME" \
+            --dir /tmp/prepare
+          test -s /tmp/prepare/general_evidence.json
+
+      - name: Download previous author stage
+        if: env.AUTHOR_STAGE != 'SYNTHESIS'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/previous
+          gh run download "$PREVIOUS_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$PREVIOUS_ARTIFACT_NAME" \
+            --dir /tmp/previous
+          find /tmp/previous -maxdepth 2 -type f -print
+
+      - name: Validate authored stage
+        id: authored
+        continue-on-error: true
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set +e
+          mkdir -p /tmp/author_output
+          python - <<'PY'
+          import copy
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(
+              Path('/tmp/author_request.json').read_text(
+                  encoding='utf-8'
+              )
+          )
+          stage = request['stage']
+          payload = request['payload']
+          general = json.loads(
+              Path('/tmp/prepare/general_evidence.json').read_text(
+                  encoding='utf-8'
+              )
+          )
+          out = Path('/tmp/author_output')
+          result = {
+              'request_id': request['request_id'],
+              'stage': stage,
+              'status': 'FAIL',
+          }
+
+          try:
+              if stage == 'SYNTHESIS':
+                  from racenote_all_runner_synthesis import (
+                      validate_all_runner_synthesis,
+                  )
+                  from racenote_pairwise_comparison import (
+                      build_comparison_request_from_synthesis,
+                  )
+
+                  audit = validate_all_runner_synthesis(
+                      general,
+                      payload,
+                  )
+                  pairwise_request = (
+                      build_comparison_request_from_synthesis(
+                          general,
+                          audit,
+                      )
+                  )
+                  (out / 'synthesis_payload.json').write_text(
+                      json.dumps(
+                          payload,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  (out / 'synthesis_audit.json').write_text(
+                      json.dumps(
+                          audit,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  (out / 'pairwise_request.json').write_text(
+                      json.dumps(
+                          pairwise_request,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  result.update(
+                      {
+                          'status': 'PASS',
+                          'draft_order': audit['draft_order'],
+                          'high_priority_boundary_count': len(
+                              audit['high_priority_boundaries']
+                          ),
+                      }
+                  )
+
+              elif stage == 'PAIRWISE':
+                  from racenote_pairwise_comparison import (
+                      validate_pairwise_comparison_from_synthesis,
+                  )
+
+                  synthesis_audit = json.loads(
+                      Path(
+                          '/tmp/previous/synthesis_audit.json'
+                      ).read_text(encoding='utf-8')
+                  )
+                  audit = validate_pairwise_comparison_from_synthesis(
+                      general,
+                      synthesis_audit,
+                      payload,
+                  )
+                  for name in (
+                      'synthesis_payload.json',
+                      'synthesis_audit.json',
+                  ):
+                      source = Path('/tmp/previous') / name
+                      if source.is_file():
+                          (out / name).write_bytes(
+                              source.read_bytes()
+                          )
+                  (out / 'pairwise_payload.json').write_text(
+                      json.dumps(
+                          payload,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  (out / 'pairwise_audit.json').write_text(
+                      json.dumps(
+                          audit,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  result.update(
+                      {
+                          'status': 'PASS',
+                          'final_order': audit['final_order'],
+                          'comparison_count': audit[
+                              'comparison_count'
+                          ],
+                          'order_changes': audit['order_changes'],
+                      }
+                  )
+
+              elif stage == 'SCENARIO':
+                  from racenote_scenario_robustness import (
+                      validate_scenario_robustness,
+                  )
+
+                  pairwise_audit = json.loads(
+                      Path(
+                          '/tmp/previous/pairwise_audit.json'
+                      ).read_text(encoding='utf-8')
+                  )
+                  audit = validate_scenario_robustness(
+                      pairwise_audit,
+                      payload,
+                  )
+                  for source in Path('/tmp/previous').glob('*.json'):
+                      (out / source.name).write_bytes(
+                          source.read_bytes()
+                      )
+                  (out / 'scenario_payload.json').write_text(
+                      json.dumps(
+                          payload,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  (out / 'scenario_audit.json').write_text(
+                      json.dumps(
+                          audit,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  result.update(
+                      {
+                          'status': 'PASS',
+                          'axis_horse_no': audit[
+                              'axis_horse_no'
+                          ],
+                          'axis_robustness': audit[
+                              'axis_robustness'
+                          ],
+                          'risk_scenario_ids': audit[
+                              'risk_scenario_ids'
+                          ],
+                          'pairwise_recheck_recommended': audit[
+                              'pairwise_recheck_recommended'
+                          ],
+                      }
+                  )
+
+              else:
+                  from racenote_forecast_gen0_3 import (
+                      audit_frozen_forecast,
+                      freeze_forecast,
+                      validate_forecast,
+                  )
+
+                  pairwise_audit = json.loads(
+                      Path(
+                          '/tmp/previous/pairwise_audit.json'
+                      ).read_text(encoding='utf-8')
+                  )
+                  scenario_audit = json.loads(
+                      Path(
+                          '/tmp/previous/scenario_audit.json'
+                      ).read_text(encoding='utf-8')
+                  )
+                  forecast = validate_forecast(
+                      general,
+                      pairwise_audit,
+                      scenario_audit,
+                      payload,
+                  )
+                  frozen_at = str(
+                      request.get('frozen_at') or ''
+                  ).strip()
+                  if not frozen_at:
+                      raise RuntimeError(
+                          'FORECAST stage requires frozen_at'
+                      )
+                  frozen = freeze_forecast(
+                      forecast,
+                      frozen_at,
+                  )
+                  freeze_audit = audit_frozen_forecast(
+                      frozen
+                  )
+                  if freeze_audit['audit_status'] != 'PASS':
+                      raise RuntimeError(
+                          'frozen forecast audit failed'
+                      )
+                  for source in Path('/tmp/previous').glob('*.json'):
+                      (out / source.name).write_bytes(
+                          source.read_bytes()
+                      )
+                  (out / 'forecast_payload.json').write_text(
+                      json.dumps(
+                          payload,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  (out / 'forecast_validated.json').write_text(
+                      json.dumps(
+                          forecast,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  (out / 'forecast_frozen.json').write_text(
+                      json.dumps(
+                          frozen,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  (out / 'forecast_freeze_audit.json').write_text(
+                      json.dumps(
+                          freeze_audit,
+                          ensure_ascii=False,
+                          indent=2,
+                      ) + '\n',
+                      encoding='utf-8',
+                  )
+                  result.update(
+                      {
+                          'status': 'PASS',
+                          'forecast_id': forecast[
+                              'forecast_id'
+                          ],
+                          'final_order': forecast[
+                              'final_order'
+                          ],
+                          'prediction_hash': frozen[
+                              'prediction_hash'
+                          ],
+                          'freeze_audit_status': freeze_audit[
+                              'audit_status'
+                          ],
+                      }
+                  )
+
+          except Exception as exc:
+              result['error_type'] = type(exc).__name__
+              result['error'] = str(exc)
+
+          Path('/tmp/author_output/stage_summary.json').write_text(
+              json.dumps(
+                  result,
+                  ensure_ascii=False,
+                  indent=2,
+              ) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(result, ensure_ascii=False))
+          if result['status'] != 'PASS':
+              raise SystemExit(1)
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Upload author validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-gen0-3-author-${{ github.run_id }}
+          path: /tmp/author_output/
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 6
+
+      - name: Comment author result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/author_output/stage_summary.json')
+          if path.is_file():
+              summary = json.loads(
+                  path.read_text(encoding='utf-8')
+              )
+          else:
+              summary = {
+                  'request_id': os.environ.get('REQUEST_ID'),
+                  'stage': os.environ.get('AUTHOR_STAGE'),
+                  'status': 'FAIL',
+                  'error': 'stage_summary.json missing',
+              }
+          summary['run_id'] = int(os.environ['GITHUB_RUN_ID'])
+          summary['artifact_name'] = (
+              'racenote-gen0-3-author-'
+              + os.environ['GITHUB_RUN_ID']
+          )
+          summary['head_sha'] = os.environ['GITHUB_SHA']
+          Path('/tmp/author_comment.md').write_text(
+              'RACENOTE_GEN03_AUTHOR_RESULT\n```json\n'
+              + json.dumps(
+                  summary,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file /tmp/author_comment.md
+
+      - name: Close author issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          AUTHOR_EXIT: ${{ steps.authored.outputs.exit_code }}
+        run: |
+          if [ "$AUTHOR_EXIT" = "0" ]; then
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason "not planned"
+          fi
+
+      - name: Fail unless authored validation passed
+        if: always()
+        env:
+          AUTHOR_EXIT: ${{ steps.authored.outputs.exit_code }}
+        run: |
+          test "$AUTHOR_EXIT" = "0"
