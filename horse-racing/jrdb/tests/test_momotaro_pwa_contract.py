@@ -66,10 +66,12 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function groupVisibleRows()', script)
         self.assertIn('class="momotaro-race-card"', script)
         self.assertIn('source: "🐬"', script)
-        self.assertIn('type: "ryota-confidence"', script)
-        self.assertIn('signal: "自信度" + ryotaConfidence', script)
+        self.assertIn('type: "ryota"', script)
+        self.assertIn('ryotaSignals.push(ryotaTag)', script)
+        self.assertIn('ryotaSignals.push("自信度" + ryotaConfidence)', script)
         self.assertNotIn('signal: "回顧馬"', script)
         self.assertNotIn('"回顧馬"', newspaper_script)
+        self.assertIn('contributor.key === "ryota" ? tag : ""', newspaper_script)
         self.assertIn('data-filter="kenshow-analysis">けん</button>', html)
         self.assertIn('data-filter="keibailuka">🐬</button>', html)
         self.assertIn('id="prediction-refresh" type="button"', html)
@@ -118,10 +120,10 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
-        self.assertIn('./momotaro.js?v=12', newspaper)
+        self.assertIn('./momotaro.js?v=13', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v15"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v16"', service_worker)
 
 
 if __name__ == "__main__":
