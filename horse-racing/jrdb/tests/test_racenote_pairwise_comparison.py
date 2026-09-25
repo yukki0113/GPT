@@ -19,6 +19,7 @@ from racenote_pairwise_comparison import (  # noqa: E402
     required_pair_keys,
     semantic_sha256,
     validate_pairwise_comparison,
+    validate_pairwise_comparison_from_synthesis,
 )
 
 
@@ -517,6 +518,60 @@ class RaceNotePairwiseComparisonTest(unittest.TestCase):
             build_comparison_request(
                 general,
                 [1, 2, 3, 4],
+            )
+
+    def test_canonical_pairwise_validation_binds_synthesis(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        payload = _valid_payload()
+        payload["all_runner_synthesis_sha256"] = semantic_sha256(
+            synthesis
+        )
+        payload["draft_order"] = list(synthesis["draft_order"])
+
+        audit = validate_pairwise_comparison_from_synthesis(
+            general,
+            synthesis,
+            payload,
+        )
+
+        self.assertEqual(
+            audit["all_runner_synthesis_sha256"],
+            semantic_sha256(synthesis),
+        )
+        self.assertEqual(
+            audit["draft_source"]["kind"],
+            "ALL_RUNNER_SYNTHESIS",
+        )
+
+    def test_canonical_pairwise_rejects_reauthored_draft_order(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        payload = _valid_payload()
+        payload["all_runner_synthesis_sha256"] = semantic_sha256(
+            synthesis
+        )
+        payload["draft_order"] = [1, 3, 2, 4]
+
+        with self.assertRaises(PairwiseComparisonError):
+            validate_pairwise_comparison_from_synthesis(
+                general,
+                synthesis,
+                payload,
+            )
+
+    def test_canonical_pairwise_rejects_synthesis_hash_mismatch(self) -> None:
+        general = _general_evidence()
+        synthesis = _synthesis_audit(general)
+        payload = _valid_payload()
+        payload["all_runner_synthesis_sha256"] = "0" * 64
+        payload["draft_order"] = list(synthesis["draft_order"])
+
+        with self.assertRaises(PairwiseComparisonError):
+            validate_pairwise_comparison_from_synthesis(
+                general,
+                synthesis,
+                payload,
             )
 
     def test_canonical_request_uses_audited_synthesis_order(self) -> None:
