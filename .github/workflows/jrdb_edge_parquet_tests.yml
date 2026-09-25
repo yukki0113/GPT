@@ -38,6 +38,8 @@ on:
       - '.github/workflows/jrdb_edge_v03_b2b_gate_issue.yml'
       - '.github/workflows/jrdb_edge_v03_shadow_catalog_issue.yml'
       - '.github/workflows/jrdb_edge_v03_operational_replay_issue.yml'
+      - '.github/workflows/jrdb_edge_v03_forward_shadow_freeze_issue.yml'
+      - '.github/workflows/jrdb_edge_v03_forward_shadow_freeze_issue.yml'
       - '.github/workflows/jrdb_edge_v03_operational_replay_issue.yml'
       - '.github/workflows/jrdb_edge_parquet_tests.yml'
   pull_request:
