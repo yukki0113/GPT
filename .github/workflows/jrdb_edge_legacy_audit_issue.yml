@@ -1,0 +1,73 @@
+name: JRDB Edge legacy dependency audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_LEGACY_AUDIT]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run legacy dependency audit
+        id: audit
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/audit
+          set +e
+          python horse-racing/jrdb/src/audit_jrdb_edge_legacy_dependencies.py             --output /tmp/audit/legacy_dependencies.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-legacy-audit-${{ github.run_id }}
+          path: /tmp/audit/
+          if-no-files-found: error
+
+      - name: Comment result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+          EXIT_CODE: ${{ steps.audit.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json,os,subprocess
+          r=json.load(open('/tmp/audit/legacy_dependencies.json'))
+          compact={
+            'status':r['status'],
+            'run_id':int(os.environ['RUN_ID']),
+            'head_sha':os.environ['HEAD_SHA'],
+            'artifact_name':f"jrdb-edge-legacy-audit-{os.environ['RUN_ID']}",
+            'active_reference_count':r['active_reference_count'],
+            'legacy_repro_reference_count':r['legacy_repro_reference_count'],
+          }
+          body='JRDB_EDGE_LEGACY_AUDIT_RESULT\n'+json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          if r['status']=='PASS':
+              subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Fail if active references remain
+        if: steps.audit.outputs.exit_code != '0'
+        run: exit 1
