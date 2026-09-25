@@ -11,11 +11,13 @@ on:
       - ".github/workflows/jrdb_pwa_publish_data.yml"
       - ".github/workflows/jrdb_pwa_fact_lite_publish.yml"
       - ".github/workflows/jrdb_momotaro_newspaper_publish_issue.yml"
+      - ".github/workflows/jrdb_newspaper_skeleton_publish_issue.yml"
   workflow_run:
     workflows:
       - "JRDB Newspaper Current Publish"
       - "JRDB PWA Fact Lite Publish"
       - "JRDB Momotaro Newspaper Current Publish"
+      - "JRDB Newspaper Skeleton Publish"
     types:
       - completed
     branches:
