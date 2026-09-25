@@ -322,7 +322,7 @@ jobs:
             /tmp/rlt_downstream/work/*fingerprint*
             /tmp/rlt_downstream/work/downstream_nonregression.json
             /tmp/rlt_downstream/work/downstream_nonregression.log
-            /tmp/rlt_downstream/record_hash_compat/manifest.json
+            /tmp/rlt_downstream/record_hash_compat/
           if-no-files-found: warn
           retention-days: 30
 
