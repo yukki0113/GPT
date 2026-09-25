@@ -184,5 +184,10 @@ and:
 
     next_stage = FORECAST_NEXT_GENERATION_CONTRACT
 
-次はtrend-first / RaceReview / Pairwise / Scenarioを正式に束ねる
-新しいForecast contractを設計する。
+downstream Forecast contractは `RaceNote-Forecast-Gen0.3` として実装済み。
+
+- `src/racenote_forecast_gen0_3.py`
+- `schema/racenote_forecast_gen0_schema_v0_3.json`
+- `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
+
+Scenario audit PASS後、Gen0.3 Base Forecastへ進む。
