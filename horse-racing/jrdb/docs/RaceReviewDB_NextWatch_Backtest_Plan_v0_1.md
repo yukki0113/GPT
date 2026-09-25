@@ -1303,3 +1303,224 @@ Next action:
 Do not proceed to formal S/A promotion or market-value validation from the
 censored 2026 Holdout. Preserve the frozen rules and rerun Turn 6 when the
 minimum observation horizon is available.
+
+
+## 25. Turn 6 Historical OOS validation checkpoint
+
+Status:
+
+HISTORICAL_OOS_VALIDATED
+
+Execution date:
+
+2026-09-25
+
+Rationale:
+
+The original forward Holdout (2026-08 onward) remains immature under the
+Discovery-only q90 next-start maturity policy. Formal validation therefore
+moved to historical out-of-sample data that fully predates the 2026 Discovery
+window. The frozen Turn-5 rule contract was applied unchanged.
+
+Historical OOS source:
+
+- source period:
+  2024-01-01 through 2025-12-31
+- source rows:
+  91,597
+- distinct source keys:
+  91,597
+- valid flat next-start outcomes:
+  81,038
+- nonfuture next-start rows:
+  0
+- thresholds reoptimized:
+  false
+- frozen rules:
+  11
+
+Validation blocks:
+
+- 2024H1:
+  source 23,949 / eligible 21,485
+- 2024H2:
+  source 21,488 / eligible 18,820
+- 2025H1:
+  source 23,686 / eligible 21,223
+- 2025H2:
+  source 22,474 / eligible 19,510
+
+Historical grading policy:
+
+- each block requires at least N=20
+- HISTORICAL_S_SUPPORTED:
+  all 4 blocks valid,
+  at least 3 blocks retain positive top3/top5 matched-baseline direction,
+  full-period top3 lift >= 5 percentage points,
+  full-period top5 lift >= 3 percentage points
+- HISTORICAL_A_SUPPORTED:
+  at least 3 positive blocks,
+  full-period top3 lift >= 3 percentage points,
+  full-period top5 lift >= 0
+
+Results:
+
+- HISTORICAL_S_SUPPORTED:
+  9 hidden-value rules
+- HISTORICAL_A_SUPPORTED:
+  2 persistence rules
+- rejected:
+  0
+- insufficient sample:
+  0
+
+All 11 frozen rules retained positive top3 and nonnegative top5 lift versus
+their matched source-finish baseline in all four historical blocks.
+
+Hidden-value rules:
+
+- HV01:
+  4着以下 + performance_signal 上位20%
+  historical N=5,967
+  full top3 lift=+11.70 pp
+  full top5 lift=+15.62 pp
+  block top3 lift range=+11.17 to +12.77 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV02:
+  6着以下 + performance_signal 上位20%
+  historical N=3,137
+  full top3 lift=+7.77 pp
+  full top5 lift=+11.10 pp
+  block top3 lift range=+6.65 to +8.36 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV03:
+  4着以下 + 上がり速度percentile 90以上
+  historical N=5,319
+  full top3 lift=+5.43 pp
+  full top5 lift=+9.40 pp
+  block top3 lift range=+4.40 to +6.35 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV05:
+  4着以下 + performance上位20% + 上がり80以上
+  historical N=1,725
+  full top3 lift=+12.37 pp
+  full top5 lift=+17.29 pp
+  block top3 lift range=+10.25 to +15.37 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV06:
+  6着以下 + performance上位20% + 上がり80以上
+  historical N=698
+  full top3 lift=+6.96 pp
+  full top5 lift=+10.33 pp
+  block top3 lift range=+2.31 to +10.55 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV07:
+  4着以下 + 強い位置取り改善 + 上がり80以上
+  historical N=3,037
+  full top3 lift=+8.21 pp
+  full top5 lift=+13.21 pp
+  block top3 lift range=+6.78 to +10.46 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV11:
+  4着以下 + performance上位20% + 自身過去3走比改善
+  historical N=3,304
+  full top3 lift=+9.07 pp
+  full top5 lift=+12.18 pp
+  block top3 lift range=+8.25 to +10.35 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV12:
+  6着以下 + performance上位20% + 自身過去3走比改善
+  historical N=1,764
+  full top3 lift=+5.36 pp
+  full top5 lift=+8.22 pp
+  block top3 lift range=+3.70 to +6.26 pp
+  status=HISTORICAL_S_SUPPORTED
+
+- HV13:
+  4着以下 + performance上位10% + 上がり90以上
+  historical N=405
+  full top3 lift=+16.27 pp
+  full top5 lift=+19.98 pp
+  block top3 lift range=+10.53 to +18.65 pp
+  status=HISTORICAL_S_SUPPORTED
+
+Persistence rules:
+
+- P01:
+  1-3着 + performance上位20%
+  historical N=8,745
+  full top3 lift=+3.33 pp
+  full top5 lift=+3.32 pp
+  status=HISTORICAL_A_SUPPORTED
+
+- P03:
+  1-3着 + performance上位20% + 上がり80以上
+  historical N=5,911
+  full top3 lift=+4.92 pp
+  full top5 lift=+5.22 pp
+  status=HISTORICAL_A_SUPPORTED
+
+Interpretation:
+
+The 2026 Discovery result is not confined to that period. The principal
+hidden-value rules reproduce across four independent 2024-2025 half-year
+blocks using the exact numeric thresholds frozen from 2026 Discovery.
+
+The strongest practical candidates are not necessarily the highest raw lift.
+For operational S/A design, balance strength, support and simplicity:
+
+- HV05:
+  strong combined performance + last3F, large N and stable lift
+- HV01:
+  simplest high-support hidden-value rule
+- HV02:
+  stricter defeated-horse version with large support
+- HV11:
+  adds within-horse improvement and remains stable
+- HV13:
+  strongest lift but smaller N; useful as a high-conviction subtype rather than
+  the sole S definition
+
+Forward 2026-08+ validation remains reserved as an additional prospective test
+once mature; it is no longer a blocker for historical OOS conclusions.
+
+Checkpoint artifact:
+
+- workflow run:
+  36112649509
+- Drive file:
+  RaceReviewDB_NextWatch_Historical_OOS_g36112649509.zip
+- Drive file ID:
+  1tzhV7Pp0NxuwTTvQyOYxxrWYke6ckZEU
+- contained files:
+  next_watch_historical_oos_fact.parquet
+  next_watch_historical_oos_validation.parquet
+  historical_oos_audit.json
+- fact SHA256:
+  38fd09adac64e1c6c82df684d923a4704e1a365f39df0a7e4528dbc51b13c969
+- validation SHA256:
+  fdad5dcb30ae674742f300309625d3f1c0f828bf97429c69bd30c46ae811477c
+
+Issue history:
+
+- #1374:
+  initial request before workflow registration, closed not_planned
+- #1375:
+  first successful Historical OOS run, closed completed
+- #1378:
+  block-metric audit rerun with unchanged frozen rules, closed completed
+
+Next turn:
+
+Turn 7 - market-value audit.
+
+The ability-prediction signal is now historically supported. The next question
+is whether next-start popularity / odds already price that signal. Market-value
+analysis must remain separate from the ability classification.
