@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
+      - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'\n      - 'horse-racing/jrdb/tests/test_racenote_horse_evidence_card.py'\n      - 'horse-racing/jrdb/schema/racenote_horse_evidence_card_schema_v0_1.json'\n      - 'horse-racing/jrdb/src/racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/schema/racenote_racereview_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_bundle_schema_v1_0.json'
@@ -35,12 +35,16 @@ jobs:
         working-directory: horse-racing/jrdb
         run: |
           python -m py_compile src/racenote_racereview_adapter.py
+          python -m py_compile src/racenote_horse_evidence_card.py
           python -m py_compile src/racenote_jrdb.py
       - name: Validate JSON schemas
         working-directory: horse-racing/jrdb
         run: |
           python -m json.tool schema/racenote_racereview_evidence_schema_v0_1.json >/dev/null
+          python -m json.tool schema/racenote_horse_evidence_card_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_bundle_schema_v1_0.json >/dev/null
       - name: Run focused adapter tests
         working-directory: horse-racing/jrdb/tests
-        run: python -m unittest -v test_racenote_racereview_adapter
+        run: |
+          python -m unittest -v test_racenote_racereview_adapter
+          python -m unittest -v test_racenote_horse_evidence_card
