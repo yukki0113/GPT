@@ -121,6 +121,19 @@ Design boundary:
 
 ## 4. RaceNote current prediction direction
 
+> 2026-09-25 current next-generation contract: **RaceNote-Forecast-Gen0.3**.
+> Planned first activation: **Gen0-G001**. Gen0.2 was never activated and is
+> retained only as a pre-redesign reference.
+>
+> Pre-Freeze chain:
+> `General Evidence -> Pairwise -> Scenario -> Base Forecast -> EdgeDB Performance-only -> Final Forecast -> Freeze`.
+> Reading priority: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
+> JRDB consensus / market / Edge Value / RL-Value / Bet Plan open only after
+> immutable Freeze PASS. Training Edge is not a Forecast input.
+> Canonical contract:
+> `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`.
+
+
 RaceNote authoritative bundleは観測データとprovenanceを渡す層です。Reader Viewもprediction modelではありません。
 
 現在の予想研究系は **RaceNote Forecast Gen0** です。
