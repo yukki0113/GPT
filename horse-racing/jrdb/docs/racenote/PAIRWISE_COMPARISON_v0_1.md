@@ -133,7 +133,7 @@ See `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`.
 
 Ability is an anchor, not an automatic winner.
 
-## 6. Preference and decisive lane
+## 7. Preference and decisive lane
 
 Each required pair records:
 
