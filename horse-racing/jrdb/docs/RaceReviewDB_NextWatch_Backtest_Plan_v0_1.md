@@ -1,6 +1,6 @@
 # RaceReviewDB Next-Watch Backtest Plan v0.1
 
-Status: PLANNED
+Status: IN_PROGRESS
 Date: 2026-09-25
 Repository: yukki0113/GPT
 Component: RaceReviewDB
@@ -472,6 +472,27 @@ No large backtest execution.
 Completion:
 
 BACKTEST_INPUT_CONTRACT_READY
+
+Turn 1 status:
+
+PASS
+
+Frozen companion contract:
+
+horse-racing/jrdb/docs/RaceReviewDB_NextWatch_Backtest_Input_Contract_v0_1.md
+
+Key decisions:
+
+- RaceReviewDB CURRENT is the primary source for source-race features, horse
+  identity and Phase 1 next-start outcomes.
+- canonical SED is the sidecar for abnormal-result eligibility, race-type
+  filtering, final popularity and final win odds.
+- source/target identity is race_horse_key with horse_id continuity.
+- next-start resolution is the first later RaceReviewDB start for the same
+  horse_id.
+- 2026-05 through 2026-09-22 has 44 observed PACI/SED date pairs.
+- realized payout/ROI source is not yet contracted; Turn 7 must audit it before
+  return-based conclusions.
 
 ## Turn 2 - Build candidate feature dataset
 
