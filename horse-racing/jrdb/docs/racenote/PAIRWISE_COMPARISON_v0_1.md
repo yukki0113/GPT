@@ -66,7 +66,28 @@ v0.1 required pairs:
 final orderがdraftから変わった場合、final orderに対してrequired pairを
 満たす必要がある。
 
-## 5. One comparison
+## 5. Prediction Interpretation first
+
+Pairwise requestには両馬の `PredictionInterpretation-v0.1` を含める。
+
+比較時はまずInterpretation profileで、
+
+- DATA_TRENDの支持 / 逆風 / mixed
+- sample-size caveat
+- Race Structure
+- RaceReview hidden / fragile / repeatability / target overlap
+- Ability Anchorの役割
+- positive / concern case
+
+を確認する。
+
+その後、必ずraw Evidence laneへ戻って根拠を検証する。
+
+Interpretationは要約であり、raw Evidenceを置き換えない。
+
+See `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`.
+
+## 6. One comparison
 
 1 pairについて、3つのEvidence laneを順番に読む。
 
@@ -129,7 +150,7 @@ Each required pair records:
 
 The summary is an auditable reason summary, not private chain-of-thought.
 
-## 7. Lower-priority override
+## 8. Lower-priority override
 
 The user preference is ordinal:
 
@@ -156,7 +177,7 @@ other horse still requires an override reason.
 
 This preserves the desired reading priority without introducing fixed weights.
 
-## 8. Reversal condition
+## 9. Reversal condition
 
 Every comparison must state at least one reversal condition.
 
@@ -170,7 +191,7 @@ Examples:
 
 This becomes direct input to Scenario Robustness.
 
-## 9. Final-order consistency
+## 10. Final-order consistency
 
 For every required pair, the preferred horse must be the horse ranked higher
 in final_order.
@@ -179,7 +200,7 @@ If pair judgment and final rank disagree, validation fails closed.
 
 This prevents the final marks from silently contradicting the comparison work.
 
-## 10. No score
+## 11. No score
 
 v0.1 does not authorize:
 
@@ -193,7 +214,7 @@ v0.1 does not authorize:
 Evidence duplication remains handled semantically, including RaceReview
 redundancy groups.
 
-## 11. Firewall
+## 12. Firewall
 
 Pairwise is pre-Freeze.
 
@@ -209,7 +230,7 @@ stage when they would act as a proxy for current market judgment.
 
 Current popularity/value belongs after Freeze.
 
-## 12. Output and next stage
+## 13. Output and next stage
 
 Implementation:
 
@@ -234,7 +255,7 @@ Scenario Robustness v0.1 is now implemented:
 It tests whether the Pairwise axis survives SLOW / MEDIUM / FAST pace
 scenarios rather than accepting one expected scenario.
 
-## 13. Short-comment relationship
+## 14. Short-comment relationship
 
 Pairwise comparison adds the piece needed for comments such as:
 
