@@ -274,6 +274,8 @@ class RaceNoteRaceReviewAdapterTest(unittest.TestCase):
         )
 
         run = first["runs"][0]
+        self.assertEqual(run["field_size"], 12)
+        self.assertEqual(run["distance_m"], 1600)
         self.assertIn("MOVE_THEN_FADE", run["review_tags"])
         self.assertIn("FASTEST_LAST3F", run["review_tags"])
         self.assertIn("PACE_FRONT_LOADED", run["review_tags"])

@@ -145,8 +145,10 @@ Both arrays remain empty with:
 
 `composite_signal_status = NOT_DERIVED_V0_1`
 
-This keeps the first connection reproducible while leaving the next RaceNote
-research step free to design candidate-up / popular-risk composites explicitly.
+This keeps the adapter itself reproducible. Composite interpretation is now
+implemented one layer downstream in `racenote_horse_evidence_card.py`, where
+hidden-strength / fragile-form candidates, contradictions, repeatability, and
+comment evidence are versioned independently from the adapter.
 
 ## 9. Forecast lifecycle
 
