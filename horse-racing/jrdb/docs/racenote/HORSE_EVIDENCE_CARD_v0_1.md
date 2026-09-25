@@ -309,7 +309,28 @@ v0.1 records at least:
 
 A missing history must never be silently converted to neutral evidence.
 
-## 13. Short-comment bridge
+## 13. Source-run context
+
+Horse Evidence Card now preserves source-run context for every RaceReview run:
+
+- run_ref
+- race_date
+- venue_code
+- surface_code
+- distance_m
+- field_size
+- finish
+- pace_shape
+
+This is provenance / transferability context, not a score.
+
+General Evidence uses only source runs that actually support selected
+RaceReview evidence when checking target-condition overlap.
+
+v0.1 may recognize exact same surface and exact same distance. It must not
+invent a distance tolerance or infer venue-code equivalence.
+
+## 14. Short-comment bridge
 
 The Card includes comment_evidence.
 
@@ -333,7 +354,7 @@ Future examples may therefore become:
 
 Those sentences are future renderer output, not hard-coded v0.1 decisions.
 
-## 14. Current boundary and next step
+## 15. Current boundary and next step
 
 v0.1 Card uses RaceReview historical evidence only.
 
