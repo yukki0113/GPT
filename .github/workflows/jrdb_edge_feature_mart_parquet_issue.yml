@@ -1,0 +1,241 @@
+name: JRDB Edge Feature Mart Parquet migration via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  migrate:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_FEATURE_MART_PARQUET]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+              'warehouse_current_drive_file_id','warehouse_manifest_drive_file_id',
+              'warehouse_generation_id','warehouse_manifest_sha256',
+              'bac_staging_folder_id','kyi_staging_folder_id',
+              'sed_staging_folder_id','ukc_staging_folder_id',
+              'from_year','to_year','generation_id'
+          }
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          if req['warehouse_generation_id']!='jrdb_normalized_warehouse_v1_2010_2025_g20260921':
+              raise SystemExit('unexpected Warehouse generation')
+          if not re.fullmatch(r'[0-9a-f]{64}',str(req['warehouse_manifest_sha256']).lower()):
+              raise SystemExit('invalid warehouse_manifest_sha256')
+          if not isinstance(req['from_year'],int) or not isinstance(req['to_year'],int):
+              raise SystemExit('year range must be integers')
+          if req['from_year']<2010 or req['to_year']>2025 or req['from_year']>req['to_year']:
+              raise SystemExit('year range must be within 2010..2025')
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,120}',str(req['generation_id'])):
+              raise SystemExit('invalid generation_id')
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as f:
+              for key,value in req.items():
+                  if isinstance(value,(str,int)):
+                      f.write(f'{key.upper()}={value}\n')
+          PY
+
+      - name: Install dependencies and focused tests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest gdown
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          python -m pytest -q             horse-racing/jrdb/tests/test_jrdb_edge_feature_mart_parquet.py             horse-racing/jrdb/tests/test_build_jrdb_edge_feature_mart.py             tools/data-storage/tests/test_materialize.py
+
+      - name: Download and validate Warehouse current + manifest
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/warehouse
+          curl --fail --location --retry 3             "https://drive.usercontent.google.com/download?id=$WAREHOUSE_CURRENT_DRIVE_FILE_ID&export=download&confirm=t"             -o /tmp/warehouse/current.json
+          curl --fail --location --retry 3             "https://drive.usercontent.google.com/download?id=$WAREHOUSE_MANIFEST_DRIVE_FILE_ID&export=download&confirm=t"             -o /tmp/warehouse/manifest.json
+          python - <<'PY'
+          import hashlib,json,os
+          current=json.load(open('/tmp/warehouse/current.json'))
+          manifest=json.load(open('/tmp/warehouse/manifest.json'))
+          if current.get('status')!='accepted':
+              raise SystemExit('Warehouse current is not accepted')
+          if current.get('generation_id')!=os.environ['WAREHOUSE_GENERATION_ID']:
+              raise SystemExit('Warehouse generation mismatch')
+          if manifest.get('status')!='PASS' or manifest.get('generation_id')!=current.get('generation_id'):
+              raise SystemExit('Warehouse manifest/current mismatch')
+          digest=hashlib.sha256(
+              json.dumps(manifest,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+          ).hexdigest()
+          if digest!=os.environ['WAREHOUSE_MANIFEST_SHA256'] or digest!=current.get('manifest_sha256'):
+              raise SystemExit(f'Warehouse canonical manifest SHA mismatch: {digest}')
+          if manifest.get('asset_reference_mode')!='staging_immutable_reference':
+              raise SystemExit('unexpected Warehouse asset reference mode')
+          PY
+
+      - name: Materialize immutable Warehouse families
+        env:
+          PYTHONPATH: tools/data-storage
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/warehouse/families /tmp/warehouse/cache /tmp/warehouse/materialization-audit
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source=json.load(open('/tmp/warehouse/manifest.json'))
+          for family in ('BAC','KYI','SED','UKC'):
+              assets=[x for x in source.get('assets',[]) if str(x.get('family') or '').upper()==family]
+              if len(assets)!=16:
+                  raise SystemExit(f'{family}: expected 16 assets, got {len(assets)}')
+              subset=dict(source); subset['assets']=assets
+              Path(f'/tmp/warehouse/manifest-{family}.json').write_text(
+                  json.dumps(subset,ensure_ascii=False,indent=2,sort_keys=True)+'\n'
+              )
+          PY
+          for family in BAC KYI SED UKC; do
+            folder_var="${family}_STAGING_FOLDER_ID"
+            folder_id="${!folder_var}"
+            python -m data_storage materialize-manifest               --manifest "/tmp/warehouse/manifest-$family.json"               --output-root "/tmp/warehouse/families/$family"               --cache-dir /tmp/warehouse/cache               --audit "/tmp/warehouse/materialization-audit/$family.json"               --folder "$family=$folder_id"               --folder-label "$family"               --backend auto
+          done
+
+      - name: Build Index Base compatibility from Warehouse
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/edge /tmp/audit
+          YEARS="$(python - <<'PY'
+          import json
+          r=json.load(open('/tmp/request.json'))
+          print(' '.join(str(y) for y in range(r['from_year'],r['to_year']+1)))
+          PY
+          )"
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_warehouse.py             --warehouse-manifest /tmp/warehouse/manifest.json             --asset-root BAC=/tmp/warehouse/families/BAC             --asset-root KYI=/tmp/warehouse/families/KYI             --asset-root SED=/tmp/warehouse/families/SED             --asset-root UKC=/tmp/warehouse/families/UKC             --years $YEARS             --db /tmp/edge/index.sqlite             > /tmp/audit/index_build.json
+
+      - name: Build unchanged v0.2 Feature Mart SQLite
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/build_jrdb_edge_feature_mart_v0_2.py             --source /tmp/edge/index.sqlite             --output /tmp/edge/edge_mart.sqlite             > /tmp/audit/feature_mart_sqlite_build.json
+
+      - name: Build Parquet generation
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/canonical/feature_mart/v0.2
+          python horse-racing/jrdb/src/build_jrdb_edge_feature_mart_parquet_generation.py             --sqlite /tmp/edge/edge_mart.sqlite             --output-root /tmp/canonical/feature_mart/v0.2             --generation-id "$GENERATION_ID"             --source-generation-id "$WAREHOUSE_GENERATION_ID"             --source-manifest-sha256 "$WAREHOUSE_MANIFEST_SHA256"             --result-json /tmp/audit/parquet_generation.json
+
+      - name: Full SQLite vs Parquet equivalence gate
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/audit_jrdb_edge_feature_mart_parquet_equivalence.py             --sqlite /tmp/edge/edge_mart.sqlite             --parquet "/tmp/canonical/feature_mart/v0.2/generations/$GENERATION_ID/edge_runner_fact.parquet"             --output /tmp/audit/equivalence.json
+          python - <<'PY'
+          import datetime,json,os
+          from pathlib import Path
+          root=Path('/tmp/canonical/feature_mart/v0.2')
+          pointer={
+              'status':'CURRENT',
+              'generation_id':os.environ['GENERATION_ID'],
+              'manifest':f"generations/{os.environ['GENERATION_ID']}/manifest.json",
+              'previous_generation_id':None,
+              'updated_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          }
+          (root/'current.json').write_text(json.dumps(pointer,ensure_ascii=False,indent=2)+'\n')
+          PY
+          python horse-racing/jrdb/src/jrdb_edge_feature_mart_parquet.py             --root /tmp/canonical/feature_mart/v0.2             > /tmp/audit/current_resolve.json
+          cp /tmp/request.json /tmp/audit/request.json
+          cp /tmp/warehouse/current.json /tmp/audit/warehouse_current.json
+
+      - name: Upload migration candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-feature-mart-parquet-${{ github.run_id }}
+          path: |
+            /tmp/canonical/feature_mart/v0.2/
+            /tmp/audit/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os,subprocess
+          from pathlib import Path
+          eq=json.load(open('/tmp/audit/equivalence.json'))
+          gen=json.load(open('/tmp/audit/parquet_generation.json'))
+          manifest=Path(gen['manifest'])
+          compact={
+              'status':'PASS',
+              'stage':'FEATURE_MART_PARQUET_CANDIDATE',
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-feature-mart-parquet-{os.environ['RUN_ID']}",
+              'warehouse_generation_id':os.environ['WAREHOUSE_GENERATION_ID'],
+              'generation_id':os.environ['GENERATION_ID'],
+              'rows':gen['row_count'],
+              'parquet_sha256':gen['parquet_sha256'],
+              'manifest_sha256':hashlib.sha256(manifest.read_bytes()).hexdigest(),
+              'equivalence_status':eq['status'],
+              'row_hash_equal':eq['canonical_row_hash_equal'],
+              'schema_columns_equal':eq['schema_columns_equal'],
+              'logical_types_equal':eq['logical_types_equal'],
+              'null_semantics_equal':eq['null_semantics_equal'],
+              'duplicate_key_rows_parquet':eq['duplicate_key_rows_parquet'],
+              'representative_aggregates_equal':eq['representative_aggregates_equal'],
+              'current_resolver':'PASS',
+              'drive_promoted':False,
+              'production_serving_changed':False,
+          }
+          body='JRDB_EDGE_FEATURE_MART_PARQUET_RESULT\n'+json.dumps(
+              compact,ensure_ascii=False,indent=2,sort_keys=True
+          )
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',
+                          os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',
+                          os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "Edge Feature Mart Parquet migration candidate failed closed. No current pointer or production serving was changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
