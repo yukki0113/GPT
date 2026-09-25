@@ -56,6 +56,17 @@ not open current market/JRDB-consensus information, and does not consume
 unfinished RaceReviewDB semantic labels or uncalibrated causal track-bias
 signals. See `docs/racenote/RACEREVIEW_ADAPTER_v0_1.md`.
 
+The first downstream Horse Evidence Card slice is also implemented:
+
+- `src/racenote_horse_evidence_card.py`
+- `schema/racenote_horse_evidence_card_schema_v0_1.json`
+- `docs/racenote/HORSE_EVIDENCE_CARD_v0_1.md`
+
+It converts historical Review evidence into primary/supporting positives,
+concerns, mixed context, repeatability, hidden-strength candidates,
+fragile-form candidates, contradiction, uncertainty, and comment evidence.
+It does not score horses and remains non-active for Forecast generation.
+
 ## 5. Legacy boundary
 
 The complete retained-asset inventory and import boundary is docs/racenote/legacy/README.md.
