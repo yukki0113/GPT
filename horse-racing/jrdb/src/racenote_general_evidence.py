@@ -1337,6 +1337,10 @@ def build_general_evidence(
             )
         _identity_check(horse, rr_card, horse_no)
 
+        data_lane = _data_trend_lane(race, horse)
+        review_lane = _rr_lane(rr_card)
+        ability_lane = _ability_anchor(horse)
+
         output_horses.append(
             {
                 "horse_no": horse_no,
@@ -1354,18 +1358,15 @@ def build_general_evidence(
                     ),
                 },
                 "evidence_lanes": {
-                    "data_trend": _data_trend_lane(
-                        race,
-                        horse,
-                    ),
-                    "racereview": _rr_lane(rr_card),
-                    "ability_anchor": _ability_anchor(horse),
+                    "data_trend": data_lane,
+                    "racereview": review_lane,
+                    "ability_anchor": ability_lane,
                 },
                 "prediction_interpretation": _prediction_interpretation(
                     race,
-                    _data_trend_lane(race, horse),
-                    _rr_lane(rr_card),
-                    _ability_anchor(horse),
+                    data_lane,
+                    review_lane,
+                    ability_lane,
                 ),
                 "comparison_status": "NOT_YET_PAIRWISE_COMPARED",
             }
