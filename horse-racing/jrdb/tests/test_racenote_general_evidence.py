@@ -759,6 +759,29 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             "IndependentRaceStructure-v0.1",
         )
         self.assertEqual(structure["pace_pressure"], "LOW")
+        self.assertEqual(
+            structure["position_tendency_counts"],
+            {
+                "FRONT": 1,
+                "FORWARD": 0,
+                "MID": 1,
+                "BACK": 0,
+                "UNKNOWN": 0,
+            },
+        )
+        self.assertEqual(
+            structure["position_variability_counts"],
+            {
+                "SINGLE_BAND": 2,
+                "MULTI_BAND": 0,
+                "UNAVAILABLE": 0,
+            },
+        )
+        self.assertTrue(
+            structure["policy"][
+                "front_or_forward_count_is_not_lead_contest_count"
+            ]
+        )
         first = structure["horses"][0]["historical_position"]
         second = structure["horses"][1]["historical_position"]
         self.assertEqual(first["tendency"], "FRONT")
