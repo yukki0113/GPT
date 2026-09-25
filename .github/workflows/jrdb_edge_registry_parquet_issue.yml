@@ -36,12 +36,16 @@ jobs:
           import json, os, re
           from pathlib import Path
           req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
-          required={'source_run_id','source_artifact_name','expected_serving_sha256','generation_id'}
+          required={'registry_run_id','registry_artifact_name','expected_registry_sha256','serving_run_id','serving_artifact_name','expected_serving_sha256','generation_id'}
           missing=sorted(required-set(req))
           if missing:
               raise SystemExit(f'missing required fields: {missing}')
-          if not isinstance(req['source_run_id'],int) or req['source_run_id']<=0:
-              raise SystemExit('source_run_id must be positive')
+          if not isinstance(req['registry_run_id'],int) or req['registry_run_id']<=0:
+              raise SystemExit('registry_run_id must be positive')
+          if not isinstance(req['serving_run_id'],int) or req['serving_run_id']<=0:
+              raise SystemExit('serving_run_id must be positive')
+          if not re.fullmatch(r'[0-9a-f]{64}',str(req['expected_registry_sha256']).lower()):
+              raise SystemExit('invalid expected_registry_sha256')
           if not re.fullmatch(r'[0-9a-f]{64}',str(req['expected_serving_sha256']).lower()):
               raise SystemExit('invalid expected_serving_sha256')
           if not re.fullmatch(r'[A-Za-z0-9._-]{1,120}',str(req['generation_id'])):
