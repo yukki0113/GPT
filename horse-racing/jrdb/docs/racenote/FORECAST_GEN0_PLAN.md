@@ -1,7 +1,13 @@
 # RaceNote Forecast Gen0 plan
 
-Status: CURRENT RESEARCH PLAN
-Last reviewed: 2026-09-13
+Status: CURRENT RESEARCH PLAN / TREND-FIRST AMENDMENT ACTIVE
+Last reviewed: 2026-09-25
+
+> 2026-09-25 amendment: the next forecast-generation research order is
+> `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
+> The older FSET-Gen0.1 ordering below is retained for Gen0-G000 audit and
+> historical continuity, not as the reading order for the next activation.
+> See `GENERAL_EVIDENCE_PRIORITY_v0_1.md`.
 
 ## 1. Goal
 
@@ -72,6 +78,19 @@ pre-race source resolve
 単一index、単一Edge、単一コメントだけで結論を固定しない。
 
 ## 4. Initial factor set
+
+`FSET-Gen0.1` は Gen0-G000 の初期研究factor setとして保持する。
+
+次世代のreading orderはfactor番号順ではなく、次のEvidence lane順とする。
+
+```text
+DATA_TREND
+  -> RACEREVIEW
+  -> ABILITY_ANCHOR
+  -> relative comparison
+```
+
+したがってF01基礎能力を先頭だから最重要、と解釈してはならない。
 
 初期factor setは `FSET-Gen0.1` の10ファクター。
 
