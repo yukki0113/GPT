@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import json
 import sys
 import unittest
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -298,6 +300,40 @@ class RaceNoteRaceReviewAdapterTest(unittest.TestCase):
             reader.calls[0]["before_date"],
             "2026-09-25",
         )
+
+    def test_parquet_date_value_is_json_serializable(self) -> None:
+        row = _history_row(
+            "0626a101",
+            "2026-09-20",
+            finish=5,
+            declared_class_group="CLASS_1",
+            time_class_equivalent="CLASS_2",
+            early_position_gain=0.4,
+            middle_position_gain=0.0,
+            late_position_gain=-0.3,
+            closing_gain_sec=0.2,
+            last3f_rank=1,
+        )
+        row["race_date"] = date(2026, 9, 20)
+        reader = FakeRaceReviewReader(
+            {"12345678": [row]}
+        )
+
+        sidecar = build_racereview_evidence(
+            _independent_view(),
+            reader,  # type: ignore[arg-type]
+            per_horse_limit=5,
+        )
+
+        self.assertEqual(
+            sidecar["horses"][0]["runs"][0]["race_date"],
+            "2026-09-20",
+        )
+        encoded = json.dumps(
+            sidecar,
+            ensure_ascii=False,
+        )
+        self.assertIn("2026-09-20", encoded)
 
     def test_future_history_fails_closed(self) -> None:
         histories = {
