@@ -62,7 +62,8 @@ function showMomotaroContributorDetail(horse, contributor) {
   const meta = [
     confidence ? "自信度 " + confidence : "",
     review,
-    contributor.key === "kenshow" ? tag : ""
+    contributor.key === "kenshow" ? tag : "",
+    contributor.key === "ryota" ? tag : ""
   ].filter(Boolean).join(" / ");
   dialogBody.innerHTML =
     (meta ? '<p class="newspaper-addon-meta">' + escapeHtml(meta) + '</p>' : "") +
