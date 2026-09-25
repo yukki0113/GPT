@@ -1,0 +1,300 @@
+name: RaceNote Gen0.3 real-data prepare
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: GitHub Actions run ID that produced the RaceNote artifact
+        required: true
+        type: string
+      source_artifact_name:
+        description: Exact RaceNote artifact name from source_run_id
+        required: true
+        type: string
+      bundle_name:
+        description: Exact race bundle file name, e.g. race_bundle_20260920_中山11R.json
+        required: true
+        type: string
+      racereview_drive_file_id:
+        description: Stable RaceReviewDB CURRENT Drive file ID
+        required: false
+        default: '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install gdown duckdb pyarrow
+
+      - name: Download source RaceNote artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          SOURCE_ARTIFACT_NAME: ${{ inputs.source_artifact_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racenote_source
+          gh run download "$SOURCE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$SOURCE_ARTIFACT_NAME" \
+            --dir /tmp/racenote_source
+          find /tmp/racenote_source -maxdepth 3 -type f -print
+
+      - name: Extract target RaceNote bundle
+        env:
+          BUNDLE_NAME: ${{ inputs.bundle_name }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          import zipfile
+          from pathlib import Path
+
+          source = Path('/tmp/racenote_source')
+          outer_candidates = sorted(source.rglob('RaceNote_*.zip'))
+          if len(outer_candidates) != 1:
+              raise SystemExit(
+                  f'expected exactly one RaceNote ZIP, found {outer_candidates}'
+              )
+
+          extracted = Path('/tmp/racenote_bundle')
+          extracted.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile(outer_candidates[0]) as archive:
+              members = archive.namelist()
+              wanted = os.environ['BUNDLE_NAME']
+              matches = [
+                  name
+                  for name in members
+                  if Path(name).name == wanted
+              ]
+              if len(matches) != 1:
+                  raise SystemExit(
+                      f'expected one {wanted} in RaceNote ZIP; found {matches}'
+                  )
+              info = archive.getinfo(matches[0])
+              if Path(info.filename).is_absolute() or '..' in Path(info.filename).parts:
+                  raise SystemExit('unsafe RaceNote ZIP member')
+              data = archive.read(info)
+              target = extracted / wanted
+              target.write_bytes(data)
+              print(target)
+          PY
+
+      - name: Build Independent firewall view
+        env:
+          BUNDLE_NAME: ${{ inputs.bundle_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racenote_prepare/firewall
+          python horse-racing/jrdb/src/racenote_gen0_2_input_firewall.py \
+            "/tmp/racenote_bundle/$BUNDLE_NAME" \
+            --output-dir /tmp/racenote_prepare/firewall
+          test -s /tmp/racenote_prepare/firewall/independent_view.json
+
+      - name: Download and extract RaceReviewDB CURRENT
+        env:
+          RACEREVIEW_DRIVE_ID: ${{ inputs.racereview_drive_file_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racereview_download /tmp/racereview_extract
+          gdown "$RACEREVIEW_DRIVE_ID" \
+            -O /tmp/racereview_download/RaceReviewDB_CURRENT.zip
+          test -s /tmp/racereview_download/RaceReviewDB_CURRENT.zip
+          python -m zipfile -t \
+            /tmp/racereview_download/RaceReviewDB_CURRENT.zip >/dev/null
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          source = Path('/tmp/racereview_download/RaceReviewDB_CURRENT.zip')
+          destination = Path('/tmp/racereview_extract')
+          resolved = destination.resolve()
+
+          with zipfile.ZipFile(source) as archive:
+              bad = archive.testzip()
+              if bad is not None:
+                  raise SystemExit(f'corrupt RaceReview member: {bad}')
+              for member in archive.infolist():
+                  target = (destination / member.filename).resolve()
+                  try:
+                      target.relative_to(resolved)
+                  except ValueError as exc:
+                      raise SystemExit(
+                          f'unsafe RaceReview ZIP member: {member.filename}'
+                      ) from exc
+              archive.extractall(destination)
+
+          current_files = sorted(destination.rglob('current.json'))
+          if len(current_files) != 1:
+              raise SystemExit(
+                  f'expected one RaceReview current.json; found {current_files}'
+              )
+          root = current_files[0].parent
+          Path('/tmp/racereview_root.txt').write_text(
+              str(root),
+              encoding='utf-8',
+          )
+          print(root)
+          PY
+
+      - name: Build RaceReview evidence sidecar
+        run: |
+          set -euo pipefail
+          RR_ROOT="$(cat /tmp/racereview_root.txt)"
+          PYTHONPATH=horse-racing/jrdb/src \
+            python horse-racing/jrdb/src/racenote_racereview_adapter.py \
+              --independent-view /tmp/racenote_prepare/firewall/independent_view.json \
+              --racereview-root "$RR_ROOT" \
+              --per-horse-limit 5 \
+              --output /tmp/racenote_prepare/racereview_evidence.json
+
+      - name: Build Horse Evidence Cards
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+            python horse-racing/jrdb/src/racenote_horse_evidence_card.py \
+              --racereview-evidence /tmp/racenote_prepare/racereview_evidence.json \
+              --output /tmp/racenote_prepare/horse_evidence_cards.json
+
+      - name: Build General Evidence
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+            python horse-racing/jrdb/src/racenote_general_evidence.py \
+              --independent-view /tmp/racenote_prepare/firewall/independent_view.json \
+              --racereview-card /tmp/racenote_prepare/horse_evidence_cards.json \
+              --output /tmp/racenote_prepare/general_evidence.json
+
+      - name: Build All-Runner Synthesis authoring request
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          from pathlib import Path
+          from racenote_all_runner_synthesis import build_synthesis_request
+
+          general_path = Path('/tmp/racenote_prepare/general_evidence.json')
+          general = json.loads(general_path.read_text(encoding='utf-8'))
+          request = build_synthesis_request(general)
+          output = Path('/tmp/racenote_prepare/all_runner_synthesis_request.json')
+          output.write_text(
+              json.dumps(request, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print(
+              json.dumps(
+                  {
+                      'status': 'PASS',
+                      'runner_count': len(request['horses']),
+                      'target': request['target'],
+                      'output': str(output),
+                  },
+                  ensure_ascii=False,
+              )
+          )
+          PY
+
+      - name: Write compact prepare summary
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          from pathlib import Path
+
+          general = json.loads(
+              Path('/tmp/racenote_prepare/general_evidence.json').read_text(
+                  encoding='utf-8'
+              )
+          )
+          rr = json.loads(
+              Path('/tmp/racenote_prepare/racereview_evidence.json').read_text(
+                  encoding='utf-8'
+              )
+          )
+          cards = json.loads(
+              Path('/tmp/racenote_prepare/horse_evidence_cards.json').read_text(
+                  encoding='utf-8'
+              )
+          )
+
+          summary = {
+              'status': 'PASS',
+              'target': general['target'],
+              'runner_count': len(general['horses']),
+              'racereview_generation_id': rr['source'].get('generation_id'),
+              'racereview_history_status_counts': {},
+              'prediction_interpretation_state_counts': {
+                  'data_trend': {},
+                  'racereview': {},
+              },
+              'hidden_strength_horse_nos': [],
+              'fragile_form_horse_nos': [],
+              'next_stage': general['next_stage'],
+          }
+
+          for horse in rr['horses']:
+              status = horse.get('history_status') or 'UNKNOWN'
+              counts = summary['racereview_history_status_counts']
+              counts[status] = counts.get(status, 0) + 1
+
+          for horse in general['horses']:
+              interpretation = horse['prediction_interpretation']
+              trend = interpretation['data_trend']['state']
+              review = interpretation['racereview']['state']
+              trend_counts = summary[
+                  'prediction_interpretation_state_counts'
+              ]['data_trend']
+              review_counts = summary[
+                  'prediction_interpretation_state_counts'
+              ]['racereview']
+              trend_counts[trend] = trend_counts.get(trend, 0) + 1
+              review_counts[review] = review_counts.get(review, 0) + 1
+
+          for card in cards['horses']:
+              profile = card.get('profile') or {}
+              hidden = profile.get('hidden_strength') or {}
+              fragile = profile.get('fragile_form') or {}
+              if hidden.get('status') not in (None, '', 'NONE'):
+                  summary['hidden_strength_horse_nos'].append(
+                      card['horse_no']
+                  )
+              if fragile.get('status') not in (None, '', 'NONE'):
+                  summary['fragile_form_horse_nos'].append(
+                      card['horse_no']
+                  )
+
+          Path('/tmp/racenote_prepare/prepare_summary.json').write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(summary, ensure_ascii=False))
+          PY
+
+      - name: Upload prepared Gen0.3 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-gen0-3-prepare-${{ github.run_id }}
+          path: /tmp/racenote_prepare/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
