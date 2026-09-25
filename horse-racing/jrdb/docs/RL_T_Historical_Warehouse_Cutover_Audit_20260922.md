@@ -255,3 +255,59 @@ It will revalidate the accepted Warehouse and full Index Base equivalence before
 RunPerf / Official RunPerf / Training Research / Stage1b / frozen RL-T v0.2 fingerprint.
 
 No production cutover has been performed yet.
+
+
+## Direct Warehouse materialization — PASS
+
+The production-oriented Historical materializer no longer depends on recursive
+`gdown --folder`.
+
+Implementation:
+
+- `src/materialize_jrdb_warehouse_from_object_index.py`
+- frozen per-family Drive object indexes under `horse-racing/jrdb/config/`
+- accepted final manifest remains the authority for relative path / SHA-256 / size
+- Drive object indexes only supply immutable candidate file IDs
+
+Formal smoke:
+
+- Issue #1301
+- run `36086217055`
+- generation: `jrdb_normalized_warehouse_v1_2010_2025_g20260921`
+- selected families: BAC/KYI/CHA/CYB/SED/UKC
+- expected assets: 96
+- materialized assets: 96
+- every object verified against accepted manifest SHA-256 and size
+- result: PASS
+
+This closes the recursive-folder transport blocker for normal Historical
+Warehouse consumption.
+
+## Remaining cutover gates — 2026-09-25
+
+1. Downstream scientific non-regression
+   - Issue #1297
+   - run `36085137368`
+   - status: RUNNING
+   - compares RunPerf / Official RunPerf / Training Research / Stage1b /
+     projected `training_edge_input` / frozen RL-T v0.2 fingerprint.
+
+2. Legacy record-hash compatibility package persistence
+   - Issue #1300
+   - run `36086214247`
+   - status: RUNNING
+   - canonical Drive destination:
+     `record_hash_compat_v1_2010_2025`
+     under the accepted generation folder.
+   - after persistence, normal operation must not refetch Historical Raw merely
+     to reconstruct legacy `record_hash`.
+
+3. Historical Warehouse + current 2026 Raw hybrid equivalence
+   - Issue #1302
+   - run `36086427809`
+   - fixed replay boundary: target 2026-09-20, settled results through 2026-09-19
+   - legacy side: Raw 2010-2026
+   - candidate side: Warehouse 2010-2025 + unchanged Raw/PACI/SED 2026
+   - all eight Index Base relations must match exactly.
+
+Production workflow files remain unchanged until these gates pass.
