@@ -660,6 +660,20 @@ def _review_source_refs(
                 ref = _text(raw_ref)
                 if ref and ref not in refs:
                     refs.append(ref)
+    profile = lane.get("profile")
+    if isinstance(profile, Mapping):
+        for signal_name in ("hidden_strength", "fragile_form"):
+            signal = profile.get(signal_name)
+            if not isinstance(signal, Mapping):
+                continue
+            raw_refs = signal.get("source_run_refs")
+            if not isinstance(raw_refs, list):
+                continue
+            for raw_ref in raw_refs:
+                ref = _text(raw_ref)
+                if ref and ref not in refs:
+                    refs.append(ref)
+
     return refs
 
 
