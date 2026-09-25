@@ -12,6 +12,8 @@ on:
       - 'horse-racing/jrdb/src/audit_jrdb_edge_v03_statistical_shadow.py'
       - 'horse-racing/jrdb/src/apply_jrdb_edge_v03_statistical_gates_shadow.py'
       - 'horse-racing/jrdb/src/build_jrdb_edge_v03_shadow_catalog.py'
+      - 'horse-racing/jrdb/src/audit_jrdb_edge_v03_operational_replay.py'
+      - 'horse-racing/jrdb/src/audit_jrdb_edge_v03_operational_replay.py'
       - 'horse-racing/jrdb/src/validate_jrdb_edge_semantic_hierarchy_v0_3.py'
       - 'horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json'
       - 'tools/data-storage/data_storage/materialize.py'
@@ -23,12 +25,16 @@ on:
       - 'horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_statistical_shadow.py'
       - 'horse-racing/jrdb/tests/test_apply_jrdb_edge_v03_statistical_gates_shadow.py'
       - 'horse-racing/jrdb/tests/test_build_jrdb_edge_v03_shadow_catalog.py'
+      - 'horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_operational_replay.py'
+      - 'horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_operational_replay.py'
       - 'horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py'
       - '.github/workflows/jrdb_edge_forward_freeze_issue.yml'
       - '.github/workflows/jrdb_edge_v03_incremental_shadow_issue.yml'
       - '.github/workflows/jrdb_edge_v03_statistical_shadow_issue.yml'
       - '.github/workflows/jrdb_edge_v03_b2b_gate_issue.yml'
       - '.github/workflows/jrdb_edge_v03_shadow_catalog_issue.yml'
+      - '.github/workflows/jrdb_edge_v03_operational_replay_issue.yml'
+      - '.github/workflows/jrdb_edge_v03_operational_replay_issue.yml'
       - '.github/workflows/jrdb_edge_parquet_tests.yml'
   pull_request:
     paths:
@@ -88,6 +94,7 @@ jobs:
             horse-racing/jrdb/src/audit_jrdb_edge_v03_statistical_shadow.py \
             horse-racing/jrdb/src/apply_jrdb_edge_v03_statistical_gates_shadow.py \
             horse-racing/jrdb/src/build_jrdb_edge_v03_shadow_catalog.py \
+            horse-racing/jrdb/src/audit_jrdb_edge_v03_operational_replay.py \
             horse-racing/jrdb/src/validate_jrdb_edge_semantic_hierarchy_v0_3.py \
             tools/data-storage/data_storage/materialize.py
       - name: Run Edge Parquet regressions
@@ -104,5 +111,6 @@ jobs:
             horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_statistical_shadow.py \
             horse-racing/jrdb/tests/test_apply_jrdb_edge_v03_statistical_gates_shadow.py \
             horse-racing/jrdb/tests/test_build_jrdb_edge_v03_shadow_catalog.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_operational_replay.py \
             horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py \
             tools/data-storage/tests/test_materialize.py
