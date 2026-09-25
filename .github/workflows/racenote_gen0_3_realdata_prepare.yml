@@ -1,6 +1,8 @@
 name: RaceNote Gen0.3 real-data prepare
 
 on:
+  issues:
+    types: [opened]
   workflow_dispatch:
     inputs:
       source_run_id:
@@ -24,9 +26,18 @@ on:
 permissions:
   actions: read
   contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_GEN03_PREPARE]'
 
 jobs:
   prepare:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' &&
+       github.event.issue.user.login == 'yukki0113' &&
+       startsWith(github.event.issue.title, '[RACENOTE_GEN03_PREPARE]'))
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -46,11 +57,109 @@ jobs:
           python -m pip install --disable-pip-version-check --upgrade pip
           python -m pip install gdown duckdb pyarrow
 
+      - name: Parse prepare request
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          INPUT_SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          INPUT_SOURCE_ARTIFACT_NAME: ${{ inputs.source_artifact_name }}
+          INPUT_BUNDLE_NAME: ${{ inputs.bundle_name }}
+          INPUT_RACEREVIEW_DRIVE_FILE_ID: ${{ inputs.racereview_drive_file_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          event_name = os.environ.get('EVENT_NAME') or ''
+          if event_name == 'issues':
+              title = os.environ.get('ISSUE_TITLE') or ''
+              prefix = os.environ['REQUEST_PREFIX']
+              request_id = title[len(prefix):].strip()
+              if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+                  raise SystemExit('invalid request_id')
+              try:
+                  request = json.loads(
+                      (os.environ.get('ISSUE_BODY') or '').strip()
+                  )
+              except json.JSONDecodeError as exc:
+                  raise SystemExit(
+                      f'Issue body must be raw JSON: {exc}'
+                  ) from exc
+              source_run_id = str(request.get('source_run_id') or '').strip()
+              source_artifact_name = str(
+                  request.get('source_artifact_name') or ''
+              ).strip()
+              bundle_name = str(request.get('bundle_name') or '').strip()
+              racereview_drive_file_id = str(
+                  request.get('racereview_drive_file_id')
+                  or '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+              ).strip()
+          else:
+              request_id = 'manual-' + os.environ.get('GITHUB_RUN_ID', 'run')
+              source_run_id = (
+                  os.environ.get('INPUT_SOURCE_RUN_ID') or ''
+              ).strip()
+              source_artifact_name = (
+                  os.environ.get('INPUT_SOURCE_ARTIFACT_NAME') or ''
+              ).strip()
+              bundle_name = (
+                  os.environ.get('INPUT_BUNDLE_NAME') or ''
+              ).strip()
+              racereview_drive_file_id = (
+                  os.environ.get('INPUT_RACEREVIEW_DRIVE_FILE_ID')
+                  or '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+              ).strip()
+
+          if not re.fullmatch(r'\d+', source_run_id):
+              raise SystemExit('source_run_id must be numeric')
+          if not source_artifact_name:
+              raise SystemExit('source_artifact_name is required')
+          if not re.fullmatch(
+              r'race_bundle_\d{8}_.+\d{1,2}R\.json',
+              bundle_name,
+          ):
+              raise SystemExit('bundle_name is invalid')
+          if not re.fullmatch(
+              r'[A-Za-z0-9_-]+',
+              racereview_drive_file_id,
+          ):
+              raise SystemExit('racereview_drive_file_id is invalid')
+
+          resolved = {
+              'request_id': request_id,
+              'source_run_id': int(source_run_id),
+              'source_artifact_name': source_artifact_name,
+              'bundle_name': bundle_name,
+              'racereview_drive_file_id': racereview_drive_file_id,
+          }
+          Path('/tmp/gen03_prepare_request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
+              f.write(f'SOURCE_RUN_ID={resolved["source_run_id"]}\n')
+              f.write(
+                  'SOURCE_ARTIFACT_NAME='
+                  + resolved['source_artifact_name']
+                  + '\n'
+              )
+              f.write(f'BUNDLE_NAME={resolved["bundle_name"]}\n')
+              f.write(
+                  'RACEREVIEW_DRIVE_ID='
+                  + resolved['racereview_drive_file_id']
+                  + '\n'
+              )
+              f.write(f'REQUEST_ID={resolved["request_id"]}\n')
+          print(json.dumps(resolved, ensure_ascii=False))
+          PY
+
       - name: Download source RaceNote artifact
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
-          SOURCE_ARTIFACT_NAME: ${{ inputs.source_artifact_name }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/racenote_source
@@ -61,8 +170,6 @@ jobs:
           find /tmp/racenote_source -maxdepth 3 -type f -print
 
       - name: Extract target RaceNote bundle
-        env:
-          BUNDLE_NAME: ${{ inputs.bundle_name }}
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -112,8 +219,6 @@ jobs:
           test -s /tmp/racenote_prepare/firewall/independent_view.json
 
       - name: Download and extract RaceReviewDB CURRENT
-        env:
-          RACEREVIEW_DRIVE_ID: ${{ inputs.racereview_drive_file_id }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/racereview_download /tmp/racereview_extract
@@ -298,3 +403,69 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           compression-level: 6
+
+      - name: Comment prepare result
+        if: always() && github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary_path = Path('/tmp/racenote_prepare/prepare_summary.json')
+          if summary_path.is_file():
+              summary = json.loads(
+                  summary_path.read_text(encoding='utf-8')
+              )
+          else:
+              summary = {
+                  'status': 'FAIL',
+                  'error': 'prepare_summary.json missing',
+              }
+
+          request_path = Path('/tmp/gen03_prepare_request.json')
+          if request_path.is_file():
+              request = json.loads(
+                  request_path.read_text(encoding='utf-8')
+              )
+          else:
+              request = {}
+
+          result = {
+              'request_id': request.get('request_id'),
+              'status': summary.get('status', 'FAIL'),
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'artifact_name': (
+                  'racenote-gen0-3-prepare-'
+                  + os.environ['GITHUB_RUN_ID']
+              ),
+              'target': summary.get('target'),
+              'runner_count': summary.get('runner_count'),
+              'racereview_generation_id': summary.get(
+                  'racereview_generation_id'
+              ),
+          }
+          Path('/tmp/gen03_prepare_comment.md').write_text(
+              'RACENOTE_GEN03_PREPARE_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file /tmp/gen03_prepare_comment.md
+
+      - name: Close prepare issue
+        if: always() && github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY"
