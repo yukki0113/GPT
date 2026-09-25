@@ -1154,6 +1154,15 @@ def main() -> int:
         required=True,
     )
     parser.add_argument(
+        "--all-runner-synthesis-audit",
+        type=Path,
+        required=False,
+        help=(
+            "Canonical path: bind Pairwise to audited All-Runner Synthesis. "
+            "Omit only for legacy replay/compatibility."
+        ),
+    )
+    parser.add_argument(
         "--output-audit",
         type=Path,
         required=True,
@@ -1166,10 +1175,22 @@ def main() -> int:
     comparison = json.loads(
         args.comparison.read_text(encoding="utf-8")
     )
-    audit = validate_pairwise_comparison(
-        general_evidence,
-        comparison,
-    )
+    if args.all_runner_synthesis_audit is not None:
+        synthesis_audit = json.loads(
+            args.all_runner_synthesis_audit.read_text(
+                encoding="utf-8"
+            )
+        )
+        audit = validate_pairwise_comparison_from_synthesis(
+            general_evidence,
+            synthesis_audit,
+            comparison,
+        )
+    else:
+        audit = validate_pairwise_comparison(
+            general_evidence,
+            comparison,
+        )
 
     args.output_audit.parent.mkdir(
         parents=True,
