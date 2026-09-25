@@ -175,9 +175,14 @@ jobs:
                    '--dir', str(support_root)],
                   check=True,
               )
-              candidates = sorted(support_root.rglob('analysis-parquet-canonical.tar.xz'))
+              candidates = sorted(
+                  list(support_root.rglob('analysis-parquet-canonical.tar.xz'))
+                  + list(support_root.rglob('analysis-parquet-candidate.tar.xz'))
+              )
               if len(candidates) != 1:
-                  raise SystemExit(f'support artifact must contain one Parquet candidate; found {candidates}')
+                  raise SystemExit(
+                      f'support artifact must contain exactly one supported Parquet archive; found {candidates}'
+                  )
               extract_parquet_archive(candidates[0])
           else:
               downloaded = Path('/tmp/jrdb_analysis_parquet.tar.xz')
