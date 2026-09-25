@@ -39,7 +39,6 @@ jobs:
               'warehouse_current_drive_file_id','warehouse_manifest_drive_file_id',
               'warehouse_generation_id','warehouse_manifest_sha256',
               'bac_staging_folder_id','kyi_staging_folder_id',
-              'cha_staging_folder_id','cyb_staging_folder_id',
               'sed_staging_folder_id','ukc_staging_folder_id',
               'from_year','to_year','generation_id'
           }
@@ -109,7 +108,8 @@ jobs:
           import json
           from pathlib import Path
           source=json.load(open('/tmp/warehouse/manifest.json'))
-          for family in ('BAC','KYI','CHA','CYB','SED','UKC'):
+          selected=('BAC','KYI','SED','UKC')
+          for family in selected:
               assets=[x for x in source.get('assets',[]) if str(x.get('family') or '').upper()==family]
               if len(assets)!=16:
                   raise SystemExit(f'{family}: expected 16 assets, got {len(assets)}')
@@ -117,8 +117,22 @@ jobs:
               Path(f'/tmp/warehouse/manifest-{family}.json').write_text(
                   json.dumps(subset,ensure_ascii=False,indent=2,sort_keys=True)+'\n'
               )
+          view=dict(source)
+          view['assets']=[
+              x for x in source.get('assets',[])
+              if str(x.get('family') or '').upper() in selected
+          ]
+          view['families']=[
+              x for x in source.get('families',[])
+              if str(x.get('family') or '').upper() in selected
+          ]
+          view['consumer_view']='EDGE_FEATURE_MART_V0_2_REQUIRED_FAMILIES'
+          view['source_canonical_manifest_sha256']='a25cedfb5d76c1f9f2ed65308181e2f5222f294ee8015f93aabe3771fb7f1087'
+          Path('/tmp/warehouse/manifest-index-base.json').write_text(
+              json.dumps(view,ensure_ascii=False,indent=2,sort_keys=True)+'\n'
+          )
           PY
-          for family in BAC KYI CHA CYB SED UKC; do
+          for family in BAC KYI SED UKC; do
             folder_var="${family}_STAGING_FOLDER_ID"
             folder_id="${!folder_var}"
             python -m data_storage materialize-manifest               --manifest "/tmp/warehouse/manifest-$family.json"               --output-root "/tmp/warehouse/families/$family"               --cache-dir /tmp/warehouse/cache               --audit "/tmp/warehouse/materialization-audit/$family.json"               --folder "$family=$folder_id"               --folder-label "$family"               --backend auto
@@ -136,7 +150,7 @@ jobs:
           print(' '.join(str(y) for y in range(r['from_year'],r['to_year']+1)))
           PY
           )"
-          python horse-racing/jrdb/src/build_jrdb_index_base_from_warehouse.py             --warehouse-manifest /tmp/warehouse/manifest.json             --asset-root BAC=/tmp/warehouse/families/BAC             --asset-root KYI=/tmp/warehouse/families/KYI             --asset-root CHA=/tmp/warehouse/families/CHA             --asset-root CYB=/tmp/warehouse/families/CYB             --asset-root SED=/tmp/warehouse/families/SED             --asset-root UKC=/tmp/warehouse/families/UKC             --years $YEARS             --db /tmp/edge/index.sqlite             > /tmp/audit/index_build.json
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_warehouse.py             --warehouse-manifest /tmp/warehouse/manifest-index-base.json             --asset-root BAC=/tmp/warehouse/families/BAC             --asset-root KYI=/tmp/warehouse/families/KYI             --asset-root SED=/tmp/warehouse/families/SED             --asset-root UKC=/tmp/warehouse/families/UKC             --years $YEARS             --db /tmp/edge/index.sqlite             > /tmp/audit/index_build.json
 
       - name: Build unchanged v0.2 Feature Mart SQLite
         env:
