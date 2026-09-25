@@ -386,6 +386,35 @@ def _replace_day(
         raise
 
 
+def validate_incremental_dates(
+    current_max: str,
+    target_dates: Sequence[str],
+) -> list[str]:
+    """Validate chronological append/last-date replace semantics."""
+    normalized_current = _text(current_max)
+    normalized_targets = sorted(
+        {
+            _text(value)
+            for value in target_dates
+            if _text(value)
+        }
+    )
+    if not normalized_current:
+        raise RaceReviewIncrementalError(
+            "RaceReviewDB CURRENT has no period_to"
+        )
+    if not normalized_targets:
+        raise RaceReviewIncrementalError(
+            "no target RaceReviewDB dates"
+        )
+    if normalized_targets[0] < normalized_current:
+        raise RaceReviewIncrementalError(
+            "historical correction requires replay from the corrected date: "
+            f"target={normalized_targets[0]} current_max={normalized_current}"
+        )
+    return normalized_targets
+
+
 def incremental_update(
     *,
     current_root: Path,
@@ -435,12 +464,10 @@ def incremental_update(
             "no target RaceReviewDB dates parsed from PACI"
         )
 
-    target_dates = sorted(staged_dates)
-    if target_dates[0] < current_max:
-        raise RaceReviewIncrementalError(
-            "historical correction requires replay from the corrected date: "
-            f"target={target_dates[0]} current_max={current_max}"
-        )
+    target_dates = validate_incremental_dates(
+        current_max,
+        list(staged_dates),
+    )
 
     history = seed_history_from_current(
         snapshot,
