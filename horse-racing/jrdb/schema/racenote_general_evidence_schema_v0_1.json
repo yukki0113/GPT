@@ -267,6 +267,7 @@
       "required": [
         "code",
         "label",
+        "redundancy_group_id",
         "direction",
         "sample_size_band",
         "condition",
@@ -277,6 +278,9 @@
       "properties": {
         "code": {"type": "string"},
         "label": {"type": "string"},
+        "redundancy_group_id": {
+          "enum": ["SURFACE", "DISTANCE", "VENUE"]
+        },
         "direction": {
           "enum": ["POSITIVE", "NEGATIVE", "NEUTRAL", "UNKNOWN"]
         },
