@@ -43,7 +43,7 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
 ## Surfaces
 
 - `newspaper.html`: 既存Newspaper runtimeを共有、過去走5走固定、共有compact historyを使用、桃太郎3人欄を追加
-- `predictions.html`: りょーたS / 王子 / イルカの一覧
+- `predictions.html`: りょーたS / 王子 / イルカの一覧。けんしょーの暫定JRDB印は掲載しない。
 - `fact-lite.html`: 既存Fact Lite runtimeと配布SQLiteを共有、OPFSだけ桃太郎専用
 
 
@@ -110,7 +110,7 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 
 - りょーた: 各Rの通常印は新聞列へ表示。特注馬は review_horse=true + comment としてリンク化し、予想一覧にも掲載する。
 - おーじ: 回顧該当馬のみ review_horse=true + comment として、🐬と同様に新聞リンク + 予想一覧へ掲載する。
-- けんしょー: RaceNote完成まで保留。JRDB印転記は暫定案であり正式運用ではない。
+- けんしょー: RaceNote完成まで、JRDB総合印の ◎ / ○ / ▲ / 注 だけを新聞のけん列へ暫定転記する。短評・モーダル・予想一覧には出さない。
 
 
 ## 表示方針
