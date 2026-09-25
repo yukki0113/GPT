@@ -751,3 +751,108 @@ Next turn:
 
 Turn 3 - resolve immediate next JRA starts and Phase-1 outcomes from this
 checkpoint without rebuilding Turn 2.
+
+
+## 21. Turn 3 execution checkpoint
+
+Status:
+
+NEXT_START_FACT_READY
+
+Execution date:
+
+2026-09-25
+
+Successful workflow:
+
+- run_id: 36109088127
+- Issue: #1350
+- result: PASS
+
+Input:
+
+- Turn2 checkpoint Drive file ID:
+  1rd9KRoFmJYJcRlRyblprP997n9TdJOLi
+- RaceReviewDB CURRENT generation:
+  jrdb_race_review_v0_1_incremental_g36094708797
+- observation horizon:
+  2026-09-22
+
+Resolution contract:
+
+- one row per Turn2 source race_horse_key
+- immediate later JRA start is selected by the same stable horse_id
+- target ordering is deterministic by race_date / race_key / horse_no
+- next_date must be strictly greater than source_date
+- source features are not rebuilt or modified
+- NO_NEXT_START_BY_HORIZON remains censored, not a failure
+- jump next starts are retained as RESOLVED_JUMP and excluded from flat Phase-1
+  outcome metrics
+- invalid next results are retained as RESOLVED_INVALID_RESULT and excluded
+  from Phase-1 outcome metrics
+
+Population:
+
+- Turn2 source rows: 18,707
+- Turn3 outcome rows: 18,707
+- distinct source keys: 18,707
+- joined backtest fact rows: 18,707
+- resolved flat valid: 10,685
+- resolved jump: 33
+- resolved invalid: 78
+- no next start by 2026-09-22 horizon: 7,911
+- Phase-1 eligible rows: 10,685
+- minimum observed days to next start: 6
+- maximum observed days to next start: 141
+- hard errors: 0
+
+By evaluation period:
+
+- Discovery source rows: 11,648
+- Discovery Phase-1 eligible: 8,619
+- Holdout source rows: 7,059
+- Holdout Phase-1 eligible: 2,066
+
+Right-censoring warning:
+
+The 2026-08-01 through 2026-09-22 Holdout source window is not yet fully
+mature at an observation horizon of 2026-09-22. In particular, late-August and
+September source starts have had limited or zero time to produce a subsequent
+JRA start.
+
+Therefore Turn 6 must not interpret "a next start happened by 2026-09-22" as a
+predictive success criterion, and must not compare only observed Holdout rows
+without a maturity policy. Before Holdout validation, freeze a censoring policy
+such as a minimum follow-up window / mature-source cutoff, or extend the
+outcome horizon with later RaceReviewDB data. Discovery rule search remains
+separate and may proceed without consulting Holdout outcomes.
+
+Checkpoint artifact:
+
+- Drive folder:
+  race_review/v0_1/next_watch/v0_1
+- Drive file:
+  RaceReviewDB_NextWatch_Turn3_g36109088127.zip
+- Drive file ID:
+  1LXlUZ4dhCmoRSDPyJZcAhF-SpHvGroMg
+- contained outcome Parquet:
+  next_watch_next_start_results.parquet
+- contained joined fact:
+  next_watch_backtest_fact.parquet
+- contained audit:
+  next_start_audit.json
+
+Object hashes:
+
+- next_watch_next_start_results.parquet
+  SHA256:
+  32ecbbb92723ec095ccce4718748906523df0e15f85c5defb8ae5257d6ec43c3
+- next_watch_backtest_fact.parquet
+  SHA256:
+  fe46db0770465734722253e7e4fc004e11e22fc10960966cb6567de4b5c983fb
+
+Next turn:
+
+Turn 4 - Discovery single-signal screening using only Discovery rows and
+Phase-1 eligible next-start outcomes. Holdout outcomes remain outside threshold
+selection.
