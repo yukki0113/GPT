@@ -21,6 +21,83 @@ from racenote_forecast_gen0_3 import (  # noqa: E402
 )
 
 
+def _general_horse(
+    horse_no: int,
+    name: str,
+) -> dict[str, object]:
+    return {
+        "horse_no": horse_no,
+        "horse_name": name,
+        "horse_id": f"H{horse_no}",
+        "evidence_lanes": {
+            "data_trend": {
+                "horse_history": {
+                    "observations": [
+                        {
+                            "code": "SAME_DISTANCE",
+                            "direction": "POSITIVE",
+                            "sample_size_band": "small",
+                            "redundancy_group_id": "DISTANCE",
+                        }
+                    ]
+                },
+                "population_context": {
+                    "frame": {
+                        "code": "FRAME_TREND",
+                        "status": "AVAILABLE",
+                    },
+                    "sire": {
+                        "code": "SIRE_TREND",
+                        "status": "AVAILABLE",
+                    },
+                    "jockey": {
+                        "code": "JOCKEY_TREND",
+                        "status": "AVAILABLE",
+                    },
+                },
+            },
+            "racereview": {
+                "primary_positive": [
+                    {
+                        "code": "RESULT_UNDERRATES_TIME",
+                    }
+                ],
+                "supporting_positive": [],
+                "concerns": [],
+                "mixed_context": [],
+                "profile": {
+                    "hidden_strength": {
+                        "reason_codes": [
+                            "RESULT_UNDERRATES_TIME"
+                        ]
+                    },
+                    "fragile_form": {
+                        "reason_codes": []
+                    },
+                },
+                "uncertainties": [],
+            },
+            "ability_anchor": {
+                "profile": {
+                    "latest": 60.0,
+                    "peak": 62.0,
+                    "typical_median": 59.0,
+                    "minimum": 55.0,
+                    "mad": 2.0,
+                }
+            },
+        },
+        "prediction_interpretation": {
+            "race_structure": {
+                "pace_pressure": "MEDIUM",
+                "horse_historical_position": {
+                    "tendency": "FORWARD",
+                },
+            }
+        },
+    }
+
+
 def _general() -> dict[str, object]:
     return {
         "general_schema_version": "RaceNote-General-Evidence-0.1",
@@ -58,9 +135,9 @@ def _general() -> dict[str, object]:
             "policy": {},
         },
         "horses": [
-            {"horse_no": 1, "horse_name": "A"},
-            {"horse_no": 2, "horse_name": "B"},
-            {"horse_no": 3, "horse_name": "C"},
+            _general_horse(1, "A"),
+            _general_horse(2, "B"),
+            _general_horse(3, "C"),
         ],
         "next_stage": {
             "name": "PAIRWISE_COMPARISON",
@@ -88,6 +165,23 @@ def _pairwise(general: dict[str, object]) -> dict[str, object]:
             "training_edge_visible": False,
         },
         "final_order": [1, 2, 3],
+        "comparisons": [
+            {
+                "horse_a": 1,
+                "horse_b": 2,
+                "preferred_horse_no": 1,
+            },
+            {
+                "horse_a": 2,
+                "horse_b": 3,
+                "preferred_horse_no": 2,
+            },
+            {
+                "horse_a": 1,
+                "horse_b": 3,
+                "preferred_horse_no": 1,
+            },
+        ],
     }
 
 
@@ -101,7 +195,52 @@ def _scenario(
         "target": copy.deepcopy(pairwise["target"]),
         "axis_robustness": "ROBUST",
         "pairwise_recheck_recommended": False,
-        "scenarios": [],
+        "horse_sensitivity": [
+            {
+                "horse_no": 1,
+                "pairwise_rank": 1,
+                "scenario_ranks": {
+                    "SLOW": 1,
+                    "MEDIUM": 1,
+                    "FAST": 1,
+                },
+            },
+            {
+                "horse_no": 2,
+                "pairwise_rank": 2,
+                "scenario_ranks": {
+                    "SLOW": 2,
+                    "MEDIUM": 2,
+                    "FAST": 2,
+                },
+            },
+            {
+                "horse_no": 3,
+                "pairwise_rank": 3,
+                "scenario_ranks": {
+                    "SLOW": 3,
+                    "MEDIUM": 3,
+                    "FAST": 3,
+                },
+            },
+        ],
+        "scenarios": [
+            {
+                "scenario_id": "SLOW",
+                "order": [1, 2, 3],
+                "key_reason_codes": ["PACE_SLOW"],
+            },
+            {
+                "scenario_id": "MEDIUM",
+                "order": [1, 2, 3],
+                "key_reason_codes": ["PACE_MEDIUM"],
+            },
+            {
+                "scenario_id": "FAST",
+                "order": [1, 2, 3],
+                "key_reason_codes": ["PACE_FAST"],
+            },
+        ],
     }
 
 
@@ -161,6 +300,35 @@ def _horse(
         "why_above_next": "条件Evidenceで一歩上。",
         "scenario_adjustment_reason": "",
         "edge_performance": _edge_none(),
+        "decision_trace": {
+            "trace_version": "RaceNote-Decision-Trace-0.1",
+            "primary": {
+                "lane": "DATA_TREND",
+                "evidence_codes": ["SAME_DISTANCE"],
+            },
+            "secondary": {
+                "lane": "RACEREVIEW",
+                "evidence_codes": [
+                    "RESULT_UNDERRATES_TIME"
+                ],
+            },
+            "concern": {
+                "lane": "SCENARIO",
+                "evidence_codes": ["SCENARIO_FAST"],
+            },
+            "pairwise_support_horse_nos": (
+                [2] if horse_no == 1
+                else [3] if horse_no == 2
+                else []
+            ),
+            "scenario_risk_ids": [],
+            "edge_ids": [],
+            "comment_evidence_codes": [
+                "SAME_DISTANCE",
+                "RESULT_UNDERRATES_TIME",
+                "SCENARIO_FAST",
+            ],
+        },
     }
 
 
