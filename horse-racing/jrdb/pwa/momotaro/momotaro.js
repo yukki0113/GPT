@@ -222,60 +222,8 @@ renderTable = function () {
 };
 
 /**
- * 3人分の印・短評を桃太郎専用カードへ描画する。
- */
-function renderMomotaroFriends() {
-  const card = document.getElementById("momotaro-friends-card");
-  const container = document.getElementById("momotaro-friends");
-  if (!card || !container || !currentBundle || !Array.isArray(currentBundle.horses)) return;
-
-  const horsesWithPredictions = currentBundle.horses.filter(function (horse) {
-    return MOMOTARO_CONTRIBUTORS.some(function (entry) {
-      if (entry.key === "kenshow") return false;
-      return momotaroHasPrediction(momotaroPrediction(horse, entry.key));
-    });
-  });
-
-  if (horsesWithPredictions.length === 0) {
-    container.innerHTML = '<div class="empty-state">桃太郎予想データはまだありません。</div>';
-    card.hidden = false;
-    return;
-  }
-
-  const rows = horsesWithPredictions.map(function (horse) {
-    const horseNo = horse && horse.key ? horse.key.horse_no : "";
-    const horseName = horse && horse.basic ? horse.basic.horse_name : "";
-    const contributors = MOMOTARO_CONTRIBUTORS.filter(function (entry) {
-      return entry.key !== "kenshow";
-    }).map(function (entry) {
-      const value = momotaroPrediction(horse, entry.key);
-      const mark = text(value.mark, "");
-      const confidence = text(value.confidence, "");
-      const comment = text(value.comment, "");
-      const review = value.review_horse === true && entry.key === "ryota" ? "特注" : "";
-      const meta = [confidence ? "自信度 " + confidence : "", review].filter(Boolean).join(" / ");
-
-      return '<div class="momotaro-contributor">' +
-        '<div><strong>' + escapeHtml(entry.label) + '</strong></div>' +
-        '<div class="momotaro-mark">' + escapeHtml(mark || "—") + '</div>' +
-        (meta ? '<div class="query-status">' + escapeHtml(meta) + '</div>' : "") +
-        '<div class="momotaro-comment">' + escapeHtml(comment || "短評なし") + '</div>' +
-        '</div>';
-    }).join("");
-
-    return '<div class="momotaro-horse-card">' +
-      '<strong>' + escapeHtml(text(horseNo, "")) + ' ' + escapeHtml(text(horseName, "")) + '</strong>' +
-      '<div class="momotaro-contributors">' + contributors + '</div>' +
-      '</div>';
-  }).join("");
-
-  container.innerHTML = rows;
-  card.hidden = false;
-}
-
-/**
  * 個人PWAのRaceNote短評は桃太郎では表示せず、JRDBレース情報だけ補助表示する。
- * 短評の主表示は3人の予想・短評カードに統一する。
+ * 友人コメントの主表示は印セルのモーダルと予想一覧に統一する。
  */
 function applyMomotaroRaceNotesLayout() {
   const card = document.getElementById("newspaper-notes-card");
@@ -298,6 +246,5 @@ const momotaroBaseRenderBundle = renderBundle;
 renderBundle = function () {
   historyCount = 5;
   momotaroBaseRenderBundle();
-  renderMomotaroFriends();
   applyMomotaroRaceNotesLayout();
 };
