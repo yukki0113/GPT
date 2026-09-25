@@ -133,12 +133,18 @@ Design boundary:
 > retained only as a pre-redesign reference.
 >
 > Pre-Freeze chain:
-> `General Evidence -> Pairwise -> Scenario -> Base Forecast -> EdgeDB Performance-only -> Final Forecast -> Freeze`.
+> `General Evidence -> All-Runner Synthesis -> Pairwise -> Scenario -> Base Forecast -> EdgeDB Performance-only -> Final Forecast -> Freeze`.
 > Reading priority: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY
 
 Prediction reading layer (2026-09-25):
 
 - `PredictionInterpretation-v0.1` is embedded per horse in General Evidence.
+- `RaceNote-All-Runner-Synthesis-0.1` is the canonical full-field draft layer.
+- It authors a complete non-scoring draft order after reading every runner.
+- Ability cannot be the primary ordering basis.
+- low-confidence / mixed / small-sample / RR-contradiction adjacent boundaries become HIGH Pairwise priorities.
+- canonical Pairwise request and validation bind to the Synthesis semantic hash and draft order.
+- canonical doc: `docs/racenote/ALL_RUNNER_SYNTHESIS_v0_1.md`.
 - It organizes trend direction + sample size + redundancy, Race Structure,
   RaceReview hidden/fragile/repeatability/target overlap, and Ability Anchor.
 - It does not score or rank.
