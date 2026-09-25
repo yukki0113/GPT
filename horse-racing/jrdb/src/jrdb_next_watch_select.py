@@ -148,6 +148,10 @@ def main() -> int:
         rule for rule in frozen
         if isinstance(rule, dict) and rule.get("track") == "hidden_value"
     ]
+    rule_descriptions = {
+        str(rule["rule_id"]): str(rule["description"])
+        for rule in hidden_rules
+    }
     if not hidden_rules:
         raise SelectorError("no hidden-value rules in frozen contract")
 
@@ -249,6 +253,10 @@ def main() -> int:
                 "race_key": item["race_key"],
                 "race_horse_key": item["race_horse_key"],
                 "horse_no": item["horse_no"],
+                "venue_code": item["venue_code"],
+                "surface_code": item["surface_code"],
+                "distance_m": item["distance_m"],
+                "declared_class_group": item["declared_class_group"],
                 "finish": item["finish"],
                 "performance_signal": item["performance_signal"],
                 "last3f_speed_percentile": item["last3f_speed_percentile"],
@@ -256,6 +264,10 @@ def main() -> int:
                 "performance_vs_prior3": item["performance_vs_prior3"],
                 "last3f_pct_vs_prior3": item["last3f_pct_vs_prior3"],
                 "matched_rules": matched,
+                "matched_rule_descriptions": [
+                    rule_descriptions[rule_id]
+                    for rule_id in matched
+                ],
             })
 
         # One horse can only have one start per JRA date in normal operation,
