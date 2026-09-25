@@ -78,6 +78,18 @@ class MomotaroPwaContractTest(unittest.TestCase):
         momotaro_position = html.index('./momotaro.css?v=6')
         self.assertLess(shared_position, momotaro_position)
 
+    def test_kenshow_temporarily_mirrors_selected_jrdb_marks_only(self) -> None:
+        script = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
+        predictions = (MOMOTARO_ROOT / "predictions.js").read_text(encoding="utf-8")
+
+        self.assertIn('new Set(["◎", "○", "▲", "注"])', script)
+        self.assertIn("function momotaroKenshowTemporaryMark(horse)", script)
+        self.assertIn('const mark = text(marks.total, "");', script)
+        self.assertIn("MOMOTARO_KENSHOW_JRDB_MARKS.has(mark)", script)
+        self.assertIn('contributor.key === "kenshow"', script)
+        self.assertNotIn('type: "kenshow"', predictions)
+        self.assertNotIn('source: "けんしょー"', predictions)
+
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
 
