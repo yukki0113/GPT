@@ -1,7 +1,12 @@
 # RaceNote Forecast Gen0.2 Prediction Contract v0.2
 
-Status: IMPLEMENTED / NOT YET ACTIVATED
+Status: IMPLEMENTED / NOT ACTIVATED / RETAINED REFERENCE
 Date: 2026-09-17
+
+> 2026-09-25: current research direction moved to the trend-first evidence
+> policy `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
+> This Gen0.2 contract remains unchanged for reproducibility. A future
+> activation using the new evidence pipeline must use a new forecast version.
 
 ## 1. Scope
 
