@@ -57,6 +57,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
     def test_prediction_list_groups_by_race_and_uses_basic_horse_name(self) -> None:
         html = (MOMOTARO_ROOT / "predictions.html").read_text(encoding="utf-8")
         script = (MOMOTARO_ROOT / "predictions.js").read_text(encoding="utf-8")
+        newspaper_script = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
 
         self.assertIn('const basic = horse.basic || {};', script)
         self.assertIn('horse_name: predictionText(basic.horse_name, "")', script)
@@ -65,6 +66,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('source: "🐬"', script)
         self.assertIn('signal: "次走注目S"', script)
         self.assertNotIn('signal: "回顧馬"', script)
+        self.assertNotIn('"回顧馬"', newspaper_script)
         self.assertIn('data-filter="keibailuka">🐬</button>', html)
         self.assertIn('id="prediction-refresh" type="button"', html)
         self.assertIn('<div class="button-row" hidden>', html)
