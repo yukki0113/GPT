@@ -145,7 +145,7 @@ class RaceReviewReader:
             )
         marks = ", ".join("?" for _ in paths)
         return (
-            f"read_parquet([{marks}], union_by_name=true)",
+            f"read_parquet([{marks}], union_by_name=true, hive_partitioning=false)",
             [str(path) for path in paths],
         )
 
