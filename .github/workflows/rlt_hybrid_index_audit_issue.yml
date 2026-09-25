@@ -1,0 +1,233 @@
+name: RL-T Hybrid Index Base Equivalence
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  PACI_FOLDER_URL: 'https://drive.google.com/drive/folders/1zFajenPU5jxInZCcmqZzkgiaYil3MD8r'
+  SED_FOLDER_URL: 'https://drive.google.com/drive/folders/1mm6sU8-skS7K2XYHm2citcorUVyMyL58'
+  TARGET_DATE: '20260920'
+  TARGET_SHORT: '260920'
+  SETTLED_THROUGH: '20260919'
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RL_T_HYBRID_INDEX_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'gdown==6.2.0' 'requests==2.34.2' \
+            'duckdb==1.1.3' 'pyarrow==25.0.1' 'PyYAML==6.0.3'
+          PYTHONPATH=tools/data-storage python -m data_storage check-deps
+
+      - name: Download accepted manifest
+        run: |
+          mkdir -p /tmp/rlt_hybrid/final /tmp/rlt_hybrid/report /tmp/rlt_hybrid/raw
+          python - <<'PY'
+          import requests
+          from pathlib import Path
+          target=Path('/tmp/rlt_hybrid/final/manifest.json')
+          with requests.get(
+              'https://drive.usercontent.google.com/download',
+              params={'id':'1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN','export':'download','confirm':'t'},
+              stream=True, timeout=(20,180),
+          ) as r:
+              r.raise_for_status()
+              with target.open('wb') as h:
+                  for block in r.iter_content(1024*1024):
+                      if block:
+                          h.write(block)
+          PY
+
+      - name: Materialize accepted Historical Warehouse directly
+        env:
+          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/materialize_jrdb_warehouse_from_object_index.py \
+            --warehouse-manifest /tmp/rlt_hybrid/final/manifest.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_bac_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_kyi_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_cha_a_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_cha_b_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_cyb_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_sed_a_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_sed_b_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_ukc_v1.json \
+            --output-root /tmp/rlt_hybrid/warehouse \
+            --families BAC KYI CHA CYB SED UKC \
+            --result-json /tmp/rlt_hybrid/report/warehouse_materialize.json
+
+      - name: Fetch Historical Raw for legacy baseline and compatibility oracle
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2010 --to-year 2025 \
+            --kinds BAC KYI SED UKC CHA CYB \
+            --output-dir /tmp/rlt_hybrid/raw \
+            --manifest /tmp/rlt_hybrid/report/historical_raw_manifest.jsonl \
+            --sleep-seconds 0.5 --max-retries 4 --retry-backoff-seconds 2 \
+            > /tmp/rlt_hybrid/report/historical_raw_stdout.log \
+            2> /tmp/rlt_hybrid/report/historical_raw_stderr.log
+
+      - name: Build legacy record-hash compatibility sidecar
+        env:
+          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/build_jrdb_index_base_record_hash_compat.py \
+            --raw-root /tmp/rlt_hybrid/raw \
+            --years $(seq 2010 2025) \
+            --output-root /tmp/rlt_hybrid/hash_compat \
+            > /tmp/rlt_hybrid/report/hash_compat_stdout.log
+
+      - name: Resolve and download fixed 2026 replay inputs
+        run: |
+          mkdir -p /tmp/rlt_hybrid/paci /tmp/rlt_hybrid/sed
+          gdown "$PACI_FOLDER_URL" --json --quiet > /tmp/rlt_hybrid/report/paci_inventory.json
+          gdown "$SED_FOLDER_URL" --json --quiet > /tmp/rlt_hybrid/report/sed_inventory.json
+          python horse-racing/jrdb/src/download_public_drive_inventory.py \
+            --inventory /tmp/rlt_hybrid/report/paci_inventory.json \
+            --output-dir /tmp/rlt_hybrid/paci \
+            --prefix PACI --year 2026 --to-date "$TARGET_DATE" \
+            --max-attempts 6 --base-sleep-seconds 1.5 \
+            --audit-json /tmp/rlt_hybrid/report/paci_download_audit.json
+          python horse-racing/jrdb/src/download_public_drive_inventory.py \
+            --inventory /tmp/rlt_hybrid/report/sed_inventory.json \
+            --output-dir /tmp/rlt_hybrid/sed \
+            --prefix SED --year 2026 --to-date "$SETTLED_THROUGH" \
+            --max-attempts 6 --base-sleep-seconds 1.5 \
+            --audit-json /tmp/rlt_hybrid/report/sed_download_audit.json
+          test -n "$(find /tmp/rlt_hybrid/paci -type f -name 'PACI260920.zip' -print -quit)"
+
+      - name: Bundle fixed 2026 replay Raw
+        run: |
+          mkdir -p /tmp/rlt_hybrid/paci_flat /tmp/rlt_hybrid/daily/SED
+          find /tmp/rlt_hybrid/paci -type f -name 'PACI26????.zip' -exec cp '{}' /tmp/rlt_hybrid/paci_flat/ ';'
+          find /tmp/rlt_hybrid/sed -type f -name 'SED26????.zip' -exec cp '{}' /tmp/rlt_hybrid/daily/SED/ ';'
+          python horse-racing/jrdb/src/bundle_jrdb_paci_year.py \
+            --source-dir /tmp/rlt_hybrid/paci_flat \
+            --output-root /tmp/rlt_hybrid/raw \
+            --year 2026 --kinds BAC KYI UKC CHA CYB \
+            --to-date "$TARGET_DATE" \
+            --audit-json /tmp/rlt_hybrid/report/paci_bundle_audit.json
+          python horse-racing/jrdb/src/bundle_jrdb_daily_year.py \
+            --source-root /tmp/rlt_hybrid/daily \
+            --output-root /tmp/rlt_hybrid/raw \
+            --year 2026 --kinds SED \
+            --to-date "$SETTLED_THROUGH" \
+            --audit-json /tmp/rlt_hybrid/report/sed_bundle_audit.json
+
+      - name: Build legacy Raw 2010-2026 baseline
+        env:
+          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
+            --raw-root /tmp/rlt_hybrid/raw \
+            --years $(seq 2010 2026) \
+            --db /tmp/rlt_hybrid/legacy.sqlite \
+            --no-archive-hash \
+            > /tmp/rlt_hybrid/report/legacy_build.log
+
+      - name: Build Warehouse Historical plus current Raw hybrid
+        env:
+          PYTHONPATH: tools/data-storage:horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/build_jrdb_index_base_hybrid.py \
+            --warehouse-manifest /tmp/rlt_hybrid/final/manifest.json \
+            --asset-root BAC=/tmp/rlt_hybrid/warehouse \
+            --asset-root KYI=/tmp/rlt_hybrid/warehouse \
+            --asset-root CHA=/tmp/rlt_hybrid/warehouse \
+            --asset-root CYB=/tmp/rlt_hybrid/warehouse \
+            --asset-root SED=/tmp/rlt_hybrid/warehouse \
+            --asset-root UKC=/tmp/rlt_hybrid/warehouse \
+            --record-hash-compat-manifest /tmp/rlt_hybrid/hash_compat/manifest.json \
+            --raw-root /tmp/rlt_hybrid/raw \
+            --db /tmp/rlt_hybrid/hybrid.sqlite \
+            --no-current-archive-hash \
+            > /tmp/rlt_hybrid/report/hybrid_build.log
+
+      - name: Compare all eight Index Base relations exactly
+        run: |
+          python horse-racing/jrdb/src/audit_jrdb_index_base_db_equivalence.py \
+            --left /tmp/rlt_hybrid/legacy.sqlite \
+            --right /tmp/rlt_hybrid/hybrid.sqlite \
+            --out /tmp/rlt_hybrid/report/hybrid_equivalence.json
+
+      - name: Verify 2026 replay boundary
+        run: |
+          python - <<'PY'
+          import json
+          import sqlite3
+          from pathlib import Path
+          con=sqlite3.connect('/tmp/rlt_hybrid/hybrid.sqlite')
+          try:
+              min_year,max_year=con.execute('SELECT MIN(year),MAX(year) FROM race_context').fetchone()
+              max_date=con.execute('SELECT MAX(race_date) FROM race_context WHERE year=2026').fetchone()[0]
+              current_results=con.execute("SELECT COUNT(*) FROM runner_result WHERE source_member LIKE 'SED260920.%'").fetchone()[0]
+          finally:
+              con.close()
+          if (min_year,max_year)!=(2010,2026):
+              raise SystemExit('hybrid coverage is not 2010..2026')
+          if max_date!='2026-09-20':
+              raise SystemExit('expected target PACI date 2026-09-20, got '+str(max_date))
+          if current_results!=0:
+              raise SystemExit('target-date SED leaked into replay input')
+          Path('/tmp/rlt_hybrid/report/replay_boundary.json').write_text(json.dumps({'min_year':min_year,'max_year':max_year,'max_2026_race_date':max_date,'target_date_sed_rows':current_results},indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/rlt_hybrid/report/hybrid_equivalence.json')
+          if p.exists():
+              report=json.loads(p.read_text(encoding='utf-8'))
+              result={'status':report.get('status'),'target_date':'2026-09-20','settled_through':'2026-09-19','table_pass':{k:v.get('pass') for k,v in report.get('tables',{}).items()}}
+          else:
+              result={'status':'FAIL','message':'hybrid equivalence report missing'}
+          Path('/tmp/result.md').write_text('RL_T_HYBRID_INDEX_AUDIT_RESULT\n'+json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result.md
+
+      - name: Upload audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rlt-hybrid-index-audit-${{ github.run_id }}
+          path: /tmp/rlt_hybrid/report/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Close issue on PASS
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
