@@ -110,8 +110,18 @@ The downstream Pairwise Comparison research contract is also implemented:
 Pairwise does not mechanically select a horse. It validates GPT-authored
 relative comparisons, requires direct evidence at every final-order boundary,
 requires reversal conditions, and requires an explicit reason whenever lower
-priority evidence overrides contrary trend/RaceReview evidence. The next
-research stage is Scenario Robustness.
+priority evidence overrides contrary trend/RaceReview evidence.
+
+Scenario Robustness v0.1 is also implemented:
+
+- `src/racenote_scenario_robustness.py`
+- `schema/racenote_scenario_robustness_schema_v0_1.json`
+- `docs/racenote/SCENARIO_ROBUSTNESS_v0_1.md`
+
+It tests SLOW / MEDIUM / FAST pace scenarios, derives whether the Pairwise
+axis is ROBUST / CONDITIONAL / FRAGILE, and records horse-by-horse rank
+sensitivity without automatically replacing the Pairwise order. The next
+research stage is the new trend-first Forecast contract.
 
 ## 5. Legacy boundary
 
