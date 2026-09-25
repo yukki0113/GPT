@@ -1,0 +1,63 @@
+{
+  "version": "0.3",
+  "status": "IMPLEMENTED_NOT_ACTIVATED",
+  "planned_generation_id": "Gen0-G001",
+  "forecast_version": "RaceNote-Forecast-Gen0.3",
+  "evidence_policy_version": "TrendFirst-RR-Pairwise-Scenario-v0.1",
+  "forecast_schema": "schema/racenote_forecast_gen0_schema_v0_3.json",
+  "forecast_helper": "src/racenote_forecast_gen0_3.py",
+  "supersedes_before_activation": {
+    "forecast_version": "RaceNote-Forecast-Gen0.2",
+    "planned_generation_id": "Gen0-G001",
+    "reason": "trend-first redesign was completed before Gen0.2 activation"
+  },
+  "source_chain": [
+    "RaceNote-General-Evidence-0.1",
+    "RaceNote-Pairwise-Audit-0.1",
+    "RaceNote-Scenario-Robustness-Audit-0.1"
+  ],
+  "decision_order": [
+    "DATA_TREND",
+    "RACEREVIEW",
+    "ABILITY_ANCHOR",
+    "PAIRWISE_COMPARISON",
+    "SCENARIO_ROBUSTNESS",
+    "BASE_FORECAST",
+    "EDGEDB_PERFORMANCE_OVERLAY",
+    "FINAL_FORECAST",
+    "FREEZE"
+  ],
+  "edge_contract": {
+    "serving_profile": "STANDARD",
+    "performance_levels": [
+      "CONFIRMED",
+      "SUGGESTIVE"
+    ],
+    "value_signal_before_freeze": false,
+    "consumer_recomputes_edge_conditions": false,
+    "redundancy_and_conflict_metadata_preserved": true
+  },
+  "hard_boundaries": {
+    "current_jrdb_consensus_before_freeze": false,
+    "current_market_before_freeze": false,
+    "edge_value_before_freeze": false,
+    "rl_value_before_freeze": false,
+    "training_edge_in_forecast": false,
+    "target_result_before_freeze": false,
+    "numeric_weighted_score_default": false,
+    "simple_ability_auto_rank": false
+  },
+  "post_freeze_open_order": [
+    "JRDB_CONSENSUS",
+    "MARKET",
+    "EDGE_VALUE",
+    "RL_VALUE",
+    "BET_PLAN"
+  ],
+  "activation_gate": {
+    "sample_manifest_required": true,
+    "generation_registration_required": true,
+    "formal_true_forward_freeze_required": true,
+    "current_generation_remains_gen0_g000_until_activation": true
+  }
+}
