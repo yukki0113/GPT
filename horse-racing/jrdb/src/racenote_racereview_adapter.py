@@ -229,6 +229,10 @@ def _run_evidence(row: Mapping[str, object]) -> dict[str, object]:
     return {
         "race_key": projected["race_key"],
         "race_date": projected["race_date"],
+        "venue_code": projected["venue_code"],
+        "surface_code": projected["surface_code"],
+        "distance_m": projected["distance_m"],
+        "field_size": projected["field_size"],
         "finish": projected["finish"],
         "families": {
             "ability": {
