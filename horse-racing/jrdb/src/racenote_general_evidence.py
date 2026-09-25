@@ -1338,6 +1338,50 @@ def _race_structure(
     }
 
 
+def _race_day_facts(
+    race: Mapping[str, object],
+) -> dict[str, object]:
+    """Expose only explicitly pre-result independent race-day facts."""
+    raw = race.get("race_day_facts")
+    unavailable = {
+        "status": "UNAVAILABLE",
+        "source_kind": None,
+        "as_of": None,
+        "weather": None,
+        "track_condition": None,
+        "policy": {
+            "result_independent_required": True,
+            "may_auto_rank": False,
+            "missing_is_not_negative_evidence": True,
+        },
+    }
+    if not isinstance(raw, Mapping):
+        return unavailable
+    if raw.get("result_independent") is not True:
+        return unavailable
+
+    source_kind = _text(raw.get("source_kind"))
+    weather = _text(raw.get("weather"))
+    track_condition = _text(raw.get("track_condition"))
+    if not source_kind:
+        return unavailable
+    if not weather and not track_condition:
+        return unavailable
+
+    return {
+        "status": "AVAILABLE",
+        "source_kind": source_kind,
+        "as_of": _text(raw.get("as_of")) or None,
+        "weather": weather or None,
+        "track_condition": track_condition or None,
+        "policy": {
+            "result_independent_required": True,
+            "may_auto_rank": False,
+            "missing_is_not_negative_evidence": True,
+        },
+    }
+
+
 def _race_data_context(
     race: Mapping[str, object],
 ) -> dict[str, object]:
@@ -1376,6 +1420,7 @@ def _race_data_context(
 
     return {
         "conditions": conditions,
+        "race_day_facts": _race_day_facts(race),
         "available_trends": trends,
         "trend_sources_v0_1": trend_sources,
         "independent_future_trend_sources": [
