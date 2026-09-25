@@ -9,6 +9,7 @@ from data_storage.errors import MaterializationError
 from data_storage.materialize import (
     AssetSpec,
     SourceEntry,
+    _dedupe_source_entries,
     extract_google_drive_file_id,
     load_manifest_assets,
     load_manifest_folder_refs,
@@ -108,6 +109,33 @@ def test_wrong_cache_does_not_pass(tmp_path: Path):
     )
     assert result["status"] == "FAIL"
     assert result["failure_count"] == 1
+
+
+def test_exact_duplicate_source_entries_are_deduped():
+    entry = SourceEntry(
+        path="objects/cha/year=2010/a.parquet",
+        url="https://drive.google.com/uc?id=same",
+        file_id="same",
+        root_label="CHA",
+    )
+    assert _dedupe_source_entries([entry, entry]) == [entry]
+
+
+def test_distinct_same_path_sources_remain_ambiguous():
+    body = b"x"
+    sha = digest(body)
+    asset = AssetSpec(
+        relative_path=f"objects/x/year=2024/{sha}.parquet",
+        sha256=sha,
+        size_bytes=1,
+    )
+    entries = [
+        SourceEntry(path=asset.relative_path, file_id="1", root_label="X"),
+        SourceEntry(path=asset.relative_path, file_id="2", root_label="X"),
+    ]
+    assert len(_dedupe_source_entries(entries)) == 2
+    with pytest.raises(MaterializationError, match="ambiguous"):
+        resolve_assets([asset], entries)
 
 
 def test_ambiguous_source_fails():
