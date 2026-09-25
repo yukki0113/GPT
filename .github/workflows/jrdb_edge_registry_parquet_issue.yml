@@ -71,13 +71,18 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p /tmp/source
-          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY"             --name "$SOURCE_ARTIFACT_NAME" --dir /tmp/source
-          mapfile -t registries < <(find /tmp/source -type f -name edge_registry.sqlite -print)
-          mapfile -t catalogs < <(find /tmp/source -type f -name edge_serving_catalog_v0_2.jsonl -print)
+          mkdir -p /tmp/source-registry /tmp/source-serving
+          gh run download "$REGISTRY_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$REGISTRY_ARTIFACT_NAME" --dir /tmp/source-registry
+          mapfile -t registries < <(find /tmp/source-registry -type f -name edge_registry.sqlite -print)
           test "${#registries[@]}" -eq 1
-          test "${#catalogs[@]}" -eq 1
           cp "${registries[0]}" /tmp/edge_registry.sqlite
+          echo "$EXPECTED_REGISTRY_SHA256  /tmp/edge_registry.sqlite" | sha256sum -c -
+
+          gh run download "$SERVING_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$SERVING_ARTIFACT_NAME" --dir /tmp/source-serving
+          mapfile -t catalogs < <(find /tmp/source-serving -type f -name edge_serving_catalog_v0_2.jsonl -print)
+          test "${#catalogs[@]}" -eq 1
           cp "${catalogs[0]}" /tmp/edge_serving_catalog_v0_2.jsonl
           echo "$EXPECTED_SERVING_SHA256  /tmp/edge_serving_catalog_v0_2.jsonl" | sha256sum -c -
 
