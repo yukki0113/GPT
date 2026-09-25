@@ -182,6 +182,81 @@
       },
       "additionalProperties": false
     },
+    "traceReason": {
+      "type": "object",
+      "required": [
+        "lane",
+        "evidence_codes"
+      ],
+      "properties": {
+        "lane": {
+          "enum": [
+            "DATA_TREND",
+            "RACEREVIEW",
+            "ABILITY_ANCHOR",
+            "RACE_STRUCTURE",
+            "SCENARIO",
+            "EDGE_PERFORMANCE",
+            "UNCERTAINTY",
+            "MIXED",
+            "NONE"
+          ]
+        },
+        "evidence_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "decisionTrace": {
+      "type": "object",
+      "required": [
+        "trace_version",
+        "primary",
+        "secondary",
+        "concern",
+        "pairwise_support_horse_nos",
+        "scenario_risk_ids",
+        "edge_ids",
+        "comment_evidence_codes"
+      ],
+      "properties": {
+        "trace_version": {
+          "const": "RaceNote-Decision-Trace-0.1"
+        },
+        "primary": {"$ref": "#/$defs/traceReason"},
+        "secondary": {"$ref": "#/$defs/traceReason"},
+        "concern": {"$ref": "#/$defs/traceReason"},
+        "pairwise_support_horse_nos": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "scenario_risk_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["SLOW", "MEDIUM", "FAST"]
+          }
+        },
+        "edge_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "comment_evidence_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    },
     "horse": {
       "type": "object",
       "required": [
@@ -201,7 +276,8 @@
         "main_concern",
         "why_above_next",
         "scenario_adjustment_reason",
-        "edge_performance"
+        "edge_performance",
+        "decision_trace"
       ],
       "properties": {
         "horse_no": {"type": "integer", "minimum": 1},
@@ -220,7 +296,8 @@
         "main_concern": {"type": "string", "minLength": 1},
         "why_above_next": {"type": "string"},
         "scenario_adjustment_reason": {"type": "string"},
-        "edge_performance": {"$ref": "#/$defs/edgePerformance"}
+        "edge_performance": {"$ref": "#/$defs/edgePerformance"},
+        "decision_trace": {"$ref": "#/$defs/decisionTrace"}
       },
       "additionalProperties": false
     }
