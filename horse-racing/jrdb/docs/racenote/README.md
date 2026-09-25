@@ -42,14 +42,28 @@ Do not introduce fixed weights or a single score as an implicit current default.
 
 All history statistics are computed as-of-exclusive from Analysis canonical. Existing RaceNote v1.0 schema and Forecast/Freeze/Guard semantics remain unchanged.
 
-## 4. Legacy boundary
+## 4. RaceReviewDB historical review evidence
+
+RaceReviewDB may be consumed through the additive sidecar adapter
+`src/racenote_racereview_adapter.py`. The adapter joins by JRDB blood
+registration number (`horse.basic.horse_id`), queries history with
+`race_date < target_date`, and emits only the stable v0.1 Review fields
+needed for historical evidence.
+
+The adapter is implemented but is not an automatic Forecast-generation
+activation. It does not mutate the authoritative RaceNote v1.0 bundle, does
+not open current market/JRDB-consensus information, and does not consume
+unfinished RaceReviewDB semantic labels or uncalibrated causal track-bias
+signals. See `docs/racenote/RACEREVIEW_ADAPTER_v0_1.md`.
+
+## 5. Legacy boundary
 
 The complete retained-asset inventory and import boundary is docs/racenote/legacy/README.md.
 v0.2 control, v1.1-P gated prediction, Edge policy, and related frozen outputs remain
 historical reproducibility/benchmark assets. They are not current Forecast Gen0 logic,
 and their output is not an automatic fallback or current prediction input.
 
-## 5. Operating rules
+## 6. Operating rules
 
 Use latest main, current contracts, and current source as truth. Do not reintroduce Stats Mart into RaceNote request payloads, Store resolution, workflow downloads, or active enrichment. Keep legacy builders and schemas physically retained until a separately authorized phase.
 
