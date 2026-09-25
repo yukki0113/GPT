@@ -217,9 +217,30 @@ Post-Freeze only:
 
 - popularity pattern joined to current popularity / odds
 
-## 8. Comparison rules
+## 8. Prediction Interpretation
 
-The next Pairwise Comparison contract must read lanes in this order:
+General Evidence now derives a deterministic, non-scoring
+`PredictionInterpretation-v0.1` for every runner before Pairwise.
+
+It summarizes:
+
+- directional DATA_TREND evidence with sample-size visibility;
+- trend redundancy groups so overlapping distance evidence is not counted twice;
+- independent Race Structure context;
+- RaceReview hidden-strength / fragile-form / contradiction state;
+- RaceReview repeatability;
+- exact source-run surface / distance overlap with the target;
+- Ability Anchor as floor / ceiling context only;
+- positive and concern case components.
+
+The Interpretation profile does not rank horses. Pairwise consumes it first,
+then verifies the underlying raw lanes.
+
+See `docs/racenote/PREDICTION_INTERPRETATION_v0_1.md`.
+
+## 9. Comparison rules
+
+The Pairwise Comparison contract must read lanes in this order:
 
     DATA_TREND
     -> RACEREVIEW
@@ -238,7 +259,7 @@ Rules:
 
 No numeric weights are authorized by v0.1.
 
-## 9. Short-comment relationship
+## 10. Short-comment relationship
 
 Short comments should ultimately explain the same evidence used in prediction.
 
@@ -261,7 +282,7 @@ Or:
 
 The renderer is future work. v0.1 only preserves structured comment evidence.
 
-## 10. Version boundary
+## 11. Version boundary
 
 Forecast Gen0.2 remains an implemented, non-activated historical contract.
 
