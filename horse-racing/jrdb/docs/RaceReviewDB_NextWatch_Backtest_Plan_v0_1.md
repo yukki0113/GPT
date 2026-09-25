@@ -856,3 +856,148 @@ Next turn:
 Turn 4 - Discovery single-signal screening using only Discovery rows and
 Phase-1 eligible next-start outcomes. Holdout outcomes remain outside threshold
 selection.
+
+
+## 22. Turn 4 execution checkpoint
+
+Status:
+
+DISCOVERY_SINGLE_SIGNAL_READY
+
+Execution date:
+
+2026-09-25
+
+Successful workflow:
+
+- run_id: 36109590220
+- Issue: #1356
+- result: PASS
+
+Input:
+
+- Turn3 checkpoint Drive file ID:
+  1LXlUZ4dhCmoRSDPyJZcAhF-SpHvGroMg
+- Discovery Phase-1 eligible rows:
+  8,619
+- Holdout outcomes:
+  not used for signal screening or threshold selection
+
+Discovery baseline:
+
+- win rate:
+  7.70%
+- top3 rate:
+  23.33%
+- top5 rate:
+  38.48%
+- average next finish:
+  7.34
+- median next finish:
+  7
+- average finish improvement:
+  -0.37
+
+Screened signal families:
+
+- source finish band
+- performance_signal quintile
+- last3f_speed_percentile band
+- overall position gain
+- late position gain
+- trouble score
+- late-break score
+- performance vs prior 3 starts
+- last3F percentile vs prior 3 starts
+- recent-5-start performance-best flag
+- pace shape
+- race pace code
+- fourth-corner frontness
+- closing_gain_sec on available-evidence rows only
+
+Descriptive findings, Discovery only:
+
+- source finish 1-3 is the strongest bucket:
+  N=2,126, next top3=41.96%, lift=+18.62 percentage points.
+  This is expected persistence of already-good performance and is not by itself
+  a useful hidden-value Next-Watch rule.
+- performance_signal top quintile:
+  N=1,723, next top3=39.00%, lift=+15.67 pp.
+- last3F percentile 90-100:
+  N=1,458, next top3=34.22%, lift=+10.89 pp.
+- last3F percentile 80-90:
+  N=1,015, next top3=31.33%, lift=+8.00 pp.
+- fourth-corner FRONT:
+  N=2,873, next top3=30.70%, lift=+7.37 pp.
+- last3F percentile improvement vs prior 3 starts, +10 to +20 points:
+  N=868, next top3=30.07%, lift=+6.74 pp.
+- overall position gain POS_STRONG:
+  N=1,053, next top3=29.44%, lift=+6.11 pp.
+- performance vs prior-3, +0.5 to +1.0:
+  N=1,291, next top3=26.88%, lift=+3.55 pp.
+
+Closing-gain evidence:
+
+- only 795 Discovery Phase-1 rows have closing_gain_sec
+- strong observed buckets exist, but this is a restricted evidence population
+- closing_gain must not be interpreted as an all-horse signal and NULL must
+  never be coerced to zero
+
+Trouble evidence:
+
+- jrdb_trouble_score >= 2:
+  N=33, next top3=36.36%, lift=+13.03 pp
+- the sample is too small to promote; keep as exploratory only
+
+Turn-5 search policy refinement:
+
+The strongest single bucket is source finish 1-3, which mainly confirms that
+already-good horses remain good. The project goal is to detect horses whose
+next-run value is not obvious from finishing position alone.
+
+Therefore Turn 5 should preserve two complementary tracks:
+
+1. persistence track:
+   evaluate whether high performance / closing / positional signals add value
+   beyond already-good source finish
+
+2. hidden-value defeat track:
+   explicitly test source finish >= 4 (and selected >= 6 definitions) combined
+   with strong performance, last3F, position dynamics, pace/trip opposition,
+   trouble evidence, or within-horse improvement
+
+Candidate rules must be compared against the appropriate source-finish baseline,
+not only the all-horse baseline. This avoids simply rediscovering that horses
+finishing 1-3 are more likely to run well next time.
+
+Checkpoint artifact:
+
+- Drive file:
+  RaceReviewDB_NextWatch_Turn4_g36109590220.zip
+- Drive file ID:
+  1x7JFIm9p0yCX4Hw7JqCQFcbNBhyGkwxZ
+- contained result:
+  next_watch_single_signal_discovery.parquet
+- contained audit:
+  single_signal_audit.json
+- result SHA256:
+  2ae8c27dabc3e25655a7d15775c89c66c2abcd6dba35ab190630e7e1e71d5e22
+
+Workflow note:
+
+The newly-created standalone Turn4 workflow registered after a short delay.
+A temporary Turn4 job was also added to the already-registered Turn3 workflow,
+causing duplicate execution with identical results. The temporary route was
+removed afterward. The standalone Turn4 workflow is the retained route.
+
+Superseded requests:
+
+- #1354: no target run during workflow registration delay; closed not_planned
+- #1355: no target run during registration delay; closed not_planned
+- #1356: successful Turn4 request; closed completed
+
+Next turn:
+
+Turn 5 - interpretable Discovery combinations, with source-finish-conditioned
+baselines and explicit hidden-value defeat rules. Freeze candidate definitions
+before any Holdout evaluation.
