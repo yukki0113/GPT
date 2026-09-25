@@ -779,6 +779,18 @@ def build_comparison_request(
                 "horse_b_name": _text(
                     runner_index[horse_b].get("horse_name")
                 ),
+                "horse_a_interpretation": copy.deepcopy(
+                    runner_index[horse_a].get(
+                        "prediction_interpretation",
+                        {},
+                    )
+                ),
+                "horse_b_interpretation": copy.deepcopy(
+                    runner_index[horse_b].get(
+                        "prediction_interpretation",
+                        {},
+                    )
+                ),
                 "required_lane_order": list(LANE_ORDER),
                 "author_fields": {
                     "lane_judgments": {
@@ -837,6 +849,8 @@ def build_comparison_request(
         "required_pairs_for_draft": pair_requests,
         "instructions": {
             "read_order": list(LANE_ORDER),
+            "use_prediction_interpretation_first": True,
+            "verify_interpretation_against_evidence_lanes": True,
             "do_not_score": True,
             "do_not_use_market": True,
             "do_not_use_current_jrdb_consensus": True,
