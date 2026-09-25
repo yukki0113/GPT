@@ -1,0 +1,192 @@
+name: JRDB Edge Parquet canonical promotion via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: jrdb-edge-parquet-promotion
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_PARQUET_PROMOTE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GPT_GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GPT_GDRIVE_SERVICE_ACCOUNT_JSON }}
+      GPT_GDRIVE_AUTOMATION_ROOT_ID: ${{ secrets.GPT_GDRIVE_AUTOMATION_ROOT_ID }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Drive client
+        run: pip install google-api-python-client google-auth
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+              'feature_run_id','feature_artifact_name','feature_generation_id',
+              'feature_generation_folder_id','feature_v02_folder_id',
+              'registry_run_id','registry_artifact_name','registry_generation_id',
+              'registry_generation_folder_id','registry_v02_folder_id'
+          }
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          for k in ('feature_run_id','registry_run_id'):
+              if not isinstance(req[k],int) or req[k] <= 0:
+                  raise SystemExit(f'{k} must be positive integer')
+          for k in ('feature_generation_id','registry_generation_id'):
+              if not re.fullmatch(r'[A-Za-z0-9._-]{1,120}',str(req[k])):
+                  raise SystemExit(f'invalid {k}')
+          Path('/tmp/promotion-request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',
+              encoding='utf-8'
+          )
+          PY
+
+      - name: Download accepted Feature Mart and Registry candidates
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          req=json.load(open('/tmp/promotion-request.json'))
+          print(req['feature_artifact_name'])
+          print(req['registry_artifact_name'])
+          PY
+          mkdir -p /tmp/feature-source /tmp/registry-source
+          feature_run=$(python -c "import json;print(json.load(open('/tmp/promotion-request.json'))['feature_run_id'])")
+          feature_artifact=$(python -c "import json;print(json.load(open('/tmp/promotion-request.json'))['feature_artifact_name'])")
+          registry_run=$(python -c "import json;print(json.load(open('/tmp/promotion-request.json'))['registry_run_id'])")
+          registry_artifact=$(python -c "import json;print(json.load(open('/tmp/promotion-request.json'))['registry_artifact_name'])")
+          gh run download "$feature_run" --repo "${{ github.repository }}" --name "$feature_artifact" --dir /tmp/feature-source
+          gh run download "$registry_run" --repo "${{ github.repository }}" --name "$registry_artifact" --dir /tmp/registry-source
+
+      - name: Validate expected candidate layout
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          req=json.load(open('/tmp/promotion-request.json'))
+          fm=Path('/tmp/feature-source/canonical/feature_mart/v0.2')
+          rg=Path('/tmp/registry-source/canonical/registry/v0.2')
+          fgen=fm/'generations'/req['feature_generation_id']
+          rgen=rg/'generations'/req['registry_generation_id']
+          required=[
+              fm/'current.json', fgen/'edge_runner_fact.parquet', fgen/'manifest.json', fgen/'audit.json',
+              rg/'current.json', rgen/'manifest.json'
+          ]
+          missing=[str(p) for p in required if not p.is_file()]
+          if missing:
+              raise SystemExit('candidate layout missing: '+json.dumps(missing))
+          registry_files=[p for p in rgen.iterdir() if p.is_file()]
+          if len(registry_files) < 3:
+              raise SystemExit(f'registry generation unexpectedly small: {registry_files}')
+          print('FEATURE_FILES', sorted(p.name for p in fgen.iterdir() if p.is_file()))
+          print('REGISTRY_FILES', sorted(p.name for p in registry_files))
+          PY
+
+      - name: Upload immutable generations and current pointers
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import subprocess
+          import tempfile
+          from pathlib import Path
+
+          req=json.load(open('/tmp/promotion-request.json'))
+
+          def upload(local_path: Path, folder_id: str, request_id: str):
+              payload={
+                  'operation':'upload',
+                  'parent_folder_id':folder_id,
+                  'verify':True,
+                  'request_id':request_id,
+                  'local_path':str(local_path),
+                  'filename':local_path.name,
+              }
+              with tempfile.NamedTemporaryFile('w',suffix='.json',delete=False,encoding='utf-8') as f:
+                  json.dump(payload,f,ensure_ascii=False)
+                  request_path=f.name
+              cp=subprocess.run(
+                  ['python','tools/gpt_io/gpt_io.py','gdrive','upload','--request',request_path],
+                  text=True,capture_output=True
+              )
+              if cp.returncode != 0:
+                  raise SystemExit(f'upload failed {local_path}: stdout={cp.stdout} stderr={cp.stderr}')
+              result=json.loads(cp.stdout)
+              if result.get('status') not in ('success','ok','PASS') and result.get('success') is not True:
+                  raise SystemExit(f'upload verification failed {local_path}: {result}')
+              return result
+
+          fm=Path('/tmp/feature-source/canonical/feature_mart/v0.2')
+          fgen=fm/'generations'/req['feature_generation_id']
+          rg=Path('/tmp/registry-source/canonical/registry/v0.2')
+          rgen=rg/'generations'/req['registry_generation_id']
+
+          results=[]
+          # Immutable payloads first.
+          for p in sorted(x for x in fgen.iterdir() if x.is_file()):
+              results.append(upload(p,req['feature_generation_folder_id'],f"feature-{p.name}"))
+          for p in sorted(x for x in rgen.iterdir() if x.is_file()):
+              results.append(upload(p,req['registry_generation_folder_id'],f"registry-{p.name}"))
+
+          # Cut over only after all immutable files verified.
+          results.append(upload(fm/'current.json',req['feature_v02_folder_id'],'feature-current'))
+          results.append(upload(rg/'current.json',req['registry_v02_folder_id'],'registry-current'))
+
+          Path('/tmp/promotion-result.json').write_text(
+              json.dumps({
+                  'status':'PASS',
+                  'stage':'EDGE_PARQUET_CANONICAL_PROMOTED',
+                  'feature_generation_id':req['feature_generation_id'],
+                  'registry_generation_id':req['registry_generation_id'],
+                  'uploads':results,
+              },ensure_ascii=False,indent=2,sort_keys=True)+'\n',
+              encoding='utf-8'
+          )
+          PY
+
+      - name: Comment success and close
+        if: success()
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          {
+            echo 'JRDB_EDGE_PARQUET_PROMOTION_RESULT'
+            echo '```json'
+            cat /tmp/promotion-result.json
+            echo '```'
+          } > /tmp/comment.md
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}"             --body "Edge Parquet canonical promotion failed closed before/while Drive promotion. Inspect run $GITHUB_SERVER_URL/${{ github.repository }}/actions/runs/$RUN_ID. Do not treat current.json as canonical until Drive readback audit passes."
