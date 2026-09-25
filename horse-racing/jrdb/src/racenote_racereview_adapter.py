@@ -21,6 +21,10 @@ from pathlib import Path
 from typing import Any
 
 from jrdb_postrace_review_reader import RaceReviewReader
+from racenote_racereview_current import (
+    STABLE_CURRENT_FILE_ID,
+    resolve_racereview_current,
+)
 
 ADAPTER_VERSION = "0.1"
 EVIDENCE_SCHEMA_VERSION = "RaceReview-Evidence-0.1"
@@ -459,7 +463,29 @@ def main() -> int:
     """Build a RaceReviewDB sidecar JSON from an independent view."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--independent-view", type=Path, required=True)
-    parser.add_argument("--racereview-root", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument(
+        "--racereview-root",
+        type=Path,
+        help="Use an already extracted RaceReviewDB root for audit/replay.",
+    )
+    source.add_argument(
+        "--racereview-current-cache",
+        type=Path,
+        help=(
+            "Resolve the operational stable Drive CURRENT into this local "
+            "generation cache before reading."
+        ),
+    )
+    parser.add_argument(
+        "--racereview-drive-file-id",
+        default=STABLE_CURRENT_FILE_ID,
+        help="Override only for controlled audit; normal operation uses stable CURRENT ID.",
+    )
+    parser.add_argument(
+        "--force-racereview-refresh",
+        action="store_true",
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--per-horse-limit", type=int, default=5)
     args = parser.parse_args()
@@ -467,12 +493,26 @@ def main() -> int:
     independent_view = json.loads(
         args.independent_view.read_text(encoding="utf-8")
     )
-    reader = RaceReviewReader(args.racereview_root)
+
+    resolver_provenance: dict[str, object] | None = None
+    if args.racereview_root is not None:
+        reader = RaceReviewReader(args.racereview_root)
+    else:
+        resolved = resolve_racereview_current(
+            args.racereview_current_cache,
+            file_id=args.racereview_drive_file_id,
+            force_refresh=args.force_racereview_refresh,
+        )
+        reader = resolved.reader
+        resolver_provenance = resolved.provenance
+
     sidecar = build_racereview_evidence(
         independent_view,
         reader,
         per_horse_limit=args.per_horse_limit,
     )
+    if resolver_provenance is not None:
+        sidecar["source"]["resolver"] = resolver_provenance
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
@@ -486,6 +526,11 @@ def main() -> int:
                 "adapter_version": ADAPTER_VERSION,
                 "source_generation_id": sidecar["source"].get(
                     "generation_id"
+                ),
+                "resolver_cache_status": (
+                    resolver_provenance.get("cache_status")
+                    if resolver_provenance is not None
+                    else "LOCAL_ROOT"
                 ),
                 "horse_count": len(sidecar["horses"]),
                 "output": str(args.output),
