@@ -77,6 +77,64 @@ def _general_evidence() -> dict[str, object]:
                         },
                     },
                 },
+                "prediction_interpretation": {
+                    "interpretation_version": "PredictionInterpretation-v0.1",
+                    "data_trend": {
+                        "state": "SUPPORTIVE",
+                        "positive": [],
+                        "negative": [],
+                        "neutral": [],
+                        "unknown": [],
+                        "best_directional_sample_band": "small",
+                        "small_sample_only": True,
+                        "population_contexts": [],
+                        "reading_rule": (
+                            "DIRECTION_PLUS_SAMPLE_SIZE_BEFORE_POPULATION_CONTEXT"
+                        ),
+                    },
+                    "racereview": {
+                        "state": "SUPPORTIVE",
+                        "hidden_strength_status": "NONE",
+                        "fragile_form_status": "NONE",
+                        "contradiction_status": "NONE",
+                        "repeatability_codes": [],
+                        "transferability": {
+                            "state": "UNKNOWN",
+                            "selected_source_run_count": 0,
+                            "exact_surface_distance_count": 0,
+                            "partial_exact_match_count": 0,
+                            "runs": [],
+                            "policy": {},
+                        },
+                        "reading_rule": (
+                            "CONTENT_FIRST_THEN_REPEATABILITY_THEN_TARGET_OVERLAP"
+                        ),
+                    },
+                    "ability_anchor": {
+                        "role": "AVAILABLE_ANCHOR",
+                        "may_create_upgrade_by_itself": False,
+                        "may_create_downgrade_by_itself": False,
+                        "profile": {
+                            "latest": peak,
+                            "peak": peak,
+                            "typical_median": peak,
+                            "minimum": peak,
+                            "mad": 0.0,
+                        },
+                    },
+                    "positive_case_components": [
+                        "DATA_TREND_SUPPORT"
+                    ],
+                    "concern_case_components": [],
+                    "pairwise_reading_order": [
+                        "DATA_TREND",
+                        "RACEREVIEW",
+                        "ABILITY_ANCHOR",
+                    ],
+                    "policy": {
+                        "no_numeric_score": True,
+                    },
+                },
                 "comparison_status": "NOT_YET_PAIRWISE_COMPARED",
             }
         )
@@ -391,7 +449,29 @@ class RaceNotePairwiseComparisonTest(unittest.TestCase):
         self.assertTrue(
             request["instructions"]["do_not_use_market"]
         )
+        self.assertTrue(
+            request["instructions"][
+                "use_prediction_interpretation_first"
+            ]
+        )
+        self.assertTrue(
+            request["instructions"][
+                "verify_interpretation_against_evidence_lanes"
+            ]
+        )
         for pair in request["required_pairs_for_draft"]:
+            self.assertEqual(
+                pair["horse_a_interpretation"][
+                    "interpretation_version"
+                ],
+                "PredictionInterpretation-v0.1",
+            )
+            self.assertEqual(
+                pair["horse_b_interpretation"][
+                    "interpretation_version"
+                ],
+                "PredictionInterpretation-v0.1",
+            )
             author_fields = pair["author_fields"]
             self.assertIsNone(author_fields["preference"])
             self.assertIsNone(author_fields["decisive_lane"])
