@@ -677,9 +677,369 @@ def _concern_trace(horse: Mapping[str, object]) -> tuple[str, str]:
     raise RuntimeError(f"no traceable concern evidence for horse {horse.get('horse_no')}")
 
 
-def _pairwise_support(pairwise_audit: Mapping[str, object]) -> dict[int, set[int]]:
+def _pairwise_support(
+    pairwise_audit: Mapping[str, object],
+) -> dict[int, set[int]]:
     result: dict[int, set[int]] = {}
     for raw in _as_list(pairwise_audit.get("comparisons")):
         item = _as_mapping(raw)
         preferred = int(item["preferred_horse_no"])
-        a_no = int(item[
+        a_no = int(item["horse_a"])
+        b_no = int(item["horse_b"])
+        loser = b_no if preferred == a_no else a_no
+        result.setdefault(preferred, set()).add(loser)
+    return result
+
+
+def _scenario_risks(
+    scenario_audit: Mapping[str, object],
+) -> dict[int, list[str]]:
+    result: dict[int, list[str]] = {}
+    for raw in _as_list(scenario_audit.get("horse_sensitivity")):
+        item = _as_mapping(raw)
+        horse_no = int(item["horse_no"])
+        pairwise_rank = int(item["pairwise_rank"])
+        ranks = _as_mapping(item.get("scenario_ranks"))
+        adverse: list[str] = []
+        for scenario_id, raw_rank in ranks.items():
+            if int(raw_rank) > pairwise_rank:
+                adverse.append(_text(scenario_id).upper())
+        result[horse_no] = sorted(set(adverse))
+    return result
+
+
+def _marks(count: int) -> list[str]:
+    result = [""] * count
+    if count >= 1:
+        result[0] = "◎"
+    if count >= 2:
+        result[1] = "○"
+    if count >= 3:
+        result[2] = "▲"
+    for index in range(3, min(6, count)):
+        result[index] = "△"
+    return result
+
+
+def build_forecast(
+    general: Mapping[str, object],
+    pairwise_audit: Mapping[str, object],
+    scenario_audit: Mapping[str, object],
+    *,
+    frozen_at: str,
+) -> dict[str, object]:
+    order = [int(value) for value in pairwise_audit["final_order"]]
+    index = _horse_index(general)
+    supports = _pairwise_support(pairwise_audit)
+    risks = _scenario_risks(scenario_audit)
+    marks = _marks(len(order))
+
+    count = len(order)
+    p_win = 1.0 / float(count)
+    p_top2 = float(min(2, count)) / float(count)
+    p_top3 = float(min(3, count)) / float(count)
+
+    horses: list[dict[str, object]] = []
+    for rank, horse_no in enumerate(order, start=1):
+        horse = index[horse_no]
+        primary_lane, primary_code = _primary_trace(horse)
+        concern_lane, concern_code = _concern_trace(horse)
+        direct_support = sorted(supports.get(horse_no, set()))
+        horse_name = _text(horse.get("horse_name"))
+
+        horses.append(
+            {
+                "horse_no": horse_no,
+                "horse_name": horse_name,
+                "base_rank": rank,
+                "final_rank": rank,
+                "mark": marks[rank - 1],
+                "p_win_base": p_win,
+                "p_top2_base": p_top2,
+                "p_top3_base": p_top3,
+                "p_win_final": p_win,
+                "p_top2_final": p_top2,
+                "p_top3_final": p_top3,
+                "primary_reason": (
+                    f"{PROFILE_VERSION}: {primary_lane}の事前Evidenceを主根拠として"
+                    "Pairwise順位をFreezeする。"
+                ),
+                "secondary_support": "",
+                "main_concern": (
+                    f"{concern_lane}:{concern_code}を主な不確実性として保持。"
+                    "Scenario robustnessは予測信頼度へ昇格しない。"
+                ),
+                "why_above_next": "",
+                "scenario_adjustment_reason": (
+                    "Scenarioは感応度監査のみで、Pairwise順位を自動置換しない。"
+                ),
+                "edge_performance": {
+                    "status": "NO_MATCH",
+                    "profile": "STANDARD",
+                    "matches": [],
+                    "adjustment_direction": "NONE",
+                    "adjustment_reason": "",
+                },
+                "decision_trace": {
+                    "trace_version": "RaceNote-Decision-Trace-0.1",
+                    "primary": {
+                        "lane": primary_lane,
+                        "evidence_codes": [primary_code],
+                    },
+                    "secondary": {
+                        "lane": "NONE",
+                        "evidence_codes": [],
+                    },
+                    "concern": {
+                        "lane": concern_lane,
+                        "evidence_codes": [concern_code],
+                    },
+                    "pairwise_support_horse_nos": direct_support,
+                    "scenario_risk_ids": risks.get(horse_no, []),
+                    "edge_ids": [],
+                    "comment_evidence_codes": [
+                        primary_code,
+                        concern_code,
+                    ],
+                },
+            }
+        )
+
+    target = copy.deepcopy(dict(_as_mapping(general.get("target"))))
+    date_text = _text(target.get("date")).replace("-", "")
+    venue = _text(target.get("venue"))
+    race_no = int(target["race_no"])
+    forecast_id = (
+        f"{date_text}_{venue}_{race_no:02d}_Gen0-DayRehearsal-v01"
+    )
+
+    return {
+        "forecast_version": "RaceNote-Forecast-Gen0.3",
+        "evidence_policy_version": "TrendFirst-RR-Pairwise-Scenario-v0.1",
+        "generation_id": "Gen0-DayRehearsal-v01",
+        "forecast_id": forecast_id,
+        "target": target,
+        "source_chain": {
+            "general_evidence_sha256": forecast_sha256(general),
+            "pairwise_audit_sha256": forecast_sha256(pairwise_audit),
+            "scenario_audit_sha256": forecast_sha256(scenario_audit),
+        },
+        "firewall": {
+            "current_jrdb_consensus_visible": False,
+            "current_market_visible": False,
+            "edge_value_visible": False,
+            "training_edge_visible": False,
+            "target_result_visible": False,
+        },
+        "pairwise_order": order,
+        "scenario_axis_robustness": _text(
+            scenario_audit.get("axis_robustness")
+        ),
+        "base_order": order,
+        "final_order": order,
+        "horses": horses,
+        "forecast_created_at": frozen_at,
+        "result_visibility_status": "HIDDEN",
+        "freeze_status": "UNFROZEN",
+        "post_freeze_open_order": [
+            "JRDB_CONSENSUS",
+            "MARKET",
+            "EDGE_VALUE",
+            "RL_VALUE",
+            "BET_PLAN",
+        ],
+    }
+
+
+def author_one(
+    general: Mapping[str, object],
+    *,
+    frozen_at: str,
+) -> dict[str, object]:
+    synthesis_payload = build_synthesis(general)
+    synthesis_audit = validate_all_runner_synthesis(
+        general,
+        synthesis_payload,
+    )
+
+    pairwise_payload = build_pairwise(
+        general,
+        synthesis_audit,
+    )
+    pairwise_audit = validate_pairwise_comparison_from_synthesis(
+        general,
+        synthesis_audit,
+        pairwise_payload,
+    )
+
+    scenario_payload = build_scenario(
+        general,
+        pairwise_audit,
+    )
+    scenario_audit = validate_scenario_robustness(
+        pairwise_audit,
+        scenario_payload,
+    )
+
+    forecast_payload = build_forecast(
+        general,
+        pairwise_audit,
+        scenario_audit,
+        frozen_at=frozen_at,
+    )
+    forecast = validate_forecast(
+        general,
+        pairwise_audit,
+        scenario_audit,
+        forecast_payload,
+    )
+    frozen = freeze_forecast(
+        forecast,
+        frozen_at,
+    )
+    freeze_audit = audit_frozen_forecast(frozen)
+    if freeze_audit["audit_status"] != "PASS":
+        raise RuntimeError("freeze audit failed")
+
+    return {
+        "profile_version": PROFILE_VERSION,
+        "target": copy.deepcopy(dict(_as_mapping(general.get("target")))),
+        "field_evidence_summary": copy.deepcopy(
+            general.get("field_evidence_summary")
+        ),
+        "synthesis_payload": synthesis_payload,
+        "synthesis_audit": synthesis_audit,
+        "pairwise_payload": pairwise_payload,
+        "pairwise_audit": pairwise_audit,
+        "scenario_payload": scenario_payload,
+        "scenario_audit": scenario_audit,
+        "forecast_payload": forecast_payload,
+        "forecast_validated": forecast,
+        "forecast_frozen": frozen,
+        "forecast_freeze_audit": freeze_audit,
+    }
+
+
+def _write_json(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def run_day(
+    prepared_root: Path,
+    output_root: Path,
+    *,
+    frozen_at: str,
+) -> dict[str, object]:
+    general_paths = sorted(prepared_root.rglob("general_evidence.json"))
+    if not general_paths:
+        raise RuntimeError("prepared root contains no general_evidence.json")
+
+    rows: list[dict[str, object]] = []
+    for index_no, general_path in enumerate(general_paths, start=1):
+        general = json.loads(general_path.read_text(encoding="utf-8"))
+        target = _as_mapping(general.get("target"))
+        venue = _text(target.get("venue"))
+        race_no = int(target["race_no"])
+        race_dir = output_root / f"{venue}_{race_no:02d}R"
+
+        authored = author_one(
+            general,
+            frozen_at=frozen_at,
+        )
+        for key in (
+            "synthesis_payload",
+            "synthesis_audit",
+            "pairwise_payload",
+            "pairwise_audit",
+            "scenario_payload",
+            "scenario_audit",
+            "forecast_payload",
+            "forecast_validated",
+            "forecast_frozen",
+            "forecast_freeze_audit",
+        ):
+            _write_json(race_dir / f"{key}.json", authored[key])
+
+        field_summary = _as_mapping(
+            authored.get("field_evidence_summary")
+        )
+        scenario_audit = _as_mapping(authored["scenario_audit"])
+        frozen = _as_mapping(authored["forecast_frozen"])
+        freeze_audit = _as_mapping(authored["forecast_freeze_audit"])
+        rows.append(
+            {
+                "target": copy.deepcopy(dict(target)),
+                "field_evidence_status": _text(
+                    field_summary.get("status")
+                ),
+                "axis_horse_no": scenario_audit.get("axis_horse_no"),
+                "axis_robustness": scenario_audit.get("axis_robustness"),
+                "final_order": copy.deepcopy(frozen.get("final_order")),
+                "forecast_id": frozen.get("forecast_id"),
+                "prediction_hash": frozen.get("prediction_hash"),
+                "freeze_audit_status": freeze_audit.get("audit_status"),
+            }
+        )
+        print(
+            f"[{index_no}/{len(general_paths)}] "
+            f"{venue}{race_no}R PASS"
+        )
+
+    summary = {
+        "status": "PASS",
+        "profile_version": PROFILE_VERSION,
+        "race_count": len(rows),
+        "frozen_at": frozen_at,
+        "result_visibility_status": "HIDDEN",
+        "races": rows,
+    }
+    _write_json(output_root / "day_freeze_summary.json", summary)
+    return summary
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--prepared-root",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--frozen-at",
+        required=True,
+    )
+    args = parser.parse_args()
+
+    datetime.fromisoformat(args.frozen_at.replace("Z", "+00:00"))
+    summary = run_day(
+        args.prepared_root,
+        args.output_root,
+        frozen_at=args.frozen_at,
+    )
+    print(
+        json.dumps(
+            {
+                "status": summary["status"],
+                "race_count": summary["race_count"],
+                "profile_version": summary["profile_version"],
+                "output": str(
+                    args.output_root / "day_freeze_summary.json"
+                ),
+            },
+            ensure_ascii=False,
+        )
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
