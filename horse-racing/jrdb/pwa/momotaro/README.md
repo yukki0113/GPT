@@ -136,3 +136,6 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 
 
 過去走は5走固定。
+
+
+予想一覧の配布シェル更新時は focused test の asset version / 表示契約も同時に更新し、Pages deploy 成功まで確認する。
