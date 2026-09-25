@@ -1346,6 +1346,7 @@ def _race_day_facts(
     unavailable = {
         "status": "UNAVAILABLE",
         "source_kind": None,
+        "source_url": None,
         "as_of": None,
         "weather": None,
         "track_condition": None,
@@ -1371,6 +1372,7 @@ def _race_day_facts(
     return {
         "status": "AVAILABLE",
         "source_kind": source_kind,
+        "source_url": _text(raw.get("source_url")) or None,
         "as_of": _text(raw.get("as_of")) or None,
         "weather": weather or None,
         "track_condition": track_condition or None,
