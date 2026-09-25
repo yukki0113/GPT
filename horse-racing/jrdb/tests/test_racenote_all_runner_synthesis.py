@@ -14,6 +14,7 @@ from racenote_all_runner_synthesis import (  # noqa: E402
     AllRunnerSynthesisError,
     SYNTHESIS_CONTRACT_VERSION,
     SYNTHESIS_SCHEMA_VERSION,
+    build_synthesis_request,
     semantic_sha256,
     validate_all_runner_synthesis,
 )
@@ -290,6 +291,42 @@ def _payload(general: dict[str, object]) -> dict[str, object]:
 
 
 class RaceNoteAllRunnerSynthesisTest(unittest.TestCase):
+    def test_authoring_request_covers_all_runners_without_choosing_order(self) -> None:
+        general = _general()
+        request = build_synthesis_request(general)
+
+        self.assertEqual(
+            request["request_schema_version"],
+            "RaceNote-All-Runner-Synthesis-Request-0.1",
+        )
+        self.assertEqual(
+            request["general_evidence_sha256"],
+            semantic_sha256(general),
+        )
+        self.assertEqual(
+            [item["horse_no"] for item in request["horses"]],
+            [1, 2, 3, 4],
+        )
+        for item in request["horses"]:
+            author = item["author_fields"]
+            self.assertIsNone(author["draft_rank"])
+            self.assertIsNone(author["confidence"])
+            self.assertIsNone(author["primary_lane"])
+            self.assertIsNone(author["draft_reason"])
+            self.assertEqual(
+                item["prediction_interpretation"][
+                    "interpretation_version"
+                ],
+                "PredictionInterpretation-v0.1",
+            )
+        self.assertTrue(
+            request["instructions"]["read_every_runner_before_ranking"]
+        )
+        self.assertTrue(request["instructions"]["do_not_score"])
+        self.assertTrue(
+            request["instructions"]["pairwise_required_next"]
+        )
+
     def test_valid_full_field_synthesis_passes(self) -> None:
         general = _general()
         audit = validate_all_runner_synthesis(
