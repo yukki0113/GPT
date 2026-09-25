@@ -371,4 +371,170 @@ def _lane_judgments(
 
 
 def _preferred_from_relation(relation: str, a_no: int, b_no: int) -> int | None:
-    
+     if relation == "A":
+        return a_no
+    if relation == "B":
+        return b_no
+    return None
+
+
+def build_pairwise(
+    general: Mapping[str, object],
+    synthesis_audit: Mapping[str, object],
+) -> dict[str, object]:
+    order = [int(value) for value in synthesis_audit["draft_order"]]
+    index = _horse_index(general)
+    comparisons: list[dict[str, object]] = []
+
+    for a_no, b_no in sorted(required_pair_keys(order)):
+        a = index[a_no]
+        b = index[b_no]
+        judgments, decisive = _lane_judgments(a, b)
+        preferred = order.index(a_no) < order.index(b_no)
+        preferred_no = a_no if preferred else b_no
+        preference = "A" if preferred_no == a_no else "B"
+
+        decisive_relation = judgments.get(decisive, {}).get("relation")
+        relation_preferred = _preferred_from_relation(
+            str(decisive_relation), a_no, b_no
+        )
+        if decisive != "UNCERTAINTY" and relation_preferred not in {None, preferred_no}:
+            raise RuntimeError(
+                f"author-order contradiction for pair {a_no}/{b_no}: "
+                f"decisive={decisive} relation={decisive_relation}"
+            )
+
+        contrary: list[str] = []
+        protected: list[str]
+        if decisive == "DATA_TREND":
+            protected = []
+        elif decisive == "RACEREVIEW":
+            protected = ["DATA_TREND"]
+        else:
+            protected = ["DATA_TREND", "RACEREVIEW"]
+        for lane in protected:
+            lane_preferred = _preferred_from_relation(
+                str(judgments[lane]["relation"]), a_no, b_no
+            )
+            if lane_preferred is not None and lane_preferred != preferred_no:
+                contrary.append(lane)
+
+        comparisons.append(
+            {
+                "horse_a": a_no,
+                "horse_b": b_no,
+                "lane_judgments": judgments,
+                "preference": preference,
+                "confidence": (
+                    "MEDIUM"
+                    if decisive in {"DATA_TREND", "RACEREVIEW"}
+                    else "LOW"
+                ),
+                "decisive_lane": decisive,
+                "lower_priority_override": bool(contrary),
+                "override_reason": (
+                    "日次リハーサルauthor profileの辞書式優先順で下位laneを採用。"
+                    if contrary
+                    else ""
+                ),
+                "comparison_summary": (
+                    f"{PROFILE_VERSION}: {preferred_no}番を{decisive}境界で暫定優先。"
+                ),
+                "reversal_conditions": [
+                    "より高優先のData TrendまたはRaceReviewに新しい方向性が供給された場合は再比較する。"
+                ],
+            }
+        )
+
+    return {
+        "pairwise_schema_version": "RaceNote-Pairwise-Comparison-0.1",
+        "pairwise_contract_version": "TrendFirst-Pairwise-v0.1",
+        "general_evidence_sha256": synthesis_sha256(general),
+        "all_runner_synthesis_sha256": pairwise_sha256(synthesis_audit),
+        "target": copy.deepcopy(dict(_as_mapping(general.get("target")))),
+        "draft_order": order,
+        "final_order": order,
+        "comparisons": comparisons,
+        "final_order_summary": (
+            f"{PROFILE_VERSION}: 必須境界を直接比較し、Synthesis順をPairwiseで監査。"
+        ),
+    }
+
+
+def _position_profile(horse: Mapping[str, object]) -> tuple[str, str]:
+    interpretation = _as_mapping(horse.get("prediction_interpretation"))
+    structure = _as_mapping(interpretation.get("race_structure"))
+    position = _as_mapping(structure.get("horse_historical_position"))
+    return (
+        _text(position.get("tendency")).upper() or "UNKNOWN",
+        _text(position.get("variability_status")).upper() or "UNAVAILABLE",
+    )
+
+
+def _scenario_order(
+    base: list[int],
+    index: Mapping[int, Mapping[str, object]],
+    scenario_id: str,
+) -> list[int]:
+    """Apply one minimal top-boundary position sensitivity probe."""
+    order = list(base)
+    if len(order) < 2:
+        return order
+
+    first_no = order[0]
+    second_no = order[1]
+    first_tendency, first_variability = _position_profile(index[first_no])
+    second_tendency, second_variability = _position_profile(index[second_no])
+
+    if scenario_id == "SLOW":
+        first_disadvantaged = first_tendency in {"BACK", "MID"}
+        second_advantaged = (
+            second_tendency in {"FRONT", "FORWARD"}
+            and second_variability == "SINGLE_BAND"
+        )
+        if first_disadvantaged and second_advantaged:
+            order[0], order[1] = order[1], order[0]
+    elif scenario_id == "FAST":
+        first_disadvantaged = (
+            first_tendency in {"FRONT", "FORWARD"}
+            and first_variability == "SINGLE_BAND"
+        )
+        second_less_committed = (
+            second_tendency in {"MID", "BACK", "UNKNOWN"}
+            or second_variability == "MULTI_BAND"
+        )
+        if first_disadvantaged and second_less_committed:
+            order[0], order[1] = order[1], order[0]
+    return order
+
+
+def build_scenario(
+    general: Mapping[str, object],
+    pairwise_audit: Mapping[str, object],
+) -> dict[str, object]:
+    base = [int(value) for value in pairwise_audit["final_order"]]
+    index = _horse_index(general)
+    scenarios: list[dict[str, object]] = []
+    risk_ids: list[str] = []
+
+    for scenario_id in ("SLOW", "MEDIUM", "FAST"):
+        if scenario_id == "MEDIUM":
+            order = list(base)
+        else:
+            order = _scenario_order(base, index, scenario_id)
+        changed = order != base
+        if order[0] != base[0]:
+            risk_ids.append(scenario_id)
+        scenarios.append(
+            {
+                "scenario_id": scenario_id,
+                "pace": scenario_id,
+                "assumption_summary": (
+                    f"{PROFILE_VERSION}: {scenario_id}の位置取り感応度を"
+                    "歴史的位置の固定度だけで最小限ストレステストする。"
+                ),
+                "order": order,
+                "changed_from_pairwise": changed,
+                "scenario_summary": (
+                    "Pairwise baselineを維持。"
+            
