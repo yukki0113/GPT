@@ -843,7 +843,8 @@ def build_general_evidence(
         "next_stage": {
             "name": "PAIRWISE_COMPARISON",
             "required_read_order": list(DECISION_ORDER),
-            "status": "NOT_IMPLEMENTED_IN_V0_1",
+            "status": "CONTRACT_IMPLEMENTED",
+            "contract_version": "TrendFirst-Pairwise-v0.1",
         },
     }
 
