@@ -27,9 +27,32 @@ The active architecture is JRDB + Historical Warehouse + Analysis canonical. Sta
 
 ## 2. Current prediction direction
 
-Forecast Gen0 is current. GPT compares each race and horse using conditions, ability, suitability, pace, training/state, recent runs, longer history, auxiliary statistics, coverage, conflicting evidence, and uncertainty. RaceNote supplies facts and provenance; prediction logic remains outside the converter, router, and Reader View.
+Forecast Gen0 research remains current, but the 2026-09-25 redesign changes the
+preferred reading order for the next forecast generation:
 
-Do not introduce fixed weights or a single score as an implicit current default. Keep prediction policy, presentation policy, and result evaluation separate.
+```text
+DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY
+```
+
+RaceNote now treats historical ability as an anchor rather than the default
+first ordering signal. GPT should read condition/race trends first, then
+RaceReview historical running content, then simple ability context, and only
+after that perform relative horse-to-horse comparison.
+
+Implemented research assets:
+
+- `src/racenote_general_evidence.py`
+- `schema/racenote_general_evidence_schema_v0_1.json`
+- `docs/racenote/GENERAL_EVIDENCE_PRIORITY_v0_1.md`
+
+Current pre-Freeze trend evidence includes horse condition history, frame,
+sire, jockey, and as-of-safe race-level running-style statistics. Popularity
+remains post-Freeze because current popularity is market information.
+
+Do not introduce fixed weights or a single score as an implicit current
+default. Keep prediction policy, presentation policy, and result evaluation
+separate. Gen0.2 remains implemented but non-activated; the trend-first
+redesign requires a new forecast version rather than silently mutating Gen0.2.
 
 ## 3. Current data boundaries
 
@@ -66,6 +89,17 @@ It converts historical Review evidence into primary/supporting positives,
 concerns, mixed context, repeatability, hidden-strength candidates,
 fragile-form candidates, contradiction, uncertainty, and comment evidence.
 It does not score horses and remains non-active for Forecast generation.
+
+The next aggregation layer is also implemented as a research input:
+
+- `src/racenote_general_evidence.py`
+- `schema/racenote_general_evidence_schema_v0_1.json`
+- `docs/racenote/GENERAL_EVIDENCE_PRIORITY_v0_1.md`
+
+This layer joins Independent RaceNote evidence with the RaceReview Horse
+Evidence Card and enforces the ordinal reading policy
+`DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR`. It does not create rankings,
+marks, or probabilities.
 
 ## 5. Legacy boundary
 
