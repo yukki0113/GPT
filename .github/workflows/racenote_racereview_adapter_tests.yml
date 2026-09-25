@@ -8,17 +8,20 @@ on:
       - 'horse-racing/jrdb/src/racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
+      - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/src/racenote_history_engine.py'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/schema/racenote_racereview_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_horse_evidence_card_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_general_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_pairwise_comparison_schema_v0_1.json'
+      - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_bundle_schema_v1_0.json'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
+      - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/tests/test_racenote_analysis_only_enrichment.py'
       - '.github/workflows/racenote_racereview_adapter_tests.yml'
   pull_request:
@@ -27,17 +30,20 @@ on:
       - 'horse-racing/jrdb/src/racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
+      - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/src/racenote_history_engine.py'
       - 'horse-racing/jrdb/src/racenote_jrdb.py'
       - 'horse-racing/jrdb/schema/racenote_racereview_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_horse_evidence_card_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_general_evidence_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_pairwise_comparison_schema_v0_1.json'
+      - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_bundle_schema_v1_0.json'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
+      - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
       - 'horse-racing/jrdb/tests/test_racenote_analysis_only_enrichment.py'
       - '.github/workflows/racenote_racereview_adapter_tests.yml'
   workflow_dispatch:
@@ -62,6 +68,7 @@ jobs:
           python -m py_compile src/racenote_horse_evidence_card.py
           python -m py_compile src/racenote_general_evidence.py
           python -m py_compile src/racenote_pairwise_comparison.py
+          python -m py_compile src/racenote_scenario_robustness.py
           python -m py_compile src/racenote_history_engine.py
           python -m py_compile src/racenote_jrdb.py
       - name: Validate JSON schemas
@@ -71,6 +78,7 @@ jobs:
           python -m json.tool schema/racenote_horse_evidence_card_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_general_evidence_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_pairwise_comparison_schema_v0_1.json >/dev/null
+          python -m json.tool schema/racenote_scenario_robustness_schema_v0_1.json >/dev/null
           python -m json.tool schema/racenote_bundle_schema_v1_0.json >/dev/null
       - name: Run focused RaceReview evidence tests
         working-directory: horse-racing/jrdb/tests
@@ -79,4 +87,5 @@ jobs:
           python -m unittest -v test_racenote_horse_evidence_card
           python -m unittest -v test_racenote_general_evidence
           python -m unittest -v test_racenote_pairwise_comparison
+          python -m unittest -v test_racenote_scenario_robustness
           PYTHONPATH=../src python -m pytest -q test_racenote_analysis_only_enrichment.py
