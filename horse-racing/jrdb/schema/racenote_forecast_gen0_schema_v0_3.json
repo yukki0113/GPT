@@ -253,6 +253,9 @@
           "type": "array",
           "uniqueItems": true,
           "items": {"type": "string", "minLength": 1}
+        },
+        "short_comment_status": {
+          "const": "SOURCE_READY"
         }
       },
       "additionalProperties": false
