@@ -13,12 +13,15 @@ Date: 2026-09-17
 Gen0-G000 / RaceNote-Forecast-Gen0.1 はimmutable historical generationとして維持する。
 Gen0.2は別versionとして実装し、次generationでのみ使用する。
 
-Planned identity:
+Historical planned identity (never activated):
 
 - generation: `Gen0-G001`
 - forecast version: `RaceNote-Forecast-Gen0.2`
 - factor set: `FSET-Gen0.2`
 - input firewall: `Gen0.2-Firewall-0.1`
+
+2026-09-25: this reservation was superseded before activation.
+`Gen0-G001` is now planned for `RaceNote-Forecast-Gen0.3`.
 
 ## 2. Forecast lifecycle
 
@@ -244,12 +247,12 @@ Config:
 
 ## 13. Activation rule
 
-Implementation availability does not activate Gen0.2 automatically.
+Gen0.2 is **not activatable as current policy** after the 2026-09-25 redesign.
+It remains for reproducibility and comparison only.
 
-Activation requires:
+The first planned post-Gen0-G000 activation is now:
 
-1. code/schema/tests present on main;
-2. ledger tabs present;
-3. next-generation sampling manifest fixed before prediction;
-4. generation metadata explicitly set to Gen0-G001 / Gen0.2;
-5. no Gen0-G000 frozen row is rewritten.
+- generation: `Gen0-G001`
+- forecast: `RaceNote-Forecast-Gen0.3`
+- contract: `FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
+
