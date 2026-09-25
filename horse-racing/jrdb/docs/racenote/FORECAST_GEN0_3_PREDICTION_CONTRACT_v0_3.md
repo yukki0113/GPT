@@ -138,7 +138,7 @@ The following are explicitly not consumed:
 
 Race Structure is context, not a deterministic pace prediction.
 
-## 6. Pairwise Comparison
+## 7. Pairwise Comparison
 
 Pairwise Comparison v0.1 validates authored relative judgments.
 
