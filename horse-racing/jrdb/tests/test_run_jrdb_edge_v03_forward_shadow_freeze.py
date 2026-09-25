@@ -52,11 +52,19 @@ def test_write_shadow_matches_uses_v03_shadow_direction(tmp_path: Path) -> None:
         shadow_catalog_jsonl=catalog,
         output_jsonl=output,
     )
-    assert result=={"runner_rows":1,"matched_runners":1,"matches":1}
+    assert result=={
+        "runner_rows":1,
+        "matched_runners":1,
+        "matches":1,
+        "incremental_reversal_matches":1,
+        "presentation_overrides":1,
+    }
     row=json.loads(output.read_text(encoding="utf-8").strip())
     match=row["edge_matches"][0]
     assert match["evidence"]["performance_signal"]=="NEGATIVE"
     assert match["v03_shadow"]["is_reversal_vs_v02"] is True
+    assert match["v03_shadow"]["presentation"]["contract"]=="V03_SHADOW_PRESENTATION"
+    assert match["v03_shadow"]["presentation"]["performance_signal"]=="NEGATIVE"
 
 
 def test_shadow_catalog_sha_is_exact(tmp_path: Path) -> None:
