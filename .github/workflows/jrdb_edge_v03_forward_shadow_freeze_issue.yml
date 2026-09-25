@@ -1,0 +1,251 @@
+name: JRDB Edge v0.3 Stage-E forward shadow freeze via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  freeze:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V03_FORWARD_SHADOW_FREEZE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+              'date',
+              'v02_publication_run_id','v02_publication_artifact_name','v02_publication_sha256',
+              'v03_stage_c_run_id','v03_stage_c_artifact_name','v03_catalog_sha256',
+              'analysis_bundle_drive_file_id','analysis_generation_id','analysis_manifest_sha256'
+          }
+          missing=sorted(required-set(req))
+          if missing: raise SystemExit(f'missing required fields: {missing}')
+          day=str(req['date'])
+          if day not in {'20260926','20260927'}:
+              raise SystemExit('Stage-E target date must be 20260926 or 20260927')
+          sha_re=re.compile(r'[0-9a-f]{64}')
+          for field in ('v02_publication_sha256','v03_catalog_sha256','analysis_manifest_sha256'):
+              value=str(req[field]).lower()
+              if not sha_re.fullmatch(value):
+                  raise SystemExit(f'invalid {field}')
+          if not isinstance(req['v02_publication_run_id'],int) or req['v02_publication_run_id']<=0:
+              raise SystemExit('invalid v02_publication_run_id')
+          if not isinstance(req['v03_stage_c_run_id'],int) or req['v03_stage_c_run_id']<=0:
+              raise SystemExit('invalid v03_stage_c_run_id')
+          req['mode']='SHADOW_ONLY'
+          req['result_data_used']=False
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Install dependencies and focused tests
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python -m pytest -q \
+            horse-racing/jrdb/tests/test_run_jrdb_edge_v03_forward_shadow_freeze.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py
+
+      - name: Download and verify v0.2 and v0.3 catalogs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v02 /tmp/v03
+          python - <<'PY'
+          import hashlib, json, os, shutil, subprocess
+          from pathlib import Path
+          req=json.load(open('/tmp/request.json'))
+
+          subprocess.run([
+              'gh','run','download',str(req['v02_publication_run_id']),
+              '--repo',os.environ['GITHUB_REPOSITORY'],
+              '--name',req['v02_publication_artifact_name'],'--dir','/tmp/v02'
+          ],check=True)
+          v02=list(Path('/tmp/v02').rglob('edge_serving_catalog_v0_2.jsonl'))
+          if len(v02)!=1: raise SystemExit(f'expected one v0.2 catalog, got {len(v02)}')
+          if hashlib.sha256(v02[0].read_bytes()).hexdigest()!=req['v02_publication_sha256']:
+              raise SystemExit('v0.2 catalog SHA mismatch')
+          shutil.copy2(v02[0],'/tmp/edge_serving_catalog_v0_2.jsonl')
+
+          subprocess.run([
+              'gh','run','download',str(req['v03_stage_c_run_id']),
+              '--repo',os.environ['GITHUB_REPOSITORY'],
+              '--name',req['v03_stage_c_artifact_name'],'--dir','/tmp/v03'
+          ],check=True)
+          v03=list(Path('/tmp/v03').rglob('edge_serving_catalog_v0_3_shadow.jsonl'))
+          if len(v03)!=1: raise SystemExit(f'expected one v0.3 shadow catalog, got {len(v03)}')
+          if hashlib.sha256(v03[0].read_bytes()).hexdigest()!=req['v03_catalog_sha256']:
+              raise SystemExit('v0.3 shadow catalog SHA mismatch')
+          shutil.copy2(v03[0],'/tmp/edge_serving_catalog_v0_3_shadow.jsonl')
+          PY
+
+      - name: Download and verify Analysis current bundle
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, subprocess, tarfile
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+
+          req=json.load(open('/tmp/request.json'))
+          bundle=Path('/tmp/analysis-parquet-current.tar.xz')
+          url=(
+              'https://drive.usercontent.google.com/download?id='
+              + req['analysis_bundle_drive_file_id']
+              + '&export=download&confirm=t'
+          )
+          subprocess.run(['curl','--fail','--location','--retry','3',url,'--output',str(bundle)],check=True)
+          root=Path('/tmp/analysis_parquet'); root.mkdir(parents=True,exist_ok=True)
+          with tarfile.open(bundle,'r:xz') as archive:
+              for member in archive.getmembers():
+                  target=(root/member.name).resolve()
+                  if root.resolve() not in (target,*target.parents):
+                      raise SystemExit(f'unsafe tar member: {member.name}')
+              archive.extractall(root)
+          report=resolve_current(root)
+          if report['generation_id']!=req['analysis_generation_id']:
+              raise SystemExit(
+                  f"Analysis generation mismatch expected={req['analysis_generation_id']} actual={report['generation_id']}"
+              )
+          manifest=Path(report['manifest'])
+          digest=hashlib.sha256(manifest.read_bytes()).hexdigest()
+          if digest!=req['analysis_manifest_sha256']:
+              raise SystemExit(
+                  f"Analysis manifest SHA mismatch expected={req['analysis_manifest_sha256']} actual={digest}"
+              )
+          Path('/tmp/analysis_resolution.json').write_text(json.dumps({
+              'generation_id':report['generation_id'],
+              'manifest_sha256':digest,
+              'rows':report['rows'],
+          },indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+
+      - name: Fetch target pre-race PACI
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          DAY="$(python -c "import json; print(json.load(open('/tmp/request.json'))['date'])")"
+          mkdir -p /tmp/raw
+          python horse-racing/jrdb/src/fetch_jrdb_paci.py --date "$DAY" --out-dir /tmp/raw
+          PACI="/tmp/raw/PACI${DAY:2}.zip"
+          test -f "$PACI"
+          cp "$PACI" /tmp/paci.zip
+          sha256sum /tmp/paci.zip
+
+      - name: Freeze v0.2 and v0.3 from identical Current Facts
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          DAY="$(python -c "import json; print(json.load(open('/tmp/request.json'))['date'])")"
+          python horse-racing/jrdb/src/run_jrdb_edge_v03_forward_shadow_freeze.py \
+            --paci /tmp/paci.zip \
+            --v02-catalog /tmp/edge_serving_catalog_v0_2.jsonl \
+            --v03-shadow-catalog /tmp/edge_serving_catalog_v0_3_shadow.jsonl \
+            --analysis-root /tmp/analysis_parquet \
+            --expected-race-date "${DAY:0:4}-${DAY:4:2}-${DAY:6:2}" \
+            --expected-v02-sha256 "$(python -c "import json; print(json.load(open('/tmp/request.json'))['v02_publication_sha256'])")" \
+            --expected-v03-sha256 "$(python -c "import json; print(json.load(open('/tmp/request.json'))['v03_catalog_sha256'])")" \
+            --expected-analysis-generation-id "$(python -c "import json; print(json.load(open('/tmp/request.json'))['analysis_generation_id'])")" \
+            --expected-analysis-manifest-sha256 "$(python -c "import json; print(json.load(open('/tmp/request.json'))['analysis_manifest_sha256'])")" \
+            --output-dir /tmp/stage_e
+          cp /tmp/request.json /tmp/stage_e/request.json
+          cp /tmp/analysis_resolution.json /tmp/stage_e/analysis_resolution.json
+
+      - name: Upload Stage-E frozen artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v03-forward-shadow-${{ github.event.issue.number }}-${{ github.run_id }}
+          path: /tmp/stage_e/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, subprocess
+          from pathlib import Path
+          root=Path('/tmp/stage_e')
+          result=json.load(open(root/'result_shadow.json'))
+          manifest_sha=hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest()
+          v02_matches_sha=hashlib.sha256((root/'edge_matches.jsonl').read_bytes()).hexdigest()
+          v03_matches_sha=hashlib.sha256((root/'edge_matches_v0_3_shadow.jsonl').read_bytes()).hexdigest()
+          compact={
+              'status':'PASS',
+              'stage':'E_FORWARD_SHADOW_FREEZE',
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-v03-forward-shadow-{os.environ['ISSUE_NUMBER']}-{os.environ['RUN_ID']}",
+              'race_date':result['race_date'],
+              'evaluation_mode':result['evaluation_mode'],
+              'pre_race_guard':result['pre_race_guard'],
+              'result_data_used':result['result_data_used'],
+              'frozen_at_utc':result['frozen_at_utc'],
+              'earliest_post_time_jst':result['earliest_post_time_jst'],
+              'manifest_sha256':manifest_sha,
+              'v02_matches_sha256':v02_matches_sha,
+              'v03_matches_sha256':v03_matches_sha,
+              'v02':result['v02'],
+              'v03':result['v03'],
+              'v03_catalog_sha256':result['v03_catalog_sha256'],
+              'production_serving_changed':False,
+          }
+          body='JRDB_EDGE_V03_FORWARD_SHADOW_FREEZE_RESULT\n'+json.dumps(
+              compact,ensure_ascii=False,indent=2,sort_keys=True
+          )
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',
+                          os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',
+                          os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge v0.3 Stage-E forward shadow freeze failed. No production serving change was made. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
