@@ -602,6 +602,47 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
             interpretation["positive_case_components"],
         )
 
+    def test_field_evidence_summary_detects_ability_fallback_only(self) -> None:
+        independent = _independent()
+        for horse in independent["horses"]:
+            horse["historical_profile"] = None
+
+        cards = _rr_cards()
+        for horse in cards["horses"]:
+            horse["primary_positive"] = []
+            horse["supporting_positive"] = []
+            horse["concerns"] = []
+            horse["mixed_context"] = []
+            horse["profile"]["hidden_strength"]["status"] = "NONE"
+            horse["profile"]["hidden_strength"]["reason_codes"] = []
+            horse["profile"]["fragile_form"]["status"] = "NONE"
+            horse["profile"]["fragile_form"]["reason_codes"] = []
+            horse["profile"]["contradiction"]["status"] = "NONE"
+
+        result = build_general_evidence(
+            independent,
+            cards,
+        )
+        summary = result["field_evidence_summary"]
+
+        self.assertEqual(
+            summary["status"],
+            "ABILITY_FALLBACK_ONLY",
+        )
+        self.assertEqual(
+            summary["top_lane_directional_runner_count"],
+            0,
+        )
+        self.assertEqual(
+            summary["ability_only_runner_count"],
+            2,
+        )
+        self.assertTrue(summary["policy"]["descriptive_only"])
+        self.assertFalse(summary["policy"]["may_auto_rank"])
+        self.assertFalse(
+            summary["policy"]["may_auto_change_marks"]
+        )
+
     def test_ability_anchor_cannot_create_upgrade_or_downgrade_by_itself(self) -> None:
         result = build_general_evidence(
             _independent(),
