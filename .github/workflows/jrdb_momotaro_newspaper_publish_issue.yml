@@ -64,6 +64,10 @@ jobs:
           if not isinstance(entries, list):
               raise SystemExit("keibailuka_entries must be an array")
 
+          momotaro_predictions = request.get("momotaro_predictions", [])
+          if not isinstance(momotaro_predictions, list):
+              raise SystemExit("momotaro_predictions must be an array")
+
           normalized_entries = []
           for index, item in enumerate(entries, start=1):
               if not isinstance(item, dict):
@@ -87,12 +91,62 @@ jobs:
                   "source_url": source_url,
               })
 
+          normalized_predictions = []
+          allowed_members = {"ryota", "oji", "kenshow"}
+          seen_prediction_keys = set()
+          for index, item in enumerate(momotaro_predictions, start=1):
+              if not isinstance(item, dict):
+                  raise SystemExit(f"momotaro prediction {index} must be an object")
+              venue_code = str(item.get("venue_code") or "").strip().zfill(2)
+              race_no = item.get("race_no")
+              horse_no = item.get("horse_no")
+              horse_name = str(item.get("horse_name") or "").strip()
+              member = str(item.get("member") or "").strip()
+              mark = str(item.get("mark") or "").strip()
+              confidence = str(item.get("confidence") or "").strip()
+              review_horse = item.get("review_horse", False)
+              comment = str(item.get("comment") or "").strip()
+
+              if not re.fullmatch(r"\d{2}", venue_code):
+                  raise SystemExit(f"momotaro prediction {index}: venue_code is invalid")
+              if not isinstance(race_no, int) or isinstance(race_no, bool) or not 1 <= race_no <= 12:
+                  raise SystemExit(f"momotaro prediction {index}: race_no is invalid")
+              if not isinstance(horse_no, int) or isinstance(horse_no, bool) or horse_no < 1:
+                  raise SystemExit(f"momotaro prediction {index}: horse_no is invalid")
+              if not horse_name:
+                  raise SystemExit(f"momotaro prediction {index}: horse_name is blank")
+              if member not in allowed_members:
+                  raise SystemExit(f"momotaro prediction {index}: member is invalid")
+              if not isinstance(review_horse, bool):
+                  raise SystemExit(f"momotaro prediction {index}: review_horse must be boolean")
+              if not mark and not confidence and not review_horse and not comment:
+                  raise SystemExit(f"momotaro prediction {index}: prediction is empty")
+
+              key = (date, venue_code, race_no, horse_no, member)
+              if key in seen_prediction_keys:
+                  raise SystemExit(f"duplicate momotaro prediction key: {key}")
+              seen_prediction_keys.add(key)
+
+              normalized_predictions.append({
+                  "date": date,
+                  "venue_code": venue_code,
+                  "race_no": race_no,
+                  "horse_no": horse_no,
+                  "horse_name": horse_name,
+                  "member": member,
+                  "mark": mark,
+                  "confidence": confidence,
+                  "review_horse": review_horse,
+                  "comment": comment,
+              })
+
           normalized = {
               "date": date,
               "base_run_id": base_run_id,
               "artifact_name": artifact_name,
               "revision": revision,
               "keibailuka_entries": normalized_entries,
+              "momotaro_predictions": normalized_predictions,
           }
           Path("/tmp/momotaro-request/request.json").write_text(
               json.dumps(normalized, ensure_ascii=False, indent=2) + "\n",
@@ -102,6 +156,31 @@ jobs:
               json.dumps({"entries": normalized_entries}, ensure_ascii=False, indent=2) + "\n",
               encoding="utf-8",
           )
+
+          if normalized_predictions:
+              import csv
+              csv_path = Path("/tmp/momotaro-request/momotaro_predictions.csv")
+              with csv_path.open("w", encoding="utf-8", newline="") as handle:
+                  writer = csv.DictWriter(
+                      handle,
+                      fieldnames=[
+                          "date",
+                          "venue_code",
+                          "race_no",
+                          "horse_no",
+                          "horse_name",
+                          "member",
+                          "mark",
+                          "confidence",
+                          "review_horse",
+                          "comment",
+                      ],
+                  )
+                  writer.writeheader()
+                  for row in normalized_predictions:
+                      output = dict(row)
+                      output["review_horse"] = "1" if row["review_horse"] else ""
+                      writer.writerow(output)
 
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
               env_file.write(f"REQUEST_DATE={date}\n")
@@ -154,7 +233,11 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf /tmp/momotaro-current
-          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             > /tmp/momotaro-request/projection-result.json
+          MOMOTARO_ARGS=()
+          if [ -f /tmp/momotaro-request/momotaro_predictions.csv ]; then
+            MOMOTARO_ARGS+=(--momotaro-csv /tmp/momotaro-request/momotaro_predictions.csv)
+          fi
+          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             "${MOMOTARO_ARGS[@]}"             > /tmp/momotaro-request/projection-result.json
 
       - name: Validate Momotaro current
         run: |
@@ -169,6 +252,9 @@ jobs:
           audit = json.loads((root / "audit.json").read_text(encoding="utf-8"))
           merge_result = json.loads(
               Path("/tmp/momotaro-request/merge-result.json").read_text(encoding="utf-8")
+          )
+          projection_result = json.loads(
+              Path("/tmp/momotaro-request/projection-result.json").read_text(encoding="utf-8")
           )
 
           if manifest.get("date") != os.environ["REQUEST_DATE"]:
@@ -217,6 +303,7 @@ jobs:
               "iluka_merged": merged,
               "iluka_unmatched": unmatched,
               "unmatched_entries": iluka_result.get("unmatched_entries") or [],
+              "momotaro_rows": int(projection_result.get("momotaro_rows") or 0),
           }
           Path("/tmp/momotaro-request/validation-summary.json").write_text(
               json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
