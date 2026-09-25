@@ -43,7 +43,7 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
 ## Surfaces
 
 - `newspaper.html`: 既存Newspaper runtimeを共有、過去走5走固定、共有compact historyを使用、桃太郎3人欄を追加
-- `predictions.html`: りょーたS / おーじ回顧馬 / イルカの一覧
+- `predictions.html`: りょーたS / 王子 / イルカの一覧
 - `fact-lite.html`: 既存Fact Lite runtimeと配布SQLiteを共有、OPFSだけ桃太郎専用
 
 
@@ -127,12 +127,12 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 - 同一レースに複数sourceがある場合はsourceごとに縦積みする。
 - 🐬は source label を 🐬 とし、馬番 + 馬名 + コメントを表示する。
 - りょーた confidence=S は「次走注目S」と表示する。
-- 王子 review_horse=true は「回顧馬」と表示する。
+- 王子 review_horse=true は一覧対象判定だけに使い、画面上では「回顧馬」等の区分ラベルを付けず、馬番 + 馬名 + コメントを表示する。
 
 
 印列幅:
-- りょ / 王子 / けん: 32px
-- 🐬: 34px
+- りょ / 王子 / けん: 24px
+- 🐬: 26px
 
 
 過去走は5走固定。
