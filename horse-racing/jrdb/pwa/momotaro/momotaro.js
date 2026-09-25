@@ -38,7 +38,7 @@ function showMomotaroContributorDetail(horse, contributor) {
   const mark = text(value.mark, "");
   const confidence = text(value.confidence, "");
   const comment = text(value.comment, "");
-  const review = value.review_horse === true ? "回顧馬" : "";
+  const review = value.review_horse === true && contributor.key === "ryota" ? "特注" : "";
 
   dialogTitle.textContent = horseName + " / " + contributor.label + (mark ? " " + mark : "");
   const meta = [
@@ -212,7 +212,7 @@ function renderMomotaroFriends() {
       const mark = text(value.mark, "");
       const confidence = text(value.confidence, "");
       const comment = text(value.comment, "");
-      const review = value.review_horse === true ? "回顧馬" : "";
+      const review = value.review_horse === true && entry.key === "ryota" ? "特注" : "";
       const meta = [confidence ? "自信度 " + confidence : "", review].filter(Boolean).join(" / ");
 
       return '<div class="momotaro-contributor">' +
