@@ -7,6 +7,8 @@ on:
       - 'horse-racing/jrdb/src/racenote_racereview_current.py'
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_race_day_facts.py'
+      - 'horse-racing/jrdb/src/racenote_jra_track_facts.py'
       - 'horse-racing/jrdb/src/racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
@@ -21,6 +23,8 @@ on:
       - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
+      - 'horse-racing/jrdb/tests/test_racenote_race_day_facts.py'
+      - 'horse-racing/jrdb/tests/test_racenote_jra_track_facts.py'
       - 'horse-racing/jrdb/tests/test_racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
@@ -32,6 +36,8 @@ on:
       - 'horse-racing/jrdb/src/racenote_racereview_current.py'
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_race_day_facts.py'
+      - 'horse-racing/jrdb/src/racenote_jra_track_facts.py'
       - 'horse-racing/jrdb/src/racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/src/racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/src/racenote_scenario_robustness.py'
@@ -46,6 +52,8 @@ on:
       - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
+      - 'horse-racing/jrdb/tests/test_racenote_race_day_facts.py'
+      - 'horse-racing/jrdb/tests/test_racenote_jra_track_facts.py'
       - 'horse-racing/jrdb/tests/test_racenote_all_runner_synthesis.py'
       - 'horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py'
       - 'horse-racing/jrdb/tests/test_racenote_scenario_robustness.py'
@@ -71,6 +79,8 @@ jobs:
           python -m py_compile src/racenote_racereview_current.py
           python -m py_compile src/racenote_racereview_adapter.py
           python -m py_compile src/racenote_general_evidence.py
+          python -m py_compile src/racenote_race_day_facts.py
+          python -m py_compile src/racenote_jra_track_facts.py
           python -m py_compile src/racenote_all_runner_synthesis.py
           python -m py_compile src/racenote_pairwise_comparison.py
           python -m py_compile src/racenote_scenario_robustness.py
@@ -92,6 +102,8 @@ jobs:
             horse-racing/jrdb/tests/test_racenote_racereview_current.py \
             horse-racing/jrdb/tests/test_racenote_racereview_adapter.py \
             horse-racing/jrdb/tests/test_racenote_general_evidence.py \
+            horse-racing/jrdb/tests/test_racenote_race_day_facts.py \
+            horse-racing/jrdb/tests/test_racenote_jra_track_facts.py \
             horse-racing/jrdb/tests/test_racenote_all_runner_synthesis.py \
             horse-racing/jrdb/tests/test_racenote_pairwise_comparison.py \
             horse-racing/jrdb/tests/test_racenote_scenario_robustness.py \
