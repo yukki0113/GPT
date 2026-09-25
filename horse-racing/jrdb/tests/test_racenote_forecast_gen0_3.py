@@ -378,6 +378,18 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
         self.assertEqual(result["scenario_axis_robustness"], "ROBUST")
         self.assertFalse(result["firewall"]["edge_value_visible"])
         self.assertEqual(
+            result["horses"][0]["decision_trace"][
+                "short_comment_status"
+            ],
+            "SOURCE_READY",
+        )
+        self.assertEqual(
+            result["horses"][0]["decision_trace"]["primary"][
+                "evidence_codes"
+            ],
+            ["SAME_DISTANCE"],
+        )
+        self.assertEqual(
             result["post_freeze_open_order"],
             [
                 "JRDB_CONSENSUS",
@@ -447,6 +459,78 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
                 payload,
             )
 
+    def test_unknown_decision_evidence_code_fails_closed(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["decision_trace"]["primary"][
+            "evidence_codes"
+        ] = ["NOT_REAL_EVIDENCE"]
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
+    def test_axis_trace_requires_direct_pairwise_support_vs_runner_up(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["decision_trace"][
+            "pairwise_support_horse_nos"
+        ] = [3]
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
+    def test_scenario_risk_trace_must_match_actual_rank_drop(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        scenario["horse_sensitivity"][0]["scenario_ranks"][
+            "FAST"
+        ] = 2
+        scenario["scenarios"][2]["order"] = [2, 1, 3]
+        payload = _payload(general, pairwise, scenario)
+        payload["source_chain"]["scenario_audit_sha256"] = semantic_sha256(
+            scenario
+        )
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
+    def test_comment_evidence_must_be_subset_of_decision_trace(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["decision_trace"][
+            "comment_evidence_codes"
+        ].append("ABILITY_PEAK")
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
+
     def test_edge_performance_can_justify_final_rank_change(self) -> None:
         general = _general()
         pairwise = _pairwise(general)
@@ -457,10 +541,12 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
         payload["horses"][0]["mark"] = "○"
         payload["horses"][0]["p_win_final"] = 0.35
         payload["horses"][0]["edge_performance"] = _edge_positive("E-A")
+        payload["horses"][0]["decision_trace"]["edge_ids"] = ["E-A"]
         payload["horses"][1]["final_rank"] = 1
         payload["horses"][1]["mark"] = "◎"
         payload["horses"][1]["p_win_final"] = 0.45
         payload["horses"][1]["edge_performance"] = _edge_positive("E-B")
+        payload["horses"][1]["decision_trace"]["edge_ids"] = ["E-B"]
         payload["horses"][2]["p_win_final"] = 0.20
 
         result = validate_forecast(
@@ -470,6 +556,21 @@ class RaceNoteForecastGen03Test(unittest.TestCase):
             payload,
         )
         self.assertEqual(result["final_order"], [2, 1, 3])
+
+    def test_used_edge_requires_edge_id_in_decision_trace(self) -> None:
+        general = _general()
+        pairwise = _pairwise(general)
+        scenario = _scenario(pairwise)
+        payload = _payload(general, pairwise, scenario)
+        payload["horses"][0]["edge_performance"] = _edge_positive("E1")
+
+        with self.assertRaises(ForecastGen03Error):
+            validate_forecast(
+                general,
+                pairwise,
+                scenario,
+                payload,
+            )
 
     def test_pairwise_rank_change_to_base_requires_scenario_reason(self) -> None:
         general = _general()
