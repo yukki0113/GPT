@@ -314,7 +314,7 @@ def _general_trace_codes(
     result: dict[str, set[str]] = {
         "DATA_TREND": set(),
         "RACEREVIEW": set(),
-        "ABILITY_ANCHOR": set(ABILITY_TRACE_CODES),
+        "ABILITY_ANCHOR": set(),
         "RACE_STRUCTURE": set(),
         "UNCERTAINTY": set(),
     }
@@ -347,6 +347,21 @@ def _general_trace_codes(
                 code = _text(raw_context.get("code"))
                 if code:
                     result["DATA_TREND"].add(code)
+
+    ability_lane = lanes.get("ability_anchor")
+    if isinstance(ability_lane, Mapping):
+        profile = ability_lane.get("profile")
+        if isinstance(profile, Mapping):
+            ability_fields = (
+                ("latest", "ABILITY_LATEST"),
+                ("peak", "ABILITY_PEAK"),
+                ("typical_median", "ABILITY_TYPICAL"),
+                ("minimum", "ABILITY_MINIMUM"),
+                ("mad", "ABILITY_CONSISTENCY"),
+            )
+            for field, code in ability_fields:
+                if profile.get(field) is not None:
+                    result["ABILITY_ANCHOR"].add(code)
 
     rr_lane = lanes.get("racereview")
     if isinstance(rr_lane, Mapping):
