@@ -202,6 +202,7 @@ def list_public_google_drive_folder(
     if not isinstance(payload, list):
         raise MaterializationError(f"Drive folder listing is not a list for {label}/{folder_id}")
     entries: list[SourceEntry] = []
+    seen_entries: set[tuple[str, str | None, str | None, str | None, str | None]] = set()
     for item in payload:
         if not isinstance(item, Mapping):
             continue
@@ -210,7 +211,12 @@ def list_public_google_drive_folder(
         file_id = extract_google_drive_file_id(url_value or "")
         if not path or not file_id:
             continue
-        entries.append(SourceEntry(path=path, url=url_value, file_id=file_id, root_label=label.upper()))
+        entry = SourceEntry(path=path, url=url_value, file_id=file_id, root_label=label.upper())
+        identity = (entry.path, entry.url, entry.file_id, entry.local_path, entry.root_label)
+        if identity in seen_entries:
+            continue
+        seen_entries.add(identity)
+        entries.append(entry)
     if not entries:
         raise MaterializationError(f"Drive folder listing returned no files for {label}/{folder_id}")
     return entries
