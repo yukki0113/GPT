@@ -100,11 +100,15 @@ def _relation_paths(
     return paths
 
 
-def _table_sql(paths: list[Path]) -> tuple[str, list[str]]:
-    marks = ", ".join("?" for _ in paths)
+def _table_sql(paths: list[Path]) -> str:
+    literals = ", ".join(
+        "'" + str(path).replace("'", "''") + "'"
+        for path in paths
+    )
     return (
-        "read_parquet([" + marks + "], union_by_name=true, hive_partitioning=false)",
-        [str(path) for path in paths],
+        "read_parquet(["
+        + literals
+        + "], union_by_name=true, hive_partitioning=false)"
     )
 
 
@@ -135,7 +139,7 @@ def main() -> int:
         )
 
     hp_paths = _relation_paths(root, manifest, "fact_horse_performance")
-    hp_sql, hp_params = _table_sql(hp_paths)
+    hp_sql = _table_sql(hp_paths)
 
     frozen = contract.get("frozen_rules")
     if not isinstance(frozen, list):
@@ -160,7 +164,7 @@ def main() -> int:
           AND COALESCE(finish, 0) > 0
           AND COALESCE(time_sec, 0) > 0
           AND COALESCE(surface_code, '') <> '3'
-        """, hp_params)
+        """)
 
         connection.execute("""
         CREATE TEMP VIEW featured AS
@@ -214,7 +218,6 @@ def main() -> int:
             matched: list[str] = []
             for rule in hidden_rules:
                 condition = str(rule["condition"])
-                connection.execute("CREATE OR REPLACE TEMP TABLE one_row AS SELECT * FROM featured WHERE 1=0")
                 # Evaluate rule against the selected race_horse_key via the same frozen SQL.
                 matched_row = connection.execute(
                     f"""
