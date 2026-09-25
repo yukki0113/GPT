@@ -130,7 +130,10 @@ def _stable_projection(row: Mapping[str, object]) -> dict[str, object]:
     """Project one RaceReviewDB row onto the adapter's frozen stable field set."""
     projected: dict[str, object] = {}
     for field in STABLE_RUN_FIELDS:
-        projected[field] = row.get(field)
+        value = row.get(field)
+        if field == "race_date":
+            value = _date_text(value)
+        projected[field] = value
     return projected
 
 
