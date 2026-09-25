@@ -78,6 +78,17 @@ def test_expected_scheduled_races_fails_closed_on_partial_snapshot() -> None:
     assert target._assert_expected_scheduled_races(
         {"provenance":{"scheduled_races":24}},24
     )==24
+    assert target._assert_expected_scheduled_races(
+        {"provenance":{"scheduled_races":24}},None
+    )==24
+    try:
+        target._assert_expected_scheduled_races(
+            {"provenance":{"scheduled_races":24}},0
+        )
+    except target.ShadowFreezeError as exc:
+        assert "must be positive" in str(exc)
+    else:
+        raise AssertionError("expected ShadowFreezeError")
 
 
 def test_shadow_catalog_sha_is_exact(tmp_path: Path) -> None:
