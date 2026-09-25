@@ -12,6 +12,7 @@ DB_TABLES = {
     # ZIP identity while Warehouse records immutable Parquet identity, so exact
     # equality is neither expected nor required for the RL-T non-regression gate.
     "training": ("training_runner",),
+    "edge_input": ("training_edge_input",),
 }
 EXCLUDED_COLUMNS = {"runperf_coefficient_snapshot": {"created_at"}}
 FINGERPRINT_FIELDS = (
@@ -71,7 +72,7 @@ def _fingerprint_compare(a:Path,b:Path)->dict[str,Any]:
 
 def main()->int:
     p=argparse.ArgumentParser()
-    for kind in ('runperf','official','training'):
+    for kind in ('runperf','official','training','edge-input'):
         p.add_argument(f'--raw-{kind}',type=Path,required=True); p.add_argument(f'--warehouse-{kind}',type=Path,required=True)
     p.add_argument('--raw-stage1b',type=Path,required=True); p.add_argument('--warehouse-stage1b',type=Path,required=True)
     p.add_argument('--raw-fingerprint',type=Path,required=True); p.add_argument('--warehouse-fingerprint',type=Path,required=True)
@@ -79,6 +80,7 @@ def main()->int:
     report={'runperf':_db_compare('runperf',a.raw_runperf,a.warehouse_runperf),
             'official':_db_compare('official',a.raw_official,a.warehouse_official),
             'training':_db_compare('training',a.raw_training,a.warehouse_training),
+            'edge_input':_db_compare('edge_input',a.raw_edge_input,a.warehouse_edge_input),
             'stage1b':_stage_compare(a.raw_stage1b,a.warehouse_stage1b),
             'fingerprint':_fingerprint_compare(a.raw_fingerprint,a.warehouse_fingerprint)}
     report['status']='PASS' if all(v['pass'] for v in report.values() if isinstance(v,dict) and 'pass' in v) else 'FAIL'
