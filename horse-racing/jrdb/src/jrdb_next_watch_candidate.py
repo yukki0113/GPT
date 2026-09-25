@@ -138,6 +138,7 @@ def build_candidate(
     rc_sql, rc_params = _table_sql(rc_paths)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_sql = str(output_path).replace("'", "''")
     connection = duckdb.connect(":memory:")
     try:
         query = f"""
@@ -252,7 +253,7 @@ def build_candidate(
           JOIN {rr_sql} r USING (race_key)
           JOIN {rc_sql} c USING (race_key)
           ORDER BY s.race_date, s.race_key, s.horse_no
-        ) TO ? (
+        ) TO '{output_sql}' (
           FORMAT PARQUET,
           COMPRESSION ZSTD
         )
@@ -261,7 +262,6 @@ def build_candidate(
             *hp_params,
             *rr_params,
             *rc_params,
-            str(output_path),
         ]
         connection.execute(query, params)
 
