@@ -13,6 +13,7 @@ Stage-D operational replay完了後のv0.3設計を、未来開催で結果参�
 
 - 2026-09-26
 - 2026-09-27
+- expected scheduled races: **24 races per target date** (Nakayama 12 + Hanshin 12)
 
 対象は日単位で固定し、Edgeの有無・人気・レース難度・結果による個別race除外は行わない。
 PACI source availabilityや開催変更がある場合はfail-closedで記録し、結果確認後の代替選択は行わない。
@@ -80,11 +81,12 @@ For each target date:
 3. verify v0.2 publication SHA;
 4. verify frozen Stage-C v0.3 shadow catalog SHA;
 5. enforce the existing TRUE_FORWARD earliest-post time guard;
-6. build Current Facts once;
-7. create v0.2 STANDARD matches;
-8. create v0.3 SHADOW_ONLY matches from exactly the same Current Facts;
-9. freeze PACI, catalogs, facts, both match outputs, provenance, and hashes;
-10. do not use SED/result data in Freeze.
+6. require PACI BAC scheduled-race count to equal the frozen full-day count (**24**); partial snapshots fail closed;
+7. build Current Facts once;
+8. create v0.2 STANDARD matches;
+9. create v0.3 SHADOW_ONLY matches from exactly the same Current Facts;
+10. freeze PACI, catalogs, facts, both match outputs, provenance, and hashes;
+11. do not use SED/result data in Freeze.
 
 The v0.3 output is observational only and must not replace Newspaper/RaceNote production serving.
 
@@ -116,3 +118,11 @@ Any later promotion decision requires a separate review after:
 - rollback to v0.2 remains available.
 
 Until then: **v0.2 = STANDARD production / v0.3 = SHADOW_ONLY.**
+
+## 7. PACI completeness correction
+
+An early 2026-09-27 PACI retrieval produced only one BAC race / 16 runners.
+That snapshot is explicitly non-canonical for Stage-E because the frozen target is the full 24-race JRA day.
+The Stage-E driver/workflow therefore requires `expected_scheduled_races=24` and rejects partial PACI snapshots.
+
+2026-09-26 is also re-frozen under the same 24-race completeness guard so both target days use one contract.
