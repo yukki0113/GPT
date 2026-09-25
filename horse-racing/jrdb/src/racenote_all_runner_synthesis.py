@@ -460,6 +460,89 @@ def _validate_boundaries(
     return output
 
 
+def build_synthesis_request(
+    general: Mapping[str, object],
+) -> dict[str, object]:
+    """Build a no-winner-chosen authoring request from General Evidence."""
+    general_horses = _validate_general(general)
+    target = _mapping(general.get("target"), "general.target")
+
+    horses: list[dict[str, object]] = []
+    for horse_no in sorted(general_horses):
+        horse = general_horses[horse_no]
+        interpretation = _mapping(
+            horse.get("prediction_interpretation"),
+            f"general.horse[{horse_no}].prediction_interpretation",
+        )
+        horses.append(
+            {
+                "horse_no": horse_no,
+                "horse_name": _text(horse.get("horse_name")),
+                "prediction_interpretation": copy.deepcopy(
+                    dict(interpretation)
+                ),
+                "author_fields": {
+                    "draft_rank": None,
+                    "confidence": None,
+                    "primary_lane": None,
+                    "positive_components": [],
+                    "concern_components": [],
+                    "ability_context_used": None,
+                    "draft_reason": None,
+                    "main_uncertainty": None,
+                },
+            }
+        )
+
+    return {
+        "request_schema_version": (
+            "RaceNote-All-Runner-Synthesis-Request-0.1"
+        ),
+        "synthesis_schema_version": SYNTHESIS_SCHEMA_VERSION,
+        "synthesis_contract_version": SYNTHESIS_CONTRACT_VERSION,
+        "general_evidence_sha256": semantic_sha256(general),
+        "target": {
+            "date": _text(target.get("date")),
+            "venue": _text(target.get("venue")),
+            "race_no": _positive_int(
+                target.get("race_no"),
+                "target.race_no",
+            ),
+            "race_name": _text(target.get("race_name")),
+        },
+        "race_data_context": copy.deepcopy(
+            general.get("race_data_context", {})
+        ),
+        "race_structure": copy.deepcopy(
+            general.get("race_structure", {})
+        ),
+        "horses": horses,
+        "author_fields": {
+            "boundaries": [],
+            "draft_order_summary": None,
+        },
+        "instructions": {
+            "read_every_runner_before_ranking": True,
+            "reading_order": [
+                "DATA_TREND",
+                "RACEREVIEW",
+                "ABILITY_ANCHOR",
+            ],
+            "do_not_score": True,
+            "do_not_count_positive_components_as_votes": True,
+            "ability_cannot_be_primary_lane": True,
+            "preserve_mixed_and_uncertainty": True,
+            "complete_rank_1_to_n_required": True,
+            "build_every_adjacent_boundary_after_ranking": True,
+            "draft_order_is_not_final_forecast": True,
+            "pairwise_required_next": True,
+            "do_not_use_market": True,
+            "do_not_use_current_jrdb_consensus": True,
+            "do_not_use_training_edge": True,
+        },
+    }
+
+
 def validate_all_runner_synthesis(
     general: Mapping[str, object],
     payload: Mapping[str, object],
