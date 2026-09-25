@@ -197,4 +197,178 @@ def _confidence(horse: Mapping[str, object]) -> str:
     return "MEDIUM"
 
 
-def _boundary_priority(upper: Mapping[str, object], lower: Mapping[str, objec
+def _boundary_priority(upper: Mapping[str, object], lower: Mapping[str, object]) -> str:
+    reasons: list[str] = []
+    if _confidence(upper) == "LOW":
+        reasons.append("UPPER_LOW_CONFIDENCE")
+    if _confidence(lower) == "LOW":
+        reasons.append("LOWER_LOW_CONFIDENCE")
+
+    for side, horse in (("UPPER", upper), ("LOWER", lower)):
+        interpretation = _as_mapping(horse.get("prediction_interpretation"))
+        trend = _as_mapping(interpretation.get("data_trend"))
+        review = _as_mapping(interpretation.get("racereview"))
+        if _text(trend.get("state")).upper() == "MIXED":
+            reasons.append(f"{side}_TREND_MIXED")
+        if trend.get("small_sample_only") is True:
+            reasons.append(f"{side}_SMALL_SAMPLE_ONLY")
+        review_state = _text(review.get("state")).upper()
+        if review_state in {"MIXED", "MIXED_CONTEXT_ONLY"}:
+            reasons.append(f"{side}_REVIEW_MIXED")
+        if _text(review.get("contradiction_status")).upper() == "MIXED":
+            reasons.append(f"{side}_REVIEW_CONTRADICTION")
+    return "HIGH" if reasons else "STANDARD"
+
+
+def build_synthesis(general: Mapping[str, object]) -> dict[str, object]:
+    order = _author_order(general)
+    index = _horse_index(general)
+    horses: list[dict[str, object]] = []
+
+    for rank, horse_no in enumerate(order, start=1):
+        horse = index[horse_no]
+        trend_state, review_state = _states(horse)
+        positive, concern = _interpretation_components(horse)
+        ability = _ability_profile(horse)
+        lane = _primary_lane(horse)
+        typical = ability.get("typical_median")
+        latest = ability.get("latest")
+        reason = (
+            f"{PROFILE_VERSION}: Trend={trend_state}, Review={review_state}を"
+            f"優先順に読み、Ability typical={typical}, latest={latest}は境界文脈として使用。"
+        )
+        uncertainty = (
+            "日次リハーサルの定型author profileであり、Evidence状態の序列は"
+            "確率的信頼度や自動スコアを意味しない。"
+        )
+        horses.append(
+            {
+                "horse_no": horse_no,
+                "draft_rank": rank,
+                "confidence": _confidence(horse),
+                "primary_lane": lane,
+                "positive_components": positive,
+                "concern_components": concern,
+                "ability_context_used": True,
+                "draft_reason": reason,
+                "main_uncertainty": uncertainty,
+            }
+        )
+
+    boundaries: list[dict[str, object]] = []
+    for upper_no, lower_no in zip(order, order[1:]):
+        upper = index[upper_no]
+        lower = index[lower_no]
+        boundaries.append(
+            {
+                "upper_horse_no": upper_no,
+                "lower_horse_no": lower_no,
+                "comparison_priority": _boundary_priority(upper, lower),
+                "boundary_summary": (
+                    f"{upper_no}番と{lower_no}番をTrend→RaceReview→Abilityの"
+                    "同一読み順で直接比較する境界。"
+                ),
+            }
+        )
+
+    target = copy.deepcopy(dict(_as_mapping(general.get("target"))))
+    return {
+        "synthesis_schema_version": "RaceNote-All-Runner-Synthesis-0.1",
+        "synthesis_contract_version": "FullField-Draft-v0.1",
+        "general_evidence_sha256": synthesis_sha256(general),
+        "target": target,
+        "horses": horses,
+        "boundaries": boundaries,
+        "draft_order_summary": (
+            f"{PROFILE_VERSION}: 全馬をDATA_TREND > RACEREVIEW >= ABILITY_ANCHORの"
+            "辞書式優先順で読み、加算スコアなしで日次リハーサルのdraftを作成。"
+        ),
+    }
+
+
+def _lane_state(horse: Mapping[str, object], lane: str) -> str:
+    trend, review = _states(horse)
+    if lane == "DATA_TREND":
+        return trend
+    if lane == "RACEREVIEW":
+        return review
+    raise ValueError(lane)
+
+
+def _relation_from_order(
+    state_a: str,
+    state_b: str,
+    order_map: Mapping[str, int],
+) -> str:
+    value_a = order_map.get(state_a, 0)
+    value_b = order_map.get(state_b, 0)
+    if value_a == value_b:
+        if value_a == 0:
+            return "UNKNOWN"
+        return "EVEN"
+    return "A" if value_a > value_b else "B"
+
+
+def _ability_relation(a: Mapping[str, object], b: Mapping[str, object]) -> str:
+    key_a = _ability_key(a)
+    key_b = _ability_key(b)
+    if key_a == key_b:
+        return "EVEN"
+    return "A" if key_a > key_b else "B"
+
+
+def _lane_judgments(
+    a: Mapping[str, object],
+    b: Mapping[str, object],
+) -> tuple[dict[str, dict[str, object]], str]:
+    a_no = int(a["horse_no"])
+    b_no = int(b["horse_no"])
+    trend_a, review_a = _states(a)
+    trend_b, review_b = _states(b)
+
+    trend_relation = _relation_from_order(trend_a, trend_b, TREND_ORDER)
+    review_relation = _relation_from_order(review_a, review_b, REVIEW_ORDER)
+    ability_relation = _ability_relation(a, b)
+
+    if trend_relation in {"A", "B"}:
+        decisive = "DATA_TREND"
+    elif review_relation in {"A", "B"}:
+        decisive = "RACEREVIEW"
+    elif ability_relation in {"A", "B"}:
+        decisive = "ABILITY_ANCHOR"
+    else:
+        decisive = "UNCERTAINTY"
+
+    judgments = {
+        "DATA_TREND": {
+            "relation": trend_relation,
+            "summary": f"Trend state: {a_no}={trend_a}, {b_no}={trend_b}。",
+            "evidence_codes": [],
+            "source_refs": [],
+        },
+        "RACEREVIEW": {
+            "relation": review_relation,
+            "summary": f"RaceReview state: {a_no}={review_a}, {b_no}={review_b}。",
+            "evidence_codes": [],
+            "source_refs": [],
+        },
+        "ABILITY_ANCHOR": {
+            "relation": ability_relation,
+            "summary": (
+                f"Ability anchorを同位境界の補助として比較: "
+                f"{a_no}={_ability_profile(a)}, {b_no}={_ability_profile(b)}。"
+            ),
+            "evidence_codes": [
+                "ABILITY_TYPICAL",
+                "ABILITY_LATEST",
+                "ABILITY_PEAK",
+                "ABILITY_CONSISTENCY",
+            ],
+            "source_refs": [],
+        },
+    }
+    return judgments, decisive
+
+
+def _preferred_from_relation(relation: str, a_no: int, b_no: int) -> int | None:
+    
