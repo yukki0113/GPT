@@ -58,7 +58,11 @@ def _recent_run(
     date: str,
     idm: float,
     finish: int,
+    corners: list[int] | None = None,
+    field_size: int = 12,
 ) -> dict[str, object]:
+    if corners is None:
+        corners = [finish, finish, finish, finish]
     return {
         "race": {
             "date": date,
@@ -68,12 +72,14 @@ def _recent_run(
             "distance_m": 1600,
             "class": "2勝クラス",
             "grade": "",
+            "field_size": field_size,
         },
         "result": {
             "finish": finish,
         },
         "performance": {
             "idm": idm,
+            "corners": corners,
         },
     }
 
@@ -533,6 +539,65 @@ class RaceNoteGeneralEvidenceTest(unittest.TestCase):
         self.assertEqual(
             context["post_freeze_trend_sources"],
             ["POPULARITY"],
+        )
+
+    def test_independent_race_structure_uses_only_historical_corners(self) -> None:
+        independent = _independent()
+        independent["horses"][0]["recent_runs"] = [
+            _recent_run(
+                "2026-09-20",
+                60.0,
+                4,
+                corners=[1, 1, 2, 2],
+            ),
+            _recent_run(
+                "2026-08-30",
+                56.0,
+                2,
+                corners=[2, 2, 2, 2],
+            ),
+            _recent_run(
+                "2026-08-02",
+                58.0,
+                5,
+                corners=[3, 3, 4, 4],
+            ),
+        ]
+        independent["horses"][1]["recent_runs"] = [
+            _recent_run(
+                "2026-09-14",
+                64.0,
+                1,
+                corners=[8, 7, 6, 4],
+            ),
+            _recent_run(
+                "2026-08-16",
+                63.0,
+                1,
+                corners=[9, 8, 5, 2],
+            ),
+        ]
+
+        result = build_general_evidence(
+            independent,
+            _rr_cards(),
+        )
+        structure = result["race_structure"]
+
+        self.assertEqual(
+            structure["structure_version"],
+            "IndependentRaceStructure-v0.1",
+        )
+        self.assertEqual(structure["pace_pressure"], "LOW")
+        first = structure["horses"][0]["historical_position"]
+        second = structure["horses"][1]["historical_position"]
+        self.assertEqual(first["tendency"], "FRONT")
+        self.assertEqual(second["tendency"], "MID")
+        self.assertFalse(
+            first["policy"]["current_jrdb_running_style_used"]
+        )
+        self.assertFalse(
+            structure["policy"]["current_jrdb_forecast_pace_used"]
         )
 
     def test_population_trends_keep_sample_size_visible(self) -> None:
