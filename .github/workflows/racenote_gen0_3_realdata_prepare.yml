@@ -208,8 +208,6 @@ jobs:
           PY
 
       - name: Build Independent firewall view
-        env:
-          BUNDLE_NAME: ${{ inputs.bundle_name }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/racenote_prepare/firewall
