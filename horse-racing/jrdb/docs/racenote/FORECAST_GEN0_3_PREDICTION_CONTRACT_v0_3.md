@@ -184,7 +184,7 @@ Every pair records:
 If lower-priority evidence overrides protected higher-priority evidence, an
 explicit override reason is required.
 
-## 8. Scenario Robustness
+## 9. Scenario Robustness
 
 Scenario Robustness v0.1 requires:
 
