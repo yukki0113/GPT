@@ -666,6 +666,176 @@ def _rotation_interval(horse: Mapping[str, object]) -> object:
     return condition.get("rotation_interval")
 
 
+def _corner_positions(run: Mapping[str, object]) -> list[int]:
+    """Return valid historical corner positions."""
+    performance = run.get("performance")
+    if not isinstance(performance, Mapping):
+        return []
+    raw = performance.get("corners")
+    if not isinstance(raw, list):
+        return []
+
+    positions: list[int] = []
+    for value in raw:
+        if value in (None, "") or isinstance(value, bool):
+            continue
+        try:
+            position = int(value)
+        except (TypeError, ValueError):
+            continue
+        if position > 0:
+            positions.append(position)
+    return positions
+
+
+def _historical_position_profile(
+    horse: Mapping[str, object],
+) -> dict[str, object]:
+    """Infer broad historical positioning from prior corner positions only."""
+    observations: list[dict[str, object]] = []
+
+    for run in _recent_run_rows(horse):
+        race = run.get("race")
+        if not isinstance(race, Mapping):
+            continue
+        field_size = _positive_int(
+            race.get("field_size"),
+            "recent_run.race.field_size",
+        ) if race.get("field_size") not in (None, "") else None
+        positions = _corner_positions(run)
+        if field_size is None or not positions:
+            continue
+
+        ratios = [
+            min(1.0, max(0.0, float(position) / float(field_size)))
+            for position in positions
+        ]
+        median_ratio = float(statistics.median(ratios))
+        if median_ratio <= 0.25:
+            band = "FRONT"
+        elif median_ratio <= 0.50:
+            band = "FORWARD"
+        elif median_ratio <= 0.75:
+            band = "MID"
+        else:
+            band = "BACK"
+
+        observations.append(
+            {
+                "date": _text(race.get("date")),
+                "venue": _text(race.get("venue")),
+                "race_no": race.get("race_no"),
+                "field_size": field_size,
+                "corners": positions,
+                "median_position_ratio": round(median_ratio, 3),
+                "band": band,
+            }
+        )
+
+    counts = {
+        "FRONT": 0,
+        "FORWARD": 0,
+        "MID": 0,
+        "BACK": 0,
+    }
+    for observation in observations:
+        counts[str(observation["band"])] += 1
+
+    tendency = "UNKNOWN"
+    confidence = "LOW"
+    if observations:
+        ordered = sorted(
+            counts.items(),
+            key=lambda item: (-item[1], item[0]),
+        )
+        top_band, top_count = ordered[0]
+        tied = [
+            band
+            for band, count in ordered
+            if count == top_count
+        ]
+        if len(tied) == 1:
+            tendency = top_band
+        if len(observations) >= 4:
+            confidence = "MEDIUM"
+        if len(observations) >= 5 and top_count >= 4:
+            confidence = "HIGH"
+
+    return {
+        "status": "AVAILABLE" if observations else "UNAVAILABLE",
+        "source": "RECENT_RUN_CORNER_HISTORY_ONLY",
+        "observed_run_count": len(observations),
+        "band_counts": counts,
+        "tendency": tendency,
+        "confidence": confidence if observations else "NONE",
+        "observations": observations,
+        "policy": {
+            "current_jrdb_running_style_used": False,
+            "current_jrdb_pace_prediction_used": False,
+            "exact_today_position_is_not_predicted": True,
+        },
+    }
+
+
+def _race_structure(
+    horses: list[Mapping[str, object]],
+) -> dict[str, object]:
+    """Build a conservative independent race-structure context."""
+    profiles: list[dict[str, object]] = []
+    front_like = 0
+    known = 0
+
+    for horse in horses:
+        basic = horse.get("basic")
+        if not isinstance(basic, Mapping):
+            continue
+        horse_no = _positive_int(
+            basic.get("horse_no"),
+            "horse.basic.horse_no",
+        )
+        profile = _historical_position_profile(horse)
+        tendency = _text(profile.get("tendency")).upper()
+        if tendency != "UNKNOWN":
+            known += 1
+        if tendency in {"FRONT", "FORWARD"}:
+            front_like += 1
+        profiles.append(
+            {
+                "horse_no": horse_no,
+                "horse_name": _text(basic.get("horse_name")),
+                "historical_position": profile,
+            }
+        )
+
+    pressure = "UNKNOWN"
+    if known:
+        if front_like <= 1:
+            pressure = "LOW"
+        elif front_like <= 3:
+            pressure = "MEDIUM"
+        else:
+            pressure = "HIGH"
+
+    return {
+        "structure_version": "IndependentRaceStructure-v0.1",
+        "status": "AVAILABLE" if known else "INSUFFICIENT_HISTORY",
+        "pace_pressure": pressure,
+        "front_or_forward_tendency_count": front_like,
+        "known_position_profile_count": known,
+        "runner_count": len(horses),
+        "horses": sorted(
+            profiles,
+            key=lambda item: int(item["horse_no"]),
+        ),
+        "policy": {
+            "source_is_historical_position_only": True,
+            "current_jrdb_running_style_used": False,
+            "current_jrdb_forecast_pace_used": False,
+            "pace_pressure_is_context_not_prediction": True,
+        },
+    }
+
+
 def _race_data_context(
     race: Mapping[str, object],
 ) -> dict[str, object]:
@@ -836,6 +1006,15 @@ def build_general_evidence(
             "training_edge_visible": False,
         },
         "race_data_context": _race_data_context(race),
+        "race_structure": _race_structure(
+            [
+                _mapping(
+                    raw_horse,
+                    "independent.horse",
+                )
+                for raw_horse in raw_horses
+            ]
+        ),
         "horses": sorted(
             output_horses,
             key=lambda horse: int(horse["horse_no"]),
