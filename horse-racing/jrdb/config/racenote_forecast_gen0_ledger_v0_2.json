@@ -1,10 +1,10 @@
 {
   "version": "0.2",
-  "status": "IMPLEMENTED_NOT_ACTIVATED",
+  "status": "SUPERSEDED_BEFORE_ACTIVATION",
   "spreadsheet_id": "1z9TJQJ61WEcrVSDxhAWP9D48plP1ixU0hCH-QGZrhnU",
   "spreadsheet_title": "RaceNote Forecast Gen0 検証台帳",
   "folder_id": "1hWBtTRj4aHiFXAkln3qxjW_g7b1FUeoO",
-  "planned_generation_id": "Gen0-G001",
+  "planned_generation_id": "UNASSIGNED_REFERENCE_ONLY",
   "forecast_version": "RaceNote-Forecast-Gen0.2",
   "factor_set_version": "FSET-Gen0.2",
   "forecast_schema": "schema/racenote_forecast_gen0_schema_v0_2.json",
@@ -13,22 +13,68 @@
   "base_source_schema": "RaceNote v1.0",
   "firewall_version": "Gen0.2-Firewall-0.1",
   "prediction_factors": [
-    {"code": "F01", "name": "過去パフォーマンス・基礎能力"},
-    {"code": "F02", "name": "今回条件適性"},
-    {"code": "F03", "name": "独立展開・位置取り"},
-    {"code": "F04", "name": "調教・状態 raw evidence"},
-    {"code": "F05", "name": "近走内容・trip quality"},
-    {"code": "F06", "name": "長期履歴・条件実績"},
-    {"code": "F07", "name": "騎手・厩舎"},
-    {"code": "F08", "name": "血統"},
-    {"code": "F09", "name": "枠・条件統計"},
-    {"code": "E01", "name": "EdgeDB performance signal"}
+    {
+      "code": "F01",
+      "name": "過去パフォーマンス・基礎能力"
+    },
+    {
+      "code": "F02",
+      "name": "今回条件適性"
+    },
+    {
+      "code": "F03",
+      "name": "独立展開・位置取り"
+    },
+    {
+      "code": "F04",
+      "name": "調教・状態 raw evidence"
+    },
+    {
+      "code": "F05",
+      "name": "近走内容・trip quality"
+    },
+    {
+      "code": "F06",
+      "name": "長期履歴・条件実績"
+    },
+    {
+      "code": "F07",
+      "name": "騎手・厩舎"
+    },
+    {
+      "code": "F08",
+      "name": "血統"
+    },
+    {
+      "code": "F09",
+      "name": "枠・条件統計"
+    },
+    {
+      "code": "E01",
+      "name": "EdgeDB performance signal"
+    }
   ],
   "separate_layers": [
-    {"code": "C01", "name": "JRDB consensus", "opens_after": "forecast_freeze"},
-    {"code": "M01", "name": "market price", "opens_after": "forecast_freeze"},
-    {"code": "M02", "name": "EdgeDB value signal", "opens_after": "forecast_freeze"},
-    {"code": "T01", "name": "Training Edge", "usage": "newspaper_display_and_human_purchase_only"}
+    {
+      "code": "C01",
+      "name": "JRDB consensus",
+      "opens_after": "forecast_freeze"
+    },
+    {
+      "code": "M01",
+      "name": "market price",
+      "opens_after": "forecast_freeze"
+    },
+    {
+      "code": "M02",
+      "name": "EdgeDB value signal",
+      "opens_after": "forecast_freeze"
+    },
+    {
+      "code": "T01",
+      "name": "Training Edge",
+      "usage": "newspaper_display_and_human_purchase_only"
+    }
   ],
   "tabs_added": {
     "確率評価": "base/final probability and ranking snapshot",
@@ -46,5 +92,8 @@
     "edge_value_signal_in_forecast": false,
     "training_edge_in_forecast": false,
     "result_before_forecast_freeze": false
-  }
+  },
+  "superseded_by": "RaceNote-Forecast-Gen0.3",
+  "superseded_on": "2026-09-25",
+  "supersede_reason": "Trend-first General Evidence / Pairwise / Scenario contract completed before Gen0.2 activation."
 }
