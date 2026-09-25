@@ -311,3 +311,62 @@ Warehouse consumption.
    - all eight Index Base relations must match exactly.
 
 Production workflow files remain unchanged until these gates pass.
+
+
+## Canonical legacy record-hash compatibility persistence — PASS
+
+The legacy Index Base `record_hash` compatibility layer is now persisted so
+normal Historical operation does not need to refetch 2010–2025 Raw merely to
+reconstruct provenance hashes.
+
+Canonical export:
+- Issue #1300
+- run `36086214247`
+- source Warehouse generation:
+  `jrdb_normalized_warehouse_v1_2010_2025_g20260921`
+- families: BAC/KYI/SED/UKC/CHA/CYB
+- status: PASS
+
+Frozen canonical manifest:
+- `config/jrdb_index_base_record_hash_compat_v1.json`
+
+Drive package set:
+- folder ID: `1fQF6uyAhJ7TDNRwfhb54Kt--j0q_Qj40`
+- `bac.parquet.zip`
+- `kyi.parquet.zip`
+- `sed.parquet.zip`
+- `ukc.parquet.zip`
+- `cha.parquet.zip`
+- `cyb.parquet.zip`
+- `manifest.json.zip`
+
+The original combined GitHub artifact exceeded the Drive connector's 100 MiB
+transfer boundary, so the already-verified artifact was split without
+recomputing source data:
+- Issue #1303
+- run `36087009991`
+- each family artifact was verified against the frozen canonical manifest
+  before upload.
+
+Frozen Drive package mapping:
+- `config/jrdb_index_base_record_hash_compat_drive_set_v1.json`
+
+Production materializer:
+- `src/materialize_jrdb_index_base_record_hash_compat_set.py`
+
+Direct Drive reconstruction smoke:
+- Issue #1304
+- run `36087310475`
+- six family packages downloaded directly from Drive
+- package SHA-256 verified
+- extracted Parquet SHA-256 verified against canonical manifest
+- six-family coverage verified
+- result: PASS
+
+Therefore normal operation can materialize both accepted Historical Warehouse
+data and legacy Index Base hash compatibility without Historical Raw.
+
+Shared normal-operation preparer:
+- `src/prepare_rl_t_historical_warehouse_inputs.py`
+- materializes accepted Warehouse plus canonical compatibility sidecars
+- reports `historical_raw_required=false`
