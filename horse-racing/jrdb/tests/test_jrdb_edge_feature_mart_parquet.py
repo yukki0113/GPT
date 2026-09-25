@@ -59,6 +59,12 @@ def test_build_equivalence_and_current_resolve(tmp_path: Path) -> None:
         source_manifest_sha256="a" * 64,
     )
     parquet = Path(result["parquet"])
+    generation_audit = json.loads(
+        (root / "generations" / result["generation_id"] / "audit.json").read_text(encoding="utf-8")
+    )
+    assert generation_audit["conversion"]["row_count_source"] == 3
+    assert generation_audit["validation"]["status"] == "success"
+    assert generation_audit["validation"]["passed"] is True
     audit = equivalence.audit(mart, parquet)
     assert audit["status"] == "PASS"
     assert audit["canonical_row_hash_equal"] is True
