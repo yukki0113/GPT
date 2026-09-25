@@ -101,6 +101,18 @@ Evidence Card and enforces the ordinal reading policy
 `DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR`. It does not create rankings,
 marks, or probabilities.
 
+The downstream Pairwise Comparison research contract is also implemented:
+
+- `src/racenote_pairwise_comparison.py`
+- `schema/racenote_pairwise_comparison_schema_v0_1.json`
+- `docs/racenote/PAIRWISE_COMPARISON_v0_1.md`
+
+Pairwise does not mechanically select a horse. It validates GPT-authored
+relative comparisons, requires direct evidence at every final-order boundary,
+requires reversal conditions, and requires an explicit reason whenever lower
+priority evidence overrides contrary trend/RaceReview evidence. The next
+research stage is Scenario Robustness.
+
 ## 5. Legacy boundary
 
 The complete retained-asset inventory and import boundary is docs/racenote/legacy/README.md.
