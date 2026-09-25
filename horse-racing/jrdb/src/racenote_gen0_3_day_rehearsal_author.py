@@ -537,4 +537,149 @@ def build_scenario(
                 "changed_from_pairwise": changed,
                 "scenario_summary": (
                     "Pairwise baselineを維持。"
-            
+                     if not changed
+                    else "上位隣接1境界のみ位置取り固定度の感応度として入れ替え。"
+                ),
+                "key_reason_codes": [
+                    f"SCENARIO_{scenario_id}",
+                    "POSITION_VARIABILITY_CONTEXT",
+                ],
+                "triggered_reversal_conditions": (
+                    ["歴史的位置の固定度と当該pace stressが上位隣接境界で反対方向に作用。"]
+                    if changed
+                    else []
+                ),
+            }
+        )
+
+    axis_wins = sum(1 for item in scenarios if item["order"][0] == base[0])
+    if axis_wins == 3:
+        status = "ROBUST"
+    elif axis_wins == 2:
+        status = "CONDITIONAL"
+    else:
+        status = "FRAGILE"
+
+    return {
+        "scenario_schema_version": "RaceNote-Scenario-Robustness-0.1",
+        "scenario_contract_version": "Pace3-Scenario-v0.1",
+        "pairwise_audit_sha256": scenario_sha256(pairwise_audit),
+        "target": copy.deepcopy(dict(_as_mapping(general.get("target")))),
+        "scenarios": scenarios,
+        "conclusion": {
+            "pairwise_axis_status": status,
+            "main_risk_scenario_ids": risk_ids,
+            "summary": (
+                f"{PROFILE_VERSION}: axis={base[0]}、3 scenario中{axis_wins}回首位。"
+                "これはscenario内順位安定性のみを示し、予測信頼度ではない。"
+            ),
+        },
+    }
+
+
+def _trace_codes(horse: Mapping[str, object]) -> dict[str, list[str]]:
+    result = {
+        "DATA_TREND": [],
+        "RACEREVIEW": [],
+        "ABILITY_ANCHOR": [],
+        "RACE_STRUCTURE": [],
+        "UNCERTAINTY": [],
+    }
+    lanes = _as_mapping(horse.get("evidence_lanes"))
+    data_lane = _as_mapping(lanes.get("data_trend"))
+    history = _as_mapping(data_lane.get("horse_history"))
+    for raw in _as_list(history.get("observations")):
+        item = _as_mapping(raw)
+        code = _text(item.get("code"))
+        if code and code not in result["DATA_TREND"]:
+            result["DATA_TREND"].append(code)
+    population = _as_mapping(data_lane.get("population_context"))
+    for raw in population.values():
+        item = _as_mapping(raw)
+        if _text(item.get("status")).upper() == "AVAILABLE":
+            code = _text(item.get("code"))
+            if code and code not in result["DATA_TREND"]:
+                result["DATA_TREND"].append(code)
+
+    review_lane = _as_mapping(lanes.get("racereview"))
+    for field in ("primary_positive", "supporting_positive", "concerns", "mixed_context"):
+        for raw in _as_list(review_lane.get(field)):
+            item = _as_mapping(raw)
+            code = _text(item.get("code"))
+            if code and code not in result["RACEREVIEW"]:
+                result["RACEREVIEW"].append(code)
+    profile = _as_mapping(review_lane.get("profile"))
+    for signal_name in ("hidden_strength", "fragile_form"):
+        signal = _as_mapping(profile.get(signal_name))
+        for raw_code in _as_list(signal.get("reason_codes")):
+            code = _text(raw_code)
+            if code and code not in result["RACEREVIEW"]:
+                result["RACEREVIEW"].append(code)
+    for raw in _as_list(review_lane.get("uncertainties")):
+        item = _as_mapping(raw)
+        code = _text(item.get("code"))
+        if code and code not in result["UNCERTAINTY"]:
+            result["UNCERTAINTY"].append(code)
+
+    ability = _ability_profile(horse)
+    ability_fields = (
+        ("latest", "ABILITY_LATEST"),
+        ("peak", "ABILITY_PEAK"),
+        ("typical_median", "ABILITY_TYPICAL"),
+        ("minimum", "ABILITY_MINIMUM"),
+        ("mad", "ABILITY_CONSISTENCY"),
+    )
+    for field, code in ability_fields:
+        if ability.get(field) is not None:
+            result["ABILITY_ANCHOR"].append(code)
+
+    interpretation = _as_mapping(horse.get("prediction_interpretation"))
+    structure = _as_mapping(interpretation.get("race_structure"))
+    pressure = _text(structure.get("pace_pressure")).upper()
+    if pressure and pressure != "UNKNOWN":
+        result["RACE_STRUCTURE"].append(f"PACE_PRESSURE_{pressure}")
+    position = _as_mapping(structure.get("horse_historical_position"))
+    tendency = _text(position.get("tendency")).upper()
+    if tendency and tendency != "UNKNOWN":
+        result["RACE_STRUCTURE"].append(f"POSITION_TENDENCY_{tendency}")
+    return result
+
+
+def _primary_trace(horse: Mapping[str, object]) -> tuple[str, str]:
+    codes = _trace_codes(horse)
+    trend_state, review_state = _states(horse)
+    if trend_state not in {"NEUTRAL_OR_UNKNOWN", "INSUFFICIENT", ""} and codes["DATA_TREND"]:
+        return "DATA_TREND", codes["DATA_TREND"][0]
+    if review_state not in {"MIXED_CONTEXT_ONLY", "INSUFFICIENT", ""} and codes["RACEREVIEW"]:
+        return "RACEREVIEW", codes["RACEREVIEW"][0]
+    if codes["ABILITY_ANCHOR"]:
+        preferred = "ABILITY_TYPICAL"
+        if preferred in codes["ABILITY_ANCHOR"]:
+            return "ABILITY_ANCHOR", preferred
+        return "ABILITY_ANCHOR", codes["ABILITY_ANCHOR"][0]
+    if codes["UNCERTAINTY"]:
+        return "UNCERTAINTY", codes["UNCERTAINTY"][0]
+    raise RuntimeError(f"no traceable primary evidence for horse {horse.get('horse_no')}")
+
+
+def _concern_trace(horse: Mapping[str, object]) -> tuple[str, str]:
+    codes = _trace_codes(horse)
+    if codes["RACE_STRUCTURE"]:
+        return "RACE_STRUCTURE", codes["RACE_STRUCTURE"][0]
+    if codes["RACEREVIEW"]:
+        return "RACEREVIEW", codes["RACEREVIEW"][0]
+    if codes["DATA_TREND"]:
+        return "DATA_TREND", codes["DATA_TREND"][0]
+    if codes["UNCERTAINTY"]:
+        return "UNCERTAINTY", codes["UNCERTAINTY"][0]
+    if codes["ABILITY_ANCHOR"]:
+        return "ABILITY_ANCHOR", codes["ABILITY_ANCHOR"][0]
+    raise RuntimeError(f"no traceable concern evidence for horse {horse.get('horse_no')}")
+
+
+def _pairwise_support(pairwise_audit: Mapping[str, object]) -> dict[int, set[int]]:
+    result: dict[int, set[int]] = {}
+    for raw in _as_list(pairwise_audit.get("comparisons")):
+        item = _as_mapping(raw)
+        preferred = int(item["preferred_horse_no"])
+        a_no = int(item[
