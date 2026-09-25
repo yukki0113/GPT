@@ -651,3 +651,103 @@ For this Chat thread:
 
 This plan is the canonical v0.1 design until an explicit versioned update
 supersedes it.
+
+
+## 20. Turn 2 execution checkpoint
+
+Status:
+
+CANDIDATE_SIGNAL_FACT_READY
+
+Execution date:
+
+2026-09-25
+
+Successful workflow:
+
+- run_id: 36108597763
+- Issue: #1346
+- result: PASS
+
+Source:
+
+- RaceReviewDB generation:
+  jrdb_race_review_v0_1_incremental_g36094708797
+- requested source period: 2026-05-01 through 2026-09-22
+- actual first source date: 2026-05-02
+- actual last source date: 2026-09-22
+
+Population:
+
+- candidate rows: 18,707
+- distinct source race_horse_key: 18,707
+- distinct horses: 8,002
+- Discovery rows: 11,648
+- Holdout rows: 7,059
+- duplicate source keys: 0
+- empty horse_id rows: 0
+- invalid finish/time rows: 0
+- jump rows: 0
+- history_date_leak rows: 0
+
+Feature contract:
+
+- raw RaceReviewDB horse-performance fields are retained
+- race-level Review/context fields are joined by race_key
+- performance_signal is defined as
+  -horse_adjusted_delta_per_1000m, so higher is better
+- within-horse history uses only preceding rows ordered by
+  horse_id / race_date / race_key / horse_no
+- derived self-comparison fields include prior 3/5-start performance means,
+  prior 5-start best, last3F relative history, closing-gain history,
+  days since previous start, and recent-best indicators
+- Discovery/Holdout labels are persisted, but no next-start outcomes are
+  present in this artifact
+
+Expected missingness is preserved as NULL, never coerced to neutral values.
+
+Observed null counts:
+
+- performance_signal: 0
+- last3f_speed_percentile: 0
+- closing_gain_sec: 17,333
+- prior3_performance_mean: 1,795
+- prior5_performance_mean: 1,795
+- prior3_last3f_pct_mean: 1,795
+- prior5_closing_gain_mean: 14,409
+
+The high closing_gain missingness means closing-gain rules must be evaluated on
+their available-evidence population and must not treat NULL as zero.
+
+Checkpoint artifact:
+
+- Drive folder next_watch:
+  1TPjuy73X9mObzxAiMOawBspqoNdnjtXg
+- Drive folder next_watch/v0_1:
+  1u10flcW396mrwmBf-kdYMBSAuCFMo_Qm
+- artifact ZIP:
+  RaceReviewDB_NextWatch_Turn2_g36108597763.zip
+- Drive file ID:
+  1rd9KRoFmJYJcRlRyblprP997n9TdJOLi
+- contained candidate Parquet:
+  next_watch_candidate_signals.parquet
+- contained audit:
+  candidate_signals_audit.json
+- Parquet size:
+  1,894,808 bytes
+- Parquet SHA256:
+  204f6e15f391f213f8369a0b32dda9d2884e2f486bb2047e0744626fd095dde4
+
+Failed/superseded Turn-2 requests:
+
+- #1343: no target workflow run due initial invalid workflow YAML; closed
+  not_planned
+- #1344: DuckDB COPY target parameter incompatibility; closed not_planned
+- #1345: candidate build succeeded, audit failed on DuckDB 1.1 boolean SUM;
+  closed not_planned
+- #1346: successful retry; closed completed
+
+Next turn:
+
+Turn 3 - resolve immediate next JRA starts and Phase-1 outcomes from this
+checkpoint without rebuilding Turn 2.
