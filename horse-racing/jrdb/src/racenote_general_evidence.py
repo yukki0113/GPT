@@ -183,6 +183,7 @@ def _trend_observation(
     label: str,
     condition: Mapping[str, object],
     career: Mapping[str, object],
+    redundancy_group_id: str,
 ) -> dict[str, object]:
     """Build one horse-history trend observation relative to career."""
     top3_delta = _rate_delta(condition, career, "top3_rate")
@@ -191,6 +192,7 @@ def _trend_observation(
     return {
         "code": code,
         "label": label,
+        "redundancy_group_id": redundancy_group_id,
         "direction": _direction_from_delta(top3_delta),
         "sample_size_band": _sample_band(condition),
         "condition": copy.deepcopy(dict(condition)),
@@ -242,12 +244,12 @@ def _horse_history_trends(
     observations: list[dict[str, object]] = []
 
     fixed_dimensions = (
-        ("same_surface", "SAME_SURFACE", "同馬場種別"),
-        ("same_distance", "SAME_DISTANCE", "同距離"),
-        ("same_venue", "SAME_VENUE", "同競馬場"),
+        ("same_surface", "SAME_SURFACE", "同馬場種別", "SURFACE"),
+        ("same_distance", "SAME_DISTANCE", "同距離", "DISTANCE"),
+        ("same_venue", "SAME_VENUE", "同競馬場", "VENUE"),
     )
 
-    for field, code, label in fixed_dimensions:
+    for field, code, label, redundancy_group_id in fixed_dimensions:
         raw = profile.get(field)
         if not isinstance(raw, Mapping):
             continue
@@ -257,6 +259,7 @@ def _horse_history_trends(
                 label,
                 raw,
                 career,
+                redundancy_group_id,
             )
         )
 
@@ -272,6 +275,7 @@ def _horse_history_trends(
                     label,
                     raw_range,
                     career,
+                    "DISTANCE",
                 )
             )
 
@@ -563,6 +567,9 @@ def _trend_interpretation(
         projected = {
             "code": _text(item.get("code")),
             "label": _text(item.get("label")),
+            "redundancy_group_id": _text(
+                item.get("redundancy_group_id")
+            ),
             "sample_size_band": _sample_band(item),
             "delta_pp": copy.deepcopy(item.get("delta_pp")),
         }
