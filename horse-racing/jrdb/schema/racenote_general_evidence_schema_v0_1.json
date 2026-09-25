@@ -129,7 +129,12 @@
     },
     "next_stage": {
       "type": "object",
-      "required": ["name", "required_read_order", "status"],
+      "required": [
+        "name",
+        "required_read_order",
+        "status",
+        "contract_version"
+      ],
       "properties": {
         "name": {"const": "PAIRWISE_COMPARISON"},
         "required_read_order": {
@@ -139,7 +144,10 @@
             "ABILITY_ANCHOR"
           ]
         },
-        "status": {"const": "NOT_IMPLEMENTED_IN_V0_1"}
+        "status": {"const": "CONTRACT_IMPLEMENTED"},
+        "contract_version": {
+          "const": "TrendFirst-Pairwise-v0.1"
+        }
       },
       "additionalProperties": false
     }
