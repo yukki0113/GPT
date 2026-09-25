@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_all_runner_synthesis_schema_v0_1.json",
+  "title": "RaceNote All-Runner Synthesis v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "synthesis_schema_version",
+    "synthesis_contract_version",
+    "general_evidence_sha256",
+    "target",
+    "horses",
+    "boundaries",
+    "draft_order_summary"
+  ],
+  "properties": {
+    "synthesis_schema_version": {
+      "const": "RaceNote-All-Runner-Synthesis-0.1"
+    },
+    "synthesis_contract_version": {
+      "const": "FullField-Draft-v0.1"
+    },
+    "general_evidence_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "target": {
+      "type": "object",
+      "required": ["date", "venue", "race_no", "race_name"],
+      "properties": {
+        "date": {"type": "string"},
+        "venue": {"type": "string", "minLength": 1},
+        "race_no": {"type": "integer", "minimum": 1},
+        "race_name": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/horse"}
+    },
+    "boundaries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/boundary"}
+    },
+    "draft_order_summary": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "horse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "horse_no",
+        "draft_rank",
+        "confidence",
+        "primary_lane",
+        "positive_components",
+        "concern_components",
+        "ability_context_used",
+        "draft_reason",
+        "main_uncertainty"
+      ],
+      "properties": {
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "draft_rank": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "confidence": {
+          "enum": ["LOW", "MEDIUM", "HIGH"]
+        },
+        "primary_lane": {
+          "enum": [
+            "DATA_TREND",
+            "RACEREVIEW",
+            "MIXED",
+            "UNCERTAINTY"
+          ]
+        },
+        "positive_components": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "concern_components": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "ability_context_used": {
+          "type": "boolean"
+        },
+        "draft_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "main_uncertainty": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "upper_horse_no",
+        "lower_horse_no",
+        "comparison_priority",
+        "boundary_summary"
+      ],
+      "properties": {
+        "upper_horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "lower_horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "comparison_priority": {
+          "enum": ["STANDARD", "HIGH"]
+        },
+        "boundary_summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
