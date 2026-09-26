@@ -50,9 +50,6 @@ jobs:
               raise SystemExit('feature_artifact_name required')
           req.setdefault('min_depth',2)
           req.setdefault('max_depth',6)
-          req.setdefault('normal_generation_floor',32)
-          req.setdefault('transition_generation_floor',12)
-          req.setdefault('max_candidates_per_depth',2500000)
           Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
           PY
 
@@ -67,7 +64,7 @@ jobs:
           python - <<'PY' >> "$GITHUB_ENV"
           import json
           r=json.load(open('/tmp/request.json'))
-          for key in ['feature_run_id','feature_artifact_name','min_depth','max_depth','normal_generation_floor','transition_generation_floor','max_candidates_per_depth']:
+          for key in ['feature_run_id','feature_artifact_name','min_depth','max_depth']:
               print(f"{key.upper()}={r[key]}")
           PY
 
@@ -88,7 +85,7 @@ jobs:
       - name: Run v0.4 Stage B candidate generation
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/build_jrdb_edge_v04_candidates.py             --parquet /tmp/feature/edge_runner_fact.parquet             --output-dir /tmp/stage-b             --min-depth "$MIN_DEPTH"             --max-depth "$MAX_DEPTH"             --normal-generation-floor "$NORMAL_GENERATION_FLOOR"             --transition-generation-floor "$TRANSITION_GENERATION_FLOOR"             --max-candidates-per-depth "$MAX_CANDIDATES_PER_DEPTH"             | tee /tmp/stage-b/stdout.json
+          python horse-racing/jrdb/src/build_jrdb_edge_v04_candidate_templates.py             --parquet /tmp/feature/edge_runner_fact.parquet             --output-dir /tmp/stage-b             --min-depth "$MIN_DEPTH"             --max-depth "$MAX_DEPTH"             | tee /tmp/stage-b/stdout.json
 
       - name: Add provenance
         if: always()
@@ -139,20 +136,17 @@ jobs:
             'artifact_name':f"jrdb-edge-v04-stage-b-{os.environ['RUN_ID']}",
             'source_rows':a['source_rows'],
             'candidate_dimension_count':a['candidate_dimension_count'],
-            'candidate_count':a['candidate_count'],
-            'candidate_count_by_depth':a['candidate_count_by_depth'],
-            'candidate_count_by_family':a['candidate_count_by_family'],
-            'transition_candidate_count':a['transition_candidate_count'],
-            'pedigree_candidate_count':a['pedigree_candidate_count'],
-            'base_normal_generation_floor':a['base_normal_generation_floor'],
-            'base_transition_generation_floor':a['base_transition_generation_floor'],
-            'depth_floor_schedule':a['depth_floor_schedule'],
-            'generation_floor_role':a['generation_floor_role'],
-            'enumeration_strategy':a['enumeration_strategy'],
+            'template_count':a['template_count'],
+            'template_count_by_depth':a['template_count_by_depth'],
+            'template_count_by_family':a['template_count_by_family'],
+            'template_count_by_lane':a['template_count_by_lane'],
+            'architecture':a['architecture'],
+            'instantiated_value_candidates_materialized':a['instantiated_value_candidates_materialized'],
+            'instantiation_owner':a['instantiation_owner'],
             'market_or_popularity_used_for_generation':a['market_or_popularity_used_for_generation'],
             'post_race_labels_used_for_generation':a['post_race_labels_used_for_generation'],
-            'deterministic_candidate_ids':a['deterministic_candidate_ids'],
-            'parent_provenance':a['parent_provenance'],
+            'deterministic_template_ids':a['deterministic_template_ids'],
+            'parent_template_provenance':a['parent_template_provenance'],
             'production_serving_changed':False,
           }
           print('JRDB_EDGE_V04_STAGE_B_RESULT')
