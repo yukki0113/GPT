@@ -1,0 +1,219 @@
+name: JRDB Newspaper v0.3 Rehearsal Publish
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_V03_REHEARSAL_PUBLISH_REQUEST]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json, os, re
+          r=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'date','base_run_id','base_artifact_name','edge_run_id','edge_artifact_name','target_revision'}
+          missing=sorted(required-set(r))
+          if missing: raise SystemExit(f'missing fields: {missing}')
+          if not re.fullmatch(r'20\d{2}-\d{2}-\d{2}',str(r['date'])): raise SystemExit('invalid date')
+          for k in ('base_run_id','edge_run_id','target_revision'):
+              if not isinstance(r[k],int) or isinstance(r[k],bool) or r[k] <= 0: raise SystemExit(f'invalid {k}')
+          print(f"REQUEST_DATE={r['date']}")
+          print(f"BASE_RUN_ID={r['base_run_id']}")
+          print(f"BASE_ARTIFACT_NAME={r['base_artifact_name']}")
+          print(f"EDGE_RUN_ID={r['edge_run_id']}")
+          print(f"EDGE_ARTIFACT_NAME={r['edge_artifact_name']}")
+          print(f"TARGET_REVISION={r['target_revision']}")
+          PY
+
+      - name: Download frozen inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/base /tmp/edge /tmp/work
+          gh run download "$BASE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$BASE_ARTIFACT_NAME" --dir /tmp/base
+          gh run download "$EDGE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$EDGE_ARTIFACT_NAME" --dir /tmp/edge
+          mapfile -t matches < <(find /tmp/edge -type f -name edge_matches_v0_3_shadow.jsonl -print)
+          test "${#matches[@]}" -eq 1
+          cp "${matches[0]}" /tmp/work/edge_matches_v0_3_shadow.jsonl
+
+      - name: Validate frozen source contracts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          manifest=json.loads((Path('/tmp/base')/'manifest.json').read_text(encoding='utf-8'))
+          audit=json.loads((Path('/tmp/base')/'audit.json').read_text(encoding='utf-8'))
+          if manifest.get('date') != os.environ['REQUEST_DATE']: raise SystemExit('base date mismatch')
+          if audit.get('status') != 'PASS': raise SystemExit('base audit not PASS')
+          if not audit.get('history_coverage_complete'): raise SystemExit('base history incomplete')
+          expected=int((manifest.get('completeness') or {}).get('expected_races') or 0)
+          ready=int((manifest.get('completeness') or {}).get('ready_races') or 0)
+          if expected != 24 or ready != 24: raise SystemExit(f'expected 24 ready races, got {expected}/{ready}')
+          rows=0
+          races=set()
+          for line in Path('/tmp/work/edge_matches_v0_3_shadow.jsonl').read_text(encoding='utf-8').splitlines():
+              if not line.strip(): continue
+              obj=json.loads(line); rows += 1
+              key=obj.get('key') or {}
+              if key.get('race_date') != os.environ['REQUEST_DATE']: raise SystemExit('edge date mismatch')
+              races.add(str(key.get('race_key') or ''))
+              for e in obj.get('edge_matches') or []:
+                  v=e.get('v03_shadow') or {}
+                  if v.get('mode') != 'SHADOW_ONLY': raise SystemExit('non-shadow edge found')
+          if rows <= 0 or len(races) != 24: raise SystemExit(f'edge coverage mismatch rows={rows} races={len(races)}')
+          print(f'v03 runner rows={rows} races={len(races)}')
+          PY
+
+      - name: Prepare revision candidate
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/day_source
+          mkdir -p /tmp/day_source/races
+          cp /tmp/base/manifest.json /tmp/day_source/manifest.json
+          cp /tmp/base/audit.json /tmp/day_source/audit.json
+          cp -a /tmp/base/races/. /tmp/day_source/races/
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path('/tmp/day_source')
+          manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          manifest['revision']=int(os.environ['TARGET_REVISION'])
+          manifest['edge_rehearsal']={
+              'mode':'V03_SHADOW_ONLY',
+              'source_run_id':int(os.environ['EDGE_RUN_ID']),
+              'source_artifact':os.environ['EDGE_ARTIFACT_NAME'],
+          }
+          for entry in manifest.get('races') or []:
+              p=root/entry['path']
+              race=json.loads(p.read_text(encoding='utf-8'))
+              md=race.setdefault('metadata',{})
+              md['revision']=int(os.environ['TARGET_REVISION'])
+              md['edge_rehearsal_mode']='V03_SHADOW_ONLY'
+              p.write_text(json.dumps(race,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+              data=p.read_bytes()
+              entry['sha256']=hashlib.sha256(data).hexdigest()
+              entry['size_bytes']=len(data)
+          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Merge v0.3 Shadow Edge into Newspaper format
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/day_v03
+          python horse-racing/jrdb/src/jrdb_newspaper_merge_edge.py             --day-dir /tmp/day_source             --edge-jsonl /tmp/work/edge_matches_v0_3_shadow.jsonl             --output-dir /tmp/day_v03             > /tmp/work/merge_result.json
+
+      - name: Validate PWA package
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path('/tmp/day_v03')
+          manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          if manifest.get('date') != os.environ['REQUEST_DATE']: raise SystemExit('output date mismatch')
+          if manifest.get('revision') != int(os.environ['TARGET_REVISION']): raise SystemExit('output revision mismatch')
+          if len(manifest.get('races') or []) != 24: raise SystemExit('output race count mismatch')
+          memo=0; runners=0
+          for entry in manifest['races']:
+              p=root/entry['path']
+              race=json.loads(p.read_text(encoding='utf-8'))
+              edge=((race.get('metadata') or {}).get('source_status') or {}).get('edge') or {}
+              if edge.get('state')!='READY' or edge.get('coverage_complete') is not True:
+                  raise SystemExit(f'edge not READY: {entry["race_key"]}')
+              for horse in race.get('horses') or []:
+                  em=horse.get('edge_matches') or []
+                  if em:
+                      runners += 1; memo += len(em)
+          out={'status':'PASS','date':manifest['date'],'revision':manifest['revision'],'race_count':24,
+               'edge_mode':'V03_SHADOW_ONLY','matched_runners':runners,'edge_memos':memo,
+               'edge_run_id':int(os.environ['EDGE_RUN_ID']),'edge_artifact':os.environ['EDGE_ARTIFACT_NAME']}
+          Path('/tmp/work/result.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Publish personal Newspaper current cache
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/day_v03 -cJf /tmp/work/jrdb_newspaper_current.tar.xz manifest.json races
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path('/tmp/day_v03'); arc=Path('/tmp/work/jrdb_newspaper_current.tar.xz')
+          m=root/'manifest.json'
+          meta={'schema_version':'0.1','release_kind':'jrdb_newspaper_current_cache',
+                'date':os.environ['REQUEST_DATE'],'revision':int(os.environ['TARGET_REVISION']),
+                'race_count':24,'manifest_sha256':hashlib.sha256(m.read_bytes()).hexdigest(),
+                'archive_filename':arc.name,'archive_size_bytes':arc.stat().st_size,
+                'archive_sha256':hashlib.sha256(arc.read_bytes()).hexdigest(),
+                'edge_mode':'V03_SHADOW_ONLY','edge_run_id':int(os.environ['EDGE_RUN_ID']),
+                'edge_artifact':os.environ['EDGE_ARTIFACT_NAME']}
+          Path('/tmp/work/jrdb_newspaper_current_release.json').write_text(json.dumps(meta,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+          PY
+          if gh release view jrdb-newspaper-current --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete jrdb-newspaper-current --repo "$GITHUB_REPOSITORY" --yes
+          fi
+          gh release create jrdb-newspaper-current --repo "$GITHUB_REPOSITORY"             --title "JRDB Newspaper current"             --notes "2026-09-26 v0.3 SHADOW rehearsal; production EdgeDB serving remains v0.2 STANDARD."             /tmp/work/jrdb_newspaper_current.tar.xz /tmp/work/jrdb_newspaper_current_release.json
+
+      - name: Upload rehearsal evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-newspaper-v03-rehearsal-${{ github.run_id }}
+          path: |
+            /tmp/work/result.json
+            /tmp/work/merge_result.json
+            /tmp/work/jrdb_newspaper_current_release.json
+            /tmp/work/edge_matches_v0_3_shadow.jsonl
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Comment success
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY' > /tmp/work/comment.md
+          import json,os
+          from pathlib import Path
+          r=json.loads(Path('/tmp/work/result.json').read_text(encoding='utf-8'))
+          r['run_id']=int(os.environ['RUN_ID'])
+          r['artifact_name']=f"jrdb-newspaper-v03-rehearsal-{os.environ['RUN_ID']}"
+          print('JRDB_NEWSPAPER_V03_REHEARSAL_RESULT')
+          print(json.dumps(r,ensure_ascii=False,indent=2))
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/work/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB Newspaper v0.3 rehearsal failed closed. Production EdgeDB serving was not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
