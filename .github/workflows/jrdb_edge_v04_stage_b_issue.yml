@@ -52,7 +52,7 @@ jobs:
           req.setdefault('max_depth',6)
           req.setdefault('normal_generation_floor',32)
           req.setdefault('transition_generation_floor',12)
-          req.setdefault('max_candidates',2500000)
+          req.setdefault('max_candidates_per_depth',2500000)
           Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
           PY
 
@@ -67,7 +67,7 @@ jobs:
           python - <<'PY' >> "$GITHUB_ENV"
           import json
           r=json.load(open('/tmp/request.json'))
-          for key in ['feature_run_id','feature_artifact_name','min_depth','max_depth','normal_generation_floor','transition_generation_floor','max_candidates']:
+          for key in ['feature_run_id','feature_artifact_name','min_depth','max_depth','normal_generation_floor','transition_generation_floor','max_candidates_per_depth']:
               print(f"{key.upper()}={r[key]}")
           PY
 
@@ -88,9 +88,10 @@ jobs:
       - name: Run v0.4 Stage B candidate generation
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/build_jrdb_edge_v04_candidates.py             --parquet /tmp/feature/edge_runner_fact.parquet             --output-dir /tmp/stage-b             --min-depth "$MIN_DEPTH"             --max-depth "$MAX_DEPTH"             --normal-generation-floor "$NORMAL_GENERATION_FLOOR"             --transition-generation-floor "$TRANSITION_GENERATION_FLOOR"             --max-candidates "$MAX_CANDIDATES"             | tee /tmp/stage-b/stdout.json
+          python horse-racing/jrdb/src/build_jrdb_edge_v04_candidates.py             --parquet /tmp/feature/edge_runner_fact.parquet             --output-dir /tmp/stage-b             --min-depth "$MIN_DEPTH"             --max-depth "$MAX_DEPTH"             --normal-generation-floor "$NORMAL_GENERATION_FLOOR"             --transition-generation-floor "$TRANSITION_GENERATION_FLOOR"             --max-candidates "$MAX_CANDIDATES_PER_DEPTH"             | tee /tmp/stage-b/stdout.json
 
       - name: Add provenance
+        if: always()
         env:
           HEAD_SHA: ${{ github.sha }}
         run: |
@@ -99,6 +100,8 @@ jobs:
           import json, os
           from pathlib import Path
           p=Path('/tmp/stage-b/stage_b_audit.json')
+          if not p.is_file():
+              raise SystemExit(0)
           d=json.loads(p.read_text())
           d['feature_run_id']=int(os.environ['FEATURE_RUN_ID'])
           d['feature_artifact_name']=os.environ['FEATURE_ARTIFACT_NAME']
@@ -108,6 +111,7 @@ jobs:
           PY
 
       - name: Upload Stage B evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jrdb-edge-v04-stage-b-${{ github.run_id }}
