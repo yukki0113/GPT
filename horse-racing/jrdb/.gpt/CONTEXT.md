@@ -180,6 +180,9 @@ RaceReviewDB consumer default (2026-09-25):
 - current facts / matchingはexact-match・pre-race only。fuzzy matching、推測前走、対象結果、最終オッズ、後日履歴を混入させない。
 - Edge current matchingのAnalysis履歴は、通常はvalidated Analysis v1.3 Parquet `current.json` / immutable generationを直接参照する。`src/jrdb_edge_analysis_history.py` がDuckDB lookupを担当する。
 - Analysis SQLiteはEdgeの通常正本ではなくrollback / compatibility / equivalence audit用途。storage migrationのためにtransition意味論・matcher・serving thresholdを変えない。
+- Edge Feature Martの通常research/build経路は、canonical Parquetをvalidated DuckDB execution workspaceへ1回だけ展開し、discovery / temporal validation / HUMAN calibration / statistical guardをDuckDB上で実行する。ParquetからFeature Mart SQLiteへのmaterializationは通常運用で禁止する。
+- Feature Mart新規生成も `Index Base compatibility SQLite -> DuckDB workspace -> Parquet canonical` を標準とし、Feature Mart SQLiteを中間正本にしない。
+- Edge Registryのmutable build workspaceは小規模・書込中心のためtransient SQLiteを許容する。ただし成功したfull buildでは同一run内でRegistry Parquet candidateを必ず生成する。canonical/current consumerは `jrdb_edge_registry_parquet.connect_current()` のDuckDB direct readを使い、Registry ParquetからSQLiteへのmaterializationを通常運用で禁止する。legacy再現だけ `--legacy-materialize-sqlite` を明示使用する。
 - 2026-09-19 PACIでParquet currentとcompatibility SQLiteを同一STANDARD catalogへ通し、current facts / matchesのbyte identityをIssue #1197 / run 35814265623で確認済み。
 - v0.1 matcher / legacy ACTIVE publicationはbackward compatibility資産として保持し、v0.2実装のために意味を書き換えない。
 
