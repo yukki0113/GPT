@@ -65,7 +65,8 @@ jobs:
           python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
           python -m pytest -q \
             horse-racing/jrdb/tests/test_analyze_jrdb_training_stage2b_parquet.py \
-            horse-racing/jrdb/tests/test_jrdb_training_research_parquet_resolver.py
+            horse-racing/jrdb/tests/test_jrdb_training_research_parquet_resolver.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_training_stage2b_parquet_regression.py
 
       - name: Download canonical current pointer
         run: |
