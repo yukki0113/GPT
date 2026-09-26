@@ -55,6 +55,46 @@ def test_sqlite_history_preserves_exact_previous_lookup(tmp_path: Path) -> None:
         source.close()
 
 
+
+
+def test_sqlite_history_batches_multiple_previous_lookups(tmp_path: Path) -> None:
+    path = tmp_path / "analysis.sqlite"
+    _sqlite(path)
+    con = sqlite3.connect(path)
+    con.execute(
+        "INSERT INTO fact_entry_result_lite VALUES(?,?,?,?,?,?,?)",
+        ("09010201", "2026-08-30", 7, "H0000002", "2", 1400, 1),
+    )
+    con.commit()
+    con.close()
+
+    source = target.open_analysis_history(analysis_db=path)
+    assert source is not None
+    try:
+        result = source.lookup_many(
+            [
+                ("09010101", "H0000001", "2026-09-09"),
+                ("09010201", "H0000002", "2026-09-09"),
+                ("09999999", "H0000003", "2026-09-09"),
+            ]
+        )
+        assert result[("09010101", "H0000001", "2026-09-09")] == {
+            "race_date": "2026-08-20",
+            "surface_code": "1",
+            "distance_m": 1800,
+            "frame_no": 5,
+        }
+        assert result[("09010201", "H0000002", "2026-09-09")] == {
+            "race_date": "2026-08-30",
+            "surface_code": "2",
+            "distance_m": 1400,
+            "frame_no": 1,
+        }
+        assert result[("09999999", "H0000003", "2026-09-09")] is None
+    finally:
+        source.close()
+
+
 def test_history_backends_are_mutually_exclusive(tmp_path: Path) -> None:
     path = tmp_path / "analysis.sqlite"
     _sqlite(path)
@@ -76,19 +116,59 @@ class _FakeResult:
 class _FakeDuckConnection:
     def __init__(self):
         self.closed = False
+        self.staged = []
+        self.fact_join_queries = 0
 
     def execute(self, sql, params=None):
-        if sql.startswith("CREATE VIEW"):
+        stripped = sql.strip()
+        if stripped.startswith("CREATE VIEW"):
             return _FakeResult([])
-        if sql == "DESCRIBE analysis_fact":
+        if stripped == "DESCRIBE analysis_fact":
             return _FakeResult([(name,) for name in sorted(target.REQUIRED_COLUMNS)])
-        if sql.startswith("SELECT MIN(race_date)"):
+        if stripped.startswith("SELECT MIN(race_date)"):
             return _FakeResult([("2010-01-05", "2026-09-06", 12345)])
-        if "WHERE race_key=? AND horse_id=?" in sql:
-            if params == ["09010101", "H0000001"]:
-                return _FakeResult([("2026-08-20", "1", 1800, 5)])
+        if stripped.startswith("DROP TABLE IF EXISTS edge_prev_lookup_keys"):
+            self.staged = []
             return _FakeResult([])
+        if stripped.startswith("CREATE TEMP TABLE edge_prev_lookup_keys"):
+            return _FakeResult([])
+        if "FROM edge_prev_lookup_keys AS k" in sql:
+            self.fact_join_queries += 1
+            rows = []
+            for prev_race_key, horse_id, target_date in self.staged:
+                if (prev_race_key, horse_id) == ("09010101", "H0000001"):
+                    rows.append(
+                        (
+                            prev_race_key,
+                            horse_id,
+                            target_date,
+                            "2026-08-20",
+                            "1",
+                            1800,
+                            5,
+                            3,
+                        )
+                    )
+                else:
+                    rows.append(
+                        (
+                            prev_race_key,
+                            horse_id,
+                            target_date,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                        )
+                    )
+            return _FakeResult(rows)
         raise AssertionError(sql)
+
+    def executemany(self, sql, rows):
+        assert sql.startswith("INSERT INTO edge_prev_lookup_keys")
+        self.staged = list(rows)
+        return _FakeResult([])
 
     def close(self):
         self.closed = True
@@ -124,16 +204,20 @@ def test_parquet_history_uses_validated_current_generation(tmp_path: Path) -> No
         assert source.source_info["kind"] == "PARQUET"
         assert source.source_info["generation_id"] == "g1"
         assert source.source_info["rows"] == 12345
-        assert source.lookup(
-            prev_race_key="09010101",
-            horse_id="H0000001",
-            target_date="2026-09-09",
-        ) == {
+        result = source.lookup_many(
+            [
+                ("09010101", "H0000001", "2026-09-09"),
+                ("09999999", "H0000002", "2026-09-09"),
+            ]
+        )
+        assert result[("09010101", "H0000001", "2026-09-09")] == {
             "race_date": "2026-08-20",
             "surface_code": "1",
             "distance_m": 1800,
             "frame_no": 5,
         }
+        assert result[("09999999", "H0000002", "2026-09-09")] is None
+        assert fake_connection.fact_join_queries == 1
     finally:
         source.close()
     assert fake_connection.closed is True
