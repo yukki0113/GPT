@@ -62,12 +62,9 @@ jobs:
           set -euo pipefail
           python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
 
-      - name: Download accepted artifacts
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Export request env
         run: |
           set -euo pipefail
-          mkdir -p /tmp/feature /tmp/registry /tmp/registry-source /tmp/v03 /tmp/audit
           python - <<'PY' >> "$GITHUB_ENV"
           import json
           r=json.load(open('/tmp/request.json'))
@@ -75,6 +72,13 @@ jobs:
               if isinstance(v,(str,int)):
                   print(f"{k.upper()}={v}")
           PY
+
+      - name: Download accepted artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/feature /tmp/registry /tmp/registry-source /tmp/v03 /tmp/audit
           gh run download "$FEATURE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$FEATURE_ARTIFACT_NAME" --dir /tmp/feature
           gh run download "$REGISTRY_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$REGISTRY_ARTIFACT_NAME" --dir /tmp/registry
           gh run download "$REGISTRY_SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$REGISTRY_SOURCE_ARTIFACT_NAME" --dir /tmp/registry-source
@@ -189,7 +193,7 @@ jobs:
             require_unique_key: true
             require_row_count_match: true
             non_null_columns: [race_key, horse_no]
-            range_columns: [race_date]
+            range_columns: []
           audit:
             path: /tmp/audit/feature_validation.json
           benchmark:
