@@ -251,7 +251,11 @@ def _rewrite_ingest_metadata(
         ]
         if columns != expected:
             raise AnalysisNativeCandidateError("meta_analysis_ingest_batch schema/order mismatch")
-        next_batch = int(con.execute("SELECT COALESCE(MAX(batch_id),0)+1 FROM ingest").fetchone()[0])
+        next_batch = int(
+            con.execute(
+                "SELECT COALESCE(MAX(CAST(batch_id AS BIGINT)),0)+1 FROM ingest"
+            ).fetchone()[0]
+        )
         for update in sorted(updates, key=lambda item: item["date"]):
             stamp = dt.datetime.now().isoformat(timespec="seconds")
             date = str(update["date"])
