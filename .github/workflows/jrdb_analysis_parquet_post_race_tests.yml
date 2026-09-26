@@ -7,12 +7,14 @@ on:
       - 'horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py'
       - 'horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py'
       - 'horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native.py'
       - 'horse-racing/jrdb/src/publish_jrdb_analysis_parquet_drive_generation.py'
       - 'horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_parquet_current.py'
       - 'horse-racing/jrdb/tests/test_materialize_jrdb_analysis_sqlite.py'
       - 'horse-racing/jrdb/tests/test_run_jrdb_analysis_post_race_incremental.py'
       - 'horse-racing/jrdb/tests/test_build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/tests/test_build_jrdb_analysis_post_race_parquet_native.py'
       - 'horse-racing/jrdb/tests/test_publish_jrdb_analysis_parquet_drive_generation.py'
       - 'horse-racing/jrdb/tests/test_jrdb_pwa_fact_lite_parquet_input_workflow.py'
       - 'horse-racing/jrdb/tests/test_jrdb_post_race_parquet_dry_run_workflow.py'
@@ -25,12 +27,14 @@ on:
       - 'horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py'
       - 'horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py'
       - 'horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native.py'
       - 'horse-racing/jrdb/src/publish_jrdb_analysis_parquet_drive_generation.py'
       - 'horse-racing/jrdb/src/migrate_jrdb_analysis_parquet.py'
       - 'horse-racing/jrdb/tests/test_jrdb_analysis_parquet_current.py'
       - 'horse-racing/jrdb/tests/test_materialize_jrdb_analysis_sqlite.py'
       - 'horse-racing/jrdb/tests/test_run_jrdb_analysis_post_race_incremental.py'
       - 'horse-racing/jrdb/tests/test_build_jrdb_analysis_post_race_parquet_candidate.py'
+      - 'horse-racing/jrdb/tests/test_build_jrdb_analysis_post_race_parquet_native.py'
       - 'horse-racing/jrdb/tests/test_publish_jrdb_analysis_parquet_drive_generation.py'
       - 'horse-racing/jrdb/tests/test_jrdb_pwa_fact_lite_parquet_input_workflow.py'
       - 'horse-racing/jrdb/tests/test_jrdb_post_race_parquet_dry_run_workflow.py'
@@ -59,6 +63,7 @@ jobs:
             horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py \
             horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py \
             horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py \
+            horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native.py \
             horse-racing/jrdb/src/publish_jrdb_analysis_parquet_drive_generation.py
       - name: Run post-race Parquet regressions
         working-directory: horse-racing/jrdb/tests
@@ -70,6 +75,7 @@ jobs:
             test_materialize_jrdb_analysis_sqlite \
             test_run_jrdb_analysis_post_race_incremental \
             test_build_jrdb_analysis_post_race_parquet_candidate \
+            test_build_jrdb_analysis_post_race_parquet_native \
             test_publish_jrdb_analysis_parquet_drive_generation \
             test_jrdb_pwa_fact_lite_parquet_input_workflow \
             test_jrdb_post_race_parquet_dry_run_workflow
