@@ -127,12 +127,13 @@ jobs:
             horse-racing/jrdb/tests/test_jrdb_edge_v0_2.py \
             horse-racing/jrdb/tests/test_jrdb_edge_suggestive_publication_v0_2.py \
             horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py \
+            horse-racing/jrdb/tests/test_jrdb_edge_relational.py \
             > /tmp/edge_tests_stdout.log 2> /tmp/edge_tests_stderr.log
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Materialize promoted Feature Mart Parquet canonical
+      - name: Prepare promoted Feature Mart Parquet as DuckDB workspace
         if: steps.request.outputs.valid == 'true' && steps.tests.outputs.exit_code == '0'
         env:
           PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
@@ -156,15 +157,19 @@ jobs:
               "https://drive.usercontent.google.com/download?id=$file_id&export=download&confirm=t" \
               -o "$target"
           done < /tmp/feature_downloads.txt
+          python horse-racing/jrdb/src/prepare_jrdb_edge_feature_mart_duckdb.py \
+            --root /tmp/feature-canonical \
+            --output /tmp/edge_feature_mart.duckdb \
+            --result-json /tmp/feature_workspace.json
           python - <<'PY'
-          from pathlib import Path
-          from jrdb_edge_feature_mart_parquet import materialize_current_sqlite
-          result=materialize_current_sqlite(
-              Path('/tmp/feature-canonical'),
-              Path('/tmp/edge_feature_mart_compat.sqlite'),
-          )
+          import json
+          result=json.load(open('/tmp/feature_workspace.json'))
           if result.get('status') != 'PASS' or result.get('rows') != 781161:
-              raise SystemExit(f'Feature Mart canonical materialization failed: {result}')
+              raise SystemExit(f'Feature Mart DuckDB workspace failed: {result}')
+          if result.get('workspace_engine') != 'duckdb':
+              raise SystemExit(f'Unexpected Edge workspace engine: {result}')
+          if result.get('source_mode') != 'parquet_canonical':
+              raise SystemExit(f'Unexpected Edge source mode: {result}')
           print(result)
           PY
 
@@ -183,7 +188,7 @@ jobs:
             --run-id '${{ github.run_id }}' \
             --head-sha '${{ github.sha }}' \
             --work-dir /tmp/jrdb_edge \
-            --prebuilt-mart /tmp/edge_feature_mart_compat.sqlite
+            --prebuilt-mart /tmp/edge_feature_mart.duckdb
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
