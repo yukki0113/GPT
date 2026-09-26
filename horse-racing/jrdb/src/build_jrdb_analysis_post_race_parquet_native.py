@@ -90,10 +90,15 @@ def _write_content_addressed(source: Path, destination_dir: Path) -> tuple[Path,
     return destination, digest
 
 
-def _audit_as_of(connection: duckdb.DuckDBPyConnection, target_date: str) -> int:
+def _audit_as_of(
+    connection: duckdb.DuckDBPyConnection,
+    target_date: str,
+    *,
+    table: str = FACT,
+) -> int:
     cutoff = target_date.replace("-", "")
     rows = connection.execute(
-        f'SELECT prev_result_key_1 FROM "{FACT}" '
+        f'SELECT prev_result_key_1 FROM "{table}" '
         "WHERE race_date=? AND prev_result_key_1 IS NOT NULL",
         [target_date],
     ).fetchall()
@@ -150,19 +155,19 @@ def _rewrite_year(
             target_date = str(update["date"])
             old_count = int(
                 con.execute(
-                    f'SELECT COUNT(*) FROM "{FACT}" WHERE race_date=?',
+                    f'SELECT COUNT(*) FROM "year_fact" WHERE race_date=?',
                     [target_date],
                 ).fetchone()[0]
             )
-            con.execute(f'DELETE FROM "{FACT}" WHERE race_date=?', [target_date])
+            con.execute(f'DELETE FROM "year_fact" WHERE race_date=?', [target_date])
             marks = ",".join("?" for _ in FACT_COLUMNS)
             con.executemany(
-                f'INSERT INTO "{FACT}" VALUES ({marks})',
+                f'INSERT INTO "year_fact" VALUES ({marks})',
                 update["rows"],
             )
             target_rows = int(
                 con.execute(
-                    f'SELECT COUNT(*) FROM "{FACT}" WHERE race_date=?',
+                    f'SELECT COUNT(*) FROM "year_fact" WHERE race_date=?',
                     [target_date],
                 ).fetchone()[0]
             )
@@ -170,7 +175,7 @@ def _rewrite_year(
                 raise AnalysisNativeCandidateError(
                     f"target row count mismatch {target_date}: {target_rows} != {len(update['rows'])}"
                 )
-            as_of = _audit_as_of(con, target_date)
+            as_of = _audit_as_of(con, target_date, table="year_fact")
             per_date.append(
                 {
                     "target_date": target_date,
@@ -183,7 +188,7 @@ def _rewrite_year(
 
         duplicates = int(
             con.execute(
-                f'SELECT COUNT(*) FROM (SELECT race_key,horse_no FROM "{FACT}" '
+                'SELECT COUNT(*) FROM (SELECT race_key,horse_no FROM "year_fact" '
                 "GROUP BY race_key,horse_no HAVING COUNT(*) > 1)"
             ).fetchone()[0]
         )
@@ -196,10 +201,10 @@ def _rewrite_year(
         staged = temp_dir / f"fact-{year}.parquet"
         staged_literal = str(staged).replace("'", "''")
         con.execute(
-            f"COPY (SELECT * FROM \"{FACT}\" ORDER BY race_date,race_key,horse_no) "
+            "COPY (SELECT * FROM \"year_fact\" ORDER BY race_date,race_key,horse_no) "
             f"TO '{staged_literal}' (FORMAT PARQUET, COMPRESSION ZSTD)"
         )
-        rows, row_hash = _canonical_digest(con, FACT, columns)
+        rows, row_hash = _canonical_digest(con, "year_fact", columns)
     finally:
         con.close()
 
