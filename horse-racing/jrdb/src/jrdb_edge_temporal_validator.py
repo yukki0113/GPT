@@ -13,12 +13,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import sqlite3
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Mapping
 
 from jrdb_edge_validation import load_policy_catalog
+from jrdb_edge_relational import connect_edge_mart
 
 VERSION = "0.1.0"
 ALLOWED_FIELDS = {
@@ -54,7 +54,7 @@ def _ratio(value: float | None, baseline: float | None) -> float | None:
 
 
 def _metrics(
-    connection: sqlite3.Connection,
+    connection: Any,
     values: Mapping[str, Any],
     baseline_values: Mapping[str, Any],
     baseline_mode: str,
@@ -241,8 +241,7 @@ def validate_candidate(
     values = {**candidate["anchor"], **candidate["modifiers"]}
     baseline_values = dict(candidate["anchor"])
     baseline_mode = candidate["baseline"]
-    connection = sqlite3.connect(mart_path)
-    connection.row_factory = sqlite3.Row
+    connection = connect_edge_mart(mart_path)
     try:
         overall = _metrics(connection, values, baseline_values, baseline_mode)
         performance_signal, value_signal = classify_signals(overall, policy)
