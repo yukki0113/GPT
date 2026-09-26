@@ -98,12 +98,12 @@ jobs:
           PYTHONPATH=tools/data-storage:horse-racing/jrdb/src \
             python horse-racing/jrdb/src/build_jrdb_index_base_from_warehouse.py \
             --warehouse-manifest /tmp/jrdb_training/historical/final/manifest.json \
-            --asset-root BAC=/tmp/jrdb_training/historical/warehouse/BAC \
-            --asset-root KYI=/tmp/jrdb_training/historical/warehouse/KYI \
-            --asset-root CHA=/tmp/jrdb_training/historical/warehouse/CHA \
-            --asset-root CYB=/tmp/jrdb_training/historical/warehouse/CYB \
-            --asset-root SED=/tmp/jrdb_training/historical/warehouse/SED \
-            --asset-root UKC=/tmp/jrdb_training/historical/warehouse/UKC \
+            --asset-root BAC=/tmp/jrdb_training/historical/warehouse \
+            --asset-root KYI=/tmp/jrdb_training/historical/warehouse \
+            --asset-root CHA=/tmp/jrdb_training/historical/warehouse \
+            --asset-root CYB=/tmp/jrdb_training/historical/warehouse \
+            --asset-root SED=/tmp/jrdb_training/historical/warehouse \
+            --asset-root UKC=/tmp/jrdb_training/historical/warehouse \
             --record-hash-compat-manifest /tmp/jrdb_training/historical/record_hash_compat/manifest.json \
             --years {2010..2025} \
             --db /tmp/jrdb_training/index.sqlite \
