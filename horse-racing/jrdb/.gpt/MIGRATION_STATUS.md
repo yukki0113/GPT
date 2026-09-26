@@ -272,3 +272,32 @@ P0/P1-1/P1-2完了は「JRDB全コードから全legacy parserを削除した」
 - RaceNote / Eval / PWAへのCanonical利用は、Raw直読より実利益がある経路だけ個別判断
 
 P1を続ける場合も、P0で確立したCommon Reader contractと回帰CIを維持する。
+## RL-T production Historical Warehouse cutover — 2026-09-26
+
+The production upstream cutover for RL-T / Training Edge / Training Research is complete at the storage/plumbing layer.
+
+- accepted Historical generation: `jrdb_normalized_warehouse_v1_2010_2025_g20260921`
+- daily: 2010–2025 = Warehouse, 2026 = existing PACI + settled SED / Raw direct
+- replay: 2010–2025 = Warehouse, 2026 = existing replay PACI / settled SED route
+- Training Research: 2010–2025 = Warehouse-only Index Base build
+- shared input preparer: `src/prepare_rl_t_historical_warehouse_inputs.py`
+- Historical Raw normal fetch in the three production workflows: disabled
+- Historical Raw fallback in production: disabled
+- static production cutover audit: Issue #1520 / run `36242350903` = PASS
+- fixed-date replay/scorer smoke (2026-09-20, settled through 2026-09-19): Issue #1517 / run `36240031550` = SUCCESS
+- Training Research full build + audit + Stage1b + Parquet generation: Issue #1518 / run `36240033827` = SUCCESS
+
+Status:
+
+```text
+RL_T_PRODUCTION_CUTOVER               = PASS
+TRAINING_RESEARCH_UPSTREAM_CUTOVER    = PASS
+HISTORICAL_NORMAL_OPERATION           = WAREHOUSE
+HISTORICAL_RAW_NORMAL_FETCH           = DISABLED
+HISTORICAL_RAW_FALLBACK               = DISABLED
+2026_DAILY_ROUTE                      = UNCHANGED
+RL_T_OLD_GPT_JRDB_ACTIVE_REFERENCE_COUNT = 0
+```
+
+Operational follow-up is tracked separately in Issue #1521: a 2026-09-27 forward smoke reached Warehouse/Drive/bundle/Index/RunPerf/projection successfully, then the unchanged frozen Training Edge v0.2 runtime fingerprint guard failed closed. Do not change the frozen science or re-enable Historical Raw fallback to bypass that guard.
+
