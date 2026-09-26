@@ -29,8 +29,14 @@ def _field_bucket_sql() -> str:
 
 def calibrate_horse_quality(connection: Any) -> dict[str, Any]:
     """Populate pre-race quality rank and prior-only expected place probability."""
-    connection.executescript("""
-      DROP TABLE IF EXISTS temp.quality_rank_tmp;
+    prefix = "temp." if getattr(connection, "engine", "sqlite") == "sqlite" else ""
+    index_sql = (
+        "CREATE INDEX temp.ix_quality_rank_tmp ON quality_rank_tmp(race_key,horse_no);"
+        if getattr(connection, "engine", "sqlite") == "sqlite"
+        else ""
+    )
+    connection.executescript(f"""
+      DROP TABLE IF EXISTS {prefix}quality_rank_tmp;
       CREATE TEMP TABLE quality_rank_tmp AS
       WITH ranked AS (
         SELECT race_key,horse_no,
@@ -47,7 +53,7 @@ def calibrate_horse_quality(connection: Any) -> dict[str, Any]:
           ELSE CAST(((qrank-1.0)/(qn-1.0))*10 AS INTEGER)
         END AS quality_bucket
       FROM ranked;
-      CREATE INDEX temp.ix_quality_rank_tmp ON quality_rank_tmp(race_key,horse_no);
+      {index_sql}
     """)
     connection.execute("""
       UPDATE edge_runner_fact
