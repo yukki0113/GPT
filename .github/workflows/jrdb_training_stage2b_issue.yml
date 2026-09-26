@@ -1,8 +1,12 @@
-name: JRDB Training Pattern Stage2b via Issue
+name: JRDB Training Pattern Stage2b Historical (retired)
 
+# RETIRED 2026-09-26:
+# Historical evidence/provenance only. The Development Lite SQLite ZIP was deleted
+# after Training Research moved to Parquet canonical storage. This workflow must
+# never be used as an operational Stage 2b route. See:
+# .github/workflows/jrdb_training_stage2b_parquet_issue.yml
 on:
-  issues:
-    types: [opened]
+  workflow_dispatch:
 
 permissions:
   contents: read
