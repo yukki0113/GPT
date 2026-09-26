@@ -238,7 +238,8 @@ PACI identity:
 Reverse grading is identical to normal operational grading:
 
 - S:
-  HV05/HV13 match OR at least two frozen hidden-value rule matches
+  HV06 or HV13 match, OR HV05 plus at least one independent additional signal
+  from HV07 / HV11 / HV12
 - A:
   at least one frozen hidden-value rule match and not S
 - no forced minimum count
@@ -280,3 +281,42 @@ Artifact:
 
 The reverse workflow reads only completed prior starts from RaceReviewDB. It
 does not use any target-race result.
+
+
+## 12. S-grade tightening 2026-09-26
+
+The original operational S rule produced too many candidates in live use
+(28 S horses for 2026-09-27).
+
+The S contract is therefore tightened for operational readability while keeping
+the same frozen underlying HV rules.
+
+New S:
+
+- HV06 match:
+  6th-or-worse source finish + strong performance + strong last-3F
+- OR HV13 match:
+  elite performance + elite last-3F
+- OR HV05 plus at least one independent extra signal:
+  HV07 (position recovery) or HV11/HV12 (own-history improvement)
+
+A:
+
+- at least one frozen hidden-value rule match
+- and does not satisfy the stricter S rule
+
+Derived hierarchical duplicates such as HV01+HV02 alone or HV03+HV07 alone do
+not promote a horse to S.
+
+Smoke application to 2026-09-27:
+
+- old S count: 28
+- tightened S count: 5
+
+Tightened S horses:
+
+- スワローシチー
+- サンライズバブル
+- セブンサークル
+- ロクメイカン
+- テンタイムトップ
