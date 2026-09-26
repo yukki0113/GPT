@@ -9,11 +9,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import sqlite3
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 from jrdb_edge_validation import load_policy_catalog, select_policy
+from jrdb_edge_relational import connect_edge_mart
 
 VERSION = "0.1.0"
 DEFAULT_TEMPLATE_PATH = (
@@ -85,7 +85,7 @@ def _aggregate_sql(group_fields: list[str], where: str) -> str:
     """
 
 
-def _key(row: sqlite3.Row, fields: list[str]) -> tuple[Any, ...]:
+def _key(row: Any, fields: list[str]) -> tuple[Any, ...]:
     return tuple(row[field] for field in fields)
 
 
@@ -128,8 +128,7 @@ def discover(
 ) -> list[dict[str, Any]]:
     templates = dict(template_catalog) if template_catalog is not None else load_template_catalog()
     policies = dict(policy_catalog) if policy_catalog is not None else load_policy_catalog()
-    connection = sqlite3.connect(mart_path)
-    connection.row_factory = sqlite3.Row
+    connection = connect_edge_mart(mart_path)
     try:
         if as_of_date is None:
             row = connection.execute("SELECT MAX(race_date) FROM edge_runner_fact").fetchone()
