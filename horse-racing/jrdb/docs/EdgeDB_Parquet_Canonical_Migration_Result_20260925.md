@@ -352,3 +352,51 @@ The active EdgeDB storage/source-of-truth chain is now Warehouse/Parquet-centere
 SQLite is retained only in allowed compatibility, transient, operational/audit, rollback, and reproduction roles.
 
 The scientific behavior of v0.2 STANDARD and v0.3 SHADOW remains unchanged.
+
+## 18. Post-migration execution cleanup — 2026-09-26
+
+A follow-up performance audit found that the initial canonical cutover still retained an unnecessary large-mart compatibility path:
+
+```text
+Feature Mart Parquet
+-> transient Feature Mart SQLite
+-> discovery / temporal validation / Registry build
+```
+
+That path is retired from normal operation.
+
+Current Feature Mart execution:
+
+```text
+Warehouse Parquet
+-> Index Base compatibility SQLite
+-> Feature Mart DuckDB execution workspace
+-> Feature Mart Parquet canonical
+
+Feature Mart Parquet canonical
+-> one validated DuckDB execution workspace
+-> discovery / temporal validation / HUMAN calibration / statistical guard
+```
+
+The active workflow no longer materializes the 781,161-row Feature Mart Parquet into SQLite.
+
+Registry policy remains intentionally different because the Registry is small and mutation-heavy. The completion benchmark already showed SQLite faster for its tiny point/count-style operations. Therefore:
+
+```text
+Registry mutable build workspace = transient SQLite, allowed
+Registry long-term/current source = Parquet canonical
+Registry normal read = Parquet + DuckDB direct
+Registry Parquet -> SQLite = forbidden in normal operation
+```
+
+A successful v0.2 Registry full build now emits a Registry Parquet candidate in the same run. `jrdb_edge_registry_parquet.connect_current()` is the canonical direct reader. The old SQLite rematerializer remains only behind the explicit legacy option `--legacy-materialize-sqlite`.
+
+This cleanup changes execution/storage plumbing only. v0.2 STANDARD, v0.3 SHADOW, matcher behavior, serving JSONL semantics, and leakage boundaries are unchanged.
+
+```text
+EDGE_FEATURE_MART_SQLITE_BRIDGE = RETIRED
+EDGE_FEATURE_MART_EXECUTION = DUCKDB
+EDGE_REGISTRY_PARQUET_DIRECT_READ = PASS
+EDGE_REGISTRY_PARQUET_TO_SQLITE_NORMAL_ROUTE = DISABLED
+```
+
