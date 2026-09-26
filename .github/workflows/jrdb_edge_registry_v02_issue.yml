@@ -193,6 +193,41 @@ jobs:
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
 
+      - name: Build Registry Parquet candidate from transient build workspace
+        if: steps.request.outputs.valid == 'true' && steps.tests.outputs.exit_code == '0' && steps.driver.outputs.exit_code == '0'
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          test -s /tmp/jrdb_edge/out/edge_registry.sqlite
+          test -s /tmp/jrdb_edge/out/edge_serving_catalog_v0_2.jsonl
+          generation_id="edge_registry_v0_2_${{ steps.request.outputs.request_id }}_${{ github.run_id }}"
+          root=/tmp/jrdb_edge/out/registry_parquet/v0.2
+          mkdir -p "$root"
+          python horse-racing/jrdb/src/build_jrdb_edge_registry_parquet_generation.py \
+            --sqlite /tmp/jrdb_edge/out/edge_registry.sqlite \
+            --output-root "$root" \
+            --generation-id "$generation_id" \
+            --serving-jsonl /tmp/jrdb_edge/out/edge_serving_catalog_v0_2.jsonl \
+            --result-json /tmp/jrdb_edge/report/registry_parquet_generation.json
+          python - <<'PY'
+          import datetime, json, os
+          from pathlib import Path
+          result=json.load(open('/tmp/jrdb_edge/report/registry_parquet_generation.json'))
+          root=Path('/tmp/jrdb_edge/out/registry_parquet/v0.2')
+          pointer={
+              'status':'CURRENT',
+              'generation_id':result['generation_id'],
+              'manifest':f"generations/{result['generation_id']}/manifest.json",
+              'previous_generation_id':None,
+              'updated_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          }
+          (root/'current.json').write_text(json.dumps(pointer,ensure_ascii=False,indent=2)+'\n')
+          PY
+          python horse-racing/jrdb/src/jrdb_edge_registry_parquet.py \
+            --root "$root" \
+            > /tmp/jrdb_edge/report/registry_parquet_current.json
+
       - name: Build final workflow result
         if: always()
         env:
