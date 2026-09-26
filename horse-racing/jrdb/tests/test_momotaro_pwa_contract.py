@@ -96,6 +96,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('mark === "◎"', script)
         self.assertIn('mark || momotaroKenshowTemporaryMark(horse) || (comment ? "注" : "")', script)
         self.assertIn('manualMark = text(value.mark, "")', script)
+        self.assertIn('manualBlank = text(value.tag, "") === "手動無印"', script)
         self.assertIn('const ryotaReviewTarget =', script)
         self.assertNotIn('escapeHtml(display || "・")', script)
         self.assertIn('type: "kenshow-analysis"', predictions)
@@ -123,10 +124,10 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
-        self.assertIn('./momotaro.js?v=16', newspaper)
+        self.assertIn('./momotaro.js?v=17', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v19"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v20"', service_worker)
 
 
 if __name__ == "__main__":
