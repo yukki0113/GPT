@@ -301,3 +301,23 @@ RL_T_OLD_GPT_JRDB_ACTIVE_REFERENCE_COUNT = 0
 
 Operational follow-up is tracked separately in Issue #1521: a 2026-09-27 forward smoke reached Warehouse/Drive/bundle/Index/RunPerf/projection successfully, then the unchanged frozen Training Edge v0.2 runtime fingerprint guard failed closed. Do not change the frozen science or re-enable Historical Raw fallback to bypass that guard.
 
+## EdgeDB post-migration execution cleanup — 2026-09-26
+
+Status:
+
+```text
+EDGE_FEATURE_MART_SQLITE_BRIDGE = RETIRED
+EDGE_FEATURE_MART_EXECUTION = DUCKDB
+EDGE_FEATURE_MART_CANONICAL = PARQUET
+EDGE_REGISTRY_MUTABLE_BUILD = TRANSIENT_SQLITE_ALLOWED
+EDGE_REGISTRY_CANONICAL = PARQUET
+EDGE_REGISTRY_CANONICAL_READ = DUCKDB_DIRECT
+EDGE_REGISTRY_PARQUET_TO_SQLITE_NORMAL_ROUTE = DISABLED
+```
+
+Normal full-build / research operation must not materialize canonical Feature Mart Parquet back into SQLite. One validated DuckDB execution workspace is shared by discovery, temporal validation, HUMAN calibration, and statistical guard.
+
+Registry is intentionally different: its small mutation-heavy build workspace may remain transient SQLite, but a successful v0.2 full build must emit a Registry Parquet candidate in the same run. Current/canonical consumers use Parquet + DuckDB direct reads. SQLite rematerialization is legacy reproduction only.
+
+This cleanup changes storage/execution plumbing only; v0.2 STANDARD, v0.3 SHADOW, matcher/serving semantics, and TRUE_FORWARD leakage boundaries are unchanged.
+
