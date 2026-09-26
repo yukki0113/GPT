@@ -9,8 +9,11 @@ class PostRaceParquetDryRunWorkflowTest(unittest.TestCase):
         root = Path(__file__).resolve().parents[3]
         workflow = (root / ".github/workflows/jrdb_post_race_parquet_dry_run_issue.yml").read_text(encoding="utf-8")
         self.assertIn("[JRDB_POST_RACE_PARQUET_DRY_RUN]", workflow)
-        self.assertIn("run_jrdb_analysis_post_race_incremental.py", workflow)
-        self.assertIn("build_jrdb_analysis_post_race_parquet_candidate.py", workflow)
+        self.assertIn("build_jrdb_analysis_post_race_parquet_native.py", workflow)
+        self.assertNotIn("run_jrdb_analysis_post_race_incremental.py", workflow)
+        self.assertNotIn("build_jrdb_analysis_post_race_parquet_candidate.py", workflow)
+        self.assertNotIn("materialize_jrdb_analysis_sqlite.py", workflow)
+        self.assertIn("full_sqlite_materialization", workflow)
         self.assertIn("non-promoted candidate only", workflow)
         self.assertIn("if-no-files-found: error", workflow)
         self.assertIn(".postrace/handoff", workflow)
