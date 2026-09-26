@@ -21,7 +21,7 @@ from jrdb_raw import (
     ymd,
 )
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 ANALYSIS_TABLE = "fact_entry_result_lite"
 ANALYSIS_REQUIRED_COLUMNS = {
     "race_key", "race_date", "horse_no", "horse_id", "track_type", "distance", "frame_no"
@@ -296,6 +296,29 @@ def build_current_facts(
         output: list[dict[str, Any]] = []
         counters: Counter[str] = Counter()
         seen: set[str] = set()
+
+        # Resolve all exact KYI previous-race links in one Analysis query.
+        # Parquet is scan-oriented; issuing one point query per runner causes
+        # repeated fact scans and recreates the old SQLite access pattern.
+        lookup_requests: list[tuple[str, str, str]] = []
+        for entry in entries:
+            prev_race_key = _text(entry.get("prev1_race_key"))
+            horse_id = _text(entry.get("horse_id"))
+            race = races[str(entry["race_key"])]
+            if prev_race_key and horse_id:
+                lookup_requests.append(
+                    (prev_race_key, horse_id, str(race["race_date"]))
+                )
+
+        previous_by_key: dict[
+            tuple[str, str, str], dict[str, Any] | None
+        ] = {}
+        if analysis is not None and lookup_requests:
+            try:
+                previous_by_key = analysis.lookup_many(lookup_requests)
+            except AnalysisHistoryError as error:
+                raise CurrentFactError(str(error)) from error
+
         for entry in entries:
             identity = str(entry["race_horse_key"])
             if identity in seen:
@@ -305,12 +328,25 @@ def build_current_facts(
             profile_status, profile = select_profile_asof(
                 profiles.get(str(entry.get("horse_id") or ""), []), str(race["race_date"])
             )
-            previous_status, previous = lookup_previous_fact_source(
-                analysis,
-                prev_race_key=_text(entry.get("prev1_race_key")),
-                horse_id=_text(entry.get("horse_id")),
-                target_date=str(race["race_date"]),
-            )
+
+            prev_race_key = _text(entry.get("prev1_race_key"))
+            horse_id = _text(entry.get("horse_id"))
+            target_date = str(race["race_date"])
+            previous: dict[str, Any] | None = None
+            if not prev_race_key:
+                previous_status = "NO_LINK"
+            elif analysis is None:
+                previous_status = "NO_HISTORY_SOURCE"
+            elif not horse_id:
+                previous_status = "NO_HORSE_ID"
+            else:
+                previous = previous_by_key.get(
+                    (prev_race_key, horse_id, target_date)
+                )
+                previous_status = (
+                    "RESOLVED" if previous is not None else "LINK_NOT_RESOLVED"
+                )
+
             counters[f"profile_{profile_status}"] += 1
             counters[f"previous_{previous_status}"] += 1
             output.append(build_runner_fact(
@@ -329,6 +365,11 @@ def build_current_facts(
                 if analysis is not None
                 else {"kind": "NONE", "generation_id": None}
             ),
+            "analysis_history_lookup": {
+                "mode": "BULK",
+                "requested_keys": len(lookup_requests),
+                "unique_keys": len(set(lookup_requests)),
+            },
             **dict(sorted(counters.items())),
         }
         return output, summary
