@@ -11,7 +11,6 @@ import bisect
 import datetime as dt
 import json
 import math
-import sqlite3
 import statistics
 from collections import defaultdict
 from pathlib import Path
@@ -191,34 +190,88 @@ def _cat(value: object) -> str:
     return text
 
 
-def _load_source(db_path: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
-    """Load the Stage 2b source while hard-stopping at development year 2023."""
-    connection = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    try:
-        table_info = connection.execute("PRAGMA table_info(training_runner)").fetchall()
-        available = {str(row[1]) for row in table_info}
-        missing = [name for name in REQUIRED_SOURCE_COLUMNS if name not in available]
-        if missing:
-            raise RuntimeError(f"required Training Research columns are missing: {missing}")
+def _load_source(source_path: Path, input_format: str = "auto") -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Load Stage 2b development rows from canonical Parquet or legacy SQLite.
 
-        columns = ",".join(REQUIRED_SOURCE_COLUMNS)
-        frame = pd.read_sql_query(
-            f"SELECT {columns} FROM training_runner WHERE year BETWEEN 2010 AND 2023 "
-            "ORDER BY race_date,race_key,horse_no",
-            connection,
-        )
-        source_total = int(connection.execute("SELECT COUNT(*) FROM training_runner").fetchone()[0])
-        source_max = int(connection.execute("SELECT MAX(year) FROM training_runner").fetchone()[0])
-    finally:
-        connection.close()
+    Parquet is the normal analytical path. SQLite is retained only for historical
+    reproduction/regression and must be selected explicitly or inferred from a
+    non-Parquet suffix.
+    """
+    selected_format = input_format
+    if selected_format == "auto":
+        selected_format = "parquet" if source_path.suffix.lower() == ".parquet" else "sqlite"
+
+    columns = ",".join(f'"{name}"' for name in REQUIRED_SOURCE_COLUMNS)
+    select_sql = (
+        f"SELECT {columns} FROM training_runner WHERE year BETWEEN 2010 AND 2023 "
+        "ORDER BY race_date,race_key,horse_no"
+    )
+
+    if selected_format == "parquet":
+        try:
+            from data_storage.query import connect_parquet
+        except ImportError as exc:
+            raise RuntimeError(
+                "Parquet input requires tools/data-storage on PYTHONPATH"
+            ) from exc
+
+        connection = connect_parquet(source_path, "training_runner")
+        try:
+            table_info = connection.execute("DESCRIBE training_runner").fetchall()
+            available = {str(row[0]) for row in table_info}
+            missing = [name for name in REQUIRED_SOURCE_COLUMNS if name not in available]
+            if missing:
+                raise RuntimeError(
+                    f"required Training Research columns are missing: {missing}"
+                )
+
+            frame = connection.execute(select_sql).fetchdf()
+            source_total = int(
+                connection.execute("SELECT COUNT(*) FROM training_runner").fetchone()[0]
+            )
+            source_max_value = connection.execute(
+                "SELECT MAX(year) FROM training_runner"
+            ).fetchone()[0]
+            source_max = None if source_max_value is None else int(source_max_value)
+        finally:
+            connection.close()
+    elif selected_format == "sqlite":
+        import sqlite3
+
+        connection = sqlite3.connect(f"file:{source_path}?mode=ro", uri=True)
+        try:
+            table_info = connection.execute("PRAGMA table_info(training_runner)").fetchall()
+            available = {str(row[1]) for row in table_info}
+            missing = [name for name in REQUIRED_SOURCE_COLUMNS if name not in available]
+            if missing:
+                raise RuntimeError(
+                    f"required Training Research columns are missing: {missing}"
+                )
+
+            frame = pd.read_sql_query(select_sql, connection)
+            source_total = int(
+                connection.execute("SELECT COUNT(*) FROM training_runner").fetchone()[0]
+            )
+            source_max_value = connection.execute(
+                "SELECT MAX(year) FROM training_runner"
+            ).fetchone()[0]
+            source_max = None if source_max_value is None else int(source_max_value)
+        finally:
+            connection.close()
+    else:
+        raise ValueError(f"unsupported input format: {input_format}")
 
     if frame.empty:
         raise RuntimeError("development source is empty")
+
     selected_max = int(frame["year"].max())
-    if selected_max > MAX_YEAR:
+    holdout_rows_selected = int((frame["year"] >= 2024).sum())
+    if selected_max > MAX_YEAR or holdout_rows_selected != 0:
         raise RuntimeError("holdout guard failed: selected rows exceed 2023")
 
     audit = {
+        "source_format": selected_format,
+        "source_path": str(source_path),
         "source_table_rows": source_total,
         "source_max_year": source_max,
         "selected_rows": int(len(frame)),
@@ -226,7 +279,7 @@ def _load_source(db_path: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
         "selected_max_year": selected_max,
         "available_columns": sorted(available),
         "missing_required_columns": missing,
-        "holdout_rows_selected": int((frame["year"] >= 2024).sum()),
+        "holdout_rows_selected": holdout_rows_selected,
     }
     return frame, audit
 
@@ -721,9 +774,9 @@ def _model_feature_inventory() -> dict[str, Any]:
     return inventory
 
 
-def analyze(db_path: Path) -> dict[str, Any]:
+def analyze(source_path: Path, input_format: str = "auto") -> dict[str, Any]:
     """Execute the frozen Stage 2b development-period validation."""
-    source, source_audit = _load_source(db_path)
+    source, source_audit = _load_source(source_path, input_format)
     work = _materialize_time_aware(source)
     work = _materialize_generic_b(work)
     work = _materialize_pattern_features(work)
@@ -904,12 +957,33 @@ def render_markdown(report: dict[str, Any]) -> str:
 def main() -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--db", type=Path, required=True)
+    source_group = parser.add_mutually_exclusive_group(required=True)
+    source_group.add_argument(
+        "--input",
+        type=Path,
+        help="Canonical Training Research development Parquet input.",
+    )
+    source_group.add_argument(
+        "--db",
+        type=Path,
+        help="Legacy SQLite input for historical reproduction only.",
+    )
+    parser.add_argument(
+        "--input-format",
+        choices=("auto", "parquet", "sqlite"),
+        default="auto",
+        help="Override source format detection when required.",
+    )
     parser.add_argument("--out-json", type=Path, required=True)
     parser.add_argument("--out-md", type=Path, required=True)
     args = parser.parse_args()
 
-    report = analyze(args.db)
+    source_path = args.input if args.input is not None else args.db
+    input_format = args.input_format
+    if args.db is not None and input_format == "auto":
+        input_format = "sqlite"
+
+    report = analyze(source_path, input_format)
     args.out_json.parent.mkdir(parents=True, exist_ok=True)
     args.out_md.parent.mkdir(parents=True, exist_ok=True)
     args.out_json.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
