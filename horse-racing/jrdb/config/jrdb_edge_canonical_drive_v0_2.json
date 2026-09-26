@@ -1,0 +1,30 @@
+{
+  "schema": "jrdb-edge-canonical-drive-v0.2",
+  "version": "1",
+  "feature_mart": {
+    "root_folder_id": "1ZXqI-gbyZiyhN6v1Xy1TegBDhNr1YhIp",
+    "current_file_id": "1_MSqLT4YepIE7k-o3tE7lKrLpbElOWJS",
+    "generation_id": "edge_feature_mart_v0_2_g20260925_pq1",
+    "generation_folder_id": "10H7drGwRrHPjgjz94hNuF-jX-xQ1cKm9",
+    "files": {
+      "edge_runner_fact.parquet": "17CC-LXzULbIzwmjDxoT1ivh8Xn1q7UrP",
+      "manifest.json": "1zSf-qQmXOkWgLQuHOndGPbeRYkn_Y2Id",
+      "audit.json": "1u5TIf3gFQ9nu2EJe0u4kAO_Z5B1aYacH"
+    }
+  },
+  "registry": {
+    "root_folder_id": "1I0YpBv0E96mvJbYqZZXdDdi-KFcW6M49",
+    "current_file_id": "14pHEq_9Q1hOmDzp0nkuy8QeNAxQxJdC-",
+    "generation_id": "edge_registry_v0_2_g20260925_pq1",
+    "generation_folder_id": "1FsNSreCEz6PWdofkmQUy62EjyERuAMUB",
+    "files": {
+      "edge_definition.parquet": "1jQAlDie2O8H-iHnJwpbWWLTuty-rCAfz",
+      "edge_metric_snapshot.parquet": "1_OlXJbaYzNv9Zs-p7m51Y14sgfJkfTy_",
+      "edge_registry_meta.parquet": "1QzHbYE4o7Es4aQAxikzdeg1Om-qEZTSU",
+      "edge_validation_event.parquet": "132HJg3_cjJycoLAK7l77cZfOq21zKPTn",
+      "edge_serving_catalog.jsonl": "1n6hgZywnZHPW_p0RVc2MapMaVgj-mao_",
+      "manifest.json": "1bJ8V9fjPGxEcV2w_WxmLgk2CfRENIbyb",
+      "audit.json": "1wbbj18xZVrINyZIKPv3AXh8DXtAO-Dk-"
+    }
+  }
+}
