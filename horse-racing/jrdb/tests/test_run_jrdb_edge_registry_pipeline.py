@@ -69,6 +69,36 @@ def test_success_runs_stages_in_order_and_requires_manifest(tmp_path: Path):
     assert (p.report_dir / "workflow_result.json").is_file()
 
 
+
+def test_prebuilt_mart_skips_raw_index_and_feature_build(tmp_path: Path):
+    seen = []
+    p = paths(tmp_path)
+
+    def executor(stage, report_dir):
+        seen.append(stage.name)
+        if stage.name == "publication_manifest":
+            p.out_dir.mkdir(parents=True, exist_ok=True)
+            (p.out_dir / "manifest.json").write_text("{}\n", encoding="utf-8")
+        return 0
+
+    result = edge_pipeline.run_pipeline(
+        request(use_prebuilt_mart=True),
+        p,
+        executor=executor,
+    )
+    assert result["status"] == "success"
+    assert seen == [
+        "discovery",
+        "registry",
+        "statistical_guard",
+        "summary",
+        "publication_manifest",
+    ]
+    assert "fetch_raw" not in seen
+    assert "index_build" not in seen
+    assert "feature_mart" not in seen
+
+
 def test_implementation_failure_stops_downstream_stages(tmp_path: Path):
     seen = []
 
