@@ -518,3 +518,31 @@ RaceNote Gen0.3 real-data dry run (2026-09-25):
 - 2026-09-13 中山10R 初風SをFreezeまで完走。
 - result-open後の1R結果は不振だったため、単発結果で重み調整はしない。
 - next research: Trend materiality / MIXED conflict detail / Ability floor guard study / Scenario provenance.
+## RL-T Production Historical Warehouse cutover handoff — 2026-09-26
+
+Production plumbing cutover is complete.
+
+```text
+DAILY_HISTORICAL_SOURCE             = WAREHOUSE
+REPLAY_HISTORICAL_SOURCE            = WAREHOUSE
+TRAINING_RESEARCH_UPSTREAM_SOURCE   = WAREHOUSE
+HISTORICAL_RAW_NORMAL_FETCH         = 0
+HISTORICAL_RAW_FALLBACK             = DISABLED
+2026_ROUTE                          = UNCHANGED
+STATIC_CUTOVER_AUDIT                = PASS
+FIXED_DATE_REPLAY_SCORER_SMOKE      = PASS
+TRAINING_RESEARCH_BUILD_SMOKE       = PASS
+```
+
+Evidence:
+- Issue #1520 / run `36242350903`: production static audit PASS
+- Issue #1517 / run `36240031550`: 2026-09-20 replay/scorer SUCCESS
+- Issue #1518 / run `36240033827`: Warehouse Training Research chain SUCCESS
+
+Do not restart Warehouse, Index Base equivalence, record-hash compatibility, or Stage2b Parquet migration work.
+
+Separate follow-up:
+- Issue #1521 tracks current-forward runtime fingerprint drift seen on 2026-09-27.
+- The 2026-09-27 run passed Historical Warehouse preparation, current Drive acquisition, bundling, hybrid Index Base, RunPerf, Official RunPerf, and projection, then failed closed at the unchanged frozen runtime fingerprint.
+- Do not solve this by changing frozen science or restoring Historical Raw as a production fallback.
+
