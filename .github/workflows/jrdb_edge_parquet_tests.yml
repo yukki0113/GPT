@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'horse-racing/jrdb/src/jrdb_edge_analysis_history.py'
+      - 'horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline_v0_2.py'
       - 'horse-racing/jrdb/src/build_jrdb_edge_registry_v0_2.py'
       - 'horse-racing/jrdb/src/jrdb_edge_statistical_guard.py'
       - 'horse-racing/jrdb/src/jrdb_edge_human_residual_v0_2.py'
@@ -70,6 +71,7 @@ on:
   pull_request:
     paths:
       - 'horse-racing/jrdb/src/jrdb_edge_analysis_history.py'
+      - 'horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline_v0_2.py'
       - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts.py'
       - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py'
       - 'horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py'
@@ -128,6 +130,7 @@ jobs:
             horse-racing/jrdb/src/build_jrdb_edge_registry_parquet_generation.py \
             horse-racing/jrdb/src/jrdb_edge_registry_parquet.py \
             horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline.py \
+            horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline_v0_2.py \
             horse-racing/jrdb/src/audit_jrdb_edge_registry_parquet_equivalence.py \
             horse-racing/jrdb/src/jrdb_edge_feature_mart_parquet.py \
             horse-racing/jrdb/src/build_jrdb_edge_feature_mart_parquet_generation.py \
