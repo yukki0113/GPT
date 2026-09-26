@@ -217,7 +217,8 @@ jobs:
             echo 'exit_code=98' >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          python horse-racing/jrdb/src/build_jrdb_index_base_hybrid.py \
+          PYTHONPATH=tools/data-storage:horse-racing/jrdb/src \
+            python horse-racing/jrdb/src/build_jrdb_index_base_hybrid.py \
             --warehouse-manifest /tmp/jrdb_replay/historical/final/manifest.json \
             --asset-root BAC=/tmp/jrdb_replay/historical/warehouse/BAC \
             --asset-root KYI=/tmp/jrdb_replay/historical/warehouse/KYI \
