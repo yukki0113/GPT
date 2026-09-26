@@ -13,8 +13,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+import duckdb
+
 from data_storage.convert import convert
 from data_storage.validate import validate
+from jrdb_edge_relational import _is_sqlite_file
 
 ARTIFACT_TYPE = "jrdb_edge_feature_mart"
 SCHEMA_VERSION = "v0.2"
@@ -42,14 +45,18 @@ def _schema_hash(schema: list[dict[str, Any]]) -> str:
 
 def build_generation(
     *,
-    sqlite_path: Path,
+    sqlite_path: Path | None = None,
+    workspace_path: Path | None = None,
     output_root: Path,
     generation_id: str,
     source_generation_id: str | None = None,
     source_manifest_sha256: str | None = None,
 ) -> dict[str, Any]:
-    if not sqlite_path.is_file():
-        raise EdgeFeatureMartGenerationError(f"SQLite mart missing: {sqlite_path}")
+    source_path = workspace_path or sqlite_path
+    if source_path is None or not source_path.is_file():
+        raise EdgeFeatureMartGenerationError(f"Feature Mart workspace missing: {source_path}")
+    if sqlite_path is not None and workspace_path is not None:
+        raise EdgeFeatureMartGenerationError("Specify only one of sqlite_path/workspace_path")
     if not generation_id:
         raise EdgeFeatureMartGenerationError("generation_id is required")
 
@@ -61,31 +68,96 @@ def build_generation(
     audit_path = generation_dir / "audit.json"
     manifest_path = generation_dir / "manifest.json"
 
-    config = {
-        "source": {
-            "format": "sqlite",
-            "path": str(sqlite_path),
-            "table": "edge_runner_fact",
-            "batch_size": 50000,
-        },
-        "target": {
-            "path": str(parquet_path),
+    if _is_sqlite_file(source_path):
+        config = {
+            "source": {
+                "format": "sqlite",
+                "path": str(source_path),
+                "table": "edge_runner_fact",
+                "batch_size": 50000,
+            },
+            "target": {
+                "path": str(parquet_path),
+                "compression": "zstd",
+                "partition_by": [],
+            },
+            "keys": {"canonical": CANONICAL_KEY},
+            "sort_by": SORT_BY,
+            "validation": {"require_row_count_match": True},
+        }
+        conversion = convert(config)
+        validation = validate(config, conversion)
+        if validation.get("status") != "success" or validation.get("passed") is not True:
+            audit_path.write_text(
+                json.dumps({"status": "FAIL", "conversion": conversion, "validation": validation},
+                           ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            raise EdgeFeatureMartGenerationError("tools/data-storage validation failed")
+    else:
+        connection = duckdb.connect(str(source_path), read_only=True)
+        try:
+            schema_rows = connection.execute("DESCRIBE edge_runner_fact").fetchall()
+            schema = [
+                {"name": str(row[0]), "type": str(row[1]).lower(), "nullable": str(row[2]).upper() != "NO"}
+                for row in schema_rows
+            ]
+            row_count = int(connection.execute("SELECT COUNT(*) FROM edge_runner_fact").fetchone()[0])
+            duplicate_count = int(
+                connection.execute(
+                    "SELECT COUNT(*) - COUNT(DISTINCT race_key || ':' || CAST(horse_no AS VARCHAR)) "
+                    "FROM edge_runner_fact"
+                ).fetchone()[0]
+            )
+            if duplicate_count:
+                raise EdgeFeatureMartGenerationError(
+                    f"DuckDB workspace duplicate canonical keys: {duplicate_count}"
+                )
+            literal = str(parquet_path).replace("'", "''")
+            connection.execute(
+                "COPY (SELECT * FROM edge_runner_fact ORDER BY race_date,race_key,horse_no) "
+                f"TO '{literal}' (FORMAT PARQUET, COMPRESSION ZSTD)"
+            )
+        finally:
+            connection.close()
+        verification = duckdb.connect()
+        try:
+            target_rows = int(
+                verification.execute(
+                    "SELECT COUNT(*) FROM read_parquet(?)", [str(parquet_path)]
+                ).fetchone()[0]
+            )
+            target_duplicates = int(
+                verification.execute(
+                    "SELECT COUNT(*) - COUNT(DISTINCT race_key || ':' || CAST(horse_no AS VARCHAR)) "
+                    "FROM read_parquet(?)",
+                    [str(parquet_path)],
+                ).fetchone()[0]
+            )
+        finally:
+            verification.close()
+        if target_rows != row_count or target_duplicates:
+            raise EdgeFeatureMartGenerationError(
+                f"DuckDB->Parquet validation failed rows={target_rows}/{row_count} duplicates={target_duplicates}"
+            )
+        conversion = {
+            "operation": "duckdb_to_parquet",
+            "input": [str(source_path)],
+            "output": str(parquet_path),
             "compression": "zstd",
             "partition_by": [],
-        },
-        "keys": {"canonical": CANONICAL_KEY},
-        "sort_by": SORT_BY,
-        "validation": {"require_row_count_match": True},
-    }
-    conversion = convert(config)
-    validation = validate(config, conversion)
-    if validation.get("status") != "success" or validation.get("passed") is not True:
-        audit_path.write_text(
-            json.dumps({"status": "FAIL", "conversion": conversion, "validation": validation},
-                       ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
-        )
-        raise EdgeFeatureMartGenerationError("tools/data-storage validation failed")
+            "row_count_source": row_count,
+            "input_size_bytes": source_path.stat().st_size,
+            "output_size_bytes": parquet_path.stat().st_size,
+            "input_sha256": {source_path.name: _sha256(source_path)},
+            "schema": schema,
+        }
+        validation = {
+            "status": "success",
+            "passed": True,
+            "row_count_match": True,
+            "duplicate_key_rows": 0,
+        }
 
     schema = conversion.get("schema")
     if not isinstance(schema, list) or not schema:
@@ -118,7 +190,8 @@ def build_generation(
         "sort_by": SORT_BY,
         "row_count": row_count,
         "schema_hash": _schema_hash(schema),
-        "source_sqlite_sha256": _sha256(sqlite_path),
+        "source_workspace_format": "sqlite" if _is_sqlite_file(source_path) else "duckdb",
+        "source_workspace_sha256": _sha256(source_path),
         "source_generation_id": source_generation_id,
         "source_manifest_sha256": source_manifest_sha256,
         "fact_asset": {
@@ -152,7 +225,9 @@ def build_generation(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sqlite", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--sqlite", type=Path)
+    source.add_argument("--workspace", type=Path)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--generation-id", required=True)
     parser.add_argument("--source-generation-id")
@@ -161,6 +236,7 @@ def main() -> None:
     args = parser.parse_args()
     result = build_generation(
         sqlite_path=args.sqlite,
+        workspace_path=args.workspace,
         output_root=args.output_root,
         generation_id=args.generation_id,
         source_generation_id=args.source_generation_id,
