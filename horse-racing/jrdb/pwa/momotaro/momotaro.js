@@ -84,8 +84,9 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
     const value = momotaroPrediction(horse, contributor.key);
     const comment = text(value.comment, "");
     const manualMark = text(value.mark, "");
+    const manualBlank = text(value.tag, "") === "手動無印";
     const jrdbMark = momotaroKenshowTemporaryMark(horse);
-    const display = manualMark || jrdbMark || (comment ? "注" : "");
+    const display = manualBlank ? "" : (manualMark || jrdbMark || (comment ? "注" : ""));
 
     if (comment) {
       return '<td class="newspaper-mark-col mark-momotaro mark-kenshow">' +
