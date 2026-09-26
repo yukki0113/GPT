@@ -30,6 +30,7 @@ jobs:
           set -euo pipefail
           python - <<'PY' >> "$GITHUB_ENV"
           import json, os, re
+          from pathlib import Path
           r=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
           required={'date','base_run_id','base_artifact_name','edge_run_id','edge_artifact_name','target_revision'}
           missing=sorted(required-set(r))
@@ -37,6 +38,10 @@ jobs:
           if not re.fullmatch(r'20\d{2}-\d{2}-\d{2}',str(r['date'])): raise SystemExit('invalid date')
           for k in ('base_run_id','edge_run_id','target_revision'):
               if not isinstance(r[k],int) or isinstance(r[k],bool) or r[k] <= 0: raise SystemExit(f'invalid {k}')
+          eval_b64=str(r.get('eval_csv_gzip_b64') or '').strip()
+          iluka_entries=r.get('keibailuka_entries') or []
+          if not isinstance(iluka_entries,list): raise SystemExit('keibailuka_entries must be array')
+          Path('/tmp/external_request.json').write_text(json.dumps({'eval_csv_gzip_b64':eval_b64,'keibailuka_entries':iluka_entries},ensure_ascii=False),encoding='utf-8')
           print(f"REQUEST_DATE={r['date']}")
           print(f"BASE_RUN_ID={r['base_run_id']}")
           print(f"BASE_ARTIFACT_NAME={r['base_artifact_name']}")
@@ -124,13 +129,38 @@ jobs:
           rm -rf /tmp/day_v03
           python horse-racing/jrdb/src/jrdb_newspaper_merge_edge.py             --day-dir /tmp/day_source             --edge-jsonl /tmp/work/edge_matches_v0_3_shadow.jsonl             --output-dir /tmp/day_v03             > /tmp/work/merge_result.json
 
+      - name: Merge optional external sources
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64,gzip,json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/external_request.json').read_text(encoding='utf-8'))
+          eval_b64=str(req.get('eval_csv_gzip_b64') or '').strip()
+          entries=req.get('keibailuka_entries') or []
+          if eval_b64:
+              Path('/tmp/work/eval.csv').write_bytes(gzip.decompress(base64.b64decode(eval_b64)))
+          if entries:
+              Path('/tmp/work/keibailuka.json').write_text(json.dumps({'entries':entries},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+          rm -rf /tmp/day_final
+          if [ -s /tmp/work/eval.csv ] || [ -s /tmp/work/keibailuka.json ]; then
+            ARGS=(--day-dir /tmp/day_v03 --output-dir /tmp/day_final --revision "$TARGET_REVISION")
+            if [ -s /tmp/work/eval.csv ]; then ARGS+=(--eval-csv /tmp/work/eval.csv); fi
+            if [ -s /tmp/work/keibailuka.json ]; then ARGS+=(--keibailuka-json /tmp/work/keibailuka.json); fi
+            python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py "${ARGS[@]}" > /tmp/work/external_merge_result.json
+          else
+            cp -a /tmp/day_v03 /tmp/day_final
+            printf '%s\n' '{"status":"SKIPPED","eval":null,"keibailuka":null}' > /tmp/work/external_merge_result.json
+          fi
+
       - name: Validate PWA package
         run: |
           set -euo pipefail
           python - <<'PY'
           import hashlib,json,os
           from pathlib import Path
-          root=Path('/tmp/day_v03')
+          root=Path('/tmp/day_final')
           manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
           if manifest.get('date') != os.environ['REQUEST_DATE']: raise SystemExit('output date mismatch')
           if manifest.get('revision') != int(os.environ['TARGET_REVISION']): raise SystemExit('output revision mismatch')
@@ -147,6 +177,9 @@ jobs:
               raise SystemExit('v0.3 Edge adapter/merge not PASS')
           if int(adapter.get('row_count') or 0)!=313 or int(adapter.get('raw_match_count') or 0)!=408:
               raise SystemExit(f'unexpected v0.3 forward counts: {adapter}')
+          external=json.loads(Path('/tmp/work/external_merge_result.json').read_text(encoding='utf-8'))
+          eval_info=external.get('eval') or {}
+          iluka_info=external.get('keibailuka') or {}
           out={'status':'PASS','date':manifest['date'],'revision':manifest['revision'],'race_count':24,
                'edge_mode':'V03_SHADOW_ONLY',
                'runner_rows':int(adapter.get('row_count') or 0),
@@ -154,6 +187,10 @@ jobs:
                'raw_matches':int(adapter.get('raw_match_count') or 0),
                'memo_runners':int(merge.get('memo_runners') or 0),
                'edge_memos':int(merge.get('memo_count') or 0),
+               'eval_merged':int(eval_info.get('merged_rows') or eval_info.get('merged') or 0),
+               'eval_analysis_comments':int(eval_info.get('analysis_comment_rows') or 0),
+               'keibailuka_merged':int(iluka_info.get('merged') or 0),
+               'keibailuka_unmatched':int(iluka_info.get('unmatched') or 0),
                'edge_run_id':int(os.environ['EDGE_RUN_ID']),'edge_artifact':os.environ['EDGE_ARTIFACT_NAME']}
           Path('/tmp/work/result.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps(out,ensure_ascii=False,indent=2))
@@ -164,11 +201,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/day_v03 -cJf /tmp/work/jrdb_newspaper_current.tar.xz manifest.json races
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/day_final -cJf /tmp/work/jrdb_newspaper_current.tar.xz manifest.json races
           python - <<'PY'
           import hashlib,json,os
           from pathlib import Path
-          root=Path('/tmp/day_v03'); arc=Path('/tmp/work/jrdb_newspaper_current.tar.xz')
+          root=Path('/tmp/day_final'); arc=Path('/tmp/work/jrdb_newspaper_current.tar.xz')
           m=root/'manifest.json'
           meta={'schema_version':'0.1','release_kind':'jrdb_newspaper_current_cache',
                 'date':os.environ['REQUEST_DATE'],'revision':int(os.environ['TARGET_REVISION']),
@@ -193,6 +230,7 @@ jobs:
             /tmp/work/merge_result.json
             /tmp/work/jrdb_newspaper_current_release.json
             /tmp/work/edge_matches_v0_3_shadow.jsonl
+            /tmp/work/external_merge_result.json
           retention-days: 30
           if-no-files-found: error
 
