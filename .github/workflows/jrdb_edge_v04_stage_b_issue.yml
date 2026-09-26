@@ -59,7 +59,7 @@ jobs:
       - name: Install dependencies
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt numpy
 
       - name: Export request env
         run: |
@@ -163,4 +163,4 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB Edge v0.4 Stage B failed closed. Production serving was not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
-          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason 'not planned'
