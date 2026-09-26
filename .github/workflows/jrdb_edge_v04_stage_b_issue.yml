@@ -1,0 +1,166 @@
+name: JRDB Edge v0.4 Stage B via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: jrdb-edge-v04-stage-b
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_B]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'feature_run_id','feature_artifact_name'}
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          if not isinstance(req['feature_run_id'],int) or req['feature_run_id'] <= 0:
+              raise SystemExit('feature_run_id must be positive integer')
+          if not isinstance(req['feature_artifact_name'],str) or not req['feature_artifact_name']:
+              raise SystemExit('feature_artifact_name required')
+          req.setdefault('min_depth',2)
+          req.setdefault('max_depth',6)
+          req.setdefault('normal_generation_floor',32)
+          req.setdefault('transition_generation_floor',12)
+          req.setdefault('max_candidates',2500000)
+          Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Export request env
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json
+          r=json.load(open('/tmp/request.json'))
+          for key in ['feature_run_id','feature_artifact_name','min_depth','max_depth','normal_generation_floor','transition_generation_floor','max_candidates']:
+              print(f"{key.upper()}={r[key]}")
+          PY
+
+      - name: Download accepted Feature Mart artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/feature /tmp/stage-b
+          gh run download "$FEATURE_RUN_ID"             --repo "$GITHUB_REPOSITORY"             --name "$FEATURE_ARTIFACT_NAME"             --dir /tmp/feature
+          mapfile -t pqs < <(find /tmp/feature -type f -name edge_runner_fact.parquet -print)
+          if [ "${#pqs[@]}" -ne 1 ]; then
+            echo "expected exactly one edge_runner_fact.parquet; found ${#pqs[@]}" >&2
+            exit 1
+          fi
+          cp "${pqs[0]}" /tmp/feature/edge_runner_fact.parquet
+
+      - name: Run v0.4 Stage B candidate generation
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/build_jrdb_edge_v04_candidates.py             --parquet /tmp/feature/edge_runner_fact.parquet             --output-dir /tmp/stage-b             --min-depth "$MIN_DEPTH"             --max-depth "$MAX_DEPTH"             --normal-generation-floor "$NORMAL_GENERATION_FLOOR"             --transition-generation-floor "$TRANSITION_GENERATION_FLOOR"             --max-candidates "$MAX_CANDIDATES"             | tee /tmp/stage-b/stdout.json
+
+      - name: Add provenance
+        env:
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path('/tmp/stage-b/stage_b_audit.json')
+          d=json.loads(p.read_text())
+          d['feature_run_id']=int(os.environ['FEATURE_RUN_ID'])
+          d['feature_artifact_name']=os.environ['FEATURE_ARTIFACT_NAME']
+          d['source_commit']=os.environ['HEAD_SHA']
+          d['design_path']='horse-racing/jrdb/docs/EdgeDB_v0_4_HighOrder_Transition_Value_Discovery_Design_20260926.md'
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload Stage B evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-b-${{ github.run_id }}
+          path: /tmp/stage-b/
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 6
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          a=json.loads(Path('/tmp/stage-b/stage_b_audit.json').read_text())
+          summary={
+            'status':a['status'],
+            'stage':a['stage'],
+            'run_id':int(os.environ['RUN_ID']),
+            'artifact_name':f"jrdb-edge-v04-stage-b-{os.environ['RUN_ID']}",
+            'source_rows':a['source_rows'],
+            'candidate_dimension_count':a['candidate_dimension_count'],
+            'candidate_count':a['candidate_count'],
+            'candidate_count_by_depth':a['candidate_count_by_depth'],
+            'candidate_count_by_family':a['candidate_count_by_family'],
+            'transition_candidate_count':a['transition_candidate_count'],
+            'pedigree_candidate_count':a['pedigree_candidate_count'],
+            'normal_generation_floor':a['normal_generation_floor'],
+            'transition_generation_floor':a['transition_generation_floor'],
+            'generation_floor_role':a['generation_floor_role'],
+            'market_or_popularity_used_for_generation':a['market_or_popularity_used_for_generation'],
+            'post_race_labels_used_for_generation':a['post_race_labels_used_for_generation'],
+            'deterministic_candidate_ids':a['deterministic_candidate_ids'],
+            'parent_provenance':a['parent_provenance'],
+            'production_serving_changed':False,
+          }
+          print('JRDB_EDGE_V04_STAGE_B_RESULT')
+          print(json.dumps(summary,ensure_ascii=False,indent=2,sort_keys=True))
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB Edge v0.4 Stage B failed closed. Production serving was not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
