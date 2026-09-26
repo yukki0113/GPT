@@ -114,6 +114,16 @@ Current operational boundary:
 
 詳細は `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md` を優先する。
 
+#### Edge storage execution rule
+
+- Feature Mart canonicalはParquet。通常のfull Registry buildでは `prepare_jrdb_edge_feature_mart_duckdb.py` でDuckDB execution workspaceを1回作成し、そのworkspaceをdiscovery / validation / HUMAN calibration / statistical guardで共有する。
+- `jrdb_edge_feature_mart_parquet.materialize_current_sqlite()` を通常workflowから呼ばない。Feature Mart SQLiteはlegacy reproductionだけ。
+- Feature Mart再生成は `build_jrdb_edge_feature_mart_v0_2.py --output-engine duckdb` → `build_jrdb_edge_feature_mart_parquet_generation.py --workspace ...` を標準とする。
+- Registryはmutable build中のみtransient SQLiteを許容する。v0.2 full build成功時は同じrunでRegistry Parquet candidateも生成し、長期保存/current sourceはParquetとする。
+- Registry canonical readは `jrdb_edge_registry_parquet.connect_current()` を使用する。ParquetからSQLiteへ戻す通常経路は禁止。SQLite再materializeは明示的なlegacy reproductionのみ。
+- Edge scientific semantics、v0.2 STANDARD、v0.3 SHADOW、TRUE_FORWARD境界はstorage実装変更と同時に変更しない。
+
+
 ### RaceNote Forecast Gen0での標準適用
 
 Current prediction researchは **RaceNote Forecast Gen0**。作業開始時に `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` を確認する。
