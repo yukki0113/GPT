@@ -32,7 +32,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install runtime dependencies
-        run: python -m pip install --disable-pip-version-check numpy -r tools/data-storage/requirements.txt
+        run: python -m pip install --disable-pip-version-check 'requests==2.34.2' numpy -r tools/data-storage/requirements.txt
 
       - name: Parse fixed-scope request
         id: request
@@ -56,24 +56,35 @@ jobs:
           python horse-racing/jrdb/tests/test_build_jrdb_index_base_from_raw.py -v
           python horse-racing/jrdb/tests/test_jrdb_training_research.py -v
 
-      - name: Fetch annual JRDB Raw 2010-2025
-        id: fetch
+      - name: Prepare RL-T Historical Warehouse inputs
+        id: historical_prepare
         continue-on-error: true
-        env:
-          JRDB_USER: ${{ secrets.JRDB_USER }}
-          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
           set +e
-          mkdir -p /tmp/jrdb_training/raw /tmp/jrdb_training/report
-          python horse-racing/jrdb/src/fetch_jrdb_history.py \
-            --from-year 2010 --to-year 2025 \
-            --kinds BAC KYI SED UKC CHA CYB \
-            --output-dir /tmp/jrdb_training/raw \
-            --manifest /tmp/jrdb_training/report/fetch_manifest.jsonl \
-            --sleep-seconds 1 --continue-on-error \
-            > /tmp/jrdb_training/report/fetch_stdout.log \
-            2> /tmp/jrdb_training/report/fetch_stderr.log
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          mkdir -p /tmp/jrdb_training/historical /tmp/jrdb_training/report
+          PYTHONPATH=horse-racing/jrdb/src:tools/data-storage \
+            python horse-racing/jrdb/src/prepare_rl_t_historical_warehouse_inputs.py \
+              --output-root /tmp/jrdb_training/historical \
+              --result-json /tmp/jrdb_training/report/historical_prepare.json \
+              > /tmp/jrdb_training/report/historical_prepare_stdout.log \
+              2> /tmp/jrdb_training/report/historical_prepare_stderr.log
+          a=$?
+          if [ "$a" = 0 ]; then
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/jrdb_training/report/historical_prepare.json')
+          r=json.loads(p.read_text(encoding='utf-8'))
+          if r.get('status')!='PASS':
+              raise SystemExit('historical prepare did not PASS')
+          if r.get('generation_id')!='jrdb_normalized_warehouse_v1_2010_2025_g20260921':
+              raise SystemExit('unexpected Warehouse generation')
+          if r.get('historical_raw_required') is not False:
+              raise SystemExit('Historical Raw unexpectedly required')
+          PY
+            a=$?
+          fi
+          echo "exit_code=$a" >> "$GITHUB_OUTPUT"
           exit 0
 
       - name: Build audited Index Base
@@ -81,8 +92,18 @@ jobs:
         continue-on-error: true
         run: |
           set +e
-          python horse-racing/jrdb/src/build_jrdb_index_base_from_raw.py \
-            --raw-root /tmp/jrdb_training/raw \
+          if [ '${{ steps.historical_prepare.outputs.exit_code }}' != '0' ]; then
+            echo "exit_code=98" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          python horse-racing/jrdb/src/build_jrdb_index_base_from_warehouse.py \
+            --warehouse-manifest /tmp/jrdb_training/historical/final/manifest.json \
+            --asset-root BAC=/tmp/jrdb_training/historical/warehouse/BAC \
+            --asset-root KYI=/tmp/jrdb_training/historical/warehouse/KYI \
+            --asset-root CHA=/tmp/jrdb_training/historical/warehouse/CHA \
+            --asset-root CYB=/tmp/jrdb_training/historical/warehouse/CYB \
+            --asset-root SED=/tmp/jrdb_training/historical/warehouse/SED \
+            --asset-root UKC=/tmp/jrdb_training/historical/warehouse/UKC \
+            --record-hash-compat-manifest /tmp/jrdb_training/historical/record_hash_compat/manifest.json \
             --years {2010..2025} \
             --db /tmp/jrdb_training/index.sqlite \
             > /tmp/jrdb_training/report/index_build_stdout.log \
@@ -171,7 +192,6 @@ jobs:
           fi
           python horse-racing/jrdb/src/audit_jrdb_training_research.py \
             --db /tmp/jrdb_training/jrdb_training_research_2010_2025_v0_1.sqlite \
-            --raw-root /tmp/jrdb_training/raw \
             --out /tmp/jrdb_training/report/training_research_build_audit.json \
             > /tmp/jrdb_training/report/training_audit_stdout.log \
             2> /tmp/jrdb_training/report/training_audit_stderr.log
@@ -217,7 +237,7 @@ jobs:
       - name: Build workflow result
         if: always()
         env:
-          FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
+          HISTORICAL_PREPARE_EXIT: ${{ steps.historical_prepare.outputs.exit_code }}
           INDEX_BUILD_EXIT: ${{ steps.index_build.outputs.exit_code }}
           INDEX_AUDIT_EXIT: ${{ steps.index_audit.outputs.exit_code }}
           RUNPERF_EXIT: ${{ steps.runperf.outputs.exit_code }}
@@ -232,13 +252,13 @@ jobs:
           import json,os
           from pathlib import Path
           exits={key:os.environ.get(key+'_EXIT','') for key in
-                 ('FETCH','INDEX_BUILD','INDEX_AUDIT','RUNPERF','TRAINING_BUILD','TRAINING_AUDIT','STAGE1B','TRANSPORT')}
+                 ('HISTORICAL_PREPARE','INDEX_BUILD','INDEX_AUDIT','RUNPERF','TRAINING_BUILD','TRAINING_AUDIT','STAGE1B','TRANSPORT')}
           audit_path=Path('/tmp/jrdb_training/report/training_research_build_audit.json')
           stage_path=Path('/tmp/jrdb_training/report/training_vertical_stage1b.json')
           audit=json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.is_file() else {}
           stage=json.loads(stage_path.read_text(encoding='utf-8')) if stage_path.is_file() else {}
           status='success' if all(v=='0' for v in exits.values()) and audit.get('status')=='PASS' else 'failure'
-          result={'status':status,'run_id':int(os.environ['RUN_ID']),'head_sha':os.environ['HEAD_SHA'],
+          result={'status':status,'run_id':int(os.environ['RUN_ID']),'head_sha':os.environ['HEAD_SHA'],'historical_source':'WAREHOUSE','historical_generation_id':'jrdb_normalized_warehouse_v1_2010_2025_g20260921','historical_raw_fallback':False,
                   'period':'2010-2025','exits':exits,'database':audit.get('database'),
                   'row_counts':audit.get('row_counts'),'coverage':audit.get('coverage'),
                   'audit_status':audit.get('status'),'audit_violations':audit.get('violations'),
@@ -280,7 +300,7 @@ jobs:
       - name: Close successful request
         if: >-
           always() &&
-          steps.fetch.outputs.exit_code == '0' &&
+          steps.historical_prepare.outputs.exit_code == '0' &&
           steps.index_build.outputs.exit_code == '0' &&
           steps.index_audit.outputs.exit_code == '0' &&
           steps.runperf.outputs.exit_code == '0' &&
@@ -295,7 +315,7 @@ jobs:
       - name: Fail workflow when a gate failed
         if: >-
           always() &&
-          (steps.fetch.outputs.exit_code != '0' ||
+          (steps.historical_prepare.outputs.exit_code != '0' ||
            steps.index_build.outputs.exit_code != '0' ||
            steps.index_audit.outputs.exit_code != '0' ||
            steps.runperf.outputs.exit_code != '0' ||
