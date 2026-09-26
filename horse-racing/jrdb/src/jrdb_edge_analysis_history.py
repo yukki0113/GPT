@@ -14,6 +14,8 @@ from typing import Any, Protocol
 
 from jrdb_analysis_parquet_current import resolve_current
 
+LookupKey = tuple[str, str, str]
+
 ANALYSIS_TABLE = "fact_entry_result_lite"
 REQUIRED_COLUMNS = {
     "race_key",
@@ -41,6 +43,12 @@ class AnalysisHistory(Protocol):
         horse_id: str,
         target_date: str,
     ) -> dict[str, Any] | None:
+        ...
+
+    def lookup_many(
+        self,
+        requests: list[LookupKey],
+    ) -> dict[LookupKey, dict[str, Any] | None]:
         ...
 
     def close(self) -> None:
@@ -77,6 +85,85 @@ def _project_previous(row: tuple[Any, ...], *, prev_race_key: str, target_date: 
     }
 
 
+def _lookup_many(
+    connection: Any,
+    *,
+    fact_table: str,
+    requests: list[LookupKey],
+) -> dict[LookupKey, dict[str, Any] | None]:
+    """Resolve exact previous-race links with one fact-table scan.
+
+    The request keys are staged in a tiny temporary table and semi-joined to
+    Analysis. This avoids the SQLite-era anti-pattern of issuing one Parquet
+    query per runner.
+    """
+    normalized = sorted(set(requests))
+    if not normalized:
+        return {}
+
+    temp_table = "edge_prev_lookup_keys"
+    connection.execute(f"DROP TABLE IF EXISTS {temp_table}")
+    connection.execute(
+        f"CREATE TEMP TABLE {temp_table} ("
+        "prev_race_key VARCHAR, horse_id VARCHAR, target_date VARCHAR)"
+    )
+    try:
+        connection.executemany(
+            f"INSERT INTO {temp_table} VALUES (?,?,?)",
+            normalized,
+        )
+        rows = connection.execute(
+            f"""
+            SELECT
+                k.prev_race_key,
+                k.horse_id,
+                k.target_date,
+                a.race_date,
+                a.track_type,
+                a.distance,
+                a.frame_no,
+                a.horse_no
+            FROM {temp_table} AS k
+            LEFT JOIN {fact_table} AS a
+              ON a.race_key = k.prev_race_key
+             AND a.horse_id = k.horse_id
+            ORDER BY
+                k.prev_race_key,
+                k.horse_id,
+                k.target_date,
+                a.horse_no
+            """
+        ).fetchall()
+
+        grouped: dict[LookupKey, list[tuple[Any, ...]]] = {
+            key: [] for key in normalized
+        }
+        for row in rows:
+            key = (str(row[0]), str(row[1]), str(row[2]))
+            if row[3] is not None:
+                grouped[key].append(tuple(row[3:7]))
+
+        output: dict[LookupKey, dict[str, Any] | None] = {}
+        for key in normalized:
+            matches = grouped[key]
+            if not matches:
+                output[key] = None
+                continue
+            if len(matches) > 1:
+                raise AnalysisHistoryError(
+                    "ambiguous Analysis previous link: "
+                    f"race_key={key[0]} horse_id={key[1]}"
+                )
+            output[key] = _project_previous(
+                matches[0],
+                prev_race_key=key[0],
+                target_date=key[2],
+            )
+        return output
+    finally:
+        connection.execute(f"DROP TABLE IF EXISTS {temp_table}")
+
+
 class SQLiteAnalysisHistory:
     """Legacy/compatibility Analysis SQLite reader."""
 
@@ -110,6 +197,16 @@ class SQLiteAnalysisHistory:
             "rows": int(coverage[2]),
         }
 
+    def lookup_many(
+        self,
+        requests: list[LookupKey],
+    ) -> dict[LookupKey, dict[str, Any] | None]:
+        return _lookup_many(
+            self.connection,
+            fact_table=ANALYSIS_TABLE,
+            requests=requests,
+        )
+
     def lookup(
         self,
         *,
@@ -117,21 +214,8 @@ class SQLiteAnalysisHistory:
         horse_id: str,
         target_date: str,
     ) -> dict[str, Any] | None:
-        rows = self.connection.execute(
-            f"""SELECT race_date,track_type,distance,frame_no
-                FROM {ANALYSIS_TABLE}
-                WHERE race_key=? AND horse_id=?
-                ORDER BY horse_no
-                LIMIT 2""",
-            (prev_race_key, horse_id),
-        ).fetchall()
-        if not rows:
-            return None
-        if len(rows) > 1:
-            raise AnalysisHistoryError(
-                f"ambiguous Analysis previous link: race_key={prev_race_key} horse_id={horse_id}"
-            )
-        return _project_previous(rows[0], prev_race_key=prev_race_key, target_date=target_date)
+        key = (prev_race_key, horse_id, target_date)
+        return self.lookup_many([key])[key]
 
     def close(self) -> None:
         self.connection.close()
@@ -184,6 +268,16 @@ class ParquetAnalysisHistory:
             "rows": int(coverage[2]),
         }
 
+    def lookup_many(
+        self,
+        requests: list[LookupKey],
+    ) -> dict[LookupKey, dict[str, Any] | None]:
+        return _lookup_many(
+            self.connection,
+            fact_table="analysis_fact",
+            requests=requests,
+        )
+
     def lookup(
         self,
         *,
@@ -191,21 +285,8 @@ class ParquetAnalysisHistory:
         horse_id: str,
         target_date: str,
     ) -> dict[str, Any] | None:
-        rows = self.connection.execute(
-            """SELECT race_date,track_type,distance,frame_no
-               FROM analysis_fact
-               WHERE race_key=? AND horse_id=?
-               ORDER BY horse_no
-               LIMIT 2""",
-            [prev_race_key, horse_id],
-        ).fetchall()
-        if not rows:
-            return None
-        if len(rows) > 1:
-            raise AnalysisHistoryError(
-                f"ambiguous Analysis previous link: race_key={prev_race_key} horse_id={horse_id}"
-            )
-        return _project_previous(rows[0], prev_race_key=prev_race_key, target_date=target_date)
+        key = (prev_race_key, horse_id, target_date)
+        return self.lookup_many([key])[key]
 
     def close(self) -> None:
         self.connection.close()
