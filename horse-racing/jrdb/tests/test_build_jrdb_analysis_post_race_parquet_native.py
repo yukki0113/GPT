@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
+import tempfile
+import unittest
 from pathlib import Path
 from unittest.mock import patch
 
@@ -10,6 +12,9 @@ import duckdb
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+# Another legacy regression module installs a stub under this module name at
+# import time. Ensure this test exercises the real production implementation.
+sys.modules.pop("update_jrdb_analysis_incremental", None)
 
 import build_jrdb_analysis_post_race_parquet_native as target  # noqa: E402
 from update_jrdb_analysis_incremental import FACT_COLUMNS  # noqa: E402
@@ -131,46 +136,56 @@ def _make_current(root: Path) -> None:
     )
 
 
-def test_native_candidate_rewrites_only_affected_year_without_sqlite(tmp_path: Path) -> None:
-    root = tmp_path / "analysis"
-    _make_current(root)
-    current_before = (root / "current.json").read_bytes()
+class NativePostRaceCandidateTest(unittest.TestCase):
+    def test_rewrites_only_affected_year_without_sqlite(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            tmp_path = Path(temporary)
+            root = tmp_path / "analysis"
+            _make_current(root)
+            current_before = (root / "current.json").read_bytes()
 
-    update = {
-        "date": "2026-09-20",
-        "year": 2026,
-        "rows": [_fact_row("2026-09-20", "RNEW", "2")],
-        "metadata": {
-            "source_manifest": {"PACI": "paci", "SED": "sed"},
-            "source_sha256s": {"PACI": "a", "SED": "b"},
-            "race_count": 1,
-            "row_count": 1,
-            "missing_profile_rows": 0,
-            "source_mode": "paci_sed",
-        },
-        "sha256s": {"PACI": "a", "SED": "b"},
-    }
+            update = {
+                "date": "2026-09-20",
+                "year": 2026,
+                "rows": [_fact_row("2026-09-20", "RNEW", "2")],
+                "metadata": {
+                    "source_manifest": {"PACI": "paci", "SED": "sed"},
+                    "source_sha256s": {"PACI": "a", "SED": "b"},
+                    "race_count": 1,
+                    "row_count": 1,
+                    "missing_profile_rows": 0,
+                    "source_mode": "paci_sed",
+                },
+                "sha256s": {"PACI": "a", "SED": "b"},
+            }
 
-    with patch.object(target, "_load_update", return_value=update):
-        result = target.build_native_candidate(
-            analysis_root=root,
-            generation_id="g1",
-            paci_files=[tmp_path / "paci.zip"],
-            sed_files=[tmp_path / "sed.zip"],
-        )
+            with patch.object(target, "_load_update", return_value=update):
+                result = target.build_native_candidate(
+                    analysis_root=root,
+                    generation_id="g1",
+                    paci_files=[tmp_path / "paci.zip"],
+                    sed_files=[tmp_path / "sed.zip"],
+                )
 
-    assert result["status"] == "CANDIDATE_PASS"
-    assert result["audit"]["native_parquet_update"] is True
-    assert result["audit"]["full_sqlite_materialization"] is False
-    assert (root / "current.json").read_bytes() == current_before
+            self.assertEqual(result["status"], "CANDIDATE_PASS")
+            self.assertIs(result["audit"]["native_parquet_update"], True)
+            self.assertIs(result["audit"]["full_sqlite_materialization"], False)
+            self.assertEqual((root / "current.json").read_bytes(), current_before)
 
-    old_manifest = json.loads((root / "generations/g0/manifest.json").read_text())
-    new_manifest = json.loads((root / "generations/g1/manifest.json").read_text())
-    old_parts = {p["year"]: p for p in old_manifest["fact_table"]["partitions"]}
-    new_parts = {p["year"]: p for p in new_manifest["fact_table"]["partitions"]}
+            old_manifest = json.loads((root / "generations/g0/manifest.json").read_text())
+            new_manifest = json.loads((root / "generations/g1/manifest.json").read_text())
+            old_parts = {p["year"]: p for p in old_manifest["fact_table"]["partitions"]}
+            new_parts = {p["year"]: p for p in new_manifest["fact_table"]["partitions"]}
 
-    assert new_parts[2025] == old_parts[2025]
-    assert new_parts[2026]["sha256"] != old_parts[2026]["sha256"]
-    assert new_manifest["update_mode"] == "parquet_native_affected_year_replace"
-    assert new_manifest["total_rows"] == 3
-    assert new_manifest["period_to"] == "2026-09-20"
+            self.assertEqual(new_parts[2025], old_parts[2025])
+            self.assertNotEqual(new_parts[2026]["sha256"], old_parts[2026]["sha256"])
+            self.assertEqual(
+                new_manifest["update_mode"],
+                "parquet_native_affected_year_replace",
+            )
+            self.assertEqual(new_manifest["total_rows"], 3)
+            self.assertEqual(new_manifest["period_to"], "2026-09-20")
+
+
+if __name__ == "__main__":
+    unittest.main()
