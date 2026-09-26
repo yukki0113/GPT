@@ -21,6 +21,7 @@ TABLES = {
     "edge_definition": ["edge_id"],
     "edge_metric_snapshot": ["edge_id", "snapshot_id"],
     "edge_validation_event": ["validation_id"],
+    "edge_statistical_guard": ["edge_id"],
 }
 
 
