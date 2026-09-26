@@ -11,6 +11,7 @@ sys.path.insert(0,str(ROOT.parents[1]/"tools"/"data-storage"))
 
 import build_jrdb_edge_registry_parquet_generation as generation  # noqa: E402
 import audit_jrdb_edge_registry_parquet_equivalence as equivalence  # noqa: E402
+import jrdb_edge_registry_parquet as current  # noqa: E402
 
 
 def _registry(tmp_path: Path) -> Path:
@@ -72,3 +73,35 @@ def test_registry_generation_and_equivalence(tmp_path: Path) -> None:
     assert all(x["canonical_row_hash_equal"] for x in audit["tables"].values())
     manifest=json.loads((gen/"manifest.json").read_text(encoding="utf-8"))
     assert manifest["serving_catalog"]["sha256"]==result["serving_sha256"]
+    pointer={
+        "status":"CURRENT",
+        "generation_id":"g1",
+        "manifest":"generations/g1/manifest.json",
+        "previous_generation_id":None,
+        "updated_at":"2026-09-26T00:00:00+00:00",
+    }
+    (root/"current.json").write_text(json.dumps(pointer)+"\n",encoding="utf-8")
+    resolved=current.resolve_current(root)
+    assert resolved["generation_id"]=="g1"
+    compat=tmp_path/"registry_compat.sqlite"
+    bridge=current.materialize_current_sqlite(root,compat)
+    assert bridge["status"]=="PASS"
+    assert bridge["compatibility_role"]=="transient_sqlite"
+    with sqlite3.connect(compat) as con:
+        assert con.execute("SELECT count(*) FROM edge_definition").fetchone()[0]==1
+
+
+def test_registry_current_fails_closed_on_missing_asset(tmp_path: Path) -> None:
+    source=_registry(tmp_path)
+    root=tmp_path/"canonical"
+    generation.build_generation(sqlite_path=source,output_root=root,generation_id="g1")
+    (root/"current.json").write_text(json.dumps({
+        "status":"CURRENT","generation_id":"g1","manifest":"generations/g1/manifest.json"
+    })+"\n",encoding="utf-8")
+    (root/"generations"/"g1"/"edge_definition.parquet").unlink()
+    try:
+        current.resolve_current(root)
+    except current.EdgeRegistryParquetError as exc:
+        assert "Missing Registry asset" in str(exc)
+    else:
+        raise AssertionError("missing canonical asset must fail closed")
