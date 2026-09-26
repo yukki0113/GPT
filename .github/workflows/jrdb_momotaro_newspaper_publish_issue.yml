@@ -405,4 +405,4 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh issue comment "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --body "Momotaro Newspaper publish failed. Workflow run: $RUN_URL"
-          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason not_planned
+          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason "not planned"
