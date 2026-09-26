@@ -106,7 +106,7 @@ def make_paths(repo_root: Path, work_dir: Path) -> PipelinePaths:
         out_dir=root / "out",
         report_dir=root / "report",
         index_db=root / "index.sqlite",
-        mart_db=root / "edge_mart.sqlite",
+        mart_db=root / "edge_mart.workspace",
     )
 
 
