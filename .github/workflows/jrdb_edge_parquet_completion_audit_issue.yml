@@ -1,0 +1,314 @@
+name: JRDB Edge Parquet completion audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: jrdb-edge-parquet-completion-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_PARQUET_COMPLETION_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+            'feature_run_id','feature_artifact_name','registry_run_id','registry_artifact_name',
+            'registry_source_run_id','registry_source_artifact_name',
+            'v02_serving_sha256','v03_run_id','v03_artifact_name','v03_catalog_sha256'
+          }
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          for k in ('feature_run_id','registry_run_id','registry_source_run_id','v03_run_id'):
+              if not isinstance(req[k],int) or req[k] <= 0:
+                  raise SystemExit(f'{k} must be positive integer')
+          for k in ('v02_serving_sha256','v03_catalog_sha256'):
+              if not re.fullmatch(r'[0-9a-f]{64}',str(req[k]).lower()):
+                  raise SystemExit(f'invalid {k}')
+          Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Install storage dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Download accepted artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/feature /tmp/registry /tmp/registry-source /tmp/v03 /tmp/audit
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json
+          r=json.load(open('/tmp/request.json'))
+          for k,v in r.items():
+              if isinstance(v,(str,int)):
+                  print(f"{k.upper()}={v}")
+          PY
+          gh run download "$FEATURE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$FEATURE_ARTIFACT_NAME" --dir /tmp/feature
+          gh run download "$REGISTRY_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$REGISTRY_ARTIFACT_NAME" --dir /tmp/registry
+          gh run download "$REGISTRY_SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$REGISTRY_SOURCE_ARTIFACT_NAME" --dir /tmp/registry-source
+          gh run download "$V03_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$V03_ARTIFACT_NAME" --dir /tmp/v03
+
+      - name: v0.2 and v0.3 regression hash gates
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for chunk in iter(lambda:f.read(1024*1024),b''):
+                      h.update(chunk)
+              return h.hexdigest()
+          serving=list(Path('/tmp/registry').glob('**/edge_serving_catalog.jsonl'))
+          if len(serving)!=1:
+              raise SystemExit(f'expected one serving catalog, found {serving}')
+          serving_sha=sha(serving[0])
+          if serving_sha != os.environ['V02_SERVING_SHA256']:
+              raise SystemExit(f'v0.2 serving regression: {serving_sha}')
+          matches=[]
+          expected=os.environ['V03_CATALOG_SHA256']
+          for p in Path('/tmp/v03').glob('**/*'):
+              if p.is_file() and sha(p)==expected:
+                  matches.append(str(p))
+          if len(matches)!=1:
+              raise SystemExit(f'v0.3 catalog regression hash not uniquely found: {matches}')
+          Path('/tmp/audit/regression.json').write_text(json.dumps({
+            'status':'PASS',
+            'V02_STANDARD_REGRESSION':'PASS',
+            'v02_serving_sha256':serving_sha,
+            'V03_SHADOW_REGRESSION':'PASS',
+            'v03_catalog_sha256':expected,
+            'v03_matching_file':matches[0],
+            'scientific_semantics_changed':False,
+          },indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Build temporary Feature Mart compatibility SQLite
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import sqlite3
+          from pathlib import Path
+          import pyarrow as pa
+          import pyarrow.parquet as pq
+          matches=list(Path('/tmp/feature').glob('**/edge_runner_fact.parquet'))
+          if len(matches)!=1:
+              raise SystemExit(f'expected one Feature Mart parquet, found {matches}')
+          parquet=matches[0]
+          out=Path('/tmp/feature_compat.sqlite')
+          if out.exists(): out.unlink()
+          pf=pq.ParquetFile(parquet)
+          schema=pf.schema_arrow
+          def sqltype(t):
+              if pa.types.is_integer(t) or pa.types.is_boolean(t): return 'INTEGER'
+              if pa.types.is_floating(t) or pa.types.is_decimal(t): return 'REAL'
+              if pa.types.is_binary(t) or pa.types.is_large_binary(t): return 'BLOB'
+              return 'TEXT'
+          q=lambda s:'"' + str(s).replace('"','""') + '"'
+          cols=[f'{q(f.name)} {sqltype(f.type)}' for f in schema]
+          conn=sqlite3.connect(out)
+          try:
+              conn.execute('PRAGMA journal_mode=OFF')
+              conn.execute('PRAGMA synchronous=OFF')
+              conn.execute('PRAGMA temp_store=MEMORY')
+              conn.execute('CREATE TABLE edge_runner_fact ('+','.join(cols)+')')
+              names=[f.name for f in schema]
+              insert='INSERT INTO edge_runner_fact VALUES ('+','.join(['?']*len(names))+')'
+              conn.execute('BEGIN')
+              for batch in pf.iter_batches(batch_size=2000):
+                  columns=[batch.column(i).to_pylist() for i in range(batch.num_columns)]
+                  rows=zip(*columns)
+                  conn.executemany(insert,rows)
+              conn.commit()
+          finally:
+              conn.close()
+          print(out.stat().st_size)
+          PY
+
+      - name: Locate Registry source SQLite
+        run: |
+          set -euo pipefail
+          mapfile -t registries < <(find /tmp/registry-source -type f -name edge_registry.sqlite -print)
+          test "${#registries[@]}" -eq 1
+          cp "${registries[0]}" /tmp/registry_source.sqlite
+
+      - name: Write shared benchmark configs
+        run: |
+          set -euo pipefail
+          feature_parquet=$(find /tmp/feature -type f -name edge_runner_fact.parquet -print -quit)
+          registry_def=$(find /tmp/registry -type f -name edge_definition.parquet -print -quit)
+          cat > /tmp/feature_benchmark.yaml <<YAML
+          dataset:
+            name: edge_feature_mart_v02
+          source:
+            format: sqlite
+            path: /tmp/feature_compat.sqlite
+            table: edge_runner_fact
+          target:
+            format: parquet
+            path: $feature_parquet
+            compression: zstd
+            partition_by: []
+          keys:
+            canonical: [race_key, horse_no]
+          sort_by: [race_date, race_key, horse_no]
+          validation:
+            require_unique_key: true
+            require_row_count_match: true
+            non_null_columns: [race_key, horse_no]
+            range_columns: [race_date]
+          audit:
+            path: /tmp/audit/feature_validation.json
+          benchmark:
+            repeats: 3
+            modes: [warm, cold]
+            sources:
+              - {name: sqlite, engine: sqlite, path: /tmp/feature_compat.sqlite, table: edge_runner_fact}
+              - {name: parquet_zstd, engine: parquet, path: $feature_parquet}
+            queries:
+              - name: full_scan
+                sql: SELECT count(*) FROM {table}
+              - name: year_filter
+                sql: SELECT count(*) FROM {table} WHERE race_date >= '2020-01-01' AND race_date < '2021-01-01'
+              - name: pre_race_eligible
+                sql: SELECT count(*) FROM {table} WHERE is_pre_race_eligible = 1
+              - name: horse_aggregation
+                sql: SELECT horse_id, count(*) AS n FROM {table} GROUP BY horse_id ORDER BY n DESC LIMIT 100
+              - name: sire_aggregation
+                sql: SELECT sire_name, count(*) AS n FROM {table} GROUP BY sire_name ORDER BY n DESC LIMIT 100
+              - name: course_aggregation
+                sql: SELECT venue_code, count(*) AS n FROM {table} GROUP BY venue_code ORDER BY n DESC
+          YAML
+
+          cat > /tmp/registry_benchmark.yaml <<YAML
+          dataset:
+            name: edge_registry_v02
+          source:
+            format: sqlite
+            path: /tmp/registry_source.sqlite
+            table: edge_definition
+          target:
+            format: parquet
+            path: $registry_def
+            compression: zstd
+            partition_by: []
+          keys:
+            canonical: [edge_id]
+          sort_by: [edge_id]
+          validation:
+            require_unique_key: true
+            require_row_count_match: true
+            non_null_columns: [edge_id]
+            range_columns: []
+          audit:
+            path: /tmp/audit/registry_validation.json
+          benchmark:
+            repeats: 5
+            modes: [warm, cold]
+            sources:
+              - {name: sqlite, engine: sqlite, path: /tmp/registry_source.sqlite, table: edge_definition}
+              - {name: parquet_zstd, engine: parquet, path: $registry_def}
+            queries:
+              - name: registry_read
+                sql: SELECT count(*) FROM {table}
+              - name: template_filter
+                sql: SELECT count(*) FROM {table} WHERE template_id IS NOT NULL
+              - name: status_aggregation
+                sql: SELECT status, count(*) AS n FROM {table} GROUP BY status ORDER BY status
+          YAML
+
+      - name: Run shared storage benchmark
+        env:
+          PYTHONPATH: tools/data-storage
+        run: |
+          set -euo pipefail
+          python -m data_storage benchmark /tmp/feature_benchmark.yaml --output /tmp/audit/feature_benchmark.json
+          python -m data_storage benchmark /tmp/registry_benchmark.yaml --output /tmp/audit/registry_benchmark.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          feature=json.load(open('/tmp/audit/feature_benchmark.json'))
+          registry=json.load(open('/tmp/audit/registry_benchmark.json'))
+          Path('/tmp/audit/result.json').write_text(json.dumps({
+            'status':'PASS',
+            'benchmark':'PASS',
+            'feature_benchmark':feature,
+            'registry_benchmark':registry,
+            'regression':json.load(open('/tmp/audit/regression.json')),
+          },ensure_ascii=False,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Upload completion audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-parquet-completion-audit-${{ github.run_id }}
+          path: /tmp/audit/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json,os,subprocess
+          data=json.load(open('/tmp/audit/result.json'))
+          compact={
+            'status':'PASS',
+            'stage':'EDGE_PARQUET_COMPLETION_AUDIT',
+            'run_id':int(os.environ['RUN_ID']),
+            'artifact_name':f"jrdb-edge-parquet-completion-audit-{os.environ['RUN_ID']}",
+            'V02_STANDARD_REGRESSION':data['regression']['V02_STANDARD_REGRESSION'],
+            'V03_SHADOW_REGRESSION':data['regression']['V03_SHADOW_REGRESSION'],
+            'benchmark':'PASS'
+          }
+          body='JRDB_EDGE_PARQUET_COMPLETION_AUDIT_RESULT\n'+json.dumps(compact,indent=2,sort_keys=True)
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "Edge Parquet completion audit failed closed. Canonical Drive data is not modified by this workflow. Inspect run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID."
