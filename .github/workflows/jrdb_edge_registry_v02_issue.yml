@@ -139,28 +139,41 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/feature-canonical
-          python - <<'PY' > /tmp/feature_downloads.tsv
+          python - <<'PY' > /tmp/feature_downloads.txt
           import json
           from pathlib import Path
           cfg=json.loads(Path('horse-racing/jrdb/config/jrdb_edge_canonical_drive_v0_2.json').read_text())
           feature=cfg['feature_mart']
           generation=feature['generation_id']
-          print(feature['current_file_id'], 'current.json', sep='\t')
+          print(feature['current_file_id'] + '|current.json')
           for name,file_id in feature['files'].items():
-              print(file_id, f'generations/{generation}/{name}', sep='\t')
+              print(file_id + '|generations/' + generation + '/' + name)
           PY
-          while IFS=        id: driver
+          while IFS='|' read -r file_id relative; do
+            target="/tmp/feature-canonical/$relative"
+            mkdir -p "$(dirname "$target")"
+            curl --fail --location --retry 3 \
+              "https://drive.usercontent.google.com/download?id=$file_id&export=download&confirm=t" \
+              -o "$target"
+          done < /tmp/feature_downloads.txt
+          python - <<'PY'
+          from pathlib import Path
+          from jrdb_edge_feature_mart_parquet import materialize_current_sqlite
+          result=materialize_current_sqlite(
+              Path('/tmp/feature-canonical'),
+              Path('/tmp/edge_feature_mart_compat.sqlite'),
+          )
+          if result.get('status') != 'PASS' or result.get('rows') != 781161:
+              raise SystemExit(f'Feature Mart canonical materialization failed: {result}')
+          print(result)
+          PY
+
+      - name: Run v0.2 Edge pipeline driver
+        id: driver
         if: steps.request.outputs.valid == 'true' && steps.tests.outputs.exit_code == '0'
         continue-on-error: true
-        env:
-          JRDB_USER: ${{ secrets.JRDB_USER }}
-          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
           set +e
-          HASH_ARG=()
-          if [ '${{ steps.request.outputs.hash_archives }}' = 'true' ]; then
-            HASH_ARG+=(--hash-archives)
-          fi
           python horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline_v0_2.py \
             --request-id '${{ steps.request.outputs.request_id }}' \
             --from-year '${{ steps.request.outputs.from_year }}' \
@@ -170,8 +183,7 @@ jobs:
             --run-id '${{ github.run_id }}' \
             --head-sha '${{ github.sha }}' \
             --work-dir /tmp/jrdb_edge \
-            --prebuilt-mart /tmp/edge_feature_mart_compat.sqlite \
-            "${HASH_ARG[@]}"
+            --prebuilt-mart /tmp/edge_feature_mart_compat.sqlite
           code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           exit 0
