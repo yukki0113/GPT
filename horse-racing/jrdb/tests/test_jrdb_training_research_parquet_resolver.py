@@ -28,16 +28,16 @@ class TrainingResearchParquetResolverTest(unittest.TestCase):
 
         connection = duckdb.connect()
         try:
+            target = str(parquet).replace("'", "''")
             connection.execute(
-                """
+                f"""
                 COPY (
                   SELECT * FROM (VALUES
                     ('05000101',1,2010),
                     ('05230101',1,2023)
                   ) AS t(race_key,horse_no,year)
-                ) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)
-                """,
-                [str(parquet)],
+                ) TO '{target}' (FORMAT PARQUET, COMPRESSION ZSTD)
+                """
             )
         finally:
             connection.close()
