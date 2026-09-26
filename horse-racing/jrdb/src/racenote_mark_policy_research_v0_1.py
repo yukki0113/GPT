@@ -6,10 +6,12 @@ Roles are intentionally separate from full-order ranking:
 - ◎ Forecast Best
 - ○ Stability Partner
 - ▲ Upside Partner
+- △ Coverage Partner
 
-The policy always emits exactly one ◎, one ○, and one ▲ when the field has
-at least three runners. It does not use current odds, popularity, results,
-current JRDB consensus, Training Edge, or value signals.
+The policy always emits exactly one ◎, one ○, one ▲, and one △ when the
+candidate set has at least four runners. It does not use current odds,
+popularity, results, current JRDB consensus, Training Edge, EdgeDB match
+values, RL index values, or value signals.
 """
 from __future__ import annotations
 
@@ -131,6 +133,22 @@ def _review_flags(profile: Mapping[str, object]) -> dict[str, object]:
     }
 
 
+
+def _condition_rank(profile: Mapping[str, object]) -> int:
+    """Return an ordinal condition context for role comparison only."""
+    signal = _mapping(profile.get("jrdb_condition_signal"))
+    state = _text(signal.get("state")).upper()
+    order = {
+        "SUPPORTIVE": 4,
+        "NEUTRAL": 3,
+        "UNAVAILABLE": 2,
+        "": 2,
+        "MIXED": 1,
+        "CONCERN": 0,
+    }
+    return order.get(state, 2)
+
+
 def _scenario_stability(item: Mapping[str, object]) -> tuple[int, int]:
     pairwise_rank = int(item.get("pairwise_rank") or 999)
     worst_rank = int(item.get("worst_rank") or pairwise_rank)
@@ -174,6 +192,18 @@ def compare_stability(
             "relation": relation,
             "basis": "SCENARIO_DOWNSIDE",
             "summary": "Prefer the runner with less adverse scenario movement.",
+        }
+
+    condition_a = _condition_rank(a)
+    condition_b = _condition_rank(b)
+    if condition_a != condition_b:
+        return {
+            "relation": "A" if condition_a > condition_b else "B",
+            "basis": "JRDB_CONDITION_STABILITY",
+            "summary": (
+                "JRDB improvement/training-arrow context is used only after "
+                "top3 Trend and scenario stability."
+            ),
         }
 
     ability_a = _mapping(a.get("ability"))
@@ -274,6 +304,18 @@ def compare_upside(
             "summary": "Transferable hidden-strength/positive review evidence supports ▲.",
         }
 
+    condition_a = _condition_rank(a)
+    condition_b = _condition_rank(b)
+    if condition_a != condition_b:
+        return {
+            "relation": "A" if condition_a > condition_b else "B",
+            "basis": "JRDB_CONDITION_UPSIDE",
+            "summary": (
+                "JRDB improvement/training-arrow support is upside "
+                "corroboration after Trend and RaceReview."
+            ),
+        }
+
     aa = _mapping(a.get("ability"))
     ab = _mapping(b.get("ability"))
     improvement = _compare_number(
@@ -355,8 +397,8 @@ def build_marks(
         int(value)
         for value in _list(semantic_author.get("semantic_candidate_order"))
     ]
-    if len(order) < 3:
-        raise RuntimeError("mark policy requires at least three candidates")
+    if len(order) < 4:
+        raise RuntimeError("mark policy requires at least four candidates")
 
     scenarios = _scenario_index(scenario)
     axis = order[0]
@@ -378,6 +420,15 @@ def build_marks(
         compare_upside,
     )
 
+    coverage_candidates = [
+        horse_no
+        for horse_no in order
+        if horse_no not in {axis, circle, triangle}
+    ]
+    if not coverage_candidates:
+        raise RuntimeError("no △ coverage candidate remains")
+    coverage = coverage_candidates[0]
+
     return {
         "policy_version": POLICY_VERSION,
         "target": dict(_mapping(packet.get("target"))),
@@ -387,24 +438,80 @@ def build_marks(
             "◎": axis,
             "○": circle,
             "▲": triangle,
+            "△": coverage,
         },
         "role_definition": {
             "◎": "Forecast Best",
             "○": "Stability Partner",
             "▲": "Upside Partner",
+            "△": "Coverage Partner",
         },
         "candidate_order": order,
         "circle_audit": circle_audit,
         "triangle_audit": triangle_audit,
         "betting_diagnostics_contract": {
             "unit_yen": 100,
-            "tickets": [
+            "primary_strategy": {
+                "name": "QUINELLA_◎-○▲_2POINT",
+                "tickets": [
+                    [axis, circle],
+                    [axis, triangle],
+                ],
+                "main_metrics": [
+                    "hit_rate",
+                    "stake",
+                    "return",
+                    "roi",
+                ],
+            },
+            "expanded_strategy": {
+                "name": "QUINELLA_◎-○▲△_3POINT",
+                "tickets": [
+                    [axis, circle],
+                    [axis, triangle],
+                    [axis, coverage],
+                ],
+                "main_metrics": [
+                    "hit_rate",
+                    "stake",
+                    "return",
+                    "roi",
+                    "incremental_return_vs_2point",
+                    "incremental_roi_of_delta_point",
+                ],
+            },
+            "role_diagnostics": {
+                "○": [
+                    "capture_rate_when_◎_is_in_actual_top2",
+                    "hit_count",
+                    "mean_hit_payout",
+                ],
+                "▲": [
+                    "rescue_hits_when_○_misses",
+                    "hit_count",
+                    "mean_hit_payout",
+                    "return_contribution_share",
+                ],
+                "△": [
+                    "rescue_hits_when_○_and_▲_miss",
+                    "incremental_return",
+                    "incremental_roi",
+                ],
+            },
+            "secondary_only": [
                 "WIN_◎",
                 "QUINELLA_◎-○",
                 "QUINELLA_◎-▲",
-                "QUINELLA_◎-○▲_2POINT",
-                "QUINELLA_BOX_◎○▲_3POINT",
+                "QUINELLA_◎-△",
             ],
+        },
+        "firewall": {
+            "market_used": False,
+            "odds_used": False,
+            "result_used": False,
+            "payout_used": False,
+            "rl_index_used": False,
+            "edgedb_match_used": False,
         },
     }
 
@@ -415,7 +522,7 @@ def run_day(
     baseline_root: Path,
     output_root: Path,
 ) -> dict[str, object]:
-    packet_paths = sorted(packet_root.rglob("semantic_pairwise_packet_v0_2.json"))
+    packet_paths = sorted(packet_root.rglob("semantic_pairwise_packet_v0_3.json"))
     if not packet_paths:
         raise RuntimeError("no semantic packets found")
 
@@ -427,7 +534,7 @@ def run_day(
         race_no = int(target["race_no"])
         race_dir = f"{venue}_{race_no:02d}R"
 
-        semantic_path = semantic_root / race_dir / "semantic_author_v0_2.json"
+        semantic_path = semantic_root / race_dir / "semantic_author_v0_4.json"
         scenario_path = baseline_root / race_dir / "scenario_audit.json"
         if not semantic_path.is_file():
             raise RuntimeError(f"missing semantic author: {semantic_path}")
