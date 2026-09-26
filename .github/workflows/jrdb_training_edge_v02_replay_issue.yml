@@ -220,12 +220,12 @@ jobs:
           PYTHONPATH=tools/data-storage:horse-racing/jrdb/src \
             python horse-racing/jrdb/src/build_jrdb_index_base_hybrid.py \
             --warehouse-manifest /tmp/jrdb_replay/historical/final/manifest.json \
-            --asset-root BAC=/tmp/jrdb_replay/historical/warehouse/BAC \
-            --asset-root KYI=/tmp/jrdb_replay/historical/warehouse/KYI \
-            --asset-root CHA=/tmp/jrdb_replay/historical/warehouse/CHA \
-            --asset-root CYB=/tmp/jrdb_replay/historical/warehouse/CYB \
-            --asset-root SED=/tmp/jrdb_replay/historical/warehouse/SED \
-            --asset-root UKC=/tmp/jrdb_replay/historical/warehouse/UKC \
+            --asset-root BAC=/tmp/jrdb_replay/historical/warehouse \
+            --asset-root KYI=/tmp/jrdb_replay/historical/warehouse \
+            --asset-root CHA=/tmp/jrdb_replay/historical/warehouse \
+            --asset-root CYB=/tmp/jrdb_replay/historical/warehouse \
+            --asset-root SED=/tmp/jrdb_replay/historical/warehouse \
+            --asset-root UKC=/tmp/jrdb_replay/historical/warehouse \
             --record-hash-compat-manifest /tmp/jrdb_replay/historical/record_hash_compat/manifest.json \
             --raw-root /tmp/jrdb_replay/raw \
             --db /tmp/jrdb_replay/index.sqlite \
