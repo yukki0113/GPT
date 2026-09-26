@@ -159,13 +159,16 @@ jobs:
               mkdir -p /tmp/eval-artifact
               gh run download "$EVAL_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$EVAL_ARTIFACT_NAME" --dir /tmp/eval-artifact
               EVAL_OUTPUT_NAME="$(python -c "import json; print(json.load(open('/tmp/external_request.json'))['eval_output_name'])")"
-              mapfile -t EVAL_FILES < <(find /tmp/eval-artifact -type f -name "$EVAL_OUTPUT_NAME" -print)
-              if [ "${#EVAL_FILES[@]}" -ne 1 ]; then
-                echo "expected exactly one Eval output named $EVAL_OUTPUT_NAME; found ${#EVAL_FILES[@]}" >&2
-                find /tmp/eval-artifact -type f -maxdepth 6 -print >&2
+              if [ -f "/tmp/eval-artifact/$EVAL_OUTPUT_NAME" ]; then
+                EVAL_SOURCE="/tmp/eval-artifact/$EVAL_OUTPUT_NAME"
+              elif [ -f "/tmp/eval-artifact/by_date/$EVAL_OUTPUT_NAME" ]; then
+                EVAL_SOURCE="/tmp/eval-artifact/by_date/$EVAL_OUTPUT_NAME"
+              else
+                echo "Eval output not found: $EVAL_OUTPUT_NAME" >&2
+                find /tmp/eval-artifact -maxdepth 6 -type f -print >&2
                 exit 1
               fi
-              cp "${EVAL_FILES[0]}" /tmp/work/eval.csv
+              cp "$EVAL_SOURCE" /tmp/work/eval.csv
             fi
           fi
           rm -rf /tmp/day_final
