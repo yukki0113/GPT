@@ -178,7 +178,7 @@ def _quote(value: str) -> str:
 
 
 def materialize_current_sqlite(root: Path, output: Path) -> dict[str, Any]:
-    """Create a transient Registry SQLite from the validated Parquet current generation."""
+    """LEGACY_REPRO only: create SQLite from validated Registry Parquet current."""
     report = resolve_current(root)
     if output.exists():
         raise EdgeRegistryParquetError(f"Refusing to overwrite compatibility SQLite: {output}")
@@ -227,7 +227,7 @@ def materialize_current_sqlite(root: Path, output: Path) -> dict[str, Any]:
     return {
         "status": "PASS",
         "source_mode": "parquet_canonical",
-        "compatibility_role": "transient_sqlite",
+        "compatibility_role": "legacy_repro_sqlite",
         "generation_id": report["generation_id"],
         "table_rows": {name: item["rows"] for name, item in report["tables"].items()},
         "output": str(output),
