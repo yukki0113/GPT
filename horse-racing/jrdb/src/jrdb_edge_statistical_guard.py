@@ -16,10 +16,11 @@ import hashlib
 import json
 import math
 import random
-import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
+
+from jrdb_edge_relational import connect_edge_mart
 
 VERSION = "0.1.0"
 MULTIPLE_TESTING_VERSION = "BH_TEMPLATE_SIGNAL_V1"
@@ -103,7 +104,7 @@ def load_clusters(mart_path: str | Path, candidate: Mapping[str, Any]) -> list[C
       GROUP BY race_date
       ORDER BY race_date
     """
-    con = sqlite3.connect(mart_path)
+    con = connect_edge_mart(mart_path, read_only=True)
     try:
         rows = con.execute(sql, [*modifier_params, *baseline_params]).fetchall()
     finally:
