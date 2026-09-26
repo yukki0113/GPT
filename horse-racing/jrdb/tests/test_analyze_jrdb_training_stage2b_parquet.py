@@ -131,15 +131,11 @@ class Stage2bParquetReaderTest(unittest.TestCase):
             )
             sqlite_connection.close()
 
-            duck = duckdb.connect()
-            try:
-                duck.register("source_frame", frame)
-                duck.execute(
-                    f"COPY source_frame TO '{parquet_path.as_posix()}' "
-                    "(FORMAT PARQUET, COMPRESSION ZSTD)"
-                )
-            finally:
-                duck.close()
+            import pyarrow as pa
+            import pyarrow.parquet as pq
+
+            table = pa.Table.from_pandas(frame, preserve_index=False)
+            pq.write_table(table, parquet_path, compression="zstd")
 
             parquet_frame, audit = _load_source(parquet_path, "parquet")
             self.assertEqual(list(parquet_frame["year"]), [2010, 2023])
