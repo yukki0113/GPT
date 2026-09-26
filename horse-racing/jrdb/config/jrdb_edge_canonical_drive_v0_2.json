@@ -15,17 +15,16 @@
   "registry": {
     "root_folder_id": "1I0YpBv0E96mvJbYqZZXdDdi-KFcW6M49",
     "current_file_id": "14pHEq_9Q1hOmDzp0nkuy8QeNAxQxJdC-",
-    "generation_id": "edge_registry_v0_2_g20260926_pq2",
-    "generation_folder_id": "1qzIdIQ8GwyyF7ekA2OE3vzfPCJI3yKBm",
+    "generation_id": "edge_registry_v0_2_g20260925_pq1",
+    "generation_folder_id": "1FsNSreCEz6PWdofkmQUy62EjyERuAMUB",
     "files": {
-      "edge_definition.parquet": "1RHWYTBgu1ROkUaBGpFb3yLNq1mcpPHt2",
-      "edge_metric_snapshot.parquet": "140AwgXJR0sg3qh738f6but1mwsb_AALI",
-      "edge_registry_meta.parquet": "1fYPITKUbhURr2F5NiJ0_xrzGId3BHxGD",
-      "edge_statistical_guard.parquet": "1FDeR7nIQMYH8tamT1h91rH-7Zcr7WO5g",
-      "edge_validation_event.parquet": "1QJyuFGFaLMjo4U7ztCOoB-e_KiJQuzy_",
-      "edge_serving_catalog.jsonl": "1Ua6CdbLHPTilJDaNSeJwXAPawypiLkDz",
-      "manifest.json": "16ZjIAXJtYGTs0yv7HXj64ch3YigINBxi",
-      "audit.json": "1BLMRNxemxILINBW3lkQ5RxngN8JB4N-f"
+      "edge_definition.parquet": "1jQAlDie2O8H-iHnJwpbWWLTuty-rCAfz",
+      "edge_metric_snapshot.parquet": "1_OlXJbaYzNv9Zs-p7m51Y14sgfJkfTy_",
+      "edge_registry_meta.parquet": "1QzHbYE4o7Es4aQAxikzdeg1Om-qEZTSU",
+      "edge_validation_event.parquet": "132HJg3_cjJycoLAK7l77cZfOq21zKPTn",
+      "edge_serving_catalog.jsonl": "1n6hgZywnZHPW_p0RVc2MapMaVgj-mao_",
+      "manifest.json": "1bJ8V9fjPGxEcV2w_WxmLgk2CfRENIbyb",
+      "audit.json": "1wbbj18xZVrINyZIKPv3AXh8DXtAO-Dk-"
     }
   }
 }
