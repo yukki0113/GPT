@@ -108,12 +108,17 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
     mark === "◎" &&
     Boolean(confidence);
 
-  if (comment || ryotaConfidenceTarget) {
+  const ryotaReviewTarget =
+    contributor.key === "ryota" &&
+    value.review_horse === true &&
+    Boolean(mark);
+
+  if (ryotaConfidenceTarget || ryotaReviewTarget || (contributor.key !== "ryota" && comment)) {
     return '<td class="newspaper-mark-col mark-momotaro mark-' + escapeHtml(contributor.key) + '">' +
       '<button type="button" class="newspaper-addon-link momotaro-contributor-button" ' +
       'data-horse-index="' + horseIndex + '" data-contributor-key="' + escapeHtml(contributor.key) + '" ' +
       'aria-label="' + escapeHtml(text(horse && horse.basic && horse.basic.horse_name, "")) + "の" + escapeHtml(contributor.label) + '詳細">' +
-      escapeHtml(display || "・") + '</button></td>';
+      escapeHtml(display) + '</button></td>';
   }
 
   return '<td class="newspaper-mark-col mark-momotaro mark-' + escapeHtml(contributor.key) + '">' +
