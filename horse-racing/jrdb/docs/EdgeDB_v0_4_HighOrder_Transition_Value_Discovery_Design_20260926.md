@@ -467,11 +467,28 @@ Performance と Value は別laneとして provenance を残す。
 
 ### Stage B — Candidate Generator
 
-- deterministic candidate ids
+- deterministic candidate/template ids
 - 2〜6-way expansion
 - transition-priority branch
 - no popularity/odds filters
-- candidate provenance
+- candidate/template provenance
+
+#### Stage B implementation note (2026-09-27)
+
+Observed-value candidates were initially materialized directly. Empirical rehearsal showed
+more than 2.5M support-only combinations before depth-4 completion, with traversal order
+affecting which deep branches were retained. Therefore canonical Stage B stores a compact,
+deterministic **search-template catalog** (dimension combinations / semantic slots) and does
+not materialize every value combination.
+
+Example Stage B template:
+- sire_name × venue_code × surface_code × distance_m
+
+Example Stage C instantiated candidate:
+- sire=キズナ × venue=東京 × surface=芝 × distance=1600m
+
+Stage C owns grouped value instantiation and ROI/robustness evaluation. This preserves the
+2〜6-way search space while avoiding millions of unevaluated intermediate rows.
 
 ### Stage C — ROI / Robustness Evaluator
 
