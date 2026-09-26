@@ -55,7 +55,7 @@ function showMomotaroContributorDetail(horse, contributor) {
   const comment = text(value.comment, "");
   const review = value.review_horse === true && contributor.key === "ryota" ? "特注" : "";
   const displayMark = contributor.key === "kenshow"
-    ? (momotaroKenshowTemporaryMark(horse) || (comment ? "注" : ""))
+    ? (mark || momotaroKenshowTemporaryMark(horse) || (comment ? "注" : ""))
     : mark;
 
   dialogTitle.textContent = horseName + " / " + contributor.label + (displayMark ? " " + displayMark : "");
@@ -83,8 +83,9 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
   if (contributor.key === "kenshow") {
     const value = momotaroPrediction(horse, contributor.key);
     const comment = text(value.comment, "");
+    const manualMark = text(value.mark, "");
     const jrdbMark = momotaroKenshowTemporaryMark(horse);
-    const display = jrdbMark || (comment ? "注" : "");
+    const display = manualMark || jrdbMark || (comment ? "注" : "");
 
     if (comment) {
       return '<td class="newspaper-mark-col mark-momotaro mark-kenshow">' +
