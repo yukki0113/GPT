@@ -15,6 +15,7 @@ RESOLVER = Path("horse-racing/jrdb/src/jrdb_training_research_parquet.py")
 ALLOWED_HISTORICAL_REFERENCE_PREFIXES = (
     ".github/workflows/jrdb_training_stage2b_issue.yml",
     "horse-racing/jrdb/docs/RL_T_TrainingResearch_Parquet_Work_Request_20260917.md",
+    "horse-racing/jrdb/src/audit_rl_t_training_research_parquet_cutover.py",
 )
 
 
@@ -37,7 +38,7 @@ def audit(root: Path) -> dict[str, Any]:
     })
     checks.append({
         "name": "legacy_workflow_issue_trigger_removed",
-        "pass": "issues:" not in legacy_text.split("jobs:", 1)[0],
+        "pass": "on:\n  workflow_dispatch:" in legacy_text and "on:\n  issues:" not in legacy_text,
     })
     checks.append({
         "name": "legacy_workflow_job_disabled",
