@@ -96,13 +96,13 @@ def test_registry_generation_and_equivalence(tmp_path: Path) -> None:
     (root/"current.json").write_text(json.dumps(pointer)+"\n",encoding="utf-8")
     resolved=current.resolve_current(root)
     assert resolved["generation_id"]=="g1"
-    compat=tmp_path/"registry_compat.sqlite"
-    bridge=current.materialize_current_sqlite(root,compat)
-    assert bridge["status"]=="PASS"
-    assert bridge["compatibility_role"]=="transient_sqlite"
-    with sqlite3.connect(compat) as con:
-        assert con.execute("SELECT count(*) FROM edge_definition").fetchone()[0]==1
-        assert con.execute("SELECT count(*) FROM edge_statistical_guard").fetchone()[0]==1
+    connection, report=current.connect_current(root)
+    try:
+        assert report["generation_id"]=="g1"
+        assert connection.execute("SELECT count(*) FROM edge_definition").fetchone()[0]==1
+        assert connection.execute("SELECT count(*) FROM edge_statistical_guard").fetchone()[0]==1
+    finally:
+        connection.close()
 
 
 def test_registry_current_fails_closed_on_missing_asset(tmp_path: Path) -> None:
