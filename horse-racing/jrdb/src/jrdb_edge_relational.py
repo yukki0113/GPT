@@ -92,8 +92,11 @@ class EdgeConnection:
         # and no stored procedures. Execute statements independently in DuckDB.
         for statement in script.split(";"):
             statement = statement.strip()
-            if statement:
-                self._connection.execute(statement)
+            if not statement:
+                continue
+            if statement.upper().startswith("PRAGMA FOREIGN_KEYS"):
+                continue
+            self._connection.execute(statement)
 
     def commit(self) -> None:
         if self.engine == "sqlite":
