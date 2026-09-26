@@ -234,13 +234,40 @@ def materialize_current_sqlite(root: Path, output: Path) -> dict[str, Any]:
     }
 
 
+
+def connect_current(root: Path) -> tuple[duckdb.DuckDBPyConnection, dict[str, Any]]:
+    """Open validated Registry current directly as DuckDB views.
+
+    This is the normal canonical read path. Parquet must not be materialized
+    back into SQLite for current research/serving reads.
+    """
+    report = resolve_current(root)
+    connection = duckdb.connect()
+    try:
+        for table, item in report["tables"].items():
+            literal = str(item["path"]).replace("'", "''")
+            connection.execute(
+                f'CREATE VIEW "{table}" AS SELECT * FROM read_parquet(\'{literal}\')'
+            )
+    except Exception:
+        connection.close()
+        raise
+    return connection, report
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
-    parser.add_argument("--materialize-sqlite", type=Path)
+    parser.add_argument(
+        "--legacy-materialize-sqlite",
+        type=Path,
+        help="Legacy reproduction only; current consumers must use Parquet/DuckDB.",
+    )
     args = parser.parse_args()
-    if args.materialize_sqlite is not None:
-        result = materialize_current_sqlite(args.root, args.materialize_sqlite)
+    if args.legacy_materialize_sqlite is not None:
+        result = materialize_current_sqlite(args.root, args.legacy_materialize_sqlite)
+        result["deprecated"] = True
+        result["operational_role"] = "LEGACY_REPRO_ONLY"
     else:
         report = resolve_current(args.root)
         result = {
@@ -250,6 +277,7 @@ def main() -> None:
             "serving_sha256": (
                 report["serving_catalog"]["sha256"] if report["serving_catalog"] else None
             ),
+            "canonical_read_mode": "PARQUET_DUCKDB",
         }
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
 
