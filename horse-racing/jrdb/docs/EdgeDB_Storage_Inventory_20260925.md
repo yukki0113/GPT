@@ -2,6 +2,8 @@
 
 Status: **MIGRATION BASELINE / SCIENTIFIC SEMANTICS FROZEN**
 
+> 2026-09-26 operational update: this file remains the migration baseline. The temporary Parquet -> SQLite Feature Mart bridge described below is superseded. Current normal execution uses a DuckDB workspace derived from canonical Parquet. Registry current is read directly with DuckDB; Registry SQLite remains only as the small mutable build workspace and is converted to a Parquet candidate in the same successful full-build run.
+
 Main SHA at inventory start: `0c652c9289d89f71cfa53f5dc68682ee8dda0c52`
 
 ## Purpose
@@ -45,7 +47,7 @@ Acquisition contract:
 
 SQLite is not prohibited. These remain valid:
 - Index Base compatibility SQLite;
-- temporary Parquet -> SQLite compatibility materialization;
+- temporary Parquet -> SQLite compatibility materialization: **LEGACY_REPRO ONLY; not normal operation**;
 - forward ledger / audit SQLite;
 - rollback/reproduction SQLite.
 
@@ -85,7 +87,7 @@ Therefore migration order is fixed:
 
 1. Feature Mart Parquet exact canonical;
 2. DuckDB/current resolver;
-3. compatibility SQLite bridge for unchanged discovery/registry semantics;
+3. validated DuckDB execution workspace for unchanged discovery/registry semantics (SQLite bridge retired 2026-09-26);
 4. Registry Parquet canonical;
 5. publication metadata cutover;
 6. legacy dependency audit.
