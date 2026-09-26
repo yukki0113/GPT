@@ -19,9 +19,7 @@ env:
 
 jobs:
   stage2b:
-    if: >-
-      github.event.issue.user.login == 'yukki0113' &&
-      startsWith(github.event.issue.title, '[JRDB_TRAINING_STAGE2B]')
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
 
