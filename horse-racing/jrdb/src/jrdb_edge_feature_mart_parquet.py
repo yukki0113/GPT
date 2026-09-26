@@ -129,7 +129,7 @@ def resolve_current(root: Path) -> dict[str, Any]:
 
 
 def materialize_current_sqlite(root: Path, output: Path) -> dict[str, Any]:
-    """Materialize current Parquet into a transient compatibility SQLite database."""
+    """LEGACY_REPRO only: materialize canonical Parquet into compatibility SQLite."""
     import sqlite3
     import pyarrow as pa
     import pyarrow.parquet as pq
@@ -187,7 +187,7 @@ def materialize_current_sqlite(root: Path, output: Path) -> dict[str, Any]:
     return {
         "status": "PASS",
         "source_mode": "parquet_canonical",
-        "compatibility_role": "transient_sqlite",
+        "compatibility_role": "legacy_repro_sqlite",
         "generation_id": report["generation_id"],
         "rows": report["rows"],
         "output": str(output),
