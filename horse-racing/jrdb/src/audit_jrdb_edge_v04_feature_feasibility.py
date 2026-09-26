@@ -247,11 +247,9 @@ def main() -> None:
             "AND broodmare_sire_name IS NOT NULL AND broodmare_sire_line_code IS NOT NULL"
         )
         transition_rows = count_where("surface_transition IS NOT NULL")
-        cross_surface_rows = count_where(
-            "surface_transition IS NOT NULL AND "
-            "(upper(surface_transition) LIKE '%TURF%DIRT%' OR upper(surface_transition) LIKE '%DIRT%TURF%' "
-            "OR surface_transition IN ('1>2','2>1','1-2','2-1'))"
-        )
+        turf_to_dirt_rows = count_where("surface_transition = '1->2'")
+        dirt_to_turf_rows = count_where("surface_transition = '2->1'")
+        cross_surface_rows = turf_to_dirt_rows + dirt_to_turf_rows
         distance_transition_rows = count_where("distance_change_m IS NOT NULL")
         prev_venue_rows = count_where("prev1_venue_code IS NOT NULL")
 
@@ -323,6 +321,8 @@ def main() -> None:
             "surface_transition_rows": transition_rows,
             "surface_transition_coverage_pct": round(100.0 * transition_rows / rows, 4) if rows else 0.0,
             "cross_surface_transition_rows": cross_surface_rows,
+            "turf_to_dirt_rows": turf_to_dirt_rows,
+            "dirt_to_turf_rows": dirt_to_turf_rows,
             "distance_transition_rows": distance_transition_rows,
             "previous_venue_rows": prev_venue_rows,
             "surface_transition_distribution": surface_distribution,
