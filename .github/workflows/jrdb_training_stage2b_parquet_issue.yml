@@ -210,7 +210,7 @@ jobs:
           compression-level: 6
 
       - name: Comment result
-        if: always() && hashFiles('/tmp/comment.md') != ''
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
