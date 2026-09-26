@@ -133,6 +133,153 @@ def _aggregate_parquet(connection: duckdb.DuckDBPyConnection, path: Path) -> dic
     }
 
 
+def _workspace_columns(connection: duckdb.DuckDBPyConnection) -> list[dict[str, Any]]:
+    return [
+        {"name": str(row[0]), "type": str(row[1]).upper(), "null": str(row[2])}
+        for row in connection.execute("DESCRIBE edge_runner_fact").fetchall()
+    ]
+
+
+def _aggregate_workspace(connection: duckdb.DuckDBPyConnection) -> dict[str, Any]:
+    return {
+        "rows": int(connection.execute("SELECT count(*) FROM edge_runner_fact").fetchone()[0]),
+        "pre_race_eligible": int(connection.execute(
+            "SELECT count(*) FROM edge_runner_fact WHERE is_pre_race_eligible=1"
+        ).fetchone()[0]),
+        "result_labeled": int(connection.execute(
+            "SELECT count(*) FROM edge_runner_fact WHERE label_finish IS NOT NULL"
+        ).fetchone()[0]),
+        "track_condition_snapshot": int(connection.execute(
+            "SELECT count(*) FROM edge_runner_fact WHERE track_condition_code IS NOT NULL"
+        ).fetchone()[0]),
+        "status_counts": {
+            str(key): int(value) for key, value in connection.execute(
+                "SELECT calculation_status,count(*) FROM edge_runner_fact "
+                "GROUP BY calculation_status ORDER BY calculation_status"
+            ).fetchall()
+        },
+        "surface_counts": {
+            str(key): int(value) for key, value in connection.execute(
+                "SELECT COALESCE(surface_code,'<NULL>'),count(*) FROM edge_runner_fact "
+                "GROUP BY surface_code ORDER BY surface_code"
+            ).fetchall()
+        },
+    }
+
+
+def audit_workspace(workspace_path: Path, parquet_path: Path) -> dict[str, Any]:
+    if not workspace_path.is_file() or not parquet_path.is_file():
+        raise FeatureMartEquivalenceError("input asset missing")
+
+    source = duckdb.connect(str(workspace_path), read_only=True)
+    target = duckdb.connect()
+    try:
+        workspace_cols = _workspace_columns(source)
+        parquet_cols = _duckdb_columns(target, parquet_path)
+        workspace_names = [item["name"] for item in workspace_cols]
+        parquet_names = [item["name"] for item in parquet_cols]
+        column_names_equal = workspace_names == parquet_names
+        logical_types_equal = column_names_equal and all(
+            _type_family_parquet(left["type"]) == _type_family_parquet(right["type"])
+            for left, right in zip(workspace_cols, parquet_cols)
+        )
+
+        key_sql = ",".join(CANONICAL_KEY)
+        workspace_dup = int(source.execute(
+            f"SELECT count(*)-(SELECT count(*) FROM (SELECT {key_sql} "
+            f"FROM edge_runner_fact GROUP BY {key_sql})) FROM edge_runner_fact"
+        ).fetchone()[0])
+        parquet_dup = int(target.execute(
+            """
+            SELECT count(*) - count(DISTINCT race_key || ':' || CAST(horse_no AS VARCHAR))
+            FROM read_parquet(?)
+            """,
+            [str(parquet_path)],
+        ).fetchone()[0])
+
+        null_workspace = {
+            name: int(source.execute(
+                f'SELECT count(*) FROM edge_runner_fact WHERE "{name}" IS NULL'
+            ).fetchone()[0])
+            for name in workspace_names
+        }
+        null_parquet = {
+            name: int(target.execute(
+                f'SELECT count(*) FROM read_parquet(?) WHERE "{name}" IS NULL',
+                [str(parquet_path)],
+            ).fetchone()[0])
+            for name in parquet_names
+        }
+
+        select = ",".join(f'"{name}"' for name in workspace_names)
+        order = ",".join(f'"{name}"' for name in ORDER_BY)
+        source_cursor = source.execute(
+            f"SELECT {select} FROM edge_runner_fact ORDER BY {order}"
+        )
+        target_cursor = target.execute(
+            f"SELECT {select} FROM read_parquet(?) ORDER BY {order}",
+            [str(parquet_path)],
+        )
+        source_hash = hashlib.sha256()
+        target_hash = hashlib.sha256()
+        source_rows = target_rows = 0
+        while True:
+            srows = source_cursor.fetchmany(5000)
+            prows = target_cursor.fetchmany(5000)
+            if not srows and not prows:
+                break
+            if len(srows) != len(prows):
+                raise FeatureMartEquivalenceError(
+                    f"stream batch row mismatch workspace={len(srows)} parquet={len(prows)}"
+                )
+            for srow, prow in zip(srows, prows):
+                _row_hash_update(source_hash, srow)
+                _row_hash_update(target_hash, prow)
+                source_rows += 1
+                target_rows += 1
+
+        source_agg = _aggregate_workspace(source)
+        parquet_agg = _aggregate_parquet(target, parquet_path)
+        row_hash_equal = source_hash.hexdigest() == target_hash.hexdigest()
+        null_equal = null_workspace == null_parquet
+        aggregates_equal = source_agg == parquet_agg
+        pass_gate = all([
+            source_rows == target_rows,
+            column_names_equal,
+            logical_types_equal,
+            workspace_dup == 0,
+            parquet_dup == 0,
+            null_equal,
+            row_hash_equal,
+            aggregates_equal,
+        ])
+        return {
+            "status": "PASS" if pass_gate else "FAIL",
+            "gate": "EDGE_FEATURE_MART_PARQUET_EQUIVALENCE",
+            "source_workspace_format": "duckdb",
+            "row_count_equal": source_rows == target_rows,
+            "row_count_workspace": source_rows,
+            "row_count_parquet": target_rows,
+            "schema_columns_equal": column_names_equal,
+            "logical_types_equal": logical_types_equal,
+            "canonical_key": CANONICAL_KEY,
+            "duplicate_key_rows_workspace": workspace_dup,
+            "duplicate_key_rows_parquet": parquet_dup,
+            "null_semantics_equal": null_equal,
+            "canonical_row_hash_workspace": source_hash.hexdigest(),
+            "canonical_row_hash_parquet": target_hash.hexdigest(),
+            "canonical_row_hash_equal": row_hash_equal,
+            "representative_aggregates_equal": aggregates_equal,
+            "representative_aggregates_workspace": source_agg,
+            "representative_aggregates_parquet": parquet_agg,
+            "column_count": len(workspace_names),
+            "columns": workspace_names,
+        }
+    finally:
+        source.close()
+        target.close()
+
+
 def audit(sqlite_path: Path, parquet_path: Path) -> dict[str, Any]:
     if not sqlite_path.is_file() or not parquet_path.is_file():
         raise FeatureMartEquivalenceError("input asset missing")
@@ -242,11 +389,17 @@ def audit(sqlite_path: Path, parquet_path: Path) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sqlite", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--sqlite", type=Path)
+    source.add_argument("--workspace", type=Path)
     parser.add_argument("--parquet", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    result = audit(args.sqlite, args.parquet)
+    result = (
+        audit_workspace(args.workspace, args.parquet)
+        if args.workspace is not None
+        else audit(args.sqlite, args.parquet)
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
