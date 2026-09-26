@@ -128,6 +128,73 @@ def resolve_current(root: Path) -> dict[str, Any]:
     return {"pointer": pointer, **report}
 
 
+def materialize_current_sqlite(root: Path, output: Path) -> dict[str, Any]:
+    """Materialize current Parquet into a transient compatibility SQLite database."""
+    import sqlite3
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    report = resolve_current(root)
+    if output.exists():
+        raise EdgeFeatureMartParquetError(f"Refusing to overwrite compatibility SQLite: {output}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    parquet = report["fact_path"]
+    pf = pq.ParquetFile(parquet)
+    schema = pf.schema_arrow
+
+    def sql_type(data_type: pa.DataType) -> str:
+        if pa.types.is_integer(data_type) or pa.types.is_boolean(data_type):
+            return "INTEGER"
+        if pa.types.is_floating(data_type) or pa.types.is_decimal(data_type):
+            return "REAL"
+        if pa.types.is_binary(data_type) or pa.types.is_large_binary(data_type):
+            return "BLOB"
+        return "TEXT"
+
+    def quote(value: str) -> str:
+        return '"' + value.replace('"', '""') + '"'
+
+    connection = sqlite3.connect(output)
+    try:
+        connection.execute("PRAGMA journal_mode=OFF")
+        connection.execute("PRAGMA synchronous=OFF")
+        columns = [f"{quote(field.name)} {sql_type(field.type)}" for field in schema]
+        connection.execute("CREATE TABLE edge_runner_fact (" + ",".join(columns) + ")")
+        placeholders = ",".join("?" for _ in schema)
+        insert_sql = "INSERT INTO edge_runner_fact VALUES (" + placeholders + ")"
+        connection.execute("BEGIN")
+        for batch in pf.iter_batches(batch_size=5000):
+            values = [batch.column(index).to_pylist() for index in range(batch.num_columns)]
+            connection.executemany(insert_sql, zip(*values))
+        connection.commit()
+        rows = int(connection.execute("SELECT count(*) FROM edge_runner_fact").fetchone()[0])
+        if rows != report["rows"]:
+            raise EdgeFeatureMartParquetError(
+                f"Compatibility SQLite row mismatch: expected={report['rows']} actual={rows}"
+            )
+        integrity = str(connection.execute("PRAGMA integrity_check").fetchone()[0])
+        if integrity != "ok":
+            raise EdgeFeatureMartParquetError(f"Compatibility SQLite integrity failed: {integrity}")
+    except Exception:
+        connection.close()
+        output.unlink(missing_ok=True)
+        raise
+    finally:
+        try:
+            connection.close()
+        except Exception:
+            pass
+    return {
+        "status": "PASS",
+        "source_mode": "parquet_canonical",
+        "compatibility_role": "transient_sqlite",
+        "generation_id": report["generation_id"],
+        "rows": report["rows"],
+        "output": str(output),
+    }
+
+
+
 def connect_current(root: Path) -> tuple[duckdb.DuckDBPyConnection, dict[str, Any]]:
     report = resolve_current(root)
     con = duckdb.connect()
