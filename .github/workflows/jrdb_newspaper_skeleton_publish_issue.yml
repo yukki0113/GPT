@@ -63,14 +63,43 @@ jobs:
           if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
               raise SystemExit("revision must be integer >= 1")
 
+          entries = request.get("keibailuka_entries", [])
+          if not isinstance(entries, list):
+              raise SystemExit("keibailuka_entries must be an array")
+          normalized_entries = []
+          for index, item in enumerate(entries, start=1):
+              if not isinstance(item, dict):
+                  raise SystemExit(f"keibailuka entry {index} must be an object")
+              venue = str(item.get("venue") or "").strip()
+              race_no = item.get("race_no")
+              horse_name = str(item.get("horse_name") or "").strip()
+              comment = str(item.get("comment") or "").strip()
+              source_url = item.get("source_url")
+              if not venue or not isinstance(race_no, int) or isinstance(race_no, bool) or not 1 <= race_no <= 12:
+                  raise SystemExit(f"keibailuka entry {index}: invalid identity")
+              if not horse_name or not comment:
+                  raise SystemExit(f"keibailuka entry {index}: horse_name/comment is blank")
+              normalized_entries.append({
+                  "venue": venue,
+                  "race_no": race_no,
+                  "horse_name": horse_name,
+                  "comment": comment,
+                  "source_url": source_url,
+              })
+
           normalized = {
               "date": date,
               "base_run_id": base_run_id,
               "artifact_name": artifact_name,
               "revision": revision,
+              "keibailuka_entries": normalized_entries,
           }
           Path("/tmp/skeleton-request/request.json").write_text(
               json.dumps(normalized, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          Path("/tmp/skeleton-request/keibailuka.json").write_text(
+              json.dumps({"entries": normalized_entries}, ensure_ascii=False, indent=2) + "\n",
               encoding="utf-8",
           )
 
@@ -114,13 +143,30 @@ jobs:
               raise SystemExit("base race completeness mismatch")
           PY
 
+      - name: Merge optional shared Iluka source
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/merged-day
+          if python - <<'PY'
+          import json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/skeleton-request/request.json').read_text(encoding='utf-8'))
+          raise SystemExit(0 if req.get('keibailuka_entries') else 1)
+          PY
+          then
+            python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py               --day-dir /tmp/base-day               --output-dir /tmp/merged-day               --keibailuka-json /tmp/skeleton-request/keibailuka.json               --revision "$REQUEST_REVISION"               > /tmp/skeleton-request/external-merge-result.json
+          else
+            cp -a /tmp/base-day /tmp/merged-day
+            printf '%s\n' '{"status":"SKIPPED","keibailuka":null}' > /tmp/skeleton-request/external-merge-result.json
+          fi
+
       - name: Build personal current
         run: |
           set -euo pipefail
           rm -rf /tmp/personal-current
           mkdir -p /tmp/personal-current
-          cp /tmp/base-day/manifest.json /tmp/personal-current/manifest.json
-          cp -a /tmp/base-day/races /tmp/personal-current/races
+          cp /tmp/merged-day/manifest.json /tmp/personal-current/manifest.json
+          cp -a /tmp/merged-day/races /tmp/personal-current/races
 
           python - <<'PY'
           import hashlib
@@ -160,7 +206,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf /tmp/momotaro-current
-          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/base-day             --output-dir /tmp/momotaro-current             > /tmp/skeleton-request/momotaro-result.json
+          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             > /tmp/skeleton-request/momotaro-result.json
 
       - name: Validate outputs
         run: |
