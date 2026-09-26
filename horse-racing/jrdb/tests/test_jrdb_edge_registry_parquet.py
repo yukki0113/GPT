@@ -42,6 +42,15 @@ def _registry(tmp_path: Path) -> Path:
           validation_id INTEGER PRIMARY KEY,edge_id TEXT NOT NULL,evaluated_at TEXT NOT NULL,policy_id TEXT NOT NULL,
           policy_version TEXT NOT NULL,decision TEXT NOT NULL,failure_reason TEXT,evidence_json TEXT NOT NULL
         );
+        CREATE TABLE edge_statistical_guard(
+          edge_id TEXT PRIMARY KEY,candidate_id TEXT NOT NULL,hypothesis_family TEXT NOT NULL,
+          temporal_status TEXT NOT NULL,statistical_status TEXT NOT NULL,
+          performance_p_value REAL,performance_q_value REAL,value_p_value REAL,value_q_value REAL,
+          performance_ci_low REAL,performance_ci_high REAL,value_ci_low REAL,value_ci_high REAL,
+          performance_stat_pass INTEGER NOT NULL,value_stat_pass INTEGER NOT NULL,
+          parent_candidate_id TEXT,redundancy_group_id TEXT,multiple_testing_version TEXT NOT NULL,
+          bootstrap_samples INTEGER NOT NULL,evidence_json TEXT NOT NULL
+        );
         """
     )
     c.execute("INSERT INTO edge_registry_meta VALUES(?,?,?,?,?,?,?)",("v","p","2026-01-01","scope",None,"VALID",None))
@@ -54,6 +63,10 @@ def _registry(tmp_path: Path) -> Path:
         "E1","S1","2025-12-31","ALL","all",None,None,100,80,50,0.1,0.3,1.0,1.1,None,0.25,1.2,0.2,0.4,0.1,1,'{"x":1}'
     ))
     c.execute("INSERT INTO edge_validation_event VALUES(?,?,?,?,?,?,?,?)",(1,"E1","2026-01-01","P","1","ACTIVATE",None,'{"ok":true}'))
+    c.execute("INSERT INTO edge_statistical_guard VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(
+        "E1","C1","F","PASS","PASS",0.01,0.02,0.03,0.04,0.1,0.2,0.3,0.4,1,1,
+        None,None,"v1",2000,'{"ok":true}'
+    ))
     c.commit(); c.close()
     return path
 
@@ -89,6 +102,7 @@ def test_registry_generation_and_equivalence(tmp_path: Path) -> None:
     assert bridge["compatibility_role"]=="transient_sqlite"
     with sqlite3.connect(compat) as con:
         assert con.execute("SELECT count(*) FROM edge_definition").fetchone()[0]==1
+        assert con.execute("SELECT count(*) FROM edge_statistical_guard").fetchone()[0]==1
 
 
 def test_registry_current_fails_closed_on_missing_asset(tmp_path: Path) -> None:
