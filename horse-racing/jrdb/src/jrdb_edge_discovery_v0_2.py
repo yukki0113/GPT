@@ -10,12 +10,12 @@ from __future__ import annotations
 import argparse
 import copy
 import json
-import sqlite3
 from pathlib import Path
 from typing import Any, Mapping
 
 import jrdb_edge_discovery as base
 from jrdb_edge_validation import PolicySelection, select_policy as select_policy_v1
+from jrdb_edge_relational import connect_edge_mart
 from jrdb_edge_human_residual_v0_2 import (
     BASELINE_MODE as HUMAN_BASELINE_MODE,
     MODEL_VERSION as HUMAN_MODEL_VERSION,
@@ -75,7 +75,7 @@ def _candidate_is_canonical(candidate: Mapping[str, Any], catalog: Mapping[str, 
 
 
 def _calibrate_human_mart(mart_path: str | Path) -> dict[str, Any]:
-    con = sqlite3.connect(mart_path)
+    con = connect_edge_mart(mart_path)
     try:
         existing = con.execute("SELECT COUNT(*) FROM edge_runner_fact WHERE horse_quality_model_version=?", (HUMAN_MODEL_VERSION,)).fetchone()[0]
         if int(existing or 0) > 0:
