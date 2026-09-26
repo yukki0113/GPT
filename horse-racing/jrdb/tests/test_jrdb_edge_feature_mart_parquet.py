@@ -81,6 +81,12 @@ def test_build_equivalence_and_current_resolve(tmp_path: Path) -> None:
     (root / "current.json").write_text(json.dumps(pointer) + "\n", encoding="utf-8")
     resolved = current.resolve_current(root)
     assert resolved["rows"] == 3
+    compatibility = tmp_path / "compat.sqlite"
+    bridge = current.materialize_current_sqlite(root, compatibility)
+    assert bridge["status"] == "PASS"
+    assert bridge["compatibility_role"] == "transient_sqlite"
+    with sqlite3.connect(compatibility) as compat:
+        assert compat.execute("SELECT count(*) FROM edge_runner_fact").fetchone()[0] == 3
     connection, report = current.connect_current(root)
     try:
         assert report["generation_id"] == result["generation_id"]
