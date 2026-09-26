@@ -370,3 +370,80 @@ Shared normal-operation preparer:
 - `src/prepare_rl_t_historical_warehouse_inputs.py`
 - materializes accepted Warehouse plus canonical compatibility sidecars
 - reports `historical_raw_required=false`
+## Production workflow final cutover — 2026-09-26
+
+The remaining production plumbing cutover has now been performed.
+
+Changed workflows:
+- `.github/workflows/jrdb_training_edge_v02_daily_issue.yml`
+- `.github/workflows/jrdb_training_edge_v02_replay_issue.yml`
+- `.github/workflows/jrdb_training_research_issue.yml`
+
+Normal Historical source in all three is now the accepted Warehouse generation
+`jrdb_normalized_warehouse_v1_2010_2025_g20260921` through
+`prepare_rl_t_historical_warehouse_inputs.py`.
+
+The old normal step
+`fetch_jrdb_history.py --from-year 2010 --to-year 2025`
+is absent from the three production workflows. There is no automatic Raw fallback.
+Historical Raw remains rollback / audit / reproduction only.
+
+Production implementation:
+- daily/replay use `build_jrdb_index_base_hybrid.py`: Warehouse 2010–2025 + unchanged 2026 PACI/settled SED Raw
+- Training Research uses `build_jrdb_index_base_from_warehouse.py`: Warehouse 2010–2025
+- canonical record-hash compatibility package is materialized by the shared preparer
+- Index Base schema and downstream science are unchanged
+
+Final static audit:
+- Issue #1520
+- run `36242350903`
+- result: PASS
+- `RL_T_OLD_GPT_JRDB_ACTIVE_REFERENCE_COUNT = 0`
+
+Fixed-date operational evidence:
+- target: 2026-09-20
+- settled through: 2026-09-19
+- Issue #1517 / run `36240031550`
+- Warehouse preparation: PASS
+- 2026 Drive input: PASS
+- bundle: PASS
+- hybrid Index Base: PASS
+- RunPerf / Official RunPerf: PASS
+- Training Edge projection: PASS
+- frozen scorer: PASS
+- five-column validation: PASS
+- 334 target runners / 154 nonblank indices / duplicate key 0
+
+Training Research production evidence:
+- Issue #1518 / run `36240033827`
+- Warehouse preparation: PASS
+- Index Base: PASS
+- Index Base audit: PASS
+- RunPerf / Official RunPerf: PASS
+- Training Research build/audit: PASS
+- Stage1b: PASS
+- immutable Parquet canonical generation: PASS
+- total rows: 781,161
+- development 2013–2023: 536,900
+- holdout 2024–2025: 95,065
+- HOLDOUT opened: false
+
+Final migration status:
+
+```text
+RL_T_PRODUCTION_CUTOVER               = PASS
+TRAINING_RESEARCH_UPSTREAM_CUTOVER    = PASS
+HISTORICAL_NORMAL_OPERATION           = WAREHOUSE
+HISTORICAL_RAW_NORMAL_FETCH           = DISABLED
+HISTORICAL_RAW_FALLBACK               = DISABLED
+2026_DAILY_ROUTE                      = UNCHANGED
+RL_T_OLD_GPT_JRDB_ACTIVE_REFERENCE_COUNT = 0
+RESEARCH_BLOCKER                      = NONE
+```
+
+### Current-forward guard note
+
+A separate 2026-09-27 forward smoke (Issue #1519 / run `36240137625`) passed Warehouse preparation, current 2026 Drive acquisition, bundling, hybrid Index Base, RunPerf, Official RunPerf, and projection, but the unchanged frozen Training Edge v0.2 runtime fingerprint rejected the current input with differences in `training_semantic_sha256` and C/CAB prediction hashes.
+
+This finding is tracked separately in Issue #1521. It is not resolved by altering the frozen v0.2 science, changing the runtime fingerprint, or re-enabling Historical Raw fallback. The fixed migration boundary remains the formally validated 2026-09-20 / settled-through-2026-09-19 evidence above.
+
