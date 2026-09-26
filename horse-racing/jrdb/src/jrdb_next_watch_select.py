@@ -26,7 +26,7 @@ import duckdb
 
 
 VERSION = "next-watch-operational-v0.1"
-CORE_S_RULES = {"HV05", "HV13"}
+CORE_S_RULES = {"HV06", "HV13"}
 
 
 class SelectorError(RuntimeError):
@@ -243,7 +243,18 @@ def main() -> int:
                 continue
 
             grade = "A"
-            if CORE_S_RULES.intersection(matched) or len(matched) >= 2:
+            matched_set = set(matched)
+            strict_s = bool(CORE_S_RULES.intersection(matched_set))
+            if (
+                "HV05" in matched_set
+                and (
+                    "HV07" in matched_set
+                    or "HV11" in matched_set
+                    or "HV12" in matched_set
+                )
+            ):
+                strict_s = True
+            if strict_s:
                 grade = "S"
 
             candidates.append({
@@ -297,7 +308,7 @@ def main() -> int:
             "source_generation_id": manifest.get("generation_id"),
             "rule_version": contract.get("rule_version"),
             "grading_contract": {
-                "S": "HV05/HV13 match OR at least 2 hidden-value frozen rule matches",
+                "S": "HV06/HV13 match OR HV05 plus HV07/HV11/HV12",
                 "A": "at least 1 hidden-value frozen rule match and not S",
                 "persistence_rules_excluded": ["P01", "P03"],
                 "forced_minimum_count": False,
