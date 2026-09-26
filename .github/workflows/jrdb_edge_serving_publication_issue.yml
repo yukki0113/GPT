@@ -80,7 +80,151 @@ jobs:
               fh.write(f'request_id={request_id}\n')
           PY
 
-      - name: Download frozen full v0.2 source artifact
+      - name: Install canonical Parquet compatibility runtime
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Materialize promoted Registry Parquet canonical
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/registry-canonical
+          python - <<'PY' > /tmp/registry_downloads.tsv
+          import json
+          from pathlib import Path
+          cfg=json.loads(Path('horse-racing/jrdb/config/jrdb_edge_canonical_drive_v0_2.json').read_text())
+          reg=cfg['registry']
+          generation=reg['generation_id']
+          print(reg['current_file_id'], 'current.json', sep='\t')
+          for name,file_id in reg['files'].items():
+              print(file_id, f'generations/{generation}/{name}', sep='\t')
+          PY
+          while IFS=
+      - name: Build v0.2 STANDARD serving publication
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/publication
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          cmd=[
+              'python','horse-racing/jrdb/src/build_jrdb_edge_suggestive_publication_v0_2.py',
+              '--registry','/tmp/edge_registry.sqlite',
+              '--sensitivity-jsonl','/tmp/edge_suggestive_bootstrap_sensitivity.jsonl',
+              '--output-suggestive-jsonl','/tmp/publication/edge_registry_suggestive.jsonl',
+              '--output-serving-jsonl','/tmp/publication/edge_serving_catalog_v0_2.jsonl',
+              '--audit-json','/tmp/publication/edge_suggestive_publication_audit.json',
+              '--expected-suggestive-rows',str(req['expected_suggestive_rows']),
+              '--expected-suggestive-channels',str(req['expected_suggestive_channels']),
+          ]
+          subprocess.run(cmd,check=True)
+          PY
+
+      - name: Validate publication contract
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          root=Path('/tmp/publication')
+          audit=json.loads((root/'edge_suggestive_publication_audit.json').read_text(encoding='utf-8'))
+          if audit.get('status')!='PASS':
+              raise SystemExit(f"publication audit status={audit.get('status')}")
+          if audit.get('active_rows')!=2572:
+              raise SystemExit(f"unexpected active_rows={audit.get('active_rows')}")
+          if audit.get('suggestive_rows')!=req['expected_suggestive_rows']:
+              raise SystemExit('suggestive row count mismatch')
+          if audit.get('serving_rows')!=2572+req['expected_suggestive_rows']:
+              raise SystemExit('serving row count mismatch')
+          if audit.get('suggestive_total_channels')!=req['expected_suggestive_channels']:
+              raise SystemExit('suggestive channel count mismatch')
+          serving=root/'edge_serving_catalog_v0_2.jsonl'
+          actual=hashlib.sha256(serving.read_bytes()).hexdigest()
+          if audit.get('serving_catalog_sha256')!=actual:
+              raise SystemExit('audit/catalog SHA mismatch')
+          if req.get('expected_serving_sha256') and actual!=req['expected_serving_sha256']:
+              raise SystemExit(
+                  f"serving SHA mismatch expected={req['expected_serving_sha256']} actual={actual}"
+              )
+          result={
+              'status':'PASS',
+              'serving_profile':'STANDARD',
+              'publication_file':'edge_serving_catalog_v0_2.jsonl',
+              'serving_catalog_sha256':actual,
+              'serving_rows':audit['serving_rows'],
+              'active_rows':audit['active_rows'],
+              'suggestive_rows':audit['suggestive_rows'],
+              'suggestive_total_channels':audit['suggestive_total_channels'],
+              'registry_sha256':audit['registry_sha256'],
+              'registry_source_mode':'parquet_canonical_transient_sqlite',
+              'registry_generation_id':json.loads(
+                  Path('/tmp/registry_canonical_resolve.json').read_text(encoding='utf-8')
+              )['generation_id'],
+              'sensitivity_sha256':audit['sensitivity_sha256'],
+              'suggestive_sha256':audit['suggestive_sha256'],
+          }
+          (root/'publication_result.json').write_text(
+              json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          PY
+
+      - name: Upload official serving publication
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-serving-v02-${{ steps.request.outputs.request_id }}-${{ github.run_id }}
+          path: /tmp/publication/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment success and close Issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          result=json.loads(Path('/tmp/publication/publication_result.json').read_text(encoding='utf-8'))
+          result.update({
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'artifact_name':f"jrdb-edge-serving-v02-{os.environ['REQUEST_ID']}-{os.environ['RUN_ID']}",
+          })
+          body='JRDB_EDGE_SERVING_PUBLICATION_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n```\n'
+          subprocess.run(['gh','issue','comment',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--body',body],check=True)
+          subprocess.run(['gh','issue','close',os.environ['ISSUE_NUMBER'],'--repo',os.environ['GITHUB_REPOSITORY'],'--reason','completed'],check=True)
+          PY
+
+      - name: Comment failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "JRDB Edge v0.2 serving publication failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+\t' read -r file_id relative; do
+            target="/tmp/registry-canonical/$relative"
+            mkdir -p "$(dirname "$target")"
+            curl --fail --location --retry 3 \
+              "https://drive.usercontent.google.com/download?id=$file_id&export=download&confirm=t" \
+              -o "$target"
+          done < /tmp/registry_downloads.tsv
+          python horse-racing/jrdb/src/jrdb_edge_registry_parquet.py \
+            --root /tmp/registry-canonical \
+            --materialize-sqlite /tmp/edge_registry.sqlite \
+            > /tmp/registry_canonical_resolve.json
+
+      - name: Download frozen sensitivity evidence only
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -96,30 +240,24 @@ jobs:
           source /tmp/source_env.sh
           gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
             --name "$SOURCE_ARTIFACT_NAME" --dir /tmp/source
-          mapfile -t registries < <(find /tmp/source -type f -name edge_registry.sqlite -print)
           mapfile -t sensitivity < <(find /tmp/source -type f -name edge_suggestive_bootstrap_sensitivity.jsonl -print)
-          if [ "${#registries[@]}" -ne 1 ] || [ "${#sensitivity[@]}" -ne 1 ]; then
-            echo "expected one registry and one sensitivity input" >&2
+          if [ "${#sensitivity[@]}" -ne 1 ]; then
+            echo "expected one frozen sensitivity input" >&2
             exit 1
           fi
-          cp "${registries[0]}" /tmp/edge_registry.sqlite
           cp "${sensitivity[0]}" /tmp/edge_suggestive_bootstrap_sensitivity.jsonl
 
-      - name: Verify frozen source hashes
+      - name: Verify frozen sensitivity hash
         run: |
           python - <<'PY'
           import hashlib, json
           from pathlib import Path
           req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
-          paths={
-              'registry_sha256':Path('/tmp/edge_registry.sqlite'),
-              'sensitivity_sha256':Path('/tmp/edge_suggestive_bootstrap_sensitivity.jsonl'),
-          }
-          for field,path in paths.items():
-              actual=hashlib.sha256(path.read_bytes()).hexdigest()
-              expected=req.get(field)
-              if expected and actual!=expected:
-                  raise SystemExit(f'{field} mismatch expected={expected} actual={actual}')
+          path=Path('/tmp/edge_suggestive_bootstrap_sensitivity.jsonl')
+          actual=hashlib.sha256(path.read_bytes()).hexdigest()
+          expected=req.get('sensitivity_sha256')
+          if expected and actual!=expected:
+              raise SystemExit(f'sensitivity_sha256 mismatch expected={expected} actual={actual}')
           PY
 
       - name: Build v0.2 STANDARD serving publication
