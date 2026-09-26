@@ -194,10 +194,10 @@ def _rewrite_year(
 
         year = int(base_partition["year"])
         staged = temp_dir / f"fact-{year}.parquet"
+        staged_literal = str(staged).replace("'", "''")
         con.execute(
             f"COPY (SELECT * FROM \"{FACT}\" ORDER BY race_date,race_key,horse_no) "
-            "TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
-            [str(staged)],
+            f"TO '{staged_literal}' (FORMAT PARQUET, COMPRESSION ZSTD)"
         )
         rows, row_hash = _canonical_digest(con, FACT, columns)
     finally:
@@ -277,10 +277,10 @@ def _rewrite_ingest_metadata(
             next_batch += 1
 
         staged = temp_dir / "meta_analysis_ingest_batch.parquet"
+        staged_literal = str(staged).replace("'", "''")
         con.execute(
             "COPY (SELECT * FROM ingest ORDER BY batch_id) "
-            "TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
-            [str(staged)],
+            f"TO '{staged_literal}' (FORMAT PARQUET, COMPRESSION ZSTD)"
         )
         rows = int(con.execute("SELECT COUNT(*) FROM ingest").fetchone()[0])
     finally:
