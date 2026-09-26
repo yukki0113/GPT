@@ -39,9 +39,13 @@ jobs:
           for k in ('base_run_id','edge_run_id','target_revision'):
               if not isinstance(r[k],int) or isinstance(r[k],bool) or r[k] <= 0: raise SystemExit(f'invalid {k}')
           eval_b64=str(r.get('eval_csv_gzip_b64') or '').strip()
+          eval_run_id=r.get('eval_run_id')
+          eval_artifact_name=str(r.get('eval_artifact_name') or '').strip()
+          if eval_run_id is not None and (not isinstance(eval_run_id,int) or isinstance(eval_run_id,bool) or eval_run_id <= 0): raise SystemExit('invalid eval_run_id')
+          if bool(eval_run_id) != bool(eval_artifact_name): raise SystemExit('eval_run_id and eval_artifact_name must be provided together')
           iluka_entries=r.get('keibailuka_entries') or []
           if not isinstance(iluka_entries,list): raise SystemExit('keibailuka_entries must be array')
-          Path('/tmp/external_request.json').write_text(json.dumps({'eval_csv_gzip_b64':eval_b64,'keibailuka_entries':iluka_entries},ensure_ascii=False),encoding='utf-8')
+          Path('/tmp/external_request.json').write_text(json.dumps({'eval_csv_gzip_b64':eval_b64,'eval_run_id':eval_run_id,'eval_artifact_name':eval_artifact_name,'keibailuka_entries':iluka_entries},ensure_ascii=False),encoding='utf-8')
           print(f"REQUEST_DATE={r['date']}")
           print(f"BASE_RUN_ID={r['base_run_id']}")
           print(f"BASE_ARTIFACT_NAME={r['base_artifact_name']}")
@@ -143,6 +147,21 @@ jobs:
           if entries:
               Path('/tmp/work/keibailuka.json').write_text(json.dumps({'entries':entries},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           PY
+          if [ ! -s /tmp/work/eval.csv ]; then
+            EVAL_RUN_ID="$(python -c "import json; print(json.load(open('/tmp/external_request.json')).get('eval_run_id') or '')")"
+            EVAL_ARTIFACT_NAME="$(python -c "import json; print(json.load(open('/tmp/external_request.json')).get('eval_artifact_name') or '')")"
+            if [ -n "$EVAL_RUN_ID" ] && [ -n "$EVAL_ARTIFACT_NAME" ]; then
+              rm -rf /tmp/eval-artifact
+              mkdir -p /tmp/eval-artifact
+              gh run download "$EVAL_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$EVAL_ARTIFACT_NAME" --dir /tmp/eval-artifact
+              mapfile -t EVAL_FILES < <(find /tmp/eval-artifact -type f -name '*.csv' -print)
+              if [ "${#EVAL_FILES[@]}" -ne 1 ]; then
+                echo "expected exactly one Eval CSV; found ${#EVAL_FILES[@]}" >&2
+                exit 1
+              fi
+              cp "${EVAL_FILES[0]}" /tmp/work/eval.csv
+            fi
+          fi
           rm -rf /tmp/day_final
           if [ -s /tmp/work/eval.csv ] || [ -s /tmp/work/keibailuka.json ]; then
             ARGS=(--day-dir /tmp/day_v03 --output-dir /tmp/day_final --revision "$TARGET_REVISION")
