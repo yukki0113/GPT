@@ -137,6 +137,8 @@ jobs:
             'pedigree_full_coverage_pct':a['pedigree_full_coverage_pct'],
             'surface_transition_rows':a['surface_transition_rows'],
             'cross_surface_transition_rows':a['cross_surface_transition_rows'],
+            'turf_to_dirt_rows':a['turf_to_dirt_rows'],
+            'dirt_to_turf_rows':a['dirt_to_turf_rows'],
             'distance_transition_rows':a['distance_transition_rows'],
             'previous_venue_rows':a['previous_venue_rows'],
             'deferred_feature_count':a['deferred_feature_count'],
