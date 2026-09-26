@@ -121,7 +121,8 @@ jobs:
               if not isinstance(review_horse, bool):
                   raise SystemExit(f"momotaro prediction {index}: review_horse must be boolean")
               if not mark and not confidence and not review_horse and not comment:
-                  raise SystemExit(f"momotaro prediction {index}: prediction is empty")
+                  if not (member == "kenshow" and tag == "手動無印"):
+                      raise SystemExit(f"momotaro prediction {index}: prediction is empty")
 
               key = (date, venue_code, race_no, horse_no, member)
               if key in seen_prediction_keys:
