@@ -1,0 +1,46 @@
+name: JRDB RL-T Production Warehouse Cutover Audit
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_RLT_PRODUCTION_CUTOVER_AUDIT]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Run production cutover audit
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rlt-production-cutover
+          python horse-racing/jrdb/src/audit_rl_t_production_warehouse_cutover.py \
+            --root . \
+            --output /tmp/rlt-production-cutover/audit.json
+
+      - name: Upload audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-rlt-production-cutover-audit-${{ github.run_id }}
+          path: /tmp/rlt-production-cutover/audit.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Close successful request
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' \
+            --body "RL-T production Warehouse cutover static audit PASS. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
