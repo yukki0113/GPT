@@ -12,9 +12,10 @@ from __future__ import annotations
 import hashlib
 import math
 import random
-import sqlite3
 from pathlib import Path
 from typing import Any, Mapping
+
+from jrdb_edge_relational import connect_edge_mart
 
 MODEL_VERSION = "HUMAN_PRE_IDM_EXPANDING_V1"
 BASELINE_MODE = "human_residual_v1"
@@ -26,7 +27,7 @@ def _field_bucket_sql() -> str:
     return "CASE WHEN declared_field_size<=7 THEN 'LE7' WHEN declared_field_size<=11 THEN '8_11' WHEN declared_field_size<=15 THEN '12_15' ELSE '16_PLUS' END"
 
 
-def calibrate_horse_quality(connection: sqlite3.Connection) -> dict[str, Any]:
+def calibrate_horse_quality(connection: Any) -> dict[str, Any]:
     """Populate pre-race quality rank and prior-only expected place probability."""
     connection.executescript("""
       DROP TABLE IF EXISTS temp.quality_rank_tmp;
@@ -95,8 +96,13 @@ def calibrate_horse_quality(connection: sqlite3.Connection) -> dict[str, Any]:
                 f"UPDATE edge_runner_fact SET horse_quality_expected_place=?,horse_quality_place_residual=label_place_hit-?,horse_quality_model_version=?,horse_quality_model_cutoff_year=? WHERE calculation_status='ELIGIBLE' AND horse_quality_bucket=? AND surface_code=? AND {fs_expr}=? AND CAST(substr(race_date,1,4) AS INTEGER)=?",
                 (expected,expected,MODEL_VERSION,prior_year,qb_i,str(surface),str(fsb),year),
             )
-            calibrated += int(cur.rowcount or 0)
     connection.commit()
+    calibrated = int(
+        connection.execute(
+            "SELECT COUNT(*) FROM edge_runner_fact WHERE horse_quality_model_version=?",
+            (MODEL_VERSION,),
+        ).fetchone()[0]
+    )
     return {
         "model_version": MODEL_VERSION,
         "calibrated_rows": calibrated,
@@ -121,7 +127,7 @@ def _where(values: Mapping[str, Any], *, start_date: str|None=None, end_date: st
     return " AND ".join(parts),params
 
 
-def human_metrics(connection: sqlite3.Connection, values: Mapping[str,Any], *, start_date: str|None=None, end_date: str|None=None) -> dict[str,Any]:
+def human_metrics(connection: Any, values: Mapping[str,Any], *, start_date: str|None=None, end_date: str|None=None) -> dict[str,Any]:
     where,params=_where(values,start_date=start_date,end_date=end_date)
     row=connection.execute("""SELECT COUNT(*),COUNT(DISTINCT horse_id),COUNT(DISTINCT race_key),MIN(race_date),MAX(race_date),AVG(label_win_hit),AVG(label_place_hit),AVG(horse_quality_expected_place),AVG(horse_quality_place_residual),SUM(COALESCE(label_win_payout,0))/(100.0*COUNT(*)),SUM(COALESCE(label_place_payout,0))/(100.0*COUNT(*)),SUM(COALESCE(label_win_payout,0)+COALESCE(label_place_payout,0)) FROM edge_runner_fact WHERE """+where,params).fetchone()
     n=int(row[0] or 0)
@@ -154,7 +160,7 @@ def discover_human(mart_path: str|Path, template: Mapping[str,Any], policy_selec
             raise ValueError(f"unsupported HUMAN template field: {f}")
     group=",".join(fields)
     nonnull=" AND ".join(f"{f} IS NOT NULL AND CAST({f} AS TEXT)<>''" for f in fields) or "1=1"
-    con=sqlite3.connect(mart_path); con.row_factory=sqlite3.Row
+    con=connect_edge_mart(mart_path)
     try:
         sql=f"""SELECT {group},COUNT(*) sample_n,COUNT(DISTINCT horse_id) unique_horses,COUNT(DISTINCT race_key) unique_races,MIN(race_date) first_date,MAX(race_date) last_date,AVG(label_win_hit) win_rate,AVG(label_place_hit) place_rate,AVG(horse_quality_expected_place) expected_place,AVG(horse_quality_place_residual) residual_mean,SUM(COALESCE(label_win_payout,0))/(100.0*COUNT(*)) win_roi,SUM(COALESCE(label_place_payout,0))/(100.0*COUNT(*)) place_roi,MAX(COALESCE(label_win_payout,0)+COALESCE(label_place_payout,0)) max_return FROM edge_runner_fact WHERE calculation_status='ELIGIBLE' AND horse_quality_expected_place IS NOT NULL AND {nonnull} GROUP BY {group}"""
         output=[]
@@ -196,7 +202,7 @@ def _directional_p(z: float, direction: str) -> float:
 def evaluate_human_statistical(mart_path: str|Path, candidate: Mapping[str,Any], temporal_result: Mapping[str,Any], *, bootstrap_samples: int=400) -> dict[str,Any]:
     values={**candidate["anchor"],**candidate["modifiers"]}
     where,params=_where(values)
-    con=sqlite3.connect(mart_path)
+    con=connect_edge_mart(mart_path)
     try:
         clusters=[(int(n),float(s or 0)) for n,s in con.execute("SELECT COUNT(*),SUM(horse_quality_place_residual) FROM edge_runner_fact WHERE "+where+" GROUP BY race_date ORDER BY race_date",params)]
     finally:
