@@ -166,6 +166,7 @@ jobs:
           python - <<'PY'
           import json, os
           from pathlib import Path
+          Path('/tmp/stage2b/report').mkdir(parents=True,exist_ok=True)
           resolver_path=Path('/tmp/stage2b/report/current_resolve.json')
           result_path=Path('/tmp/stage2b/report/training_pattern_stage2b_result.json')
           resolver=json.loads(resolver_path.read_text(encoding='utf-8')) if resolver_path.is_file() else {}
@@ -209,7 +210,7 @@ jobs:
           compression-level: 6
 
       - name: Comment result
-        if: always()
+        if: always() && hashFiles('/tmp/comment.md') != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
