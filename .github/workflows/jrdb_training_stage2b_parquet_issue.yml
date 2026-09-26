@@ -1,0 +1,230 @@
+name: JRDB Training Stage2b Parquet via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_TRAINING_STAGE2B_PARQUET]'
+
+jobs:
+  stage2b-parquet:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_TRAINING_STAGE2B_PARQUET]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required = {'current_drive_file_id','manifest_drive_file_id','development_drive_file_id'}
+          missing = sorted(required - set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          for key in sorted(required):
+              value = str(req[key])
+              if not re.fullmatch(r'[A-Za-z0-9_-]{10,200}', value):
+                  raise SystemExit(f'invalid Drive file id: {key}')
+          Path('/tmp/request.json').write_text(
+              json.dumps(req,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as handle:
+              for key in sorted(required):
+                  handle.write(f'{key.upper()}={req[key]}\n')
+          PY
+
+      - name: Install runtime dependencies and focused tests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q pytest numpy pandas scipy scikit-learn
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_analyze_jrdb_training_stage2b_parquet.py \
+            horse-racing/jrdb/tests/test_jrdb_training_research_parquet_resolver.py
+
+      - name: Download canonical current pointer
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/stage2b/canonical /tmp/stage2b/report
+          curl --fail --location --retry 3 \
+            "https://drive.usercontent.google.com/download?id=$CURRENT_DRIVE_FILE_ID&export=download&confirm=t" \
+            -o /tmp/stage2b/canonical/current.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          pointer=json.loads(Path('/tmp/stage2b/canonical/current.json').read_text(encoding='utf-8'))
+          generation=pointer.get('generation_id')
+          manifest=pointer.get('manifest')
+          if pointer.get('status')!='SUCCESS':
+              raise SystemExit('Training Research current is not SUCCESS')
+          if not isinstance(generation,str) or not generation:
+              raise SystemExit('current generation_id missing')
+          expected=f'build-{generation}/manifest.json'
+          if manifest!=expected:
+              raise SystemExit(f'current manifest mismatch: expected={expected} actual={manifest}')
+          generation_root=Path('/tmp/stage2b/canonical')/f'build-{generation}'
+          generation_root.mkdir(parents=True,exist_ok=True)
+          Path('/tmp/stage2b/generation_id').write_text(generation,encoding='utf-8')
+          PY
+
+      - name: Download immutable manifest and development Parquet
+        run: |
+          set -euo pipefail
+          GENERATION_ID="$(cat /tmp/stage2b/generation_id)"
+          GENERATION_ROOT="/tmp/stage2b/canonical/build-$GENERATION_ID"
+          curl --fail --location --retry 3 \
+            "https://drive.usercontent.google.com/download?id=$MANIFEST_DRIVE_FILE_ID&export=download&confirm=t" \
+            -o "$GENERATION_ROOT/manifest.json"
+          curl --fail --location --retry 3 \
+            "https://drive.usercontent.google.com/download?id=$DEVELOPMENT_DRIVE_FILE_ID&export=download&confirm=t" \
+            -o "$GENERATION_ROOT/training_development.parquet"
+
+      - name: Resolve and validate current Parquet canonical
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_training_research_parquet.py \
+            --root /tmp/stage2b/canonical \
+            > /tmp/stage2b/report/current_resolve.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('/tmp/stage2b/report/current_resolve.json').read_text(encoding='utf-8'))
+          if report.get('status')!='PASS':
+              raise SystemExit('current resolver did not PASS')
+          if report.get('min_year')!=2010 or report.get('max_year')!=2023:
+              raise SystemExit('development year contract failed')
+          if report.get('duplicate_keys')!=0:
+              raise SystemExit('duplicate canonical keys detected')
+          Path('/tmp/stage2b/development_path').write_text(report['development_path'],encoding='utf-8')
+          PY
+
+      - name: Run Stage2b on canonical Parquet
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          DEVELOPMENT_PATH="$(cat /tmp/stage2b/development_path)"
+          python horse-racing/jrdb/src/analyze_jrdb_training_stage2b.py \
+            --input "$DEVELOPMENT_PATH" \
+            --out-json /tmp/stage2b/report/training_pattern_stage2b_result.json \
+            --out-md /tmp/stage2b/report/Training_Pattern_Stage2b_Parquet_Result.md \
+            > /tmp/stage2b/report/analyze_stdout.log \
+            2> /tmp/stage2b/report/analyze_stderr.log
+
+      - name: Validate Stage2b holdout guard
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('/tmp/stage2b/report/training_pattern_stage2b_result.json').read_text(encoding='utf-8'))
+          source=report.get('source_audit') or {}
+          guard=report.get('holdout_guard') or {}
+          if report.get('status')!='success':
+              raise SystemExit('Stage2b did not report success')
+          if source.get('source_format')!='parquet':
+              raise SystemExit('Stage2b did not use Parquet input')
+          if source.get('selected_max_year')!=2023 or source.get('holdout_rows_selected')!=0:
+              raise SystemExit('source holdout contract failed')
+          if guard.get('max_selected_year')!=2023 or guard.get('selected_2024_2025_rows')!=0:
+              raise SystemExit('analysis holdout contract failed')
+          PY
+
+      - name: Build compact result
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          resolver_path=Path('/tmp/stage2b/report/current_resolve.json')
+          result_path=Path('/tmp/stage2b/report/training_pattern_stage2b_result.json')
+          resolver=json.loads(resolver_path.read_text(encoding='utf-8')) if resolver_path.is_file() else {}
+          result=json.loads(result_path.read_text(encoding='utf-8')) if result_path.is_file() else {}
+          status='PASS' if resolver.get('status')=='PASS' and result.get('status')=='success' else 'FAIL'
+          compact={
+              'status':status,
+              'stage':'STAGE2B_PARQUET_CANONICAL_RERUN',
+              'run_id':int(os.environ['RUN_ID']),
+              'head_sha':os.environ['HEAD_SHA'],
+              'generation_id':resolver.get('generation_id'),
+              'development_sha256':resolver.get('sha256'),
+              'development_rows':resolver.get('rows'),
+              'development_min_year':resolver.get('min_year'),
+              'development_max_year':resolver.get('max_year'),
+              'duplicate_keys':resolver.get('duplicate_keys'),
+              'source_audit':result.get('source_audit'),
+              'holdout_guard':result.get('holdout_guard'),
+              'population':result.get('population'),
+              'incremental_decision':result.get('incremental_decision'),
+              'legacy_sqlite_zip_used':False,
+              'deleted_development_lite_drive_id_used':False,
+              'historical_regression_checked':False,
+          }
+          text=json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)
+          Path('/tmp/stage2b/report/workflow_result.json').write_text(text+'\n',encoding='utf-8')
+          Path('/tmp/comment.md').write_text(
+              'JRDB_TRAINING_STAGE2B_PARQUET_RESULT\n```json\n'+text+'\n```\n',
+              encoding='utf-8'
+          )
+          PY
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-training-stage2b-parquet-${{ github.run_id }}
+          path: /tmp/stage2b/report/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --body-file /tmp/comment.md
+
+      - name: Close successful request
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close '${{ github.event.issue.number }}' --repo '${{ github.repository }}' --reason completed
+
+      - name: Comment fail-closed status
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment '${{ github.event.issue.number }}' --repo '${{ github.repository }}' \
+            --body "Stage2b Parquet canonical rerun failed closed. Historical workflow and frozen RL-T science were not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
