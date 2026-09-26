@@ -134,6 +134,8 @@ jobs:
           python horse-racing/jrdb/src/jrdb_newspaper_merge_edge.py             --day-dir /tmp/day_source             --edge-jsonl /tmp/work/edge_matches_v0_3_shadow.jsonl             --output-dir /tmp/day_v03             > /tmp/work/merge_result.json
 
       - name: Merge optional external sources
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python - <<'PY'
