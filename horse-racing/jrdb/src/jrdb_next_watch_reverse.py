@@ -22,7 +22,7 @@ import duckdb
 
 
 VERSION = "next-watch-reverse-v0.1"
-CORE_S_RULES = {"HV05", "HV13"}
+CORE_S_RULES = {"HV06", "HV13"}
 
 
 class ReverseSelectorError(RuntimeError):
@@ -284,7 +284,18 @@ def main() -> int:
                 continue
 
             grade = "A"
-            if CORE_S_RULES.intersection(matched) or len(matched) >= 2:
+            matched_set = set(matched)
+            strict_s = bool(CORE_S_RULES.intersection(matched_set))
+            if (
+                "HV05" in matched_set
+                and (
+                    "HV07" in matched_set
+                    or "HV11" in matched_set
+                    or "HV12" in matched_set
+                )
+            ):
+                strict_s = True
+            if strict_s:
                 grade = "S"
 
             selected.append(
