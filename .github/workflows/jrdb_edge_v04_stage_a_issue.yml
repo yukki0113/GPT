@@ -1,0 +1,160 @@
+name: JRDB Edge v0.4 Stage A via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: jrdb-edge-v04-stage-a
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_A]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'feature_run_id','feature_artifact_name'}
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          if not isinstance(req['feature_run_id'],int) or req['feature_run_id'] <= 0:
+              raise SystemExit('feature_run_id must be positive integer')
+          if not isinstance(req['feature_artifact_name'],str) or not req['feature_artifact_name']:
+              raise SystemExit('feature_artifact_name required')
+          Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Export request env
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json
+          r=json.load(open('/tmp/request.json'))
+          print(f"FEATURE_RUN_ID={r['feature_run_id']}")
+          print(f"FEATURE_ARTIFACT_NAME={r['feature_artifact_name']}")
+          PY
+
+      - name: Download accepted Feature Mart artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/feature /tmp/stage-a
+          gh run download "$FEATURE_RUN_ID"             --repo "$GITHUB_REPOSITORY"             --name "$FEATURE_ARTIFACT_NAME"             --dir /tmp/feature
+          mapfile -t pqs < <(find /tmp/feature -type f -name edge_runner_fact.parquet -print)
+          if [ "${#pqs[@]}" -ne 1 ]; then
+            echo "expected exactly one edge_runner_fact.parquet; found ${#pqs[@]}" >&2
+            exit 1
+          fi
+          cp "${pqs[0]}" /tmp/feature/edge_runner_fact.parquet
+
+      - name: Run v0.4 Stage A audit
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/audit_jrdb_edge_v04_feature_feasibility.py             --parquet /tmp/feature/edge_runner_fact.parquet             --output-dir /tmp/stage-a             | tee /tmp/stage-a/stdout.json
+
+      - name: Add request provenance
+        env:
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path('/tmp/stage-a/stage_a_audit.json')
+          d=json.loads(p.read_text())
+          d['feature_run_id']=int(os.environ['FEATURE_RUN_ID'])
+          d['feature_artifact_name']=os.environ['FEATURE_ARTIFACT_NAME']
+          d['source_commit']=os.environ['HEAD_SHA']
+          d['design_path']='horse-racing/jrdb/docs/EdgeDB_v0_4_HighOrder_Transition_Value_Discovery_Design_20260926.md'
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload Stage A evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-a-${{ github.run_id }}
+          path: /tmp/stage-a/
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 6
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          a=json.loads(Path('/tmp/stage-a/stage_a_audit.json').read_text())
+          summary={
+            'status':a['status'],
+            'stage':a['stage'],
+            'run_id':int(os.environ['RUN_ID']),
+            'artifact_name':f"jrdb-edge-v04-stage-a-{os.environ['RUN_ID']}",
+            'rows':a['rows'],
+            'race_date_min':a['race_date_min'],
+            'race_date_max':a['race_date_max'],
+            'candidate_fields_present':a['candidate_fields_present'],
+            'candidate_fields_total':a['candidate_fields_total'],
+            'pedigree_full_rows':a['pedigree_full_rows'],
+            'pedigree_full_coverage_pct':a['pedigree_full_coverage_pct'],
+            'surface_transition_rows':a['surface_transition_rows'],
+            'cross_surface_transition_rows':a['cross_surface_transition_rows'],
+            'distance_transition_rows':a['distance_transition_rows'],
+            'previous_venue_rows':a['previous_venue_rows'],
+            'deferred_feature_count':a['deferred_feature_count'],
+            'stage_b_readiness':a['stage_b_readiness'],
+            'production_serving_changed':False,
+          }
+          print('JRDB_EDGE_V04_STAGE_A_RESULT')
+          print(json.dumps(summary,ensure_ascii=False,indent=2,sort_keys=True))
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB Edge v0.4 Stage A failed closed. Production serving was not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
