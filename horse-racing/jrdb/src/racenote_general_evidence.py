@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 """Build the general RaceNote evidence view for GPT comparison.
 
-The v0.1 contract encodes the user-preferred reading order:
+The v0.2 contract encodes the user-preferred reading order:
 
     DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY
+
+JRDB condition-improvement / training-arrow signals are exposed separately as
+corroboration or contradiction context. They are not numeric scores and may not
+auto-rank a horse by themselves.
 
 This is an ordinal reasoning contract, not a numeric weighting model.
 
@@ -12,12 +16,14 @@ The builder joins:
 - RaceNote INDEPENDENT view
 - RaceReview-backed Horse Evidence Card
 
-It then exposes three evidence lanes:
+It then exposes four evidence lanes:
 1. data_trend
 2. racereview
 3. ability_anchor
+4. jrdb_condition_signal
 
-Current market, current JRDB consensus, and Training Edge remain hidden.
+Current market, current JRDB consensus, Training Edge, EdgeDB match values, RL
+index values, and RL-derived values remain hidden.
 """
 from __future__ import annotations
 
@@ -29,8 +35,8 @@ import statistics
 from collections.abc import Mapping
 from pathlib import Path
 
-GENERAL_SCHEMA_VERSION = "RaceNote-General-Evidence-0.1"
-GENERAL_LOGIC_VERSION = "TrendFirst-RR-AbilityAnchor-v0.1"
+GENERAL_SCHEMA_VERSION = "RaceNote-General-Evidence-0.2"
+GENERAL_LOGIC_VERSION = "TrendFirst-RR-AbilityAnchor-ConditionCorroboration-v0.2"
 EXPECTED_RR_CARD_SCHEMA = "RaceNote-Horse-Evidence-Card-0.1"
 
 DECISION_ORDER = (
@@ -938,11 +944,85 @@ def _race_structure_interpretation(
     }
 
 
+
+def _jrdb_condition_signal(
+    horse: Mapping[str, object],
+) -> dict[str, object]:
+    """Interpret JRDB improvement/training-arrow labels without scoring them."""
+    condition = horse.get("condition_facts")
+    training = horse.get("training_facts")
+
+    improvement = ""
+    if isinstance(condition, Mapping):
+        improvement = _text(condition.get("improvement")).upper()
+
+    training_arrow = ""
+    if isinstance(training, Mapping):
+        training_arrow = _text(training.get("jrdb_training_arrow"))
+
+    improvement_relation = "UNAVAILABLE"
+    if improvement in {"AA", "A"}:
+        improvement_relation = "SUPPORTIVE"
+    elif improvement == "B":
+        improvement_relation = "NEUTRAL"
+    elif improvement in {"C", "?"}:
+        improvement_relation = "CONCERN"
+
+    arrow_relation = "UNAVAILABLE"
+    if training_arrow in {"デキ抜群", "上昇"}:
+        arrow_relation = "SUPPORTIVE"
+    elif training_arrow == "平行線":
+        arrow_relation = "NEUTRAL"
+    elif training_arrow in {"やや下降気味", "デキ落ち"}:
+        arrow_relation = "CONCERN"
+
+    directional = {
+        value
+        for value in (improvement_relation, arrow_relation)
+        if value in {"SUPPORTIVE", "CONCERN"}
+    }
+    if directional == {"SUPPORTIVE"}:
+        state = "SUPPORTIVE"
+    elif directional == {"CONCERN"}:
+        state = "CONCERN"
+    elif directional == {"SUPPORTIVE", "CONCERN"}:
+        state = "MIXED"
+    elif (
+        improvement_relation == "NEUTRAL"
+        or arrow_relation == "NEUTRAL"
+    ):
+        state = "NEUTRAL"
+    else:
+        state = "UNAVAILABLE"
+
+    return {
+        "state": state,
+        "jrdb_improvement": improvement or None,
+        "jrdb_improvement_relation": improvement_relation,
+        "jrdb_training_arrow": training_arrow or None,
+        "jrdb_training_arrow_relation": arrow_relation,
+        "reading_rule": (
+            "CONDITION_SIGNAL_IS_CORROBORATION_OR_CONTRADICTION_NOT_SCORE"
+        ),
+        "policy": {
+            "may_auto_rank": False,
+            "may_auto_create_axis": False,
+            "may_corroborate_pairwise": True,
+            "may_raise_concern": True,
+            "training_clock_reanalysis_used": False,
+            "training_index_used": False,
+            "rl_index_used": False,
+            "edgedb_match_used": False,
+        },
+    }
+
+
 def _prediction_interpretation(
     race: Mapping[str, object],
     data_lane: Mapping[str, object],
     rr_lane: Mapping[str, object],
     ability_lane: Mapping[str, object],
+    condition_lane: Mapping[str, object],
     race_structure: Mapping[str, object],
     horse_no: int,
 ) -> dict[str, object]:
@@ -970,6 +1050,15 @@ def _prediction_interpretation(
         positive_components.append("RACEREVIEW_MIXED_SUPPORT")
         concern_components.append("RACEREVIEW_MIXED_CONCERN")
 
+    condition_state = _text(condition_lane.get("state")).upper()
+    if condition_state == "SUPPORTIVE":
+        positive_components.append("JRDB_CONDITION_SUPPORT")
+    elif condition_state == "CONCERN":
+        concern_components.append("JRDB_CONDITION_CONCERN")
+    elif condition_state == "MIXED":
+        positive_components.append("JRDB_CONDITION_MIXED_SUPPORT")
+        concern_components.append("JRDB_CONDITION_MIXED_CONCERN")
+
     ability_status = _text(ability_lane.get("status")).upper()
     ability_role = "AVAILABLE_ANCHOR"
     if ability_status != "AVAILABLE":
@@ -992,6 +1081,7 @@ def _prediction_interpretation(
                 ability_lane.get("profile", {})
             ),
         },
+        "jrdb_condition_signal": copy.deepcopy(dict(condition_lane)),
         "positive_case_components": positive_components,
         "concern_case_components": concern_components,
         "pairwise_reading_order": list(DECISION_ORDER),
@@ -1002,6 +1092,8 @@ def _prediction_interpretation(
             "rr_repeatability_matters": True,
             "rr_target_overlap_is_transferability_context": True,
             "ability_is_floor_ceiling_anchor": True,
+            "jrdb_condition_signal_is_corroboration_only": True,
+            "jrdb_condition_signal_may_not_auto_rank": True,
             "final_upgrade_or_downgrade_requires_pairwise": True,
         },
     }
@@ -1619,6 +1711,7 @@ def build_general_evidence(
         data_lane = _data_trend_lane(race, horse)
         review_lane = _rr_lane(rr_card)
         ability_lane = _ability_anchor(horse)
+        condition_lane = _jrdb_condition_signal(horse)
 
         output_horses.append(
             {
@@ -1640,12 +1733,14 @@ def build_general_evidence(
                     "data_trend": data_lane,
                     "racereview": review_lane,
                     "ability_anchor": ability_lane,
+                    "jrdb_condition_signal": condition_lane,
                 },
                 "prediction_interpretation": _prediction_interpretation(
                     race,
                     data_lane,
                     review_lane,
                     ability_lane,
+                    condition_lane,
                     race_structure,
                     horse_no,
                 ),
@@ -1663,7 +1758,10 @@ def build_general_evidence(
             "race_name": _text(race.get("race_name")),
         },
         "priority_policy": {
-            "relation": "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR",
+            "relation": (
+                "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR; "
+                "JRDB_CONDITION_SIGNAL=CORROBORATION_ONLY"
+            ),
             "decision_order": list(DECISION_ORDER),
             "numeric_weights": None,
             "rules": {
@@ -1671,6 +1769,7 @@ def build_general_evidence(
                 "racereview_read_second": True,
                 "ability_anchor_read_last": True,
                 "ability_may_auto_rank": False,
+                "jrdb_condition_signal_may_auto_rank": False,
                 "lower_priority_override_requires_reason": True,
                 "higher_priority_missing_is_not_negative": True,
                 "small_sample_must_remain_visible": True,
@@ -1681,6 +1780,9 @@ def build_general_evidence(
             "current_jrdb_consensus_visible": False,
             "current_market_visible": False,
             "training_edge_visible": False,
+            "rl_index_visible": False,
+            "edgedb_match_visible": False,
+            "jrdb_condition_signal_visible": True,
         },
         "race_data_context": _race_data_context(race),
         "race_structure": race_structure,
