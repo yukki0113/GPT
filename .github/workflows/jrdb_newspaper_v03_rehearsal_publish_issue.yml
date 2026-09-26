@@ -135,19 +135,25 @@ jobs:
           if manifest.get('date') != os.environ['REQUEST_DATE']: raise SystemExit('output date mismatch')
           if manifest.get('revision') != int(os.environ['TARGET_REVISION']): raise SystemExit('output revision mismatch')
           if len(manifest.get('races') or []) != 24: raise SystemExit('output race count mismatch')
-          memo=0; runners=0
           for entry in manifest['races']:
               p=root/entry['path']
               race=json.loads(p.read_text(encoding='utf-8'))
               edge=((race.get('metadata') or {}).get('source_status') or {}).get('edge') or {}
               if edge.get('state')!='READY' or edge.get('coverage_complete') is not True:
                   raise SystemExit(f'edge not READY: {entry["race_key"]}')
-              for horse in race.get('horses') or []:
-                  em=horse.get('edge_matches') or []
-                  if em:
-                      runners += 1; memo += len(em)
+          merge=json.loads(Path('/tmp/work/merge_result.json').read_text(encoding='utf-8'))
+          adapter=merge.get('edge_adapter') or {}
+          if merge.get('status')!='PASS' or adapter.get('status')!='PASS':
+              raise SystemExit('v0.3 Edge adapter/merge not PASS')
+          if int(adapter.get('row_count') or 0)!=313 or int(adapter.get('raw_match_count') or 0)!=408:
+              raise SystemExit(f'unexpected v0.3 forward counts: {adapter}')
           out={'status':'PASS','date':manifest['date'],'revision':manifest['revision'],'race_count':24,
-               'edge_mode':'V03_SHADOW_ONLY','matched_runners':runners,'edge_memos':memo,
+               'edge_mode':'V03_SHADOW_ONLY',
+               'runner_rows':int(adapter.get('row_count') or 0),
+               'matched_runners':int(adapter.get('matched_runner_count') or 0),
+               'raw_matches':int(adapter.get('raw_match_count') or 0),
+               'memo_runners':int(merge.get('memo_runners') or 0),
+               'edge_memos':int(merge.get('memo_count') or 0),
                'edge_run_id':int(os.environ['EDGE_RUN_ID']),'edge_artifact':os.environ['EDGE_ARTIFACT_NAME']}
           Path('/tmp/work/result.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps(out,ensure_ascii=False,indent=2))
