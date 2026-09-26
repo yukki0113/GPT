@@ -262,3 +262,24 @@ The 2026 daily route remains PACI/SED Raw-direct. The Warehouse reader is covera
 Contract: RaceNote historical rebuilds (2010–2025) resolve the accepted dedicated JRDB Warehouse current pointer and its immutable Parquet assets, then use the existing RaceNote normalizer unchanged. `racenote_request.py` requires an explicit local current file and verified roots for BAC/KYI/CHA/CYB/ZED/ZKB; 2026 remains the PACI/Raw route. Raw is retained for audit, rollback, and the explicit 2010 previous-result boundary only.
 
 Formal dual-read PASS: 2018-12-28 (24 races / 368 horses / 1,184 previous-result keys) and 2025-12-28 (24 races / 356 horses / 1,160 previous-result keys). Gates: row count, primary keys, schema, NULL/blank semantics, all logical values, Archive semantic hash, repeated-read determinism, idempotence. The 2010 KYI scan found 65,835 references to 2009 result keys; those require recorded Raw fallback because Warehouse coverage begins in 2010.
+## RL-T production Warehouse boundary — 2026-09-26
+
+RL-T production historical upstream is now cut over to the accepted JRDB Historical Warehouse generation `jrdb_normalized_warehouse_v1_2010_2025_g20260921`.
+
+Normal production route:
+- 2010–2025: accepted Warehouse + canonical record-hash compatibility package
+- 2026 daily/replay: existing PACI + settled SED / Raw-direct semantics
+- Index Base schema / RunPerf / Official RunPerf / Training Edge v0.2 science remain unchanged
+- no silent Historical Raw fallback
+
+The three production workflows are:
+- `.github/workflows/jrdb_training_edge_v02_daily_issue.yml`
+- `.github/workflows/jrdb_training_edge_v02_replay_issue.yml`
+- `.github/workflows/jrdb_training_research_issue.yml`
+
+Static production audit PASS: Issue #1520 / run `36242350903`.
+Fixed replay/scorer boundary PASS: Issue #1517 / run `36240031550`.
+Training Research Warehouse build PASS: Issue #1518 / run `36240033827`.
+
+A separate current-forward runtime fingerprint drift observed on 2026-09-27 is tracked in Issue #1521. Treat it as an operational/scientific guard investigation, not as permission to revert the Historical source to Raw or to modify the frozen v0.2 fingerprint.
+
