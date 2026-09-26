@@ -18,7 +18,7 @@ import hashlib
 import json
 from typing import Any, Mapping
 
-FIREWALL_VERSION = "Gen0.2-Firewall-0.1"
+FIREWALL_VERSION = "Gen0.2-Firewall-0.2"
 SOURCE_SCHEMA_VERSION = "1.0"
 
 
@@ -69,7 +69,18 @@ def _independent_older_run(run: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _independent_training(training: Mapping[str, Any]) -> dict[str, Any]:
+    """Expose raw preparation facts plus JRDB's non-market condition arrow.
+
+    The training arrow is allowed because it is a pre-race preparation-state
+    observation. Training indices, processed consensus summaries, Training Edge,
+    and RL-derived values remain outside the independent forecast view.
+    """
     result: dict[str, Any] = {}
+    summary = training.get("summary")
+    if isinstance(summary, Mapping):
+        training_arrow = summary.get("training_arrow")
+        if training_arrow not in (None, ""):
+            result["jrdb_training_arrow"] = copy.deepcopy(training_arrow)
     if isinstance(training.get("main_workout"), Mapping):
         result["main_workout"] = copy.deepcopy(training["main_workout"])
     analysis = training.get("analysis")
@@ -118,7 +129,12 @@ def build_partitioned_views(bundle: Mapping[str, Any]) -> dict[str, Any]:
         if isinstance(condition, Mapping):
             safe_condition = _copy_keys(
                 condition,
-                ("rotation_interval", "rest_reason", "horse_traits"),
+                (
+                    "rotation_interval",
+                    "rest_reason",
+                    "horse_traits",
+                    "improvement",
+                ),
             )
             farm = condition.get("farm")
             if isinstance(farm, Mapping) and farm.get("name") not in (None, ""):
@@ -185,6 +201,9 @@ def build_partitioned_views(bundle: Mapping[str, Any]) -> dict[str, Any]:
             "current_jrdb_consensus_visible": False,
             "current_market_visible": False,
             "training_edge_visible": False,
+            "rl_index_visible": False,
+            "edgedb_match_visible": False,
+            "jrdb_condition_signal_visible": True,
         },
         "race": independent_race,
         "horses": independent_horses,
