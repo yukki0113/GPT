@@ -157,6 +157,16 @@ jobs:
               raise SystemExit('analysis holdout contract failed')
           PY
 
+      - name: Historical Stage2b non-regression audit
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/audit_jrdb_training_stage2b_parquet_regression.py \
+            --result /tmp/stage2b/report/training_pattern_stage2b_result.json \
+            --resolver /tmp/stage2b/report/current_resolve.json \
+            --output /tmp/stage2b/report/stage2b_historical_regression.json
+
       - name: Build compact result
         if: always()
         env:
@@ -169,9 +179,15 @@ jobs:
           Path('/tmp/stage2b/report').mkdir(parents=True,exist_ok=True)
           resolver_path=Path('/tmp/stage2b/report/current_resolve.json')
           result_path=Path('/tmp/stage2b/report/training_pattern_stage2b_result.json')
+          regression_path=Path('/tmp/stage2b/report/stage2b_historical_regression.json')
           resolver=json.loads(resolver_path.read_text(encoding='utf-8')) if resolver_path.is_file() else {}
           result=json.loads(result_path.read_text(encoding='utf-8')) if result_path.is_file() else {}
-          status='PASS' if resolver.get('status')=='PASS' and result.get('status')=='success' else 'FAIL'
+          regression=json.loads(regression_path.read_text(encoding='utf-8')) if regression_path.is_file() else {}
+          status='PASS' if (
+              resolver.get('status')=='PASS' and
+              result.get('status')=='success' and
+              regression.get('status')=='PASS'
+          ) else 'FAIL'
           compact={
               'status':status,
               'stage':'STAGE2B_PARQUET_CANONICAL_RERUN',
@@ -189,7 +205,10 @@ jobs:
               'incremental_decision':result.get('incremental_decision'),
               'legacy_sqlite_zip_used':False,
               'deleted_development_lite_drive_id_used':False,
-              'historical_regression_checked':False,
+              'historical_regression_checked':regression.get('status')=='PASS',
+              'historical_regression_status':regression.get('status'),
+              'historical_regression_failure_count':regression.get('failure_count'),
+              'historical_regression_tolerance':regression.get('tolerance'),
           }
           text=json.dumps(compact,ensure_ascii=False,indent=2,sort_keys=True)
           Path('/tmp/stage2b/report/workflow_result.json').write_text(text+'\n',encoding='utf-8')
