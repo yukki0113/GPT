@@ -30,6 +30,7 @@ def build_stages_v02(request, paths, python):
         command = list(stage.command)
         if stage.name == "feature_mart":
             command[1] = str(ROOT / "src/build_jrdb_edge_feature_mart_v0_2.py")
+            command.extend(["--output-engine", "duckdb"])
         elif stage.name == "discovery":
             command[1] = str(ROOT / "src/jrdb_edge_discovery_v0_2.py")
             command.extend(["--templates", str(TEMPLATES), "--policies", str(POLICIES)])
