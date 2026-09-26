@@ -45,6 +45,7 @@ class PipelineRequest:
     template_version: str
     hash_archives: bool = False
     skip_fetch: bool = False
+    use_prebuilt_mart: bool = False
 
 
 @dataclass(frozen=True)
@@ -122,7 +123,7 @@ def _script(paths: PipelinePaths, name: str) -> str:
 def build_stages(request: PipelineRequest, paths: PipelinePaths, python: str) -> list[Stage]:
     years = [str(year) for year in range(request.from_year, request.to_year + 1)]
     stages: list[Stage] = []
-    if not request.skip_fetch:
+    if not request.skip_fetch and not request.use_prebuilt_mart:
         stages.append(
             Stage(
                 "fetch_raw",
@@ -151,45 +152,48 @@ def build_stages(request: PipelineRequest, paths: PipelinePaths, python: str) ->
             )
         )
 
-    index_command = [
-        python,
-        _script(paths, "build_jrdb_index_base_from_raw.py"),
-        "--raw-root",
-        str(paths.raw_root),
-        "--years",
-        *years,
-        "--db",
-        str(paths.index_db),
-    ]
-    if not request.hash_archives:
-        index_command.append("--no-archive-hash")
+    if not request.use_prebuilt_mart:
+        index_command = [
+            python,
+            _script(paths, "build_jrdb_index_base_from_raw.py"),
+            "--raw-root",
+            str(paths.raw_root),
+            "--years",
+            *years,
+            "--db",
+            str(paths.index_db),
+        ]
+        if not request.hash_archives:
+            index_command.append("--no-archive-hash")
+        stages.extend(
+            [
+                Stage("index_build", tuple(index_command), FAILURE_CLASS_IMPLEMENTATION),
+                Stage(
+                    "index_audit",
+                    (
+                        python,
+                        _script(paths, "audit_jrdb_index_base.py"),
+                        "--db",
+                        str(paths.index_db),
+                        "--out",
+                        str(paths.report_dir / "index_audit.json"),
+                    ),
+                    FAILURE_CLASS_DOMAIN,
+                ),
+                Stage(
+                    "feature_mart",
+                    (
+                        python,
+                        _script(paths, "build_jrdb_edge_feature_mart.py"),
+                        "--source",
+                        str(paths.index_db),
+                        "--output",
+                        str(paths.mart_db),
+                    ),
+                    FAILURE_CLASS_IMPLEMENTATION,
+                ),
     stages.extend(
         [
-            Stage("index_build", tuple(index_command), FAILURE_CLASS_IMPLEMENTATION),
-            Stage(
-                "index_audit",
-                (
-                    python,
-                    _script(paths, "audit_jrdb_index_base.py"),
-                    "--db",
-                    str(paths.index_db),
-                    "--out",
-                    str(paths.report_dir / "index_audit.json"),
-                ),
-                FAILURE_CLASS_DOMAIN,
-            ),
-            Stage(
-                "feature_mart",
-                (
-                    python,
-                    _script(paths, "build_jrdb_edge_feature_mart.py"),
-                    "--source",
-                    str(paths.index_db),
-                    "--output",
-                    str(paths.mart_db),
-                ),
-                FAILURE_CLASS_IMPLEMENTATION,
-            ),
             Stage(
                 "discovery",
                 (
@@ -395,6 +399,10 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--work-dir", required=True)
     parser.add_argument("--hash-archives", action="store_true")
     parser.add_argument("--skip-fetch", action="store_true")
+    parser.add_argument(
+        "--prebuilt-mart", type=Path,
+        help="Validated transient Feature Mart SQLite materialized from canonical Parquet.",
+    )
     parser.add_argument("--python", default=sys.executable)
     return parser
 
@@ -417,6 +425,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             template_version=template_version,
             hash_archives=bool(args.hash_archives),
             skip_fetch=bool(args.skip_fetch),
+            use_prebuilt_mart=args.prebuilt_mart is not None,
         )
         validate_request(request)
     except RequestValidationError as exc:
@@ -432,6 +441,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             template_version=str(args.template_version or "INVALID"),
             hash_archives=bool(args.hash_archives),
             skip_fetch=bool(args.skip_fetch),
+            use_prebuilt_mart=args.prebuilt_mart is not None,
         )
         synthetic = Stage("request_validation", tuple(), FAILURE_CLASS_REQUEST)
         payload = _result_payload(
@@ -447,6 +457,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(json.dumps(payload, ensure_ascii=False))
         return 2
 
+    if args.prebuilt_mart is not None:
+        source = args.prebuilt_mart.resolve()
+        if not source.is_file():
+            synthetic = Stage("prebuilt_mart", tuple(), FAILURE_CLASS_REQUEST)
+            payload = _result_payload(
+                request, paths, status="failure", exit_codes={},
+                failed_stage=synthetic, error_code="PREBUILT_MART_MISSING",
+                message=f"prebuilt mart is missing: {source}",
+            )
+            write_result(paths, payload)
+            print(json.dumps(payload, ensure_ascii=False))
+            return 2
+        prepare_directories(paths)
+        if paths.mart_db.exists():
+            raise FileExistsError(paths.mart_db)
+        import shutil
+        shutil.copy2(source, paths.mart_db)
     payload = run_pipeline(request, paths, python=args.python)
     print(json.dumps(payload, ensure_ascii=False))
     return 0 if payload["status"] == "success" else 1
