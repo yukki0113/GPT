@@ -192,6 +192,9 @@ def build_stages(request: PipelineRequest, paths: PipelinePaths, python: str) ->
                     ),
                     FAILURE_CLASS_IMPLEMENTATION,
                 ),
+            ]
+        )
+
     stages.extend(
         [
             Stage(
