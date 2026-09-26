@@ -6,11 +6,11 @@ const MOMOTARO_CONTRIBUTORS = [
   { key: "kenshow", label: "けんしょー" }
 ];
 
-const MOMOTARO_KENSHOW_JRDB_MARKS = new Set(["◎", "○", "▲", "注"]);
+const MOMOTARO_KENSHOW_JRDB_MARKS = new Set(["◎", "○", "▲"]);
 
 /**
  * RaceNote運用確定までの暫定表示。
- * JRDB総合印のうち ◎ / ○ / ▲ / 注 だけを、けん列へそのまま転記する。
+ * JRDB総合印のうち ◎ / ○ / ▲ だけを、けん列へそのまま転記する。
  * addon化・短評化・予想一覧化はしない。
  */
 function momotaroKenshowTemporaryMark(horse) {
