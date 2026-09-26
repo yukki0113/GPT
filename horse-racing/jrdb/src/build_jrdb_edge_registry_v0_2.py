@@ -2,13 +2,13 @@
 """Build Edge Registry v0.2 with v0.2 fields, HUMAN support, and safe display text."""
 from __future__ import annotations
 
-import sqlite3
 from pathlib import Path
 from typing import Any, Mapping
 
 import jrdb_edge_temporal_validator as temporal
 from jrdb_edge_display_v0_2 import render_display_text
 from jrdb_edge_human_residual_v0_2 import BASELINE_MODE as HUMAN_BASELINE_MODE, human_metrics
+from jrdb_edge_relational import connect_edge_mart
 
 VERSION = "0.2.2"
 V02_FIELDS = {
@@ -48,11 +48,11 @@ def _load_jockey_labels(mart_path: str | Path) -> dict[str, str]:
     keep the previous behavior by returning no display-label overrides rather
     than failing Registry construction.
     """
-    connection = sqlite3.connect(mart_path)
+    connection = connect_edge_mart(mart_path, read_only=True)
     try:
         columns = {
-            str(row[1])
-            for row in connection.execute("PRAGMA table_info(edge_runner_fact)").fetchall()
+            str(row[0])
+            for row in connection.execute("DESCRIBE edge_runner_fact").fetchall()
         }
         if "jockey_name" not in columns:
             return {}
