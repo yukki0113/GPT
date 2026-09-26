@@ -164,9 +164,10 @@ def load_predictions(
             line_no,
         )
         if not mark and not confidence and not review_horse and not comment:
-            raise ValueError(
-                f"empty Momotaro prediction at CSV line {line_no}"
-            )
+            if not (member == "kenshow" and tag == "手動無印"):
+                raise ValueError(
+                    f"empty Momotaro prediction at CSV line {line_no}"
+                )
 
         key = (date, venue_code, race_no, horse_no, member)
         if key in index:
