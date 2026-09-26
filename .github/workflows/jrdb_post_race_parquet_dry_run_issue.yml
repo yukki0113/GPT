@@ -69,6 +69,8 @@ jobs:
       - name: Install Parquet dependencies
         run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
       - name: Download and validate current Analysis Parquet bundle
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
         run: |
           set -euo pipefail
           curl --fail --location --retry 3 --retry-delay 2 \
@@ -76,11 +78,20 @@ jobs:
             --output .postrace/analysis-parquet.tar.xz
           mkdir -p .postrace/analysis-parquet
           tar -xJf .postrace/analysis-parquet.tar.xz -C .postrace/analysis-parquet
-          python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py \
-            --analysis-root .postrace/analysis-parquet \
-            --out .postrace/analysis-before.sqlite \
-            | tee .postrace/analysis_before_materialization.json
-          mv .postrace/analysis-before.sqlite .postrace/analysis-work.sqlite
+          python - <<'PY' | tee .postrace/analysis_current_validation.json
+          import json
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+
+          report = resolve_current(Path('.postrace/analysis-parquet'))
+          print(json.dumps({
+              'status': 'PASS',
+              'generation_id': report['generation_id'],
+              'rows': report['rows'],
+              'asset_count': len(report['assets']),
+              'full_sqlite_materialization': False,
+          }, sort_keys=True))
+          PY
       - name: Fetch PACI and SED
         env:
           JRDB_USER: ${{ secrets.JRDB_USER }}
@@ -95,25 +106,21 @@ jobs:
             test -s ".postrace/raw/PACI/PACI${yymmdd}.zip"
             test -s ".postrace/raw/SED/SED${yymmdd}.zip"
           done < .postrace/dates.txt
-      - name: Replace requested dates in temporary SQLite
-        run: |
-          set -euo pipefail
-          while IFS= read -r race_date; do
-            compact="${race_date//-/}"
-            yymmdd="${compact:2:6}"
-            python horse-racing/jrdb/src/run_jrdb_analysis_post_race_incremental.py \
-              --db .postrace/analysis-work.sqlite \
-              --paci ".postrace/raw/PACI/PACI${yymmdd}.zip" \
-              --sed ".postrace/raw/SED/SED${yymmdd}.zip" \
-              > ".postrace/update_${compact}.json"
-          done < .postrace/dates.txt
-      - name: Build and validate immutable shadow candidate
+      - name: Build and validate immutable shadow candidate natively from Parquet
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
         run: |
           set -euo pipefail
           args=()
-          for year in $AFFECTED_YEARS; do args+=(--affected-year "$year"); done
-          python horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_candidate.py \
-            --source-sqlite .postrace/analysis-work.sqlite \
+          while IFS= read -r race_date; do
+            compact="${race_date//-/}"
+            yymmdd="${compact:2:6}"
+            args+=(
+              --paci ".postrace/raw/PACI/PACI${yymmdd}.zip"
+              --sed ".postrace/raw/SED/SED${yymmdd}.zip"
+            )
+          done < .postrace/dates.txt
+          python horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native.py \
             --analysis-root .postrace/analysis-parquet \
             --generation-id "$GENERATION_ID" \
             "${args[@]}" \
@@ -124,6 +131,11 @@ jobs:
           result = json.loads(Path('.postrace/candidate_result.json').read_text(encoding='utf-8'))
           if result.get('status') != 'CANDIDATE_PASS':
               raise SystemExit('candidate generation is not PASS')
+          audit = result.get('audit') or {}
+          if audit.get('native_parquet_update') is not True:
+              raise SystemExit('candidate did not use native Parquet update')
+          if audit.get('full_sqlite_materialization') is not False:
+              raise SystemExit('full SQLite materialization unexpectedly occurred')
           PY
       - name: Package non-promoted handoff artifact
         run: |
@@ -133,7 +145,7 @@ jobs:
             -cJf .postrace/handoff/analysis-parquet-candidate.tar.xz \
             -C .postrace/analysis-parquet current.json shadow_current.json generations objects metadata
           cp .postrace/candidate_result.json .postrace/handoff/candidate_result.json
-          cp .postrace/update_*.json .postrace/handoff/
+          cp .postrace/analysis_current_validation.json .postrace/handoff/analysis_current_validation.json
       - uses: actions/upload-artifact@v4
         with:
           name: jrdb-post-race-parquet-candidate-${{ github.run_id }}
