@@ -19,6 +19,8 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
+from jrdb_edge_relational import connect_edge_mart
+
 from jrdb_edge_canonical import (
     distance_bucket as _distance_bucket,
     frame_zone as _frame_zone,
@@ -78,7 +80,7 @@ def _historical_track_condition_snapshot(connection: sqlite3.Connection) -> dict
     return snapshot
 
 
-def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_SCHEMA) -> dict[str, int | float | str]:
+def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_SCHEMA, *, output_engine: str = "sqlite") -> dict[str, int | float | str]:
     source_path = Path(source)
     output_path = Path(output)
     schema_path = Path(schema)
@@ -87,7 +89,12 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
 
     src = sqlite3.connect(source_path)
     src.row_factory = sqlite3.Row
-    out = sqlite3.connect(output_path)
+    if output_engine not in {"sqlite", "duckdb"}:
+        raise ValueError(f"unsupported output_engine: {output_engine}")
+    if output_engine == "sqlite":
+        out: Any = sqlite3.connect(output_path)
+    else:
+        out = connect_edge_mart(output_path)
     try:
         _required_tables(src)
         out.executescript(schema_path.read_text(encoding="utf-8"))
@@ -148,6 +155,7 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
         rows = pre_race_eligible = result_labeled = anomalies = 0
         historical_track_condition_rows = excluded_obstacle_count = 0
         eligible_labels = win_hits = place_hits = 0
+        insert_buffer: list[tuple[Any, ...]] = []
         for row in src.execute(query):
             if row["profile_asof_date"] and row["profile_asof_date"] > row["race_date"]:
                 raise ValueError("profile observation leaks from the future")
@@ -253,7 +261,10 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
                 "label_final_win_popularity": row["label_final_win_popularity"],
                 "calculation_status": status,
             }
-            out.execute(insert_sql, tuple(values[c] for c in columns))
+            insert_buffer.append(tuple(values[c] for c in columns))
+            if len(insert_buffer) >= 5000:
+                out.executemany(insert_sql, insert_buffer)
+                insert_buffer.clear()
             rows += 1
             pre_race_eligible += is_pre
             result_labeled += int(row["label_finish"] is not None)
@@ -261,6 +272,10 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
                 eligible_labels += 1
                 win_hits += int(win_hit or 0)
                 place_hits += int(place_hit or 0)
+
+        if insert_buffer:
+            out.executemany(insert_sql, insert_buffer)
+            insert_buffer.clear()
 
         win_hit_rate = win_hits / eligible_labels if eligible_labels else 0.0
         place_hit_rate = place_hits / eligible_labels if eligible_labels else 0.0
@@ -284,9 +299,23 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
             ),
         )
         out.commit()
-        integrity = out.execute("PRAGMA integrity_check").fetchone()[0]
-        if integrity != "ok":
-            raise ValueError(f"Edge Feature Mart integrity_check failed: {integrity}")
+        if output_engine == "sqlite":
+            integrity = out.execute("PRAGMA integrity_check").fetchone()[0]
+            if integrity != "ok":
+                raise ValueError(f"Edge Feature Mart integrity_check failed: {integrity}")
+        else:
+            actual_rows = int(out.execute("SELECT COUNT(*) FROM edge_runner_fact").fetchone()[0])
+            duplicates = int(
+                out.execute(
+                    "SELECT COUNT(*) - COUNT(DISTINCT race_key || ':' || CAST(horse_no AS VARCHAR)) "
+                    "FROM edge_runner_fact"
+                ).fetchone()[0]
+            )
+            if actual_rows != rows or duplicates:
+                raise ValueError(
+                    f"Edge Feature Mart DuckDB validation failed rows={actual_rows}/{rows} duplicates={duplicates}"
+                )
+            integrity = "logical_pass"
         return {
             "status": "PASS",
             "rows": rows,
@@ -301,6 +330,8 @@ def build(source: str | Path, output: str | Path, schema: str | Path = DEFAULT_S
             "win_hit_rate": win_hit_rate,
             "place_hit_rate": place_hit_rate,
             "anomalies": anomalies,
+            "output_engine": output_engine,
+            "integrity_check": integrity,
         }
     finally:
         src.close()
@@ -312,8 +343,9 @@ def main() -> int:
     parser.add_argument("--source", required=True, help="JRDB Index Base v0.1 SQLite")
     parser.add_argument("--output", required=True)
     parser.add_argument("--schema", default=str(DEFAULT_SCHEMA))
+    parser.add_argument("--output-engine", choices=("sqlite", "duckdb"), default="sqlite")
     args = parser.parse_args()
-    print(build(args.source, args.output, args.schema))
+    print(build(args.source, args.output, args.schema, output_engine=args.output_engine))
     return 0
 
 
