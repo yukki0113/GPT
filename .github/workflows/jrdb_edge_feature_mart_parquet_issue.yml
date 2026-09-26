@@ -152,12 +152,12 @@ jobs:
           )"
           python horse-racing/jrdb/src/build_jrdb_index_base_from_warehouse.py             --warehouse-manifest /tmp/warehouse/manifest-index-base.json             --asset-root BAC=/tmp/warehouse/families/BAC             --asset-root KYI=/tmp/warehouse/families/KYI             --asset-root SED=/tmp/warehouse/families/SED             --asset-root UKC=/tmp/warehouse/families/UKC             --years $YEARS             --db /tmp/edge/index.sqlite             > /tmp/audit/index_build.json
 
-      - name: Build unchanged v0.2 Feature Mart SQLite
+      - name: Build v0.2 Feature Mart DuckDB workspace
         env:
           PYTHONPATH: horse-racing/jrdb/src
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/build_jrdb_edge_feature_mart_v0_2.py             --source /tmp/edge/index.sqlite             --output /tmp/edge/edge_mart.sqlite             > /tmp/audit/feature_mart_sqlite_build.json
+          python horse-racing/jrdb/src/build_jrdb_edge_feature_mart_v0_2.py             --source /tmp/edge/index.sqlite             --output /tmp/edge/edge_mart.duckdb             --output-engine duckdb             > /tmp/audit/feature_mart_duckdb_build.json
 
       - name: Build Parquet generation
         env:
@@ -165,14 +165,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/canonical/feature_mart/v0.2
-          python horse-racing/jrdb/src/build_jrdb_edge_feature_mart_parquet_generation.py             --sqlite /tmp/edge/edge_mart.sqlite             --output-root /tmp/canonical/feature_mart/v0.2             --generation-id "$GENERATION_ID"             --source-generation-id "$WAREHOUSE_GENERATION_ID"             --source-manifest-sha256 "$WAREHOUSE_MANIFEST_SHA256"             --result-json /tmp/audit/parquet_generation.json
+          python horse-racing/jrdb/src/build_jrdb_edge_feature_mart_parquet_generation.py             --workspace /tmp/edge/edge_mart.duckdb             --output-root /tmp/canonical/feature_mart/v0.2             --generation-id "$GENERATION_ID"             --source-generation-id "$WAREHOUSE_GENERATION_ID"             --source-manifest-sha256 "$WAREHOUSE_MANIFEST_SHA256"             --result-json /tmp/audit/parquet_generation.json
 
-      - name: Full SQLite vs Parquet equivalence gate
+      - name: Full DuckDB workspace vs Parquet equivalence gate
         env:
           PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/audit_jrdb_edge_feature_mart_parquet_equivalence.py             --sqlite /tmp/edge/edge_mart.sqlite             --parquet "/tmp/canonical/feature_mart/v0.2/generations/$GENERATION_ID/edge_runner_fact.parquet"             --output /tmp/audit/equivalence.json
+          python horse-racing/jrdb/src/audit_jrdb_edge_feature_mart_parquet_equivalence.py             --workspace /tmp/edge/edge_mart.duckdb             --parquet "/tmp/canonical/feature_mart/v0.2/generations/$GENERATION_ID/edge_runner_fact.parquet"             --output /tmp/audit/equivalence.json
           python - <<'PY'
           import datetime,json,os
           from pathlib import Path
@@ -232,6 +232,7 @@ jobs:
               'logical_types_equal':eq['logical_types_equal'],
               'null_semantics_equal':eq['null_semantics_equal'],
               'duplicate_key_rows_parquet':eq['duplicate_key_rows_parquet'],
+              'source_workspace_format':eq.get('source_workspace_format'),
               'representative_aggregates_equal':eq['representative_aggregates_equal'],
               'current_resolver':'PASS',
               'drive_promoted':False,
