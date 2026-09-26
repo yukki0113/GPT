@@ -248,8 +248,10 @@ jobs:
             queries:
               - name: registry_read
                 sql: SELECT count(*) FROM {table}
-              - name: template_filter
-                sql: SELECT count(*) FROM {table} WHERE template_id IS NOT NULL
+              - name: family_filter
+                sql: SELECT count(*) FROM {table} WHERE family IS NOT NULL
+              - name: anchor_type_aggregation
+                sql: SELECT anchor_type, count(*) AS n FROM {table} GROUP BY anchor_type ORDER BY anchor_type
               - name: status_aggregation
                 sql: SELECT status, count(*) AS n FROM {table} GROUP BY status ORDER BY status
           YAML
