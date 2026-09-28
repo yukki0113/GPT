@@ -41,8 +41,12 @@ FORBIDDEN_KEYS = {
 FORBIDDEN_PREFIXES = (
     "current_odds",
     "current_popularity",
-    "result_",
 )
+
+ALLOWED_RESULT_META_KEYS = {
+    "result_visibility",
+    "result_independent",
+}
 
 
 class RaceNoteV1Error(RuntimeError):
@@ -70,6 +74,8 @@ def _walk_forbidden(value: object, path: str = "$") -> list[str]:
             if lower in FORBIDDEN_KEYS:
                 hits.append(f"{path}.{key}")
             if any(lower.startswith(prefix) for prefix in FORBIDDEN_PREFIXES):
+                hits.append(f"{path}.{key}")
+            if lower.startswith("result_") and lower not in ALLOWED_RESULT_META_KEYS:
                 hits.append(f"{path}.{key}")
             _child_path = f"{path}.{key}"
             hits.extend(_walk_forbidden(child, _child_path))
