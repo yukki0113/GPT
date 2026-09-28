@@ -192,3 +192,47 @@ After the v1.4 archive exists, run the trend aggregator against an actual RaceNo
 - ROI/display values.
 
 Forecast logic remains out of scope.
+
+
+## 2026-09-28 canonical promotion
+
+Analysis v1.4 has been promoted to the current RaceNote warehouse location.
+
+Drive canonical root:
+
+`/GPT/horse-racing/10_warehouse/analysis/v1/`
+
+Current generation:
+
+`analysis-v1_4-canonical-20260928-01`
+
+Current pointer:
+
+`/GPT/horse-racing/10_warehouse/analysis/v1/current.json`
+
+Published contents:
+- `current.json`
+- generation `manifest.json`
+- generation `audit.json`
+- year-partitioned Parquet for 2016-2026
+- Analysis metadata Parquet
+
+Verified canonical properties:
+- schema version: v1.4
+- period: 2016-01-05 through 2026-09-13
+- total rows: 516,061
+- canonical key: race_key + horse_no
+- duplicate key rows: 0
+- row-level equivalence: PASS
+- aggregate checks including meeting_no / meeting_day / course_code: PASS
+- validation status: PASS
+- Fact Lite v0.3 compatibility: exact row-level diff 0 against v1.3
+
+BAC backfill coverage:
+- 37,038 / 37,038 races mapped
+- annual BAC gaps were repaired from date-scoped PACI
+- remaining BAC-missing races: 0
+
+The old v1.3 Drive generation remains untouched for rollback/reference.
+
+Normal RaceNote Trend consumers should treat the above v1.4 root/current pointer as the canonical Analysis history source.
