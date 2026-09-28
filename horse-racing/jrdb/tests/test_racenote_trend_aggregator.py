@@ -1,10 +1,26 @@
 from __future__ import annotations
 
-import json
+import importlib.util
 import sqlite3
 from pathlib import Path
 
-from racenote.src.racenote_trend_aggregator import attach_trends
+ROOT = Path(__file__).resolve().parents[3]
+MODULE_PATH = (
+    ROOT
+    / "horse-racing"
+    / "jrdb"
+    / "racenote"
+    / "src"
+    / "racenote_trend_aggregator.py"
+)
+SPEC = importlib.util.spec_from_file_location(
+    "racenote_trend_aggregator",
+    MODULE_PATH,
+)
+assert SPEC is not None and SPEC.loader is not None
+MODULE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+attach_trends = MODULE.attach_trends
 
 
 SCHEMA = """
