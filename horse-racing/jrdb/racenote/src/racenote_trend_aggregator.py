@@ -304,35 +304,34 @@ def _levels(note: Mapping[str, object], kind: str) -> list[dict[str, object]]:
         name = str(race.get("race_name") or "").strip()
         if not name:
             return []
-        strict_clauses = base_clauses + ["TRIM(COALESCE(f.race_name,'')) = ?", class_sql]
-        strict_params = base_params + [name] + class_params
-        strict_scope = {
+        named_clauses = base_clauses + ["TRIM(COALESCE(f.race_name,'')) = ?", class_sql]
+        named_params = base_params + [name] + class_params
+        named_scope = {
             **base_scope,
             "race_name": name,
             "class": race.get("class"),
             "grade": race.get("grade"),
+            "course_rail": "ANY",
         }
+        levels = [
+            {
+                "id": "NAMED_MAIN",
+                "clauses": named_clauses,
+                "params": named_params,
+                "scope": named_scope,
+            }
+        ]
         if codes.get("course_code"):
-            return [
-                {
-                    "id": "NAMED_EXACT",
-                    "clauses": strict_clauses + ["f.course_code = ?"],
-                    "params": strict_params + [codes["course_code"]],
-                    "scope": {**strict_scope, "course_rail": race.get("course_rail")},
+            levels.append({
+                "id": "NAMED_RAIL_SLICE",
+                "clauses": named_clauses + ["f.course_code = ?"],
+                "params": named_params + [codes["course_code"]],
+                "scope": {
+                    **named_scope,
+                    "course_rail": race.get("course_rail"),
                 },
-                {
-                    "id": "NAMED_SAME_CONDITIONS_EXCEPT_RAIL",
-                    "clauses": strict_clauses,
-                    "params": strict_params,
-                    "scope": {**strict_scope, "course_rail": "ANY"},
-                },
-            ]
-        return [{
-            "id": "NAMED_EXACT",
-            "clauses": strict_clauses,
-            "params": strict_params,
-            "scope": strict_scope,
-        }]
+            })
+        return levels
 
     # Local trend: class is preserved through every fallback level.
     local_base = base_clauses + [local_class_sql, "CAST(SUBSTR(f.race_date,6,2) AS INTEGER) = ?"]
@@ -521,6 +520,7 @@ def _build_block(
         "sample": sample,
         "dimensions": selected["dimensions"],
         "provenance_refs": ["P3_ANALYSIS_TREND"],
+        "levels": aggregated,
         "fallback_levels": [
             {
                 "level_id": item["level_id"],
