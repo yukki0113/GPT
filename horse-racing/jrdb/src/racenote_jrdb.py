@@ -64,6 +64,7 @@ JRDB_CLASS = {
 SURFACE = {"1": "芝", "2": "ダート", "3": "障害"}
 TURN = {"1": "右", "2": "左", "3": "直線", "9": "その他"}
 COURSE_LAYOUT = {"1": "通常（内）", "2": "外", "3": "直線ダート", "9": "その他"}
+COURSE_RAIL = {"1": "A", "2": "A1", "3": "A2", "4": "B", "5": "C", "6": "D"}
 TRACK_CONDITION = {"10": "良", "11": "速良", "12": "遅良", "20": "稍重", "21": "速稍重", "22": "遅稍重", "30": "重", "31": "速重", "32": "遅重", "40": "不良", "41": "速不良", "42": "遅不良", "1": "良", "2": "稍重", "3": "重", "4": "不良"}
 RACE_TYPE = {"11": "2歳", "12": "3歳", "13": "3歳以上", "14": "4歳以上", "20": "障害", "99": "その他"}
 RACE_CLASS = {"04": "1勝クラス", "05": "1勝クラス", "08": "2勝クラス", "09": "2勝クラス", "10": "2勝クラス", "15": "3勝クラス", "16": "3勝クラス", "A1": "新馬", "A2": "未出走", "A3": "未勝利", "OP": "オープン"}
@@ -233,7 +234,19 @@ def result_key(record: bytes) -> str:
 
 
 def race_key_parts(key: str) -> dict[str, Any]:
-    return {"venue_code": key[:2], "year_yy": key[2:4], "meeting": key[4:5], "day_raw": key[5:6], "race_no": int(key[6:8]) if key[6:8].isdigit() else None}
+    day_raw = key[5:6].lower()
+    try:
+        day = int(day_raw, 16)
+    except ValueError:
+        day = None
+    return {
+        "venue_code": key[:2],
+        "year_yy": key[2:4],
+        "meeting": int(key[4:5]) if key[4:5].isdigit() else None,
+        "day_raw": day_raw,
+        "day": day,
+        "race_no": int(key[6:8]) if key[6:8].isdigit() else None,
+    }
 
 
 def read_fixed_records(zf: zipfile.ZipFile, member: str, prefix: str, audit: Audit) -> list[bytes]:
@@ -281,7 +294,33 @@ class Normalizer:
 
     def race(self, raw: dict[str, Any]) -> dict[str, Any]:
         parts = race_key_parts(raw["race_key_raw"])
-        return {"date": ymd(raw["date_raw"]), "venue": decode(parts["venue_code"], VENUES, "venue", self.audit), "meeting": parts["meeting"], "day": parts["day_raw"], "race_no": parts["race_no"], "post_time": hhmm(raw["post_time_raw"]), "race_name": raw["race_name"], "surface": decode(raw["surface_code"], SURFACE, "surface", self.audit), "distance_m": raw["distance_raw"] and int(raw["distance_raw"]) if raw["distance_raw"].isdigit() else None, "turn": decode(raw["turn_code"], TURN, "turn", self.audit), "course_layout": decode(raw["layout_code"], COURSE_LAYOUT, "course_layout", self.audit), "race_type": decode(raw["race_type_code"], RACE_TYPE, "race_type", self.audit), "class": decode(raw["race_class_code"], RACE_CLASS, "race_class", self.audit), "race_conditions": self.symbols(raw["symbol_code"]), "weight_rule": decode(raw["weight_rule_code"], WEIGHT_RULE, "weight_rule", self.audit), "grade": decode(raw["grade_code"], GRADE, "grade", self.audit), "field_size": raw["field_size"]}
+        return {
+            "date": ymd(raw["date_raw"]),
+            "venue": decode(parts["venue_code"], VENUES, "venue", self.audit),
+            "meeting": parts["meeting"],
+            "day": parts["day"],
+            "race_no": parts["race_no"],
+            "post_time": hhmm(raw["post_time_raw"]),
+            "race_name": raw["race_name"],
+            "surface": decode(raw["surface_code"], SURFACE, "surface", self.audit),
+            "distance_m": raw["distance_raw"] and int(raw["distance_raw"]) if raw["distance_raw"].isdigit() else None,
+            "turn": decode(raw["turn_code"], TURN, "turn", self.audit),
+            "course_layout": decode(raw["layout_code"], COURSE_LAYOUT, "course_layout", self.audit),
+            "course_rail": decode(raw.get("course_code"), COURSE_RAIL, "course_rail", self.audit),
+            "race_type": decode(raw["race_type_code"], RACE_TYPE, "race_type", self.audit),
+            "class": decode(raw["race_class_code"], RACE_CLASS, "race_class", self.audit),
+            "race_conditions": self.symbols(raw["symbol_code"]),
+            "weight_rule": decode(raw["weight_rule_code"], WEIGHT_RULE, "weight_rule", self.audit),
+            "grade": decode(raw["grade_code"], GRADE, "grade", self.audit),
+            "field_size": raw["field_size"],
+            "source_codes": {
+                "venue_code": parts["venue_code"],
+                "surface_code": raw["surface_code"],
+                "race_class_code": raw["race_class_code"],
+                "grade_code": raw["grade_code"],
+                "course_code": raw.get("course_code"),
+            },
+        }
 
     def symbols(self, code: str) -> list[str]:
         if not code:
