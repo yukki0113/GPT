@@ -10,8 +10,8 @@ Gen0の約50Rは「一度にGPTへ予想させるbatch」ではなく、**改善
 予想単位は常に1R。運用上は標準5R程度を1チャンクとして順番に消化してよいが、各Rのforecast / hash / Freezeは独立させる。
 
 ```text
-JRDB Analysis Lite historical SQLite
-  -> deterministic race sampler
+JRDB Analysis v1.4 Parquet current
+  -> DuckDB direct deterministic race sampler
   -> immutable 50R PRIMARY + 20R RESERVE manifest
   -> Google Sheets 対象Rキュー
   -> next READY race
@@ -22,7 +22,9 @@ JRDB Analysis Lite historical SQLite
 
 ## 2. Sampling source
 
-標準sourceはJRDB Analysis Lite v1.3 SQLiteの `fact_entry_result_lite`。
+標準sourceはvalidated JRDB Analysis v1.4 Parquet currentの `fact_entry_result_lite`。\
+`current.json` -> manifest -> immutable year partitionsを検証し、DuckDBで直接読む。\
+v1.3 SQLite入力はlegacy reproduction / audit専用として残す。
 
 使用可能なselection field:
 
@@ -45,7 +47,8 @@ selectionで使用禁止:
 - win_payout / place_payout
 - その他target race outcome
 
-Analysis Lite自体は結果列を保持するが、sampler queryはそれらをSELECT / WHERE / ORDER BYへ使用しない。
+Analysis自体は結果列を保持するが、sampler queryはそれらをSELECT / WHERE / ORDER BYへ使用しない。\
+manifestには `analysis_generation_id` / manifest SHA-256 / schema / storage formatをsource identityとして固定する。
 
 ## 3. Eligibility
 
@@ -197,6 +200,6 @@ READY / SOURCE_READY
 - `src/racenote_forecast_gen0_queue.py`
 - `tests/test_build_racenote_gen0_sample_manifest.py`
 - `tests/test_racenote_forecast_gen0_queue.py`
-- `config/racenote_forecast_gen0_ledger_v0_1.json`
+- `config/racenote_forecast_gen0_ledger_v0_3.json`
 - `FORECAST_GEN0_LEDGER_CONTRACT_v0_1.md`
 - Google Sheets `対象Rキュー`
