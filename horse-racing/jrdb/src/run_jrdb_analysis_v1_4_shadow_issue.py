@@ -70,6 +70,29 @@ def source_probe(db: Path, path: Path) -> dict:
     return result
 
 
+def missing_bac_dates(source_db: Path, report_path: Path) -> list[str]:
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    keys = [str(x) for x in report.get("missing_bac_sample") or []]
+    missing_count = int(report.get("coverage", {}).get("bac_missing_races") or 0)
+    if missing_count == 0:
+        return []
+    if len(keys) < missing_count:
+        raise RuntimeError(
+            f"upgrade report truncated missing BAC keys: {len(keys)} < {missing_count}"
+        )
+    marks = ",".join("?" for _ in keys)
+    with sqlite3.connect(f"file:{source_db}?mode=ro", uri=True) as conn:
+        rows = conn.execute(
+            f"SELECT DISTINCT race_date FROM fact_entry_result_lite "
+            f"WHERE race_key IN ({marks}) ORDER BY race_date",
+            keys,
+        ).fetchall()
+    dates = [str(row[0]) for row in rows]
+    if not dates:
+        raise RuntimeError("BAC gaps exist but source dates could not be resolved")
+    return dates
+
+
 def fact_digest(path: Path) -> dict:
     with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as conn:
         return {
@@ -159,6 +182,7 @@ def main() -> int:
         )
 
     upgraded = work / "analysis-v1_4.sqlite"
+    report_path = work / "upgrade_report.json"
     run(
         [
             sys.executable,
@@ -167,9 +191,46 @@ def main() -> int:
             "--output", str(upgraded),
             "--annual-root", str(annual),
             "--paci-root", str(paci),
-            "--report", str(work / "upgrade_report.json"),
+            "--report", str(report_path),
         ]
     )
+
+    fallback_dates = missing_bac_dates(source_db, report_path)
+    if fallback_dates:
+        print(
+            "BAC annual gaps detected; fetching PACI fallback dates: "
+            + ",".join(fallback_dates),
+            flush=True,
+        )
+        for index, date in enumerate(fallback_dates, start=1):
+            compact = date.replace("-", "")
+            print(f"BAC fallback PACI {index}/{len(fallback_dates)} {compact}", flush=True)
+            run(
+                [
+                    sys.executable,
+                    "horse-racing/jrdb/src/fetch_jrdb_paci.py",
+                    "--date", compact,
+                    "--out-dir", str(paci),
+                ],
+                env=env,
+            )
+        upgraded.unlink(missing_ok=True)
+        report_path.unlink(missing_ok=True)
+        run(
+            [
+                sys.executable,
+                "horse-racing/jrdb/src/upgrade_jrdb_analysis_v1_4_shadow.py",
+                "--source", str(source_db),
+                "--output", str(upgraded),
+                "--annual-root", str(annual),
+                "--paci-root", str(paci),
+                "--report", str(report_path),
+            ]
+        )
+        final_report = json.loads(report_path.read_text(encoding="utf-8"))
+        remaining = int(final_report.get("coverage", {}).get("bac_missing_races") or 0)
+        if remaining:
+            raise RuntimeError(f"BAC gaps remain after PACI fallback: {remaining}")
 
     parquet = work / "parquet"
     run(
