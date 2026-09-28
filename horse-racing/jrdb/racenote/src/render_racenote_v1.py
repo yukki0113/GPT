@@ -79,8 +79,50 @@ def render(note: dict) -> str:
             f"- **{label}**: {item.get('status')} — "
             f"{scope or 'scopeなし'}"
         )
+        sample = item.get("sample") or {}
+        if sample.get("starts") is not None:
+            sample_bits = [f"starts={sample.get('starts')}"]
+            if sample.get("races") is not None:
+                sample_bits.append(f"races={sample.get('races')}")
+            if sample.get("editions") is not None:
+                sample_bits.append(f"editions={sample.get('editions')}")
+            if sample.get("period"):
+                sample_bits.append(f"period={sample.get('period')}")
+            lines.append("  - sample: " + " / ".join(sample_bits))
+        if item.get("selected_level"):
+            lines.append(f"  - selected_level: {item.get('selected_level')}")
+        for fallback in item.get("fallback_levels") or []:
+            fs = fallback.get("sample") or {}
+            lines.append(
+                f"  - fallback {fallback.get('level_id')}: "
+                f"starts={fs.get('starts')} / races={fs.get('races')}"
+            )
         for limitation in item.get("limitations") or []:
             lines.append(f"  - limitation: {limitation}")
+
+        dimensions = item.get("dimensions") or {}
+        for axis, dimension in dimensions.items():
+            rows = (dimension or {}).get("rows") or []
+            if not rows:
+                continue
+            lines.extend([
+                "",
+                f"### {label} — {(dimension or {}).get('label') or axis}",
+                "",
+                "| 条件 | 成績 | 勝率 | 3着内率 | 単回 | 複回 | n |",
+                "|---|---:|---:|---:|---:|---:|---:|",
+            ])
+            for row in rows:
+                record = (row.get("finish_record") or {}).get("compact") or "—"
+                win_rate = _dash(row.get("win_rate"))
+                top3_rate = _dash(row.get("top3_rate"))
+                win_roi = _dash(row.get("win_roi"))
+                place_roi = _dash(row.get("place_roi"))
+                lines.append(
+                    f"| {_dash(row.get('item'))} | {record} | "
+                    f"{win_rate}% | {top3_rate}% | "
+                    f"{win_roi}% | {place_roi}% | {row.get('starts')} |"
+                )
 
     lines.extend(["", "## Runners", ""])
 
