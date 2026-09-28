@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import importlib.util
 import sqlite3
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -74,13 +76,20 @@ class FactLiteFromAnalysisV14Test(unittest.TestCase):
                 connection.close()
 
             output = root / "fact.sqlite"
-            result = BUILDER.build(
-                analysis,
-                output,
-                race_names=None,
-                schema=ROOT / "horse-racing/jrdb/schema/jrdb_pwa_fact_lite_schema_v0_3.sql",
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(BUILDER_PATH),
+                    "--analysis",
+                    str(analysis),
+                    "--db",
+                    str(output),
+                ],
+                check=True,
+                text=True,
+                capture_output=True,
             )
-            self.assertEqual(result["rows"], 2)
+            self.assertIn("'rows': 2", completed.stdout)
 
             connection = sqlite3.connect(output)
             try:
