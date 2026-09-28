@@ -1,8 +1,9 @@
 name: RaceNote Phase B native Parquet E2E
 
 on:
-  push:
-    branches: [main, codex/racenote-phaseb-parquet-native-cutover]
+  # This E2E depends on external Drive assets and is intentionally not run on
+  # every direct push to main. Run it from a PR that touches the Phase B
+  # surface below, or explicitly via workflow_dispatch.
   pull_request:
     paths:
       - '.github/workflows/racenote_phase_b_native_e2e.yml'
