@@ -88,6 +88,7 @@ Fact Lite publisherはReleaseのみを更新し、Pagesをpartial deployしま�
 - download後: size / SHA-256 / schema / required tables / `PRAGMA integrity_check` 等を検証
 - 検証成功: `incoming.sqlite` で検証後に `current.sqlite` を置換し、`incoming.sqlite` を削除
 - Fact Lite SQLiteはOPFSへ `current.sqlite` の1世代だけを永続保持する。旧実装の `previous.sqlite` は起動時に削除する
+- 同期中だけ `current.sqlite` + `incoming.sqlite` が一時的に並存し、同期完了後は `current.sqlite` のみ残す
 - 検証失敗: 利用中currentを維持
 
 Fact LiteはOPFSへ保存し、起動時にローカルcurrentを復元したうえでオンラインなら最新版確認を行います。schema / capabilityを実データから確認し、未対応機能を推測で有効化しません。
