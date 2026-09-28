@@ -57,6 +57,16 @@ The trend-first redesign is now finalized as **RaceNote-Forecast-Gen0.3**.
 Gen0.2 was never activated and is retained only as a pre-redesign reference.
 The planned first activation remains `Gen0-G001`, now using Gen0.3.
 
+### Gen0-G001 activation readiness — 2026-09-29
+
+The fixed 50 PRIMARY + 20 RESERVE sample manifest is PASS and registered in
+`RaceNote Forecast Gen0 検証台帳`. Gen0-G001 is `READY`, not yet `ACTIVE`.
+The current operational generation remains Gen0-G000 until the first formal
+TRUE_FORWARD pre-result Freeze passes.
+
+Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
+
+
 ## 3. Current data boundaries
 
 - 2010–2025 historical RaceNote input: accepted JRDB Historical Warehouse
