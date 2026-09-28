@@ -6,7 +6,7 @@ const FACT_SQL_WASM_URL = FACT_RUNTIME_CONFIG.sqlWasmUrl || "./vendor/sql-wasm.w
 const FACT_MANIFEST_URL = FACT_RUNTIME_CONFIG.factManifestUrl || "./data/fact-lite/manifest.json";
 const FACT_OPFS_DIR = FACT_RUNTIME_CONFIG.factOpfsDir || "jrdb-fact-lite";
 const FACT_CURRENT = "current.sqlite";
-const FACT_PREVIOUS = "previous.sqlite";
+const FACT_LEGACY_PREVIOUS = "previous.sqlite";
 const FACT_INCOMING = "incoming.sqlite";
 const FACT_METADATA = "metadata.json";
 const FACT_SCHEMA_VERSION = "0.2";
@@ -571,12 +571,9 @@ async function syncFactFromRemote() {
     }
     validateFactBytes(bytes);
 
-    const oldCurrent = await readFactFile(FACT_CURRENT);
-    if (oldCurrent) {
-      await writeFactFile(FACT_PREVIOUS, oldCurrent.bytes);
-    }
     await writeFactFile(FACT_CURRENT, bytes);
     await removeFactFile(FACT_INCOMING);
+    await removeFactFile(FACT_LEGACY_PREVIOUS);
 
     const metadata = {
       artifact_type: factRemoteManifest.artifact_type,
@@ -842,6 +839,10 @@ async function initializeFactLite() {
 
   try {
     await navigator.storage.getDirectory();
+    // Persist only the active Fact Lite DB. Remove files left by older
+    // two-generation builds or an interrupted prior sync.
+    await removeFactFile(FACT_LEGACY_PREVIOUS);
+    await removeFactFile(FACT_INCOMING);
     factOpfsStatus.textContent = "利用可能";
     factDbStatus.textContent = "sql.js準備中...";
     await loadFactSqlJs();

@@ -248,6 +248,7 @@ Fact Lite Releaseはcurrent assetを置換する。旧Fact Liteを別のDrive保
 - static app shell: Service Worker cache
 - `/data/`: Service Worker cache対象外
 - SQLite current: OPFS
+- Fact LiteのOPFS永続保持は `current.sqlite` 1世代のみ。`incoming.sqlite` は同期中だけ使用し、旧 `previous.sqlite` は起動時に削除する
 - remote manifest / SHAで更新判定
 - download後にsize / SHA / schema / integrity等をvalidate
 - validation失敗時は既存currentを維持

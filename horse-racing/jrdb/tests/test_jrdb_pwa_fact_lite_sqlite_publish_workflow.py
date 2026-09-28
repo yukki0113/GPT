@@ -21,6 +21,19 @@ class FactLiteSqlitePublishWorkflowTest(unittest.TestCase):
         self.assertNotIn("FACT_PARQUET_RELEASE_TAG", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
 
+    def test_fact_lite_opfs_keeps_one_persistent_sqlite_generation(self) -> None:
+        script = (ROOT / "horse-racing/jrdb/pwa/fact-lite.js").read_text(encoding="utf-8")
+        personal_html = (ROOT / "horse-racing/jrdb/pwa/fact-lite.html").read_text(encoding="utf-8")
+        momotaro_html = (ROOT / "horse-racing/jrdb/pwa/momotaro/fact-lite.html").read_text(encoding="utf-8")
+
+        self.assertIn('const FACT_LEGACY_PREVIOUS = "previous.sqlite";', script)
+        self.assertNotIn('const FACT_PREVIOUS = "previous.sqlite";', script)
+        self.assertNotIn("writeFactFile(FACT_PREVIOUS", script)
+        self.assertIn("await removeFactFile(FACT_LEGACY_PREVIOUS);", script)
+        self.assertIn("await removeFactFile(FACT_INCOMING);", script)
+        self.assertIn('./fact-lite.js?v=23', personal_html)
+        self.assertIn('../fact-lite.js?v=23', momotaro_html)
+
     def test_full_pages_follows_successful_fact_lite_publish(self) -> None:
         workflow = (ROOT / ".github/workflows/jrdb_pwa_pages.yml").read_text(encoding="utf-8")
         self.assertIn('"JRDB PWA Fact Lite Publish"', workflow)
