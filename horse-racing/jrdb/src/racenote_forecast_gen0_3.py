@@ -23,7 +23,7 @@ from typing import Any
 FORECAST_VERSION = "RaceNote-Forecast-Gen0.3"
 EVIDENCE_POLICY_VERSION = "TrendFirst-RR-Pairwise-Scenario-v0.1"
 DEFAULT_GENERATION_ID = "Gen0-G001"
-EXPECTED_GENERAL_SCHEMA = "RaceNote-General-Evidence-0.1"
+EXPECTED_GENERAL_SCHEMA = "RaceNote-General-Evidence-0.2"
 EXPECTED_PAIRWISE_AUDIT = "RaceNote-Pairwise-Audit-0.1"
 EXPECTED_SCENARIO_AUDIT = "RaceNote-Scenario-Robustness-Audit-0.1"
 ALLOWED_MARKS = {"◎", "○", "▲", "△", ""}
