@@ -5,6 +5,7 @@ on:
     types: [opened]
 
 permissions:
+  actions: read
   contents: read
   issues: write
 
@@ -36,14 +37,29 @@ jobs:
           from pathlib import Path
 
           request = json.loads(os.environ['ISSUE_BODY'])
-          required = {'request_id', 'dates', 'analysis_parquet_bundle_file_id', 'generation_id'}
+          required = {'request_id', 'dates', 'generation_id'}
           missing = sorted(key for key in required if not request.get(key))
           if missing:
               raise SystemExit('Missing request fields: ' + ', '.join(missing))
           if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', str(request['request_id'])):
               raise SystemExit('Invalid request_id')
-          if not re.fullmatch(r'[A-Za-z0-9_-]{10,}', str(request['analysis_parquet_bundle_file_id'])):
+          bundle_id = request.get('analysis_parquet_bundle_file_id')
+          source_run_id = request.get('source_run_id')
+          artifact_name = request.get('artifact_name')
+          if bool(bundle_id) == bool(source_run_id or artifact_name):
+              raise SystemExit(
+                  'Provide exactly one Analysis source: analysis_parquet_bundle_file_id '
+                  'or source_run_id + artifact_name'
+              )
+          if bundle_id and not re.fullmatch(r'[A-Za-z0-9_-]{10,}', str(bundle_id)):
               raise SystemExit('Invalid analysis_parquet_bundle_file_id')
+          if source_run_id or artifact_name:
+              if not source_run_id or not artifact_name:
+                  raise SystemExit('Artifact source requires source_run_id and artifact_name')
+              if not str(source_run_id).isdigit():
+                  raise SystemExit('Invalid source_run_id')
+              if not re.fullmatch(r'[A-Za-z0-9._-]{3,200}', str(artifact_name)):
+                  raise SystemExit('Invalid artifact_name')
           if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{2,127}', str(request['generation_id'])):
               raise SystemExit('Invalid generation_id')
           values = request['dates']
@@ -62,22 +78,46 @@ jobs:
           Path('.postrace/dates.txt').write_text('\n'.join(date.isoformat() for date in dates) + '\n', encoding='utf-8')
           with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as env:
               env.write(f"REQUEST_ID={request['request_id']}\n")
-              env.write(f"ANALYSIS_PARQUET_BUNDLE_FILE_ID={request['analysis_parquet_bundle_file_id']}\n")
+              env.write(f"ANALYSIS_PARQUET_BUNDLE_FILE_ID={request.get('analysis_parquet_bundle_file_id','')}\n")
+              env.write(f"SOURCE_RUN_ID={request.get('source_run_id','')}\n")
+              env.write(f"ARTIFACT_NAME={request.get('artifact_name','')}\n")
               env.write(f"GENERATION_ID={request['generation_id']}\n")
               env.write('AFFECTED_YEARS=' + ' '.join(sorted({str(date.year) for date in dates})) + '\n')
           PY
       - name: Install Parquet dependencies
         run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
-      - name: Download and validate current Analysis Parquet bundle
+      - name: Prepare and validate current Analysis Parquet source
         env:
+          GH_TOKEN: ${{ github.token }}
           PYTHONPATH: horse-racing/jrdb/src
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3 --retry-delay 2 \
-            "https://drive.usercontent.google.com/download?id=${ANALYSIS_PARQUET_BUNDLE_FILE_ID}&export=download&confirm=t" \
-            --output .postrace/analysis-parquet.tar.xz
           mkdir -p .postrace/analysis-parquet
-          tar -xJf .postrace/analysis-parquet.tar.xz -C .postrace/analysis-parquet
+          if [ -n "${SOURCE_RUN_ID}" ]; then
+            mkdir -p .postrace/source-artifact
+            gh run download "${SOURCE_RUN_ID}" -n "${ARTIFACT_NAME}" -D .postrace/source-artifact
+            test -d .postrace/source-artifact/parquet
+            cp -a .postrace/source-artifact/parquet/. .postrace/analysis-parquet/
+            if [ ! -f .postrace/analysis-parquet/current.json ]; then
+              test -f .postrace/analysis-parquet/shadow_current.json
+              python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('.postrace/analysis-parquet')
+          pointer = json.loads((root / 'shadow_current.json').read_text(encoding='utf-8'))
+          pointer['status'] = 'CURRENT'
+          (root / 'current.json').write_text(
+              json.dumps(pointer, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+            fi
+          else
+            curl --fail --location --retry 3 --retry-delay 2 \
+              "https://drive.usercontent.google.com/download?id=${ANALYSIS_PARQUET_BUNDLE_FILE_ID}&export=download&confirm=t" \
+              --output .postrace/analysis-parquet.tar.xz
+            tar -xJf .postrace/analysis-parquet.tar.xz -C .postrace/analysis-parquet
+          fi
           python - <<'PY' | tee .postrace/analysis_current_validation.json
           import json
           from pathlib import Path
@@ -120,7 +160,7 @@ jobs:
               --sed ".postrace/raw/SED/SED${yymmdd}.zip"
             )
           done < .postrace/dates.txt
-          python horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native.py \
+          python horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native_v1_4.py \
             --analysis-root .postrace/analysis-parquet \
             --generation-id "$GENERATION_ID" \
             "${args[@]}" \
