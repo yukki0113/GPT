@@ -365,7 +365,7 @@ def _reorder_cluster(packet: Mapping[str, object]) -> dict[str, object]:
 
 
 def run_day(input_root: Path, output_root: Path) -> dict[str, object]:
-    packet_paths = sorted(input_root.rglob("semantic_pairwise_packet_v0_2.json"))
+    packet_paths = sorted(input_root.rglob("semantic_pairwise_packet_v0_3.json"))
     if not packet_paths:
         raise RuntimeError("no semantic pairwise packets found")
 
@@ -387,7 +387,7 @@ def run_day(input_root: Path, output_root: Path) -> dict[str, object]:
             "result_visibility_status": "HIDDEN",
             **result,
         }
-        (out_dir / "semantic_author_v0_2.json").write_text(
+        (out_dir / "semantic_author_v0_4.json").write_text(
             json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
