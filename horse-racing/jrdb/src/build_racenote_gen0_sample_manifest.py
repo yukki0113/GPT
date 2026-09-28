@@ -188,10 +188,12 @@ def load_candidates_parquet(
 
     connection = duckdb.connect(":memory:")
     try:
+        parquet_list = ", ".join(
+            "'" + path.replace("'", "''") + "'" for path in paths
+        )
         connection.execute(
             "CREATE TEMP VIEW fact_entry_result_lite AS "
-            "SELECT * FROM read_parquet(?)",
-            [paths],
+            f"SELECT * FROM read_parquet([{parquet_list}])"
         )
         columns = {
             str(row[0])
