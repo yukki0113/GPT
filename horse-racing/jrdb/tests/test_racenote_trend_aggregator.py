@@ -184,7 +184,7 @@ def test_named_scope_requires_name_and_current_conditions(tmp_path: Path) -> Non
     conn.commit()
     conn.close()
 
-    out = attach_trends(_note(), db)
+    out = attach_trends(_note(), analysis_db=db)
     named = out["trend_context"]["named_race"]
     assert named["status"] == "AVAILABLE"
     assert named["selected_level"] == "NAMED_EXACT"
@@ -227,7 +227,7 @@ def test_local_graded_scope_uses_op_plus_support(tmp_path: Path) -> None:
     conn.commit()
     conn.close()
 
-    out = attach_trends(_note(), db)
+    out = attach_trends(_note(), analysis_db=db)
     local = out["trend_context"]["local_context"]
     assert local["status"] == "AVAILABLE"
     assert local["scope"]["class_scope"] == "OP+"
