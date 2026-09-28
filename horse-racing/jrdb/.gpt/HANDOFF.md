@@ -244,34 +244,78 @@ PWA / Newspaperの都合でForecast policyを決めません。predictionを先�
 
 ## 6. Post-race Analysis / Mart / Fact Lite
 
-開催後更新は一つの世代として考えます。
+Current Analysis canonical is **v1.4 immutable Parquet**.
+
+Drive root:
+
+`GPT/horse-racing/10_warehouse/analysis/v1/`
+
+Current generation at this handoff:
+
+`analysis-v1_4-canonical-20260928-02`
+
+Current validated coverage:
+
+- 2016-01-05 through 2026-09-27
+- 517,622 rows
+- canonical key: `race_key + horse_no`
+- duplicate key rows: 0
+
+Normal daily candidate path:
+
+`.github/workflows/jrdb_post_race_parquet_refresh_issue.yml`
+
+Native updater:
+
+`src/build_jrdb_analysis_post_race_parquet_native_v1_4.py`
+
+Execution boundary:
 
 ```text
-completed race results
-  -> Analysis date-level update
-  -> Analysis validation / canonical save
-  -> affected Stats Mart refresh
-  -> Fact Lite regenerate + validate + publish
-  -> condition-summary PWA current generation update
+previous successful GitHub Actions candidate artifact
+  -> Actions-native PACI/SED fetch
+  -> v1.4 native Parquet affected-year replacement
+  -> audited candidate artifact
+  -> GPT downloads artifact
+  -> native Google Drive connector publish
+  -> Drive round-trip SHA/size/manifest validation
+  -> current.json promotion
+  -> downstream consumer smoke / Fact Lite / PWA
 ```
 
-Analysisだけ最新化し、条件別集計PWAを旧Analysis世代に残さないことを標準とします。
+Do not let GitHub Actions read or write Google Drive directly. The post-race
+workflow request uses `source_run_id`, `artifact_name`,
+`expected_source_generation`, `dates`, and the new
+`generation_id`. Drive IDs are not workflow inputs.
 
-Storage boundary (v1.3 / v0.3 logical schemas are unchanged):
+Normal v1.4 gates include:
 
-- Analysis Parquet is the analytical canonical; its year objects, metadata and manifest are immutable. `current.json` advances only after a PASS candidate and retains one rollback generation.
-- Analysis SQLite is a compatibility materialization, never an independently updated second canonical.
-- Fact Lite SQLite remains the current PWA/sql.js/OPFS delivery artifact.
-- Fact Lite Parquet is a parallel DuckDB-built shadow candidate only.
-- DuckDB-Wasm and direct browser Parquet reads remain future scope.
+- row count equality
+- canonical key equality
+- schema contract equality
+- row-level equivalence
+- metadata preservation
+- duplicate key rows = 0
+- as-of violations = 0
+- native Parquet update = true
+- full SQLite materialization = false
 
-認証済みJRDB取得・正式artifact chain・publication証跡が必要な部分は `.gpt/WORKFLOW.md` の Route D を使います。既取得入力だけで完結する検証・集計はRoute Cを優先します。
+Validated first daily cutover:
+Issue #1590 / Run `36437363166` -> generation
+`analysis-v1_4-canonical-20260928-02`.
 
-### Current artifact retention
+RaceNote Trend smoke after promotion:
+Issue #1591 / Run `36438532392` -> PASS.
 
-Analysis LiteのDrive正本は**current世代だけ**を通常保持する。新Analysisを所定の共有フォルダへuploadし、filename・size・SHA-256・ZIP/SQLite検査を再確認したうえでFact Lite/PWA公開が成功した場合、直前のcurrent Analysisを削除する。失敗時は旧currentを残し、切替を行わない。
+The previous generation remains immutable for rollback. Do not delete the prior
+generation merely because `current.json` advances.
 
-Stats MartやRaw、監査artifact、RaceNote Archiveなど、再現性のため明示的に保持する資産にはこの削除規則を適用しない。
+The old `jrdb_post_race_refresh_issue.yml` /
+`run_jrdb_analysis_post_race_incremental.py` full-SQLite route is legacy /
+rollback only, not the normal current path.
+
+Analysisと下流配布は同じ運用世代として扱い、Analysisだけ最新化して
+Fact Lite / condition-summary PWAを旧世代へ放置しない。
 
 ## 7. Stable data rules
 
