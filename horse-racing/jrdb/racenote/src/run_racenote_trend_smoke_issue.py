@@ -138,6 +138,15 @@ def main() -> int:
         ]
     )
 
+    run(
+        [
+            sys.executable,
+            "horse-racing/jrdb/racenote/src/validate_racenote_v1.py",
+            "--input", str(output),
+            "--trend-only",
+        ]
+    )
+
     markdown = work / "trend_smoke_output.md"
     run(
         [
