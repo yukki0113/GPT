@@ -118,6 +118,14 @@ def _schema_for_manifest(manifest_path: Path) -> Path:
     return Path(__file__).resolve().parents[1] / "schema" / name
 
 
+
+def materialize(manifest_path: Path, output: Path, schema: Path) -> dict[str, Any]:
+    """Backward-compatible explicit-generation materializer used by regression tests."""
+    manifest_path = manifest_path.resolve()
+    root = manifest_path.parents[2]
+    return materialize_generation(root, manifest_path, output, schema)
+
+
 def materialize_current(root: Path, output: Path, schema: Path | None = None) -> dict[str, Any]:
     """Resolve current.json first; never materialize a non-current generation by default."""
     current = resolve_current(root)
