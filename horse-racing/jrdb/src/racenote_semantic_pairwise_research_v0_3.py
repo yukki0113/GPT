@@ -371,7 +371,7 @@ def run_day(
         packet = build_packet(general, frozen)
         out_dir = output_root / f"{venue}_{race_no:02d}R"
         out_dir.mkdir(parents=True, exist_ok=True)
-        (out_dir / "semantic_pairwise_packet_v0_2.json").write_text(
+        (out_dir / "semantic_pairwise_packet_v0_3.json").write_text(
             json.dumps(packet, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
