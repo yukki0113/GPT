@@ -18,7 +18,7 @@ from pathlib import Path
 
 SYNTHESIS_SCHEMA_VERSION = "RaceNote-All-Runner-Synthesis-0.1"
 SYNTHESIS_CONTRACT_VERSION = "FullField-Draft-v0.1"
-EXPECTED_GENERAL_SCHEMA = "RaceNote-General-Evidence-0.1"
+EXPECTED_GENERAL_SCHEMA = "RaceNote-General-Evidence-0.2"
 EXPECTED_INTERPRETATION_VERSION = "PredictionInterpretation-v0.1"
 
 PRIMARY_LANES = {
@@ -122,6 +122,18 @@ def _validate_general(
     if firewall.get("training_edge_visible") is not False:
         raise AllRunnerSynthesisError(
             "Training Edge must remain hidden"
+        )
+    if firewall.get("rl_index_visible") is not False:
+        raise AllRunnerSynthesisError(
+            "RL index must remain hidden"
+        )
+    if firewall.get("edgedb_match_visible") is not False:
+        raise AllRunnerSynthesisError(
+            "EdgeDB match must remain hidden"
+        )
+    if firewall.get("jrdb_condition_signal_visible") is not True:
+        raise AllRunnerSynthesisError(
+            "JRDB condition signal visibility contract mismatch"
         )
 
     result: dict[int, Mapping[str, object]] = {}
