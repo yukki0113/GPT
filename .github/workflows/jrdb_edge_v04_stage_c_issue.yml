@@ -81,7 +81,7 @@ jobs:
             exit 1
           fi
           cp "${pqs[0]}" /tmp/feature/edge_runner_fact.parquet
-          cp "${tpls[0]}" /tmp/stage-b/candidate_template_catalog.parquet
+          cp "${tpls[0]}" /tmp/inputs/candidate_template_catalog.parquet
 
       - name: Run Stage C grouped evaluation
         run: |
