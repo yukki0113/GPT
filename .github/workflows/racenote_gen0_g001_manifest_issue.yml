@@ -1,0 +1,183 @@
+name: RaceNote Gen0-G001 sample manifest
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  build-manifest:
+    if: >-
+      startsWith(github.event.issue.title, '[RACENOTE_GEN0_G001_MANIFEST]') &&
+      github.event.issue.user.login == 'yukki0113'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p .gen0/source .gen0/output
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads(os.environ['ISSUE_BODY'])
+          required={'source_run_id','artifact_name','expected_source_generation','generation_id','seed'}
+          missing=sorted(k for k in required if not req.get(k))
+          if missing:
+              raise SystemExit('Missing request fields: '+', '.join(missing))
+          if req['generation_id'] != 'Gen0-G001':
+              raise SystemExit('generation_id must be Gen0-G001')
+          try:
+              run_id=int(req['source_run_id'])
+          except (TypeError, ValueError) as e:
+              raise SystemExit('source_run_id must be integer') from e
+          artifact=str(req['artifact_name'])
+          expected=str(req['expected_source_generation'])
+          seed=str(req['seed'])
+          if not re.fullmatch(r'[A-Za-z0-9._-]{3,160}', artifact):
+              raise SystemExit('invalid artifact_name')
+          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{2,127}', expected):
+              raise SystemExit('invalid expected_source_generation')
+          if not re.fullmatch(r'[A-Za-z0-9._|:-]{3,160}', seed):
+              raise SystemExit('invalid seed')
+          Path('.gen0/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as f:
+              f.write(f'SOURCE_RUN_ID={run_id}\n')
+              f.write(f'ARTIFACT_NAME={artifact}\n')
+              f.write(f'EXPECTED_SOURCE_GENERATION={expected}\n')
+              f.write(f'GENERATION_ID={req["generation_id"]}\n')
+              f.write(f'SAMPLE_SEED={seed}\n')
+          PY
+
+      - name: Install Parquet dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+
+      - name: Resolve validated Analysis v1.4 source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          gh run download "$SOURCE_RUN_ID" -n "$ARTIFACT_NAME" -D .gen0/source
+          bundle="$(find .gen0/source -type f -name 'analysis-parquet-candidate.tar.xz' -print -quit)"
+          test -n "$bundle"
+          mkdir -p .gen0/analysis
+          tar -xJf "$bundle" -C .gen0/analysis
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          root=Path('.gen0/analysis')
+          shadow=root/'shadow_current.json'
+          if not shadow.is_file():
+              raise SystemExit('missing shadow_current.json')
+          pointer=json.loads(shadow.read_text(encoding='utf-8'))
+          expected=os.environ['EXPECTED_SOURCE_GENERATION']
+          if pointer.get('generation_id') != expected:
+              raise SystemExit(f"source generation mismatch: {pointer.get('generation_id')} != {expected}")
+          pointer['status']='CURRENT'
+          (root/'current.json').write_text(json.dumps(pointer,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          report=resolve_current(root)
+          if report['generation_id'] != expected:
+              raise SystemExit('resolved generation mismatch')
+          PY
+
+      - name: Build immutable Gen0-G001 sample manifest
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/build_racenote_gen0_sample_manifest.py \
+            --analysis-root .gen0/analysis \
+            --generation-id "$GENERATION_ID" \
+            --seed "$SAMPLE_SEED" \
+            --out-manifest .gen0/output/racenote_gen0_g001_sample_manifest.json \
+            --out-queue-csv .gen0/output/racenote_gen0_g001_queue.csv
+
+      - name: Audit activation manifest
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          p=Path('.gen0/output/racenote_gen0_g001_sample_manifest.json')
+          m=json.loads(p.read_text(encoding='utf-8'))
+          races=m['races']
+          primary=[r for r in races if r['sample_role']=='PRIMARY']
+          reserve=[r for r in races if r['sample_role']=='RESERVE']
+          if m['generation_id']!='Gen0-G001':
+              raise SystemExit('wrong generation')
+          if len(primary)!=50 or len(reserve)!=20 or len(races)!=70:
+              raise SystemExit('sample counts invalid')
+          if m['source_identity']['analysis_generation_id'] != 'analysis-v1_4-canonical-20260928-02':
+              raise SystemExit('wrong Analysis generation')
+          if m['source_identity']['analysis_schema_version']!='v1.4':
+              raise SystemExit('wrong Analysis schema')
+          if m['source_identity']['analysis_storage_format']!='parquet':
+              raise SystemExit('wrong Analysis storage')
+          if m['selection_policy']['result_columns_selected'] is not False:
+              raise SystemExit('result-blind contract broken')
+          if len({r['race_key'] for r in races}) != 70:
+              raise SystemExit('duplicate race_key')
+          for group in (primary,reserve):
+              dc=Counter(r['race_date'] for r in group)
+              if max(dc.values())>3:
+                  raise SystemExit('same-date cap broken')
+              sc=Counter(r['surface_code'] for r in group)
+              if min(sc['1'],sc['2']) < int(len(group)*0.30):
+                  raise SystemExit('surface minimum broken')
+          audit={
+            'status':'PASS',
+            'generation_id':m['generation_id'],
+            'manifest_id':m['manifest_id'],
+            'manifest_sha256':m['manifest_sha256'],
+            'candidate_pool_sha256':m['candidate_pool_sha256'],
+            'source_identity':m['source_identity'],
+            'primary_count':len(primary),
+            'reserve_count':len(reserve),
+            'result_columns_selected':False,
+            'unique_race_keys':len({r['race_key'] for r in races}),
+          }
+          Path('.gen0/output/activation_manifest_audit.json').write_text(
+              json.dumps(audit,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(audit,ensure_ascii=False))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-gen0-g001-manifest-${{ github.run_id }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            .gen0/output/racenote_gen0_g001_sample_manifest.json
+            .gen0/output/racenote_gen0_g001_queue.csv
+            .gen0/output/activation_manifest_audit.json
+            .gen0/request.json
+
+      - name: Report result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const passed = '${{ job.status }}' === 'success';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `RaceNote Gen0-G001 manifest ${passed ? 'passed' : 'failed'}. Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            });
