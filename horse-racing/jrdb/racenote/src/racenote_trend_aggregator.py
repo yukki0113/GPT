@@ -73,7 +73,16 @@ AXES: dict[str, dict[str, str]] = {
     },
     "style": {
         "label": "脚質",
-        "select": "COALESCE(NULLIF(f.running_style,''),'不明')",
+        "select": (
+            "CASE CAST(f.running_style AS TEXT) "
+            "WHEN '1' THEN '逃げ' "
+            "WHEN '2' THEN '先行' "
+            "WHEN '3' THEN '差し' "
+            "WHEN '4' THEN '追込' "
+            "WHEN '5' THEN '好位差し' "
+            "WHEN '6' THEN '自在' "
+            "ELSE COALESCE(NULLIF(CAST(f.running_style AS TEXT),''),'不明') END"
+        ),
         "group": "f.running_style",
         "joins": "",
     },
@@ -85,7 +94,13 @@ AXES: dict[str, dict[str, str]] = {
     },
     "sex": {
         "label": "性別",
-        "select": "COALESCE(NULLIF(f.sex_code,''),'不明')",
+        "select": (
+            "CASE CAST(f.sex_code AS TEXT) "
+            "WHEN '1' THEN '牡' "
+            "WHEN '2' THEN '牝' "
+            "WHEN '3' THEN 'セン' "
+            "ELSE COALESCE(NULLIF(CAST(f.sex_code AS TEXT),''),'不明') END"
+        ),
         "group": "f.sex_code",
         "joins": "",
     },
@@ -102,7 +117,7 @@ AXES: dict[str, dict[str, str]] = {
         "joins": "",
     },
     "prev_distance": {
-        "label": "前走距離",
+        "label": "前走距離変化",
         "select": (
             "CASE "
             "WHEN p.distance IS NULL THEN '前走不明' "
