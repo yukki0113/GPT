@@ -584,6 +584,11 @@ def main() -> int:
     parser.add_argument("--independent-view", type=Path, required=True)
     parser.add_argument("--racereview-evidence", type=Path)
     parser.add_argument("--paci-context", type=Path)
+    parser.add_argument(
+        "--analysis-root",
+        type=Path,
+        help="Optional Analysis Parquet v1.4 root; attaches Named/Local/Base Trend.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -606,6 +611,10 @@ def main() -> int:
         raise BuildError("RaceReview root must be object")
 
     note = build(independent, racereview, paci_context)
+    if args.analysis_root is not None:
+        from racenote_trend_aggregator import attach_trends
+        note = attach_trends(note, analysis_root=args.analysis_root)
+
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(note, ensure_ascii=False, indent=2) + "\n",
@@ -617,6 +626,10 @@ def main() -> int:
                 "status": "PASS",
                 "output": str(args.output),
                 "runner_count": len(note["runners"]),
+                "trend_status": {
+                    key: note.get("trend_context", {}).get(key, {}).get("status")
+                    for key in ("named_race", "local_context", "base_context")
+                },
             },
             ensure_ascii=False,
         )
