@@ -331,7 +331,8 @@
             "AVAILABLE",
             "PARTIAL",
             "UNAVAILABLE",
-            "NOT_APPLICABLE"
+            "NOT_APPLICABLE",
+            "NOT_GENERATED"
           ]
         },
         "scope": {
@@ -363,6 +364,10 @@
                 "string",
                 "null"
               ]
+            },
+            "races": {
+              "type": "integer",
+              "minimum": 0
             }
           }
         },
@@ -380,6 +385,90 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "selected_level": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "level_id",
+              "scope",
+              "sample"
+            ],
+            "properties": {
+              "level_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scope": {
+                "type": "object"
+              },
+              "sample": {
+                "type": "object",
+                "additionalProperties": true,
+                "required": [
+                  "starts",
+                  "races"
+                ],
+                "properties": {
+                  "starts": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "races": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fallback_levels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "level_id",
+              "scope",
+              "sample"
+            ],
+            "properties": {
+              "level_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scope": {
+                "type": "object"
+              },
+              "sample": {
+                "type": "object",
+                "additionalProperties": true,
+                "required": [
+                  "starts",
+                  "races"
+                ],
+                "properties": {
+                  "starts": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "races": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
           }
         }
       }
