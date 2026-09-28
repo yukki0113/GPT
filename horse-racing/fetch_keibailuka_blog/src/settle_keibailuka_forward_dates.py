@@ -75,7 +75,9 @@ def main():
     for src in ledger:
         d=(src.get("日付") or "").strip()
         if d not in req["dates"]: continue
-        horse=(src.get("馬名_raw") or "").strip()
+        horse_raw=(src.get("馬名_raw") or "").strip()
+        horse_resolved=(src.get("馬名_resolved") or "").strip()
+        horse=horse_resolved or horse_raw
         venue=(src.get("会場") or "").strip()
         rm=re.fullmatch(r"(\d+)R",(src.get("R") or "").strip())
         if not horse or horse=="🤡" or venue not in VENUE_CODES or not rm: continue
@@ -96,7 +98,7 @@ def main():
         finish=to_int(sed.get("finish"))
         fp=to_int(sed.get("final_popularity"))
         row={
-          "key":src.get("key"),"日付":d,"会場":venue,"R":src.get("R"),"馬名":horse,
+          "key":src.get("key"),"日付":d,"会場":venue,"R":src.get("R"),"馬名_raw":horse_raw,"馬名_resolved":horse_resolved,"馬名":horse,
           "primary_reason":primary,"base_win_rank":base_rank,"base_win_odds":to_float(kyi.get("base_win_odds")),
           "shadow_rule_id":RULE_ID if shadow else "","shadow_selected":1 if shadow else 0,
           "着順":finish,"確定単勝人気順位":fp,"最終単勝オッズ":to_float(sed.get("final_win_odds")),
