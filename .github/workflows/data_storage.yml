@@ -16,6 +16,8 @@ on:
       - "horse-racing/jrdb/src/audit_jrdb_pwa_fact_lite_dual.py"
       - "horse-racing/jrdb/tests/test_jrdb_analysis_parquet.py"
       - "horse-racing/jrdb/tests/test_fact_lite_from_analysis_v1_4.py"
+      - "horse-racing/jrdb/tests/test_racenote_trend_aggregator.py"
+      - "horse-racing/jrdb/racenote/src/racenote_trend_aggregator.py"
       - ".github/workflows/data_storage.yml"
       - ".github/workflows/jrdb_analysis_parquet_canonical_issue.yml"
   workflow_dispatch:
@@ -61,6 +63,7 @@ jobs:
           python -m pytest tools/data-storage/tests -q
           python -m unittest horse-racing/jrdb/tests/test_jrdb_analysis_parquet.py
           python -m unittest horse-racing/jrdb/tests/test_fact_lite_from_analysis_v1_4.py
+          python -m unittest horse-racing/jrdb/tests/test_racenote_trend_aggregator.py
 
       - name: Validate config path
         if: inputs.config_path != ''
