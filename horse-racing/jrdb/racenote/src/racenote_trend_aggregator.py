@@ -256,6 +256,19 @@ def _levels(note: Mapping[str, object], kind: str) -> list[dict[str, object]]:
     codes = _race_codes(note)
     base_clauses, base_params, base_scope = _base_filters(note)
     class_sql, class_params = _class_filter(race, codes)
+    grade = str(race.get("grade") or "").strip()
+    is_open_or_graded = grade in GRADE_CODES or str(race.get("class") or "").strip() == "オープン"
+    if is_open_or_graded:
+        local_class_sql = (
+            "(f.grade_code IN ('1','2','3','4','6') "
+            "OR f.race_condition_code='OP')"
+        )
+        local_class_params: list[object] = []
+        local_class_label = "OP+"
+    else:
+        local_class_sql = class_sql
+        local_class_params = class_params
+        local_class_label = race.get("class")
     month = int(str(race["date"])[5:7])
     day = race.get("meeting_day")
     day_int = int(day) if isinstance(day, int) or str(day or "").isdigit() else None
@@ -303,12 +316,13 @@ def _levels(note: Mapping[str, object], kind: str) -> list[dict[str, object]]:
         }]
 
     # Local trend: class is preserved through every fallback level.
-    local_base = base_clauses + [class_sql, "CAST(SUBSTR(f.race_date,6,2) AS INTEGER) = ?"]
-    local_params = base_params + class_params + [month]
+    local_base = base_clauses + [local_class_sql, "CAST(SUBSTR(f.race_date,6,2) AS INTEGER) = ?"]
+    local_params = base_params + local_class_params + [month]
     common_scope = {
         **base_scope,
-        "class": race.get("class"),
-        "grade": race.get("grade"),
+        "class_scope": local_class_label,
+        "target_class": race.get("class"),
+        "target_grade": race.get("grade"),
         "month": month,
     }
     levels: list[dict[str, object]] = []
@@ -342,9 +356,14 @@ def _levels(note: Mapping[str, object], kind: str) -> list[dict[str, object]]:
             sc["course_rail"] = race.get("course_rail")
         levels.append({"id": "LOCAL_DROP_MEETING_DAY", "clauses": c, "params": p, "scope": sc})
 
-    c = base_clauses + [class_sql]
-    p = base_params + class_params
-    sc = {**base_scope, "class": race.get("class"), "grade": race.get("grade")}
+    c = base_clauses + [local_class_sql]
+    p = base_params + local_class_params
+    sc = {
+        **base_scope,
+        "class_scope": local_class_label,
+        "target_class": race.get("class"),
+        "target_grade": race.get("grade"),
+    }
     if codes.get("course_code"):
         c.append("f.course_code = ?")
         p.append(codes["course_code"])
@@ -353,12 +372,13 @@ def _levels(note: Mapping[str, object], kind: str) -> list[dict[str, object]]:
 
     levels.append({
         "id": "LOCAL_SAME_CLASS_COURSE",
-        "clauses": base_clauses + [class_sql],
-        "params": base_params + class_params,
+        "clauses": base_clauses + [local_class_sql],
+        "params": base_params + local_class_params,
         "scope": {
             **base_scope,
-            "class": race.get("class"),
-            "grade": race.get("grade"),
+            "class_scope": local_class_label,
+            "target_class": race.get("class"),
+            "target_grade": race.get("grade"),
             "course_rail": "ANY",
         },
     })
