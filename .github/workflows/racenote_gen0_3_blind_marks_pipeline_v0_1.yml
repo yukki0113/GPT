@@ -1,0 +1,565 @@
+name: RaceNote Gen0.3 blind marks pipeline v0.1
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACENOTE_GEN03_BLIND_MARKS_V01]'
+
+jobs:
+  build-blind-marks:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_GEN03_BLIND_MARKS_V01]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install gdown duckdb pyarrow
+
+      - name: Parse request
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          title = os.environ.get('ISSUE_TITLE') or ''
+          prefix = os.environ['REQUEST_PREFIX']
+          request_id = title[len(prefix):].strip()
+          if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
+              raise SystemExit('invalid request_id')
+
+          body = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          source_run_id = int(body.get('source_run_id') or 0)
+          source_artifact_name = str(
+              body.get('source_artifact_name') or ''
+          ).strip()
+          frozen_at = str(body.get('frozen_at') or '').strip()
+          racereview_drive_file_id = str(
+              body.get('racereview_drive_file_id')
+              or '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+          ).strip()
+
+          if source_run_id <= 0:
+              raise SystemExit('source_run_id must be positive')
+          if not source_artifact_name:
+              raise SystemExit('source_artifact_name is required')
+          if not frozen_at:
+              raise SystemExit('frozen_at is required')
+          if not re.fullmatch(r'[A-Za-z0-9_-]+', racereview_drive_file_id):
+              raise SystemExit('invalid racereview_drive_file_id')
+
+          resolved = {
+              'request_id': request_id,
+              'source_run_id': source_run_id,
+              'source_artifact_name': source_artifact_name,
+              'frozen_at': frozen_at,
+              'racereview_drive_file_id': racereview_drive_file_id,
+          }
+          Path('/tmp/request.json').write_text(
+              json.dumps(resolved, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
+              f.write(f"REQUEST_ID={request_id}\n")
+              f.write(f"SOURCE_RUN_ID={source_run_id}\n")
+              f.write(f"SOURCE_ARTIFACT_NAME={source_artifact_name}\n")
+              f.write(f"FROZEN_AT={frozen_at}\n")
+              f.write(f"RACEREVIEW_DRIVE_ID={racereview_drive_file_id}\n")
+          PY
+
+      - name: Compile blind pipeline modules
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_gen0_2_input_firewall.py \
+            horse-racing/jrdb/src/racenote_general_evidence.py \
+            horse-racing/jrdb/src/racenote_gen0_3_day_rehearsal_author.py \
+            horse-racing/jrdb/src/racenote_semantic_pairwise_research_v0_3.py \
+            horse-racing/jrdb/src/racenote_semantic_author_research_v0_4.py \
+            horse-racing/jrdb/src/racenote_mark_policy_research_v0_1.py
+
+      - name: Download source RaceNote artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/source
+          gh run download "$SOURCE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$SOURCE_ARTIFACT_NAME" \
+            --dir /tmp/source
+
+      - name: Extract RaceNote bundles
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          source = Path('/tmp/source')
+          candidates = sorted(source.rglob('RaceNote_*.zip'))
+          if len(candidates) != 1:
+              raise SystemExit(
+                  f'expected exactly one RaceNote ZIP, found {candidates}'
+              )
+
+          output = Path('/tmp/racenote_day')
+          output.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile(candidates[0]) as archive:
+              members = [
+                  item
+                  for item in archive.infolist()
+                  if Path(item.filename).name.startswith('race_bundle_')
+                  and Path(item.filename).suffix == '.json'
+              ]
+              if not members:
+                  raise SystemExit('RaceNote ZIP contains no race bundles')
+              for item in members:
+                  member = Path(item.filename)
+                  if member.is_absolute() or '..' in member.parts:
+                      raise SystemExit(f'unsafe member: {item.filename}')
+                  (output / member.name).write_bytes(archive.read(item))
+          print(f'extracted {len(members)} race bundles')
+          PY
+
+      - name: Download RaceReviewDB CURRENT
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rr_download /tmp/rr_extract
+          gdown "$RACEREVIEW_DRIVE_ID" \
+            -O /tmp/rr_download/RaceReviewDB_CURRENT.zip
+          test -s /tmp/rr_download/RaceReviewDB_CURRENT.zip
+          python -m zipfile -t /tmp/rr_download/RaceReviewDB_CURRENT.zip >/dev/null
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          source = Path('/tmp/rr_download/RaceReviewDB_CURRENT.zip')
+          destination = Path('/tmp/rr_extract')
+          resolved = destination.resolve()
+          with zipfile.ZipFile(source) as archive:
+              for member in archive.infolist():
+                  target = (destination / member.filename).resolve()
+                  try:
+                      target.relative_to(resolved)
+                  except ValueError as exc:
+                      raise SystemExit(
+                          f'unsafe RaceReview member: {member.filename}'
+                      ) from exc
+              archive.extractall(destination)
+
+          current_files = sorted(destination.rglob('current.json'))
+          if len(current_files) != 1:
+              raise SystemExit(
+                  f'expected one RaceReview current.json; found {current_files}'
+              )
+          Path('/tmp/rr_root.txt').write_text(
+              str(current_files[0].parent),
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Prepare all races with condition corroboration
+        id: prepare
+        continue-on-error: true
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set +e
+          python - <<'PY'
+          import hashlib
+          import json
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          source_root = Path('/tmp/racenote_day')
+          output_root = Path('/tmp/prepare')
+          output_root.mkdir(parents=True, exist_ok=True)
+          rr_root = Path('/tmp/rr_root.txt').read_text(
+              encoding='utf-8'
+          ).strip()
+
+          def run(command: list[str]) -> None:
+              subprocess.run(command, check=True)
+
+          rows = []
+          bundles = sorted(source_root.glob('race_bundle_*.json'))
+          for index, bundle in enumerate(bundles, start=1):
+              race_dir = output_root / bundle.stem
+              firewall_dir = race_dir / 'firewall'
+              firewall_dir.mkdir(parents=True, exist_ok=True)
+              print(f'[{index}/{len(bundles)}] {bundle.name}')
+
+              run([
+                  sys.executable,
+                  'horse-racing/jrdb/src/racenote_gen0_2_input_firewall.py',
+                  str(bundle),
+                  '--output-dir',
+                  str(firewall_dir),
+              ])
+              independent = firewall_dir / 'independent_view.json'
+
+              rr_evidence = race_dir / 'racereview_evidence.json'
+              run([
+                  sys.executable,
+                  'horse-racing/jrdb/src/racenote_racereview_adapter.py',
+                  '--independent-view',
+                  str(independent),
+                  '--racereview-root',
+                  rr_root,
+                  '--per-horse-limit',
+                  '5',
+                  '--output',
+                  str(rr_evidence),
+              ])
+
+              cards = race_dir / 'horse_evidence_cards.json'
+              run([
+                  sys.executable,
+                  'horse-racing/jrdb/src/racenote_horse_evidence_card.py',
+                  '--racereview-evidence',
+                  str(rr_evidence),
+                  '--output',
+                  str(cards),
+              ])
+
+              general = race_dir / 'general_evidence.json'
+              run([
+                  sys.executable,
+                  'horse-racing/jrdb/src/racenote_general_evidence.py',
+                  '--independent-view',
+                  str(independent),
+                  '--racereview-card',
+                  str(cards),
+                  '--output',
+                  str(general),
+              ])
+
+              general_obj = json.loads(
+                  general.read_text(encoding='utf-8')
+              )
+              synthesis_request = race_dir / 'all_runner_synthesis_request.json'
+              code = (
+                  'import json,sys; '
+                  'from pathlib import Path; '
+                  'from racenote_all_runner_synthesis import build_synthesis_request; '
+                  'g=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8")); '
+                  'r=build_synthesis_request(g); '
+                  'Path(sys.argv[2]).write_text('
+                  'json.dumps(r,ensure_ascii=False,indent=2)+"\\n",'
+                  'encoding="utf-8")'
+              )
+              run([
+                  sys.executable,
+                  '-c',
+                  code,
+                  str(general),
+                  str(synthesis_request),
+              ])
+
+              semantic = hashlib.sha256(
+                  json.dumps(
+                      general_obj,
+                      ensure_ascii=False,
+                      sort_keys=True,
+                      separators=(',', ':'),
+                  ).encode('utf-8')
+              ).hexdigest()
+              rows.append({
+                  'bundle_name': bundle.name,
+                  'target': general_obj['target'],
+                  'runner_count': len(general_obj['horses']),
+                  'general_evidence_sha256': semantic,
+                  'general_schema_version': general_obj.get(
+                      'general_schema_version'
+                  ),
+                  'general_logic_version': general_obj.get(
+                      'general_logic_version'
+                  ),
+                  'field_evidence_summary': general_obj.get(
+                      'field_evidence_summary'
+                  ),
+              })
+
+          summary = {
+              'status': 'PASS',
+              'race_count': len(rows),
+              'result_visibility_status': 'HIDDEN',
+              'market_visibility_status': 'HIDDEN',
+              'races': rows,
+          }
+          (output_root / 'day_prepare_summary.json').write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Freeze baseline day forecast
+        id: baseline
+        if: steps.prepare.outputs.exit_code == '0'
+        continue-on-error: true
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set +e
+          mkdir -p /tmp/baseline
+          python horse-racing/jrdb/src/racenote_gen0_3_day_rehearsal_author.py \
+            --prepared-root /tmp/prepare \
+            --output-root /tmp/baseline \
+            --frozen-at "$FROZEN_AT"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Build Semantic Pairwise v0.3
+        id: pairwise
+        if: steps.baseline.outputs.exit_code == '0'
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/pairwise
+          python horse-racing/jrdb/src/racenote_semantic_pairwise_research_v0_3.py \
+            --prepared-root /tmp/prepare \
+            --author-root /tmp/baseline \
+            --output-root /tmp/pairwise
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Build Semantic Author v0.4
+        id: semantic
+        if: steps.pairwise.outputs.exit_code == '0'
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/semantic
+          python horse-racing/jrdb/src/racenote_semantic_author_research_v0_4.py \
+            --input-root /tmp/pairwise \
+            --output-root /tmp/semantic
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Assign ◎○▲△ with Mark Policy v0.1
+        id: marks
+        if: steps.semantic.outputs.exit_code == '0'
+        continue-on-error: true
+        run: |
+          set +e
+          mkdir -p /tmp/marks
+          python horse-racing/jrdb/src/racenote_mark_policy_research_v0_1.py \
+            --packet-root /tmp/pairwise \
+            --semantic-root /tmp/semantic \
+            --baseline-root /tmp/baseline \
+            --output-root /tmp/marks
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Build blind pipeline manifest
+        if: always()
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          def read(path: str) -> dict:
+              file = Path(path)
+              if not file.is_file():
+                  return {}
+              return json.loads(file.read_text(encoding='utf-8'))
+
+          request = read('/tmp/request.json')
+          prepare = read('/tmp/prepare/day_prepare_summary.json')
+          baseline = read('/tmp/baseline/day_freeze_summary.json')
+          pairwise = read('/tmp/pairwise/semantic_pairwise_day_summary.json')
+          semantic = read('/tmp/semantic/semantic_author_day_summary.json')
+          marks = read('/tmp/marks/mark_policy_day_summary.json')
+
+          stage_exit = {
+              'prepare': '${{ steps.prepare.outputs.exit_code }}',
+              'baseline': '${{ steps.baseline.outputs.exit_code }}',
+              'pairwise': '${{ steps.pairwise.outputs.exit_code }}',
+              'semantic': '${{ steps.semantic.outputs.exit_code }}',
+              'marks': '${{ steps.marks.outputs.exit_code }}',
+          }
+          passed = all(value == '0' for value in stage_exit.values())
+          manifest = {
+              'status': 'PASS' if passed else 'FAIL',
+              'request_id': request.get('request_id'),
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'head_sha': os.environ['GITHUB_SHA'],
+              'source_run_id': request.get('source_run_id'),
+              'source_artifact_name': request.get('source_artifact_name'),
+              'frozen_at': request.get('frozen_at'),
+              'race_count': marks.get(
+                  'race_count',
+                  semantic.get('race_count', prepare.get('race_count')),
+              ),
+              'versions': {
+                  'general_schema': (
+                      prepare.get('races', [{}])[0].get(
+                          'general_schema_version'
+                      )
+                      if prepare.get('races') else None
+                  ),
+                  'general_logic': (
+                      prepare.get('races', [{}])[0].get(
+                          'general_logic_version'
+                      )
+                      if prepare.get('races') else None
+                  ),
+                  'baseline_profile': baseline.get('profile_version'),
+                  'pairwise': pairwise.get('packet_version'),
+                  'semantic_author': semantic.get('author_version'),
+                  'mark_policy': marks.get('policy_version'),
+              },
+              'axis_changed_count': semantic.get('axis_changed_count'),
+              'result_visibility_status': 'HIDDEN',
+              'market_visibility_status': 'HIDDEN',
+              'firewall': {
+                  'rl_index_visible': False,
+                  'edgedb_match_visible': False,
+                  'training_edge_visible': False,
+                  'jrdb_condition_signal_visible': True,
+              },
+              'stage_exit_codes': stage_exit,
+          }
+          output = Path('/tmp/final')
+          output.mkdir(parents=True, exist_ok=True)
+          (output / 'blind_marks_pipeline_manifest.json').write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Collect final artifact
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/final
+          for stage in prepare baseline pairwise semantic marks; do
+            if [ -d "/tmp/$stage" ]; then
+              mkdir -p "/tmp/final/$stage"
+              cp -a "/tmp/$stage/." "/tmp/final/$stage/"
+            fi
+          done
+
+      - name: Upload blind marks artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-gen03-blind-marks-v01-${{ github.run_id }}
+          path: /tmp/final/
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 6
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/final/blind_marks_pipeline_manifest.json')
+          if path.is_file():
+              result = json.loads(path.read_text(encoding='utf-8'))
+          else:
+              result = {
+                  'status': 'FAIL',
+                  'run_id': int(os.environ['GITHUB_RUN_ID']),
+              }
+          result['artifact_name'] = (
+              'racenote-gen03-blind-marks-v01-'
+              + os.environ['GITHUB_RUN_ID']
+          )
+          Path('/tmp/comment.md').write_text(
+              'RACENOTE_GEN03_BLIND_MARKS_V01_RESULT\n```json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n```\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file /tmp/comment.md
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          status="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('/tmp/final/blind_marks_pipeline_manifest.json')
+          if not path.is_file():
+              print('FAIL')
+          else:
+              print(json.loads(path.read_text(encoding='utf-8')).get('status', 'FAIL'))
+          PY
+          )"
+          if [ "$status" = "PASS" ]; then
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason "not planned"
+          fi
+
+      - name: Fail unless all stages passed
+        if: always()
+        run: |
+          test "$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('/tmp/final/blind_marks_pipeline_manifest.json')
+          if not path.is_file():
+              print('FAIL')
+          else:
+              print(json.loads(path.read_text(encoding='utf-8')).get('status', 'FAIL'))
+          PY
+          )" = "PASS"
