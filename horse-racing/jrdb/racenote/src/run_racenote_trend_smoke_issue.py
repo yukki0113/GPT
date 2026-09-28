@@ -190,8 +190,16 @@ def main() -> int:
     )
 
     result = json.loads(output.read_text(encoding="utf-8"))
+    trend_provenance = next(
+        (
+            item for item in result.get("provenance", [])
+            if item.get("id") == "P3_ANALYSIS_TREND"
+        ),
+        {},
+    )
     summary = {
         "status": "PASS",
+        "analysis_generation_id": trend_provenance.get("snapshot"),
         "target": race,
         "named": {
             "status": result["trend_context"]["named_race"].get("status"),
