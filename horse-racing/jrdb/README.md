@@ -103,18 +103,35 @@ Performance / Value、CONFIRMED / SUGGESTIVE、重複Edgeを安易に数値加�
 
 Canonical SQLiteはRawを置換する正本ではなく、反復・横断アクセス用のmaterializationです。
 
-### Analysis Lite / Stats Mart / post-race
+### Analysis Lite / post-race
 
-- `src/build_jrdb_analysis_from_raw.py` — production full rebuild
-- `src/update_jrdb_analysis_incremental.py` — 対象日単位の差分置換
-- `src/build_jrdb_stats_mart.py` — Analysis -> Stats Mart
-- `src/refresh_jrdb_stats_mart_year.py` — 対象年partition更新
-- `src/build_jrdb_pwa_fact_lite.py` — 条件別集計PWA用Fact Lite
-- `src/migrate_jrdb_analysis_parquet.py` — immutable year-object Analysis Parquet shadow migration
-- `src/materialize_jrdb_analysis_sqlite.py` — compatibility SQLite from an Analysis Parquet manifest
-- `src/build_jrdb_pwa_fact_lite_dual.py` — one DuckDB logical Fact Lite relation to SQLite + Parquet
+Current Analysis canonical is **v1.4 immutable Parquet** under
+`GPT/horse-racing/10_warehouse/analysis/v1/`.
 
-開催後の標準フローは、結果を使ってAnalysisを差分更新し、その更新済みAnalysisを正本保存・検証した後、Stats MartとFact Liteを再生成・検証・配布してconsumerを同一世代へ進めます。Analysisだけ更新してPWAを旧世代に残さないことを運用原則とします。
+- `src/build_jrdb_analysis_from_raw_v1_4.py` — v1.4 full rebuild
+- `src/build_jrdb_analysis_post_race_parquet_native_v1_4.py` — current affected-year native Parquet post-race updater
+- `.github/workflows/jrdb_post_race_parquet_refresh_issue.yml` — Actions-native daily candidate generation
+- `src/migrate_jrdb_analysis_parquet_v1_4.py` — v1.4 immutable Parquet migration
+- `src/materialize_jrdb_analysis_sqlite.py` — compatibility / rollback materialization only
+- `src/build_jrdb_pwa_fact_lite.py` / `src/build_jrdb_pwa_fact_lite_dual.py` — Fact Lite consumers
+
+Normal daily transport boundary:
+
+```text
+prior successful GitHub Actions candidate artifact
+  -> JRDB PACI/SED acquisition in Actions
+  -> native v1.4 Parquet candidate
+  -> GPT/native Drive publication + round-trip validation
+  -> Drive current.json promotion
+  -> downstream Fact Lite / PWA
+```
+
+GitHub Actions does not read/write Google Drive directly. The old
+`update_jrdb_analysis_incremental.py` /
+`run_jrdb_analysis_post_race_incremental.py` full-SQLite daily path and Stats
+Mart refresh are legacy/rollback paths, not the current standard.
+
+Analysisだけ更新してFact Lite/PWAを旧世代に残さないことを運用原則とします。
 
 ### RaceNote data layer
 
