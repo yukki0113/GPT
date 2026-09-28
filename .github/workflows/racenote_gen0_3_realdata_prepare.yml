@@ -17,10 +17,15 @@ on:
         description: Exact race bundle file name, e.g. race_bundle_20260920_中山11R.json
         required: true
         type: string
-      racereview_drive_file_id:
-        description: Stable RaceReviewDB CURRENT Drive file ID
+      racereview_source_run_id:
+        description: GitHub Actions run ID for the accepted RaceReviewDB CURRENT bytes
         required: false
-        default: '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+        default: '36094708797'
+        type: string
+      racereview_artifact_name:
+        description: Exact accepted RaceReviewDB artifact name
+        required: false
+        default: 'RaceReviewDB-next-36094708797'
         type: string
       race_day_facts_json:
         description: Optional independent pre-result race-day facts JSON
@@ -60,7 +65,7 @@ jobs:
       - name: Install runtime
         run: |
           python -m pip install --disable-pip-version-check --upgrade pip
-          python -m pip install gdown duckdb pyarrow
+          python -m pip install duckdb pyarrow
 
       - name: Parse prepare request
         env:
@@ -70,7 +75,8 @@ jobs:
           INPUT_SOURCE_RUN_ID: ${{ inputs.source_run_id }}
           INPUT_SOURCE_ARTIFACT_NAME: ${{ inputs.source_artifact_name }}
           INPUT_BUNDLE_NAME: ${{ inputs.bundle_name }}
-          INPUT_RACEREVIEW_DRIVE_FILE_ID: ${{ inputs.racereview_drive_file_id }}
+          INPUT_RACEREVIEW_SOURCE_RUN_ID: ${{ inputs.racereview_source_run_id }}
+          INPUT_RACEREVIEW_ARTIFACT_NAME: ${{ inputs.racereview_artifact_name }}
           INPUT_RACE_DAY_FACTS_JSON: ${{ inputs.race_day_facts_json }}
         run: |
           set -euo pipefail
@@ -100,9 +106,13 @@ jobs:
                   request.get('source_artifact_name') or ''
               ).strip()
               bundle_name = str(request.get('bundle_name') or '').strip()
-              racereview_drive_file_id = str(
-                  request.get('racereview_drive_file_id')
-                  or '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+              racereview_source_run_id = str(
+                  request.get('racereview_source_run_id')
+                  or '36094708797'
+              ).strip()
+              racereview_artifact_name = str(
+                  request.get('racereview_artifact_name')
+                  or 'RaceReviewDB-next-36094708797'
               ).strip()
               race_day_facts = request.get('race_day_facts')
               if race_day_facts is not None:
@@ -121,9 +131,13 @@ jobs:
               bundle_name = (
                   os.environ.get('INPUT_BUNDLE_NAME') or ''
               ).strip()
-              racereview_drive_file_id = (
-                  os.environ.get('INPUT_RACEREVIEW_DRIVE_FILE_ID')
-                  or '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+              racereview_source_run_id = (
+                  os.environ.get('INPUT_RACEREVIEW_SOURCE_RUN_ID')
+                  or '36094708797'
+              ).strip()
+              racereview_artifact_name = (
+                  os.environ.get('INPUT_RACEREVIEW_ARTIFACT_NAME')
+                  or 'RaceReviewDB-next-36094708797'
               ).strip()
               raw_race_day_facts = (
                   os.environ.get('INPUT_RACE_DAY_FACTS_JSON')
@@ -151,18 +165,21 @@ jobs:
               bundle_name,
           ):
               raise SystemExit('bundle_name is invalid')
+          if not re.fullmatch(r'\d+', racereview_source_run_id):
+              raise SystemExit('racereview_source_run_id must be numeric')
           if not re.fullmatch(
-              r'[A-Za-z0-9_-]+',
-              racereview_drive_file_id,
+              r'[A-Za-z0-9._-]{3,160}',
+              racereview_artifact_name,
           ):
-              raise SystemExit('racereview_drive_file_id is invalid')
+              raise SystemExit('racereview_artifact_name is invalid')
 
           resolved = {
               'request_id': request_id,
               'source_run_id': int(source_run_id),
               'source_artifact_name': source_artifact_name,
               'bundle_name': bundle_name,
-              'racereview_drive_file_id': racereview_drive_file_id,
+              'racereview_source_run_id': int(racereview_source_run_id),
+              'racereview_artifact_name': racereview_artifact_name,
               'race_day_facts': race_day_facts,
           }
           Path('/tmp/gen03_prepare_request.json').write_text(
@@ -188,8 +205,13 @@ jobs:
               )
               f.write(f'BUNDLE_NAME={resolved["bundle_name"]}\n')
               f.write(
-                  'RACEREVIEW_DRIVE_ID='
-                  + resolved['racereview_drive_file_id']
+                  'RACEREVIEW_SOURCE_RUN_ID='
+                  + str(resolved['racereview_source_run_id'])
+                  + '\n'
+              )
+              f.write(
+                  'RACEREVIEW_ARTIFACT_NAME='
+                  + resolved['racereview_artifact_name']
                   + '\n'
               )
               f.write(f'REQUEST_ID={resolved["request_id"]}\n')
@@ -273,43 +295,40 @@ jobs:
             /tmp/racenote_prepare/firewall/independent_view.json
           test -s /tmp/racenote_prepare/firewall/independent_view.json
 
-      - name: Download and extract RaceReviewDB CURRENT
+      - name: Download and validate accepted RaceReviewDB artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p /tmp/racereview_download /tmp/racereview_extract
-          gdown "$RACEREVIEW_DRIVE_ID" \
-            -O /tmp/racereview_download/RaceReviewDB_CURRENT.zip
-          test -s /tmp/racereview_download/RaceReviewDB_CURRENT.zip
-          python -m zipfile -t \
-            /tmp/racereview_download/RaceReviewDB_CURRENT.zip >/dev/null
+          mkdir -p /tmp/racereview_extract
+          gh run download "$RACEREVIEW_SOURCE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$RACEREVIEW_ARTIFACT_NAME" \
+            --dir /tmp/racereview_extract
           python - <<'PY'
-          import zipfile
+          import json
           from pathlib import Path
 
-          source = Path('/tmp/racereview_download/RaceReviewDB_CURRENT.zip')
           destination = Path('/tmp/racereview_extract')
-          resolved = destination.resolve()
-
-          with zipfile.ZipFile(source) as archive:
-              bad = archive.testzip()
-              if bad is not None:
-                  raise SystemExit(f'corrupt RaceReview member: {bad}')
-              for member in archive.infolist():
-                  target = (destination / member.filename).resolve()
-                  try:
-                      target.relative_to(resolved)
-                  except ValueError as exc:
-                      raise SystemExit(
-                          f'unsafe RaceReview ZIP member: {member.filename}'
-                      ) from exc
-              archive.extractall(destination)
-
           current_files = sorted(destination.rglob('current.json'))
           if len(current_files) != 1:
               raise SystemExit(
                   f'expected one RaceReview current.json; found {current_files}'
               )
           root = current_files[0].parent
+          current = json.loads(
+              current_files[0].read_text(encoding='utf-8')
+          )
+          expected = 'jrdb_race_review_v0_1_incremental_g36094708797'
+          if current.get('status') != 'CURRENT':
+              raise SystemExit('RaceReview artifact current status is not CURRENT')
+          if current.get('generation_id') != expected:
+              raise SystemExit(
+                  'RaceReview generation mismatch: '
+                  + str(current.get('generation_id'))
+                  + ' != '
+                  + expected
+              )
           Path('/tmp/racereview_root.txt').write_text(
               str(root),
               encoding='utf-8',
