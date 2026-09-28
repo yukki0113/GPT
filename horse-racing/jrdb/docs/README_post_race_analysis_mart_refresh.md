@@ -9,24 +9,104 @@ Analysisの正本はGoogle Drive上のimmutable Parquet generationであり、`c
 
 Fact Liteの通常配布・PWA runtimeはParquet / DuckDB-Wasmである。Stats Martは旧思想のSQLite資産として現状維持し、開催後更新の標準工程・完了条件には含めない。
 
-## 次回からの固定順序
+## 2026-09-29 current standard — Analysis v1.4 native Parquet
 
-1. DriveのAnalysis `current.json`とmanifestを取得し、SHA-256、size、schema、canonical key、row countを検証する。
-2. `materialize_jrdb_analysis_sqlite.py`で一時SQLiteを作る。
-3. `run_jrdb_analysis_post_race_incremental.py`でPACI + SEDの対象日だけを置換し、対象外行不変・as-of・canonical keyを監査する。
-4. `build_jrdb_analysis_post_race_parquet_candidate.py`で新しいshadow generationを作る。ここでは`current.json`を変更しない。
-5. generation assetをDriveへ保存し、別途再取得したrootでmanifest・asset SHA・size・row count・auditを検証する。
-6. `publish_jrdb_analysis_parquet_drive_generation.py`でAnalysis `current.json`を切り替える。
-7. 切替後のAnalysis Parquet bundleだけを入力にFact Lite Parquet generationを発行・同値性監査する。
-8. Fact Lite current、GitHub Pages、条件別集計PWAを更新し、通常検索・オフライン検索を確認する。
+Analysis current schema is v1.4. Normal post-race Analysis refresh no longer
+materializes the full Analysis dataset to SQLite.
 
-Stats Martのrefresh・配布・PWA入力への復帰は行わない。必要になった場合は別Workで旧資産として個別に扱う。
+Current Drive root:
 
-いずれかのgateに失敗した場合、Analysis / Fact Lite / Pagesのcurrentは直前の正常generationを維持する。未参照の候補assetは残ってもよいが、既存generationを編集・上書きしてはならない。
+`/GPT/horse-racing/10_warehouse/analysis/v1/`
 
-## 実装状態
+Current pointer:
 
-Parquet resolver、temporary SQLite materialization、日付置換監査、candidate生成、Drive round-trip promotion、Fact Liteのcurrent manifest限定入力、Parquet配布、Pages公開まで実装済みである。旧`jrdb_post_race_refresh_issue.yml`はStats Martを含む旧経路のため、通常の開催後更新には用いない。
+`current.json`
+
+Current generation at this review:
+
+`analysis-v1_4-canonical-20260928-02`
+
+Current operational candidate workflow:
+
+`.github/workflows/jrdb_post_race_parquet_refresh_issue.yml`
+
+Native updater:
+
+`src/build_jrdb_analysis_post_race_parquet_native_v1_4.py`
+
+### Fixed execution split
+
+GitHub Actions and Google Drive transport are intentionally separated.
+
+- Actions may use JRDB Secrets and an **upstream GitHub Actions artifact chain**.
+- Actions must not download from or upload to Google Drive directly.
+- GPT/native Drive connector resolves and publishes the Drive canonical.
+- Drive `current.json` advances only after candidate PASS + Drive round-trip
+  validation.
+
+### Fixed refresh order
+
+1. Confirm the Drive Analysis `current.json` generation and the matching most
+   recent successful post-race candidate artifact.
+2. Start `[JRDB_POST_RACE_PARQUET_REFRESH]` with:
+   - `request_id`
+   - `dates`
+   - `generation_id`
+   - `source_run_id`
+   - `artifact_name`
+   - `expected_source_generation`
+3. The workflow downloads only that upstream GitHub Actions artifact, promotes
+   its `shadow_current.json` to an execution-local `current.json`, and checks
+   that it equals `expected_source_generation`.
+4. PACI + SED are acquired with JRDB Secrets.
+5. `build_jrdb_analysis_post_race_parquet_native_v1_4.py` replaces only the
+   affected year partition(s) and emits a new immutable candidate generation.
+6. Required gates include:
+   - row count equality
+   - canonical key equality
+   - schema contract equality
+   - row-level equivalence
+   - metadata preservation
+   - duplicate key rows = 0
+   - native Parquet update = true
+   - full SQLite materialization = false
+7. GPT downloads the successful candidate artifact and publishes only the new
+   immutable generation assets to Drive.
+8. GPT re-downloads the just-published Drive assets and verifies manifest SHA,
+   size, row count and audit independently.
+9. Only after that round-trip PASS, update the existing Drive `current.json`
+   file in place. Preserve the previous generation for rollback.
+10. Rebuild/replace the stable local transport bundle used by GPT-side
+    consumers as needed. Do not turn that bundle into an Actions->Drive route.
+11. Run consumer smoke from a validated local/Drive-resolved bundle or from the
+    formal Actions artifact chain, according to the execution routing policy.
+12. Continue to downstream Fact Lite / PWA publication only after Analysis
+    current validation succeeds.
+
+### Validated cutover evidence
+
+2026-09-28/29 cutover candidate:
+
+- Issue #1590
+- Run `36437363166`
+- generation `analysis-v1_4-canonical-20260928-02`
+- dates: 2026-09-19, 09-20, 09-21, 09-22, 09-26, 09-27
+- total rows after update: 517,622
+- period through: 2026-09-27
+- duplicate key rows: 0
+- as-of violations: 0
+- native Parquet update: PASS
+- full SQLite materialization: false
+
+RaceNote Trend consumer smoke against the promoted v1.4-02 data also passed
+(Issue #1591 / Run `36438532392`).
+
+### Legacy route
+
+`.github/workflows/jrdb_post_race_refresh_issue.yml` and the old
+`run_jrdb_analysis_post_race_incremental.py` full-SQLite route are retained
+for historical compatibility / rollback investigation only. They are not the
+normal v1.4 post-race Analysis refresh path.
 
 ## 完了報告
 
