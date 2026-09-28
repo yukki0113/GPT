@@ -268,8 +268,25 @@ Every statistic should expose:
 - numerator/denominator or starts,
 - period/editions,
 - sample size,
-- return/payoff statistics when legitimately available,
+- finish record in compact human-readable form such as `(1-0-2-8)`,
+- win return rate (単回) when payout data is available,
+- place return rate (複回) when payout data is available,
 - missingness.
+
+Canonical aggregation fields should include:
+- first,
+- second,
+- third,
+- out,
+- starts,
+- win_rate,
+- top3_rate,
+- win_roi,
+- place_roi.
+
+The reader may render these as:
+
+`(1-0-2-8) / 単回155% / 複回118%`
 
 No statistic gets an automatic priority rank.
 
@@ -539,6 +556,31 @@ RaceNote v1 does not:
 Those are Forecast-layer responsibilities.
 
 ---
+
+## 14.1 PACI-driven scope extraction
+
+In normal operation, Trend search scopes should be derived automatically from the target PACI/BAC race facts.
+
+Available BAC context includes:
+- venue,
+- distance,
+- surface,
+- class,
+- grade,
+- race name,
+- meeting number,
+- meeting day,
+- turf course rail code (A / A1 / A2 / B / C / D).
+
+Named Race Trend must use the race name **together with the current race conditions**. A same-name race held at a materially different venue, distance, class/grade, or course configuration must not silently enter the strict Named sample.
+
+Local Trend should preserve the current class while broadening:
+1. venue + surface + distance + class/grade + month + course rail + nearby meeting day,
+2. drop meeting-day proximity,
+3. drop month,
+4. drop course rail only as a wider support sample.
+
+The narrow sample remains visible even when small. Broader levels support interpretation rather than overwrite the narrow sample.
 
 ## 15. Phase 1 acceptance criteria
 
