@@ -146,9 +146,12 @@ def _rewrite_year(
     try:
         con.execute('CREATE TEMP TABLE year_fact AS SELECT * FROM read_parquet(?)', [str(source)])
         columns = [str(row[0]) for row in con.execute("DESCRIBE year_fact").fetchall()]
-        if columns != list(FACT_COLUMNS):
+        missing = sorted(set(FACT_COLUMNS) - set(columns))
+        extra = sorted(set(columns) - set(FACT_COLUMNS))
+        if missing or extra or len(columns) != len(FACT_COLUMNS):
             raise AnalysisNativeCandidateError(
-                f"Analysis fact schema/order mismatch for year {base_partition['year']}"
+                "Analysis fact schema mismatch for year "
+                f"{base_partition['year']}: missing={missing}, extra={extra}"
             )
 
         for update in sorted(updates, key=lambda item: item["date"]):
@@ -161,8 +164,9 @@ def _rewrite_year(
             )
             con.execute(f'DELETE FROM "year_fact" WHERE race_date=?', [target_date])
             marks = ",".join("?" for _ in FACT_COLUMNS)
+            insert_columns = ",".join(f'"{column}"' for column in FACT_COLUMNS)
             con.executemany(
-                f'INSERT INTO "year_fact" VALUES ({marks})',
+                f'INSERT INTO "year_fact" ({insert_columns}) VALUES ({marks})',
                 update["rows"],
             )
             target_rows = int(
