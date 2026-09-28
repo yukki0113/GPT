@@ -63,7 +63,7 @@ jobs:
           python -m pytest tools/data-storage/tests -q
           python -m unittest horse-racing/jrdb/tests/test_jrdb_analysis_parquet.py
           python -m unittest horse-racing/jrdb/tests/test_fact_lite_from_analysis_v1_4.py
-          python -m unittest horse-racing/jrdb/tests/test_racenote_trend_aggregator.py
+          python -m pytest horse-racing/jrdb/tests/test_racenote_trend_aggregator.py -q
 
       - name: Validate config path
         if: inputs.config_path != ''
