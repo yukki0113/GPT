@@ -25,7 +25,7 @@ from pathlib import Path
 
 PAIRWISE_SCHEMA_VERSION = "RaceNote-Pairwise-Comparison-0.1"
 PAIRWISE_CONTRACT_VERSION = "TrendFirst-Pairwise-v0.1"
-EXPECTED_GENERAL_SCHEMA = "RaceNote-General-Evidence-0.1"
+EXPECTED_GENERAL_SCHEMA = "RaceNote-General-Evidence-0.2"
 
 LANE_ORDER = (
     "DATA_TREND",
@@ -253,6 +253,14 @@ def _validate_general_evidence(
     if firewall.get("training_edge_visible") is not False:
         raise PairwiseComparisonError(
             "Training Edge must remain hidden"
+        )
+    if firewall.get("rl_index_visible") is not False:
+        raise PairwiseComparisonError(
+            "RL index must remain hidden"
+        )
+    if firewall.get("edgedb_match_visible") is not False:
+        raise PairwiseComparisonError(
+            "EdgeDB match must remain hidden"
         )
 
 
