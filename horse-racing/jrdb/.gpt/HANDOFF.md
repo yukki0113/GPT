@@ -307,6 +307,9 @@ Issue #1590 / Run `36437363166` -> generation
 RaceNote Trend smoke after promotion:
 Issue #1591 / Run `36438532392` -> PASS.
 
+Artifact-only workflow routing smoke:
+Issue #1592 / Run `36489888125` -> PASS.
+
 The previous generation remains immutable for rollback. Do not delete the prior
 generation merely because `current.json` advances.
 
