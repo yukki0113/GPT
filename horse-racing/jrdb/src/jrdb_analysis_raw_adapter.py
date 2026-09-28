@@ -32,19 +32,35 @@ def _int(value: object) -> int | None:
         return None
 
 
+def _hex_digit(value: object) -> int | None:
+    """Decode JRDB one-character hexadecimal meeting-day fields."""
+    text = _text(value).strip().lower()
+    if len(text) != 1:
+        return None
+    try:
+        return int(text, 16)
+    except ValueError:
+        return None
+
+
 def parse_bac(raw: bytes, race_date: str, year: int) -> dict[str, object]:
-    """Project one BAC row into the existing Analysis race representation."""
+    """Project one BAC row into the Analysis race representation."""
     parsed = _COMMON.bac(raw)
+    race_key = _text(parsed.get("race_key_raw"))
     return {
         "race_date": race_date,
         "year": year,
-        "venue_code": _text(str(parsed["race_key_raw"])[:2]),
-        "race_no": _int(str(parsed["race_key_raw"])[6:8]),
+        "venue_code": _text(race_key[:2]),
+        "meeting_no": _int(race_key[4:5]),
+        "meeting_day": _hex_digit(race_key[5:6]),
+        "race_no": _int(race_key[6:8]),
         "distance": _int(parsed.get("distance_raw")),
         "track_type": _text(parsed.get("surface_code")),
         "race_condition_code": _text(parsed.get("race_class_code")),
         "track_condition_code": None,
         "grade_code": _text(parsed.get("grade_code")),
+        "race_name": _text(parsed.get("race_name")) or None,
+        "course_code": _text(parsed.get("course_code")) or None,
         "win5_leg_no": _int(parsed.get("win5_leg_no")),
     }
 
