@@ -191,7 +191,25 @@ LegacyからGen0へ再利用してよいのは、pre-race guard、as-of validati
 - 既取得PACI/SED/Analysisを使う差分生成・validation・row count・integrity確認: 条件がCを満たす場合 **C**
 - JRDB認証取得、formal artifact chain、Release/Pages publicationを伴う開催後正式更新: **D**
 
-開催後は `Analysis update -> canonical save/validation -> Stats Mart refresh -> Fact Lite regenerate/validate/publish -> condition-summary PWA update` を一つの運用世代として扱う。Analysisだけを更新して後続PWAを旧世代に残さない。
+Current Analysis daily route is v1.4 native Parquet:
+`.github/workflows/jrdb_post_race_parquet_refresh_issue.yml` ->
+`build_jrdb_analysis_post_race_parquet_native_v1_4.py`.
+
+The Actions request must chain from a prior successful GitHub Actions artifact
+using `source_run_id`, `artifact_name` and
+`expected_source_generation`. Do not pass a Google Drive file ID to the
+workflow and do not add `drive.google.com`, `drive.usercontent.google.com`,
+gdown, or Drive API transport to it.
+
+Drive canonical publication is a separate GPT/native connector step:
+
+`candidate PASS -> GPT downloads artifact -> native Drive publish -> Drive round-trip validation -> current.json promotion`.
+
+Normal v1.4 post-race refresh must keep
+`native_parquet_update=true` and `full_sqlite_materialization=false`.
+The old full-SQLite post-race route is rollback/historical compatibility only.
+
+開催後は `Analysis update -> canonical save/validation -> Fact Lite regenerate/validate/publish -> condition-summary PWA update` を一つの運用世代として扱う。Analysisだけを更新して後続PWAを旧世代に残さない。Stats Martは現行標準chainから外れており、必要時のみlegacy資産として個別に扱う。
 
 ### Ability / Debut Ability指数開発での標準適用
 
