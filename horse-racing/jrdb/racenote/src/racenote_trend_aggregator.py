@@ -311,27 +311,39 @@ def _levels(note: Mapping[str, object], kind: str) -> list[dict[str, object]]:
             "race_name": name,
             "class": race.get("class"),
             "grade": race.get("grade"),
-            "course_rail": "ANY",
         }
-        levels = [
+        if codes.get("course_code"):
+            return [
+                {
+                    "id": "NAMED_STRICT",
+                    "clauses": named_clauses + ["f.course_code = ?"],
+                    "params": named_params + [codes["course_code"]],
+                    "scope": {
+                        **named_scope,
+                        "course_rail": race.get("course_rail"),
+                    },
+                },
+                {
+                    "id": "NAMED_DROP_RAIL",
+                    "clauses": named_clauses,
+                    "params": named_params,
+                    "scope": {
+                        **named_scope,
+                        "course_rail": "ANY",
+                    },
+                },
+            ]
+        return [
             {
                 "id": "NAMED_MAIN",
                 "clauses": named_clauses,
                 "params": named_params,
-                "scope": named_scope,
-            }
-        ]
-        if codes.get("course_code"):
-            levels.append({
-                "id": "NAMED_RAIL_SLICE",
-                "clauses": named_clauses + ["f.course_code = ?"],
-                "params": named_params + [codes["course_code"]],
                 "scope": {
                     **named_scope,
-                    "course_rail": race.get("course_rail"),
+                    "course_rail": "UNAVAILABLE",
                 },
-            })
-        return levels
+            }
+        ]
 
     # Local trend: class is preserved through every fallback level.
     local_base = base_clauses + [local_class_sql, "CAST(SUBSTR(f.race_date,6,2) AS INTEGER) = ?"]
