@@ -24,10 +24,23 @@ def main() -> int:
     args = parser.parse_args()
 
     req = json.loads(args.issue_body)
-    required = {"source_run_id", "artifact_name", "date", "venue", "race_no"}
+    required = {"date", "venue", "race_no"}
     missing = sorted(required - set(req))
     if missing:
         raise RuntimeError("missing request fields: " + ", ".join(missing))
+
+    bundle_file_id = str(req.get("analysis_parquet_bundle_file_id") or "").strip()
+    source_run_id = req.get("source_run_id")
+    artifact_name = str(req.get("artifact_name") or "").strip()
+    bundle_mode = bool(bundle_file_id)
+    artifact_mode = source_run_id is not None or bool(artifact_name)
+    if bundle_mode == artifact_mode:
+        raise RuntimeError(
+            "specify exactly one Analysis source: "
+            "analysis_parquet_bundle_file_id or source_run_id + artifact_name"
+        )
+    if artifact_mode and (source_run_id is None or not artifact_name):
+        raise RuntimeError("artifact source requires source_run_id and artifact_name")
 
     work = args.work_dir
     work.mkdir(parents=True, exist_ok=True)
@@ -35,25 +48,44 @@ def main() -> int:
     artifact.mkdir(exist_ok=True)
 
     env = os.environ.copy()
-    run(
-        [
-            "gh", "run", "download", str(req["source_run_id"]),
-            "-n", str(req["artifact_name"]),
-            "-D", str(artifact),
-        ],
-        env=env,
-    )
-
-    parquet_root = artifact / "parquet"
-    shadow_current = parquet_root / "shadow_current.json"
-    if not shadow_current.is_file():
-        raise RuntimeError(f"shadow_current.json not found: {shadow_current}")
-    pointer = json.loads(shadow_current.read_text(encoding="utf-8"))
-    pointer["status"] = "CURRENT"
-    (parquet_root / "current.json").write_text(
-        json.dumps(pointer, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    if bundle_mode:
+        bundle = work / "analysis-parquet.tar.xz"
+        run(
+            [
+                "curl", "--fail", "--location", "--retry", "3", "--retry-delay", "2",
+                (
+                    "https://drive.usercontent.google.com/download?"
+                    f"id={bundle_file_id}&export=download&confirm=t"
+                ),
+                "--output", str(bundle),
+            ],
+            env=env,
+        )
+        parquet_root = work / "parquet"
+        parquet_root.mkdir(exist_ok=True)
+        run(["tar", "-xJf", str(bundle), "-C", str(parquet_root)], env=env)
+        current = parquet_root / "current.json"
+        if not current.is_file():
+            raise RuntimeError(f"current.json not found in canonical bundle: {current}")
+    else:
+        run(
+            [
+                "gh", "run", "download", str(source_run_id),
+                "-n", artifact_name,
+                "-D", str(artifact),
+            ],
+            env=env,
+        )
+        parquet_root = artifact / "parquet"
+        shadow_current = parquet_root / "shadow_current.json"
+        if not shadow_current.is_file():
+            raise RuntimeError(f"shadow_current.json not found: {shadow_current}")
+        pointer = json.loads(shadow_current.read_text(encoding="utf-8"))
+        pointer["status"] = "CURRENT"
+        (parquet_root / "current.json").write_text(
+            json.dumps(pointer, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
     date = str(req["date"])
     paci_dir = work / "paci"
