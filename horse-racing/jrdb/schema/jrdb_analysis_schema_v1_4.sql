@@ -1,8 +1,8 @@
 PRAGMA foreign_keys=ON;
 
 -- JRDB Analysis Lite schema v1.4
--- v1.4 adds BAC WIN5 leg number while preserving v1.2 previous-result linkage,
--- incremental ingest metadata, and the horse-history access index.
+-- v1.4 adds BAC meeting number/day, race name, and turf course rail code
+-- for RaceNote Named/Local Trend sampling while preserving v1.3 fields.
 
 CREATE TABLE meta_analysis_build(
   build_id INTEGER PRIMARY KEY,
