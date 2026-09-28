@@ -110,6 +110,30 @@ Workflow:
     PYTHONPATH=. python -m unittest discover -s tests -v
     python -m py_compile keirin_historical/*.py
 
+## Stage A Core Canonical (offline)
+
+Requires Python 3.12 and `pyarrow`. Prepare a read-only directory containing
+`keirin-historical-2016.zip` through `keirin-historical-2025.zip` copied from
+Drive `00_raw/backfill_archives`. The parser does not perform HTTP requests or
+change the ZIPs.
+
+```bash
+cd keirin
+PYTHONPATH=. python -m keirin_canonical.cli \
+  --archives /path/to/annual-zips \
+  --supplemental-archive /path/to/keirin-historical-2016-01-poc-1185.zip \
+  --output /path/to/10_canonical \
+  --parser-commit "$(git rev-parse HEAD)"
+```
+
+The command writes a new exclusive `v0_1/generations/<generation>/` directory
+with typed ZSTD Parquet, per-asset provenance, and JSON audit. Exit code 2
+indicates that the integrity and input coverage gate failed; inspect
+`manifest/coverage.json`. A year ZIP may be readable while omitting acquired
+events: compare its successful manifest assets against the discovery total.
+`--supplemental-archive` is repeatable. Same-path/same-SHA replicas are parsed
+once with provenance retained; same-path/different-SHA inputs fail closed.
+
 ## Next gate
 
 1. Raw HTMLからpre / postを物理分離するCanonical parserを実装する。
