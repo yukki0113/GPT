@@ -14,6 +14,36 @@ def _dash(value: object) -> str:
     return str(value)
 
 
+def _scope_summary(scope: dict) -> str:
+    labels = {
+        "venue": "会場",
+        "surface": "馬場",
+        "distance_m": "距離",
+        "race_name": "レース",
+        "class": "クラス",
+        "grade": "Grade",
+        "class_scope": "クラス母集団",
+        "target_class": "対象クラス",
+        "target_grade": "対象Grade",
+        "month": "月",
+        "course_rail": "コース",
+        "meeting_day_band": "開催日帯",
+    }
+    pieces: list[str] = []
+    for key, value in scope.items():
+        if key == "period" or value is None or value == "":
+            continue
+        label = labels.get(key, key)
+        if key == "distance_m":
+            value = f"{value}m"
+        elif key == "month":
+            value = f"{value}月"
+        elif key == "meeting_day_band" and isinstance(value, list) and len(value) == 2:
+            value = f"{value[0]}-{value[1]}日目"
+        pieces.append(f"{label}={value}")
+    return " / ".join(pieces) if pieces else "—"
+
+
 def _history_summary(horse: dict) -> str:
     profile = (
         horse.get("horse_history", {})
@@ -52,7 +82,7 @@ def render(note: dict) -> str:
         (
             f"- コース: {_dash(race.get('turn'))} / "
             f"{_dash(race.get('course_layout'))} / "
-            f"{race.get('field_size')}頭"
+            f"{_dash(race.get('field_size'))}頭"
         ),
         (
             "- 情報境界: "
@@ -70,35 +100,44 @@ def render(note: dict) -> str:
         ("base_context", "Base"),
     ):
         item = note["trend_context"][key]
-        scope = ", ".join(
-            f"{name}={value}"
-            for name, value in (item.get("scope") or {}).items()
-            if value is not None and value != ""
-        )
-        lines.append(
-            f"- **{label}**: {item.get('status')} — "
-            f"{scope or 'scopeなし'}"
-        )
+        scope = item.get("scope") or {}
         sample = item.get("sample") or {}
+        if key == "named_race":
+            title = f"Named Race Trend — {race.get('race_name') or '名称なし'}"
+        elif key == "local_context":
+            title = "Local Trend"
+        else:
+            title = "Base Trend"
+
+        lines.extend([
+            f"### {title}",
+            "",
+            f"- Status: {item.get('status')}",
+            f"- Scope: {_scope_summary(scope)}",
+            f"- Period: {_dash(sample.get('period') or scope.get('period'))}",
+        ])
+        sample_bits = []
         if sample.get("starts") is not None:
-            sample_bits = [f"starts={sample.get('starts')}"]
-            if sample.get("races") is not None:
-                sample_bits.append(f"races={sample.get('races')}")
-            if sample.get("editions") is not None:
-                sample_bits.append(f"editions={sample.get('editions')}")
-            if sample.get("period"):
-                sample_bits.append(f"period={sample.get('period')}")
-            lines.append("  - sample: " + " / ".join(sample_bits))
+            sample_bits.append(f"{sample.get('starts')} starts")
+        if sample.get("races") is not None:
+            sample_bits.append(f"{sample.get('races')} races")
+        if sample.get("editions") is not None:
+            sample_bits.append(f"{sample.get('editions')} editions")
+        if sample_bits:
+            lines.append("- Sample: " + " / ".join(sample_bits))
         if item.get("selected_level"):
-            lines.append(f"  - selected_level: {item.get('selected_level')}")
+            lines.append(f"- Selected: {item.get('selected_level')}")
+        fallbacks = []
         for fallback in item.get("fallback_levels") or []:
             fs = fallback.get("sample") or {}
-            lines.append(
-                f"  - fallback {fallback.get('level_id')}: "
-                f"starts={fs.get('starts')} / races={fs.get('races')}"
+            fallbacks.append(
+                f"{fallback.get('level_id')} "
+                f"({fs.get('starts')} starts / {fs.get('races')} races)"
             )
+        if fallbacks:
+            lines.append("- Levels: " + " → ".join(fallbacks))
         for limitation in item.get("limitations") or []:
-            lines.append(f"  - limitation: {limitation}")
+            lines.append(f"- Limitation: {limitation}")
 
         dimensions = item.get("dimensions") or {}
         for axis, dimension in dimensions.items():
@@ -107,10 +146,10 @@ def render(note: dict) -> str:
                 continue
             lines.extend([
                 "",
-                f"### {label} — {(dimension or {}).get('label') or axis}",
+                f"#### {label} — {(dimension or {}).get('label') or axis}",
                 "",
-                "| 条件 | 成績 | 勝率 | 3着内率 | 単回 | 複回 | n |",
-                "|---|---:|---:|---:|---:|---:|---:|",
+                "| 条件 | 成績・回収率 | 勝率 | 3着内率 | n |",
+                "|---|---:|---:|---:|---:|",
             ])
             for row in rows:
                 record = (row.get("finish_record") or {}).get("compact") or "—"
@@ -118,10 +157,10 @@ def render(note: dict) -> str:
                 top3_rate = _dash(row.get("top3_rate"))
                 win_roi = _dash(row.get("win_roi"))
                 place_roi = _dash(row.get("place_roi"))
+                compact = f"{record} / 単回{win_roi}% / 複回{place_roi}%"
                 lines.append(
-                    f"| {_dash(row.get('item'))} | {record} | "
-                    f"{win_rate}% | {top3_rate}% | "
-                    f"{win_roi}% | {place_roi}% | {row.get('starts')} |"
+                    f"| {_dash(row.get('item'))} | {compact} | "
+                    f"{win_rate}% | {top3_rate}% | {row.get('starts')} |"
                 )
 
     lines.extend(["", "## Runners", ""])
