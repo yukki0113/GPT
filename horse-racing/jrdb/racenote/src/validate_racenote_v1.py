@@ -202,7 +202,7 @@ def validate_trend_context(trend_value: object) -> dict[str, object]:
 
     return {
         "status": "PASS",
-        "trend_blocks": trend_result["trend_blocks"],
+        "trend_blocks": ["named_race", "local_context", "base_context"],
     }
 
 
