@@ -48,7 +48,12 @@ def main() -> int:
     shadow_current = parquet_root / "shadow_current.json"
     if not shadow_current.is_file():
         raise RuntimeError(f"shadow_current.json not found: {shadow_current}")
-    shutil.copy2(shadow_current, parquet_root / "current.json")
+    pointer = json.loads(shadow_current.read_text(encoding="utf-8"))
+    pointer["status"] = "CURRENT"
+    (parquet_root / "current.json").write_text(
+        json.dumps(pointer, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
     date = str(req["date"])
     paci_dir = work / "paci"
