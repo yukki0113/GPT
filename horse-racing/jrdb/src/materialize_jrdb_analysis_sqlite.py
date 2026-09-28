@@ -135,16 +135,24 @@ def materialize_current(root: Path, output: Path, schema: Path | None = None) ->
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--analysis-root", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--analysis-root", type=Path)
+    source.add_argument("--manifest", type=Path)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument(
         "--schema",
         type=Path,
         default=None,
-        help="Optional explicit Analysis schema. Omit to select from current manifest.",
+        help="Optional explicit Analysis schema. Omit to select from manifest/current.",
     )
     args = parser.parse_args()
-    print(materialize_current(args.analysis_root, args.out, args.schema))
+    if args.manifest is not None:
+        manifest = args.manifest.resolve()
+        selected_schema = args.schema or _schema_for_manifest(manifest)
+        root = manifest.parents[2]
+        print(materialize_generation(root, manifest, args.out, selected_schema))
+    else:
+        print(materialize_current(args.analysis_root, args.out, args.schema))
 
 
 if __name__ == "__main__":
