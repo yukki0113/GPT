@@ -8,6 +8,16 @@ Last reviewed: 2026-09-25
 > Reading priority: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
 > Gen0.2 was implemented but never activated and is retained as reference only.
 
+### Gen0-G001 activation readiness — 2026-09-29
+
+The fixed 50 PRIMARY + 20 RESERVE sample manifest is PASS and registered in
+`RaceNote Forecast Gen0 検証台帳`. Gen0-G001 is `READY`, not yet `ACTIVE`.
+The current operational generation remains Gen0-G000 until the first formal
+TRUE_FORWARD pre-result Freeze passes.
+
+Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
+
+
 ## 1. Goal
 
 RaceNote Forecast Gen0の目的は、固定ルールで印を機械生成することではなく、**RaceNoteの開催前evidenceをGPTが読み、比較し、予想し、その読み方を結果から改善する研究サイクル**を成立させることである。
