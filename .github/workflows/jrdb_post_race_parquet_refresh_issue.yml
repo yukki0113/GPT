@@ -5,11 +5,10 @@ on:
     types: [opened]
 
 permissions:
+  actions: read
   contents: read
   issues: write
 
-env:
-  DEFAULT_ANALYSIS_PARQUET_BUNDLE_FILE_ID: 1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5
 
 jobs:
   refresh-candidate:
@@ -41,7 +40,7 @@ jobs:
           from pathlib import Path
 
           request = json.loads(os.environ['ISSUE_BODY'])
-          required = {'request_id', 'dates', 'generation_id'}
+          required = {'request_id', 'dates', 'generation_id', 'source_run_id', 'artifact_name', 'expected_source_generation'}
           missing = sorted(key for key in required if not request.get(key))
           if missing:
               raise SystemExit('Missing request fields: ' + ', '.join(missing))
@@ -63,12 +62,16 @@ jobs:
           if len(dates) > 10:
               raise SystemExit('At most 10 race dates may be refreshed at once')
 
-          bundle_id = str(
-              request.get('analysis_parquet_bundle_file_id')
-              or os.environ['DEFAULT_ANALYSIS_PARQUET_BUNDLE_FILE_ID']
-          )
-          if not re.fullmatch(r'[A-Za-z0-9_-]{10,}', bundle_id):
-              raise SystemExit('Invalid analysis_parquet_bundle_file_id')
+          try:
+              source_run_id = int(request['source_run_id'])
+          except (TypeError, ValueError) as error:
+              raise SystemExit('source_run_id must be an integer') from error
+          artifact_name = str(request['artifact_name'])
+          if not re.fullmatch(r'[A-Za-z0-9._-]{3,160}', artifact_name):
+              raise SystemExit('Invalid artifact_name')
+          expected_source_generation = str(request['expected_source_generation'])
+          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{2,127}', expected_source_generation):
+              raise SystemExit('Invalid expected_source_generation')
 
           Path('.postrace/request.json').write_text(
               json.dumps(request, ensure_ascii=False, indent=2) + '\n',
@@ -80,38 +83,62 @@ jobs:
           )
           with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as env:
               env.write(f"REQUEST_ID={request['request_id']}\n")
-              env.write(f"ANALYSIS_PARQUET_BUNDLE_FILE_ID={bundle_id}\n")
+              env.write(f"SOURCE_RUN_ID={source_run_id}\n")
+              env.write(f"ARTIFACT_NAME={artifact_name}\n")
+              env.write(f"EXPECTED_SOURCE_GENERATION={expected_source_generation}\n")
               env.write(f"GENERATION_ID={request['generation_id']}\n")
           PY
 
       - name: Install Parquet dependencies
         run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
 
-      - name: Download and validate current v1.4 canonical bundle
+      - name: Download and validate promoted v1.4 source artifact
         env:
+          GH_TOKEN: ${{ github.token }}
           PYTHONPATH: horse-racing/jrdb/src
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3 --retry-delay 2             "https://drive.usercontent.google.com/download?id=${ANALYSIS_PARQUET_BUNDLE_FILE_ID}&export=download&confirm=t"             --output .postrace/analysis-parquet.tar.xz
-          mkdir -p .postrace/analysis-parquet
-          tar -xJf .postrace/analysis-parquet.tar.xz -C .postrace/analysis-parquet
+          mkdir -p .postrace/upstream .postrace/analysis-parquet
+          gh run download "$SOURCE_RUN_ID" -n "$ARTIFACT_NAME" -D .postrace/upstream
+          candidate_bundle="$(find .postrace/upstream -type f -name 'analysis-parquet-candidate.tar.xz' -print -quit)"
+          test -n "$candidate_bundle"
+          tar -xJf "$candidate_bundle" -C .postrace/analysis-parquet
           python - <<'PY' | tee .postrace/analysis_current_validation.json
           import json
+          import os
           from pathlib import Path
           from jrdb_analysis_parquet_current import resolve_current
 
           root = Path('.postrace/analysis-parquet')
+          shadow = root / 'shadow_current.json'
+          if not shadow.is_file():
+              raise SystemExit('upstream candidate artifact has no shadow_current.json')
+          pointer = json.loads(shadow.read_text(encoding='utf-8'))
+          expected = os.environ['EXPECTED_SOURCE_GENERATION']
+          if pointer.get('generation_id') != expected:
+              raise SystemExit(
+                  f"source generation mismatch: expected={expected} "
+                  f"artifact={pointer.get('generation_id')}"
+              )
+          pointer['status'] = 'CURRENT'
+          (root / 'current.json').write_text(
+              json.dumps(pointer, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
           report = resolve_current(root)
           manifest = json.loads(Path(report['manifest']).read_text(encoding='utf-8'))
           if manifest.get('schema_version') != 'v1.4':
-              raise SystemExit(f"Production refresh requires v1.4 current; got {manifest.get('schema_version')}")
+              raise SystemExit(
+                  f"Production refresh requires v1.4 current; got {manifest.get('schema_version')}"
+              )
           print(json.dumps({
               'status': 'PASS',
               'generation_id': report['generation_id'],
               'schema_version': manifest['schema_version'],
               'rows': report['rows'],
               'asset_count': len(report['assets']),
-              'bundle_file_id': '${ANALYSIS_PARQUET_BUNDLE_FILE_ID}',
+              'source_run_id': int(os.environ['SOURCE_RUN_ID']),
+              'artifact_name': os.environ['ARTIFACT_NAME'],
           }, sort_keys=True))
           PY
 
