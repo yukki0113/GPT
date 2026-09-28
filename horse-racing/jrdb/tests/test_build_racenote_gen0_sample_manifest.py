@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import sqlite3
 import sys
+import tempfile
 from collections import Counter
 from pathlib import Path
+
+import duckdb
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -191,3 +196,123 @@ def test_queue_projection_keeps_manifest_identity() -> None:
     assert {row["manifest_id"] for row in rows} == {manifest["manifest_id"]}
     assert {row["manifest_sha256"] for row in rows} == {manifest["manifest_sha256"]}
     assert rows[0]["source_ready_status"] == "UNRESOLVED"
+
+def test_parquet_current_is_canonical_sampling_source() -> None:
+    """Current Gen0 sampling resolves validated Analysis v1.4 Parquet."""
+    with tempfile.TemporaryDirectory() as temp_name:
+        root = Path(temp_name)
+        object_path = (
+            root
+            / "objects"
+            / "fact_entry_result_lite"
+            / "year=2025"
+            / "fact.parquet"
+        )
+        object_path.parent.mkdir(parents=True)
+
+        source = _database()
+        rows = source.execute(
+            """
+            SELECT
+                race_date, venue_code, race_no, track_type, distance,
+                race_condition_code, grade_code, race_key, horse_no
+            FROM fact_entry_result_lite
+            """
+        ).fetchall()
+        source.close()
+
+        con = duckdb.connect(":memory:")
+        con.execute(
+            """
+            CREATE TABLE fact_entry_result_lite(
+                race_date VARCHAR,
+                venue_code VARCHAR,
+                race_no INTEGER,
+                track_type VARCHAR,
+                distance INTEGER,
+                race_condition_code VARCHAR,
+                grade_code VARCHAR,
+                race_key VARCHAR,
+                horse_no INTEGER
+            )
+            """
+        )
+        con.executemany(
+            "INSERT INTO fact_entry_result_lite VALUES (?,?,?,?,?,?,?,?,?)",
+            rows,
+        )
+        con.execute(
+            f"COPY fact_entry_result_lite TO '{object_path}' "
+            "(FORMAT PARQUET, COMPRESSION ZSTD)"
+        )
+        con.close()
+
+        digest = hashlib.sha256(object_path.read_bytes()).hexdigest()
+        metadata = {}
+        for name in ("meta_analysis_build", "meta_analysis_ingest_batch"):
+            path = root / "metadata" / f"{name}.parquet"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            dcon = duckdb.connect(":memory:")
+            dcon.execute("CREATE TABLE meta(value VARCHAR)")
+            dcon.execute("INSERT INTO meta VALUES ('x')")
+            dcon.execute(
+                f"COPY meta TO '{path}' (FORMAT PARQUET, COMPRESSION ZSTD)"
+            )
+            dcon.close()
+            metadata[name] = {
+                "relative_path": str(path.relative_to(root)),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "size_bytes": path.stat().st_size,
+                "rows": 1,
+            }
+
+        generation_id = "analysis-v1_4-test"
+        manifest = {
+            "artifact_type": "jrdb_analysis",
+            "schema_version": "v1.4",
+            "storage_format": "parquet",
+            "storage_version": "2",
+            "validation_status": "PASS",
+            "generation_id": generation_id,
+            "total_rows": len(rows),
+            "fact_table": {
+                "name": "fact_entry_result_lite",
+                "canonical_key": ["race_key", "horse_no"],
+                "partitions": [{
+                    "year": 2025,
+                    "rows": len(rows),
+                    "relative_path": str(object_path.relative_to(root)),
+                    "sha256": digest,
+                    "size_bytes": object_path.stat().st_size,
+                }],
+            },
+            "metadata_tables": metadata,
+        }
+        manifest_path = root / "generations" / generation_id / "manifest.json"
+        manifest_path.parent.mkdir(parents=True)
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        (root / "current.json").write_text(
+            json.dumps({
+                "status": "CURRENT",
+                "generation_id": generation_id,
+                "manifest": f"generations/{generation_id}/manifest.json",
+            }),
+            encoding="utf-8",
+        )
+
+        candidates, source_identity = sampler.load_candidates_parquet(root)
+        assert len(candidates) == 120
+        assert source_identity["analysis_generation_id"] == generation_id
+        assert source_identity["analysis_schema_version"] == "v1.4"
+        assert source_identity["analysis_storage_format"] == "parquet"
+        assert len(source_identity["analysis_manifest_sha256"]) == 64
+
+        manifest_out = sampler.build_manifest(
+            candidates,
+            "Gen0-G001",
+            "GEN0-G001-SEED-001",
+            source_identity=source_identity,
+        )
+        assert manifest_out["source_identity"] == source_identity
+        assert manifest_out["selection_policy"]["result_columns_selected"] is False
+
