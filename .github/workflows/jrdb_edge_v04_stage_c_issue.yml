@@ -71,7 +71,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p /tmp/feature /tmp/stage-b /tmp/stage-c
+          mkdir -p /tmp/feature /tmp/stage-b /tmp/stage-c /tmp/inputs
           gh run download "$FEATURE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$FEATURE_ARTIFACT_NAME" --dir /tmp/feature
           gh run download "$STAGE_B_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$STAGE_B_ARTIFACT_NAME" --dir /tmp/stage-b
           mapfile -t pqs < <(find /tmp/feature -type f -name edge_runner_fact.parquet -print)
@@ -86,7 +86,7 @@ jobs:
       - name: Run Stage C grouped evaluation
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c.py             --feature-parquet /tmp/feature/edge_runner_fact.parquet             --template-parquet /tmp/stage-b/candidate_template_catalog.parquet             --output-dir /tmp/stage-c             --template-batch-size "$TEMPLATE_BATCH_SIZE"             --min-win-roi "$MIN_WIN_ROI"             --min-place-roi "$MIN_PLACE_ROI"             --max-per-template "$MAX_PER_TEMPLATE"             | tee /tmp/stage-c/stdout.json
+          python horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c.py             --feature-parquet /tmp/feature/edge_runner_fact.parquet             --template-parquet /tmp/inputs/candidate_template_catalog.parquet             --output-dir /tmp/stage-c             --template-batch-size "$TEMPLATE_BATCH_SIZE"             --min-win-roi "$MIN_WIN_ROI"             --min-place-roi "$MIN_PLACE_ROI"             --max-per-template "$MAX_PER_TEMPLATE"             | tee /tmp/stage-c/stdout.json
 
       - name: Add provenance
         if: always()
