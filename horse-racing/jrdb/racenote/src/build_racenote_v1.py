@@ -169,9 +169,39 @@ def _neutral_racereview(
     }
 
 
+def _select_paci_context(
+    paci_context: Mapping[str, object] | None,
+    race: Mapping[str, object],
+) -> Mapping[str, object] | None:
+    if paci_context is None:
+        return None
+    rows = paci_context.get("races")
+    if not isinstance(rows, list):
+        raise BuildError("PACI context races must be an array")
+    matches = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        if str(row.get("date") or "") != str(race.get("date") or ""):
+            continue
+        if str(row.get("venue") or "") != str(race.get("venue") or ""):
+            continue
+        try:
+            row_no = int(row.get("race_no"))
+            race_no = int(race.get("race_no"))
+        except (TypeError, ValueError):
+            continue
+        if row_no == race_no:
+            matches.append(row)
+    if len(matches) > 1:
+        raise BuildError("PACI context matched multiple target races")
+    return matches[0] if matches else None
+
+
 def build(
     independent: Mapping[str, object],
     racereview: Mapping[str, object] | None = None,
+    paci_context: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     if _text(independent.get("view_kind")).upper() != "INDEPENDENT":
         raise BuildError("Gen0.2 INDEPENDENT view is required")
@@ -204,6 +234,8 @@ def build(
     )
     if race is None or horses is None:
         raise BuildError("independent view is missing race/horses")
+
+    target_paci = _select_paci_context(paci_context, race)
 
     metadata = (
         independent.get("metadata")
@@ -367,16 +399,36 @@ def build(
             "class": race.get("class"),
             "grade": race.get("grade"),
             "turn": race.get("turn"),
-            "course_layout": race.get("course_layout"),
-            "course_rail": race.get("course_rail"),
+            "course_layout": (
+                target_paci.get("course_layout")
+                if target_paci is not None
+                else race.get("course_layout")
+            ),
+            "course_rail": (
+                target_paci.get("course_rail")
+                if target_paci is not None
+                else race.get("course_rail")
+            ),
             "race_type": race.get("race_type"),
             "race_conditions": copy.deepcopy(
                 race.get("race_conditions") or []
             ),
             "weight_rule": race.get("weight_rule"),
-            "meeting_id": _text(race.get("meeting")) or None,
-            "meeting_day": race.get("day"),
-            "source_codes": copy.deepcopy(race.get("source_codes") or {}),
+            "meeting_id": (
+                _text(target_paci.get("meeting_no"))
+                if target_paci is not None
+                else _text(race.get("meeting"))
+            ) or None,
+            "meeting_day": (
+                target_paci.get("meeting_day")
+                if target_paci is not None
+                else race.get("day")
+            ),
+            "source_codes": copy.deepcopy(
+                (target_paci.get("source_codes") if target_paci is not None else None)
+                or race.get("source_codes")
+                or {}
+            ),
             "is_newcomer": _text(race.get("class")).startswith("新馬"),
             "is_steeplechase": _text(race.get("surface")).startswith("障害"),
         },
@@ -531,6 +583,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--independent-view", type=Path, required=True)
     parser.add_argument("--racereview-evidence", type=Path)
+    parser.add_argument("--paci-context", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -542,12 +595,17 @@ def main() -> int:
         if args.racereview_evidence
         else None
     )
+    paci_context = (
+        json.loads(args.paci_context.read_text(encoding="utf-8"))
+        if args.paci_context
+        else None
+    )
     if not isinstance(independent, Mapping):
         raise BuildError("independent view root must be object")
     if racereview is not None and not isinstance(racereview, Mapping):
         raise BuildError("RaceReview root must be object")
 
-    note = build(independent, racereview)
+    note = build(independent, racereview, paci_context)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(note, ensure_ascii=False, indent=2) + "\n",
