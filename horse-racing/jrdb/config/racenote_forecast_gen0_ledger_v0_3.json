@@ -1,6 +1,6 @@
 {
   "version": "0.3",
-  "status": "IMPLEMENTED_NOT_ACTIVATED",
+  "status": "ACTIVATION_PREP_TRUE_FORWARD_PENDING",
   "planned_generation_id": "Gen0-G001",
   "forecast_version": "RaceNote-Forecast-Gen0.3",
   "evidence_policy_version": "TrendFirst-RR-Pairwise-Scenario-v0.1",
@@ -58,8 +58,41 @@
   ],
   "activation_gate": {
     "sample_manifest_required": true,
+    "sample_manifest_status": "PASS",
     "generation_registration_required": true,
+    "generation_registration_status": "PASS",
     "formal_true_forward_freeze_required": true,
+    "formal_true_forward_freeze_status": "PENDING",
     "current_generation_remains_gen0_g000_until_activation": true
+  },
+  "sample_manifest": {
+    "status": "PASS",
+    "generation_id": "Gen0-G001",
+    "manifest_id": "Gen0-G001-3fcca49d7610",
+    "manifest_sha256": "3fcca49d76107b91214be08673e1ddd8797733f1a2445d5e67aead86520d2061",
+    "candidate_pool_sha256": "ca76f8979bcb08c14a8f5b7664fe957651f2bfaa9719f4fd42e8c3c26e0a63d6",
+    "seed": "GEN0-G001-SEED-001",
+    "primary_count": 50,
+    "reserve_count": 20,
+    "source_identity": {
+      "analysis_generation_id": "analysis-v1_4-canonical-20260928-02",
+      "analysis_manifest_sha256": "e9c391e76fac86a15526e8ab453558e68fc00400a18674e26edf64aad9feec9e",
+      "analysis_schema_version": "v1.4",
+      "analysis_storage_format": "parquet"
+    },
+    "issue_number": 1594,
+    "workflow_run_id": 36499756053,
+    "artifact_id": 11004733178,
+    "artifact_name": "racenote-gen0-g001-manifest-36499756053"
+  },
+  "generation_registration": {
+    "status": "PASS",
+    "ledger_spreadsheet_id": "1z9TJQJ61WEcrVSDxhAWP9D48plP1ixU0hCH-QGZrhnU",
+    "generation_sheet": "世代管理",
+    "generation_row": 3,
+    "queue_sheet": "対象Rキュー",
+    "queue_range": "A72:Y141",
+    "registered_races": 70,
+    "generation_status": "READY"
   }
 }
