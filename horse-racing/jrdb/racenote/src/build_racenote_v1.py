@@ -447,20 +447,20 @@ def build(
         },
         "trend_context": {
             "named_race": {
-                "status": "UNAVAILABLE",
+                "status": "NOT_GENERATED",
                 "scope": {"race_name": race.get("race_name")},
-                "sample": {"starts": 0, "editions": 0, "period": None},
+                "sample": {"starts": 0, "editions": None, "period": None},
                 "dimensions": {},
                 "provenance_refs": [],
                 "limitations": [
                     (
-                        "Named-race trend extractor is not implemented "
-                        "in Phase 2 v0.1."
+                        "Named-race Trend has not been generated yet; "
+                        "attach it with the Trend aggregator."
                     )
                 ],
             },
             "local_context": {
-                "status": "UNAVAILABLE",
+                "status": "NOT_GENERATED",
                 "scope": {
                     "venue": race.get("venue"),
                     "surface": race.get("surface"),
@@ -474,8 +474,8 @@ def build(
                 "provenance_refs": [],
                 "limitations": [
                     (
-                        "Class-preserving local-context trend extractor "
-                        "is not implemented in Phase 2 v0.1."
+                        "Local Trend has not been generated yet; attach it "
+                        "with the Trend aggregator."
                     )
                 ],
             },
