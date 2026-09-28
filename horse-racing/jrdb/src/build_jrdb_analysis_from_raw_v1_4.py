@@ -12,7 +12,7 @@ import re
 import sqlite3
 from pathlib import Path
 
-from jrdb_analysis_raw_adapter import (
+from jrdb_analysis_raw_adapter_v1_4 import (
     parse_bac,
     parse_cyb,
     parse_kyi,
