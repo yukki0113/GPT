@@ -12,11 +12,11 @@ class PostRaceParquetRefreshWorkflowTest(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn("[JRDB_POST_RACE_PARQUET_REFRESH]", workflow)
-        self.assertIn(
-            "DEFAULT_ANALYSIS_PARQUET_BUNDLE_FILE_ID: "
-            "1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5",
-            workflow,
-        )
+        self.assertIn("source_run_id", workflow)
+        self.assertIn("artifact_name", workflow)
+        self.assertIn("expected_source_generation", workflow)
+        self.assertIn('gh run download "$SOURCE_RUN_ID"', workflow)
+        self.assertIn("analysis-parquet-candidate.tar.xz", workflow)
         self.assertIn(
             "build_jrdb_analysis_post_race_parquet_native_v1_4.py",
             workflow,
@@ -32,6 +32,8 @@ class PostRaceParquetRefreshWorkflowTest(unittest.TestCase):
         self.assertNotIn("materialize_jrdb_analysis_sqlite.py", workflow)
         self.assertNotIn("publish_jrdb_analysis_parquet_drive_generation.py", workflow)
         self.assertNotIn("refresh_jrdb_stats_mart_year.py", workflow)
+        self.assertNotIn("drive.usercontent.google.com", workflow)
+        self.assertNotIn("drive.google.com", workflow)
 
 
 if __name__ == "__main__":
