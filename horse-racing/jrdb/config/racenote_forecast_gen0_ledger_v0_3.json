@@ -12,7 +12,8 @@
     "reason": "trend-first redesign was completed before Gen0.2 activation"
   },
   "source_chain": [
-    "RaceNote-General-Evidence-0.1",
+    "RaceNote-General-Evidence-0.2",
+    "RaceNote-All-Runner-Synthesis-0.1",
     "RaceNote-Pairwise-Audit-0.1",
     "RaceNote-Scenario-Robustness-Audit-0.1"
   ],
@@ -20,6 +21,7 @@
     "DATA_TREND",
     "RACEREVIEW",
     "ABILITY_ANCHOR",
+    "ALL_RUNNER_SYNTHESIS",
     "PAIRWISE_COMPARISON",
     "SCENARIO_ROBUSTNESS",
     "BASE_FORECAST",
