@@ -218,7 +218,7 @@ def _validate_general_evidence(
         "general_evidence.priority_policy",
     )
     relation = _text(policy.get("relation"))
-    if relation != "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR":
+    if relation != "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR; JRDB_CONDITION_SIGNAL=CORROBORATION_ONLY":
         raise PairwiseComparisonError(
             "general evidence priority relation changed unexpectedly"
         )
@@ -782,7 +782,7 @@ def validate_pairwise_comparison(
         },
         "policy": {
             "priority_relation": (
-                "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR"
+                "DATA_TREND > RACEREVIEW >= ABILITY_ANCHOR; JRDB_CONDITION_SIGNAL=CORROBORATION_ONLY"
             ),
             "numeric_score_used": False,
             "market_visible": False,
