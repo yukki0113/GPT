@@ -79,7 +79,7 @@ def validate_generation(root: Path, manifest_path: Path) -> dict[str, Any]:
     manifest = _read_json(manifest_path)
     if manifest.get("artifact_type") != "jrdb_analysis":
         raise AnalysisParquetCurrentError("Unexpected artifact_type")
-    if manifest.get("schema_version") != "v1.3" or manifest.get("storage_format") != "parquet":
+    if manifest.get("schema_version") not in {"v1.3", "v1.4"} or manifest.get("storage_format") != "parquet":
         raise AnalysisParquetCurrentError("Unexpected Analysis storage contract")
     if manifest.get("validation_status") != "PASS":
         raise AnalysisParquetCurrentError("Generation is not PASS")
