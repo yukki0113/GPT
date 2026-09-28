@@ -194,6 +194,9 @@ def test_named_scope_requires_name_and_current_conditions(tmp_path: Path) -> Non
     assert popularity["finish_record"]["compact"] == "(1-0-0-0)"
     assert popularity["win_roi"] == 350.0
     assert popularity["place_roi"] == 160.0
+
+    assert named["dimensions"]["style"]["rows"][0]["item"] == "先行"
+    assert named["dimensions"]["sex"]["rows"][0]["item"] == "牡"
     strict = next(level for level in named["levels"] if level["level_id"] == "NAMED_STRICT")
     assert strict["sample"]["starts"] == 1
     fallback = next(level for level in named["levels"] if level["level_id"] == "NAMED_DROP_RAIL")
