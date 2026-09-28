@@ -16,9 +16,9 @@ RaceNote Forecast Gen0の対象R固定、予想、Freeze、結果、振返り、
 - Parent folder ID: `1hWBtTRj4aHiFXAkln3qxjW_g7b1FUeoO`
 - Google Sheets timezone: `Asia/Tokyo`
 
-正本config:
+現行Gen0.3正本config:
 
-`config/racenote_forecast_gen0_ledger_v0_1.json`
+`config/racenote_forecast_gen0_ledger_v0_3.json`
 
 ## 3. Access policy
 
@@ -192,7 +192,7 @@ generation間の変更と基盤bug fixを記録する。
 
 Gen0-G000 default:
 
-- source: JRDB Analysis Lite v1.3 `fact_entry_result_lite`
+- source: validated JRDB Analysis v1.4 Parquet current `fact_entry_result_lite`
 - PRIMARY: 50R
 - RESERVE: 20R
 - 障害 `track_type=3` 除外
@@ -247,8 +247,8 @@ queue transitionのdeterministic helper:
 ## 9. Generation initialization transaction
 
 1. `設定 / 世代管理`をread
-2. historical Analysis Lite SQLiteをresolve
-3. `build_racenote_gen0_sample_manifest.py`でcandidate poolを構築
+2. Analysis v1.4 Parquet `current.json` / manifest / immutable assetsをresolve・検証
+3. `build_racenote_gen0_sample_manifest.py --analysis-root ...`でDuckDB direct candidate poolを構築
 4. 障害を除外し、結果列非参照を確認
 5. seed付きでPRIMARY50R + RESERVE20Rを固定
 6. manifest_id / manifest_sha256 / candidate_pool_sha256を生成
@@ -347,5 +347,5 @@ result leakage、schema破損、source identity defect等の研究成立を妨�
 - `tests/test_racenote_forecast_gen0.py`
 - `tests/test_racenote_forecast_gen0_guard.py`
 - `tests/test_racenote_forecast_gen0_evaluation.py`
-- `config/racenote_forecast_gen0_ledger_v0_1.json`
+- `config/racenote_forecast_gen0_ledger_v0_3.json`
 - `FORECAST_GEN0_SAMPLE_QUEUE_v0_1.md`
