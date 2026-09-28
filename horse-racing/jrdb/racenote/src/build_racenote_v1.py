@@ -368,18 +368,15 @@ def build(
             "grade": race.get("grade"),
             "turn": race.get("turn"),
             "course_layout": race.get("course_layout"),
-            "course_rail": None,
+            "course_rail": race.get("course_rail"),
             "race_type": race.get("race_type"),
             "race_conditions": copy.deepcopy(
                 race.get("race_conditions") or []
             ),
             "weight_rule": race.get("weight_rule"),
             "meeting_id": _text(race.get("meeting")) or None,
-            "meeting_day": (
-                int(race.get("day"))
-                if str(race.get("day") or "").isdigit()
-                else None
-            ),
+            "meeting_day": race.get("day"),
+            "source_codes": copy.deepcopy(race.get("source_codes") or {}),
             "is_newcomer": _text(race.get("class")).startswith("新馬"),
             "is_steeplechase": _text(race.get("surface")).startswith("障害"),
         },
