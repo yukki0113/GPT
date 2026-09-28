@@ -130,8 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
-      - name: Checkout latest main
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 1
@@ -142,135 +141,19 @@ jobs:
           cache: pip
           cache-dependency-path: tools/data-storage/requirements.txt
 
-      - name: Parse request
-        env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
-        run: |
-          set -euo pipefail
-          mkdir -p .v14
-          python - <<'PY'
-          import json, os, re
-          from pathlib import Path
-          req=json.loads(os.environ['ISSUE_BODY'])
-          required={'drive_file_id','source_filename','generation_id'}
-          missing=required-set(req)
-          if missing:
-              raise SystemExit('missing request fields: '+', '.join(sorted(missing)))
-          if not re.fullmatch(r'[A-Za-z0-9_-]{10,}',str(req['drive_file_id'])):
-              raise SystemExit('invalid drive_file_id')
-          if not re.fullmatch(r'jrdb_analysis_[A-Za-z0-9_.-]+\.sqlite\.zip',str(req['source_filename'])):
-              raise SystemExit('invalid source_filename')
-          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{2,127}',str(req['generation_id'])):
-              raise SystemExit('invalid generation_id')
-          Path('.v14/request.json').write_text(json.dumps(req,indent=2)+'\n',encoding='utf-8')
-          PY
-
       - name: Install dependencies
         run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
 
-      - name: Download source Analysis v1.3
-        run: |
-          set -euo pipefail
-          FILE_ID="$(python -c 'import json; print(json.load(open(".v14/request.json"))["drive_file_id"])')"
-          FILENAME="$(python -c 'import json; print(json.load(open(".v14/request.json"))["source_filename"])')"
-          curl --fail --location --retry 3 --retry-delay 2             "https://drive.usercontent.google.com/download?id=${FILE_ID}&export=download&confirm=t"             --output ".v14/${FILENAME}"
-          unzip -t ".v14/${FILENAME}"
-          mkdir -p .v14/source
-          unzip -q ".v14/${FILENAME}" -d .v14/source
-          mapfile -t dbs < <(find .v14/source -type f -name '*.sqlite' -print)
-          test "${#dbs[@]}" -eq 1
-          cp "${dbs[0]}" .v14/analysis-v1_3.sqlite
-          python - <<'PY'
-          import json, sqlite3
-          from pathlib import Path
-          p=Path('.v14/analysis-v1_3.sqlite')
-          with sqlite3.connect(f'file:{p}?mode=ro',uri=True) as c:
-              if c.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
-                  raise SystemExit('source Analysis integrity failure')
-              period=c.execute('SELECT MIN(race_date),MAX(race_date),COUNT(*),COUNT(DISTINCT race_key) FROM fact_entry_result_lite').fetchone()
-              dates=[r[0] for r in c.execute("SELECT DISTINCT race_date FROM fact_entry_result_lite WHERE year=2026 ORDER BY race_date")]
-          Path('.v14/source_probe.json').write_text(json.dumps({
-              'period_from':period[0],'period_to':period[1],'rows':period[2],'races':period[3],
-              'dates_2026':dates,
-          },indent=2)+'\n')
-          PY
-
-      - name: Fetch 2016-2025 annual BAC
+      - name: Run v1.4 shadow rebuild
         env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
           JRDB_USER: ${{ secrets.JRDB_USER }}
           JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
-          set -euo pipefail
-          mkdir -p .v14/annual
-          python horse-racing/jrdb/src/fetch_jrdb_history.py             --from-year 2016 --to-year 2025             --kinds BAC             --output-dir .v14/annual             --manifest .v14/annual/fetch_manifest.jsonl             --sleep-seconds 1             --continue-on-error
-          for y in $(seq 2016 2025); do test -s ".v14/annual/BAC/BAC_${y}.zip"; done
-
-      - name: Fetch 2026 PACI dates present in source
-        env:
-          JRDB_USER: ${{ secrets.JRDB_USER }}
-          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
-        run: |
-          set -euo pipefail
-          mkdir -p .v14/paci
-          python - <<'PY'
-          import json, subprocess, sys
-          dates=json.load(open('.v14/source_probe.json'))['dates_2026']
-          for i,date in enumerate(dates,1):
-              compact=date.replace('-','')
-              print(f'PACI {i}/{len(dates)} {compact}',flush=True)
-              subprocess.run([
-                  sys.executable,
-                  'horse-racing/jrdb/src/fetch_jrdb_paci.py',
-                  '--date',compact,
-                  '--out-dir','.v14/paci',
-              ],check=True)
-          PY
-
-      - name: Build v1.4 shadow SQLite
-        run: |
-          set -euo pipefail
-          python horse-racing/jrdb/src/upgrade_jrdb_analysis_v1_4_shadow.py             --source .v14/analysis-v1_3.sqlite             --output .v14/analysis-v1_4.sqlite             --annual-root .v14/annual             --paci-root .v14/paci             --report .v14/upgrade_report.json
-
-      - name: Build and audit v1.4 Parquet shadow
-        env:
-          PYTHONPATH: tools/data-storage
-        run: |
-          set -euo pipefail
-          GENERATION_ID="$(python -c 'import json; print(json.load(open(".v14/request.json"))["generation_id"])')"
-          python horse-racing/jrdb/src/migrate_jrdb_analysis_parquet_v1_4.py             --source-sqlite .v14/analysis-v1_4.sqlite             --output-root .v14/parquet             --generation-id "${GENERATION_ID}"             --result-json .v14/parquet_result.json
-          python horse-racing/jrdb/src/materialize_jrdb_analysis_sqlite.py             --manifest ".v14/parquet/generations/${GENERATION_ID}/manifest.json"             --schema horse-racing/jrdb/schema/jrdb_analysis_schema_v1_4.sql             --out .v14/analysis-v1_4-roundtrip.sqlite
-
-      - name: Verify Analysis v1.4 to Fact Lite v0.3 compatibility
-        run: |
-          set -euo pipefail
-          python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py             --analysis .v14/analysis-v1_3.sqlite             --db .v14/fact-v13.sqlite
-          python horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py             --analysis .v14/analysis-v1_4-roundtrip.sqlite             --db .v14/fact-v14.sqlite
-          python - <<'PY'
-          import json, sqlite3
-          def digest(path):
-              with sqlite3.connect(f'file:{path}?mode=ro',uri=True) as c:
-                  return {
-                      'rows':c.execute('SELECT COUNT(*) FROM fact_stats_entry').fetchone()[0],
-                      'races':c.execute('SELECT COUNT(*) FROM dim_race').fetchone()[0],
-                      'integrity':c.execute('PRAGMA integrity_check').fetchone()[0],
-                  }
-          a=digest('.v14/fact-v13.sqlite'); b=digest('.v14/fact-v14.sqlite')
-          with sqlite3.connect('.v14/fact-v13.sqlite') as x:
-              x.execute("ATTACH DATABASE '.v14/fact-v14.sqlite' AS newer")
-              diff=x.execute(
-                  'SELECT COUNT(*) FROM ('
-                  'SELECT * FROM fact_stats_entry EXCEPT SELECT * FROM newer.fact_stats_entry '
-                  'UNION ALL '
-                  'SELECT * FROM newer.fact_stats_entry EXCEPT SELECT * FROM fact_stats_entry)'
-              ).fetchone()[0]
-          if a['rows']!=b['rows'] or a['races']!=b['races'] or diff!=0:
-              raise SystemExit(f'Fact Lite compatibility mismatch: {a} vs {b}; diff={diff}')
-          if a['integrity']!='ok' or b['integrity']!='ok':
-              raise SystemExit('Fact Lite integrity failure')
-          open('.v14/fact_compat.json','w').write(json.dumps({'status':'PASS','v13':a,'v14':b,'fact_diff':diff},indent=2)+'\n')
-          PY
+          python horse-racing/jrdb/src/run_jrdb_analysis_v1_4_shadow_issue.py             --issue-body "$ISSUE_BODY"             --work-dir .v14
 
       - name: Upload v1.4 shadow candidate
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jrdb-analysis-v1-4-shadow-${{ github.run_id }}
@@ -296,4 +179,9 @@ jobs:
 Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}
 
 No Analysis current pointer, Drive canonical, Fact Lite release, or Pages publication was changed.`;
-            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body});
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
