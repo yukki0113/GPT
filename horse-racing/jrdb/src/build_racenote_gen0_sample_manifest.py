@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Build a reproducible RaceNote Forecast Gen0 race-sample manifest.
 
-The sampler reads only race identity / pre-race structural fields from JRDB
-Analysis Lite v1.3. It never selects result, payout, final-odds, or popularity
-columns. The output fixes the question set before GPT starts forecasting.
+The current sampler reads only race identity / pre-race structural fields from
+the validated Analysis v1.4 Parquet canonical. Legacy SQLite input remains
+available only for reproducibility/audit. Result, payout, final-odds, and
+popularity columns are never selected for sampling.
 """
 
 from __future__ import annotations
@@ -18,7 +19,11 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-VERSION = "0.1.1"
+import duckdb
+
+from jrdb_analysis_parquet_current import resolve_current
+
+VERSION = "0.2.0"
 SOURCE_TABLE = "fact_entry_result_lite"
 DEFAULT_PRIMARY_COUNT = 50
 DEFAULT_RESERVE_COUNT = 20
@@ -71,8 +76,10 @@ def validate_source_schema(connection: sqlite3.Connection) -> None:
         raise SampleManifestError(f"source table missing columns: {missing}")
 
 
-def load_candidates(
-    connection: sqlite3.Connection,
+def _load_candidates_from_connection(
+    connection: Any,
+    *,
+    table: str,
     date_from: str | None = None,
     date_to: str | None = None,
 ) -> list[dict[str, Any]]:
@@ -82,7 +89,6 @@ def load_candidates(
     The source table contains post-race columns, but this query never selects or
     filters by their values.
     """
-    validate_source_schema(connection)
     clauses = [
         "track_type IN ('1','2')",
         "venue_code IN ('01','02','03','04','05','06','07','08','09','10')",
@@ -109,7 +115,7 @@ def load_candidates(
             race_condition_code,
             grade_code,
             COUNT(*) AS runner_count
-        FROM {SOURCE_TABLE}
+        FROM {table}
         WHERE {' AND '.join(clauses)}
         GROUP BY
             race_date,
@@ -143,6 +149,78 @@ def load_candidates(
             }
         )
     return candidates
+
+
+def load_candidates(
+    connection: sqlite3.Connection,
+    date_from: str | None = None,
+    date_to: str | None = None,
+) -> list[dict[str, Any]]:
+    """Legacy SQLite sampler retained for reproducibility/audit."""
+    validate_source_schema(connection)
+    return _load_candidates_from_connection(
+        connection,
+        table=SOURCE_TABLE,
+        date_from=date_from,
+        date_to=date_to,
+    )
+
+
+def load_candidates_parquet(
+    analysis_root: Path,
+    date_from: str | None = None,
+    date_to: str | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, str]]:
+    """Load result-blind race candidates from validated Analysis v1.4 Parquet."""
+    root = analysis_root.resolve()
+    resolved = resolve_current(root)
+    manifest_path = Path(resolved["manifest"])
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != "v1.4":
+        raise SampleManifestError(
+            f"Gen0 current sampler requires Analysis v1.4; got {manifest.get('schema_version')}"
+        )
+
+    partitions = manifest["fact_table"]["partitions"]
+    paths = [str((root / row["relative_path"]).resolve()) for row in partitions]
+    if not paths:
+        raise SampleManifestError("Analysis v1.4 has no fact partitions")
+
+    connection = duckdb.connect(":memory:")
+    try:
+        connection.execute(
+            "CREATE TEMP VIEW fact_entry_result_lite AS "
+            "SELECT * FROM read_parquet(?)",
+            [paths],
+        )
+        columns = {
+            str(row[0])
+            for row in connection.execute(
+                "DESCRIBE fact_entry_result_lite"
+            ).fetchall()
+        }
+        missing = sorted(REQUIRED_COLUMNS - columns)
+        if missing:
+            raise SampleManifestError(
+                f"Analysis v1.4 fact table missing columns: {missing}"
+            )
+        candidates = _load_candidates_from_connection(
+            connection,
+            table=SOURCE_TABLE,
+            date_from=date_from,
+            date_to=date_to,
+        )
+    finally:
+        connection.close()
+
+    return candidates, {
+        "analysis_generation_id": str(resolved["generation_id"]),
+        "analysis_manifest_sha256": hashlib.sha256(
+            manifest_path.read_bytes()
+        ).hexdigest(),
+        "analysis_schema_version": "v1.4",
+        "analysis_storage_format": "parquet",
+    }
 
 
 def _candidate_pool_sha256(candidates: Sequence[Mapping[str, Any]]) -> str:
@@ -275,6 +353,7 @@ def build_manifest(
     candidates: Sequence[Mapping[str, Any]],
     generation_id: str,
     seed: str,
+    source_identity: Mapping[str, str] | None = None,
     primary_count: int = DEFAULT_PRIMARY_COUNT,
     reserve_count: int = DEFAULT_RESERVE_COUNT,
     max_per_date: int = DEFAULT_MAX_PER_DATE,
@@ -327,6 +406,7 @@ def build_manifest(
         "max_per_date": max_per_date,
         "min_surface_share": min_surface_share,
         "candidate_pool_sha256": pool_sha,
+        "source_identity": dict(source_identity or {}),
         "races": races,
     }
     manifest_sha = _sha256_text(
@@ -410,7 +490,9 @@ def write_queue_csv(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
 def main() -> None:
     """CLI entrypoint for deterministic Gen0 sample selection."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--db", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--analysis-root", type=Path)
+    source.add_argument("--db", type=Path)
     parser.add_argument("--generation-id", required=True)
     parser.add_argument("--seed", required=True)
     parser.add_argument("--out-manifest", type=Path, required=True)
@@ -427,16 +509,35 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    connection = sqlite3.connect(args.db)
-    try:
-        candidates = load_candidates(connection, args.date_from, args.date_to)
-    finally:
-        connection.close()
+    source_identity: dict[str, str]
+    if args.analysis_root is not None:
+        candidates, source_identity = load_candidates_parquet(
+            args.analysis_root,
+            args.date_from,
+            args.date_to,
+        )
+    else:
+        connection = sqlite3.connect(args.db)
+        try:
+            candidates = load_candidates(
+                connection,
+                args.date_from,
+                args.date_to,
+            )
+        finally:
+            connection.close()
+        source_identity = {
+            "analysis_generation_id": "LEGACY_SQLITE_UNBOUND",
+            "analysis_manifest_sha256": "",
+            "analysis_schema_version": "v1.3",
+            "analysis_storage_format": "sqlite",
+        }
 
     manifest = build_manifest(
         candidates,
         generation_id=args.generation_id,
         seed=args.seed,
+        source_identity=source_identity,
         primary_count=args.primary_count,
         reserve_count=args.reserve_count,
         max_per_date=args.max_per_date,
