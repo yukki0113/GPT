@@ -420,12 +420,73 @@
         "recent_runs": {
           "type": "array",
           "items": {
-            "type": "object"
+            "$ref": "#/$defs/historicalRun"
           }
         },
         "ability_history": {
           "type": "object",
-          "additionalProperties": true
+          "additionalProperties": true,
+          "required": [
+            "run_values"
+          ],
+          "properties": {
+            "run_values": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true,
+                "required": [
+                  "date",
+                  "venue",
+                  "surface",
+                  "distance_m",
+                  "class",
+                  "ability_value"
+                ],
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "venue": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "race_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "surface": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "distance_m": {
+                    "type": "integer",
+                    "minimum": 800
+                  },
+                  "class": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "grade": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "ability_value": {
+                    "type": [
+                      "number",
+                      "integer",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            }
+          }
         },
         "horse_history": {
           "type": "object",
@@ -485,6 +546,104 @@
             "string",
             "null"
           ]
+        }
+      }
+    },
+    "historicalRun": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "date",
+        "venue",
+        "surface",
+        "distance_m",
+        "class",
+        "finish"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "venue": {
+          "type": "string",
+          "minLength": 1
+        },
+        "race_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "distance_m": {
+          "type": "integer",
+          "minimum": 800
+        },
+        "class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "grade": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "course_layout": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "track_condition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "finish": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "field_size": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "jockey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "assigned_weight": {
+          "type": [
+            "number",
+            "integer",
+            "null"
+          ]
+        },
+        "ability_value": {
+          "type": [
+            "number",
+            "integer",
+            "null"
+          ]
+        },
+        "racereview_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     }
