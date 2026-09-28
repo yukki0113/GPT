@@ -101,6 +101,9 @@ GitHub Actions and Google Drive transport are intentionally separated.
 RaceNote Trend consumer smoke against the promoted v1.4-02 data also passed
 (Issue #1591 / Run `36438532392`).
 
+Artifact-only transport regression also passed after removing direct Drive access
+from the workflow (Issue #1592 / Run `36489888125`).
+
 ### Legacy route
 
 `.github/workflows/jrdb_post_race_refresh_issue.yml` and the old
