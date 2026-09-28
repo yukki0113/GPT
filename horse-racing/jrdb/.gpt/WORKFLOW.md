@@ -81,16 +81,18 @@ Secrets、Actions固有権限、Actions artifact chain、長時間・大容量ru
 
 Dを使う場合のみ、下記「Issue駆動Actionsのpreflight」を適用する。
 
-### Google Drive routing — do not use Actions Drive bridge
+### Google Drive routing — no direct Actions ↔ Drive transport
 
 JRDBのRaw / Analysis / Fact Lite / research asset等をGoogle Driveへ保存・取得する場合も、repository rootのDrive routing decisionを優先する。
 
-- production-standard: connected native Google Drive connector / native tools
-- frozen / prohibited for normal operation: `[gpt-gdrive-request]` / `.github/workflows/gpt_gdrive_request_issue.yml` / `tools/gpt_io/gdrive/`
-- GitHub Actions artifactをDriveへ保存する場合は、GitHub connectorでartifactを取得し、native Google Drive connectorへ渡す。
-- Actions artifact -> Driveの搬送だけを理由にDrive bridge Issueを作らない。
-- repositoryにworkflowが残っていても、それはcompatibility / future implementation assetであり、current operational permissionではない。
+- production-standard: **GitHub source / artifact -> GPTが取得 -> GPT runtime -> connected native Google Drive connectorでupload**
+- Drive入力の利用: **native Google Drive connector -> GPT runtime -> GitHub正本moduleを取得してGPT側で実行**
+- prohibited: GitHub ActionsからDriveを直接read / writeする経路全般。旧`[gpt-gdrive-request]`だけでなく、workflow内の`gdown` / `drive.google.com` / Google Drive API直接利用も含む。
+- `.github/workflows/gpt_gdrive_request_issue.yml` は運用廃止・削除済み。`tools/gpt_io/gdrive/` はcurrent operational routeではない。
+- GitHub Actions artifactをDriveへ保存する場合は、GPTがGitHub connectorでartifactを取得し、native Google Drive connectorへ渡す。
+- Drive transportだけを理由にIssue / Actionsを作らない。
 - `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` やService Account Secretを有効化・設定しない。
+- Drive inputを必要とするE2Eがpure deterministicに実行可能ならCとしてGPTローカル実行へ寄せる。Actions-native要件が別途ある場合も、Drive搬送部分はGPT側で分離する。
 
 正本: repository root `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`。
 

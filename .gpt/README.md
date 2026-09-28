@@ -144,6 +144,6 @@ run failureは一律に減らしません。
 - GitHub運用上位方針: `.gpt/GITHUB_OPERATION_POLICY.md`
 - Actions Issue preflight / retry: `.gpt/ISSUE_REQUEST_CONTRACTS.md`
 - GitHub Actions job時間監査: `.gpt/GITHUB_ACTIONS_JOB_AUDIT.md`
-- Google Drive標準経路: connected native Google Drive tools / connector。Actions Drive bridgeはdeferred（`tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`）
+- Google Drive標準経路: **GPTがGitHub source/artifactを取得 -> GPT runtime -> connected native Google Drive connectorでupload/download**。GitHub ActionsからDriveへの直接read/write（`gdown` / Drive URL / API /旧bridge）は禁止。正本: `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`
 
 個別プロジェクトの `.gpt/WORKFLOW.md` に旧「Issueを標準経路とする」記述が残る場合は、Actions-nativeである理由を棚卸しし、本上位方針へ順次寄せます。

@@ -262,29 +262,44 @@ branch protection、権限、競合、API制約で安全にまとめられない
 
 上位共通文書に個別プロジェクトのfile ID / Spreadsheet ID /日次データ配置を固定しません。正本の具体的所在は各プロジェクト文書を参照します。
 
-### 9.1 Google Drive transport routing — Actions bridge is frozen
+### 9.1 Google Drive transport routing — direct GitHub/Actions ↔ Drive transport is prohibited
 
-Google Driveへのread / write / upload / downloadは、**connected native Google Drive connector / native toolsをproduction-standard route** とします。
+Google Driveへのread / write / upload / downloadは、**ChatGPT / Work側のconnected native Google Drive connector / native toolsをproduction-standard route** とします。
 
-`.github/workflows/gpt_gdrive_request_issue.yml`、`tools/gpt_io/gdrive/`、`[gpt-gdrive-request]` は互換・将来実装用の残存資産であり、**通常運用では使用しません**。
+**GitHub Actions runnerからGoogle Driveへ直接接続する経路、およびGoogle DriveからGitHub Actions runnerへ直接取得する経路は通常運用では禁止します。** Service Account/API clientだけでなく、`gdown`、`drive.google.com` URL、Google Drive REST API等をworkflowから直接利用する方式も同じ扱いです。
+
+旧 `.github/workflows/gpt_gdrive_request_issue.yml` は運用廃止とし、workflow自体を削除します。`tools/gpt_io/gdrive/` 等のadapter/sourceは履歴・将来検討用資産として残り得ますが、**current operational routeではありません**。
 
 禁止事項:
 
-- `[gpt-gdrive-request]` Issueを通常運用で発行しない。
+- `[gpt-gdrive-request]` Issueを発行しない。
+- GitHub Actions workflowから `gdown` / `drive.google.com` / Google Drive APIを使ってDriveを直接read / writeしない。
 - `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` を有効化しない。
 - `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` 等の長期Service Account keyを通常運用のために作成・設定しない。
 - GitHub Actions artifactをDriveへ搬送するためだけにActions Drive bridgeをchainしない。
 - workflow / adapterがrepositoryに存在することを「利用可能な標準経路」と解釈しない。
 
-GitHub Actions artifactをDriveへ保存する必要がある場合の標準経路:
+GitHub側の成果物をDriveへ保存する場合の標準経路:
 
 ```text
-GitHub artifact
--> GitHub connector / direct artifact download
+GitHub source / artifact
+-> GPTがGitHub connectorから取得
 -> Chat / runtime file reference
--> connected native Google Drive connector
+-> GPTのconnected native Google Drive connectorでupload
 -> destination folder
 ```
+
+Drive上の入力をGitHub正本moduleで処理する場合も、Actionsから直接Driveを読ませません。
+
+```text
+Google Drive
+-> GPTのconnected native Google Drive connectorで取得
+-> GPT runtime
+-> GitHub正本moduleを取得してローカル実行
+-> 必要なら成果物をDrive connectorで戻す
+```
+
+Actions-nativeでなければ成立しない処理でもDrive transportだけはGPT側で分離し、ActionsにはGitHub artifact等のGitHub内で完結する入力を渡す設計を優先します。
 
 Google Docs / Sheets / Slidesは各native toolを使用します。
 
@@ -318,5 +333,7 @@ Google Docs / Sheets / Slidesは各native toolを使用します。
 > **並列更新ではforceせず、競合時はlatest main上へ自分の差分だけ再構築する。**
 >
 > **failedで役目を終えたIssueはopenのまま放置せず、実態に応じたstate reasonでcloseする。**
+>
+> **Google Drive transportはGPT側native connectorに集約し、GitHub ActionsからDriveへ直接接続しない。**
 >
 > **作業分割はIssue単位ではなく、論理的な完了点・監査点単位で行う。**
