@@ -13,9 +13,19 @@ import argparse
 import copy
 import json
 import sqlite3
+import sys
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
+
+import duckdb
+
+ROOT = Path(__file__).resolve().parents[4]
+JRDB_SRC = ROOT / "horse-racing" / "jrdb" / "src"
+if str(JRDB_SRC) not in sys.path:
+    sys.path.insert(0, str(JRDB_SRC))
+
+from jrdb_analysis_parquet_current import resolve_current
 
 VERSION = "RaceNote-Trend-Aggregator-0.1"
 
@@ -163,11 +173,20 @@ class TrendError(RuntimeError):
     pass
 
 
-def _table_columns(conn: sqlite3.Connection) -> set[str]:
-    return {str(row[1]) for row in conn.execute("PRAGMA table_info(fact_entry_result_lite)")}
+def _table_columns(conn: Any) -> set[str]:
+    try:
+        rows = conn.execute("PRAGMA table_info(fact_entry_result_lite)").fetchall()
+        if rows:
+            return {str(row[1]) for row in rows}
+    except Exception:
+        pass
+    return {
+        str(row[0])
+        for row in conn.execute("DESCRIBE fact_entry_result_lite").fetchall()
+    }
 
 
-def _require_v14_columns(conn: sqlite3.Connection) -> None:
+def _require_v14_columns(conn: Any) -> None:
     required = {
         "race_date", "year", "venue_code", "meeting_no", "meeting_day",
         "race_no", "track_type", "distance", "race_condition_code",
@@ -385,7 +404,7 @@ def _levels(note: Mapping[str, object], kind: str) -> list[dict[str, object]]:
     return levels
 
 
-def _sample(conn: sqlite3.Connection, clauses: list[str], params: list[object]) -> dict[str, object]:
+def _sample(conn: Any, clauses: list[str], params: list[object]) -> dict[str, object]:
     row = conn.execute(
         "SELECT COUNT(*) AS starts, COUNT(DISTINCT race_key) AS races "
         "FROM fact_entry_result_lite AS f WHERE " + " AND ".join(clauses),
@@ -395,7 +414,7 @@ def _sample(conn: sqlite3.Connection, clauses: list[str], params: list[object]) 
 
 
 def _axis_rows(
-    conn: sqlite3.Connection,
+    conn: Any,
     clauses: list[str],
     params: list[object],
     axis: str,
@@ -440,7 +459,7 @@ def _axis_rows(
 
 
 def _aggregate_level(
-    conn: sqlite3.Connection,
+    conn: Any,
     level: Mapping[str, object],
 ) -> dict[str, object]:
     clauses = list(level["clauses"])
@@ -462,7 +481,7 @@ def _aggregate_level(
 
 
 def _build_block(
-    conn: sqlite3.Connection,
+    conn: Any,
     note: Mapping[str, object],
     kind: str,
 ) -> dict[str, object]:
@@ -514,9 +533,55 @@ def _build_block(
     }
 
 
-def attach_trends(note: Mapping[str, object], analysis_db: Path) -> dict[str, object]:
+def _open_parquet_current(root: Path) -> tuple[Any, dict[str, object]]:
+    current = resolve_current(root)
+    manifest = json.loads(Path(current["manifest"]).read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != "v1.4":
+        raise TrendError(
+            "RaceNote Trend requires Analysis Parquet v1.4; "
+            f"current is {manifest.get('schema_version')}"
+        )
+    paths = [
+        str((root / part["relative_path"]).resolve())
+        for part in manifest["fact_table"]["partitions"]
+    ]
+    if not paths:
+        raise TrendError("Analysis Parquet current has no fact partitions")
+    escaped = ", ".join("'" + path.replace("'", "''") + "'" for path in paths)
+    conn = duckdb.connect(":memory:")
+    conn.execute(
+        "CREATE VIEW fact_entry_result_lite AS "
+        f"SELECT * FROM read_parquet([{escaped}])"
+    )
+    return conn, {
+        "generation_id": current["generation_id"],
+        "manifest": str(current["manifest"]),
+        "schema_version": manifest.get("schema_version"),
+    }
+
+
+def attach_trends(
+    note: Mapping[str, object],
+    *,
+    analysis_db: Path | None = None,
+    analysis_root: Path | None = None,
+) -> dict[str, object]:
+    if (analysis_db is None) == (analysis_root is None):
+        raise TrendError("Specify exactly one of analysis_db or analysis_root")
+
     output = copy.deepcopy(dict(note))
-    conn = sqlite3.connect(f"file:{analysis_db}?mode=ro", uri=True)
+    source_meta: dict[str, object]
+    if analysis_root is not None:
+        conn, source_meta = _open_parquet_current(analysis_root.resolve())
+        source_name = "JRDB Analysis Parquet v1.4"
+        source_snapshot = source_meta["generation_id"]
+    else:
+        assert analysis_db is not None
+        conn = sqlite3.connect(f"file:{analysis_db}?mode=ro", uri=True)
+        source_name = "JRDB Analysis Lite v1.4 materialized SQLite"
+        source_snapshot = str(analysis_db)
+        source_meta = {}
+
     try:
         _require_v14_columns(conn)
         named = _build_block(conn, output, "named")
@@ -546,9 +611,9 @@ def attach_trends(note: Mapping[str, object], analysis_db: Path) -> dict[str, ob
     provenance = output.setdefault("provenance", [])
     provenance.append({
         "id": "P3_ANALYSIS_TREND",
-        "source": "JRDB Analysis Lite v1.4",
+        "source": source_name,
         "as_of": str(output.get("metadata", {}).get("as_of") or ""),
-        "snapshot": str(analysis_db),
+        "snapshot": source_snapshot,
         "transform_version": VERSION,
     })
     missing = output.get("coverage", {}).get("missing_families")
@@ -567,14 +632,20 @@ def attach_trends(note: Mapping[str, object], analysis_db: Path) -> dict[str, ob
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--note", type=Path, required=True)
-    parser.add_argument("--analysis-db", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--analysis-root", type=Path)
+    source.add_argument("--analysis-db", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
     note = json.loads(args.note.read_text(encoding="utf-8"))
     if not isinstance(note, Mapping):
         raise TrendError("RaceNote root must be object")
-    output = attach_trends(note, args.analysis_db)
+    output = attach_trends(
+        note,
+        analysis_db=args.analysis_db,
+        analysis_root=args.analysis_root,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(output, ensure_ascii=False, indent=2) + "\n",
