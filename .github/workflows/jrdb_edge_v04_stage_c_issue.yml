@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt numpy
 
       - name: Export request env
         run: |
