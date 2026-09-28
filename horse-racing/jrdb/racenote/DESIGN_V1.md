@@ -334,13 +334,14 @@ These are facts/context only.
 
 Do not reduce recent runs to only a median.
 
-For each recent run preserve enough context to read the race:
+For each recent run preserve enough context to read **how comparable that performance is to today's race**:
 - date
 - venue
 - race name
 - class / grade
 - surface
 - distance
+- course layout when available
 - track condition
 - field size
 - frame / horse number where available
@@ -357,7 +358,22 @@ This is essential for contextual reads such as:
 - G2 1st → G3 4th → G3 1st,
 - G1 loss that may not represent today's class,
 - repeated same-class placings,
-- class-rise breakthrough.
+- class-rise breakthrough,
+- a high-grade performance earned at a materially different venue/distance from today's target,
+- a slightly lower raw Ability performance earned under conditions much closer to today's race.
+
+Race class/grade must therefore never be detached from venue, surface and distance when GPT reads a past performance.
+
+Example:
+- 天皇賞（春）G1 at Kyoto 3200m,
+- 阪神大賞典 G2 at Hanshin 3000m,
+- 宝塚記念 G1 at Hanshin 2200m,
+- 金鯱賞 G2 at Chukyo 2000m,
+- 京都記念 G2 at Kyoto 2200m,
+
+are not interchangeable evidence for a target such as Sapporo 2000m merely because they are all graded races.
+
+RaceNote should preserve these contexts and let the Forecast layer judge their relevance.
 
 ### 9.4 ability_history
 
@@ -367,9 +383,16 @@ Preserve:
 - run-level Ability/IDM values,
 - recent sequence,
 - optional descriptive summaries such as latest / median / peak / dispersion,
-- class/grade attached to each value.
+- class/grade attached to each value,
+- venue attached to each run-level value,
+- surface attached to each run-level value,
+- distance attached to each run-level value.
 
-The class context must not be lost when summarizing Ability.
+The class context **and target-condition context** must not be lost when summarizing Ability.
+
+A peak Ability earned in a G1 at 3200m and an only slightly lower Ability earned in a G2 at 2000m should remain distinguishable to the Forecast layer when today's race is 2000m.
+
+RaceNote does not decide which is superior; it preserves enough context for GPT to make that judgment.
 
 ### 9.5 horse_history
 
