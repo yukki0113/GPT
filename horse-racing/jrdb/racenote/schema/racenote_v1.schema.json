@@ -1,0 +1,492 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RaceNote-v1.schema.json",
+  "title": "RaceNote v1 Evidence Note",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "metadata",
+    "race",
+    "race_day",
+    "trend_context",
+    "field_context",
+    "runners",
+    "coverage",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "RaceNote-Evidence-1.0"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "note_kind",
+        "generated_at",
+        "target_date",
+        "as_of",
+        "result_visibility",
+        "market_visibility"
+      ],
+      "properties": {
+        "note_kind": {
+          "const": "EVIDENCE_NOTE"
+        },
+        "generated_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "as_of": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_visibility": {
+          "const": "HIDDEN"
+        },
+        "market_visibility": {
+          "enum": [
+            "HIDDEN",
+            "SUPPLEMENT_ONLY"
+          ]
+        },
+        "source_snapshot": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "race": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "date",
+        "venue",
+        "race_no",
+        "surface",
+        "distance_m",
+        "field_size",
+        "class"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "venue": {
+          "type": "string",
+          "minLength": 1
+        },
+        "race_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "race_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "distance_m": {
+          "type": "integer",
+          "minimum": 800
+        },
+        "field_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "grade": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "course_layout": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "course_rail": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meeting_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meeting_day": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "is_newcomer": {
+          "type": "boolean"
+        },
+        "is_steeplechase": {
+          "type": "boolean"
+        }
+      }
+    },
+    "race_day": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "AVAILABLE",
+            "PARTIAL",
+            "UNAVAILABLE"
+          ]
+        },
+        "weather": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "track_condition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "as_of": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "trend_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "named_race",
+        "local_context",
+        "base_context",
+        "comparison"
+      ],
+      "properties": {
+        "named_race": {
+          "$ref": "#/$defs/trendBlock"
+        },
+        "local_context": {
+          "$ref": "#/$defs/trendBlock"
+        },
+        "base_context": {
+          "$ref": "#/$defs/trendBlock"
+        },
+        "comparison": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "AVAILABLE",
+                "PARTIAL",
+                "UNAVAILABLE"
+              ]
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "field_context": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "AVAILABLE",
+            "PARTIAL",
+            "UNAVAILABLE"
+          ]
+        },
+        "running_style_distribution": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "class_movers": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "layoff_distribution": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "runners": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/runner"
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "runner_count",
+        "missing_families",
+        "limitations"
+      ],
+      "properties": {
+        "runner_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "missing_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/provenanceItem"
+      }
+    }
+  },
+  "$defs": {
+    "trendBlock": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "status",
+        "scope",
+        "sample",
+        "dimensions",
+        "provenance_refs"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "AVAILABLE",
+            "PARTIAL",
+            "UNAVAILABLE",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "scope": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "sample": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "starts"
+          ],
+          "properties": {
+            "starts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "editions": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "period": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "provenance_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "horse_no",
+        "horse_name",
+        "identity",
+        "current_entry",
+        "recent_runs",
+        "ability_history",
+        "horse_history",
+        "racereview",
+        "population_context",
+        "data_gaps",
+        "provenance_refs"
+      ],
+      "properties": {
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "horse_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identity": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "current_entry": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "recent_runs": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "ability_history": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "horse_history": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "racereview": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "population_context": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "data_gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "provenance_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provenanceItem": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id",
+        "source",
+        "as_of"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "as_of": {
+          "type": "string",
+          "minLength": 1
+        },
+        "snapshot": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "transform_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}
