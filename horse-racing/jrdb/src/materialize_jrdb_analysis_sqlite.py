@@ -106,10 +106,23 @@ def materialize_generation(
             connection.close()
 
 
-def materialize_current(root: Path, output: Path, schema: Path) -> dict[str, Any]:
+def _schema_for_manifest(manifest_path: Path) -> Path:
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    version = str(payload.get("schema_version") or "")
+    name = {
+        "v1.3": "jrdb_analysis_schema_v1_3.sql",
+        "v1.4": "jrdb_analysis_schema_v1_4.sql",
+    }.get(version)
+    if name is None:
+        raise RuntimeError(f"unsupported Analysis schema_version: {version}")
+    return Path(__file__).resolve().parents[1] / "schema" / name
+
+
+def materialize_current(root: Path, output: Path, schema: Path | None = None) -> dict[str, Any]:
     """Resolve current.json first; never materialize a non-current generation by default."""
     current = resolve_current(root)
-    return materialize_generation(root.resolve(), current["manifest"], output, schema)
+    selected_schema = schema or _schema_for_manifest(current["manifest"])
+    return materialize_generation(root.resolve(), current["manifest"], output, selected_schema)
 
 
 def main() -> None:
@@ -119,7 +132,8 @@ def main() -> None:
     parser.add_argument(
         "--schema",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "schema" / "jrdb_analysis_schema_v1_3.sql",
+        default=None,
+        help="Optional explicit Analysis schema. Omit to select from current manifest.",
     )
     args = parser.parse_args()
     print(materialize_current(args.analysis_root, args.out, args.schema))
