@@ -204,7 +204,7 @@ Drive canonical root:
 
 Current generation:
 
-`analysis-v1_4-canonical-20260928-01`
+`analysis-v1_4-canonical-20260928-02`
 
 Current pointer:
 
@@ -219,8 +219,8 @@ Published contents:
 
 Verified canonical properties:
 - schema version: v1.4
-- period: 2016-01-05 through 2026-09-13
-- total rows: 516,061
+- period: 2016-01-05 through 2026-09-27
+- total rows: 517,622
 - canonical key: race_key + horse_no
 - duplicate key rows: 0
 - row-level equivalence: PASS
@@ -236,3 +236,22 @@ BAC backfill coverage:
 The old v1.3 Drive generation remains untouched for rollback/reference.
 
 Normal RaceNote Trend consumers should treat the above v1.4 root/current pointer as the canonical Analysis history source.
+
+## 2026-09-29 daily v1.4 cutover
+
+The v1.4 daily/post-race refresh path is now native Parquet.
+
+- workflow: `.github/workflows/jrdb_post_race_parquet_refresh_issue.yml`
+- updater: `horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native_v1_4.py`
+- candidate input: previous successful GitHub Actions candidate artifact
+- Drive publication: GPT/native Google Drive connector after candidate PASS
+- Actions -> Drive direct transport: prohibited
+- full Analysis SQLite materialization: not part of the normal path
+- immutable generation first, then Drive round-trip validation, then
+  `current.json` promotion
+
+The first promoted daily candidate is
+`analysis-v1_4-canonical-20260928-02` from Issue #1590 / Run
+`36437363166`. A current-data RaceNote Trend consumer smoke passed in
+Issue #1591 / Run `36438532392`.
+
