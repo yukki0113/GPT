@@ -101,6 +101,7 @@ jobs:
           python -m py_compile \
             horse-racing/jrdb/src/racenote_gen0_2_input_firewall.py \
             horse-racing/jrdb/src/racenote_general_evidence.py \
+            horse-racing/jrdb/src/racenote_all_runner_synthesis.py \
             horse-racing/jrdb/src/racenote_gen0_3_day_rehearsal_author.py \
             horse-racing/jrdb/src/racenote_semantic_pairwise_research_v0_3.py \
             horse-racing/jrdb/src/racenote_semantic_author_research_v0_4.py \
@@ -328,7 +329,7 @@ jobs:
 
       - name: Freeze baseline day forecast
         id: baseline
-        if: steps.prepare.outputs.exit_code == '0'
+        if: ${{ steps.prepare.outputs.exit_code == '0' }}
         continue-on-error: true
         env:
           PYTHONPATH: horse-racing/jrdb/src
@@ -345,7 +346,7 @@ jobs:
 
       - name: Build Semantic Pairwise v0.3
         id: pairwise
-        if: steps.baseline.outputs.exit_code == '0'
+        if: ${{ steps.prepare.outputs.exit_code == '0' && steps.baseline.outputs.exit_code == '0' }}
         continue-on-error: true
         run: |
           set +e
@@ -360,7 +361,7 @@ jobs:
 
       - name: Build Semantic Author v0.4
         id: semantic
-        if: steps.pairwise.outputs.exit_code == '0'
+        if: ${{ steps.prepare.outputs.exit_code == '0' && steps.baseline.outputs.exit_code == '0' && steps.pairwise.outputs.exit_code == '0' }}
         continue-on-error: true
         run: |
           set +e
@@ -374,7 +375,7 @@ jobs:
 
       - name: Assign ◎○▲△ with Mark Policy v0.1
         id: marks
-        if: steps.semantic.outputs.exit_code == '0'
+        if: ${{ steps.prepare.outputs.exit_code == '0' && steps.baseline.outputs.exit_code == '0' && steps.pairwise.outputs.exit_code == '0' && steps.semantic.outputs.exit_code == '0' }}
         continue-on-error: true
         run: |
           set +e
@@ -411,13 +412,20 @@ jobs:
           marks = read('/tmp/marks/mark_policy_day_summary.json')
 
           stage_exit = {
-              'prepare': '${{ steps.prepare.outputs.exit_code }}',
-              'baseline': '${{ steps.baseline.outputs.exit_code }}',
-              'pairwise': '${{ steps.pairwise.outputs.exit_code }}',
-              'semantic': '${{ steps.semantic.outputs.exit_code }}',
-              'marks': '${{ steps.marks.outputs.exit_code }}',
+              'prepare': '${{ steps.prepare.outputs.exit_code }}' or 'SKIPPED',
+              'baseline': '${{ steps.baseline.outputs.exit_code }}' or 'SKIPPED',
+              'pairwise': '${{ steps.pairwise.outputs.exit_code }}' or 'SKIPPED',
+              'semantic': '${{ steps.semantic.outputs.exit_code }}' or 'SKIPPED',
+              'marks': '${{ steps.marks.outputs.exit_code }}' or 'SKIPPED',
           }
-          passed = all(value == '0' for value in stage_exit.values())
+          passed = (
+              prepare.get('status') == 'PASS'
+              and baseline.get('status') == 'PASS'
+              and pairwise.get('status') == 'PASS'
+              and semantic.get('status') == 'PASS'
+              and marks.get('status') == 'PASS'
+              and all(value == '0' for value in stage_exit.values())
+          )
           manifest = {
               'status': 'PASS' if passed else 'FAIL',
               'request_id': request.get('request_id'),
