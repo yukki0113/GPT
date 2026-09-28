@@ -187,13 +187,15 @@ def test_named_scope_requires_name_and_current_conditions(tmp_path: Path) -> Non
     out = attach_trends(_note(), analysis_db=db)
     named = out["trend_context"]["named_race"]
     assert named["status"] == "AVAILABLE"
-    assert named["selected_level"] == "NAMED_EXACT"
+    assert named["selected_level"] == "NAMED_MAIN"
     assert named["sample"]["starts"] == 1
 
     popularity = named["dimensions"]["popularity"]["rows"][0]
     assert popularity["finish_record"]["compact"] == "(1-0-0-0)"
     assert popularity["win_roi"] == 350.0
     assert popularity["place_roi"] == 160.0
+    rail = next(level for level in named["levels"] if level["level_id"] == "NAMED_RAIL_SLICE")
+    assert rail["sample"]["starts"] == 1
 
 
 def test_local_graded_scope_uses_op_plus_support(tmp_path: Path) -> None:
