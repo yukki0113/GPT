@@ -155,6 +155,16 @@ Prediction reading layer (2026-09-25):
 > Canonical contract:
 > `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
 
+### Gen0-G001 activation readiness — 2026-09-29
+
+The fixed 50 PRIMARY + 20 RESERVE sample manifest is PASS and registered in
+`RaceNote Forecast Gen0 検証台帳`. Gen0-G001 is `READY`, not yet `ACTIVE`.
+The current operational generation remains Gen0-G000 until the first formal
+TRUE_FORWARD pre-result Freeze passes.
+
+Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
+
+
 RaceReviewDB consumer default (2026-09-25):
 
 - operational source: stable Drive `RaceReviewDB_CURRENT.zip`
