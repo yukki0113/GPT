@@ -698,7 +698,7 @@ def build_daily_package(
     next_watch_rules: Path,
     output_root: Path,
     rrdb_work_root: Path,
-) -> tuple[dict[str, Any], dict[str, Any]]:
+) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     """Execute D4 through Reader, validation and final package."""
     bundles, report = build_through_rrdb(
         paci_path=paci_path,
@@ -737,7 +737,7 @@ def build_daily_package(
     report["package"] = package
     report["stages"]["package"] = "PASS"
     report["status"] = "D4_PASS_PRE_CUTOVER"
-    return package["manifest_payload"], report
+    return package["manifest_payload"], report, bundles
 
 
 def _write_d3_debug(
@@ -782,7 +782,7 @@ def run(args: argparse.Namespace) -> int:
             / ".debug"
             / "rrdb_work"
         )
-        manifest, report = build_daily_package(
+        manifest, report, bundles = build_daily_package(
             paci_path=args.paci,
             target_date=args.target_date,
             analysis_root=args.analysis_root,
@@ -792,20 +792,10 @@ def run(args: argparse.Namespace) -> int:
             output_root=args.output,
             rrdb_work_root=rrdb_work_root,
         )
-        # Preserve a non-canonical connected-stage copy only when explicitly requested.
-        bundles, d3_report = build_through_rrdb(
-            paci_path=args.paci,
-            target_date=args.target_date,
-            analysis_root=args.analysis_root,
-            racereview_root=args.racereview_root,
-            racereview_current_cache=args.racereview_current_cache,
-            next_watch_rules=args.next_watch_rules,
-            rrdb_work_root=rrdb_work_root,
-        )
-        report["debug_report"] = str(_write_d3_debug(args, bundles, d3_report))
+        report["debug_report"] = str(_write_d3_debug(args, bundles, report))
     else:
         with tempfile.TemporaryDirectory(prefix="racenote-daily-rrdb-") as tmp:
-            manifest, report = build_daily_package(
+            manifest, report, bundles = build_daily_package(
                 paci_path=args.paci,
                 target_date=args.target_date,
                 analysis_root=args.analysis_root,
