@@ -27,64 +27,51 @@ The active architecture is JRDB + Historical Warehouse + Analysis canonical. Sta
 
 ## 2. Current prediction direction
 
-Forecast Gen0 research remains current, but the 2026-09-25 redesign changes the
-preferred reading order for the next forecast generation:
+RaceNote Forecast Gen0 is the current prediction **research** program.
 
-```text
-DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY
-```
+The project currently separates two things explicitly:
 
-RaceNote now treats historical ability as an anchor rather than the default
-first ordering signal. GPT should read condition/race trends first, then
-RaceReview historical running content, then simple ability context, and only
-after that perform relative horse-to-horse comparison.
+### Fixed / current invariants
 
-Implemented research assets:
+- RaceNote is a facts / evidence / provenance layer and does not choose ◎.
+- target result and prohibited post-race / market information remain hidden before Freeze.
+- historical evidence is as-of-exclusive to the target date.
+- prediction is frozen immutably before result acquisition.
+- result evaluation never rewrites the frozen prediction.
+- historical tuning and TRUE_FORWARD validation are separate.
+- fixed numeric weights / one hidden score are not a Gen0 default.
 
-- `src/racenote_general_evidence.py`
-- `schema/racenote_general_evidence_schema_v0_1.json`
-- `docs/racenote/GENERAL_EVIDENCE_PRIORITY_v0_1.md`
+### Not yet fixed
 
-Current pre-Freeze trend evidence includes horse condition history, frame,
-sire, jockey, and as-of-safe race-level running-style statistics. Popularity
-remains post-Freeze because current popularity is market information.
+The detailed Forecast decision logic remains open research:
 
-Do not introduce fixed weights or a single score as an implicit current
-default. Keep prediction policy, presentation policy, and result evaluation
-separate.
+- evidence reading priority
+- Trend / RaceReview / Ability conflict handling
+- whether All-Runner Synthesis is mandatory
+- whether Pairwise is mandatory
+- whether Scenario Robustness is mandatory
+- whether EdgeDB Performance is used pre-Freeze
+- probability / confidence policy
+- detailed ◎ / ○ / ▲ / △ selection policy
+- prompt wording
 
-The trend-first redesign is now finalized as **RaceNote-Forecast-Gen0.3**.
-Gen0.2 was never activated and is retained only as a pre-redesign reference.
-The planned first activation remains `Gen0-G001`, now using Gen0.3.
+`RaceNote-Forecast-Gen0.3` is an implemented **research candidate** containing
+General Evidence, All-Runner Synthesis, Pairwise, Scenario and optional
+EdgeDB Performance overlay. It is useful for comparison and reproducibility,
+but is not the adopted Gen0 prediction logic.
 
-### Gen0-G001 activation readiness — 2026-09-29
+Gen0-G001 activation preparation is paused until a detailed Forecast logic
+version is explicitly selected. The existing G001 manifest / ledger / transport
+PASS evidence is retained as infrastructure evidence only.
 
-The fixed 50 PRIMARY + 20 RESERVE sample manifest is PASS and registered in
-`RaceNote Forecast Gen0 検証台帳`. Gen0-G001 is `READY`, not yet `ACTIVE`.
-The current operational generation remains Gen0-G000 until the first formal
-TRUE_FORWARD pre-result Freeze passes.
+Canonical research plan:
+`docs/racenote/FORECAST_GEN0_PLAN.md`
 
-Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
+G001 status:
+`docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`
 
-
-
-
-### 2026 PACI historical backtest lane — 2026-09-29
-
-2026 PACI historical replay is now a separate blinded research lane for
-Forecast logic adjustment. The Drive PACI canonical contains 82 race days
-from 2026-01-04 through 2026-09-27. Historical tuning must use complete-day
-target freezes, one race = one LLM call, immutable Freeze before any target
-result open, and separate DEV / OOS / HOLDOUT blocks.
-
-Historical backtest does **not** satisfy the Gen0-G001 TRUE_FORWARD activation
-gate.
-
-Canonical design:
+2026 PACI blinded backtest design:
 `docs/racenote/FORECAST_GEN0_2026_PACI_BACKTEST_DESIGN_v0_1.md`
-
-Canonical config:
-`config/racenote_forecast_2026_paci_backtest_v0_1.json`
 
 ## 3. Current data boundaries
 
@@ -207,7 +194,7 @@ Real-data dry-run audit:
 
 - `docs/racenote/GEN0_3_REALDATA_DRYRUN_HATSUKAZE_20260913.md`
 
-The next-generation Forecast contract is now implemented:
+The Gen0.3 research-candidate Forecast implementation is:
 
 - `src/racenote_forecast_gen0_3.py`
 - `src/racenote_edge_performance_adapter.py`
@@ -215,10 +202,11 @@ The next-generation Forecast contract is now implemented:
 - `config/racenote_forecast_gen0_ledger_v0_3.json`
 - `docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md`
 
-Gen0.3 consumes General Evidence -> All-Runner Synthesis -> Pairwise -> Scenario -> Base Forecast,
-then allows only EdgeDB Performance evidence to adjust the final forecast.
-JRDB consensus, current market, Edge Value, RL/Value and Bet Plan remain
-post-Freeze layers.
+As a candidate, Gen0.3 consumes General Evidence -> All-Runner Synthesis ->
+Pairwise -> Scenario -> Base Forecast and then permits only EdgeDB Performance
+as a pre-Freeze overlay. This ordering and overlay policy are **candidate-specific**
+and remain subject to blinded historical comparison. The information firewall
+itself remains a project-level invariant.
 
 ## 5. Legacy boundary
 
