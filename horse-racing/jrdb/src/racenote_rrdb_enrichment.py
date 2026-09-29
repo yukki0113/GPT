@@ -84,7 +84,7 @@ def _independent_view(bundle: Mapping[str, object]) -> dict[str, object]:
     }
 
 
-def _extract_frozen_contract(source: Path, work_root: Path) -> dict[str, Any]:
+def load_frozen_contract(source: Path, work_root: Path) -> dict[str, Any]:
     if source.suffix.lower() == ".json":
         contract = _read_json(source)
     else:
@@ -368,7 +368,7 @@ def main() -> int:
         work_root.mkdir(parents=True, exist_ok=True)
 
     try:
-        contract = _extract_frozen_contract(args.next_watch_rules, work_root)
+        contract = load_frozen_contract(args.next_watch_rules, work_root)
         if args.racereview_root is not None:
             reader = RaceReviewReader(args.racereview_root)
         else:
