@@ -76,6 +76,8 @@ jobs:
       - name: Build full 2026-05-23 P1/P2 RaceNote
         env:
           PYTHONPATH: horse-racing/jrdb/src
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
           ANALYSIS_ROOT="$(cat /tmp/analysis_root.txt)"
           python horse-racing/jrdb/src/racenote_request.py \
