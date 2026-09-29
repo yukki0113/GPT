@@ -1,3 +1,23 @@
+### RaceNote RRDB formal integration design — 2026-09-29
+
+- Design:
+  `docs/racenote/RACENOTE_RRDB_INTEGRATION_DESIGN_v0_1.md`
+- Current problem: RRDB / RaceReview assets exist, but the normal Human-Context Reader v0.3 calibration path does not receive them in RaceNote.
+- Planned normal chain:
+  `RaceNote base -> Analysis/P1/P2 -> RRDB enrichment -> RaceNote v1.0 -> Reader View -> Human-Context Reader`
+- Per-horse target block: `racereview`.
+- Two lanes:
+  - historical Review context
+  - latest-prior-start Next-Watch S/A context
+- Reuse existing CURRENT resolver / RaceReview adapter / Horse Evidence Card / Next-Watch frozen rules.
+- No horse-name fallback; join by JRDB blood registration number.
+- Strict historical boundary: `race_date < target_date`.
+- RRDB is contextual evidence only: no fixed bonus, no automatic ◎/mark.
+- Forecast trace must record RRDB `reviewed` and whether it was used; if ignored, record why.
+- Same-run recent_runs comment + RRDB evidence are corroborating details, not additive votes.
+- P3 sibling and obstacle-specific evidence remain out of scope.
+- No new clean PACI date should be consumed for RRDB integration validation.
+
 ### RaceNote pedigree enrichment feasibility — 2026-09-29
 
 - Obstacle-specific evidence is deferred.
