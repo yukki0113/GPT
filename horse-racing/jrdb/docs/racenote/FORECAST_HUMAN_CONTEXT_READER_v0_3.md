@@ -103,6 +103,37 @@ Rules:
 - if direct race evidence is absent, pedigree may become more informative,
   but uncertainty remains.
 
+### 4.2 RaceReviewDB / Next-Watch evidence
+
+When RaceNote exposes `racereview`, it must be reviewed before marks are
+finalized.
+
+Read RRDB as prior-run interpretation, not as a score.
+
+Especially useful for:
+- result understated by adjusted performance / last-3F;
+- trouble or position recovery hidden by the finishing position;
+- apparent good form aided by pace / position;
+- repeated historical patterns;
+- frozen Next-Watch S/A matches.
+
+Rules:
+- S/A never automatically becomes ◎ / ○ / ▲;
+- NO_MATCH is neutral, not negative;
+- no fixed RRDB weight exists;
+- a strong current-condition mismatch may outweigh RRDB history;
+- evidence from the same source run appearing in both `recent_runs` and
+  `racereview` is one corroborated story, not two votes;
+- raw trouble scores are descriptive and must not be interpreted as calibrated
+  severity unless their RRDB contract says so.
+
+Each forecast trace must state:
+- whether RRDB was available;
+- that it was reviewed;
+- whether it changed the decision;
+- cited horse/run when used;
+- why it was not used when available but non-decisive.
+
 ### Step C — Form a candidate cluster
 
 Select typically 3–5 candidates.
@@ -157,6 +188,12 @@ Each race must preserve:
     without relying on that numeric rank.
 - `strongest_counter`
 - `reversal_condition`
+- `rrdb_evidence`:
+  - available
+  - reviewed
+  - used_in_decision
+  - cited horse refs / decision roles when used
+  - reason_not_used when not used
 
 Private chain-of-thought is not required; these are concise auditable summaries.
 
