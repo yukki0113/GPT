@@ -1,0 +1,31 @@
+{
+  "version": "RaceNote-Baseline-Reader-0.1",
+  "status": "INITIAL_BACKTEST_BASELINE",
+  "role": "RESEARCH_BASELINE",
+  "fixed_weight": false,
+  "numeric_score": false,
+  "required_reading_steps": [
+    "RACE_CONTEXT_FIRST",
+    "READ_EVERY_RUNNER",
+    "COMPARE_FIELD",
+    "PRESERVE_CONFLICT_AND_UNCERTAINTY",
+    "CHOOSE_MARKS"
+  ],
+  "mark_semantics": {
+    "main": "今回、自分なら一番買いたい馬",
+    "second": "◎に次いで総合的に買いたい相手",
+    "third": "上位を逆転し得る次候補",
+    "others": "それ以下で馬券候補として残す馬"
+  },
+  "explicitly_not_required": [
+    "TREND_FIRST_PRIORITY",
+    "ALL_RUNNER_SYNTHESIS",
+    "PAIRWISE",
+    "SLOW_MEDIUM_FAST_SCENARIO",
+    "EDGEDB_PERFORMANCE_OVERLAY",
+    "FIXED_CONFIDENCE_MAPPING"
+  ],
+  "common_record_schema": "schema/racenote_forecast_research_record_v0_1.json",
+  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
+  "output_contract": "docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md"
+}
