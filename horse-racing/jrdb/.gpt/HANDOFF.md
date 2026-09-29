@@ -11,9 +11,13 @@
   - Analysis also has sire / broodmare-sire line codes
 - Implementation status:
   - P1: IMPLEMENTED on main
-  - P2: not yet implemented
+  - P2: IMPLEMENTED on main
   - P3 sibling history: not yet implemented; requires canonical maternal identity source
 - P1 payload exposes sire / broodmare sire / line codes from the approved Analysis target projection.
+- P2 adds `pedigree_context` for sire and broodmare sire using target venue + surface + exact distance and target-relevant distance ranges.
+- P2 historical rows are strictly `race_date < target_date`; small samples remain visible with sample-size bands.
+- `stats.sire` remains backward-compatible and `stats.broodmare_sire` is added.
+- P2 is descriptive only: no pedigree score, automatic suitability label, or automatic mark selection.
 - Current Analysis v1.4 has no dam_name in that projection, so dam_name remains null / coverage PARTIAL rather than guessed.
 - Target-day Analysis access is now restricted to the existing TARGET_COLUMNS pre-race whitelist instead of SELECT * for RaceNote enrichment.
 - Do not read arbitrary post-race Analysis rows pre-Freeze; use pre-race source or a dedicated pedigree-only safe projection.
