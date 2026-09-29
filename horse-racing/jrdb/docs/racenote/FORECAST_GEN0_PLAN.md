@@ -24,6 +24,17 @@ Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
 
 
 
+### Forecast execution / research responsibility split
+
+Current operation separates chat responsibilities:
+
+- Forecast execution thread: prediction / Freeze / HTML / handoff only
+- Research thread: result open / evaluation / logic adjustment
+
+Canonical:
+- `docs/racenote/FORECAST_GEN0_THREAD_ROLES_v0_1.md`
+- `docs/racenote/FORECAST_EXECUTION_THREAD_BOOTSTRAP_v0_1.md`
+
 ### Current Backtest / TRUE_FORWARD research operating assets — 2026-09-29
 
 The common operating contract is now:
