@@ -39,9 +39,21 @@ TRUE_FORWARDへ移行するための共通研究プロトコル。
 
 `RaceNote-Forecast-Gen0.3` はこれらの一候補実装であり、採用済みdefaultではない。
 
+## 2.1 Initial baseline
+
+The first historical turn uses:
+
+- logic version: `RaceNote-Baseline-Reader-0.1`
+- contract: `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_1.md`
+- config: `config/racenote_forecast_logic_baseline_v0_1.json`
+
+This baseline deliberately avoids fixed evidence priorities, scores, mandatory
+Pairwise/Scenario, and Gen0.3-specific reading rules. It exists to provide a
+stable starting point for observed improvements.
+
 ## 3. One turn
 
-Historical backtestの標準研究単位は **2開催日**。
+Historical backtestの標準研究単位は **未使用eligibleな2開催日**。
 
 ```text
 unused eligible PACI days
@@ -67,6 +79,11 @@ unused eligible PACI days
 - source/validation failure raceは `TECHNICAL_SKIP` として残す。
 - 結果を見てから同turnの別レースlogicを変更しない。
 - turn終了後の変更は原則1テーマに限定する。
+
+Each new two-day turn is a walk-forward blind check of the logic version that
+exists before its results are opened. After result open, that same turn becomes
+development evidence for the next version. Separate historical holdout blocks
+may be reserved later, but are not required for the normal iteration cadence.
 
 ## 4. Day selection
 
