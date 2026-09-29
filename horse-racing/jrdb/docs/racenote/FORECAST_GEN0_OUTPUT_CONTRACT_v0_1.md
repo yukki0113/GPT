@@ -103,3 +103,21 @@ Forecast HTMLはFreeze済みrecordから生成する。
 結果開封後にprediction-side HTMLを書き換えない。
 
 結果を重ねて見せる場合は別review HTMLを作る。
+
+
+## 6. Turn handoff
+
+Forecast execution threadは結果を開かず、turn終了時に:
+
+- `turn_handoff_<turn_id>.json`
+- canonical prediction records
+- daily forecast HTML
+
+をResearch threadへ渡す。
+
+Schema:
+`schema/racenote_forecast_turn_handoff_v0_1.json`
+
+handoffは `result_opened = false` を必須とする。
+
+Research threadはhandoff受領後にresult open / reviewを行う。
