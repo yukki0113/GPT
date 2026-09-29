@@ -30,7 +30,8 @@
     "main_vs_third",
     "why_not_numeric_leader",
     "strongest_counter",
-    "reversal_condition"
+    "reversal_condition",
+    "rrdb_evidence"
   ],
   "calibration_policy": {
     "consume_unused_eligible_days": false,
@@ -48,7 +49,8 @@
   "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
   "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
   "optional_evidence_lanes": [
-    "PEDIGREE_CONTEXT_P1_P2"
+    "PEDIGREE_CONTEXT_P1_P2",
+    "RRDB_RACEREVIEW_NEXT_WATCH"
   ],
   "pedigree_policy": {
     "source_fields": [
@@ -65,5 +67,22 @@
       "WEAK_DIRECT_SUITABILITY_EVIDENCE"
     ],
     "interpretation": "CONTEXTUAL_EVIDENCE_NOT_SCORE"
+  },
+  "rrdb_policy": {
+    "source_field": "racereview",
+    "must_review_when_present": true,
+    "fixed_weight": false,
+    "automatic_axis": false,
+    "next_watch_auto_mark": false,
+    "no_match_is_negative": false,
+    "same_run_deduplication": true,
+    "decision_roles": [
+      "UPGRADE_RECENT_FORM",
+      "DOWNGRADE_APPARENT_FORM",
+      "SUPPORT_REPEATABILITY",
+      "SUPPORT_COUNTERARGUMENT",
+      "CONTEXT_ONLY"
+    ],
+    "interpretation": "PRIOR_RUN_CONTENT_CONTEXT_NOT_SCORE"
   }
 }
