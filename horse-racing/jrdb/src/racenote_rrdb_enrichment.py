@@ -233,13 +233,15 @@ def _latest_next_watch(
         con.close()
 
 
-def enrich_bundle(
+def _apply_bundle_enrichment(
     bundle: dict[str, object],
     reader: RaceReviewReader,
     contract: Mapping[str, object],
+    next_watch: Mapping[str, dict[str, object]],
     *,
     per_horse_limit: int = 5,
 ) -> dict[str, object]:
+    """Apply RRDB evidence using a precomputed target-date Next-Watch map."""
     independent = _independent_view(bundle)
     sidecar = build_racereview_evidence(
         independent,
@@ -255,16 +257,6 @@ def enrich_bundle(
     target_date = str(race.get("date") or "")
     sidecar_by_no = {int(x["horse_no"]): x for x in sidecar["horses"]}
     card_by_no = {int(x["horse_no"]): x for x in cards["horses"]}
-
-    ids: list[str] = []
-    for raw in horses:
-        if not isinstance(raw, Mapping):
-            continue
-        basic = _horse_basic(raw)
-        horse_id = str(basic.get("horse_id") or "").strip()
-        if horse_id:
-            ids.append(horse_id)
-    next_watch = _latest_next_watch(reader, contract, ids, target_date)
 
     for raw in horses:
         if not isinstance(raw, dict):
@@ -341,6 +333,99 @@ def enrich_bundle(
     }
     return bundle
 
+
+def enrich_bundle(
+    bundle: dict[str, object],
+    reader: RaceReviewReader,
+    contract: Mapping[str, object],
+    *,
+    per_horse_limit: int = 5,
+) -> dict[str, object]:
+    """Backward-compatible single-bundle enrichment."""
+    race = bundle.get("race")
+    horses = bundle.get("horses")
+    if not isinstance(race, Mapping) or not isinstance(horses, list):
+        raise RRDBEnrichmentError("RaceNote bundle missing race/horses")
+    target_date = str(race.get("date") or "")
+    ids: list[str] = []
+    for raw in horses:
+        if not isinstance(raw, Mapping):
+            continue
+        basic = _horse_basic(raw)
+        horse_id = str(basic.get("horse_id") or "").strip()
+        if horse_id:
+            ids.append(horse_id)
+    next_watch = _latest_next_watch(reader, contract, ids, target_date)
+    return _apply_bundle_enrichment(
+        bundle,
+        reader,
+        contract,
+        next_watch,
+        per_horse_limit=per_horse_limit,
+    )
+
+
+def enrich_bundles(
+    bundles: list[dict[str, object]],
+    reader: RaceReviewReader,
+    contract: Mapping[str, object],
+    *,
+    per_horse_limit: int = 5,
+) -> list[dict[str, object]]:
+    """Enrich one target day's RaceNotes with one shared Next-Watch query.
+
+    The day-level path intentionally preserves the same per-race RaceReview
+    adapter/Card semantics as enrich_bundle(). Only source resolution and
+    latest-prior Next-Watch reconstruction are shared.
+    """
+    if not bundles:
+        return []
+
+    target_dates: set[str] = set()
+    horse_ids: list[str] = []
+    for bundle in bundles:
+        if str(bundle.get("schema_version")) != "1.0":
+            raise RRDBEnrichmentError(
+                "RRDB daily enrichment requires authoritative RaceNote v1.0"
+            )
+        race = bundle.get("race")
+        horses = bundle.get("horses")
+        if not isinstance(race, Mapping) or not isinstance(horses, list):
+            raise RRDBEnrichmentError("RaceNote bundle missing race/horses")
+        target_date = str(race.get("date") or "")
+        if not target_date:
+            raise RRDBEnrichmentError("RaceNote target date missing")
+        target_dates.add(target_date)
+        for raw in horses:
+            if not isinstance(raw, Mapping):
+                continue
+            basic = _horse_basic(raw)
+            horse_id = str(basic.get("horse_id") or "").strip()
+            if horse_id:
+                horse_ids.append(horse_id)
+
+    if len(target_dates) != 1:
+        raise RRDBEnrichmentError(
+            f"daily RRDB enrichment requires one target date: {sorted(target_dates)}"
+        )
+
+    target_date = next(iter(target_dates))
+    next_watch = _latest_next_watch(
+        reader,
+        contract,
+        sorted(set(horse_ids)),
+        target_date,
+    )
+    return [
+        _apply_bundle_enrichment(
+            bundle,
+            reader,
+            contract,
+            next_watch,
+            per_horse_limit=per_horse_limit,
+        )
+        for bundle in bundles
+    ]
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Add formal RRDB evidence to RaceNote v1.0")
