@@ -126,6 +126,18 @@ Current operational boundary:
 - Edge scientific semantics、v0.2 STANDARD、v0.3 SHADOW、TRUE_FORWARD境界はstorage実装変更と同時に変更しない。
 
 
+### RaceNote day-level buildでの標準適用
+
+D5 PASS後のfull-day production entrypointは `src/build_racenote_daily.py`。
+
+- 既取得PACI / Analysis / RRDB / frozen rulesを用いる日次build・validation: **C**
+- JRDB Secretsを使うPACI取得やformal immutable auditを同時に必要とする場合: **D**
+- full-day requestを1Rずつ別Issueへ分解しない。PACI parse / Analysis open / RRDB resolve / frozen-rule loadはday request内で各1回を標準とする。
+- outputは authoritative bundles + Reader Views + manifest + validation report。
+- existing one-race pathはsingle-race、audit、rollback用途として保持する。
+- daily builder側でHistory / Trend / P1/P2 / RRDB / Forecast意味論を再実装しない。
+- D5 evidence: `docs/racenote/RACENOTE_DAILY_D5_EQUIVALENCE_20260930.md`。
+
 ### RaceNote Forecast Gen0での標準適用
 
 Current prediction researchは **RaceNote Forecast Gen0**。作業開始時に `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` を確認する。
