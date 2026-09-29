@@ -1,0 +1,366 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_forecast_research_record_v0_2.json",
+  "title": "RaceNote Forecast Research Record v0.2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "identity",
+    "research",
+    "source",
+    "prediction",
+    "decision_trace",
+    "audit"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "RaceNote-Forecast-Research-Record-0.2"
+    },
+    "identity": {
+      "type": "object",
+      "required": [
+        "target_date",
+        "venue",
+        "race_no",
+        "race_key"
+      ],
+      "properties": {
+        "target_date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "venue": {
+          "type": "string",
+          "minLength": 1
+        },
+        "race_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "race_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "race_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "surface": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "distance_m": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "research": {
+      "type": "object",
+      "required": [
+        "evaluation_mode",
+        "turn_id",
+        "logic_version"
+      ],
+      "properties": {
+        "evaluation_mode": {
+          "enum": [
+            "BLINDED_HISTORICAL",
+            "TRUE_FORWARD"
+          ]
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "logic_version": {
+          "const": "RaceNote-Baseline-Reader-0.2"
+        }
+      },
+      "additionalProperties": true
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "racenote_identity"
+      ],
+      "properties": {
+        "racenote_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "racenote_semantic_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "prediction": {
+      "type": "object",
+      "required": [
+        "axis",
+        "marks",
+        "axis_comment",
+        "concern"
+      ],
+      "properties": {
+        "axis": {
+          "$ref": "#/$defs/horse_ref"
+        },
+        "marks": {
+          "type": "object",
+          "required": [
+            "main",
+            "second",
+            "third",
+            "others"
+          ],
+          "properties": {
+            "main": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "second": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "third": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "others": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/horse_ref"
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "axis_comment": {
+          "type": "string",
+          "minLength": 20
+        },
+        "concern": {
+          "type": "string",
+          "minLength": 10
+        },
+        "full_field_order": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/horse_ref"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "decision_trace": {
+      "type": "object",
+      "required": [
+        "race_thesis",
+        "decisive_factors",
+        "main_vs_second",
+        "strongest_counter",
+        "downweighted_evidence",
+        "reversal_condition"
+      ],
+      "properties": {
+        "race_thesis": {
+          "type": "string",
+          "minLength": 20
+        },
+        "decisive_factors": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/factor"
+          }
+        },
+        "main_vs_second": {
+          "type": "object",
+          "required": [
+            "main",
+            "second",
+            "why_main_over_second"
+          ],
+          "properties": {
+            "main": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "second": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "why_main_over_second": {
+              "type": "string",
+              "minLength": 20
+            }
+          },
+          "additionalProperties": true
+        },
+        "strongest_counter": {
+          "type": "string",
+          "minLength": 15
+        },
+        "downweighted_evidence": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "evidence",
+              "reason_downweighted"
+            ],
+            "properties": {
+              "evidence": {
+                "type": "string",
+                "minLength": 5
+              },
+              "reason_downweighted": {
+                "type": "string",
+                "minLength": 10
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "reversal_condition": {
+          "type": "string",
+          "minLength": 15
+        },
+        "missing_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3
+          }
+        },
+        "evidence_conflicts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 5
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "audit": {
+      "type": "object",
+      "required": [
+        "created_at",
+        "frozen_at",
+        "prediction_hash",
+        "pre_result_guard",
+        "result_visible_at_freeze",
+        "decision_trace_guard"
+      ],
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "frozen_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prediction_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pre_result_guard": {
+          "const": "PASS"
+        },
+        "result_visible_at_freeze": {
+          "const": false
+        },
+        "decision_trace_guard": {
+          "const": "PASS"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "horse_ref": {
+      "type": "object",
+      "required": [
+        "horse_no",
+        "horse_name"
+      ],
+      "properties": {
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "horse_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "factor": {
+      "type": "object",
+      "required": [
+        "lane",
+        "observation",
+        "interpretation"
+      ],
+      "properties": {
+        "lane": {
+          "enum": [
+            "Ability",
+            "RecentForm",
+            "Suitability",
+            "Pace",
+            "Training",
+            "Trend",
+            "RaceReview",
+            "Pedigree",
+            "Other"
+          ]
+        },
+        "observation": {
+          "type": "string",
+          "minLength": 8
+        },
+        "interpretation": {
+          "type": "string",
+          "minLength": 12
+        },
+        "source_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
