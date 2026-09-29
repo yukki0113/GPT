@@ -15,9 +15,12 @@ HTML側で印・順位・コメント根拠を再計算しない。
 
 ## 2. Canonical structured record
 
-Schema:
+Current schema:
 
-`schema/racenote_forecast_research_record_v0_1.json`
+`schema/racenote_forecast_research_record_v0_2.json`
+
+Historical v0.1 records remain valid immutable evidence for BTDAY-0001 and
+other already-frozen runs. Do not rewrite them into v0.2 after result access.
 
 1 race = 1 recordを基本とする。
 
@@ -27,12 +30,24 @@ Schema:
 - source identity
 - marks
 - axis
-- short comments
+- short human-facing comments
 - optional full-field order
+- structured `decision_trace`
 - audit / freeze metadata
 
-Candidate固有の詳細traceは `candidate_trace` へ追加してよい。
-common fieldの意味はcandidateごとに変えない。
+Current v0.2 Decision Trace must include:
+- race thesis
+- 2–4 decisive factors
+- explicit ◎ vs ○ comparison
+- strongest counter-case
+- downweighted evidence
+- reversal condition
+
+Canonical trace contract:
+`docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md`
+
+Human-facing comments may stay compact; they are not a substitute for the
+canonical trace.
 
 ## 3. Daily human HTML
 
@@ -121,3 +136,16 @@ Schema:
 handoffは `result_opened = false` を必須とする。
 
 Research threadはhandoff受領後にresult open / reviewを行う。
+
+
+## 7. Freeze quality gate
+
+For current v0.2 records, before Freeze run:
+
+`src/validate_racenote_forecast_decision_trace.py`
+
+Freeze is invalid unless the validator PASSes and
+`audit.decision_trace_guard = PASS`.
+
+The gate is intended to reject records where field values are merely inserted
+into generic prose without an explicit race-specific comparison.
