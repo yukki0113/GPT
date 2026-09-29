@@ -54,11 +54,13 @@ jobs:
 
       - name: Resolve Analysis root
         run: |
+          mkdir -p /tmp/analysis_unpack
+          tar -xJf /tmp/support/analysis-parquet-candidate.tar.xz -C /tmp/analysis_unpack
           python - <<'PY'
           import json
           from pathlib import Path
           candidates=[]
-          for p in Path('/tmp/support').rglob('manifest.json'):
+          for p in Path('/tmp/analysis_unpack').rglob('manifest.json'):
               try:
                   d=json.loads(p.read_text(encoding='utf-8'))
               except Exception:
