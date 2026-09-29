@@ -9,10 +9,13 @@
   - dam_name
   - broodmare_sire_name
   - Analysis also has sire / broodmare-sire line codes
-- Recommended order:
-  - P1: expose pedigree identity in RaceNote
-  - P2: add as-of-safe sire / broodmare-sire historical context
-  - P3: sibling history only after canonical maternal identity source is confirmed
+- Implementation status:
+  - P1: IMPLEMENTED on main
+  - P2: not yet implemented
+  - P3 sibling history: not yet implemented; requires canonical maternal identity source
+- P1 payload exposes sire / broodmare sire / line codes from the approved Analysis target projection.
+- Current Analysis v1.4 has no dam_name in that projection, so dam_name remains null / coverage PARTIAL rather than guessed.
+- Target-day Analysis access is now restricted to the existing TARGET_COLUMNS pre-race whitelist instead of SELECT * for RaceNote enrichment.
 - Do not read arbitrary post-race Analysis rows pre-Freeze; use pre-race source or a dedicated pedigree-only safe projection.
 - No pedigree score / fixed weight / automatic mark selection.
 
