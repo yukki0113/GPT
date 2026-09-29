@@ -164,6 +164,13 @@ TRUE_FORWARD pre-result Freeze passes.
 
 Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
 
+Single-race Gen0.3 Prepare transport is also PASS via explicit GitHub Actions
+artifact chaining and explicit RaceReview generation binding (Issue #1597 /
+Run `36501017523`). No direct Actions -> Drive transport is used by this
+single-race activation path. The only remaining Gen0-G001 activation gate is
+the first genuine TRUE_FORWARD pre-result Freeze.
+
+
 
 RaceReviewDB consumer default (2026-09-25):
 
