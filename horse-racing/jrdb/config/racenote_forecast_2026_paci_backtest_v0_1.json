@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "status": "DESIGN_ACCEPTED_IMPLEMENTATION_PENDING",
+  "status": "DESIGN_ACCEPTED_FORECAST_LOGIC_SELECTION_PENDING",
   "mode": "BLINDED_HISTORICAL",
   "forecast_family": "RaceNote-Forecast-Gen0.x",
   "paci_source": {
@@ -80,9 +80,40 @@
   ],
   "promotion_policy": {
     "historical_backtest_can_activate_gen0_g001": false,
-    "true_forward_freeze_still_required": true,
+    "gen0_g001_activation_status": "PAUSED_FORECAST_LOGIC_UNFROZEN",
     "candidate_changes_require_new_version": true,
-    "no_tuning_inside_oos_block": true
+    "no_tuning_inside_oos_block": true,
+    "true_forward_gate_defined_after_logic_selection": true
   },
-  "canonical_design": "docs/racenote/FORECAST_GEN0_2026_PACI_BACKTEST_DESIGN_v0_1.md"
+  "canonical_design": "docs/racenote/FORECAST_GEN0_2026_PACI_BACKTEST_DESIGN_v0_1.md",
+  "purpose": "Select detailed Gen0 Forecast logic through blinded historical comparison; do not assume Gen0.3 is adopted.",
+  "fixed_invariants": [
+    "RACENOTE_EVIDENCE_BOUNDARY",
+    "AS_OF_EXCLUSIVE_HISTORY",
+    "RESULT_FIREWALL",
+    "IMMUTABLE_PRE_RESULT_FREEZE",
+    "RESULT_AFTER_FREEZE",
+    "PREDICTION_RESULT_SEPARATION",
+    "VERSIONED_EXPERIMENTS"
+  ],
+  "unfrozen_research_variables": [
+    "EVIDENCE_READING_PRIORITY",
+    "TREND_RACEREVIEW_ABILITY_CONFLICT_POLICY",
+    "ALL_RUNNER_SYNTHESIS_USAGE",
+    "PAIRWISE_USAGE",
+    "SCENARIO_ROBUSTNESS_USAGE",
+    "EDGEDB_PERFORMANCE_PRE_FREEZE_USAGE",
+    "CONFIDENCE_POLICY",
+    "PROBABILITY_POLICY",
+    "MARK_AND_AXIS_SELECTION",
+    "PROMPT_WORDING"
+  ],
+  "candidate_policy": {
+    "required_interface": "ONE_RACE_PRE_RESULT_INPUT_TO_IMMUTABLE_FORECAST",
+    "baseline_candidates": [
+      "SIMPLE_RACENOTE_READER_TBD",
+      "RaceNote-Forecast-Gen0.3"
+    ],
+    "gen0_3_role": "EXPERIMENTAL_CANDIDATE_NOT_DEFAULT"
+  }
 }
