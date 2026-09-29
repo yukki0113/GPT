@@ -1,9 +1,9 @@
 {
   "version": "RaceNote-Forecast-Logic-Current-0.1",
   "updated_at": "2026-09-29",
-  "current_logic_version": "RaceNote-Human-Context-Reader-0.3.1",
-  "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_3_1.md",
-  "logic_config": "config/racenote_forecast_logic_human_context_v0_3_1.json",
+  "current_logic_version": "RaceNote-Human-Context-Reader-0.3.2",
+  "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md",
+  "logic_config": "config/racenote_forecast_logic_human_context_v0_3_2.json",
   "record_schema": "schema/racenote_forecast_research_record_v0_3_1.json",
   "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
   "freeze_validator": "src/validate_racenote_forecast_human_context.py",
@@ -12,7 +12,7 @@
     "last_turn": "BTDAY-0002",
     "status": "FROZEN_RESEARCH_BASELINE"
   },
-  "change_reason": "Human-context calibration retained; add RRDB balance guard so RRDB normally interprets/corroborates direct evidence and cannot overturn strong target-condition evidence without an independent current-race reason.",
+  "change_reason": "RRDB is now used to reinterpret visible prior results, then horses are re-compared in the current race. RRDB may act as a tie-breaker or restore older relevant direct evidence, but labels alone never determine marks.",
   "phase": "CALIBRATION_HOLD",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
