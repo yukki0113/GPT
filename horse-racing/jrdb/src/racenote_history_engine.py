@@ -535,6 +535,31 @@ def statistic_with_ranges(
     return output
 
 
+def pedigree_historical_context(
+    *,
+    sire_name: object,
+    broodmare_sire_name: object,
+    statistic_builder,
+) -> dict:
+    """Build non-scoring P2 pedigree context for sire and broodmare sire."""
+    sire = statistic_builder("sire_name", sire_name) if sire_name not in (None, "") else None
+    broodmare_sire = (
+        statistic_builder("broodmare_sire_name", broodmare_sire_name)
+        if broodmare_sire_name not in (None, "")
+        else None
+    )
+    observed = sum(item is not None for item in (sire, broodmare_sire))
+    coverage_status = "FULL" if observed == 2 else ("PARTIAL" if observed else "NONE")
+    return {
+        "sire": sire,
+        "broodmare_sire": broodmare_sire,
+        "coverage_status": coverage_status,
+        "scoring": False,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size",
+    }
+
+
 def build_run_layers(horse: dict, older_limit: int) -> dict:
     """Describe the meaning and observed size of detailed and compact run layers."""
     return {
@@ -629,6 +654,15 @@ def enrich(
             "missing_field_policy": "null_no_guess",
             "result_fields_exposed": False,
         },
+        "pedigree_enrichment_p2": {
+            "status": "ACTIVE",
+            "scoring": False,
+            "dimensions": ["sire_name", "broodmare_sire_name"],
+            "condition_scope": "venue_surface_exact_distance_plus_target_distance_ranges",
+            "as_of_exclusive": race_date,
+            "small_sample_policy": "retain_with_sample_size",
+            "result_fields_exposed": False,
+        },
         "distance_range_policy": {
             "ranges": [dict(item) for item in DISTANCE_RANGE_DEFINITIONS],
             "overlap_boundaries_m": [1400, 1800],
@@ -655,7 +689,15 @@ def enrich(
                 "source_policy": "approved_pre_race_identity_fields_only",
                 "scoring": False,
             }
-            horse["stats"] = {"sire": None, "jockey": None}
+            horse["stats"] = {"sire": None, "broodmare_sire": None, "jockey": None}
+            horse["pedigree_context"] = {
+                "sire": None,
+                "broodmare_sire": None,
+                "coverage_status": "NONE",
+                "scoring": False,
+                "interpretation_policy": "descriptive_context_only",
+                "small_sample_policy": "retain_with_sample_size",
+            }
             horse["history_coverage"] = {
                 "scope": "jrdb_jra_history",
                 "observed_history": "unknown",
@@ -708,22 +750,29 @@ def enrich(
         horse["historical_profile"] = profile_value
 
         sire = entry["sire_name"]
+        broodmare_sire = row_value(entry, "broodmare_sire_name")
         jockey = entry["jockey_name"] or horse["basic"].get("jockey")
+
+        def build_dimension_stat(column: str, value: object) -> dict:
+            return statistic_with_ranges(
+                analysis,
+                column,
+                value,
+                race_date,
+                venue_code,
+                track_type,
+                distance,
+                years,
+            )
+
+        horse["pedigree_context"] = pedigree_historical_context(
+            sire_name=sire,
+            broodmare_sire_name=broodmare_sire,
+            statistic_builder=build_dimension_stat,
+        )
         horse["stats"] = {
-            "sire": (
-                statistic_with_ranges(
-                    analysis,
-                    "sire_name",
-                    sire,
-                    race_date,
-                    venue_code,
-                    track_type,
-                    distance,
-                    years,
-                )
-                if sire
-                else None
-            ),
+            "sire": horse["pedigree_context"]["sire"],
+            "broodmare_sire": horse["pedigree_context"]["broodmare_sire"],
             "jockey": (
                 statistic_with_ranges(
                     analysis,
@@ -872,7 +921,7 @@ class BulkEnrichmentIndex:
         for row in detail_rows:
             self.horse_rows.setdefault(str(row[0]), []).append(row)
 
-        for column in ("sire_name", "jockey_name", "frame_no"):
+        for column in ("sire_name", "broodmare_sire_name", "jockey_name", "frame_no"):
             values = sorted({row[column] for row in self.entries.values() if row[column] not in (None, "")})
             if not values:
                 continue
@@ -989,7 +1038,15 @@ class BulkEnrichmentIndex:
                     "source_policy": "approved_pre_race_identity_fields_only",
                     "scoring": False,
                 }
-                horse["stats"] = {"sire": None, "jockey": None}
+                horse["stats"] = {"sire": None, "broodmare_sire": None, "jockey": None}
+            horse["pedigree_context"] = {
+                "sire": None,
+                "broodmare_sire": None,
+                "coverage_status": "NONE",
+                "scoring": False,
+                "interpretation_policy": "descriptive_context_only",
+                "small_sample_policy": "retain_with_sample_size",
+            }
                 horse["history_coverage"] = {"scope": "jrdb_jra_history", "observed_history": "unknown", "observed_starts": None, "overseas_history_coverage": "not_guaranteed", "reason": "target_entry_not_found", "run_layers": build_run_layers(horse, self.older_limit)}
                 continue
             horse_id = str(entry["horse_id"]) if entry["horse_id"] else None
@@ -1019,8 +1076,22 @@ class BulkEnrichmentIndex:
             if horse["history_coverage"]["reason"] == "foreign_based_entry_no_jra_history":
                 horse["historical_profile"] = None
             sire = entry["sire_name"]
+            broodmare_sire = row_value(entry, "broodmare_sire_name")
             jockey = entry["jockey_name"] or horse["basic"].get("jockey")
-            horse["stats"] = {"sire": self._stat("sire_name", sire, venue_code, track_type, distance, race_date) if sire else None, "jockey": self._stat("jockey_name", jockey, venue_code, track_type, distance, race_date) if jockey else None}
+
+            def build_dimension_stat(column: str, value: object) -> dict:
+                return self._stat(column, value, venue_code, track_type, distance, race_date)
+
+            horse["pedigree_context"] = pedigree_historical_context(
+                sire_name=sire,
+                broodmare_sire_name=broodmare_sire,
+                statistic_builder=build_dimension_stat,
+            )
+            horse["stats"] = {
+                "sire": horse["pedigree_context"]["sire"],
+                "broodmare_sire": horse["pedigree_context"]["broodmare_sire"],
+                "jockey": self._stat("jockey_name", jockey, venue_code, track_type, distance, race_date) if jockey else None,
+            }
         frames = {}
         for frame_no in range(1, 9):
             stat = self._stat("frame_no", frame_no, venue_code, track_type, distance, race_date)
