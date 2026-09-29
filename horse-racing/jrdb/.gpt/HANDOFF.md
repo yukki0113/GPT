@@ -1,3 +1,22 @@
+### RaceNote Daily Build D3 — 2026-09-30
+
+- D3 is implemented.
+- Connected path:
+  `PACI -> BASE -> Analysis/History/Trend/P1/P2 -> formal RRDB`.
+- New RRDB bulk API:
+  `racenote_rrdb_enrichment.enrich_bundles()`.
+- All daily horse IDs are collected first; latest-prior Next-Watch is reconstructed once for the whole target date.
+- Existing RaceReview adapter / Horse Evidence Card semantics are reused per race.
+- `enrich_bundle()` remains backward compatible and shares the same apply helper.
+- Daily orchestrator loads frozen Next-Watch rules once and resolves RRDB CURRENT once (or opens one explicit generation root).
+- RRDB source failures are request-level FAIL.
+- Normal D3 RRDB work uses a temporary directory; retained only with `--keep-intermediate`.
+- Focused tests: `tests/test_racenote_daily_build_d3.py`.
+- Current CLI intentionally stops after RRDB with `NOT_IMPLEMENTED_AFTER_D3`.
+- Existing one-race path remains production truth until D5 equivalence/cutover.
+- Next turn: **D4 — Reader View + validation + final package/manifest**.
+- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
+
 ### RaceNote Daily Build D2 — 2026-09-30
 
 - D2 is implemented in `src/build_racenote_daily.py`.
