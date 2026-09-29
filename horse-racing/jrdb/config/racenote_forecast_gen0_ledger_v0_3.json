@@ -1,7 +1,7 @@
 {
   "version": "0.3",
-  "status": "ACTIVATION_PREP_TRUE_FORWARD_PENDING",
-  "planned_generation_id": "Gen0-G001",
+  "status": "RESEARCH_CANDIDATE_NOT_ADOPTED",
+  "planned_generation_id": null,
   "forecast_version": "RaceNote-Forecast-Gen0.3",
   "evidence_policy_version": "TrendFirst-RR-Pairwise-Scenario-v0.1",
   "forecast_schema": "schema/racenote_forecast_gen0_schema_v0_3.json",
@@ -57,14 +57,12 @@
     "BET_PLAN"
   ],
   "activation_gate": {
-    "sample_manifest_required": true,
-    "sample_manifest_status": "PASS",
-    "generation_registration_required": true,
-    "generation_registration_status": "PASS",
-    "formal_true_forward_freeze_required": true,
-    "formal_true_forward_freeze_status": "PENDING",
-    "current_generation_remains_gen0_g000_until_activation": true,
-    "single_race_prepare_transport_status": "PASS"
+    "status": "PAUSED_FORECAST_LOGIC_UNFROZEN",
+    "sample_manifest_status": "PASS_HISTORICAL_ASSET",
+    "generation_registration_status": "PASS_HISTORICAL_ASSET",
+    "single_race_prepare_transport_status": "PASS_ENGINEERING_EVIDENCE",
+    "formal_true_forward_freeze_status": "NOT_APPLICABLE_UNTIL_LOGIC_SELECTED",
+    "current_generation_remains_gen0_g000": true
   },
   "sample_manifest": {
     "status": "PASS",
@@ -94,7 +92,7 @@
     "queue_sheet": "対象Rキュー",
     "queue_range": "A72:Y141",
     "registered_races": 70,
-    "generation_status": "READY"
+    "generation_status": "HISTORICAL_READY_RECORD_ONLY"
   },
   "single_race_prepare_transport": {
     "status": "PASS",
@@ -110,5 +108,34 @@
     "smoke_artifact_name": "racenote-gen0-3-prepare-36501017523",
     "smoke_status": "PASS",
     "direct_drive_transport": false
+  },
+  "role": "EXPERIMENTAL_FORECAST_CANDIDATE",
+  "adoption": {
+    "detailed_forecast_logic_selected": false,
+    "gen0_3_is_current_default": false,
+    "activation_candidate_status": "PAUSED",
+    "reason": "RaceNote/evaluation infrastructure is fixed, but detailed Forecast logic remains under blinded historical research."
+  },
+  "candidate_specific_policy": {
+    "source_chain": [
+      "RaceNote-General-Evidence-0.2",
+      "RaceNote-All-Runner-Synthesis-0.1",
+      "RaceNote-Pairwise-Audit-0.1",
+      "RaceNote-Scenario-Robustness-Audit-0.1"
+    ],
+    "decision_order": [
+      "DATA_TREND",
+      "RACEREVIEW",
+      "ABILITY_ANCHOR",
+      "ALL_RUNNER_SYNTHESIS",
+      "PAIRWISE_COMPARISON",
+      "SCENARIO_ROBUSTNESS",
+      "BASE_FORECAST",
+      "EDGEDB_PERFORMANCE_OVERLAY",
+      "FINAL_FORECAST",
+      "FREEZE"
+    ],
+    "evidence_policy_version": "TrendFirst-RR-Pairwise-Scenario-v0.1",
+    "note": "These fields describe the Gen0.3 candidate implementation only; they are not project-wide Gen0 defaults."
   }
 }
