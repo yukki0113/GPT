@@ -59,18 +59,18 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          candidates=[]
-          for p in Path('/tmp/analysis_unpack').rglob('manifest.json'):
-              try:
-                  d=json.loads(p.read_text(encoding='utf-8'))
-              except Exception:
-                  continue
-              if d.get('artifact_type')=='jrdb_analysis' and d.get('generation_id')=='analysis-v1_4-canonical-20260928-02':
-                  candidates.append(p.parent)
-          if len(candidates)!=1:
-              raise SystemExit(f'unique Analysis root required: {candidates}')
-          Path('/tmp/analysis_root.txt').write_text(str(candidates[0]), encoding='utf-8')
-          print(candidates[0])
+          root=Path('/tmp/analysis_unpack')
+          current=root/'current.json'
+          if not current.is_file():
+              raise SystemExit(f'Analysis current.json missing: {current}')
+          manifest=root/'generations'/'analysis-v1_4-canonical-20260928-02'/'manifest.json'
+          if not manifest.is_file():
+              raise SystemExit(f'expected generation manifest missing: {manifest}')
+          d=json.loads(manifest.read_text(encoding='utf-8'))
+          if d.get('generation_id')!='analysis-v1_4-canonical-20260928-02':
+              raise SystemExit(f'unexpected generation: {d.get("generation_id")}')
+          Path('/tmp/analysis_root.txt').write_text(str(root), encoding='utf-8')
+          print(root)
           PY
 
       - name: Build full 2026-05-23 P1/P2 RaceNote
