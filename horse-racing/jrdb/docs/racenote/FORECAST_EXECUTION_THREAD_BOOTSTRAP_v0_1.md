@@ -9,12 +9,12 @@ GitHub `yukki0113/GPT` main の最新状態から、まず以下を確認する�
 1. `horse-racing/jrdb/docs/racenote/FORECAST_GEN0_THREAD_ROLES_v0_1.md`
 2. `horse-racing/jrdb/docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md`
 3. `horse-racing/jrdb/docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
-4. current Forecast logic contract / config
-   - initial current:
-     - `horse-racing/jrdb/docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_1.md`
-     - `horse-racing/jrdb/config/racenote_forecast_logic_baseline_v0_1.json`
-5. `horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json`
-6. `horse-racing/jrdb/src/racenote_backtest_day_picker.py`
+4. `horse-racing/jrdb/config/racenote_forecast_logic_current.json`
+5. current pointerが示す Forecast logic contract / config / record schema
+6. `horse-racing/jrdb/docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md`
+7. `horse-racing/jrdb/src/validate_racenote_forecast_decision_trace.py`
+8. `horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json`
+9. `horse-racing/jrdb/src/racenote_backtest_day_picker.py`
 
 以後、会話内の古い説明よりlatest mainのcurrent assetsを優先する。
 
@@ -28,6 +28,8 @@ GitHub `yukki0113/GPT` main の最新状態から、まず以下を確認する�
 - current logic_versionを全対象Rで固定
 - 1 race = 1 independent forecast
 - canonical research record保存
+- race-specific Decision Trace作成
+- Decision Trace validator PASS
 - immutable Freeze
 - 日別forecast HTML生成
 - turn handoff manifest生成
@@ -49,6 +51,9 @@ GitHub `yukki0113/GPT` main の最新状態から、まず以下を確認する�
 
 予想中に見つけた課題は短い `execution_observations` として残し、
 その場でlogicへ反映しない。
+
+テンプレート短評へ馬名・数値だけを差し込んでDecision Traceの代用に
+することは禁止。各raceで◎と○の具体的な比較を必ず残す。
 
 ## Output
 
@@ -77,9 +82,15 @@ handoffには最低限:
 全usable raceのFreezeとhandoff作成が終わったら停止し、
 「結果確認・評価・ロジック調整は研究スレッドへ渡してください」と報告する。
 
-## Initial run
+## Current logic resolution
 
-現時点でResearch threadから別指定がなければ、
-current initial logicは `RaceNote-Baseline-Reader-0.1`。
+Research threadから別指定がない場合でもlogic versionを推測しない。
 
-ただし実行開始前にlatest mainでcurrent logic versionを必ず再確認する。
+必ず:
+`config/racenote_forecast_logic_current.json`
+をlatest mainから読み、そこに指定されたlogic / schema / validatorを使う。
+
+Current at 2026-09-29:
+`RaceNote-Baseline-Reader-0.2`
+
+ただしこの記載自体よりcurrent pointerを優先する。
