@@ -1,11 +1,14 @@
-### RaceNote RRDB formal integration design — 2026-09-29
+### RaceNote RRDB formal integration — 2026-09-29
 
 - Design:
   `docs/racenote/RACENOTE_RRDB_INTEGRATION_DESIGN_v0_1.md`
-- Current problem: RRDB / RaceReview assets exist, but the normal Human-Context Reader v0.3 calibration path does not receive them in RaceNote.
-- Planned normal chain:
+- Status: R1-R5 IMPLEMENTED; focused real-data smoke pending.
+- Normal chain:
   `RaceNote base -> Analysis/P1/P2 -> RRDB enrichment -> RaceNote v1.0 -> Reader View -> Human-Context Reader`
-- Per-horse target block: `racereview`.
+- Per-horse block: `racereview`.
+- implementation: `src/racenote_rrdb_enrichment.py`
+- shared Next-Watch grading: `src/jrdb_next_watch_rules.py`
+- production history enrichment can invoke RRDB after Analysis/P1/P2.
 - Two lanes:
   - historical Review context
   - latest-prior-start Next-Watch S/A context
@@ -13,7 +16,8 @@
 - No horse-name fallback; join by JRDB blood registration number.
 - Strict historical boundary: `race_date < target_date`.
 - RRDB is contextual evidence only: no fixed bonus, no automatic ◎/mark.
-- Forecast trace must record RRDB `reviewed` and whether it was used; if ignored, record why.
+- Current future record schema: `schema/racenote_forecast_research_record_v0_3_1.json`.
+- Forecast trace records RRDB `reviewed` and whether it was used; if ignored, record why.
 - Same-run recent_runs comment + RRDB evidence are corroborating details, not additive votes.
 - P3 sibling and obstacle-specific evidence remain out of scope.
 - No new clean PACI date should be consumed for RRDB integration validation.
@@ -51,7 +55,7 @@
 - Current logic: `RaceNote-Human-Context-Reader-0.3`.
 - Mandatory teacher evidence: `racenote/evidence/human_forecast_evidence_202301.md`.
 - Current calibration protocol: `docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md`.
-- Current schema: `schema/racenote_forecast_research_record_v0_3.json`.
+- Current schema: `schema/racenote_forecast_research_record_v0_3_1.json`.
 - Current validator: `src/validate_racenote_forecast_human_context.py`.
 - v0.3 forbids single-score / implicit numeric sorting as the primary axis-selection method.
 - Use only 6–12 representative races from already-used / ineligible days during calibration.
