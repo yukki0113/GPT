@@ -26,7 +26,8 @@ jobs:
 
       - name: Download fixed inputs
         run: |
-          gdown 'https://drive.google.com/uc?id=1IUlbu4MvGf66Iqsznw3EtzRZ6pwd2Gb9' -O /tmp/cal003_inputs.json
+          base64 -d horse-racing/jrdb/tmp/cal003_inputs.json.b64 > /tmp/cal003_inputs.json
+          test -s /tmp/cal003_inputs.json
           gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/RaceReviewDB_CURRENT.zip
           gdown 'https://drive.google.com/uc?id=1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr' -O /tmp/next_watch_rules.zip
 
