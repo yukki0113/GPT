@@ -1,8 +1,20 @@
 # RaceNote Forecast Gen0 — 2026 PACI Historical Backtest Design v0.1
 
-Status: **DESIGN ACCEPTED / IMPLEMENTATION PENDING**
+Status: **CURRENT / CORE RESEARCH INFRASTRUCTURE IMPLEMENTED**
 
 Date: 2026-09-29
+
+## 0. Canonical operating contract
+
+This design is specialized to the 2026 PACI historical lane.
+The common Backtest / TRUE_FORWARD research rules are canonicalized in:
+
+- `docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md`
+- `docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
+- `schema/racenote_forecast_research_record_v0_1.json`
+
+The common protocol is authoritative when this older design text is ambiguous.
+
 
 ## 1. Purpose
 
@@ -191,15 +203,18 @@ Historical target-day selection is implemented by:
 - `src/racenote_backtest_day_picker.py`
 - `config/racenote_backtest_day_pool_2026.json`
 
-Each PACI date stores `date`, `file_name`, `drive_file_id`, `used`,
-`used_at`, and `selection_id`.
+Each PACI date stores `date`, `file_name`, `drive_file_id`, `eligible`,
+`exclusion_reason`, `used`, `used_at`, and `selection_id`.
 
-`pick -n N` samples only unused dates and immediately marks them used.
+`pick -n N` samples only unused **eligible** dates by default and immediately marks them used.
 The actual seed is stored in the selection history so the draw is reproducible.
 `release` returns an accidental draw to the unused pool.
 
-A newer PACI Drive inventory can be merged with `sync`. Existing usage flags
-are preserved; previously unseen PACI dates are added as unused candidates.
+A newer PACI Drive inventory can be merged with `sync`. Existing usage and
+eligibility state are preserved; previously unseen PACI dates are added as
+unused eligible candidates unless explicitly classified otherwise.
+Known result-exposed dates are excluded from clean blind turns in the pool.
+`--include-ineligible` exists only for explicit DEV replay.
 The deterministic picker itself does not access Google Drive credentials.
 
 ### Default research turn
@@ -450,9 +465,9 @@ Required fields/semantics:
 
 Do not set `forecast.current_generation` from historical backtest rows.
 
-## 15. First implementation milestone
+## 15. Implementation state
 
-Implement only the reusable infrastructure first:
+The following reusable infrastructure is now implemented or contractually fixed:
 
 1. PACI 2026 source inventory / immutable manifest builder
 2. contamination registry
@@ -464,14 +479,15 @@ Implement only the reusable infrastructure first:
 8. deterministic evaluation summary
 9. baseline-vs-candidate comparison report
 
-First smoke:
+Implemented supporting assets include:
 
-- one clean historical date
-- all races on that date
-- use a deliberately simple baseline reader plus the existing Gen0.3 candidate where practical
-- purpose = validate candidate-pluggable execution, firewall, source identity, freeze-before-result, and metrics
+- persistent random day pool / picker
+- clean-turn eligibility flags
+- common forecast research record schema
+- daily forecast HTML output contract / renderer
 
-Only after the smoke PASS should the first 2-day DEV tuning block be opened.
+The next execution milestone is the first clean two-day turn using one explicitly
+named baseline logic version, followed by result-open and review.
 
 ## 16. Relationship to Gen0-G001 activation
 
