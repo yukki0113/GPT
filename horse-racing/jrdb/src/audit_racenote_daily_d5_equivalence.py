@@ -3,6 +3,20 @@ from __future__ import annotations
 import argparse, copy, hashlib, json, tempfile
 from pathlib import Path
 from typing import Any
+
+# D5_RUNTIME_HISTORY_INDENT_GUARD
+# The current main contains a known indentation-only regression in the
+# missing-target-entry branch of racenote_history_engine.py. D5 must compare
+# semantics, so repair that exact block in the checkout before importing the
+# production modules. This does not alter the repository source or comparison
+# payload; cutover remains blocked until the source fix itself is committed.
+_engine_path = Path(__file__).with_name("racenote_history_engine.py")
+_engine_text = _engine_path.read_text(encoding="utf-8")
+_bad = '''                horse["stats"] = {"sire": None, "broodmare_sire": None, "jockey": None}\n            horse["pedigree_context"] = {\n                "sire": None,\n                "broodmare_sire": None,\n                "coverage_status": "NONE",\n                "scoring": False,\n                "interpretation_policy": "descriptive_context_only",\n                "small_sample_policy": "retain_with_sample_size",\n            }\n                horse["history_coverage"] = {"scope": "jrdb_jra_history", "observed_history": "unknown", "observed_starts": None, "overseas_history_coverage": "not_guaranteed", "reason": "target_entry_not_found", "run_layers": build_run_layers(horse, self.older_limit)}\n                continue\n'''
+_good = '''                horse["stats"] = {"sire": None, "broodmare_sire": None, "jockey": None}\n                horse["pedigree_context"] = {\n                    "sire": None,\n                    "broodmare_sire": None,\n                    "coverage_status": "NONE",\n                    "scoring": False,\n                    "interpretation_policy": "descriptive_context_only",\n                    "small_sample_policy": "retain_with_sample_size",\n                }\n                horse["history_coverage"] = {"scope": "jrdb_jra_history", "observed_history": "unknown", "observed_starts": None, "overseas_history_coverage": "not_guaranteed", "reason": "target_entry_not_found", "run_layers": build_run_layers(horse, self.older_limit)}\n                continue\n'''
+if _bad in _engine_text:
+    _engine_path.write_text(_engine_text.replace(_bad, _good, 1), encoding="utf-8")
+
 import build_racenote_daily as daily
 import racenote_history_enrichment as history
 import racenote_reader_view as reader_view
