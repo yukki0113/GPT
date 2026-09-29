@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Day-level RaceNote production orchestrator.
 
-D2 connects deterministic Stage A (PACI -> all base RaceNotes) and Stage B
-(Analysis/history/P1/P2 bulk enrichment). RRDB/Reader/package cutover remains
-fail-closed until D3-D4.
+Stages A-F are connected through D4: PACI -> base -> History/P1/P2 -> RRDB ->
+Reader View -> validation -> package. Production cutover remains forbidden until
+D5 old-path vs daily-path semantic equivalence passes.
 """
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ from typing import Any
 import racenote_history_enrichment as history
 import racenote_jrdb as jrdb
 import racenote_rrdb_enrichment as rrdb
+import racenote_reader_view as reader_view
 from jrdb_postrace_review_reader import RaceReviewReader
 from racenote_analysis_backend import AnalysisBackendError, open_analysis_backend
 from racenote_racereview_current import (
@@ -140,7 +141,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             "validation_report": str(output_root / "validation_report.json"),
         },
         "warnings": [
-            "D2 connects BASE/HISTORY only; RRDB/Reader/package are not yet production-active."
+            "Daily D4 package is pre-cutover; existing one-race path remains production truth until D5 equivalence passes."
         ],
         "errors": [],
     }
@@ -437,6 +438,308 @@ def build_through_rrdb(
     return enriched, report
 
 
+
+def _bundle_identity(bundle: dict[str, Any]) -> dict[str, Any]:
+    race = bundle.get("race")
+    if not isinstance(race, dict):
+        raise DailyBuildError("RaceNote bundle is missing race")
+    return {
+        "venue": race.get("venue"),
+        "race_no": race.get("race_no"),
+        "race_key": race.get("race_key"),
+    }
+
+
+def _artifact_stem(target_date: str, bundle: dict[str, Any]) -> str:
+    race = bundle["race"]
+    venue = str(race.get("venue") or "UNKNOWN")
+    race_no = str(race.get("race_no") or "00")
+    safe_venue = "".join(ch for ch in venue if ch.isalnum() or ch in ("-", "_"))
+    if not safe_venue:
+        safe_venue = "UNKNOWN"
+    return f"{target_date.replace('-', '')}_{safe_venue}{race_no}R"
+
+
+def build_reader_views(
+    bundles: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Build and round-trip validate one lossless Reader View per bundle."""
+    views: list[dict[str, Any]] = []
+    races: list[dict[str, Any]] = []
+    for bundle in bundles:
+        try:
+            view = reader_view.build_reader_view(bundle)
+            expanded = reader_view.expand_reader_view(view, validate_hash=True)
+        except reader_view.ReaderViewError as exc:
+            ident = _bundle_identity(bundle)
+            raise DailyBuildError(
+                f"Reader View failed for {ident['venue']}{ident['race_no']}R: {exc}"
+            ) from exc
+        if expanded != bundle:
+            ident = _bundle_identity(bundle)
+            raise DailyBuildError(
+                f"Reader View semantic round-trip mismatch for "
+                f"{ident['venue']}{ident['race_no']}R"
+            )
+        views.append(view)
+        races.append({
+            "race": _bundle_identity(bundle),
+            "source_semantic_sha256": view["source_semantic_sha256"],
+            "roundtrip_validation": "PASS",
+        })
+    return views, {
+        "race_count": len(views),
+        "view_version": reader_view.VIEW_VERSION,
+        "roundtrip_validation": "PASS",
+        "races": races,
+    }
+
+
+def _iter_dicts(value: Any):
+    if isinstance(value, dict):
+        yield value
+        for child in value.values():
+            yield from _iter_dicts(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _iter_dicts(child)
+
+
+def validate_daily_bundles(
+    bundles: list[dict[str, Any]],
+    views: list[dict[str, Any]],
+    report: dict[str, Any],
+    target_date: str,
+) -> dict[str, Any]:
+    """Apply request/race-level D4 gates without changing RaceNote semantics."""
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if len(bundles) != len(views):
+        errors.append(
+            f"Reader count mismatch bundles={len(bundles)} views={len(views)}"
+        )
+
+    base = report.get("base", {})
+    contamination = int(base.get("target_result_contamination") or 0)
+    if contamination:
+        errors.append(f"target-result contamination count={contamination}")
+
+    analysis_as_of_violations = 0
+    rrdb_as_of_violations = 0
+    for bundle in bundles:
+        race = bundle.get("race") or {}
+        if race.get("date") != target_date:
+            errors.append(
+                f"race target date mismatch: {race.get('venue')}{race.get('race_no')}R "
+                f"date={race.get('date')}"
+            )
+
+        for node in _iter_dicts(bundle):
+            if "as_of_exclusive" in node:
+                as_of = node.get("as_of_exclusive")
+                if as_of not in (None, target_date):
+                    analysis_as_of_violations += 1
+
+        horses = bundle.get("horses") or []
+        for horse in horses:
+            if not isinstance(horse, dict):
+                continue
+            block = horse.get("racereview")
+            if not isinstance(block, dict):
+                continue
+            for node in _iter_dicts(block):
+                race_date = node.get("race_date")
+                if isinstance(race_date, str) and race_date >= target_date:
+                    rrdb_as_of_violations += 1
+
+    if analysis_as_of_violations:
+        errors.append(
+            f"Analysis/history as-of violations={analysis_as_of_violations}"
+        )
+    if rrdb_as_of_violations:
+        errors.append(f"RRDB as-of violations={rrdb_as_of_violations}")
+
+    rrdb_report = report.get("rrdb") or {}
+    if not rrdb_report.get("rrdb_generation_id"):
+        errors.append("RRDB generation provenance is missing")
+    if not rrdb_report.get("next_watch_rule_version"):
+        errors.append("Next-Watch rule provenance is missing")
+
+    status = "PASS" if not errors else "FAIL"
+    return {
+        "status": status,
+        "target_date": target_date,
+        "race_count": len(bundles),
+        "reader_view_count": len(views),
+        "firewall": {
+            "target_result_exposed": bool(contamination),
+            "market_exposed": False,
+            "analysis_as_of_violations": analysis_as_of_violations,
+            "rrdb_as_of_violations": rrdb_as_of_violations,
+        },
+        "checks": {
+            "race_structure": status,
+            "provenance": "PASS" if not any("provenance" in x for x in errors) else "FAIL",
+            "reader_roundtrip": "PASS" if len(bundles) == len(views) else "FAIL",
+        },
+        "warnings": warnings,
+        "errors": errors,
+    }
+
+
+def write_daily_package(
+    *,
+    bundles: list[dict[str, Any]],
+    views: list[dict[str, Any]],
+    report: dict[str, Any],
+    validation: dict[str, Any],
+    target_date: str,
+    output_root: Path,
+) -> dict[str, Any]:
+    """Write canonical D4 authoritative/reader package and manifest."""
+    if validation.get("status") != "PASS":
+        raise DailyBuildError(
+            "D4 validation failed: " + "; ".join(validation.get("errors") or [])
+        )
+
+    root = output_root / f"RaceNote_{target_date.replace('-', '')}"
+    authoritative_dir = root / "authoritative"
+    reader_dir = root / "reader"
+    authoritative_dir.mkdir(parents=True, exist_ok=True)
+    reader_dir.mkdir(parents=True, exist_ok=True)
+
+    authoritative_files: list[str] = []
+    reader_files: list[str] = []
+    for bundle, view in zip(bundles, views, strict=True):
+        stem = _artifact_stem(target_date, bundle)
+        authoritative = authoritative_dir / f"race_bundle_{stem}.json"
+        reader = reader_dir / f"racenote_reader_{stem}.json"
+        authoritative.write_text(
+            json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        reader_view.write_reader_view(reader, view, pretty=False)
+        authoritative_files.append(str(authoritative))
+        reader_files.append(str(reader))
+
+    validation_path = root / "validation_report.json"
+    validation_path.write_text(
+        json.dumps(validation, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    manifest = {
+        "schema_version": MANIFEST_SCHEMA_VERSION,
+        "target_date": target_date,
+        "status": "PASS",
+        "pipeline_version": PIPELINE_VERSION,
+        "stages": {name: "PASS" for name in STAGE_NAMES},
+        "sources": {
+            "paci": {
+                "target_date": report["base"].get("target_date"),
+                "date_raw": report["base"].get("date_raw"),
+                "record_counts": report["base"].get("record_counts"),
+            },
+            "analysis": report["history"].get("analysis_source"),
+            "rrdb": report["rrdb"].get("rrdb_source"),
+            "next_watch": {
+                "rule_version": report["rrdb"].get("next_watch_rule_version"),
+            },
+        },
+        "counts": {
+            "races_expected": report["base"].get("race_count"),
+            "races_built": len(bundles),
+            "reader_views": len(views),
+            "horses": sum(len(x.get("horses", [])) for x in bundles),
+            "technical_skips": 0,
+        },
+        "firewall": validation["firewall"],
+        "validation": {
+            "base": "PASS",
+            "history": "PASS",
+            "pedigree": "PASS",
+            "rrdb": "PASS",
+            "reader_roundtrip": validation["checks"]["reader_roundtrip"],
+        },
+        "artifacts": {
+            "authoritative_dir": str(authoritative_dir),
+            "reader_dir": str(reader_dir),
+            "manifest": str(root / "manifest.json"),
+            "validation_report": str(validation_path),
+        },
+        "warnings": list(report["base"].get("warnings") or [])
+        + list(report["history"].get("warnings") or [])
+        + list(validation.get("warnings") or []),
+        "errors": [],
+    }
+    manifest_path = root / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2, default=str) + "\n",
+        encoding="utf-8",
+    )
+    return {
+        "root": str(root),
+        "authoritative_files": authoritative_files,
+        "reader_files": reader_files,
+        "manifest": str(manifest_path),
+        "validation_report": str(validation_path),
+        "manifest_payload": manifest,
+    }
+
+
+def build_daily_package(
+    *,
+    paci_path: Path,
+    target_date: str,
+    analysis_root: Path,
+    racereview_root: Path | None,
+    racereview_current_cache: Path | None,
+    next_watch_rules: Path,
+    output_root: Path,
+    rrdb_work_root: Path,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Execute D4 through Reader, validation and final package."""
+    bundles, report = build_through_rrdb(
+        paci_path=paci_path,
+        target_date=target_date,
+        analysis_root=analysis_root,
+        racereview_root=racereview_root,
+        racereview_current_cache=racereview_current_cache,
+        next_watch_rules=next_watch_rules,
+        rrdb_work_root=rrdb_work_root,
+    )
+    views, reader_report = build_reader_views(bundles)
+    report["reader"] = reader_report
+    report["stages"]["reader"] = "PASS"
+
+    validation = validate_daily_bundles(
+        bundles,
+        views,
+        report,
+        target_date,
+    )
+    if validation["status"] != "PASS":
+        raise DailyBuildError(
+            "D4 validation failed: " + "; ".join(validation["errors"])
+        )
+    report["validation"] = validation
+    report["stages"]["validation"] = "PASS"
+
+    package = write_daily_package(
+        bundles=bundles,
+        views=views,
+        report=report,
+        validation=validation,
+        target_date=target_date,
+        output_root=output_root,
+    )
+    report["package"] = package
+    report["stages"]["package"] = "PASS"
+    report["status"] = "D4_PASS_PRE_CUTOVER"
+    return package["manifest_payload"], report
+
+
 def _write_d3_debug(
     args: argparse.Namespace,
     bundles: list[dict[str, Any]],
@@ -479,7 +782,18 @@ def run(args: argparse.Namespace) -> int:
             / ".debug"
             / "rrdb_work"
         )
-        bundles, report = build_through_rrdb(
+        manifest, report = build_daily_package(
+            paci_path=args.paci,
+            target_date=args.target_date,
+            analysis_root=args.analysis_root,
+            racereview_root=args.racereview_root,
+            racereview_current_cache=args.racereview_current_cache,
+            next_watch_rules=args.next_watch_rules,
+            output_root=args.output,
+            rrdb_work_root=rrdb_work_root,
+        )
+        # Preserve a non-canonical connected-stage copy only when explicitly requested.
+        bundles, d3_report = build_through_rrdb(
             paci_path=args.paci,
             target_date=args.target_date,
             analysis_root=args.analysis_root,
@@ -488,37 +802,32 @@ def run(args: argparse.Namespace) -> int:
             next_watch_rules=args.next_watch_rules,
             rrdb_work_root=rrdb_work_root,
         )
-        report["debug_report"] = str(_write_d3_debug(args, bundles, report))
+        report["debug_report"] = str(_write_d3_debug(args, bundles, d3_report))
     else:
         with tempfile.TemporaryDirectory(prefix="racenote-daily-rrdb-") as tmp:
-            bundles, report = build_through_rrdb(
+            manifest, report = build_daily_package(
                 paci_path=args.paci,
                 target_date=args.target_date,
                 analysis_root=args.analysis_root,
                 racereview_root=args.racereview_root,
                 racereview_current_cache=args.racereview_current_cache,
                 next_watch_rules=args.next_watch_rules,
+                output_root=args.output,
                 rrdb_work_root=Path(tmp),
             )
 
-    print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
-    raise DailyBuildNotImplementedError(
-        "D3 BASE/HISTORY/RRDB completed successfully, but Reader/validation/package "
-        "are not connected yet. D4 will connect the final deterministic stages."
-    )
-
+    print(json.dumps({
+        "status": "success",
+        "pipeline_version": PIPELINE_VERSION,
+        "daily_status": report["status"],
+        "manifest": manifest,
+    }, ensure_ascii=False, indent=2, default=str))
+    return 0
 
 def main() -> int:
     args = parse_args()
     try:
         return run(args)
-    except DailyBuildNotImplementedError as exc:
-        print(json.dumps({
-            "status": "NOT_IMPLEMENTED_AFTER_D3",
-            "pipeline_version": PIPELINE_VERSION,
-            "error": str(exc),
-        }, ensure_ascii=False))
-        return 3
     except DailyBuildError as exc:
         print(json.dumps({
             "status": "FAIL",
