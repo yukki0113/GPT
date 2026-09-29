@@ -1,6 +1,6 @@
 # RaceNote Pedigree Enrichment Design v0.1
 
-Status: **FEASIBILITY CONFIRMED / IMPLEMENTATION NOT YET CUT OVER**
+Status: **P1 IMPLEMENTED / P2-P3 NOT YET IMPLEMENTED**
 Date: 2026-09-29
 
 ## 1. Background
@@ -240,3 +240,49 @@ Do not block P1/P2 on sibling support.
 
 Sibling support should be a separate source/research task because its canonical
 maternal identity path is not yet confirmed.
+
+
+## 12. P1 implementation status — 2026-09-29
+
+Implemented on main:
+
+- `src/racenote_history_engine.py`
+  - target Analysis row changed from unrestricted `SELECT *` to the existing
+    approved `TARGET_COLUMNS` pre-race projection.
+  - adds per-horse `pedigree`.
+- `src/racenote_history_enrichment.py`
+  - publishes P1 provenance / no-scoring / no-result exposure policy.
+- `tests/test_racenote_pedigree_p1.py`
+  - pedigree projection and firewall checks.
+- `tests/test_racenote_reader_view.py`
+  - verifies pedigree survives Reader View round-trip unchanged.
+
+Current P1 payload:
+
+```json
+{
+  "pedigree": {
+    "horse_id": "...",
+    "sire_name": "...",
+    "dam_name": null,
+    "broodmare_sire_name": "...",
+    "sire_line_code": "...",
+    "broodmare_sire_line_code": "...",
+    "coverage_status": "PARTIAL",
+    "source": "JRDB Analysis canonical target identity projection",
+    "source_policy": "approved_pre_race_identity_fields_only",
+    "scoring": false
+  }
+}
+```
+
+Current Analysis v1.4 target projection contains sire / broodmare sire and line
+codes but does **not** contain `dam_name`. Therefore `dam_name` is currently
+null in the normal RaceNote request path and coverage is normally `PARTIAL`.
+
+This is intentional fail-closed behavior. Do not reconstruct the dam by
+free-text name matching or external guessing.
+
+P1 is considered implemented for the currently canonical safe source.
+A future dedicated pedigree master may upgrade `dam_name` coverage without
+changing the P1 semantic contract.
