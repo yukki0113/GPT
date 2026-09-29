@@ -1,0 +1,124 @@
+name: CAL006 RRDB execution
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/cal006_rrdb_exec.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install duckdb gdown
+
+      - name: Download CAL006 P1/P2 base and formal RRDB inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/base /tmp/rrdb /tmp/rules
+          gh run download 36545550105 --repo "${{ github.repository }}" -n cal006-racenote-p1p2-base -D /tmp/base
+          gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/RaceReviewDB_CURRENT.zip
+          gdown 'https://drive.google.com/uc?id=1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr' -O /tmp/next_watch_rules.zip
+
+      - name: Select 10 unused calibration races and enrich formal RRDB
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          from jrdb_postrace_review_reader import RaceReviewReader
+          from racenote_rrdb_enrichment import load_frozen_contract, enrich_bundle
+
+          source=json.loads(Path('/tmp/base/racenote_20260523_P1P2_all.json').read_text(encoding='utf-8'))
+          targets={
+              ('京都',2),('京都',6),('京都',9),('京都',12),
+              ('新潟',5),('新潟',10),('新潟',11),
+              ('東京',3),('東京',9),('東京',10),
+          }
+          selected=[b for b in source if (b['race']['venue'],int(b['race']['race_no'])) in targets]
+          selected.sort(key=lambda b:(b['race']['venue'],int(b['race']['race_no'])))
+          if len(selected)!=10:
+              raise SystemExit(f'exactly 10 selected required: {[(b["race"]["venue"],b["race"]["race_no"]) for b in selected]}')
+
+          rrroot=Path('/tmp/rrdb')
+          with zipfile.ZipFile('/tmp/RaceReviewDB_CURRENT.zip') as z:
+              z.extractall(rrroot)
+          current=list(rrroot.rglob('current.json'))
+          if len(current)!=1:
+              raise SystemExit(f'unique RRDB current.json required: {current}')
+          reader=RaceReviewReader(current[0].parent)
+          contract=load_frozen_contract(Path('/tmp/next_watch_rules.zip'),Path('/tmp/rules'))
+
+          out=[]; matrix=[]
+          for bundle in selected:
+              enriched=enrich_bundle(bundle,reader,contract,per_horse_limit=5)
+              target_date=enriched['race']['date']
+              for horse in enriched['horses']:
+                  rr=horse.get('racereview') or {}
+                  latest=rr.get('latest_prior_run') or {}
+                  nw=rr.get('next_watch') or {}
+                  src=nw.get('source_run') or {}
+                  dates=[str(x) for x in (latest.get('race_date'),src.get('race_date')) if x is not None]
+                  if any(d>=target_date for d in dates):
+                      raise SystemExit(f'RRDB leakage {target_date}: {horse.get("horse_name")} {dates}')
+                  matrix.append({
+                      'target_date':target_date,
+                      'venue':enriched['race']['venue'],
+                      'race_no':enriched['race']['race_no'],
+                      'horse_no':horse.get('horse_no') or horse.get('basic',{}).get('horse_no'),
+                      'horse_name':horse.get('horse_name') or horse.get('basic',{}).get('horse_name'),
+                      'horse_id':horse.get('horse_id') or horse.get('basic',{}).get('horse_id'),
+                      'history_status':rr.get('history_status'),
+                      'latest_prior_run':latest,
+                      'next_watch':nw,
+                      'history_profile':rr.get('history_profile'),
+                      'reviewed':True,
+                  })
+              out.append(enriched)
+
+          Path('/tmp/out').mkdir(parents=True,exist_ok=True)
+          Path('/tmp/out/racenote_inputs_CAL-006_P1P2_RRDB.json').write_text(
+              json.dumps(out,ensure_ascii=False,indent=2,default=str)+'\n',encoding='utf-8')
+          Path('/tmp/out/rrdb_review_matrix_CAL-006.json').write_text(
+              json.dumps(matrix,ensure_ascii=False,indent=2,default=str)+'\n',encoding='utf-8')
+          Path('/tmp/out/rrdb_execution_summary_CAL-006.json').write_text(
+              json.dumps({
+                  'status':'PASS','race_count':len(out),'horse_count':len(matrix),
+                  'all_horses_reviewed':all(x['reviewed'] for x in matrix),
+                  'rrdb_generation_id':reader.generation_id,
+                  'period_from':reader.period_from,'period_to':reader.period_to,
+                  'review_schema_version':reader.review_schema_version,
+                  'review_logic_version':reader.review_logic_version,
+                  'baseline_version':reader.baseline_version,
+                  'next_watch_rule_version':contract.get('rule_version'),
+                  'result_opened':False,
+                  'selected_races':[{
+                      'date':b['race']['date'],'venue':b['race']['venue'],
+                      'race_no':b['race']['race_no'],'surface':b['race']['surface'],
+                      'distance_m':b['race']['distance_m'],'class':b['race']['class']
+                  } for b in out]
+              },ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(Path('/tmp/out/rrdb_execution_summary_CAL-006.json').read_text())
+          PY
+
+      - name: Upload CAL006 formal RRDB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cal006-racenote-p1p2-rrdb
+          path: /tmp/out/
+          retention-days: 3
