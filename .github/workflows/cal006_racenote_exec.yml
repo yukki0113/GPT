@@ -32,7 +32,10 @@ jobs:
           from pathlib import Path
           p = Path('horse-racing/jrdb/src/racenote_history_engine.py')
           lines = p.read_text(encoding='utf-8').splitlines()
-          start = next(i for i,l in enumerate(lines) if l == '            horse["pedigree_context"] = {')
+          matches = [i for i,l in enumerate(lines) if l == '            horse["pedigree_context"] = {']
+          if len(matches) < 2:
+              raise SystemExit(f'expected duplicate pedigree_context sites: {matches}')
+          start = matches[-1]
           end = next(i for i,l in enumerate(lines[start+1:], start+1) if 'horse["history_coverage"] =' in l)
           for i in range(start, end):
               lines[i] = '    ' + lines[i]
@@ -50,7 +53,6 @@ jobs:
           test -s /tmp/PACI260523.zip
 
       - name: Resolve Analysis root
-        id: analysis
         run: |
           python - <<'PY'
           import json
@@ -65,9 +67,8 @@ jobs:
                   candidates.append(p.parent)
           if len(candidates)!=1:
               raise SystemExit(f'unique Analysis root required: {candidates}')
+          Path('/tmp/analysis_root.txt').write_text(str(candidates[0]), encoding='utf-8')
           print(candidates[0])
-          with open('/tmp/analysis_root.txt','w',encoding='utf-8') as f:
-              f.write(str(candidates[0]))
           PY
 
       - name: Build full 2026-05-23 P1/P2 RaceNote
