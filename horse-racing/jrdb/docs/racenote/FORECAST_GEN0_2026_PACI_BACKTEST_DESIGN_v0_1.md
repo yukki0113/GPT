@@ -7,15 +7,18 @@ Date: 2026-09-29
 ## 1. Purpose
 
 2026年のJRDB PACIを、当時の開催前入力として再生し、
-RaceNote-Forecast-Gen0.xの読み方・比較方法・軸選択ロジックを
-結果盲検のまま検証・改善するためのhistorical backtest laneを定義する。
+RaceNoteからどのように読み、比較し、軸を選ぶべきかという
+**未固定のForecast logic** を、結果盲検のまま探索・比較するための
+historical backtest laneを定義する。
 
 このlaneはTRUE_FORWARD activationとは別である。
 
-- historical backtest = ロジック研究・改善
-- TRUE_FORWARD = 現行世代の実運用activation / forward validation
+- historical backtest = Forecast logicの探索・比較・改善
+- TRUE_FORWARD = **ロジック選定後**のforward validation / activation evidence
 
-Historical backtestの成績だけでGen0-G001をACTIVEにしてはならない。
+現時点ではGen0-G001 activation自体をPAUSEする。
+Historical backtestの目的はGen0.3を追認することではなく、Gen0.3を含む
+複数のForecast reader候補から採用ロジックを選ぶことである。
 
 ## 2. Authoritative 2026 PACI source
 
@@ -65,12 +68,8 @@ real pre-race prediction.
 ```text
 PACI / as-of historical evidence
   -> RaceNote
-  -> Independent firewall
-  -> General Evidence
-  -> All-Runner Synthesis
-  -> Pairwise
-  -> Scenario
-  -> Forecast
+  -> pre-result firewall
+  -> candidate Forecast reader
   -> immutable Freeze
 ================ RESULT FIREWALL ================
   -> target result open
@@ -121,15 +120,17 @@ Output:
 
 Input:
 - Stage A RaceNote artifact
-- explicitly bound RaceReview artifact/generation
+- only the historical evidence sources permitted by the candidate under test
 
 Output:
-- independent view
-- General Evidence
-- authoring requests
-- firewall audit
+- result-independent candidate input package
+- provenance / firewall audit
+- candidate-specific authoring request where required
 
 No result source is mounted in this stage.
+
+General Evidence / Synthesis / Pairwise / Scenario are reusable Gen0.3 research
+assets, but are **not mandatory for every candidate reader**.
 
 ### Stage C — AUTHOR / FREEZE
 
@@ -423,8 +424,8 @@ Implement only the reusable infrastructure first:
 2. contamination registry
 3. deterministic date selector
 4. historical RaceNote build from selected PACI
-5. existing Gen0.3 firewall / Prepare reuse
-6. one-race author/freeze orchestration contract
+5. common result firewall / provenance / Freeze infrastructure
+6. candidate-pluggable one-race author/freeze orchestration contract
 7. post-Freeze result join
 8. deterministic evaluation summary
 9. baseline-vs-candidate comparison report
@@ -433,23 +434,27 @@ First smoke:
 
 - one clean historical date
 - all races on that date
-- no logic change
-- purpose = validate firewall, source identity, freeze-before-result, and metrics
+- use a deliberately simple baseline reader plus the existing Gen0.3 candidate where practical
+- purpose = validate candidate-pluggable execution, firewall, source identity, freeze-before-result, and metrics
 
 Only after the smoke PASS should the first 2-day DEV tuning block be opened.
 
 ## 16. Relationship to Gen0-G001 activation
 
-This backtest lane may improve the Forecast contract before or after
-Gen0-G001 activation, but it does not weaken the activation gate.
+Gen0-G001 activation is currently **PAUSED BEFORE ACTIVATION** because the
+detailed Forecast logic has not yet been selected.
 
-Current rule remains:
+The backtest lane exists specifically to resolve that uncertainty.
 
-- Gen0-G001 = READY
-- historical backtest may continue
-- first genuine TRUE_FORWARD pre-result Freeze is still required for ACTIVE
+Current rule:
 
-If historical research produces a materially different contract before the
-first TRUE_FORWARD race, do not silently replace Gen0.3 under the same
-activation identity. Version the contract explicitly and update the activation
-plan.
+- RaceNote extraction / evidence contract = fixed
+- pre-result firewall / provenance / immutable Freeze / result-after-Freeze = fixed
+- detailed Forecast reading / comparison / mark logic = unfrozen
+- Gen0.3 = research candidate
+- Gen0-G001 activation = paused
+- TRUE_FORWARD gate = defined only after a Forecast logic version is selected
+
+When a candidate is accepted from historical research, create or explicitly
+bind a Forecast logic version and only then define the activation generation
+and TRUE_FORWARD gate. Do not silently reactivate the former Gen0.3/G001 plan.
