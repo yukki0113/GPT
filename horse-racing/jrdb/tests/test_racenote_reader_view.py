@@ -102,6 +102,18 @@ def bundle() -> dict[str, object]:
         "horses": [
             {
                 "basic": {"horse_no": 1, "horse_name": "テストホースA"},
+                "pedigree": {
+                    "horse_id": "A001",
+                    "sire_name": "父A",
+                    "dam_name": None,
+                    "broodmare_sire_name": "母父A",
+                    "sire_line_code": "1206",
+                    "broodmare_sire_line_code": "1601",
+                    "coverage_status": "PARTIAL",
+                    "source": "JRDB Analysis canonical target identity projection",
+                    "source_policy": "approved_pre_race_identity_fields_only",
+                    "scoring": False,
+                },
                 "recent_runs": [{"date": "2024-11-30", "finish": 1}],
                 "older_runs": [],
                 "historical_profile": profile(),
@@ -155,6 +167,15 @@ class RaceNoteReaderViewTest(unittest.TestCase):
             reader_view.semantic_sha256(restored),
             view["source_semantic_sha256"],
         )
+
+    def test_pedigree_is_preserved_losslessly(self) -> None:
+        source = bundle()
+        view = reader_view.build_reader_view(source)
+        self.assertEqual(
+            view["horses"][0]["pedigree"],
+            source["horses"][0]["pedigree"],
+        )
+        self.assertEqual(reader_view.expand_reader_view(view), source)
 
     def test_source_is_not_mutated(self) -> None:
         source = bundle()
