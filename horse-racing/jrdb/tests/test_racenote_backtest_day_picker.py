@@ -1,15 +1,33 @@
 import unittest
-from racenote_backtest_day_picker import new_state, pick_days, release_selection, summary, sync_state
+
+from racenote_backtest_day_picker import (
+    new_state,
+    pick_days,
+    release_selection,
+    summary,
+    sync_state,
+)
+
 
 class TestRaceNoteBacktestDayPicker(unittest.TestCase):
     def rows(self, *dates):
-        return [{"date": d, "file_name": f"PACI{d[2:].replace('-', '')}.zip", "drive_file_id": f"id-{d}"} for d in dates]
+        return [
+            {
+                "date": d,
+                "file_name": f"PACI{d[2:].replace('-', '')}.zip",
+                "drive_file_id": f"id-{d}",
+            }
+            for d in dates
+        ]
 
     def test_pick_marks_used_and_is_reproducible(self):
         rows = self.rows("2026-01-04", "2026-01-05", "2026-01-10", "2026-01-11")
         a = new_state(rows)
         b = new_state(rows)
-        self.assertEqual(pick_days(a, 2, "fixed-seed")["dates"], pick_days(b, 2, "fixed-seed")["dates"])
+        self.assertEqual(
+            pick_days(a, 2, "fixed-seed")["dates"],
+            pick_days(b, 2, "fixed-seed")["dates"],
+        )
         self.assertEqual(summary(a)["used_days"], 2)
 
     def test_sync_preserves_used_and_adds_new_date(self):
@@ -30,6 +48,34 @@ class TestRaceNoteBacktestDayPicker(unittest.TestCase):
         state = new_state(self.rows("2026-01-04"))
         with self.assertRaises(ValueError):
             pick_days(state, 2, "seed")
+
+    def test_ineligible_dates_are_excluded_by_default(self):
+        rows = self.rows("2026-01-04", "2026-01-05")
+        rows[0]["eligible"] = False
+        rows[0]["exclusion_reason"] = "known result exposure"
+        state = new_state(rows)
+        selected = pick_days(state, 1, "seed")
+        self.assertEqual(selected["dates"], ["2026-01-05"])
+        self.assertEqual(summary(state)["eligible_unused_days"], 0)
+
+    def test_include_ineligible_allows_explicit_dev_replay(self):
+        rows = self.rows("2026-01-04")
+        rows[0]["eligible"] = False
+        state = new_state(rows)
+        selected = pick_days(state, 1, "seed", include_ineligible=True)
+        self.assertEqual(selected["dates"], ["2026-01-04"])
+
+    def test_sync_preserves_existing_eligibility(self):
+        rows = self.rows("2026-01-04")
+        rows[0]["eligible"] = False
+        rows[0]["exclusion_reason"] = "known result exposure"
+        state = new_state(rows)
+        sync_state(state, self.rows("2026-01-04", "2026-01-05"))
+        by_date = {row["date"]: row for row in state["days"]}
+        self.assertFalse(by_date["2026-01-04"]["eligible"])
+        self.assertEqual(by_date["2026-01-04"]["exclusion_reason"], "known result exposure")
+        self.assertTrue(by_date["2026-01-05"]["eligible"])
+
 
 if __name__ == "__main__":
     unittest.main()
