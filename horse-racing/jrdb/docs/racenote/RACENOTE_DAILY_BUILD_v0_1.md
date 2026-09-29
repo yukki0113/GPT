@@ -1,6 +1,6 @@
 # RaceNote Daily Build v0.1
 
-Status: **D3 RRDB CONNECTED / D4 READER+VALIDATION+PACKAGE PENDING**
+Status: **D4 READER+VALIDATION+PACKAGE CONNECTED / D5 EQUIVALENCE+CUTOVER PENDING**
 Date: 2026-09-30
 
 ## 1. Purpose
@@ -368,7 +368,9 @@ D3 acceptance intent:
 
 ### D4 — Reader / validation / package
 
-Connect Stages D-F.
+**IMPLEMENTED.**
+
+Stages D-F are connected in `src/build_racenote_daily.py` using the existing reversible Reader View implementation. Validation is fail-closed and the package is emitted only after request/race gates pass.
 
 Acceptance:
 - authoritative and Reader directories produced;
@@ -388,7 +390,7 @@ Acceptance:
 
 ## 12. Current operational status
 
-D1 contract is frozen and D2-D3 are connected.
+D1 contract is frozen and D2-D4 are connected.
 
 The daily CLI can now execute through:
 
@@ -396,10 +398,8 @@ The daily CLI can now execute through:
 PACI -> BASE -> HISTORY / Trend / P1 / P2 -> RRDB
 ```
 
-It intentionally stops before Reader View / final validation / package. It is
-not yet the production daily entrypoint.
+It now produces authoritative bundles, reversible Reader Views, a daily manifest and validation report. It remains **pre-cutover** and is not yet the production daily entrypoint.
 
-Until D5 cutover, the existing RaceNote one-race and enrichment entrypoints
-remain production truth.
+Until D5 cutover, the existing RaceNote one-race and enrichment entrypoints remain production truth.
 
-Next implementation turn: **D4 — Reader View + validation + package**.
+Next implementation turn: **D5 — real-data old-path vs daily-path semantic equivalence, then cutover if PASS**.
