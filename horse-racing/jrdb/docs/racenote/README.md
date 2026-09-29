@@ -25,19 +25,19 @@ RaceNote is a facts/evidence/provenance layer for GPT comparison and prediction.
 
 The active architecture is JRDB + Historical Warehouse + Analysis canonical. Stats Mart is a frozen legacy cache and is not an active dependency.
 
-## RaceNote Daily Build modernization — D1
+## RaceNote Daily Build — production day-level path
 
-Daily orchestration is being consolidated under:
+Day-level RaceNote production is consolidated under:
 
 - `docs/racenote/RACENOTE_DAILY_BUILD_v0_1.md`
 - `schema/racenote_daily_build_manifest_v0_1.json`
 - `src/build_racenote_daily.py`
 
-Current status: **D4 Reader View + validation + final package connected; D5 equivalence/cutover pending**.
+Current status: **D5 PASS / production day-level cutover complete**.
 
-The daily CLI now executes all deterministic orchestration stages through final package generation. It remains pre-cutover; the existing one-race production path is authoritative until D5 old-vs-daily semantic equality passes.
+The daily CLI executes all deterministic orchestration stages through final package generation and is the standard full-day production entrypoint.
 
-The target/current D4 daily path is:
+The current production daily path is:
 
 ```text
 PACI -> all base RaceNotes -> Analysis/P1/P2 bulk enrichment
@@ -48,7 +48,7 @@ PACI -> all base RaceNotes -> Analysis/P1/P2 bulk enrichment
 This work changes orchestration only. It must not change RaceNote evidence
 semantics, Trend, P1/P2, RRDB or Forecast logic.
 
-Until D5 equivalence/cutover passes, existing one-race production entrypoints remain authoritative. The daily builder may be executed for D5 validation, but its output is pre-cutover.
+D5 passed on 2026-05-23 across 36 races / 549 horses. Existing one-race entrypoints remain available for explicit single-race use, audit and rollback.
 
 ## 2. Current prediction direction
 
