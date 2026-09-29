@@ -41,8 +41,14 @@ The common operating contract is now:
 
 - `docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md`
 - `docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
-- `schema/racenote_forecast_research_record_v0_1.json`
-- `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_1.md` — turn-1 baseline logic
+- `config/racenote_forecast_logic_current.json` — current logic pointer
+- `schema/racenote_forecast_research_record_v0_2.json` — current observable record schema
+- `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_2.md` — current research baseline
+- `docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md` — per-race reasoning summary contract
+- `src/validate_racenote_forecast_decision_trace.py` — pre-Freeze trace validator
+
+BTDAY-0001 remains frozen under `RaceNote-Baseline-Reader-0.1`.
+The move to v0.2 is a pre-result observability fix, not result-based tuning.
 
 Historical standard cadence:
 
@@ -105,49 +111,66 @@ pre-race source resolve
 
 ## 3. Prediction inputs
 
-Gen0.3 Independent Forecastの入力順は固定する。
+Gen0共通では、1 raceにつきresult-independent RaceNote evidenceを入力とする。
+詳細なEvidence reading orderはまだ研究対象であり、Gen0.3の入力順を
+current defaultとして固定しない。
+
+Current research baselineは
+`config/racenote_forecast_logic_current.json`
+からresolveする。
+
+Current baseline v0.2の読み方:
 
 ```text
-RaceNote INDEPENDENT view
-  -> General Evidence
-  -> Pairwise Comparison
-  -> Scenario Robustness
-  -> Base Forecast
-  -> EdgeDB Performance-only overlay
-  -> Final Forecast
+RaceNote
+  -> race context
+  -> read every runner
+  -> identify race thesis
+  -> build candidate cluster
+  -> explicit ◎ vs ○ comparison
+  -> counter-evidence / downweighted evidence / reversal condition
+  -> marks
+  -> Decision Trace validation
   -> Freeze
 ```
 
+Gen0.3の
+
+```text
+General Evidence
+  -> All-Runner Synthesis
+  -> Pairwise
+  -> Scenario
+  -> Base Forecast
+  -> EdgeDB Performance
+  -> Final Forecast
+```
+
+は比較用candidate固有pipelineであり、Gen0共通のmandatory input orderではない。
+
 ### Pre-Freeze allowed
 
-Race level:
+RaceNote contract上許可されたas-of-safe pre-race evidence。
+例:
+- race condition / course context
+- historical ability / suitability / recent-run content
+- historical Trend
+- historical RaceReview
+- workout / stable / jockey / pedigree等のpre-race facts
 
-- surface / distance / course layout / turn / class / grade / field size
-- as-of-safe frame / running-style / other historical trends
-- independent Race Structure reconstructed from prior corner positions
-
-Horse level:
-
-- same surface / same distance / same venue / distance-range history
-- RaceReview historical running-content evidence
-- prior-run IDM as Ability Anchor
-- recent detailed runs / older history / coverage
-- jockey / sire / frame context
-- pre-race factual rotation / weight / raw workout evidence allowed by firewall
-- EdgeDB Performance evidence after Base Forecast only
+candidate固有laneを使う場合は、そのcandidate contractに明記する。
 
 ### Pre-Freeze forbidden
 
-- current JRDB IDM / total composite / marks
-- current JRDB forecast running style / forecast pace / forecast finish order
-- current odds / popularity / market ranks
-- EdgeDB Value channel
-- RL / Value
+- target result / payout
+- final odds / final popularity
+- current hidden JRDB consensus
+- Edge Value / RL Value
 - Training Edge
-- target result / payout / final odds
+- target post-race review
+- any target evaluation label
 
-Current JRDB consensus and market may be opened only after immutable Forecast
-Freeze. They may evaluate the frozen prediction but must not mutate it.
+Current baseline v0.2はEdgeDB Performance overlayを必須にしない。
 
 ## 4. Initial factor set
 
@@ -246,6 +269,12 @@ GPTはレースごとに重要度を変え、不要なfactorを軽視してよ�
 - concise reason for the axis
 - alternatives / upset candidates where appropriate
 - uncertainty summary
+- race thesis
+- 2–4 decisive factors with interpretation
+- explicit ◎ vs ○ comparison
+- strongest counter-case
+- downweighted evidence
+- reversal condition
 
 confidenceは的中確率ではなく、**入力coverageとevidence整合性に対する予想時点の確信度**とする。
 
@@ -267,6 +296,10 @@ freeze前にGPT自身が予想を監査する。
 - 各馬を独立採点しただけでなく横比較したか
 - ◎の負け筋を確認したか
 - target result / final odds / post-race情報を見ていないか
+- Decision Traceがrace-specificか
+- ◎と○の直接比較が残っているか
+- strongest counter / reversal conditionが具体的か
+- Decision Trace validator PASSか
 
 監査によって予想を修正した場合、Freezeするのは修正後の最終予想だけとする。
 
