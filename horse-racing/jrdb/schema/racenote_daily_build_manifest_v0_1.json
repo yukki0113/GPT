@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_daily_build_manifest_v0_1.json",
+  "title": "RaceNote Daily Build Manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "target_date",
+    "status",
+    "pipeline_version",
+    "stages",
+    "sources",
+    "counts",
+    "firewall",
+    "validation",
+    "artifacts",
+    "warnings",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "RaceNote-Daily-Build-Manifest-0.1"
+    },
+    "target_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "enum": [
+        "PLANNED",
+        "PASS",
+        "PARTIAL_PASS",
+        "FAIL"
+      ]
+    },
+    "pipeline_version": {
+      "const": "RaceNote-Daily-Build-0.1"
+    },
+    "stages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base",
+        "history",
+        "rrdb",
+        "reader",
+        "validation",
+        "package"
+      ],
+      "properties": {
+        "base": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "history": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "rrdb": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "reader": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "validation": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "package": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "paci",
+        "analysis",
+        "rrdb",
+        "next_watch"
+      ],
+      "properties": {
+        "paci": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "analysis": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "rrdb": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "next_watch": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "races_expected",
+        "races_built",
+        "reader_views",
+        "horses",
+        "technical_skips"
+      ],
+      "properties": {
+        "races_expected": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "races_built": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reader_views": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "horses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "technical_skips": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "firewall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_result_exposed",
+        "market_exposed",
+        "analysis_as_of_violations",
+        "rrdb_as_of_violations"
+      ],
+      "properties": {
+        "target_result_exposed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "market_exposed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "analysis_as_of_violations": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "rrdb_as_of_violations": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base",
+        "history",
+        "pedigree",
+        "rrdb",
+        "reader_roundtrip"
+      ],
+      "properties": {
+        "base": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "history": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "pedigree": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "rrdb": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        },
+        "reader_roundtrip": {
+          "enum": [
+            "PLANNED",
+            "NOT_RUN",
+            "PASS",
+            "PARTIAL_PASS",
+            "FAIL"
+          ]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authoritative_dir",
+        "reader_dir",
+        "manifest",
+        "validation_report"
+      ],
+      "properties": {
+        "authoritative_dir": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reader_dir": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "manifest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "validation_report": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
