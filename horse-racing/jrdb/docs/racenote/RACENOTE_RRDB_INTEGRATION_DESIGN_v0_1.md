@@ -1,6 +1,6 @@
 # RaceNote RRDB Integration Design v0.1
 
-Status: **DESIGN APPROVED FOR IMPLEMENTATION**
+Status: **R1-R5 IMPLEMENTED / REAL-DATA SMOKE PENDING**
 Date: 2026-09-29
 
 ## 1. Goal
@@ -484,3 +484,51 @@ The purpose is to ensure:
 
 That preserves the current successful flexible forecast style while finally
 connecting the RRDB investment to the normal RaceNote / Forecast path.
+
+
+## 17. Implementation status — 2026-09-29
+
+Implemented on main:
+
+- `src/jrdb_next_watch_rules.py`
+  - shared tightened S/A grading
+  - reason-group compression
+  - short human summary
+- `src/jrdb_next_watch_select.py`
+  - now reuses shared grading
+- `src/jrdb_next_watch_reverse.py`
+  - now reuses shared grading
+- `src/racenote_rrdb_enrichment.py`
+  - formal per-horse `racereview` enrichment
+  - existing RaceReview adapter + Horse Evidence Card reuse
+  - strict target-date-exclusive historical lookup
+  - latest-prior-run Next-Watch reconstruction
+  - RaceNote provenance publication
+- `src/racenote_history_enrichment.py`
+  - production entrypoint can run RRDB enrichment after Analysis/P1/P2 when
+    RRDB source + frozen rule artifact are supplied
+- `schema/racenote_forecast_research_record_v0_3_1.json`
+  - adds mandatory `rrdb_evidence` trace
+- `src/validate_racenote_forecast_human_context.py`
+  - current schema requires RRDB reviewed
+  - used RRDB requires cited horse refs
+  - unused RRDB requires a reason
+- Human-Context Reader / config / Forecast bootstrap updated.
+
+Backward compatibility:
+
+- CAL-001 / CAL-002 v0.3 records are not rewritten.
+- validator still accepts historical v0.3 records.
+- current pointer now uses v0.3.1 for future calibration.
+
+Still pending before declaring full operational PASS:
+
+- focused repository test execution;
+- one 5-10 race already-used/ineligible real-data smoke showing:
+  - S/A match equality with reverse selector;
+  - historical trouble visibility;
+  - NO_MATCH neutrality;
+  - recent_runs / RRDB same-run de-duplication;
+  - Reader View lossless round-trip.
+
+No unused clean PACI day should be consumed by this smoke.
