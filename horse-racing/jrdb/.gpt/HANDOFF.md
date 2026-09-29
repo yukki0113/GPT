@@ -1,3 +1,21 @@
+### RaceNote pedigree enrichment feasibility — 2026-09-29
+
+- Obstacle-specific evidence is deferred.
+- Pedigree enrichment design:
+  `docs/racenote/RACENOTE_PEDIGREE_ENRICHMENT_DESIGN_v0_1.md`
+- Confirmed existing project fields:
+  - horse_id = JRDB blood registration no
+  - sire_name
+  - dam_name
+  - broodmare_sire_name
+  - Analysis also has sire / broodmare-sire line codes
+- Recommended order:
+  - P1: expose pedigree identity in RaceNote
+  - P2: add as-of-safe sire / broodmare-sire historical context
+  - P3: sibling history only after canonical maternal identity source is confirmed
+- Do not read arbitrary post-race Analysis rows pre-Freeze; use pre-race source or a dedicated pedigree-only safe projection.
+- No pedigree score / fixed weight / automatic mark selection.
+
 ### Forecast axis calibration hold — 2026-09-29
 
 - Stop consuming new clean PACI dates until forecast axis is accepted.
