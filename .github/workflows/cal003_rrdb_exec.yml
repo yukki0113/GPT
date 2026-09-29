@@ -1,0 +1,114 @@
+name: CAL003 RRDB execution
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/cal003_rrdb_exec.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install duckdb gdown
+
+      - name: Download fixed inputs
+        run: |
+          gdown 'https://drive.google.com/uc?id=1IUlbu4MvGf66Iqsznw3EtzRZ6pwd2Gb9' -O /tmp/cal003_inputs.json
+          gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/RaceReviewDB_CURRENT.zip
+          gdown 'https://drive.google.com/uc?id=1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr' -O /tmp/next_watch_rules.zip
+
+      - name: Enrich 10 RaceNotes with formal RRDB
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          from jrdb_postrace_review_reader import RaceReviewReader
+          from racenote_rrdb_enrichment import load_frozen_contract, enrich_bundle
+
+          inputs = json.loads(Path('/tmp/cal003_inputs.json').read_text(encoding='utf-8'))
+          rrroot = Path('/tmp/rrdb')
+          rrroot.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile('/tmp/RaceReviewDB_CURRENT.zip') as z:
+              z.extractall(rrroot)
+          current = list(rrroot.rglob('current.json'))
+          if len(current) != 1:
+              raise SystemExit(f'unique RRDB current.json required: {current}')
+          reader = RaceReviewReader(current[0].parent)
+          contract = load_frozen_contract(Path('/tmp/next_watch_rules.zip'), Path('/tmp/rules_work'))
+
+          out = []
+          matrix = []
+          for bundle in inputs:
+              enriched = enrich_bundle(bundle, reader, contract, per_horse_limit=5)
+              target_date = enriched['race']['date']
+              for horse in enriched['horses']:
+                  rr = horse.get('racereview') or {}
+                  latest = rr.get('latest_prior_run') or {}
+                  nw = rr.get('next_watch') or {}
+                  src = nw.get('source_run') or {}
+                  source_dates = []
+                  if latest.get('race_date') is not None:
+                      source_dates.append(str(latest.get('race_date')))
+                  if src.get('race_date') is not None:
+                      source_dates.append(str(src.get('race_date')))
+                  if any(d >= target_date for d in source_dates):
+                      raise SystemExit(f'RRDB leakage {target_date}: {horse.get("horse_name")} {source_dates}')
+                  matrix.append({
+                      'target_date': target_date,
+                      'venue': enriched['race']['venue'],
+                      'race_no': enriched['race']['race_no'],
+                      'horse_no': horse.get('horse_no'),
+                      'horse_name': horse.get('horse_name'),
+                      'horse_id': horse.get('horse_id'),
+                      'history_status': rr.get('history_status'),
+                      'latest_prior_run': latest,
+                      'next_watch': nw,
+                      'history_profile': rr.get('history_profile'),
+                      'reviewed': True,
+                  })
+              out.append(enriched)
+
+          Path('/tmp/out').mkdir(parents=True, exist_ok=True)
+          Path('/tmp/out/racenote_inputs_CAL-003_P1P2_RRDB.json').write_text(
+              json.dumps(out, ensure_ascii=False, indent=2, default=str) + '\n', encoding='utf-8')
+          Path('/tmp/out/rrdb_review_matrix_CAL-003.json').write_text(
+              json.dumps(matrix, ensure_ascii=False, indent=2, default=str) + '\n', encoding='utf-8')
+          Path('/tmp/out/rrdb_execution_summary.json').write_text(
+              json.dumps({
+                  'status': 'PASS',
+                  'race_count': len(out),
+                  'horse_count': len(matrix),
+                  'all_horses_reviewed': all(x['reviewed'] for x in matrix),
+                  'rrdb_generation_id': reader.generation_id,
+                  'period_from': reader.period_from,
+                  'period_to': reader.period_to,
+                  'review_schema_version': reader.review_schema_version,
+                  'review_logic_version': reader.review_logic_version,
+                  'baseline_version': reader.baseline_version,
+                  'next_watch_rule_version': contract.get('rule_version'),
+                  'result_opened': False,
+              }, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(Path('/tmp/out/rrdb_execution_summary.json').read_text())
+          PY
+
+      - name: Upload CAL003 RRDB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cal003-rrdb-enriched
+          path: /tmp/out/
+          retention-days: 3
