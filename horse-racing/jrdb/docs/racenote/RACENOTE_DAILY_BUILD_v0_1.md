@@ -1,6 +1,6 @@
 # RaceNote Daily Build v0.1
 
-Status: **D2 BASE + HISTORY/P1/P2 CONNECTED / D3 RRDB PENDING**
+Status: **D3 RRDB CONNECTED / D4 READER+VALIDATION+PACKAGE PENDING**
 Date: 2026-09-30
 
 ## 1. Purpose
@@ -333,14 +333,39 @@ D2 acceptance intent:
 
 ### D3 — RRDB daily bulk
 
-Connect Stage C.
+**IMPLEMENTED.**
 
-Acceptance:
-- RRDB CURRENT resolved once;
-- Next-Watch contract loaded once;
-- bulk enrichment matches current `enrich_bundle()` semantics;
-- no name fallback;
-- strict target-date-exclusive history.
+RRDB module:
+- `racenote_rrdb_enrichment.enrich_bundles()` added.
+- all target races must share one target date.
+- all daily horse IDs are collected before latest-prior Next-Watch reconstruction.
+- `_latest_next_watch()` is therefore called once for the full day.
+- shared Next-Watch output is then applied to each race through
+  `_apply_bundle_enrichment()`.
+- existing single-race `enrich_bundle()` remains backward compatible and now
+  delegates to the same apply helper.
+- existing RaceReview adapter + Horse Evidence Card semantics are reused rather
+  than reimplemented.
+
+Daily orchestrator:
+- frozen Next-Watch contract is loaded once.
+- RRDB CURRENT is resolved once, or one explicit generation root is opened.
+- all Stage B bundles are passed to `rrdb.enrich_bundles()` once.
+- RRDB source / generation / rule version are recorded in the D3 report.
+- RRDB source failures are request-level FAIL.
+- default Next-Watch extraction work is temporary and removed automatically.
+- `--keep-intermediate` is required to retain RRDB debug/work output.
+
+Focused tests:
+- `tests/test_racenote_daily_build_d3.py`
+
+D3 acceptance intent:
+- RRDB source resolution once;
+- frozen-rule load once;
+- Next-Watch reconstruction once per day;
+- single vs bulk semantic equality for the same precomputed evidence;
+- no name fallback / no scoring;
+- one target-date boundary for the batch.
 
 ### D4 — Reader / validation / package
 
@@ -369,13 +394,13 @@ D1 contract is frozen and D2 is connected.
 The daily CLI can now execute through:
 
 ```text
-PACI -> BASE -> HISTORY / Trend / P1 / P2
+PACI -> BASE -> HISTORY / Trend / P1 / P2 -> RRDB
 ```
 
-It intentionally stops before RRDB. It is not yet the production daily
-entrypoint.
+It intentionally stops before Reader View / final validation / package. It is
+not yet the production daily entrypoint.
 
 Until D5 cutover, the existing RaceNote one-race and enrichment entrypoints
 remain production truth.
 
-Next implementation turn: **D3 — RRDB daily bulk enrichment**.
+Next implementation turn: **D4 — Reader View + validation + package**.
