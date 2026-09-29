@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "status": "DESIGN_ACCEPTED_FORECAST_LOGIC_SELECTION_PENDING",
+  "status": "CURRENT_CORE_INFRASTRUCTURE_IMPLEMENTED",
   "mode": "BLINDED_HISTORICAL",
   "forecast_family": "RaceNote-Forecast-Gen0.x",
   "paci_source": {
@@ -119,13 +119,24 @@
     "gen0_3_role": "EXPERIMENTAL_CANDIDATE_NOT_DEFAULT"
   },
   "day_picker": {
-    "version": "racenote-backtest-day-picker-0.1.0",
     "module": "src/racenote_backtest_day_picker.py",
     "state": "config/racenote_backtest_day_pool_2026.json",
+    "default_excludes_ineligible": true,
+    "future_inventory_sync": true
+  },
+  "turn_policy": {
     "default_pick_days": 2,
-    "selection_unit": "COMPLETE_RACE_DAY",
-    "preserve_used_on_sync": true,
-    "add_new_dates_as_unused": true,
-    "stored_seed_for_reproducibility": true
-  }
+    "expected_race_range": "48-72 typical",
+    "same_logic_version_within_turn": true,
+    "result_open_after_all_usable_freezes": true,
+    "max_bounded_logic_changes_after_turn": 1
+  },
+  "output_contract": {
+    "canonical_record_schema": "schema/racenote_forecast_research_record_v0_1.json",
+    "human_contract": "docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md",
+    "daily_renderer": "src/render_racenote_forecast_html.py",
+    "daily_html_pattern": "forecast_YYYYMMDD.html",
+    "turn_review_pattern": "review_<turn_id>.html"
+  },
+  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md"
 }
