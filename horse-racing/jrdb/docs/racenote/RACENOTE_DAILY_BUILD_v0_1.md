@@ -314,12 +314,11 @@ Stage B:
 - `evidence_semantic_sha256()` supports old-vs-daily migration comparison
   while excluding execution-only telemetry.
 
-D2 normal CLI behavior:
-- BASE/HISTORY execute;
-- D2 report is printed;
-- execution then fails closed before RRDB with
-  `NOT_IMPLEMENTED_AFTER_D2`;
-- `--keep-intermediate` may write non-canonical D2 debug bundles.
+D2 stage behavior:
+- BASE/HISTORY execute through the shared bulk path;
+- D2 can be exercised directly through `build_through_history()`;
+- the current public daily CLI now continues into D3 before fail-close;
+- `--keep-intermediate` may retain non-canonical debug bundles.
 
 Focused tests:
 - `tests/test_racenote_daily_build_d2.py`
@@ -389,7 +388,7 @@ Acceptance:
 
 ## 12. Current operational status
 
-D1 contract is frozen and D2 is connected.
+D1 contract is frozen and D2-D3 are connected.
 
 The daily CLI can now execute through:
 
