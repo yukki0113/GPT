@@ -135,7 +135,8 @@ Analysisだけ更新してFact Lite/PWAを旧世代に残さないことを運�
 
 ### RaceNote data layer
 
-- `src/racenote_request.py` — 統一request入口
+- `src/build_racenote_daily.py` — **production full-day entrypoint**。D5 semantic equivalence PASS後の標準日次生成
+- `src/racenote_request.py` — 既存1R/request入口。明示的single-race・audit・rollback用途として保持
 - `src/racenote_jrdb.py` — PACI -> base RaceNote v0.2
 - `src/racenote_history_enrichment.py` / `src/racenote_history_engine.py` — Analysis/Mart履歴enrichment
 - `src/racenote_reader_view.py` / `src/racenote_reader_zip.py` — GPT向けcompact view
