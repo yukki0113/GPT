@@ -1,27 +1,25 @@
 # RaceNote Forecast Gen0 plan
 
-Status: CURRENT RESEARCH PLAN / GEN0.3 CONTRACT FINALIZED
-Last reviewed: 2026-09-25
+Status: CURRENT RESEARCH PLAN / FORECAST LOGIC UNFROZEN
+Last reviewed: 2026-09-29
 
-> Current next-generation contract: `RaceNote-Forecast-Gen0.3`.
-> Planned first activation: `Gen0-G001`.
-> Reading priority: `DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY`.
-> Gen0.2 was implemented but never activated and is retained as reference only.
+> RaceNote extraction / evidence boundaries and the pre-result research lifecycle are fixed.
+> Detailed Forecast decision logic is **not yet adopted**.
+> `RaceNote-Forecast-Gen0.3` is an implemented research candidate, not the Gen0 default.
+> `Gen0-G001` activation preparation is paused until a Forecast logic version is explicitly selected.
 
-### Gen0-G001 activation readiness — 2026-09-29
+### Gen0-G001 preparation status — 2026-09-29
 
-The fixed 50 PRIMARY + 20 RESERVE sample manifest is PASS and registered in
-`RaceNote Forecast Gen0 検証台帳`. Gen0-G001 is `READY`, not yet `ACTIVE`.
-The current operational generation remains Gen0-G000 until the first formal
-TRUE_FORWARD pre-result Freeze passes.
+The fixed 50 PRIMARY + 20 RESERVE sample manifest, ledger registration, and
+single-race artifact-only transport smoke are preserved as valid engineering
+evidence. However, they were prepared before the project explicitly separated
+"research infrastructure" from "adopted Forecast logic".
+
+Gen0-G001 is therefore **PAUSED BEFORE ACTIVATION**. The next gate is Forecast
+logic selection through blinded historical research, not a TRUE_FORWARD run of
+Gen0.3. `forecast.current_generation` remains `Gen0-G000`.
 
 Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
-
-Single-race Gen0.3 Prepare transport is also PASS via explicit GitHub Actions
-artifact chaining and explicit RaceReview generation binding (Issue #1597 /
-Run `36501017523`). No direct Actions -> Drive transport is used by this
-single-race activation path. The only remaining Gen0-G001 activation gate is
-the first genuine TRUE_FORWARD pre-result Freeze.
 
 
 
@@ -110,7 +108,7 @@ Freeze. They may evaluate the frozen prediction but must not mutate it.
 
 `FSET-Gen0.1` は Gen0-G000 の初期研究factor setとして保持する。
 
-次世代のreading orderはfactor番号順ではなく、次のEvidence lane順とする。
+Gen0.3 candidateでは、factor番号順ではなく次のEvidence lane順を試している。これは研究仮説であり、Gen0共通の固定reading orderではない。
 
 General EvidenceからAll-Runner Synthesisへ入る直前に
 `PredictionInterpretation-v0.1` を作る。
@@ -133,10 +131,10 @@ DATA_TREND
 
 2026-09-25時点で `General Evidence v0.1`、
 `Pairwise Comparison v0.1`、`Scenario Robustness v0.1`、
-`RaceNote-Forecast-Gen0.3` まで実装済み。
-次世代では全馬独立採点だけで順位を作らず、直接比較と逆転条件を記録し、
-SLOW / MEDIUM / FAST の3展開で軸の頑健性を確認したうえでBase Forecastを
-作る。EdgeDBはその後にPerformance channelだけを補助Evidenceとして使う。
+`RaceNote-Forecast-Gen0.3` まで**研究候補として実装済み**。
+これらを必須工程として採用するか、SLOW / MEDIUM / FASTを残すか、
+EdgeDB Performanceをpre-Freezeで使うかを含め、詳細Forecast logicは
+2026 PACI blinded historical backtestで比較して決める。
 
 初期factor setは `FSET-Gen0.1` の10ファクター。
 
@@ -245,7 +243,7 @@ freezeでは最低限:
 
 を固定する。
 
-`src/racenote_forecast_gen0_3.py` がGen0.3のsource-chain / probability / mark / Edge Performance / freeze境界をdeterministicに検証する。
+`src/racenote_forecast_gen0_3.py` はGen0.3 candidateのsource-chain / probability / mark / Edge Performance / freeze境界をdeterministicに検証する。Gen0共通で再利用すべきなのは、禁止情報検査・provenance・hash・immutable Freeze等の検証インフラであり、Gen0.3固有のmark/probability決定規則ではない。
 
 禁止result field、pre-race guard不成立、結果visible、mark/axis内部不整合、hash不整合はfail closedとする。
 
