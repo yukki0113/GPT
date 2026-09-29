@@ -335,7 +335,7 @@ def main() -> int:
             "no_prior_history_count": len(no_history),
             "no_prior_history": no_history,
             "grading_contract": {
-                "S": "HV05/HV13 match OR at least 2 frozen hidden-value rule matches",
+                "S": "HV06/HV13 match OR HV05 plus HV07/HV11/HV12",
                 "A": "at least 1 frozen hidden-value rule match and not S",
                 "forced_minimum_count": False,
             },
