@@ -1,3 +1,21 @@
+### RaceNote Daily Build D1 — 2026-09-30
+
+- Goal: make requests such as `09/27のRaceNote生成してください` complete as one deterministic daily build.
+- Contract: `docs/racenote/RACENOTE_DAILY_BUILD_v0_1.md`.
+- Manifest schema: `schema/racenote_daily_build_manifest_v0_1.json`.
+- Skeleton entrypoint: `src/build_racenote_daily.py`.
+- Current state: **D1 CONTRACT FROZEN / SKELETON ONLY**.
+- D1 production execution intentionally fails closed; `--plan` only.
+- No existing RaceNote semantic source was changed.
+- Daily stages are fixed as:
+  `BASE -> HISTORY/P1/P2 -> RRDB -> READER -> VALIDATION -> PACKAGE`.
+- One daily request should parse PACI once, open Analysis once, resolve RRDB CURRENT once, and load Next-Watch rules once.
+- Normal output will contain authoritative RaceNote v1.0 bundles + lossless Reader Views + manifest/validation report.
+- Intermediate Stage A/B/C outputs are non-canonical and should not be retained by default.
+- Cutover is forbidden until D5 old-path vs daily-path semantic equality passes.
+- Next implementation turn: **D2 — connect PACI base generation + Analysis/P1/P2 bulk enrichment**.
+- Forecast logic `RaceNote-Human-Context-Reader-0.3.2` is out of scope for D1-D5 orchestration work.
+
 ### Human-Context Reader 0.3.2 — RRDB reinterpret / recompare — 2026-09-29
 
 - Current calibration logic: `RaceNote-Human-Context-Reader-0.3.2`.
