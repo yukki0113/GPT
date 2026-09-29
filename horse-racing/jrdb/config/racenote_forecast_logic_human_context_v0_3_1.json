@@ -1,0 +1,97 @@
+{
+  "version": "RaceNote-Human-Context-Reader-0.3.1",
+  "status": "CURRENT_CALIBRATION_LOGIC_RRDB_BALANCE_GUARD",
+  "phase": "CALIBRATION_HOLD",
+  "role": "FORECAST_AXIS_CALIBRATION",
+  "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
+  "teacher_evidence_usage": "MANDATORY_FEW_SHOT_REASONING_REFERENCE",
+  "primary_semantic": "今回、自分なら一番買いたい馬",
+  "hard_anti_mechanical_rules": [
+    "NO_SINGLE_AGGREGATE_SORT_AS_PRIMARY_SELECTION",
+    "NO_IMPLICIT_NUMERIC_SCORE",
+    "NO_MAX_VALUE_AUTO_AXIS",
+    "NO_FULL_FIELD_NUMERIC_DRAFT_BEFORE_RACE_MODEL",
+    "NO_POST_HOC_PROSE_FOR_NUMERIC_SORT"
+  ],
+  "prediction_sequence": [
+    "RACE_MODEL_BEFORE_HORSE_SELECTION",
+    "READ_EVERY_RUNNER_AS_CONTEXTUAL_CASE",
+    "FORM_3_TO_5_HORSE_CANDIDATE_CLUSTER",
+    "COMPARE_MAIN_VS_SECOND_AND_THIRD",
+    "CHOOSE_MARKS",
+    "OPTIONAL_FULL_FIELD_ORDER_AFTER_MARKS"
+  ],
+  "required_trace": [
+    "human_principles_used",
+    "race_model",
+    "primary_question",
+    "candidate_cases",
+    "main_vs_second",
+    "main_vs_third",
+    "why_not_numeric_leader",
+    "strongest_counter",
+    "reversal_condition",
+    "rrdb_evidence"
+  ],
+  "calibration_policy": {
+    "consume_unused_eligible_days": false,
+    "recommended_race_count_min": 6,
+    "recommended_race_count_max": 12,
+    "allowed_used_dates": [
+      "2026-02-08",
+      "2026-05-23",
+      "2026-03-08",
+      "2026-04-26"
+    ],
+    "performance_evidence": false,
+    "resume_blind_turn_requires_research_clearance": true
+  },
+  "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
+  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
+  "optional_evidence_lanes": [
+    "PEDIGREE_CONTEXT_P1_P2",
+    "RRDB_RACEREVIEW_NEXT_WATCH"
+  ],
+  "pedigree_policy": {
+    "source_fields": [
+      "pedigree",
+      "pedigree_context"
+    ],
+    "fixed_weight": false,
+    "automatic_axis": false,
+    "small_sample": "RETAIN_WITH_N",
+    "especially_relevant_when": [
+      "NEWCOMER_OR_NO_PRIOR_HISTORY",
+      "LIGHTLY_RACED",
+      "FIRST_MEANINGFUL_DISTANCE_CHANGE",
+      "WEAK_DIRECT_SUITABILITY_EVIDENCE"
+    ],
+    "interpretation": "CONTEXTUAL_EVIDENCE_NOT_SCORE"
+  },
+  "rrdb_policy": {
+    "source_field": "racereview",
+    "must_review_when_present": true,
+    "fixed_weight": false,
+    "automatic_axis": false,
+    "next_watch_auto_mark": false,
+    "no_match_is_negative": false,
+    "same_run_deduplication": true,
+    "decision_roles": [
+      "UPGRADE_RECENT_FORM",
+      "DOWNGRADE_APPARENT_FORM",
+      "SUPPORT_REPEATABILITY",
+      "SUPPORT_COUNTERARGUMENT",
+      "CONTEXT_ONLY"
+    ],
+    "interpretation": "PRIOR_RUN_CONTENT_CONTEXT_NOT_SCORE",
+    "default_role": "INTERPRET_OR_CORROBORATE",
+    "neutral_usage_is_valid": true,
+    "target_usage_rate": null,
+    "direct_evidence_override_requires_independent_current_race_reason": true,
+    "rrdb_alone_cannot_overturn_strong_direct_evidence": true,
+    "fragile_form_alone_is_veto": false,
+    "hidden_strength_alone_is_promotion": false,
+    "preserve_directly_supported_candidate_cluster": true,
+    "stronger_weight_allowed_when": "DIRECT_EVIDENCE_ABSENT_WEAK_STALE_OR_INCONSISTENT"
+  }
+}
