@@ -1039,14 +1039,14 @@ class BulkEnrichmentIndex:
                     "scoring": False,
                 }
                 horse["stats"] = {"sire": None, "broodmare_sire": None, "jockey": None}
-            horse["pedigree_context"] = {
-                "sire": None,
-                "broodmare_sire": None,
-                "coverage_status": "NONE",
-                "scoring": False,
-                "interpretation_policy": "descriptive_context_only",
-                "small_sample_policy": "retain_with_sample_size",
-            }
+                horse["pedigree_context"] = {
+                    "sire": None,
+                    "broodmare_sire": None,
+                    "coverage_status": "NONE",
+                    "scoring": False,
+                    "interpretation_policy": "descriptive_context_only",
+                    "small_sample_policy": "retain_with_sample_size",
+                }
                 horse["history_coverage"] = {"scope": "jrdb_jra_history", "observed_history": "unknown", "observed_starts": None, "overseas_history_coverage": "not_guaranteed", "reason": "target_entry_not_found", "run_layers": build_run_layers(horse, self.older_limit)}
                 continue
             horse_id = str(entry["horse_id"]) if entry["horse_id"] else None
