@@ -1,6 +1,6 @@
 # RaceNote Pedigree Enrichment Design v0.1
 
-Status: **P1 IMPLEMENTED / P2-P3 NOT YET IMPLEMENTED**
+Status: **P1-P2 IMPLEMENTED / P3 NOT YET IMPLEMENTED**
 Date: 2026-09-29
 
 ## 1. Background
@@ -286,3 +286,71 @@ free-text name matching or external guessing.
 P1 is considered implemented for the currently canonical safe source.
 A future dedicated pedigree master may upgrade `dam_name` coverage without
 changing the P1 semantic contract.
+
+
+## 13. P2 implementation status — 2026-09-29
+
+Implemented on main.
+
+Per-horse output:
+
+```json
+{
+  "pedigree_context": {
+    "sire": {
+      "starts": 0,
+      "wins": 0,
+      "top3": 0,
+      "win_rate": null,
+      "top3_rate": null,
+      "sample_size_band": "none",
+      "period": "2022-2026YTD",
+      "as_of_exclusive": "2026-05-23",
+      "track_condition_scope": "all_conditions",
+      "source": "JRDB Analysis canonical (as-of-exclusive)",
+      "distance_ranges": []
+    },
+    "broodmare_sire": {},
+    "coverage_status": "FULL|PARTIAL|NONE",
+    "scoring": false,
+    "interpretation_policy": "descriptive_context_only",
+    "small_sample_policy": "retain_with_sample_size"
+  }
+}
+```
+
+Current condition scope:
+
+- target venue
+- target surface
+- target exact distance
+- target-relevant overlapping distance range(s)
+
+Both sire and broodmare-sire use the same as-of-exclusive aggregation contract.
+
+Backward compatibility:
+
+- existing `stats.sire` remains.
+- `stats.broodmare_sire` is added.
+- both point to the same semantic summaries exposed in `pedigree_context`.
+
+Firewall:
+
+- target identity comes only from approved `TARGET_COLUMNS`.
+- historical P2 counts require `race_date < target_date`.
+- target result / final odds / payout are not used by P2.
+- Analysis backend now fails closed if the P2 canonical pedigree columns are absent.
+
+Small samples:
+
+- never dropped solely for low N.
+- `sample_size_band` remains descriptive.
+- no automatic pedigree suitability label or score is produced.
+
+Forecast integration:
+
+`RaceNote-Human-Context-Reader-0.3` may use P1/P2 as one contextual evidence
+lane, especially for newcomers / lightly raced horses / weak direct suitability
+evidence. It is not a fixed-weight or automatic-axis factor.
+
+P3 sibling history remains deferred.
