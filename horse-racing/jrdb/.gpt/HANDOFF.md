@@ -1,3 +1,16 @@
+### RaceNote Daily Build D5 — 2026-09-30
+
+- **D5 PASS / production day-level cutover complete.**
+- Standard full-day entrypoint: `src/build_racenote_daily.py`.
+- Production chain: `PACI -> BASE -> Analysis/History/Trend/P1/P2 -> RRDB -> Reader View -> validation -> package`.
+- Final real-data confirmation: Issue #1611 / run `36646513226`, target 2026-05-23, 36 races / 549 horses.
+- All gates PASS: race identity, horse identity, evidence semantic equality, P1/P2, RRDB, Reader View round-trip.
+- Reader source hashes are not old-vs-new equality gates because they include expected execution-only metadata differences; migration semantic hashing continues to exclude only `generated_at`, local Analysis paths and query telemetry.
+- D5 discovered and fixed a pre-existing indentation regression in `racenote_history_engine.py`; final confirmation ran from main after that source fix.
+- Existing one-race paths remain supported for explicit single-race requests, audit and rollback, but are no longer the normal day-level path.
+- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
+- Audit: `docs/racenote/RACENOTE_DAILY_D5_EQUIVALENCE_20260930.md`.
+
 ### RaceNote Daily Build D4 — 2026-09-30
 
 - D4 is implemented in `src/build_racenote_daily.py`.
