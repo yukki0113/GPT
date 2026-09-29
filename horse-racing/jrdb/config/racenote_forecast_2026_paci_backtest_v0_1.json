@@ -1,0 +1,88 @@
+{
+  "version": "0.1",
+  "status": "DESIGN_ACCEPTED_IMPLEMENTATION_PENDING",
+  "mode": "BLINDED_HISTORICAL",
+  "forecast_family": "RaceNote-Forecast-Gen0.x",
+  "paci_source": {
+    "drive_folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
+    "naming_pattern": "PACIyymmdd.zip",
+    "inventory_snapshot_date": "2026-09-29",
+    "file_count_2026": 82,
+    "period_from": "2026-01-04",
+    "period_to": "2026-09-27",
+    "source_manifest_requires": [
+      "race_date",
+      "drive_file_id",
+      "file_name",
+      "size_bytes",
+      "sha256"
+    ]
+  },
+  "batch_policy": {
+    "preferred_unit": "COMPLETE_RACE_DAY",
+    "improvement_unit_target_races": 50,
+    "preferred_dev_days_per_iteration": 2,
+    "preferred_oos_days_per_iteration": 2,
+    "one_race_one_llm_call": true,
+    "giant_multi_race_reasoning_call": false
+  },
+  "stages": [
+    "SOURCE",
+    "PREPARE",
+    "AUTHOR_FREEZE",
+    "RESULT_OPEN",
+    "EVALUATION"
+  ],
+  "result_firewall": {
+    "target_result_before_complete_batch_freeze": false,
+    "target_sed_hjc_before_complete_batch_freeze": false,
+    "final_odds_before_complete_batch_freeze": false,
+    "final_popularity_before_complete_batch_freeze": false,
+    "current_jrdb_consensus_before_freeze": false,
+    "edge_value_before_freeze": false,
+    "rl_value_before_freeze": false
+  },
+  "known_contamination": [
+    {
+      "scope": "FULL_DAY",
+      "date": "2026-07-25",
+      "reason": "Gen0.3 day rehearsal result reviewed"
+    },
+    {
+      "scope": "FULL_DAY",
+      "date": "2026-07-26",
+      "reason": "Gen0.3 day rehearsal result reviewed"
+    },
+    {
+      "scope": "FULL_DAY",
+      "date": "2026-08-01",
+      "reason": "Semantic v0.3 OOS result reviewed"
+    },
+    {
+      "scope": "FULL_DAY",
+      "date": "2026-08-08",
+      "reason": "Semantic v0.3 OOS result reviewed"
+    },
+    {
+      "scope": "RACE",
+      "date": "2026-09-13",
+      "venue": "中山",
+      "race_no": 10,
+      "reason": "Gen0.3 real-data dry run / 初風ステークス"
+    },
+    {
+      "scope": "RACE",
+      "date": "2026-08-16",
+      "venue": "札幌",
+      "race_no": 11,
+      "reason": "Trend structural test; result known"
+    }
+  ],
+  "promotion_policy": {
+    "historical_backtest_can_activate_gen0_g001": false,
+    "true_forward_freeze_still_required": true,
+    "candidate_changes_require_new_version": true,
+    "no_tuning_inside_oos_block": true
+  },
+  "canonical_design": "docs/racenote/FORECAST_GEN0_2026_PACI_BACKTEST_DESIGN_v0_1.md"
+}
