@@ -1,0 +1,124 @@
+name: CAL006 RaceNote execution
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/cal006_racenote_exec.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+          python -m pip install -r tools/data-storage/requirements.txt
+
+      - name: Patch main indentation defect in runtime only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('horse-racing/jrdb/src/racenote_history_engine.py')
+          lines = p.read_text(encoding='utf-8').splitlines()
+          start = next(i for i,l in enumerate(lines) if l == '            horse["pedigree_context"] = {')
+          end = next(i for i,l in enumerate(lines[start+1:], start+1) if 'horse["history_coverage"] =' in l)
+          for i in range(start, end):
+              lines[i] = '    ' + lines[i]
+          p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
+          python -m py_compile horse-racing/jrdb/src/racenote_history_engine.py
+
+      - name: Download fixed source data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gdown 'https://drive.google.com/uc?id=1vpQ1Bc4JRyXdLDzmhQbp0u5c7BwbjKx7' -O /tmp/PACI260523.zip
+          mkdir -p /tmp/support
+          gh run download 36437363166 --repo "${{ github.repository }}" -n jrdb-post-race-parquet-refresh-36437363166 -D /tmp/support
+          test -s /tmp/PACI260523.zip
+
+      - name: Resolve Analysis root
+        id: analysis
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          candidates=[]
+          for p in Path('/tmp/support').rglob('manifest.json'):
+              try:
+                  d=json.loads(p.read_text(encoding='utf-8'))
+              except Exception:
+                  continue
+              if d.get('artifact_type')=='jrdb_analysis' and d.get('generation_id')=='analysis-v1_4-canonical-20260928-02':
+                  candidates.append(p.parent)
+          if len(candidates)!=1:
+              raise SystemExit(f'unique Analysis root required: {candidates}')
+          print(candidates[0])
+          with open('/tmp/analysis_root.txt','w',encoding='utf-8') as f:
+              f.write(str(candidates[0]))
+          PY
+
+      - name: Build full 2026-05-23 P1/P2 RaceNote
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          ANALYSIS_ROOT="$(cat /tmp/analysis_root.txt)"
+          python horse-racing/jrdb/src/racenote_request.py \
+            --date 20260523 \
+            --analysis-root "$ANALYSIS_ROOT" \
+            --analysis-backend parquet \
+            --archive /tmp/PACI260523.zip \
+            --output /tmp/cal006_racenote \
+            --stats-window-years 5
+          find /tmp/cal006_racenote -maxdepth 4 -type f -print
+
+      - name: Collect P1/P2 bundles
+        run: |
+          mkdir -p /tmp/out
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          zips=sorted(Path('/tmp/cal006_racenote').rglob('RaceNote_*.zip'))
+          if not zips:
+              raise SystemExit('RaceNote ZIP not found')
+          rows=[]
+          for zp in zips:
+              with zipfile.ZipFile(zp) as z:
+                  for name in z.namelist():
+                      if name.endswith('.json') and 'race_bundle_' in Path(name).name:
+                          d=json.loads(z.read(name).decode('utf-8'))
+                          rows.append(d)
+          rows.sort(key=lambda x:(x['race']['venue'],int(x['race']['race_no'])))
+          Path('/tmp/out/racenote_20260523_P1P2_all.json').write_text(
+              json.dumps(rows, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          Path('/tmp/out/build_summary.json').write_text(
+              json.dumps({
+                'status':'PASS',
+                'date':'2026-05-23',
+                'race_count':len(rows),
+                'horse_count':sum(len(x.get('horses',[])) for x in rows),
+                'analysis_generation':'analysis-v1_4-canonical-20260928-02',
+                'runtime_patch':'indentation_only',
+                'target_result_opened':False
+              }, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+          print(Path('/tmp/out/build_summary.json').read_text())
+          PY
+
+      - name: Upload CAL006 base artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cal006-racenote-p1p2-base
+          path: /tmp/out/
+          retention-days: 3
