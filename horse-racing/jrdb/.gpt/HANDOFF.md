@@ -232,6 +232,7 @@ The common operating contract is now:
 - `docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md`
 - `docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
 - `schema/racenote_forecast_research_record_v0_1.json`
+- `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_1.md` — first two-day turn baseline
 
 Historical standard cadence:
 
