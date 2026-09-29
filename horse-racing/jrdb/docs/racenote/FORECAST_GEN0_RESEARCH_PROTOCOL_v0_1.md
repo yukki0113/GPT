@@ -56,32 +56,40 @@ results. Result opening belongs to the Research thread.
 
 `RaceNote-Forecast-Gen0.3` はこれらの一候補実装であり、採用済みdefaultではない。
 
-## 2.1 Current research baseline
+## 2.1 Current forecast phase
 
 Current logic is resolved from:
 
 `config/racenote_forecast_logic_current.json`
 
-Current baseline:
+Current phase:
 
-- logic version: `RaceNote-Baseline-Reader-0.2`
-- contract: `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_2.md`
-- config: `config/racenote_forecast_logic_baseline_v0_2.json`
-- Decision Trace: `docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md`
-- record schema: `schema/racenote_forecast_research_record_v0_2.json`
-- Freeze validator: `src/validate_racenote_forecast_decision_trace.py`
+- phase: `CALIBRATION_HOLD`
+- logic: `RaceNote-Human-Context-Reader-0.3`
+- contract: `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_3.md`
+- teacher evidence: `racenote/evidence/human_forecast_evidence_202301.md`
+- calibration protocol: `docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md`
+- schema: `schema/racenote_forecast_research_record_v0_3.json`
+- validator: `src/validate_racenote_forecast_human_context.py`
 
-BTDAY-0001 used v0.1 and remains immutable historical baseline evidence.
-v0.2 was created from a pre-result structural audit; no target results were used.
+BTDAY-0001 used v0.1.
+BTDAY-0002 used v0.2.
 
-The baseline still avoids fixed evidence priorities, scores, mandatory
-Pairwise/Scenario, and Gen0.3-specific reading rules. v0.2 adds observable,
-race-specific comparison traces so later research can identify the actual
-reading/comparison error.
+Both are preserved. v0.3 is not a result-tuned promotion. It exists because
+the forecast axis remained mechanically numeric and the project must stabilize
+"how a race is read" before spending more clean blind days.
+
+While `CALIBRATION_HOLD` is active:
+- do not pick a new unused eligible PACI day;
+- use human teacher evidence plus already-used/ineligible replay material;
+- use 6–12 representative races per calibration iteration;
+- do not count calibration replay as blind performance evidence.
 
 ## 3. One turn
 
-Historical backtestの標準研究単位は **未使用eligibleな2開催日**。
+After calibration clearance, historical blind backtestの標準研究単位は **未使用eligibleな2開催日**。
+
+現在は `CALIBRATION_HOLD` のため、このblind turn cadenceを一時停止する。
 
 ```text
 unused eligible PACI days
@@ -200,9 +208,13 @@ GPT / analysis向けの正本はstructured JSON / JSONL。
 
 Human-readable HTMLはこの正本から生成し、HTMLから予想を再構築しない。
 
-Canonical common schema:
+Canonical schema is resolved by current logic pointer.
 
-`schema/racenote_forecast_research_record_v0_1.json`
+Current calibration schema:
+
+`schema/racenote_forecast_research_record_v0_3.json`
+
+Historical frozen v0.1/v0.2 records remain immutable under their original schemas.
 
 ## 7. User-facing forecast delivery
 
