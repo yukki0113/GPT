@@ -16,8 +16,9 @@ from jrdb_analysis_parquet_current import resolve_current
 TABLE = "fact_entry_result_lite"
 REQUIRED_COLUMNS = {
     "race_date", "year", "venue_code", "race_no", "track_type", "distance",
-    "race_key", "horse_no", "horse_id", "frame_no", "sire_name", "jockey_name",
-    "finish", "final_win_odds", "final_win_popularity",
+    "race_key", "horse_no", "horse_id", "frame_no", "sire_name",
+    "broodmare_sire_name", "sire_line_code", "broodmare_sire_line_code",
+    "jockey_name", "finish", "final_win_odds", "final_win_popularity",
 }
 TARGET_COLUMNS = (
     "race_date, year, venue_code, race_no, track_type, distance, "
