@@ -1,0 +1,185 @@
+# RaceNote Forecast Human-Context Reader v0.3
+
+Status: **CURRENT CALIBRATION LOGIC**
+Date: 2026-09-29
+Logic version: `RaceNote-Human-Context-Reader-0.3`
+
+## 1. Purpose
+
+未使用blind日を消費して精度検証する前に、
+「何をもって◎を選ぶ予想なのか」を固めるためのcalibration logic。
+
+v0.1 / v0.2で見られた、
+RaceNote内の数値を実質的な総合スコアとして並べる挙動から離れ、
+人力予想教師データで観測された **race-context-first / flexible evidence**
+の判断様式を直接参照する。
+
+このversionはまだ採用Forecast logicではない。
+まず予想の軸を安定させるためのcalibration candidateである。
+
+## 2. Mandatory human forecast evidence
+
+Every forecast execution must read:
+
+`racenote/evidence/human_forecast_evidence_202301.md`
+
+This evidence is a few-shot reasoning reference, not a deterministic rulebook.
+
+Preserve these principles:
+
+1. ◎ is not highest generic score / highest win probability by definition.
+   - ◎ = 「今回、自分なら一番買いたい馬」。
+2. Race-level context comes first.
+3. Evidence importance changes by race.
+4. Concern does not automatically veto ◎.
+5. A race may have no obvious safe axis, yet still require a chosen ◎.
+6. Recent form is contextual:
+   opponent strength / class / course / race content matter.
+7. Do not copy historical examples literally.
+
+## 3. Hard anti-mechanical rules
+
+The following are forbidden as the primary selection mechanism:
+
+- sorting by one aggregate / total / 総合 value
+- adding RaceNote numeric fields into an implicit score
+- choosing the largest Ability / Training / Stable / Trend value
+- making a draft full-field numeric order before understanding the race
+- explaining an already numeric-sorted list after the fact
+
+Numeric values may support a judgment only **after** the race thesis and horse
+comparison have been formed.
+
+If the same marks would be produced merely by sorting one or more visible
+numeric fields, the forecast must be reconsidered before Freeze.
+
+## 4. Prediction sequence
+
+### Step A — Read the race, not the horses first
+
+Write a short `race_model` before selecting any horse:
+
+- what kind of race is this?
+- what is likely to separate the field?
+- what evidence lane is especially meaningful here?
+- what evidence lane is likely noisy / secondary?
+
+No horse may be assigned ◎ at this step.
+
+### Step B — Read every runner as a case
+
+For each runner, extract only concise contextual notes:
+
+- case_for: why this horse can be bought *in this race*
+- case_against: why it may fail *in this race*
+- context_hook: which race-model point matters most
+
+Do not assign a numeric score.
+
+### Step C — Form a candidate cluster
+
+Select typically 3–5 candidates.
+
+For each candidate state:
+- plausible winning / strong-running path
+- main vulnerability
+- evidence that is actually discriminating vs merely descriptive
+
+### Step D — Choose ◎ by comparative judgment
+
+Ask:
+
+> If I had to buy one horse in this specific race, which horse's positive case
+> remains most convincing after accounting for the race model and its own main
+> weakness?
+
+Then compare ◎ directly with ○ and ▲.
+
+The answer may favor:
+- the strongest horse,
+- the best-suited horse,
+- the horse with the most repeatable setup,
+- a horse whose recent result underrates its content,
+- or another context-specific case.
+
+There is no universal hierarchy.
+
+### Step E — Marks
+
+- ◎ = 今回、自分なら一番買いたい馬
+- ○ = ◎と最後まで比較した対抗
+- ▲ = 上位を逆転できる第三候補
+- △ = candidate clusterの残り
+
+Full-field order is **not used to select ◎**.
+If ranking output is needed for evaluation, create it only after marks are fixed.
+
+## 5. Required calibration trace
+
+Each race must preserve:
+
+- `human_principles_used`: 1–3 principle IDs from the teacher evidence
+- `race_model`
+- `primary_question`: this race's central forecasting question
+- `candidate_cases`: 3–5 concise candidate case summaries
+- `main_vs_second`
+- `main_vs_third`
+- `why_not_numeric_leader`:
+  - if ◎ is not the obvious numeric leader, explain why;
+  - if ◎ is also the numeric leader, explain why the judgment would still hold
+    without relying on that numeric rank.
+- `strongest_counter`
+- `reversal_condition`
+
+Private chain-of-thought is not required; these are concise auditable summaries.
+
+## 6. Calibration phase
+
+Current project status is **CALIBRATION_HOLD**.
+
+Do not consume a new unused eligible PACI day while this hold is active.
+
+Allowed development material:
+
+- human forecast evidence
+- already-used BTDAY-0001 dates:
+  - 2026-02-08
+  - 2026-05-23
+- already-used BTDAY-0002 dates:
+  - 2026-03-08
+  - 2026-04-26
+- already ineligible / result-exposed dates for explicit DEV replay
+
+Calibration replay is not blind performance evidence and must not be counted in
+Forecast hit-rate promotion metrics.
+
+Use a small representative set, normally 6–12 races, rather than another full
+two-day 48–72R turn.
+
+Goal of calibration:
+- predictions no longer collapse into numeric sorting
+- race_model materially differs by race
+- candidate comparisons are specific
+- teacher principles are visibly reflected
+- user can understand why the marks were chosen
+
+Only after the Research thread explicitly clears calibration may the project
+resume random unused two-day blind turns.
+
+## 7. Missing evidence
+
+If a desired human-style judgment needs evidence absent from RaceNote:
+- do not invent it;
+- record the gap;
+- make the best forecast from available evidence;
+- treat repeated gaps as RaceNote research input.
+
+Do not change RaceNote schema during a calibration replay.
+
+## 8. Result discipline
+
+Calibration is for forecast behavior, not result optimization.
+
+Do not use target results to decide whether a calibration forecast "looks human".
+Result-aware tuning resumes only after the forecast axis is accepted and clean
+blind research is restarted.
