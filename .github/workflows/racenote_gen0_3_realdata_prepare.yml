@@ -553,5 +553,22 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          gh issue close "$ISSUE_NUMBER" \
-            --repo "$GITHUB_REPOSITORY"
+          status="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('/tmp/racenote_prepare/prepare_summary.json')
+          if not path.is_file():
+              print('FAIL')
+          else:
+              print(json.loads(path.read_text(encoding='utf-8')).get('status', 'FAIL'))
+          PY
+          )"
+          if [ "$status" = "PASS" ]; then
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --reason "not planned"
+          fi
