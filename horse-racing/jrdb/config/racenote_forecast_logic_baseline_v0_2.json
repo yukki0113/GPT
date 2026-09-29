@@ -1,0 +1,55 @@
+{
+  "version": "RaceNote-Baseline-Reader-0.2",
+  "status": "CURRENT_RESEARCH_BASELINE",
+  "role": "RESEARCH_BASELINE",
+  "predecessor": "RaceNote-Baseline-Reader-0.1",
+  "change_type": "PRE_RESULT_OBSERVABILITY_CONTRACT_FIX",
+  "performance_tuned_from_results": false,
+  "fixed_weight": false,
+  "numeric_score": false,
+  "required_reading_steps": [
+    "RACE_CONTEXT_FIRST",
+    "READ_EVERY_RUNNER",
+    "IDENTIFY_RACE_THESIS",
+    "BUILD_CANDIDATE_CLUSTER",
+    "COMPARE_MAIN_VS_SECOND",
+    "RECORD_COUNTER_EVIDENCE",
+    "RECORD_DOWNWEIGHTED_EVIDENCE",
+    "RECORD_REVERSAL_CONDITION",
+    "CHOOSE_MARKS"
+  ],
+  "required_decision_trace": {
+    "race_thesis": true,
+    "decisive_factors": {
+      "min_items": 2,
+      "max_items": 4
+    },
+    "main_vs_second": true,
+    "strongest_counter": true,
+    "downweighted_evidence": true,
+    "reversal_condition": true
+  },
+  "anti_template": {
+    "generic_only_trace_forbidden": true,
+    "values_only_reason_forbidden": true,
+    "requires_race_specific_comparison": true
+  },
+  "mark_semantics": {
+    "main": "今回、自分なら一番買いたい馬",
+    "second": "◎に次いで総合的に買いたい相手",
+    "third": "上位を逆転し得る次候補",
+    "others": "それ以下で馬券候補として残す馬"
+  },
+  "explicitly_not_required": [
+    "TREND_FIRST_PRIORITY",
+    "ALL_RUNNER_SYNTHESIS",
+    "PAIRWISE",
+    "SLOW_MEDIUM_FAST_SCENARIO",
+    "EDGEDB_PERFORMANCE_OVERLAY",
+    "FIXED_CONFIDENCE_MAPPING"
+  ],
+  "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
+  "common_record_schema": "schema/racenote_forecast_research_record_v0_2.json",
+  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
+  "output_contract": "docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md"
+}
