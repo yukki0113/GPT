@@ -33,7 +33,13 @@ def normalize_inventory_rows(rows: Iterable[dict[str, Any]]):
         if date in seen:
             raise ValueError(f"duplicate date in inventory: {date}")
         seen.add(date)
-        out.append({"date": date, "file_name": file_name, "drive_file_id": drive_file_id})
+        out.append({
+            "date": date,
+            "file_name": file_name,
+            "drive_file_id": drive_file_id,
+            "eligible": bool(row.get("eligible", True)),
+            "exclusion_reason": row.get("exclusion_reason"),
+        })
     return sorted(out, key=lambda r: r["date"])
 
 def new_state(rows):
