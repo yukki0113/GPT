@@ -1,3 +1,26 @@
+### RaceNote Daily Build D2 — 2026-09-30
+
+- D2 is implemented in `src/build_racenote_daily.py`.
+- Connected path:
+  `PACI -> BASE -> Analysis/History/Trend/P1/P2`.
+- Stage A reuses `racenote_jrdb.parse_zip / BundleBuilder`; PACI is parsed once.
+- Stage B opens Analysis once and calls
+  `racenote_history_enrichment.enrich_production_many()` once for all races.
+- No History/Trend/P1/P2 logic was reimplemented in the daily orchestrator.
+- Current CLI intentionally stops before RRDB with
+  `NOT_IMPLEMENTED_AFTER_D2`; it is not production-cutover yet.
+- `--keep-intermediate` writes only non-canonical `.debug/history` output.
+- Focused tests: `tests/test_racenote_daily_build_d2.py`.
+- Migration equality now uses `evidence_semantic_sha256` because independent
+  executions necessarily differ in `generated_at`, local Analysis paths and
+  query telemetry. Those execution-only fields remain in real artifacts but
+  are excluded only from migration comparison.
+- Evidence/provenance changes remain hash-significant.
+- Existing one-race path remains production truth until D5.
+- Next turn: **D3 — resolve RRDB CURRENT/rules once and bulk-enrich all daily races**.
+- Forecast logic remains out of scope and unchanged at
+  `RaceNote-Human-Context-Reader-0.3.2`.
+
 ### RaceNote Daily Build D1 — 2026-09-30
 
 - Goal: make requests such as `09/27のRaceNote生成してください` complete as one deterministic daily build.
