@@ -236,6 +236,24 @@ Canonical:
 - `docs/racenote/FORECAST_EXECUTION_THREAD_BOOTSTRAP_v0_1.md`
 - `schema/racenote_forecast_turn_handoff_v0_1.json`
 
+### Forecast baseline observability fix — 2026-09-29
+
+- BTDAY-0001 completed under `RaceNote-Baseline-Reader-0.1`; preserve immutable.
+- Before result open, structural audit found insufficient race-specific reasoning trace.
+- Current pointer: `config/racenote_forecast_logic_current.json`.
+- Current baseline: `RaceNote-Baseline-Reader-0.2`.
+- v0.2 keeps no-fixed-weight logic but requires:
+  - race thesis
+  - 2–4 decisive factors with interpretation
+  - explicit ◎ vs ○ comparison
+  - strongest counter
+  - downweighted evidence
+  - reversal condition
+- current schema: `schema/racenote_forecast_research_record_v0_2.json`
+- trace contract: `docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md`
+- pre-Freeze validator: `src/validate_racenote_forecast_decision_trace.py`
+- no BTDAY-0001 results were used to create v0.2.
+
 ### Current Backtest / TRUE_FORWARD research operating assets — 2026-09-29
 
 The common operating contract is now:
