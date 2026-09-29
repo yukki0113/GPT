@@ -25,6 +25,31 @@ RaceNote is a facts/evidence/provenance layer for GPT comparison and prediction.
 
 The active architecture is JRDB + Historical Warehouse + Analysis canonical. Stats Mart is a frozen legacy cache and is not an active dependency.
 
+## RaceNote Daily Build modernization — D1
+
+Daily orchestration is being consolidated under:
+
+- `docs/racenote/RACENOTE_DAILY_BUILD_v0_1.md`
+- `schema/racenote_daily_build_manifest_v0_1.json`
+- `src/build_racenote_daily.py`
+
+Current status: **D1 contract/skeleton only**.
+
+The target daily path is:
+
+```text
+PACI -> all base RaceNotes -> Analysis/P1/P2 bulk enrichment
+     -> formal RRDB enrichment -> Reader Views
+     -> validation -> daily manifest/package
+```
+
+This work changes orchestration only. It must not change RaceNote evidence
+semantics, Trend, P1/P2, RRDB or Forecast logic.
+
+Until D5 equivalence/cutover passes, existing one-race production entrypoints
+remain authoritative. The D1 daily CLI is fail-closed for production execution;
+`--plan` is the only executable D1 mode.
+
 ## 2. Current prediction direction
 
 RaceNote Forecast Gen0 is the current prediction **research** program.
