@@ -20,9 +20,9 @@ from pathlib import Path
 
 import duckdb
 
+from jrdb_next_watch_rules import grade_matched_rules
 
 VERSION = "next-watch-reverse-v0.1"
-CORE_S_RULES = {"HV06", "HV13"}
 
 
 class ReverseSelectorError(RuntimeError):
@@ -283,20 +283,9 @@ def main() -> int:
             if not matched:
                 continue
 
-            grade = "A"
-            matched_set = set(matched)
-            strict_s = bool(CORE_S_RULES.intersection(matched_set))
-            if (
-                "HV05" in matched_set
-                and (
-                    "HV07" in matched_set
-                    or "HV11" in matched_set
-                    or "HV12" in matched_set
-                )
-            ):
-                strict_s = True
-            if strict_s:
-                grade = "S"
+            grade = grade_matched_rules(matched)
+            if grade is None:
+                continue
 
             selected.append(
                 {
