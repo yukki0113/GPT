@@ -126,6 +126,25 @@ Design boundary:
 - 独立axisの+ / -が残る場合は任意net scoreへ加算せずMIXED
 - 次工程はsemantic parent mapを用いたparent-relative metric shadow audit
 
+
+
+### 2026 PACI historical backtest lane — 2026-09-29
+
+2026 PACI historical replay is now a separate blinded research lane for
+Forecast logic adjustment. The Drive PACI canonical contains 82 race days
+from 2026-01-04 through 2026-09-27. Historical tuning must use complete-day
+target freezes, one race = one LLM call, immutable Freeze before any target
+result open, and separate DEV / OOS / HOLDOUT blocks.
+
+Historical backtest does **not** satisfy the Gen0-G001 TRUE_FORWARD activation
+gate.
+
+Canonical design:
+`docs/racenote/FORECAST_GEN0_2026_PACI_BACKTEST_DESIGN_v0_1.md`
+
+Canonical config:
+`config/racenote_forecast_2026_paci_backtest_v0_1.json`
+
 ## 4. RaceNote current prediction direction
 
 > 2026-09-25 current next-generation contract: **RaceNote-Forecast-Gen0.3**.
