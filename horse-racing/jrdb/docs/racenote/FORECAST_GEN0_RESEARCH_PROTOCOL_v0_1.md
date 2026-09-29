@@ -12,6 +12,22 @@ TRUE_FORWARDへ移行するための共通研究プロトコル。
 この文書は「どの馬を◎にするか」を決める予想ロジックではない。
 予想ロジックを公平に比較・改善するための**固定実験枠**を定義する。
 
+## 1.1 Thread separation
+
+Forecast research is operated with two chat roles.
+
+- **Forecast execution thread**: pre-result prediction / Freeze / HTML / handoff only.
+- **Research thread**: result open / evaluation / prediction-context review / logic adjustment / Git update.
+
+Canonical role contract:
+`docs/racenote/FORECAST_GEN0_THREAD_ROLES_v0_1.md`
+
+Execution-thread bootstrap:
+`docs/racenote/FORECAST_EXECUTION_THREAD_BOOTSTRAP_v0_1.md`
+
+The execution thread stops at a frozen turn handoff and must not open target
+results. Result opening belongs to the Research thread.
+
 ## 2. Fixed vs unfrozen
 
 ### Fixed
@@ -61,8 +77,9 @@ unused eligible PACI days
   -> target days frozen
   -> same logic_version for every target race
   -> race-by-race prediction / Freeze
-  -> both days complete
-  -> result open
+  -> both days complete / all usable predictions frozen
+  -> execution-thread handoff
+  -> Research thread opens results
   -> deterministic metrics + qualitative review
   -> decide one bounded logic change
   -> next turn
@@ -205,7 +222,8 @@ Canonical output contract:
 
 ## 8. Turn review
 
-2日すべてFreeze後に結果を開き、turn reviewを作る。
+Forecast execution threadが2日分のFreeze済みhandoffを返した後、
+**Research threadでのみ**結果を開き、turn reviewを作る。
 
 User-facing:
 - `review_<turn_id>.html`
