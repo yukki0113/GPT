@@ -74,6 +74,19 @@ G001 status:
 `docs/racenote/FORECAST_GEN0_2026_PACI_BACKTEST_DESIGN_v0_1.md`
 
 
+### Forecast research thread split
+
+Current chat-role boundary:
+
+- Research thread: result review + Forecast logic research / version updates
+- Forecast execution thread: pre-result forecast + Freeze + daily HTML + handoff only
+
+Canonical:
+
+- `docs/racenote/FORECAST_GEN0_THREAD_ROLES_v0_1.md`
+- `docs/racenote/FORECAST_EXECUTION_THREAD_BOOTSTRAP_v0_1.md`
+- `schema/racenote_forecast_turn_handoff_v0_1.json`
+
 ### Current Backtest / TRUE_FORWARD research operating assets — 2026-09-29
 
 The common operating contract is now:
