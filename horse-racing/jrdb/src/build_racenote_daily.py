@@ -22,7 +22,10 @@ import racenote_jrdb as jrdb
 import racenote_rrdb_enrichment as rrdb
 from jrdb_postrace_review_reader import RaceReviewReader
 from racenote_analysis_backend import AnalysisBackendError, open_analysis_backend
-from racenote_racereview_current import resolve_racereview_current
+from racenote_racereview_current import (
+    RaceReviewCurrentResolverError,
+    resolve_racereview_current,
+)
 
 PIPELINE_VERSION = "RaceNote-Daily-Build-0.1"
 MANIFEST_SCHEMA_VERSION = "RaceNote-Daily-Build-Manifest-0.1"
@@ -347,35 +350,38 @@ def enrich_rrdb_bundles(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Resolve RRDB/rules once and enrich all daily RaceNotes."""
     work_root.mkdir(parents=True, exist_ok=True)
-    contract = rrdb.load_frozen_contract(next_watch_rules, work_root)
-
-    if racereview_root is not None:
-        reader = RaceReviewReader(racereview_root)
-        rrdb_source = {
-            "mode": "generation_root",
-            "root": str(racereview_root),
-            "generation_id": reader.generation_id,
-        }
-    else:
-        if racereview_current_cache is None:
-            raise DailyBuildError("RRDB current cache is required")
-        resolved = resolve_racereview_current(racereview_current_cache)
-        reader = resolved.reader
-        rrdb_source = {
-            "mode": "current_cache",
-            "root": str(resolved.root),
-            "generation_id": reader.generation_id,
-            "provenance": resolved.provenance,
-        }
-
     try:
+        contract = rrdb.load_frozen_contract(next_watch_rules, work_root)
+
+        if racereview_root is not None:
+            reader = RaceReviewReader(racereview_root)
+            rrdb_source = {
+                "mode": "generation_root",
+                "root": str(racereview_root),
+                "generation_id": reader.generation_id,
+            }
+        else:
+            if racereview_current_cache is None:
+                raise DailyBuildError("RRDB current cache is required")
+            resolved = resolve_racereview_current(racereview_current_cache)
+            reader = resolved.reader
+            rrdb_source = {
+                "mode": "current_cache",
+                "root": str(resolved.root),
+                "generation_id": reader.generation_id,
+                "provenance": resolved.provenance,
+            }
+
         enriched = rrdb.enrich_bundles(
             bundles,
             reader,
             contract,
             per_horse_limit=5,
         )
-    except rrdb.RRDBEnrichmentError as exc:
+    except (
+        rrdb.RRDBEnrichmentError,
+        RaceReviewCurrentResolverError,
+    ) as exc:
         raise DailyBuildError(str(exc)) from exc
 
     return enriched, {
