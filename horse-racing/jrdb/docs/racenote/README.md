@@ -33,17 +33,11 @@ Daily orchestration is being consolidated under:
 - `schema/racenote_daily_build_manifest_v0_1.json`
 - `src/build_racenote_daily.py`
 
-Current status: **D3 through formal RRDB connected**.
+Current status: **D4 Reader View + validation + final package connected; D5 equivalence/cutover pending**.
 
-The daily CLI currently executes through Stage C and then fails closed before
-Reader View / final validation / package. It remains pre-cutover; the existing
-one-race production path is authoritative until D5 equivalence passes.
+The daily CLI now executes all deterministic orchestration stages through final package generation. It remains pre-cutover; the existing one-race production path is authoritative until D5 old-vs-daily semantic equality passes.
 
-The daily CLI currently executes through Stage B and then fails closed before
-RRDB. It is still pre-cutover; the existing one-race production path remains
-authoritative until D5 equivalence passes.
-
-The target daily path is:
+The target/current D4 daily path is:
 
 ```text
 PACI -> all base RaceNotes -> Analysis/P1/P2 bulk enrichment
@@ -54,9 +48,7 @@ PACI -> all base RaceNotes -> Analysis/P1/P2 bulk enrichment
 This work changes orchestration only. It must not change RaceNote evidence
 semantics, Trend, P1/P2, RRDB or Forecast logic.
 
-Until D5 equivalence/cutover passes, existing one-race production entrypoints
-remain authoritative. The D1 daily CLI is fail-closed for production execution;
-`--plan` is the only executable D1 mode.
+Until D5 equivalence/cutover passes, existing one-race production entrypoints remain authoritative. The daily builder may be executed for D5 validation, but its output is pre-cutover.
 
 ## 2. Current prediction direction
 
