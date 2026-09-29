@@ -1,3 +1,17 @@
+### RaceNote Daily Build D4 — 2026-09-30
+
+- D4 is implemented in `src/build_racenote_daily.py`.
+- Connected path:
+  `PACI -> BASE -> Analysis/History/Trend/P1/P2 -> RRDB -> Reader View -> validation -> package`.
+- Reader View reuses `racenote_reader_view.py` and every view must pass semantic round-trip before packaging.
+- Final output is `RaceNote_YYYYMMDD/authoritative/`, `reader/`, `manifest.json`, and `validation_report.json`.
+- Target-result contamination, historical as-of boundaries, RRDB future rows and provenance are fail-closed validation gates.
+- `--keep-intermediate` retains only explicit debug material; normal intermediate Stage A/B/C artifacts remain non-canonical.
+- Focused tests: `tests/test_racenote_daily_build_d4.py`.
+- Status remains **PRE-CUTOVER**. Existing one-race path is production truth until D5.
+- Next turn: **D5 — real-data old-path vs daily-path semantic equality and cutover decision**.
+- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
+
 ### RaceNote Daily Build D3 — 2026-09-30
 
 - D3 is implemented.
