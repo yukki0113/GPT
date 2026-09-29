@@ -37,6 +37,7 @@ results. Result opening belongs to the Research thread.
 - target result / payout / final odds / final popularity / prohibited current consensusはFreeze前に見ない。
 - 1レースの予想は独立させる。
 - predictionはresult open前にimmutable Freezeする。
+- current v0.2以降ではDecision Trace guard must PASS before Freeze.
 - Freeze後に結果を開いてもpredictionを書き換えない。
 - バックテストとTRUE_FORWARDは同じ保存形式を使う。
 - logicを変更したらlogic_versionを変える。
@@ -55,17 +56,28 @@ results. Result opening belongs to the Research thread.
 
 `RaceNote-Forecast-Gen0.3` はこれらの一候補実装であり、採用済みdefaultではない。
 
-## 2.1 Initial baseline
+## 2.1 Current research baseline
 
-The first historical turn uses:
+Current logic is resolved from:
 
-- logic version: `RaceNote-Baseline-Reader-0.1`
-- contract: `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_1.md`
-- config: `config/racenote_forecast_logic_baseline_v0_1.json`
+`config/racenote_forecast_logic_current.json`
 
-This baseline deliberately avoids fixed evidence priorities, scores, mandatory
-Pairwise/Scenario, and Gen0.3-specific reading rules. It exists to provide a
-stable starting point for observed improvements.
+Current baseline:
+
+- logic version: `RaceNote-Baseline-Reader-0.2`
+- contract: `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_2.md`
+- config: `config/racenote_forecast_logic_baseline_v0_2.json`
+- Decision Trace: `docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md`
+- record schema: `schema/racenote_forecast_research_record_v0_2.json`
+- Freeze validator: `src/validate_racenote_forecast_decision_trace.py`
+
+BTDAY-0001 used v0.1 and remains immutable historical baseline evidence.
+v0.2 was created from a pre-result structural audit; no target results were used.
+
+The baseline still avoids fixed evidence priorities, scores, mandatory
+Pairwise/Scenario, and Gen0.3-specific reading rules. v0.2 adds observable,
+race-specific comparison traces so later research can identify the actual
+reading/comparison error.
 
 ## 3. One turn
 
