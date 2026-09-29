@@ -13,8 +13,8 @@ def test_gen03_prepare_uses_racereview_actions_artifact_not_drive() -> None:
     assert "racereview_source_run_id" in workflow
     assert "racereview_artifact_name" in workflow
     assert 'gh run download "$RACEREVIEW_SOURCE_RUN_ID"' in workflow
-    assert "RaceReviewDB-next-36094708797" in workflow
-    assert "jrdb_race_review_v0_1_incremental_g36094708797" in workflow
+    assert "racereview_expected_generation" in workflow
+    assert "RACEREVIEW_EXPECTED_GENERATION" in workflow
 
     assert "gdown" not in workflow
     assert "racereview_drive_file_id" not in workflow
