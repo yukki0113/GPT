@@ -1,3 +1,20 @@
+### Forecast axis calibration hold — 2026-09-29
+
+- Stop consuming new clean PACI dates until forecast axis is accepted.
+- Current phase: `CALIBRATION_HOLD`.
+- Current logic pointer: `config/racenote_forecast_logic_current.json`.
+- Current logic: `RaceNote-Human-Context-Reader-0.3`.
+- Mandatory teacher evidence: `racenote/evidence/human_forecast_evidence_202301.md`.
+- Current calibration protocol: `docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md`.
+- Current schema: `schema/racenote_forecast_research_record_v0_3.json`.
+- Current validator: `src/validate_racenote_forecast_human_context.py`.
+- v0.3 forbids single-score / implicit numeric sorting as the primary axis-selection method.
+- Use only 6–12 representative races from already-used / ineligible days during calibration.
+- BTDAY-0001 dates: 2026-02-08, 2026-05-23.
+- BTDAY-0002 dates: 2026-03-08, 2026-04-26.
+- Calibration is not blind performance evidence.
+- Resume unused two-day turns only after Research thread explicitly clears the forecast axis.
+
 
 - Forecast reason provenance uses `RaceNote-Decision-Trace-0.1`.
 - Decision Trace binds primary / secondary / concern prose to real Trend / RR /
