@@ -35,6 +35,27 @@ Canonical:
 - `docs/racenote/FORECAST_GEN0_THREAD_ROLES_v0_1.md`
 - `docs/racenote/FORECAST_EXECUTION_THREAD_BOOTSTRAP_v0_1.md`
 
+### Forecast-axis calibration hold — 2026-09-29
+
+The blind-day loop is temporarily paused.
+
+Reason:
+- v0.1 produced generic numeric-ranking forecasts;
+- v0.2 improved trace observability but did not materially change the selection behavior;
+- spending another ~2 clean days / ~50 races per wording adjustment would waste the finite 2026 pool.
+
+Current:
+- phase: `CALIBRATION_HOLD`
+- logic: `RaceNote-Human-Context-Reader-0.3`
+- teacher: `racenote/evidence/human_forecast_evidence_202301.md`
+- calibration: `docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md`
+
+Rules:
+- no new unused PACI day selection during hold;
+- use 6–12 representative races from already-used / ineligible dates;
+- calibration results are not performance evidence;
+- resume two-day blind turns only after Research thread accepts the forecast axis.
+
 ### Current Backtest / TRUE_FORWARD research operating assets — 2026-09-29
 
 The common operating contract is now:
@@ -42,8 +63,8 @@ The common operating contract is now:
 - `docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md`
 - `docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
 - `config/racenote_forecast_logic_current.json` — current logic pointer
-- `schema/racenote_forecast_research_record_v0_2.json` — current observable record schema
-- `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_2.md` — current research baseline
+- `schema/racenote_forecast_research_record_v0_3.json` — current calibration record schema
+- `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_3.md` — current human-context calibration logic
 - `docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md` — per-race reasoning summary contract
 - `src/validate_racenote_forecast_decision_trace.py` — pre-Freeze trace validator
 
