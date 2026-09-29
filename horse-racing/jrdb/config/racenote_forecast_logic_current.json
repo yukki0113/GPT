@@ -1,0 +1,16 @@
+{
+  "version": "RaceNote-Forecast-Logic-Current-0.1",
+  "updated_at": "2026-09-29",
+  "current_logic_version": "RaceNote-Baseline-Reader-0.2",
+  "logic_contract": "docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_2.md",
+  "logic_config": "config/racenote_forecast_logic_baseline_v0_2.json",
+  "record_schema": "schema/racenote_forecast_research_record_v0_2.json",
+  "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
+  "freeze_validator": "src/validate_racenote_forecast_decision_trace.py",
+  "predecessor": {
+    "logic_version": "RaceNote-Baseline-Reader-0.1",
+    "last_turn": "BTDAY-0001",
+    "status": "FROZEN_HISTORICAL_BASELINE"
+  },
+  "change_reason": "Pre-result structural audit showed insufficient observable comparison trace and excessive generic/template-like comments. No target results were used for this change."
+}
