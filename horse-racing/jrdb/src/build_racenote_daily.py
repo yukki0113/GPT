@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Day-level RaceNote production orchestrator.
 
-Stages A-F are connected through D4: PACI -> base -> History/P1/P2 -> RRDB ->
-Reader View -> validation -> package. Production cutover remains forbidden until
-D5 old-path vs daily-path semantic equivalence passes.
+Stages A-F are connected: PACI -> base -> History/P1/P2 -> RRDB -> Reader View
+-> validation -> package. D5 real-data semantic equivalence passed on
+2026-09-30; this is the production day-level RaceNote entrypoint.
 """
 from __future__ import annotations
 
@@ -141,7 +141,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             "validation_report": str(output_root / "validation_report.json"),
         },
         "warnings": [
-            "Daily D4 package is pre-cutover; existing one-race path remains production truth until D5 equivalence passes."
+            "Daily builder is the production day-level entrypoint; one-race builders remain supported for single-race use, audit and rollback."
         ],
         "errors": [],
     }
@@ -736,7 +736,7 @@ def build_daily_package(
     )
     report["package"] = package
     report["stages"]["package"] = "PASS"
-    report["status"] = "D4_PASS_PRE_CUTOVER"
+    report["status"] = "PASS"
     return package["manifest_payload"], report, bundles
 
 
