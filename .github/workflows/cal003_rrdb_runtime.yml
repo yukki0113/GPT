@@ -1,0 +1,135 @@
+name: CAL003 RRDB runtime
+
+on:
+  push:
+    branches: [cal003-rrdb-runtime]
+    paths:
+      - '.github/workflows/cal003_rrdb_runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install shared Parquet DuckDB toolchain
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tools/data-storage/requirements.txt
+
+      - name: Download CAL-003 sources
+        run: |
+          mkdir -p /tmp/cal003
+          gdown 1NDBHet8vSAgXa_5R3gKSmkHj6MnhJtnw -O /tmp/cal003/racenote_inputs.json
+          gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/cal003/RaceReviewDB_CURRENT.zip
+          gdown 1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr -O /tmp/cal003/next_watch_rules.zip
+
+      - name: Formal RRDB enrichment
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json
+          import shutil
+          import zipfile
+          from pathlib import Path
+
+          from jrdb_postrace_review_reader import RaceReviewReader
+          import racenote_rrdb_enrichment as rrdb
+
+          work = Path('/tmp/cal003')
+          rrdb_root = work / 'rrdb'
+          rrdb_root.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile(work / 'RaceReviewDB_CURRENT.zip') as z:
+              z.extractall(rrdb_root)
+
+          current_candidates = list(rrdb_root.rglob('current.json'))
+          if len(current_candidates) != 1:
+              raise SystemExit(f'unique RRDB current.json required: {current_candidates}')
+          root = current_candidates[0].parent
+          reader = RaceReviewReader(root)
+          contract = rrdb.load_frozen_contract(work / 'next_watch_rules.zip', work / 'rules_work')
+
+          bundles = json.loads((work / 'racenote_inputs.json').read_text(encoding='utf-8'))
+          if not isinstance(bundles, list) or len(bundles) != 10:
+              raise SystemExit(f'exactly 10 RaceNote bundles required, got {type(bundles)} {len(bundles) if isinstance(bundles,list) else None}')
+
+          enriched = []
+          all_horses = []
+          violations = []
+          for bundle in bundles:
+              out = rrdb.enrich_bundle(bundle, reader, contract, per_horse_limit=5)
+              race = out['race']
+              target = race['date']
+              for h in out['horses']:
+                  rr = h.get('racereview')
+                  if not isinstance(rr, dict):
+                      violations.append(f"{target} {race['venue']}{race['race_no']}R #{h.get('horse_no')} missing racereview")
+                      continue
+                  latest = rr.get('latest_prior_run')
+                  if isinstance(latest, dict) and latest.get('race_date') and str(latest['race_date']) >= target:
+                      violations.append(f"{target} #{h.get('horse_no')} RRDB future/same-day leak {latest['race_date']}")
+                  nw = rr.get('next_watch') or {}
+                  all_horses.append({
+                      'date': target,
+                      'venue': race['venue'],
+                      'race_no': race['race_no'],
+                      'horse_no': h.get('horse_no'),
+                      'horse_name': h.get('horse_name'),
+                      'horse_id': h.get('horse_id'),
+                      'history_status': rr.get('history_status'),
+                      'latest_prior_date': latest.get('race_date') if isinstance(latest,dict) else None,
+                      'next_watch_status': nw.get('status'),
+                      'next_watch_grade': nw.get('grade'),
+                      'matched_rule_ids': nw.get('matched_rule_ids') or [],
+                      'review_tags': latest.get('review_tags') if isinstance(latest,dict) else [],
+                  })
+              enriched.append(out)
+
+          if violations:
+              raise SystemExit('RRDB safety violations:\n' + '\n'.join(violations))
+
+          outdir = Path('cal003_rrdb_artifact')
+          outdir.mkdir(exist_ok=True)
+          (outdir / 'racenote_inputs_CAL-003_P1P2_RRDB.json').write_text(
+              json.dumps(enriched, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          (outdir / 'rrdb_all_horses_CAL-003.json').write_text(
+              json.dumps(all_horses, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+
+          summary = {
+              'status':'PASS',
+              'bundle_count':len(enriched),
+              'horse_count':len(all_horses),
+              'rrdb_generation_id':reader.current.get('generation_id'),
+              'rrdb_manifest_generation_id':reader.manifest.get('generation_id'),
+              'rule_version':'next-watch-rules-discovery-v0.1',
+              's_count':sum(1 for x in all_horses if x['next_watch_grade']=='S'),
+              'a_count':sum(1 for x in all_horses if x['next_watch_grade']=='A'),
+              'no_match_count':sum(1 for x in all_horses if x['next_watch_status']=='NO_MATCH'),
+              'no_history_count':sum(1 for x in all_horses if x['history_status']!='AVAILABLE'),
+              'result_opened':False,
+              'target_result_fields_exposed':False,
+          }
+          (outdir / 'rrdb_enrichment_audit_CAL-003.json').write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload formal RRDB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cal003-rrdb-enriched
+          path: cal003_rrdb_artifact/
+          retention-days: 7
+          if-no-files-found: error
