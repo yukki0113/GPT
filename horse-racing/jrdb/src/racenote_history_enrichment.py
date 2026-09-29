@@ -22,7 +22,10 @@ import json
 from pathlib import Path
 
 import racenote_history_engine as engine
+import racenote_rrdb_enrichment as rrdb
+from jrdb_postrace_review_reader import RaceReviewReader
 from racenote_analysis_backend import AnalysisBackendError, open_analysis_backend
+from racenote_racereview_current import resolve_racereview_current
 
 SCHEMA_VERSION = "1.0"
 OLDER_RUNS_LIMIT = 3
@@ -37,6 +40,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--analysis", type=Path, default=None, help=argparse.SUPPRESS)
     parser.add_argument("--analysis-backend", choices=("parquet", "sqlite"), default="parquet")
     parser.add_argument("--output", type=Path, required=True)
+    rrdb_source = parser.add_mutually_exclusive_group(required=False)
+    rrdb_source.add_argument("--racereview-root", type=Path)
+    rrdb_source.add_argument("--racereview-current-cache", type=Path)
+    parser.add_argument("--next-watch-rules", type=Path, default=None)
+    parser.add_argument("--rrdb-work-root", type=Path, default=None)
     parser.add_argument(
         "--stats-window-years",
         type=int,
@@ -180,6 +188,37 @@ def main() -> int:
         )
         enriched["metadata"]["history_enrichment"]["analysis_source"] = analysis.source_info
         enriched["metadata"]["history_enrichment"]["analysis_source"].update(analysis.metrics())
+
+        rrdb_requested = (
+            args.racereview_root is not None
+            or args.racereview_current_cache is not None
+        )
+        if rrdb_requested:
+            if args.next_watch_rules is None:
+                raise SystemExit(
+                    "--next-watch-rules is required when RRDB enrichment is requested"
+                )
+            rrdb_work_root = args.rrdb_work_root or (
+                args.output.parent / ".racenote_rrdb_work"
+            )
+            rrdb_work_root.mkdir(parents=True, exist_ok=True)
+            contract = rrdb.load_frozen_contract(
+                args.next_watch_rules,
+                rrdb_work_root,
+            )
+            if args.racereview_root is not None:
+                rrdb_reader = RaceReviewReader(args.racereview_root)
+            else:
+                resolved = resolve_racereview_current(
+                    args.racereview_current_cache,
+                )
+                rrdb_reader = resolved.reader
+            enriched = rrdb.enrich_bundle(
+                enriched,
+                rrdb_reader,
+                contract,
+                per_horse_limit=5,
+            )
     except AnalysisBackendError as error:
         raise SystemExit(str(error)) from error
     finally:
@@ -199,6 +238,9 @@ def main() -> int:
                 "output": str(args.output),
                 "warning_count": len(warnings),
                 "warnings": warnings,
+                "rrdb_enrichment": (
+                    enriched.get("metadata", {}).get("racereview_enrichment")
+                ),
             },
             ensure_ascii=False,
         )
