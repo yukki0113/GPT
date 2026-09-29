@@ -41,7 +41,14 @@ def new_state(rows):
     return {
         "version": VERSION,
         "updated_at": now_iso(),
-        "days": [{**r, "used": False, "used_at": None, "selection_id": None} for r in normalized],
+        "days": [{
+            **r,
+            "eligible": bool(r.get("eligible", True)),
+            "exclusion_reason": r.get("exclusion_reason"),
+            "used": False,
+            "used_at": None,
+            "selection_id": None,
+        } for r in normalized],
         "selections": [],
     }
 
@@ -53,6 +60,8 @@ def sync_state(state, rows):
         old = existing.get(r["date"])
         merged.append({
             **r,
+            "eligible": bool(old.get("eligible", True)) if old else bool(r.get("eligible", True)),
+            "exclusion_reason": old.get("exclusion_reason") if old else r.get("exclusion_reason"),
             "used": bool(old.get("used")) if old else False,
             "used_at": old.get("used_at") if old else None,
             "selection_id": old.get("selection_id") if old else None,
@@ -63,12 +72,17 @@ def sync_state(state, rows):
     state.setdefault("selections", [])
     return state
 
-def pick_days(state, n, seed=None):
+def pick_days(state, n, seed=None, include_ineligible=False):
     if n <= 0:
         raise ValueError("n must be >= 1")
-    available = [r for r in state.get("days", []) if not r.get("used")]
+    available = [
+        r for r in state.get("days", [])
+        if not r.get("used") and (include_ineligible or r.get("eligible", True))
+    ]
     if len(available) < n:
-        raise ValueError(f"not enough unused dates: requested={n}, available={len(available)}")
+        raise ValueError(
+            f"not enough unused eligible dates: requested={n}, available={len(available)}"
+        )
     actual_seed = seed or secrets.token_hex(16)
     selected = sorted(random.Random(actual_seed).sample(available, n), key=lambda r: r["date"])
     sid = f"BTDAY-{len(state.get('selections', [])) + 1:04d}"
@@ -115,6 +129,9 @@ def summary(state):
         "unused_days": len(days) - used,
         "first_date": min((r["date"] for r in days), default=None),
         "last_date": max((r["date"] for r in days), default=None),
+        "eligible_unused_days": sum(
+            1 for r in days if not r.get("used") and r.get("eligible", True)
+        ),
         "selection_count": len(state.get("selections", [])),
     }
 
@@ -139,6 +156,11 @@ def main():
     a.add_argument("--state", type=Path, required=True)
     a.add_argument("-n", type=int, default=2)
     a.add_argument("--seed")
+    a.add_argument(
+        "--include-ineligible",
+        action="store_true",
+        help="Allow dates excluded from clean blind turns; use only for explicit DEV replay.",
+    )
     a = sub.add_parser("status")
     a.add_argument("--state", type=Path, required=True)
     a = sub.add_parser("release")
@@ -159,7 +181,7 @@ def main():
         print(json.dumps(summary(state), ensure_ascii=False))
         return 0
     if args.command == "pick":
-        rec = pick_days(state, args.n, args.seed)
+        rec = pick_days(state, args.n, args.seed, args.include_ineligible)
         save_json(args.state, state)
         print(json.dumps(rec, ensure_ascii=False))
         return 0
