@@ -15,12 +15,14 @@ HTML側で印・順位・コメント根拠を再計算しない。
 
 ## 2. Canonical structured record
 
-Current schema:
+Current schema is resolved from `config/racenote_forecast_logic_current.json`.
 
-`schema/racenote_forecast_research_record_v0_2.json`
+Current at 2026-09-29:
 
-Historical v0.1 records remain valid immutable evidence for BTDAY-0001 and
-other already-frozen runs. Do not rewrite them into v0.2 after result access.
+`schema/racenote_forecast_research_record_v0_3_1.json`
+
+Historical v0.1 / v0.2 / v0.3 records remain immutable under the schemas used
+when they were frozen. Do not rewrite older turns into the current schema.
 
 1 race = 1 recordを基本とする。
 
@@ -35,13 +37,14 @@ other already-frozen runs. Do not rewrite them into v0.2 after result access.
 - structured `decision_trace`
 - audit / freeze metadata
 
-Current v0.2 Decision Trace must include:
-- race thesis
-- 2–4 decisive factors
-- explicit ◎ vs ○ comparison
+Current Human-Context v0.3.1 trace includes:
+- race_model / primary_question
+- 3–5 candidate cases
+- explicit ◎ vs ○ / ◎ vs ▲ comparison
 - strongest counter-case
-- downweighted evidence
 - reversal condition
+- RRDB review trace (`rrdb_evidence`)
+- human forecast principle references
 
 Canonical trace contract:
 `docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md`
@@ -140,12 +143,11 @@ Research threadはhandoff受領後にresult open / reviewを行う。
 
 ## 7. Freeze quality gate
 
-For current v0.2 records, before Freeze run:
+For current records, before Freeze run:
 
-`src/validate_racenote_forecast_decision_trace.py`
+`src/validate_racenote_forecast_human_context.py`
 
-Freeze is invalid unless the validator PASSes and
-`audit.decision_trace_guard = PASS`.
+The current v0.3.1 gate also requires RRDB to be explicitly reviewed. RRDB may
+be non-decisive, but when it is not used the trace must record why.
 
-The gate is intended to reject records where field values are merely inserted
-into generic prose without an explicit race-specific comparison.
+Freeze is invalid unless the current validator PASSes.
