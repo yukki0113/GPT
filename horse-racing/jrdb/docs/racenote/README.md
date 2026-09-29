@@ -33,7 +33,11 @@ Daily orchestration is being consolidated under:
 - `schema/racenote_daily_build_manifest_v0_1.json`
 - `src/build_racenote_daily.py`
 
-Current status: **D1 contract/skeleton only**.
+Current status: **D2 BASE + Analysis/History/Trend/P1/P2 connected**.
+
+The daily CLI currently executes through Stage B and then fails closed before
+RRDB. It is still pre-cutover; the existing one-race production path remains
+authoritative until D5 equivalence passes.
 
 The target daily path is:
 
