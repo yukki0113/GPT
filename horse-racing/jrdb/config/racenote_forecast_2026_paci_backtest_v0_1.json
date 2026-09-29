@@ -117,7 +117,7 @@
       "RaceNote-Forecast-Gen0.3"
     ],
     "gen0_3_role": "EXPERIMENTAL_CANDIDATE_NOT_DEFAULT",
-    "current_research_baseline": "RaceNote-Baseline-Reader-0.2",
+    "current_research_baseline": "RaceNote-Human-Context-Reader-0.3",
     "baseline_v0_1_status": "BTDAY-0001_FROZEN_HISTORICAL"
   },
   "day_picker": {
@@ -136,13 +136,31 @@
     "decision_trace_validator": "src/validate_racenote_forecast_decision_trace.py"
   },
   "output_contract": {
-    "canonical_record_schema": "schema/racenote_forecast_research_record_v0_2.json",
+    "canonical_record_schema": "schema/racenote_forecast_research_record_v0_3.json",
     "human_contract": "docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md",
     "daily_renderer": "src/render_racenote_forecast_html.py",
     "daily_html_pattern": "forecast_YYYYMMDD.html",
     "turn_review_pattern": "review_<turn_id>.html",
-    "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md"
+    "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
+    "human_context_validator": "src/validate_racenote_forecast_human_context.py"
   },
   "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
-  "current_logic_pointer": "config/racenote_forecast_logic_current.json"
+  "current_logic_pointer": "config/racenote_forecast_logic_current.json",
+  "current_phase": "CALIBRATION_HOLD",
+  "clean_blind_picks_paused": true,
+  "calibration": {
+    "protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
+    "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
+    "current_logic": "RaceNote-Human-Context-Reader-0.3",
+    "consume_unused_eligible_days": false,
+    "replay_race_count": "6-12",
+    "used_dates_available": [
+      "2026-02-08",
+      "2026-05-23",
+      "2026-03-08",
+      "2026-04-26"
+    ],
+    "performance_evidence": false,
+    "resume_requires_research_clearance": true
+  }
 }
