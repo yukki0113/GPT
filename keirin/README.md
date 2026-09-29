@@ -134,6 +134,16 @@ events: compare its successful manifest assets against the discovery total.
 `--supplemental-archive` is repeatable. Same-path/same-SHA replicas are parsed
 once with provenance retained; same-path/different-SHA inputs fail closed.
 
+## Stage B1 probe preparation (no request by default)
+
+keirin_probe contains an allowlisted official-JS capture utility, an offline
+evidence analyzer, and a five-race detail runner that requires a reviewed
+request-contract JSON. It has no third-party dependencies. Capture is plan-only
+unless --execute is explicitly supplied; no Stage B1 or detail request was
+run from Work. See
+docs/STAGE_B1_PROBE_TOOLCHAIN_RUNBOOK_20260929.md for the handoff and offline
+unit-test command.
+
 ## Next gate
 
 1. Raw HTMLからpre / postを物理分離するCanonical parserを実装する。
