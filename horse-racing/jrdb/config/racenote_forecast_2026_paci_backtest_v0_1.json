@@ -113,10 +113,12 @@
   "candidate_policy": {
     "required_interface": "ONE_RACE_PRE_RESULT_INPUT_TO_IMMUTABLE_FORECAST",
     "baseline_candidates": [
-      "SIMPLE_RACENOTE_READER_TBD",
+      "RaceNote-Baseline-Reader-0.2",
       "RaceNote-Forecast-Gen0.3"
     ],
-    "gen0_3_role": "EXPERIMENTAL_CANDIDATE_NOT_DEFAULT"
+    "gen0_3_role": "EXPERIMENTAL_CANDIDATE_NOT_DEFAULT",
+    "current_research_baseline": "RaceNote-Baseline-Reader-0.2",
+    "baseline_v0_1_status": "BTDAY-0001_FROZEN_HISTORICAL"
   },
   "day_picker": {
     "module": "src/racenote_backtest_day_picker.py",
@@ -129,14 +131,18 @@
     "expected_race_range": "48-72 typical",
     "same_logic_version_within_turn": true,
     "result_open_after_all_usable_freezes": true,
-    "max_bounded_logic_changes_after_turn": 1
+    "max_bounded_logic_changes_after_turn": 1,
+    "decision_trace_required": true,
+    "decision_trace_validator": "src/validate_racenote_forecast_decision_trace.py"
   },
   "output_contract": {
-    "canonical_record_schema": "schema/racenote_forecast_research_record_v0_1.json",
+    "canonical_record_schema": "schema/racenote_forecast_research_record_v0_2.json",
     "human_contract": "docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md",
     "daily_renderer": "src/render_racenote_forecast_html.py",
     "daily_html_pattern": "forecast_YYYYMMDD.html",
-    "turn_review_pattern": "review_<turn_id>.html"
+    "turn_review_pattern": "review_<turn_id>.html",
+    "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md"
   },
-  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md"
+  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
+  "current_logic_pointer": "config/racenote_forecast_logic_current.json"
 }
