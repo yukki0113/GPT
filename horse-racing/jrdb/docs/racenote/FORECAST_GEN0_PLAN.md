@@ -23,6 +23,39 @@ Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
 
 
 
+
+### Current Backtest / TRUE_FORWARD research operating assets — 2026-09-29
+
+The common operating contract is now:
+
+- `docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md`
+- `docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
+- `schema/racenote_forecast_research_record_v0_1.json`
+
+Historical standard cadence:
+
+- random PICK = 2 unused eligible PACI days
+- typically about 48–72 races
+- one logic_version for the whole turn
+- one race = one independent forecast
+- Freeze all usable predictions before any target result open
+- review the two days as one turn
+- change at most one bounded logic theme before the next turn
+
+Day state:
+
+- `src/racenote_backtest_day_picker.py`
+- `config/racenote_backtest_day_pool_2026.json`
+
+User-facing daily output is compact HTML generated only from frozen canonical
+records:
+
+- `src/render_racenote_forecast_html.py`
+- `forecast_YYYYMMDD.html`
+
+This same common record / presentation contract is intended to carry forward
+to TRUE_FORWARD after a detailed Forecast logic version is selected.
+
 ## 1. Goal
 
 RaceNote Forecast Gen0の目的は、固定ルールで印を機械生成することではなく、**RaceNoteの開催前evidenceをGPTが読み、比較し、予想し、その読み方を結果から改善する研究サイクル**を成立させることである。
