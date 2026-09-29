@@ -184,9 +184,47 @@ Betting diagnostics must remain separate from Forecast-quality evaluation.
 No target result may be reconstructed from Analysis, SED, HJC, Eval, or any
 other source before the complete batch Freeze gate passes.
 
+## 5.1 Persistent random day pool
+
+Historical target-day selection is implemented by:
+
+- `src/racenote_backtest_day_picker.py`
+- `config/racenote_backtest_day_pool_2026.json`
+
+Each PACI date stores `date`, `file_name`, `drive_file_id`, `used`,
+`used_at`, and `selection_id`.
+
+`pick -n N` samples only unused dates and immediately marks them used.
+The actual seed is stored in the selection history so the draw is reproducible.
+`release` returns an accidental draw to the unused pool.
+
+A newer PACI Drive inventory can be merged with `sync`. Existing usage flags
+are preserved; previously unseen PACI dates are added as unused candidates.
+The deterministic picker itself does not access Google Drive credentials.
+
+### Default research turn
+
+The default research turn is **2 randomly selected complete PACI days**.
+This normally yields roughly **48-72 races per turn** depending on the number
+of active venues.
+
+```text
+pick 2 unused PACI days
+  -> freeze target-set identity
+  -> blind forecast each race independently
+  -> Freeze all usable predictions
+  -> open results
+  -> aggregate the two-day errors / metrics
+  -> make at most one bounded Forecast-logic change
+  -> next 2-day turn
+```
+
+Do not redraw a selected date merely because its race count, venue mix, or
+results are inconvenient.
+
 ## 6. Backtest unit
 
-The preferred unit is a **complete race day**, not cherry-picked races.
+The atomic selection unit is a **complete race day**, not cherry-picked races. The default research turn is two randomly selected unused complete days.
 
 Reasons:
 - prevents selection after seeing difficult/easy race characteristics
@@ -196,11 +234,7 @@ Reasons:
 
 A normal JRA 3-venue day is approximately 36 races.
 
-The initial improvement unit remains approximately 50 races. In practice:
-
-- 2 complete days ~= 72 races
-
-is the preferred research block.
+The default improvement turn is two complete days, typically about 48-72 races. This is the normal cadence for one bounded logic adjustment.
 
 If a race fails source/validation, retain it in the denominator as
 `TECHNICAL_SKIP`; do not silently substitute a more convenient race.
