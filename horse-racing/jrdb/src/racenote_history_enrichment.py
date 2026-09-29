@@ -62,6 +62,22 @@ def production_metadata(
         "future_leakage_policy": (
             "all rolling statistics from JRDB Analysis canonical with race_date < target_date"
         ),
+        "pedigree_enrichment": {
+            "version": "P1-0.1",
+            "status": "ACTIVE",
+            "scoring": False,
+            "source": "JRDB Analysis canonical target identity projection",
+            "approved_fields": [
+                "horse_id",
+                "sire_name",
+                "dam_name",
+                "broodmare_sire_name",
+                "sire_line_code",
+                "broodmare_sire_line_code",
+            ],
+            "missing_field_policy": "null_no_guess",
+            "result_fields_exposed": False,
+        },
         "distance_range_policy": {
             "ranges": [dict(item) for item in engine.DISTANCE_RANGE_DEFINITIONS],
             "overlap_boundaries_m": [1400, 1800],
