@@ -19,12 +19,14 @@
     ]
   },
   "batch_policy": {
-    "preferred_unit": "COMPLETE_RACE_DAY",
+    "preferred_unit": "TWO_RANDOM_UNUSED_COMPLETE_RACE_DAYS",
     "improvement_unit_target_races": 50,
     "preferred_dev_days_per_iteration": 2,
     "preferred_oos_days_per_iteration": 2,
     "one_race_one_llm_call": true,
-    "giant_multi_race_reasoning_call": false
+    "giant_multi_race_reasoning_call": false,
+    "default_pick_days": 2,
+    "expected_races_per_turn": "48-72 typical; not guaranteed"
   },
   "stages": [
     "SOURCE",
@@ -115,5 +117,15 @@
       "RaceNote-Forecast-Gen0.3"
     ],
     "gen0_3_role": "EXPERIMENTAL_CANDIDATE_NOT_DEFAULT"
+  },
+  "day_picker": {
+    "version": "racenote-backtest-day-picker-0.1.0",
+    "module": "src/racenote_backtest_day_picker.py",
+    "state": "config/racenote_backtest_day_pool_2026.json",
+    "default_pick_days": 2,
+    "selection_unit": "COMPLETE_RACE_DAY",
+    "preserve_used_on_sync": true,
+    "add_new_dates_as_unused": true,
+    "stored_seed_for_reproducibility": true
   }
 }
