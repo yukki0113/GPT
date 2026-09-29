@@ -62,6 +62,31 @@ Spreadsheet ID:
 - sampler version: `0.2.0`
 - sampler source: validated Analysis v1.4 Parquet current
 
+## Single-race Prepare transport
+
+The formal single-race Gen0.3 prepare path is now artifact-only and generation-bound.
+
+- workflow: `.github/workflows/racenote_gen0_3_realdata_prepare.yml`
+- RaceNote source: explicit GitHub Actions run + artifact
+- RaceReview source: explicit GitHub Actions run + artifact
+- RaceReview generation: explicit expected generation, fail-closed on mismatch
+- direct Actions -> Google Drive transport: prohibited / absent
+
+Regression evidence:
+
+- Issue: #1597
+- Run: `36501017523`
+- status: PASS
+- artifact ID: `11005616447`
+- artifact: `racenote-gen0-3-prepare-36501017523`
+- target used only for routing regression: 2026-09-13 中山10R 初風ステークス
+- runners: 10
+- RaceReview generation:
+  `jrdb_race_review_v0_1_incremental_g36094708797`
+
+This smoke is transport / evidence-preparation evidence only. It does not
+activate Gen0-G001 and must not be treated as a new TRUE_FORWARD prediction.
+
 ## Remaining activation gate
 
 Only the first formal TRUE_FORWARD Freeze remains.
