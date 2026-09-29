@@ -18,7 +18,10 @@ from typing import Any
 
 import racenote_history_enrichment as history
 import racenote_jrdb as jrdb
+import racenote_rrdb_enrichment as rrdb
+from jrdb_postrace_review_reader import RaceReviewReader
 from racenote_analysis_backend import AnalysisBackendError, open_analysis_backend
+from racenote_racereview_current import resolve_racereview_current
 
 PIPELINE_VERSION = "RaceNote-Daily-Build-0.1"
 MANIFEST_SCHEMA_VERSION = "RaceNote-Daily-Build-Manifest-0.1"
@@ -333,7 +336,101 @@ def build_through_history(
     return enriched, report
 
 
-def _write_d2_debug(
+def enrich_rrdb_bundles(
+    bundles: list[dict[str, Any]],
+    *,
+    racereview_root: Path | None,
+    racereview_current_cache: Path | None,
+    next_watch_rules: Path,
+    work_root: Path,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Resolve RRDB/rules once and enrich all daily RaceNotes."""
+    work_root.mkdir(parents=True, exist_ok=True)
+    contract = rrdb.load_frozen_contract(next_watch_rules, work_root)
+
+    if racereview_root is not None:
+        reader = RaceReviewReader(racereview_root)
+        rrdb_source = {
+            "mode": "generation_root",
+            "root": str(racereview_root),
+            "generation_id": reader.generation_id,
+        }
+    else:
+        if racereview_current_cache is None:
+            raise DailyBuildError("RRDB current cache is required")
+        resolved = resolve_racereview_current(racereview_current_cache)
+        reader = resolved.reader
+        rrdb_source = {
+            "mode": "current_cache",
+            "root": str(resolved.root),
+            "generation_id": reader.generation_id,
+            "provenance": resolved.provenance,
+        }
+
+    try:
+        enriched = rrdb.enrich_bundles(
+            bundles,
+            reader,
+            contract,
+            per_horse_limit=5,
+        )
+    except rrdb.RRDBEnrichmentError as exc:
+        raise DailyBuildError(str(exc)) from exc
+
+    return enriched, {
+        "race_count": len(enriched),
+        "horse_count": sum(len(x.get("horses", [])) for x in enriched),
+        "rrdb_source": rrdb_source,
+        "rrdb_generation_id": reader.generation_id,
+        "next_watch_rule_version": contract.get("rule_version"),
+        "enrichment_version": rrdb.VERSION,
+        "source_resolutions": {
+            "rrdb": 1,
+            "next_watch_contract": 1,
+        },
+    }
+
+
+def build_through_rrdb(
+    *,
+    paci_path: Path,
+    target_date: str,
+    analysis_root: Path,
+    racereview_root: Path | None,
+    racereview_current_cache: Path | None,
+    next_watch_rules: Path,
+    rrdb_work_root: Path,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Execute D3: D2 stages plus one shared daily RRDB enrichment."""
+    bundles, report = build_through_history(
+        paci_path=paci_path,
+        target_date=target_date,
+        analysis_root=analysis_root,
+    )
+    enriched, rrdb_report = enrich_rrdb_bundles(
+        bundles,
+        racereview_root=racereview_root,
+        racereview_current_cache=racereview_current_cache,
+        next_watch_rules=next_watch_rules,
+        work_root=rrdb_work_root,
+    )
+    report["status"] = "D3_PASS"
+    report["stages"]["rrdb"] = "PASS"
+    report["rrdb"] = rrdb_report
+    report["migration_hashes"] = [
+        {
+            "race": {
+                "venue": bundle["race"]["venue"],
+                "race_no": bundle["race"]["race_no"],
+            },
+            "evidence_semantic_sha256": evidence_semantic_sha256(bundle),
+        }
+        for bundle in enriched
+    ]
+    return enriched, report
+
+
+def _write_d3_debug(
     args: argparse.Namespace,
     bundles: list[dict[str, Any]],
     report: dict[str, Any],
@@ -342,7 +439,7 @@ def _write_d2_debug(
         args.output
         / f"RaceNote_{args.target_date.replace('-', '')}"
         / ".debug"
-        / "history"
+        / "rrdb"
     )
     root.mkdir(parents=True, exist_ok=True)
     for bundle in bundles:
@@ -355,7 +452,7 @@ def _write_d2_debug(
             json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
-    report_path = root / "d2_report.json"
+    report_path = root / "d3_report.json"
     report_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -368,18 +465,28 @@ def run(args: argparse.Namespace) -> int:
         print(json.dumps(build_plan(args), ensure_ascii=False, indent=2))
         return 0
 
-    bundles, report = build_through_history(
+    rrdb_work_root = (
+        args.output
+        / f"RaceNote_{args.target_date.replace('-', '')}"
+        / ".work"
+        / "rrdb"
+    )
+    bundles, report = build_through_rrdb(
         paci_path=args.paci,
         target_date=args.target_date,
         analysis_root=args.analysis_root,
+        racereview_root=args.racereview_root,
+        racereview_current_cache=args.racereview_current_cache,
+        next_watch_rules=args.next_watch_rules,
+        rrdb_work_root=rrdb_work_root,
     )
     if args.keep_intermediate:
-        report["debug_report"] = str(_write_d2_debug(args, bundles, report))
+        report["debug_report"] = str(_write_d3_debug(args, bundles, report))
 
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+    print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
     raise DailyBuildNotImplementedError(
-        "D2 BASE/HISTORY completed successfully, but RRDB/Reader/package are "
-        "not connected yet. D3 will connect formal RRDB daily enrichment."
+        "D3 BASE/HISTORY/RRDB completed successfully, but Reader/validation/package "
+        "are not connected yet. D4 will connect the final deterministic stages."
     )
 
 
@@ -389,7 +496,7 @@ def main() -> int:
         return run(args)
     except DailyBuildNotImplementedError as exc:
         print(json.dumps({
-            "status": "NOT_IMPLEMENTED_AFTER_D2",
+            "status": "NOT_IMPLEMENTED_AFTER_D3",
             "pipeline_version": PIPELINE_VERSION,
             "error": str(exc),
         }, ensure_ascii=False))
