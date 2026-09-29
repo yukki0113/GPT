@@ -1,0 +1,18 @@
+{
+  "base": {
+    "selKaisai": "20160206", "selKjyoCd": "13", "joName": "いわき平競輪場",
+    "raceName": "試験杯", "imgGradeAlt": "F2",
+    "C0201kaisai": [
+      {"txtEventDate": "02/06", "txtDaily": "初日"},
+      {"txtEventDate": "02/08", "txtDaily": "最終日"}
+    ]
+  },
+  "days": [
+    {"strKaisaiFlg": "0", "strRaceNitiji": "初日",
+     "raceNoDataList": [{"strRaceNo": "1R", "strLnkPrm": "official-token", "strLnkKBn": "2"}],
+     "raceEventDataList": [{"strColspan": "1", "strRaceEvent": "Ａ級<br/>チャレンジ予選"}]},
+    {"strKaisaiFlg": "1", "strRaceNitiji": "最終日",
+     "raceNoDataList": [{"strRaceNo": "1R", "strLnkPrm": "cancel-token", "strLnkKBn": "2"}],
+     "raceEventDataList": [{"strColspan": "1", "strRaceEvent": "Ａ級<br/>決勝"}]}
+  ]
+}
