@@ -76,6 +76,33 @@ For each runner, extract only concise contextual notes:
 
 Do not assign a numeric score.
 
+### 4.1 Pedigree evidence
+
+When RaceNote exposes `pedigree` / `pedigree_context`, treat it as one
+contextual evidence lane.
+
+Especially relevant when:
+- newcomer / no prior race history
+- lightly raced horse
+- first meaningful distance change
+- first surface / weak direct suitability evidence
+
+Read:
+- sire identity
+- broodmare sire identity
+- target venue + surface + exact-distance historical context
+- target-relevant distance-range context
+- starts / wins / top3 / sample-size band
+
+Rules:
+- pedigree is not a fixed-weight lane;
+- no pedigree-only ◎;
+- small-n is retained but interpreted with its sample size;
+- do not turn a percentage into an automatic "suitable / unsuitable" label;
+- if direct race evidence is strong, pedigree may remain secondary;
+- if direct race evidence is absent, pedigree may become more informative,
+  but uncertainty remains.
+
 ### Step C — Form a candidate cluster
 
 Select typically 3–5 candidates.
