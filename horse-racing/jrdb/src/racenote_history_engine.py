@@ -643,6 +643,18 @@ def enrich(
             warnings.append(f"target_entry_not_found:horse_no={horse_no}")
             horse["older_runs"] = []
             horse["historical_profile"] = None
+            horse["pedigree"] = {
+                "horse_id": horse.get("basic", {}).get("horse_id"),
+                "sire_name": None,
+                "dam_name": None,
+                "broodmare_sire_name": None,
+                "sire_line_code": None,
+                "broodmare_sire_line_code": None,
+                "coverage_status": "NONE",
+                "source": "JRDB Analysis canonical target identity projection",
+                "source_policy": "approved_pre_race_identity_fields_only",
+                "scoring": False,
+            }
             horse["stats"] = {"sire": None, "jockey": None}
             horse["history_coverage"] = {
                 "scope": "jrdb_jra_history",
