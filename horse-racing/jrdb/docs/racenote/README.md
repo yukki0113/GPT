@@ -95,6 +95,17 @@ The common operating contract is now:
 - `docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
 - `schema/racenote_forecast_research_record_v0_1.json`
 - `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_1.md` — initial simple reader for turn 1
+- `config/racenote_forecast_logic_current.json` — current Forecast logic pointer
+- `docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_2.md` — current observable baseline
+- `docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md` — per-race comparison trace
+- `src/validate_racenote_forecast_decision_trace.py` — pre-Freeze trace gate
+
+Current baseline status:
+
+- BTDAY-0001: immutable v0.1 historical baseline
+- current: `RaceNote-Baseline-Reader-0.2`
+- v0.2 change reason: pre-result observability fix, not result-based tuning
+- each usable race must preserve explicit ◎ vs ○ comparison and Decision Trace
 
 Historical standard cadence:
 
