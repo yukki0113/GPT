@@ -8,6 +8,8 @@ import json
 import sqlite3
 from pathlib import Path
 
+from racenote_analysis_backend import TARGET_COLUMNS
+
 JRA_VENUES = {
     "01": "札幌",
     "02": "函館",
@@ -153,11 +155,56 @@ def target_entry(
     race_no: int,
     horse_no: int,
 ) -> sqlite3.Row | None:
-    """Return the target entry row from Analysis Lite."""
+    """Return only the approved pre-race target projection from Analysis."""
     return connection.execute(
-        f"SELECT * FROM {TABLE} WHERE race_date=? AND venue_code=? AND race_no=? AND horse_no=?",
+        f"SELECT {TARGET_COLUMNS} FROM {TABLE} "
+        "WHERE race_date=? AND venue_code=? AND race_no=? AND horse_no=?",
         (race_date, venue_code, race_no, horse_no),
     ).fetchone()
+
+
+def row_value(row: object, key: str) -> object:
+    """Read an optional mapping/Row field without guessing missing columns."""
+    if row is None:
+        return None
+    try:
+        keys = row.keys()  # type: ignore[attr-defined]
+    except AttributeError:
+        keys = ()
+    if key not in keys:
+        return None
+    return row[key]  # type: ignore[index]
+
+
+def pedigree_identity(entry: object, horse_id: str | None) -> dict:
+    """Build non-scoring pedigree identity from the approved target projection."""
+    sire_name = row_value(entry, "sire_name")
+    dam_name = row_value(entry, "dam_name")
+    broodmare_sire_name = row_value(entry, "broodmare_sire_name")
+    sire_line_code = row_value(entry, "sire_line_code")
+    broodmare_sire_line_code = row_value(entry, "broodmare_sire_line_code")
+
+    names = (sire_name, dam_name, broodmare_sire_name)
+    observed = sum(value not in (None, "") for value in names)
+    if observed == len(names):
+        coverage_status = "FULL"
+    elif observed:
+        coverage_status = "PARTIAL"
+    else:
+        coverage_status = "NONE"
+
+    return {
+        "horse_id": horse_id,
+        "sire_name": sire_name,
+        "dam_name": dam_name,
+        "broodmare_sire_name": broodmare_sire_name,
+        "sire_line_code": sire_line_code,
+        "broodmare_sire_line_code": broodmare_sire_line_code,
+        "coverage_status": coverage_status,
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": False,
+    }
 
 
 def horse_distance_ranges(
@@ -567,6 +614,21 @@ def enrich(
         "future_leakage_policy": (
             "all rolling statistics from JRDB Analysis canonical with race_date < target_date"
         ),
+        "pedigree_enrichment_p1": {
+            "status": "ACTIVE",
+            "scoring": False,
+            "source": "JRDB Analysis canonical target identity projection",
+            "approved_fields": [
+                "horse_id",
+                "sire_name",
+                "dam_name",
+                "broodmare_sire_name",
+                "sire_line_code",
+                "broodmare_sire_line_code",
+            ],
+            "missing_field_policy": "null_no_guess",
+            "result_fields_exposed": False,
+        },
         "distance_range_policy": {
             "ranges": [dict(item) for item in DISTANCE_RANGE_DEFINITIONS],
             "overlap_boundaries_m": [1400, 1800],
@@ -593,6 +655,10 @@ def enrich(
             continue
 
         horse_id = entry["horse_id"]
+        horse["pedigree"] = pedigree_identity(
+            entry,
+            str(horse_id) if horse_id else None,
+        )
         horse["older_runs"] = (
             older_runs(
                 analysis,
@@ -745,7 +811,8 @@ class BulkEnrichmentIndex:
         if window_row and window_row[0] is not None:
             self.window_start = str(window_row[0])
         target_rows = self.analysis.execute(
-            f"SELECT * FROM {TABLE} WHERE race_date=?", [self.race_date]
+            f"SELECT {TARGET_COLUMNS} FROM {TABLE} WHERE race_date=?",
+            [self.race_date],
         ).fetchall()
         requested_keys = set()
         for base in self.bases:
@@ -898,10 +965,23 @@ class BulkEnrichmentIndex:
                 warnings.append(f"target_entry_not_found:horse_no={horse_no}")
                 horse["older_runs"] = []
                 horse["historical_profile"] = None
+                horse["pedigree"] = {
+                    "horse_id": horse.get("basic", {}).get("horse_id"),
+                    "sire_name": None,
+                    "dam_name": None,
+                    "broodmare_sire_name": None,
+                    "sire_line_code": None,
+                    "broodmare_sire_line_code": None,
+                    "coverage_status": "NONE",
+                    "source": "JRDB Analysis canonical target identity projection",
+                    "source_policy": "approved_pre_race_identity_fields_only",
+                    "scoring": False,
+                }
                 horse["stats"] = {"sire": None, "jockey": None}
                 horse["history_coverage"] = {"scope": "jrdb_jra_history", "observed_history": "unknown", "observed_starts": None, "overseas_history_coverage": "not_guaranteed", "reason": "target_entry_not_found", "run_layers": build_run_layers(horse, self.older_limit)}
                 continue
             horse_id = str(entry["horse_id"]) if entry["horse_id"] else None
+            horse["pedigree"] = pedigree_identity(entry, horse_id)
             recent = horse.get("recent_runs", [])
             cutoff = min((item.get("race", {}).get("date") for item in recent if item.get("race", {}).get("date")), default=race_date)
             older = [row for row in self.horse_rows.get(horse_id, []) if str(row[1]) < str(cutoff)][:self.older_limit] if horse_id else []
