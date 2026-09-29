@@ -11,6 +11,7 @@ import argparse
 import copy
 import hashlib
 import json
+import tempfile
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
@@ -465,23 +466,34 @@ def run(args: argparse.Namespace) -> int:
         print(json.dumps(build_plan(args), ensure_ascii=False, indent=2))
         return 0
 
-    rrdb_work_root = (
-        args.output
-        / f"RaceNote_{args.target_date.replace('-', '')}"
-        / ".work"
-        / "rrdb"
-    )
-    bundles, report = build_through_rrdb(
-        paci_path=args.paci,
-        target_date=args.target_date,
-        analysis_root=args.analysis_root,
-        racereview_root=args.racereview_root,
-        racereview_current_cache=args.racereview_current_cache,
-        next_watch_rules=args.next_watch_rules,
-        rrdb_work_root=rrdb_work_root,
-    )
     if args.keep_intermediate:
+        rrdb_work_root = (
+            args.output
+            / f"RaceNote_{args.target_date.replace('-', '')}"
+            / ".debug"
+            / "rrdb_work"
+        )
+        bundles, report = build_through_rrdb(
+            paci_path=args.paci,
+            target_date=args.target_date,
+            analysis_root=args.analysis_root,
+            racereview_root=args.racereview_root,
+            racereview_current_cache=args.racereview_current_cache,
+            next_watch_rules=args.next_watch_rules,
+            rrdb_work_root=rrdb_work_root,
+        )
         report["debug_report"] = str(_write_d3_debug(args, bundles, report))
+    else:
+        with tempfile.TemporaryDirectory(prefix="racenote-daily-rrdb-") as tmp:
+            bundles, report = build_through_rrdb(
+                paci_path=args.paci,
+                target_date=args.target_date,
+                analysis_root=args.analysis_root,
+                racereview_root=args.racereview_root,
+                racereview_current_cache=args.racereview_current_cache,
+                next_watch_rules=args.next_watch_rules,
+                rrdb_work_root=Path(tmp),
+            )
 
     print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
     raise DailyBuildNotImplementedError(
