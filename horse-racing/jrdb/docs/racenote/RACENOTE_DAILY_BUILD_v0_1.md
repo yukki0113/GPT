@@ -1,6 +1,6 @@
 # RaceNote Daily Build v0.1
 
-Status: **D1 CONTRACT FROZEN / ORCHESTRATOR SKELETON ONLY**
+Status: **D2 BASE + HISTORY/P1/P2 CONNECTED / D3 RRDB PENDING**
 Date: 2026-09-30
 
 ## 1. Purpose
@@ -226,13 +226,24 @@ For every compared race require:
 
 - same race identity;
 - same horse identities;
-- same authoritative RaceNote semantic SHA-256;
+- same evidence-semantic SHA-256;
 - same P1/P2 semantics;
 - same RRDB provenance and per-horse semantics;
 - same Reader View round-trip result.
 
-If exact semantic equality cannot be retained, the difference must be explained
-and explicitly approved before cutover.
+Migration hashing deliberately excludes execution-only metadata that is
+expected to differ between independent runs:
+
+- `metadata.generated_at`
+- local Analysis `path` / `manifest_path`
+- Analysis `query_count` / `parquet_scan_count`
+
+These fields remain present in the actual RaceNote artifact; they are ignored
+only by the old-vs-daily migration comparator. Evidence/provenance fields such
+as Analysis generation, coverage and RaceNote content remain hash-significant.
+
+Any remaining evidence-semantic difference must be explained and explicitly
+approved before cutover.
 
 ## 9. Error policy
 
@@ -285,13 +296,40 @@ Acceptance:
 
 ### D2 — Base + Analysis/P1/P2 batch
 
-Connect Stage A and Stage B.
+**IMPLEMENTED.**
 
-Acceptance:
-- PACI parsed once;
-- Analysis opened once;
-- all daily base bundles are enriched through bulk path;
-- representative race outputs match the existing one-race path through Stage B.
+Stage A:
+- `build_base_bundles()` parses PACI once and reuses the existing
+  `racenote_jrdb.Audit / parse_zip / BundleBuilder` implementation.
+- requested date must match the PACI BAC date.
+- any base bundle-generation error fails D2 rather than silently dropping a race.
+
+Stage B:
+- `build_through_history()` opens Analysis once.
+- `enrich_history_bundles()` calls
+  `racenote_history_enrichment.enrich_production_many()` once for the full day.
+- History / Trend / P1 / P2 are therefore produced by the existing canonical
+  bulk engine rather than a new daily reimplementation.
+- Analysis source/provenance is attached after the bulk run.
+- `evidence_semantic_sha256()` supports old-vs-daily migration comparison
+  while excluding execution-only telemetry.
+
+D2 normal CLI behavior:
+- BASE/HISTORY execute;
+- D2 report is printed;
+- execution then fails closed before RRDB with
+  `NOT_IMPLEMENTED_AFTER_D2`;
+- `--keep-intermediate` may write non-canonical D2 debug bundles.
+
+Focused tests:
+- `tests/test_racenote_daily_build_d2.py`
+
+D2 acceptance intent:
+- PACI parse once;
+- Analysis open once;
+- bulk history enrichment once;
+- execution metadata does not create false migration mismatches;
+- evidence changes remain hash-significant.
 
 ### D3 — RRDB daily bulk
 
@@ -324,12 +362,20 @@ Acceptance:
 - docs/HANDOFF/current operation point to daily builder;
 - old one-race path remains available for audit/rollback.
 
-## 12. D1 operational status
+## 12. Current operational status
 
-D1 does not yet build RaceNote.
+D1 contract is frozen and D2 is connected.
 
-The skeleton exists so later turns can add one stage at a time without changing
-the public CLI and output contract.
+The daily CLI can now execute through:
+
+```text
+PACI -> BASE -> HISTORY / Trend / P1 / P2
+```
+
+It intentionally stops before RRDB. It is not yet the production daily
+entrypoint.
 
 Until D5 cutover, the existing RaceNote one-race and enrichment entrypoints
 remain production truth.
+
+Next implementation turn: **D3 — RRDB daily bulk enrichment**.
