@@ -1,0 +1,104 @@
+name: racenote-d5-equivalence-fixed-20260523
+on:
+  issues:
+    types: [opened]
+permissions:
+  actions: read
+  contents: read
+  issues: write
+jobs:
+  d5:
+    if: startsWith(github.event.issue.title, '[RACENOTE_D5_FIXED]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: jrdb-post-race-parquet-refresh-36437363166
+          path: /tmp/a
+          github-token: ${{ github.token }}
+          run-id: 36437363166
+      - uses: actions/download-artifact@v4
+        with:
+          name: RaceReviewDB-next-36094708797
+          path: /tmp/r
+          github-token: ${{ github.token }}
+          run-id: 36094708797
+      - uses: actions/download-artifact@v4
+        with:
+          name: RaceReviewDB-next-watch-turn5-36110362625
+          path: /tmp/n
+          github-token: ${{ github.token }}
+          run-id: 36110362625
+      - name: Prepare inputs
+        run: |
+          python - <<'PY'
+          import tarfile,zipfile,json
+          from pathlib import Path
+          ar=list(Path('/tmp/a').rglob('analysis-parquet-canonical.tar.xz'))+list(Path('/tmp/a').rglob('analysis-parquet-candidate.tar.xz'))
+          if len(ar)!=1: raise SystemExit(str(ar))
+          out=Path('/tmp/analysis');out.mkdir()
+          with tarfile.open(ar[0],'r:*') as t:t.extractall(out,filter='data')
+          cur=list(out.rglob('current.json'))
+          if len(cur)!=1:raise SystemExit('analysis current')
+          def rrroot():
+            hits=list(Path('/tmp/r').rglob('current.json'))
+            if len(hits)==1:return hits[0].parent
+            for z in Path('/tmp/r').rglob('*.zip'):
+              d=Path('/tmp/r')/('x_'+z.stem);d.mkdir(exist_ok=True)
+              with zipfile.ZipFile(z) as q:q.extractall(d)
+              h=list(d.rglob('current.json'))
+              if len(h)==1:return h[0].parent
+          rr=rrroot()
+          rules=list(Path('/tmp/n').rglob('next_watch_candidate_rules_frozen.json'))
+          if len(rules)!=1:raise SystemExit('rules')
+          Path('/tmp/resolved.json').write_text(json.dumps({'analysis':str(cur[0].parent),'rrdb':str(rr),'rules':str(rules[0])}))
+          PY
+      - name: Fetch PACI
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: python horse-racing/jrdb/src/fetch_jrdb_paci.py --date 20260523 --out-dir /tmp/paci
+      - name: Run D5
+        id: d5
+        continue-on-error: true
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set +e
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          x=json.loads(Path('/tmp/resolved.json').read_text())
+          p=list(Path('/tmp/paci').glob('PACI*.zip'))[0]
+          cmd=['python','horse-racing/jrdb/src/audit_racenote_daily_d5_equivalence.py','--date','20260523','--paci',str(p),'--analysis-root',x['analysis'],'--racereview-root',x['rrdb'],'--next-watch-rules',x['rules'],'--output','/tmp/out']
+          raise SystemExit(subprocess.run(cmd).returncode)
+          PY
+          c=$?
+          echo "exit_code=$c" >> "$GITHUB_OUTPUT"
+          exit $c
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: racenote-d5-fixed-${{ github.run_id }}
+          path: /tmp/out/
+      - name: Comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,subprocess
+          from pathlib import Path
+          p=Path('/tmp/out/d5_equivalence_report.json')
+          x=json.loads(p.read_text()) if p.exists() else {'status':'FAIL','hard_errors':['report missing']}
+          x['run_id']=int(os.environ['GITHUB_RUN_ID'])
+          subprocess.run(['gh','issue','comment',os.environ['GITHUB_EVENT_PATH'].split('/')[-1] if False else '${{ github.event.issue.number }}','--body','RACENOTE_D5_FIXED_RESULT\n'+json.dumps(x,ensure_ascii=False,indent=2)],check=True)
+          PY
+      - name: Final gate
+        if: steps.d5.outputs.exit_code != '0'
+        run: exit 1
