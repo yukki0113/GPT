@@ -1,3 +1,20 @@
+### Human-Context Reader 0.3.2 — RRDB reinterpret / recompare — 2026-09-29
+
+- Current calibration logic: `RaceNote-Human-Context-Reader-0.3.2`.
+- RRDB role is narrowed to prior-result reinterpretation:
+  `visible result -> RRDB reinterpretation -> revised horse understanding -> current-race recompare -> marks`.
+- Reinterpretation states: `UPGRADE / DOWNGRADE / CONFIRM / NEUTRAL`.
+- RRDB may move marks when candidates are close, when recent form is misleading but relevant direct evidence exists, or when direct evidence is weak/stale/inconsistent.
+- RRDB labels alone never justify a mark change:
+  - Next-Watch S/A alone: no
+  - hidden_strength alone: no
+  - fragile_form alone: no
+- Strong direct evidence raises the burden of proof but does not make a horse immune to RRDB reinterpretation.
+- Old relevant direct evidence may become important again when RRDB explains superficially poor recent finishes.
+- CAL-005 should replay the same 10 races / same P1-P2-RRDB inputs as CAL-003/004 so only Reader logic changes.
+- No unused eligible PACI day should be consumed.
+- If CAL-005 produces both natural RRDB-driven reordering and natural direct-evidence preservation, calibration can be considered for closure before the next fresh two-day blind turn.
+
 ### Human-Context Reader 0.3.1 — RRDB balance guard — 2026-09-29
 
 - Current calibration logic: `RaceNote-Human-Context-Reader-0.3.1`.
