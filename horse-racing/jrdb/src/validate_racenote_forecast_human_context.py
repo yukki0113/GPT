@@ -7,7 +7,7 @@ import argparse, json, re
 from pathlib import Path
 from typing import Any
 
-VERSION = "racenote-human-context-validator-0.1.0"
+VERSION = "racenote-human-context-validator-0.2.0"
 
 def load_records(path: Path) -> list[dict[str, Any]]:
     if path.suffix.lower() == ".jsonl":
@@ -28,8 +28,12 @@ def validate_record(r: dict[str,Any]) -> list[str]:
     audit=r.get("audit") or {}
     pre=f"{ident.get('target_date','?')} {ident.get('venue','?')}{ident.get('race_no','?')}R"
 
-    if r.get("schema_version")!="RaceNote-Forecast-Research-Record-0.3":
-        e.append(f"{pre}: schema must be v0.3")
+    schema_version=r.get("schema_version")
+    if schema_version not in {
+        "RaceNote-Forecast-Research-Record-0.3",
+        "RaceNote-Forecast-Research-Record-0.3.1",
+    }:
+        e.append(f"{pre}: unsupported schema version")
     if research.get("logic_version")!="RaceNote-Human-Context-Reader-0.3":
         e.append(f"{pre}: wrong logic_version")
     if research.get("evaluation_mode")=="CALIBRATION_REPLAY" and research.get("turn_id","").startswith("BTDAY-"):
@@ -69,6 +73,43 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         if preferred and preferred not in reason: e.append(f"{pre}: {key} must name {preferred}")
         if other and other not in reason: e.append(f"{pre}: {key} must name {other}")
         if len(reason.strip())<20: e.append(f"{pre}: {key} reason too short")
+
+    if schema_version=="RaceNote-Forecast-Research-Record-0.3.1":
+        rrdb=t.get("rrdb_evidence")
+        if not isinstance(rrdb,dict):
+            e.append(f"{pre}: rrdb_evidence required for v0.3.1")
+        else:
+            available=rrdb.get("available")
+            reviewed=rrdb.get("reviewed")
+            used=rrdb.get("used_in_decision")
+            refs=rrdb.get("horse_refs")
+            reason=rrdb.get("reason_not_used")
+            if not isinstance(available,bool):
+                e.append(f"{pre}: rrdb_evidence.available must be boolean")
+            if reviewed is not True:
+                e.append(f"{pre}: RRDB must be reviewed in v0.3.1")
+            if not isinstance(used,bool):
+                e.append(f"{pre}: rrdb_evidence.used_in_decision must be boolean")
+            if not isinstance(refs,list):
+                e.append(f"{pre}: rrdb_evidence.horse_refs must be array")
+            if used is False and (not isinstance(reason,str) or len(reason.strip())<8):
+                e.append(f"{pre}: unused RRDB requires reason_not_used")
+            if used is True and (not isinstance(refs,list) or len(refs)<1):
+                e.append(f"{pre}: used RRDB requires at least one horse_ref")
+            allowed_roles={
+                "UPGRADE_RECENT_FORM",
+                "DOWNGRADE_APPARENT_FORM",
+                "SUPPORT_REPEATABILITY",
+                "SUPPORT_COUNTERARGUMENT",
+                "CONTEXT_ONLY",
+            }
+            if isinstance(refs,list):
+                for idx,ref in enumerate(refs,1):
+                    if not isinstance(ref,dict):
+                        e.append(f"{pre}: rrdb horse_ref[{idx}] must be object")
+                        continue
+                    if ref.get("decision_role") not in allowed_roles:
+                        e.append(f"{pre}: rrdb horse_ref[{idx}] invalid decision_role")
 
     # Hidden-score warning: reject traces whose race model/decision reason is mostly naked numeric fields.
     combined=" ".join(str(t.get(k) or "") for k in [
