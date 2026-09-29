@@ -63,7 +63,8 @@
     "generation_registration_status": "PASS",
     "formal_true_forward_freeze_required": true,
     "formal_true_forward_freeze_status": "PENDING",
-    "current_generation_remains_gen0_g000_until_activation": true
+    "current_generation_remains_gen0_g000_until_activation": true,
+    "single_race_prepare_transport_status": "PASS"
   },
   "sample_manifest": {
     "status": "PASS",
@@ -94,5 +95,20 @@
     "queue_range": "A72:Y141",
     "registered_races": 70,
     "generation_status": "READY"
+  },
+  "single_race_prepare_transport": {
+    "status": "PASS",
+    "mode": "github_actions_artifact_chain",
+    "source_racenote_run_id": 36105976370,
+    "source_racenote_artifact_name": "racenote-dryrun-20260913-gen03-v01-36105976370",
+    "racereview_source_run_id": 36094708797,
+    "racereview_artifact_name": "RaceReviewDB-next-36094708797",
+    "racereview_expected_generation": "jrdb_race_review_v0_1_incremental_g36094708797",
+    "smoke_issue_number": 1597,
+    "smoke_run_id": 36501017523,
+    "smoke_artifact_id": 11005616447,
+    "smoke_artifact_name": "racenote-gen0-3-prepare-36501017523",
+    "smoke_status": "PASS",
+    "direct_drive_transport": false
   }
 }
