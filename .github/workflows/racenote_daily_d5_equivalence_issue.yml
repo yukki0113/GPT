@@ -34,7 +34,7 @@ jobs:
           PY
       - name: Download fixed upstream artifacts
         env:
-          ${{ github.token }}: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           python - <<'PY'
           import json, os, subprocess
@@ -126,7 +126,7 @@ jobs:
       - name: Comment result
         if: always()
         env:
-          ${{ github.token }}: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           AUDIT_EXIT: ${{ steps.audit.outputs.exit_code }}
         run: |
