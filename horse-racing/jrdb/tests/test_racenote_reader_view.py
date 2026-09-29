@@ -114,6 +114,20 @@ def bundle() -> dict[str, object]:
                     "source_policy": "approved_pre_race_identity_fields_only",
                     "scoring": False,
                 },
+                "pedigree_context": {
+                    "sire": {
+                        **summary(12, 2, 5),
+                        "distance_ranges": [summary(8, 1, 3)],
+                    },
+                    "broodmare_sire": {
+                        **summary(4, 0, 1),
+                        "distance_ranges": [summary(3, 0, 1)],
+                    },
+                    "coverage_status": "FULL",
+                    "scoring": False,
+                    "interpretation_policy": "descriptive_context_only",
+                    "small_sample_policy": "retain_with_sample_size",
+                },
                 "recent_runs": [{"date": "2024-11-30", "finish": 1}],
                 "older_runs": [],
                 "historical_profile": profile(),
@@ -174,6 +188,15 @@ class RaceNoteReaderViewTest(unittest.TestCase):
         self.assertEqual(
             view["horses"][0]["pedigree"],
             source["horses"][0]["pedigree"],
+        )
+        self.assertEqual(reader_view.expand_reader_view(view), source)
+
+    def test_pedigree_context_is_preserved_losslessly(self) -> None:
+        source = bundle()
+        view = reader_view.build_reader_view(source)
+        self.assertEqual(
+            view["horses"][0]["pedigree_context"],
+            source["horses"][0]["pedigree_context"],
         )
         self.assertEqual(reader_view.expand_reader_view(view), source)
 
