@@ -225,6 +225,17 @@ immutable Freeze / result-after-Freezeの研究手順はcurrent invariant。
 過去のG001 manifest / ledger registration / transport PASSは削除せず、
 infrastructure / reproducibility evidenceとして保持する。
 
+### Forecast / Research thread separation — 2026-09-29
+
+- Forecast execution thread = pre-result execution only.
+- Research thread = result-open, review, logic research, Git updates.
+- execution thread must stop after frozen handoff and must not open target results.
+
+Canonical:
+- `docs/racenote/FORECAST_GEN0_THREAD_ROLES_v0_1.md`
+- `docs/racenote/FORECAST_EXECUTION_THREAD_BOOTSTRAP_v0_1.md`
+- `schema/racenote_forecast_turn_handoff_v0_1.json`
+
 ### Current Backtest / TRUE_FORWARD research operating assets — 2026-09-29
 
 The common operating contract is now:
