@@ -1,3 +1,18 @@
+### Human-Context Reader 0.3.1 — RRDB balance guard — 2026-09-29
+
+- Current calibration logic: `RaceNote-Human-Context-Reader-0.3.1`.
+- Core Human-Context 0.3 behavior is unchanged.
+- New RRDB balance guard:
+  - RRDB defaults to interpretation / corroboration.
+  - decision-neutral RRDB is valid; there is no target RRDB usage rate.
+  - RRDB alone cannot overturn strong direct target-condition evidence.
+  - a material mark change against strong direct evidence requires an independent current-race reason.
+  - `fragile_form` alone is not a veto.
+  - `hidden_strength` / Next-Watch S/A alone is not a promotion rule.
+  - a directly supported candidate must not be pushed out of the candidate cluster solely by richer RRDB signals.
+- CAL-004 should use only already-used/ineligible dates and 10 races.
+- If CAL-004 behavior is acceptable, Research may clear CALIBRATION_HOLD and move to the next fresh two-day blind turn.
+
 ### RaceNote RRDB formal integration — 2026-09-29
 
 - Design:
