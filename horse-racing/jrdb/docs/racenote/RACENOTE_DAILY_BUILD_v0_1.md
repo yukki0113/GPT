@@ -1,6 +1,6 @@
 # RaceNote Daily Build v0.1
 
-Status: **D4 READER+VALIDATION+PACKAGE CONNECTED / D5 EQUIVALENCE+CUTOVER PENDING**
+Status: **D5 PASS / PRODUCTION DAY-LEVEL CUTOVER COMPLETE**
 Date: 2026-09-30
 
 ## 1. Purpose
@@ -42,7 +42,7 @@ This project does not:
 - add RRDB scoring;
 - change Next-Watch grading;
 - expose target result, market, final odds or final popularity;
-- replace current one-race builders before equivalence gates pass;
+- remove the existing one-race builders; they remain available for single-race use, audit and rollback;
 - make intermediate stage files canonical.
 
 ## 3. Canonical stage model
@@ -380,7 +380,11 @@ Acceptance:
 
 ### D5 — Real-data equivalence / cutover
 
-Use an already-used/ineligible date.
+**PASS / CUTOVER COMPLETE — 2026-09-30.**
+
+Validation date: `2026-05-23` (already-used/ineligible research date). Final confirmation: Issue #1611 / run `36646513226`.
+
+Observed: 36 races / 549 horses. Race identity, horse identity, evidence-semantic SHA-256, P1/P2, RRDB and Reader View round-trip all passed for every race. Reader source hashes differ as expected because Reader hashes include execution-only metadata that the migration comparator deliberately excludes.
 
 Acceptance:
 - daily build completes;
@@ -390,7 +394,7 @@ Acceptance:
 
 ## 12. Current operational status
 
-D1 contract is frozen and D2-D4 are connected.
+D1 contract is frozen and D2-D5 are complete.
 
 The daily CLI can now execute through:
 
@@ -398,8 +402,8 @@ The daily CLI can now execute through:
 PACI -> BASE -> HISTORY / Trend / P1 / P2 -> RRDB
 ```
 
-It now produces authoritative bundles, reversible Reader Views, a daily manifest and validation report. It remains **pre-cutover** and is not yet the production daily entrypoint.
+Day-level production requests now use `src/build_racenote_daily.py` as the standard entrypoint. It produces authoritative bundles, reversible Reader Views, a daily manifest and validation report.
 
-Until D5 cutover, the existing RaceNote one-race and enrichment entrypoints remain production truth.
+Existing one-race/enrichment entrypoints remain supported for explicit single-race requests, audit and rollback; they are no longer the normal full-day production path.
 
-Next implementation turn: **D5 — real-data old-path vs daily-path semantic equivalence, then cutover if PASS**.
+D5 evidence is recorded in `docs/racenote/RACENOTE_DAILY_D5_EQUIVALENCE_20260930.md`.
