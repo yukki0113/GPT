@@ -26,12 +26,20 @@ GitHub `yukki0113/GPT` main の最新状態から、まず以下を確認する�
 - `CALIBRATION_HOLD` 中は新しいunused eligible日をPICKしない
 - calibrationでは既使用 / ineligible日からResearch thread指定の6–12Rだけを使う
 - PACIからRaceNote準備
+- Analysis/P1/P2 history enrichment
+- RRDB formal enrichmentを実施
+  - RaceReviewDB CURRENT
+  - frozen Next-Watch rules
+  - `racenote_rrdb_enrichment.py`
 - RaceNote validation / firewall確認
 - current logic_versionを全対象Rで固定
 - 1 race = 1 independent forecast
 - canonical research record保存
 - current logicが要求するrace-specific trace作成
 - human forecast teacher evidenceを必ず読む
+- RaceNoteに`racereview`がある場合は全馬について確認する
+- schema v0.3.1では`rrdb_evidence` traceを必ず残す
+- RRDBを使わなかった場合も理由を残す
 - current validator PASS
 - immutable Freeze
 - 日別forecast HTML生成
@@ -104,3 +112,20 @@ Phase:
 `CALIBRATION_HOLD`
 
 ただしこの記載自体よりcurrent pointerを優先する。
+
+
+## RRDB normal execution
+
+Current normal RRDB sources:
+
+- RRDB CURRENT stable file ID:
+  `1UwNfrupMTHRPhkzULPvClGre4MWz2TFg`
+- frozen Next-Watch rule artifact Drive file ID:
+  `1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr`
+
+Do not reimplement S/A grading in the execution thread.
+Use repository enrichment / shared grading code.
+
+If RRDB source resolution fails, record it as a technical evidence-source
+failure. Do not silently replace it with an empty RRDB block and continue as if
+RRDB had been reviewed.
