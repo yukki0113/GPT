@@ -63,11 +63,13 @@ def production_metadata(
             "all rolling statistics from JRDB Analysis canonical with race_date < target_date"
         ),
         "pedigree_enrichment": {
-            "version": "P1-0.1",
+            "identity_version": "P1-0.1",
+            "context_version": "P2-0.1",
             "status": "ACTIVE",
             "scoring": False,
-            "source": "JRDB Analysis canonical target identity projection",
-            "approved_fields": [
+            "identity_source": "JRDB Analysis canonical target identity projection",
+            "historical_context_source": "JRDB Analysis canonical (as-of-exclusive)",
+            "approved_identity_fields": [
                 "horse_id",
                 "sire_name",
                 "dam_name",
@@ -75,6 +77,12 @@ def production_metadata(
                 "sire_line_code",
                 "broodmare_sire_line_code",
             ],
+            "historical_dimensions": [
+                "sire_name",
+                "broodmare_sire_name"
+            ],
+            "condition_scope": "venue_surface_exact_distance_plus_target_distance_ranges",
+            "small_sample_policy": "retain_with_sample_size",
             "missing_field_policy": "null_no_guess",
             "result_fields_exposed": False,
         },
