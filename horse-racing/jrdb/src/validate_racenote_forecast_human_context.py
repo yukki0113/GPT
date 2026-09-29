@@ -7,7 +7,7 @@ import argparse, json, re
 from pathlib import Path
 from typing import Any
 
-VERSION = "racenote-human-context-validator-0.2.0"
+VERSION = "racenote-human-context-validator-0.2.1"
 
 def load_records(path: Path) -> list[dict[str, Any]]:
     if path.suffix.lower() == ".jsonl":
@@ -34,7 +34,10 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         "RaceNote-Forecast-Research-Record-0.3.1",
     }:
         e.append(f"{pre}: unsupported schema version")
-    if research.get("logic_version")!="RaceNote-Human-Context-Reader-0.3":
+    if research.get("logic_version") not in {
+        "RaceNote-Human-Context-Reader-0.3",
+        "RaceNote-Human-Context-Reader-0.3.1",
+    }:
         e.append(f"{pre}: wrong logic_version")
     if research.get("evaluation_mode")=="CALIBRATION_REPLAY" and research.get("turn_id","").startswith("BTDAY-"):
         e.append(f"{pre}: calibration replay must use CAL-* turn id")
