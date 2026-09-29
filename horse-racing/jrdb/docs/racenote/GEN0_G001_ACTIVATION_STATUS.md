@@ -1,20 +1,61 @@
 # RaceNote Gen0-G001 Activation Status
 
-Status: **READY / TRUE_FORWARD FREEZE PENDING**
+Status: **PAUSED BEFORE ACTIVATION / FORECAST LOGIC UNFROZEN**
 
 Last updated: 2026-09-29
 
-## Contract
+## Current interpretation
 
-- Forecast: `RaceNote-Forecast-Gen0.3`
-- Planned generation: `Gen0-G001`
-- current operational generation remains: `Gen0-G000`
-- activation requires the first formal TRUE_FORWARD pre-result Freeze PASS
+Gen0-G001 was prepared while `RaceNote-Forecast-Gen0.3` was being treated as
+the next activation candidate. That interpretation is no longer current.
 
-## Fixed sample manifest
+The project has fixed the RaceNote extraction / evidence layer and the
+pre-result research discipline, but **has not yet selected the detailed
+Forecast decision logic to adopt for Gen0**.
 
-The deterministic Gen0-G001 sample manifest was generated from validated
-Analysis v1.4 Parquet canonical data.
+Therefore:
+
+- `RaceNote-Forecast-Gen0.3` is an implemented **research candidate**, not the adopted Gen0 logic.
+- `Gen0-G001` must not be activated merely by running one TRUE_FORWARD Freeze.
+- `forecast.current_generation` remains `Gen0-G000`.
+- the G001 sample manifest, ledger registration, and transport smokes are retained as valid infrastructure / reproducibility evidence.
+- activation planning resumes only after a Forecast logic version is explicitly selected through blinded historical research.
+
+## What is fixed now
+
+The following are current project-level invariants and are independent of the
+eventual detailed prediction logic.
+
+- RaceNote is the result-independent evidence layer.
+- target result / final market / prohibited post-race data must remain hidden before Freeze.
+- historical evidence must satisfy the target-date as-of boundary.
+- prediction artifacts are immutable after Freeze.
+- result acquisition and evaluation occur only after Freeze.
+- historical tuning and TRUE_FORWARD validation are separate.
+- old prediction artifacts are never rewritten after seeing results.
+
+## What is NOT fixed now
+
+The following remain research variables rather than Gen0 defaults.
+
+- evidence reading priority such as `DATA/TRENDS > RACEREVIEW >= ABILITY`
+- whether All-Runner Synthesis is mandatory
+- whether Pairwise is mandatory
+- whether SLOW / MEDIUM / FAST Scenario Robustness is mandatory
+- how Trend / RaceReview / Ability conflicts are resolved
+- whether EdgeDB Performance participates pre-Freeze
+- confidence semantics beyond the minimum audit record
+- probability generation
+- detailed mark policy / axis-selection logic
+- any numeric weight or score
+- prompt wording used to choose ◎ / ○ / ▲ / △
+
+Gen0.3 may be evaluated as one candidate against simpler or alternative
+Forecast readers.
+
+## Preserved G001 preparation evidence
+
+The deterministic sample manifest remains valid as a historical research asset.
 
 - Issue: #1594
 - Run: `36499756053`
@@ -26,79 +67,41 @@ Analysis v1.4 Parquet canonical data.
   `3fcca49d76107b91214be08673e1ddd8797733f1a2445d5e67aead86520d2061`
 - candidate pool SHA-256:
   `ca76f8979bcb08c14a8f5b7664fe957651f2bfaa9719f4fd42e8c3c26e0a63d6`
-- seed: `GEN0-G001-SEED-001`
-- PRIMARY: 50 races
-- RESERVE: 20 races
-- unique race keys: 70
-- result columns selected for sampling: false
+- PRIMARY: 50
+- RESERVE: 20
+- source: Analysis v1.4 Parquet canonical
 
-Source identity:
+The queue registered in `RaceNote Forecast Gen0 検証台帳` is retained for
+reproducibility. Its previous `READY` label must not be interpreted as
+"Forecast logic adopted and ready to activate".
 
-- Analysis generation:
-  `analysis-v1_4-canonical-20260928-02`
-- Analysis manifest SHA-256:
-  `e9c391e76fac86a15526e8ab453558e68fc00400a18674e26edf64aad9feec9e`
-- schema: v1.4
-- storage: Parquet
+## Preserved transport evidence
 
-The full ordered 70-race queue is registered in the operational Google Sheets
-ledger. The manifest ID / SHA / seed / pool SHA above bind that queue to the
-formal Actions artifact.
-
-## Ledger registration
-
-Spreadsheet: `RaceNote Forecast Gen0 検証台帳`
-
-Spreadsheet ID:
-`1z9TJQJ61WEcrVSDxhAWP9D48plP1ixU0hCH-QGZrhnU`
-
-- `世代管理`: Gen0-G001 registered as `READY`
-- `対象Rキュー`: rows A72:Y141, 70 races
-- PRIMARY rows: 50
-- RESERVE rows: 20
-- frozen races: 0
-- evaluated races: 0
-- `forecast.current_generation`: intentionally remains `Gen0-G000`
-- sampler version: `0.2.0`
-- sampler source: validated Analysis v1.4 Parquet current
-
-## Single-race Prepare transport
-
-The formal single-race Gen0.3 prepare path is now artifact-only and generation-bound.
-
-- workflow: `.github/workflows/racenote_gen0_3_realdata_prepare.yml`
-- RaceNote source: explicit GitHub Actions run + artifact
-- RaceReview source: explicit GitHub Actions run + artifact
-- RaceReview generation: explicit expected generation, fail-closed on mismatch
-- direct Actions -> Google Drive transport: prohibited / absent
-
-Regression evidence:
+The single-race Gen0.3 Prepare transport remains valid engineering evidence.
 
 - Issue: #1597
 - Run: `36501017523`
 - status: PASS
 - artifact ID: `11005616447`
 - artifact: `racenote-gen0-3-prepare-36501017523`
-- target used only for routing regression: 2026-09-13 中山10R 初風ステークス
-- runners: 10
-- RaceReview generation:
-  `jrdb_race_review_v0_1_incremental_g36094708797`
 
-This smoke is transport / evidence-preparation evidence only. It does not
-activate Gen0-G001 and must not be treated as a new TRUE_FORWARD prediction.
+This proves the artifact-only / generation-bound transport path can work.
+It does **not** establish Gen0.3 as the adopted prediction logic.
 
-## Remaining activation gate
+## Next gate
 
-Only the first formal TRUE_FORWARD Freeze remains.
+The next project gate is **Forecast logic selection**, not TRUE_FORWARD activation.
 
-Until that run passes:
+Use the 2026 PACI blinded historical backtest lane to compare prediction
+approaches while preserving the common RaceNote / firewall / Freeze /
+evaluation infrastructure.
 
-- do not change `forecast.current_generation` to Gen0-G001
-- do not mark Gen0-G001 `ACTIVE`
-- do not acquire the target race result before Freeze
-- do not open current market / current JRDB consensus / Edge Value / RL-Value
-  before Freeze
-- do not tune Gen0.3 from the one-race Hatsukaze dry-run result
+Only after a detailed Forecast logic version is explicitly selected should a
+new activation candidate be declared. At that point:
 
-After the first formal TRUE_FORWARD Freeze PASS, update the generation ledger,
-current-generation setting, and this document in the same activation change.
+1. bind the selected logic version to a generation,
+2. define its historical validation evidence,
+3. define its TRUE_FORWARD activation gate,
+4. update the ledger and current-generation plan explicitly.
+
+Do not silently reuse the old G001 READY interpretation.
