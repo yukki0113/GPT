@@ -3,7 +3,7 @@
   "source": {
     "drive_folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
     "inventory_snapshot_date": "2026-09-29",
-    "note": "Sync a newer Drive inventory to add future PACI dates while preserving existing used flags."
+    "note": "Sync newer PACI inventory while preserving used flags and eligibility. Clean blind picks exclude known result-exposed dates by default."
   },
   "updated_at": "2026-09-29",
   "days": [
@@ -13,7 +13,9 @@
       "drive_file_id": "1OYtJki-HN2ObyyX1_LyaoS03ZeK6WypR",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-05",
@@ -21,7 +23,9 @@
       "drive_file_id": "1fpzUkGnpFiqcKaIe8HeFUrxTgPm7S96V",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-10",
@@ -29,7 +33,9 @@
       "drive_file_id": "1i7SbHhB9AHMF6hxEoacinf-1eLS0nSEi",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-11",
@@ -37,7 +43,9 @@
       "drive_file_id": "1PYMEkJKMAgMsNhp498WH2sr4Np4iGBDS",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-12",
@@ -45,7 +53,9 @@
       "drive_file_id": "1qDPhWZ-JJq_Nsh_eo3GkvyCOPG7W2pYf",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-17",
@@ -53,7 +63,9 @@
       "drive_file_id": "1GT4E19fLPlUDCCTkalCB-Wb2dvvjc5bS",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-18",
@@ -61,7 +73,9 @@
       "drive_file_id": "1SRs8prms4BEh-ck9yKcBx1AXXH-l8PqI",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-24",
@@ -69,7 +83,9 @@
       "drive_file_id": "1x0wM1mze9Z_EZub_lytRVO7si0i06YbZ",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-25",
@@ -77,7 +93,9 @@
       "drive_file_id": "1NPM8Ei44sSuy30XxUzOeGhb7HYg9TRqs",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-01-31",
@@ -85,7 +103,9 @@
       "drive_file_id": "1PNzvuUMKxj9bX1S5laeSdMQ8QHoqNbo-",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-01",
@@ -93,7 +113,9 @@
       "drive_file_id": "1BFF9xF92is3FOQnnC9pvJP-102DadRev",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-07",
@@ -101,7 +123,9 @@
       "drive_file_id": "158Vmwgtiwhja3gMGTN0GMnq85IZ33TWR",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-08",
@@ -109,7 +133,9 @@
       "drive_file_id": "1P0ryqql5V_Q5XWYJ36InOGtpr8txRvcl",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-10",
@@ -117,7 +143,9 @@
       "drive_file_id": "1isbVe1WJ9RdK4Wus0gk4KtlRcJZIBtIU",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-14",
@@ -125,7 +153,9 @@
       "drive_file_id": "1wDSdaRiNmUpq5BL0X6xbQJZdZzz8DdSG",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-15",
@@ -133,7 +163,9 @@
       "drive_file_id": "1KI9USCd9lgkJFGDKcP79C1uv4im58zF7",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-21",
@@ -141,7 +173,9 @@
       "drive_file_id": "1icHG-MI3sR5hEfgIrT8Do3AUfNlIIzNK",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-22",
@@ -149,7 +183,9 @@
       "drive_file_id": "1wtPYlenggLDlN8XWzPR37mGM6DAH4gIE",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-02-28",
@@ -157,7 +193,9 @@
       "drive_file_id": "1TrC_GDxfEoJh6vd840Cd-qRbtcEkJlcI",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-01",
@@ -165,7 +203,9 @@
       "drive_file_id": "1EUmxWYb_42ayQjkIjV1PK59jgq6KY4so",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-07",
@@ -173,7 +213,9 @@
       "drive_file_id": "1qbv3ckRVS44LQxsItSAzRUoEfEclIfAc",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-08",
@@ -181,7 +223,9 @@
       "drive_file_id": "1ydPYqJr69NFTeooJdDMhY_RHY4co2KqY",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-14",
@@ -189,7 +233,9 @@
       "drive_file_id": "1wlR74Nlxqu-Z_kzjW9ecMZjrdNYC3Lyw",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-15",
@@ -197,7 +243,9 @@
       "drive_file_id": "1WSrJiv0h3LrqGDdgtg_VfrLKpXjw-59h",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-21",
@@ -205,7 +253,9 @@
       "drive_file_id": "1fXMZVGnGRKCQ0PWMiM-90kbWd1DAAQ43",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-22",
@@ -213,7 +263,9 @@
       "drive_file_id": "10h_nQ-WGYpZzvnGqtVgwQvU3MNLjZZ-v",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-28",
@@ -221,7 +273,9 @@
       "drive_file_id": "1x7EHSCUss6UJEStk0jGNnntF8LxD0umq",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-03-29",
@@ -229,7 +283,9 @@
       "drive_file_id": "1XzmfFNsUWku-H46WU0vTcH01qG6DEYtI",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-04",
@@ -237,7 +293,9 @@
       "drive_file_id": "1VWtzbHr_IReNnKFjtWtlrgJGzXfawk9g",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-05",
@@ -245,7 +303,9 @@
       "drive_file_id": "1OWip5b2bzOoQlkOgpxiZOVx5ldZ_SD2-",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-11",
@@ -253,7 +313,9 @@
       "drive_file_id": "10L6Sc7Zn-0-KuYOzzfLJJIrapa0AY87R",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-12",
@@ -261,7 +323,9 @@
       "drive_file_id": "1RkEd_1Esdo4YsDueTIOGbSrLiumGCuCy",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-18",
@@ -269,7 +333,9 @@
       "drive_file_id": "1X8ji2H0bHc5udmSqId79eynjSobwB4W7",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-19",
@@ -277,7 +343,9 @@
       "drive_file_id": "18V9mmmMIIWZIC-v7smrgnX5G12oBSAe6",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-25",
@@ -285,7 +353,9 @@
       "drive_file_id": "11zUlBcTMQEsfnwbBP7WojFEyClTqTjji",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-04-26",
@@ -293,7 +363,9 @@
       "drive_file_id": "1fIZf32j5cKoBhpOgMd3ue055etsifKOX",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-02",
@@ -301,7 +373,9 @@
       "drive_file_id": "1O6S2VcL-XbC59fPe0xgYLUGn-vSIzMKw",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-03",
@@ -309,7 +383,9 @@
       "drive_file_id": "1n1r_m169U5FzZQluA_PjJ3q0QfnusQYQ",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-09",
@@ -317,7 +393,9 @@
       "drive_file_id": "1UcaDWcLGwQMbWJ40wwYAskrNDGqraPjn",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-10",
@@ -325,7 +403,9 @@
       "drive_file_id": "1qwWppnmLWpSqN-479u5yISRp8yQjq_RX",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-16",
@@ -333,7 +413,9 @@
       "drive_file_id": "1AMaONXFE-9JUDcb4Lzrmm2RYyO1le3e5",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-17",
@@ -341,7 +423,9 @@
       "drive_file_id": "12hBCuRJyXWTcuhrqhUSKNGYwoh3gizYO",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-23",
@@ -349,7 +433,9 @@
       "drive_file_id": "1vpQ1Bc4JRyXdLDzmhQbp0u5c7BwbjKx7",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-24",
@@ -357,7 +443,9 @@
       "drive_file_id": "1erzdIYnQCRThKuGxjKOYAjHUTORs1gdO",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-30",
@@ -365,7 +453,9 @@
       "drive_file_id": "142FYbNOJ4GJs-TbebZJmhATohRKYs7Ri",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-05-31",
@@ -373,7 +463,9 @@
       "drive_file_id": "1kg7qxyHFDkriJVEWLdIYK5652WDZw3PM",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-06",
@@ -381,7 +473,9 @@
       "drive_file_id": "1r8lFGGSBVwd9gMEPmnjRtshB0frG7bVH",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-07",
@@ -389,7 +483,9 @@
       "drive_file_id": "1_PtkQ1k1yGlrPQs_h-MXCgopbtG3t-Uf",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-13",
@@ -397,7 +493,9 @@
       "drive_file_id": "1YN5jmdw2eYawyO_Of8CFNfCPvoU9mFvo",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-14",
@@ -405,7 +503,9 @@
       "drive_file_id": "13TPezY-QTGcj3f76Rc8EAMPMJRtoQHy_",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-20",
@@ -413,7 +513,9 @@
       "drive_file_id": "1d_nId9qgIT-j7EUgBGLJVmcyYEUwztYd",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-21",
@@ -421,7 +523,9 @@
       "drive_file_id": "1BQvobFc6mv5aD1u-M4pcAI5dS_iitx1x",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-27",
@@ -429,7 +533,9 @@
       "drive_file_id": "1pevJHvSdoRXzddlsUzNKxiZgWDMZ4fgQ",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-06-28",
@@ -437,7 +543,9 @@
       "drive_file_id": "1apbG67c5SldS-5fKfCzBnl31czMBW3wi",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-07-04",
@@ -445,7 +553,9 @@
       "drive_file_id": "1sXdAVwfgPiiaZBybvu7EREB2bYvEySys",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-07-05",
@@ -453,7 +563,9 @@
       "drive_file_id": "1F8ofy42jalxJoVBVvsqqa0YOXRuEiehH",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-07-11",
@@ -461,7 +573,9 @@
       "drive_file_id": "1jt0HzTZ_gZIHGMvL9RojFlcIZq807BUq",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-07-12",
@@ -469,7 +583,9 @@
       "drive_file_id": "1H4f_9N2IidouoD0MfXP1JnbK2Xgf-pJd",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-07-18",
@@ -477,7 +593,9 @@
       "drive_file_id": "1qNgjAhHqdEUVwNRZGRK60rAj28U7jGu9",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-07-19",
@@ -485,7 +603,9 @@
       "drive_file_id": "18uopE4WrWTo4aAhlXZtlYJu4IyrWe7Mv",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-07-25",
@@ -493,7 +613,9 @@
       "drive_file_id": "1BRL1kcQ-4tQyqE_GMfDgs04DUcPcvboM",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Gen0.3 day rehearsal result review"
     },
     {
       "date": "2026-07-26",
@@ -501,7 +623,9 @@
       "drive_file_id": "1KH_KVIoDK21zmgQAqKXoAJG78Djzzn7T",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Gen0.3 day rehearsal result review"
     },
     {
       "date": "2026-08-01",
@@ -509,7 +633,9 @@
       "drive_file_id": "1kySK0AycsjHSmJn4HVbaGuYkb-2mqYf7",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Semantic v0.3 result review"
     },
     {
       "date": "2026-08-02",
@@ -517,7 +643,9 @@
       "drive_file_id": "1mQ1Lwg4X4q-ZElBvQ8CS80bFAwstyLfe",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-08-08",
@@ -525,7 +653,9 @@
       "drive_file_id": "1TYMIvH1Z_PnsVNuB7dTNt5EH6GbJfLHv",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Semantic v0.3 result review"
     },
     {
       "date": "2026-08-09",
@@ -533,7 +663,9 @@
       "drive_file_id": "1nFDh_qBSQHnHiJYcQGS_0skLd7nkh-m6",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-08-15",
@@ -541,7 +673,9 @@
       "drive_file_id": "1iHMThJdliG1i1FEuVK8fSEc3W2Hxg9bI",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-08-16",
@@ -549,7 +683,9 @@
       "drive_file_id": "1ilv_oKuaYkIYRKdZI-3e6mP1gc2GapyS",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Target-day research included known result exposure"
     },
     {
       "date": "2026-08-22",
@@ -557,7 +693,9 @@
       "drive_file_id": "13gmBW5B8PDuYD9msVZjtcdWc0YfuuphA",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-08-23",
@@ -565,7 +703,9 @@
       "drive_file_id": "1QQg-Kh6TsJs7WP6IcTDpJMe4Nell-mEr",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-08-29",
@@ -573,7 +713,9 @@
       "drive_file_id": "1JsDVyoLZ7gydBQqqujvTJ5u0orpWOk8D",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-08-30",
@@ -581,7 +723,9 @@
       "drive_file_id": "1sAjg1OHZEPlsLvTvRsjNK2fB_Kr7mE_O",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-05",
@@ -589,7 +733,9 @@
       "drive_file_id": "1nAZsvZT3pFSeCvuIbYyzqo7L230HV9Zv",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-06",
@@ -597,7 +743,9 @@
       "drive_file_id": "1w7Qo4WpH8TcTtCTXEAK-qv3CH5Sa2BNU",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-12",
@@ -605,7 +753,9 @@
       "drive_file_id": "1IM8xl7FNLz02E6jZz0UOAZrxX2gpiZC_",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-13",
@@ -613,7 +763,9 @@
       "drive_file_id": "110iUUdb3un4BGdbSG5AUOVXjKJ4PVAoJ",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Gen0.3 real-data dry run included known result exposure"
     },
     {
       "date": "2026-09-19",
@@ -621,7 +773,9 @@
       "drive_file_id": "1AL3Ua_2WY_NlKfMloSOinbzVZVRmjgNi",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-20",
@@ -629,7 +783,9 @@
       "drive_file_id": "14HiihawoEMU7kAA6OZ9mzQMwtJ2bckE0",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-21",
@@ -637,7 +793,9 @@
       "drive_file_id": "1dRo6fYQkKaj905FJHjUzhQMNrxXc8KZk",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-22",
@@ -645,7 +803,9 @@
       "drive_file_id": "1VdkTE06TwBIWt2vxi98qGgft6jIfwzIv",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-26",
@@ -653,7 +813,9 @@
       "drive_file_id": "1PSYw6uL2Gx-rbtcJsgsGFZZNGTnMc4od",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     },
     {
       "date": "2026-09-27",
@@ -661,7 +823,9 @@
       "drive_file_id": "1G57s0Ix5Xb6AcKfZ2HrpOvasLC05dYg8",
       "used": false,
       "used_at": null,
-      "selection_id": null
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
     }
   ],
   "selections": []
