@@ -46,5 +46,24 @@
     "resume_blind_turn_requires_research_clearance": true
   },
   "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
-  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md"
+  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
+  "optional_evidence_lanes": [
+    "PEDIGREE_CONTEXT_P1_P2"
+  ],
+  "pedigree_policy": {
+    "source_fields": [
+      "pedigree",
+      "pedigree_context"
+    ],
+    "fixed_weight": false,
+    "automatic_axis": false,
+    "small_sample": "RETAIN_WITH_N",
+    "especially_relevant_when": [
+      "NEWCOMER_OR_NO_PRIOR_HISTORY",
+      "LIGHTLY_RACED",
+      "FIRST_MEANINGFUL_DISTANCE_CHANGE",
+      "WEAK_DIRECT_SUITABILITY_EVIDENCE"
+    ],
+    "interpretation": "CONTEXTUAL_EVIDENCE_NOT_SCORE"
+  }
 }
