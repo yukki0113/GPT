@@ -81,6 +81,15 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - JRDB認証取得、formal artifact chain、immutable publication証跡が必要な工程は `.gpt/WORKFLOW.md` のRoute D。既取得入力だけで完結する集計・監査はRoute Cを優先する。
 - 旧Stats Mart更新手順は historical/legacy asset であり、RaceNote current operationには使用しない。current workflow/sourceと `docs/racenote/legacy/README.md` を確認する。
 
+## RaceNote day-level production entrypoint — D5 accepted 2026-09-30
+- Full-day requests such as「09/27のRaceNote生成してください」は `src/build_racenote_daily.py` をstandard entrypointとする。
+- Production chain: PACI parse once -> all base bundles -> Analysis/Trend/P1/P2 bulk -> RRDB bulk -> Reader View -> validation -> package。
+- D5 final confirmation: 2026-05-23, 36 races / 549 horses, Issue #1611 / run `36646513226`。race/horse identity、evidence semantics、P1/P2、RRDB、Reader View round-tripは全件PASS。
+- Migration equalityでは独立実行で必ず変わる `generated_at`、local Analysis path、query telemetryのみ除外する。Evidence/provenance差は除外しない。
+- Existing `racenote_request.py` / one-race enrichmentはexplicit single-race、audit、rollback用途として保持する。
+- Forecast logicは日次orchestration cutoverの影響を受けず、別version管理を維持する。
+- Audit: `docs/racenote/RACENOTE_DAILY_D5_EQUIVALENCE_20260930.md`。
+
 ## RaceNote request entrypoint
 - RaceNote取得は `src/racenote_request.py` を統一入口とする。ユーザー/GPTは原則として対象日、任意の開催場、任意のRだけを指定し、過去/当日/未来のsource分岐はrouter内部で行う。
 - JRDB Secretsや正式artifact chainを必要とするGPT定型実行は `[RACENOTE_REQUEST]` Issue → GitHub Actions → artifact回収のActions-native経路を使う。詳細は `docs/README_racenote_request.md`。
