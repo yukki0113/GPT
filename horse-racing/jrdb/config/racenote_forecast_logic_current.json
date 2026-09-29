@@ -1,16 +1,20 @@
 {
   "version": "RaceNote-Forecast-Logic-Current-0.1",
   "updated_at": "2026-09-29",
-  "current_logic_version": "RaceNote-Baseline-Reader-0.2",
-  "logic_contract": "docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_2.md",
-  "logic_config": "config/racenote_forecast_logic_baseline_v0_2.json",
-  "record_schema": "schema/racenote_forecast_research_record_v0_2.json",
+  "current_logic_version": "RaceNote-Human-Context-Reader-0.3",
+  "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_3.md",
+  "logic_config": "config/racenote_forecast_logic_human_context_v0_3.json",
+  "record_schema": "schema/racenote_forecast_research_record_v0_3.json",
   "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
-  "freeze_validator": "src/validate_racenote_forecast_decision_trace.py",
+  "freeze_validator": "src/validate_racenote_forecast_human_context.py",
   "predecessor": {
-    "logic_version": "RaceNote-Baseline-Reader-0.1",
-    "last_turn": "BTDAY-0001",
-    "status": "FROZEN_HISTORICAL_BASELINE"
+    "logic_version": "RaceNote-Baseline-Reader-0.2",
+    "last_turn": "BTDAY-0002",
+    "status": "FROZEN_RESEARCH_BASELINE"
   },
-  "change_reason": "Pre-result structural audit showed insufficient observable comparison trace and excessive generic/template-like comments. No target results were used for this change."
+  "change_reason": "Forecast axis not yet stable: v0.1/v0.2 remained mechanically numeric. Switch to teacher-evidence-driven human-context calibration without consuming new clean PACI days.",
+  "phase": "CALIBRATION_HOLD",
+  "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
+  "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
+  "clean_blind_pick_allowed": false
 }
