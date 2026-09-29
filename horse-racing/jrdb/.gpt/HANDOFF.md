@@ -208,6 +208,24 @@ RaceNote authoritative bundleは観測データとprovenanceを渡す層です�
 
 現在の予想研究系は **RaceNote Forecast Gen0** です。
 
+### Forecast logic status — 2026-09-29
+
+RaceNoteの抽出 / evidence contractと、pre-result firewall / provenance /
+immutable Freeze / result-after-Freezeの研究手順はcurrent invariant。
+
+一方、詳細な予想ロジックは **UNFROZEN**。
+
+- `RaceNote-Forecast-Gen0.3` = implemented research candidate
+- `DATA/TRENDS > RACEREVIEW >= ABILITY` = candidate hypothesis, not adopted default
+- Synthesis / Pairwise / Scenario / Edge Performance overlay = candidate components, not mandatory Gen0 steps
+- Gen0-G001 activation = PAUSED until Forecast logic selection
+- historical PACI backtest = logic selection research
+- TRUE_FORWARD = selected logic versionの後段validation
+
+過去のG001 manifest / ledger registration / transport PASSは削除せず、
+infrastructure / reproducibility evidenceとして保持する。
+
+
 正本方針:
 
 - `docs/racenote/README.md`
