@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: jrdb-edge-v04-stage-c1-sharded
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   prepare:
@@ -137,7 +137,7 @@ jobs:
           python - <<'PY' >> "$GITHUB_ENV"
           import json
           r=json.load(open('/tmp/plan/request.json'))
-          for key in ['feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name','min_win_roi','min_place_roi']:
+          for key in ['feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name','min_win_roi','min_place_roi','max_per_template']:
               print(f"{key.upper()}={r[key]}")
           PY
 
