@@ -81,6 +81,36 @@ When they do:
 - ○ is then assigned to the best remaining stability / comparison horse;
 - preserve an internal note that both attraction and stability converged on ◎.
 
+### 3.1 Counter / reversal handling under CONVERGE
+
+When attraction and stability converge on ◎, audit fields that describe a
+counterargument must **never point back to ◎ itself**.
+
+In a CONVERGE case:
+
+- `strongest_counter` must describe the strongest remaining rival or scenario
+  that could defeat ◎;
+- `reversal_condition` must describe a condition under which that remaining
+  rival / scenario could reverse the forecast;
+- the preferred source is normally ○, but another marked horse may be used when
+  it is clearly the stronger counterargument;
+- do not generate self-referential text such as "◎の安定材料が強く出れば◎を
+  上回る" or any equivalent construction.
+
+This is an audit-integrity rule only. It does not alter marks, re-rank horses,
+or force ○ to be the strongest counter when another rival presents the more
+meaningful race-specific threat.
+
+Before Freeze, a CONVERGE record should pass the following semantic guard:
+
+```text
+counter horse != ◎
+reversal target != ◎
+```
+
+If no single rival is the meaningful counter, use a race-shape / scenario
+counterargument instead of inventing a horse-specific one.
+
 This convergence may support a future confidence / axis-reliability parameter,
 but v0.3.3-candidate does not define a numeric confidence value or threshold.
 
