@@ -1,0 +1,48 @@
+name: Archive BTDAY-0006 temp
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  archive:
+    if: startsWith(github.event.issue.title, '[ARCHIVE_BTDAY0006]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download DAY PREP artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/art /tmp/prep
+          gh run download 36676309564 --repo "${GITHUB_REPOSITORY}" --name 'BTDAY-0006-DAY-PREP' --dir /tmp/art
+          unzip -q /tmp/art/BTDAY-0006_DAY_PREP_20260405_FINAL.zip -d /tmp/prep
+
+      - name: Reproduce exact Frozen outputs
+        run: |
+          python .github/tmp/archive_btday0006.py /tmp/prep horse-racing/jrdb/backtests/BTDAY-0006/20260405
+
+      - name: Commit archive
+        run: |
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add horse-racing/jrdb/backtests/BTDAY-0006/20260405
+          git commit -m "RaceNote: archive BTDAY-0006 artifacts"
+          git push origin HEAD:main
+
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" || true
