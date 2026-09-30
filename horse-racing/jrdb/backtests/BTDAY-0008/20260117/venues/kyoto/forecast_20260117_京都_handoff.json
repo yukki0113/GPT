@@ -1,0 +1,26 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0008",
+  "target_date": "2026-01-17",
+  "venue": "京都",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+  "main_sha": "7f75584c8c7f8ca71d04e1a07a99fcf343450e69",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "b10c42449e7a808d38073884f007211bd68501f4a1ee586dc31159e47f4b0ecd",
+    "f6964ba19098234a1800200e73e30644a649c40eaadb1452f63b3b2272200e63",
+    "4a70900563ee325964741acb22c491655d89d4bfdb77ffa41b045b896e294314",
+    "c211bea087c65577da7e3342c7a0c247d87b3ca97e538b3a8956dfc6dc908d2d",
+    "620514760aae98feb0d8b250d8d4cdba2ca68147e9cfc322f51dd86cb11170cd",
+    "8c1f78b3caf3848dd0bab891a91c937ac80c7c31864af99c925bdedaf638de75",
+    "df650ca61ee353178f52425e8845418d6053ca1c4fbb9cc52e5d07b73dfe6750",
+    "7b3423d9f4859a3e6af0f7431b5073394e4652590013afc900c2bd1b22ab6b63",
+    "c11250b0c06753f17a8a14a76e267e77b1c29616191490f8c921251bdc4171b2",
+    "7fbaec52cae3d3bd9c9f02fee5086c1b0fc778f01bc1927147517286f3876db7",
+    "8008db9a948b25eeca537e29626a15cc8d3ccfc482d0d0afe3eeca1c035bac2b",
+    "927e5076a2a3cfd3e77ce8f0471c482705a9a8ac814d9d31669e75e7d7771356"
+  ]
+}

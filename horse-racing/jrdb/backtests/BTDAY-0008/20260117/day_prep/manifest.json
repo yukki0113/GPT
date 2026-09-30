@@ -1,0 +1,105 @@
+{
+  "schema_version": "RaceNote-Daily-Build-Manifest-0.1",
+  "target_date": "2026-01-17",
+  "status": "PASS",
+  "pipeline_version": "RaceNote-Daily-Build-0.1",
+  "stages": {
+    "base": "PASS",
+    "history": "PASS",
+    "rrdb": "PASS",
+    "reader": "PASS",
+    "validation": "PASS",
+    "package": "PASS"
+  },
+  "sources": {
+    "paci": {
+      "target_date": "2026-01-17",
+      "date_raw": "20260117",
+      "record_counts": {
+        "BAC": 24,
+        "KYI": 336,
+        "CHA": 336,
+        "CYB": 336,
+        "ZED": 1248,
+        "ZKB": 1166
+      }
+    },
+    "analysis": {
+      "kind": "PARQUET",
+      "backend": "parquet_duckdb",
+      "path": "/tmp/analysis",
+      "manifest_path": "/tmp/analysis/generations/analysis-v1_4-canonical-20260928-02/manifest.json",
+      "generation_id": "analysis-v1_4-canonical-20260928-02",
+      "min_race_date": "2016-01-05",
+      "max_race_date": "2026-09-27",
+      "rows": 517622,
+      "query_count": 9,
+      "parquet_scan_count": 9
+    },
+    "rrdb": {
+      "mode": "generation_root",
+      "root": "/tmp/rrdb/postrace_review/v0_1",
+      "generation_id": "jrdb_race_review_v0_1_incremental_g36514429467"
+    },
+    "next_watch": {
+      "rule_version": "next-watch-rules-discovery-v0.1"
+    }
+  },
+  "counts": {
+    "races_expected": 24,
+    "races_built": 24,
+    "reader_views": 24,
+    "horses": 336,
+    "technical_skips": 0
+  },
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "validation": {
+    "base": "PASS",
+    "history": "PASS",
+    "pedigree": "PASS",
+    "rrdb": "PASS",
+    "reader_roundtrip": "PASS"
+  },
+  "artifacts": {
+    "authoritative_dir": "/tmp/output/RaceNote_20260117/authoritative",
+    "reader_dir": "/tmp/output/RaceNote_20260117/reader",
+    "manifest": "/tmp/output/RaceNote_20260117/manifest.json",
+    "validation_report": "/tmp/output/RaceNote_20260117/validation_report.json"
+  },
+  "warnings": [
+    "unknown_leg_condition:080:10",
+    "unknown_tokki:333:6",
+    "unknown_leg_condition:076:4",
+    "unknown_tokki:206:3",
+    "unknown_tokki:258:3",
+    "unknown_one_week_course:62:3",
+    "unknown_tokki:257:2",
+    "unknown_tokki:225:2",
+    "unknown_tokki:721:2",
+    "unknown_tokki:128:2",
+    "unknown_tokki:165:1",
+    "unknown_tokki:353:1",
+    "unknown_tokki:716:1",
+    "unknown_tokki:784:1",
+    "unknown_tokki:703:1",
+    "unknown_training_course:62:1",
+    "unknown_tokki:719:1",
+    "unknown_tokki:325:1",
+    "unknown_tokki:429:1",
+    "unknown_tokki:558:1",
+    "unknown_tokki:091:1",
+    "unknown_tokki:107:1",
+    "unknown_tokki:046:1",
+    "unknown_tokki:347:1",
+    "unknown_tokki:591:1",
+    "unknown_tokki:412:1",
+    "unknown_tokki:142:1",
+    "unknown_tokki:702:1"
+  ],
+  "errors": []
+}
