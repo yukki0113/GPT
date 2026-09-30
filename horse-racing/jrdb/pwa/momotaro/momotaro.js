@@ -235,24 +235,53 @@ renderTable = function () {
 };
 
 /**
- * 個人PWAのRaceNote短評は桃太郎では表示せず、JRDBレース情報だけ補助表示する。
- * 友人コメントの主表示は印セルのモーダルと予想一覧に統一する。
+ * 桃太郎新聞のレース短評欄を描画する。
+ * りょーた / けんしょーはレース単位短評、おーじは回顧馬メモを表示する。
  */
 function applyMomotaroRaceNotesLayout() {
   const card = document.getElementById("newspaper-notes-card");
   const target = document.getElementById("newspaper-race-notes");
-  if (!card || !target) return;
+  if (!card || !target || !currentBundle) return;
 
   const title = card.querySelector("h2");
-  if (title) title.textContent = "レース情報";
+  if (title) title.textContent = "レース短評";
 
-  const sections = Array.from(target.querySelectorAll(".newspaper-v5-note-section"));
-  sections.forEach(function (section) {
-    const heading = section.querySelector("h3");
-    if (heading && heading.textContent === "RaceNote短評") {
-      section.remove();
-    }
-  });
+  const notes = currentBundle.race_notes || {};
+  const comments = notes.momotaro_comments || {};
+  const horses = Array.isArray(currentBundle.horses)
+    ? [...currentBundle.horses].sort(function (a, b) {
+        return Number(a && a.key && a.key.horse_no) - Number(b && b.key && b.key.horse_no);
+      })
+    : [];
+
+  const ojiBlocks = horses.map(function (horse) {
+    const prediction = momotaroPrediction(horse, "oji");
+    if (prediction.review_horse !== true) return "";
+    const horseNo = text(horse && horse.key && horse.key.horse_no, "");
+    const horseName = text(horse && horse.basic && horse.basic.horse_name, "");
+    const memo = text(prediction.comment, "");
+    const heading = horseNo + "." + horseName;
+    return '<div class="momotaro-race-note-review"><strong>' +
+      escapeHtml(heading) +
+      '</strong>' +
+      (memo ? '<p>' + escapeHtml(memo) + '</p>' : "") +
+      '</div>';
+  }).filter(Boolean).join("");
+
+  function section(label, body) {
+    return '<section class="momotaro-race-note-person">' +
+      '<h3>' + escapeHtml(label) + '</h3>' +
+      '<div class="momotaro-race-note-body">' + body + '</div>' +
+      '</section>';
+  }
+
+  const ryota = text(comments.ryota, "");
+  const kenshow = text(comments.kenshow, "");
+  target.innerHTML = '<div class="momotaro-race-notes-grid">' +
+    section("りょーた", ryota ? '<p>' + escapeHtml(ryota) + '</p>' : "") +
+    section("おーじ", ojiBlocks) +
+    section("けんしょー", kenshow ? '<p>' + escapeHtml(kenshow) + '</p>' : "") +
+    '</div>';
 }
 
 const momotaroBaseRenderBundle = renderBundle;
