@@ -1,0 +1,294 @@
+name: JRDB Edge v0.4 Stage C1 sharded via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: jrdb-edge-v04-stage-c1-sharded
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_C1_SHARDED]')
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name'}
+          missing=sorted(required-set(req))
+          if missing:
+              raise SystemExit(f'missing required fields: {missing}')
+          req.setdefault('min_win_roi',110.0)
+          req.setdefault('min_place_roi',105.0)
+          req.setdefault('max_per_template',100)
+          req.setdefault('max_templates_per_shard',900)
+          req.setdefault('target_estimated_cost',250000000)
+          Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Install planner dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Export request env
+        run: |
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json
+          r=json.load(open('/tmp/request.json'))
+          for key in ['feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name','min_win_roi','min_place_roi','max_per_template','max_templates_per_shard','target_estimated_cost']:
+              print(f"{key.upper()}={r[key]}")
+          PY
+
+      - name: Download Stage B catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/stage-b /tmp/plan
+          gh run download "$STAGE_B_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$STAGE_B_ARTIFACT_NAME" --dir /tmp/stage-b
+          mapfile -t tpls < <(find /tmp/stage-b -type f -name candidate_template_catalog.parquet -print)
+          if [ "${#tpls[@]}" -ne 1 ]; then
+            echo "expected exactly one candidate_template_catalog.parquet; found ${#tpls[@]}" >&2
+            exit 1
+          fi
+          cp "${tpls[0]}" /tmp/plan/candidate_template_catalog.parquet
+
+      - name: Plan deterministic shards
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards.py             --template-parquet /tmp/plan/candidate_template_catalog.parquet             --output /tmp/plan/shard_plan.json             --max-templates-per-shard "$MAX_TEMPLATES_PER_SHARD"             --target-estimated-cost "$TARGET_ESTIMATED_COST"             | tee /tmp/plan/planner_stdout.json
+
+      - name: Export matrix
+        id: matrix
+        run: |
+          set -euo pipefail
+          echo "matrix=$(cat /tmp/plan/matrix.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Add request provenance
+        run: |
+          cp /tmp/request.json /tmp/plan/request.json
+
+      - name: Upload shard plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-c1-plan-${{ github.run_id }}
+          path: /tmp/plan/
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 6
+
+  evaluate:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt numpy
+
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-c1-plan-${{ github.run_id }}
+          path: /tmp/plan
+
+      - name: Export request env
+        run: |
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json
+          r=json.load(open('/tmp/plan/request.json'))
+          for key in ['feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name','min_win_roi','min_place_roi']:
+              print(f"{key.upper()}={r[key]}")
+          PY
+
+      - name: Download canonical inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/feature /tmp/stage-b /tmp/inputs /tmp/out
+          gh run download "$FEATURE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$FEATURE_ARTIFACT_NAME" --dir /tmp/feature
+          gh run download "$STAGE_B_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$STAGE_B_ARTIFACT_NAME" --dir /tmp/stage-b
+          mapfile -t pqs < <(find /tmp/feature -type f -name edge_runner_fact.parquet -print)
+          mapfile -t tpls < <(find /tmp/stage-b -type f -name candidate_template_catalog.parquet -print)
+          if [ "${#pqs[@]}" -ne 1 ] || [ "${#tpls[@]}" -ne 1 ]; then
+            echo "input artifact shape mismatch feature=${#pqs[@]} template=${#tpls[@]}" >&2
+            exit 1
+          fi
+          cp "${pqs[0]}" /tmp/inputs/edge_runner_fact.parquet
+          cp "${tpls[0]}" /tmp/inputs/candidate_template_catalog.parquet
+
+      - name: Evaluate shard
+        env:
+          SHARD_ID: ${{ matrix.shard_id }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py             --feature-parquet /tmp/inputs/edge_runner_fact.parquet             --template-parquet /tmp/inputs/candidate_template_catalog.parquet             --shard-plan /tmp/plan/shard_plan.json             --shard-id "$SHARD_ID"             --output-dir /tmp/out             --min-win-roi "$MIN_WIN_ROI"             --min-place-roi "$MIN_PLACE_ROI"             | tee /tmp/out/stdout.json
+
+      - name: Add evaluator provenance
+        env:
+          SHARD_ID: ${{ matrix.shard_id }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          sid=os.environ['SHARD_ID']
+          p=Path('/tmp/out')/f'stage_c_shard_audit_{sid}.json'
+          d=json.loads(p.read_text())
+          d['evaluator_commit']=os.environ['HEAD_SHA']
+          d['feature_run_id']=int(os.environ['FEATURE_RUN_ID'])
+          d['feature_artifact_name']=os.environ['FEATURE_ARTIFACT_NAME']
+          d['stage_b_run_id']=int(os.environ['STAGE_B_RUN_ID'])
+          d['stage_b_artifact_name']=os.environ['STAGE_B_ARTIFACT_NAME']
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload shard evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-c1-shard-${{ github.run_id }}-${{ matrix.shard_id }}
+          path: /tmp/out/
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 6
+
+  aggregate:
+    needs: [prepare, evaluate]
+    if: ${{ always() && needs.prepare.result == 'success' && needs.evaluate.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-c1-plan-${{ github.run_id }}
+          path: /tmp/plan
+
+      - name: Download all shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: jrdb-edge-v04-stage-c1-shard-${{ github.run_id }}-*
+          path: /tmp/shards
+
+      - name: Merge shards
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/final
+          MAX_PER_TEMPLATE=$(python - <<'PY'
+          import json
+          print(json.load(open('/tmp/plan/request.json'))['max_per_template'])
+          PY
+          )
+          python horse-racing/jrdb/src/merge_jrdb_edge_v04_stage_c1_shards.py             --shard-plan /tmp/plan/shard_plan.json             --shards-dir /tmp/shards             --output-dir /tmp/final             --max-per-template "$MAX_PER_TEMPLATE"             | tee /tmp/final/stdout.json
+          cp /tmp/plan/shard_plan.json /tmp/final/shard_plan.json
+
+      - name: Upload final Stage C1 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-c1-${{ github.run_id }}
+          path: /tmp/final/
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 6
+
+      - name: Comment success and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          a=json.load(open('/tmp/final/stage_c_audit.json'))
+          out={
+            'status':a['status'],
+            'stage':a['stage'],
+            'run_id':int(os.environ['RUN_ID']),
+            'artifact_name':f"jrdb-edge-v04-stage-c1-{os.environ['RUN_ID']}",
+            'expected_shard_count':a['expected_shard_count'],
+            'received_pass_shard_count':a['received_pass_shard_count'],
+            'raw_candidate_count_before_template_cap':a['raw_candidate_count_before_template_cap'],
+            'research_candidate_count':a['research_candidate_count'],
+            'max_per_template':a['max_per_template'],
+            'policy_version':a['policy_version'],
+            'market_or_popularity_used_to_define_population':a['market_or_popularity_used_to_define_population'],
+            'production_serving_changed':False,
+          }
+          print('JRDB_EDGE_V04_STAGE_C1_RESULT')
+          print(json.dumps(out,ensure_ascii=False,indent=2,sort_keys=True))
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+  finalize_failure:
+    needs: [prepare, evaluate, aggregate]
+    if: ${{ always() && (needs.prepare.result != 'success' || needs.evaluate.result != 'success' || needs.aggregate.result != 'success') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment failure and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          PREPARE_RESULT: ${{ needs.prepare.result }}
+          EVALUATE_RESULT: ${{ needs.evaluate.result }}
+          AGGREGATE_RESULT: ${{ needs.aggregate.result }}
+        run: |
+          BODY="JRDB Edge v0.4 Stage C1 sharded run failed closed. prepare=$PREPARE_RESULT evaluate=$EVALUATE_RESULT aggregate=$AGGREGATE_RESULT. Successful shard artifacts, if any, remain available for audit. Production serving was not changed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason 'not planned'
