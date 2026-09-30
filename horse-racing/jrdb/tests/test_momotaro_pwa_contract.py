@@ -44,7 +44,12 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperV4HistoryTableClass()', script)
         self.assertIn("momotaro-newspaper-table ' + newspaperV4HistoryTableClass()", script)
         self.assertNotIn("3人の予想・短評", html)
-        self.assertIn('heading.textContent === "RaceNote短評"', script)
+        self.assertIn('title.textContent = "レース短評"', script)
+        self.assertIn('section("りょーた"', script)
+        self.assertIn('section("おーじ"', script)
+        self.assertIn('section("けんしょー"', script)
+        self.assertIn('prediction.review_horse !== true', script)
+        self.assertNotIn('title.textContent = "レース情報"', script)
         self.assertNotIn("renderMomotaroFriends", script)
         self.assertNotIn('id="momotaro-friends-card"', html)
 
@@ -81,7 +86,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
 
         shared_position = html.index('../newspaper-v9.css?v=2')
-        momotaro_position = html.index('./momotaro.css?v=6')
+        momotaro_position = html.index('./momotaro.css?v=7')
         self.assertLess(shared_position, momotaro_position)
 
     def test_kenshow_temporarily_mirrors_selected_jrdb_marks_only(self) -> None:
@@ -124,7 +129,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
-        self.assertIn('./momotaro.js?v=17', newspaper)
+        self.assertIn('./momotaro.js?v=18', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
         self.assertIn('../fact-lite.js?v=23', fact_lite)
