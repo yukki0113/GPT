@@ -1,0 +1,69 @@
+{
+  "schema_version": "RaceNote-Daily-Prep-Handoff-0.1-provisional",
+  "selection_id": "BTDAY-0003",
+  "target_date": "2026-08-29",
+  "status": "PASS",
+  "pipeline_version": "RaceNote-Daily-Build-0.1",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.2",
+  "phase": "BLIND_RESEARCH_ACTIVE",
+  "venue_count": 3,
+  "venues": {
+    "中京": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "新潟": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "札幌": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "race_count": 36,
+  "horse_count": 494,
+  "authoritative_count": 36,
+  "reader_count": 36,
+  "analysis_generation": "analysis-v1_4-canonical-20260928-02",
+  "rrdb_generation": "jrdb_race_review_v0_1_incremental_g36514429467",
+  "next_watch_rule_version": "next-watch-rules-discovery-v0.1",
+  "result_opened": false,
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "manifest_sha256": "9128de62e4a738631fe50696863547b344fb2bf9f8ecde596681713869d7316f"
+}
