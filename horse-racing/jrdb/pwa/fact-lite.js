@@ -4,6 +4,7 @@ const FACT_RUNTIME_CONFIG = window.JRDB_PWA_CONFIG || {};
 const FACT_SQL_JS_URL = FACT_RUNTIME_CONFIG.sqlJsUrl || "./vendor/sql-wasm.js";
 const FACT_SQL_WASM_URL = FACT_RUNTIME_CONFIG.sqlWasmUrl || "./vendor/sql-wasm.wasm";
 const FACT_MANIFEST_URL = FACT_RUNTIME_CONFIG.factManifestUrl || "./data/fact-lite/manifest.json";
+const FACT_DOWNLOAD_BASE_URL = FACT_RUNTIME_CONFIG.factDownloadBaseUrl || "./";
 const FACT_OPFS_DIR = FACT_RUNTIME_CONFIG.factOpfsDir || "jrdb-fact-lite";
 const FACT_CURRENT = "current.sqlite";
 const FACT_LEGACY_PREVIOUS = "previous.sqlite";
@@ -531,6 +532,15 @@ async function checkFactManifest(autoSyncWhenMissing) {
   }
 }
 
+function factDownloadUrl(manifest) {
+  const rawPath = String(manifest && manifest.download && manifest.download.path || "").trim();
+  if (!rawPath) {
+    throw new Error("download.pathがありません");
+  }
+  const base = new URL(FACT_DOWNLOAD_BASE_URL, window.location.href);
+  return new URL(rawPath.replace(/^\.\//, ""), base).toString();
+}
+
 async function syncFactFromRemote() {
   if (!navigator.onLine || factSyncInProgress) {
     return;
@@ -549,8 +559,9 @@ async function syncFactFromRemote() {
   factSyncProgress.textContent = "Fact Lite SQLiteを取得中...";
 
   try {
+    const downloadUrl = factDownloadUrl(factRemoteManifest);
     const response = await fetch(
-      factRemoteManifest.download.path + "?t=" + Date.now(),
+      downloadUrl + (downloadUrl.includes("?") ? "&" : "?") + "t=" + Date.now(),
       { cache: "no-store" }
     );
     if (!response.ok) {
