@@ -7,6 +7,7 @@ on:
     paths:
       - "horse-racing/jrdb/pwa/**"
       - "horse-racing/jrdb/tests/test_momotaro_pwa_contract.py"
+      - "horse-racing/jrdb/tests/test_newspaper_compact_history_pwa.py"
       - "horse-racing/jrdb/src/build_momotaro_newspaper_projection.py"
       - ".github/workflows/jrdb_pwa_pages.yml"
       - ".github/workflows/jrdb_pwa_publish_data.yml"
