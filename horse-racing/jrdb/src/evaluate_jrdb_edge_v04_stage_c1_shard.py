@@ -6,7 +6,7 @@ defined only by Stage B pre-race dimensions/values. Outcomes/payouts are used
 only after population definition for ROI screening. Odds/popularity are unused.
 """
 from __future__ import annotations
-import argparse, datetime as dt, hashlib, json
+import argparse, datetime as dt, hashlib, heapq, json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -96,6 +96,7 @@ def main():
     ap.add_argument("--output-dir",type=Path,required=True)
     ap.add_argument("--min-win-roi",type=float,default=110.0)
     ap.add_argument("--min-place-roi",type=float,default=105.0)
+    ap.add_argument("--max-per-template",type=int,default=100)
     args=ap.parse_args()
     out=args.output_dir.resolve(); out.mkdir(parents=True,exist_ok=True)
     plan=json.loads(args.shard_plan.read_text())
@@ -122,10 +123,10 @@ def main():
     cuts={365:(max_date-dt.timedelta(days=365)).isoformat(),730:(max_date-dt.timedelta(days=730)).isoformat(),1095:(max_date-dt.timedelta(days=1095)).isoformat()}
     recent={k:date_np>=v for k,v in cuts.items()}
 
-    sink=Sink(out/f"research_candidates_shard_{args.shard_id}.parquet")
-    terminal_groups=0; pruned=0; jackpot=0
+    heaps={}
+    terminal_groups=0; pruned=0; jackpot=0; admitted_before_cap=0
     def evaluate(meta,postings,conditions):
-        nonlocal terminal_groups,jackpot
+        nonlocal terminal_groups,jackpot,admitted_before_cap
         n=len(postings)
         if n<meta["support_floor"]:return
         terminal_groups+=1
@@ -153,7 +154,15 @@ def main():
             row[f"n_{days}"]=nn
             row[f"win_roi_{days}"]=round(float(wp[m].sum())/nn,4) if nn else None
             row[f"place_roi_{days}"]=round(float(pp[m].sum())/nn,4) if nn else None
-        sink.add(row)
+        admitted_before_cap+=1
+        score=max(float(row["win_roi"]),float(row["place_roi"]))
+        key=(score,int(row["n"]),row["candidate_id"])
+        h=heaps.setdefault(meta["template_id"],[])
+        item=(key,row)
+        if len(h)<args.max_per_template:
+            heapq.heappush(h,item)
+        elif key>h[0][0]:
+            heapq.heapreplace(h,item)
 
     all_rows=np.arange(n_rows,dtype=np.int32)
     def walk(node,postings,conditions):
@@ -170,13 +179,21 @@ def main():
                 code=int(sv[s]); value=dictionaries[dim][code]
                 if value==NULL_SENTINEL:continue
                 walk(child,postings[order[s:e]],conditions+[{"feature":dim,"value":str(value)}])
-    walk(root,all_rows,[]); sink.close()
+    walk(root,all_rows,[])
+    sink=Sink(out/f"research_candidates_shard_{args.shard_id}.parquet")
+    for tid,h in heaps.items():
+        selected=[x[1] for x in sorted(h,key=lambda x:x[0],reverse=True)]
+        for rank,row in enumerate(selected,1):
+            row["template_rank"]=rank
+            sink.add(row)
+    sink.close()
 
     audit={
       "status":"PASS","stage":"V04_STAGE_C1_SHARD","policy_version":POLICY_VERSION,
       "shard_id":args.shard_id,"search_lane":shard["search_lane"],"depth":int(shard["depth"]),
       "template_count":len(templates),"source_rows":n_rows,"terminal_groups_evaluated":terminal_groups,
-      "prefix_groups_pruned_by_support":pruned,"research_candidate_count":sink.count,
+      "prefix_groups_pruned_by_support":pruned,"admitted_before_template_cap":admitted_before_cap,
+      "research_candidate_count":sink.count,"max_per_template":args.max_per_template,
       "jackpot_flagged_top1_70pct_count":jackpot,"admission_min_win_roi":args.min_win_roi,
       "admission_min_place_roi":args.min_place_roi,"max_source_date":max_date.isoformat(),
       "recent_cutoffs":{f"{k}d":v for k,v in cuts.items()},
@@ -185,7 +202,8 @@ def main():
       "shard_plan_sha256":sha256_file(args.shard_plan),
       "template_ids_sha256":shard["template_ids_sha256"],
       "market_or_popularity_used_to_define_population":False,"odds_or_popularity_band_filter_used":False,
-      "result_labels_used_for_evaluation_only":True,"template_cap_applied":False,
+      "result_labels_used_for_evaluation_only":True,"template_cap_applied":True,
+      "template_cap_is_globally_equivalent":True,
       "production_serving_changed":False,
     }
     (out/f"stage_c_shard_audit_{args.shard_id}.json").write_text(json.dumps(audit,ensure_ascii=False,indent=2,sort_keys=True)+"\n",encoding="utf-8")
