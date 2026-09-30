@@ -1,0 +1,28 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0003",
+  "target_date": "2026-08-29",
+  "venue": "札幌",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.2",
+  "main_sha": "383f2776755ba23f6addf67b37e401819ba77f1f",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "99c8751b2c2be6415a025efaba97df99cb2542ab17508b22bbb0f15af3271d55",
+    "a667e3f9bd9c8898156b4affeab0456a8cfe30e453ff2a4768fa0032acfee246",
+    "8fee39daac63714c98d77b8282e6864fc58ee4f765ba48ec8bdbaa81929259aa",
+    "095c076ec329471598623a060acecad72c69710d9af4543fb2299e83f6509bd3",
+    "17646cdb6641e481cd88b747c99cec582a5c55a791c6a9b9c9988665248c444d",
+    "181e3eff4fe1cfb2f7ebac206cbf0a1dc6c5f07503cb6ae82a086ea186d605f1",
+    "d0eda9f39b3dfed5932f72c27a4b410275742f36184d5674089ebc2bfaeda37a",
+    "58ca70a054e3ab3318745f12e0f3b89d0714f479c7044bb5c8abb58004cb5576",
+    "bfe120028cd5905d55f420ac47057341a8f4673aa6be22d348a2c34b90067ba1",
+    "01942516f0ca937af33bc10a343f95c379bd5b848d589c164e46afb4baae6ca6",
+    "54748b86200c479360200a79431cf0281aba382912e39b44337ed9c66cf3ac7f",
+    "668d69aa77030e9126c66e65c8bc0c1d0f750470975ee20a2133eb4b31a2b7a5"
+  ],
+  "source_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip",
+  "next_stage": "DAY MERGE; all three venues are Frozen"
+}
