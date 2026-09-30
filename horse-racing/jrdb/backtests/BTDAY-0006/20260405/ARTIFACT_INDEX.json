@@ -1,0 +1,98 @@
+{
+  "schema_version": "RaceNote-Backtest-Artifact-Index-0.1",
+  "selection_id": "BTDAY-0006",
+  "target_date": "2026-04-05",
+  "canonical_entry": "day_merge/forecast_20260405_all.json",
+  "files": [
+    {
+      "path": "README.md",
+      "size_bytes": 587,
+      "sha256": "a79b7676dba30ba5d3390176e1f5f2f036d22ee7395744567fa0599bb72e0f15"
+    },
+    {
+      "path": "day_merge/forecast_20260405_all.html",
+      "size_bytes": 13173,
+      "sha256": "cf69d1c61e8b8fcefe3e20ed75b0a90396387ea585e2cc339b949356142a0464"
+    },
+    {
+      "path": "day_merge/forecast_20260405_all.json",
+      "size_bytes": 342170,
+      "sha256": "0edd9eabe004a02f2ead9c3fe7868ea18264ec04de0b81c39b329f6781d8d5d8"
+    },
+    {
+      "path": "day_merge/forecast_20260405_all.jsonl",
+      "size_bytes": 239954,
+      "sha256": "dac39df4b824124fa7531cffafbc6abf1454ceb64920ffeaae54f3b9c409b5ed"
+    },
+    {
+      "path": "day_merge/forecast_20260405_all_audit.json",
+      "size_bytes": 717,
+      "sha256": "9bb670a767557898b5b2e03c83b69a6bf1f98080d461b1d5779fc94d2dee5f34"
+    },
+    {
+      "path": "day_merge/forecast_20260405_all_handoff.json",
+      "size_bytes": 2314,
+      "sha256": "1cd16ae8f43f70d4d992da55fd2cb7f4274ef0c3b4dd190c4d50fd6e96f06bc7"
+    },
+    {
+      "path": "day_prep/day_prep_handoff.json",
+      "size_bytes": 1130,
+      "sha256": "e50d22356a03908d8971d8a844ceb9af2051963404951bc0b8ca2a50bb669f1a"
+    },
+    {
+      "path": "day_prep/manifest.json",
+      "size_bytes": 2900,
+      "sha256": "a2c8089dca29b1feeb65d9bbcb31e5787bfe5da8cb414c5835e2aa5cb7ce3bb3"
+    },
+    {
+      "path": "day_prep/selected_pool_state.json",
+      "size_bytes": 23891,
+      "sha256": "1d87aed86e068eaa6a90f5250fb6c4a20ad3cb04e55c9f8f647571ae1ec61972"
+    },
+    {
+      "path": "day_prep/validation_report.json",
+      "size_bytes": 394,
+      "sha256": "3253b777be391b0d7ecee639375daeb73856e1984db5f15b2790869258179743"
+    },
+    {
+      "path": "venues/hanshin/forecast_20260405_阪神.json",
+      "size_bytes": 169720,
+      "sha256": "23bfa27062c882bf90a267fb9902874b96175c21be3710bc5777ed8d47355790"
+    },
+    {
+      "path": "venues/hanshin/forecast_20260405_阪神.jsonl",
+      "size_bytes": 119271,
+      "sha256": "06eb8ce61258c8c0196fed081cb11c0a891f80002d0d8386aed3511d4058eb3d"
+    },
+    {
+      "path": "venues/hanshin/forecast_20260405_阪神_audit.json",
+      "size_bytes": 436,
+      "sha256": "a61f7ccdf60565c56f107ee61096ddfa75b1431d06a008ca4c499d6b8a4016ae"
+    },
+    {
+      "path": "venues/hanshin/forecast_20260405_阪神_handoff.json",
+      "size_bytes": 1263,
+      "sha256": "6c9bff3920302e3f5b73db5e85b8e1f7f7a9676996eea171af8c89f6486e6eba"
+    },
+    {
+      "path": "venues/nakayama/forecast_20260405_中山.json",
+      "size_bytes": 172453,
+      "sha256": "f7d206135ad6ec9baeded85d9bc14ed068238401e8e304684a01fb867b77c2ca"
+    },
+    {
+      "path": "venues/nakayama/forecast_20260405_中山.jsonl",
+      "size_bytes": 120683,
+      "sha256": "ebae3edc881f880165bdc763862706c395113235309ff396982a3525fa64a77e"
+    },
+    {
+      "path": "venues/nakayama/forecast_20260405_中山_audit.json",
+      "size_bytes": 420,
+      "sha256": "5358c3e239536d7f74c53ab9890dfbe10c876e7b1268d70a99a0960abe17f7d6"
+    },
+    {
+      "path": "venues/nakayama/forecast_20260405_中山_handoff.json",
+      "size_bytes": 1263,
+      "sha256": "26054a57da1d7fb28a0a6d4866c326a91f7fafdb5a5c981306b21fd7d45afed5"
+    }
+  ]
+}

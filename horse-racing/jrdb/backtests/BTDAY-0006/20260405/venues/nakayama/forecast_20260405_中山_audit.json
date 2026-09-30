@@ -1,0 +1,16 @@
+{
+  "validator_version": "racenote-human-context-0.3.3-candidate-equivalent",
+  "candidate_patch": "CONVERGE counter/reversal self-reference guard",
+  "status": "PASS",
+  "venue": "中山",
+  "target_date": "2026-04-05",
+  "record_count": 12,
+  "frozen_count": 12,
+  "error_count": 0,
+  "prediction_hash_unique_count": 12,
+  "converge_races": [
+    4
+  ],
+  "converge_semantic_guard": "PASS",
+  "result_opened": false
+}
