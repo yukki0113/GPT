@@ -124,6 +124,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         fact_lite = (MOMOTARO_ROOT / "fact-lite.html").read_text(encoding="utf-8")
         manifest = (MOMOTARO_ROOT / "manifest.webmanifest").read_text(encoding="utf-8")
         service_worker = (MOMOTARO_ROOT / "service-worker.js").read_text(encoding="utf-8")
+        fact_script = (PWA_ROOT / "fact-lite.js").read_text(encoding="utf-8")
 
         self.assertIn('newspaperOpfsDir: "momotaro-newspaper"', newspaper)
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
@@ -134,6 +135,9 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('"name": "桃太郎新聞"', manifest)
         self.assertIn('../fact-lite.js?v=24', fact_lite)
         self.assertIn('factDownloadBaseUrl: "../"', fact_lite)
+        self.assertIn('FACT_DOWNLOAD_BASE_URL', fact_script)
+        self.assertIn('function factDownloadUrl(manifest)', fact_script)
+        self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
         self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v22"', service_worker)
 
