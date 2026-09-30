@@ -5,7 +5,7 @@
     "inventory_snapshot_date": "2026-09-29",
     "note": "Sync newer PACI inventory while preserving used flags and eligibility. Clean blind picks exclude known result-exposed dates by default."
   },
-  "updated_at": "2026-09-30T01:55:00Z",
+  "updated_at": "2026-09-30T02:38:53Z",
   "days": [
     {
       "date": "2026-01-04",
@@ -231,9 +231,9 @@
       "date": "2026-03-14",
       "file_name": "PACI260314.zip",
       "drive_file_id": "1wlR74Nlxqu-Z_kzjW9ecMZjrdNYC3Lyw",
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-09-30T02:38:53Z",
+      "selection_id": "BTDAY-0004",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -856,6 +856,15 @@
       "n": 1,
       "dates": [
         "2026-08-29"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0004",
+      "selected_at": "2026-09-30T02:38:53Z",
+      "seed": "79e111e51b1352c1d301b6a703e36fa5",
+      "n": 1,
+      "dates": [
+        "2026-03-14"
       ]
     }
   ]
