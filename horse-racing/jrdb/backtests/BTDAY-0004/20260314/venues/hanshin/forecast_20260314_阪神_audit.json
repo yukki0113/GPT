@@ -1,0 +1,25 @@
+{
+  "validator_version": "racenote-human-context-validator-0.2.2-equivalent",
+  "reader_explanation_policy": "4.2.2 Reader-facing explanation of reinterpretation",
+  "status": "PASS",
+  "record_count": 12,
+  "error_count": 0,
+  "prediction_hash_unique_count": 12,
+  "result_opened": false,
+  "venue": "阪神",
+  "target_date": "2026-03-14",
+  "material_rrdb_reader_explanation_races": [
+    1,
+    3,
+    5,
+    6,
+    7,
+    9,
+    10,
+    12
+  ],
+  "information_gaps": [
+    "Obstacle-specific evidence remains limited for 8R",
+    "P3 sibling evidence unavailable"
+  ]
+}
