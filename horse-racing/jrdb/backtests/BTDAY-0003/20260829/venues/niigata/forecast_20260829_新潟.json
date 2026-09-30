@@ -1,0 +1,1000 @@
+[
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "新潟",
+      "race_no": 1,
+      "race_key": "2026-08-29-新潟-1",
+      "race_name": null,
+      "surface": "障害",
+      "distance_m": 2850,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-新潟",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/新潟/1R",
+      "racenote_semantic_sha256": "b021eba18e5427ea86c52ab97eb27cdb09bd82a1c1c31807c435a5a3521b847c",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 10,
+        "horse_name": "オリンポスカズマ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 10,
+          "horse_name": "オリンポスカズマ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "リッケンバッカー",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "ラパンラピッド",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "フォーディアライフ",
+            "rank": 4
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ホウオウサンデー",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "オリンポスカズマは前走の中京障害3000mで4着。障害戦で先行して最後まで大きく崩れず、今回は調教も上昇しています。障害経験の浅い馬もいる組み合わせなら、実戦で形を作れている点を最優先します。",
+      "reader_facing_reason": "オリンポスカズマは前走の中京障害3000mで4着。障害戦で先行して最後まで大きく崩れず、今回は調教も上昇しています。障害経験の浅い馬もいる組み合わせなら、実戦で形を作れている点を最優先します。",
+      "concern": "障害専用のEvidenceが十分ではなく、飛越の巧拙やコース替わりによる適性差をRaceNoteだけでは捉え切れない。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "障害2850m未勝利。障害専用の補助Evidenceが薄いため、平地能力の横比較よりも障害実戦での完走内容、道中の位置取り、今回の調教状態を中心に見る。",
+      "primary_question": "障害実戦経験組の中で、前走内容と今回の状態から最も安定して競馬を組み立てられる馬はどれか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "オリンポスカズマ"
+          },
+          "case_for": "直近は中京障害3000mで4着。能力見立てIDMは10.5、調教は上昇。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は先行で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "リッケンバッカー"
+          },
+          "case_for": "直近は中京障害3000mで5着。能力見立てIDMは10.4、調教は平行線。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は追込で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ラパンラピッド"
+          },
+          "case_for": "直近は福島障害2750mで10着。能力見立てIDMは10.3、調教は平行線。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は差しで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "フォーディアライフ"
+          },
+          "case_for": "直近は阪神障害2970mで9着。能力見立てIDMは10.1、調教は上昇。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は先行で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ホウオウサンデー"
+          },
+          "case_for": "直近は川崎ダート1600mで10着。能力見立てIDMは10.2、調教は平行線。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は差しで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 10,
+          "horse_name": "オリンポスカズマ"
+        },
+        "other": {
+          "horse_no": 6,
+          "horse_name": "リッケンバッカー"
+        },
+        "reason": "オリンポスカズマをリッケンバッカーより上に置く。オリンポスカズマは前走の中京障害3000mで4着。障害戦で先行して最後まで大きく崩れず、今回は調教も上昇しています。障害経験の浅い馬もいる組み合わせなら、実戦で形を作れている点を最優先します。 リッケンバッカーにも有力材料はあるが、今回条件での再現性を比較するとオリンポスカズマを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 10,
+          "horse_name": "オリンポスカズマ"
+        },
+        "other": {
+          "horse_no": 11,
+          "horse_name": "ラパンラピッド"
+        },
+        "reason": "オリンポスカズマをラパンラピッドより上に置く。オリンポスカズマは前走の中京障害3000mで4着。障害戦で先行して最後まで大きく崩れず、今回は調教も上昇しています。障害経験の浅い馬もいる組み合わせなら、実戦で形を作れている点を最優先します。 ラパンラピッドの長所も認めるが、今回の中心条件に対する直接証拠はオリンポスカズマを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "障害専用のEvidenceが十分ではなく、飛越の巧拙やコース替わりによる適性差をRaceNoteだけでは捉え切れない。",
+      "reversal_condition": "障害専用のEvidenceが十分ではなく、飛越の巧拙やコース替わりによる適性差をRaceNoteだけでは捉え切れない。が実際に強く表面化し、リッケンバッカーまたはラパンラピッドが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "Obstacle-specific evidence remains limited",
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 10,
+            "horse_name": "オリンポスカズマ",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "07262609",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "リッケンバッカー",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "07262309",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV03"
+            ],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "ラパンラピッド",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "03262201",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 12
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:23:01+00:00",
+      "frozen_at": "2026-09-30T02:23:01+00:00",
+      "prediction_hash": "479484343fc5c12198e9fc210f0e2e531e2173ef13e4423c00163dcd2b247ac1",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "新潟",
+      "race_no": 2,
+      "race_key": "2026-08-29-新潟-2",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-新潟",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/新潟/2R",
+      "racenote_semantic_sha256": "4706cdff53e073b34fbdce86407695d533bcd1ca53e26e29ea25e95873b31fa7",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "ゴールドプレイヤー",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "ゴールドプレイヤー",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "オウケンサクラコ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "カシマライフウ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "アデルフィー",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ガードオブオナー",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ゴールドプレイヤーは前走の新潟ダ1800mで3着。道中で位置を上げながら最後まで脚を使い、1800mでは4戦3回が3着以内。今回は調教も上昇しており、同条件での再現性を中心視します。",
+      "reader_facing_reason": "ゴールドプレイヤーは前走の新潟ダ1800mで3着。道中で位置を上げながら最後まで脚を使い、1800mでは4戦3回が3着以内。今回は調教も上昇しており、同条件での再現性を中心視します。",
+      "concern": "差し脚質なので、前半が緩んで先行勢が余力を残す流れでは位置取り差が残る可能性がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "3歳ダ1800m未勝利。新潟1800mの好走馬が多く、同条件での末脚の質と今回の調教上昇が比較の中心。先行馬の粘りより差しの再現性を重視する。",
+      "primary_question": "新潟ダ1800mで既に上位実績を持つ馬のうち、今回最も内容を一段上げられる材料があるのはどの馬か。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ゴールドプレイヤー"
+          },
+          "case_for": "直近は新潟ダート1800mで3着。能力見立てIDMは41.1、調教は上昇。同距離履歴は4走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は差しで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "オウケンサクラコ"
+          },
+          "case_for": "直近は新潟ダート1800mで2着。能力見立てIDMは39.0、調教は平行線。同距離履歴は2走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は追込で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "カシマライフウ"
+          },
+          "case_for": "直近は新潟ダート1800mで3着。能力見立てIDMは40.0、調教は平行線。同距離履歴は5走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は差しで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "アデルフィー"
+          },
+          "case_for": "直近は新潟ダート1800mで4着。能力見立てIDMは41.0、調教は上昇。同距離履歴は6走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は先行で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ガードオブオナー"
+          },
+          "case_for": "直近は東京芝2400mで3着。能力見立てIDMは40.9、調教は平行線。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は先行で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "ゴールドプレイヤー"
+        },
+        "other": {
+          "horse_no": 9,
+          "horse_name": "オウケンサクラコ"
+        },
+        "reason": "ゴールドプレイヤーをオウケンサクラコより上に置く。ゴールドプレイヤーは前走の新潟ダ1800mで3着。道中で位置を上げながら最後まで脚を使い、1800mでは4戦3回が3着以内。今回は調教も上昇しており、同条件での再現性を中心視します。 オウケンサクラコにも有力材料はあるが、今回条件での再現性を比較するとゴールドプレイヤーを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "ゴールドプレイヤー"
+        },
+        "other": {
+          "horse_no": 15,
+          "horse_name": "カシマライフウ"
+        },
+        "reason": "ゴールドプレイヤーをカシマライフウより上に置く。ゴールドプレイヤーは前走の新潟ダ1800mで3着。道中で位置を上げながら最後まで脚を使い、1800mでは4戦3回が3着以内。今回は調教も上昇しており、同条件での再現性を中心視します。 カシマライフウの長所も認めるが、今回の中心条件に対する直接証拠はゴールドプレイヤーを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "差し脚質なので、前半が緩んで先行勢が余力を残す流れでは位置取り差が残る可能性がある。",
+      "reversal_condition": "差し脚質なので、前半が緩んで先行勢が余力を残す流れでは位置取り差が残る可能性がある。が実際に強く表面化し、オウケンサクラコまたはカシマライフウが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "ゴールドプレイヤー",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "04262310",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "オウケンサクラコ",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "04262505",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "カシマライフウ",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "04262604",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 15
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:23:01+00:00",
+      "frozen_at": "2026-09-30T02:23:01+00:00",
+      "prediction_hash": "f0696f35bd613110778cdd5fc1239654a1f0184858ee33d469c5323be5d7da3a",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "新潟",
+      "race_no": 3,
+      "race_key": "2026-08-29-新潟-3",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1600,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-新潟",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/新潟/3R",
+      "racenote_semantic_sha256": "25fe936befe0d83960fa4b7e470dd2aba1fb989c864403d84a471db3d3d3642f",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "アウアリイ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "アウアリイ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "ノルトハウゼン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "キムケンシーサー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "サウンドシェリー",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ホウオウビリーヴ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "アウアリイは前走の新潟芝1600mで3着。逃げて最後まで粘り、今回は調教もデキ抜群です。同コース同距離の直接実績があることを、距離未経験の上位馬より重く見ます。",
+      "reader_facing_reason": "アウアリイは前走の新潟芝1600mで3着。逃げて最後まで粘り、今回は調教もデキ抜群です。同コース同距離の直接実績があることを、距離未経験の上位馬より重く見ます。",
+      "concern": "前走は後半型の流れで自分の形を作れた面があり、今回はペースが上がると最後の粘りが落ちる余地がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H3"
+      ],
+      "race_model": "2歳芝1600m未勝利。1600m経験組と1400m・1200mからの延長組が混在。新潟マイルで既に好走した直接証拠と今回の調教を優先する。",
+      "primary_question": "距離未経験の能力上位馬より、同じ新潟1600mで形を作った馬をどこまで信頼できるか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "アウアリイ"
+          },
+          "case_for": "直近は新潟芝1600mで3着。能力見立てIDMは29.2、調教はデキ抜群。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は逃げで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ノルトハウゼン"
+          },
+          "case_for": "直近は東京芝1400mで4着。能力見立てIDMは36.8、調教は上昇。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は追込で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "キムケンシーサー"
+          },
+          "case_for": "直近は小倉芝1200mで4着。能力見立てIDMは32.0、調教は平行線。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は差しで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "サウンドシェリー"
+          },
+          "case_for": "直近は中京芝1600mで5着。能力見立てIDMは29.0、調教は平行線。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は先行で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ホウオウビリーヴ"
+          },
+          "case_for": "直近は東京芝1800mで10着。能力見立てIDMは28.0、調教は上昇。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は差しで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "アウアリイ"
+        },
+        "other": {
+          "horse_no": 2,
+          "horse_name": "ノルトハウゼン"
+        },
+        "reason": "アウアリイをノルトハウゼンより上に置く。アウアリイは前走の新潟芝1600mで3着。逃げて最後まで粘り、今回は調教もデキ抜群です。同コース同距離の直接実績があることを、距離未経験の上位馬より重く見ます。 ノルトハウゼンにも有力材料はあるが、今回条件での再現性を比較するとアウアリイを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "アウアリイ"
+        },
+        "other": {
+          "horse_no": 11,
+          "horse_name": "キムケンシーサー"
+        },
+        "reason": "アウアリイをキムケンシーサーより上に置く。アウアリイは前走の新潟芝1600mで3着。逃げて最後まで粘り、今回は調教もデキ抜群です。同コース同距離の直接実績があることを、距離未経験の上位馬より重く見ます。 キムケンシーサーの長所も認めるが、今回の中心条件に対する直接証拠はアウアリイを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "前走は後半型の流れで自分の形を作れた面があり、今回はペースが上がると最後の粘りが落ちる余地がある。",
+      "reversal_condition": "前走は後半型の流れで自分の形を作れた面があり、今回はペースが上がると最後の粘りが落ちる余地がある。が実際に強く表面化し、ノルトハウゼンまたはキムケンシーサーが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 8,
+            "horse_name": "アウアリイ",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "04262202",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ノルトハウゼン",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "05263306",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "キムケンシーサー",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "10262501",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV03"
+            ],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 11
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:23:01+00:00",
+      "frozen_at": "2026-09-30T02:23:01+00:00",
+      "prediction_hash": "7b096affe1bb33cc6bc0513a7c161262809d84c86b59e7c6399e2b3c7496ca96",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "新潟",
+      "race_no": 4,
+      "race_key": "2026-08-29-新潟-4",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1400,
+      "class": "新馬"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-新潟",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/新潟/4R",
+      "racenote_semantic_sha256": "5700ad4d8515b2d7fd3a012f7a56b2998cabd1c6f68dd0be2739e01796186e85",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "エクラドリオン",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "エクラドリオン",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 15,
+          "horse_name": "コメットサン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 12,
+          "horse_name": "セレスティナ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 13,
+            "horse_name": "イントリー",
+            "rank": 4
+          },
+          {
+            "horse_no": 18,
+            "horse_name": "ショウナンワンパク",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "エクラドリオンは新馬組の中で基礎能力見立てが最上位で、調教もデキ抜群。実戦経験のないレースでは不確実性が大きいものの、初戦から動ける材料が最も揃っています。",
+      "reader_facing_reason": "エクラドリオンは新馬組の中で基礎能力見立てが最上位で、調教もデキ抜群。実戦経験のないレースでは不確実性が大きいものの、初戦から動ける材料が最も揃っています。",
+      "concern": "全馬初出走で、スタート・気性・実戦での位置取りは未知。調教の良さがそのままレース結果へ結び付かないリスクが高い。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H2",
+        "H4",
+        "H5"
+      ],
+      "race_model": "2歳芝1400m新馬。全馬未出走なので実戦内容やRRDBは使えない。調教の質と上向き、P1/P2血統文脈、初戦から動ける基礎能力見立てを組み合わせる。",
+      "primary_question": "実戦証拠がない中で、1400mの流れに初戦から対応できる仕上がりを最も示している馬はどれか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "エクラドリオン"
+          },
+          "case_for": "実戦歴はなく初出走。能力見立てIDMは47.1、調教はデキ抜群。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "初出走のためスタート・位置取り・実戦対応が未知。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "コメットサン"
+          },
+          "case_for": "実戦歴はなく初出走。能力見立てIDMは38.6、調教は平行線。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "初出走のためスタート・位置取り・実戦対応が未知。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "セレスティナ"
+          },
+          "case_for": "実戦歴はなく初出走。能力見立てIDMは33.4、調教は上昇。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "初出走のためスタート・位置取り・実戦対応が未知。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "イントリー"
+          },
+          "case_for": "実戦歴はなく初出走。能力見立てIDMは37.5、調教は上昇。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "初出走のためスタート・位置取り・実戦対応が未知。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 18,
+            "horse_name": "ショウナンワンパク"
+          },
+          "case_for": "実戦歴はなく初出走。能力見立てIDMは34.6、調教は平行線。同距離履歴は0走で、今回条件への接続材料を確認する。",
+          "case_against": "初出走のためスタート・位置取り・実戦対応が未知。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 4,
+          "horse_name": "エクラドリオン"
+        },
+        "other": {
+          "horse_no": 15,
+          "horse_name": "コメットサン"
+        },
+        "reason": "エクラドリオンをコメットサンより上に置く。エクラドリオンは新馬組の中で基礎能力見立てが最上位で、調教もデキ抜群。実戦経験のないレースでは不確実性が大きいものの、初戦から動ける材料が最も揃っています。 コメットサンにも有力材料はあるが、今回条件での再現性を比較するとエクラドリオンを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 4,
+          "horse_name": "エクラドリオン"
+        },
+        "other": {
+          "horse_no": 12,
+          "horse_name": "セレスティナ"
+        },
+        "reason": "エクラドリオンをセレスティナより上に置く。エクラドリオンは新馬組の中で基礎能力見立てが最上位で、調教もデキ抜群。実戦経験のないレースでは不確実性が大きいものの、初戦から動ける材料が最も揃っています。 セレスティナの長所も認めるが、今回の中心条件に対する直接証拠はエクラドリオンを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "全馬初出走で、スタート・気性・実戦での位置取りは未知。調教の良さがそのままレース結果へ結び付かないリスクが高い。",
+      "reversal_condition": "全馬初出走で、スタート・気性・実戦での位置取りは未知。調教の良さがそのままレース結果へ結び付かないリスクが高い。が実際に強く表面化し、コメットサンまたはセレスティナが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全馬初出走で対象となる過去走RRDBがないため使用しない。",
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 18
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:23:01+00:00",
+      "frozen_at": "2026-09-30T02:23:01+00:00",
+      "prediction_hash": "2b872738af722ef984188467ded5294df1c4afe4f1744399ce7842f5bca56871",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "新潟",
+      "race_no": 5,
+      "race_key": "2026-08-29-新潟-5",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2200,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-新潟",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/新潟/5R",
+      "racenote_semantic_sha256": "087141b5e133a17577fceccedd93e91bb6eaf7fb7739f540788242bb57267350",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "ヤマメホープ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "ヤマメホープ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "ゾネブルーム",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "イクオクコウネン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "サヴマ",
+            "rank": 4
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "ゴールドエンバー",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ヤマメホープは前走の新潟芝2200mで2着。道中で位置を上げながら崩れず、今回は調教も上昇して高水準です。今回と同じ条件で既に勝ち負けの形を作れている点を最も重く見ます。",
+      "reader_facing_reason": "ヤマメホープは前走の新潟芝2200mで2着。道中で位置を上げながら崩れず、今回は調教も上昇して高水準です。今回と同じ条件で既に勝ち負けの形を作れている点を最も重く見ます。",
+      "concern": "先行して運ぶタイプなので、差し勢が早めに動く持続戦になると最後の切れで上回られる可能性がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "3歳芝2200m未勝利。2200m直接実績馬と2400m好走馬が揃う。新潟2200mの直接証拠、長距離での持続力、今回の調教上昇を比較する。",
+      "primary_question": "新潟2200mで既に2着した馬を、2400m好走組や能力上位馬が上回れるだけの材料があるか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ヤマメホープ"
+          },
+          "case_for": "直近は新潟芝2200mで2着。能力見立てIDMは44.0、調教は上昇。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は先行で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ゾネブルーム"
+          },
+          "case_for": "直近は新潟芝2400mで2着。能力見立てIDMは43.3、調教は上昇。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は差しで、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "イクオクコウネン"
+          },
+          "case_for": "直近は阪神芝2200mで7着。能力見立てIDMは45.6、調教は平行線。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は先行で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "サヴマ"
+          },
+          "case_for": "直近は新潟芝2400mで3着。能力見立てIDMは43.0、調教は平行線。同距離履歴は1走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は追込で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "ゴールドエンバー"
+          },
+          "case_for": "直近は新潟芝2400mで6着。能力見立てIDMは41.0、調教は平行線。同距離履歴は2走で、今回条件への接続材料を確認する。",
+          "case_against": "脚質は追込で、展開次第では長所を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・Trend・P1/P2・RRDBを固定配点せず、このレースで識別力の高いEvidenceとして比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "ヤマメホープ"
+        },
+        "other": {
+          "horse_no": 9,
+          "horse_name": "ゾネブルーム"
+        },
+        "reason": "ヤマメホープをゾネブルームより上に置く。ヤマメホープは前走の新潟芝2200mで2着。道中で位置を上げながら崩れず、今回は調教も上昇して高水準です。今回と同じ条件で既に勝ち負けの形を作れている点を最も重く見ます。 ゾネブルームにも有力材料はあるが、今回条件での再現性を比較するとヤマメホープを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "ヤマメホープ"
+        },
+        "other": {
+          "horse_no": 2,
+          "horse_name": "イクオクコウネン"
+        },
+        "reason": "ヤマメホープをイクオクコウネンより上に置く。ヤマメホープは前走の新潟芝2200mで2着。道中で位置を上げながら崩れず、今回は調教も上昇して高水準です。今回と同じ条件で既に勝ち負けの形を作れている点を最も重く見ます。 イクオクコウネンの長所も認めるが、今回の中心条件に対する直接証拠はヤマメホープを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "先行して運ぶタイプなので、差し勢が早めに動く持続戦になると最後の切れで上回られる可能性がある。",
+      "reversal_condition": "先行して運ぶタイプなので、差し勢が早めに動く持続戦になると最後の切れで上回られる可能性がある。が実際に強く表面化し、ゾネブルームまたはイクオクコウネンが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "ヤマメホープ",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "04262411",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "ゾネブルーム",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "04262802",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "イクオクコウネン",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "09263404",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV01",
+              "HV02",
+              "HV11",
+              "HV12"
+            ],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 18
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:23:01+00:00",
+      "frozen_at": "2026-09-30T02:23:01+00:00",
+      "prediction_hash": "ee0385673282b40d3de3e754c917c98e1613f8d4606f12a6ec678ebf04194971",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "新潟",
+      "race_no": 6,
+      "race_key": "2026-08-29-新潟-6",
+      "race_name": "新発田城特別",
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-新潟",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/新潟/6R",
+      "racenote_semantic_sha256": "a21ffbbf9a36afc038f9d830a9054044ff369905e914f3198fc87ff5165fbf31",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 3,
+        "horse_name": "ルーナディサングエ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 3,
+          "horse_name": "ルーナディサングエ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "ルシャルムール",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 8,
+          "horse_name": "アビヤント",
+          "rank": 3
+        },
+        "others": [
