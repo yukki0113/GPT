@@ -578,8 +578,11 @@ merge invariants:
 - all shard Stage B catalog SHA identical
 - all shard evaluator commit / policy version identical
 
-merge後に template 単位の max_per_template を適用する。
-各 shard 内で先に template cap を掛け、別 shard の候補を失わせてはならない。
+原則として template 単位の max_per_template は global policy とする。
+ただし Stage C1 の shard plan は **1 template = exactly 1 shard** を保証するため、
+その不変条件が audit で確認できる場合に限り shard 内で同じ max_per_template を適用してよい。
+この場合、shard-local cap は global merge 後の cap と数学的に同値であり、artifact 肥大化を抑制できる。
+merge 側でも cap を再適用し、idempotent invariant として検証する。
 
 最終成果物:
 - research_candidates.parquet
@@ -708,3 +711,10 @@ It does not narrow:
 - no-popularity / no-odds candidate-generation rule
 
 Production v0.2 / v0.3 serving remains unchanged.
+
+
+### Stage C1 implementation note (2026-09-30)
+
+初回 sharded r1 の実測で、cap 前の深度4 shard が約62MBとなり、104 shard 全体では merge input が数GB級へ膨張する可能性が確認された。
+Stage C1 plan は template を shard 間で分割しないため、shard 内で template cap を適用しても候補順位の欠損は生じない。
+この性質を利用し、canonical C1 evaluator は shard 内 cap を適用してから artifact を保存する。
