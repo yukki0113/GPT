@@ -42,3 +42,33 @@
   padding-left:1px;
   padding-right:1px;
 }
+
+.momotaro-race-notes-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.75rem;
+}
+.momotaro-race-note-person{
+  border:1px solid #ddd;
+  border-radius:.55rem;
+  padding:.75rem;
+  min-height:90px;
+  background:#fff;
+}
+.momotaro-race-note-person h3{
+  margin:0 0 .5rem;
+  font-size:1rem;
+}
+.momotaro-race-note-body{
+  min-height:2.5rem;
+  white-space:pre-wrap;
+  line-height:1.55;
+  font-size:.94rem;
+}
+.momotaro-race-note-body p{margin:0}
+.momotaro-race-note-review+.momotaro-race-note-review{margin-top:.65rem}
+.momotaro-race-note-review strong{display:block;margin-bottom:.15rem}
+.momotaro-race-note-review p{margin:0;white-space:pre-wrap}
+@media(max-width:720px){
+  .momotaro-race-notes-grid{grid-template-columns:1fr}
+}
