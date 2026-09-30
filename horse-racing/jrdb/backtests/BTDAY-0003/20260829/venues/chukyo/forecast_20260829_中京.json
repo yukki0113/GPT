@@ -1,0 +1,1000 @@
+[
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "中京",
+      "race_no": 1,
+      "race_key": "2026-08-29-中京-1",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2000,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-中京",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/中京/1R",
+      "racenote_semantic_sha256": "65a9c6fa9d0f4262c648f7e25b40c4325518f6d53e790c26db64302327befb2b",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "エンルートフライト",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "エンルートフライト",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "マンナット",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 6,
+          "horse_name": "ピュアノーブル",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "メモリアデルレ",
+            "rank": 4
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ブラックミューズ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "エンルートフライトは初戦の福島2000mで2着。前で運びながら最後まで粘れており、今回は調教も上昇。前走が超スローで展開利を受けた点は割り引いても、同距離の直接実績と仕上がりを合わせれば中心に据えやすい。",
+      "reader_facing_reason": "エンルートフライトは初戦の福島2000mで2着。前で運びながら最後まで粘れており、今回は調教も上昇。前走が超スローで展開利を受けた点は割り引いても、同距離の直接実績と仕上がりを合わせれば中心に据えやすい。",
+      "concern": "前走はかなり遅い流れを前で運べた利があり、今回はペースが変わった時に同じ粘りを出せるかが課題。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "2歳芝2000m未勝利。キャリアが浅いので指数の大小だけでなく、2000mを一度経験して最後まで脚を使えたか、今回の調教上昇と位置取りの見通しを重視する。",
+      "primary_question": "2000m経験組の中で、前走内容の再現性と今回の上積みを最も両立できる馬はどれか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "エンルートフライト"
+          },
+          "case_for": "直近は福島芝2000mで2着。今回の能力見立てはIDM 31.1、調教は上昇。同距離履歴は1走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は先行で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "マンナット"
+          },
+          "case_for": "直近は中京芝2000mで6着。今回の能力見立てはIDM 29.0、調教は平行線。同距離履歴は1走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ピュアノーブル"
+          },
+          "case_for": "直近は中京芝1600mで5着。今回の能力見立てはIDM 28.0、調教は平行線。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "メモリアデルレ"
+          },
+          "case_for": "直近は中京芝2000mで7着。今回の能力見立てはIDM 31.0、調教は平行線。同距離履歴は1走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ブラックミューズ"
+          },
+          "case_for": "直近は中京ダート1400mで7着。今回の能力見立てはIDM 31.2、調教は上昇。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "エンルートフライト"
+        },
+        "other": {
+          "horse_no": 7,
+          "horse_name": "マンナット"
+        },
+        "reason": "エンルートフライトをマンナットより上に置く。エンルートフライトは初戦の福島2000mで2着。前で運びながら最後まで粘れており、今回は調教も上昇。前走が超スローで展開利を受けた点は割り引いても、同距離の直接実績と仕上がりを合わせれば中心に据えやすい。 マンナットにも有力材料はあるが、今回条件での再現性を比較するとエンルートフライトを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "エンルートフライト"
+        },
+        "other": {
+          "horse_no": 6,
+          "horse_name": "ピュアノーブル"
+        },
+        "reason": "エンルートフライトをピュアノーブルより上に置く。エンルートフライトは初戦の福島2000mで2着。前で運びながら最後まで粘れており、今回は調教も上昇。前走が超スローで展開利を受けた点は割り引いても、同距離の直接実績と仕上がりを合わせれば中心に据えやすい。 ピュアノーブルの長所も認めるが、今回の中心条件に対する直接証拠はエンルートフライトを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "前走はかなり遅い流れを前で運べた利があり、今回はペースが変わった時に同じ粘りを出せるかが課題。",
+      "reversal_condition": "前走はかなり遅い流れを前で運べた利があり、今回はペースが変わった時に同じ粘りを出せるかが課題。が実際に強く表面化し、マンナットまたはピュアノーブルが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 1,
+            "horse_name": "エンルートフライト",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "03262805",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "マンナット",
+            "decision_role": "DOWNGRADE_APPARENT_FORM",
+            "reinterpretation_state": "DOWNGRADE",
+            "source_run_ref": "07263202",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ピュアノーブル",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "07262602",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 11
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:18:20+00:00",
+      "frozen_at": "2026-09-30T02:18:20+00:00",
+      "prediction_hash": "6c83e992013696f5c79e519fcd92a2ae7ca32ae48ca332dffc77126baa5c2579",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "中京",
+      "race_no": 2,
+      "race_key": "2026-08-29-中京-2",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-中京",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/中京/2R",
+      "racenote_semantic_sha256": "7c7cf89cd5fcf4bd50372b8960e97f7c70b313a5c1e4ca04f26bf7ee4a2067db",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "オーリエイト",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "オーリエイト",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "ボビーザグレート",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "ソリドゥス",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ダノンアズール",
+            "rank": 4
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "ルガルデ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "オーリエイトは前走の中京ダ1800mで2着。道中で位置を上げながら上がり最速を使っており、今回と同じ条件で最も内容がはっきりしています。調教も高水準で、素直に前走の再現を期待します。",
+      "reader_facing_reason": "オーリエイトは前走の中京ダ1800mで2着。道中で位置を上げながら上がり最速を使っており、今回と同じ条件で最も内容がはっきりしています。調教も高水準で、素直に前走の再現を期待します。",
+      "concern": "前走は差す形だったため、流れが落ち着いて前残りになると位置取り差が残る可能性がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H3"
+      ],
+      "race_model": "2歳ダ1800m未勝利。ダート経験が少ない組が多く、同じ中京1800mで好走済みの直接証拠を最優先し、距離延長組は末脚と調教から適応余地を見る。",
+      "primary_question": "中京ダ1800mで既に形を作った馬を、未知の距離延長組が上回れるだけの根拠があるか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "オーリエイト"
+          },
+          "case_for": "直近は中京ダート1800mで2着。今回の能力見立てはIDM 33.0、調教は平行線。同距離履歴は1走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ボビーザグレート"
+          },
+          "case_for": "直近は小倉ダート1700mで5着。今回の能力見立てはIDM 26.0、調教は平行線。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は追込で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ソリドゥス"
+          },
+          "case_for": "直近は中京ダート1400mで5着。今回の能力見立てはIDM 21.0、調教は上昇。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は追込で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ダノンアズール"
+          },
+          "case_for": "直近は新潟芝1600mで6着。今回の能力見立てはIDM 19.0、調教は平行線。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は先行で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ルガルデ"
+          },
+          "case_for": "直近は中京ダート1400mで8着。今回の能力見立てはIDM 20.0、調教は平行線。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は追込で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "オーリエイト"
+        },
+        "other": {
+          "horse_no": 2,
+          "horse_name": "ボビーザグレート"
+        },
+        "reason": "オーリエイトをボビーザグレートより上に置く。オーリエイトは前走の中京ダ1800mで2着。道中で位置を上げながら上がり最速を使っており、今回と同じ条件で最も内容がはっきりしています。調教も高水準で、素直に前走の再現を期待します。 ボビーザグレートにも有力材料はあるが、今回条件での再現性を比較するとオーリエイトを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "オーリエイト"
+        },
+        "other": {
+          "horse_no": 11,
+          "horse_name": "ソリドゥス"
+        },
+        "reason": "オーリエイトをソリドゥスより上に置く。オーリエイトは前走の中京ダ1800mで2着。道中で位置を上げながら上がり最速を使っており、今回と同じ条件で最も内容がはっきりしています。調教も高水準で、素直に前走の再現を期待します。 ソリドゥスの長所も認めるが、今回の中心条件に対する直接証拠はオーリエイトを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "前走は差す形だったため、流れが落ち着いて前残りになると位置取り差が残る可能性がある。",
+      "reversal_condition": "前走は差す形だったため、流れが落ち着いて前残りになると位置取り差が残る可能性がある。が実際に強く表面化し、ボビーザグレートまたはソリドゥスが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "オーリエイト",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "07262402",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ボビーザグレート",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "10262406",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "ソリドゥス",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "07262701",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 12
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:18:20+00:00",
+      "frozen_at": "2026-09-30T02:18:20+00:00",
+      "prediction_hash": "1f1d1211dcc2527ba06aa025eb0d6f9ba5e53e72a1ab375cf25c4aa82c441b45",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "中京",
+      "race_no": 3,
+      "race_key": "2026-08-29-中京-3",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1400,
+      "class": "新馬"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-中京",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/中京/3R",
+      "racenote_semantic_sha256": "204a38f354f30d4b501681acaf8172f84189efe6d6016b82d2c1377c28df8711",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 3,
+        "horse_name": "パルフェクシオン",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 3,
+          "horse_name": "パルフェクシオン",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "インティサール",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "リムリックアイル",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 5,
+            "horse_name": "ビンチャリ",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ジーティーハルカゼ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "パルフェクシオンは調教がデキ抜群で、全体時計・終いとも今回の新馬組では強い内容。キズナ産駒の中京芝1400m周辺のP2にも十分な母数があり、初戦から動ける材料が最も揃っています。",
+      "reader_facing_reason": "パルフェクシオンは調教がデキ抜群で、全体時計・終いとも今回の新馬組では強い内容。キズナ産駒の中京芝1400m周辺のP2にも十分な母数があり、初戦から動ける材料が最も揃っています。",
+      "concern": "全馬が初出走で実戦時の気性・スタート・位置取りは未知。調教評価がそのまま競馬に結び付かないリスクは大きい。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H2",
+        "H4",
+        "H5"
+      ],
+      "race_model": "2歳芝1400m新馬。全馬未出走で実戦比較ができないため、調教の質と上向き、P1/P2血統文脈、RaceNote上の基礎能力見立てを組み合わせる。小標本血統は過信しない。",
+      "primary_question": "実戦証拠がない中で、初戦から1400mの流れに対応できる仕上がりと血統背景を最も持つ馬はどれか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "パルフェクシオン"
+          },
+          "case_for": "実戦歴はなく初出走。今回の能力見立てはIDM 42.3、調教はデキ抜群。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "実戦歴がないためスタート・位置取り・レース対応が未知。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "インティサール"
+          },
+          "case_for": "実戦歴はなく初出走。今回の能力見立てはIDM 38.7、調教はデキ抜群。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "実戦歴がないためスタート・位置取り・レース対応が未知。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "リムリックアイル"
+          },
+          "case_for": "実戦歴はなく初出走。今回の能力見立てはIDM 34.3、調教は上昇。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "実戦歴がないためスタート・位置取り・レース対応が未知。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ビンチャリ"
+          },
+          "case_for": "実戦歴はなく初出走。今回の能力見立てはIDM 36.3、調教は平行線。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "実戦歴がないためスタート・位置取り・レース対応が未知。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ジーティーハルカゼ"
+          },
+          "case_for": "実戦歴はなく初出走。今回の能力見立てはIDM 26.5、調教は平行線。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "実戦歴がないためスタート・位置取り・レース対応が未知。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 3,
+          "horse_name": "パルフェクシオン"
+        },
+        "other": {
+          "horse_no": 8,
+          "horse_name": "インティサール"
+        },
+        "reason": "パルフェクシオンをインティサールより上に置く。パルフェクシオンは調教がデキ抜群で、全体時計・終いとも今回の新馬組では強い内容。キズナ産駒の中京芝1400m周辺のP2にも十分な母数があり、初戦から動ける材料が最も揃っています。 インティサールにも有力材料はあるが、今回条件での再現性を比較するとパルフェクシオンを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 3,
+          "horse_name": "パルフェクシオン"
+        },
+        "other": {
+          "horse_no": 4,
+          "horse_name": "リムリックアイル"
+        },
+        "reason": "パルフェクシオンをリムリックアイルより上に置く。パルフェクシオンは調教がデキ抜群で、全体時計・終いとも今回の新馬組では強い内容。キズナ産駒の中京芝1400m周辺のP2にも十分な母数があり、初戦から動ける材料が最も揃っています。 リムリックアイルの長所も認めるが、今回の中心条件に対する直接証拠はパルフェクシオンを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "全馬が初出走で実戦時の気性・スタート・位置取りは未知。調教評価がそのまま競馬に結び付かないリスクは大きい。",
+      "reversal_condition": "全馬が初出走で実戦時の気性・スタート・位置取りは未知。調教評価がそのまま競馬に結び付かないリスクは大きい。が実際に強く表面化し、インティサールまたはリムリックアイルが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全馬初出走で対象となる過去走RRDBがないため使用しない。",
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 12
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:18:20+00:00",
+      "frozen_at": "2026-09-30T02:18:20+00:00",
+      "prediction_hash": "9e11ce05f0f8dbbb7a8835afbba2355d9f63aac5cd7b2d27409f16fbed852cfa",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "中京",
+      "race_no": 4,
+      "race_key": "2026-08-29-中京-4",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2200,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-中京",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/中京/4R",
+      "racenote_semantic_sha256": "a074fae849384e153455154c4e4c217b3964ace01fa5b8471666133a776387eb",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "スクランプシャス",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "スクランプシャス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 13,
+          "horse_name": "マイコンプリート",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 16,
+          "horse_name": "ナムラヴンダー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "プロスト",
+            "rank": 4
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "クールドリオン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "スクランプシャスは前走の中京2200mで2着。後方から上がり最速で詰めており、今回は調教も上昇しています。同条件で既に勝ち負けの形を作れている点を最も重く見ます。",
+      "reader_facing_reason": "スクランプシャスは前走の中京2200mで2着。後方から上がり最速で詰めており、今回は調教も上昇しています。同条件で既に勝ち負けの形を作れている点を最も重く見ます。",
+      "concern": "追込脚質なので、前半が緩く先行勢が余力を残すと届かない可能性がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "3歳芝2200m未勝利。同条件好走馬が複数いるため、2200mの直接実績と終いの質を軸に、2000m組の上昇度と今回の調教を比較する。",
+      "primary_question": "中京2200mの直接証拠を持つ馬と、2000mから状態を上げてくる馬のどちらを中心に取るべきか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "スクランプシャス"
+          },
+          "case_for": "直近は中京芝2200mで2着。今回の能力見立てはIDM 43.0、調教は上昇。同距離履歴は3走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "マイコンプリート"
+          },
+          "case_for": "直近は中京芝2000mで3着。今回の能力見立てはIDM 44.0、調教はデキ抜群。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "ナムラヴンダー"
+          },
+          "case_for": "直近は中京芝2200mで4着。今回の能力見立てはIDM 38.0、調教は平行線。同距離履歴は2走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は先行で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "プロスト"
+          },
+          "case_for": "直近は中京芝2000mで5着。今回の能力見立てはIDM 45.0、調教は平行線。同距離履歴は2走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は追込で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "クールドリオン"
+          },
+          "case_for": "直近は京都芝1800mで2着。今回の能力見立てはIDM 38.2、調教は平行線。同距離履歴は0走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "スクランプシャス"
+        },
+        "other": {
+          "horse_no": 13,
+          "horse_name": "マイコンプリート"
+        },
+        "reason": "スクランプシャスをマイコンプリートより上に置く。スクランプシャスは前走の中京2200mで2着。後方から上がり最速で詰めており、今回は調教も上昇しています。同条件で既に勝ち負けの形を作れている点を最も重く見ます。 マイコンプリートにも有力材料はあるが、今回条件での再現性を比較するとスクランプシャスを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "スクランプシャス"
+        },
+        "other": {
+          "horse_no": 16,
+          "horse_name": "ナムラヴンダー"
+        },
+        "reason": "スクランプシャスをナムラヴンダーより上に置く。スクランプシャスは前走の中京2200mで2着。後方から上がり最速で詰めており、今回は調教も上昇しています。同条件で既に勝ち負けの形を作れている点を最も重く見ます。 ナムラヴンダーの長所も認めるが、今回の中心条件に対する直接証拠はスクランプシャスを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "追込脚質なので、前半が緩く先行勢が余力を残すと届かない可能性がある。",
+      "reversal_condition": "追込脚質なので、前半が緩く先行勢が余力を残すと届かない可能性がある。が実際に強く表面化し、マイコンプリートまたはナムラヴンダーが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 8,
+            "horse_name": "スクランプシャス",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "07262809",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "マイコンプリート",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "07262601",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 16,
+            "horse_name": "ナムラヴンダー",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "07262809",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 16
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:18:20+00:00",
+      "frozen_at": "2026-09-30T02:18:20+00:00",
+      "prediction_hash": "0e639a701b9f0f1667a1f03e3f1e90d0491c743d8f3f3db07355947cb0315550",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "中京",
+      "race_no": 5,
+      "race_key": "2026-08-29-中京-5",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2000,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-中京",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/中京/5R",
+      "racenote_semantic_sha256": "32453c8b0327ff01e3e9fcba1832c212029a6ce70f98ac27812dc6c5f063f056",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ワンダーデリエール",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ワンダーデリエール",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "ビクスバイト",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 6,
+          "horse_name": "パンキー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "ゴールデンテティス",
+            "rank": 4
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "コスモフィレンツェ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ワンダーデリエールは前走の中京2000mで2着。先行して33秒台の上がりを使えており、今回は調教も上昇して高水準です。同条件の速い決着に対応した実績を買います。",
+      "reader_facing_reason": "ワンダーデリエールは前走の中京2000mで2着。先行して33秒台の上がりを使えており、今回は調教も上昇して高水準です。同条件の速い決着に対応した実績を買います。",
+      "concern": "過去には同コースで大きく崩れたレースもあり、展開や折り合い次第で振れ幅が残る。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H3"
+      ],
+      "race_model": "3歳芝2000m未勝利。同コース2着馬が複数いて比較しやすい。中京2000mの直接実績、直近の末脚、調教上昇を組み合わせて勝ち切りに近い馬を選ぶ。",
+      "primary_question": "同じ中京2000mで2着している組の中で、今回さらに一段上げられる材料が最も多いのはどの馬か。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ワンダーデリエール"
+          },
+          "case_for": "直近は中京芝2000mで2着。今回の能力見立てはIDM 48.0、調教は上昇。同距離履歴は3走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は先行で、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ビクスバイト"
+          },
+          "case_for": "直近は中京芝2000mで2着。今回の能力見立てはIDM 39.3、調教は上昇。同距離履歴は3走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "パンキー"
+          },
+          "case_for": "直近は中京芝2000mで3着。今回の能力見立てはIDM 39.2、調教は平行線。同距離履歴は3走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ゴールデンテティス"
+          },
+          "case_for": "直近は中京芝2000mで4着。今回の能力見立てはIDM 40.0、調教は平行線。同距離履歴は1走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は差しで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "コスモフィレンツェ"
+          },
+          "case_for": "直近は中京芝2000mで10着。今回の能力見立てはIDM 42.0、調教は平行線。同距離履歴は3走で、今回条件への接続材料を持つ。",
+          "case_against": "脚質は逃げで、展開次第では持ち味を出し切れない余地がある。",
+          "context_hook": "地力・今回条件・調教・過去走内容を固定配点せず、このレースで識別力の高い材料として比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "ワンダーデリエール"
+        },
+        "other": {
+          "horse_no": 10,
+          "horse_name": "ビクスバイト"
+        },
+        "reason": "ワンダーデリエールをビクスバイトより上に置く。ワンダーデリエールは前走の中京2000mで2着。先行して33秒台の上がりを使えており、今回は調教も上昇して高水準です。同条件の速い決着に対応した実績を買います。 ビクスバイトにも有力材料はあるが、今回条件での再現性を比較するとワンダーデリエールを優先する。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "ワンダーデリエール"
+        },
+        "other": {
+          "horse_no": 6,
+          "horse_name": "パンキー"
+        },
+        "reason": "ワンダーデリエールをパンキーより上に置く。ワンダーデリエールは前走の中京2000mで2着。先行して33秒台の上がりを使えており、今回は調教も上昇して高水準です。同条件の速い決着に対応した実績を買います。 パンキーの長所も認めるが、今回の中心条件に対する直接証拠はワンダーデリエールを上位とした。"
+      },
+      "why_not_numeric_leader": "IDM・総合指数・調教指数・Trend・P1/P2・RRDBを合算した順位は作らず、今回条件で識別力の高いEvidenceを選んで候補同士を比較した。",
+      "strongest_counter": "過去には同コースで大きく崩れたレースもあり、展開や折り合い次第で振れ幅が残る。",
+      "reversal_condition": "過去には同コースで大きく崩れたレースもあり、展開や折り合い次第で振れ幅が残る。が実際に強く表面化し、ビクスバイトまたはパンキーが想定より有利な位置取り・展開を得る場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 1,
+            "horse_name": "ワンダーデリエール",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "07262505",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "ビクスバイト",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "07262401",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "パンキー",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "07262303",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 13
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T02:18:20+00:00",
+      "frozen_at": "2026-09-30T02:18:20+00:00",
+      "prediction_hash": "aae7f0cad31f8bc57002221c6bb092053adf1b34b9a4b532fdd1497d913a4d74",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-08-29",
+      "venue": "中京",
+      "race_no": 6,
+      "race_key": "2026-08-29-中京-6",
+      "race_name": "清洲特別",
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "2勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0003-中京",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0003/20260829/中京/6R",
+      "racenote_semantic_sha256": "967180c3bf3beb4507fc2d528397595e412eac40a8ad4648c099dbf74c681a31",
+      "day_prep_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "シルフズミスチーフ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "シルフズミスチーフ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 12,
+          "horse_name": "バッハアルプゼー",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "ルクスレイモンド",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "ダノンモンテローザ",
+            "rank": 4
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "フィドルファドル",
+            "rank": 5
+          }
