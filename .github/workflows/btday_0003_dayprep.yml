@@ -47,14 +47,19 @@ jobs:
           from pathlib import Path
 
           ar=Path('/tmp/analysis')
-          if not (ar/'current.json').is_file():
-              raise SystemExit('Analysis current.json missing')
           manifest=ar/'generations'/'analysis-v1_4-canonical-20260928-02'/'manifest.json'
           if not manifest.is_file():
               raise SystemExit('Expected Analysis generation missing')
           d=json.loads(manifest.read_text(encoding='utf-8'))
           if d.get('generation_id')!='analysis-v1_4-canonical-20260928-02':
               raise SystemExit('Unexpected Analysis generation')
+          # The support artifact contains both -01 and -02, but its archived current.json
+          # predates final Drive promotion. DAY PREP must use the accepted current generation.
+          (ar/'current.json').write_text(json.dumps({
+              'status':'CURRENT',
+              'generation_id':'analysis-v1_4-canonical-20260928-02',
+              'manifest':'generations/analysis-v1_4-canonical-20260928-02/manifest.json'
+          },ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
 
           currents=list(Path('/tmp/rrdb').rglob('current.json'))
           if len(currents)!=1:
