@@ -55,11 +55,13 @@ jobs:
               raise SystemExit('Unexpected Analysis generation')
           # The support artifact contains both -01 and -02, but its archived current.json
           # predates final Drive promotion. DAY PREP must use the accepted current generation.
-          (ar/'current.json').write_text(json.dumps({
-              'status':'CURRENT',
-              'generation_id':'analysis-v1_4-canonical-20260928-02',
-              'manifest':'generations/analysis-v1_4-canonical-20260928-02/manifest.json'
-          },ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          with (ar/'current.json').open('w',encoding='utf-8') as f:
+              json.dump({
+                  'status':'CURRENT',
+                  'generation_id':'analysis-v1_4-canonical-20260928-02',
+                  'manifest':'generations/analysis-v1_4-canonical-20260928-02/manifest.json'
+              },f,ensure_ascii=False,indent=2)
+              f.write(chr(10))
 
           currents=list(Path('/tmp/rrdb').rglob('current.json'))
           if len(currents)!=1:
