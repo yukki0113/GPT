@@ -1,0 +1,10 @@
+{
+  "sample_set": "approved five-race probe targets from Stage A Core Canonical",
+  "samples": [
+    {"race_key": "20160101|56|1", "source_raw_sha256": "c49d61b83ee201268f4c32edc4346311bba3013402494f09bc9022d506dc1115", "source_raw_path": "keirin-historical-2016-01-poc-1185.zip:raw/2016/01/events/56_01.html"},
+    {"race_key": "20200101|53|1", "source_raw_sha256": "0a64b27f600aa5599f608ec52b9e4a31c6273211830247544440ad3abab09e95", "source_raw_path": "keirin-historical-2020.zip:raw/2020/01/events/53_01.html"},
+    {"race_key": "20250101|45|1", "source_raw_sha256": "0fd1725ad7f26b62fac97eddd7ebb6f7f3092357a694a03baa065d35aa9eb9bc", "source_raw_path": "keirin-historical-2025.zip:raw/2025/01/events/45_01.html"},
+    {"race_key": "20250109|26|1", "source_raw_sha256": "c14e0398bea69a3bdff349490ed8a240bf0e95d2be263218d878fc0469e6cc67", "source_raw_path": "keirin-historical-2025.zip:raw/2025/01/events/26_01.html"},
+    {"race_key": "20250605|61|1", "source_raw_sha256": "8ba31927adb7b4c4f942aee82b0f07e3f0fb059b9dad6808a9416a263e5eae7c", "source_raw_path": "keirin-historical-2025.zip:raw/2025/06/events/61_01.html"}
+  ]
+}
