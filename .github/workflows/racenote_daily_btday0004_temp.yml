@@ -1,0 +1,147 @@
+name: RaceNote daily backtest BTDAY-0004 temp
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  build:
+    if: startsWith(github.event.issue.title, '[RACENOTE_DAILY_BTDAY0004]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install duckdb pyarrow pandas numpy jsonschema gdown
+
+      - name: Prepare sources
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb /tmp/rules /tmp/output
+
+          gdown 'https://drive.google.com/uc?id=1wlR74Nlxqu-Z_kzjW9ecMZjrdNYC3Lyw' -O /tmp/input/PACI260314.zip
+          gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/input/RaceReviewDB_CURRENT.zip
+          gdown 'https://drive.google.com/uc?id=1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr' -O /tmp/input/NextWatch.zip
+
+          gh run download 36437363166 --repo "${GITHUB_REPOSITORY}" \
+            --name 'jrdb-post-race-parquet-refresh-36437363166' \
+            --dir /tmp/analysis_art
+          tar -xJf /tmp/analysis_art/analysis-parquet-candidate.tar.xz -C /tmp/analysis
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/analysis/current.json')
+          x=json.loads(p.read_text(encoding='utf-8'))
+          manifest=Path('/tmp/analysis/generations/analysis-v1_4-canonical-20260928-02/manifest.json')
+          if not manifest.is_file():
+              raise SystemExit('canonical -02 manifest missing')
+          x={'status':'CURRENT','generation_id':'analysis-v1_4-canonical-20260928-02',
+             'manifest':'generations/analysis-v1_4-canonical-20260928-02/manifest.json'}
+          p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+
+          unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          unzip -q /tmp/input/NextWatch.zip -d /tmp/rules
+
+      - name: Run D5 daily builder
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/build_racenote_daily.py \
+            --date 2026-03-14 \
+            --paci /tmp/input/PACI260314.zip \
+            --analysis-root /tmp/analysis \
+            --racereview-current-cache /tmp/rrdb \
+            --next-watch-rules /tmp/rules/next_watch_candidate_rules_frozen.json \
+            --output /tmp/output | tee /tmp/build_stdout.json
+
+      - name: Create DAY PREP handoff
+        run: |
+          python - <<'PY'
+          import json, hashlib, zipfile
+          from pathlib import Path
+          root=Path('/tmp/output/RaceNote_20260314')
+          manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          validation=json.loads((root/'validation_report.json').read_text(encoding='utf-8'))
+          readers=sorted((root/'reader').glob('*.json'))
+          venues={}
+          for p in readers:
+              x=json.loads(p.read_text(encoding='utf-8'))
+              r=x['race']
+              venues.setdefault(r['venue'],[]).append(int(r['race_no']))
+          handoff={
+            'schema_version':'RaceNote-Day-Prep-Handoff-0.1-draft',
+            'selection_id':'BTDAY-0004',
+            'target_date':'2026-03-14',
+            'paci_file':'PACI260314.zip',
+            'paci_drive_file_id':'1wlR74Nlxqu-Z_kzjW9ecMZjrdNYC3Lyw',
+            'logic_version':'RaceNote-Human-Context-Reader-0.3.2',
+            'analysis_generation':manifest['sources']['analysis']['generation_id'],
+            'rrdb_generation':manifest['sources']['rrdb'].get('generation_id'),
+            'next_watch_rule_version':manifest['sources']['next_watch'].get('rule_version'),
+            'venues':sorted(venues),
+            'venue_races':{k:sorted(v) for k,v in sorted(venues.items())},
+            'venue_count':len(venues),
+            'race_count':manifest['counts']['races_built'],
+            'horse_count':manifest['counts']['horses'],
+            'technical_skips':manifest['counts']['technical_skips'],
+            'status':manifest['status'],
+            'validation_status':validation['status'],
+            'result_opened':False,
+          }
+          (root/'day_prep_handoff.json').write_text(json.dumps(handoff,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          out=Path('/tmp/BTDAY-0004_DAY_PREP_20260314_FINAL.zip')
+          with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
+              for p in root.rglob('*'):
+                  if p.is_file(): z.write(p,p.relative_to(root))
+          print(json.dumps(handoff,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BTDAY-0004-DAY-PREP-20260314
+          path: /tmp/BTDAY-0004_DAY_PREP_20260314_FINAL.zip
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          root=Path('/tmp/output/RaceNote_20260314')
+          if (root/'day_prep_handoff.json').is_file():
+              x=json.loads((root/'day_prep_handoff.json').read_text(encoding='utf-8'))
+              status='success'
+          else:
+              x={}
+              status='failure'
+          print('RACENOTE_DAILY_BTDAY0004_RESULT')
+          print('\\`\\`\\`json')
+          print(json.dumps({
+            'status':status,
+            'run_id':int(os.environ['GITHUB_RUN_ID']),
+            'artifact_name':'BTDAY-0004-DAY-PREP-20260314',
+            **x
+          },ensure_ascii=False,indent=2))
+          print('\\`\\`\\`')
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --body-file /tmp/comment.md
+          gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}"
