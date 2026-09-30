@@ -1,3 +1,17 @@
+### RaceNote clean blind daily backtest activation — 2026-09-30
+
+- User explicitly authorized transition from calibration hold to formal daily clean-blind backtesting.
+- Current phase: `BLIND_RESEARCH_ACTIVE`.
+- `clean_blind_pick_allowed = true`.
+- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
+- Daily operation baseline: `docs/racenote/DAILY_FORECAST_OPERATION_v0_1.md`.
+- Daily RaceNote production entrypoint: `src/build_racenote_daily.py`.
+- Normal backtest flow:
+  `eligible unused 2026 date -> DAY PREP -> one venue per Forecast turn -> venue Freeze -> DAY MERGE -> STOP before results`.
+- Clean-blind date selection must use `config/racenote_backtest_day_pool_2026.json` and persist the selected date before Forecast.
+- RRDB remains required contextual evidence; target results remain unopened until the requested Forecast scope is Frozen.
+- CAL-001 through CAL-006 are treated as completed calibration evidence; daily backtesting now proceeds on fresh eligible dates.
+
 ### RaceNote Daily Build D5 — 2026-09-30
 
 - **D5 PASS / production day-level cutover complete.**
