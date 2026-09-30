@@ -29,7 +29,7 @@ def main():
         if a.get("template_ids_sha256")!=expected[sid]["template_ids_sha256"]:raise SystemExit(f"template digest mismatch {sid}")
         audits.append(a); tables.append(pq.read_table(pps[0]))
 
-    keys=["feature_parquet_sha256","template_catalog_sha256","shard_plan_sha256","policy_version","admission_min_win_roi","admission_min_place_roi"]
+    keys=["feature_parquet_sha256","template_catalog_sha256","shard_plan_sha256","policy_version","evaluator_commit","admission_min_win_roi","admission_min_place_roi"]
     for k in keys:
         vals={json.dumps(a.get(k),sort_keys=True) for a in audits}
         if len(vals)!=1:raise SystemExit(f"provenance mismatch {k}: {vals}")
