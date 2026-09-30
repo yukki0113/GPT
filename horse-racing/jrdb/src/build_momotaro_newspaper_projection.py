@@ -92,6 +92,56 @@ def parse_bool(value: str, line_no: int) -> bool:
     )
 
 
+def load_race_comments(
+    path: Path,
+    *,
+    expected_date: str,
+) -> dict[tuple[str, int, str], str]:
+    """Load sparse race-level Momotaro comments keyed by venue/race/member."""
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    entries = payload.get("entries") if isinstance(payload, dict) else None
+    if not isinstance(entries, list):
+        raise ValueError("Momotaro race-comments JSON must contain entries array")
+
+    output: dict[tuple[str, int, str], str] = {}
+    for index, item in enumerate(entries, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f"race comment {index} must be an object")
+        date = str(item.get("date") or "").strip()
+        venue_code = str(item.get("venue_code") or "").strip().zfill(2)
+        member_raw = str(item.get("member") or "").strip()
+        member = MEMBER_ALIASES.get(member_raw)
+        comment = str(item.get("comment") or "").strip()
+        try:
+            race_no = int(item.get("race_no"))
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"invalid race comment race_no at item {index}") from exc
+
+        if date != expected_date:
+            raise ValueError(
+                f"race comment date mismatch at item {index}: {date!r}"
+            )
+        if not re.fullmatch(r"\d{2}", venue_code):
+            raise ValueError(
+                f"invalid race comment venue_code at item {index}: {venue_code!r}"
+            )
+        if not 1 <= race_no <= 12:
+            raise ValueError(f"invalid race comment race_no at item {index}")
+        if member not in {"ryota", "kenshow"}:
+            raise ValueError(
+                f"race comment member must be ryota/kenshow at item {index}"
+            )
+        if not comment:
+            raise ValueError(f"blank race comment at item {index}")
+
+        key = (venue_code, race_no, member)
+        if key in output:
+            raise ValueError(f"duplicate race comment key: {key}")
+        output[key] = comment
+
+    return output
+
+
 def load_predictions(
     path: Path,
 ) -> tuple[
@@ -268,6 +318,7 @@ def build_projection(
     output_dir: Path,
     *,
     momotaro_csv: Path | None = None,
+    race_comments_json: Path | None = None,
 ) -> dict[str, Any]:
     """Build a fail-closed public Momotaro projection."""
     source_manifest_path = day_dir / "manifest.json"
@@ -300,6 +351,14 @@ def build_projection(
     if momotaro_csv is not None:
         prediction_index, prediction_sha = load_predictions(
             momotaro_csv
+        )
+
+    race_comments: dict[tuple[str, int, str], str] = {}
+    if race_comments_json is not None:
+        manifest_date = str(manifest.get("date") or "")
+        race_comments = load_race_comments(
+            race_comments_json,
+            expected_date=manifest_date,
         )
 
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
@@ -378,8 +437,20 @@ def build_projection(
             }
 
         race_notes = bundle.get("race_notes")
-        if isinstance(race_notes, dict):
-            race_notes.pop("racenote_short_comment", None)
+        if not isinstance(race_notes, dict):
+            race_notes = {}
+            bundle["race_notes"] = race_notes
+        race_notes.pop("racenote_short_comment", None)
+
+        member_comments: dict[str, str] = {}
+        for member in ("ryota", "kenshow"):
+            comment = race_comments.get((venue_code, race_no, member))
+            if comment:
+                member_comments[member] = comment
+        if member_comments:
+            race_notes["momotaro_comments"] = member_comments
+        else:
+            race_notes.pop("momotaro_comments", None)
 
         target_path = output_dir / relative
         target_path.parent.mkdir(parents=True, exist_ok=True)
@@ -474,6 +545,7 @@ def build_projection(
         "date": manifest.get("date"),
         "races": len(output_entries),
         "momotaro_rows": len(seen_predictions),
+        "race_comment_rows": len(race_comments),
         "manifest_sha256": sha_file(output_dir / "manifest.json"),
         "day_package_sha256": sha_file(
             output_dir / "day-package.json"
@@ -487,12 +559,14 @@ def main() -> int:
     parser.add_argument("--day-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--momotaro-csv", type=Path)
+    parser.add_argument("--race-comments-json", type=Path)
     args = parser.parse_args()
 
     result = build_projection(
         args.day_dir,
         args.output_dir,
         momotaro_csv=args.momotaro_csv,
+        race_comments_json=args.race_comments_json,
     )
     print(json.dumps(result, ensure_ascii=False))
     return 0
