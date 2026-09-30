@@ -1,0 +1,128 @@
+name: BTDAY-0003 DAY PREP
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/btday_0003_dayprep.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install gdown
+          python -m pip install -r tools/data-storage/requirements.txt
+
+      - name: Download fixed DAY PREP inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/support /tmp/rrdb /tmp/rules
+          gdown 'https://drive.google.com/uc?id=1JsDVyoLZ7gydBQqqujvTJ5u0orpWOk8D' -O /tmp/PACI260829.zip
+          gh run download 36437363166 --repo "${{ github.repository }}" -n jrdb-post-race-parquet-refresh-36437363166 -D /tmp/support
+          gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/RaceReviewDB_CURRENT.zip
+          gdown 'https://drive.google.com/uc?id=1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr' -O /tmp/next_watch_rules.zip
+          test -s /tmp/PACI260829.zip
+
+      - name: Prepare Analysis and RRDB roots
+        run: |
+          mkdir -p /tmp/analysis /tmp/rrdb
+          tar -xJf /tmp/support/analysis-parquet-candidate.tar.xz -C /tmp/analysis
+          unzip -q /tmp/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          ar=Path('/tmp/analysis')
+          if not (ar/'current.json').is_file():
+              raise SystemExit('Analysis current.json missing')
+          manifest=ar/'generations'/'analysis-v1_4-canonical-20260928-02'/'manifest.json'
+          if not manifest.is_file():
+              raise SystemExit('Expected Analysis generation missing')
+          d=json.loads(manifest.read_text(encoding='utf-8'))
+          if d.get('generation_id')!='analysis-v1_4-canonical-20260928-02':
+              raise SystemExit('Unexpected Analysis generation')
+
+          currents=list(Path('/tmp/rrdb').rglob('current.json'))
+          if len(currents)!=1:
+              raise SystemExit(f'unique RRDB current.json required: {currents}')
+          Path('/tmp/rrdb_root.txt').write_text(str(currents[0].parent),encoding='utf-8')
+          print('analysis_root', ar)
+          print('rrdb_root', currents[0].parent)
+          PY
+
+      - name: Build full daily RaceNote
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          RRDB_ROOT="$(cat /tmp/rrdb_root.txt)"
+          mkdir -p /tmp/dayprep
+          python horse-racing/jrdb/src/build_racenote_daily.py \
+            --date 2026-08-29 \
+            --paci /tmp/PACI260829.zip \
+            --analysis-root /tmp/analysis \
+            --racereview-root "$RRDB_ROOT" \
+            --next-watch-rules /tmp/next_watch_rules.zip \
+            --output /tmp/dayprep
+          find /tmp/dayprep -maxdepth 4 -type f -print
+
+      - name: Build DAY PREP handoff
+        run: |
+          python - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          root=Path('/tmp/dayprep/RaceNote_20260829')
+          manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          auth=sorted((root/'authoritative').glob('*.json'))
+          readers=sorted((root/'reader').glob('*.json'))
+          venues={}
+          for p in auth:
+              b=json.loads(p.read_text(encoding='utf-8'))
+              r=b['race']
+              venues.setdefault(r['venue'],[]).append(int(r['race_no']))
+          for v in venues:
+              venues[v]=sorted(venues[v])
+          handoff={
+              'schema_version':'RaceNote-Daily-Prep-Handoff-0.1-provisional',
+              'selection_id':'BTDAY-0003',
+              'target_date':'2026-08-29',
+              'status':manifest['status'],
+              'pipeline_version':manifest['pipeline_version'],
+              'logic_version':'RaceNote-Human-Context-Reader-0.3.2',
+              'phase':'BLIND_RESEARCH_ACTIVE',
+              'venue_count':len(venues),
+              'venues':venues,
+              'race_count':manifest['counts']['races_built'],
+              'horse_count':manifest['counts']['horses'],
+              'authoritative_count':len(auth),
+              'reader_count':len(readers),
+              'analysis_generation':(manifest.get('sources',{}).get('analysis') or {}).get('generation_id'),
+              'rrdb_generation':(manifest.get('sources',{}).get('rrdb') or {}).get('generation_id'),
+              'next_watch_rule_version':(manifest.get('sources',{}).get('next_watch') or {}).get('rule_version'),
+              'result_opened':False,
+              'firewall':manifest.get('firewall'),
+              'manifest_sha256':hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest(),
+          }
+          (root/'day_prep_handoff.json').write_text(json.dumps(handoff,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(handoff,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload DAY PREP package
+        uses: actions/upload-artifact@v4
+        with:
+          name: btday-0003-dayprep-20260829
+          path: /tmp/dayprep/RaceNote_20260829/
+          retention-days: 7
