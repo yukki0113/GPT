@@ -1,0 +1,43 @@
+{
+  "schema_version": "RaceNote-Daily-Merge-Audit-0.1-draft",
+  "selection_id": "BTDAY-0004",
+  "target_date": "2026-03-14",
+  "status": "PASS",
+  "venues": [
+    "中山",
+    "阪神",
+    "中京"
+  ],
+  "venue_count": 3,
+  "expected_races": 36,
+  "merged_races": 36,
+  "duplicate_race_keys": 0,
+  "prediction_hash_unique_count": 36,
+  "prediction_hash_preserved": true,
+  "marks_recomputed": false,
+  "reader_reasons_rewritten": false,
+  "reader_explanation_policy": "4.2.2 Reader-facing explanation of reinterpretation",
+  "result_opened": false,
+  "technical_skips": 0,
+  "venue_handoffs": [
+    {
+      "venue": "中京",
+      "frozen_count": 12,
+      "result_opened": false,
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    {
+      "venue": "中山",
+      "frozen_count": 12,
+      "result_opened": false,
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    {
+      "venue": "阪神",
+      "frozen_count": 12,
+      "result_opened": false,
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    }
+  ],
+  "merged_at": "2026-09-30T03:09:05+00:00"
+}
