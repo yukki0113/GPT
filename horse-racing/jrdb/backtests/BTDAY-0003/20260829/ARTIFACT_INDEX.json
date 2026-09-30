@@ -1,0 +1,32 @@
+{
+  "schema_version": "RaceNote-Backtest-Artifact-Index-0.1",
+  "selection_id": "BTDAY-0003",
+  "target_date": "2026-08-29",
+  "canonical_entry": "day_merge/forecast_20260829_all.json",
+  "transport_zip_committed": false,
+  "files": [
+    {"path":"day_prep/day_prep_handoff.json","size_bytes":1294,"sha256":"73de742f6972be35d63dc1be0ecad2e09eb35ae58592c3151d441059002ff6a3"},
+    {"path":"day_prep/manifest.json","size_bytes":3121,"sha256":"9128de62e4a738631fe50696863547b344fb2bf9f8ecde596681713869d7316f"},
+    {"path":"day_prep/validation_report.json","size_bytes":394,"sha256":"089ac1f40bb5cf86b81740f3db7a3b3ef0191515a04aa552cb5c5fec5b4a616e"},
+    {"path":"venues/chukyo/forecast_20260829_中京.json","size_bytes":119222,"sha256":"505fe4be8dde4d0c70706b50f3b998f167b96301f7961a758562d827cd581fa0"},
+    {"path":"venues/chukyo/forecast_20260829_中京.jsonl","size_bytes":95515,"sha256":"05169df062b8774dbe12559ac5fcad58c7410c84918c7650f7ec8a5debee1f00"},
+    {"path":"venues/chukyo/forecast_20260829_中京.html","size_bytes":5932,"sha256":"fb868b94936ffbae15f21b2bb98d68fde20d9a8c07476ad0fd442d9f0d3d8442"},
+    {"path":"venues/chukyo/forecast_20260829_中京_audit.json","size_bytes":257,"sha256":"cf58895093dd9e7a7301fce02686e9712357127c2afe6f30292e297a3de23896"},
+    {"path":"venues/chukyo/forecast_20260829_中京_handoff.json","size_bytes":1406,"sha256":"3f89065d1a0bd91c97bf6e56b922113d53e9756b3de1d105d68e98e5b36fb8b8"},
+    {"path":"venues/niigata/forecast_20260829_新潟.json","size_bytes":119262,"sha256":"0050504e823909d1e70f10c18253ca24253bcdabd37ee1d4a915c90fc8d3f156"},
+    {"path":"venues/niigata/forecast_20260829_新潟.jsonl","size_bytes":95056,"sha256":"34785721a39e32a0a0358a7b965960481c8671ec2d3fd4430cd131b9071227d8"},
+    {"path":"venues/niigata/forecast_20260829_新潟.html","size_bytes":5812,"sha256":"d5d6a3f86342c39c489528dd9569c33f58f7f3acd4239486aabd8d2733a0668a"},
+    {"path":"venues/niigata/forecast_20260829_新潟_audit.json","size_bytes":381,"sha256":"2848d650f6024276b90ae673816488c2ce66c14488060990487f3424a7567850"},
+    {"path":"venues/niigata/forecast_20260829_新潟_handoff.json","size_bytes":1396,"sha256":"c77fecc400c490fd43baad363b0b9f949339af4e858188250e6c300884e2687c"},
+    {"path":"venues/sapporo/forecast_20260829_札幌.json","size_bytes":118594,"sha256":"ae4ae01165ae9d5a84937a8a58f6ceeefd1c73fcf993d72519fbaaccbc996dbe"},
+    {"path":"venues/sapporo/forecast_20260829_札幌.jsonl","size_bytes":94730,"sha256":"6ced217086cfead942115d7c565b6996705c2cb138ae0a9dab491235ecaa19e5"},
+    {"path":"venues/sapporo/forecast_20260829_札幌.html","size_bytes":5888,"sha256":"9ee808bbc44b3fa15701ca645802bbb39e845a7c84fb8b807e4c5ce943054af8"},
+    {"path":"venues/sapporo/forecast_20260829_札幌_audit.json","size_bytes":324,"sha256":"72bca75dd2a0eeaa6fb2be3eccd1e4f52880965b38c21e74b7f4b122d5f59f17"},
+    {"path":"venues/sapporo/forecast_20260829_札幌_handoff.json","size_bytes":1373,"sha256":"4aac03561bd1413afe57f5e9d06a336adc8ec32f2226c2c9452b30e88cf6a156"},
+    {"path":"day_merge/forecast_20260829_all.json","size_bytes":357072,"sha256":"0891bf0570246f8d319983788517107bf85ed4b7d2b01cec93e51618b93ba40f"},
+    {"path":"day_merge/forecast_20260829_all.jsonl","size_bytes":285301,"sha256":"4847a01f796cc873383ca074c0c475730bec7efef7ab87e9d88fcf7480553bd9"},
+    {"path":"day_merge/forecast_20260829_all.html","size_bytes":17226,"sha256":"1b8746a2e0136b4c115c077447d5d859016e4da290446babd65fa7ffe178ee41"},
+    {"path":"day_merge/forecast_20260829_all_audit.json","size_bytes":1026,"sha256":"b63897a375197be4bbccf819a43a91a625fb19116338944b0e89c2739e7224ba"},
+    {"path":"day_merge/forecast_20260829_all_handoff.json","size_bytes":3269,"sha256":"e216ceb3f6296037a233e4757df4071f0b6255db5c0a9fa682dec396e37f95e3"}
+  ]
+}
