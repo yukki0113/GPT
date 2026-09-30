@@ -1,0 +1,1000 @@
+[
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-14",
+      "venue": "阪神",
+      "race_no": 1,
+      "race_key": "2026-03-14-阪神-1",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0004-阪神",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0004/20260314/阪神/1R",
+      "racenote_semantic_sha256": "3a3ac93551816b8883912598cf3a71eb886c0275b7458391b4630bde6dd9cdf6",
+      "day_prep_package": "BTDAY-0004_DAY_PREP_20260314_FINAL.zip",
+      "reader_explanation_policy": "FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md#4.2.2"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "マルベック",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "マルベック",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "アンミックス",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 12,
+          "horse_name": "コイタマチャン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "ペプチドプラタ",
+            "rank": 4
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "シャンデヴィーニュ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "マルベックは前走の阪神ダ1800mで4着。道中で押し上げた後に最後は少し甘くなっており、4着をそのまま強調はしません。それでも同じ阪神1800mを経験しており、今回は調教も上向き。アンミックスも似た失速があるだけに、今回条件への直接経験を決め手にします。",
+      "reader_facing_reason": "マルベックは前走の阪神ダ1800mで4着。道中で押し上げた後に最後は少し甘くなっており、4着をそのまま強調はしません。それでも同じ阪神1800mを経験しており、今回は調教も上向き。アンミックスも似た失速があるだけに、今回条件への直接経験を決め手にします。",
+      "concern": "前走の終いの甘さが再び出ると、アンミックスや差しに回るコイタマチャンに上回られる余地がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "3歳ダ1800m未勝利。阪神1800mの直接実績馬と他場1800m好走馬が中心。前走着順だけでなく、道中で動いた後の失速まで含めて再比較する。",
+      "primary_question": "阪神1800m4着のマルベックを、中山1800m3着のアンミックスより今回上に取れるか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "マルベック"
+          },
+          "case_for": "直近は阪神ダート1800mで4着。同距離は1走・3着以内0回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "アンミックス"
+          },
+          "case_for": "直近は中山ダート1800mで3着。同距離は1走・3着以内1回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "コイタマチャン"
+          },
+          "case_for": "直近は阪神ダート1800mで7着。同距離は2走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ペプチドプラタ"
+          },
+          "case_for": "実戦歴はなく初出走。同距離は0走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "初出走のためスタート・位置取り・実戦対応が未知。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "シャンデヴィーニュ"
+          },
+          "case_for": "直近は京都ダート1200mで12着。同距離は0走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 4,
+          "horse_name": "マルベック"
+        },
+        "other": {
+          "horse_no": 1,
+          "horse_name": "アンミックス"
+        },
+        "reason": "マルベックをアンミックスより上に置く。マルベックは前走の阪神ダ1800mで4着。道中で押し上げた後に最後は少し甘くなっており、4着をそのまま強調はしません。それでも同じ阪神1800mを経験しており、今回は調教も上向き。アンミックスも似た失速があるだけに、今回条件への直接経験を決め手にします。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 4,
+          "horse_name": "マルベック"
+        },
+        "other": {
+          "horse_no": 12,
+          "horse_name": "コイタマチャン"
+        },
+        "reason": "マルベックをコイタマチャンより上に置く。マルベックは前走の阪神ダ1800mで4着。道中で押し上げた後に最後は少し甘くなっており、4着をそのまま強調はしません。それでも同じ阪神1800mを経験しており、今回は調教も上向き。アンミックスも似た失速があるだけに、今回条件への直接経験を決め手にします。"
+      },
+      "why_not_numeric_leader": "単一のIDM・総合値・調教指数・Trend・P1/P2・RRDBを並べた順位ではなく、このレースで識別力の高い直接証拠と再現性を比較して印を決めた。",
+      "strongest_counter": "前走の終いの甘さが再び出ると、アンミックスや差しに回るコイタマチャンに上回られる余地がある。",
+      "reversal_condition": "前走の終いの甘さが再び出ると、アンミックスや差しに回るコイタマチャンに上回られる余地がある。が実際に強く表面化し、アンミックスまたはコイタマチャンが想定以上に今回条件へ適応する場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 4,
+            "horse_name": "マルベック",
+            "decision_role": "DOWNGRADE_APPARENT_FORM",
+            "reinterpretation_state": "DOWNGRADE",
+            "source_run_ref": "09255206",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "アンミックス",
+            "decision_role": "DOWNGRADE_APPARENT_FORM",
+            "reinterpretation_state": "DOWNGRADE",
+            "source_run_ref": "06261904",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "コイタマチャン",
+            "decision_role": "CONTEXT_ONLY",
+            "reinterpretation_state": "NEUTRAL",
+            "source_run_ref": "09261401",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 13
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T03:08:35+00:00",
+      "frozen_at": "2026-09-30T03:08:35+00:00",
+      "prediction_hash": "52e1aebd9e99d8c28686e35e325aae440bb46e9dcc5333aac68f9e2d8e393eaa",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS",
+      "reader_explanation_4_2_2": "APPLIED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-14",
+      "venue": "阪神",
+      "race_no": 2,
+      "race_key": "2026-03-14-阪神-2",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1400,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0004-阪神",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0004/20260314/阪神/2R",
+      "racenote_semantic_sha256": "a27c791fb9f2dc474d8089bdc71a9fecd50f599de682e9fd98e3362104ac8196",
+      "day_prep_package": "BTDAY-0004_DAY_PREP_20260314_FINAL.zip",
+      "reader_explanation_policy": "FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md#4.2.2"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "ジャーナーリア",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "ジャーナーリア",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "エバイダンス",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 13,
+          "horse_name": "ジューンアゲイン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "ロードステラート",
+            "rank": 4
+          },
+          {
+            "horse_no": 16,
+            "horse_name": "ファツアップ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ジャーナーリアは前走の阪神ダ1400mで2着。道中で位置を上げながら最後まで粘れており、今回は調教も上昇しています。同じ条件で既に勝ち負けまで届いている直接証拠を最優先します。",
+      "reader_facing_reason": "ジャーナーリアは前走の阪神ダ1400mで2着。道中で位置を上げながら最後まで粘れており、今回は調教も上昇しています。同じ条件で既に勝ち負けまで届いている直接証拠を最優先します。",
+      "concern": "エバイダンスは調教が上向きで、ダート替わりが噛み合えば未知の上積みが大きい。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "3歳ダ1400m未勝利。阪神1400m2着馬が明確な中心候補。芝から替わる上昇馬や距離短縮組は、今回の適応余地を補助的に見る。",
+      "primary_question": "同条件2着のジャーナーリアを、芝からダートへ替わるエバイダンスより上に据えるべきか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ジャーナーリア"
+          },
+          "case_for": "直近は阪神ダート1400mで2着。同距離は4走・3着以内1回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "エバイダンス"
+          },
+          "case_for": "直近は京都芝1600mで6着。同距離は5走・3着以内2回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "ジューンアゲイン"
+          },
+          "case_for": "直近は京都芝1600mで7着。同距離は0走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ロードステラート"
+          },
+          "case_for": "直近は京都ダート1800mで9着。同距離は0走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "ファツアップ"
+          },
+          "case_for": "直近は阪神ダート1400mで8着。同距離は1走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 2,
+          "horse_name": "ジャーナーリア"
+        },
+        "other": {
+          "horse_no": 8,
+          "horse_name": "エバイダンス"
+        },
+        "reason": "ジャーナーリアをエバイダンスより上に置く。ジャーナーリアは前走の阪神ダ1400mで2着。道中で位置を上げながら最後まで粘れており、今回は調教も上昇しています。同じ条件で既に勝ち負けまで届いている直接証拠を最優先します。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 2,
+          "horse_name": "ジャーナーリア"
+        },
+        "other": {
+          "horse_no": 13,
+          "horse_name": "ジューンアゲイン"
+        },
+        "reason": "ジャーナーリアをジューンアゲインより上に置く。ジャーナーリアは前走の阪神ダ1400mで2着。道中で位置を上げながら最後まで粘れており、今回は調教も上昇しています。同じ条件で既に勝ち負けまで届いている直接証拠を最優先します。"
+      },
+      "why_not_numeric_leader": "単一のIDM・総合値・調教指数・Trend・P1/P2・RRDBを並べた順位ではなく、このレースで識別力の高い直接証拠と再現性を比較して印を決めた。",
+      "strongest_counter": "エバイダンスは調教が上向きで、ダート替わりが噛み合えば未知の上積みが大きい。",
+      "reversal_condition": "エバイダンスは調教が上向きで、ダート替わりが噛み合えば未知の上積みが大きい。が実際に強く表面化し、エバイダンスまたはジューンアゲインが想定以上に今回条件へ適応する場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [
+          {
+            "horse_no": 2,
+            "horse_name": "ジャーナーリア",
+            "decision_role": "CONTEXT_ONLY",
+            "reinterpretation_state": "NEUTRAL",
+            "source_run_ref": "09261103",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "エバイダンス",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "08262606",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV01",
+              "HV02"
+            ],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "ジューンアゲイン",
+            "decision_role": "CONTEXT_ONLY",
+            "reinterpretation_state": "NEUTRAL",
+            "source_run_ref": "08262106",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": "RRDBは全候補で確認したが、今回の印は主に当該条件の直接実績と状態差で決まり、再解釈は決定的ではなかった。",
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 16
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T03:08:35+00:00",
+      "frozen_at": "2026-09-30T03:08:35+00:00",
+      "prediction_hash": "9e81b5eadef823eca5e1ad2135e8ddf72e74b546da87e289ab19901299e1c4e6",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS",
+      "reader_explanation_4_2_2": "APPLIED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-14",
+      "venue": "阪神",
+      "race_no": 3,
+      "race_key": "2026-03-14-阪神-3",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0004-阪神",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0004/20260314/阪神/3R",
+      "racenote_semantic_sha256": "51d91c1cb51e33d67579f5655f85b10c6b2b8593704d6e85b2f6f65c53c6aab2",
+      "day_prep_package": "BTDAY-0004_DAY_PREP_20260314_FINAL.zip",
+      "reader_explanation_policy": "FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md#4.2.2"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "マオノムサシ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "マオノムサシ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "コスモブラック",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 3,
+          "horse_name": "ゲタリア",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "サンライズアーサー",
+            "rank": 4
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "クワッドマリニン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "コスモブラックの前走2着は上がり最速で内容が強く、相手として最も警戒します。それでもマオノムサシは前走の阪神1800mで3着し、道中から位置を上げて最後まで伸びたうえ、今回は調教も上昇。同じ阪神1800mでの再現性をわずかに上に取ります。",
+      "reader_facing_reason": "コスモブラックの前走2着は上がり最速で内容が強く、相手として最も警戒します。それでもマオノムサシは前走の阪神1800mで3着し、道中から位置を上げて最後まで伸びたうえ、今回は調教も上昇。同じ阪神1800mでの再現性をわずかに上に取ります。",
+      "concern": "末脚そのものはコスモブラックが上で、差しが届く流れなら逆転される可能性が高い。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "3歳ダ1800m未勝利。同条件2〜5着馬が揃う比較しやすいレース。着順だけでなく末脚の質と今回の状態を重視する。",
+      "primary_question": "阪神1800m3着のマオノムサシを、京都1800m2着かつ最速上がりのコスモブラックより上に取るか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "マオノムサシ"
+          },
+          "case_for": "直近は阪神ダート1800mで3着。同距離は3走・3着以内1回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "コスモブラック"
+          },
+          "case_for": "直近は京都ダート1800mで2着。同距離は2走・3着以内2回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は追込。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ゲタリア"
+          },
+          "case_for": "直近は阪神ダート1800mで2着。同距離は1走・3着以内1回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は追込。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "サンライズアーサー"
+          },
+          "case_for": "直近は阪神ダート1800mで5着。同距離は5走・3着以内1回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は追込。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "クワッドマリニン"
+          },
+          "case_for": "直近は東京ダート2100mで6着。同距離は1走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "マオノムサシ"
+        },
+        "other": {
+          "horse_no": 8,
+          "horse_name": "コスモブラック"
+        },
+        "reason": "マオノムサシをコスモブラックより上に置く。コスモブラックの前走2着は上がり最速で内容が強く、相手として最も警戒します。それでもマオノムサシは前走の阪神1800mで3着し、道中から位置を上げて最後まで伸びたうえ、今回は調教も上昇。同じ阪神1800mでの再現性をわずかに上に取ります。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "マオノムサシ"
+        },
+        "other": {
+          "horse_no": 3,
+          "horse_name": "ゲタリア"
+        },
+        "reason": "マオノムサシをゲタリアより上に置く。コスモブラックの前走2着は上がり最速で内容が強く、相手として最も警戒します。それでもマオノムサシは前走の阪神1800mで3着し、道中から位置を上げて最後まで伸びたうえ、今回は調教も上昇。同じ阪神1800mでの再現性をわずかに上に取ります。"
+      },
+      "why_not_numeric_leader": "単一のIDM・総合値・調教指数・Trend・P1/P2・RRDBを並べた順位ではなく、このレースで識別力の高い直接証拠と再現性を比較して印を決めた。",
+      "strongest_counter": "末脚そのものはコスモブラックが上で、差しが届く流れなら逆転される可能性が高い。",
+      "reversal_condition": "末脚そのものはコスモブラックが上で、差しが届く流れなら逆転される可能性が高い。が実際に強く表面化し、コスモブラックまたはゲタリアが想定以上に今回条件へ適応する場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "マオノムサシ",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "09261102",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "コスモブラック",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "08262102",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ゲタリア",
+            "decision_role": "CONTEXT_ONLY",
+            "reinterpretation_state": "NEUTRAL",
+            "source_run_ref": "09261302",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 13
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T03:08:35+00:00",
+      "frozen_at": "2026-09-30T03:08:35+00:00",
+      "prediction_hash": "ab8002ce38b8c9a9265b970bc563dc2638b1f424fae5f16360f68bbcaf393028",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS",
+      "reader_explanation_4_2_2": "APPLIED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-14",
+      "venue": "阪神",
+      "race_no": 4,
+      "race_key": "2026-03-14-阪神-4",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1400,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0004-阪神",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0004/20260314/阪神/4R",
+      "racenote_semantic_sha256": "69fb44c7984295e116d5db407d79faff7ddd4943ae1672776bbec2601e7b8f0f",
+      "day_prep_package": "BTDAY-0004_DAY_PREP_20260314_FINAL.zip",
+      "reader_explanation_policy": "FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md#4.2.2"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "アクアアイ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "アクアアイ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 16,
+          "horse_name": "アイルトン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "ダノンベルビュー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 13,
+            "horse_name": "メランコリニスタ",
+            "rank": 4
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "マイティキングダム",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "アクアアイは前走の京都芝1400mで2着。速い前半の中でも位置を上げて最後まで伸び、今回は調教も上昇しています。1400mの直接実績が明確で、1600mから短縮するアイルトンより今回の条件へ素直に接続できます。",
+      "reader_facing_reason": "アクアアイは前走の京都芝1400mで2着。速い前半の中でも位置を上げて最後まで伸び、今回は調教も上昇しています。1400mの直接実績が明確で、1600mから短縮するアイルトンより今回の条件へ素直に接続できます。",
+      "concern": "アイルトンは阪神マイル3着の地力があり、1400m短縮で先行力が生きれば押し切られる可能性がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H6"
+      ],
+      "race_model": "3歳芝1400m未勝利。1400mの直接好走馬と1600mからの短縮組が中心。距離実績と先行持続力、今回の状態を比較する。",
+      "primary_question": "京都1400m2着のアクアアイを、阪神1600m3着のアイルトンより上に取るべきか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "アクアアイ"
+          },
+          "case_for": "直近は京都芝1400mで2着。同距離は1走・3着以内1回。調教は上昇で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "アイルトン"
+          },
+          "case_for": "直近は阪神芝1600mで3着。同距離は3走・3着以内1回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は逃げ。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ダノンベルビュー"
+          },
+          "case_for": "直近は阪神芝1600mで5着。同距離は2走・3着以内1回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "メランコリニスタ"
+          },
+          "case_for": "直近は京都芝1400mで7着。同距離は2走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "マイティキングダム"
+          },
+          "case_for": "直近は京都芝1400mで6着。同距離は3走・3着以内2回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "アクアアイ"
+        },
+        "other": {
+          "horse_no": 16,
+          "horse_name": "アイルトン"
+        },
+        "reason": "アクアアイをアイルトンより上に置く。アクアアイは前走の京都芝1400mで2着。速い前半の中でも位置を上げて最後まで伸び、今回は調教も上昇しています。1400mの直接実績が明確で、1600mから短縮するアイルトンより今回の条件へ素直に接続できます。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "アクアアイ"
+        },
+        "other": {
+          "horse_no": 5,
+          "horse_name": "ダノンベルビュー"
+        },
+        "reason": "アクアアイをダノンベルビューより上に置く。アクアアイは前走の京都芝1400mで2着。速い前半の中でも位置を上げて最後まで伸び、今回は調教も上昇しています。1400mの直接実績が明確で、1600mから短縮するアイルトンより今回の条件へ素直に接続できます。"
+      },
+      "why_not_numeric_leader": "単一のIDM・総合値・調教指数・Trend・P1/P2・RRDBを並べた順位ではなく、このレースで識別力の高い直接証拠と再現性を比較して印を決めた。",
+      "strongest_counter": "アイルトンは阪神マイル3着の地力があり、1400m短縮で先行力が生きれば押し切られる可能性がある。",
+      "reversal_condition": "アイルトンは阪神マイル3着の地力があり、1400m短縮で先行力が生きれば押し切られる可能性がある。が実際に強く表面化し、アイルトンまたはダノンベルビューが想定以上に今回条件へ適応する場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "アクアアイ",
+            "decision_role": "CONTEXT_ONLY",
+            "reinterpretation_state": "NEUTRAL",
+            "source_run_ref": "08261512",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 16,
+            "horse_name": "アイルトン",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "reinterpretation_state": "CONFIRM",
+            "source_run_ref": "09261105",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "ダノンベルビュー",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "09255704",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": "RRDBは全候補で確認したが、今回の印は主に当該条件の直接実績と状態差で決まり、再解釈は決定的ではなかった。",
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 18
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T03:08:35+00:00",
+      "frozen_at": "2026-09-30T03:08:35+00:00",
+      "prediction_hash": "fa262a6c10c9c852d1eaac6070f507ed964f99ec608d780cac24cb52cd0513eb",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS",
+      "reader_explanation_4_2_2": "APPLIED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-14",
+      "venue": "阪神",
+      "race_no": 5,
+      "race_key": "2026-03-14-阪神-5",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0004-阪神",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0004/20260314/阪神/5R",
+      "racenote_semantic_sha256": "c42a52e899b8806243701ee8686e2ebdf05d5baad6c3f760da4d8aefa90d9cf3",
+      "day_prep_package": "BTDAY-0004_DAY_PREP_20260314_FINAL.zip",
+      "reader_explanation_policy": "FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md#4.2.2"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "ロードスタニング",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "ロードスタニング",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "ラパンドール",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "チェファルー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "タイセイグローバル",
+            "rank": 4
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "ルナフィオーレ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ロードスタニングは前走の京都芝2000mで2着し、上がり最速で差を詰めた内容が強いです。1800mへの短縮も大きな不安はなく、実戦証拠のないチェファルーより今回は信頼を置きます。ラパンドールも前走内容は良いものの、距離を一段延ばす分だけこちらを上に取ります。",
+      "reader_facing_reason": "ロードスタニングは前走の京都芝2000mで2着し、上がり最速で差を詰めた内容が強いです。1800mへの短縮も大きな不安はなく、実戦証拠のないチェファルーより今回は信頼を置きます。ラパンドールも前走内容は良いものの、距離を一段延ばす分だけこちらを上に取ります。",
+      "concern": "チェファルーは初出走でも調教が抜群で、実戦で能力をそのまま出せれば既走馬をまとめて上回る余地がある。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H2",
+        "H5"
+      ],
+      "race_model": "3歳芝1800m未勝利。2000m2着馬、1600m4着馬、未出走馬が混在。実戦の直接証拠を優先しつつ、未出走馬は調教とP1/P2で不確実性込みに評価する。",
+      "primary_question": "京都2000m2着のロードスタニングを、1600m4着のラパンドールや調教抜群の初出走チェファルーより上に取るか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ロードスタニング"
+          },
+          "case_for": "直近は京都芝2000mで2着。同距離は0走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ラパンドール"
+          },
+          "case_for": "直近は京都芝1600mで4着。同距離は1走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "チェファルー"
+          },
+          "case_for": "実戦歴はなく初出走。同距離は0走・3着以内0回。調教はデキ抜群で、今回条件への直接接続を確認する。",
+          "case_against": "初出走のためスタート・位置取り・実戦対応が未知。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "タイセイグローバル"
+          },
+          "case_for": "直近は小倉芝1800mで3着。同距離は1走・3着以内1回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は差し。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "ルナフィオーレ"
+          },
+          "case_for": "直近は京都芝1600mで7着。同距離は0走・3着以内0回。調教は平行線で、今回条件への直接接続を確認する。",
+          "case_against": "脚質は先行。展開・距離替わり・相手強化で再現性が落ちる余地がある。",
+          "context_hook": "今回条件への直接実績、近走内容、状態、P1/P2、RRDB再解釈を固定配点せず比較する。"
+        }
+      ],
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 4,
+          "horse_name": "ロードスタニング"
+        },
+        "other": {
+          "horse_no": 1,
+          "horse_name": "ラパンドール"
+        },
+        "reason": "ロードスタニングをラパンドールより上に置く。ロードスタニングは前走の京都芝2000mで2着し、上がり最速で差を詰めた内容が強いです。1800mへの短縮も大きな不安はなく、実戦証拠のないチェファルーより今回は信頼を置きます。ラパンドールも前走内容は良いものの、距離を一段延ばす分だけこちらを上に取ります。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 4,
+          "horse_name": "ロードスタニング"
+        },
+        "other": {
+          "horse_no": 14,
+          "horse_name": "チェファルー"
+        },
+        "reason": "ロードスタニングをチェファルーより上に置く。ロードスタニングは前走の京都芝2000mで2着し、上がり最速で差を詰めた内容が強いです。1800mへの短縮も大きな不安はなく、実戦証拠のないチェファルーより今回は信頼を置きます。ラパンドールも前走内容は良いものの、距離を一段延ばす分だけこちらを上に取ります。"
+      },
+      "why_not_numeric_leader": "単一のIDM・総合値・調教指数・Trend・P1/P2・RRDBを並べた順位ではなく、このレースで識別力の高い直接証拠と再現性を比較して印を決めた。",
+      "strongest_counter": "チェファルーは初出走でも調教が抜群で、実戦で能力をそのまま出せれば既走馬をまとめて上回る余地がある。",
+      "reversal_condition": "チェファルーは初出走でも調教が抜群で、実戦で能力をそのまま出せれば既走馬をまとめて上回る余地がある。が実際に強く表面化し、ラパンドールまたはチェファルーが想定以上に今回条件へ適応する場合は逆転しうる。",
+      "missing_evidence": [
+        "P3 sibling evidence unavailable"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 4,
+            "horse_name": "ロードスタニング",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "08261705",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ラパンドール",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "reinterpretation_state": "UPGRADE",
+            "source_run_ref": "08262606",
+            "next_watch_grade": "S",
+            "matched_rule_ids": [
+              "HV01",
+              "HV05",
+              "HV11"
+            ],
+            "current_race_relevance": "直近走を今回条件へ戻して候補比較に使用。内部ラベル単独では印を決めない。"
+          }
+        ],
+        "reason_not_used": null,
+        "all_horses_reviewed": true,
+        "reviewed_horse_count": 18
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T03:08:35+00:00",
+      "frozen_at": "2026-09-30T03:08:35+00:00",
+      "prediction_hash": "ec3a2af6f237b948908ef8f97df8d390b1eb806708b218f604c4309aa79b32ba",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "human_context_guard": "PASS",
+      "reader_explanation_4_2_2": "APPLIED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-14",
+      "venue": "阪神",
+      "race_no": 6,
+      "race_key": "2026-03-14-阪神-6",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0004-阪神",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
