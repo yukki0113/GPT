@@ -1,0 +1,26 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0009",
+  "target_date": "2026-03-07",
+  "venue": "中山",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+  "main_sha": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "383f9aa46c2a23fa6d13bec26f973c074f5b2f36dc636f8da8f21c193152ed38",
+    "aad464b8577701663172ce900568f49db36395809fdd81b8d4a6e0161d15c067",
+    "f033430ac4df715767ca27ad9ec08f25ddaed8e4fcb6ab9e116db34cad254b3f",
+    "11025db5373914c7f43cf68b4ea7d298d09233fcfc23a26a3426e9c36ed1b8e5",
+    "119db692c3c4ca158cd8ed2d5953b7d57493bfb4042fb85a4ccfe38c2b77c678",
+    "e244e4d9b278b2c6452758c307650be44eba68404ed66b92a41cb46b1f65d072",
+    "94053ef1270ec6f7da0a726e96604637ba7b422116d991995d3391f69b80c7dd",
+    "90024f3f3a9f4596df6de6802c2b33d64bb44db7cbd4b6b1b245cc57dcddca5a",
+    "5f87f9430eefca4c4c5332649a4df4e6d795eb0283eac1d409b88b545c5463d3",
+    "5c3188024985989ca69559c460275983cdd3c077f5c6688918027dd2aa52a808",
+    "450fe234c659e46ea21c76ece65bedfd4ca9e35227a67e3439bcc8cb7e1eaf30",
+    "ee62327bc8927b29d9740585d7c9dca2acc450a1cb2d63304836446f46fbb453"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": "RaceNote-Day-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0009",
+  "target_date": "2026-03-07",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+  "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf",
+  "day_prep_artifact": "BTDAY-0009-DAY-PREP",
+  "day_prep_artifact_digest": "sha256:989507291aca6661620a9255a1d9f55de2b46df5b24248b17e00d2aabe16b6d9",
+  "venues": [
+    "中山",
+    "阪神"
+  ],
+  "race_count": 24,
+  "frozen_count": 24,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "383f9aa46c2a23fa6d13bec26f973c074f5b2f36dc636f8da8f21c193152ed38",
+    "aad464b8577701663172ce900568f49db36395809fdd81b8d4a6e0161d15c067",
+    "f033430ac4df715767ca27ad9ec08f25ddaed8e4fcb6ab9e116db34cad254b3f",
+    "11025db5373914c7f43cf68b4ea7d298d09233fcfc23a26a3426e9c36ed1b8e5",
+    "119db692c3c4ca158cd8ed2d5953b7d57493bfb4042fb85a4ccfe38c2b77c678",
+    "e244e4d9b278b2c6452758c307650be44eba68404ed66b92a41cb46b1f65d072",
+    "94053ef1270ec6f7da0a726e96604637ba7b422116d991995d3391f69b80c7dd",
+    "90024f3f3a9f4596df6de6802c2b33d64bb44db7cbd4b6b1b245cc57dcddca5a",
+    "5f87f9430eefca4c4c5332649a4df4e6d795eb0283eac1d409b88b545c5463d3",
+    "5c3188024985989ca69559c460275983cdd3c077f5c6688918027dd2aa52a808",
+    "450fe234c659e46ea21c76ece65bedfd4ca9e35227a67e3439bcc8cb7e1eaf30",
+    "ee62327bc8927b29d9740585d7c9dca2acc450a1cb2d63304836446f46fbb453",
+    "330f4e65b95a4fe18048e6d234999761404919549a36921d37bde0e774c539e4",
+    "c65625535dd9518d3b4f3e5e21cfe414c20fdcb8e89d334f3ee9534335b51cab",
+    "4a6af54fc48832225dccf5ed67a24c8b5dc482e03d1e84d4d2b1f6f135cdc874",
+    "89b8c6805882d7479de2f5252fe039b604a3d9af677341c75134a09f54c706ef",
+    "8a6b96609590a2bc1aaa1bc443a597fe16e1452c9090f70fce2cf5c785e8ae8c",
+    "d180645a916d8b58f18a7cb9797bcd6af2e5f5a24c3b4c2b4120e486fd5ab7e2",
+    "59269845cddbb11b8e8d13a6bcfe2e709a0328f4603a63344d1a861165268dd8",
+    "b7f5e04c4daff21a675824167f53a65cb50603278b2e9b29b4daf4f5dbe4edc6",
+    "eecbdcff4327d96537af2516462ed5d6fe21dc119593168c43cbdfc77b56feef",
+    "9e726fcc065e1de0c9fd39a3dbbe489f8b3997aa7cc8c822752fcb59e1c3de8c",
+    "7721966b7ff3429e2bc02000a1b269aac6c8cd2c4e67905e24dc1d70487b8fdc",
+    "08de981a9da607f9de75067c3e30dc812d9236befa2b7e66ad7906208c9bac97"
+  ]
+}

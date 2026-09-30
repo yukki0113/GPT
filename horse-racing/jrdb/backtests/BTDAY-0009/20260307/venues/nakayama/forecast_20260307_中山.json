@@ -1,0 +1,3113 @@
+[
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 1,
+      "race_key": "2026-03-07-中山-1",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/1R",
+      "racenote_semantic_sha256": "40ad2c1e76cc3e2a815e599c418b6602de1acb5baa395233d0e1607a0f3d73f2",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "アイムインディ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "アイムインディ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "メビウスロマンス",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 16,
+          "horse_name": "トモジャオーリー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "ジャメビュ",
+            "rank": 4
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "ティアップシャイン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "アイムインディは今回IDM 37.0、近3走 3着、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "アイムインディは今回IDM 37.0、近3走 3着、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "メビウスロマンスは近3走は2・4・2着。地力・実績の再現性ではこちらを基準に置く。",
+      "concern": "メビウスロマンスが近3走は2・4・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山ダート1200m・未勝利。アイムインディの勝ち切る材料とメビウスロマンスの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "アイムインディ"
+          },
+          "case_for": "今回IDM 37.0、近3走着順 3着、調教デキ抜群、前走上がり最速。",
+          "case_against": "今回の1200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "メビウスロマンス"
+          },
+          "case_for": "今回IDM 36.0、近3走着順 2・4・2着、調教平行線。",
+          "case_against": "今回の1200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "トモジャオーリー"
+          },
+          "case_for": "今回IDM 33.6、近3走着順 5・2着、同距離1走で3着内0回、同場1走で3着内0回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ジャメビュ"
+          },
+          "case_for": "今回IDM 33.0、近3走着順 3・5・5着、同距離5走で3着内1回、同場6走で3着内1回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ティアップシャイン"
+          },
+          "case_for": "今回IDM 28.0、近3走着順 5着、調教平行線。",
+          "case_against": "今回の1200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "アイムインディ"
+        },
+        "reason": "アイムインディは今回IDM 37.0、近3走 3着、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "メビウスロマンス"
+        },
+        "reason": "メビウスロマンスは近3走は2・4・2着。地力・実績の再現性ではこちらを基準に置く。"
+      },
+      "attraction_stability_convergence": false,
+      "winning_path": "アイムインディは今回IDM 37.0、近3走 3着、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "アイムインディ"
+        },
+        "other": {
+          "horse_no": 2,
+          "horse_name": "メビウスロマンス"
+        },
+        "reason": "◎アイムインディ: アイムインディは今回IDM 37.0、近3走 3着、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○メビウスロマンス: 近3走は2・4・2着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "アイムインディ"
+        },
+        "other": {
+          "horse_no": 16,
+          "horse_name": "トモジャオーリー"
+        },
+        "reason": "◎アイムインディはトモジャオーリーより今回の勝ち筋を具体的に描ける材料が多く、▲トモジャオーリーは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "メビウスロマンスが近3走は2・4・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "メビウスロマンスが再現性の高い形を出し、アイムインディが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 1,
+            "horse_name": "アイムインディ",
+            "source_run_ref": "05261505",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "メビウスロマンス",
+            "source_run_ref": "05261701",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 16,
+            "horse_name": "トモジャオーリー",
+            "source_run_ref": "06255201",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_LOSS"
+            ]
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "ジャメビュ",
+            "source_run_ref": "06262101",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "ティアップシャイン",
+            "source_run_ref": "05261603",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_FRONT_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "383f9aa46c2a23fa6d13bec26f973c074f5b2f36dc636f8da8f21c193152ed38",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "DIVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 2,
+      "race_key": "2026-03-07-中山-2",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/2R",
+      "racenote_semantic_sha256": "1cac1ec1aeed98365a965eaf991bc62c29e9121f728678d5fc0541e16b82ba31",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "エタンセル",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "エタンセル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 5,
+          "horse_name": "ダンシングアウェイ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "ジオストラテジー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "ロジクリスエス",
+            "rank": 4
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "ロイヤルヤマト",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "エタンセルは今回IDM 33.1、近3走 3着、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "エタンセルは今回IDM 33.1、近3走 3着、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ダンシングアウェイは同距離2走で3着内0回、同場2走で3着内0回、近3走は4・14・9着。地力・実績の再現性ではこちらを基準に置く。",
+      "concern": "ダンシングアウェイが同距離2走で3着内0回、同場2走で3着内0回、近3走は4・14・9着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山ダート1800m・未勝利。エタンセルの勝ち切る材料とダンシングアウェイの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "エタンセル"
+          },
+          "case_for": "今回IDM 33.1、近3走着順 3着、調教上昇。",
+          "case_against": "今回の1800mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ダンシングアウェイ"
+          },
+          "case_for": "今回IDM 31.0、近3走着順 4・14・9着、同距離2走で3着内0回、同場2走で3着内0回、調教上昇。",
+          "case_against": "追込脚質のため、前残りや仕掛け遅れになると能力を出し切れないリスクがある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ジオストラテジー"
+          },
+          "case_for": "今回IDM 30.0、近3走着順 6・10・4着、同距離3走で3着内0回、同場2走で3着内0回、調教平行線。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ロジクリスエス"
+          },
+          "case_for": "今回IDM 34.0、近3走着順 15・9・2着、同場2走で3着内1回、調教上昇。",
+          "case_against": "今回の1800mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ロイヤルヤマト"
+          },
+          "case_for": "今回IDM 31.2、近3走着順 14・8・6着、同場2走で3着内0回、調教平行線。",
+          "case_against": "今回の1800mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "エタンセル"
+        },
+        "reason": "エタンセルは今回IDM 33.1、近3走 3着、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ダンシングアウェイ"
+        },
+        "reason": "ダンシングアウェイは同距離2走で3着内0回、同場2走で3着内0回、近3走は4・14・9着。地力・実績の再現性ではこちらを基準に置く。"
+      },
+      "attraction_stability_convergence": false,
+      "winning_path": "エタンセルは今回IDM 33.1、近3走 3着、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "エタンセル"
+        },
+        "other": {
+          "horse_no": 5,
+          "horse_name": "ダンシングアウェイ"
+        },
+        "reason": "◎エタンセル: エタンセルは今回IDM 33.1、近3走 3着、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○ダンシングアウェイ: 同距離2走で3着内0回、同場2走で3着内0回、近3走は4・14・9着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "エタンセル"
+        },
+        "other": {
+          "horse_no": 1,
+          "horse_name": "ジオストラテジー"
+        },
+        "reason": "◎エタンセルはジオストラテジーより今回の勝ち筋を具体的に描ける材料が多く、▲ジオストラテジーは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "ダンシングアウェイが同距離2走で3着内0回、同場2走で3着内0回、近3走は4・14・9着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "ダンシングアウェイが再現性の高い形を出し、エタンセルが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "エタンセル",
+            "source_run_ref": "05261603",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "ダンシングアウェイ",
+            "source_run_ref": "05261602",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ジオストラテジー",
+            "source_run_ref": "08262601",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "PACE_VERY_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ロジクリスエス",
+            "source_run_ref": "06255303",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "ロイヤルヤマト",
+            "source_run_ref": "06261805",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_FRONT_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "aad464b8577701663172ce900568f49db36395809fdd81b8d4a6e0161d15c067",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "DIVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 3,
+      "race_key": "2026-03-07-中山-3",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/3R",
+      "racenote_semantic_sha256": "82dca19f600addebc071eb3fa863d44bb6d540759912da4dfba5869b979c3c01",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 14,
+        "horse_name": "トヨサカエ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 14,
+          "horse_name": "トヨサカエ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "シュヴァルツシルト",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "アクロスメモリア",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 13,
+            "horse_name": "エコロセレナ",
+            "rank": 4
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "ドラリズム",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "トヨサカエは今回IDM 40.0、近3走 2・3着、同距離1走・3着内1回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "トヨサカエは今回IDM 40.0、近3走 2・3着、同距離1走・3着内1回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "トヨサカエ自身が勝ち判断と安定判断の双方で最上位。",
+      "concern": "シュヴァルツシルトが近3走は4・3・3着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山ダート1200m・未勝利。トヨサカエの勝ち切る材料とシュヴァルツシルトの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "トヨサカエ"
+          },
+          "case_for": "今回IDM 40.0、近3走着順 2・3着、同距離1走で3着内1回、同場1走で3着内1回、調教デキ抜群。",
+          "case_against": "追込脚質のため、前残りや仕掛け遅れになると能力を出し切れないリスクがある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "シュヴァルツシルト"
+          },
+          "case_for": "今回IDM 32.0、近3走着順 4・3・3着、調教平行線。",
+          "case_against": "今回の1200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "アクロスメモリア"
+          },
+          "case_for": "今回IDM 31.0、近3走着順 3・5・11着、同距離2走で3着内1回、同場2走で3着内1回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "エコロセレナ"
+          },
+          "case_for": "今回IDM 29.0、近3走着順 5・9・5着、同場1走で3着内0回、調教平行線。",
+          "case_against": "今回の1200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ドラリズム"
+          },
+          "case_for": "今回IDM 25.0、近3走着順 6・8着、同距離1走で3着内0回、同場1走で3着内0回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "トヨサカエ"
+        },
+        "reason": "トヨサカエは今回IDM 40.0、近3走 2・3着、同距離1走・3着内1回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "トヨサカエ"
+        },
+        "reason": "トヨサカエ自身が勝ち判断と安定判断の双方で最上位。"
+      },
+      "attraction_stability_convergence": true,
+      "winning_path": "トヨサカエは今回IDM 40.0、近3走 2・3着、同距離1走・3着内1回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 14,
+          "horse_name": "トヨサカエ"
+        },
+        "other": {
+          "horse_no": 8,
+          "horse_name": "シュヴァルツシルト"
+        },
+        "reason": "◎トヨサカエ: トヨサカエは今回IDM 40.0、近3走 2・3着、同距離1走・3着内1回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○シュヴァルツシルト: 近3走は4・3・3着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 14,
+          "horse_name": "トヨサカエ"
+        },
+        "other": {
+          "horse_no": 5,
+          "horse_name": "アクロスメモリア"
+        },
+        "reason": "◎トヨサカエはアクロスメモリアより今回の勝ち筋を具体的に描ける材料が多く、▲アクロスメモリアは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "シュヴァルツシルトが近3走は4・3・3着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "シュヴァルツシルトが再現性の高い形を出し、トヨサカエが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 14,
+            "horse_name": "トヨサカエ",
+            "source_run_ref": "05261601",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "シュヴァルツシルト",
+            "source_run_ref": "05261601",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "アクロスメモリア",
+            "source_run_ref": "06261101",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "エコロセレナ",
+            "source_run_ref": "05261801",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "ドラリズム",
+            "source_run_ref": "06261903",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_FRONT_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "f033430ac4df715767ca27ad9ec08f25ddaed8e4fcb6ab9e116db34cad254b3f",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "CONVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 4,
+      "race_key": "2026-03-07-中山-4",
+      "race_name": null,
+      "surface": "障害",
+      "distance_m": 3200,
+      "class": "オープン"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/4R",
+      "racenote_semantic_sha256": "58e6c1cf7626e4731026ba6972921e8ebd08e4481b6151aa357b146510d92135",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "ホークフィールド",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "ホークフィールド",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "インディゴブラック",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "ロードリベラシオン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "アスクオンディープ",
+            "rank": 4
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "コレクテイニア",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ホークフィールドは今回IDM 13.2、近3走 1・1・14着を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "ホークフィールドは今回IDM 13.2、近3走 1・1・14着を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "インディゴブラックは同距離1走で3着内1回、同場5走で3着内3回、近3走は2・3・4着。地力・実績の再現性ではこちらを基準に置く。",
+      "concern": "インディゴブラックが同距離1走で3着内1回、同場5走で3着内3回、近3走は2・3・4着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山障害3200m・オープン。ホークフィールドの勝ち切る材料とインディゴブラックの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ホークフィールド"
+          },
+          "case_for": "今回IDM 13.2、近3走着順 1・1・14着、同場1走で3着内0回、調教平行線。",
+          "case_against": "今回の3200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山障害3200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "インディゴブラック"
+          },
+          "case_for": "今回IDM 13.4、近3走着順 2・3・4着、同距離1走で3着内1回、同場5走で3着内3回、調教上昇。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山障害3200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "ロードリベラシオン"
+          },
+          "case_for": "今回IDM 13.3、近3走着順 2・1・6着、同場3走で3着内1回、調教平行線。",
+          "case_against": "今回の3200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山障害3200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "アスクオンディープ"
+          },
+          "case_for": "今回IDM 13.0、近3走着順 1・2・2着、同場3走で3着内2回、調教平行線。",
+          "case_against": "今回の3200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山障害3200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "コレクテイニア"
+          },
+          "case_for": "今回IDM 13.1、近3走着順 1・2・3着、同場9走で3着内3回、調教平行線。",
+          "case_against": "今回の3200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山障害3200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "ホークフィールド"
+        },
+        "reason": "ホークフィールドは今回IDM 13.2、近3走 1・1・14着を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 6,
+          "horse_name": "インディゴブラック"
+        },
+        "reason": "インディゴブラックは同距離1走で3着内1回、同場5走で3着内3回、近3走は2・3・4着。地力・実績の再現性ではこちらを基準に置く。"
+      },
+      "attraction_stability_convergence": false,
+      "winning_path": "ホークフィールドは今回IDM 13.2、近3走 1・1・14着を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "ホークフィールド"
+        },
+        "other": {
+          "horse_no": 6,
+          "horse_name": "インディゴブラック"
+        },
+        "reason": "◎ホークフィールド: ホークフィールドは今回IDM 13.2、近3走 1・1・14着を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○インディゴブラック: 同距離1走で3着内1回、同場5走で3着内3回、近3走は2・3・4着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 7,
+          "horse_name": "ホークフィールド"
+        },
+        "other": {
+          "horse_no": 14,
+          "horse_name": "ロードリベラシオン"
+        },
+        "reason": "◎ホークフィールドはロードリベラシオンより今回の勝ち筋を具体的に描ける材料が多く、▲ロードリベラシオンは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "インディゴブラックが同距離1走で3着内1回、同場5走で3着内3回、近3走は2・3・4着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "インディゴブラックが再現性の高い形を出し、ホークフィールドが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "ホークフィールド",
+            "source_run_ref": "10261304",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "LATE_POSITION_GAIN"
+            ]
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "インディゴブラック",
+            "source_run_ref": "08261308",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_LOSS"
+            ]
+          },
+          {
+            "horse_no": 14,
+            "horse_name": "ロードリベラシオン",
+            "source_run_ref": "10261304",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_LOSS"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "アスクオンディープ",
+            "source_run_ref": "06261704",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN"
+            ]
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "コレクテイニア",
+            "source_run_ref": "06261604",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_GAIN"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "11025db5373914c7f43cf68b4ea7d298d09233fcfc23a26a3426e9c36ed1b8e5",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "DIVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 5,
+      "race_key": "2026-03-07-中山-5",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2200,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/5R",
+      "racenote_semantic_sha256": "3c64c2ad2c5d4fbafd34ac2ee44476c2e7ffa80f3ffdf0db1cd97bb337e9190a",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 12,
+        "horse_name": "ウィロークリーク",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 12,
+          "horse_name": "ウィロークリーク",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 17,
+          "horse_name": "ベルトラッキ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "ニシノヒノトリ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "ウインターブレス",
+            "rank": 4
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "キンググローリー",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ウィロークリークは今回IDM 47.0、近3走 5・2・2着、同距離1走・3着内0回、調教上昇、Next-Watch Aを総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "ウィロークリークは今回IDM 47.0、近3走 5・2・2着、同距離1走・3着内0回、調教上昇、Next-Watch Aを総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ベルトラッキは同距離1走で3着内1回、同場1走で3着内1回、近3走は3・2・2着。地力・実績の再現性ではこちらを基準に置く。",
+      "concern": "ベルトラッキが同距離1走で3着内1回、同場1走で3着内1回、近3走は3・2・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山芝2200m・未勝利。ウィロークリークの勝ち切る材料とベルトラッキの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "ウィロークリーク"
+          },
+          "case_for": "今回IDM 47.0、近3走着順 5・2・2着、同距離1走で3着内0回、同場3走で3着内1回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 17,
+            "horse_name": "ベルトラッキ"
+          },
+          "case_for": "今回IDM 42.9、近3走着順 3・2・2着、同距離1走で3着内1回、同場1走で3着内1回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ニシノヒノトリ"
+          },
+          "case_for": "今回IDM 42.0、近3走着順 4・7・4着、同距離1走で3着内0回、同場2走で3着内0回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ウインターブレス"
+          },
+          "case_for": "今回IDM 44.0、近3走着順 3・5・6着、同場1走で3着内1回、調教平行線、前走上がり最速。",
+          "case_against": "今回の2200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山芝2200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "キンググローリー"
+          },
+          "case_for": "今回IDM 43.0、近3走着順 9・5・4着、同距離1走で3着内0回、同場3走で3着内0回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 12,
+          "horse_name": "ウィロークリーク"
+        },
+        "reason": "ウィロークリークは今回IDM 47.0、近3走 5・2・2着、同距離1走・3着内0回、調教上昇、Next-Watch Aを総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 17,
+          "horse_name": "ベルトラッキ"
+        },
+        "reason": "ベルトラッキは同距離1走で3着内1回、同場1走で3着内1回、近3走は3・2・2着。地力・実績の再現性ではこちらを基準に置く。"
+      },
+      "attraction_stability_convergence": false,
+      "winning_path": "ウィロークリークは今回IDM 47.0、近3走 5・2・2着、同距離1走・3着内0回、調教上昇、Next-Watch Aを総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 12,
+          "horse_name": "ウィロークリーク"
+        },
+        "other": {
+          "horse_no": 17,
+          "horse_name": "ベルトラッキ"
+        },
+        "reason": "◎ウィロークリーク: ウィロークリークは今回IDM 47.0、近3走 5・2・2着、同距離1走・3着内0回、調教上昇、Next-Watch Aを総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○ベルトラッキ: 同距離1走で3着内1回、同場1走で3着内1回、近3走は3・2・2着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 12,
+          "horse_name": "ウィロークリーク"
+        },
+        "other": {
+          "horse_no": 2,
+          "horse_name": "ニシノヒノトリ"
+        },
+        "reason": "◎ウィロークリークはニシノヒノトリより今回の勝ち筋を具体的に描ける材料が多く、▲ニシノヒノトリは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "ベルトラッキが同距離1走で3着内1回、同場1走で3着内1回、近3走は3・2・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "ベルトラッキが再現性の高い形を出し、ウィロークリークが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 12,
+            "horse_name": "ウィロークリーク",
+            "source_run_ref": "06261805",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV01"
+            ],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 17,
+            "horse_name": "ベルトラッキ",
+            "source_run_ref": "05261406",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ニシノヒノトリ",
+            "source_run_ref": "06261406",
+            "next_watch_grade": "S",
+            "matched_rule_ids": [
+              "HV01",
+              "HV03",
+              "HV05",
+              "HV07",
+              "HV11",
+              "HV13"
+            ],
+            "decision_role": "SUPPORT_COUNTERARGUMENT",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "EARLY_POSITION_GAIN",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "ウインターブレス",
+            "source_run_ref": "06261506",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "キンググローリー",
+            "source_run_ref": "06261805",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV01",
+              "HV02"
+            ],
+            "decision_role": "SUPPORT_COUNTERARGUMENT",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_FRONT_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "119db692c3c4ca158cd8ed2d5953b7d57493bfb4042fb85a4ccfe38c2b77c678",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "DIVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 6,
+      "race_key": "2026-03-07-中山-6",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2000,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/6R",
+      "racenote_semantic_sha256": "a3e4dd1078fea3c98c9891693ace92bcb138bb117b3a3f85b31341588d56da3d",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "エリュグレイス",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "エリュグレイス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "サムシングスイート",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 18,
+          "horse_name": "セシルブリュネ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "クレアノア",
+            "rank": 4
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "コスモナエマ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "エリュグレイスは今回IDM 43.0、近3走 2・2着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "エリュグレイスは今回IDM 43.0、近3走 2・2着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "エリュグレイス自身が勝ち判断と安定判断の双方で最上位。",
+      "concern": "サムシングスイートが同距離1走で3着内1回、同場2走で3着内1回、近3走は2・2・5着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山芝2000m・未勝利。エリュグレイスの勝ち切る材料とサムシングスイートの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "エリュグレイス"
+          },
+          "case_for": "今回IDM 43.0、近3走着順 2・2着、同距離1走で3着内1回、同場1走で3着内1回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2000mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "サムシングスイート"
+          },
+          "case_for": "今回IDM 42.0、近3走着順 2・2・5着、同距離1走で3着内1回、同場2走で3着内1回、調教平行線。",
+          "case_against": "追込脚質のため、前残りや仕掛け遅れになると能力を出し切れないリスクがある。",
+          "context_hook": "中山芝2000mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 18,
+            "horse_name": "セシルブリュネ"
+          },
+          "case_for": "今回IDM 38.5、近3走着順 3着、同距離1走で3着内1回、同場1走で3着内1回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2000mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "クレアノア"
+          },
+          "case_for": "今回IDM 39.0、近3走着順 4・4着、調教上昇、Next-Watch A、前走上がり最速。",
+          "case_against": "今回の2000mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山芝2000mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "コスモナエマ"
+          },
+          "case_for": "今回IDM 29.7、近3走着順 2・4・10着、同距離3走で3着内1回、調教平行線。",
+          "case_against": "追込脚質のため、前残りや仕掛け遅れになると能力を出し切れないリスクがある。",
+          "context_hook": "中山芝2000mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "エリュグレイス"
+        },
+        "reason": "エリュグレイスは今回IDM 43.0、近3走 2・2着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "エリュグレイス"
+        },
+        "reason": "エリュグレイス自身が勝ち判断と安定判断の双方で最上位。"
+      },
+      "attraction_stability_convergence": true,
+      "winning_path": "エリュグレイスは今回IDM 43.0、近3走 2・2着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "エリュグレイス"
+        },
+        "other": {
+          "horse_no": 9,
+          "horse_name": "サムシングスイート"
+        },
+        "reason": "◎エリュグレイス: エリュグレイスは今回IDM 43.0、近3走 2・2着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○サムシングスイート: 同距離1走で3着内1回、同場2走で3着内1回、近3走は2・2・5着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "エリュグレイス"
+        },
+        "other": {
+          "horse_no": 18,
+          "horse_name": "セシルブリュネ"
+        },
+        "reason": "◎エリュグレイスはセシルブリュネより今回の勝ち筋を具体的に描ける材料が多く、▲セシルブリュネは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "サムシングスイートが同距離1走で3着内1回、同場2走で3着内1回、近3走は2・2・5着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "サムシングスイートが再現性の高い形を出し、エリュグレイスが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 1,
+            "horse_name": "エリュグレイス",
+            "source_run_ref": "06261506",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "サムシングスイート",
+            "source_run_ref": "05261605",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 18,
+            "horse_name": "セシルブリュネ",
+            "source_run_ref": "06255505",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "クレアノア",
+            "source_run_ref": "05261306",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV01",
+              "HV03",
+              "HV05"
+            ],
+            "decision_role": "SUPPORT_COUNTERARGUMENT",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "コスモナエマ",
+            "source_run_ref": "01252602",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "e244e4d9b278b2c6452758c307650be44eba68404ed66b92a41cb46b1f65d072",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "CONVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 7,
+      "race_key": "2026-03-07-中山-7",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/7R",
+      "racenote_semantic_sha256": "2b684a4a255635e0e7047de7fdeec4e2ffbe626035a3793d96e78b923e0c9735",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 12,
+        "horse_name": "レッドスティンガー",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 12,
+          "horse_name": "レッドスティンガー",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "ライヴレッドアイ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "ウォーターサグラダ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "ノースブルースカイ",
+            "rank": 4
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "カリヨンアヴォン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "レッドスティンガーは今回IDM 46.0、近3走 2・7・8着、同距離2走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "レッドスティンガーは今回IDM 46.0、近3走 2・7・8着、同距離2走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ライヴレッドアイは同距離3走で3着内3回、同場2走で3着内2回、近3走は1・2・2着。地力・実績の再現性ではこちらを基準に置く。",
+      "concern": "ライヴレッドアイが同距離3走で3着内3回、同場2走で3着内2回、近3走は1・2・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山ダート1200m・1勝クラス。レッドスティンガーの勝ち切る材料とライヴレッドアイの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "レッドスティンガー"
+          },
+          "case_for": "今回IDM 46.0、近3走着順 2・7・8着、同距離2走で3着内1回、同場2走で3着内1回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ライヴレッドアイ"
+          },
+          "case_for": "今回IDM 44.0、近3走着順 1・2・2着、同距離3走で3着内3回、同場2走で3着内2回、調教上昇。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ウォーターサグラダ"
+          },
+          "case_for": "今回IDM 45.0、近3走着順 1・2着、同距離1走で3着内1回、調教平行線、前走上がり最速。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ノースブルースカイ"
+          },
+          "case_for": "今回IDM 43.1、近3走着順 1着、調教平行線。",
+          "case_against": "今回の1200mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "カリヨンアヴォン"
+          },
+          "case_for": "今回IDM 43.2、近3走着順 4・1着、同距離2走で3着内1回、同場2走で3着内1回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1200mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 12,
+          "horse_name": "レッドスティンガー"
+        },
+        "reason": "レッドスティンガーは今回IDM 46.0、近3走 2・7・8着、同距離2走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "ライヴレッドアイ"
+        },
+        "reason": "ライヴレッドアイは同距離3走で3着内3回、同場2走で3着内2回、近3走は1・2・2着。地力・実績の再現性ではこちらを基準に置く。"
+      },
+      "attraction_stability_convergence": false,
+      "winning_path": "レッドスティンガーは今回IDM 46.0、近3走 2・7・8着、同距離2走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 12,
+          "horse_name": "レッドスティンガー"
+        },
+        "other": {
+          "horse_no": 3,
+          "horse_name": "ライヴレッドアイ"
+        },
+        "reason": "◎レッドスティンガー: レッドスティンガーは今回IDM 46.0、近3走 2・7・8着、同距離2走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○ライヴレッドアイ: 同距離3走で3着内3回、同場2走で3着内2回、近3走は1・2・2着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 12,
+          "horse_name": "レッドスティンガー"
+        },
+        "other": {
+          "horse_no": 4,
+          "horse_name": "ウォーターサグラダ"
+        },
+        "reason": "◎レッドスティンガーはウォーターサグラダより今回の勝ち筋を具体的に描ける材料が多く、▲ウォーターサグラダは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "ライヴレッドアイが同距離3走で3着内3回、同場2走で3着内2回、近3走は1・2・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "ライヴレッドアイが再現性の高い形を出し、レッドスティンガーが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 12,
+            "horse_name": "レッドスティンガー",
+            "source_run_ref": "06261404",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ライヴレッドアイ",
+            "source_run_ref": "06261301",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "CLOSING_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "ウォーターサグラダ",
+            "source_run_ref": "08261501",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ノースブルースカイ",
+            "source_run_ref": "05261504",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "CLOSING_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "カリヨンアヴォン",
+            "source_run_ref": "06255206",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "94053ef1270ec6f7da0a726e96604637ba7b422116d991995d3391f69b80c7dd",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "DIVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 8,
+      "race_key": "2026-03-07-中山-8",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/8R",
+      "racenote_semantic_sha256": "0129d5bc8f4f962ef6f86ed4034fb52b6ec868e4965a8dd832af04070c6abfd7",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 5,
+        "horse_name": "ホークライト",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 5,
+          "horse_name": "ホークライト",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "クニノハッピー",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 8,
+          "horse_name": "プレジール",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "オウケンシルヴァー",
+            "rank": 4
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "カージオイド",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ホークライトは今回IDM 49.2、近3走 2・2・2着、同距離6走・3着内5回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "ホークライトは今回IDM 49.2、近3走 2・2・2着、同距離6走・3着内5回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ホークライト自身が勝ち判断と安定判断の双方で最上位。",
+      "concern": "クニノハッピーが同距離1走で3着内0回、同場2走で3着内0回、近3走は6・7・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山ダート1800m・1勝クラス。ホークライトの勝ち切る材料とクニノハッピーの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ホークライト"
+          },
+          "case_for": "今回IDM 49.2、近3走着順 2・2・2着、同距離6走で3着内5回、同場4走で3着内4回、調教上昇。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "クニノハッピー"
+          },
+          "case_for": "今回IDM 54.3、近3走着順 6・7・2着、同距離1走で3着内0回、同場2走で3着内0回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "プレジール"
+          },
+          "case_for": "今回IDM 50.4、近3走着順 7・9・4着、同距離12走で3着内2回、同場10走で3着内2回、調教平行線。",
+          "case_against": "追込脚質のため、前残りや仕掛け遅れになると能力を出し切れないリスクがある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "オウケンシルヴァー"
+          },
+          "case_for": "今回IDM 46.2、近3走着順 4・3・6着、同距離9走で3着内5回、同場10走で3着内5回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "カージオイド"
+          },
+          "case_for": "今回IDM 43.0、近3走着順 7・15・5着、同距離11走で3着内5回、同場9走で3着内4回、調教平行線。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ホークライト"
+        },
+        "reason": "ホークライトは今回IDM 49.2、近3走 2・2・2着、同距離6走・3着内5回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ホークライト"
+        },
+        "reason": "ホークライト自身が勝ち判断と安定判断の双方で最上位。"
+      },
+      "attraction_stability_convergence": true,
+      "winning_path": "ホークライトは今回IDM 49.2、近3走 2・2・2着、同距離6走・3着内5回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 5,
+          "horse_name": "ホークライト"
+        },
+        "other": {
+          "horse_no": 9,
+          "horse_name": "クニノハッピー"
+        },
+        "reason": "◎ホークライト: ホークライトは今回IDM 49.2、近3走 2・2・2着、同距離6走・3着内5回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○クニノハッピー: 同距離1走で3着内0回、同場2走で3着内0回、近3走は6・7・2着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 5,
+          "horse_name": "ホークライト"
+        },
+        "other": {
+          "horse_no": 8,
+          "horse_name": "プレジール"
+        },
+        "reason": "◎ホークライトはプレジールより今回の勝ち筋を具体的に描ける材料が多く、▲プレジールは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "クニノハッピーが同距離1走で3着内0回、同場2走で3着内0回、近3走は6・7・2着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "クニノハッピーが再現性の高い形を出し、ホークライトが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 5,
+            "horse_name": "ホークライト",
+            "source_run_ref": "06261706",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "クニノハッピー",
+            "source_run_ref": "06255608",
+            "next_watch_grade": "S",
+            "matched_rule_ids": [
+              "HV01",
+              "HV02",
+              "HV05",
+              "HV06",
+              "HV07",
+              "HV11",
+              "HV12"
+            ],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "プレジール",
+            "source_run_ref": "06255608",
+            "next_watch_grade": "S",
+            "matched_rule_ids": [
+              "HV01",
+              "HV02",
+              "HV03",
+              "HV05",
+              "HV06",
+              "HV07",
+              "HV11",
+              "HV12",
+              "HV13"
+            ],
+            "decision_role": "SUPPORT_COUNTERARGUMENT",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "オウケンシルヴァー",
+            "source_run_ref": "05261502",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "カージオイド",
+            "source_run_ref": "05261502",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "PACE_BALANCED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "90024f3f3a9f4596df6de6802c2b33d64bb44db7cbd4b6b1b245cc57dcddca5a",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "CONVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 9,
+      "race_key": "2026-03-07-中山-9",
+      "race_name": "潮来特別",
+      "surface": "芝",
+      "distance_m": 2500,
+      "class": "2勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/9R",
+      "racenote_semantic_sha256": "8aeb45cc6e3c3bf7323615599e56020dadfbf5278c1ed46a9569986008cf2bd9",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "ピックデムッシュ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "ピックデムッシュ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 12,
+          "horse_name": "カエルム",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "クリフハンガー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "オールマイデイズ",
+            "rank": 4
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "レーヴドロペラ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ピックデムッシュは今回IDM 59.1、近3走 2・2・4着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "ピックデムッシュは今回IDM 59.1、近3走 2・2・4着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ピックデムッシュ自身が勝ち判断と安定判断の双方で最上位。",
+      "concern": "カエルムが近3走は4・2・6着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山芝2500m・2勝クラス。ピックデムッシュの勝ち切る材料とカエルムの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ピックデムッシュ"
+          },
+          "case_for": "今回IDM 59.1、近3走着順 2・2・4着、同距離1走で3着内1回、同場5走で3着内4回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2500mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "カエルム"
+          },
+          "case_for": "今回IDM 59.0、近3走着順 4・2・6着、調教平行線、Next-Watch A。",
+          "case_against": "今回の2500mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山芝2500mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "クリフハンガー"
+          },
+          "case_for": "今回IDM 56.0、近3走着順 1・8・6着、同場5走で3着内2回、調教平行線、前走上がり最速。",
+          "case_against": "今回の2500mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山芝2500mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "オールマイデイズ"
+          },
+          "case_for": "今回IDM 55.0、近3走着順 4・3・7着、同距離1走で3着内1回、同場5走で3着内2回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝2500mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "レーヴドロペラ"
+          },
+          "case_for": "今回IDM 51.1、近3走着順 3・1・14着、同場3走で3着内1回、調教平行線。",
+          "case_against": "今回の2500mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山芝2500mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ピックデムッシュ"
+        },
+        "reason": "ピックデムッシュは今回IDM 59.1、近3走 2・2・4着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ピックデムッシュ"
+        },
+        "reason": "ピックデムッシュ自身が勝ち判断と安定判断の双方で最上位。"
+      },
+      "attraction_stability_convergence": true,
+      "winning_path": "ピックデムッシュは今回IDM 59.1、近3走 2・2・4着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "ピックデムッシュ"
+        },
+        "other": {
+          "horse_no": 12,
+          "horse_name": "カエルム"
+        },
+        "reason": "◎ピックデムッシュ: ピックデムッシュは今回IDM 59.1、近3走 2・2・4着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○カエルム: 近3走は4・2・6着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "ピックデムッシュ"
+        },
+        "other": {
+          "horse_no": 2,
+          "horse_name": "クリフハンガー"
+        },
+        "reason": "◎ピックデムッシュはクリフハンガーより今回の勝ち筋を具体的に描ける材料が多く、▲クリフハンガーは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "カエルムが近3走は4・2・6着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "カエルムが再現性の高い形を出し、ピックデムッシュが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 8,
+            "horse_name": "ピックデムッシュ",
+            "source_run_ref": "06255809",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "カエルム",
+            "source_run_ref": "10261910",
+            "next_watch_grade": "A",
+            "matched_rule_ids": [
+              "HV07"
+            ],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "クリフハンガー",
+            "source_run_ref": "06261607",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "EARLY_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "オールマイデイズ",
+            "source_run_ref": "06261707",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_VERY_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "レーヴドロペラ",
+            "source_run_ref": "03253410",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_BACK_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "5f87f9430eefca4c4c5332649a4df4e6d795eb0283eac1d409b88b545c5463d3",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "CONVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 10,
+      "race_key": "2026-03-07-中山-10",
+      "race_name": "上総ステークス",
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "3勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/10R",
+      "racenote_semantic_sha256": "cf797ea9948552f7d2d83e0c910fffeeb183cf49281a2e66bc484d6653ad7007",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ホウオウバリスタ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ホウオウバリスタ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 13,
+          "horse_name": "エクリプスルバン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 9,
+          "horse_name": "シンビリーブ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ウィンドフォール",
+            "rank": 4
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "デコラシオン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ホウオウバリスタは今回IDM 62.1、近3走 2・6・5着、同距離9走・3着内5回を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "ホウオウバリスタは今回IDM 62.1、近3走 2・6・5着、同距離9走・3着内5回を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ホウオウバリスタ自身が勝ち判断と安定判断の双方で最上位。",
+      "concern": "エクリプスルバンが同距離5走で3着内2回、同場4走で3着内2回、近3走は1・6着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山ダート1800m・3勝クラス。ホウオウバリスタの勝ち切る材料とエクリプスルバンの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ホウオウバリスタ"
+          },
+          "case_for": "今回IDM 62.1、近3走着順 2・6・5着、同距離9走で3着内5回、同場8走で3着内5回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "エクリプスルバン"
+          },
+          "case_for": "今回IDM 62.0、近3走着順 1・6着、同距離5走で3着内2回、同場4走で3着内2回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "シンビリーブ"
+          },
+          "case_for": "今回IDM 60.0、近3走着順 3・3・5着、同距離8走で3着内4回、調教平行線、前走時計はクラス水準以上。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ウィンドフォール"
+          },
+          "case_for": "今回IDM 57.9、近3走着順 5・1・1着、同距離3走で3着内2回、同場1走で3着内1回、調教平行線。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "デコラシオン"
+          },
+          "case_for": "今回IDM 59.1、近3走着順 4・2・6着、同距離17走で3着内8回、同場17走で3着内9回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山ダート1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "ホウオウバリスタ"
+        },
+        "reason": "ホウオウバリスタは今回IDM 62.1、近3走 2・6・5着、同距離9走・3着内5回を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "ホウオウバリスタ"
+        },
+        "reason": "ホウオウバリスタ自身が勝ち判断と安定判断の双方で最上位。"
+      },
+      "attraction_stability_convergence": true,
+      "winning_path": "ホウオウバリスタは今回IDM 62.1、近3走 2・6・5着、同距離9走・3着内5回を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "ホウオウバリスタ"
+        },
+        "other": {
+          "horse_no": 13,
+          "horse_name": "エクリプスルバン"
+        },
+        "reason": "◎ホウオウバリスタ: ホウオウバリスタは今回IDM 62.1、近3走 2・6・5着、同距離9走・3着内5回を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○エクリプスルバン: 同距離5走で3着内2回、同場4走で3着内2回、近3走は1・6着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 1,
+          "horse_name": "ホウオウバリスタ"
+        },
+        "other": {
+          "horse_no": 9,
+          "horse_name": "シンビリーブ"
+        },
+        "reason": "◎ホウオウバリスタはシンビリーブより今回の勝ち筋を具体的に描ける材料が多く、▲シンビリーブは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "エクリプスルバンが同距離5走で3着内2回、同場4走で3着内2回、近3走は1・6着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "エクリプスルバンが再現性の高い形を出し、ホウオウバリスタが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 1,
+            "horse_name": "ホウオウバリスタ",
+            "source_run_ref": "06261610",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "エクリプスルバン",
+            "source_run_ref": "06261308",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "シンビリーブ",
+            "source_run_ref": "08261810",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ウィンドフォール",
+            "source_run_ref": "04252307",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "LATE_POSITION_LOSS",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "デコラシオン",
+            "source_run_ref": "06261109",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_BACK_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "5c3188024985989ca69559c460275983cdd3c077f5c6688918027dd2aa52a808",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "CONVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 11,
+      "race_key": "2026-03-07-中山-11",
+      "race_name": "中山牝馬ステークス",
+      "surface": "芝",
+      "distance_m": 1800,
+      "class": "オープン"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/11R",
+      "racenote_semantic_sha256": "72af184afae0a13bdfac40e71ff1d0908b3c7d3577b7342a7f6b54acc096c5b2",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 14,
+        "horse_name": "ニシノティアモ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 14,
+          "horse_name": "ニシノティアモ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "アンゴラブラック",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "パラディレーヌ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 16,
+            "horse_name": "レーゼドラマ",
+            "rank": 4
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "エリカエクスプレス",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ニシノティアモは今回IDM 65.9、近3走 1・1・1着、同距離6走・3着内4回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "ニシノティアモは今回IDM 65.9、近3走 1・1・1着、同距離6走・3着内4回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ニシノティアモ自身が勝ち判断と安定判断の双方で最上位。",
+      "concern": "アンゴラブラックが同距離2走で3着内2回、同場5走で3着内4回、近3走は2・2・1着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山芝1800m・オープン。ニシノティアモの勝ち切る材料とアンゴラブラックの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "ニシノティアモ"
+          },
+          "case_for": "今回IDM 65.9、近3走着順 1・1・1着、同距離6走で3着内4回、同場2走で3着内1回、調教デキ抜群。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山芝1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "アンゴラブラック"
+          },
+          "case_for": "今回IDM 65.0、近3走着順 2・2・1着、同距離2走で3着内2回、同場5走で3着内4回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "パラディレーヌ"
+          },
+          "case_for": "今回IDM 65.3、近3走着順 2・3・8着、同距離5走で3着内4回、同場1走で3着内1回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "レーゼドラマ"
+          },
+          "case_for": "今回IDM 64.4、近3走着順 1・17・10着、同距離2走で3着内1回、同場1走で3着内1回、調教平行線。",
+          "case_against": "逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。",
+          "context_hook": "中山芝1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "エリカエクスプレス"
+          },
+          "case_for": "今回IDM 64.7、近3走着順 12・2・11着、同場2走で3着内1回、調教平行線。",
+          "case_against": "今回の1800mは直接の同距離実績がなく、距離適応に不確実性が残る。",
+          "context_hook": "中山芝1800mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "ニシノティアモ"
+        },
+        "reason": "ニシノティアモは今回IDM 65.9、近3走 1・1・1着、同距離6走・3着内4回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "ニシノティアモ"
+        },
+        "reason": "ニシノティアモ自身が勝ち判断と安定判断の双方で最上位。"
+      },
+      "attraction_stability_convergence": true,
+      "winning_path": "ニシノティアモは今回IDM 65.9、近3走 1・1・1着、同距離6走・3着内4回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 14,
+          "horse_name": "ニシノティアモ"
+        },
+        "other": {
+          "horse_no": 10,
+          "horse_name": "アンゴラブラック"
+        },
+        "reason": "◎ニシノティアモ: ニシノティアモは今回IDM 65.9、近3走 1・1・1着、同距離6走・3着内4回、調教デキ抜群を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○アンゴラブラック: 同距離2走で3着内2回、同場5走で3着内4回、近3走は2・2・1着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 14,
+          "horse_name": "ニシノティアモ"
+        },
+        "other": {
+          "horse_no": 4,
+          "horse_name": "パラディレーヌ"
+        },
+        "reason": "◎ニシノティアモはパラディレーヌより今回の勝ち筋を具体的に描ける材料が多く、▲パラディレーヌは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "アンゴラブラックが同距離2走で3着内2回、同場5走で3着内4回、近3走は2・2・1着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "アンゴラブラックが再現性の高い形を出し、ニシノティアモが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 14,
+            "horse_name": "ニシノティアモ",
+            "source_run_ref": "03253511",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_VERY_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "アンゴラブラック",
+            "source_run_ref": "06261111",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "パラディレーヌ",
+            "source_run_ref": "08254411",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_GAIN",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 16,
+            "horse_name": "レーゼドラマ",
+            "source_run_ref": "10261611",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "CLOSING_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "エリカエクスプレス",
+            "source_run_ref": "08254411",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "PACE_BALANCED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "450fe234c659e46ea21c76ece65bedfd4ca9e35227a67e3439bcc8cb7e1eaf30",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "CONVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-03-07",
+      "venue": "中山",
+      "race_no": 12,
+      "race_key": "2026-03-07-中山-12",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1600,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0009-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.3.4-candidate",
+      "candidate_patch": "win-first market-blind main selection refinement"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0009/20260307/中山/12R",
+      "racenote_semantic_sha256": "57902c2471da803b49b9006a5dce41c1151f37c83c178ec8d83a280b1598441f",
+      "day_prep_package": "BTDAY-0009_DAY_PREP_20260307_FINAL.zip",
+      "main_sha_at_forecast": "a092e114096014cb6ac87a6c8debeb3e92fe0aaf"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "ブラックジェダイト",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "ブラックジェダイト",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "ライネリーベ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "レッドレナート",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 13,
+            "horse_name": "キアラメンテ",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ラヴスコール",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "ブラックジェダイトは今回IDM 50.0、近3走 2・5・3着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "reader_facing_reason": "ブラックジェダイトは今回IDM 50.0、近3走 2・5・3着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "stability_counter_reason": "ライネリーベは同距離2走で3着内1回、同場1走で3着内0回、近3走は1・2・3着。地力・実績の再現性ではこちらを基準に置く。",
+      "concern": "ライネリーベが同距離2走で3着内1回、同場1走で3着内0回、近3走は1・2・3着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "human_principles_used": [
+        "H1",
+        "H4",
+        "H7"
+      ],
+      "race_model": "中山芝1600m・1勝クラス。ブラックジェダイトの勝ち切る材料とライネリーベの安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",
+      "primary_question": "市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",
+      "candidate_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ブラックジェダイト"
+          },
+          "case_for": "今回IDM 50.0、近3走着順 2・5・3着、同距離1走で3着内1回、同場3走で3着内2回、調教上昇。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝1600mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ライネリーベ"
+          },
+          "case_for": "今回IDM 47.1、近3走着順 1・2・3着、同距離2走で3着内1回、同場1走で3着内0回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝1600mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "レッドレナート"
+          },
+          "case_for": "今回IDM 46.2、近3走着順 2・4・7着、同距離10走で3着内5回、同場4走で3着内2回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝1600mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "キアラメンテ"
+          },
+          "case_for": "今回IDM 45.9、近3走着順 7・1・3着、同距離3走で3着内3回、同場2走で3着内1回、調教平行線。",
+          "case_against": "上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。",
+          "context_hook": "中山芝1600mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ラヴスコール"
+          },
+          "case_for": "今回IDM 46.0、近3走着順 7・2・12着、同距離6走で3着内2回、同場5走で3着内2回、調教平行線。",
+          "case_against": "追込脚質のため、前残りや仕掛け遅れになると能力を出し切れないリスクがある。",
+          "context_hook": "中山芝1600mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"
+        }
+      ],
+      "attraction_choice": {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ブラックジェダイト"
+        },
+        "reason": "ブラックジェダイトは今回IDM 50.0、近3走 2・5・3着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。"
+      },
+      "stability_choice": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "ライネリーベ"
+        },
+        "reason": "ライネリーベは同距離2走で3着内1回、同場1走で3着内0回、近3走は1・2・3着。地力・実績の再現性ではこちらを基準に置く。"
+      },
+      "attraction_stability_convergence": false,
+      "winning_path": "ブラックジェダイトは今回IDM 50.0、近3走 2・5・3着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。",
+      "main_vs_second": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "ブラックジェダイト"
+        },
+        "other": {
+          "horse_no": 2,
+          "horse_name": "ライネリーベ"
+        },
+        "reason": "◎ブラックジェダイト: ブラックジェダイトは今回IDM 50.0、近3走 2・5・3着、同距離1走・3着内1回、調教上昇を総合し、DAY PREP内のレース材料だけなら最も1着に近いと判断する。 ○ライネリーベ: 同距離2走で3着内1回、同場1走で3着内0回、近3走は1・2・3着。"
+      },
+      "main_vs_third": {
+        "preferred": {
+          "horse_no": 8,
+          "horse_name": "ブラックジェダイト"
+        },
+        "other": {
+          "horse_no": 4,
+          "horse_name": "レッドレナート"
+        },
+        "reason": "◎ブラックジェダイトはレッドレナートより今回の勝ち筋を具体的に描ける材料が多く、▲レッドレナートは相手候補まで。"
+      },
+      "why_not_numeric_leader": "IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。",
+      "strongest_counter": "ライネリーベが同距離2走で3着内1回、同場1走で3着内0回、近3走は1・2・3着。安定材料をそのまま出せると◎の最有力判断を脅かす。",
+      "reversal_condition": "ライネリーベが再現性の高い形を出し、ブラックジェダイトが今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。",
+      "missing_evidence": [
+        "current odds / current popularity are outside the Forecast Reader input boundary"
+      ],
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 8,
+            "horse_name": "ブラックジェダイト",
+            "source_run_ref": "06261408",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ライネリーベ",
+            "source_run_ref": "04253307",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "レッドレナート",
+            "source_run_ref": "05261512",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "キアラメンテ",
+            "source_run_ref": "06255412",
+            "next_watch_grade": null,
+            "matched_rule_ids": [],
+            "decision_role": "CONTEXT_ONLY",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ラヴスコール",
+            "source_run_ref": "07255512",
+            "next_watch_grade": "S",
+            "matched_rule_ids": [
+              "HV01",
+              "HV02",
+              "HV03",
+              "HV05",
+              "HV06",
+              "HV11",
+              "HV12"
+            ],
+            "decision_role": "SUPPORT_COUNTERARGUMENT",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          }
+        ],
+        "reason_not_used": null
+      }
+    },
+    "audit": {
+      "created_at": "2026-09-30T23:41:27+00:00",
+      "frozen_at": "2026-09-30T23:41:27+00:00",
+      "prediction_hash": "ee62327bc8927b29d9740585d7c9dca2acc450a1cb2d63304836446f46fbb453",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "candidate_role_separation": "DIVERGE",
+      "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+      "independent_selection_guard": "PASS",
+      "converge_counter_self_reference_guard": "PASS"
+    }
+  }
+]
