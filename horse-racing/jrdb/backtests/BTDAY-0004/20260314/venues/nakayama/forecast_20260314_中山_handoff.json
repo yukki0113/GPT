@@ -1,0 +1,29 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0004",
+  "target_date": "2026-03-14",
+  "venue": "中山",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.2",
+  "main_sha": "f2569de786c12bfd388e9921517e10e32b653974",
+  "reader_explanation_policy": "FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md section 4.2.2",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "596ac70a0777e059127c6a42d354591c7cc34d6a222e71f40a3e24990b61c9c0",
+    "d8d92db3f7018b2ed24cb26f6b7adb80968c76da13d47213405fd9531dfde8cd",
+    "9cb8dd3b8430ffdb06d115da17853e61b41dd25916d9cb727d092fcabf3b7c90",
+    "8294bcf9f394a3d893c4414b9d9c2b96e813ba529693c95cb3a707e0e8960a57",
+    "ce26a4a8ca0c723194fe9e23b6a993e3cf3f4ae1ddfb602481ceb42f2883029c",
+    "cefbc1e46e4f83af6b8d497a97a9b347afdf9a7439ccedeba0aec768890736b6",
+    "caac44d2585c0c7c7073823d09bab8412dac6169634612c41ddd8bac469d9dc0",
+    "f752407f885df4dbe2b25a85ea3f542461c4d13bb88017edc4577c73a7268f3e",
+    "e243525631b5cd74163d5cc12a602254598e836d583e859ea3f71aa5dd863997",
+    "dbb452fbea755ede900f8330ff1bd111158a8bb1be4969aa76bceef92c0cac65",
+    "1e3795746bb27138baf3fa7ac6e05bc968e35f7bffc411552f3af0917ac4cdf6",
+    "9fe380ee8c52413f22725f25a128fc32b082107b92600b631e06d3789565e2ff"
+  ],
+  "source_package": "BTDAY-0004_DAY_PREP_20260314_FINAL.zip",
+  "next_stage": "VENUE FORECAST 阪神; DAY MERGE only after all venues freeze"
+}
