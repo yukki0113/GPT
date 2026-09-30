@@ -1,0 +1,42 @@
+{
+  "schema_version": "RaceNote-Daily-Merge-Audit-0.1-draft",
+  "selection_id": "BTDAY-0003",
+  "target_date": "2026-08-29",
+  "status": "PASS",
+  "venues": [
+    "札幌",
+    "新潟",
+    "中京"
+  ],
+  "venue_count": 3,
+  "expected_races": 36,
+  "merged_races": 36,
+  "duplicate_race_keys": 0,
+  "prediction_hash_unique_count": 36,
+  "prediction_hash_preserved": true,
+  "marks_recomputed": false,
+  "reader_reasons_rewritten": false,
+  "result_opened": false,
+  "technical_skips": 0,
+  "venue_handoffs": [
+    {
+      "venue": "中京",
+      "frozen_count": 12,
+      "result_opened": false,
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    {
+      "venue": "新潟",
+      "frozen_count": 12,
+      "result_opened": false,
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    },
+    {
+      "venue": "札幌",
+      "frozen_count": 12,
+      "result_opened": false,
+      "logic_version": "RaceNote-Human-Context-Reader-0.3.2"
+    }
+  ],
+  "merged_at": "2026-09-30T02:28:33+00:00"
+}
