@@ -1,6 +1,6 @@
 {
   "version": "RaceNote-Forecast-Logic-Current-0.1",
-  "updated_at": "2026-09-29",
+  "updated_at": "2026-09-30",
   "current_logic_version": "RaceNote-Human-Context-Reader-0.3.2",
   "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md",
   "logic_config": "config/racenote_forecast_logic_human_context_v0_3_2.json",
@@ -12,13 +12,15 @@
     "last_turn": "BTDAY-0002",
     "status": "FROZEN_RESEARCH_BASELINE"
   },
-  "change_reason": "RRDB is now used to reinterpret visible prior results, then horses are re-compared in the current race. RRDB may act as a tie-breaker or restore older relevant direct evidence, but labels alone never determine marks.",
-  "phase": "CALIBRATION_HOLD",
+  "change_reason": "CAL-001 through CAL-006 calibration completed. Daily forecast operation baseline and D5 daily RaceNote build are available; clean blind daily backtesting is authorized while keeping Human-Context Reader 0.3.2 unchanged.",
+  "phase": "BLIND_RESEARCH_ACTIVE",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
-  "clean_blind_pick_allowed": false,
+  "daily_operation": "docs/racenote/DAILY_FORECAST_OPERATION_v0_1.md",
+  "daily_racenote_entrypoint": "src/build_racenote_daily.py",
+  "clean_blind_pick_allowed": true,
   "rrdb_integration": {
-    "status": "ACTIVE_REQUIRED_FOR_NEW_CALIBRATION",
+    "status": "ACTIVE_REQUIRED",
     "design": "docs/racenote/RACENOTE_RRDB_INTEGRATION_DESIGN_v0_1.md",
     "enrichment": "src/racenote_rrdb_enrichment.py",
     "current_file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
