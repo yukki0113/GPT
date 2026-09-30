@@ -36,7 +36,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add "$S" && git commit -m "RaceNote: fix BTDAY-0010 target date" && git push origin HEAD:main
       - name: Sources
-        env: {GH_TOKEN: ${{ github.token }}}
+        env:\n          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p /tmp/in /tmp/a /tmp/an /tmp/rr /tmp/nw /tmp/out
           gdown "https://drive.google.com/uc?id=$(cat /tmp/fid)" -O "/tmp/in/$(cat /tmp/file)"
@@ -52,7 +52,7 @@ jobs:
           unzip -q /tmp/in/rr.zip -d /tmp/rr
           unzip -q /tmp/in/nw.zip -d /tmp/nw
       - name: Build
-        env: {PYTHONPATH: horse-racing/jrdb/src}
+        env:\n          PYTHONPATH: horse-racing/jrdb/src
         run: |
           python horse-racing/jrdb/src/build_racenote_daily.py --date "$(cat /tmp/date)" --paci "/tmp/in/$(cat /tmp/file)" --analysis-root /tmp/an --racereview-root /tmp/rr/postrace_review/v0_1 --next-watch-rules /tmp/nw/next_watch_candidate_rules_frozen.json --output /tmp/out
       - name: Handoff
@@ -78,7 +78,7 @@ jobs:
         with: {name: BTDAY-0010-DAY-PREP, path: '/tmp/BTDAY-0010_DAY_PREP_*_FINAL.zip', retention-days: 14}
       - name: Comment
         if: always()
-        env: {GH_TOKEN: ${{ github.token }}}
+        env:\n          GH_TOKEN: ${{ github.token }}
         run: |
           D=$(cat /tmp/date); C=${D//-/}; H=/tmp/out/RaceNote_${C}/day_prep_handoff.json
           { echo RACENOTE_DAILY_BTDAY0010_RESULT; cat "$H"; } > /tmp/c
