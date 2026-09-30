@@ -1,68 +1,71 @@
 # RaceNote Daily Forecast Operation v0.1
 
-Status: AGREED OPERATION BASELINE  
+Status: **AGREED OPERATION BASELINE — TWO-TURN DAILY DEFAULT**  
 Updated: 2026-09-30
 
 ## 1. Purpose
 
-This document records the agreed operating shape for RaceNote daily forecasting after the CAL-001 through CAL-006 calibration phase.
+This document records the agreed operating shape for RaceNote daily forecasting.
 
 The same execution shape is used for:
 
 - historical backtests on eligible 2026 JRA dates
 - normal forward daily operation for the next JRA race day
 
-The intent is to keep the forecasting path itself common between backtest and production-like operation. Backtest-only and publication-only behavior should live at the boundary, not inside race prediction logic.
+The forecasting path itself should remain common between backtest and production-like operation. Backtest-only and publication-only behavior belongs at the boundary, not inside race prediction logic.
 
-Current forecast logic is resolved from:
-
-- `config/racenote_forecast_logic_current.json`
-
-At the time this agreement was recorded, current logic is:
-
-- `RaceNote-Human-Context-Reader-0.3.2`
-- phase: `CALIBRATION_HOLD`
-
-This document does not override the current logic pointer. Forecast execution must always re-resolve latest main/current before a new day starts.
+Forecast logic must always be re-resolved from latest `main` before a new day starts. This operation document does not override the current/candidate logic contract selected for that test.
 
 ---
 
-## 2. Daily unit
+## 2. Daily unit and standard turn shape
 
 One target date is one Daily Forecast unit.
 
 A normal JRA day contains two or three venues, normally 24 to 36 races.
 
-The daily flow is intentionally split into separate turns:
+The current default is **two turns per target day**:
 
 ```text
-DAY PREP
-  -> VENUE FORECAST #1
-  -> VENUE FORECAST #2
-  -> VENUE FORECAST #3, when present
-  -> DAY MERGE
+TURN 1 — DAY PREP
+  -> resolve / fix target date
+  -> acquire PACI
+  -> generate the full-day RaceNote in one batch
+  -> validate source / as-of / leakage boundaries
+  -> fix DAY PREP handoff
+  -> STOP before forecasting
+
+TURN 2 — FULL-DAY FORECAST
+  -> forecast all venues / all races for the day
+  -> Freeze each venue independently
+  -> verify prediction hashes / completeness
+  -> deterministic DAY MERGE
+  -> generate simple one-day HTML
   -> STOP before post-race work
 ```
 
-The GPT forecasting work unit is **one venue / up to 12 races per turn**, not the whole day at once.
+For a normal three-venue day, TURN 2 therefore handles up to **36 races in one turn**.
 
-Each race inside a venue is still forecast independently.
+This two-turn shape became the default after `BTDAY-0005 / 2026-06-28` successfully completed all 36 race forecasts, venue-level Freeze, hash checks, and DAY MERGE in one Forecast turn with `result_opened=false`.
+
+Each race remains an independent forecast decision even when the whole day is processed in one turn.
 
 ---
 
-## 3. Stage A — DAY PREP
+## 3. Stage A — DAY PREP / TURN 1
 
 ### 3.1 Target-date resolution
 
 Backtest:
 
-- choose a target date from the approved 2026 historical pool
-- obey the current pool / eligibility / already-used rules
+- choose one target date from the approved historical pool
+- obey eligibility / already-used rules
 - the selection mechanism must not expose target-race results
+- once selected, fix the date in the pool before Forecast begins
 
 Normal forward operation:
 
-- use the requested next/current JRA race date, for example tomorrow's Saturday card
+- use the requested next/current JRA race date
 - do not use backtest random selection
 
 ### 3.2 RaceNote generation
@@ -72,263 +75,252 @@ For the target date:
 1. resolve or acquire the target day's PACI
 2. run the existing daily RaceNote orchestrator
 3. generate RaceNote for the entire day in one batch
-4. include the currently required enrichment lanes, including P1/P2 and formal RRDB when current contract requires them
+4. include the currently required enrichment lanes, including P1/P2 and formal RRDB when required
 5. enforce all as-of / pre-result boundaries
+6. validate the Reader View / manifest / source provenance
 
 Expected scope:
 
 - 2 venues: normally 24 races
 - 3 venues: normally 36 races
 
-DAY PREP is a data-preparation stage.
+DAY PREP is strictly a data-preparation stage.
 
-**No forecast marks are assigned here.**
+**No forecast marks are assigned in TURN 1.**
 
-### 3.3 Daily input manifest
+### 3.3 DAY PREP handoff
 
-DAY PREP should leave a machine-readable day manifest that identifies at least:
+TURN 1 should end with a machine-readable handoff identifying at least:
 
 - target date
+- selection id when backtesting
 - venues
 - expected race count per venue
-- RaceNote input identities
-- logic/current resolution used for the day
-- source/provenance identities needed for reproducibility
+- RaceNote identities
+- Analysis / RRDB / Next-Watch provenance
+- forecast logic or candidate logic intended for TURN 2
+- validation state
 - result leakage guard state
+- `result_opened=false`
 
-Exact handoff schema and filename are to be formalized next.
+After this handoff is fixed, RaceNote input identity is immutable for the day's Forecast.
 
 ---
 
-## 4. Stage B — VENUE FORECAST
+## 4. Stage B — FULL-DAY FORECAST / TURN 2
 
-### 4.1 One venue = one turn
+### 4.1 Default: one day = one Forecast turn
 
-GPT handles one venue at a time.
+After DAY PREP completes, GPT normally forecasts the entire target day in one turn.
 
-Typical examples:
+Typical three-venue shape:
 
 ```text
-東京 1R-12R
-京都 1R-12R
-新潟 1R-12R
+Venue #1 1R-12R
+  -> venue Freeze
+Venue #2 1R-12R
+  -> venue Freeze
+Venue #3 1R-12R
+  -> venue Freeze
+DAY MERGE
 ```
 
-A three-venue day therefore normally requires three Forecast turns after DAY PREP.
-
-This boundary is deliberate:
-
-- prevents whole-day context inflation
-- keeps evidence reading manageable
-- makes venue-level audits and retry boundaries clear
-- lets venue/course context remain visible without turning the day into one giant ranking task
+The whole-day turn is an execution boundary only. It must **not** become one combined ranking task across races or venues.
 
 ### 4.2 Race independence
 
-Within the venue:
+Within the full-day turn:
 
 - each race is one independent forecast
 - do not rank horses across different races
-- do not weaken or strengthen one race's marks because another race on the same day looks stronger
-- do not use later-race prediction choices to repair earlier-race choices
+- do not strengthen or weaken a pick because another race on the same day looks stronger
+- do not use later-race choices to repair earlier-race choices
+- do not revise a venue after that venue has been Frozen
+- do not rebalance marks across venues before DAY MERGE
 
-Venue context may inform interpretation of course/trend evidence where the RaceNote contract permits it, but prediction decisions remain race-local.
+Venue/course context may inform RaceNote evidence where the active contract permits it, but prediction decisions remain race-local.
 
 ### 4.3 Reader behavior
 
-The Reader should flexibly integrate relevant evidence such as:
+The active Reader should flexibly integrate relevant evidence such as:
 
 - ground ability
 - current-race condition fit
 - Trend
 - P1/P2 pedigree context
 - training
-- RRDB reinterpretation of prior visible results
+- RRDB reinterpretation of visible prior results
+- any additional evidence lane explicitly allowed by the active logic contract
 
-No fixed universal weighting or aggregate score is introduced merely for daily operation.
+No fixed universal weighting or aggregate score is introduced merely because the whole day is processed in one turn.
 
-RRDB keeps the current semantics:
+RRDB retains the existing semantic flow:
 
 ```text
 visible prior result
-  -> reinterpret as UPGRADE / DOWNGRADE / CONFIRM / NEUTRAL
-  -> return to the current race
+  -> reinterpret prior run
+  -> return to current race
   -> re-compare candidates
   -> assign marks
 ```
 
-RRDB labels, Next-Watch S/A, Trend, pedigree statistics, or training figures do not directly determine marks by themselves.
+Internal RRDB labels, Next-Watch grades, Trend, pedigree statistics, or training values do not directly determine marks by themselves.
 
 ### 4.4 Internal trace vs reader-facing reason
 
-Canonical forecast records retain the internal audit trail, including:
+Canonical forecast records retain the audit trail required by the active logic contract.
 
-- race model
-- candidate comparison
-- evidence usage
-- RRDB interpretation
-- counterargument
-- reversal condition
-- evidence gaps
+Reader-facing forecast reasons explain **why the horse is worth buying in this race**.
 
-Reader-facing text is separate.
+Do not expose internal research labels as the reason itself.
 
-Reader-facing forecast reasons must explain **why the horse is worth buying in this race**.
+### 4.5 Venue Freeze remains mandatory
 
-Avoid publication text that sounds like internal model repair, for example:
+Even inside a one-day Forecast turn, each venue must be Frozen independently after its usable races are complete.
 
-- "RRDBでUPGRADEしたから"
-- "前回の評価を修正したため"
-- "CALで印を戻したため"
+Venue Freeze requires:
 
-Those belong to internal audit/research trace, not the newspaper-facing reason.
-
-### 4.5 Venue Freeze
-
-After all usable races at the venue are complete:
-
-- validate the canonical records
-- Freeze the venue prediction set
-- record prediction hashes
-- keep `result_opened=false`
-- emit a venue-level handoff
+- canonical record validation
+- prediction hashes
+- `result_opened=false`
+- venue-level handoff
+- explicit technical skips when any race could not be completed
 
 A Frozen venue is immutable for that target day.
 
-If a technical defect requires regeneration, it must be explicitly identified and audited rather than silently overwriting the forecast.
+---
 
-Exact venue handoff schema and filenames are to be formalized next.
+## 5. Safety fallback — one venue per turn
+
+The prior `one venue / up to 12 races per Forecast turn` design remains the mandatory fallback when the full-day turn becomes operationally unsafe.
+
+Fallback triggers include:
+
+- approaching turn / execution time limits
+- evidence review becoming too shallow or compressed
+- context / artifact / tool limits
+- a venue cannot be completed cleanly
+- validation or Freeze cannot be finished reliably
+- any other issue that risks prediction quality, completeness, or auditability
+
+When a fallback is required:
+
+1. finish and Freeze only the venue(s) genuinely completed
+2. do not rush or abbreviate the remaining races
+3. end the turn
+4. resume with the next unfinished venue in a new turn
+5. run DAY MERGE only after every target venue is Frozen
+
+The fallback is an execution-safety boundary, not a change in forecast logic.
 
 ---
 
-## 5. Stage C — DAY MERGE
+## 6. Stage C — DAY MERGE
 
-DAY MERGE begins only after all target venues are Frozen.
+DAY MERGE begins only after every target venue is Frozen.
 
-### 5.1 Merge is not a forecasting stage
-
-The merge step is deterministic packaging only.
+DAY MERGE is deterministic packaging only.
 
 It may:
 
 - combine venue canonical records
 - sort races into daily order
 - verify completeness
-- verify hashes / identities
-- generate a one-day simple HTML
-- generate a consumer payload for Newspaper PWA in forward operation
+- verify identities and prediction hashes
+- generate daily audit / handoff
+- generate a simple one-day HTML
+- generate Newspaper PWA payload when forward operation requires it
 
 It must not:
 
 - change marks
-- rewrite the selected main horse
-- re-run candidate comparison
+- rewrite ◎ / ○ / ▲ / △
+- rerun candidate comparison
 - rebalance confidence across venues
-- decide that one venue's main pick looks weaker after seeing the full day
+- modify a reader-facing reason in a way that changes prediction meaning
 
-Example of prohibited behavior:
-
-```text
-東京◎ / 京都◎ / 新潟◎ are already Frozen
--> look at the whole day
--> replace 東京◎ because another race now looks stronger
-```
-
-That is not merge behavior and is forbidden.
-
-### 5.2 Daily outputs
-
-The merged day should contain, at minimum:
-
-- all Frozen race prediction records
-- venue/source identity
-- prediction hashes
-- daily completeness audit
-- `result_opened=false`
-- simple one-day HTML
-
-Normal forward operation additionally produces:
-
-- Newspaper PWA-compatible payload
-
-Backtest:
-
-- PWA publication payload is optional / unnecessary
-- the simple HTML and canonical merged records are sufficient before post-race evaluation
-
-Exact final file contract is to be formalized next.
+Backtests normally require only canonical merged records, audit/handoff, and simple HTML before post-race evaluation.
 
 ---
 
-## 6. Stage D — POST-RACE boundary
+## 7. Stage D — POST-RACE boundary
 
-Post-race work is a separate phase and should not occur inside Forecast execution.
+Post-race work is a separate phase.
 
-Only after the daily Forecast is fully Frozen may another research/review path:
+Only after the full requested Forecast scope is Frozen and DAY MERGE is complete may another research/review path:
 
 - acquire results
-- join result/performance data
+- join performance data
 - calculate forecast evaluation
-- perform review
+- perform diagnosis
 - propose logic changes
 
 The Forecast execution path must not open target results before Freeze.
 
-Post-race evidence must not flow backward into already Frozen forecasts.
+Post-race evidence must never flow backward into Frozen forecasts.
 
 ---
 
-## 7. Backtest and forward-operation parity
-
-The preferred design is one shared pipeline.
+## 8. Backtest and forward-operation parity
 
 ### Historical backtest
 
 ```text
+TURN 1:
 approved/random historical date
   -> DAY PREP
-  -> venue forecast(s)
+  -> STOP
+
+TURN 2:
+full-day Forecast
+  -> venue Freeze x all venues
   -> DAY MERGE
   -> STOP
-  -> separate result/research phase
+
+then separate result/research phase
 ```
 
 ### Normal forward operation
 
 ```text
+TURN 1:
 next JRA race date
   -> DAY PREP
-  -> venue forecast(s)
-  -> DAY MERGE
-  -> Newspaper PWA payload
   -> STOP
-  -> separate post-race phase after results exist
+
+TURN 2:
+full-day Forecast
+  -> venue Freeze x all venues
+  -> DAY MERGE
+  -> Newspaper PWA payload when required
+  -> STOP
+
+then separate post-race phase after results exist
 ```
 
-The core Reader, RaceNote input, canonical forecast record, Freeze semantics, and merge behavior should be the same in both modes.
-
-Do not maintain a special backtest-only prediction implementation unless a contract explicitly requires it.
+If TURN 2 cannot be completed safely, split only at venue boundaries and continue with the fallback described above.
 
 ---
 
-## 8. Immutability and retry rules
+## 9. Immutability and retry rules
 
-The following are operational invariants:
+Operational invariants:
 
-1. RaceNote input identity is fixed before venue forecasting starts.
-2. A venue Forecast is immutable after successful Freeze.
-3. DAY MERGE consumes Frozen venue outputs only.
-4. Merge never changes prediction judgment.
-5. Target results remain unopened until the whole requested Forecast scope is Frozen.
-6. Technical retry does not silently become a second prediction attempt.
-7. A failed or skipped race is explicit; it is not silently filled with guessed marks.
-8. Reader-facing publication text is derived from Frozen prediction records and does not redefine the prediction.
+1. RaceNote input identity is fixed at the end of TURN 1.
+2. TURN 1 ends before any forecast marks are assigned.
+3. TURN 2 may cover 24–36 races, but every race remains independent.
+4. A venue is immutable after successful Freeze.
+5. DAY MERGE consumes Frozen venue outputs only.
+6. DAY MERGE never changes prediction judgment.
+7. Target results remain unopened until the entire requested Forecast scope is Frozen.
+8. Technical retry does not silently become a second prediction attempt.
+9. Failed / skipped races are explicit and never filled with guessed marks.
+10. Reader-facing publication text does not redefine the Frozen prediction.
+11. If a full-day Forecast turn must stop early, Freeze completed venue(s) only and resume unfinished venues later.
 
 ---
 
-## 9. Suggested directory shape
-
-The following is an agreed direction, not yet a finalized file contract:
+## 10. Suggested directory shape
 
 ```text
 daily/YYYYMMDD/
@@ -347,51 +339,36 @@ daily/YYYYMMDD/
 
 Backtests may omit `publish/newspaper_payload.json`.
 
-Filename/schema details remain a follow-up design task.
-
----
-
-## 10. Next formalization work
-
-The operating sequence above is agreed.
-
-The next design task is to formalize three machine contracts:
-
-1. **DAY PREP handoff**
-   - complete day input manifest
-   - RaceNote identities / source provenance
-   - expected venue/race inventory
-
-2. **VENUE FORECAST handoff**
-   - venue Freeze state
-   - canonical record paths
-   - race/frozen/skip counts
-   - prediction hashes
-   - result-open guard
-
-3. **DAY MERGE handoff / output contract**
-   - deterministic venue merge
-   - daily completeness/hash audit
-   - simple HTML contract
-   - Newspaper PWA payload boundary
-
-Until those schemas are committed, the sequence and invariants in this document are the operational baseline, while example filenames remain provisional.
-
 ---
 
 ## 11. Summary
 
-The agreed normal unit is:
+The current default is:
 
 ```text
-one day of RaceNote generated in one batch
-  -> GPT forecasts one venue (12R) per turn
-  -> venue Freeze
-  -> repeat for 2-3 venues
-  -> deterministic daily merge
-  -> simple HTML
-  -> PWA payload only when needed
-  -> result work remains outside Forecast
+TURN 1
+  full-day RaceNote generation + validation
+  -> DAY PREP handoff fixed
+  -> STOP
+
+TURN 2
+  forecast all 24–36 races
+  -> Freeze each venue independently
+  -> deterministic DAY MERGE
+  -> simple HTML / required payload
+  -> STOP before results
 ```
 
-This structure is the common basis for both practical daily operation and production-like historical backtesting.
+Operational fallback:
+
+```text
+If the one-day Forecast turn approaches practical limits:
+  -> Freeze completed venue(s)
+  -> end the turn
+  -> resume one venue at a time
+  -> DAY MERGE after all venues are Frozen
+```
+
+`BTDAY-0005 / 2026-06-28` is the first successful reference run for the two-turn daily shape.
+
+Keep the two-turn structure as the default while it remains stable. Revert to the venue-per-turn fallback whenever quality, completeness, timing, context, or tooling becomes a concern.
