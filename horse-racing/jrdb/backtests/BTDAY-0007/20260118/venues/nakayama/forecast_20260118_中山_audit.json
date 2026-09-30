@@ -1,0 +1,21 @@
+{
+  "validator_version": "racenote-human-context-0.3.4-candidate-equivalent",
+  "candidate_patch": "DIVERGE winning-path / winning-value refinement",
+  "status": "PASS",
+  "venue": "中山",
+  "target_date": "2026-01-18",
+  "record_count": 12,
+  "frozen_count": 12,
+  "error_count": 0,
+  "prediction_hash_unique_count": 12,
+  "converge_races": [
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "winning_path_guard": "PASS",
+  "converge_semantic_guard": "PASS",
+  "result_opened": false
+}

@@ -1,0 +1,115 @@
+{
+  "schema_version": "RaceNote-Daily-Build-Manifest-0.1",
+  "target_date": "2026-01-18",
+  "status": "PASS",
+  "pipeline_version": "RaceNote-Daily-Build-0.1",
+  "stages": {
+    "base": "PASS",
+    "history": "PASS",
+    "rrdb": "PASS",
+    "reader": "PASS",
+    "validation": "PASS",
+    "package": "PASS"
+  },
+  "sources": {
+    "paci": {
+      "target_date": "2026-01-18",
+      "date_raw": "20260118",
+      "record_counts": {
+        "BAC": 24,
+        "KYI": 351,
+        "CHA": 351,
+        "CYB": 351,
+        "ZED": 1325,
+        "ZKB": 1181
+      }
+    },
+    "analysis": {
+      "kind": "PARQUET",
+      "backend": "parquet_duckdb",
+      "path": "/tmp/analysis",
+      "manifest_path": "/tmp/analysis/generations/analysis-v1_4-canonical-20260928-02/manifest.json",
+      "generation_id": "analysis-v1_4-canonical-20260928-02",
+      "min_race_date": "2016-01-05",
+      "max_race_date": "2026-09-27",
+      "rows": 517622,
+      "query_count": 9,
+      "parquet_scan_count": 9
+    },
+    "rrdb": {
+      "mode": "generation_root",
+      "root": "/tmp/rrdb/postrace_review/v0_1",
+      "generation_id": "jrdb_race_review_v0_1_incremental_g36514429467"
+    },
+    "next_watch": {
+      "rule_version": "next-watch-rules-discovery-v0.1"
+    }
+  },
+  "counts": {
+    "races_expected": 24,
+    "races_built": 24,
+    "reader_views": 24,
+    "horses": 351,
+    "technical_skips": 0
+  },
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "validation": {
+    "base": "PASS",
+    "history": "PASS",
+    "pedigree": "PASS",
+    "rrdb": "PASS",
+    "reader_roundtrip": "PASS"
+  },
+  "artifacts": {
+    "authoritative_dir": "/tmp/output/RaceNote_20260118/authoritative",
+    "reader_dir": "/tmp/output/RaceNote_20260118/reader",
+    "manifest": "/tmp/output/RaceNote_20260118/manifest.json",
+    "validation_report": "/tmp/output/RaceNote_20260118/validation_report.json"
+  },
+  "warnings": [
+    "unknown_tokki:333:7",
+    "unknown_leg_condition:114:5",
+    "unknown_tokki:242:4",
+    "unknown_tokki:054:4",
+    "unknown_tokki:225:3",
+    "unknown_tokki:208:3",
+    "unknown_tokki:128:3",
+    "unknown_tokki:721:3",
+    "unknown_tokki:091:3",
+    "unknown_tokki:407:2",
+    "unknown_leg_condition:065:2",
+    "unknown_leg_condition:076:2",
+    "unknown_tokki:877:2",
+    "unknown_tokki:796:2",
+    "unknown_tokki:703:1",
+    "unknown_tokki:229:1",
+    "unknown_one_week_course:62:1",
+    "unknown_tokki:206:1",
+    "unknown_tokki:212:1",
+    "unknown_tokki:302:1",
+    "unknown_tokki:495:1",
+    "unknown_tokki:347:1",
+    "unknown_tokki:533:1",
+    "unknown_tokki:870:1",
+    "unknown_tokki:716:1",
+    "unknown_tokki:427:1",
+    "unknown_tokki:792:1",
+    "unknown_tokki:188:1",
+    "unknown_tokki:543:1",
+    "unknown_tokki:429:1",
+    "unknown_tokki:542:1",
+    "unknown_tokki:369:1",
+    "unknown_tokki:066:1",
+    "unknown_tokki:308:1",
+    "unknown_tokki:927:1",
+    "unknown_tokki:467:1",
+    "unknown_tokki:237:1",
+    "unknown_tokki:099:1"
+  ],
+  "errors": []
+}
