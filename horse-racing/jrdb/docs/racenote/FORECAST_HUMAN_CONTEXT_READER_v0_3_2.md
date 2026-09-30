@@ -197,6 +197,47 @@ Each forecast trace must state:
 - cited horse/run when used;
 - why it was not used when available but non-decisive.
 
+### 4.2.2 Reader-facing explanation of reinterpretation
+
+This subsection changes **expression only**. It does not change candidate selection,
+marks, evidence weighting, RRDB interpretation, or the logic version.
+
+`axis_comment` / `reader_facing_reason` should let a reader understand the
+important reinterpretation that actually mattered to the final comparison,
+without exposing internal labels as if they were scores.
+
+Rules:
+
+- If RRDB materially `UPGRADE`s ◎, explain in natural language why the visible
+  prior result understates the run and how that matters under today's conditions.
+- If RRDB materially `DOWNGRADE`s ◎ but ◎ is still retained, acknowledge the
+  weakness and state what current-condition evidence still outweighs it.
+- If a close rival is materially upgraded, or ◎ is downgraded, and the marks do
+  not change, explain the decisive current-race comparison rather than silently
+  omitting that tension.
+- Do not write `UPGRADE`, `DOWNGRADE`, `S`, or `A` as the reason itself.
+  Translate the underlying run content into ordinary racing language.
+- Do not force RRDB wording when the reinterpretation is `NEUTRAL`, merely
+  corroborative, or non-decisive.
+- Keep the reader-facing reason concise and race-specific. Avoid a generic
+  template that could be pasted onto another race.
+- The explanation must describe the judgment already made; it must not be used
+  to recompute or change the marks after the fact.
+
+Preferred narrative shape when reinterpretation is material:
+
+```text
+visible result / apparent form
+  -> what the prior run actually showed
+  -> why that matters (or is outweighed) today
+  -> final comparative judgment
+```
+
+Frozen earlier backtests must not be rewritten solely to adopt this wording
+policy. They remain valid evidence for accuracy analysis because the prediction
+logic and marks are unchanged; later backtests may use the clearer explanation
+layer while retaining the same `RaceNote-Human-Context-Reader-0.3.2` logic.
+
 ### Step C — Form a candidate cluster
 
 Select typically 3–5 candidates.
