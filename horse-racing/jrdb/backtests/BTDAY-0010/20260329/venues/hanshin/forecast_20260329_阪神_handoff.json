@@ -1,0 +1,26 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0010",
+  "target_date": "2026-03-29",
+  "venue": "阪神",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+  "main_sha": "803cd8b930d8f217c7378b1f7f01a00443af62e2",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "947107161adccf39b94dc7751d04bca32770199041d5c7c77f6c01b7bd5a9dad",
+    "dd1467c901a86cdee34b52bdac532a1fb84e1aaeb10d39c8f3abe607d87923ac",
+    "ad14c386fe13fad185b0c347e470ce2a3adecfa7204b1799570f6617e0eb67ee",
+    "5cdac81aa23359930813ae6b0c9e3ca0ee6cdea8686797929a3246f6c3466d0b",
+    "1402dcc3e1a921c62de7de6b10e53148e746d88df7d1bc09eb7e9d2e79b55667",
+    "918b91d890f300493c4e21aa2a6a4e7f2bbcd759bca4b768d5ecf3ad8630a8af",
+    "ec6b733da7c750cc553cb221cb283978e611d9fa87a1b91437b8e5056e63bd46",
+    "3f6724e6d9d30c90231853be050ea74923875964aac3aa55f01c4bc9a4423b15",
+    "ecd8193bbfdc9ea44fa4691099ae0e5116c3c9c9c6bf23fbf672b8a55df4d74f",
+    "f33d3bac0665b5373d91e6dd94abfa1c4a38b4c0ff79c22e3e9ab5e2b98f412d",
+    "ed835d317eaf1a4512e046ca44cc0a12ae40c8df0d80dcf3587db72f22c63d9a",
+    "5d7ff24406ee76cf3946dffab0bb23ab2679a22c9ea3872837ffd4301ed0d234"
+  ]
+}

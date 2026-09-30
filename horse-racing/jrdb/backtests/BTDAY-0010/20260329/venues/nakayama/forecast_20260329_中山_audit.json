@@ -1,0 +1,28 @@
+{
+  "validator_version": "racenote-human-context-0.3.5-candidate-equivalent",
+  "candidate_patch": "win-first market-blind main selection refinement",
+  "status": "PASS",
+  "venue": "中山",
+  "target_date": "2026-03-29",
+  "record_count": 12,
+  "frozen_count": 12,
+  "error_count": 0,
+  "prediction_hash_unique_count": 12,
+  "converge_races": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+  "independent_selection_guard": "PASS",
+  "converge_semantic_guard": "PASS",
+  "result_opened": false
+}

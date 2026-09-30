@@ -1,0 +1,20 @@
+{
+  "schema_version": "RaceNote-Day-Merge-Audit-0.1-draft",
+  "selection_id": "BTDAY-0010",
+  "target_date": "2026-03-29",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+  "status": "PASS",
+  "venue_count": 3,
+  "record_count": 36,
+  "frozen_count": 36,
+  "technical_skips": 0,
+  "prediction_hash_unique_count": 36,
+  "winning_path_guard": "NOT_REQUIRED_v0.3.5",
+  "independent_selection_guard": "PASS",
+  "result_opened": false,
+  "venues": {
+    "中京": "PASS",
+    "中山": "PASS",
+    "阪神": "PASS"
+  }
+}
