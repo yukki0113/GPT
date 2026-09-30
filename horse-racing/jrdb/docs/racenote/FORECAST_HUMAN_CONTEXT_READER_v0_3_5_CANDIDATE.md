@@ -1,6 +1,6 @@
 # RaceNote Forecast Human-Context Reader v0.3.5 Candidate
 
-Status: **CANDIDATE — WIN-FIRST WITH MARKET-AWARE JUDGMENT**
+Status: **CANDIDATE — WIN-FIRST MARKET-BLIND JUDGMENT**
 Date: 2026-10-01
 Base logic: `RaceNote-Human-Context-Reader-0.3.4-candidate`
 Candidate logic id: `RaceNote-Human-Context-Reader-0.3.5-candidate`
@@ -18,11 +18,12 @@ adjusts only the final ◎ decision.
 
 The guiding idea is:
 
-> **◎ should primarily be the horse the Reader thinks is most likely to win this
-> race, while still allowing market disagreement / buyability to influence that
-> judgment when supported by real race evidence.**
+> **◎ should be the horse the Reader independently thinks is most likely to win
+> this race from the evidence available in DAY PREP.**
 
-This is deliberately not "pick the favorite" and not "pick the value horse".
+The Reader does not receive current popularity or current odds. The judgment is
+therefore deliberately market-blind: neither "pick the favorite" nor "pick the
+value horse" is available as a forecasting rule.
 
 ## 2. Candidate set remains unchanged
 
@@ -55,24 +56,28 @@ The Reader should make this judgment from the race itself:
 
 No single lane controls the decision.
 
-### 3.1 Market information is context, not a tie-break-only rule
+### 3.1 Market-blindness is an input invariant
 
-Market information should remain visible while judging ◎.
+Current market information is outside the Forecast Reader input boundary.
 
-Do **not** use popularity merely after the win judgment as a mechanical
-tie-breaker.
+During DAY PREP / Forecast, do not request, infer, reconstruct, or use:
 
-Instead ask:
+- current win odds;
+- current popularity rank;
+- market-implied probability;
+- "favorite / outsider" status derived from current betting;
+- any equivalent current-market signal.
 
-> 市場の評価は、この馬の今回の勝つ可能性を適切に表しているか。
+The Reader must decide ◎ from race evidence alone.
 
-A horse may become ◎ despite lower market support when the Reader has concrete,
-race-specific reasons to believe the market is underrating its winning chance.
+This also means the forecast logic itself cannot deliberately manufacture an
+"穴党" profile by preferring underbet horses. Whether the independent forecast
+ultimately disagreed with the market is a **post-Freeze diagnostic**, not an
+input to the forecast.
 
-Likewise, a favorite may remain ◎ when the evidence supports it.
-
-This preserves an "穴党" character as willingness to disagree with the market
-when warranted, not as an obligation to avoid popular horses.
+After results / market data are legitimately available in evaluation, researchers
+may measure ◎ popularity, odds, and market disagreement. Those measurements must
+not flow back into the Frozen forecast.
 
 ### 3.2 Do not confuse upside with win probability
 
@@ -82,7 +87,6 @@ The following alone are not enough to justify ◎:
 - "training is better";
 - "distance change may suit";
 - "RRDB upgraded the prior run";
-- "the price is attractive";
 - "this horse is more interesting".
 
 Those may contribute to the final judgment, but ◎ should still represent the
@@ -133,30 +137,25 @@ Instead it should be able to state naturally:
 A race-specific winning explanation is welcome when genuinely present, but it
 must not be generated merely to satisfy a template.
 
-If the only reason to prefer ◎ is that it is more exciting, less popular, or
-has vague upside, reconsider the selection.
+If the only reason to prefer ◎ is that it is more exciting or has vague upside,
+reconsider the selection.
 
-## 7. Popularity concentration guard — semantic, not mechanical
+## 7. Independent-selection guard
 
-v0.3.5 explicitly avoids a hidden drift toward "favorite = ◎".
+Because the Reader has no current market input, the guard is simpler:
 
-Before Freeze, the Reader should perform a semantic check:
+> If I ignore any imagined popularity and use only the supplied race evidence,
+> is this still the horse I most expect to win?
 
-> If this horse were not the market favorite, would the same race evidence still
-> make me choose it as ◎?
+Do not guess which horse is likely to be favorite from IDM, recent finishes,
+name recognition, jockey, or other proxies in order to recreate the missing
+market.
 
-This is not a popularity filter and must not force a different horse.
+Likewise, do not seek a less-obvious horse merely to make the forecast look
+original.
 
-The purpose is only to detect accidental substitution of market consensus for
-independent race reading.
-
-Conversely:
-
-> If this horse were more popular, would I still like its winning case?
-
-This check helps avoid choosing a horse merely because it looks like value.
-
-No popularity rank or odds threshold is introduced.
+The purpose is to keep ◎ as an independent race judgment rather than a hidden
+market-following or hidden contrarian exercise.
 
 ## 8. Reader-facing explanation
 
@@ -195,8 +194,7 @@ The conceptual reasoning is:
 ```text
 understand the race
   -> form the candidate cluster
-  -> ask who is most likely to win
-  -> keep market disagreement visible as context
+  -> ask who is most likely to win from supplied race evidence
   -> independently identify the stability horse
   -> assign ◎ / ○ / remaining marks
 ```
@@ -208,8 +206,10 @@ This is not a fixed algorithm.
 RRDB remains an evidence-reinterpretation layer, not a mark rule.
 
 UPGRADE / DOWNGRADE / CONFIRM / NEUTRAL, Next-Watch grade, IDM, training,
-Trend, pedigree, direct-condition history, and market information are all
-evidence lanes.
+Trend, pedigree, and direct-condition history are evidence lanes.
+
+Current market information is not a Forecast evidence lane under the present
+DAY PREP contract.
 
 No single lane determines ◎.
 
@@ -234,5 +234,8 @@ The next untouched blind backtests should evaluate:
 
 The main question for v0.3.5 is:
 
-> Can the Reader improve ◎ win selection without collapsing into market-following
-> favorite selection and without damaging the already-strong candidate cluster?
+> Can the Reader improve ◎ win selection from market-blind race evidence without
+> damaging the already-strong candidate cluster?
+
+Final popularity / odds may still be compared after Freeze as an evaluation
+diagnostic, but they are not part of the v0.3.5 prediction decision.
