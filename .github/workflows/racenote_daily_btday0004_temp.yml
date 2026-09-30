@@ -61,11 +61,12 @@ jobs:
         env:
           PYTHONPATH: horse-racing/jrdb/src
         run: |
+          set -o pipefail
           python horse-racing/jrdb/src/build_racenote_daily.py \
             --date 2026-03-14 \
             --paci /tmp/input/PACI260314.zip \
             --analysis-root /tmp/analysis \
-            --racereview-current-cache /tmp/rrdb \
+            --racereview-root /tmp/rrdb/postrace_review/v0_1/generations/jrdb_race_review_v0_1_incremental_g36514429467 \
             --next-watch-rules /tmp/rules/next_watch_candidate_rules_frozen.json \
             --output /tmp/output | tee /tmp/build_stdout.json
 
