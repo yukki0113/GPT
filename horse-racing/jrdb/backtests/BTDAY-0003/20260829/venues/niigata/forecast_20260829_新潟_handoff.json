@@ -1,0 +1,28 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0003",
+  "target_date": "2026-08-29",
+  "venue": "新潟",
+  "logic_version": "RaceNote-Human-Context-Reader-0.3.2",
+  "main_sha": "2d71320263a54e51849113ab5e598497bee9d750",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "479484343fc5c12198e9fc210f0e2e531e2173ef13e4423c00163dcd2b247ac1",
+    "f0696f35bd613110778cdd5fc1239654a1f0184858ee33d469c5323be5d7da3a",
+    "7b096affe1bb33cc6bc0513a7c161262809d84c86b59e7c6399e2b3c7496ca96",
+    "2b872738af722ef984188467ded5294df1c4afe4f1744399ce7842f5bca56871",
+    "ee0385673282b40d3de3e754c917c98e1613f8d4606f12a6ec678ebf04194971",
+    "eed42efdbb59c702f0b670bbdb8284e5ff76f71855087a09aa2a9b580464b921",
+    "9b9ad5b50a6d34a1499767b1c67c84dcc3edc3891417d8d439de41daa5274488",
+    "6cd43314172990e6b9e7a458b19561399aa06df9cbe3ae0f986c04250691d519",
+    "acc3d39121a27e5a0e823654a5e4dd6556f050e8aefcc6b00b514196b6a955c7",
+    "f902f06289bd13302ba2d85aeeabb405e7a5a3eeb3581cb5d3600f09a3c50c09",
+    "bf9e799219a6d0094f1d9287c324dbff20be31e6c78be4128a36f4b752e06d8a",
+    "531b96d8dc300872c12b696e18e85adcb4c5c904d9dda97e647238069a7b013e"
+  ],
+  "source_package": "BTDAY-0003_DAY_PREP_20260829_FINAL.zip",
+  "next_stage": "VENUE FORECAST 札幌; DAY MERGE only after all venues freeze"
+}
