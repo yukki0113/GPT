@@ -492,11 +492,125 @@ Stage C owns grouped value instantiation and ROI/robustness evaluation. This pre
 
 ### Stage C — ROI / Robustness Evaluator
 
+Stage C は Stage B の search-template catalog を実データへ適用し、
+observed value candidate を生成して ROI / robustness を評価する。
+
+#### Stage C execution architecture (revised 2026-09-30)
+
+単一 job で 47,371 templates を 781,161 rows に対して深度6まで展開する方式は採用しない。
+r5 では prefix-trie 共有方式でも workflow timeout 120分に到達したため、
+canonical Stage C は **sharded matrix execution + deterministic merge** とする。
+
+探索思想・candidate definition・support policy・ROI policy は変更しない。
+変更するのは execution partition のみである。
+
+##### C1 — Shard planning
+
+Stage B template catalog を以下のキーで deterministic に分割する。
+
+1. search_lane
+   - TRANSITION_PRIORITY
+   - PEDIGREE_INTERACTION
+   - PEDIGREE_BASELINE
+2. depth
+   - 2
+   - 3
+   - 4
+   - 5
+   - 6
+3. shard_no
+   - template count / estimated cost に応じて lane × depth 内を複数 shard に分割
+
+原則として lane × depth を最小の意味単位とし、
+高コスト区分は template_id の安定順で複数 shard に均等分割する。
+
+shard split は ROI・結果・人気・オッズを参照してはならない。
+split criterion は template metadata と Stage A/B で得られた cardinality / estimated group upper bound のみとする。
+
+##### C2 — Independent shard evaluation
+
+各 shard は同じ canonical evaluator を使用し、独立 artifact を生成する。
+
+各 shard の入力:
+- immutable Feature Mart Parquet
+- Stage B template catalog
+- shard manifest
+
+各 shard の出力:
+- research_candidates_shard_<id>.parquet
+- stage_c_shard_audit_<id>.json
+
+各 shard で算出する項目:
+- n
+- wins / places
+- win ROI / place ROI
+- win/place return sum
+- top1 contribution
+- ROI ex top1
+- recent 365d / 730d / 1095d metrics
+- family / lane / depth / template provenance
+
+各 shard は fail-closed。
+timeout / OOM / exception の shard が1つでもあれば final Stage C は PASS にしてはならない。
+
+##### C3 — Checkpoint / artifact policy
+
+Stage C は「全job完了時に初めて成果物を残す」方式を禁止する。
+
+- 各 shard は完了直後に artifact を保存する。
+- shard artifact は retry 時に再利用可能な immutable evidence とする。
+- failed shard の再実行は当該 shard のみでよい。
+- successful shard を再計算する必要はない。
+- aggregate job は全 expected shard の manifest / digest / status を検証してから merge する。
+
+これにより120分timeout等で全進捗を失うことを防ぐ。
+
+##### C4 — Deterministic merge
+
+全 shard PASS 後、aggregate job が candidate parquet を union する。
+
+merge invariants:
+- candidate_id unique
+- template_id / conditions provenance preserved
+- 同一 candidate の重複は fail
+- expected shard count = received PASS shard count
+- all shard source Feature Mart SHA identical
+- all shard Stage B catalog SHA identical
+- all shard evaluator commit / policy version identical
+
+merge後に template 単位の max_per_template を適用する。
+各 shard 内で先に template cap を掛け、別 shard の候補を失わせてはならない。
+
+最終成果物:
+- research_candidates.parquet
+- stage_c_manifest.json
+- stage_c_audit.json
+- shard_inventory.json
+
+##### C5 — Parent / robustness enrichment split
+
+Stage C の初回 discovery screen と、
+重い parent incrementality / top3 exclusion は分離する。
+
+- Stage C1: broad ROI / top1 / recent screen
+- Stage C2: shortlisted candidates に対する parent incrementality / top3 exclusion / temporal-dispersion enrichment
+
+理由:
+全 observed candidate に parent 全比較や top3 recalculation を掛けるより、
+Stage C1 で research pool を作った後に C2 を実施する方が計算効率がよく、
+探索母集団の定義も変えないため。
+
+Stage C2 でも人気・オッズ帯による candidate population の再定義は禁止する。
+
+##### Stage C metrics
+
 - win/place ROI
-- parent delta
-- top1/top3 exclusion
-- temporal dispersion
+- parent delta (C2)
+- top1 exclusion (C1)
+- top3 exclusion (C2)
+- temporal dispersion (C2)
 - recent windows
+- jackpot dependency
 
 ### Stage D — Historical Rolling Validation
 
@@ -569,3 +683,28 @@ v0.4 は初回から100%完成思想を目指さない。
 
 v0.4 の第一目的は「設計思想を議論だけで最適化すること」ではなく、
 実際に機械探索した条件を見て、欲しかったEdgeと違う部分を具体化できる状態を作ることである。
+
+## 16. Stage C execution incident and design correction (2026-09-30)
+
+Observed execution history:
+
+- r1/r2: workflow input staging defects; evaluator not reached.
+- r3: DuckDB GROUPING SETS approach reached ~5.5 GiB and OOM.
+- r4: trie evaluator dependency defect; evaluator not reached.
+- r5: prefix-trie evaluator executed normally but reached the workflow 120-minute timeout.
+- r5 produced no completed research candidate catalog.
+
+Conclusion:
+single-job Stage C is not canonical for v0.4.
+The corrected design is sharded matrix evaluation with immutable per-shard evidence and deterministic aggregate merge.
+
+This correction changes execution topology only.
+It does not narrow:
+- 2〜6-way search depth
+- pedigree / pedigree-transition search space
+- transition-priority lane
+- ROI thresholds
+- candidate support policy
+- no-popularity / no-odds candidate-generation rule
+
+Production v0.2 / v0.3 serving remains unchanged.
