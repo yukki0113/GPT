@@ -80,6 +80,9 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('data-filter="kenshow-analysis">けん</button>', html)
         self.assertIn('data-filter="keibailuka">🐬</button>', html)
         self.assertIn('id="prediction-refresh" type="button"', html)
+        self.assertIn('<title>桃太郎新聞 / 注目馬一覧</title>', html)
+        self.assertIn('<h2>今日の注目馬一覧</h2>', html)
+        self.assertNotIn('>予想一覧</a>', html)
         self.assertIn('<div class="button-row" hidden>', html)
 
     def test_momotaro_stylesheet_loads_after_shared_newspaper_styles(self) -> None:
@@ -139,7 +142,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function factDownloadUrl(manifest)', fact_script)
         self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v22"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v23"', service_worker)
 
 
 if __name__ == "__main__":
