@@ -1,0 +1,75 @@
+{
+  "schema_version": "RaceNote-Day-Prep-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0012",
+  "target_date": "2026-07-12",
+  "paci_file": "PACI260712.zip",
+  "paci_drive_file_id": "1H4f_9N2IidouoD0MfXP1JnbK2Xgf-pJd",
+  "forecast_logic_candidate": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+  "forecast_logic_base": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+  "candidate_patch": "consolidated five-mark forecast",
+  "analysis_generation": "analysis-v1_4-canonical-20260928-02",
+  "rrdb_generation": "jrdb_race_review_v0_1_incremental_g36514429467",
+  "next_watch_rule_version": "next-watch-rules-discovery-v0.1",
+  "venues": [
+    "函館",
+    "小倉",
+    "福島"
+  ],
+  "venue_races": {
+    "函館": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "小倉": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "福島": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "venue_count": 3,
+  "race_count": 36,
+  "horse_count": 470,
+  "technical_skips": 0,
+  "status": "PASS",
+  "validation_status": "PASS",
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "result_opened": false
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0012",
+  "target_date": "2026-07-12",
+  "venue": "函館",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+  "main_sha": "3582587f9dce024c145b5255a6d407b6d6d2e6c5",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "171636ae396b08bc8fb37d73fb6d521c8a115e910dc2288adc69e7e5e6b7864a",
+    "8f9bcd028960415e8e7275a29f7fba0dcc1f2a3c10cc54123ae4c9ca1ec0272b",
+    "ff30a41c6a526b46cac2a24d4ea46762becdc9e34d999313c5c77703abb1735c",
+    "402958cc41c4e65e7a73888b5f41e5cb6988bbb80b5adcf959cbb7187758c2a6",
+    "4a0a3305c38f2f67350e04c34ccdd5498aa16232741154cdba945dee461165a7",
+    "fb208a96a6515383b4b164f4ac8f5f48bb744b9aec3e5057f501ac08928056b8",
+    "24c9fc659fe9f32dc853b539242a241f54e104ead7ff908f1a32569f5e502a06",
+    "05c05072d40569a4375bf16ead159540d40f20df4b90459eae88bba4bc2a5146",
+    "e3368594620db4cbfe7e3b72d6e1c0135e7eee9ded97e563a11d4384d40b5c4f",
+    "e7c996ed1d542eead8a812bd434504fd869d0671b2de57b08687c24939550306",
+    "df56f6134820f5e581c0b552f6386c28e77461ddba0804b74da6dcba0b5bc556",
+    "fe0ad45e61d9abf6d54db81e61c9f9cca53abe158ce7cf3cca10420bd139aeae"
+  ]
+}

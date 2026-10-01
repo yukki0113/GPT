@@ -1,0 +1,17 @@
+{
+  "selection_id": "BTDAY-0012",
+  "target_date": "2026-07-12",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+  "status": "FROZEN",
+  "result_opened": false,
+  "day_prep_source": {
+    "artifact_name": "BTDAY-0012-DAY-PREP",
+    "run_id": 36802360743,
+    "digest": "sha256:49c14279c1bbf25751d4404c5dea2e2c0640bbd0f48606c07df8c5f3440aba6e"
+  },
+  "forecast": {
+    "race_count": 36,
+    "venue_count": 3,
+    "technical_skips": 0
+  }
+}

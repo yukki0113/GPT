@@ -1,0 +1,943 @@
+{
+  "version": "racenote-backtest-day-picker-0.1.0",
+  "source": {
+    "drive_folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
+    "inventory_snapshot_date": "2026-09-29",
+    "note": "Sync newer PACI inventory while preserving used flags and eligibility. Clean blind picks exclude known result-exposed dates by default."
+  },
+  "updated_at": "2026-10-01T01:42:36+00:00",
+  "days": [
+    {
+      "date": "2026-01-04",
+      "file_name": "PACI260104.zip",
+      "drive_file_id": "1OYtJki-HN2ObyyX1_LyaoS03ZeK6WypR",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-05",
+      "file_name": "PACI260105.zip",
+      "drive_file_id": "1fpzUkGnpFiqcKaIe8HeFUrxTgPm7S96V",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-10",
+      "file_name": "PACI260110.zip",
+      "drive_file_id": "1i7SbHhB9AHMF6hxEoacinf-1eLS0nSEi",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-11",
+      "file_name": "PACI260111.zip",
+      "drive_file_id": "1PYMEkJKMAgMsNhp498WH2sr4Np4iGBDS",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-12",
+      "file_name": "PACI260112.zip",
+      "drive_file_id": "1qDPhWZ-JJq_Nsh_eo3GkvyCOPG7W2pYf",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-17",
+      "file_name": "PACI260117.zip",
+      "drive_file_id": "1GT4E19fLPlUDCCTkalCB-Wb2dvvjc5bS",
+      "used": true,
+      "used_at": "2026-09-30T16:01:50+00:00",
+      "selection_id": "BTDAY-0008",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-18",
+      "file_name": "PACI260118.zip",
+      "drive_file_id": "1SRs8prms4BEh-ck9yKcBx1AXXH-l8PqI",
+      "used": true,
+      "used_at": "2026-09-30T15:40:31+00:00",
+      "selection_id": "BTDAY-0007",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-24",
+      "file_name": "PACI260124.zip",
+      "drive_file_id": "1x0wM1mze9Z_EZub_lytRVO7si0i06YbZ",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-25",
+      "file_name": "PACI260125.zip",
+      "drive_file_id": "1NPM8Ei44sSuy30XxUzOeGhb7HYg9TRqs",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-01-31",
+      "file_name": "PACI260131.zip",
+      "drive_file_id": "1PNzvuUMKxj9bX1S5laeSdMQ8QHoqNbo-",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-01",
+      "file_name": "PACI260201.zip",
+      "drive_file_id": "1BFF9xF92is3FOQnnC9pvJP-102DadRev",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-07",
+      "file_name": "PACI260207.zip",
+      "drive_file_id": "158Vmwgtiwhja3gMGTN0GMnq85IZ33TWR",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-08",
+      "file_name": "PACI260208.zip",
+      "drive_file_id": "1P0ryqql5V_Q5XWYJ36InOGtpr8txRvcl",
+      "used": true,
+      "used_at": "2026-09-29T02:05:00+00:00",
+      "selection_id": "BTDAY-0001",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-10",
+      "file_name": "PACI260210.zip",
+      "drive_file_id": "1isbVe1WJ9RdK4Wus0gk4KtlRcJZIBtIU",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-14",
+      "file_name": "PACI260214.zip",
+      "drive_file_id": "1wDSdaRiNmUpq5BL0X6xbQJZdZzz8DdSG",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-15",
+      "file_name": "PACI260215.zip",
+      "drive_file_id": "1KI9USCd9lgkJFGDKcP79C1uv4im58zF7",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-21",
+      "file_name": "PACI260221.zip",
+      "drive_file_id": "1icHG-MI3sR5hEfgIrT8Do3AUfNlIIzNK",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-22",
+      "file_name": "PACI260222.zip",
+      "drive_file_id": "1wtPYlenggLDlN8XWzPR37mGM6DAH4gIE",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-02-28",
+      "file_name": "PACI260228.zip",
+      "drive_file_id": "1TrC_GDxfEoJh6vd840Cd-qRbtcEkJlcI",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-01",
+      "file_name": "PACI260301.zip",
+      "drive_file_id": "1EUmxWYb_42ayQjkIjV1PK59jgq6KY4so",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-07",
+      "file_name": "PACI260307.zip",
+      "drive_file_id": "1qbv3ckRVS44LQxsItSAzRUoEfEclIfAc",
+      "used": true,
+      "used_at": "2026-09-30T23:30:44+00:00",
+      "selection_id": "BTDAY-0009",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-08",
+      "file_name": "PACI260308.zip",
+      "drive_file_id": "1ydPYqJr69NFTeooJdDMhY_RHY4co2KqY",
+      "used": true,
+      "used_at": "2026-09-29T02:33:34.383Z",
+      "selection_id": "BTDAY-0002",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-14",
+      "file_name": "PACI260314.zip",
+      "drive_file_id": "1wlR74Nlxqu-Z_kzjW9ecMZjrdNYC3Lyw",
+      "used": true,
+      "used_at": "2026-09-30T02:38:53Z",
+      "selection_id": "BTDAY-0004",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-15",
+      "file_name": "PACI260315.zip",
+      "drive_file_id": "1WSrJiv0h3LrqGDdgtg_VfrLKpXjw-59h",
+      "used": true,
+      "used_at": "2026-10-01T01:29:29+00:00",
+      "selection_id": "BTDAY-0011",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-21",
+      "file_name": "PACI260321.zip",
+      "drive_file_id": "1fXMZVGnGRKCQ0PWMiM-90kbWd1DAAQ43",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-22",
+      "file_name": "PACI260322.zip",
+      "drive_file_id": "10h_nQ-WGYpZzvnGqtVgwQvU3MNLjZZ-v",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-28",
+      "file_name": "PACI260328.zip",
+      "drive_file_id": "1x7EHSCUss6UJEStk0jGNnntF8LxD0umq",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-03-29",
+      "file_name": "PACI260329.zip",
+      "drive_file_id": "1XzmfFNsUWku-H46WU0vTcH01qG6DEYtI",
+      "used": true,
+      "used_at": "2026-09-30T23:50:19+00:00",
+      "selection_id": "BTDAY-0010",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-04",
+      "file_name": "PACI260404.zip",
+      "drive_file_id": "1VWtzbHr_IReNnKFjtWtlrgJGzXfawk9g",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-05",
+      "file_name": "PACI260405.zip",
+      "drive_file_id": "1OWip5b2bzOoQlkOgpxiZOVx5ldZ_SD2-",
+      "used": true,
+      "used_at": "2026-09-30T06:03:50+00:00",
+      "selection_id": "BTDAY-0006",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-11",
+      "file_name": "PACI260411.zip",
+      "drive_file_id": "10L6Sc7Zn-0-KuYOzzfLJJIrapa0AY87R",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-12",
+      "file_name": "PACI260412.zip",
+      "drive_file_id": "1RkEd_1Esdo4YsDueTIOGbSrLiumGCuCy",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-18",
+      "file_name": "PACI260418.zip",
+      "drive_file_id": "1X8ji2H0bHc5udmSqId79eynjSobwB4W7",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-19",
+      "file_name": "PACI260419.zip",
+      "drive_file_id": "18V9mmmMIIWZIC-v7smrgnX5G12oBSAe6",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-25",
+      "file_name": "PACI260425.zip",
+      "drive_file_id": "11zUlBcTMQEsfnwbBP7WojFEyClTqTjji",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-04-26",
+      "file_name": "PACI260426.zip",
+      "drive_file_id": "1fIZf32j5cKoBhpOgMd3ue055etsifKOX",
+      "used": true,
+      "used_at": "2026-09-29T02:33:34.383Z",
+      "selection_id": "BTDAY-0002",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-02",
+      "file_name": "PACI260502.zip",
+      "drive_file_id": "1O6S2VcL-XbC59fPe0xgYLUGn-vSIzMKw",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-03",
+      "file_name": "PACI260503.zip",
+      "drive_file_id": "1n1r_m169U5FzZQluA_PjJ3q0QfnusQYQ",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-09",
+      "file_name": "PACI260509.zip",
+      "drive_file_id": "1UcaDWcLGwQMbWJ40wwYAskrNDGqraPjn",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-10",
+      "file_name": "PACI260510.zip",
+      "drive_file_id": "1qwWppnmLWpSqN-479u5yISRp8yQjq_RX",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-16",
+      "file_name": "PACI260516.zip",
+      "drive_file_id": "1AMaONXFE-9JUDcb4Lzrmm2RYyO1le3e5",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-17",
+      "file_name": "PACI260517.zip",
+      "drive_file_id": "12hBCuRJyXWTcuhrqhUSKNGYwoh3gizYO",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-23",
+      "file_name": "PACI260523.zip",
+      "drive_file_id": "1vpQ1Bc4JRyXdLDzmhQbp0u5c7BwbjKx7",
+      "used": true,
+      "used_at": "2026-09-29T02:05:00+00:00",
+      "selection_id": "BTDAY-0001",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-24",
+      "file_name": "PACI260524.zip",
+      "drive_file_id": "1erzdIYnQCRThKuGxjKOYAjHUTORs1gdO",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-30",
+      "file_name": "PACI260530.zip",
+      "drive_file_id": "142FYbNOJ4GJs-TbebZJmhATohRKYs7Ri",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-05-31",
+      "file_name": "PACI260531.zip",
+      "drive_file_id": "1kg7qxyHFDkriJVEWLdIYK5652WDZw3PM",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-06",
+      "file_name": "PACI260606.zip",
+      "drive_file_id": "1r8lFGGSBVwd9gMEPmnjRtshB0frG7bVH",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-07",
+      "file_name": "PACI260607.zip",
+      "drive_file_id": "1_PtkQ1k1yGlrPQs_h-MXCgopbtG3t-Uf",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-13",
+      "file_name": "PACI260613.zip",
+      "drive_file_id": "1YN5jmdw2eYawyO_Of8CFNfCPvoU9mFvo",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-14",
+      "file_name": "PACI260614.zip",
+      "drive_file_id": "13TPezY-QTGcj3f76Rc8EAMPMJRtoQHy_",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-20",
+      "file_name": "PACI260620.zip",
+      "drive_file_id": "1d_nId9qgIT-j7EUgBGLJVmcyYEUwztYd",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-21",
+      "file_name": "PACI260621.zip",
+      "drive_file_id": "1BQvobFc6mv5aD1u-M4pcAI5dS_iitx1x",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-27",
+      "file_name": "PACI260627.zip",
+      "drive_file_id": "1pevJHvSdoRXzddlsUzNKxiZgWDMZ4fgQ",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-06-28",
+      "file_name": "PACI260628.zip",
+      "drive_file_id": "1apbG67c5SldS-5fKfCzBnl31czMBW3wi",
+      "used": true,
+      "used_at": "2026-09-30T04:27:00Z",
+      "selection_id": "BTDAY-0005",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-07-04",
+      "file_name": "PACI260704.zip",
+      "drive_file_id": "1sXdAVwfgPiiaZBybvu7EREB2bYvEySys",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-07-05",
+      "file_name": "PACI260705.zip",
+      "drive_file_id": "1F8ofy42jalxJoVBVvsqqa0YOXRuEiehH",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-07-11",
+      "file_name": "PACI260711.zip",
+      "drive_file_id": "1jt0HzTZ_gZIHGMvL9RojFlcIZq807BUq",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-07-12",
+      "file_name": "PACI260712.zip",
+      "drive_file_id": "1H4f_9N2IidouoD0MfXP1JnbK2Xgf-pJd",
+      "used": true,
+      "used_at": "2026-10-01T01:42:36+00:00",
+      "selection_id": "BTDAY-0012",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-07-18",
+      "file_name": "PACI260718.zip",
+      "drive_file_id": "1qNgjAhHqdEUVwNRZGRK60rAj28U7jGu9",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-07-19",
+      "file_name": "PACI260719.zip",
+      "drive_file_id": "18uopE4WrWTo4aAhlXZtlYJu4IyrWe7Mv",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-07-25",
+      "file_name": "PACI260725.zip",
+      "drive_file_id": "1BRL1kcQ-4tQyqE_GMfDgs04DUcPcvboM",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Gen0.3 day rehearsal result review"
+    },
+    {
+      "date": "2026-07-26",
+      "file_name": "PACI260726.zip",
+      "drive_file_id": "1KH_KVIoDK21zmgQAqKXoAJG78Djzzn7T",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Gen0.3 day rehearsal result review"
+    },
+    {
+      "date": "2026-08-01",
+      "file_name": "PACI260801.zip",
+      "drive_file_id": "1kySK0AycsjHSmJn4HVbaGuYkb-2mqYf7",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Semantic v0.3 result review"
+    },
+    {
+      "date": "2026-08-02",
+      "file_name": "PACI260802.zip",
+      "drive_file_id": "1mQ1Lwg4X4q-ZElBvQ8CS80bFAwstyLfe",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-08-08",
+      "file_name": "PACI260808.zip",
+      "drive_file_id": "1TYMIvH1Z_PnsVNuB7dTNt5EH6GbJfLHv",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Prior Semantic v0.3 result review"
+    },
+    {
+      "date": "2026-08-09",
+      "file_name": "PACI260809.zip",
+      "drive_file_id": "1nFDh_qBSQHnHiJYcQGS_0skLd7nkh-m6",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-08-15",
+      "file_name": "PACI260815.zip",
+      "drive_file_id": "1iHMThJdliG1i1FEuVK8fSEc3W2Hxg9bI",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-08-16",
+      "file_name": "PACI260816.zip",
+      "drive_file_id": "1ilv_oKuaYkIYRKdZI-3e6mP1gc2GapyS",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Target-day research included known result exposure"
+    },
+    {
+      "date": "2026-08-22",
+      "file_name": "PACI260822.zip",
+      "drive_file_id": "13gmBW5B8PDuYD9msVZjtcdWc0YfuuphA",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-08-23",
+      "file_name": "PACI260823.zip",
+      "drive_file_id": "1QQg-Kh6TsJs7WP6IcTDpJMe4Nell-mEr",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-08-29",
+      "file_name": "PACI260829.zip",
+      "drive_file_id": "1JsDVyoLZ7gydBQqqujvTJ5u0orpWOk8D",
+      "used": true,
+      "used_at": "2026-09-30T01:55:00Z",
+      "selection_id": "BTDAY-0003",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-08-30",
+      "file_name": "PACI260830.zip",
+      "drive_file_id": "1sAjg1OHZEPlsLvTvRsjNK2fB_Kr7mE_O",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-05",
+      "file_name": "PACI260905.zip",
+      "drive_file_id": "1nAZsvZT3pFSeCvuIbYyzqo7L230HV9Zv",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-06",
+      "file_name": "PACI260906.zip",
+      "drive_file_id": "1w7Qo4WpH8TcTtCTXEAK-qv3CH5Sa2BNU",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-12",
+      "file_name": "PACI260912.zip",
+      "drive_file_id": "1IM8xl7FNLz02E6jZz0UOAZrxX2gpiZC_",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-13",
+      "file_name": "PACI260913.zip",
+      "drive_file_id": "110iUUdb3un4BGdbSG5AUOVXjKJ4PVAoJ",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "Gen0.3 real-data dry run included known result exposure"
+    },
+    {
+      "date": "2026-09-19",
+      "file_name": "PACI260919.zip",
+      "drive_file_id": "1AL3Ua_2WY_NlKfMloSOinbzVZVRmjgNi",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-20",
+      "file_name": "PACI260920.zip",
+      "drive_file_id": "14HiihawoEMU7kAA6OZ9mzQMwtJ2bckE0",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-21",
+      "file_name": "PACI260921.zip",
+      "drive_file_id": "1dRo6fYQkKaj905FJHjUzhQMNrxXc8KZk",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-22",
+      "file_name": "PACI260922.zip",
+      "drive_file_id": "1VdkTE06TwBIWt2vxi98qGgft6jIfwzIv",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-26",
+      "file_name": "PACI260926.zip",
+      "drive_file_id": "1PSYw6uL2Gx-rbtcJsgsGFZZNGTnMc4od",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "date": "2026-09-27",
+      "file_name": "PACI260927.zip",
+      "drive_file_id": "1G57s0Ix5Xb6AcKfZ2HrpOvasLC05dYg8",
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": true,
+      "exclusion_reason": null
+    }
+  ],
+  "selections": [
+    {
+      "selection_id": "BTDAY-0001",
+      "selected_at": "2026-09-29T02:05:00+00:00",
+      "seed": "0e68a94e4713a8fb2fd5d1b9ffe0dc49",
+      "n": 2,
+      "dates": [
+        "2026-02-08",
+        "2026-05-23"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0002",
+      "selected_at": "2026-09-29T02:33:34.383Z",
+      "seed": "d0be6db67a55e2fcce4db12b0832bdd6",
+      "n": 2,
+      "dates": [
+        "2026-03-08",
+        "2026-04-26"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0003",
+      "selected_at": "2026-09-30T01:55:00Z",
+      "seed": "08646f74d570a7205762cf2305bd1491",
+      "n": 1,
+      "dates": [
+        "2026-08-29"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0004",
+      "selected_at": "2026-09-30T02:38:53Z",
+      "seed": "79e111e51b1352c1d301b6a703e36fa5",
+      "n": 1,
+      "dates": [
+        "2026-03-14"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0005",
+      "selected_at": "2026-09-30T04:27:00Z",
+      "seed": "2ba0ebae70c017c6708bb4aa939c995f",
+      "n": 1,
+      "dates": [
+        "2026-06-28"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0006",
+      "selected_at": "2026-09-30T06:03:50+00:00",
+      "seed": "8fd5cb40a6d9f04f2f39d2782b739406",
+      "n": 1,
+      "dates": [
+        "2026-04-05"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0007",
+      "selected_at": "2026-09-30T15:40:31+00:00",
+      "seed": "6d99743d10b33910e801c3e8c22ba7ef",
+      "n": 1,
+      "dates": [
+        "2026-01-18"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0008",
+      "selected_at": "2026-09-30T16:01:50+00:00",
+      "seed": "906e83d7490c9a242104b83c144249ea",
+      "n": 1,
+      "dates": [
+        "2026-01-17"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0009",
+      "selected_at": "2026-09-30T23:30:44+00:00",
+      "seed": "a4d1f76e9c3b5a802ed6f1147c9b28e5",
+      "n": 1,
+      "dates": [
+        "2026-03-07"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0010",
+      "selected_at": "2026-09-30T23:50:19+00:00",
+      "seed": "7c6e12f4b930ad58e21c0f46d5a8b37c",
+      "n": 1,
+      "dates": [
+        "2026-03-29"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0011",
+      "selected_at": "2026-10-01T01:29:29+00:00",
+      "seed": "d23e58a91bc7406fa4e217c98530bd61",
+      "n": 1,
+      "dates": [
+        "2026-03-15"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0012",
+      "selected_at": "2026-10-01T01:42:36+00:00",
+      "seed": "6a19dcb4e735402f91b8ce602d4f87a3",
+      "n": 1,
+      "dates": [
+        "2026-07-12"
+      ]
+    }
+  ]
+}
