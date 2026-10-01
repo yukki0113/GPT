@@ -14,6 +14,7 @@ from jrdb_recommendation_signals import (  # noqa: E402
     PERFORMANCE_Q80,
     VERSION,
     matched_signals,
+    newspaper_comment,
     recommendation_payload,
 )
 
@@ -89,6 +90,40 @@ class RecommendationSignalsTest(unittest.TestCase):
         self.assertIn("FRONT_SURVIVE_GAP05", payload["matched_signal_ids"])
         self.assertIsNone(payload["grade"])
         self.assertEqual(payload["grade_status"], "DISABLED")
+
+    def test_newspaper_comment_collapses_nested_hv_and_hides_codes(self) -> None:
+        row = base_row()
+        row.update({
+            "finish": 7,
+            "time_class_equivalent_numeric": 3.2,
+            "time_class_equivalent": "CLASS_2",
+            "horse_adjusted_delta_per_1000m": -0.25,
+            "pace_balance_percentile": 85.0,
+            "corner4_frontness": 0.75,
+            "winner_gap_sec": 0.22,
+        })
+        comment = newspaper_comment(row)
+        self.assertIsNotNone(comment)
+        self.assertIn("1段以上上のクラス水準", comment)
+        self.assertIn("勝ち馬0.22秒差", comment)
+        self.assertIn("6着以下でも補正タイム", comment)
+        self.assertNotIn("HV01", comment)
+        self.assertNotIn("HV02", comment)
+        self.assertNotIn("4着以下でも補正タイム", comment)
+
+    def test_newspaper_rear_comment_translates_percentile(self) -> None:
+        row = base_row()
+        row.update({
+            "finish": 3,
+            "pace_balance_percentile": 12.0,
+            "corner4_frontness": 0.20,
+            "winner_gap_sec": 0.31,
+            "last3f_speed_percentile": 98.0,
+        })
+        self.assertEqual(
+            newspaper_comment(row),
+            "後傾で後方から上がり上位2%級。",
+        )
 
     def test_below_threshold_is_no_match(self) -> None:
         row = base_row()
