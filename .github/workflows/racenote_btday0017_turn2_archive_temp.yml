@@ -27,9 +27,18 @@ jobs:
       - name: Fetch frozen archive payload
         run: |
           set -euo pipefail
-          curl -L --fail --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-866c-820b-800c-755ce2850984/raw?se=2026-10-01T08%3A48%3A39Z&sp=r&sv=2026-02-06&sr=b&scid=bac752b1-8a4d-587d-a5da-514ec1223a88&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-01T08%3A22%3A36Z&ske=2026-10-02T08%3A22%3A36Z&sks=b&skv=2026-02-06&sig=/g45NIKE62DYcUyehnnEWriUxSDBvvoZ9jfuYMqjZTQ%3D' -o /tmp/bt17.zip
           python - <<'PY'
-          import zipfile
+          import sys, zipfile
+          from pathlib import Path
+          root=Path.cwd()
+          sys.path.insert(0,str(root))
+          from tools.gpt_io.gdrive import gdrive_api
+          service, automation_root_id = gdrive_api.load_service()
+          file_id='1ANN_nKpLC5eoFimI7lXKfDt1F8nakdCX'
+          gdrive_api.assert_under_root(service,file_id,automation_root_id)
+          meta=gdrive_api.metadata(service,file_id)
+          assert meta.get('name')=='BTDAY-0017_ARCHIVE_20260815_v2.zip', meta
+          gdrive_api.download(service,file_id,Path('/tmp/bt17.zip'),force=True)
           z=zipfile.ZipFile('/tmp/bt17.zip')
           bad=z.testzip()
           assert bad is None, bad
