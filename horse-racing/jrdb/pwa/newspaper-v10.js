@@ -52,14 +52,16 @@ renderTable = function () {
   newspaperV10ApplyMyIndex();
 };
 
-const newspaperV10DayPackageSummaryBase = dayPackageSummary;
 dayPackageSummary = function (value) {
-  const base = newspaperV10DayPackageSummaryBase(value);
-  if (!value || !value.manifest) return base;
+  if (!value || !value.manifest) return "新聞データなし";
 
   const sources = value.manifest.source_status || {};
-  const indexState = sources.my_index && sources.my_index.state === "READY" ? "指数○" : "指数—";
-  return `${base} / ${indexState}`;
+  const evalState = sources.eval && sources.eval.state === "READY" ? "Eval○" : "Eval—";
+  const ilukaState = sources.keibailuka && sources.keibailuka.state === "READY" ? "🐬○" : "🐬—";
+  const edgeState = sources.edge && sources.edge.state === "READY" ? "Edge○" : "Edge—";
+  const count = Array.isArray(value.races) ? value.races.length : 0;
+
+  return `${value.manifest.date} / ${count}R / ${evalState} / ${ilukaState} / ${edgeState}`;
 };
 
 window.addEventListener("load", () => {
