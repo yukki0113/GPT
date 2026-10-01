@@ -1,6 +1,27 @@
 /* Newspaper display v6 overrides */
 
-/* Seven-column mark block: 能力 -> 独自 -> Eval -> 追切 -> JRDB -> RN -> 🐬 */
-.newspaper-table-v4 .newspaper-mark-group-head { min-width: 248px; }
-.newspaper-table-v4 .mark-my { width: 36px; min-width: 36px; max-width: 36px; }
-.newspaper-table-v4 .mark-training { width: 34px; min-width: 34px; max-width: 34px; }
+/* Personal mark block: 能力 -> Eval -> 追切 -> JRDB -> RN -> りょ -> 王子 -> 🐬 */
+.newspaper-table-v4 .newspaper-mark-group-head {
+  min-width: 227px;
+}
+.newspaper-table-v4 .mark-ability,
+.newspaper-table-v4 .mark-eval,
+.newspaper-table-v4 .mark-training,
+.newspaper-table-v4 .mark-rn,
+.newspaper-table-v4 .mark-ryota,
+.newspaper-table-v4 .mark-oji,
+.newspaper-table-v4 .mark-iluka {
+  width: 27px;
+  min-width: 27px;
+  max-width: 27px;
+}
+.newspaper-table-v4 .mark-jrdb {
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px;
+}
+.newspaper-table-v4 .mark-momotaro,
+.newspaper-table-v4 .newspaper-addon-link {
+  padding-left: 2px;
+  padding-right: 2px;
+}
