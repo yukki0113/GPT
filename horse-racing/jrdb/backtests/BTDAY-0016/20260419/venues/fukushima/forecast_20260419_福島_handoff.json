@@ -1,0 +1,28 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0016",
+  "target_date": "2026-04-19",
+  "venue": "福島",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+  "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+  "main_sha": "e6cdf268433f6ab6ae5b0cbe3772ffe8e04746fa",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "market_blind_guard": "FAIL_PRE_FREEZE_MARKET_EXPOSURE_ONE_HORSE",
+  "prediction_hashes": [
+    "8d59df024ac57d35805cc9dba7b2b664475941c94ef5b3d5350aa1887aa0383b",
+    "df403f24d5fb88631a42a3a61623bee4976d3552bfe9448fec9e10cd25f973e6",
+    "8a50f1e8eda31fb749f2ef931472f877950838b132b7e5c49d42391bb0984b97",
+    "11b67d6ead948cc68db55b2651a2bb9de4dd3823ac3f7187a2ae04d3b7174923",
+    "4811b1f388972ab348d45d3595a18a1424dec60486d233334120e1ee82684a7c",
+    "0120102aa9db1c12144805b9940203be2b53f311267fafa20e2656e8a059c4bb",
+    "068e2912b36223c56e64fedb4d773f40c62df80f79d5e5bab3c4cd926d7be15f",
+    "bd46d0921e5fbf36dee84573c69765c5d4c0a743197d03d9a15beeab7fe0e165",
+    "07dfcea61f8b9c491fc084ffd4b0f3742a1f8a8e405205582dae128ac24cc5c9",
+    "aebc935ebe94fa61b086f36a128f5d1404c7c6e56443c023f455e6c2c1c60e19",
+    "30aa0d05c45aae4415d36bb977af60da19d2a3e17d92abc9126bd0c7a1b86183",
+    "97e9421c09161ac700f35f4acbe058fe22786dc59671d9fcf2a3b0878b0b7a29"
+  ]
+}

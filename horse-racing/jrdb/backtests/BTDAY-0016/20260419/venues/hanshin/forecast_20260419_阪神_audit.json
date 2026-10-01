@@ -1,0 +1,18 @@
+{
+  "validator_version": "racenote-human-context-0.4.1-candidate-equivalent",
+  "candidate_patch": "mainline + single-shot five-mark forecast",
+  "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+  "status": "FROZEN_CONTAMINATED_MARKET_EXPOSURE",
+  "venue": "阪神",
+  "target_date": "2026-04-19",
+  "record_count": 12,
+  "frozen_count": 12,
+  "error_count": 0,
+  "prediction_hash_unique_count": 12,
+  "five_mark_role_guard": "PASS",
+  "mainline_single_shot_guard": "PASS",
+  "reader_facing_prose_guard": "PASS",
+  "market_blind_guard": "FAIL_PRE_FREEZE_MARKET_EXPOSURE_ONE_HORSE",
+  "legacy_converge_machinery": "NOT_USED",
+  "result_opened": false
+}

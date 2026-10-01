@@ -1,0 +1,28 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0016",
+  "target_date": "2026-04-19",
+  "venue": "中山",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+  "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+  "main_sha": "e6cdf268433f6ab6ae5b0cbe3772ffe8e04746fa",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "market_blind_guard": "FAIL_PRE_FREEZE_MARKET_EXPOSURE_ONE_HORSE",
+  "prediction_hashes": [
+    "4b2e97ec8fbe96f3e9be6ac05a23614379fb9f692ea550514008a5bae97edb76",
+    "6c2747de30148af9f4dc2668ffbf519c4225efc7575e50de6bf43a77836f91d4",
+    "d822a16784653d2770ee14cf36a916cb00ceefbf5c9197867197d785a347cbfb",
+    "cd4bbd7175be9f9d08b001a31d157d07da9250dc17fd833c4eb438359f5f33bc",
+    "a5f88d86e95c4bff8addad55aacf906fd5b94c58f883721a5ad36f34bf94c03c",
+    "de322106617088133cde6af06d3ec030ad1e6e9ea9ffa74f347f959e635c6460",
+    "ba86875198c7088053b11ed1c02e3223f2d902a58acb09f61aa30e99554d2a4d",
+    "e86373b64b40368767f7f8b593d834be0cba5bfe09027034394cded3c5d90494",
+    "26fa051a85e3d43e8e791ee16cdf217e8244b7e81e3ca75b18a2172527ef2447",
+    "01911c40e1fe6648fd18f9003e258d6e2f6d9b2876f76452eae3bf32eeb03c58",
+    "787e903183af7070bd4e620bcf7befe36e2f8c9ea448dbb56038e96f740d1692",
+    "181d5ca029e7ed6ff468f5c976668c497ec728d44064898d9efd334c988c53fb"
+  ]
+}
