@@ -1,0 +1,185 @@
+name: RaceNote daily backtest BTDAY-0018 temp
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  build:
+    if: startsWith(github.event.issue.title, '[RACENOTE_DAILY_BTDAY0018]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install duckdb pyarrow pandas numpy jsonschema gdown
+
+      - name: Pick and persist BTDAY-0018
+        run: |
+          set -euo pipefail
+          STATE='horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json'
+          cp "$STATE" /tmp/pool.json
+          python horse-racing/jrdb/src/racenote_backtest_day_picker.py pick --state /tmp/pool.json -n 1 --seed 'btday0018-v042-rrdbv02-20261001' | tee /tmp/selection.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          pool=json.loads(Path('/tmp/pool.json').read_text(encoding='utf-8'))
+          sel=json.loads(Path('/tmp/selection.json').read_text(encoding='utf-8'))
+          assert sel['selection_id']=='BTDAY-0018', sel
+          date=sel['dates'][0]
+          row=next(x for x in pool['days'] if x['date']==date)
+          Path('/tmp/date.txt').write_text(date)
+          Path('/tmp/file_name.txt').write_text(row['file_name'])
+          Path('/tmp/drive_file_id.txt').write_text(row['drive_file_id'])
+          print(json.dumps({'selection':sel,'row':row},ensure_ascii=False,indent=2))
+          PY
+          cp /tmp/pool.json "$STATE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$STATE"
+          git commit -m "RaceNote: fix BTDAY-0018 target date"
+          git push origin HEAD:main
+
+      - name: Prepare sources
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb /tmp/output
+          FILE_NAME="$(cat /tmp/file_name.txt)"
+          DRIVE_FILE_ID="$(cat /tmp/drive_file_id.txt)"
+          gdown "https://drive.google.com/uc?id=${DRIVE_FILE_ID}" -O "/tmp/input/${FILE_NAME}"
+          gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/input/RaceReviewDB_CURRENT.zip
+          gh run download 36437363166 --repo "${GITHUB_REPOSITORY}" --name 'jrdb-post-race-parquet-refresh-36437363166' --dir /tmp/analysis_art
+          tar -xJf /tmp/analysis_art/analysis-parquet-candidate.tar.xz -C /tmp/analysis
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest=Path('/tmp/analysis/generations/analysis-v1_4-canonical-20260928-02/manifest.json')
+          assert manifest.is_file(), 'canonical analysis generation missing'
+          Path('/tmp/analysis/current.json').write_text(json.dumps({
+            'status':'CURRENT',
+            'generation_id':'analysis-v1_4-canonical-20260928-02',
+            'manifest':'generations/analysis-v1_4-canonical-20260928-02/manifest.json'
+          },ensure_ascii=False,indent=2)+'\n')
+          PY
+          unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          test "$(find /tmp/rrdb -name current.json | wc -l)" -eq 1
+
+      - name: Run current daily builder
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          DATE="$(cat /tmp/date.txt)"
+          FILE_NAME="$(cat /tmp/file_name.txt)"
+          RRDB_ROOT="$(dirname "$(find /tmp/rrdb -name current.json | head -1)")"
+          python horse-racing/jrdb/src/build_racenote_daily.py             --date "${DATE}"             --paci "/tmp/input/${FILE_NAME}"             --analysis-root /tmp/analysis             --racereview-root "${RRDB_ROOT}"             --output /tmp/output | tee /tmp/build_stdout.json
+
+      - name: Verify v0.4.2 RRDB v0.2 DAY PREP
+        run: |
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          date=Path('/tmp/date.txt').read_text().strip()
+          compact=date.replace('-','')
+          file_name=Path('/tmp/file_name.txt').read_text().strip()
+          drive_file_id=Path('/tmp/drive_file_id.txt').read_text().strip()
+          root=Path('/tmp/output')/f'RaceNote_{compact}'
+          manifest=json.loads((root/'manifest.json').read_text())
+          validation=json.loads((root/'validation_report.json').read_text())
+          readers=sorted((root/'reader').glob('*.json'))
+          assert validation['status']=='PASS', validation
+          fw=validation['firewall']
+          assert fw['target_result_exposed'] is False
+          assert fw['market_exposed'] is False
+          assert fw['analysis_as_of_violations']==0
+          assert fw['rrdb_as_of_violations']==0
+          assert manifest['sources']['rrdb_recommendation']['contract_version']=='rrdb-recommendation-signals-v0.2'
+          assert manifest['sources']['rrdb_recommendation']['grade_status']=='DISABLED'
+          assert manifest['sources']['rrdb_recommendation']['lookback_days']==730
+          venues={}
+          counts={'MATCH':0,'NO_MATCH':0,'NO_PRIOR_HISTORY':0}
+          for p in readers:
+              x=json.loads(p.read_text())
+              r=x['race']; venues.setdefault(r['venue'],[]).append(int(r['race_no']))
+              for h in x.get('horses',[]):
+                  rec=((h.get('racereview') or {}).get('recommendation') or {})
+                  st=rec.get('status')
+                  if st in counts: counts[st]+=1
+                  assert rec.get('grade') is None
+                  assert rec.get('grade_status')=='DISABLED'
+                  assert rec.get('contract_version')=='rrdb-recommendation-signals-v0.2'
+          handoff={
+            'schema_version':'RaceNote-Day-Prep-Handoff-0.2-draft',
+            'selection_id':'BTDAY-0018',
+            'target_date':date,
+            'paci_file':file_name,
+            'paci_drive_file_id':drive_file_id,
+            'forecast_logic_candidate':'RaceNote-Human-Context-Reader-0.4.2-candidate',
+            'reader_facing_prose_contract':'FORECAST_READER_FACING_PROSE_v0_1',
+            'analysis_generation':manifest['sources']['analysis']['generation_id'],
+            'rrdb_generation':manifest['sources']['rrdb'].get('generation_id'),
+            'rrdb_recommendation_contract':'rrdb-recommendation-signals-v0.2',
+            'rrdb_grade_status':'DISABLED',
+            'rrdb_lookback_days':730,
+            'rrdb_recommendation_counts':counts,
+            'venues':sorted(venues),
+            'venue_races':{k:sorted(v) for k,v in sorted(venues.items())},
+            'venue_count':len(venues),
+            'race_count':manifest['counts']['races_built'],
+            'horse_count':manifest['counts']['horses'],
+            'technical_skips':manifest['counts']['technical_skips'],
+            'status':manifest['status'],
+            'validation_status':validation['status'],
+            'firewall':fw,
+            'result_opened':False
+          }
+          (root/'day_prep_handoff.json').write_text(json.dumps(handoff,ensure_ascii=False,indent=2)+'\n')
+          (root/'selected_pool_state.json').write_text(Path('/tmp/pool.json').read_text())
+          out=Path('/tmp')/f'BTDAY-0018_DAY_PREP_{compact}_FINAL.zip'
+          with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
+              for p in root.rglob('*'):
+                  if p.is_file(): z.write(p,p.relative_to(root))
+          print(json.dumps(handoff,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BTDAY-0018-DAY-PREP
+          path: /tmp/BTDAY-0018_DAY_PREP_*_FINAL.zip
+          retention-days: 14
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          date=Path('/tmp/date.txt').read_text().strip() if Path('/tmp/date.txt').exists() else None
+          root=Path('/tmp/output')/f"RaceNote_{date.replace('-','')}" if date else None
+          ok=bool(root and (root/'day_prep_handoff.json').is_file())
+          x=json.loads((root/'day_prep_handoff.json').read_text()) if ok else {}
+          print('RACENOTE_DAILY_BTDAY0018_RESULT')
+          print(json.dumps({'status':'PASS' if ok else 'FAIL','run_id':int(os.environ['GITHUB_RUN_ID']),'artifact_name':'BTDAY-0018-DAY-PREP',**x},ensure_ascii=False,indent=2))
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --body-file /tmp/comment.md
+          gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --reason completed || true
