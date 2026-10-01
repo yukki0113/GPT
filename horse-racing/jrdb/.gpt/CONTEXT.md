@@ -295,3 +295,31 @@ Training Research Warehouse build PASS: Issue #1518 / run `36240033827`.
 
 A separate current-forward runtime fingerprint drift observed on 2026-09-27 is tracked in Issue #1521. Treat it as an operational/scientific guard investigation, not as permission to revert the Historical source to Raw or to modify the frozen v0.2 fingerprint.
 
+## RaceReviewDB recommendation cutover — 2026-10-01
+
+Current RRDB recommendation contract:
+
+- `docs/RaceReviewDB_Recommendation_Operation_v0_2.md`
+- `src/jrdb_recommendation_signals.py`
+- contract version: `rrdb-recommendation-signals-v0.2`
+
+Operational recommendation signals:
+
+- `TIME_CLASS_PLUS1` — 上位クラス時計
+- `FRONT_SURVIVE_GAP05` — 前傾を前で受けて勝ち馬0.5秒以内
+- `REAR_HIGH_LAST3F90` — 後傾後方＋上がり90pct以上
+- `HV01` — 4着以下＋補正タイム上位20%
+- `HV02` — 6着以下＋補正タイム上位20%
+
+S/A recommendation grade is **disabled**. Multiple matched signals do not automatically increase rank. Consumers should expose the measured strength values of each signal instead.
+
+Current source-date selector:
+`src/jrdb_recommendation_select.py`
+
+Current future-PACI reverse lookup:
+`src/jrdb_recommendation_reverse.py`
+
+Normal recommendation/history lookup horizon is `730 days` before the target date. This is a consumer-serving boundary, not permission to delete the longer RRDB research/computational history. The incremental Review builder currently seeds standards from persisted CURRENT history, so physical CURRENT compaction must not be done until baseline-history state is decoupled.
+
+The former `jrdb_next_watch_rules.py` S/A contract and `next-watch-rules-discovery-v0.1` artifact are historical-reproduction assets only.
+
