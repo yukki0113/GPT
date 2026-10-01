@@ -4,7 +4,7 @@
   "current_logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
   "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_2_CANDIDATE.md",
   "logic_config": "config/racenote_forecast_logic_human_context_v0_4_2.json",
-  "record_schema": "schema/racenote_forecast_research_record_v0_3_1.json",
+  "record_schema": "schema/racenote_forecast_research_record_v0_4_2.json",
   "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
   "freeze_validator": "src/validate_racenote_forecast_human_context.py",
   "predecessor": {
