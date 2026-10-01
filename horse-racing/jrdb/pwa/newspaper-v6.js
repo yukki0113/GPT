@@ -9,7 +9,7 @@ function newspaperV6ApplyMarkLayout() {
   if (!table) return;
 
   const groupHead = table.querySelector(".newspaper-mark-group-head");
-  if (groupHead) groupHead.colSpan = 7;
+  if (groupHead) groupHead.colSpan = 6;
 
   const headRow = table.querySelector(".newspaper-mark-head-row");
   if (headRow) {
@@ -21,11 +21,10 @@ function newspaperV6ApplyMarkLayout() {
     trainingHead.textContent = "追切";
 
     const myHead = headRow.querySelector(".mark-my");
-    if (myHead) myHead.textContent = "独自";
+    if (myHead) myHead.remove();
 
     const orderedHeads = [
       headRow.querySelector(".mark-ability"),
-      myHead,
       headRow.querySelector(".mark-eval"),
       trainingHead,
       headRow.querySelector(".mark-jrdb"),
@@ -72,9 +71,11 @@ function newspaperV6ApplyMarkLayout() {
       }
     }
 
+    const myCell = row.querySelector(".mark-my");
+    if (myCell) myCell.remove();
+
     const orderedCells = [
       row.querySelector(".mark-ability"),
-      row.querySelector(".mark-my"),
       row.querySelector(".mark-eval"),
       trainingCell,
       row.querySelector(".mark-jrdb"),
