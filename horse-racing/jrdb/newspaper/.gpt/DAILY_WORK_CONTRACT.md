@@ -116,7 +116,7 @@ Hard StopはNewspaper Baseを安全に成立させられない場合に限定し
 
 PACI未取得かつJRDB認証取得が可能な場合は、Actions-Native routeで公式PACI取得を試み、その後ローカル/deterministic buildへ戻ります。
 
-Eval、RaceNote、keibailuka、EdgeDB、独自指数の欠損だけを理由にHard Stopしません。
+Eval、RaceNote、RaceReviewDB recommendation、keibailuka、EdgeDB、独自指数の欠損だけを理由にHard Stopしません。
 
 ## 6. Build and merge policy
 
@@ -320,3 +320,23 @@ Hard Stopの場合は、停止理由と不足しているBase必須条件を明�
 4. 遅着sourceは次revisionで安全に追加する。
 5. 旧revisionを消さず、再現可能性と監査性を維持する。
 6. ユーザーに細かな手順指示を要求せず、通常は日付だけで完走する。
+
+
+### RaceReviewDB recommendation handoff
+
+Canonical input:
+
+`RRDB_recommendation_YYYYMMDD_PWA_handoff_v0_1.csv`
+
+This is a sparse optional addon. Only RRDB-recommended horses appear.
+
+Required columns:
+
+`date,venue_code,race_no,race_key,horse_no,horse_name,recommendation_comment,recommendation_version`
+
+Newspaper performs exact join only and stores the supplied prose under
+`addons.rrdb_recommendation`. Do not recompute RRDB conditions, expose
+internal signal IDs/strength JSON, or generate S/A grades.
+
+Detailed contract:
+`../../docs/RaceReviewDB_Newspaper_Handoff_v0_1.md`
