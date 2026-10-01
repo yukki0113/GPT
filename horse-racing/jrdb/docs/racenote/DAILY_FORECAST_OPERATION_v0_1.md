@@ -341,6 +341,37 @@ Backtests may omit `publish/newspaper_payload.json`.
 
 ---
 
+## 10.1 One-request orchestration and reasoning boundary
+
+From BTDAY-0024 onward, DAY PREP and FULL-DAY FORECAST may be completed within one user request.
+
+This changes the interaction boundary, not the forecast reasoning boundary.
+
+Required internal flow:
+
+```text
+mechanical DAY PREP
+  -> STOP FOR RACE-BY-RACE REASONING
+  -> model inspects the full field and authors marks + prose + decision trace
+  -> deterministic Freeze packager
+  -> validator
+  -> immutability guard
+  -> canonical publish
+```
+
+The reasoning checkpoint must not be replaced by a scoring script, fixed-pick generator, RRDB-driven selector, or prose template.
+
+`src/racenote_freeze_prepared_forecast.py` is the canonical deterministic Freeze packager. It consumes complete prepared records and must not choose horses or generate prose.
+
+`src/racenote_finalize_fixed_picks.py` is intentionally disabled because it mixed forecast authorship with deterministic packaging.
+
+`src/racenote_freeze_immutability_guard.py` protects an existing canonical Freeze: identical semantic prediction hashes are an identical retry; different hashes are a conflict and must not overwrite silently.
+
+Prediction semantic hashes exclude execution-only metadata such as Git SHA and timestamps, so a technical retry cannot change the forecast identity merely because the runtime changed.
+
+The detailed boundary contract is `docs/racenote/FORECAST_REASONING_MECHANICAL_BOUNDARY_v0_1.md`.
+
+---
 ## 11. Summary
 
 The current default is:
