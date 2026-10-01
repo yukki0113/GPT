@@ -5,11 +5,11 @@
 - **Git direct read/write:** PRODUCTION / STANDARD.
 - **Git Issue/Actions transport:** COMPATIBILITY FALLBACK.
 - **Google Drive native connector route:** PRODUCTION / STANDARD FOR CHATGPT-WORK.
-- **Google Drive Actions backend:** DEFERRED / NOT REAL-DRIVE E2E ACCEPTED.
+- **Google Drive Actions backend:** DISCONTINUED FOR OPERATION / NOT PRODUCTION-ACCEPTED.
 
 Repository-wide GitHub routing is defined by `.gpt/GITHUB_OPERATION_POLICY.md`. This bridge must not override the A/B/C/D routing decision.
 
-Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. The Actions backend is retained only as inactive compatibility code. Do not enable it and do not configure `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` or `GPT_GDRIVE_AUTOMATION_ROOT_ID`. Google Drive / Docs / Sheets operations use the connected native tools only.
+Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. Do not configure or use an Actions-side Google Drive Service Account backend, direct `drive.google.com` download, `gdown`, or an Issue bridge for Drive transport.
 
 See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` for the architecture decision and safety contract.
 
@@ -79,26 +79,41 @@ The implementation lives at `tools/gpt_io/git/issue_preflight.py`. It validates 
 
 Do not create an Issue merely to run a preflight. The routing decision comes first.
 
-## Google Drive backend
+## Google Drive transport
 
-The bridge transfers stored bytes (SQLite, ZIP, CSV, XLSX, JSON and similar files). It does not edit Google Docs, Sheets or Slides, and never decides whether Git or Drive is the source of truth.
+Production-standard Drive transport is:
 
-Authentication uses `GPT_GDRIVE_SERVICE_ACCOUNT_JSON`; writes are limited to descendants of `GPT_GDRIVE_AUTOMATION_ROOT_ID`. Share only the dedicated automation root with the Service Account. Secrets must remain in GitHub Actions secrets and must not be placed in source, Issues, logs, artifacts, or reports.
-
-The automation root itself is an allowed destination; no operation may cross above or outside it.
-
-Upload is no-overwrite. `move`, `replace`, and `trash` require an exact file ID. Replace also requires matching `expected.file_id` and optionally checks expected size and modified time. `verify: true` re-downloads uploaded/replaced bytes and compares size and SHA-256 before success.
-
-Optional `format_validation` accepts `zip` (CRC) or `xlsx` (ZIP CRC plus workbook structure).
-
-Use a JSON request file:
-
-```bash
-python tools/gpt_io/gpt_io.py gdrive upload --request request.json
-python tools/gpt_io/gpt_io.py gdrive download --request request.json
+```text
+GitHub source / artifact
+-> GPT runtime
+-> connected native Google Drive connector
+-> Drive
 ```
 
-`[gpt-gdrive-request]` is for the deferred Actions backend only, not the standard GPT/Work route. Large source bytes use a short-lived Actions artifact referenced by `source_artifact_run_id` and `source_artifact_name`; do not place large Base64 in an Issue and do not commit Drive data to Git.
+When a Drive input must be processed by canonical repository code:
+
+```text
+Google Drive
+-> connected native Google Drive connector
+-> GPT runtime
+-> canonical GitHub module
+-> local deterministic execution
+-> optional native Drive connector write-back
+```
+
+Actions-side Drive transport is not an operational fallback. In particular, do not use:
+
+- `gdown`
+- direct `drive.google.com` downloads
+- Google Drive REST API from Actions
+- `GPT_GDRIVE_SERVICE_ACCOUNT_JSON`
+- `GPT_GDRIVE_AUTOMATION_ROOT_ID`
+- `[gpt-gdrive-request]`
+- a Drive-transport-only Actions chain
+
+Historical workflows that depended on those routes are stored only as non-runnable references under `.gpt/legacy_workflows/drive_direct/`. They must not be moved back into `.github/workflows/` without a new repository-level routing decision.
+
+Adapter/source code for the discontinued backend may remain only as historical/reference implementation where needed. It is not a current operation surface.
 
 ## Key rule
 
