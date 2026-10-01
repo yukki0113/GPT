@@ -1,0 +1,236 @@
+name: RaceNote Newspaper 20260927 Finalize
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  finalize:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_NEWSPAPER_20260927_FINALIZE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore exact fixed inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/src /tmp/art /tmp/work
+          download() {
+            local id="$1" out="$2"
+            curl -L --fail --retry 4 --retry-delay 2 \
+              "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
+              -o "${out}"
+            test -s "${out}"
+          }
+          download "1o2xW4aovSeUbS8Jet7KFUH90vqtngXpy" /tmp/src/prepared.jsonl
+          echo "840d7c1b4cfdc52b823da305b5b25b8cb934bc994366e7c93ac92faebc97c2df  /tmp/src/prepared.jsonl" | sha256sum -c -
+          test "$(grep -c '^{' /tmp/src/prepared.jsonl)" -eq 24
+          download "1ZLtyEQ497wEhG-wjgUn25ZVI5sJz0Bme" /tmp/src/prep_artifact.zip
+          unzip -q /tmp/src/prep_artifact.zip -d /tmp/art
+          unzip -q /tmp/art/RACENOTE_NEWSPAPER_20260927_PREP.zip -d /tmp/work
+          test -d /tmp/work/racenote/RaceNote_20260927/reader
+          test -d /tmp/work/newspaper/base/races
+      - name: Prepare freeze root
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/freeze_prep
+          cp -a /tmp/work/racenote/RaceNote_20260927/reader /tmp/freeze_prep/reader
+          cat > /tmp/freeze_prep/day_prep_handoff.json <<'JSON'
+          {
+            "selection_id": "NEWSPAPER-20260927",
+            "target_date": "2026-09-27",
+            "status": "DAY_PREP_PASS",
+            "race_count": 24,
+            "result_opened": false
+          }
+          JSON
+      - name: Freeze model-authored forecast
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+            --prep-root /tmp/freeze_prep \
+            --prepared-records /tmp/src/prepared.jsonl \
+            --output-root /tmp/frozen \
+            --selection-id NEWSPAPER-20260927 \
+            --date 2026-09-27 \
+            --main-sha 3d7e3d545af735acba7c67bcf9bbf5c1771d4203
+          python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py \
+            --records /tmp/frozen/day_merge/forecast_20260927_all.jsonl \
+            --output /tmp/frozen/day_merge/forecast_20260927_validator.json
+      - name: Build complete RaceNote Newspaper handoff CSV
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+
+          reader_dir=Path('/tmp/freeze_prep/reader')
+          forecast=json.loads(Path('/tmp/frozen/day_merge/forecast_20260927_all.json').read_text())
+          base=Path('/tmp/work/newspaper/base')
+          manifest=json.loads((base/'manifest.json').read_text())
+
+          base_by={}
+          for e in manifest['races']:
+              bundle=json.loads((base/e['path']).read_text())
+              race=bundle['race']
+              base_by[(race['venue'],int(race['race_no']))]=bundle
+
+          readers={}
+          for p in reader_dir.glob('*.json'):
+              r=json.loads(p.read_text())
+              readers[(r['race']['venue'],int(r['race']['race_no']))]=r
+
+          rows=[]
+          marks_by_rank={1:'◎',2:'○',3:'▲',4:'△',5:'△'}
+          for rec in forecast:
+              ident=rec['identity']
+              key=(ident['venue'],int(ident['race_no']))
+              rd=readers[key]
+              nb=base_by[key]
+              nb_horses={int(h['key']['horse_no']):h for h in nb['horses']}
+              marks=rec['prediction']['marks']
+              top=[
+                marks['main']['horse_no'],marks['second']['horse_no'],marks['third']['horse_no'],
+                marks['others'][0]['horse_no'],marks['others'][1]['horse_no']
+              ]
+              remaining=[]
+              for h in rd['horses']:
+                  no=int(h['basic']['horse_no'])
+                  if no in top: continue
+                  finish=((h.get('pace') or {}).get('forecast_positions') or {}).get('finish') or {}
+                  fo=finish.get('order')
+                  fo=int(fo) if isinstance(fo,(int,float)) else 999
+                  idm=(h.get('ability') or {}).get('idm')
+                  tr=((h.get('training') or {}).get('summary') or {}).get('training_index')
+                  remaining.append((fo,-float(idm if idm is not None else -999),-float(tr if tr is not None else -999),no))
+              remaining_nos=[x[-1] for x in sorted(remaining)]
+              order=[*map(int,top),*remaining_nos]
+              if len(order)!=len(rd['horses']) or len(set(order))!=len(order):
+                  raise SystemExit(f'full order invalid: {key}')
+              rank={no:i+1 for i,no in enumerate(order)}
+              reasons=rec['decision_trace']['mark_reason']
+              horse_comments={int(top[0]):reasons['main'],int(top[1]):reasons['second'],int(top[2]):reasons['third']}
+              for h in rd['horses']:
+                  no=int(h['basic']['horse_no'])
+                  bhorse=nb_horses[no]
+                  if bhorse['basic']['horse_name']!=h['basic']['horse_name']:
+                      raise SystemExit(f'horse name mismatch: {key} {no}')
+                  rk=rank[no]
+                  rows.append({
+                    'date':'2026-09-27',
+                    'venue_code':str(nb['race']['venue_code']).zfill(2),
+                    'venue':ident['venue'],
+                    'race_no':ident['race_no'],
+                    'race_key':nb['race']['race_key'],
+                    'horse_no':no,
+                    'horse_name':h['basic']['horse_name'],
+                    'mark':marks_by_rank.get(rk,''),
+                    'prediction_rank':rk,
+                    'confidence':'B',
+                    'race_short_comment':rec['decision_trace']['race_model'],
+                    'horse_short_comment':horse_comments.get(no,''),
+                    'model_version':rec['research']['logic_version'],
+                    'source_semantic_sha256':rec['source']['racenote_semantic_sha256'],
+                  })
+          rows.sort(key=lambda r:(r['venue_code'],int(r['race_no']),int(r['horse_no'])))
+          if len(rows)!=307:
+              raise SystemExit(f'row count mismatch: {len(rows)}')
+          out=Path('/tmp/RaceNote_prediction_20260927_PWA_handoff_v0_1.csv')
+          fields=['date','venue_code','venue','race_no','race_key','horse_no','horse_name','mark','prediction_rank','confidence','race_short_comment','horse_short_comment','model_version','source_semantic_sha256']
+          with out.open('w',encoding='utf-8-sig',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          print(json.dumps({'rows':len(rows),'races':24,'top3_comments':sum(bool(r['horse_short_comment']) for r in rows)},ensure_ascii=False))
+          PY
+      - name: Merge RaceNote into Newspaper and publish PWA layout
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py \
+            --day-dir /tmp/work/newspaper/base \
+            --output-dir /tmp/newspaper_merged \
+            --racenote-csv /tmp/RaceNote_prediction_20260927_PWA_handoff_v0_1.csv \
+            --revision 2 \
+            | tee /tmp/merge_result.json
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/jrdb_newspaper_publish_current.py \
+            --day-package /tmp/newspaper_merged/day-package.json \
+            --output-dir /tmp/pwa/20260927 \
+            | tee /tmp/publish_result.json
+      - name: Validate integration
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          v=json.loads(Path('/tmp/frozen/day_merge/forecast_20260927_validator.json').read_text())
+          if v['status']!='PASS' or v['record_count']!=24 or v['error_count']!=0:
+              raise SystemExit('forecast validator failed')
+          m=json.loads(Path('/tmp/pwa/20260927/manifest.json').read_text())
+          if len(m['races'])!=24:
+              raise SystemExit('PWA manifest race count mismatch')
+          total=comments=0
+          for e in m['races']:
+              b=json.loads((Path('/tmp/pwa/20260927')/e['path']).read_text())
+              if b['metadata']['source_status']['racenote_prediction']['state']!='READY':
+                  raise SystemExit('RaceNote source not READY')
+              if not b['race_notes'].get('racenote_short_comment'):
+                  raise SystemExit('race comment missing')
+              for h in b['horses']:
+                  a=(h.get('addons') or {}).get('racenote_prediction')
+                  if not a: raise SystemExit('RaceNote addon missing')
+                  total+=1
+                  if a.get('horse_short_comment'): comments+=1
+          if total!=307 or comments!=72:
+              raise SystemExit(f'counts mismatch total={total} comments={comments}')
+          print(json.dumps({'status':'PASS','races':24,'horses':total,'top3_comments':comments,'validator':'PASS','anti_template':v['anti_template']['status']},ensure_ascii=False))
+          PY
+      - name: Package deliverables
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/deliverables
+          cp /tmp/frozen/day_merge/forecast_20260927_all.json /tmp/deliverables/RaceNote_forecast_20260927_all.json
+          cp /tmp/frozen/day_merge/forecast_20260927_validator.json /tmp/deliverables/RaceNote_forecast_20260927_validator.json
+          cp /tmp/RaceNote_prediction_20260927_PWA_handoff_v0_1.csv /tmp/deliverables/
+          cp /tmp/newspaper_merged/day-package.json /tmp/deliverables/JRDB_Newspaper_20260927_RaceNote_merged_day-package.json
+          cp /tmp/pwa/20260927/manifest.json /tmp/deliverables/JRDB_Newspaper_20260927_PWA_manifest.json
+          cd /tmp/pwa
+          zip -qr /tmp/deliverables/JRDB_Newspaper_20260927_PWA_payload.zip 20260927
+          cd /tmp/deliverables
+          zip -qr /tmp/RACENOTE_NEWSPAPER_20260927_FINAL.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RACENOTE_NEWSPAPER_20260927_FINAL
+          path: /tmp/RACENOTE_NEWSPAPER_20260927_FINAL.zip
+          compression-level: 0
+          retention-days: 7
+      - name: Comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if test -s /tmp/pwa/20260927/manifest.json; then
+            printf 'RACENOTE_NEWSPAPER_20260927_FINAL_RESULT\nPASS: 24 races / 307 horses / 72 top3 comments / PWA payload generated\n' > /tmp/comment.md
+          else
+            printf 'RACENOTE_NEWSPAPER_20260927_FINAL_RESULT\nFAILED\n' > /tmp/comment.md
+          fi
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+      - name: Close
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed || true
