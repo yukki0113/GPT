@@ -64,6 +64,15 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - 過去時点を再現する分析では、対象日以降の結果が混入しないようas-of条件を必ず設ける。現行YTD Martを過去レースへそのまま適用しない。
 - RaceNote ArchiveはDriveとは別に、固定命名のimmutable GitHub Release assetとrelease metadataを探索indexとして使用する。Router本体へRelease URLを固定せず、`src/resolve_racenote_archive_release.py` が対象月のlatest compatible publishable shardを解決してローカルpathだけをRouterへ渡す。
 
+## Result / payout query routing — 2026-10-01
+- Completed JRA race result/payout lookup standard entrypoint: `src/jrdb_result_query.py`.
+- SED is horse-result authority; HJC is payout authority. Default response is confirmed 1st-3rd finishers plus all eight HJC payout types.
+- Historical 2010-2025 can use accepted JRDB Warehouse `sed` + `hjc_payout`; current dates use SED/HJC Raw.
+- For requests such as result, payout, in-the-money outcome, hit settlement, or ROI inputs, first use Result Query when JRDB coverage exists. Do not lead with general Web search.
+- If JRDB source is missing, the tool returns `partial`; it does not silently replace evidence with Web data.
+- Full runner rows are opt-in. Fixed-width offsets remain owned only by `jrdb_raw.py`.
+- Contract: `docs/README_jrdb_result_query.md`.
+
 ## Annual Canonical materialization
 - `src/build_jrdb_canonical.py` はCommon Readerのneutral parse結果をannual SQLiteへmaterializeする任意の高速アクセス層。
 - Canonical SQLiteはRawを置換せず、固定長解釈の独立正本にもならない。byte offsetは持たず、Common Readerの返却fieldを投影する。
