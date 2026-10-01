@@ -272,12 +272,7 @@ def automatic_kenshow_prediction(horse: dict[str, Any]) -> dict[str, Any] | None
     rn_comment = str(racenote.get("horse_short_comment") or "").strip()
     rrdb_comment = str(rrdb.get("comment") or "").strip()
 
-    comments = []
-    if rn_comment:
-        comments.append(rn_comment)
-    if rrdb_comment and rrdb_comment not in comments:
-        comments.append(rrdb_comment)
-    comment = "\n".join(comments)
+    comment = rrdb_comment or rn_comment
 
     review_horse = bool(rrdb_comment)
     if not mark and not review_horse and not comment:
