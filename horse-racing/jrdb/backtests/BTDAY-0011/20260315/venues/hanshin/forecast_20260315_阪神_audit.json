@@ -1,0 +1,15 @@
+{
+  "validator_version": "racenote-human-context-0.4.0-candidate-equivalent",
+  "candidate_patch": "consolidated five-mark forecast",
+  "status": "PASS",
+  "venue": "阪神",
+  "target_date": "2026-03-15",
+  "record_count": 12,
+  "frozen_count": 12,
+  "error_count": 0,
+  "prediction_hash_unique_count": 12,
+  "five_mark_role_guard": "PASS",
+  "market_blind_guard": "PASS",
+  "legacy_converge_machinery": "NOT_USED",
+  "result_opened": false
+}

@@ -1,0 +1,17 @@
+{
+  "selection_id": "BTDAY-0011",
+  "target_date": "2026-03-15",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+  "status": "FROZEN",
+  "result_opened": false,
+  "day_prep_source": {
+    "artifact_name": "BTDAY-0011-DAY-PREP",
+    "run_id": 36801316453,
+    "digest": "sha256:366ea2185394f8a7e420d880d8c425296005511d769141c1e31f8c7030002c2c"
+  },
+  "forecast": {
+    "race_count": 36,
+    "venue_count": 3,
+    "technical_skips": 0
+  }
+}

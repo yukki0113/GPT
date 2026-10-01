@@ -1,0 +1,75 @@
+{
+  "schema_version": "RaceNote-Day-Prep-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0011",
+  "target_date": "2026-03-15",
+  "paci_file": "PACI260315.zip",
+  "paci_drive_file_id": "1WSrJiv0h3LrqGDdgtg_VfrLKpXjw-59h",
+  "forecast_logic_candidate": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+  "forecast_logic_base": "RaceNote-Human-Context-Reader-0.3.5-candidate",
+  "candidate_patch": "consolidated five-mark forecast",
+  "analysis_generation": "analysis-v1_4-canonical-20260928-02",
+  "rrdb_generation": "jrdb_race_review_v0_1_incremental_g36514429467",
+  "next_watch_rule_version": "next-watch-rules-discovery-v0.1",
+  "venues": [
+    "中京",
+    "中山",
+    "阪神"
+  ],
+  "venue_races": {
+    "中京": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "中山": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "阪神": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "venue_count": 3,
+  "race_count": 36,
+  "horse_count": 524,
+  "technical_skips": 0,
+  "status": "PASS",
+  "validation_status": "PASS",
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "result_opened": false
+}

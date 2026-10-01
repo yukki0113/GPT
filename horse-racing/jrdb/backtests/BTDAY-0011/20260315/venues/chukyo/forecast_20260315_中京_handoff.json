@@ -1,0 +1,26 @@
+{
+  "schema_version": "RaceNote-Venue-Forecast-Handoff-0.1-draft",
+  "selection_id": "BTDAY-0011",
+  "target_date": "2026-03-15",
+  "venue": "中京",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+  "main_sha": "a9e26bdd5d064d646ebae114b498e34f704da5e6",
+  "race_count": 12,
+  "frozen_count": 12,
+  "technical_skips": 0,
+  "result_opened": false,
+  "prediction_hashes": [
+    "29790cb1199c79c58f87264ebe0314d9af8be6a885e35a90c24bac7ede082f51",
+    "f15ee36130eaa1b366316bebdbc86664db841551e2c85e917a6101876db774cf",
+    "1d1e779201f4eced25efc9383b0ab462d9bbfb98217eb63c92578b24db37f091",
+    "478f507aae63dad799efb41751ffbe521744be8a4f3bdcb7f0ba1cf4e63654b8",
+    "144936e71040c5911360a2b4cb6aab4ef7843fc693d0bf1a07299eb38ce365e0",
+    "674457998d9b38f3e8a81d4de24924b902a9fa4efc4a3028cbe046bb255192c0",
+    "a71937cb6762edcfaacdec82b8c2ceef08b4c0aa58417c9a885e4742c24ea3a9",
+    "561486cadfe129ff1fece3f31fbf7d46af64db344eb529e02f0b7ddbd93b3e7e",
+    "81a9da079e7a1f6299c57cfdf4ac016dbdfd2af5ec879545fe7aeeb641657036",
+    "6c1d5b233191cbb2785aae81d8d6fc12cfc608fe01f0c1bc5994ddb640ef573c",
+    "5d4c85a127c2a4b8fae000fc455dbd394c4fbd7ef911a1e8fb5879838380c42f",
+    "28f4809b6769f1ea3b88bb96be54f713f772bff878669405fd722b60344d8eed"
+  ]
+}
