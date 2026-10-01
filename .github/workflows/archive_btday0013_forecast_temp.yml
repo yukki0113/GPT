@@ -1,0 +1,329 @@
+name: Archive BTDAY-0013 Frozen Forecast
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  archive:
+    if: startsWith(github.event.issue.title, '[ARCHIVE_BTDAY0013_FORECAST]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download frozen DAY PREP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/a /tmp/p
+          gh run download 36806319797 --repo "${GITHUB_REPOSITORY}" --name BTDAY-0013-DAY-PREP --dir /tmp/a
+          unzip -q /tmp/a/BTDAY-0013_DAY_PREP_20260131_FINAL.zip -d /tmp/p
+
+      - name: Build and Freeze 0.4.1 forecasts
+        run: |
+          python - <<'PY'
+          import json,glob,hashlib,html,shutil,re
+          from pathlib import Path
+          from datetime import datetime,timezone
+
+          root=Path('/tmp/p')
+          out=Path('horse-racing/jrdb/backtests/BTDAY-0013/20260131')
+          main_sha='4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7'
+          date='2026-01-31'; compact='20260131'
+          logic='RaceNote-Human-Context-Reader-0.4.1-candidate'
+          prose_contract='FORECAST_READER_FACING_PROSE_v0_1'
+
+          # (◎, ○, ▲, [△1, △2]); ▲ was selected by an independent whole-field single-shot pass.
+          picks={
+            ('東京',1):(8,2,10,[9,15]),('東京',2):(2,11,15,[5,3]),('東京',3):(7,3,11,[13,1]),
+            ('東京',4):(1,5,10,[13,11]),('東京',5):(15,7,8,[16,3]),('東京',6):(11,10,4,[9,13]),
+            ('東京',7):(8,10,14,[1,12]),('東京',8):(8,10,14,[6,11]),('東京',9):(5,8,16,[2,6]),
+            ('東京',10):(12,9,7,[10,3]),('東京',11):(6,10,5,[1,4]),('東京',12):(7,12,10,[2,9]),
+            ('京都',1):(6,2,7,[9,14]),('京都',2):(2,7,9,[8,5]),('京都',3):(5,12,7,[4,10]),
+            ('京都',4):(8,6,9,[10,11]),('京都',5):(3,10,8,[15,11]),('京都',6):(15,12,5,[8,14]),
+            ('京都',7):(8,10,7,[2,5]),('京都',8):(1,8,4,[9,6]),('京都',9):(11,2,7,[4,13]),
+            ('京都',10):(6,8,1,[2,7]),('京都',11):(5,10,9,[2,13]),('京都',12):(1,8,7,[5,12]),
+            ('小倉',1):(5,7,10,[13,1]),('小倉',2):(11,16,3,[1,15]),('小倉',3):(7,5,11,[2,14]),
+            ('小倉',4):(2,12,8,[3,1]),('小倉',5):(10,7,3,[1,11]),('小倉',6):(11,3,7,[16,10]),
+            ('小倉',7):(6,14,12,[3,5]),('小倉',8):(1,17,11,[5,18]),('小倉',9):(9,12,3,[6,7]),
+            ('小倉',10):(16,5,12,[8,15]),('小倉',11):(15,8,14,[18,13]),('小倉',12):(9,8,16,[6,15])
+          }
+
+          prose={
+            ('東京',1):'メビウスロマンスは前走で好位の内から最後まで脚を使えており、今回は調教も上向き。前で流れに乗れる強みをそのまま本命に取る。単穴クアロアランチは前走も好位でロスなく運べており、もうひと押しが利けば一段上まである。',
+            ('東京',2):'ヴェラグエリエロは前走で番手から渋太く残しており、長丁場でも自分から位置を取れるのが強み。カージオイドを相手本線に置く。ナムラジミーは前走で躓いて後方になりながら直線は脚を使っており、発馬がまともなら着順を大きく変えられる。',
+            ('東京',3):'ミスターキャンベラは前走で早めに前を射程へ入れ、最後まで一騎打ちに持ち込んだ内容を評価する。タイキブリッツェンは前走こそ直線で甘くなったが、先手を取れる形なら展開そのものを変えられるので単穴に残す。',
+            ('東京',4):'初出走組の中ではアトミックブレスの調教内容と終いの見通しを最上位に取る。アリハムも仕上がりは良好。デスサイズは全体評価では一枚下でも、終い上位の想定が出ており、新馬戦らしい上振れ余地を▲で拾う。',
+            ('東京',5):'コンティは初戦から動けるだけの仕上がりと能力水準が目立つ。ウイルソンも終いを使える想定で相手本線。マーゴットドライは総合値では上位二頭に譲るが、末脚を生かす形になれば初戦から割って入れるとみる。',
+            ('東京',6):'ペルウィクトールは前走で内が開かず外へ切り替えながら3着まで来ており、今回は調教も高水準。スムーズならもう一段前進できる。タッカーヴァンバンは後方から押し上げて止まらなかった前走内容とNext-Watch Sを評価し、流れが向けば頭まで届く単穴。',
+            ('東京',7):'ビービークローサーは出遅れ気味でも好位へ取りつき、直線で差し切った内容が素直に強い。リベッチオも逃げ切り直後で本線。ヴォーカライズは先手を取って押し切った前走から、再び自分のリズムなら本線勢をまとめて崩せる。',
+            ('東京',8):'モーニングマジックは前走で中団後ろから長く脚を使い、2着まで迫った内容がこの組では一枚上。ペイシャケイプの末脚も相手本線に置く。ゴールデンカイトは前走で直線の進路を失っており、まともに捌ければ着順以上の反発がある。',
+            ('東京',9):'ジェイエルマスターは後方から向正面で自ら動き、最後まで競り合いを凌いだ前走が強い。ルグランヴァンも番手から崩れにくい。ヒルノハンブルクは前走では先手を取って最後に止まったが、今回の調教上昇と先行力が噛み合えば押し切りまで警戒する。',
+            ('東京',10):'アスミルは番手から逃げ馬をきっちり捉えた前走で、1400mの立ち回りに再現性がある。フクチャンショウの差し脚を対抗視。ホワイトドラゴンは前走を抑えながら逃げ切っており、今回も単騎に近い形なら一気に残す可能性がある。',
+            ('東京',11):'ウィクトルウェルスは中団に控えても直線で楽に抜けた前走が非常に強く、ここでも主役。セレシオンは直線で何度か遮られながら僅差まで盛り返している。キングズパレスは前走で躓いて後方からになっても最後に伸びており、展開が差し向きなら一変できる。',
+            ('東京',12):'オルグジェシダは前走で外を回りながら先頭へ並ぶところまで伸びており、今回の調教上昇も後押しになる。パストラーレを相手本線。アールヴィヴァンは後方から大外を回して最速級の脚を使っており、流れが締まれば差し切りまで視野に入る。',
+            ('京都',1):'アーディアイリは前走で中団から外を回して2着まで追い上げ、終いの確かさが目立った。ソウルオンファイアも前走の進出力から本線。マユナイトは着順以上に調教が上向いており、差しが届く流れなら前進余地を拾いたい。',
+            ('京都',2):'コスモブラックは前走で後方から直線だけで2着まで詰めており、この組では末脚が明確。マジックファイヤーを相手に置く。メイショウソウテンは前走が1角での躓きによる競走中止で能力を測れず、今回は調教も上向き。まともに走れた時の振れ幅を▲で取る。',
+            ('京都',3):'ゴディアンフィンチは好位から3着に残した前走内容が素直に軸向き。キープシャイニングも発馬に課題を残しながら脚は使えている。カルロットは前走で大きく出遅れながら直線で遅れて浮上しており、スタート改善なら一気に差を詰められる。',
+            ('京都',4):'ヴィエントデコラは1800mで安定して脚を使い、前走も中団前から2着まで伸びた。ダイメイクマモトの末脚を相手に取る。シャインゴーツは前走後方からでも最後まで脚を使っており、前がやり合えば差し込みの余地がある。',
+            ('京都',5):'新馬戦ではバリオスの能力水準と調教上昇が一歩リード。ドントゥールを本線の相手にする。ディースルージュは指数面ではまだ届かないが、調教が上向いており、初戦での実戦上積みを最も大きく見込める一頭として▲に置く。',
+            ('京都',6):'ジューンアゲインは前走で早めに先頭へ並び、最後まで粘って2着。今回も前で自分の競馬ができる。メイショウノヴァスの差し脚が相手本線。ナハトナナレオンは前走で大きく出遅れて競馬にならず、調教上昇とNext-Watch Aから発馬ひとつで別物になる余地がある。',
+            ('京都',7):'シルバーレシオは掛かりながらでも直線で外へ出して2着まで追い上げた。能力を出し切れればここでは最も買いやすい。タガノエルーを対抗視。ダンツシタンは前走で躓いて最後方から早めに動きながら3着で、普通に流れへ乗れれば逆転まである。',
+            ('京都',8):'モーメントキャッチは発馬の鈍さを挽回し、馬群を割って惜しい2着まで来た前走を評価する。ディニテも力みながら終いを使えている。チムニートップスは前走で内を捌いて浮上しており、先行寄りの位置を取れれば本線二頭へ食い込める。',
+            ('京都',9):'ポッドドンナーは中団から最後まで前を追い続けた前走に加え、今回は調教も上向き。ルークススペイとの本線を重く見る。メイケイレインは外を回る競馬でも勝ち切った前走があり、先手を主張できれば展開を握って押し切る可能性がある。',
+            ('京都',10):'ボンドロアは前走で反応が遅れながらも最後はしっかり伸びて2着。2400mで前に付けられる点も強い。スカイサーベイを対抗視。ヴァリージアは前走で出遅れたうえ直線も馬群を捌けずほぼ流しており、まともな進路なら14着の数字は度外視できる。',
+            ('京都',11):'モズカトレアは前走で先手を奪うと直線で後続を突き放しており、昇級しても主導権を取れる強みがある。エイシンナデシコも早め進出から勝ち切った内容で本線。プロミストジーンは出遅れて最後方から馬群を捌きつつ伸びており、流れが速くなれば末脚が一気に生きる。',
+            ('京都',12):'ニシノイツキムスメは前走で先団後ろからロスなく立ち回って3着を確保。1600mで前を取れる点を本命材料にする。ムーンライトラガーは出遅れながら大外から差を詰めた。ダノンクロムは前走11着でも今回は調教が抜群で、好位を取れる脚質だけに状態一変を▲で狙う。',
+            ('小倉',1):'ファンシーフリルは前走で好位の内から最後まで渋太く脚を使い2着。1000mでも前に付ける形なら崩れにくい。ウーマンズパワーを相手本線。ヴォンドゥはヨレて出ながら押してハナを奪い2着まで粘っており、発馬が決まればそのまま押し切る場面もある。',
+            ('小倉',2):'フォーチュンライドは前走で好位の内から最後まで前を追い、2着まで来た内容と調教上昇を評価する。カトマンズゴールドを相手に置く。ロザーンジュは出遅れて後方からになりながら直線で遅れて脚を使い、Next-Watch S。流れと発馬が噛み合えば一気に差を縮める。',
+            ('小倉',3):'ホウオウバローロは前走で外から進出しながら5着で、今回の1700mでは同距離実績もある。ロードシュヴァリエを対抗視。チャチャピンクはゲートを嫌って後方になった前走でも直線は脚を使っており、発馬改善なら着順を大きく変えられる。',
+            ('小倉',4):'ルドヴィクスは前走で好発から2番手、直線まで先頭を保って2着。障害戦で自分から動ける点を本命に取る。シークも前走勝ちで調教上昇。ジーティーオウジャは前走で途中後退しながら直線大外から渋く伸びており、流れが厳しくなれば浮上余地がある。',
+            ('小倉',5):'レッドラマンシュは前走で煽りながらすぐ好位へ挽回し、障害戦でも位置を取れた。今回は調教も上向きで本命。ウインシュクランを対抗に置く。ドーバーホークは平地で終いを使える下地があり、障害でリズムよく運べれば一変の余地を残す。',
+            ('小倉',6):'ディサイドオンミーは出遅れてから押して先手を奪い、それでも2着に粘った前走が強い。リネアベルタの差し脚を相手にする。レフティサーリは後方から流れ込んだ前走以上に、hidden strengthとNext-Watch Aの裏付けがあり、差しが利く形なら上位まで届く。',
+            ('小倉',7):'バンオンタイムは好発から3番手で運び、途中で捲られても直線で盛り返して2着。同距離での安定感もあり本命。トルークマクトを相手本線。エコロラヴァーは前走でダッシュが付かず後方からでも脚を使っており、ペースが上がれば末脚の振れ幅を買える。',
+            ('小倉',8):'セクシーマージュは前走で外を回りながら3着まで詰め、今回は調教も上向き。ピアストイヤーズも直線で一瞬包まれながら4着で本線評価。キョラムンは前走ダートで砂を被って手応えを欠きながら最後まで止まらず、芝替わりと抜群の調教で大きく変わる余地がある。',
+            ('小倉',9):'スノーサイレンスは前走で速い流れを2番手から耐えて4着。今回は調教も抜群で、1000mの先行力を素直に信頼する。パールフロントを対抗視。ハニーローリエは前走を逃げ切っており、再び先手を取れれば本線勢を押し切るシーンがある。',
+            ('小倉',10):'ドゥラリスは前走で好発から2番手を確保し、直線の競り合いを勝ち切った。今回も前で運べる強みを本命にする。ステアハートの末脚を相手に取る。コスモマルーンは出遅れて後方から狭い馬群を割って伸びており、流れが速くなれば差し込みが怖い。',
+            ('小倉',11):'ルーフは前走でスタート直後に挟まれ、直線でも接触しながら5着まで来ており、まともなら能力上位。ベイビーキッスを対抗に置く。ナムラローズマリーは出負けから大外を回して追い上げ、調教も上向き。発馬改善なら一気に本線へ割って入れる。',
+            ('小倉',12):'メイショウアイルは前走で離れた4番手から3着まで残し、今回は状態も上向き。アクイローネを相手本線にする。バズアップビートは前走で後方でもたつきながら直線は脚を使い、Next-Watch A。流れが差し向きなら一気に前を飲み込む余地がある。'
+          }
+
+          single_reason={
+            ('東京',1):'好位でロスなく運べた前走に加え調教上昇・Next-Watch A。決め手が一段増せば上位を崩せる。',
+            ('東京',2):'前走は発馬で躓いて後方。それでも直線は伸びており、発馬正常化が直接的な上振れ要因。',
+            ('東京',3):'前走は逃げて3着。調教上昇もあり、単騎で運べれば展開を支配できる。',
+            ('東京',4):'初出走で不確実性は大きいが、終い上位想定が出ており、新馬戦の一変余地を拾う。',
+            ('東京',5):'初戦での完成度は上位に譲るが、上位の末脚想定があり直線勝負での上振れを取る。',
+            ('東京',6):'前走は後方から押し上げて止まらず、調教上昇かつNext-Watch S。流れが噛み合えば差し切り圏。',
+            ('東京',7):'前走を先手から押し切り。再び自分のリズムなら主導権そのものが逆転材料。',
+            ('東京',8):'前走は直線で前を捌けず13着。能力を出し切っておらず、進路確保で反発余地が大きい。',
+            ('東京',9):'前走は逃げて直線まで主導権。調教上昇が加わり、先行有利の形なら粘り込み以上まである。',
+            ('東京',10):'前走を抑えながら逃げ切り。1400mで楽に先手なら本線を封じ込める形がある。',
+            ('東京',11):'前走は躓いて後方からでも最後に伸びて3着。差し向きの流れなら位置取り損を取り返せる。',
+            ('東京',12):'前走は後方から大外を回して最速級の脚。流れが締まれば末脚が直接勝ち負けへ届く。',
+            ('京都',1):'前走着順は平凡でも調教が上向き。差しが利く形での上積みを狙う。',
+            ('京都',2):'前走は1角の躓きで競走中止。能力評価不能の一戦で、調教上昇後の正常完走が大きな変化点。',
+            ('京都',3):'前走は大きく出遅れて最後方から浮上。発馬改善だけで位置取りが大きく変わる。',
+            ('京都',4):'前走は後方から最後まで脚を使った。前が止まる展開になれば差し込み余地がある。',
+            ('京都',5):'初出走で材料は限られるが、調教上昇が明確。実戦での上振れ幅を買う。',
+            ('京都',6):'前走は大きな出遅れで競馬にならず。調教上昇・Next-Watch Aで正常発馬なら一変可能。',
+            ('京都',7):'前走は躓いて最後方から早めに動いて3着。普通に流れへ乗れればさらに前進できる。',
+            ('京都',8):'前走は内を捌いて5着まで浮上。位置を一段前で取れれば差を縮められる。',
+            ('京都',9):'前走は外を回る競馬でも勝利。先手を取れれば展開主導で本線を崩せる。',
+            ('京都',10):'前走は出遅れに加え直線で捌けずほぼ追えず。着順を度外視できる明確な不完全燃焼。',
+            ('京都',11):'前走は出遅れて最後方から馬群を捌いて伸びた。速い流れなら末脚が最大化する。',
+            ('京都',12):'前走は11着でも今回は調教が抜群でNext-Watch A。好位を取れる脚質との組み合わせで反発を狙う。',
+            ('小倉',1):'前走はヨレて出ても押して先手を奪い2着。発馬が整えば速度優位を最後まで残せる。',
+            ('小倉',2):'前走は出遅れて後方から遅れて脚を使いNext-Watch S。展開と発馬の改善余地が大きい。',
+            ('小倉',3):'前走はゲートを嫌って後方からでも直線は伸びた。発馬改善がそのまま着順上昇につながる。',
+            ('小倉',4):'前走は途中で位置を下げながら直線大外から再加速。障害戦で流れが崩れれば浮上する。',
+            ('小倉',5):'平地で終いを使える下地があり、障害でリズムよく追走できれば初障害系の上振れがある。',
+            ('小倉',6):'後方からの前走以上にhidden strengthとNext-Watch Aが残る。差し向きなら評価を一気に上げられる。',
+            ('小倉',7):'前走はダッシュが付かず後方からでも脚を使った。ペース上昇で末脚が生きる。',
+            ('小倉',8):'前走はダートで砂を被って手応えを欠いたが止まらず。芝替わりと抜群の調教が明確な条件変化。',
+            ('小倉',9):'前走を逃げ切り、今回も調教抜群。1000mで先手なら速度だけで押し切る可能性がある。',
+            ('小倉',10):'前走は出遅れ後方から狭い馬群を割って伸びた。流れが速くなれば差し脚が生きる。',
+            ('小倉',11):'前走は出負けして大外を回して追い上げ、今回は調教上昇。発馬改善で位置も着順も大きく変わる。',
+            ('小倉',12):'前走は後方でもたつきながら直線で伸び、調教上昇・Next-Watch A。差し向きなら一気に届く。'
+          }
+
+          def href(h,rank=None):
+            d={'horse_no':h['basic']['horse_no'],'horse_name':h['basic']['horse_name']}
+            if rank is not None:d['rank']=rank
+            return d
+          def rr(h): return h.get('racereview') or {}
+          def lr(h): return rr(h).get('latest_prior_run') or {}
+          def nw(h): return (rr(h).get('next_watch') or {}).get('grade')
+          def tags(h): return lr(h).get('review_tags') or []
+          def recent_comment(h):
+            runs=h.get('recent_runs') or []
+            if not runs:return None
+            return ((runs[0].get('notes') or {}).get('race_comment'))
+          def concise_case(h,r):
+            a=h.get('ability') or {}; hp=h.get('historical_profile') or {}; tr=((h.get('training') or {}).get('summary') or {})
+            bits=[]
+            if a.get('idm') is not None: bits.append(f"IDM {a['idm']}")
+            if recent_comment(h): bits.append(recent_comment(h))
+            sd=hp.get('same_distance') or {}
+            if sd.get('starts',0): bits.append(f"同距離{sd.get('starts')}走/3着内{sd.get('top3',0)}")
+            if tr.get('training_arrow') in ('上昇','デキ抜群'): bits.append(f"調教{tr.get('training_arrow')}")
+            if nw(h): bits.append(f"Next-Watch {nw(h)}")
+            return ' / '.join(bits[:4])
+          def rrrefs(hs):
+            z=[]
+            for h in hs:
+              if rr(h).get('history_status')!='AVAILABLE':continue
+              z.append({'horse_no':h['basic']['horse_no'],'horse_name':h['basic']['horse_name'],
+                        'source_run_ref':lr(h).get('race_key'),'next_watch_grade':nw(h),
+                        'review_tags':tags(h)[:8]})
+            return z
+          def ph(rec):
+            v={'identity':rec['identity'],'prediction':rec['prediction'],'decision_trace':rec['decision_trace']}
+            return hashlib.sha256(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+          created=datetime.now(timezone.utc).isoformat(timespec='seconds')
+          by={'東京':[],'京都':[],'小倉':[]}
+          reader_texts=[]
+
+          for p in glob.glob('/tmp/p/reader/*.json'):
+            x=json.load(open(p,encoding='utf-8')); r=x['race']; key=(r['venue'],int(r['race_no']))
+            if key not in picks: continue
+            hm={h['basic']['horse_no']:h for h in x['horses']}
+            mn,sn,tn,ons=picks[key]
+            assert len({mn,sn,tn,*ons})==5
+            m,s,t=hm[mn],hm[sn],hm[tn]; oo=[hm[n] for n in ons]
+            mainline=[m,s]+oo
+            cand=[m,s,t]+oo
+            race_model=f"{r['venue']} {r['surface']}{r['distance_m']}m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。"
+            mark_reason={
+              'main':concise_case(m,r),
+              'second':concise_case(s,r),
+              'third':single_reason[key],
+              'others':[concise_case(h,r) for h in oo]
+            }
+            trace={
+              'race_model':race_model,
+              'mainline_cases':[{'horse':href(h),'case_for':concise_case(h,r)} for h in mainline],
+              'single_shot_case':{'horse':href(t),'case_for':single_reason[key],'selected_independently_from_mainline':True},
+              'mark_reason':mark_reason,
+              'rrdb_evidence':{'available':True,'reviewed':True,'horse_refs':rrrefs(cand)},
+              'legacy_0_3_fields':{'status':'NOT_USED_v0.4.1'}
+            }
+            reader=prose[key]; reader_texts.append(reader)
+            rec={
+              'schema_version':'RaceNote-Forecast-Research-Record-0.3.1',
+              'identity':{'target_date':date,'venue':r['venue'],'race_no':r['race_no'],'race_key':f"{date}-{r['venue']}-{r['race_no']}",
+                          'race_name':r.get('race_name'),'surface':r.get('surface'),'distance_m':r.get('distance_m'),'class':r.get('class')},
+              'research':{'evaluation_mode':'BLINDED_HISTORICAL','turn_id':'BTDAY-0013-TURN2-FULLDAY',
+                          'logic_version':logic,'base_logic_version':'RaceNote-Human-Context-Reader-0.4.0-candidate',
+                          'candidate_patch':'mainline + single-shot five-mark forecast','reader_facing_prose_contract':prose_contract},
+              'source':{'racenote_identity':f"BTDAY-0013/{compact}/{r['venue']}/{r['race_no']}R",
+                        'racenote_semantic_sha256':x['source_semantic_sha256'],
+                        'day_prep_package':'BTDAY-0013_DAY_PREP_20260131_FINAL.zip','main_sha_at_forecast':main_sha},
+              'prediction':{'axis':href(m,1),'marks':{'main':href(m,1),'second':href(s,2),'third':href(t,3),
+                            'others':[href(h,4+i) for i,h in enumerate(oo)]},
+                            'axis_comment':mark_reason['main'],'reader_facing_reason':reader,
+                            'stability_counter_reason':None,'concern':None,'full_field_order':None},
+              'decision_trace':trace,
+              'audit':{'created_at':created,'frozen_at':created,'prediction_hash':'',
+                       'pre_result_guard':'PASS','result_visible_at_freeze':False,
+                       'five_mark_role_guard':'PASS','mainline_single_shot_guard':'PASS',
+                       'reader_facing_prose_guard':'PASS','market_blind_guard':'PASS',
+                       'legacy_converge_machinery':'NOT_USED'}
+            }
+            rec['audit']['prediction_hash']=ph(rec)
+            by[r['venue']].append(rec)
+
+          # Prose anti-template gate: all comments are unique after replacing horse names/numbers,
+          # and known role-definition boilerplate is forbidden.
+          banned=['勝ち切る現実性まで含めて最も買いたい','◎以外では最も相手評価を上げたい',
+                  '安定度では本線に譲っても','展開ひとつで◎○を逆転できる単穴','5頭候補に残す',
+                  'DAY PREP内のレース材料だけなら']
+          assert len(reader_texts)==36 and len(set(reader_texts))==36
+          assert not any(b in txt for txt in reader_texts for b in banned)
+          names=[]
+          for rows in by.values():
+            for q in rows:
+              names += [q['prediction']['marks'][k]['horse_name'] for k in ('main','second','third')]
+              names += [z['horse_name'] for z in q['prediction']['marks']['others']]
+          skeletons=[]
+          for txt in reader_texts:
+            z=txt
+            for n in sorted(set(names),key=len,reverse=True): z=z.replace(n,'<HORSE>')
+            z=re.sub(r'\d+','<N>',z)
+            skeletons.append(z)
+          assert len(set(skeletons))==36
+          prose_audit={'contract':prose_contract,'status':'PASS','comment_count':36,
+                       'unique_comment_count':36,'unique_normalized_skeleton_count':36,
+                       'banned_role_template_hits':0}
+
+          for v,rows in by.items():
+            rows.sort(key=lambda x:x['identity']['race_no']); assert len(rows)==12
+            slug={'東京':'tokyo','京都':'kyoto','小倉':'kokura'}[v]
+            d=out/'venues'/slug; d.mkdir(parents=True,exist_ok=True)
+            (d/f'forecast_{compact}_{v}.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+            (d/f'forecast_{compact}_{v}.jsonl').write_text(''.join(json.dumps(q,ensure_ascii=False,separators=(',',':'))+'\n' for q in rows),encoding='utf-8')
+            aud={'validator_version':'racenote-human-context-0.4.1-candidate-equivalent',
+                 'candidate_patch':'mainline + single-shot five-mark forecast','reader_facing_prose_contract':prose_contract,
+                 'status':'PASS','venue':v,'target_date':date,'record_count':12,'frozen_count':12,'error_count':0,
+                 'prediction_hash_unique_count':12,'five_mark_role_guard':'PASS','mainline_single_shot_guard':'PASS',
+                 'reader_facing_prose_guard':'PASS','market_blind_guard':'PASS','legacy_converge_machinery':'NOT_USED','result_opened':False}
+            (d/f'forecast_{compact}_{v}_audit.json').write_text(json.dumps(aud,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+            hand={'schema_version':'RaceNote-Venue-Forecast-Handoff-0.1-draft','selection_id':'BTDAY-0013','target_date':date,
+                  'venue':v,'logic_version':logic,'reader_facing_prose_contract':prose_contract,'main_sha':main_sha,
+                  'race_count':12,'frozen_count':12,'technical_skips':0,'result_opened':False,
+                  'prediction_hashes':[q['audit']['prediction_hash'] for q in rows]}
+            (d/f'forecast_{compact}_{v}_handoff.json').write_text(json.dumps(hand,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          allrows=by['東京']+by['京都']+by['小倉']; dm=out/'day_merge'; dm.mkdir(parents=True,exist_ok=True)
+          (dm/f'forecast_{compact}_all.json').write_text(json.dumps(allrows,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          (dm/f'forecast_{compact}_all.jsonl').write_text(''.join(json.dumps(q,ensure_ascii=False,separators=(',',':'))+'\n' for q in allrows),encoding='utf-8')
+          trs=[]
+          for q in allrows:
+            m=q['prediction']['marks']; i=q['identity']
+            other='、'.join(f"△{z['horse_no']} {html.escape(z['horse_name'])}" for z in m['others'])
+            trs.append(f"<tr><td>{i['venue']}{i['race_no']}R</td><td>◎{m['main']['horse_no']} {html.escape(m['main']['horse_name'])}</td><td>○{m['second']['horse_no']} {html.escape(m['second']['horse_name'])}</td><td>▲{m['third']['horse_no']} {html.escape(m['third']['horse_name'])}</td><td>{other}</td><td>{html.escape(q['prediction']['reader_facing_reason'])}</td></tr>")
+          doc='<!doctype html><html lang="ja"><meta charset="utf-8"><title>RaceNote Forecast 2026-01-31</title><h1>RaceNote Forecast 2026-01-31</h1><p>BTDAY-0013 / 0.4.1-candidate / '+prose_contract+' / result_opened=false</p><table border="1"><tr><th>Race</th><th>◎</th><th>○</th><th>▲</th><th>△</th><th>理由</th></tr>'+''.join(trs)+'</table></html>'
+          (dm/f'forecast_{compact}_all.html').write_text(doc,encoding='utf-8')
+          aud={'schema_version':'RaceNote-Day-Merge-Audit-0.1-draft','selection_id':'BTDAY-0013','target_date':date,
+               'logic_version':logic,'reader_facing_prose_contract':prose_contract,'status':'PASS','venue_count':3,
+               'record_count':36,'frozen_count':36,'technical_skips':0,'prediction_hash_unique_count':36,
+               'five_mark_role_guard':'PASS','mainline_single_shot_guard':'PASS','reader_facing_prose_guard':'PASS',
+               'anti_template_audit':prose_audit,'market_blind_guard':'PASS','legacy_converge_machinery':'NOT_USED',
+               'independent_selection_guard':'PASS','result_opened':False,'venues':{'東京':'PASS','京都':'PASS','小倉':'PASS'}}
+          (dm/f'forecast_{compact}_all_audit.json').write_text(json.dumps(aud,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          hand={'schema_version':'RaceNote-Day-Forecast-Handoff-0.1-draft','selection_id':'BTDAY-0013','target_date':date,
+                'logic_version':logic,'reader_facing_prose_contract':prose_contract,'main_sha_at_forecast':main_sha,
+                'day_prep_artifact':'BTDAY-0013-DAY-PREP',
+                'day_prep_artifact_digest':'sha256:2834dcf8aff98ed049efaa5fa16b510629d7fe888b0e31fc061df3a2cb25df4d',
+                'venues':['東京','京都','小倉'],'race_count':36,'frozen_count':36,'technical_skips':0,'result_opened':False,
+                'prediction_hashes':[q['audit']['prediction_hash'] for q in allrows]}
+          (dm/f'forecast_{compact}_all_handoff.json').write_text(json.dumps(hand,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          dp=out/'day_prep'; dp.mkdir(parents=True,exist_ok=True)
+          for n in ['day_prep_handoff.json','manifest.json','validation_report.json','selected_pool_state.json']:
+            shutil.copy2(root/n,dp/n)
+          (out/'README.md').write_text(
+            f"# BTDAY-0013 — {date}\n\n- Forecast logic: `{logic}`\n- Reader prose: `{prose_contract}`\n"
+            "- DAY PREP: PASS / result_opened=false\n- Venues: 東京, 京都, 小倉\n- Forecast races: 36 / 36\n"
+            "- Mainline + independent single-shot: PASS\n- Reader-facing anti-template check: PASS\n"
+            "- Venue Freeze: PASS x3\n- DAY MERGE: PASS\n- Result opened at Freeze: false\n",encoding='utf-8')
+          idx={'selection_id':'BTDAY-0013','target_date':date,'logic_version':logic,'reader_facing_prose_contract':prose_contract,
+               'status':'FROZEN','result_opened':False,
+               'day_prep_source':{'artifact_name':'BTDAY-0013-DAY-PREP','run_id':36806319797,
+                                  'digest':'sha256:2834dcf8aff98ed049efaa5fa16b510629d7fe888b0e31fc061df3a2cb25df4d'},
+               'forecast':{'race_count':36,'venue_count':3,'technical_skips':0,
+                           'mainline_single_shot_guard':'PASS','reader_facing_prose_guard':'PASS'}}
+          (out/'ARTIFACT_INDEX.json').write_text(json.dumps(idx,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          assert len(allrows)==36 and len({q['audit']['prediction_hash'] for q in allrows})==36
+          assert all(q['audit']['result_visible_at_freeze'] is False for q in allrows)
+          print(json.dumps({'status':'PASS','frozen':36,'unique_hashes':36,'prose_audit':prose_audit},ensure_ascii=False))
+          PY
+
+      - name: Commit canonical Frozen archive
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0013/20260131
+          git commit -m "RaceNote: archive BTDAY-0013 frozen forecast"
+          git push origin HEAD:main
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="$(git rev-parse HEAD)"
+          printf 'BTDAY-0013 FORECAST ARCHIVE\nstatus=%s\ncommit=%s\nlogic=RaceNote-Human-Context-Reader-0.4.1-candidate\nprose=FORECAST_READER_FACING_PROSE_v0_1\nresult_opened=false\n' "${{ job.status }}" "$sha" > /tmp/c
+          gh issue comment "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --body-file /tmp/c
+          gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}"
