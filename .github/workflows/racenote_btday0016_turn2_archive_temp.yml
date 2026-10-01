@@ -48,12 +48,12 @@ jobs:
       - name: Report
         run: |
           gh issue comment "${{ github.event.issue.number }}" --body "RACENOTE_BTDAY0016_TURN2_RESULT
-status=FROZEN_CONTAMINATED_MARKET_EXPOSURE
-clean_blind_eligible=false
-result_opened=false
-race_count=36
-technical_skips=0
-anti_template=PASS
-market_blind_guard=FAIL_PRE_FREEZE_MARKET_EXPOSURE_ONE_HORSE
-commit=${{ steps.commit.outputs.sha }}"
+          status=FROZEN_CONTAMINATED_MARKET_EXPOSURE
+          clean_blind_eligible=false
+          result_opened=false
+          race_count=36
+          technical_skips=0
+          anti_template=PASS
+          market_blind_guard=FAIL_PRE_FREEZE_MARKET_EXPOSURE_ONE_HORSE
+          commit=${{ steps.commit.outputs.sha }}"
           gh issue close "${{ github.event.issue.number }}" --reason completed
