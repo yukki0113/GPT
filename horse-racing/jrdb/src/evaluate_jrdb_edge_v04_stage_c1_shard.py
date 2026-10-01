@@ -119,7 +119,6 @@ def main():
     dates=table["race_date"].combine_chunks()
     if not (pa.types.is_string(dates.type) or pa.types.is_large_string(dates.type)):dates=pc.cast(dates,pa.string())
     date_np=np.asarray(pc.fill_null(dates,"0000-00-00").to_numpy(zero_copy_only=False),dtype=str)
-    max_date=dt.date.fromisoformat(max(x for x in date_np if x!="0000-00-00"))
     cuts={365:(max_date-dt.timedelta(days=365)).isoformat(),730:(max_date-dt.timedelta(days=730)).isoformat(),1095:(max_date-dt.timedelta(days=1095)).isoformat()}
     recent={k:date_np>=v for k,v in cuts.items()}
 
