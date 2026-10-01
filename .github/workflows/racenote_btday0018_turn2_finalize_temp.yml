@@ -25,7 +25,7 @@ jobs:
       - name: Restore frozen payload
         run: |
           set -euo pipefail
-          curl -L --fail --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-e598-820b-9218-14a64e82606d/raw?se=2026-10-01T09%3A11%3A17Z&sp=r&sv=2026-02-06&sr=b&scid=f5b149e7-c827-5e99-814f-658c28697e52&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-01T08%3A24%3A40Z&ske=2026-10-02T08%3A24%3A40Z&sks=b&skv=2026-02-06&sig=BIN%2Bd62aOGdDyY6A/DNM/oIotddlJXXG7sO5MmOXfdI%3D' -o /tmp/bt18.zip
+          curl -L --fail --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-9360-820b-b39e-d920ebb7de78/raw?se=2026-10-01T09%3A12%3A45Z&sp=r&sv=2026-02-06&sr=b&scid=54d3b104-4635-5682-a51c-a6a06fa9a15d&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-01T08%3A56%3A25Z&ske=2026-10-02T08%3A56%3A25Z&sks=b&skv=2026-02-06&sig=Nv7kwNP79EEjNqb/zIeq3PgY7d2ifw5D6/gy0plx7U4%3D' -o /tmp/bt18.zip
           python - <<'PY'
           import zipfile
           z=zipfile.ZipFile('/tmp/bt18.zip')
