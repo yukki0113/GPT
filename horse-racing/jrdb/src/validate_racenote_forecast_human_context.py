@@ -7,7 +7,7 @@ import argparse, json, re
 from pathlib import Path
 from typing import Any
 
-VERSION = "racenote-human-context-validator-0.3.0"
+VERSION = "racenote-human-context-validator-0.4.0"
 
 def load_records(path: Path) -> list[dict[str, Any]]:
     if path.suffix.lower() == ".jsonl":
@@ -185,9 +185,51 @@ def validate_record(r: dict[str,Any]) -> list[str]:
     if any(x in combined for x in banned):
         e.append(f"{pre}: generic/numeric selection phrase detected")
 
+    if is_v04:
+        prose=str(p.get("reader_facing_reason") or "").strip()
+        if len(prose) < 45:
+            e.append(f"{pre}: reader_facing_reason too short for race-specific prose")
+        if "\n" in prose:
+            e.append(f"{pre}: reader_facing_reason must be one paragraph")
+        internal_terms=("UPGRADE","DOWNGRADE","CONFIRM","hidden_strength","Next-Watch","DAY PREP","mainline_cases","single_shot_case")
+        if any(x in prose for x in internal_terms):
+            e.append(f"{pre}: reader_facing_reason exposes internal research terminology")
+
     if audit.get("pre_result_guard")!="PASS": e.append(f"{pre}: pre_result_guard must PASS")
     if audit.get("result_visible_at_freeze") is not False: e.append(f"{pre}: result must be hidden")
     return e
+
+def audit_reader_prose(rows:list[dict[str,Any]]) -> tuple[list[str],dict[str,Any]]:
+    errors=[]
+    comments=[str(((r.get("prediction") or {}).get("reader_facing_reason") or "")).strip() for r in rows]
+    comments=[x for x in comments if x]
+    n=len(comments)
+    canned=(
+        "ここでは軸に取る",
+        "相手の中心",
+        "展開が噛み合えば上位へ割り込める",
+        "本線とは違う形で上位へ割り込む余地を取った",
+        "今回条件でも見直せる",
+    )
+    threshold=max(3, (n+3)//4) if n else 3
+    repeated={}
+    for phrase in canned:
+        count=sum(phrase in c for c in comments)
+        if count:
+            repeated[phrase]=count
+        if count >= threshold:
+            errors.append(f"TURN: canned reader-facing phrase repeated too often: {phrase} ({count}/{n})")
+    exact_unique=len(set(comments))
+    if n >= 6 and exact_unique / n < .90:
+        errors.append(f"TURN: reader_facing_reason unique ratio too low ({exact_unique}/{n})")
+    return errors,{
+        "status":"PASS" if not errors else "FAIL",
+        "comment_count":n,
+        "unique_comment_count":exact_unique,
+        "one_paragraph_count":sum("\n" not in c for c in comments),
+        "repeat_threshold":threshold,
+        "repeated_canned_phrases":repeated,
+    }
 
 def audit_turn(rows:list[dict[str,Any]]) -> dict[str,Any]:
     errors=[]
@@ -196,7 +238,9 @@ def audit_turn(rows:list[dict[str,Any]]) -> dict[str,Any]:
     if len(models)>=6:
         ratio=len(set(models))/len(models)
         if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models)})")
-    return {"validator_version":VERSION,"status":"PASS" if not errors else "FAIL","record_count":len(rows),"error_count":len(errors),"errors":errors}
+    prose_errors,anti_template=audit_reader_prose(rows)
+    errors.extend(prose_errors)
+    return {"validator_version":VERSION,"status":"PASS" if not errors else "FAIL","record_count":len(rows),"error_count":len(errors),"errors":errors,"anti_template":anti_template}
 
 def main()->int:
     ap=argparse.ArgumentParser()
