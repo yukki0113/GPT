@@ -36,7 +36,7 @@ function newspaperV5ApplyMarkLayout() {
   if (!table) return;
 
   const groupHead = table.querySelector(".newspaper-mark-group-head");
-  if (groupHead) groupHead.colSpan = 6;
+  if (groupHead) groupHead.colSpan = 5;
 
   const headRow = table.querySelector(".newspaper-mark-head-row");
   if (headRow) {
@@ -50,13 +50,13 @@ function newspaperV5ApplyMarkLayout() {
       iluka: headRow.querySelector(".mark-iluka")
     };
     if (head.training) head.training.remove();
+    if (head.my) head.my.remove();
     if (head.ability) head.ability.textContent = "能力";
-    if (head.my) head.my.textContent = "独自指数";
     if (head.eval) head.eval.textContent = "Eval";
     if (head.jrdb) head.jrdb.textContent = "JRDB";
     if (head.rn) head.rn.textContent = "RN";
     if (head.iluka) head.iluka.textContent = "🐬";
-    for (const cell of [head.ability, head.my, head.eval, head.jrdb, head.rn, head.iluka]) {
+    for (const cell of [head.ability, head.eval, head.jrdb, head.rn, head.iluka]) {
       if (cell) headRow.appendChild(cell);
     }
   }
@@ -79,15 +79,13 @@ function newspaperV5ApplyMarkLayout() {
       iluka: row.querySelector(".mark-iluka")
     };
     if (cells.training) cells.training.remove();
+    if (cells.my) cells.my.remove();
 
     if (cells.ability) {
       const value = ability.idm;
       cells.ability.textContent = value !== null && value !== undefined && value !== ""
         ? number(value)
         : newspaperV5IntrinsicValue(null, "jrdb_base");
-    }
-    if (cells.my) {
-      cells.my.textContent = newspaperV5AddonValue(addons.my_index, "my_index", ["index", "score", "value", "display_value"]);
     }
     if (cells.eval) {
       cells.eval.textContent = newspaperV5AddonValue(addons.eval, "eval", ["eval", "score", "index", "value", "display_value"]);
@@ -112,7 +110,7 @@ function newspaperV5ApplyMarkLayout() {
     }
 
     const anchor = row.querySelector(".newspaper-history-cell") || row.querySelector(".newspaper-edge");
-    for (const cell of [cells.ability, cells.my, cells.eval, cells.jrdb, cells.rn, cells.iluka]) {
+    for (const cell of [cells.ability, cells.eval, cells.jrdb, cells.rn, cells.iluka]) {
       if (cell && anchor) row.insertBefore(cell, anchor);
     }
   });
