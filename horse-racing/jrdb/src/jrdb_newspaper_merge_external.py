@@ -39,6 +39,10 @@ EVAL_ANALYSIS_STATUSES = {"NONE", "WATCH", "MATCH"}
 MY_INDEX_REQUIRED_COLUMNS = {
     "date", "venue_code", "race_no", "horse_no", "training_edge_index",
 }
+RRDB_RECOMMENDATION_REQUIRED_COLUMNS = {
+    "date", "venue_code", "race_no", "race_key", "horse_no", "horse_name",
+    "recommendation_comment", "recommendation_version",
+}
 
 RACENOTE_REQUIRED_COLUMNS = {
     "date", "venue_code", "venue", "race_no", "race_key", "horse_no", "horse_name",
@@ -304,6 +308,68 @@ def load_my_index(
     return index, sha_file(path), value_rows, null_rows
 
 
+
+def load_rrdb_recommendation(
+    path: Path,
+) -> tuple[dict[tuple[str, str, int, int], dict[str, Any]], str]:
+    """Load sparse RRDB reader-facing recommendation comments."""
+    with path.open(encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = set(reader.fieldnames or [])
+        missing = RRDB_RECOMMENDATION_REQUIRED_COLUMNS - fields
+        if missing:
+            raise ValueError(
+                f"RRDB recommendation CSV missing required columns: {sorted(missing)}"
+            )
+        index: dict[tuple[str, str, int, int], dict[str, Any]] = {}
+        for line_no, row in enumerate(reader, start=2):
+            try:
+                date = str(row["date"] or "").strip()
+                venue_code = str(row["venue_code"] or "").strip().zfill(2)
+                race_no = int(str(row["race_no"] or "").strip())
+                horse_no = int(str(row["horse_no"] or "").strip())
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError(
+                    f"invalid RRDB recommendation identity at CSV line {line_no}: {exc}"
+                ) from exc
+            race_key = str(row["race_key"] or "").strip()
+            horse_name = str(row["horse_name"] or "").strip()
+            comment = str(row["recommendation_comment"] or "").strip()
+            version = str(row["recommendation_version"] or "").strip()
+            try:
+                dt.date.fromisoformat(date)
+            except ValueError as exc:
+                raise ValueError(
+                    f"invalid RRDB recommendation date at CSV line {line_no}: {date!r}"
+                ) from exc
+            if (
+                not re.fullmatch(r"\d{2}", venue_code)
+                or not 1 <= race_no <= 12
+                or horse_no < 1
+                or not race_key
+                or not horse_name
+                or not comment
+                or not version
+            ):
+                raise ValueError(
+                    f"invalid RRDB recommendation row at CSV line {line_no}"
+                )
+            key = (date, venue_code, race_no, horse_no)
+            if key in index:
+                raise ValueError(f"duplicate RRDB recommendation key: {key}")
+            index[key] = {
+                "date": date,
+                "venue_code": venue_code,
+                "race_no": race_no,
+                "race_key": race_key,
+                "horse_no": horse_no,
+                "horse_name": horse_name,
+                "recommendation_comment": comment,
+                "recommendation_version": version,
+            }
+    return index, sha_file(path)
+
+
 def load_iluka(path: Path) -> tuple[list[dict[str, Any]], str]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     entries = raw.get("entries") if isinstance(raw, dict) else raw
@@ -543,6 +609,7 @@ def merge_day(
     iluka_json: Path | None = None,
     racenote_csv: Path | None = None,
     my_index_csv: Path | None = None,
+    rrdb_recommendation_csv: Path | None = None,
 ) -> dict[str, Any]:
     if revision < 1:
         raise ValueError("revision must be >= 1")
@@ -579,6 +646,14 @@ def merge_day(
             my_index_null_rows,
         ) = load_my_index(my_index_csv)
 
+    if rrdb_recommendation_csv is None:
+        rrdb_recommendation_index: dict[tuple[str, str, int, int], dict[str, Any]] = {}
+        rrdb_recommendation_sha = None
+    else:
+        rrdb_recommendation_index, rrdb_recommendation_sha = load_rrdb_recommendation(
+            rrdb_recommendation_csv
+        )
+
     iluka_entries, iluka_sha = (
         ([], None) if iluka_json is None else load_iluka(iluka_json)
     )
@@ -599,6 +674,7 @@ def merge_day(
     seen_iluka: set[tuple[str, int, str]] = set()
     seen_rn: set[tuple[str, int, int]] = set()
     seen_rn_races: set[tuple[str, int]] = set()
+    seen_rrdb_recommendation: set[tuple[str, str, int, int]] = set()
     race_paths: dict[str, Path] = {}
     per_race: list[dict[str, Any]] = []
 
@@ -623,6 +699,7 @@ def merge_day(
         eval_race_status_counts = {"NONE": 0, "WATCH": 0, "MATCH": 0}
         iluka_merged = 0
         rn_merged = 0
+        rrdb_recommendation_merged = 0
         rn_comments = 0
 
         rn_meta = (
@@ -728,6 +805,29 @@ def merge_day(
                     seen_iluka.add(key)
                     iluka_merged += 1
 
+
+            if rrdb_recommendation_csv is not None:
+                rrdb_key = (race_date, venue_code, race_no, horse_no)
+                rrdb_row = rrdb_recommendation_index.get(rrdb_key)
+                if rrdb_row is not None:
+                    if rrdb_row["horse_name"] != horse_name:
+                        raise ValueError(
+                            f"RRDB recommendation horse-name mismatch for {rrdb_key}: "
+                            f"{rrdb_row['horse_name']!r} != {horse_name!r}"
+                        )
+                    if rrdb_row["race_key"] != race_key:
+                        raise ValueError(
+                            f"RRDB recommendation race identity mismatch for {rrdb_key}"
+                        )
+                    horse["addons"]["rrdb_recommendation"] = {
+                        "comment": rrdb_row["recommendation_comment"],
+                        "source": "RaceReviewDB",
+                        "source_date": rrdb_row["date"],
+                        "version": rrdb_row["recommendation_version"],
+                    }
+                    seen_rrdb_recommendation.add(rrdb_key)
+                    rrdb_recommendation_merged += 1
+
             if racenote_csv is not None:
                 key = (venue_code, race_no, horse_no)
                 row = rn_index.get(key)
@@ -771,6 +871,23 @@ def merge_day(
                 seen_rn.add(key)
                 rn_merged += 1
 
+
+        if rrdb_recommendation_csv is not None:
+            expected_rrdb = sum(
+                key[0] == race_date and key[1] == venue_code and key[2] == race_no
+                for key in rrdb_recommendation_index
+            )
+            status["rrdb_recommendation"] = _source_state(
+                version=rrdb_recommendation_csv.name,
+                generated_at=now,
+                sha=rrdb_recommendation_sha,
+                message=(
+                    f"targeted={expected_rrdb} merged={rrdb_recommendation_merged}"
+                ),
+                expected=expected_rrdb,
+                resolved=rrdb_recommendation_merged,
+                complete=expected_rrdb == rrdb_recommendation_merged,
+            )
         if rn_meta is not None:
             bundle.setdefault("race_notes", {}).setdefault("items", [])
             bundle["race_notes"]["racenote_short_comment"] = rn_meta[
@@ -864,6 +981,7 @@ def merge_day(
             "keibailuka_merged": iluka_merged,
             "racenote_merged": rn_merged,
             "racenote_horse_comments": rn_comments,
+            "rrdb_recommendation_merged": rrdb_recommendation_merged,
         })
 
     if eval_csv is not None and set(eval_index) != seen_eval:
@@ -876,6 +994,13 @@ def merge_day(
         extra = sorted(set(my_index_index) - seen_my_index)
         raise ValueError(
             f"Training Edge rows not consumed: count={len(extra)} "
+            f"sample={extra[:5]}"
+        )
+
+    if rrdb_recommendation_csv is not None and set(rrdb_recommendation_index) != seen_rrdb_recommendation:
+        extra = sorted(set(rrdb_recommendation_index) - seen_rrdb_recommendation)
+        raise ValueError(
+            f"RRDB recommendation rows not consumed: count={len(extra)} "
             f"sample={extra[:5]}"
         )
     if racenote_csv is not None and set(rn_index) != seen_rn:
@@ -937,6 +1062,22 @@ def merge_day(
                 f"targeted={len(iluka_entries)} "
                 f"merged={len(seen_iluka)} "
                 f"unmatched={len(unmatched)}"
+            ),
+        }
+
+    if rrdb_recommendation_csv is not None:
+        versions = sorted({
+            row["recommendation_version"]
+            for row in rrdb_recommendation_index.values()
+        })
+        manifest["source_status"]["rrdb_recommendation"] = {
+            "state": "READY",
+            "source_version": ",".join(versions),
+            "generated_at": now,
+            "message": (
+                f"targeted={len(rrdb_recommendation_index)} "
+                f"merged={len(seen_rrdb_recommendation)} "
+                f"handoff={rrdb_recommendation_csv.name}"
             ),
         }
     if racenote_csv is not None:
@@ -1015,6 +1156,21 @@ def merge_day(
             "unmatched": 0,
         }
 
+
+    rrdb_recommendation_result = None
+    if rrdb_recommendation_csv is not None:
+        rrdb_recommendation_result = {
+            "source_file": rrdb_recommendation_csv.name,
+            "sha256": rrdb_recommendation_sha,
+            "targeted": len(rrdb_recommendation_index),
+            "merged": len(seen_rrdb_recommendation),
+            "unmatched": 0,
+            "versions": sorted({
+                row["recommendation_version"]
+                for row in rrdb_recommendation_index.values()
+            }),
+        }
+
     rn_result = None
     if racenote_csv is not None:
         extension = any(
@@ -1075,6 +1231,7 @@ def merge_day(
             }
         ),
         "racenote_prediction": rn_result,
+        "rrdb_recommendation": rrdb_recommendation_result,
         "per_race": per_race,
     }
     result["day_package"] = write_day_package(
@@ -1094,6 +1251,7 @@ def main() -> int:
     parser.add_argument("--keibailuka-json", type=Path)
     parser.add_argument("--racenote-csv", type=Path)
     parser.add_argument("--my-index-csv", type=Path)
+    parser.add_argument("--rrdb-recommendation-csv", type=Path)
     parser.add_argument("--revision", type=int, required=True)
     args = parser.parse_args()
     print(json.dumps(
@@ -1109,6 +1267,7 @@ def main() -> int:
             ),
             racenote_csv=args.racenote_csv,
             my_index_csv=args.my_index_csv,
+            rrdb_recommendation_csv=args.rrdb_recommendation_csv,
         ),
         ensure_ascii=False,
     ))
