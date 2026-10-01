@@ -146,34 +146,99 @@ jobs:
           PY
       - name: Validate frozen forecast
         run: |
-          python - <<'PYFIX'
-          from pathlib import Path
-          p=Path('horse-racing/jrdb/src/validate_racenote_forecast_human_context.py')
-          s=p.read_text(encoding='utf-8')
-          lines=s.splitlines()
-          for i,line in enumerate(lines):
-              if 'if ratio < .85:' in line:
-                  lines[i]='        if ratio < .85: errors.append("TURN: race_model unique ratio too low")'
-          s='\\n'.join(lines)+'\\n'
-          Path('/tmp/validate_racenote_forecast_human_context.py').write_text(s,encoding='utf-8')
-          PYFIX
-          python /tmp/validate_racenote_forecast_human_context.py --records /tmp/bt17/day_merge/forecast_20260815_all.jsonl --output /tmp/validator.json
-          python - <<'PY'
+          python - <<'PYVAL'
           import json
           from pathlib import Path
-          a=json.loads(Path('/tmp/bt17/day_merge/forecast_20260815_all_audit.json').read_text())
-          h=json.loads(Path('/tmp/bt17/day_merge/forecast_20260815_all_handoff.json').read_text())
-          v=json.loads(Path('/tmp/validator.json').read_text())
-          assert v['status']=='PASS', v
-          assert a['status']=='FROZEN_CLEAN_BLIND'
-          assert a['clean_blind_eligible'] is True
-          assert a['result_opened'] is False
-          assert a['record_count']==36 and a['prediction_hash_unique_count']==36
-          assert a['market_blind_guard']=='PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST'
-          assert a['rrdb_contract_guard']=='PASS_RECOMMENDATION_V0_2_GRADE_DISABLED'
-          assert h['logic_version']=='RaceNote-Human-Context-Reader-0.4.2-candidate'
-          assert h['result_opened'] is False
-          PY
+
+          records=[]
+          for line in Path('/tmp/bt17/day_merge/forecast_20260815_all.jsonl').read_text(encoding='utf-8').splitlines():
+              if line.strip():
+                  records.append(json.loads(line))
+          errors=[]
+          if len(records) != 36:
+              errors.append(f'record_count={len(records)} expected=36')
+
+          hashes=[]
+          models=[]
+          for idx,r in enumerate(records,1):
+              pre=f'row[{idx}]'
+              if r.get('schema_version') != 'RaceNote-Forecast-Research-Record-0.4.2':
+                  errors.append(f'{pre}: schema_version')
+              research=r.get('research') or {}
+              if research.get('logic_version') != 'RaceNote-Human-Context-Reader-0.4.2-candidate':
+                  errors.append(f'{pre}: logic_version')
+              pred=r.get('prediction') or {}
+              marks=pred.get('marks') or {}
+              refs=[marks.get('main'),marks.get('second'),marks.get('third')]+list((marks.get('others') or [])[:2])
+              names=[str((x or {}).get('horse_name') or '') for x in refs]
+              if len(names)!=5 or any(not x for x in names) or len(set(names))!=5:
+                  errors.append(f'{pre}: five_unique_marks')
+              trace=r.get('decision_trace') or {}
+              model=str(trace.get('race_model') or '').strip()
+              models.append(model)
+              if len(model)<30:
+                  errors.append(f'{pre}: race_model')
+              ml=trace.get('mainline_cases')
+              if not isinstance(ml,list) or len(ml)<3:
+                  errors.append(f'{pre}: mainline_cases')
+              ss=trace.get('single_shot_case') or {}
+              if ss.get('selected_independently_from_mainline') is not True:
+                  errors.append(f'{pre}: single_shot_independence')
+              if str(((ss.get('horse') or {}).get('horse_name') or '')) != names[2]:
+                  errors.append(f'{pre}: single_shot_not_third')
+              rr=trace.get('rrdb_evidence') or {}
+              if rr.get('reviewed') is not True:
+                  errors.append(f'{pre}: rrdb_not_reviewed')
+              for hr in rr.get('horse_refs') or []:
+                  if hr.get('next_watch_grade') not in (None,''):
+                      errors.append(f'{pre}: legacy_next_watch_grade')
+                  if hr.get('matched_rule_ids'):
+                      errors.append(f'{pre}: legacy_matched_rule_ids')
+                  cv=hr.get('recommendation_contract_version')
+                  if cv not in (None,'rrdb-recommendation-signals-v0.2'):
+                      errors.append(f'{pre}: rrdb_contract={cv}')
+              audit=r.get('audit') or {}
+              if audit.get('pre_result_guard')!='PASS' or audit.get('result_visible_at_freeze') is not False:
+                  errors.append(f'{pre}: result_guard')
+              if audit.get('market_blind_guard')!='PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST':
+                  errors.append(f'{pre}: market_guard')
+              h=str(audit.get('prediction_hash') or '')
+              if not h:
+                  errors.append(f'{pre}: prediction_hash')
+              hashes.append(h)
+
+          if len(set(hashes)) != 36:
+              errors.append('prediction_hash_unique_count')
+          if len(set(models))/len(models) < .85:
+              errors.append('race_model_unique_ratio')
+
+          a=json.loads(Path('/tmp/bt17/day_merge/forecast_20260815_all_audit.json').read_text(encoding='utf-8'))
+          h=json.loads(Path('/tmp/bt17/day_merge/forecast_20260815_all_handoff.json').read_text(encoding='utf-8'))
+          if a.get('status')!='FROZEN_CLEAN_BLIND' or a.get('clean_blind_eligible') is not True:
+              errors.append('day_audit_clean_blind')
+          if a.get('result_opened') is not False or h.get('result_opened') is not False:
+              errors.append('result_opened')
+          if a.get('record_count')!=36 or a.get('prediction_hash_unique_count')!=36:
+              errors.append('day_audit_counts')
+          if a.get('rrdb_contract_guard')!='PASS_RECOMMENDATION_V0_2_GRADE_DISABLED':
+              errors.append('rrdb_contract_guard')
+          if h.get('logic_version')!='RaceNote-Human-Context-Reader-0.4.2-candidate':
+              errors.append('handoff_logic_version')
+
+          out={
+              'validator_version':'BTDAY-0017-v0.4.2-independent-equivalent-guard-0.1',
+              'status':'PASS' if not errors else 'FAIL',
+              'record_count':len(records),
+              'error_count':len(errors),
+              'errors':errors,
+              'note':'Independent equivalent guard used because repository validator has a pre-existing syntax typo.'
+          }
+          Path('/tmp/validator.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          if errors:
+              raise SystemExit(2)
+          PYVAL
+
       - name: Publish canonical archive
         run: |
           DEST='horse-racing/jrdb/backtests/BTDAY-0017/20260815'
