@@ -78,6 +78,18 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn(".mark-jrdb", css)
         self.assertIn("width: 38px", css)
 
+    def test_personal_day_summary_keeps_only_requested_external_states(self) -> None:
+        script = (PWA_ROOT / "newspaper-v10.js").read_text(encoding="utf-8")
+        html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
+
+        self.assertIn('./newspaper-v10.js?v=3', html)
+        self.assertIn('Eval○', script)
+        self.assertIn('🐬○', script)
+        self.assertIn('Edge○', script)
+        self.assertNotIn('RN○', script)
+        self.assertNotIn('指数○', script)
+        self.assertIn('${value.manifest.date} / ${count}R / ${evalState} / ${ilukaState} / ${edgeState}', script)
+
     def test_personal_history_selector_remains_3_5_8(self) -> None:
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
         script = (PWA_ROOT / "newspaper.js").read_text(encoding="utf-8")
@@ -155,7 +167,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v69"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v70"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
         self.assertIn('"./newspaper-v4.css?v=9"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=8"', service_worker)
