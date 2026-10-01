@@ -227,3 +227,13 @@ The handoff is sparse and contains only matched target-horse identity plus one
 RRDB-generated short comment and contract version. Newspaper/PWA must not expose
 internal signal IDs, signal counts, raw strength JSON, or S/A grades.
 
+Reader-facing canonical phrases are intentionally concise:
+- 前走時計はクラス水準より上。
+- 前傾ラップ戦を前で受け、勝ち馬と僅差まで踏ん張った。
+- 後傾ラップ戦も後方から上位の上がりは使った。
+- 敗戦でもタイムは水準以上。
+
+PWA presentation reuses the existing RaceNote mark cell. Keep an existing
+RaceNote mark; if none exists, show 注. In either case the mark opens the modal
+containing the RRDB short comment.
+
