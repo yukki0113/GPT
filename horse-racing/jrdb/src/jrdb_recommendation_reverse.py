@@ -24,7 +24,7 @@ from jrdb_recommendation_signals import (
     recommendation_payload,
 )
 
-VERSION = "rrdb-recommendation-reverse-v0.2"
+VERSION = "rrdb-recommendation-reverse-v0.3"
 
 
 class RecommendationReverseError(RuntimeError):
