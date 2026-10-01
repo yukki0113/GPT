@@ -1,0 +1,67 @@
+name: JRDB SKB 2026 backfill one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/jrdb_skb_2026_backfill_oneshot.yml'
+permissions:
+  contents: read
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch 2026 SKB through 2026-09-26
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/skb
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-date 20260101 \
+            --to-date 20260926 \
+            --kinds SKB \
+            --output-dir /tmp/skb \
+            --manifest /tmp/skb/fetch_manifest.jsonl \
+            --sleep-seconds 0.5 \
+            --continue-on-error
+      - name: Validate discovered SKB ZIPs
+        run: |
+          python - <<'PY'
+          import hashlib, json, zipfile
+          from collections import Counter
+          from pathlib import Path
+          root=Path('/tmp/skb')
+          manifest=[json.loads(x) for x in (root/'fetch_manifest.jsonl').read_text(encoding='utf-8').splitlines() if x.strip()]
+          counts=Counter(r.get('status') for r in manifest)
+          files=sorted((root/'SKB').glob('SKB26*.zip'))
+          if not files:
+              raise SystemExit('no 2026 SKB daily/periodic ZIPs were discovered')
+          rows=[]
+          for p in files:
+              if not zipfile.is_zipfile(p):
+                  raise SystemExit(f'invalid zip: {p}')
+              with zipfile.ZipFile(p) as z:
+                  bad=z.testzip()
+                  if bad:
+                      raise SystemExit(f'corrupt member: {p.name}!{bad}')
+                  members=[n for n in z.namelist() if not n.endswith('/')]
+                  if not any(Path(n).name.upper().startswith('SKB') for n in members):
+                      raise SystemExit(f'no SKB member in {p.name}')
+              rows.append({'file_name':p.name,'size_bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          report={'status':'success','range':['2026-01-01','2026-09-26'],'fetch_status_counts':dict(counts),'downloaded_file_count':len(rows),'files':rows}
+          (root/'backfill_validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-skb-2026-backfill-through-0926
+          path: /tmp/skb/
+          retention-days: 7
+          compression-level: 0
