@@ -150,7 +150,11 @@ jobs:
           from pathlib import Path
           p=Path('horse-racing/jrdb/src/validate_racenote_forecast_human_context.py')
           s=p.read_text(encoding='utf-8')
-          s=s.replace('if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models))})")','if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models))}")')
+          lines=s.splitlines()
+          for i,line in enumerate(lines):
+              if 'if ratio < .85:' in line:
+                  lines[i]='        if ratio < .85: errors.append("TURN: race_model unique ratio too low")'
+          s='\\n'.join(lines)+'\\n'
           Path('/tmp/validate_racenote_forecast_human_context.py').write_text(s,encoding='utf-8')
           PYFIX
           python /tmp/validate_racenote_forecast_human_context.py --records /tmp/bt17/day_merge/forecast_20260815_all.jsonl --output /tmp/validator.json
