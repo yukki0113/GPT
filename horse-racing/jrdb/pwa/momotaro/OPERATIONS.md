@@ -127,7 +127,7 @@ RaceNoteの当日予想を、そのままけんしょー予想として扱う。
 - RaceNote印 → `addons.momotaro.kenshow.mark`
 - RaceNote confidence → `addons.momotaro.kenshow.confidence`
 - RaceNote単馬短評 → `addons.momotaro.kenshow.comment`
-- RaceNoteレース短評 → `race_notes.momotaro_comments.kenshow`
+- RaceNoteレース短評 → `race_notes.momotaro_comments.kenshow`（個人PWAでも独立RaceNote短評欄は持たず、けんしょーの「短評」欄へ表示）
 - tagは `RaceNote`
 
 新聞ではRaceNote印を「けん」列に表示する。
@@ -147,7 +147,9 @@ RRDB推薦に該当した馬は、けんしょーの注目馬提出として扱�
 RaceNoteとRRDBが同一馬に重なった場合:
 
 - 印・confidenceはRaceNoteを使用
-- 単馬短評はRaceNote短評とRRDBコメントの両方を保持
+- 新聞のけん列はRaceNote印をそのままモーダル化する
+- RaceNote印が無いRRDB該当馬は「注」を表示してモーダル化する
+- RRDB該当時のモーダル本文はRRDBコメントだけを表示する
 - tagは `RaceNote / RRDB`
 - RRDB該当なので `review_horse=true`
 
