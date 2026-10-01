@@ -48,7 +48,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - JRDBコード値のreader-facing表示はマスタ定義を参照し、内部codeを説明なしで通常表示へ露出しない。
 
 ## Common JRDB Raw Reader
-- `src/jrdb_raw.py` を BAC / KYI / CHA / CYB / SED / SKB / ZED / ZKB / UKC の固定長解釈の正本とする。
+- `src/jrdb_raw.py` を BAC / KYI / CHA / CYB / SED / SKB / ZED / ZKB / HJC / UKC の固定長解釈の正本とする。
 - CP932 decode、fixed byte offset、race key / race-horse key / result key、record-length auditはCommon Readerが担当する。
 - RaceNote / Eval / Analysis / PWA / Edge は consumer adapter で既存schema・label・集計・as-of policyへ投影し、Common Reader対応fieldのbyte offsetを重複実装しない。
 - 新しいRaw fieldが必要な場合はconsumerへ直接sliceを追加せず、Common Readerへfieldとcharacterization testを追加してから利用する。
