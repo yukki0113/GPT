@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Canonical RaceReviewDB recommendation signals v0.2.
+"""Canonical RaceReviewDB recommendation signals v0.3.
 
 This module is the current operational recommendation contract after the
 2024-2025 Historical OOS and strength/monotonicity studies.
@@ -14,11 +14,14 @@ from __future__ import annotations
 from collections.abc import Mapping
 import math
 
-VERSION = "rrdb-recommendation-signals-v0.2"
+VERSION = "rrdb-recommendation-signals-v0.3"
 OPERATIONAL_LOOKBACK_DAYS = 730
 
 # Frozen from the accepted pre-OOS / OOS research contracts.
 PERFORMANCE_Q80 = -0.09305555555555287
+# Operational Q85 is frozen from the 2026-08〜09 fine-band study for the v0.3
+# recommendation cutover. It is a serving threshold, not a universal strength grade.
+PERFORMANCE_Q85 = 0.03422932330827132
 PERFORMANCE_Q90 = 0.16777149321267684
 PERFORMANCE_Q95_PRE_OOS = 0.3612475482
 
@@ -46,16 +49,14 @@ SIGNAL_ORDER = (
     "TIME_CLASS_PLUS1",
     "FRONT_SURVIVE_GAP05",
     "REAR_HIGH_LAST3F90",
-    "HV01",
-    "HV02",
+    "HV02_Q85_Q90",
 )
 
 SIGNAL_LABELS = {
     "TIME_CLASS_PLUS1": "上位クラス時計",
     "FRONT_SURVIVE_GAP05": "前傾前受け耐性",
     "REAR_HIGH_LAST3F90": "後傾差し逆行",
-    "HV01": "着順以上のタイム内容",
-    "HV02": "大敗着順以上のタイム内容",
+    "HV02_Q85_Q90": "大敗着順以上のタイム内容",
 }
 
 
@@ -105,8 +106,10 @@ def performance_band(value: float | None) -> str | None:
         return "Q95_PLUS"
     if value >= PERFORMANCE_Q90:
         return "Q90_Q95"
+    if value >= PERFORMANCE_Q85:
+        return "Q85_Q90"
     if value >= PERFORMANCE_Q80:
-        return "Q80_Q90"
+        return "Q80_Q85"
     return "BELOW_Q80"
 
 
@@ -144,11 +147,13 @@ def matched_signals(row: Mapping[str, object]) -> list[str]:
     ):
         matched.append("REAR_HIGH_LAST3F90")
 
-    if finish is not None and perf is not None:
-        if finish >= 4 and perf >= PERFORMANCE_Q80:
-            matched.append("HV01")
-        if finish >= 6 and perf >= PERFORMANCE_Q80:
-            matched.append("HV02")
+    if (
+        finish is not None
+        and finish >= 6
+        and perf is not None
+        and PERFORMANCE_Q85 <= perf < PERFORMANCE_Q90
+    ):
+        matched.append("HV02_Q85_Q90")
 
     return [signal for signal in SIGNAL_ORDER if signal in matched]
 
@@ -176,7 +181,7 @@ def signal_strength(signal_id: str, row: Mapping[str, object]) -> dict[str, obje
             "pace_balance_percentile": _finite(row.get("pace_balance_percentile")),
             "corner4_frontness": _finite(row.get("corner4_frontness")),
         }
-    if signal_id in {"HV01", "HV02"}:
+    if signal_id == "HV02_Q85_Q90":
         return {
             "performance_signal": perf,
             "performance_band": performance_band(perf),
@@ -228,10 +233,10 @@ def newspaper_comment(row: Mapping[str, object]) -> str | None:
     if "REAR_HIGH_LAST3F90" in ids:
         phrases.append("後傾ラップ戦も後方から上位の上がりは使った。")
 
-    # HV01/HV02 are hierarchical and share the same reader-facing meaning.
-    # When TIME_CLASS already supplies a stronger absolute-time statement,
-    # avoid repeating a second near-synonymous time sentence.
-    if ("HV01" in ids or "HV02" in ids) and "TIME_CLASS_PLUS1" not in ids:
+    # The operational HV signal is the narrowed HV02 Q85–Q90 band. When
+    # TIME_CLASS already supplies a stronger absolute-time statement, avoid
+    # repeating a second near-synonymous time sentence.
+    if "HV02_Q85_Q90" in ids and "TIME_CLASS_PLUS1" not in ids:
         phrases.append("敗戦でもタイムは水準以上。")
 
     return "".join(phrases)
@@ -265,7 +270,7 @@ def human_summary(row: Mapping[str, object]) -> str | None:
                 if isinstance(pct, float)
                 else "後傾後方から強い上がり"
             )
-        elif signal_id in {"HV01", "HV02"}:
+        elif signal_id == "HV02_Q85_Q90":
             band = strength.get("performance_band")
             finish = strength.get("source_finish")
             phrases.append(f"{finish}着から補正タイム{band}" if finish else f"補正タイム{band}")
