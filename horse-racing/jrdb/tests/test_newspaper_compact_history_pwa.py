@@ -31,6 +31,26 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn('./newspaper-v4.js?v=8', html)
         self.assertIn('./newspaper-v6.js?v=2', html)
 
+    def test_personal_surface_merges_momotaro_public_companion(self) -> None:
+        html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
+        day = (PWA_ROOT / "newspaper-day.js").read_text(encoding="utf-8")
+        overlay = (PWA_ROOT / "newspaper-momotaro.js").read_text(encoding="utf-8")
+        watchlist = (PWA_ROOT / "watchlist.html").read_text(encoding="utf-8")
+
+        self.assertIn('newspaperCompanionBase: "./momotaro/data/newspaper/current/"', html)
+        self.assertIn('./newspaper-day.js?v=5', html)
+        self.assertIn('./newspaper-momotaro.js?v=1', html)
+        self.assertIn("function mergeNewspaperCompanion", day)
+        self.assertIn("horse.addons.momotaro = companionAddons.momotaro", day)
+        self.assertIn("momotaro_comments", day)
+        self.assertIn('groupHead.colSpan = 9', overlay)
+        self.assertIn('short: "りょ"', overlay)
+        self.assertIn('short: "王子"', overlay)
+        self.assertIn('short: "けん"', overlay)
+        self.assertIn('桃太郎短評', overlay)
+        self.assertIn('predictionCurrentBase: "./momotaro/data/newspaper/current/"', watchlist)
+        self.assertIn('data-filter="keibailuka">🐬</button>', watchlist)
+
     def test_personal_history_selector_remains_3_5_8(self) -> None:
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
         script = (PWA_ROOT / "newspaper.js").read_text(encoding="utf-8")
@@ -108,7 +128,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v65"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v66"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
         self.assertIn('"./newspaper-v4.css?v=9"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=8"', service_worker)
