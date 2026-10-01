@@ -1,0 +1,22 @@
+{
+  "status": "FROZEN_CLEAN_BLIND",
+  "clean_blind_eligible": true,
+  "result_opened": false,
+  "record_count": 36,
+  "frozen_count": 36,
+  "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+  "prediction_hash_unique_count": 36,
+  "five_mark_role_guard": "PASS",
+  "mainline_single_shot_guard": "PASS",
+  "reader_facing_prose_guard": "PASS",
+  "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+  "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+  "anti_template": {
+    "status": "PASS",
+    "comment_count": 36,
+    "unique_comment_count": 36,
+    "one_paragraph_count": 36,
+    "repeat_threshold": 9,
+    "repeated_canned_phrases": {}
+  }
+}
