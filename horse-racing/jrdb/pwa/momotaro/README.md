@@ -43,7 +43,7 @@ Kenshow_Labo PWAと同じGitHub Pages artifact内に配置する、独立した�
 ## Surfaces
 
 - `newspaper.html`: 既存Newspaper runtimeを共有、過去走5走固定、共有compact historyを使用、桃太郎3人欄を追加
-- `predictions.html`: りょーたS / 王子 / イルカの一覧。けんしょーの暫定JRDB印は掲載しない。
+- `predictions.html`: りょーた / 王子 / けんしょー / 🐬 の注目馬一覧。けんしょーはRaceNote/RRDB由来を掲載する。
 - `fact-lite.html`: 既存Fact Lite runtimeと配布SQLiteを共有、OPFSだけ桃太郎専用
 
 
@@ -110,8 +110,34 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 
 - りょーた: 各Rの通常印は新聞列へ表示。特注馬は review_horse=true + comment としてリンク化し、予想一覧にも掲載する。
 - おーじ: 回顧該当馬のみ review_horse=true + comment として、🐬と同様に新聞リンク + 予想一覧へ掲載する。
-- けんしょー: RaceNote完成まで、JRDB総合印の ◎ / ○ / ▲ / 注 だけを新聞のけん列へ暫定転記する。短評・モーダル・予想一覧には出さない。
+- けんしょー: RaceNote/RRDBを正本とする。RaceNoteの印をけん印、RaceNote単馬短評とRRDB推薦コメントをけんしょーコメント、RRDB該当馬を注目馬として扱う。RaceNoteレース短評はけんしょーのレース短評として扱う。
 
+
+## けんしょー = RaceNote / RRDB 運用
+
+けんしょーはKenshow_Labo利用者本人であり、今後はRaceNote/RRDBをけんしょー提出の正本とする。
+
+自動変換:
+
+- `addons.racenote_prediction.mark` → `addons.momotaro.kenshow.mark`
+- `addons.racenote_prediction.confidence` → `addons.momotaro.kenshow.confidence`
+- `addons.racenote_prediction.horse_short_comment` → けんしょー単馬コメント
+- `addons.rrdb_recommendation.comment` → けんしょー注目馬コメント
+- RRDB該当馬 → `review_horse=true`
+- `race_notes.racenote_short_comment` → `race_notes.momotaro_comments.kenshow`
+
+RaceNote単馬短評とRRDBコメントが同一馬にある場合は両方を保持する。
+明示的な `momotaro.kenshow` 手動入力がある場合は自動値より手動値を優先する。
+`tag=手動無印` は印を明示的に空にする。
+
+JRDB総合印をけんしょー印として代用する旧暫定仕様は廃止する。
+
+反映surface:
+
+- 桃太郎新聞の「けん」列・短評
+- 桃太郎新聞の注目馬一覧
+- 個人PWA新聞の「けん」列・桃太郎短評
+- 個人PWAの注目馬一覧
 
 ## 表示方針
 
