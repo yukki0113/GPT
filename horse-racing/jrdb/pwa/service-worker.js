@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v64";
+const CACHE_NAME = "jrdb-pwa-shell-v65";
 const APP_SHELL = [
   "./",
   "./index.html",
