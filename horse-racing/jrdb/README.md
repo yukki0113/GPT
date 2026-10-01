@@ -39,6 +39,21 @@
 | 開催後Analysis/Mart更新 | `docs/README_post_race_analysis_mart_refresh.md` |
 | PWA / 条件別集計 / Newspaper表示運用 | `pwa/.gpt/HANDOFF.md` + `pwa/README.md` |
 
+## Daily Raw acquisition
+
+2026 current-operation raw acquisition is defined in:
+
+- `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`
+
+Normal user-facing commands:
+
+- `mmddの開催前取得をお願いします` -> target PACI + missing SKB from the immediately preceding JRA race week
+- `mmdd〜mmddの開催後取得をお願いします` -> SED + HJC for each requested race date
+
+SKB is intentionally excluded from immediate post-race acquisition and is recovered on the following pre-race cycle after checking canonical Drive inventory.
+
+Authenticated JRDB acquisition remains GitHub Actions-native; Drive publication is performed only through the connected native Google Drive connector after artifact validation.
+
 ## Source of truth
 
 正本は用途ごとに分離します。
