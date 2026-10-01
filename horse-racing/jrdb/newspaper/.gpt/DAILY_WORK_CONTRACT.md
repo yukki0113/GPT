@@ -340,3 +340,14 @@ internal signal IDs/strength JSON, or generate S/A grades.
 
 Detailed contract:
 `../../docs/RaceReviewDB_Newspaper_Handoff_v0_1.md`
+
+
+#### PWA表示規約
+
+RRDB推奨は独立した印列を新設しない。
+
+- RaceNote印が既にある対象馬: その印を維持してモーダル化する。
+- RaceNote印がない対象馬: `注` を表示してモーダル化する。
+- RaceNote単馬短評がある場合: 消さずに同一モーダルへRRDB短評を併記する。
+- RRDB内部のsignal ID / strength / S-A gradeはPWAへ表示しない。
+
