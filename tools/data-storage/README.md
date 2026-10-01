@@ -2,6 +2,8 @@
 
 Project-neutral conversion, validation, query, benchmark, and immutable-asset materialization utilities shared by `horse-racing`, `local-horse-racing`, and `boat-racing`.
 
+GPT / Work運用上は、このpackageをrepository共通の **汎用CRUD / Data Storage Tool** として扱う。Parquet / DuckDB taskで現在のPython環境に依存が無い場合も、即座に「実行環境なし」で停止せず、このpackageのbootstrap / dependency checkを先に行う。
+
 The durable analytical data is Parquet. DuckDB is used as an in-process query engine and does not require a persistent `.duckdb` file. Project-specific columns, keys, partitions, and validation rules belong in each project's YAML config, not in this package.
 
 ## Supported scope
@@ -20,14 +22,29 @@ The durable analytical data is Parquet. DuckDB is used as an in-process query en
 
 Parquet is not an operational-database replacement. Keep SQLite where transactions, frequent updates, constraints, or indexed point lookups dominate. Use this package for rebuilt/append-oriented warehouse and mart datasets.
 
-## Install
+## Runtime bootstrap / Install
 
-From the repository root:
+From the repository root, reuse the dedicated environment when possible:
 
 ```bash
-python -m venv .venv-data-storage
-.venv-data-storage/bin/python -m pip install -r tools/data-storage/requirements.txt
+if [ ! -x .venv-data-storage/bin/python ]; then
+  python -m venv .venv-data-storage
+  .venv-data-storage/bin/python -m pip install -r tools/data-storage/requirements.txt
+fi
+
+PYTHONPATH=tools/data-storage \
+  .venv-data-storage/bin/python -m data_storage check-deps
 ```
+
+If the environment exists but `check-deps` reports `DEPENDENCY_MISSING`, install/repair from the pinned requirements and run the check again:
+
+```bash
+.venv-data-storage/bin/python -m pip install -r tools/data-storage/requirements.txt
+PYTHONPATH=tools/data-storage \
+  .venv-data-storage/bin/python -m data_storage check-deps
+```
+
+Do not reinstall dependencies on every task when the existing environment already passes `check-deps`. Only report the task as blocked when environment creation or dependency installation itself is unavailable/fails.
 
 DuckDB is pinned to `1.1.3`. Newer wheels must be separately qualified on all execution CPUs before the pin is raised.
 
@@ -37,7 +54,7 @@ Set the package root once:
 
 ```bash
 export PYTHONPATH="$PWD/tools/data-storage"
-python -m data_storage check-deps
+.venv-data-storage/bin/python -m data_storage check-deps
 ```
 
 Direct SQLite conversion:

@@ -8,7 +8,7 @@
 
 - **A: Read / Audit** — repository/file/commit/issue/workflow/result/artifact metadata/SHA/diff/main状態の確認。GitHub read/search/fetchを直接使い、Issueを作らない。
 - **B: Git Change** — source/test/docs/config/workflow等のUTF-8テキスト変更。最新main、対象path、現内容を確認後、GitHub contents API相当のdirect create/update/deleteでmainへ直接commitする。`[gpt-git-update]` は標準経路としない。
-- **C: Pure Deterministic Execution** — GitHub mainの既存Python/ロジックを、入力がChat/ローカルにあり、Secrets・特別なActions環境・長時間/大容量処理・immutable artifact監査が不要な場合にChat/ローカルで直接実行する。
+- **C: Pure Deterministic Execution** — GitHub mainの既存Python/ロジックを、入力がChat/ローカルにあり、Secrets・特別なActions環境・長時間/大容量処理・immutable artifact監査が不要な場合にChat/ローカルで直接実行する。Parquet / DuckDBが必要な場合はrepository共通 `tools/data-storage/` を標準実行基盤として使用する。
 - **D: Actions-Native Execution** — Secrets、Actions artifact chain、長時間/大容量、runner固有依存、immutable freeze、監査run、scheduled/third-party reproducibility等が必要な処理。既存Issue/Actions経路を維持する。
 
 A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選んだ場合のみ、ルート `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / retry規約を適用する。

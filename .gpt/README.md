@@ -53,11 +53,33 @@ Secrets、Actions固有権限、artifact chain、長時間runner、immutable fre
 
 対象例:
 
-- CSV / JSON整形・join・集計
+- CSV / JSON / SQLite / Parquet整形・join・集計
+- Parquet / DuckDB query・schema / row-count / key監査
 - scoring / metrics
 - SHA / schema / integrity確認
 - focused unit test / regression
 - 固定入力に対する変換・比較・監査
+
+### Parquet / DuckDB の共通実行基盤
+
+Parquet / DuckDBを扱うC系統の処理では、repository共通の汎用CRUD / Data Storage Tool `tools/data-storage/` を第一選択とする。
+
+`duckdb` / `pyarrow` 等が現在のPython環境へimportできないことだけを理由に「実行環境がない」として停止しない。まず既存の `.venv-data-storage` を確認し、利用可能なら再利用する。未作成または依存不足なら `tools/data-storage/requirements.txt` から専用venvをbootstrapし、`data_storage check-deps` で確認してから処理を続行する。
+
+標準preflight:
+
+```bash
+if [ ! -x .venv-data-storage/bin/python ]; then
+  python -m venv .venv-data-storage
+fi
+.venv-data-storage/bin/python -m pip install -r tools/data-storage/requirements.txt
+PYTHONPATH=tools/data-storage \
+  .venv-data-storage/bin/python -m data_storage check-deps
+```
+
+既存venvで `check-deps` がPASSする場合は再install不要。依存install自体が失敗・禁止されている場合だけ、その事実を実行不能理由として報告する。
+
+単純なParquet query / validation / conversionは共通CLIを優先する。project固有の意味論・schema・canonical key・生成contractがある処理は、そのproject正本module/configを使い、共通Toolへ意味論を再実装しない。
 
 可能なら `source_commit` / source・input・output SHA / module version / generated_at を残し、再現性を確保します。
 

@@ -23,12 +23,13 @@ RaceNote作業では追加で `docs/racenote/README.md` と `docs/racenote/FOREC
 
 1. `README.md` / HANDOFF / CONTEXTを確認。
 2. 対象Pythonと対応README・schema/reference/contractを確認。
-3. 2026 Raw（PACI / SED / HJC）を扱う場合は、`docs/JRDB_2026_Raw_Drive_Reference.md` を確認し、Google Drive上の既存Rawを最優先でresolveする。Drive inventoryを確認せずupstream全日付取得を開始しない。
-4. 既存仕様を壊さない範囲で改修。
-5. 可能な範囲で実行テスト / 回帰確認。
-6. 生成物・秘密情報・Rawデータが差分に入っていないことを確認。
-7. entrypoint / default / contract / subsystem boundary / current-vs-legacy boundaryが変わる場合、README / CONTEXT / HANDOFF / dedicated docsの更新要否を同時確認。
-8. Gitへcommitし、以後Git版を正本とする。
+3. Parquet / DuckDBを扱う場合は、repository共通 `tools/data-storage/` をresolveし、既存 `.venv-data-storage` + `check-deps` を先に確認する。依存が現在のPythonへ入っていないだけでは停止せず、必要なら `tools/data-storage/requirements.txt` からbootstrapする。
+4. 2026 Raw（PACI / SED / HJC）を扱う場合は、`docs/JRDB_2026_Raw_Drive_Reference.md` を確認し、Google Drive上の既存Rawを最優先でresolveする。Drive inventoryを確認せずupstream全日付取得を開始しない。
+5. 既存仕様を壊さない範囲で改修。
+6. 可能な範囲で実行テスト / 回帰確認。
+7. 生成物・秘密情報・Rawデータが差分に入っていないことを確認。
+8. entrypoint / default / contract / subsystem boundary / current-vs-legacy boundaryが変わる場合、README / CONTEXT / HANDOFF / dedicated docsの更新要否を同時確認。
+9. Gitへcommitし、以後Git版を正本とする。
 
 ## GitHub routing standard — 2026-09-10
 
@@ -67,6 +68,24 @@ Secrets、Actions固有権限、Actions artifact chain、長時間・大容量ru
 - fixed fixture / frozen inputに対するRaceNote / Edge / Newspaperのdeterministic validation
 
 同一処理を「Issueを投げるためだけ」にActionsへ送らない。
+
+#### Parquet / DuckDB execution preflight
+
+JRDBでParquet / DuckDBを読む・集計する・validationする処理では、`tools/data-storage/` をrepository共通の汎用CRUD / Data Storage基盤として扱う。
+
+```text
+Parquet / DuckDB task
+-> tools/data-storage/README.md 確認
+-> 既存 .venv-data-storage を確認
+-> check-deps PASSならそのまま再利用
+-> absent / DEPENDENCY_MISSINGなら requirements からbootstrap
+-> check-deps再実行
+-> 共通CLI またはJRDB正本module/configを実行
+```
+
+`import duckdb` / `import pyarrow` の失敗だけで「この環境では扱えない」と結論しない。依存install自体が失敗・禁止される場合のみ実行不能として報告する。
+
+単純query / validation / conversionは共通CLIを優先し、JRDB固有のscientific semantics、schema、canonical key、current pointer、publication contractはJRDB正本module/configへ委譲する。
 
 ### D. Actions-Native Execution
 
