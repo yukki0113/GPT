@@ -62,13 +62,38 @@ RRDB remains an interpretation layer:
 
 ```text
 visible prior result
+  -> inspect the current RRDB recommendation signals and measured strength
   -> reinterpret what the run actually showed
   -> revise understanding of the horse
   -> return to today's race
   -> compare with today's rivals
 ```
 
-RRDB labels are not marks.
+The current RRDB recommendation contract is
+`rrdb-recommendation-signals-v0.2`.
+
+Current recommendation evidence may include:
+
+- `TIME_CLASS_PLUS1` — the prior run reached an upper-class time level;
+- `FRONT_SURVIVE_GAP05` — the horse survived a strongly forward-pressing race near the front;
+- `REAR_HIGH_LAST3F90` — the horse produced a high-end late section against a rear-unfriendly pace shape;
+- `HV01` / `HV02` — the adjusted time content was stronger than the visible finishing position suggests.
+
+Read the signal together with its measured strength and source-run context.
+Signal IDs are evidence labels, not marks.
+
+There is no S/A recommendation grade in current operation.
+Do not reconstruct one from signal count or apparent strength.
+
+Multiple RRDB signals from the same prior run are not additive votes.
+They are different descriptions of one historical performance and should be
+integrated as one evidence story.
+
+A RRDB match is not automatically positive for today's race.
+Ask whether the prior-run evidence transfers to today's class, course, distance,
+pace shape, condition, and opposition.
+
+`NO_MATCH` is neutral, not negative.
 
 Use the reinterpreted run only when it changes how the horse should be understood
 under today's conditions.
