@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "candidate_count": 398,
+  "selection_order": "PACI -> prior RRDB only -> frozen HV -> S/A -> same-day SED settlement",
+  "grade_summary": {
+    "S": {
+      "n": 59,
+      "place_hits": 13,
+      "place_hit_rate": 0.22033898305084745,
+      "stake_yen": 5900,
+      "place_payout_yen": 3670,
+      "place_roi": 0.6220338983050847
+    },
+    "A": {
+      "n": 339,
+      "place_hits": 81,
+      "place_hit_rate": 0.23893805309734514,
+      "stake_yen": 33900,
+      "place_payout_yen": 29830,
+      "place_roi": 0.8799410029498526
+    }
+  },
+  "feature_columns_preserved": [
+    "previous_finish",
+    "performance_signal",
+    "previous_time_delta_per_1000m",
+    "last3f_speed_percentile",
+    "overall_position_gain",
+    "performance_vs_prior3",
+    "last3f_pct_vs_prior3"
+  ],
+  "settlement_columns": [
+    "result_finish",
+    "final_win_odds",
+    "final_win_popularity",
+    "place_hit",
+    "place_payout_yen"
+  ],
+  "exact_combo_counts": [
+    {"grade":"A","combo":"HV03","n":93},
+    {"grade":"A","combo":"HV03+HV07","n":55},
+    {"grade":"A","combo":"HV01+HV02+HV11+HV12","n":50},
+    {"grade":"A","combo":"HV01+HV02","n":41},
+    {"grade":"A","combo":"HV01+HV11","n":31},
+    {"grade":"A","combo":"HV01","n":29},
+    {"grade":"A","combo":"HV07","n":26},
+    {"grade":"A","combo":"HV01+HV05","n":10},
+    {"grade":"S","combo":"HV01+HV05+HV11","n":9},
+    {"grade":"S","combo":"HV01+HV02+HV05+HV06+HV11+HV12","n":8},
+    {"grade":"S","combo":"HV01+HV02+HV05+HV06","n":6},
+    {"grade":"S","combo":"HV01+HV02+HV03+HV05+HV06+HV11+HV12","n":6},
+    {"grade":"S","combo":"HV01+HV03+HV05+HV07+HV11+HV13","n":4},
+    {"grade":"A","combo":"HV01+HV03+HV05","n":4},
+    {"grade":"S","combo":"HV01+HV03+HV05+HV07","n":3},
+    {"grade":"S","combo":"HV01+HV03+HV05+HV11","n":3},
+    {"grade":"S","combo":"HV01+HV05+HV07+HV11","n":3},
+    {"grade":"S","combo":"HV01+HV03+HV05+HV07+HV11","n":2},
+    {"grade":"S","combo":"HV01+HV02+HV03+HV05+HV06+HV07+HV11+HV12","n":2},
+    {"grade":"S","combo":"HV01+HV02+HV03+HV05+HV06+HV11+HV12+HV13","n":2},
+    {"grade":"S","combo":"HV01+HV02+HV05+HV06+HV07+HV11+HV12","n":2},
+    {"grade":"S","combo":"HV01+HV05+HV07","n":2},
+    {"grade":"S","combo":"HV01+HV02+HV03+HV05+HV06","n":2},
+    {"grade":"S","combo":"HV01+HV03+HV05+HV13","n":1},
+    {"grade":"S","combo":"HV01+HV03+HV05+HV07+HV13","n":1},
+    {"grade":"S","combo":"HV01+HV03+HV05+HV11+HV13","n":1},
+    {"grade":"S","combo":"HV01+HV02+HV03+HV05+HV06+HV07+HV11+HV12+HV13","n":1},
+    {"grade":"S","combo":"HV01+HV02+HV03+HV05+HV06+HV07","n":1}
+  ]
+}
