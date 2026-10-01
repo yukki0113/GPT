@@ -271,6 +271,30 @@ v0.4 では「2段まで」の固定上限を設けない。
 複数parentがある場合、全parentを保持し、
 weakest / strongest parent comparison を監査できるようにする。
 
+## 6.5 Discovery Window Policy
+
+v0.4 の canonical discovery window は **as-of trailing 5 years** とする。
+
+理由:
+- 血統・厩舎・馬場傾向・ローテーションは時代変化する。
+- 2010年代前半の強い条件が現在の現役馬に適用できるとは限らない。
+- 死亡・引退済み種牡馬の大量過去データが current Value discovery を支配することを避ける。
+- Stage D の rolling/as-of validation と自然に接続できる。
+
+定義:
+- as-of date を T とする。
+- discovery period は `[T-5 years, T]` の trailing window。
+- C1 の candidate population / ROI / support はこの5年内だけで計算する。
+- 3y / 2y / 1y は current trend 診断として同じ候補に対して保持する。
+- 5年以上前の履歴は candidate discovery には使わず、historical context / archaeology / lineage continuity の補助監査に限定する。
+
+例:
+- 2025年末historical prototype: 概ね2020年末〜2025年末の5年間。
+- 2026-09-26 as-of validation: 2021-09-26〜2026-09-26。
+
+この変更は search dimensions や 2〜6-way depth を狭めるものではなく、
+**時間方向の母集団を current applicability に合わせて制限する**ものである。
+
 ## 7. Recent Trend
 
 Recent を主目的に固定しないが、必須の診断軸とする。
@@ -718,3 +742,21 @@ Production v0.2 / v0.3 serving remains unchanged.
 初回 sharded r1 の実測で、cap 前の深度4 shard が約62MBとなり、104 shard 全体では merge input が数GB級へ膨張する可能性が確認された。
 Stage C1 plan は template を shard 間で分割しないため、shard 内で template cap を適用しても候補順位の欠損は生じない。
 この性質を利用し、canonical C1 evaluator は shard 内 cap を適用してから artifact を保存する。
+
+
+## 17. All-history C1 superseded by trailing-5y discovery (2026-10-01)
+
+2010〜2025 全期間を使った C1 r2 は execution validation と search-space audit としては PASS したが、
+4,639,841 research candidates が残り、current Value discovery の母集団としては広すぎると判断した。
+
+全期間版で確認できたこと:
+- sharded execution / deterministic merge が成立する。
+- 104/104 shards PASS。
+- popularity / odds を candidate population 定義に使っていない。
+- 2〜6-way search space を実行可能。
+
+ただし全期間 discovery は、現在ほぼ出走しない血統や過去regimeのValueまで大量に保持する。
+そのため all-history C1 artifacts は canonical candidate catalog とせず、監査証跡へ降格する。
+
+以後の canonical C1 は trailing 5y で再生成する。
+旧all-history artifactは新5y版PASS後に削除可能とする。
