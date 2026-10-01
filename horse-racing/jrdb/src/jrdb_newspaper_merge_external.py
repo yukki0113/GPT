@@ -871,7 +871,17 @@ def merge_day(
                 seen_rn.add(key)
                 rn_merged += 1
 
+        if rn_meta is not None:
+            bundle.setdefault("race_notes", {}).setdefault("items", [])
+            bundle["race_notes"]["racenote_short_comment"] = rn_meta[
+                "race_short_comment"
+            ]
+            seen_rn_races.add(race_id)
 
+        bundle["metadata"]["revision"] = revision
+        bundle["metadata"]["generated_at"] = now
+        status = bundle["metadata"]["source_status"]
+        count = len(bundle["horses"])
         if rrdb_recommendation_csv is not None:
             expected_rrdb = sum(
                 key[0] == race_date and key[1] == venue_code and key[2] == race_no
@@ -888,17 +898,6 @@ def merge_day(
                 resolved=rrdb_recommendation_merged,
                 complete=expected_rrdb == rrdb_recommendation_merged,
             )
-        if rn_meta is not None:
-            bundle.setdefault("race_notes", {}).setdefault("items", [])
-            bundle["race_notes"]["racenote_short_comment"] = rn_meta[
-                "race_short_comment"
-            ]
-            seen_rn_races.add(race_id)
-
-        bundle["metadata"]["revision"] = revision
-        bundle["metadata"]["generated_at"] = now
-        status = bundle["metadata"]["source_status"]
-        count = len(bundle["horses"])
         if eval_csv is not None:
             eval_message = _eval_status_message(
                 merged=eval_merged,
