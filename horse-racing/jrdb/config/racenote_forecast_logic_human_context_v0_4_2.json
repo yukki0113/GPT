@@ -1,0 +1,116 @@
+{
+  "version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+  "status": "CURRENT_BLIND_RESEARCH_CANDIDATE",
+  "phase": "BLIND_RESEARCH_ACTIVE",
+  "role": "FORECAST_BLIND_RESEARCH",
+  "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
+  "teacher_evidence_usage": "MANDATORY_FEW_SHOT_REASONING_REFERENCE",
+  "primary_semantic": "今回、自分なら最も買いたい主役",
+  "hard_anti_mechanical_rules": [
+    "NO_SINGLE_AGGREGATE_SORT_AS_PRIMARY_SELECTION",
+    "NO_IMPLICIT_NUMERIC_SCORE",
+    "NO_MAX_VALUE_AUTO_AXIS",
+    "NO_FULL_FIELD_NUMERIC_DRAFT_BEFORE_RACE_MODEL",
+    "NO_POST_HOC_PROSE_FOR_NUMERIC_SORT"
+  ],
+  "prediction_sequence": [
+    "READ_WHOLE_RACE_BEFORE_MARKS",
+    "FORM_ORDINARY_MAINLINE_CONTENDERS",
+    "COMPARE_MAINLINE_FOR_MAIN_SECOND_SUPPORT",
+    "INDEPENDENT_FULL_FIELD_SINGLE_SHOT_SEARCH",
+    "ASSIGN_MAIN_SECOND_SINGLE_SHOT_SUPPORT",
+    "FREEZE"
+  ],
+  "required_trace": [
+    "human_principles_used",
+    "race_model",
+    "primary_question",
+    "candidate_cases",
+    "main_vs_second",
+    "main_vs_third",
+    "why_not_numeric_leader",
+    "strongest_counter",
+    "reversal_condition",
+    "rrdb_evidence"
+  ],
+  "calibration_policy": {
+    "consume_unused_eligible_days": false,
+    "recommended_race_count_min": 6,
+    "recommended_race_count_max": 12,
+    "allowed_used_dates": [
+      "2026-02-08",
+      "2026-05-23",
+      "2026-03-08",
+      "2026-04-26"
+    ],
+    "performance_evidence": false,
+    "resume_blind_turn_requires_research_clearance": true
+  },
+  "decision_trace_contract": "docs/racenote/FORECAST_DECISION_TRACE_CONTRACT_v0_1.md",
+  "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
+  "optional_evidence_lanes": [
+    "PEDIGREE_CONTEXT_P1_P2",
+    "RRDB_RACEREVIEW_RECOMMENDATION"
+  ],
+  "pedigree_policy": {
+    "source_fields": [
+      "pedigree",
+      "pedigree_context"
+    ],
+    "fixed_weight": false,
+    "automatic_axis": false,
+    "small_sample": "RETAIN_WITH_N",
+    "especially_relevant_when": [
+      "NEWCOMER_OR_NO_PRIOR_HISTORY",
+      "LIGHTLY_RACED",
+      "FIRST_MEANINGFUL_DISTANCE_CHANGE",
+      "WEAK_DIRECT_SUITABILITY_EVIDENCE"
+    ],
+    "interpretation": "CONTEXTUAL_EVIDENCE_NOT_SCORE"
+  },
+  "rrdb_policy": {
+    "source_field": "racereview.recommendation",
+    "must_review_when_present": true,
+    "fixed_weight": false,
+    "automatic_axis": false,
+    "no_match_is_negative": false,
+    "same_run_deduplication": true,
+    "interpretation": "READ_SIGNAL_STRENGTH_AND_SOURCE_RUN_REINTERPRET_VISIBLE_PRIOR_RESULT_THEN_RECOMPARE_CURRENT_RACE",
+    "reinterpretation_states": [
+      "UPGRADE",
+      "DOWNGRADE",
+      "CONFIRM",
+      "NEUTRAL"
+    ],
+    "mark_change_allowed_when": [
+      "CANDIDATES_OTHERWISE_CLOSE",
+      "POOR_VISIBLE_RESULT_REINTERPRETED_UP_WITH_RELEVANT_DIRECT_EVIDENCE",
+      "GOOD_VISIBLE_RESULT_REINTERPRETED_DOWN_AND_COMPETITOR_HAS_COMPARABLE_OR_STRONGER_CURRENT_EVIDENCE",
+      "DIRECT_EVIDENCE_WEAK_STALE_OR_INTERNALLY_INCONSISTENT"
+    ],
+    "mark_change_not_justified_by": [
+      "RRDB_RECOMMENDATION_SIGNAL_ALONE",
+      "MATCHED_SIGNAL_COUNT_ALONE",
+      "MEASURED_STRENGTH_WITHOUT_CURRENT_RACE_RELEVANCE",
+      "GENERIC_RRDB_SIGNAL_WITHOUT_CURRENT_RACE_RELEVANCE"
+    ],
+    "direct_evidence_policy": "RAISES_BURDEN_OF_PROOF_NOT_IMMUNITY",
+    "tie_breaker_allowed": true,
+    "target_usage_rate": null,
+    "target_mark_change_rate": null,
+    "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+    "recommendation_grade_status": "DISABLED",
+    "recommendation_auto_mark": false,
+    "operational_lookback_days": 730,
+    "legacy_next_watch": "HISTORICAL_COMPATIBILITY_ONLY"
+  },
+  "single_shot_policy": {
+    "selection": "INDEPENDENT_FULL_FIELD_SCAN",
+    "meaning": "ASYMMETRIC_RACE_SPECIFIC_VALUE_AROUND_MAINLINE",
+    "may_beat_mainline": true,
+    "may_intrude_behind_mainline": true,
+    "popularity_rule": false,
+    "minimum_odds_rule": false,
+    "fixed_score": false
+  }
+}
