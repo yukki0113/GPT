@@ -72,6 +72,7 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - If JRDB source is missing, the tool returns `partial`; it does not silently replace evidence with Web data.
 - Full runner rows are opt-in. Fixed-width offsets remain owned only by `jrdb_raw.py`.
 - Contract: `docs/README_jrdb_result_query.md`.
+- GPT/Work はユーザーへRaw/Warehouseのローカルpath入力を要求する前に、既存Drive正本 `GPT/horse-racing/00_raw` または `GPT/horse-racing/10_warehouse/jrdb/v1/current.json` をresolve/materializeしてResult Queryへ渡す。ユーザーの通常入力は日付（任意で場/R/式別）だけでよい。
 
 ## Annual Canonical materialization
 - `src/build_jrdb_canonical.py` はCommon Readerのneutral parse結果をannual SQLiteへmaterializeする任意の高速アクセス層。
