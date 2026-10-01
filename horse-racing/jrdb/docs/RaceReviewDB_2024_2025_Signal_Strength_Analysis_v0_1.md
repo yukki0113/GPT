@@ -13,7 +13,7 @@
 | Signal / axis | 結果 | 解釈 |
 |---|---|---|
 | TIME_CLASS class gap | `NON_MONOTONIC` | +1.0～+2.0未満はnext top3 43.3–44.8%だが、+2以上は36.9%。 |
-| TIME_CLASS next-class margin | `NON_MONOTONIC` | 0.30–0.60秒帯が45.2%で最大。0.60秒以上は低下し、1秒以上は23.6%。 |
+| TIME_CLASS next-class margin | `NON_MONOTONIC` | 0.30–0.60秒帯が45.8%で最大。0.60秒以上は低下し、1秒以上は23.1%。 |
 | FRONT winner gap | `NON_MONOTONIC`（端の≤0を含む） | >0.80秒の20.3%から0.01–0.20秒の46.8%まで上昇する一方、≤0は30.8%。 |
 | FRONT cumulative thresholds | 0.80→0.50→0.30秒は概ね上向き、0.20秒は低下 | top3は34.7→36.5→36.7→35.5%。matched liftは+10.9→+11.1→+6.4→+0.5pt。 |
 | FRONT pace strength | `FLAT` | pace 70–79 / 80–89 / 90–100のtop3は28.6 / 28.3 / 27.1%。 |
@@ -35,14 +35,14 @@
 | Unclassified target finish | 0 (target finish 0 / abnormal: 569; excluded from ability denominator) |
 | Valid settled market rows | 81,198 |
 | Frozen signal positive N (TIME_CLASS_PLUS1 / FRONT_SURVIVE_GAP05 / FRONT_SURVIVE_OR / REAR_HIGH_LAST3F90 / HV01 / HV02 / POSITION_RECOVERY) | 386 / 4,612 / 7,760 / 1,610 / 6,014 / 3,165 / 10,216 |
-| Class-margin observations / missing | 50,110 / 31,657 |
+| Class-margin observations / missing | 57,210 / 24,557 |
 | Future next-class reference dates | 0 |
 
 The input fact was not modified, and no source→target mapping was regenerated. Ability rates use mapped target rows with `target_finish > 0`; 569 target rows coded 0 are retained in the fact but excluded from ability denominators. Market metrics use valid settled-market rows with classified target finish.
 
 ### Next-class standard reconstruction
 
-`next_higher_class_standard_sec` is not present in the input. It was reconstructed from the preceding race-review history for the same venue, surface, and next-higher declared class, using historical winner time and subtracting the historical race's day/track adjustment when available. Scope priority was: prior 7 days exact distance, prior 14 days exact distance, then prior 14 days within ±200m. Every selected source race was strictly earlier than its OOS source date; the source actual time was adjusted by its own day/track adjustment for a like-for-like margin. The resulting `next_class_margin_sec = next_higher_class_standard_sec - source_time_adjusted_sec`; positive means faster than the reconstructed reference. Missing references remain null, not zero. This local reconstruction is a proxy and has 61.3% coverage; margin results should be read with that limit.
+`next_higher_class_standard_sec` is not present in the input. It was reconstructed from the preceding race-review history for the same venue, surface, and next-higher declared class, using historical winner time and subtracting the historical race's day/track adjustment when available. Scope priority was: prior 7 days exact distance, prior 14 days exact distance, then prior 14 days within ±200m. Every selected source race was strictly earlier than its OOS source date; the source actual time was adjusted by its own day/track adjustment for a like-for-like margin. The resulting `next_class_margin_sec = next_higher_class_standard_sec - source_time_adjusted_sec`; positive means faster than the reconstructed reference. Missing references remain null, not zero. This local reconstruction is a proxy and has 70.0% coverage; margin results should be read with that limit.
 
 HV strength bands reuse frozen `performance_signal_q80=-0.0930555556` and `performance_signal_q90=0.1677714932`. The Q95 split was fixed from the 2022–2023 pre-OOS performance-signal distribution (`0.3612475482`), not selected using 2024–2025 outcomes. The source performance signal recomputation exactly matched the existing field.
 
@@ -61,11 +61,11 @@ HV strength bands reuse frozen `performance_signal_q80=-0.0930555556` and `perfo
 
 | Margin | N | Next top3 | Next top5 | Matched top3 lift | Median popularity | Median odds | Place ROI |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| <0 | 6,551 | 21.4% | 35.7% | -0.7pt | 8 | 27.70 | 72.7% |
-| 0–<0.30 sec | 139 | 38.8% | 50.4% | +12.9pt | 4 | 8.80 | 99.6% |
-| 0.30–<0.60 sec | 104 | 45.2% | 59.6% | +17.3pt | 3 | 7.00 | 95.9% |
-| 0.60–<1.00 sec | 75 | 32.0% | 54.7% | +4.6pt | 4 | 8.20 | 70.4% |
-| ≥1.00 sec | 686 | 23.6% | 38.9% | -1.4pt | 7 | 22.25 | 65.6% |
+| <0 | 8,201 | 21.1% | 35.7% | -1.0pt | 8 | 28.40 | 72.9% |
+| 0–<0.30 sec | 184 | 44.0% | 59.8% | +14.8pt | 3 | 5.95 | 94.6% |
+| 0.30–<0.60 sec | 120 | 45.8% | 61.7% | +16.2pt | 3 | 6.30 | 90.8% |
+| 0.60–<1.00 sec | 98 | 39.8% | 61.2% | +10.0pt | 3 | 6.15 | 73.9% |
+| ≥1.00 sec | 562 | 23.1% | 39.0% | -3.5pt | 7 | 23.15 | 64.6% |
 
 **回答:** class gapとnext-class marginの両方で、最上位帯まで強くなるほど次走能力が改善する単調性は確認できない。class gapは+1.0〜+2.0未満で高いが+2.0以上で反転。marginは0.30–0.60秒帯が最良で、1秒以上では崩れる。marginは説明可能な物理量だが、基準再構築の欠損と上位帯の逆転があり、今回の結果だけでは安定した連続gradeとして採用できない。人気・オッズも帯域間で大きく変わる。
 
