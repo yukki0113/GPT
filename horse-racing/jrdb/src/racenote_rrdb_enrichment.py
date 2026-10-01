@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 """Formal RaceReviewDB enrichment for authoritative RaceNote v1.0.
 
-This module projects historical RaceReviewDB evidence and the frozen
-Next-Watch judgement for each target horse into RaceNote. It never reads the
-target result, market, current popularity, or future RRDB rows.
+This module projects historical RaceReviewDB evidence and the current
+RRDB recommendation signals for each target horse into RaceNote. It never reads
+the target result, market, current popularity, or future RRDB rows.
+
+The former frozen Next-Watch contract may still be supplied by legacy callers,
+but it is not required by current recommendation semantics.
 """
 
 from __future__ import annotations
@@ -210,8 +213,8 @@ def _latest_recommendation(
 def _apply_bundle_enrichment(
     bundle: dict[str, object],
     reader: RaceReviewReader,
-    contract: Mapping[str, object],
     recommendation: Mapping[str, dict[str, object]],
+    contract: Mapping[str, object] | None = None,
     *,
     per_horse_limit: int = 5,
 ) -> dict[str, object]:
@@ -308,7 +311,7 @@ def _apply_bundle_enrichment(
         "recommendation_contract_version": RECOMMENDATION_VERSION,
         "recommendation_grade_status": "DISABLED",
         "operational_lookback_days": OPERATIONAL_LOOKBACK_DAYS,
-        "legacy_next_watch_rule_version": contract.get("rule_version"),
+        "legacy_next_watch_rule_version": (contract or {}).get("rule_version"),
         "legacy_next_watch_status": "HISTORICAL_COMPATIBILITY_ONLY",
         "as_of_exclusive": target_date,
         "horse_identity": "JRDB_BLOOD_REGISTRATION_NO",
@@ -323,7 +326,7 @@ def _apply_bundle_enrichment(
 def enrich_bundle(
     bundle: dict[str, object],
     reader: RaceReviewReader,
-    contract: Mapping[str, object],
+    contract: Mapping[str, object] | None = None,
     *,
     per_horse_limit: int = 5,
 ) -> dict[str, object]:
@@ -345,8 +348,8 @@ def enrich_bundle(
     return _apply_bundle_enrichment(
         bundle,
         reader,
-        contract,
         recommendation,
+        contract,
         per_horse_limit=per_horse_limit,
     )
 
@@ -354,7 +357,7 @@ def enrich_bundle(
 def enrich_bundles(
     bundles: list[dict[str, object]],
     reader: RaceReviewReader,
-    contract: Mapping[str, object],
+    contract: Mapping[str, object] | None = None,
     *,
     per_horse_limit: int = 5,
 ) -> list[dict[str, object]]:
@@ -405,8 +408,8 @@ def enrich_bundles(
         _apply_bundle_enrichment(
             bundle,
             reader,
-            contract,
             recommendation,
+            contract,
             per_horse_limit=per_horse_limit,
         )
         for bundle in bundles
@@ -419,7 +422,13 @@ def main() -> int:
     source.add_argument("--racereview-root", type=Path)
     source.add_argument("--racereview-current-cache", type=Path)
     p.add_argument("--racereview-drive-file-id", default=STABLE_CURRENT_FILE_ID)
-    p.add_argument("--next-watch-rules", type=Path, required=True)
+    p.add_argument(
+        "--next-watch-rules",
+        type=Path,
+        required=False,
+        default=None,
+        help="Deprecated legacy compatibility input; current RRDB recommendations do not require it.",
+    )
     p.add_argument("--work-root", type=Path, default=None)
     p.add_argument("--per-horse-limit", type=int, default=5)
     p.add_argument("--output", type=Path, required=True)
@@ -438,7 +447,11 @@ def main() -> int:
         work_root.mkdir(parents=True, exist_ok=True)
 
     try:
-        contract = load_frozen_contract(args.next_watch_rules, work_root)
+        contract = (
+            load_frozen_contract(args.next_watch_rules, work_root)
+            if args.next_watch_rules is not None
+            else None
+        )
         if args.racereview_root is not None:
             reader = RaceReviewReader(args.racereview_root)
         else:
@@ -467,7 +480,7 @@ def main() -> int:
             "rrdb_generation_id": reader.generation_id,
             "recommendation_contract_version": RECOMMENDATION_VERSION,
             "recommendation_grade_status": "DISABLED",
-            "legacy_next_watch_rule_version": contract.get("rule_version"),
+            "legacy_next_watch_rule_version": (contract or {}).get("rule_version"),
             "output": str(args.output),
         }, ensure_ascii=False, default=str))
         return 0
