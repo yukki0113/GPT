@@ -83,7 +83,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('<title>桃太郎新聞 / 注目馬一覧</title>', html)
         self.assertIn('<h2>今日の注目馬一覧</h2>', html)
         self.assertNotIn('>予想一覧</a>', html)
-        self.assertIn('./predictions.js?v=7', html)
+        self.assertIn('./predictions.js?v=8', html)
         self.assertIn('PREDICTION_RUNTIME_CONFIG.predictionCurrentBase', script)
         self.assertIn('<div class="button-row" hidden>', html)
 
@@ -132,7 +132,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
-        self.assertIn('./momotaro.js?v=18', newspaper)
+        self.assertIn('./momotaro.js?v=19', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
         self.assertIn('../fact-lite.js?v=24', fact_lite)
@@ -141,7 +141,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function factDownloadUrl(manifest)', fact_script)
         self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v24"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v25"', service_worker)
 
 
 if __name__ == "__main__":
