@@ -60,6 +60,8 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('<details class="recovery-panel newspaper-recovery-panel" hidden>', html)
         self.assertIn('id="newspaper-source-status" class="query-status" hidden', html)
         self.assertIn('<div class="button-row" hidden>', html)
+        self.assertIn('./predictions.js?v=7', html)
+        self.assertIn('PREDICTION_RUNTIME_CONFIG.predictionCurrentBase', script)
 
     def test_prediction_list_groups_by_race_and_uses_basic_horse_name(self) -> None:
         html = (MOMOTARO_ROOT / "predictions.html").read_text(encoding="utf-8")
@@ -142,7 +144,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function factDownloadUrl(manifest)', fact_script)
         self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v23"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v24"', service_worker)
 
 
 if __name__ == "__main__":
