@@ -1,6 +1,6 @@
 "use strict";
 
-/* Newspaper display v6: requested seven-column order and compact JRDB race view. */
+/* Newspaper display v6: personal prediction columns and compact JRDB race view. */
 
 function newspaperV6ApplyMarkLayout() {
   if (!currentBundle || !tableWrap) return;
@@ -23,12 +23,15 @@ function newspaperV6ApplyMarkLayout() {
     const myHead = headRow.querySelector(".mark-my");
     if (myHead) myHead.remove();
 
+    const rnHead = headRow.querySelector(".mark-rn");
+    if (rnHead) rnHead.textContent = "けん";
+
     const orderedHeads = [
       headRow.querySelector(".mark-ability"),
       headRow.querySelector(".mark-eval"),
       trainingHead,
       headRow.querySelector(".mark-jrdb"),
-      headRow.querySelector(".mark-rn"),
+      rnHead,
       headRow.querySelector(".mark-iluka")
     ];
     for (const cell of orderedHeads) {
