@@ -104,12 +104,11 @@ class RecommendationSignalsTest(unittest.TestCase):
         })
         comment = newspaper_comment(row)
         self.assertIsNotNone(comment)
-        self.assertIn("1段以上上のクラス水準", comment)
-        self.assertIn("勝ち馬0.22秒差", comment)
-        self.assertIn("6着以下でも補正タイム", comment)
+        self.assertIn("前走時計はクラス水準より上。", comment)
+        self.assertIn("前傾ラップ戦を前で受け、勝ち馬と僅差まで踏ん張った。", comment)
+        self.assertNotIn("敗戦でもタイムは水準以上。", comment)
         self.assertNotIn("HV01", comment)
         self.assertNotIn("HV02", comment)
-        self.assertNotIn("4着以下でも補正タイム", comment)
 
     def test_newspaper_rear_comment_translates_percentile(self) -> None:
         row = base_row()
@@ -122,7 +121,7 @@ class RecommendationSignalsTest(unittest.TestCase):
         })
         self.assertEqual(
             newspaper_comment(row),
-            "後傾で後方から上がり上位2%級。",
+            "後傾ラップ戦も後方から上位の上がりは使った。",
         )
 
     def test_below_threshold_is_no_match(self) -> None:
