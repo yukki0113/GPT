@@ -97,7 +97,7 @@ Performance / Value、CONFIRMED / SUGGESTIVE、重複Edgeを安易に数値加�
 
 ### Common Raw / Canonical
 
-- `src/jrdb_raw.py` — BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/UKC共通Reader
+- `src/jrdb_raw.py` — BAC/KYI/CHA/CYB/SED/SKB/ZED/ZKB/HJC/UKC共通Reader
 - `src/jrdb_raw_history.py` — annual Raw履歴アクセス
 - `src/build_jrdb_canonical.py` — neutral factsのannual SQLite materialization
 - `src/jrdb_store.py` — local/CLI向けartifact resolver。GPT標準Drive取得層そのものではない
