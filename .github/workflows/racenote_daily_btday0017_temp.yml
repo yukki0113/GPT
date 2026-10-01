@@ -2,6 +2,7 @@
 name: RaceNote daily backtest BTDAY-0017 temp
 
 on:
+  workflow_dispatch:
   issues:
     types: [opened]
 
