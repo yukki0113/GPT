@@ -1,5 +1,7 @@
+# registration refresh
 name: RaceNote BTDAY-0016 TURN2 archive temp
 on:
+  workflow_dispatch:
   issues:
     types: [opened]
 permissions:
