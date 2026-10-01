@@ -121,12 +121,12 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 
 - `addons.racenote_prediction.mark` → `addons.momotaro.kenshow.mark`
 - `addons.racenote_prediction.confidence` → `addons.momotaro.kenshow.confidence`
-- `addons.racenote_prediction.horse_short_comment` → けんしょー単馬コメント
+- `addons.racenote_prediction.horse_short_comment` → RRDB非該当時のみ補助的なけんしょー単馬コメント
 - `addons.rrdb_recommendation.comment` → けんしょー注目馬コメント
 - RRDB該当馬 → `review_horse=true`
 - `race_notes.racenote_short_comment` → `race_notes.momotaro_comments.kenshow`
 
-RaceNote単馬短評とRRDBコメントが同一馬にある場合は両方を保持する。
+RRDB該当馬ではモーダル本文をRRDBコメントとし、RaceNote単馬短評は表示に混在させない。
 明示的な `momotaro.kenshow` 手動入力がある場合は自動値より手動値を優先する。
 `tag=手動無印` は印を明示的に空にする。
 
