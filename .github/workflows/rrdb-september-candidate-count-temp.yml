@@ -1,0 +1,83 @@
+name: RRDB September Candidate Count Temp
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  count:
+    if: github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RRDB_SEP_CANDIDATE_COUNT_TEMP]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check duckdb gdown
+      - name: Download inputs
+        run: |
+          mkdir -p /tmp/rrdb_sep
+          gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/rrdb_sep/current.zip
+          gdown 1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr -O /tmp/rrdb_sep/rules.zip
+          gdown 1nAZsvZT3pFSeCvuIbYyzqo7L230HV9Zv -O /tmp/rrdb_sep/PACI260905.zip
+          gdown 1w7Qo4WpH8TcTtCTXEAK-qv3CH5Sa2BNU -O /tmp/rrdb_sep/PACI260906.zip
+          gdown 1IM8xl7FNLz02E6jZz0UOAZrxX2gpiZC_ -O /tmp/rrdb_sep/PACI260912.zip
+          gdown 110iUUdb3un4BGdbSG5AUOVXjKJ4PVAoJ -O /tmp/rrdb_sep/PACI260913.zip
+          gdown 1AL3Ua_2WY_NlKfMloSOinbzVZVRmjgNi -O /tmp/rrdb_sep/PACI260919.zip
+          gdown 14HiihawoEMU7kAA6OZ9mzQMwtJ2bckE0 -O /tmp/rrdb_sep/PACI260920.zip
+          gdown 1dRo6fYQkKaj905FJHjUzhQMNrxXc8KZk -O /tmp/rrdb_sep/PACI260921.zip
+          gdown 1VdkTE06TwBIWt2vxi98qGgft6jIfwzIv -O /tmp/rrdb_sep/PACI260922.zip
+          gdown 1PSYw6uL2Gx-rbtcJsgsGFZZNGTnMc4od -O /tmp/rrdb_sep/PACI260926.zip
+          gdown 1G57s0Ix5Xb6AcKfZ2HrpOvasLC05dYg8 -O /tmp/rrdb_sep/PACI260927.zip
+      - name: Run reverse
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          for D in 0905 0906 0912 0913 0919 0920 0921 0922 0926 0927; do
+            mkdir -p "/tmp/rrdb_sep/work_$D"
+            python horse-racing/jrdb/src/jrdb_next_watch_reverse.py \
+              --race-date "2026-${D:0:2}-${D:2:2}" \
+              --paci-zip "/tmp/rrdb_sep/PACI26$D.zip" \
+              --current-zip /tmp/rrdb_sep/current.zip \
+              --turn5-zip /tmp/rrdb_sep/rules.zip \
+              --work-root "/tmp/rrdb_sep/work_$D" \
+              --output-json "/tmp/rrdb_sep/rev_$D.json" >/dev/null
+          done
+      - name: Count
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from collections import Counter
+          root=Path('/tmp/rrdb_sep')
+          out=[]
+          combo=Counter()
+          bygrade=Counter()
+          for p in sorted(root.glob('rev_*.json')):
+              d=json.loads(p.read_text(encoding='utf-8'))
+              ds=d['target_race_date']
+              s=d['s']; a=d['a']
+              out.append({'date':ds,'S':len(s),'A':len(a),'total':len(s)+len(a),'entries':d['entry_count'],'no_prior':d['no_prior_history_count']})
+              for g,items in [('S',s),('A',a)]:
+                  bygrade[g]+=len(items)
+                  for x in items:
+                      combo[(g,'+'.join(x.get('matched_rules') or []))]+=1
+          result={'days':out,'by_grade':dict(bygrade),'combos':[{'grade':g,'combo':c,'n':n} for (g,c),n in combo.most_common()]}
+          print(json.dumps(result,ensure_ascii=False))
+          Path('/tmp/rrdb_sep/summary.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/rrdb_sep/summary.json
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
