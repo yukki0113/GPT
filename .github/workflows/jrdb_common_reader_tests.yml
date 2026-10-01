@@ -32,7 +32,7 @@ on:
       - 'horse-racing/jrdb/src/export_jrdb_eval_dataset.py'
       - 'horse-racing/jrdb/src/export_jrdb_eval_horse_results.py'
       - 'horse-racing/jrdb/src/jrdb_result_query.py'
-      - 'horse-racing/jrdb/src/jrdb_result_query.py'
+      - 'horse-racing/jrdb/src/jrdb_result_query_runner.py'
       - 'horse-racing/jrdb/src/jrdb_newspaper_build.py'
       - 'horse-racing/jrdb/schema/jrdb_pwa_newspaper_race_schema_v0_1.json'
       - 'horse-racing/jrdb/tests/test_jrdb_raw_common.py'
@@ -57,7 +57,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_racenote_warehouse_reader_bulk.py'
       - 'horse-racing/jrdb/tests/test_jrdb_eval_horse_result_adapter.py'
       - 'horse-racing/jrdb/tests/test_jrdb_result_query.py'
-      - 'horse-racing/jrdb/tests/test_jrdb_result_query.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_result_query_runner.py'
       - 'horse-racing/jrdb/tests/test_racenote_analysis_history_index.py'
       - 'horse-racing/jrdb/tests/test_jrdb_newspaper_build.py'
       - '.github/workflows/jrdb_common_reader_tests.yml'
@@ -159,6 +159,7 @@ jobs:
             src/export_jrdb_eval_dataset.py \
             src/export_jrdb_eval_horse_results.py \
             src/jrdb_result_query.py \
+            src/jrdb_result_query_runner.py \
             src/jrdb_newspaper_build.py
 
       - name: Run common reader regressions
@@ -184,6 +185,7 @@ jobs:
             test_jrdb_racenote_warehouse_reader_bulk \
             test_jrdb_eval_horse_result_adapter \
             test_jrdb_result_query \
+            test_jrdb_result_query_runner \
             test_racenote_analysis_history_index \
             test_jrdb_newspaper_build
 
