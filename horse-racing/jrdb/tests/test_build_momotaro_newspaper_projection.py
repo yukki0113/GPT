@@ -201,7 +201,7 @@ class MomotaroProjectionTest(unittest.TestCase):
             self.assertTrue(kenshow["review_horse"])
             self.assertEqual(
                 kenshow["comment"],
-                "RaceNote単馬短評\nRRDB注目馬コメント",
+                "RRDB注目馬コメント",
             )
             self.assertEqual(
                 projected["race_notes"]["momotaro_comments"]["kenshow"],
