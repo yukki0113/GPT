@@ -279,3 +279,38 @@ jobs:
           PY
           gh issue comment "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --body-file /tmp/comment.md
           gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" || true
+
+
+  fix_v042_validator:
+    if: startsWith(github.event.issue.title, '[FIX_RACENOTE_V042_VALIDATOR]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Fix validator syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('horse-racing/jrdb/src/validate_racenote_forecast_human_context.py')
+          lines=p.read_text(encoding='utf-8').splitlines()
+          hits=0
+          for i,line in enumerate(lines):
+              if 'if ratio < .85:' in line:
+                  lines[i]='        if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models))}")'
+                  hits+=1
+          assert hits==1, hits
+          p.write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          PY
+          python -m py_compile horse-racing/jrdb/src/validate_racenote_forecast_human_context.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/src/validate_racenote_forecast_human_context.py
+          git commit -m "RaceNote: fix v0.4 validator syntax"
+          git push origin HEAD:main
+      - name: Close fix issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" || true
