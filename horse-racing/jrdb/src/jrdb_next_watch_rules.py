@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Shared operational Next-Watch grading semantics."""
+"""Legacy Next-Watch S/A grading semantics.
+
+Superseded for current operation on 2026-10-01 by
+`jrdb_recommendation_signals.py`. Retained for historical reproduction only.
+"""
 
 from __future__ import annotations
 from collections.abc import Iterable
