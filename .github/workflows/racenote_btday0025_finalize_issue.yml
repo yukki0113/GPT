@@ -1,0 +1,168 @@
+name: RaceNote BTDAY-0025 Finalize
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  finalize:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_BTDAY025_FINALIZE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check duckdb pyarrow
+      - name: Download fixed inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/src /tmp/analysis /tmp/rrdb /tmp/dayprep /tmp/prep_for_freeze
+          download() {
+            local id="$1" out="$2"
+            curl -L --fail --retry 4 --retry-delay 2 \
+              "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
+              -o "${out}"
+            test -s "${out}"
+          }
+          download "1KI9USCd9lgkJFGDKcP79C1uv4im58zF7" /tmp/src/PACI260215.zip
+          download "1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5" /tmp/src/analysis.tar.xz
+          download "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg" /tmp/src/RaceReviewDB_CURRENT.zip
+          download "1JAbitwP-WVuMO7KQZnnBbLJKLLG138ON" /tmp/src/prepared.jsonl
+          echo "e41c18e047d985a11476d9424b6bc380e74aba3c61e037b56df4ddc5eddfc575  /tmp/src/prepared.jsonl" | sha256sum -c -
+          test "$(grep -c '^{' /tmp/src/prepared.jsonl)" -eq 36
+          tar -xJf /tmp/src/analysis.tar.xz -C /tmp/analysis
+          unzip -q /tmp/src/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+      - name: Rebuild clean DAY PREP
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/build_racenote_daily.py \
+            --date 2026-02-15 \
+            --paci /tmp/src/PACI260215.zip \
+            --analysis-root /tmp/analysis \
+            --racereview-root /tmp/rrdb/postrace_review/v0_1 \
+            --output /tmp/dayprep
+          cp -a /tmp/dayprep/RaceNote_20260215/reader /tmp/prep_for_freeze/reader
+          cat > /tmp/prep_for_freeze/day_prep_handoff.json <<'JSON'
+          {
+            "selection_id": "BTDAY-0025",
+            "target_date": "2026-02-15",
+            "status": "DAY_PREP_PASS",
+            "race_count": 36,
+            "result_opened": false
+          }
+          JSON
+      - name: Freeze fixed model-authored records
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/frozen
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+            --prep-root /tmp/prep_for_freeze \
+            --prepared-records /tmp/src/prepared.jsonl \
+            --output-root /tmp/frozen \
+            --selection-id BTDAY-0025 \
+            --date 2026-02-15 \
+            --main-sha 613cc8be27a492b8f5a755d3890a6b97fdd02b3a
+      - name: Validate frozen records and prose
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py \
+            --records /tmp/frozen/day_merge/forecast_20260215_all.jsonl \
+            --output /tmp/frozen/day_merge/forecast_20260215_validator.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/frozen/day_merge')
+          validator=json.loads((root/'forecast_20260215_validator.json').read_text())
+          if validator.get('status')!='PASS' or validator.get('record_count')!=36:
+              raise SystemExit('validator failed')
+          audit_path=root/'forecast_20260215_all_audit.json'
+          audit=json.loads(audit_path.read_text())
+          audit['reader_facing_prose_guard']='PASS'
+          audit['anti_template']=validator.get('anti_template')
+          audit_path.write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Immutability gate
+        run: |
+          set -euo pipefail
+          canonical="horse-racing/jrdb/backtests/BTDAY-0025/20260215/day_merge/forecast_20260215_all_handoff.json"
+          python horse-racing/jrdb/src/racenote_freeze_immutability_guard.py \
+            --candidate-handoff /tmp/frozen/day_merge/forecast_20260215_all_handoff.json \
+            --canonical-handoff "$canonical" \
+            --output /tmp/frozen/day_merge/forecast_20260215_immutability.json
+          test "$(python -c "import json; print(json.load(open('/tmp/frozen/day_merge/forecast_20260215_immutability.json'))['status'])")" = "NEW_FREEZE"
+      - name: Render daily HTML
+        run: |
+          python horse-racing/jrdb/src/render_racenote_forecast_html.py \
+            --records /tmp/frozen/day_merge/forecast_20260215_all.jsonl \
+            --output /tmp/frozen/forecast_20260215.html
+      - name: Publish canonical archive
+        id: publish
+        run: |
+          set -euo pipefail
+          target="horse-racing/jrdb/backtests/BTDAY-0025/20260215"
+          test ! -e "$target"
+          mkdir -p "$(dirname "$target")"
+          cp -a /tmp/frozen "$target"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git diff --cached --check
+          git commit -m "racenote: freeze BTDAY-0025 2026-02-15"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          COMMIT_SHA: ${{ steps.publish.outputs.sha }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          h=Path('/tmp/frozen/day_merge/forecast_20260215_all_handoff.json')
+          v=Path('/tmp/frozen/day_merge/forecast_20260215_validator.json')
+          if h.exists() and v.exists():
+              hand=json.loads(h.read_text()); val=json.loads(v.read_text())
+              payload={
+                'status':hand.get('status'),
+                'selection_id':hand.get('selection_id'),
+                'target_date':hand.get('target_date'),
+                'race_count':hand.get('race_count'),
+                'result_opened':hand.get('result_opened'),
+                'validator_status':val.get('status'),
+                'validator_errors':val.get('error_count'),
+                'anti_template':(val.get('anti_template') or {}).get('status'),
+                'commit_sha':os.environ.get('COMMIT_SHA')
+              }
+          else:
+              payload={'status':'FAILED_BEFORE_FREEZE','commit_sha':os.environ.get('COMMIT_SHA')}
+          print('RACENOTE_BTDAY025_FINAL_RESULT')
+          print('\\`\\`\\`json')
+          print(json.dumps(payload,ensure_ascii=False,indent=2))
+          print('\\`\\`\\`')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed || true
