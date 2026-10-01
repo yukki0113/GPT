@@ -1,0 +1,25 @@
+{
+  "selection_id": "BTDAY-0022",
+  "target_date": "2026-09-22",
+  "status": "FROZEN_CLEAN_BLIND",
+  "clean_blind_eligible": true,
+  "result_opened": false,
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+  "rrdb_recommendation_contract": "rrdb-recommendation-signals-v0.3",
+  "main_sha_at_forecast": "d45ea6a186d34141aaa5d2da9976b849fe9305ea",
+  "race_count": 12,
+  "prediction_hashes": [
+    "4e97bf3895f57f5b4582ffbc511ba4ca69c16db9436fbe985217919dfa6ca8f6",
+    "b441b5c2ad2fbf58439681c53ec3041084fbbcdf4688662b0b78a4d3574366e6",
+    "5dad9d61c3fa2e3eda717ff1cf3dc22fdfdbc7994d9c1f982664ccc94e0b843a",
+    "2b6e09ac1c99baff83e155e763ca220969a0714a27e669bb6cb40d6096509c06",
+    "8e9edba3d5607d0bd9d76f258a1c2a28a0e09e4f0609d358e0dea14d22eb2a6f",
+    "54ae12933004b75074c74ceb2557e9e9a612e398780957aac843257ff4aa2116",
+    "10c071ae3bd6b5c3fc47c9e5eddab319491e32137eef5cd17e702b12807a604c",
+    "098e7570d43d104ce2beb278e3b2aad9b2c5499b89c526f5d6b07ea09ba4a6d3",
+    "1469dee69006e0ab7cb13746069d4568c98da604b4314cd31cdc5099beeec12e",
+    "a2946fbefd197991af6f33264dd9867b4b109a3d9acc9e6a90ba39dd98a58b9c",
+    "f35528574b1d17d2ff49318ef252c7a61614c690a63936133edee66a87be2813",
+    "49cbfdf43298e6f7184cdae75f226c3ffb2fd4a325ed7f8bf6f80b368039395f"
+  ]
+}
