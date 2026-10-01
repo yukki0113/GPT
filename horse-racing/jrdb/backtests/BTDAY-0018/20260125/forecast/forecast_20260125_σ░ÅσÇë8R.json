@@ -1,0 +1,235 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "小倉",
+    "race_no": 8,
+    "race_key": "2026-01-25-小倉-8",
+    "race_name": null,
+    "surface": "芝",
+    "distance_m": 1800,
+    "class": "1勝クラス"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/小倉/8R",
+    "racenote_semantic_sha256": "d29ec0a319ba0dbbe952be2f29f53bd33c5ff3f03057c34e3058b87846093341",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 7,
+      "horse_name": "グランセゾン",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 7,
+        "horse_name": "グランセゾン",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 3,
+        "horse_name": "ウインシャーガス",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 11,
+        "horse_name": "ルナルーチェット",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 8,
+          "horse_name": "ウアーシュプルング",
+          "rank": 4
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "ホウオウペトリュス",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走新潟2200mは4着だが、内追走。直線少し仕掛け遅れるが脚は伸ばす / 4着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+    "reader_facing_reason": "グランセゾンは前走新潟2200mは4着だが、内追走。直線少し仕掛け遅れるが脚は伸ばす。さらに4着という見た目以上に補正タイムの中身が良かった。状態は上向き。ここでは軸に取る。 ウインシャーガスも5着という見た目以上に補正タイムの中身が良かった、状態は上向き。相手の中心。 ルナルーチェットは12着という見た目以上に補正タイムの中身が良かった、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "小倉 芝1800m 1勝クラス。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "グランセゾン"
+        },
+        "case_for": "前走新潟2200mは4着だが、内追走。直線少し仕掛け遅れるが脚は伸ばす / 4着という見た目以上に補正タイムの中身が良かった / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "ウインシャーガス"
+        },
+        "case_for": "前走中京2000mは5着だが、内を立ち回る。脚は使ったが前が止まらず / 5着という見た目以上に補正タイムの中身が良かった / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ウアーシュプルング"
+        },
+        "case_for": "前走中山2200mは4着だが、先団内でジックリ、ロスなく運ぶも伸び甘く / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "ホウオウペトリュス"
+        },
+        "case_for": "前走中京2000mは5着だが、馬群の後方待機、外不利なく回って渋太い脚 / 5着という見た目以上に補正タイムの中身が良かった / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 11,
+        "horse_name": "ルナルーチェット"
+      },
+      "case_for": "前走福島2000mは12着だが、ポンと出て先行。差し決着になってバテバテ / 12着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走新潟2200mは4着だが、内追走。直線少し仕掛け遅れるが脚は伸ばす / 4着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "second": "前走中京2000mは5着だが、内を立ち回る。脚は使ったが前が止まらず / 5着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "third": "前走福島2000mは12着だが、ポンと出て先行。差し決着になってバテバテ / 12着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "others": [
+        "前走中山2200mは4着だが、先団内でジックリ、ロスなく運ぶも伸び甘く / 状態は上向き",
+        "前走中京2000mは5着だが、馬群の後方待機、外不利なく回って渋太い脚 / 5着という見た目以上に補正タイムの中身が良かった / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": true,
+      "horse_refs": [
+        {
+          "horse_no": 7,
+          "horse_name": "グランセゾン",
+          "source_run_ref": "04254109",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "HV01"
+          ],
+          "signal_strength": {
+            "HV01": {
+              "performance_signal": 0.189393939393948,
+              "performance_band": "Q90_Q95",
+              "source_finish": 4
+            }
+          },
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "ウインシャーガス",
+          "source_run_ref": "07255108",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "HV01"
+          ],
+          "signal_strength": {
+            "HV01": {
+              "performance_signal": 0.20000000000000284,
+              "performance_band": "Q90_Q95",
+              "source_finish": 5
+            }
+          },
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "ルナルーチェット",
+          "source_run_ref": "03253508",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "HV01",
+            "HV02"
+          ],
+          "signal_strength": {
+            "HV01": {
+              "performance_signal": 0.2749999999999986,
+              "performance_band": "Q90_Q95",
+              "source_finish": 12
+            },
+            "HV02": {
+              "performance_signal": 0.2749999999999986,
+              "performance_band": "Q90_Q95",
+              "source_finish": 12
+            }
+          },
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "ウアーシュプルング",
+          "source_run_ref": "06255707",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "ホウオウペトリュス",
+          "source_run_ref": "07255406",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "HV01"
+          ],
+          "signal_strength": {
+            "HV01": {
+              "performance_signal": -0.07083333333333286,
+              "performance_band": "Q80_Q90",
+              "source_finish": 5
+            }
+          },
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": null
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "2ec82d3cfde0c5851f2654c646e526635b7f042b40e17c1024ec8fac6a600572"
+  }
+}

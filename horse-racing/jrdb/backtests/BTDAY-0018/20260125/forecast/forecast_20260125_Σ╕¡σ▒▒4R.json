@@ -1,0 +1,197 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "中山",
+    "race_no": 4,
+    "race_key": "2026-01-25-中山-4",
+    "race_name": null,
+    "surface": "ダート",
+    "distance_m": 1800,
+    "class": "新馬"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/中山/4R",
+    "racenote_semantic_sha256": "f069102095fbea3c6aa5e03b1a21c8e2b3b9ee0a4d5f830db2618d9836d2e1b9",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 14,
+      "horse_name": "アンミックス",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 14,
+        "horse_name": "アンミックス",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 2,
+        "horse_name": "ラウターユーベル",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 12,
+        "horse_name": "スカイレックス",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 7,
+          "horse_name": "レイズテンペスト",
+          "rank": 4
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "ローレルクラウン",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "調教気配も悪くない",
+    "reader_facing_reason": "アンミックスは実戦履歴が乏しい分、今回の事前能力評価と仕上がりを重視した。調教気配も悪くない。ここでは軸に取る。 ラウターユーベルも事前能力評価と仕上がりのバランスが良い、追い切りも高水準。相手の中心。 スカイレックスは本線勢とは違う形で条件好転の余地がある、追い切りも高水準。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "中山 ダート1800m 新馬。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "アンミックス"
+        },
+        "case_for": "調教気配も悪くない"
+      },
+      {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "ラウターユーベル"
+        },
+        "case_for": "追い切りも高水準"
+      },
+      {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "レイズテンペスト"
+        },
+        "case_for": "追い切りも高水準"
+      },
+      {
+        "horse": {
+          "horse_no": 6,
+          "horse_name": "ローレルクラウン"
+        },
+        "case_for": "追い切りも高水準"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 12,
+        "horse_name": "スカイレックス"
+      },
+      "case_for": "追い切りも高水準",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "調教気配も悪くない",
+      "second": "追い切りも高水準",
+      "third": "追い切りも高水準",
+      "others": [
+        "追い切りも高水準",
+        "追い切りも高水準"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": false,
+      "horse_refs": [
+        {
+          "horse_no": 14,
+          "horse_name": "アンミックス",
+          "source_run_ref": null,
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 2,
+          "horse_name": "ラウターユーベル",
+          "source_run_ref": null,
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 12,
+          "horse_name": "スカイレックス",
+          "source_run_ref": null,
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "レイズテンペスト",
+          "source_run_ref": null,
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "ローレルクラウン",
+          "source_run_ref": null,
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": "RRDB recommendation was reviewed, but no selected horse had a current-race-relevant MATCH signal strong enough to change the mainline or single-shot decision."
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "c63c1af5c3806ab4120dd78af911b46411995eb117b9a8e6a0c04cca9153a918"
+  }
+}

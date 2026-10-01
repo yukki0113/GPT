@@ -1,0 +1,205 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "京都",
+    "race_no": 1,
+    "race_key": "2026-01-25-京都-1",
+    "race_name": null,
+    "surface": "ダート",
+    "distance_m": 1800,
+    "class": "未勝利"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/京都/1R",
+    "racenote_semantic_sha256": "5fbef0feeb296fe3dcb26631b014b45dcb24effc0c471e6be762778a07e6c687",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 3,
+      "horse_name": "ジューンセクレタ",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 3,
+        "horse_name": "ジューンセクレタ",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 5,
+        "horse_name": "ロックバンド",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 6,
+        "horse_name": "スマートグロワール",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 9,
+          "horse_name": "テーオーカイザー",
+          "rank": 4
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "バケラッタ",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走阪神1800mは2着だが、アオル。二脚で番手から４角先頭も惜敗 / 状態は上向き",
+    "reader_facing_reason": "ジューンセクレタは前走阪神1800mは2着だが、アオル。二脚で番手から４角先頭も惜敗。状態は上向き。ここでは軸に取る。 ロックバンドも前走京都1900mは2着だが、好位内から直線内突き前は捉えるも惜敗、状態は上向き。相手の中心。 スマートグロワールは5着という見た目以上に補正タイムの中身が良かった、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "京都 ダート1800m 未勝利。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "ジューンセクレタ"
+        },
+        "case_for": "前走阪神1800mは2着だが、アオル。二脚で番手から４角先頭も惜敗 / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ロックバンド"
+        },
+        "case_for": "前走京都1900mは2着だが、好位内から直線内突き前は捉えるも惜敗 / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 9,
+          "horse_name": "テーオーカイザー"
+        },
+        "case_for": "前走京都1600mは3着だが、中団の前。４角進出もワンパンチ欠く / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "バケラッタ"
+        },
+        "case_for": "前走京都1800mは10着だが、中団の内も３角では鞍上の手動く / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 6,
+        "horse_name": "スマートグロワール"
+      },
+      "case_for": "前走京都1800mは5着だが、４角外から好位取り付くも伸びはジリ / 5着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走阪神1800mは2着だが、アオル。二脚で番手から４角先頭も惜敗 / 状態は上向き",
+      "second": "前走京都1900mは2着だが、好位内から直線内突き前は捉えるも惜敗 / 状態は上向き",
+      "third": "前走京都1800mは5着だが、４角外から好位取り付くも伸びはジリ / 5着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "others": [
+        "前走京都1600mは3着だが、中団の前。４角進出もワンパンチ欠く / 状態は上向き",
+        "前走京都1800mは10着だが、中団の内も３角では鞍上の手動く / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": true,
+      "horse_refs": [
+        {
+          "horse_no": 3,
+          "horse_name": "ジューンセクレタ",
+          "source_run_ref": "09255801",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "ロックバンド",
+          "source_run_ref": "08261302",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "スマートグロワール",
+          "source_run_ref": "08261502",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "HV01"
+          ],
+          "signal_strength": {
+            "HV01": {
+              "performance_signal": -0.01754385964912015,
+              "performance_band": "Q80_Q90",
+              "source_finish": 5
+            }
+          },
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 9,
+          "horse_name": "テーオーカイザー",
+          "source_run_ref": "08261206",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "バケラッタ",
+          "source_run_ref": "08261504",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": null
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "af1ff6cf757a7ed93dc4f999e630f42e3fc2d27ce8b31a7f99579ca96dc34e03"
+  }
+}

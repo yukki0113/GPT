@@ -1,0 +1,213 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "中山",
+    "race_no": 7,
+    "race_key": "2026-01-25-中山-7",
+    "race_name": null,
+    "surface": "芝",
+    "distance_m": 1600,
+    "class": "2勝クラス"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/中山/7R",
+    "racenote_semantic_sha256": "fa44e3071009d8820f112f55e2538bfe9e9a5f496cd1ff2c028ae980f0b09aa4",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 1,
+      "horse_name": "フォルラニーニ",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 1,
+        "horse_name": "フォルラニーニ",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 3,
+        "horse_name": "ストレイトトーカー",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 5,
+        "horse_name": "コスモアンソロジー",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 7,
+          "horse_name": "ロゼル",
+          "rank": 4
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "ガルサブランカ",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走東京1600mは2着だが、先団で掛かる。じわり前取り付き脚は続けた / 状態は上向き",
+    "reader_facing_reason": "フォルラニーニは前走東京1600mは2着だが、先団で掛かる。じわり前取り付き脚は続けた。状態は上向き。ここでは軸に取る。 ストレイトトーカーも前走中山1600mは3着だが、向正面寄られ３番手、４角先頭から粘ったが、状態は上向き。相手の中心。 コスモアンソロジーは前が厳しい流れを前めで踏ん張った内容、4着という見た目以上に補正タイムの中身が良かった、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "中山 芝1600m 2勝クラス。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "フォルラニーニ"
+        },
+        "case_for": "前走東京1600mは2着だが、先団で掛かる。じわり前取り付き脚は続けた / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "ストレイトトーカー"
+        },
+        "case_for": "前走中山1600mは3着だが、向正面寄られ３番手、４角先頭から粘ったが / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "ロゼル"
+        },
+        "case_for": "前走中山1600mは5着だが、中団内で追っつけ追走、直線は伸びきれず / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ガルサブランカ"
+        },
+        "case_for": "前走東京1600mは6着だが、先団内で宥め追走、直線追われ伸びずバテず / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 5,
+        "horse_name": "コスモアンソロジー"
+      },
+      "case_for": "前走京都1800mは4着だが、内枠からずっと内をロスなく最後伸び欠いた / 前が厳しい流れを前めで踏ん張った内容、4着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走東京1600mは2着だが、先団で掛かる。じわり前取り付き脚は続けた / 状態は上向き",
+      "second": "前走中山1600mは3着だが、向正面寄られ３番手、４角先頭から粘ったが / 状態は上向き",
+      "third": "前走京都1800mは4着だが、内枠からずっと内をロスなく最後伸び欠いた / 前が厳しい流れを前めで踏ん張った内容、4着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "others": [
+        "前走中山1600mは5着だが、中団内で追っつけ追走、直線は伸びきれず / 状態は上向き",
+        "前走東京1600mは6着だが、先団内で宥め追走、直線追われ伸びずバテず / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": true,
+      "horse_refs": [
+        {
+          "horse_no": 1,
+          "horse_name": "フォルラニーニ",
+          "source_run_ref": "05255312",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "ストレイトトーカー",
+          "source_run_ref": "06261310",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "コスモアンソロジー",
+          "source_run_ref": "08261209",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05",
+            "HV01"
+          ],
+          "signal_strength": {
+            "FRONT_SURVIVE_GAP05": {
+              "winner_gap_sec": 0.4000000000000057,
+              "pace_balance_percentile": 86.47342995169082,
+              "corner4_frontness": 0.7,
+              "source_finish": 4,
+              "source_won": false
+            },
+            "HV01": {
+              "performance_signal": 0.12152777777776988,
+              "performance_band": "Q80_Q90",
+              "source_finish": 4
+            }
+          },
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "ロゼル",
+          "source_run_ref": "06261310",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "ガルサブランカ",
+          "source_run_ref": "05255312",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": null
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "4cebf7044ca3299353c876cdfffcbea8e35559a6a018fff350b47cc64af40b8b"
+  }
+}

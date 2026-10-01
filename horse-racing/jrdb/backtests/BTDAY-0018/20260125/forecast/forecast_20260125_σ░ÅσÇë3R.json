@@ -1,0 +1,197 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "小倉",
+    "race_no": 3,
+    "race_key": "2026-01-25-小倉-3",
+    "race_name": null,
+    "surface": "ダート",
+    "distance_m": 1000,
+    "class": "1勝クラス"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/小倉/3R",
+    "racenote_semantic_sha256": "2c543320326eff3f7bdb507b0114186a66e9f0acfe87708f375c6bf02975c4d4",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 13,
+      "horse_name": "セイルロケット",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 13,
+        "horse_name": "セイルロケット",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 5,
+        "horse_name": "ヨドノゴールド",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 12,
+        "horse_name": "ラインパシオン",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 11,
+          "horse_name": "ヒラボクカレラ",
+          "rank": 4
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "マカニ",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走門別1000mは1着 / 状態は上向き",
+    "reader_facing_reason": "セイルロケットは前走門別1000mは1着。状態は上向き。ここでは軸に取る。 ヨドノゴールドも事前能力評価と仕上がりのバランスが良い、状態は上向き。相手の中心。 ラインパシオンは前走福島1150mは6着だが、Ｓ一息で馬群の内。直線ジリジリと差は詰め、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "小倉 ダート1000m 1勝クラス。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 13,
+          "horse_name": "セイルロケット"
+        },
+        "case_for": "前走門別1000mは1着 / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ヨドノゴールド"
+        },
+        "case_for": "状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "ヒラボクカレラ"
+        },
+        "case_for": "前走京都1200mは9着だが、好枠から二脚で先手も直線は踏ん張れず / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "マカニ"
+        },
+        "case_for": "前走札幌1000mは1着だが、外から促し先手。直線一杯も押し切る / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 12,
+        "horse_name": "ラインパシオン"
+      },
+      "case_for": "前走福島1150mは6着だが、Ｓ一息で馬群の内。直線ジリジリと差は詰め / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走門別1000mは1着 / 状態は上向き",
+      "second": "状態は上向き",
+      "third": "前走福島1150mは6着だが、Ｓ一息で馬群の内。直線ジリジリと差は詰め / 状態は上向き",
+      "others": [
+        "前走京都1200mは9着だが、好枠から二脚で先手も直線は踏ん張れず / 状態は上向き",
+        "前走札幌1000mは1着だが、外から促し先手。直線一杯も押し切る / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": false,
+      "horse_refs": [
+        {
+          "horse_no": 13,
+          "horse_name": "セイルロケット",
+          "source_run_ref": "01252503",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "ヨドノゴールド",
+          "source_run_ref": "04251712",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 12,
+          "horse_name": "ラインパシオン",
+          "source_run_ref": "03253502",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "ヒラボクカレラ",
+          "source_run_ref": "08261307",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "マカニ",
+          "source_run_ref": "01251302",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": "RRDB recommendation was reviewed, but no selected horse had a current-race-relevant MATCH signal strong enough to change the mainline or single-shot decision."
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "24473f05367b88126174798490dfe92224bd9f1da065ed66f02ff9ff1c1e928a"
+  }
+}

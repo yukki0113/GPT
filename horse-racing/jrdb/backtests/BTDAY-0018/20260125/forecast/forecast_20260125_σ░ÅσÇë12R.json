@@ -1,0 +1,231 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "小倉",
+    "race_no": 12,
+    "race_key": "2026-01-25-小倉-12",
+    "race_name": null,
+    "surface": "芝",
+    "distance_m": 2000,
+    "class": "1勝クラス"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/小倉/12R",
+    "racenote_semantic_sha256": "64a79d3fdbdde41289ed3698ed3996b701d0434f7c8cc11ffc5f02f46b90dcbc",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 3,
+      "horse_name": "エイシンジェンマ",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 3,
+        "horse_name": "エイシンジェンマ",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 10,
+        "horse_name": "マイネルアレス",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 13,
+        "horse_name": "マイネルアウルム",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 11,
+          "horse_name": "サラダ",
+          "rank": 4
+        },
+        {
+          "horse_no": 2,
+          "horse_name": "イゾレエオリア",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走中京2000mは8着だが、内を追送して行きたがる。もうひと伸びない / 8着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+    "reader_facing_reason": "エイシンジェンマは前走中京2000mは8着だが、内を追送して行きたがる。もうひと伸びない。さらに8着という見た目以上に補正タイムの中身が良かった。状態は上向き。ここでは軸に取る。 マイネルアレスも前走中山2200mは14着だが、後方馬群から３角手前で動くも、直線バテた、状態は上向き。相手の中心。 マイネルアウルムは前走の補正タイムは今回より上のクラスに通じる水準、7着という見た目以上に補正タイムの中身が良かった、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "小倉 芝2000m 1勝クラス。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "エイシンジェンマ"
+        },
+        "case_for": "前走中京2000mは8着だが、内を追送して行きたがる。もうひと伸びない / 8着という見た目以上に補正タイムの中身が良かった / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 10,
+          "horse_name": "マイネルアレス"
+        },
+        "case_for": "前走中山2200mは14着だが、後方馬群から３角手前で動くも、直線バテた / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "サラダ"
+        },
+        "case_for": "前走京都2000mは9着だが、中団馬群追走も直線は追われて伸びず / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "イゾレエオリア"
+        },
+        "case_for": "前走中山1800mは11着だが、出遅れて最後尾、直線最内進むが伸び脚一瞬 / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 13,
+        "horse_name": "マイネルアウルム"
+      },
+      "case_for": "前走東京2400mは7着だが、後方内追走、ロスなく捌いてジリジリだけは / 前走の補正タイムは今回より上のクラスに通じる水準、7着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走中京2000mは8着だが、内を追送して行きたがる。もうひと伸びない / 8着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "second": "前走中山2200mは14着だが、後方馬群から３角手前で動くも、直線バテた / 状態は上向き",
+      "third": "前走東京2400mは7着だが、後方内追走、ロスなく捌いてジリジリだけは / 前走の補正タイムは今回より上のクラスに通じる水準、7着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "others": [
+        "前走京都2000mは9着だが、中団馬群追走も直線は追われて伸びず / 状態は上向き",
+        "前走中山1800mは11着だが、出遅れて最後尾、直線最内進むが伸び脚一瞬 / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": true,
+      "horse_refs": [
+        {
+          "horse_no": 3,
+          "horse_name": "エイシンジェンマ",
+          "source_run_ref": "07255508",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "HV01",
+            "HV02"
+          ],
+          "signal_strength": {
+            "HV01": {
+              "performance_signal": 0.04375000000000995,
+              "performance_band": "Q80_Q90",
+              "source_finish": 8
+            },
+            "HV02": {
+              "performance_signal": 0.04375000000000995,
+              "performance_band": "Q80_Q90",
+              "source_finish": 8
+            }
+          },
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "マイネルアレス",
+          "source_run_ref": "06255707",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 13,
+          "horse_name": "マイネルアウルム",
+          "source_run_ref": "05255707",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "TIME_CLASS_PLUS1",
+            "HV01",
+            "HV02"
+          ],
+          "signal_strength": {
+            "TIME_CLASS_PLUS1": {
+              "class_gap_numeric": 2.0476190476190634,
+              "time_class_equivalent": "CLASS_3",
+              "time_class_equivalent_numeric": 4.047619047619063
+            },
+            "HV01": {
+              "performance_signal": 0.1785714285714235,
+              "performance_band": "Q90_Q95",
+              "source_finish": 7
+            },
+            "HV02": {
+              "performance_signal": 0.1785714285714235,
+              "performance_band": "Q90_Q95",
+              "source_finish": 7
+            }
+          },
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "サラダ",
+          "source_run_ref": "08254112",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 2,
+          "horse_name": "イゾレエオリア",
+          "source_run_ref": "06255412",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": null
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "2a049038197f47185469532ca76d2ff39687f39546dffe204637141c6ddc389b"
+  }
+}

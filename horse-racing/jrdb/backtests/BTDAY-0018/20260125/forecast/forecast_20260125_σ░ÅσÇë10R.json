@@ -1,0 +1,211 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "小倉",
+    "race_no": 10,
+    "race_key": "2026-01-25-小倉-10",
+    "race_name": "響灘特別",
+    "surface": "ダート",
+    "distance_m": 1700,
+    "class": "2勝クラス"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/小倉/10R",
+    "racenote_semantic_sha256": "228aae39a6c046c717ccbe0f0f86d88bef1a16fb3b819fd53adc313aba35d1f5",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 1,
+      "horse_name": "アイウィル",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 1,
+        "horse_name": "アイウィル",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 9,
+        "horse_name": "マナエトレ",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 4,
+        "horse_name": "ギマール",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 8,
+          "horse_name": "ライフゲート",
+          "rank": 4
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "マテンロウブレイブ",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走中山1800mは3着だが、中団内をロスなく進み直線入口接近渋太い脚 / 状態は上向き",
+    "reader_facing_reason": "アイウィルは前走中山1800mは3着だが、中団内をロスなく進み直線入口接近渋太い脚。状態は上向き。ここでは軸に取る。 マナエトレも前走京都1800mは2着だが、番手追走。直線も渋太く粘るも勝馬強く、状態は上向き。相手の中心。 ギマールは6着という見た目以上に補正タイムの中身が良かった、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "小倉 ダート1700m 2勝クラス。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "アイウィル"
+        },
+        "case_for": "前走中山1800mは3着だが、中団内をロスなく進み直線入口接近渋太い脚 / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 9,
+          "horse_name": "マナエトレ"
+        },
+        "case_for": "前走京都1800mは2着だが、番手追走。直線も渋太く粘るも勝馬強く / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ライフゲート"
+        },
+        "case_for": "前走中山1800mは7着だが、促して先手。淡々と運べたが直線は苦しく / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "マテンロウブレイブ"
+        },
+        "case_for": "前走福島1700mは1着だが、道中は後方。直線外出してＧ前差し切る / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 4,
+        "horse_name": "ギマール"
+      },
+      "case_for": "前走阪神1800mは6着だが、内をロスなく立ち回るも直線良い脚少し / 6着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走中山1800mは3着だが、中団内をロスなく進み直線入口接近渋太い脚 / 状態は上向き",
+      "second": "前走京都1800mは2着だが、番手追走。直線も渋太く粘るも勝馬強く / 状態は上向き",
+      "third": "前走阪神1800mは6着だが、内をロスなく立ち回るも直線良い脚少し / 6着という見た目以上に補正タイムの中身が良かった / 状態は上向き",
+      "others": [
+        "前走中山1800mは7着だが、促して先手。淡々と運べたが直線は苦しく / 状態は上向き",
+        "前走福島1700mは1着だが、道中は後方。直線外出してＧ前差し切る / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": true,
+      "horse_refs": [
+        {
+          "horse_no": 1,
+          "horse_name": "アイウィル",
+          "source_run_ref": "06261209",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 9,
+          "horse_name": "マナエトレ",
+          "source_run_ref": "08261109",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "ギマール",
+          "source_run_ref": "09255209",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "HV01",
+            "HV02"
+          ],
+          "signal_strength": {
+            "HV01": {
+              "performance_signal": -0.027777777777776198,
+              "performance_band": "Q80_Q90",
+              "source_finish": 6
+            },
+            "HV02": {
+              "performance_signal": -0.027777777777776198,
+              "performance_band": "Q80_Q90",
+              "source_finish": 6
+            }
+          },
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "ライフゲート",
+          "source_run_ref": "06255110",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "マテンロウブレイブ",
+          "source_run_ref": "03253506",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": null
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "6bdc61f6b9e7b4124c95c6adea949fe29a9f49a42c42f12cfd16946457e37d98"
+  }
+}

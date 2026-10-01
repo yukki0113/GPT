@@ -1,0 +1,216 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "中山",
+    "race_no": 8,
+    "race_key": "2026-01-25-中山-8",
+    "race_name": null,
+    "surface": "ダート",
+    "distance_m": 1200,
+    "class": "2勝クラス"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/中山/8R",
+    "racenote_semantic_sha256": "2fb2c284770ddb9457028981fd66c00eb52462edd2a5988c7840666675947301",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 2,
+      "horse_name": "ハードセルツァー",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 2,
+        "horse_name": "ハードセルツァー",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 8,
+        "horse_name": "ジャスパーソレイユ",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 4,
+        "horse_name": "フォーワンセルフ",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 5,
+          "horse_name": "ショウナンハクウン",
+          "rank": 4
+        },
+        {
+          "horse_no": 9,
+          "horse_name": "ホウオウプレミア",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走中山1200mは2着だが、馬なり中団追走、直線外を回り渋太く伸びる / 前が厳しい流れを前めで踏ん張った内容 / 状態は上向き",
+    "reader_facing_reason": "ハードセルツァーは前走中山1200mは2着だが、馬なり中団追走、直線外を回り渋太く伸びる。さらに前が厳しい流れを前めで踏ん張った内容。状態は上向き。ここでは軸に取る。 ジャスパーソレイユも前走中山1200mは2着だが、促して先手。単騎で運んで良く粘れてるが、状態は上向き。相手の中心。 フォーワンセルフは後方から上位級の末脚を使った内容、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "中山 ダート1200m 2勝クラス。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "ハードセルツァー"
+        },
+        "case_for": "前走中山1200mは2着だが、馬なり中団追走、直線外を回り渋太く伸びる / 前が厳しい流れを前めで踏ん張った内容 / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ジャスパーソレイユ"
+        },
+        "case_for": "前走中山1200mは2着だが、促して先手。単騎で運んで良く粘れてるが / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ショウナンハクウン"
+        },
+        "case_for": "前走中山1200mは3着だが、促して好位、最後までバテずに脚は続けたが / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 9,
+          "horse_name": "ホウオウプレミア"
+        },
+        "case_for": "前走東京1600mは5着だが、先団で宥め追走、直線追われて伸びきれず / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 4,
+        "horse_name": "フォーワンセルフ"
+      },
+      "case_for": "前走中京1400mは7着だが、出遅れてダッシュも一息。４角大外多少伸び / 後方から上位級の末脚を使った内容 / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走中山1200mは2着だが、馬なり中団追走、直線外を回り渋太く伸びる / 前が厳しい流れを前めで踏ん張った内容 / 状態は上向き",
+      "second": "前走中山1200mは2着だが、促して先手。単騎で運んで良く粘れてるが / 状態は上向き",
+      "third": "前走中京1400mは7着だが、出遅れてダッシュも一息。４角大外多少伸び / 後方から上位級の末脚を使った内容 / 状態は上向き",
+      "others": [
+        "前走中山1200mは3着だが、促して好位、最後までバテずに脚は続けたが / 状態は上向き",
+        "前走東京1600mは5着だが、先団で宥め追走、直線追われて伸びきれず / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": true,
+      "horse_refs": [
+        {
+          "horse_no": 2,
+          "horse_name": "ハードセルツァー",
+          "source_run_ref": "06261412",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ],
+          "signal_strength": {
+            "FRONT_SURVIVE_GAP05": {
+              "winner_gap_sec": 0.19999999999998863,
+              "pace_balance_percentile": 89.18781725888324,
+              "corner4_frontness": 0.6,
+              "source_finish": 2,
+              "source_won": false
+            }
+          },
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "ジャスパーソレイユ",
+          "source_run_ref": "06261112",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "フォーワンセルフ",
+          "source_run_ref": "07255510",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [
+            "REAR_HIGH_LAST3F90"
+          ],
+          "signal_strength": {
+            "REAR_HIGH_LAST3F90": {
+              "last3f_speed_percentile": 100.0,
+              "winner_gap_sec": 0.6000000000000085,
+              "pace_balance_percentile": 22.77227722772277,
+              "corner4_frontness": 0.1333333333333333
+            }
+          },
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "ショウナンハクウン",
+          "source_run_ref": "06261112",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 9,
+          "horse_name": "ホウオウプレミア",
+          "source_run_ref": "05255508",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": null
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "5301b823f75f9472c504911b4c9bfcaa8341d10e5179cd01db57fe4b9a10cc76"
+  }
+}

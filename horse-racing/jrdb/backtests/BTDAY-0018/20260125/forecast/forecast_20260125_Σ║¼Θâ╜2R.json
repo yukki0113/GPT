@@ -1,0 +1,197 @@
+{
+  "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+  "identity": {
+    "target_date": "2026-01-25",
+    "venue": "京都",
+    "race_no": 2,
+    "race_key": "2026-01-25-京都-2",
+    "race_name": null,
+    "surface": "ダート",
+    "distance_m": 1900,
+    "class": "未勝利"
+  },
+  "research": {
+    "evaluation_mode": "BLINDED_HISTORICAL",
+    "turn_id": "BTDAY-0018-TURN2-FULLDAY",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+    "candidate_patch": "mainline + single-shot five-mark forecast",
+    "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+  },
+  "source": {
+    "racenote_identity": "BTDAY-0018/20260125/京都/2R",
+    "racenote_semantic_sha256": "6bf3d186b4849c9e800306b5f3a05bf32a69f44a1cc3b1fc821f0b9cbb4f25f5",
+    "day_prep_package": "BTDAY-0018_DAY_PREP_20260125_FINAL.zip",
+    "main_sha_at_forecast": "66bb018d23d00a0de6578651c8eaae53b3b14275",
+    "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
+  },
+  "prediction": {
+    "axis": {
+      "horse_no": 9,
+      "horse_name": "ジャスティンゴッホ",
+      "rank": 1
+    },
+    "marks": {
+      "main": {
+        "horse_no": 9,
+        "horse_name": "ジャスティンゴッホ",
+        "rank": 1
+      },
+      "second": {
+        "horse_no": 16,
+        "horse_name": "ドメイン",
+        "rank": 2
+      },
+      "third": {
+        "horse_no": 10,
+        "horse_name": "ロードヴェリタス",
+        "rank": 3
+      },
+      "others": [
+        {
+          "horse_no": 11,
+          "horse_name": "ガウラディスコ",
+          "rank": 4
+        },
+        {
+          "horse_no": 14,
+          "horse_name": "ハイドパーク",
+          "rank": 5
+        }
+      ]
+    },
+    "axis_comment": "前走阪神1800mは2着だが、出ムチ入れて好位。直線前追うも脚色同じに / 状態は上向き",
+    "reader_facing_reason": "ジャスティンゴッホは前走阪神1800mは2着だが、出ムチ入れて好位。直線前追うも脚色同じに。状態は上向き。ここでは軸に取る。 ドメインも前走京都1900mは3着だが、二脚で番手。直線ジリジリで終い切れ負け、状態は上向き。相手の中心。 ロードヴェリタスは前走京都1800mは7着だが、行き脚なく馬群後方。外から流れ込み、状態は上向き。展開が噛み合えば上位へ割り込める。",
+    "stability_counter_reason": null,
+    "concern": null,
+    "full_field_order": null
+  },
+  "decision_trace": {
+    "race_model": "京都 ダート1900m 未勝利。事前の能力・近走内容・位置取り・仕上がりを全頭比較し、本線を形成。その後に本線順位とは独立して、過去走の見た目以上の内容や今回条件での上位割り込み余地を全頭から再探索した。",
+    "mainline_cases": [
+      {
+        "horse": {
+          "horse_no": 9,
+          "horse_name": "ジャスティンゴッホ"
+        },
+        "case_for": "前走阪神1800mは2着だが、出ムチ入れて好位。直線前追うも脚色同じに / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 16,
+          "horse_name": "ドメイン"
+        },
+        "case_for": "前走京都1900mは3着だが、二脚で番手。直線ジリジリで終い切れ負け / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "ガウラディスコ"
+        },
+        "case_for": "前走京都1900mは7着だが、１角膨れる。終始馬群の外で早々にムチ / 状態は上向き"
+      },
+      {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "ハイドパーク"
+        },
+        "case_for": "前走京都1800mは11着だが、馬群後方でモタ付き追い上げはなく / 状態は上向き"
+      }
+    ],
+    "single_shot_case": {
+      "horse": {
+        "horse_no": 10,
+        "horse_name": "ロードヴェリタス"
+      },
+      "case_for": "前走京都1800mは7着だが、行き脚なく馬群後方。外から流れ込み / 状態は上向き",
+      "selected_independently_from_mainline": true
+    },
+    "mark_reason": {
+      "main": "前走阪神1800mは2着だが、出ムチ入れて好位。直線前追うも脚色同じに / 状態は上向き",
+      "second": "前走京都1900mは3着だが、二脚で番手。直線ジリジリで終い切れ負け / 状態は上向き",
+      "third": "前走京都1800mは7着だが、行き脚なく馬群後方。外から流れ込み / 状態は上向き",
+      "others": [
+        "前走京都1900mは7着だが、１角膨れる。終始馬群の外で早々にムチ / 状態は上向き",
+        "前走京都1800mは11着だが、馬群後方でモタ付き追い上げはなく / 状態は上向き"
+      ]
+    },
+    "rrdb_evidence": {
+      "available": true,
+      "reviewed": true,
+      "used_in_decision": false,
+      "horse_refs": [
+        {
+          "horse_no": 9,
+          "horse_name": "ジャスティンゴッホ",
+          "source_run_ref": "09255206",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "UPGRADE_RECENT_FORM",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 16,
+          "horse_name": "ドメイン",
+          "source_run_ref": "08261302",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_REPEATABILITY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "ロードヴェリタス",
+          "source_run_ref": "08261504",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "SUPPORT_COUNTERARGUMENT",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "ガウラディスコ",
+          "source_run_ref": "08261202",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        },
+        {
+          "horse_no": 14,
+          "horse_name": "ハイドパーク",
+          "source_run_ref": "08261504",
+          "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+          "matched_signal_ids": [],
+          "signal_strength": null,
+          "decision_role": "CONTEXT_ONLY",
+          "next_watch_grade": null,
+          "matched_rule_ids": []
+        }
+      ],
+      "reason_not_used": "RRDB recommendation was reviewed, but no selected horse had a current-race-relevant MATCH signal strong enough to change the mainline or single-shot decision."
+    },
+    "legacy_0_3_fields": {
+      "status": "NOT_USED_v0.4.2"
+    }
+  },
+  "audit": {
+    "created_at": "2026-10-01T09:03:00+00:00",
+    "frozen_at": "2026-10-01T09:03:00+00:00",
+    "pre_result_guard": "PASS",
+    "result_visible_at_freeze": false,
+    "five_mark_role_guard": "PASS",
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS",
+    "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+    "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_2_GRADE_DISABLED",
+    "legacy_converge_machinery": "NOT_USED",
+    "prediction_hash": "f284b0593497b96976e5f88527922fe1a42bc59867d7b503ca040e101fd10740"
+  }
+}
