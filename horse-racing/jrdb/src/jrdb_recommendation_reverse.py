@@ -20,6 +20,7 @@ from jrdb_recommendation_signals import (
     OPERATIONAL_LOOKBACK_DAYS,
     VERSION as SIGNAL_VERSION,
     human_summary,
+    newspaper_comment,
     recommendation_payload,
 )
 
@@ -215,6 +216,7 @@ def main() -> int:
                 },
                 **payload,
                 "human_summary": human_summary(item),
+                "newspaper_comment": newspaper_comment(item),
             }
             if payload["status"] == "MATCH":
                 recommendations.append(record)
