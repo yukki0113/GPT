@@ -104,6 +104,16 @@ Performance / Value、CONFIRMED / SUGGESTIVE、重複Edgeを安易に数値加�
 
 Canonical SQLiteはRawを置換する正本ではなく、反復・横断アクセス用のmaterializationです。
 
+### Result / payout query
+
+- `src/jrdb_result_query.py` — completed-race deterministic lookup for **SED top-3 result + HJC all payouts**.
+- Default output is 1st-3rd finishers (horse no/name/final popularity/final win odds) plus all eight payout types: win/place/frame quinella/quinella/wide/exacta/trio/trifecta.
+- `--include-all-runners` exposes the full SED field only when needed.
+- 2010-2025 historical mode can read accepted Warehouse `sed` + `hjc_payout`; current operation reads SED/HJC Raw.
+- The tool owns no fixed-width offsets, performs no prediction/ROI calculation, and never performs automatic Web fallback.
+- For JRDB-covered completed JRA result/payout questions, use this tool before general Web search.
+- Contract: `docs/README_jrdb_result_query.md`.
+
 ### Analysis Lite / post-race
 
 Current Analysis canonical is **v1.4 immutable Parquet** under
