@@ -100,7 +100,7 @@ jobs:
         with:
           name: jrdb-edge-v04-stage-c1-plan-${{ github.run_id }}
           path: /tmp/plan/
-          retention-days: 30
+          retention-days: 7
           if-no-files-found: error
           compression-level: 6
 
@@ -190,7 +190,7 @@ jobs:
         with:
           name: jrdb-edge-v04-stage-c1-shard-${{ github.run_id }}-${{ matrix.shard_id }}
           path: /tmp/out/
-          retention-days: 30
+          retention-days: 7
           if-no-files-found: error
           compression-level: 6
 
