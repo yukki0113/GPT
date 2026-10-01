@@ -28,36 +28,23 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install duckdb pyarrow pandas numpy jsonschema gdown
 
-      - name: Pick and persist BTDAY-0014 from unused eligible pool
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Load fixed BTDAY-0014 selection
         run: |
           set -euo pipefail
-          STATE='horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json'
-          cp "$STATE" /tmp/pool.json
-          python horse-racing/jrdb/src/racenote_backtest_day_picker.py pick             --state /tmp/pool.json             -n 1             --seed '9d4c7a2e61b548f3a0c9e7126b8d35f4'             | tee /tmp/selection.json
-
           python - <<'PY'
           import json
           from pathlib import Path
-          pool=json.loads(Path('/tmp/pool.json').read_text(encoding='utf-8'))
-          sel=json.loads(Path('/tmp/selection.json').read_text(encoding='utf-8'))
-          assert sel['selection_id']=='BTDAY-0014', sel
-          date=sel['dates'][0]
-          row=next(x for x in pool['days'] if x['date']==date)
-          Path('/tmp/date.txt').write_text(date,encoding='utf-8')
-          Path('/tmp/date_compact.txt').write_text(date.replace('-',''),encoding='utf-8')
+          pool=json.loads(Path('horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json').read_text(encoding='utf-8'))
+          sel=next(x for x in pool['selections'] if x['selection_id']=='BTDAY-0014')
+          assert sel['dates']==['2026-08-22'], sel
+          row=next(x for x in pool['days'] if x['date']=='2026-08-22')
+          assert row['used'] is True and row['selection_id']=='BTDAY-0014', row
+          Path('/tmp/date.txt').write_text('2026-08-22',encoding='utf-8')
+          Path('/tmp/date_compact.txt').write_text('20260822',encoding='utf-8')
           Path('/tmp/file_name.txt').write_text(row['file_name'],encoding='utf-8')
           Path('/tmp/drive_file_id.txt').write_text(row['drive_file_id'],encoding='utf-8')
           print(json.dumps({'selection':sel,'row':row},ensure_ascii=False,indent=2))
           PY
-
-          cp /tmp/pool.json "$STATE"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$STATE"
-          git commit -m "RaceNote: fix BTDAY-0014 target date"
-          git push origin HEAD:main
 
       - name: Prepare sources
         env:
