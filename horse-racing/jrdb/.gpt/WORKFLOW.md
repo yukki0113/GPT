@@ -63,6 +63,26 @@ For both commands:
 
 Do not use the retired Actions-to-Drive bridge.
 
+## Completed-race Result Query — mandatory Drive bridge
+
+For requests asking for completed JRA results, payouts, hit settlement, ROI inputs, or in-the-money outcomes, do **not** search the public Web first.
+
+Standard execution:
+
+1. Read `docs/README_jrdb_result_query.md`.
+2. Run `src/jrdb_result_query_runner.py --date ... --plan` to obtain the exact required SED/HJC Drive paths.
+3. Use the **native Google Drive connector** to locate and materialize those files into the plan's local paths.
+4. Execute `src/jrdb_result_query_runner.py --date ... [--venue ...] [--race ...]`.
+5. If the query returns `success` / `review_required`, use JRDB as the result source.
+6. If a required Drive object cannot be found after an actual Drive inventory check, report the JRDB gap. External Web may be used only when the user needs a fallback fact and the JRDB source is genuinely absent/outside coverage.
+
+Important:
+- Raw ZIPs are intentionally excluded from Git. "Raw is not in the repository" is an expected state, not a failure.
+- Do not use GitHub repository search to decide whether SED/HJC data exists.
+- Do not ask the user to provide local paths when the connected Project Drive contains the source.
+- Do not add a direct Drive client/gdown/API transport to GitHub Actions for this flow; transport remains GPT/native-connector -> runtime.
+- 2026+ uses daily `SEDyymmdd.zip` + `HJCyymmdd.zip`; <=2025 runner plans annual `SED_YYYY.zip` + `HJC_YYYY.zip`, which the query engine filters to the requested date.
+
 ## GitHub routing standard — 2026-09-10
 
 JRDBをChatGPTから扱う場合、処理開始時に「GitHub Actions実行環境が本当に必要か」を判定し、次の4経路を標準とする。Issue駆動を既定経路にはしない。
