@@ -1,0 +1,2262 @@
+[
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 1,
+      "race_key": "2026-01-31-東京-1",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1400,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/1R",
+      "racenote_semantic_sha256": "cf3de0795b0635ba28b857c66dc51fa009f65d602ceea98ba562cad064aae097",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "メビウスロマンス",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "メビウスロマンス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "マカイゾウ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 10,
+          "horse_name": "クアロアランチ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "ヨルヴィック",
+            "rank": 4
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "レースクイーン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 39.0 / 好発構えて先団内、最後まで渋太く脚使った / 同距離1走/3着内1 / 調教上昇",
+      "reader_facing_reason": "メビウスロマンスは前走で好位の内から最後まで脚を使えており、今回は調教も上向き。前で流れに乗れる強みをそのまま本命に取る。単穴クアロアランチは前走も好位でロスなく運べており、もうひと押しが利けば一段上まである。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 ダート1400m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "メビウスロマンス"
+          },
+          "case_for": "IDM 39.0 / 好発構えて先団内、最後まで渋太く脚使った / 同距離1走/3着内1 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "マカイゾウ"
+          },
+          "case_for": "IDM 35.9 / 好発押して１列目の外、直線渋太く脚伸ばす / 同距離2走/3着内2"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ヨルヴィック"
+          },
+          "case_for": "IDM 33.1 / スッと先手も、３角から並ばれて苦しく。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "レースクイーン"
+          },
+          "case_for": "IDM 28.0 / 先団で促し追走、勝負所遅れるもバテはせず"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 10,
+          "horse_name": "クアロアランチ"
+        },
+        "case_for": "好位でロスなく運べた前走に加え調教上昇・Next-Watch A。決め手が一段増せば上位を崩せる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 39.0 / 好発構えて先団内、最後まで渋太く脚使った / 同距離1走/3着内1 / 調教上昇",
+        "second": "IDM 35.9 / 好発押して１列目の外、直線渋太く脚伸ばす / 同距離2走/3着内2",
+        "third": "好位でロスなく運べた前走に加え調教上昇・Next-Watch A。決め手が一段増せば上位を崩せる。",
+        "others": [
+          "IDM 33.1 / スッと先手も、３角から並ばれて苦しく。",
+          "IDM 28.0 / 先団で促し追走、勝負所遅れるもバテはせず"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 8,
+            "horse_name": "メビウスロマンス",
+            "source_run_ref": "05254a04",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "マカイゾウ",
+            "source_run_ref": "05255401",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "クアロアランチ",
+            "source_run_ref": "05255306",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "ヨルヴィック",
+            "source_run_ref": "05255504",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "レースクイーン",
+            "source_run_ref": "06261101",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "a669c2658460d18a7c29f082228e58f01170363c6fe5136e1bf244122a507e91",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 2,
+      "race_key": "2026-01-31-東京-2",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 2100,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/2R",
+      "racenote_semantic_sha256": "563f0a7238a870d19009e99e19a1c1cbda6406dbfdb7e85b34396b00faa947d8",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "ヴェラグエリエロ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "ヴェラグエリエロ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 11,
+          "horse_name": "カージオイド",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "ナムラジミー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 5,
+            "horse_name": "スマートクオーレ",
+            "rank": 4
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ディズレーリ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 48.0 / 促して番手。逃げ馬に付いて行き渋太く粘る / 同距離1走/3着内1",
+      "reader_facing_reason": "ヴェラグエリエロは前走で番手から渋太く残しており、長丁場でも自分から位置を取れるのが強み。カージオイドを相手本線に置く。ナムラジミーは前走で躓いて後方になりながら直線は脚を使っており、発馬がまともなら着順を大きく変えられる。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 ダート2100m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ヴェラグエリエロ"
+          },
+          "case_for": "IDM 48.0 / 促して番手。逃げ馬に付いて行き渋太く粘る / 同距離1走/3着内1"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "カージオイド"
+          },
+          "case_for": "IDM 46.2 / 構えて中団内、砂被り反応悪いがバテずに。 / 同距離2走/3着内1 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "スマートクオーレ"
+          },
+          "case_for": "IDM 43.0 / 押して中団内勝負所も我慢、直線捌いて浮上 / 同距離2走/3着内0 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ディズレーリ"
+          },
+          "case_for": "IDM 46.1 / 中団後で宥め追走、直線外からジリジリ伸び / 同距離11走/3着内2 / Next-Watch A"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "ナムラジミー"
+        },
+        "case_for": "前走は発馬で躓いて後方。それでも直線は伸びており、発馬正常化が直接的な上振れ要因。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 48.0 / 促して番手。逃げ馬に付いて行き渋太く粘る / 同距離1走/3着内1",
+        "second": "IDM 46.2 / 構えて中団内、砂被り反応悪いがバテずに。 / 同距離2走/3着内1 / 調教上昇",
+        "third": "前走は発馬で躓いて後方。それでも直線は伸びており、発馬正常化が直接的な上振れ要因。",
+        "others": [
+          "IDM 43.0 / 押して中団内勝負所も我慢、直線捌いて浮上 / 同距離2走/3着内0 / 調教上昇",
+          "IDM 46.1 / 中団後で宥め追走、直線外からジリジリ伸び / 同距離11走/3着内2 / Next-Watch A"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 2,
+            "horse_name": "ヴェラグエリエロ",
+            "source_run_ref": "05255507",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "カージオイド",
+            "source_run_ref": "06261107",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "ナムラジミー",
+            "source_run_ref": "06261306",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "スマートクオーレ",
+            "source_run_ref": "06261204",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ディズレーリ",
+            "source_run_ref": "05255507",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "840ee81e3a0c5b69799c3c0cff0f6884f41799e9edac54bd960989383512b06d",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 3,
+      "race_key": "2026-01-31-東京-3",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1600,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/3R",
+      "racenote_semantic_sha256": "62b8d55aee3851ae20f66a4746d49e796d2ec635575b5804b1f01f97fcbd1935",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "ミスターキャンベラ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "ミスターキャンベラ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "キセログラフィカ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "スティールヴォーグ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 13,
+            "horse_name": "フォルナカリア",
+            "rank": 4
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "アラクラン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 40.0 / 促して２番手、先頭と一騎打ちも伸び負けた / 調教上昇",
+      "reader_facing_reason": "ミスターキャンベラは前走で早めに前を射程へ入れ、最後まで一騎打ちに持ち込んだ内容を評価する。タイキブリッツェンは前走こそ直線で甘くなったが、先手を取れる形なら展開そのものを変えられるので単穴に残す。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 ダート1600m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ミスターキャンベラ"
+          },
+          "case_for": "IDM 40.0 / 促して２番手、先頭と一騎打ちも伸び負けた / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "キセログラフィカ"
+          },
+          "case_for": "IDM 37.0 / 馬なり好位外３番手、直線渋太く差は詰める / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "フォルナカリア"
+          },
+          "case_for": "IDM 34.6 / 先団で前見つつ、ロスなく運ぶも追われ甘い / 同距離1走/3着内0 / Next-Watch A"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "アラクラン"
+          },
+          "case_for": "IDM 36.0 / 仕掛けて先団外、早めに進出も直線半ば一杯 / 同距離1走/3着内0"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "スティールヴォーグ"
+        },
+        "case_for": "前走は逃げて3着。調教上昇もあり、単騎で運べれば展開を支配できる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 40.0 / 促して２番手、先頭と一騎打ちも伸び負けた / 調教上昇",
+        "second": "IDM 37.0 / 馬なり好位外３番手、直線渋太く差は詰める / 調教上昇",
+        "third": "前走は逃げて3着。調教上昇もあり、単騎で運べれば展開を支配できる。",
+        "others": [
+          "IDM 34.6 / 先団で前見つつ、ロスなく運ぶも追われ甘い / 同距離1走/3着内0 / Next-Watch A",
+          "IDM 36.0 / 仕掛けて先団外、早めに進出も直線半ば一杯 / 同距離1走/3着内0"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "ミスターキャンベラ",
+            "source_run_ref": "06261403",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "キセログラフィカ",
+            "source_run_ref": "06261203",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "EARLY_POSITION_GAIN",
+              "MIDDLE_POSITION_LOSS",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "スティールヴォーグ",
+            "source_run_ref": "06255306",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "CLOSING_LOSS",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "フォルナカリア",
+            "source_run_ref": "06254605",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "LATE_POSITION_LOSS",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "アラクラン",
+            "source_run_ref": "05254a01",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_FRONT_LOADED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "5035cc596ee791d5ae79c9a704f5a75b76ba9f8aed31d4213ab2981ddac555ce",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 4,
+      "race_key": "2026-01-31-東京-4",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1400,
+      "class": "新馬"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/4R",
+      "racenote_semantic_sha256": "a96cb8956abc259a8474574a460ced3da1714763e95a694afa3854d5eadea896",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "アトミックブレス",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "アトミックブレス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 5,
+          "horse_name": "アリハム",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 10,
+          "horse_name": "デスサイズ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 13,
+            "horse_name": "イアソンテソーロ",
+            "rank": 4
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "ユキノグラス",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 38.5 / 調教上昇",
+      "reader_facing_reason": "初出走組の中ではアトミックブレスの調教内容と終いの見通しを最上位に取る。アリハムも仕上がりは良好。デスサイズは全体評価では一枚下でも、終い上位の想定が出ており、新馬戦らしい上振れ余地を▲で拾う。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 ダート1400m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "アトミックブレス"
+          },
+          "case_for": "IDM 38.5 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "アリハム"
+          },
+          "case_for": "IDM 34.6 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "イアソンテソーロ"
+          },
+          "case_for": "IDM 21.5"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ユキノグラス"
+          },
+          "case_for": "IDM 20.4"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 10,
+          "horse_name": "デスサイズ"
+        },
+        "case_for": "初出走で不確実性は大きいが、終い上位想定が出ており、新馬戦の一変余地を拾う。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 38.5 / 調教上昇",
+        "second": "IDM 34.6 / 調教上昇",
+        "third": "初出走で不確実性は大きいが、終い上位想定が出ており、新馬戦の一変余地を拾う。",
+        "others": [
+          "IDM 21.5",
+          "IDM 20.4"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": []
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "43f6934842d2d0be08e4ecd0ed406db5082bbedd87772ad44a5206812fbcee18",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 5,
+      "race_key": "2026-01-31-東京-5",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1800,
+      "class": "新馬"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/5R",
+      "racenote_semantic_sha256": "419e6be9f31923721475d2ed9f482af3d801b078dca50b9bb633a538440d3368",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 15,
+        "horse_name": "コンティ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 15,
+          "horse_name": "コンティ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "ウイルソン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 8,
+          "horse_name": "マーゴットドライ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 16,
+            "horse_name": "アマンヘセル",
+            "rank": 4
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "リッツパーティー",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 49.5 / 調教上昇",
+      "reader_facing_reason": "コンティは初戦から動けるだけの仕上がりと能力水準が目立つ。ウイルソンも終いを使える想定で相手本線。マーゴットドライは総合値では上位二頭に譲るが、末脚を生かす形になれば初戦から割って入れるとみる。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 芝1800m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "コンティ"
+          },
+          "case_for": "IDM 49.5 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ウイルソン"
+          },
+          "case_for": "IDM 43.6 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "アマンヘセル"
+          },
+          "case_for": "IDM 37.9"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "リッツパーティー"
+          },
+          "case_for": "IDM 28.3"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "マーゴットドライ"
+        },
+        "case_for": "初戦での完成度は上位に譲るが、上位の末脚想定があり直線勝負での上振れを取る。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 49.5 / 調教上昇",
+        "second": "IDM 43.6 / 調教上昇",
+        "third": "初戦での完成度は上位に譲るが、上位の末脚想定があり直線勝負での上振れを取る。",
+        "others": [
+          "IDM 37.9",
+          "IDM 28.3"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": []
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "ac27cfbc84e4ef41673c86df403ceb339718c25fcd029124d761d2a2829fb5c4",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 6,
+      "race_key": "2026-01-31-東京-6",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1600,
+      "class": "未勝利"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/6R",
+      "racenote_semantic_sha256": "76d10223e6496305bf87f01e32c9a2f8d400e8dd286ff5ee46a56ab06aedad81",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 11,
+        "horse_name": "ペルウィクトール",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 11,
+          "horse_name": "ペルウィクトール",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "ミスティユニバンス",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "タッカーヴァンバン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "リアライズリバティ",
+            "rank": 4
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "ベアサナエチャン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 39.2 / 好発、譲ってハコ内追走内空かず外出し３着 / 同距離1走/3着内1 / 調教デキ抜群",
+      "reader_facing_reason": "ペルウィクトールは前走で内が開かず外へ切り替えながら3着まで来ており、今回は調教も高水準。スムーズならもう一段前進できる。タッカーヴァンバンは後方から押し上げて止まらなかった前走内容とNext-Watch Sを評価し、流れが向けば頭まで届く単穴。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 芝1600m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ペルウィクトール"
+          },
+          "case_for": "IDM 39.2 / 好発、譲ってハコ内追走内空かず外出し３着 / 同距離1走/3着内1 / 調教デキ抜群"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ミスティユニバンス"
+          },
+          "case_for": "IDM 39.1 / 好発も控えて中団、直線外から伸び僅差２着 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "リアライズリバティ"
+          },
+          "case_for": "IDM 35.4 / 好発促し好位内、直線上手く捌いて２着浮上 / 同距離1走/3着内1"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "ベアサナエチャン"
+          },
+          "case_for": "IDM 39.0 / 促して先団内、内ロスなく運ぶも直線は甘く / 同距離4走/3着内2 / Next-Watch A"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "タッカーヴァンバン"
+        },
+        "case_for": "前走は後方から押し上げて止まらず、調教上昇かつNext-Watch S。流れが噛み合えば差し切り圏。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 39.2 / 好発、譲ってハコ内追走内空かず外出し３着 / 同距離1走/3着内1 / 調教デキ抜群",
+        "second": "IDM 39.1 / 好発も控えて中団、直線外から伸び僅差２着 / 調教上昇",
+        "third": "前走は後方から押し上げて止まらず、調教上昇かつNext-Watch S。流れが噛み合えば差し切り圏。",
+        "others": [
+          "IDM 35.4 / 好発促し好位内、直線上手く捌いて２着浮上 / 同距離1走/3着内1",
+          "IDM 39.0 / 促して先団内、内ロスなく運ぶも直線は甘く / 同距離4走/3着内2 / Next-Watch A"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 11,
+            "horse_name": "ペルウィクトール",
+            "source_run_ref": "04252203",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "PACE_VERY_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "ミスティユニバンス",
+            "source_run_ref": "05255403",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "タッカーヴァンバン",
+            "source_run_ref": "06261205",
+            "next_watch_grade": "S",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "リアライズリバティ",
+            "source_run_ref": "05255201",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "ベアサナエチャン",
+            "source_run_ref": "06261105",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "EARLY_POSITION_GAIN",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_BALANCED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "0a42df8fa2ed4a83012b88d6f2a51478125ff6cf11e8c1ac94595cd5228ef41e",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 7,
+      "race_key": "2026-01-31-東京-7",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1600,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/7R",
+      "racenote_semantic_sha256": "8c8d5454fd2db4a6d4437e8cf78b97cf77db21eeeaedd8399e6ee902055ab6f6",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "ビービークローサー",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "ビービークローサー",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "リベッチオ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "ヴォーカライズ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 1,
+            "horse_name": "ドンエレクトス",
+            "rank": 4
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "サンラザール",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 53.0 / Ｓ一息。ジワリ好位から直線外伸びで差し切",
+      "reader_facing_reason": "ビービークローサーは出遅れ気味でも好位へ取りつき、直線で差し切った内容が素直に強い。リベッチオも逃げ切り直後で本線。ヴォーカライズは先手を取って押し切った前走から、再び自分のリズムなら本線勢をまとめて崩せる。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 ダート1600m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ビービークローサー"
+          },
+          "case_for": "IDM 53.0 / Ｓ一息。ジワリ好位から直線外伸びで差し切"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "リベッチオ"
+          },
+          "case_for": "IDM 52.1 / 好発促し楽にハナ、外張りつつも直線凌いだ / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ドンエレクトス"
+          },
+          "case_for": "IDM 52.0 / 後方で追っつけ追走、直線外出すと良く伸び / 同距離1走/3着内1"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "サンラザール"
+          },
+          "case_for": "IDM 48.9 / 馬なり１列目の外３番手、直線早め先頭凌ぐ / 同距離1走/3着内1 / 調教上昇"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "ヴォーカライズ"
+        },
+        "case_for": "前走を先手から押し切り。再び自分のリズムなら主導権そのものが逆転材料。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 53.0 / Ｓ一息。ジワリ好位から直線外伸びで差し切",
+        "second": "IDM 52.1 / 好発促し楽にハナ、外張りつつも直線凌いだ / 調教上昇",
+        "third": "前走を先手から押し切り。再び自分のリズムなら主導権そのものが逆転材料。",
+        "others": [
+          "IDM 52.0 / 後方で追っつけ追走、直線外出すと良く伸び / 同距離1走/3着内1",
+          "IDM 48.9 / 馬なり１列目の外３番手、直線早め先頭凌ぐ / 同距離1走/3着内1 / 調教上昇"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 8,
+            "horse_name": "ビービークローサー",
+            "source_run_ref": "08261303",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "リベッチオ",
+            "source_run_ref": "07255201",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "FASTEST_LAST3F"
+            ]
+          },
+          {
+            "horse_no": 14,
+            "horse_name": "ヴォーカライズ",
+            "source_run_ref": "09255102",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "FASTEST_LAST3F"
+            ]
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ドンエレクトス",
+            "source_run_ref": "05255709",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "サンラザール",
+            "source_run_ref": "05255202",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "f8355b4c32054faf12fc26fc220593fe9a86ff8ada34d438dbac80f4ec4ebaa7",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 8,
+      "race_key": "2026-01-31-東京-8",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1400,
+      "class": "2勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/8R",
+      "racenote_semantic_sha256": "488c58576fd2802cd21f14cdf1d5b32197994a0acc60cb885a17b914b077c0ab",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "モーニングマジック",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "モーニングマジック",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "ペイシャケイプ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "ゴールデンカイト",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "アスクアイルビゼア",
+            "rank": 4
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "フィーチャリング",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 61.0 / 馬なり中団後ろで構え直線外から渋太く迫る / 同距離4走/3着内4 / 調教上昇",
+      "reader_facing_reason": "モーニングマジックは前走で中団後ろから長く脚を使い、2着まで迫った内容がこの組では一枚上。ペイシャケイプの末脚も相手本線に置く。ゴールデンカイトは前走で直線の進路を失っており、まともに捌ければ着順以上の反発がある。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 ダート1400m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "モーニングマジック"
+          },
+          "case_for": "IDM 61.0 / 馬なり中団後ろで構え直線外から渋太く迫る / 同距離4走/3着内4 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ペイシャケイプ"
+          },
+          "case_for": "IDM 55.0 / 行き脚なく後方。直線馬群捌きＧ前急追 / 同距離4走/3着内2"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "アスクアイルビゼア"
+          },
+          "case_for": "IDM 54.0 / 好位で前見ながら。直線狭い所割って伸び / 同距離8走/3着内4"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "フィーチャリング"
+          },
+          "case_for": "IDM 52.1 / 中団内ロスなく回り直線詰まらず外を伸びる / 同距離2走/3着内1"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "ゴールデンカイト"
+        },
+        "case_for": "前走は直線で前を捌けず13着。能力を出し切っておらず、進路確保で反発余地が大きい。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 61.0 / 馬なり中団後ろで構え直線外から渋太く迫る / 同距離4走/3着内4 / 調教上昇",
+        "second": "IDM 55.0 / 行き脚なく後方。直線馬群捌きＧ前急追 / 同距離4走/3着内2",
+        "third": "前走は直線で前を捌けず13着。能力を出し切っておらず、進路確保で反発余地が大きい。",
+        "others": [
+          "IDM 54.0 / 好位で前見ながら。直線狭い所割って伸び / 同距離8走/3着内4",
+          "IDM 52.1 / 中団内ロスなく回り直線詰まらず外を伸びる / 同距離2走/3着内1"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 8,
+            "horse_name": "モーニングマジック",
+            "source_run_ref": "05255608",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "ペイシャケイプ",
+            "source_run_ref": "09255108",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F"
+            ]
+          },
+          {
+            "horse_no": 14,
+            "horse_name": "ゴールデンカイト",
+            "source_run_ref": "09255108",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_LOSS"
+            ]
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "アスクアイルビゼア",
+            "source_run_ref": "08261408",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "フィーチャリング",
+            "source_run_ref": "05255807",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "b4b0d7c63eee70bc84ecfaff07fe97ce842597dd1cbbcdaf7c394f0e777e7de5",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 9,
+      "race_key": "2026-01-31-東京-9",
+      "race_name": "白嶺ステークス",
+      "surface": "ダート",
+      "distance_m": 1600,
+      "class": "3勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/9R",
+      "racenote_semantic_sha256": "32f73aec631149079ed9b6f58507280947108df0ea5c03a5b260aa23901c86e6",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 5,
+        "horse_name": "ジェイエルマスター",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 5,
+          "horse_name": "ジェイエルマスター",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "ルグランヴァン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 16,
+          "horse_name": "ヒルノハンブルク",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "ロッシニアーナ",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ワイドブリザード",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 66.0 / 出遅れ後方、向正面捲って出て競り合い凌ぐ / 同距離3走/3着内3",
+      "reader_facing_reason": "ジェイエルマスターは後方から向正面で自ら動き、最後まで競り合いを凌いだ前走が強い。ルグランヴァンも番手から崩れにくい。ヒルノハンブルクは前走では先手を取って最後に止まったが、今回の調教上昇と先行力が噛み合えば押し切りまで警戒する。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 ダート1600m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ジェイエルマスター"
+          },
+          "case_for": "IDM 66.0 / 出遅れ後方、向正面捲って出て競り合い凌ぐ / 同距離3走/3着内3"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ルグランヴァン"
+          },
+          "case_for": "IDM 60.8 / じわり番手。直線半ば押されてしっかり伸び / 同距離5走/3着内5"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ロッシニアーナ"
+          },
+          "case_for": "IDM 58.0 / 押して１列目の外、直線叩き合い先に抜けた / 同距離2走/3着内2 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ワイドブリザード"
+          },
+          "case_for": "IDM 59.0 / 番手追走から早め先頭。完璧も勝ち馬が強く / 同距離8走/3着内2"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 16,
+          "horse_name": "ヒルノハンブルク"
+        },
+        "case_for": "前走は逃げて直線まで主導権。調教上昇が加わり、先行有利の形なら粘り込み以上まである。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 66.0 / 出遅れ後方、向正面捲って出て競り合い凌ぐ / 同距離3走/3着内3",
+        "second": "IDM 60.8 / じわり番手。直線半ば押されてしっかり伸び / 同距離5走/3着内5",
+        "third": "前走は逃げて直線まで主導権。調教上昇が加わり、先行有利の形なら粘り込み以上まである。",
+        "others": [
+          "IDM 58.0 / 押して１列目の外、直線叩き合い先に抜けた / 同距離2走/3着内2 / 調教上昇",
+          "IDM 59.0 / 番手追走から早め先頭。完璧も勝ち馬が強く / 同距離8走/3着内2"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 5,
+            "horse_name": "ジェイエルマスター",
+            "source_run_ref": "06255808",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "EARLY_POSITION_GAIN",
+              "MIDDLE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "ルグランヴァン",
+            "source_run_ref": "05255110",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 16,
+            "horse_name": "ヒルノハンブルク",
+            "source_run_ref": "08254810",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ロッシニアーナ",
+            "source_run_ref": "05254b12",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_VERY_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ワイドブリザード",
+            "source_run_ref": "08261510",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_BACK_LOADED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "22eafa01bf83db497598f356c85f24c05566fe7ee63fa88fae4eebf6c07fd9fe",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 10,
+      "race_key": "2026-01-31-東京-10",
+      "race_name": "クロッカスステークス",
+      "surface": "芝",
+      "distance_m": 1400,
+      "class": "オープン"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/10R",
+      "racenote_semantic_sha256": "1cdf0eb6c03f093a69a3b5e060730002bd918a9f7387f0934118817d0bdfcef4",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 12,
+        "horse_name": "アスミル",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 12,
+          "horse_name": "アスミル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "フクチャンショウ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "ホワイトドラゴン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "グッドピース",
+            "rank": 4
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ルージュダリア",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 50.0 / 外からジワリ番手。逃馬との追い比べ制す / 同距離5走/3着内4",
+      "reader_facing_reason": "アスミルは番手から逃げ馬をきっちり捉えた前走で、1400mの立ち回りに再現性がある。フクチャンショウの差し脚を対抗視。ホワイトドラゴンは前走を抑えながら逃げ切っており、今回も単騎に近い形なら一気に残す可能性がある。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 芝1400m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "アスミル"
+          },
+          "case_for": "IDM 50.0 / 外からジワリ番手。逃馬との追い比べ制す / 同距離5走/3着内4"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "フクチャンショウ"
+          },
+          "case_for": "IDM 48.3 / 中団馬群追走、馬場真ん中からしっかり伸び / 同距離2走/3着内1"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "グッドピース"
+          },
+          "case_for": "IDM 50.1 / 促し好位の内も直線の伸びはなく。 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ルージュダリア"
+          },
+          "case_for": "IDM 47.6 / 好発、相手見て内から主張直線内避けて粘る / 調教上昇"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "ホワイトドラゴン"
+        },
+        "case_for": "前走を抑えながら逃げ切り。1400mで楽に先手なら本線を封じ込める形がある。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 50.0 / 外からジワリ番手。逃馬との追い比べ制す / 同距離5走/3着内4",
+        "second": "IDM 48.3 / 中団馬群追走、馬場真ん中からしっかり伸び / 同距離2走/3着内1",
+        "third": "前走を抑えながら逃げ切り。1400mで楽に先手なら本線を封じ込める形がある。",
+        "others": [
+          "IDM 50.1 / 促し好位の内も直線の伸びはなく。 / 調教上昇",
+          "IDM 47.6 / 好発、相手見て内から主張直線内避けて粘る / 調教上昇"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 12,
+            "horse_name": "アスミル",
+            "source_run_ref": "09255709",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_VERY_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "フクチャンショウ",
+            "source_run_ref": "05255111",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "LATE_POSITION_GAIN",
+              "PACE_BACK_LOADED"
+            ]
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "ホワイトドラゴン",
+            "source_run_ref": "06254802",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "CLOSING_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "グッドピース",
+            "source_run_ref": "09255611",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ルージュダリア",
+            "source_run_ref": "04253206",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "CLOSING_GAIN",
+              "PACE_BALANCED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "8fc8117307b1b15688f82a2ab55c120d35713ff44cab4a46bc54dde9cf42ff4b",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 11,
+      "race_key": "2026-01-31-東京-11",
+      "race_name": "白富士ステークス",
+      "surface": "芝",
+      "distance_m": 2000,
+      "class": "オープン"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/11R",
+      "racenote_semantic_sha256": "bf223520f420aa6491b42c161e36b75b5e50a982030d04e1dc82551172423450",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 6,
+        "horse_name": "ウィクトルウェルス",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 6,
+          "horse_name": "ウィクトルウェルス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "セレシオン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "キングズパレス",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 1,
+            "horse_name": "ヴィレム",
+            "rank": 4
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "ダノンシーマ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 67.1 / 枠の差で控えて中団、直線外から楽に抜けた / 同距離4走/3着内4 / 調教上昇",
+      "reader_facing_reason": "ウィクトルウェルスは中団に控えても直線で楽に抜けた前走が非常に強く、ここでも主役。セレシオンは直線で何度か遮られながら僅差まで盛り返している。キングズパレスは前走で躓いて後方からになっても最後に伸びており、展開が差し向きなら一変できる。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 芝2000m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ウィクトルウェルス"
+          },
+          "case_for": "IDM 67.1 / 枠の差で控えて中団、直線外から楽に抜けた / 同距離4走/3着内4 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "セレシオン"
+          },
+          "case_for": "IDM 68.6 / 押しても中団、直線数回遮られ盛り返し僅差 / 同距離5走/3着内3"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ヴィレム"
+          },
+          "case_for": "IDM 65.0 / 枠の差で後方待機、直線外回し鋭く伸び勝つ / 同距離10走/3着内8"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ダノンシーマ"
+          },
+          "case_for": "IDM 65.1 / 好位で抑える。直線前開くと一気に抜ける / 同距離2走/3着内2"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "キングズパレス"
+        },
+        "case_for": "前走は躓いて後方からでも最後に伸びて3着。差し向きの流れなら位置取り損を取り返せる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 67.1 / 枠の差で控えて中団、直線外から楽に抜けた / 同距離4走/3着内4 / 調教上昇",
+        "second": "IDM 68.6 / 押しても中団、直線数回遮られ盛り返し僅差 / 同距離5走/3着内3",
+        "third": "前走は躓いて後方からでも最後に伸びて3着。差し向きの流れなら位置取り損を取り返せる。",
+        "others": [
+          "IDM 65.0 / 枠の差で後方待機、直線外回し鋭く伸び勝つ / 同距離10走/3着内8",
+          "IDM 65.1 / 好位で抑える。直線前開くと一気に抜ける / 同距離2走/3着内2"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 6,
+            "horse_name": "ウィクトルウェルス",
+            "source_run_ref": "05255210",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "セレシオン",
+            "source_run_ref": "05255211",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_LOSS",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "キングズパレス",
+            "source_run_ref": "07252211",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_VERY_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ヴィレム",
+            "source_run_ref": "05255811",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_AT_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "FASTEST_LAST3F",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "ダノンシーマ",
+            "source_run_ref": "08254510",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_BELOW_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "caf990a40708a23224ce4b35cf58d87dac0d868d396945cd940666d7e07d804d",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.3.1",
+    "identity": {
+      "target_date": "2026-01-31",
+      "venue": "東京",
+      "race_no": 12,
+      "race_key": "2026-01-31-東京-12",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1800,
+      "class": "1勝クラス"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0013-TURN2-FULLDAY",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+      "base_logic_version": "RaceNote-Human-Context-Reader-0.4.0-candidate",
+      "candidate_patch": "mainline + single-shot five-mark forecast",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1"
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0013/20260131/東京/12R",
+      "racenote_semantic_sha256": "35ae5d770b60c408634dfdc10ddb5cb707fd2af0e5803671d255c08708026bbd",
+      "day_prep_package": "BTDAY-0013_DAY_PREP_20260131_FINAL.zip",
+      "main_sha_at_forecast": "4f60af0bf6ee6035b43b19e0c5536c06d4e6c5f7"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "オルグジェシダ",
+        "rank": 1
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "オルグジェシダ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 12,
+          "horse_name": "パストラーレ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 10,
+          "horse_name": "アールヴィヴァン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "タイセイプランセス",
+            "rank": 4
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "エリーナストーム",
+            "rank": 5
+          }
+        ]
+      },
+      "axis_comment": "IDM 54.0 / 馬なりで中団の外、直線渋太く伸び先頭並ぶ / 同距離5走/3着内5 / 調教上昇",
+      "reader_facing_reason": "オルグジェシダは前走で外を回りながら先頭へ並ぶところまで伸びており、今回の調教上昇も後押しになる。パストラーレを相手本線。アールヴィヴァンは後方から大外を回して最速級の脚を使っており、流れが締まれば差し切りまで視野に入る。",
+      "stability_counter_reason": null,
+      "concern": null,
+      "full_field_order": null
+    },
+    "decision_trace": {
+      "race_model": "東京 芝1800m。位置取り、直近の競馬内容、条件適性と状態を優先し、本線4頭とは別に全頭から単穴を探索。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "オルグジェシダ"
+          },
+          "case_for": "IDM 54.0 / 馬なりで中団の外、直線渋太く伸び先頭並ぶ / 同距離5走/3着内5 / 調教上昇"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "パストラーレ"
+          },
+          "case_for": "IDM 50.0 / 押して２番手取りつき直線一騎打ち競り負け / 同距離4走/3着内2"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "タイセイプランセス"
+          },
+          "case_for": "IDM 56.0 / 好位後ろで構えて運ぶも、直線は余力なく。 / 同距離3走/3着内1 / Next-Watch A"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "エリーナストーム"
+          },
+          "case_for": "IDM 49.0 / 好位の内。３角で外出すも直線はジリジリ。 / 同距離3走/3着内2 / 調教上昇"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 10,
+          "horse_name": "アールヴィヴァン"
+        },
+        "case_for": "前走は後方から大外を回して最速級の脚。流れが締まれば末脚が直接勝ち負けへ届く。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "IDM 54.0 / 馬なりで中団の外、直線渋太く伸び先頭並ぶ / 同距離5走/3着内5 / 調教上昇",
+        "second": "IDM 50.0 / 押して２番手取りつき直線一騎打ち競り負け / 同距離4走/3着内2",
+        "third": "前走は後方から大外を回して最速級の脚。流れが締まれば末脚が直接勝ち負けへ届く。",
+        "others": [
+          "IDM 56.0 / 好位後ろで構えて運ぶも、直線は余力なく。 / 同距離3走/3着内1 / Next-Watch A",
+          "IDM 49.0 / 好位の内。３角で外出すも直線はジリジリ。 / 同距離3走/3着内2 / 調教上昇"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "オルグジェシダ",
+            "source_run_ref": "05255612",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "パストラーレ",
+            "source_run_ref": "06255412",
+            "next_watch_grade": null,
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "アールヴィヴァン",
+            "source_run_ref": "05255612",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_GAIN",
+              "PACE_BALANCED"
+            ]
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "タイセイプランセス",
+            "source_run_ref": "05254307",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "MIDDLE_POSITION_GAIN",
+              "LATE_POSITION_LOSS",
+              "MOVE_THEN_FADE",
+              "PACE_FRONT_LOADED"
+            ]
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "エリーナストーム",
+            "source_run_ref": "09254308",
+            "next_watch_grade": "A",
+            "review_tags": [
+              "TIME_ABOVE_DECLARED_CLASS",
+              "EARLY_POSITION_LOSS",
+              "LATE_POSITION_LOSS",
+              "PACE_BACK_LOADED"
+            ]
+          }
+        ]
+      },
+      "legacy_0_3_fields": {
+        "status": "NOT_USED_v0.4.1"
+      }
+    },
+    "audit": {
+      "created_at": "2026-10-01T02:39:54+00:00",
+      "frozen_at": "2026-10-01T02:39:54+00:00",
+      "prediction_hash": "a97d3154e90d4a9d6888cb708d282d6e515f90814891c82e34e4831882505b57",
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PASS",
+      "market_blind_guard": "PASS",
+      "legacy_converge_machinery": "NOT_USED"
+    }
+  }
+]

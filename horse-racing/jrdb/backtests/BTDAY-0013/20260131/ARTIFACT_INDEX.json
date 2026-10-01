@@ -1,0 +1,20 @@
+{
+  "selection_id": "BTDAY-0013",
+  "target_date": "2026-01-31",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+  "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+  "status": "FROZEN",
+  "result_opened": false,
+  "day_prep_source": {
+    "artifact_name": "BTDAY-0013-DAY-PREP",
+    "run_id": 36806319797,
+    "digest": "sha256:2834dcf8aff98ed049efaa5fa16b510629d7fe888b0e31fc061df3a2cb25df4d"
+  },
+  "forecast": {
+    "race_count": 36,
+    "venue_count": 3,
+    "technical_skips": 0,
+    "mainline_single_shot_guard": "PASS",
+    "reader_facing_prose_guard": "PASS"
+  }
+}

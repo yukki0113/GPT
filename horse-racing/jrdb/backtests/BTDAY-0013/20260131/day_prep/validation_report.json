@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "target_date": "2026-01-31",
+  "race_count": 36,
+  "reader_view_count": 36,
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "checks": {
+    "race_structure": "PASS",
+    "provenance": "PASS",
+    "reader_roundtrip": "PASS"
+  },
+  "warnings": [],
+  "errors": []
+}
