@@ -139,6 +139,11 @@ jobs:
           if not files:
               raise SystemExit('no daily ZIP was downloaded')
 
+          not_found_by_kind = {}
+          for row in manifest_rows:
+              if row.get('status') == 'NOT_FOUND':
+                  not_found_by_kind[row.get('source_kind')] = not_found_by_kind.get(row.get('source_kind'), 0) + 1
+
           report = {
               'status': 'success',
               'from_date': req['from_date'],
@@ -146,6 +151,12 @@ jobs:
               'kinds': req['kinds'],
               'downloaded_file_count': len(files),
               'fetch_status_counts': dict(status_counts),
+              'not_found_by_kind': not_found_by_kind,
+              'availability_notes': {
+                  'SED': 'race-day result archive; expected on completed JRA race dates',
+                  'HJC': 'race-day payout archive; expected on completed JRA race dates',
+                  'SKB': 'periodic/weekly result-extension archive; a race-day NOT_FOUND is not a missing race-day result',
+              },
               'files': files,
           }
           (root / 'daily_validation.json').write_text(
