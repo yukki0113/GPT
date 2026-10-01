@@ -64,6 +64,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn("trainingHead", v6)
         self.assertIn('headRow.querySelector(".mark-jrdb")', v6)
         self.assertIn('headRow.querySelector(".mark-rn")', v6)
+        self.assertIn('rnHead.textContent = "けん"', v6)
         self.assertIn('headRow.querySelector(".mark-iluka")', v6)
         self.assertIn('groupHead.colSpan = 8', overlay)
         self.assertNotIn('short: "けん"', overlay)
