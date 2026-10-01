@@ -175,6 +175,17 @@ jobs:
           path: /tmp/rrdb_sep_ledger/out/*
           if-no-files-found: error
 
+      - name: Copy temporary ledger into repository
+        run: |
+          mkdir -p horse-racing/jrdb/analysis/tmp
+          cp /tmp/rrdb_sep_ledger/out/rrdb_next_watch_202609_ledger.csv horse-racing/jrdb/analysis/tmp/
+          cp /tmp/rrdb_sep_ledger/out/rrdb_next_watch_202609_summary.json horse-racing/jrdb/analysis/tmp/
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "analysis: add temporary September RRDB Next-Watch ledger"
+          file_pattern: horse-racing/jrdb/analysis/tmp/rrdb_next_watch_202609_*
+
       - name: Close request
         env:
           GH_TOKEN: ${{ github.token }}
