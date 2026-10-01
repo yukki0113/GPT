@@ -463,3 +463,11 @@ Common Readerと既存RRDB/Next-Watch helperを利用し、consumer独自のbyte
 台帳・features・集計・matched比較・audit・provenanceは`horse-racing/jrdb/analysis/tmp/`に保存する。
 CSVはUTF-8 BOM、identityは文字列。表計算ソフトで開く場合は先頭ゼロを維持する。
 Parquetを型保持の正本とする。
+
+
+
+## 10. 分位母集団の追加照合（2026-10-01）
+
+作業指示の全previous-usable entry（2,686頭）で分位を計算した補助分析を追加した。主表の平地実出走2,590頭の分位とは別契約で、前走6着以下×top20は99頭・21的中・回収118.38%となる。主表の94頭・114.47%との差はデータ不一致ではなく、分位母集団の違いである。いずれの計算でも精算母集団は平地実出走2,590頭。
+
+詳細と全usable分位・着順クロス・人気/オッズ帯は[分位母集団監査](RaceReviewDB_202609_Quantile_Scope_Audit_v0_1.md)および`analysis/tmp/rrdb_202609_quantile_scope_sensitivity.csv`を参照。target結果を変更しても閾値不変、独立生成台帳のkey/特徴/精算も3,137頭一致した。主結論と正式S/Aルールは変更しない。

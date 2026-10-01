@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "canonical_commit": "08dad98029f39fd7586faf65cd2c82c263a6516a",
+  "canonical_ledger_sha256": "698cc61b7d5973655871212eb6d06a80f321ed7181afc8e0ad58909cbd35ad3f",
+  "source_script_sha256": "39f474e0352b429272c18e9541e5919239e5ab4e88c5da4a0feb766897f4ca6a",
+  "summary_sha256": "8252fb15f5bfaaf0da0ea8b0c863453b717db551353a22a155830267ffab0c7c",
+  "target_entry_count": 3137,
+  "primary_settlement_n": 2590,
+  "thresholds": {
+    "ALL_ENTRY_USABLE": {
+      "source_n": 2686,
+      "cutoffs": {
+        "performance_signal": {
+          "0.5": -0.6541666666666623,
+          "0.7": -0.2942810457516344,
+          "0.8": -0.06623931623932522,
+          "0.9": 0.1944444444444393
+        },
+        "front_pace_opposition_raw": {
+          "0.5": 0.19594643766829195,
+          "0.7": 0.3560818083961249,
+          "0.8": 0.45720835455934794,
+          "0.9": 0.6329175599298382
+        },
+        "rear_pace_opposition_raw": {
+          "0.5": 0.15657946114798907,
+          "0.7": 0.3041061276058118,
+          "0.8": 0.4114285714285714,
+          "0.9": 0.573529411764706
+        }
+      }
+    },
+    "PRIMARY_FLAT_STARTED_USABLE": {
+      "source_n": 2590,
+      "cutoffs": {
+        "performance_signal": {
+          "0.5": -0.649404761904762,
+          "0.7": -0.2777777777777778,
+          "0.8": -0.0555555555555524,
+          "0.9": 0.21138888888889343
+        },
+        "front_pace_opposition_raw": {
+          "0.5": 0.19661475964793504,
+          "0.7": 0.35847809626083926,
+          "0.8": 0.46156223973348715,
+          "0.9": 0.6416148855878212
+        },
+        "rear_pace_opposition_raw": {
+          "0.5": 0.15370777387854745,
+          "0.7": 0.30115781686992354,
+          "0.8": 0.4031954887218045,
+          "0.9": 0.5689861153434441
+        }
+      }
+    }
+  },
+  "target_outcome_perturbation_threshold_invariance": "PASS",
+  "outcome_optimized": false,
+  "feature_and_outcome_semantic_crosscheck": {
+    "status": "PASS",
+    "independent_ledger_sha256": "f52c44dda954e40ee9d033799bd5aa7c48fa2f282e3d67d729c626f447ca6fcd",
+    "compared_columns": [
+      "horse_id",
+      "previous_race_key",
+      "previous_race_horse_key",
+      "previous_finish",
+      "performance_signal",
+      "pace_balance_percentile",
+      "corner4_frontness",
+      "target_place_payout_yen",
+      "target_win_odds",
+      "target_popularity"
+    ],
+    "row_count": 3137
+  },
+  "quantiles_descriptive_not_deployable_asof": true
+}
