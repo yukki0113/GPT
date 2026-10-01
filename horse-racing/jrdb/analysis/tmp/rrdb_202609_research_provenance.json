@@ -1,0 +1,114 @@
+{
+  "status": "PASS",
+  "generated_at": "2026-10-01T03:40:21.651436+00:00",
+  "data_source_commit": "ffa600b46e75daa2ad7d1a8bc2c4088c2366a267",
+  "module_version": "rrdb-all-runner-time-pace-v0.1",
+  "research_only": true,
+  "temporary_issues_created": 0,
+  "temporary_workflows_created": 0,
+  "tests": [
+    "future and same-date rows do not affect selected previous features",
+    "no-history entrant retained with NULL exposure",
+    "small-field third place is not place hit",
+    "raw length, identity, object hashes, source as-of pace and time checks PASS"
+  ],
+  "artifacts": [
+    {
+      "path": "horse-racing/jrdb/src/jrdb_previous_start_research_ledger.py",
+      "bytes": 15892,
+      "sha256": "4e7a882a671eca87fd75364343bb840ad8bfd75be56a3d80d67bc24e9b9b0ce5",
+      "git_blob_sha": "732aa4bfddc359a511314bc69b9f04f4fbb5bb1c"
+    },
+    {
+      "path": "horse-racing/jrdb/src/analyze_rrdb_time_pace.py",
+      "bytes": 14180,
+      "sha256": "6b5a2e34e9c2f815a809247c4986c1f6be83f484d902cb6d58e759d2262e151f",
+      "git_blob_sha": "9d6006b90ebfe9aa948878879565c30bb823ef05"
+    },
+    {
+      "path": "horse-racing/jrdb/src/report_rrdb_time_pace.py",
+      "bytes": 18467,
+      "sha256": "89c666c9e9296bbda8549d1c4bb0a987216463de0163f2549ad5959746b9eed1",
+      "git_blob_sha": "36d6d975e569eeb2ef34ab27b9de77cabef083ef"
+    },
+    {
+      "path": "horse-racing/jrdb/tests/test_jrdb_previous_start_research_ledger.py",
+      "bytes": 3390,
+      "sha256": "d08b1143d399cac2fd6818fc9ddfc50ea8f601f0f55401dc04a6c9d4916a69b4",
+      "git_blob_sha": "4b106a66637b2ec8027528cb95da47d87f6ba0a1"
+    },
+    {
+      "path": "horse-racing/jrdb/docs/RaceReviewDB_202609_Time_PaceOpposition_Analysis_v0_1.md",
+      "bytes": 31771,
+      "sha256": "9bd215d248c079327c3d0f2692805164fef45b9a687785893ea26adc7d38a396",
+      "git_blob_sha": "d5fcb358a2ff791d995306373a4baaaf241ad87c"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_all_runner_research_ledger.csv",
+      "bytes": 2502470,
+      "sha256": "8f729e7df53bb7fe69af2ad2d54b2b7c20f6875ec38222dc8055be1dfcefcd83",
+      "git_blob_sha": "5e457f6c571febde4a7725940cde3b154be525cd"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_all_runner_research_ledger.parquet",
+      "bytes": 492357,
+      "sha256": "698cc61b7d5973655871212eb6d06a80f321ed7181afc8e0ad58909cbd35ad3f",
+      "git_blob_sha": "b4947d96c8dcc8d927ead764b136fd8ea119149a"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_analysis_audit.json",
+      "bytes": 2669,
+      "sha256": "011d7e27d73b2b26caa66066391af4784f78ec2925d553c9e347da35ba6b31b4",
+      "git_blob_sha": "647b94582a59cf3942336d90017dc2b2c327ff18"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_analysis_population.parquet",
+      "bytes": 471010,
+      "sha256": "49e96b3138acb856a15b8c2bb764bc9e2b56e5d68c38ddaf3bd3bacc7fbaf520",
+      "git_blob_sha": "68496a3cdb8c0968f27bbae05482c063f2ae0770"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_data_audit.json",
+      "bytes": 7353,
+      "sha256": "531a6a3de4f3ab47210482aa70cd83d90a4665d6d2fa1e032042e43f18da06d0",
+      "git_blob_sha": "7ee7b3583971defcb810b8d5734e1a0e3512f044"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_high_payout_examples.csv",
+      "bytes": 31262,
+      "sha256": "b9e69d7818d6d18e278ccb39ee9cf965fa9a78b71eee7b0a73ccd2492b7dfe84",
+      "git_blob_sha": "3b524a7c67e89d182d0d26ad0b19910799aef57c"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_matched_comparisons.json",
+      "bytes": 42328,
+      "sha256": "1a81c4199cfca9643bbb49fdc60382790254598a337840003ecf98c1487e1250",
+      "git_blob_sha": "636acc2fb8d3364d4f458655b41faffb01e121cb"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_previous_start_features.parquet",
+      "bytes": 469599,
+      "sha256": "ff811e72366ae4937c333f86a1a1efab7c6b3249ba03b8640f2a692bc100aed1",
+      "git_blob_sha": "df0fbe5de24436768e6124dbd47d7114ac32b47a"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_time_pace_analysis.csv",
+      "bytes": 293559,
+      "sha256": "d641c8d082a9c200d4bda40f2b23280a16650b100bbdd77d600c527b722b58dc",
+      "git_blob_sha": "29024323056e142c46e97ce459df9f7ce1e5a68f"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_time_pace_analysis.parquet",
+      "bytes": 96195,
+      "sha256": "48ebf2df0aed2b3d645e4cc06b7aebceddb622d0b22eab8c93de0434ddf6c0c2",
+      "git_blob_sha": "087f2493d909961580b91748c10739fcd310d34e"
+    },
+    {
+      "path": "horse-racing/jrdb/analysis/tmp/rrdb_202609_research_provenance.json",
+      "bytes": 4604,
+      "sha256": "e65e803a16c2fae554f5f82e7d31260e8efe09f3560acd7b6d814acb9ad25677",
+      "git_blob_sha": "f24efc4f584da84ce2c62f62587e285cd4c2765f"
+    }
+  ],
+  "source_byte_identity": "canonical dependencies match source_commit Git blob SHA exactly"
+}

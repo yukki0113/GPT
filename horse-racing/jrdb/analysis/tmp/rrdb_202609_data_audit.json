@@ -1,0 +1,188 @@
+{
+  "status": "PASS",
+  "version": "rrdb-all-runner-time-pace-v0.1",
+  "source_commit": "ffa600b46e75daa2ad7d1a8bc2c4088c2366a267",
+  "rrdb_generation": "jrdb_race_review_v0_1_incremental_g36514429467",
+  "rrdb_period_to": "2026-09-27",
+  "target_runner_count": 3137,
+  "target_started_count": 3128,
+  "target_flat_started_count": 3039,
+  "usable_previous_rrdb_start_count": 2686,
+  "usable_flat_started_count": 2590,
+  "no_previous_history_count": 451,
+  "duplicate_count": 0,
+  "rrdb_duplicates": {
+    "fact_horse_performance": 0,
+    "fact_race_context": 0,
+    "fact_race_review": 0
+  },
+  "sed_join_missing_count": 0,
+  "settlement_identity_mismatch_count": 0,
+  "pace_feature_missing_count": 745,
+  "performance_feature_missing_count": 0,
+  "corner4_feature_missing_count": 1,
+  "closing_gain_missing_count": 2475,
+  "previous_date_violation_count": 0,
+  "historical_standard_date_violation_count": 0,
+  "pace_asof_audit": {
+    "checked_source_races": 865,
+    "missing_source_races": 217,
+    "mismatch_count": 0,
+    "mismatch_examples": []
+  },
+  "raw_length_errors": {},
+  "rrdb_object_hash_verified_count": 51,
+  "inputs_sha256": {
+    "RaceReviewDB_CURRENT.zip": "bff6f3c7a8c7a0424fb9a4c7155a9c7631b55fe04d3ba1b6371e0515939ce5f4",
+    "frozen_rules.zip": "dbf9ab7fdbc49a179784e6b248289c98f026354cb9061cfcda7052976f052b46",
+    "PACI260905.zip": "897b4e6e1815d78288c88f0d07af384e368f73e36fade8203c818f8f8c9806f8",
+    "PACI260906.zip": "03fe47c9e934a013444d071e27e61f50af022af308c86354a9e9e94544eab010",
+    "PACI260912.zip": "f770e4c1f34b2d2803b0c9a18c2ffcd84ef4959278d011037cbca71ff6b3c150",
+    "PACI260913.zip": "fddd18c06a75401a1222cecc6e08843e9e6c2658d405c48ff4d50b8bcd1b2542",
+    "PACI260919.zip": "d33689fe060b2d0b4d3ecb194fa32bc2164804c7d40d483e49282a995d58b7d0",
+    "PACI260920.zip": "79322fa8d37281ea716be928e9a30b2fd256e934454990880473f9db4b466a45",
+    "PACI260921.zip": "3e9718f6808fcc08ff4623a880ff934fe947ee87496aed14338940402c2eda91",
+    "PACI260922.zip": "1e7256c35d5b310c7de47359d876723b1bb5b6ace688da9ab0fafe668c3fd923",
+    "PACI260926.zip": "ac9f234a4099e7571bb5e44930abc1a47721628b8b2c924acf65e1758f74cdf0",
+    "PACI260927.zip": "7fe0a3b0b86078248d10c8addfb2a32d337a7591a31fbbc8588e889d21cbef2c",
+    "SED260905.zip": "24b4a42f1402f672fdce6121a0284ec159d05417426506f32565fc2a46531493",
+    "SED260906.zip": "56a0a65c510ece618295ea9634d8b41427794124f9240f09a7d46ea89be8023d",
+    "SED260912.zip": "6898a63965bb0c96fc10a538e2bb969e2992a3a5a0dbf8c7cb68845779fc1015",
+    "SED260913.zip": "24986d07630d247a1d2f016eda35aaf4d2deeaadae1dc08ae6f4c07ccb655959",
+    "SED260919.zip": "efe5b18f64de056a2525d907523e57be08b7e3fbd22a74b8f7fd8c84c6727d7b",
+    "SED260920.zip": "5bc7cb0ca2874b4ad047dae139177ec0b1ac810fbbdc59496d795f7fc436f016",
+    "SED260921.zip": "5708606f1f4efd040059efaf775a02f4ed9f4f3e7ad525a7a6bb87da1a483056",
+    "SED260922.zip": "4577473a0cd394d8288f9e5c5c9b64f9d65ccba2d5623b571dbde954c979c50b",
+    "SED260926.zip": "f0b1a38ce20ded6d8ce289a94bc3adae9e20208587576fbd1e1237ecd7fa1c61",
+    "SED260927.zip": "89289858d10b052f47b903d7f8419fccf292007677b4349a64dad6a8fe34eec6"
+  },
+  "features_before_settlement_sha256": "ff811e72366ae4937c333f86a1a1efab7c6b3249ba03b8640f2a692bc100aed1",
+  "rule_version": "next-watch-rules-discovery-v0.1",
+  "frozen_thresholds": {
+    "performance_signal_q80": -0.09305555555555287,
+    "performance_signal_q90": 0.16777149321267684,
+    "last3f_pct_strong": 80,
+    "last3f_pct_elite": 90,
+    "position_gain_strong": 0.25,
+    "last3f_vs_prior3_improvement": 10,
+    "performance_vs_prior3_improvement": 0.5,
+    "trouble_score_strong": 2
+  },
+  "daily": [
+    {
+      "target_date": "2026-09-05",
+      "paci_entrants": 455,
+      "races": 36,
+      "started": 452,
+      "flat_started": 444,
+      "previous_history": 389,
+      "no_previous_history": 66
+    },
+    {
+      "target_date": "2026-09-06",
+      "paci_entrants": 491,
+      "races": 36,
+      "started": 491,
+      "flat_started": 484,
+      "previous_history": 450,
+      "no_previous_history": 41
+    },
+    {
+      "target_date": "2026-09-12",
+      "paci_entrants": 316,
+      "races": 24,
+      "started": 315,
+      "flat_started": 307,
+      "previous_history": 272,
+      "no_previous_history": 44
+    },
+    {
+      "target_date": "2026-09-13",
+      "paci_entrants": 314,
+      "races": 24,
+      "started": 313,
+      "flat_started": 303,
+      "previous_history": 296,
+      "no_previous_history": 18
+    },
+    {
+      "target_date": "2026-09-19",
+      "paci_entrants": 287,
+      "races": 24,
+      "started": 286,
+      "flat_started": 274,
+      "previous_history": 225,
+      "no_previous_history": 62
+    },
+    {
+      "target_date": "2026-09-20",
+      "paci_entrants": 334,
+      "races": 24,
+      "started": 334,
+      "flat_started": 322,
+      "previous_history": 273,
+      "no_previous_history": 61
+    },
+    {
+      "target_date": "2026-09-21",
+      "paci_entrants": 159,
+      "races": 12,
+      "started": 158,
+      "flat_started": 158,
+      "previous_history": 134,
+      "no_previous_history": 25
+    },
+    {
+      "target_date": "2026-09-22",
+      "paci_entrants": 161,
+      "races": 12,
+      "started": 161,
+      "flat_started": 147,
+      "previous_history": 138,
+      "no_previous_history": 23
+    },
+    {
+      "target_date": "2026-09-26",
+      "paci_entrants": 313,
+      "races": 24,
+      "started": 312,
+      "flat_started": 306,
+      "previous_history": 253,
+      "no_previous_history": 60
+    },
+    {
+      "target_date": "2026-09-27",
+      "paci_entrants": 307,
+      "races": 24,
+      "started": 306,
+      "flat_started": 294,
+      "previous_history": 256,
+      "no_previous_history": 51
+    }
+  ],
+  "features_use_target_results": false,
+  "threshold_optimization": false,
+  "formal_rule_promotion": false,
+  "source_modules_sha256": {
+    "jrdb_previous_start_research_ledger.py": "4e7a882a671eca87fd75364343bb840ad8bfd75be56a3d80d67bc24e9b9b0ce5",
+    "jrdb_postrace_review_source.py": "0620b14557fa5759dd62ae2fbff9faf38c4e571bffc6422e2c363c50ffcf8eed",
+    "jrdb_postrace_review_builder.py": "5c90151e0a79f01523eb3ac0d865db259e8f6bbae1c2ba26ef5e79e2550e05f6",
+    "jrdb_raw.py": "bbfdd3ae488c394bbf03a7ff87dfa0e6c9228295c8f2b0c40a744912bd6d2956",
+    "jrdb_postrace_review.py": "7252091a6e763b82c2deaf7c99c9b648d7b46e84a2b2d4b1bd4519346995c6a7",
+    "jrdb_next_watch_rules.py": "62422c9029253b4b21be3d33b5fd8e931aacf8ca66add5ab3a4cf69e7943bec6",
+    "jrdb_postrace_review_context.py": "033f053c8288a2732cd5edf296e4accecf439b868712419faf3c2e451cb0cb6c",
+    "jrdb_ukc.py": "ec478ee94d2ea84c68afbcb3142be0a039b1f3bb4c65d34121c2e03f0352fefa",
+    "jrdb_next_watch_reverse.py": "4055c03eaa92f769ff53b5431c9f1e7aa69607b1525aac763dea4d250345339d",
+    "jrdb_postrace_review_standard.py": "d85e63984894951314a34f075994cf19194b7e9d1aca92be2012d8fd2d245c80"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "duckdb": "1.5.6",
+    "pandas": "2.2.3"
+  },
+  "outputs_sha256": {
+    "rrdb_202609_previous_start_features.parquet": "ff811e72366ae4937c333f86a1a1efab7c6b3249ba03b8640f2a692bc100aed1",
+    "rrdb_202609_all_runner_research_ledger.parquet": "698cc61b7d5973655871212eb6d06a80f321ed7181afc8e0ad58909cbd35ad3f",
+    "rrdb_202609_all_runner_research_ledger.csv": "8f729e7df53bb7fe69af2ad2d54b2b7c20f6875ec38222dc8055be1dfcefcd83"
+  }
+}

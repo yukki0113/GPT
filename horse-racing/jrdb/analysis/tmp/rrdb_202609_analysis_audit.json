@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "version": "time-pace-screen-v0.1",
+  "population_n": 2590,
+  "time_complete_n": 2590,
+  "pace_complete_n": 1848,
+  "common_complete_n": 1848,
+  "quantiles": {
+    "performance_signal": {
+      "0": -8.757936507936511,
+      "0.5": -0.649404761904762,
+      "0.7": -0.2777777777777778,
+      "0.8": -0.0555555555555524,
+      "0.9": 0.21138888888889343,
+      "1": 2.0833333333333335
+    },
+    "front_pace_opposition_raw": {
+      "0": 0.0,
+      "0.5": 0.19661475964793504,
+      "0.7": 0.35847809626083926,
+      "0.8": 0.46156223973348715,
+      "0.9": 0.6416148855878212,
+      "1": 0.9983361064891847
+    },
+    "rear_pace_opposition_raw": {
+      "0": 0.0,
+      "0.5": 0.15370777387854745,
+      "0.7": 0.30115781686992354,
+      "0.8": 0.4031954887218045,
+      "0.9": 0.5689861153434441,
+      "1": 1.0
+    }
+  },
+  "quantile_method": "linear interpolation; >= cutoffs; ties kept together",
+  "quantiles_use_outcomes": false,
+  "quantiles_are_month_descriptive": true,
+  "threshold_search": false,
+  "frozen_rule_changes": false,
+  "formal_promotion": false,
+  "signal_count": 34,
+  "aggregate_rows": 1333,
+  "primary_front_definition": "pace>=70 and corner4_frontness>=0.6",
+  "primary_rear_definition": "pace<=30 and corner4_frontness<=0.4",
+  "position_recovery_definition": "overall_position_gain>=0.25; with last3f>=80 additionally reported",
+  "bootstrap": "1000 paired target-race cluster draws, seed=20261001; exploratory, no multiplicity correction",
+  "matched_baseline": "Indirect standardization; parent includes child; sparse cells are reported, not causal adjustment",
+  "outputs_sha256": {
+    "rrdb_202609_time_pace_analysis.csv": "d641c8d082a9c200d4bda40f2b23280a16650b100bbdd77d600c527b722b58dc",
+    "rrdb_202609_analysis_population.parquet": "49e96b3138acb856a15b8c2bb764bc9e2b56e5d68c38ddaf3bd3bacc7fbaf520",
+    "rrdb_202609_high_payout_examples.csv": "b9e69d7818d6d18e278ccb39ee9cf965fa9a78b71eee7b0a73ccd2492b7dfe84",
+    "rrdb_202609_all_runner_research_ledger.parquet": "698cc61b7d5973655871212eb6d06a80f321ed7181afc8e0ad58909cbd35ad3f",
+    "rrdb_202609_all_runner_research_ledger.csv": "8f729e7df53bb7fe69af2ad2d54b2b7c20f6875ec38222dc8055be1dfcefcd83",
+    "rrdb_202609_time_pace_analysis.parquet": "48ebf2df0aed2b3d645e4cc06b7aebceddb622d0b22eab8c93de0434ddf6c0c2",
+    "rrdb_202609_data_audit.json": "531a6a3de4f3ab47210482aa70cd83d90a4665d6d2fa1e032042e43f18da06d0",
+    "rrdb_202609_matched_comparisons.json": "1a81c4199cfca9643bbb49fdc60382790254598a337840003ecf98c1487e1250",
+    "rrdb_202609_previous_start_features.parquet": "ff811e72366ae4937c333f86a1a1efab7c6b3249ba03b8640f2a692bc100aed1"
+  }
+}
