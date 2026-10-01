@@ -298,7 +298,7 @@ jobs:
           hits=0
           for i,line in enumerate(lines):
               if 'if ratio < .85:' in line:
-                  lines[i]='        if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models))}")'
+                  lines[i]='        if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models)})")'
                   hits+=1
           assert hits==1, hits
           p.write_text('\n'.join(lines)+'\n',encoding='utf-8')
