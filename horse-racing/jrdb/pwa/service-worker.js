@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "jrdb-pwa-shell-v66";
+const CACHE_NAME = "jrdb-pwa-shell-v67";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -11,7 +11,7 @@ const APP_SHELL = [
   "./newspaper.css?v=3",
   "./newspaper-v4.css?v=9",
   "./newspaper-v5.css?v=1",
-  "./newspaper-v6.css?v=1",
+  "./newspaper-v6.css?v=2",
   "./newspaper-v9.css?v=2",
   "./fact-lite.js?v=24",
   "./fact-lite-v3.js?v=4",
@@ -20,13 +20,13 @@ const APP_SHELL = [
   "./newspaper-v2.js?v=3",
   "./newspaper-day.js?v=5",
   "./newspaper-v4.js?v=8",
-  "./newspaper-v5.js?v=1",
-  "./newspaper-v6.js?v=2",
+  "./newspaper-v5.js?v=2",
+  "./newspaper-v6.js?v=3",
   "./newspaper-v7.js?v=4",
   "./newspaper-v8.js?v=1",
   "./newspaper-v9.js?v=1",
   "./newspaper-v10.js?v=2",
-  "./newspaper-momotaro.js?v=1",
+  "./newspaper-momotaro.js?v=2",
   "./momotaro/momotaro.css?v=7",
   "./momotaro/predictions.js?v=7",
   "./manifest.webmanifest",
