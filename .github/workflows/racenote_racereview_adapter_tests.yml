@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths:
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_signals.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_select.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_reverse.py'
+      - 'horse-racing/jrdb/src/racenote_rrdb_enrichment.py'
+      - 'horse-racing/jrdb/src/racenote_history_enrichment.py'
+      - 'horse-racing/jrdb/src/build_racenote_daily.py'
       - 'horse-racing/jrdb/src/racenote_racereview_current.py'
       - 'horse-racing/jrdb/src/racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
@@ -19,6 +25,7 @@ on:
       - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_bundle_schema_v1_0.json'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_recommendation_signals.py'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
       - 'horse-racing/jrdb/tests/test_racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
@@ -29,6 +36,12 @@ on:
   pull_request:
     paths:
       - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_signals.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_select.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_reverse.py'
+      - 'horse-racing/jrdb/src/racenote_rrdb_enrichment.py'
+      - 'horse-racing/jrdb/src/racenote_history_enrichment.py'
+      - 'horse-racing/jrdb/src/build_racenote_daily.py'
       - 'horse-racing/jrdb/src/racenote_racereview_current.py'
       - 'horse-racing/jrdb/src/racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/src/racenote_general_evidence.py'
@@ -43,6 +56,7 @@ on:
       - 'horse-racing/jrdb/schema/racenote_scenario_robustness_schema_v0_1.json'
       - 'horse-racing/jrdb/schema/racenote_bundle_schema_v1_0.json'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_adapter.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_recommendation_signals.py'
       - 'horse-racing/jrdb/tests/test_racenote_racereview_current.py'
       - 'horse-racing/jrdb/tests/test_racenote_horse_evidence_card.py'
       - 'horse-racing/jrdb/tests/test_racenote_general_evidence.py'
@@ -68,6 +82,12 @@ jobs:
       - name: Compile RaceReview evidence modules
         working-directory: horse-racing/jrdb
         run: |
+          python -m py_compile src/jrdb_recommendation_signals.py
+          python -m py_compile src/jrdb_recommendation_select.py
+          python -m py_compile src/jrdb_recommendation_reverse.py
+          python -m py_compile src/racenote_rrdb_enrichment.py
+          python -m py_compile src/racenote_history_enrichment.py
+          python -m py_compile src/build_racenote_daily.py
           python -m py_compile src/racenote_racereview_adapter.py
           python -m py_compile src/racenote_racereview_current.py
           python -m py_compile src/racenote_horse_evidence_card.py
@@ -88,6 +108,7 @@ jobs:
       - name: Run focused RaceReview evidence tests
         working-directory: horse-racing/jrdb/tests
         run: |
+          python -m unittest -v test_jrdb_recommendation_signals
           python -m unittest -v test_racenote_racereview_adapter
           python -m unittest -v test_racenote_racereview_current
           python -m unittest -v test_racenote_horse_evidence_card
