@@ -132,7 +132,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=9', newspaper)
         self.assertIn('../newspaper-v4.js?v=8', newspaper)
-        self.assertIn('./momotaro.js?v=19', newspaper)
+        self.assertIn('./momotaro.js?v=20', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
         self.assertIn('../fact-lite.js?v=24', fact_lite)
@@ -141,7 +141,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function factDownloadUrl(manifest)', fact_script)
         self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v25"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v26"', service_worker)
 
 
 if __name__ == "__main__":
