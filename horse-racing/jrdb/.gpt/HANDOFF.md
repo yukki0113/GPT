@@ -16,13 +16,15 @@
 
 ### JRDB Result Query v0.1 — 2026-10-01
 
-- Standard completed-race lookup: `src/jrdb_result_query.py`.
+- Standard completed-race lookup engine: `src/jrdb_result_query.py`.
+- GPT/Work standard entrypoint: `src/jrdb_result_query_runner.py`.
 - Default: SED top3 + HJC all eight payout types; full runners are opt-in.
 - Use this before general Web search for JRDB-covered results/payouts/settlement inputs.
 - Historical 2010-2025: accepted Warehouse `sed` + `hjc_payout`; current: SED/HJC Raw.
 - Missing source => explicit `partial`; no automatic Web fallback.
 - Contract/tests: `docs/README_jrdb_result_query.md`, `tests/test_jrdb_result_query.py`.
-- Normal GPT/Work request should need only date, optional venue/race/bet type. Resolve existing Drive Raw/Warehouse internally; do not ask the user for artifact paths when Project storage already contains them.
+- Normal GPT/Work request should need only date, optional venue/race/bet type. First run `jrdb_result_query_runner.py --plan`, materialize the listed Drive SED/HJC with the native connector, then execute the runner. Do not ask the user for artifact paths.
+- Repository absence of Raw is expected. Never jump to Web search merely because SED/HJC is not checked into Git.
 
 ### RaceNote clean blind daily backtest activation — 2026-09-30
 
