@@ -65,14 +65,16 @@ Active。中央競馬データ基盤をJRA-VANからJRDBへ移行した現行系
 - RaceNote ArchiveはDriveとは別に、固定命名のimmutable GitHub Release assetとrelease metadataを探索indexとして使用する。Router本体へRelease URLを固定せず、`src/resolve_racenote_archive_release.py` が対象月のlatest compatible publishable shardを解決してローカルpathだけをRouterへ渡す。
 
 ## Result / payout query routing — 2026-10-01
-- Completed JRA race result/payout lookup standard entrypoint: `src/jrdb_result_query.py`.
+- Completed JRA race result/payout lookup engine: `src/jrdb_result_query.py`.
+- GPT/Work operational entrypoint: `src/jrdb_result_query_runner.py` + native Google Drive materialization.
 - SED is horse-result authority; HJC is payout authority. Default response is confirmed 1st-3rd finishers plus all eight HJC payout types.
 - Historical 2010-2025 can use accepted JRDB Warehouse `sed` + `hjc_payout`; current dates use SED/HJC Raw.
 - For requests such as result, payout, in-the-money outcome, hit settlement, or ROI inputs, first use Result Query when JRDB coverage exists. Do not lead with general Web search.
 - If JRDB source is missing, the tool returns `partial`; it does not silently replace evidence with Web data.
 - Full runner rows are opt-in. Fixed-width offsets remain owned only by `jrdb_raw.py`.
 - Contract: `docs/README_jrdb_result_query.md`.
-- GPT/Work はユーザーへRaw/Warehouseのローカルpath入力を要求する前に、既存Drive正本 `GPT/horse-racing/00_raw` または `GPT/horse-racing/10_warehouse/jrdb/v1/current.json` をresolve/materializeしてResult Queryへ渡す。ユーザーの通常入力は日付（任意で場/R/式別）だけでよい。
+- GPT/Work はユーザーへRaw/Warehouseのローカルpath入力を要求しない。まず `jrdb_result_query_runner.py --plan` で必要なDrive sourceを確定し、native Google Drive connectorでruntimeへmaterializeし、その後runnerを実行する。ユーザーの通常入力は日付（任意で場/R/式別）だけでよい。
+- Raw ZIPがGit repositoryに無いことは正常設計であり、Web検索へのfallback理由にしてはいけない。Drive inventory/materializationを実行して実在確認した後、JRDB coverage外またはsource不存在が確認された場合だけ外部Webを検討する。
 
 ## Annual Canonical materialization
 - `src/build_jrdb_canonical.py` はCommon Readerのneutral parse結果をannual SQLiteへmaterializeする任意の高速アクセス層。
