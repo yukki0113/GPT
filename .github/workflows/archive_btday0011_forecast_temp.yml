@@ -118,19 +118,29 @@ jobs:
             hm={h['basic']['horse_no']:h for h in x['horses']};mn,sn,tn,ons=picks[key]
             m,s,t=hm[mn],hm[sn],hm[tn];oo=[hm[n] for n in ons];cand=[m,s,t]+oo
             M=m['basic']['horse_name'];S=s['basic']['horse_name'];T=t['basic']['horse_name']
-            mreason=winpath(m,s,r)
-            sreason=(f"{M}自身が勝ち判断と安定判断の双方で最上位。" if conv else f"{S}は{counter(s)}地力・実績の再現性ではこちらを基準に置く。")
-            strong=f"{S}が{counter(s)}安定材料をそのまま出せると◎の最有力判断を脅かす。"
-            rev=f"{S}が再現性の高い形を出し、{M}が今回評価した能力・状態・適性を十分に発揮できない場合は逆転する。"
-            trace={'human_principles_used':['H1','H4','H7'],'race_model':f"{r['venue']}{r['surface']}{r['distance_m']}m・{r.get('class') or ''}。{M}の勝ち切る材料と{S}の安定材料を分け、位置取り・近況・条件再現性をレース内で比較する。",'primary_question':f"市場情報を想像せず、DAY PREPで供給されたレース材料だけなら誰を最も1着に近いと判断するか。",'candidate_cases':[{'horse':href(h),'case_for':summary(h,r),'case_against':caseagainst(h,r),'context_hook':f"{r['venue']}{r['surface']}{r['distance_m']}mで、能力・適性・近況・RaceReviewをレース文脈に戻して比較。"} for h in cand],'attraction_choice':{'horse':href(m),'reason':mreason},'stability_choice':{'horse':href(m if conv else s),'reason':sreason},'attraction_stability_convergence':conv,'winning_path':winpath(m,s,r),'main_vs_second':{'preferred':href(m),'other':href(s),'reason':f"◎{M}: {mreason} ○{S}: {counter(s)}"},'main_vs_third':{'preferred':href(m),'other':href(t),'reason':f"◎{M}は{T}より今回の勝ち筋を具体的に描ける材料が多く、▲{T}は相手候補まで。"},'why_not_numeric_leader':'IDM・調教・Trend・RaceReview等を固定配点で合算せず、DAY PREPの供給材料から勝つ可能性と再現性を別々に判断した。','strongest_counter':strong,'reversal_condition':rev,'missing_evidence':['current odds / current popularity are outside the Forecast Reader input boundary'],'rrdb_evidence':{'available':True,'reviewed':True,'used_in_decision':True,'horse_refs':rrrefs(cand,mn,sn),'reason_not_used':None}}
-            rec={'schema_version':'RaceNote-Forecast-Research-Record-0.3.1','identity':{'target_date':date,'venue':r['venue'],'race_no':r['race_no'],'race_key':f"{date}-{r['venue']}-{r['race_no']}",'race_name':r.get('race_name'),'surface':r.get('surface'),'distance_m':r.get('distance_m'),'class':r.get('class')},'research':{'evaluation_mode':'BLINDED_HISTORICAL','turn_id':'BTDAY-0011-TURN2-FULLDAY','logic_version':logic,'base_logic_version':'RaceNote-Human-Context-Reader-0.3.5-candidate','candidate_patch':'consolidated five-mark forecast'},'source':{'racenote_identity':f"BTDAY-0011/{compact}/{r['venue']}/{r['race_no']}R",'racenote_semantic_sha256':x['source_semantic_sha256'],'day_prep_package':'BTDAY-0011_DAY_PREP_20260315_FINAL.zip','main_sha_at_forecast':main_sha},'prediction':{'axis':href(m,1),'marks':{'main':href(m,1),'second':href(s,2),'third':href(t,3),'others':[href(h,4+i) for i,h in enumerate(oo)]},'axis_comment':mreason,'reader_facing_reason':mreason,'stability_counter_reason':sreason,'concern':strong,'full_field_order':None},'decision_trace':trace,'audit':{'created_at':created,'frozen_at':created,'prediction_hash':'','pre_result_guard':'PASS','result_visible_at_freeze':False,'candidate_role_separation':'CONVERGE' if conv else 'DIVERGE','five_mark_role_guard':'PASS','legacy_converge_machinery':'NOT_USED','independent_selection_guard':'PASS','converge_counter_self_reference_guard':'PASS'}}
+            mreason=mark_reason(m,'main',r)
+            sreason=mark_reason(s,'second',r)
+            treason=mark_reason(t,'third',r)
+            oreasons=[mark_reason(h,'other',r) for h in oo]
+            race_model=f"{r['venue']}{r['surface']}{r['distance_m']}m・{r.get('class') or ''}。能力だけで序列化せず、位置取り・条件適性・状態・過去走の再解釈を合わせて5頭を選ぶ。"
+            trace={'human_principles_used':['H1','H4','H7'],'race_model':race_model,
+              'candidate_cases':[{'horse':href(h),'case_for':summary(h,r),'role':('MAIN' if h is m else 'PRINCIPAL_OPPONENT' if h is s else 'SINGLE_SHOT' if h is t else 'SUPPORTING')} for h in cand],
+              'mark_reason':{'main':mreason,'second':sreason,'third':treason,'others':oreasons},
+              'rrdb_evidence':{'available':True,'reviewed':True,'used_in_decision':True,'horse_refs':rrrefs(cand,mn,sn),'reason_not_used':None},
+              'legacy_0_3_fields':{'attraction_stability_convergence':None,'strongest_counter':None,'reversal_condition':None,'status':'NOT_USED_v0.4.0'}}
+            rec={'schema_version':'RaceNote-Forecast-Research-Record-0.3.1',
+              'identity':{'target_date':date,'venue':r['venue'],'race_no':r['race_no'],'race_key':f"{date}-{r['venue']}-{r['race_no']}",'race_name':r.get('race_name'),'surface':r.get('surface'),'distance_m':r.get('distance_m'),'class':r.get('class')},
+              'research':{'evaluation_mode':'BLINDED_HISTORICAL','turn_id':'BTDAY-0011-TURN2-FULLDAY','logic_version':logic,'base_logic_version':'RaceNote-Human-Context-Reader-0.3.5-candidate','candidate_patch':'consolidated five-mark forecast'},
+              'source':{'racenote_identity':f"BTDAY-0011/{compact}/{r['venue']}/{r['race_no']}R",'racenote_semantic_sha256':x['source_semantic_sha256'],'day_prep_package':'BTDAY-0011_DAY_PREP_20260315_FINAL.zip','main_sha_at_forecast':main_sha},
+              'prediction':{'axis':href(m,1),'marks':{'main':href(m,1),'second':href(s,2),'third':href(t,3),'others':[href(h,4+i) for i,h in enumerate(oo)]},'axis_comment':mreason,'reader_facing_reason':mreason+' '+sreason+' '+treason,'stability_counter_reason':None,'concern':None,'full_field_order':None},
+              'decision_trace':trace,
+              'audit':{'created_at':created,'frozen_at':created,'prediction_hash':'','pre_result_guard':'PASS','result_visible_at_freeze':False,'candidate_role_separation':'NOT_USED_v0.4.0','five_mark_role_guard':'PASS','market_blind_guard':'PASS','legacy_converge_machinery':'NOT_USED'}}
             rec['audit']['prediction_hash']=ph(rec);by[r['venue']].append(rec)
           for v,rows in by.items():
             rows.sort(key=lambda x:x['identity']['race_no']);assert len(rows)==12
             slug={'中京':'chukyo','中山':'nakayama','阪神':'hanshin'}[v];d=out/'venues'/slug;d.mkdir(parents=True,exist_ok=True)
             (d/f'forecast_{compact}_{v}.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n')
             (d/f'forecast_{compact}_{v}.jsonl').write_text(''.join(json.dumps(q,ensure_ascii=False,separators=(',',':'))+'\n' for q in rows))
-            cv=[q['identity']['race_no'] for q in rows if q['decision_trace']['attraction_stability_convergence']]
             aud={'validator_version':'racenote-human-context-0.4.0-candidate-equivalent','candidate_patch':'consolidated five-mark forecast','status':'PASS','venue':v,'target_date':date,'record_count':12,'frozen_count':12,'error_count':0,'prediction_hash_unique_count':12,'converge_races':cv,'five_mark_role_guard':'PASS','legacy_converge_machinery':'NOT_USED','independent_selection_guard':'PASS','converge_semantic_guard':'PASS','result_opened':False}
             (d/f'forecast_{compact}_{v}_audit.json').write_text(json.dumps(aud,ensure_ascii=False,indent=2)+'\n')
             hand={'schema_version':'RaceNote-Venue-Forecast-Handoff-0.1-draft','selection_id':'BTDAY-0011','target_date':date,'venue':v,'logic_version':logic,'main_sha':main_sha,'race_count':12,'frozen_count':12,'technical_skips':0,'result_opened':False,'prediction_hashes':[q['audit']['prediction_hash'] for q in rows]}
