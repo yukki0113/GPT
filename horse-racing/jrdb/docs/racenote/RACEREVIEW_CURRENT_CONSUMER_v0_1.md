@@ -147,6 +147,25 @@ The Gen0.3 reading order remains:
 DATA / TRENDS > RACEREVIEW >= SIMPLE ABILITY
 ```
 
+## 7.1 Operational history horizon
+
+Current RRDB recommendation/history serving uses a rolling `730-day` lookback
+before the target date.
+
+This is a **consumer boundary**, not a physical deletion rule for the
+RaceReviewDB CURRENT computational state. The incremental Review builder seeds
+historical standards from persisted CURRENT history, so physically truncating
+the same artifact to two years would change future baseline construction unless
+that state is first decoupled.
+
+Therefore:
+
+- recommendation consumers ignore rows older than 730 days;
+- RaceNote RRDB recommendation lookup uses the same 730-day boundary;
+- longer immutable/research history may remain in CURRENT or research stores
+  until a separate compact-serving artifact is introduced;
+- no historical Warehouse/research artifact is deleted by this policy.
+
 ## 8. Operational ownership
 
 RaceReviewDB owns:
