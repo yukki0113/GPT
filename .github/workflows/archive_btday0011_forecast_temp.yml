@@ -98,6 +98,23 @@ jobs:
             if st=='追込':return '追込脚質のため、前残りや仕掛け遅れになると能力を出し切れないリスクがある。'
             if st=='逃げ':return '逃げ脚質で、同型との競り合いが長引くと終いの余力を失うリスクがある。'
             return '上位候補との能力差が小さく、展開・位置取りが噛み合わない場合は取りこぼし余地がある。'
+          def mark_reason(h,role,r):
+            a=h.get('ability',{}); t=h.get('training',{}).get('summary',{}).get('training_arrow'); hp=h.get('historical_profile') or {}
+            sd=hp.get('same_distance') or {}; name=h['basic']['horse_name']; bits=[]
+            if sd.get('starts',0) and sd.get('top3',0): bits.append(f"同距離で{sd.get('top3')}回馬券圏")
+            if t=='デキ抜群': bits.append("追い切りの状態面が強い")
+            elif t=='上昇': bits.append("状態は上向き")
+            st=a.get('running_style')
+            if st=='逃げ': bits.append("自分の形に持ち込める先行力")
+            elif st=='先行': bits.append("好位で運べる機動力")
+            elif st=='差し': bits.append("差し脚を生かせる")
+            elif st=='追込': bits.append("終いの伸びを生かせる")
+            if not bits and a.get('idm') is not None: bits.append(f"今回IDM {a['idm']}の地力")
+            core='、'.join(bits[:3])
+            if role=='main': return f"{name}を主役に取る。{core}が今回の条件で噛み合い、勝ち切る現実性まで含めて最も買いたい。"
+            if role=='second': return f"{name}は{core}が強み。◎以外では最も相手評価を上げたい。"
+            if role=='third': return f"{name}は{core}が一発の材料。安定度では本線に譲っても、展開ひとつで◎○を逆転できる単穴。"
+            return f"{name}は{core}を評価して5頭候補に残す。"
           def rrrefs(hs,mn,sn):
             z=[]
             for h in hs:
