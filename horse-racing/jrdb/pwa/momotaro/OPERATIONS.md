@@ -116,49 +116,61 @@
 
 ## けんしょー
 
-RaceNoteの予想運用が完成するまでの暫定運用として、JRDB総合印を新聞のけん列へ転記する。
+けんしょーはKenshow_Labo利用者本人であり、RaceNote / RaceReviewDB (RRDB) を予想・短評・注目馬提出の正本とする。
 
-対象印は次の4種類だけとする。
+### RaceNote
 
-- ◎
-- ○
-- ▲
-- 注
+RaceNoteの当日予想を、そのままけんしょー予想として扱う。
 
-参照元:
+自動変換:
 
-- `horse.jrdb.marks.total`
+- RaceNote印 → `addons.momotaro.kenshow.mark`
+- RaceNote confidence → `addons.momotaro.kenshow.confidence`
+- RaceNote単馬短評 → `addons.momotaro.kenshow.comment`
+- RaceNoteレース短評 → `race_notes.momotaro_comments.kenshow`
+- tagは `RaceNote`
 
-表示ルール:
+新聞ではRaceNote印を「けん」列に表示する。
+単馬短評がある場合は印セルから詳細を確認できる。
+レース短評は新聞下部のけんしょー短評として表示する。
 
-- 上記4印だけをけん列へそのまま表示する
-- それ以外のJRDB印は空欄
-- 短評・コメントは付けない
-- モーダルリンクにしない
-- 予想一覧には掲載しない
-- `addons.momotaro.kenshow` へコピーしない
-- 表示時に `horse.jrdb.marks.total` を直接参照し、配布データへ別名保存しない
+### RaceReviewDB (RRDB)
 
-これはRaceNote完成までの暫定表示であり、けんしょー独自予想として確定したものではない。
-RaceNote運用確定時に置き換える。
+RRDB推薦に該当した馬は、けんしょーの注目馬提出として扱う。
 
-### けんしょー追加予想（不利分析）
+自動変換:
 
-次走注目馬CSV由来の対象馬は `addons.momotaro.kenshow` に comment + tag=不利分析 として保持する。
+- RRDB推薦該当馬 → `addons.momotaro.kenshow.review_horse = true`
+- RRDB recommendation_comment → `addons.momotaro.kenshow.comment`
+- tagは `RRDB`
 
-新聞:
-- JRDB総合印が ◎ / ○ / ▲ / 注 のいずれかなら、その印をそのままリンク化する。
-- 上記印が無い対象馬は、けん列に「注」を表示してリンク化する。
-- リンク先は不利分析コメントのモーダル。
-- JRDB原本の印は変更しない。別馬の注印を削除・移動しない。
+RaceNoteとRRDBが同一馬に重なった場合:
 
-予想一覧:
-- 全対象馬を掲載する。
-- sourceは「けんしょー」。
-- tagは「不利分析」。
-- 馬番 + 馬名 + コメントを表示する。
+- 印・confidenceはRaceNoteを使用
+- 単馬短評はRaceNote短評とRRDBコメントの両方を保持
+- tagは `RaceNote / RRDB`
+- RRDB該当なので `review_horse=true`
 
-新聞下部に3人短評カード自体を置かない。
+### 手動補正
+
+明示的なけんしょー手動入力がある場合は自動変換値より優先する。
+ただし未指定fieldはRaceNote/RRDB自動値を維持する。
+
+`tag=手動無印` の場合のみ、RaceNote由来の印も含めて印を明示的に空にする。
+
+### 旧暫定仕様
+
+JRDB総合印をけんしょー印へ転記する旧暫定仕様は廃止する。
+JRDB印とけんしょー予想は別概念として扱う。
+
+### 反映先
+
+同じけんしょー情報を以下へ反映する。
+
+- 桃太郎新聞: けん列 / レース短評
+- 桃太郎 注目馬一覧
+- 個人PWA新聞: けん列 / 桃太郎短評
+- 個人PWA 注目馬一覧
 
 ## 🐬 イルカブログ
 
@@ -192,7 +204,7 @@ RaceNote運用確定時に置き換える。
 
 - りょ: りょーたの各R通常印。特注馬はリンク化
 - 王子: おーじ回顧該当馬のみ表示・リンク化
-- けん: RaceNote完成までJRDB総合印の ◎ / ○ / ▲ / 注 のみ暫定転記
+- けん: RaceNote印を表示。RaceNote/RRDB短評・注目馬はけんしょー情報として扱う
 - 🐬: イルカブログ対象馬のみ表示・リンク化
 
 過去走は5走固定。表示は個人PWAと共有する `newspaper-v4` compact rendererを使用する。
@@ -281,4 +293,4 @@ RaceNote運用確定時に置き換える。
 - 桃太郎公開projection
 - focused tests
 
-個人PWAのKenshow_Labo側へ桃太郎固有ルールを波及させない。
+個人PWAは桃太郎公開情報を伴走データとして取り込み、けんしょー情報も同一意味で新聞・注目馬一覧へ反映する。
