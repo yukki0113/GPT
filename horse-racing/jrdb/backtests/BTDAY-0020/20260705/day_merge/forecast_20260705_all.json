@@ -22,7 +22,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/1R",
       "racenote_semantic_sha256": "4370a56404084cc22e2fbe34c876526718dacce8f77ae81cbc9b12fe6812731b",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -183,8 +183,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -193,7 +193,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "3866b2b7ae3d862e8a4c50152b1b0fb701cbcb3a8b27ba25244731ee8e84e34f"
+      "prediction_hash": "f9d12ac709779dc803186fe51de52552b90bd74fdcdd49b989b5a0ec17881548"
     }
   },
   {
@@ -219,7 +219,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/2R",
       "racenote_semantic_sha256": "0971acb4469a8dad9146f79b481f05a426b23ac3d79386f39752b27951ad9cdc",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -380,8 +380,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -390,7 +390,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "e33ef4a0a348f42a9d8d873ff19013fbe6272cfd25bc2ce095b0999add5c5abc"
+      "prediction_hash": "610b666db944cb5afce246c83f5d0f794527314fedb360bf5c8e6aa0e205e982"
     }
   },
   {
@@ -416,7 +416,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/3R",
       "racenote_semantic_sha256": "36a5c9d388a1e5a1c1353b42625e92915065747b5be7f47be53d54c266c2925d",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -597,8 +597,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -607,7 +607,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "beaf2852085ca79996fe4f8cfc367d559925b7fadca289d4d6a6e9aeb25ac629"
+      "prediction_hash": "b46b8b611be50c2bdac5700df89fc9fde0e4039c7b39bab403a957cd52944991"
     }
   },
   {
@@ -633,7 +633,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/4R",
       "racenote_semantic_sha256": "9168a5a3059c705124a57ab49dc3610e6c782a4f020ccce337d8eae3ad184a44",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -823,8 +823,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -833,7 +833,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "545d5c3cda8425ef454a461e11f49a459e8cb768b69bdc5d4332b6a6338c37bf"
+      "prediction_hash": "b5478b39ef39a655f9204c0df527050994a652c24bd83693912b15c1a7656c43"
     }
   },
   {
@@ -859,7 +859,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/5R",
       "racenote_semantic_sha256": "71bc2dad4e8ade7f3bc1e661884e3cb4fdc24d12dde93a69a7dac8c4e1bf117d",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -1020,8 +1020,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -1030,7 +1030,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "b0659a76956ec470ff0d8ea7c2488aea1199984c883b10c40ff044b837dc9a5b"
+      "prediction_hash": "66015bf10bd6e3342d94d83a3c413bbc60ca42c48edebc81c2fe6c194b0f7d53"
     }
   },
   {
@@ -1056,7 +1056,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/6R",
       "racenote_semantic_sha256": "b9e4eedd6fdb14a4c8dd54d421c3c325bd2529a249cf7a66a53522511ad8ccc4",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -1227,8 +1227,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -1237,7 +1237,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "8b8ae1a728725548b0f9e45d12abae8e406a6c5e9d42bf035b9b5635e32c7865"
+      "prediction_hash": "d8eec7e1c6adeef0a15839e308c520e44fcc66b9f3384d31bb2374132b22a43c"
     }
   },
   {
@@ -1263,7 +1263,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/7R",
       "racenote_semantic_sha256": "9f8531821546fb4062cf2cb2db88f9b814adc2d320f1d0a72c2470b025dbcbb9",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -1424,8 +1424,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -1434,7 +1434,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "98a23617259602e7dfc6ff7b0238c156b7eb6fe2ea8f18eb2ae0adf8b6bfd92d"
+      "prediction_hash": "8e87ccf29571332bf1f78e83fcae57d7336646ae870b68792e1ac464a932c1c7"
     }
   },
   {
@@ -1460,7 +1460,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/8R",
       "racenote_semantic_sha256": "630874f9599717446fdb196249a78b9f440d89cef534727f0f4667d2586b0ae0",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -1631,8 +1631,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -1641,7 +1641,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "4ae09ac139ed61953a9750469d84dd75facd1719c259fbeae32a3080ffd6c91d"
+      "prediction_hash": "07710b50babf42e5f57a4e204d4ca6aa65c4aad29b42a9e91175892bc28e7d80"
     }
   },
   {
@@ -1667,7 +1667,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/9R",
       "racenote_semantic_sha256": "481640823fc2534b88e10cce9896e0de6f526b93c543ec4a22145ea6eda0f3b8",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -1828,8 +1828,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -1838,7 +1838,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "2a0bae0ef2bacd054544daf8bfb2ac53c67abcfb28af55b927e73590845d09c6"
+      "prediction_hash": "a70348e029cb40bb710c1eb76aa1c79477d7d66764c583411028d5ca6c98c0f2"
     }
   },
   {
@@ -1864,7 +1864,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/10R",
       "racenote_semantic_sha256": "138d576c5921c44c7beccc2392c2e5e9b076a950518cc7009e5da58a12696375",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -2041,8 +2041,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -2051,7 +2051,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "dbd8c0fa52dccaa91422d1238f0623ee1c4f030bff13bbcff99e53a6daf40a18"
+      "prediction_hash": "9aff3ee8322a0da43a125ea50756ad302e63d87d88e3d58099885748dadaafe6"
     }
   },
   {
@@ -2077,7 +2077,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/11R",
       "racenote_semantic_sha256": "83cddafbe5dee4d7beef604ce5b145b932441a8155e52b416fe04a0e97fe2ea1",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -2238,8 +2238,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -2248,7 +2248,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "254cf9c2e051d5eea93e79a29b2b34a2397c9a83ad1eaada12e3e881923a4a13"
+      "prediction_hash": "e361f0d165ee411f63627150e2bd4a0fccf8483c2ec3abd3c62a86dfacdaf8df"
     }
   },
   {
@@ -2274,7 +2274,7 @@
       "racenote_identity": "BTDAY-0020/20260705/函館/12R",
       "racenote_semantic_sha256": "a2dc783e245cd1e1c498aca29c2535ea3c43bb76257172bf530ac6106a2d0a81",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -2445,8 +2445,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -2455,7 +2455,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "628cee0d9e875abe7e5d7938af8877eaeeafb318cd6490ea3b0bfb948a4864cd"
+      "prediction_hash": "08e0dd4f5c2d767e85f96c0148b65f6b12fa9e490786baad4bb3b3116ea947e8"
     }
   },
   {
@@ -2481,7 +2481,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/1R",
       "racenote_semantic_sha256": "d38e089b2fcdbe0710c5c3cf604f4af6089c401365fe483d9822c27a1d1227b9",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -2642,8 +2642,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -2652,7 +2652,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "ef35ff7bcf3a7fb70346bffb626bb1c0c89edbc2c726434c07aacb766218ef4b"
+      "prediction_hash": "969c0217dedaa17c083d7bc7a533661d7880cae7e5591e1ae35a215e4e56dd3a"
     }
   },
   {
@@ -2678,7 +2678,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/2R",
       "racenote_semantic_sha256": "fadb76d108e694c4c001cad031d7b3e3890a1f1998a1811dd94fc8272b2acd9e",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -2839,8 +2839,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -2849,7 +2849,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "f14913ea9a23c9a82586145b5d396237eed44e11b61ef11ff1b6fccbe038728a"
+      "prediction_hash": "4b7d889fa86ce623d029a3326f4dda1f8efa73d020aabc389008396f9fc85e66"
     }
   },
   {
@@ -2875,7 +2875,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/3R",
       "racenote_semantic_sha256": "2527a51b80f155123a373837b92fc549e23f23e2016e7d45caed648d6b94d6be",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -3036,8 +3036,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -3046,7 +3046,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "a33c67d5f9125b8ec8f7654dc545056dbaaa0bd9c385440da069e04d20f91706"
+      "prediction_hash": "e0c5147c1a029d6dee782289bcf03407d4299c4d44852d9bb785397c2ad111d7"
     }
   },
   {
@@ -3072,7 +3072,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/4R",
       "racenote_semantic_sha256": "1d581698e79b8feacbf845ce09e1ab0fa28d4fd22bc1611815b12c38368f76df",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -3251,8 +3251,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -3261,7 +3261,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "375fad7b0dacc2bfcfa013bad502af1e1a6f2ce2bcad0c8b679a8294eee890cb"
+      "prediction_hash": "ee8d39ebb0efffb0ffcd64b3620e3fb8ab7a5f51e0c9d03daaefe40b21766651"
     }
   },
   {
@@ -3287,7 +3287,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/5R",
       "racenote_semantic_sha256": "ccce4cdef1612ca4cfe8a689ead842dee7e639cd1431b2a23ab70c6e525fa921",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -3448,8 +3448,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -3458,7 +3458,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "a6b27f4f42cb43ece9d2be72040c166566ff3705ab538ea2d020c81784f4f2d9"
+      "prediction_hash": "607b6443cd18301c55394c6f7ade94eb66328aae67d7e470181aad09378c0b44"
     }
   },
   {
@@ -3484,7 +3484,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/6R",
       "racenote_semantic_sha256": "509ad6d0ded01c11c4597d16bb8c43dfa3b3c3eddf1396c8f3df4e84b003ea2c",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -3645,8 +3645,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -3655,7 +3655,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "200c7d1d6ce6cb718fe558db43abb9565538be9bc5163d8450e5e07c83b72ffe"
+      "prediction_hash": "d6e3e261ea41f26614faa0989b32d636cc74ec32c77b80ac9f354d7c3971fbec"
     }
   },
   {
@@ -3681,7 +3681,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/7R",
       "racenote_semantic_sha256": "addae5f0ae756df8943df1bf857bd60e56aa79493b9184510cbd75bd90dce49f",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -3842,8 +3842,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -3852,7 +3852,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "f3073390c8caf93b267da375a5bb27583ef7acd4522dcb9ccfcd4b974d53ac9d"
+      "prediction_hash": "60e054d619e44c9353b68a8b8f9867440d35e9756db12b4f3c5208a6323158f4"
     }
   },
   {
@@ -3878,7 +3878,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/8R",
       "racenote_semantic_sha256": "fe610a8a84d1b85f8b6d848268a2436e23961d40eb603ce05bd937e6ebd84757",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -4047,8 +4047,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -4057,7 +4057,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "6dc39f3128c82adad5fee53251113ca598a46c22c18414ed43cfdfb540064bd1"
+      "prediction_hash": "2d7656e8d76d0108aec64bfdad242c4127c6b4defc4ed888b941e7be9e41d47e"
     }
   },
   {
@@ -4083,7 +4083,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/9R",
       "racenote_semantic_sha256": "13a9c8a45090f052e586719e600c3ef46ff72c737b332b96b7a8120fe072341a",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -4252,8 +4252,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -4262,7 +4262,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "f203bab4eabe926e17d34576219f1e47a8d4e8d6cebc6484a297814bd4ac6249"
+      "prediction_hash": "e049fcb8aa0fdfcc24189e4cdf8d75b3fe62de2374ad308cf9c3b67ad7c54953"
     }
   },
   {
@@ -4288,7 +4288,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/10R",
       "racenote_semantic_sha256": "7bfbec9f2f62f3821a83eac82214e2f72ffb974045a61f08a1fe4f9e8330ac80",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -4449,8 +4449,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -4459,7 +4459,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "00a650807f9bb9b5ae9e88ce6b407588355f6fd921d56efdb6da9bcbf6cb3177"
+      "prediction_hash": "44c229adc3010e58fa19c5d7b8368f053c9e3b287a20890a3bae73a5748f631b"
     }
   },
   {
@@ -4485,7 +4485,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/11R",
       "racenote_semantic_sha256": "34bcf57b1b33374d573df936ca49c619ed1e122816456e99c385c697927b4ca3",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -4654,8 +4654,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -4664,7 +4664,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "81136ad6c6f22f5d211b8e5dd7f12093def16b0e1de1700748411a2cb93a65cb"
+      "prediction_hash": "af4d435e3ad2efa67272c4dcdd1f5b7d3cb921446bd9d08dcc9545e2e6a60df5"
     }
   },
   {
@@ -4690,7 +4690,7 @@
       "racenote_identity": "BTDAY-0020/20260705/小倉/12R",
       "racenote_semantic_sha256": "eda62612cc76900c9ad87453c2885b9f66c0640ebffad8204988298fddc63168",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -4861,8 +4861,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -4871,7 +4871,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "8d17e7d9ddd11e2ed241ecf42e43c5355b3c1680a665f59e3123d8c928e31339"
+      "prediction_hash": "0a69e03b14d4aaaa1f9018d0a943a039c029f56e1dbe3abb300f17fdbf820ff0"
     }
   },
   {
@@ -4897,7 +4897,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/1R",
       "racenote_semantic_sha256": "e9ea7d9314fdd6fb8b0bc44cc41bdea132eb104029a09bb24b8a625bd58b9358",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -5058,8 +5058,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -5068,7 +5068,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "df8de3673f0ae57dc415da3c2c8aebdb4e1d065c2039e8013c40e144b6e41eb4"
+      "prediction_hash": "190449ce05acf616f451cb2ea0da135165969211ed8a2f0b4ab9dc0bda069e2f"
     }
   },
   {
@@ -5094,7 +5094,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/2R",
       "racenote_semantic_sha256": "c297327c029e7050f0b03ee0e9036308aec835007bf5cd1b58dee8209ed44dfd",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -5265,8 +5265,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -5275,7 +5275,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "9659ee13ffb5ef76c6bb3e0569e99b2125bae91e4f79aa9ac75e391e25698e74"
+      "prediction_hash": "728799b398abeba489800dbec6d2bbd27215371251e84bc81a217e11a43456b0"
     }
   },
   {
@@ -5301,7 +5301,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/3R",
       "racenote_semantic_sha256": "fe95c87ec07cdeb7d0ca8a76914e8c85bc83c5a57d4402aa54a9268644c209bb",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -5462,8 +5462,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -5472,7 +5472,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "312dac1540255d2cfeec48684ba09b47c66a49407939cff39fbdb185a2d7eb8c"
+      "prediction_hash": "e1a214274db853e32d3e0898e992d2d2e87a6957c2b3e7f146f388ecc228397c"
     }
   },
   {
@@ -5498,7 +5498,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/4R",
       "racenote_semantic_sha256": "98386305698ba34a9c2eb33a5e8f0fba5643bb8bfe137398207bd097264d5933",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -5659,8 +5659,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -5669,7 +5669,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "5249d18f3e2cbdb5da616a742ec1b646f855cd28609308dd88f89ce9dcd5ea25"
+      "prediction_hash": "51d26db94be8efd160ee8725f1f08fbfd1ac63b861742a2b089364e047a37b6c"
     }
   },
   {
@@ -5695,7 +5695,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/5R",
       "racenote_semantic_sha256": "e1538703801b438d842953ea37fe3cf57a9db052d277d694207195449e0713ee",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -5856,8 +5856,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -5866,7 +5866,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "c27b509ef06b2fe6430d7fad84ac3e8b5ba4041baf2ccef4087f109d85b87489"
+      "prediction_hash": "ab68eb16ae5d111b023174b8b080de80ed5bb83da3062d7330998d8a1cbd853b"
     }
   },
   {
@@ -5892,7 +5892,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/6R",
       "racenote_semantic_sha256": "3edc5297f60146f9368e906a427209d3ac7383441cd2fec038dac56a90b20fd4",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -6053,8 +6053,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -6063,7 +6063,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "5d4b6417395c220a5db425c06add6b442026a6f0df2f9eb532d2e322f7993d50"
+      "prediction_hash": "143379f2b9b0079c15ceaf28b11f68fc9f3e0d30ac1ffd016797529c5ab27000"
     }
   },
   {
@@ -6089,7 +6089,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/7R",
       "racenote_semantic_sha256": "d957807e56fe6a77b958d4e6263ab373de21acd0b1b697238feec91f960866e6",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -6260,8 +6260,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -6270,7 +6270,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "9768f46db3bf66054e28db6d54a85862286aa4b68dfda32f58774732c5ebd622"
+      "prediction_hash": "5ed802306f3c886ec6471a650f609f82e394f33dc41d47c70d6f597743c5fc5b"
     }
   },
   {
@@ -6296,7 +6296,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/8R",
       "racenote_semantic_sha256": "2593c164c4b40ec6cc76147b98ff94fd9a74ee37ea981356ebd03dd49b698255",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -6457,8 +6457,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -6467,7 +6467,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "a1e5b4ee046c91132ac42fb267658f07d37aa2502f99bf0deca115b13a32e1d2"
+      "prediction_hash": "6c185d1190cf9202bc84925c6623c21bbeb92b1469225dde988bbde93920ef54"
     }
   },
   {
@@ -6493,7 +6493,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/9R",
       "racenote_semantic_sha256": "0030882c1ce2798b1be1fc15f246d5c760ccd198c3b7dca302d7c8fbc23fc00d",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -6662,8 +6662,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -6672,7 +6672,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "654955bd6ef817ff6158d02a2e3bf32c36d3aed86b9ac17a84e55ea2b1760849"
+      "prediction_hash": "88fd1740271f27e3e52dd704b1f26def47d059d1cfd5d161d2979623350897aa"
     }
   },
   {
@@ -6698,7 +6698,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/10R",
       "racenote_semantic_sha256": "eacc78d6df587b2d8d2d4cf8c303e4ddfd82040bc55324b2c2d4a3f347d1eda9",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -6859,8 +6859,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -6869,7 +6869,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "1907e3722d22d40f7c23d8ad382b72049961e4124c258506d3aab2a80a412e7f"
+      "prediction_hash": "d8c8c998a5928c90b91054deff21f4ed526a2c3436554d83be7fcf3f92253f7c"
     }
   },
   {
@@ -6895,7 +6895,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/11R",
       "racenote_semantic_sha256": "f95e53db25b605bfaa3ce9e6ac18d9dfd6b2c51176bb555f2c77d4fc66286591",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -7056,8 +7056,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -7066,7 +7066,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "0b7b6f5a5373a156ffd4e76f1807928b24e7d5566cbbc340a4fd5be5de344b93"
+      "prediction_hash": "43c723b249e9f0360112e89537ae72dfad547803d3ea84ac221e594a5e280b66"
     }
   },
   {
@@ -7092,7 +7092,7 @@
       "racenote_identity": "BTDAY-0020/20260705/福島/12R",
       "racenote_semantic_sha256": "c81692cd05b31cd9d6fb2ce48645fe33bd9b23e642f8d8d4fb7e54b4b86d6a59",
       "day_prep_package": "BTDAY-0020_DAY_PREP_20260705_FINAL.zip",
-      "main_sha_at_forecast": "503a8bc63be7a538d50a5c5662774106c252ab64",
+      "main_sha_at_forecast": "abc4eb3366423ca7553b39bfb8d2e2cb506b6779",
       "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST"
     },
     "prediction": {
@@ -7263,8 +7263,8 @@
       }
     },
     "audit": {
-      "created_at": "2026-10-01T12:29:47.609690+00:00",
-      "frozen_at": "2026-10-01T12:29:47.609690+00:00",
+      "created_at": "2026-10-01T12:30:06.763278+00:00",
+      "frozen_at": "2026-10-01T12:30:06.763278+00:00",
       "pre_result_guard": "PASS",
       "result_visible_at_freeze": false,
       "five_mark_role_guard": "PASS",
@@ -7273,7 +7273,7 @@
       "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
       "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
       "legacy_converge_machinery": "NOT_USED",
-      "prediction_hash": "94b8776e96b07ea765186ba70d6d9acabeb8b1a6e72913f4428eb24155dca794"
+      "prediction_hash": "d8534e7a098fbd3ce4ad946e383809bc117e35657ac191fb1c41472957258e8d"
     }
   }
 ]
