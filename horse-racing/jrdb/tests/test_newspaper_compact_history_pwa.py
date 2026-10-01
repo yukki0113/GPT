@@ -29,6 +29,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertLess(config_position, runtime_position)
         self.assertIn('./newspaper-v4.css?v=9', html)
         self.assertIn('./newspaper-v4.js?v=8', html)
+        self.assertIn('./newspaper-v6.js?v=2', html)
 
     def test_personal_history_selector_remains_3_5_8(self) -> None:
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
@@ -107,7 +108,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v62"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v65"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
         self.assertIn('"./newspaper-v4.css?v=9"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=8"', service_worker)
