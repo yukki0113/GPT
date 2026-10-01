@@ -43,6 +43,7 @@ jobs:
           Path('/tmp/date_compact.txt').write_text('20260822',encoding='utf-8')
           Path('/tmp/file_name.txt').write_text(row['file_name'],encoding='utf-8')
           Path('/tmp/drive_file_id.txt').write_text(row['drive_file_id'],encoding='utf-8')
+          Path('/tmp/pool.json').write_text(json.dumps(pool,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps({'selection':sel,'row':row},ensure_ascii=False,indent=2))
           PY
 
