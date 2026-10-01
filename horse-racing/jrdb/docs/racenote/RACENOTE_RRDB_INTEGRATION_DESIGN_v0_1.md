@@ -1,5 +1,16 @@
 # RaceNote RRDB Integration Design v0.1
 
+> **2026-10-01 current-operation cutover**
+>
+> The historical integration architecture in this document remains valid, but
+> the operational Next-Watch S/A recommendation semantics are superseded by
+> `docs/RaceReviewDB_Recommendation_Operation_v0_2.md` and
+> `src/jrdb_recommendation_signals.py`.
+>
+> Current operation exposes recommendation signals + measured strength and does
+> not assign S/A grades. The old frozen Next-Watch artifact is retained only for
+> historical compatibility/reproduction.
+
 Status: **R1-R5 IMPLEMENTED / REAL-DATA SMOKE PENDING**
 Date: 2026-09-29
 
