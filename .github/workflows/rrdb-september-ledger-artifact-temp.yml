@@ -1,0 +1,184 @@
+name: RRDB September Ledger Artifact Temp
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  build:
+    if: github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RRDB_SEP_LEDGER_ARTIFACT_TEMP]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: python -m pip install --disable-pip-version-check duckdb gdown
+
+      - name: Download inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rrdb_sep_ledger/out
+          gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/rrdb_sep_ledger/current.zip
+          gdown 1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr -O /tmp/rrdb_sep_ledger/rules.zip
+
+          gdown 1nAZsvZT3pFSeCvuIbYyzqo7L230HV9Zv -O /tmp/rrdb_sep_ledger/PACI260905.zip
+          gdown 1w7Qo4WpH8TcTtCTXEAK-qv3CH5Sa2BNU -O /tmp/rrdb_sep_ledger/PACI260906.zip
+          gdown 1IM8xl7FNLz02E6jZz0UOAZrxX2gpiZC_ -O /tmp/rrdb_sep_ledger/PACI260912.zip
+          gdown 110iUUdb3un4BGdbSG5AUOVXjKJ4PVAoJ -O /tmp/rrdb_sep_ledger/PACI260913.zip
+          gdown 1AL3Ua_2WY_NlKfMloSOinbzVZVRmjgNi -O /tmp/rrdb_sep_ledger/PACI260919.zip
+          gdown 14HiihawoEMU7kAA6OZ9mzQMwtJ2bckE0 -O /tmp/rrdb_sep_ledger/PACI260920.zip
+          gdown 1dRo6fYQkKaj905FJHjUzhQMNrxXc8KZk -O /tmp/rrdb_sep_ledger/PACI260921.zip
+          gdown 1VdkTE06TwBIWt2vxi98qGgft6jIfwzIv -O /tmp/rrdb_sep_ledger/PACI260922.zip
+          gdown 1PSYw6uL2Gx-rbtcJsgsGFZZNGTnMc4od -O /tmp/rrdb_sep_ledger/PACI260926.zip
+          gdown 1G57s0Ix5Xb6AcKfZ2HrpOvasLC05dYg8 -O /tmp/rrdb_sep_ledger/PACI260927.zip
+
+          gdown 1_SO1RlmVCcbLceA_ol_BIQG0GvjTE25R -O /tmp/rrdb_sep_ledger/SED260905.zip
+          gdown 1V5vSW7DPjrqFgCLCzilM4JE0IvZrbORj -O /tmp/rrdb_sep_ledger/SED260906.zip
+          gdown 17PO0IAt0q-rOOXPqC_c6osT0NDg9xzp9 -O /tmp/rrdb_sep_ledger/SED260912.zip
+          gdown 1THuVx90xpL4CTahrilmRAxY5EGiWijqS -O /tmp/rrdb_sep_ledger/SED260913.zip
+          gdown 1CAU1uUx6dQqOZBZAKFPnvfGEjvcCWCfm -O /tmp/rrdb_sep_ledger/SED260919.zip
+          gdown 114LnlTzt7E4m0i908VbRBnLgl35e-YB4 -O /tmp/rrdb_sep_ledger/SED260920.zip
+          gdown 1s0kX7w9cwjNJSNmVEQ4jOku1UjavHG7A -O /tmp/rrdb_sep_ledger/SED260921.zip
+          gdown 1czsagH5BtgovpaCTzWimgMUdo7l1m5YE -O /tmp/rrdb_sep_ledger/SED260922.zip
+          gdown 1bkAIzKRcQ16RvYEbb7ZNBk_pNhbs9S2A -O /tmp/rrdb_sep_ledger/SED260926.zip
+          gdown 1Vb3DsKz2hEA-FFHG-00ZwjrDTxCEA3qI -O /tmp/rrdb_sep_ledger/SED260927.zip
+
+      - name: Run reverse
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          for D in 0905 0906 0912 0913 0919 0920 0921 0922 0926 0927; do
+            mkdir -p "/tmp/rrdb_sep_ledger/work_$D"
+            python horse-racing/jrdb/src/jrdb_next_watch_reverse.py \
+              --race-date "2026-${D:0:2}-${D:2:2}" \
+              --paci-zip "/tmp/rrdb_sep_ledger/PACI26$D.zip" \
+              --current-zip /tmp/rrdb_sep_ledger/current.zip \
+              --turn5-zip /tmp/rrdb_sep_ledger/rules.zip \
+              --work-root "/tmp/rrdb_sep_ledger/work_$D" \
+              --output-json "/tmp/rrdb_sep_ledger/reverse_$D.json" >/dev/null
+          done
+
+      - name: Settle and write ledger
+        run: |
+          python - <<'PY'
+          import csv, json, zipfile
+          from collections import Counter
+          from pathlib import Path
+
+          root=Path('/tmp/rrdb_sep_ledger')
+          out=root/'out'
+          ledger=out/'rrdb_next_watch_202609_ledger.csv'
+          summary=out/'rrdb_next_watch_202609_summary.json'
+
+          def a(raw): return raw.decode('ascii',errors='ignore').strip()
+          def i(raw):
+              s=a(raw)
+              try: return int(s) if s else 0
+              except: return 0
+          def f(raw):
+              s=a(raw)
+              try: return float(s) if s else None
+              except: return None
+
+          def sed(path):
+              m={}
+              with zipfile.ZipFile(path) as z:
+                  names=[n for n in z.namelist() if Path(n).name.upper().startswith('SED')]
+                  if len(names)!=1: raise SystemExit(f'bad SED member count {path}: {names}')
+                  data=z.read(names[0])
+              for r in data.splitlines():
+                  if len(r)<355: continue
+                  k=a(r[:10])
+                  m[k]={
+                      'result_finish':i(r[140:142]),
+                      'final_win_odds':f(r[174:180]),
+                      'final_win_popularity':i(r[180:182]),
+                      'place_payout_yen':i(r[348:355]),
+                  }
+              return m
+
+          fields=[
+            'target_date','grade','target_race_key','target_race_horse_key','venue_code','race_no','horse_no','horse_id','horse_name',
+            'matched_rules','exact_combo','matched_rule_descriptions',
+            'previous_race_date','previous_race_key','previous_finish',
+            'performance_signal','previous_time_delta_per_1000m','last3f_speed_percentile','overall_position_gain',
+            'performance_vs_prior3','last3f_pct_vs_prior3',
+            'result_finish','final_win_odds','final_win_popularity','place_hit','place_payout_yen'
+          ]
+          rows=[]
+          days=['0905','0906','0912','0913','0919','0920','0921','0922','0926','0927']
+          for d in days:
+              rev=json.loads((root/f'reverse_{d}.json').read_text(encoding='utf-8'))
+              sm=sed(root/f'SED26{d}.zip')
+              for grade,key in [('S','s'),('A','a')]:
+                  for x in rev[key]:
+                      rk=x['target_race_horse_key']
+                      if rk not in sm: raise SystemExit(f'missing SED join {d} {rk}')
+                      sr=sm[rk]
+                      matched=x.get('matched_rules') or []
+                      perf=x.get('performance_signal')
+                      rows.append({
+                        'target_date':rev['target_race_date'],'grade':grade,
+                        'target_race_key':x.get('target_race_key'),'target_race_horse_key':rk,
+                        'venue_code':x.get('target_venue_code'),'race_no':x.get('target_race_no'),'horse_no':x.get('target_horse_no'),
+                        'horse_id':x.get('horse_id'),'horse_name':x.get('horse_name'),
+                        'matched_rules':'|'.join(matched),'exact_combo':'+'.join(matched),
+                        'matched_rule_descriptions':' / '.join(x.get('matched_rule_descriptions') or []),
+                        'previous_race_date':x.get('previous_race_date'),'previous_race_key':x.get('previous_race_key'),
+                        'previous_finish':x.get('previous_finish'),'performance_signal':perf,
+                        'previous_time_delta_per_1000m':(-perf if perf is not None else None),
+                        'last3f_speed_percentile':x.get('last3f_speed_percentile'),
+                        'overall_position_gain':x.get('overall_position_gain'),
+                        'performance_vs_prior3':x.get('performance_vs_prior3'),
+                        'last3f_pct_vs_prior3':x.get('last3f_pct_vs_prior3'),
+                        **sr,'place_hit':1 if sr['place_payout_yen']>0 else 0
+                      })
+
+          if len(rows)!=398: raise SystemExit(f'candidate count drift {len(rows)}')
+          if len({r['target_race_horse_key'] for r in rows})!=398: raise SystemExit('duplicate candidate key')
+          rows.sort(key=lambda r:(r['target_date'],0 if r['grade']=='S' else 1,r['target_race_key'],int(r['horse_no'] or 0)))
+          with ledger.open('w',encoding='utf-8-sig',newline='') as h:
+              w=csv.DictWriter(h,fieldnames=fields); w.writeheader(); w.writerows(rows)
+
+          gs={}
+          for g in ('S','A'):
+              x=[r for r in rows if r['grade']==g]; n=len(x); hits=sum(r['place_hit'] for r in x); pay=sum(r['place_payout_yen'] for r in x)
+              gs[g]={'n':n,'place_hits':hits,'place_hit_rate':hits/n,'stake_yen':n*100,'place_payout_yen':pay,'place_roi':pay/(n*100)}
+
+          ec=Counter((r['grade'],r['exact_combo']) for r in rows)
+          obj={
+            'status':'PASS','candidate_count':len(rows),
+            'selection_order':'PACI -> prior RRDB only -> frozen HV -> S/A -> same-day SED settlement',
+            'grade_summary':gs,
+            'feature_columns_preserved':['previous_finish','performance_signal','previous_time_delta_per_1000m','last3f_speed_percentile','overall_position_gain','performance_vs_prior3','last3f_pct_vs_prior3'],
+            'settlement_columns':['result_finish','final_win_odds','final_win_popularity','place_hit','place_payout_yen'],
+            'exact_combo_counts':[{'grade':g,'combo':c,'n':n} for (g,c),n in ec.most_common()]
+          }
+          summary.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(obj,ensure_ascii=False))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-nextwatch-202609-ledger
+          path: /tmp/rrdb_sep_ledger/out/*
+          if-no-files-found: error
+
+      - name: Close request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "PASS: September ledger artifact built."
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
