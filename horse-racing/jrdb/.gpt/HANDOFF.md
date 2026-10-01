@@ -1,3 +1,19 @@
+### JRDB Daily Raw Acquisition v0.1 — 2026-10-01
+
+- Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`.
+- Normal pre-race command: `mmddの開催前取得をお願いします`.
+  - acquire target-date PACI;
+  - resolve the immediately preceding JRA race week's actual race dates;
+  - check canonical Drive SKB inventory;
+  - recover/upload only missing preceding-week SKB.
+- Normal post-race command: `mmdd〜mmddの開催後取得をお願いします`.
+  - acquire/upload SED + HJC for each requested race date;
+  - do not request SKB;
+  - do not request PACI.
+- SKB is intentionally recovered on the following pre-race cycle because its publication timing lags SED/HJC. Same-week SKB `NOT_FOUND` is not a reason for blind retry.
+- Always check Drive before upstream fetch, validate artifact ZIP + size/SHA, upload with the native Google Drive connector, then re-list Drive before claiming completion.
+- GitHub Actions is used for authenticated JRDB acquisition only; no Actions-to-Drive transport.
+
 ### JRDB Result Query v0.1 — 2026-10-01
 
 - Standard completed-race lookup: `src/jrdb_result_query.py`.
