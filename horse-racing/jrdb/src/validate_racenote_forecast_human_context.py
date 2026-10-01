@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3."""
+"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3-v0.4.2."""
 
 from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
 from typing import Any
 
-VERSION = "racenote-human-context-validator-0.2.2"
+VERSION = "racenote-human-context-validator-0.3.0"
 
 def load_records(path: Path) -> list[dict[str, Any]]:
     if path.suffix.lower() == ".jsonl":
@@ -34,51 +34,94 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         "RaceNote-Forecast-Research-Record-0.3.1",
     }:
         e.append(f"{pre}: unsupported schema version")
-    if research.get("logic_version") not in {
+    logic_version=research.get("logic_version")
+    if logic_version not in {
         "RaceNote-Human-Context-Reader-0.3",
         "RaceNote-Human-Context-Reader-0.3.1",
         "RaceNote-Human-Context-Reader-0.3.2",
+        "RaceNote-Human-Context-Reader-0.4.0-candidate",
+        "RaceNote-Human-Context-Reader-0.4.1-candidate",
+        "RaceNote-Human-Context-Reader-0.4.2-candidate",
     }:
         e.append(f"{pre}: wrong logic_version")
     if research.get("evaluation_mode")=="CALIBRATION_REPLAY" and research.get("turn_id","").startswith("BTDAY-"):
         e.append(f"{pre}: calibration replay must use CAL-* turn id")
 
-    principles=t.get("human_principles_used")
-    if not isinstance(principles,list) or not (1 <= len(principles) <= 3):
-        e.append(f"{pre}: human_principles_used must contain 1-3 IDs")
+    is_v04=str(logic_version or "").startswith("RaceNote-Human-Context-Reader-0.4")
 
-    for key,n in [("race_model",30),("primary_question",15),("why_not_numeric_leader",20),("strongest_counter",15),("reversal_condition",15)]:
-        if len(str(t.get(key) or "").strip()) < n:
-            e.append(f"{pre}: {key} too short")
+    if is_v04:
+        if len(str(t.get("race_model") or "").strip()) < 30:
+            e.append(f"{pre}: race_model too short")
 
-    cases=t.get("candidate_cases")
-    if not isinstance(cases,list) or not 3 <= len(cases) <= 5:
-        e.append(f"{pre}: candidate_cases must contain 3-5 horses")
+        mainline=t.get("mainline_cases")
+        if not isinstance(mainline,list) or len(mainline) < 3:
+            e.append(f"{pre}: mainline_cases must contain at least 3 horses")
+        else:
+            seen=set()
+            for i,case in enumerate(mainline,1):
+                horse=(case or {}).get("horse") if isinstance(case,dict) else None
+                name=hname(horse)
+                if not name:
+                    e.append(f"{pre}: mainline[{i}] horse missing")
+                if name in seen:
+                    e.append(f"{pre}: duplicate mainline horse {name}")
+                seen.add(name)
+
+        single=t.get("single_shot_case")
+        if not isinstance(single,dict):
+            e.append(f"{pre}: single_shot_case required")
+        else:
+            horse=single.get("horse")
+            if not hname(horse):
+                e.append(f"{pre}: single_shot_case horse missing")
+            if single.get("selected_independently_from_mainline") is not True:
+                e.append(f"{pre}: single_shot_case must be independently selected")
+
+        main=hname(marks.get("main")); second=hname(marks.get("second")); third=hname(marks.get("third"))
+        others=marks.get("others") if isinstance(marks.get("others"),list) else []
+        mark_names=[main,second,third]+[hname(x) for x in others[:2]]
+        if len(mark_names) != 5 or any(not x for x in mark_names) or len(set(mark_names)) != 5:
+            e.append(f"{pre}: v0.4 five marks must be five unique horses")
+        if isinstance(single,dict) and hname(single.get("horse")) and third != hname(single.get("horse")):
+            e.append(f"{pre}: final ▲ must equal single_shot_case horse")
+
     else:
-        seen=set()
-        for i,c in enumerate(cases,1):
-            name=hname((c or {}).get("horse"))
-            if not name: e.append(f"{pre}: candidate[{i}] horse missing")
-            if name in seen: e.append(f"{pre}: duplicate candidate {name}")
-            seen.add(name)
-            if len(str((c or {}).get("case_for") or "").strip())<15:
-                e.append(f"{pre}: candidate[{i}] case_for too short")
-            if len(str((c or {}).get("case_against") or "").strip())<10:
-                e.append(f"{pre}: candidate[{i}] case_against too short")
-            if len(str((c or {}).get("context_hook") or "").strip())<10:
-                e.append(f"{pre}: candidate[{i}] context_hook too short")
+        principles=t.get("human_principles_used")
+        if not isinstance(principles,list) or not (1 <= len(principles) <= 3):
+            e.append(f"{pre}: human_principles_used must contain 1-3 IDs")
 
-    main=hname(marks.get("main")); second=hname(marks.get("second")); third=hname(marks.get("third"))
-    for key,preferred,other in [("main_vs_second",main,second),("main_vs_third",main,third)]:
-        c=t.get(key) or {}
-        reason=str(c.get("reason") or "")
-        if hname(c.get("preferred")) != preferred or hname(c.get("other")) != other:
-            e.append(f"{pre}: {key} horse identity mismatch")
-        if preferred and preferred not in reason: e.append(f"{pre}: {key} must name {preferred}")
-        if other and other not in reason: e.append(f"{pre}: {key} must name {other}")
-        if len(reason.strip())<20: e.append(f"{pre}: {key} reason too short")
+        for key,n in [("race_model",30),("primary_question",15),("why_not_numeric_leader",20),("strongest_counter",15),("reversal_condition",15)]:
+            if len(str(t.get(key) or "").strip()) < n:
+                e.append(f"{pre}: {key} too short")
 
-    if schema_version=="RaceNote-Forecast-Research-Record-0.3.1":
+        cases=t.get("candidate_cases")
+        if not isinstance(cases,list) or not 3 <= len(cases) <= 5:
+            e.append(f"{pre}: candidate_cases must contain 3-5 horses")
+        else:
+            seen=set()
+            for i,case in enumerate(cases,1):
+                name=hname((case or {}).get("horse"))
+                if not name: e.append(f"{pre}: candidate[{i}] horse missing")
+                if name in seen: e.append(f"{pre}: duplicate candidate {name}")
+                seen.add(name)
+                if len(str((case or {}).get("case_for") or "").strip())<15:
+                    e.append(f"{pre}: candidate[{i}] case_for too short")
+                if len(str((case or {}).get("case_against") or "").strip())<10:
+                    e.append(f"{pre}: candidate[{i}] case_against too short")
+                if len(str((case or {}).get("context_hook") or "").strip())<10:
+                    e.append(f"{pre}: candidate[{i}] context_hook too short")
+
+        main=hname(marks.get("main")); second=hname(marks.get("second")); third=hname(marks.get("third"))
+        for key,preferred,other in [("main_vs_second",main,second),("main_vs_third",main,third)]:
+            comp=t.get(key) or {}
+            reason=str(comp.get("reason") or "")
+            if hname(comp.get("preferred")) != preferred or hname(comp.get("other")) != other:
+                e.append(f"{pre}: {key} horse identity mismatch")
+            if preferred and preferred not in reason: e.append(f"{pre}: {key} must name {preferred}")
+            if other and other not in reason: e.append(f"{pre}: {key} must name {other}")
+            if len(reason.strip())<20: e.append(f"{pre}: {key} reason too short")
+
+    if schema_version in {"RaceNote-Forecast-Research-Record-0.3.1","RaceNote-Forecast-Research-Record-0.4.2"}:
         rrdb=t.get("rrdb_evidence")
         if not isinstance(rrdb,dict):
             e.append(f"{pre}: rrdb_evidence required for v0.3.1")
@@ -92,7 +135,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
                 e.append(f"{pre}: rrdb_evidence.available must be boolean")
             if reviewed is not True:
                 e.append(f"{pre}: RRDB must be reviewed in v0.3.1")
-            if not isinstance(used,bool):
+            if not isinstance(used,bool) and not is_v04:
                 e.append(f"{pre}: rrdb_evidence.used_in_decision must be boolean")
             if not isinstance(refs,list):
                 e.append(f"{pre}: rrdb_evidence.horse_refs must be array")
@@ -100,6 +143,14 @@ def validate_record(r: dict[str,Any]) -> list[str]:
                 e.append(f"{pre}: unused RRDB requires reason_not_used")
             if used is True and (not isinstance(refs,list) or len(refs)<1):
                 e.append(f"{pre}: used RRDB requires at least one horse_ref")
+            if is_v04 and isinstance(refs,list):
+                for idx,ref in enumerate(refs,1):
+                    if not isinstance(ref,dict):
+                        continue
+                    if ref.get("next_watch_grade") not in {None, ""}:
+                        e.append(f"{pre}: current RRDB must not use legacy next_watch_grade in horse_ref[{idx}]")
+                    if "matched_rule_ids" in ref and ref.get("matched_rule_ids"):
+                        e.append(f"{pre}: current RRDB must use matched_signal_ids, not matched_rule_ids")
             allowed_roles={
                 "UPGRADE_RECENT_FORM",
                 "DOWNGRADE_APPARENT_FORM",
@@ -116,9 +167,10 @@ def validate_record(r: dict[str,Any]) -> list[str]:
                         e.append(f"{pre}: rrdb horse_ref[{idx}] invalid decision_role")
 
     # Hidden-score warning: reject traces whose race model/decision reason is mostly naked numeric fields.
-    combined=" ".join(str(t.get(k) or "") for k in [
-        "race_model","primary_question","why_not_numeric_leader","strongest_counter","reversal_condition"
-    ])
+    combined=" ".join(str(t.get(k) or "") for k in (
+        ["race_model","mark_reason"] if is_v04 else
+        ["race_model","primary_question","why_not_numeric_leader","strongest_counter","reversal_condition"]
+    ))
     numeric_tokens=re.findall(r"\b\d+(?:\.\d+)?\b", combined)
     if len(numeric_tokens) >= 8 and len(combined) < 240:
         e.append(f"{pre}: trace appears numeric-dominated; reconsider hidden-score behavior")
