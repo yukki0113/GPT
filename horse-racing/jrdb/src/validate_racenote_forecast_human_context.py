@@ -195,7 +195,7 @@ def audit_turn(rows:list[dict[str,Any]]) -> dict[str,Any]:
     models=[str((r.get("decision_trace") or {}).get("race_model") or "").strip() for r in rows]
     if len(models)>=6:
         ratio=len(set(models))/len(models)
-        if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models))})")
+        if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models)})")
     return {"validator_version":VERSION,"status":"PASS" if not errors else "FAIL","record_count":len(rows),"error_count":len(errors),"errors":errors}
 
 def main()->int:
