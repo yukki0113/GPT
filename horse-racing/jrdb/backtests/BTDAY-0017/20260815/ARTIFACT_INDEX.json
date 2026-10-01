@@ -1,0 +1,24 @@
+{
+  "selection_id": "BTDAY-0017",
+  "target_date": "2026-08-15",
+  "status": "FROZEN_CLEAN_BLIND",
+  "files": [
+    "day_merge/forecast_20260815_all.html",
+    "day_merge/forecast_20260815_all.json",
+    "day_merge/forecast_20260815_all.jsonl",
+    "day_merge/forecast_20260815_all_audit.json",
+    "day_merge/forecast_20260815_all_handoff.json",
+    "venues/chukyo/forecast_20260815_中京.json",
+    "venues/chukyo/forecast_20260815_中京.jsonl",
+    "venues/chukyo/forecast_20260815_中京_audit.json",
+    "venues/chukyo/forecast_20260815_中京_handoff.json",
+    "venues/niigata/forecast_20260815_新潟.json",
+    "venues/niigata/forecast_20260815_新潟.jsonl",
+    "venues/niigata/forecast_20260815_新潟_audit.json",
+    "venues/niigata/forecast_20260815_新潟_handoff.json",
+    "venues/sapporo/forecast_20260815_札幌.json",
+    "venues/sapporo/forecast_20260815_札幌.jsonl",
+    "venues/sapporo/forecast_20260815_札幌_audit.json",
+    "venues/sapporo/forecast_20260815_札幌_handoff.json"
+  ]
+}
