@@ -3,6 +3,7 @@
 /* Full-day package delivery: published current-day auto refresh + manual fallback import. */
 const NEWSPAPER_DAY_OPFS_FILE = NEWSPAPER_RUNTIME_CONFIG.newspaperDayOpfsFile || "current-day.json";
 const NEWSPAPER_CURRENT_BASE = NEWSPAPER_RUNTIME_CONFIG.newspaperCurrentBase || "./data/newspaper/current/";
+const NEWSPAPER_COMPANION_BASE = NEWSPAPER_RUNTIME_CONFIG.newspaperCompanionBase || "";
 const dayFileInput = document.getElementById("newspaper-day-file");
 const dayImportButton = document.getElementById("newspaper-day-import");
 const dayRefreshButton = document.getElementById("newspaper-day-refresh");
@@ -136,15 +137,19 @@ async function restoreDayPackage() {
   }
 }
 
+function publishedUrlAtBase(base, relativePath) {
+  return new URL(`${base}${relativePath}`, window.location.href);
+}
+
 function publishedUrl(relativePath) {
-  return new URL(`${NEWSPAPER_CURRENT_BASE}${relativePath}`, window.location.href);
+  return publishedUrlAtBase(NEWSPAPER_CURRENT_BASE, relativePath);
 }
 
 function manifestSignature(manifest) {
   const entries = [...(manifest.races || [])]
     .map(entry => `${text(entry.race_key, "")}:${text(entry.sha256, "").toLowerCase()}`)
     .sort();
-  return `${text(manifest.date, "")}|${Number(manifest.revision) || 0}|${entries.join("|")}`;
+  return `${text(manifest.date, "")}|${Number(manifest.revision) || 0}|momotaro:${Number(manifest.momotaro_revision) || 0}|${entries.join("|")}`;
 }
 
 async function sha256Hex(buffer) {
@@ -153,8 +158,8 @@ async function sha256Hex(buffer) {
   return [...new Uint8Array(digest)].map(value => value.toString(16).padStart(2, "0")).join("");
 }
 
-async function fetchPublishedRace(entry, manifest) {
-  const response = await fetch(publishedUrl(entry.path), { cache: "no-store" });
+async function fetchPublishedRaceAtBase(entry, manifest, base) {
+  const response = await fetch(publishedUrlAtBase(base, entry.path), { cache: "no-store" });
   if (!response.ok) throw new Error(`${entry.path} の取得に失敗しました (${response.status})`);
   const buffer = await response.arrayBuffer();
   const digest = await sha256Hex(buffer);
@@ -171,6 +176,70 @@ async function fetchPublishedRace(entry, manifest) {
     throw new Error(`${entry.path} のレースidentityがmanifestと一致しません。`);
   }
   return bundle;
+}
+
+function mergeNewspaperCompanion(baseBundle, companionBundle) {
+  if (!baseBundle || !companionBundle) return baseBundle;
+  const companionHorses = new Map(
+    (companionBundle.horses || []).map(function (horse) {
+      return [Number(horse && horse.key && horse.key.horse_no), horse];
+    })
+  );
+
+  (baseBundle.horses || []).forEach(function (horse) {
+    const companion = companionHorses.get(Number(horse && horse.key && horse.key.horse_no));
+    if (!companion) return;
+    horse.addons = horse.addons || {};
+    const companionAddons = companion.addons || {};
+    if (companionAddons.momotaro) {
+      horse.addons.momotaro = companionAddons.momotaro;
+    }
+  });
+
+  const companionNotes = companionBundle.race_notes || {};
+  if (companionNotes.momotaro_comments) {
+    baseBundle.race_notes = baseBundle.race_notes || {};
+    baseBundle.race_notes.momotaro_comments = companionNotes.momotaro_comments;
+  }
+  return baseBundle;
+}
+
+async function fetchCompanionManifest(date) {
+  if (!NEWSPAPER_COMPANION_BASE) return null;
+  try {
+    const response = await fetch(
+      publishedUrlAtBase(NEWSPAPER_COMPANION_BASE, "manifest.json"),
+      { cache: "no-store" }
+    );
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error(`桃太郎manifest取得失敗 (${response.status})`);
+    const manifest = validatePublishedManifest(await response.json());
+    if (String(manifest.date) !== String(date)) return null;
+    return manifest;
+  } catch (error) {
+    console.warn("Newspaper companion manifest unavailable", error);
+    return null;
+  }
+}
+
+async function fetchPublishedRace(entry, manifest, companionManifest) {
+  const bundle = await fetchPublishedRaceAtBase(entry, manifest, NEWSPAPER_CURRENT_BASE);
+  if (!companionManifest) return bundle;
+  const companionEntry = (companionManifest.races || []).find(function (candidate) {
+    return String(candidate.race_key) === String(entry.race_key);
+  });
+  if (!companionEntry) return bundle;
+  try {
+    const companion = await fetchPublishedRaceAtBase(
+      companionEntry,
+      companionManifest,
+      NEWSPAPER_COMPANION_BASE
+    );
+    return mergeNewspaperCompanion(bundle, companion);
+  } catch (error) {
+    console.warn("Newspaper companion race unavailable", entry.race_key, error);
+    return bundle;
+  }
 }
 
 async function refreshPublishedDay({ automatic = false } = {}) {
@@ -202,6 +271,8 @@ async function refreshPublishedDay({ automatic = false } = {}) {
     if (!response.ok) throw new Error(`manifest取得失敗 (${response.status})`);
 
     const manifest = validatePublishedManifest(await response.json());
+    const companionManifest = await fetchCompanionManifest(manifest.date);
+    manifest.momotaro_revision = companionManifest ? Number(companionManifest.revision) || 0 : 0;
     if (currentDayPackage && manifestSignature(currentDayPackage.manifest) === manifestSignature(manifest)) {
       dayStatus.textContent = `${dayPackageSummary(currentDayPackage)} / 最新`;
       return false;
@@ -212,7 +283,7 @@ async function refreshPublishedDay({ automatic = false } = {}) {
     }
 
     dayStatus.textContent = `${manifest.date} の新聞データを取得・検証しています…`;
-    const races = await Promise.all(manifest.races.map(entry => fetchPublishedRace(entry, manifest)));
+    const races = await Promise.all(manifest.races.map(entry => fetchPublishedRace(entry, manifest, companionManifest)));
     const packageValue = validateDayPackage({
       schema_version: "0.1",
       bundle_kind: "jrdb_pwa_newspaper_day_package",
