@@ -213,3 +213,17 @@ Do not sort solely by matched signal count.
 
 If ordering is needed, prefer race order / horse number unless a downstream
 forecast layer supplies its own ranking.
+
+
+## 13. Newspaper/PWA presentation boundary
+
+RaceNote internal consumers may read full signal IDs and measured strength.
+
+Newspaper/PWA uses a separate reader-facing handoff:
+
+`docs/RaceReviewDB_Newspaper_Handoff_v0_1.md`
+
+The handoff is sparse and contains only matched target-horse identity plus one
+RRDB-generated short comment and contract version. Newspaper/PWA must not expose
+internal signal IDs, signal counts, raw strength JSON, or S/A grades.
+
