@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Current RaceReviewDB recommendation selector v0.2.
+"""Current RaceReviewDB recommendation selector v0.3.
 
 Select recommendation-signal horses from one completed source date.
 No future result, market, or S/A grade is used.
@@ -22,7 +22,7 @@ from jrdb_recommendation_signals import (
     recommendation_payload,
 )
 
-VERSION = "rrdb-recommendation-select-v0.2"
+VERSION = "rrdb-recommendation-select-v0.3"
 
 
 class RecommendationSelectorError(RuntimeError):
