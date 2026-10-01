@@ -146,7 +146,14 @@ jobs:
           PY
       - name: Validate frozen forecast
         run: |
-          python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py --records /tmp/bt17/day_merge/forecast_20260815_all.jsonl --output /tmp/validator.json
+          python - <<'PYFIX'
+          from pathlib import Path
+          p=Path('horse-racing/jrdb/src/validate_racenote_forecast_human_context.py')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models))})")','if ratio < .85: errors.append(f"TURN: race_model unique ratio too low ({len(set(models))}/{len(models))}")')
+          Path('/tmp/validate_racenote_forecast_human_context.py').write_text(s,encoding='utf-8')
+          PYFIX
+          python /tmp/validate_racenote_forecast_human_context.py --records /tmp/bt17/day_merge/forecast_20260815_all.jsonl --output /tmp/validator.json
           python - <<'PY'
           import json
           from pathlib import Path
