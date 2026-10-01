@@ -39,6 +39,24 @@ A/B/Cで完結できる処理のためだけにIssueを作らない。Dを選ん
 
 version付きcontractと実source `VERSION` / schemaが食い違う場合は、古いcontractへ実装を推測で合わせず、source/tests/docsを監査してcurrent contractを更新する。
 
+### Parquet / DuckDB 共通実行preflight
+
+Eval作業でParquet / DuckDBを読む・queryする・validationする必要が生じた場合、project内に独自のCRUD環境を作る前にrepository共通 `tools/data-storage/` を使用する。
+
+```text
+Parquet / DuckDB task
+-> root tools/data-storage/README.md を確認
+-> 既存 .venv-data-storage を確認
+-> check-deps PASSならそのまま再利用
+-> absent / DEPENDENCY_MISSINGなら tools/data-storage/requirements.txt からbootstrap
+-> check-deps再実行
+-> 共通CLI またはEval正本moduleを実行
+```
+
+現在のPythonに `duckdb` / `pyarrow` がimportできないことだけを理由に「Parquet/DuckDBを扱える環境がない」として停止しない。依存installまたはvenv作成自体が失敗・禁止される場合だけ、その事実を実行不能理由として報告する。
+
+共通Toolはstorage/query/validationを担当し、Eval固有のcanonical key、研究条件、PWA contract等はEval正本module/docsへ残す。詳細bootstrapはroot `.gpt/README.md` と `tools/data-storage/README.md` を正本とする。
+
 ## 2. このスレッドの標準: Chatへ直接渡されたEval画像 -> 完成CSV -> PWA提出CSV
 
 ユーザーがEval表画像または画像ZIPをChatへ直接渡し、「CSV化」「完成CSV」等を依頼した場合は次を標準とする。PWA連携を行う通常運用では完成CSVの後にPWA提出CSVまで派生生成する。
