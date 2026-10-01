@@ -278,7 +278,7 @@ jobs:
 
   finalize_failure:
     needs: [prepare, evaluate, aggregate]
-    if: ${{ always() && (needs.prepare.result != 'success' || needs.evaluate.result != 'success' || needs.aggregate.result != 'success') }}
+    if: ${{ always() && github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_C1_SHARDED]') && (needs.prepare.result != 'success' || needs.evaluate.result != 'success' || needs.aggregate.result != 'success') }}
     runs-on: ubuntu-latest
     steps:
       - name: Comment failure and close
