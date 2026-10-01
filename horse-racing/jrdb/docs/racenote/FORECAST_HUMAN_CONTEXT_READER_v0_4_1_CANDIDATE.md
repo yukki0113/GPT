@@ -221,25 +221,19 @@ Market comparison is post-Freeze evaluation only.
 
 ## 9. Reader-facing explanation
 
-The explanation must describe the actual race judgment, not prove compliance
-with a role definition.
+Reader-facing prose is governed by:
 
-Do not generate fixed closing phrases for ◎ / ○ / ▲.
+`horse-racing/jrdb/docs/racenote/FORECAST_READER_FACING_PROSE_v0_1.md`
 
-In particular, avoid post-hoc templates equivalent to:
+The forecasting logic decides the marks. The prose contract decides how those
+Frozen decisions are explained to the reader.
 
-- "勝ち切る現実性まで含めて最も買いたい";
-- "◎以外では最も相手評価を上げたい";
-- "安定度では本線に譲っても、展開ひとつで◎○を逆転できる単穴".
+Do not derive reader-facing text by filling mark-role templates.
 
-Those conclusions may be true, but repeating them is not evidence.
+Do not copy structured audit fields directly into `reader_facing_reason`.
 
-Instead, state the concrete race-specific material that caused the mark.
-
-For ▲, the explanation should make the actual asymmetric / reversal reason
-understandable. If no such reason can be stated from the supplied evidence, the
-selection should be reconsidered before Freeze.
-
+Reader-facing comments should be regenerated from the underlying race evidence
+and the Frozen decision in natural racing language.
 ## 10. Minimal audit trace
 
 Keep only concise audit material needed to inspect the decision:
