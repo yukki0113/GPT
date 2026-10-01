@@ -62,7 +62,15 @@ class MomotaroProjectionTest(unittest.TestCase):
                     "history": [],
                     "addons": {
                         "eval": {"eval": 60},
-                        "racenote_prediction": {"mark": "◎"},
+                        "racenote_prediction": {
+                            "mark": "◎",
+                            "confidence": "A",
+                            "horse_short_comment": "RaceNote単馬短評",
+                        },
+                        "rrdb_recommendation": {
+                            "comment": "RRDB注目馬コメント",
+                            "source": "RaceReviewDB",
+                        },
                         "keibailuka": {"comment": "イルカコメント"},
                         "my_index": {"training_edge_index": 80.1},
                     },
@@ -169,6 +177,42 @@ class MomotaroProjectionTest(unittest.TestCase):
                 }
             )
         return path
+
+    def test_projection_auto_maps_racenote_and_rrdb_to_kenshow(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            source = self._write_source_day(root)
+            output = root / "output"
+
+            result = MODULE.build_projection(source, output)
+
+            self.assertEqual(result["status"], "PASS")
+            projected = json.loads(
+                (output / "races" / "09_01_09264601.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            horse = projected["horses"][0]
+            kenshow = horse["addons"]["momotaro"]["kenshow"]
+
+            self.assertEqual(kenshow["mark"], "◎")
+            self.assertEqual(kenshow["confidence"], "A")
+            self.assertEqual(kenshow["tag"], "RaceNote / RRDB")
+            self.assertTrue(kenshow["review_horse"])
+            self.assertEqual(
+                kenshow["comment"],
+                "RaceNote単馬短評\nRRDB注目馬コメント",
+            )
+            self.assertEqual(
+                projected["race_notes"]["momotaro_comments"]["kenshow"],
+                "個人用短評",
+            )
+            self.assertNotIn("racenote_prediction", horse["addons"])
+            self.assertNotIn("rrdb_recommendation", horse["addons"])
+            self.assertNotIn(
+                "racenote_short_comment",
+                projected["race_notes"],
+            )
 
     def test_projection_strips_private_addons_and_keeps_shared_data(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
