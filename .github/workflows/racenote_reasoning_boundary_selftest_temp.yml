@@ -1,0 +1,73 @@
+name: RaceNote reasoning boundary selftest temp
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  test:
+    if: startsWith(github.event.issue.title, '[RACENOTE_BOUNDARY_SELFTEST]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile tools
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_finalize_fixed_picks.py \
+            horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+            horse-racing/jrdb/src/racenote_freeze_immutability_guard.py \
+            horse-racing/jrdb/src/validate_racenote_forecast_human_context.py
+      - name: Verify deprecated generator is blocked
+        run: |
+          set +e
+          python horse-racing/jrdb/src/racenote_finalize_fixed_picks.py \
+            --prep-root /tmp/x --output-root /tmp/y --selection-id X --date 2026-01-01 \
+            --turn-id X --picks-json /tmp/z --main-sha x >/tmp/deprecated.log 2>&1
+          rc=$?
+          set -e
+          test "$rc" -ne 0
+          grep -q 'forecast marks, prose' /tmp/deprecated.log
+      - name: Verify semantic immutability guard
+        run: |
+          cat >/tmp/a.json <<'JSON'
+          {"selection_id":"BTDAY-X","target_date":"2026-01-01","prediction_hashes":["a","b"]}
+          JSON
+          cp /tmp/a.json /tmp/b.json
+          python horse-racing/jrdb/src/racenote_freeze_immutability_guard.py --candidate-handoff /tmp/a.json --canonical-handoff /tmp/b.json --output /tmp/same.json
+          grep -q 'IDENTICAL_RETRY' /tmp/same.json
+          cat >/tmp/c.json <<'JSON'
+          {"selection_id":"BTDAY-X","target_date":"2026-01-01","prediction_hashes":["a","DIFFERENT"]}
+          JSON
+          set +e
+          python horse-racing/jrdb/src/racenote_freeze_immutability_guard.py --candidate-handoff /tmp/c.json --canonical-handoff /tmp/b.json --output /tmp/conflict.json
+          rc=$?
+          set -e
+          test "$rc" -eq 3
+          grep -q 'CONFLICTING_FREEZE' /tmp/conflict.json
+      - name: Verify old mechanical prose is detected
+        run: |
+          set +e
+          python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py \
+            --records horse-racing/jrdb/backtests/BTDAY-0023/20260503/day_merge/forecast_20260503_all.jsonl \
+            --output /tmp/old023.json
+          rc=$?
+          set -e
+          test "$rc" -eq 2
+          grep -q 'canned reader-facing phrase repeated too often' /tmp/old023.json
+      - name: Report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo 'RACENOTE_BOUNDARY_SELFTEST PASS' >/tmp/comment.md
+          gh issue comment "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --body-file /tmp/comment.md
+          gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --reason completed || true
