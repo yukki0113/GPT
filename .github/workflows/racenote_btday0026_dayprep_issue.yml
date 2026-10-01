@@ -1,0 +1,125 @@
+name: RaceNote BTDAY-0026 DAY PREP
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  day-prep:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_BTDAY026_PREP]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check duckdb pyarrow
+      - name: Download immutable sources
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/src /tmp/analysis /tmp/rrdb
+          download() {
+            local id="$1" out="$2"
+            curl -L --fail --retry 4 --retry-delay 2 \
+              "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
+              -o "${out}"
+            test -s "${out}"
+          }
+          download "1x0wM1mze9Z_EZub_lytRVO7si0i06YbZ" /tmp/src/PACI260124.zip
+          download "1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5" /tmp/src/analysis.tar.xz
+          download "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg" /tmp/src/RaceReviewDB_CURRENT.zip
+          tar -xJf /tmp/src/analysis.tar.xz -C /tmp/analysis
+          unzip -q /tmp/src/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          test -s /tmp/analysis/current.json
+          test -s /tmp/rrdb/postrace_review/v0_1/current.json
+      - name: Build DAY PREP
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/build_racenote_daily.py \
+            --date 2026-01-24 \
+            --paci /tmp/src/PACI260124.zip \
+            --analysis-root /tmp/analysis \
+            --racereview-root /tmp/rrdb/postrace_review/v0_1 \
+            --output /tmp/dayprep \
+            --keep-intermediate \
+            | tee /tmp/dayprep.log
+          test -s /tmp/dayprep/RaceNote_20260124/manifest.json
+          test -s /tmp/dayprep/RaceNote_20260124/validation_report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('/tmp/dayprep/RaceNote_20260124/manifest.json').read_text())
+          v=json.loads(Path('/tmp/dayprep/RaceNote_20260124/validation_report.json').read_text())
+          if m.get('status')!='PASS' or v.get('status')!='PASS':
+              raise SystemExit('DAY PREP validation not PASS')
+          fw=v.get('firewall') or {}
+          if fw.get('target_result_exposed') or fw.get('market_exposed'):
+              raise SystemExit('firewall failed')
+          print(json.dumps({
+              'status':'PASS',
+              'target_date':'2026-01-24',
+              'race_count':m.get('counts',{}).get('races_built'),
+              'horse_count':m.get('counts',{}).get('horses'),
+              'analysis_generation':(m.get('sources',{}).get('analysis') or {}).get('generation_id'),
+              'rrdb_generation':((m.get('sources',{}).get('rrdb') or {}).get('generation_id')),
+              'recommendation':m.get('sources',{}).get('rrdb_recommendation'),
+              'firewall':fw,
+          },ensure_ascii=False,indent=2))
+          PY
+      - name: Package DAY PREP
+        run: |
+          cd /tmp/dayprep
+          zip -qr /tmp/BTDAY-0026_DAY_PREP_20260124_FINAL.zip RaceNote_20260124
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BTDAY-0026_DAY_PREP_20260124_FINAL
+          path: /tmp/BTDAY-0026_DAY_PREP_20260124_FINAL.zip
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if test -s /tmp/dayprep/RaceNote_20260124/manifest.json; then
+            python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          m=json.loads(Path('/tmp/dayprep/RaceNote_20260124/manifest.json').read_text())
+          print('RACENOTE_BTDAY026_DAY_PREP_RESULT')
+          print('\\`\\`\\`json')
+          print(json.dumps({
+            'status':m.get('status'),
+            'run_id':int(os.environ['GITHUB_RUN_ID']),
+            'head_sha':os.environ['GITHUB_SHA'],
+            'artifact_name':'BTDAY-0026_DAY_PREP_20260124_FINAL',
+            'target_date':'2026-01-24',
+            'race_count':m.get('counts',{}).get('races_built'),
+            'horse_count':m.get('counts',{}).get('horses')
+          },ensure_ascii=False,indent=2))
+          print('\\`\\`\\`')
+          PY
+          else
+            printf 'RACENOTE_BTDAY026_DAY_PREP_RESULT\nFAILED before manifest\n' > /tmp/comment.md
+          fi
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed || true
