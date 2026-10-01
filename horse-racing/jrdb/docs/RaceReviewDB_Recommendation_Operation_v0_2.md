@@ -1,6 +1,8 @@
 # RaceReviewDB Recommendation Operation v0.2
 
 Status: OPERATIONAL
+
+> SUPERSEDED for current operation by the v0.3 four-signal contract. Retained for historical reference.
 Date: 2026-10-01
 
 ## 1. Purpose
