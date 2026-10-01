@@ -41,7 +41,7 @@ function showMomotaroContributorDetail(horse, contributor) {
   const comment = text(value.comment, "");
   const review = value.review_horse === true && contributor.key === "ryota" ? "特注" : "";
   const displayMark = contributor.key === "kenshow"
-    ? (mark || (comment ? "注" : ""))
+    ? (mark || (value.review_horse === true ? "注" : (comment ? "注" : "")))
     : mark;
 
   dialogTitle.textContent = horseName + " / " + contributor.label + (displayMark ? " " + displayMark : "");
@@ -71,7 +71,7 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
     const comment = text(value.comment, "");
     const manualMark = text(value.mark, "");
     const manualBlank = text(value.tag, "") === "手動無印";
-    const display = manualBlank ? "" : (manualMark || (comment ? "注" : ""));
+    const display = manualBlank ? "" : (manualMark || (value.review_horse === true ? "注" : (comment ? "注" : "")));
 
     if (comment) {
       return '<td class="newspaper-mark-col mark-momotaro mark-kenshow">' +
