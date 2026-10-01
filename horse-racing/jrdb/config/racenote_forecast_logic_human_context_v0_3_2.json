@@ -50,7 +50,7 @@
   "research_protocol": "docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md",
   "optional_evidence_lanes": [
     "PEDIGREE_CONTEXT_P1_P2",
-    "RRDB_RACEREVIEW_NEXT_WATCH"
+    "RRDB_RACEREVIEW_RECOMMENDATION"
   ],
   "pedigree_policy": {
     "source_fields": [
@@ -73,7 +73,6 @@
     "must_review_when_present": true,
     "fixed_weight": false,
     "automatic_axis": false,
-    "next_watch_auto_mark": false,
     "no_match_is_negative": false,
     "same_run_deduplication": true,
     "interpretation": "REINTERPRET_VISIBLE_PRIOR_RESULT_THEN_RECOMPARE_CURRENT_RACE",
@@ -90,7 +89,7 @@
       "DIRECT_EVIDENCE_WEAK_STALE_OR_INTERNALLY_INCONSISTENT"
     ],
     "mark_change_not_justified_by": [
-      "NEXT_WATCH_GRADE_ALONE",
+      "RRDB_RECOMMENDATION_SIGNAL_ALONE",
       "HIDDEN_STRENGTH_ALONE",
       "FRAGILE_FORM_ALONE",
       "GENERIC_RRDB_SIGNAL_WITHOUT_CURRENT_RACE_RELEVANCE"
@@ -98,6 +97,9 @@
     "direct_evidence_policy": "RAISES_BURDEN_OF_PROOF_NOT_IMMUNITY",
     "tie_breaker_allowed": true,
     "target_usage_rate": null,
-    "target_mark_change_rate": null
+    "target_mark_change_rate": null,
+    "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+    "recommendation_grade_status": "DISABLED",
+    "recommendation_auto_mark": false
   }
 }
