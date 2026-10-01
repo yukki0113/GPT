@@ -94,23 +94,20 @@ class MomotaroPwaContractTest(unittest.TestCase):
         momotaro_position = html.index('./momotaro.css?v=7')
         self.assertLess(shared_position, momotaro_position)
 
-    def test_kenshow_temporarily_mirrors_selected_jrdb_marks_only(self) -> None:
+    def test_kenshow_uses_projected_racenote_rrdb_values_only(self) -> None:
         script = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
         predictions = (MOMOTARO_ROOT / "predictions.js").read_text(encoding="utf-8")
 
-        self.assertIn('new Set(["◎", "○", "▲"])', script)
-        self.assertIn("function momotaroKenshowTemporaryMark(horse)", script)
-        self.assertIn('const mark = text(marks.total, "");', script)
-        self.assertIn("MOMOTARO_KENSHOW_JRDB_MARKS.has(mark)", script)
+        self.assertNotIn("momotaroKenshowTemporaryMark", script)
+        self.assertNotIn("MOMOTARO_KENSHOW_JRDB_MARKS", script)
         self.assertIn('contributor.key === "kenshow"', script)
-        self.assertIn('mark === "◎"', script)
-        self.assertIn('mark || momotaroKenshowTemporaryMark(horse) || (comment ? "注" : "")', script)
         self.assertIn('manualMark = text(value.mark, "")', script)
         self.assertIn('manualBlank = text(value.tag, "") === "手動無印"', script)
         self.assertIn('const ryotaReviewTarget =', script)
         self.assertNotIn('escapeHtml(display || "・")', script)
         self.assertIn('type: "kenshow-analysis"', predictions)
         self.assertIn('source: "けんしょー"', predictions)
+        self.assertIn("kenshowMark || kenshowComment || kenshow.review_horse === true", predictions)
 
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
