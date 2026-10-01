@@ -28,32 +28,24 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install duckdb pyarrow pandas numpy jsonschema gdown
 
-      - name: Pick and persist BTDAY-0020
+      - name: Load fixed BTDAY-0020 selection
         run: |
           set -euo pipefail
           STATE='horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json'
           cp "$STATE" /tmp/pool.json
-          python horse-racing/jrdb/src/racenote_backtest_day_picker.py pick --state /tmp/pool.json -n 1 --seed 'btday0020-v042-rrdbv03-20261001' | tee /tmp/selection.json
           python - <<'PY'
           import json
           from pathlib import Path
           pool=json.loads(Path('/tmp/pool.json').read_text(encoding='utf-8'))
-          sel=json.loads(Path('/tmp/selection.json').read_text(encoding='utf-8'))
-          assert sel['selection_id']=='BTDAY-0020', sel
-          date=sel['dates'][0]
-          row=next(x for x in pool['days'] if x['date']==date)
-          assert row['eligible'] is True and row['used'] is True
-          Path('/tmp/date.txt').write_text(date)
+          sel=next(x for x in pool['selections'] if x['selection_id']=='BTDAY-0020')
+          assert sel['dates']==['2026-07-05'], sel
+          row=next(x for x in pool['days'] if x['date']=='2026-07-05')
+          assert row['used'] is True and row['selection_id']=='BTDAY-0020'
+          Path('/tmp/date.txt').write_text(row['date'])
           Path('/tmp/file_name.txt').write_text(row['file_name'])
           Path('/tmp/drive_file_id.txt').write_text(row['drive_file_id'])
           print(json.dumps({'selection':sel,'row':row},ensure_ascii=False,indent=2))
           PY
-          cp /tmp/pool.json "$STATE"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$STATE"
-          git commit -m "RaceNote: fix BTDAY-0020 target date"
-          git push origin HEAD:main
 
       - name: Prepare sources
         env:
