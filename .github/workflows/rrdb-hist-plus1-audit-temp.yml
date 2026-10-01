@@ -1,0 +1,47 @@
+name: RRDB Historical Plus1 Audit Temp
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  audit:
+    if: github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RRDB_HIST_PLUS1_AUDIT_TEMP]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check duckdb gdown pandas pyarrow
+      - run: |
+          mkdir -p /tmp/rrdb
+          gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/rrdb/current.zip
+      - name: Schema
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json,duckdb
+          from pathlib import Path
+          from jrdb_next_watch_reverse import _race_review_root,_relation_paths,_table_sql
+          root=_race_review_root(Path('/tmp/rrdb/current.zip'),Path('/tmp/rrdb/work'))
+          cur=json.loads((root/'current.json').read_text())
+          man=json.loads((root/cur['manifest']).read_text())
+          con=duckdb.connect()
+          out={}
+          for rel in ['fact_horse_performance','fact_race_review','fact_race_context']:
+              ps=_relation_paths(root,man,rel); sql=_table_sql(ps)
+              desc=con.execute(f"DESCRIBE SELECT * FROM {sql}").fetchall()
+              out[rel]=[r[0] for r in desc]
+          Path('/tmp/rrdb/schema.json').write_text(json.dumps(out,ensure_ascii=False,indent=2))
+          print(json.dumps(out,ensure_ascii=False))
+          PY
+      - name: Comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/rrdb/schema.json
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
