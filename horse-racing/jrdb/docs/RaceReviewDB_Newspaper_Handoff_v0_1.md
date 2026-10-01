@@ -67,18 +67,15 @@ recommendation_version
 
 The PWA comment must be racing prose, not an internal code dump.
 
-Examples:
+Canonical reader-facing phrases:
 
-- `前走時計は1段以上上のクラス水準。`
-- `前傾を前で受け、勝ち馬0.22秒差まで踏ん張った。`
-- `後傾で後方から上がり上位2%級。`
-- `6着以下でも補正タイムは上位20%級。`
+- `TIME_CLASS_PLUS1` -> `前走時計はクラス水準より上。`
+- `FRONT_SURVIVE_GAP05` -> `前傾ラップ戦を前で受け、勝ち馬と僅差まで踏ん張った。`
+- `REAR_HIGH_LAST3F90` -> `後傾ラップ戦も後方から上位の上がりは使った。`
+- `HV01 / HV02` -> `敗戦でもタイムは水準以上。`
 
 When independent concepts coexist, RRDB may join them into one compact comment.
-
-Hierarchical HV01/HV02 overlap must not create duplicate prose. When HV02
-applies, use the more specific "6着以下" wording rather than also repeating
-the HV01 "4着以下" wording.
+Do not repeat two near-synonymous time comments when TIME_CLASS and HV overlap.
 
 ## 5. Hidden internal information
 
@@ -132,13 +129,18 @@ Projection:
 
 ## 7. PWA presentation
 
-Newspaper PWA:
+RRDB does not own a standalone Newspaper column.
 
-- shows `RRDB` as a small recommendation column;
-- matched horses show `推`;
-- tapping `推` opens the RRDB short comment;
-- non-matched horses show `—`;
+Use the existing RaceNote mark cell:
+
+- if an RRDB target already has a RaceNote mark, keep that mark and make the mark tappable;
+- if an RRDB target has no RaceNote mark, display `注` and make it tappable;
+- the modal shows the supplied RRDB short comment;
+- when a RaceNote horse comment also exists, preserve it and show both comments in the same modal;
+- non-RRDB horses are unchanged;
 - PWA does not show internal signal IDs or strength structures.
+
+RRDB must not replace an existing RaceNote mark with `注`.
 
 ## 8. Ownership boundary
 
@@ -172,4 +174,6 @@ A horse may have:
 - both
 - neither
 
-They represent different evidence lanes and must remain separate namespaces.
+They remain separate data namespaces internally. Presentation may share the existing
+RaceNote mark cell according to section 7; this is only a UI projection and does
+not merge the underlying evidence contracts.
