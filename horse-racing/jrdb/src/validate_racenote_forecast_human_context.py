@@ -32,6 +32,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
     if schema_version not in {
         "RaceNote-Forecast-Research-Record-0.3",
         "RaceNote-Forecast-Research-Record-0.3.1",
+        "RaceNote-Forecast-Research-Record-0.4.2",
     }:
         e.append(f"{pre}: unsupported schema version")
     logic_version=research.get("logic_version")
