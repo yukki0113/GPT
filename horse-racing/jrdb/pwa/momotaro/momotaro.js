@@ -6,20 +6,6 @@ const MOMOTARO_CONTRIBUTORS = [
   { key: "kenshow", label: "けんしょー" }
 ];
 
-const MOMOTARO_KENSHOW_JRDB_MARKS = new Set(["◎", "○", "▲"]);
-
-/**
- * RaceNote運用確定までの暫定表示。
- * JRDB総合印のうち ◎ / ○ / ▲ だけを、けん列へそのまま転記する。
- * addon化・短評化・予想一覧化はしない。
- */
-function momotaroKenshowTemporaryMark(horse) {
-  const jrdb = horse && horse.jrdb ? horse.jrdb : {};
-  const marks = jrdb.marks || {};
-  const mark = text(marks.total, "");
-  return MOMOTARO_KENSHOW_JRDB_MARKS.has(mark) ? mark : "";
-}
-
 /**
  * 桃太郎専用予想addonを返す。
  * upstream未提供時は空objectを返し、既存新聞の意味論は変更しない。
@@ -55,7 +41,7 @@ function showMomotaroContributorDetail(horse, contributor) {
   const comment = text(value.comment, "");
   const review = value.review_horse === true && contributor.key === "ryota" ? "特注" : "";
   const displayMark = contributor.key === "kenshow"
-    ? (mark || momotaroKenshowTemporaryMark(horse) || (comment ? "注" : ""))
+    ? (mark || (comment ? "注" : ""))
     : mark;
 
   dialogTitle.textContent = horseName + " / " + contributor.label + (displayMark ? " " + displayMark : "");
@@ -85,8 +71,7 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
     const comment = text(value.comment, "");
     const manualMark = text(value.mark, "");
     const manualBlank = text(value.tag, "") === "手動無印";
-    const jrdbMark = momotaroKenshowTemporaryMark(horse);
-    const display = manualBlank ? "" : (manualMark || jrdbMark || (comment ? "注" : ""));
+    const display = manualBlank ? "" : (manualMark || (comment ? "注" : ""));
 
     if (comment) {
       return '<td class="newspaper-mark-col mark-momotaro mark-kenshow">' +
