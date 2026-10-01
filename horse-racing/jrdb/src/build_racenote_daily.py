@@ -67,7 +67,13 @@ def parse_args() -> argparse.Namespace:
     rrdb_source = parser.add_mutually_exclusive_group(required=True)
     rrdb_source.add_argument("--racereview-root", type=Path)
     rrdb_source.add_argument("--racereview-current-cache", type=Path)
-    parser.add_argument("--next-watch-rules", required=True, type=Path)
+    parser.add_argument(
+        "--next-watch-rules",
+        required=False,
+        type=Path,
+        default=None,
+        help="Deprecated legacy compatibility input; current RRDB recommendation v0.2 does not require it.",
+    )
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
         "--keep-intermediate",
@@ -112,7 +118,16 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             "paci": {"path": str(args.paci)},
             "analysis": {"root": str(args.analysis_root), "backend": "parquet"},
             "rrdb": rrdb_source,
-            "next_watch": {"path": str(args.next_watch_rules)},
+            "rrdb_recommendation": {
+                "contract_version": rrdb.RECOMMENDATION_VERSION,
+                "grade_status": "DISABLED",
+                "lookback_days": rrdb.OPERATIONAL_LOOKBACK_DAYS,
+            },
+            "legacy_next_watch": (
+                {"path": str(args.next_watch_rules)}
+                if args.next_watch_rules is not None
+                else None
+            ),
         },
         "counts": {
             "races_expected": None,
@@ -346,13 +361,17 @@ def enrich_rrdb_bundles(
     *,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
-    next_watch_rules: Path,
+    next_watch_rules: Path | None,
     work_root: Path,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Resolve RRDB/rules once and enrich all daily RaceNotes."""
+    """Resolve RRDB once and enrich all daily RaceNotes with recommendation v0.2."""
     work_root.mkdir(parents=True, exist_ok=True)
     try:
-        contract = rrdb.load_frozen_contract(next_watch_rules, work_root)
+        contract = (
+            rrdb.load_frozen_contract(next_watch_rules, work_root)
+            if next_watch_rules is not None
+            else None
+        )
 
         if racereview_root is not None:
             reader = RaceReviewReader(racereview_root)
@@ -390,11 +409,16 @@ def enrich_rrdb_bundles(
         "horse_count": sum(len(x.get("horses", [])) for x in enriched),
         "rrdb_source": rrdb_source,
         "rrdb_generation_id": reader.generation_id,
-        "next_watch_rule_version": contract.get("rule_version"),
+        "recommendation_contract_version": rrdb.RECOMMENDATION_VERSION,
+        "recommendation_grade_status": "DISABLED",
+        "operational_lookback_days": rrdb.OPERATIONAL_LOOKBACK_DAYS,
+        "legacy_next_watch_rule_version": (
+            contract.get("rule_version") if contract is not None else None
+        ),
         "enrichment_version": rrdb.VERSION,
         "source_resolutions": {
             "rrdb": 1,
-            "next_watch_contract": 1,
+            "legacy_next_watch_contract": 1 if contract is not None else 0,
         },
     }
 
@@ -406,7 +430,7 @@ def build_through_rrdb(
     analysis_root: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
-    next_watch_rules: Path,
+    next_watch_rules: Path | None,
     rrdb_work_root: Path,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Execute D3: D2 stages plus one shared daily RRDB enrichment."""
@@ -563,8 +587,10 @@ def validate_daily_bundles(
     rrdb_report = report.get("rrdb") or {}
     if not rrdb_report.get("rrdb_generation_id"):
         errors.append("RRDB generation provenance is missing")
-    if not rrdb_report.get("next_watch_rule_version"):
-        errors.append("Next-Watch rule provenance is missing")
+    if rrdb_report.get("recommendation_contract_version") != rrdb.RECOMMENDATION_VERSION:
+        errors.append("RRDB recommendation contract provenance is missing or stale")
+    if rrdb_report.get("recommendation_grade_status") != "DISABLED":
+        errors.append("RRDB recommendation grade must remain disabled")
 
     status = "PASS" if not errors else "FAIL"
     return {
@@ -643,8 +669,14 @@ def write_daily_package(
             },
             "analysis": report["history"].get("analysis_source"),
             "rrdb": report["rrdb"].get("rrdb_source"),
-            "next_watch": {
-                "rule_version": report["rrdb"].get("next_watch_rule_version"),
+            "rrdb_recommendation": {
+                "contract_version": report["rrdb"].get("recommendation_contract_version"),
+                "grade_status": report["rrdb"].get("recommendation_grade_status"),
+                "lookback_days": report["rrdb"].get("operational_lookback_days"),
+            },
+            "legacy_next_watch": {
+                "rule_version": report["rrdb"].get("legacy_next_watch_rule_version"),
+                "status": "HISTORICAL_COMPATIBILITY_ONLY",
             },
         },
         "counts": {
@@ -695,7 +727,7 @@ def build_daily_package(
     analysis_root: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
-    next_watch_rules: Path,
+    next_watch_rules: Path | None,
     output_root: Path,
     rrdb_work_root: Path,
 ) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
