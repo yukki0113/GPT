@@ -209,9 +209,9 @@ def recommendation_payload(row: Mapping[str, object]) -> dict[str, object]:
 def newspaper_comment(row: Mapping[str, object]) -> str | None:
     """Return the reader-facing Newspaper/PWA short comment.
 
-    This intentionally hides internal signal IDs and grade semantics.  It
-    translates the matched evidence into compact racing prose.  Hierarchical
-    HV01/HV02 overlap is collapsed to the more specific HV02 wording.
+    Keep the prose intentionally compact and editorial. Internal signal IDs,
+    thresholds and measured strength values remain available to RaceNote, but
+    are not exposed in the newspaper comment.
     """
     ids = matched_signals(row)
     if not ids:
@@ -220,29 +220,21 @@ def newspaper_comment(row: Mapping[str, object]) -> str | None:
     phrases: list[str] = []
 
     if "TIME_CLASS_PLUS1" in ids:
-        phrases.append("前走時計は1段以上上のクラス水準")
+        phrases.append("前走時計はクラス水準より上。")
 
     if "FRONT_SURVIVE_GAP05" in ids:
-        gap = _finite(row.get("winner_gap_sec"))
-        if gap is not None:
-            phrases.append(f"前傾を前で受け、勝ち馬{gap:.2f}秒差まで踏ん張った")
-        else:
-            phrases.append("前傾を前で受けて踏ん張った")
+        phrases.append("前傾ラップ戦を前で受け、勝ち馬と僅差まで踏ん張った。")
 
     if "REAR_HIGH_LAST3F90" in ids:
-        pct = _finite(row.get("last3f_speed_percentile"))
-        if pct is not None:
-            top = max(1, int(round(100.0 - pct)))
-            phrases.append(f"後傾で後方から上がり上位{top}%級")
-        else:
-            phrases.append("後傾で後方から強い上がり")
+        phrases.append("後傾ラップ戦も後方から上位の上がりは使った。")
 
-    if "HV02" in ids:
-        phrases.append("6着以下でも補正タイムは上位20%級")
-    elif "HV01" in ids:
-        phrases.append("4着以下でも補正タイムは上位20%級")
+    # HV01/HV02 are hierarchical and share the same reader-facing meaning.
+    # When TIME_CLASS already supplies a stronger absolute-time statement,
+    # avoid repeating a second near-synonymous time sentence.
+    if ("HV01" in ids or "HV02" in ids) and "TIME_CLASS_PLUS1" not in ids:
+        phrases.append("敗戦でもタイムは水準以上。")
 
-    return "。".join(phrases) + "。"
+    return "".join(phrases)
 
 def human_summary(row: Mapping[str, object]) -> str | None:
     payload = recommendation_payload(row)
