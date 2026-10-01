@@ -1,0 +1,35 @@
+{
+  "schema_version": "RaceNote-Day-Merge-Audit-0.1-draft",
+  "selection_id": "BTDAY-0015",
+  "target_date": "2026-08-23",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.1-candidate",
+  "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+  "status": "PASS",
+  "venue_count": 3,
+  "record_count": 36,
+  "frozen_count": 36,
+  "technical_skips": 0,
+  "prediction_hash_unique_count": 36,
+  "five_mark_role_guard": "PASS",
+  "mainline_single_shot_guard": "PASS",
+  "reader_facing_prose_guard": "PASS",
+  "anti_template_audit": {
+    "contract": "FORECAST_READER_FACING_PROSE_v0_1",
+    "status": "PASS",
+    "comment_count": 36,
+    "unique_comment_count": 36,
+    "unique_normalized_skeleton_count": 36,
+    "banned_role_template_hits": 0,
+    "one_paragraph_count": 36,
+    "prose_contract_commit": "a6328f2e08191ab128a995a232234ecd512e96b7"
+  },
+  "market_blind_guard": "PASS",
+  "legacy_converge_machinery": "NOT_USED",
+  "independent_selection_guard": "PASS",
+  "result_opened": false,
+  "venues": {
+    "中京": "PASS",
+    "新潟": "PASS",
+    "札幌": "PASS"
+  }
+}
