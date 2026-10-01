@@ -35,7 +35,7 @@
 | EdgeDB v0.3 operational audit | `docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md` |
 | EdgeDB v0.3 shadow design | `docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md` |
 | RaceNoteコメント表示 | `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` |
-| RaceReviewDB 現行推奨契約 | `docs/RaceReviewDB_Recommendation_Operation_v0_2.md` + `src/jrdb_recommendation_signals.py` |
+| RaceReviewDB 現行推奨契約 | `docs/RaceReviewDB_Recommendation_Operation_v0_3.md` + `src/jrdb_recommendation_signals.py` |
 | 開催後Analysis/Mart更新 | `docs/README_post_race_analysis_mart_refresh.md` |
 | PWA / 条件別集計 / Newspaper表示運用 | `pwa/.gpt/HANDOFF.md` + `pwa/README.md` |
 
