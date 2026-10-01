@@ -109,6 +109,7 @@ Eval側が条件判定・注目馬選定・コメント作成を所有します�
 
 - Eval merger: `addons.eval`
 - RaceNote prediction merger: `addons.racenote_prediction` + race-level RaceNote note
+- RaceReviewDB recommendation merger: `addons.rrdb_recommendation` (sparse target horse + supplied short comment)
 - keibailuka merger: `addons.keibailuka`
 - independent index merger: `addons.my_index`
 - Edge matcher input: EdgeDB matcher output
@@ -148,7 +149,7 @@ MMDDの競馬新聞用JSONを作成し、アップロードしてください。
 
 - 添付 -> File Library -> Drive canonical -> verified artifact の順で入力をresolveする
 - PACI / JRDB RawをBase必須sourceとする
-- Eval / RaceNote prediction / keibailuka / Edge / independent indexはoptional addonとして扱う
+- Eval / RaceNote prediction / RaceReviewDB recommendation / keibailuka / Edge / independent indexはoptional addonとして扱う
 - optional addonが未着でも処理を止めず、その時点の完成JSONを正式revisionとして保存・公開する
 - source状態は `READY / NOT_FOUND / ERROR / NOT_EXPECTED` で報告する
 - 同日更新は既存JSONへの直接追記ではなく、verified inputsから再構成してimmutable revisionを上げる
@@ -183,3 +184,16 @@ Drive canonical
 ```
 
 Pages deploymentそのものはGitHub Actions環境を使いますが、PWA source変更はGitHubへdirect commitし、そのpush triggerでPages workflowを起動するのを標準とします。
+
+
+## RaceReviewDB recommendation comments
+
+RRDB recommendation for Newspaper/PWA is intentionally reader-facing and sparse.
+
+Canonical handoff:
+`../docs/RaceReviewDB_Newspaper_Handoff_v0_1.md`
+
+Newspaper consumes only exact target identity + the RRDB-supplied short comment.
+It does not expose or recompute RRDB signal IDs, signal count, raw strength or
+S/A grade. Matched horses are projected to `addons.rrdb_recommendation` and
+the PWA shows a tappable `推` marker with the short comment.
