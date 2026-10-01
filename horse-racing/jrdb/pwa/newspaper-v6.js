@@ -107,23 +107,29 @@ function newspaperV6ShowRaceNoteDetail(horse) {
   const name = text(horse && horse.basic && horse.basic.horse_name, "");
   const rnMark = text(rnAddon && rnAddon.mark, "");
   const rrdbComment = text(rrdbAddon && rrdbAddon.comment, "");
+  const rnComment = text(rnAddon && rnAddon.horse_short_comment, "");
   const displayMark = rnMark || (rrdbComment ? "注" : "");
   const rank = Number(rnAddon && rnAddon.prediction_rank);
   const confidence = text(rnAddon && rnAddon.confidence, "");
-  const rnComment = text(rnAddon && rnAddon.horse_short_comment, "");
+
   dialogTitle.textContent = `${name}${displayMark ? ` / ${displayMark}` : ""}`;
-  const meta = [
-    Number.isFinite(rank) && rank > 0 ? `予想順位 ${rank}位` : "",
-    confidence ? `自信度 ${confidence}` : ""
-  ].filter(Boolean).join(" / ");
-  const blocks = [];
-  if (rnComment) {
-    blocks.push(`<section class="newspaper-v5-note-section"><h3>RaceNote</h3><p class="newspaper-addon-comment">${escapeHtml(rnComment)}</p></section>`);
-  }
+
   if (rrdbComment) {
-    blocks.push(`<section class="newspaper-v5-note-section"><h3>RaceReviewDB</h3><p class="newspaper-addon-comment">${escapeHtml(rrdbComment)}</p></section>`);
+    dialogBody.innerHTML =
+      '<section class="newspaper-v5-note-section"><h3>RaceReviewDB</h3>' +
+      '<p class="newspaper-addon-comment">' + escapeHtml(rrdbComment) + '</p></section>';
+  } else {
+    const meta = [
+      Number.isFinite(rank) && rank > 0 ? `予想順位 ${rank}位` : "",
+      confidence ? `自信度 ${confidence}` : ""
+    ].filter(Boolean).join(" / ");
+    dialogBody.innerHTML =
+      (meta ? '<p class="newspaper-addon-meta">' + escapeHtml(meta) + '</p>' : "") +
+      (rnComment
+        ? '<section class="newspaper-v5-note-section"><h3>RaceNote</h3><p class="newspaper-addon-comment">' + escapeHtml(rnComment) + '</p></section>'
+        : '<p class="newspaper-addon-comment">単馬短評なし</p>');
   }
-  dialogBody.innerHTML = `${meta ? `<p class="newspaper-addon-meta">${escapeHtml(meta)}</p>` : ""}${blocks.join("") || '<p class="newspaper-addon-comment">単馬短評なし</p>'}`;
+
   if (typeof detailDialog.showModal === "function") detailDialog.showModal();
   else detailDialog.setAttribute("open", "");
 }
@@ -234,22 +240,10 @@ function newspaperV6RenderRaceInfo() {
       ].map(([label, value]) => newspaperV5RaceMetric(label, value)).join("")
     : `<div class="empty-state newspaper-note-empty">JRDBレース情報は未取得です。</div>`;
 
-  const rnState = newspaperV5SourceState("racenote_prediction");
-  const rnComment = text(notes.racenote_short_comment, "");
-  const rnMarkup = rnComment
-    ? `<p class="newspaper-v5-rn-comment">${escapeHtml(rnComment)}</p>`
-    : (newspaperV5ReadyBlank(rnState)
-      ? `<div class="empty-state newspaper-note-empty">短評なし</div>`
-      : `<div class="empty-state newspaper-note-empty">RaceNote未取得</div>`);
-
   target.innerHTML = `
     <section class="newspaper-v5-note-section">
       <h3>JRDB レース情報</h3>
       <div class="newspaper-v5-race-metrics">${jrdbMarkup}</div>
-    </section>
-    <section class="newspaper-v5-note-section">
-      <h3>RaceNote短評</h3>
-      ${rnMarkup}
     </section>`;
 }
 
