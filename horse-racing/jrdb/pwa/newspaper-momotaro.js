@@ -4,8 +4,7 @@
 
 const PERSONAL_MOMOTARO_CONTRIBUTORS = [
   { key: "ryota", label: "りょーた", short: "りょ" },
-  { key: "oji", label: "おーじ", short: "王子" },
-  { key: "kenshow", label: "けんしょー", short: "けん" }
+  { key: "oji", label: "おーじ", short: "王子" }
 ];
 
 const PERSONAL_MOMOTARO_KENSHOW_JRDB_MARKS = new Set(["◎", "○", "▲"]);
@@ -83,7 +82,7 @@ function personalMomotaroApplyMarks() {
   });
 
   const groupHead = table.querySelector(".newspaper-mark-group-head");
-  if (groupHead) groupHead.colSpan = 9;
+  if (groupHead) groupHead.colSpan = 8;
 
   const headRow = table.querySelector(".newspaper-mark-head-row");
   if (headRow && !headRow.querySelector(".mark-ryota")) {
