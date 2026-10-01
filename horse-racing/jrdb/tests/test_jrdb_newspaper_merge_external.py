@@ -283,6 +283,32 @@ def _write_my_index(
         writer.writerows(rows)
 
 
+
+def _write_rrdb_recommendation(
+    path: Path,
+    *,
+    horse_name: str = "カセノメロス",
+    race_key: str = "01262501",
+) -> None:
+    fields = [
+        "date", "venue_code", "race_no", "race_key", "horse_no", "horse_name",
+        "recommendation_comment", "recommendation_version",
+    ]
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerow({
+            "date": "2026-09-05",
+            "venue_code": "01",
+            "race_no": 1,
+            "race_key": race_key,
+            "horse_no": 1,
+            "horse_name": horse_name,
+            "recommendation_comment": "前傾を前で受け、勝ち馬0.22秒差まで踏ん張った。",
+            "recommendation_version": "rrdb-recommendation-signals-v0.2",
+        })
+
+
 class NewspaperExternalMergeTest(unittest.TestCase):
     def test_my_index_absent_preserves_backward_compatibility(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_name:
@@ -873,6 +899,54 @@ class NewspaperExternalMergeTest(unittest.TestCase):
                     revision=2,
                     racenote_csv=rn,
                 )
+
+
+    def test_rrdb_recommendation_sparse_comment_merges(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            source = root / "rrdb.csv"
+            _write_rrdb_recommendation(source)
+            output = root / "merged"
+            result = merge_day(
+                _write_day(root),
+                output,
+                revision=2,
+                rrdb_recommendation_csv=source,
+            )
+            bundle = json.loads(
+                (output / "races/01_01_01262501.json").read_text(encoding="utf-8")
+            )
+            manifest = json.loads(
+                (output / "manifest.json").read_text(encoding="utf-8")
+            )
+
+        addon = bundle["horses"][0]["addons"]["rrdb_recommendation"]
+        self.assertEqual(
+            addon["comment"],
+            "前傾を前で受け、勝ち馬0.22秒差まで踏ん張った。",
+        )
+        self.assertEqual(addon["source"], "RaceReviewDB")
+        self.assertNotIn("rrdb_recommendation", bundle["horses"][1]["addons"])
+        self.assertEqual(result["rrdb_recommendation"]["targeted"], 1)
+        self.assertEqual(result["rrdb_recommendation"]["merged"], 1)
+        self.assertEqual(
+            manifest["source_status"]["rrdb_recommendation"]["state"],
+            "READY",
+        )
+
+    def test_rrdb_recommendation_identity_mismatch_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            source = root / "rrdb.csv"
+            _write_rrdb_recommendation(source, horse_name="別馬")
+            with self.assertRaisesRegex(ValueError, "horse-name mismatch"):
+                merge_day(
+                    _write_day(root),
+                    root / "merged",
+                    revision=2,
+                    rrdb_recommendation_csv=source,
+                )
+
 
 
 if __name__ == "__main__":
