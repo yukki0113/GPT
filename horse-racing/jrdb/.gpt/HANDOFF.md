@@ -6,6 +6,7 @@
 - Historical 2010-2025: accepted Warehouse `sed` + `hjc_payout`; current: SED/HJC Raw.
 - Missing source => explicit `partial`; no automatic Web fallback.
 - Contract/tests: `docs/README_jrdb_result_query.md`, `tests/test_jrdb_result_query.py`.
+- Normal GPT/Work request should need only date, optional venue/race/bet type. Resolve existing Drive Raw/Warehouse internally; do not ask the user for artifact paths when Project storage already contains them.
 
 ### RaceNote clean blind daily backtest activation — 2026-09-30
 
