@@ -18,6 +18,7 @@ import duckdb
 from jrdb_recommendation_signals import (
     VERSION as SIGNAL_VERSION,
     human_summary,
+    newspaper_comment,
     recommendation_payload,
 )
 
@@ -147,6 +148,7 @@ def main() -> int:
                 "finish": item.get("finish"),
                 **payload,
                 "human_summary": human_summary(item),
+                "newspaper_comment": newspaper_comment(item),
             })
 
         result = {
