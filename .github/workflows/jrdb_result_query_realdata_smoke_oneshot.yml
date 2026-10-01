@@ -1,0 +1,61 @@
+name: JRDB Result Query realdata smoke one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/jrdb_result_query_realdata_smoke_oneshot.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch 2026-09-06 SED and HJC
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --date 20260906 --kinds SED HJC \
+            --output-dir /tmp/result_raw \
+            --manifest /tmp/result_raw/fetch_manifest.jsonl \
+            --sleep-seconds 1
+      - name: Run Result Query
+        run: |
+          python horse-racing/jrdb/src/jrdb_result_query.py \
+            --date 2026-09-06 --venue 阪神 --race 10 \
+            --source raw \
+            --sed /tmp/result_raw/SED/SED260906.zip \
+            --hjc /tmp/result_raw/HJC/HJC260906.zip \
+            --pretty > /tmp/result.json
+          python - <<'PY'
+          import json
+          p='/tmp/result.json'
+          d=json.load(open(p,encoding='utf-8'))
+          assert d['status']=='success', d
+          assert d['race_count']==1, d['race_count']
+          race=d['races'][0]
+          assert race['venue_name']=='阪神' and race['race_no']==10
+          assert len(race['top3']) >= 3
+          expected={'win','place','frame_quinella','quinella','wide','exacta','trio','trifecta'}
+          assert set(race['payouts'])==expected
+          assert d['provenance']['web_used'] is False
+          print(json.dumps({
+            'status':d['status'],
+            'race_key':race['race_key'],
+            'top3':race['top3'],
+            'payout_type_counts':{k:len(v) for k,v in race['payouts'].items()},
+            'cross_validation':race['cross_validation']['status'],
+          },ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-result-query-realdata-smoke-20260906-hanshin10
+          path: /tmp/result.json
+          retention-days: 7
