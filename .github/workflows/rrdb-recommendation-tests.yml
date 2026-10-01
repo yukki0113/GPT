@@ -1,0 +1,54 @@
+name: RRDB Recommendation v0.2 Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_recommendation_signals.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_select.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_reverse.py'
+      - 'horse-racing/jrdb/src/racenote_rrdb_enrichment.py'
+      - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
+      - 'horse-racing/jrdb/src/racenote_history_enrichment.py'
+      - 'horse-racing/jrdb/src/build_racenote_daily.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_recommendation_signals.py'
+      - '.github/workflows/rrdb-recommendation-tests.yml'
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_recommendation_signals.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_select.py'
+      - 'horse-racing/jrdb/src/jrdb_recommendation_reverse.py'
+      - 'horse-racing/jrdb/src/racenote_rrdb_enrichment.py'
+      - 'horse-racing/jrdb/src/racenote_racereview_adapter.py'
+      - 'horse-racing/jrdb/src/racenote_history_enrichment.py'
+      - 'horse-racing/jrdb/src/build_racenote_daily.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_recommendation_signals.py'
+      - '.github/workflows/rrdb-recommendation-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile recommendation cutover modules
+        working-directory: horse-racing/jrdb
+        run: |
+          python -m py_compile src/jrdb_recommendation_signals.py
+          python -m py_compile src/jrdb_recommendation_select.py
+          python -m py_compile src/jrdb_recommendation_reverse.py
+          python -m py_compile src/racenote_rrdb_enrichment.py
+          python -m py_compile src/racenote_racereview_adapter.py
+          python -m py_compile src/racenote_history_enrichment.py
+          python -m py_compile src/build_racenote_daily.py
+      - name: Run recommendation contract tests
+        working-directory: horse-racing/jrdb/tests
+        run: |
+          python -m unittest -v test_jrdb_recommendation_signals
+          python -m unittest -v test_racenote_racereview_adapter
