@@ -7,7 +7,8 @@ The projection is intentionally allowlist-based:
 - keep only the shared external addons.keibailuka addon;
 - remove private/individual addons such as Eval, RaceNote and my_index;
 - clear Edge matches;
-- optionally merge sparse three-member predictions from an exact-key CSV.
+- translate private RaceNote/RRDB signals into Kenshow's public member view;
+- optionally merge sparse three-member predictions from an exact-key CSV, with explicit Kenshow rows overriding automatic values.
 
 The output directory contains only manifest.json, audit.json, day-package.json
 and races/*.json so unrelated files from the source release cannot leak.
@@ -253,6 +254,58 @@ def filtered_source_status(source_status: Any) -> dict[str, Any]:
     return output
 
 
+def automatic_kenshow_prediction(horse: dict[str, Any]) -> dict[str, Any] | None:
+    """Translate private RaceNote/RRDB signals into the public Kenshow member view."""
+    addons = horse.get("addons")
+    if not isinstance(addons, dict):
+        return None
+
+    racenote = addons.get("racenote_prediction")
+    if not isinstance(racenote, dict):
+        racenote = {}
+    rrdb = addons.get("rrdb_recommendation")
+    if not isinstance(rrdb, dict):
+        rrdb = {}
+
+    mark = str(racenote.get("mark") or "").strip()
+    confidence = str(racenote.get("confidence") or "").strip()
+    rn_comment = str(racenote.get("horse_short_comment") or "").strip()
+    rrdb_comment = str(rrdb.get("comment") or "").strip()
+
+    comments = []
+    if rn_comment:
+        comments.append(rn_comment)
+    if rrdb_comment and rrdb_comment not in comments:
+        comments.append(rrdb_comment)
+    comment = "\n".join(comments)
+
+    review_horse = bool(rrdb_comment)
+    if not mark and not confidence and not review_horse and not comment:
+        return None
+
+    tags = []
+    if mark or rn_comment:
+        tags.append("RaceNote")
+    if rrdb_comment:
+        tags.append("RRDB")
+
+    return {
+        "mark": mark or None,
+        "confidence": confidence or None,
+        "tag": " / ".join(tags) or None,
+        "review_horse": review_horse,
+        "comment": comment or None,
+    }
+
+
+def automatic_kenshow_race_comment(bundle: dict[str, Any]) -> str:
+    """Expose the private RaceNote race comment as Kenshow's public race comment."""
+    race_notes = bundle.get("race_notes")
+    if not isinstance(race_notes, dict):
+        return ""
+    return str(race_notes.get("racenote_short_comment") or "").strip()
+
+
 def project_horse(
     horse: dict[str, Any],
     *,
@@ -279,6 +332,10 @@ def project_horse(
     horse_name = str(projected["basic"]["horse_name"])
     momotaro: dict[str, Any] = {}
 
+    automatic_kenshow = automatic_kenshow_prediction(horse)
+    if automatic_kenshow is not None:
+        momotaro["kenshow"] = automatic_kenshow
+
     for member in ("ryota", "oji", "kenshow"):
         key = (
             race_date,
@@ -296,13 +353,24 @@ def project_horse(
                 f"{row['horse_name']!r} != {horse_name!r}"
             )
 
-        momotaro[member] = {
+        explicit = {
             "mark": row["mark"] or None,
             "confidence": row["confidence"] or None,
             "tag": row["tag"] or None,
             "review_horse": row["review_horse"],
             "comment": row["comment"] or None,
         }
+        if member == "kenshow" and automatic_kenshow is not None:
+            merged = dict(automatic_kenshow)
+            for field, value in explicit.items():
+                if value not in {None, "", False}:
+                    merged[field] = value
+            if row["tag"] == "手動無印":
+                merged["mark"] = None
+                merged["tag"] = "手動無印"
+            momotaro[member] = merged
+        else:
+            momotaro[member] = explicit
         seen_predictions.add(key)
 
     if momotaro:
@@ -436,6 +504,7 @@ def build_projection(
                 "message": "prediction source not supplied",
             }
 
+        automatic_kenshow_comment = automatic_kenshow_race_comment(bundle)
         race_notes = bundle.get("race_notes")
         if not isinstance(race_notes, dict):
             race_notes = {}
@@ -443,6 +512,8 @@ def build_projection(
         race_notes.pop("racenote_short_comment", None)
 
         member_comments: dict[str, str] = {}
+        if automatic_kenshow_comment:
+            member_comments["kenshow"] = automatic_kenshow_comment
         for member in ("ryota", "kenshow"):
             comment = race_comments.get((venue_code, race_no, member))
             if comment:
