@@ -195,5 +195,11 @@ Canonical handoff:
 
 Newspaper consumes only exact target identity + the RRDB-supplied short comment.
 It does not expose or recompute RRDB signal IDs, signal count, raw strength or
-S/A grade. Matched horses are projected to `addons.rrdb_recommendation` and
-the PWA shows a tappable `推` marker with the short comment.
+S/A grade. Matched horses are projected to `addons.rrdb_recommendation`.
+
+PWA presentation reuses the existing RaceNote mark cell:
+- existing RaceNote mark -> keep the mark and make it tappable;
+- no RaceNote mark -> display `注` and make it tappable;
+- modal -> preserve any RaceNote horse comment and add the RRDB short comment.
+
+No standalone RRDB mark column is created.
