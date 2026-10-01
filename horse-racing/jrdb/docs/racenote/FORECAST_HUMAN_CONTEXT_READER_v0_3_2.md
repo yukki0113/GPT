@@ -103,22 +103,22 @@ Rules:
 - if direct race evidence is absent, pedigree may become more informative,
   but uncertainty remains.
 
-### 4.2 RaceReviewDB / Next-Watch evidence
+### 4.2 RaceReviewDB recommendation evidence
 
 When RaceNote exposes `racereview`, it must be reviewed before marks are
 finalized.
 
-Read RRDB as prior-run interpretation, not as a score.
+Read RRDB as prior-run interpretation, not as a score. The current recommendation contract is `rrdb-recommendation-signals-v0.2`; S/A recommendation grades are disabled.
 
 Especially useful for:
 - result understated by adjusted performance / last-3F;
 - trouble or position recovery hidden by the finishing position;
 - apparent good form aided by pace / position;
 - repeated historical patterns;
-- frozen Next-Watch S/A matches.
+- current RRDB recommendation-signal matches and their measured strength.
 
 Rules:
-- S/A never automatically becomes ◎ / ○ / ▲;
+- RRDB recommendation signals never automatically become ◎ / ○ / ▲;
 - NO_MATCH is neutral, not negative;
 - no fixed RRDB weight exists;
 - a strong current-condition mismatch may outweigh RRDB history;
@@ -163,7 +163,7 @@ RRDB may move ◎ / ○ / ▲ / △ when:
 RRDB should not move marks when:
 - one horse has clearly stronger current-condition evidence and RRDB only adds
   generic hidden/fragile context;
-- Next-Watch S/A is the only reason;
+- an RRDB recommendation signal is the only reason;
 - hidden_strength / fragile_form is the only reason;
 - the reinterpretation has no clear relevance to today's course / distance /
   pace / class / running setup.
