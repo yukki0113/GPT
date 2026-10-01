@@ -280,7 +280,7 @@ def automatic_kenshow_prediction(horse: dict[str, Any]) -> dict[str, Any] | None
     comment = "\n".join(comments)
 
     review_horse = bool(rrdb_comment)
-    if not mark and not confidence and not review_horse and not comment:
+    if not mark and not review_horse and not comment:
         return None
 
     tags = []
