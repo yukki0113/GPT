@@ -1,7 +1,11 @@
 # RaceReviewDB Next-Watch Operation v0.1
 
-Status: OPERATIONAL  
-Date: 2026-09-25
+Status: SUPERSEDED / HISTORICAL REPRODUCTION ONLY  
+Date: 2026-09-25  
+Superseded: 2026-10-01 by `RaceReviewDB_Recommendation_Operation_v0_2.md`
+
+> Current operation no longer uses S/A grades. This document is retained only
+> for historical reproduction of the former Next-Watch contract.
 
 ## 1. Purpose
 
