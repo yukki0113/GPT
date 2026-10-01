@@ -1,6 +1,8 @@
 # RaceNote RRDB Integration Design v0.2
 
 Status: **ACTIVE — RRDB RECOMMENDATION v0.2**
+
+> SUPERSEDED for current operation by the v0.3 four-signal contract. Retained for historical reference.
 Date: 2026-10-01
 Supersedes: `RACENOTE_RRDB_INTEGRATION_DESIGN_v0_1.md` for current operation
 
