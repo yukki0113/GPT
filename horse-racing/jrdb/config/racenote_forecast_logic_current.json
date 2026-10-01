@@ -1,6 +1,6 @@
 {
   "version": "RaceNote-Forecast-Logic-Current-0.1",
-  "updated_at": "2026-09-30",
+  "updated_at": "2026-10-01",
   "current_logic_version": "RaceNote-Human-Context-Reader-0.3.2",
   "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_3_2.md",
   "logic_config": "config/racenote_forecast_logic_human_context_v0_3_2.json",
@@ -12,7 +12,7 @@
     "last_turn": "BTDAY-0002",
     "status": "FROZEN_RESEARCH_BASELINE"
   },
-  "change_reason": "CAL-001 through CAL-006 calibration completed. Daily forecast operation baseline and D5 daily RaceNote build are available; clean blind daily backtesting is authorized while keeping Human-Context Reader 0.3.2 unchanged.",
+  "change_reason": "RRDB recommendation cutover: replace operational S/A Next-Watch grading with OOS-supported recommendation signals and measured strength; keep Human-Context Reader judgment flexible.",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
@@ -22,9 +22,15 @@
   "rrdb_integration": {
     "status": "ACTIVE_REQUIRED",
     "design": "docs/racenote/RACENOTE_RRDB_INTEGRATION_DESIGN_v0_1.md",
+    "current_recommendation_contract": "docs/RaceReviewDB_Recommendation_Operation_v0_2.md",
+    "recommendation_module": "src/jrdb_recommendation_signals.py",
     "enrichment": "src/racenote_rrdb_enrichment.py",
     "current_file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
-    "next_watch_rules_file_id": "1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr",
+    "recommendation_contract_version": "rrdb-recommendation-signals-v0.2",
+    "recommendation_grade_status": "DISABLED",
+    "operational_lookback_days": 730,
+    "legacy_next_watch_rules_file_id": "1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr",
+    "legacy_next_watch_status": "HISTORICAL_COMPATIBILITY_ONLY",
     "trace_required": true
   }
 }
