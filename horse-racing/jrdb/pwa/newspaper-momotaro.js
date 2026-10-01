@@ -158,7 +158,7 @@ function personalMomotaroAppendNotes() {
   const kenshow = text(comments.kenshow, "");
   target.insertAdjacentHTML("beforeend",
     '<section class="newspaper-v5-note-section personal-momotaro-race-notes">' +
-      '<h3>桃太郎短評</h3>' +
+      '<h3>短評</h3>' +
       '<div class="momotaro-race-notes-grid">' +
         section("りょーた", ryota ? '<p>' + escapeHtml(ryota) + '</p>' : "") +
         section("おーじ", ojiBlocks) +
