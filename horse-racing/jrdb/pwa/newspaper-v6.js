@@ -57,13 +57,18 @@ function newspaperV6ApplyMarkLayout() {
     const rnAddon = horse.addons && horse.addons.racenote_prediction
       ? horse.addons.racenote_prediction
       : null;
+    const rrdbAddon = horse.addons && horse.addons.rrdb_recommendation
+      ? horse.addons.rrdb_recommendation
+      : null;
     const rnMark = text(rnAddon && rnAddon.mark, "");
     const rnComment = text(rnAddon && rnAddon.horse_short_comment, "");
+    const rrdbComment = text(rrdbAddon && rrdbAddon.comment, "");
+    const displayMark = rnMark || (rrdbComment ? "注" : "");
     if (rnCell) {
-      if (rnMark && rnComment) {
-        rnCell.innerHTML = `<button type="button" class="newspaper-addon-link newspaper-racenote-button" data-horse-index="${index}" aria-label="${escapeHtml(text(horse.basic && horse.basic.horse_name, ""))}のRaceNote短評">${escapeHtml(rnMark)}</button>`;
+      if (displayMark && (rnComment || rrdbComment)) {
+        rnCell.innerHTML = `<button type="button" class="newspaper-addon-link newspaper-racenote-button" data-horse-index="${index}" aria-label="${escapeHtml(text(horse.basic && horse.basic.horse_name, ""))}の短評">${escapeHtml(displayMark)}</button>`;
       } else {
-        rnCell.textContent = rnMark || newspaperV5IntrinsicValue(null, "racenote_prediction");
+        rnCell.textContent = displayMark || newspaperV5IntrinsicValue(null, "racenote_prediction");
       }
     }
 
@@ -93,18 +98,28 @@ function newspaperV6ApplyMarkLayout() {
 }
 
 function newspaperV6ShowRaceNoteDetail(horse) {
-  const addon = horse && horse.addons ? horse.addons.racenote_prediction : null;
+  const rnAddon = horse && horse.addons ? horse.addons.racenote_prediction : null;
+  const rrdbAddon = horse && horse.addons ? horse.addons.rrdb_recommendation : null;
   const name = text(horse && horse.basic && horse.basic.horse_name, "");
-  const mark = text(addon && addon.mark, "");
-  const rank = Number(addon && addon.prediction_rank);
-  const confidence = text(addon && addon.confidence, "");
-  const comment = text(addon && addon.horse_short_comment, "");
-  dialogTitle.textContent = `${name} / RaceNote${mark ? ` ${mark}` : ""}`;
+  const rnMark = text(rnAddon && rnAddon.mark, "");
+  const rrdbComment = text(rrdbAddon && rrdbAddon.comment, "");
+  const displayMark = rnMark || (rrdbComment ? "注" : "");
+  const rank = Number(rnAddon && rnAddon.prediction_rank);
+  const confidence = text(rnAddon && rnAddon.confidence, "");
+  const rnComment = text(rnAddon && rnAddon.horse_short_comment, "");
+  dialogTitle.textContent = `${name}${displayMark ? ` / ${displayMark}` : ""}`;
   const meta = [
     Number.isFinite(rank) && rank > 0 ? `予想順位 ${rank}位` : "",
     confidence ? `自信度 ${confidence}` : ""
   ].filter(Boolean).join(" / ");
-  dialogBody.innerHTML = `${meta ? `<p class="newspaper-addon-meta">${escapeHtml(meta)}</p>` : ""}<p class="newspaper-addon-comment">${escapeHtml(comment || "単馬短評なし")}</p>`;
+  const blocks = [];
+  if (rnComment) {
+    blocks.push(`<section class="newspaper-v5-note-section"><h3>RaceNote</h3><p class="newspaper-addon-comment">${escapeHtml(rnComment)}</p></section>`);
+  }
+  if (rrdbComment) {
+    blocks.push(`<section class="newspaper-v5-note-section"><h3>RaceReviewDB</h3><p class="newspaper-addon-comment">${escapeHtml(rrdbComment)}</p></section>`);
+  }
+  dialogBody.innerHTML = `${meta ? `<p class="newspaper-addon-meta">${escapeHtml(meta)}</p>` : ""}${blocks.join("") || '<p class="newspaper-addon-comment">単馬短評なし</p>'}`;
   if (typeof detailDialog.showModal === "function") detailDialog.showModal();
   else detailDialog.setAttribute("open", "");
 }
