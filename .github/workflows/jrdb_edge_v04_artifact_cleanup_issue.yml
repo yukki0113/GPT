@@ -1,0 +1,79 @@
+name: JRDB Edge v0.4 Artifact Cleanup via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  cleanup:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V04_ARTIFACT_CLEANUP]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse cleanup request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          run_ids=req.get('run_ids')
+          if not isinstance(run_ids,list) or not run_ids:
+              raise SystemExit('run_ids must be a non-empty list')
+          if not all(isinstance(x,int) and x>0 for x in run_ids):
+              raise SystemExit('run_ids must contain positive integers')
+          Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Delete artifacts for requested runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' >/tmp/run_ids.txt
+          import json
+          for x in json.load(open('/tmp/request.json'))['run_ids']:
+              print(x)
+          PY
+
+          deleted=0
+          bytes=0
+          : > /tmp/deleted.tsv
+          while read -r run_id; do
+            gh api --paginate               -H "Accept: application/vnd.github+json"               "/repos/$GITHUB_REPOSITORY/actions/runs/$run_id/artifacts?per_page=100"               --jq '.artifacts[] | [.id,.size_in_bytes,.name] | @tsv'               > "/tmp/artifacts-$run_id.tsv"
+            while IFS=$'\t' read -r artifact_id size name; do
+              [ -z "$artifact_id" ] && continue
+              gh api -X DELETE                 -H "Accept: application/vnd.github+json"                 "/repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id"
+              deleted=$((deleted+1))
+              bytes=$((bytes+size))
+              printf '%s\t%s\t%s\t%s\n' "$run_id" "$artifact_id" "$size" "$name" >> /tmp/deleted.tsv
+            done < "/tmp/artifacts-$run_id.tsv"
+          done < /tmp/run_ids.txt
+          echo "DELETED_COUNT=$deleted" >> "$GITHUB_ENV"
+          echo "DELETED_BYTES=$bytes" >> "$GITHUB_ENV"
+
+      - name: Comment result and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import os
+          n=int(os.environ['DELETED_COUNT'])
+          b=int(os.environ['DELETED_BYTES'])
+          print('JRDB_EDGE_V04_ARTIFACT_CLEANUP_RESULT')
+          print(f'deleted_artifacts: {n}')
+          print(f'deleted_bytes: {b}')
+          print(f'deleted_gib: {b/(1024**3):.3f}')
+          print('Production serving was not changed.')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
