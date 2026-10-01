@@ -1,8 +1,8 @@
 {
   "selection_id": "BTDAY-0022",
   "target_date": "2026-09-22",
-  "status": "FROZEN_CLEAN_BLIND",
-  "clean_blind_eligible": true,
+  "status": "FROZEN_WITH_OPERATOR_MARKET_EXPOSURE",
+  "clean_blind_eligible": false,
   "result_opened": false,
   "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
   "rrdb_recommendation_contract": "rrdb-recommendation-signals-v0.3",
@@ -21,5 +21,9 @@
     "a2946fbefd197991af6f33264dd9867b4b109a3d9acc9e6a90ba39dd98a58b9c",
     "f35528574b1d17d2ff49318ef252c7a61614c690a63936133edee66a87be2813",
     "49cbfdf43298e6f7184cdae75f226c3ffb2fd4a325ed7f8bf6f80b368039395f"
-  ]
+  ],
+  "operator_market_exposure": {
+    "exposed": true,
+    "note": "Strict clean-blind eligibility revoked due to pre-finalization operator exposure to one target-day market object. Frozen prediction content and prediction hashes are unchanged."
+  }
 }
