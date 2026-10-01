@@ -50,6 +50,50 @@ Dead-heats are not collapsed: every horse whose confirmed finish is 1-3 is retur
 
 All runners are opt-in with `--include-all-runners`.
 
+## GPT / Work operational runner
+
+Repository source and JRDB Raw are intentionally stored separately. Raw absence from Git is therefore normal.
+
+For GPT/Work, the standard entrypoint is `src/jrdb_result_query_runner.py`, not direct Web search and not a guessed local Raw path.
+
+First generate the exact materialization plan:
+
+```bash
+python src/jrdb_result_query_runner.py \
+  --date 2026-09-06 \
+  --plan \
+  --pretty
+```
+
+The plan returns native Google Drive source paths such as:
+
+```text
+/Google Drive/GPT/horse-racing/00_raw/SED/SED260906.zip
+/Google Drive/GPT/horse-racing/00_raw/HJC/HJC260906.zip
+```
+
+and exact runtime destinations under:
+
+```text
+/mnt/data/jrdb_result_query/YYYYMMDD/
+```
+
+GPT/Work must then materialize those files with the connected native Google Drive connector and execute:
+
+```bash
+python src/jrdb_result_query_runner.py \
+  --date 2026-09-06 \
+  --venue 阪神 \
+  --race 10 \
+  --pretty
+```
+
+For <=2025, the same runner requests annual `SED_YYYY.zip` and `HJC_YYYY.zip`; the query engine selects only the requested date's members.
+
+The runner deliberately contains **no direct Google Drive network client**. This preserves the project rule that Drive transport is handled by GPT/native connector rather than GitHub Actions or an embedded gdown/API bridge.
+
+Fail-closed rule: if the planned Raw has not been materialized, runner execution errors with `web_fallback_allowed=false`. "Raw is not in Git" is never a reason to search the Web.
+
 ## CLI
 
 ### One day / all races
