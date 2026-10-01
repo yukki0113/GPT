@@ -1,6 +1,6 @@
 {
-  "status": "FROZEN_CLEAN_BLIND",
-  "clean_blind_eligible": true,
+  "status": "FROZEN_WITH_OPERATOR_MARKET_EXPOSURE",
+  "clean_blind_eligible": false,
   "result_opened": false,
   "record_count": 12,
   "frozen_count": 12,
@@ -16,5 +16,11 @@
     "unique_comment_count": 12,
     "one_paragraph_count": 12,
     "banned_internal_term_hits": 0
+  },
+  "operator_market_exposure": {
+    "exposed": true,
+    "scope": "single horse market object during local structure inspection before fixed-pick finalization",
+    "target_date": "2026-09-22",
+    "note": "Canonical TURN2 workflow stripped target-day market before record generation, but strict human/operator clean-blind eligibility is conservatively revoked. Frozen marks/comments/decision trace/prediction hashes are unchanged."
   }
 }
