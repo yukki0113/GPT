@@ -228,7 +228,8 @@ jobs:
           banned=['UPGRADE','DOWNGRADE','CONFIRM','hidden_strength','Next-Watch','勝ち切る現実性まで含めて最も買いたい','◎以外では最も相手評価を上げたい',
                   '安定度では本線に譲っても','展開ひとつで◎○を逆転できる単穴','5頭候補に残す',
                   'DAY PREP内のレース材料だけなら']
-          assert len(reader_texts)==36 and len(set(reader_texts))==36\n          assert all('\\n' not in txt and '\\r' not in txt for txt in reader_texts)
+          assert len(reader_texts)==36 and len(set(reader_texts))==36
+          assert all('\\n' not in txt and '\\r' not in txt for txt in reader_texts)
           assert not any(b in txt for txt in reader_texts for b in banned)
           names=[]
           for rows in by.values():
