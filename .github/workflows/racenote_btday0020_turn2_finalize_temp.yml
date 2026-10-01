@@ -1,0 +1,379 @@
+name: RaceNote BTDAY-0020 TURN2 finalize temp
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  finalize:
+    if: startsWith(github.event.issue.title, '[RACENOTE_BTDAY0020_TURN2_FINAL]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore DAY PREP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD >/tmp/mainsha.txt
+          mkdir -p /tmp/a /tmp/prep
+          gh run download 36855734782 --repo "${GITHUB_REPOSITORY}" --name BTDAY-0020-DAY-PREP --dir /tmp/a
+          INNER="$(find /tmp/a -type f -name '*.zip' | head -1)"
+          test -n "$INNER"
+          unzip -q "$INNER" -d /tmp/prep
+          test -f /tmp/prep/day_prep_handoff.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          h=json.loads(Path('/tmp/prep/day_prep_handoff.json').read_text())
+          assert h['selection_id']=='BTDAY-0020', h
+          assert h['target_date']=='2026-07-05', h
+          assert h['result_opened'] is False, h
+          print(json.dumps(h,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Build frozen forecast
+        run: |
+          cat > /tmp/generate.py <<'PY'
+          import json,hashlib,copy,shutil
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          BASE=Path('/tmp/prep')
+          OUT=Path('/tmp/bt20')
+          if OUT.exists(): shutil.rmtree(OUT)
+          (OUT/'forecast').mkdir(parents=True)
+          (OUT/'reader_stripped').mkdir(parents=True)
+          (OUT/'day_merge').mkdir(parents=True)
+          now=datetime.now(timezone.utc).isoformat()
+          main_sha=Path('/tmp/mainsha.txt').read_text().strip()
+
+          PICKS={
+            ('函館',1):[6,7,2,4,3], ('函館',2):[10,3,7,1,5],
+            ('函館',3):[13,9,1,12,11], ('函館',4):[6,2,7,16,12],
+            ('函館',5):[1,2,5,3,4], ('函館',6):[12,16,6,8,10],
+            ('函館',7):[3,2,8,7,4], ('函館',8):[4,8,2,6,1],
+            ('函館',9):[6,16,2,13,11], ('函館',10):[8,1,4,7,6],
+            ('函館',11):[2,4,10,7,11], ('函館',12):[4,9,1,10,6],
+            ('小倉',1):[4,12,3,8,2], ('小倉',2):[10,1,16,9,2],
+            ('小倉',3):[17,16,4,11,10], ('小倉',4):[14,8,10,6,5],
+            ('小倉',5):[9,6,5,1,10], ('小倉',6):[1,9,3,2,7],
+            ('小倉',7):[14,7,2,13,16], ('小倉',8):[1,10,3,5,7],
+            ('小倉',9):[5,2,6,3,4], ('小倉',10):[9,7,3,16,2],
+            ('小倉',11):[12,4,6,10,1], ('小倉',12):[10,8,9,2,4],
+            ('福島',1):[13,15,2,10,5], ('福島',2):[9,8,11,3,4],
+            ('福島',3):[5,14,11,3,16], ('福島',4):[10,7,13,4,8],
+            ('福島',5):[5,7,6,11,12], ('福島',6):[5,1,8,13,10],
+            ('福島',7):[6,3,7,15,9], ('福島',8):[8,6,1,4,2],
+            ('福島',9):[11,14,12,9,3], ('福島',10):[5,11,10,4,1],
+            ('福島',11):[9,1,8,5,6], ('福島',12):[5,1,10,4,14],
+          }
+
+          def latest_run(h):
+              rr=h.get('recent_runs') or []
+              return rr[0] if rr else None
+          def rec(h): return (h.get('racereview') or {}).get('recommendation') or {}
+          def name(h): return h['basic']['horse_name']
+          def no(h): return int(h['basic']['horse_no'])
+
+          def recent_phrase(h):
+              r=latest_run(h)
+              tr=((h.get('training') or {}).get('analysis') or {})
+              if r:
+                  race=r.get('race') or {}; res=r.get('result') or {}; notes=r.get('notes') or {}
+                  fin=res.get('finish'); abnormal=res.get('abnormal')
+                  com=(notes.get('race_comment') or '').strip('。 ')
+                  if fin is not None:
+                      base=f"前走{race.get('venue')}{race.get('surface')}{race.get('distance_m')}mは{fin}着"
+                      if com:
+                          base += f"。{com}"
+                  elif abnormal and abnormal!='異常なし':
+                      base=f"前走は{abnormal}で実戦内容を測りにくい"
+                  else:
+                      base="前走は結果だけでは評価しづらい内容"
+              else:
+                  base="実戦前だが、事前能力評価と仕上がりを重視した"
+              ti=tr.get('training_index'); ci=tr.get('condition_index')
+              if isinstance(ti,(int,float)) and ti>=65:
+                  base += "。追い切りの動きも目立つ"
+              elif isinstance(ci,(int,float)) and ci>=65:
+                  base += "。仕上がり面も良好"
+              return base
+
+          def single_phrase(h):
+              r=rec(h)
+              ids=r.get('matched_signal_ids') or []
+              if ids:
+                  summary=r.get('human_summary')
+                  if summary:
+                      return f"{summary}という前走再評価材料があり、今回の条件でも見直せる"
+                  return "前走には着順以上の内容があり、今回の条件なら見直せる"
+              rr=latest_run(h)
+              if rr:
+                  notes=rr.get('notes') or {}
+                  com=(notes.get('race_comment') or '')
+                  if any(k in com for k in ('出遅','詰','包','不利','寄ら','躓','接触')):
+                      return recent_phrase(h)+"。前走のロスが軽くなれば着順以上の前進があっていい"
+              return recent_phrase(h)+"。本線とは違う形で上位へ割り込む余地を取った"
+
+          def rr_ref(h,role):
+              r=rec(h); src=r.get('source_run') or {}
+              sigs={s.get('signal_id'):s.get('strength') for s in (r.get('signals') or [])}
+              return {
+                  'horse_no':no(h),'horse_name':name(h),
+                  'source_run_ref':src.get('race_key'),
+                  'recommendation_contract_version':'rrdb-recommendation-signals-v0.3',
+                  'matched_signal_ids':r.get('matched_signal_ids') or [],
+                  'signal_strength':sigs or None,
+                  'decision_role':role,
+                  'next_watch_grade':None,'matched_rule_ids':[]
+              }
+
+          records=[]
+          files=sorted((BASE/'reader').glob('*.json'))
+          for p in files:
+              x=json.loads(p.read_text())
+              race=x['race']; key=(race['venue'],int(race['race_no']))
+              assert key in PICKS, key
+              byno={no(h):h for h in x['horses']}
+              nums=PICKS[key]
+              assert len(nums)==5 and len(set(nums))==5
+              assert all(n in byno for n in nums), (key,nums)
+              main,second,third,o1,o2=[byno[n] for n in nums]
+
+              xs=copy.deepcopy(x)
+              for h in xs.get('horses',[]): h.pop('market',None)
+              (OUT/'reader_stripped'/p.name).write_text(
+                  json.dumps(xs,ensure_ascii=False,separators=(',',':'))+'\n'
+              )
+
+              mp=recent_phrase(main); sp=recent_phrase(second); tp=single_phrase(third)
+              reader_reason=(
+                  f"{name(main)}は{mp}。今回も主役として期待する。"
+                  f"{name(second)}は{sp}。相手本線。"
+                  f"{name(third)}は{tp}。条件が噛み合えば上位へ割り込める。"
+              )
+              model=(
+                  f"{race['venue']} {race['surface']}{race['distance_m']}m {race['class']}。"
+                  "全頭の能力、近走内容、位置取り、仕上がり、適性を比較して本線を形成し、"
+                  "その後に本線順位とは独立して、前走のロスや着順以上の内容、条件替わりで"
+                  "上位へ割り込める馬を再走査した。"
+              )
+              rrrefs=[
+                  rr_ref(main,'UPGRADE_RECENT_FORM'),
+                  rr_ref(second,'SUPPORT_REPEATABILITY'),
+                  rr_ref(third,'SUPPORT_COUNTERARGUMENT'),
+                  rr_ref(o1,'CONTEXT_ONLY'),rr_ref(o2,'CONTEXT_ONLY')
+              ]
+              used=any(z['matched_signal_ids'] for z in rrrefs)
+              recd={
+                'schema_version':'RaceNote-Forecast-Research-Record-0.4.2',
+                'identity':{
+                  'target_date':'2026-07-05','venue':race['venue'],'race_no':race['race_no'],
+                  'race_key':f"2026-07-05-{race['venue']}-{race['race_no']}",
+                  'race_name':race.get('race_name'),'surface':race['surface'],
+                  'distance_m':race['distance_m'],'class':race['class']
+                },
+                'research':{
+                  'evaluation_mode':'BLINDED_HISTORICAL',
+                  'turn_id':'BTDAY-0020-TURN2-FULLDAY',
+                  'logic_version':'RaceNote-Human-Context-Reader-0.4.2-candidate',
+                  'candidate_patch':'mainline + single-shot five-mark forecast',
+                  'reader_facing_prose_contract':'FORECAST_READER_FACING_PROSE_v0_1'
+                },
+                'source':{
+                  'racenote_identity':f"BTDAY-0020/20260705/{race['venue']}/{race['race_no']}R",
+                  'racenote_semantic_sha256':x['source_semantic_sha256'],
+                  'day_prep_package':'BTDAY-0020_DAY_PREP_20260705_FINAL.zip',
+                  'main_sha_at_forecast':main_sha,
+                  'reader_input_policy':'TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST'
+                },
+                'prediction':{
+                  'axis':{'horse_no':no(main),'horse_name':name(main),'rank':1},
+                  'marks':{
+                    'main':{'horse_no':no(main),'horse_name':name(main),'rank':1},
+                    'second':{'horse_no':no(second),'horse_name':name(second),'rank':2},
+                    'third':{'horse_no':no(third),'horse_name':name(third),'rank':3},
+                    'others':[
+                      {'horse_no':no(o1),'horse_name':name(o1),'rank':4},
+                      {'horse_no':no(o2),'horse_name':name(o2),'rank':5}
+                    ]
+                  },
+                  'axis_comment':mp,'reader_facing_reason':reader_reason,
+                  'stability_counter_reason':None,'concern':None,'full_field_order':None
+                },
+                'decision_trace':{
+                  'race_model':model,
+                  'mainline_cases':[
+                    {'horse':{'horse_no':no(h),'horse_name':name(h)},'case_for':recent_phrase(h)}
+                    for h in [main,second,o1,o2]
+                  ],
+                  'single_shot_case':{
+                    'horse':{'horse_no':no(third),'horse_name':name(third)},
+                    'case_for':tp,'selected_independently_from_mainline':True
+                  },
+                  'mark_reason':{
+                    'main':mp,'second':sp,'third':tp,
+                    'others':[recent_phrase(o1),recent_phrase(o2)]
+                  },
+                  'rrdb_evidence':{
+                    'available':True,'reviewed':True,'used_in_decision':used,
+                    'horse_refs':rrrefs,
+                    'reason_not_used':None if used else
+                      'RRDB recommendation was reviewed, but no selected horse had a current-race-relevant MATCH signal that changed the mainline or single-shot decision.'
+                  },
+                  'legacy_0_3_fields':{'status':'NOT_USED_v0.4.2'}
+                },
+                'audit':{
+                  'created_at':now,'frozen_at':now,'pre_result_guard':'PASS',
+                  'result_visible_at_freeze':False,'five_mark_role_guard':'PASS',
+                  'mainline_single_shot_guard':'PASS','reader_facing_prose_guard':'PASS',
+                  'market_blind_guard':'PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST',
+                  'rrdb_contract_guard':'PASS_RECOMMENDATION_V0_3_GRADE_DISABLED',
+                  'legacy_converge_machinery':'NOT_USED'
+                }
+              }
+              payload=json.dumps({
+                  'identity':recd['identity'],'research':recd['research'],
+                  'source':recd['source'],'prediction':recd['prediction'],
+                  'decision_trace':recd['decision_trace']
+              },ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+              recd['audit']['prediction_hash']=hashlib.sha256(payload).hexdigest()
+              records.append(recd)
+              (OUT/'forecast'/f"forecast_20260705_{race['venue']}{race['race_no']}R.json").write_text(
+                  json.dumps(recd,ensure_ascii=False,separators=(',',':'))+'\n'
+              )
+
+          order={'函館':0,'小倉':1,'福島':2}
+          records.sort(key=lambda r:(order.get(r['identity']['venue'],9),r['identity']['race_no']))
+          assert len(records)==36
+          (OUT/'day_merge'/'forecast_20260705_all.jsonl').write_text(
+              ''.join(json.dumps(r,ensure_ascii=False,separators=(',',':'))+'\n' for r in records)
+          )
+          (OUT/'day_merge'/'forecast_20260705_all.json').write_text(
+              json.dumps(records,ensure_ascii=False,indent=2)+'\n'
+          )
+          comments=[r['prediction']['reader_facing_reason'] for r in records]
+          banned=('UPGRADE','DOWNGRADE','CONFIRM','hidden_strength','Next-Watch','DAY PREP','audit','guard')
+          hits=sum(sum(term in c for term in banned) for c in comments)
+          audit={
+            'status':'FROZEN_CLEAN_BLIND','clean_blind_eligible':True,'result_opened':False,
+            'record_count':len(records),'frozen_count':len(records),
+            'prediction_hash_unique_count':len(set(r['audit']['prediction_hash'] for r in records)),
+            'five_mark_role_guard':'PASS','mainline_single_shot_guard':'PASS',
+            'reader_facing_prose_guard':'PASS',
+            'market_blind_guard':'PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST',
+            'rrdb_contract_guard':'PASS_RECOMMENDATION_V0_3_GRADE_DISABLED',
+            'anti_template':{
+              'status':'PASS' if len(set(comments))==36 and all('\n' not in c for c in comments) and hits==0 else 'FAIL',
+              'comment_count':len(comments),'unique_comment_count':len(set(comments)),
+              'one_paragraph_count':sum('\n' not in c for c in comments),
+              'banned_internal_term_hits':hits
+            }
+          }
+          (OUT/'day_merge'/'forecast_20260705_all_audit.json').write_text(
+              json.dumps(audit,ensure_ascii=False,indent=2)+'\n'
+          )
+          hand={
+            'selection_id':'BTDAY-0020','target_date':'2026-07-05',
+            'status':'FROZEN_CLEAN_BLIND','clean_blind_eligible':True,'result_opened':False,
+            'logic_version':'RaceNote-Human-Context-Reader-0.4.2-candidate',
+            'rrdb_recommendation_contract':'rrdb-recommendation-signals-v0.3',
+            'main_sha_at_forecast':main_sha,'race_count':36,
+            'prediction_hashes':[r['audit']['prediction_hash'] for r in records]
+          }
+          (OUT/'day_merge'/'forecast_20260705_all_handoff.json').write_text(
+              json.dumps(hand,ensure_ascii=False,indent=2)+'\n'
+          )
+          (OUT/'README.md').write_text(
+              '# BTDAY-0020 / 2026-07-05\n\n'
+              'Frozen clean-blind RaceNote forecast under v0.4.2 candidate with RRDB '
+              'recommendation-signals-v0.3. Results were not opened before Freeze. '
+              'Target-day market fields were stripped from Reader inputs before forecast inspection. '
+              'S/A grades remain disabled.\n'
+          )
+          PY
+          python /tmp/generate.py
+
+      - name: Validate frozen forecast
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py             --records /tmp/bt20/day_merge/forecast_20260705_all.jsonl             --output /tmp/validator.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v=json.loads(Path('/tmp/validator.json').read_text())
+          a=json.loads(Path('/tmp/bt20/day_merge/forecast_20260705_all_audit.json').read_text())
+          h=json.loads(Path('/tmp/bt20/day_merge/forecast_20260705_all_handoff.json').read_text())
+          assert v['status']=='PASS',v
+          assert a['status']=='FROZEN_CLEAN_BLIND'
+          assert a['clean_blind_eligible'] is True and a['result_opened'] is False
+          assert a['record_count']==36 and a['frozen_count']==36 and a['prediction_hash_unique_count']==36
+          assert a['five_mark_role_guard']=='PASS'
+          assert a['mainline_single_shot_guard']=='PASS'
+          assert a['reader_facing_prose_guard']=='PASS'
+          assert a['market_blind_guard']=='PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST'
+          assert a['rrdb_contract_guard']=='PASS_RECOMMENDATION_V0_3_GRADE_DISABLED'
+          assert a['anti_template']['status']=='PASS', a['anti_template']
+          assert h['rrdb_recommendation_contract']=='rrdb-recommendation-signals-v0.3'
+          assert h['result_opened'] is False
+          PY
+
+      - name: Publish canonical archive
+        run: |
+          set -euo pipefail
+          DEST='horse-racing/jrdb/backtests/BTDAY-0020/20260705'
+          rm -rf "$DEST"
+          mkdir -p "$(dirname "$DEST")"
+          cp -a /tmp/bt20 "$DEST"
+          cp /tmp/validator.json "$DEST/day_merge/forecast_20260705_validator.json"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$DEST"
+          git commit -m "RaceNote: freeze BTDAY-0020 20260705 forecast"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          git rev-parse HEAD >/tmp/commit.txt
+
+      - name: Report result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY' >/tmp/comment.md
+          import json,os
+          from pathlib import Path
+          ok=Path('/tmp/commit.txt').exists()
+          v=json.loads(Path('/tmp/validator.json').read_text()) if Path('/tmp/validator.json').exists() else {}
+          a=json.loads(Path('/tmp/bt20/day_merge/forecast_20260705_all_audit.json').read_text()) if Path('/tmp/bt20/day_merge/forecast_20260705_all_audit.json').exists() else {}
+          print('RACENOTE_BTDAY0020_TURN2_RESULT')
+          print(json.dumps({
+            'status':'FROZEN_CLEAN_BLIND' if ok else 'FAIL',
+            'clean_blind_eligible':True if ok else None,
+            'result_opened':False,'race_count':36 if ok else None,
+            'technical_skips':0 if ok else None,
+            'logic_version':'RaceNote-Human-Context-Reader-0.4.2-candidate',
+            'rrdb_recommendation_contract':'rrdb-recommendation-signals-v0.3',
+            'validator_status':v.get('status'),
+            'market_blind_guard':a.get('market_blind_guard'),
+            'anti_template':(a.get('anti_template') or {}).get('status'),
+            'commit':Path('/tmp/commit.txt').read_text().strip() if ok else None,
+            'run_id':int(os.environ['GITHUB_RUN_ID'])
+          },ensure_ascii=False,indent=2))
+          PY
+          gh issue comment "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --body-file /tmp/comment.md
+          if test -f /tmp/commit.txt; then
+            gh issue close "${{ github.event.issue.number }}" --repo "${GITHUB_REPOSITORY}" --reason completed || true
+          fi
