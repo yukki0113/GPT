@@ -1,0 +1,73 @@
+name: JRDB HJC 2026 backfill one-shot
+
+on:
+  push:
+    paths:
+      - '.github/workflows/jrdb_hjc_2026_backfill_oneshot.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch 2026 HJC through 2026-09-13
+        env:
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/hjc
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-date 20260104 \
+            --to-date 20260913 \
+            --kinds HJC \
+            --output-dir /tmp/hjc \
+            --manifest /tmp/hjc/fetch_manifest.jsonl \
+            --sleep-seconds 1 \
+            --continue-on-error
+      - name: Validate HJC backfill
+        run: |
+          python - <<'PY'
+          import hashlib, json, zipfile
+          from pathlib import Path
+          root = Path('/tmp/hjc/HJC')
+          files = sorted(root.glob('HJC26*.zip'))
+          if len(files) != 76:
+              raise SystemExit(f'expected 76 HJC race-day ZIPs through 2026-09-13, got {len(files)}')
+          rows = []
+          for p in files:
+              if not zipfile.is_zipfile(p):
+                  raise SystemExit(f'invalid zip: {p.name}')
+              with zipfile.ZipFile(p) as zf:
+                  bad = zf.testzip()
+                  if bad:
+                      raise SystemExit(f'corrupt member {bad} in {p.name}')
+                  members = [n for n in zf.namelist() if not n.endswith('/')]
+                  if not any(Path(n).name.upper().startswith('HJC') for n in members):
+                      raise SystemExit(f'no HJC member in {p.name}')
+              rows.append({
+                  'file_name': p.name,
+                  'size_bytes': p.stat().st_size,
+                  'sha256': hashlib.sha256(p.read_bytes()).hexdigest(),
+              })
+          Path('/tmp/hjc/backfill_validation.json').write_text(
+              json.dumps({'status':'success','count':len(rows),'files':rows}, indent=2),
+              encoding='utf-8'
+          )
+          PY
+      - name: Upload backfill artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-hjc-2026-backfill-through-0913
+          path: /tmp/hjc/
+          retention-days: 7
+          compression-level: 0
