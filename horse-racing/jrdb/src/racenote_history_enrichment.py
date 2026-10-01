@@ -43,7 +43,12 @@ def parse_args() -> argparse.Namespace:
     rrdb_source = parser.add_mutually_exclusive_group(required=False)
     rrdb_source.add_argument("--racereview-root", type=Path)
     rrdb_source.add_argument("--racereview-current-cache", type=Path)
-    parser.add_argument("--next-watch-rules", type=Path, default=None)
+    parser.add_argument(
+        "--next-watch-rules",
+        type=Path,
+        default=None,
+        help="Deprecated legacy compatibility input; current RRDB recommendations do not require it.",
+    )
     parser.add_argument("--rrdb-work-root", type=Path, default=None)
     parser.add_argument(
         "--stats-window-years",
@@ -194,17 +199,17 @@ def main() -> int:
             or args.racereview_current_cache is not None
         )
         if rrdb_requested:
-            if args.next_watch_rules is None:
-                raise SystemExit(
-                    "--next-watch-rules is required when RRDB enrichment is requested"
-                )
             rrdb_work_root = args.rrdb_work_root or (
                 args.output.parent / ".racenote_rrdb_work"
             )
             rrdb_work_root.mkdir(parents=True, exist_ok=True)
-            contract = rrdb.load_frozen_contract(
-                args.next_watch_rules,
-                rrdb_work_root,
+            contract = (
+                rrdb.load_frozen_contract(
+                    args.next_watch_rules,
+                    rrdb_work_root,
+                )
+                if args.next_watch_rules is not None
+                else None
             )
             if args.racereview_root is not None:
                 rrdb_reader = RaceReviewReader(args.racereview_root)
