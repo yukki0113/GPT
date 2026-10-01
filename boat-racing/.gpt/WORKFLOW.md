@@ -13,7 +13,8 @@ Updated: 2026-09-18
 5. `boat-racing/.gpt/HANDOFF.md`
 6. 本 `WORKFLOW.md`
 7. 対象工程の `docs/` / `src/`
-8. D. Actions-Native Executionを使う場合だけ対象 `.github/workflows/`
+8. Parquet / DuckDB処理を扱う場合は repository root `tools/data-storage/README.md`
+9. D. Actions-Native Executionを使う場合だけ対象 `.github/workflows/`
 
 司令室・会場選別・仕様改訂研究では、さらに `docs/ForwardTrial_司令室運用・会場選別・Shadow検証.md` を読む。
 
@@ -33,11 +34,28 @@ GitHubを使う作業は開始時に次の4系統へ分類する。
 - **C. Pure Deterministic Execution**
   - Git正本moduleと必要入力をChat側で取得でき、secret・特殊runner・Actions監査証跡が不要な処理。
   - CSV/JSON整形、join、集計、scoring、SHA、差分、artifact回収後の検証等は原則C。
+  - Parquet / DuckDBの汎用query・validation・変換・benchmarkは `tools/data-storage/` を標準実行基盤とし、依存不足だけでDへ送らない。
 - **D. Actions-Native Execution**
   - Secrets、認証付き外部取得、Actions artifact chain、長時間・大容量、runner依存、immutable freeze、監査run、またはChatローカルで正本moduleを同一条件実行できない処理。
   - fully validated requestをIssueで1回だけ起動する。
 
 「GitHubにmoduleがある」ことだけを理由にDを選ばない。
+
+### Parquet / DuckDB execution preflight
+
+```text
+Parquet / DuckDB task
+-> tools/data-storage/README.md 確認
+-> 既存 .venv-data-storage + check-deps
+-> PASSなら再利用
+-> absent / DEPENDENCY_MISSINGなら requirements からbootstrap
+-> check-deps再実行
+-> 共通CLI またはboat-racing正本moduleを実行
+```
+
+`duckdb` / `pyarrow` が現在のPythonに無いことだけを理由に「実行環境なし」として停止しない。venv作成・依存install自体が失敗または禁止される場合だけblockとして報告する。
+
+共通Toolはstorage/query/validationを担当する。月締めのfamily × month × schema hash、全列string保持、`source_csv`、manifest、Lossless/key、`cleanup_ready` の業務contractは `src/monthly_parquet_archive.py` / `docs/Parquet月締め運用.md` を優先する。
 
 ### 現行D経路
 

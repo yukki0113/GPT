@@ -98,6 +98,18 @@ moduleの通常CLIは上記3CSVに加え、`source_commit`、source/input/output
 - URL: `https://drive.google.com/drive/folders/19aHo7aKIp0G01SIkk7fcI_uktyaWhW2q`
 - バックテスト結果、結果参照前固定、比較資料、仕様改訂判断などを保存
 
+## Shared Parquet / DuckDB runtime
+
+月締めParquet、Parquet再読込、DuckDB分析、schema / row-count / key / NULL等の汎用監査では、repository共通の汎用CRUD / Data Storage Tool `tools/data-storage/` を標準実行基盤として利用します。
+
+- 現在のPythonに `duckdb` / `pyarrow` が無いことだけでは処理を停止しない。
+- root `.venv-data-storage` があり `check-deps` がPASSする場合は再利用し、毎回installしない。
+- absent / `DEPENDENCY_MISSING` の場合は `tools/data-storage/requirements.txt` からbootstrapして再確認する。
+- 競艇固有の月締めschema、family分離、manifest、Lossless/key、`cleanup_ready` contractは `src/monthly_parquet_archive.py` と `docs/Parquet月締め運用.md` を正本とし、共通Toolへ再実装しない。
+- 環境作成・依存install自体が失敗または禁止される場合だけ実行不能として報告する。
+
+共通runtimeの詳細は repository root `.gpt/README.md` と `tools/data-storage/README.md` を参照します。
+
 ## CSV原本保存と月締めParquet
 
 日次CSVの原本保存・保存漏れ監査は、Git/ActionsではなくGoogle Driveを直接正本として扱う。対象日CSVは添付、ChatGPT Library、参照可能な日次成果物の順に探索し、内容を変更・再生成せずに対応区分へ保存する。アップロード前後にDriveの同名・内容・存在を確認し、未発見・競合は推測で補完せず報告する。

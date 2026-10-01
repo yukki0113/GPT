@@ -56,6 +56,20 @@ GitHub正本moduleと必要入力をGPT側で取得でき、secret・特殊runne
 
 Parquet / DuckDB処理は、原則として共通 `tools/data-storage/` のmodule / CLIを利用し、local-horse-racing側で同等実装をコピーしない。Project固有のcolumns / keys / partitions / as-of rulesだけをProject側へ定義する。
 
+実行preflightは次を標準とする。
+
+```text
+Parquet / DuckDB task
+-> tools/data-storage/README.md 確認
+-> 既存 .venv-data-storage + check-deps
+-> PASSなら再利用
+-> absent / DEPENDENCY_MISSINGなら requirements からbootstrap
+-> check-deps再実行
+-> 共通CLI またはlocal-horse-racing正本moduleを実行
+```
+
+`duckdb` / `pyarrow` のimport失敗だけで「実行環境がない」として停止しない。venv作成または依存install自体が失敗・禁止される場合のみblockとして報告する。
+
 正本moduleと同等の処理を独自再実装して置き換えず、可能なら source commit / input SHA / output SHA / module version等を残す。
 
 ### D. Actions-Native Execution

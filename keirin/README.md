@@ -110,6 +110,19 @@ Workflow:
     PYTHONPATH=. python -m unittest discover -s tests -v
     python -m py_compile keirin_historical/*.py
 
+## Shared Parquet / DuckDB runtime
+
+Canonical Parquetの生成・再読込・validation・DuckDB queryでは、repository共通の汎用CRUD / Data Storage Tool `tools/data-storage/` を標準実行基盤として利用します。
+
+- Stage AのPython 3.12要件は維持する。
+- `pyarrow` / `duckdb` が現在のPython環境に無いことだけでは停止しない。
+- Python 3.12でroot `.venv-data-storage` を利用でき、`check-deps` がPASSする場合は再利用する。
+- 未作成または `DEPENDENCY_MISSING` なら `tools/data-storage/requirements.txt` からbootstrapして再確認する。
+- 競輪固有のRaw→Canonical parser、pre/post境界、provenance、coverage / leakage gateは `keirin_canonical` とcanonical docsを正本とし、共通Toolへ意味論を再実装しない。
+- venv作成・依存install自体が失敗または禁止される場合だけ実行不能として報告する。
+
+詳細bootstrapは repository root `.gpt/README.md` と `tools/data-storage/README.md` を参照します。
+
 ## Stage A Core Canonical (offline)
 
 Requires Python 3.12 and `pyarrow`. Prepare a read-only directory containing
