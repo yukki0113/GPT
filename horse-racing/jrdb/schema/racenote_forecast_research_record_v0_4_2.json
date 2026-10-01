@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_forecast_research_record_v0_4_2.json",
+  "title": "RaceNote Forecast Research Record v0.4.2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "identity",
+    "research",
+    "source",
+    "prediction",
+    "decision_trace",
+    "audit"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "RaceNote-Forecast-Research-Record-0.4.2"
+    },
+    "identity": {
+      "type": "object",
+      "required": [
+        "target_date",
+        "venue",
+        "race_no",
+        "race_key"
+      ],
+      "additionalProperties": true
+    },
+    "research": {
+      "type": "object",
+      "required": [
+        "evaluation_mode",
+        "turn_id",
+        "logic_version"
+      ],
+      "properties": {
+        "evaluation_mode": {
+          "enum": [
+            "BLINDED_HISTORICAL",
+            "TRUE_FORWARD"
+          ]
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "logic_version": {
+          "const": "RaceNote-Human-Context-Reader-0.4.2-candidate"
+        }
+      },
+      "additionalProperties": true
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "racenote_identity"
+      ],
+      "additionalProperties": true
+    },
+    "prediction": {
+      "type": "object",
+      "required": [
+        "marks"
+      ],
+      "properties": {
+        "marks": {
+          "type": "object",
+          "required": [
+            "main",
+            "second",
+            "third",
+            "others"
+          ],
+          "properties": {
+            "main": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "second": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "third": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "others": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "$ref": "#/$defs/horse_ref"
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "decision_trace": {
+      "type": "object",
+      "required": [
+        "race_model",
+        "mainline_cases",
+        "single_shot_case",
+        "mark_reason",
+        "rrdb_evidence"
+      ],
+      "properties": {
+        "race_model": {
+          "type": "string",
+          "minLength": 30
+        },
+        "mainline_cases": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "horse"
+            ],
+            "properties": {
+              "horse": {
+                "$ref": "#/$defs/horse_ref"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "single_shot_case": {
+          "type": "object",
+          "required": [
+            "horse",
+            "selected_independently_from_mainline"
+          ],
+          "properties": {
+            "horse": {
+              "$ref": "#/$defs/horse_ref"
+            },
+            "selected_independently_from_mainline": {
+              "const": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "mark_reason": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "rrdb_evidence": {
+          "type": "object",
+          "required": [
+            "available",
+            "reviewed",
+            "horse_refs"
+          ],
+          "properties": {
+            "available": {
+              "type": "boolean"
+            },
+            "reviewed": {
+              "const": true
+            },
+            "used_in_decision": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "horse_refs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "horse_no",
+                  "horse_name"
+                ],
+                "properties": {
+                  "horse_no": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "horse_name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_run_ref": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "recommendation_contract_version": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "matched_signal_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "signal_strength": {
+                    "type": [
+                      "object",
+                      "null"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "decision_role": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "next_watch_grade": {
+                    "type": [
+                      "null"
+                    ]
+                  },
+                  "matched_rule_ids": {
+                    "type": "array",
+                    "maxItems": 0
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "reason_not_used": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "audit": {
+      "type": "object",
+      "required": [
+        "pre_result_guard",
+        "result_visible_at_freeze"
+      ],
+      "properties": {
+        "pre_result_guard": {
+          "const": "PASS"
+        },
+        "result_visible_at_freeze": {
+          "const": false
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "horse_ref": {
+      "type": "object",
+      "required": [
+        "horse_no",
+        "horse_name"
+      ],
+      "properties": {
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "horse_name": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
