@@ -20,11 +20,11 @@ from typing import Any
 
 import duckdb
 
-from jrdb_next_watch_rules import (
-    VERSION as GRADE_VERSION,
-    grade_matched_rules,
-    human_summary,
-    reason_groups,
+from jrdb_recommendation_signals import (
+    OPERATIONAL_LOOKBACK_DAYS,
+    VERSION as RECOMMENDATION_VERSION,
+    human_summary as recommendation_human_summary,
+    recommendation_payload,
 )
 from jrdb_postrace_review_reader import RaceReviewReader
 from racenote_horse_evidence_card import build_horse_evidence_cards
@@ -130,102 +130,76 @@ def _table_sql(paths: list[Path]) -> str:
     return f"read_parquet([{values}], union_by_name=true, hive_partitioning=false)"
 
 
-def _latest_next_watch(
+def _latest_recommendation(
     reader: RaceReviewReader,
-    contract: Mapping[str, object],
     horse_ids: list[str],
     target_date: str,
 ) -> dict[str, dict[str, object]]:
-    """Reconstruct frozen Next-Watch on each horse's latest prior flat JRA run."""
-    frozen = contract.get("frozen_rules")
-    if not isinstance(frozen, list):
-        raise RRDBEnrichmentError("frozen_rules missing")
-    hidden = [
-        x for x in frozen
-        if isinstance(x, Mapping) and x.get("track") == "hidden_value"
-    ]
-    if not hidden:
-        raise RRDBEnrichmentError("no hidden-value rules")
-    rule_ids = [str(x.get("rule_id")) for x in hidden]
-    expr = ",\n".join(
-        f"CASE WHEN {str(x.get('condition'))} THEN TRUE ELSE FALSE END AS match_{str(x.get('rule_id'))}"
-        for x in hidden
-    )
+    """Apply current RRDB recommendation signals to each horse's latest prior run."""
     hp = _table_sql(_relation_paths(reader, "fact_horse_performance"))
+    rc = _table_sql(_relation_paths(reader, "fact_race_context"))
     con = duckdb.connect(":memory:")
     try:
         con.execute(f"""
         CREATE TEMP VIEW hp_valid AS
-        SELECT *,
-          -horse_adjusted_delta_per_1000m AS performance_signal,
-          AVG(-horse_adjusted_delta_per_1000m) OVER (
-            PARTITION BY horse_id
-            ORDER BY race_date, race_key, horse_no
-            ROWS BETWEEN 3 PRECEDING AND 1 PRECEDING
-          ) AS prior3_performance_mean,
-          AVG(last3f_speed_percentile) OVER (
-            PARTITION BY horse_id
-            ORDER BY race_date, race_key, horse_no
-            ROWS BETWEEN 3 PRECEDING AND 1 PRECEDING
-          ) AS prior3_last3f_pct_mean
-        FROM {hp}
-        WHERE horse_id IS NOT NULL
-          AND TRIM(horse_id) <> ''
-          AND COALESCE(finish, 0) > 0
-          AND COALESCE(time_sec, 0) > 0
-          AND COALESCE(surface_code, '') <> '3'
+        SELECT
+          hp.*,
+          rc.pace_balance_percentile,
+          -hp.horse_adjusted_delta_per_1000m AS performance_signal
+        FROM {hp} hp
+        LEFT JOIN {rc} rc USING (race_key)
+        WHERE hp.horse_id IS NOT NULL
+          AND TRIM(hp.horse_id) <> ''
+          AND COALESCE(hp.finish, 0) > 0
+          AND COALESCE(hp.time_sec, 0) > 0
+          AND COALESCE(hp.surface_code, '') <> '3'
         """)
+
         result: dict[str, dict[str, object]] = {}
         for horse_id in sorted(set(horse_ids)):
             cur = con.execute(f"""
-            WITH prior AS (
-              SELECT *,
-                performance_signal - prior3_performance_mean AS performance_vs_prior3,
-                last3f_speed_percentile - prior3_last3f_pct_mean AS last3f_pct_vs_prior3,
-                ROW_NUMBER() OVER (
-                  ORDER BY race_date DESC, race_key DESC, horse_no DESC
-                ) AS rn
-              FROM hp_valid
-              WHERE horse_id=? AND race_date < CAST(? AS DATE)
-            )
-            SELECT *, {expr}
-            FROM prior
-            WHERE rn=1
-            """, [horse_id, target_date])
+            SELECT *
+            FROM hp_valid
+            WHERE horse_id=?
+              AND race_date < CAST(? AS DATE)
+              AND race_date >= CAST(? AS DATE)
+                  - INTERVAL '{OPERATIONAL_LOOKBACK_DAYS} days'
+            ORDER BY race_date DESC, race_key DESC, horse_no DESC
+            LIMIT 1
+            """, [horse_id, target_date, target_date])
             row = cur.fetchone()
             if row is None:
                 result[horse_id] = {
                     "status": "NO_PRIOR_HISTORY",
+                    "contract_version": RECOMMENDATION_VERSION,
                     "grade": None,
-                    "rule_version": contract.get("rule_version"),
-                    "matched_rule_ids": [],
-                    "matched_rule_count": 0,
-                    "reason_groups": [],
+                    "grade_status": "DISABLED",
+                    "matched_signal_ids": [],
+                    "matched_signal_count": 0,
+                    "signals": [],
                     "human_summary": None,
+                    "lookback_days": OPERATIONAL_LOOKBACK_DAYS,
                 }
                 continue
+
             names = [d[0] for d in cur.description]
             item = dict(zip(names, row))
-            matched = [rid for rid in rule_ids if bool(item.get(f"match_{rid}"))]
-            grade = grade_matched_rules(matched)
+            payload = recommendation_payload(item)
             result[horse_id] = {
-                "status": "MATCH" if grade else "NO_MATCH",
-                "grade": grade,
-                "rule_version": contract.get("rule_version"),
-                "grade_logic_version": GRADE_VERSION,
-                "matched_rule_ids": sorted(matched),
-                "matched_rule_count": len(matched),
-                "reason_groups": reason_groups(matched),
-                "human_summary": human_summary(matched),
+                **payload,
+                "human_summary": recommendation_human_summary(item),
+                "lookback_days": OPERATIONAL_LOOKBACK_DAYS,
                 "source_run": {
                     "race_date": str(item.get("race_date")),
                     "race_key": item.get("race_key"),
                     "finish": item.get("finish"),
-                    "performance_signal": item.get("performance_signal"),
+                    "winner_gap_sec": item.get("winner_gap_sec"),
+                    "pace_balance_percentile": item.get("pace_balance_percentile"),
+                    "corner4_frontness": item.get("corner4_frontness"),
                     "last3f_speed_percentile": item.get("last3f_speed_percentile"),
-                    "overall_position_gain": item.get("overall_position_gain"),
-                    "performance_vs_prior3": item.get("performance_vs_prior3"),
-                    "last3f_pct_vs_prior3": item.get("last3f_pct_vs_prior3"),
+                    "performance_signal": item.get("performance_signal"),
+                    "time_class_equivalent": item.get("time_class_equivalent"),
+                    "time_class_equivalent_numeric": item.get("time_class_equivalent_numeric"),
                 },
             }
         return result
@@ -237,7 +211,7 @@ def _apply_bundle_enrichment(
     bundle: dict[str, object],
     reader: RaceReviewReader,
     contract: Mapping[str, object],
-    next_watch: Mapping[str, dict[str, object]],
+    recommendation: Mapping[str, dict[str, object]],
     *,
     per_horse_limit: int = 5,
 ) -> dict[str, object]:
@@ -281,18 +255,26 @@ def _apply_bundle_enrichment(
             "source_generation_id": reader.generation_id,
             "as_of_exclusive": target_date,
             "latest_prior_run": latest_prior,
-            "next_watch": next_watch.get(
+            "recommendation": recommendation.get(
                 horse_id,
                 {
                     "status": "NO_HORSE_ID" if not horse_id else "NO_PRIOR_HISTORY",
+                    "contract_version": RECOMMENDATION_VERSION,
                     "grade": None,
-                    "rule_version": contract.get("rule_version"),
-                    "matched_rule_ids": [],
-                    "matched_rule_count": 0,
-                    "reason_groups": [],
+                    "grade_status": "DISABLED",
+                    "matched_signal_ids": [],
+                    "matched_signal_count": 0,
+                    "signals": [],
                     "human_summary": None,
+                    "lookback_days": OPERATIONAL_LOOKBACK_DAYS,
                 },
             ),
+            "next_watch": {
+                "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+                "grade": None,
+                "grade_status": "DISABLED",
+                "replacement": "recommendation",
+            },
             "history_profile": (
                 {
                     "repeated_patterns": review.get("profile", {}).get("repeated_patterns", []),
@@ -323,7 +305,11 @@ def _apply_bundle_enrichment(
         "review_schema_version": source_meta.get("review_schema_version"),
         "review_logic_version": source_meta.get("review_logic_version"),
         "baseline_version": source_meta.get("baseline_version"),
-        "next_watch_rule_version": contract.get("rule_version"),
+        "recommendation_contract_version": RECOMMENDATION_VERSION,
+        "recommendation_grade_status": "DISABLED",
+        "operational_lookback_days": OPERATIONAL_LOOKBACK_DAYS,
+        "legacy_next_watch_rule_version": contract.get("rule_version"),
+        "legacy_next_watch_status": "HISTORICAL_COMPATIBILITY_ONLY",
         "as_of_exclusive": target_date,
         "horse_identity": "JRDB_BLOOD_REGISTRATION_NO",
         "name_fallback": False,
@@ -355,12 +341,12 @@ def enrich_bundle(
         horse_id = str(basic.get("horse_id") or "").strip()
         if horse_id:
             ids.append(horse_id)
-    next_watch = _latest_next_watch(reader, contract, ids, target_date)
+    recommendation = _latest_recommendation(reader, ids, target_date)
     return _apply_bundle_enrichment(
         bundle,
         reader,
         contract,
-        next_watch,
+        recommendation,
         per_horse_limit=per_horse_limit,
     )
 
@@ -410,9 +396,8 @@ def enrich_bundles(
         )
 
     target_date = next(iter(target_dates))
-    next_watch = _latest_next_watch(
+    recommendation = _latest_recommendation(
         reader,
-        contract,
         sorted(set(horse_ids)),
         target_date,
     )
@@ -421,7 +406,7 @@ def enrich_bundles(
             bundle,
             reader,
             contract,
-            next_watch,
+            recommendation,
             per_horse_limit=per_horse_limit,
         )
         for bundle in bundles
@@ -480,7 +465,9 @@ def main() -> int:
             "race": enriched["race"],
             "horse_count": len(enriched["horses"]),
             "rrdb_generation_id": reader.generation_id,
-            "next_watch_rule_version": contract.get("rule_version"),
+            "recommendation_contract_version": RECOMMENDATION_VERSION,
+            "recommendation_grade_status": "DISABLED",
+            "legacy_next_watch_rule_version": contract.get("rule_version"),
             "output": str(args.output),
         }, ensure_ascii=False, default=str))
         return 0
