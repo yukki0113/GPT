@@ -32,5 +32,9 @@
     "legacy_next_watch_rules_file_id": "1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr",
     "legacy_next_watch_status": "HISTORICAL_COMPATIBILITY_ONLY",
     "trace_required": true
-  }
+  },
+  "reasoning_mechanical_boundary": "docs/racenote/FORECAST_REASONING_MECHANICAL_BOUNDARY_v0_1.md",
+  "freeze_packager": "src/racenote_freeze_prepared_forecast.py",
+  "freeze_immutability_guard": "src/racenote_freeze_immutability_guard.py",
+  "legacy_fixed_picks_finalizer_status": "DISABLED_MECHANICAL_PROSE_GENERATION"
 }
