@@ -13,6 +13,7 @@ input contract.
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import math
 from collections import Counter
@@ -21,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from jrdb_postrace_review_reader import RaceReviewReader
+from jrdb_recommendation_signals import OPERATIONAL_LOOKBACK_DAYS
 from racenote_racereview_current import (
     STABLE_CURRENT_FILE_ID,
     resolve_racereview_current,
@@ -404,6 +406,15 @@ def build_racereview_evidence(
         per_horse_limit=per_horse_limit,
     )
 
+    target_day = dt.date.fromisoformat(str(target["date"]))
+    cutoff_day = target_day - dt.timedelta(days=OPERATIONAL_LOOKBACK_DAYS)
+    for horse_id, rows in list(history_by_horse.items()):
+        history_by_horse[horse_id] = [
+            row
+            for row in rows
+            if dt.date.fromisoformat(_date_text(row.get("race_date"))) >= cutoff_day
+        ]
+
     output_horses: list[dict[str, object]] = []
     for identity in identities:
         horse_id = _text(identity["horse_id"])
@@ -454,6 +465,7 @@ def build_racereview_evidence(
             "reason_codes_status": "NOT_USED_UNSTABLE",
             "track_bias_status": "NOT_USED_UNCALIBRATED_V0_1",
             "market_visibility_status": "NOT_APPLICABLE",
+            "operational_lookback_days": OPERATIONAL_LOOKBACK_DAYS,
         },
         "horses": sorted(
             output_horses,
