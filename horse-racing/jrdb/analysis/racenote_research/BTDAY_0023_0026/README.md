@@ -137,3 +137,11 @@ Race Selector仮説発見のためのanalysis-side annotationである。
 - `hierarchy_support_winner_annotations_v0_1.jsonl`: 30Rのassessment / cause_codesを保持。
 
 これでHierarchy failure 64Rの○/▲/△レビューが一巡した。
+
+
+## Coverage third-place review v0.1
+
+- `COVERAGE_THIRD_PLACE_REVIEW_v0_1.md`: 3着無印68頭をPre-Freeze Reader入力へ戻って△1/△2と比較。
+- `coverage_third_place_annotations_v0_1.jsonl`: SWAP_CANDIDATE / COMPLETE_MISS / AMBIGUOUS の1頭1行annotation。
+
+Coverage failure全110R・149 missed Top3のうち、まず馬券構造への影響が大きい3着漏れ68頭を優先して研究した。
