@@ -1048,3 +1048,14 @@ T4 is complete. Inventory: docs/RL_Retired_Asset_Inventory_20261002.md.
 - Gate: T4_ASSET_FREEZE = PASS.
 
 Next: T5 shared-infrastructure naming/role audit; preserve active JRDB Warehouse and record-hash workflows.
+
+## RL retirement T5 — 2026-10-02
+
+T5 is complete. The five active rlt_* workflows and prepare_rl_t_historical_warehouse_inputs.py remain by name with explicit ACTIVE_SHARED_INFRA role comments. Names/issue prefixes remain for compatibility; functional behavior is unchanged. No active rlt workflow generates RL output. Audit: docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.
+
+SHARED_WAREHOUSE_INFRA_ACTIVE = TRUE
+SHARED_INDEX_BASE_ACTIVE = TRUE
+RECORD_HASH_COMPAT_ACTIVE = TRUE
+RL_ONLY_SHARED_INFRA_COUNT = 0
+AMBIGUOUS_RLT_ACTIVE_ROLE_COUNT = 0
+T5_SHARED_INFRA_DISENTANGLEMENT = PASS

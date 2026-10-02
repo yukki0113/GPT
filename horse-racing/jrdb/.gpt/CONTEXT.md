@@ -372,3 +372,8 @@ Formal evidence:
 ## RL retirement T4 asset status — 2026-10-02
 
 RL / Training Edge research is retired. Its implementation, configuration and focused tests remain frozen for explicit reproduction/audit only. Training Research builders, schema and Parquet evidence are preserved as frozen research assets; there is no normal rebuild path. See docs/RL_Retired_Asset_Inventory_20261002.md for path-level classification. Shared JRDB Warehouse, Index Base, record-hash compatibility and common storage tooling remain active.
+
+
+## RL retirement T5 infrastructure status — 2026-10-02
+
+Five active rlt_* workflows and the RL-T-named Warehouse input preparer are explicitly classified as ACTIVE_SHARED_INFRA. Their names are retained for issue-route compatibility; their behavior remains Warehouse / Index Base / record-hash compatibility only. The T5 audit is docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.

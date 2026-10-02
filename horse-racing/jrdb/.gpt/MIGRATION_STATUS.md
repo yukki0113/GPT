@@ -404,3 +404,8 @@ RL_TEST_ROLE = FROZEN_REPRO_ONLY
 RL_DOC_ROLE = HISTORICAL_EVIDENCE
 TRAINING_RESEARCH_ROLE = FROZEN_RESEARCH_ASSET
 T4_ASSET_FREEZE = PASS
+
+
+## RL retirement T5 — 2026-10-02
+
+The active rlt_* issue workflows are JRDB Warehouse / Index Base / record-hash compatibility infrastructure. Historical RL-T naming is retained to preserve issue routing; workflow/source headers identify ACTIVE_SHARED_INFRA and no RL scoring or Training Research build role. Infrastructure remains enabled. See docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Prepare canonical RL-T Historical Warehouse inputs for normal operation.
+"""
+ACTIVE_SHARED_INFRA — this helper materializes accepted JRDB Warehouse and record-hash compatibility inputs. RL-T is historical naming; this is not an RL scorer or Training Research builder.
+Prepare canonical RL-T Historical Warehouse inputs for normal operation.
 
 The helper materializes:
 - accepted JRDB Historical Warehouse assets for BAC/KYI/CHA/CYB/SED/UKC

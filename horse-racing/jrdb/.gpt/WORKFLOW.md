@@ -397,3 +397,8 @@ When working on Newspaper / RaceNote / EdgeDB / PWA, assume RL is absent unless 
 ## RL retirement T4 operational boundary — 2026-10-02
 
 Do not invoke Training Edge scorers/evaluators or build Training Research during normal production. Retain their code/tests/config and immutable evidence only for explicitly requested historical reproduction or audit. RL absence is the normal production state. The path-level inventory is docs/RL_Retired_Asset_Inventory_20261002.md; shared Warehouse / Index Base / record-hash compatibility and common DuckDB/Parquet tooling remain active.
+
+
+## RL retirement T5 workflow routing — 2026-10-02
+
+Keep the five active rlt_* workflows enabled: they serve Warehouse audit/materialization and record-hash compatibility. Their historical RL-T names and issue prefixes are retained; do not treat them as RL model/scorer entrypoints. See docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.
