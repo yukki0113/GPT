@@ -83,7 +83,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('<title>桃太郎新聞 / 注目馬一覧</title>', html)
         self.assertIn('<h2>今日の注目馬一覧</h2>', html)
         self.assertNotIn('>予想一覧</a>', html)
-        self.assertIn('./predictions.js?v=8', html)
+        self.assertIn('./predictions.js?v=9', html)
         self.assertIn('PREDICTION_RUNTIME_CONFIG.predictionCurrentBase', script)
         self.assertIn('<div class="button-row" hidden>', html)
 
@@ -107,7 +107,9 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertNotIn('escapeHtml(display || "・")', script)
         self.assertIn('type: "kenshow-analysis"', predictions)
         self.assertIn('source: "けんしょー"', predictions)
-        self.assertIn("kenshowMark || kenshowComment || kenshow.review_horse === true", predictions)
+        self.assertIn("if (kenshow.review_horse === true)", predictions)
+        self.assertIn('signal: "不利分析"', predictions)
+        self.assertNotIn('signal: "RaceNote"', predictions)
 
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
