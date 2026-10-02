@@ -105,7 +105,7 @@ jobs:
           data=json.loads(src.read_text(encoding="utf-8"))
           if data.get("date") != os.environ["REQUEST_DATE"]:
               raise SystemExit("RaceNote date mismatch")
-          fields=["date","venue_code","venue","race_no","race_key","horse_no","horse_name","mark","prediction_rank","confidence","race_short_comment","horse_short_comment","model_version","source_semantic_sha256"]
+          fields=["date","venue_code","venue","race_no","race_key","horse_no","horse_name","mark","prediction_rank","confidence","race_short_comment","model_version","source_semantic_sha256"]
           count=0
           with Path("/tmp/kensho/racenote.csv").open("w",encoding="utf-8",newline="") as h:
               w=csv.DictWriter(h,fieldnames=fields)
@@ -118,7 +118,7 @@ jobs:
                           "horse_no":horse["horse_no"],"horse_name":horse["horse_name"],
                           "mark":horse.get("mark") or "","prediction_rank":horse["prediction_rank"],
                           "confidence":horse["confidence"],"race_short_comment":race.get("race_short_comment") or "",
-                          "horse_short_comment":"","model_version":data["model_version"],
+                          "model_version":data["model_version"],
                           "source_semantic_sha256":horse["source_semantic_sha256"],
                       })
                       count+=1
