@@ -228,6 +228,8 @@ def load_eval(
     return index, sha_file(path), analysis_enabled
 
 
+# Historical compatibility only: RL / Training Edge production generation is retired.
+# Normal Newspaper production must not require or auto-create this input.
 def load_my_index(
     path: Path,
 ) -> tuple[dict[tuple[str, str, int, int], dict[str, Any]], str, int, int]:
@@ -1363,7 +1365,14 @@ def main() -> int:
     parser.add_argument("--eval-csv", type=Path)
     parser.add_argument("--keibailuka-json", type=Path)
     parser.add_argument("--racenote-csv", type=Path)
-    parser.add_argument("--my-index-csv", type=Path)
+    parser.add_argument(
+        "--my-index-csv",
+        type=Path,
+        help=(
+            "Retired Training Edge/RL compatibility input only. "
+            "Normal production must omit this option and must not generate RL on demand."
+        ),
+    )
     parser.add_argument("--rrdb-recommendation-csv", type=Path)
     parser.add_argument("--rrdb-recommendation-json", type=Path)
     parser.add_argument("--revision", type=int, required=True)
