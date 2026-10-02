@@ -47,7 +47,8 @@ def main():
     con=duckdb.connect()
     con.execute("PRAGMA threads=4")
     con.execute(f"CREATE VIEW c AS SELECT * FROM read_parquet('{c1}')")
-    con.execute("""
+    shortlist_sql=str(shortlist).replace("'","''")
+    con.execute(f"""
       COPY (
         WITH x AS (
           SELECT *,
@@ -87,8 +88,8 @@ def main():
           OR
           (depth >= 5 AND robust_top1 AND current2y_strong AND current1y_positive
            AND n_730 BETWEEN 5 AND 9)
-      ) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)
-    """,[str(shortlist)])
+      ) TO '{shortlist_sql}' (FORMAT PARQUET, COMPRESSION ZSTD)
+    """)
 
     total=con.execute(f"select count(*) from read_parquet('{str(shortlist).replace(chr(39),chr(39)*2)}')").fetchone()[0]
     route_counts={r[0]:r[1] for r in con.execute(f"select c2_entry_route,count(*) from read_parquet('{str(shortlist).replace(chr(39),chr(39)*2)}') group by 1").fetchall()}
@@ -123,16 +124,18 @@ def main():
 
     childp=str((out/"c2_shortlist_with_metric_id.parquet")).replace("'","''")
     parentraw=str((out/"child_parent_map_raw.parquet")).replace("'","''")
+    parent_requests_sql=str(out/"parent_metric_requests.parquet").replace("'","''")
     con.execute(f"""
       COPY (
         SELECT DISTINCT parent_metric_request_id AS metric_request_id,
                parent_conditions_json AS conditions_json,
                parent_depth AS depth
         FROM read_parquet('{parentraw}')
-      ) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)
-    """,[str(out/"parent_metric_requests.parquet")])
+      ) TO '{parent_requests_sql}' (FORMAT PARQUET, COMPRESSION ZSTD)
+    """)
 
     parents=str((out/"parent_metric_requests.parquet")).replace("'","''")
+    metric_catalog_sql=str(out/"metric_request_catalog.parquet").replace("'","''")
     con.execute(f"""
       COPY (
         SELECT metric_request_id, conditions_json, depth, 'CHILD' AS observed_role
@@ -149,8 +152,8 @@ def main():
           SELECT 1 FROM read_parquet('{childp}') c
           WHERE c.metric_request_id=p.metric_request_id
         )
-      ) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)
-    """,[str(out/"metric_request_catalog.parquet")])
+      ) TO '{metric_catalog_sql}' (FORMAT PARQUET, COMPRESSION ZSTD)
+    """)
 
     parent_count=con.execute(f"select count(*) from read_parquet('{parents}')").fetchone()[0]
     request_count=con.execute(f"select count(*) from read_parquet('{str((out/'metric_request_catalog.parquet')).replace(chr(39),chr(39)*2)}')").fetchone()[0]
