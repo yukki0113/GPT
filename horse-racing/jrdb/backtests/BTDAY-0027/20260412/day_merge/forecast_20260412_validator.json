@@ -1,0 +1,15 @@
+{
+  "validator_version": "racenote-human-context-validator-0.4.0",
+  "status": "PASS",
+  "record_count": 36,
+  "error_count": 0,
+  "errors": [],
+  "anti_template": {
+    "status": "PASS",
+    "comment_count": 36,
+    "unique_comment_count": 36,
+    "one_paragraph_count": 36,
+    "repeat_threshold": 9,
+    "repeated_canned_phrases": {}
+  }
+}
