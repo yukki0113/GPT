@@ -59,7 +59,7 @@ def main() -> None:
                     "日付": row.get("日付", ""),
                     "会場": row.get("会場", ""),
                     "R": row.get("R", ""),
-                    "馬名_raw": row.get("馬名_raw", ""),
+                    "馬名_raw": row.get("馬名_resolved") or row.get("馬名_raw", ""),
                     "コメント": row.get("コメント", ""),
                 }
             )
