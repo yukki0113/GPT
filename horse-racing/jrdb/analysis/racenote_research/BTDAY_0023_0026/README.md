@@ -113,3 +113,11 @@ Race Selector仮説発見のためのanalysis-side annotationである。
 | ▲妙味度 | 92 | 47 | 5 |
 
 次工程で初めてOutcome / settlementとJOINし、ラベル別の成績・ROI・組合せ効果を確認する。
+
+
+## Hierarchy ◎ vs ○ review v0.1
+
+- `HIERARCHY_MAIN_VS_SECOND_REVIEW_v0_1.md`: ○逆転23RをFreeze時点の材料へ戻って再評価した研究レビュー。
+- `hierarchy_main_vs_second_annotations_v0_1.jsonl`: 23Rのassessment / cause_codes / rationaleを1R1行で保持。
+
+結果だけで序列を学習しないため、`REVERSAL_WARRANTED / NARROW_GAP / PRE_RACE_JUSTIFIED` を区別する。
