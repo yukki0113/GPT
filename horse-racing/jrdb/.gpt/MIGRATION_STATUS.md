@@ -8,7 +8,7 @@
 > - New consumer marts: `GPT/horse-racing/20_mart`.
 > - Old top-level `GPT/JRDB` remains active for legacy Analysis/Fact Lite/Stats/store compatibility; do not delete yet.
 > - RaceNote direct Historical rebuild is Warehouse-standard; full Archive backfill plumbing is technical debt.
-> - RL-T / Training Edge Historical workflow cutover remains pending Index Base equivalence; 2026 PACI/SED stays Raw-direct.
+> - RL / RaceLift research is retired as of 2026-10-02. Historical cutover is complete; RL index generation is no longer a production requirement. 2026 PACI/SED stays Raw-direct for current JRDB operation.
 
 # JRDB Git migration status
 
@@ -320,4 +320,34 @@ Normal full-build / research operation must not materialize canonical Feature Ma
 Registry is intentionally different: its small mutation-heavy build workspace may remain transient SQLite, but a successful v0.2 full build must emit a Registry Parquet candidate in the same run. Current/canonical consumers use Parquet + DuckDB direct reads. SQLite rematerialization is legacy reproduction only.
 
 This cleanup changes storage/execution plumbing only; v0.2 STANDARD, v0.3 SHADOW, matcher/serving semantics, and TRUE_FORWARD leakage boundaries are unchanged.
+
+## RL / RaceLift retirement — 2026-10-02
+
+Normative contract:
+
+`docs/RL_Retirement_Contract_20261002.md`
+
+Current status:
+
+```text
+RL_RESEARCH_STATUS                  = RETIRED
+RL_NEW_INDEX_DEVELOPMENT            = STOPPED
+RL_DAILY_INDEX_GENERATION           = STOPPED
+RL_INDEX_REQUIRED_BY_PRODUCTION     = FALSE
+
+RL_T_V0_2_ROLE                      = FROZEN_REPRO_ASSET
+TRAINING_RESEARCH_ROLE              = FROZEN_RESEARCH_ASSET
+
+JRDB_WAREHOUSE_ROLE                 = ACTIVE_SHARED_INFRA
+JRDB_INDEX_BASE_ROLE                = ACTIVE_SHARED_INFRA
+RECORD_HASH_COMPAT_ROLE             = ACTIVE_SHARED_INFRA
+```
+
+RL欠損はretirement後のnormal stateであり、production failureではない。
+RL欠損を理由にscorer / Training Researchを自動実行しない。
+RL欠損を理由にHistorical Rawへfallbackしない。
+RLを得るためだけにTraining Researchを再buildしない。
+
+2026-09-26までのRL-T / Training Edge migration・cutover・regression記録はhistorical evidenceとして保持する。
+後続cleanupではworkflow発火停止、downstream hard-dependency audit、frozen asset inventory、repo-wide retirement auditを行う。
 
