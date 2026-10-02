@@ -4,8 +4,8 @@
 
 This module MUST NOT choose horses or write forecast prose.
 It accepts complete model-authored race records, validates them against the
-DAY PREP Reader identities, strips target-day market from archived Reader
-copies, computes semantic prediction hashes, and writes canonical day files.
+market-blind Forecast Reader identities, computes semantic prediction hashes,
+and writes canonical day files. It cannot repair an exposed authoring input.
 """
 from __future__ import annotations
 
@@ -171,10 +171,35 @@ def main() -> int:
     assert handoff.get("selection_id") == args.selection_id
     assert handoff.get("target_date") == args.date
     assert handoff.get("result_opened") is False
+    assert handoff.get("target_market_opened", False) is False
+
+    if args.logic_version != DEFAULT_LOGIC:
+        assert handoff.get("market_blind") is True
+        assert handoff.get("stripped_at_input_bind") is True
+        assert handoff.get("main_sha") == args.main_sha
+        assert handoff.get("rrdb_contract") == REQUIRED_RRDB
+        manifest_bytes = (prep / "reader_stripped_manifest.json").read_bytes()
+        assert hashlib.sha256(manifest_bytes).hexdigest() == handoff.get("reader_stripped_manifest_sha256")
+        stripped_manifest = json.loads(manifest_bytes)
+        assert stripped_manifest.get("selection_id") == args.selection_id
+        assert stripped_manifest.get("target_date") == args.date
+        assert stripped_manifest.get("race_count") == handoff.get("race_count")
+        assert stripped_manifest.get("market_blind") is True
+        assert stripped_manifest.get("result_opened") is False
+        expected_hashes = stripped_manifest.get("reader_sha256") or {}
+    else:
+        expected_hashes = None
 
     readers = {}
-    for path in sorted((prep / "reader").glob("*.json")):
-        reader = json.loads(path.read_text(encoding="utf-8"))
+    reader_paths = sorted((prep / "reader").glob("*.json"))
+    if expected_hashes is not None:
+        assert set(expected_hashes) == {p.name for p in reader_paths}, "Reader manifest file set mismatch"
+    for path in reader_paths:
+        content = path.read_bytes()
+        if expected_hashes is not None:
+            assert hashlib.sha256(content).hexdigest() == expected_hashes[path.name], f"Reader digest mismatch: {path.name}"
+        reader = json.loads(content)
+        assert not contains_key(reader, "market"), f"Forecast input still contains market: {path.name}"
         race = reader.get("race") or {}
         key = (str(race.get("venue")), int(race.get("race_no")))
         assert key not in readers
@@ -209,8 +234,6 @@ def main() -> int:
         record = copy.deepcopy(by_key[key])
 
         stripped = copy.deepcopy(reader)
-        for horse in stripped.get("horses", []):
-            horse.pop("market", None)
         (out / "reader_stripped" / reader_path.name).write_text(
             json.dumps(stripped, ensure_ascii=False, separators=(",", ":")) + "\n",
             encoding="utf-8",

@@ -30,9 +30,22 @@ production Forecast pointer pending evaluation.
    BTDAY-0035 date or a baseline day.
 2. Produce and audit DAY PREP using the current direct GitHub/Drive/Work
    execution path. Actions are necessary only for an Actions-native step.
-3. Bind one accepted `reader_stripped` set, with target-day market objects
-   removed. Target results and target-day odds/popularity remain unopened
-   throughout preparation, judgment, Freeze and validation.
+3. DAY PREP's lossless `reader/` and `authoritative/` are **not** Forecast
+   inputs: they may contain target-day market. Keep those files out of the
+   model's judgment context. Bind a new immutable clean input first:
+
+   ```sh
+   python horse-racing/jrdb/src/racenote_prepare_forecast_input.py \
+     --day-prep-root "$DAY_PREP" --output-root "$FORECAST_PREP" \
+     --selection-id "$BTDAY_ID" --date "$TARGET_DATE" --main-sha "$MAIN_SHA"
+   ```
+
+   Expose only `$FORECAST_PREP/reader/*.json` and its handoff to the judgment
+   context. Verify the binder PASS and the full expected race count before
+   reading any Reader. Do not inspect or paste the lossless DAY PREP Reader
+   to check it manually. Target result and target-day market remain unopened
+   throughout judgment, Freeze and validation. A market-bearing Reader cannot
+   be repaired retroactively by stripping it at Freeze time.
 4. RRDB recommendation contract is `rrdb-recommendation-signals-v0.3`.
 
 ## 3. Author v0.4.3 alone
@@ -58,7 +71,7 @@ After every expected race has a completed authored record:
 
 ```sh
 python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
-  --prep-root "$PREP" --prepared-records "$PREPARED_V043" \
+  --prep-root "$FORECAST_PREP" --prepared-records "$PREPARED_V043" \
   --output-root "$NEW_FROZEN_V043" --selection-id "$BTDAY_ID" \
   --date "$TARGET_DATE" --main-sha "$MAIN_SHA" \
   --logic-version RaceNote-Human-Context-Reader-0.4.3-candidate

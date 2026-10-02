@@ -9,6 +9,7 @@ from pathlib import Path
 SRC = Path(__file__).resolve().parents[1] / "src"
 sys.path.insert(0, str(SRC))
 from audit_racenote_btday_ab import audit
+from racenote_prepare_forecast_input import bind
 from validate_racenote_forecast_human_context import audit_turn
 
 SHA = "a" * 40
@@ -55,14 +56,22 @@ class ABFreezeTest(unittest.TestCase):
     def test_freeze_and_audit(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            prep = root / "prep"
-            (prep / "reader").mkdir(parents=True)
-            reader = {"race": {"venue": "東京", "race_no": 1}, "source_semantic_sha256": "reader-hash",
+            raw_prep = root / "raw-prep"
+            (raw_prep / "reader").mkdir(parents=True)
+            reader = {"race": {"date": DATE, "venue": "東京", "race_no": 1}, "source_semantic_sha256": "reader-hash",
                       "horses": [{"basic": {"horse_no": i, "horse_name": n}}
                                  for i, n in enumerate(("一号", "二号", "三号", "四号", "五号"), 1)]}
-            (prep / "reader" / "race.json").write_text(json.dumps(reader), encoding="utf-8")
-            (prep / "day_prep_handoff.json").write_text(json.dumps({
-                "selection_id": SELECTION, "target_date": DATE, "result_opened": False, "race_count": 1}), encoding="utf-8")
+            reader["horses"][0]["market"] = {"odds": 2.0}
+            (raw_prep / "reader" / "race.json").write_text(json.dumps(reader), encoding="utf-8")
+            (raw_prep / "manifest.json").write_text(json.dumps({"status": "PASS", "target_date": DATE,
+                "sources": {"rrdb_recommendation": {"contract_version": "rrdb-recommendation-signals-v0.3", "grade_status": "DISABLED"}},
+                "counts": {"races_built": 1, "reader_views": 1}}), encoding="utf-8")
+            (raw_prep / "validation_report.json").write_text(json.dumps({"status": "PASS",
+                "firewall": {"target_result_exposed": False}}), encoding="utf-8")
+            prep = root / "forecast-input"
+            handoff = bind(raw_prep, prep, SELECTION, DATE, SHA)
+            self.assertEqual(handoff["race_count"], 1)
+            self.assertNotIn("market", (prep / "reader" / "race.json").read_text(encoding="utf-8"))
             roots = []
             for version, changed in (("0.4.2", False), ("0.4.3", True)):
                 logic = f"RaceNote-Human-Context-Reader-{version}-candidate"
@@ -105,9 +114,39 @@ class ABFreezeTest(unittest.TestCase):
             self.assertEqual(failed["status"], "FAIL")
             self.assertIsNone(absent)
             frozen_file.write_text(json.dumps(original, ensure_ascii=False), encoding="utf-8")
-            reader["horses"][0]["market"] = {"odds": 2.0}
             (prep / "reader" / "race.json").write_text(json.dumps(reader), encoding="utf-8")
             self.assertEqual(audit(prep, *roots, SHA)[0]["status"], "FAIL")
+            contaminated_out = root / "contaminated-freeze"
+            proc = subprocess.run([sys.executable, str(SRC / "racenote_freeze_prepared_forecast.py"),
+                "--prep-root", str(prep), "--prepared-records", str(root / "0.4.3.json"),
+                "--output-root", str(contaminated_out), "--selection-id", SELECTION,
+                "--date", DATE, "--main-sha", SHA,
+                "--logic-version", "RaceNote-Human-Context-Reader-0.4.3-candidate"],
+                capture_output=True, text=True)
+            self.assertNotEqual(proc.returncode, 0)
+            self.assertFalse(contaminated_out.exists())
+
+    def test_freeze_rejects_market_and_tampered_reader_before_writing(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            prep = root / "prep"
+            (prep / "reader").mkdir(parents=True)
+            reader = {"race": {"venue": "東京", "race_no": 1}, "source_semantic_sha256": "reader-hash",
+                      "horses": [{"basic": {"horse_no": i, "horse_name": n}} for i, n in enumerate(
+                          ("一号", "二号", "三号", "四号", "五号"), 1)]}
+            reader["horses"][0]["market"] = {"odds": 2.0}
+            (prep / "reader" / "race.json").write_text(json.dumps(reader), encoding="utf-8")
+            (prep / "day_prep_handoff.json").write_text(json.dumps({
+                "selection_id": SELECTION, "target_date": DATE, "result_opened": False, "race_count": 1}), encoding="utf-8")
+            prepared = root / "prepared.json"
+            prepared.write_text(json.dumps([record("RaceNote-Human-Context-Reader-0.4.3-candidate")], ensure_ascii=False), encoding="utf-8")
+            out = root / "frozen"
+            cmd = [sys.executable, str(SRC / "racenote_freeze_prepared_forecast.py"),
+                   "--prep-root", str(prep), "--prepared-records", str(prepared), "--output-root", str(out),
+                   "--selection-id", SELECTION, "--date", DATE, "--main-sha", SHA,
+                   "--logic-version", "RaceNote-Human-Context-Reader-0.4.3-candidate"]
+            self.assertNotEqual(subprocess.run(cmd, capture_output=True).returncode, 0)
+            self.assertFalse(out.exists())
 
 
 if __name__ == "__main__":

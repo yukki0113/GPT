@@ -592,6 +592,13 @@ def validate_daily_bundles(
     if rrdb_report.get("recommendation_grade_status") != "DISABLED":
         errors.append("RRDB recommendation grade must remain disabled")
 
+    # This Reader is deliberately lossless; market blindness is established only
+    # by racenote_prepare_forecast_input, not by DAY PREP validation.
+    raw_reader_market_count = sum(
+        int("market" in horse)
+        for view in views for horse in (view.get("horses") or [])
+        if isinstance(horse, dict)
+    )
     status = "PASS" if not errors else "FAIL"
     return {
         "status": status,
@@ -600,7 +607,9 @@ def validate_daily_bundles(
         "reader_view_count": len(views),
         "firewall": {
             "target_result_exposed": bool(contamination),
-            "market_exposed": False,
+            "market_exposed": None,
+            "raw_reader_market_object_count": raw_reader_market_count,
+            "forecast_input_market_blind": False,
             "analysis_as_of_violations": analysis_as_of_violations,
             "rrdb_as_of_violations": rrdb_as_of_violations,
         },
