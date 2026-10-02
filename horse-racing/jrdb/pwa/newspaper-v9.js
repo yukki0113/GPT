@@ -26,17 +26,6 @@ function newspaperV9EvalValue(horse) {
   return newspaperV2AddonDisplay(addon, ["eval", "score", "index", "value"]);
 }
 
-function newspaperV9EvalCodes(analysis) {
-  if (!analysis) return [];
-  if (Array.isArray(analysis.codes)) {
-    return analysis.codes
-      .map(value => text(value, "").trim())
-      .filter(Boolean);
-  }
-  const fallback = text(analysis.codes, "").trim();
-  return fallback ? [fallback] : [];
-}
-
 function newspaperV9ShowEvalDetail(horse) {
   const addon = newspaperV9EvalAddon(horse);
   const analysis = newspaperV9EvalAnalysis(horse);
@@ -44,31 +33,13 @@ function newspaperV9ShowEvalDetail(horse) {
 
   const horseName = text(horse && horse.basic && horse.basic.horse_name, "");
   const evalValue = newspaperV9EvalValue(horse);
-  const title = text(analysis.title, "").trim();
   const comment = text(analysis.comment, "").trim();
-  const codes = newspaperV9EvalCodes(analysis);
-  const status = text(analysis.status, "").trim();
-  const version = text(analysis.version, "").trim();
-  const asof = text(analysis.asof, "").trim();
-
-  const detailRows = [
-    ["条件コード", codes.length ? codes.join(" / ") : "—"],
-    ["status", status],
-    ["version", version],
-    ["as-of", asof]
-  ].filter(([, value]) => value !== null && value !== undefined && value !== "");
 
   dialogTitle.textContent = `${horseName} / Eval ${evalValue}`;
-  dialogBody.innerHTML = `
-    <div class="newspaper-eval-analysis">
-      ${title ? `<h3 class="newspaper-eval-analysis-title">${escapeHtml(title)}</h3>` : ""}
-      <p class="newspaper-addon-comment newspaper-eval-analysis-comment">${escapeHtml(comment)}</p>
-      <dl class="newspaper-detail-list newspaper-eval-analysis-meta">${
-        detailRows.map(([label, value]) =>
-          `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(text(value))}</dd></div>`
-        ).join("")
-      }</dl>
-    </div>`;
+  dialogBody.innerHTML =
+    '<p class="newspaper-addon-comment newspaper-eval-analysis-comment">' +
+    escapeHtml(comment) +
+    '</p>';
 
   if (typeof detailDialog.showModal === "function") {
     detailDialog.showModal();
