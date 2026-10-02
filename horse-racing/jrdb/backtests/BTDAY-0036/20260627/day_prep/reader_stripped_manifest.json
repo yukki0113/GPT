@@ -1,0 +1,261 @@
+{
+  "selection_id": "BTDAY-0036",
+  "target_date": "2026-06-27",
+  "race_count": 36,
+  "market_object_count_removed": 448,
+  "market_blind": true,
+  "readers": [
+    {
+      "race_key": "函館10R",
+      "reader": "racenote_reader_20260627_函館10R.json",
+      "sha256": "ac8f6110f034b81cc5059703b4b95109ff2ef4ed32f49fd38805c02fdbdefbcc",
+      "horse_count": 11,
+      "source_semantic_sha256": "9ec9f2cf61a05eabdc2cf17e3d35b17903647ad335409075fe90fc1912be015d"
+    },
+    {
+      "race_key": "函館11R",
+      "reader": "racenote_reader_20260627_函館11R.json",
+      "sha256": "972c153e0a39ca68c028744b3f9eb2b0534468e8f04794a1848c96283638a3e7",
+      "horse_count": 14,
+      "source_semantic_sha256": "9f83952c706d72a9d289a7826372d88565c2daf5dbb457a8368fcc7ebe4e355d"
+    },
+    {
+      "race_key": "函館12R",
+      "reader": "racenote_reader_20260627_函館12R.json",
+      "sha256": "1c2915cd6c8aa23e789ae78abde1eaea1224d2644e16d325552233e837dc6133",
+      "horse_count": 10,
+      "source_semantic_sha256": "b92293d62661c2006229804ca97bb9a52396b89250a6e29a0f5bce54a9a9d778"
+    },
+    {
+      "race_key": "函館1R",
+      "reader": "racenote_reader_20260627_函館1R.json",
+      "sha256": "387aecd3ef220f7e31b359a09017acbc31bbab36e8cfb2bf4dd8784efd4f1c66",
+      "horse_count": 16,
+      "source_semantic_sha256": "821a1110ce522ccb88f3fe40772f7e75c97926e4ea0602092540888dd82307a8"
+    },
+    {
+      "race_key": "函館2R",
+      "reader": "racenote_reader_20260627_函館2R.json",
+      "sha256": "f65d154c3aba05b41eafb19244b1dd232b9a324acc8a3e1af92385d0e4ffb667",
+      "horse_count": 12,
+      "source_semantic_sha256": "cf581c2cc7bada54e9d40fc999e6b88115a6e0c6e36018a33ad2b695b1624733"
+    },
+    {
+      "race_key": "函館3R",
+      "reader": "racenote_reader_20260627_函館3R.json",
+      "sha256": "7866314441d80f1eeadf66bd8e3a8ef1b9014c9bbca2131fb4aed9d864e07ff7",
+      "horse_count": 12,
+      "source_semantic_sha256": "8ee8144f8d400182a4679edc84cf79bd7db76a0f049142f1815993d6b64f8879"
+    },
+    {
+      "race_key": "函館4R",
+      "reader": "racenote_reader_20260627_函館4R.json",
+      "sha256": "b07cf031a86f951c23ef407121b7a837f6353ef339ca35331387eff21f2784a7",
+      "horse_count": 16,
+      "source_semantic_sha256": "4ab1d288b96e70159563171c54d9765f74917b62136dad7fbf29ab763ec017ab"
+    },
+    {
+      "race_key": "函館5R",
+      "reader": "racenote_reader_20260627_函館5R.json",
+      "sha256": "09cc891fddeb68d263b5f55313d95ec877b3c7b383568b211d025fe77cf40808",
+      "horse_count": 8,
+      "source_semantic_sha256": "68f726cf0800d2f72cce0f50967d588166f44330dfdf28523b44e2d8a519abd3"
+    },
+    {
+      "race_key": "函館6R",
+      "reader": "racenote_reader_20260627_函館6R.json",
+      "sha256": "b538375edaa12f64c50a310b9b47735ad1d0d2f4297d258218e926e0f4070aed",
+      "horse_count": 11,
+      "source_semantic_sha256": "2e687d5d6b28f6ca97bd6f078bbb72929427d029db2f124eeeab304c5832f20d"
+    },
+    {
+      "race_key": "函館7R",
+      "reader": "racenote_reader_20260627_函館7R.json",
+      "sha256": "2eff0f2b1cb881aac15380fcb8c4aa04764f1d23c05ccba70d7beb4e18b88420",
+      "horse_count": 11,
+      "source_semantic_sha256": "598336c7e3fc92ce29db29eae1d9a29b5545a102cb4d6e9ec02ce4a3a0f7e2de"
+    },
+    {
+      "race_key": "函館8R",
+      "reader": "racenote_reader_20260627_函館8R.json",
+      "sha256": "0f4f567bf026fd61672b12d8b27c699a4526a07223964370283a29f0024a1da2",
+      "horse_count": 11,
+      "source_semantic_sha256": "de394400fe7df0d9ff0b3dc4c107f5328b04a27c7b9c41ca94859ca9ec99de5b"
+    },
+    {
+      "race_key": "函館9R",
+      "reader": "racenote_reader_20260627_函館9R.json",
+      "sha256": "840167c148e1b38e935b491aef40e50820d7f2d49288b37e58d7971df7d26ad7",
+      "horse_count": 9,
+      "source_semantic_sha256": "efd01255dde57731a37bdd42288b8d0fd0fb1254c4d751b584c22062ad6b8757"
+    },
+    {
+      "race_key": "小倉10R",
+      "reader": "racenote_reader_20260627_小倉10R.json",
+      "sha256": "be8f1f71f2aa66b257dbba9ba9e4f9130c3a02bd9c0444d55dd28c05496ec613",
+      "horse_count": 13,
+      "source_semantic_sha256": "ec613943719eef81cca158ef817c18e3cfdc547ef00e8cb183544f38b64464e8"
+    },
+    {
+      "race_key": "小倉11R",
+      "reader": "racenote_reader_20260627_小倉11R.json",
+      "sha256": "cfac671531c6bcdf996d03612539dd6a436ec144fee7ed40adb9b9c7f854309b",
+      "horse_count": 15,
+      "source_semantic_sha256": "1561fc8a687ced8ed4e18c9cbafddd6c5bc6529b9f95570397c5072d7921174b"
+    },
+    {
+      "race_key": "小倉12R",
+      "reader": "racenote_reader_20260627_小倉12R.json",
+      "sha256": "3f996cc8b48e0deba664729fda24401370b0500e19c906f052e79d69bbf1cb82",
+      "horse_count": 8,
+      "source_semantic_sha256": "a71fc96a91fdf3e8460393ee77fde2d82aa32b501a8dd0dab03efea074160f3b"
+    },
+    {
+      "race_key": "小倉1R",
+      "reader": "racenote_reader_20260627_小倉1R.json",
+      "sha256": "7d317c3deedc7f7b011331b1feab305a8d5b328263f416962719a669103769e7",
+      "horse_count": 6,
+      "source_semantic_sha256": "f7f467e5a7ebb073546ceecc4970f4e56f667f7f7a534f921a55cd43fe82c790"
+    },
+    {
+      "race_key": "小倉2R",
+      "reader": "racenote_reader_20260627_小倉2R.json",
+      "sha256": "b990fce65d5fea5771fa894ed03679b48f33c68d13f6d6c1c7623246f0e7faab",
+      "horse_count": 14,
+      "source_semantic_sha256": "412752f9b25cdc606e3caff00ead2a284ce7a96625bbdc3487bdbe5039af314b"
+    },
+    {
+      "race_key": "小倉3R",
+      "reader": "racenote_reader_20260627_小倉3R.json",
+      "sha256": "0ff02cf9da95f311da726d691566afff4e4c5636b3c4b997264c9559ec7f0562",
+      "horse_count": 16,
+      "source_semantic_sha256": "3f91f59906e1c28648514da59a2cb139f07b90d899eb63b4b1d0e25732ad5366"
+    },
+    {
+      "race_key": "小倉4R",
+      "reader": "racenote_reader_20260627_小倉4R.json",
+      "sha256": "f44f0525e54b60146988398b45089eba975fcb2c7bb2e392eb28a689c30d3db5",
+      "horse_count": 16,
+      "source_semantic_sha256": "62a1ef0ff119c1cd4490b3879fa8b34f451230bdee6fb8c6176b0a0e8ae16aaa"
+    },
+    {
+      "race_key": "小倉5R",
+      "reader": "racenote_reader_20260627_小倉5R.json",
+      "sha256": "9a178ec993ae31b6d39315d2380b738d9cdc445416a1898674ce1951b009e7eb",
+      "horse_count": 10,
+      "source_semantic_sha256": "e73b43941103c3f13b44fe9d3723eb7aed5de30906b539ac8ed04cf934b8f7f6"
+    },
+    {
+      "race_key": "小倉6R",
+      "reader": "racenote_reader_20260627_小倉6R.json",
+      "sha256": "9ee69aecceaf19ef2df00a8967017ffba08191901b1ba8a2165057adcfb45b7f",
+      "horse_count": 17,
+      "source_semantic_sha256": "61d8ca5e01212231e2523dd67e6a664aaac07cc12db2303b25956434ec39177d"
+    },
+    {
+      "race_key": "小倉7R",
+      "reader": "racenote_reader_20260627_小倉7R.json",
+      "sha256": "1ed9f4b8a285716b343e6b905c60bb09234f04848db8d28842d26cbdac2b7f5f",
+      "horse_count": 16,
+      "source_semantic_sha256": "233f42dc048babba8712a83f25a436a490a9885111b8238a33a7c6ed9311cc7c"
+    },
+    {
+      "race_key": "小倉8R",
+      "reader": "racenote_reader_20260627_小倉8R.json",
+      "sha256": "16a0e8a288644e88cc1f80e290a4cffd94fec1caf1f66ddd249b0176f1690f3d",
+      "horse_count": 9,
+      "source_semantic_sha256": "bce6d1b217fe6ad6c5a3ca39b45e4e632d92ead01920f16ed5b5d7c19b20080f"
+    },
+    {
+      "race_key": "小倉9R",
+      "reader": "racenote_reader_20260627_小倉9R.json",
+      "sha256": "0d1395cbd92016f3194191f43465190ded01e064401bdd3eb378ea9bc35984de",
+      "horse_count": 8,
+      "source_semantic_sha256": "3ee52f51a3d158b35220046e1ca306bd929b502b44f8ba5f95c41937f4fdf3c0"
+    },
+    {
+      "race_key": "福島10R",
+      "reader": "racenote_reader_20260627_福島10R.json",
+      "sha256": "53cbc7c10a3e694fc34e6c81d9fde4fd577d57fc11cd7316accd6bb8aa7e6f8c",
+      "horse_count": 11,
+      "source_semantic_sha256": "0deb19d32c359a66e536437589ce5f040a7f3831430dca70c6a404d91d8a8051"
+    },
+    {
+      "race_key": "福島11R",
+      "reader": "racenote_reader_20260627_福島11R.json",
+      "sha256": "580bc521f088a697f520cdc5535d41027b5eca673e6252aee062d4ee55aaf5fd",
+      "horse_count": 9,
+      "source_semantic_sha256": "59bd4320f2ca010ee5c7b7c65a9ca4bc6b5fb341bfe7826af540bff003688ee9"
+    },
+    {
+      "race_key": "福島12R",
+      "reader": "racenote_reader_20260627_福島12R.json",
+      "sha256": "1f3783506ff95fc3a78e590769f0b9d14fbb8fa3a56190a3c42f7f3f1fb64f4d",
+      "horse_count": 16,
+      "source_semantic_sha256": "9675df266948c84e20c984f197050f2916c3f41ab8973159bc8f03950793b64b"
+    },
+    {
+      "race_key": "福島1R",
+      "reader": "racenote_reader_20260627_福島1R.json",
+      "sha256": "615bd25c3696ce8f56bd7a3b3421c0bb2d3bac9105f5a731eec3f6229b489b97",
+      "horse_count": 14,
+      "source_semantic_sha256": "56d6f3ee109621b93bb46cb009a7d0286a8598c9eb69360620ed599f79707d85"
+    },
+    {
+      "race_key": "福島2R",
+      "reader": "racenote_reader_20260627_福島2R.json",
+      "sha256": "8f9769f421a60380a13f7813d8208368153e38eed3258543187c3579b8a289db",
+      "horse_count": 15,
+      "source_semantic_sha256": "4da794f4efcfdf61c5b09d8705b6286dfdf5a952add3b5fa3575e849151b2091"
+    },
+    {
+      "race_key": "福島3R",
+      "reader": "racenote_reader_20260627_福島3R.json",
+      "sha256": "98572587240a79c961b21612e5342986b2baeecda4b00a9fc0a76070c1a80ecb",
+      "horse_count": 15,
+      "source_semantic_sha256": "0aed72fce6cc0babecefb36750cad7ad8c7bee17ea9a0e6f95c808da5954e7f2"
+    },
+    {
+      "race_key": "福島4R",
+      "reader": "racenote_reader_20260627_福島4R.json",
+      "sha256": "7184ea2e989ab6cd7a365342b7ec1a3d19dadc2d9a8091c0f5de9a6d55bc5699",
+      "horse_count": 10,
+      "source_semantic_sha256": "7e22ee3213e5dadb3813b1ce4d992231acf0625f4cb57042ea1c9ab4263904e5"
+    },
+    {
+      "race_key": "福島5R",
+      "reader": "racenote_reader_20260627_福島5R.json",
+      "sha256": "d760ce54ecd2358b0e67d0ad06ab13b872b458c9f8e7b566fe7f43f799d6f342",
+      "horse_count": 11,
+      "source_semantic_sha256": "9383494d2d3887ab7d0fe037ff71e87790b2c1d7b21a033bf71811ce0078d0e3"
+    },
+    {
+      "race_key": "福島6R",
+      "reader": "racenote_reader_20260627_福島6R.json",
+      "sha256": "776ebd93711c2289069d175ea84a33d9202b4ec75f1c51c3d8b742f74cbecde0",
+      "horse_count": 10,
+      "source_semantic_sha256": "f67fc603838d6ad18f7cbfe93a9d25393bcc0bd283c267138bb8021373b61a2e"
+    },
+    {
+      "race_key": "福島7R",
+      "reader": "racenote_reader_20260627_福島7R.json",
+      "sha256": "86a907ee3ef07448891a7ee80d579e7b5ceee01e693f134caeba1f4dbc96cbb9",
+      "horse_count": 16,
+      "source_semantic_sha256": "37fbe6a9eb852f745afb607631200549f8de561144f76046b5342f5a3e3d6df4"
+    },
+    {
+      "race_key": "福島8R",
+      "reader": "racenote_reader_20260627_福島8R.json",
+      "sha256": "1ae14eaa6be0bf30edefd7e585673f327b7abac3a5511cc8869a2241ddf8101a",
+      "horse_count": 16,
+      "source_semantic_sha256": "0f90b915a678eb21ab14bcbf33dcf7aaef99c7549b2466d6ebc76ae627a1c60a"
+    },
+    {
+      "race_key": "福島9R",
+      "reader": "racenote_reader_20260627_福島9R.json",
+      "sha256": "d12b5e5f0c0efa1be50fda9afae27aa5c73390124a5d554c399914087936c047",
+      "horse_count": 16,
+      "source_semantic_sha256": "631c1ea97434bf7c4f6dbab806cfc3143a82deb201a0b888bbc9ab4e0b17cd0b"
+    }
+  ]
+}

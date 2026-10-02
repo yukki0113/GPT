@@ -1,0 +1,11 @@
+{
+  "selection_id": "BTDAY-0036",
+  "target_date": "2026-06-27",
+  "input_binding": "CLEAN_PRE_FORECAST",
+  "source_note": "The original DAY PREP reader carried horse.market; the forecast was authored only after a separate binding removed it from every runner.",
+  "market_objects_removed_before_authoring": 448,
+  "reader_count": 36,
+  "target_market_value_exposed_to_decision_context": false,
+  "target_result_opened": false,
+  "clean_reader_manifest": "reader_stripped_manifest.json"
+}

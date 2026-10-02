@@ -1,0 +1,5314 @@
+[
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 1,
+      "race_key": "20260627_函館1R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館1R",
+      "racenote_semantic_sha256": "821a1110ce522ccb88f3fe40772f7e75c97926e4ea0602092540888dd82307a8",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "アルサック"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "アルサック"
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "ニシノオールワン"
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "スイープセレニティ"
+        },
+        "others": [
+          {
+            "horse_no": 16,
+            "horse_name": "ルージュアストレア"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ビアーレ"
+          }
+        ]
+      },
+      "reader_facing_reason": "アルサックは同距離4戦で3度馬券圏に入り、先行できる点を軸に取る。 ニシノオールワンは逃げ脚質と状態指数の高さから前残りを警戒するが、芝適性△で対抗まで。 スイープセレニティは同距離の一戦で馬券圏を確保し、人気薄でも末脚がはまる場面を単穴で想定する。 ルージュアストレアは先行力はあるものの1200mの実走がなく、距離短縮の不確実さを連下にとどめる。 ビアーレは芝適性と先行脚質はあるが、過去3戦で馬券圏がなく状態面の上積み待ち。"
+    },
+    "decision_trace": {
+      "race_model": "函館芝1200mの未勝利戦。短い直線で位置を取れる馬を軸に、同距離実績と調整状態を見て、差し届く場合の相手を補う。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "アルサック"
+          },
+          "case": "アルサックは同距離4戦で3度馬券圏に入り、先行できる点を軸に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ニシノオールワン"
+          },
+          "case": "ニシノオールワンは逃げ脚質と状態指数の高さから前残りを警戒するが、芝適性△で対抗まで。"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "ルージュアストレア"
+          },
+          "case": "ルージュアストレアは先行力はあるものの1200mの実走がなく、距離短縮の不確実さを連下にとどめる。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ビアーレ"
+          },
+          "case": "ビアーレは芝適性と先行脚質はあるが、過去3戦で馬券圏がなく状態面の上積み待ち。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "スイープセレニティ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "スイープセレニティは同距離の一戦で馬券圏を確保し、人気薄でも末脚がはまる場面を単穴で想定する。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "アルサックは同距離4戦で3度馬券圏に入り、先行できる点を軸に取る。 ニシノオールワンは逃げ脚質と状態指数の高さから前残りを警戒するが、芝適性△で対抗まで。 スイープセレニティは同距離の一戦で馬券圏を確保し、人気薄でも末脚がはまる場面を単穴で想定する。 ルージュアストレアは先行力はあるものの1200mの実走がなく、距離短縮の不確実さを連下にとどめる。 ビアーレは芝適性と先行脚質はあるが、過去3戦で馬券圏がなく状態面の上積み待ち。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "f13c74783111d4c8a4e5d2e787a001d369e7aa13139d285fff70a7ce9ae98c56",
+      "prediction_semantic_hash": "f13c74783111d4c8a4e5d2e787a001d369e7aa13139d285fff70a7ce9ae98c56"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 2,
+      "race_key": "20260627_函館2R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館2R",
+      "racenote_semantic_sha256": "cf581c2cc7bada54e9d40fc999e6b88115a6e0c6e36018a33ad2b695b1624733",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 10,
+        "horse_name": "マリブサーフ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 10,
+          "horse_name": "マリブサーフ"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "ドリームガッサン"
+        },
+        "third": {
+          "horse_no": 6,
+          "horse_name": "クインズスズラン"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "スイーヴル"
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "アイビーミャーオ"
+          }
+        ]
+      },
+      "reader_facing_reason": "マリブサーフはダート適性○で先行でき、過去4戦の複勝率50%を評価する。 ドリームガッサンは前傾戦を前で受けて小差だった過去走があり、短距離の先行力を対抗に買う。 クインズスズランは平坦向きの先行馬で、少数ながら同距離の好走がある。先手が取れれば単穴。 スイーヴルは同距離4戦の複勝率75%と調整状態は魅力だが、砂適性△のため連下。 アイビーミャーオは指数の高さは認める一方、本人のダート×と砂被りへの不安を考慮して押さえまで。"
+    },
+    "decision_trace": {
+      "race_model": "函館ダート1000mの未勝利戦。スタートと序盤の加速が重要なため先行できる馬を中心に、過去の短距離実績と砂への適性を照合する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "マリブサーフ"
+          },
+          "case": "マリブサーフはダート適性○で先行でき、過去4戦の複勝率50%を評価する。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ドリームガッサン"
+          },
+          "case": "ドリームガッサンは前傾戦を前で受けて小差だった過去走があり、短距離の先行力を対抗に買う。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "スイーヴル"
+          },
+          "case": "スイーヴルは同距離4戦の複勝率75%と調整状態は魅力だが、砂適性△のため連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "アイビーミャーオ"
+          },
+          "case": "アイビーミャーオは指数の高さは認める一方、本人のダート×と砂被りへの不安を考慮して押さえまで。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 6,
+          "horse_name": "クインズスズラン"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "クインズスズランは平坦向きの先行馬で、少数ながら同距離の好走がある。先手が取れれば単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "マリブサーフはダート適性○で先行でき、過去4戦の複勝率50%を評価する。 ドリームガッサンは前傾戦を前で受けて小差だった過去走があり、短距離の先行力を対抗に買う。 クインズスズランは平坦向きの先行馬で、少数ながら同距離の好走がある。先手が取れれば単穴。 スイーヴルは同距離4戦の複勝率75%と調整状態は魅力だが、砂適性△のため連下。 アイビーミャーオは指数の高さは認める一方、本人のダート×と砂被りへの不安を考慮して押さえまで。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "ドリームガッサン",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.40秒差",
+            "source_run": {
+              "corner4_frontness": 0.9285714285714286,
+              "finish": 6,
+              "last3f_speed_percentile": 35.714285714285715,
+              "pace_balance_percentile": 77.26396917148362,
+              "performance_signal": -0.7500000000000048,
+              "race_date": "2026-05-10",
+              "race_key": "04261402",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.4000000000000057
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "c3c860e3a57c5003090ee8ac51f28ed2a5a310f58647be85252e000ff9d5885f",
+      "prediction_semantic_hash": "c3c860e3a57c5003090ee8ac51f28ed2a5a310f58647be85252e000ff9d5885f"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 3,
+      "race_key": "20260627_函館3R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館3R",
+      "racenote_semantic_sha256": "8ee8144f8d400182a4679edc84cf79bd7db76a0f049142f1815993d6b64f8879",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 9,
+        "horse_name": "コイオステソーロ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 9,
+          "horse_name": "コイオステソーロ"
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "キセログラフィカ"
+        },
+        "third": {
+          "horse_no": 12,
+          "horse_name": "シンエンドーツダ"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "サクセスブルー"
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "ホウオウファラオ"
+          }
+        ]
+      },
+      "reader_facing_reason": "コイオステソーロは前走の時計が上位クラス相当で、ダートの逃げ脚質と既走6戦の安定感を軸に据える。 キセログラフィカは先行できて通算7戦の複勝率が高く、相手の第一候補に置く。 シンエンドーツダは指数は二番手だが追込一辺倒で、前が止まる展開なら浮上する単穴。 サクセスブルーは逃げる形なら残り目はあるが、近走の好走がなく折り合い面を割り引く。 ホウオウファラオは終い勝負の追込馬。ダート適性△と好走歴の薄さから五番手。"
+    },
+    "decision_trace": {
+      "race_model": "函館ダート1700mの未勝利戦。逃げ馬の主導権を見つつ、同距離とダート適性を優先する。能力差の大きい組だが相手は展開別に拾う。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "コイオステソーロ"
+          },
+          "case": "コイオステソーロは前走の時計が上位クラス相当で、ダートの逃げ脚質と既走6戦の安定感を軸に据える。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "キセログラフィカ"
+          },
+          "case": "キセログラフィカは先行できて通算7戦の複勝率が高く、相手の第一候補に置く。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "サクセスブルー"
+          },
+          "case": "サクセスブルーは逃げる形なら残り目はあるが、近走の好走がなく折り合い面を割り引く。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ホウオウファラオ"
+          },
+          "case": "ホウオウファラオは終い勝負の追込馬。ダート適性△と好走歴の薄さから五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 12,
+          "horse_name": "シンエンドーツダ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "シンエンドーツダは指数は二番手だが追込一辺倒で、前が止まる展開なら浮上する単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "コイオステソーロは前走の時計が上位クラス相当で、ダートの逃げ脚質と既走6戦の安定感を軸に据える。 キセログラフィカは先行できて通算7戦の複勝率が高く、相手の第一候補に置く。 シンエンドーツダは指数は二番手だが追込一辺倒で、前が止まる展開なら浮上する単穴。 サクセスブルーは逃げる形なら残り目はあるが、近走の好走がなく折り合い面を割り引く。 ホウオウファラオは終い勝負の追込馬。ダート適性△と好走歴の薄さから五番手。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 9,
+            "horse_name": "コイオステソーロ",
+            "matched_signal_ids": [
+              "TIME_CLASS_PLUS1"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "SUPPORT_REPEATABILITY",
+            "human_summary": "上位クラス時計（クラス差 +1.56）",
+            "source_run": {
+              "corner4_frontness": 1.0,
+              "finish": 2,
+              "last3f_speed_percentile": 90.9090909090909,
+              "pace_balance_percentile": 30.74792243767313,
+              "performance_signal": 1.1176470588235328,
+              "race_date": "2026-06-13",
+              "race_key": "02261106",
+              "time_class_equivalent": "CLASS_2",
+              "time_class_equivalent_numeric": 2.555555555555568,
+              "winner_gap_sec": 0.0
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "91a9cdc68853498fffbe94b4189203c85f18672ee0e3f8338b70e85b73c587a8",
+      "prediction_semantic_hash": "91a9cdc68853498fffbe94b4189203c85f18672ee0e3f8338b70e85b73c587a8"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 4,
+      "race_key": "20260627_函館4R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館4R",
+      "racenote_semantic_sha256": "4ab1d288b96e70159563171c54d9765f74917b62136dad7fbf29ab763ec017ab",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 14,
+        "horse_name": "アイムイン"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 14,
+          "horse_name": "アイムイン"
+        },
+        "second": {
+          "horse_no": 11,
+          "horse_name": "エアヴァイブス"
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "エグジスタンス"
+        },
+        "others": [
+          {
+            "horse_no": 12,
+            "horse_name": "ウインラファーガ"
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ララニューディー"
+          }
+        ]
+      },
+      "reader_facing_reason": "アイムインは先行できて過去6戦の複勝率が高く、同距離でも崩れていない。時計の掛かる芝への適性を軸にする。 エアヴァイブスは前傾戦を前で受けて小差だった材料があり、差しに回っても脚を使える対抗。 エグジスタンスは右回りの特徴と同距離3戦の安定感を評価し、先行して残る単穴を狙う。 ウインラファーガは同距離一戦で好走し、相手が競り合うなら外から届く余地を買う。 ララニューディーは指数は上位だが距離実績が一戦で未好走、走法の不安もあり押さえまで。"
+    },
+    "decision_trace": {
+      "race_model": "函館芝1800mの未勝利戦。小回りでの位置取りと同距離成績を比較し、先行勢と差し勢の両方に印を配する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "アイムイン"
+          },
+          "case": "アイムインは先行できて過去6戦の複勝率が高く、同距離でも崩れていない。時計の掛かる芝への適性を軸にする。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "エアヴァイブス"
+          },
+          "case": "エアヴァイブスは前傾戦を前で受けて小差だった材料があり、差しに回っても脚を使える対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "ウインラファーガ"
+          },
+          "case": "ウインラファーガは同距離一戦で好走し、相手が競り合うなら外から届く余地を買う。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ララニューディー"
+          },
+          "case": "ララニューディーは指数は上位だが距離実績が一戦で未好走、走法の不安もあり押さえまで。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "エグジスタンス"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "エグジスタンスは右回りの特徴と同距離3戦の安定感を評価し、先行して残る単穴を狙う。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "アイムインは先行できて過去6戦の複勝率が高く、同距離でも崩れていない。時計の掛かる芝への適性を軸にする。 エアヴァイブスは前傾戦を前で受けて小差だった材料があり、差しに回っても脚を使える対抗。 エグジスタンスは右回りの特徴と同距離3戦の安定感を評価し、先行して残る単穴を狙う。 ウインラファーガは同距離一戦で好走し、相手が競り合うなら外から届く余地を買う。 ララニューディーは指数は上位だが距離実績が一戦で未好走、走法の不安もあり押さえまで。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 11,
+            "horse_name": "エアヴァイブス",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.40秒差",
+            "source_run": {
+              "corner4_frontness": 0.7058823529411764,
+              "finish": 7,
+              "last3f_speed_percentile": 58.8235294117647,
+              "pace_balance_percentile": 71.46198830409357,
+              "performance_signal": -0.8660714285714377,
+              "race_date": "2026-05-31",
+              "race_key": "08263c05",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.4000000000000057
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "18d84ef117c94df77bf17eaed038179ecc52c18bbbc8c7a4e59c83d7da8ba27d",
+      "prediction_semantic_hash": "18d84ef117c94df77bf17eaed038179ecc52c18bbbc8c7a4e59c83d7da8ba27d"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 5,
+      "race_key": "20260627_函館5R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館5R",
+      "racenote_semantic_sha256": "68f726cf0800d2f72cce0f50967d588166f44330dfdf28523b44e2d8a519abd3",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ステラトップガン"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ステラトップガン"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "ヌーンベルク"
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "ミハテヌユメ"
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ライーリーアース"
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "アゴルディーノ"
+          }
+        ]
+      },
+      "reader_facing_reason": "ステラトップガンは事前の能力評価がこの組で一歩先行し、初戦の軸に据える。 ヌーンベルクは調整状態が最も目立つ一頭で、初戦から動ける可能性を単穴ではなく対抗で評価する。 ミハテヌユメは事前指数が二番手の水準で、上位争いの素地を単穴として残す。 ライーリーアースは調整指数に一定の裏付けがあり、上位勢が実戦で戸惑えば浮上する。 アゴルディーノは指数で上位三頭に譲るが、初戦の仕上がり差で連下には届き得る。"
+    },
+    "decision_trace": {
+      "race_model": "函館芝1200mの2歳新馬戦。実走歴は全馬なく、事前指数と調整状態を補助線として比較する。短い直線の初戦だけに不確実性が大きい。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ステラトップガン"
+          },
+          "case": "ステラトップガンは事前の能力評価がこの組で一歩先行し、初戦の軸に据える。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ヌーンベルク"
+          },
+          "case": "ヌーンベルクは調整状態が最も目立つ一頭で、初戦から動ける可能性を単穴ではなく対抗で評価する。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ライーリーアース"
+          },
+          "case": "ライーリーアースは調整指数に一定の裏付けがあり、上位勢が実戦で戸惑えば浮上する。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "アゴルディーノ"
+          },
+          "case": "アゴルディーノは指数で上位三頭に譲るが、初戦の仕上がり差で連下には届き得る。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "ミハテヌユメ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ミハテヌユメは事前指数が二番手の水準で、上位争いの素地を単穴として残す。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ステラトップガンは事前の能力評価がこの組で一歩先行し、初戦の軸に据える。 ヌーンベルクは調整状態が最も目立つ一頭で、初戦から動ける可能性を単穴ではなく対抗で評価する。 ミハテヌユメは事前指数が二番手の水準で、上位争いの素地を単穴として残す。 ライーリーアースは調整指数に一定の裏付けがあり、上位勢が実戦で戸惑えば浮上する。 アゴルディーノは指数で上位三頭に譲るが、初戦の仕上がり差で連下には届き得る。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "7dc64a27306e9f0ffd72c11067cd74a3a491f0b6f12836c06aadd176b0555c86",
+      "prediction_semantic_hash": "7dc64a27306e9f0ffd72c11067cd74a3a491f0b6f12836c06aadd176b0555c86"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 6,
+      "race_key": "20260627_函館6R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館6R",
+      "racenote_semantic_sha256": "2e687d5d6b28f6ca97bd6f078bbb72929427d029db2f124eeeab304c5832f20d",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 5,
+        "horse_name": "プリンセスアツコ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 5,
+          "horse_name": "プリンセスアツコ"
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "エリカビアリッツ"
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "コサージュ"
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "プルーフリーディン"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "コーリンクレア"
+          }
+        ]
+      },
+      "reader_facing_reason": "プリンセスアツコは既走5戦ですべて馬券圏に入り、ダート適性○。差しに回っても安定した脚を評価する。 エリカビアリッツはこちらも既走4戦ですべて馬券圏。先行力で小回りに合う対抗。 コサージュは1700mの経験と先行力があり、上位二頭の距離不安が出るなら単穴で逆転。 プルーフリーディンは指数は上位だがダート×の特徴と気難しさがあり、連下まで。 コーリンクレアは調整状態は悪くないが既走4戦で好走がなく、先行粘りを五番手で拾う。"
+    },
+    "decision_trace": {
+      "race_model": "函館ダート1700mの未勝利戦。短距離寄りの近走から距離延長する馬が多く、ダート適性と先行・差しの組合せを重視する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "プリンセスアツコ"
+          },
+          "case": "プリンセスアツコは既走5戦ですべて馬券圏に入り、ダート適性○。差しに回っても安定した脚を評価する。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "エリカビアリッツ"
+          },
+          "case": "エリカビアリッツはこちらも既走4戦ですべて馬券圏。先行力で小回りに合う対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "プルーフリーディン"
+          },
+          "case": "プルーフリーディンは指数は上位だがダート×の特徴と気難しさがあり、連下まで。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "コーリンクレア"
+          },
+          "case": "コーリンクレアは調整状態は悪くないが既走4戦で好走がなく、先行粘りを五番手で拾う。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "コサージュ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "コサージュは1700mの経験と先行力があり、上位二頭の距離不安が出るなら単穴で逆転。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "プリンセスアツコは既走5戦ですべて馬券圏に入り、ダート適性○。差しに回っても安定した脚を評価する。 エリカビアリッツはこちらも既走4戦ですべて馬券圏。先行力で小回りに合う対抗。 コサージュは1700mの経験と先行力があり、上位二頭の距離不安が出るなら単穴で逆転。 プルーフリーディンは指数は上位だがダート×の特徴と気難しさがあり、連下まで。 コーリンクレアは調整状態は悪くないが既走4戦で好走がなく、先行粘りを五番手で拾う。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "2f6a790dfc01d9698f2a9a15056b992d12ca2758cfd4f13b22a1dea5be895662",
+      "prediction_semantic_hash": "2f6a790dfc01d9698f2a9a15056b992d12ca2758cfd4f13b22a1dea5be895662"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 7,
+      "race_key": "20260627_函館7R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館7R",
+      "racenote_semantic_sha256": "598336c7e3fc92ce29db29eae1d9a29b5545a102cb4d6e9ec02ce4a3a0f7e2de",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "メイショウテンク"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "メイショウテンク"
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "マカナアネラ"
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "ドウアドバンテージ"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "コスモナエマ"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "アイドクレース"
+          }
+        ]
+      },
+      "reader_facing_reason": "メイショウテンクは能力評価と調整状態が高く、同距離で半数が馬券圏。追込の位置取りだけ注意し軸。 マカナアネラは同距離3戦すべて馬券圏の先行馬で、展開面の安定を対抗に取る。 ドウアドバンテージは同距離4戦すべて馬券圏で、ペースが流れるほど差し脚が生きる単穴。 コスモナエマは逃げ脚質で函館の小回りを活かせるが、上位三頭との能力差があり連下。 アイドクレースは馬込みを苦にしない差し馬。2000mの過去4戦で好走がなく押さえまで。"
+    },
+    "decision_trace": {
+      "race_model": "函館芝2000mの1勝クラス。小回りで先行する馬と持続的に脚を使う差し馬を比較し、同距離成績と状態を重ねる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "メイショウテンク"
+          },
+          "case": "メイショウテンクは能力評価と調整状態が高く、同距離で半数が馬券圏。追込の位置取りだけ注意し軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "マカナアネラ"
+          },
+          "case": "マカナアネラは同距離3戦すべて馬券圏の先行馬で、展開面の安定を対抗に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "コスモナエマ"
+          },
+          "case": "コスモナエマは逃げ脚質で函館の小回りを活かせるが、上位三頭との能力差があり連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "アイドクレース"
+          },
+          "case": "アイドクレースは馬込みを苦にしない差し馬。2000mの過去4戦で好走がなく押さえまで。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "ドウアドバンテージ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ドウアドバンテージは同距離4戦すべて馬券圏で、ペースが流れるほど差し脚が生きる単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "メイショウテンクは能力評価と調整状態が高く、同距離で半数が馬券圏。追込の位置取りだけ注意し軸。 マカナアネラは同距離3戦すべて馬券圏の先行馬で、展開面の安定を対抗に取る。 ドウアドバンテージは同距離4戦すべて馬券圏で、ペースが流れるほど差し脚が生きる単穴。 コスモナエマは逃げ脚質で函館の小回りを活かせるが、上位三頭との能力差があり連下。 アイドクレースは馬込みを苦にしない差し馬。2000mの過去4戦で好走がなく押さえまで。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "4c95b2361c352092ea62c6f129315ea83ba53fb49587f37d36fc03e260a7117d",
+      "prediction_semantic_hash": "4c95b2361c352092ea62c6f129315ea83ba53fb49587f37d36fc03e260a7117d"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 8,
+      "race_key": "20260627_函館8R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館8R",
+      "racenote_semantic_sha256": "de394400fe7df0d9ff0b3dc4c107f5328b04a27c7b9c41ca94859ca9ec99de5b",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "マメタンク"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "マメタンク"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "カッタッパ"
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "ミサビスケッツ"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "フレンズプラス"
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "テーオーナタリー"
+          }
+        ]
+      },
+      "reader_facing_reason": "マメタンクは総合水準が抜け、先行できる。芝スタートと砂被りへの弱さを認めても、外へ出せれば押し切る軸。 カッタッパは先行力と過去6戦の高い複勝率を評価。使い込むと良くない特徴はあるが対抗。 ミサビスケッツは同距離一戦の好走と調整状態が目立ち、流れが速まれば差して届く単穴。 フレンズプラスは先行二頭が競り合う場合の差し相手。速い時計への課題があり連下。 テーオーナタリーは先行馬で地力はあるが、外から被せられる形に弱く信頼度を下げる。"
+    },
+    "decision_trace": {
+      "race_model": "函館ダート1000mの1勝クラス。芝スタートの加速と砂被りへの対応を重視し、序盤に位置を取れる馬を中心に組み立てる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "マメタンク"
+          },
+          "case": "マメタンクは総合水準が抜け、先行できる。芝スタートと砂被りへの弱さを認めても、外へ出せれば押し切る軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "カッタッパ"
+          },
+          "case": "カッタッパは先行力と過去6戦の高い複勝率を評価。使い込むと良くない特徴はあるが対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "フレンズプラス"
+          },
+          "case": "フレンズプラスは先行二頭が競り合う場合の差し相手。速い時計への課題があり連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "テーオーナタリー"
+          },
+          "case": "テーオーナタリーは先行馬で地力はあるが、外から被せられる形に弱く信頼度を下げる。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "ミサビスケッツ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ミサビスケッツは同距離一戦の好走と調整状態が目立ち、流れが速まれば差して届く単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "マメタンクは総合水準が抜け、先行できる。芝スタートと砂被りへの弱さを認めても、外へ出せれば押し切る軸。 カッタッパは先行力と過去6戦の高い複勝率を評価。使い込むと良くない特徴はあるが対抗。 ミサビスケッツは同距離一戦の好走と調整状態が目立ち、流れが速まれば差して届く単穴。 フレンズプラスは先行二頭が競り合う場合の差し相手。速い時計への課題があり連下。 テーオーナタリーは先行馬で地力はあるが、外から被せられる形に弱く信頼度を下げる。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "a2ce8125e001cfb07d9880f51fd4045c9280b1d54fb222febdae45ff4f48dec3",
+      "prediction_semantic_hash": "a2ce8125e001cfb07d9880f51fd4045c9280b1d54fb222febdae45ff4f48dec3"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 9,
+      "race_key": "20260627_函館9R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館9R",
+      "racenote_semantic_sha256": "efd01255dde57731a37bdd42288b8d0fd0fb1254c4d751b584c22062ad6b8757",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "ララバニュルス"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "ララバニュルス"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "シュークリーム"
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "ドリーミングアップ"
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "ファニーバニー"
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ナオミライトニング"
+          }
+        ]
+      },
+      "reader_facing_reason": "ララバニュルスは先行できて同距離3戦の複勝率が高く、状態も整う。広いコース向きの懸念を含めても軸。 シュークリームは平坦向きの先行馬で1200mの経験が豊富。押し切りの相手として対抗。 ドリーミングアップは後方から速い上がりを使った所見があり、前が速くなれば一気に差す単穴。 ファニーバニーは逃げて同距離でも安定。渋馬場への適性もあり、主導権次第で連下。 ナオミライトニングは同距離3戦で好走歴はあるが一本調子で、ペースが合う場合の五番手。"
+    },
+    "decision_trace": {
+      "race_model": "函館芝1200mの1勝クラス。短い直線で先行できる馬を上位に置き、追込勢には展開の助けを条件とする。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ララバニュルス"
+          },
+          "case": "ララバニュルスは先行できて同距離3戦の複勝率が高く、状態も整う。広いコース向きの懸念を含めても軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "シュークリーム"
+          },
+          "case": "シュークリームは平坦向きの先行馬で1200mの経験が豊富。押し切りの相手として対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ファニーバニー"
+          },
+          "case": "ファニーバニーは逃げて同距離でも安定。渋馬場への適性もあり、主導権次第で連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ナオミライトニング"
+          },
+          "case": "ナオミライトニングは同距離3戦で好走歴はあるが一本調子で、ペースが合う場合の五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "ドリーミングアップ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ドリーミングアップは後方から速い上がりを使った所見があり、前が速くなれば一気に差す単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ララバニュルスは先行できて同距離3戦の複勝率が高く、状態も整う。広いコース向きの懸念を含めても軸。 シュークリームは平坦向きの先行馬で1200mの経験が豊富。押し切りの相手として対抗。 ドリーミングアップは後方から速い上がりを使った所見があり、前が速くなれば一気に差す単穴。 ファニーバニーは逃げて同距離でも安定。渋馬場への適性もあり、主導権次第で連下。 ナオミライトニングは同距離3戦で好走歴はあるが一本調子で、ペースが合う場合の五番手。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 7,
+            "horse_name": "ドリーミングアップ",
+            "matched_signal_ids": [
+              "REAR_HIGH_LAST3F90"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "後傾後方から上がり100pct",
+            "source_run": {
+              "corner4_frontness": 0.1428571428571429,
+              "finish": 2,
+              "last3f_speed_percentile": 100.0,
+              "pace_balance_percentile": 11.685552407932011,
+              "performance_signal": -0.13141025641025078,
+              "race_date": "2026-06-13",
+              "race_key": "02261107",
+              "time_class_equivalent": "CLASS_1",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.09999999999999432
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "de7211870fd2e4514d52da946cb5ebe01c05a65d30dd94ff0d20622e4c4f5ce7",
+      "prediction_semantic_hash": "de7211870fd2e4514d52da946cb5ebe01c05a65d30dd94ff0d20622e4c4f5ce7"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 10,
+      "race_key": "20260627_函館10R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館10R",
+      "racenote_semantic_sha256": "9ec9f2cf61a05eabdc2cf17e3d35b17903647ad335409075fe90fc1912be015d",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ハートメテオ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ハートメテオ"
+        },
+        "second": {
+          "horse_no": 4,
+          "horse_name": "ウィルサヴァイブ"
+        },
+        "third": {
+          "horse_no": 3,
+          "horse_name": "ヨヒーン"
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "ウインアクトゥール"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "レイヤードレッド"
+          }
+        ]
+      },
+      "reader_facing_reason": "ハートメテオは同距離3戦で2度馬券圏、状態指数も高く、長く脚を使う差し切りに期待する。 ウィルサヴァイブは先行力と同距離実績があり、軸が届かない流れでは粘り込む対抗。 ヨヒーンは同距離11戦の経験とローカル向きの特徴から、消耗戦なら一発がある単穴。 ウインアクトゥールは同距離8戦で複勝率が高く、能力評価では僅差の連下に残す。 レイヤードレッドは差し脚と同距離実績を備えるが、位置取り次第として押さえ。"
+    },
+    "decision_trace": {
+      "race_model": "函館芝2000mの2勝クラス。小回りで先行する馬を見つつ、同距離で脚を使えている追込馬の差し切りを主線に据える。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ハートメテオ"
+          },
+          "case": "ハートメテオは同距離3戦で2度馬券圏、状態指数も高く、長く脚を使う差し切りに期待する。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ウィルサヴァイブ"
+          },
+          "case": "ウィルサヴァイブは先行力と同距離実績があり、軸が届かない流れでは粘り込む対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ウインアクトゥール"
+          },
+          "case": "ウインアクトゥールは同距離8戦で複勝率が高く、能力評価では僅差の連下に残す。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "レイヤードレッド"
+          },
+          "case": "レイヤードレッドは差し脚と同距離実績を備えるが、位置取り次第として押さえ。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "ヨヒーン"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ヨヒーンは同距離11戦の経験とローカル向きの特徴から、消耗戦なら一発がある単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ハートメテオは同距離3戦で2度馬券圏、状態指数も高く、長く脚を使う差し切りに期待する。 ウィルサヴァイブは先行力と同距離実績があり、軸が届かない流れでは粘り込む対抗。 ヨヒーンは同距離11戦の経験とローカル向きの特徴から、消耗戦なら一発がある単穴。 ウインアクトゥールは同距離8戦で複勝率が高く、能力評価では僅差の連下に残す。 レイヤードレッドは差し脚と同距離実績を備えるが、位置取り次第として押さえ。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "08405f1f88e4d7c6281b9fb5edc49199e64cc6c600c5c2f1d80b02c1e3f8dbbc",
+      "prediction_semantic_hash": "08405f1f88e4d7c6281b9fb5edc49199e64cc6c600c5c2f1d80b02c1e3f8dbbc"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 11,
+      "race_key": "20260627_函館11R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館11R",
+      "racenote_semantic_sha256": "9f83952c706d72a9d289a7826372d88565c2daf5dbb457a8368fcc7ebe4e355d",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 12,
+        "horse_name": "アメリカンステージ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 12,
+          "horse_name": "アメリカンステージ"
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "ジョーメッドヴィン"
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "ルージュラナキラ"
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "ナムラクララ"
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "モリノドリーム"
+          }
+        ]
+      },
+      "reader_facing_reason": "アメリカンステージは先行脚質で通算9戦の複勝率が非常に高く、芝短距離の適性も明瞭。軸を託す。 ジョーメッドヴィンは同距離30戦の蓄積と調整状態があり、差しが利けば対抗。 ルージュラナキラは小回り向きの先行馬で、展開が落ち着く形なら単穴から頭まで狙える。 ナムラクララは芝適性と指数は拮抗するが気難しさもあり、連下として扱う。 モリノドリームは着順以上の補正時計を示したRRDB所見があり、流れの速い時の差し込みを押さえる。"
+    },
+    "decision_trace": {
+      "race_model": "函館芝1200mのオープン。先行してスピードを生かす馬を軸に、差し馬の補正時計と同距離実績を別角度から検討する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "アメリカンステージ"
+          },
+          "case": "アメリカンステージは先行脚質で通算9戦の複勝率が非常に高く、芝短距離の適性も明瞭。軸を託す。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ジョーメッドヴィン"
+          },
+          "case": "ジョーメッドヴィンは同距離30戦の蓄積と調整状態があり、差しが利けば対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ナムラクララ"
+          },
+          "case": "ナムラクララは芝適性と指数は拮抗するが気難しさもあり、連下として扱う。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "モリノドリーム"
+          },
+          "case": "モリノドリームは着順以上の補正時計を示したRRDB所見があり、流れの速い時の差し込みを押さえる。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "ルージュラナキラ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ルージュラナキラは小回り向きの先行馬で、展開が落ち着く形なら単穴から頭まで狙える。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "アメリカンステージは先行脚質で通算9戦の複勝率が非常に高く、芝短距離の適性も明瞭。軸を託す。 ジョーメッドヴィンは同距離30戦の蓄積と調整状態があり、差しが利けば対抗。 ルージュラナキラは小回り向きの先行馬で、展開が落ち着く形なら単穴から頭まで狙える。 ナムラクララは芝適性と指数は拮抗するが気難しさもあり、連下として扱う。 モリノドリームは着順以上の補正時計を示したRRDB所見があり、流れの速い時の差し込みを押さえる。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 9,
+            "horse_name": "モリノドリーム",
+            "matched_signal_ids": [
+              "HV02_Q85_Q90"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "8着から補正タイムQ85_Q90",
+            "source_run": {
+              "corner4_frontness": 0.6,
+              "finish": 8,
+              "last3f_speed_percentile": 53.84615384615385,
+              "pace_balance_percentile": 41.417910447761194,
+              "performance_signal": 0.03571428571428707,
+              "race_date": "2026-05-16",
+              "race_key": "08263711",
+              "time_class_equivalent": "OPEN",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.6999999999999886
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "bc5649f886b6d570838ba5b97ee69c146fe46c4a5f219ec613e0a10482c8f600",
+      "prediction_semantic_hash": "bc5649f886b6d570838ba5b97ee69c146fe46c4a5f219ec613e0a10482c8f600"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "函館",
+      "race_no": 12,
+      "race_key": "20260627_函館12R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/函館12R",
+      "racenote_semantic_sha256": "b92293d62661c2006229804ca97bb9a52396b89250a6e29a0f5bce54a9a9d778",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "テイエムゴッホ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "テイエムゴッホ"
+        },
+        "second": {
+          "horse_no": 4,
+          "horse_name": "ストロングボーイ"
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "グレイスフルマーチ"
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "ベイビールビオ"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "マーベリックシチー"
+          }
+        ]
+      },
+      "reader_facing_reason": "テイエムゴッホはダートの逃げ脚質で通算5戦の複勝率60%。自分の形を作れるなら軸。 ストロングボーイは前傾を前で受けて小差だった既走が強く、発馬の遅さを補えば差し込む対抗。 グレイスフルマーチは同距離11戦の経験があり、差しに回って上位二頭を追う相手。 ベイビールビオは調整状態は高いが同距離での馬券圏が少なく、追込の展開待ちで連下。 マーベリックシチーはダート適性はあるものの同距離の成績が低く、消耗戦での浮上を五番手。"
+    },
+    "decision_trace": {
+      "race_model": "函館ダート1700mの1勝クラス。逃げ馬のペースを中心に、同距離で好走した差し・追込馬がどこまで迫れるかを比べる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "テイエムゴッホ"
+          },
+          "case": "テイエムゴッホはダートの逃げ脚質で通算5戦の複勝率60%。自分の形を作れるなら軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ストロングボーイ"
+          },
+          "case": "ストロングボーイは前傾を前で受けて小差だった既走が強く、発馬の遅さを補えば差し込む対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ベイビールビオ"
+          },
+          "case": "ベイビールビオは調整状態は高いが同距離での馬券圏が少なく、追込の展開待ちで連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "マーベリックシチー"
+          },
+          "case": "マーベリックシチーはダート適性はあるものの同距離の成績が低く、消耗戦での浮上を五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "グレイスフルマーチ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "グレイスフルマーチは同距離11戦の経験があり、差しに回って上位二頭を追う相手。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "テイエムゴッホはダートの逃げ脚質で通算5戦の複勝率60%。自分の形を作れるなら軸。 ストロングボーイは前傾を前で受けて小差だった既走が強く、発馬の遅さを補えば差し込む対抗。 グレイスフルマーチは同距離11戦の経験があり、差しに回って上位二頭を追う相手。 ベイビールビオは調整状態は高いが同距離での馬券圏が少なく、追込の展開待ちで連下。 マーベリックシチーはダート適性はあるものの同距離の成績が低く、消耗戦での浮上を五番手。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 4,
+            "horse_name": "ストロングボーイ",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.00秒差",
+            "source_run": {
+              "corner4_frontness": 0.6,
+              "finish": 1,
+              "last3f_speed_percentile": 100.0,
+              "pace_balance_percentile": 71.17241379310344,
+              "performance_signal": 0.3558823529411788,
+              "race_date": "2026-06-14",
+              "race_key": "02261202",
+              "time_class_equivalent": "MAIDEN",
+              "time_class_equivalent_numeric": 1.4653846153846195,
+              "winner_gap_sec": 0.0
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "af178140df42ba2bdc971b80b60077979e27c65c74cfa203b4d9fcea001ab2d1",
+      "prediction_semantic_hash": "af178140df42ba2bdc971b80b60077979e27c65c74cfa203b4d9fcea001ab2d1"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 1,
+      "race_key": "20260627_小倉1R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉1R",
+      "racenote_semantic_sha256": "f7f467e5a7ebb073546ceecc4970f4e56f667f7f7a534f921a55cd43fe82c790",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "シスキンブルーム"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "シスキンブルーム"
+        },
+        "second": {
+          "horse_no": 4,
+          "horse_name": "イザベル"
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "クリコキアナ"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "スマートメモリー"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ニドヅケキンシ"
+          }
+        ]
+      },
+      "reader_facing_reason": "シスキンブルームは初戦で馬券圏を確保した先行馬。事前評価にも差があり軸。 イザベルは初戦の成績は振るわないが状態指数65が目立ち、上積みに期待する対抗。 クリコキアナは逃げ脚質で小回りに合う可能性があり、序盤から主導権を取れれば単穴。 スマートメモリーは芝適性はあるものの初戦で結果を出せず、差し届く場合に連下。 ニドヅケキンシは能力評価は低く近走も弱いが、小頭数で流れが変わる余地を五番手。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝1200mの2歳未勝利戦。各馬の実走が一戦程度で比較材料が乏しく、先行力と調整状態を重視して慎重に組み立てる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "シスキンブルーム"
+          },
+          "case": "シスキンブルームは初戦で馬券圏を確保した先行馬。事前評価にも差があり軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "イザベル"
+          },
+          "case": "イザベルは初戦の成績は振るわないが状態指数65が目立ち、上積みに期待する対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "スマートメモリー"
+          },
+          "case": "スマートメモリーは芝適性はあるものの初戦で結果を出せず、差し届く場合に連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ニドヅケキンシ"
+          },
+          "case": "ニドヅケキンシは能力評価は低く近走も弱いが、小頭数で流れが変わる余地を五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "クリコキアナ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "クリコキアナは逃げ脚質で小回りに合う可能性があり、序盤から主導権を取れれば単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "シスキンブルームは初戦で馬券圏を確保した先行馬。事前評価にも差があり軸。 イザベルは初戦の成績は振るわないが状態指数65が目立ち、上積みに期待する対抗。 クリコキアナは逃げ脚質で小回りに合う可能性があり、序盤から主導権を取れれば単穴。 スマートメモリーは芝適性はあるものの初戦で結果を出せず、差し届く場合に連下。 ニドヅケキンシは能力評価は低く近走も弱いが、小頭数で流れが変わる余地を五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "a991305614bbad77fb78d7ef27f01cd0c7a97ab0eda277ba0dfc480821490394",
+      "prediction_semantic_hash": "a991305614bbad77fb78d7ef27f01cd0c7a97ab0eda277ba0dfc480821490394"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 2,
+      "race_key": "20260627_小倉2R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉2R",
+      "racenote_semantic_sha256": "412752f9b25cdc606e3caff00ead2a284ce7a96625bbdc3487bdbe5039af314b",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 10,
+        "horse_name": "ジャスパーブレイズ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 10,
+          "horse_name": "ジャスパーブレイズ"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "アルムアポジェ"
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "スマッシング"
+        },
+        "others": [
+          {
+            "horse_no": 5,
+            "horse_name": "メイショウテンジン"
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "モズエムブイピー"
+          }
+        ]
+      },
+      "reader_facing_reason": "ジャスパーブレイズはダート適性のある逃げ馬で状態指数76が高い。先手を取る形を軸とする。 アルムアポジェは過去7戦の複勝率が高く、こちらも逃げられる。右モタレの懸念を対抗の理由にする。 スマッシングは通算8戦で安定し逃げ脚質も魅力。気難しさが出なければ単穴で頭まで。 メイショウテンジンは先行力とブリンカー効果を評価するが、ダート適性△で連下。 モズエムブイピーはダート適性○の先行馬だがまだ好走歴がなく、未知の上積みを五番手に残す。"
+    },
+    "decision_trace": {
+      "race_model": "小倉ダート1000mの未勝利戦。短距離の逃げ・先行勢が多いため発馬と序盤の競り合いを見て、差の小さい上位馬を比べる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ジャスパーブレイズ"
+          },
+          "case": "ジャスパーブレイズはダート適性のある逃げ馬で状態指数76が高い。先手を取る形を軸とする。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "アルムアポジェ"
+          },
+          "case": "アルムアポジェは過去7戦の複勝率が高く、こちらも逃げられる。右モタレの懸念を対抗の理由にする。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "メイショウテンジン"
+          },
+          "case": "メイショウテンジンは先行力とブリンカー効果を評価するが、ダート適性△で連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "モズエムブイピー"
+          },
+          "case": "モズエムブイピーはダート適性○の先行馬だがまだ好走歴がなく、未知の上積みを五番手に残す。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "スマッシング"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "スマッシングは通算8戦で安定し逃げ脚質も魅力。気難しさが出なければ単穴で頭まで。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ジャスパーブレイズはダート適性のある逃げ馬で状態指数76が高い。先手を取る形を軸とする。 アルムアポジェは過去7戦の複勝率が高く、こちらも逃げられる。右モタレの懸念を対抗の理由にする。 スマッシングは通算8戦で安定し逃げ脚質も魅力。気難しさが出なければ単穴で頭まで。 メイショウテンジンは先行力とブリンカー効果を評価するが、ダート適性△で連下。 モズエムブイピーはダート適性○の先行馬だがまだ好走歴がなく、未知の上積みを五番手に残す。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "3f8fce0db175f515f33b4d3f535ec0515840321d2be801979eae5216949af981",
+      "prediction_semantic_hash": "3f8fce0db175f515f33b4d3f535ec0515840321d2be801979eae5216949af981"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 3,
+      "race_key": "20260627_小倉3R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉3R",
+      "racenote_semantic_sha256": "3f91f59906e1c28648514da59a2cb139f07b90d899eb63b4b1d0e25732ad5366",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 16,
+        "horse_name": "バロッカネーラ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 16,
+          "horse_name": "バロッカネーラ"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "ライツェントライゼ"
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "アロハ"
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "オーロラボレアリス"
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ミリタリータトゥー"
+          }
+        ]
+      },
+      "reader_facing_reason": "バロッカネーラは前傾戦を前で受けて小差の既走があり、改善評価A。外枠でも能力を軸にする。 ライツェントライゼは7戦で複勝率42.9%、根性を見せる差し馬。相手の中心に置く。 アロハは少数の実走で複勝率50%、折り合える先行馬。流れが落ち着けば単穴の逆転がある。 オーロラボレアリスは折り合いはつくが同距離の一戦で好走できず、追込の位置取りもあり連下。 ミリタリータトゥーは初出走で比較材料が少ない。先行勢が崩れた際の未知の上振れを押さえる。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝1800mの未勝利戦。上位の既走馬と初出走馬が混在し、経験の差と折り合いを重視しながら小回りへの対応を読む。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "バロッカネーラ"
+          },
+          "case": "バロッカネーラは前傾戦を前で受けて小差の既走があり、改善評価A。外枠でも能力を軸にする。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ライツェントライゼ"
+          },
+          "case": "ライツェントライゼは7戦で複勝率42.9%、根性を見せる差し馬。相手の中心に置く。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "オーロラボレアリス"
+          },
+          "case": "オーロラボレアリスは折り合いはつくが同距離の一戦で好走できず、追込の位置取りもあり連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ミリタリータトゥー"
+          },
+          "case": "ミリタリータトゥーは初出走で比較材料が少ない。先行勢が崩れた際の未知の上振れを押さえる。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "アロハ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "アロハは少数の実走で複勝率50%、折り合える先行馬。流れが落ち着けば単穴の逆転がある。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "バロッカネーラは前傾戦を前で受けて小差の既走があり、改善評価A。外枠でも能力を軸にする。 ライツェントライゼは7戦で複勝率42.9%、根性を見せる差し馬。相手の中心に置く。 アロハは少数の実走で複勝率50%、折り合える先行馬。流れが落ち着けば単穴の逆転がある。 オーロラボレアリスは折り合いはつくが同距離の一戦で好走できず、追込の位置取りもあり連下。 ミリタリータトゥーは初出走で比較材料が少ない。先行勢が崩れた際の未知の上振れを押さえる。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 16,
+            "horse_name": "バロッカネーラ",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.00秒差",
+            "source_run": {
+              "corner4_frontness": 0.6470588235294117,
+              "finish": 3,
+              "last3f_speed_percentile": 76.47058823529412,
+              "pace_balance_percentile": 88.35365853658537,
+              "performance_signal": 0.025000000000003908,
+              "race_date": "2026-04-12",
+              "race_key": "09262604",
+              "time_class_equivalent": "MAIDEN",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.0
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "31b046e217daabb7583648bbee1e5a1a2cacb69a988e3d6a056d8b543b74af5c",
+      "prediction_semantic_hash": "31b046e217daabb7583648bbee1e5a1a2cacb69a988e3d6a056d8b543b74af5c"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 4,
+      "race_key": "20260627_小倉4R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉4R",
+      "racenote_semantic_sha256": "62a1ef0ff119c1cd4490b3879fa8b34f451230bdee6fb8c6176b0a0e8ae16aaa",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "アイランド"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "アイランド"
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "シャンパンスター"
+        },
+        "third": {
+          "horse_no": 13,
+          "horse_name": "ラッキーヴォーグ"
+        },
+        "others": [
+          {
+            "horse_no": 16,
+            "horse_name": "ルージュエテルナ"
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "ソルアモール"
+          }
+        ]
+      },
+      "reader_facing_reason": "アイランドは初戦で馬券圏に入り改善評価A。ダート適性もあり、相手の経験差を承知で軸。 シャンパンスターは逃げ脚質と既走6戦の安定を評価するが発馬の不安があり対抗。 ラッキーヴォーグは前走の補正時計に隠れた価値があり、先行して運べれば単穴で見直す。 ルージュエテルナは持久力はあるがダート適性△で過去2戦の好走もなく連下。 ソルアモールは同距離は一戦で好走していないものの、差しに回って展開を待つ五番手。"
+    },
+    "decision_trace": {
+      "race_model": "小倉ダート1700mの未勝利戦。既走数の少ない上位馬が多く、先行できる馬と差し馬の位置取りを重視する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "アイランド"
+          },
+          "case": "アイランドは初戦で馬券圏に入り改善評価A。ダート適性もあり、相手の経験差を承知で軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "シャンパンスター"
+          },
+          "case": "シャンパンスターは逃げ脚質と既走6戦の安定を評価するが発馬の不安があり対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "ルージュエテルナ"
+          },
+          "case": "ルージュエテルナは持久力はあるがダート適性△で過去2戦の好走もなく連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ソルアモール"
+          },
+          "case": "ソルアモールは同距離は一戦で好走していないものの、差しに回って展開を待つ五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 13,
+          "horse_name": "ラッキーヴォーグ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ラッキーヴォーグは前走の補正時計に隠れた価値があり、先行して運べれば単穴で見直す。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "アイランドは初戦で馬券圏に入り改善評価A。ダート適性もあり、相手の経験差を承知で軸。 シャンパンスターは逃げ脚質と既走6戦の安定を評価するが発馬の不安があり対抗。 ラッキーヴォーグは前走の補正時計に隠れた価値があり、先行して運べれば単穴で見直す。 ルージュエテルナは持久力はあるがダート適性△で過去2戦の好走もなく連下。 ソルアモールは同距離は一戦で好走していないものの、差しに回って展開を待つ五番手。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 13,
+            "horse_name": "ラッキーヴォーグ",
+            "matched_signal_ids": [
+              "HV02_Q85_Q90"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "8着から補正タイムQ85_Q90",
+            "source_run": {
+              "corner4_frontness": 0.7333333333333334,
+              "finish": 8,
+              "last3f_speed_percentile": 40.0,
+              "pace_balance_percentile": 44.416498993963785,
+              "performance_signal": 0.04166666666667614,
+              "race_date": "2026-05-23",
+              "race_key": "08263901",
+              "time_class_equivalent": "MAIDEN",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 1.0
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "6a951660a11299e5c8c9ad20df058f8c495a38bcfea901e7a392779c4869751d",
+      "prediction_semantic_hash": "6a951660a11299e5c8c9ad20df058f8c495a38bcfea901e7a392779c4869751d"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 5,
+      "race_key": "20260627_小倉5R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉5R",
+      "racenote_semantic_sha256": "e73b43941103c3f13b44fe9d3723eb7aed5de30906b539ac8ed04cf934b8f7f6",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 9,
+        "horse_name": "タカモリ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 9,
+          "horse_name": "タカモリ"
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "リエーヴェ"
+        },
+        "third": {
+          "horse_no": 6,
+          "horse_name": "カエリールークス"
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ニシノキヅイタラ"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ワッザイカ"
+          }
+        ]
+      },
+      "reader_facing_reason": "タカモリは事前の能力評価が僅かに最上位で、状態指数も安定しており軸。 リエーヴェは事前評価は軸に近く、初戦の短距離対応を対抗として買う。 カエリールークスは指数は上位グループ。小倉の速い流れに乗れれば単穴。 ニシノキヅイタラは上位三頭との差はあるが初戦での成長余地があり連下に残す。 ワッザイカは状態は標準的で未知の部分が大きい。押さえとして五番手。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝1200mの2歳新馬戦。実戦歴がないため事前指数を絶対視せず、調整状態と初戦のスピードを併せて判断する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "タカモリ"
+          },
+          "case": "タカモリは事前の能力評価が僅かに最上位で、状態指数も安定しており軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "リエーヴェ"
+          },
+          "case": "リエーヴェは事前評価は軸に近く、初戦の短距離対応を対抗として買う。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ニシノキヅイタラ"
+          },
+          "case": "ニシノキヅイタラは上位三頭との差はあるが初戦での成長余地があり連下に残す。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ワッザイカ"
+          },
+          "case": "ワッザイカは状態は標準的で未知の部分が大きい。押さえとして五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 6,
+          "horse_name": "カエリールークス"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "カエリールークスは指数は上位グループ。小倉の速い流れに乗れれば単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "タカモリは事前の能力評価が僅かに最上位で、状態指数も安定しており軸。 リエーヴェは事前評価は軸に近く、初戦の短距離対応を対抗として買う。 カエリールークスは指数は上位グループ。小倉の速い流れに乗れれば単穴。 ニシノキヅイタラは上位三頭との差はあるが初戦での成長余地があり連下に残す。 ワッザイカは状態は標準的で未知の部分が大きい。押さえとして五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "3514c9a03f92b633f8ebee3627ef5373e3adf2b3d024f80fbaaba18e9eaee1fc",
+      "prediction_semantic_hash": "3514c9a03f92b633f8ebee3627ef5373e3adf2b3d024f80fbaaba18e9eaee1fc"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 6,
+      "race_key": "20260627_小倉6R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉6R",
+      "racenote_semantic_sha256": "61d8ca5e01212231e2523dd67e6a664aaac07cc12db2303b25956434ec39177d",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "フレアオブセンス"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "フレアオブセンス"
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "ビップヴォルフ"
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "スクランプシャス"
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "クロスボーダー"
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "スフィダンテ"
+          }
+        ]
+      },
+      "reader_facing_reason": "フレアオブセンスは同距離4戦ですべて馬券圏に入った先行馬。指数の僅差より距離の確かさを軸に取る。 ビップヴォルフは同距離でも半数が馬券圏で状態指数65。差し脚を対抗に置く。 スクランプシャスは指数は上位でブリンカーの効果もあるが同距離の一戦では不振、連下よりは単穴の上振れを評価。 クロスボーダーは指数は僅差でも過去8戦で馬券圏がなく、差し届く展開に限定して押さえる。 スフィダンテは同距離4戦の複勝率50%。コーナーワークの不安から五番手。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝2000mの未勝利戦。上位指数馬に距離実績の乏しい馬がいるため、同距離の安定感と位置取りを比べて軸を選ぶ。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "フレアオブセンス"
+          },
+          "case": "フレアオブセンスは同距離4戦ですべて馬券圏に入った先行馬。指数の僅差より距離の確かさを軸に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ビップヴォルフ"
+          },
+          "case": "ビップヴォルフは同距離でも半数が馬券圏で状態指数65。差し脚を対抗に置く。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "クロスボーダー"
+          },
+          "case": "クロスボーダーは指数は僅差でも過去8戦で馬券圏がなく、差し届く展開に限定して押さえる。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "スフィダンテ"
+          },
+          "case": "スフィダンテは同距離4戦の複勝率50%。コーナーワークの不安から五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "スクランプシャス"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "スクランプシャスは指数は上位でブリンカーの効果もあるが同距離の一戦では不振、連下よりは単穴の上振れを評価。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "フレアオブセンスは同距離4戦ですべて馬券圏に入った先行馬。指数の僅差より距離の確かさを軸に取る。 ビップヴォルフは同距離でも半数が馬券圏で状態指数65。差し脚を対抗に置く。 スクランプシャスは指数は上位でブリンカーの効果もあるが同距離の一戦では不振、連下よりは単穴の上振れを評価。 クロスボーダーは指数は僅差でも過去8戦で馬券圏がなく、差し届く展開に限定して押さえる。 スフィダンテは同距離4戦の複勝率50%。コーナーワークの不安から五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "234b6a60222c136b964811029123edf807e30bc0b5ad8469c601380d3e84fce0",
+      "prediction_semantic_hash": "234b6a60222c136b964811029123edf807e30bc0b5ad8469c601380d3e84fce0"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 7,
+      "race_key": "20260627_小倉7R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉7R",
+      "racenote_semantic_sha256": "233f42dc048babba8712a83f25a436a490a9885111b8238a33a7c6ed9311cc7c",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 13,
+        "horse_name": "ホウショウルクス"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 13,
+          "horse_name": "ホウショウルクス"
+        },
+        "second": {
+          "horse_no": 12,
+          "horse_name": "ショコラプリン"
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "アンリーベイビー"
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "ザラタン"
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "ショウナンラウール"
+          }
+        ]
+      },
+      "reader_facing_reason": "ホウショウルクスはダート適性○で先行でき、既走2戦の能力水準を評価して軸。 ショコラプリンは通算6戦の複勝率が高くスタミナもある先行馬で対抗。 アンリーベイビーは小回り向きで同距離8戦の複勝率50%。外から運べれば単穴で逆転。 ザラタンは調整指数69が目立つ差し馬。過去の同距離実績は乏しく連下。 ショウナンラウールは差し脚はあるがダート適性△と荒れ馬場への不安があり五番手。"
+    },
+    "decision_trace": {
+      "race_model": "小倉ダート1700mの1勝クラス。先行勢の安定と小回り適性を優先し、差し馬の調整状態を相手評価に加える。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "ホウショウルクス"
+          },
+          "case": "ホウショウルクスはダート適性○で先行でき、既走2戦の能力水準を評価して軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "ショコラプリン"
+          },
+          "case": "ショコラプリンは通算6戦の複勝率が高くスタミナもある先行馬で対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ザラタン"
+          },
+          "case": "ザラタンは調整指数69が目立つ差し馬。過去の同距離実績は乏しく連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ショウナンラウール"
+          },
+          "case": "ショウナンラウールは差し脚はあるがダート適性△と荒れ馬場への不安があり五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "アンリーベイビー"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "アンリーベイビーは小回り向きで同距離8戦の複勝率50%。外から運べれば単穴で逆転。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ホウショウルクスはダート適性○で先行でき、既走2戦の能力水準を評価して軸。 ショコラプリンは通算6戦の複勝率が高くスタミナもある先行馬で対抗。 アンリーベイビーは小回り向きで同距離8戦の複勝率50%。外から運べれば単穴で逆転。 ザラタンは調整指数69が目立つ差し馬。過去の同距離実績は乏しく連下。 ショウナンラウールは差し脚はあるがダート適性△と荒れ馬場への不安があり五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "9a77932829216e94a8107674e1d7825cea736e5d0ed8f7291bb836d68886d6b3",
+      "prediction_semantic_hash": "9a77932829216e94a8107674e1d7825cea736e5d0ed8f7291bb836d68886d6b3"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 8,
+      "race_key": "20260627_小倉8R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉8R",
+      "racenote_semantic_sha256": "bce6d1b217fe6ad6c5a3ca39b45e4e632d92ead01920f16ed5b5d7c19b20080f",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 3,
+        "horse_name": "メローネ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 3,
+          "horse_name": "メローネ"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "レオナルドスター"
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "ドルチェミスト"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "ブルズアイプリンス"
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "ベネメレンティ"
+          }
+        ]
+      },
+      "reader_facing_reason": "メローネは同距離5戦の複勝率60%で先行可能。被せられる形を避ければ軸。 レオナルドスターは芝向きで同距離15戦の経験が豊富。気難しさはあるが対抗に置く。 ドルチェミストは終い確実の差し馬。前の二頭が競れば届く単穴として独立に拾う。 ブルズアイプリンスはIDMは上位だが芝適性△、追込の位置取りにも課題があり連下。 ベネメレンティは逃げ馬として展開利はあるものの、通算14戦の好走率が低く押さえまで。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝1200mの1勝クラス。先行して小回りに乗れる二頭を主線とし、前が競り合えば差し脚のある馬を加える。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "メローネ"
+          },
+          "case": "メローネは同距離5戦の複勝率60%で先行可能。被せられる形を避ければ軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "レオナルドスター"
+          },
+          "case": "レオナルドスターは芝向きで同距離15戦の経験が豊富。気難しさはあるが対抗に置く。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ブルズアイプリンス"
+          },
+          "case": "ブルズアイプリンスはIDMは上位だが芝適性△、追込の位置取りにも課題があり連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ベネメレンティ"
+          },
+          "case": "ベネメレンティは逃げ馬として展開利はあるものの、通算14戦の好走率が低く押さえまで。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "ドルチェミスト"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ドルチェミストは終い確実の差し馬。前の二頭が競れば届く単穴として独立に拾う。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "メローネは同距離5戦の複勝率60%で先行可能。被せられる形を避ければ軸。 レオナルドスターは芝向きで同距離15戦の経験が豊富。気難しさはあるが対抗に置く。 ドルチェミストは終い確実の差し馬。前の二頭が競れば届く単穴として独立に拾う。 ブルズアイプリンスはIDMは上位だが芝適性△、追込の位置取りにも課題があり連下。 ベネメレンティは逃げ馬として展開利はあるものの、通算14戦の好走率が低く押さえまで。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "ca637919e14f2b19d3725766e16ab75cf44ccfb9b985db7f180591b1b238f0d0",
+      "prediction_semantic_hash": "ca637919e14f2b19d3725766e16ab75cf44ccfb9b985db7f180591b1b238f0d0"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 9,
+      "race_key": "20260627_小倉9R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉9R",
+      "racenote_semantic_sha256": "3ee52f51a3d158b35220046e1ca306bd929b502b44f8ba5f95c41937f4fdf3c0",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "サヴォアフェール"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "サヴォアフェール"
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "ダノンアトラス"
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "ノンブルドール"
+        },
+        "others": [
+          {
+            "horse_no": 7,
+            "horse_name": "ゼンノインヴォーク"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "サンライズグラシア"
+          }
+        ]
+      },
+      "reader_facing_reason": "サヴォアフェールは同距離の一戦で好走、通算4戦でも安定。能力水準の差を軸にする。 ダノンアトラスは後方から高い上がりを使った既走があり、同距離8戦の複勝率75%も魅力で対抗。 ノンブルドールは同距離3戦で複勝率が高く、差し脚が利けば単穴で先着する余地がある。 ゼンノインヴォークは30戦の経験と距離適性は堅実だが、追込脚質で位置取りが後ろになるリスクから連下。 サンライズグラシアは逃げて単騎の利を得られるが、上位三頭とは能力差があり五番手。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝2000mの1勝クラス。小頭数の先行馬が少なく、追込勢には位置取りの懸念がある。同距離実績の確かさを重視する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "サヴォアフェール"
+          },
+          "case": "サヴォアフェールは同距離の一戦で好走、通算4戦でも安定。能力水準の差を軸にする。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ダノンアトラス"
+          },
+          "case": "ダノンアトラスは後方から高い上がりを使った既走があり、同距離8戦の複勝率75%も魅力で対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ゼンノインヴォーク"
+          },
+          "case": "ゼンノインヴォークは30戦の経験と距離適性は堅実だが、追込脚質で位置取りが後ろになるリスクから連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "サンライズグラシア"
+          },
+          "case": "サンライズグラシアは逃げて単騎の利を得られるが、上位三頭とは能力差があり五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "ノンブルドール"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ノンブルドールは同距離3戦で複勝率が高く、差し脚が利けば単穴で先着する余地がある。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "サヴォアフェールは同距離の一戦で好走、通算4戦でも安定。能力水準の差を軸にする。 ダノンアトラスは後方から高い上がりを使った既走があり、同距離8戦の複勝率75%も魅力で対抗。 ノンブルドールは同距離3戦で複勝率が高く、差し脚が利けば単穴で先着する余地がある。 ゼンノインヴォークは30戦の経験と距離適性は堅実だが、追込脚質で位置取りが後ろになるリスクから連下。 サンライズグラシアは逃げて単騎の利を得られるが、上位三頭とは能力差があり五番手。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 1,
+            "horse_name": "ダノンアトラス",
+            "matched_signal_ids": [
+              "REAR_HIGH_LAST3F90"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "後傾後方から上がり92pct",
+            "source_run": {
+              "corner4_frontness": 0.33333333333333337,
+              "finish": 3,
+              "last3f_speed_percentile": 91.66666666666667,
+              "pace_balance_percentile": 6.73758865248227,
+              "performance_signal": -0.375,
+              "race_date": "2026-05-17",
+              "race_key": "04261607",
+              "time_class_equivalent": "CLASS_1",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.09999999999999432
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "b37325b7eff099a64c9844a71676becf081ce88933b865c1ed1ee97f915be9bf",
+      "prediction_semantic_hash": "b37325b7eff099a64c9844a71676becf081ce88933b865c1ed1ee97f915be9bf"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 10,
+      "race_key": "20260627_小倉10R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉10R",
+      "racenote_semantic_sha256": "ec613943719eef81cca158ef817c18e3cfdc547ef00e8cb183544f38b64464e8",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 11,
+        "horse_name": "サディーク"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 11,
+          "horse_name": "サディーク"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "ロードトレゾール"
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "ホーリーブラッサム"
+        },
+        "others": [
+          {
+            "horse_no": 4,
+            "horse_name": "ジェニファー"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "スネーフリンガ"
+          }
+        ]
+      },
+      "reader_facing_reason": "サディークは同距離5戦で複勝率80%、先行できる。安定した短距離実績を軸にする。 ロードトレゾールは調整状態が高く、同距離17戦の経験も豊富な先行馬で対抗。 ホーリーブラッサムは平坦向きの逃げ馬。1200mは未知でも単騎なら前残りがある単穴。 ジェニファーは同距離14戦の複勝率50%があり、先行勢が競った際の相手に加える。 スネーフリンガは逃げ脚質だが同距離の好走率は低く、時計が掛かるなら押さえ。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝1200mの2勝クラス。逃げ・先行馬が揃うため競り合いによる失速を警戒し、同距離実績と調整を重視する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "サディーク"
+          },
+          "case": "サディークは同距離5戦で複勝率80%、先行できる。安定した短距離実績を軸にする。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ロードトレゾール"
+          },
+          "case": "ロードトレゾールは調整状態が高く、同距離17戦の経験も豊富な先行馬で対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ジェニファー"
+          },
+          "case": "ジェニファーは同距離14戦の複勝率50%があり、先行勢が競った際の相手に加える。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "スネーフリンガ"
+          },
+          "case": "スネーフリンガは逃げ脚質だが同距離の好走率は低く、時計が掛かるなら押さえ。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "ホーリーブラッサム"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ホーリーブラッサムは平坦向きの逃げ馬。1200mは未知でも単騎なら前残りがある単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "サディークは同距離5戦で複勝率80%、先行できる。安定した短距離実績を軸にする。 ロードトレゾールは調整状態が高く、同距離17戦の経験も豊富な先行馬で対抗。 ホーリーブラッサムは平坦向きの逃げ馬。1200mは未知でも単騎なら前残りがある単穴。 ジェニファーは同距離14戦の複勝率50%があり、先行勢が競った際の相手に加える。 スネーフリンガは逃げ脚質だが同距離の好走率は低く、時計が掛かるなら押さえ。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "d53a6050e253a0aeb1b5ad32b1d2ec9d7f4f7af8ec8b04bc9c42a10a241d2ff7",
+      "prediction_semantic_hash": "d53a6050e253a0aeb1b5ad32b1d2ec9d7f4f7af8ec8b04bc9c42a10a241d2ff7"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 11,
+      "race_key": "20260627_小倉11R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉11R",
+      "racenote_semantic_sha256": "1561fc8a687ced8ed4e18c9cbafddd6c5bc6529b9f95570397c5072d7921174b",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 11,
+        "horse_name": "ストップヤーニング"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 11,
+          "horse_name": "ストップヤーニング"
+        },
+        "second": {
+          "horse_no": 12,
+          "horse_name": "アレナパラシオ"
+        },
+        "third": {
+          "horse_no": 9,
+          "horse_name": "ゴッドブルービー"
+        },
+        "others": [
+          {
+            "horse_no": 15,
+            "horse_name": "パフ"
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "ジューンエオス"
+          }
+        ]
+      },
+      "reader_facing_reason": "ストップヤーニングは先行できて調整状態も高い。ダートの現級水準を評価し軸。 アレナパラシオはダート適性◎、同距離9戦で複勝率55.6%。逃げて粘る対抗。 ゴッドブルービーは小倉向きの特徴と同距離14戦の複勝率57.1%。流れれば差す単穴。 パフは小回り向きで同距離14戦の複勝率71.4%、脚をためられれば連下以上。 ジューンエオスは同距離4戦の複勝率75%。指数は僅差でも前が速くなる場合の押さえに取る。"
+    },
+    "decision_trace": {
+      "race_model": "小倉ダート1700mの3勝クラス。逃げる12番のペースと、先行・差し各馬の小回り適性を比べる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ストップヤーニング"
+          },
+          "case": "ストップヤーニングは先行できて調整状態も高い。ダートの現級水準を評価し軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "アレナパラシオ"
+          },
+          "case": "アレナパラシオはダート適性◎、同距離9戦で複勝率55.6%。逃げて粘る対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "パフ"
+          },
+          "case": "パフは小回り向きで同距離14戦の複勝率71.4%、脚をためられれば連下以上。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ジューンエオス"
+          },
+          "case": "ジューンエオスは同距離4戦の複勝率75%。指数は僅差でも前が速くなる場合の押さえに取る。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 9,
+          "horse_name": "ゴッドブルービー"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ゴッドブルービーは小倉向きの特徴と同距離14戦の複勝率57.1%。流れれば差す単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ストップヤーニングは先行できて調整状態も高い。ダートの現級水準を評価し軸。 アレナパラシオはダート適性◎、同距離9戦で複勝率55.6%。逃げて粘る対抗。 ゴッドブルービーは小倉向きの特徴と同距離14戦の複勝率57.1%。流れれば差す単穴。 パフは小回り向きで同距離14戦の複勝率71.4%、脚をためられれば連下以上。 ジューンエオスは同距離4戦の複勝率75%。指数は僅差でも前が速くなる場合の押さえに取る。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "85c34e260ff406c6fb0a5a96598e32e712f042f187d2c4157abc26ab8005cd34",
+      "prediction_semantic_hash": "85c34e260ff406c6fb0a5a96598e32e712f042f187d2c4157abc26ab8005cd34"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "小倉",
+      "race_no": 12,
+      "race_key": "20260627_小倉12R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/小倉12R",
+      "racenote_semantic_sha256": "a71fc96a91fdf3e8460393ee77fde2d82aa32b501a8dd0dab03efea074160f3b",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "タナスーペルノーバ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "タナスーペルノーバ"
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "ピアストイヤーズ"
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "ルブリアン"
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "リピ"
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "レインオンミー"
+          }
+        ]
+      },
+      "reader_facing_reason": "タナスーペルノーバは芝への対応があり逃げ脚質。短距離の流れに乗れるなら軸。 ピアストイヤーズは同距離7戦で複勝率57.1%、先行できる。速い時計への不安を見ても対抗。 ルブリアンは同距離6戦の複勝率50%と逃げ脚質。ハナ条件を満たせば単穴で粘れる。 リピは能力評価は高いがダート向きの特徴と芝1200m未経験があり連下。 レインオンミーは差し馬で前が競り合う時の相手だが、同距離の好走がなく五番手。"
+    },
+    "decision_trace": {
+      "race_model": "小倉芝1200mの1勝クラス。逃げ馬二頭の主導権を見ながら、距離実績のある先行馬を本線とする。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "タナスーペルノーバ"
+          },
+          "case": "タナスーペルノーバは芝への対応があり逃げ脚質。短距離の流れに乗れるなら軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ピアストイヤーズ"
+          },
+          "case": "ピアストイヤーズは同距離7戦で複勝率57.1%、先行できる。速い時計への不安を見ても対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "リピ"
+          },
+          "case": "リピは能力評価は高いがダート向きの特徴と芝1200m未経験があり連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "レインオンミー"
+          },
+          "case": "レインオンミーは差し馬で前が競り合う時の相手だが、同距離の好走がなく五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "ルブリアン"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ルブリアンは同距離6戦の複勝率50%と逃げ脚質。ハナ条件を満たせば単穴で粘れる。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "タナスーペルノーバは芝への対応があり逃げ脚質。短距離の流れに乗れるなら軸。 ピアストイヤーズは同距離7戦で複勝率57.1%、先行できる。速い時計への不安を見ても対抗。 ルブリアンは同距離6戦の複勝率50%と逃げ脚質。ハナ条件を満たせば単穴で粘れる。 リピは能力評価は高いがダート向きの特徴と芝1200m未経験があり連下。 レインオンミーは差し馬で前が競り合う時の相手だが、同距離の好走がなく五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "a49d523265bd9c6021a10cbc9b69906472cbe1388c9f4183619cbd7fdcbf6a1a",
+      "prediction_semantic_hash": "a49d523265bd9c6021a10cbc9b69906472cbe1388c9f4183619cbd7fdcbf6a1a"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 1,
+      "race_key": "20260627_福島1R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島1R",
+      "racenote_semantic_sha256": "56d6f3ee109621b93bb46cb009a7d0286a8598c9eb69360620ed599f79707d85",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 9,
+        "horse_name": "キュピドン"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 9,
+          "horse_name": "キュピドン"
+        },
+        "second": {
+          "horse_no": 5,
+          "horse_name": "ディベルティスマン"
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "バラジ"
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "セキテイオー"
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "オーサムストローク"
+          }
+        ]
+      },
+      "reader_facing_reason": "キュピドンは先行して運べる脚質とこの組で高い障害評価を軸に取る。 ディベルティスマンは差し脚と既走の安定感があり、前が苦しくなる形での対抗。 バラジは過去の実走で安定しているが飛越は別問題。障害戦で流れが合うなら単穴。 セキテイオーは障害戦の中距離で最後まで脚を残す可能性を評価し、連下に取る。 オーサムストロークは逃げて主導権を握れるが長い距離でのスタミナを課題とし五番手。"
+    },
+    "decision_trace": {
+      "race_model": "福島障害2750mの未勝利戦。平地の成績をそのまま移せないため、障害戦の経験と飛越の安定、先行できるかを優先して比較する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "キュピドン"
+          },
+          "case": "キュピドンは先行して運べる脚質とこの組で高い障害評価を軸に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ディベルティスマン"
+          },
+          "case": "ディベルティスマンは差し脚と既走の安定感があり、前が苦しくなる形での対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "セキテイオー"
+          },
+          "case": "セキテイオーは障害戦の中距離で最後まで脚を残す可能性を評価し、連下に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "オーサムストローク"
+          },
+          "case": "オーサムストロークは逃げて主導権を握れるが長い距離でのスタミナを課題とし五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "バラジ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "バラジは過去の実走で安定しているが飛越は別問題。障害戦で流れが合うなら単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "キュピドンは先行して運べる脚質とこの組で高い障害評価を軸に取る。 ディベルティスマンは差し脚と既走の安定感があり、前が苦しくなる形での対抗。 バラジは過去の実走で安定しているが飛越は別問題。障害戦で流れが合うなら単穴。 セキテイオーは障害戦の中距離で最後まで脚を残す可能性を評価し、連下に取る。 オーサムストロークは逃げて主導権を握れるが長い距離でのスタミナを課題とし五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "27d3eb24cddcca86ea4dd7b92fc5750dc6e56f69751adafc405adc0441c3b127",
+      "prediction_semantic_hash": "27d3eb24cddcca86ea4dd7b92fc5750dc6e56f69751adafc405adc0441c3b127"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 2,
+      "race_key": "20260627_福島2R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島2R",
+      "racenote_semantic_sha256": "4da794f4efcfdf61c5b09d8705b6286dfdf5a952add3b5fa3575e849151b2091",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 14,
+        "horse_name": "テンオンスゴールド"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 14,
+          "horse_name": "テンオンスゴールド"
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "アオイミズホ"
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "スターツトゥデイ"
+        },
+        "others": [
+          {
+            "horse_no": 4,
+            "horse_name": "コパノミラノ"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "スクイーズアウト"
+          }
+        ]
+      },
+      "reader_facing_reason": "テンオンスゴールドはダート適性○の逃げ馬で能力評価は先行。最後にソラを使う点を警戒しつつ軸。 アオイミズホは差し脚と通算9戦の複勝率44.4%を評価して対抗。 スターツトゥデイは近走2戦で好走がないが上積みの余地があり、前崩れなら単穴。 コパノミラノはズブさは残るもののダートに慣れた差し馬で連下。 スクイーズアウトは先行力を持つが既走2戦で好走がなく、流れが楽な場合の五番手。"
+    },
+    "decision_trace": {
+      "race_model": "福島ダート1700mの未勝利戦。逃げ馬が主導権を取る形を基点に、差し馬が小回りで位置を確保できるかを比較する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "テンオンスゴールド"
+          },
+          "case": "テンオンスゴールドはダート適性○の逃げ馬で能力評価は先行。最後にソラを使う点を警戒しつつ軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "アオイミズホ"
+          },
+          "case": "アオイミズホは差し脚と通算9戦の複勝率44.4%を評価して対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "コパノミラノ"
+          },
+          "case": "コパノミラノはズブさは残るもののダートに慣れた差し馬で連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "スクイーズアウト"
+          },
+          "case": "スクイーズアウトは先行力を持つが既走2戦で好走がなく、流れが楽な場合の五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "スターツトゥデイ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "スターツトゥデイは近走2戦で好走がないが上積みの余地があり、前崩れなら単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "テンオンスゴールドはダート適性○の逃げ馬で能力評価は先行。最後にソラを使う点を警戒しつつ軸。 アオイミズホは差し脚と通算9戦の複勝率44.4%を評価して対抗。 スターツトゥデイは近走2戦で好走がないが上積みの余地があり、前崩れなら単穴。 コパノミラノはズブさは残るもののダートに慣れた差し馬で連下。 スクイーズアウトは先行力を持つが既走2戦で好走がなく、流れが楽な場合の五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "aacfd88b52add8f9ac16a53bb133684a0d6fb1415b1e4944b500fc56e6bc5479",
+      "prediction_semantic_hash": "aacfd88b52add8f9ac16a53bb133684a0d6fb1415b1e4944b500fc56e6bc5479"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 3,
+      "race_key": "20260627_福島3R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島3R",
+      "racenote_semantic_sha256": "0aed72fce6cc0babecefb36750cad7ad8c7bee17ea9a0e6f95c808da5954e7f2",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 10,
+        "horse_name": "ショウナンパトス"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 10,
+          "horse_name": "ショウナンパトス"
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "ジェネラスキング"
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "コパノエイダン"
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "サムシングニュー"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "ガムラスタン"
+          }
+        ]
+      },
+      "reader_facing_reason": "ショウナンパトスは既走6戦の複勝率66.7%で状態指数67。差し脚を軸に取る。 ジェネラスキングは前傾を前で受けて小差の既走があり、少数ながら実走での安定も評価して対抗。 コパノエイダンは差し届く流れなら末脚を使えるが、後方過ぎる位置取りを嫌い単穴。 サムシングニューは同条件の経験は少ないが、過去の一戦で馬券圏に入り、長く脚を使う形を連下に加える。 ガムラスタンは通算3戦で複勝率66.7%。追込の展開待ちで五番手。"
+    },
+    "decision_trace": {
+      "race_model": "福島ダート1700mの1勝クラス。差し・追込馬が多いため、コーナーで進出できるかと既往のダート安定感を重視する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ショウナンパトス"
+          },
+          "case": "ショウナンパトスは既走6戦の複勝率66.7%で状態指数67。差し脚を軸に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ジェネラスキング"
+          },
+          "case": "ジェネラスキングは前傾を前で受けて小差の既走があり、少数ながら実走での安定も評価して対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "サムシングニュー"
+          },
+          "case": "サムシングニューは同条件の経験は少ないが、過去の一戦で馬券圏に入り、長く脚を使う形を連下に加える。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ガムラスタン"
+          },
+          "case": "ガムラスタンは通算3戦で複勝率66.7%。追込の展開待ちで五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "コパノエイダン"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "コパノエイダンは差し届く流れなら末脚を使えるが、後方過ぎる位置取りを嫌い単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ショウナンパトスは既走6戦の複勝率66.7%で状態指数67。差し脚を軸に取る。 ジェネラスキングは前傾を前で受けて小差の既走があり、少数ながら実走での安定も評価して対抗。 コパノエイダンは差し届く流れなら末脚を使えるが、後方過ぎる位置取りを嫌い単穴。 サムシングニューは同条件の経験は少ないが、過去の一戦で馬券圏に入り、長く脚を使う形を連下に加える。 ガムラスタンは通算3戦で複勝率66.7%。追込の展開待ちで五番手。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 3,
+            "horse_name": "ジェネラスキング",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.00秒差",
+            "source_run": {
+              "corner4_frontness": 0.9285714285714286,
+              "finish": 1,
+              "last3f_speed_percentile": 100.0,
+              "pace_balance_percentile": 97.12379199263691,
+              "performance_signal": 0.38888888888889045,
+              "race_date": "2026-03-29",
+              "race_key": "06263203",
+              "time_class_equivalent": "CLASS_1",
+              "time_class_equivalent_numeric": 1.636363636363634,
+              "winner_gap_sec": 0.0
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "a5496b59c13330a87217f055187f124ec52a6fcf9ce36c01bc92156608ece945",
+      "prediction_semantic_hash": "a5496b59c13330a87217f055187f124ec52a6fcf9ce36c01bc92156608ece945"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 4,
+      "race_key": "20260627_福島4R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島4R",
+      "racenote_semantic_sha256": "7e22ee3213e5dadb3813b1ce4d992231acf0625f4cb57042ea1c9ab4263904e5",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "ウォーターリーダー"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "ウォーターリーダー"
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "コンバスチョン"
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "ゴールドブリーズ"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "ブラックバラード"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "ヴェールランス"
+          }
+        ]
+      },
+      "reader_facing_reason": "ウォーターリーダーはバンケット向きの特徴があり、同距離一戦でも好走。障害での適性を軸に取る。 コンバスチョンは先行できて障害の持久戦に合わせやすく対抗。 ゴールドブリーズは同距離2戦で安定しており、先行勢が流れるなら差し込む単穴。 ブラックバラードは連続障害への対応に利点があり、早め進出なら連下。 ヴェールランスは逃げ脚質で前残りの形もあるが、最後の脚色に課題があり押さえ。"
+    },
+    "decision_trace": {
+      "race_model": "福島障害2750mのオープン。障害の飛越と福島のバンケットへの対応、先行馬のペース配分を比較して判断する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ウォーターリーダー"
+          },
+          "case": "ウォーターリーダーはバンケット向きの特徴があり、同距離一戦でも好走。障害での適性を軸に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "コンバスチョン"
+          },
+          "case": "コンバスチョンは先行できて障害の持久戦に合わせやすく対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ブラックバラード"
+          },
+          "case": "ブラックバラードは連続障害への対応に利点があり、早め進出なら連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ヴェールランス"
+          },
+          "case": "ヴェールランスは逃げ脚質で前残りの形もあるが、最後の脚色に課題があり押さえ。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "ゴールドブリーズ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ゴールドブリーズは同距離2戦で安定しており、先行勢が流れるなら差し込む単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ウォーターリーダーはバンケット向きの特徴があり、同距離一戦でも好走。障害での適性を軸に取る。 コンバスチョンは先行できて障害の持久戦に合わせやすく対抗。 ゴールドブリーズは同距離2戦で安定しており、先行勢が流れるなら差し込む単穴。 ブラックバラードは連続障害への対応に利点があり、早め進出なら連下。 ヴェールランスは逃げ脚質で前残りの形もあるが、最後の脚色に課題があり押さえ。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "9e18d481b289c9de2274cf7a6d38fe09a3bae2a5b29c9f972a90f77b7b9a4ef0",
+      "prediction_semantic_hash": "9e18d481b289c9de2274cf7a6d38fe09a3bae2a5b29c9f972a90f77b7b9a4ef0"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 5,
+      "race_key": "20260627_福島5R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島5R",
+      "racenote_semantic_sha256": "9383494d2d3887ab7d0fe037ff71e87790b2c1d7b21a033bf71811ce0078d0e3",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 3,
+        "horse_name": "アンムート"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 3,
+          "horse_name": "アンムート"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "シャインフォード"
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "エバーメテオ"
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "ショウナンハーヴェ"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "エーアイクワイ"
+          }
+        ]
+      },
+      "reader_facing_reason": "アンムートは事前の能力評価が高く、新馬戦の軸候補として抜けた水準。 シャインフォードは調整状態が上向きで初戦の上振れを対抗に取る。 エバーメテオは事前指数が次位で、新馬同士なら単穴から先着する余地がある。 ショウナンハーヴェは指数は上位グループで、速い流れへの対応次第で連下。 エーアイクワイは事前評価は上位勢より低いが初戦の調整内容で五番手。"
+    },
+    "decision_trace": {
+      "race_model": "福島芝1200mの2歳新馬戦。全馬が未出走で実走の適性は不明。事前評価と調整状態を組み合わせて先行できそうな馬を選ぶ。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "アンムート"
+          },
+          "case": "アンムートは事前の能力評価が高く、新馬戦の軸候補として抜けた水準。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "シャインフォード"
+          },
+          "case": "シャインフォードは調整状態が上向きで初戦の上振れを対抗に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ショウナンハーヴェ"
+          },
+          "case": "ショウナンハーヴェは指数は上位グループで、速い流れへの対応次第で連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "エーアイクワイ"
+          },
+          "case": "エーアイクワイは事前評価は上位勢より低いが初戦の調整内容で五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "エバーメテオ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "エバーメテオは事前指数が次位で、新馬同士なら単穴から先着する余地がある。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "アンムートは事前の能力評価が高く、新馬戦の軸候補として抜けた水準。 シャインフォードは調整状態が上向きで初戦の上振れを対抗に取る。 エバーメテオは事前指数が次位で、新馬同士なら単穴から先着する余地がある。 ショウナンハーヴェは指数は上位グループで、速い流れへの対応次第で連下。 エーアイクワイは事前評価は上位勢より低いが初戦の調整内容で五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "9d91a912f45e5f97f000c13285436082ceebd8b3515b2848e07bbc5886280af6",
+      "prediction_semantic_hash": "9d91a912f45e5f97f000c13285436082ceebd8b3515b2848e07bbc5886280af6"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 6,
+      "race_key": "20260627_福島6R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島6R",
+      "racenote_semantic_sha256": "f67fc603838d6ad18f7cbfe93a9d25393bcc0bd283c267138bb8021373b61a2e",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 9,
+        "horse_name": "ムーンベリル"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 9,
+          "horse_name": "ムーンベリル"
+        },
+        "second": {
+          "horse_no": 5,
+          "horse_name": "エコロメジャー"
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "エランヴィータ"
+        },
+        "others": [
+          {
+            "horse_no": 7,
+            "horse_name": "セイウンガジュマル"
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "パレスラン"
+          }
+        ]
+      },
+      "reader_facing_reason": "ムーンベリルは事前指数の上位で状態指数も安定しており、初戦の軸。 エコロメジャーは能力評価は僅差で、短距離の位置取りがうまくいけば対抗。 エランヴィータは状態指数が上位二頭と同程度で、初戦の上振れを単穴。 セイウンガジュマルは能力評価は低いが状態指数63が際立ち、調整の良さが実戦に結びつく場合を連下に取る。 パレスランは上位勢との差はあるが初戦の不確実さを踏まえ押さえる。"
+    },
+    "decision_trace": {
+      "race_model": "福島ダート1150mの2歳新馬戦。短距離の初戦で全馬未経験。事前評価に加え、調整状態によるスタート時の完成度を重視する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ムーンベリル"
+          },
+          "case": "ムーンベリルは事前指数の上位で状態指数も安定しており、初戦の軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "エコロメジャー"
+          },
+          "case": "エコロメジャーは能力評価は僅差で、短距離の位置取りがうまくいけば対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "セイウンガジュマル"
+          },
+          "case": "セイウンガジュマルは能力評価は低いが状態指数63が際立ち、調整の良さが実戦に結びつく場合を連下に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "パレスラン"
+          },
+          "case": "パレスランは上位勢との差はあるが初戦の不確実さを踏まえ押さえる。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "エランヴィータ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "エランヴィータは状態指数が上位二頭と同程度で、初戦の上振れを単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ムーンベリルは事前指数の上位で状態指数も安定しており、初戦の軸。 エコロメジャーは能力評価は僅差で、短距離の位置取りがうまくいけば対抗。 エランヴィータは状態指数が上位二頭と同程度で、初戦の上振れを単穴。 セイウンガジュマルは能力評価は低いが状態指数63が際立ち、調整の良さが実戦に結びつく場合を連下に取る。 パレスランは上位勢との差はあるが初戦の不確実さを踏まえ押さえる。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "2fdb229805b56112fdb4195c7e2f563e92f6c6eaecaa8c981c20917e57e1afe4",
+      "prediction_semantic_hash": "2fdb229805b56112fdb4195c7e2f563e92f6c6eaecaa8c981c20917e57e1afe4"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 7,
+      "race_key": "20260627_福島7R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島7R",
+      "racenote_semantic_sha256": "37fbe6a9eb852f745afb607631200549f8de561144f76046b5342f5a3e3d6df4",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 5,
+        "horse_name": "エバーシャンティ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 5,
+          "horse_name": "エバーシャンティ"
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "アッパーウォーター"
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "アースヴィンチ"
+        },
+        "others": [
+          {
+            "horse_no": 7,
+            "horse_name": "ラグアイリータ"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "イバラヒメ"
+          }
+        ]
+      },
+      "reader_facing_reason": "エバーシャンティは同距離の一戦で馬券圏があり、状態指数67の差し馬。軸に据える。 アッパーウォーターは指数が続く差し馬で、前が速い時に末脚を生かす対抗。 アースヴィンチは逃げ脚質と芝適性○を評価し、単騎で運べれば単穴から逆転。 ラグアイリータは同距離3戦を経験する逃げ馬。突っ張る特徴から競り合いを懸念し連下。 イバラヒメは能力評価は下がるが差し脚を使える場合の五番手。"
+    },
+    "decision_trace": {
+      "race_model": "福島芝1800mの未勝利戦。差し馬の安定と先行馬の小回り利を比較し、同距離実績で優劣をつける。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "エバーシャンティ"
+          },
+          "case": "エバーシャンティは同距離の一戦で馬券圏があり、状態指数67の差し馬。軸に据える。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "アッパーウォーター"
+          },
+          "case": "アッパーウォーターは指数が続く差し馬で、前が速い時に末脚を生かす対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ラグアイリータ"
+          },
+          "case": "ラグアイリータは同距離3戦を経験する逃げ馬。突っ張る特徴から競り合いを懸念し連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "イバラヒメ"
+          },
+          "case": "イバラヒメは能力評価は下がるが差し脚を使える場合の五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "アースヴィンチ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "アースヴィンチは逃げ脚質と芝適性○を評価し、単騎で運べれば単穴から逆転。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "エバーシャンティは同距離の一戦で馬券圏があり、状態指数67の差し馬。軸に据える。 アッパーウォーターは指数が続く差し馬で、前が速い時に末脚を生かす対抗。 アースヴィンチは逃げ脚質と芝適性○を評価し、単騎で運べれば単穴から逆転。 ラグアイリータは同距離3戦を経験する逃げ馬。突っ張る特徴から競り合いを懸念し連下。 イバラヒメは能力評価は下がるが差し脚を使える場合の五番手。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "622be3402f902a525262a7523f851d65671913f6f0898f31851abbf822daefa6",
+      "prediction_semantic_hash": "622be3402f902a525262a7523f851d65671913f6f0898f31851abbf822daefa6"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 8,
+      "race_key": "20260627_福島8R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島8R",
+      "racenote_semantic_sha256": "0f90b915a678eb21ab14bcbf33dcf7aaef99c7549b2466d6ebc76ae627a1c60a",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 13,
+        "horse_name": "ベアダイヤモンド"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 13,
+          "horse_name": "ベアダイヤモンド"
+        },
+        "second": {
+          "horse_no": 14,
+          "horse_name": "オートカリテ"
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "コールリッジ"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "ウインマニフィーク"
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "クリスタルドレス"
+          }
+        ]
+      },
+      "reader_facing_reason": "ベアダイヤモンドは同距離2戦ですべて馬券圏、瞬発力も備える差し馬を軸にする。 オートカリテは前傾戦を前で受けて小差の既走があり、先行して運ぶ対抗。 コールリッジは着順以上の補正時計を示した既走があり、指数差を覆す単穴を独立に拾う。 ウインマニフィークは同距離4戦で半数が馬券圏。ジリ脚だが流れれば連下。 クリスタルドレスは指数は高いが同距離経験がなく、脚を使える形なら押さえ。"
+    },
+    "decision_trace": {
+      "race_model": "福島芝2000mの未勝利戦。先行勢の前傾戦への耐性と差し馬の同距離実績を別々に評価する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "ベアダイヤモンド"
+          },
+          "case": "ベアダイヤモンドは同距離2戦ですべて馬券圏、瞬発力も備える差し馬を軸にする。"
+        },
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "オートカリテ"
+          },
+          "case": "オートカリテは前傾戦を前で受けて小差の既走があり、先行して運ぶ対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ウインマニフィーク"
+          },
+          "case": "ウインマニフィークは同距離4戦で半数が馬券圏。ジリ脚だが流れれば連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "クリスタルドレス"
+          },
+          "case": "クリスタルドレスは指数は高いが同距離経験がなく、脚を使える形なら押さえ。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "コールリッジ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "コールリッジは着順以上の補正時計を示した既走があり、指数差を覆す単穴を独立に拾う。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ベアダイヤモンドは同距離2戦ですべて馬券圏、瞬発力も備える差し馬を軸にする。 オートカリテは前傾戦を前で受けて小差の既走があり、先行して運ぶ対抗。 コールリッジは着順以上の補正時計を示した既走があり、指数差を覆す単穴を独立に拾う。 ウインマニフィークは同距離4戦で半数が馬券圏。ジリ脚だが流れれば連下。 クリスタルドレスは指数は高いが同距離経験がなく、脚を使える形なら押さえ。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 14,
+            "horse_name": "オートカリテ",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.10秒差",
+            "source_run": {
+              "corner4_frontness": 0.8666666666666667,
+              "finish": 2,
+              "last3f_speed_percentile": 40.0,
+              "pace_balance_percentile": 83.80952380952381,
+              "performance_signal": -0.2142857142857153,
+              "race_date": "2026-05-03",
+              "race_key": "04261201",
+              "time_class_equivalent": "MAIDEN",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.09999999999999432
+            }
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "コールリッジ",
+            "matched_signal_ids": [
+              "HV02_Q85_Q90"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "SUPPORT_COUNTERARGUMENT",
+            "human_summary": "6着から補正タイムQ85_Q90",
+            "source_run": {
+              "corner4_frontness": 0.2666666666666667,
+              "finish": 6,
+              "last3f_speed_percentile": 93.33333333333333,
+              "pace_balance_percentile": 78.21428571428571,
+              "performance_signal": 0.07222222222222759,
+              "race_date": "2026-03-08",
+              "race_key": "06262405",
+              "time_class_equivalent": "MAIDEN",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 1.5999999999999943
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "c3d88ad9d49fc2882ce8a5bb9c7176b3aa9fe29eb19e31e336c782de7f2a0b98",
+      "prediction_semantic_hash": "c3d88ad9d49fc2882ce8a5bb9c7176b3aa9fe29eb19e31e336c782de7f2a0b98"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 9,
+      "race_key": "20260627_福島9R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島9R",
+      "racenote_semantic_sha256": "631c1ea97434bf7c4f6dbab806cfc3143a82deb201a0b888bbc9ab4e0b17cd0b",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 6,
+        "horse_name": "エコロシード"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 6,
+          "horse_name": "エコロシード"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "ケブランリ"
+        },
+        "third": {
+          "horse_no": 12,
+          "horse_name": "タッカージーティー"
+        },
+        "others": [
+          {
+            "horse_no": 15,
+            "horse_name": "ルクスレイモンド"
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "ヒラボクカレラ"
+          }
+        ]
+      },
+      "reader_facing_reason": "エコロシードは先行してきた既走の安定感とダート適性を軸に取る。 ケブランリは少ない実走ながら複勝率75%で、脚抜きのよいダートにも対応する対抗。 タッカージーティーは前傾を前で受けて小差だった過去走を評価し、前が厳しくても粘る単穴。 ルクスレイモンドは外枠が合い、同距離の一戦で好走。先行争いが過熱しなければ連下。 ヒラボクカレラは平坦向きで同距離2戦とも馬券圏だが、速い時計には課題があり五番手。"
+    },
+    "decision_trace": {
+      "race_model": "福島ダート1150mの2勝クラス。前へ行く馬が多く、前傾でも粘れる既走と平坦適性を重視して比較する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "エコロシード"
+          },
+          "case": "エコロシードは先行してきた既走の安定感とダート適性を軸に取る。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ケブランリ"
+          },
+          "case": "ケブランリは少ない実走ながら複勝率75%で、脚抜きのよいダートにも対応する対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "ルクスレイモンド"
+          },
+          "case": "ルクスレイモンドは外枠が合い、同距離の一戦で好走。先行争いが過熱しなければ連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ヒラボクカレラ"
+          },
+          "case": "ヒラボクカレラは平坦向きで同距離2戦とも馬券圏だが、速い時計には課題があり五番手。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 12,
+          "horse_name": "タッカージーティー"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "タッカージーティーは前傾を前で受けて小差だった過去走を評価し、前が厳しくても粘る単穴。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "エコロシードは先行してきた既走の安定感とダート適性を軸に取る。 ケブランリは少ない実走ながら複勝率75%で、脚抜きのよいダートにも対応する対抗。 タッカージーティーは前傾を前で受けて小差だった過去走を評価し、前が厳しくても粘る単穴。 ルクスレイモンドは外枠が合い、同距離の一戦で好走。先行争いが過熱しなければ連下。 ヒラボクカレラは平坦向きで同距離2戦とも馬券圏だが、速い時計には課題があり五番手。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 12,
+            "horse_name": "タッカージーティー",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.30秒差",
+            "source_run": {
+              "corner4_frontness": 1.0,
+              "finish": 3,
+              "last3f_speed_percentile": 20.0,
+              "pace_balance_percentile": 77.81124497991968,
+              "performance_signal": -0.7222222222222285,
+              "race_date": "2026-05-30",
+              "race_key": "08263b12",
+              "time_class_equivalent": "CLASS_1",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.29999999999999716
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "4b81caf4b6651e5faf0126f7c233997377c3bb9fa3532f75a23526ed0897d410",
+      "prediction_semantic_hash": "4b81caf4b6651e5faf0126f7c233997377c3bb9fa3532f75a23526ed0897d410"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 10,
+      "race_key": "20260627_福島10R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島10R",
+      "racenote_semantic_sha256": "0deb19d32c359a66e536437589ce5f040a7f3831430dca70c6a404d91d8a8051",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 9,
+        "horse_name": "ドゥマーヴェリック"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 9,
+          "horse_name": "ドゥマーヴェリック"
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "ラストレガシー"
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "ハイクオリティ"
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "リフレックス"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "コスモマルーン"
+          }
+        ]
+      },
+      "reader_facing_reason": "ドゥマーヴェリックは先行できて同距離の一戦で好走。エンジンの掛かりは遅いが能力を軸にする。 ラストレガシーは同距離5戦の複勝率80%、ブリンカーも効く。堅実な対抗。 ハイクオリティは前傾を前で受けて小差だった既走があり、逃げる形なら単穴で残り目。 リフレックスはハナを取れるかが鍵の先行馬。競り合いが緩い場合の連下。 コスモマルーンは追込で展開待ちだが前が止まる想定を五番手で押さえる。"
+    },
+    "decision_trace": {
+      "race_model": "福島ダート1700mの2勝クラス。先行馬が多く競り合いを想定し、同距離での持久力と差し馬の届く条件を考慮する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ドゥマーヴェリック"
+          },
+          "case": "ドゥマーヴェリックは先行できて同距離の一戦で好走。エンジンの掛かりは遅いが能力を軸にする。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ラストレガシー"
+          },
+          "case": "ラストレガシーは同距離5戦の複勝率80%、ブリンカーも効く。堅実な対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "リフレックス"
+          },
+          "case": "リフレックスはハナを取れるかが鍵の先行馬。競り合いが緩い場合の連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "コスモマルーン"
+          },
+          "case": "コスモマルーンは追込で展開待ちだが前が止まる想定を五番手で押さえる。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "ハイクオリティ"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "ハイクオリティは前傾を前で受けて小差だった既走があり、逃げる形なら単穴で残り目。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ドゥマーヴェリックは先行できて同距離の一戦で好走。エンジンの掛かりは遅いが能力を軸にする。 ラストレガシーは同距離5戦の複勝率80%、ブリンカーも効く。堅実な対抗。 ハイクオリティは前傾を前で受けて小差だった既走があり、逃げる形なら単穴で残り目。 リフレックスはハナを取れるかが鍵の先行馬。競り合いが緩い場合の連下。 コスモマルーンは追込で展開待ちだが前が止まる想定を五番手で押さえる。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 1,
+            "horse_name": "ハイクオリティ",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.00秒差",
+            "source_run": {
+              "corner4_frontness": 1.0,
+              "finish": 1,
+              "last3f_speed_percentile": 72.72727272727273,
+              "pace_balance_percentile": 92.28499156829679,
+              "performance_signal": -0.2916666666666619,
+              "race_date": "2026-05-09",
+              "race_key": "04261312",
+              "time_class_equivalent": "CLASS_1",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.0
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "43a3c4105d83a02d7dbad15f6ea5ae9169e66c4631029e27222fac2c055b07d7",
+      "prediction_semantic_hash": "43a3c4105d83a02d7dbad15f6ea5ae9169e66c4631029e27222fac2c055b07d7"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 11,
+      "race_key": "20260627_福島11R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島11R",
+      "racenote_semantic_sha256": "59bd4320f2ca010ee5c7b7c65a9ca4bc6b5fb341bfe7826af540bff003688ee9",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "マリアイリダータ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "マリアイリダータ"
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "ハニーコム"
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "リーティアコナル"
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "フィオレストラーダ"
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "ホウオウスーペリア"
+          }
+        ]
+      },
+      "reader_facing_reason": "マリアイリダータは既走7戦ですべて馬券圏、同距離3戦でも崩れない。先行して押し切る軸。 ハニーコムは芝適性◎で同距離4戦すべて馬券圏。前で運ぶ対抗。 リーティアコナルは逃げて自分のペースを作れる。揉まれ弱い特徴から単騎なら単穴で逆転。 フィオレストラーダは同距離8戦の複勝率62.5%。先行勢の一角として連下。 ホウオウスーペリアは同距離7戦の複勝率57.1%、差しが利けば五番手から浮上。"
+    },
+    "decision_trace": {
+      "race_model": "福島芝2000mの3勝クラス。先行馬が多く位置取りの競争があるが、同距離成績の安定を優先して軸を選ぶ。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "マリアイリダータ"
+          },
+          "case": "マリアイリダータは既走7戦ですべて馬券圏、同距離3戦でも崩れない。先行して押し切る軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ハニーコム"
+          },
+          "case": "ハニーコムは芝適性◎で同距離4戦すべて馬券圏。前で運ぶ対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "フィオレストラーダ"
+          },
+          "case": "フィオレストラーダは同距離8戦の複勝率62.5%。先行勢の一角として連下。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ホウオウスーペリア"
+          },
+          "case": "ホウオウスーペリアは同距離7戦の複勝率57.1%、差しが利けば五番手から浮上。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "リーティアコナル"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "リーティアコナルは逃げて自分のペースを作れる。揉まれ弱い特徴から単騎なら単穴で逆転。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "マリアイリダータは既走7戦ですべて馬券圏、同距離3戦でも崩れない。先行して押し切る軸。 ハニーコムは芝適性◎で同距離4戦すべて馬券圏。前で運ぶ対抗。 リーティアコナルは逃げて自分のペースを作れる。揉まれ弱い特徴から単騎なら単穴で逆転。 フィオレストラーダは同距離8戦の複勝率62.5%。先行勢の一角として連下。 ホウオウスーペリアは同距離7戦の複勝率57.1%、差しが利けば五番手から浮上。"
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "推奨シグナルの有無と対象馬の既往を確認したが、このレースの印を変える直接材料には採用しない。"
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "5464d9009a121b71ab9007eace8a1f0264c59d7f610d0e451dd2c14c21fe6aa2",
+      "prediction_semantic_hash": "5464d9009a121b71ab9007eace8a1f0264c59d7f610d0e451dd2c14c21fe6aa2"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.3",
+    "identity": {
+      "target_date": "2026-06-27",
+      "venue": "福島",
+      "race_no": 12,
+      "race_key": "20260627_福島12R"
+    },
+    "research": {
+      "evaluation_mode": "BLINDED_HISTORICAL",
+      "turn_id": "BTDAY-0036",
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED",
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "source": {
+      "racenote_identity": "BTDAY-0036/福島12R",
+      "racenote_semantic_sha256": "9675df266948c84e20c984f197050f2916c3f41ab8973159bc8f03950793b64b",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 15,
+        "horse_name": "ファインサマーデイ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 15,
+          "horse_name": "ファインサマーデイ"
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "サムハラ"
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "エバーラスト"
+        },
+        "others": [
+          {
+            "horse_no": 12,
+            "horse_name": "ビッグフラワー"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "デアリングエア"
+          }
+        ]
+      },
+      "reader_facing_reason": "ファインサマーデイは既走3戦すべて馬券圏、同距離も2戦とも好走。逃げて運ぶ軸。 サムハラは同距離2戦とも馬券圏の差し馬で、前が速くなれば対抗。 エバーラストは前傾を前で受けて小差だった既走があり、指数差を覆す単穴の余地がある。 ビッグフラワーは能力評価は次位だが同距離8戦の好走率が低く連下まで。 デアリングエアは二の脚は速いが気難しさと距離実績の不足を懸念し押さえ。"
+    },
+    "decision_trace": {
+      "race_model": "福島芝1200mの1勝クラス。逃げ馬の安定を主線とし、同距離で差せている馬の前崩れも相手に加える。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "ファインサマーデイ"
+          },
+          "case": "ファインサマーデイは既走3戦すべて馬券圏、同距離も2戦とも好走。逃げて運ぶ軸。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "サムハラ"
+          },
+          "case": "サムハラは同距離2戦とも馬券圏の差し馬で、前が速くなれば対抗。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "ビッグフラワー"
+          },
+          "case": "ビッグフラワーは能力評価は次位だが同距離8戦の好走率が低く連下まで。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "デアリングエア"
+          },
+          "case": "デアリングエアは二の脚は速いが気難しさと距離実績の不足を懸念し押さえ。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "エバーラスト"
+        },
+        "selected_independently_from_mainline": true,
+        "case": "エバーラストは前傾を前で受けて小差だった既走があり、指数差を覆す単穴の余地がある。"
+      },
+      "mark_reason": {
+        "model_authored_reason": "ファインサマーデイは既走3戦すべて馬券圏、同距離も2戦とも好走。逃げて運ぶ軸。 サムハラは同距離2戦とも馬券圏の差し馬で、前が速くなれば対抗。 エバーラストは前傾を前で受けて小差だった既走があり、指数差を覆す単穴の余地がある。 ビッグフラワーは能力評価は次位だが同距離8戦の好走率が低く連下まで。 デアリングエアは二の脚は速いが気難しさと距離実績の不足を懸念し押さえ。"
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+        "used_in_decision": true,
+        "horse_refs": [
+          {
+            "horse_no": 11,
+            "horse_name": "エバーラスト",
+            "matched_signal_ids": [
+              "FRONT_SURVIVE_GAP05"
+            ],
+            "recommendation_contract_version": "rrdb-recommendation-signals-v0.3",
+            "decision_role": "UPGRADE_RECENT_FORM",
+            "human_summary": "前傾を前で受けて勝ち馬0.00秒差",
+            "source_run": {
+              "corner4_frontness": 0.8823529411764706,
+              "finish": 1,
+              "last3f_speed_percentile": 88.23529411764706,
+              "pace_balance_percentile": 79.8948220064725,
+              "performance_signal": 0.39209401709403124,
+              "race_date": "2026-02-15",
+              "race_key": "10261802",
+              "time_class_equivalent": "CLASS_1",
+              "time_class_equivalent_numeric": null,
+              "winner_gap_sec": 0.0
+            }
+          }
+        ],
+        "reason_not_used": null
+      },
+      "consistency_pass": {
+        "hierarchy_reviewed": true,
+        "hierarchy_changed": false,
+        "hierarchy_reason": null,
+        "single_shot_promotion_reviewed": true,
+        "single_shot_promoted": false,
+        "single_shot_promotion_reason": null,
+        "coverage_challenger_reviewed": true,
+        "coverage_challenger": null,
+        "coverage_changed": false,
+        "coverage_reason": null,
+        "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "market_blind": true,
+      "target_market_opened": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T10:05:41.892175+00:00",
+      "frozen_at": "2026-10-02T10:05:41.892175+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "3242814b138a47e20fc40981979b22709d4b490ff9759d2d866206914576e5c0",
+      "prediction_semantic_hash": "3242814b138a47e20fc40981979b22709d4b490ff9759d2d866206914576e5c0"
+    }
+  }
+]

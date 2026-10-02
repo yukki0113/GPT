@@ -1,0 +1,14 @@
+{
+  "selection_id": "BTDAY-0039",
+  "target_date": "2026-09-20",
+  "status": "EXCLUDED_INPUT_BINDING_VIOLATION",
+  "supersedes_prior_clean_blind_eligibility_claim": true,
+  "frozen_forecast_immutable": true,
+  "reason": "The reader_stripped/forecast_prep input used during prediction still carried a target-day horse.market object for each of 334 runners. The Freeze packager stripped it only while archiving, after authoring. This does not meet the runbook requirement to bind an accepted market-stripped input before forecast.",
+  "target_market_values_exposed_to_model": false,
+  "target_result_opened": false,
+  "result_or_settlement_performed": false,
+  "prospective_cohort_eligible": false,
+  "market_object_count_at_authoring_input": 334,
+  "remediation": "Retain the frozen artifact as an excluded audit sample; select a new unused eligible BTDAY for a replacement."
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "RaceNote-DAY-PREP-Handoff-0.1",
+  "selection_id": "BTDAY-0036",
+  "target_date": "2026-06-27",
+  "venues": [
+    "函館",
+    "小倉",
+    "福島"
+  ],
+  "race_count": 36,
+  "main_sha": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1",
+  "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+  "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+  "reader_stripped_manifest": "reader_stripped_manifest.json",
+  "market_blind": true,
+  "result_opened": false,
+  "target_result_opened": false,
+  "target_market_opened": false,
+  "day_prep_manifest": "../manifest.json",
+  "day_prep_status": "PASS",
+  "reader_stripped_manifest_sha256": "9ec1d8fa20dc7318c5dc5aee5503d9b546d764dde7e4e9ec9ff7bc5a80dff14d",
+  "stripped_at_input_bind": true,
+  "market_object_count_removed": 448
+}
