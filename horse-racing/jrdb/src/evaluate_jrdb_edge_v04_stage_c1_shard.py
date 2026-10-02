@@ -97,6 +97,7 @@ def main():
     ap.add_argument("--min-win-roi",type=float,default=110.0)
     ap.add_argument("--min-place-roi",type=float,default=105.0)
     ap.add_argument("--max-per-template",type=int,default=100)
+    ap.add_argument("--discovery-years",type=int,default=5)
     args=ap.parse_args()
     out=args.output_dir.resolve(); out.mkdir(parents=True,exist_ok=True)
     plan=json.loads(args.shard_plan.read_text())
@@ -111,7 +112,24 @@ def main():
     root=build_trie(templates)
 
     cols=[*ALL_DIMS,"race_date","label_win_hit","label_place_hit","label_win_payout","label_place_payout"]
-    table=pq.read_table(args.feature_parquet,columns=cols); n_rows=table.num_rows
+    table_all=pq.read_table(args.feature_parquet,columns=cols)
+    source_rows_all=table_all.num_rows
+    dates_all=table_all["race_date"].combine_chunks()
+    if not (pa.types.is_string(dates_all.type) or pa.types.is_large_string(dates_all.type)):
+        dates_all=pc.cast(dates_all,pa.string())
+    date_all_np=np.asarray(pc.fill_null(dates_all,"0000-00-00").to_numpy(zero_copy_only=False),dtype=str)
+    valid_dates=[x for x in date_all_np if x!="0000-00-00"]
+    if not valid_dates:
+        raise SystemExit("race_date missing")
+    max_date=dt.date.fromisoformat(max(valid_dates))
+    try:
+        discovery_start=max_date.replace(year=max_date.year-args.discovery_years)
+    except ValueError:
+        discovery_start=max_date.replace(year=max_date.year-args.discovery_years,day=28)
+    discovery_start_s=discovery_start.isoformat()
+    keep_mask=pc.greater_equal(dates_all,pa.scalar(discovery_start_s,type=pa.string()))
+    table=table_all.filter(keep_mask)
+    n_rows=table.num_rows
     codes={}; dictionaries={}
     for d in ALL_DIMS:codes[d],dictionaries[d]=encode(table[d])
     win_hit=numeric(table["label_win_hit"],np.int16); place_hit=numeric(table["label_place_hit"],np.int16)
@@ -190,7 +208,9 @@ def main():
     audit={
       "status":"PASS","stage":"V04_STAGE_C1_SHARD","policy_version":POLICY_VERSION,
       "shard_id":args.shard_id,"search_lane":shard["search_lane"],"depth":int(shard["depth"]),
-      "template_count":len(templates),"source_rows":n_rows,"terminal_groups_evaluated":terminal_groups,
+      "template_count":len(templates),"source_rows_all_history":source_rows_all,"source_rows":n_rows,
+      "discovery_years":args.discovery_years,"discovery_start_date":discovery_start_s,"discovery_end_date":max_date.isoformat(),
+      "terminal_groups_evaluated":terminal_groups,
       "prefix_groups_pruned_by_support":pruned,"admitted_before_template_cap":admitted_before_cap,
       "research_candidate_count":sink.count,"max_per_template":args.max_per_template,
       "jackpot_flagged_top1_70pct_count":jackpot,"admission_min_win_roi":args.min_win_roi,
