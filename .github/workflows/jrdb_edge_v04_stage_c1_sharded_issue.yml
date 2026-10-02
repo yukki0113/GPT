@@ -10,8 +10,8 @@ permissions:
   issues: write
 
 concurrency:
-  group: jrdb-edge-v04-stage-c1-sharded
-  cancel-in-progress: true
+  group: jrdb-edge-v04-stage-c1-sharded-${{ github.event.issue.number }}
+  cancel-in-progress: false
 
 jobs:
   prepare:
