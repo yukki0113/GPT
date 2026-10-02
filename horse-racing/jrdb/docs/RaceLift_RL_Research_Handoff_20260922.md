@@ -1,3 +1,17 @@
+> [!IMPORTANT]
+> **RETIRED — 2026-10-02**
+>
+> RaceLift（RL）指数研究・Training Edge / RL-T の新規開発および日次算出は終了した。
+> 本文は研究過程・frozen仕様・再現証跡として保持するhistorical documentであり、
+> 「次に実装すべき作業」を示すcurrent handoffではない。
+>
+> 現行の正本は `horse-racing/jrdb/docs/RL_Retirement_Contract_20261002.md`。
+> RL出力が無いことはnormal stateであり、Newspaper / RaceNote / EdgeDB / PWAの
+> production処理がRL算出を要求してはならない。
+>
+> JRDB Warehouse / Index Base / record-hash compatibilityは共有基盤なので、
+> RL retirementを理由に停止・削除しないこと。
+
 # RaceLift（RL）指数 研究・運用 引き継ぎ
 
 更新日: 2026-09-22
