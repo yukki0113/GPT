@@ -114,8 +114,8 @@ Required structure:
   "coverage_challenger_case": null,
   "coverage_boundary": {
     "current_delta2": {
-      "horse_no": 0,
-      "horse_name": "..."
+      "horse_no": 16,
+      "horse_name": "Example Delta2"
     },
     "direct_condition_comparison": null,
     "ability_comparison": null,
