@@ -1,0 +1,76 @@
+name: JRDB Edge v0.4 Stage C1 Pool Audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V04_C1_POOL_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          for k in ['c1_run_id','c1_artifact_name']:
+              if k not in r: raise SystemExit(f'missing {k}')
+          Path('/tmp/request.json').write_text(json.dumps(r,indent=2,sort_keys=True)+'\n')
+          PY
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+      - name: Download C1 final artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/c1 /tmp/out
+          RUN_ID=$(python -c "import json;print(json.load(open('/tmp/request.json'))['c1_run_id'])")
+          ART=$(python -c "import json;print(json.load(open('/tmp/request.json'))['c1_artifact_name'])")
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ART" --dir /tmp/c1
+          mapfile -t pqs < <(find /tmp/c1 -type f -name research_candidates.parquet -print)
+          [ "${#pqs[@]}" -eq 1 ] || { echo "expected one research_candidates.parquet, found ${#pqs[@]}" >&2; exit 1; }
+          cp "${pqs[0]}" /tmp/c1/research_candidates.parquet
+      - name: Audit candidate pool
+        run: |
+          python horse-racing/jrdb/src/audit_jrdb_edge_v04_stage_c1_pool.py             --c1-parquet /tmp/c1/research_candidates.parquet             --output /tmp/out/c1_pool_audit.json             | tee /tmp/out/stdout.json
+      - name: Upload audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v04-c1-pool-audit-${{ github.run_id }}
+          path: /tmp/out/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Comment and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json
+          a=json.load(open('/tmp/out/c1_pool_audit.json'))
+          print('JRDB_EDGE_V04_C1_POOL_AUDIT_RESULT')
+          print(json.dumps(a,ensure_ascii=False,indent=2,sort_keys=True))
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
