@@ -335,3 +335,22 @@ Normal recommendation/history lookup horizon is `730 days` before the target dat
 
 The former `jrdb_next_watch_rules.py` S/A contract and `next-watch-rules-discovery-v0.1` artifact are historical-reproduction assets only.
 
+## RL / RaceLift retirement contract — 2026-10-02
+
+RL / RaceLift research is retired.
+
+Normative source:
+`docs/RL_Retirement_Contract_20261002.md`
+
+Operational interpretation:
+
+- Training Edge / RL-T v0.2 is frozen reproduction evidence, not a normal production input.
+- Training Research is a frozen research asset; do not rebuild it merely because an RL value is absent.
+- RL output absence is normal and must not fail Newspaper / RaceNote / EdgeDB / PWA.
+- Do not auto-run an RL scorer, auto-open HOLDOUT, auto-retune, or auto-fallback to Historical Raw because RL is missing.
+- RaceNote's existing `training_edge_visible=false` / `rl_index_visible=false` guards remain as anti-dependency firewalls.
+- Newspaper historical `my_index` compatibility may remain, but normal production must not require it.
+- JRDB Warehouse / Index Base / record-hash compatibility remain active shared infrastructure and are not retired with RL.
+
+The earlier 2026-09-26 RL-T production Warehouse section is historical migration evidence only; it no longer means RL daily generation should continue.
+
