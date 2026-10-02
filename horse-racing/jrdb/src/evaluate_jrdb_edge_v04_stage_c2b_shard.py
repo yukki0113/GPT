@@ -130,8 +130,9 @@ def main():
             ym=ys==y; nn=int(ym.sum())
             wy.append(float(w[ym].sum())/nn if nn else 0.0)
             py.append(float(p[ym].sum())/nn if nn else 0.0)
+        signature=hashlib.sha256(np.asarray(postings,dtype=np.int32).tobytes()).hexdigest()[:24]
         row={
-          "metric_request_id":mid,"n":n,"wins":wins,"places":places,
+          "metric_request_id":mid,"match_signature":signature,"n":n,"wins":wins,"places":places,
           "win_roi":wsum/n if n else None,"place_roi":psum/n if n else None,
           "win_return_sum":wsum,"place_return_sum":psum,
           "top1_win_payout":top1w,"top1_place_payout":top1p,
