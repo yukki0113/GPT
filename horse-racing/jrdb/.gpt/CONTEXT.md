@@ -354,3 +354,16 @@ Operational interpretation:
 
 The earlier 2026-09-26 RL-T production Warehouse section is historical migration evidence only; it no longer means RL daily generation should continue.
 
+## RL downstream non-dependency confirmed — 2026-10-02
+
+T3 retirement audit proved that current Newspaper / RaceNote / EdgeDB / PWA do not require RL / Training Edge output.
+
+- no active workflow passes `--my-index-csv`
+- Newspaper historical `my_index` input is optional compatibility only
+- RaceNote keeps `training_edge_visible=false` and `rl_index_visible=false`
+- EdgeDB / PWA have no RL hard dependency
+- missing RL output is a normal production state
+
+Formal evidence:
+`docs/RL_Retirement_T3_Downstream_Audit_20261002.md`
+
