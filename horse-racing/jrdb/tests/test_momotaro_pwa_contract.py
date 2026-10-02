@@ -143,7 +143,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function factDownloadUrl(manifest)', fact_script)
         self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v26"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v27"', service_worker)
 
 
 if __name__ == "__main__":
