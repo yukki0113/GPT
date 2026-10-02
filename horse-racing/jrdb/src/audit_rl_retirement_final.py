@@ -148,7 +148,7 @@ def audit(root: Path = ROOT) -> dict[str, Any]:
         "horse-racing/jrdb/config/training_edge_v0_2_runtime_versions.json",
     )
     config_readme = _read(root / "horse-racing/jrdb/config/README_training_edge_v0_2_runtime.md")
-    checks.append(check("rl_config_frozen_and_pending_marker_closed", all((root / p).is_file() for p in config_files) and "RETIRED / FROZEN" in config_readme and "not a pending task" in config_readme, {"config_count": len(config_files)}))
+    checks.append(check("rl_config_frozen_and_pending_marker_closed", all((root / p).is_file() for p in config_files) and "Retirement status" in config_readme and "stale historical pre-freeze evidence" in config_readme, {"config_count": len(config_files)}))
 
     shared_texts = {p: _read(root / p) for p in SHARED_WORKFLOWS}
     shared_missing = [p for p,t in shared_texts.items() if "ACTIVE_SHARED_INFRA" not in t]
