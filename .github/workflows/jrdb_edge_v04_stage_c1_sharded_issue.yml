@@ -164,7 +164,7 @@ jobs:
           SHARD_ID: ${{ matrix.shard_id }}
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py             --feature-parquet /tmp/inputs/edge_runner_fact.parquet             --template-parquet /tmp/inputs/candidate_template_catalog.parquet             --shard-plan /tmp/plan/shard_plan.json             --shard-id "$SHARD_ID"             --output-dir /tmp/out             --min-win-roi "$MIN_WIN_ROI"             --min-place-roi "$MIN_PLACE_ROI"             | tee /tmp/out/stdout.json
+          python horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py             --feature-parquet /tmp/inputs/edge_runner_fact.parquet             --template-parquet /tmp/inputs/candidate_template_catalog.parquet             --shard-plan /tmp/plan/shard_plan.json             --shard-id "$SHARD_ID"             --output-dir /tmp/out             --min-win-roi "$MIN_WIN_ROI"             --min-place-roi "$MIN_PLACE_ROI"             --max-per-template "$MAX_PER_TEMPLATE"             --discovery-years "$DISCOVERY_YEARS"             | tee /tmp/out/stdout.json
 
       - name: Add evaluator provenance
         env:
