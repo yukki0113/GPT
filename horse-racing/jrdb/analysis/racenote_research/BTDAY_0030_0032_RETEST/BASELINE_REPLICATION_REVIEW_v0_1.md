@@ -43,22 +43,22 @@ Coverage:
 
 ## Hierarchy result
 
-- REVERSAL_WARRANTED: **4**
-- NARROW_GAP: **11**
-- PRE_RACE_JUSTIFIED: **23**
+- REVERSAL_WARRANTED: **5**
+- NARROW_GAP: **9**
+- PRE_RACE_JUSTIFIED: **24**
 - SINGLE_SHOT_SUCCESS_NO_PROMOTION: **6**
 - PROMOTION_WARRANTED: **0**
 
 Clear correction:
-- **4 / 44 = 9.1%**
+- **5 / 44 = 11.4%**
 
 Boundary:
-- **11 / 44 = 25.0%**
+- **9 / 44 = 20.5%**
 
 No clear correction / ▲ role success:
-- 23 PRE_RACE_JUSTIFIED
+- 24 PRE_RACE_JUSTIFIED
 - 6 SINGLE_SHOT_SUCCESS_NO_PROMOTION
-- total **29 / 44 = 65.9%**
+- total **30 / 44 = 68.2%**
 
 ### Comparison with prior sets
 
@@ -73,15 +73,15 @@ Retest 0027〜0029:
 - no clear correction 32 / 45 = 71.1%
 
 Replication 0030〜0032:
-- clear 4 / 44 = 9.1%
-- boundary 11 / 44 = 25.0%
-- no clear correction 29 / 44 = 65.9%
+- clear 5 / 44 = 11.4%
+- boundary 9 / 44 = 20.5%
+- no clear correction 30 / 44 = 68.2%
 
 Combined mechanical Hierarchy population:
 - **153R**
-- clear correction: **23 / 153 = 15.0%**
-- boundary: **28 / 153 = 18.3%**
-- no clear correction / ▲ role success: **102 / 153 = 66.7%**
+- clear correction: **24 / 153 = 15.7%**
+- boundary: **26 / 153 = 17.0%**
+- no clear correction / ▲ role success: **103 / 153 = 67.3%**
 
 The direction remains stable:
 **mechanical “winner != ◎” is mostly not a correctable ◎ failure.**
@@ -109,8 +109,9 @@ This strongly supports preserving ▲ as a distinct role.
 Clear reversals in this set:
 1. 0030 中山9R — same-distance 1200m win / can-win evidence underweighted.
 2. 0031 札幌4R — 2000m direct-condition evidence underweighted versus strong but 2600m-derived ◎ evidence.
-3. 0032 阪神9R — same 2200m 2nd + REAR_HIGH_LAST3F90 + strong training.
-4. 0032 阪神10R — same 1800m 2nd versus ◎'s 1600m 3rd.
+3. 0032 中山7R — same 1600m win + strong training versus ◎'s 1800m4着からの短縮.
+4. 0032 阪神9R — same 2200m 2nd + REAR_HIGH_LAST3F90 + strong training.
+5. 0032 阪神10R — same 1800m 2nd versus ◎'s 1600m 3rd.
 
 All four are variants of the already observed pattern:
 **race_model / target condition and final hierarchy must remain semantically consistent.**
@@ -119,8 +120,8 @@ All four are variants of the already observed pattern:
 
 39 unmarked third-place horses:
 - SWAP_CANDIDATE: **8 / 39 = 20.5%**
-- COMPLETE_MISS: **30 / 39 = 76.9%**
-- AMBIGUOUS: **1 / 39 = 2.6%**
+- COMPLETE_MISS: **27 / 39 = 69.2%**
+- AMBIGUOUS: **4 / 39 = 10.3%**
 
 Prior:
 - Discovery 0023〜0026: SWAP 32/68 = 47.1%
@@ -130,8 +131,8 @@ Prior:
 Combined 0023〜0032 detailed 3着無印:
 - total 131
 - SWAP 47 = **35.9%**
-- COMPLETE_MISS 73 = **55.7%**
-- AMBIGUOUS 11 = **8.4%**
+- COMPLETE_MISS 70 = **53.4%**
+- AMBIGUOUS 14 = **10.7%**
 
 The SWAP rate has fallen in each new independent block:
 **47.1% -> 29.2% -> 20.5%**.
