@@ -197,7 +197,7 @@ class MomotaroProjectionTest(unittest.TestCase):
 
             self.assertEqual(kenshow["mark"], "◎")
             self.assertEqual(kenshow["confidence"], "A")
-            self.assertEqual(kenshow["tag"], "RaceNote / RRDB")
+            self.assertEqual(kenshow["tag"], "不利分析")
             self.assertTrue(kenshow["review_horse"])
             self.assertEqual(
                 kenshow["comment"],
