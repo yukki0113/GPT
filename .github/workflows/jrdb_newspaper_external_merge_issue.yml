@@ -1,0 +1,247 @@
+name: JRDB Newspaper External Merge via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_NEWSPAPER_EXTERNAL_MERGE_REQUEST]'
+  RELEASE_TAG: jrdb-newspaper-current
+  RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
+  RELEASE_META: jrdb_newspaper_current_release.json
+
+jobs:
+  merge:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EXTERNAL_MERGE_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request and decode Eval
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/external-merge
+          python - <<'PY'
+          import base64, gzip, json, os, re
+          from pathlib import Path
+
+          req = json.loads((os.environ.get("ISSUE_BODY") or "").strip())
+          date = str(req.get("date") or "").strip()
+          revision = req.get("revision")
+          eval_gzip_b64 = str(req.get("eval_gzip_b64") or "").strip()
+
+          if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", date):
+              raise SystemExit("date must be YYYY-MM-DD")
+          if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+              raise SystemExit("revision must be integer >= 1")
+          if not eval_gzip_b64:
+              raise SystemExit("eval_gzip_b64 is required")
+
+          try:
+              payload = gzip.decompress(base64.b64decode(eval_gzip_b64, validate=True))
+          except Exception as exc:
+              raise SystemExit(f"failed to decode Eval payload: {exc}") from exc
+
+          Path("/tmp/external-merge/eval.csv").write_bytes(payload)
+          Path("/tmp/external-merge/request.json").write_text(
+              json.dumps({"date": date, "revision": revision}, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              env.write(f"REQUEST_DATE={date}\n")
+              env.write(f"REQUEST_REVISION={revision}\n")
+          PY
+
+      - name: Download current personal Newspaper release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/current-release
+          mkdir -p /tmp/current-release
+          gh release download "$RELEASE_TAG"             --repo "$GITHUB_REPOSITORY"             --pattern "$RELEASE_ARCHIVE"             --pattern "$RELEASE_META"             --dir /tmp/current-release
+
+      - name: Validate and extract current release
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, tarfile
+          from pathlib import Path, PurePosixPath
+
+          root = Path("/tmp/current-release")
+          archive = root / os.environ["RELEASE_ARCHIVE"]
+          meta = json.loads((root / os.environ["RELEASE_META"]).read_text(encoding="utf-8"))
+
+          if meta.get("schema_version") != "0.1" or meta.get("release_kind") != "jrdb_newspaper_current_cache":
+              raise SystemExit("invalid current release metadata")
+          if meta.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit(f"current release date mismatch: {meta.get('date')}")
+          if hashlib.sha256(archive.read_bytes()).hexdigest() != meta.get("archive_sha256"):
+              raise SystemExit("current archive SHA mismatch")
+
+          out = Path("/tmp/current-day")
+          out.mkdir()
+          with tarfile.open(archive, mode="r:xz") as handle:
+              for member in handle.getmembers():
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts or member.issym() or member.islnk():
+                      raise SystemExit(f"unsafe release member: {member.name}")
+              handle.extractall(out, filter="data")
+
+          manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+          if manifest.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit("manifest date mismatch")
+          if int(manifest.get("revision") or 0) >= int(os.environ["REQUEST_REVISION"]):
+              raise SystemExit("requested revision must be newer than current")
+
+          # merge_day only requires audit presence; current cache intentionally omits it.
+          (out / "audit.json").write_text(
+              json.dumps({"status": "PASS", "date": manifest.get("date"), "source": "current-release"}) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Merge Eval into current day
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/merged-day
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/current-day             --output-dir /tmp/merged-day             --eval-csv /tmp/external-merge/eval.csv             --revision "$REQUEST_REVISION"             > /tmp/external-merge/merge-result.json
+
+      - name: Validate merged personal current
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+
+          root = Path("/tmp/merged-day")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          if manifest.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit("merged date mismatch")
+          if int(manifest.get("revision") or 0) != int(os.environ["REQUEST_REVISION"]):
+              raise SystemExit("merged revision mismatch")
+          status = (manifest.get("source_status") or {}).get("eval") or {}
+          if status.get("state") != "READY":
+              raise SystemExit("Eval source is not READY")
+
+          entries = manifest.get("races") or []
+          eval_count = 0
+          iluka_count = 0
+          for entry in entries:
+              path = root / str(entry["path"])
+              data = path.read_bytes()
+              if hashlib.sha256(data).hexdigest() != str(entry.get("sha256") or ""):
+                  raise SystemExit(f"race SHA mismatch: {entry['path']}")
+              bundle = json.loads(data.decode("utf-8"))
+              for horse in bundle.get("horses") or []:
+                  addons = horse.get("addons") or {}
+                  if addons.get("eval") is not None:
+                      eval_count += 1
+                  if addons.get("keibailuka") is not None:
+                      iluka_count += 1
+
+          if eval_count != 349:
+              raise SystemExit(f"Eval merge count mismatch: {eval_count}")
+          if iluka_count != 14:
+              raise SystemExit(f"Iluka preservation mismatch: {iluka_count}")
+
+          Path("/tmp/external-merge/validation.json").write_text(
+              json.dumps({
+                  "status": "PASS",
+                  "date": manifest["date"],
+                  "revision": manifest["revision"],
+                  "race_count": len(entries),
+                  "eval_count": eval_count,
+                  "iluka_count": iluka_count,
+              }, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Build personal release cache
+        run: |
+          set -euo pipefail
+          rm -f "/tmp/external-merge/$RELEASE_ARCHIVE" "/tmp/external-merge/$RELEASE_META"
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/merged-day             --exclude='./audit.json'             -cJf "/tmp/external-merge/$RELEASE_ARCHIVE" .
+
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+
+          root = Path("/tmp/external-merge")
+          merged = Path("/tmp/merged-day")
+          archive = root / os.environ["RELEASE_ARCHIVE"]
+          manifest = json.loads((merged / "manifest.json").read_text(encoding="utf-8"))
+          meta = {
+              "schema_version": "0.1",
+              "release_kind": "jrdb_newspaper_current_cache",
+              "date": manifest["date"],
+              "revision": manifest["revision"],
+              "race_count": len(manifest.get("races") or []),
+              "manifest_sha256": hashlib.sha256((merged / "manifest.json").read_bytes()).hexdigest(),
+              "archive_filename": archive.name,
+              "archive_size_bytes": archive.stat().st_size,
+              "archive_sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
+              "source_run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "source_artifact": "external-merge-eval",
+          }
+          (root / os.environ["RELEASE_META"]).write_text(
+              json.dumps(meta, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Publish personal current release only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
+          fi
+          gh release create "$RELEASE_TAG"             --repo "$GITHUB_REPOSITORY"             --title "JRDB Newspaper current"             --notes "Mutable personal PWA Newspaper cache with external sources merged."             "/tmp/external-merge/$RELEASE_ARCHIVE"             "/tmp/external-merge/$RELEASE_META"
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result=json.loads(Path("/tmp/external-merge/validation.json").read_text(encoding="utf-8"))
+          Path("/tmp/external-merge/comment.md").write_text(
+              "JRDB_NEWSPAPER_EXTERNAL_MERGE_RESULT\n```json\n"
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + "\n```\n",
+              encoding="utf-8",
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/external-merge/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB Newspaper external merge failed. Workflow run: $RUN_URL"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
