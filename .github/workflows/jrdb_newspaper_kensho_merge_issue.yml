@@ -1,0 +1,284 @@
+name: JRDB Newspaper Kensho Merge via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  RELEASE_TAG: jrdb-newspaper-current
+  RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
+  RELEASE_META: jrdb_newspaper_current_release.json
+  MOMOTARO_RELEASE_TAG: jrdb-momotaro-newspaper-current
+  MOMOTARO_RELEASE_ARCHIVE: jrdb_momotaro_newspaper_current.tar.xz
+  MOMOTARO_RELEASE_META: jrdb_momotaro_newspaper_current_release.json
+
+jobs:
+  merge:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_KENSHO_MERGE_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/kensho
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get("ISSUE_BODY") or "").strip())
+          date=str(req.get("date") or "").strip()
+          revision=req.get("revision")
+          rn=str(req.get("racenote_repo_path") or "").strip()
+          rr=str(req.get("rrdb_repo_path") or "").strip()
+          if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}",date):
+              raise SystemExit("date must be YYYY-MM-DD")
+          if not isinstance(revision,int) or isinstance(revision,bool) or revision < 1:
+              raise SystemExit("revision must be integer >= 1")
+          for label,value in (("racenote_repo_path",rn),("rrdb_repo_path",rr)):
+              p=Path(value)
+              if not value or p.is_absolute() or ".." in p.parts or not p.is_file():
+                  raise SystemExit(f"invalid {label}")
+          Path("/tmp/kensho/request.json").write_text(json.dumps(req,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as h:
+              h.write(f"REQUEST_DATE={date}\nREQUEST_REVISION={revision}\nRACENOTE_PATH={rn}\nRRDB_PATH={rr}\n")
+          PY
+
+      - name: Download current personal release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/current-release /tmp/current-day
+          mkdir -p /tmp/current-release /tmp/current-day
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --pattern "$RELEASE_ARCHIVE" --pattern "$RELEASE_META" --dir /tmp/current-release
+
+      - name: Validate and extract current personal release
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,tarfile
+          from pathlib import Path,PurePosixPath
+          root=Path("/tmp/current-release")
+          archive=root/os.environ["RELEASE_ARCHIVE"]
+          meta=json.loads((root/os.environ["RELEASE_META"]).read_text(encoding="utf-8"))
+          if meta.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit(f"current date mismatch: {meta.get('date')}")
+          if hashlib.sha256(archive.read_bytes()).hexdigest()!=meta.get("archive_sha256"):
+              raise SystemExit("current archive SHA mismatch")
+          with tarfile.open(archive,"r:xz") as h:
+              for m in h.getmembers():
+                  p=PurePosixPath(m.name)
+                  if p.is_absolute() or ".." in p.parts or m.issym() or m.islnk():
+                      raise SystemExit(f"unsafe member: {m.name}")
+              h.extractall("/tmp/current-day",filter="data")
+          manifest=json.loads(Path("/tmp/current-day/manifest.json").read_text(encoding="utf-8"))
+          if manifest.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit("manifest date mismatch")
+          if int(manifest.get("revision") or 0) >= int(os.environ["REQUEST_REVISION"]):
+              raise SystemExit("requested revision must be newer than current")
+          (Path("/tmp/current-day")/"audit.json").write_text(
+              json.dumps({"status":"PASS","date":manifest["date"],"source":"current-release"})+"\n",
+              encoding="utf-8")
+          PY
+
+      - name: Convert compact RaceNote handoff
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,json,os
+          from pathlib import Path
+          src=Path(os.environ["RACENOTE_PATH"])
+          data=json.loads(src.read_text(encoding="utf-8"))
+          if data.get("date") != os.environ["REQUEST_DATE"]:
+              raise SystemExit("RaceNote date mismatch")
+          fields=["date","venue_code","venue","race_no","race_key","horse_no","horse_name","mark","prediction_rank","confidence","race_short_comment","horse_short_comment","model_version","source_semantic_sha256"]
+          count=0
+          with Path("/tmp/kensho/racenote.csv").open("w",encoding="utf-8",newline="") as h:
+              w=csv.DictWriter(h,fieldnames=fields)
+              w.writeheader()
+              for race in data.get("races") or []:
+                  for horse in race.get("horses") or []:
+                      w.writerow({
+                          "date":data["date"],"venue_code":race["venue_code"],"venue":race["venue"],
+                          "race_no":race["race_no"],"race_key":race["race_key"],
+                          "horse_no":horse["horse_no"],"horse_name":horse["horse_name"],
+                          "mark":horse.get("mark") or "","prediction_rank":horse["prediction_rank"],
+                          "confidence":horse["confidence"],"race_short_comment":race.get("race_short_comment") or "",
+                          "horse_short_comment":"","model_version":data["model_version"],
+                          "source_semantic_sha256":horse["source_semantic_sha256"],
+                      })
+                      count+=1
+          if len(data.get("races") or []) != 24 or count != 349:
+              raise SystemExit(f"RaceNote completeness mismatch races={len(data.get('races') or [])} horses={count}")
+          PY
+
+      - name: Merge RaceNote and RRDB into personal current
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/merged-day
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/current-day             --output-dir /tmp/merged-day             --racenote-csv /tmp/kensho/racenote.csv             --rrdb-recommendation-csv "$RRDB_PATH"             --revision "$REQUEST_REVISION"             > /tmp/kensho/merge-result.json
+
+      - name: Validate personal merge
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path("/tmp/merged-day")
+          manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+          if manifest.get("date") != os.environ["REQUEST_DATE"] or int(manifest.get("revision") or 0)!=int(os.environ["REQUEST_REVISION"]):
+              raise SystemExit("personal manifest mismatch")
+          counts={"eval":0,"iluka":0,"racenote":0,"rrdb":0}
+          for entry in manifest.get("races") or []:
+              b=json.loads((root/entry["path"]).read_text(encoding="utf-8"))
+              for h in b.get("horses") or []:
+                  a=h.get("addons") or {}
+                  counts["eval"] += int(isinstance(a.get("eval"),dict))
+                  counts["iluka"] += int(isinstance(a.get("keibailuka"),dict))
+                  counts["racenote"] += int(isinstance(a.get("racenote_prediction"),dict))
+                  counts["rrdb"] += int(isinstance(a.get("rrdb_recommendation"),dict))
+          if counts != {"eval":349,"iluka":13,"racenote":349,"rrdb":20}:
+              raise SystemExit(f"personal counts mismatch: {counts}")
+          Path("/tmp/kensho/personal-validation.json").write_text(
+              json.dumps({"status":"PASS","date":manifest["date"],"revision":manifest["revision"],**counts},ensure_ascii=False,indent=2)+"\n",
+              encoding="utf-8")
+          PY
+
+      - name: Publish personal current release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/personal-release
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/merged-day --exclude='./audit.json' -cJf "/tmp/personal-release/$RELEASE_ARCHIVE" .
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path("/tmp/merged-day"); out=Path("/tmp/personal-release")
+          manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+          archive=out/os.environ["RELEASE_ARCHIVE"]
+          meta={
+              "schema_version":"0.1","release_kind":"jrdb_newspaper_current_cache",
+              "date":manifest["date"],"revision":manifest["revision"],"race_count":len(manifest.get("races") or []),
+              "manifest_sha256":hashlib.sha256((root/"manifest.json").read_bytes()).hexdigest(),
+              "archive_filename":archive.name,"archive_size_bytes":archive.stat().st_size,
+              "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
+              "source_run_id":int(os.environ["GITHUB_RUN_ID"]),"source_artifact":"kensho-racenote-rrdb-merge",
+          }
+          (out/os.environ["RELEASE_META"]).write_text(json.dumps(meta,ensure_ascii=False,sort_keys=True,separators=(",",":"))+"\n",encoding="utf-8")
+          PY
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
+          fi
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Newspaper current"             --notes "Current personal newspaper with Kensho RaceNote and RRDB merged."             "/tmp/personal-release/$RELEASE_ARCHIVE" "/tmp/personal-release/$RELEASE_META"             /tmp/kensho/personal-validation.json
+
+      - name: Build Momotaro projection
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/momotaro-current
+          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             > /tmp/kensho/momotaro-projection.json
+
+      - name: Validate Momotaro Kensho projection
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,json,os
+          from pathlib import Path
+          rrdb={}
+          with Path(os.environ["RRDB_PATH"]).open(encoding="utf-8-sig",newline="") as h:
+              for row in csv.DictReader(h):
+                  rrdb[(str(row["race_key"]),int(row["horse_no"]))]=row["recommendation_comment"]
+          root=Path("/tmp/momotaro-current")
+          manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+          checked=0; rn_marked=0; iluka=0
+          for entry in manifest.get("races") or []:
+              b=json.loads((root/entry["path"]).read_text(encoding="utf-8"))
+              rk=str(b["race"]["race_key"])
+              for h in b.get("horses") or []:
+                  a=h.get("addons") or {}
+                  m=a.get("momotaro") or {}
+                  k=m.get("kenshow") or {}
+                  if k.get("mark"): rn_marked += 1
+                  if isinstance(m.get("keibailuka"),dict): iluka += 1
+                  key=(rk,int(h["key"]["horse_no"]))
+                  if key in rrdb:
+                      if k.get("review_horse") is not True:
+                          raise SystemExit(f"RRDB review_horse missing {key}")
+                      if k.get("tag") != "不利分析":
+                          raise SystemExit(f"RRDB tag mismatch {key}: {k.get('tag')!r}")
+                      if k.get("comment") != rrdb[key]:
+                          raise SystemExit(f"RRDB comment mismatch {key}")
+                      checked+=1
+          if checked != 20:
+              raise SystemExit(f"RRDB projection count mismatch: {checked}")
+          if rn_marked != 120:
+              raise SystemExit(f"RaceNote marked count mismatch: {rn_marked}")
+          if iluka != 13:
+              raise SystemExit(f"Iluka projection count mismatch: {iluka}")
+          Path("/tmp/kensho/momotaro-validation.json").write_text(
+              json.dumps({"status":"PASS","date":manifest["date"],"rrdb_checked":checked,"racenote_marked":rn_marked,"iluka":iluka},ensure_ascii=False,indent=2)+"\n",
+              encoding="utf-8")
+          PY
+
+      - name: Publish Momotaro current release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/momotaro-release
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/momotaro-current -cJf "/tmp/momotaro-release/$MOMOTARO_RELEASE_ARCHIVE" .
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path("/tmp/momotaro-current"); out=Path("/tmp/momotaro-release")
+          manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+          archive=out/os.environ["MOMOTARO_RELEASE_ARCHIVE"]
+          meta={
+              "schema_version":"0.1","release_kind":"jrdb_momotaro_newspaper_current_cache",
+              "date":manifest["date"],"revision":manifest.get("revision"),"race_count":len(manifest.get("races") or []),
+              "manifest_sha256":hashlib.sha256((root/"manifest.json").read_bytes()).hexdigest(),
+              "archive_filename":archive.name,"archive_size_bytes":archive.stat().st_size,
+              "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
+              "source_run_id":int(os.environ["GITHUB_RUN_ID"]),"source_artifact":"kensho-projection",
+          }
+          (out/os.environ["MOMOTARO_RELEASE_META"]).write_text(json.dumps(meta,ensure_ascii=False,sort_keys=True,separators=(",",":"))+"\n",encoding="utf-8")
+          PY
+          if gh release view "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
+          fi
+          gh release create "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Momotaro Newspaper current"             --notes "Current Momotaro newspaper projection with Kensho RaceNote and RRDB."             "/tmp/momotaro-release/$MOMOTARO_RELEASE_ARCHIVE" "/tmp/momotaro-release/$MOMOTARO_RELEASE_META"             /tmp/kensho/momotaro-validation.json
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          cat /tmp/kensho/personal-validation.json
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB_NEWSPAPER_KENSHO_MERGE_RESULT: success. Personal and Momotaro current releases updated from the same 2026-10-03 dataset."
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "Kensho merge failed. $RUN_URL"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned"
