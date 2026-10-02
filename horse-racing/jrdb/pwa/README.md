@@ -131,7 +131,9 @@ PWAの現在動作:
 - comment非空: **Eval値そのものだけ**をリンク化
 - linkはイルカ列と同じ青字 + 下線
 - 既存 `newspaper-detail-dialog` を共用
-- title / comment / codes / status / version / asofを表示
+- modal本文は `analysis.comment` のみを表示し、内部status/codes/version/asofはUIへ出さない
+- 個人PWAの注目馬一覧にはcomment非空の馬だけを `Eval` タグ・馬名・上流title・comment付きで追加する
+- 桃太郎PWAにはEvalを投影せず、private currentから個人PWAだけが取得する
 - PWAにH1/H2条件式を持たない
 - WATCHを買い推奨へ変換しない
 - MATCHを的中保証として扱わない
