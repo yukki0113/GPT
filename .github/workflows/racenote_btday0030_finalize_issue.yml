@@ -55,10 +55,10 @@ jobs:
         run: |
           set -euo pipefail
           curl -L --fail --retry 4 --retry-delay 2 \
-            "https://drive.usercontent.google.com/download?id=1M3urx3aAf2XksEEnITueRzAa5VsFdx8v&export=download&confirm=t" \
+            "https://sdmntprnznorth.oaiusercontent.com/files/00000000-c9dc-820b-9522-c2ff45cc549a/raw?se=2026-10-02T04%3A46%3A50Z&sp=r&sv=2026-02-06&sr=b&scid=032aea86-a8e4-540f-855e-f0cc8d97437b&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T02%3A32%3A16Z&ske=2026-10-03T02%3A32%3A16Z&sks=b&skv=2026-02-06&sig=0qHxoiIP0ca6m%2BEf71A1ZxA7s/E7lacxilnwLk9jiz8%3D" \
             -o /tmp/BTDAY-0030_prepared_forecast.jsonl
           test -s /tmp/BTDAY-0030_prepared_forecast.jsonl
-          sha256sum /tmp/BTDAY-0030_prepared_forecast.jsonl
+          echo "fd53405d073d7c53e6d4ce9410fae8691c72e2263ef07b6eb6e11e23bf662901  /tmp/BTDAY-0030_prepared_forecast.jsonl" | sha256sum -c -
       - name: Freeze prepared forecast
         run: |
           set -euo pipefail
