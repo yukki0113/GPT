@@ -1,13 +1,43 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3-v0.4.2."""
+"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3-v0.4.3."""
 
 from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
 from typing import Any
 
-VERSION = "racenote-human-context-validator-0.4.0"
+VERSION = "racenote-human-context-validator-0.4.3"
+
+V043_LOGIC = "RaceNote-Human-Context-Reader-0.4.3-candidate"
+V043_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.3"
+PASS_FIELDS = (
+    ("hierarchy_reviewed", "hierarchy_changed", "hierarchy_reason", "HIERARCHY_CONSISTENCY"),
+    ("single_shot_promotion_reviewed", "single_shot_promoted", "single_shot_promotion_reason", "SINGLE_SHOT_PROMOTION"),
+    ("coverage_challenger_reviewed", "coverage_changed", "coverage_reason", "COVERAGE_CHALLENGER"),
+)
+
+def validate_consistency_pass(r: dict[str,Any]) -> list[str]:
+    trace=r.get("decision_trace") or {}
+    cp=trace.get("consistency_pass")
+    if not isinstance(cp,dict):
+        return ["consistency_pass required"]
+    errors=[]
+    changed=[]
+    for reviewed,flag,reason,label in PASS_FIELDS:
+        if cp.get(reviewed) is not True:
+            errors.append(f"{reviewed} must be true")
+        if not isinstance(cp.get(flag),bool):
+            errors.append(f"{flag} must be boolean")
+        if cp.get(flag) is True:
+            changed.append(label)
+            if not str(cp.get(reason) or "").strip():
+                errors.append(f"{reason} required for change")
+    attribution=cp.get("change_attribution")
+    expected="+".join(changed) if changed else "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
+    if attribution != expected:
+        errors.append(f"change_attribution must equal {expected}")
+    return errors
 
 def load_records(path: Path) -> list[dict[str, Any]]:
     if path.suffix.lower() == ".jsonl":
@@ -33,6 +63,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         "RaceNote-Forecast-Research-Record-0.3",
         "RaceNote-Forecast-Research-Record-0.3.1",
         "RaceNote-Forecast-Research-Record-0.4.2",
+        V043_SCHEMA,
     }:
         e.append(f"{pre}: unsupported schema version")
     logic_version=research.get("logic_version")
@@ -43,12 +74,19 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         "RaceNote-Human-Context-Reader-0.4.0-candidate",
         "RaceNote-Human-Context-Reader-0.4.1-candidate",
         "RaceNote-Human-Context-Reader-0.4.2-candidate",
+        V043_LOGIC,
     }:
         e.append(f"{pre}: wrong logic_version")
     if research.get("evaluation_mode")=="CALIBRATION_REPLAY" and research.get("turn_id","").startswith("BTDAY-"):
         e.append(f"{pre}: calibration replay must use CAL-* turn id")
 
     is_v04=str(logic_version or "").startswith("RaceNote-Human-Context-Reader-0.4")
+    if schema_version == V043_SCHEMA or logic_version == V043_LOGIC:
+        if (schema_version,logic_version)!=(V043_SCHEMA,V043_LOGIC):
+            e.append(f"{pre}: v0.4.3 schema/logic mismatch")
+        if research.get("independent_forecast") is not True or research.get("baseline_marks_used_as_input") is not False:
+            e.append(f"{pre}: v0.4.3 must declare independent forecast without baseline marks")
+        e.extend(f"{pre}: {message}" for message in validate_consistency_pass(r))
 
     if is_v04:
         if len(str(t.get("race_model") or "").strip()) < 30:
@@ -122,7 +160,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
             if other and other not in reason: e.append(f"{pre}: {key} must name {other}")
             if len(reason.strip())<20: e.append(f"{pre}: {key} reason too short")
 
-    if schema_version in {"RaceNote-Forecast-Research-Record-0.3.1","RaceNote-Forecast-Research-Record-0.4.2"}:
+    if schema_version in {"RaceNote-Forecast-Research-Record-0.3.1","RaceNote-Forecast-Research-Record-0.4.2",V043_SCHEMA}:
         rrdb=t.get("rrdb_evidence")
         if not isinstance(rrdb,dict):
             e.append(f"{pre}: rrdb_evidence required for v0.3.1")

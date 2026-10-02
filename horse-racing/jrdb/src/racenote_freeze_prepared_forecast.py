@@ -13,14 +13,17 @@ import argparse
 import copy
 import hashlib
 import json
-import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 VERSION = "racenote-freeze-prepared-forecast-0.1.0"
 
-REQUIRED_LOGIC = "RaceNote-Human-Context-Reader-0.4.2-candidate"
+DEFAULT_LOGIC = "RaceNote-Human-Context-Reader-0.4.2-candidate"
+LOGIC_SCHEMAS = {
+    DEFAULT_LOGIC: "RaceNote-Forecast-Research-Record-0.4.2",
+    "RaceNote-Human-Context-Reader-0.4.3-candidate": "RaceNote-Forecast-Research-Record-0.4.3",
+}
 REQUIRED_PROSE = "FORECAST_READER_FACING_PROSE_v0_1"
 REQUIRED_RRDB = "rrdb-recommendation-signals-v0.3"
 REQUIRED_AUTHORING_MODE = "MODEL_RACE_BY_RACE_REASONING"
@@ -90,6 +93,7 @@ def validate_prepared_record(
     reader: dict[str, Any],
     selection_id: str,
     target_date: str,
+    logic_version: str = DEFAULT_LOGIC,
 ) -> None:
     race = reader.get("race") or {}
     ident = record.get("identity") or {}
@@ -102,8 +106,13 @@ def validate_prepared_record(
     got = (str(ident.get("target_date")), str(ident.get("venue")), int(ident.get("race_no")))
     assert got == expected, (got, expected)
 
-    assert record.get("schema_version") == "RaceNote-Forecast-Research-Record-0.4.2"
-    assert research.get("logic_version") == REQUIRED_LOGIC
+    assert record.get("schema_version") == LOGIC_SCHEMAS[logic_version]
+    assert research.get("logic_version") == logic_version
+    if logic_version != DEFAULT_LOGIC:
+        assert research.get("independent_forecast") is True
+        assert research.get("baseline_marks_used_as_input") is False
+        from validate_racenote_forecast_human_context import validate_consistency_pass
+        assert not validate_consistency_pass(record), validate_consistency_pass(record)
     assert research.get("reader_facing_prose_contract") == REQUIRED_PROSE
     assert research.get("authoring_mode") == REQUIRED_AUTHORING_MODE
     assert research.get("prose_origin") == REQUIRED_PROSE_ORIGIN
@@ -136,6 +145,7 @@ def validate_prepared_record(
 
     rrdb = trace.get("rrdb_evidence") or {}
     assert rrdb.get("reviewed") is True
+    assert rrdb.get("recommendation_contract_version", REQUIRED_RRDB) == REQUIRED_RRDB
     assert isinstance(rrdb.get("used_in_decision"), bool)
     refs = rrdb.get("horse_refs")
     assert isinstance(refs, list)
@@ -153,6 +163,7 @@ def main() -> int:
     ap.add_argument("--selection-id", required=True)
     ap.add_argument("--date", required=True)
     ap.add_argument("--main-sha", required=True)
+    ap.add_argument("--logic-version", choices=tuple(LOGIC_SCHEMAS), default=DEFAULT_LOGIC)
     args = ap.parse_args()
 
     prep = args.prep_root
@@ -178,14 +189,14 @@ def main() -> int:
         key = (str(ident.get("venue")), int(ident.get("race_no")))
         assert key not in by_key, f"duplicate prepared race: {key}"
         assert key in readers, f"prepared race not in DAY PREP: {key}"
-        validate_prepared_record(record, readers[key][1], args.selection_id, args.date)
+        validate_prepared_record(record, readers[key][1], args.selection_id, args.date, args.logic_version)
         by_key[key] = record
 
     assert set(by_key) == set(readers), "prepared records do not cover the full DAY PREP card"
 
     out = args.output_root
     if out.exists():
-        shutil.rmtree(out)
+        raise FileExistsError(f"Freeze output already exists: {out}")
     for d in ("forecast", "reader_stripped", "day_merge"):
         (out / d).mkdir(parents=True, exist_ok=True)
 
@@ -268,7 +279,7 @@ def main() -> int:
         "status": "FROZEN_CLEAN_BLIND",
         "clean_blind_eligible": True,
         "result_opened": False,
-        "logic_version": REQUIRED_LOGIC,
+        "logic_version": args.logic_version,
         "reader_facing_prose_contract": REQUIRED_PROSE,
         "rrdb_recommendation_contract": REQUIRED_RRDB,
         "authoring_mode": REQUIRED_AUTHORING_MODE,

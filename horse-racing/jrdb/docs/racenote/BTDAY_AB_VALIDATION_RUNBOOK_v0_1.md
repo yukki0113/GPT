@@ -114,6 +114,43 @@ Also report:
 
 These are pre-result diagnostics only.
 
+### Deterministic Freeze and audit commands
+
+Use the same accepted, market-stripped DAY PREP directory for both versions.
+The two prepared record files contain independently model-authored marks, prose,
+and decision traces. Candidate B uses
+`RaceNote-Forecast-Research-Record-0.4.3` and records the three reviewed
+consistency passes in `decision_trace.consistency_pass`; the v0.4.2 schema
+and default Freeze invocation remain valid.
+
+```sh
+python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+  --prep-root "$PREP" --prepared-records "$PREPARED_A" \
+  --output-root "$FROZEN_A" --selection-id "$SELECTION_ID" \
+  --date "$TARGET_DATE" --main-sha "$MAIN_SHA"
+python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+  --prep-root "$PREP" --prepared-records "$PREPARED_B" \
+  --output-root "$FROZEN_B" --selection-id "$SELECTION_ID" \
+  --date "$TARGET_DATE" --main-sha "$MAIN_SHA" \
+  --logic-version RaceNote-Human-Context-Reader-0.4.3-candidate
+python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py \
+  --records "$FROZEN_A/day_merge/forecast_${COMPACT_DATE}_all.json" \
+  --output "$FROZEN_A/day_merge/validator.json"
+python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py \
+  --records "$FROZEN_B/day_merge/forecast_${COMPACT_DATE}_all.json" \
+  --output "$FROZEN_B/day_merge/validator.json"
+python horse-racing/jrdb/src/audit_racenote_btday_ab.py \
+  --prep-root "$PREP" --baseline-root "$FROZEN_A" \
+  --candidate-root "$FROZEN_B" --main-sha "$MAIN_SHA" \
+  --output-dir "$AB_AUDIT_DIR"
+```
+
+Copy the two merged forecast files and the generated `ab_manifest.json` /
+`ab_audit.json` to the filenames in section 5 only after both validators
+and the A/B audit PASS. A failed audit produces no PASS manifest. Freeze
+output directories must be new staging paths; do not rerun the packager
+against a previously frozen output directory.
+
 ## 8. Result acquisition
 
 After both versions are Frozen:
