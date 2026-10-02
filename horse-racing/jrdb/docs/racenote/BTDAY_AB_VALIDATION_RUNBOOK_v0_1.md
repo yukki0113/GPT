@@ -43,13 +43,29 @@ Both A and B must be frozen before any target result is opened.
 For each race:
 1. prepare one accepted `reader_stripped` input;
 2. bind its semantic hash;
-3. run v0.4.2 from that input;
-4. independently run v0.4.3 from the **same** input;
+3. run v0.4.2 from that input in an A-only Work context;
+4. independently run v0.4.3 from the **same** input in a separate, new B-only Work context;
 5. Freeze both outputs;
 6. only then proceed to results.
 
 Do not let v0.4.3 read the v0.4.2 marks as evidence.
 Do not ask v0.4.3 merely to "edit" the baseline marks.
+Neither Work context may read the other's Forecast marks, decision trace,
+reader-facing reason, or HTML while creating its own prediction. A/B comparison
+and access to both Frozen outputs occur only in the later audit context.
+
+After A is Frozen, the B-only handoff contains only:
+- BTDAY ID and target date;
+- canonical DAY PREP path / identifier and `reader_stripped` path;
+- main SHA and RRDB contract;
+- expected race count;
+- market-blind and result-unopened audit state.
+
+The B-only handoff must not contain A's marks (including horse names attached
+to marks), decision trace, reader-facing reason, or HTML. Existing partial A
+drafts remain in the A context; their existence does not require B to run in
+that context and does not stop A from finishing. Both individual Freezes must
+complete before A/B audit or result acquisition.
 
 The comparison must be two independent Forecast decisions sharing only the
 pre-race evidence.
