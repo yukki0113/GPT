@@ -1,0 +1,105 @@
+name: RaceNote BTDAY-0033 AB DAY PREP
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  day-prep:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_BTDAY033_AB_PREP]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check duckdb pyarrow
+      - name: Download immutable sources
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/src /tmp/analysis /tmp/rrdb
+          download() {
+            local id="$1" out="$2"
+            curl -L --fail --retry 4 --retry-delay 2 \
+              "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
+              -o "${out}"
+            test -s "${out}"
+          }
+          download "1qDPhWZ-JJq_Nsh_eo3GkvyCOPG7W2pYf" /tmp/src/PACI260112.zip
+          download "1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5" /tmp/src/analysis.tar.xz
+          download "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg" /tmp/src/RaceReviewDB_CURRENT.zip
+          tar -xJf /tmp/src/analysis.tar.xz -C /tmp/analysis
+          unzip -q /tmp/src/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+      - name: Build shared DAY PREP
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src \
+          python horse-racing/jrdb/src/build_racenote_daily.py \
+            --date 2026-01-12 \
+            --paci /tmp/src/PACI260112.zip \
+            --analysis-root /tmp/analysis \
+            --racereview-root /tmp/rrdb/postrace_review/v0_1 \
+            --output /tmp/dayprep \
+            --keep-intermediate
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/dayprep/RaceNote_20260112')
+          m=json.loads((root/'manifest.json').read_text())
+          v=json.loads((root/'validation_report.json').read_text())
+          assert m.get('status')=='PASS' and v.get('status')=='PASS'
+          fw=v.get('firewall') or {}
+          assert fw.get('target_result_exposed') is False
+          assert fw.get('market_exposed') is False
+          assert fw.get('analysis_as_of_violations')==0
+          assert fw.get('rrdb_as_of_violations')==0
+          print(json.dumps({'status':'PASS','race_count':m['counts']['races_built'],'horse_count':m['counts']['horses'],'firewall':fw},ensure_ascii=False))
+          PY
+      - name: Package shared DAY PREP
+        run: |
+          cd /tmp/dayprep
+          zip -qr /tmp/BTDAY-0033_AB_DAY_PREP_20260112_FINAL.zip RaceNote_20260112
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BTDAY-0033_AB_DAY_PREP_20260112_FINAL
+          path: /tmp/BTDAY-0033_AB_DAY_PREP_20260112_FINAL.zip
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          m=Path('/tmp/dayprep/RaceNote_20260112/manifest.json')
+          if m.exists():
+            x=json.loads(m.read_text())
+            payload={'status':x.get('status'),'run_id':int(os.environ['GITHUB_RUN_ID']),'target_date':'2026-01-12','race_count':x.get('counts',{}).get('races_built'),'horse_count':x.get('counts',{}).get('horses')}
+          else: payload={'status':'FAILED'}
+          print('RACENOTE_BTDAY033_AB_DAY_PREP_RESULT')
+          print('\\`\\`\\`json')
+          print(json.dumps(payload,ensure_ascii=False,indent=2))
+          print('\\`\\`\\`')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed || true
