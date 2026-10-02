@@ -110,7 +110,7 @@ RL missing
   -> auto-fallback to Historical Raw
 ```
 
-RL非存在は、retirement後のnormal stateである。
+RL非存在は、retirement後のnormal stateである。 Missing RL / Training Edge output is a normal production state.
 
 ## 8. Future reopening
 
