@@ -129,3 +129,11 @@ Race Selector仮説発見のためのanalysis-side annotationである。
 - `hierarchy_single_shot_winner_annotations_v0_1.jsonl`: 11Rのassessment / cause_codesを保持。
 
 ▲は定義上◎○を負かしてよいため、機械的なhierarchy_failureをそのままロジック失敗とみなさない。
+
+
+## Hierarchy △ winner review v0.1
+
+- `HIERARCHY_SUPPORT_WINNER_REVIEW_v0_1.md`: △1/△2勝利30RをFreeze時点の材料へ戻ってレビュー。
+- `hierarchy_support_winner_annotations_v0_1.jsonl`: 30Rのassessment / cause_codesを保持。
+
+これでHierarchy failure 64Rの○/▲/△レビューが一巡した。
