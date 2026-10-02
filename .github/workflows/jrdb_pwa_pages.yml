@@ -22,6 +22,7 @@ on:
       - "JRDB Momotaro Newspaper Current Publish"
       - "JRDB 20260927 RaceNote RRDB Publish"
       - "JRDB Newspaper Skeleton Publish"
+      - "JRDB Newspaper External Merge via Issue"
       - "JRDB Newspaper v0.3 Rehearsal Publish"
     types:
       - completed
