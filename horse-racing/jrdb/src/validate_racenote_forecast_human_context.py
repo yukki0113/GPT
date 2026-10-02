@@ -144,6 +144,12 @@ def validate_consistency_pass(r: dict[str,Any]) -> list[str]:
 
         if verdict == "SWAP":
             changed.append("COVERAGE_CHALLENGER")
+            if boundary.get("direct_condition_comparison") != "CHALLENGER_STRONGER":
+                errors.append("SWAP requires challenger stronger on direct condition")
+            if boundary.get("ability_comparison") not in {"CHALLENGER_STRONGER","ROUGHLY_EQUAL"}:
+                errors.append("SWAP requires no material ability gap versus delta2")
+            if boundary.get("race_model_comparison") not in {"CHALLENGER_STRONGER","ROUGHLY_EQUAL"}:
+                errors.append("SWAP requires challenger to fit race model at least as well as delta2")
             if final_delta2_no != challenger_no:
                 errors.append("SWAP final delta2 must equal coverage_best_challenger")
             if delta2_no is not None and delta2_no in final_mark_nos:
