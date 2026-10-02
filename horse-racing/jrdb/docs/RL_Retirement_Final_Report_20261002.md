@@ -37,10 +37,10 @@ Formal GitHub Actions run:
 - Artifact: jrdb-rl-retirement-final-36961003878
 - Artifact digest: sha256:437e34ecef5afedb9f1f51327a4ad190fad6e16f0ea1f578eacacfa251bf67cd
 - Run URL: https://github.com/yukki0113/GPT/actions/runs/36961003878
-- Active workflows scanned at audit time: 139, including the temporary audit
-  workflow. That workflow was removed immediately after the successful run.
-  The latest main has 139 workflows and does not contain the temporary audit
-  workflow; a concurrent RaceNote finalize workflow accounts for the net count.
+- Active workflows scanned at audit time: 139, including the temporary
+  audit workflow. That workflow was removed immediately after the successful
+  run. Latest main at closure has 137 active workflows and does not contain the
+  temporary audit workflow. The counts describe different repository snapshots.
 
 The permanent wrapper src/audit_rl_retirement_final.py reuses
 src/audit_rl_retirement_downstream_dependencies.py. Audit result: PASS,
