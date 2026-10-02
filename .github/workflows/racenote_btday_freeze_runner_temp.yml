@@ -1,0 +1,13 @@
+name: RaceNote BTDAY freeze runner temp
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  smoke:
+    if: startsWith(github.event.issue.title, '[RACENOTE_FREEZE_RUNNER_SMOKE]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Smoke
+        run: echo ok
