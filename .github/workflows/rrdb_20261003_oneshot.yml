@@ -1,0 +1,100 @@
+name: RRDB 20261003 one-shot reverse
+
+on:
+  push:
+    branches:
+      - rrdb-20261003-oneshot
+    paths:
+      - ".github/workflows/rrdb_20261003_oneshot.yml"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  reverse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install runtime
+        run: python -m pip install 'duckdb==1.1.3'
+
+      - name: Download canonical PACI and RRDB artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/paci /tmp/rrdb /tmp/work /tmp/out
+          gh run download 36997195374 --repo "$GITHUB_REPOSITORY" --name jrdb-raw-20261003 --dir /tmp/paci
+          gh run download 36514429467 --repo "$GITHUB_REPOSITORY" --name RaceReviewDB-next-36514429467 --dir /tmp/rrdb
+          PACI="$(find /tmp/paci -type f -name 'PACI261003.zip' | head -1)"
+          CURRENT="$(find /tmp/rrdb -type f -name 'RaceReviewDB_CURRENT.zip' | head -1)"
+          test -n "$PACI" && test -f "$PACI"
+          test -n "$CURRENT" && test -f "$CURRENT"
+          echo "PACI=$PACI" >> "$GITHUB_ENV"
+          echo "CURRENT=$CURRENT" >> "$GITHUB_ENV"
+
+      - name: Run canonical RRDB v0.3 reverse lookup
+        run: |
+          set -euo pipefail
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_recommendation_reverse.py \
+            --race-date 2026-10-03 \
+            --paci-zip "$PACI" \
+            --current-zip "$CURRENT" \
+            --work-root /tmp/work \
+            --output-json /tmp/out/rrdb_reverse_20261003.json
+
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/build_rrdb_newspaper_handoff.py \
+            --reverse-json /tmp/out/rrdb_reverse_20261003.json \
+            --output-csv /tmp/out/rrdb_handoff_20261003.csv
+
+      - name: Build user-facing CSV and audit
+        run: |
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+
+          src = Path("/tmp/out/rrdb_reverse_20261003.json")
+          payload = json.loads(src.read_text(encoding="utf-8"))
+          if payload.get("status") != "PASS":
+              raise SystemExit("reverse result not PASS")
+          venue_names = {"05": "東京", "08": "京都"}
+          rows = []
+          for x in payload.get("recommendations", []):
+              code = str(x.get("venue_code") or "").zfill(2)
+              rows.append({
+                  "会場": venue_names.get(code, code),
+                  "R": int(x.get("race_no") or 0),
+                  "番号": int(x.get("horse_no") or 0),
+                  "馬名": str(x.get("horse_name_paci") or "").strip(),
+                  "コメント": str(x.get("newspaper_comment") or "").strip(),
+              })
+          rows.sort(key=lambda r: ({"東京":0,"京都":1}.get(r["会場"],9), r["R"], r["番号"]))
+          out = Path("/tmp/out/20261003_RRDB_v0_3_該当馬.csv")
+          with out.open("w", encoding="utf-8-sig", newline="") as f:
+              w = csv.DictWriter(f, fieldnames=["会場","R","番号","馬名","コメント"])
+              w.writeheader()
+              w.writerows(rows)
+          audit = {
+              "status": "PASS",
+              "race_date": payload.get("race_date"),
+              "entrant_count": payload.get("entrant_count"),
+              "recommendation_count": payload.get("recommendation_count"),
+              "no_match_count": payload.get("no_match_count"),
+              "no_history_count": payload.get("no_history_count"),
+              "recommendation_contract_version": payload.get("recommendation_contract_version"),
+              "source_generation_id": payload.get("source_generation_id"),
+              "csv_rows": len(rows),
+          }
+          Path("/tmp/out/audit_20261003.json").write_text(
+              json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+          )
+          print(json.dumps(audit, ensure_ascii=False))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-v0-3-20261003-oneshot
+          path: /tmp/out/*
+          retention-days: 7
