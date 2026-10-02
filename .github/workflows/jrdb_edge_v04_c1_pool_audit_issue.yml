@@ -50,7 +50,6 @@ jobs:
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ART" --dir /tmp/c1
           mapfile -t pqs < <(find /tmp/c1 -type f -name research_candidates.parquet -print)
           [ "${#pqs[@]}" -eq 1 ] || { echo "expected one research_candidates.parquet, found ${#pqs[@]}" >&2; exit 1; }
-          cp "${pqs[0]}" /tmp/c1/research_candidates.parquet
       - name: Audit candidate pool
         run: |
           python horse-racing/jrdb/src/audit_jrdb_edge_v04_stage_c1_pool.py             --c1-parquet /tmp/c1/research_candidates.parquet             --output /tmp/out/c1_pool_audit.json             | tee /tmp/out/stdout.json
