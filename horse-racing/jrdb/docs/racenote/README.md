@@ -303,3 +303,24 @@ and their output is not an automatic fallback or current prediction input.
 Use latest main, current contracts, and current source as truth. Do not reintroduce Stats Mart into RaceNote request payloads, Store resolution, workflow downloads, or active enrichment. Keep legacy builders and schemas physically retained until a separately authorized phase.
 
 For current research, follow this guide and the Forecast Gen0 contract. For deterministic/legacy reproduction, use the dedicated legacy documents and preserved artifacts.
+
+
+### Current Human-Context Reader A/B candidate — 2026-10-02
+
+Current baseline remains:
+
+- `FORECAST_HUMAN_CONTEXT_READER_v0_4_2_CANDIDATE.md`
+- `RaceNote-Human-Context-Reader-0.4.2-candidate`
+
+A/B validation candidate:
+
+- `FORECAST_HUMAN_CONTEXT_READER_v0_4_3_CANDIDATE.md`
+- `RaceNote-Human-Context-Reader-0.4.3-candidate`
+
+v0.4.3 adds only bounded semantic final checks: Hierarchy consistency, a conservative ▲ promotion gate, and a narrow △2-vs-borderline-challenger Coverage check. It does not add scores, fixed weights, market input, a sixth horse, or automatic RRDB promotion.
+
+For new unused BTDAYs, freeze both versions from the same Reader input before opening target results. Canonical procedure:
+
+- `BTDAY_AB_VALIDATION_RUNBOOK_v0_1.md`
+
+Do not change the current production/baseline pointer to v0.4.3 until A/B evidence supports promotion.
