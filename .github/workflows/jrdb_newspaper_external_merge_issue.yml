@@ -119,6 +119,17 @@ jobs:
           if int(manifest.get("revision") or 0) >= int(os.environ["REQUEST_REVISION"]):
               raise SystemExit("requested revision must be newer than current")
 
+          iluka_count = 0
+          for entry in manifest.get("races") or []:
+              bundle = json.loads((out / str(entry["path"])).read_text(encoding="utf-8"))
+              for horse in bundle.get("horses") or []:
+                  if (horse.get("addons") or {}).get("keibailuka") is not None:
+                      iluka_count += 1
+          Path("/tmp/external-merge/baseline.json").write_text(
+              json.dumps({"iluka_count": iluka_count}, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+
           # merge_day only requires audit presence; current cache intentionally omits it.
           (out / "audit.json").write_text(
               json.dumps({"status": "PASS", "date": manifest.get("date"), "source": "current-release"}) + "\n",
@@ -167,8 +178,14 @@ jobs:
 
           if eval_count != 349:
               raise SystemExit(f"Eval merge count mismatch: {eval_count}")
-          if iluka_count != 14:
-              raise SystemExit(f"Iluka preservation mismatch: {iluka_count}")
+          baseline = json.loads(
+              Path("/tmp/external-merge/baseline.json").read_text(encoding="utf-8")
+          )
+          expected_iluka = int(baseline.get("iluka_count") or 0)
+          if iluka_count != expected_iluka:
+              raise SystemExit(
+                  f"Iluka preservation mismatch: before={expected_iluka} after={iluka_count}"
+              )
 
           Path("/tmp/external-merge/validation.json").write_text(
               json.dumps({
@@ -255,4 +272,4 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB Newspaper external merge failed. Workflow run: $RUN_URL"
-          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned"
