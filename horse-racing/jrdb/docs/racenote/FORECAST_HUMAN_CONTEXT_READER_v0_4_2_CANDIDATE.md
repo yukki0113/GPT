@@ -70,14 +70,14 @@ visible prior result
 ```
 
 The current RRDB recommendation contract is
-`rrdb-recommendation-signals-v0.2`.
+`rrdb-recommendation-signals-v0.3`.
 
 Current recommendation evidence may include:
 
 - `TIME_CLASS_PLUS1` — the prior run reached an upper-class time level;
 - `FRONT_SURVIVE_GAP05` — the horse survived a strongly forward-pressing race near the front;
 - `REAR_HIGH_LAST3F90` — the horse produced a high-end late section against a rear-unfriendly pace shape;
-- `HV01` / `HV02` — the adjusted time content was stronger than the visible finishing position suggests.
+- `HV02_Q85_Q90` — for a horse finishing 6th or worse, the adjusted time content fell in the current operational Q85-Q90 strength band and was stronger than the visible finishing position suggests.
 
 Read the signal together with its measured strength and source-run context.
 Signal IDs are evidence labels, not marks.
