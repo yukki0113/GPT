@@ -1,0 +1,20 @@
+{
+  "schema_version": "racenote-forward-forecast-manifest-v0.1",
+  "target_date": "2026-10-03",
+  "source_mode": "FORWARD",
+  "status": "FROZEN_CLEAN_BLIND",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+  "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1",
+  "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+  "race_count": 24,
+  "horse_count": 349,
+  "paci_drive_file_id": "1JnPqDp3u8D4Wql3bVNeWScQ9E6hw6nyO",
+  "analysis_generation": "analysis-v1_4-canonical-20260928-02",
+  "rrdb_generation": "jrdb_race_review_v0_1_incremental_g36514429467",
+  "forecast_all_sha256": "af1869b821bebf99c726c7d43c270b73af2613fca86455494aa87cb194a140ec",
+  "pwa_day_package_sha256": "7fe4e7e58f62fa421748252d19aa46affd87f6561908d1cd219cf6accb50da7c",
+  "reader_stripped_manifest_sha256": "886942ae6df3d3e964ad5b281e06c60822296c91af20124754c0fea0d6817d89",
+  "result_opened": false,
+  "target_market_opened": false,
+  "publication_status": "JSON_GENERATED_NOT_PUBLISHED_TO_CURRENT"
+}

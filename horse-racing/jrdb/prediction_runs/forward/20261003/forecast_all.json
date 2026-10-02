@@ -1,0 +1,2834 @@
+[
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 1
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "2f1235a2a9ef20f626847795c6a2d29293326926d82a5c9d8af0315b3b7aae31",
+      "racenote_identity": "FORWARD-20261003/京都1R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 13,
+        "horse_name": "ジョルティーニ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 13,
+          "horse_name": "ジョルティーニ"
+        },
+        "second": {
+          "horse_no": 15,
+          "horse_name": "ゴールデンレシオ"
+        },
+        "third": {
+          "horse_no": 9,
+          "horse_name": "ニドヅケキンシ"
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ダノンアズール"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "プッシュバーン"
+          }
+        ]
+      },
+      "reader_facing_reason": "ジョルティーニは前走のダート1400mで先行して競り合いながら2着に粘り、今回も好位から運べる。ゴールデンレシオは1200mで後方から長く脚を使っており、距離が延びても追走を整えられれば差は小さい。ニドヅケキンシは前走の短距離で出脚が付かなかったが、1400mで道中の位置を上げられれば終いの脚が生きる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1400mの未勝利戦。前へ行ける馬は複数いるが、同距離で粘れた馬と短距離から脚を伸ばす馬の持続力を比較する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "ジョルティーニ"
+          },
+          "case_for": "前走1400mで先行して2着。競られても大きく止まらず、今回も好位を取れる。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "ゴールデンレシオ"
+          },
+          "case_for": "1200mの前走は後方から長く脚を使って3着。距離延長で追走に余裕が出るか。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ダノンアズール"
+          },
+          "case_for": "先手を取れるが1800mでは直線で止まった。1400mへの短縮で粘りを見直す。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 9,
+          "horse_name": "ニドヅケキンシ"
+        },
+        "case_for": "1200mでは出脚が付かず外を回した。1400mで流れに乗れれば終いの脚を違う形で使える。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "前走1400mで先行して2着。競られても大きく止まらず、今回も好位を取れる。",
+        "second": "1200mの前走は後方から長く脚を使って3着。距離延長で追走に余裕が出るか。",
+        "third": "1200mでは出脚が付かず外を回した。1400mで流れに乗れれば終いの脚を違う形で使える。",
+        "others": [
+          "先手を取れるが1800mでは直線で止まった。1400mへの短縮で粘りを見直す。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "c876e8b036429b132aab1889e2eceaa4fad11b58a818a9159ae4fa4bf0c8779e",
+      "prediction_semantic_hash": "c876e8b036429b132aab1889e2eceaa4fad11b58a818a9159ae4fa4bf0c8779e"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 2
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "7f3a76b82c656ad77f552855a93158199c928e7e3b509567f6c07a10f0f8d326",
+      "racenote_identity": "FORWARD-20261003/京都2R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 3,
+        "horse_name": "メイショウジェード"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 3,
+          "horse_name": "メイショウジェード"
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "ウィクフォード"
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "コルサロ"
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "ルーメンルーナエ"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "イッペイ"
+          }
+        ]
+      },
+      "reader_facing_reason": "メイショウジェードは2000mで先手を取って惜敗し、1600mでも直線で前を追えている。中間の1800mでも自分の位置を作れそうだ。ウィクフォードは前走同距離で早めに進出して粘り、仕掛けが噛み合えば逆転もある。コルサロは出遅れても直線で脚を使っており、前が早めに動く流れなら外から届く余地がある。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝1800mの少頭数。先行して粘る馬と早めに動く馬がいて、直線での持続力と仕掛けどころが鍵になる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "メイショウジェード"
+          },
+          "case_for": "芝2000mと1600mで連続2着。先手を取って追い比べにも対応した。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ウィクフォード"
+          },
+          "case_for": "前走1800mで向正面から早めに進出し、最後まで粘って2着。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ルーメンルーナエ"
+          },
+          "case_for": "1600mで2着だが道中で頭を上げ、直線もふらついた。折り合い改善なら。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "コルサロ"
+        },
+        "case_for": "出遅れながら1800mの直線外から伸び、前々走も同距離で末脚を見せた。前が動く形なら食い込める。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "芝2000mと1600mで連続2着。先手を取って追い比べにも対応した。",
+        "second": "前走1800mで向正面から早めに進出し、最後まで粘って2着。",
+        "third": "出遅れながら1800mの直線外から伸び、前々走も同距離で末脚を見せた。前が動く形なら食い込める。",
+        "others": [
+          "1600mで2着だが道中で頭を上げ、直線もふらついた。折り合い改善なら。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "97f971d5ca910a6adc160bb7f5f0fb3b97c55f781f6f1d0987a70cc2426b2de9",
+      "prediction_semantic_hash": "97f971d5ca910a6adc160bb7f5f0fb3b97c55f781f6f1d0987a70cc2426b2de9"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 3
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "ed605e7b0c62acc4fa79019ad36cebb40117f900a34d6b6a089182856ea84346",
+      "racenote_identity": "FORWARD-20261003/京都3R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "ワイズギャング"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "ワイズギャング"
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "スターフュージョン"
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "ダンシングドール"
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "ヒルノプーリア"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "イーブンベター"
+          }
+        ]
+      },
+      "reader_facing_reason": "ワイズギャングはダート1400mで先手を取って2着に粘り、同じ条件で運べる強みがある。ただし先行馬は多い。スターフュージョンは1200mで好位から続けて走れており、距離延長をこなせば有力な相手。ダンシングドールは同距離で出遅れや外回りを挟んでも差を詰めており、前が競る形なら一気に圏内へ入れる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1400mで逃げ・先行候補が多い。前を取るだけでは苦しく、同距離で粘れる先行馬と差し馬の両面を評価する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ワイズギャング"
+          },
+          "case_for": "1400mで逃げて2着。今回も前へ行けるが、他の先行馬との競り合いには注意。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "スターフュージョン"
+          },
+          "case_for": "1200mで好位から連続好走。1400m延長でも番手で脚を残せるか。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "ヒルノプーリア"
+          },
+          "case_for": "1200mで先手を取って粘った。1400mへの延長で最後の踏ん張りが課題。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "ダンシングドール"
+        },
+        "case_for": "1400mで2度3着。出遅れや外回りでも終いに差を詰め、先行勢が競れば浮上する。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mで逃げて2着。今回も前へ行けるが、他の先行馬との競り合いには注意。",
+        "second": "1200mで好位から連続好走。1400m延長でも番手で脚を残せるか。",
+        "third": "1400mで2度3着。出遅れや外回りでも終いに差を詰め、先行勢が競れば浮上する。",
+        "others": [
+          "1200mで先手を取って粘った。1400mへの延長で最後の踏ん張りが課題。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "cf7284d94efabd33c71fef65d49df095a4d47c080945b912024e8bdaca8d52c6",
+      "prediction_semantic_hash": "cf7284d94efabd33c71fef65d49df095a4d47c080945b912024e8bdaca8d52c6"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 4
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "f8f7d8891cbc7e559b19267d381fb5646adcb6b9608803ba84113eba1ef94db8",
+      "racenote_identity": "FORWARD-20261003/京都4R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 12,
+        "horse_name": "バルチックアンバー"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 12,
+          "horse_name": "バルチックアンバー"
+        },
+        "second": {
+          "horse_no": 11,
+          "horse_name": "タガノクレーキング"
+        },
+        "third": {
+          "horse_no": 13,
+          "horse_name": "ベラジオアゲーラ"
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "ガジュノリプリンス"
+          },
+          {
+            "horse_no": 14,
+            "horse_name": "ロイヤルガミーヌ"
+          }
+        ]
+      },
+      "reader_facing_reason": "初出走ばかりで比較材料は限られるが、バルチックアンバーは先行圏を確保して運べそうな点から中心に取る。タガノクレーキングも前を見ながら競馬ができる想定で、初戦の反応次第では主役になる。ベラジオアゲーラは中間の動きがあり、前が早くなった場合に少し控えた位置から進出する形を警戒したい。いずれも実戦適性は未確認。",
+      "confidence": "C"
+    },
+    "decision_trace": {
+      "race_model": "ダート1800mの新馬戦で実戦履歴がない。初戦の位置取りと長い距離を最後まで保てるかは未知数として扱う。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "バルチックアンバー"
+          },
+          "case_for": "初戦の想定では前を射程に入れやすい。長距離のダートでの実走は未確認。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "タガノクレーキング"
+          },
+          "case_for": "好位を取る想定で、前を見ながら運べる可能性。初戦なので反応は未知。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ガジュノリプリンス"
+          },
+          "case_for": "先行圏を取れる想定と中間の調教が支え。実戦での追走はまだ分からない。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 13,
+          "horse_name": "ベラジオアゲーラ"
+        },
+        "case_for": "想定位置は前一辺倒ではなく、中間の調教も動いている。前の争いが厳しければ差し込む余地。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "初戦の想定では前を射程に入れやすい。長距離のダートでの実走は未確認。",
+        "second": "好位を取る想定で、前を見ながら運べる可能性。初戦なので反応は未知。",
+        "third": "想定位置は前一辺倒ではなく、中間の調教も動いている。前の争いが厳しければ差し込む余地。",
+        "others": [
+          "先行圏を取れる想定と中間の調教が支え。実戦での追走はまだ分からない。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "aff78f139fa39c5f296095f0cdaefbf55a51dbad8b64421d337bf00dbf868fad",
+      "prediction_semantic_hash": "aff78f139fa39c5f296095f0cdaefbf55a51dbad8b64421d337bf00dbf868fad"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 5
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "fe8b1f48d7f5b06fc48b0e32abf63776733269dd1a2885355b2e25d56f137aee",
+      "racenote_identity": "FORWARD-20261003/京都5R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "マルカクラック"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "マルカクラック"
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "ディープリメンバー"
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "レッドシーカー"
+        },
+        "others": [
+          {
+            "horse_no": 4,
+            "horse_name": "パンプルネル"
+          },
+          {
+            "horse_no": 16,
+            "horse_name": "サンマルボニータ"
+          }
+        ]
+      },
+      "reader_facing_reason": "マルカクラックは初戦ながら前で流れに乗れる想定で、芝1600mの出だしを大きく損ねなければ中心。ディープリメンバーも前で運べそうだが、両馬とも実戦の末脚はまだ分からない。レッドシーカーはその後ろから運んで直線で前との差を詰める形を見込み、初戦の競り合いに対応できれば面白い。",
+      "confidence": "C"
+    },
+    "decision_trace": {
+      "race_model": "芝1600mの新馬戦。実戦での折り合いも末脚も未確認で、序盤の位置と調教の準備を慎重に比較する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "マルカクラック"
+          },
+          "case_for": "好位を取る想定で調教も一定の準備がある。ただし初戦の芝適性は不明。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "ディープリメンバー"
+          },
+          "case_for": "前で流れに乗れる想定。初戦ゆえ直線の反応が焦点。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "パンプルネル"
+          },
+          "case_for": "先行圏に置ける想定だが調教の裏付けは限定的。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "レッドシーカー"
+        },
+        "case_for": "前の数頭が競るなら、その直後で脚を溜める形を想定できる。初戦の伸びは未知。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "好位を取る想定で調教も一定の準備がある。ただし初戦の芝適性は不明。",
+        "second": "前で流れに乗れる想定。初戦ゆえ直線の反応が焦点。",
+        "third": "前の数頭が競るなら、その直後で脚を溜める形を想定できる。初戦の伸びは未知。",
+        "others": [
+          "先行圏に置ける想定だが調教の裏付けは限定的。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "c4f2c72be4a39a2015eb855f4b392348ea96688d762e394bbecc5b0974398709",
+      "prediction_semantic_hash": "c4f2c72be4a39a2015eb855f4b392348ea96688d762e394bbecc5b0974398709"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 6
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "373cd67ef17a000cd61399e4919d7fae9cce5ce3881b59db7c78e7c3c7283661",
+      "racenote_identity": "FORWARD-20261003/京都6R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 16,
+        "horse_name": "リガーレ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 16,
+          "horse_name": "リガーレ"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "ダンツウルス"
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "ガウディ"
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "キッコベッロ"
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ノンブルドール"
+          }
+        ]
+      },
+      "reader_facing_reason": "リガーレは前走2000mで好位の内を進み、直線で追い出しを待たされながら2着。前が開けば勝ち負けになる。ダンツウルスは同距離で好位から早めに動いて粘っており、こちらも主導権を握れる。ガウディは長めの距離で終いが届き切らなかったが、2000mへ短縮して勝負どころで早く動ければ前の二頭を脅かせる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝2000mで前へ行きたい馬が複数いる。好位の捌きと直線の持続力を重視し、後方勢には届く位置かを問う。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "リガーレ"
+          },
+          "case_for": "前走2000mで内の好位から直線前が壁になっても2着。スムーズなら前進。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ダンツウルス"
+          },
+          "case_for": "2000mで好位外から早めに動いて2着、同距離で3着もある。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "キッコベッロ"
+          },
+          "case_for": "同距離で続けて2着。展開にかかわらず終いを保った実績。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "ガウディ"
+        },
+        "case_for": "2400mでは伸び切れないが、2200mでは後方から3着。2000mへの短縮で早めに進出できれば。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "前走2000mで内の好位から直線前が壁になっても2着。スムーズなら前進。",
+        "second": "2000mで好位外から早めに動いて2着、同距離で3着もある。",
+        "third": "2400mでは伸び切れないが、2200mでは後方から3着。2000mへの短縮で早めに進出できれば。",
+        "others": [
+          "同距離で続けて2着。展開にかかわらず終いを保った実績。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "0e41c3294cb9e4bfc305c3ae2f52417a54fa547ce7eb0b91ce5cdb30af939a0f",
+      "prediction_semantic_hash": "0e41c3294cb9e4bfc305c3ae2f52417a54fa547ce7eb0b91ce5cdb30af939a0f"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 7
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "5271f4181abe88886febeb1a52a7c89d3215289e3507e959ac930f9ddec872d3",
+      "racenote_identity": "FORWARD-20261003/京都7R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 14,
+        "horse_name": "ペプチドレオン"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 14,
+          "horse_name": "ペプチドレオン"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "ブロンテス"
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "フレイムスター"
+        },
+        "others": [
+          {
+            "horse_no": 5,
+            "horse_name": "パンサーズ"
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "マテンロウミラクル"
+          }
+        ]
+      },
+      "reader_facing_reason": "ペプチドレオンはダート1400mを好位から勝ち、昇級後も同距離で3着と崩れていない。ブロンテスは中団からの伸びを続けて見せており、前がやり合うなら相手の中心。フレイムスターは前走4角先頭から2着に粘った内容があり、競り合いを避けて自分のリズムで運べれば一気に押し切る場面もある。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1400mの先行馬が多い一戦。前走同条件の内容を軸にしつつ、逃げ争いが激しくなれば中団からの進出も考える。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "ペプチドレオン"
+          },
+          "case_for": "1400mで好位から勝ち、昇級後も同距離3着。今回条件に直結する。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ブロンテス"
+          },
+          "case_for": "1400mで続けて一定の脚を使い、前走3着。中団から差せる。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "パンサーズ"
+          },
+          "case_for": "1400mを先行して勝った直後。昇級でも前へ行ければ。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "フレイムスター"
+        },
+        "case_for": "前走1400mで4角先頭から2着。前が手薄なら押し切りまである一方、競られると甘くなる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mで好位から勝ち、昇級後も同距離3着。今回条件に直結する。",
+        "second": "1400mで続けて一定の脚を使い、前走3着。中団から差せる。",
+        "third": "前走1400mで4角先頭から2着。前が手薄なら押し切りまである一方、競られると甘くなる。",
+        "others": [
+          "1400mを先行して勝った直後。昇級でも前へ行ければ。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "08f3dccec3ef2e630f57bbcea822c75a58393d441e74d9345c13c37e4df225ed",
+      "prediction_semantic_hash": "08f3dccec3ef2e630f57bbcea822c75a58393d441e74d9345c13c37e4df225ed"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 8
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "53d1cd82ae22b6a1ef0036c403cd58624d36e7584e64fb8db98c6dcac9199a29",
+      "racenote_identity": "FORWARD-20261003/京都8R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "サトノアイボリー"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "サトノアイボリー"
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "アクロフェイズ"
+        },
+        "third": {
+          "horse_no": 3,
+          "horse_name": "オモイヲノセテ"
+        },
+        "others": [
+          {
+            "horse_no": 5,
+            "horse_name": "ブレットパス"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "イベントホライゾン"
+          }
+        ]
+      },
+      "reader_facing_reason": "サトノアイボリーは芝2000mで番手からの2着と好位差しの勝利があり、前を見ながら動ける。アクロフェイズは1800mで強い勝ち方をした一方、2000mでは大敗もあるため距離の折り合いが鍵。オモイヲノセテは前走の同距離で中団から決め手を発揮しており、先行勢の競り合いが強まれば差し込める。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝2000mで逃げたい馬が複数。早めの仕掛けに耐えられる好位勢と、前が削り合った時の差し脚を比較する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "サトノアイボリー"
+          },
+          "case_for": "2000mで勝利と2着。番手から追い比べに対応でき、今回の条件で筋が通る。"
+        },
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "アクロフェイズ"
+          },
+          "case_for": "1800mの前走は進出して快勝。2000mでは大敗もあり距離適性に不安。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ブレットパス"
+          },
+          "case_for": "2200mで2着の持続力があり、前が崩れれば浮上。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "オモイヲノセテ"
+        },
+        "case_for": "2000mを中団から直線で差し切った前走。前が速くなれば再び脚を生かせる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "2000mで勝利と2着。番手から追い比べに対応でき、今回の条件で筋が通る。",
+        "second": "1800mの前走は進出して快勝。2000mでは大敗もあり距離適性に不安。",
+        "third": "2000mを中団から直線で差し切った前走。前が速くなれば再び脚を生かせる。",
+        "others": [
+          "2200mで2着の持続力があり、前が崩れれば浮上。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "5f4dc99c6b0f23f04cf7a9094841591d0ba4a859e192ddf2743a467515894897",
+      "prediction_semantic_hash": "5f4dc99c6b0f23f04cf7a9094841591d0ba4a859e192ddf2743a467515894897"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 9
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "e9369786b82b157599c7776aae34585d699034ce101dce8828be1f43bedf0ba1",
+      "racenote_identity": "FORWARD-20261003/京都9R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ベニバナ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ベニバナ"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "ラムラベイ"
+        },
+        "third": {
+          "horse_no": 6,
+          "horse_name": "ヴィヴェローネ"
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ギャルズマインド"
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "ショウナンカノア"
+          }
+        ]
+      },
+      "reader_facing_reason": "ベニバナは芝1400mで番手から早めに先頭へ立って押し切り、同距離で再現しやすい。ラムラベイも1400mの前走を前で抜け出しており、先行力では差がない。ヴィヴェローネは出遅れ気味でも4角から進出して同距離を勝っており、1200m組が前で競れば差し切る余地がある。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝1400mの少頭数。1200mの逃げ馬が距離を延ばすため、同距離で勝った馬の運びやすさを優先する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ベニバナ"
+          },
+          "case_for": "1400mで番手から早め先頭で勝利。今回もこの距離への適性が明確。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "ラムラベイ"
+          },
+          "case_for": "前走1400mで番手から早めに抜け出した。先行する形で安定。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ギャルズマインド"
+          },
+          "case_for": "1200mを外から好位差しで勝ち、1400m延長が課題。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 6,
+          "horse_name": "ヴィヴェローネ"
+        },
+        "case_for": "前走1400mでスタート一息から4角進出して勝った。前が競るなら外からまとめて届く。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mで番手から早め先頭で勝利。今回もこの距離への適性が明確。",
+        "second": "前走1400mで番手から早めに抜け出した。先行する形で安定。",
+        "third": "前走1400mでスタート一息から4角進出して勝った。前が競るなら外からまとめて届く。",
+        "others": [
+          "1200mを外から好位差しで勝ち、1400m延長が課題。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "e60cb72eb9c5f841a7d4b87035fc74331b029e51984cc66a66c3b245988bcd74",
+      "prediction_semantic_hash": "e60cb72eb9c5f841a7d4b87035fc74331b029e51984cc66a66c3b245988bcd74"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 10
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "c2463a1f231516cd721cb621611161677ba677814b345b76ad68faa1c0ddcefe",
+      "racenote_identity": "FORWARD-20261003/京都10R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 14,
+        "horse_name": "ルクスデイジー"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 14,
+          "horse_name": "ルクスデイジー"
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "ウルスクローム"
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "ライジン"
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "テーオーグレーザー"
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "アメリカンチケット"
+          }
+        ]
+      },
+      "reader_facing_reason": "ルクスデイジーはダート1200mで好位からしぶとく粘る競馬が続き、前走の追われてからの甘さを修正できれば軸。ウルスクロームは同距離で連続2着と差す形が定着しており、前が速くなるほど近づく。ライジンは前走で中団前から勝ち馬に併せて伸びており、先行争いが激しくなるなら外から一気に上位へ入れる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1200mで先行勢が多く、序盤の競り合いが速くなりそう。好位から粘れる馬と中団から脚を使う馬を両立させる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "ルクスデイジー"
+          },
+          "case_for": "1200mで高い内容を続け、好位から渋太く運べる。前走の頭の高さには注意。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ウルスクローム"
+          },
+          "case_for": "同距離で連続2着。外からの進出と追い込みの両形を見せた。"
+        },
+        {
+          "horse": {
+            "horse_no": 11,
+            "horse_name": "テーオーグレーザー"
+          },
+          "case_for": "1200mで前が厳しくても好位の内から勝った実績。前走は進路の窮屈さ。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ライジン"
+        },
+        "case_for": "1200mで中団外から勝ち馬に併せて伸びた。先行勢が激しく争えば差し込める。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1200mで高い内容を続け、好位から渋太く運べる。前走の頭の高さには注意。",
+        "second": "同距離で連続2着。外からの進出と追い込みの両形を見せた。",
+        "third": "1200mで中団外から勝ち馬に併せて伸びた。先行勢が激しく争えば差し込める。",
+        "others": [
+          "1200mで前が厳しくても好位の内から勝った実績。前走は進路の窮屈さ。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "8bc3fdfddd024970078e6c7f898aedf592564a171a8ffc517cac7136419bac01",
+      "prediction_semantic_hash": "8bc3fdfddd024970078e6c7f898aedf592564a171a8ffc517cac7136419bac01"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 11
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "b0004db022d33ce8ca2ddfbc3ab87ead3348e3824dc43f9838c9bcc576f29eda",
+      "racenote_identity": "FORWARD-20261003/京都11R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 16,
+        "horse_name": "フロムダスク"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 16,
+          "horse_name": "フロムダスク"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "レッドエヴァンス"
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "テーオーダヴィンチ"
+        },
+        "others": [
+          {
+            "horse_no": 4,
+            "horse_name": "メイショウヨゾラ"
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "クラスペディア"
+          }
+        ]
+      },
+      "reader_facing_reason": "フロムダスクは芝1200mで好位から抜け出した前走の内容が鮮明で、速い流れでも位置を取り切れるかが鍵。レッドエヴァンスは同距離で中団から3着、1400mでは好位から勝っており運び方に幅がある。テーオーダヴィンチは前走1200mを最後方から外へ出して差し切り、前が競り合う展開なら直線で一気に勢力図を変えられる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝1200mの大人数で先行馬が揃う。速い流れでも前で押し通せる馬と、外から届く差し馬を分けて見る。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 16,
+            "horse_name": "フロムダスク"
+          },
+          "case_for": "前走1200mで好位から抜け出し、同距離の実戦内容が強い。速い流れへの対応が焦点。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "レッドエヴァンス"
+          },
+          "case_for": "1200mで中団から3着、1400mでも好位から勝利。位置を選べる。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "メイショウヨゾラ"
+          },
+          "case_for": "1200mで勝ちと好位からの粘り。前走6着から巻き返せる。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "テーオーダヴィンチ"
+        },
+        "case_for": "1200mの前走は最後方から直線外を伸びて勝利。先行馬が揃う今回は末脚の効きどころがある。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "前走1200mで好位から抜け出し、同距離の実戦内容が強い。速い流れへの対応が焦点。",
+        "second": "1200mで中団から3着、1400mでも好位から勝利。位置を選べる。",
+        "third": "1200mの前走は最後方から直線外を伸びて勝利。先行馬が揃う今回は末脚の効きどころがある。",
+        "others": [
+          "1200mで勝ちと好位からの粘り。前走6着から巻き返せる。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "bdefba600d9ceb3e2f27880dc0d94920c4a017039f7453429b3e4256086f649b",
+      "prediction_semantic_hash": "bdefba600d9ceb3e2f27880dc0d94920c4a017039f7453429b3e4256086f649b"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "京都",
+      "race_no": 12
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "9d47ea51a975d4d8b3b186bbed3dd92f8af9b14bb5ed1a87156870a4f1726b3a",
+      "racenote_identity": "FORWARD-20261003/京都12R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 9,
+        "horse_name": "オオツカ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 9,
+          "horse_name": "オオツカ"
+        },
+        "second": {
+          "horse_no": 14,
+          "horse_name": "システマソラー"
+        },
+        "third": {
+          "horse_no": 13,
+          "horse_name": "メイショウコシュウ"
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "リヒトミューレ"
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "ショーダンサー"
+          }
+        ]
+      },
+      "reader_facing_reason": "オオツカはダート1800mの前走でも水準の高い内容を保ち、1700mでは中団前から進出して抜け出している。システマソラーは1800mで早めに動いて3着、1700mでも長く脚を使って勝ち切った。メイショウコシュウは1700mを好位から完勝しており、距離延長でも前が競る直後を取れれば一気に勝負へ加われる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1800mで逃げ馬が競り合う可能性。中団から長く脚を使える馬を主軸に、1700m好走組の延長を吟味する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 9,
+            "horse_name": "オオツカ"
+          },
+          "case_for": "同距離の前走でも高い水準を示し、1700mでは4角から進出して勝利。"
+        },
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "システマソラー"
+          },
+          "case_for": "1800mで3着、1700mでは3角から長く脚を使って勝った。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "リヒトミューレ"
+          },
+          "case_for": "1800mの4着から相手候補。後方寄りでは届くかが課題。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 13,
+          "horse_name": "メイショウコシュウ"
+        },
+        "case_for": "1700mを好位から抜け出して勝利。1800m延長をこなせば先行勢の後ろから一気に進出可能。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "同距離の前走でも高い水準を示し、1700mでは4角から進出して勝利。",
+        "second": "1800mで3着、1700mでは3角から長く脚を使って勝った。",
+        "third": "1700mを好位から抜け出して勝利。1800m延長をこなせば先行勢の後ろから一気に進出可能。",
+        "others": [
+          "1800mの4着から相手候補。後方寄りでは届くかが課題。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "6528641b64218ad3c444cd97017745cbbbdcd99f27040ae08e63edf7e74f9697",
+      "prediction_semantic_hash": "6528641b64218ad3c444cd97017745cbbbdcd99f27040ae08e63edf7e74f9697"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 1
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "48731ded4014a43b3b6bae1d066ff90d554f3cd652577cda51ce90504fb976c0",
+      "racenote_identity": "FORWARD-20261003/東京1R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 13,
+        "horse_name": "スターフラッシュ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 13,
+          "horse_name": "スターフラッシュ"
+        },
+        "second": {
+          "horse_no": 15,
+          "horse_name": "ヒゲキリ"
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "ワンダーマーベル"
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "セイウンガジュマル"
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "パレスラン"
+          }
+        ]
+      },
+      "reader_facing_reason": "スターフラッシュは1400mの前走で好スタートから先行し、直線で一度先頭に立って2着。距離延長は課題だが、同じ形を作れるなら中心。ヒゲキリは1800mでハナを切って最後まで粘ったため、短縮で抵抗力が増す。ワンダーマーベルは前走で4角大外から猛追しており、1600mで追走位置を改善できれば前の二頭を差す場面がある。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1600mの未勝利戦。前へ行ける二頭を比較し、距離短縮で後方から追い上げる馬の可能性を残す。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "スターフラッシュ"
+          },
+          "case_for": "1400mで好発から逃げ馬を追い、直線先頭に立って2着。1600m延長が課題。"
+        },
+        {
+          "horse": {
+            "horse_no": 15,
+            "horse_name": "ヒゲキリ"
+          },
+          "case_for": "1800mで先手を取って交わされた後も粘り2着。距離を詰めて持続力を生かす。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "セイウンガジュマル"
+          },
+          "case_for": "1200mで後方から脚を使い、距離延長で追走が楽になるか。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ワンダーマーベル"
+        },
+        "case_for": "1800mで好発から行けず4角大外を回して猛追。1600m短縮で位置を取れれば届く。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mで好発から逃げ馬を追い、直線先頭に立って2着。1600m延長が課題。",
+        "second": "1800mで先手を取って交わされた後も粘り2着。距離を詰めて持続力を生かす。",
+        "third": "1800mで好発から行けず4角大外を回して猛追。1600m短縮で位置を取れれば届く。",
+        "others": [
+          "1200mで後方から脚を使い、距離延長で追走が楽になるか。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "f8d1eac4eba6ee01dc7aebbd3508bf7a37a1dbbbe272d4c5c8f21eba70a96dd0",
+      "prediction_semantic_hash": "f8d1eac4eba6ee01dc7aebbd3508bf7a37a1dbbbe272d4c5c8f21eba70a96dd0"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 2
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "79240ad4e35e88b1df85102824578ac0bae9c618d054eec0595be45f5686aaf3",
+      "racenote_identity": "FORWARD-20261003/東京2R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "シアルナーレ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "シアルナーレ"
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "ロゼプレミア"
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "スターマイン"
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "ウイニングレイ"
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "インテルラゴス"
+          }
+        ]
+      },
+      "reader_facing_reason": "シアルナーレは芝2000mで好位から伸びて惜しい2着。今回も逃げ馬を目標にできる。ロゼプレミアは同距離を先手から粘る形が明確で、ペースを落とせれば押し切りも十分。スターマインは前走1800mで出遅れながら内を突いて3着まで来ており、2000mで追走が整えば終いの脚が際立つ。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝2000mで逃げ馬のロゼプレミアに対し、好位で追走できる馬がいる。直線の追い比べと出遅れ馬の距離対応を比べる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "シアルナーレ"
+          },
+          "case_for": "同距離で好位から伸びて2着。逃げ馬を射程に入れて運べる。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ロゼプレミア"
+          },
+          "case_for": "2000mで先手を取って直線も粘り2着。展開を作れる。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ウイニングレイ"
+          },
+          "case_for": "2000mで早めに進出して3着。仕掛けどころ次第。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "スターマイン"
+        },
+        "case_for": "1800mで出遅れて最後方から内を突き3着。2000mで序盤の遅れを補えれば差し込む。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "同距離で好位から伸びて2着。逃げ馬を射程に入れて運べる。",
+        "second": "2000mで先手を取って直線も粘り2着。展開を作れる。",
+        "third": "1800mで出遅れて最後方から内を突き3着。2000mで序盤の遅れを補えれば差し込む。",
+        "others": [
+          "2000mで早めに進出して3着。仕掛けどころ次第。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "bacad3f510afd0aa3295f91b5dc7c960dc011e8c667ca5a0363598eb9199db6a",
+      "prediction_semantic_hash": "bacad3f510afd0aa3295f91b5dc7c960dc011e8c667ca5a0363598eb9199db6a"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 3
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "c7afc4a277deef734276d73997d2497f3d5a5158acf31bab83b8b369ca2cf5c1",
+      "racenote_identity": "FORWARD-20261003/東京3R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "ソードオブステート"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "ソードオブステート"
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "タンタフェリチア"
+        },
+        "third": {
+          "horse_no": 12,
+          "horse_name": "マデイラシトリン"
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "ポッドコーディア"
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "アルティマノヴァ"
+          }
+        ]
+      },
+      "reader_facing_reason": "初出走18頭の芝1400mで不確実性は大きいが、ソードオブステートは前で運べる想定と中間の動きを手掛かりに中心。タンタフェリチアも先行圏を取れそうで、初戦の反応が良ければ逆転できる。マデイラシトリンは少し後ろから脚を使う形を見込み、前が競り合う展開になれば上位に食い込む余地がある。",
+      "confidence": "C"
+    },
+    "decision_trace": {
+      "race_model": "芝1400mの新馬戦で18頭。実戦の折り合いも直線の反応も未知で、想定される先行力と調教から仮説を置く。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ソードオブステート"
+          },
+          "case_for": "先行圏を取る想定で、中間の調教も一定の裏付け。実走はない。"
+        },
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "タンタフェリチア"
+          },
+          "case_for": "同様に前で運べる想定。初戦のペースへの対応が焦点。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ポッドコーディア"
+          },
+          "case_for": "前の組に付けられる想定だが、直線での脚は未知。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 12,
+          "horse_name": "マデイラシトリン"
+        },
+        "case_for": "中団で脚を溜める形を想定。前が競り合った際には差し込める可能性がある。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "先行圏を取る想定で、中間の調教も一定の裏付け。実走はない。",
+        "second": "同様に前で運べる想定。初戦のペースへの対応が焦点。",
+        "third": "中団で脚を溜める形を想定。前が競り合った際には差し込める可能性がある。",
+        "others": [
+          "前の組に付けられる想定だが、直線での脚は未知。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "447daa32a80674afa21cca3b41e2d035d842fc732248938696259645165c450b",
+      "prediction_semantic_hash": "447daa32a80674afa21cca3b41e2d035d842fc732248938696259645165c450b"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 4
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "43c122081858fcf1178a74721e631088ccb3db51352d4bc79cd217981eac884f",
+      "racenote_identity": "FORWARD-20261003/東京4R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "メイショウソウセキ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "メイショウソウセキ"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "セイウンパシュート"
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "エーオーキング"
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ブライトマン"
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "サトノエピック"
+          }
+        ]
+      },
+      "reader_facing_reason": "メイショウソウセキは障害3000mで先手を取って勝負どころに追い付かれても伸び返し、3100mでも前で運ぶ形が見える。セイウンパシュートは3250mで着地の躓きから立て直して4着に来ており、飛越を無難にこなせば強い相手。エーオーキングは2880mで二周目から進出して差し切ったが飛越の不安定さもあり、今回は障害をこなした時の一撃として評価する。",
+      "confidence": "C"
+    },
+    "decision_trace": {
+      "race_model": "障害3100mのオープン。平地の数値を横並びにせず、飛越の安定と二周目に脚を残す内容を比較する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "メイショウソウセキ"
+          },
+          "case_for": "前走3000mを先手から粘って勝利し、以前も障害で前から3着。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "セイウンパシュート"
+          },
+          "case_for": "3250mで躓きながら4着。距離への対応と途中の進出は評価できるが飛越リスク。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ブライトマン"
+          },
+          "case_for": "3000mを早め先頭から勝った。以前の飛越不安を再発しないかが鍵。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "エーオーキング"
+        },
+        "case_for": "2880mで中団から二周目に進出して差し切り。前走以前は飛越の課題もあり、安定すれば前を捕まえる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "前走3000mを先手から粘って勝利し、以前も障害で前から3着。",
+        "second": "3250mで躓きながら4着。距離への対応と途中の進出は評価できるが飛越リスク。",
+        "third": "2880mで中団から二周目に進出して差し切り。前走以前は飛越の課題もあり、安定すれば前を捕まえる。",
+        "others": [
+          "3000mを早め先頭から勝った。以前の飛越不安を再発しないかが鍵。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "ff7f60fb8de86edf955610ceae4750d6a6e6ff67d64de1e101cdfaa628870cfe",
+      "prediction_semantic_hash": "ff7f60fb8de86edf955610ceae4750d6a6e6ff67d64de1e101cdfaa628870cfe"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 5
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "3d70bd181ccf7ccb7c5fec6843307439ca193977a2426a9d63e5a98291a095ea",
+      "racenote_identity": "FORWARD-20261003/東京5R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 3,
+        "horse_name": "ヴァルカモニカ"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 3,
+          "horse_name": "ヴァルカモニカ"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "ヒシホライゾン"
+        },
+        "third": {
+          "horse_no": 1,
+          "horse_name": "センチュリースカイ"
+        },
+        "others": [
+          {
+            "horse_no": 2,
+            "horse_name": "ロードディグニティ"
+          },
+          {
+            "horse_no": 9,
+            "horse_name": "サラサシンシアズ"
+          }
+        ]
+      },
+      "reader_facing_reason": "新馬戦なので過信は禁物だが、ヴァルカモニカは先行できる想定と中間の動きから芝1800mで中心に置く。ヒシホライゾンも前で進める見込みがあり、実戦で折り合えば差はない。センチュリースカイはその後ろから脚を溜める形が取れれば、前が早めに動いた直線で差し込める。",
+      "confidence": "C"
+    },
+    "decision_trace": {
+      "race_model": "芝1800mの新馬戦で実走データがない。想定位置と中間の動きを手掛かりにするが、距離の折り合いは未知。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ヴァルカモニカ"
+          },
+          "case_for": "前で運べる想定と中間の調教が支え。ただし実戦の1800mは未経験。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ヒシホライゾン"
+          },
+          "case_for": "先行圏を取れる想定。初戦の反応次第では主役。"
+        },
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "ロードディグニティ"
+          },
+          "case_for": "中間の調教が動いているが初戦の立ち回りは未確認。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 1,
+          "horse_name": "センチュリースカイ"
+        },
+        "case_for": "先行勢の後ろで運ぶ想定。好位の馬が早めに動けば末脚を試す形になる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "前で運べる想定と中間の調教が支え。ただし実戦の1800mは未経験。",
+        "second": "先行圏を取れる想定。初戦の反応次第では主役。",
+        "third": "先行勢の後ろで運ぶ想定。好位の馬が早めに動けば末脚を試す形になる。",
+        "others": [
+          "中間の調教が動いているが初戦の立ち回りは未確認。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": false,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "d7c22fcde875753433795f20813049aaf87bfb204aa629d5b9a1a94492bfbc60",
+      "prediction_semantic_hash": "d7c22fcde875753433795f20813049aaf87bfb204aa629d5b9a1a94492bfbc60"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 6
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "650ef76cdaa26f80f7bb0a084b5ff0a9857118297c01b03333514c2bc0a32bd6",
+      "racenote_identity": "FORWARD-20261003/東京6R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "チームユートピア"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "チームユートピア"
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "ミヤエスケープ"
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "オーシャンステラ"
+        },
+        "others": [
+          {
+            "horse_no": 13,
+            "horse_name": "ローズブーケ"
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ロジザボード"
+          }
+        ]
+      },
+      "reader_facing_reason": "チームユートピアは1400mでハナから2着の内容があり、前走1200mの失速は出遅れを押して挽回した負荷も大きかった。ミヤエスケープは前走1400mを好位後ろから伸びて勝ち、昇級でも立ち回りは合う。オーシャンステラは同距離を出遅れから直線外に出して差し切っており、先行争いが激しくなれば一気に届く。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1400mで先行候補が多く、前走短距離の失速だけでは判断しにくい。1400m実績と先行負荷を突き合わせる。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 7,
+            "horse_name": "チームユートピア"
+          },
+          "case_for": "1400mでは先手を取って2着。前走1200mは出遅れて無理に挽回し失速した。"
+        },
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ミヤエスケープ"
+          },
+          "case_for": "1400mの前走で好位後ろから伸びて勝利。昇級で相手関係は上がる。"
+        },
+        {
+          "horse": {
+            "horse_no": 13,
+            "horse_name": "ローズブーケ"
+          },
+          "case_for": "1200mを中団から勝ち、1400m延長で追走の余裕が出るか。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "オーシャンステラ"
+        },
+        "case_for": "1400mを出遅れから後方内を通り、直線外へ出して差し切った。前が競れば再現できる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mでは先手を取って2着。前走1200mは出遅れて無理に挽回し失速した。",
+        "second": "1400mの前走で好位後ろから伸びて勝利。昇級で相手関係は上がる。",
+        "third": "1400mを出遅れから後方内を通り、直線外へ出して差し切った。前が競れば再現できる。",
+        "others": [
+          "1200mを中団から勝ち、1400m延長で追走の余裕が出るか。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "3217b4ff492a4cdbeb8e8511b61f6e14bbacad38e7316c2ba41c7818af5f5d1f",
+      "prediction_semantic_hash": "3217b4ff492a4cdbeb8e8511b61f6e14bbacad38e7316c2ba41c7818af5f5d1f"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 7
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "ae224af125a6313d19437347061154e071d153704d47ab1edfa80a9b755ecf70",
+      "racenote_identity": "FORWARD-20261003/東京7R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "グリオンヴール"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "グリオンヴール"
+        },
+        "second": {
+          "horse_no": 14,
+          "horse_name": "ワディアルリヤハ"
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "アトリウムチャペル"
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "ノーブルクロンヌ"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "アイアンパイク"
+          }
+        ]
+      },
+      "reader_facing_reason": "グリオンヴールは芝1400mで好位から2着、3着と同条件で安定して伸びている。ワディアルリヤハも1400mを前で運んで勝ちと3着があり、折り合って進めば互角。アトリウムチャペルは1200mで大きく遅れながら外を回してしぶとく脚を使ったため、1400mへの延長で追走が楽になり、前が競れば差し込める。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝1400mの多頭数で先行勢が複数。前で脚を残せる同距離実績を軸に、出遅れ馬が流れを利用する可能性も見る。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "グリオンヴール"
+          },
+          "case_for": "1400mで好位から2着、同距離3着もあり安定した内容。"
+        },
+        {
+          "horse": {
+            "horse_no": 14,
+            "horse_name": "ワディアルリヤハ"
+          },
+          "case_for": "同距離で好位から3着、勝ちもある。折り合いがつけば粘れる。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ノーブルクロンヌ"
+          },
+          "case_for": "1400mの勝利と6着。中団差しだと進路取りが鍵。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "アトリウムチャペル"
+        },
+        "case_for": "1200mで大きく出遅れても直線外から脚を使った。距離延長と前の競り合いが噛み合えば。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mで好位から2着、同距離3着もあり安定した内容。",
+        "second": "同距離で好位から3着、勝ちもある。折り合いがつけば粘れる。",
+        "third": "1200mで大きく出遅れても直線外から脚を使った。距離延長と前の競り合いが噛み合えば。",
+        "others": [
+          "1400mの勝利と6着。中団差しだと進路取りが鍵。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "f7602dd4ab83254a5728aa87e84dda5ce84bd32ef6b56605605b55cde61d1083",
+      "prediction_semantic_hash": "f7602dd4ab83254a5728aa87e84dda5ce84bd32ef6b56605605b55cde61d1083"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 8
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "2fd9accf5729bc359d565568352815daf765e9f65c1e61afd4ba9e03287d408e",
+      "racenote_identity": "FORWARD-20261003/東京8R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "プレースメント"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "プレースメント"
+        },
+        "second": {
+          "horse_no": 5,
+          "horse_name": "エドワードバローズ"
+        },
+        "third": {
+          "horse_no": 10,
+          "horse_name": "ジーティーブラック"
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "マサッチェハマー"
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "ファンタイムギフト"
+          }
+        ]
+      },
+      "reader_facing_reason": "プレースメントは東京ダート1600mで先団から直線外へ出して勝ち切り、同距離の2着もある。エドワードバローズは出遅れからの2着があり、前走も中団から差を詰めた。ジーティーブラックは1700mで躓きながら外へ出して2着まで伸びており、1600mで序盤を上手く運べれば前をまとめて捕まえる余地がある。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1600mで前に付ける馬は多いが、同距離で勝ち切った馬と出遅れから迫った馬の両方に勝機がある。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 2,
+            "horse_name": "プレースメント"
+          },
+          "case_for": "1600mで先団から直線外へ出して勝ち、同距離2着もある。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "エドワードバローズ"
+          },
+          "case_for": "1600mで出遅れながら直線外から伸び2着。前走5着も差を詰めた。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "マサッチェハマー"
+          },
+          "case_for": "1600mで好位外から勝利。昇級後の再現性はこれから。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 10,
+          "horse_name": "ジーティーブラック"
+        },
+        "case_for": "1700mで躓いてから追い上げ2着。1600mで流れに乗れれば直線で一段伸びる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1600mで先団から直線外へ出して勝ち、同距離2着もある。",
+        "second": "1600mで出遅れながら直線外から伸び2着。前走5着も差を詰めた。",
+        "third": "1700mで躓いてから追い上げ2着。1600mで流れに乗れれば直線で一段伸びる。",
+        "others": [
+          "1600mで好位外から勝利。昇級後の再現性はこれから。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "3b7914a95a46b359efd4be6428fcd5049094d2dbaa6a8e68b9c303056681c29b",
+      "prediction_semantic_hash": "3b7914a95a46b359efd4be6428fcd5049094d2dbaa6a8e68b9c303056681c29b"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 9
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "173a7852bcc7ac624d66cef29b11004bf417735d1145116c7dcc8c0eb2b86444",
+      "racenote_identity": "FORWARD-20261003/東京9R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "フィールドノート"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "フィールドノート"
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "ドッグウッド"
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "ホウオウシンデレラ"
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "ノビリシマビジョン"
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "ミッキージャンプ"
+          }
+        ]
+      },
+      "reader_facing_reason": "フィールドノートは芝1800mの前走で中団内をロスなく運び、直線も捌いて勝ち切った。ドッグウッドは出遅れから外を回して迫った前走と、馬群を割った勝利があり、流れ次第で逆転する。ホウオウシンデレラは同距離で中団からしぶとく脚を使い続け、逃げ馬が競り合って直線で止まれば間を割って浮上できる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝1800mで逃げ候補が複数。前のペースが落ち着かない場合に、中団からロスなく進む馬の終いを重視する。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "フィールドノート"
+          },
+          "case_for": "前走1800mで中団内から捌いて快勝。今回も位置取りに無理がない。"
+        },
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "ドッグウッド"
+          },
+          "case_for": "1800mで直線外から迫り、以前は馬群を割って勝利。"
+        },
+        {
+          "horse": {
+            "horse_no": 10,
+            "horse_name": "ノビリシマビジョン"
+          },
+          "case_for": "1800mで前に行って3着。逃げ争いに巻き込まれるリスク。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "ホウオウシンデレラ"
+        },
+        "case_for": "1800mで続けて掲示板付近、中団から終いに脚を使う。先行勢の消耗なら浮上。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "前走1800mで中団内から捌いて快勝。今回も位置取りに無理がない。",
+        "second": "1800mで直線外から迫り、以前は馬群を割って勝利。",
+        "third": "1800mで続けて掲示板付近、中団から終いに脚を使う。先行勢の消耗なら浮上。",
+        "others": [
+          "1800mで前に行って3着。逃げ争いに巻き込まれるリスク。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "63afd3e6232c021b29319b3f16807aca04212f9c4c7bddbbf0910efcf518f480",
+      "prediction_semantic_hash": "63afd3e6232c021b29319b3f16807aca04212f9c4c7bddbbf0910efcf518f480"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 10
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "8043c877cfff3edec7ee8908f99890efc256e4c82510d5df21451f18f8ac04e6",
+      "racenote_identity": "FORWARD-20261003/東京10R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 5,
+        "horse_name": "レッドキングリー"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 5,
+          "horse_name": "レッドキングリー"
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "ホウオウシェリー"
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "チャンネルトンネル"
+        },
+        "others": [
+          {
+            "horse_no": 12,
+            "horse_name": "フォーゲル"
+          },
+          {
+            "horse_no": 18,
+            "horse_name": "ヒシアマン"
+          }
+        ]
+      },
+      "reader_facing_reason": "レッドキングリーは芝1400mで好位内から前を追って2着、以前も先団から勝っており位置取りに融通が利く。ホウオウシェリーは同距離を先手から粘り切って勝ったが、今回は他の先行馬との競り合いが鍵。チャンネルトンネルは後方から馬群の内を捌いて2着まで伸びており、前が厳しくなれば差し込む余地がある。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "芝1400mの18頭で逃げたい馬が複数。前で粘る馬を評価しつつ、先行争いの外から伸びる差し馬を単穴で拾う。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "レッドキングリー"
+          },
+          "case_for": "1400mで先行して2着、前々走も勝利。好位内で脚を残せる。"
+        },
+        {
+          "horse": {
+            "horse_no": 3,
+            "horse_name": "ホウオウシェリー"
+          },
+          "case_for": "1400mを先手から粘って勝った。競り合いが強まると負担。"
+        },
+        {
+          "horse": {
+            "horse_no": 12,
+            "horse_name": "フォーゲル"
+          },
+          "case_for": "1400mを早めに動いて差し切り。今回は先行勢が多く進路が鍵。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "チャンネルトンネル"
+        },
+        "case_for": "1400mで後方から内を捌いて2着まで伸びた。前が競り合えば直線で一気に迫る。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mで先行して2着、前々走も勝利。好位内で脚を残せる。",
+        "second": "1400mを先手から粘って勝った。競り合いが強まると負担。",
+        "third": "1400mで後方から内を捌いて2着まで伸びた。前が競り合えば直線で一気に迫る。",
+        "others": [
+          "1400mを早めに動いて差し切り。今回は先行勢が多く進路が鍵。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "69ebe9ebcb1b495fd08e0bd0e8ed7c57b6355802268a77e0389436eefee74498",
+      "prediction_semantic_hash": "69ebe9ebcb1b495fd08e0bd0e8ed7c57b6355802268a77e0389436eefee74498"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 11
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "bd3c6157c581631f77ffe79e91cec466d126037617ba66c636f88647fb0fe256",
+      "racenote_identity": "FORWARD-20261003/東京11R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ルヴァレドクール"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ルヴァレドクール"
+        },
+        "second": {
+          "horse_no": 4,
+          "horse_name": "ヘニーガイスト"
+        },
+        "third": {
+          "horse_no": 3,
+          "horse_name": "スナッピードレッサ"
+        },
+        "others": [
+          {
+            "horse_no": 5,
+            "horse_name": "ドンエレクトス"
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "ジャスティンアース"
+          }
+        ]
+      },
+      "reader_facing_reason": "ルヴァレドクールはダートで好位から前を目標にして伸びる形で連勝し、今回も主導権争いの直後から動ける。ヘニーガイストは躓いても早めに進出して勝っており、スムーズなら強敵。スナッピードレッサは中団内からじわりと進出して勝った内容があり、逃げ馬が互いに脚を使えば差し込んで本線を崩せる。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1600mオープンで先行馬が揃う。前で勝ち切る力を見せた馬を軸に、競り合いが激しい場合の差し込みを別に探す。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 1,
+            "horse_name": "ルヴァレドクール"
+          },
+          "case_for": "ダートで好位から連勝し、前を目標にした直線の伸びが強い。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "ヘニーガイスト"
+          },
+          "case_for": "躓いても進出して勝ち、好スタートから圧勝もある。"
+        },
+        {
+          "horse": {
+            "horse_no": 5,
+            "horse_name": "ドンエレクトス"
+          },
+          "case_for": "1600m近辺の勝ちと2着。前を取りに行く際の負荷が鍵。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 3,
+          "horse_name": "スナッピードレッサ"
+        },
+        "case_for": "中団内から進出して勝ち、先団からも2着。前が競り合うなら差す形が生きる。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "ダートで好位から連勝し、前を目標にした直線の伸びが強い。",
+        "second": "躓いても進出して勝ち、好スタートから圧勝もある。",
+        "third": "中団内から進出して勝ち、先団からも2着。前が競り合うなら差す形が生きる。",
+        "others": [
+          "1600m近辺の勝ちと2着。前を取りに行く際の負荷が鍵。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "78d0a6b8b12dded8ba24a35400a16e852afe4b69acbfdecaead4f5a0759b4971",
+      "prediction_semantic_hash": "78d0a6b8b12dded8ba24a35400a16e852afe4b69acbfdecaead4f5a0759b4971"
+    }
+  },
+  {
+    "schema_version": "RaceNote-Forecast-Research-Record-0.4.2",
+    "identity": {
+      "target_date": "2026-10-03",
+      "venue": "東京",
+      "race_no": 12
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "reader_facing_prose_contract": "FORECAST_READER_FACING_PROSE_v0_1",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "prose_origin": "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
+    },
+    "source": {
+      "racenote_semantic_sha256": "5aeb8efbf02be58534cdbe070435d134d71203433a35e2bd55a69c1bbd63f9dc",
+      "racenote_identity": "FORWARD-20261003/東京12R",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "main_sha_at_forecast": "c7f29029b93c2f6396f88c326506ccbe03c24ed1"
+    },
+    "prediction": {
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "マジッククッキー"
+      },
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "マジッククッキー"
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "ヘリテージブルーム"
+        },
+        "third": {
+          "horse_no": 10,
+          "horse_name": "ショーリバース"
+        },
+        "others": [
+          {
+            "horse_no": 4,
+            "horse_name": "レーティッシュ"
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "ケブランリ"
+          }
+        ]
+      },
+      "reader_facing_reason": "マジッククッキーはダート1400mで出遅れと接触がありながら直線外から猛追して2着。発馬リスクは残るが、前が競る今回は末脚を生かせる。ヘリテージブルームは好位から勝ちと2着があり、先行勢では最も粘りが計算できる。ショーリバースは同距離を中団から伸びて勝っており、前の争いが長引けばもう一頭の差し馬として浮上する。",
+      "confidence": "B"
+    },
+    "decision_trace": {
+      "race_model": "ダート1400mで先行勢の負荷が高まりやすい。後方から届く馬と前で粘る馬を比較し、単穴には流れを利用できる別の差し脚を取る。",
+      "mainline_cases": [
+        {
+          "horse": {
+            "horse_no": 8,
+            "horse_name": "マジッククッキー"
+          },
+          "case_for": "1400mで出遅れ接触後に外から猛追して2着。再度大きく遅れるリスクはある。"
+        },
+        {
+          "horse": {
+            "horse_no": 6,
+            "horse_name": "ヘリテージブルーム"
+          },
+          "case_for": "1400mで好位から2着と勝利。先行して渋太く運べる。"
+        },
+        {
+          "horse": {
+            "horse_no": 4,
+            "horse_name": "レーティッシュ"
+          },
+          "case_for": "1400mで好位内から3着、能力はあるが勝ち切りに課題。"
+        }
+      ],
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 10,
+          "horse_name": "ショーリバース"
+        },
+        "case_for": "1400mを中団から差し切った。先行勢が競って再び脚を使う形なら。",
+        "selected_independently_from_mainline": true
+      },
+      "mark_reason": {
+        "main": "1400mで出遅れ接触後に外から猛追して2着。再度大きく遅れるリスクはある。",
+        "second": "1400mで好位から2着と勝利。先行して渋太く運べる。",
+        "third": "1400mを中団から差し切った。先行勢が競って再び脚を使う形なら。",
+        "others": [
+          "1400mで好位内から3着、能力はあるが勝ち切りに課題。",
+          "補完候補として残す。"
+        ]
+      },
+      "rrdb_evidence": {
+        "available": true,
+        "reviewed": true,
+        "used_in_decision": false,
+        "horse_refs": [],
+        "reason_not_used": "全頭の推薦信号を確認したが、印は実走内容と今回の条件・展開の判断を主因とした。",
+        "recommendation_contract_version": "rrdb-recommendation-signals-v0.3"
+      }
+    },
+    "audit": {
+      "pre_result_guard": "PASS",
+      "result_visible_at_freeze": false,
+      "freeze_packager_version": "racenote-freeze-prepared-forecast-0.1.0",
+      "created_at": "2026-10-02T13:47:40.997421+00:00",
+      "frozen_at": "2026-10-02T13:47:40.997421+00:00",
+      "five_mark_role_guard": "PASS",
+      "mainline_single_shot_guard": "PASS",
+      "reader_facing_prose_guard": "PENDING_VALIDATOR",
+      "market_blind_guard": "PASS_TARGET_DAY_MARKET_FIELDS_STRIPPED_BEFORE_FORECAST",
+      "rrdb_contract_guard": "PASS_RECOMMENDATION_V0_3_GRADE_DISABLED",
+      "prediction_hash_contract": "SEMANTIC_V1_EXECUTION_METADATA_EXCLUDED",
+      "prediction_hash": "0640e06c99e87fc2d8f385f00797277d0ac88a3e5154a2cad78bb6aadc63f59d",
+      "prediction_semantic_hash": "0640e06c99e87fc2d8f385f00797277d0ac88a3e5154a2cad78bb6aadc63f59d"
+    }
+  }
+]

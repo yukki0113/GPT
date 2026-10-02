@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "date": "2026-10-03",
+  "source_mode": "FORWARD",
+  "result_opened": false,
+  "target_market_opened": false,
+  "market_blind_guard": "PASS_STRIPPED_BEFORE_FORECAST",
+  "day_prep_status": "PASS",
+  "reader_count": 24,
+  "forecast_validator": "PASS",
+  "frozen_races": 24,
+  "prediction_hash_unique_count": 24,
+  "newspaper_merge_status": "PASS",
+  "newspaper_merged_horses": 349,
+  "pwa_rank_6_plus_policy": "TRANSPORT_ORDER_BY_HORSE_NO_NOT_FORECAST_RANKING",
+  "pwa_other_sources": "NOT_MERGED_IN_THIS_PACKAGE"
+}
