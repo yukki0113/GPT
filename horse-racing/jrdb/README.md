@@ -26,6 +26,9 @@
 | 永続domain context | `.gpt/CONTEXT.md` |
 | 実行経路・Git運用 | `.gpt/WORKFLOW.md` |
 | JRDB Raw固定長解釈 | `src/jrdb_raw.py` + `docs/JRDB_Common_Raw_Reader_v0_1.md` |
+| JRDB公式固定長仕様リファレンス | `docs/reference/JRDB_Fixed_Length_Data_Definition.md` |
+| JRDB公式マスタコードリファレンス | `docs/reference/JRDB_Master_Code_Definition.md` |
+| JRDB主要ファイル相関・キー整理 | `docs/reference/JRDB_File_Relation_Key_Definition.md` |
 | RaceNote正式仕様 | `docs/README_racenote_v1.md` / `docs/README_racenote_request.md` |
 | RaceNote現行開発方針 | `docs/racenote/README.md` |
 | RaceNote Forecast Gen0研究計画 | `docs/racenote/FORECAST_GEN0_PLAN.md` |
