@@ -965,3 +965,34 @@ Normal recommendation/history lookup horizon is `730 days` before the target dat
 
 The former `jrdb_next_watch_rules.py` S/A contract and `next-watch-rules-discovery-v0.1` artifact are historical-reproduction assets only.
 
+## RL / RaceLift retirement handoff — 2026-10-02
+
+RL research is retired. Do not resume model development or daily index generation from the older RL-T handoff sections.
+
+Normative contract:
+`docs/RL_Retirement_Contract_20261002.md`
+
+```text
+RL_RESEARCH_STATUS               = RETIRED
+RL_DAILY_INDEX_GENERATION        = STOPPED
+RL_INDEX_REQUIRED_BY_PRODUCTION  = FALSE
+RL_T_V0_2                        = FROZEN_REPRO_ONLY
+TRAINING_RESEARCH                = FROZEN_RESEARCH_ASSET
+```
+
+Important:
+
+- Missing RL / Training Edge output is a valid normal state.
+- Do not create an RL value on demand for Newspaper, RaceNote, EdgeDB, or PWA.
+- Do not restart Training Research, HOLDOUT, OOT, runtime freeze, or model-tuning work unless a new explicit research decision reopens RL as a new version.
+- Keep Warehouse / Index Base / record-hash compatibility active; those are shared JRDB infrastructure.
+- Existing anti-RL RaceNote firewalls should remain.
+- Historical RL docs and evidence should be read as frozen research history, not as current next-action instructions.
+
+Next cleanup sequence:
+1. retire active RL workflows,
+2. prove downstream non-dependency,
+3. inventory/freeze RL assets,
+4. disentangle shared infrastructure naming where useful,
+5. run final retirement audit.
+
