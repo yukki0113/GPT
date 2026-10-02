@@ -305,23 +305,47 @@ Use latest main, current contracts, and current source as truth. Do not reintrod
 For current research, follow this guide and the Forecast Gen0 contract. For deterministic/legacy reproduction, use the dedicated legacy documents and preserved artifacts.
 
 
-### Current Human-Context Reader prospective validation — 2026-10-02
+### Current Human-Context Reader prospective validation — 2026-10-03
 
 Fixed historical clean-blind baseline cohort:
 
 - `FORECAST_HUMAN_CONTEXT_READER_v0_4_2_CANDIDATE.md`
 - `RaceNote-Human-Context-Reader-0.4.2-candidate`
-- BTDAY-0023 through BTDAY-0032 only; preserve the existing Frozen records.
+- BTDAY-0023 through BTDAY-0032 only; 336R.
+- Preserve the existing Frozen records.
 
-New unused BTDAY forecast logic:
+Completed v0.4.3 prospective cohort:
 
 - `FORECAST_HUMAN_CONTEXT_READER_v0_4_3_CANDIDATE.md`
 - `RaceNote-Human-Context-Reader-0.4.3-candidate`
+- BTDAY-0036 / 0037 / 0040 / 0041; 132 clean-blind races.
+- BTDAY-0038 and 0039 remain formally excluded.
+- Do not add new v0.4.3 days or rewrite this cohort.
 
-v0.4.3 adds only bounded semantic final checks: Hierarchy consistency, a conservative ▲ promotion gate, and a narrow △2-vs-borderline-challenger Coverage check. It does not add scores, fixed weights, market input, a sixth horse, or automatic RRDB promotion.
+New unused BTDAY forecast logic:
 
-For new unused BTDAYs, produce and Freeze v0.4.3 alone before opening target results. Do not create same-day v0.4.2. Compare prospective v0.4.3 days with the fixed historical v0.4.2 cohort after result acquisition, keeping cohort and calendar differences explicit. Canonical procedure:
+- `FORECAST_HUMAN_CONTEXT_READER_v0_4_4_CANDIDATE.md`
+- `RaceNote-Human-Context-Reader-0.4.4-candidate`
+- schema: `schema/racenote_forecast_research_record_v0_4_4.json`
+
+v0.4.4 inherits v0.4.3 hierarchy and independent ▲ semantics. Its bounded
+change is an explicit Coverage boundary audit: every race must perform a
+lightweight unmarked scan, identify the best eligible challenger or prove none
+exists, compare that challenger directly with provisional △2, and record
+`KEEP / SWAP / NO_ELIGIBLE_CHALLENGER`.
+
+This remains non-scoring and conservative. It does not add fixed weights,
+market input, a sixth horse, automatic RRDB promotion, automatic ▲ promotion,
+broad outsider hunting, or forced swaps.
+
+For new unused BTDAYs, produce and Freeze v0.4.4 alone before opening target
+results. Do not create same-day v0.4.2 or v0.4.3 forecasts. Compare new v0.4.4
+prospective days with the fixed v0.4.2 baseline and fixed v0.4.3 cohort,
+keeping cohort/calendar differences explicit.
+
+Canonical procedure:
 
 - `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
 
-BTDAY-0035 has a previously Frozen v0.4.2-only record. Keep it immutable and outside both defined evaluation cohorts. The old same-day A/B runbook is superseded. This operational BTDAY change does not itself promote v0.4.3 to a production Forecast pointer.
+The production Forecast pointer remains unchanged pending an explicit research
+promotion decision.
