@@ -278,16 +278,10 @@ def automatic_kenshow_prediction(horse: dict[str, Any]) -> dict[str, Any] | None
     if not mark and not review_horse and not comment:
         return None
 
-    tags = []
-    if mark or rn_comment:
-        tags.append("RaceNote")
-    if rrdb_comment:
-        tags.append("RRDB")
-
     return {
         "mark": mark or None,
         "confidence": confidence or None,
-        "tag": " / ".join(tags) or None,
+        "tag": "不利分析" if rrdb_comment else None,
         "review_horse": review_horse,
         "comment": comment or None,
     }
