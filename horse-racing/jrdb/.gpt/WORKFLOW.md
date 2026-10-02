@@ -369,6 +369,16 @@ The formal comparison and exact gates are recorded in `docs/JRDB_Analysis_Wareho
 Normative contract:
 `docs/RL_Retirement_Contract_20261002.md`
 
+Current status:
+
+```text
+RL_RESEARCH_STATUS               = RETIRED
+RL_DAILY_INDEX_GENERATION        = STOPPED
+RL_INDEX_REQUIRED_BY_PRODUCTION  = FALSE
+```
+
+Missing RL / Training Edge output is a normal production state.
+
 For ordinary work:
 
 - do not start or continue RL / Training Edge model development;
