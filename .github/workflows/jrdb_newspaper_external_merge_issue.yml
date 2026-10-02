@@ -43,18 +43,22 @@ jobs:
           date = str(req.get("date") or "").strip()
           revision = req.get("revision")
           eval_gzip_b64 = str(req.get("eval_gzip_b64") or "").strip()
+          eval_csv = str(req.get("eval_csv") or "")
 
           if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", date):
               raise SystemExit("date must be YYYY-MM-DD")
           if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
               raise SystemExit("revision must be integer >= 1")
-          if not eval_gzip_b64:
-              raise SystemExit("eval_gzip_b64 is required")
+          if bool(eval_gzip_b64) == bool(eval_csv):
+              raise SystemExit("supply exactly one of eval_gzip_b64/eval_csv")
 
-          try:
-              payload = gzip.decompress(base64.b64decode(eval_gzip_b64, validate=True))
-          except Exception as exc:
-              raise SystemExit(f"failed to decode Eval payload: {exc}") from exc
+          if eval_csv:
+              payload = eval_csv.encode("utf-8")
+          else:
+              try:
+                  payload = gzip.decompress(base64.b64decode(eval_gzip_b64, validate=True))
+              except Exception as exc:
+                  raise SystemExit(f"failed to decode Eval payload: {exc}") from exc
 
           Path("/tmp/external-merge/eval.csv").write_bytes(payload)
           Path("/tmp/external-merge/request.json").write_text(
