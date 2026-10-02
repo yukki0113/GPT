@@ -1,0 +1,84 @@
+name: RaceNote BTDAY-0033 AB Publish
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[RACENOTE_BTDAY033_AB_PUBLISH]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Download frozen A/B JSONs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/ab
+          curl -L --fail --retry 4 "https://sdmntprwestus3.oaiusercontent.com/files/00000000-33ec-81fd-bd71-1310d0dea20d/raw?se=2026-10-02T06%3A10%3A24Z&sp=r&sv=2026-02-06&sr=b&scid=0cc6de26-73ba-5af2-aa1a-6dba5f352af6&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T02%3A25%3A12Z&ske=2026-10-03T02%3A25%3A12Z&sks=b&skv=2026-02-06&sig=KZMfJPNYatgE3PXisXLQMFO9tRMPZnJO38I7d/th2hY%3D" -o /tmp/ab/forecast_20260112_all_v042.json
+          curl -L --fail --retry 4 "https://sdmntprwestus2.oaiusercontent.com/files/00000000-ba84-81f8-ba86-bfa91bd7008a/raw?se=2026-10-02T06%3A10%3A24Z&sp=r&sv=2026-02-06&sr=b&scid=d75ff3b6-bc75-534a-a168-de31bc07fb67&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T02%3A37%3A13Z&ske=2026-10-03T02%3A37%3A13Z&sks=b&skv=2026-02-06&sig=32OW8mR1wHm3CdSFkxNx/N4z7Mp%2BlIDjDJcJ5lGCRqU%3D" -o /tmp/ab/forecast_20260112_all_v043.json
+          curl -L --fail --retry 4 "https://sdmntpraustraliaeast.oaiusercontent.com/files/00000000-7dd0-81fa-b53f-5eed92c6d6f0/raw?se=2026-10-02T06%3A10%3A23Z&sp=r&sv=2026-02-06&sr=b&scid=6f628845-3cd0-5771-8a54-5364fd9c0859&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T02%3A39%3A35Z&ske=2026-10-03T02%3A39%3A35Z&sks=b&skv=2026-02-06&sig=3dup4vlaALURyA4YyyX9jdrOsrjwnc8ZDPOiq7eFS7w%3D" -o /tmp/ab/forecast_20260112_ab_manifest.json
+          curl -L --fail --retry 4 "https://sdmntprjapaneast.oaiusercontent.com/files/00000000-ad60-8209-877b-33e63e381128/raw?se=2026-10-02T06%3A10%3A24Z&sp=r&sv=2026-02-06&sr=b&scid=a2aad0dd-8052-5911-89a2-e88ae0abcb0d&skoid=f5e14fda-2af7-44a3-9d18-d372ffcad871&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T02%3A23%3A32Z&ske=2026-10-03T02%3A23%3A32Z&sks=b&skv=2026-02-06&sig=jhuBM2A7w8NFu9900fCv3LIlyYacHX0xa/i7bLSBvSU%3D" -o /tmp/ab/forecast_20260112_ab_audit.json
+          echo "fe059110f3fb62096ae61f1d20fd930a30f30117472c928f4a2b39baf75c940d  /tmp/ab/forecast_20260112_all_v042.json" | sha256sum -c -
+          echo "5eb9546ac48958744b8f990502411b70e692290606242ace7f04a8f49f55d729  /tmp/ab/forecast_20260112_all_v043.json" | sha256sum -c -
+          echo "2aeac0be2ae2e1b98799a41fb1ef0efbb825153df1deeed10c724670078c3703  /tmp/ab/forecast_20260112_ab_manifest.json" | sha256sum -c -
+          echo "e59b406fde39dbaf83569767ac2164e406d509b23d065d2b44b140b166b5bfd0  /tmp/ab/forecast_20260112_ab_audit.json" | sha256sum -c -
+      - name: Verify A/B audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('/tmp/ab/forecast_20260112_all_v042.json').read_text())
+          b=json.loads(Path('/tmp/ab/forecast_20260112_all_v043.json').read_text())
+          m=json.loads(Path('/tmp/ab/forecast_20260112_ab_manifest.json').read_text())
+          q=json.loads(Path('/tmp/ab/forecast_20260112_ab_audit.json').read_text())
+          assert len(a)==len(b)==m['race_count']==24
+          assert q['status']=='PASS'
+          assert q['same_identity_all'] and q['same_reader_semantic_hash_all']
+          assert q['market_blind_v042'] and q['market_blind_v043'] and q['result_opened'] is False
+          print(json.dumps({'status':'PASS','race_count':24,'main_diff':q['main_diff_races'],'set_diff':q['five_horse_set_diff_races']},ensure_ascii=False))
+          PY
+      - name: Publish four canonical JSONs
+        run: |
+          set -euo pipefail
+          DEST="horse-racing/jrdb/backtests/BTDAY-0033/20260112/day_merge"
+          test ! -e "horse-racing/jrdb/backtests/BTDAY-0033/20260112" || { echo "destination exists"; exit 3; }
+          mkdir -p "$DEST"
+          cp /tmp/ab/*.json "$DEST/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "racenote: freeze BTDAY-0033 v0.4.2 vs v0.4.3 A-B"
+          git push origin HEAD:main
+          echo "CANONICAL_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          from pathlib import Path
+          p=Path('/tmp/ab/forecast_20260112_ab_audit.json')
+          q=json.loads(p.read_text()) if p.exists() else {}
+          payload={'status':q.get('status','FAILED'),'selection_id':'BTDAY-0033','target_date':'2026-01-12','race_count':q.get('race_count_v042'),'result_opened':q.get('result_opened'),'main_diff_races':q.get('main_diff_races'),'five_horse_set_diff_races':q.get('five_horse_set_diff_races'),'canonical_commit':os.environ.get('CANONICAL_COMMIT')}
+          print('RACENOTE_BTDAY033_AB_PUBLISH_RESULT')
+          print('\\`\\`\\`json'); print(json.dumps(payload,ensure_ascii=False,indent=2)); print('\\`\\`\\`')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+      - name: Close issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed || true
