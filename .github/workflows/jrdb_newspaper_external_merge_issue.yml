@@ -44,15 +44,22 @@ jobs:
           revision = req.get("revision")
           eval_gzip_b64 = str(req.get("eval_gzip_b64") or "").strip()
           eval_csv = str(req.get("eval_csv") or "")
+          eval_repo_path = str(req.get("eval_repo_path") or "").strip()
 
           if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", date):
               raise SystemExit("date must be YYYY-MM-DD")
           if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
               raise SystemExit("revision must be integer >= 1")
-          if bool(eval_gzip_b64) == bool(eval_csv):
-              raise SystemExit("supply exactly one of eval_gzip_b64/eval_csv")
+          supplied = sum(bool(value) for value in (eval_gzip_b64, eval_csv, eval_repo_path))
+          if supplied != 1:
+              raise SystemExit("supply exactly one of eval_gzip_b64/eval_csv/eval_repo_path")
 
-          if eval_csv:
+          if eval_repo_path:
+              repo_path = Path(eval_repo_path)
+              if repo_path.is_absolute() or ".." in repo_path.parts or not repo_path.is_file():
+                  raise SystemExit("invalid eval_repo_path")
+              payload = repo_path.read_bytes()
+          elif eval_csv:
               payload = eval_csv.encode("utf-8")
           else:
               try:
