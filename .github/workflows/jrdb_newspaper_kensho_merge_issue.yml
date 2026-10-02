@@ -213,7 +213,7 @@ jobs:
                   m=a.get("momotaro") or {}
                   k=m.get("kenshow") or {}
                   if k.get("mark"): rn_marked += 1
-                  if isinstance(m.get("keibailuka"),dict): iluka += 1
+                  if isinstance(a.get("keibailuka"),dict): iluka += 1
                   key=(rk,int(h["key"]["horse_no"]))
                   if key in rrdb:
                       if k.get("review_horse") is not True:
