@@ -121,3 +121,11 @@ Race Selector仮説発見のためのanalysis-side annotationである。
 - `hierarchy_main_vs_second_annotations_v0_1.jsonl`: 23Rのassessment / cause_codes / rationaleを1R1行で保持。
 
 結果だけで序列を学習しないため、`REVERSAL_WARRANTED / NARROW_GAP / PRE_RACE_JUSTIFIED` を区別する。
+
+
+## Hierarchy ▲ winner review v0.1
+
+- `HIERARCHY_SINGLE_SHOT_WINNER_REVIEW_v0_1.md`: ▲勝利11Rをsingle-shot成功とpromotion missに分離したレビュー。
+- `hierarchy_single_shot_winner_annotations_v0_1.jsonl`: 11Rのassessment / cause_codesを保持。
+
+▲は定義上◎○を負かしてよいため、機械的なhierarchy_failureをそのままロジック失敗とみなさない。
