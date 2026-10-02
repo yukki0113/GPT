@@ -1,0 +1,45 @@
+{
+  "request": "BTDAY-0036 through BTDAY-0038 using RaceNote-Human-Context-Reader-0.4.3-candidate",
+  "baseline": "v0.4.2 fixed historical comparator BTDAY-0023 through BTDAY-0032",
+  "same_day_ab": false,
+  "main_sha": "c80e5c287481c73c7d4555d4e8a484ea9bcd70e1",
+  "selections": [
+    {
+      "selection_id": "BTDAY-0036",
+      "target_date": "2026-06-27",
+      "day_prep_status": "PASS",
+      "forecast_status": "NOT_STARTED"
+    },
+    {
+      "selection_id": "BTDAY-0037",
+      "target_date": "2026-07-18",
+      "day_prep_status": "PASS",
+      "forecast_status": "NOT_STARTED"
+    },
+    {
+      "selection_id": "BTDAY-0038",
+      "target_date": "2026-02-22",
+      "day_prep_status": "INVALIDATED_MARKET_EXPOSURE",
+      "forecast_status": "NOT_CREATED",
+      "replacement_id": "BTDAY-0039",
+      "replacement_target_date": "2026-09-20"
+    },
+    {
+      "selection_id": "BTDAY-0039",
+      "target_date": "2026-09-20",
+      "replacement_for": "BTDAY-0038",
+      "day_prep_status": "PASS",
+      "forecast_status": "FROZEN_CLEAN_BLIND",
+      "race_count": 24,
+      "validator_status": "PASS",
+      "audit_turn_status": "PASS",
+      "result_opened": false,
+      "settlement_performed": false
+    }
+  ],
+  "incomplete_work": [
+    "BTDAY-0036 model forecasts, audit, Freeze",
+    "BTDAY-0037 model forecasts, audit, Freeze"
+  ],
+  "results_stage": "NOT_STARTED"
+}
