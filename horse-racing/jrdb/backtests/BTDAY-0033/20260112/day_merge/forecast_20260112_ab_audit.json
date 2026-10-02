@@ -1,0 +1,286 @@
+{
+  "schema_version": "racenote-btday-ab-audit-v0.1",
+  "status": "PASS",
+  "selection_id": "BTDAY-0033",
+  "target_date": "2026-01-12",
+  "race_count_v042": 24,
+  "race_count_v043": 24,
+  "same_identity_all": true,
+  "same_reader_semantic_hash_all": true,
+  "five_unique_marks_all_v042": true,
+  "five_unique_marks_all_v043": true,
+  "rrdb_contract_v042": "rrdb-recommendation-signals-v0.3",
+  "rrdb_contract_v043": "rrdb-recommendation-signals-v0.3",
+  "market_blind_v042": true,
+  "market_blind_v043": true,
+  "result_opened": false,
+  "five_horse_set_diff_races": 4,
+  "main_diff_races": 9,
+  "second_diff_races": 11,
+  "single_shot_diff_races": 2,
+  "only_support_boundary_diff_races": 2,
+  "changed_races": [
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "v042": [
+        6,
+        9,
+        15,
+        16,
+        11
+      ],
+      "v043": [
+        6,
+        9,
+        15,
+        14,
+        16
+      ],
+      "attribution": "COVERAGE_CHALLENGER",
+      "pre_freeze_rationale": "△境界を再確認し、同条件4着で調教上昇のヴァンデスペランスをロケットパンチより直接比較価値が高いと判断。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "v042": [
+        7,
+        17,
+        11,
+        15,
+        6
+      ],
+      "v043": [
+        17,
+        7,
+        11,
+        15,
+        6
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "中山2000m3着という直接条件の裏付けがあるベアドッキューンを、東京1800m2着中心のエリュグレイスより上に置く。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "v042": [
+        1,
+        6,
+        10,
+        3,
+        5
+      ],
+      "v043": [
+        1,
+        10,
+        2,
+        6,
+        3
+      ],
+      "attribution": "SINGLE_SHOT_PROMOTION",
+      "pre_freeze_rationale": "オオタチは2400m勝ちとTIME_CLASS_PLUS1があり、条件付き穴ではなく本線級の勝ち筋と判断。▲を長距離勝ちのダカラフェスティヴへ再設定。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "v042": [
+        1,
+        5,
+        8,
+        4,
+        12
+      ],
+      "v043": [
+        5,
+        1,
+        8,
+        4,
+        12
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "リラボニートは直近中山1600m2着とデキ抜群が揃い、当日の直接条件に対する勝ち筋がダノンエアズロックより明確。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "v042": [
+        3,
+        6,
+        5,
+        18,
+        10
+      ],
+      "v043": [
+        3,
+        6,
+        5,
+        18,
+        1
+      ],
+      "attribution": "COVERAGE_CHALLENGER",
+      "pre_freeze_rationale": "△2境界で東京2000m2着のキャピタルリッチが、近走不振のクラウドセイルより直接距離の裏付けで上回る。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "v042": [
+        7,
+        10,
+        5,
+        3,
+        2
+      ],
+      "v043": [
+        10,
+        7,
+        5,
+        3,
+        2
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "ブラックコーラルは京都1800m2着を含む同距離5戦3回好走があり、サヴォアフェールより直接条件の再現性を上位評価。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "v042": [
+        2,
+        13,
+        11,
+        7,
+        1
+      ],
+      "v043": [
+        2,
+        7,
+        11,
+        13,
+        1
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "アゲンストオッズの京都1400m2着という直接実績を重く見て、本線相手へ引き上げる。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "v042": [
+        4,
+        2,
+        6,
+        7,
+        5
+      ],
+      "v043": [
+        2,
+        4,
+        6,
+        7,
+        5
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "マテンロウシルビアは京都1900m勝ちと京都1800m3着があり、今回条件での勝ち筋がアリストクラシアの安定型より明確。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "v042": [
+        16,
+        6,
+        15,
+        14,
+        13
+      ],
+      "v043": [
+        6,
+        16,
+        15,
+        14,
+        13
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "サンマルノヴェルは京都1400mで連続2着かつ高IDM実績があり、同条件の直接性でセボンサデッセを上回る。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "v042": [
+        1,
+        10,
+        5,
+        8,
+        7
+      ],
+      "v043": [
+        10,
+        8,
+        5,
+        1,
+        2
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY+COVERAGE_CHALLENGER",
+      "pre_freeze_rationale": "ディニテとユキノクラウンの1900m直接好走を優先し、△境界では同距離3戦すべて好走のスコーピオンイメルを採用。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "v042": [
+        10,
+        8,
+        4,
+        1,
+        7
+      ],
+      "v043": [
+        4,
+        10,
+        8,
+        1,
+        7
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "ウインデイジーは京都2400mを実際に勝っており、距離延長対応を見込むアロンディより直接の勝ち筋が強い。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "v042": [
+        7,
+        11,
+        8,
+        15,
+        3
+      ],
+      "v043": [
+        15,
+        7,
+        8,
+        11,
+        3
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "モックモックは京都1800mで1着・2着を含む4戦4回好走。直近阪神勝ちのデルアヴァーより今回条件への直結度を上位評価。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "v042": [
+        13,
+        1,
+        16,
+        11,
+        15
+      ],
+      "v043": [
+        1,
+        11,
+        16,
+        13,
+        15
+      ],
+      "attribution": "HIERARCHY_CONSISTENCY",
+      "pre_freeze_rationale": "アルトラムスは京都1600m勝ちと調教水準が揃い、モノポリオの1800m中心の実績より今回のマイル条件に直接合う。"
+    }
+  ],
+  "baseline_prediction_hash": "751a06d5f490d9a23550d8ddf03608a8fff530bbd58cc9fec48e6e5ddd1ef85e",
+  "candidate_prediction_hash": "6002cd8c070455e38d8a373b096efad5be98183e4851dfa548ab89a3849e1f3d"
+}

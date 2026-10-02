@@ -1,0 +1,17 @@
+{
+  "schema_version": "racenote-btday-ab-manifest-v0.1",
+  "selection_id": "BTDAY-0033",
+  "target_date": "2026-01-12",
+  "baseline_logic_id": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+  "candidate_logic_id": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+  "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+  "same_reader_input_required": true,
+  "market_blind": true,
+  "result_opened_before_both_freezes": false,
+  "shared_day_prep_artifact_id": 11211627042,
+  "shared_day_prep_sha256": "745685e35cdde1db922fc6313689c8e8ef9d9209aeea6b21d71823c49ea79bc8",
+  "race_count": 24,
+  "baseline_prediction_hash": "751a06d5f490d9a23550d8ddf03608a8fff530bbd58cc9fec48e6e5ddd1ef85e",
+  "candidate_prediction_hash": "6002cd8c070455e38d8a373b096efad5be98183e4851dfa548ab89a3849e1f3d",
+  "storage_policy": "GIT_JSON_ONLY_NO_HTML_NO_XLSX_NO_ZIP_NO_PARQUET_RAW_COPY"
+}

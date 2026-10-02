@@ -1,0 +1,2606 @@
+[
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 1,
+      "race_key": "2026-01-12-中山-1",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "1c7ef532d53ec38f6d3fadbd86aa7653f45b0f38ec30d247fa19e29695931e84",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 5,
+          "horse_name": "アイスメルティング",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 3,
+          "horse_name": "スリーコーズ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 8,
+          "horse_name": "イトシサ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 4,
+            "horse_name": "ニンジャトットリ",
+            "rank": 4
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "クールフィールド",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 5,
+        "horse_name": "アイスメルティング",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "中山ダート1200mの未勝利で、既に同条件で前受けして粘った実績と今回の仕上がりを最優先する。上位3頭の力差は小さく、位置取りの安定性が軸選択の鍵。",
+      "forecast_rationale": "アイスメルティングは同条件2着と調教上昇が揃う。スリーコーズは中山1200m3着実績、イトシサは距離短縮で終いが生きる単穴。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "イトシサ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 5,
+          "horse_name": "アイスメルティング",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "スリーコーズ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "イトシサ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "ニンジャトットリ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 13,
+          "horse_name": "クールフィールド",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "bebf1ffca8c873d0fe0f69cf990ea44ba877374b2b36b6441974b6dd71e9be93",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 2,
+      "race_key": "2026-01-12-中山-2",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "ec594a476e1c68333055296747b3271f5c6e03ead14f07985ea2a108ea527542",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ブルーサーマル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 4,
+          "horse_name": "ホールドザデイ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "ジャストマイウェイ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "ハングローズ",
+            "rank": 4
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "マスカルポーネ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ブルーサーマル",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "中山ダート1800mで既走内容の差が比較的明確。直近同条件で終いまで伸びた馬を中心に、先行して自分で競馬を作れる馬を相手に置く。",
+      "forecast_rationale": "ブルーサーマルは同条件2着で内容が一段上。ホールドザデイは先行力、ジャストマイウェイは調教上昇と前残りの別シナリオを買う。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "ジャストマイウェイ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 1,
+          "horse_name": "ブルーサーマル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "ホールドザデイ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "ジャストマイウェイ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "ハングローズ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "マスカルポーネ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "ec2662fff43ba3c7139a4c33711916da40fc2ba2c06a13628fbda2354f23615e",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 3,
+      "race_key": "2026-01-12-中山-3",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "1f9a4d58fd97531224df66e591f2666be638cfecdc0bf7d05b93636b46345f8a",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 6,
+          "horse_name": "マイネルオランチア",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 9,
+          "horse_name": "アオハルブルース",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "ブレイズランナー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 16,
+            "horse_name": "ユイノサダハル",
+            "rank": 4
+          },
+          {
+            "horse_no": 11,
+            "horse_name": "ロケットパンチ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 6,
+        "horse_name": "マイネルオランチア",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "同条件経験馬が多く、前走中山1800mの内容と東京1600mからの持続力を比較。上位は差し型中心で、単穴は先行・前残り側の別シナリオを拾う。",
+      "forecast_rationale": "マイネルオランチアは中山1800m3着と東京1600m2着で軸。アオハルブルースを相手、ブレイズランナーは中京1800m2着とRRDB示唆を単穴材料にする。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "ブレイズランナー",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 6,
+          "horse_name": "マイネルオランチア",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 9,
+          "horse_name": "アオハルブルース",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "ブレイズランナー",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 16,
+          "horse_name": "ユイノサダハル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "ロケットパンチ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "c5ae6e96d5aa534db063e65a82b2e1ad648cef64e691ac7288eebcabdd887af3",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 4,
+      "race_key": "2026-01-12-中山-4",
+      "race_name": null,
+      "surface": "障害",
+      "distance_m": 2880,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "2e32c67d2af6feb022754c03c4b354e68f9d89a979c6a67ce33c7d0a3ef65be6",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "シャンデルナゴル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 7,
+          "horse_name": "マテンロウノカゼ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 14,
+          "horse_name": "タガノバルコス",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 1,
+            "horse_name": "ブライテストドーン",
+            "rank": 4
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "アンノウンウォリア",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "シャンデルナゴル",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "障害未勝利は飛越の安定と同コース経験を重視。直近中山2880mで崩れず走った組を本線とし、上昇度のある馬を単穴に回す。",
+      "forecast_rationale": "シャンデルナゴルは前走同コース3着で飛越経験が直結。マテンロウノカゼを相手、タガノバルコスは同コース連続善戦と上昇を単穴に取る。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 14,
+          "horse_name": "タガノバルコス",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 4,
+          "horse_name": "シャンデルナゴル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "マテンロウノカゼ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 14,
+          "horse_name": "タガノバルコス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "ブライテストドーン",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 12,
+          "horse_name": "アンノウンウォリア",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "c0517bb8eb640fa0ad9e076864beab9297766b4e784007db1bd7e298e975ed49",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 5,
+      "race_key": "2026-01-12-中山-5",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "新馬"
+    },
+    "source": {
+      "reader_semantic_sha256": "aeadc2eb3c726a8f41137501939b4ff98e92101ea2bdd9897f35681690f20aa1",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "フレキシブル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 11,
+          "horse_name": "ヨドノヒロイン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "マイトリックスター",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 12,
+            "horse_name": "ヴォンドゥ",
+            "rank": 4
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "エリンフレーム",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "フレキシブル",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "新馬戦なので既走実績ではなく調教、JRDB能力見立て、初戦向きの完成度を中心に判断。上位評価馬の中でも調教上昇を伴う馬を主役にする。",
+      "forecast_rationale": "フレキシブルは能力見立てと調教が最上位。ヨドノヒロインを本線相手、マイトリックスターは初戦での前進余地を単穴にする。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "マイトリックスター",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 2,
+          "horse_name": "フレキシブル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "ヨドノヒロイン",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "マイトリックスター",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 12,
+          "horse_name": "ヴォンドゥ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "エリンフレーム",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "15dc481b4615c75a37be44791952b1f3bd6935846f10a81dcff4cc8e23771ebb",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 6,
+      "race_key": "2026-01-12-中山-6",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2000,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "c8777f6b32d22085cf63325e5108a4efcf1999289b3c38f07859b137d2b4b3d5",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "エリュグレイス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 17,
+          "horse_name": "ベアドッキューン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "サトノマティーニ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 15,
+            "horse_name": "ガードオブオナー",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "アイスアンドスノー",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "エリュグレイス",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "芝2000m未勝利で、1800〜2000mの終いの質と中山内回りへの対応力を見る。差し勢が中心だが、位置を取れる馬の残り目も支えにする。",
+      "forecast_rationale": "エリュグレイスは初戦東京1800m2着で伸びしろが大きい。ベアドッキューンは中山2000m3着、サトノマティーニは高い終い性能を単穴で評価。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "サトノマティーニ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 7,
+          "horse_name": "エリュグレイス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 17,
+          "horse_name": "ベアドッキューン",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "サトノマティーニ",
+          "matched_signal_ids": [
+            "REAR_HIGH_LAST3F90"
+          ]
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "ガードオブオナー",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "アイスアンドスノー",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "f3912866d3b4e621a9e04d0b5379220872c3c183edffed37fd18f2710c1cabaa",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 7,
+      "race_key": "2026-01-12-中山-7",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "1勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "b54dc6d2e323bc9e39526264343f873b4f21407bfd99d8d0eecbbd2b939f3f93",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 15,
+          "horse_name": "ランスノーブル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "フィールオーサム",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "キョウエイフロイデ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "カスバートテソーロ",
+            "rank": 4
+          },
+          {
+            "horse_no": 8,
+            "horse_name": "リュミナーズ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 15,
+        "horse_name": "ランスノーブル",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "中山ダート1800mの1勝クラスで、同条件の再現性とクラス水準の裏付けを優先。後方型が多いため、持続力と位置取りの両面を比較する。",
+      "forecast_rationale": "ランスノーブルは同条件の安定とTIME_CLASS_PLUS1が強い。フィールオーサムを相手、キョウエイフロイデは後方からの末脚を単穴にする。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "キョウエイフロイデ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 15,
+          "horse_name": "ランスノーブル",
+          "matched_signal_ids": [
+            "TIME_CLASS_PLUS1"
+          ]
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "フィールオーサム",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "キョウエイフロイデ",
+          "matched_signal_ids": [
+            "REAR_HIGH_LAST3F90"
+          ]
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "カスバートテソーロ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "リュミナーズ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "356082fb608183bdc1cd66cb4347183159983933aedd284f8bd475608e46c1b7",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 8,
+      "race_key": "2026-01-12-中山-8",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1200,
+      "class": "1勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "d3df96d14a3a45fbf908daa9faef7a7ed81da5cc2efc1e40982b38a73befee5f",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 9,
+          "horse_name": "ロンドンオービタル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "ヒシアイラ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 7,
+          "horse_name": "シャルトル",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "ミスターバッドガイ",
+            "rank": 4
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "サムハラ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 9,
+        "horse_name": "ロンドンオービタル",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "芝1200mの1勝クラスで、同条件実績と前走の短距離内容を重視。先行型が多く、単純な前有利ではなく最後まで脚を残せるかを見る。",
+      "forecast_rationale": "ロンドンオービタルは中山1200m2着と上昇調教が軸材料。ヒシアイラを相手、シャルトルは1400m勝ちからの短縮で差し込み余地を単穴にする。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 7,
+          "horse_name": "シャルトル",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 9,
+          "horse_name": "ロンドンオービタル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 2,
+          "horse_name": "ヒシアイラ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "シャルトル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "ミスターバッドガイ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "サムハラ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "91ebb807c9431bab419f97305274cbf2c3107c1167d82ae93922c0426ecfa529",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 9,
+      "race_key": "2026-01-12-中山-9",
+      "race_name": "成田特別",
+      "surface": "ダート",
+      "distance_m": 2400,
+      "class": "2勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "a5157be436b3f297cdd4c9bf64e546c64a92d12985b73a44c7855254eb4c3d4b",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ムジェロ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "フジレイメイ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 10,
+          "horse_name": "オオタチ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ファイアトリック",
+            "rank": 4
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "ジョータルマエ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ムジェロ",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "ダート2400mは距離適性を最優先し、同条件または近い長距離ダートでの持続力を評価。単穴は長距離で隠れた強さを示す別線を拾う。",
+      "forecast_rationale": "ムジェロは同条件2着で最も直接的。フジレイメイは中山長距離の安定、オオタチは2400m勝ちとTIME_CLASS_PLUS1を単穴に取る。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 10,
+          "horse_name": "オオタチ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 1,
+          "horse_name": "ムジェロ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "フジレイメイ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "オオタチ",
+          "matched_signal_ids": [
+            "TIME_CLASS_PLUS1"
+          ]
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "ファイアトリック",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "ジョータルマエ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "fc50331524a940c3a96e81f76812732175245b0d81eebedef4c524b93f0fdbbd",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 10,
+      "race_key": "2026-01-12-中山-10",
+      "race_name": "初春ステークス",
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "3勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "4fc4212c85e5aa0897c89948bcba578c2004a6b68f7a51a1869662233b6e65da",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 8,
+          "horse_name": "ロサンゼルス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 11,
+          "horse_name": "ドンレパルス",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 2,
+          "horse_name": "クーデール",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 15,
+            "horse_name": "ドラゴンウェルズ",
+            "rank": 4
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "コブラ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 8,
+        "horse_name": "ロサンゼルス",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "3勝クラスのダート1200mで先行勢が多くハイ寄り。中山1200mで勝ち切れる先行力と、差しの高い終い性能を両方残す。",
+      "forecast_rationale": "ロサンゼルスは同条件2勝クラスを完勝し先行力が明確。ドンレパルスは差し脚、クーデールは前走勝ちとFRONT_SURVIVE_GAP05を単穴評価。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 2,
+          "horse_name": "クーデール",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 8,
+          "horse_name": "ロサンゼルス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "ドンレパルス",
+          "matched_signal_ids": [
+            "REAR_HIGH_LAST3F90"
+          ]
+        },
+        {
+          "horse_no": 2,
+          "horse_name": "クーデール",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "ドラゴンウェルズ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "コブラ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "4981fb60f2319569ef023bc9c55c30b2f56b7e542c447d4102d46b65280e6086",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 11,
+      "race_key": "2026-01-12-中山-11",
+      "race_name": "ニューイヤーステークス",
+      "surface": "芝",
+      "distance_m": 1600,
+      "class": "オープン"
+    },
+    "source": {
+      "reader_semantic_sha256": "6f5bd6330872460e71177f310b4ba3cceb9eb0302c4a71fb59cdf100bea5602a",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "ダノンエアズロック",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 5,
+          "horse_name": "リラボニート",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 8,
+          "horse_name": "ファンダム",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 4,
+            "horse_name": "カピリナ",
+            "rank": 4
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "ダイシンヤマト",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "ダノンエアズロック",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "中山芝1600mのオープンで、マイルの直接実績と先行して崩れない能力を中心に比較。距離短縮・延長組は勝ち切り根拠がある場合だけ上位へ。",
+      "forecast_rationale": "ダノンエアズロックはマイル重賞級の能力と上昇調教を軸にする。リラボニートは中山1600m2着、ファンダムは中山マイル勝ち実績を単穴に取る。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "ファンダム",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 1,
+          "horse_name": "ダノンエアズロック",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "リラボニート",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "ファンダム",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "カピリナ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 12,
+          "horse_name": "ダイシンヤマト",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "914aba705441dd03b0baa01c3d05f3bc5cb1ea2cbf870a8b450355a6e2cbdeed",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "中山",
+      "race_no": 12,
+      "race_key": "2026-01-12-中山-12",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 2000,
+      "class": "1勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "055866f0534b70b6266a056ac7ff40c1243d85984a4fd4631e5afc2cde59a58a",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 3,
+          "horse_name": "ミッキーマドンナ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "マリアイリダータ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "ラファヴォリット",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 18,
+            "horse_name": "スワローシチー",
+            "rank": 4
+          },
+          {
+            "horse_no": 10,
+            "horse_name": "クラウドセイル",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 3,
+        "horse_name": "ミッキーマドンナ",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "芝2000mの1勝クラスで上位2頭の能力差が大きい。相手以下は2000m実績、コース適性、持続脚を見て五頭を収束させる。",
+      "forecast_rationale": "ミッキーマドンナは能力水準が抜け、マリアイリダータも近走内容が強い。ラファヴォリットは2000m勝利を持つため単穴で残す。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "ラファヴォリット",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 3,
+          "horse_name": "ミッキーマドンナ",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "マリアイリダータ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "ラファヴォリット",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 18,
+          "horse_name": "スワローシチー",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "クラウドセイル",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "767280431cabe39b83d2d4fc72e0a3ea00da5224b809bfdfad0c4361ebe0ac6b",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 1,
+      "race_key": "2026-01-12-京都-1",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1200,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "d9492f4ff694c3fe8d79454f3ae180473067584728c95559c5760360f8adf147",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "リアルアルバ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 14,
+          "horse_name": "ウォーターサグラダ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "レッドレベンディス",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 10,
+            "horse_name": "メリフルアス",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "ナムラオットー",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "リアルアルバ",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "京都ダート1200m未勝利で、同コースの先行実績を最優先。距離短縮組は追走できるかを確認し、単穴は1200mで一定水準を示した馬から選ぶ。",
+      "forecast_rationale": "リアルアルバは京都1200mで2着・4着と直接実績が明確。ウォーターサグラダを相手、レッドレベンディスは1200m経験を単穴に置く。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "レッドレベンディス",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 2,
+          "horse_name": "リアルアルバ",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 14,
+          "horse_name": "ウォーターサグラダ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "レッドレベンディス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "メリフルアス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "ナムラオットー",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "c1ad4a1db83a0004ae6bd7128bd29d11893227616e0292637e93723c0c8f299f",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 2,
+      "race_key": "2026-01-12-京都-2",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "f11044d0870224c958dec43db739d5d4c0229bf30a06550766b59d688a4d8456",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "サヴォアフェール",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "ブラックコーラル",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "サンライズアーサー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 3,
+            "horse_name": "ヴィエントデコラ",
+            "rank": 4
+          },
+          {
+            "horse_no": 2,
+            "horse_name": "キングズテイル",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "サヴォアフェール",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "京都ダート1800m未勝利で、1800mの直接実績が豊富な組が中心。前走2着馬が複数いるため、仕上がりと同コース再現性で序列をつける。",
+      "forecast_rationale": "サヴォアフェールは前走1800m2着と調教抜群。ブラックコーラルを相手、サンライズアーサーは同距離2着経験を単穴で拾う。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "サンライズアーサー",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 7,
+          "horse_name": "サヴォアフェール",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "ブラックコーラル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "サンライズアーサー",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "ヴィエントデコラ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 2,
+          "horse_name": "キングズテイル",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "26f2fbc92b53a7688fee06e0e90510a053e740ceb1f8d492fe48b0a14526f886",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 3,
+      "race_key": "2026-01-12-京都-3",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1400,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "f1247b06832be098a521fb87180053a048562b59dce2d04f86a79392b1639f05",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "ゼルダ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 13,
+          "horse_name": "アスターエポワス",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 11,
+          "horse_name": "フェスティヴドレス",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 7,
+            "horse_name": "アゲンストオッズ",
+            "rank": 4
+          },
+          {
+            "horse_no": 1,
+            "horse_name": "ガルディエンヌ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "ゼルダ",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "京都ダート1400m未勝利で、1400mの直近好走と先行・差し双方の再現性を比較。単穴は本線とは別に終いの伸びを持つ馬を拾う。",
+      "forecast_rationale": "ゼルダは1400m2着と調教水準で主役。アスターエポワスを相手、フェスティヴドレスは1400mで2・3着の末脚を単穴評価。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 11,
+          "horse_name": "フェスティヴドレス",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 2,
+          "horse_name": "ゼルダ",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 13,
+          "horse_name": "アスターエポワス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "フェスティヴドレス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "アゲンストオッズ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "ガルディエンヌ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "055fee9939623eea8e2b5f870e6dea3338fc4f7f6d13d720de3b4e37c82e50ed",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 4,
+      "race_key": "2026-01-12-京都-4",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "新馬"
+    },
+    "source": {
+      "reader_semantic_sha256": "b1383410eaa7eda407398d82d6bffdb5f69982597554766daba6525f5b2f1ee2",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 16,
+          "horse_name": "キリオス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "アメリカンスタイル",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 13,
+          "horse_name": "ジャイアンバローズ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 9,
+            "horse_name": "ロードヴェリタス",
+            "rank": 4
+          },
+          {
+            "horse_no": 6,
+            "horse_name": "チャーチルデュース",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 16,
+        "horse_name": "キリオス",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "ダート1800m新馬で、調教とJRDBの初戦能力見立てが主材料。上位評価の完成度を本線にしつつ、単穴は調教上昇が目立つ別タイプを取る。",
+      "forecast_rationale": "キリオスは能力見立てと調教が最上位。アメリカンスタイルを相手、ジャイアンバローズは調教上昇を単穴材料にする。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 13,
+          "horse_name": "ジャイアンバローズ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 16,
+          "horse_name": "キリオス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "アメリカンスタイル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 13,
+          "horse_name": "ジャイアンバローズ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 9,
+          "horse_name": "ロードヴェリタス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "チャーチルデュース",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "4356a71f2004991fe97c2e4c3866f4c88167d89ae5f5888a5f7a65a4da2eb0d2",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 5,
+      "race_key": "2026-01-12-京都-5",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1600,
+      "class": "新馬"
+    },
+    "source": {
+      "reader_semantic_sha256": "edf47f309a766bcf3c67616d177096886a996ab3284dcec62d1545a397faf849",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 5,
+          "horse_name": "ソルトアイリス",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "ニシノサリーナ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 13,
+          "horse_name": "サイモンゼスト",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 18,
+            "horse_name": "ジャスティンカレラ",
+            "rank": 4
+          },
+          {
+            "horse_no": 4,
+            "horse_name": "インディクイーン",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 5,
+        "horse_name": "ソルトアイリス",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "芝1600m新馬で、調教水準と能力見立ての上位が明確。初戦での完成度を重視し、上位4頭を本線、別角度の一頭を単穴に置く。",
+      "forecast_rationale": "ソルトアイリスは能力・調教とも最上位。ニシノサリーナを相手、サイモンゼストは上位二頭と異なる伸びしろを単穴に取る。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 13,
+          "horse_name": "サイモンゼスト",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 5,
+          "horse_name": "ソルトアイリス",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "ニシノサリーナ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 13,
+          "horse_name": "サイモンゼスト",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 18,
+          "horse_name": "ジャスティンカレラ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "インディクイーン",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "68d3458331a144d7e8f497279fa57c03cc2766e21adb38fc0bfe97e6b39aab61",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 6,
+      "race_key": "2026-01-12-京都-6",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "1勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "57990eebdc4e850fe0085156f1adcbe01ba7ef669d4976863afae2f5b1ff5418",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 4,
+          "horse_name": "アリストクラシア",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 2,
+          "horse_name": "マテンロウシルビア",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 6,
+          "horse_name": "イフリーティア",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 7,
+            "horse_name": "ジュルナール",
+            "rank": 4
+          },
+          {
+            "horse_no": 5,
+            "horse_name": "アンジュアルディ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 4,
+        "horse_name": "アリストクラシア",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "京都ダート1800mの1勝クラスで、同条件の実戦内容と1900mを含む持続力を比較。先行型の息持ちと差しの確実性の両方を残す。",
+      "forecast_rationale": "アリストクラシアは能力水準が一枚上。マテンロウシルビアを相手、イフリーティアは先行して残す別シナリオを単穴にする。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 6,
+          "horse_name": "イフリーティア",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 4,
+          "horse_name": "アリストクラシア",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 2,
+          "horse_name": "マテンロウシルビア",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "イフリーティア",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "ジュルナール",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "アンジュアルディ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "5b52b809b15b20147e58ae7da168298709dc9a0588efb573d20e3615441a7327",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 7,
+      "race_key": "2026-01-12-京都-7",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1400,
+      "class": "1勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "7b19fa7a47b06d9e4a923ac0802b6a7cfddb0f41a4bafa0b4cccb369d0573b66",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 16,
+          "horse_name": "セボンサデッセ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 6,
+          "horse_name": "サンマルノヴェル",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 15,
+          "horse_name": "ジェミート",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 14,
+            "horse_name": "メイケイレイン",
+            "rank": 4
+          },
+          {
+            "horse_no": 13,
+            "horse_name": "エイシンマールス",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 16,
+        "horse_name": "セボンサデッセ",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "京都ダート1400mの1勝クラスで好走歴のある馬が多い。直接コース実績と近走の再現性を重視し、終い型を単穴として独立評価する。",
+      "forecast_rationale": "セボンサデッセは近走1400m2着と調教抜群。サンマルノヴェルを相手、ジェミートは差しの安定性を単穴評価。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 15,
+          "horse_name": "ジェミート",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 16,
+          "horse_name": "セボンサデッセ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "サンマルノヴェル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "ジェミート",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 14,
+          "horse_name": "メイケイレイン",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 13,
+          "horse_name": "エイシンマールス",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "ebeee65cfe5c411692947c1927a50db57394ae40b2804ae75204128e0287470e",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 8,
+      "race_key": "2026-01-12-京都-8",
+      "race_name": null,
+      "surface": "ダート",
+      "distance_m": 1900,
+      "class": "1勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "b78f9f3052276d891c599f7e1a3dfe00f08c1d9e8eb55802b4f4631d67ec8591",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 1,
+          "horse_name": "オリーブグリーン",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 10,
+          "horse_name": "ディニテ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 5,
+          "horse_name": "モーメントキャッチ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 8,
+            "horse_name": "ユキノクラウン",
+            "rank": 4
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "グレイルクエスト",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 1,
+        "horse_name": "オリーブグリーン",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "ダート1900mで、1900mの直接実績と1800mからの持続力を比較。長く脚を使える馬を中心に、RRDBの前残り示唆は補助材料に留める。",
+      "forecast_rationale": "オリーブグリーンは近走1800m2着と能力上位。ディニテを相手、モーメントキャッチは前走2着とRRDB示唆を単穴に置く。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 5,
+          "horse_name": "モーメントキャッチ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 1,
+          "horse_name": "オリーブグリーン",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 10,
+          "horse_name": "ディニテ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 5,
+          "horse_name": "モーメントキャッチ",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "ユキノクラウン",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "グレイルクエスト",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "62e0a373488d051e48ff9000b14fe889e61117c73b84100cc39eb72eeaba8621",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 9,
+      "race_key": "2026-01-12-京都-9",
+      "race_name": "琵琶湖特別",
+      "surface": "芝",
+      "distance_m": 2400,
+      "class": "2勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "4a242f1bc13663977f03a318c6ab40861ad335b8eccf2ad1441504e2e853e8f2",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 10,
+          "horse_name": "アロンディ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 8,
+          "horse_name": "キングスコール",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 4,
+          "horse_name": "ウインデイジー",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 1,
+            "horse_name": "パンデアスカル",
+            "rank": 4
+          },
+          {
+            "horse_no": 7,
+            "horse_name": "ライフセービング",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 10,
+        "horse_name": "アロンディ",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "芝2400mの2勝クラスで距離経験が重要。2400mで実績のある馬と、能力上位で距離延長に対応できる馬を比較して本線を決める。",
+      "forecast_rationale": "アロンディは2400m3着と調教抜群で主役。キングスコールを相手、ウインデイジーは京都2400m勝ちの直接実績を単穴にする。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 4,
+          "horse_name": "ウインデイジー",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 10,
+          "horse_name": "アロンディ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "キングスコール",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 4,
+          "horse_name": "ウインデイジー",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "パンデアスカル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 7,
+          "horse_name": "ライフセービング",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "08aee73789eab80a17a0ecffa578020499cfa4178771e3705abf375dbee9be79",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 10,
+      "race_key": "2026-01-12-京都-10",
+      "race_name": "雅ステークス",
+      "surface": "ダート",
+      "distance_m": 1800,
+      "class": "3勝クラス"
+    },
+    "source": {
+      "reader_semantic_sha256": "e2c6838c88cf3a54691867a4473d1361fd50c3355e970db834eb4f9104f54881",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 7,
+          "horse_name": "デルアヴァー",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 11,
+          "horse_name": "タガノマカシヤ",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 8,
+          "horse_name": "パシアンジャン",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 15,
+            "horse_name": "モックモック",
+            "rank": 4
+          },
+          {
+            "horse_no": 3,
+            "horse_name": "ペンナヴェローチェ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 7,
+        "horse_name": "デルアヴァー",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "京都ダート1800mの3勝クラスで上位の層が厚い。直近勝利、同コース実績、クラス水準を比較し、単穴は隠れた前走内容を持つ馬を別線で評価する。",
+      "forecast_rationale": "デルアヴァーは前走ダート1800m完勝で能力上位。タガノマカシヤを相手、パシアンジャンは同条件実績とRRDB示唆を単穴評価。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 8,
+          "horse_name": "パシアンジャン",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 7,
+          "horse_name": "デルアヴァー",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "タガノマカシヤ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 8,
+          "horse_name": "パシアンジャン",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "モックモック",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 3,
+          "horse_name": "ペンナヴェローチェ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "8d5f938fa172bad46fab82ac0a143cffc268e5d307bea61156e44a935abd7115",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 11,
+      "race_key": "2026-01-12-京都-11",
+      "race_name": "シンザン記念",
+      "surface": "芝",
+      "distance_m": 1600,
+      "class": "オープン"
+    },
+    "source": {
+      "reader_semantic_sha256": "5faf2154132279eb3f9ad5e17f0adb9d1cc31bd0d4dde5cd3a59d9ba359aaaa7",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 13,
+          "horse_name": "モノポリオ",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 1,
+          "horse_name": "アルトラムス",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 16,
+          "horse_name": "サウンドムーブ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 11,
+            "horse_name": "バルセシート",
+            "rank": 4
+          },
+          {
+            "horse_no": 15,
+            "horse_name": "クールデイトナ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 13,
+        "horse_name": "モノポリオ",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "3歳マイル重賞でキャリアが浅く、1600mの直接勝利と上積みを重視。1800m実績馬も能力は認めるが、マイル適性を序列に反映する。",
+      "forecast_rationale": "モノポリオは1800mで高い能力を示し軸候補。アルトラムスを相手、サウンドムーブは先行力とFRONT_SURVIVE_GAP05を単穴に取る。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 16,
+          "horse_name": "サウンドムーブ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 13,
+          "horse_name": "モノポリオ",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 1,
+          "horse_name": "アルトラムス",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 16,
+          "horse_name": "サウンドムーブ",
+          "matched_signal_ids": [
+            "FRONT_SURVIVE_GAP05"
+          ]
+        },
+        {
+          "horse_no": 11,
+          "horse_name": "バルセシート",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 15,
+          "horse_name": "クールデイトナ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "d5520de6a3277296ba42d58d1a58b14a32f78d98aa90f0555f92c9fa0a5925d2",
+      "frozen_pre_result": true
+    }
+  },
+  {
+    "schema_version": "racenote-btday-ab-forecast-v0.1",
+    "identity": {
+      "target_date": "2026-01-12",
+      "venue": "京都",
+      "race_no": 12,
+      "race_key": "2026-01-12-京都-12",
+      "race_name": null,
+      "surface": "芝",
+      "distance_m": 1400,
+      "class": "未勝利"
+    },
+    "source": {
+      "reader_semantic_sha256": "34f4c711eaabbd0843fbdf2f98531a01c776b7512764e8e1d45235a5512ec550",
+      "reader_input_policy": "TARGET_DAY_MARKET_OBJECT_REMOVED_BEFORE_FORECAST",
+      "shared_day_prep_artifact_id": 11211627042
+    },
+    "research": {
+      "logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
+      "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+      "authoring_mode": "MODEL_RACE_BY_RACE_REASONING",
+      "market_blind": true,
+      "result_opened": false,
+      "independent_forecast": true,
+      "baseline_marks_used_as_input": false
+    },
+    "prediction": {
+      "marks": {
+        "main": {
+          "horse_no": 2,
+          "horse_name": "ララディアーブル",
+          "rank": 1
+        },
+        "second": {
+          "horse_no": 13,
+          "horse_name": "ナオミニオールイン",
+          "rank": 2
+        },
+        "third": {
+          "horse_no": 16,
+          "horse_name": "サルタラリンダ",
+          "rank": 3
+        },
+        "others": [
+          {
+            "horse_no": 6,
+            "horse_name": "マイティキングダム",
+            "rank": 4
+          },
+          {
+            "horse_no": 12,
+            "horse_name": "メランコリニスタ",
+            "rank": 5
+          }
+        ]
+      },
+      "axis": {
+        "horse_no": 2,
+        "horse_name": "ララディアーブル",
+        "rank": 1
+      }
+    },
+    "decision_trace": {
+      "race_model": "芝1400m未勝利で、1400mの連続好走馬を中心に据える。前へ行く馬と差し馬が混在するため、単穴は末脚の伸びしろを独立して評価する。",
+      "forecast_rationale": "ララディアーブルは1400m連続2着で最も安定。ナオミニオールインを相手、サルタラリンダはREAR_HIGH_LAST3F90を伴う末脚を単穴評価。",
+      "single_shot_case": {
+        "horse": {
+          "horse_no": 16,
+          "horse_name": "サルタラリンダ",
+          "rank": 3
+        },
+        "selected_independently_from_mainline": true
+      },
+      "rrdb_evidence": [
+        {
+          "horse_no": 2,
+          "horse_name": "ララディアーブル",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 13,
+          "horse_name": "ナオミニオールイン",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 16,
+          "horse_name": "サルタラリンダ",
+          "matched_signal_ids": [
+            "REAR_HIGH_LAST3F90"
+          ]
+        },
+        {
+          "horse_no": 6,
+          "horse_name": "マイティキングダム",
+          "matched_signal_ids": []
+        },
+        {
+          "horse_no": 12,
+          "horse_name": "メランコリニスタ",
+          "matched_signal_ids": []
+        }
+      ]
+    },
+    "audit": {
+      "prediction_hash_contract": "SEMANTIC_V1_AB",
+      "prediction_hash": "26fad56c421cc85369fcb67a7df35da33e77b31939d6922b5031c072f5cf228a",
+      "frozen_pre_result": true
+    }
+  }
+]
