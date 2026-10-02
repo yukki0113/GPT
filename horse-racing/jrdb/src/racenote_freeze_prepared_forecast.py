@@ -23,6 +23,7 @@ DEFAULT_LOGIC = "RaceNote-Human-Context-Reader-0.4.2-candidate"
 LOGIC_SCHEMAS = {
     DEFAULT_LOGIC: "RaceNote-Forecast-Research-Record-0.4.2",
     "RaceNote-Human-Context-Reader-0.4.3-candidate": "RaceNote-Forecast-Research-Record-0.4.3",
+    "RaceNote-Human-Context-Reader-0.4.4-candidate": "RaceNote-Forecast-Research-Record-0.4.4",
 }
 REQUIRED_PROSE = "FORECAST_READER_FACING_PROSE_v0_1"
 REQUIRED_RRDB = "rrdb-recommendation-signals-v0.3"
