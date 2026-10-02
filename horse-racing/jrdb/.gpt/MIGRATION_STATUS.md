@@ -370,3 +370,25 @@ Eight RL-specific workflows were moved out of `.github/workflows/` into
 shared Historical Warehouse / record-hash compatibility infrastructure, not RL
 model/index workflows.
 
+## RL retirement T3 downstream non-dependency — 2026-10-02
+
+Formal report:
+`docs/RL_Retirement_T3_Downstream_Audit_20261002.md`
+
+```text
+RACENOTE_RL_REQUIRED               = FALSE
+NEWSPAPER_RL_REQUIRED              = FALSE
+EDGEDB_RL_REQUIRED                 = FALSE
+PWA_RL_REQUIRED                    = FALSE
+
+ACTIVE_MY_INDEX_ARGUMENT_COUNT     = 0
+RL_ABSENCE_FAILURE_PATH_COUNT      = 0
+T3_DOWNSTREAM_NONDEPENDENCY        = PASS
+```
+
+Issue #1720 / run `36949876100` completed success with failure_count=0.
+
+Newspaper `my_index` / `training_edge_index` remains historical compatibility only and is optional.
+RaceNote anti-RL firewalls remain active.
+EdgeDB/PWA contain no hard dependency on retired RL output.
+
