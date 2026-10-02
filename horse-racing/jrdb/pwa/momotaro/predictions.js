@@ -1,7 +1,8 @@
 "use strict";
 
 const PREDICTION_RUNTIME_CONFIG = window.JRDB_PWA_CONFIG || {};
-const PREDICTION_CURRENT_BASE = PREDICTION_RUNTIME_CONFIG.predictionCurrentBase || "./data/newspaper/current/";\nconst PREDICTION_EVAL_BASE = PREDICTION_RUNTIME_CONFIG.evalCurrentBase || "";
+const PREDICTION_CURRENT_BASE = PREDICTION_RUNTIME_CONFIG.predictionCurrentBase || "./data/newspaper/current/";
+const PREDICTION_EVAL_BASE = PREDICTION_RUNTIME_CONFIG.evalCurrentBase || "";
 const predictionStatus = document.getElementById("prediction-status");
 const predictionList = document.getElementById("prediction-list");
 const predictionRefresh = document.getElementById("prediction-refresh");
