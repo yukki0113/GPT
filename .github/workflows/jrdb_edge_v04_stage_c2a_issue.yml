@@ -1,0 +1,117 @@
+name: JRDB Edge v0.4 Stage C2A via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  prepare:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_C2A]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          for k in ['c1_run_id','c1_artifact_name']:
+              if k not in r:
+                  raise SystemExit(f'missing {k}')
+          Path('/tmp/request.json').write_text(json.dumps(r,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -q -r tools/data-storage/requirements.txt
+
+      - name: Download canonical C1 artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/c1 /tmp/out
+          RUN_ID=$(python -c "import json;print(json.load(open('/tmp/request.json'))['c1_run_id'])")
+          ART=$(python -c "import json;print(json.load(open('/tmp/request.json'))['c1_artifact_name'])")
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ART" --dir /tmp/c1
+          mapfile -t pqs < <(find /tmp/c1 -type f -name research_candidates.parquet -print)
+          [ "${#pqs[@]}" -eq 1 ] || { echo "expected one research_candidates.parquet, found ${#pqs[@]}" >&2; exit 1; }
+
+      - name: Build C2A shortlist and requests
+        run: |
+          set -euo pipefail
+          C1=$(find /tmp/c1 -type f -name research_candidates.parquet -print -quit)
+          python horse-racing/jrdb/src/prepare_jrdb_edge_v04_stage_c2.py             --c1-parquet "$C1"             --output-dir /tmp/out             | tee /tmp/out/stdout.json
+
+      - name: Add provenance
+        env:
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path('/tmp/out/stage_c2a_audit.json')
+          d=json.loads(p.read_text())
+          r=json.load(open('/tmp/request.json'))
+          d['c1_run_id']=int(r['c1_run_id'])
+          d['c1_artifact_name']=r['c1_artifact_name']
+          d['source_commit']=os.environ['HEAD_SHA']
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload C2A artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-edge-v04-stage-c2a-${{ github.run_id }}
+          path: /tmp/out/
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 6
+
+      - name: Comment and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY' > /tmp/comment.md
+          import json, os
+          a=json.load(open('/tmp/out/stage_c2a_audit.json'))
+          out={
+            'status':a['status'],
+            'stage':a['stage'],
+            'run_id':int(os.environ['RUN_ID']),
+            'artifact_name':f"jrdb-edge-v04-stage-c2a-{os.environ['RUN_ID']}",
+            'c1_candidate_count':a['c1_candidate_count'],
+            'c2_shortlist_count':a['c2_shortlist_count'],
+            'c2_entry_route_counts':a['c2_entry_route_counts'],
+            'child_parent_map_count':a['child_parent_map_count'],
+            'unique_parent_metric_request_count':a['unique_parent_metric_request_count'],
+            'unique_metric_request_count':a['unique_metric_request_count'],
+            'market_or_popularity_used':False,
+            'production_serving_changed':False,
+          }
+          print('JRDB_EDGE_V04_STAGE_C2A_RESULT')
+          print(json.dumps(out,ensure_ascii=False,indent=2,sort_keys=True))
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
