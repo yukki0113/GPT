@@ -1,0 +1,11 @@
+{
+  "selection_id": "BTDAY-0041",
+  "target_date": "2026-09-06",
+  "input_binding": "CLEAN_PRE_FORECAST",
+  "source_note": "The model viewed only a separately bound market-stripped Reader after binder PASS.",
+  "market_objects_removed_before_authoring": 491,
+  "reader_count": 36,
+  "target_market_value_exposed_to_decision_context": false,
+  "target_result_opened": false,
+  "clean_reader_manifest": "reader_stripped_manifest.json"
+}

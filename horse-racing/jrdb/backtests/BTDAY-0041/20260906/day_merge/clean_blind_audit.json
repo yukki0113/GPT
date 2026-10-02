@@ -1,0 +1,17 @@
+{
+  "selection_id": "BTDAY-0041",
+  "target_date": "2026-09-06",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
+  "status": "PASS",
+  "race_count": 36,
+  "unique_race_count": 36,
+  "all_five_marks_unique_and_roster_matched": true,
+  "source_semantic_hash_match_count": 36,
+  "market_object_count_in_authoring_readers": 0,
+  "result_opened": false,
+  "target_day_market_opened": false,
+  "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+  "validator_status": "PASS",
+  "frozen_status": "FROZEN_CLEAN_BLIND",
+  "main_sha_at_forecast": "3cb7204cd1bac702680f8e868dee6768358cd7a1"
+}
