@@ -1,0 +1,160 @@
+name: JRDB Newspaper Day Build via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  build-day:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_DAY_REQUEST]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          req = json.loads((os.environ.get("ISSUE_BODY") or "").strip())
+          date = str(req.get("date") or "").strip()
+          revision = req.get("revision", 1)
+          raw_run_id = req.get("raw_run_id")
+          artifact_name = str(req.get("artifact_name") or "").strip()
+
+          if not re.fullmatch(r"20\d{6}", date):
+              raise SystemExit("date must be YYYYMMDD")
+          if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
+              raise SystemExit("revision must be integer >= 1")
+          if not isinstance(raw_run_id, int) or isinstance(raw_run_id, bool) or raw_run_id <= 0:
+              raise SystemExit("raw_run_id must be positive integer")
+          if artifact_name != f"jrdb-raw-{date}":
+              raise SystemExit(f"artifact_name must be jrdb-raw-{date}")
+
+          Path("/tmp/request.json").write_text(
+              json.dumps({
+                  "date": date,
+                  "revision": revision,
+                  "raw_run_id": raw_run_id,
+                  "artifact_name": artifact_name,
+              }, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              env.write(f"REQUEST_DATE={date}\n")
+              env.write(f"REQUEST_REVISION={revision}\n")
+              env.write(f"RAW_RUN_ID={raw_run_id}\n")
+              env.write(f"RAW_ARTIFACT={artifact_name}\n")
+              env.write(f"OUTPUT_ARTIFACT=jrdb-newspaper-day-{date}\n")
+          PY
+
+      - name: Verify raw run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          STATUS="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RAW_RUN_ID}" --jq '.status + "/" + (.conclusion // "")')"
+          test "$STATUS" = "completed/success"
+
+      - name: Download raw artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/raw
+          mkdir -p /tmp/raw
+          gh run download "$RAW_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$RAW_ARTIFACT" --dir /tmp/raw
+          find /tmp/raw -maxdepth 4 -type f -print
+
+      - name: Build audited day package
+        run: |
+          set -euo pipefail
+          PACI="$(find /tmp/raw -type f -name "PACI${REQUEST_DATE:2}.zip" -print -quit)"
+          test -n "$PACI"
+          rm -rf /tmp/day
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_day_build.py             --paci "$PACI"             --date "$REQUEST_DATE"             --revision "$REQUEST_REVISION"             --output-dir /tmp/day             > /tmp/day-result.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          audit=json.loads(Path("/tmp/day/audit.json").read_text(encoding="utf-8"))
+          manifest=json.loads(Path("/tmp/day/manifest.json").read_text(encoding="utf-8"))
+          if audit.get("status") != "PASS":
+              raise SystemExit("day audit is not PASS")
+          if not audit.get("history_coverage_complete"):
+              raise SystemExit("history coverage incomplete")
+          expected=int((manifest.get("completeness") or {}).get("expected_races") or 0)
+          ready=int((manifest.get("completeness") or {}).get("ready_races") or 0)
+          if expected <= 0 or expected != ready:
+              raise SystemExit("race completeness mismatch")
+          PY
+
+      - name: Upload day artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.OUTPUT_ARTIFACT }}
+          path: /tmp/day/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          audit=json.loads(Path("/tmp/day/audit.json").read_text(encoding="utf-8"))
+          manifest=json.loads(Path("/tmp/day/manifest.json").read_text(encoding="utf-8"))
+          result={
+              "status":"success",
+              "run_id":int(os.environ["RUN_ID"]),
+              "artifact_name":os.environ["OUTPUT_ARTIFACT"],
+              "audit_status":audit["status"],
+              "date":manifest["date"],
+              "race_count":audit["race_count"],
+              "venue_codes":audit["venue_codes"],
+              "totals":audit["totals"],
+              "history_coverage_complete":audit["history_coverage_complete"],
+              "completeness":manifest["completeness"],
+          }
+          Path("/tmp/comment.md").write_text(
+              "JRDB_NEWSPAPER_DAY_RESULT\n```json\n"
+              + json.dumps(result,ensure_ascii=False,indent=2)
+              + "\n```\n",
+              encoding="utf-8",
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB Newspaper day build failed. Workflow run: $RUN_URL"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
