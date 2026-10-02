@@ -84,17 +84,14 @@ function collectRows(bundle) {
     }
 
     const kenshow = momotaro.kenshow || {};
-    const kenshowMark = predictionText(kenshow.mark, "");
-    const kenshowComment = predictionText(kenshow.comment, "");
-    const kenshowTag = predictionText(kenshow.tag, "");
-    if (kenshowMark || kenshowComment || kenshow.review_horse === true) {
+    if (kenshow.review_horse === true) {
       rows.push(Object.assign({}, base, {
         type: "kenshow-analysis",
         source: "けんしょー",
         source_order: 4,
-        signal: kenshowTag || (kenshow.review_horse === true ? "注目馬" : "RaceNote"),
-        mark: kenshowMark,
-        comment: kenshowComment
+        signal: "不利分析",
+        mark: predictionText(kenshow.mark, ""),
+        comment: predictionText(kenshow.comment, "")
       }));
     }
 
