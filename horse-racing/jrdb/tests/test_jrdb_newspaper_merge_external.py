@@ -309,6 +309,51 @@ def _write_rrdb_recommendation(
         })
 
 
+
+def _write_rrdb_recommendation_json(
+    path: Path,
+    *,
+    horse_name: str = "カセノメロス",
+    race_key: str = "01262501",
+) -> None:
+    payload = {
+        "schema_version": "rrdb-pwa-recommendation-handoff-v0.1",
+        "status": "PASS",
+        "date": "2026-09-05",
+        "source": "RaceReviewDB",
+        "recommendation_version": "rrdb-recommendation-signals-v0.3",
+        "source_generation_id": "test-generation",
+        "paci_file": "PACI260905.zip",
+        "targeted": 1,
+        "identity_validation": {
+            "status": "PASS",
+            "paci_entrant_count": 2,
+            "matched": 1,
+            "mismatch": 0,
+        },
+        "items": [{
+            "date": "2026-09-05",
+            "venue_code": "01",
+            "race_no": 1,
+            "race_key": race_key,
+            "horse_no": 1,
+            "horse_name": horse_name,
+            "addons": {
+                "rrdb_recommendation": {
+                    "comment": "敗戦でもタイムは水準以上。",
+                    "source": "RaceReviewDB",
+                    "source_date": "2026-09-05",
+                    "version": "rrdb-recommendation-signals-v0.3",
+                }
+            },
+        }],
+    }
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
 class NewspaperExternalMergeTest(unittest.TestCase):
     def test_my_index_absent_preserves_backward_compatibility(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_name:
@@ -900,6 +945,52 @@ class NewspaperExternalMergeTest(unittest.TestCase):
                     racenote_csv=rn,
                 )
 
+
+    def test_rrdb_recommendation_json_handoff_merges(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            source = root / "RRDB_20260905_PWA_handoff_v0_3.json"
+            _write_rrdb_recommendation_json(source)
+            output = root / "merged"
+            result = merge_day(
+                _write_day(root),
+                output,
+                revision=2,
+                rrdb_recommendation_json=source,
+            )
+            bundle = json.loads(
+                (output / "races/01_01_01262501.json").read_text(encoding="utf-8")
+            )
+            manifest = json.loads(
+                (output / "manifest.json").read_text(encoding="utf-8")
+            )
+
+        addon = bundle["horses"][0]["addons"]["rrdb_recommendation"]
+        self.assertEqual(addon["comment"], "敗戦でもタイムは水準以上。")
+        self.assertEqual(addon["source"], "RaceReviewDB")
+        self.assertEqual(result["rrdb_recommendation"]["targeted"], 1)
+        self.assertEqual(result["rrdb_recommendation"]["merged"], 1)
+        self.assertEqual(
+            result["rrdb_recommendation"]["source_file"],
+            "RRDB_20260905_PWA_handoff_v0_3.json",
+        )
+        self.assertEqual(
+            manifest["source_status"]["rrdb_recommendation"]["state"],
+            "READY",
+        )
+
+    def test_rrdb_recommendation_json_identity_mismatch_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_name:
+            root = Path(tmp_name)
+            source = root / "rrdb.json"
+            _write_rrdb_recommendation_json(source, horse_name="別馬")
+            with self.assertRaisesRegex(ValueError, "horse-name mismatch"):
+                merge_day(
+                    _write_day(root),
+                    root / "merged",
+                    revision=2,
+                    rrdb_recommendation_json=source,
+                )
 
     def test_rrdb_recommendation_sparse_comment_merges(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_name:
