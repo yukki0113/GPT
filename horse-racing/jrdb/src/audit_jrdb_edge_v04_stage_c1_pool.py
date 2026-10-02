@@ -111,6 +111,31 @@ def main():
       from x
     """)[0]
 
+    scenario_by_depth_lane=rows(con,"""
+      with x as (
+        select *,
+          (
+            (win_roi >= 110 and wins >= 2 and win_roi_ex_top1 >= 100 and coalesce(top1_win_contribution,1) < 0.70)
+            or
+            (place_roi >= 105 and places >= 3 and place_roi_ex_top1 >= 100 and coalesce(top1_place_contribution,1) < 0.70)
+          ) as robust_top1,
+          (
+            (win_roi >= 110 and wins >= 2 and n_730 >= 5 and win_roi_730 >= 100)
+            or
+            (place_roi >= 105 and places >= 3 and n_730 >= 5 and place_roi_730 >= 100)
+          ) as current2y_positive
+        from c
+      )
+      select depth,search_lane,
+        count(*) total,
+        count(*) filter(where robust_top1 and current2y_positive) robust_2y,
+        count(*) filter(where robust_top1 and current2y_positive and n_730>=10) robust_2y_n10,
+        count(*) filter(where robust_top1 and current2y_positive and n_730>=20) robust_2y_n20
+      from x
+      group by 1,2
+      order by 1,2
+    """)
+
     jackpot=rows(con,"""
       select
         count(*) filter(where coalesce(top1_win_contribution,0) >= .70) win_top1_70,
@@ -149,6 +174,7 @@ def main():
       "candidates_per_template_quantiles":template_quant,
       "by_depth_lane":by_depth_lane,
       "scenario_counts":scenario,
+      "scenario_by_depth_lane":scenario_by_depth_lane,
       "jackpot_and_ex_top1_counts":jackpot,
       "recent_support_counts":recent_support,
       "diagnostic_only":True,
