@@ -758,7 +758,7 @@ def merge_day(
             rrdb_recommendation_json
         )
         rrdb_recommendation_source_name = rrdb_recommendation_json.name
-    elif rrdb_recommendation_source_name is not None:
+    elif rrdb_recommendation_csv is not None:
         rrdb_recommendation_index, rrdb_recommendation_sha = load_rrdb_recommendation(
             rrdb_recommendation_csv
         )
