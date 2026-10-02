@@ -1012,3 +1012,27 @@ Evidence:
 Next cleanup turn is T3: prove Newspaper / RaceNote / EdgeDB / PWA have no hard
 dependency on RL and ensure no active workflow passes `--my-index-csv`.
 
+## RL retirement T3 handoff — 2026-10-02
+
+T3 is complete.
+
+```text
+RACENOTE_RL_REQUIRED            = FALSE
+NEWSPAPER_RL_REQUIRED           = FALSE
+EDGEDB_RL_REQUIRED              = FALSE
+PWA_RL_REQUIRED                 = FALSE
+ACTIVE_MY_INDEX_ARGUMENT_COUNT  = 0
+T3_DOWNSTREAM_NONDEPENDENCY     = PASS
+```
+
+Evidence:
+- Issue #1720
+- run `36949876100`
+- artifact `11203452444`
+- report: `docs/RL_Retirement_T3_Downstream_Audit_20261002.md`
+
+Keep `src/audit_rl_retirement_downstream_dependencies.py` for the final T6 audit.
+The temporary T3 Actions workflow was removed after PASS, so no new active RL workflow remains.
+
+Next: T4 — inventory and freeze RL research assets. Do not delete shared Warehouse / Index Base infrastructure.
+
