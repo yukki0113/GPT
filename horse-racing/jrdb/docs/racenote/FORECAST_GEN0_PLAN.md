@@ -1,7 +1,7 @@
 # RaceNote Forecast Gen0 plan
 
 Status: CURRENT RESEARCH PLAN / FORECAST LOGIC UNFROZEN
-Last reviewed: 2026-09-29
+Last reviewed: 2026-10-03
 
 > RaceNote extraction / evidence boundaries and the pre-result research lifecycle are fixed.
 > Detailed Forecast decision logic is **not yet adopted**.
@@ -20,6 +20,33 @@ logic selection through blinded historical research, not a TRUE_FORWARD run of
 Gen0.3. `forecast.current_generation` remains `Gen0-G000`.
 
 Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
+
+
+### Current Human-Context BTDAY prospective lane — 2026-10-03
+
+The active historical logic-selection lane now uses
+`RaceNote-Human-Context-Reader-0.4.4-candidate` on new unused BTDAYs.
+
+Cohort boundaries are fixed as follows:
+
+- v0.4.2 baseline: BTDAY-0023–0032 / 336R;
+- v0.4.3 completed prospective: BTDAY-0036, 0037, 0040, 0041 / 132R;
+- v0.4.4: new unused clean-blind BTDAYs only.
+
+v0.4.4 preserves the v0.4.3 hierarchy and independent ▲ role and changes only
+the support-boundary Coverage review: every race must perform a bounded
+unmarked scan, identify the best eligible challenger or explicitly record none,
+compare against provisional △2, and record KEEP / SWAP /
+NO_ELIGIBLE_CHALLENGER in a fail-closed audit trace.
+
+Canonical logic:
+`docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_4_CANDIDATE.md`
+
+Canonical operating procedure:
+`docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
+
+This is a research-candidate change and does not promote the production
+Forecast pointer.
 
 
 
