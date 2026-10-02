@@ -1,7 +1,7 @@
 "use strict";
 
 const PREDICTION_RUNTIME_CONFIG = window.JRDB_PWA_CONFIG || {};
-const PREDICTION_CURRENT_BASE = PREDICTION_RUNTIME_CONFIG.predictionCurrentBase || "./data/newspaper/current/";
+const PREDICTION_CURRENT_BASE = PREDICTION_RUNTIME_CONFIG.predictionCurrentBase || "./data/newspaper/current/";\nconst PREDICTION_EVAL_BASE = PREDICTION_RUNTIME_CONFIG.evalCurrentBase || "";
 const predictionStatus = document.getElementById("prediction-status");
 const predictionList = document.getElementById("prediction-list");
 const predictionRefresh = document.getElementById("prediction-refresh");
@@ -22,8 +22,12 @@ function predictionEscape(value) {
   });
 }
 
+function predictionPublishedUrlAtBase(base, path) {
+  return new URL(path, new URL(base, window.location.href)).toString();
+}
+
 function predictionPublishedUrl(path) {
-  return new URL(path, new URL(PREDICTION_CURRENT_BASE, window.location.href)).toString();
+  return predictionPublishedUrlAtBase(PREDICTION_CURRENT_BASE, path);
 }
 
 function extractIluka(addons) {
@@ -108,6 +112,56 @@ function collectRows(bundle) {
     }
   });
   return rows;
+}
+
+function collectEvalRows(bundle) {
+  const race = bundle.race || {};
+  const rows = [];
+  (bundle.horses || []).forEach(function (horse) {
+    const addons = horse.addons || {};
+    const evalAddon = addons.eval && typeof addons.eval === "object" ? addons.eval : {};
+    const analysis = evalAddon.analysis && typeof evalAddon.analysis === "object" ? evalAddon.analysis : {};
+    const comment = predictionText(analysis.comment, "").trim();
+    if (!comment) return;
+
+    const basic = horse.basic || {};
+    const key = horse.key || {};
+    rows.push({
+      race_key: predictionText(race.race_key, ""),
+      venue: predictionText(race.venue, ""),
+      race_no: Number(race.race_no || 0),
+      race_name: predictionText(race.race_name, ""),
+      horse_no: Number(key.horse_no || 0),
+      horse_name: predictionText(basic.horse_name, ""),
+      type: "eval-analysis",
+      source: "Eval",
+      source_order: 5,
+      signal: predictionText(analysis.title, ""),
+      mark: "",
+      comment: comment
+    });
+  });
+  return rows;
+}
+
+async function predictionLoadPublishedDay(base) {
+  const manifestResponse = await fetch(
+    predictionPublishedUrlAtBase(base, "manifest.json") + "?t=" + Date.now(),
+    {cache:"no-store"}
+  );
+  if (!manifestResponse.ok) throw new Error("manifest HTTP " + manifestResponse.status);
+  const manifest = await manifestResponse.json();
+  if (!Array.isArray(manifest.races)) throw new Error("manifest.races がありません");
+
+  const bundles = await Promise.all(manifest.races.map(async function (entry) {
+    const response = await fetch(
+      predictionPublishedUrlAtBase(base, entry.path) + "?t=" + Date.now(),
+      {cache:"no-store"}
+    );
+    if (!response.ok) throw new Error(entry.path + " HTTP " + response.status);
+    return response.json();
+  }));
+  return {manifest: manifest, bundles: bundles};
 }
 
 function groupVisibleRows() {
@@ -206,20 +260,19 @@ async function refreshPredictions() {
   predictionRefresh.disabled = true;
   predictionStatus.textContent = "最新データを確認中…";
   try {
-    const manifestResponse = await fetch(predictionPublishedUrl("manifest.json") + "?t=" + Date.now(), {cache:"no-store"});
-    if (!manifestResponse.ok) throw new Error("manifest HTTP " + manifestResponse.status);
-    const manifest = await manifestResponse.json();
-    if (!Array.isArray(manifest.races)) throw new Error("manifest.races がありません");
+    const publicDay = await predictionLoadPublishedDay(PREDICTION_CURRENT_BASE);
+    predictionRows = publicDay.bundles.flatMap(collectRows);
 
-    const bundles = await Promise.all(manifest.races.map(async function (entry) {
-      const response = await fetch(predictionPublishedUrl(entry.path) + "?t=" + Date.now(), {cache:"no-store"});
-      if (!response.ok) throw new Error(entry.path + " HTTP " + response.status);
-      return response.json();
-    }));
+    if (PREDICTION_EVAL_BASE) {
+      const evalDay = await predictionLoadPublishedDay(PREDICTION_EVAL_BASE);
+      if (predictionText(evalDay.manifest.date, "") !== predictionText(publicDay.manifest.date, "")) {
+        throw new Error("Eval currentの日付が注目馬一覧と一致しません");
+      }
+      predictionRows = predictionRows.concat(evalDay.bundles.flatMap(collectEvalRows));
+    }
 
-    predictionRows = bundles.flatMap(collectRows);
     renderPredictionRows();
-    predictionStatus.textContent = predictionText(manifest.date, "") + " / " + predictionRows.length + "件";
+    predictionStatus.textContent = predictionText(publicDay.manifest.date, "") + " / " + predictionRows.length + "件";
   } catch (error) {
     console.error(error);
     predictionStatus.textContent = "取得失敗: " + error.message;
