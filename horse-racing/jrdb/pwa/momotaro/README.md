@@ -110,7 +110,7 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 
 - りょーた: 各Rの通常印は新聞列へ表示。特注馬は review_horse=true + comment としてリンク化し、予想一覧にも掲載する。
 - おーじ: 回顧該当馬のみ review_horse=true + comment として、🐬と同様に新聞リンク + 予想一覧へ掲載する。
-- けんしょー: RaceNote/RRDBを正本とする。RaceNoteの印をけん印、RaceNote単馬短評とRRDB推薦コメントをけんしょーコメント、RRDB該当馬を注目馬として扱う。RaceNoteレース短評はけんしょーのレース短評として扱う。
+- けんしょー: RaceNote/RRDBを正本とする。RaceNoteの印をけん印、RaceNote単馬短評は新聞モーダル専用、RRDB推薦コメントをけんしょー注目馬コメントとして扱う。注目馬一覧にはRRDB該当馬だけを掲載する。RaceNoteレース短評はけんしょーのレース短評として扱う。
 
 
 ## けんしょー = RaceNote / RRDB 運用
@@ -121,12 +121,12 @@ horse_nameも一致を必須とする。重複・別日・未消費行はfail-cl
 
 - `addons.racenote_prediction.mark` → `addons.momotaro.kenshow.mark`
 - `addons.racenote_prediction.confidence` → `addons.momotaro.kenshow.confidence`
-- `addons.racenote_prediction.horse_short_comment` → RRDB非該当時のみ補助的なけんしょー単馬コメント
+- `addons.racenote_prediction.horse_short_comment` → 新聞のけん印モーダル専用コメント。注目馬一覧には使用しない
 - `addons.rrdb_recommendation.comment` → けんしょー注目馬コメント
 - RRDB該当馬 → `review_horse=true`
 - `race_notes.racenote_short_comment` → `race_notes.momotaro_comments.kenshow`
 
-RRDB該当馬ではモーダル本文をRRDBコメントとし、RaceNote単馬短評は表示に混在させない。
+RRDB該当馬ではモーダル本文をRRDBコメントとし、RaceNote単馬短評は表示に混在させない。RRDB由来の表示タグは「不利分析」、RaceNote単独表示にはタグを付けない。
 明示的な `momotaro.kenshow` 手動入力がある場合は自動値より手動値を優先する。
 `tag=手動無印` は印を明示的に空にする。
 
