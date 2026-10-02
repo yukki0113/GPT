@@ -351,3 +351,22 @@ RLを得るためだけにTraining Researchを再buildしない。
 2026-09-26までのRL-T / Training Edge migration・cutover・regression記録はhistorical evidenceとして保持する。
 後続cleanupではworkflow発火停止、downstream hard-dependency audit、frozen asset inventory、repo-wide retirement auditを行う。
 
+## RL retirement T2 workflow retirement — 2026-10-02
+
+Evidence:
+`docs/RL_Retirement_T2_Workflow_Audit_20261002.md`
+
+```text
+ACTIVE_RL_MODEL_WORKFLOW_COUNT      = 0
+ACTIVE_RL_DAILY_WORKFLOW_COUNT      = 0
+ACTIVE_RL_RESEARCH_WORKFLOW_COUNT   = 0
+OPEN_RL_RESEARCH_ISSUE_COUNT        = 0
+RETIRED_RL_WORKFLOW_ARCHIVE_COUNT   = 8
+T2_WORKFLOW_RETIREMENT              = PASS
+```
+
+Eight RL-specific workflows were moved out of `.github/workflows/` into
+`.gpt/legacy_workflows/retired_rl/`. Remaining active `rlt_*` workflows are
+shared Historical Warehouse / record-hash compatibility infrastructure, not RL
+model/index workflows.
+
