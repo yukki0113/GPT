@@ -128,7 +128,7 @@ RaceNoteの当日予想を、そのままけんしょー予想として扱う。
 - RaceNote confidence → `addons.momotaro.kenshow.confidence`
 - RaceNote単馬短評 → `addons.momotaro.kenshow.comment`
 - RaceNoteレース短評 → `race_notes.momotaro_comments.kenshow`（個人PWAでも独立RaceNote短評欄は持たず、けんしょーの「短評」欄へ表示）
-- tagは `RaceNote`
+- 画面表示用tagは付けない
 
 新聞ではRaceNote印を「けん」列に表示する。
 単馬短評がある場合は印セルから詳細を確認できる。
@@ -142,7 +142,7 @@ RRDB推薦に該当した馬は、けんしょーの注目馬提出として扱�
 
 - RRDB推薦該当馬 → `addons.momotaro.kenshow.review_horse = true`
 - RRDB recommendation_comment → `addons.momotaro.kenshow.comment`
-- tagは `RRDB`
+- 画面表示用tagは `不利分析`
 
 RaceNoteとRRDBが同一馬に重なった場合:
 
@@ -150,7 +150,7 @@ RaceNoteとRRDBが同一馬に重なった場合:
 - 新聞のけん列はRaceNote印をそのままモーダル化する
 - RaceNote印が無いRRDB該当馬は「注」を表示してモーダル化する
 - RRDB該当時のモーダル本文はRRDBコメントだけを表示する
-- tagは `RaceNote / RRDB`
+- 画面表示用tagは `不利分析`
 - RRDB該当なので `review_horse=true`
 
 ### 手動補正
@@ -167,12 +167,8 @@ JRDB印とけんしょー予想は別概念として扱う。
 
 ### 反映先
 
-同じけんしょー情報を以下へ反映する。
-
-- 桃太郎新聞: けん列 / レース短評
-- 桃太郎 注目馬一覧
-- 個人PWA新聞: けん列 / 桃太郎短評
-- 個人PWA 注目馬一覧
+- RaceNote: 桃太郎新聞・個人PWA新聞のけん列 / レース短評。単馬コメントは新聞モーダルのみ。
+- RRDB: 桃太郎新聞・個人PWA新聞のけん列モーダル + 両PWAの注目馬一覧。
 
 ## 🐬 イルカブログ
 
@@ -248,7 +244,7 @@ JRDB印とけんしょー予想は別概念として扱う。
 
 通常のりょーた各R印は一覧へ全件展開しない。
 
-けんしょーは暫定JRDB印転記のみで、予想一覧対象外。
+けんしょーはRRDB該当馬だけを注目馬一覧へ掲載する。RaceNote単独馬は一覧対象外。表示タグは「不利分析」。
 
 ## addon contract
 
