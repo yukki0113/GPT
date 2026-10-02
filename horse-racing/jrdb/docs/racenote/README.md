@@ -305,22 +305,23 @@ Use latest main, current contracts, and current source as truth. Do not reintrod
 For current research, follow this guide and the Forecast Gen0 contract. For deterministic/legacy reproduction, use the dedicated legacy documents and preserved artifacts.
 
 
-### Current Human-Context Reader A/B candidate — 2026-10-02
+### Current Human-Context Reader prospective validation — 2026-10-02
 
-Current baseline remains:
+Fixed historical clean-blind baseline cohort:
 
 - `FORECAST_HUMAN_CONTEXT_READER_v0_4_2_CANDIDATE.md`
 - `RaceNote-Human-Context-Reader-0.4.2-candidate`
+- BTDAY-0023 through BTDAY-0032 only; preserve the existing Frozen records.
 
-A/B validation candidate:
+New unused BTDAY forecast logic:
 
 - `FORECAST_HUMAN_CONTEXT_READER_v0_4_3_CANDIDATE.md`
 - `RaceNote-Human-Context-Reader-0.4.3-candidate`
 
 v0.4.3 adds only bounded semantic final checks: Hierarchy consistency, a conservative ▲ promotion gate, and a narrow △2-vs-borderline-challenger Coverage check. It does not add scores, fixed weights, market input, a sixth horse, or automatic RRDB promotion.
 
-For new unused BTDAYs, freeze both versions from the same Reader input before opening target results. Canonical procedure:
+For new unused BTDAYs, produce and Freeze v0.4.3 alone before opening target results. Do not create same-day v0.4.2. Compare prospective v0.4.3 days with the fixed historical v0.4.2 cohort after result acquisition, keeping cohort and calendar differences explicit. Canonical procedure:
 
-- `BTDAY_AB_VALIDATION_RUNBOOK_v0_1.md`
+- `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
 
-Do not change the current production/baseline pointer to v0.4.3 until A/B evidence supports promotion.
+BTDAY-0035 has a previously Frozen v0.4.2-only record. Keep it immutable and outside both defined evaluation cohorts. The old same-day A/B runbook is superseded. This operational BTDAY change does not itself promote v0.4.3 to a production Forecast pointer.

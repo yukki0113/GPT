@@ -1,9 +1,9 @@
 # RaceNote Forecast Human-Context Reader v0.4.3 Candidate
 
-Status: **A/B VALIDATION CANDIDATE — NOT YET CURRENT BASELINE**  
+Status: **PROSPECTIVE BTDAY CANDIDATE — NOT YET PROMOTED TO PRODUCTION**  
 Date: 2026-10-02  
 Candidate logic id: `RaceNote-Human-Context-Reader-0.4.3-candidate`  
-Baseline for A/B comparison: `RaceNote-Human-Context-Reader-0.4.2-candidate`  
+Fixed historical baseline: `RaceNote-Human-Context-Reader-0.4.2-candidate` on BTDAY-0023–0032  
 RRDB recommendation contract: `rrdb-recommendation-signals-v0.3`
 
 Research basis:
@@ -15,11 +15,11 @@ Research basis:
 
 ## 1. Purpose
 
-v0.4.3 is a **bounded comparison-stage refinement** of v0.4.2.
+v0.4.3 is a **bounded prospective refinement** of v0.4.2.
 
-It does not replace v0.4.2 yet.
-It exists so the next unused BTDAYs can freeze both versions from the same
-market-blind input and test whether the refinement actually improves results.
+It is used alone on new unused BTDAYs, with market-blind input and
+pre-result Freeze. The fixed v0.4.2 cohort is the historical comparator;
+no same-day v0.4.2 forecast is created for new days.
 
 v0.4.3 does **not** introduce:
 - a score;
@@ -304,7 +304,8 @@ research-only audit fields when practical:
     "coverage_challenger_reviewed": true,
     "coverage_challenger": null,
     "coverage_changed": false,
-    "coverage_reason": null
+    "coverage_reason": null,
+    "change_attribution": "UNCHANGED_AFTER_INDEPENDENT_REVIEW"
   }
 }
 ```
@@ -312,22 +313,24 @@ research-only audit fields when practical:
 These fields record the reasoning result.
 They are not inputs and must not be transformed into scores.
 
-A/B validation may store this sidecar separately if the current Forecast schema
-does not yet accept these fields.
+The v0.4.3 research record schema accepts this consistency pass. The current
+Freeze/Validator requires the three reviewed flags, change booleans, and
+change attribution in the decision trace.
 
-## 10. A/B validation status
+## 10. Prospective validation status
 
-v0.4.3 is **not the default Forecast logic yet**.
+v0.4.3 is the **sole logic for new unused BTDAY prospective forecasts**.
+It remains a candidate rather than a promoted production Forecast pointer.
 
-Until promotion:
-- ordinary/current output remains v0.4.2;
-- v0.4.3 is generated only for explicit A/B validation;
-- the same pre-Freeze input must be used for both;
-- both versions must be frozen before target results are opened;
-- neither version may see the other's result performance before Freeze.
+The v0.4.2 historical clean-blind baseline is fixed to BTDAY-0023–0032.
+Do not generate v0.4.2 on the same new BTDAY. Select a new unused day with
+the canonical picker, prepare a market-blind Reader, author v0.4.3,
+Freeze and validate it, then acquire results in a separate step.
+BTDAY-0035's existing v0.4.2-only Freeze stays immutable and outside
+these evaluation cohorts.
 
-Canonical A/B procedure:
-`BTDAY_AB_VALIDATION_RUNBOOK_v0_1.md`
+Canonical procedure:
+`BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
 
 ## 11. Promotion question
 
@@ -345,12 +348,11 @@ Primary:
 - ◎-first-fixed trifecta.
 
 Diagnostics:
-- how many races changed from 0.4.2;
-- which pass caused each change;
-- whether unchanged races remain stable;
-- whether Coverage changes improve podium coverage without reducing winner
-  coverage;
-- whether ▲ role integrity remains intact.
+- how often each v0.4.3 consistency pass changes the authored marks;
+- whether Coverage changes preserve winner coverage and support podium coverage;
+- whether ▲ role integrity remains intact;
+- cohort composition, course/calendar mix, and uncertainty in the
+  historical-versus-prospective comparison.
 
 A few large exotic payouts are part of the target distribution and must not be
 automatically removed from the primary comparison.

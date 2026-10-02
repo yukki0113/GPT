@@ -1,7 +1,14 @@
 # RaceNote BTDAY A/B Validation Runbook v0.1
 
-Status: **ACTIVE FOR v0.4.2 vs v0.4.3 CANDIDATE VALIDATION**  
+Status: **SUPERSEDED — historical same-day A/B design; do not use for new BTDAYs**  
 Date: 2026-10-02
+
+Superseded on 2026-10-02 by
+`BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`.
+For all new unused BTDAYs, Freeze v0.4.3 alone. The fixed v0.4.2
+baseline consists of existing clean-blind BTDAY-0023–0032. The steps below
+remain only as a record of the former same-day A/B design and must not be
+used to select or run another day.
 
 ## 1. Purpose
 
