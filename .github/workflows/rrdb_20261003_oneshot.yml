@@ -29,9 +29,11 @@ jobs:
           gh run download 36997195374 --repo "$GITHUB_REPOSITORY" --name jrdb-raw-20261003 --dir /tmp/paci
           gh run download 36514429467 --repo "$GITHUB_REPOSITORY" --name RaceReviewDB-next-36514429467 --dir /tmp/rrdb
           PACI="$(find /tmp/paci -type f -name 'PACI261003.zip' | head -1)"
-          CURRENT="$(find /tmp/rrdb -type f -name 'RaceReviewDB_CURRENT.zip' | head -1)"
           test -n "$PACI" && test -f "$PACI"
-          test -n "$CURRENT" && test -f "$CURRENT"
+          test -f /tmp/rrdb/postrace_review/v0_1/current.json
+          (cd /tmp/rrdb && zip -qr /tmp/RaceReviewDB_CURRENT.zip .)
+          CURRENT="/tmp/RaceReviewDB_CURRENT.zip"
+          test -f "$CURRENT"
           echo "PACI=$PACI" >> "$GITHUB_ENV"
           echo "CURRENT=$CURRENT" >> "$GITHUB_ENV"
 
