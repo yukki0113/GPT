@@ -402,3 +402,8 @@ Do not invoke Training Edge scorers/evaluators or build Training Research during
 ## RL retirement T5 workflow routing — 2026-10-02
 
 Keep the five active rlt_* workflows enabled: they serve Warehouse audit/materialization and record-hash compatibility. Their historical RL-T names and issue prefixes are retained; do not treat them as RL model/scorer entrypoints. See docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.
+
+
+## RL retirement final operational state — 2026-10-02
+
+RL absence is the normal production state. Do not auto-score, auto-build Training Research, restart HOLDOUT/OOT/calibration, tune a frozen model, or fall back to Historical Raw to recover RL. Final repo-wide audit: docs/RL_Retirement_Final_Report_20261002.md (PASS). Shared JRDB Warehouse / Index Base / record-hash compatibility stays active.

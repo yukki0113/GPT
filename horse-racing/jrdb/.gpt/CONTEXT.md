@@ -377,3 +377,8 @@ RL / Training Edge research is retired. Its implementation, configuration and fo
 ## RL retirement T5 infrastructure status — 2026-10-02
 
 Five active rlt_* workflows and the RL-T-named Warehouse input preparer are explicitly classified as ACTIVE_SHARED_INFRA. Their names are retained for issue-route compatibility; their behavior remains Warehouse / Index Base / record-hash compatibility only. The T5 audit is docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.
+
+
+## RL retirement final status — 2026-10-02
+
+The RL retirement sequence is complete (T1–T6 PASS). Final report: docs/RL_Retirement_Final_Report_20261002.md. No active RL scorer/research workflow, open RL research issue, RL-dependent downstream production path, or RL-required production input remains. Frozen evidence is preserved; shared Warehouse / Index Base / record-hash infrastructure remains active.

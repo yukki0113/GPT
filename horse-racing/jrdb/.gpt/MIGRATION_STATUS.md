@@ -409,3 +409,8 @@ T4_ASSET_FREEZE = PASS
 ## RL retirement T5 — 2026-10-02
 
 The active rlt_* issue workflows are JRDB Warehouse / Index Base / record-hash compatibility infrastructure. Historical RL-T naming is retained to preserve issue routing; workflow/source headers identify ACTIVE_SHARED_INFRA and no RL scoring or Training Research build role. Infrastructure remains enabled. See docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.
+
+
+## RL retirement — COMPLETE — 2026-10-02
+
+T1–T6 have passed. Final repo-wide evidence is recorded in docs/RL_Retirement_Final_Report_20261002.md. RL production requirement and downstream hard dependencies are zero; frozen research assets/evidence remain preserved. Shared JRDB Warehouse, Index Base and record-hash compatibility remain active. Open RL research issues: 0.

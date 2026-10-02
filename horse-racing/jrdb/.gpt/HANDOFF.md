@@ -1059,3 +1059,13 @@ RECORD_HASH_COMPAT_ACTIVE = TRUE
 RL_ONLY_SHARED_INFRA_COUNT = 0
 AMBIGUOUS_RLT_ACTIVE_ROLE_COUNT = 0
 T5_SHARED_INFRA_DISENTANGLEMENT = PASS
+
+## RL retirement T6 — COMPLETE — 2026-10-02
+
+Final report: docs/RL_Retirement_Final_Report_20261002.md.
+
+- T1–T6 all PASS; RL retirement is COMPLETE.
+- Formal audit run 36961003878 succeeded at head 621ad3a961e050d3b12672add4aae3290bd33037; artifact 11206784733, digest sha256:437e34ecef5afedb9f1f51327a4ad190fad6e16f0ea1f578eacacfa251bf67cd.
+- Active RL model/daily/research workflow counts = 0; RL research open issue count = 0; downstream hard dependency count = 0.
+- RL assets and reproduction evidence are preserved; shared JRDB Warehouse / Index Base / record-hash compatibility remain active.
+- Temporary T6 workflow was removed after PASS; permanent audit scripts and report remain.
