@@ -5,7 +5,7 @@
     "inventory_snapshot_date": "2026-09-29",
     "note": "Sync newer PACI inventory while preserving used flags and eligibility. Clean blind picks exclude known result-exposed dates by default."
   },
-  "updated_at": "2026-10-02T06:28:43+00:00",
+  "updated_at": "2026-10-02T06:46:54+00:00",
   "days": [
     {
       "date": "2026-01-04",
@@ -521,9 +521,9 @@
       "date": "2026-06-21",
       "file_name": "PACI260621.zip",
       "drive_file_id": "1BQvobFc6mv5aD1u-M4pcAI5dS_iitx1x",
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-10-02T06:46:54+00:00",
+      "selection_id": "BTDAY-0035",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -641,11 +641,11 @@
       "date": "2026-08-02",
       "file_name": "PACI260802.zip",
       "drive_file_id": "1mQ1Lwg4X4q-ZElBvQ8CS80bFAwstyLfe",
-      "used": true,
-      "used_at": "2026-10-02T06:28:43+00:00",
-      "selection_id": "BTDAY-0034",
-      "eligible": true,
-      "exclusion_reason": null
+      "used": false,
+      "used_at": null,
+      "selection_id": null,
+      "eligible": false,
+      "exclusion_reason": "INVALIDATED: target-day market field was exposed in Reader inspection before A/B Freeze; do not use for blind validation."
     },
     {
       "date": "2026-08-08",
@@ -1135,6 +1135,16 @@
       "n": 1,
       "dates": [
         "2026-08-02"
+      ],
+      "released_at": "2026-10-02T06:46:54+00:00"
+    },
+    {
+      "selection_id": "BTDAY-0035",
+      "selected_at": "2026-10-02T06:46:54+00:00",
+      "seed": "02796f5ba5beac72309e3ddb204d13fd",
+      "n": 1,
+      "dates": [
+        "2026-06-21"
       ]
     }
   ]
