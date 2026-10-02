@@ -996,3 +996,19 @@ Next cleanup sequence:
 4. disentangle shared infrastructure naming where useful,
 5. run final retirement audit.
 
+## RL retirement T2 handoff — 2026-10-02
+
+T2 is complete.
+
+- RL model/research/Training Research active Actions entrypoints: 0
+- RL daily/replay active Actions entrypoints: 0
+- RL research open issues: 0
+- archived retired workflows: 8
+- shared Warehouse / record-hash `rlt_*` workflows remain active intentionally
+
+Evidence:
+`docs/RL_Retirement_T2_Workflow_Audit_20261002.md`
+
+Next cleanup turn is T3: prove Newspaper / RaceNote / EdgeDB / PWA have no hard
+dependency on RL and ensure no active workflow passes `--my-index-csv`.
+
