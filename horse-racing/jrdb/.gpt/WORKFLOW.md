@@ -363,3 +363,22 @@ RaceNote、EdgeDB、Eval、Training等のsubsystemは各専用guide/contractを�
 - Do not alter the JRDB Warehouse current pointer, historical Warehouse Parquet, or the existing Analysis current pointer as part of this routing choice.
 
 The formal comparison and exact gates are recorded in `docs/JRDB_Analysis_Warehouse_Dual_Read_Audit_20260921.md`; the normative contract is `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md`.
+
+## RL / RaceLift retirement rule — 2026-10-02
+
+Normative contract:
+`docs/RL_Retirement_Contract_20261002.md`
+
+For ordinary work:
+
+- do not start or continue RL / Training Edge model development;
+- do not schedule or generate daily RL indices;
+- do not treat missing RL output as an error;
+- do not auto-run Training Research or the RL scorer to satisfy a downstream consumer;
+- do not use Historical Raw fallback to recover a missing RL value;
+- do not reopen HOLDOUT / OOT / calibration / runtime-freeze work without a new explicit research decision;
+- preserve frozen RL assets for reproduction/audit only;
+- preserve JRDB Warehouse / Index Base / record-hash compatibility as active shared infrastructure.
+
+When working on Newspaper / RaceNote / EdgeDB / PWA, assume RL is absent unless the task explicitly concerns historical compatibility or reproduction.
+
