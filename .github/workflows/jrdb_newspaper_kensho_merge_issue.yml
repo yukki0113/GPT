@@ -44,6 +44,9 @@ jobs:
           revision=req.get("revision")
           rn=str(req.get("racenote_repo_path") or "").strip()
           rr=str(req.get("rrdb_repo_path") or "").strip()
+          momotaro_predictions=req.get("momotaro_predictions", [])
+          if not isinstance(momotaro_predictions, list):
+              raise SystemExit("momotaro_predictions must be an array")
           if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}",date):
               raise SystemExit("date must be YYYY-MM-DD")
           if not isinstance(revision,int) or isinstance(revision,bool) or revision < 1:
@@ -186,11 +189,35 @@ jobs:
           fi
           gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Newspaper current"             --notes "Current personal newspaper with Kensho RaceNote and RRDB merged."             "/tmp/personal-release/$RELEASE_ARCHIVE" "/tmp/personal-release/$RELEASE_META"             /tmp/kensho/personal-validation.json
 
+      - name: Prepare optional Momotaro member predictions
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
+          rows=req.get("momotaro_predictions") or []
+          if not rows:
+              raise SystemExit(0)
+          fields=["date","venue_code","race_no","horse_no","horse_name","member","mark","confidence","tag","review_horse","comment"]
+          with Path("/tmp/kensho/momotaro_predictions.csv").open("w",encoding="utf-8",newline="") as h:
+              w=csv.DictWriter(h,fieldnames=fields)
+              w.writeheader()
+              for row in rows:
+                  out={key:row.get(key,"") for key in fields}
+                  out["review_horse"]="1" if row.get("review_horse") is True else ""
+                  w.writerow(out)
+          PY
+
       - name: Build Momotaro projection
         run: |
           set -euo pipefail
           rm -rf /tmp/momotaro-current
-          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             > /tmp/kensho/momotaro-projection.json
+          MOMOTARO_ARGS=()
+          if [ -f /tmp/kensho/momotaro_predictions.csv ]; then
+            MOMOTARO_ARGS+=(--momotaro-csv /tmp/kensho/momotaro_predictions.csv)
+          fi
+          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             "${MOMOTARO_ARGS[@]}"             > /tmp/kensho/momotaro-projection.json
 
       - name: Validate Momotaro Kensho projection
         run: |
@@ -229,6 +256,36 @@ jobs:
               raise SystemExit(f"RaceNote marked count mismatch: {rn_marked}")
           if iluka != 13:
               raise SystemExit(f"Iluka projection count mismatch: {iluka}")
+
+          req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
+          requested=req.get("momotaro_predictions") or []
+          projected={}
+          for entry in manifest.get("races") or []:
+              b=json.loads((root/entry["path"]).read_text(encoding="utf-8"))
+              venue_code=str(b["race"]["venue_code"]).zfill(2)
+              race_no=int(b["race"]["race_no"])
+              for h in b.get("horses") or []:
+                  horse_no=int(h["key"]["horse_no"])
+                  member_map=((h.get("addons") or {}).get("momotaro") or {})
+                  for member in ("ryota","oji","kenshow"):
+                      if isinstance(member_map.get(member),dict):
+                          projected[(venue_code,race_no,horse_no,member)]=member_map[member]
+          for row in requested:
+              key=(str(row["venue_code"]).zfill(2),int(row["race_no"]),int(row["horse_no"]),str(row["member"]))
+              got=projected.get(key)
+              if not isinstance(got,dict):
+                  raise SystemExit(f"requested Momotaro row missing from projection: {key}")
+              expected={
+                  "mark": str(row.get("mark") or "").strip() or None,
+                  "confidence": str(row.get("confidence") or "").strip() or None,
+                  "tag": str(row.get("tag") or "").strip() or None,
+                  "review_horse": bool(row.get("review_horse")),
+                  "comment": str(row.get("comment") or "").strip() or None,
+              }
+              for field,value in expected.items():
+                  if got.get(field) != value:
+                      raise SystemExit(f"Momotaro row mismatch {key} field={field}: {got.get(field)!r}!={value!r}")
+
           Path("/tmp/kensho/momotaro-validation.json").write_text(
               json.dumps({"status":"PASS","date":manifest["date"],"rrdb_checked":checked,"racenote_marked":rn_marked,"iluka":iluka},ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8")
