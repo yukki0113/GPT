@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Fingerprint the frozen Training Edge v0.2 fit population and predictions.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Fingerprint the frozen Training Edge v0.2 fit population and predictions.
 
 This is an operational reproducibility guard, not a model-selection step.  It
 uses only the preregistered 2013-2025 fit population with 2010-2012 warmup and

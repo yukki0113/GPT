@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Non-predictive build audit for JRDB Training Research Base v0.1."""
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Non-predictive build audit for JRDB Training Research Base v0.1."""
 from __future__ import annotations
 
 import argparse

@@ -1036,3 +1036,15 @@ The temporary T3 Actions workflow was removed after PASS, so no new active RL wo
 
 Next: T4 — inventory and freeze RL research assets. Do not delete shared Warehouse / Index Base infrastructure.
 
+
+## RL retirement T4 — 2026-10-02
+
+T4 is complete. Inventory: docs/RL_Retired_Asset_Inventory_20261002.md.
+
+- RL source/config/tests are FROZEN_REPRO_ONLY; Training Research is a FROZEN_RESEARCH_ASSET.
+- Dated research docs and the old runtime pending marker are historical evidence, not current tasks.
+- No RL research asset was deleted; accepted Training Research Parquet/evidence remains preserved.
+- Shared Warehouse / Index Base / record-hash compatibility and common DuckDB/Parquet tooling remain active.
+- Gate: T4_ASSET_FREEZE = PASS.
+
+Next: T5 shared-infrastructure naming/role audit; preserve active JRDB Warehouse and record-hash workflows.

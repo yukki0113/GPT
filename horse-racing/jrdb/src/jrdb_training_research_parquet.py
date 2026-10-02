@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Resolve and validate the current JRDB Training Research Parquet generation."""
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Resolve and validate the current JRDB Training Research Parquet generation."""
 from __future__ import annotations
 
 import hashlib

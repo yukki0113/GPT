@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Evaluate frozen Training Edge v0.2 on unseen-by-v0.2 2026 evidence.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Evaluate frozen Training Edge v0.2 on unseen-by-v0.2 2026 evidence.
 
 The model design and calibration are frozen before this evaluator is used on 2026
 outcomes. Training uses eligible 2013-2025 rows; 2026 is test-only. 2024-2025 are

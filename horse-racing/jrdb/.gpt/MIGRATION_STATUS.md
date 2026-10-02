@@ -392,3 +392,15 @@ Newspaper `my_index` / `training_edge_index` remains historical compatibility on
 RaceNote anti-RL firewalls remain active.
 EdgeDB/PWA contain no hard dependency on retired RL output.
 
+
+
+## RL retirement T4 — 2026-10-02
+
+RL scorer/evaluator/config/tests are frozen reproduction assets; Training Research builders/data/schema are frozen research assets. No research data, Parquet generation, schema or historical evidence was deleted. Common Warehouse, Index Base, record-hash compatibility and tools/data-storage remain active shared infrastructure. See docs/RL_Retired_Asset_Inventory_20261002.md.
+
+RL_SOURCE_ROLE = FROZEN_REPRO_ONLY
+RL_CONFIG_ROLE = FROZEN_REPRO_ONLY
+RL_TEST_ROLE = FROZEN_REPRO_ONLY
+RL_DOC_ROLE = HISTORICAL_EVIDENCE
+TRAINING_RESEARCH_ROLE = FROZEN_RESEARCH_ASSET
+T4_ASSET_FREEZE = PASS

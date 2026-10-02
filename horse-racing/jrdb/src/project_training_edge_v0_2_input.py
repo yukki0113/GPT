@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Project a versioned Training Edge v0.2 evaluation input SQLite.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Project a versioned Training Edge v0.2 evaluation input SQLite.
 
 This projector intentionally does not modify or extend Training Research Base v0.1.
 It reads audited Index Base + Official RunPerf and materializes only the chronology,

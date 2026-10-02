@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# FROZEN_REPRO_ONLY — historical RL/Training Research reproduction test; not a production enablement signal.
 from __future__ import annotations
 
 import sqlite3

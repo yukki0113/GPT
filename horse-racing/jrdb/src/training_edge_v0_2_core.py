@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Core contract for Training Edge v0.2 development scoring.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Core contract for Training Edge v0.2 development scoring.
 
 This module freezes the feature blocks, preprocessing, Ridge implementation,
 raw Edge definition, and percentile calibration transform selected on 2026-09-11.

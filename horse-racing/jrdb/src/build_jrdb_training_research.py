@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Build JRDB Training Research Base v0.1 from audited Index Base and Official RunPerf.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Build JRDB Training Research Base v0.1 from audited Index Base and Official RunPerf.
 
 The builder projects Common Reader facts already materialized by Index Base. It does
 not parse fixed-width records and deliberately excludes odds, popularity and payouts.

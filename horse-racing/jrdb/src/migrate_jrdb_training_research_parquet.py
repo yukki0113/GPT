@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Create one immutable JRDB Training Research Parquet generation.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Create one immutable JRDB Training Research Parquet generation.
 
 SQLite remains a build-time comparison materialization only.  Conversion and basic
 storage validation are delegated to the repository-wide ``tools/data-storage``

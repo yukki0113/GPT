@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Audit the RL-T Training Research Parquet cutover for active legacy dependencies."""
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Audit the RL-T Training Research Parquet cutover for active legacy dependencies."""
 from __future__ import annotations
 
 import json

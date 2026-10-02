@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Score frozen Training Edge v0.2 for one pre-race JRDB day.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Score frozen Training Edge v0.2 for one pre-race JRDB day.
 
 The input projection may contain historical settled rows plus the target day's
 pre-race rows. Target-day result values are never required and are ignored for

@@ -1,3 +1,4 @@
+-- FROZEN_RESEARCH_ASSET — historical Training Research schema; no production rebuild.
 PRAGMA foreign_keys=ON;
 
 -- JRDB Training Research Base v0.1

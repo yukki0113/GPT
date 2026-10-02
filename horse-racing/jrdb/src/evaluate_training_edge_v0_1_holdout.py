@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Evaluate the frozen Training Edge v0.1 on the one-shot 2024-2025 holdout.
+"""
+RETIRED — frozen historical implementation. Reproduction/audit only; not a production entrypoint. Do not extend or restart RL research.
+Evaluate the frozen Training Edge v0.1 on the one-shot 2024-2025 holdout.
 
 The protocol is defined by docs/Training_Edge_v0_1_Freeze_20260911.md.
 This evaluator intentionally exposes no tuning arguments for features, buckets,
