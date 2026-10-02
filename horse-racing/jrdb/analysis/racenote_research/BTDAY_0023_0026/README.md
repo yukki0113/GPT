@@ -67,3 +67,49 @@ RaceNote Human-Context Reader v0.4.2 candidate の BTDAY-0023〜0026、計144R�
 ## Git size policy
 この母集団はJSONL/Markdownのみ。xlsx / parquet / zip / JRDB Raw複製は置かない。
 新しい研究軸は列を巨大化させず、必要なら別JSONLでannotationを追加し、原Forecastを重複保存しない。
+
+
+## Selector discovery labels v0.1
+
+`selector_labels_discovery_v0_1.jsonl` に144Rの③用ラベルを保存した。
+
+### ラベル
+- `axis_confidence`: ◎信頼度
+- `five_horse_convergence`: 5頭収束度
+- `chaos_level`: 波乱度
+- `single_shot_value`: ▲妙味度
+
+各軸は `HIGH / MID / LOW`。
+
+### blindness
+23〜26は分析者が結果を既知のため、厳密なblindではない。
+全行に `label_blindness = PSEUDO_BLIND_RESULT_KNOWN_TO_ANALYST` を保持する。
+
+ラベル付け工程では outcome / settlement / final market を参照せず、
+Forecastと `reader_stripped` の事前情報だけを利用した。
+
+### full-field calibration
+文章表現の世代差を自信度と誤認しないため、Reader文章の強い言い回しだけで判定しない。
+
+全頭の事前情報から、IDM・総合指数・調教指数・直近着順・RRDB recommendation signalを
+レース内相対値へ正規化した補助比較を作り、以下をラベル判断の校正材料にした。
+
+- ◎の全頭相対順位と選択5頭内の差
+- 選択5頭が全頭相対Top6を何頭占有するか
+- 最上位無印候補と選択上位馬の差
+- 全頭上位6頭の評価spread
+- ▲の全頭相対順位、RRDB signal、独立した展開・条件シナリオ
+
+この補助比較自体を新しいForecastロジックとは扱わない。
+Race Selector仮説発見のためのanalysis-side annotationである。
+
+### 144R label distribution
+
+| axis | HIGH | MID | LOW |
+|---|---:|---:|---:|
+| ◎信頼度 | 48 | 79 | 17 |
+| 5頭収束度 | 107 | 20 | 17 |
+| 波乱度 | 19 | 80 | 45 |
+| ▲妙味度 | 92 | 47 | 5 |
+
+次工程で初めてOutcome / settlementとJOINし、ラベル別の成績・ROI・組合せ効果を確認する。
