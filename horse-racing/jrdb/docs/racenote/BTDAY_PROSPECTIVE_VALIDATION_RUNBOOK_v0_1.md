@@ -152,7 +152,24 @@ Ambiguous cases default to KEEP.
 
 ## 5. Freeze, validate and save
 
-After every expected race has a completed authored record:
+After every expected race has a completed authored record, run the exact
+same command first with `--preflight-only`. This checks Reader binding,
+full-card coverage, v0.4.4 Coverage identities/counts, and the full prose
+Validator **without creating an immutable Freeze directory**. Repair authored
+records in the judgment layer until the preflight returns PASS. Then omit
+`--preflight-only` to write Freeze:
+
+```sh
+python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \\
+  --prep-root "$FORECAST_PREP" --prepared-records "$PREPARED_V044" \\
+  --output-root "$NEW_FROZEN_V044" --selection-id "$BTDAY_ID" \\
+  --date "$TARGET_DATE" --main-sha "$MAIN_SHA" \\
+  --logic-version RaceNote-Human-Context-Reader-0.4.4-candidate \\
+  --preflight-only
+```
+
+The regular Freeze repeats those checks before writing. A failed preflight is
+an incomplete forecast, not a technical day exclusion.
 
 ```sh
 python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
@@ -222,3 +239,37 @@ Compare against both:
 Do not pool excluded BTDAYs into formal cohorts.
 
 Promotion requires a later explicit research decision.
+
+## 7. One-request operator checklist and restart checkpoint
+
+The stages are ordered. Keep the same selection and clean Reader on a retry.
+
+| Stage | Canonical operation | Completion evidence |
+| --- | --- | --- |
+| Selection | Inspect the current pool/history. Reuse an already selected BTDAY ID; otherwise call `src/racenote_backtest_day_picker.py pick --state <pool> -n 1` once and persist the updated pool on latest main. | One selection ID, one date, PACI filename/Drive ID; no duplicate draw |
+| PACI | Resolve the selected filename in the PACI Drive folder from `docs/JRDB_2026_Raw_Drive_Reference.md`; verify ZIP and PACI families. | Exact date/file identity and readable ZIP |
+| DAY PREP | Run `src/build_racenote_daily.py` once for the date with the current Analysis and RRDB v0.3 assets. Resolve Parquet/DuckDB via `tools/data-storage/` if needed. | `manifest.json` and `validation_report.json` PASS; expected race count; target result unopened and as-of guards PASS |
+| Clean bind | Run `src/racenote_prepare_forecast_input.py` on DAY PREP. | `day_prep_handoff.json` and `reader_stripped_manifest.json` PASS, market blind, result unopened, hash and race count fixed |
+| Model judgment | Read only `$FORECAST_PREP/reader/*.json` and handoff. Author five marks, four mainline cases (◎/○/provisional △1/△2), independent ▲, RRDB review, v0.4.4 Coverage scan/comparison and race-specific prose for **each** race. | One complete authored record per Reader; no scripted marks, prose, challenger or verdict |
+| Preflight / Freeze | Run Freeze `--preflight-only`, then normal Freeze and Validator. | Preflight PASS, all races Frozen, Validator PASS, semantic hashes fixed |
+| Git save / output | Save clean handoff/manifest, input-binding audit, merged frozen JSON/JSONL, freeze handoff/audits, validator and frozen-record-derived reader output under `backtests/BTDAY-xxxx/YYYYMMDD/` on latest main. Render with `src/render_racenote_forecast_html.py --records <frozen-all.json> --output <forecast.html>` if HTML is needed. | Git readback of same hashes and full race count; ordinary forecast shown only from Frozen records |
+
+The picker is a persistent state mutation. Never rerun `pick` for an ID
+already recorded in main. If a task spans multiple sessions, checkpoint only:
+BTDAY ID/date, PACI identity, main SHA used at bind, clean input root and
+manifest SHA, expected/completed race count, and market/result-unopened audit.
+Authored decisions and prose stay with the forecast work; do not recalculate
+completed races from a changed input.
+
+Before declaring completion, compare the exact Reader race-key set with the
+prepared-record set. A few authored marks or a readable projection are not a
+Freeze. When a card is large, save race-by-race authored progress and continue
+through the missing keys in the same request. Report an actual unavailable
+asset or failing gate by name; do not treat ordinary remaining authoring work as
+an environment failure.
+
+This lane is ordinarily A (read/audit) + C (deterministic local execution) +
+B (Git save). Existing Drive PACI does not require an Actions run. Use D only
+when a separate Actions-native requirement is actually present. In particular,
+do not use the removed temporary BTDAY42/43 job: it synthesized model-authored
+Coverage and mainline narratives from marks.
