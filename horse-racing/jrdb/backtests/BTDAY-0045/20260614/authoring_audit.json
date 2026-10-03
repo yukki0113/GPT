@@ -1,0 +1,11 @@
+{
+  "selection_id": "BTDAY-0045",
+  "target_date": "2026-06-14",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.4-candidate",
+  "technical_freeze_status": "PASS",
+  "result_opened": false,
+  "target_day_market_opened": false,
+  "formal_cohort_eligible": false,
+  "authoring_review": "An abbreviated per-horse projection was the primary judgment input. The full clean Reader was bound and validated mechanically, but full-field model reading for every runner was not completed.",
+  "reason": "Prospective runbook section 2 requires the full clean Reader for the whole field and forbids an abbreviated projection as the sole authoring input. Preserve the immutable forecast but exclude this day from formal comparative cohort until a research decision."
+}
