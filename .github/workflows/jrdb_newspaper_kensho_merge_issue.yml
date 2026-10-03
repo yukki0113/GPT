@@ -43,7 +43,9 @@ jobs:
           date=str(req.get("date") or "").strip()
           revision=req.get("revision")
           rn=str(req.get("racenote_repo_path") or "").strip()
+          rn_gzip_b64=str(req.get("racenote_gzip_b64") or "").strip()
           rr=str(req.get("rrdb_repo_path") or "").strip()
+          rr_csv=str(req.get("rrdb_csv") or "")
           momotaro_predictions=req.get("momotaro_predictions", [])
           if not isinstance(momotaro_predictions, list):
               raise SystemExit("momotaro_predictions must be an array")
@@ -51,10 +53,29 @@ jobs:
               raise SystemExit("date must be YYYY-MM-DD")
           if not isinstance(revision,int) or isinstance(revision,bool) or revision < 1:
               raise SystemExit("revision must be integer >= 1")
-          for label,value in (("racenote_repo_path",rn),("rrdb_repo_path",rr)):
-              p=Path(value)
-              if not value or p.is_absolute() or ".." in p.parts or not p.is_file():
-                  raise SystemExit(f"invalid {label}")
+          if sum(bool(v) for v in (rn, rn_gzip_b64)) != 1:
+              raise SystemExit("supply exactly one of racenote_repo_path/racenote_gzip_b64")
+          if sum(bool(v) for v in (rr, rr_csv)) != 1:
+              raise SystemExit("supply exactly one of rrdb_repo_path/rrdb_csv")
+          if rn:
+              p=Path(rn)
+              if p.is_absolute() or ".." in p.parts or not p.is_file():
+                  raise SystemExit("invalid racenote_repo_path")
+          else:
+              import base64,gzip
+              try:
+                  payload=gzip.decompress(base64.b64decode(rn_gzip_b64,validate=True))
+              except Exception as exc:
+                  raise SystemExit(f"failed to decode racenote_gzip_b64: {exc}") from exc
+              Path("/tmp/kensho/racenote.json").write_bytes(payload)
+              rn="/tmp/kensho/racenote.json"
+          if rr:
+              p=Path(rr)
+              if p.is_absolute() or ".." in p.parts or not p.is_file():
+                  raise SystemExit("invalid rrdb_repo_path")
+          else:
+              Path("/tmp/kensho/rrdb.csv").write_text(rr_csv,encoding="utf-8")
+              rr="/tmp/kensho/rrdb.csv"
           Path("/tmp/kensho/request.json").write_text(json.dumps(req,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as h:
               h.write(f"REQUEST_DATE={date}\nREQUEST_REVISION={revision}\nRACENOTE_PATH={rn}\nRRDB_PATH={rr}\n")
@@ -125,8 +146,13 @@ jobs:
                           "source_semantic_sha256":horse["source_semantic_sha256"],
                       })
                       count+=1
-          if len(data.get("races") or []) != 24 or count != 349:
-              raise SystemExit(f"RaceNote completeness mismatch races={len(data.get('races') or [])} horses={count}")
+          race_count=len(data.get("races") or [])
+          if race_count != 24 or count <= 0:
+              raise SystemExit(f"RaceNote completeness mismatch races={race_count} horses={count}")
+          marked=sum(1 for race in data.get("races") or [] for horse in race.get("horses") or [] if str(horse.get("mark") or "").strip())
+          Path("/tmp/kensho/expected-counts.json").write_text(
+              json.dumps({"racenote":count,"racenote_marked":marked},ensure_ascii=False)+"\n",
+              encoding="utf-8")
           PY
 
       - name: Merge RaceNote and RRDB into personal current
@@ -145,6 +171,14 @@ jobs:
           manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
           if manifest.get("date") != os.environ["REQUEST_DATE"] or int(manifest.get("revision") or 0)!=int(os.environ["REQUEST_REVISION"]):
               raise SystemExit("personal manifest mismatch")
+          baseline={"eval":0,"iluka":0}
+          current_manifest=json.loads(Path("/tmp/current-day/manifest.json").read_text(encoding="utf-8"))
+          for entry in current_manifest.get("races") or []:
+              b=json.loads((Path("/tmp/current-day")/entry["path"]).read_text(encoding="utf-8"))
+              for h in b.get("horses") or []:
+                  a=h.get("addons") or {}
+                  baseline["eval"] += int(isinstance(a.get("eval"),dict))
+                  baseline["iluka"] += int(isinstance(a.get("keibailuka"),dict))
           counts={"eval":0,"iluka":0,"racenote":0,"rrdb":0}
           for entry in manifest.get("races") or []:
               b=json.loads((root/entry["path"]).read_text(encoding="utf-8"))
@@ -154,8 +188,13 @@ jobs:
                   counts["iluka"] += int(isinstance(a.get("keibailuka"),dict))
                   counts["racenote"] += int(isinstance(a.get("racenote_prediction"),dict))
                   counts["rrdb"] += int(isinstance(a.get("rrdb_recommendation"),dict))
-          if counts != {"eval":349,"iluka":13,"racenote":349,"rrdb":20}:
-              raise SystemExit(f"personal counts mismatch: {counts}")
+          expected=json.loads(Path("/tmp/kensho/expected-counts.json").read_text(encoding="utf-8"))
+          import csv
+          with Path(os.environ["RRDB_PATH"]).open(encoding="utf-8-sig",newline="") as h:
+              rrdb_expected=sum(1 for _ in csv.DictReader(h))
+          wanted={"eval":baseline["eval"],"iluka":baseline["iluka"],"racenote":int(expected["racenote"]),"rrdb":rrdb_expected}
+          if counts != wanted:
+              raise SystemExit(f"personal counts mismatch: got={counts} expected={wanted}")
           Path("/tmp/kensho/personal-validation.json").write_text(
               json.dumps({"status":"PASS","date":manifest["date"],"revision":manifest["revision"],**counts},ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8")
@@ -250,12 +289,14 @@ jobs:
                       if k.get("comment") != rrdb[key]:
                           raise SystemExit(f"RRDB comment mismatch {key}")
                       checked+=1
-          if checked != 20:
-              raise SystemExit(f"RRDB projection count mismatch: {checked}")
-          if rn_marked != 120:
-              raise SystemExit(f"RaceNote marked count mismatch: {rn_marked}")
-          if iluka != 13:
-              raise SystemExit(f"Iluka projection count mismatch: {iluka}")
+          expected=json.loads(Path("/tmp/kensho/expected-counts.json").read_text(encoding="utf-8"))
+          if checked != len(rrdb):
+              raise SystemExit(f"RRDB projection count mismatch: got={checked} expected={len(rrdb)}")
+          if rn_marked != int(expected["racenote_marked"]):
+              raise SystemExit(f"RaceNote marked count mismatch: got={rn_marked} expected={expected['racenote_marked']}")
+          personal=json.loads(Path("/tmp/kensho/personal-validation.json").read_text(encoding="utf-8"))
+          if iluka != int(personal["iluka"]):
+              raise SystemExit(f"Iluka projection count mismatch: got={iluka} expected={personal['iluka']}")
 
           req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
           requested=req.get("momotaro_predictions") or []
@@ -327,7 +368,7 @@ jobs:
         run: |
           set -euo pipefail
           cat /tmp/kensho/personal-validation.json
-          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB_NEWSPAPER_KENSHO_MERGE_RESULT: success. Personal and Momotaro current releases updated from the same 2026-10-03 dataset."
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB_NEWSPAPER_KENSHO_MERGE_RESULT: success. Personal and Momotaro current releases updated from the same ${REQUEST_DATE} dataset."
           gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
 
       - name: Comment failure and close
