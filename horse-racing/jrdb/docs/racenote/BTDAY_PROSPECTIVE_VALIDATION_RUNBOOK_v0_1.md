@@ -59,6 +59,11 @@ decision.
 4. Expose only `$FORECAST_PREP/reader/*.json` and its handoff to the judgment
    context. Verify binder PASS and expected race count before reading any
    Reader.
+   Read each full clean Reader for the whole field. An ad hoc abbreviated
+   projection is only a navigation aid; it cannot be the sole authoring input.
+   In particular, do not silently omit `pedigree`, `pedigree_context` or
+   `racereview` (history, latest prior run, recommendation) when comparing
+   horses. Distinguish missing source fields from omitted display fields.
 5. Do not inspect or paste the lossless DAY PREP Reader to check it manually.
    Target result and target-day market remain unopened throughout judgment,
    Coverage scan, Freeze and validation.
