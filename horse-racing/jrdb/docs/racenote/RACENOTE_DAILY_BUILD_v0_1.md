@@ -165,6 +165,12 @@ Per-race repetition of these operations is considered an implementation smell.
 Reader View is not a second semantic source of truth. The authoritative bundle
 remains the source; Reader View must reconstruct it exactly by semantic hash.
 
+For blinded BTDAY forecasting, this lossless DAY PREP Reader is **not** the
+model input: it can preserve target-day market fields from PACI. Run
+`racenote_prepare_forecast_input.py` first and expose only its
+`forecast_prep/reader/*.json` plus the clean handoff. Do not inspect the
+lossless `reader/` or `authoritative/` during judgment.
+
 ## 6. Manifest contract
 
 Schema:
@@ -204,7 +210,7 @@ Forbidden in final pre-race RaceNote:
 - same-day post-race Review;
 - historical row with `race_date >= target_date`;
 - final odds / final popularity exposed through a target-day path;
-- current market;
+- current market in the model-facing **clean bound Forecast Reader** (the lossless DAY PREP may retain it);
 - future RRDB rows.
 
 The daily builder must not weaken an existing lower-level firewall in order to
