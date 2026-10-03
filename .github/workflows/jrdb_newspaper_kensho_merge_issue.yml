@@ -47,8 +47,11 @@ jobs:
           rr=str(req.get("rrdb_repo_path") or "").strip()
           rr_csv=str(req.get("rrdb_csv") or "")
           momotaro_predictions=req.get("momotaro_predictions", [])
+          keibailuka_entries=req.get("keibailuka_entries", [])
           if not isinstance(momotaro_predictions, list):
               raise SystemExit("momotaro_predictions must be an array")
+          if not isinstance(keibailuka_entries, list):
+              raise SystemExit("keibailuka_entries must be an array")
           if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}",date):
               raise SystemExit("date must be YYYY-MM-DD")
           if not isinstance(revision,int) or isinstance(revision,bool) or revision < 1:
@@ -77,6 +80,9 @@ jobs:
               Path("/tmp/kensho/rrdb.csv").write_text(rr_csv,encoding="utf-8")
               rr="/tmp/kensho/rrdb.csv"
           Path("/tmp/kensho/request.json").write_text(json.dumps(req,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          Path("/tmp/kensho/keibailuka.json").write_text(
+              json.dumps({"entries":keibailuka_entries},ensure_ascii=False,indent=2)+"\n",
+              encoding="utf-8")
           with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as h:
               h.write(f"REQUEST_DATE={date}\nREQUEST_REVISION={revision}\nRACENOTE_PATH={rn}\nRRDB_PATH={rr}\n")
           PY
@@ -159,7 +165,17 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf /tmp/merged-day
-          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/current-day             --output-dir /tmp/merged-day             --racenote-csv /tmp/kensho/racenote.csv             --rrdb-recommendation-csv "$RRDB_PATH"             --revision "$REQUEST_REVISION"             > /tmp/kensho/merge-result.json
+          EXTRA_ARGS=()
+          if python - <<'PY'
+          import json
+          from pathlib import Path
+          req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
+          raise SystemExit(0 if req.get("keibailuka_entries") else 1)
+          PY
+          then
+            EXTRA_ARGS+=(--keibailuka-json /tmp/kensho/keibailuka.json)
+          fi
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/current-day             --output-dir /tmp/merged-day             --racenote-csv /tmp/kensho/racenote.csv             --rrdb-recommendation-csv "$RRDB_PATH"             "${EXTRA_ARGS[@]}"             --revision "$REQUEST_REVISION"             > /tmp/kensho/merge-result.json
 
       - name: Validate personal merge
         run: |
@@ -192,7 +208,9 @@ jobs:
           import csv
           with Path(os.environ["RRDB_PATH"]).open(encoding="utf-8-sig",newline="") as h:
               rrdb_expected=sum(1 for _ in csv.DictReader(h))
-          wanted={"eval":baseline["eval"],"iluka":baseline["iluka"],"racenote":int(expected["racenote"]),"rrdb":rrdb_expected}
+          req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
+          requested_iluka=len(req.get("keibailuka_entries") or [])
+          wanted={"eval":baseline["eval"],"iluka":requested_iluka if requested_iluka else baseline["iluka"],"racenote":int(expected["racenote"]),"rrdb":rrdb_expected}
           if counts != wanted:
               raise SystemExit(f"personal counts mismatch: got={counts} expected={wanted}")
           Path("/tmp/kensho/personal-validation.json").write_text(
