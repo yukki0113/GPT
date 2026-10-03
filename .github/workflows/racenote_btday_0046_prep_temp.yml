@@ -29,7 +29,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb /tmp/rules /tmp/out /tmp/forecast_prep
+          mkdir -p /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb /tmp/rules /tmp/out
           gdown 'https://drive.google.com/uc?id=1icHG-MI3sR5hEfgIrT8Do3AUfNlIIzNK' -O /tmp/input/PACI260221.zip
           gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/input/RaceReviewDB_CURRENT.zip
           gdown 'https://drive.google.com/uc?id=1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr' -O /tmp/input/NextWatch.zip
@@ -103,6 +103,6 @@ jobs:
             gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason completed
           else
             gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --body "BTDAY-0046 DAY PREP failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason not_planned
+            gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason "not planned"
             exit 1
           fi
