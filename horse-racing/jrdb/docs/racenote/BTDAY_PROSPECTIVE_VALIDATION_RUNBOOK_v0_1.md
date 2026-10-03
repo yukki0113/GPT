@@ -96,6 +96,38 @@ Scripts may bind identities and package authored decisions. They must not
 select horses, choose the Coverage challenger, decide KEEP/SWAP, or compose
 forecast prose.
 
+### Strict binding of authored decisions
+
+For faster and safer entry, the model may write a JSON array with exactly one
+decision per clean Reader and bind it using
+`src/racenote_bind_authored_v044.py`. Each decision must explicitly contain:
+
+- `venue`, `race_no`, five ordered `marks` (◎/○/▲/△1/△2);
+- `race_model`, `reader_facing_reason`, `mark_reason`;
+- four authored `mainline_cases` with `horse_no` and `case` for
+  ◎/○/provisional △1/△2, plus `single_shot_case` for ▲;
+- `rrdb_evidence` with explicit available/reviewed/used flags, authored
+  `reason_not_used`, and any horse number + decision role references;
+- `consistency_pass` with hierarchy and ▲ decisions/reasons, every
+  Coverage field from section 4, and the provisional △2 horse number.
+
+For the compact input, `coverage_boundary.current_delta2` and
+`coverage_best_challenger` are horse numbers (or null for no challenger).
+The binder fills horse names, Reader/source identities, RRDB evidence IDs
+and fixed contract metadata only. It rejects missing cases or decisions; it
+does not infer a challenger, verdict, comparison, reason or RRDB use.
+
+```sh
+python horse-racing/jrdb/src/racenote_bind_authored_v044.py \
+  --prep-root "$FORECAST_PREP" --decisions "$AUTHORED_V044" \
+  --output "$PREPARED_V044" --selection-id "$BTDAY_ID" \
+  --date "$TARGET_DATE" --main-sha "$MAIN_SHA"
+```
+
+The binder requires an exact race-key set and full Validator PASS before
+writing `$PREPARED_V044`. Do not substitute the retired temporary packager,
+which filled missing judgment with stock text.
+
 ## 4. Required v0.4.4 Coverage trace
 
 Every race must contain an auditable Coverage pass.
