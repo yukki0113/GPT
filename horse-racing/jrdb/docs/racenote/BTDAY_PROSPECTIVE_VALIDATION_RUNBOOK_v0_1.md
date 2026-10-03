@@ -254,6 +254,25 @@ The stages are ordered. Keep the same selection and clean Reader on a retry.
 | Preflight / Freeze | Run Freeze `--preflight-only`, then normal Freeze and Validator. | Preflight PASS, all races Frozen, Validator PASS, semantic hashes fixed |
 | Git save / output | Save clean handoff/manifest, input-binding audit, merged frozen JSON/JSONL, freeze handoff/audits, validator and frozen-record-derived reader output under `backtests/BTDAY-xxxx/YYYYMMDD/` on latest main. Render with `src/render_racenote_forecast_html.py --records <frozen-all.json> --output <forecast.html>` if HTML is needed. | Git readback of same hashes and full race count; ordinary forecast shown only from Frozen records |
 
+Stage the Git tree deterministically after the post-Freeze Validator PASS.
+The staging command verifies clean Reader hashes and identities again, copies
+only forecast-safe evidence, and formats the already-frozen prose. It never
+chooses marks or writes a decision trace:
+
+```sh
+python horse-racing/jrdb/src/racenote_stage_btday_archive.py \\
+  --day-prep-root "$DAY_PREP" --clean-prep-root "$FORECAST_PREP" \\
+  --frozen-root "$NEW_FROZEN_V044" \\
+  --output-root "horse-racing/jrdb/backtests/$BTDAY_ID/$COMPACT_DATE" \\
+  --selection-id "$BTDAY_ID" --date "$TARGET_DATE"
+```
+
+Commit the staged UTF-8 files against latest main via an available direct
+GitHub route, then read back `day_merge/forecast_${COMPACT_DATE}_all.json`,
+`validator.json` and `clean_blind_audit.json`. Compare the staged merged
+SHA-256, record count, and semantic prediction hashes. Do not overwrite an
+existing immutable BTDAY directory. Git staging does not require Actions.
+
 The picker is a persistent state mutation. Never rerun `pick` for an ID
 already recorded in main. If a task spans multiple sessions, checkpoint only:
 BTDAY ID/date, PACI identity, main SHA used at bind, clean input root and
