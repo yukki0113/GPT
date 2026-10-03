@@ -117,7 +117,7 @@ th{background:#f2f2f2;position:sticky;top:0}
                 f"<td>{html.escape(_horse_text(marks.get('second')))}</td>"
                 f"<td>{html.escape(_horse_text(marks.get('third')))}</td>"
                 f"<td>{html.escape(_others_text(marks.get('others')))}</td>"
-                f"<td class=\"comment\">{html.escape(str(pred.get('axis_comment') or '—'))}</td>"
+                f"<td class=\"comment\">{html.escape(str(pred.get('reader_facing_reason') or pred.get('axis_comment') or '—'))}</td>"
                 f"<td>{html.escape(str(pred.get('concern') or '—'))}</td>"
                 "</tr>"
             )
