@@ -47,6 +47,16 @@ jobs:
           rr=str(req.get("rrdb_repo_path") or "").strip()
           rr_csv=str(req.get("rrdb_csv") or "")
           momotaro_predictions=req.get("momotaro_predictions", [])
+          momotaro_predictions_gzip_b64=str(req.get("momotaro_predictions_gzip_b64") or "").strip()
+          if momotaro_predictions_gzip_b64:
+              import base64,gzip
+              if momotaro_predictions:
+                  raise SystemExit("supply momotaro_predictions or momotaro_predictions_gzip_b64, not both")
+              try:
+                  momotaro_predictions=json.loads(gzip.decompress(base64.b64decode(momotaro_predictions_gzip_b64,validate=True)).decode("utf-8"))
+              except Exception as exc:
+                  raise SystemExit(f"failed to decode momotaro_predictions_gzip_b64: {exc}") from exc
+              req["momotaro_predictions"]=momotaro_predictions
           keibailuka_entries=req.get("keibailuka_entries", [])
           if not isinstance(momotaro_predictions, list):
               raise SystemExit("momotaro_predictions must be an array")
