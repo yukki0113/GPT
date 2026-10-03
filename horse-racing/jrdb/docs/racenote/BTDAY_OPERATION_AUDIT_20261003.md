@@ -72,3 +72,26 @@ missing model judgments from each original clean Reader, run strict binding and
 preflight for the full card, then Freeze, Validator and Git staging/readback.
 Do not treat the selection or partial marks as a completed forecast. Do not
 open target results or target-day market in the forecast work.
+
+## Authoring-input fidelity follow-up
+
+The clean Reader output itself was verified for BTDAY-0042 and 0043:
+
+| Day | Races / runners | Sire and broodmare-sire names | P2 context | RRDB v0.3 block | Prior Review history | Matched signal horses |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0042 | 36 / 508 | 508 / 508 | 508 | 508 | 478 (30 NO_HISTORY) | 31 |
+| 0043 | 36 / 539 | 539 / 539 | 539 | 539 | 497 (42 NO_HISTORY) | 37 |
+
+The `pedigree.dam_name` field is null for every runner in both days, so P1
+identity status is PARTIAL even though sire and broodmare sire are present.
+The current Analysis Parquet fact contains the sire and broodmare-sire fields
+but not dam_name. P2 sire/broodmare-sire condition context is FULL for every
+runner. This is an explicit coverage limit, not a reason to invent dam data.
+
+The prior local `project_readers_v044.py` authoring summary computed a
+pedigree string but did not append it to its output lines. It reduced RRDB
+to matched signal IDs and omitted history, latest prior run and detailed
+recommendation context. Consequently the partially written 0042 judgments
+must be reviewed anew against the **full clean Reader** before they can be
+accepted. No 0042/0043 Forecast was Frozen. The active runbook now forbids
+abbreviated projections as the sole authoring input.
