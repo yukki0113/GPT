@@ -65,7 +65,31 @@ Do not use the retired Actions-to-Drive bridge.
 
 ## Completed-race Result Query — mandatory Drive bridge
 
-For requests asking for completed JRA results, payouts, hit settlement, ROI inputs, or in-the-money outcomes, do **not** search the public Web first.
+For requests asking for completed JRA results, payouts, hit settlement, ROI inputs, or in-the-money outcomes, use JRDB first **except for the explicit same-day post-Freeze RaceNote速報 path below**.
+
+### Same-day post-Freeze RaceNote result / settlement exception
+
+When the user needs a provisional RaceNote ticket result **on the target race day**, before the target-date SED/HJC has been acquired, the standard lightweight route is:
+
+1. Confirm the relevant Forecast records are already frozen and the pre-result Guard passed.
+2. Run `src/racenote_daily_result_fetch.py --date YYYY-MM-DD`.
+   - v0.1 uses Sponichi Keiba Web as a replaceable public-Web same-day source.
+   - it retrieves top-3 finishers and payout information for the day's races.
+   - unfinished/incompletely posted races stay `pending`; abnormal/dead-heat shapes fail closed as `review_required`.
+3. Run `src/racenote_daily_settlement.py --forecast ... --results ...`.
+   - all tickets are 100 yen fixed;
+   - it reports ◎ win/place, ◎-○/▲ quinella and exacta, ◎-all-marks trio flow, and ◎-1st-fixed trifecta flow ROI/top payouts.
+4. Treat this output as **same-day provisional settlement only**.
+5. Later detailed review remains the canonical JRDB SED/HJC + RaceReview path.
+
+Canonical guide: `docs/racenote/SAME_DAY_RESULT_SETTLEMENT_v0_1.md`.
+
+Hard boundary:
+- never open the target-date public result page before the Forecast Freeze/Guard;
+- do not use same-day Web results as a RaceNote/Forecast input;
+- do not replace weekday JRDB SED/HJC detailed review with this速報 route.
+
+The generic completed-race path below remains the default for historical/post-race result queries and for any date whose JRDB result assets are already available.
 
 Standard execution:
 
