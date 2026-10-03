@@ -160,11 +160,11 @@ records in the judgment layer until the preflight returns PASS. Then omit
 `--preflight-only` to write Freeze:
 
 ```sh
-python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \\
-  --prep-root "$FORECAST_PREP" --prepared-records "$PREPARED_V044" \\
-  --output-root "$NEW_FROZEN_V044" --selection-id "$BTDAY_ID" \\
-  --date "$TARGET_DATE" --main-sha "$MAIN_SHA" \\
-  --logic-version RaceNote-Human-Context-Reader-0.4.4-candidate \\
+python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+  --prep-root "$FORECAST_PREP" --prepared-records "$PREPARED_V044" \
+  --output-root "$NEW_FROZEN_V044" --selection-id "$BTDAY_ID" \
+  --date "$TARGET_DATE" --main-sha "$MAIN_SHA" \
+  --logic-version RaceNote-Human-Context-Reader-0.4.4-candidate \
   --preflight-only
 ```
 
@@ -260,10 +260,10 @@ only forecast-safe evidence, and formats the already-frozen prose. It never
 chooses marks or writes a decision trace:
 
 ```sh
-python horse-racing/jrdb/src/racenote_stage_btday_archive.py \\
-  --day-prep-root "$DAY_PREP" --clean-prep-root "$FORECAST_PREP" \\
-  --frozen-root "$NEW_FROZEN_V044" \\
-  --output-root "horse-racing/jrdb/backtests/$BTDAY_ID/$COMPACT_DATE" \\
+python horse-racing/jrdb/src/racenote_stage_btday_archive.py \
+  --day-prep-root "$DAY_PREP" --clean-prep-root "$FORECAST_PREP" \
+  --frozen-root "$NEW_FROZEN_V044" \
+  --output-root "horse-racing/jrdb/backtests/$BTDAY_ID/$COMPACT_DATE" \
   --selection-id "$BTDAY_ID" --date "$TARGET_DATE"
 ```
 
