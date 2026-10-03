@@ -62,10 +62,13 @@ jobs:
           momotaro_predictions=list(momotaro_predictions or []) + list(momotaro_predictions_append)
           req["momotaro_predictions"]=momotaro_predictions
           keibailuka_entries=req.get("keibailuka_entries", [])
+          momotaro_race_comments=req.get("momotaro_race_comments", [])
           if not isinstance(momotaro_predictions, list):
               raise SystemExit("momotaro_predictions must be an array")
           if not isinstance(keibailuka_entries, list):
               raise SystemExit("keibailuka_entries must be an array")
+          if not isinstance(momotaro_race_comments, list):
+              raise SystemExit("momotaro_race_comments must be an array")
           if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}",date):
               raise SystemExit("date must be YYYY-MM-DD")
           if not isinstance(revision,int) or isinstance(revision,bool) or revision < 1:
@@ -280,6 +283,21 @@ jobs:
                   w.writerow(out)
           PY
 
+      - name: Prepare optional Momotaro race comments
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
+          rows=req.get("momotaro_race_comments") or []
+          if rows:
+              Path("/tmp/kensho/momotaro_race_comments.json").write_text(
+                  json.dumps({"entries":rows},ensure_ascii=False,indent=2)+"\n",
+                  encoding="utf-8",
+              )
+          PY
+
       - name: Build Momotaro projection
         run: |
           set -euo pipefail
@@ -287,6 +305,9 @@ jobs:
           MOMOTARO_ARGS=()
           if [ -f /tmp/kensho/momotaro_predictions.csv ]; then
             MOMOTARO_ARGS+=(--momotaro-csv /tmp/kensho/momotaro_predictions.csv)
+          fi
+          if [ -f /tmp/kensho/momotaro_race_comments.json ]; then
+            MOMOTARO_ARGS+=(--race-comments-json /tmp/kensho/momotaro_race_comments.json)
           fi
           python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             "${MOMOTARO_ARGS[@]}"             > /tmp/kensho/momotaro-projection.json
 
@@ -332,11 +353,15 @@ jobs:
 
           req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
           requested=req.get("momotaro_predictions") or []
+          requested_comments=req.get("momotaro_race_comments") or []
           projected={}
+          projected_comments={}
           for entry in manifest.get("races") or []:
               b=json.loads((root/entry["path"]).read_text(encoding="utf-8"))
               venue_code=str(b["race"]["venue_code"]).zfill(2)
               race_no=int(b["race"]["race_no"])
+              for member,comment in ((b.get("race_notes") or {}).get("momotaro_comments") or {}).items():
+                  projected_comments[(venue_code,race_no,str(member))]=str(comment)
               for h in b.get("horses") or []:
                   horse_no=int(h["key"]["horse_no"])
                   member_map=((h.get("addons") or {}).get("momotaro") or {})
@@ -358,6 +383,11 @@ jobs:
               for field,value in expected.items():
                   if got.get(field) != value:
                       raise SystemExit(f"Momotaro row mismatch {key} field={field}: {got.get(field)!r}!={value!r}")
+          for row in requested_comments:
+              key=(str(row["venue_code"]).zfill(2),int(row["race_no"]),str(row["member"]))
+              expected_comment=str(row.get("comment") or "").strip()
+              if projected_comments.get(key) != expected_comment:
+                  raise SystemExit(f"Momotaro race comment mismatch {key}: {projected_comments.get(key)!r}!={expected_comment!r}")
 
           Path("/tmp/kensho/momotaro-validation.json").write_text(
               json.dumps({"status":"PASS","date":manifest["date"],"rrdb_checked":checked,"racenote_marked":rn_marked,"iluka":iluka},ensure_ascii=False,indent=2)+"\n",
