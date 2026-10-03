@@ -135,6 +135,37 @@ def validate_prepared_record(
         assert n in horses, (race, n)
         assert str(entry.get("horse_name") or "").strip() == horses[n], (race, n, entry)
 
+    if logic_version == "RaceNote-Human-Context-Reader-0.4.4-candidate":
+        cp = trace.get("consistency_pass") or {}
+        scan = cp.get("coverage_scan") or {}
+        boundary = cp.get("coverage_boundary") or {}
+        provisional = boundary.get("current_delta2") or {}
+        provisional_no = int(provisional.get("horse_no"))
+        assert provisional_no in horses and provisional.get("horse_name") == horses[provisional_no], (
+            race, "provisional delta2 identity mismatch"
+        )
+        assert provisional_no not in numbers[:4], (race, "provisional delta2 overlaps main/second/third/delta1")
+        assert scan.get("unmarked_count") == len(horses) - 5, (race, "unmarked_count mismatch")
+        direct = scan.get("direct_condition_candidate_count")
+        assert isinstance(direct, int) and 0 <= direct <= len(horses) - 5, (race, "direct candidate count mismatch")
+        provisional_five = set(numbers[:4]) | {provisional_no}
+        shortlist = scan.get("shortlisted_horse_nos") or []
+        assert all(n in horses and n not in provisional_five for n in shortlist), (
+            race, "Coverage shortlist must contain only unmarked roster horses"
+        )
+        challenger = cp.get("coverage_best_challenger")
+        if challenger is not None:
+            n = int(challenger.get("horse_no"))
+            assert n in horses and challenger.get("horse_name") == horses[n], (race, "challenger identity mismatch")
+        mainline = trace.get("mainline_cases") or []
+        expected_mainline = provisional_five - {numbers[2]}
+        assert len(mainline) == 4 and {int(x["horse"]["horse_no"]) for x in mainline} == expected_mainline, (
+            race, "v0.4.4 mainline must document main, second, delta1 and provisional delta2"
+        )
+        assert all(len(str(x.get("case") or "").strip()) >= 10 for x in mainline), (
+            race, "v0.4.4 mainline case missing"
+        )
+
     axis = prediction.get("axis") or {}
     assert int(axis.get("horse_no")) == numbers[0]
     assert str(axis.get("horse_name") or "").strip() == horses[numbers[0]]
@@ -165,6 +196,7 @@ def main() -> int:
     ap.add_argument("--date", required=True)
     ap.add_argument("--main-sha", required=True)
     ap.add_argument("--logic-version", choices=tuple(LOGIC_SCHEMAS), default=DEFAULT_LOGIC)
+    ap.add_argument("--preflight-only", action="store_true", help="Validate the full authored card without creating Freeze files")
     args = ap.parse_args()
 
     prep = args.prep_root
@@ -219,6 +251,16 @@ def main() -> int:
         by_key[key] = record
 
     assert set(by_key) == set(readers), "prepared records do not cover the full DAY PREP card"
+
+    from validate_racenote_forecast_human_context import audit_turn
+    validation = audit_turn(records)
+    if validation["status"] != "PASS":
+        raise ValueError("Prepared forecast validator FAIL: " + "; ".join(validation["errors"]))
+    if args.preflight_only:
+        print(json.dumps({"status": "PASS", "preflight_only": True,
+                          "selection_id": args.selection_id, "race_count": len(records),
+                          "validator": validation}, ensure_ascii=False, indent=2))
+        return 0
 
     out = args.output_root
     if out.exists():
