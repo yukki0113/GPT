@@ -211,6 +211,15 @@ D5 PASS後のfull-day production entrypointは `src/build_racenote_daily.py`。
 
 ### RaceNote Forecast Gen0での標準適用
 
+2026-10-03以降の新規BTDAY prospective validationは
+`docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` を入口とし、
+v0.4.4 candidate単独で進める。既存PACIをDriveから取得し、Workで
+DAY PREP・clean binding・予想記録preflight・Freeze・Validatorを行い、
+GitHub mainへ保存する経路は A/C/B。Actions環境の有無を前提にしない。
+JRDB Secrets取得や正式Actions run証跡が個別に必要なときだけDへ分類する。
+予想の印・Coverage判定・理由文をスクリプトで補完する一時経路は使用しない。
+結果/対象日marketは両監査のPASSまで開かない。
+
 Current prediction researchは **RaceNote Forecast Gen0**。作業開始時に `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` を確認する。
 
 - current forecast方針、prediction record、self-audit guidance、docs/schema/testのUTF-8変更: **B**
