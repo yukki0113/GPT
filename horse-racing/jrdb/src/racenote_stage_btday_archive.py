@@ -67,15 +67,16 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
         assert key not in readers
         readers[key] = reader
     assert set(keys) == set(readers)
+    logic_version = str(freeze_handoff["logic_version"])
+    if logic_version not in {"RaceNote-Human-Context-Reader-0.4.4-candidate", "RaceNote-Human-Context-Reader-0.4.5-candidate"}:
+        raise ValueError(f"unsupported archive logic: {logic_version}")
     for row in rows:
         key = (row["identity"]["venue"], int(row["identity"]["race_no"]))
-        validate_prepared_record(row, readers[key], selection_id, date,
-                                 "RaceNote-Human-Context-Reader-0.4.4-candidate")
+        validate_prepared_record(row, readers[key], selection_id, date, logic_version)
     hashes = [r["audit"]["prediction_semantic_hash"] for r in rows]
     assert hashes == freeze_handoff["prediction_hashes"]
     assert all(semantic_hash(r) == h for r, h in zip(rows, hashes))
-    assert all(r["research"]["logic_version"] == "RaceNote-Human-Context-Reader-0.4.4-candidate"
-               for r in rows)
+    assert all(r["research"]["logic_version"] == logic_version for r in rows)
     assert all(not contains_key(r, "market") and r["audit"]["result_visible_at_freeze"] is False
                for r in rows)
     assert not output.exists(), f"immutable archive target already exists: {output}"
@@ -104,7 +105,7 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
     }
     clean_audit = {
         "selection_id": selection_id, "target_date": date,
-        "logic_version": "RaceNote-Human-Context-Reader-0.4.4-candidate",
+        "logic_version": logic_version,
         "status": "PASS", "race_count": expected,
         "prediction_semantic_hashes": hashes,
         "result_opened": False, "target_day_market_opened": False,
@@ -118,7 +119,8 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
         (output / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     # Presentation is a projection of the immutable records, not new judgment.
-    md = [f"# {selection_id} 予想（RaceNote 0.4.4）", "", f"対象日: {date}　全{expected}競走", ""]
+    display_version = "0.4.5" if logic_version.endswith("0.4.5-candidate") else "0.4.4"
+    md = [f"# {selection_id} 予想（RaceNote {display_version}）", "", f"対象日: {date}　全{expected}競走", ""]
     venue = None
     for r in sorted(rows, key=lambda x: (x["identity"]["venue"], int(x["identity"]["race_no"]))):
         ident, pred = r["identity"], r["prediction"]
