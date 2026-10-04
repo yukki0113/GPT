@@ -68,7 +68,7 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
         readers[key] = reader
     assert set(keys) == set(readers)
     logic_version = str(freeze_handoff["logic_version"])
-    if logic_version not in {"RaceNote-Human-Context-Reader-0.4.4-candidate", "RaceNote-Human-Context-Reader-0.4.5-candidate"}:
+    if logic_version not in {"RaceNote-Human-Context-Reader-0.4.4-candidate", "RaceNote-Human-Context-Reader-0.4.5-candidate", "RaceNote-Human-Context-Reader-0.4.6-candidate"}:
         raise ValueError(f"unsupported archive logic: {logic_version}")
     for row in rows:
         key = (row["identity"]["venue"], int(row["identity"]["race_no"]))
@@ -119,7 +119,7 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
         (output / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     # Presentation is a projection of the immutable records, not new judgment.
-    display_version = "0.4.5" if logic_version.endswith("0.4.5-candidate") else "0.4.4"
+    if logic_version.endswith("0.4.6-candidate"):\n        display_version = "0.4.6"\n    elif logic_version.endswith("0.4.5-candidate"):\n        display_version = "0.4.5"\n    else:\n        display_version = "0.4.4"
     md = [f"# {selection_id} 予想（RaceNote {display_version}）", "", f"対象日: {date}　全{expected}競走", ""]
     venue = None
     for r in sorted(rows, key=lambda x: (x["identity"]["venue"], int(x["identity"]["race_no"]))):
