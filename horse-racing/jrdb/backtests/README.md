@@ -23,13 +23,19 @@ Rules:
 - Target results are not stored in this pre-result artifact tree.
 - Post-race result joins and review belong to the analysis/research flow.
 
-## Current prospective validation cohorts (2026-10-03)
+## Current prospective validation cohorts (2026-10-04)
 
 - Fixed v0.4.2 clean-blind historical comparator: BTDAY-0023–0032, 336R.
 - Fixed v0.4.3 prospective cohort: BTDAY-0036 / 0037 / 0040 / 0041, 132R.
-- New unused BTDAYs: v0.4.4 candidate alone. BTDAY-0042 and
-  BTDAY-0043 have already been selected in the pool, so resume those IDs
-  without a second draw. A selection alone is not a completed Freeze.
+- New unused BTDAY selections after v0.4.6 activation use
+  `RaceNote-Human-Context-Reader-0.4.6-candidate` only. The production
+  Forecast pointer remains separately managed and unchanged.
+- A day already selected before v0.4.6 activation retains its recorded
+  selection and handling; do not relabel or reforecast it under v0.4.6.
+- BTDAY-0047 / 2026-07-11 was selected for the v0.4.5 attempt and then
+  explicitly discarded before Freeze. Its selection history remains as draw
+  provenance, but it has no frozen forecast and is not part of a completed
+  prospective cohort. Its date remains consumed.
 - BTDAY-0038 and 0039 remain excluded from formal clean-blind comparison.
 
 The current operator sequence and preflight gate are in
