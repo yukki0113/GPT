@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3-v0.4.4."""
+"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3-v0.4.5."""
 
 from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
 from typing import Any
 
-VERSION = "racenote-human-context-validator-0.4.4"
+VERSION = "racenote-human-context-validator-0.4.5"
 
 V043_LOGIC = "RaceNote-Human-Context-Reader-0.4.3-candidate"
 V043_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.3"
 V044_LOGIC = "RaceNote-Human-Context-Reader-0.4.4-candidate"
 V044_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.4"
+V045_LOGIC = "RaceNote-Human-Context-Reader-0.4.5-candidate"
+V045_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.5"
 PASS_FIELDS = (
     ("hierarchy_reviewed", "hierarchy_changed", "hierarchy_reason", "HIERARCHY_CONSISTENCY"),
     ("single_shot_promotion_reviewed", "single_shot_promoted", "single_shot_promotion_reason", "SINGLE_SHOT_PROMOTION"),
@@ -159,6 +161,100 @@ def validate_consistency_pass(r: dict[str,Any]) -> list[str]:
                 errors.append(f"{verdict} final delta2 must equal provisional delta2")
             if verdict == "KEEP" and challenger_no is not None and challenger_no in final_mark_nos:
                 errors.append("KEEP challenger must remain outside final five")
+    elif logic_version == V045_LOGIC:
+        if cp.get("coverage_scan_reviewed") is not True:
+            errors.append("coverage_scan_reviewed must be true")
+
+        scan=cp.get("coverage_scan")
+        if not isinstance(scan,dict):
+            errors.append("coverage_scan required")
+            scan={}
+        unmarked=scan.get("unmarked_count")
+        shortlist=scan.get("shortlisted_horse_nos")
+        if not isinstance(unmarked,int) or isinstance(unmarked,bool) or unmarked < 0:
+            errors.append("coverage_scan.unmarked_count must be non-negative integer")
+        if not isinstance(shortlist,list) or any(not isinstance(x,int) or isinstance(x,bool) or x < 1 for x in (shortlist or [])):
+            errors.append("coverage_scan.shortlisted_horse_nos must be positive-integer array")
+            shortlist=[]
+        elif len(shortlist) != len(set(shortlist)):
+            errors.append("coverage_scan.shortlisted_horse_nos must be unique")
+        if isinstance(unmarked,int) and isinstance(shortlist,list) and len(shortlist) > unmarked:
+            errors.append("coverage shortlist cannot exceed unmarked_count")
+
+        boundary=cp.get("coverage_boundary")
+        if not isinstance(boundary,dict):
+            errors.append("coverage_boundary required")
+            boundary={}
+        delta2=(boundary or {}).get("current_delta2")
+        delta2_no=_horse_no_ref(delta2)
+        if delta2_no is None or not str((delta2 or {}).get("horse_name") or "").strip():
+            errors.append("coverage_boundary.current_delta2 horse required")
+
+        verdict=cp.get("coverage_verdict")
+        if verdict not in {"KEEP","SWAP","NO_ELIGIBLE_CHALLENGER"}:
+            errors.append("coverage_verdict must be KEEP, SWAP or NO_ELIGIBLE_CHALLENGER")
+
+        coverage_changed=cp.get("coverage_changed")
+        if not isinstance(coverage_changed,bool):
+            errors.append("coverage_changed must be boolean")
+        elif verdict == "SWAP" and coverage_changed is not True:
+            errors.append("SWAP requires coverage_changed=true")
+        elif verdict in {"KEEP","NO_ELIGIBLE_CHALLENGER"} and coverage_changed is not False:
+            errors.append(f"{verdict} requires coverage_changed=false")
+
+        if len(str(cp.get("coverage_reason") or "").strip()) < 8:
+            errors.append("coverage_reason must explain the boundary decision")
+
+        challenger=cp.get("coverage_best_challenger")
+        challenger_no=_horse_no_ref(challenger)
+        labels={"CHALLENGER_STRONGER","DELTA2_STRONGER","ROUGHLY_EQUAL","UNCLEAR"}
+        comparison_keys=("direct_condition_comparison","ability_comparison","race_model_comparison")
+        if verdict == "NO_ELIGIBLE_CHALLENGER":
+            if challenger is not None:
+                errors.append("NO_ELIGIBLE_CHALLENGER requires coverage_best_challenger=null")
+            if shortlist:
+                errors.append("NO_ELIGIBLE_CHALLENGER requires empty shortlist")
+            for key in comparison_keys:
+                if boundary.get(key) is not None:
+                    errors.append(f"NO_ELIGIBLE_CHALLENGER requires coverage_boundary.{key}=null")
+        elif verdict in {"KEEP","SWAP"}:
+            if challenger_no is None or not str((challenger or {}).get("horse_name") or "").strip():
+                errors.append(f"{verdict} requires coverage_best_challenger horse")
+            if challenger_no is not None and challenger_no not in shortlist:
+                errors.append("coverage_best_challenger must appear in shortlisted_horse_nos")
+            for key in comparison_keys:
+                if boundary.get(key) not in labels:
+                    errors.append(f"coverage_boundary.{key} has invalid comparison label")
+            if challenger_no is not None and delta2_no == challenger_no:
+                errors.append("coverage challenger must differ from provisional delta2")
+
+        marks=((r.get("prediction") or {}).get("marks") or {})
+        others=marks.get("others") if isinstance(marks.get("others"),list) else []
+        final_delta2_no=_horse_no_ref(others[1]) if len(others) >= 2 else None
+        final_mark_nos=[
+            _horse_no_ref(marks.get("main")),
+            _horse_no_ref(marks.get("second")),
+            _horse_no_ref(marks.get("third")),
+            *[_horse_no_ref(x) for x in others[:2]],
+        ]
+        if verdict == "SWAP":
+            changed.append("COVERAGE_CHALLENGER")
+            if boundary.get("direct_condition_comparison") != "CHALLENGER_STRONGER":
+                errors.append("SWAP requires challenger stronger on direct condition")
+            if boundary.get("ability_comparison") not in {"CHALLENGER_STRONGER","ROUGHLY_EQUAL"}:
+                errors.append("SWAP requires no material ability gap versus delta2")
+            if boundary.get("race_model_comparison") not in {"CHALLENGER_STRONGER","ROUGHLY_EQUAL"}:
+                errors.append("SWAP requires challenger to fit race model at least as well as delta2")
+            if final_delta2_no != challenger_no:
+                errors.append("SWAP final delta2 must equal coverage_best_challenger")
+            if delta2_no is not None and delta2_no in final_mark_nos:
+                errors.append("SWAP provisional delta2 must leave final five")
+        elif verdict in {"KEEP","NO_ELIGIBLE_CHALLENGER"}:
+            if final_delta2_no != delta2_no:
+                errors.append(f"{verdict} final delta2 must equal provisional delta2")
+            if verdict == "KEEP" and challenger_no is not None and challenger_no in final_mark_nos:
+                errors.append("KEEP challenger must remain outside final five")
+
     else:
         reviewed,flag,reason,label=PASS_FIELDS[2]
         if cp.get(reviewed) is not True:
@@ -202,6 +298,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         "RaceNote-Forecast-Research-Record-0.4.2",
         V043_SCHEMA,
         V044_SCHEMA,
+        V045_SCHEMA,
     }:
         e.append(f"{pre}: unsupported schema version")
     logic_version=research.get("logic_version")
@@ -214,16 +311,18 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         "RaceNote-Human-Context-Reader-0.4.2-candidate",
         V043_LOGIC,
         V044_LOGIC,
+        V045_LOGIC,
     }:
         e.append(f"{pre}: wrong logic_version")
     if research.get("evaluation_mode")=="CALIBRATION_REPLAY" and research.get("turn_id","").startswith("BTDAY-"):
         e.append(f"{pre}: calibration replay must use CAL-* turn id")
 
     is_v04=str(logic_version or "").startswith("RaceNote-Human-Context-Reader-0.4")
-    if schema_version in {V043_SCHEMA,V044_SCHEMA} or logic_version in {V043_LOGIC,V044_LOGIC}:
+    if schema_version in {V043_SCHEMA,V044_SCHEMA,V045_SCHEMA} or logic_version in {V043_LOGIC,V044_LOGIC,V045_LOGIC}:
         expected_pair={
             V043_LOGIC: V043_SCHEMA,
             V044_LOGIC: V044_SCHEMA,
+            V045_LOGIC: V045_SCHEMA,
         }.get(logic_version)
         if expected_pair is None or schema_version != expected_pair:
             e.append(f"{pre}: v0.4.3+ schema/logic mismatch")
@@ -303,7 +402,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
             if other and other not in reason: e.append(f"{pre}: {key} must name {other}")
             if len(reason.strip())<20: e.append(f"{pre}: {key} reason too short")
 
-    if schema_version in {"RaceNote-Forecast-Research-Record-0.3.1","RaceNote-Forecast-Research-Record-0.4.2",V043_SCHEMA,V044_SCHEMA}:
+    if schema_version in {"RaceNote-Forecast-Research-Record-0.3.1","RaceNote-Forecast-Research-Record-0.4.2",V043_SCHEMA,V044_SCHEMA,V045_SCHEMA}:
         rrdb=t.get("rrdb_evidence")
         if not isinstance(rrdb,dict):
             e.append(f"{pre}: rrdb_evidence required for v0.3.1")
@@ -375,6 +474,15 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         internal_terms=("UPGRADE","DOWNGRADE","CONFIRM","hidden_strength","Next-Watch","DAY PREP","mainline_cases","single_shot_case")
         if any(x in prose for x in internal_terms):
             e.append(f"{pre}: reader_facing_reason exposes internal research terminology")
+
+    if logic_version == V045_LOGIC:
+        if research.get("prediction_semantics") != "INHERIT_V0.4.4":
+            e.append(f"{pre}: v0.4.5 must declare inherited v0.4.4 prediction semantics")
+        if research.get("execution_contract") != "RACENOTE_EXECUTION_V0.4.5":
+            e.append(f"{pre}: wrong v0.4.5 execution contract")
+        core_hash=str(audit.get("decision_core_sha256") or "")
+        if not re.fullmatch(r"[0-9a-f]{64}", core_hash):
+            e.append(f"{pre}: v0.4.5 decision_core_sha256 required")
 
     if audit.get("pre_result_guard")!="PASS": e.append(f"{pre}: pre_result_guard must PASS")
     if audit.get("result_visible_at_freeze") is not False: e.append(f"{pre}: result must be hidden")
