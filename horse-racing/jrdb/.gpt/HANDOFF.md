@@ -22,22 +22,6 @@
 - v0.4.5 chunk/checkpoint modules remain historical/reproducibility assets only, not normal v0.4.6 execution.
 - Production `current_logic_version` remains unchanged and separate.
 
-### RaceNote Human-Context v0.4.5 execution-stable prospective — 2026-10-04
-
-- New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.5-candidate` from `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
-- Production `current_logic_version` remains unchanged; never substitute it for the BTDAY prospective pointer.
-- Prediction semantics intentionally inherit v0.4.4. This version addresses execution stability, not Coverage tuning.
-- Standard path:
-  `clean market-blind Reader -> racenote_chunk_clean_readers_v045.py -> per-race Decision Core -> racenote_checkpoint_authored_v045.py -> resume from first missing race -> racenote_bind_checkpoints_v045.py -> strict Freeze -> validator -> archive`.
-- Decision Core schema: `schema/racenote_decision_core_v0_4_5.json`.
-- Final schema: `schema/racenote_forecast_research_record_v0_4_5.json`.
-- Reader chunks are lossless semantic transport, never shortened summaries. Normal one-horse-at-a-time retrieval is not the operating path.
-- Each completed race checkpoint is immutable. A resource/token stop with valid checkpoints is `IN_PROGRESS_CHECKPOINTED`, not a failed card; do not regenerate completed races.
-- Deterministic binder owns unmarked count, Coverage-changed, change-attribution, horse-name binding and RRDB source metadata. It never selects horses or writes predictive prose.
-- Canonical logic/runbook:
-  `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md`,
-  `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`.
-
 ### JRDB Daily Raw Acquisition v0.1 — 2026-10-01
 
 - Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`.
@@ -66,19 +50,17 @@
 - Normal GPT/Work request should need only date, optional venue/race/bet type. First run `jrdb_result_query_runner.py --plan`, materialize the listed Drive SED/HJC with the native connector, then execute the runner. Do not ask the user for artifact paths.
 - Repository absence of Raw is expected. Never jump to Web search merely because SED/HJC is not checked into Git.
 
-### RaceNote clean blind daily backtest activation — 2026-09-30
+### RaceNote clean blind daily backtest activation — current routing
 
-- User explicitly authorized transition from calibration hold to formal daily clean-blind backtesting.
-- Current phase: `BLIND_RESEARCH_ACTIVE`.
-- `clean_blind_pick_allowed = true`.
-- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
-- Daily operation baseline: `docs/racenote/DAILY_FORECAST_OPERATION_v0_1.md`.
-- Daily RaceNote production entrypoint: `src/build_racenote_daily.py`.
-- Normal backtest flow:
-  `eligible unused 2026 date -> DAY PREP -> one venue per Forecast turn -> venue Freeze -> DAY MERGE -> STOP before results`.
-- Clean-blind date selection must use `config/racenote_backtest_day_pool_2026.json` and persist the selected date before Forecast.
-- RRDB remains required contextual evidence; target results remain unopened until the requested Forecast scope is Frozen.
-- CAL-001 through CAL-006 are treated as completed calibration evidence; daily backtesting now proceeds on fresh eligible dates.
+- Phase: `BLIND_RESEARCH_ACTIVE`; clean-blind picks are allowed.
+- DAY PREP entrypoint remains `src/build_racenote_daily.py`.
+- BTDAY prediction logic is always resolved from latest
+  `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
+- Current prospective logic is v0.4.6; do not reuse the older v0.3-era
+  per-venue-turn or old-version workflow instructions from historical handoffs.
+- Target results remain unopened until the full requested forecast scope is
+  Frozen and validated.
+- RRDB remains contextual evidence under its current recommendation contract.
 
 ### RaceNote Daily Build D5 — 2026-09-30
 
