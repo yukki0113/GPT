@@ -7,7 +7,7 @@
 - There is no active v0.4.6 hierarchy pass, ▲ promotion pass, Coverage state machine, mandatory chunk artifact, or per-race checkpoint loop.
 - Normal execution: predict one venue continuously -> save one immutable venue batch -> continue automatically to next venue -> bind full day -> Freeze/Validator/archive.
 - Saving a venue batch is never a reason to ask the user for a continuation instruction.
-- Recovery only after a genuine interruption: read `batch_manifest.json`, resume from first unsaved venue, never re-author saved venues.
+- Recovery only after a genuine interruption: run `racenote_save_venue_batch_v046.py --reconcile-only`, then read `batch_manifest.json` and resume from the first unsaved venue. Reconciliation validates existing immutable venue files without re-authoring them.
 - Active modules:
   - `src/racenote_save_venue_batch_v046.py`
   - `src/racenote_bind_venue_batches_v046.py`
