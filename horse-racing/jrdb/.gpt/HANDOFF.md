@@ -72,7 +72,7 @@
 - Reader source hashes are not old-vs-new equality gates because they include expected execution-only metadata differences; migration semantic hashing continues to exclude only `generated_at`, local Analysis paths and query telemetry.
 - D5 discovered and fixed a pre-existing indentation regression in `racenote_history_engine.py`; final confirmation ran from main after that source fix.
 - Existing one-race paths remain supported for explicit single-race requests, audit and rollback, but are no longer the normal day-level path.
-- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
+- Historical note: at the time of this D4/D5 infrastructure milestone the Forecast logic was v0.3.2. This is not the current BTDAY logic; resolve current BTDAY logic from `prospective_research_candidate`.
 - Audit: `docs/racenote/RACENOTE_DAILY_D5_EQUIVALENCE_20260930.md`.
 
 ### RaceNote Daily Build D4 — 2026-09-30
@@ -87,7 +87,7 @@
 - Focused tests: `tests/test_racenote_daily_build_d4.py`.
 - Status remains **PRE-CUTOVER**. Existing one-race path is production truth until D5.
 - Next turn: **D5 — real-data old-path vs daily-path semantic equality and cutover decision**.
-- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
+- Historical note: at the time of this D4/D5 infrastructure milestone the Forecast logic was v0.3.2. This is not the current BTDAY logic; resolve current BTDAY logic from `prospective_research_candidate`.
 
 ### RaceNote Daily Build D3 — 2026-09-30
 
@@ -106,7 +106,7 @@
 - Current CLI intentionally stops after RRDB with `NOT_IMPLEMENTED_AFTER_D3`.
 - Existing one-race path remains production truth until D5 equivalence/cutover.
 - Next turn: **D4 — Reader View + validation + final package/manifest**.
-- Forecast logic remains unchanged at `RaceNote-Human-Context-Reader-0.3.2`.
+- Historical note: at the time of this D4/D5 infrastructure milestone the Forecast logic was v0.3.2. This is not the current BTDAY logic; resolve current BTDAY logic from `prospective_research_candidate`.
 
 ### RaceNote Daily Build D2 — 2026-09-30
 
