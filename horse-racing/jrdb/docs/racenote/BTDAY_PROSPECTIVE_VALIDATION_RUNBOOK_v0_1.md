@@ -115,11 +115,22 @@ Expected normal states:
 
 Recovery is used only if execution actually ends before the day is complete.
 
-On the next execution, read
-`$WORKING/venue_batches/batch_manifest.json`.
+On the next execution, first reconcile immutable venue files into the
+recovery manifest. This handles interruption after a venue file is committed
+but before the manifest update:
+
+```sh
+python horse-racing/jrdb/src/racenote_save_venue_batch_v046.py \
+  --prep-root "$FORECAST_PREP" \
+  --output-root "$WORKING/venue_batches" \
+  --reconcile-only
+```
+
+Then read `$WORKING/venue_batches/batch_manifest.json`.
 
 - Existing venue batches are immutable pre-result predictions.
-- Do not reread/re-author completed venues.
+- Reconciliation validates their version, identity, complete race roster, and
+  Decision Core hashes; it does not rewrite or re-author them.
 - Resume with the first venue in `remaining_venues`.
 
 Do not introduce per-race checkpoints as a normal recovery layer.
