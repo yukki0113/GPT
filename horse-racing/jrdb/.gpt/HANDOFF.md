@@ -1,3 +1,19 @@
+### RaceNote Human-Context v0.4.5 execution-stable prospective — 2026-10-04
+
+- New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.5-candidate` from `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
+- Production `current_logic_version` remains unchanged; never substitute it for the BTDAY prospective pointer.
+- Prediction semantics intentionally inherit v0.4.4. This version addresses execution stability, not Coverage tuning.
+- Standard path:
+  `clean market-blind Reader -> racenote_chunk_clean_readers_v045.py -> per-race Decision Core -> racenote_checkpoint_authored_v045.py -> resume from first missing race -> racenote_bind_checkpoints_v045.py -> strict Freeze -> validator -> archive`.
+- Decision Core schema: `schema/racenote_decision_core_v0_4_5.json`.
+- Final schema: `schema/racenote_forecast_research_record_v0_4_5.json`.
+- Reader chunks are lossless semantic transport, never shortened summaries. Normal one-horse-at-a-time retrieval is not the operating path.
+- Each completed race checkpoint is immutable. A resource/token stop with valid checkpoints is `IN_PROGRESS_CHECKPOINTED`, not a failed card; do not regenerate completed races.
+- Deterministic binder owns unmarked count, Coverage-changed, change-attribution, horse-name binding and RRDB source metadata. It never selects horses or writes predictive prose.
+- Canonical logic/runbook:
+  `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md`,
+  `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`.
+
 ### JRDB Daily Raw Acquisition v0.1 — 2026-10-01
 
 - Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`.
