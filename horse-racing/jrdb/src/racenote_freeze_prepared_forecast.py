@@ -24,10 +24,12 @@ LOGIC_SCHEMAS = {
     DEFAULT_LOGIC: "RaceNote-Forecast-Research-Record-0.4.2",
     "RaceNote-Human-Context-Reader-0.4.3-candidate": "RaceNote-Forecast-Research-Record-0.4.3",
     "RaceNote-Human-Context-Reader-0.4.4-candidate": "RaceNote-Forecast-Research-Record-0.4.4",
+    "RaceNote-Human-Context-Reader-0.4.5-candidate": "RaceNote-Forecast-Research-Record-0.4.5",
 }
 REQUIRED_PROSE = "FORECAST_READER_FACING_PROSE_v0_1"
 REQUIRED_RRDB = "rrdb-recommendation-signals-v0.3"
 REQUIRED_AUTHORING_MODE = "MODEL_RACE_BY_RACE_REASONING"
+V045_AUTHORING_MODE = "MODEL_RACE_BY_RACE_DECISION_CORE"
 REQUIRED_PROSE_ORIGIN = "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
 
 
@@ -115,7 +117,8 @@ def validate_prepared_record(
         from validate_racenote_forecast_human_context import validate_consistency_pass
         assert not validate_consistency_pass(record), validate_consistency_pass(record)
     assert research.get("reader_facing_prose_contract") == REQUIRED_PROSE
-    assert research.get("authoring_mode") == REQUIRED_AUTHORING_MODE
+    expected_authoring_mode = V045_AUTHORING_MODE if logic_version == "RaceNote-Human-Context-Reader-0.4.5-candidate" else REQUIRED_AUTHORING_MODE
+    assert research.get("authoring_mode") == expected_authoring_mode
     assert research.get("prose_origin") == REQUIRED_PROSE_ORIGIN
 
     expected_source = reader.get("source_semantic_sha256")
@@ -164,6 +167,37 @@ def validate_prepared_record(
         )
         assert all(len(str(x.get("case") or "").strip()) >= 10 for x in mainline), (
             race, "v0.4.4 mainline case missing"
+        )
+
+    if logic_version == "RaceNote-Human-Context-Reader-0.4.5-candidate":
+        cp = trace.get("consistency_pass") or {}
+        scan = cp.get("coverage_scan") or {}
+        boundary = cp.get("coverage_boundary") or {}
+        provisional = boundary.get("current_delta2") or {}
+        provisional_no = int(provisional.get("horse_no"))
+        assert provisional_no in horses and provisional.get("horse_name") == horses[provisional_no], (
+            race, "v0.4.5 provisional delta2 identity mismatch"
+        )
+        assert provisional_no not in numbers[:4], (race, "v0.4.5 provisional delta2 overlaps first four marks")
+        assert scan.get("unmarked_count") == len(horses) - 5, (race, "v0.4.5 unmarked_count mismatch")
+        provisional_five = set(numbers[:4]) | {provisional_no}
+        shortlist = scan.get("shortlisted_horse_nos") or []
+        assert all(n in horses and n not in provisional_five for n in shortlist), (
+            race, "v0.4.5 Coverage shortlist must contain only unmarked roster horses"
+        )
+        challenger = cp.get("coverage_best_challenger")
+        if challenger is not None:
+            n = int(challenger.get("horse_no"))
+            assert n in horses and challenger.get("horse_name") == horses[n], (
+                race, "v0.4.5 challenger identity mismatch"
+            )
+        mainline = trace.get("mainline_cases") or []
+        expected_mainline = provisional_five - {numbers[2]}
+        assert len(mainline) == 4 and {int(x["horse"]["horse_no"]) for x in mainline} == expected_mainline, (
+            race, "v0.4.5 mainline must document main, second, delta1 and provisional delta2"
+        )
+        assert all(len(str(x.get("case") or "").strip()) >= 10 for x in mainline), (
+            race, "v0.4.5 mainline case missing"
         )
 
     axis = prediction.get("axis") or {}
@@ -348,7 +382,7 @@ def main() -> int:
         "logic_version": args.logic_version,
         "reader_facing_prose_contract": REQUIRED_PROSE,
         "rrdb_recommendation_contract": REQUIRED_RRDB,
-        "authoring_mode": REQUIRED_AUTHORING_MODE,
+        "authoring_mode": (V045_AUTHORING_MODE if args.logic_version == "RaceNote-Human-Context-Reader-0.4.5-candidate" else REQUIRED_AUTHORING_MODE),
         "prose_origin": REQUIRED_PROSE_ORIGIN,
         "main_sha_at_forecast": args.main_sha,
         "race_count": len(frozen),
