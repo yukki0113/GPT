@@ -199,7 +199,7 @@ def write_manifest(output_root: Path, handoff: dict, chunks_manifest_sha: str) -
             "race_no": int(d["race_no"]),
             "file": path.name,
             "sha256": digest(raw),
-            "decision_core_sha256": digest(canonical(d)),
+            "decision_core_sha256": digest(canonical({k:v for k,v in d.items() if k != "checkpoint"})),
         })
     expected = int(handoff["race_count"])
     complete = len(entries)
