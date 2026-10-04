@@ -44,6 +44,10 @@ def load_clean(prep: Path, selection_id: str, date: str, main_sha: str):
         raise ValueError("main SHA mismatch")
     if handoff.get("market_blind") is not True or handoff.get("result_opened") is not False:
         raise ValueError("clean-blind handoff required")
+    if manifest.get("market_blind") is not True or manifest.get("result_opened") is not False:
+        raise ValueError("clean Reader manifest is not market-blind pre-result")
+    if manifest.get("race_count") != handoff.get("race_count"):
+        raise ValueError("clean Reader manifest race count mismatch")
     if handoff.get("target_market_opened") is not False:
         raise ValueError("target market was opened")
     if handoff.get("rrdb_contract") != RRDB:
@@ -65,7 +69,11 @@ def load_clean(prep: Path, selection_id: str, date: str, main_sha: str):
         if contains_key(reader, "market"):
             raise ValueError(f"market field in clean Reader: {path.name}")
         race = reader["race"]
+        if race.get("date") != date:
+            raise ValueError(f"Reader target date mismatch: {path.name}")
         key = (str(race["venue"]), int(race["race_no"]))
+        if key in readers:
+            raise ValueError(f"duplicate clean Reader race: {key}")
         readers[key] = reader
     if len(readers) != int(handoff["race_count"]):
         raise ValueError("clean Reader race count mismatch")
