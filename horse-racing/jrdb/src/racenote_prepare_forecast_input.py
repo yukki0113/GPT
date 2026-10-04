@@ -9,6 +9,7 @@ import argparse
 import copy
 import hashlib
 import json
+import tempfile
 from pathlib import Path
 
 RRDB = "rrdb-recommendation-signals-v0.3"
@@ -27,6 +28,8 @@ def contains_market(value: object) -> bool:
 
 
 def bind(prep: Path, output: Path, selection: str, target_date: str, main_sha: str) -> dict:
+    if not __debug__:
+        raise RuntimeError("Forecast input binding must run without Python optimization; validation uses assertions")
     if output.exists():
         raise FileExistsError(f"Forecast input already exists: {output}")
     manifest = json.loads((prep / "manifest.json").read_text(encoding="utf-8"))
@@ -76,12 +79,18 @@ def bind(prep: Path, output: Path, selection: str, target_date: str, main_sha: s
         "result_opened": False, "target_market_opened": False,
         "reader_stripped_manifest_sha256": digest(manifest_bytes),
     }
-    (output / "reader").mkdir(parents=True)
-    for name, (data, _) in files.items():
-        (output / "reader" / name).write_bytes(data)
-    (output / "reader_stripped_manifest.json").write_bytes(manifest_bytes)
-    (output / "day_prep_handoff.json").write_text(
-        json.dumps(handoff, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=f".{output.name}.stage-", dir=output.parent) as temp_root:
+        stage = Path(temp_root) / "forecast_input"
+        (stage / "reader").mkdir(parents=True)
+        for name, (data, _) in files.items():
+            (stage / "reader" / name).write_bytes(data)
+        (stage / "reader_stripped_manifest.json").write_bytes(manifest_bytes)
+        (stage / "day_prep_handoff.json").write_text(
+            json.dumps(handoff, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if output.exists():
+            raise FileExistsError(f"Forecast input already exists: {output}")
+        stage.rename(output)
     return handoff
 
 
