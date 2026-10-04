@@ -110,10 +110,16 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
         "prediction_semantic_hashes": hashes,
         "result_opened": False, "target_day_market_opened": False,
         "market_blind": True, "validator_status": "PASS",
-        "coverage_swap_count": sum(
-            r["decision_trace"]["consistency_pass"]["coverage_verdict"] == "SWAP" for r in rows
-        ),
     }
+    if logic_version == "RaceNote-Human-Context-Reader-0.4.6-candidate":
+        clean_audit["boundary_alternative_count"] = sum(
+            (r.get("decision_trace") or {}).get("support_boundary", {}).get("alternative") is not None
+            for r in rows
+        )
+    else:
+        clean_audit["coverage_swap_count"] = sum(
+            r["decision_trace"]["consistency_pass"]["coverage_verdict"] == "SWAP" for r in rows
+        )
     for name, value in (("day_prep/input_binding_audit.json", input_audit),
                         ("day_merge/clean_blind_audit.json", clean_audit)):
         (output / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
