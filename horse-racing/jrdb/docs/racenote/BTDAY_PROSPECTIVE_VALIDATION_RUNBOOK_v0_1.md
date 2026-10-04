@@ -1,43 +1,48 @@
 # RaceNote BTDAY Prospective Validation Runbook v0.1
 
-Status: **ACTIVE FOR NEW UNUSED BTDAYs — v0.4.5 CANDIDATE ONLY**
+Status: **ACTIVE FOR NEW UNUSED BTDAYs — v0.4.6 CANDIDATE ONLY**  
 Date: 2026-10-04
 
-## 1. Cohorts
+## 1. Operating principle
 
-Fixed comparison cohorts remain immutable:
+v0.4.6 uses one simple prediction loop.
 
-- v0.4.2 historical baseline: BTDAY-0023 through BTDAY-0032 / 336R
-- v0.4.3 prospective: BTDAY-0036, 0037, 0040, 0041 / 132R
-- v0.4.4 prospective: completed clean-blind v0.4.4 BTDAYs only
-- v0.4.5: new unused clean-blind BTDAYs selected after this activation
+```text
+prepare clean day
+  -> read complete race
+  -> make one integrated five-horse judgment
+  -> continue through the venue
+  -> save one venue batch
+  -> continue automatically
+  -> bind full day
+  -> validate
+  -> Freeze
+  -> archive / render
+```
 
-BTDAY-0038 and BTDAY-0039 remain excluded.
+Do not recreate the v0.4.4/v0.4.5 sequence of separate hierarchy,
+promotion, Coverage, per-race checkpoint and chunk-management passes.
 
-Do not rerun an old version on the same new day. The production Forecast
-pointer remains unchanged pending explicit promotion.
+The prediction contract is:
+`docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`.
 
-## 2. Prediction contract
+## 2. Cohorts
 
-Read:
+Preserve all prior cohorts and exclusions as recorded. New unused BTDAYs after
+v0.4.6 activation use v0.4.6 only. Do not create same-day old-version A/B
+forecasts.
 
-- `FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md`
-- `FORECAST_HUMAN_CONTEXT_READER_v0_4_4_CANDIDATE.md`
-- `FORECAST_REASONING_MECHANICAL_BOUNDARY_v0_1.md`
-- `FORECAST_READER_FACING_PROSE_v0_1.md`
+The production Forecast pointer remains unchanged until a separate promotion
+decision.
 
-v0.4.5 inherits v0.4.4 prediction semantics unchanged.
+## 3. Select and prepare the day
 
-The model still reads the full clean information for every horse, creates the
-race model, four ordinary mainline cases, independent ▲, hierarchy review,
-single-shot promotion review, provisional-△2 Coverage review, five final marks
-and reader-facing prose.
+Use the current BTDAY pool/history and select one unused eligible day according
+to the existing clean-blind selection procedure.
 
-## 3. DAY PREP and clean binding
+Run the standard deterministic DAY PREP.
 
-Use the ordinary deterministic DAY PREP path and RRDB v0.3.
-
-Bind a clean immutable Reader before model judgment:
+Bind the market-stripped forecast input:
 
 ```sh
 python horse-racing/jrdb/src/racenote_prepare_forecast_input.py \
@@ -48,179 +53,171 @@ python horse-racing/jrdb/src/racenote_prepare_forecast_input.py \
   --main-sha "$MAIN_SHA"
 ```
 
-Require market blind, result unopened, full race count and manifest hash PASS.
+Require:
 
-Never expose the lossless market-bearing DAY PREP Reader to the prediction
-context after clean binding.
+- full expected race count;
+- `market_blind=true`;
+- `result_opened=false`;
+- `target_market_opened=false`;
+- clean Reader manifest hash fixed;
+- RRDB recommendation contract v0.3.
 
-## 4. Lossless Reader chunks
+After this point use only the clean forecast Reader for model judgment.
 
-Immediately chunk the clean Readers:
+## 4. Read and predict one venue continuously
+
+Use the clean Reader files directly as the authoritative input.
+
+The runtime may read a large Reader in multiple lossless pieces when required
+by tool limits, but this is transport only. There is no required chunk artifact
+and no normal one-horse-at-a-time loop.
+
+For each race:
+
+1. read the complete race and all runners;
+2. state the race model;
+3. choose final ◎ ○ ▲ △1 △2;
+4. provide four mainline cases for ◎ ○ △1 △2;
+5. provide the independent ▲ case;
+6. compare final △2 with the strongest excluded alternative, or record no
+   close alternative;
+7. cite only materially used RRDB horses;
+8. write the reader-facing reason.
+
+Author against:
+`schema/racenote_decision_core_v0_4_6.json`.
+
+Do not stop between races for workflow bookkeeping.
+
+## 5. Save the venue batch
+
+When all races in one venue are authored, save them together:
 
 ```sh
-python horse-racing/jrdb/src/racenote_chunk_clean_readers_v045.py \
+python horse-racing/jrdb/src/racenote_save_venue_batch_v046.py \
   --prep-root "$FORECAST_PREP" \
-  --output-root "$WORKING/reader_chunks"
+  --decisions "$WORKING/current_venue.json" \
+  --output-root "$WORKING/venue_batches"
 ```
 
-Require top manifest `status=PASS`.
+The save is a recovery write, not a user-interaction boundary.
 
-The chunks are the ordinary transport unit for model reading. They are not
-summaries. All original clean Reader fields must survive semantic reassembly.
+After PASS, immediately continue to the next unsaved venue in the same request
+while execution capacity remains. Do not ask the user to say "continue" merely
+because a venue batch was saved.
 
-Do not fall back to one-horse-at-a-time reads in normal execution.
+Expected normal states:
 
-## 5. Race-by-race Decision Core
+- `IN_PROGRESS_BATCHED`: one or more venues safely saved;
+- `COMPLETE_READY_TO_BIND`: all venues safely saved.
 
-Author one race at a time using
-`schema/racenote_decision_core_v0_4_5.json`.
+## 6. Recovery
 
-The model authors only substantive predictive choices:
+Recovery is used only if execution actually ends before the day is complete.
 
-- race model;
-- five pre-Coverage boundary marks;
-- four mainline cases;
-- independent ▲ case;
-- RRDB use/review;
-- hierarchy changed flag and reason only when changed;
-- single-shot promotion flag and reason only when changed;
-- Coverage shortlist/challenger/comparisons/verdict/reason;
-- five final marks;
-- mark reason and reader-facing prose.
+On the next execution, read
+`$WORKING/venue_batches/batch_manifest.json`.
 
-The model does **not** author deterministic audit derivatives such as
-unmarked-count, Coverage-changed, change-attribution or horse-name binding.
+- Existing venue batches are immutable pre-result predictions.
+- Do not reread/re-author completed venues.
+- Resume with the first venue in `remaining_venues`.
 
-## 6. One-race checkpoint
+Do not introduce per-race checkpoints as a normal recovery layer.
 
-After each race Decision Core:
+## 7. Bind the complete day
+
+When the batch manifest is `COMPLETE_READY_TO_BIND`:
 
 ```sh
-python horse-racing/jrdb/src/racenote_checkpoint_authored_v045.py \
+python horse-racing/jrdb/src/racenote_bind_venue_batches_v046.py \
   --prep-root "$FORECAST_PREP" \
-  --chunks-root "$WORKING/reader_chunks" \
-  --decision "$WORKING/current_decision.json" \
-  --output-root "$WORKING/authored"
-```
-
-A successful checkpoint is immutable.
-
-The checkpoint verifies Reader/chunk identity, roster and five-mark invariants,
-▲ identity, mainline completeness, RRDB reference shape, Coverage
-KEEP/SWAP/NO_ELIGIBLE invariants and prose minimum structure.
-
-It does not choose or rewrite horses.
-
-### Normal interruption
-
-If execution ends before the card is complete and all completed races are
-checkpointed:
-
-- status is `IN_PROGRESS_CHECKPOINTED`;
-- report completed/remaining count;
-- preserve all checkpoint files;
-- next execution starts from the first missing race;
-- do not reread or regenerate completed races.
-
-This is a valid recoverable state, not an invariant failure.
-
-## 7. Complete-card materialization
-
-Only when `checkpoint_manifest.json` is
-`COMPLETE_READY_TO_FREEZE`:
-
-```sh
-python horse-racing/jrdb/src/racenote_bind_checkpoints_v045.py \
-  --prep-root "$FORECAST_PREP" \
-  --checkpoints-root "$WORKING/authored" \
-  --output "$WORKING/prepared_v045.json" \
+  --batches-root "$WORKING/venue_batches" \
+  --output "$WORKING/prepared_v046.json" \
   --selection-id "$BTDAY_ID" \
   --date "$TARGET_DATE" \
   --main-sha "$MAIN_SHA"
 ```
 
-The binder may only derive deterministic metadata:
-
-- horse names from Reader horse numbers;
-- unmarked count;
-- Coverage changed boolean;
-- change attribution;
-- RRDB source-run metadata.
-
-It must not select horses, change verdicts or write new predictive prose.
+The binder may only attach deterministic identities and source metadata. It
+must not choose a horse, change a mark, select the boundary alternative or
+write prediction prose.
 
 ## 8. Preflight, Freeze and Validator
 
 ```sh
 python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
   --prep-root "$FORECAST_PREP" \
-  --prepared-records "$WORKING/prepared_v045.json" \
-  --output-root "$FROZEN_V045" \
+  --prepared-records "$WORKING/prepared_v046.json" \
+  --output-root "$FROZEN_V046" \
   --selection-id "$BTDAY_ID" \
   --date "$TARGET_DATE" \
   --main-sha "$MAIN_SHA" \
-  --logic-version RaceNote-Human-Context-Reader-0.4.5-candidate \
+  --logic-version RaceNote-Human-Context-Reader-0.4.6-candidate \
   --preflight-only
 
 python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
   --prep-root "$FORECAST_PREP" \
-  --prepared-records "$WORKING/prepared_v045.json" \
-  --output-root "$FROZEN_V045" \
+  --prepared-records "$WORKING/prepared_v046.json" \
+  --output-root "$FROZEN_V046" \
   --selection-id "$BTDAY_ID" \
   --date "$TARGET_DATE" \
   --main-sha "$MAIN_SHA" \
-  --logic-version RaceNote-Human-Context-Reader-0.4.5-candidate
+  --logic-version RaceNote-Human-Context-Reader-0.4.6-candidate
 
 python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py \
-  --records "$FROZEN_V045/day_merge/forecast_${COMPACT_DATE}_all.json" \
-  --output "$FROZEN_V045/day_merge/validator.json"
+  --records "$FROZEN_V046/day_merge/forecast_${COMPACT_DATE}_all.json" \
+  --output "$FROZEN_V046/day_merge/validator.json"
 ```
 
-Final success requires:
+Only after Freeze and Validator PASS may target results be opened.
 
-- complete race-key equality;
-- market blind and result unopened;
-- Reader and chunk hashes fixed;
-- all expected checkpoint hashes present;
-- v0.4.5 materialized record invariants;
-- Freeze PASS;
-- Human-Context Validator PASS.
+## 9. Archive and output
 
-## 9. Working-state interpretation
+Use the existing BTDAY archive stager after Validator PASS.
 
-Use these states:
+Render ordinary reader-facing output only from Frozen records.
 
-- `IN_PROGRESS_CHECKPOINTED`: valid partial authored day; resume later
-- `COMPLETE_READY_TO_FREEZE`: all race checkpoints exist
-- `FROZEN_CLEAN_BLIND`: final successful clean-blind day
-- `FAILED_INVARIANT`: a deterministic integrity gate failed
+Archive evidence should prove:
 
-A resource/token stop is not `FAILED_INVARIANT` when valid checkpoints exist.
+- clean Reader identity;
+- full-card race count;
+- v0.4.6 logic/schema;
+- prediction semantic hashes;
+- target result unopened at Freeze;
+- target market unopened at Freeze;
+- Validator PASS.
 
-## 10. Git archival
+Working venue batches are recovery assets. They are not themselves Frozen
+forecasts.
 
-Only final Frozen assets belong in the canonical immutable BTDAY archive.
+## 10. When execution should stop
 
-Working checkpoints may be retained in an explicit working/recovery path when
-needed, but they must not be mistaken for Frozen forecasts.
+Normal batch saves do not stop execution.
 
-Use the existing archive staging path after Validator PASS. Ensure it accepts
-the v0.4.5 Frozen root and read back the merged record count and semantic
-prediction hashes.
+Stop only when:
+
+- the full day is Frozen and archived;
+- a required source is genuinely unavailable;
+- a deterministic integrity gate fails;
+- the execution environment actually ends before more work can be performed.
+
+If the environment ends after valid venue batches exist, report the saved
+venues and first remaining venue. Do not convert a recoverable partial day into
+a request for confirmation after every save.
 
 ## 11. Evaluation
 
-Continue established prediction metrics and v0.4.4 Coverage diagnostics.
+Continue the established outcome and ROI metrics.
 
-Additionally measure v0.4.5 execution reliability:
+For v0.4.6 also record:
 
-- chunk semantic-reassembly failures;
-- completed-race checkpoint rate;
-- completed races regenerated after interruption;
-- lost authored races after interruption;
-- normal one-horse-at-a-time Reader reads;
-- complete-card authoring success rate;
-- number of turns required per BTDAY.
+- rate of races with a close excluded boundary alternative;
+- final △2 versus that excluded alternative after results;
+- ▲ result profile;
+- full-day completion in one execution;
+- number of venue recovery writes;
+- number of resumed venues;
+- number of completed venues re-authored (target: zero).
 
-The objective is prediction-quality preservation plus substantially improved
-execution stability.
+The primary execution target is to restore rapid prospective iteration without
+weakening complete-reader or clean-blind safeguards.
