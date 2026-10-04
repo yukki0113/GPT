@@ -1,3 +1,27 @@
+### RaceNote Human-Context v0.4.6 unified prospective — 2026-10-04
+
+- New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.6-candidate` from `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
+- v0.4.6 is a self-contained rewrite. Do not stack v0.4.4/v0.4.5 workflow rules underneath it.
+- Governing invariants: complete market-blind Reader evidence, integrated human-context judgment, clean Freeze before results.
+- One race judgment: race model -> ◎ ○ △1 △2 ordinary support + independent ▲ -> final △2 versus strongest excluded alternative -> final five + prose.
+- There is no active v0.4.6 hierarchy pass, ▲ promotion pass, Coverage state machine, mandatory chunk artifact, or per-race checkpoint loop.
+- Normal execution: predict one venue continuously -> save one immutable venue batch -> continue automatically to next venue -> bind full day -> Freeze/Validator/archive.
+- Saving a venue batch is never a reason to ask the user for a continuation instruction.
+- Recovery only after a genuine interruption: read `batch_manifest.json`, resume from first unsaved venue, never re-author saved venues.
+- Active modules:
+  - `src/racenote_save_venue_batch_v046.py`
+  - `src/racenote_bind_venue_batches_v046.py`
+  - `src/racenote_freeze_prepared_forecast.py`
+  - `src/validate_racenote_forecast_human_context.py`
+- Active schemas:
+  - `schema/racenote_decision_core_v0_4_6.json`
+  - `schema/racenote_forecast_research_record_v0_4_6.json`
+- Canonical docs:
+  - `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`
+  - `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
+- v0.4.5 chunk/checkpoint modules remain historical/reproducibility assets only, not normal v0.4.6 execution.
+- Production `current_logic_version` remains unchanged and separate.
+
 ### RaceNote Human-Context v0.4.5 execution-stable prospective — 2026-10-04
 
 - New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.5-candidate` from `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
