@@ -10,8 +10,8 @@ GitHub `yukki0113/GPT` main の最新状態から、まず以下を確認する�
 2. `horse-racing/jrdb/docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md`
 3. `horse-racing/jrdb/docs/racenote/FORECAST_GEN0_OUTPUT_CONTRACT_v0_1.md`
 4. `horse-racing/jrdb/config/racenote_forecast_logic_current.json`
-5. current pointerが示す Forecast logic contract / config / record schema
-6. current pointerが示す teacher evidence / calibration protocol
+5. BTDAY prospectiveでは `prospective_research_candidate` が示す logic contract / Decision Core schema / record schema / runbook
+6. production/current forecastでは `current_logic_version` が示す contract / config / schema
 7. current pointerが示す Freeze validator
 8. `horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json`
 9. `horse-racing/jrdb/src/racenote_backtest_day_picker.py`
@@ -102,16 +102,26 @@ handoffには最低限:
 
 Research threadから別指定がない場合でもlogic versionを推測しない。
 
-必ず:
-`config/racenote_forecast_logic_current.json`
-をlatest mainから読み、そこに指定されたlogic / schema / validatorを使う。
+必ず `config/racenote_forecast_logic_current.json` をlatest mainから読む。
 
-Current at 2026-09-29:
-`RaceNote-Human-Context-Reader-0.3`
-Phase:
-`CALIBRATION_HOLD`
+用途ごとにpointerを分ける:
 
-ただしこの記載自体よりcurrent pointerを優先する。
+- BTDAY prospective research:
+  `prospective_research_candidate`
+- production/current forecast:
+  `current_logic_version`
+
+この2つを混同しない。production pointerを研究BTDAYへ代用しない。
+
+Current BTDAY prospective at 2026-10-04:
+`RaceNote-Human-Context-Reader-0.4.5-candidate`
+
+v0.4.5では canonical runbook を読み、lossless Reader chunks ->
+race Decision Core -> immutable one-race checkpoint -> complete-card
+materialization -> Freeze の順を守る。途中停止時は valid checkpoint が
+あれば最初のmissing raceから再開し、完了済みraceを再予想しない。
+
+ただしこの記載自体よりlatest config pointerを優先する。
 
 
 ## RRDB normal execution
