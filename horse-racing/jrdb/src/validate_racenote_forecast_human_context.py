@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3-v0.4.5."""
+"""Pre-Freeze guard for RaceNote Human-Context Reader v0.3-v0.4.6."""
 
 from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
 from typing import Any
 
-VERSION = "racenote-human-context-validator-0.4.5"
+VERSION = "racenote-human-context-validator-0.4.6"
 
 V043_LOGIC = "RaceNote-Human-Context-Reader-0.4.3-candidate"
 V043_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.3"
@@ -15,6 +15,8 @@ V044_LOGIC = "RaceNote-Human-Context-Reader-0.4.4-candidate"
 V044_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.4"
 V045_LOGIC = "RaceNote-Human-Context-Reader-0.4.5-candidate"
 V045_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.5"
+V046_LOGIC = "RaceNote-Human-Context-Reader-0.4.6-candidate"
+V046_SCHEMA = "RaceNote-Forecast-Research-Record-0.4.6"
 PASS_FIELDS = (
     ("hierarchy_reviewed", "hierarchy_changed", "hierarchy_reason", "HIERARCHY_CONSISTENCY"),
     ("single_shot_promotion_reviewed", "single_shot_promoted", "single_shot_promotion_reason", "SINGLE_SHOT_PROMOTION"),
@@ -299,6 +301,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         V043_SCHEMA,
         V044_SCHEMA,
         V045_SCHEMA,
+        V046_SCHEMA,
     }:
         e.append(f"{pre}: unsupported schema version")
     logic_version=research.get("logic_version")
@@ -312,6 +315,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         V043_LOGIC,
         V044_LOGIC,
         V045_LOGIC,
+        V046_LOGIC,
     }:
         e.append(f"{pre}: wrong logic_version")
     if research.get("evaluation_mode")=="CALIBRATION_REPLAY" and research.get("turn_id","").startswith("BTDAY-"):
@@ -329,6 +333,14 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         if research.get("independent_forecast") is not True or research.get("baseline_marks_used_as_input") is not False:
             e.append(f"{pre}: v0.4.3+ must declare independent forecast without baseline marks")
         e.extend(f"{pre}: {message}" for message in validate_consistency_pass(r))
+
+    if schema_version == V046_SCHEMA or logic_version == V046_LOGIC:
+        if schema_version != V046_SCHEMA or logic_version != V046_LOGIC:
+            e.append(f"{pre}: v0.4.6 schema/logic mismatch")
+        if research.get("independent_forecast") is not True or research.get("baseline_marks_used_as_input") is not False:
+            e.append(f"{pre}: v0.4.6 must declare independent forecast without baseline marks")
+        if research.get("execution_contract") != "RACENOTE_EXECUTION_V0.4.6":
+            e.append(f"{pre}: wrong v0.4.6 execution contract")
 
     if is_v04:
         if len(str(t.get("race_model") or "").strip()) < 30:
@@ -366,6 +378,48 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         if isinstance(single,dict) and hname(single.get("horse")) and third != hname(single.get("horse")):
             e.append(f"{pre}: final ▲ must equal single_shot_case horse")
 
+        if logic_version == V046_LOGIC:
+            if len(mainline) != 4:
+                e.append(f"{pre}: v0.4.6 mainline_cases must contain exactly 4 horses")
+            else:
+                mainline_nos=[]
+                for case in mainline:
+                    horse=(case or {}).get("horse") if isinstance(case,dict) else None
+                    try:
+                        mainline_nos.append(int((horse or {}).get("horse_no")))
+                    except (TypeError,ValueError):
+                        pass
+                    if len(str((case or {}).get("case") or "").strip()) < 8:
+                        e.append(f"{pre}: v0.4.6 mainline case too short")
+                mark_nos=[]
+                for item in [marks.get("main"),marks.get("second"),*(others[:2] if isinstance(others,list) else [])]:
+                    try:
+                        mark_nos.append(int((item or {}).get("horse_no")))
+                    except (TypeError,ValueError):
+                        pass
+                if len(mark_nos)==4 and set(mainline_nos) != set(mark_nos):
+                    e.append(f"{pre}: v0.4.6 mainline must match ◎ ○ △1 △2")
+
+            if len(str((single or {}).get("case") or "").strip()) < 8:
+                e.append(f"{pre}: v0.4.6 single_shot_case case too short")
+
+            boundary=t.get("support_boundary")
+            if not isinstance(boundary,dict):
+                e.append(f"{pre}: v0.4.6 support_boundary required")
+            else:
+                final_delta2=boundary.get("final_delta2")
+                if hname(final_delta2) != (hname(others[1]) if len(others)>=2 else ""):
+                    e.append(f"{pre}: v0.4.6 support_boundary final_delta2 must equal final △2")
+                alt=boundary.get("alternative")
+                if alt is not None:
+                    alt_name=hname(alt)
+                    if not alt_name:
+                        e.append(f"{pre}: v0.4.6 boundary alternative horse missing")
+                    if alt_name in mark_names:
+                        e.append(f"{pre}: v0.4.6 boundary alternative must remain outside final five")
+                if len(str(boundary.get("reason") or "").strip()) < 8:
+                    e.append(f"{pre}: v0.4.6 support_boundary reason too short")
+
     else:
         principles=t.get("human_principles_used")
         if not isinstance(principles,list) or not (1 <= len(principles) <= 3):
@@ -402,7 +456,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
             if other and other not in reason: e.append(f"{pre}: {key} must name {other}")
             if len(reason.strip())<20: e.append(f"{pre}: {key} reason too short")
 
-    if schema_version in {"RaceNote-Forecast-Research-Record-0.3.1","RaceNote-Forecast-Research-Record-0.4.2",V043_SCHEMA,V044_SCHEMA,V045_SCHEMA}:
+    if schema_version in {"RaceNote-Forecast-Research-Record-0.3.1","RaceNote-Forecast-Research-Record-0.4.2",V043_SCHEMA,V044_SCHEMA,V045_SCHEMA,V046_SCHEMA}:
         rrdb=t.get("rrdb_evidence")
         if not isinstance(rrdb,dict):
             e.append(f"{pre}: rrdb_evidence required for v0.3.1")
@@ -483,6 +537,11 @@ def validate_record(r: dict[str,Any]) -> list[str]:
         core_hash=str(audit.get("decision_core_sha256") or "")
         if not re.fullmatch(r"[0-9a-f]{64}", core_hash):
             e.append(f"{pre}: v0.4.5 decision_core_sha256 required")
+
+    if logic_version == V046_LOGIC:
+        core_hash=str(audit.get("decision_core_sha256") or "")
+        if not re.fullmatch(r"[0-9a-f]{64}", core_hash):
+            e.append(f"{pre}: v0.4.6 decision_core_sha256 required")
 
     if audit.get("pre_result_guard")!="PASS": e.append(f"{pre}: pre_result_guard must PASS")
     if audit.get("result_visible_at_freeze") is not False: e.append(f"{pre}: result must be hidden")
