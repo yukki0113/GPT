@@ -10,9 +10,10 @@ backtests/
     YYYYMMDD/
       README.md
       day_prep/
-      venues/
       day_merge/
 ```
+
+Venue Decision Core batches are working recovery assets. The canonical archive contains the complete Frozen card and its validation evidence.
 
 Analysis/research threads should start from the target day's `README.md`, then read `day_merge/forecast_YYYYMMDD_all.json` as the canonical merged pre-result forecast.
 
