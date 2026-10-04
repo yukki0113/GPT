@@ -22,32 +22,34 @@ Gen0.3. `forecast.current_generation` remains `Gen0-G000`.
 Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
 
 
-### Current Human-Context BTDAY prospective lane — 2026-10-03
+### Current Human-Context BTDAY prospective lane — 2026-10-04
 
 The active historical logic-selection lane now uses
-`RaceNote-Human-Context-Reader-0.4.4-candidate` on new unused BTDAYs.
+`RaceNote-Human-Context-Reader-0.4.5-candidate` on new unused BTDAYs.
 
-Cohort boundaries are fixed as follows:
+Cohort boundaries are fixed by version. v0.4.5 intentionally inherits v0.4.4
+prediction semantics while changing the execution contract.
 
-- v0.4.2 baseline: BTDAY-0023–0032 / 336R;
-- v0.4.3 completed prospective: BTDAY-0036, 0037, 0040, 0041 / 132R;
-- v0.4.4: new unused clean-blind BTDAYs only.
+v0.4.5 keeps full clean Reader evidence, race-model formation, four ordinary
+mainline cases, independent ▲, hierarchy review and provisional-△2 Coverage
+review. It does not retune SWAP semantics.
 
-v0.4.4 preserves the v0.4.3 hierarchy and independent ▲ role and changes only
-the support-boundary Coverage review: every race must perform a bounded
-unmarked scan, identify the best eligible challenger or explicitly record none,
-compare against provisional △2, and record KEEP / SWAP /
-NO_ELIGIBLE_CHALLENGER in a fail-closed audit trace.
+Execution changes:
+
+- lossless semantic Reader chunking;
+- compact model-authored Decision Core;
+- immutable one-race checkpoints;
+- resume from first missing race;
+- deterministic audit materialization before strict Freeze.
 
 Canonical logic:
-`docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_4_CANDIDATE.md`
+`docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md`
 
 Canonical operating procedure:
 `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
 
-This is a research-candidate change and does not promote the production
+This remains a research-candidate change and does not promote the production
 Forecast pointer.
-
 
 
 
