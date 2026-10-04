@@ -87,7 +87,9 @@ unused day selection
 同一実行内で次会場へそのまま進む。
 
 実行環境が本当に終了した場合だけ、
-`batch_manifest.json` の `remaining_venues` から再開する。
+`racenote_save_venue_batch_v046.py --reconcile-only` で保存済み会場ファイルを
+検証して進捗表を復元し、`batch_manifest.json` の `remaining_venues` から
+再開する。保存済み会場の予想は作り直さない。
 保存済み会場は再予想しない。
 
 ## 6. Clean-blind boundary
