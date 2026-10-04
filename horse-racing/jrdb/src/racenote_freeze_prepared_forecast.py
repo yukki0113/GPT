@@ -261,6 +261,8 @@ def validate_prepared_record(
 
 
 def main() -> int:
+    if not __debug__:
+        raise RuntimeError("Forecast Freeze must run without Python optimization; integrity guards use assertions")
     ap = argparse.ArgumentParser()
     ap.add_argument("--prep-root", type=Path, required=True)
     ap.add_argument("--prepared-records", type=Path, required=True)
