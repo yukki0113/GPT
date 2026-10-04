@@ -305,47 +305,42 @@ Use latest main, current contracts, and current source as truth. Do not reintrod
 For current research, follow this guide and the Forecast Gen0 contract. For deterministic/legacy reproduction, use the dedicated legacy documents and preserved artifacts.
 
 
-### Current Human-Context Reader prospective validation — 2026-10-03
+### Current Human-Context Reader prospective validation — 2026-10-04
 
-Fixed historical clean-blind baseline cohort:
+Fixed comparison cohorts remain immutable:
 
-- `FORECAST_HUMAN_CONTEXT_READER_v0_4_2_CANDIDATE.md`
-- `RaceNote-Human-Context-Reader-0.4.2-candidate`
-- BTDAY-0023 through BTDAY-0032 only; 336R.
-- Preserve the existing Frozen records.
+- v0.4.2 historical baseline: BTDAY-0023–0032 / 336R
+- v0.4.3 completed prospective: BTDAY-0036, 0037, 0040, 0041 / 132R
+- v0.4.4: completed clean-blind v0.4.4 prospective days only
 
-Completed v0.4.3 prospective cohort:
+New unused BTDAYs use:
 
-- `FORECAST_HUMAN_CONTEXT_READER_v0_4_3_CANDIDATE.md`
-- `RaceNote-Human-Context-Reader-0.4.3-candidate`
-- BTDAY-0036 / 0037 / 0040 / 0041; 132 clean-blind races.
-- BTDAY-0038 and 0039 remain formally excluded.
-- Do not add new v0.4.3 days or rewrite this cohort.
+- `FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md`
+- `RaceNote-Human-Context-Reader-0.4.5-candidate`
+- Decision Core schema: `schema/racenote_decision_core_v0_4_5.json`
+- Final record schema: `schema/racenote_forecast_research_record_v0_4_5.json`
 
-New unused BTDAY forecast logic:
+v0.4.5 intentionally inherits v0.4.4 prediction semantics. It is an
+execution-stability change: clean Readers are losslessly chunked, the model
+authors only substantive Decision Core fields, every completed race is saved
+as an immutable checkpoint, deterministic audit values are materialized by
+module, and interrupted cards resume from the first missing race.
 
-- `FORECAST_HUMAN_CONTEXT_READER_v0_4_4_CANDIDATE.md`
-- `RaceNote-Human-Context-Reader-0.4.4-candidate`
-- schema: `schema/racenote_forecast_research_record_v0_4_4.json`
+Canonical modules:
 
-v0.4.4 inherits v0.4.3 hierarchy and independent ▲ semantics. Its bounded
-change is an explicit Coverage boundary audit: every race must perform a
-lightweight unmarked scan, identify the best eligible challenger or prove none
-exists, compare that challenger directly with provisional △2, and record
-`KEEP / SWAP / NO_ELIGIBLE_CHALLENGER`.
-
-This remains non-scoring and conservative. It does not add fixed weights,
-market input, a sixth horse, automatic RRDB promotion, automatic ▲ promotion,
-broad outsider hunting, or forced swaps.
-
-For new unused BTDAYs, produce and Freeze v0.4.4 alone before opening target
-results. Do not create same-day v0.4.2 or v0.4.3 forecasts. Compare new v0.4.4
-prospective days with the fixed v0.4.2 baseline and fixed v0.4.3 cohort,
-keeping cohort/calendar differences explicit.
+- `src/racenote_chunk_clean_readers_v045.py`
+- `src/racenote_checkpoint_authored_v045.py`
+- `src/racenote_bind_checkpoints_v045.py`
+- `src/racenote_freeze_prepared_forecast.py`
+- `src/validate_racenote_forecast_human_context.py`
 
 Canonical procedure:
 
 - `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
+
+Do not use shortened Reader projections as the primary prediction input and do
+not normally retrieve one horse at a time. A valid partial day is
+`IN_PROGRESS_CHECKPOINTED`, not a failed run.
 
 The production Forecast pointer remains unchanged pending an explicit research
 promotion decision.
