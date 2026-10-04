@@ -78,30 +78,77 @@ def load_batches(root: Path, handoff: dict, readers: dict) -> dict:
         raise ValueError("venue batches are incomplete")
     if manifest.get("selection_id") != handoff["selection_id"] or manifest.get("target_date") != handoff["target_date"]:
         raise ValueError("batch manifest identity mismatch")
+    if manifest.get("logic_version") != LOGIC:
+        raise ValueError("batch manifest logic mismatch")
+    if manifest.get("batch_version") != "racenote-save-venue-batch-0.4.6":
+        raise ValueError("batch manifest version mismatch")
     if manifest.get("clean_reader_manifest_sha256") != handoff["reader_stripped_manifest_sha256"]:
         raise ValueError("batch manifest clean Reader mismatch")
 
+    expected_by_venue = {}
+    for venue, race_no in readers:
+        expected_by_venue.setdefault(venue, []).append(race_no)
+    for venue in expected_by_venue:
+        expected_by_venue[venue].sort()
+    if manifest.get("expected_venues") != sorted(expected_by_venue):
+        raise ValueError("batch manifest expected venue set mismatch")
+    if manifest.get("expected_races_by_venue") != expected_by_venue:
+        raise ValueError("batch manifest expected race roster mismatch")
+    if manifest.get("completed_venues") != sorted(expected_by_venue) or manifest.get("remaining_venues") != []:
+        raise ValueError("complete batch manifest venue status mismatch")
+
+    entries = manifest.get("entries")
+    if not isinstance(entries, list):
+        raise ValueError("batch manifest entries must be an array")
+    entry_venues = [str(x.get("venue") or "") for x in entries]
+    if len(entry_venues) != len(set(entry_venues)) or sorted(entry_venues) != sorted(expected_by_venue):
+        raise ValueError("batch manifest entries must cover each expected venue exactly once")
+    expected_files = {f"{venue}.json" for venue in expected_by_venue}
+    entry_files = {str(x.get("file") or "") for x in entries}
+    actual_files = {p.name for p in root.glob("*.json") if p.name != "batch_manifest.json"}
+    if entry_files != expected_files or actual_files != expected_files:
+        raise ValueError("venue batch file set does not match the manifest")
+
+    from racenote_save_venue_batch_v046 import validate_core
+
     cores = {}
-    for entry in manifest.get("entries", []):
-        path = root / entry["file"]
+    for entry in entries:
+        venue = str(entry["venue"])
+        filename = str(entry["file"])
+        if filename != f"{venue}.json":
+            raise ValueError(f"venue batch path mismatch: {filename}")
+        path = root / filename
         raw = path.read_bytes()
         if digest(raw) != entry.get("sha256"):
             raise ValueError(f"venue batch digest mismatch: {path.name}")
         payload = json.loads(raw)
-        if payload.get("logic_version") != LOGIC:
-            raise ValueError(f"venue batch logic mismatch: {path.name}")
-        hashes = payload.get("decision_core_sha256") or []
-        decisions = payload.get("decisions") or []
-        if len(hashes) != len(decisions):
+        if (
+            payload.get("batch_version") != "racenote-save-venue-batch-0.4.6"
+            or payload.get("logic_version") != LOGIC
+            or payload.get("selection_id") != handoff["selection_id"]
+            or payload.get("target_date") != handoff["target_date"]
+            or payload.get("venue") != venue
+        ):
+            raise ValueError(f"venue batch identity/version mismatch: {path.name}")
+        hashes = payload.get("decision_core_sha256")
+        decisions = payload.get("decisions")
+        if not isinstance(hashes, list) or not isinstance(decisions, list) or len(hashes) != len(decisions):
             raise ValueError(f"venue batch core hash count mismatch: {path.name}")
+        race_nos = [int(x.get("race_no")) for x in decisions]
+        if sorted(race_nos) != expected_by_venue[venue] or len(set(race_nos)) != len(race_nos):
+            raise ValueError(f"venue batch race roster mismatch: {path.name}")
+        if entry.get("race_nos") != race_nos or entry.get("race_count") != len(decisions):
+            raise ValueError(f"venue batch manifest roster mismatch: {path.name}")
         for core, expected_hash in zip(decisions, hashes):
             if digest(canonical(core)) != expected_hash:
                 raise ValueError(f"Decision Core hash mismatch: {path.name}")
-            key = (str(core["venue"]), int(core["race_no"]))
+            key = (str(core.get("venue")), int(core.get("race_no")))
             if key in cores:
                 raise ValueError(f"duplicate Decision Core: {key}")
             if key not in readers:
                 raise ValueError(f"Decision Core absent from clean card: {key}")
+            validate_core(core, readers[key])
+
             cores[key] = core
     if set(cores) != set(readers):
         raise ValueError(f"incomplete Decision Core card: missing={sorted(set(readers)-set(cores))}")
