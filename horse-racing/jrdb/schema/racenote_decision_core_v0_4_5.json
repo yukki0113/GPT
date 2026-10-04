@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_decision_core_v0_4_5.json",
+  "title": "RaceNote Decision Core v0.4.5",
+  "type": "object",
+  "required": [
+    "venue",
+    "race_no",
+    "race_model",
+    "boundary_marks",
+    "mainline_cases",
+    "single_shot_case",
+    "mark_reason",
+    "rrdb_evidence",
+    "hierarchy",
+    "single_shot_promotion",
+    "coverage",
+    "final_marks",
+    "reader_facing_reason"
+  ],
+  "properties": {
+    "venue": {
+      "type": "string",
+      "minLength": 1
+    },
+    "race_no": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "race_model": {
+      "type": "string",
+      "minLength": 30
+    },
+    "boundary_marks": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "mainline_cases": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": [
+          "horse_no",
+          "case"
+        ],
+        "properties": {
+          "horse_no": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "case": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "single_shot_case": {
+      "type": "object",
+      "required": [
+        "horse_no",
+        "case"
+      ],
+      "properties": {
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "case": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "mark_reason": {
+      "type": "string",
+      "minLength": 20
+    },
+    "rrdb_evidence": {
+      "type": "object",
+      "required": [
+        "available",
+        "reviewed",
+        "used_in_decision",
+        "horse_refs",
+        "reason_not_used"
+      ],
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "reviewed": {
+          "const": true
+        },
+        "used_in_decision": {
+          "type": "boolean"
+        },
+        "horse_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "horse_no",
+              "decision_role"
+            ],
+            "properties": {
+              "horse_no": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "decision_role": {
+                "enum": [
+                  "UPGRADE_RECENT_FORM",
+                  "DOWNGRADE_APPARENT_FORM",
+                  "SUPPORT_REPEATABILITY",
+                  "SUPPORT_COUNTERARGUMENT",
+                  "CONTEXT_ONLY"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "reason_not_used": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "hierarchy": {
+      "type": "object",
+      "required": [
+        "changed"
+      ],
+      "properties": {
+        "changed": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "single_shot_promotion": {
+      "type": "object",
+      "required": [
+        "promoted"
+      ],
+      "properties": {
+        "promoted": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "shortlist",
+        "challenger",
+        "direct_condition",
+        "ability",
+        "race_model",
+        "verdict",
+        "reason"
+      ],
+      "properties": {
+        "shortlist": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "challenger": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "direct_condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/comparison_label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ability": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/comparison_label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "race_model": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/comparison_label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "KEEP",
+            "SWAP",
+            "NO_ELIGIBLE_CHALLENGER"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 8
+        }
+      },
+      "additionalProperties": false
+    },
+    "final_marks": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "reader_facing_reason": {
+      "type": "string",
+      "minLength": 45
+    }
+  },
+  "$defs": {
+    "comparison_label": {
+      "enum": [
+        "CHALLENGER_STRONGER",
+        "DELTA2_STRONGER",
+        "ROUGHLY_EQUAL",
+        "UNCLEAR"
+      ]
+    }
+  },
+  "additionalProperties": false
+}
