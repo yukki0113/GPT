@@ -72,15 +72,26 @@ def validate_core(core: dict, reader: dict) -> None:
     race = reader["race"]
     venue = str(race["venue"])
     race_no = int(race["race_no"])
-    if str(core.get("venue")) != venue or int(core.get("race_no")) != race_no:
+    expected_fields = {
+        "venue", "race_no", "race_model", "marks", "mainline_cases",
+        "single_shot_case", "boundary_review", "rrdb_refs", "reader_facing_reason",
+    }
+    if set(core) != expected_fields:
+        raise ValueError(f"{venue}{race_no}R: Decision Core fields must match the v0.4.6 schema")
+    if not isinstance(core.get("race_no"), int) or isinstance(core.get("race_no"), bool):
+        raise ValueError(f"{venue}{race_no}R: race_no must be an integer")
+    if str(core.get("venue")) != venue or core["race_no"] != race_no:
         raise ValueError(f"{venue}{race_no}R: Decision Core identity mismatch")
 
     horses = {int(h["basic"]["horse_no"]): h for h in reader.get("horses", [])}
     roster = set(horses)
     marks = core.get("marks")
-    if not isinstance(marks, list) or len(marks) != 5:
-        raise ValueError(f"{venue}{race_no}R: exactly five marks required")
-    marks = [int(x) for x in marks]
+    if (
+        not isinstance(marks, list)
+        or len(marks) != 5
+        or any(not isinstance(x, int) or isinstance(x, bool) for x in marks)
+    ):
+        raise ValueError(f"{venue}{race_no}R: exactly five integer marks required")
     if len(set(marks)) != 5 or not set(marks) <= roster:
         raise ValueError(f"{venue}{race_no}R: marks must be five unique Reader horses")
 
@@ -92,7 +103,11 @@ def validate_core(core: dict, reader: dict) -> None:
         raise ValueError(f"{venue}{race_no}R: four mainline cases required")
     mainline_nos = []
     for item in mainline:
-        n = int(item.get("horse_no"))
+        if not isinstance(item, dict) or set(item) != {"horse_no", "case"}:
+            raise ValueError(f"{venue}{race_no}R: mainline case fields must match the v0.4.6 schema")
+        if not isinstance(item["horse_no"], int) or isinstance(item["horse_no"], bool):
+            raise ValueError(f"{venue}{race_no}R: mainline horse_no must be an integer")
+        n = item["horse_no"]
         if n not in roster or len(str(item.get("case") or "").strip()) < 8:
             raise ValueError(f"{venue}{race_no}R: invalid mainline case")
         mainline_nos.append(n)
@@ -101,17 +116,22 @@ def validate_core(core: dict, reader: dict) -> None:
         raise ValueError(f"{venue}{race_no}R: mainline cases must match ◎ ○ △1 △2")
 
     single = core.get("single_shot_case") or {}
-    if int(single.get("horse_no")) != marks[2]:
+    if not isinstance(single, dict) or set(single) != {"horse_no", "case"}:
+        raise ValueError(f"{venue}{race_no}R: single-shot fields must match the v0.4.6 schema")
+    if not isinstance(single.get("horse_no"), int) or isinstance(single.get("horse_no"), bool):
+        raise ValueError(f"{venue}{race_no}R: single-shot horse_no must be an integer")
+    if single.get("horse_no") != marks[2]:
         raise ValueError(f"{venue}{race_no}R: single-shot case must match ▲")
     if len(str(single.get("case") or "").strip()) < 8:
         raise ValueError(f"{venue}{race_no}R: single-shot case too short")
 
     boundary = core.get("boundary_review")
-    if not isinstance(boundary, dict):
-        raise ValueError(f"{venue}{race_no}R: boundary_review required")
+    if not isinstance(boundary, dict) or set(boundary) != {"alternative_horse_no", "reason"}:
+        raise ValueError(f"{venue}{race_no}R: boundary_review fields must match the v0.4.6 schema")
     alt = boundary.get("alternative_horse_no")
     if alt is not None:
-        alt = int(alt)
+        if not isinstance(alt, int) or isinstance(alt, bool):
+            raise ValueError(f"{venue}{race_no}R: boundary alternative horse_no must be an integer or null")
         if alt not in roster or alt in marks:
             raise ValueError(f"{venue}{race_no}R: boundary alternative must be an excluded Reader horse")
     if len(str(boundary.get("reason") or "").strip()) < 8:
@@ -122,7 +142,11 @@ def validate_core(core: dict, reader: dict) -> None:
         raise ValueError(f"{venue}{race_no}R: rrdb_refs must be array")
     seen = set()
     for ref in refs:
-        n = int(ref.get("horse_no"))
+        if not isinstance(ref, dict) or set(ref) != {"horse_no", "decision_role"}:
+            raise ValueError(f"{venue}{race_no}R: RRDB ref fields must match the v0.4.6 schema")
+        if not isinstance(ref.get("horse_no"), int) or isinstance(ref.get("horse_no"), bool):
+            raise ValueError(f"{venue}{race_no}R: RRDB horse_no must be an integer")
+        n = ref["horse_no"]
         if n not in roster:
             raise ValueError(f"{venue}{race_no}R: RRDB ref horse absent")
         if n in seen:
