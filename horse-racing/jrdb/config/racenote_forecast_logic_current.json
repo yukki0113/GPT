@@ -1,6 +1,6 @@
 {
   "version": "RaceNote-Forecast-Logic-Current-0.1",
-  "updated_at": "2026-10-03",
+  "updated_at": "2026-10-04",
   "current_logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
   "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_2_CANDIDATE.md",
   "logic_config": "config/racenote_forecast_logic_human_context_v0_4_2.json",
@@ -39,18 +39,17 @@
   "legacy_fixed_picks_finalizer_status": "DISABLED_MECHANICAL_PROSE_GENERATION",
   "prospective_research_candidate": {
     "status": "ACTIVE_FOR_NEW_UNUSED_BTDAYS",
-    "logic_version": "RaceNote-Human-Context-Reader-0.4.4-candidate",
-    "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_4_CANDIDATE.md",
-    "record_schema": "schema/racenote_forecast_research_record_v0_4_4.json",
+    "logic_version": "RaceNote-Human-Context-Reader-0.4.5-candidate",
+    "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md",
+    "prediction_semantics": "INHERIT_V0.4.4",
+    "execution_contract": "RACENOTE_EXECUTION_V0.4.5",
+    "decision_core_schema": "schema/racenote_decision_core_v0_4_5.json",
+    "record_schema": "schema/racenote_forecast_research_record_v0_4_5.json",
     "runbook": "docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md",
-    "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.4.3-candidate",
-    "predecessor_formal_cohort": [
-      "BTDAY-0036",
-      "BTDAY-0037",
-      "BTDAY-0040",
-      "BTDAY-0041"
-    ],
-    "predecessor_formal_race_count": 132,
+    "reader_chunker": "src/racenote_chunk_clean_readers_v045.py",
+    "checkpoint_module": "src/racenote_checkpoint_authored_v045.py",
+    "checkpoint_binder": "src/racenote_bind_checkpoints_v045.py",
+    "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.4.4-candidate",
     "same_day_ab": false,
     "production_pointer_unchanged": true
   }
