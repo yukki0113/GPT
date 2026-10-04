@@ -25,11 +25,13 @@ LOGIC_SCHEMAS = {
     "RaceNote-Human-Context-Reader-0.4.3-candidate": "RaceNote-Forecast-Research-Record-0.4.3",
     "RaceNote-Human-Context-Reader-0.4.4-candidate": "RaceNote-Forecast-Research-Record-0.4.4",
     "RaceNote-Human-Context-Reader-0.4.5-candidate": "RaceNote-Forecast-Research-Record-0.4.5",
+    "RaceNote-Human-Context-Reader-0.4.6-candidate": "RaceNote-Forecast-Research-Record-0.4.6",
 }
 REQUIRED_PROSE = "FORECAST_READER_FACING_PROSE_v0_1"
 REQUIRED_RRDB = "rrdb-recommendation-signals-v0.3"
 REQUIRED_AUTHORING_MODE = "MODEL_RACE_BY_RACE_REASONING"
 V045_AUTHORING_MODE = "MODEL_RACE_BY_RACE_DECISION_CORE"
+V046_AUTHORING_MODE = "MODEL_UNIFIED_RACE_JUDGMENT"
 REQUIRED_PROSE_ORIGIN = "MODEL_AUTHORED_NOT_SCRIPT_GENERATED"
 
 
@@ -114,10 +116,16 @@ def validate_prepared_record(
     if logic_version != DEFAULT_LOGIC:
         assert research.get("independent_forecast") is True
         assert research.get("baseline_marks_used_as_input") is False
-        from validate_racenote_forecast_human_context import validate_consistency_pass
-        assert not validate_consistency_pass(record), validate_consistency_pass(record)
+        if logic_version != "RaceNote-Human-Context-Reader-0.4.6-candidate":
+            from validate_racenote_forecast_human_context import validate_consistency_pass
+            assert not validate_consistency_pass(record), validate_consistency_pass(record)
     assert research.get("reader_facing_prose_contract") == REQUIRED_PROSE
-    expected_authoring_mode = V045_AUTHORING_MODE if logic_version == "RaceNote-Human-Context-Reader-0.4.5-candidate" else REQUIRED_AUTHORING_MODE
+    if logic_version == "RaceNote-Human-Context-Reader-0.4.6-candidate":
+        expected_authoring_mode = V046_AUTHORING_MODE
+    elif logic_version == "RaceNote-Human-Context-Reader-0.4.5-candidate":
+        expected_authoring_mode = V045_AUTHORING_MODE
+    else:
+        expected_authoring_mode = REQUIRED_AUTHORING_MODE
     assert research.get("authoring_mode") == expected_authoring_mode
     assert research.get("prose_origin") == REQUIRED_PROSE_ORIGIN
 
@@ -198,6 +206,34 @@ def validate_prepared_record(
         )
         assert all(len(str(x.get("case") or "").strip()) >= 10 for x in mainline), (
             race, "v0.4.5 mainline case missing"
+        )
+
+    if logic_version == "RaceNote-Human-Context-Reader-0.4.6-candidate":
+        mainline = trace.get("mainline_cases") or []
+        expected_mainline = {numbers[0], numbers[1], numbers[3], numbers[4]}
+        assert len(mainline) == 4 and {int(x["horse"]["horse_no"]) for x in mainline} == expected_mainline, (
+            race, "v0.4.6 mainline must document ◎ ○ △1 △2"
+        )
+        assert all(len(str(x.get("case") or "").strip()) >= 8 for x in mainline), (
+            race, "v0.4.6 mainline case missing"
+        )
+        boundary = trace.get("support_boundary") or {}
+        final_delta2 = boundary.get("final_delta2") or {}
+        assert int(final_delta2.get("horse_no")) == numbers[4], (
+            race, "v0.4.6 support boundary final_delta2 mismatch"
+        )
+        assert final_delta2.get("horse_name") == horses[numbers[4]], (
+            race, "v0.4.6 final delta2 identity mismatch"
+        )
+        alternative = boundary.get("alternative")
+        if alternative is not None:
+            n = int(alternative.get("horse_no"))
+            assert n in horses and alternative.get("horse_name") == horses[n], (
+                race, "v0.4.6 boundary alternative identity mismatch"
+            )
+            assert n not in numbers, (race, "v0.4.6 boundary alternative must remain outside final five")
+        assert len(str(boundary.get("reason") or "").strip()) >= 8, (
+            race, "v0.4.6 boundary reason missing"
         )
 
     axis = prediction.get("axis") or {}
@@ -382,7 +418,7 @@ def main() -> int:
         "logic_version": args.logic_version,
         "reader_facing_prose_contract": REQUIRED_PROSE,
         "rrdb_recommendation_contract": REQUIRED_RRDB,
-        "authoring_mode": (V045_AUTHORING_MODE if args.logic_version == "RaceNote-Human-Context-Reader-0.4.5-candidate" else REQUIRED_AUTHORING_MODE),
+        "authoring_mode": (V046_AUTHORING_MODE if args.logic_version == "RaceNote-Human-Context-Reader-0.4.6-candidate" else (V045_AUTHORING_MODE if args.logic_version == "RaceNote-Human-Context-Reader-0.4.5-candidate" else REQUIRED_AUTHORING_MODE)),
         "prose_origin": REQUIRED_PROSE_ORIGIN,
         "main_sha_at_forecast": args.main_sha,
         "race_count": len(frozen),
