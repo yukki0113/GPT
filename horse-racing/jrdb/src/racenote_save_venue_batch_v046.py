@@ -15,6 +15,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from racenote_freeze_prepared_forecast import contains_key
+
 LOGIC = "RaceNote-Human-Context-Reader-0.4.6-candidate"
 VERSION = "racenote-save-venue-batch-0.4.6"
 RRDB = "rrdb-recommendation-signals-v0.3"
@@ -45,6 +47,16 @@ def load_clean(prep: Path) -> tuple[dict, dict, dict]:
         raise ValueError("clean Reader manifest digest mismatch")
     if handoff.get("market_blind") is not True or handoff.get("result_opened") is not False:
         raise ValueError("venue batch requires clean market-blind pre-result input")
+    if handoff.get("target_market_opened") is not False:
+        raise ValueError("target market was opened")
+    if manifest.get("market_blind") is not True or manifest.get("result_opened") is not False:
+        raise ValueError("clean Reader manifest is not market-blind pre-result")
+    if (
+        manifest.get("selection_id") != handoff.get("selection_id")
+        or manifest.get("target_date") != handoff.get("target_date")
+        or manifest.get("race_count") != handoff.get("race_count")
+    ):
+        raise ValueError("clean Reader manifest identity/count mismatch")
     if handoff.get("rrdb_contract") != RRDB:
         raise ValueError("RRDB contract mismatch")
 
@@ -58,13 +70,21 @@ def load_clean(prep: Path) -> tuple[dict, dict, dict]:
         if digest(raw) != expected[path.name]:
             raise ValueError(f"Reader digest mismatch: {path.name}")
         reader = json.loads(raw)
+        if contains_key(reader, "market"):
+            raise ValueError(f"market field in clean Reader: {path.name}")
         race = reader.get("race") or {}
+        if race.get("date") != handoff.get("target_date"):
+            raise ValueError(f"Reader target date mismatch: {path.name}")
         key = (str(race.get("venue")), int(race.get("race_no")))
+        if key in readers:
+            raise ValueError(f"duplicate clean Reader race: {key}")
         readers[key] = {
             "reader": reader,
             "file": path.name,
             "sha256": expected[path.name],
         }
+    if len(readers) != int(handoff["race_count"]):
+        raise ValueError("clean Reader race count mismatch")
     return handoff, manifest, readers
 
 
