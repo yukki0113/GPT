@@ -24,32 +24,33 @@ Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
 
 ### Current Human-Context BTDAY prospective lane — 2026-10-04
 
-The active historical logic-selection lane now uses
-`RaceNote-Human-Context-Reader-0.4.5-candidate` on new unused BTDAYs.
+The active lane uses
+`RaceNote-Human-Context-Reader-0.4.6-candidate` on new unused BTDAYs.
 
-Cohort boundaries are fixed by version. v0.4.5 intentionally inherits v0.4.4
-prediction semantics while changing the execution contract.
+v0.4.6 is a clean consolidation of the useful Human-Context ideas learned
+through v0.4.5:
 
-v0.4.5 keeps full clean Reader evidence, race-model formation, four ordinary
-mainline cases, independent ▲, hierarchy review and provisional-△2 Coverage
-review. It does not retune SWAP semantics.
+- complete clean Reader evidence;
+- integrated race-model judgment;
+- independent ▲;
+- fifth-mark boundary awareness;
+- deterministic clean Freeze.
 
-Execution changes:
+It deliberately removes separate hierarchy/promotion/Coverage workflow passes,
+mandatory Reader chunk artifacts and per-race checkpoint loops from the active
+operating context.
 
-- lossless semantic Reader chunking;
-- compact model-authored Decision Core;
-- immutable one-race checkpoints;
-- resume from first missing race;
-- deterministic audit materialization before strict Freeze.
+Normal execution predicts continuously through one venue, saves one immutable
+venue batch for recovery, then continues automatically. Only a genuine
+interruption uses the batch manifest to resume from the first unsaved venue.
 
 Canonical logic:
-`docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md`
+`docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`
 
-Canonical operating procedure:
+Canonical procedure:
 `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
 
-This remains a research-candidate change and does not promote the production
-Forecast pointer.
+This remains a research candidate. Production pointer remains unchanged.
 
 
 
