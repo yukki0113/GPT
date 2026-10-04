@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import shutil
+import tempfile
 from pathlib import Path
 
 from racenote_freeze_prepared_forecast import contains_key, semantic_hash, validate_prepared_record
@@ -28,6 +29,8 @@ def sha256(path: Path) -> str:
 
 def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
           selection_id: str, date: str) -> dict:
+    if not __debug__:
+        raise RuntimeError("BTDAY archive staging must run without Python optimization; integrity guards use assertions")
     compact = date.replace("-", "")
     binding = read_json(clean_prep / "day_prep_handoff.json")
     clean_manifest_path = clean_prep / "reader_stripped_manifest.json"
@@ -79,7 +82,11 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
     assert all(r["research"]["logic_version"] == logic_version for r in rows)
     assert all(not contains_key(r, "market") and r["audit"]["result_visible_at_freeze"] is False
                for r in rows)
-    assert not output.exists(), f"immutable archive target already exists: {output}"
+    if output.exists():
+        raise FileExistsError(f"immutable archive target already exists: {output}")
+    final_output = output
+    final_output.parent.mkdir(parents=True, exist_ok=True)
+    output = Path(tempfile.mkdtemp(prefix=f".{final_output.name}.stage-", dir=final_output.parent))
 
     (output / "day_prep").mkdir(parents=True)
     (output / "day_merge").mkdir()
@@ -146,9 +153,13 @@ def stage(day_prep: Path, clean_prep: Path, frozen: Path, output: Path,
                    pred["reader_facing_reason"], ""])
     (output / "day_merge" / f"forecast_{compact}_reader.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     (output / "day_merge" / f"forecast_{compact}.html").write_text(render_daily_html(rows), encoding="utf-8")
+    merged_sha256 = sha256(output / "day_merge" / f"forecast_{compact}_all.json")
+    if final_output.exists():
+        raise FileExistsError(f"immutable archive target already exists: {final_output}")
+    output.rename(final_output)
     return {"status": "PASS", "selection_id": selection_id, "target_date": date,
-            "race_count": expected, "staged_path": str(output),
-            "merged_sha256": sha256(output / "day_merge" / f"forecast_{compact}_all.json")}
+            "race_count": expected, "staged_path": str(final_output),
+            "merged_sha256": merged_sha256}
 
 
 def main() -> int:
