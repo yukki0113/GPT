@@ -1,5 +1,12 @@
 # RaceNote current guide
 
+For new unused BTDAY selections, the active prospective research contract is
+`RaceNote-Human-Context-Reader-0.4.6-candidate`. Resolve it from
+`config/racenote_forecast_logic_current.json -> prospective_research_candidate`
+and use `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` for
+execution. The production `current_logic_version` is a separate pointer.
+The older baseline cadence described below is historical research context.
+
 ## 1. Current architecture
 
 Current production path:
