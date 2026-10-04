@@ -100,28 +100,43 @@ handoffには最低限:
 
 ## Current logic resolution
 
-Research threadから別指定がない場合でもlogic versionを推測しない。
+Never infer the BTDAY logic version from conversation history.
 
-必ず `config/racenote_forecast_logic_current.json` をlatest mainから読む。
+Read latest:
+`config/racenote_forecast_logic_current.json`.
 
-用途ごとにpointerを分ける:
+For BTDAY prospective research use only:
+`prospective_research_candidate`.
 
-- BTDAY prospective research:
-  `prospective_research_candidate`
-- production/current forecast:
-  `current_logic_version`
-
-この2つを混同しない。production pointerを研究BTDAYへ代用しない。
+For production/current forecast use:
+`current_logic_version`.
 
 Current BTDAY prospective at 2026-10-04:
-`RaceNote-Human-Context-Reader-0.4.5-candidate`
+`RaceNote-Human-Context-Reader-0.4.6-candidate`.
 
-v0.4.5では canonical runbook を読み、lossless Reader chunks ->
-race Decision Core -> immutable one-race checkpoint -> complete-card
-materialization -> Freeze の順を守る。途中停止時は valid checkpoint が
-あれば最初のmissing raceから再開し、完了済みraceを再予想しない。
+For v0.4.6, read the candidate contract and prospective runbook as one
+self-contained operating context. Do not reconstruct the workflow by stacking
+v0.4.4/v0.4.5 procedures underneath it.
 
-ただしこの記載自体よりlatest config pointerを優先する。
+Normal v0.4.6 execution:
+
+```text
+clean Reader
+-> continuous prediction for one venue
+-> one immutable venue batch save
+-> automatically continue
+-> bind complete day
+-> Freeze / Validator / archive
+```
+
+The venue batch is only a recovery point. Saving it is never by itself a reason
+to stop or ask the user for a continuation instruction.
+
+If execution is genuinely interrupted, resume from the first unsaved venue
+listed in the batch manifest and do not re-author completed venues.
+
+The production pointer remains separate and unchanged unless explicitly
+promoted by the research process.
 
 
 ## RRDB normal execution
