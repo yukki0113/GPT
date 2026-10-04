@@ -15,6 +15,7 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import tempfile
 from typing import Any
 
 VERSION = "racenote-freeze-prepared-forecast-0.1.0"
@@ -100,6 +101,8 @@ def validate_prepared_record(
     target_date: str,
     logic_version: str = DEFAULT_LOGIC,
 ) -> None:
+    if not __debug__:
+        raise RuntimeError("Forecast validation must run without Python optimization; integrity guards use assertions")
     race = reader.get("race") or {}
     ident = record.get("identity") or {}
     research = record.get("research") or {}
@@ -332,9 +335,11 @@ def main() -> int:
                           "validator": validation}, ensure_ascii=False, indent=2))
         return 0
 
-    out = args.output_root
-    if out.exists():
-        raise FileExistsError(f"Freeze output already exists: {out}")
+    final_out = args.output_root
+    if final_out.exists():
+        raise FileExistsError(f"Freeze output already exists: {final_out}")
+    final_out.parent.mkdir(parents=True, exist_ok=True)
+    out = Path(tempfile.mkdtemp(prefix=f".{final_out.name}.freeze-", dir=final_out.parent))
     for d in ("forecast", "reader_stripped", "day_merge"):
         (out / d).mkdir(parents=True, exist_ok=True)
 
@@ -436,6 +441,9 @@ def main() -> int:
         "This packager did not select horses or generate forecast prose.\n",
         encoding="utf-8",
     )
+    if final_out.exists():
+        raise FileExistsError(f"Freeze output already exists: {final_out}")
+    out.rename(final_out)
     print(json.dumps(day_handoff, ensure_ascii=False, indent=2))
     return 0
 
