@@ -307,40 +307,27 @@ For current research, follow this guide and the Forecast Gen0 contract. For dete
 
 ### Current Human-Context Reader prospective validation — 2026-10-04
 
-Fixed comparison cohorts remain immutable:
+Fixed comparison cohorts remain immutable. New unused BTDAYs now use:
 
-- v0.4.2 historical baseline: BTDAY-0023–0032 / 336R
-- v0.4.3 completed prospective: BTDAY-0036, 0037, 0040, 0041 / 132R
-- v0.4.4: completed clean-blind v0.4.4 prospective days only
+- `FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`
+- `RaceNote-Human-Context-Reader-0.4.6-candidate`
+- Decision Core: `schema/racenote_decision_core_v0_4_6.json`
+- final record: `schema/racenote_forecast_research_record_v0_4_6.json`
+- venue recovery writer: `src/racenote_save_venue_batch_v046.py`
+- complete-day binder: `src/racenote_bind_venue_batches_v046.py`
 
-New unused BTDAYs use:
+v0.4.6 is a fresh unified operating context, not v0.4.5 plus additional
+exceptions. The model reads the complete clean race, authors one integrated
+five-horse judgment, keeps ▲ independent, and checks the final △2 against the
+strongest excluded alternative. There are no separate hierarchy/promotion/
+Coverage workflow passes in the v0.4.6 record.
 
-- `FORECAST_HUMAN_CONTEXT_READER_v0_4_5_CANDIDATE.md`
-- `RaceNote-Human-Context-Reader-0.4.5-candidate`
-- Decision Core schema: `schema/racenote_decision_core_v0_4_5.json`
-- Final record schema: `schema/racenote_forecast_research_record_v0_4_5.json`
-
-v0.4.5 intentionally inherits v0.4.4 prediction semantics. It is an
-execution-stability change: clean Readers are losslessly chunked, the model
-authors only substantive Decision Core fields, every completed race is saved
-as an immutable checkpoint, deterministic audit values are materialized by
-module, and interrupted cards resume from the first missing race.
-
-Canonical modules:
-
-- `src/racenote_chunk_clean_readers_v045.py`
-- `src/racenote_checkpoint_authored_v045.py`
-- `src/racenote_bind_checkpoints_v045.py`
-- `src/racenote_freeze_prepared_forecast.py`
-- `src/validate_racenote_forecast_human_context.py`
+Normal recovery granularity is one venue. After a venue batch is saved,
+execution continues automatically. Per-race checkpoints and mandatory Reader
+chunk artifacts from v0.4.5 are historical implementation assets and are not
+part of the active v0.4.6 path.
 
 Canonical procedure:
+`BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`.
 
-- `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
-
-Do not use shortened Reader projections as the primary prediction input and do
-not normally retrieve one horse at a time. A valid partial day is
-`IN_PROGRESS_CHECKPOINTED`, not a failed run.
-
-The production Forecast pointer remains unchanged pending an explicit research
-promotion decision.
+The production Forecast pointer remains unchanged pending explicit promotion.
