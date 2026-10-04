@@ -140,31 +140,61 @@ def validate_core(core: dict, reader: dict) -> None:
 
 
 def manifest_for(output_root: Path, handoff: dict, readers: dict) -> dict:
-    entries = []
-    for path in sorted(output_root.glob("*.json")):
-        if path.name == "batch_manifest.json":
-            continue
-        raw = path.read_bytes()
-        value = json.loads(raw)
-        venue = str(value["venue"])
-        rows = value["decisions"]
-        entries.append({
-            "venue": venue,
-            "file": path.name,
-            "sha256": digest(raw),
-            "race_nos": [int(x["race_no"]) for x in rows],
-            "race_count": len(rows),
-        })
-
     expected_by_venue = {}
     for venue, race_no in readers:
         expected_by_venue.setdefault(venue, []).append(race_no)
     for venue in expected_by_venue:
         expected_by_venue[venue].sort()
 
-    completed_venues = sorted(x["venue"] for x in entries)
+    entries = []
+    seen_venues = set()
+    paths = sorted(
+        p for p in output_root.glob("*.json") if p.name != "batch_manifest.json"
+    )
+    expected_files = {f"{venue}.json" for venue in expected_by_venue}
+    actual_files = {p.name for p in paths}
+    if not actual_files <= expected_files:
+        raise ValueError(f"unexpected venue batch files: {sorted(actual_files - expected_files)}")
+
+    for path in paths:
+        raw = path.read_bytes()
+        payload = json.loads(raw)
+        venue = str(payload.get("venue") or "")
+        if venue not in expected_by_venue or path.name != f"{venue}.json":
+            raise ValueError(f"invalid venue batch identity: {path.name}")
+        if venue in seen_venues:
+            raise ValueError(f"duplicate venue batch: {venue}")
+        seen_venues.add(venue)
+        if payload.get("batch_version") != VERSION or payload.get("logic_version") != LOGIC:
+            raise ValueError(f"venue batch version mismatch: {path.name}")
+        if payload.get("selection_id") != handoff.get("selection_id"):
+            raise ValueError(f"venue batch selection mismatch: {path.name}")
+        if payload.get("target_date") != handoff.get("target_date"):
+            raise ValueError(f"venue batch target date mismatch: {path.name}")
+
+        rows = payload.get("decisions")
+        hashes = payload.get("decision_core_sha256")
+        if not isinstance(rows, list) or not isinstance(hashes, list) or len(rows) != len(hashes):
+            raise ValueError(f"venue batch decisions/hash mismatch: {path.name}")
+        race_nos = [int(x.get("race_no")) for x in rows]
+        if sorted(race_nos) != expected_by_venue[venue] or len(set(race_nos)) != len(race_nos):
+            raise ValueError(f"venue batch must cover the complete venue card: {path.name}")
+        for core, expected_hash in zip(rows, hashes):
+            if str(core.get("venue")) != venue or digest(canonical(core)) != expected_hash:
+                raise ValueError(f"venue batch Decision Core identity/hash mismatch: {path.name}")
+            validate_core(core, readers[(venue, int(core["race_no"]))]["reader"])
+
+        entries.append({
+            "venue": venue,
+            "file": path.name,
+            "sha256": digest(raw),
+            "race_nos": race_nos,
+            "race_count": len(rows),
+        })
+
+    completed_venues = sorted(seen_venues)
     all_venues = sorted(expected_by_venue)
-    remaining = [v for v in all_venues if v not in completed_venues]
+    remaining = [v for v in all_venues if v not in seen_venues]
     status = "COMPLETE_READY_TO_BIND" if not remaining else "IN_PROGRESS_BATCHED"
 
     return {
@@ -178,19 +208,47 @@ def manifest_for(output_root: Path, handoff: dict, readers: dict) -> dict:
         "completed_venues": completed_venues,
         "remaining_venues": remaining,
         "status": status,
-        "entries": entries,
+        "entries": sorted(entries, key=lambda x: x["venue"]),
     }
+
+
+def write_manifest(output_root: Path, manifest: dict) -> None:
+    path = output_root / "batch_manifest.json"
+    temporary = output_root / "batch_manifest.json.tmp"
+    temporary.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--prep-root", type=Path, required=True)
-    ap.add_argument("--decisions", type=Path, required=True,
+    ap.add_argument("--decisions", type=Path,
                     help="JSON array containing one venue's complete Decision Cores")
     ap.add_argument("--output-root", type=Path, required=True)
+    ap.add_argument(
+        "--reconcile-only",
+        action="store_true",
+        help="Rebuild batch_manifest.json from validated immutable venue files after interruption",
+    )
     args = ap.parse_args()
 
     handoff, _, readers = load_clean(args.prep_root)
+    args.output_root.mkdir(parents=True, exist_ok=True)
+    if args.reconcile_only:
+        manifest = manifest_for(args.output_root, handoff, readers)
+        write_manifest(args.output_root, manifest)
+        print(json.dumps({
+            "status": manifest["status"],
+            "reconciled": True,
+            "completed_venues": manifest["completed_venues"],
+            "remaining_venues": manifest["remaining_venues"],
+        }, ensure_ascii=False, indent=2))
+        return 0
+    if args.decisions is None:
+        raise ValueError("--decisions is required unless --reconcile-only is set")
     decisions = json.loads(args.decisions.read_text(encoding="utf-8"))
     if not isinstance(decisions, list) or not decisions:
         raise ValueError("decisions must be a non-empty JSON array")
@@ -208,7 +266,6 @@ def main() -> int:
         key = (venue, int(core["race_no"]))
         validate_core(core, readers[key]["reader"])
 
-    args.output_root.mkdir(parents=True, exist_ok=True)
     out = args.output_root / f"{venue}.json"
     if out.exists():
         raise FileExistsError(f"immutable venue batch already exists: {out}")
@@ -226,10 +283,7 @@ def main() -> int:
     out.write_bytes(raw)
 
     manifest = manifest_for(args.output_root, handoff, readers)
-    (args.output_root / "batch_manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    write_manifest(args.output_root, manifest)
     print(json.dumps({
         "status": manifest["status"],
         "saved_venue": venue,
