@@ -88,6 +88,22 @@ The active RaceNote prospective prediction cohort remains:
 
 The 0.5.x feature research runs in parallel and must not modify active v0.4.6 Reader exposure or horse-selection semantics until an explicit promotion decision is recorded in an audit.
 
+
+## 3.1 Current stage
+
+Stage A: **ACCEPT_WITH_NOTES**
+
+Reviewed implementation commit:
+`21f7c58116bbc8ee75f1d05ccfebb60ae66f0821`
+
+Canonical audit:
+`audits/20261005_JRDB_FEATURE_AUDIT_STAGE_A_AUDIT.md`
+
+Current instruction:
+`instructions/20261005_JRDB_FEATURE_AUDIT_STAGE_B_INSTRUCTION.md`
+
+Stage B window is fixed to **2023-2025**. Do not extend to five years until a Stage B audit explicitly requests Stage B2.
+
 ## 4. Historical analysis horizon
 
 The feature audit must not start with all available historical years.
