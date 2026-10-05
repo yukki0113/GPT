@@ -24,6 +24,7 @@ Primary cohort:
 
 | Path inside supplied bundle | Size bytes | SHA-256 |
 |---|---:|---|
+| `.gitignore` | 662 | `e0cc1bdf107a67f3f0323b8e66c1ed1e82e7d715e0c0e9f0331802262404061a` |
 | `horse-racing/jrdb/tools/run_racenote_feature_audit_stage_b.py` | 37,364 | `a946409b58a5c022c90b6bec2b9b04d156b444825d5fc8c590209896d43f0364` |
 | `reports/20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md` | 14,387 | `0ea8987f52047a52525c373e431263ff2d812b39f099b2692c7ff9c2bbaa8067` |
 | `results/stage_b_2023_2025/cohort.json` | 231 | `0350f5091ae2a3ac212f59c17c3c6a3304d0f64c0d23b977c8630fc0e6be3960` |
