@@ -22,27 +22,38 @@ Gen0.3. `forecast.current_generation` remains `Gen0-G000`.
 Canonical status: `docs/racenote/GEN0_G001_ACTIVATION_STATUS.md`.
 
 
-### Current Human-Context BTDAY prospective lane — 2026-10-04
+### Current Human-Context BTDAY prospective lane — 2026-10-05
 
 The active lane uses
 `RaceNote-Human-Context-Reader-0.4.6-candidate` on new unused BTDAYs.
 
-v0.4.6 is a clean consolidation of the useful Human-Context ideas learned
-through v0.4.5:
+Prediction semantics remain:
 
 - complete clean Reader evidence;
 - integrated race-model judgment;
+- ◎ ○ △1 △2 as ordinary support roles;
 - independent ▲;
-- fifth-mark boundary awareness;
+- final △2 checked against the closest excluded alternative;
 - deterministic clean Freeze.
 
-It deliberately removes separate hierarchy/promotion/Coverage workflow passes,
-mandatory Reader chunk artifacts and per-race checkpoint loops from the active
-operating context.
+The active execution route is intentionally small:
 
-Normal execution predicts continuously through one venue, saves one immutable
-venue batch for recovery, then continues automatically. Only a genuine
-interruption uses the batch manifest to resume from the first unsaved venue.
+```text
+prepare request
+-> permanent clean-prep workflow
+-> one model-authored venue file
+-> next venue
+-> all venues complete
+-> permanent deterministic finalizer
+```
+
+The model-authored venue files are recovery points. Final venue batches are
+materialized once during finalization rather than being pushed after every
+venue.
+
+RRDB refs are sparse audit evidence, not a mirror of all reviewed/marked horses.
+Reader-facing prose is natural racing analysis and should not expose internal
+RRDB/IDM/index terminology by habit.
 
 Canonical logic:
 `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`
