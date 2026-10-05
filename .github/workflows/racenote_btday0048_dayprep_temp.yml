@@ -1,14 +1,14 @@
 name: RaceNote BTDAY-0048 DAY PREP temp
 on:
-  issues:
-    types: [opened]
+  push:
+    branches: [main]
+    paths: ['.github/btday0048_trigger']
 permissions:
   actions: read
   contents: write
   issues: write
 jobs:
   build:
-    if: startsWith(github.event.issue.title, '[RACENOTE_DAILY_BTDAY0048]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -104,20 +104,12 @@ jobs:
             /tmp/out/RaceNote_20260207/validation_report.json
             /tmp/forecast_prep/
           retention-days: 14
-      - name: Comment result and close
+      - name: Emit summary
         if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           if test -s /tmp/summary.json; then
-            BODY="$(cat /tmp/summary.json)"
-            gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --body "RACENOTE_DAILY_BTDAY0048_RESULT
-\`\`\`json
-${BODY}
-\`\`\`"
-            gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason completed
+            cat /tmp/summary.json
           else
-            gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --body "BTDAY-0048 DAY PREP failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason "not planned"
+            echo 'BTDAY-0048 DAY PREP failed'
             exit 1
           fi
