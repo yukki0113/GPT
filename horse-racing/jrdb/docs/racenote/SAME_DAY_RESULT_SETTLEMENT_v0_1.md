@@ -12,7 +12,12 @@ be read before the relevant Forecast Freeze.
 
 ## Modules
 
+- `src/racenote_daily_result_from_jrdb.py`
+  - preferred source when target-date JRDB post-race Raw is already available
+  - SED -> finishers / HJC -> all eight payout types
+  - no Web access; cross-validates SED win/place payouts against HJC
 - `src/racenote_daily_result_fetch.py`
+  - race-day速報 source when target-date SED/HJC is not available yet
   - default source: Sponichi Keiba Web daily result page
   - one date page -> all detected JRA races
   - retains top 3 finishers and payouts
@@ -23,7 +28,27 @@ be read before the relevant Forecast Freeze.
   - generates fixed ticket formations and aggregates ROI
   - emits machine-readable JSON and a compact Markdown report
 
-## 1. Same-day result acquisition
+## 1. Result acquisition
+
+Use the cheapest deterministic source already available.
+
+### A. Target-date SED/HJC already acquired — preferred
+
+This is the standard route for next-day / Monday confirmation.
+
+```bash
+python horse-racing/jrdb/src/racenote_daily_result_from_jrdb.py \
+  --date 2026-10-04 \
+  --sed /path/to/SED261004.zip \
+  --hjc /path/to/HJC261004.zip \
+  --pretty
+```
+
+SED supplies finishers and HJC supplies all eight payout types.  The builder also
+cross-validates SED win/place payout fields against HJC.  A mismatch fails closed
+as `review_required`.
+
+### B. Race-day SED/HJC not available — Web速報 fallback
 
 ```bash
 python horse-racing/jrdb/src/racenote_daily_result_fetch.py \
@@ -64,8 +89,9 @@ Fail-closed behavior:
 settlement strategies below.  The settlement-required set is win, place, quinella,
 wide, exacta, trio and trifecta.
 
-This module is source-replaceable through the `DailyResultSource` protocol.  v0.1
-ships `SponichiDailyResultSource` only.
+The Web fetch module is source-replaceable through the `DailyResultSource`
+protocol.  v0.1 ships `SponichiDailyResultSource` only.  Operationally, however,
+JRDB SED/HJC takes precedence whenever both target-date files already exist.
 
 ## 2. RaceNote settlement
 
