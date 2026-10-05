@@ -48,6 +48,34 @@ Do not reinstall dependencies on every task when the existing environment alread
 
 DuckDB is pinned to `1.1.3`. Newer wheels must be separately qualified on all execution CPUs before the pin is raised.
 
+## Codex / managed-runtime fallback
+
+If `check-deps` fails and the documented `pip install -r tools/data-storage/requirements.txt` repair is itself blocked by a managed-runtime proxy/network policy, do not silently replace the canonical DuckDB/Parquet implementation with another engine.
+
+Use the repository-wide local-first -> Actions fallback contract:
+
+- contract: `tools/data-storage/docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md`
+- runner: `tools/data-storage/scripts/data_storage_fallback_runner.py`
+- workflow: `.github/workflows/data_storage_fallback_issue.yml`
+- request title prefix: `[DATA_STORAGE_FALLBACK]`
+
+The fallback installs the pinned Data Storage requirements on GitHub Actions, downloads declared upstream Actions artifacts, executes validated repository Python entrypoints with argv arrays (no arbitrary shell request), uploads outputs/audit logs, and closes the request Issue.
+
+Routing rule:
+
+```text
+local .venv-data-storage
+-> check-deps
+-> one normal requirements repair attempt
+-> repair succeeds: execute locally
+-> repair blocked by managed runtime/network policy:
+     use [DATA_STORAGE_FALLBACK] when inputs are reproducible from checkout/Actions artifacts
+-> inspect fallback audit/artifact
+-> continue task
+```
+
+A local package-transport restriction is not, by itself, a reason to redesign scientific logic or report the repository task as permanently blocked.
+
 ## CLI
 
 Set the package root once:
