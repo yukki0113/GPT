@@ -1,3 +1,23 @@
+
+## RaceNote research-work handoff area — 2026-10-05
+
+Substantial design / execution / audit handoffs are stored under:
+
+`docs/racenote/research-work/`
+
+Use:
+
+- `instructions/` for canonical work orders;
+- `reports/` for actual execution/analysis results;
+- `audits/` for acceptance/revision decisions.
+
+Current parallel research lane: **RaceNote 0.5.x JRDB Feature Audit**.
+The active v0.4.6 prediction cohort remains unchanged while this research is exploratory.
+Historical feature analysis must start with **2023-2025** and may extend to **2021-2025** only if the three-year result is inconclusive. If five years still yield no stable practical signal, stop expanding the horizon and retain the 0.4.x Human-Context principle rather than forcing a new feature hierarchy.
+
+Current Stage A instruction:
+`docs/racenote/research-work/instructions/20261005_JRDB_FEATURE_AUDIT_STAGE_A_INSTRUCTION.md`
+
 # RaceNote current guide
 
 For new unused BTDAY selections, the active prospective research contract is
