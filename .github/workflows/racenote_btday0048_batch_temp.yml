@@ -1,0 +1,43 @@
+name: RaceNote BTDAY-0048 venue batch temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0048/20260207/authored_decisions/*.json'
+permissions:
+  contents: write
+jobs:
+  save:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Save pending venue batches
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          PREP='horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep'
+          AUTH='horse-racing/jrdb/backtests/BTDAY-0048/20260207/authored_decisions'
+          OUT='horse-racing/jrdb/backtests/BTDAY-0048/20260207/venue_batches'
+          mkdir -p "$OUT"
+          for f in "$AUTH"/*.json; do
+            venue="$(basename "$f" .json)"
+            if [ ! -f "$OUT/$venue.json" ]; then
+              python horse-racing/jrdb/src/racenote_save_venue_batch_v046.py --prep-root "$PREP" --decisions "$f" --output-root "$OUT"
+            fi
+          done
+      - name: Commit batches
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0048/20260207/venue_batches
+          if ! git diff --cached --quiet; then
+            git commit -m 'RaceNote: save BTDAY-0048 venue batch'
+            git push origin HEAD:main
+          fi
