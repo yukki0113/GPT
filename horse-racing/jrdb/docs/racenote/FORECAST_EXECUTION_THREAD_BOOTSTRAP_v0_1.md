@@ -4,137 +4,116 @@
 
 ## 1. 最初に読むもの
 
-latest mainから次の順に確認する。
+latest mainから次だけを読む。
 
 1. `config/racenote_forecast_logic_current.json`
 2. BTDAYなら `prospective_research_candidate.logic_contract`
 3. BTDAYなら `prospective_research_candidate.runbook`
-4. pointerが示す Decision Core / final record schema
+4. pointerが示す Decision Core schema
 5. `FORECAST_READER_FACING_PROSE_v0_1.md`
 6. BTDAY day-pool/history
 
-会話内の旧version手順を継ぎ足して使わない。
-**active pointerが示すversionのcontractとrunbookだけを、そのversionの一つの文脈として使う。**
+旧versionの手順を足し合わせない。
+active pointerが示すcontract/runbookを、そのversionの一つの文脈として使う。
 
-## 2. Pointerの使い分け
+## 2. Current BTDAY route
 
-- BTDAY prospective research:
-  `prospective_research_candidate`
-- production/current forecast:
-  `current_logic_version`
+Current prospective logic:
 
-両者は別物。BTDAYにproduction pointerを代用しない。
+`RaceNote-Human-Context-Reader-0.4.6-candidate`
 
-Current BTDAY prospective:
-`RaceNote-Human-Context-Reader-0.4.6-candidate`.
-
-## 3. v0.4.6の仕事
-
-予想実行スレッドが行うことは次だけ。
+通常経路:
 
 ```text
 unused day selection
--> DAY PREP
--> clean market-blind bind
--> complete Readerを読んで予想
--> venue batch save
+-> prepare request JSON
+-> permanent prepare workflow
+-> clean Reader
+-> venue単位で連続予想
+-> authored_decisions/<venue>.json を保存
 -> 次会場へ自動継続
--> complete-day bind
--> preflight
--> Freeze
--> Validator
--> archive / reader-facing output
+-> 全会場揃ったら permanent finalizer
+-> Freeze / Validator / archive
 -> STOP before results
 ```
 
-各レースではv0.4.6 contractに従って一つの統合判断を行う。
+通常運用では、BTDAYごとのtemporary workflowを作らない。
+
+## 3. Prediction work
+
+各レースで行うのは一つの統合判断だけ。
 
 - race model
 - ◎ ○ △1 △2 の通常支持4頭
 - 独立▲
 - 最終△2と最良の除外候補の境界確認
 - 最終 ◎ ○ ▲ △1 △2
+- sparse RRDB refs
 - reader-facing reason
 
-過去versionの hierarchy pass / ▲ promotion pass / Coverage state machine を
+過去versionの hierarchy pass / promotion pass / Coverage state machineを
 別工程として追加しない。
 
-## 4. Reader
+RRDBは全体文脈として読んでよいが、`rrdb_refs` は
+**RRDBが最終判断を実際に変えた・明確に補強した馬だけ**を残す。
+印馬一覧の複製にはしない。
 
-予想に使う正本は market-stripped clean Reader。
+## 4. Reader and prose
 
-全馬の情報を読む。短縮要約だけで予想しない。
+予想入力の正本はmarket-stripped clean Reader。全馬情報を読む。
 
-ただしReaderをどうツール上で運ぶかは実装詳細。
-通常運用で、
+Readerのツール上の分割方法は実装詳細であり、mandatory chunkや
+一頭ずつのreadを通常手順にしない。
 
-- mandatory chunk artifactを作る
-- 1頭ずつ取得する
-- chunkごとに監査する
+reader-facing proseは、印の順番をJSONのように読み上げるのではなく、
+そのレースで重要だった具体的な競馬内容を一つの短評として書く。
 
-ことは要求しない。
+RRDB / IDM / 内部指数名・role名は原則audit側に置き、読者向けには
+その根拠となる競馬内容へ翻訳する。
 
-ツール出力制限で分割が必要なら、情報を落とさない範囲で実用的な単位に
-分けて読めばよい。
+## 5. Save and recovery
 
-## 5. 保存と継続
+一会場を予想したら
+`authored_decisions/<venue>.json`
+をGitへ保存する。これが復旧点。
 
-通常の復旧点は **1会場につき1回**。
+保存後は確認を求めず次会場へ進む。
 
-`racenote_save_venue_batch_v046.py` がPASSしたら、その事実だけを理由に
-停止したりユーザーへ再開指示を求めたりしない。
+実行が本当に途切れた場合だけ、既存authored venue filesを確認し、
+最初の未保存会場から再開する。保存済み会場を再予想しない。
 
-同一実行内で次会場へそのまま進む。
-
-実行環境が本当に終了した場合だけ、
-`racenote_save_venue_batch_v046.py --reconcile-only` で保存済み会場ファイルを
-検証して進捗表を復元し、`batch_manifest.json` の `remaining_venues` から
-再開する。保存済み会場の予想は作り直さない。
-保存済み会場は再予想しない。
+permanent finalizerは全会場が揃うまでは何も生成せず正常終了し、
+揃った時だけdeterministic packagingを一度実行する。
 
 ## 6. Clean-blind boundary
 
-Freeze完了まではtarget resultを開かない。
+Freeze完了まではtarget result、payout、final odds/popularity、
+result join、post-race評価を開かない。
 
-開かないもの:
+target-day marketもclean bind後のモデル入力には含めない。
 
-- 着順
-- payout
-- final odds
-- final popularity
-- result join
-- post-race評価
+結果確認・成績評価はFreeze後の別工程。
 
-target-day marketもclean bind後の予想入力には含めない。
+## 7. Responsibility boundary
 
-結果確認・成績評価・ロジック変更はFreeze後に研究側で行う。
+モデル:
+印、▲、boundary alternative、race model、horse case、reader-facing prose。
 
-## 7. モジュール責務
+機械:
+identity、hash、roster、schema、complete-card確認、bind、Freeze、
+Validator、archive。
 
-機械処理はidentity・hash・roster・schema・完全性・Freezeを担当する。
+この境界を越えて機械が予想を作ったり、モデルがworkflow監査項目を
+大量に手書きしたりしない。
 
-機械処理は以下を決めない。
-
-- 印
-- ▲
-- 境界代替馬
-- race model
-- horse case
-- reader-facing prediction prose
-
-予想判断はモデル、決定論的整合性はmoduleという境界だけを維持する。
-
-## 8. 終了条件
+## 8. Stop conditions
 
 正常完了:
 full card Freeze + Validator PASS + archive/readback完了。
 
 途中終了:
-有効なvenue batchが残っているなら、保存済み会場と次の未保存会場を報告する。
-確認待ちのために意図的に止まらない。
+保存済み会場と最初の未保存会場を報告する。確認待ちのために止まらない。
 
 異常終了:
-必要assetが実際にない、またはdeterministic invariantがFAILした場合のみ、
-具体的なgate名と到達点を報告する。
-
-結果を開いたり予想ロジックをその場で修正したりせず停止する。
+必要asset欠落またはdeterministic invariant FAILのみ。
+結果を開かず、具体的なgate名と到達点を報告する。
