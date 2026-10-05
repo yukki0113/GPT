@@ -312,27 +312,30 @@ Use latest main, current contracts, and current source as truth. Do not reintrod
 For current research, follow this guide and the Forecast Gen0 contract. For deterministic/legacy reproduction, use the dedicated legacy documents and preserved artifacts.
 
 
-### Current Human-Context Reader prospective validation — 2026-10-04
+### Current Human-Context Reader prospective validation — 2026-10-05
 
-Fixed comparison cohorts remain immutable. New unused BTDAYs now use:
+New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.6-candidate`.
 
-- `FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`
-- `RaceNote-Human-Context-Reader-0.4.6-candidate`
+v0.4.6 remains one prediction cohort. The 2026-10-05 refinements affect
+reader-facing prose, RRDB trace sparsity and deterministic execution only; they
+do not change how ◎ ○ ▲ △1 △2 are selected.
+
+Active assets:
+
+- logic: `FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`
 - Decision Core: `schema/racenote_decision_core_v0_4_6.json`
 - final record: `schema/racenote_forecast_research_record_v0_4_6.json`
-- venue recovery writer: `src/racenote_save_venue_batch_v046.py`
-- complete-day binder: `src/racenote_bind_venue_batches_v046.py`
+- prepare request: `schema/racenote_btday_v046_request.json`
+- prepare workflow: `.github/workflows/racenote_btday_v046_prepare.yml`
+- finalizer: `.github/workflows/racenote_btday_v046_finalize.yml`
 
-v0.4.6 is a fresh unified operating context, not v0.4.5 plus additional
-exceptions. The model reads the complete clean race, authors one integrated
-five-horse judgment, keeps ▲ independent, and checks the final △2 against the
-strongest excluded alternative. There are no separate hierarchy/promotion/
-Coverage workflow passes in the v0.4.6 record.
+Normal operation predicts a venue continuously and commits one
+`authored_decisions/<venue>.json` recovery file. It then continues immediately.
+The permanent finalizer waits until every expected venue exists, then performs
+venue validation/batch materialization, bind, Freeze, Validator and archive once.
 
-Normal recovery granularity is one venue. After a venue batch is saved,
-execution continues automatically. Per-race checkpoints and mandatory Reader
-chunk artifacts from v0.4.5 are historical implementation assets and are not
-part of the active v0.4.6 path.
+Per-race checkpoints, mandatory Reader chunks and per-BTDAY temporary workflows
+are not part of the active v0.4.6 route.
 
 Canonical procedure:
 `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`.
