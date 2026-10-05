@@ -47,9 +47,27 @@ jobs:
           req.setdefault('min_win_roi',110.0)
           req.setdefault('min_place_roi',105.0)
           req.setdefault('max_per_template',100)
-          req.setdefault('discovery_years',5)
+          req.setdefault('discovery_years',3)
+          req.setdefault('search_lanes',['TRANSITION_PRIORITY','PEDIGREE_INTERACTION','PEDIGREE_BASELINE'])
+          req.setdefault('min_depth',2)
+          req.setdefault('max_depth',3)
+          req.setdefault('as_of_date',None)
           req.setdefault('max_templates_per_shard',900)
           req.setdefault('target_estimated_cost',250000000)
+          allowed={'TRANSITION_PRIORITY','PEDIGREE_INTERACTION','PEDIGREE_BASELINE'}
+          if not isinstance(req['search_lanes'],list) or not req['search_lanes'] or set(req['search_lanes'])-allowed:
+              raise SystemExit('search_lanes must be a non-empty list of supported Wave A lanes')
+          if not (isinstance(req['min_depth'],int) and isinstance(req['max_depth'],int) and 2 <= req['min_depth'] <= req['max_depth'] <= 6):
+              raise SystemExit('depth must satisfy 2 <= min_depth <= max_depth <= 6')
+          if not isinstance(req['discovery_years'],int) or req['discovery_years'] <= 0:
+              raise SystemExit('discovery_years must be a positive integer')
+          if req['as_of_date'] is not None:
+              from datetime import date
+              try:
+                  if date.fromisoformat(req['as_of_date']).isoformat()!=req['as_of_date']:
+                      raise ValueError('non-canonical date')
+              except (TypeError,ValueError):
+                  raise SystemExit('as_of_date must be an ISO YYYY-MM-DD date or null')
           Path('/tmp/request.json').write_text(json.dumps(req,indent=2,sort_keys=True)+'\n')
           PY
 
@@ -62,8 +80,10 @@ jobs:
           python - <<'PY' >> "$GITHUB_ENV"
           import json
           r=json.load(open('/tmp/request.json'))
-          for key in ['feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name','min_win_roi','min_place_roi','max_per_template','discovery_years','max_templates_per_shard','target_estimated_cost']:
+          for key in ['feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name','min_win_roi','min_place_roi','max_per_template','discovery_years','min_depth','max_depth','max_templates_per_shard','target_estimated_cost']:
               print(f"{key.upper()}={r[key]}")
+          print('SEARCH_LANES_JSON='+json.dumps(r['search_lanes'],separators=(',',':')))
+          print('AS_OF_DATE='+(r['as_of_date'] or ''))
           PY
 
       - name: Download Stage B catalog
@@ -83,7 +103,21 @@ jobs:
       - name: Plan deterministic shards
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards.py             --template-parquet /tmp/plan/candidate_template_catalog.parquet             --output /tmp/plan/shard_plan.json             --max-templates-per-shard "$MAX_TEMPLATES_PER_SHARD"             --target-estimated-cost "$TARGET_ESTIMATED_COST"             | tee /tmp/plan/planner_stdout.json
+          mapfile -t lane_args < <(python - <<'PY'
+          import json, os
+          for lane in json.loads(os.environ['SEARCH_LANES_JSON']):
+              print('--search-lane')
+              print(lane)
+          PY
+          )
+          python horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards.py \
+            --template-parquet /tmp/plan/candidate_template_catalog.parquet \
+            --output /tmp/plan/shard_plan.json \
+            "${lane_args[@]}" \
+            --min-depth "$MIN_DEPTH" --max-depth "$MAX_DEPTH" \
+            --max-templates-per-shard "$MAX_TEMPLATES_PER_SHARD" \
+            --target-estimated-cost "$TARGET_ESTIMATED_COST" \
+            | tee /tmp/plan/planner_stdout.json
 
       - name: Export matrix
         id: matrix
@@ -140,6 +174,7 @@ jobs:
           r=json.load(open('/tmp/plan/request.json'))
           for key in ['feature_run_id','feature_artifact_name','stage_b_run_id','stage_b_artifact_name','min_win_roi','min_place_roi','max_per_template','discovery_years']:
               print(f"{key.upper()}={r[key]}")
+          print('AS_OF_DATE='+(r.get('as_of_date') or ''))
           PY
 
       - name: Download canonical inputs
@@ -164,7 +199,16 @@ jobs:
           SHARD_ID: ${{ matrix.shard_id }}
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py             --feature-parquet /tmp/inputs/edge_runner_fact.parquet             --template-parquet /tmp/inputs/candidate_template_catalog.parquet             --shard-plan /tmp/plan/shard_plan.json             --shard-id "$SHARD_ID"             --output-dir /tmp/out             --min-win-roi "$MIN_WIN_ROI"             --min-place-roi "$MIN_PLACE_ROI"             --max-per-template "$MAX_PER_TEMPLATE"             --discovery-years "$DISCOVERY_YEARS"             | tee /tmp/out/stdout.json
+          as_of_args=()
+          if [[ -n "$AS_OF_DATE" ]]; then as_of_args+=(--as-of-date "$AS_OF_DATE"); fi
+          python horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py \
+            --feature-parquet /tmp/inputs/edge_runner_fact.parquet \
+            --template-parquet /tmp/inputs/candidate_template_catalog.parquet \
+            --shard-plan /tmp/plan/shard_plan.json \
+            --shard-id "$SHARD_ID" --output-dir /tmp/out \
+            --min-win-roi "$MIN_WIN_ROI" --min-place-roi "$MIN_PLACE_ROI" \
+            --max-per-template "$MAX_PER_TEMPLATE" --discovery-years "$DISCOVERY_YEARS" \
+            "${as_of_args[@]}" | tee /tmp/out/stdout.json
 
       - name: Add evaluator provenance
         env:

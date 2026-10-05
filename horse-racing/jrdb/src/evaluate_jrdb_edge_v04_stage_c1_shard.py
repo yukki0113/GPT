@@ -15,6 +15,8 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
+from jrdb_edge_v04_preflight import resolve_date_window
+
 ALL_DIMS=[
 "venue_code","distance_m","surface_code","turn_code","inner_outer_code",
 "race_condition_code","grade_code","track_condition_bucket","frame_zone",
@@ -98,7 +100,9 @@ def main():
     ap.add_argument("--min-place-roi",type=float,default=105.0)
     ap.add_argument("--max-per-template",type=int,default=100)
     ap.add_argument("--discovery-years",type=int,default=5)
+    ap.add_argument("--as-of-date",help="inclusive YYYY-MM-DD research endpoint; defaults to max source race_date")
     args=ap.parse_args()
+    if args.discovery_years<=0:raise SystemExit("discovery-years must be a positive integer")
     out=args.output_dir.resolve(); out.mkdir(parents=True,exist_ok=True)
     plan=json.loads(args.shard_plan.read_text())
     shard=next((s for s in plan["shards"] if s["shard_id"]==args.shard_id),None)
@@ -117,17 +121,16 @@ def main():
     dates_all=table_all["race_date"].combine_chunks()
     if not (pa.types.is_string(dates_all.type) or pa.types.is_large_string(dates_all.type)):
         dates_all=pc.cast(dates_all,pa.string())
-    date_all_np=np.asarray(pc.fill_null(dates_all,"0000-00-00").to_numpy(zero_copy_only=False),dtype=str)
-    valid_dates=[x for x in date_all_np if x!="0000-00-00"]
-    if not valid_dates:
-        raise SystemExit("race_date missing")
-    max_date=dt.date.fromisoformat(max(valid_dates))
     try:
-        discovery_start=max_date.replace(year=max_date.year-args.discovery_years)
-    except ValueError:
-        discovery_start=max_date.replace(year=max_date.year-args.discovery_years,day=28)
+        as_of_date,discovery_start,max_source_date=resolve_date_window(
+            pc.unique(dates_all).to_pylist(),args.discovery_years,args.as_of_date
+        )
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     discovery_start_s=discovery_start.isoformat()
-    keep_mask=pc.greater_equal(dates_all,pa.scalar(discovery_start_s,type=pa.string()))
+    lower=pc.greater_equal(dates_all,pa.scalar(discovery_start_s,type=pa.string()))
+    upper=pc.less_equal(dates_all,pa.scalar(as_of_date.isoformat(),type=pa.string()))
+    keep_mask=pc.fill_null(pc.and_(lower,upper),False)
     table=table_all.filter(keep_mask)
     n_rows=table.num_rows
     codes={}; dictionaries={}
@@ -137,7 +140,7 @@ def main():
     dates=table["race_date"].combine_chunks()
     if not (pa.types.is_string(dates.type) or pa.types.is_large_string(dates.type)):dates=pc.cast(dates,pa.string())
     date_np=np.asarray(pc.fill_null(dates,"0000-00-00").to_numpy(zero_copy_only=False),dtype=str)
-    cuts={365:(max_date-dt.timedelta(days=365)).isoformat(),730:(max_date-dt.timedelta(days=730)).isoformat(),1095:(max_date-dt.timedelta(days=1095)).isoformat()}
+    cuts={365:(as_of_date-dt.timedelta(days=365)).isoformat(),730:(as_of_date-dt.timedelta(days=730)).isoformat(),1095:(as_of_date-dt.timedelta(days=1095)).isoformat()}
     recent={k:date_np>=v for k,v in cuts.items()}
 
     heaps={}
@@ -209,12 +212,13 @@ def main():
       "status":"PASS","stage":"V04_STAGE_C1_SHARD","policy_version":POLICY_VERSION,
       "shard_id":args.shard_id,"search_lane":shard["search_lane"],"depth":int(shard["depth"]),
       "template_count":len(templates),"source_rows_all_history":source_rows_all,"source_rows":n_rows,
-      "discovery_years":args.discovery_years,"discovery_start_date":discovery_start_s,"discovery_end_date":max_date.isoformat(),
+      "discovery_years":args.discovery_years,"requested_as_of_date":args.as_of_date,
+      "resolved_as_of_date":as_of_date.isoformat(),"discovery_start_date":discovery_start_s,"discovery_end_date":as_of_date.isoformat(),
       "terminal_groups_evaluated":terminal_groups,
       "prefix_groups_pruned_by_support":pruned,"admitted_before_template_cap":admitted_before_cap,
       "research_candidate_count":sink.count,"max_per_template":args.max_per_template,
       "jackpot_flagged_top1_70pct_count":jackpot,"admission_min_win_roi":args.min_win_roi,
-      "admission_min_place_roi":args.min_place_roi,"max_source_date":max_date.isoformat(),
+      "admission_min_place_roi":args.min_place_roi,"max_source_date":max_source_date.isoformat(),
       "recent_cutoffs":{f"{k}d":v for k,v in cuts.items()},
       "feature_parquet_sha256":sha256_file(args.feature_parquet),
       "template_catalog_sha256":sha256_file(args.template_parquet),

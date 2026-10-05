@@ -10,6 +10,8 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
+from jrdb_edge_v04_preflight import resolve_date_window
+
 NULL="__NULL__"
 POLICY_VERSION="v04-stage-c2b-exact-r1"
 
@@ -67,8 +69,10 @@ def main():
     ap.add_argument("--shard-index",type=int,required=True)
     ap.add_argument("--shard-count",type=int,required=True)
     ap.add_argument("--discovery-years",type=int,default=5)
+    ap.add_argument("--as-of-date",help="inclusive YYYY-MM-DD research endpoint; defaults to max source race_date")
     args=ap.parse_args()
     if not 0<=args.shard_index<args.shard_count:raise SystemExit("invalid shard")
+    if args.discovery_years<=0:raise SystemExit("discovery-years must be a positive integer")
     out=args.output_dir.resolve(); out.mkdir(parents=True,exist_ok=True)
 
     requests=[]
@@ -95,11 +99,15 @@ def main():
     dates_all=alltab["race_date"].combine_chunks()
     if not (pa.types.is_string(dates_all.type) or pa.types.is_large_string(dates_all.type)):
         dates_all=pc.cast(dates_all,pa.string())
-    ds=np.asarray(pc.fill_null(dates_all,"0000-00-00").to_numpy(zero_copy_only=False),dtype=str)
-    max_date=dt.date.fromisoformat(max(x for x in ds if x!="0000-00-00"))
-    try:start=max_date.replace(year=max_date.year-args.discovery_years)
-    except ValueError:start=max_date.replace(year=max_date.year-args.discovery_years,day=28)
-    mask=pc.greater_equal(dates_all,pa.scalar(start.isoformat(),type=pa.string()))
+    try:
+        as_of_date,start,max_source_date=resolve_date_window(
+            pc.unique(dates_all).to_pylist(),args.discovery_years,args.as_of_date
+        )
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+    lower=pc.greater_equal(dates_all,pa.scalar(start.isoformat(),type=pa.string()))
+    upper=pc.less_equal(dates_all,pa.scalar(as_of_date.isoformat(),type=pa.string()))
+    mask=pc.fill_null(pc.and_(lower,upper),False)
     tab=alltab.filter(mask); n_rows=tab.num_rows
 
     codes={}; value_to_code={}
@@ -111,7 +119,7 @@ def main():
     if not (pa.types.is_string(dates.type) or pa.types.is_large_string(dates.type)):dates=pc.cast(dates,pa.string())
     date_np=np.asarray(pc.fill_null(dates,"0000-00-00").to_numpy(zero_copy_only=False),dtype=str)
     years=np.asarray([int(x[:4]) for x in date_np],dtype=np.int16)
-    cuts={365:(max_date-dt.timedelta(days=365)).isoformat(),730:(max_date-dt.timedelta(days=730)).isoformat(),1095:(max_date-dt.timedelta(days=1095)).isoformat()}
+    cuts={365:(as_of_date-dt.timedelta(days=365)).isoformat(),730:(as_of_date-dt.timedelta(days=730)).isoformat(),1095:(as_of_date-dt.timedelta(days=1095)).isoformat()}
     recent={k:date_np>=v for k,v in cuts.items()}
 
     sink=Sink(out/f"metric_results_shard_{args.shard_index:02d}.parquet")
@@ -189,7 +197,9 @@ def main():
       "shard_index":args.shard_index,"shard_count":args.shard_count,
       "request_count":len(requests),"metric_result_count":sink.count,
       "feature_rows_all_history":alltab.num_rows,"feature_rows_discovery":n_rows,
-      "discovery_start_date":start.isoformat(),"discovery_end_date":max_date.isoformat(),
+      "requested_as_of_date":args.as_of_date,"resolved_as_of_date":as_of_date.isoformat(),
+      "discovery_start_date":start.isoformat(),"discovery_end_date":as_of_date.isoformat(),
+      "max_source_date":max_source_date.isoformat(),"discovery_years":args.discovery_years,
       "missing_value_branches":missing_value_branches,
       "feature_parquet_sha256":sha256_file(args.feature_parquet),
       "request_parquet_sha256":sha256_file(args.request_parquet),
