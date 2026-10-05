@@ -932,8 +932,8 @@
   },
   "git_outputs": {
     "r1_report.md": {
-      "bytes": 14552,
-      "sha256": "15a327d715dca592585df87dd3336204d5c6a2cf70c5aef3dec87bf9ea6c8b34"
+      "bytes": 14756,
+      "sha256": "bb71544ed660dddaba365b337ee9192cf41910cf29630730c3c8b3722fceb721"
     },
     "shortlist.csv": {
       "bytes": 195895,
@@ -993,10 +993,13 @@
     "open_prs_at_preflight": [],
     "pending_result_pr": {
       "branch": "research/jrdb-edge-v04-r1-wave-a-3y-20261005",
-      "head_commit": "395c5a1d704e07c7a0cc37509fe7cbba8d5aefdf",
+      "documentation_state_update_commit": "189a240ab415223834d39c214756056b4abee446",
       "mergeable": false,
+      "mergeable_at_creation": false,
+      "mergeable_current": true,
       "number": 1800,
       "relevance": "Carries this R1 result and compact review outputs; merge is required before main-based downstream tasks can read them.",
+      "result_payload_commit": "395c5a1d704e07c7a0cc37509fe7cbba8d5aefdf",
       "state": "OPEN",
       "title": "research(jrdb): record EdgeDB v0.4 R1 Wave A 3y results"
     },
