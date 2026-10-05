@@ -124,11 +124,13 @@
           }
         },
         "additionalProperties": false
-      }
+      },
+      "description": "Sparse audit refs only for horses whose RRDB evidence materially changed or sharpened the final judgment. This is not a list of every reviewed horse or every marked horse."
     },
     "reader_facing_reason": {
       "type": "string",
-      "minLength": 45
+      "minLength": 45,
+      "description": "One natural newspaper-style race comment. Do not serialize marks mechanically or expose internal evidence-source terminology when ordinary racing language conveys the point."
     }
   },
   "additionalProperties": false
