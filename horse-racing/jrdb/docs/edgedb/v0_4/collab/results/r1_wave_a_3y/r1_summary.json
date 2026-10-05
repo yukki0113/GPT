@@ -1,0 +1,1139 @@
+{
+  "c1": {
+    "candidate_count": 68685,
+    "candidate_count_by_family": {
+      "PEDIGREE_CROSS": 41012,
+      "PEDIGREE_TRANSITION_CROSS": 18531,
+      "TRANSITION_CROSS": 9142
+    },
+    "duplicate_candidate_ids": 0,
+    "elapsed_seconds_total": 89.42770603200097,
+    "lane_depth_distributions": {
+      "PEDIGREE_BASELINE:D2": {
+        "candidate_count": 3503,
+        "candidate_rate_per_terminal_group": 0.13241853783926816,
+        "jackpot_flag_count": 1228,
+        "jackpot_flag_rate": 0.35055666571510136,
+        "n": {
+          "count": 3503,
+          "max": 1093.0,
+          "median": 51.0,
+          "min": 24.0,
+          "p10": 27.0,
+          "p90": 201.80000000000018
+        },
+        "n_1095": {
+          "count": 3503,
+          "max": 1090.0,
+          "median": 51.0,
+          "min": 23.0,
+          "p10": 26.0,
+          "p90": 201.0
+        },
+        "n_365": {
+          "count": 3503,
+          "max": 434.0,
+          "median": 17.0,
+          "min": 0.0,
+          "p10": 6.0,
+          "p90": 71.0
+        },
+        "n_730": {
+          "count": 3503,
+          "max": 815.0,
+          "median": 33.0,
+          "min": 0.0,
+          "p10": 16.0,
+          "p90": 138.80000000000018
+        },
+        "place_roi": {
+          "count": 3503,
+          "max": 562.8571,
+          "median": 105.0877,
+          "min": 17.5,
+          "p10": 64.05226,
+          "p90": 173.44286
+        },
+        "place_roi_1095": {
+          "count": 3503,
+          "max": 562.8571,
+          "median": 104.9057,
+          "min": 17.5,
+          "p10": 64.10130000000001,
+          "p90": 174.28042
+        },
+        "place_roi_365": {
+          "count": 3459,
+          "max": 1060.0,
+          "median": 83.3333,
+          "min": 0.0,
+          "p10": 9.857140000000008,
+          "p90": 200.30558000000005
+        },
+        "place_roi_730": {
+          "count": 3499,
+          "max": 745.3846,
+          "median": 96.4,
+          "min": 0.0,
+          "p10": 45.4909,
+          "p90": 190.0
+        },
+        "places": {
+          "count": 3503,
+          "max": 302.0,
+          "median": 12.0,
+          "min": 2.0,
+          "p10": 5.0,
+          "p90": 45.0
+        },
+        "templates_evaluated": 60,
+        "terminal_groups_evaluated": 26454,
+        "top1_place_contribution": {
+          "count": 3503,
+          "max": 0.937186,
+          "median": 0.311914,
+          "min": 0.040556,
+          "p10": 0.1346878,
+          "p90": 0.6255640000000001
+        },
+        "top1_win_contribution": {
+          "count": 3415,
+          "max": 1.0,
+          "median": 0.59733,
+          "min": 0.107849,
+          "p10": 0.3033862,
+          "p90": 0.9375378
+        },
+        "win_roi": {
+          "count": 3503,
+          "max": 1371.8919,
+          "median": 157.25,
+          "min": 0.0,
+          "p10": 36.317040000000006,
+          "p90": 323.14670000000024
+        },
+        "win_roi_1095": {
+          "count": 3503,
+          "max": 1371.8919,
+          "median": 157.5,
+          "min": 0.0,
+          "p10": 36.4009,
+          "p90": 327.7733800000001
+        },
+        "win_roi_365": {
+          "count": 3459,
+          "max": 2600.0,
+          "median": 68.0851,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 418.05240000000003
+        },
+        "win_roi_730": {
+          "count": 3499,
+          "max": 2292.5,
+          "median": 138.4615,
+          "min": 0.0,
+          "p10": 9.61232,
+          "p90": 380.0
+        },
+        "wins": {
+          "count": 3503,
+          "max": 117.0,
+          "median": 5.0,
+          "min": 0.0,
+          "p10": 2.0,
+          "p90": 16.0
+        }
+      },
+      "PEDIGREE_BASELINE:D3": {
+        "candidate_count": 31211,
+        "candidate_rate_per_terminal_group": 0.1079875719663419,
+        "jackpot_flag_count": 12890,
+        "jackpot_flag_rate": 0.41299541828201597,
+        "n": {
+          "count": 31211,
+          "max": 2487.0,
+          "median": 43.0,
+          "min": 22.0,
+          "p10": 24.0,
+          "p90": 151.0
+        },
+        "n_1095": {
+          "count": 31211,
+          "max": 2472.0,
+          "median": 43.0,
+          "min": 20.0,
+          "p10": 24.0,
+          "p90": 151.0
+        },
+        "n_365": {
+          "count": 31211,
+          "max": 836.0,
+          "median": 15.0,
+          "min": 0.0,
+          "p10": 5.0,
+          "p90": 53.0
+        },
+        "n_730": {
+          "count": 31211,
+          "max": 1583.0,
+          "median": 29.0,
+          "min": 0.0,
+          "p10": 14.0,
+          "p90": 101.0
+        },
+        "place_roi": {
+          "count": 31211,
+          "max": 884.0909,
+          "median": 108.5246,
+          "min": 19.3651,
+          "p10": 66.0,
+          "p90": 197.7083
+        },
+        "place_roi_1095": {
+          "count": 31211,
+          "max": 884.0909,
+          "median": 108.5417,
+          "min": 19.3651,
+          "p10": 65.9259,
+          "p90": 198.0769
+        },
+        "place_roi_365": {
+          "count": 30983,
+          "max": 3200.0,
+          "median": 86.3636,
+          "min": 0.0,
+          "p10": 15.0,
+          "p90": 227.5
+        },
+        "place_roi_730": {
+          "count": 31192,
+          "max": 912.0,
+          "median": 101.6667,
+          "min": 0.0,
+          "p10": 48.0952,
+          "p90": 214.7368
+        },
+        "places": {
+          "count": 31211,
+          "max": 602.0,
+          "median": 11.0,
+          "min": 2.0,
+          "p10": 5.0,
+          "p90": 35.0
+        },
+        "templates_evaluated": 396,
+        "terminal_groups_evaluated": 289024,
+        "top1_place_contribution": {
+          "count": 31211,
+          "max": 0.979348,
+          "median": 0.341289,
+          "min": 0.020099,
+          "p10": 0.156342,
+          "p90": 0.652278
+        },
+        "top1_win_contribution": {
+          "count": 30402,
+          "max": 1.0,
+          "median": 0.641788,
+          "min": 0.067884,
+          "p10": 0.337607,
+          "p90": 0.956602
+        },
+        "win_roi": {
+          "count": 31211,
+          "max": 1634.4,
+          "median": 183.9815,
+          "min": 0.0,
+          "p10": 40.4918,
+          "p90": 387.3913
+        },
+        "win_roi_1095": {
+          "count": 31211,
+          "max": 1634.4,
+          "median": 183.8889,
+          "min": 0.0,
+          "p10": 40.0,
+          "p90": 387.9167
+        },
+        "win_roi_365": {
+          "count": 30983,
+          "max": 21190.0,
+          "median": 77.7778,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 563.3333
+        },
+        "win_roi_730": {
+          "count": 31192,
+          "max": 3668.0,
+          "median": 160.40550000000002,
+          "min": 0.0,
+          "p10": 10.9091,
+          "p90": 468.08707000000004
+        },
+        "wins": {
+          "count": 31211,
+          "max": 219.0,
+          "median": 4.0,
+          "min": 0.0,
+          "p10": 2.0,
+          "p90": 13.0
+        }
+      },
+      "PEDIGREE_INTERACTION:D2": {
+        "candidate_count": 350,
+        "candidate_rate_per_terminal_group": 0.06951340615690169,
+        "jackpot_flag_count": 176,
+        "jackpot_flag_rate": 0.5028571428571429,
+        "n": {
+          "count": 350,
+          "max": 511.0,
+          "median": 28.0,
+          "min": 18.0,
+          "p10": 19.0,
+          "p90": 87.10000000000002
+        },
+        "n_1095": {
+          "count": 350,
+          "max": 508.0,
+          "median": 28.0,
+          "min": 18.0,
+          "p10": 19.0,
+          "p90": 87.0
+        },
+        "n_365": {
+          "count": 350,
+          "max": 188.0,
+          "median": 10.5,
+          "min": 0.0,
+          "p10": 5.0,
+          "p90": 33.0
+        },
+        "n_730": {
+          "count": 350,
+          "max": 363.0,
+          "median": 20.0,
+          "min": 0.0,
+          "p10": 11.0,
+          "p90": 58.0
+        },
+        "place_roi": {
+          "count": 350,
+          "max": 431.2903,
+          "median": 126.95455,
+          "min": 27.8571,
+          "p10": 75.46051,
+          "p90": 241.16111000000038
+        },
+        "place_roi_1095": {
+          "count": 350,
+          "max": 431.2903,
+          "median": 126.95455,
+          "min": 21.8519,
+          "p10": 75.46051,
+          "p90": 241.16111000000038
+        },
+        "place_roi_365": {
+          "count": 346,
+          "max": 708.3333,
+          "median": 92.13915,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 246.0606
+        },
+        "place_roi_730": {
+          "count": 348,
+          "max": 590.0,
+          "median": 118.3974,
+          "min": 0.0,
+          "p10": 54.13078000000001,
+          "p90": 225.0
+        },
+        "places": {
+          "count": 350,
+          "max": 124.0,
+          "median": 8.0,
+          "min": 2.0,
+          "p10": 3.0,
+          "p90": 22.0
+        },
+        "templates_evaluated": 4,
+        "terminal_groups_evaluated": 5035,
+        "top1_place_contribution": {
+          "count": 350,
+          "max": 0.94086,
+          "median": 0.4043595,
+          "min": 0.077117,
+          "p10": 0.198138,
+          "p90": 0.7003428
+        },
+        "top1_win_contribution": {
+          "count": 340,
+          "max": 1.0,
+          "median": 0.718695,
+          "min": 0.117026,
+          "p10": 0.3874229,
+          "p90": 1.0
+        },
+        "win_roi": {
+          "count": 350,
+          "max": 1309.5238,
+          "median": 259.47675000000004,
+          "min": 0.0,
+          "p10": 49.41576,
+          "p90": 568.8788600000003
+        },
+        "win_roi_1095": {
+          "count": 350,
+          "max": 1372.7778,
+          "median": 258.3983,
+          "min": 0.0,
+          "p10": 48.77274,
+          "p90": 568.8788600000003
+        },
+        "win_roi_365": {
+          "count": 346,
+          "max": 2462.0,
+          "median": 100.5,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 746.16665
+        },
+        "win_roi_730": {
+          "count": 348,
+          "max": 1703.6364,
+          "median": 223.1111,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 654.21884
+        },
+        "wins": {
+          "count": 350,
+          "max": 46.0,
+          "median": 3.0,
+          "min": 0.0,
+          "p10": 1.0,
+          "p90": 8.0
+        }
+      },
+      "PEDIGREE_INTERACTION:D3": {
+        "candidate_count": 5948,
+        "candidate_rate_per_terminal_group": 0.0697835396257406,
+        "jackpot_flag_count": 3266,
+        "jackpot_flag_rate": 0.5490921318090114,
+        "n": {
+          "count": 5948,
+          "max": 781.0,
+          "median": 25.0,
+          "min": 16.0,
+          "p10": 17.0,
+          "p90": 76.0
+        },
+        "n_1095": {
+          "count": 5948,
+          "max": 780.0,
+          "median": 25.0,
+          "min": 15.0,
+          "p10": 17.0,
+          "p90": 76.0
+        },
+        "n_365": {
+          "count": 5948,
+          "max": 301.0,
+          "median": 9.0,
+          "min": 0.0,
+          "p10": 3.0,
+          "p90": 28.0
+        },
+        "n_730": {
+          "count": 5948,
+          "max": 548.0,
+          "median": 18.0,
+          "min": 0.0,
+          "p10": 10.0,
+          "p90": 52.0
+        },
+        "place_roi": {
+          "count": 5948,
+          "max": 646.0,
+          "median": 126.6667,
+          "min": 23.125,
+          "p10": 72.40518,
+          "p90": 258.92587
+        },
+        "place_roi_1095": {
+          "count": 5948,
+          "max": 646.0,
+          "median": 126.5728,
+          "min": 23.125,
+          "p10": 72.16705,
+          "p90": 259.29488000000003
+        },
+        "place_roi_365": {
+          "count": 5780,
+          "max": 4350.0,
+          "median": 95.21164999999999,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 285.0217400000001
+        },
+        "place_roi_730": {
+          "count": 5929,
+          "max": 1520.0,
+          "median": 118.8235,
+          "min": 0.0,
+          "p10": 49.323780000000006,
+          "p90": 274.43333999999993
+        },
+        "places": {
+          "count": 5948,
+          "max": 224.0,
+          "median": 7.0,
+          "min": 2.0,
+          "p10": 3.0,
+          "p90": 18.0
+        },
+        "templates_evaluated": 60,
+        "terminal_groups_evaluated": 85235,
+        "top1_place_contribution": {
+          "count": 5948,
+          "max": 0.970109,
+          "median": 0.4249145,
+          "min": 0.03951,
+          "p10": 0.2175106,
+          "p90": 0.7340080000000001
+        },
+        "top1_win_contribution": {
+          "count": 5734,
+          "max": 1.0,
+          "median": 0.7560475,
+          "min": 0.111059,
+          "p10": 0.42598630000000004,
+          "p90": 1.0
+        },
+        "win_roi": {
+          "count": 5948,
+          "max": 2255.0,
+          "median": 261.4706,
+          "min": 0.0,
+          "p10": 40.613960000000006,
+          "p90": 555.2941
+        },
+        "win_roi_1095": {
+          "count": 5948,
+          "max": 2255.0,
+          "median": 261.4706,
+          "min": 0.0,
+          "p10": 40.0,
+          "p90": 556.04614
+        },
+        "win_roi_365": {
+          "count": 5780,
+          "max": 7050.0,
+          "median": 80.7692,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 843.75
+        },
+        "win_roi_730": {
+          "count": 5929,
+          "max": 3056.6667,
+          "median": 232.8571,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 665.6363199999998
+        },
+        "wins": {
+          "count": 5948,
+          "max": 90.0,
+          "median": 3.0,
+          "min": 0.0,
+          "p10": 1.0,
+          "p90": 7.0
+        }
+      },
+      "TRANSITION_PRIORITY:D2": {
+        "candidate_count": 932,
+        "candidate_rate_per_terminal_group": 0.08905025797821517,
+        "jackpot_flag_count": 428,
+        "jackpot_flag_rate": 0.4592274678111588,
+        "n": {
+          "count": 932,
+          "max": 1138.0,
+          "median": 36.0,
+          "min": 12.0,
+          "p10": 14.100000000000009,
+          "p90": 163.89999999999998
+        },
+        "n_1095": {
+          "count": 932,
+          "max": 1138.0,
+          "median": 36.0,
+          "min": 11.0,
+          "p10": 14.100000000000009,
+          "p90": 163.79999999999995
+        },
+        "n_365": {
+          "count": 932,
+          "max": 405.0,
+          "median": 13.0,
+          "min": 0.0,
+          "p10": 4.0,
+          "p90": 58.0
+        },
+        "n_730": {
+          "count": 932,
+          "max": 761.0,
+          "median": 24.0,
+          "min": 3.0,
+          "p10": 9.0,
+          "p90": 113.89999999999998
+        },
+        "place_roi": {
+          "count": 932,
+          "max": 734.4444,
+          "median": 111.736,
+          "min": 22.2222,
+          "p10": 65.76517,
+          "p90": 231.17763
+        },
+        "place_roi_1095": {
+          "count": 932,
+          "max": 734.4444,
+          "median": 111.6446,
+          "min": 22.8571,
+          "p10": 65.23412,
+          "p90": 230.51071
+        },
+        "place_roi_365": {
+          "count": 914,
+          "max": 934.0,
+          "median": 83.05675,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 236.94117
+        },
+        "place_roi_730": {
+          "count": 932,
+          "max": 726.0,
+          "median": 100.32480000000001,
+          "min": 0.0,
+          "p10": 47.2727,
+          "p90": 240.32502999999997
+        },
+        "places": {
+          "count": 932,
+          "max": 229.0,
+          "median": 8.0,
+          "min": 2.0,
+          "p10": 3.0,
+          "p90": 36.0
+        },
+        "templates_evaluated": 59,
+        "terminal_groups_evaluated": 10466,
+        "top1_place_contribution": {
+          "count": 932,
+          "max": 0.960854,
+          "median": 0.3831595,
+          "min": 0.041578,
+          "p10": 0.15139220000000003,
+          "p90": 0.7152238
+        },
+        "top1_win_contribution": {
+          "count": 878,
+          "max": 1.0,
+          "median": 0.6969080000000001,
+          "min": 0.100405,
+          "p10": 0.3303463,
+          "p90": 0.9913186000000008
+        },
+        "win_roi": {
+          "count": 932,
+          "max": 1946.9231,
+          "median": 186.83370000000002,
+          "min": 0.0,
+          "p10": 24.65485000000001,
+          "p90": 425.1701399999998
+        },
+        "win_roi_1095": {
+          "count": 932,
+          "max": 1946.9231,
+          "median": 186.83370000000002,
+          "min": 0.0,
+          "p10": 24.65485000000001,
+          "p90": 426.30584999999974
+        },
+        "win_roi_365": {
+          "count": 914,
+          "max": 3453.3333,
+          "median": 64.9119,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 532.3875800000001
+        },
+        "win_roi_730": {
+          "count": 932,
+          "max": 2812.2222,
+          "median": 157.91405,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 473.50679999999994
+        },
+        "wins": {
+          "count": 932,
+          "max": 80.0,
+          "median": 3.0,
+          "min": 0.0,
+          "p10": 1.0,
+          "p90": 14.0
+        }
+      },
+      "TRANSITION_PRIORITY:D3": {
+        "candidate_count": 26741,
+        "candidate_rate_per_terminal_group": 0.07997547590208305,
+        "jackpot_flag_count": 12956,
+        "jackpot_flag_rate": 0.48449945776148984,
+        "n": {
+          "count": 26741,
+          "max": 3218.0,
+          "median": 30.0,
+          "min": 10.0,
+          "p10": 12.0,
+          "p90": 181.0
+        },
+        "n_1095": {
+          "count": 26741,
+          "max": 3208.0,
+          "median": 30.0,
+          "min": 9.0,
+          "p10": 12.0,
+          "p90": 181.0
+        },
+        "n_365": {
+          "count": 26741,
+          "max": 1080.0,
+          "median": 10.0,
+          "min": 0.0,
+          "p10": 3.0,
+          "p90": 61.0
+        },
+        "n_730": {
+          "count": 26741,
+          "max": 2141.0,
+          "median": 20.0,
+          "min": 0.0,
+          "p10": 7.0,
+          "p90": 119.0
+        },
+        "place_roi": {
+          "count": 26741,
+          "max": 1729.0909,
+          "median": 116.1017,
+          "min": 19.375,
+          "p10": 67.6471,
+          "p90": 258.3333
+        },
+        "place_roi_1095": {
+          "count": 26741,
+          "max": 1729.0909,
+          "median": 116.0417,
+          "min": 19.375,
+          "p10": 67.4725,
+          "p90": 258.5185
+        },
+        "place_roi_365": {
+          "count": 26257,
+          "max": 3550.0,
+          "median": 88.3069,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 276.0
+        },
+        "place_roi_730": {
+          "count": 26708,
+          "max": 1808.0,
+          "median": 107.7168,
+          "min": 0.0,
+          "p10": 47.642450000000004,
+          "p90": 265.7143
+        },
+        "places": {
+          "count": 26741,
+          "max": 790.0,
+          "median": 7.0,
+          "min": 2.0,
+          "p10": 3.0,
+          "p90": 38.0
+        },
+        "templates_evaluated": 527,
+        "terminal_groups_evaluated": 334365,
+        "top1_place_contribution": {
+          "count": 26741,
+          "max": 0.977223,
+          "median": 0.402098,
+          "min": 0.022545,
+          "p10": 0.152439,
+          "p90": 0.748936
+        },
+        "top1_win_contribution": {
+          "count": 25441,
+          "max": 1.0,
+          "median": 0.709329,
+          "min": 0.070529,
+          "p10": 0.340206,
+          "p90": 1.0
+        },
+        "win_roi": {
+          "count": 26741,
+          "max": 3474.0,
+          "median": 180.0,
+          "min": 0.0,
+          "p10": 30.0,
+          "p90": 537.0
+        },
+        "win_roi_1095": {
+          "count": 26741,
+          "max": 3474.0,
+          "median": 179.1304,
+          "min": 0.0,
+          "p10": 30.0,
+          "p90": 537.2
+        },
+        "win_roi_365": {
+          "count": 26257,
+          "max": 22340.0,
+          "median": 71.2987,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 701.3813600000004
+        },
+        "win_roi_730": {
+          "count": 26708,
+          "max": 7446.6667,
+          "median": 152.9361,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 624.0321299999999
+        },
+        "wins": {
+          "count": 26741,
+          "max": 286.0,
+          "median": 3.0,
+          "min": 0.0,
+          "p10": 1.0,
+          "p90": 14.0
+        }
+      }
+    },
+    "merge_status": "PASS",
+    "peak_rss_kib_max": 709660,
+    "templates_hitting_max_per_template_cap": 490,
+    "zero_candidate_templates": 14
+  },
+  "c2a": {
+    "by_depth_lane_route": [
+      {
+        "c2_entry_route": "ESTABLISHED_CURRENT",
+        "count": 876,
+        "depth": 2,
+        "search_lane": "PEDIGREE_BASELINE"
+      },
+      {
+        "c2_entry_route": "ESTABLISHED_CURRENT",
+        "count": 134,
+        "depth": 2,
+        "search_lane": "PEDIGREE_INTERACTION"
+      },
+      {
+        "c2_entry_route": "ESTABLISHED_CURRENT",
+        "count": 240,
+        "depth": 2,
+        "search_lane": "TRANSITION_PRIORITY"
+      },
+      {
+        "c2_entry_route": "ESTABLISHED_CURRENT",
+        "count": 9009,
+        "depth": 3,
+        "search_lane": "PEDIGREE_BASELINE"
+      },
+      {
+        "c2_entry_route": "ESTABLISHED_CURRENT",
+        "count": 1944,
+        "depth": 3,
+        "search_lane": "PEDIGREE_INTERACTION"
+      },
+      {
+        "c2_entry_route": "ESTABLISHED_CURRENT",
+        "count": 5604,
+        "depth": 3,
+        "search_lane": "TRANSITION_PRIORITY"
+      }
+    ],
+    "c1_candidate_count": 68685,
+    "c2_entry_route_counts": {
+      "ESTABLISHED_CURRENT": 17807
+    },
+    "c2_shortlist_count": 17807,
+    "child_parent_map_count": 52171,
+    "emerging_high_order_count": 0,
+    "production_serving_changed": false,
+    "stage": "V04_STAGE_C2A_SHORTLIST_AND_PARENT_REQUESTS",
+    "status": "PASS",
+    "unique_metric_request_count": 30733,
+    "unique_parent_metric_request_count": 14129
+  },
+  "c2b": {
+    "discovery_end": "2025-12-28",
+    "discovery_start": "2022-12-28",
+    "duplicate_requests": 0,
+    "duplicate_result_ids": 0,
+    "elapsed_seconds": 34.022663386000204,
+    "extra_results": 0,
+    "feature_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+    "missing_requests": 0,
+    "missing_value_branches": 0,
+    "peak_rss_kib": 615288,
+    "request_count": 30733,
+    "request_sha256": "be76f7ecf8ccf453c3b7c1f0b23ca4d4db2931bc89a8c451a9086d05a840a371",
+    "result_count": 30733,
+    "shard_count": 1,
+    "status": "PASS",
+    "unique_request_ids": 30733,
+    "unique_result_ids": 30733
+  },
+  "execution_code_base_commit": "21f7c58116bbc8ee75f1d05ccfebb60ae66f0821",
+  "execution_source_file_sha256": {
+    "c1_evaluator": "dfa8476d8f5c003386c03bb406f1231bc3f40786bf6161f53a3ef5f9c53347e8",
+    "c1_merger": "821bebaf97bfd0514ca898c40b14320d37e1b89954575e9b1b33a29dd50abf00",
+    "c2a_pyarrow_replica": "d77a996e5b3b4c81d46af0f59534e10a5450af83b8464b0697044d8f61c72e56",
+    "c2b_evaluator": "1144c58a5e63792487c730bc3b252e9dc8ac7c610d801c5ec3672c91b3f329fb",
+    "date_window_helper": "797903a1c8a1ca75c97e370e65db2a2e5fc3eb052478fde76a5586670fb782c3",
+    "parent_join_report_builder": "983db34c585772c300089919bad4fbb944295c21a8bf082f8b460ea77d88ab17",
+    "planner": "c2f439c0bfa3ee601b17f36894a3398eb5164887e1b5785f1e359f72a0f54cf9"
+  },
+  "frozen_inputs": {
+    "feature_artifact_zip_sha256": "19d713da2e6ebf57965de98952fbf18d79f9ddfd5c1996833af3267b1a53f725",
+    "feature_mart_artifact": "jrdb-edge-feature-mart-parquet-36116777782",
+    "feature_mart_generation": "edge_feature_mart_v0_2_g20260925_pq1",
+    "feature_mart_run_id": "36116777782",
+    "feature_parquet_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+    "feature_rows": 781161,
+    "stage_b_artifact": "jrdb-edge-v04-stage-b-36262821119",
+    "stage_b_artifact_zip_sha256": "5e71e15aba78228404441790bf9a67e7cd461bed542bc510ee6e8744de20805d",
+    "stage_b_run_id": "36262821119",
+    "template_catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+    "template_count": 47371
+  },
+  "git_outputs": {
+    "r1_report.md": {
+      "bytes": 14552,
+      "sha256": "15a327d715dca592585df87dd3336204d5c6a2cf70c5aef3dec87bf9ea6c8b34"
+    },
+    "shortlist.csv": {
+      "bytes": 195895,
+      "sha256": "153f25c30d4abc300658ba6dd205b1db9ed0fe6724a87f6c8cefc34774cf4bc8"
+    }
+  },
+  "incrementality": {
+    "complete_child_parent_rows_outside_git": 17807,
+    "family_summary": {
+      "PEDIGREE_CROSS": {
+        "c1_candidates": 41012,
+        "c2_shortlist": 11963,
+        "incrementality_labels": {
+          "INCREMENTAL_CANDIDATE": 266,
+          "JACKPOT_DEPENDENT": 11629,
+          "MIXED_PARENT_INCREMENTALITY": 68
+        }
+      },
+      "PEDIGREE_TRANSITION_CROSS": {
+        "c1_candidates": 18531,
+        "c2_shortlist": 4204,
+        "incrementality_labels": {
+          "INCREMENTAL_CANDIDATE": 81,
+          "JACKPOT_DEPENDENT": 4106,
+          "MIXED_PARENT_INCREMENTALITY": 17
+        }
+      },
+      "TRANSITION_CROSS": {
+        "c1_candidates": 9142,
+        "c2_shortlist": 1640,
+        "incrementality_labels": {
+          "INCREMENTAL_CANDIDATE": 20,
+          "JACKPOT_DEPENDENT": 1615,
+          "MIXED_PARENT_INCREMENTALITY": 5
+        }
+      }
+    },
+    "label_counts": {
+      "INCREMENTAL_CANDIDATE": 367,
+      "JACKPOT_DEPENDENT": 17350,
+      "MIXED_PARENT_INCREMENTALITY": 90
+    },
+    "shortlist_incremental_rows": 100,
+    "shortlist_mixed_rows": 0,
+    "shortlist_rows": 100,
+    "temporal_warning_counts": {
+      "730D_DIRECTION_CONTRADICTS_FULL_3Y": 3402,
+      "NO_RECENT_365D_SUPPORT": 66,
+      "TOP3_EXCLUSION_REMOVES_BOTH_LANES": 17350,
+      "VALUE_CONFINED_TO_ONE_YEAR": 226
+    }
+  },
+  "instruction_commit": "8259b357fcf72bede30ca6723dee7ddc6a9a9bbc",
+  "instruction_file_on_main_blob_sha": "0f7787aa4eaa36fae91568993d28ddfe5b9b9c4c",
+  "no_market_generation": true,
+  "pending_merge_github_state": {
+    "merge_commit": "c8628f4c1dd571d6eea3436da21262f5dc53c171",
+    "open_prs_at_preflight": [],
+    "pr_1799_state": "MERGED",
+    "relevance": "Codex Cloud Git operation rules were followed; the PR was confirmed merged during execution."
+  },
+  "per_shard": [
+    {
+      "admitted_before_cap": 5699,
+      "audit_status": "PASS",
+      "catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+      "depth": 2,
+      "elapsed_seconds": 11.149378848000197,
+      "estimated_cost": 478856,
+      "feature_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+      "final_candidate_count": 3503,
+      "lane": "PEDIGREE_BASELINE",
+      "output_bytes": 395684,
+      "peak_rss_kib": 613636,
+      "plan_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+      "shard_id": "pedigree_baseline-d2-s000",
+      "templates": 60,
+      "terminal_groups_evaluated": 26454
+    },
+    {
+      "admitted_before_cap": 69167,
+      "audit_status": "PASS",
+      "catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+      "depth": 3,
+      "elapsed_seconds": 28.41298456200002,
+      "estimated_cost": 24629721,
+      "feature_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+      "final_candidate_count": 31211,
+      "lane": "PEDIGREE_BASELINE",
+      "output_bytes": 3177646,
+      "peak_rss_kib": 709660,
+      "plan_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+      "shard_id": "pedigree_baseline-d3-s000",
+      "templates": 396,
+      "terminal_groups_evaluated": 289024
+    },
+    {
+      "admitted_before_cap": 1429,
+      "audit_status": "PASS",
+      "catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+      "depth": 2,
+      "elapsed_seconds": 2.5447993459997633,
+      "estimated_cost": 965219,
+      "feature_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+      "final_candidate_count": 350,
+      "lane": "PEDIGREE_INTERACTION",
+      "output_bytes": 53700,
+      "peak_rss_kib": 598520,
+      "plan_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+      "shard_id": "pedigree_interaction-d2-s000",
+      "templates": 4,
+      "terminal_groups_evaluated": 5035
+    },
+    {
+      "admitted_before_cap": 23557,
+      "audit_status": "PASS",
+      "catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+      "depth": 3,
+      "elapsed_seconds": 10.586219012000129,
+      "estimated_cost": 27599991,
+      "feature_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+      "final_candidate_count": 5948,
+      "lane": "PEDIGREE_INTERACTION",
+      "output_bytes": 569267,
+      "peak_rss_kib": 636752,
+      "plan_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+      "shard_id": "pedigree_interaction-d3-s000",
+      "templates": 60,
+      "terminal_groups_evaluated": 85235
+    },
+    {
+      "admitted_before_cap": 2086,
+      "audit_status": "PASS",
+      "catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+      "depth": 2,
+      "elapsed_seconds": 3.0801788800004033,
+      "estimated_cost": 84255,
+      "feature_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+      "final_candidate_count": 932,
+      "lane": "TRANSITION_PRIORITY",
+      "output_bytes": 120543,
+      "peak_rss_kib": 611240,
+      "plan_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+      "shard_id": "transition_priority-d2-s000",
+      "templates": 59,
+      "terminal_groups_evaluated": 10466
+    },
+    {
+      "admitted_before_cap": 75768,
+      "audit_status": "PASS",
+      "catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+      "depth": 3,
+      "elapsed_seconds": 33.65414538400046,
+      "estimated_cost": 17815575,
+      "feature_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+      "final_candidate_count": 26741,
+      "lane": "TRANSITION_PRIORITY",
+      "output_bytes": 2627570,
+      "peak_rss_kib": 688884,
+      "plan_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+      "shard_id": "transition_priority-d3-s000",
+      "templates": 527,
+      "terminal_groups_evaluated": 334365
+    }
+  ],
+  "planner": {
+    "plan_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+    "same_shard_assignment_as_preflight": true,
+    "selected_by_depth": {
+      "2": 123,
+      "3": 983
+    },
+    "selected_by_lane": {
+      "PEDIGREE_BASELINE": 456,
+      "PEDIGREE_INTERACTION": 64,
+      "TRANSITION_PRIORITY": 586
+    },
+    "selected_templates": 1106,
+    "shards": 6,
+    "source_catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba"
+  },
+  "production_unchanged": true,
+  "repository_main_base_commit": "bdb6fef165847d5f5a999b6c11b2920d43356268",
+  "request_parameters": {
+    "execution_route": "LOCAL_SEQUENTIAL",
+    "lanes": [
+      "TRANSITION_PRIORITY",
+      "PEDIGREE_INTERACTION",
+      "PEDIGREE_BASELINE"
+    ],
+    "max_depth": 3,
+    "max_per_template": 100,
+    "min_depth": 2,
+    "min_place_roi": 105,
+    "min_win_roi": 110,
+    "parallelism": 1
+  },
+  "schema_version": "jrdb-edge-v04-r1-wave-a-3y-summary-v1",
+  "source_tree_note": "Preflight implementation and result files were already present as uncommitted workspace changes; execution used the working tree versions of planner/C1/C2B scripts.",
+  "status": "DONE",
+  "window": {
+    "as_of_date": "2025-12-28",
+    "discovery_years": 3,
+    "inclusive_end": "2025-12-28",
+    "inclusive_start": "2022-12-28",
+    "rows_in_window": 143102
+  }
+}
