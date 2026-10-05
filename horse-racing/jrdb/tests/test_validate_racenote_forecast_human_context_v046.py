@@ -6,7 +6,7 @@ from pathlib import Path
 SRC = Path(__file__).resolve().parents[1] / "src"
 sys.path.insert(0, str(SRC))
 
-from validate_racenote_forecast_human_context import validate_record
+from validate_racenote_forecast_human_context import audit_reader_prose, validate_record
 
 
 def _horse(n: int, name: str) -> dict:
@@ -105,3 +105,37 @@ def test_v046_final_delta2_must_match_marks() -> None:
     record["decision_trace"]["support_boundary"]["final_delta2"] = _horse(6, "Alternative")
     errors = validate_record(record)
     assert any("support_boundary final_delta2 must equal final △2" in x for x in errors)
+
+
+def test_v046_prose_internal_terms_are_advisory_not_failure() -> None:
+    rows = []
+    for i in range(8):
+        r = _record()
+        r["identity"]["race_no"] = i + 1
+        r["prediction"]["reader_facing_reason"] = (
+            f"◎{i+1}の前走内容を中心に評価。○は安定し、▲は流れが向けば差し込める。"
+            "RRDBでも見直せ、相手は2頭まで。"
+        )
+        rows.append(r)
+    errors, report = audit_reader_prose(rows)
+    assert errors == []
+    assert report["status"] == "PASS"
+    assert report["direct_internal_term_counts"]["RRDB"] == 8
+    assert report["advisories"]
+
+
+def test_v046_prose_repeated_mark_order_is_advisory() -> None:
+    rows = []
+    for i in range(8):
+        r = _record()
+        r["identity"]["race_no"] = i + 1
+        r["prediction"]["reader_facing_reason"] = (
+            f"◎{i+1}は前走内容を評価。○{i+2}は条件実績があり、"
+            f"▲{i+3}は展開が向けば伸びる。{i+4}と{i+5}まで。"
+        )
+        rows.append(r)
+    errors, report = audit_reader_prose(rows)
+    assert errors == []
+    assert report["ordered_mark_comment_count"] == 8
+    assert report["generic_made_ending_count"] == 8
+    assert len(report["advisories"]) >= 2
