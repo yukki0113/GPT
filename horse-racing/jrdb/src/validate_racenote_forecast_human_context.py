@@ -549,6 +549,7 @@ def validate_record(r: dict[str,Any]) -> list[str]:
 
 def audit_reader_prose(rows:list[dict[str,Any]]) -> tuple[list[str],dict[str,Any]]:
     errors=[]
+    advisories=[]
     comments=[str(((r.get("prediction") or {}).get("reader_facing_reason") or "")).strip() for r in rows]
     comments=[x for x in comments if x]
     n=len(comments)
@@ -570,6 +571,26 @@ def audit_reader_prose(rows:list[dict[str,Any]]) -> tuple[list[str],dict[str,Any
     exact_unique=len(set(comments))
     if n >= 6 and exact_unique / n < .90:
         errors.append(f"TURN: reader_facing_reason unique ratio too low ({exact_unique}/{n})")
+
+    direct_internal={
+        "RRDB": sum("RRDB" in c for c in comments),
+        "IDM": sum("IDM" in c for c in comments),
+        "指数": sum("指数" in c for c in comments),
+    }
+    for term,count in direct_internal.items():
+        if count:
+            advisories.append(f"reader-facing prose directly exposes {term} in {count}/{n} races; prefer ordinary racing language unless the term itself is informative")
+
+    mark_order_count=sum(
+        ("◎" in c and "○" in c and "▲" in c and c.index("◎") < c.index("○") < c.index("▲"))
+        for c in comments
+    )
+    made_ending_count=sum(bool(re.search(r"(?:まで|までを相手(?:に)?|までを押さえる?)。?$", c)) for c in comments)
+    if n >= 8 and mark_order_count / n >= .80:
+        advisories.append(f"reader-facing prose follows ◎→○→▲ order in {mark_order_count}/{n} races; vary structure from race evidence")
+    if n >= 8 and made_ending_count / n >= .50:
+        advisories.append(f"reader-facing prose uses a generic '...まで' ending in {made_ending_count}/{n} races; omit unsupported mark enumeration")
+
     return errors,{
         "status":"PASS" if not errors else "FAIL",
         "comment_count":n,
@@ -577,6 +598,10 @@ def audit_reader_prose(rows:list[dict[str,Any]]) -> tuple[list[str],dict[str,Any
         "one_paragraph_count":sum("\n" not in c for c in comments),
         "repeat_threshold":threshold,
         "repeated_canned_phrases":repeated,
+        "direct_internal_term_counts":direct_internal,
+        "ordered_mark_comment_count":mark_order_count,
+        "generic_made_ending_count":made_ending_count,
+        "advisories":advisories,
     }
 
 def audit_turn(rows:list[dict[str,Any]]) -> dict[str,Any]:
