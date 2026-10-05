@@ -97,6 +97,35 @@ GitHub正本module取得
 
 正本moduleと同等の処理を独自に再実装して置き換えないことを原則とします。
 
+#### C-1. Parquet / DuckDB managed-runtime fallback
+
+Parquet / DuckDB処理では repository共通 `tools/data-storage/` を最初にresolveする。
+
+標準判定:
+
+```text
+tools/data-storage/README.md確認
+-> .venv-data-storage + check-deps
+-> DEPENDENCY_MISSINGなら requirements から通常repairを1回
+-> PASSならCとしてlocal実行
+-> managed runtimeのproxy/network policyでrepair自体がblocked
+   -> 入力がcheckout / Actions artifactから再現可能か確認
+   -> YES: [DATA_STORAGE_FALLBACK] Issue + .github/workflows/data_storage_fallback_issue.yml
+   -> NO: reproducible input routeを先に解決
+```
+
+Actions fallbackは、local環境に依存を入れられない場合の**実行環境代替**であり、scientific semanticsの代替ではない。DuckDB SQLが正本ならDuckDB SQLを維持し、PyArrow/pandas等への暗黙再実装で回避しない。
+
+Fallback正本:
+
+- `tools/data-storage/docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md`
+- `tools/data-storage/scripts/data_storage_fallback_runner.py`
+- `.github/workflows/data_storage_fallback_issue.yml`
+
+Fallback requestはowner起票の `[DATA_STORAGE_FALLBACK]` Issueに限定し、任意shellではなくrepo内Python entrypoint + argv配列を実行する。結果はrun/artifact/auditを確認してから後続判断に使う。
+
+このfallbackは、Secrets・formal publication・project固有guardが必要なD系workflowを置き換えない。
+
 ### D. Actions-Native Execution
 
 Issue / GitHub Actionsを維持する対象:
@@ -157,6 +186,7 @@ Dを選んだ場合、Issue作成前に以下を確認します。
 - external transient: retry / backoff
 - domain validation: 原因確認。正常なfail-closedを成功扱いに変えない
 - implementation error: 実装修正
+- managed-runtime dependency transport failure: Parquet / DuckDB処理では `tools/data-storage/` のlocal bootstrapを1回確認し、proxy/network policyで依存取得不能なら `[DATA_STORAGE_FALLBACK]` Actions経路へ切り替える。canonical DuckDB/Parquet処理を別engineへ暗黙再実装しない。
 
 同じrequestを理由確認なしでrerunしません。
 
