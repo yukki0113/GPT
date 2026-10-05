@@ -1,0 +1,692 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "race_model": "京都ダート1800m未勝利。9番の前走2着IDM45と今回の抜群の調教が明確に抜ける。1番は同条件4着と上昇調教、4番は芝からの初ダートで能力値以上の変化余地を取り、以下は既存ダート実績を比較する。",
+    "marks": [
+      9,
+      1,
+      4,
+      6,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "前走京都1800m2着IDM45。総合51.3、調教23.5で今回の完成度は一枚上。"
+      },
+      {
+        "horse_no": 1,
+        "case": "京都1800m4着IDM33があり、今回調教上昇。砂被りは課題でも外へ出せれば相手筆頭。"
+      },
+      {
+        "horse_no": 6,
+        "case": "京都1800mでIDM29前後を出しており、決め手不足でも相手圏の基礎実績はある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "東京1600m6着などダートで大崩れせず、上位が崩れた際の5頭目として残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "芝ではIDM31〜32を出しており、調教も良好。初ダートが刺激になれば既走ダート組を一気に上回る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番は前走芝でIDM28まで上げたが、過去ダートで大敗があり、今回は8番の近走ダート安定度を優先した。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 4,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 6,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 8,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎9キリオスは前走2着の内容と今回の抜群の仕上がりから中心不動。○1ワルトシュタインは同条件実績と上昇調教、▲4トランスマリーンは初ダートの変わり身を狙う。6と8は既存ダート実績で相手へ。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "race_model": "京都ダート1900m未勝利で、7番の先行力と基礎能力が中心。6番は出遅れながら長く脚を使った前走、5番は同条件5着があり、距離経験を重視。3番は初ダートの上振れ、8番は近走1700mの末脚で補完する。",
+    "marks": [
+      7,
+      6,
+      5,
+      3,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "阪神1800m2着IDM40、総合47.6。調教上昇も大きく、先行して押し切る形が最も描きやすい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "前走京都1800mで最後方から3着IDM33。1900mでも持続脚が生きれば逆転圏。"
+      },
+      {
+        "horse_no": 3,
+        "case": "京都1900m5着IDM33の直接実績があり、上昇調教も好材料。"
+      },
+      {
+        "horse_no": 8,
+        "case": "小倉1700m6着IDM31。出遅れ癖はあるが末脚は上位で、流れが向けば5頭圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "芝1800m6着IDM35、調教15.9。初ダートで追走が噛み合えば能力値以上の一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番は京都1800m2着歴があるが直近1700m10着IDM9の落差が大きく、今回は8番の直近内容を上に取った。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎7アビルは前走2着と調教上昇を素直に評価。○6フォーティンブラスは出遅れから長く脚を使った前走が強く、▲5ウォーターハクビは1900m経験が武器。初ダート3と末脚の8まで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "race_model": "京都ダート1400m未勝利。1番は近走の先行力と1700m3着、13番はダート1400〜1700mで安定した内容を持つ。初ダート3番の芝IDM41を単穴に置き、差し勢10・8までを比較する。",
+    "marks": [
+      1,
+      13,
+      3,
+      10,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "ダートでIDM34まで上げ、今回調教上昇。早仕掛けで甘くなった過去1400mを修正できれば中心。"
+      },
+      {
+        "horse_no": 13,
+        "case": "小倉1700m4着IDM36、阪神1400m4着IDM36と地力安定。ダート向き評価もあり相手筆頭。"
+      },
+      {
+        "horse_no": 10,
+        "case": "京都1400m5着IDM35。大きな決め手はないが同条件の再現性で相手に残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "京都1400m4着IDM30があり、前走6着IDM34。差しに回れば上位の崩れを拾える。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "芝1800m4着IDM41と能力上位。初ダートでも調教17.5、血統・体力面が噛み合えば勝ち切りまで。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12番は先行力がある一方、近走の1400m・1200mで直線の甘さが続くため、末脚の8番を5頭目にした。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 1,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 3,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 8,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 12,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎1アニマレイは近走ダートの安定感と調教上昇を評価。○13ジャーナーリアは距離を問わず地力を示し、▲3ポッドリプルは芝の高い能力から初ダートの一発。10と8の差しまでを押さえる。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "race_model": "全馬初出走の京都ダート1800m新馬。過去走がないため、JRDB基礎評価・調教・終い時計・騎手文脈を一体で比較。13番が指数最上位、7・6番が調教と総合評価で続く。",
+    "marks": [
+      13,
+      7,
+      6,
+      3,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "IDM27.1、総合30.3でメンバー最上位。終い11秒7と基礎評価◎が揃い初戦から中心。"
+      },
+      {
+        "horse_no": 7,
+        "case": "総合26.5、調教上昇で11秒9。総合印○も含め仕上がりが良く相手筆頭。"
+      },
+      {
+        "horse_no": 3,
+        "case": "総合25.7で調教12.4、上位上がり想定。初戦から動ける材料が揃う。"
+      },
+      {
+        "horse_no": 9,
+        "case": "終い11秒4と反応面に魅力。指数は一段下でも単騎で脚を使えれば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "総合26.4で騎手評価◎。調教は上位ほど抜けないが、実戦で前に付けられれば一変できる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15番は調教終い11秒9と悪くないが基礎指数が低く、現時点では9番の総合評価を優先した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新馬戦は仕上がりと基礎評価を重視。◎13マルカアルバが指数最上位、○7エイシンキタールン、▲6アチーヴァーが続く。3クリュギストと終いの良い9アキノビューティーまで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "race_model": "京都芝1600m未勝利。先行して高水準を繰り返す5・1番が軸だが、3番の前走は最後方から3着でRRDBも高上がりを支持。11・10もマイル水準に足り、前後双方から組む。",
+    "marks": [
+      5,
+      1,
+      3,
+      11,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "京都1600m4着IDM44。RRDBでも着順以上の内容を支持し、先行力と基礎能力で中心。"
+      },
+      {
+        "horse_no": 1,
+        "case": "中京1600mで2・3着、IDM44まで。先行して崩れず、RRDBもクラス水準以上の反復を支持。"
+      },
+      {
+        "horse_no": 11,
+        "case": "中京1600m4着IDM42。前目で運べる安定感があり、上位2頭と流れを作る側として残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "1400mで3・4着だが直線の内容は良く、調教上昇。1600m延長で追走が楽なら差し込み可能。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "前走京都1600mを最後方から3着。RRDBのREAR_HIGH_LAST3F90と展開不利評価が一致し、流れ一つで差し切れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8番は1600mでIDM34前後を安定して出すが、上位5頭より決め手とピーク値が一枚下と判断した。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 1,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 3,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 10,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 8,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎5サトノカスターニャは前走4着以上の内容と先行力を評価。○1テイエムアイランはマイルで安定。▲3サッポロイクコは最後方からの末脚をRRDBでも高評価し、一発候補。11と10まで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "race_model": "京都ダート1400m1勝クラス。5番の新馬勝ちがIDM50で水準高く、8番も同条件で安定。6番は近走の末脚を評価し、9・4の先行勢まで。前が多いため差しの届く余地も大きい。",
+    "marks": [
+      5,
+      8,
+      6,
+      9,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "京都1400m新馬を後続を突き放してIDM50。TIME_CLASS_PLUS1もあり、昇級でも基礎能力は最上位。"
+      },
+      {
+        "horse_no": 8,
+        "case": "京都1400m1着IDM45、前走2着IDM40。先行・差しの両方で対応でき再現性が高い。"
+      },
+      {
+        "horse_no": 9,
+        "case": "京都1400mで1・2・2着の実績。前走2着は後方から伸び、デキ抜群で巻き返し濃厚。"
+      },
+      {
+        "horse_no": 4,
+        "case": "新馬で京都1400mを完勝IDM42。前走大敗はハイペースで息が入らず、条件回帰で見直せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "京都1400m3着を含め安定し、短距離勝ちIDM44。前が競り合う形でも好位から運べるため逆転余地。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番は福島1150m勝ちIDM46があるが1400mでのピークは一段下。京都同条件勝ちの4番を上に取った。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 6,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 9,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 2,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎5メイショウカクウチは新馬勝ちの内容がこの組でも一枚上。○8ホットシートは同条件で安定、▲6スマートジュリアスはデキ抜群と末脚で逆転候補。9と4の先行力まで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "race_model": "京都芝2400m1勝クラス。7番は同条件2着を含む高水準の反復と今回の仕上がりが抜ける。2番は2200〜2600mで連続2着、9番は長距離で高IDMを反復。前残り候補3と差し6を組み合わせる。",
+    "marks": [
+      7,
+      2,
+      9,
+      3,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "京都2400m2着IDM48、阪神2200m勝ちIDM52。RRDBもクラス以上の反復と末脚を支持し、調教20.0で中心。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2200m2着IDM49、2600m2着IDM52。スタミナと安定性が高く、2400mでも相手筆頭。"
+      },
+      {
+        "horse_no": 3,
+        "case": "阪神2200m勝ちから休養明け。先行力と調教13.5があり、楽に運べれば粘り込み可能。"
+      },
+      {
+        "horse_no": 6,
+        "case": "2400mで3・4着歴があり、前走2000m3着IDM46。展開待ちだが距離延長はプラス。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "京都2400m2着IDM49、阪神2000m2着IDM50など現級水準を反復。後方からでも末脚が確実で一発候補。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番も京都2400m3・4着で安定するが、上位5頭と比べピークIDMと決め手でわずかに劣る。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 9,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 3,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 6,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 1,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎7アスクコモンタレヴは同条件2着と高水準の反復、仕上がりを総合して中心。○2ロードガレリアは長距離安定、▲9ファームツエンティは末脚の反復で逆転候補。3と6まで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "race_model": "京都芝2000m2勝クラス。7番は2000〜2200mでIDM51〜55を安定して出し総合59.7。6番も現級水準のIDM53〜55、4番は先行持続力がある。8・1まで含め能力差の小さい上位集団。",
+    "marks": [
+      7,
+      6,
+      4,
+      8,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "近5走すべてIDM51以上、総合59.7で調教上昇。RRDBの反復能力も強く、軸として最も安定。"
+      },
+      {
+        "horse_no": 6,
+        "case": "1600〜2000mでIDM51〜55を反復し、今回調教上昇。展開利の補正は必要でも能力は上位。"
+      },
+      {
+        "horse_no": 8,
+        "case": "京都2000m4着IDM52。先行してしぶとく、今回も前で運べる点を評価。"
+      },
+      {
+        "horse_no": 1,
+        "case": "京都2000m3着IDM52。追込でも内を捌けるタイプで、展開が締まれば上位へ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "京都2000mでIDM54、近走も51。好位から運べるため、上位の仕掛けが遅れれば押し切る一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番はIDM49前後の地力はあるが近走7・11・8着と決め手を欠き、1番の直近3着を優先した。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 6,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 8,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 1,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎7ヴァリディシームスは現級水準を高く安定して反復。○6ヴィスマール、▲4ディーガレジェンドも能力差は小さい。8バルティカの先行力と、直近3着の1ピンキープロミスまで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "race_model": "京都ダート1200m3勝クラス。7番の逃げ能力がIDM63まで伸び、8番は差しでIDM60。前が速くなる可能性が高いため3番の確実な末脚を単穴に置き、4・9まで展開対応力を重視する。",
+    "marks": [
+      7,
+      8,
+      3,
+      4,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "東京1400mを逃げ切りIDM63、総合69.3。今回デキ抜群で、短縮しても先行力は明確に最上位。"
+      },
+      {
+        "horse_no": 8,
+        "case": "阪神1200m2着IDM60、京都1200m勝ちIDM57。差しで安定し、前が競れば逆転も十分。"
+      },
+      {
+        "horse_no": 4,
+        "case": "京都1200mを2勝し、前走もIDM54。後方から進出でき、前崩れなら上位へ。"
+      },
+      {
+        "horse_no": 9,
+        "case": "中山1200m7着でも展開厳しく、RRDBは着順以上の内容。先行勢の中ではしぶとさを残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "近走1200mでIDM54〜59、最速上がりを反復。出遅れリスクはあるがハイペースならまとめて差し切れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12番は過去IDM62の勝ちがあるが直近42まで落ち、近況の再現性で9番を5頭目にした。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 8,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 3,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 4,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 9,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 12,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎7パラサイコロジーは先行力と現在の完成度が抜ける。○8ゲッティヴィラは差し脚で対抗、▲3エンヤラヴフェイスはハイペースなら一気。4イリフィ、9ムームまでを相手に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "race_model": "3歳オープン芝1600m。4番は阪神重賞級の高いIDM56と京都1600m実績があり一段上。2番は新馬勝ちの内容と調教上昇、8番は東京1600m勝ち。6・7は実戦経験とマイル適性で続く。",
+    "marks": [
+      4,
+      2,
+      8,
+      6,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "阪神1600m4着IDM56、京都1600m2着47。総合59.9と強気の厩舎評価で中心。"
+      },
+      {
+        "horse_no": 2,
+        "case": "京都1800m新馬を勝ちIDM40。調教19.9と強気評価で、2戦目の上積みが大きい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "京都1600m1着IDM43、前走5着44。先行して崩れず、オープンでも相手圏。"
+      },
+      {
+        "horse_no": 7,
+        "case": "阪神1400m勝ちIDM39、前走まで安定。1600m経験もあり相手には残せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "東京1600m新馬勝ちIDM42で、調教上昇・上位上がり想定。キャリア1戦でも能力が伸びれば逆転可能。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番は1400mでIDM46まであるがマイルでの直接実績が薄く、7番のマイル3着歴と上昇度を上に取った。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 2,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 6,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 5,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎4スウィートハピネスは既に高いマイル実績があり中心。○2アドマイヤシュラは2戦目の上積み、▲8フェルミアークは東京1600m勝ちから一発。6と7もマイル適性で相手へ。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "race_model": "京都ダート1900mオープンで高水準馬が揃う。13番は京都1800m連勝でIDM70、12番は差しでIDM68を反復、7番は1900m3着68。16・10も現級級の指数を持ち、前後の能力上位を素直に重視する。",
+    "marks": [
+      13,
+      12,
+      7,
+      16,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "京都1800mをIDM70で逃げ切り、総合79.6。先行有利の1900m傾向とも合い、能力最上位。"
+      },
+      {
+        "horse_no": 12,
+        "case": "阪神1800m2着IDM68、京都1900m5着65。RRDBもクラス以上の反復と末脚を支持し対抗。"
+      },
+      {
+        "horse_no": 16,
+        "case": "京都1900m3着IDM68、東京2100m2着65。末脚の反復があり、流れが締まれば差し込み。"
+      },
+      {
+        "horse_no": 10,
+        "case": "前走阪神1800m3着IDM65、交流含め高水準。調教上昇で好位差しなら崩れにくい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "京都1800m2着IDM71、阪神2000m3着67。近走1900m9着は割引せず、先行して一発の能力がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番は4連勝でIDM62.5まで伸び、RRDBも高水準反復。ただし初オープンで上位5頭の現級ピークを僅かに下回る。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 13,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 12,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 16,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 10,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 3,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎13トリポリタニアは京都連勝とIDM70で中心。○12タイトニットは高水準の末脚、▲7ゼットリアンは1900m実績で逆転候補。16ジューンアヲニヨシと10ディープリボーンまで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "race_model": "京都ダート1200m1勝クラス。7番は1400mでIDM55まであり前走1200m3着、今回調教上昇。3番は中京1200m2着IDM51。13番は前走の直線ロスと上昇調教から単穴、4・9まで末脚を比較する。",
+    "marks": [
+      7,
+      3,
+      13,
+      4,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "京都1200m3着IDM45に加え1400mで55。調教21.1・強気評価で今回は能力を出し切る条件が揃う。"
+      },
+      {
+        "horse_no": 3,
+        "case": "中京1200m2着IDM51がこの組で高水準。前走5着も外を回した内容で相手筆頭。"
+      },
+      {
+        "horse_no": 4,
+        "case": "京都1200m5着IDM42。先行でき、RRDBではクラス以上の反復と速い上がりの裏付けもある。"
+      },
+      {
+        "horse_no": 9,
+        "case": "京都1400m6着IDM46、阪神1200m5着42。取消明けでも末脚を使えるため展開次第で圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "前走京都1200m4着は直線で前捌きに手間取り、次走良化気配。調教18.0と上昇度が大きく差し切りまで。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15番は同条件6着IDM42で大外を回した内容は悪くないが、9番の1400mIDM46と末脚を僅かに上位評価。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 3,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 13,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 9,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 15,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎7サンマルノヴェルは能力ピークと今回の調教上昇を評価。○3タイセイブロウは1200m実績、▲13モカラマーズは前走のロスと良化気配から一発。4と9まで。"
+  }
+]
