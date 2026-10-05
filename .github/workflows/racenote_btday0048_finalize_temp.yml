@@ -1,0 +1,62 @@
+name: RaceNote BTDAY-0048 finalize temp
+on:
+  push:
+    branches: [main]
+    paths: ['.github/btday0048_finalize_trigger']
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Finalize clean-blind forecast
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0048/20260207'
+          PREP="$ROOT/forecast_prep"
+          BATCH="$ROOT/venue_batches"
+          MAIN_SHA='b9a60508384cf1864b73da122548704ceb49757e'
+          LOGIC='RaceNote-Human-Context-Reader-0.4.6-candidate'
+          python horse-racing/jrdb/src/racenote_bind_venue_batches_v046.py             --prep-root "$PREP" --batches-root "$BATCH"             --output /tmp/prepared.json             --selection-id BTDAY-0048 --date 2026-02-07 --main-sha "$MAIN_SHA"
+          python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py             --prep-root "$PREP" --prepared-records /tmp/prepared.json             --output-root /tmp/frozen             --selection-id BTDAY-0048 --date 2026-02-07 --main-sha "$MAIN_SHA"             --logic-version "$LOGIC" --preflight-only
+          python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py             --prep-root "$PREP" --prepared-records /tmp/prepared.json             --output-root /tmp/frozen             --selection-id BTDAY-0048 --date 2026-02-07 --main-sha "$MAIN_SHA"             --logic-version "$LOGIC"
+          python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py             --records /tmp/frozen/day_merge/forecast_20260207_all.json             --output /tmp/frozen/day_merge/validator.json
+          python horse-racing/jrdb/src/racenote_stage_btday_archive.py             --day-prep-root "$ROOT/day_prep"             --clean-prep-root "$PREP"             --frozen-root /tmp/frozen             --output-root /tmp/archive             --selection-id BTDAY-0048 --date 2026-02-07
+          mkdir -p "$ROOT/day_merge"
+          cp -f /tmp/archive/README.md "$ROOT/README.md"
+          cp -f /tmp/archive/day_prep/* "$ROOT/day_prep/"
+          cp -f /tmp/archive/day_merge/* "$ROOT/day_merge/"
+          cp -f /tmp/prepared.json "$ROOT/prepared_records_v046.json"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0048/20260207')
+          h=json.loads((root/'day_merge/forecast_20260207_all_handoff.json').read_text())
+          v=json.loads((root/'day_merge/validator.json').read_text())
+          a=json.loads((root/'day_merge/clean_blind_audit.json').read_text())
+          assert h['status']=='FROZEN_CLEAN_BLIND'
+          assert h['race_count']==31
+          assert v['status']=='PASS' and v['record_count']==31
+          assert a['status']=='PASS' and a['race_count']==31
+          assert a['result_opened'] is False
+          assert a['target_day_market_opened'] is False
+          print(json.dumps({'status':'PASS','handoff':h,'validator':v,'clean_blind_audit':a},ensure_ascii=False,indent=2))
+          PY
+      - name: Commit immutable forecast archive
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0048/20260207
+          git commit -m 'RaceNote: freeze and archive BTDAY-0048 v0.4.6'
+          git push origin HEAD:main
