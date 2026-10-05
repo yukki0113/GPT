@@ -122,9 +122,10 @@ def build_research_outputs(root: Path, c1: Path, c2a: Path, c2b: Path, out: Path
             if finite(full) and finite(recent) and ((float(full) >= 100 > float(recent)) or (float(full) < 100 <= float(recent))):
                 warnings.append("730D_DIRECTION_CONTRADICTS_FULL_3Y")
                 break
-        if active and not any(x["top3_survives"] for x in lane_details):
+        if active and not ((finite(cm.get("win_roi_ex_top3")) and float(cm["win_roi_ex_top3"]) >= 100) or (finite(cm.get("place_roi_ex_top3")) and float(cm["place_roi_ex_top3"]) >= 100)):
             warnings.append("TOP3_EXCLUSION_REMOVES_BOTH_LANES")
-        label = "INCREMENTAL_CANDIDATE" if incremental else "MIXED_PARENT_INCREMENTALITY" if mixed else "JACKPOT_DEPENDENT" if jackpot else "TEMPORALLY_THIN" if warnings else "PARENT_REDUNDANT"
+        parent_redundant = bool(comparisons) and all((p["win_roi_delta"] is None or p["win_roi_delta"] <= 0) and (p["place_roi_delta"] is None or p["place_roi_delta"] <= 0) for p in comparisons)
+        label = "INCREMENTAL_CANDIDATE" if incremental else "JACKPOT_DEPENDENT" if jackpot else "MIXED_PARENT_INCREMENTALITY" if mixed else "TEMPORALLY_THIN" if warnings else "PARENT_REDUNDANT" if parent_redundant else "MIXED_PARENT_INCREMENTALITY"
         best_delta = max((x["minimum_parent_roi_delta"] for x in lane_details if x["top3_survives"] and x["not_top1_jackpot"] and x["beats_all_parents"] and x["minimum_parent_roi_delta"] is not None), default=None)
         enriched.append({"candidate_id": child["candidate_id"], "family": child["family"], "depth": int(child["depth"]),
             "lane": child["search_lane"], "conditions_json": child["conditions_json"],
