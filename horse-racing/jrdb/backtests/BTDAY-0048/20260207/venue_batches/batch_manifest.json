@@ -1,0 +1,76 @@
+{
+  "batch_version": "racenote-save-venue-batch-0.4.6",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.6-candidate",
+  "selection_id": "BTDAY-0048",
+  "target_date": "2026-02-07",
+  "clean_reader_manifest_sha256": "cadbebaed81f869f141978cc53458a056bf31473ba7c6085b500867f97b48147",
+  "expected_venues": [
+    "京都",
+    "小倉",
+    "東京"
+  ],
+  "expected_races_by_venue": {
+    "京都": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "小倉": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "東京": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "completed_venues": [
+    "東京"
+  ],
+  "remaining_venues": [
+    "京都",
+    "小倉"
+  ],
+  "status": "IN_PROGRESS_BATCHED",
+  "entries": [
+    {
+      "venue": "東京",
+      "file": "東京.json",
+      "sha256": "5b67e3b7f807bc7d7a1de5d502d5670d3f9eba13c6738de306cc9ff880dfac57",
+      "race_nos": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "race_count": 7
+    }
+  ]
+}
