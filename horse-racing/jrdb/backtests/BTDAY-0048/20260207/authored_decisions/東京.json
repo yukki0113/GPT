@@ -1,0 +1,384 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "race_model": "先行有利の東京ダート1400mだが、既走馬では後方からでも末脚を示した組が優勢。初ダートの15番は能力値と調教は高い一方、芝での好走が展開利を含むため本線の最上位までは上げず、ダート実績と再現性を優先する。",
+    "marks": [
+      7,
+      14,
+      15,
+      6,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "東京ダート1400mで出遅れながら2着まで伸びた内容が素直に強く、上昇調教とダート適性も噛み合う。"
+      },
+      {
+        "horse_no": 14,
+        "case": "同条件3着の実績と直線最速級の脚があり、休養明けでも調教内容は十分。発馬さえ五分なら逆転圏。"
+      },
+      {
+        "horse_no": 6,
+        "case": "中京ダート1400m3着があり、先行力を使える形なら東京でも残り目がある。前走は展開面の反証材料もある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "1800mで先手を取って3着の粘りは評価でき、距離短縮で先行力が生きる余地がある。ただしRRDB上は前走着順を額面通りには取りにくい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "芝2戦はいずれも3着で基礎能力と調教・騎手文脈は最上位級。初ダートが嵌れば一気に勝ち切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4番は終いの脚と前走までの伸びは魅力だが、出遅れ癖と追走位置の不安が大きく、今回は12番の距離短縮と先行再現性を上に取った。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 6,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 12,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 14,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 15,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎7ルージュリヴィエラ。東京ダート1400mで後方から2着まで伸びた前走を軸に取り、調教上昇も後押し。○14は同条件3着と末脚で迫り、▲15は初ダートでも地力・調教・鞍上から一発まで。6と12は先行して粘り込む形を押さえる。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "race_model": "東京ダート1300mは逃げ・先行の優位が明確だが、既走組の前受け勢には甘さも残る。前走の後方差しをRRDBで見直せる14番を中心に、同条件好走歴の7番と先行力の9番を組み合わせる。",
+    "marks": [
+      14,
+      7,
+      9,
+      11,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "前走1200mは後方から最後に鋭く伸び、RRDBも後方高上がりを明確に拾う。1300m延長で追走が少し楽になれば差し切りまで。"
+      },
+      {
+        "horse_no": 7,
+        "case": "東京1300mで2着があり、東京1400mでも4着。近走の着順以上にコース適性が高く、崩れにくい本線候補。"
+      },
+      {
+        "horse_no": 11,
+        "case": "前走はハイペースで差し込み5着。IDM33で今回の距離短縮も合い、流れが締まれば上位に届く。"
+      },
+      {
+        "horse_no": 10,
+        "case": "中山1200m3着と東京1400m6着があり、上昇調教も好材料。決め手は一枚落ちるが相手には堅実。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ダート替わりの前走で好位から4着、IDM31。前に行ける脚は1300mで武器になり、展開を握れば勝ち切りもある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15番は東京1400m2着がある一方、その好走はRRDBで着順過大評価の側面があり、近走13着も含めて安定性で10番に譲る。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 14,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 7,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 9,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 10,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 15,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎14サリーアンは前走4着でも後方からの脚を高く評価。東京1300mで2着のある○7を相手本線に、前走ダートで先行して4着の▲9は展開利込みで単穴。11と10は差し脚の安定感を押さえる。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "race_model": "東京ダート1600mらしく先行優位だが、2番の末脚性能が一段上。6番が主導権を取りやすく、そこへ7番・15番が前目から絡む構図。後方勢は展開待ちの色が濃い。",
+    "marks": [
+      2,
+      6,
+      7,
+      15,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "東京1600mでIDM38の4着があり、今回は調教デキ抜群。末脚順位も最上位で、前が止まり切らなくても差し込める地力がある。"
+      },
+      {
+        "horse_no": 6,
+        "case": "前走1800mを逃げて4着。距離短縮と東京の先行優位が噛み合い、単騎気味なら押し切りまで視野。"
+      },
+      {
+        "horse_no": 15,
+        "case": "前走逃げて3着、IDM34。先行力は明確で、1600mへの短縮なら粘りが増す可能性がある。"
+      },
+      {
+        "horse_no": 3,
+        "case": "東京1600mで5、6着の実績があり大崩れしにくい。調教下降は割引だが、上位差し勢が崩れた際の相手候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "東京1600mで3、4着があり前走1800mでも3着。RRDBの反証を踏まえても安定した地力があり、流れ一つで勝ち切れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10番は距離短縮と先行位置予測に魅力があるが、前走1900m10着からの裏付けが薄く、実績のある3番を5頭目に残した。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 2,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 3,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎2アオイミズホは東京1600mで見せた末脚と今回の抜群のデキを最上位評価。○6は距離短縮で逃げ残りを狙える。▲7は東京1600mの安定実績が魅力で、15の先行力と3のコース経験までを相手に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "race_model": "1勝クラスの東京ダート1600mで、同条件の高いIDM実績を持つ差し勢が揃った。9番の東京1600m適性と今回の状態を中心に、2・5・10の持続力を比較。前有利一辺倒ではなく直線の能力差を重視する。",
+    "marks": [
+      9,
+      2,
+      5,
+      10,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "東京1600mで2着2回、IDM52のピークがあり、今回は調教デキ抜群。コース適性と末脚の再現性を最上位に取る。"
+      },
+      {
+        "horse_no": 2,
+        "case": "近5走すべてダートで安定し、東京1600m3着IDM50。ルメール騎乗も含めて大崩れしにくい。"
+      },
+      {
+        "horse_no": 10,
+        "case": "東京1600mで2着を重ね、RRDBでも繰り返し展開不利を受けた内容が残る。上昇調教なら差し込み濃厚。"
+      },
+      {
+        "horse_no": 11,
+        "case": "前走同条件2着IDM50。内で立ち回れれば強い一方、その前走は展開利の補正も必要で5頭目評価。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "ダート転向後に東京1600m2着、福島1700m2着。追走位置を問わず脚を使え、強気の厩舎評価から勝ち切りまで狙える。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6番は東京1600m3着と地力があるが、近2走の1800mで伸びを欠き、今回の上位5頭より状態・近走内容の裏付けが弱い。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 10,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 11,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 6,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "◎9クラリネットソナタは東京1600mでの高い実績に今回の好状態を加えて中心。○2も同条件で安定し、▲5はダート替わり後の連続2着から勝ち切り候補。10の持続脚、11の内立ち回りまで。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "race_model": "全馬初出走の芝1800m新馬戦で、過去走比較ができない。調教の絶対内容、JRDBの総合評価、血統・騎手のコース文脈をまとめて判断し、時計と状態で抜ける10番を中心に置く。",
+    "marks": [
+      10,
+      15,
+      16,
+      7,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "IDM45.1、総合51.2、調教上昇で最終11秒7。初出走組の中で能力・仕上がりの両面が最も揃う。"
+      },
+      {
+        "horse_no": 15,
+        "case": "総合50.3、ルメール、調教上昇と条件が揃い、初戦から能力を出せる構成。"
+      },
+      {
+        "horse_no": 7,
+        "case": "戸崎騎乗で父系・騎手統計も優秀。調教上昇と終い11秒5があり、実戦向きの反応を期待できる。"
+      },
+      {
+        "horse_no": 2,
+        "case": "上位3頭ほど指数は抜けないが、調教・総合評価が安定し、田辺の芝中距離文脈も含めて5頭圏に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "IDM42.5、総合47.0で上位級。大外枠でも初戦の自由度はあり、流れに乗れれば一発で上位を逆転できる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番も総合32.6で悪くないが、上位5頭と比べると調教・指数の両面で明確な差があり、2番を優先した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初出走だけの一戦は調教と基礎評価を素直に重視。◎10カットソロは指数・調教とも一段上で、○15ヘイジュードも仕上がり十分。▲16ソパデアホを一発候補とし、7と2を相手に据える。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "race_model": "芝1600m未勝利で、前で運べる4・6番と末脚の2・7番が対立する構図。東京の先行優位は意識しつつ、後方から速い上がりを使った内容はRRDBで見直し、能力の再現性を重視する。",
+    "marks": [
+      6,
+      4,
+      7,
+      2,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "東京1600m新馬で先行3着、今回はデキ抜群。先行有利の傾向と能力値が噛み合い、押し切り候補。"
+      },
+      {
+        "horse_no": 4,
+        "case": "中山1600mで連続3着、前走は長く脚を使う内容。東京でも先行できればしぶとく残る。"
+      },
+      {
+        "horse_no": 2,
+        "case": "前走4着ながら大外を回して最速級の末脚。RRDBも後方高上がりを支持し、直線勝負なら差し切り圏。"
+      },
+      {
+        "horse_no": 14,
+        "case": "東京1600m4着があり、前走は出遅れて早仕掛け。RRDBで着順以上の内容が残り、ルメールで巻き返しを期待。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "東京1600m2着があり、RRDBの後方高上がりシグナルと展開不利評価も後押し。流れが締まれば一気に突き抜ける。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12番は芝1800m2着と地力があるが、前走ダート3着は着順ほど強くない補正が必要。1600m適性の裏付けで14番を上に取った。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 2,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 7,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      },
+      {
+        "horse_no": 14,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 12,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎6レッドアヴィオンは東京1600m3着の先行力と今回の好状態を評価。○4レヴェランジェは連続3着の安定感。▲7テンユウは後方からの伸びをRRDBでも見直せ、2の末脚、14の巻き返しまで。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "race_model": "昇級馬中心のダート1400mで、先行馬が多く前の争いは楽ではない。14番は1600m勝ちの内容と調教・総合評価が最上位、13番は同条件の完勝実績、8番はクラス水準の高い末脚を持ち、前後のバランスを取る。",
+    "marks": [
+      14,
+      13,
+      8,
+      10,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "東京1600m新馬を先行して完勝し、総合56.2と調教内容も最上位。距離短縮でも先行力を保てれば中心。"
+      },
+      {
+        "horse_no": 13,
+        "case": "東京1400mを逃げて完勝、IDM50。RRDBに展開利の指摘はあるが、同条件での再現性と基礎能力は高い。"
+      },
+      {
+        "horse_no": 10,
+        "case": "前走1200mを完勝しIDM48。先行力があり1400mでも押し切る基礎能力を持つが、前走は展開利補正が必要。"
+      },
+      {
+        "horse_no": 3,
+        "case": "中京1400m2着IDM48があり、前走京都5着からの巻き返し余地。上がり性能も上位で相手に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "東京1400m2着IDM50があり、RRDBでもクラス水準以上の反復を支持。追込脚質でも前が競れば一気の差し切りがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番は1200m連勝級の先行力が魅力だが、今回は1400mへの延長と前走の展開利を考慮し、同距離高実績の3番を5頭目にした。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 13,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 8,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 10,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      },
+      {
+        "horse_no": 2,
+        "decision_role": "DOWNGRADE_APPARENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎14フルミネブルは新馬完勝の内容に調教・総合評価を加えて軸。○13カセノアステリアは東京1400m完勝の実績、▲8マジッククッキーは同条件で高い末脚性能を持つ。10と3も能力水準は足りる。"
+  }
+]
