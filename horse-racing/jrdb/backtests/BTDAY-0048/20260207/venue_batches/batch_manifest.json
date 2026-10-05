@@ -50,17 +50,36 @@
   },
   "completed_venues": [
     "京都",
+    "小倉",
     "東京"
   ],
-  "remaining_venues": [
-    "小倉"
-  ],
-  "status": "IN_PROGRESS_BATCHED",
+  "remaining_venues": [],
+  "status": "COMPLETE_READY_TO_BIND",
   "entries": [
     {
       "venue": "京都",
       "file": "京都.json",
       "sha256": "3c08ef52da1a519af52160310e0d076ce34830663bd6c796a4e0c28527cec714",
+      "race_nos": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "race_count": 12
+    },
+    {
+      "venue": "小倉",
+      "file": "小倉.json",
+      "sha256": "4dd0e693116cc883679c5fe97fec9c1863c28386118fa129bbd3c77701e94b73",
       "race_nos": [
         1,
         2,

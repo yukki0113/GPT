@@ -1,0 +1,725 @@
+{
+  "batch_version": "racenote-save-venue-batch-0.4.6",
+  "logic_version": "RaceNote-Human-Context-Reader-0.4.6-candidate",
+  "selection_id": "BTDAY-0048",
+  "target_date": "2026-02-07",
+  "venue": "小倉",
+  "decisions": [
+    {
+      "venue": "小倉",
+      "race_no": 1,
+      "race_model": "小倉ダート1700m未勝利。13番は1400m・1800mで着順以上の内容を続け、今回の調教上昇と総合評価が最上位。10番は1800m3着、16番は1800mで安定し、14番の先行力と2番の1700m4着を距離適性込みで評価する。",
+      "marks": [
+        13,
+        10,
+        16,
+        14,
+        2
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 13,
+          "case": "1400m4着IDM35、1800m4着IDM38で着順以上の内容。RRDBも前で耐えた価値を支持し、調教19.7と今回の完成度が高い。"
+        },
+        {
+          "horse_no": 10,
+          "case": "前走1800m3着IDM33。ブリンカー効果と先行持続力があり、1700m短縮なら粘りが増す。"
+        },
+        {
+          "horse_no": 14,
+          "case": "1200〜1400mでは先行してIDM33前後。1700mへの延長は課題だが調教14.3と前受け力で相手圏。"
+        },
+        {
+          "horse_no": 2,
+          "case": "福島1700m4着IDM30の直接実績。近走は弱いが距離適性の裏付けを5頭目に取る。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 16,
+        "case": "1800mで4・5着、1400mでも6着。RRDBは着順以上の内容を拾っており、1700mで流れに乗れば上位2頭へ食い込める。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 5,
+        "reason": "5番は1800m5着IDM27で先行力はあるが、直接1700m実績を持つ2番を5頭目に優先した。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 13,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 10,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 16,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 14,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 2,
+          "decision_role": "CONTEXT_ONLY"
+        }
+      ],
+      "reader_facing_reason": "◎13フレットローソは近2走の内容と今回の大きな上昇度を中心視。○10ホールドミーワンスは1800m3着からの短縮、▲16マーゴットクリュグは着順以上の内容で一発候補。14と2まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 2,
+      "race_model": "小倉芝1200m未勝利。16番は前走同条件2着IDM41で一段上。8番も1200mで3・4着を安定して反復し、3番は1400〜1600mで高い地力を示す。12・17の短縮適性までを比較する。",
+      "marks": [
+        16,
+        8,
+        3,
+        12,
+        17
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 16,
+          "case": "前走小倉1200m2着IDM41、総合46.9で調教20.5。逃げて粘る形が明確で中心。"
+        },
+        {
+          "horse_no": 8,
+          "case": "1200mで3着IDM37、4着37を反復。前でも差しても崩れにくく相手筆頭。"
+        },
+        {
+          "horse_no": 12,
+          "case": "1400〜1600mでIDM38〜39を安定し、前走ダート1200mでも3着38。短縮しても能力は上位。"
+        },
+        {
+          "horse_no": 17,
+          "case": "1400mで2着2回。前走13着はハイペース先行で失速したもので、1200m短縮なら巻き返し余地。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 3,
+        "case": "1400m4着IDM35、1600m4着34。距離短縮で流れが締まれば差し脚が生きるタイプで、前崩れなら上位をまとめて差せる。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 13,
+        "reason": "13番は1200mで3着を重ねるがRRDBで着順過大評価の反証が複数あり、17番の1400m高水準実績を5頭目に取った。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 16,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 8,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 3,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 12,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 17,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 13,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        }
+      ],
+      "reader_facing_reason": "◎16マイネルユーゲントは前走小倉1200m2着と今回の好調教で中心。○8ゴールドパレードは同距離で安定、▲3イトシサは短縮でも地力上位。12と17まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 3,
+      "race_model": "小倉ダート1000m未勝利。8番は前走同条件2着IDM41で明確に抜ける。6番は同条件4着、5番は1400mで前を取り切るスピードがあり、14番の1000m3着歴、4番の1200m経験を相手に置く。",
+      "marks": [
+        8,
+        6,
+        5,
+        14,
+        4
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 8,
+          "case": "前走小倉1000m2着IDM41、1150mでも2着38。小回り短距離での再現性と総合評価が一段上。"
+        },
+        {
+          "horse_no": 6,
+          "case": "前走小倉1000m4着IDM32。好発から外を回っての内容で、今回は内外のロスが減れば前進できる。"
+        },
+        {
+          "horse_no": 14,
+          "case": "札幌1000m3着IDM30の直接実績があり、近走1200mの大敗だけで切れない。"
+        },
+        {
+          "horse_no": 4,
+          "case": "中山1200m10着IDM27。出遅れ癖はあるが1000mの消耗戦で他馬が甘くなれば5頭圏。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 5,
+        "case": "1400mで逃げてIDM31まで上げ、RRDBも厳しい先行位置を支持。1000mへの大幅短縮でスピードを出し切れば一変できる。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 12,
+        "reason": "12番は1800mからの大幅短縮とデキ抜群が魅力だが、短距離スピードの実証がなく、1200m経験の4番を上に取った。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 8,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 6,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 5,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 14,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        }
+      ],
+      "reader_facing_reason": "◎8ファンシーフリルは同条件2着の内容が抜ける。○6コウユーネロガも前走小倉1000m4着、▲5パドゼフィールは短縮で先行力を最大化できれば一発。14と4まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 4,
+      "race_model": "障害2860m未勝利。1番は直近3戦すべて障害3着で飛越と先行力が安定。9番も障害で2着を反復し、4番は2着2回。8番は近走4着、3番は5着反復と、障害実戦の再現性を優先する。",
+      "marks": [
+        1,
+        9,
+        4,
+        8,
+        3
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 1,
+          "case": "中山2880m、福島2750m、東京3000mで3着を反復。先行して飛越リズムを保てる点がこの組で最も安定。"
+        },
+        {
+          "horse_no": 9,
+          "case": "中山2880m2着、新潟2890m2着。小倉2860mも5着があり、調教20.7で状態面は最上位。"
+        },
+        {
+          "horse_no": 8,
+          "case": "小倉2860m4着、福島2750m4着と近走安定。飛越不安は残るが相手圏の再現性がある。"
+        },
+        {
+          "horse_no": 3,
+          "case": "障害で5着を3戦続け、前に行ける脚がある。勝ち切り材料は薄いが5頭圏では堅実。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 4,
+        "case": "福島2750mと新潟2890mで2着。好位から運べる障害センスがあり、飛越が噛み合えば1・9番を逆転できる。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 2,
+        "reason": "2番は障害初戦10着からデキ抜群だが、現時点では障害5着を反復する3番の実戦再現性を優先した。"
+      },
+      "rrdb_refs": [],
+      "reader_facing_reason": "◎1トーアマリシテンは障害3着を3戦連続で最も安定。○9デザートスターも2着実績を重ね、▲4マグナレガリアは好位運びが噛み合えば逆転。8と3まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 5,
+      "race_model": "障害2860m未勝利。10番は直近の小倉2860m2着、阪神2970m2着で明確な軸。8番も2・3着を反復し、5番は3〜5着を安定。1番の末脚、9番の障害4着を相手に置く。",
+      "marks": [
+        10,
+        8,
+        5,
+        1,
+        9
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 10,
+          "case": "前走小倉2860m2着、阪神2970m2着、中山2880m3着。飛越・終いとも現状最も安定し中心。"
+        },
+        {
+          "horse_no": 8,
+          "case": "福島2770m2着、阪神2970m3着。先行〜好位で障害リズムを作れ、相手筆頭。"
+        },
+        {
+          "horse_no": 1,
+          "case": "中山2880m4・5着で直線の盛り返しもある。上位2頭ほど完成度はないが圏内再現性が高い。"
+        },
+        {
+          "horse_no": 9,
+          "case": "新潟2850m4着で長く脚を使った内容。間隔は空くが展開が流れれば差し込み余地。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 5,
+        "case": "福島2750m3着・2770m4着、小倉2860m5着。小回り障害で立ち回る力があり、上昇調教から一発。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 4,
+        "reason": "4番は小倉2860m4着歴があるが、近2走は飛越不安と7着が続き、9番の直近障害4着を5頭目に取った。"
+      },
+      "rrdb_refs": [],
+      "reader_facing_reason": "◎10シルヴァーデュークは直近2戦連続2着で軸。○8ハイウェイスターも障害で安定し、▲5グラヴィテは小回り経験と上昇度で一発候補。1と9まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 6,
+      "race_model": "芝2000m未勝利。9番は小倉2000m3着IDM41と福島2000m2着40で地力最上位。6番は前走同条件2着IDM40、18番はマイルでIDM42まで伸ばし先行力がある。10・3の2000m安定組まで。",
+      "marks": [
+        9,
+        6,
+        18,
+        10,
+        3
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 9,
+          "case": "前走小倉2000m3着IDM41、福島2000m2着40。平坦向き評価もあり、距離・コースとも最も信頼できる。"
+        },
+        {
+          "horse_no": 6,
+          "case": "前走小倉2000m2着IDM40。後方から馬群を割った内容をRRDBでも見直せ、対抗に十分。"
+        },
+        {
+          "horse_no": 10,
+          "case": "小倉2000m4着を含め2000mで3〜5着。好位から運べる安定性で相手圏。"
+        },
+        {
+          "horse_no": 3,
+          "case": "阪神2000m3着IDM33、1800m5着31。上位とは指数差があるが距離適性と良化余地で残す。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 18,
+        "case": "京都1600m5着IDM42まで上昇。2000mでは7着だが逃げ・先行の形が取れ、小倉で楽に運べれば一気の押し切り余地。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 2,
+        "reason": "2番は阪神2000m2着IDM33で3番と近いが、3番は2000m3着に加え超強気評価と上昇調教があり僅かに上。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 6,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 18,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 10,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        }
+      ],
+      "reader_facing_reason": "◎9アストリルは2000mで連続好走し平坦適性も明確。○6ビップヴォルフは前走小倉2着の内容、▲18クラウンインジエアは先行力と上昇度で一発。10と3まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 7,
+      "race_model": "芝2000m1勝クラス。10番は前走中京2000m2着IDM49で一段上。4番は2000mで47〜48を反復、6番は差しで現級水準を安定。13番の上昇度と3番の前走小倉5着47までを上位群とする。",
+      "marks": [
+        10,
+        4,
+        6,
+        13,
+        3
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 10,
+          "case": "前走中京2000m2着IDM49、総合54。現級でのピークと安定性が最上位。"
+        },
+        {
+          "horse_no": 4,
+          "case": "中京2000m3着IDM47、阪神2000m勝ち48。RRDBもクラス水準以上の反復を支持し相手筆頭。"
+        },
+        {
+          "horse_no": 13,
+          "case": "札幌2000m勝ち45、福島2000m4着46。後方から確実に伸びるタイプで展開の融通が利く。"
+        },
+        {
+          "horse_no": 3,
+          "case": "前走小倉2000m5着IDM47。先行して上位と僅差まで粘り、同条件での即時再現性がある。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 6,
+        "case": "札幌2000m勝ちIDM43、函館1800m2着を反復。調教18.4と上昇し、好位から一気に上位を逆転する余地。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 15,
+        "reason": "15番は2000m勝ちIDM45など安定するが、今回の調教上昇と直接小倉好走で3番を5頭目に取った。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 10,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 4,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 6,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 13,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 3,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 15,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        }
+      ],
+      "reader_facing_reason": "◎10エレガンシアは現級2000m2着の内容を中心視。○4フィオレストラーダも距離実績安定、▲6アリスメティークは末脚の反復から逆転候補。13と3まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 8,
+      "race_model": "ダート1700m1勝クラス。12番は札幌1700mでIDM48を含む3着反復と今回の調教上昇。4番は1400mでIDM50まであり距離延長が焦点。11番は小倉1700m勝ち、5番は札幌1700m連続好走、1番も函館1700m3着実績がある。",
+      "marks": [
+        12,
+        4,
+        11,
+        5,
+        1
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 12,
+          "case": "1700mで3着IDM48・43、1800mでも45。調教20.5と状態良好で距離実績を最優先し中心。"
+        },
+        {
+          "horse_no": 4,
+          "case": "1400mでIDM50、49を反復。1700m初距離でも総合53.5と上昇調教から能力で押し切る可能性。"
+        },
+        {
+          "horse_no": 5,
+          "case": "札幌1700m2着IDM47、4着43、2着45と距離実績が豊富。前走小倉12着は割り引いても相手に残る。"
+        },
+        {
+          "horse_no": 1,
+          "case": "函館1700m3着IDM45・41。近走は7着前後でも距離適性は確かで5頭目。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 11,
+        "case": "小倉1700mを先行して勝ちIDM44。前走福島11着は不振だが、同条件回帰と調教18.0で一変できる。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 9,
+        "reason": "9番は小倉1700m勝ちIDM43・過去47があるが近2走12・7着で、1番の直近同距離安定度を優先した。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 12,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 4,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 5,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 1,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 9,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        }
+      ],
+      "reader_facing_reason": "◎12ローズマイスターは1700m実績と今回の上昇度で中心。○4モズタチアガレは距離延長でも能力上位、▲11ハッコウイチウは小倉1700m勝ちの再現を狙う。5と1まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 9,
+      "race_model": "芝2000m1勝クラス。13番は2200mでIDM51〜52を反復し小倉2000m勝ちもある。1番は前走2000m4着IDM50と調教上昇、12番は1800m2着49。10番は2000mで50、9番も長距離で55まであり、持続力上位を選ぶ。",
+      "marks": [
+        13,
+        1,
+        12,
+        10,
+        9
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 13,
+          "case": "阪神・中京2200mで2着IDM52・51、小倉2000m勝ち。総合56.9、調教18.0で能力と適性が揃う。"
+        },
+        {
+          "horse_no": 1,
+          "case": "前走中山2000m4着IDM50、調教21.1。先行して崩れず、今回の状態上昇で対抗。"
+        },
+        {
+          "horse_no": 10,
+          "case": "中京2000mでIDM50、京都2000mでも47を反復。後方脚質でも末脚の再現性が高い。"
+        },
+        {
+          "horse_no": 9,
+          "case": "阪神2400mIDM55、2200m3着49。2000mは少し忙しいが能力水準で5頭圏。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 12,
+        "case": "阪神1800m2着IDM49、京都2000m4着46。後方からの末脚をRRDBも支持し、前が流れれば差し切りまで。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 4,
+        "reason": "4番は小倉2000m3着IDM44など距離適性はあるが、上位5頭に比べピークIDMと直近の伸びで一枚下。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 13,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 1,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 12,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 10,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 9,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 4,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        }
+      ],
+      "reader_facing_reason": "◎13サミダレナイツは高水準の長距離実績と小倉2000m勝ちを評価。○1リーティアコナルは前走50と好調教、▲12シンドリームシンは末脚で逆転候補。10と9まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 10,
+      "race_model": "芝1800m2勝クラス。16番は1600〜1800mでIDM51〜56を安定し今回調教19.2。6番は小倉1800m勝ちと福島1800m勝ち、9番は現級でIDM51〜54の末脚を反復。3番と小倉巧者10番を相手にする。",
+      "marks": [
+        16,
+        6,
+        9,
+        3,
+        10
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 16,
+          "case": "京都1800m3着IDM56、マイルでも54前後を安定。調教19.2と総合59で地力最上位。"
+        },
+        {
+          "horse_no": 6,
+          "case": "福島1800m勝ちIDM52、小倉1800m勝ち44。ローカル・小回り向きで今回条件に合う。"
+        },
+        {
+          "horse_no": 3,
+          "case": "1800〜2000mでIDM50超を反復し、RRDBも速い上がりと厳しい位置取りを支持。後方からでも相手筆頭級。"
+        },
+        {
+          "horse_no": 10,
+          "case": "小倉1800m1着・2着ともIDM48。ピークは上位より低いがコース適性の高さで5頭目。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 9,
+        "case": "札幌1800m3着IDM54、京都1600m6着52。気性面の不安はあるが、先行して折り合えば一発の地力がある。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 1,
+        "reason": "1番は札幌1800m2着53など堅実だが、今回は小倉適性が明確な10番を5頭目に取った。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 16,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 6,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 9,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 3,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 10,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 1,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        }
+      ],
+      "reader_facing_reason": "◎16ゼンダンハヤブサは近走の高い能力水準と好調教で中心。○6マテンロウギフトは小回り1800m巧者、▲9ヤマニンループは末脚の反復で逆転候補。3と10まで。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 11,
+      "race_model": "ダート1700m3勝クラス。15番は1700〜1800mで連続好走し総合65.1、調教17.2。5番は前走小倉1700m勝ちIDM58、4番は小倉1700m2着IDM62歴、6番・9番も1700mでIDM60前後を持ち、コース適性と現級能力を重視。",
+      "marks": [
+        15,
+        5,
+        4,
+        6,
+        9
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 15,
+          "case": "京都1800m勝ちIDM56、福島1700m2着56、札幌1700m勝ち51。近走の上昇と総合65.1で中心。"
+        },
+        {
+          "horse_no": 5,
+          "case": "前走小倉1700m勝ちIDM58、中山1800m2着60。昇級でも現級級の数値があり対抗。"
+        },
+        {
+          "horse_no": 6,
+          "case": "福島1700m2着55、小倉1700m5着57・過去2着62。RRDBの過大評価反証はあるがコース実績が厚い。"
+        },
+        {
+          "horse_no": 9,
+          "case": "小倉1700mで3着59・4着60。近走2000mでも55を保ち、距離回帰で巻き返し。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 4,
+        "case": "福島1700m2着60、小倉1700m5着57。前受けして粘れる能力があり、展開が前に残れば勝ち切りまで。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 8,
+        "reason": "8番は小倉1700m4着57とデキ抜群だが、9番は同条件で59〜60を反復しており現級ピークを優先した。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 15,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 5,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 4,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 6,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        },
+        {
+          "horse_no": 9,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 8,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        }
+      ],
+      "reader_facing_reason": "◎15カペルブリュッケは近走の上昇と1700m適性で中心。○5アイウィルは前走小倉勝ち、▲4ゴッドブルービーは同条件IDM62歴から一発。6と9も現級水準。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 12,
+      "race_model": "芝1200m1勝クラス。15番は1400mでIDM52を含む高水準を反復し、1200m短縮でも前受けできる。6番は小倉1200m勝ちIDM47、3番は直近小倉1200m4着46。12番の1200m2着、13番の函館1200m安定まで。",
+      "marks": [
+        15,
+        6,
+        3,
+        12,
+        13
+      ],
+      "mainline_cases": [
+        {
+          "horse_no": 15,
+          "case": "1400mで1勝・2着2回、ピークIDM52。二の脚が速く、1200m短縮なら先行力をさらに生かせる。"
+        },
+        {
+          "horse_no": 6,
+          "case": "小倉1200m勝ちIDM47、福島1200m2着47。現級での距離実績と調教16.3が揃う。"
+        },
+        {
+          "horse_no": 12,
+          "case": "阪神1200m2着IDM47。前走1400m14着は掛かりと外回りで度外視余地があり、短縮で巻き返せる。"
+        },
+        {
+          "horse_no": 13,
+          "case": "函館1200m1着45、3着46など安定。RRDBの着順補正は必要でも距離適性は高い。"
+        }
+      ],
+      "single_shot_case": {
+        "horse_no": 3,
+        "case": "前走小倉1200m4着IDM46。出遅れから内を挽回した内容で、同条件継続なら差し切りまで。"
+      },
+      "boundary_review": {
+        "alternative_horse_no": 18,
+        "reason": "18番は中山1200m2着48など高いがRRDBで展開利の反証が多く、13番の短距離反復性を5頭目に取った。"
+      },
+      "rrdb_refs": [
+        {
+          "horse_no": 15,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 6,
+          "decision_role": "SUPPORT_REPEATABILITY"
+        },
+        {
+          "horse_no": 3,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 12,
+          "decision_role": "UPGRADE_RECENT_FORM"
+        },
+        {
+          "horse_no": 13,
+          "decision_role": "SUPPORT_COUNTERARGUMENT"
+        },
+        {
+          "horse_no": 18,
+          "decision_role": "DOWNGRADE_APPARENT_FORM"
+        }
+      ],
+      "reader_facing_reason": "◎15ベルサは1400mで示した高い先行能力を短縮で評価。○6ワインクーラーは小倉1200m勝ち、▲3ナンナンプーは直近同条件4着の内容から一発。12と13まで。"
+    }
+  ],
+  "decision_core_sha256": [
+    "e74e1d3e89afa6bd41a95615b69c8c2732fc598bc9c85a1448e355ca9cc5866b",
+    "66afb6ec1ac134934ffbe554296a73e82c06a80c4edf62161a3daf4f538ddca7",
+    "0f48841533b1701bd9b9d431d52fd0c4f944349aa78d329fabfe355be8d6c270",
+    "4f7c19b12c808cc51b1b41c8f6449daac366e79d89bf16b2d2cd5e52a91336ec",
+    "ba86e6d850ef76e98332af204fbfbd3d5f9fb56cf52883d17b8de68d93a306a6",
+    "1f5d10e25090ac6f5dcd19dcb60e1ffd020a3cffe6a42babdd284a73b9a3b9ac",
+    "83031491abc3e00a3ac2646b815caca760909df2a7294e342edba78a6a4a9d28",
+    "7bde007b76d814d5212ce9072ebea984b61cc2407b69bc7db2ca38adc2f0c08c",
+    "3ab2f3b3f076f669660f720d2f8df7e698ec4cf953777be7545518afd949a78b",
+    "70bb5e67ad12a3ae2f69726ec7be57e35aa0dcc18dae7d382e5a5be0c83e1fdb",
+    "1f3b8fd5a27a6913c7c666f64ff57dbdec3fa2c4a88edce08719bb20c13b80a7",
+    "1e01a6b087b472fc3cb91f483158252d723698dd32da2e87dc3a6c7c2b0494c7"
+  ]
+}
