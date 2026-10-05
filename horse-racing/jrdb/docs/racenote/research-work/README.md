@@ -93,16 +93,29 @@ The 0.5.x feature research runs in parallel and must not modify active v0.4.6 Re
 
 Stage A: **ACCEPT_WITH_NOTES**
 
-Reviewed implementation commit:
-`21f7c58116bbc8ee75f1d05ccfebb60ae66f0821`
+Stage B (2023-2025): **ACCEPT**
 
-Canonical audit:
-`audits/20261005_JRDB_FEATURE_AUDIT_STAGE_A_AUDIT.md`
+Stage B decision:
+
+`PROCEED_STAGE_C`
+
+No five-year Stage B2 extension is requested.
+
+Canonical Stage B report:
+`reports/20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md`
+
+Canonical Stage B audit:
+`audits/20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md`
+
+Supplied artifact checksum manifest:
+`results/stage_b_2023_2025/ARTIFACT_MANIFEST.md`
 
 Current instruction:
-`instructions/20261005_JRDB_FEATURE_AUDIT_STAGE_B_INSTRUCTION.md`
+`instructions/20261005_JRDB_FEATURE_AUDIT_STAGE_C_INSTRUCTION.md`
 
-Stage B window is fixed to **2023-2025**. Do not extend to five years until a Stage B audit explicitly requests Stage B2.
+The active v0.4.6 Reader / prediction cohort remains unchanged. Stage C is an
+information-architecture proposal only.
+
 
 ## 4. Historical analysis horizon
 
