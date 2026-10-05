@@ -1,0 +1,39 @@
+{
+  "evidence_version": "0.1",
+  "source": "Stage A immutable Historical event HTML, captured in existing archives",
+  "assets": [
+    {
+      "path": "/pc/static/js/commonSubmit.js",
+      "purpose": "Inspect shared submit/navigation helper referenced by the archived Historical event page. Exact dependency on racelive is unverified.",
+      "references": [
+        {"archive": "keirin-historical-2016-01-poc-1185.zip", "raw_relative_path": "raw/2016/01/events/56_01.html", "raw_sha256": "c49d61b83ee201268f4c32edc4346311bba3013402494f09bc9022d506dc1115", "script_src_values": ["/pc/static/js/commonSubmit.js"]},
+        {"archive": "keirin-historical-2020.zip", "raw_relative_path": "raw/2020/01/events/53_01.html", "raw_sha256": "0a64b27f600aa5599f608ec52b9e4a31c6273211830247544440ad3abab09e95", "script_src_values": ["/pc/static/js/commonSubmit.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/01/events/45_01.html", "raw_sha256": "0fd1725ad7f26b62fac97eddd7ebb6f7f3092357a694a03baa065d35aa9eb9bc", "script_src_values": ["/pc/static/js/commonSubmit.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/01/events/26_01.html", "raw_sha256": "c14e0398bea69a3bdff349490ed8a240bf0e95d2be263218d878fc0469e6cc67", "script_src_values": ["/pc/static/js/commonSubmit.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/06/events/61_01.html", "raw_sha256": "8ba31927adb7b4c4f942aee82b0f07e3f0fb059b9dad6808a9416a263e5eae7c", "script_src_values": ["/pc/static/js/commonSubmit.js"]}
+      ]
+    },
+    {
+      "path": "/pc/static/js/PJ0301_c.js",
+      "purpose": "Inspect PJ0301 page-specific controller referenced by the archived Historical event page; direct racelive dependency is unverified.",
+      "references": [
+        {"archive": "keirin-historical-2016-01-poc-1185.zip", "raw_relative_path": "raw/2016/01/events/56_01.html", "raw_sha256": "c49d61b83ee201268f4c32edc4346311bba3013402494f09bc9022d506dc1115", "script_src_values": ["/pc/static/js/PJ0301_c.js"]},
+        {"archive": "keirin-historical-2020.zip", "raw_relative_path": "raw/2020/01/events/53_01.html", "raw_sha256": "0a64b27f600aa5599f608ec52b9e4a31c6273211830247544440ad3abab09e95", "script_src_values": ["/pc/static/js/PJ0301_c.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/01/events/45_01.html", "raw_sha256": "0fd1725ad7f26b62fac97eddd7ebb6f7f3092357a694a03baa065d35aa9eb9bc", "script_src_values": ["/pc/static/js/PJ0301_c.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/01/events/26_01.html", "raw_sha256": "c14e0398bea69a3bdff349490ed8a240bf0e95d2be263218d878fc0469e6cc67", "script_src_values": ["/pc/static/js/PJ0301_c.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/06/events/61_01.html", "raw_sha256": "8ba31927adb7b4c4f942aee82b0f07e3f0fb059b9dad6808a9416a263e5eae7c", "script_src_values": ["/pc/static/js/PJ0301_c.js"]}
+      ]
+    },
+    {
+      "path": "/pc/static/js/FPJ0305.js",
+      "purpose": "Inspect page-shell controller referenced by the archived Historical event page; direct racelive dependency is unverified.",
+      "references": [
+        {"archive": "keirin-historical-2016-01-poc-1185.zip", "raw_relative_path": "raw/2016/01/events/56_01.html", "raw_sha256": "c49d61b83ee201268f4c32edc4346311bba3013402494f09bc9022d506dc1115", "script_src_values": ["/pc/static/js/FPJ0305.js"]},
+        {"archive": "keirin-historical-2020.zip", "raw_relative_path": "raw/2020/01/events/53_01.html", "raw_sha256": "0a64b27f600aa5599f608ec52b9e4a31c6273211830247544440ad3abab09e95", "script_src_values": ["/pc/static/js/FPJ0305.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/01/events/45_01.html", "raw_sha256": "0fd1725ad7f26b62fac97eddd7ebb6f7f3092357a694a03baa065d35aa9eb9bc", "script_src_values": ["/pc/static/js/FPJ0305.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/01/events/26_01.html", "raw_sha256": "c14e0398bea69a3bdff349490ed8a240bf0e95d2be263218d878fc0469e6cc67", "script_src_values": ["/pc/static/js/FPJ0305.js"]},
+        {"archive": "keirin-historical-2025.zip", "raw_relative_path": "raw/2025/06/events/61_01.html", "raw_sha256": "8ba31927adb7b4c4f942aee82b0f07e3f0fb059b9dad6808a9416a263e5eae7c", "script_src_values": ["/pc/static/js/FPJ0305.js"]}
+      ]
+    }
+  ]
+}
