@@ -82,6 +82,53 @@ Codex Cloud の workspace は task 開始時点の repository snapshot を基準
 
 同一 task 内の一時成果物や未反映変更を引き継ぐ必要がある場合は、既存 task を継続する。
 
+### 未 merge / PR 待ち資産も確認対象にする
+
+Codex Cloud の作業開始時に、`main` だけを「Git の全状態」とみなしてはいけない。
+
+対象領域に **open PR / merge 待ち branch / commit 済みだが main 未反映の instruction・result・code** がある場合、それらも必ず確認対象に含める。
+
+作業開始前の preflight では、GitHub built-in connector を使って少なくとも以下を確認する。
+
+1. 対象領域に関連する open PR があるか
+2. 指定された instruction / result / code が `main` にあるか、open PR / branch にのみ存在するか
+3. 既存 PR に後続作業の前提となる変更が含まれていないか
+4. 新規作業が既存の merge 待ち変更と競合・重複しないか
+
+ファイルが workspace や `main` に見つからない場合、直ちに「存在しない」と結論しない。まず GitHub connector で open PR / branch / commit を確認する。
+
+#### merge 待ち資産を使う場合
+
+原則として、再現性を優先し、必要な前提 PR を main へ merge してから新しい Cloud task を開始する。
+
+ただし、研究・監査上の理由で未 merge の内容を参照する必要がある場合は、GitHub connector 経由で対象 PR / branch / commit を明示的に読み、次を RESULT / REPORT に記録する。
+
+- PR番号
+- branch名
+- commit SHA
+- main 未反映であること
+- その未 merge 資産を参照した理由
+- 後続で merge が必要かどうか
+
+未 merge の複数 branch を暗黙に混ぜて作業しない。どの基準状態を使ったかを必ず明示する。
+
+#### 作業完了時の pending merge 記録
+
+RESULT / REPORT には、作業成果そのものだけでなく、その時点で後続工程に関係する **merge 待ち PR / branch** も記載する。
+
+推奨セクション:
+
+```text
+## Pending merge / GitHub state
+
+- PR #NNNN: <title>
+  - branch: ...
+  - status: OPEN / MERGEABLE / BLOCKED
+  - relevance: この後続工程で何に必要か
+```
+
+静的な README に全 open PR の一覧を恒久保存するのではなく、各 task の RESULT / REPORT に、その作業に関連する pending merge を記録する。README は「必ず確認・記録する」という運用契約を保持する。
+
 ---
 
 ## 3. GitHub 反映ルール
@@ -317,6 +364,7 @@ RESULT / REPORT には最低限以下を含める。
 - テスト結果
 - 集計・監査結果
 - GitHub branch / commit 相当 SHA / PR
+- 関連する pending merge PR / branch と status
 - 未解決事項
 - 推奨 next action
 
@@ -333,6 +381,8 @@ Cloud 用 instruction.md には、必要に応じて以下を付与する。
 
 - Use the published GPT Cloud Environment.
 - Treat the instruction file and repository docs as canonical.
+- Before concluding that a file or prerequisite is missing, inspect relevant open PRs / pending branches with the built-in GitHub connector.
+- Record relevant pending-merge PRs/branches in the requested RESULT/REPORT.
 - Do not depend on shell git fetch/pull/push.
 - For GitHub writes, use the built-in GitHub connector.
 - Create a working branch and PR unless explicitly instructed otherwise.
@@ -351,6 +401,8 @@ Cloud 用 instruction.md には、必要に応じて以下を付与する。
 Codex Cloud task を開始する前に確認する。
 
 - [ ] 対象 instruction.md は Git に保存済み
+- [ ] 対象領域の関連 open PR / merge 待ち branch を GitHub connector で確認済み
+- [ ] instruction / 前提資産が main と pending PR のどちらにあるか確認済み
 - [ ] 必要なら main へ反映済み
 - [ ] `GPT` Cloud Environment を選択
 - [ ] task 開始時点の repository snapshot に必要資産が含まれる
@@ -365,6 +417,7 @@ Codex Cloud task を開始する前に確認する。
 ## 13. 既知の注意点
 
 - Cloud workspace は task 開始時点の repository snapshot と一致するとは限らず、特に task 開始後に追加された commit は自動追従しない。
+- `main` にない資産でも open PR / pending branch に存在する場合があるため、GitHub connector での確認を省略しない。
 - shell Git の GitHub 通信は Cloud proxy 障害の影響を受ける場合がある。
 - GitHub connector と shell Git の通信経路・認証は別物として扱う。
 - Drive connector と repository 内の旧 Drive API adapter も別物として扱う。
