@@ -1,6 +1,6 @@
 {
   "version": "RaceNote-Forecast-Logic-Current-0.1",
-  "updated_at": "2026-10-04",
+  "updated_at": "2026-10-05",
   "current_logic_version": "RaceNote-Human-Context-Reader-0.4.2-candidate",
   "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_2_CANDIDATE.md",
   "logic_config": "config/racenote_forecast_logic_human_context_v0_4_2.json",
@@ -45,11 +45,13 @@
     "decision_core_schema": "schema/racenote_decision_core_v0_4_6.json",
     "record_schema": "schema/racenote_forecast_research_record_v0_4_6.json",
     "runbook": "docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md",
-    "batch_writer": "src/racenote_save_venue_batch_v046.py",
-    "batch_binder": "src/racenote_bind_venue_batches_v046.py",
     "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.4.5-candidate",
-    "design_note": "Fresh unified context: complete-reader + integrated five-horse judgment + venue-batch recovery. No mandatory chunk workflow or per-race checkpoint loop.",
+    "design_note": "v0.4.6 prediction semantics unchanged. Complete clean Reader + integrated five-horse judgment. Sparse material RRDB refs, natural reader prose, authored venue files as recovery points, permanent deterministic prepare/finalize workflows.",
     "same_day_ab": false,
-    "production_pointer_unchanged": true
+    "production_pointer_unchanged": true,
+    "prepare_request_schema": "schema/racenote_btday_v046_request.json",
+    "prepare_workflow": ".github/workflows/racenote_btday_v046_prepare.yml",
+    "finalize_workflow": ".github/workflows/racenote_btday_v046_finalize.yml",
+    "recovery_artifact": "authored_decisions/<venue>.json"
   }
 }
