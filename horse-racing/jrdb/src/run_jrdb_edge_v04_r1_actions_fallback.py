@@ -148,6 +148,11 @@ def build_research_outputs(root: Path, c1: Path, c2a: Path, c2b: Path, out: Path
         "PEDIGREE_TRANSITION_CROSS": "KEEP_3Y_OBSERVE_ONLY",
         "TRANSITION_CROSS": "STOP_FAMILY_EXPANSION",
     }
+    rationales = {
+        "PEDIGREE_CROSS": "The largest non-jackpot incremental pool merits a frozen 5y stability check; the 3y result does not authorize depth-4 execution.",
+        "PEDIGREE_TRANSITION_CROSS": "Some incremental evidence exists, but the smaller pool and temporal/support uncertainty do not yet justify expansion.",
+        "TRANSITION_CROSS": "The family is dominated by jackpot-dependent candidates and has too few non-jackpot incremental cases to justify further search.",
+    }
     for family in FAMILIES:
         counts = labels_by_family[family]
         total = c2_counts[family]
@@ -161,15 +166,25 @@ def build_research_outputs(root: Path, c1: Path, c2a: Path, c2b: Path, out: Path
             "warning_counts": dict(warnings_by_family[family]),
             "incremental_child_support_min": min(support) if support else None,
             "incremental_child_support_median": sorted(support)[len(support)//2] if support else None,
+            "incremental_child_support_distribution": {"count": len(support), "min": min(support) if support else None,
+                "p10": support[int((len(support)-1)*.10)] if support else None,
+                "median": support[len(support)//2] if support else None,
+                "p90": support[int((len(support)-1)*.90)] if support else None,
+                "max": max(support) if support else None},
+            "incremental_recent_365_support_median": sorted(int(r["child_metrics"].get("n_365") or 0) for r in inc)[len(inc)//2] if inc else None,
+            "incremental_recent_730_support_median": sorted(int(r["child_metrics"].get("n_730") or 0) for r in inc)[len(inc)//2] if inc else None,
+            "incremental_parent_roi_deltas": sorted(float(p[k]) for r in inc for p in r["parent_comparisons"] for k in ("win_roi_delta", "place_roi_delta") if finite(p.get(k))),
+            "incremental_recent_365_direction": {"win_positive": sum(finite(r["child_metrics"].get("win_roi_365")) and float(r["child_metrics"]["win_roi_365"]) >= 100 for r in inc), "place_positive": sum(finite(r["child_metrics"].get("place_roi_365")) and float(r["child_metrics"]["place_roi_365"]) >= 100 for r in inc)},
+            "incremental_recent_730_direction": {"win_positive": sum(finite(r["child_metrics"].get("win_roi_730")) and float(r["child_metrics"]["win_roi_730"]) >= 100 for r in inc), "place_positive": sum(finite(r["child_metrics"].get("place_roi_730")) and float(r["child_metrics"]["place_roi_730"]) >= 100 for r in inc)},
             "depth_2_incremental": sum(r["depth"] == 2 for r in inc), "depth_3_incremental": sum(r["depth"] == 3 for r in inc),
-            "decision": decisions[family]}
+            "decision": decisions[family], "decision_rationale": rationales[family]}
 
     # Auditable, bounded examples; full enrichments stay only in the Actions artifact.
     example_sets = {}
     for family in FAMILIES:
         group = [r for r in enriched if r["family"] == family]
-        best = sorted((r for r in group if r["label"] == "INCREMENTAL_CANDIDATE"), key=lambda r: (-(r["minimum_parent_roi_delta"] or 0), -r["support_for_review"], r["candidate_id"]))[:5]
-        rejected = sorted((r for r in group if r["label"] == "JACKPOT_DEPENDENT" or r["temporal_warnings"]), key=lambda r: (-(len(r["temporal_warnings"])), r["support_for_review"], r["candidate_id"]))[:3]
+        best = sorted((r for r in group if r["label"] == "INCREMENTAL_CANDIDATE"), key=lambda r: (-(r["minimum_parent_roi_delta"] or 0), -r["support_for_review"], r["candidate_id"]))[:10]
+        rejected = sorted((r for r in group if r["label"] == "JACKPOT_DEPENDENT" or r["temporal_warnings"]), key=lambda r: (-(len(r["temporal_warnings"])), r["support_for_review"], r["candidate_id"]))[:5]
         example_sets[family] = {"strong_incremental": best, "rejected_or_unstable": rejected}
 
     c2audit = json.loads((c2a / "stage_c2a_audit.json").read_text())
@@ -196,7 +211,10 @@ def build_research_outputs(root: Path, c1: Path, c2a: Path, c2b: Path, out: Path
         f"Frozen inputs: Feature Mart {EXPECTED_FM}; Stage B catalog {EXPECTED_CATALOG}", "Window: 2022-12-28 through 2025-12-28 inclusive", "DuckDB C2A and C2B merge were run from canonical repository entrypoints. Production impact: NONE.", "",
         "## PR #1800 aggregate sanity comparison", "", f"Canonical C1/C2A: {c2audit['c1_candidate_count']:,} / {c2audit['c2_shortlist_count']:,}; parent links {c2audit['child_parent_map_count']:,}; unique parent requests {c2audit['unique_parent_metric_request_count']:,}; total requests {c2audit['unique_metric_request_count']:,}.", "PR #1800 is a provisional reference; differences downstream of C1 are not treated as errors without examining canonical DuckDB output.", "", "## Family decisions", "", "Rates use that family’s C2 shortlist as denominator. No composite score was used.", ""]
     for family, s in family_summary.items():
-        report += [f"### {family}", "", f"Decision: `{s['decision']}`", "", f"C1 {s['c1_candidates']:,}; C2 {s['c2_shortlist']:,}; incremental {s['incremental']} ({s['incremental_rate']:.2%}); mixed {s['mixed']} ({s['mixed_rate']:.2%}); jackpot-dependent {s['jackpot_dependent']} ({s['jackpot_rate']:.2%}); other {s['temporally_thin_or_parent_redundant']:,}.", f"Incremental depths D2/D3: {s['depth_2_incremental']} / {s['depth_3_incremental']}; child support min/median {s['incremental_child_support_min']} / {s['incremental_child_support_median']}; temporal flags: `{json.dumps(s['warning_counts'], sort_keys=True)}`.", "", "Representative conditions and child/immediate-parent metrics are in `r1_summary.json` and the <=100-row `shortlist.csv`. These are research examples, not betting recommendations.", ""]
+        deltas = s["incremental_parent_roi_deltas"]
+        delta_min = min(deltas) if deltas else None
+        delta_med = deltas[len(deltas)//2] if deltas else None
+        report += [f"### {family}", "", f"Decision: `{s['decision']}`", s["decision_rationale"], "", f"C1 {s['c1_candidates']:,}; C2 {s['c2_shortlist']:,}; incremental {s['incremental']} ({s['incremental_rate']:.2%}); mixed {s['mixed']} ({s['mixed_rate']:.2%}); jackpot-dependent {s['jackpot_dependent']} ({s['jackpot_rate']:.2%}); other {s['temporally_thin_or_parent_redundant']:,}.", f"Incremental depths D2/D3: {s['depth_2_incremental']} / {s['depth_3_incremental']}; child support min/median {s['incremental_child_support_min']} / {s['incremental_child_support_median']}; support distribution `{json.dumps(s['incremental_child_support_distribution'], sort_keys=True)}`; recent support medians 365d/730d {s['incremental_recent_365_support_median']} / {s['incremental_recent_730_support_median']}; parent ROI delta min/median {delta_min} / {delta_med}; recent direction counts 365d {s['incremental_recent_365_direction']}, 730d {s['incremental_recent_730_direction']}; temporal flags: `{json.dumps(s['warning_counts'], sort_keys=True)}`.", "", "Representative conditions and child/immediate-parent metrics are in `r1_summary.json` and the <=100-row `shortlist.csv`. These are research examples, not betting recommendations.", ""]
     report += ["## Disposition and scope", "", "PR #1800 remains provisional and should be closed/superseded after the canonical replacement result is reviewed. PR #1801 is blocked-only documentation and should be closed as superseded. No 5-year or depth-4 execution, threshold tuning, market conditioning, SHADOW publication, or production serving change was performed.", ""]
     (out / "r1_report.md").write_text("\n".join(report), encoding="utf-8")
     return summary
@@ -239,6 +257,10 @@ def main() -> None:
         run(root, "horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c2b_shard.py", "--feature-parquet", str(feature), "--request-parquet", str(c2adir / "metric_request_catalog.parquet"),
             "--output-dir", str(c2bdir), "--shard-index", str(idx), "--shard-count", str(shard_count), "--discovery-years", "3", "--as-of-date", AS_OF)
     run(root, "horse-racing/jrdb/src/merge_jrdb_edge_v04_stage_c2b.py", "--shards-dir", str(c2bdir), "--c2a-dir", str(c2adir), "--output-dir", str(c2bdir), "--expected-shards", str(shard_count))
+    c2baudit = json.loads((c2bdir / "stage_c2b_audit.json").read_text())
+    shard_audits = [json.loads(p.read_text()) for p in sorted(c2bdir.glob("stage_c2b_shard_audit_*.json"))]
+    if c2baudit.get("metric_result_count") != request_count or len(shard_audits) != shard_count or any(x.get("status") != "PASS" or x.get("missing_value_branches") != 0 or x.get("feature_parquet_sha256") != EXPECTED_FM or x.get("discovery_start_date") != "2022-12-28" or x.get("discovery_end_date") != AS_OF for x in shard_audits):
+        raise SystemExit("C2B shard audit/provenance integrity failed")
     # Reassert identical frozen provenance and windows for every C1 shard before merge acceptance.
     for shard in plan["shards"]:
         apath = one(sharddir, f"stage_c_shard_audit_{shard['shard_id']}.json")
@@ -257,9 +279,13 @@ def main() -> None:
     pq.write_table(combined, c2bdir / "metric_results.parquet", compression="zstd")
     if combined.num_rows != request_count or len(set(combined["metric_request_id"].to_pylist())) != request_count:
         raise SystemExit("C2B exact request/result ID integrity mismatch")
+    request_ids = set(pq.read_table(c2adir / "metric_request_catalog.parquet", columns=["metric_request_id"])["metric_request_id"].to_pylist())
+    result_ids = set(combined["metric_request_id"].to_pylist())
+    if request_ids != result_ids:
+        raise SystemExit(f"C2B request/result exact ID mismatch missing={len(request_ids-result_ids)} extra={len(result_ids-request_ids)}")
     summary = build_research_outputs(root, c1dir / "research_candidates.parquet", c2adir, c2bdir, a.output_dir, plan)
     # Keep research outputs bounded in Git intent; broad data remains in the temporary Actions artifact.
-    audit = {"status": "PASS", "source_commit": os.environ.get("GITHUB_SHA"), "feature_sha256": EXPECTED_FM,
+    audit = {"status": "PASS", "source_commit": summary["source_commit"], "feature_sha256": EXPECTED_FM,
         "catalog_sha256": EXPECTED_CATALOG, "plan_sha256": sha(planpath), "c1_count": 68685,
         "c2a_audit": c2audit, "c2b_exact_result_count": request_count, "r1_status": summary["status"]}
     (a.output_dir / "canonical_r1_audit.json").write_text(json.dumps(audit, indent=2, sort_keys=True) + "\n", encoding="utf-8")
