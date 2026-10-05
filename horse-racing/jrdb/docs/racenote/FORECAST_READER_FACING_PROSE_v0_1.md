@@ -28,76 +28,93 @@ The target publication surface is the newspaper PWA race-short-comment section. 
 
 ## 2. Core writing principle
 
-Write **why these horses are worth buying in this race**.
+Write one short piece of racing analysis, not a serialization of the five
+marks.
 
-Do not write **why each horse satisfies the definition of its mark**.
+The marks are already shown elsewhere. The comment should explain the race
+through the concrete evidence that mattered most: the main horse's strongest
+case, the important opponent or race-shape tension, and the specific reason
+the independent ▲ can overturn the main line when that is useful.
 
-The normal flow is:
+There is no preferred sentence order such as ◎ -> ○ -> ▲ -> △1 -> △2.
+Mention only the horses needed to make the race view understandable.
 
-~~~text
-◎ main evidence and interpretation
-  -> ○ concise opponent case
-  -> ▲ concrete single-shot reason
-~~~
+A good test is whether the paragraph would still read naturally if the mark
+symbols were removed.
 
-This is not a mandatory sentence template. The order may bend when the race reads more naturally another way, but the whole race should remain readable as one compact paragraph.
+## 3. Translate evidence into racing language
 
-The paragraph should feel like one race comment, not three mini-comments pasted together.
+Reader-facing prose should normally describe what happened or what changes
+today:
 
-## 3. Race-specific evidence first
+- where the horse was positioned and how it moved;
+- whether the previous placing understated or overstated the run;
+- course, distance, surface, pace or class change;
+- training/condition change when it connects to today's race;
+- a concrete reason the race shape can improve or worsen.
 
-Use only evidence that materially affected the judgment. Useful material may include what happened in a prior race beyond the finish position, course / distance / surface change, class / opponent context, pace or position, how the horse moved through the race, late strength or inability to sustain it, current training / condition, direct-condition history, RRDB reinterpretation translated into ordinary racing language, and a concrete reason today's setup may be better or worse.
+Internal evidence sources and numeric aids belong primarily in the Decision
+Core. RRDB, IDM, internal index names, decision roles and signal labels should
+normally be translated into ordinary racing language.
 
-Raw values may appear when they genuinely clarify the point, but the prose must not become a field dump.
+For example, prefer:
 
-Prefer:
-
-> 前走は8着でも道中で位置を上げており、今回は1700mへ戻るのがプラス。
+> 前走は最後方からでも直線で脚を使えており、流れが速くなれば差し込みまである。
 
 over:
 
-> IDM 36.1、近3走3・9・9着、同距離1回馬券圏、調教平行線。
+> RRDBでも高評価でIDM62。
 
-The second form may remain in the audit trace. It is not the target reader-facing style.
+A raw number may appear only when that number itself is unusually informative
+to the reader. It should not be the sole reason for a mark.
 
-## 4. Interpret before concluding
+## 4. One paragraph, variable shape
 
-A finish position alone is not an explanation.
+The standard newspaper comment is one compact paragraph, but one paragraph
+does not imply one sentence skeleton.
 
-When useful, say what was hidden inside the visible result: moved early and paid for it late, made ground despite an unfavorable pace, was unable to secure position, showed class-compatible speed, had a better run than the placing suggests, or had a favorable trip that may not repeat.
+It may begin with:
 
-Translate RRDB findings into this kind of ordinary race interpretation.
+- the main horse;
+- a race-shape observation;
+- a condition change;
+- a notable previous run;
+- a tightly matched group when no single horse dominates.
 
-Do not print internal labels such as UPGRADE / DOWNGRADE / CONFIRM / hidden_strength / Next-Watch grade merely as reader-facing justification. If such evidence mattered, translate it into ordinary racing language.
+◎ usually receives the most explanation. ○ and ▲ receive only the space their
+actual evidence needs. △1 / △2 need not be mentioned unless they add useful
+race context.
 
-## 5. One-paragraph race comment
+Avoid habitual endings that merely enumerate the remaining marks, such as
+「XとYまで」, when they add no information.
 
-The standard reader-facing output for a race is one paragraph.
+## 5. ▲ prose
 
-Within that paragraph:
+▲ must reveal the concrete asymmetric reason for the independent single-shot
+selection.
 
-- ◎ receives the most space because it is the main forecast judgment;
-- ○ is usually explained more briefly, with the strongest concrete reason it belongs in the main line;
-- ▲ receives enough space to make the specific upset / reversal reason understandable;
-- △1 / △2 do not need to be forced into the short comment unless there is a particularly useful race-wide point to mention.
+The reader should be able to understand what change in pace, position,
+condition, preparation or hidden prior-run strength gives that horse a path to
+beat the main line.
 
-Do not force equal sentence counts or equal word counts for ◎ / ○ / ▲.
+Calling it 「一発候補」 or 「逆転候補」 is not an explanation by itself.
+Those words are fine only after the actual source of upside is clear.
 
-Do not create a rigid pattern such as:
+## 6. Card-level prose review
 
-> ◎ explanation. ○ is the main opponent. ▲ has upset potential.
+Before Freeze, read the comments as a card rather than validating each race in
+isolation.
 
-The paragraph should read as continuous racing analysis.
+Look for repeated structure, especially:
 
-## 6. Mark words are optional, mark definitions are not prose
+- every race starting with ◎ and then mechanically moving to ○ and ▲;
+- repeated 「一発候補」「逆転候補」 without race-specific explanation;
+- repeated 「XとYまで」 endings;
+- direct exposure of internal terms such as RRDB / decision-role labels where
+  ordinary racing language would say the same thing better.
 
-It is acceptable to write 「本命にします」「対抗にします」「単穴で狙います」「押さえます」 when they fit naturally.
+This review changes prose only. It never changes the Frozen mark decision.
 
-It is not acceptable to fill the explanation with the internal definition of the mark.
-
-Avoid reusable role statements such as 「勝ち切る現実性まで含めて最も買いたい」「◎以外では最も相手評価を上げたい」「安定度では本線に譲る」「展開ひとつで◎○を逆転できる単穴」「5頭候補に残す」. Those are decision metadata, not racing analysis.
-
-Likewise, phrases such as 「相手本線」「対抗視」 are allowed, but they must not become mandatory connectors used in the same place every race.
 
 ## 7. ◎ prose
 
