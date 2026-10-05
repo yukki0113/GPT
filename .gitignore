@@ -35,3 +35,5 @@ logs/
 Thumbs.db
 .vscode/
 .idea/
+# ASA Server Manager local distribution artifacts
+asa-server-manager/dist/
