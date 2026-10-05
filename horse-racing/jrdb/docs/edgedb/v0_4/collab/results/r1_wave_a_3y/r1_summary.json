@@ -925,6 +925,11 @@
     "template_catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
     "template_count": 47371
   },
+  "git_handoff": {
+    "branch": "research/jrdb-edge-v04-r1-wave-a-3y-20261005",
+    "content_commit": "395c5a1d704e07c7a0cc37509fe7cbba8d5aefdf",
+    "pull_request": "https://github.com/yukki0113/GPT/pull/1800"
+  },
   "git_outputs": {
     "r1_report.md": {
       "bytes": 14552,
@@ -985,10 +990,18 @@
   "instruction_file_on_main_blob_sha": "0f7787aa4eaa36fae91568993d28ddfe5b9b9c4c",
   "no_market_generation": true,
   "pending_merge_github_state": {
-    "merge_commit": "c8628f4c1dd571d6eea3436da21262f5dc53c171",
     "open_prs_at_preflight": [],
-    "pr_1799_state": "MERGED",
-    "relevance": "Codex Cloud Git operation rules were followed; the PR was confirmed merged during execution."
+    "pending_result_pr": {
+      "branch": "research/jrdb-edge-v04-r1-wave-a-3y-20261005",
+      "head_commit": "395c5a1d704e07c7a0cc37509fe7cbba8d5aefdf",
+      "mergeable": false,
+      "number": 1800,
+      "relevance": "Carries this R1 result and compact review outputs; merge is required before main-based downstream tasks can read them.",
+      "state": "OPEN",
+      "title": "research(jrdb): record EdgeDB v0.4 R1 Wave A 3y results"
+    },
+    "pr_1799_merge_commit": "c8628f4c1dd571d6eea3436da21262f5dc53c171",
+    "pr_1799_state": "MERGED"
   },
   "per_shard": [
     {

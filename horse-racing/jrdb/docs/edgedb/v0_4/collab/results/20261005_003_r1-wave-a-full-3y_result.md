@@ -57,6 +57,6 @@ Requested compact outputs:
 - `collab/results/r1_wave_a_3y/r1_report.md`
 - `collab/results/r1_wave_a_3y/shortlist.csv` (100 rows)
 
-This result file is the handoff record. Git commit / PR identifiers will be recorded here after the connector write completes.
+Result commit: `395c5a1d704e07c7a0cc37509fe7cbba8d5aefdf` on `research/jrdb-edge-v04-r1-wave-a-3y-20261005`. Pull request: [#1800](https://github.com/yukki0113/GPT/pull/1800), currently OPEN (`mergeable=false` at creation). This result PR must merge before main-based downstream tasks can consume these files.
 
-Open PR preflight found no open PRs. PR #1799 was confirmed merged as `c8628f4c1dd571d6eea3436da21262f5dc53c171`; no relevant pending merge remains.
+Open PR preflight found none. PR #1799 is merged as `c8628f4c1dd571d6eea3436da21262f5dc53c171`. The result assets are now pending in PR #1800, so downstream main-based tasks should wait for its merge.

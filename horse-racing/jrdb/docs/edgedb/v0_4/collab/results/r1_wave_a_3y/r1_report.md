@@ -139,7 +139,8 @@ These are research review examples, not a production ranking. Each row’s full 
 
 ## GitHub state / pending merge
 
-- Open PRs at preflight: none returned by the GitHub connector. PR #1799 (`docs/codex-cloud-operating-guide-20261005`, head `170afef30e773572e0abb9b631355a16735e8d98`) was confirmed merged during this task; merge commit `c8628f4c1dd571d6eea3436da21262f5dc53c171`. No relevant pending merge PR remains.
+- Open PRs at task preflight: none returned by the GitHub connector. PR #1799 (`docs/codex-cloud-operating-guide-20261005`, head `170afef30e773572e0abb9b631355a16735e8d98`) was confirmed merged as `c8628f4c1dd571d6eea3436da21262f5dc53c171`.
+- This result is now in open PR #1800 on `research/jrdb-edge-v04-r1-wave-a-3y-20261005`, content commit `395c5a1d704e07c7a0cc37509fe7cbba8d5aefdf`; it must merge before main-based downstream tasks can consume it. GitHub reported `mergeable=false` at creation time.
 
 ## Files and scope
 
