@@ -1,0 +1,183 @@
+name: RaceNote BTDAY v0.4.6 finalize
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-*/**/authored_decisions/*.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-btday-v046-finalize
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate complete authored cards and finalize when ready
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t CHANGED < <(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" -- 'horse-racing/jrdb/backtests/BTDAY-*/**/authored_decisions/*.json')
+          test "${#CHANGED[@]}" -gt 0
+
+          declare -A ROOTS=()
+          for p in "${CHANGED[@]}"; do
+            root="${p%/authored_decisions/*}"
+            ROOTS["$root"]=1
+          done
+
+          for ROOT in "${!ROOTS[@]}"; do
+            PREP="$ROOT/forecast_prep"
+            AUTH="$ROOT/authored_decisions"
+            test -s "$PREP/day_prep_handoff.json"
+
+            READY="$(python - "$PREP" "$AUTH" <<'PY'
+          import json, sys
+          from pathlib import Path
+          prep=Path(sys.argv[1]); auth=Path(sys.argv[2])
+          readers=[]
+          for p in sorted((prep/'reader').glob('*.json')):
+              r=json.loads(p.read_text(encoding='utf-8'))
+              readers.append((str(r['race']['venue']), int(r['race']['race_no'])))
+          expected=sorted({v for v,_ in readers})
+          actual=sorted(p.stem for p in auth.glob('*.json'))
+          unexpected=sorted(set(actual)-set(expected))
+          if unexpected:
+              raise SystemExit(f'unexpected authored venue files: {unexpected}')
+          print('READY' if actual==expected else 'INCOMPLETE')
+          if actual!=expected:
+              print(f'expected={expected} actual={actual}', file=sys.stderr)
+          PY
+          )"
+
+            if test "$READY" != READY; then
+              echo "$ROOT: authored venues incomplete; recovery files are preserved and no packaging is run."
+              continue
+            fi
+
+            if test -d "$ROOT/day_merge"; then
+              echo "$ROOT: already finalized; immutable archive left untouched."
+              continue
+            fi
+
+            TMP="$(mktemp -d)"
+            BATCH="$TMP/venue_batches"
+            FROZEN="$TMP/frozen"
+            ARCHIVE="$TMP/archive"
+            mkdir -p "$BATCH"
+
+            for f in "$AUTH"/*.json; do
+              python horse-racing/jrdb/src/racenote_save_venue_batch_v046.py \
+                --prep-root "$PREP" \
+                --decisions "$f" \
+                --output-root "$BATCH"
+            done
+
+            eval "$(python - "$PREP/day_prep_handoff.json" <<'PY'
+          import json, shlex, sys
+          h=json.load(open(sys.argv[1], encoding='utf-8'))
+          vals={
+              'SEL':h['selection_id'],
+              'TARGET_DATE':h['target_date'],
+              'MAIN_SHA':h['main_sha'],
+              'COMPACT':h['target_date'].replace('-',''),
+          }
+          for k,v in vals.items():
+              print(f'{k}={shlex.quote(str(v))}')
+          PY
+          )"
+
+            python horse-racing/jrdb/src/racenote_bind_venue_batches_v046.py \
+              --prep-root "$PREP" \
+              --batches-root "$BATCH" \
+              --output "$TMP/prepared.json" \
+              --selection-id "$SEL" \
+              --date "$TARGET_DATE" \
+              --main-sha "$MAIN_SHA"
+
+            python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+              --prep-root "$PREP" \
+              --prepared-records "$TMP/prepared.json" \
+              --output-root "$FROZEN" \
+              --selection-id "$SEL" \
+              --date "$TARGET_DATE" \
+              --main-sha "$MAIN_SHA" \
+              --logic-version RaceNote-Human-Context-Reader-0.4.6-candidate \
+              --preflight-only
+
+            python horse-racing/jrdb/src/racenote_freeze_prepared_forecast.py \
+              --prep-root "$PREP" \
+              --prepared-records "$TMP/prepared.json" \
+              --output-root "$FROZEN" \
+              --selection-id "$SEL" \
+              --date "$TARGET_DATE" \
+              --main-sha "$MAIN_SHA" \
+              --logic-version RaceNote-Human-Context-Reader-0.4.6-candidate
+
+            python horse-racing/jrdb/src/validate_racenote_forecast_human_context.py \
+              --records "$FROZEN/day_merge/forecast_${COMPACT}_all.json" \
+              --output "$FROZEN/day_merge/validator.json"
+
+            python horse-racing/jrdb/src/racenote_stage_btday_archive.py \
+              --day-prep-root "$ROOT/day_prep" \
+              --clean-prep-root "$PREP" \
+              --frozen-root "$FROZEN" \
+              --output-root "$ARCHIVE" \
+              --selection-id "$SEL" \
+              --date "$TARGET_DATE"
+
+            mkdir -p "$ROOT/day_merge" "$ROOT/venue_batches"
+            cp -f "$ARCHIVE/README.md" "$ROOT/README.md"
+            cp -f "$ARCHIVE/day_prep/"* "$ROOT/day_prep/"
+            cp -f "$ARCHIVE/day_merge/"* "$ROOT/day_merge/"
+            cp -f "$TMP/prepared.json" "$ROOT/prepared_records_v046.json"
+            cp -f "$BATCH/"*.json "$ROOT/venue_batches/"
+
+            python - "$ROOT" "$COMPACT" <<'PY'
+          import json, sys
+          from pathlib import Path
+          root=Path(sys.argv[1]); compact=sys.argv[2]
+          h=json.loads((root/'day_merge'/f'forecast_{compact}_all_handoff.json').read_text())
+          v=json.loads((root/'day_merge'/'validator.json').read_text())
+          a=json.loads((root/'day_merge'/'clean_blind_audit.json').read_text())
+          b=json.loads((root/'venue_batches'/'batch_manifest.json').read_text())
+          assert h['status']=='FROZEN_CLEAN_BLIND'
+          assert v['status']=='PASS'
+          assert a['status']=='PASS'
+          assert a['result_opened'] is False and a['target_day_market_opened'] is False
+          assert b['status']=='COMPLETE_READY_TO_BIND' and b['remaining_venues']==[]
+          assert h['race_count']==v['record_count']==a['race_count']
+          PY
+          done
+
+      - name: Commit completed deterministic packaging
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-*
+          if git diff --cached --quiet; then
+            echo "No completed card was ready for packaging."
+            exit 0
+          fi
+          git commit -m 'RaceNote: finalize completed v0.4.6 BTDAY card'
+          git pull --rebase origin main
+          git push origin HEAD:main
