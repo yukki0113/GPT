@@ -148,45 +148,53 @@ states or boilerplate review flags.
 Normal execution is deliberately simple:
 
 ```text
-DAY PREP
-  -> clean market-blind Reader bind
-  -> read one venue continuously
-  -> author that venue's Decision Cores
-  -> save one immutable venue batch
+prepare request
+  -> permanent workflow builds DAY PREP + clean Reader
+  -> model reads one venue continuously
+  -> commit one authored_decisions/<venue>.json recovery file
   -> immediately continue to the next venue
-  -> bind all venue batches into full records
-  -> validate
-  -> Freeze
-  -> archive / render
+  -> when all expected venue files exist:
+       permanent workflow validates venue batches
+       -> bind full records
+       -> preflight / Freeze / Validator
+       -> archive / render
 ```
 
-A 36-race / three-venue day therefore normally has three recovery writes, not
-36 per-race workflow cycles.
+A venue Decision Core file is the recovery point. There is no reason to create
+and push an additional intermediate venue-batch artifact while prediction is
+still in progress.
 
-Saving a venue batch is not a conversational stop. After a successful save,
-continue automatically while execution capacity remains.
+The deterministic venue-batch representation remains part of final packaging
+and provenance, but it is built once after the complete authored card exists.
 
-The repository provides permanent v0.4.6 automation for deterministic
-preparation and post-authoring packaging. Do not create a temporary workflow
-for each BTDAY when the permanent route can perform the same deterministic
-work.
+Saving an authored venue is not a conversational stop. Continue automatically
+while execution capacity remains.
+
+Repository automation:
+
+- `.github/workflows/racenote_btday_v046_prepare.yml`
+- `.github/workflows/racenote_btday_v046_finalize.yml`
+
+These permanent workflows replace per-BTDAY temporary workflows in normal
+operation.
 
 ## 7. Recovery is separate from normal prediction
 
-Recovery exists only to avoid losing completed work.
+Recovery exists only to avoid losing completed model judgment.
 
-If execution actually ends after one or more venue batches were saved, the
-next execution:
+If execution actually ends after one or more
+`authored_decisions/<venue>.json` files were committed, the next execution:
 
-1. reads the batch manifest;
-2. treats saved venue decisions as immutable pre-result work;
-3. resumes from the first unsaved venue.
+1. reads the clean forecast prep and existing authored venue files;
+2. treats those files as immutable pre-result decisions;
+3. resumes from the first expected venue without an authored file.
 
 It does not re-predict completed venues.
 
-A recovery boundary never asks the user for permission merely because a batch
-was saved. User input is needed only for a genuine unresolved asset,
-integrity failure, or a new instruction.
+The finalizer may run after every authored-file commit, but it performs no
+packaging until the complete expected venue set exists. Therefore incomplete
+cards cause no extra Git artifacts and no user confirmation step.
+
 
 ## 8. Deterministic responsibilities
 
