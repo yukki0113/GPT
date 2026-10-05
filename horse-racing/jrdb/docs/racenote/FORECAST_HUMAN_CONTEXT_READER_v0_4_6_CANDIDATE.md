@@ -1,7 +1,7 @@
 # RaceNote Forecast Human-Context Reader v0.4.6 Candidate
 
 Status: **UNIFIED PROSPECTIVE CANDIDATE — NOT PRODUCTION**  
-Date: 2026-10-04  
+Date: 2026-10-05  
 Logic id: `RaceNote-Human-Context-Reader-0.4.6-candidate`  
 Execution contract: `RACENOTE_EXECUTION_V0.4.6`  
 RRDB: `rrdb-recommendation-signals-v0.3`
@@ -92,12 +92,22 @@ This is not a second field rerank and there is no KEEP/SWAP state machine.
 
 RRDB is contextual evidence inside the same race reading.
 
-Use it when it materially changes interpretation of recent form,
-repeatability, counter-evidence or hidden strength. It is never an additive
-vote and never automatically changes a mark.
+Read the available RRDB context normally, but keep the audit trace sparse.
+`rrdb_refs` is not a list of every horse whose RRDB entry was inspected and
+not a second copy of the five marks. Record a horse only when RRDB changed or
+materially sharpened the interpretation used in the final judgment.
 
-The Decision Core records only RRDB horses that materially influenced the
-decision. The binder supplies source metadata mechanically.
+A useful test is:
+
+> If the same mark and the same reasoning would have been written without the
+> RRDB evidence, this horse does not need an rrdb_ref.
+
+RRDB remains non-additive and never automatically changes a mark. The binder
+only attaches source metadata to model-selected refs.
+
+Reader-facing prose should express the underlying racing observation rather
+than naming RRDB, its internal role labels or signal machinery unless the
+source name itself is genuinely useful to the reader.
 
 ## 5. Compact Decision Core
 
@@ -155,6 +165,11 @@ A 36-race / three-venue day therefore normally has three recovery writes, not
 
 Saving a venue batch is not a conversational stop. After a successful save,
 continue automatically while execution capacity remains.
+
+The repository provides permanent v0.4.6 automation for deterministic
+preparation and post-authoring packaging. Do not create a temporary workflow
+for each BTDAY when the permanent route can perform the same deterministic
+work.
 
 ## 7. Recovery is separate from normal prediction
 
