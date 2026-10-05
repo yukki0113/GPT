@@ -1,0 +1,108 @@
+name: Data Storage fallback via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+jobs:
+  run:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[DATA_STORAGE_FALLBACK]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run repository fallback contract
+        id: execute
+        env:
+          FALLBACK_REQUEST_JSON: ${{ github.event.issue.body }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python tools/data-storage/scripts/data_storage_fallback_runner.py
+
+      - name: Upload fallback result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-storage-fallback-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /tmp/data-storage-fallback/output/
+            /tmp/data-storage-fallback/fallback-audit.json
+            /tmp/data-storage-fallback/request.json
+            /tmp/data-storage-fallback/request.sha256
+            /tmp/data-storage-fallback/stdout/
+            /tmp/data-storage-fallback/stderr/
+
+      - name: Comment and close request
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          STATUS=FAIL
+          REQUEST_ID=
+          SOURCE_COMMIT=
+          DUCKDB_VERSION=
+          PYARROW_VERSION=
+          ERROR=
+          if [ -f /tmp/data-storage-fallback/fallback-audit.json ]; then
+            eval "$(python - <<'PY'
+          import json, shlex
+          p='/tmp/data-storage-fallback/fallback-audit.json'
+          d=json.load(open(p))
+          for key, value in [
+              ('STATUS', d.get('status')),
+              ('REQUEST_ID', d.get('request_id')),
+              ('SOURCE_COMMIT', d.get('source_commit')),
+              ('DUCKDB_VERSION', d.get('duckdb_version')),
+              ('PYARROW_VERSION', d.get('pyarrow_version')),
+              ('ERROR', d.get('error')),
+          ]:
+              print(f"{key}={shlex.quote('' if value is None else str(value))}")
+          PY
+            )"
+          fi
+
+          {
+            echo "DATA_STORAGE_FALLBACK_RESULT"
+            echo
+            echo "status: $STATUS"
+            echo "request_id: $REQUEST_ID"
+            echo "run_id: $RUN_ID"
+            echo "artifact: data-storage-fallback-$RUN_ID"
+            echo "source_commit: $SOURCE_COMMIT"
+            echo "duckdb_version: $DUCKDB_VERSION"
+            echo "pyarrow_version: $PYARROW_VERSION"
+            echo "run: https://github.com/$GH_REPO/actions/runs/$RUN_ID"
+            if [ -n "$ERROR" ]; then
+              echo "error: $ERROR"
+            fi
+          } > /tmp/data-storage-fallback-comment.md
+
+          gh issue comment "$ISSUE_NUMBER" --repo "$GH_REPO" --body-file /tmp/data-storage-fallback-comment.md
+          if [ "$STATUS" = "PASS" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "$GH_REPO" --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" --repo "$GH_REPO" --reason "not planned"
+          fi
