@@ -70,8 +70,19 @@ class PlannerAndWindowUnitTests(unittest.TestCase):
     def test_empty_or_invalid_planner_selection_fails(self):
         with self.assertRaisesRegex(ValueError, "empty"):
             select_templates(self.rows, ["TRANSITION_PRIORITY"], 5, 6)
-        with self.assertRaisesRegex(ValueError, "unknown search lane"):
-            select_templates(self.rows, ["STATIC_CROSS"], 2, 3)
+        with self.assertRaisesRegex(ValueError, "empty"):
+            select_templates(self.rows, ["UNSUPPORTED_LANE"], 2, 3)
+
+    def test_explicit_lane_selection_does_not_make_static_a_default(self):
+        selected = select_templates(self.rows, ["STATIC_CROSS"], 2, 3)
+        self.assertEqual([row["template_id"] for row in selected], ["t6"])
+        wave_a = select_templates(
+            self.rows,
+            ["TRANSITION_PRIORITY", "PEDIGREE_INTERACTION", "PEDIGREE_BASELINE"],
+            2,
+            3,
+        )
+        self.assertNotIn("t6", [row["template_id"] for row in wave_a])
 
     def test_plan_and_assignments_are_deterministic(self):
         kwargs = dict(

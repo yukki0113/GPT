@@ -7,9 +7,6 @@ import math
 from pathlib import Path
 from typing import Any, Iterable
 
-LANES = {"TRANSITION_PRIORITY", "PEDIGREE_INTERACTION", "PEDIGREE_BASELINE"}
-
-
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as source:
@@ -27,10 +24,6 @@ def select_templates(
     if not 2 <= min_depth <= max_depth <= 6:
         raise ValueError("depth must satisfy 2 <= min_depth <= max_depth <= 6")
     lanes = set(search_lanes) if search_lanes is not None else None
-    if lanes is not None:
-        unknown = lanes - LANES
-        if unknown:
-            raise ValueError(f"unknown search lane(s): {sorted(unknown)}")
     selected = [
         row for row in rows
         if min_depth <= int(row["depth"]) <= max_depth
