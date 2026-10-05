@@ -1,0 +1,827 @@
+{
+  "inventory_version": "stage-a-1",
+  "generated_from": [
+    "horse-racing/jrdb/src/racenote_jrdb.py",
+    "horse-racing/jrdb/src/racenote_analysis_backend.py",
+    "horse-racing/jrdb/src/racenote_history_enrichment.py",
+    "horse-racing/jrdb/schema/jrdb_analysis_schema_v1_4.sql",
+    "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+  ],
+  "fields": [
+    {
+      "field_id": "race.surface_distance",
+      "display_name": "芝/ダート・距離",
+      "category": "suitability_context",
+      "source_record": "BAC",
+      "source_field": "surface_code@25:1;distance_raw@21:4",
+      "raw_or_derived": "raw",
+      "derivation_source": "BAC fixed-width decode",
+      "current_racenote_exposure": "race.surface,race.distance_m",
+      "current_reader_exposure": "race.surface,race.distance_m",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "今回条件の記述値。",
+      "overlap_candidates": [
+        "race.course_layout",
+        "KYI distance_fit"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "race.class_grade",
+      "display_name": "クラス・格",
+      "category": "class_level",
+      "source_record": "BAC",
+      "source_field": "race_class_code@30:2;grade_code@36:1",
+      "raw_or_derived": "raw",
+      "derivation_source": "BAC fixed-width decode",
+      "current_racenote_exposure": "race.class,race.grade",
+      "current_reader_exposure": "race.class,race.grade",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "番組上のクラス/格と個体JRDBクラス指標は別概念。",
+      "overlap_candidates": [
+        "KYI jrdb_class"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "race.symbols",
+      "display_name": "レース条件記号",
+      "category": "suitability_context",
+      "source_record": "BAC",
+      "source_field": "symbol_code@32:3;weight_rule_code@35:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "Normalizer.symbols / weight rule decoder",
+      "current_racenote_exposure": "race.race_conditions,race.weight_rule",
+      "current_reader_exposure": "race.race_conditions,race.weight_rule",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "3桁条件コードを制約ラベルへデコード。",
+      "overlap_candidates": [
+        "race.class_grade"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.idm",
+      "display_name": "IDM",
+      "category": "ability_performance",
+      "source_record": "KYI",
+      "source_field": "idm@55:5",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].ability.idm",
+      "current_reader_exposure": "horses[].ability.idm",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "JRDB能力値。",
+      "overlap_candidates": [
+        "horse.total_index",
+        "recent_runs[].performance.idm"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.total_index",
+      "display_name": "総合指数",
+      "category": "ability_performance",
+      "source_record": "KYI",
+      "source_field": "total_index@85:5",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].ability.total_index",
+      "current_reader_exposure": "horses[].ability.total_index",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "事前評価の合成指数。内部算出式は本監査範囲で未確認。",
+      "overlap_candidates": [
+        "horse.idm",
+        "horse.jrdb_ratings.info_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.info_index",
+      "display_name": "情報指数",
+      "category": "jrdb_composite",
+      "source_record": "KYI",
+      "source_field": "info_index@65:5",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].jrdb_ratings.info_index",
+      "current_reader_exposure": "horses[].jrdb_ratings.info_index",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "JRDB提供の指数。",
+      "overlap_candidates": [
+        "horse.total_index",
+        "horse.idm"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.jockey_index",
+      "display_name": "騎手指数",
+      "category": "jockey_trainer",
+      "source_record": "KYI",
+      "source_field": "jockey_index@60:5",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].jrdb_ratings.jockey_index",
+      "current_reader_exposure": "horses[].jrdb_ratings.jockey_index",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "現騎手名と異なる数値評価。",
+      "overlap_candidates": [
+        "horse.jockey_expected_top2_rate"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.stable_index",
+      "display_name": "厩舎指数",
+      "category": "jockey_trainer",
+      "source_record": "KYI",
+      "source_field": "stable_index@150:5",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].jrdb_ratings.stable_index",
+      "current_reader_exposure": "horses[].jrdb_ratings.stable_index",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "厩舎評価の数値指標。",
+      "overlap_candidates": [
+        "horse.stable_evaluation",
+        "training.condition_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.longshot_index",
+      "display_name": "穴指数",
+      "category": "jrdb_composite",
+      "source_record": "KYI",
+      "source_field": "longshot_index@161:3",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].jrdb_ratings.longshot_index",
+      "current_reader_exposure": "horses[].jrdb_ratings.longshot_index",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "複合評価と思われるが公式定義式は未確認。",
+      "overlap_candidates": [
+        "horse.total_index",
+        "horse.info_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.jockey_expected_top2_rate",
+      "display_name": "騎手連対期待率",
+      "category": "jockey_trainer",
+      "source_record": "KYI",
+      "source_field": "jockey_expected_top2_rate@157:4",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].jrdb_ratings.jockey_expected_top2_rate",
+      "current_reader_exposure": "horses[].jrdb_ratings.jockey_expected_top2_rate",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "単位/較正定義は外部コードブックで要確認。",
+      "overlap_candidates": [
+        "horse.jockey_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.jrdb_class",
+      "display_name": "JRDBクラス",
+      "category": "class_level",
+      "source_record": "KYI",
+      "source_field": "jrdb_class_code@167:2",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].ability.jrdb_class",
+      "current_reader_exposure": "horses[].ability.jrdb_class",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "個体のJRDBクラス判定。番組クラスとは区別。",
+      "overlap_candidates": [
+        "race.class_grade"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.running_style",
+      "display_name": "脚質",
+      "category": "pace_position",
+      "source_record": "KYI",
+      "source_field": "running_style_code@90:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].ability.running_style",
+      "current_reader_exposure": "horses[].ability.running_style",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "コードを脚質ラベルへ変換。",
+      "overlap_candidates": [
+        "pace.indices.front",
+        "pace.indices.position"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.pace_indices",
+      "display_name": "ペース/位置指数",
+      "category": "pace_position",
+      "source_record": "KYI",
+      "source_field": "front@359:5;pace@364:5;late@369:5;position@374:5",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric fields",
+      "current_racenote_exposure": "horses[].pace.indices.{front,pace,late,position}",
+      "current_reader_exposure": "horses[].pace.indices.{front,pace,late,position}",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "4軸の数値指標。",
+      "overlap_candidates": [
+        "pace.ranks",
+        "forecast_positions"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.pace_ranks",
+      "display_name": "ペース/位置順位",
+      "category": "pace_position",
+      "source_record": "KYI",
+      "source_field": "front@453:2;pace@455:2;late@457:2;position@459:2",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric fields",
+      "current_racenote_exposure": "horses[].pace.ranks.{front,pace,late,position}",
+      "current_reader_exposure": "horses[].pace.ranks.{front,pace,late,position}",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "指数に対応する順位。欠損を含む。",
+      "overlap_candidates": [
+        "pace.indices"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.forecast_positions",
+      "display_name": "想定位置取り",
+      "category": "pace_position",
+      "source_record": "KYI",
+      "source_field": "mid@380:2,382:2,384:1;last3f@385:2,387:2,389:1;finish@390:2,392:2,394:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI tuple decode to order/margin/lane",
+      "current_racenote_exposure": "horses[].pace.forecast_positions",
+      "current_reader_exposure": "horses[].pace.forecast_positions",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "想定隊列の順・差・内外。",
+      "overlap_candidates": [
+        "pace.indices",
+        "pace.ranks"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.start_index",
+      "display_name": "スタート指数",
+      "category": "pace_position",
+      "source_record": "KYI",
+      "source_field": "start_index@520:4",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].pace.start_index",
+      "current_reader_exposure": "horses[].pace.start_index",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "スタートに関する数値指標。",
+      "overlap_candidates": [
+        "horse.late_break_rate"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.late_break_rate",
+      "display_name": "出遅れ率",
+      "category": "pace_position",
+      "source_record": "KYI",
+      "source_field": "late_break_rate@524:4",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].pace.late_break_rate",
+      "current_reader_exposure": "horses[].pace.late_break_rate",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "率のスケール詳細は要確認。",
+      "overlap_candidates": [
+        "horse.start_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.distance_fit",
+      "display_name": "距離適性",
+      "category": "suitability_context",
+      "source_record": "KYI",
+      "source_field": "distance_fit_code@91:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].ability.distance_fit",
+      "current_reader_exposure": "horses[].ability.distance_fit",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "カテゴリ評価。",
+      "overlap_candidates": [
+        "pedigree_context.distance_ranges",
+        "history same_distance"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.surface_fit",
+      "display_name": "芝/ダート適性",
+      "category": "suitability_context",
+      "source_record": "KYI",
+      "source_field": "turf_fit_code@334:1;dirt_fit_code@335:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].ability.surface_fit",
+      "current_reader_exposure": "horses[].ability.surface_fit",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "表面別カテゴリ評価。",
+      "overlap_candidates": [
+        "distance_fit",
+        "heavy_track_fit"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.heavy_track_fit",
+      "display_name": "道悪適性",
+      "category": "suitability_context",
+      "source_record": "KYI",
+      "source_field": "heavy_track_fit_code@166:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].ability.heavy_track_fit",
+      "current_reader_exposure": "horses[].ability.heavy_track_fit",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "3段階コードのデコード。",
+      "overlap_candidates": [
+        "surface_fit",
+        "recent_runs.track_condition"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.condition",
+      "display_name": "上昇度・厩舎評価",
+      "category": "training_condition",
+      "source_record": "KYI",
+      "source_field": "improvement_code@92:1;stable_evaluation_code@156:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].condition.improvement,horses[].condition.stable_evaluation",
+      "current_reader_exposure": "horses[].condition.improvement,horses[].condition.stable_evaluation",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "質的コンディション評価。",
+      "overlap_candidates": [
+        "training.summary",
+        "stable_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.training_index",
+      "display_name": "調教指数",
+      "category": "training_condition",
+      "source_record": "KYI",
+      "source_field": "training_index@145:5",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric field",
+      "current_racenote_exposure": "horses[].training.summary.training_index",
+      "current_reader_exposure": "horses[].training.summary.training_index",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "CYB側training_indexとは別レコード由来。",
+      "overlap_candidates": [
+        "CYB training_index",
+        "CHA clock_index.total"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.training_arrow",
+      "display_name": "調教矢印",
+      "category": "training_condition",
+      "source_record": "KYI",
+      "source_field": "training_arrow_code@155:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].training.summary.training_arrow",
+      "current_reader_exposure": "horses[].training.summary.training_arrow",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "方向を表すカテゴリ。",
+      "overlap_candidates": [
+        "condition.improvement",
+        "CYB condition_change"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.workout",
+      "display_name": "直前追切時計/指数",
+      "category": "training_condition",
+      "source_record": "CHA",
+      "source_field": "clock@29:3,32:3,35:3;clock_index@38:3,41:3,44:3,47:3",
+      "raw_or_derived": "derived",
+      "derivation_source": "CHA parser converts tenths and grouped indices",
+      "current_racenote_exposure": "horses[].training.main_workout.{clock,clock_index}",
+      "current_reader_exposure": "horses[].training.main_workout.{clock,clock_index}",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "1件の追切。総合・区間時計と指数は関連するが同一でない。",
+      "overlap_candidates": [
+        "KYI training_index",
+        "CYB training_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.workout_context",
+      "display_name": "追切コース/負荷/併せ",
+      "category": "training_condition",
+      "source_record": "CHA",
+      "source_field": "course@22:2;strength@24:1;state@25:2;rider@27:1;furlongs@28:1;pair@50:5",
+      "raw_or_derived": "derived",
+      "derivation_source": "CHA code decode",
+      "current_racenote_exposure": "horses[].training.main_workout.{course,strength,state,rider_type,furlongs,pair}",
+      "current_reader_exposure": "horses[].training.main_workout.{course,strength,state,rider_type,furlongs,pair}",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "追切条件と併せ馬情報。",
+      "overlap_candidates": [
+        "CYB course_counts",
+        "training_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.training_analysis",
+      "display_name": "調教分析/馬場別本数",
+      "category": "training_condition",
+      "source_record": "CYB",
+      "source_field": "course_counts@14..27;training_index@30:3;condition_index@33:3;comment@38:40",
+      "raw_or_derived": "derived",
+      "derivation_source": "CYB fields normalized into training_analysis",
+      "current_racenote_exposure": "horses[].training.analysis",
+      "current_reader_exposure": "horses[].training.analysis",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "本数・指数・コメントを持つ別評価系。condition_changeは現実装で常にnull。",
+      "overlap_candidates": [
+        "KYI training_index",
+        "CHA clock_index",
+        "stable_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.jockey_trainer_identity",
+      "display_name": "騎手・調教師",
+      "category": "jockey_trainer",
+      "source_record": "KYI",
+      "source_field": "jockey@172:12;trainer@188:12;trainer_base@200:4",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI fixed-width text fields",
+      "current_racenote_exposure": "horses[].basic.{jockey,trainer,trainer_base}",
+      "current_reader_exposure": "horses[].basic.{jockey,trainer,trainer_base}",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "識別情報。独立した実績集計ではない。",
+      "overlap_candidates": [
+        "jockey_index",
+        "stable_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.market_opening",
+      "display_name": "基準オッズ/人気",
+      "category": "market",
+      "source_record": "KYI",
+      "source_field": "base_win_odds@96:5;base_win_rank@101:2;base_place_odds@103:5;base_place_rank@108:2",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser numeric fields",
+      "current_racenote_exposure": "horses[].market.*",
+      "current_reader_exposure": "DAY PREP only / excluded from clean Reader",
+      "current_v046_visible": false,
+      "lineage_status": "CURRENT_HIDDEN",
+      "semantic_notes": "DAY PREPでは存在、v0.4.6 clean input bindingで除去。",
+      "overlap_candidates": [
+        "final market (not in clean input)"
+      ],
+      "witness_path_present": false,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.jrdb_marks",
+      "display_name": "JRDB印",
+      "category": "jrdb_composite",
+      "source_record": "KYI",
+      "source_field": "marks@327:1..333:1",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI code decode",
+      "current_racenote_exposure": "horses[].jrdb_ratings.marks",
+      "current_reader_exposure": "horses[].jrdb_ratings.marks",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "指数ごとの印カテゴリ。名称と原指数は併存。",
+      "overlap_candidates": [
+        "total_index",
+        "idm",
+        "info_index",
+        "jockey_index",
+        "stable_index",
+        "training_index",
+        "longshot_index"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.farm",
+      "display_name": "外厩名/評価",
+      "category": "training_condition",
+      "source_record": "KYI",
+      "source_field": "farm_name@573:50;farm_rank@623:1;farm_index_rank@624:1",
+      "raw_or_derived": "raw",
+      "derivation_source": "KYI parser fields",
+      "current_racenote_exposure": "horses[].condition.farm",
+      "current_reader_exposure": "horses[].condition.farm",
+      "current_v046_visible": true,
+      "lineage_status": "CURRENT_VISIBLE",
+      "semantic_notes": "外厩情報。",
+      "overlap_candidates": [
+        "stable_index",
+        "training_analysis"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.past_performance",
+      "display_name": "直近5走の成績/走破内容",
+      "category": "ability_performance",
+      "source_record": "ZED",
+      "source_field": "time@144:4;idm@183:3;metrics@186..239;corners@309..315;3F@259,262",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI previous keys join to strictly prior ZED; Normalizer.history",
+      "current_racenote_exposure": "horses[].recent_runs[].{result,performance,jrdb_metrics}",
+      "current_reader_exposure": "horses[].recent_runs[].{result,performance,jrdb_metrics}",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "過去走から構成され対象日以降は除外。レース後の評価値群を含む。",
+      "overlap_candidates": [
+        "KYI idm",
+        "pace indices"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.past_notes",
+      "display_name": "過去走特記事項/馬体",
+      "category": "ability_performance",
+      "source_record": "ZKB",
+      "source_field": "tokki@27..44;equipment@45..68;leg@69..113;comments@114..273",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI previous result keys join to ZKB",
+      "current_racenote_exposure": "horses[].recent_runs[].notes,horses[].recent_runs[].body",
+      "current_reader_exposure": "horses[].recent_runs[].notes,horses[].recent_runs[].body",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "過去走の観察コメント・装備・脚元。",
+      "overlap_candidates": [
+        "horse_traits",
+        "current condition"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.recent_runs",
+      "display_name": "直近履歴接続",
+      "category": "ability_performance",
+      "source_record": "KYI",
+      "source_field": "previous[5]@204..323",
+      "raw_or_derived": "derived",
+      "derivation_source": "KYI explicit previous keys join PACI ZED/ZKB",
+      "current_racenote_exposure": "horses[].recent_runs",
+      "current_reader_exposure": "horses[].recent_runs",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "最大5走、キー照合、target date strictly earlier。",
+      "overlap_candidates": [
+        "Analysis older_runs"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.history_profile",
+      "display_name": "通算/条件別成績",
+      "category": "analysis_history",
+      "source_record": "Analysis Lite",
+      "source_field": "fact_entry_result_lite(horse_id,race_date,finish,track_type,distance,venue_code)",
+      "raw_or_derived": "derived",
+      "derivation_source": "racenote_history_enrichment query_summary; as-of-exclusive",
+      "current_racenote_exposure": "horses[].historical_profile",
+      "current_reader_exposure": "horses[].historical_profile",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "出走・勝利・3着内と率/標本帯。",
+      "overlap_candidates": [
+        "recent_runs",
+        "pedigree_context"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.older_runs",
+      "display_name": "古い過去走",
+      "category": "analysis_history",
+      "source_record": "Analysis Lite",
+      "source_field": "fact_entry_result_lite fields in racenote_analysis_backend.TARGET_COLUMNS",
+      "raw_or_derived": "derived",
+      "derivation_source": "racenote_history_enrichment: up to 3 strictly older than PACI recent runs",
+      "current_racenote_exposure": "horses[].older_runs",
+      "current_reader_exposure": "horses[].older_runs",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "直近PACI履歴より古い最大3件。",
+      "overlap_candidates": [
+        "recent_runs",
+        "historical_profile"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.pedigree_identity",
+      "display_name": "血統識別",
+      "category": "pedigree",
+      "source_record": "Analysis Lite",
+      "source_field": "horse_id,sire_name,dam_name,broodmare_sire_name,sire_line_code,broodmare_sire_line_code",
+      "raw_or_derived": "derived",
+      "derivation_source": "approved pre-race Analysis identity projection",
+      "current_racenote_exposure": "horses[].pedigree",
+      "current_reader_exposure": "horses[].pedigree",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "結果値は露出しない識別情報。部分欠損あり。",
+      "overlap_candidates": [
+        "pedigree_context"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "horse.pedigree_context",
+      "display_name": "父/母父条件別成績",
+      "category": "pedigree",
+      "source_record": "Analysis Lite",
+      "source_field": "horse_id + sire_name/broodmare_sire_name; historical facts",
+      "raw_or_derived": "derived",
+      "derivation_source": "racenote_history_enrichment pedigree context; as-of-exclusive",
+      "current_racenote_exposure": "horses[].pedigree_context",
+      "current_reader_exposure": "horses[].pedigree_context",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "血統軸の条件別集計。スコア化なし、小標本を保持。",
+      "overlap_candidates": [
+        "historical_profile",
+        "distance_fit"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "race.trends",
+      "display_name": "枠/脚質等レース傾向",
+      "category": "analysis_history",
+      "source_record": "Analysis Lite",
+      "source_field": "fact_entry_result_lite historical rows",
+      "raw_or_derived": "derived",
+      "derivation_source": "racenote_trend_aggregator / build_racenote_v1",
+      "current_racenote_exposure": "race.race_trends",
+      "current_reader_exposure": "race.race_trends",
+      "current_v046_visible": true,
+      "lineage_status": "DERIVED_VISIBLE",
+      "semantic_notes": "過去集計（starts/wins/top3/rates/sample band）。",
+      "overlap_candidates": [
+        "horse.history_profile",
+        "running_style"
+      ],
+      "witness_path_present": true,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "field.context",
+      "display_name": "出走馬比較文脈",
+      "category": "suitability_context",
+      "source_record": "KYI + Analysis",
+      "source_field": "current runners + historical facts",
+      "raw_or_derived": "derived",
+      "derivation_source": "RaceNote field-context builder",
+      "current_racenote_exposure": "field_context",
+      "current_reader_exposure": "field_context",
+      "current_v046_visible": false,
+      "lineage_status": "UNKNOWN_LINEAGE",
+      "semantic_notes": "正確な集約/フィールド一覧の系譜は builder 定義照合を要する。",
+      "overlap_candidates": [
+        "race.trends",
+        "historical_profile"
+      ],
+      "witness_path_present": false,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "paci.extra_records",
+      "display_name": "PACI追加レコード",
+      "category": "paci_extension",
+      "source_record": "PACI",
+      "source_field": "CHA/CYB/ZED/ZKB and optional records",
+      "raw_or_derived": "derived",
+      "derivation_source": "parser/joins vary by record family",
+      "current_racenote_exposure": "some under training/recent_runs; others absent",
+      "current_reader_exposure": "some under training/recent_runs; others absent",
+      "current_v046_visible": false,
+      "lineage_status": "UNKNOWN_LINEAGE",
+      "semantic_notes": "PACIの全レコード種別とRaceNote出力対応は個別に照合が必要。",
+      "overlap_candidates": [
+        "recent_runs",
+        "training"
+      ],
+      "witness_path_present": false,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    },
+    {
+      "field_id": "analysis.unused_columns",
+      "display_name": "Analysis Lite非Reader列",
+      "category": "analysis_history",
+      "source_record": "Analysis Lite",
+      "source_field": "meeting_no,meeting_day,race_name,course_code,age,sex_code,sire_line_code,broodmare_sire_line_code,prev_result_key_1,prev_race_key_1",
+      "raw_or_derived": "raw",
+      "derivation_source": "Analysis Lite schema v1.4",
+      "current_racenote_exposure": "none in historical_profile summary",
+      "current_reader_exposure": "DAY PREP only / excluded from clean Reader",
+      "current_v046_visible": false,
+      "lineage_status": "CURRENT_HIDDEN",
+      "semantic_notes": "Analysisテーブルにはあるが、このreader出力パスで特徴値としては未表示。",
+      "overlap_candidates": [
+        "race identity",
+        "pedigree identity"
+      ],
+      "witness_path_present": false,
+      "evidence_witness": "horse-racing/jrdb/backtests/BTDAY-0048/20260207/forecast_prep/reader/racenote_reader_20260207_東京1R.json"
+    }
+  ]
+}
