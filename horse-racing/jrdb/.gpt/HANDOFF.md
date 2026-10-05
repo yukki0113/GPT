@@ -1,25 +1,28 @@
-### RaceNote Human-Context v0.4.6 unified prospective — 2026-10-04
+### RaceNote Human-Context v0.4.6 unified prospective — 2026-10-05
 
 - New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.6-candidate` from `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
-- v0.4.6 is a self-contained rewrite. Do not stack v0.4.4/v0.4.5 workflow rules underneath it.
-- Governing invariants: complete market-blind Reader evidence, integrated human-context judgment, clean Freeze before results.
-- One race judgment: race model -> ◎ ○ △1 △2 ordinary support + independent ▲ -> final △2 versus strongest excluded alternative -> final five + prose.
-- There is no active v0.4.6 hierarchy pass, ▲ promotion pass, Coverage state machine, mandatory chunk artifact, or per-race checkpoint loop.
-- Normal execution: predict one venue continuously -> save one immutable venue batch -> continue automatically to next venue -> bind full day -> Freeze/Validator/archive.
-- Saving a venue batch is never a reason to ask the user for a continuation instruction.
-- Recovery only after a genuine interruption: run `racenote_save_venue_batch_v046.py --reconcile-only`, then read `batch_manifest.json` and resume from the first unsaved venue. Reconciliation validates existing immutable venue files without re-authoring them.
-- Active modules:
-  - `src/racenote_save_venue_batch_v046.py`
-  - `src/racenote_bind_venue_batches_v046.py`
-  - `src/racenote_freeze_prepared_forecast.py`
-  - `src/validate_racenote_forecast_human_context.py`
+- v0.4.6 remains one prediction cohort. 2026-10-05 refinements change prose, trace sparsity and deterministic execution only; they do not change horse-selection semantics.
+- Governing prediction context: complete market-blind Reader, integrated race model, ◎○△1△2 ordinary support, independent ▲, final △2 versus closest excluded alternative.
+- RRDB is read as contextual evidence, but `rrdb_refs` should include only horses whose RRDB evidence materially changed or sharpened the final judgment. Do not mirror all marked/reviewed horses.
+- Reader-facing prose is natural race analysis. Avoid serializing ◎→○→▲→残り△ by habit; translate RRDB/IDM/internal index labels into ordinary racing language unless the raw term itself is genuinely informative.
+- Normal execution:
+  1. commit `backtests/requests/BTDAY-XXXX.json`;
+  2. permanent `.github/workflows/racenote_btday_v046_prepare.yml` builds DAY PREP + clean forecast prep;
+  3. model authors one complete `authored_decisions/<venue>.json` and immediately continues;
+  4. authored venue files are the recovery points;
+  5. permanent `.github/workflows/racenote_btday_v046_finalize.yml` does nothing until all expected venues exist, then performs venue validation/batch materialization -> bind -> Freeze -> Validator -> archive once.
+- Normal operation must not create per-BTDAY temporary workflows.
+- Saving a venue file is never a reason to ask the user for a continuation instruction.
+- Recovery after a genuine interruption starts from the first expected venue without an authored file; saved venues are never re-authored.
 - Active schemas:
   - `schema/racenote_decision_core_v0_4_6.json`
   - `schema/racenote_forecast_research_record_v0_4_6.json`
+  - `schema/racenote_btday_v046_request.json`
 - Canonical docs:
   - `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_4_6_CANDIDATE.md`
   - `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`
-- v0.4.5 chunk/checkpoint modules remain historical/reproducibility assets only, not normal v0.4.6 execution.
+  - `docs/racenote/FORECAST_READER_FACING_PROSE_v0_1.md`
+- v0.4.5 chunk/checkpoint modules remain historical/reproducibility assets only.
 - Production `current_logic_version` remains unchanged and separate.
 
 ### JRDB Daily Raw Acquisition v0.1 — 2026-10-01
