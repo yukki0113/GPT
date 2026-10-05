@@ -65,22 +65,25 @@ Do not use the retired Actions-to-Drive bridge.
 
 ## Completed-race Result Query — mandatory Drive bridge
 
-For requests asking for completed JRA results, payouts, hit settlement, ROI inputs, or in-the-money outcomes, use JRDB first **except for the explicit same-day post-Freeze RaceNote速報 path below**.
+For requests asking for completed JRA results, payouts, hit settlement, ROI inputs, or in-the-money outcomes, use JRDB first.  RaceNote has two post-Freeze routes: JRDB SED/HJC when those target-date files already exist, and a public-Web速報 fallback only while they are still unavailable.
 
-### Same-day post-Freeze RaceNote result / settlement exception
-
-When the user needs a provisional RaceNote ticket result **on the target race day**, before the target-date SED/HJC has been acquired, the standard lightweight route is:
+### Post-Freeze RaceNote result / settlement routing
 
 1. Confirm the relevant Forecast records are already frozen and the pre-result Guard passed.
-2. Run `src/racenote_daily_result_fetch.py --date YYYY-MM-DD`.
-   - v0.1 uses Sponichi Keiba Web as a replaceable public-Web same-day source.
-   - it retrieves top-3 finishers and payout information for the day's races.
+2. Check the canonical Drive inventory for target-date `SEDyymmdd.zip` and `HJCyymmdd.zip`.
+3. If **both exist**, use the deterministic JRDB route:
+   - materialize both files through the native Drive connector;
+   - run `src/racenote_daily_result_from_jrdb.py --date YYYY-MM-DD --sed ... --hjc ...`;
+   - SED supplies finishers, HJC supplies all eight payout types;
+   - SED win/place payout fields are cross-validated against HJC;
+   - Web result acquisition is unnecessary.
+4. If target-date SED/HJC is **not yet available** (normally race-day速報), use `src/racenote_daily_result_fetch.py --date YYYY-MM-DD`.
+   - v0.1 uses Sponichi Keiba Web as a replaceable public-Web source;
    - unfinished/incompletely posted races stay `pending`; abnormal/dead-heat shapes fail closed as `review_required`.
-3. Run `src/racenote_daily_settlement.py --forecast ... --results ...`.
+5. Run `src/racenote_daily_settlement.py --forecast ... --results ...`.
    - all tickets are 100 yen fixed;
    - it reports ◎ win/place, ◎-○/▲ quinella and exacta, ◎-all-marks trio flow, and ◎-1st-fixed trifecta flow ROI/top payouts.
-4. Treat this output as **same-day provisional settlement only**.
-5. Later detailed review remains the canonical JRDB SED/HJC + RaceReview path.
+6. Detailed RaceReview remains the canonical JRDB SED/HJC post-race review path.
 
 Canonical guide: `docs/racenote/SAME_DAY_RESULT_SETTLEMENT_v0_1.md`.
 
