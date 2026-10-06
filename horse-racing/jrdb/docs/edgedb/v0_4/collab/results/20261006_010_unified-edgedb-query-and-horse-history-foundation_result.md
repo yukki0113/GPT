@@ -72,4 +72,4 @@ The local `.venv-data-storage` dependency check reported DuckDB and PyArrow miss
 
 - Instruction 010 acceptance gate: **PASS** with the canonical Analysis Parquet fallback and focused tests.
 - Production consumer migration: **NONE**; RaceNote/PWA remain unchanged.
-- PR #1822 remains unmerged under its merge hold, pending review.
+- PR #1822 was reviewed and merged to `main`; merge commit: `def179f401632eed4da2b75431672e376973ca20`.
