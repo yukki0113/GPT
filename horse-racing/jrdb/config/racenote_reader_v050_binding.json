@@ -1,0 +1,664 @@
+{
+  "schema_version": "stage-d-binding-v1",
+  "candidate_version": "RaceNote-Human-Context-Reader-0.5.0-candidate",
+  "stage_c_policy_count": 73,
+  "entries": [
+    {
+      "feature_id": "idm",
+      "source_path": "ability.idm",
+      "source_family": "KYI",
+      "tier": "PRIMARY",
+      "display_group": "ABILITY",
+      "primary_representation": "idm",
+      "rationale": "Stable descriptive separation supports prominent, non-weighted evidence."
+    },
+    {
+      "feature_id": "total_index",
+      "source_path": "ability.total_index",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "ABILITY",
+      "primary_representation": "idm",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "info_index",
+      "source_path": "jrdb_ratings.info_index",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "ABILITY",
+      "primary_representation": "info_index",
+      "rationale": "Strong but market-aligned provider composite; group under one ability block with IDM, not a second vote."
+    },
+    {
+      "feature_id": "jockey_index",
+      "source_path": "jrdb_ratings.jockey_index",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "CONNECTIONS",
+      "primary_representation": "jockey_index",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "stable_index",
+      "source_path": "jrdb_ratings.stable_index",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "CONNECTIONS",
+      "primary_representation": "stable_index",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "longshot_index",
+      "source_path": "jrdb_ratings.longshot_index",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "ABILITY",
+      "primary_representation": "longshot_index",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "jockey_expected_top2_rate",
+      "source_path": "jrdb_ratings.jockey_expected_top2_rate",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "CONNECTIONS",
+      "primary_representation": "jockey_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "pace_front_index",
+      "source_path": "pace.indices.front",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_front_index",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "pace_front_rank",
+      "source_path": "pace.ranks.front",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_front_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "pace_pace_index",
+      "source_path": "pace.indices.pace",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_pace_index",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "pace_pace_rank",
+      "source_path": "pace.ranks.pace",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_pace_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "pace_late_index",
+      "source_path": "pace.indices.late",
+      "source_family": "KYI",
+      "tier": "PRIMARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_late_index",
+      "rationale": "Stable descriptive separation supports prominent, non-weighted evidence."
+    },
+    {
+      "feature_id": "pace_late_rank",
+      "source_path": "pace.ranks.late",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_late_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "pace_position_index",
+      "source_path": "pace.indices.position",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_position_index",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "pace_position_rank",
+      "source_path": "pace.ranks.position",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_position_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "forecast_mid_order",
+      "source_path": "pace.forecast_positions.mid.order",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_mid_margin",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "forecast_mid_margin",
+      "source_path": "pace.forecast_positions.mid.margin",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_mid_margin",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "forecast_mid_lane",
+      "source_path": "pace.forecast_positions.mid.lane",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_mid_lane",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "forecast_last3f_order",
+      "source_path": "pace.forecast_positions.last3f.order",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_last3f_margin",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "forecast_last3f_margin",
+      "source_path": "pace.forecast_positions.last3f.margin",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_last3f_margin",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "forecast_last3f_lane",
+      "source_path": "pace.forecast_positions.last3f.lane",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_last3f_lane",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "forecast_finish_order",
+      "source_path": "pace.forecast_positions.finish.order",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_finish_margin",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "forecast_finish_margin",
+      "source_path": "pace.forecast_positions.finish.margin",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_finish_margin",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "forecast_finish_lane",
+      "source_path": "pace.forecast_positions.finish.lane",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_finish_lane",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "start_index",
+      "source_path": "pace.start_index",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "start_index",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "late_break_rate",
+      "source_path": "pace.late_break_rate",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "late_break_rate",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "running_style",
+      "source_path": "ability.running_style",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "running_style",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "jrdb_class",
+      "source_path": "ability.jrdb_class",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "ABILITY",
+      "primary_representation": "jrdb_class",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "distance_fit",
+      "source_path": "ability.distance_fit",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "SUITABILITY",
+      "primary_representation": "distance_fit",
+      "rationale": "Reduced coverage; show only when present and relevant to surface/distance."
+    },
+    {
+      "feature_id": "turf_fit",
+      "source_path": "ability.surface_fit.turf",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "SUITABILITY",
+      "primary_representation": "turf_fit",
+      "rationale": "Reduced coverage; show only when present and relevant to surface/distance."
+    },
+    {
+      "feature_id": "dirt_fit",
+      "source_path": "ability.surface_fit.dirt",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "SUITABILITY",
+      "primary_representation": "dirt_fit",
+      "rationale": "Reduced coverage; show only when present and relevant to surface/distance."
+    },
+    {
+      "feature_id": "heavy_track_fit",
+      "source_path": "ability.heavy_track_fit",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "SUITABILITY",
+      "primary_representation": "heavy_track_fit",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "forecast_pace",
+      "source_path": "pace.forecast_pace",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "forecast_pace",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "pace_symbol",
+      "source_path": "pace.symbol",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "PACE_POSITION",
+      "primary_representation": "pace_symbol",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "kyi_training_index",
+      "source_path": "training.summary.training_index",
+      "source_family": "KYI",
+      "tier": "PRIMARY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "kyi_training_index",
+      "rationale": "Strong stable KYI summary; retain separately from CHA/CYB because KYI versus CYB rank correlation is 0.159."
+    },
+    {
+      "feature_id": "training_arrow",
+      "source_path": "training.summary.training_arrow",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "training_arrow",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "improvement",
+      "source_path": "condition.improvement",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "improvement",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "stable_evaluation",
+      "source_path": "condition.stable_evaluation",
+      "source_family": "KYI",
+      "tier": "SECONDARY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "stable_evaluation",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "farm_rank",
+      "source_path": "condition.farm.rank",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "farm_rank",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "farm_index_rank",
+      "source_path": "condition.farm.index_rank",
+      "source_family": "KYI",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "farm_index_rank",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_clock_index_front",
+      "source_path": "training.main_workout.clock_index.front",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_clock_index_front",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_clock_index_middle",
+      "source_path": "training.main_workout.clock_index.middle",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_clock_index_middle",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_clock_index_last",
+      "source_path": "training.main_workout.clock_index.last",
+      "source_family": "CHA",
+      "tier": "SECONDARY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_clock_index_last",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "cha_clock_index_total",
+      "source_path": "training.main_workout.clock_index.total",
+      "source_family": "CHA",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_training_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "cha_clock_front",
+      "source_path": "training.main_workout.clock.front",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_clock_front",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_clock_middle",
+      "source_path": "training.main_workout.clock.middle",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_clock_middle",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_clock_last",
+      "source_path": "training.main_workout.clock.last",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_clock_last",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_course",
+      "source_path": "training.main_workout.course",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_course",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_strength",
+      "source_path": "training.main_workout.strength",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_strength",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_state",
+      "source_path": "training.main_workout.state",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_state",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_pair_result",
+      "source_path": "training.main_workout.pair.result",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_pair_result",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cha_furlongs",
+      "source_path": "training.main_workout.furlongs",
+      "source_family": "CHA",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cha_furlongs",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_training_index",
+      "source_path": "training.analysis.training_index",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_training_index",
+      "rationale": "Same observed values as CHA total clock index; one shared workout block, never two confirmations."
+    },
+    {
+      "feature_id": "cyb_condition_index",
+      "source_path": "training.analysis.condition_index",
+      "source_family": "CYB",
+      "tier": "SECONDARY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_condition_index",
+      "rationale": "Distinct racing context or moderate signal; keep visible without independent voting."
+    },
+    {
+      "feature_id": "cyb_one_week_ago_index",
+      "source_path": "training.analysis.one_week_ago.index",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_one_week_ago_index",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_course_count_slope",
+      "source_path": "training.analysis.course_counts.slope",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_course_count_slope",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_course_count_wood",
+      "source_path": "training.analysis.course_counts.wood",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_course_count_wood",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_course_count_dirt",
+      "source_path": "training.analysis.course_counts.dirt",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_course_count_dirt",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_course_count_turf",
+      "source_path": "training.analysis.course_counts.turf",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_course_count_turf",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_course_count_pool",
+      "source_path": "training.analysis.course_counts.pool",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_course_count_pool",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_course_count_obstacle",
+      "source_path": "training.analysis.course_counts.obstacle",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_course_count_obstacle",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_course_count_polytrack",
+      "source_path": "training.analysis.course_counts.polytrack",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_course_count_polytrack",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_distance_pattern",
+      "source_path": "training.analysis.distance_pattern",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_distance_pattern",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_focus",
+      "source_path": "training.analysis.focus",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_focus",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_volume_grade",
+      "source_path": "training.analysis.volume_grade",
+      "source_family": "CYB",
+      "tier": "CONTEXT_ONLY",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_volume_grade",
+      "rationale": "Retain as conditional context or source detail; no general headline claim."
+    },
+    {
+      "feature_id": "cyb_training_grade",
+      "source_path": "training.analysis.training_grade",
+      "source_family": "CYB",
+      "tier": "INSUFFICIENT_COVERAGE",
+      "display_group": "TRAINING_CONDITION",
+      "primary_representation": "cyb_training_grade",
+      "rationale": "No usable values in the 2023–2025 sample."
+    },
+    {
+      "feature_id": "mark_total",
+      "source_path": "jrdb_ratings.marks.total",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "MARKS",
+      "primary_representation": "idm",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "mark_idm",
+      "source_path": "jrdb_ratings.marks.idm",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "MARKS",
+      "primary_representation": "idm",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "mark_info",
+      "source_path": "jrdb_ratings.marks.info",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "MARKS",
+      "primary_representation": "info_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "mark_jockey",
+      "source_path": "jrdb_ratings.marks.jockey",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "MARKS",
+      "primary_representation": "jockey_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "mark_stable",
+      "source_path": "jrdb_ratings.marks.stable",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "MARKS",
+      "primary_representation": "stable_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "mark_training",
+      "source_path": "jrdb_ratings.marks.training",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "MARKS",
+      "primary_representation": "kyi_training_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    },
+    {
+      "feature_id": "mark_longshot",
+      "source_path": "jrdb_ratings.marks.longshot",
+      "source_family": "KYI",
+      "tier": "REDUNDANT_HIDDEN",
+      "display_group": "MARKS",
+      "primary_representation": "longshot_index",
+      "rationale": "Collapse duplicate or near-duplicate presentation; preserve the original source leaf for traceability."
+    }
+  ]
+}
