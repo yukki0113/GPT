@@ -47,8 +47,8 @@ def main() -> int:
         shadow = json.loads(shadow_path.read_text(encoding="utf-8"))
         if shadow.get("generation_id") != EXPECTED_GENERATION:
             raise SystemExit(f"unexpected upstream generation: {shadow.get('generation_id')!r}")
-        if shadow.get("status") != "CURRENT":
-            raise SystemExit("upstream shadow pointer is not CURRENT")
+        if shadow.get("status") != "SHADOW_PASS":
+            raise SystemExit("upstream candidate pointer is not SHADOW_PASS")
         (root / "current.json").write_text(json.dumps(shadow, sort_keys=True) + "\n", encoding="utf-8")
         report = resolve_current(root)
         if report["generation_id"] != EXPECTED_GENERATION:
