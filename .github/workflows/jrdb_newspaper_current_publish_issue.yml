@@ -85,7 +85,7 @@ jobs:
               raise SystemExit('candidate parity report is not fully PASS')
           if report.get('release_modified') is not False:
               raise SystemExit('unexpected release_modified state')
-          if int(report.get('missing_join_count') or -1)!=0 or int(report.get('extra_join_count') or -1)!=0:
+          if int(report.get('missing_join_count', -1))!=0 or int(report.get('extra_join_count', -1))!=0:
               raise SystemExit('candidate has join mismatches')
           package=json.loads(packages[0].read_text(encoding='utf-8'))
           manifest=package.get('manifest') or {}
