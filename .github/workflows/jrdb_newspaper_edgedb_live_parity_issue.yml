@@ -46,6 +46,13 @@ jobs:
           if req['raw_artifact_name'] != f'jrdb-raw-{date}':
               raise SystemExit('unexpected raw_artifact_name')
           Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as env:
+              env.write(f"REQUEST_DATE={date}\\n")
+              env.write(f"EXPECTED_REVISION={req['expected_revision']}\\n")
+              env.write(f"RAW_RUN_ID={req['raw_run_id']}\\n")
+              env.write(f"RAW_ARTIFACT={req['raw_artifact_name']}\\n")
+              env.write(f"ANALYSIS_RUN_ID={req['analysis_run_id']}\\n")
+              env.write(f"ANALYSIS_ARTIFACT={req['analysis_artifact_name']}\\n")
           PY
 
       - name: Install dependencies
@@ -57,14 +64,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/raw /tmp/analysis-artifact /tmp/analysis
-          RAW_RUN_ID="$(python -c "import json;print(json.load(open('/tmp/request.json'))['raw_run_id'])")"
-          RAW_ARTIFACT="$(python -c "import json;print(json.load(open('/tmp/request.json'))['raw_artifact_name'])")"
-          ANALYSIS_RUN_ID="$(python -c "import json;print(json.load(open('/tmp/request.json'))['analysis_run_id'])")"
-          ANALYSIS_ARTIFACT="$(python -c "import json;print(json.load(open('/tmp/request.json'))['analysis_artifact_name'])")"
           gh run download "$RAW_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$RAW_ARTIFACT" --dir /tmp/raw
           gh run download "$ANALYSIS_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ANALYSIS_ARTIFACT" --dir /tmp/analysis-artifact
-          DATE="$(python -c "import json;print(json.load(open('/tmp/request.json'))['date'])")"
-          PACI="$(find /tmp/raw -type f -name "PACI${DATE:2}.zip" -print -quit)"
+          PACI="$(find /tmp/raw -type f -name "PACI${REQUEST_DATE:2}.zip" -print -quit)"
           test -n "$PACI"
           BUNDLE="$(find /tmp/analysis-artifact -type f -name 'analysis-parquet-candidate.tar.xz' -print -quit)"
           test -n "$BUNDLE"
@@ -90,16 +92,16 @@ jobs:
           gh release download jrdb-newspaper-current --repo "$GITHUB_REPOSITORY"             --pattern 'jrdb_newspaper_current.tar.xz' --dir /tmp/release --clobber
           tar -xJf /tmp/release/jrdb_newspaper_current.tar.xz -C /tmp/current
           python - <<'PY'
-          import json
+          import json, os
           from pathlib import Path
-          req=json.loads(Path('/tmp/request.json').read_text())
           manifests=list(Path('/tmp/current').rglob('manifest.json'))
           manifests=[p for p in manifests if p.parent.joinpath('races').is_dir()]
           if len(manifests)!=1: raise SystemExit(f'expected one day manifest, got {manifests}')
           root=manifests[0].parent
           m=json.loads(manifests[0].read_text())
-          expected_date=f"{req['date'][:4]}-{req['date'][4:6]}-{req['date'][6:]}"
-          if m.get('date')!=expected_date or int(m.get('revision') or 0)!=req['expected_revision']:
+          date=os.environ['REQUEST_DATE']
+          expected_date=f"{date[:4]}-{date[4:6]}-{date[6:]}"
+          if m.get('date')!=expected_date or int(m.get('revision') or 0)!=int(os.environ['EXPECTED_REVISION']):
               raise SystemExit(f"current release mismatch date/revision: {m.get('date')} r{m.get('revision')}")
           Path('/tmp/current-root.txt').write_text(str(root))
           print(f'current_root={root} date={m["date"]} revision={m["revision"]}')
@@ -110,8 +112,7 @@ jobs:
           PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
         run: |
           set -euo pipefail
-          DATE="$(python -c "import json;print(json.load(open('/tmp/request.json'))['date'])")"
-          PACI="$(find /tmp/raw -type f -name "PACI${DATE:2}.zip" -print -quit)"
+          PACI="$(find /tmp/raw -type f -name "PACI${REQUEST_DATE:2}.zip" -print -quit)"
           REGISTRY="$(python - <<'PY'
           import json
           from pathlib import Path
