@@ -1,0 +1,230 @@
+from __future__ import annotations
+
+import copy
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+import racenote_ab_freeze_barrier as barrier
+import racenote_ab_lane as lane
+import racenote_ab_session as session
+import racenote_reader_v050 as v050
+import racenote_reader_view as v046_reader
+
+
+def core(venue: str, race_no: int, label: str) -> dict:
+    return {
+        "venue": venue,
+        "race_no": race_no,
+        "race_model": f"{label}: pace and class context decide the race after a full-field read.",
+        "marks": [1, 2, 3, 4, 5],
+        "mainline_cases": [
+            {"horse_no": n, "case": f"{label}: credible clean pre-race case for horse {n}."}
+            for n in (1, 2, 4, 5)
+        ],
+        "single_shot_case": {"horse_no": 3, "case": f"{label}: independent asymmetric route for horse 3."},
+        "boundary_review": {"alternative_horse_no": 6, "reason": f"{label}: horse 5 has the clearer transferable case."},
+        "rrdb_refs": [],
+        "reader_facing_reason": f"{label}: The race shape supports the selected five runners, with an independent upside case for horse three and a considered fifth-mark boundary.",
+    }
+
+
+class ABHarnessTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        root = Path(self.tmp.name)
+        self.prep = root / "BTDAY-9999" / "forecast_prep"
+        self.ab = root / "BTDAY-9999" / "ab"
+        self.request = root / "requests" / "BTDAY-9999.json"
+        self.prep.mkdir(parents=True)
+        self.request.parent.mkdir(parents=True)
+        self.main_sha = "a" * 40
+        self.request.write_text(json.dumps({
+            "selection_id": "BTDAY-9999", "target_date": "2026-10-20",
+            "paci_file_id": "synthetic-paci", "analysis_artifact_run_id": 1,
+            "analysis_artifact_name": "synthetic-analysis",
+            "analysis_generation_id": "synthetic-generation",
+        }), encoding="utf-8")
+        self.roster = [("東京", 1), ("東京", 2), ("京都", 3)]
+        hashes = {}
+        reader_dir = self.prep / "reader"
+        reader_dir.mkdir()
+        for venue, race_no in self.roster:
+            source = {
+                "schema_version": "1.0",
+                "metadata": {"data_phase": "pre_race"},
+                "race": {"date": "2026-10-20", "venue": venue, "race_no": race_no, "surface": "芝", "distance_m": 1600, "class": "open"},
+                "horses": [
+                    {
+                        "basic": {"horse_no": n, "horse_name": f"{venue}-{race_no}-{n}"},
+                        "ability": {"idm": n + 10, "total_index": n + 9, "distance_fit": None},
+                        "training": {"analysis": {"training_index": n + 20}},
+                        "jrdb_ratings": {"jockey_index": n},
+                    }
+                    for n in range(1, 7)
+                ],
+            }
+            clean = v046_reader.build_reader_view(source)
+            name = f"reader_{venue}_{race_no}.json"
+            path = reader_dir / name
+            path.write_text(json.dumps(clean, ensure_ascii=False) + "\n", encoding="utf-8")
+            hashes[name] = session.digest(path.read_bytes())
+        manifest = {
+            "selection_id": "BTDAY-9999", "target_date": "2026-10-20",
+            "race_count": 3, "reader_sha256": hashes, "market_blind": True,
+            "result_opened": False,
+        }
+        (self.prep / "reader_stripped_manifest.json").write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+        handoff = {
+            "selection_id": "BTDAY-9999", "target_date": "2026-10-20",
+            "race_count": 3, "main_sha": self.main_sha,
+            "rrdb_contract": "rrdb-recommendation-signals-v0.3",
+            "market_blind": True, "stripped_at_input_bind": True,
+            "target_market_opened": False, "result_opened": False,
+            "reader_stripped_manifest_sha256": session.digest((self.prep / "reader_stripped_manifest.json").read_bytes()),
+        }
+        (self.prep / "day_prep_handoff.json").write_text(json.dumps(handoff), encoding="utf-8")
+        self.sealed = session.init_session(self.prep, self.request, self.ab, self.main_sha)
+
+    def write_incoming(self, which: str) -> list[Path]:
+        paths = []
+        for venue, race_nos in (("東京", [1, 2]), ("京都", [3])):
+            path = self.ab / which / "incoming" / f"{venue}.json"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps([core(venue, n, which) for n in race_nos], ensure_ascii=False), encoding="utf-8")
+            paths.append(path)
+        return paths
+
+    def save_and_freeze(self, which: str) -> dict:
+        for path in self.write_incoming(which):
+            lane.save_venue(self.ab, which, path)
+        return lane.build_freeze(self.ab, which)
+
+    def test_one_prepare_seals_one_shared_session_and_cannot_reinitialize(self) -> None:
+        sealed, readers, derived = session.load_session(self.ab)
+        self.assertEqual(sealed["status"], "SESSION_SEALED")
+        self.assertEqual(len(sealed["race_roster"]), 3)
+        self.assertEqual(sealed["expected_venues"], ["京都", "東京"])
+        self.assertEqual(sealed["source_prepare_request_identity"]["analysis_generation_id"], "synthetic-generation")
+        self.assertEqual(len(sealed["source_prepare_request_identity"]["sha256"]), 64)
+        self.assertEqual(len(readers), len(derived))
+        with self.assertRaises(FileExistsError):
+            session.init_session(self.prep, self.request, self.ab, self.main_sha)
+
+    def test_both_lanes_share_original_hashes_and_v050_is_deterministic_normal_only(self) -> None:
+        sealed, readers, derived = session.load_session(self.ab)
+        binding = v050.load_binding()
+        for key, original in readers.items():
+            entry = derived[key]
+            self.assertEqual(entry["original_clean_reader_sha256"], original["sha256"])
+            normal = session.read_json(self.ab / "v050" / "reader" / entry["derived_normal_filename"])
+            self.assertEqual(normal, v050.transform(original["reader"], binding)["normal_view"])
+            self.assertNotIn("provenance", normal)
+            self.assertEqual(entry["candidate_version"], v050.VERSION)
+        self.assertEqual(sealed["original_clean_reader_sha256"], session.read_json(self.ab / "shared" / "reader_manifest.json")["reader_sha256"])
+
+    def test_sibling_input_is_rejected_and_lane_paths_do_not_collide(self) -> None:
+        sibling = self.write_incoming("v050")[0]
+        with self.assertRaisesRegex(ValueError, "sibling inputs forbidden"):
+            lane.save_venue(self.ab, "v046", sibling)
+        a = self.write_incoming("v046")[0]
+        saved_a = lane.save_venue(self.ab, "v046", a)
+        saved_b = lane.save_venue(self.ab, "v050", sibling)
+        self.assertNotEqual(saved_a["logic_version"], saved_b["logic_version"])
+        self.assertTrue((self.ab / "v046" / "authored_decisions" / a.name).is_file())
+        self.assertTrue((self.ab / "v050" / "authored_decisions" / sibling.name).is_file())
+
+    def test_sibling_artifact_cannot_replace_model_reader(self) -> None:
+        incoming = self.write_incoming("v046")[0]
+        lane.save_venue(self.ab, "v046", incoming)
+        _, _, derived = session.load_session(self.ab)
+        entry = next(iter(derived.values()))
+        model_path = self.ab / "v050" / "reader" / entry["derived_normal_filename"]
+        sibling_payload = (self.ab / "v046" / "authored_decisions" / incoming.name).read_bytes()
+        model_path.write_bytes(sibling_payload)
+        with self.assertRaises(ValueError):
+            session.load_session(self.ab)
+
+    def test_invalid_five_marks_and_incomplete_venue_block_freeze(self) -> None:
+        files = self.write_incoming("v050")
+        first = json.loads(files[0].read_text(encoding="utf-8"))
+        first[0]["marks"] = [1, 1, 3, 4, 5]
+        files[0].write_text(json.dumps(first, ensure_ascii=False), encoding="utf-8")
+        with self.assertRaises(ValueError):
+            lane.save_venue(self.ab, "v050", files[0])
+        first[0] = core("東京", 1, "v050")
+        files[0].write_text(json.dumps(first, ensure_ascii=False), encoding="utf-8")
+        lane.save_venue(self.ab, "v050", files[0])
+        with self.assertRaises(ValueError):
+            lane.build_freeze(self.ab, "v050")
+
+    def test_v050_freeze_identifies_own_cohort_and_validates_normal_reader(self) -> None:
+        frozen = self.save_and_freeze("v050")
+        self.assertEqual(frozen["logic_version"], v050.VERSION)
+        self.assertEqual(frozen["status"], "FROZEN_CLEAN_BLIND")
+        self.assertEqual(frozen["validator_status"], "PASS")
+        self.assertNotEqual(frozen["reader_manifest_sha256"], frozen["original_clean_reader_manifest_sha256"])
+        self.assertEqual(frozen["record_count"], 3)
+
+    def test_barrier_fails_with_one_lane_only(self) -> None:
+        self.save_and_freeze("v046")
+        with self.assertRaises(FileNotFoundError):
+            barrier.create_barrier(self.ab)
+        self.assertFalse((self.ab / "ab_freeze_barrier.json").exists())
+
+    def test_barrier_rejects_wrong_session_and_reader_hash(self) -> None:
+        self.save_and_freeze("v046")
+        self.save_and_freeze("v050")
+        path = self.ab / "v050" / "frozen" / "lane_handoff.json"
+        original = session.read_json(path)
+        for key, value in (("session_id", "wrong"), ("original_clean_reader_manifest_sha256", "0" * 64)):
+            changed = copy.deepcopy(original)
+            changed[key] = value
+            session.write_json(path, changed)
+            with self.assertRaises(ValueError):
+                barrier.create_barrier(self.ab)
+        session.write_json(path, original)
+
+    def test_barrier_rejects_roster_or_sibling_input_tamper(self) -> None:
+        self.save_and_freeze("v046")
+        self.save_and_freeze("v050")
+        path = self.ab / "v050" / "frozen" / "lane_handoff.json"
+        original = session.read_json(path)
+        for key, value in (("race_roster", []), ("sibling_forecast_input_used", True), ("result_opened", True)):
+            changed = copy.deepcopy(original)
+            changed[key] = value
+            session.write_json(path, changed)
+            with self.assertRaises(ValueError):
+                barrier.create_barrier(self.ab)
+        session.write_json(path, original)
+
+    def test_barrier_passes_only_both_clean_and_revalidates_before_evaluation(self) -> None:
+        self.save_and_freeze("v046")
+        self.save_and_freeze("v050")
+        result = barrier.create_barrier(self.ab)
+        self.assertEqual(result["status"], "BOTH_LANES_FROZEN_CLEAN_BLIND")
+        self.assertEqual(result["lanes"]["v046"]["logic_version"], lane.V046)
+        self.assertEqual(result["lanes"]["v050"]["logic_version"], lane.V050)
+        self.assertEqual(barrier.require_barrier(self.ab), result)
+        with self.assertRaises(FileExistsError):
+            barrier.create_barrier(self.ab)
+        path = self.ab / "v050" / "frozen" / "records.json"
+        path.write_bytes(path.read_bytes() + b" ")
+        with self.assertRaises(ValueError):
+            barrier.require_barrier(self.ab)
+
+    def test_no_early_result_gate_and_current_pointer_unchanged(self) -> None:
+        with self.assertRaisesRegex(ValueError, "barrier missing"):
+            barrier.require_barrier(self.ab)
+        current = (ROOT / "config" / "racenote_forecast_logic_current.json").read_text(encoding="utf-8")
+        self.assertNotIn(v050.VERSION, current)
+
+
+if __name__ == "__main__":
+    unittest.main()
