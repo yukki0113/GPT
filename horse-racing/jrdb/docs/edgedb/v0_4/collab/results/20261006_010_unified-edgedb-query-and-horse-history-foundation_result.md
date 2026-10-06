@@ -35,7 +35,7 @@ PYTHONPATH=horse-racing/jrdb/src python -m unittest -v \
   horse-racing/jrdb/tests/test_jrdb_horse_history_query.py
 ```
 
-Result: **8 tests passed**. Coverage includes source hashes and cohort fingerprint/row count, v0.2 STANDARD matcher parity on a deterministic fixture, v0.4 cohort membership parity, exact lifecycle visibility, manifest fail-closed cases, deterministic ordering, identity filters, and SQLite compatibility history date/order/limit/duplicate/provenance behavior.
+Result: **9 tests passed**. Coverage includes source hashes and cohort fingerprint/row count, v0.2 STANDARD matcher parity on a deterministic fixture, v0.4 cohort membership parity, exact lifecycle visibility, manifest fail-closed cases, deterministic ordering, identity filters, and SQLite compatibility history date/order/limit/duplicate/provenance behavior.
 
 `py_compile` passed for the two new query modules and the v0.4 cohort/shadow modules.
 
