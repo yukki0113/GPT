@@ -32,7 +32,11 @@ Purpose: start a fresh forecast thread for the **v0.4.6 lane** of a same-BTDAY c
 - ◎ ○ ▲ △1 △2 の5頭を各レースで選出し、▲はmainlineとは独立したsingle-shot caseとして判断してください。
 - 最終△2とstrongest excluded alternative/nullの比較を残してください。
 - RRDBは判断を materially 変えた場合だけ疎に参照してください。
-- reader-facing reasonは自然な競馬分析文にしてください。
+- `mainline_cases` の4件は、各馬について「このレースでなぜその馬を本線に置いたか」を具体的な能力・近走内容・展開・適性・状態などに結び付けて書いてください。役割名だけの定型文は禁止です。
+- `single_shot_case.case` は、▲馬固有の「どの条件・展開・見落とされやすい強みが噛み合えば勝ち切れるか」を具体的に書いてください。「展開が振れれば一発」のような共通テンプレだけでは不可です。
+- `boundary_review.reason` は、最終△2と strongest excluded alternative を実際に比較した差分を具体的に書いてください。「△2の方が再現性が高い」のような共通文だけでは不可です。
+- 別レースと完全同一の mainline / ▲ / boundary 理由文を再利用しないでください。A/B harnessはv0.4.6 laneでexact duplicate traceをrejectします。
+- reader-facing reasonは自然な競馬分析文にしてください。監査用の定型句を末尾に付ける必要はありません。
 
 ### 実行単位
 
