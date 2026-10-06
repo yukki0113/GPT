@@ -95,6 +95,33 @@ class CandidateReaderTest(unittest.TestCase):
         self.assertNotIn("dirt_fit", shown)
         self.assertIn("dirt_fit", {x["feature_id"] for x in view["provenance"]["horses"][0]["detail"]})
 
+    def test_non_fit_context_is_hidden_by_default_with_provenance(self) -> None:
+        horse = {
+            "basic": {"horse_no": 1},
+            "pace": {"start_index": 8, "late_break_rate": 3},
+            "condition": {"farm": {"rank": "A"}},
+            "training": {
+                "main_workout": {"course": "南W", "clock": {"front": 12}},
+                "analysis": {"course_counts": {"wood": 2}, "training_index": 54},
+            },
+            "jrdb_ratings": {"jockey_index": 10},
+        }
+        view = candidate.transform(clean_view(horse), self.binding)
+        normal_ids = {
+            fid
+            for tiers in view["normal_view"]["horses"][0]["evidence"].values()
+            for fields in tiers.values()
+            for fid in fields
+        }
+        detail_ids = {entry["feature_id"] for entry in view["provenance"]["horses"][0]["detail"]}
+        gated = {
+            "start_index", "late_break_rate", "farm_rank", "cha_course",
+            "cha_clock_front", "cyb_course_count_wood",
+        }
+        self.assertFalse(normal_ids & gated)
+        self.assertTrue(gated <= detail_ids)
+        self.assertTrue({"jockey_index", "cyb_training_index"} <= normal_ids)
+
     def test_same_clean_input_and_v046_non_regression(self) -> None:
         clean = clean_view({"basic": {"horse_no": 1}, "ability": {"idm": 60, "total_index": 58}})
         before = copy.deepcopy(clean)
