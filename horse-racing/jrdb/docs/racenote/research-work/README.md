@@ -95,26 +95,31 @@ Stage A: **ACCEPT_WITH_NOTES**
 
 Stage B (2023-2025): **ACCEPT**
 
-Stage B decision:
+Stage C: **DESIGN_0_5_CANDIDATE**
 
-`PROCEED_STAGE_C`
+Stage C merge:
+`733db3231d57c70dc59a5ba8bf9ae5b9e288d689`
 
-No five-year Stage B2 extension is requested.
+Current phase:
 
-Canonical Stage B report:
-`reports/20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md`
+**Stage D — RaceNote 0.5.0 candidate Reader implementation**
 
-Canonical Stage B audit:
-`audits/20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md`
+Canonical instruction:
+`instructions/20261006_RACENOTE_V05_CANDIDATE_READER_STAGE_D_INSTRUCTION.md`
 
-Supplied artifact checksum manifest:
-`results/stage_b_2023_2025/ARTIFACT_MANIFEST.md`
+Stage D must:
 
-Current instruction:
-`instructions/20261005_JRDB_FEATURE_AUDIT_STAGE_C_INSTRUCTION.md`
+- implement 0.5.x as a parallel non-production Reader;
+- preserve the same clean upstream evidence;
+- leave v0.4.6 byte/semantically unchanged;
+- bind all 73 Stage C policy entries;
+- measure structural field/token reduction;
+- stop before prediction A/B evaluation.
 
-The active v0.4.6 Reader / prediction cohort remains unchanged. Stage C is an
-information-architecture proposal only.
+The next gate is `READY_FOR_CLEAN_BLIND_A_B`.
+
+The active v0.4.6 Reader / prediction cohort remains unchanged until a later
+explicit clean-blind comparison and promotion decision.
 
 
 ## 4. Historical analysis horizon
