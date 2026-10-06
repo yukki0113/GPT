@@ -89,8 +89,18 @@ def validate_policy_binding(binding: dict[str, Any], policy: dict[str, Any]) -> 
 
 
 def _relevant(row: dict[str, Any], race: dict[str, Any]) -> bool:
+    """Explicit normal-view gates; unspecified CONTEXT_ONLY stays in detail."""
     fid = row["feature_id"]
+    # Stage D requires these two Stage C context-tier fields as the normal
+    # representation of their connection/workout blocks.
+    if fid in {"jockey_index", "cyb_training_index"}:
+        return True
+    if fid == "jrdb_class":
+        return race.get("class") not in (None, "")
     surface = str(race.get("surface") or "")
+    if fid == "distance_fit":
+        distance = race.get("distance_m")
+        return isinstance(distance, (int, float)) and not isinstance(distance, bool) and distance > 0
     if fid == "turf_fit":
         return surface in {"芝", "turf", "TURF"}
     if fid == "dirt_fit":
@@ -99,7 +109,7 @@ def _relevant(row: dict[str, Any], race: dict[str, Any]) -> bool:
         return str(race.get("track_condition") or "") in {
             "重", "不良", "heavy", "HEAVY",
         }
-    return True
+    return False
 
 
 def _source_has_value(found: bool, value: Any) -> bool:
