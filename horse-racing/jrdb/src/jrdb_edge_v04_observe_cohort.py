@@ -97,7 +97,6 @@ def build(five_rows, three_rows, source_meta):
                "represented_historical_candidates": [provenance],
                "historical_label": "INCREMENTAL_CANDIDATE",
                "historical_audit": {
-                   "c1_metrics": candidate["c1_metrics"],
                    "child_metrics": {k: candidate["child_metrics"].get(k) for k in (
                        "n", "wins", "places", "win_roi", "place_roi", "n_365", "n_730",
                        "win_roi_365", "place_roi_365", "win_roi_730", "place_roi_730",
