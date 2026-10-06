@@ -21,6 +21,7 @@ def main() -> None:
     parser.add_argument("--template-parquet", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--search-lane", action="append", dest="search_lanes")
+    parser.add_argument("--family", action="append", dest="families")
     parser.add_argument("--min-depth", type=int, default=2)
     parser.add_argument("--max-depth", type=int, default=6)
     parser.add_argument("--max-templates-per-shard", type=int, default=900)
@@ -35,6 +36,7 @@ def main() -> None:
             rows,
             source_catalog_sha256=sha256_file(source_catalog),
             search_lanes=args.search_lanes,
+            families=args.families,
             min_depth=args.min_depth,
             max_depth=args.max_depth,
             max_templates_per_shard=args.max_templates_per_shard,
