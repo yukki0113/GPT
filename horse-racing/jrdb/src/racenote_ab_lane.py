@@ -52,6 +52,39 @@ def expected_races_by_venue(session: dict) -> dict[str, list[int]]:
     return {venue: sorted(races) for venue, races in sorted(result.items())}
 
 
+def _reject_v046_boilerplate(decisions: list[dict[str, Any]]) -> None:
+    """Require race-specific audit prose for the v0.4.6 A/B lane.
+
+    This does not judge forecast quality or require particular vocabulary.
+    It only rejects exact trace reuse across different races in one venue,
+    which cannot serve as an audit record of horse/race-specific reasoning.
+    """
+    fields: list[tuple[str, list[str]]] = [
+        (
+            "mainline case",
+            [
+                str(item.get("case") or "").strip()
+                for core in decisions
+                for item in core.get("mainline_cases", [])
+            ],
+        ),
+        (
+            "single-shot case",
+            [str(core.get("single_shot_case", {}).get("case") or "").strip() for core in decisions],
+        ),
+        (
+            "boundary reason",
+            [str(core.get("boundary_review", {}).get("reason") or "").strip() for core in decisions],
+        ),
+    ]
+    for label, values in fields:
+        seen: set[str] = set()
+        for value in values:
+            if value in seen:
+                raise ValueError(f"v046 exact boilerplate trace reuse rejected: {label}")
+            seen.add(value)
+
+
 def _validate_venue_cores(
     decisions: list[dict[str, Any]],
     venue: str,
@@ -72,6 +105,8 @@ def _validate_venue_cores(
             raise ValueError("Decision Core race identity mismatch")
         reader, _ = lane_reader(ab_root, lane, key, readers, derived)
         validate_core(core, reader)
+    if lane == "v046":
+        _reject_v046_boilerplate(decisions)
 
 
 def save_venue(ab_root: Path, lane: str, decisions_path: Path) -> dict[str, Any]:
