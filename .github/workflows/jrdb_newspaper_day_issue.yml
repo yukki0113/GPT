@@ -37,6 +37,9 @@ jobs:
           revision = req.get("revision", 1)
           raw_run_id = req.get("raw_run_id")
           artifact_name = str(req.get("artifact_name") or "").strip()
+          analysis_bundle_drive_file_id = str(req.get("analysis_bundle_drive_file_id") or "").strip()
+          analysis_generation_id = str(req.get("analysis_generation_id") or "").strip()
+          analysis_manifest_sha256 = str(req.get("analysis_manifest_sha256") or "").strip().lower()
 
           if not re.fullmatch(r"20\d{6}", date):
               raise SystemExit("date must be YYYYMMDD")
@@ -53,6 +56,9 @@ jobs:
                   "revision": revision,
                   "raw_run_id": raw_run_id,
                   "artifact_name": artifact_name,
+                  "analysis_bundle_drive_file_id": analysis_bundle_drive_file_id,
+                  "analysis_generation_id": analysis_generation_id,
+                  "analysis_manifest_sha256": analysis_manifest_sha256,
               }, ensure_ascii=False, indent=2) + "\n",
               encoding="utf-8",
           )
@@ -104,6 +110,53 @@ jobs:
           if expected <= 0 or expected != ready:
               raise SystemExit("race completeness mismatch")
           PY
+
+      - name: Resolve canonical Analysis and attach STANDARD Edge
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          PACI="$(find /tmp/raw -type f -name "PACI${REQUEST_DATE:2}.zip" -print -quit)"
+          python - <<'PY'
+          import json, subprocess, tarfile
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          from jrdb_newspaper_query_edge_day import _error_day
+          req=json.loads(Path('/tmp/request.json').read_text())
+          root=Path('/tmp/analysis_parquet')
+          try:
+              file_id=req['analysis_bundle_drive_file_id']
+              if not file_id or not req['analysis_generation_id'] or not req['analysis_manifest_sha256']:
+                  raise ValueError('canonical Analysis bundle identity missing from request')
+              bundle=Path('/tmp/analysis-parquet-current.tar.xz')
+              subprocess.run(['curl','--fail','--location','--retry','3',
+                  f'https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t',
+                  '--output',str(bundle)],check=True)
+              root.mkdir(parents=True,exist_ok=True)
+              with tarfile.open(bundle,'r:xz') as archive:
+                  for member in archive.getmembers():
+                      target=(root/member.name).resolve()
+                      if root.resolve() not in (target,*target.parents) or member.issym() or member.islnk():
+                          raise ValueError('unsafe Analysis archive member')
+                  archive.extractall(root)
+              report=resolve_current(root)
+              import hashlib
+              sha=hashlib.sha256(Path(report['manifest']).read_bytes()).hexdigest()
+              if report['generation_id']!=req['analysis_generation_id'] or sha!=req['analysis_manifest_sha256']:
+                  raise ValueError('canonical Analysis generation or manifest SHA mismatch')
+          except Exception as exc:
+              _error_day(Path('/tmp/day'),Path('/tmp/day-edge'),f'Analysis unavailable: {exc}')
+          PY
+          if test -d /tmp/day-edge; then
+            rm -rf /tmp/day
+            mv /tmp/day-edge /tmp/day
+          else
+            python horse-racing/jrdb/src/jrdb_newspaper_query_edge_day.py \
+              --base-day /tmp/day --output-dir /tmp/day-edge --paci "$PACI" \
+              --analysis-root /tmp/analysis_parquet > /tmp/edge-result.json
+            rm -rf /tmp/day
+            mv /tmp/day-edge /tmp/day
+          fi
 
       - name: Upload day artifact
         uses: actions/upload-artifact@v4

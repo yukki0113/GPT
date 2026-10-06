@@ -351,3 +351,7 @@ RRDB推奨は独立した印列を新設しない。
 - RaceNote単馬短評がある場合: 消さずに同一モーダルへRRDB短評を併記する。
 - RRDB内部のsignal ID / strength / S-A gradeはPWAへ表示しない。
 
+
+### Edge Query consumer
+
+日次Newspaper Baseと同じPACIを `jrdb_edgedb_query.py --profile STANDARD` に一度渡す。Analysisは既存のcanonical Parquet current bundleを世代IDとmanifest SHAで検証して利用する。adapterは `STANDARD` かつ `production_eligible=true` のsignalだけを `special_memos` に投影し、三つのidentity keyで完全一致mergeする。Edge Query/merge単独失敗時は `edge.state=ERROR` とaudit理由を残してBaseを維持する。旧matcher JSONLは互換入力に限定する。

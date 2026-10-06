@@ -81,6 +81,9 @@ def merge_edge_day(
         raise ValueError("day-dir must contain races/")
 
     edge_index, edge_audit = edge_adapter.load_special_memo_index(edge_path)
+    query_info = edge_audit.get("query")
+    if query_info and query_info["profile"] == "STANDARD" and edge_audit["non_standard_signal_count"]:
+        raise ValueError("STANDARD query contains non-STANDARD or non-production signals")
 
     if target_dir.exists():
         shutil.rmtree(target_dir)
@@ -88,6 +91,7 @@ def merge_edge_day(
 
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     consumed_keys: set[tuple[str, str, int]] = set()
+    missing_keys: list[tuple[str, str, int]] = []
     merged_rows = 0
     memo_runners = 0
     memo_count = 0
@@ -114,7 +118,8 @@ def merge_edge_day(
             join_key = (race_key, race_horse_key, horse_no)
             edge_row = edge_index.get(join_key)
             if edge_row is None:
-                raise ValueError(f"Edge row missing for exact join key {join_key}")
+                missing_keys.append(join_key)
+                continue
 
             special_memos = edge_row["special_memos"]
             horse["special_memos"] = special_memos
@@ -152,8 +157,8 @@ def merge_edge_day(
         })
 
     extra_keys = sorted(set(edge_index) - consumed_keys)
-    if extra_keys:
-        raise ValueError(f"Edge rows not consumed: count={len(extra_keys)} sample={extra_keys[:5]}")
+    if missing_keys or extra_keys:
+        raise ValueError(f"Edge exact join mismatch missing={len(missing_keys)} extra={len(extra_keys)} sample_missing={missing_keys[:5]} sample_extra={extra_keys[:5]}")
     if merged_rows != len(edge_index):
         raise ValueError(f"Edge/Newspaper row count mismatch: merged={merged_rows} edge={len(edge_index)}")
 
@@ -181,6 +186,8 @@ def merge_edge_day(
         "merged_rows": merged_rows,
         "memo_runners": memo_runners,
         "memo_count": memo_count,
+        "missing_join_count": len(missing_keys),
+        "extra_join_count": len(extra_keys),
         "per_race": per_race,
     }
     result["day_package"] = _write_day_package(target_dir, target_dir / "day-package.json")

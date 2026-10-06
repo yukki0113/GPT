@@ -508,7 +508,29 @@ def normalize_row(row: Mapping[str, Any], *, line_no: int) -> dict[str, Any]:
         "horse_id": _text(key.get("horse_id")),
         "race_date": _text(key.get("race_date")),
     }
-    raw_matches = row.get("edge_matches")
+    if row.get("schema_version") == "edgedb-query/v1":
+        if row.get("profile") not in {"STANDARD", "RESEARCH_ALL", "STANDARD_PLUS_SHADOW"}:
+            raise NewspaperEdgeAdapterError(f"{context}: unsupported query profile")
+        if not _text(row.get("query_engine_version")) or not _text(row.get("manifest_revision")):
+            raise NewspaperEdgeAdapterError(f"{context}: query provenance missing")
+        signals = row.get("signals")
+        if not isinstance(signals, list):
+            raise NewspaperEdgeAdapterError(f"{context}: signals must be an array")
+        raw_matches = []
+        for signal in signals:
+            if not isinstance(signal, Mapping):
+                raise NewspaperEdgeAdapterError(f"{context}: signal must be an object")
+            lifecycle = signal.get("source_lifecycle", signal.get("lifecycle"))
+            if lifecycle != "STANDARD" or signal.get("production_eligible") is not True:
+                continue
+            audit = signal.get("audit")
+            if not isinstance(audit, Mapping) or _text(audit.get("edge_id")) != _text(signal.get("signal_id")):
+                raise NewspaperEdgeAdapterError(f"{context}: STANDARD signal audit identity mismatch")
+            raw_matches.append(audit)
+    elif row.get("schema_version") is not None:
+        raise NewspaperEdgeAdapterError(f"{context}: unsupported schema_version")
+    else:
+        raw_matches = row.get("edge_matches")
     if not isinstance(raw_matches, list):
         raise NewspaperEdgeAdapterError(f"{context}: edge_matches must be an array")
 
@@ -546,6 +568,9 @@ def load_special_memo_index(
     special_memo_count = 0
     matched_runner_count = 0
     special_memo_runner_count = 0
+    query_metadata = None
+    input_format = None
+    signal_count = standard_signal_count = non_standard_signal_count = 0
 
     with source_path.open(encoding="utf-8") as handle:
         for line_no, raw_line in enumerate(handle, start=1):
@@ -555,6 +580,21 @@ def load_special_memo_index(
                 raw_row = json.loads(raw_line)
             except json.JSONDecodeError as exc:
                 raise NewspaperEdgeAdapterError(f"edge_matches line {line_no}: invalid JSON") from exc
+            row_format = "query" if isinstance(raw_row, Mapping) and raw_row.get("schema_version") == "edgedb-query/v1" else "legacy"
+            if input_format is not None and row_format != input_format:
+                raise NewspaperEdgeAdapterError(f"edge_matches line {line_no}: mixed query and legacy rows")
+            input_format = row_format
+            if isinstance(raw_row, Mapping) and raw_row.get("schema_version") == "edgedb-query/v1":
+                provenance = {k: raw_row.get(k) for k in ("schema_version", "query_engine_version", "manifest_revision", "profile")}
+                if query_metadata is not None and provenance != query_metadata:
+                    raise NewspaperEdgeAdapterError(f"edge_matches line {line_no}: mixed query provenance")
+                query_metadata = provenance
+                for signal in raw_row.get("signals") if isinstance(raw_row.get("signals"), list) else []:
+                    signal_count += 1
+                    if isinstance(signal, Mapping) and signal.get("source_lifecycle", signal.get("lifecycle")) == "STANDARD" and signal.get("production_eligible") is True:
+                        standard_signal_count += 1
+                    else:
+                        non_standard_signal_count += 1
             row = normalize_row(raw_row, line_no=line_no)
             key_data = row["key"]
             key = (
@@ -582,5 +622,9 @@ def load_special_memo_index(
         "matched_runner_count": matched_runner_count,
         "special_memo_count": special_memo_count,
         "special_memo_runner_count": special_memo_runner_count,
+        "query": query_metadata,
+        "total_signal_count": signal_count,
+        "standard_signal_count": standard_signal_count,
+        "non_standard_signal_count": non_standard_signal_count,
     }
     return index, audit

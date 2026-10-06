@@ -203,3 +203,7 @@ Issue発行前に:
 8. request JSONの機械的serialize
 
 を全PASSさせ、Issueは1回だけ作成する。失敗時はfailed stepを確認し、blind rerunしない。
+
+## EdgeDB Query日次consumer
+
+PACI Base後、同じPACIとcanonical Analysis Parquet currentを使い `jrdb_edgedb_query.py --profile STANDARD` を日全体に一回実行する。`edgedb-query/v1` をadapterで `special_memos` に投影し、`race_key + race_horse_key + horse_no` の完全一致でmergeする。SHADOW / OBSERVE_ONLY / production_eligible=falseは通常表示不可。Edgeの単独失敗は `edge.state=ERROR` と監査し、PACI/Baseを停止しない。旧generation-specific matcherの直接実行は日次経路から外し、旧JSONL入力互換のみ維持する。
