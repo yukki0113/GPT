@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-10-06T05:01:50Z",
+  "source_artifact_runs": {
+    "3y": {
+      "archive_sha256": "ceadecafe0e1b78ce6c3f370439c446cc39017943b510f175e81fbe67bd43269",
+      "run": 37321021557
+    },
+    "5y_c1_c2a": {
+      "archive_sha256": "e82a5a06aeb1346e21ed689222543bf8435f86e7135573a9abc2eb42baf834cf",
+      "run": 37405197661
+    },
+    "5y_c2b": {
+      "archive_sha256": "6bccbc8fb7d61564c04cd27aa413869ba3df5ed4b138db08d38fde38fbb2849e",
+      "run": 37405567334
+    },
+    "5y_full_label_export": {
+      "archive_sha256": "b81669aeff5fa73a93bc421e3b8acf775d74f8709329132a0b06dc7eb0d6666b",
+      "artifact_id": 11391276365,
+      "full_enriched_sha256": "b75025ff9bab80d74d3ba99170cf7661ff1c27f64c85682081fc1598569ea3df",
+      "run": 37416474375
+    },
+    "stage_b_catalog_json_sha256": "4844ccbd0affbad74910a3f1704df524909772d0acb962bba87e870db4f0894a"
+  },
+  "source_commits": {
+    "3y_canonical": "9aba7103f944ea419189c104be4e48485b819d0d",
+    "5y_analysis": "c1b2b8eb06e956f3ec69d698c60c56d848f53ba9",
+    "5y_canonical": "24c4d2b410ed27b663d4a7d618754ae0dbe745c0",
+    "full_label_export": "40bcec6f691c23d155598f00cdde84a1d04013bb",
+    "instruction": "18646e915d800edb1b075a95553470247205dec3"
+  },
+  "source_result_file_shas": {
+    "3y_result_git_blob": "d27f7cdb434f8294b280151da4731fc17b917eb8",
+    "5y_result_git_blob": "68e6343d8ab42ab32401f337c834996da7d00b5f"
+  },
+  "template_id_by_candidate_id": {
+    "v04c_1ed24612a32dac5e0d5176d9": "v04tpl_055181416bd1bf70f809",
+    "v04c_511b1225039ffe49d0a9d3b3": "v04tpl_7ee358c33bc09eeac6e6",
+    "v04c_61d3d9cb46c6502e0d5a88e1": "v04tpl_8745143f424f45b206fc",
+    "v04c_641e43d7677ff6e47d5c5916": "v04tpl_111d47c39227759c7348",
+    "v04c_a77c679eaf6f766c86d15e23": "v04tpl_a2124a783d465fa8f465",
+    "v04c_cf994ab591ebe10bcbd02d85": "v04tpl_a780ff71cc647324d41a",
+    "v04c_cfaead5fc4ee988782c4cc44": "v04tpl_dff5db8fad8cf2931185",
+    "v04c_d9e1ef34711ce08121781bd2": "v04tpl_38586c629b4aeb0e5489",
+    "v04c_f424e824a6c19c7e292edf00": "v04tpl_b118b85a0c06c1e41fce",
+    "v04c_fd77e97c82b00ce0eab5c710": "v04tpl_a780ff71cc647324d41a"
+  }
+}
