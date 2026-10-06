@@ -45,14 +45,14 @@ jobs:
                   raise SystemExit(f'{key} must be positive integer')
           if req['raw_artifact_name'] != f'jrdb-raw-{date}':
               raise SystemExit('unexpected raw_artifact_name')
-          Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           with Path(os.environ['GITHUB_ENV']).open('a',encoding='utf-8') as env:
-              env.write(f"REQUEST_DATE={date}\\n")
-              env.write(f"EXPECTED_REVISION={req['expected_revision']}\\n")
-              env.write(f"RAW_RUN_ID={req['raw_run_id']}\\n")
-              env.write(f"RAW_ARTIFACT={req['raw_artifact_name']}\\n")
-              env.write(f"ANALYSIS_RUN_ID={req['analysis_run_id']}\\n")
-              env.write(f"ANALYSIS_ARTIFACT={req['analysis_artifact_name']}\\n")
+              env.write(f"REQUEST_DATE={date}\n")
+              env.write(f"EXPECTED_REVISION={req['expected_revision']}\n")
+              env.write(f"RAW_RUN_ID={req['raw_run_id']}\n")
+              env.write(f"RAW_ARTIFACT={req['raw_artifact_name']}\n")
+              env.write(f"ANALYSIS_RUN_ID={req['analysis_run_id']}\n")
+              env.write(f"ANALYSIS_ARTIFACT={req['analysis_artifact_name']}\n")
           PY
 
       - name: Install dependencies
@@ -79,7 +79,7 @@ jobs:
           r=resolve_current(Path('/tmp/analysis'))
           Path('/tmp/analysis-resolved.json').write_text(json.dumps({
               'generation_id':r['generation_id'],'rows':r['rows'],'manifest':str(r['manifest'])
-          },sort_keys=True)+'\\n')
+          },sort_keys=True)+'\n')
           print(Path('/tmp/analysis-resolved.json').read_text())
           PY
 
@@ -155,7 +155,7 @@ jobs:
               if l['special_memos'] != q['special_memos']:
                   mismatches.append({'key':key,'field':'special_memos'})
           if mismatches:
-              Path('/tmp/parity-mismatch.json').write_text(json.dumps(mismatches[:100],ensure_ascii=False,indent=2)+'\\n')
+              Path('/tmp/parity-mismatch.json').write_text(json.dumps(mismatches[:100],ensure_ascii=False,indent=2)+'\n')
               raise SystemExit(f'live parity mismatch count={len(mismatches)}')
 
           current=Path(Path('/tmp/current-root.txt').read_text())
@@ -190,7 +190,7 @@ jobs:
               n1=copy.deepcopy(b1.get('race_notes') or {})
               if n0!=n1: preserve_mismatches.append({'race_key':rk,'field':'race_notes'})
           if preserve_mismatches:
-              Path('/tmp/preserve-mismatch.json').write_text(json.dumps(preserve_mismatches[:100],ensure_ascii=False,indent=2)+'\\n')
+              Path('/tmp/preserve-mismatch.json').write_text(json.dumps(preserve_mismatches[:100],ensure_ascii=False,indent=2)+'\n')
               raise SystemExit(f'non-Edge preservation mismatch count={len(preserve_mismatches)}')
 
           report={
@@ -212,7 +212,7 @@ jobs:
               'analysis':json.loads(Path('/tmp/analysis-resolved.json').read_text()),
               'release_modified':False,
           }
-          Path('/tmp/report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2,sort_keys=True)+'\\n')
+          Path('/tmp/report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2,sort_keys=True)+'\n')
           print(Path('/tmp/report.json').read_text())
           PY
 
