@@ -136,6 +136,10 @@ def build_research_outputs(root: Path, c1: Path, c2a: Path, c2b: Path, out: Path
             "support_for_review": min([int(cm.get("n") or 0)] + [int(p["metrics"].get("n") or 0) for p in comparisons]),
             "c1_metrics": {k: child.get(k) for k in ("n", "wins", "places", "win_roi", "place_roi", "n_365", "n_730", "n_1095", "win_roi_365", "place_roi_365", "win_roi_730", "place_roi_730")}})
 
+    full_path = os.environ.get("EDGE_V04_FULL_ENRICHED_OUTPUT")
+    if full_path:
+        Path(full_path).write_text(json.dumps(enriched, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+
     labels_by_family = defaultdict(Counter)
     warnings_by_family = defaultdict(Counter)
     for r in enriched:
@@ -235,7 +239,7 @@ def main() -> None:
     work = Path("/tmp/jrdb-edge-v04-r1-canonical")
     c1dir, sharddir, c2adir, c2bdir = (work / x for x in ("c1", "c1-shards", "c2a", "c2b-shards"))
     planpath = work / "shard_plan.json"
-    run(root, "horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards.py", "--template-parquet", str(catalog), "--output", str(planpath),
+    run(root, os.environ.get("EDGE_V04_R1_PLANNER_ENTRYPOINT", "horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards.py"), "--template-parquet", str(catalog), "--output", str(planpath),
         *sum((["--search-lane", lane] for lane in LANES), []), "--min-depth", "2", "--max-depth", "3")
     plan = json.loads(planpath.read_text())
     if plan["template_count"] != 1106 or plan["shard_count"] != 6 or plan["selected_template_counts_by_depth"] != {"2": 123, "3": 983} or sha(planpath) != EXPECTED_PLAN:

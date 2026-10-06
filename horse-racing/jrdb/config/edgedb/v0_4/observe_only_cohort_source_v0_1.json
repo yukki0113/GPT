@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-10-06T05:50:19Z",
+  "source_artifact_runs": {
+    "3y": {
+      "archive_sha256": "ceadecafe0e1b78ce6c3f370439c446cc39017943b510f175e81fbe67bd43269",
+      "run": 37321021557
+    },
+    "3y_full_reproduction": {
+      "accepted_planner_git_blob": "e08c2b2e673749e90ad28d35a8d7d8f36e6761d2",
+      "archive_sha256": "86a1b2d118f7264502b53993493fb296d0bc99e6bec6895f2e651e689e87fe35",
+      "artifact_id": 11392124793,
+      "canonical_planner_sha256": "de823224c0f10690232835b35557517c474377734b2df347ca3a9a08daa3ded8",
+      "full_enriched_sha256": "5099ea48faf02fcfd0752202d9840c9491ca0fd70e29cf436cb6f01d19cd3a33",
+      "issue": 1821,
+      "pinned_preflight_git_blob": "f393d8851a63003d5f3070b751b09fba7ac86e69",
+      "run": 37420322097,
+      "status": "PASS"
+    },
+    "5y_c1_c2a": {
+      "archive_sha256": "e82a5a06aeb1346e21ed689222543bf8435f86e7135573a9abc2eb42baf834cf",
+      "run": 37405197661
+    },
+    "5y_c2b": {
+      "archive_sha256": "6bccbc8fb7d61564c04cd27aa413869ba3df5ed4b138db08d38fde38fbb2849e",
+      "run": 37405567334
+    },
+    "5y_full_label_export": {
+      "archive_sha256": "b81669aeff5fa73a93bc421e3b8acf775d74f8709329132a0b06dc7eb0d6666b",
+      "artifact_id": 11391276365,
+      "full_enriched_sha256": "b75025ff9bab80d74d3ba99170cf7661ff1c27f64c85682081fc1598569ea3df",
+      "run": 37416474375
+    },
+    "frozen_inputs": {
+      "feature_mart_run": 36116777782,
+      "feature_mart_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+      "stage_b_catalog_sha256": "cf70098156283e42df49cc61d4988f1d2b578a4dbf4135c8121eb81262d5d2ba",
+      "stage_b_run": 36262821119
+    }
+  },
+  "source_commits": {
+    "3y_canonical": "9aba7103f944ea419189c104be4e48485b819d0d",
+    "3y_full_reproduction": "a7549548949d3c5a6ae722e6defeae0edfe3ad71",
+    "5y_analysis": "c1b2b8eb06e956f3ec69d698c60c56d848f53ba9",
+    "5y_canonical": "24c4d2b410ed27b663d4a7d618754ae0dbe745c0",
+    "full_label_export": "40bcec6f691c23d155598f00cdde84a1d04013bb",
+    "instruction": "18646e915d800edb1b075a95553470247205dec3",
+    "instruction_009": "bf7ea31362554c496287cd2313b2377c71a2f4d2"
+  },
+  "source_result_file_shas": {
+    "3y_result_git_blob": "d27f7cdb434f8294b280151da4731fc17b917eb8",
+    "5y_result_git_blob": "68e6343d8ab42ab32401f337c834996da7d00b5f"
+  }
+}
