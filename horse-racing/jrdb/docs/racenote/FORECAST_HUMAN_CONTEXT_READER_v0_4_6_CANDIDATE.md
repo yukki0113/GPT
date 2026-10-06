@@ -49,41 +49,51 @@ rather than added as independent prohibitions.
 
 ## 3. One-race judgment
 
-After reading the whole race, make one integrated decision:
+v0.4.6 treats each race as one ordinary handicapping problem.
 
-1. State the race model: what is likely to decide the race.
-2. Choose four ordinary support/mainline horses: ◎, ○, △1, △2.
-3. Choose ▲ independently as the best asymmetric single-shot case.
-4. Before finalizing △2, compare it with the strongest excluded alternative.
-5. Finalize exactly five unique marks: ◎ ○ ▲ △1 △2.
-6. Write one concise reader-facing explanation.
+Read the complete clean Reader for the whole field first and form a view of
+how the race is likely to be decided: which abilities transfer to today's
+conditions, what the likely pace/position shape means, which recent runs are
+most informative, and where condition, suitability or contextual evidence
+materially changes the interpretation.
 
-There is no separate hierarchy pass, ▲ promotion pass or Coverage scan pass.
-Their useful intent is already contained in steps 2–4.
+From that race view, choose the five horses and then record the decision in the
+compact Decision Core. The Decision Core is a record of the judgment that was
+already made; it is not a form whose fields should drive the reasoning.
 
-### Decision-trace specificity
+The five roles are:
 
-The compact Decision Core is an audit record of the actual one-race judgment,
-not a role-label template.
+- **◎** — the clearest win route under the race model;
+- **○** — the strongest ordinary support horse after ◎;
+- **▲** — the best credible asymmetric win/upset route, considered
+  independently from the ordinary support order;
+- **△1 / △2** — the remaining ordinary support horses in order.
 
-For every race:
+Before fixing △2, compare it once with the strongest excluded alternative.
+That comparison exists to make the fifth-horse boundary explicit, not to start
+a second reranking pass.
 
-- each `mainline_cases[].case` must state why **that horse in that race** owns
-  its authored role, using concrete evidence or a concrete race-model fit;
-- `single_shot_case.case` must state the specific asymmetric route for the
-  authored ▲ horse;
-- `boundary_review.reason` must explain the actual comparison between the
-  final △2 and the recorded strongest excluded alternative (or why no close
-  alternative exists);
-- these fields must not reuse generic boilerplate merely saying that the horse
-  is the best ◎/○/△/▲ candidate or that the selected horse is "more suitable".
+After the five are decided, write the Decision Core in the same terms a human
+handicapper would use to explain the race:
 
-Exact repeated trace prose across different races is invalid for A/B authoring.
-A repeated sentence is evidence that the judgment trace was not captured at
-the required granularity.
+- `race_model` summarizes what is likely to decide this particular race;
+- each `mainline_cases[].case` captures the evidence and race fit that made
+  that horse worth keeping in the ordinary support group;
+- `single_shot_case.case` captures the actual route by which ▲ could beat
+  the mainline horses;
+- `boundary_review.reason` records the real trade-off between △2 and the
+  closest excluded horse, or explains why no close alternative exists;
+- `reader_facing_reason` turns the same judgment into one concise,
+  newspaper-style race comment.
 
-This rule changes **trace fidelity only**. It does not change the five-horse
-selection semantics, mark roles, evidence surface, or v0.4.6 logic identity.
+The prose should naturally vary with the race because the underlying judgment
+varies with the race. It may mention numbers when they are useful, but the
+purpose is to explain the interpretation rather than inventory Reader fields.
+A concise specific sentence is preferable to a longer generic one.
+
+There is no separate hierarchy pass, ▲ promotion pass, Coverage scan pass, or
+trace-writing pass. Reading the race, choosing the five, checking the fifth
+boundary, and recording the reasoning are one integrated act.
 
 ### ◎
 
