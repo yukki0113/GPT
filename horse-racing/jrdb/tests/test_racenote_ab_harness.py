@@ -24,11 +24,11 @@ def core(venue: str, race_no: int, label: str) -> dict:
         "race_model": f"{label}: pace and class context decide the race after a full-field read.",
         "marks": [1, 2, 3, 4, 5],
         "mainline_cases": [
-            {"horse_no": n, "case": f"{label}: credible clean pre-race case for horse {n}."}
+            {"horse_no": n, "case": f"{label} race {race_no}: credible clean pre-race case for horse {n}."}
             for n in (1, 2, 4, 5)
         ],
-        "single_shot_case": {"horse_no": 3, "case": f"{label}: independent asymmetric route for horse 3."},
-        "boundary_review": {"alternative_horse_no": 6, "reason": f"{label}: horse 5 has the clearer transferable case."},
+        "single_shot_case": {"horse_no": 3, "case": f"{label} race {race_no}: independent asymmetric route for horse 3."},
+        "boundary_review": {"alternative_horse_no": 6, "reason": f"{label} race {race_no}: horse 5 has the clearer transferable case."},
         "rrdb_refs": [],
         "reader_facing_reason": f"{label}: The race shape supports the selected five runners, with an independent upside case for horse three and a considered fifth-mark boundary.",
     }
@@ -150,6 +150,25 @@ class ABHarnessTest(unittest.TestCase):
         model_path.write_bytes(sibling_payload)
         with self.assertRaises(ValueError):
             session.load_session(self.ab)
+
+    def test_v046_rejects_exact_trace_boilerplate_but_v050_structure_is_unaffected(self) -> None:
+        path = self.ab / "v046" / "incoming" / "東京.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        first = core("東京", 1, "v046")
+        second = core("東京", 2, "v046")
+        second["mainline_cases"][0]["case"] = first["mainline_cases"][0]["case"]
+        path.write_text(json.dumps([first, second], ensure_ascii=False), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "exact boilerplate trace reuse"):
+            lane.save_venue(self.ab, "v046", path)
+
+        path_b = self.ab / "v050" / "incoming" / "東京.json"
+        path_b.parent.mkdir(parents=True, exist_ok=True)
+        first_b = core("東京", 1, "v050")
+        second_b = core("東京", 2, "v050")
+        second_b["mainline_cases"][0]["case"] = first_b["mainline_cases"][0]["case"]
+        path_b.write_text(json.dumps([first_b, second_b], ensure_ascii=False), encoding="utf-8")
+        saved = lane.save_venue(self.ab, "v050", path_b)
+        self.assertEqual(saved["lane_id"], "v050")
 
     def test_invalid_five_marks_and_incomplete_venue_block_freeze(self) -> None:
         files = self.write_incoming("v050")
