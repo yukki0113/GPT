@@ -62,7 +62,11 @@ def build(five_rows, three_rows, source_meta):
     original_by_fp = {}
     exact_duplicates = 0
     semantic_duplicates = 0
+    seen_candidate_ids = set()
     for candidate, source in sorted(inputs, key=lambda p: (p[1], p[0]["candidate_id"])):
+        if candidate["candidate_id"] in seen_candidate_ids:
+            raise ValueError("duplicate historical candidate ID")
+        seen_candidate_ids.add(candidate["candidate_id"])
         family = candidate["family"]
         if FAMILIES.get(family) != source:
             raise ValueError("family/source mismatch")
@@ -145,7 +149,8 @@ def validate(cohort):
         raise ValueError("family dedup counts changed")
     if cohort["exact_duplicate_count"] + cohort["semantic_duplicate_count"] != cohort["duplicate_map_count"]:
         raise ValueError("duplicate audit changed")
-    if sum(len(r["represented_historical_candidates"]) for r in cohort["rows"]) != 347:
+    represented_ids = [p["candidate_id"] for r in cohort["rows"] for p in r["represented_historical_candidates"]]
+    if len(represented_ids) != 347 or len(set(represented_ids)) != 347:
         raise ValueError("historical provenance changed")
 
 
