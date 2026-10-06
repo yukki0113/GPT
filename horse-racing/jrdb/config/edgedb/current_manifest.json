@@ -14,30 +14,30 @@
       "source_generation": "v0.2",
       "lifecycle": "STANDARD",
       "adapter_type": "jrdb_registry_jsonl_v0_2",
-      "path": "horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_2_34620664640.jsonl.gz.b64",
+      "path": "horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_2_34620664640.jsonl.xz.b64",
       "enabled": true,
       "production_eligible": true,
       "display_eligible_default": true,
       "prediction_eligible_default": true,
-      "expected_sha256": "25c9692a6bdba1faae08f7f22b88a16bf0c340cb4826dbb0d5c6177cb64a4be3",
+      "expected_sha256": "cd4b489329b41883b18b32122a109553bc18d19fb7c5f006f4404291bb74814b",
       "notes": "Canonical v0.2 STANDARD publication: successful GitHub Actions run 34620664640, artifact jrdb-edge-serving-v02-full-2010-2025-standard-r1-34620664640; SHA corroborated by JRDB_Edge_v0_3_Stage_E_Forward_Shadow_Freeze_20260926_27.md and EdgeDB_Parquet_Canonical_Migration_Result_20260925.md.",
       "publication_catalog_sha256": "fe1182e1e8beed952d5f4b740642fd3ec1262c353d6d46036e19a457f27d7469",
-      "snapshot_gzip_sha256": "d658cb84e8bb6246f53fb54c4ecbf0549cd7ac999ecf106ad757f80e08c7ce3f"
+      "snapshot_compressed_sha256": "88e548338d9004ad69c1c884937656ddae347960ca1422707f6eb815a2af8983"
     },
     {
       "source_key": "jrdb-edge-v03-shadow-36045237262",
       "source_generation": "v0.3",
       "lifecycle": "SHADOW",
       "adapter_type": "jrdb_registry_jsonl_v0_3",
-      "path": "horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_3_shadow_36045237262.jsonl.gz.b64",
+      "path": "horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_3_shadow_36045237262.jsonl.xz.b64",
       "enabled": true,
       "production_eligible": false,
       "display_eligible_default": true,
       "prediction_eligible_default": false,
-      "expected_sha256": "a50f0f7693642c6e4caa4bff421f56aa16a7018be527f62e41b4ba484282b9af",
+      "expected_sha256": "eb4b4e7776ce15db551dd5d38503566f37b58eb7c4d9aa84202257ac85f4a7f9",
       "notes": "Canonical v0.3 Stage-C shadow catalog: successful GitHub Actions run 36045237262, artifact jrdb-edge-v03-shadow-catalog-36045237262; rows retain nested v03_shadow mode SHADOW_ONLY.",
       "publication_catalog_sha256": "a724a005ec40446f4a982a79de17ba7a2ae169c09260ecee98a159b663914379",
-      "snapshot_gzip_sha256": "497a5e3a40ad9558c29d66ac5ad7bae3d32a6227a38c907f1bf5c04e3b4f2809"
+      "snapshot_compressed_sha256": "0e1b9fc24533fc94f42fe2e5907d638a4beb8f9806c9ad2be1ebfa15cebba41b"
     },
     {
       "source_key": "jrdb-edge-v04-observe-only-cohort-v0-1",
