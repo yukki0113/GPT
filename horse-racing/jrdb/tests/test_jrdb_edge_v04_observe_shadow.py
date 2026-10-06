@@ -89,8 +89,14 @@ class ObserveShadowTests(unittest.TestCase):
             cohort_mod.fingerprint([{"feature": "label_win_hit", "value": "1"}])
         five, three = population()
         five[1] = copy.deepcopy(five[0])
+        five[1]["template_id"] = "another_template"
+        five[1]["candidate_id"] = "v04c_" + cohort_mod.sha({"template_id": five[1]["template_id"],
+            "conditions": json.loads(five[1]["conditions_json"])})[:24]
         built = cohort_mod.build(five, three, META)
         self.assertEqual((built["exact_duplicate_count"], built["cohort_row_count"]), (1, 346))
+        five[1]["candidate_id"] = five[0]["candidate_id"]
+        with self.assertRaises(ValueError):
+            cohort_mod.build(five, three, META)
 
     def test_membership_immutability(self):
         changed = copy.deepcopy(self.cohort)
