@@ -61,6 +61,30 @@ After reading the whole race, make one integrated decision:
 There is no separate hierarchy pass, ▲ promotion pass or Coverage scan pass.
 Their useful intent is already contained in steps 2–4.
 
+### Decision-trace specificity
+
+The compact Decision Core is an audit record of the actual one-race judgment,
+not a role-label template.
+
+For every race:
+
+- each `mainline_cases[].case` must state why **that horse in that race** owns
+  its authored role, using concrete evidence or a concrete race-model fit;
+- `single_shot_case.case` must state the specific asymmetric route for the
+  authored ▲ horse;
+- `boundary_review.reason` must explain the actual comparison between the
+  final △2 and the recorded strongest excluded alternative (or why no close
+  alternative exists);
+- these fields must not reuse generic boilerplate merely saying that the horse
+  is the best ◎/○/△/▲ candidate or that the selected horse is "more suitable".
+
+Exact repeated trace prose across different races is invalid for A/B authoring.
+A repeated sentence is evidence that the judgment trace was not captured at
+the required granularity.
+
+This rule changes **trace fidelity only**. It does not change the five-horse
+selection semantics, mark roles, evidence surface, or v0.4.6 logic identity.
+
 ### ◎
 
 ◎ is the horse with the clearest win route under the authored race model, not
