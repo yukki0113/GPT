@@ -132,19 +132,58 @@ validate each authored venue
 
 The finalizer never chooses a horse or writes prediction prose.
 
-## 6. Freeze boundary
+## 6. Freeze and post-Freeze result flow
 
-Until final Freeze succeeds, do not open:
+Prediction and result acquisition are separated by the Freeze boundary.
 
-- target result;
-- payouts;
-- final odds/popularity;
-- result joins;
-- post-race evaluation.
+Until final Freeze succeeds, do not open target results, payouts, final
+odds/popularity, result joins, or post-race evaluation. Target-day market
+stays outside the model input after clean binding.
 
-Target-day market stays outside the model input after clean binding.
+Once the relevant forecast or both A/B lanes are Frozen and the required
+Freeze barrier has passed, use JRDB Raw as the canonical result source.
 
-Result/ROI analysis is a separate post-Freeze operation.
+The normal post-Freeze path is:
+
+```text
+Freeze / A-B barrier PASS
+-> jrdb_result_query_runner.py --plan --date YYYY-MM-DD
+-> materialize the exact Drive Raw files named by the plan
+-> jrdb_result_query_runner.py --date YYYY-MM-DD
+-> SED parses finish/order and runner result data
+-> HJC parses all eight payout types
+-> SED/HJC win/place cross-validation
+-> racenote_daily_result_from_jrdb.py builds one canonical full-day result JSON
+-> evaluation / settlement consumes that daily result
+```
+
+For 2026 daily Raw, the runner resolves:
+
+- `/Google Drive/GPT/horse-racing/00_raw/SED/SEDyymmdd.zip`
+- `/Google Drive/GPT/horse-racing/00_raw/HJC/HJCyymmdd.zip`
+
+For 2025 and earlier it resolves the corresponding annual SED/HJC archives.
+
+The GPT/Work layer materializes those exact Drive files into the local paths
+returned by the plan. Raw is intentionally not stored in Git. Its absence from
+the repository is expected and is not a reason to search the Web.
+
+A date-only result query is the default for RaceNote evaluation. It returns
+every JRA race available for that day, so do not loop over individual races or
+scrape separate race pages when the day-level SED/HJC path is available.
+Venue/race filters exist only for focused inspection.
+
+`racenote_daily_result_from_jrdb.py` is the canonical RaceNote adapter. It
+uses SED for the official top three and HJC for win, place, frame quinella,
+quinella, wide, exacta, trio and trifecta payouts. Any SED/HJC win/place
+cross-validation mismatch is `review_required` and must not be silently
+settled.
+
+Web-based daily-result acquisition is a fallback/convenience route only when
+the canonical target-date JRDB Raw is genuinely unavailable after checking
+Drive. It is not the default BTDAY result-confirmation path.
+
+Result/ROI analysis starts only after this daily result has been built.
 
 ## 7. Validation expectations
 
