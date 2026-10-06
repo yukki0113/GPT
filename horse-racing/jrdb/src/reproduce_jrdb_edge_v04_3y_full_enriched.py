@@ -39,7 +39,8 @@ def main():
     out = a.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
     full_path = out / "full_enriched_3y.json"
-    env = dict(os.environ, EDGE_V04_FULL_ENRICHED_OUTPUT=str(full_path),\n               EDGE_V04_R1_PLANNER_ENTRYPOINT="horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards_3y_canonical.py")
+    env = dict(os.environ, EDGE_V04_FULL_ENRICHED_OUTPUT=str(full_path),
+               EDGE_V04_R1_PLANNER_ENTRYPOINT="horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards_3y_canonical.py")
     runner = Path("horse-racing/jrdb/src/run_jrdb_edge_v04_r1_actions_fallback.py")
     subprocess.run([sys.executable, str(runner), "--feature-input", a.feature_input,
                     "--catalog-input", a.catalog_input, "--output-dir", str(out)],
