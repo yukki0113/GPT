@@ -136,6 +136,10 @@ def build_research_outputs(root: Path, c1: Path, c2a: Path, c2b: Path, out: Path
             "support_for_review": min([int(cm.get("n") or 0)] + [int(p["metrics"].get("n") or 0) for p in comparisons]),
             "c1_metrics": {k: child.get(k) for k in ("n", "wins", "places", "win_roi", "place_roi", "n_365", "n_730", "n_1095", "win_roi_365", "place_roi_365", "win_roi_730", "place_roi_730")}})
 
+    full_path = os.environ.get("EDGE_V04_FULL_ENRICHED_OUTPUT")
+    if full_path:
+        Path(full_path).write_text(json.dumps(enriched, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+
     labels_by_family = defaultdict(Counter)
     warnings_by_family = defaultdict(Counter)
     for r in enriched:
