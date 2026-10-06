@@ -154,17 +154,27 @@ jobs:
           for key in sorted(legacy_index):
               l=legacy_index[key]
               q=query_index[key]
-              if [x['edge_id'] for x in l['edge_matches']] != [x['edge_id'] for x in q['edge_matches']]:
-                  mismatches.append({'key':key,'field':'edge_ids'})
+              legacy_ids=[x['edge_id'] for x in l['edge_matches']]
+              query_ids=[x['edge_id'] for x in q['edge_matches']]
+              if legacy_ids != query_ids:
+                  mismatches.append({'key':key,'field':'edge_ids','legacy':legacy_ids,'query':query_ids})
                   continue
               for lm,qm in zip(l['edge_matches'],q['edge_matches']):
                   for field in ('performance_evidence_level','performance_signal','presentation_role'):
                       if lm.get(field)!=qm.get(field):
-                          mismatches.append({'key':key,'field':field,'legacy':lm.get(field),'query':qm.get(field)})
-              if l['special_memos'] != q['special_memos']:
-                  mismatches.append({'key':key,'field':'special_memos'})
+                          mismatches.append({'key':key,'edge_id':lm.get('edge_id'),'field':field,'legacy':lm.get(field),'query':qm.get(field)})
+              legacy_memos=[{k:m.get(k) for k in ('edge_id','memo_text','condition_text','performance_signal','performance_evidence_level','presentation_role','serving_eligible','serving_reason')} for m in l['special_memos']]
+              query_memos=[{k:m.get(k) for k in ('edge_id','memo_text','condition_text','performance_signal','performance_evidence_level','presentation_role','serving_eligible','serving_reason')} for m in q['special_memos']]
+              if legacy_memos != query_memos:
+                  mismatches.append({'key':key,'field':'special_memos_display','legacy':legacy_memos,'query':query_memos})
           if mismatches:
-              Path('/tmp/parity-mismatch.json').write_text(json.dumps(mismatches[:100],ensure_ascii=False,indent=2)+'\n')
+              from collections import Counter
+              counts=Counter(m['field'] for m in mismatches)
+              diag={'mismatch_count':len(mismatches),'by_field':dict(counts),'samples':mismatches[:20],
+                    'legacy_audit':legacy_audit,'query_audit':query_audit}
+              Path('/tmp/parity-mismatch.json').write_text(json.dumps(diag,ensure_ascii=False,indent=2)+'\n')
+              print('LIVE_PARITY_DIAGNOSTIC')
+              print(json.dumps(diag,ensure_ascii=False,indent=2))
               raise SystemExit(f'live parity mismatch count={len(mismatches)}')
 
           current=Path(Path('/tmp/current-root.txt').read_text())
