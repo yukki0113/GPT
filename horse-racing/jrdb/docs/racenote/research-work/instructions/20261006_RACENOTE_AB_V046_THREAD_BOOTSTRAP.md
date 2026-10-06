@@ -21,22 +21,36 @@ Purpose: start a fresh forecast thread for the **v0.4.6 lane** of a same-BTDAY c
 
 このスレッドでは **v0.4.6 Readerだけ** を使用して、対象日の全レースをclean-blindで予想してください。
 
-### 厳守事項
+予想は、まず各レースのcomplete clean Readerを全頭ぶん読み、普通の競馬予想として
+「このレースは何で決まりそうか」を考えるところから始めます。能力、近走内容、
+脚質と位置取り、展開、距離・馬場適性、状態、必要に応じたRRDB文脈を一つの
+race modelとして統合し、その見立てから ◎ ○ ▲ △1 △2 の5頭を決めてください。
 
-- v0.5.0 laneのbranch、PR、authored_decisions、frozen成果物、印、理由文、decision traceを見ないでください。
-- 別スレッドや過去会話にある同一BTDAYの予想内容を参照しないでください。
-- 使用してよいのは、A/B sessionで封印されたshared clean evidenceとv0.4.6の正式Reader契約のみです。
-- target結果、払戻、最終人気、最終オッズを開かないでください。
-- 予想途中で結果確認を行わないでください。
-- 現行のv0.4.6 horse-selection semanticsを変更しないでください。
-- ◎ ○ ▲ △1 △2 の5頭を各レースで選出し、▲はmainlineとは独立したsingle-shot caseとして判断してください。
-- 最終△2とstrongest excluded alternative/nullの比較を残してください。
-- RRDBは判断を materially 変えた場合だけ疎に参照してください。
-- `mainline_cases` の4件は、各馬について「このレースでなぜその馬を本線に置いたか」を具体的な能力・近走内容・展開・適性・状態などに結び付けて書いてください。役割名だけの定型文は禁止です。
-- `single_shot_case.case` は、▲馬固有の「どの条件・展開・見落とされやすい強みが噛み合えば勝ち切れるか」を具体的に書いてください。「展開が振れれば一発」のような共通テンプレだけでは不可です。
-- `boundary_review.reason` は、最終△2と strongest excluded alternative を実際に比較した差分を具体的に書いてください。「△2の方が再現性が高い」のような共通文だけでは不可です。
-- 別レースと完全同一の mainline / ▲ / boundary 理由文を再利用しないでください。A/B harnessはv0.4.6 laneでexact duplicate traceをrejectします。
-- reader-facing reasonは自然な競馬分析文にしてください。監査用の定型句を末尾に付ける必要はありません。
+◎・○・△1・△2は通常の本線4頭です。▲だけはその序列とは別に、この組み合わせで
+条件や展開が噛み合った時に勝ち切れる非対称な一頭として選びます。最後に△2と
+最も迷った除外馬を一度だけ比較し、5頭を確定します。
+
+Decision Coreは、この予想を保存するための記録です。欄を埋めるために判断を作るの
+ではなく、実際にそのレースを読んで決めた内容をそのまま記録してください。
+
+- `race_model` には、そのレースで勝敗を分けそうな構図を書く。
+- `mainline_cases` には、本線4頭を残した実際の根拠を書く。
+- `single_shot_case` には、▲が本線勢を上回る具体的な勝ち筋を書く。
+- `boundary_review` には、△2と最有力除外馬の実際の比較を書く。
+- `reader_facing_reason` には、以上を読者向けの自然な短評としてまとめる。
+
+数字や指数は判断を説明するのに役立つ時だけ使い、Reader項目の羅列を理由文の代わり
+にしないでください。短くても、その馬・そのレースについて何を評価したかが伝わる
+文章を優先します。
+
+RRDBは他のReader情報と同じく文脈の一部として読み、判断を materially 変えた、
+または解釈を明確にした場合だけ `rrdb_refs` に残します。
+
+A/Bの独立性については、v0.5.0 laneのbranch、PR、authored/frozen成果物、印、
+理由文、decision traceを予想入力として参照しません。同一BTDAYについて別スレッド
+や過去会話に予想内容があっても参照せず、A/B sessionで封印されたshared clean
+evidenceとv0.4.6 Reader契約だけから独立して予想します。target結果、払戻、最終人気、
+最終オッズもFreeze完了まで開きません。
 
 ### 実行単位
 
