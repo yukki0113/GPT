@@ -113,16 +113,25 @@ jobs:
         run: |
           set -euo pipefail
           PACI="$(find /tmp/raw -type f -name "PACI${REQUEST_DATE:2}.zip" -print -quit)"
-          REGISTRY="$(python - <<'PY'
-          import json
+          python - <<'PY'
+          import base64,gzip,json,lzma
           from pathlib import Path
           m=json.loads(Path('horse-racing/jrdb/config/edgedb/current_manifest.json').read_text())
           rows=[s for s in m['sources'] if s.get('enabled') and s.get('source_generation')=='v0.2' and s.get('lifecycle')=='STANDARD']
           if len(rows)!=1: raise SystemExit(f'expected one v0.2 STANDARD source, got {len(rows)}')
-          print(rows[0]['path'])
+          src=Path(rows[0]['path'])
+          out=Path('/tmp/legacy-registry.jsonl')
+          if src.name.endswith('.xz.b64'):
+              out.write_bytes(lzma.decompress(base64.b64decode(src.read_text(encoding='ascii'),validate=True)))
+          elif src.name.endswith('.gz.b64'):
+              out.write_bytes(gzip.decompress(base64.b64decode(src.read_text(encoding='ascii'),validate=True)))
+          elif src.suffix=='.gz':
+              with gzip.open(src,'rb') as h: out.write_bytes(h.read())
+          else:
+              out.write_bytes(src.read_bytes())
+          print(f'legacy_registry_source={src} materialized={out} bytes={out.stat().st_size}')
           PY
-          )"
-          python horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py             --paci "$PACI" --analysis-root /tmp/analysis --registry-jsonl "$REGISTRY"             --output-jsonl /tmp/legacy.jsonl --audit-json /tmp/legacy-audit.json > /tmp/legacy-summary.json
+          python horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py             --paci "$PACI" --analysis-root /tmp/analysis --registry-jsonl /tmp/legacy-registry.jsonl             --output-jsonl /tmp/legacy.jsonl --audit-json /tmp/legacy-audit.json > /tmp/legacy-summary.json
           python horse-racing/jrdb/src/jrdb_edgedb_query.py             --manifest horse-racing/jrdb/config/edgedb/current_manifest.json             --paci "$PACI" --analysis-root /tmp/analysis --profile STANDARD             --output-jsonl /tmp/query.jsonl
 
       - name: Compare live parity and merge into current personal release candidate
