@@ -103,7 +103,7 @@ jobs:
           gdown "https://drive.google.com/uc?id=$NEXTWATCH_ID" -O /tmp/input/NextWatch.zip
 
           gh run download "$ANALYSIS_RUN" --repo "$GITHUB_REPOSITORY" --name "$ANALYSIS_ARTIFACT" --dir /tmp/analysis_art
-          ANALYSIS_ARCHIVE="$(find /tmp/analysis_art -maxdepth 1 -type f | head -n 1)"
+          ANALYSIS_ARCHIVE="$(find /tmp/analysis_art -maxdepth 1 -type f \( -name '*.tar.xz' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' \) | sort | head -n 1)"
           test -n "$ANALYSIS_ARCHIVE"
           case "$ANALYSIS_ARCHIVE" in
             *.tar.xz) tar -xJf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
