@@ -100,26 +100,32 @@ Stage C: **DESIGN_0_5_CANDIDATE**
 Stage C merge:
 `733db3231d57c70dc59a5ba8bf9ae5b9e288d689`
 
+Stage D: **READY_FOR_CLEAN_BLIND_A_B**
+
+Stage D merge:
+`25c235b1a8bc652756cff866677c2a7bd071c4df`
+
 Current phase:
 
-**Stage D — RaceNote 0.5.0 candidate Reader implementation**
+**Stage E — same-BTDAY dual-thread clean-blind A/B harness**
 
 Canonical instruction:
-`instructions/20261006_RACENOTE_V05_CANDIDATE_READER_STAGE_D_INSTRUCTION.md`
+`instructions/20261006_RACENOTE_V050_STAGE_E_AB_HARNESS_INSTRUCTION.md`
 
-Stage D must:
+Stage E must:
 
-- implement 0.5.x as a parallel non-production Reader;
-- preserve the same clean upstream evidence;
-- leave v0.4.6 byte/semantically unchanged;
-- bind all 73 Stage C policy entries;
-- measure structural field/token reduction;
-- stop before prediction A/B evaluation.
+- reserve/select a BTDAY only once;
+- seal one shared clean Reader evidence set;
+- derive the v0.5.0 normal Reader from the same clean evidence;
+- support independent v0.4.6 and v0.5.0 authoring/freeze lanes;
+- prevent either forecast lane from seeing the sibling lane before both freezes;
+- require both lanes to be `FROZEN_CLEAN_BLIND` before result/market evaluation;
+- preserve the existing one-lane v0.4.6 prospective route unchanged.
 
-The next gate is `READY_FOR_CLEAN_BLIND_A_B`.
+The next gate is `READY_FOR_DUAL_THREAD_PILOT`.
 
-The active v0.4.6 Reader / prediction cohort remains unchanged until a later
-explicit clean-blind comparison and promotion decision.
+The active prospective prediction logic remains v0.4.6. Stage E is research
+infrastructure only and must not repoint production/current logic.
 
 
 ## 4. Historical analysis horizon
