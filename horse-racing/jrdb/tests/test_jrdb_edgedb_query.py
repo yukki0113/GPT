@@ -62,6 +62,13 @@ class EdgeDBQueryTests(unittest.TestCase):
         self.assertEqual(sources[1]["publication_catalog_sha256"],"a724a005ec40446f4a982a79de17ba7a2ae169c09260ecee98a159b663914379")
         self.assertEqual(sources[2]["expected_fingerprint_set_sha256"],"ad0cf386601fb0366db27197072205c565eef189fa2e1062a97702f4b30f4876")
 
+    def test_published_manifest_sources_load_and_validate(self):
+        manifest, sources = query.load_manifest(MANIFEST, ROOT)
+        self.assertEqual(manifest["query_contract"], "edgedb-query/v1")
+        self.assertEqual([len(s["data"]) if isinstance(s["data"], list) else s["data"]["cohort_row_count"] for s in sources], [3009, 2044, 347])
+        self.assertEqual(sources[0]["publication_catalog_sha256"], "fe1182e1e8beed952d5f4b740642fd3ec1262c353d6d46036e19a457f27d7469")
+        self.assertEqual(sources[1]["publication_catalog_sha256"], "a724a005ec40446f4a982a79de17ba7a2ae169c09260ecee98a159b663914379")
+
     def test_standard_adapter_parity_with_v02_matcher(self):
         temp,root,path=_fixture()
         try:
