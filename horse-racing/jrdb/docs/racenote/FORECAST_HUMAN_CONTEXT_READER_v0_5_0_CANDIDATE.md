@@ -52,10 +52,11 @@ Only `normal_view` is the default model-facing candidate. `provenance` is a sepa
 
 ## Presentation rules
 
-- **ABILITY:** IDM is primary. Information and longshot indices support it in the same block. Total index and parent marks remain in detail.
-- **PACE_POSITION:** Late index is primary. Front, pace and position numeric indices are secondary. Supplied ranks and projected orders move to detail; projected margins form the normal trajectory. Lane, start and late-break remain conditional.
+- **ABILITY:** IDM is primary. Information and longshot indices support it in the same block. JRDB class appears when both the source value and race class are present. Total index and parent marks remain in detail.
+- **PACE_POSITION:** Late index is primary. Front, pace and position numeric indices are secondary. Supplied ranks and projected orders move to detail; projected margins form the normal trajectory. Lane, start and late-break remain in detail until an explicit relevance gate is defined.
 - **TRAINING_CONDITION:** KYI training is primary; CHA last clock and CYB condition are secondary. CYB training is the normal workout representation, with CHA total in detail. If both values differ, both are retained and a divergence note is emitted. No equality is inferred when one source is missing.
 - **SUITABILITY and CONNECTIONS:** Fit fields appear only when populated and race-relevant. Jockey index appears once; expected top-two rate stays in detail. Stable index is secondary.
+- A populated `CONTEXT_ONLY` field is hidden from normal view by default. Explicit gates allow jockey index and CYB training index as the required normal representations; distance fit when race distance is known; turf/dirt fit on the matching surface; heavy-track fit when the race condition is heavy; and JRDB class when race class is known. Other context fields remain in detail until a deterministic gate is justified.
 - Other clean pre-race context, including race trends, runner identity, history, pedigree, stats and RRDB context, remains available. Stage C fields that are hidden or irrelevant to the present race remain in provenance.
 
 The tiers are presentation roles, never numerical weights or mechanical votes. Missing values are omitted from normal evidence and recorded as absent, null or empty string in provenance. No correlated feature is filled in for a missing source.
