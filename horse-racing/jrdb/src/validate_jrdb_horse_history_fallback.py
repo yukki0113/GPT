@@ -109,7 +109,7 @@ def main() -> int:
 
         result = {
             "status": "PASS",
-            "source_commit_expected": "6cf0ad5a27971be622dce84269aaffef80e81912",
+            "implementation_base_commit": "6cf0ad5a27971be622dce84269aaffef80e81912",
             "analysis": {
                 "generation_id": report["generation_id"],
                 "manifest_sha256": sha256(manifest_path),
