@@ -20,14 +20,17 @@ def select_templates(
     search_lanes: Iterable[str] | None,
     min_depth: int,
     max_depth: int,
+    families: Iterable[str] | None = None,
 ) -> list[dict[str, Any]]:
     if not 2 <= min_depth <= max_depth <= 6:
         raise ValueError("depth must satisfy 2 <= min_depth <= max_depth <= 6")
     lanes = set(search_lanes) if search_lanes is not None else None
+    family_set = set(families) if families is not None else None
     selected = [
         row for row in rows
         if min_depth <= int(row["depth"]) <= max_depth
         and (lanes is None or str(row["search_lane"]) in lanes)
+        and (family_set is None or str(row.get("family")) in family_set)
     ]
     selected.sort(key=lambda row: (str(row["search_lane"]), int(row["depth"]), str(row["template_id"])))
     if not selected:
@@ -96,6 +99,7 @@ def build_plan(
     *,
     source_catalog_sha256: str,
     search_lanes: Iterable[str] | None = None,
+    families: Iterable[str] | None = None,
     min_depth: int = 2,
     max_depth: int = 6,
     max_templates_per_shard: int = 900,
@@ -103,7 +107,8 @@ def build_plan(
     max_total_shards: int = 180,
 ) -> dict[str, Any]:
     requested_lanes = sorted(set(search_lanes)) if search_lanes is not None else None
-    selected = select_templates(source_rows, requested_lanes, min_depth, max_depth)
+    requested_families = sorted(set(families)) if families is not None else None
+    selected = select_templates(source_rows, requested_lanes, min_depth, max_depth, requested_families)
     shards = build_shards(
         selected,
         max_templates_per_shard=max_templates_per_shard,
@@ -112,10 +117,14 @@ def build_plan(
     )
     by_lane: dict[str, int] = {}
     by_depth: dict[str, int] = {}
+    by_family: dict[str, int] = {}
     for row in selected:
-        lane, depth = str(row["search_lane"]), str(int(row["depth"]))
+        lane, depth, family = str(row["search_lane"]), str(int(row["depth"])), str(row.get("family"))
         by_lane[lane] = by_lane.get(lane, 0) + 1
         by_depth[depth] = by_depth.get(depth, 0) + 1
+        by_family[family] = by_family.get(family, 0) + 1
+    selected_template_ids = sorted(str(row["template_id"]) for row in selected)
+    selected_template_ids_sha256 = hashlib.sha256("\n".join(selected_template_ids).encode()).hexdigest()
     return {
         "status": "PASS",
         "stage": "V04_STAGE_C1_SHARD_PLAN",
@@ -124,10 +133,13 @@ def build_plan(
         "template_count": len(selected),
         "shard_count": len(shards),
         "requested_search_lanes": requested_lanes,
+        "requested_families": requested_families,
         "requested_min_depth": min_depth,
         "requested_max_depth": max_depth,
         "selected_template_counts_by_lane": dict(sorted(by_lane.items())),
         "selected_template_counts_by_depth": dict(sorted(by_depth.items())),
+        "selected_template_counts_by_family": dict(sorted(by_family.items())),
+        "selected_template_ids_sha256": selected_template_ids_sha256,
         "selection_applied_before_partition": True,
         "max_templates_per_shard": max_templates_per_shard,
         "target_estimated_cost": target_estimated_cost,
