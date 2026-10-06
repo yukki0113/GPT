@@ -49,7 +49,8 @@ def main() -> int:
             raise SystemExit(f"unexpected upstream generation: {shadow.get('generation_id')!r}")
         if shadow.get("status") != "SHADOW_PASS":
             raise SystemExit("upstream candidate pointer is not SHADOW_PASS")
-        (root / "current.json").write_text(json.dumps(shadow, sort_keys=True) + "\n", encoding="utf-8")
+        current_pointer = {**shadow, "status": "CURRENT"}
+        (root / "current.json").write_text(json.dumps(current_pointer, sort_keys=True) + "\n", encoding="utf-8")
         report = resolve_current(root)
         if report["generation_id"] != EXPECTED_GENERATION:
             raise SystemExit("canonical generation identity mismatch")
