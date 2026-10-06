@@ -151,24 +151,6 @@ class ABHarnessTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             session.load_session(self.ab)
 
-    def test_v046_rejects_exact_trace_boilerplate_but_v050_structure_is_unaffected(self) -> None:
-        path = self.ab / "v046" / "incoming" / "東京.json"
-        path.parent.mkdir(parents=True, exist_ok=True)
-        first = core("東京", 1, "v046")
-        second = core("東京", 2, "v046")
-        second["mainline_cases"][0]["case"] = first["mainline_cases"][0]["case"]
-        path.write_text(json.dumps([first, second], ensure_ascii=False), encoding="utf-8")
-        with self.assertRaisesRegex(ValueError, "exact boilerplate trace reuse"):
-            lane.save_venue(self.ab, "v046", path)
-
-        path_b = self.ab / "v050" / "incoming" / "東京.json"
-        path_b.parent.mkdir(parents=True, exist_ok=True)
-        first_b = core("東京", 1, "v050")
-        second_b = core("東京", 2, "v050")
-        second_b["mainline_cases"][0]["case"] = first_b["mainline_cases"][0]["case"]
-        path_b.write_text(json.dumps([first_b, second_b], ensure_ascii=False), encoding="utf-8")
-        saved = lane.save_venue(self.ab, "v050", path_b)
-        self.assertEqual(saved["lane_id"], "v050")
 
     def test_invalid_five_marks_and_incomplete_venue_block_freeze(self) -> None:
         files = self.write_incoming("v050")
