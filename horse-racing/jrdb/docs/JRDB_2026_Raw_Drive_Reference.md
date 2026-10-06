@@ -59,9 +59,15 @@ Google Drive folder:
 
 ### HJC
 
-2026標準Rawセットの一部。Drive上の日次HJCを使用する。
+Google Drive folder:
 
-HJCの個別File IDをGitへ固定しない。Google Driveアダプタで日付・命名規則からresolveする。
+`https://drive.google.com/drive/folders/1IshMV7r57O8HdsIN1o9pZyXU6YXJxEso`
+
+日次命名:
+
+`HJCyymmdd.zip`
+
+2026開催日分の払戻確認は、このDrive資産を先にresolveする。個々の日次File IDはGitへ固定せず、folder rootと命名規則から都度resolveする。
 
 ## Mandatory acquisition order
 
