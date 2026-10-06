@@ -94,13 +94,74 @@ python horse-racing/jrdb/src/racenote_ab_freeze_barrier.py \
 
 Only this successful command writes `ab/ab_freeze_barrier.json` with `BOTH_LANES_FROZEN_CLEAN_BLIND`. Commit it with the integration artifact. If a lane is missing, tampered, mismatched, non-blind or not Validator PASS, barrier creation fails.
 
-## 4. Results are a later step
+## 4. Post-Freeze result evaluation
 
-Every future A/B result or market evaluation entry point must call `racenote_ab_freeze_barrier.require_barrier(ab_root)` immediately before opening target results or market. `--verify-only` exposes the same check for operators:
+Result evaluation starts only after both independent lane Freezes have been integrated
+and the shared barrier exists.
+
+Immediately before opening target results, verify the barrier against the current
+bytes:
 
 ```bash
 python horse-racing/jrdb/src/racenote_ab_freeze_barrier.py \
-  --ab-root horse-racing/jrdb/backtests/BTDAY-XXXX/ab --verify-only
+  --ab-root horse-racing/jrdb/backtests/BTDAY-XXXX/<YYYYMMDD>/ab \
+  --verify-only
 ```
 
-The guard revalidates both frozen lanes and the barrier against current bytes; a stale barrier does not grant access. Stage E stops after building and testing this harness. A real dual-thread pilot and any result evaluation need a separate instruction.
+For completed 2026 JRA dates, the normal result source is the project's canonical
+JRDB Raw on Google Drive. Do not begin with public Web result pages.
+
+Generate the materialization plan:
+
+```bash
+python horse-racing/jrdb/src/jrdb_result_query_runner.py \
+  --date YYYY-MM-DD \
+  --plan \
+  --pretty
+```
+
+For 2026 the plan resolves the daily archives:
+
+```text
+GPT/horse-racing/00_raw/SED/SEDyymmdd.zip
+GPT/horse-racing/00_raw/HJC/HJCyymmdd.zip
+```
+
+Use the native Google Drive connector to resolve and materialize those exact files
+into the runner's planned local paths, then query the complete day:
+
+```bash
+python horse-racing/jrdb/src/jrdb_result_query_runner.py \
+  --date YYYY-MM-DD \
+  --include-all-runners \
+  --pretty
+```
+
+The result contract is:
+
+- SED = horse-level finish, horse identity, final win popularity/odds;
+- HJC = race-level payout authority for all eight bet types;
+- SED win/place payouts = HJC cross-validation lane;
+- one date query = all JRA races on that date;
+- `success` or `review_required` is retained with provenance for the A/B analysis.
+
+The A/B evaluation then joins each lane's frozen `records.json` to the parsed
+results by venue + race number + horse number. At minimum compare:
+
+- ◎ win / top-2 / top-3 performance;
+- ▲ win / top-3 performance;
+- winner mark distribution across ◎ ○ ▲ △1 △2 / unmarked;
+- number of actual top-3 horses contained in the five marks;
+- races where v0.4.6 and v0.5.0 changed ◎, ▲, or the five-horse set;
+- whether those changed decisions improved or worsened the observed result.
+
+ROI or ticket-settlement analysis is a separate metric layer. Do not substitute
+betting return for the statistical prediction comparison.
+
+Public-Web result acquisition is only a fallback when an actual canonical Drive
+inventory check confirms the required JRDB Raw is unavailable, or when the requested
+fact lies outside the SED/HJC result contract.
+
+The authoritative generic result-query guide is
+`docs/README_jrdb_result_query.md`; same-day settlement behavior is documented in
+`docs/racenote/SAME_DAY_RESULT_SETTLEMENT_v0_1.md`.
