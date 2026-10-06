@@ -677,13 +677,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_clock_front",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout.clock.front",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cha_clock_middle",
@@ -692,13 +692,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_clock_middle",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout.clock.middle",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cha_clock_last",
@@ -707,13 +707,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_clock_last",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout.clock.last",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cha_course",
@@ -722,13 +722,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_course",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cha_strength",
@@ -737,13 +737,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_strength",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cha_state",
@@ -752,13 +752,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_state",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cha_pair_result",
@@ -767,13 +767,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_pair_result",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cha_furlongs",
@@ -782,13 +782,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cha_furlongs",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CHA",
       "reader_leaf": "horses[].training.main_workout.furlongs",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_training_index",
@@ -842,13 +842,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_course_count_slope",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis.course_counts.slope",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_course_count_wood",
@@ -857,13 +857,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_course_count_wood",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis.course_counts.wood",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_course_count_dirt",
@@ -872,13 +872,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_course_count_dirt",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis.course_counts.dirt",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_course_count_turf",
@@ -887,13 +887,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_course_count_turf",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis.course_counts.turf",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_course_count_pool",
@@ -902,13 +902,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_course_count_pool",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis.course_counts.pool",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_course_count_obstacle",
@@ -917,13 +917,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_course_count_obstacle",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis.course_counts.obstacle",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_course_count_polytrack",
@@ -932,13 +932,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_course_count_polytrack",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis.course_counts.polytrack",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_distance_pattern",
@@ -947,13 +947,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_distance_pattern",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_focus",
@@ -962,13 +962,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_focus",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_volume_grade",
@@ -977,13 +977,13 @@
       "display_group": "TRAINING_CONDITION",
       "primary_representation": "cyb_volume_grade",
       "retained_for_provenance": true,
-      "change_type": "conditional_only",
+      "change_type": "unchanged",
       "rationale": "Retain as conditional context or source detail; no general headline claim.",
       "evidence_reference": "20261005_JRDB_FEATURE_AUDIT_STAGE_B_REPORT.md; 20261005_JRDB_FEATURE_AUDIT_STAGE_B_AUDIT.md",
       "source_record": "CYB",
       "reader_leaf": "horses[].training.analysis",
       "information_availability": "available when populated",
-      "presentation_effect": "conditional presentation"
+      "presentation_effect": "unchanged conditional source detail"
     },
     {
       "feature_id": "cyb_training_grade",
