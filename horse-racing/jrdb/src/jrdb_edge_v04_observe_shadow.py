@@ -55,6 +55,11 @@ def no_result_fields(obj):
             no_result_fields(value)
 
 
+def condition_matches(row, facts):
+    """Pure v0.4 membership predicate shared by frozen shadow and query adapters."""
+    return all(facts.get(c["feature"]) is not None and str(facts[c["feature"]]) == c["value"] for c in row["conditions"])
+
+
 def match_day(cohort, facts, target_date, asof, source_identity):
     validate_cohort(cohort)
     if not source_identity.get("sha256"):
@@ -78,7 +83,7 @@ def match_day(cohort, facts, target_date, asof, source_identity):
             raise ValueError("noncanonical fact dimension")
         for row in cohort["rows"]:
             # C1 compares PyArrow-cast strings; absent/null values never match.
-            if all(item["facts"].get(c["feature"]) is not None and str(item["facts"][c["feature"]]) == c["value"] for c in row["conditions"]):
+            if condition_matches(row, item["facts"]):
                 matches.append({"race_date": target_date, "race_id": item["race_id"], "horse_id": item["horse_id"],
                                 "cohort_id": row["cohort_id"], "family": row["family"], "candidate_id": row["candidate_id"],
                                 "matched_conditions": row["conditions"], "match_asof": asof,
@@ -224,3 +229,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
