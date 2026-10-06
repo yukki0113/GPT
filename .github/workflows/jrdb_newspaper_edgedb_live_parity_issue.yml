@@ -39,7 +39,7 @@ jobs:
           missing=sorted(required-set(req))
           if missing: raise SystemExit(f'missing fields: {missing}')
           date=str(req['date'])
-          if not re.fullmatch(r'20\\d{6}',date): raise SystemExit('date must be YYYYMMDD')
+          if not re.fullmatch(r'20\d{6}',date): raise SystemExit('date must be YYYYMMDD')
           for key in ('expected_revision','raw_run_id','analysis_run_id'):
               if not isinstance(req[key],int) or isinstance(req[key],bool) or req[key] <= 0:
                   raise SystemExit(f'{key} must be positive integer')
@@ -245,5 +245,5 @@ jobs:
           else
             BODY="JRDB_NEWSPAPER_EDGEDB_LIVE_PARITY_RESULT: FAILED. Public release was not modified. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
             gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
-            gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
+            gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned"
           fi
