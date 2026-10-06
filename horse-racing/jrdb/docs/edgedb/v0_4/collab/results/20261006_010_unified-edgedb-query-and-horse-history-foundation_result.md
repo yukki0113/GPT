@@ -23,7 +23,7 @@ Production impact: **NONE**
 | SHADOW v0.3 | Successful GitHub Actions run `36045237262`; artifact `jrdb-edge-v03-shadow-catalog-36045237262`; committed snapshot `horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_3_shadow_36045237262.jsonl.xz.b64` | 2,044 rows; SHA-256 `a724a005ec40446f4a982a79de17ba7a2ae169c09260ecee98a159b663914379`; rows retain `v03_shadow.mode=SHADOW_ONLY`. |
 | OBSERVE_ONLY v0.4 | `horse-racing/jrdb/config/edgedb/v0_4/observe_only_cohort_v0_1.json` | 347 rows; fingerprint-set SHA-256 `ad0cf386601fb0366db27197072205c565eef189fa2e1062a97702f4b30f4876`; membership validator passes. |
 
-The manifest SHA-256 is `21e528792946556b774c092fa49eccef0ae8b7dfac38785319ef051d2c5ffce9`. The runtime checks the base64 asset SHA-256, decodes XZ, verifies the compressed snapshot SHA-256 (`88e548338d9004ad69c1c884937656ddae347960ca1422707f6eb815a2af8983` for v0.2; `0e1b9fc24533fc94f42fe2e5907d638a4beb8f9806c9ad2be1ebfa15cebba41b` for v0.3), then passes the decoded JSONL through the existing registry loader. The manifest records the canonical uncompressed publication hashes separately.
+The manifest SHA-256 is `b3e086704ec0ec31093f017f1ec0f3065317c1933ee6e2976780f2aa448f9bae`. The runtime checks the base64 asset SHA-256, decodes XZ, verifies the compressed snapshot SHA-256 (`88e548338d9004ad69c1c884937656ddae347960ca1422707f6eb815a2af8983` for v0.2; `0e1b9fc24533fc94f42fe2e5907d638a4beb8f9806c9ad2be1ebfa15cebba41b` for v0.3), then passes the decoded JSONL through the existing registry loader. The manifest records the canonical uncompressed publication hashes separately.
 
 ## Verification
 
