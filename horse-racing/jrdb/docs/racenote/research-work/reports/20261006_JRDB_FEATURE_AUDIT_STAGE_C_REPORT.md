@@ -68,7 +68,7 @@ proposed 0.5.x normal view for the same source evidence:
                        finish order=<finish_order>; CHA total=<cha_total>
 ```
 
-For these 14 explicitly named scalar slots, the illustrative normal view has 9 slots: 5 duplicate/detail slots move out of normal presentation. The provenance block still has access to all 14. This is a **structural count**, not a measured byte or token reduction on an actual committed Reader example. For the complete catalog, 17/73 leaves (23.3%) are marked hidden from normal presentation; that is an upper-bound field-slot count, not a predicted token reduction. A later renderer benchmark must measure real serialized bytes/tokens before claiming savings.
+For these 15 explicitly named scalar slots, the illustrative normal view has 9 slots: 6 duplicate/detail slots move out of normal presentation. The provenance block still has access to all 14. This is a **structural count**, not a measured byte or token reduction on an actual committed Reader example. For the complete catalog, 17/73 leaves (23.3%) are marked hidden from normal presentation; that is an upper-bound field-slot count, not a predicted token reduction. A later renderer benchmark must measure real serialized bytes/tokens before claiming savings.
 
 ## v0.4.6 to 0.5.x migration and compatibility
 
