@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Stable, consumer-neutral query boundary over EdgeDB generations."""
 from __future__ import annotations
-import argparse, base64, gzip, hashlib, json, tempfile
+import argparse, base64, gzip, hashlib, json, lzma, tempfile
 from pathlib import Path
 from typing import Any
 import jrdb_edge_matcher_v0_2 as matcher
@@ -71,17 +71,16 @@ def load_manifest(path: str|Path, root: str|Path|None=None) -> tuple[dict[str,An
             if src.get("expected_rows") is not None and cohort.get("cohort_row_count")!=src["expected_rows"]: raise ManifestError("cohort row-count mismatch")
             loaded.append({**src,"data":cohort})
         else:
-            if p.name.endswith(".gz.b64"):
+            if p.name.endswith(".xz.b64") or p.name.endswith(".gz.b64"):
                 try: compressed=base64.b64decode(p.read_text(encoding="ascii"),validate=True)
                 except (OSError,ValueError) as e: raise ManifestError(f"invalid base64 registry snapshot: {src['source_key']}") from e
-                snapshot_sha=src.get("snapshot_gzip_sha256")
+                snapshot_sha=src.get("snapshot_compressed_sha256")
                 if snapshot_sha and hashlib.sha256(compressed).hexdigest()!=snapshot_sha: raise ManifestError(f"compressed snapshot SHA-256 mismatch: {src['source_key']}")
                 with tempfile.TemporaryDirectory(prefix="edgedb-registry-") as temp:
                     expanded=Path(temp)/"registry.jsonl"
                     try:
-                        with gzip.GzipFile(fileobj=__import__("io").BytesIO(compressed),mode="rb") as source, expanded.open("wb") as target:
-                            for block in iter(lambda:source.read(1024*1024),b""): target.write(block)
-                    except (OSError,EOFError) as e: raise ManifestError(f"invalid gzip registry snapshot: {src['source_key']}") from e
+                        expanded.write_bytes(lzma.decompress(compressed) if p.name.endswith(".xz.b64") else gzip.decompress(compressed))
+                    except (OSError,EOFError,lzma.LZMAError) as e: raise ManifestError(f"invalid compressed registry snapshot: {src['source_key']}") from e
                     rows=matcher.load_registry(expanded)
             elif p.suffix==".gz":
                 with tempfile.TemporaryDirectory(prefix="edgedb-registry-") as temp:
