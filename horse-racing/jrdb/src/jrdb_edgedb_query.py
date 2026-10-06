@@ -124,8 +124,10 @@ def query(facts:list[dict[str,Any]], manifest_path:str|Path, *, profile="STANDAR
             audit.append({"source_key":src["source_key"],"generation":src["source_generation"],"lifecycle":src["lifecycle"]})
             if src["adapter_type"]=="jrdb_observe_cohort_v0_1": signals.extend(_observe_signals(src,fact))
             else: signals.extend(_registry_signals(src,fact))
-        lifecycle_order={"STANDARD":0,"SHADOW":1,"OBSERVE_ONLY":2}
-        signals.sort(key=lambda s:(lifecycle_order[s["lifecycle"]],s["source_generation"],str(s["signal_id"])))
+        # Preserve manifest source order and each source adapter's canonical
+        # match order.  This keeps STANDARD output byte/semantic-compatible
+        # with the legacy v0.2 matcher while remaining deterministic because
+        # both the manifest sources and source rows are immutable ordered inputs.
         if only_matched and not signals: continue
         results.append({"schema_version":SCHEMA_VERSION,"query_engine_version":VERSION,"manifest_revision":manifest["manifest_revision"],"profile":profile,"key":key,"signals":signals,"source_audit":audit})
     results.sort(key=lambda r:tuple(str(r["key"].get(k) or "") for k in ("race_date","race_key","horse_no","horse_id")))
