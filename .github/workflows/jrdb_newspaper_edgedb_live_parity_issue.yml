@@ -1,0 +1,249 @@
+name: JRDB Newspaper EdgeDB live parity test
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  live-parity:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EDGEDB_LIVE_PARITY]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={'date','expected_revision','raw_run_id','raw_artifact_name','analysis_run_id','analysis_artifact_name'}
+          missing=sorted(required-set(req))
+          if missing: raise SystemExit(f'missing fields: {missing}')
+          date=str(req['date'])
+          if not re.fullmatch(r'20\\d{6}',date): raise SystemExit('date must be YYYYMMDD')
+          for key in ('expected_revision','raw_run_id','analysis_run_id'):
+              if not isinstance(req[key],int) or isinstance(req[key],bool) or req[key] <= 0:
+                  raise SystemExit(f'{key} must be positive integer')
+          if req['raw_artifact_name'] != f'jrdb-raw-{date}':
+              raise SystemExit('unexpected raw_artifact_name')
+          Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          PY
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+
+      - name: Download real PACI and canonical Analysis artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/raw /tmp/analysis-artifact /tmp/analysis
+          RAW_RUN_ID="$(python -c "import json;print(json.load(open('/tmp/request.json'))['raw_run_id'])")"
+          RAW_ARTIFACT="$(python -c "import json;print(json.load(open('/tmp/request.json'))['raw_artifact_name'])")"
+          ANALYSIS_RUN_ID="$(python -c "import json;print(json.load(open('/tmp/request.json'))['analysis_run_id'])")"
+          ANALYSIS_ARTIFACT="$(python -c "import json;print(json.load(open('/tmp/request.json'))['analysis_artifact_name'])")"
+          gh run download "$RAW_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$RAW_ARTIFACT" --dir /tmp/raw
+          gh run download "$ANALYSIS_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ANALYSIS_ARTIFACT" --dir /tmp/analysis-artifact
+          DATE="$(python -c "import json;print(json.load(open('/tmp/request.json'))['date'])")"
+          PACI="$(find /tmp/raw -type f -name "PACI${DATE:2}.zip" -print -quit)"
+          test -n "$PACI"
+          BUNDLE="$(find /tmp/analysis-artifact -type f -name 'analysis-parquet-candidate.tar.xz' -print -quit)"
+          test -n "$BUNDLE"
+          tar -xJf "$BUNDLE" -C /tmp/analysis
+          test -f /tmp/analysis/current.json
+          PYTHONPATH=horse-racing/jrdb/src:tools/data-storage python - <<'PY'
+          import json
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          r=resolve_current(Path('/tmp/analysis'))
+          Path('/tmp/analysis-resolved.json').write_text(json.dumps({
+              'generation_id':r['generation_id'],'rows':r['rows'],'manifest':str(r['manifest'])
+          },sort_keys=True)+'\\n')
+          print(Path('/tmp/analysis-resolved.json').read_text())
+          PY
+
+      - name: Download current personal Newspaper release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release /tmp/current
+          gh release download jrdb-newspaper-current --repo "$GITHUB_REPOSITORY"             --pattern 'jrdb_newspaper_current.tar.xz' --dir /tmp/release --clobber
+          tar -xJf /tmp/release/jrdb_newspaper_current.tar.xz -C /tmp/current
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text())
+          manifests=list(Path('/tmp/current').rglob('manifest.json'))
+          manifests=[p for p in manifests if p.parent.joinpath('races').is_dir()]
+          if len(manifests)!=1: raise SystemExit(f'expected one day manifest, got {manifests}')
+          root=manifests[0].parent
+          m=json.loads(manifests[0].read_text())
+          expected_date=f"{req['date'][:4]}-{req['date'][4:6]}-{req['date'][6:]}"
+          if m.get('date')!=expected_date or int(m.get('revision') or 0)!=req['expected_revision']:
+              raise SystemExit(f"current release mismatch date/revision: {m.get('date')} r{m.get('revision')}")
+          Path('/tmp/current-root.txt').write_text(str(root))
+          print(f'current_root={root} date={m["date"]} revision={m["revision"]}')
+          PY
+
+      - name: Run legacy v0.2 and new EdgeDB Query on same real inputs
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          DATE="$(python -c "import json;print(json.load(open('/tmp/request.json'))['date'])")"
+          PACI="$(find /tmp/raw -type f -name "PACI${DATE:2}.zip" -print -quit)"
+          REGISTRY="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('horse-racing/jrdb/config/edgedb/current_manifest.json').read_text())
+          rows=[s for s in m['sources'] if s.get('enabled') and s.get('source_generation')=='v0.2' and s.get('lifecycle')=='STANDARD']
+          if len(rows)!=1: raise SystemExit(f'expected one v0.2 STANDARD source, got {len(rows)}')
+          print(rows[0]['path'])
+          PY
+          )"
+          python horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py             --paci "$PACI" --analysis-root /tmp/analysis --registry-jsonl "$REGISTRY"             --output-jsonl /tmp/legacy.jsonl --audit-json /tmp/legacy-audit.json > /tmp/legacy-summary.json
+          python horse-racing/jrdb/src/jrdb_edgedb_query.py             --manifest horse-racing/jrdb/config/edgedb/current_manifest.json             --paci "$PACI" --analysis-root /tmp/analysis --profile STANDARD             --output-jsonl /tmp/query.jsonl
+
+      - name: Compare live parity and merge into current personal release candidate
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          ROOT="$(cat /tmp/current-root.txt)"
+          python - <<'PY'
+          import copy,json,hashlib
+          from pathlib import Path
+          import jrdb_newspaper_edge_adapter as adapter
+          import jrdb_newspaper_merge_edge as merger
+
+          legacy_index,legacy_audit=adapter.load_special_memo_index('/tmp/legacy.jsonl')
+          query_index,query_audit=adapter.load_special_memo_index('/tmp/query.jsonl')
+          if set(legacy_index)!=set(query_index):
+              raise SystemExit(f'runner key mismatch legacy={len(legacy_index)} query={len(query_index)}')
+          mismatches=[]
+          for key in sorted(legacy_index):
+              l=legacy_index[key]
+              q=query_index[key]
+              if [x['edge_id'] for x in l['edge_matches']] != [x['edge_id'] for x in q['edge_matches']]:
+                  mismatches.append({'key':key,'field':'edge_ids'})
+                  continue
+              for lm,qm in zip(l['edge_matches'],q['edge_matches']):
+                  for field in ('performance_evidence_level','performance_signal','presentation_role'):
+                      if lm.get(field)!=qm.get(field):
+                          mismatches.append({'key':key,'field':field,'legacy':lm.get(field),'query':qm.get(field)})
+              if l['special_memos'] != q['special_memos']:
+                  mismatches.append({'key':key,'field':'special_memos'})
+          if mismatches:
+              Path('/tmp/parity-mismatch.json').write_text(json.dumps(mismatches[:100],ensure_ascii=False,indent=2)+'\\n')
+              raise SystemExit(f'live parity mismatch count={len(mismatches)}')
+
+          current=Path(Path('/tmp/current-root.txt').read_text())
+          before={}
+          for p in sorted((current/'races').glob('*.json')):
+              b=json.loads(p.read_text())
+              rk=str((b.get('race') or {}).get('race_key') or '')
+              before[rk]=b
+          result=merger.merge_edge_day(current,'/tmp/query.jsonl','/tmp/edge-candidate')
+
+          after={}
+          for p in sorted(Path('/tmp/edge-candidate/races').glob('*.json')):
+              b=json.loads(p.read_text())
+              rk=str((b.get('race') or {}).get('race_key') or '')
+              after[rk]=b
+          if set(before)!=set(after): raise SystemExit('race key set changed after Edge merge')
+
+          preserve_mismatches=[]
+          for rk in before:
+              b0,b1=before[rk],after[rk]
+              h0={int(h['key']['horse_no']):h for h in b0.get('horses') or []}
+              h1={int(h['key']['horse_no']):h for h in b1.get('horses') or []}
+              if set(h0)!=set(h1):
+                  preserve_mismatches.append({'race_key':rk,'field':'horse_set'})
+                  continue
+              for no in h0:
+                  x=copy.deepcopy(h0[no]); y=copy.deepcopy(h1[no])
+                  x.pop('special_memos',None); y.pop('special_memos',None)
+                  if x!=y:
+                      preserve_mismatches.append({'race_key':rk,'horse_no':no,'field':'non_edge_horse_data'})
+              n0=copy.deepcopy(b0.get('race_notes') or {})
+              n1=copy.deepcopy(b1.get('race_notes') or {})
+              if n0!=n1: preserve_mismatches.append({'race_key':rk,'field':'race_notes'})
+          if preserve_mismatches:
+              Path('/tmp/preserve-mismatch.json').write_text(json.dumps(preserve_mismatches[:100],ensure_ascii=False,indent=2)+'\\n')
+              raise SystemExit(f'non-Edge preservation mismatch count={len(preserve_mismatches)}')
+
+          report={
+              'status':'PASS',
+              'live_parity':'PASS',
+              'current_personal_merge':'PASS',
+              'legacy_runner_rows':legacy_audit['row_count'],
+              'query_runner_rows':query_audit['row_count'],
+              'legacy_raw_match_count':legacy_audit['raw_match_count'],
+              'query_raw_match_count':query_audit['raw_match_count'],
+              'special_memo_count':query_audit['special_memo_count'],
+              'special_memo_runner_count':query_audit['special_memo_runner_count'],
+              'non_standard_signal_count':query_audit.get('non_standard_signal_count'),
+              'query':query_audit.get('query'),
+              'merged_rows':result['merged_rows'],
+              'missing_join_count':result['missing_join_count'],
+              'extra_join_count':result['extra_join_count'],
+              'day_package_sha256':result['day_package']['sha256'],
+              'analysis':json.loads(Path('/tmp/analysis-resolved.json').read_text()),
+              'release_modified':False,
+          }
+          Path('/tmp/report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2,sort_keys=True)+'\\n')
+          print(Path('/tmp/report.json').read_text())
+          PY
+
+      - name: Upload test candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-newspaper-edgedb-live-parity-${{ github.run_id }}
+          retention-days: 14
+          compression-level: 6
+          path: |
+            /tmp/report.json
+            /tmp/legacy-summary.json
+            /tmp/legacy-audit.json
+            /tmp/query.jsonl
+            /tmp/edge-candidate/day-package.json
+            /tmp/edge-candidate/audit.json
+
+      - name: Report and close
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "$JOB_STATUS" = "success" ]; then
+            BODY="JRDB_NEWSPAPER_EDGEDB_LIVE_PARITY_RESULT: PASS. Public release was not modified. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+            gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+            gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+          else
+            BODY="JRDB_NEWSPAPER_EDGEDB_LIVE_PARITY_RESULT: FAILED. Public release was not modified. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+            gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+            gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason not_planned
+          fi
