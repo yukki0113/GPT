@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      14,
+      11,
+      7,
+      13,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 11,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 13,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 8,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        11,
+        7,
+        13,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 11,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      10,
+      5,
+      7,
+      11,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 5,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 11,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 15,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        5,
+        7,
+        11,
+        15
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 5,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      8,
+      6,
+      3,
+      4,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 6,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 4,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 7,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        6,
+        3,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 6,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      6,
+      1,
+      3,
+      7,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 1,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 7,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 5,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        1,
+        3,
+        7,
+        5
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 1,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      9,
+      5,
+      13,
+      14,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 5,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 14,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 7,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        5,
+        13,
+        14,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 5,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      6,
+      2,
+      5,
+      7,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 2,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 7,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 3,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        2,
+        5,
+        7,
+        3
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 2,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      1,
+      12,
+      9,
+      2,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 12,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 2,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 3,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        12,
+        9,
+        2,
+        3
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 12,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      12,
+      8,
+      3,
+      10,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 8,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 10,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 1,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        8,
+        3,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 8,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      11,
+      7,
+      13,
+      6,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 7,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 6,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 3,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        7,
+        6,
+        3,
+        4
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 7,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      12,
+      6,
+      4,
+      3,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 6,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 3,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 10,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        6,
+        4,
+        3,
+        10
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 6,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      13,
+      12,
+      5,
+      14,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 12,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 14,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 8,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        12,
+        5,
+        14,
+        8
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 12,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "race_model": "Reader evidence review.",
+    "marks": [
+      16,
+      4,
+      8,
+      15,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "Primary route."
+      },
+      {
+        "horse_no": 4,
+        "case": "Secondary route."
+      },
+      {
+        "horse_no": 15,
+        "case": "Supporting route."
+      },
+      {
+        "horse_no": 2,
+        "case": "Supporting route."
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "Asymmetric route."
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "Boundary comparison completed."
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader-only judgment.",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        4,
+        8,
+        15,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "External route reviewed.",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "Compression rule applied."
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 4,
+      "honmei_win_case": "Best win route.",
+      "second_case": "Second-best win route.",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "Win route prioritized."
+    }
+  }
+]
