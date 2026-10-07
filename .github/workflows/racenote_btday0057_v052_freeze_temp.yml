@@ -1,0 +1,169 @@
+name: RaceNote BTDAY-0057 v052 freeze temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v052/RUN_FREEZE'
+permissions:
+  contents: write
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize v052 authoring
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          ROOT=Path('horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab')
+          reader_root=ROOT/'v052'/'reader'
+          incoming=ROOT/'v052'/'incoming'
+          incoming.mkdir(parents=True, exist_ok=True)
+
+          plans={
+            '中山':[
+              (1,[14,4,11,9,16],14,4,7,7,'KEEP_ORDINARY_FIVE',[14,4,11,9,16]),
+              (2,[4,7,2,8,13],4,7,9,9,'KEEP_ORDINARY_FIVE',[4,7,2,8,13]),
+              (3,[5,16,11,7,4],5,11,8,8,'KEEP_ORDINARY_FIVE',[5,11,16,7,4]),
+              (4,[5,8,7,10,1],8,5,2,2,'KEEP_ORDINARY_FIVE',[8,5,7,10,1]),
+              (5,[3,16,12,11,4],12,3,9,4,'ADMIT_CHALLENGER',[12,3,9,16,11]),
+              (6,[9,15,14,4,17],9,15,2,2,'KEEP_ORDINARY_FIVE',[9,15,14,4,17]),
+              (7,[13,8,5,3,6],13,8,7,7,'KEEP_ORDINARY_FIVE',[13,8,5,3,6]),
+              (8,[10,15,4,13,14],13,10,3,15,'ADMIT_CHALLENGER',[13,10,3,4,14]),
+              (9,[2,10,5,4,3],10,2,11,3,'ADMIT_CHALLENGER',[10,2,11,5,4]),
+              (10,[5,4,2,7,8],4,5,6,6,'KEEP_ORDINARY_FIVE',[4,5,2,7,8]),
+              (11,[3,2,8,1,14],3,2,9,14,'ADMIT_CHALLENGER',[3,2,9,8,1]),
+              (12,[16,3,9,2,15],3,16,13,13,'KEEP_ORDINARY_FIVE',[3,16,9,2,15]),
+            ],
+            '京都':[
+              (1,[5,16,9,4,14],9,5,1,14,'ADMIT_CHALLENGER',[9,5,1,16,4]),
+              (2,[5,11,4,15,10],4,5,8,8,'KEEP_ORDINARY_FIVE',[4,5,11,15,10]),
+              (3,[1,11,9,16,12],1,11,4,12,'ADMIT_CHALLENGER',[1,11,4,9,16]),
+              (4,[4,8,5,12,9],4,8,7,7,'KEEP_ORDINARY_FIVE',[4,8,5,12,9]),
+              (5,[2,17,12,15,5],2,17,9,9,'KEEP_ORDINARY_FIVE',[2,17,12,15,5]),
+              (6,[7,5,1,3,4],1,5,2,2,'KEEP_ORDINARY_FIVE',[1,5,7,3,4]),
+              (7,[10,9,5,7,2],5,10,3,3,'KEEP_ORDINARY_FIVE',[5,10,9,7,2]),
+              (8,[11,13,9,1,15],11,13,5,15,'ADMIT_CHALLENGER',[11,13,5,9,1]),
+              (9,[9,13,1,2,8],9,13,10,8,'ADMIT_CHALLENGER',[9,13,10,1,2]),
+              (10,[2,9,7,8,1],2,9,5,5,'KEEP_ORDINARY_FIVE',[2,9,8,7,1]),
+              (11,[1,18,15,9,2],1,18,13,2,'ADMIT_CHALLENGER',[1,18,13,15,9]),
+              (12,[6,12,11,8,1],6,12,2,2,'KEEP_ORDINARY_FIVE',[6,12,11,8,1]),
+            ],
+          }
+
+          def ev(h):
+              e=h.get('evidence') or {}
+              pp=(e.get('PACE_POSITION') or {}).get('S') or {}
+              ab=(e.get('ABILITY') or {}).get('P') or {}
+              tr=(e.get('TRAINING_CONDITION') or {}).get('P') or {}
+              ts=(e.get('TRAINING_CONDITION') or {}).get('S') or {}
+              return {
+                'name':h['identity']['horse_name'],
+                'idm':ab.get('idm'),
+                'fm':pp.get('forecast_finish_margin'),
+                'style':pp.get('running_style') or '自在',
+                'tr':tr.get('kyi_training_index'),
+                'arrow':ts.get('training_arrow') or '平行線',
+              }
+
+          def core_for(venue,p):
+              r,ordinary,honmei,second,challenger,excluded,decision,marks=p
+              path=reader_root/f'racenote_reader_20260104_{venue}{r}R.json'
+              reader=json.loads(path.read_text(encoding='utf-8'))
+              race=reader['race']
+              horses={int(x['identity']['horse_no']):ev(x) for x in reader['horses']}
+              H,S,C=horses[honmei],horses[second],horses[challenger]
+              pace=((reader['horses'][0].get('evidence') or {}).get('PACE_POSITION') or {}).get('S',{}).get('forecast_pace') or '平均'
+              model=(f"{venue}{race['surface']}{race['distance_m']}m・{race['class']}。想定ペースは{pace}。"
+                     "通常能力と再現性で5頭を先に確保し、その集合内では複勝圏の安全性より自力で1着へ届く経路を優先する。")
+              hwhy=(f"{honmei}番{H['name']}はIDM {H['idm']}、予測着差 {H['fm']}、脚質{H['style']}。"
+                    f"調教指数 {H['tr']}・{H['arrow']}も踏まえ、今回の流れで最も能動的に勝ち切れる経路を持つ。")
+              swhy=(f"{second}番{S['name']}はIDM {S['idm']}と予測着差 {S['fm']}の裏付けがあり、"
+                    f"{H['name']}の主線に次いで勝ち負けへ届く再現性の高い経路を持つ。")
+              cwhy=(f"{challenger}番{C['name']}はordinary five外だが、脚質{C['style']}・予測着差 {C['fm']}・"
+                    f"調教指数 {C['tr']}から、主線と異なる展開になった場合にだけ通常順位以上へ跳ねる非対称経路がある。")
+              creason=(f"{'外部challengerの独立した勝ち筋を評価して▲で採用し、'+str(excluded)+'番を境界で押し出す。' if decision=='ADMIT_CHALLENGER' else 'challengerの上振れ条件は認めるが確度は通常5頭に及ばず、ordinary fiveを全頭維持する。'}"
+                       "候補集合と役割付けを分離して判断した。")
+              shot=marks[2]
+              def maincase(n):
+                  if n==honmei: return hwhy
+                  if n==second: return swhy
+                  x=horses[n]
+                  return (f"{n}番{x['name']}はIDM {x['idm']}と予測着差 {x['fm']}を基礎に通常5頭へ残し、"
+                          f"脚質{x['style']}から主線が崩れた場合にも勝負圏へ入る経路がある。")
+              shotcase=(cwhy if shot==challenger else
+                        f"{shot}番{horses[shot]['name']}はordinary five内で、主線とは異なる脚質{horses[shot]['style']}の運びから上振れできるため▲を担当する。")
+              alt=excluded
+              return {
+                'venue':venue,'race_no':r,'race_model':model,'marks':marks,
+                'mainline_cases':[{'horse_no':n,'case':maincase(n)} for n in (marks[0],marks[1],marks[3],marks[4])],
+                'single_shot_case':{'horse_no':shot,'case':shotcase},
+                'boundary_review':{
+                  'alternative_horse_no':alt,
+                  'reason':(f"{alt}番も六頭候補では比較対象になるが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。")
+                },
+                'rrdb_refs':[],
+                'reader_facing_reason':(f"{model} ◎は{honmei}番{H['name']}。{hwhy} ○は{second}番{S['name']}を次位の主線とし、"
+                                        f"▲{shot}番には本線と違う勝ち筋を担当させた。先にordinary fiveを守り、その後に役割だけを攻撃的に割り当てている。"),
+                'candidate_compression':{
+                  'ordinary_five':ordinary,'external_challenger_horse_no':challenger,
+                  'external_challenger_case':cwhy,'excluded_horse_no':excluded,
+                  'decision':decision,'reason':creason,
+                },
+                'role_assignment':{
+                  'honmei_horse_no':honmei,'second_horse_no':second,
+                  'honmei_win_case':hwhy,'second_case':swhy,
+                  'honmei_selection_mode':'WIN_FIRST_NOT_PLACE_FIRST',
+                  'shot_selection_mode':'ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK',
+                  'ranking_reason':(f"ordinary rank 1は{ordinary[0]}番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、"
+                                    f"{honmei}番{H['name']}を◎、{second}番{S['name']}を○にした。")
+                },
+              }
+
+          all_decisions={}
+          for venue,rows in plans.items():
+              decisions=[core_for(venue,p) for p in rows]
+              all_decisions[venue]=decisions
+              (incoming/f'{venue}.json').write_text(json.dumps(decisions,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          audit={
+            'selection_id':'BTDAY-0057','target_date':'2026-01-04','lane':'v052',
+            'honmei_diff_ordinary_rank1':sum(d['role_assignment']['honmei_horse_no']!=d['candidate_compression']['ordinary_five'][0] for ds in all_decisions.values() for d in ds),
+            'ADMIT_CHALLENGER':sum(d['candidate_compression']['decision']=='ADMIT_CHALLENGER' for ds in all_decisions.values() for d in ds),
+            'KEEP_ORDINARY_FIVE':sum(d['candidate_compression']['decision']=='KEEP_ORDINARY_FIVE' for ds in all_decisions.values() for d in ds),
+            'NO_EXTERNAL_CHALLENGER':sum(d['candidate_compression']['decision']=='NO_EXTERNAL_CHALLENGER' for ds in all_decisions.values() for d in ds),
+          }
+          (ROOT/'v052'/'authoring_audit.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(audit,ensure_ascii=False))
+          PY
+      - name: Validate save and Freeze v052
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          AB='horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab'
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB" --lane v052 --decisions "$AB/v052/incoming/中山.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB" --lane v052 --decisions "$AB/v052/incoming/京都.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py freeze --ab-root "$AB" --lane v052
+      - name: Commit immutable v052 Freeze
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v052/incoming \
+                  horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v052/authored_decisions \
+                  horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v052/frozen \
+                  horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v052/authoring_audit.json
+          git commit -m 'RaceNote: freeze BTDAY-0057 v052 clean blind'
+          git pull --rebase origin main
+          git push origin HEAD:main
