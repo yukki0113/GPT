@@ -1,0 +1,60 @@
+name: RaceNote BTDAY-0055 v051 reseal temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0055.v051-reseal'
+permissions:
+  contents: write
+jobs:
+  reseal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reseal three-way session
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          PREP='horse-racing/jrdb/backtests/BTDAY-0055/20260105/forecast_prep'
+          REQUEST='horse-racing/jrdb/backtests/requests/BTDAY-0055.json'
+          AB='horse-racing/jrdb/backtests/BTDAY-0055/20260105/ab'
+          test ! -e "$AB/v046/incoming"
+          test ! -e "$AB/v050/incoming"
+          test ! -e "$AB/v046/frozen"
+          test ! -e "$AB/v050/frozen"
+          BASE_MAIN_SHA="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('horse-racing/jrdb/backtests/BTDAY-0055/20260105/forecast_prep/day_prep_handoff.json').read_text())['main_sha'])
+          PY
+          )"
+          rm -rf "$AB"
+          python horse-racing/jrdb/src/racenote_ab_session.py \
+            --prep-root "$PREP" \
+            --request "$REQUEST" \
+            --ab-root "$AB" \
+            --base-main-sha "$BASE_MAIN_SHA" \
+            --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+            --include-v051
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('horse-racing/jrdb/backtests/BTDAY-0055/20260105/ab/ab_session.json')
+          s=json.loads(p.read_text())
+          assert s['v051_enabled'] is True
+          assert 'v051' in s['lane_definitions']
+          assert len(s['race_roster']) == 24
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A "$AB"
+          git commit -m 'RaceNote: reseal BTDAY-0055 with v051 lane'
+          git pull --rebase origin main
+          git push origin HEAD:main
