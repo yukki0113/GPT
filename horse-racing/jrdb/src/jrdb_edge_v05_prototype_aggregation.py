@@ -278,7 +278,7 @@ def run(*,feature_input:Path,analysis_input:Path,out:Path,feature_artifact_diges
                     if any(v is None for v in cond.values()):continue
                     cid=candidate_id(template,cond);spec=SPECS[template];parent={k:cond[k] for k in spec["parent"]}
                     ptemplate={"T1_COURSE_FRAME":"T1_COURSE","T2_SIRE_COURSE":"T2_SIRE","T3_SIRE_DISTANCE_CHANGE":"T3_SIRE","T4_SIRE_SURFACE_SWITCH":"T4_SIRE","T6_SIRE_SURFACE_GOING":"T6_SIRE_SURFACE"}[template]
-                    candidates.append({"candidate_id":cid,"template_id":template,"family":spec["family"],"conditions":cond,"condition_fingerprint":fingerprint(cond),"condition_values":[cond[k] for k in spec["conditions"]],"discovery_population_n":int(values["n"]),"parent_template":ptemplate,"parent_values":[parent[k] for k in spec["parent"]],"parent_key":fingerprint({"template":ptemplate,"conditions":parent}),"depth":len(cond)})
+                    candidates.append({"candidate_id":cid,"template_id":template,"template_version":"v0.5.1","family":spec["family"],"conditions":cond,"condition_fingerprint":fingerprint(cond),"condition_values":[cond[k] for k in spec["conditions"]],"discovery_population_n":int(values["n"]),"parent_template":ptemplate,"parent_values":[parent[k] for k in spec["parent"]],"parent_key":fingerprint({"template":ptemplate,"conditions":parent}),"depth":len(cond)})
             ids=[c["candidate_id"] for c in candidates]
             if len(ids)!=len(set(ids)):raise ValueError("duplicate deterministic candidate IDs")
             metrics=[];parents={}
@@ -309,7 +309,8 @@ def run(*,feature_input:Path,analysis_input:Path,out:Path,feature_artifact_diges
                 if ctx["n"]<5:labels.append("INSUFFICIENT")
                 if c["support_class"]=="MICRO" and c["freshness"] in {"CURRENT","EMERGING"}:labels.append("CURRENT_BUT_LOW_SUPPORT")
                 if c["freshness"] in {"EMERGING","DECAYING"}:labels.append(c["freshness"])
-                if recent.get("place_roi") is not None and recent["place_roi"]>=100 and recent["n"]>=5:labels.append("NICHE_VALUE_POSITIVE" if "NICHE_VALUE_POSITIVE" not in labels else "NICHE_VALUE_POSITIVE")
+                if recent.get("hit_pop_8_plus",0)>0:labels.append("LONGSHOT_EVIDENCE")
+                if d is not None and d>0 and recent.get("place_roi") is not None and recent["place_roi"]<100:labels.append("SATURATED_OR_PRICED")
                 if recent.get("place_roi") is not None and recent["place_roi"]<80:labels.append("WEAK")
                 c["research_labels"]=sorted(set(labels));c["shortlist_eligible"]=shortlist_eligible(recent["n"])
                 c["memo"]=memo(c,d)
