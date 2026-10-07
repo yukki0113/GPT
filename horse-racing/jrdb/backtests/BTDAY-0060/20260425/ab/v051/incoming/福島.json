@@ -1,0 +1,650 @@
+[
+  {
+    "venue": "福島",
+    "race_no": 1,
+    "race_model": "福島1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      9,
+      6,
+      5,
+      10,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 10,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "通常5頭の中で主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15の別経路も比較したが、ordinary fiveを崩す根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        6,
+        5,
+        10,
+        2
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15にも通常5頭とは異なる展開経路があるが、今回条件でsupportを押し出すだけの再現性・優位性には届かない。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎9・○6はordinary five時点で固定。challenger15を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎9と○6はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 2,
+    "race_model": "福島2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      4,
+      8,
+      16,
+      13,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 13,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "通常5頭の中で主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5の別経路も比較したが、ordinary fiveを崩す根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        8,
+        16,
+        13,
+        1
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5にも通常5頭とは異なる展開経路があるが、今回条件でsupportを押し出すだけの再現性・優位性には届かない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎4・○8はordinary five時点で固定。challenger5を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎4と○8はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 3,
+    "race_model": "福島3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      15,
+      7,
+      10,
+      9,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 9,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4はordinary supportとして比較したが、外部challenger10の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        7,
+        9,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎15・○7はordinary five時点で固定。challenger10を▲に採用しsupport4を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎15と○7はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 4,
+    "race_model": "福島4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      3,
+      11,
+      8,
+      16,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 16,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "通常5頭の中で主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7の別経路も比較したが、ordinary fiveを崩す根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        11,
+        8,
+        16,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7にも通常5頭とは異なる展開経路があるが、今回条件でsupportを押し出すだけの再現性・優位性には届かない。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎3・○11はordinary five時点で固定。challenger7を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎3と○11はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 5,
+    "race_model": "福島5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      13,
+      8,
+      15,
+      11,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 11,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2はordinary supportとして比較したが、外部challenger15の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        8,
+        11,
+        12,
+        2
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎13・○8はordinary five時点で固定。challenger15を▲に採用しsupport2を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎13と○8はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 6,
+    "race_model": "福島6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      14,
+      9,
+      6,
+      13,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 13,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2はordinary supportとして比較したが、外部challenger6の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        9,
+        13,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎14・○9はordinary five時点で固定。challenger6を▲に採用しsupport2を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎14と○9はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 7,
+    "race_model": "福島7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      1,
+      12,
+      11,
+      8,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 8,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "通常5頭の中で主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6の別経路も比較したが、ordinary fiveを崩す根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        12,
+        11,
+        8,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6にも通常5頭とは異なる展開経路があるが、今回条件でsupportを押し出すだけの再現性・優位性には届かない。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎1・○12はordinary five時点で固定。challenger6を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎1と○12はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 8,
+    "race_model": "福島8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      2,
+      4,
+      13,
+      12,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 12,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14はordinary supportとして比較したが、外部challenger13の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        12,
+        10,
+        14
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。",
+      "excluded_horse_no": 14,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎2・○4はordinary five時点で固定。challenger13を▲に採用しsupport14を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎2と○4はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 9,
+    "race_model": "福島9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      2,
+      14,
+      13,
+      7,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 14,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 7,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 11,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16はordinary supportとして比較したが、外部challenger13の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        14,
+        7,
+        11,
+        16
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。",
+      "excluded_horse_no": 16,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎2・○14はordinary five時点で固定。challenger13を▲に採用しsupport16を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎2と○14はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 10,
+    "race_model": "福島10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      7,
+      14,
+      4,
+      16,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 14,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 16,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "通常5頭の中で主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15の別経路も比較したが、ordinary fiveを崩す根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        14,
+        4,
+        16,
+        3
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15にも通常5頭とは異なる展開経路があるが、今回条件でsupportを押し出すだけの再現性・優位性には届かない。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎7・○14はordinary five時点で固定。challenger15を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎7と○14はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 11,
+    "race_model": "福島11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      3,
+      6,
+      2,
+      4,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 11,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5はordinary supportとして比較したが、外部challenger2の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        6,
+        4,
+        11,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎3・○6はordinary five時点で固定。challenger2を▲に採用しsupport5を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎3と○6はchallenger検討前に固定し、その後も変更していない。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 12,
+    "race_model": "福島12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      13,
+      9,
+      4,
+      16,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 16,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1はordinary supportとして比較したが、外部challenger4の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        9,
+        16,
+        12,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4は通常5頭と異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた際の非対称な上振れを評価する。",
+      "excluded_horse_no": 1,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎13・○9はordinary five時点で固定。challenger4を▲に採用しsupport1を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "福島12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎13と○9はchallenger検討前に固定し、その後も変更していない。"
+  }
+]
