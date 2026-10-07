@@ -1,0 +1,249 @@
+name: EdgeDB v0.5 Positive Value Freeze
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+jobs:
+  freeze:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[EDGEDB_V05_POSITIVE_FREEZE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Parquet runtime
+        run: python -m pip install --disable-pip-version-check 'pyarrow==25.0.1'
+
+      - name: Download frozen source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/v05-freeze/source
+          gh run download 37596365904             --repo "${{ github.repository }}"             --name data-storage-fallback-37596365904             --dir /tmp/v05-freeze/source
+
+      - name: Build and verify frozen cohort
+        run: |
+          python - <<'PY'
+          import csv, hashlib, json
+          from collections import Counter
+          from pathlib import Path
+          import pyarrow as pa
+          import pyarrow.parquet as pq
+
+          src=Path('/tmp/v05-freeze/source/output/combined_candidate_summary.csv')
+          if not src.is_file():
+              raise SystemExit(f'missing canonical source: {src}')
+          out=Path('/tmp/v05-freeze/output')
+          out.mkdir(parents=True,exist_ok=True)
+
+          rows=[]
+          with src.open(encoding='utf-8-sig',newline='') as f:
+              for r in csv.DictReader(f):
+                  if r['positive_value_eligible'].strip().lower()!='true':
+                      continue
+                  metrics=json.loads(r['metrics'])
+                  # Strictly freeze only the 2024-2025 discovery evidence.
+                  if any('2026' in k for k in metrics):
+                      raise SystemExit('2026 metric key found in freeze source')
+                  ov=metrics['overall_2024_2025']
+                  rows.append({
+                      'candidate_id':r['candidate_id'],
+                      'template_id':r['template_id'],
+                      'template_version':r['template_version'],
+                      'family':r['family'],
+                      'conditions':json.loads(r['conditions']),
+                      'condition_fingerprint':r['condition_fingerprint'],
+                      'support_class':r['support_class'],
+                      'freshness':r['freshness'],
+                      'memo':r['memo'],
+                      'n_2024_2025':int(ov['n']),
+                      'place_roi_2024_2025':float(ov['place_roi']),
+                      'win_roi_2024_2025':float(ov['win_roi']),
+                      'places_2024_2025':int(ov['places']),
+                      'wins_2024_2025':int(ov['wins']),
+                      'value_strength_band':r['value_strength_band'] or None,
+                      'research_labels':json.loads(r['research_labels']) if r['research_labels'] else [],
+                      'redundancy_status':r['redundancy_status'] or None,
+                      'representative_candidate_id':r['representative_candidate_id'] or None,
+                  })
+
+          rows.sort(key=lambda x:x['candidate_id'])
+          if len(rows)!=1620:
+              raise SystemExit(f'expected 1620 positive candidates, got {len(rows)}')
+          if len({x['candidate_id'] for x in rows})!=1620:
+              raise SystemExit('duplicate candidate_id in frozen cohort')
+          if not all(x['n_2024_2025']>=5 for x in rows):
+              raise SystemExit('n gate violation')
+          if not all(x['place_roi_2024_2025']>=100 for x in rows):
+              raise SystemExit('ROI gate violation')
+
+          payload={
+              'schema_version':'edgedb-v05-positive-value-frozen-cohort/v1',
+              'cohort_name':'v0.5_positive_value_2024_2025_pre_oos',
+              'discovery_window':['2024-01-01','2025-12-31'],
+              'context_window':['2022-01-01','2023-12-31'],
+              'oos_window_start':'2026-01-01',
+              'positive_gate':{'min_n':5,'min_place_roi':100.0,'roi_window':'2024-2025 combined'},
+              'candidate_count':1620,
+              'candidates':rows,
+          }
+          canonical=json.dumps(payload,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n'
+          cohort_sha=hashlib.sha256(canonical.encode()).hexdigest()
+          expected='a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9'
+          if cohort_sha != expected:
+              raise SystemExit(f'cohort fingerprint mismatch: {cohort_sha} != {expected}')
+
+          cohort_json=out/'v05_positive_value_frozen_cohort.json'
+          cohort_json.write_text(canonical,encoding='utf-8')
+
+          flat=[]
+          for x in rows:
+              flat.append({
+                  'candidate_id':x['candidate_id'],
+                  'template_id':x['template_id'],
+                  'template_version':x['template_version'],
+                  'family':x['family'],
+                  'conditions_json':json.dumps(x['conditions'],ensure_ascii=False,sort_keys=True,separators=(',',':')),
+                  'condition_fingerprint':x['condition_fingerprint'],
+                  'support_class':x['support_class'],
+                  'freshness':x['freshness'],
+                  'memo':x['memo'],
+                  'n_2024_2025':x['n_2024_2025'],
+                  'place_roi_2024_2025':x['place_roi_2024_2025'],
+                  'win_roi_2024_2025':x['win_roi_2024_2025'],
+                  'places_2024_2025':x['places_2024_2025'],
+                  'wins_2024_2025':x['wins_2024_2025'],
+                  'value_strength_band':x['value_strength_band'],
+                  'research_labels_json':json.dumps(x['research_labels'],ensure_ascii=False,separators=(',',':')),
+                  'redundancy_status':x['redundancy_status'],
+                  'representative_candidate_id':x['representative_candidate_id'],
+              })
+          parquet=out/'v05_positive_value_frozen_cohort.parquet'
+          pq.write_table(pa.Table.from_pylist(flat),parquet,compression='zstd')
+
+          fam=Counter(x['family'] for x in rows)
+          sup=Counter(x['support_class'] for x in rows)
+          bands=Counter(x['value_strength_band'] or 'NONE' for x in rows)
+          manifest={
+              'schema_version':'edgedb-v05-positive-value-freeze-manifest/v1',
+              'status':'PASS',
+              'source':{
+                  'actions_run_id':37596365904,
+                  'artifact_id':11470539365,
+                  'artifact_name':'data-storage-fallback-37596365904',
+                  'artifact_digest':'sha256:dc46a1ad1b5beeb4e641ba9b0b5801495d68e61cb2d10759a79754f1696ee5c0',
+                  'source_file':'output/combined_candidate_summary.csv',
+                  'source_pr':1890,
+                  'source_merge_commit':'3c5264197165a18949d003aac93b6c5fc2918cc0',
+              },
+              'freeze':{
+                  'candidate_count':1620,
+                  'discovery_window':['2024-01-01','2025-12-31'],
+                  'context_window':['2022-01-01','2023-12-31'],
+                  'oos_not_used':True,
+                  'oos_window_start':'2026-01-01',
+                  'gate':'n >= 5 AND combined 2024-2025 place ROI >= 100%',
+                  'cohort_sha256':cohort_sha,
+                  'sort_key':'candidate_id ASC',
+              },
+              'counts':{
+                  'by_family':dict(sorted(fam.items())),
+                  'by_support_class':dict(sorted(sup.items())),
+                  'by_value_strength_band':dict(sorted(bands.items())),
+              },
+              'files':{},
+          }
+          for p in (cohort_json,parquet):
+              manifest['files'][p.name]={
+                  'size_bytes':p.stat().st_size,
+                  'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
+              }
+          manifest_path=out/'v05_positive_value_freeze_manifest.json'
+          manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+
+          report=out/'v05_positive_value_freeze_report.md'
+          report.write_text(
+              '# EdgeDB v0.5 Positive Value Frozen Cohort\n\n'
+              'Status: PASS\n\n'
+              f'- Candidate count: {len(rows):,}\n'
+              f'- Cohort SHA-256: {cohort_sha}\n'
+              '- Discovery: 2024-01-01 through 2025-12-31\n'
+              '- Context: 2022-01-01 through 2023-12-31\n'
+              '- 2026 outcomes/market/results: NOT USED\n'
+              '- Gate: n >= 5 AND combined 2024-2025 place ROI >= 100%\n'
+              f'- Family counts: {json.dumps(dict(sorted(fam.items())),ensure_ascii=False)}\n'
+              f'- Support counts: {json.dumps(dict(sorted(sup.items())),ensure_ascii=False)}\n'
+              f'- Value bands: {json.dumps(dict(sorted(bands.items())),ensure_ascii=False)}\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Publish freeze manifest and canonical JSON to main
+        run: |
+          set -euo pipefail
+          DEST=horse-racing/jrdb/config/edgedb/v0_5/frozen
+          mkdir -p "$DEST"
+          cp /tmp/v05-freeze/output/v05_positive_value_frozen_cohort.json "$DEST/"
+          cp /tmp/v05-freeze/output/v05_positive_value_freeze_manifest.json "$DEST/"
+          mkdir -p horse-racing/jrdb/docs/edgedb/v0_5/collab/results
+          cp /tmp/v05-freeze/output/v05_positive_value_freeze_report.md             horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_004_positive_value_freeze_result.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST" horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_004_positive_value_freeze_result.md
+          if ! git diff --cached --quiet; then
+            git commit -m "data(edgedb): freeze v0.5 positive value cohort"
+            git push origin HEAD:main
+          fi
+
+      - name: Upload frozen replay artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: edgedb-v05-positive-value-freeze-${{ github.run_id }}
+          path: /tmp/v05-freeze/output/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if [ -f /tmp/v05-freeze/output/v05_positive_value_freeze_manifest.json ]; then
+            COHORT_SHA="$(python -c "import json; print(json.load(open('/tmp/v05-freeze/output/v05_positive_value_freeze_manifest.json'))['freeze']['cohort_sha256'])")"
+            BODY="EDGEDB_V05_POSITIVE_FREEZE_RESULT PASS\nrun_id=$GITHUB_RUN_ID\ncohort_count=1620\ncohort_sha256=$COHORT_SHA\nartifact=edgedb-v05-positive-value-freeze-$GITHUB_RUN_ID"
+          else
+            BODY="EDGEDB_V05_POSITIVE_FREEZE_RESULT FAIL\nrun_id=$GITHUB_RUN_ID"
+          fi
+          printf "%b\n" "$BODY" | gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file -
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason "not planned"
+          fi
