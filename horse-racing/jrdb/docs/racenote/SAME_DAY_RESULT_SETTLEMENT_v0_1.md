@@ -23,7 +23,8 @@ be read before the relevant Forecast Freeze.
   - retains top 3 finishers and payouts
   - supports repeated execution while racing is still in progress
 - `src/racenote_daily_settlement.py`
-  - reads a frozen `forecast_YYYYMMDD_all.json` (or compatible records)
+  - reads a frozen `forecast_YYYYMMDD_all.json`, or A/B lane `frozen/records.json`
+  - accepts A/B `decision_core.marks=[◎,○,▲,△1,△2]` directly
   - reads the same-day result JSON
   - generates fixed ticket formations and aggregates ROI
   - emits machine-readable JSON and a compact Markdown report
