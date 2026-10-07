@@ -29,7 +29,7 @@ Status: PARTIAL_WITH_TOPOLOGY_BLOCKED
 
 - Chronology-derived active-first rows: 14,078; code==1 rows: 15,027; parity mismatches: 657.
 - Warehouse code distribution: `[{"code": "1", "count": 15027}, {"code": "2", "count": 3372}, {"code": "3", "count": 52599}, {"code": "<BLANK>", "count": 710163}]`.
-- UNKNOWN blinkers target rows: 205. Mismatches are UNKNOWN for candidate membership; see `first_history_audit.json` for representative rows.
+- UNKNOWN blinkers target rows: 205. Mismatches are UNKNOWN for candidate membership; see `output/first_history_audit.json` in the Actions artifact for representative rows; the checked-in audit stores anonymized mismatch patterns.
 - Active semantics follow the repository codebook: 1=first worn, 2=re-worn, 3=active blinkers. Blank code means no active blinkers on that start; code 2 is not accepted as first use when codebook and chronology disagree.
 
 ## Unified candidate counts
