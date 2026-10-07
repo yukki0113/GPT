@@ -236,3 +236,91 @@ After two clean-blind days / 72 races:
 5. The correct next action is to continue prospective same-BTDAY A/B sampling rather than promote or reject v0.5.0 from these two days alone.
 
 BTDAY-0049 v0.4.6 has weaker qualitative Decision Trace quality than BTDAY-0050, so mark-level numerical comparison is valid, but detailed causal prose attribution for that lane/day should be treated cautiously.
+
+
+## Trio divergence decomposition
+
+The apparent trio advantage of v0.4.6 is much larger in ROI than in hit frequency.
+
+Across 72 races:
+
+- v0.4.6 trio hits: 21
+- v0.5.0 trio hits: 20
+- common trio hits: 16
+- v0.4.6-only trio hits: 5
+- v0.5.0-only trio hits: 4
+
+Therefore only nine races change the trio hit result. The exclusive payouts are:
+
+### v0.4.6-only trio hits
+
+| BTDAY | Race | Payout | Structural cause in v0.5.0 |
+|---|---|---:|---|
+| 0049 | 中山4R | 29,300 | v0.4.6 ▲1 and △2=14 were both actual top3; v0.5.0 replaced both with ▲9 / △2=2 |
+| 0049 | 中京8R | 1,670 | v0.4.6 △2=3 was actual 3rd; v0.5.0 introduced ▲16 and dropped 3 |
+| 0050 | 札幌4R | 1,120 | v0.5.0 dropped v0.4.6 ○6, which finished 2nd; broader support reorder rather than ▲ alone |
+| 0050 | 札幌8R | 2,070 | v0.4.6 △2=1 won; v0.5.0 introduced ▲6 and dropped 1 |
+| 0050 | 札幌11R | 760 | v0.4.6 △1=4 finished 2nd; v0.5.0 introduced ▲5 and dropped 4 |
+
+Exclusive payout total: **34,920 yen**.
+
+### v0.5.0-only trio hits
+
+| BTDAY | Race | Payout | Structural gain in v0.5.0 |
+|---|---|---:|---|
+| 0049 | 阪神1R | 2,920 | new ▲10 and new △2=6 both entered the actual top3 |
+| 0049 | 阪神3R | 2,410 | same five-horse set; ◎ changed from 7 (4th) to 13 (3rd) |
+| 0049 | 阪神9R | 1,590 | new ▲8 finished 2nd and converted the trio |
+| 0050 | 阪神4R | 4,250 | new ▲17 won and converted the trio |
+
+Exclusive payout total: **11,170 yen**.
+
+The 23,750-yen payout gap between the lanes is exactly the difference between
+these exclusive payout totals.
+
+The dominant observation is BTDAY-0049 中山4R. Its 29,300-yen trio accounts for
+more than the entire aggregate payout advantage of v0.4.6. If that one race is
+removed, the 71-race trio ROI becomes:
+
+- v0.4.6: **63.2%**
+- v0.5.0: **76.3%**
+
+Thus the current sample does not support the claim that v0.5.0 systematically
+sacrifices trio stability for a more aggressive ▲. Hit frequency is nearly tied,
+and the ROI difference is dominated by one large payout.
+
+### Role-churn structure
+
+Across all 72 races, comparing v0.4.6 horses to the v0.5.0 five-horse set:
+
+- v0.4.6 ◎ dropped from the v0.5.0 five-horse set: 0/72
+- v0.4.6 ○ dropped: 5/72
+- v0.4.6 ▲ dropped: 12/72
+- v0.4.6 △1 dropped: 14/72
+- v0.4.6 △2 dropped: **41/72**
+
+The most unstable membership is therefore not ◎ but the fifth-horse boundary.
+v0.5.0 keeps the old △2 in the same △2 role only 11/72 times and removes it from
+the five-horse set in 41/72 races.
+
+New horses entering the v0.5.0 set most often enter as:
+
+- ▲: 32 horses
+- △2: 28 horses
+- △1: 10 horses
+- ○: 2 horses
+
+This means the Reader change is doing two things at once: creating a more
+independent ▲ and substantially re-solving the lower support / fifth-horse
+boundary.
+
+Among the clearly attributable trio divergences, introducing a new ▲ directly
+created three v0.5.0-only hits (8,760 yen total) and directly displaced a
+top-three lower-support horse in three v0.4.6-only hits (4,500 yen total).
+The exceptional 29,300-yen 中山4R loss is mixed: both the old ▲ and old △2 were
+removed, so it cannot be assigned to ▲ alone.
+
+Current interpretation: the direct ▲ changes themselves do not yet look like a
+net trio liability. The bigger research question is whether v0.5.0's much more
+volatile △2 / lower-support boundary is improving expected value or discarding
+too much useful coverage.
