@@ -1,0 +1,650 @@
+[
+  {
+    "venue": "札幌",
+    "race_no": 1,
+    "race_model": "札幌1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      12,
+      3,
+      10,
+      9,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 9,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        3,
+        10,
+        9,
+        8
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎12・○3はordinary five作成時点で固定。challenger5も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎12と○3はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲10を一撃経路、△9・△8を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 2,
+    "race_model": "札幌2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      6,
+      5,
+      9,
+      1,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        5,
+        9,
+        1,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎6・○5はordinary five作成時点で固定。challenger11も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎6と○5はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲9を一撃経路、△1・△2を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 3,
+    "race_model": "札幌3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      4,
+      5,
+      6,
+      10,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        5,
+        6,
+        10,
+        3
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎4・○5はordinary five作成時点で固定。challenger8も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎4と○5はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲6を一撃経路、△10・△3を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 4,
+    "race_model": "札幌4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      10,
+      9,
+      4,
+      11,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 11,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6はordinary supportとして最後まで比較したが、外部challenger4の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        9,
+        11,
+        8,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 6,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎10・○9はordinary five作成時点で固定。challenger4を▲として採用し、support6を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎10と○9はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲4を一撃経路、△11・△8を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 5,
+    "race_model": "札幌5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      11,
+      12,
+      13,
+      4,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 4,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        12,
+        13,
+        4,
+        9
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎11・○12はordinary five作成時点で固定。challenger7も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎11と○12はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲13を一撃経路、△4・△9を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 6,
+    "race_model": "札幌6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      10,
+      7,
+      11,
+      5,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 5,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 13,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        7,
+        11,
+        5,
+        13
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎10・○7はordinary five作成時点で固定。challenger14も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎10と○7はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲11を一撃経路、△5・△13を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 7,
+    "race_model": "札幌7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      4,
+      3,
+      7,
+      12,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 16,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        3,
+        7,
+        12,
+        16
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎4・○3はordinary five作成時点で固定。challenger1も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎4と○3はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲7を一撃経路、△12・△16を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 8,
+    "race_model": "札幌8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      6,
+      7,
+      8,
+      10,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        7,
+        8,
+        10,
+        5
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎6・○7はordinary five作成時点で固定。challenger13も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎6と○7はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲8を一撃経路、△10・△5を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 9,
+    "race_model": "札幌9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      2,
+      8,
+      1,
+      10,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15はordinary supportとして最後まで比較したが、外部challenger1の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        8,
+        10,
+        11,
+        15
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 15,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎2・○8はordinary five作成時点で固定。challenger1を▲として採用し、support15を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎2と○8はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲1を一撃経路、△10・△11を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 10,
+    "race_model": "札幌10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      13,
+      8,
+      10,
+      2,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3はordinary supportとして最後まで比較したが、外部challenger10の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        8,
+        2,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 3,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎13・○8はordinary five作成時点で固定。challenger10を▲として採用し、support3を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎13と○8はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲10を一撃経路、△2・△1を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 11,
+    "race_model": "札幌11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      3,
+      13,
+      10,
+      14,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 13,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 14,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        13,
+        10,
+        14,
+        5
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎3・○13はordinary five作成時点で固定。challenger16も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎3と○13はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲10を一撃経路、△14・△5を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 12,
+    "race_model": "札幌12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      8,
+      1,
+      4,
+      5,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 5,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        1,
+        4,
+        5,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎8・○1はordinary five作成時点で固定。challenger2も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "札幌12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎8と○1はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲4を一撃経路、△5・△7を相手圏として5頭に圧縮した。"
+  }
+]
