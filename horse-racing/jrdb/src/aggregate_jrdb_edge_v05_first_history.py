@@ -87,7 +87,9 @@ def build_history_features(con: Any, warehouse: Path, feature_path: Path,
     lookup = {(str(a["family"]).upper(), int(a["year"])): warehouse / a["relative_path"] for a in manifest["assets"]}
     sed_paths = [str(lookup[("SED", y)]) for y in range(2010, 2026)]
     kyi_paths = [str(lookup[("KYI", y)]) for y in range(2010, 2026)]
-    con.execute("CREATE OR REPLACE TEMP VIEW sed_raw AS SELECT trim(CAST(blood_registration_no AS VARCHAR)) blood_id, trim(CAST(race_key_raw AS VARCHAR)) race_key, trim(CAST(horse_no AS VARCHAR)) horse_no, CAST(race_date AS VARCHAR) race_date, trim(CAST(surface_code AS VARCHAR)) surface FROM read_parquet(?)", [sed_paths])
+    def parquet_list(paths: list[str]) -> str:
+        return "[" + ",".join("'" + p.replace("'", "''") + "'" for p in paths) + "]"
+    con.execute(f"CREATE OR REPLACE TEMP VIEW sed_raw AS SELECT trim(CAST(blood_registration_no AS VARCHAR)) blood_id, trim(CAST(race_key_raw AS VARCHAR)) race_key, trim(CAST(horse_no AS VARCHAR)) horse_no, CAST(race_date AS VARCHAR) race_date, trim(CAST(surface_code AS VARCHAR)) surface FROM read_parquet({parquet_list(sed_paths)})")
     con.execute("CREATE OR REPLACE TEMP VIEW sed_groups AS SELECT blood_id,race_key,horse_no,min(race_date) race_date,min(surface) surface,count(*) raw_rows,count(DISTINCT surface) surface_variants FROM sed_raw GROUP BY blood_id,race_key,horse_no")
     sed_raw_rows = int(con.execute("SELECT count(*) FROM sed_raw").fetchone()[0])
     sed_unique = int(con.execute("SELECT count(*) FROM sed_groups").fetchone()[0])
@@ -113,7 +115,7 @@ def build_history_features(con: Any, warehouse: Path, feature_path: Path,
       FROM sed_history h
     """)
 
-    con.execute("CREATE OR REPLACE TEMP VIEW kyi_raw AS SELECT trim(CAST(blood_registration_no AS VARCHAR)) blood_id, trim(CAST(race_key_raw AS VARCHAR)) race_key, trim(CAST(horse_no AS VARCHAR)) horse_no, trim(CAST(blinker_code AS VARCHAR)) blinker_code FROM read_parquet(?)", [kyi_paths])
+    con.execute(f"CREATE OR REPLACE TEMP VIEW kyi_raw AS SELECT trim(CAST(blood_registration_no AS VARCHAR)) blood_id, trim(CAST(race_key_raw AS VARCHAR)) race_key, trim(CAST(horse_no AS VARCHAR)) horse_no, trim(CAST(blinker_code AS VARCHAR)) blinker_code FROM read_parquet({parquet_list(kyi_paths)})")
     con.execute("""
       CREATE OR REPLACE TEMP VIEW kyi_groups AS
       SELECT k.blood_id,k.race_key,k.horse_no,min(k.blinker_code) blinker_code,
