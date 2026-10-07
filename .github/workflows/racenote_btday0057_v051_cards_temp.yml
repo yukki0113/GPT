@@ -1,0 +1,74 @@
+name: RaceNote BTDAY-0057 v051 cards temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0057.v051-cards'
+permissions:
+  contents: write
+jobs:
+  cards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 2}
+      - name: Build compact v051 cards
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          src=Path('horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v051/reader')
+          out=Path('horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v051/authoring_cards')
+          out.mkdir(parents=True,exist_ok=True)
+          def g(d,*ks):
+              for k in ks:
+                  if not isinstance(d,dict): return None
+                  d=d.get(k)
+              return d
+          for p in sorted(src.glob('*.json')):
+              x=json.loads(p.read_text())
+              rr=x['race']
+              lines=[f"{rr['venue']}{rr['race_no']}R {rr.get('class')} {rr.get('surface')}{rr.get('distance_m')}m field={rr.get('field_size')} conditions={rr.get('race_conditions')} trends={json.dumps(rr.get('race_trends'),ensure_ascii=False,separators=(',',':'))}"]
+              for h in x['horses']:
+                  i=h['identity']; e=h.get('evidence',{}); o=h.get('other_context',{})
+                  ab=e.get('ABILITY',{}); pp=e.get('PACE_POSITION',{}); tc=e.get('TRAINING_CONDITION',{}); su=e.get('SUITABILITY',{}); co=e.get('CONNECTIONS',{})
+                  hist=o.get('historical_profile',{})
+                  race_review=o.get('racereview',{})
+                  hp=race_review.get('history_profile',{}) or {}
+                  rec=race_review.get('recommendation',{}) or {}
+                  runs=[]
+                  for r in (o.get('recent_runs') or [])[:5]:
+                      ra=r.get('race',{}); pe=r.get('performance',{}); no=r.get('notes',{}); re=r.get('result',{}); jm=r.get('jrdb_metrics',{})
+                      runs.append({
+                        'd':ra.get('date'),'v':ra.get('venue'),'c':ra.get('class'),'s':ra.get('surface'),'m':ra.get('distance_m'),'tc':ra.get('track_condition'),
+                        'f':re.get('finish'),'idm':pe.get('idm'),'cor':pe.get('corners'),'l3':pe.get('last3f_sec'),'hp':pe.get('horse_pace'),'rp':pe.get('race_pace'),
+                        'raw':jm.get('raw_score'),'trk':jm.get('track_diff'),'pc':jm.get('pace_score'),
+                        'rc':no.get('race_comment'),'sp':no.get('special_notes')
+                      })
+                  stats=o.get('stats',{})
+                  line={
+                    'n':i['horse_no'],'name':i['horse_name'],'j':i.get('jockey'),'t':i.get('trainer'),
+                    'idm':g(ab,'P','idm'),'info':g(ab,'S','info_index'),'long':g(ab,'S','longshot_index'),'class':g(ab,'C','jrdb_class'),
+                    'front':g(pp,'S','pace_front_index'),'late':g(pp,'P','pace_late_index'),'pace':g(pp,'S','pace_pace_index'),'pos':g(pp,'S','pace_position_index'),
+                    'fm':g(pp,'S','forecast_finish_margin'),'lm':g(pp,'S','forecast_last3f_margin'),'mm':g(pp,'S','forecast_mid_margin'),'fp':g(pp,'S','forecast_pace'),'style':g(pp,'S','running_style'),
+                    'train':{'cyb':g(tc,'C','cyb_training_index'),'kyi':g(tc,'P','kyi_training_index'),'clock':g(tc,'S','cha_clock_index_last'),'cond':g(tc,'S','cyb_condition_index'),'imp':g(tc,'S','improvement'),'arr':g(tc,'S','training_arrow'),'stable':g(tc,'S','stable_evaluation')},
+                    'fit':{'dirt':g(su,'C','dirt_fit'),'heavy':g(su,'S','heavy_track_fit')},
+                    'conn':{'j':g(co,'C','jockey_index'),'st':g(co,'S','stable_index')},
+                    'career':hist.get('career'),'same_d':hist.get('same_distance'),'same_s':hist.get('same_surface'),'same_v':hist.get('same_venue'),
+                    'rrpos':[(z.get('code'),z.get('strength')) for z in (hp.get('primary_positive') or [])],
+                    'rrconc':hp.get('concerns'),'rrfrag':hp.get('fragile_form'),'rrhidden':hp.get('hidden_strength'),'rrrep':hp.get('repeated_patterns'),
+                    'recsig':[(z.get('signal_id'),z.get('decision_role'),z.get('strength')) for z in (rec.get('signals') or [])],
+                    'runs':runs,
+                    'stats':{k:{'n':v.get('starts'),'t3':v.get('top3_rate'),'w':v.get('win_rate')} for k,v in stats.items() if isinstance(v,dict)},
+                    'work':o.get('training'),
+                    'traits':g(o,'condition','horse_traits')
+                  }
+                  lines.append(json.dumps(line,ensure_ascii=False,separators=(',',':')))
+              (out/(p.stem.replace('racenote_reader_','cards_')+'.txt')).write_text('\n'.join(lines)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v051/authoring_cards
+          git commit -m 'RaceNote: build BTDAY-0057 v051 authoring cards'
+          git pull --rebase origin main
+          git push origin HEAD:main
