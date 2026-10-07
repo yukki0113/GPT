@@ -257,7 +257,8 @@ def run(*,feature_input:Path,analysis_input:Path,out:Path,feature_artifact_diges
         if freport["generation_id"]!="edge_feature_mart_v0_2_g20260925_pq1":raise ValueError("unexpected Feature Mart generation")
         con=duckdb.connect()
         try:
-            con.execute("CREATE TEMP VIEW facts AS SELECT * FROM read_parquet(?)",[str(fpath)])
+            fpath_sql=str(fpath).replace("'","''")
+            con.execute(f"CREATE TEMP VIEW facts AS SELECT * FROM read_parquet('{fpath_sql}')")
             schema={r[0] for r in con.execute("DESCRIBE facts").fetchall()}
             missing=[x for x in PRE_RACE_FIELDS+EVALUATION_FIELDS if x not in schema]
             if missing:raise ValueError(f"required Feature Mart columns missing: {missing}")
