@@ -190,7 +190,7 @@ def build_freeze(ab_root: Path, lane: str) -> dict[str, Any]:
         "schema_version": FROZEN_VERSION,
         "status": "FROZEN_CLEAN_BLIND",
         "validator_status": "PASS",
-        "validator": "racenote_save_venue_batch_v046.validate_core + A/B session integrity",
+        "validator": ("racenote_decision_core_v051.validate_core" if lane == "v051" else "racenote_save_venue_batch_v046.validate_core") + " + A/B session integrity",
         "session_id": session["session_id"],
         "selection_id": session["selection_id"],
         "target_date": session["target_date"],
