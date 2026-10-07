@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Require two validated independent A/B lane Freezes before result opening."""
+"""Require every enabled clean-blind lane Freeze before result opening."""
 from __future__ import annotations
 
 import argparse
@@ -17,7 +17,8 @@ def validated_barrier(ab_root: Path) -> dict[str, Any]:
     session, readers, derived = load_session(ab_root)
     lanes = {}
     race_keys = [(x["venue"], x["race_no"]) for x in session["race_roster"]]
-    for lane in ("v046", "v050"):
+    enabled_lanes = [lane for lane in ("v046", "v050", "v051") if lane in session.get("lane_definitions", {})]
+    for lane in enabled_lanes:
         handoff, records = load_lane_freeze(ab_root, lane, session, readers, derived)
         if [(x["venue"], x["race_no"]) for x in records] != race_keys:
             raise ValueError(f"{lane}: shared A/B race identities differ")
@@ -32,11 +33,13 @@ def validated_barrier(ab_root: Path) -> dict[str, Any]:
             "status": handoff["status"],
             "validator_status": handoff["validator_status"],
         }
-    if lanes["v046"]["original_clean_reader_manifest_sha256"] != lanes["v050"]["original_clean_reader_manifest_sha256"]:
+    originals = {item["original_clean_reader_manifest_sha256"] for item in lanes.values()}
+    if len(originals) != 1:
         raise ValueError("lane original clean Reader manifests differ")
+    status = "BOTH_LANES_FROZEN_CLEAN_BLIND" if enabled_lanes == ["v046", "v050"] else "ALL_LANES_FROZEN_CLEAN_BLIND"
     return {
         "schema_version": BARRIER_VERSION,
-        "status": "BOTH_LANES_FROZEN_CLEAN_BLIND",
+        "status": status,
         "session_id": session["session_id"],
         "selection_id": session["selection_id"],
         "target_date": session["target_date"],
@@ -65,7 +68,7 @@ def require_barrier(ab_root: Path) -> dict[str, Any]:
     """Call this from any future A/B result or market evaluation entry point."""
     path = ab_root / "ab_freeze_barrier.json"
     if not path.is_file():
-        raise ValueError("A/B result/market opening blocked: both-lane Freeze barrier missing")
+        raise ValueError("A/B result/market opening blocked: enabled-lane Freeze barrier missing")
     actual = read_json(path)
     expected = validated_barrier(ab_root)
     if actual != expected:
