@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'horse-racing/jrdb/backtests/BTDAY-0057/20260104/forecast_prep/**'
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0057.session'
 permissions:
   contents: write
 jobs:
