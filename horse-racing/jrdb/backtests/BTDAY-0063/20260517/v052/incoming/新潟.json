@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "race_model": "新潟障害2890m・未勝利。障害実績、飛越の安定性、近走の失速要因と調教状態を中心に、完走安定度だけでなく勝ち切る位置取りまで含めて判断する。",
+    "marks": [
+      6,
+      13,
+      11,
+      12,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番ライツフォルは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番フォルガイルは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番アニージョは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ゲレルは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番トーアマリシテンは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8番アヴニールドブリエまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6番ライツフォルは今回の条件で1着を取り切るシナリオが最も明確。○13番フォルガイルは別の主線として再現性が高い。▲11番トーアマリシテンは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        13,
+        11,
+        12,
+        3
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8番アヴニールドブリエは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8番アヴニールドブリエの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 13,
+      "honmei_win_case": "6番ライツフォルはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "13番フォルガイルは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "race_model": "新潟ダート1800m・未勝利。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      6,
+      7,
+      1,
+      9,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番エタンセルは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番アデルフィーは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番カフジマリボーは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番クロームクロスは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番ナウオアネヴァーは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番パイザナンバーまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6番エタンセルは今回の条件で1着を取り切るシナリオが最も明確。○7番アデルフィーは別の主線として再現性が高い。▲1番ナウオアネヴァーは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        7,
+        1,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番パイザナンバーは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2番パイザナンバーの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 7,
+      "honmei_win_case": "6番エタンセルはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "7番アデルフィーは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "race_model": "新潟ダート1200m・未勝利。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      6,
+      12,
+      14,
+      2,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番マリリンバローズは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番エコロセレナは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ベルオーシャンは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番スカットは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14番リトセアは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10番マジンタクシーまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6番マリリンバローズは今回の条件で1着を取り切るシナリオが最も明確。○12番エコロセレナは別の主線として再現性が高い。▲14番リトセアは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        12,
+        14,
+        2,
+        8
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番マジンタクシーは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10番マジンタクシーの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 12,
+      "honmei_win_case": "6番マリリンバローズはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "12番エコロセレナは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "race_model": "新潟障害2890m・未勝利。障害実績、飛越の安定性、近走の失速要因と調教状態を中心に、完走安定度だけでなく勝ち切る位置取りまで含めて判断する。",
+    "marks": [
+      12,
+      11,
+      9,
+      3,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12番アルヴィアは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番タイセイレスポンスは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番スティルシャイニンは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番テーオーサンドニは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9番コルデアニルは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8番ヴェールランスまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎12番アルヴィアは今回の条件で1着を取り切るシナリオが最も明確。○11番タイセイレスポンスは別の主線として再現性が高い。▲9番コルデアニルは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        11,
+        9,
+        3,
+        6
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8番ヴェールランスは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8番ヴェールランスの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 11,
+      "honmei_win_case": "12番アルヴィアはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "11番タイセイレスポンスは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "race_model": "新潟芝2000m・未勝利。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      1,
+      13,
+      5,
+      8,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番ウインポーシャは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番レゼルフォートは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番ウインターブレスは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番セーヌデローヴは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番ブランニューホームは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4番ラップトップまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1番ウインポーシャは今回の条件で1着を取り切るシナリオが最も明確。○13番レゼルフォートは別の主線として再現性が高い。▲5番ブランニューホームは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        13,
+        5,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番ラップトップは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4番ラップトップの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 13,
+      "honmei_win_case": "1番ウインポーシャはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "13番レゼルフォートは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "race_model": "新潟ダート1800m・未勝利。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      7,
+      3,
+      2,
+      5,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7番トランセンコは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番オーケーリアンは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番サイモンセレーノは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番タイセイルビーは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2番エコロラヴァーは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番フライスカイハイまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎7番トランセンコは今回の条件で1着を取り切るシナリオが最も明確。○3番オーケーリアンは別の主線として再現性が高い。▲2番エコロラヴァーは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        3,
+        5,
+        6,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番エコロラヴァーは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 1,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "2番エコロラヴァーの別経路を通常5頭の非◎○馬より高く評価し、◎○を保持したまま▲として採用した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 3,
+      "honmei_win_case": "7番トランセンコはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "3番オーケーリアンは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "race_model": "新潟芝2000m・1勝クラス。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      8,
+      10,
+      1,
+      12,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番ベネスピラは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番ディーンズリスターは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番ダノンアトラスは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ウインボレロは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番マイネルアウルムは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4番コスモアチーブまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8番ベネスピラは今回の条件で1着を取り切るシナリオが最も明確。○10番ディーンズリスターは別の主線として再現性が高い。▲1番マイネルアウルムは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        10,
+        1,
+        12,
+        11
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番コスモアチーブは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4番コスモアチーブの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 10,
+      "honmei_win_case": "8番ベネスピラはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "10番ディーンズリスターは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "race_model": "新潟ダート1800m・1勝クラス。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      10,
+      2,
+      5,
+      4,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番ゴルデールスカーは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ココデイックは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ミッキーコンドルは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番アバレリュウは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番ラテライトは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番グランコネクシオンまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎10番ゴルデールスカーは今回の条件で1着を取り切るシナリオが最も明確。○2番ココデイックは別の主線として再現性が高い。▲5番ラテライトは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        2,
+        5,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番グランコネクシオンは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3番グランコネクシオンの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 2,
+      "honmei_win_case": "10番ゴルデールスカーはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "2番ココデイックは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "race_model": "新潟芝1000m・1勝クラス。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      4,
+      10,
+      12,
+      15,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4番ベルタソは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番マグネシアブリックは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番ダノンゴーイチは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番ミエノブラボーは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番ウインマスカレードは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番オオゾラヒバリまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎4番ベルタソは今回の条件で1着を取り切るシナリオが最も明確。○10番マグネシアブリックは別の主線として再現性が高い。▲12番ウインマスカレードは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        10,
+        12,
+        15,
+        16
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番オオゾラヒバリは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "5番オオゾラヒバリの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 10,
+      "honmei_win_case": "4番ベルタソはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "10番マグネシアブリックは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "race_model": "新潟芝2000m・2勝クラス。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      1,
+      14,
+      7,
+      5,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番コンフォルツァは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番マリアイリダータは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番フルレゾンは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ホウオウシンデレラは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番ワザモノは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16番ズイウンゴサイまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1番コンフォルツァは今回の条件で1着を取り切るシナリオが最も明確。○14番マリアイリダータは別の主線として再現性が高い。▲7番ワザモノは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        14,
+        5,
+        4,
+        16
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番ワザモノは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 16,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "7番ワザモノの別経路を通常5頭の非◎○馬より高く評価し、◎○を保持したまま▲として採用した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 14,
+      "honmei_win_case": "1番コンフォルツァはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "14番マリアイリダータは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "race_model": "新潟芝1800m・3勝クラス。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      6,
+      4,
+      14,
+      12,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番エストゥペンダは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ピックアチェリーは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番ピンキープロミスは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番バッデレイトは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14番ミエスペランサは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番ミナデオロまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6番エストゥペンダは今回の条件で1着を取り切るシナリオが最も明確。○4番ピックアチェリーは別の主線として再現性が高い。▲14番ミエスペランサは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        4,
+        14,
+        12,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番ミナデオロは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3番ミナデオロの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 4,
+      "honmei_win_case": "6番エストゥペンダはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "4番ピックアチェリーは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "race_model": "新潟ダート1200m・1勝クラス。Readerの近走内容、位置取り、終い、調教、コース条件への適応を照合し、今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      10,
+      4,
+      5,
+      1,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番スーパーバイザーは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番シルフレイは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番ワンウェイトゥヘルは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番エルムラントは通常候補5頭の中で近走内容・状態・今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番ジーティームッシュは通常主線とは異なる展開、脚質、飛越または条件変化の上振れ経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9番ティピティーナまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎10番スーパーバイザーは今回の条件で1着を取り切るシナリオが最も明確。○4番シルフレイは別の主線として再現性が高い。▲5番ジーティームッシュは通常順位ではなく、条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        4,
+        5,
+        1,
+        7
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番ティピティーナは通常5頭の外から、展開・脚質・障害適性または条件変化で勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9番ティピティーナの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 4,
+      "honmei_win_case": "10番スーパーバイザーはReader上の能力、近走内容、状態と今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "4番シルフレイは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  }
+]
