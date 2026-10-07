@@ -1,0 +1,91 @@
+{
+  "schema_version": "edgedb-v05-2026-pre-race-match-freeze/v1",
+  "status": "PARTIAL",
+  "recommendation": "PARTIAL_PRE_RACE_COVERAGE",
+  "production_impact": "NONE",
+  "cohort": {
+    "path": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json",
+    "candidate_count": 1620,
+    "sha256": "a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9",
+    "unsupported_condition_count": 0,
+    "all_candidates_consumed": true,
+    "turn1_run_id": 37598903743,
+    "turn1_artifact_id": 11471917437
+  },
+  "source": {
+    "source_commit": "08610fa29fa412b504491f6adb30536e13263584",
+    "paci_drive_folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
+    "paci_inventory_snapshot_date": "2026-10-07",
+    "paci_inventory_file_count": 84,
+    "paci_downloaded_file_count": 79,
+    "paci_downloaded_inputs_sha256": "2f68e709bc84130a97ef9dbf5af94f5e4e16e942654e66c50d209585fa5d7bd5",
+    "sed_2026_run_id": 37604723913,
+    "sed_2026_artifact_id": 11474018960,
+    "sed_2026_artifact_digest": "sha256:23080e983350cd61255d229315855cab29a492eef62e3ae1df6c88bbe164c516",
+    "warehouse_generation": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+    "warehouse_run_id": 37592837881,
+    "warehouse_artifact_id": 11468713930,
+    "warehouse_artifact_digest": "sha256:fb28c17889cf2a9028b58e1bac3164b89a0b4c66eadfb5d3dba19d1ace88499a"
+  },
+  "coverage": {
+    "first_race_date": "2026-01-04",
+    "latest_race_date": "2026-10-04",
+    "paci_days_matched": 79,
+    "paci_dates_unavailable_for_matching": [
+      "2026-05-10",
+      "2026-05-16",
+      "2026-05-31",
+      "2026-08-01",
+      "2026-10-03"
+    ],
+    "races": 2502,
+    "runners": 34550,
+    "canonical_sed_history_days": 84,
+    "canonical_sed_history_events": 36706,
+    "sed_2026_rows_unjoined_to_paci": 2156
+  },
+  "history_audit": {
+    "warehouse_history_events_2010_2025": 781161,
+    "first_dirt": {"true": 2554, "false": 31909, "unknown": 87},
+    "first_turf": {"true": 2379, "false": 32094, "unknown": 77},
+    "first_blinkers": {"true": 909, "false": 33470, "unknown": 171},
+    "distance_or_surface_transition_unknown": 5112,
+    "chronology_violations": 0
+  },
+  "matching": {
+    "candidate_count": 1620,
+    "match_rows": 11427,
+    "unique_matched_runners": 10019,
+    "runners_with_0_matches": 24531,
+    "runners_with_1_match": 8718,
+    "runners_with_2_matches": 1204,
+    "runners_with_3_plus_matches": 97,
+    "maximum_matches_on_one_runner": 4,
+    "family_counts": {"T1": 3361, "T2": 5585, "T3": 837, "T4": 1511, "T5": 133}
+  },
+  "leakage_audit": {
+    "result_fields_absent": true,
+    "payout_fields_absent": true,
+    "popularity_absent": true,
+    "odds_absent": true,
+    "post_race_fields_absent": true,
+    "analysis_2026_fields_read": [],
+    "going_bucket_available": false,
+    "going_bucket_unknown_rows": 34550
+  },
+  "fingerprints": {
+    "pre_race_fact_sha256": "526516f9e5a1f46d96de6484e68a9b04237f6f5d6ac2f80f0c34ad380e5ef5c0",
+    "match_sha256": "fbc6258626e9f407990639b1bcb3cfaad3b7d83666aee418c754d74f79240cf4",
+    "daily_fingerprint_rows": 79,
+    "daily_fingerprints_file": "v05_2026_match_counts_by_day.csv"
+  },
+  "workflow_artifact": {
+    "run_id": 37608655008,
+    "artifact_id": 11477465151,
+    "artifact_name": "edgedb-v05-2026-match-freeze-pr-1895",
+    "artifact_digest": "sha256:d892b0f5262b864c313ef7ff27c4fff65d103e704d392ddef4b6122d71d5d246",
+    "expires_at": "2027-01-05T10:37:41Z",
+    "row_level_files_committed_to_git": false
+  },
+  "turn3_started": false
+}
