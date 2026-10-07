@@ -1,0 +1,109 @@
+{
+  "schema_version": "edgedb-v05-2026-oos-eval/v1",
+  "status": "PASS",
+  "recommendation": "READY_FOR_TURN4_DENSITY_AND_SIEVE_REVIEW",
+  "production_impact": "NONE",
+  "cohort": {
+    "candidate_count": 1620,
+    "sha256": "a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9"
+  },
+  "turn2_freeze": {
+    "match_rows": 15330,
+    "match_sha256": "0b99b90b745aef11655630ed2b1416f71c5664b1a3f133f08fd0d493b68b55f0",
+    "actions_run_id": 37612817025,
+    "artifact_id": 11479600272,
+    "artifact_digest": "sha256:67cb99ac37db7f3be639839fb9fb0a60944b487a9f9a834d6af5f57a3ea9e479"
+  },
+  "result_source": {
+    "type": "canonical_2026_SED_daily_history",
+    "actions_run_id": 37604723913,
+    "artifact_id": 11474018960,
+    "artifact_digest": "sha256:23080e983350cd61255d229315855cab29a492eef62e3ae1df6c88bbe164c516",
+    "race_days": 84,
+    "result_rows": 36706,
+    "join_missing": 0
+  },
+  "oos": {
+    "joined_match_rows": 15330,
+    "candidate_count": 1620,
+    "unseen_candidates": 232,
+    "n_lt5_candidates": 901,
+    "labels": {
+      "CONFIRMED": 98,
+      "STILL_PLAUSIBLE": 194,
+      "DECAYING": 323,
+      "CONTRADICTED": 104,
+      "INSUFFICIENT_OOS": 901
+    },
+    "by_family": {
+      "T1": {
+        "candidates": 100,
+        "CONFIRMED": 17,
+        "STILL_PLAUSIBLE": 29,
+        "DECAYING": 11,
+        "CONTRADICTED": 27,
+        "INSUFFICIENT_OOS": 16
+      },
+      "T2": {
+        "candidates": 1102,
+        "CONFIRMED": 55,
+        "STILL_PLAUSIBLE": 113,
+        "DECAYING": 239,
+        "CONTRADICTED": 25,
+        "INSUFFICIENT_OOS": 670
+      },
+      "T3": {
+        "candidates": 93,
+        "CONFIRMED": 1,
+        "STILL_PLAUSIBLE": 10,
+        "DECAYING": 11,
+        "CONTRADICTED": 6,
+        "INSUFFICIENT_OOS": 65
+      },
+      "T4": {
+        "candidates": 117,
+        "CONFIRMED": 7,
+        "STILL_PLAUSIBLE": 18,
+        "DECAYING": 22,
+        "CONTRADICTED": 24,
+        "INSUFFICIENT_OOS": 46
+      },
+      "T5": {
+        "candidates": 22,
+        "CONFIRMED": 6,
+        "STILL_PLAUSIBLE": 3,
+        "DECAYING": 6,
+        "CONTRADICTED": 0,
+        "INSUFFICIENT_OOS": 7
+      },
+      "T6": {
+        "candidates": 186,
+        "CONFIRMED": 12,
+        "STILL_PLAUSIBLE": 21,
+        "DECAYING": 34,
+        "CONTRADICTED": 22,
+        "INSUFFICIENT_OOS": 97
+      }
+    }
+  },
+  "label_contract": {
+    "INSUFFICIENT_OOS": "n_2026 < 5",
+    "CONFIRMED": "n>=5 AND place_roi_2026>=100 AND delta_place_rate>-0.03",
+    "STILL_PLAUSIBLE": "n>=5 AND (place_roi_2026>=100 OR delta_place_rate>-0.03), excluding CONFIRMED",
+    "CONTRADICTED": "n>=20 AND place_roi_2026<100 AND delta_place_rate<=-0.03 AND delta_place_roi<=-20",
+    "DECAYING": "remaining n>=5 candidates",
+    "diagnostic_only": true
+  },
+  "fingerprints": {
+    "joined_match_sha256": "4f8a37bda9f8d39931733b2e0125f5497da1dfd36f6acdf890daeebf72a1176e",
+    "candidate_eval_sha256": "6c3f13b071e1c2b0d902c1262b020597b547c3e7e665f3bd1166c3af77097b6b"
+  },
+  "workflow_artifact": {
+    "run_id": 37614611257,
+    "artifact_id": 11478468034,
+    "artifact_name": "edgedb-v05-2026-oos-eval-pr-1898",
+    "artifact_digest": "sha256:f10034cf6d2d730dcb3d76b6c9be41c90d36e61e49c94b70ab7458f296eb9f13",
+    "row_level_files_committed_to_git": false
+  },
+  "turn4_started": false
+}

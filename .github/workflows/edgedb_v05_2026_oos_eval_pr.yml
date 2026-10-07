@@ -1,0 +1,58 @@
+name: EdgeDB v0.5 2026 OOS evaluation (Turn 3)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/edgedb_v05_2026_oos_eval_pr.yml'
+      - 'horse-racing/jrdb/src/jrdb_edge_v05_2026_oos_eval.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_oos_eval.py'
+      - 'horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  oos-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Download immutable Turn 2 match freeze
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/turn2
+          gh run download 37612817025 --repo yukki0113/GPT             --name edgedb-v05-2026-match-freeze-pr-1897 --dir /tmp/turn2
+          test -f /tmp/turn2/v05_2026_match_freeze.parquet
+      - name: Download canonical 2026 SED history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/sed2026
+          gh run download 37604723913 --repo yukki0113/GPT             --name jrdb-daily-history-20260101-20261007 --dir /tmp/sed2026
+      - name: Run focused tests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python -m unittest horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_oos_eval.py -v
+      - name: Run Turn 3 OOS evaluation
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/jrdb_edge_v05_2026_oos_eval.py             --cohort horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json             --match /tmp/turn2/v05_2026_match_freeze.parquet             --sed-root /tmp/sed2026             --output-root /tmp/v05-turn3
+      - name: Upload Turn 3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: edgedb-v05-2026-oos-eval-pr-${{ github.event.pull_request.number || 'manual' }}
+          path: /tmp/v05-turn3/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
