@@ -209,6 +209,8 @@ jobs:
           git add "$DEST" horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_004_positive_value_freeze_result.md
           if ! git diff --cached --quiet; then
             git commit -m "data(edgedb): freeze v0.5 positive value cohort"
+            git fetch origin main
+            git rebase origin/main
             git push origin HEAD:main
           fi
 
