@@ -64,7 +64,6 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             sed_rows = [sed("00000001", "r20", "2020-01-01", "1"), sed("00000001", "r21", "2021-01-01", "1"),
                         sed("00000001", "r22", "2022-01-01", "2"), sed("00000001", "r22", "2022-01-01", "2"),
                         sed("00000002", "r10", "2010-01-01", "1"), sed("00000002", "r23", "2023-01-01", "2")]
-            pq.write_table(pa.Table.from_pylist(sed_rows), root / assets[0]["relative_path"].replace("KYI", "SED"), compression="zstd") if False else None
             # Replace the SED 2020, 2021, 2022 and 2023 annual partitions.
             for year in range(2010, 2026):
                 rel = f"objects/sed/year={year}/asset.parquet"
@@ -98,7 +97,9 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             con = duckdb.connect()
             try:
                 audit = first_history.build_history_features(con, root, feature, out)
-                rows = {r["horse_id"]: r for r in con.execute("SELECT * FROM read_parquet(?)", [str(out)]).fetchdf().to_dict("records")}
+                cur = con.execute("SELECT * FROM read_parquet(?)", [str(out)])
+                names = [d[0] for d in cur.description]
+                rows = {r["horse_id"]: r for r in (dict(zip(names, row)) for row in cur.fetchall())}
             finally:
                 con.close()
             self.assertFalse(rows["00000001"]["first_dirt"] is None)
