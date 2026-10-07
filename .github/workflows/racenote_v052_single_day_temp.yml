@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install test runner
-        run: python -m pip install pytest
+        run: python -m pip install pytest duckdb
       - name: Validate v052 baseline and single-day path
         env:
           PYTHONPATH: horse-racing/jrdb/src
