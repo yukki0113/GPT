@@ -1,0 +1,85 @@
+name: RaceNote BTDAY-0057 v051 authoring digest temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0057.v051-digest'
+permissions:
+  contents: write
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - name: Build v051-only authoring digest
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          src=Path('horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v051/reader')
+          out=Path('horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v051/authoring_digest')
+          out.mkdir(parents=True, exist_ok=True)
+
+          def compact_run(r):
+              race=r.get('race') or {}
+              perf=r.get('performance') or {}
+              notes=r.get('notes') or {}
+              res=r.get('result') or {}
+              return {
+                  'race': {k:race.get(k) for k in ('date','venue','race_no','class','race_type','surface','distance_m','track_condition','field_size')},
+                  'performance': {k:perf.get(k) for k in ('idm','corners','first3f_sec','last3f_sec','horse_pace','race_pace','course_lane')},
+                  'jrdb_metrics': r.get('jrdb_metrics'),
+                  'notes': {
+                      'paddock_comment':notes.get('paddock_comment'),
+                      'race_comment':notes.get('race_comment'),
+                      'equipment_comment':notes.get('equipment_comment'),
+                      'leg_comment':notes.get('leg_comment'),
+                      'special_notes':notes.get('special_notes'),
+                  },
+                  'result': {k:res.get(k) for k in ('finish','time_sec','abnormal','carried_weight_kg')},
+                  'body': r.get('body'),
+              }
+
+          for p in sorted(src.glob('*.json')):
+              x=json.loads(p.read_text(encoding='utf-8'))
+              horses=[]
+              for h in x['horses']:
+                  oc=h.get('other_context') or {}
+                  rr=oc.get('racereview') or {}
+                  hp=rr.get('history_profile') or {}
+                  horses.append({
+                      'identity':h.get('identity'),
+                      'evidence':h.get('evidence'),
+                      'condition':oc.get('condition'),
+                      'historical_profile':oc.get('historical_profile'),
+                      'pedigree':oc.get('pedigree'),
+                      'pedigree_context':oc.get('pedigree_context'),
+                      'racereview':{
+                          'history_status':rr.get('history_status'),
+                          'history_profile':hp,
+                          'latest_prior_run':rr.get('latest_prior_run'),
+                          'recommendation':rr.get('recommendation'),
+                      },
+                      'recent_runs':[compact_run(r) for r in (oc.get('recent_runs') or [])],
+                      'stats':oc.get('stats'),
+                      'training':oc.get('training'),
+                  })
+              d={
+                  'source_file':p.name,
+                  'race':x.get('race'),
+                  'shared_context':x.get('shared_context'),
+                  'tier_legend':x.get('tier_legend'),
+                  'horses':horses,
+              }
+              q=out/p.name.replace('racenote_reader_','digest_')
+              q.write_text(json.dumps(d,ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/v051/authoring_digest
+          git commit -m 'RaceNote: build BTDAY-0057 v051 authoring digest'
+          git pull --rebase origin main
+          git push origin HEAD:main
