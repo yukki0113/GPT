@@ -41,6 +41,27 @@ A separate 2026 historical-start source is also needed to derive incremental FIR
 
 The cohort contains 1,620 parseable candidate objects. The matcher was not executed, so unsupported-key fail-closed behavior and exact matching support are **not tested**.
 
+
+### Required condition field availability
+
+The source schema below is the repository's safe KYI record parser schema plus its composite key definition. It is not a fact-mart schema.
+
+| Frozen condition field | KYI availability | Notes |
+|---|---|---|
+| `frame_no` | Present | Parsed from the pre-race KYI row. |
+| `venue_code` | Present in canonical race key | Race key's first two characters; date is represented by the archive date, while race key preserves venue/meeting/day/race number. |
+| `distance_m` | Not established | No canonical 2026 PACI/Feature Mart source was included in this artifact. |
+| `surface_code` | Not established | No canonical 2026 PACI/Feature Mart source was included in this artifact. |
+| `going_bucket` | Not established | No permitted pre-race source was included. |
+| `sire_name` | Not established | KYI safe parser schema does not expose this field. |
+| `distance_change` | Not established | Requires distance plus a canonical strictly earlier start. |
+| `surface_transition` | Not established | Requires surface plus a canonical strictly earlier start. |
+| `first_dirt` | Not derived | Requires surface and reconciled strictly earlier career starts. |
+| `first_turf` | Not derived | Requires surface and reconciled strictly earlier career starts. |
+| `first_blinkers` | Not derived | KYI has a blinker code, but the chronology-safe history comparison was not built. |
+
+Canonical runner key in the verified KYI input is `race_horse_key = race_key_raw + horse_no`. Identity is carried by a blood-registration number in the source but is not needed for the structural counts or committed audit. The structural scan read record length, race key, and horse number only. The raw archive is not used as the matching input; parser fields such as odds and ratings were not opened.
+
 ## D. Leakage audit
 
 | Check | Status |
