@@ -1,0 +1,650 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "race_model": "障害3000m未勝利で、近走障害実績と飛越の安定性を優先し、10・14を軸に1・3・12までを通常5頭とする。",
+    "marks": [
+      10,
+      14,
+      1,
+      3,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 14,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は障害で前に行ける点が境界材料だが、近走障害実績比較で最終5頭外とする。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        14,
+        1,
+        3,
+        12
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9は平地で先行力があり障害でも前に行けるため、リズム良く運べた場合の前残り上振れがある。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎10・○14は固定。9の先行上振れはあるが、ordinary supportの1・3・12が示す障害実績を押し出すほどではなく5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "障害3000m未勝利で、近走障害実績と飛越の安定性を優先し、10・14を軸に1・3・12までを通常5頭とする。 ◎10と○14はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲1を別シナリオの上振れ候補、△3・△12を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "race_model": "ダート1600m未勝利で、同条件の先行実績が明確な1・9を軸に、差しの5・3と13を通常支持とする。",
+    "marks": [
+      1,
+      9,
+      2,
+      5,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 5,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13は終いの余地がある一方、2の同条件先行実績との比較で5頭目から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        9,
+        5,
+        3,
+        13
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は同条件で逃げ粘って2着があり、前有利の流れを自ら作れれば通常順位以上に残す独立した先行経路がある。",
+      "excluded_horse_no": 13,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎1・○9は固定し、外部challenger2を▲採用。ordinary support末尾13より東京1600mでの先行再現性を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1600m未勝利で、同条件の先行実績が明確な1・9を軸に、差しの5・3と13を通常支持とする。 ◎1と○9はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲2を別シナリオの上振れ候補、△5・△3を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "race_model": "ダート1400m未勝利で、能力・調教とも上位の15と12を中心に、9・3・14の近走安定性を組み合わせる。",
+    "marks": [
+      15,
+      12,
+      9,
+      3,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 14,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10は同コース実績で境界まで来るが、調教と指数比較で14を残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        12,
+        9,
+        3,
+        14
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は東京1400mで4着があり、前目の位置を取れた場合に通常順位以上へ残る上振れ経路がある。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎15・○12は固定。10のコース実績は評価するが、ordinary support3頭の現状の総合力を崩すほどではなく5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1400m未勝利で、能力・調教とも上位の15と12を中心に、9・3・14の近走安定性を組み合わせる。 ◎15と○12はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲9を別シナリオの上振れ候補、△3・△14を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "race_model": "芝1400m新馬で実戦歴がないため、能力指標・調教・陣営力を中心に2・6・4・3・5を通常5頭とする。",
+    "marks": [
+      2,
+      6,
+      4,
+      3,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7は新馬ゆえの未知性が境界材料だが、調教と基礎能力比較で最終5頭外とする。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        6,
+        4,
+        3,
+        5
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7は上位5頭より総合指数は劣るが、少頭数の新馬で流れが特殊になった場合に初戦上振れの余地がある。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎2・○6は固定。7の未知の上振れよりも、ordinary supportの4・3・5が示す完成度を優先して5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1400m新馬で実戦歴がないため、能力指標・調教・陣営力を中心に2・6・4・3・5を通常5頭とする。 ◎2と○6はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲4を別シナリオの上振れ候補、△3・△5を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "race_model": "芝1600m新馬で2の総合指数が一段上。1・5・6・4を能力と調教のバランスで通常5頭に組み込む。",
+    "marks": [
+      2,
+      1,
+      5,
+      6,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は調教面で境界に残るが、総合指数比較で4を優先した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        1,
+        5,
+        6,
+        4
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9は調教状態が悪くなく、初戦の展開が向けば上位勢の一角へ食い込む余地がある。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎2・○1は固定。9の初戦上振れは認めるが、5・6・4の完成度を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1600m新馬で2の総合指数が一段上。1・5・6・4を能力と調教のバランスで通常5頭に組み込む。 ◎2と○1はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲5を別シナリオの上振れ候補、△6・△4を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "race_model": "ダート1600m未勝利で10・8の先行実績が中心。3・11・9を通常相手とし、前で運べる別候補も比較する。",
+    "marks": [
+      10,
+      8,
+      13,
+      3,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は差し込み余地があるが、13の先行シナリオとの比較で最終5頭外とする。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        8,
+        3,
+        11,
+        9
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は福島1700mで4着があり、前目で運べる脚質から、東京でも位置を取れた際に残す非対称な経路がある。",
+      "excluded_horse_no": 9,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎10・○8は固定し、外部challenger13を▲採用。ordinary support末尾9より、前で運べる再現性を優先した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1600m未勝利で10・8の先行実績が中心。3・11・9を通常相手とし、前で運べる別候補も比較する。 ◎10と○8はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲13を別シナリオの上振れ候補、△3・△11を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "race_model": "芝2000m未勝利で、近走2000m上位の9・10・8を中心に、6・2までを通常5頭とする。",
+    "marks": [
+      9,
+      10,
+      8,
+      6,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 10,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16は同条件の安定感が境界材料だが、2の前残りシナリオを残して除外する。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        10,
+        8,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16は東京2000mで連続5着があり、流れが噛み合えば堅実に差を詰める境界上振れがある。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎9・○10は固定。16の安定感は認めるが、8・6・2の上位実績を崩すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝2000m未勝利で、近走2000m上位の9・10・8を中心に、6・2までを通常5頭とする。 ◎9と○10はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲8を別シナリオの上振れ候補、△6・△2を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "race_model": "ダート1600m1勝クラスで、同条件実績最上位の3を中心に16・8・11・12を通常支持とする。",
+    "marks": [
+      3,
+      16,
+      14,
+      8,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 16,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11は東京1600m3着歴があるが、14の近走勝ち上がり内容との比較で5頭目から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        16,
+        8,
+        11,
+        12
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14は福島1700m勝ちと中京1800m3着があり、好位で流れに乗れれば昇級でも通常順位以上に粘る別経路がある。",
+      "excluded_horse_no": 11,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎3・○16は固定し、外部challenger14を▲採用。ordinary support末尾11より近走の前受け実績を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1600m1勝クラスで、同条件実績最上位の3を中心に16・8・11・12を通常支持とする。 ◎3と○16はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲14を別シナリオの上振れ候補、△8・△12を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "race_model": "芝2400m1勝クラスで、東京長距離実績のある10・12・8・2・5を通常5頭として素直に評価する。",
+    "marks": [
+      10,
+      12,
+      8,
+      2,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は同コース実績で境界だが、近走総合力比較で5を残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        12,
+        8,
+        2,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9は東京2400mで4着があり、ロスなく運べれば終いの粘り込みで上位へ近づく余地がある。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎10・○12は固定。9のコース適性は認めるが、8・2・5の近走内容を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝2400m1勝クラスで、東京長距離実績のある10・12・8・2・5を通常5頭として素直に評価する。 ◎10と○12はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲8を別シナリオの上振れ候補、△2・△5を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "race_model": "芝1400m2勝クラスで、能力上位4・11を軸に、16・9・1を通常相手とする。",
+    "marks": [
+      4,
+      11,
+      15,
+      16,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 16,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1は逃げ残りシナリオがあるが、15の末脚上振れとの比較で最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        11,
+        16,
+        9,
+        1
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15は中山1200mで3着があり、後方からでも末脚を使えるため、先行勢が競り合った時の差し込み上振れがある。",
+      "excluded_horse_no": 1,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎4・○11は固定し、外部challenger15を▲採用。ordinary support末尾1より前崩れ時の独立した差し経路を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1400m2勝クラスで、能力上位4・11を軸に、16・9・1を通常相手とする。 ◎4と○11はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲15を別シナリオの上振れ候補、△16・△9を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "race_model": "ダート1400m3勝クラスで、同条件連勝の9・12が中心。6・5・7を能力と脚質の違いで通常相手に残す。",
+    "marks": [
+      9,
+      12,
+      6,
+      5,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 5,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13は東京1400m勝ち実績で境界だが、近走安定度から7を残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        12,
+        6,
+        5,
+        7
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は東京1400mを先行して勝ち切った実績があり、前残りになれば巻き返す経路がある。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎9・○12は固定。13の先行上振れは認めるが、6・5・7の直近内容を上回る再現性まではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1400m3勝クラスで、同条件連勝の9・12が中心。6・5・7を能力と脚質の違いで通常相手に残す。 ◎9と○12はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲6を別シナリオの上振れ候補、△5・△7を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "race_model": "ダート1600m1勝クラスで、同条件連続2着の10が中心。5・6・9・2を通常相手として能力と先行力を補完する。",
+    "marks": [
+      10,
+      5,
+      6,
+      9,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "◎に次ぐ安定した勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 9,
+        "case": "上位2頭を崩さず相手圏に残せる地力と再現性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "通常評価とは別の展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16は差し展開で境界候補だが、2の前受けシナリオを残して除外する。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        5,
+        6,
+        9,
+        2
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16は東京1600mで中団から差を詰めた経験があり、前が流れた際の差し込み余地がある。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎10・○5は固定。16の差し込み余地はあるが、6・9・2の現状の実績を崩すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1600m1勝クラスで、同条件連続2着の10が中心。5・6・9・2を通常相手として能力と先行力を補完する。 ◎10と○5はordinary five作成時点の軸として固定し、外部challenger比較後も動かしていない。最終的には◎○を本線の中心、▲6を別シナリオの上振れ候補、△9・△2を相手圏として5頭に圧縮した。"
+  }
+]
