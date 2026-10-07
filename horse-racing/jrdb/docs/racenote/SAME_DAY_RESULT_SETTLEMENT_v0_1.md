@@ -114,10 +114,19 @@ All tickets use a fixed unit stake of **100 yen**.
 | --- | --- |
 | ◎ win | `◎` |
 | ◎ place | `◎` |
-| quinella | `◎-○`, `◎-▲` |
-| exacta | `◎→○`, `◎→▲` |
+| quinella ○ leg | `◎-○` |
+| quinella ▲ leg | `◎-▲` |
+| quinella combined | `◎-○`, `◎-▲` |
+| exacta ○ leg | `◎→○` |
+| exacta ▲ leg | `◎→▲` |
+| exacta combined | `◎→○`, `◎→▲` |
 | trio | `◎` one-horse axis, every 2-horse combination from all other marks |
 | trifecta | `◎` fixed 1st, every ordered 2-horse permutation from all other marks |
+
+The ○-leg and ▲-leg rows are analytical views of the same physical quinella/exacta
+tickets already included in the combined rows. They do not add stakes or change the
+24-ticket formation. They exist so post-race analysis can tell whether ▲ actually
+boosted the ◎-anchored payout profile rather than merely selecting a higher-priced horse.
 
 With the current five-mark Forecast record (`◎ / ○ / ▲ / △1 / △2`), this is:
 
