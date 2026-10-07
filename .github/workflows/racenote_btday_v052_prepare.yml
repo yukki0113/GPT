@@ -1,0 +1,190 @@
+name: RaceNote BTDAY v0.5.2 canonical TURN 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-*.json'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: racenote-btday-v052-turn1
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install duckdb pyarrow pandas numpy jsonschema gdown
+
+      - name: Resolve request
+        id: req
+        shell: bash
+        run: |
+          set -euo pipefail
+          REQUEST="$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" -- 'horse-racing/jrdb/backtests/requests/BTDAY-*.json' | tail -n 1)"
+          test -n "$REQUEST"
+          python - "$REQUEST" <<'PY' >> "$GITHUB_OUTPUT"
+          import json, re, sys
+          from pathlib import Path
+          p=Path(sys.argv[1])
+          r=json.loads(p.read_text(encoding='utf-8'))
+          required=('selection_id','target_date','paci_file_id','analysis_artifact_run_id','analysis_artifact_name','analysis_generation_id')
+          missing=[k for k in required if not r.get(k)]
+          if missing:
+              raise SystemExit(f'missing request fields: {missing}')
+          if not re.fullmatch(r'BTDAY-[0-9]{4}', str(r['selection_id'])):
+              raise SystemExit('invalid selection_id')
+          if not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', str(r['target_date'])):
+              raise SystemExit('invalid target_date')
+          cfg=json.loads(Path('horse-racing/jrdb/config/racenote_forecast_logic_current.json').read_text(encoding='utf-8'))
+          rrdb=(r.get('rrdb_file_id') or cfg['rrdb_integration']['current_file_id'])
+          nxt=(r.get('next_watch_file_id') or cfg['rrdb_integration']['legacy_next_watch_rules_file_id'])
+          vals={
+              'request':str(p),
+              'selection_id':str(r['selection_id']),
+              'target_date':str(r['target_date']),
+              'compact':str(r['target_date']).replace('-',''),
+              'paci_file_id':str(r['paci_file_id']),
+              'analysis_run_id':str(r['analysis_artifact_run_id']),
+              'analysis_artifact_name':str(r['analysis_artifact_name']),
+              'analysis_generation_id':str(r['analysis_generation_id']),
+              'rrdb_file_id':str(rrdb),
+              'next_watch_file_id':str(nxt),
+          }
+          for k,v in vals.items():
+              if '\n' in v or '\r' in v:
+                  raise SystemExit(f'invalid newline in {k}')
+              print(f'{k}={v}')
+          PY
+
+      - name: Materialize canonical sources
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMPACT: ${{ steps.req.outputs.compact }}
+          PACI_ID: ${{ steps.req.outputs.paci_file_id }}
+          ANALYSIS_RUN: ${{ steps.req.outputs.analysis_run_id }}
+          ANALYSIS_ARTIFACT: ${{ steps.req.outputs.analysis_artifact_name }}
+          ANALYSIS_GEN: ${{ steps.req.outputs.analysis_generation_id }}
+          RRDB_ID: ${{ steps.req.outputs.rrdb_file_id }}
+          NEXTWATCH_ID: ${{ steps.req.outputs.next_watch_file_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb /tmp/rules
+          PACI_PATH="/tmp/input/PACI${COMPACT:2}.zip"
+          gdown "https://drive.google.com/uc?id=$PACI_ID" -O "$PACI_PATH"
+          gdown "https://drive.google.com/uc?id=$RRDB_ID" -O /tmp/input/RaceReviewDB_CURRENT.zip
+          gdown "https://drive.google.com/uc?id=$NEXTWATCH_ID" -O /tmp/input/NextWatch.zip
+
+          gh run download "$ANALYSIS_RUN" --repo "$GITHUB_REPOSITORY" --name "$ANALYSIS_ARTIFACT" --dir /tmp/analysis_art
+          ANALYSIS_ARCHIVE="$(find /tmp/analysis_art -maxdepth 1 -type f \( -name '*.tar.xz' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' \) | sort | head -n 1)"
+          test -n "$ANALYSIS_ARCHIVE"
+          case "$ANALYSIS_ARCHIVE" in
+            *.tar.xz) tar -xJf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
+            *.tar.gz|*.tgz) tar -xzf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
+            *.zip) unzip -q "$ANALYSIS_ARCHIVE" -d /tmp/analysis ;;
+            *) echo "unsupported analysis artifact: $ANALYSIS_ARCHIVE" >&2; exit 1 ;;
+          esac
+
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path('/tmp/analysis')
+          gen=os.environ['ANALYSIS_GEN']
+          manifest=root/'generations'/gen/'manifest.json'
+          if not manifest.is_file():
+              raise SystemExit(f'analysis generation missing: {manifest}')
+          (root/'current.json').write_text(json.dumps({
+              'status':'CURRENT',
+              'generation_id':gen,
+              'manifest':f'generations/{gen}/manifest.json',
+          }, indent=2)+'\n', encoding='utf-8')
+          PY
+
+          unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          unzip -q /tmp/input/NextWatch.zip -d /tmp/rules
+
+      - name: Build canonical v0.5.2 TURN 1
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          SEL: ${{ steps.req.outputs.selection_id }}
+          TARGET_DATE: ${{ steps.req.outputs.target_date }}
+          COMPACT: ${{ steps.req.outputs.compact }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="horse-racing/jrdb/backtests/$SEL/$COMPACT"
+          if test -e "$TARGET/forecast_prep" || test -e "$TARGET/v052" || test -e "$TARGET/operation_handoff.json"; then
+            echo "immutable v0.5.2 TURN 1 target already exists: $TARGET" >&2
+            exit 1
+          fi
+
+          PACI_PATH="/tmp/input/PACI${COMPACT:2}.zip"
+          MAIN_SHA="$(git rev-parse HEAD)"
+
+          python horse-racing/jrdb/src/racenote_v052_from_paci.py \
+            --date "$TARGET_DATE" \
+            --paci "$PACI_PATH" \
+            --selection-id "$SEL" \
+            --main-sha "$MAIN_SHA" \
+            --analysis-root /tmp/analysis \
+            --racereview-root /tmp/rrdb/postrace_review/v0_1 \
+            --next-watch-rules /tmp/rules/next_watch_candidate_rules_frozen.json \
+            --output-root "$TARGET"
+
+          ROOT="$TARGET/day_prep/RaceNote_$COMPACT"
+          cp "$ROOT/manifest.json" "$TARGET/day_prep/manifest.json"
+          cp "$ROOT/validation_report.json" "$TARGET/day_prep/validation_report.json"
+
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          sel=os.environ['SEL']; compact=os.environ['COMPACT']
+          root=Path('horse-racing/jrdb/backtests')/sel/compact
+          m=json.loads((root/'day_prep/manifest.json').read_text())
+          v=json.loads((root/'day_prep/validation_report.json').read_text())
+          p=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
+          o=json.loads((root/'operation_handoff.json').read_text())
+          s=json.loads((root/'v052/session.json').read_text())
+          assert m['status']=='PASS' and v['status']=='PASS'
+          assert p['market_blind'] is True and p['result_opened'] is False and p['target_market_opened'] is False
+          assert o['status']=='READY_FOR_V052_AUTHORING'
+          assert o['market_blind'] is True and o['result_opened'] is False and o['ab_required'] is False
+          assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.2-candidate'
+          assert len(s['race_roster'])==m['counts']['races_built']==p['race_count']==o['race_count']
+          PY
+
+      - name: Commit immutable canonical v0.5.2 TURN 1
+        env:
+          SEL: ${{ steps.req.outputs.selection_id }}
+          COMPACT: ${{ steps.req.outputs.compact }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="horse-racing/jrdb/backtests/$SEL/$COMPACT"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git add "$TARGET/day_prep/manifest.json" "$TARGET/day_prep/validation_report.json"
+          git add "$TARGET/forecast_prep" "$TARGET/v052" "$TARGET/operation_handoff.json"
+
+          git commit -m "RaceNote: stage $SEL canonical v0.5.2 TURN 1"
+          git pull --rebase origin main
+          git push origin HEAD:main
