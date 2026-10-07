@@ -51,9 +51,7 @@ The first two positions are protected anchors for the rest of the compression st
 
 ### Step C — search outside that five for one external asymmetric challenger
 
-Choose exactly one horse outside `ordinary_five` as `external_challenger_horse_no`.
-
-The challenger must have a distinct upside / winning route that is not merely “the next horse in ordinary rank”. Price, popularity and target-day market information are unavailable and must not be inferred.
+Choose exactly one horse outside `ordinary_five` as `external_challenger_horse_no` when the race has six or more runners. The challenger must have a distinct upside / winning route that is not merely “the next horse in ordinary rank”. Price, popularity and target-day market information are unavailable and must not be inferred.\n\nFor an exactly five-runner field there is no external horse to compare. Use `NO_EXTERNAL_CHALLENGER`, keep the full ordinary five, and assign ▲ from the three ordinary support horses.
 
 ### Step D — compare six to five explicitly
 
@@ -101,8 +99,7 @@ Mechanical validation enforces:
 - ○ = `ordinary_five[1]`;
 - final five = six-candidate pool minus `excluded_horse_no`;
 - an admitted challenger cannot displace ◎ or ○;
-- an admitted challenger must be ▲;
-- `KEEP_ORDINARY_FIVE` must exclude the external challenger;
+- an admitted challenger must be ▲;\n- `KEEP_ORDINARY_FIVE` must exclude the external challenger;\n- an exactly five-runner field must use `NO_EXTERNAL_CHALLENGER` with null challenger/excluded fields;
 - final marks remain exactly five unique Reader horses.
 
 The validator does **not** mechanically score the racing evidence. The model remains responsible for the racing judgment.
