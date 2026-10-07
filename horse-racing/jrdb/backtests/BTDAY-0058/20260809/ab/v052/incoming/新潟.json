@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "race_model": "新潟芝2000m・未勝利。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      13,
+      6,
+      11,
+      8,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "13番スーパーユタカはIDM 37.0、予測着差 0、脚質先行。調教指数 16.8・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番アオイノリプーはIDM 33.1、予測着差 0の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番ラガリーガはIDM 30.0、予測着差 8を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番エクスマキナはIDM 24.2、予測着差 13を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番シアルナーレはordinary five内で、主線と異なる脚質先行から上振れする経路を持つため▲を担当する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟芝2000m・未勝利。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は13番スーパーユタカ。13番スーパーユタカはIDM 37.0、予測着差 0、脚質先行。調教指数 16.8・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は6番アオイノリプーを次位の主線とし、▲11番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        6,
+        11,
+        8,
+        1
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14番ツーハーツはordinary five外だが、脚質追込・予測着差 17・調教指数 12.5から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "challengerの上振れ条件は認めるが通常5頭を崩す確度には届かず、ordinary fiveを全頭維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 6,
+      "honmei_win_case": "13番スーパーユタカはIDM 37.0、予測着差 0、脚質先行。調教指数 16.8・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "6番アオイノリプーはIDM 33.1、予測着差 0の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は13番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、13番スーパーユタカを◎、6番アオイノリプーを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "race_model": "新潟芝1200m・新馬。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      4,
+      6,
+      5,
+      10,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4番ワイズジュエルはIDM 44.5、予測着差 0、脚質自在。調教指数 16.9・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番イスクメルはIDM 45.0、予測着差 4の裏付けがあり、脚質自在から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番シジマはIDM 37.3、予測着差 7を基礎にordinary fiveへ残し、脚質自在から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番メジェグレイスはIDM 34.9、予測着差 11を基礎にordinary fiveへ残し、脚質自在から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番エスシークザンはordinary five内で、主線と異なる脚質自在から上振れする経路を持つため▲を担当する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟芝1200m・新馬。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は4番ワイズジュエル。4番ワイズジュエルはIDM 44.5、予測着差 0、脚質自在。調教指数 16.9・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は6番イスクメルを次位の主線とし、▲5番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        6,
+        5,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番クリガーレはordinary five外だが、脚質自在・予測着差 10・調教指数 -2.0から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "challengerの上振れ条件は認めるが通常5頭を崩す確度には届かず、ordinary fiveを全頭維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "honmei_win_case": "4番ワイズジュエルはIDM 44.5、予測着差 0、脚質自在。調教指数 16.9・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "6番イスクメルはIDM 45.0、予測着差 4の裏付けがあり、脚質自在から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は4番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、4番ワイズジュエルを◎、6番イスクメルを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "race_model": "新潟ダート1200m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      12,
+      1,
+      4,
+      15,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12番ハングローズはIDM 42.0、予測着差 6、脚質差し。調教指数 22.5・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番ローズオブジャパンはIDM 37.0、予測着差 3の裏付けがあり、脚質逃げから◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番セントリアンはIDM 34.0、予測着差 6を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番プティシラーはIDM 30.2、予測着差 6を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番エコロセレナはordinary five内で、主線と異なる脚質先行から上振れする経路を持つため▲を担当する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟ダート1200m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は12番ハングローズ。12番ハングローズはIDM 42.0、予測着差 6、脚質差し。調教指数 22.5・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は1番ローズオブジャパンを次位の主線とし、▲4番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        1,
+        4,
+        15,
+        5
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8番テリオスレイはordinary five外だが、脚質先行・予測着差 15・調教指数 8.6から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "challengerの上振れ条件は認めるが通常5頭を崩す確度には届かず、ordinary fiveを全頭維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 1,
+      "honmei_win_case": "12番ハングローズはIDM 42.0、予測着差 6、脚質差し。調教指数 22.5・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "1番ローズオブジャパンはIDM 37.0、予測着差 3の裏付けがあり、脚質逃げから◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は12番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、12番ハングローズを◎、1番ローズオブジャパンを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "race_model": "新潟ダート1800m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      12,
+      10,
+      3,
+      8,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12番クリムゾンリーフはIDM 44.0、予測着差 0、脚質逃げ。調教指数 20.1・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番モンスターラッシュはIDM 46.0、予測着差 4の裏付けがあり、脚質先行から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番カシマライフウはIDM 39.0、予測着差 9を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番キセログラフィカはIDM 35.0、予測着差 20を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番アデルフィーはordinary five内で、主線と異なる脚質先行から上振れする経路を持つため▲を担当する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟ダート1800m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は12番クリムゾンリーフ。12番クリムゾンリーフはIDM 44.0、予測着差 0、脚質逃げ。調教指数 20.1・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は10番モンスターラッシュを次位の主線とし、▲3番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        10,
+        3,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番ユイノスレチガイはordinary five外だが、脚質追込・予測着差 24・調教指数 2.2から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "challengerの上振れ条件は認めるが通常5頭を崩す確度には届かず、ordinary fiveを全頭維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 10,
+      "honmei_win_case": "12番クリムゾンリーフはIDM 44.0、予測着差 0、脚質逃げ。調教指数 20.1・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "10番モンスターラッシュはIDM 46.0、予測着差 4の裏付けがあり、脚質先行から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は12番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、12番クリムゾンリーフを◎、10番モンスターラッシュを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "race_model": "新潟ダート1200m・1勝クラス。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      9,
+      12,
+      11,
+      6,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9番アンバサダネージュはIDM 52.0、予測着差 6、脚質逃げ。調教指数 15.3・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番シュヴァルツシルトはIDM 47.0、予測着差 0の裏付けがあり、脚質逃げから◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番ベアアッコチャンはIDM 50.0、予測着差 8を基礎にordinary fiveへ残し、脚質追込から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ベルゼビュートはIDM 49.0、予測着差 7を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番ゼファーテソーロはordinary five内で、主線と異なる脚質差しから上振れする経路を持つため▲を担当する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟ダート1200m・1勝クラス。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は9番アンバサダネージュ。9番アンバサダネージュはIDM 52.0、予測着差 6、脚質逃げ。調教指数 15.3・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は12番シュヴァルツシルトを次位の主線とし、▲11番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        11,
+        6,
+        2,
+        12
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番ブリングライトはordinary five外だが、脚質追込・予測着差 15・調教指数 -4.6から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "challengerの上振れ条件は認めるが通常5頭を崩す確度には届かず、ordinary fiveを全頭維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 12,
+      "honmei_win_case": "9番アンバサダネージュはIDM 52.0、予測着差 6、脚質逃げ。調教指数 15.3・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "12番シュヴァルツシルトはIDM 47.0、予測着差 0の裏付けがあり、脚質逃げから◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は9番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、9番アンバサダネージュを◎、12番シュヴァルツシルトを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "race_model": "新潟芝1800m・3勝クラス。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      1,
+      3,
+      11,
+      4,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番ライヒスアドラーはIDM 65.0、予測着差 0、脚質先行。調教指数 22.1・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番カニキュルはIDM 65.1、予測着差 10の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ガジュノリはIDM 62.0、予測着差 9を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ハギノアルデバランはIDM 60.0、予測着差 13を基礎にordinary fiveへ残し、脚質追込から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番デルアヴァーはordinary five外だが、脚質追込・予測着差 8・調教指数 3.6から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟芝1800m・3勝クラス。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は1番ライヒスアドラー。1番ライヒスアドラーはIDM 65.0、予測着差 0、脚質先行。調教指数 22.1・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は3番カニキュルを次位の主線とし、▲11番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        3,
+        4,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11番デルアヴァーはordinary five外だが、脚質追込・予測着差 8・調教指数 3.6から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "外部challengerの独立した勝ち筋を評価して▲で採用し、2番を境界で押し出す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 3,
+      "honmei_win_case": "1番ライヒスアドラーはIDM 65.0、予測着差 0、脚質先行。調教指数 22.1・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "3番カニキュルはIDM 65.1、予測着差 10の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は1番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、1番ライヒスアドラーを◎、3番カニキュルを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "race_model": "新潟ダート1800m・オープン。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      6,
+      12,
+      2,
+      9,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番ドンエレクトスはIDM 64.8、予測着差 4、脚質逃げ。調教指数 16.1・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番メルカントゥールはIDM 66.1、予測着差 5の裏付けがあり、脚質先行から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番ショウナンバンライはIDM 64.0、予測着差 8を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番チェリヴェントはIDM 63.1、予測着差 0を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2番ファイアマンはordinary five外だが、脚質逃げ・予測着差 7・調教指数 -5.7から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟ダート1800m・オープン。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は6番ドンエレクトス。6番ドンエレクトスはIDM 64.8、予測着差 4、脚質逃げ。調教指数 16.1・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は12番メルカントゥールを次位の主線とし、▲2番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        6,
+        9,
+        4,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番ファイアマンはordinary five外だが、脚質逃げ・予測着差 7・調教指数 -5.7から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "外部challengerの独立した勝ち筋を評価して▲で採用し、5番を境界で押し出す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 12,
+      "honmei_win_case": "6番ドンエレクトスはIDM 64.8、予測着差 4、脚質逃げ。調教指数 16.1・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "12番メルカントゥールはIDM 66.1、予測着差 5の裏付けがあり、脚質先行から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は12番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、6番ドンエレクトスを◎、12番メルカントゥールを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "race_model": "新潟芝1000m・2勝クラス。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      11,
+      13,
+      12,
+      8,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11番ハニーローリエはIDM 58.1、予測着差 0、脚質逃げ。調教指数 17.8・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番ロードトレゾールはIDM 54.0、予測着差 3の裏付けがあり、脚質逃げから◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番カレンデュラはIDM 48.7、予測着差 11を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ラヴェンデルはIDM 48.2、予測着差 14を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番レジーナローズはordinary five内で、主線と異なる脚質差しから上振れする経路を持つため▲を担当する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟芝1000m・2勝クラス。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は11番ハニーローリエ。11番ハニーローリエはIDM 58.1、予測着差 0、脚質逃げ。調教指数 17.8・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は13番ロードトレゾールを次位の主線とし、▲12番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        13,
+        12,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番ラトルシェはordinary five外だが、脚質差し・予測着差 12・調教指数 5.1から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "challengerの上振れ条件は認めるが通常5頭を崩す確度には届かず、ordinary fiveを全頭維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 13,
+      "honmei_win_case": "11番ハニーローリエはIDM 58.1、予測着差 0、脚質逃げ。調教指数 17.8・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "13番ロードトレゾールはIDM 54.0、予測着差 3の裏付けがあり、脚質逃げから◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は11番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、11番ハニーローリエを◎、13番ロードトレゾールを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "race_model": "新潟ダート1200m・2勝クラス。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      14,
+      10,
+      11,
+      3,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "14番ピコテンダーはIDM 50.0、予測着差 0、脚質先行。調教指数 18.0・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番フィーチャリングはIDM 52.1、予測着差 2の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番フォンメイリーはIDM 48.0、予測着差 1を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番シャンハイナイトはIDM 46.6、予測着差 0を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番ハッピーウィズユーはordinary five外だが、脚質逃げ・予測着差 0・調教指数 -3.8から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟ダート1200m・2勝クラス。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は14番ピコテンダー。14番ピコテンダーはIDM 50.0、予測着差 0、脚質先行。調教指数 18.0・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は10番フィーチャリングを次位の主線とし、▲11番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        14,
+        12,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11番ハッピーウィズユーはordinary five外だが、脚質逃げ・予測着差 0・調教指数 -3.8から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 12,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "外部challengerの独立した勝ち筋を評価して▲で採用し、12番を境界で押し出す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 10,
+      "honmei_win_case": "14番ピコテンダーはIDM 50.0、予測着差 0、脚質先行。調教指数 18.0・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "10番フィーチャリングはIDM 52.1、予測着差 2の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は10番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、14番ピコテンダーを◎、10番フィーチャリングを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "race_model": "新潟芝2000m・1勝クラス。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      7,
+      5,
+      2,
+      4,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7番ウップヘリーアはIDM 55.0、予測着差 0、脚質先行。調教指数 21.7・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番モートンアイランドはIDM 55.1、予測着差 8の裏付けがあり、脚質差しから◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番イスキオスはIDM 39.0、予測着差 9を基礎にordinary fiveへ残し、脚質逃げから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番オプレントジュエルはIDM 43.2、予測着差 17を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2番ミッドセンチュリーはordinary five内で、主線と異なる脚質差しから上振れする経路を持つため▲を担当する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟芝2000m・1勝クラス。想定ペースは平均。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は7番ウップヘリーア。7番ウップヘリーアはIDM 55.0、予測着差 0、脚質先行。調教指数 21.7・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は5番モートンアイランドを次位の主線とし、▲2番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        5,
+        2,
+        4,
+        6
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番テイキットイージーはordinary five外だが、脚質追込・予測着差 16・調教指数 -8.9から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "challengerの上振れ条件は認めるが通常5頭を崩す確度には届かず、ordinary fiveを全頭維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 5,
+      "honmei_win_case": "7番ウップヘリーアはIDM 55.0、予測着差 0、脚質先行。調教指数 21.7・デキ抜群も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "5番モートンアイランドはIDM 55.1、予測着差 8の裏付けがあり、脚質差しから◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は7番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、7番ウップヘリーアを◎、5番モートンアイランドを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "race_model": "新潟芝1600m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      3,
+      16,
+      1,
+      4,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3番バンオンタイムはIDM 40.0、予測着差 0、脚質先行。調教指数 19.3・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番ベルランコントルはIDM 45.1、予測着差 6の裏付けがあり、脚質先行から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番フジサンはIDM 45.0、予測着差 3を基礎にordinary fiveへ残し、脚質先行から主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ルシアージュはIDM 39.1、予測着差 8を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番ワイズファミリアはordinary five外だが、脚質差し・予測着差 7・調教指数 17.6から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟芝1600m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は3番バンオンタイム。3番バンオンタイムはIDM 40.0、予測着差 0、脚質先行。調教指数 19.3・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は16番ベルランコントルを次位の主線とし、▲1番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        4,
+        3,
+        2,
+        9
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番ワイズファミリアはordinary five外だが、脚質差し・予測着差 7・調教指数 17.6から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 9,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "外部challengerの独立した勝ち筋を評価して▲で採用し、9番を境界で押し出す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 16,
+      "honmei_win_case": "3番バンオンタイムはIDM 40.0、予測着差 0、脚質先行。調教指数 19.3・上昇も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "16番ベルランコントルはIDM 45.1、予測着差 6の裏付けがあり、脚質先行から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は16番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、3番バンオンタイムを◎、16番ベルランコントルを○にした。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "race_model": "新潟芝1200m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。",
+    "marks": [
+      15,
+      14,
+      16,
+      10,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15番ルージュフィーリアはIDM 46.0、予測着差 0、脚質先行。調教指数 17.5・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番ココソラーレはIDM 45.0、予測着差 6の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番オンナキュヌヴィはIDM 39.4、予測着差 8を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番セリエンクーニゲンはIDM 39.0、予測着差 4を基礎にordinary fiveへ残し、脚質差しから主線が崩れた場合にも勝負圏へ入る経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "16番ラルルジェンヌはordinary five外だが、脚質先行・予測着差 12・調教指数 16.8から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 17,
+      "reason": "17番も六頭比較の対象だが、最終5頭では今回の勝ち筋と再現性の比較から境界外とした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟芝1200m・未勝利。想定ペースはハイ。能力と近走再現性でordinary fiveを先に確保し、その内部では安全性より1着へ直結する位置・持続力・末脚経路を優先する。 ◎は15番ルージュフィーリア。15番ルージュフィーリアはIDM 46.0、予測着差 0、脚質先行。調教指数 17.5・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。 ○は14番ココソラーレを次位の主線とし、▲16番には本線と異なる勝ち筋を担当させる。候補集合を先に固定し、その後に役割のみを攻撃的に割り当てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        14,
+        10,
+        6,
+        17
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16番ラルルジェンヌはordinary five外だが、脚質先行・予測着差 12・調教指数 16.8から、主線と違う展開になった場合に通常順位以上へ跳ねる非対称な勝ち筋がある。",
+      "excluded_horse_no": 17,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "外部challengerの独立した勝ち筋を評価して▲で採用し、17番を境界で押し出す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 14,
+      "honmei_win_case": "15番ルージュフィーリアはIDM 46.0、予測着差 0、脚質先行。調教指数 17.5・平行線も含め、今回の流れで最も自力で勝ち切る像が明確。",
+      "second_case": "14番ココソラーレはIDM 45.0、予測着差 6の裏付けがあり、脚質追込から◎の次に勝ち負けへ届く再現性の高い主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ordinary rank 1は15番だが、複勝圏の安全性ではなく1着へ届く経路を比較し、15番ルージュフィーリアを◎、14番ココソラーレを○にした。"
+    }
+  }
+]
