@@ -67,7 +67,11 @@ def session_identity_fields(session: dict[str, Any]) -> dict[str, Any]:
     } | ({
         "v051_enabled": session["v051_enabled"],
         "v051_contract_version": session["v051_contract_version"],
-    } if session.get("v051_enabled") else {})
+    } if session.get("v051_enabled") else {}) | ({
+        "v052_enabled": session["v052_enabled"],
+        "v052_contract_version": session["v052_contract_version"],
+        "ab_profile": session["ab_profile"],
+    } if session.get("v052_enabled") else {})
 
 
 def expected_session_id(session: dict[str, Any]) -> str:
