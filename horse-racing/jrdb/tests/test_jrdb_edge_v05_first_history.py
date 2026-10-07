@@ -63,7 +63,8 @@ class FirstHistoryAggregationTests(unittest.TestCase):
                         "race_date": day, "surface_code": surface}
             sed_rows = [sed("00000001", "r20", "2020-01-01", "1"), sed("00000001", "r21", "2021-01-01", "1"),
                         sed("00000001", "r22", "2022-01-01", "2"), sed("00000001", "r22", "2022-01-01", "2"),
-                        sed("00000002", "r10", "2010-01-01", "1"), sed("00000002", "r23", "2023-01-01", "2")]
+                        sed("00000002", "r10", "2010-01-01", "1"), sed("00000002", "r23", "2023-01-01", "2"),
+                        sed("00000003", "r30", "2022-06-01", "1")]
             # Replace the SED 2020, 2021, 2022 and 2023 annual partitions.
             for year in range(2010, 2026):
                 rel = f"objects/sed/year={year}/asset.parquet"
@@ -78,7 +79,7 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             ]
             pq.write_table(pa.Table.from_pylist(kyi_rows[:1]), root / "objects/kyi/year=2020/asset.parquet")
             pq.write_table(pa.Table.from_pylist(kyi_rows[1:2]), root / "objects/kyi/year=2021/asset.parquet")
-            pq.write_table(pa.Table.from_pylist(pa.Table.from_pylist(kyi_rows[2:3]).to_pylist()), root / "objects/kyi/year=2022/asset.parquet")
+            pq.write_table(pa.Table.from_pylist(kyi_rows[2:3] + [{"blood_registration_no": "00000003", "race_key_raw": "r30", "horse_no": "01", "blinker_code": ""}]), root / "objects/kyi/year=2022/asset.parquet")
             pq.write_table(pa.Table.from_pylist(kyi_rows[3:4]), root / "objects/kyi/year=2010/asset.parquet")
             pq.write_table(pa.Table.from_pylist(kyi_rows[4:]), root / "objects/kyi/year=2023/asset.parquet")
             # Refresh manifest SHA/size after annual fixture partitions were replaced.
@@ -91,6 +92,7 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             feature_rows = [
                 {"race_date": "2022-01-01", "race_key": "r22", "horse_no": "01", "horse_id": "00000001", "surface_code": "2", "sire_name": "Sire A", "is_pre_race_eligible": 1},
                 {"race_date": "2023-01-01", "race_key": "r23", "horse_no": "01", "horse_id": "00000002", "surface_code": "2", "sire_name": "Sire B", "is_pre_race_eligible": 1},
+                {"race_date": "2022-06-01", "race_key": "r30", "horse_no": "01", "horse_id": "00000003", "surface_code": "1", "sire_name": "Sire C", "is_pre_race_eligible": 1},
             ]
             feature = root / "feature.parquet"; pq.write_table(pa.Table.from_pylist(feature_rows), feature)
             out = root / "enriched.parquet"
@@ -107,6 +109,7 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             self.assertIsNone(rows["00000002"]["first_dirt"])  # 2010 left censor
             self.assertFalse(rows["00000002"]["first_turf"])  # target is dirt, so FIRST_TURF is definitively false
             self.assertFalse(rows["00000001"]["first_blinkers"])  # prior code 1; target code 3 is not first
+            self.assertFalse(rows["00000003"]["first_blinkers"])  # blank equipment code means no active blinkers
             self.assertEqual(audit["sed_duplicate_groups_collapsed"], 1)
             self.assertGreaterEqual(audit["blinker_code_parity_mismatch_count"], 0)
 
