@@ -1,0 +1,158 @@
+name: JRDB Warehouse Research Materialization
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  materialize:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_WAREHOUSE_RESEARCH_MATERIALIZE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check 'requests==2.34.2'
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          body=(os.environ.get('ISSUE_BODY') or '').strip()
+          req=json.loads(body) if body else {}
+          families=[str(x).upper() for x in (req.get('families') or ['KYI','SED'])]
+          allowed={'KYI','SED'}
+          if not families or any(x not in allowed for x in families):
+              raise SystemExit('families must be a non-empty subset of KYI,SED')
+          years=[int(y) for y in (req.get('years') or list(range(2010,2026)))]
+          if years != sorted(set(years)) or any(y < 2010 or y > 2025 for y in years):
+              raise SystemExit('years must be a unique sorted subset of 2010-2025')
+          root=Path('/tmp/jrdb_warehouse_research')
+          (root/'request').mkdir(parents=True,exist_ok=True)
+          (root/'report').mkdir(parents=True,exist_ok=True)
+          (root/'request'/'request.json').write_text(
+              json.dumps({'families':families,'years':years},ensure_ascii=False,indent=2)+'\n',
+              encoding='utf-8')
+          PY
+
+      - name: Download accepted Warehouse manifest
+        run: |
+          python - <<'PY'
+          import requests
+          from pathlib import Path
+          target=Path('/tmp/jrdb_warehouse_research/manifest.json')
+          with requests.get(
+              'https://drive.usercontent.google.com/download',
+              params={'id':'1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN','export':'download','confirm':'t'},
+              stream=True, timeout=(20,180),
+          ) as r:
+              r.raise_for_status()
+              with target.open('wb') as h:
+                  for block in r.iter_content(1024*1024):
+                      if block: h.write(block)
+          PY
+
+      - name: Materialize accepted KYI and SED Warehouse assets
+        run: |
+          python horse-racing/jrdb/src/materialize_jrdb_warehouse_from_object_index.py \
+            --warehouse-manifest /tmp/jrdb_warehouse_research/manifest.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_kyi_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_sed_a_v1.json \
+            --drive-index horse-racing/jrdb/config/warehouse_drive_index_sed_b_v1.json \
+            --output-root /tmp/jrdb_warehouse_research/warehouse \
+            --families KYI SED \
+            --result-json /tmp/jrdb_warehouse_research/report/materialize.json \
+            > /tmp/jrdb_warehouse_research/report/materialize_stdout.log
+
+      - name: Select requested years and verify
+        run: |
+          python - <<'PY'
+          import json, shutil, hashlib
+          from pathlib import Path
+          root=Path('/tmp/jrdb_warehouse_research')
+          req=json.loads((root/'request'/'request.json').read_text(encoding='utf-8'))
+          report=json.loads((root/'report'/'materialize.json').read_text(encoding='utf-8'))
+          if report.get('status')!='PASS':
+              raise SystemExit('materialization failed')
+          if report.get('generation_id')!='jrdb_normalized_warehouse_v1_2010_2025_g20260921':
+              raise SystemExit('generation mismatch')
+          selected=root/'selected'
+          selected.mkdir(parents=True,exist_ok=True)
+          copied=[]
+          for asset in report['assets']:
+              fam=str(asset['family']).upper()
+              year=int(asset['year'])
+              if fam not in req['families'] or year not in req['years']:
+                  continue
+              src=root/'warehouse'/asset['relative_path']
+              dst=selected/asset['relative_path']
+              dst.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(src,dst)
+              h=hashlib.sha256(dst.read_bytes()).hexdigest()
+              if h != asset['sha256'] or dst.stat().st_size != asset['size_bytes']:
+                  raise SystemExit(f'verification failed: {fam} {year}')
+              copied.append({'family':fam,'year':year,'relative_path':asset['relative_path'],'sha256':h,'size_bytes':dst.stat().st_size})
+          expected=len(req['families'])*len(req['years'])
+          if len(copied)!=expected:
+              raise SystemExit(f'expected {expected} selected assets, got {len(copied)}')
+          out={'status':'PASS','generation_id':report['generation_id'],'families':req['families'],'years':req['years'],'asset_count':len(copied),'assets':copied}
+          (selected/'research_materialization_manifest.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          (root/'report'/'selected.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload research Warehouse artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-warehouse-research-${{ github.run_id }}
+          path: /tmp/jrdb_warehouse_research/selected/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
+      - name: Comment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path('/tmp/jrdb_warehouse_research/report/selected.json')
+          result=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status':'FAIL'}
+          result['run_id']=int(os.environ['GITHUB_RUN_ID'])
+          result['artifact_name']=f"jrdb-warehouse-research-{os.environ['GITHUB_RUN_ID']}"
+          Path('/tmp/result.md').write_text('JRDB_WAREHOUSE_RESEARCH_MATERIALIZE_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n',encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/result.md
+
+      - name: Close request issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
+          else
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason "not planned"
+          fi
