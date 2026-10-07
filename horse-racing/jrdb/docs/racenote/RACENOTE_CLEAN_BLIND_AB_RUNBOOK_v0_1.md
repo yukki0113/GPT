@@ -145,8 +145,12 @@ The result contract is:
 - one date query = all JRA races on that date;
 - `success` or `review_required` is retained with provenance for the A/B analysis.
 
-The A/B evaluation then joins each lane's frozen `records.json` to the parsed
-results by venue + race number + horse number. At minimum compare:
+The A/B evaluation joins each lane's frozen `records.json` to the parsed
+results by venue + race number + horse number and evaluates two parallel layers.
+
+### Prediction layer
+
+At minimum compare:
 
 - ◎ win / top-2 / top-3 performance;
 - ▲ win / top-3 performance;
@@ -155,8 +159,32 @@ results by venue + race number + horse number. At minimum compare:
 - races where v0.4.6 and v0.5.0 changed ◎, ▲, or the five-horse set;
 - whether those changed decisions improved or worsened the observed result.
 
-ROI or ticket-settlement analysis is a separate metric layer. Do not substitute
-betting return for the statistical prediction comparison.
+### Settlement / payout-boost layer
+
+Use 100-yen fixed tickets and always report:
+
+- ◎ single win;
+- ◎ single place;
+- quinella `◎-○`;
+- quinella `◎-▲`;
+- quinella combined `◎-○▲` (2 tickets/race);
+- exacta `◎→○`;
+- exacta `◎→▲`;
+- exacta combined `◎→○▲` (2 tickets/race);
+- trio `◎` one-horse axis to every 2-horse combination from ○ ▲ △1 △2
+  (6 tickets/race);
+- trifecta `◎` fixed 1st to every ordered 2-horse permutation from
+  ○ ▲ △1 △2 (12 tickets/race).
+
+For each formation report ticket count, stake, hit tickets / hit races, payout,
+profit/loss and ROI. The ○ and ▲ legs of quinella/exacta must be shown separately
+as well as combined so that ▲ is evaluated by its actual payout contribution.
+A higher-priced ▲ is not a success by itself; the research question is whether
+including ▲ improves the ◎-anchored betting return profile.
+
+Prediction accuracy and betting return remain separate evidence channels. Do not
+replace one with the other, and do not infer stable profitability from one or two
+large payouts.
 
 Public-Web result acquisition is only a fallback when an actual canonical Drive
 inventory check confirms the required JRDB Raw is unavailable, or when the requested
