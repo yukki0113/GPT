@@ -1,0 +1,35 @@
+name: RaceNote BTDAY-0056 three-way session temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0056.session'
+permissions:
+  contents: write
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Initialize sealed three-way session
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          PREP='horse-racing/jrdb/backtests/BTDAY-0056/20260606/forecast_prep'
+          REQUEST='horse-racing/jrdb/backtests/requests/BTDAY-0056.json'
+          AB='horse-racing/jrdb/backtests/BTDAY-0056/20260606/ab'
+          BASE_MAIN_SHA='d8f78415f8621fe20cbc907f8d61a5339041fe49'
+          python horse-racing/jrdb/src/racenote_ab_session.py --prep-root "$PREP" --request "$REQUEST" --ab-root "$AB" --base-main-sha "$BASE_MAIN_SHA" --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json --include-v051
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$AB"
+          git commit -m 'RaceNote: seal BTDAY-0056 three-way session'
+          git pull --rebase origin main
+          git push origin HEAD:main
