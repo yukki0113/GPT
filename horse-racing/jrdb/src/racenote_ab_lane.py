@@ -11,11 +11,18 @@ from typing import Any
 from racenote_ab_session import digest, encoded, load_session, read_json, write_json
 from racenote_reader_v050 import VERSION as V050
 from racenote_reader_v051 import VERSION as V051
+from racenote_reader_v052 import VERSION as V052
 from racenote_save_venue_batch_v046 import LOGIC as V046, validate_core as validate_core_v046
 from racenote_decision_core_v051 import validate_core as validate_core_v051
+from racenote_decision_core_v052 import validate_core as validate_core_v052
 
-LANES = {"v046": V046, "v050": V050, "v051": V051}
-VALIDATORS = {"v046": validate_core_v046, "v050": validate_core_v046, "v051": validate_core_v051}
+LANES = {"v046": V046, "v050": V050, "v051": V051, "v052": V052}
+VALIDATORS = {
+    "v046": validate_core_v046,
+    "v050": validate_core_v046,
+    "v051": validate_core_v051,
+    "v052": validate_core_v052,
+}
 AUTHORED_VERSION = "racenote-ab-authored-venue-0.1"
 FROZEN_VERSION = "racenote-ab-lane-frozen-0.1"
 
@@ -25,7 +32,9 @@ def lane_reader_manifest_sha(ab_root: Path, lane: str, session: dict) -> str:
         return session["clean_reader_manifest_sha256"]
     if lane == "v050":
         return session["v050_reader_manifest_sha256"]
-    return session["v051_reader_manifest_sha256"]
+    if lane == "v051":
+        return session["v051_reader_manifest_sha256"]
+    return session["v052_reader_manifest_sha256"]
 
 
 def lane_reader(ab_root: Path, lane: str, key: tuple[str, int], readers: dict, derived: dict) -> tuple[dict, str]:
@@ -190,7 +199,13 @@ def build_freeze(ab_root: Path, lane: str) -> dict[str, Any]:
         "schema_version": FROZEN_VERSION,
         "status": "FROZEN_CLEAN_BLIND",
         "validator_status": "PASS",
-        "validator": ("racenote_decision_core_v051.validate_core" if lane == "v051" else "racenote_save_venue_batch_v046.validate_core") + " + A/B session integrity",
+        "validator": (
+            "racenote_decision_core_v051.validate_core"
+            if lane == "v051"
+            else "racenote_decision_core_v052.validate_core"
+            if lane == "v052"
+            else "racenote_save_venue_batch_v046.validate_core"
+        ) + " + A/B session integrity",
         "session_id": session["session_id"],
         "selection_id": session["selection_id"],
         "target_date": session["target_date"],
