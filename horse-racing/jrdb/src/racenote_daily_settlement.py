@@ -106,8 +106,14 @@ def extract_marks(record: dict[str, Any]) -> list[MarkedHorse]:
                 delta_index += 1
                 symbol = f"△{delta_index}"
             out.append(MarkedHorse(symbol, item["horse_no"], str(item.get("horse_name") or "")))
+    elif isinstance(record.get("decision_core"), dict) and isinstance(record["decision_core"].get("marks"), list):
+        raw_marks = record["decision_core"]["marks"]
+        if len(raw_marks) != 5:
+            raise ValueError("decision_core.marks must contain exactly ◎ ○ ▲ △1 △2")
+        for symbol, horse_no in zip(("◎", "○", "▲", "△1", "△2"), raw_marks):
+            out.append(MarkedHorse(symbol, int(horse_no), ""))
     else:
-        raise ValueError("prediction.marks must be dict or list")
+        raise ValueError("forecast marks must be prediction.marks or decision_core.marks")
 
     required = {"◎", "○", "▲"}
     found = {row.mark for row in out}
