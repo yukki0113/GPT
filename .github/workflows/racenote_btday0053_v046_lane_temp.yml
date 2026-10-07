@@ -1,0 +1,53 @@
+name: RaceNote BTDAY-0053 v046 Lane Freeze
+on:
+  push:
+    branches:
+      - racenote/btday-0053-v046-20261007
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0053/20260926/ab/v046/.run-freeze'
+permissions:
+  contents: write
+jobs:
+  validate-and-freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: racenote/btday-0053-v046-20261007
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Save venue cards and freeze Lane A
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          AB_ROOT="horse-racing/jrdb/backtests/BTDAY-0053/20260926/ab"
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB_ROOT" --lane v046 --decisions "$AB_ROOT/v046/incoming/中山.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB_ROOT" --lane v046 --decisions "$AB_ROOT/v046/incoming/阪神.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py freeze --ab-root "$AB_ROOT" --lane v046
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("horse-racing/jrdb/backtests/BTDAY-0053/20260926/ab/v046/frozen/lane_handoff.json")
+          x=json.loads(p.read_text(encoding="utf-8"))
+          assert x["status"]=="FROZEN_CLEAN_BLIND"
+          assert x["validator_status"]=="PASS"
+          assert x["logic_version"]=="RaceNote-Human-Context-Reader-0.4.6-candidate"
+          assert x["market_blind"] is True
+          assert x["result_opened"] is False
+          assert x["target_market_opened"] is False
+          assert x["record_count"]==24
+          assert x["sibling_forecast_input_used"] is False
+          print(json.dumps(x, ensure_ascii=False, indent=2))
+          PY
+      - name: Commit frozen Lane A artifacts
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0053/20260926/ab/v046/authored_decisions
+          git add horse-racing/jrdb/backtests/BTDAY-0053/20260926/ab/v046/frozen
+          git commit -m 'RaceNote: freeze BTDAY-0053 v0.4.6 lane'
+          git push origin HEAD:racenote/btday-0053-v046-20261007
