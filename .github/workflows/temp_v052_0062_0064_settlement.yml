@@ -1,0 +1,94 @@
+name: Temp v052 0062-0064 settlement audit
+on:
+  push:
+    branches:
+      - audit/v052-0062-0064-settlement
+    paths:
+      - 'horse-racing/jrdb/tests/.v052_0062_0064_settlement_trigger'
+
+permissions:
+  contents: read
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: audit/v052-0062-0064-settlement
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install gdown
+      - name: Download JRDB result raw
+        run: |
+          mkdir -p /tmp/results
+          gdown "https://drive.google.com/uc?id=1HcbapDWlbmfrfB_4Lsf6yIlmPIjFxi52" -O /tmp/results/SED260210.zip
+          gdown "https://drive.google.com/uc?id=1_ZKXhr2dGczucnK1w3ROiwspi5uvb5jG" -O /tmp/results/HJC260210.zip
+          gdown "https://drive.google.com/uc?id=1AWOtDje2IxDS7_q8ZZviBh3PKVWAZRF4" -O /tmp/results/SED260517.zip
+          gdown "https://drive.google.com/uc?id=1M3apo0Icl7rX6BmCuqWZzSOnbGrTIabk" -O /tmp/results/HJC260517.zip
+          gdown "https://drive.google.com/uc?id=1Jr6W4JG5zGOkWW41w8LzKhRl55ghEsNG" -O /tmp/results/SED260502.zip
+          gdown "https://drive.google.com/uc?id=1cs8Si-RjClU88BO_sAv8R1oi4DSGNt5U" -O /tmp/results/HJC260502.zip
+      - name: Build canonical results and settlements
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -e
+          python horse-racing/jrdb/src/racenote_daily_result_from_jrdb.py --date 2026-02-10 --sed /tmp/results/SED260210.zip --hjc /tmp/results/HJC260210.zip --output /tmp/results/20260210.json --pretty
+          python horse-racing/jrdb/src/racenote_daily_settlement.py --forecast horse-racing/jrdb/backtests/BTDAY-0062/20260210/v052/frozen/records.json --results /tmp/results/20260210.json --output-json /tmp/results/0062_settlement.json --output-md /tmp/results/0062.md
+          python horse-racing/jrdb/src/racenote_daily_result_from_jrdb.py --date 2026-05-17 --sed /tmp/results/SED260517.zip --hjc /tmp/results/HJC260517.zip --output /tmp/results/20260517.json --pretty
+          python horse-racing/jrdb/src/racenote_daily_settlement.py --forecast horse-racing/jrdb/backtests/BTDAY-0063/20260517/v052/frozen/records.json --results /tmp/results/20260517.json --output-json /tmp/results/0063_settlement.json --output-md /tmp/results/0063.md
+          python horse-racing/jrdb/src/racenote_daily_result_from_jrdb.py --date 2026-05-02 --sed /tmp/results/SED260502.zip --hjc /tmp/results/HJC260502.zip --output /tmp/results/20260502.json --pretty
+          python horse-racing/jrdb/src/racenote_daily_settlement.py --forecast horse-racing/jrdb/backtests/BTDAY-0064/20260502/v052/frozen/records.json --results /tmp/results/20260502.json --output-json /tmp/results/0064_settlement.json --output-md /tmp/results/0064.md
+      - name: Print audit summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          cases = [
+              ("0062","20260210","horse-racing/jrdb/backtests/BTDAY-0062/20260210/v052/frozen/records.json"),
+              ("0063","20260517","horse-racing/jrdb/backtests/BTDAY-0063/20260517/v052/frozen/records.json"),
+              ("0064","20260502","horse-racing/jrdb/backtests/BTDAY-0064/20260502/v052/frozen/records.json"),
+          ]
+
+          def accuracy(forecast_path, result_path):
+              f=json.loads(Path(forecast_path).read_text())
+              r=json.loads(Path(result_path).read_text())
+              idx={(x["venue"],int(x["race_no"])):x for x in r["races"]}
+              m={"races":0,"honmei_win":0,"honmei_top2":0,"honmei_top3":0,"shot_win":0,"shot_top3":0,"winner5":0,"top3_captured":0}
+              for row in f:
+                  rr=idx[(row["venue"],int(row["race_no"]))]
+                  top=[int(x["horse_no"]) for x in rr["top3"]]
+                  marks=list(map(int,row["decision_core"]["marks"]))
+                  h,s=marks[0],marks[2]
+                  m["races"]+=1
+                  m["honmei_win"]+= h==top[0]
+                  m["honmei_top2"]+= h in top[:2]
+                  m["honmei_top3"]+= h in top
+                  m["shot_win"]+= s==top[0]
+                  m["shot_top3"]+= s in top
+                  m["winner5"]+= top[0] in marks
+                  m["top3_captured"]+=sum(x in marks for x in top)
+              m["avg_top3"]=m["top3_captured"]/m["races"]
+              return m
+
+          total_acc={k:0 for k in ["races","honmei_win","honmei_top2","honmei_top3","shot_win","shot_top3","winner5","top3_captured"]}
+          total_strategy={}
+          output={}
+          for sid,date,fp in cases:
+              acc=accuracy(fp,f"/tmp/results/{date}.json")
+              st=json.loads(Path(f"/tmp/results/{sid}_settlement.json").read_text())
+              strategies={x["code"]:{"stake":x["stake_jpy"],"payout":x["payout_jpy"],"roi":x["return_rate_pct"],"hits":x["hit_races"],"top":x["top_payout_tickets"]} for x in st["strategies"]}
+              output[sid]={"accuracy":acc,"strategies":strategies}
+              for k in total_acc:
+                  total_acc[k]+=acc[k]
+              for code,x in strategies.items():
+                  z=total_strategy.setdefault(code,{"stake":0,"payout":0,"hits":0})
+                  z["stake"]+=x["stake"]; z["payout"]+=x["payout"]; z["hits"]+=x["hits"]
+          total_acc["avg_top3"]=total_acc["top3_captured"]/total_acc["races"]
+          for code,z in total_strategy.items():
+              z["roi"]=round(z["payout"]/z["stake"]*100,1)
+          output["combined_0062_0064"]={"accuracy":total_acc,"strategies":total_strategy}
+          print("AUDIT_SUMMARY_JSON="+json.dumps(output,ensure_ascii=False,separators=(",",":")))
+          PY
