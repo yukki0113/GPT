@@ -39,8 +39,8 @@ Discovery: 2024-01-01 through 2025-12-31 (inclusive). Context only: 2022-01-01 t
 | label_place_payout | POST_RACE_EVALUATION_ONLY | 21.6198% (20,394/94,330) |
 | label_final_win_odds | POST_RACE_EVALUATION_ONLY | 99.6258% (93,977/94,330) |
 | label_final_win_popularity | POST_RACE_EVALUATION_ONLY | 100.0% (94,330/94,330) |
-| FIRST_DIRT / FIRST_TURF | BLOCKED: not present in frozen Feature Mart; prior-surface difference is not substituted | — |
-| FIRST_BLINKERS | BLOCKED: KYI blinker code is not present in frozen Feature Mart | — |
+| FIRST_DIRT / FIRST_TURF | PARTIAL: not present in frozen Feature Mart; Warehouse ZED/SED 2010-2025 schema supports exact horse-history derivation, but full-history execution remains pending due to Warehouse materialization / fallback transport constraints | — |
+| FIRST_BLINKERS | PARTIAL: not present in frozen Feature Mart; Warehouse KYI 2010-2025 contains blinker_code and chronology helpers pass fixtures, but full-history execution remains pending due to Warehouse materialization / fallback transport constraints | — |
 | Course topology | BLOCKED: no complete canonical venue+surface+distance(+variant) lookup established | — |
 
 ## Candidate counts and distributions
