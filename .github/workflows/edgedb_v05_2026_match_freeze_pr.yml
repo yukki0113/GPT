@@ -8,6 +8,8 @@ on:
       - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts.py'
       - 'horse-racing/jrdb/src/aggregate_jrdb_edge_v05_first_history.py'
       - 'horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_pre_race_match_freeze.py'
+      - 'horse-racing/jrdb/src/recover_jrdb_edge_v05_2026_paci.py'
+      - 'horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_paci_drive_inventory.json'
       - 'horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json'
   workflow_dispatch:
 
@@ -45,6 +47,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh run download 37604723913 --repo yukki0113/GPT --name jrdb-daily-history-20260101-20261007 --dir /tmp/sed2026
+      - name: Recover missing PACI files by canonical Drive ID
+        run: |
+          python horse-racing/jrdb/src/recover_jrdb_edge_v05_2026_paci.py \
+            --paci-root /tmp/paci --sed-root /tmp/sed2026 \
+            --inventory horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_paci_drive_inventory.json \
+            --output /tmp/paci/v05_2026_paci_input_inventory.json
       - name: Verify cohort and run focused matcher tests
         env:
           PYTHONPATH: horse-racing/jrdb/src
