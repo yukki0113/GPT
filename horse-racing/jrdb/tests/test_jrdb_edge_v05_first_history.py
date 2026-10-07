@@ -105,7 +105,7 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             self.assertFalse(rows["00000001"]["first_dirt"] is None)
             self.assertTrue(rows["00000001"]["first_dirt"])
             self.assertIsNone(rows["00000002"]["first_dirt"])  # 2010 left censor
-            self.assertIsNone(rows["00000002"]["first_turf"])  # left censor also applies to the other surface
+            self.assertFalse(rows["00000002"]["first_turf"])  # target is dirt, so FIRST_TURF is definitively false
             self.assertFalse(rows["00000001"]["first_blinkers"])  # prior code 1; target code 3 is not first
             self.assertEqual(audit["sed_duplicate_groups_collapsed"], 1)
             self.assertGreaterEqual(audit["blinker_code_parity_mismatch_count"], 0)
