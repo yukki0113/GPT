@@ -1,0 +1,93 @@
+name: RaceNote BTDAY-0058 clean prep temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0058/PREP_TRIGGER'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install duckdb pyarrow pandas numpy jsonschema gdown
+      - name: Build clean prep
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          SEL='BTDAY-0058'
+          TARGET_DATE='2026-08-09'
+          COMPACT='20260809'
+          PACI_ID='1nFDh_qBSQHnHiJYcQGS_0skLd7nkh-m6'
+          ANALYSIS_RUN='36437363166'
+          ANALYSIS_ARTIFACT='jrdb-post-race-parquet-refresh-36437363166'
+          ANALYSIS_GEN='analysis-v1_4-canonical-20260928-02'
+          RRDB_ID='1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+          NEXTWATCH_ID='1AzhPgqr8GXei4opzbI8gD7nb4-5qZ3Zr'
+          TARGET="horse-racing/jrdb/backtests/$SEL/$COMPACT"
+          if test -e "$TARGET/day_prep" || test -e "$TARGET/forecast_prep"; then
+            echo "immutable prepare target already exists: $TARGET" >&2
+            exit 1
+          fi
+          mkdir -p /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb /tmp/rules /tmp/out
+          PACI_PATH="/tmp/input/PACI260809.zip"
+          gdown "https://drive.google.com/uc?id=$PACI_ID" -O "$PACI_PATH"
+          gdown "https://drive.google.com/uc?id=$RRDB_ID" -O /tmp/input/RaceReviewDB_CURRENT.zip
+          gdown "https://drive.google.com/uc?id=$NEXTWATCH_ID" -O /tmp/input/NextWatch.zip
+          gh run download "$ANALYSIS_RUN" --repo "$GITHUB_REPOSITORY" --name "$ANALYSIS_ARTIFACT" --dir /tmp/analysis_art
+          ANALYSIS_ARCHIVE="$(find /tmp/analysis_art -maxdepth 1 -type f \( -name '*.tar.xz' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' \) | sort | head -n 1)"
+          test -n "$ANALYSIS_ARCHIVE"
+          case "$ANALYSIS_ARCHIVE" in
+            *.tar.xz) tar -xJf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
+            *.tar.gz|*.tgz) tar -xzf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
+            *.zip) unzip -q "$ANALYSIS_ARCHIVE" -d /tmp/analysis ;;
+            *) exit 1 ;;
+          esac
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/analysis'); gen='analysis-v1_4-canonical-20260928-02'
+          manifest=root/'generations'/gen/'manifest.json'
+          if not manifest.is_file(): raise SystemExit(f'missing {manifest}')
+          (root/'current.json').write_text(json.dumps({'status':'CURRENT','generation_id':gen,'manifest':f'generations/{gen}/manifest.json'},indent=2)+'\n')
+          PY
+          unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          unzip -q /tmp/input/NextWatch.zip -d /tmp/rules
+          python horse-racing/jrdb/src/build_racenote_daily.py             --date "$TARGET_DATE" --paci "$PACI_PATH"             --analysis-root /tmp/analysis             --racereview-root /tmp/rrdb/postrace_review/v0_1             --next-watch-rules /tmp/rules/next_watch_candidate_rules_frozen.json             --output /tmp/out
+          ROOT="/tmp/out/RaceNote_$COMPACT"
+          MAIN_SHA="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/racenote_prepare_forecast_input.py             --day-prep-root "$ROOT" --output-root /tmp/forecast_prep             --selection-id "$SEL" --date "$TARGET_DATE" --main-sha "$MAIN_SHA"
+          mkdir -p "$TARGET/day_prep" "$TARGET/forecast_prep"
+          cp "$ROOT/manifest.json" "$TARGET/day_prep/manifest.json"
+          cp "$ROOT/validation_report.json" "$TARGET/day_prep/validation_report.json"
+          cp -R /tmp/forecast_prep/. "$TARGET/forecast_prep/"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0058/20260809')
+          m=json.loads((root/'day_prep/manifest.json').read_text())
+          v=json.loads((root/'day_prep/validation_report.json').read_text())
+          h=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
+          assert m['status']=='PASS' and v['status']=='PASS'
+          assert h['market_blind'] is True and h['target_market_opened'] is False and h['result_opened'] is False
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET/day_prep" "$TARGET/forecast_prep"
+          git commit -m 'RaceNote: stage BTDAY-0058 clean forecast prep'
+          git pull --rebase origin main
+          git push origin HEAD:main
