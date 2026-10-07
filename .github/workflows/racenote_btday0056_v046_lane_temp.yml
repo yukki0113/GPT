@@ -1,0 +1,53 @@
+name: RaceNote BTDAY-0056 v0.4.6 lane temp
+on:
+  push:
+    branches: [racenote/btday-0056-v046-20261007]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0056/20260606/ab/v046/.run-freeze'
+permissions:
+  contents: write
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: racenote/btday-0056-v046-20261007
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Save venue cards and freeze Lane A
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        shell: bash
+        run: |
+          set -euo pipefail
+          AB='horse-racing/jrdb/backtests/BTDAY-0056/20260606/ab'
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB" --lane v046 --decisions "$AB/v046/incoming/東京.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB" --lane v046 --decisions "$AB/v046/incoming/阪神.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py freeze --ab-root "$AB" --lane v046
+          python - "$AB/v046/frozen/lane_handoff.json" <<'PY'
+          import json, sys
+          h=json.load(open(sys.argv[1], encoding='utf-8'))
+          assert h['status']=='FROZEN_CLEAN_BLIND'
+          assert h['validator_status']=='PASS'
+          assert h['record_count']==24
+          assert h['market_blind'] is True
+          assert h['target_market_opened'] is False
+          assert h['result_opened'] is False
+          assert h['sibling_forecast_input_used'] is False
+          assert h['logic_version']=='RaceNote-Human-Context-Reader-0.4.6-candidate'
+          PY
+      - name: Commit immutable Lane A Freeze
+        shell: bash
+        run: |
+          set -euo pipefail
+          AB='horse-racing/jrdb/backtests/BTDAY-0056/20260606/ab'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -rf "$AB/v046/incoming"
+          git rm -f "$AB/v046/.run-freeze" .github/workflows/racenote_btday0056_v046_lane_temp.yml
+          git add "$AB/v046/authored_decisions" "$AB/v046/frozen"
+          git commit -m 'racenote: freeze BTDAY-0056 v0.4.6 lane'
+          git push origin HEAD:racenote/btday-0056-v046-20261007
