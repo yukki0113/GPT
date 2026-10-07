@@ -59,6 +59,7 @@ class V051DecisionCoreTest(unittest.TestCase):
         changed = copy.deepcopy(core())
         changed["candidate_compression"]["excluded_horse_no"] = 1
         changed["marks"] = [4, 2, 3, 5, 6]
+        changed["boundary_review"]["alternative_horse_no"] = 7
         changed["mainline_cases"] = [
             {"horse_no": 4, "case": "十分な通常本線根拠を持つ候補として評価する。"},
             {"horse_no": 2, "case": "十分な通常本線根拠を持つ候補として評価する。"},
