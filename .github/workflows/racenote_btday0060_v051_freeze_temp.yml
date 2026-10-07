@@ -1,0 +1,48 @@
+name: RaceNote BTDAY-0060 v051 save freeze temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0060.v051-freeze'
+permissions:
+  contents: write
+jobs:
+  save-freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate, canonical save, and freeze v051 only
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          AB='horse-racing/jrdb/backtests/BTDAY-0060/20260425/ab'
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB" --lane v051 --decisions "$AB/v051/incoming/京都.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB" --lane v051 --decisions "$AB/v051/incoming/東京.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py save --ab-root "$AB" --lane v051 --decisions "$AB/v051/incoming/福島.json"
+          python horse-racing/jrdb/src/racenote_ab_lane.py freeze --ab-root "$AB" --lane v051
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('horse-racing/jrdb/backtests/BTDAY-0060/20260425/ab/v051/frozen/lane_handoff.json')
+          h=json.loads(p.read_text())
+          assert h['status']=='FROZEN_CLEAN_BLIND'
+          assert h['validator_status']=='PASS'
+          assert h['record_count']==36
+          assert h['result_opened'] is False
+          assert h['target_market_opened'] is False
+          assert h['sibling_forecast_input_used'] is False
+          print(json.dumps(h,ensure_ascii=False))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$AB/v051/authored_decisions" "$AB/v051/frozen"
+          git commit -m 'RaceNote: freeze BTDAY-0060 v051 clean-blind'
+          git pull --rebase origin main
+          git push origin HEAD:main
