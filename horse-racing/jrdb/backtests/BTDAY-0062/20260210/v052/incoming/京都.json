@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "race_model": "京都ダート1200mの未勝利。先行候補が複数いるため、前半の位置取りだけでなく直線で減速せず勝ち切れる末脚と近走の不利耐性を重視する。",
+    "marks": [
+      13,
+      7,
+      16,
+      11,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "前走1200m3着でIDM38。差し脚と終いの再現性が最上位で、勝ち切りまで届く主線。"
+      },
+      {
+        "horse_no": 7,
+        "case": "短距離ダートで先行力があり、1200mなら自分の形を作りやすい。"
+      },
+      {
+        "horse_no": 11,
+        "case": "直近1200mでIDM34.1。先行して崩れ切らない再現性を評価する。"
+      },
+      {
+        "horse_no": 14,
+        "case": "直近1200mで連続4着、外を回しても差を詰めており差し筋が安定。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "16番スリーコーズは前走で躓き・バランス崩れがありながら能力を見せており、スムーズなら先行上振れがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎13番は13番アドフランマムは前走1200m3着のIDM38が最上位級で、差し脚を素直に出せれば1着まで届く具体的な経路がある。 ○7番は7番アルサックは短距離で前を取れる脚があり、1200mへの適応と位置取りから押し切りの次主線とする。 ▲16番は16番スリーコーズは前走で躓き・バランス崩れがありながら能力を見せており、スムーズなら先行上振れがある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        7,
+        11,
+        14,
+        3
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16番は前走の出遅れ・接触系不利からの反転余地があり、通常上位とは別の先行上振れ経路を持つ。",
+      "excluded_horse_no": 3,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭では13・7を軸に評価。16番の前走不利からの反転を外部challengerとして認め、3番を落として▲に採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 7,
+      "honmei_win_case": "13番アドフランマムは前走1200m3着のIDM38が最上位級で、差し脚を素直に出せれば1着まで届く具体的な経路がある。",
+      "second_case": "7番アルサックは短距離で前を取れる脚があり、1200mへの適応と位置取りから押し切りの次主線とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "race_model": "京都ダート1800mの未勝利。少頭数でも消耗戦になり得るため、同距離の持続力、直近の終い、調教状態を合わせて勝ち切り候補を選ぶ。",
+    "marks": [
+      9,
+      5,
+      1,
+      6,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "前走1800m2着、IDM43で調教指数21.5。終いの質と状態の両方が最上位。"
+      },
+      {
+        "horse_no": 5,
+        "case": "前走1800m3着、IDM33で上昇調教。先行差し両面で崩れにくい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "1800m近辺で追走経験があり、調教指数12.9で状態面を評価。"
+      },
+      {
+        "horse_no": 7,
+        "case": "近走内容は不安定だが、先行できれば少頭数で残り目がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番アンリミテッドは1800mで3着歴があり、上昇調教から前進する非対称ルートを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9番は9番ワンダフルデイズは1800mで連続好内容、IDM43級と高い調教状態を併せ持ち、差し切る勝ち筋が最も明確。 ○5番は5番ポッドジークは前走1800m3着で上昇調教。9番に続く主線として安定して前進できる。 ▲1番は1番アンリミテッドは1800mで3着歴があり、上昇調教から前進する非対称ルートを評価する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        5,
+        1,
+        6,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番アンファールは地方1600m4着を挟むが、中央1800mの内容から通常5頭を崩すほどの勝ち筋は弱い。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2番の変化余地も比較したが、1800m実績と状態を優先すると通常5頭を崩すほどではなくKEEPとする。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 5,
+      "honmei_win_case": "9番ワンダフルデイズは1800mで連続好内容、IDM43級と高い調教状態を併せ持ち、差し切る勝ち筋が最も明確。",
+      "second_case": "5番ポッドジークは前走1800m3着で上昇調教。9番に続く主線として安定して前進できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "race_model": "京都ダート1400mの未勝利。先行勢が揃うため、前で運ぶ能力に加えて道中のロス、不利からの反転、1400mでの再現性を重視する。",
+    "marks": [
+      9,
+      13,
+      8,
+      11,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "1400mで連続2・3着、IDM37.9。先行して最後まで残す能力が最も高い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "東京1400m2着、IDM34.9で調教もデキ抜群。先行主線として強い。"
+      },
+      {
+        "horse_no": 11,
+        "case": "前走京都1400m3着で上昇調教。大崩れしにくい主線候補。"
+      },
+      {
+        "horse_no": 4,
+        "case": "前走京都1400m2着、調教デキ抜群。大外を回した内容も評価できる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "8番リピは芝でIDM40の実績があり、ダート替わりで先行力が噛み合えば一変する別経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9番は9番アーガイルショアは同条件で2・3着を続け、先行して崩れにくい。今回は押し切りまで最も描きやすい。 ○13番は13番カーリキューは東京1400m2着と高い調教状態があり、先行して9番を逆転できる次主線。 ▲8番は8番リピは芝でIDM40の実績があり、ダート替わりで先行力が噛み合えば一変する別経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        13,
+        11,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番ハッピーバンクは前走3着でも展開利を含み、上位5頭より勝ち切り根拠が一段弱い。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2番まで比較したが、通常5頭の能力・近走再現性を上回る外部経路とは判断せずKEEPする。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 13,
+      "honmei_win_case": "9番アーガイルショアは同条件で2・3着を続け、先行して崩れにくい。今回は押し切りまで最も描きやすい。",
+      "second_case": "13番カーリキューは東京1400m2着と高い調教状態があり、先行して9番を逆転できる次主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "race_model": "京都ダート1800mの1勝クラス。前傾想定でも前残りと差しの両方が成立し得るため、クラス適性と展開耐性を重視する。",
+    "marks": [
+      9,
+      7,
+      5,
+      6,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "前走同条件2着で前傾を逃げて耐えた。調教デキ抜群で勝ち筋が明瞭。"
+      },
+      {
+        "horse_no": 7,
+        "case": "前走同条件1着、IDM58。差し脚とクラス上位の能力を評価する。"
+      },
+      {
+        "horse_no": 6,
+        "case": "前走阪神1800m2着、IDM56。差しで安定して高い能力を示す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "京都1800m2着で展開不向きでも走れており、差し主線として残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番フランキーバローズは前傾を前で受けて好走を重ねており、前残りの非対称ルートを担う。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9番は9番ハイクオリティは前走京都1800mで前傾を逃げて2着。状態もデキ抜群で、主導権から押し切る勝ち筋を最優先する。 ○7番は7番ルクスフレンジーは同条件勝ちとIDM58があり、差し切り能力では最上位級の次主線。 ▲5番は5番フランキーバローズは前傾を前で受けて好走を重ねており、前残りの非対称ルートを担う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        7,
+        6,
+        1,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番サンマルミッションは後方からの展開待ち色が強く、通常5頭を崩す勝ち筋までは不足する。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4番の差し込み余地は比較したが、クラス実績と展開耐性で通常5頭が明確に上回るためKEEPとする。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 7,
+      "honmei_win_case": "9番ハイクオリティは前走京都1800mで前傾を逃げて2着。状態もデキ抜群で、主導権から押し切る勝ち筋を最優先する。",
+      "second_case": "7番ルクスフレンジーは同条件勝ちとIDM58があり、差し切り能力では最上位級の次主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "race_model": "京都芝1600mの新馬。既走比較がないため、能力指数、調教状態、厩舎・騎手要素をまとめ、勝ち切る初戦性能を重視する。",
+    "marks": [
+      15,
+      14,
+      9,
+      4,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "IDM36.2、情報指数3.1、調教14.4。初戦から完成度が高く勝ち切り候補。"
+      },
+      {
+        "horse_no": 14,
+        "case": "IDM35.3、安定した厩舎評価と上昇調教で初戦向き。"
+      },
+      {
+        "horse_no": 4,
+        "case": "IDM34.4で調教13.3。能力と状態のバランスが良い。"
+      },
+      {
+        "horse_no": 11,
+        "case": "IDM33.6、松山騎乗で調教10.7。主線に残せる完成度。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9番ベイニーニャは上位4頭より指数は少し下でも、池添騎乗と調教・厩舎の組み合わせから初戦の上振れ余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎15番は15番エレガンスアスクは能力指数と調教がともに上位で、初戦から好位で流れに乗って押し切る経路が最も明瞭。 ○14番は14番スマートティアナは上昇調教と高い能力指数を併せ持ち、15番に次ぐ完成度で○とする。 ▲9番は9番ベイニーニャは上位4頭より指数は少し下でも、池添騎乗と調教・厩舎の組み合わせから初戦の上振れ余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        14,
+        4,
+        11,
+        8
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番は新馬戦特有の未観測余地が大きく、騎手・厩舎・調教を合わせた上振れ経路を外部challengerとして評価する。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭を先に固定したうえで9番の初戦上振れを評価し、8番より勝ち切りの別経路が明確として▲に採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 14,
+      "honmei_win_case": "15番エレガンスアスクは能力指数と調教がともに上位で、初戦から好位で流れに乗って押し切る経路が最も明瞭。",
+      "second_case": "14番スマートティアナは上昇調教と高い能力指数を併せ持ち、15番に次ぐ完成度で○とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "race_model": "京都芝2400mの未勝利。距離延長で瞬発力だけでなく持続力と折り合いが必要なため、2000m以上の内容と状態を重視する。",
+    "marks": [
+      9,
+      15,
+      7,
+      5,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "2000mで連続3着、IDM36〜37、調教指数20。長く脚を使う主線。"
+      },
+      {
+        "horse_no": 15,
+        "case": "2200m4着、IDM35。先行して持続する形が距離延長でも描ける。"
+      },
+      {
+        "horse_no": 5,
+        "case": "前走2000m6着だが次走良化気配、調教14.6で上積みがある。"
+      },
+      {
+        "horse_no": 3,
+        "case": "後方からの末脚シグナルがあり、距離延長で追走が楽になれば差し込める。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番トレセデオロは2000mで逃げ先行を続けており、2400mで単騎に近い形なら粘り込みの別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9番は9番ビクスバイトは2000mで連続3着、調教指数20かつA評価。距離延長でも末脚を持続できれば差し切る経路が最も強い。 ○15番は15番パウンドフォーワンは2200m4着から距離適性を見込め、先行持続で9番と異なる主線を持つ。 ▲7番は7番トレセデオロは2000mで逃げ先行を続けており、2400mで単騎に近い形なら粘り込みの別経路がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        15,
+        5,
+        7,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番ヴィラジョヴィスは先行経験があるが、2400mで通常5頭を上回る持続根拠までは弱い。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1番の先行残りも比較したが、長距離での能力・状態・末脚を合わせると通常5頭を維持する方が妥当。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 15,
+      "honmei_win_case": "9番ビクスバイトは2000mで連続3着、調教指数20かつA評価。距離延長でも末脚を持続できれば差し切る経路が最も強い。",
+      "second_case": "15番パウンドフォーワンは2200m4着から距離適性を見込め、先行持続で9番と異なる主線を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "race_model": "京都ダート1800mの1勝クラス。スロー寄り想定で位置取りが重要だが、後方から一気に差す経路も残るため両面を評価する。",
+    "marks": [
+      7,
+      5,
+      6,
+      2,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "前走同条件2着、過去IDM51。上昇調教で差し切りまで狙える。"
+      },
+      {
+        "horse_no": 5,
+        "case": "1900m2着・1800m3着と安定。調教18.7で持続力の主線。"
+      },
+      {
+        "horse_no": 2,
+        "case": "同条件で連続3着。外を回しても伸びており相手なりに走れる。"
+      },
+      {
+        "horse_no": 3,
+        "case": "同条件2着歴があり、上昇調教から前進余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6番デルマサクラサクは後方型だがRRDBで後傾後方から上がり100pct。前が止まる一点で突き抜ける非対称性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎7番は7番アリストクラシアは同条件2着の実績と高い厩舎評価、上昇調教が揃い、好位差しから勝ち切る経路を最上位とする。 ○5番は5番オリジナルファインは近2走2・3着と安定し、調教指数18.7で長く脚を使う次主線。 ▲6番は6番デルマサクラサクは後方型だがRRDBで後傾後方から上がり100pct。前が止まる一点で突き抜ける非対称性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        5,
+        2,
+        3,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番は通常評価では後方依存だが、終い性能が極端に高い履歴があり展開崩壊時の一撃経路が明確。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭の◎○を保持したまま、6番の極端な末脚ルートを外部challengerとして認め、4番を落として▲に採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 5,
+      "honmei_win_case": "7番アリストクラシアは同条件2着の実績と高い厩舎評価、上昇調教が揃い、好位差しから勝ち切る経路を最上位とする。",
+      "second_case": "5番オリジナルファインは近2走2・3着と安定し、調教指数18.7で長く脚を使う次主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "race_model": "京都芝1200mの2勝クラス。前の争いと高速決着の両方を想定し、短距離での再現性と終いの上振れを分けて評価する。",
+    "marks": [
+      5,
+      4,
+      6,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "前走同距離2着、IDM60。先行して高水準を維持できる主線。"
+      },
+      {
+        "horse_no": 4,
+        "case": "芝1400m2着でIDM59、調教17.1。短縮でも能力上位。"
+      },
+      {
+        "horse_no": 2,
+        "case": "芝1200m2着、上昇調教A。差しで展開に左右されにくい。"
+      },
+      {
+        "horse_no": 7,
+        "case": "芝1200mで安定して先行、近走IDM57。前で運べる主線候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6番トーセントラムは後方型でLOSS_WITH_FASTEST_LAST3Fを持ち、前崩れなら一気に差す別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎5番は5番ルシードは前走1200m2着のIDM60で、先行して直線まで脚を残せる。再現性と勝ち切りの両面で最上位。 ○4番は4番リリーフィールドは能力上位で調教も高く、短縮で追走が噛み合えば5番を逆転できる。 ▲6番は6番トーセントラムは後方型でLOSS_WITH_FASTEST_LAST3Fを持ち、前崩れなら一気に差す別経路がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        4,
+        2,
+        7,
+        1
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番は通常順位では外でも最速上がり履歴があり、短距離の前崩れ時にだけ成立する非対称ルートを持つ。",
+      "excluded_horse_no": 1,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭を固定後、6番の最速上がり型の展開依存ルートを別枠で採用し、1番を落として▲に置く。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 4,
+      "honmei_win_case": "5番ルシードは前走1200m2着のIDM60で、先行して直線まで脚を残せる。再現性と勝ち切りの両面で最上位。",
+      "second_case": "4番リリーフィールドは能力上位で調教も高く、短縮で追走が噛み合えば5番を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "race_model": "京都芝1600mの3勝クラス。差し勢の末脚比較が中心だが、前傾を前で耐える経路も価値があるため展開耐性を分けて見る。",
+    "marks": [
+      10,
+      13,
+      12,
+      2,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "前走展開不向きでもIDM57、調教19。勝ち上がり実績もあり差し主線。"
+      },
+      {
+        "horse_no": 13,
+        "case": "近走59級、後方から高い上がりを反復。展開が流れれば強い。"
+      },
+      {
+        "horse_no": 2,
+        "case": "1600mで高水準を維持し上昇調教。安定した差し主線。"
+      },
+      {
+        "horse_no": 5,
+        "case": "前走1600m3着、IDM59。好位差しで崩れにくい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番ネーヴェフレスカは前傾を前で受けて勝ち切った履歴があり、差し優勢想定を裏返す先行ルートがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎10番は10番キングメーカーは1600m勝ちと高い調教状態があり、展開不向きの前走から差し切りへ反転する経路を最上位とする。 ○13番は13番ブリュットミレジメは高い末脚を反復し、流れれば一気に差し切れる次主線。 ▲12番は12番ネーヴェフレスカは前傾を前で受けて勝ち切った履歴があり、差し優勢想定を裏返す先行ルートがある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        13,
+        2,
+        5,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番は通常の末脚比較とは別に、前傾を前で受け切る耐性を持ち、展開を逆手に取る勝ち筋が明確。",
+      "excluded_horse_no": 7,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭の◎○を維持しつつ、12番の前受け耐性を外部の非対称経路として採用し、7番を落として▲にする。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 13,
+      "honmei_win_case": "10番キングメーカーは1600m勝ちと高い調教状態があり、展開不向きの前走から差し切りへ反転する経路を最上位とする。",
+      "second_case": "13番ブリュットミレジメは高い末脚を反復し、流れれば一気に差し切れる次主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "race_model": "京都ダート1200mのオープン。先行力の高い馬が多く前傾化を想定し、前受け耐性と差しの切れを両方向から評価する。",
+    "marks": [
+      3,
+      12,
+      13,
+      8,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "1200mを完勝してIDM66、調教15.7。先行力と上昇度が高い。"
+      },
+      {
+        "horse_no": 12,
+        "case": "差し・追込から高い末脚を反復し、前傾化で差し切る主線。"
+      },
+      {
+        "horse_no": 8,
+        "case": "近2走3着、前傾を前で受ける耐性があり安定。"
+      },
+      {
+        "horse_no": 4,
+        "case": "追込で高い末脚指数を持ち、前が崩れれば突き抜ける余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13番アガシは大外を回して1200mを勝った実績があり、外差しが届く流れなら主線外から勝ち切れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎3番は3番ファムエレガンテは1200m完勝の能力と上昇調教が揃い、速い流れでも前で押し切る勝ち筋が最も明確。 ○12番は12番スマートフォルスは末脚性能が高く、前傾化すれば差し切りまで届く次主線。 ▲13番は13番アガシは大外を回して1200mを勝った実績があり、外差しが届く流れなら主線外から勝ち切れる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        12,
+        8,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13番は1200m勝ちの外差し性能があり、先行多数で前が崩れる展開に特化した非対称ルートを持つ。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭の◎○を保持したうえで13番の外差し一撃を採用し、2番より展開に対する勝ち切り経路が明確として▲にする。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 12,
+      "honmei_win_case": "3番ファムエレガンテは1200m完勝の能力と上昇調教が揃い、速い流れでも前で押し切る勝ち筋が最も明確。",
+      "second_case": "12番スマートフォルスは末脚性能が高く、前傾化すれば差し切りまで届く次主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "race_model": "京都芝1800mのきさらぎ賞。少頭数で位置取りが緩みやすく、能力上位の差しに加えて単騎先行の残り目も重視する。",
+    "marks": [
+      1,
+      4,
+      5,
+      7,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1800m重賞級でIDM56.2、末脚と広いコース適性が高い。"
+      },
+      {
+        "horse_no": 4,
+        "case": "2000mで1勝・3着、調教デキ抜群。持続力と状態が強い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "1600m3着、1800m勝ちで末脚を反復。距離延長も対応可能。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2000m勝ち、先行して前傾を耐えた実績があり展開対応幅が広い。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番ストームゲイルは1800mを逃げ先行で連続好走し、少頭数で楽に運べればそのまま押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1番は1番ゾロアストロは1800mで高いIDMと末脚を示し、広いコースで差し切る勝ち筋が最も完成している。 ○4番は4番ゴーイントゥスカイは調教デキ抜群で2000mの持続力もあり、早め進出から勝ち切れる次主線。 ▲5番は5番ストームゲイルは1800mを逃げ先行で連続好走し、少頭数で楽に運べればそのまま押し切る別経路がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        4,
+        7,
+        2,
+        8
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番は能力指数では上位外だが、前傾を前で受け切った先行実績があり少頭数の展開利を最大化できる。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭を先に固定し、5番の単騎先行・前受け耐性を外部challengerとして採用。8番を落として▲に置く。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 4,
+      "honmei_win_case": "1番ゾロアストロは1800mで高いIDMと末脚を示し、広いコースで差し切る勝ち筋が最も完成している。",
+      "second_case": "4番ゴーイントゥスカイは調教デキ抜群で2000mの持続力もあり、早め進出から勝ち切れる次主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "race_model": "京都ダート1200mの2勝クラス。逃げ先行が多く流れやすいため、前受け性能と差し脚の両方を勝ち切り目線で評価する。",
+    "marks": [
+      6,
+      5,
+      2,
+      15,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "近2走1200m2着、IDM53、調教19。差し脚と安定感が最上位。"
+      },
+      {
+        "horse_no": 5,
+        "case": "1200m4着、調教17.9。逃げ先行で自分の形を作れる。"
+      },
+      {
+        "horse_no": 15,
+        "case": "大外を回して1200m勝ち、後方から上がり100pctの別筋を持つ。"
+      },
+      {
+        "horse_no": 13,
+        "case": "1200m6着でも能力は維持し、上昇調教で差を詰める余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2番クリノオリーブは1200m3着・1400m4着と前で安定し、先行多数でも好位でロスなく運ぶ経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16番まで比較した上で、最終5頭の役割と勝ち筋を優先して境界を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6番は6番ヴリトラハンは1200mで連続2着、情報指数・調教とも高く、流れたところを差し切る勝ち筋が最も明確。 ○5番は5番アメリカンチケットは先行力と高い調教状態があり、前で運んで押し切る次主線。 ▲2番は2番クリノオリーブは1200m3着・1400m4着と前で安定し、先行多数でも好位でロスなく運ぶ経路がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        5,
+        15,
+        13,
+        16
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番は通常上位より指数は僅かに下でも、短距離で前を取って粘る再現性があり展開上の上振れ経路が明確。",
+      "excluded_horse_no": 16,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "通常5頭の◎○を守りながら2番の先行安定性を外部challengerとして採用し、16番を落として▲に置く。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 5,
+      "honmei_win_case": "6番ヴリトラハンは1200mで連続2着、情報指数・調教とも高く、流れたところを差し切る勝ち筋が最も明確。",
+      "second_case": "5番アメリカンチケットは先行力と高い調教状態があり、前で運んで押し切る次主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、当該レースで1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  }
+]
