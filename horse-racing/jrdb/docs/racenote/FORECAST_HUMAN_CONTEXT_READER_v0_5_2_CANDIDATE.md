@@ -1,6 +1,6 @@
 # RaceNote v0.5.2 Candidate — Protected Candidate Set / Aggressive Role Assignment
 
-Status: **RESEARCH CANDIDATE — CLEAN-BLIND v0.5.1 vs v0.5.2 VALIDATION REQUIRED**  
+Status: **PROMOTED BASELINE — PROSPECTIVE v0.5.1 vs v0.5.2 A/B COMPLETE AT BTDAY-0057..0060**  
 Date: 2026-10-07  
 Logic ID: `RaceNote-Human-Context-Reader-0.5.2-candidate`
 
@@ -151,4 +151,53 @@ The central v0.5.2 question is:
 
 v0.4.6 remains preserved as a historical baseline and can be used retrospectively. It is no longer required as a prospective authoring lane for the new v0.5.1 vs v0.5.2 experiment.
 
-No production/current pointer changes are made by this candidate.
+## 8. Baseline promotion — 2026-10-07
+
+The prospective v0.5.1 vs v0.5.2 comparison is complete for BTDAY-0057 through BTDAY-0060, 132 races total.
+
+Promotion evidence is intentionally split into prediction and settlement channels.
+
+Prediction:
+- v0.5.1 ◎ wins: 32/132 = 24.2%
+- v0.5.2 ◎ wins: 35/132 = 26.5%
+- v0.5.1 ◎ top-2: 50.0%
+- v0.5.2 ◎ top-2: 44.7%
+- v0.5.1 ◎ top-3: 61.4%
+- v0.5.2 ◎ top-3: 56.1%
+- v0.5.1 winner-in-five: 71.2%
+- v0.5.2 winner-in-five: 70.5%
+
+The lower top-2/top-3 rate is not treated as an automatic regression because the v0.5.2 objective is win-first asymmetric settlement rather than place-first flattening.
+
+The v0.5.2 role audit changed ◎ away from ordinary_five[0] in 52 races. Across those re-ranks:
+- finish improved in 31 races;
+- finish worsened in 21 races;
+- 11 additional ◎ wins were created;
+- 6 ordinary-rank-1 wins were lost;
+- net ◎ win creation: +5.
+
+Settlement over the same 132 races:
+- ◎ win ROI: v0.5.1 60.8% / v0.5.2 69.2%
+- ◎-○ quinella ROI: 48.8% / 61.4%
+- ◎-▲ quinella ROI: 90.0% / 83.8%
+- ◎→○ exacta ROI: 33.9% / 72.1%
+- ◎→▲ exacta ROI: 54.0% / 76.2%
+- combined ◎→○▲ exacta ROI: 43.9% / 74.2%
+- trio ROI: 54.3% / 69.5%
+- trifecta ROI: 34.0% / 84.8%
+
+BTDAY-0060 supplied the clearest asymmetric day-level evidence, including positive v0.5.2 ROI in the combined quinella, both exacta routes, trio and trifecta while prediction top-2/top-3 rates were lower than v0.5.1.
+
+Decision:
+- v0.5.2 is promoted to the current RaceNote forecast baseline.
+- v0.5.1 remains preserved as the historical structural-safety baseline.
+- the v0.5.1/v0.5.2 A/B harness remains available for audit/reproduction but is no longer required for ordinary prospective operation.
+- future improvements should preserve the v0.5.2 candidate-set protection and WIN_FIRST_NOT_PLACE_FIRST role behavior unless new prospective evidence justifies replacing them.
+
+## 9. Current operation
+
+Ordinary BTDAY and forward daily use should use the single-day v0.5.2 path documented in:
+
+`RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`
+
+The A/B path remains historical/research infrastructure and is not the default operational route.
