@@ -20,19 +20,37 @@ def load_candidate_labels(path: Path) -> dict[str,str]:
         raise AnalysisError(f"expected 1620 candidate labels, got {len(out)}")
     return out
 
-def load_horse_names(root: Path) -> dict[tuple[str,int],str]:
-    parser=Parser(); out={}
+def load_sed_population(root: Path) -> tuple[dict[tuple[str,int],str], list[dict[str,Any]]]:
+    parser=Parser(); names={}; population=[]
+    seen=set()
     for ap in sorted(root.rglob("SED26????.zip")):
         with zipfile.ZipFile(ap) as zf:
             for member in canonical_members(zf,"SED"):
                 for rec in read_fixed_records(zf,member,"SED"):
                     r=parser.sed(rec)
-                    key=(str(r["race_key_raw"]),int(r["horse_no"]))
+                    race_key=str(r["race_key_raw"]); horse_no=int(r["horse_no"])
+                    key=(race_key,horse_no)
+                    if key in seen:
+                        raise AnalysisError(f"duplicate SED population row: {key}")
+                    seen.add(key)
                     name=str(r.get("horse_name") or "").strip()
-                    if key in out and out[key] != name and name:
-                        raise AnalysisError(f"conflicting horse name for {key}")
-                    out[key]=name
-    return out
+                    names[key]=name
+                    abnormal=str(r.get("abnormal_code") or "")
+                    eligible=r.get("finish") is not None and abnormal in {"","0"}
+                    population.append({
+                        "race_horse_key":race_key+f"{horse_no:02d}",
+                        "race_key":race_key,"horse_no":horse_no,"horse_name":name,
+                        "finish":r.get("finish"),"abnormal_code":abnormal,
+                        "popularity":r.get("final_popularity"),
+                        "win_payout":int(r.get("win_payout") or 0),
+                        "place_payout":int(r.get("place_payout") or 0),
+                        "eligible":eligible,
+                        "win_hit":bool(eligible and int(r.get("finish") or 999)==1),
+                        "place_hit":bool(eligible and int(r.get("place_payout") or 0)>0),
+                    })
+    if len(population)!=36706:
+        raise AnalysisError(f"expected 36706 SED population rows, got {len(population)}")
+    return names,population
 
 def load_matches(path: Path) -> list[dict[str,Any]]:
     import pyarrow.parquet as pq
@@ -117,7 +135,7 @@ def breakdown(rows:list[dict[str,Any]], keyfn) -> dict[str,Any]:
     for r in rows:g[str(keyfn(r))].append(r)
     return {k:metrics(v) for k,v in sorted(g.items())}
 
-def analyze(runners:list[dict[str,Any]]) -> dict[str,Any]:
+def analyze(runners:list[dict[str,Any]], population:list[dict[str,Any]]) -> dict[str,Any]:
     sig=lambda r: "1" if r["signal_count"]==1 else "2" if r["signal_count"]==2 else "3_PLUS"
     famcnt=lambda r:"1" if r["family_count"]==1 else "2" if r["family_count"]==2 else "3_PLUS"
     def popband(r):
@@ -148,9 +166,26 @@ def analyze(runners:list[dict[str,Any]]) -> dict[str,Any]:
         for pb in ("1_3","4_7","8_9","10_PLUS"):
             subset=[r for r in runners if sig(r)==sb and popband(r)==pb]
             cross[f"{sb}__{pb}"]=metrics(subset)
+    matched_keys={r["race_horse_key"] for r in runners}
+    unmatched=[r for r in population if r["race_horse_key"] not in matched_keys]
+    all_pop=breakdown(population,popband)
+    unmatched_pop=breakdown(unmatched,popband)
+    edge_pop=breakdown(runners,popband)
+    popularity_lift={}
+    for band in ("1_3","4_7","8_9","10_PLUS"):
+        e=edge_pop.get(band,{}); u=unmatched_pop.get(band,{})
+        popularity_lift[band]={
+            "edge_place_rate":e.get("place_rate"),"nonedge_place_rate":u.get("place_rate"),
+            "place_rate_delta":(e.get("place_rate")-u.get("place_rate")) if e.get("place_rate") is not None and u.get("place_rate") is not None else None,
+            "edge_win_rate":e.get("win_rate"),"nonedge_win_rate":u.get("win_rate"),
+            "win_rate_delta":(e.get("win_rate")-u.get("win_rate")) if e.get("win_rate") is not None and u.get("win_rate") is not None else None,
+        }
     return {
         "status":"PASS",
         "overall":metrics(runners),
+        "population_all":metrics(population),
+        "population_nonedge":metrics(unmatched),
+        "popularity_matched_vs_nonedge":popularity_lift,
         "by_signal_count":breakdown(runners,sig),
         "by_distinct_family_count":breakdown(runners,famcnt),
         "by_popularity_band":breakdown(runners,popband),
@@ -182,9 +217,9 @@ def main()->int:
     args.output_root.mkdir(parents=True,exist_ok=True)
     rows=load_matches(args.joined_matches)
     labels=load_candidate_labels(args.candidate_eval)
-    names=load_horse_names(args.sed_root)
+    names,population=load_sed_population(args.sed_root)
     runners=aggregate_runners(rows,labels,names)
-    result=analyze(runners)
+    result=analyze(runners,population)
     write_csv(args.output_root/"v05_2026_runner_outcomes.csv",runners)
     (args.output_root/"v05_2026_runner_outcome_analysis.json").write_text(json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True,default=str)+"\n",encoding="utf-8")
     print(json.dumps(result,ensure_ascii=False,sort_keys=True,default=str))
