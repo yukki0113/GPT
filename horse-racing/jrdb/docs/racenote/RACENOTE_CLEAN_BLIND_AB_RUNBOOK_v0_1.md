@@ -145,8 +145,30 @@ The result contract is:
 - one date query = all JRA races on that date;
 - `success` or `review_required` is retained with provenance for the A/B analysis.
 
-The A/B evaluation joins each lane's frozen `records.json` to the parsed
-results by venue + race number + horse number and evaluates two parallel layers.
+Build the canonical RaceNote daily-result JSON from the same materialized Raw:
+
+```bash
+python horse-racing/jrdb/src/racenote_daily_result_from_jrdb.py \
+  --date YYYY-MM-DD \
+  --sed /mnt/data/jrdb_result_query/YYYYMMDD/SEDyymmdd.zip \
+  --hjc /mnt/data/jrdb_result_query/YYYYMMDD/HJCyymmdd.zip \
+  --pretty
+```
+
+Then settle each frozen lane directly:
+
+```bash
+python horse-racing/jrdb/src/racenote_daily_settlement.py \
+  --forecast horse-racing/jrdb/backtests/BTDAY-XXXX/<YYYYMMDD>/ab/v046/frozen/records.json \
+  --results horse-racing/jrdb/result_cache/YYYYMMDD_SameDay_Result.json
+
+python horse-racing/jrdb/src/racenote_daily_settlement.py \
+  --forecast horse-racing/jrdb/backtests/BTDAY-XXXX/<YYYYMMDD>/ab/v050/frozen/records.json \
+  --results horse-racing/jrdb/result_cache/YYYYMMDD_SameDay_Result.json
+```
+
+The A/B evaluation joins each lane's frozen records to the same parsed result source
+and evaluates two parallel layers.
 
 ### Prediction layer
 
