@@ -292,7 +292,7 @@ def run(*,feature_input:Path,analysis_input:Path,out:Path,feature_artifact_diges
             for row in metrics:byid[row["candidate_id"]][row["period"]]=_metric_obj(row)
             parent_by={}
             for c in candidates:
-                pset={p:parents.get((c["parent_key"],p)) for p in ("context_2022_2023","year_2024","year_2025")}
+                pset={p:parents.get((c["parent_key"],p)) for p in ("context_2022_2023","year_2024","year_2025","overall_2024_2025")}
                 def parent_obj(p):
                     r=pset[p]
                     return {"n":int(r["n"]),"win_rate":r["win_rate"],"place_rate":r["place_rate"],"win_roi":r["win_roi"],"place_roi":r["place_roi"]} if r else {"n":0,"win_rate":None,"place_rate":None,"win_roi":None,"place_roi":None}
