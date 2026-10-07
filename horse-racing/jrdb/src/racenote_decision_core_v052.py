@@ -139,15 +139,17 @@ def validate_core(core: dict, reader: dict) -> None:
     if decision == "NO_EXTERNAL_CHALLENGER":
         raise ValueError(f"{venue}{race_no}R: NO_EXTERNAL_CHALLENGER is only valid in a five-runner field")
 
-    final_expected = (set(ordinary) | {challenger}) - {excluded}
-    if set(marks) != final_expected:
-        raise ValueError(f"{venue}{race_no}R: final marks must equal the audited six-to-five compression")
-
     if decision == "ADMIT_CHALLENGER":
         if excluded == challenger:
             raise ValueError(f"{venue}{race_no}R: admitted challenger cannot be excluded")
         if excluded in {honmei, second}:
             raise ValueError(f"{venue}{race_no}R: challenger cannot displace audited ◎/○")
+
+    final_expected = (set(ordinary) | {challenger}) - {excluded}
+    if set(marks) != final_expected:
+        raise ValueError(f"{venue}{race_no}R: final marks must equal the audited six-to-five compression")
+
+    if decision == "ADMIT_CHALLENGER":
         if marks[2] != challenger:
             raise ValueError(f"{venue}{race_no}R: admitted external challenger must be ▲")
     else:
