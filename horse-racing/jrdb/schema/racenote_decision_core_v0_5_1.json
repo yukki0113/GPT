@@ -79,12 +79,12 @@
           "uniqueItems": true,
           "items": {"type": "integer", "minimum": 1}
         },
-        "external_challenger_horse_no": {"type": "integer", "minimum": 1},
+        "external_challenger_horse_no": {"type": ["integer", "null"], "minimum": 1},
         "external_challenger_case": {"type": "string", "minLength": 12},
-        "excluded_horse_no": {"type": "integer", "minimum": 1},
+        "excluded_horse_no": {"type": ["integer", "null"], "minimum": 1},
         "decision": {
           "type": "string",
-          "enum": ["ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE"]
+          "enum": ["ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE", "NO_EXTERNAL_CHALLENGER"]
         },
         "reason": {"type": "string", "minLength": 16}
       }
