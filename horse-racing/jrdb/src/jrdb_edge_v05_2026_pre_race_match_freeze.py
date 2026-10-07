@@ -565,6 +565,8 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
     inventory = json.loads(inventory_path.read_text()) if inventory_path.exists() else None
     if inventory is None or inventory["remaining_missing_date_count"]:
         raise FreezeError("canonical PACI recovery inventory missing or incomplete")
+    (output_root / "v05_2026_paci_input_inventory.json").write_text(
+        json.dumps(inventory, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     history_audit = build_history_index(facts, sed_rows, warehouse_root)
     for fact in facts:
         validate_match_fact_schema(fact)
