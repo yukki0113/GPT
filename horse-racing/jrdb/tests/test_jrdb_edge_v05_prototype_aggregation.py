@@ -46,6 +46,8 @@ class PrototypeAggregationTests(unittest.TestCase):
         self.assertEqual(edgedb_v05.going_bucket("1"), "GOOD")
         for value in ("2", "3", "4"):
             self.assertEqual(edgedb_v05.going_bucket(value), "SOFT_OR_WORSE")
+        self.assertEqual(edgedb_v05.going_bucket("GOOD"), "GOOD")
+        self.assertEqual(edgedb_v05.going_bucket("SOFT_OR_WORSE"), "SOFT_OR_WORSE")
         self.assertIsNone(edgedb_v05.going_bucket("0"))
 
     def test_support_bands_keep_micro_candidates_regardless_of_returns(self):
