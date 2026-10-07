@@ -1,0 +1,81 @@
+name: RaceNote BTDAY-0060 v051 shortlist temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0060.v051-shortlist'
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 2}
+      - name: Build shortlist
+        run: |
+          python - <<'PY'
+          import json, statistics
+          from pathlib import Path
+          src=Path('horse-racing/jrdb/backtests/BTDAY-0060/20260425/ab/v051/reader')
+          out=Path('horse-racing/jrdb/backtests/BTDAY-0060/20260425/ab/v051/shortlist.txt')
+          def g(d,*ks):
+            for k in ks:
+              if not isinstance(d,dict): return None
+              d=d.get(k)
+            return d
+          rows=[]
+          for p in sorted(src.glob('*.json')):
+            x=json.loads(p.read_text())
+            rr=x['race']; hs=[]
+            raw=[]
+            for h in x['horses']:
+              i=h['identity']; e=h.get('evidence',{}); o=h.get('other_context',{}); rrv=o.get('racereview',{}) or {}; hp=rrv.get('history_profile',{}) or {}; rec=rrv.get('recommendation',{}) or {}
+              vals={
+                'n':i['horse_no'],'name':i['horse_name'],
+                'idm':g(e,'ABILITY','P','idm') or -99,
+                'info':g(e,'ABILITY','S','info_index') or -9,
+                'long':g(e,'ABILITY','S','longshot_index') or -9,
+                'tr':g(e,'TRAINING_CONDITION','P','kyi_training_index') or -99,
+                'conn':g(e,'CONNECTIONS','C','jockey_index') or -9,
+                'F':g(e,'PACE_POSITION','S','pace_front_index') or -99,
+                'L':g(e,'PACE_POSITION','P','pace_late_index') or -99,
+                'P':g(e,'PACE_POSITION','S','pace_pace_index') or -99,
+                'pos':g(e,'PACE_POSITION','S','pace_position_index') or -99,
+                'rr':[z.get('code') for z in hp.get('primary_positive') or []],
+                'sig':(rec.get('matched_signal_ids') or []),
+                'runs':[]
+              }
+              for z in (o.get('recent_runs') or [])[:2]:
+                ra=z.get('race',{}); pe=z.get('performance',{}); re=z.get('result',{}); no=z.get('notes',{})
+                vals['runs'].append(f"{ra.get('date','')[5:]} {ra.get('venue','')}{ra.get('surface','')}{ra.get('distance_m','')} f{re.get('finish')} i{pe.get('idm')} {str(no.get('race_comment') or '')[:24]}")
+              raw.append(vals)
+            # rank-sum: lower is better, long used lightly
+            metrics=[('idm',True,3),('info',True,2),('tr',True,2),('conn',True,1),('long',True,0.5)]
+            scores={h['n']:0 for h in raw}
+            for k,desc,w in metrics:
+              ranked=sorted(raw,key=lambda z:z[k],reverse=desc)
+              for idx,h in enumerate(ranked): scores[h['n']]+=idx*w
+            for h in raw: h['score']=round(scores[h['n']],1)
+            ordered=sorted(raw,key=lambda z:z['score'])
+            top=ordered[:7]
+            special=[]
+            for h in raw:
+              if h in top: continue
+              if h['sig'] or h['L']>=2 or h['F']>=0 or h['long']>=220 or any(c in h['rr'] for c in ['REPEATED_FASTEST_LAST3F','PACE_POSITION_AGAINST_GOOD_RUN','REPEATED_ABOVE_CLASS_PERFORMANCE']):
+                special.append(h)
+            special=sorted(special,key=lambda z:(-max(z['L'],z['F']),-z['long']))[:3]
+            rows.append(f"## {rr['venue']}{rr['race_no']}R {rr.get('class')} {rr.get('surface')}{rr.get('distance_m')} n={rr.get('field_size')}")
+            for h in top:
+              rows.append(f"T {h['n']} {h['name']} sc={h['score']} idm={h['idm']} info={h['info']} tr={h['tr']} long={h['long']} F/L/P={h['F']}/{h['L']}/{h['P']} rr={','.join(h['rr'])} sig={','.join(h['sig'])} | {' ; '.join(h['runs'])}")
+            for h in special:
+              rows.append(f"X {h['n']} {h['name']} sc={h['score']} idm={h['idm']} info={h['info']} tr={h['tr']} long={h['long']} F/L/P={h['F']}/{h['L']}/{h['P']} rr={','.join(h['rr'])} sig={','.join(h['sig'])} | {' ; '.join(h['runs'])}")
+            rows.append('')
+          out.write_text('\n'.join(rows),encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0060/20260425/ab/v051/shortlist.txt
+          git commit -m 'RaceNote: build BTDAY-0060 v051 shortlist'
+          git pull --rebase origin main
+          git push origin HEAD:main
