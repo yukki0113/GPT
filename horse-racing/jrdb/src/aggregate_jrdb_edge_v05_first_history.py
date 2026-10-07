@@ -136,11 +136,11 @@ def build_history_features(con: Any, warehouse: Path, feature_path: Path,
     con.execute("""
       CREATE OR REPLACE TEMP VIEW kyi_flags AS
       SELECT h.*,
-        CASE WHEN code_variants!=1 OR same_day_races>1 OR race_date IS NULL OR blood_id='' OR race_key='' OR horse_no='' OR blinker_code NOT IN ('1','2','3','0') THEN NULL
-             WHEN blinker_code NOT IN ('1','2','3') THEN FALSE
+        CASE WHEN code_variants!=1 OR same_day_races>1 OR race_date IS NULL OR blood_id='' OR race_key='' OR horse_no='' OR (blinker_code NOT IN ('1','2','3','0','') AND blinker_code IS NOT NULL) THEN NULL
+             WHEN blinker_code NOT IN ('1','2','3') OR blinker_code IS NULL THEN FALSE
              WHEN EXISTS (SELECT 1 FROM kyi_history p WHERE p.blood_id=h.blood_id AND p.blinker_code IN ('1','2','3') AND p.race_date<h.race_date AND p.code_variants=1) THEN FALSE
              WHEN substr(first_seen,1,4)='2010' THEN NULL ELSE TRUE END first_blinkers_chronology,
-        CASE WHEN blinker_code='1' THEN TRUE WHEN blinker_code IN ('0','2','3') THEN FALSE ELSE NULL END code_first_use
+        CASE WHEN blinker_code='1' THEN TRUE WHEN blinker_code IN ('0','2','3','') OR blinker_code IS NULL THEN FALSE ELSE NULL END code_first_use
       FROM kyi_history h
     """)
     mismatch = int(con.execute("SELECT count(*) FROM kyi_flags WHERE first_blinkers_chronology IS NOT NULL AND code_first_use IS NOT NULL AND first_blinkers_chronology!=code_first_use").fetchone()[0])
@@ -368,7 +368,7 @@ def render_result(summary: dict[str, Any], additions: list[dict[str, Any]], hist
              f"- Chronology-derived active-first rows: {history['blinker_chronology_count']:,}; code==1 rows: {history['blinker_code_1_count']:,}; parity mismatches: {history['blinker_code_parity_mismatch_count']:,}.",
              f"- Warehouse code distribution: `{json.dumps(history['blinker_code_distribution'], ensure_ascii=False)}`.",
              f"- UNKNOWN blinkers target rows: {history['unknown_feature_rows']['first_blinkers']:,}. Mismatches are UNKNOWN for candidate membership; see `first_history_audit.json` for representative rows.",
-             "- Active semantics are codes 1/2/3; code 2 re-wear is not accepted as first use when codebook and chronology disagree.", "",
+             "- Active semantics are codes 1/2/3; blank and 0 mean no active blinkers on that start. Code 2 is re-wear and is not accepted as first use when codebook and chronology disagree.", "",
              "## Unified candidate counts", "", "| Family | All candidates | n>=5 | Positive Value | Negative Edge | Support classes | Freshness | LONGSHOT_EVIDENCE |", "|---|---:|---:|---:|---:|---|---|---:|"]
     for fam, row in sorted(families.items()):
         support = json.dumps(row.get("support_classes", {}), ensure_ascii=False, sort_keys=True)
