@@ -1,0 +1,1792 @@
+Warning: truncated output (original token count: 32367)
+Total output lines: 3175
+
+{
+  "full_raw_pairs_and_clusters_in_actions_artifact": true,
+  "largest_positive_clusters": [
+    {
+      "cluster_size": 5,
+      "representative_candidate_id": "v05-971f98c5c9616673e88b466d",
+      "suppressed_candidate_ids": [
+        "v05-2d71b3bf5d2364dda150e0b3",
+        "v05-36932ffe6ca98a1175f78a60",
+        "v05-3897a6ee881a57218ea386e6",
+        "v05-7e084b5a18ec70b127117e72"
+      ]
+    },
+    {
+      "cluster_size": 4,
+      "representative_candidate_id": "v05-39ec333e58fed6561c997a20",
+      "suppressed_candidate_ids": [
+        "v05-7c45ccb74ddf1a601743e1a0",
+        "v05-aaf0445d2f736c1dfdfe6394",
+        "v05-dcddd99f791ee0a7a37b195a"
+      ]
+    },
+    {
+      "cluster_size": 4,
+      "representative_candidate_id": "v05-424480a6f54e77fc4a9e149a",
+      "suppressed_candidate_ids": [
+        "v05-2fe3ab649fb5fa41b73efffe",
+        "v05-849bf4192fc283e1e69680cd",
+        "v05-a8086178efbf40926e20a5f5"
+      ]
+    },
+    {
+      "cluster_size": 3,
+      "representative_candidate_id": "v05-3f20d1d83c6120df9965b813",
+      "suppressed_candidate_ids": [
+        "v05-32a5c91ba2ae4632f8ce4d1b",
+        "v05-4efb9ee6b8d2b29ff0c366ae"
+      ]
+    },
+    {
+      "cluster_size": 3,
+      "representative_candidate_id": "v05-4789db27c353ab9eb63e8959",
+      "suppressed_candidate_ids": [
+        "v05-7610f9feb7a38d3aabe96cc7",
+        "v05-ea5d985d97a3838c411f67ac"
+      ]
+    },
+    {
+      "cluster_size": 3,
+      "representative_candidate_id": "v05-7ffbae0b53e4bf8836752334",
+      "suppressed_candidate_ids": [
+        "v05-58a310531f88cc014bcda9ae",
+        "v05-7b415fbcbe98ddad5aaeb677"
+      ]
+    },
+    {
+      "cluster_size": 3,
+      "representative_candidate_id": "v05-bb6e406fa22dd7aa70ae1042",
+      "suppressed_candidate_ids": [
+        "v05-81c8ce60f08c0dc350dedc6f",
+        "v05-d1ae3913f03d0f8570321027"
+      ]
+    },
+    {
+      "cluster_size": 2,
+      "representative_candidate_id": "v05-2706e22ceabe46817834a751",
+      "suppressed_candidate_ids": [
+        "v05-d2a521bfc978d1d4a71e7f39"
+      ]
+    },
+    {
+      "cluster_size": 2,
+      "representative_candidate_id": "v05-3ccaf20c760f18fcc6324366",
+      "suppressed_candidate_ids": [
+        "v05-bc57e17f130057121340cdb1"
+      ]
+    },
+    {
+      "cluster_size": 2,
+      "representative_candidate_id": "v05-5056f673a5dfab937d7ef5ff",
+      "suppressed_candidate_ids": [
+        "v05-498fc42ed4af65abc0daaf4e"
+      ]
+    }
+  ],
+  "positive_value_post_cluster_count": 1500,
+  "positive_value_pre_cluster_count": 1530,
+  "raw_candidate_rows_retained": true,
+  "raw_research_overlap": {
+    "clusters": [
+      {
+        "candidate_ids": [
+          "v05-000556903d3c65964b7d1aeb",
+          "v05-3deb5549bf2b0085838e8254",
+          "v05-44dcde056dfa10d6496af5d1",
+          "v05-5b6c3246aff143ad83484e7e",
+          "v05-968adcc940ce0d2283bdac5c",
+          "v05-cfc1ebc8063940e45ffc6a2b",
+          "v05-d10ab66be18391867381317e",
+          "v05-e75929fc846526e39d109247",
+          "v05-f3a19fbe4436a9a87235b883"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-9eb1b43a88b675dd",
+        "representative_candidate_id": "v05-e75929fc846526e39d109247",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-007420fe480018d5b8ed47ec",
+          "v05-01c080ca0e169d581cd6edba",
+          "v05-0d737c54abc0dfad47af6d47",
+          "v05-14cdf76ad5e34e8e6f5422d6",
+          "v05-1b5bad218a9297ae7fb650f6",
+          "v05-2a7b54028eecd3b9fe8f0981",
+          "v05-470f992cbf6eedf08abb6148",
+          "v05-549c84f6146c8b81286af793",
+          "v05-55a1e18bf1b994b53a954850",
+          "v05-6b94f08e496690d825e2376a",
+          "v05-7f7f10762d2aac9d861babb5",
+          "v05-d5949b4c493c2592b01c0b36",
+          "v05-fd150579332ac963a098f159"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-ba7f6a20d29fac21",
+        "representative_candidate_id": "v05-549c84f6146c8b81286af793",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-00759608271ce05674ef97c1",
+          "v05-64de8dfe70f3f91322b5d8b4"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-37ca33cecef6d115",
+        "representative_candidate_id": "v05-00759608271ce05674ef97c1",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-00a151f40bcb9f72bed78e52",
+          "v05-0de23287fe9d852a279f9b91"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-5688013a6cab1691",
+        "representative_candidate_id": "v05-00a151f40bcb9f72bed78e52",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-02d466dffc7e71b9be0cbdb7",
+          "v05-13fbb0aaad0f60ef22679b70",
+          "v05-245597ca70cbc74bbfd26ae9",
+          "v05-2bf9450388a7ddc3abf122a6",
+          "v05-308d8f331dd6a249934ac286",
+          "v05-7941a86a3d25e70d484080ae",
+          "v05-888b63139fb872af7959f5fe",
+          "v05-9bc81aaf452faa42c13317e4"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-6bc7bf0be741c307",
+        "representative_candidate_id": "v05-888b63139fb872af7959f5fe",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-039bf26954e84e5120c7c269",
+          "v05-4d5a50ac6c1f519c78409536",
+          "v05-a0cf2dd61b85b7be3d52af71",
+          "v05-a84df54cea1e161ece5a358a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-c3563beee0c6d01e",
+        "representative_candidate_id": "v05-a84df54cea1e161ece5a358a",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-03b6c203835ea65850a714be",
+          "v05-a63a4d4d222e49613ae512c7"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-98312364000e6c95",
+        "representative_candidate_id": "v05-03b6c203835ea65850a714be",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-04718cadc1f795d6c47aa094",
+          "v05-5c9bd15433d3d3b47c089369",
+          "v05-fe747ab01a54c933a93fe7dc"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-da7a2e8f6547c4e6",
+        "representative_candidate_id": "v05-5c9bd15433d3d3b47c089369",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-04c0c60d4053d3ba09feb171",
+          "v05-7cfce4f9a3b2f3e493e04506",
+          "v05-89ce6d6853d45012bf84aa97",
+          "v05-f2d4d550ee6d9d98931aa02a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a4c50baa67760de1",
+        "representative_candidate_id": "v05-89ce6d6853d45012bf84aa97",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-053806ef9b731715f19894bc",
+          "v05-74ff49618c0f8e8aaf20dcc9",
+          "v05-a242a53a109013134c3ac927"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-f45370554288c414",
+        "representative_candidate_id": "v05-a242a53a109013134c3ac927",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-05c2ce7553e1945bb07f5ea7",
+          "v05-1965057bff7eb1ab78ac82f3"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a74ecf93b4d79995",
+        "representative_candidate_id": "v05-05c2ce7553e1945bb07f5ea7",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-066e1c5af25f6b6503a2d13e",
+          "v05-303f04ba840031da787d59a9"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0b1ed3ed8b81ac31",
+        "representative_candidate_id": "v05-066e1c5af25f6b6503a2d13e",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-06eb5a668871ac6a41b179f8",
+          "v05-4d0d6c367c567a94344f6a6f",
+          "v05-73c53182eee57850dd7ad4e7"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-1fce081a0ca1496f",
+        "representative_candidate_id": "v05-4d0d6c367c567a94344f6a6f",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-07f55dcc801803d604ef16d5",
+          "v05-a5b84c61587a09ae30bd3a38",
+          "v05-f00915d69b7452caf66cf022"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-43825da1fe9a14b3",
+        "representative_candidate_id": "v05-a5b84c61587a09ae30bd3a38",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0828e8eec7a916ef7784dba3",
+          "v05-0a10755833646ac9c3c2f137",
+          "v05-187e15fe8ea40d36f54cac38",
+          "v05-1b7cea2cc349f75fb9c4da76",
+          "v05-230d2debd7932c09aec0c481",
+          "v05-b175e89ce21a2236163dd3a4",
+          "v05-b8041fde1e7960d0dfb830d2",
+          "v05-b8d9926f5310b870607ed219",
+          "v05-dc371f58e583541340d63df2",
+          "v05-e44b17c367cbfdeeda55fd91",
+          "v05-e821a881b7413e81930e3e97"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-2ef647df32371fd6",
+        "representative_candidate_id": "v05-0828e8eec7a916ef7784dba3",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-083be1379c67ba59d8ec31d0",
+          "v05-0d5a6ff3b55425b69fabb74a",
+          "v05-3bfd1a854a015830e116bee9",
+          "v05-3fe16a4bc961e3166a989fd2",
+          "v05-44d7aa49853febdda50d09ae",
+          "v05-53fe4e74d4f1f3e7e76863c8"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-ecae9eca9697688f",
+        "representative_candidate_id": "v05-53fe4e74d4f1f3e7e76863c8",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-087a15a0faeb45c2667664a2",
+          "v05-6bc40d019771dcbca0664c1d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-d34a20f04a1eaa98",
+        "representative_candidate_id": "v05-087a15a0faeb45c2667664a2",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-08a05d1da333aefa557d9798",
+          "v05-1b8b880c3b9e2292eea2c55e",
+          "v05-415e073445c3bcd2a6a4ddab",
+          "v05-810ae36d90a098c719d69b8b",
+          "v05-e737bf4b034387df0fd67efd"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-15738ca17a469a7b",
+        "representative_candidate_id": "v05-810ae36d90a098c719d69b8b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-08bdef9461b6207f7b326787",
+          "v05-4be1b65fd6317038515c4f74",
+          "v05-8b0d283052dd740b8a4c630e"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-b32be7c83393c7e2",
+        "representative_candidate_id": "v05-4be1b65fd6317038515c4f74",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-08f5e0e52c2f971d6b055035",
+          "v05-0ea8aa5f43437cc98e785cfc",
+          "v05-20e38a01db7c464ad4941896",
+          "v05-22c22836d541277a47f6becf",
+          "v05-3019d4464b36c4089af358ac",
+          "v05-3eab4fd4e7e8e67aa8734e90",
+          "v05-421c032c66680382f3de769f",
+          "v05-5d92f1ccdffb38e897bd7afc",
+          "v05-eb907dec39b85f2d7a23a361"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0e4d5ba2b6a2de95",
+        "representative_candidate_id": "v05-08f5e0e52c2f971d6b055035",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-090aeba736379939c1a5d958",
+          "v05-27d8a9a5bc9821520be78c0a",
+          "v05-c4bc246e060187600b348a91"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7f6e2ab4e823b343",
+        "representative_candidate_id": "v05-090aeba736379939c1a5d958",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-099108739758ff07b1631bba",
+          "v05-9c47f40d28afe902350b2d78"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-dd1177efb97efbf5",
+        "representative_candidate_id": "v05-099108739758ff07b1631bba",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-09ca3082d97be8b37f3eb111",
+          "v05-65da7c6e283c3a76146ad1c3"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-6b30700c222f5aa5",
+        "representative_candidate_id": "v05-65da7c6e283c3a76146ad1c3",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-09e8605bbd98031525134442",
+          "v05-1755a2c74b2608a28e222f0a",
+          "v05-5f6c46a8ca1462e13cd7c464",
+          "v05-80cab889abca18b0af1a1642",
+          "v05-9c934b6116dd452cb81f0c88",
+          "v05-cb367ac97f99c16b0613259f",
+          "v05-d9bf4f3b1f06c5a83f3ec6da",
+          "v05-dd777c267bf37b3157c102ca",
+          "v05-f0be3330be46b68b31e8315b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-b38f87c85290fe92",
+        "representative_candidate_id": "v05-80cab889abca18b0af1a1642",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0b2b15df0b13bb09c94e78ba",
+          "v05-68c91b49e17575eb33e20e49",
+          "v05-899af9bf7321391c081f7417",
+          "v05-9b12816a68e9fb3b64514e6b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-5215813f7402aaa0",
+        "representative_candidate_id": "v05-899af9bf7321391c081f7417",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0b4d4a02acc18827407c0483",
+          "v05-20c63f653d90c1bfff288ce0",
+          "v05-231595f2d913e92245fdbbfb",
+          "v05-2e0f408af3eb98044faa6d7c",
+          "v05-354393ee4e4ba5d71eb91c7d",
+          "v05-49d88c6c2bdbe5815f40b83d",
+          "v05-64de0133f8608707a65f00e2",
+          "v05-c1d904947b1edc34e2a22b0e"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-b8b8821990127c34",
+        "representative_candidate_id": "v05-2e0f408af3eb98044faa6d7c",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0bf46166e9d47440ec839374",
+          "v05-1fb7105b6c88d26e8dc42e4d",
+          "v05-4847d72c350f425f45d503e0",
+          "v05-52707fd79b70cdc7d7584076",
+          "v05-e20b0cb85031e0f039d0f309"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-39a8ef7c3f6a8d9a",
+        "representative_candidate_id": "v05-4847d72c350f425f45d503e0",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0c337b2dd6d0c5139b37c389",
+          "v05-ab14d170f23bf630fbe3dac8",
+          "v05-bde824c1dab38f60ef98c1ef"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-316621d43f7e0c56",
+        "representative_candidate_id": "v05-bde824c1dab38f60ef98c1ef",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0c9e60a93ac56493dce3ae7b",
+          "v05-7f86492bae59994ddcab38b1",
+          "v05-8f4983ed191fdcede6059be0",
+          "v05-998ad41af08ff356178a6f08",
+          "v05-dc62fd3292d7d51dbf04c26d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-87a0cd46c84d6186",
+        "representative_candidate_id": "v05-998ad41af08ff356178a6f08",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0cdf0a7051d2145310ce0270",
+          "v05-25c27212d64770f2a024c6c9",
+          "v05-d83dfdaefb1ae909ff213bb5",
+          "v05-dc2bf5ee5aee9528370a9866",
+          "v05-ef4079eda5f06654f811ceb0"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-955e47721c0b73a3",
+        "representative_candidate_id": "v05-0cdf0a7051d2145310ce0270",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0ceb629d6a0289c5b2e8620e",
+          "v05-927a30501ef308a0bea13d32"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a9484dd732812565",
+        "representative_candidate_id": "v05-0ceb629d6a0289c5b2e8620e",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0d0a6bc419bba083041d0ed4",
+          "v05-93d92de90112239cf27896a0"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-40da5ea78ed427d9",
+        "representative_candidate_id": "v05-0d0a6bc419bba083041d0ed4",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0da82642ad63a03766805dca",
+          "v05-14a1ac64d190cc91de84fca5",
+          "v05-1d1afb3fe1c674e5cf9e20ef",
+          "v05-c933ae3e735dfe550875b7aa"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0ccf77843155b0e0",
+        "representative_candidate_id": "v05-1d1afb3fe1c674e5cf9e20ef",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0df9ea93404490501f521955",
+          "v05-a976dd3b4ce6ed5be2703ec9",
+          "v05-aa83685b9d71ea4d2aece64d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-5308d84d3cf2b06c",
+        "representative_candidate_id": "v05-a976dd3b4ce6ed5be2703ec9",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0e00b90ade514559e67c0401",
+          "v05-597f00ce5ffef70dad847d5d",
+          "v05-7a769d6b222a994c29bed160"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-27abda7bb6529c84",
+        "representative_candidate_id": "v05-0e00b90ade514559e67c0401",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0e335391339e9bb64650bd99",
+          "v05-164e126d2a0e86012ab7f480",
+          "v05-4bc85e8f309c8c2f2cf120e9",
+          "v05-5226ed36f2ec6e39fb21e8df",
+          "v05-8e6c2ef8b9e9241f6dd63994",
+          "v05-c43889070c47ad6356bfd46b",
+          "v05-ea35b8cf6d3ceffbacda51ef",
+          "v05-fcddf35ee3091d5819c68533"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a87e633d778f25d5",
+        "representative_candidate_id": "v05-ea35b8cf6d3ceffbacda51ef",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0f4f7bcb704272a1c9aef268",
+          "v05-a79713140f2a7d1f6f44a330",
+          "v05-c3e21e8f358ca34357abeda6"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-9888260961a1d0f5",
+        "representative_candidate_id": "v05-a79713140f2a7d1f6f44a330",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-0fd9b2ac6cf05542ad307e6d",
+          "v05-35a06877dc00681728d495fe",
+          "v05-5b5ab97f18c6b440a7b19c12",
+          "v05-6065696305d6cdb17d5f4465",
+          "v05-684e10bc51cfbbe278cfafa3",
+          "v05-81b999e14060a1109f54048d",
+          "v05-ef7675503bbc5975917738e3"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-4e21d89e74d6dbbe",
+        "representative_candidate_id": "v05-684e10bc51cfbbe278cfafa3",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1057494196edfd45f0f58467",
+          "v05-d0ff4ad9e83e34260ad78e97"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7e2a56e878791ba5",
+        "representative_candidate_id": "v05-d0ff4ad9e83e34260ad78e97",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-10c59b48652bcf1d20de8e3c",
+          "v05-22b4492e41aaf050c35858a8"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a0fb086968170b88",
+        "representative_candidate_id": "v05-10c59b48652bcf1d20de8e3c",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-11fb5410613332b0eedc449b",
+          "v05-5b39b394031b74cfe12035e8",
+          "v05-63b73ec4288c3feb87d8902a",
+          "v05-9da6911ab620dedd7e242984",
+          "v05-b5677227aeca9070fb2a30ed",
+          "v05-ca9929dd40f7dc3794473361",
+          "v05-fe961c5d910a4fee803b659c"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0e381a1e31454da6",
+        "representative_candidate_id": "v05-ca9929dd40f7dc3794473361",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-121aced0811a1a410656e7ee",
+          "v05-1400ffb95a6841bcbde03026",
+          "v05-46e4115efdbd8b14fd120076",
+          "v05-572189fb4de1eafedc7b97b5",
+          "v05-8448d03d9aa4008bedcf29b5",
+          "v05-8d2ffbd42466c85192b2c416",
+          "v05-96d7b91a8d3ac2500549646c",
+          "v05-976b543756f2b22962d545c9",
+          "v05-b9cd0eb57610260b97bbc7a2",
+          "v05-c11c894678bec882c1bebbb5",
+          "v05-c88becba4382ba3d7745865c",
+          "v05-eb654364fb575a941c2863a1",
+          "v05-f84811081d404096e9eaf68a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-51a1973afaa7dfad",
+        "representative_candidate_id": "v05-976b543756f2b22962d545c9",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1228e851cc73eecd983df259",
+          "v05-a5480e174e6e8571f2bc2c9b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-8369bf9c43dcdc36",
+        "representative_candidate_id": "v05-a5480e174e6e8571f2bc2c9b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-125a4c5cedd22d10b244291f",
+          "v05-2c5c369c53f4b30be8eea07a",
+          "v05-75138a477e696cdfa232faa6",
+          "v05-c9017a9634184990fed8df88",
+          "v05-e77e54ec3957b3ddd0c5513a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-c85f930f162121f0",
+        "representative_candidate_id": "v05-e77e54ec3957b3ddd0c5513a",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-12b2a2469f762c0d20c859e2",
+          "v05-2d13112f1dc9e50e647d3123",
+          "v05-a9aa2f5b2e6fe93c980f0b53"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-3ee8ba0f0fc4231b",
+        "representative_candidate_id": "v05-12b2a2469f762c0d20c859e2",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-12da9aac72c83314873a21a4",
+          "v05-17b3e7168406a0017a07b347",
+          "v05-2ad6f5fdfd173144862e16ea",
+          "v05-7084270eb0d28c9fb39f44fa",
+          "v05-dfd6d84d2242f3d2065fd4c9",
+          "v05-ef06689fcf96d82d8439a6f0",
+          "v05-f4630c35601ac6852fa704f8"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-daf461a4ff4d90ce",
+        "representative_candidate_id": "v05-dfd6d84d2242f3d2065fd4c9",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-13d9d4efc04934f442c1f4c9",
+          "v05-e5fad07509e456b5d92ea613"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-b9480860addbcecf",
+        "representative_candidate_id": "v05-13d9d4efc04934f442c1f4c9",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1405ecccf0dd8ff87e2ff69c",
+          "v05-1838e4bbd2e161297366db0d",
+          "v05-2b932506f5e487f50668c1dc",
+          "v05-2dd9e1d80b29e6adff74eb8d",
+          "v05-345f68c9354f44e7e5f2261c",
+          "v05-48b9af3e12e081983c8f0ff8",
+          "v05-82241c02c2eccf13355433b8",
+          "v05-f83b388d01f6daa88ceef1f6"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-22254aa6f3f66a70",
+        "representative_candidate_id": "v05-1838e4bbd2e161297366db0d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-14e734c5d6cdfd73c62521ab",
+          "v05-e8b2cd082c028c2524a5b6a3"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a86afd87ab83629f",
+        "representative_candidate_id": "v05-14e734c5d6cdfd73c62521ab",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-158b176a94325e1986d32ba5",
+          "v05-1631fbf61fff14c6c89157f2",
+          "v05-1fac02b0ece612a3111e715b",
+          "v05-3f527277806db04ae5e4347f",
+          "v05-628dcf25fff2d77efe3d4e70",
+          "v05-adc8818b084bce7bb970b295"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0b3e369a6e0dc7b9",
+        "representative_candidate_id": "v05-3f527277806db04ae5e4347f",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-15c8f8bae6660977243f93a5",
+          "v05-17d14d8efd5f797b02d6a2c4",
+          "v05-5a616c468a2948954438b7b7",
+          "v05-8c86c7a0943e84762fb76a64",
+          "v05-b33063de49c095b1b3304ce9",
+          "v05-c5392d4d781aabffb579081d",
+          "v05-cc463e44e0dab424c10e0287"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-245a7bf2699ae620",
+        "representative_candidate_id": "v05-8c86c7a0943e84762fb76a64",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-166552c4baa75d917a8fb907",
+          "v05-3f53be00e79c77f19af8550b",
+          "v05-4092f5cb733f76e8f132b7fa",
+          "v05-71b57817dcb7ab80735de02b",
+          "v05-892d286182afaf20e3967f43",
+          "v05-b0fb4a81149bf2d5975acb9e",
+          "v05-b5b0efa435a42e6aa415602c",
+          "v05-bcaaea4d9496d3bd4b744596",
+          "v05-de69c3eb5aa7fc1b3fec1604",
+          "v05-ee0d64212bb70fd71db4bc08"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-c61dfa5833095425",
+        "representative_candidate_id": "v05-de69c3eb5aa7fc1b3fec1604",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-178c1595ea0bd963ed50700b",
+          "v05-3140abf9dcf84197156c7791"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-9e9d399c422b5468",
+        "representative_candidate_id": "v05-178c1595ea0bd963ed50700b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-17a829c9a7fe75a7276f2cc8",
+          "v05-7bbe717706d3da1223659591"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-51037270f0a7a578",
+        "representative_candidate_id": "v05-7bbe717706d3da1223659591",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-17acaa48d29c2f92b7936134",
+          "v05-5c3104206849a307ba647e59",
+          "v05-89967822c69e76b99e8e6b36",
+          "v05-cd045eed38b2d075d34b2fda",
+          "v05-e47c203893b141ee9f0132e7"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a657daadcaabe26d",
+        "representative_candidate_id": "v05-89967822c69e76b99e8e6b36",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1892925ca1107e396e03b13d",
+          "v05-a1d5a317b84c9a2c850db30d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-c1a57e451f82d0de",
+        "representative_candidate_id": "v05-1892925ca1107e396e03b13d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-18e0e88afa57860f9a6654f6",
+          "v05-9f596247ed46834c3c1f8cb2",
+          "v05-e617032324384f9a10280b66",
+          "v05-f94ae2279514d2a1a27bbb33"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-32fb31b38b5222b1",
+        "representative_candidate_id": "v05-9f596247ed46834c3c1f8cb2",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-18e9917385d60c93eca96575",
+          "v05-3d1342f641711a7aec1ca798",
+          "v05-474e3aacf36a4902e36ebdc5"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-32b251a6296f53c7",
+        "representative_candidate_id": "v05-3d1342f641711a7aec1ca798",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-18f4ccb849cbf257d42a8662",
+          "v05-4bfb939ae21e719ff0c56d38"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-cf0d196a283f0c67",
+        "representative_candidate_id": "v05-18f4ccb849cbf257d42a8662",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1a5ba7e2d97a153d884697d3",
+          "v05-3a08ae7c5de41973a7d5ac21",
+          "v05-4bbe66b74444417ee550919a",
+          "v05-4ead17bc44a3e4caa816d717",
+          "v05-9954b555c72a59a712ccb495",
+          "v05-f57e6d3509d1c8826244562d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-b323b9a06af579ae",
+        "representative_candidate_id": "v05-f57e6d3509d1c8826244562d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1ab98ac1f2855b8242bb7084",
+          "v05-47ac611421e2fdbead083853",
+          "v05-57dc8925459704d5fe14b530",
+          "v05-cd9012b92cf378d470856ea5"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-2997ac41fb856d6b",
+        "representative_candidate_id": "v05-57dc8925459704d5fe14b530",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1b0b0d4d39d8302d1460043e",
+          "v05-adfc6ec06dce5895b75194c7"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-77bba7bbadeb0a2d",
+        "representative_candidate_id": "v05-adfc6ec06dce5895b75194c7",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1b22d74d018327aad7f963a6",
+          "v05-416382a3815758a2880a1a75",
+          "v05-4c78e93a2b34d2b477aace75",
+          "v05-5f37b95b42dd152eb5f54d58",
+          "v05-6168bea780f16e4e2dad89f0",
+          "v05-7ebb744419dcb7d2602d5c17",
+          "v05-c37a394226e1517e979031f5",
+          "v05-e8ceaac6493029f76a9f3ce6"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0079024685ee5aad",
+        "representative_candidate_id": "v05-7ebb744419dcb7d2602d5c17",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-1c172d3597bddd109e5969ec",
+          "v05-452e5dd232933ea9c10af103",
+          "v05-b2c4c82e29357d719f53fe27"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-9f2b416dc1923751",
+        "representative_candidate_id": "v05-1c172d3597bddd109e5969ec",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate…14367 tokens truncated…d2360c758c80a97d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-678802614975cca05ca9a653",
+          "v05-fc02d26a702d2a82012a303e"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-459f88af69e25c7b",
+        "representative_candidate_id": "v05-678802614975cca05ca9a653",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6af0b0b839f6121a794b2974",
+          "v05-95bc066b9a9ce11e4fe8a9c6"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7ab47513793c1d46",
+        "representative_candidate_id": "v05-95bc066b9a9ce11e4fe8a9c6",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6b19b71ca65c6d556af148c9",
+          "v05-c1e230e00a0c5284f5529c3d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-b8d02e67e3714bbc",
+        "representative_candidate_id": "v05-c1e230e00a0c5284f5529c3d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6b1a9bdaed95c8d7cfafbd44",
+          "v05-da9fba9d8417c5d90267fbab"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-6bc24815320aada3",
+        "representative_candidate_id": "v05-da9fba9d8417c5d90267fbab",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6b5efa030bdc33d4ef8c9820",
+          "v05-e0184890311d08134c8a39ee"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-028978333dfd488c",
+        "representative_candidate_id": "v05-e0184890311d08134c8a39ee",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6c8331d6553f5d8554544be7",
+          "v05-7e3242e0ad75242f8f7ddb20"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a4ee16e0862dd2ef",
+        "representative_candidate_id": "v05-6c8331d6553f5d8554544be7",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6cd0d464933badf0350f4840",
+          "v05-d0afafe26ef807088bedf22d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0940d564e4010173",
+        "representative_candidate_id": "v05-d0afafe26ef807088bedf22d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6d846690be68c6d83dad62a9",
+          "v05-da512250155ea4b9195ae59a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a38d5a8d59da2589",
+        "representative_candidate_id": "v05-da512250155ea4b9195ae59a",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6d89428514fc97faa1aae0ab",
+          "v05-cbefd02dc4812af7875891c3"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7d15e11b5b2ed585",
+        "representative_candidate_id": "v05-cbefd02dc4812af7875891c3",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6dbc6e83d584583f04b049a1",
+          "v05-7e33fe70998b6b7e37d25b88"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7e68b07f523d234f",
+        "representative_candidate_id": "v05-7e33fe70998b6b7e37d25b88",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6e50274589bc9571708c502b",
+          "v05-838cf05bd2d1faaa8f3f5355",
+          "v05-f0fb4ee15c7d00d240ea3544"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7f7650b03d4706c1",
+        "representative_candidate_id": "v05-6e50274589bc9571708c502b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6ed1b5025230dc57490876f9",
+          "v05-ba8ab1392efd332a534c9c1e"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-f2d788ad55ea2779",
+        "representative_candidate_id": "v05-ba8ab1392efd332a534c9c1e",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-6ef1f0e353c973594ae7c5c5",
+          "v05-6f7671ae5c3d1bb33cc4a013"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-c91aac8d4a3024b5",
+        "representative_candidate_id": "v05-6f7671ae5c3d1bb33cc4a013",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-70bdf38adff88363e2e5fe49",
+          "v05-c9e5e754beb9fdb46e9734c8"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-863bc2f07ecf0ecd",
+        "representative_candidate_id": "v05-70bdf38adff88363e2e5fe49",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-70e3c2fcb20438e0301d1232",
+          "v05-b00427221e9cf11e23feb75d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0563d76a7bace37c",
+        "representative_candidate_id": "v05-b00427221e9cf11e23feb75d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-717740fbbecda284ffc483e4",
+          "v05-cb42a0bb49e40852be90178b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-5535206dcb61f60f",
+        "representative_candidate_id": "v05-cb42a0bb49e40852be90178b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-71848266714b17624b4ac5d6",
+          "v05-8e50a47651b4f7862232d64c",
+          "v05-ddbd88d51edb8f683244ec4b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-f12d4c614b168c16",
+        "representative_candidate_id": "v05-ddbd88d51edb8f683244ec4b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-724771ababf4af7969d913f1",
+          "v05-c462a15b4542fcd6f524155e"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-040d7a414ae39ec6",
+        "representative_candidate_id": "v05-724771ababf4af7969d913f1",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7295471d512abfab909b545d",
+          "v05-8e197fc72a3c68467b34ea9d"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-5c786080062ec794",
+        "representative_candidate_id": "v05-7295471d512abfab909b545d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-742c79fd47bc24b9b57906f8",
+          "v05-bc6e986056595c0e39d87f3b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-c26e76e842dcca92",
+        "representative_candidate_id": "v05-bc6e986056595c0e39d87f3b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7489d7802d92a5b29216f6cf",
+          "v05-835a754c3fae0ea4897da5f6",
+          "v05-a0029a6fe4dc199f843894c8"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-26a3be2168b1310a",
+        "representative_candidate_id": "v05-a0029a6fe4dc199f843894c8",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7734d090d31b944272700f72",
+          "v05-f11fadd585c70e3d4089b070"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-3d254d1195755aed",
+        "representative_candidate_id": "v05-f11fadd585c70e3d4089b070",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-79254101c490fd458a775d39",
+          "v05-8d332ea225bcb73a87fef765"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-9c3ba35d86948c54",
+        "representative_candidate_id": "v05-79254101c490fd458a775d39",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-795933bf3b4ee99c3beb4e36",
+          "v05-c4b4fba1c47abd8fe18e44ac",
+          "v05-e3d3ddfa66670b17a54780cb"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a061985881f56d54",
+        "representative_candidate_id": "v05-795933bf3b4ee99c3beb4e36",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-79be63564e1de49cff1a16ce",
+          "v05-944a00ce2aebb52a63ca9ce0",
+          "v05-a147aaa71b742c8903858328",
+          "v05-a716d52a8b3cde6cb7302f27"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-755c0e905c3bcb9c",
+        "representative_candidate_id": "v05-a716d52a8b3cde6cb7302f27",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7aa624078ca402e0f7fd0d5a",
+          "v05-a1cab4475d809c45ff6a68b1"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-025201a089baac48",
+        "representative_candidate_id": "v05-7aa624078ca402e0f7fd0d5a",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7ab99e360837dc68d4f2d403",
+          "v05-b500f911d21685971884871b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-38fec42c45fdc1e9",
+        "representative_candidate_id": "v05-7ab99e360837dc68d4f2d403",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7ae860d75cdfaf42511d2c27",
+          "v05-d32ae856cd6886d49b4eeef7"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-e118ae51a50d0613",
+        "representative_candidate_id": "v05-7ae860d75cdfaf42511d2c27",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7ba8272ec29b4ec6af8e23c2",
+          "v05-a083c0370edc916bce2a013a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0ae75a5f79a639ad",
+        "representative_candidate_id": "v05-a083c0370edc916bce2a013a",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7c6085c4344bc0d65a362d7f",
+          "v05-816f6948da4339397902625a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0839262fad5cf44b",
+        "representative_candidate_id": "v05-816f6948da4339397902625a",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7c9e2832a82ddce57e771add",
+          "v05-fb63e1ebe64c190b5e60ad02"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-6b59f58bcfdf5a23",
+        "representative_candidate_id": "v05-fb63e1ebe64c190b5e60ad02",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-7ff35ec4a5504aea973e9d77",
+          "v05-b2560c0b22d25ff66c96b17b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0c996cf22ea4e741",
+        "representative_candidate_id": "v05-b2560c0b22d25ff66c96b17b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-8055b2fad7910a60a3df864e",
+          "v05-c24497afc1972f592ab37692"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-405c6eda38f8ef4d",
+        "representative_candidate_id": "v05-c24497afc1972f592ab37692",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-830397fb6c89b569ca118244",
+          "v05-b5e20287f30ee03bd06fb1ec",
+          "v05-c770e6dd1ad93dd7c11898c1",
+          "v05-d4e457b701270a8f6f40ebd2"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-3c890597ff9c69d2",
+        "representative_candidate_id": "v05-b5e20287f30ee03bd06fb1ec",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-83d530818c16a9d654d6f5e3",
+          "v05-c18d05591de4ee217b08fbd6"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7ec49d891b859c11",
+        "representative_candidate_id": "v05-c18d05591de4ee217b08fbd6",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-8655807f6f95c6db9a35d1f7",
+          "v05-f75f2382f9388ce5558913bd"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-8b9e6909c735ab31",
+        "representative_candidate_id": "v05-f75f2382f9388ce5558913bd",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-87122d3d4ef9d1389acebfe0",
+          "v05-88e36adc5edfbe801cd9f619"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-5f630b000cb02ffc",
+        "representative_candidate_id": "v05-88e36adc5edfbe801cd9f619",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-882eb6be7cffb51da2323823",
+          "v05-c45574b71194d8a466178cd5"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-90f97fb7c6309888",
+        "representative_candidate_id": "v05-c45574b71194d8a466178cd5",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-89681aeb308154e2cb20c42f",
+          "v05-f9030a0a7bd99133ed9297f6"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-15329219d948ab9e",
+        "representative_candidate_id": "v05-f9030a0a7bd99133ed9297f6",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-8a9ffb7360bb41a6fe7bc12b",
+          "v05-f972c4868607c3507414222e"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0734ef8ffd3b9021",
+        "representative_candidate_id": "v05-8a9ffb7360bb41a6fe7bc12b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-8b4e896f9b7e39ac04c54ec2",
+          "v05-aaa1a6cb8cc3d8e527cf9094"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-1b30aa0ab59c4e1d",
+        "representative_candidate_id": "v05-8b4e896f9b7e39ac04c54ec2",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-8baafa43f00d6a3e70c2527d",
+          "v05-d82ee22c37eafd0f33165347"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-edefaa87570ce19a",
+        "representative_candidate_id": "v05-8baafa43f00d6a3e70c2527d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-8c8ac3e2c006ba881a545e13",
+          "v05-a34220e0ed50c7c2ab7572e9",
+          "v05-c3ba6465647d27bdb84ae962",
+          "v05-e5c6ada47c9f989bef2f8177"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-7de0ad9b048dbaee",
+        "representative_candidate_id": "v05-e5c6ada47c9f989bef2f8177",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-91450f09d611fb687beddf92",
+          "v05-ac72e11932026841f1a59d30"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-1d172574cc51e9fe",
+        "representative_candidate_id": "v05-91450f09d611fb687beddf92",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-92828833e172059a192ab4fe",
+          "v05-e97e2a6ae28f17c3bf0cced9"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-8a6edab82080f745",
+        "representative_candidate_id": "v05-92828833e172059a192ab4fe",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-939b098dede026795e6ba2a4",
+          "v05-fdca32b8aa1c9adf030a97c7"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-3cb871163e69d4d7",
+        "representative_candidate_id": "v05-939b098dede026795e6ba2a4",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-9510dbf4069eb4fe5849a69b",
+          "v05-da52ad6bb4c2f09527e90513"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-415ed182b9b83101",
+        "representative_candidate_id": "v05-da52ad6bb4c2f09527e90513",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-97207275fd41fc1eb375821c",
+          "v05-a1fb5f843a8f737d80519414"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-8283ac847760c30b",
+        "representative_candidate_id": "v05-97207275fd41fc1eb375821c",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-975d4b8f7fd9aec7bd427372",
+          "v05-bcca51fdb3fc721ec04735ac"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-3856117b3b98fa53",
+        "representative_candidate_id": "v05-975d4b8f7fd9aec7bd427372",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-97afacba0ddd4cd9d2d01e85",
+          "v05-ad8197344fd393d45cc4c4aa",
+          "v05-c6e19409f6a799961462b7c9",
+          "v05-cb07c09c9e029dc492826e72"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-06e3c31ea2e7ab8f",
+        "representative_candidate_id": "v05-ad8197344fd393d45cc4c4aa",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-9a8ea395b5b8c8e8fd3d8965",
+          "v05-ad63195e822faa8e3467f058"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-f72a3b3270752081",
+        "representative_candidate_id": "v05-9a8ea395b5b8c8e8fd3d8965",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-9bee39c10c68ace3d253aec2",
+          "v05-b695f6e7647406836f387d8b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-16802ec90849e5b4",
+        "representative_candidate_id": "v05-b695f6e7647406836f387d8b",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-9c146a4dd34a510cd5d12ec4",
+          "v05-b866ec46e8cb93ba1d19b43a",
+          "v05-fcc114eaa934486c7c62b981"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-f93ac0c4287bd725",
+        "representative_candidate_id": "v05-b866ec46e8cb93ba1d19b43a",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-9dabecac828ae19cf44fe6f1",
+          "v05-c7f89ef9182e07b697a14286"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-15c6807f3506e572",
+        "representative_candidate_id": "v05-9dabecac828ae19cf44fe6f1",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-9e655752a162f74c95723037",
+          "v05-c3a85789b67e241820ef371a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-1a3885fd81d05c0c",
+        "representative_candidate_id": "v05-9e655752a162f74c95723037",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a0f5c60d16684513ad602407",
+          "v05-d63a2501c9c521ef3a8ae464",
+          "v05-f0b1b9110b0cd070f761c1bc"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-bc3a96e8ee932ca7",
+        "representative_candidate_id": "v05-a0f5c60d16684513ad602407",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a0f85f826f207516b8195ef6",
+          "v05-f03b2af5b9c4741c8a671a7f"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-80c656ade98c1a0d",
+        "representative_candidate_id": "v05-a0f85f826f207516b8195ef6",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a1c256c0703f272aa833138e",
+          "v05-b5b5fc9f59f7d598d115d700",
+          "v05-badb8d8fa071315fb9ccbef3",
+          "v05-d8b2068c724c732dc6d2cd0b"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-966dea4efb2a124d",
+        "representative_candidate_id": "v05-b5b5fc9f59f7d598d115d700",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a1cb2347bf113b4dc1377ab8",
+          "v05-aa811efc73a52b4a1cc597ea"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-8db1de859aed59c9",
+        "representative_candidate_id": "v05-aa811efc73a52b4a1cc597ea",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a1ff43d7bef4ec5411513266",
+          "v05-faa4c4ed25123b5b446e1c50"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-9b45ee946b86669f",
+        "representative_candidate_id": "v05-a1ff43d7bef4ec5411513266",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a424fef54bcf242868477820",
+          "v05-dc47bba01642c66531ea87b2"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-d0e1eb42511e5343",
+        "representative_candidate_id": "v05-dc47bba01642c66531ea87b2",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a7c5473ecde6b11d563164dc",
+          "v05-ccc33dd8174b9dcd085fbc1c"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-e761ad312cda8ce3",
+        "representative_candidate_id": "v05-ccc33dd8174b9dcd085fbc1c",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-a95525e4006658b4f86de987",
+          "v05-aad64f2f411caed619d2a432"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-a2f6cf66e2e73e3b",
+        "representative_candidate_id": "v05-aad64f2f411caed619d2a432",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-ac67f6365881e61337858745",
+          "v05-dcd9d5864fccf82e46a0d991",
+          "v05-e7685dd5647569f5fcc98be5"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-41f0017effda88ff",
+        "representative_candidate_id": "v05-dcd9d5864fccf82e46a0d991",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-ae8e870d873209d09269eeb1",
+          "v05-d207f5aea65362dcc9cc14e7"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-de03295033656d28",
+        "representative_candidate_id": "v05-d207f5aea65362dcc9cc14e7",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-b2c47552bd2ba13e42c15109",
+          "v05-f3b49b4d2c1a55dcede5c2a3",
+          "v05-fe069b77bb4d70e3e1d9b50c"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-67b2602414eaa792",
+        "representative_candidate_id": "v05-f3b49b4d2c1a55dcede5c2a3",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-b2d6dcda18b19d6f87ff7fcb",
+          "v05-bac14faa326ff9077f807c8f"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-c910c07b64b23fd3",
+        "representative_candidate_id": "v05-bac14faa326ff9077f807c8f",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-b2ea6ab4a9ca9e65a373e5d7",
+          "v05-bdd037024fbdcd1159cb9cef"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-6bdf3062878e19e8",
+        "representative_candidate_id": "v05-b2ea6ab4a9ca9e65a373e5d7",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-b7004e796fce0273393f4b47",
+          "v05-d005c87d6c784a4e33d673b4",
+          "v05-e366f90feb02d0bcf62b0f25"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-dc2ac1761c3a2be1",
+        "representative_candidate_id": "v05-d005c87d6c784a4e33d673b4",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-b78ef908c6166d88a96274d8",
+          "v05-fd42995794aea6ff4bdecf46"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-8cb88a967c61f246",
+        "representative_candidate_id": "v05-fd42995794aea6ff4bdecf46",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-c3a28b63a70092932393e65b",
+          "v05-e8df799aabb61ebf9fef0dfb"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-416727a05790324d",
+        "representative_candidate_id": "v05-e8df799aabb61ebf9fef0dfb",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-c70dddea791ca1e96e9d2ce3",
+          "v05-f41584de435a794e3a9816ad"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0303d5a59da5bfcc",
+        "representative_candidate_id": "v05-f41584de435a794e3a9816ad",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-c793108912dc675063cd8222",
+          "v05-d73eb625f757d20323672c15",
+          "v05-dffa123806b2d501e382383c"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-57470e0eb8267a76",
+        "representative_candidate_id": "v05-d73eb625f757d20323672c15",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-c894e83629dfe90011caae2c",
+          "v05-cbfc98f6686aedaf3620fffe"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-f23016814a62116f",
+        "representative_candidate_id": "v05-c894e83629dfe90011caae2c",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-c9e21eb286731b176d28152d",
+          "v05-e71f5a8a52e99363659e465c"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-e7aabaa8de60aa6c",
+        "representative_candidate_id": "v05-c9e21eb286731b176d28152d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-ca047ad8966d08979a7186bc",
+          "v05-d8493965263e0ddca6f5478a"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-933d69c161b89168",
+        "representative_candidate_id": "v05-ca047ad8966d08979a7186bc",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-e82754129d13c4280c525b23",
+          "v05-ec019a87ff611b0c51a982a6",
+          "v05-f04f673ffa1fa55b902ec1b4"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-0cd56b001ccbbc9a",
+        "representative_candidate_id": "v05-ec019a87ff611b0c51a982a6",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-e86fd33b5c58e64a6699123d",
+          "v05-f274084075d35b7fdc484e83"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-67efd3f7e4d1ba4c",
+        "representative_candidate_id": "v05-e86fd33b5c58e64a6699123d",
+        "suppressed_candidate_ids": []
+      },
+      {
+        "candidate_ids": [
+          "v05-f4457ec3b15ea298759cbd4f",
+          "v05-fab351f4e33798b83b6968b2"
+        ],
+        "reason": "suggested review cluster from Jaccard >= 0.80 or exact subset; raw candidates retained",
+        "redundancy_cluster_id": "red-53821307bcdd397c",
+        "representative_candidate_id": "v05-f4457ec3b15ea298759cbd4f",
+        "suppressed_candidate_ids": []
+      }
+    ],
+    "pair_count": 135220,
+    "pair_list_truncated": true,
+    "suggested_review_pair_count": 667,
+    "threshold": 0.8
+  },
+  "representative_rule": "Within suggested Jaccard >= 0.80 or exact-subset components of ROI-qualified candidates only, choose lowest condition depth, then largest recent n, then candidate ID; raw candidates are retained.",
+  "schema_version": "edgedb-v05-redundancy-summary/v2",
+  "suppressed_candidate_ids": {
+    "v05-2706e22ceabe46817834a751": [
+      "v05-d2a521bfc978d1d4a71e7f39"
+    ],
+    "v05-39ec333e58fed6561c997a20": [
+      "v05-7c45ccb74ddf1a601743e1a0",
+      "v05-aaf0445d2f736c1dfdfe6394",
+      "v05-dcddd99f791ee0a7a37b195a"
+    ],
+    "v05-3ccaf20c760f18fcc6324366": [
+      "v05-bc57e17f130057121340cdb1"
+    ],
+    "v05-3f20d1d83c6120df9965b813": [
+      "v05-32a5c91ba2ae4632f8ce4d1b",
+      "v05-4efb9ee6b8d2b29ff0c366ae"
+    ],
+    "v05-424480a6f54e77fc4a9e149a": [
+      "v05-2fe3ab649fb5fa41b73efffe",
+      "v05-849bf4192fc283e1e69680cd",
+      "v05-a8086178efbf40926e20a5f5"
+    ],
+    "v05-4789db27c353ab9eb63e8959": [
+      "v05-7610f9feb7a38d3aabe96cc7",
+      "v05-ea5d985d97a3838c411f67ac"
+    ],
+    "v05-5056f673a5dfab937d7ef5ff": [
+      "v05-498fc42ed4af65abc0daaf4e"
+    ],
+    "v05-6f7671ae5c3d1bb33cc4a013": [
+      "v05-6ef1f0e353c973594ae7c5c5"
+    ],
+    "v05-7ffbae0b53e4bf8836752334": [
+      "v05-58a310531f88cc014bcda9ae",
+      "v05-7b415fbcbe98ddad5aaeb677"
+    ],
+    "v05-971f98c5c9616673e88b466d": [
+      "v05-2d71b3bf5d2364dda150e0b3",
+      "v05-36932ffe6ca98a1175f78a60",
+      "v05-3897a6ee881a57218ea386e6",
+      "v05-7e084b5a18ec70b127117e72"
+    ],
+    "v05-aad64f2f411caed619d2a432": [
+      "v05-a95525e4006658b4f86de987"
+    ],
+    "v05-bb6e406fa22dd7aa70ae1042": [
+      "v05-81c8ce60f08c0dc350dedc6f",
+      "v05-d1ae3913f03d0f8570321027"
+    ],
+    "v05-bd355995197abb88a8af3c66": [
+      "v05-52ed238202e4abb1f7d868aa"
+    ],
+    "v05-c18d05591de4ee217b08fbd6": [
+      "v05-83d530818c16a9d654d6f5e3"
+    ],
+    "v05-cb217874b4fd581fd3239fc6": [
+      "v05-408b656a1a184a0f2e3efe3a"
+    ],
+    "v05-cbefd02dc4812af7875891c3": [
+      "v05-6d89428514fc97faa1aae0ab"
+    ],
+    "v05-dbb0dd7f0b32d6c3a67b0a50": [
+      "v05-557828647c9dd2da66700838"
+    ],
+    "v05-e0184890311d08134c8a39ee": [
+      "v05-6b5efa030bdc33d4ef8c9820"
+    ],
+    "v05-f4457ec3b15ea298759cbd4f": [
+      "v05-fab351f4e33798b83b6968b2"
+    ]
+  }
+}

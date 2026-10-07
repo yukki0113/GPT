@@ -1,0 +1,245 @@
+{
+  "blocked_features": {
+    "course_topology": "BLOCKED_AFTER_REPOSITORY_AUDIT; BAC exposes turn_code (right/left/straight/other) and layout_code (inner/outer/straight-dirt/other), but no authoritative venue+surface+distance+layout -> one/two-turn map exists in repository metadata. These fields do not encode turn count; distance inference is invalid.",
+    "first_blinkers": "DERIVABLE_FROM_WAREHOUSE_SCHEMA; not included in candidate aggregation because canonical KYI annual history Parquet was not present in the Actions artifact inputs. KYI has blood_registration_no, race_key_raw, blinker_code; codes 1/2/3 mean first-worn/re-worn/active.",
+    "first_dirt": "DERIVABLE_FROM_WAREHOUSE_SCHEMA; not included in candidate aggregation because canonical annual history Parquet was not present in the Actions artifact inputs. Use blood_registration_no + race_key_raw to join runner history and surface_code; UNKNOWN for left-censored horses.",
+    "first_turf": "DERIVABLE_FROM_WAREHOUSE_SCHEMA; not included in candidate aggregation because canonical annual history Parquet was not present in the Actions artifact inputs. Use blood_registration_no + race_key_raw to join runner history and surface_code; UNKNOWN for left-censored horses."
+  },
+  "feature_availability": {
+    "distance_change_bucket": {
+      "available": true,
+      "coverage_pct": 87.6826,
+      "non_null": 82711,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "distance_m": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "frame_no": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "horse_id": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "horse_no": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "label_final_win_odds": {
+      "available": true,
+      "coverage_pct": 99.6258,
+      "non_null": 93977,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_final_win_popularity": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_finish": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_place_hit": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_place_payout": {
+      "available": true,
+      "coverage_pct": 21.6198,
+      "non_null": 20394,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_win_hit": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_win_payout": {
+      "available": true,
+      "coverage_pct": 7.2808,
+      "non_null": 6868,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "race_date": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "race_key": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "sire_name": {
+      "available": true,
+      "coverage_pct": 99.9989,
+      "non_null": 94329,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "surface_code": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "surface_transition": {
+      "available": true,
+      "coverage_pct": 87.6826,
+      "non_null": 82711,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "track_condition_bucket": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "venue_code": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    }
+  },
+  "schema_version": "edgedb-v05-feature-mart-audit/v1",
+  "source": {
+    "analysis_artifact_digest": "sha256:d159c2fca9959d9b144d55f9b3ba98228158cc38b85fcc730032a53f29252a55",
+    "analysis_artifact_run_id": 36437363166,
+    "analysis_coverage": "validated v1.4 generation; discovery scan intentionally does not use Analysis 2026 rows",
+    "analysis_generation_id": "analysis-v1_4-canonical-20260928-02",
+    "analysis_manifest_sha256": "e9c391e76fac86a15526e8ab453558e68fc00400a18674e26edf64aad9feec9e",
+    "analysis_rows": 517622,
+    "execution_source_commit_expected": "a43f150b9900163a629b95fe809cd37800f5236b",
+    "feature_mart_artifact_digest": "sha256:19d713da2e6ebf57965de98952fbf18d79f9ddfd5c1996833af3267b1a53f725",
+    "feature_mart_artifact_run_id": 36116777782,
+    "feature_mart_coverage": [
+      "2010-01-05",
+      "2025-12-28"
+    ],
+    "feature_mart_generation_id": "edge_feature_mart_v0_2_g20260925_pq1",
+    "feature_mart_manifest_sha256": "2b7d1d61a3b6b582f10d7bcdd6655ccb3f8abb2479b117935a49aa1b87aa68c8",
+    "feature_mart_parquet_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+    "feature_mart_rows": 781161,
+    "instruction_source_commit": "a43f150b9900163a629b95fe809cd37800f5236b",
+    "warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+    "warehouse_manifest_sha256": "a25cedfb5d76c1f9f2ed65308181e2f5222f294ee8015f93aabe3771fb7f1087"
+  },
+  "status": "PASS",
+  "warehouse_history_audit": {
+    "families": {
+      "BAC": {
+        "coverage_years": "2010-2025",
+        "family_manifest_sha256": "12c09e56ac390c2311c27b0ed68ddf3c42e9eba70c73e006121d04afe837ac3d",
+        "layout_code_map": {
+          "1": "通常（内）",
+          "2": "外",
+          "3": "直線ダート",
+          "9": "その他"
+        },
+        "result": "BLOCKED; no turn-count category/authoritative topology crosswalk found in repository configuration or metadata",
+        "schema_fields": [
+          "race_key_raw",
+          "race_date",
+          "surface_code",
+          "distance_m",
+          "turn_code",
+          "layout_code"
+        ],
+        "turn_code_map": {
+          "1": "右",
+          "2": "左",
+          "3": "直線",
+          "9": "その他"
+        },
+        "year_partitions": 16
+      },
+      "KYI": {
+        "coverage_years": "2010-2025",
+        "family_manifest_sha256": "760c9eaa98cbd590425dcf6150c11b2df3509a83a1046778404f160692d1f328",
+        "parser_semantics": "jrdb_raw.Parser.kyi parses blinker_code; racenote_jrdb.BLINKER maps 1=初装着, 2=再装着, 3=ブリンカー",
+        "result": "SCHEMA_PASS; history calculation not run because Warehouse Parquet is not an input artifact to the approved Actions fallback",
+        "schema_fields": [
+          "blood_registration_no",
+          "race_key_raw",
+          "horse_no",
+          "blinker_code"
+        ],
+        "year_partitions": 16
+      },
+      "SED": {
+        "coverage_years": "2010-2025",
+        "family_manifest_sha256": "36ba1579c378588770d7d23eea4478829423441d382b3ebd99f89f3a4c926296",
+        "result": "SCHEMA_PASS; duplicate/source-consistency audit remains to be done during materialized join",
+        "schema_fields": [
+          "blood_registration_no",
+          "race_key_raw",
+          "race_date",
+          "surface_code",
+          "horse_no"
+        ],
+        "year_partitions": 16
+      },
+      "ZED": {
+        "coverage_years": "2010-2025",
+        "family_manifest_sha256": "43844a65fe7b836f74a5e3beabfb194fb9f942a8a16d5ceb0fc76954c483a68b",
+        "result": "SCHEMA_PASS; full surface chronology can be joined by canonical horse registration number",
+        "schema_fields": [
+          "blood_registration_no",
+          "race_key_raw",
+          "race_date",
+          "surface_code",
+          "horse_no"
+        ],
+        "year_partitions": 16
+      }
+    },
+    "history_derivation": {
+      "candidate_join": "KYI.race_horse_key or blood_registration_no+race_key_raw+horse_no to result rows; surface from canonical ZED/SED",
+      "first_blinker_rule": "active code in {1,2,3} and no prior active code for the same blood_registration_no; left-edge-history targets UNKNOWN",
+      "first_surface_rule": "target surface must not be in strictly earlier starts; rows with first observed history at 2010 left edge are UNKNOWN; duplicate same-day/horse source rows must be reconciled",
+      "implementation_status": "CHRONOLOGY_HELPERS_AND_FIXTURE_TESTS_PASS; canonical full-population join blocked because Data Storage fallback contract does not transport Google Drive assets and no accepted Warehouse Actions artifact was available as input"
+    },
+    "warehouse_asset_manifest_drive_id": "1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN",
+    "warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+    "warehouse_manifest_sha256": "a25cedfb5d76c1f9f2ed65308181e2f5222f294ee8015f93aabe3771fb7f1087"
+  }
+}
