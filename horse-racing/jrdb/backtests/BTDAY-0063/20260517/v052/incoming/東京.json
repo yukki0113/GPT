@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "race_model": "東京ダート1600m・未勝利。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      5,
+      2,
+      4,
+      3,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5番コーリンクレアは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ミライヘノティアラは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ビリキナータは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番ロットは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番イデアクリスタルは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15番オーケーグレイスまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎5番コーリンクレアは今回の東京条件で1着を取り切るシナリオが最も明確。○2番ミライヘノティアラは別の主線として再現性が高い。▲4番イデアクリスタルは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        2,
+        4,
+        3,
+        10
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15番オーケーグレイスは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15番オーケーグレイスの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 2,
+      "honmei_win_case": "5番コーリンクレアはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "2番ミライヘノティアラは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "race_model": "東京ダート1400m・未勝利。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      14,
+      5,
+      4,
+      10,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "14番デスサイズは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番マナイアカラニは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番ロードクローザーは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番イデアジュアンイハは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番エルアンは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9番キタノシオンまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎14番デスサイズは今回の東京条件で1着を取り切るシナリオが最も明確。○5番マナイアカラニは別の主線として再現性が高い。▲4番エルアンは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        5,
+        10,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番エルアンは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 9,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "4番エルアンの別経路を通常5頭の非◎○馬より高く評価し、◎○を保持したまま▲として採用した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 5,
+      "honmei_win_case": "14番デスサイズはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "5番マナイアカラニは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "race_model": "東京ダート2100m・未勝利。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      2,
+      4,
+      7,
+      8,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番ブルーフレアは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番エクストラプッシュは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番アイスアイスベイビは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番チャリティチャリスは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番アイムスティルミーは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10番オーキッドワンまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2番ブルーフレアは今回の東京条件で1着を取り切るシナリオが最も明確。○4番エクストラプッシュは別の主線として再現性が高い。▲7番アイムスティルミーは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        7,
+        8,
+        1
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番オーキッドワンは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10番オーキッドワンの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 4,
+      "honmei_win_case": "2番ブルーフレアはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "4番エクストラプッシュは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "race_model": "東京芝1800m・未勝利。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      16,
+      3,
+      4,
+      5,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "16番クカイリモクは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番マジックパレスは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ペカリーナは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番イニスフェイルは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番ニシノマルガリートは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12番ルシアージュまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎16番クカイリモクは今回の東京条件で1着を取り切るシナリオが最も明確。○3番マジックパレスは別の主線として再現性が高い。▲4番ニシノマルガリートは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        3,
+        5,
+        9,
+        12
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番ニシノマルガリートは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 12,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "4番ニシノマルガリートの別経路を通常5頭の非◎○馬より高く評価し、◎○を保持したまま▲として採用した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 3,
+      "honmei_win_case": "16番クカイリモクはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "3番マジックパレスは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "race_model": "東京芝2400m・未勝利。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      11,
+      5,
+      10,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11番ショウナンマルチは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ウルフマンは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番レッドリアライズは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番ルアグロールは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10番レッドブライトンは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9番コスモアマデウスまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎11番ショウナンマルチは今回の東京条件で1着を取り切るシナリオが最も明確。○5番ウルフマンは別の主線として再現性が高い。▲10番レッドブライトンは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        5,
+        10,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番コスモアマデウスは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9番コスモアマデウスの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 5,
+      "honmei_win_case": "11番ショウナンマルチはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "5番ウルフマンは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "race_model": "東京ダート1600m・1勝クラス。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      1,
+      7,
+      5,
+      6,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番ヴンダーバールは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番ワイズギャングは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番ジュワネングは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番フィアーブルは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番バルボアパークは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番ファンシーズまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1番ヴンダーバールは今回の東京条件で1着を取り切るシナリオが最も明確。○7番ワイズギャングは別の主線として再現性が高い。▲5番バルボアパークは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        7,
+        5,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番ファンシーズは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3番ファンシーズの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 7,
+      "honmei_win_case": "1番ヴンダーバールはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "7番ワイズギャングは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "race_model": "東京芝1600m・1勝クラス。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      2,
+      4,
+      1,
+      5,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番トミーバローズは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ブルースカイブルーは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ヴァロアークは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番リアライズリバティは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番サトノマティーニは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6番タイセイフレッサまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2番トミーバローズは今回の東京条件で1着を取り切るシナリオが最も明確。○4番ブルースカイブルーは別の主線として再現性が高い。▲1番サトノマティーニは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        5,
+        7,
+        1
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番タイセイフレッサは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6番タイセイフレッサの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 4,
+      "honmei_win_case": "2番トミーバローズはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "4番ブルースカイブルーは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "race_model": "東京芝1800m・1勝クラス。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      1,
+      9,
+      13,
+      8,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番アドミラルシップは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番ホウオウペトリュスは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番エデルクローネは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ドルビナは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13番クモヒトツナイは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10番バズアップビートまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1番アドミラルシップは今回の東京条件で1着を取り切るシナリオが最も明確。○9番ホウオウペトリュスは別の主線として再現性が高い。▲13番クモヒトツナイは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        9,
+        13,
+        8,
+        3
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番バズアップビートは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10番バズアップビートの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 9,
+      "honmei_win_case": "1番アドミラルシップはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "9番ホウオウペトリュスは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "race_model": "東京芝1600m・2勝クラス。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      12,
+      4,
+      1,
+      9,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12番エルマーゴは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ジーティーマンは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番デファイは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番ミッキースターダムは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番オリバナムは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8番マイネルフォルツァまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎12番エルマーゴは今回の東京条件で1着を取り切るシナリオが最も明確。○4番ジーティーマンは別の主線として再現性が高い。▲1番オリバナムは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        4,
+        9,
+        7,
+        8
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番オリバナムは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "1番オリバナムの別経路を通常5頭の非◎○馬より高く評価し、◎○を保持したまま▲として採用した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 4,
+      "honmei_win_case": "12番エルマーゴはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "4番ジーティーマンは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "race_model": "東京ダート1600m・2勝クラス。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      1,
+      14,
+      11,
+      15,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番グロスビークは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番ケイアイアルタイルは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番コーリンカルベラは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番メイショウタイピンは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番グレイスザクラウンは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7番トルショーまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1番グロスビークは今回の東京条件で1着を取り切るシナリオが最も明確。○14番ケイアイアルタイルは別の主線として再現性が高い。▲11番グレイスザクラウンは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        14,
+        11,
+        15,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番トルショーは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7番トルショーの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 14,
+      "honmei_win_case": "1番グロスビークはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "14番ケイアイアルタイルは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "race_model": "東京芝1600m・オープン。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      12,
+      8,
+      4,
+      7,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12番エンブロイダリーは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番カムニャックは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番クイーンズウォークは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番アイサンサンは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番エリカエクスプレスは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 18,
+      "reason": "18番チェルヴィニアまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎12番エンブロイダリーは今回の東京条件で1着を取り切るシナリオが最も明確。○8番カムニャックは別の主線として再現性が高い。▲4番エリカエクスプレスは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        8,
+        7,
+        15,
+        18
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番エリカエクスプレスは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 18,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "4番エリカエクスプレスの別経路を通常5頭の非◎○馬より高く評価し、◎○を保持したまま▲として採用した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 8,
+      "honmei_win_case": "12番エンブロイダリーはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "8番カムニャックは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "race_model": "東京ダート1400m・3勝クラス。Readerの近走内容、位置取り、終い、調教、東京コースへの再現性を照合し、複勝安定度ではなく今回1着まで届く経路を優先して判断する。",
+    "marks": [
+      13,
+      12,
+      3,
+      8,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "13番メイケイレインは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番スニーカースキルは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番ラファルは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番アスクアイルビゼアは通常候補5頭の中で能力、近走内容、状態と今回条件への再現性を評価し、主線として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番コーラルクラウンは通常主線とは異なる位置取り、展開または条件変化で勝ち切る非対称な経路を持ち、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11番サトノガレオンまで比較し、通常5頭の保護と外部challengerの勝ち筋を分けて最終5頭を確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎13番メイケイレインは今回の東京条件で1着を取り切るシナリオが最も明確。○12番スニーカースキルは別の主線として再現性が高い。▲3番コーラルクラウンは通常順位ではなく、展開や条件が噛み合った際の非対称な勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        12,
+        3,
+        8,
+        10
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11番サトノガレオンは通常5頭の外から、展開・脚質・条件変化のいずれかで勝ち切る別経路を持つため外部challengerとして比較した。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "11番サトノガレオンの上振れ余地は認めるが、通常5頭を崩すほどの勝ち切り根拠には届かないため通常5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 12,
+      "honmei_win_case": "13番メイケイレインはReader上の能力、近走内容、状態と東京の今回条件を合わせると、具体的に1着まで届くシナリオが最も明瞭。",
+      "second_case": "12番スニーカースキルは◎とは異なる位置取りや脚の使い方から勝ち切りまで届く次の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "複勝圏の安全性ではなく、今回1着を取り切る具体的な展開・能力・状態の経路を優先して◎○を再順位付けした。"
+    }
+  }
+]
