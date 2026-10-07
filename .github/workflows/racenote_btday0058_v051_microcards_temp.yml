@@ -1,0 +1,62 @@
+name: RaceNote BTDAY-0058 v051 microcards temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0058.v051-microcards'
+permissions:
+  contents: write
+jobs:
+  cards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 2}
+      - name: Build microcards
+        run: |
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          src=Path('horse-racing/jrdb/backtests/BTDAY-0058/20260809/ab/v051/reader')
+          out=Path('horse-racing/jrdb/backtests/BTDAY-0058/20260809/ab/v051/microcards')
+          out.mkdir(parents=True,exist_ok=True)
+          def g(d,*ks):
+            for k in ks:
+              if not isinstance(d,dict): return None
+              d=d.get(k)
+            return d
+          def short(s,n=55):
+            if not s:return ''
+            return re.sub(r'\s+',' ',str(s))[:n]
+          for p in sorted(src.glob('*.json')):
+            x=json.loads(p.read_text())
+            r=x['race']
+            lines=[f"{r['venue']}{r['race_no']}R|{r.get('class')}|{r.get('surface')}{r.get('distance_m')}|n={r.get('field_size')}|cond={r.get('race_conditions')}"]
+            for h in x['horses']:
+              i=h['identity']; e=h.get('evidence',{}); o=h.get('other_context',{}); rr=o.get('racereview',{}); hp=rr.get('history_profile',{}) or {}
+              runs=[]
+              for z in (o.get('recent_runs') or [])[:3]:
+                ra=z.get('race',{}); pe=z.get('performance',{}); no=z.get('notes',{}); re_=z.get('result',{}); jm=z.get('jrdb_metrics',{})
+                runs.append(f"{ra.get('date','')[5:]}:{ra.get('venue','')}{ra.get('distance_m','')}{ra.get('surface','')}:f{re_.get('finish')}:i{pe.get('idm')}:c{pe.get('corners')}:raw{jm.get('raw_score')}:pc{jm.get('pace_score')}:{short(no.get('race_comment'),38)}:{'/'.join((no.get('special_notes') or [])[:2])}")
+              pos=[z.get('code') for z in hp.get('primary_positive') or []]
+              rep=[f"{z.get('tag')}x{z.get('count')}" for z in hp.get('repeated_patterns') or []]
+              rec=(rr.get('recommendation') or {}).get('matched_signal_ids') or []
+              car=o.get('historical_profile',{}).get('career',{})
+              tr=o.get('training',{}).get('main_workout',{}) or {}
+              printline='|'.join([
+                f"{i['horse_no']}:{i['horse_name']}",f"J={i.get('jockey')}",f"idm={g(e,'ABILITY','P','idm')}",f"info={g(e,'ABILITY','S','info_index')}",f"long={g(e,'ABILITY','S','longshot_index')}",
+                f"F={g(e,'PACE_POSITION','S','pace_front_index')}",f"L={g(e,'PACE_POSITION','P','pace_late_index')}",f"P={g(e,'PACE_POSITION','S','pace_pace_index')}",f"Pos={g(e,'PACE_POSITION','S','pace_position_index')}",f"m={g(e,'PACE_POSITION','S','forecast_finish_margin')}/{g(e,'PACE_POSITION','S','forecast_mid_margin')}/{g(e,'PACE_POSITION','S','forecast_last3f_margin')}",f"sty={g(e,'PACE_POSITION','S','running_style')}",
+                f"tr={g(e,'TRAINING_CONDITION','P','kyi_training_index')}/{g(e,'TRAINING_CONDITION','C','cyb_training_index')}/{g(e,'TRAINING_CONDITION','S','cha_clock_index_last')}/{g(e,'TRAINING_CONDITION','S','improvement')}",
+                f"fit={g(e,'SUITABILITY','C','dirt_fit')}/{g(e,'SUITABILITY','S','heavy_track_fit')}",f"conn={g(e,'CONNECTIONS','C','jockey_index')}/{g(e,'CONNECTIONS','S','stable_index')}",
+                f"career={car.get('starts')}/{car.get('top3_rate')}",f"rr+={','.join(pos)}",f"rep={','.join(rep)}",f"sig={','.join(rec)}",
+                f"runs={';'.join(runs)}",f"work={tr.get('date')}:{g(tr,'pair','strength')}:{tr.get('rider_type')}",f"traits={','.join(g(o,'condition','horse_traits') or [])}"
+              ])
+              lines.append(printline)
+            (out/(p.stem.replace('racenote_reader_','micro_')+'.txt')).write_text('\n'.join(lines)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0058/20260809/ab/v051/microcards
+          git commit -m 'RaceNote: build BTDAY-0058 v051 microcards'
+          git pull --rebase origin main
+          git push origin HEAD:main
