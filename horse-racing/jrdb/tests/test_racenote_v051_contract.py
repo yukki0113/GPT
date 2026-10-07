@@ -90,6 +90,38 @@ class V051DecisionCoreTest(unittest.TestCase):
         changed["candidate_compression"]["reason"] = "外部挑戦3は魅力を認めるが、通常五頭の末尾を押し出すほどではないため五頭を維持する。"
         v051.validate_core(changed, reader())
 
+
+    def test_exactly_five_runners_use_no_external_challenger(self) -> None:
+        five_reader = {
+            "race": {"venue": "東京", "race_no": 1},
+            "horses": [{"basic": {"horse_no": n}} for n in range(1, 6)],
+        }
+        changed = copy.deepcopy(core())
+        changed["marks"] = [1, 2, 4, 3, 5]
+        changed["mainline_cases"] = [
+            {"horse_no": 1, "case": "能力と展開の両面で最も明瞭な勝ち筋がある。"},
+            {"horse_no": 2, "case": "通常本線の二番手として崩れにくい根拠がある。"},
+            {"horse_no": 3, "case": "通常支持として展開適合と再現性を評価できる。"},
+            {"horse_no": 5, "case": "通常支持として五頭内に残す根拠がある。"},
+        ]
+        changed["single_shot_case"] = {
+            "horse_no": 4,
+            "case": "五頭立ての通常支持内では4が最も非対称な上振れ経路を持つ。",
+        }
+        changed["boundary_review"] = {
+            "alternative_horse_no": None,
+            "reason": "五頭立てのため除外候補は存在せず、全頭を五印に残す。",
+        }
+        changed["candidate_compression"] = {
+            "ordinary_five": [1, 2, 3, 4, 5],
+            "external_challenger_horse_no": None,
+            "external_challenger_case": "五頭立てのため外部の六頭目候補は存在しない。",
+            "excluded_horse_no": None,
+            "decision": "NO_EXTERNAL_CHALLENGER",
+            "reason": "五頭立てなので通常五頭をそのまま保持し、支持三頭の中から▲を割り当てる。",
+        }
+        v051.validate_core(changed, five_reader)
+
     def test_reader_projection_is_not_changed_by_v051(self) -> None:
         import racenote_reader_v050 as v050_reader
         import racenote_reader_v051 as v051_reader
