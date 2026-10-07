@@ -52,8 +52,7 @@ For every race:
 
 1. form the race model;
 2. create ordered `ordinary_five=[◎ anchor, ○ anchor, support A, support B, support C]`;
-3. choose exactly one external asymmetric challenger outside that five;
-4. compare the six explicitly;
+3. choose exactly one external asymmetric challenger outside that five when six or more runners exist; for exactly five runners use `NO_EXTERNAL_CHALLENGER`;\n4. compare the six explicitly when a sixth runner exists;
 5. either `ADMIT_CHALLENGER` or `KEEP_ORDINARY_FIVE`;
 6. do not change the two anchors during the challenger comparison;
 7. write the required `candidate_compression` object.
