@@ -347,14 +347,18 @@ def build_history_index(facts: list[dict[str, Any]], sed_rows: list[dict[str, st
     sed_conflicts = 0
     sed_duplicates = 0
     for (blood, race, horse_no), group in event_groups.items():
-        if len(group["dates"]) != 1 or len(group["surface"]) != 1 or len(group["distance"]) != 1:
+        if len(group["dates"]) != 1:
             sed_conflicts += 1
             continue
         date = next(iter(group["dates"]))
+        surface_unknown = len(group["surface"]) != 1
+        distance_unknown = len(group["distance"]) != 1
+        if surface_unknown or distance_unknown:
+            sed_conflicts += 1
         event = {"horse_id": blood, "race_key": race, "horse_no": horse_no,
-                 "race_date": date, "surface_code": next(iter(group["surface"])),
-                 "distance_m": next(iter(group["distance"])), "blinker_code": None,
-                 "surface_unknown": False, "blinker_unknown": False}
+                 "race_date": date, "surface_code": None if surface_unknown else next(iter(group["surface"])),
+                 "distance_m": None if distance_unknown else next(iter(group["distance"])), "blinker_code": None,
+                 "surface_unknown": surface_unknown, "blinker_unknown": False}
         older_events.append(event); identity_date[(blood, date)].add(race)
 
     kyi_groups: dict[tuple[str, str, str], set[str]] = defaultdict(set)
@@ -511,8 +515,8 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
     sed_rows = load_2026_sed(sed_root)
     sed_dates = {row["race_date"] for row in sed_rows}
     paci_dates = {row["race_date"] for row in facts}
-    if paci_dates != sed_dates:
-        raise FreezeError(f"PACI/SED date coverage mismatch: paci_only={len(paci_dates-sed_dates)} sed_only={len(sed_dates-paci_dates)}")
+    if not paci_dates.issubset(sed_dates):
+        raise FreezeError(f"PACI dates missing from SED chronology: {len(paci_dates-sed_dates)}")
     history_audit = build_history_index(facts, sed_rows, warehouse_root)
     for fact in facts:
         validate_match_fact_schema(fact)
@@ -557,10 +561,14 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
         for day, item in sorted(month_day.items()): writer.writerow([day, item["fact_rows"], item["match_rows"], item["fact_sha256"], item["match_sha256"]])
     _write_parquet(fact_rows, FACT_COLUMNS, output_root / "v05_2026_pre_race_facts.parquet")
     _write_parquet(matches, MATCH_COLUMNS, output_root / "v05_2026_match_freeze.parquet")
-    missing_days = sorted(paci_dates - sed_dates)
-    recommendation = "PARTIAL_PRE_RACE_COVERAGE" if facts and any(row["going_bucket"] is None for row in facts) else "READY_FOR_TURN3_OUTCOME_JOIN"
+    missing_days = sorted(sed_dates - paci_dates)
+    paci_sed_equal = paci_dates == sed_dates
+    recommendation = ("PARTIAL_PRE_RACE_COVERAGE"
+        if not paci_sed_equal or history_audit["sed_2026_unjoined_to_paci"] or
+           (facts and any(row["going_bucket"] is None for row in facts))
+        else "READY_FOR_TURN3_OUTCOME_JOIN")
     audit = {
-        "status": "PASS" if facts and paci_dates == sed_dates else "PARTIAL",
+        "status": "PASS" if facts and paci_sed_equal else "PARTIAL",
         "recommendation": recommendation,
         "production_impact": "NONE",
         "input_provenance": {"cohort": cohort_audit, "paci": paci_audit,
@@ -571,9 +579,11 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
             "warehouse_generation": WAREHOUSE_GENERATION},
         "coverage": {"first_race_date": min(paci_dates) if paci_dates else None,
             "latest_race_date": max(paci_dates) if paci_dates else None,
-            "race_days": len(paci_dates), "races": paci_audit["paci_race_count"],
+            "race_days": len(paci_dates), "sed_history_days": len(sed_dates),
+            "races": paci_audit["paci_race_count"],
             "runners": len(facts), "sed_history_events": len(sed_rows),
-            "paci_sed_date_sets_equal": paci_dates == sed_dates, "missing_days": missing_days},
+            "paci_sed_date_sets_equal": paci_sed_equal, "paci_dates_missing_from_sed": [],
+            "paci_dates_unavailable_for_matching": missing_days},
         "leakage_audit": {"result_fields_absent_from_matching_schema": not bool(set(FACT_COLUMNS) & FORBIDDEN_FIELDS),
             "payout_fields_absent": True, "popularity_absent": True, "odds_absent": True,
             "post_race_fields_absent": True,
