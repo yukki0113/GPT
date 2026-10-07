@@ -368,7 +368,7 @@ def render_result(summary: dict[str, Any], additions: list[dict[str, Any]], hist
              f"- Chronology-derived active-first rows: {history['blinker_chronology_count']:,}; code==1 rows: {history['blinker_code_1_count']:,}; parity mismatches: {history['blinker_code_parity_mismatch_count']:,}.",
              f"- Warehouse code distribution: `{json.dumps(history['blinker_code_distribution'], ensure_ascii=False)}`.",
              f"- UNKNOWN blinkers target rows: {history['unknown_feature_rows']['first_blinkers']:,}. Mismatches are UNKNOWN for candidate membership; see `first_history_audit.json` for representative rows.",
-             "- Active semantics are codes 1/2/3; blank and 0 mean no active blinkers on that start. Code 2 is re-wear and is not accepted as first use when codebook and chronology disagree.", "",
+             "- Active semantics follow the repository codebook: 1=first worn, 2=re-worn, 3=active blinkers. Blank code means no active blinkers on that start; code 2 is not accepted as first use when codebook and chronology disagree.", "",
              "## Unified candidate counts", "", "| Family | All candidates | n>=5 | Positive Value | Negative Edge | Support classes | Freshness | LONGSHOT_EVIDENCE |", "|---|---:|---:|---:|---:|---|---|---:|"]
     for fam, row in sorted(families.items()):
         support = json.dumps(row.get("support_classes", {}), ensure_ascii=False, sort_keys=True)
