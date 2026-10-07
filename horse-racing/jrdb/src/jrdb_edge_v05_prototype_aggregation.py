@@ -211,10 +211,10 @@ def _freshness(context:dict[str,Any], y24:dict[str,Any],y25:dict[str,Any],recent
 
 def memo(c:dict[str,Any], delta:float|None)->str:
     cond=c["conditions"]; t=c["template_id"]
-    if delta is None: direction="は近年の傾向を要確認"
-    elif delta>0: direction="は近年、親条件より複勝率が高い"
-    elif delta<0: direction="は近年、親条件より複勝率が低い"
-    else: direction="は近年、親条件と同程度"
+    if delta is None: direction="近年の傾向を要確認"
+    elif delta>0: direction="近年、親条件より複勝率が高い"
+    elif delta<0: direction="近年、親条件より複勝率が低い"
+    else: direction="近年、親条件と同程度"
     if t=="T1_COURSE_FRAME":
         base=f"{VENUES.get(cond['venue_code'],cond['venue_code'])}{SURFACES.get(cond['surface_code'],cond['surface_code'])}{cond['distance_m']}m"
         return f"{base}は{cond['frame_no']}枠で、{direction}"
