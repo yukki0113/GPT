@@ -66,10 +66,7 @@ class V052DecisionCoreTest(unittest.TestCase):
 
     def test_honmei_must_stay_inside_ordinary_five(self) -> None:
         changed = copy.deepcopy(core())
-        changed["role_assignment"]["honmei_horse_no"] = 3
-        changed["marks"][0] = 3
-        changed["marks"][2] = 4
-        changed["single_shot_case"]["horse_no"] = 4
+        changed["role_assignment"]["honmei_horse_no"] = 7
         with self.assertRaisesRegex(ValueError, "ordinary-five"):
             v052.validate_core(changed, reader())
 
