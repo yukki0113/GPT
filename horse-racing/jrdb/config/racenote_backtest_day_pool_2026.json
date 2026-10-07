@@ -31,9 +31,9 @@
       "date": "2026-01-10",
       "file_name": "PACI260110.zip",
       "drive_file_id": "1i7SbHhB9AHMF6hxEoacinf-1eLS0nSEi",
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-10-07T00:20:00+00:00",
+      "selection_id": "BTDAY-0052",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -1289,6 +1289,15 @@
       "n": 1,
       "dates": [
         "2026-04-04"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0052",
+      "selected_at": "2026-10-07T00:20:00+00:00",
+      "seed": "a4c7ede6063fe81197f5f1fa2eeaf13b",
+      "n": 1,
+      "dates": [
+        "2026-01-10"
       ]
     }
   ]
