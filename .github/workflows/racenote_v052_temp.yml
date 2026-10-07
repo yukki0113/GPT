@@ -1,0 +1,27 @@
+name: RaceNote v052 temporary validation
+on:
+  push:
+    branches:
+      - research/racenote-v052-pair-harness
+    paths:
+      - 'horse-racing/jrdb/tests/.v052-trigger'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/racenote-v052-pair-harness
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate v052 contract and A/B harness
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python -m unittest \
+            horse-racing/jrdb/tests/test_racenote_v051_contract.py \
+            horse-racing/jrdb/tests/test_racenote_v052_contract.py \
+            horse-racing/jrdb/tests/test_racenote_ab_harness.py
