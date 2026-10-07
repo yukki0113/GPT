@@ -1,0 +1,51 @@
+{
+  "schema_version": "edgedb-v05-2026-match-freeze-manifest/v1",
+  "status": "BLOCKED_NO_FREEZE",
+  "recommendation": "MATCHER_CONTRACT_BLOCKED",
+  "production_impact": "NONE",
+  "cohort": {
+    "path": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json",
+    "candidate_count": 1620,
+    "sha256": "a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9",
+    "verified": true
+  },
+  "source": {
+    "route": "jrdb_daily_history_fetch_issue.yml / fetch_jrdb_history.py",
+    "run_id": 37602432550,
+    "artifact_id": 11472884532,
+    "artifact_name": "jrdb-daily-history-20260101-20261007",
+    "artifact_digest": "sha256:1002e3b4dee0ed9bdd58dc0ccb7beb522e90148fbdd05936ee19777c157eb10f",
+    "kind": "KYI",
+    "files_downloaded": 85,
+    "not_found_dates": 195,
+    "first_source_date": "2026-01-04",
+    "latest_source_date": "2026-10-04",
+    "unique_races": 2658,
+    "rows": 36861,
+    "unique_race_horse_keys": 36706,
+    "repeated_race_horse_keys": 155,
+    "malformed_records": 0
+  },
+  "matching": {
+    "fact_mart_created": false,
+    "match_rows_created": false,
+    "pre_race_fact_sha256": null,
+    "match_sha256": null,
+    "monthly_or_daily_fingerprints": null
+  },
+  "leakage_audit": {
+    "used_2026_outcomes": false,
+    "read_finish_payout_popularity_odds_for_matching": false,
+    "fact_schema_result_field_check": "NOT_RUN_NO_FACT_MART",
+    "popularity_odds_exclusion": "NOT_RUN_NO_MATCH_INPUT"
+  },
+  "history_audit": {
+    "first_dirt": "NOT_DERIVED",
+    "first_turf": "NOT_DERIVED",
+    "first_blinkers": "NOT_DERIVED",
+    "chronology_violations": null,
+    "unknown_counts": null
+  },
+  "block_reason": "The verified 2026 daily KYI source does not establish the complete canonical pre-race condition schema (including distance, surface, going, sire name) or a permitted source for strictly earlier 2026 career starts.",
+  "turn3_started": false
+}
