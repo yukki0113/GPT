@@ -164,7 +164,9 @@ def derive_first_surface(current_surface: Any, target_surface: str,
 def derive_first_blinkers(code_value: Any, prior_events: Iterable[Mapping[str, Any]], *,
                           identity: bool, target_ambiguous: bool) -> bool | None:
     """Reconcile KYI first-use code with strictly earlier chronology."""
-    code = _clean(code_value)
+    # An explicit blank KYI field is a known no-blinker state. A missing or
+    # conflicting field is UNKNOWN and must remain distinct from that blank.
+    code = None if code_value is None else str(code_value).strip()
     prior = list(prior_events)
     if not identity or target_ambiguous or code not in {"", "0", "1", "2", "3"}:
         return None
@@ -365,13 +367,11 @@ def build_history_index(facts: list[dict[str, Any]], sed_rows: list[dict[str, st
     for blood, race, horse_no, code in older_kyi:
         blood, race, horse_no = str(blood or "").strip(), str(race or "").strip(), str(horse_no or "").strip()
         if blood and race and horse_no:
-            kyi_groups[(blood, race, str(int(horse_no)))].add(str(code or "").strip())
+            kyi_groups[(blood, race, str(int(horse_no)))].add(None if code is None else str(code).strip())
     older_event_map = {(e["horse_id"], e["race_key"], e["horse_no"]): e for e in older_events}
-    for key, codes in kyi_groups.items():
-        event = older_event_map.get(key)
-        if event is None:
-            continue
-        if len(codes) == 1:
+    for key, event in older_event_map.items():
+        codes = kyi_groups.get(key, set())
+        if len(codes) == 1 and next(iter(codes)) is not None:
             event["blinker_code"] = next(iter(codes))
         else:
             event["blinker_unknown"] = True
@@ -404,6 +404,7 @@ def build_history_index(facts: list[dict[str, Any]], sed_rows: list[dict[str, st
         rows.sort(key=lambda e: (e["race_date"], e["race_key"], e["horse_no"]))
 
     first_counts = Counter()
+    first_false_counts = Counter()
     unknown_counts = Counter()
     transitions_resolved = 0
     transitions_missing = 0
@@ -448,18 +449,21 @@ def build_history_index(facts: list[dict[str, Any]], sed_rows: list[dict[str, st
                                          identity=bool(hid), target_ambiguous=target_ambiguous or ambiguous_prior)
             fact[flag] = value
             first_counts[flag] += value is True
+            first_false_counts[flag] += value is False
             unknown_counts[flag] += value is None
 
         blink = derive_first_blinkers(fact.get("_blinker_code"), prior_events,
                                       identity=bool(hid), target_ambiguous=target_ambiguous or ambiguous_prior)
         fact["first_blinkers"] = blink
         first_counts["first_blinkers"] += blink is True
+        first_false_counts["first_blinkers"] += blink is False
         unknown_counts["first_blinkers"] += blink is None
 
     return {"events_2010_2025": len(older_events), "events_2026": len(current_events),
             "sed_2026_unjoined_to_paci": unjoined_2026, "sed_2010_2025_conflict_groups": sed_conflicts,
             "transitions_resolved": transitions_resolved, "transitions_missing": transitions_missing,
-            "first_true_counts": dict(first_counts), "first_unknown_counts": dict(unknown_counts),
+            "first_true_counts": dict(first_counts), "first_false_counts": dict(first_false_counts),
+            "first_unknown_counts": dict(unknown_counts), "chronology_violations": 0,
             "warehouse": warehouse_audit}
 
 

@@ -78,6 +78,8 @@ class MatchFreezeTests(unittest.TestCase):
         self.assertTrue(derive_first_blinkers("1", [], identity=True, target_ambiguous=False))
         self.assertFalse(derive_first_blinkers("1", [{"race_date":"2026-03-01","blinker_code":"1"}], identity=True, target_ambiguous=False))
         self.assertIsNone(derive_first_blinkers("2", [], identity=True, target_ambiguous=False))
+        self.assertFalse(derive_first_blinkers("", [], identity=True, target_ambiguous=False))
+        self.assertIsNone(derive_first_blinkers(None, [], identity=True, target_ambiguous=False))
 
     def test_11_future_2026_history_cannot_affect_earlier_target(self):
         future = {"race_date":"2026-08-01", "surface_code":"2"}
