@@ -1,0 +1,29 @@
+{
+  "schema_version": "racenote-btday-formal-adoption-audit-0.1",
+  "selection_id": "BTDAY-0061",
+  "target_date": "2026-06-20",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.2-candidate",
+  "venues": [
+    "東京",
+    "阪神",
+    "函館"
+  ],
+  "race_count": 36,
+  "adoption_status": "FORMALLY_ADOPTED_CLEAN_BLIND_INFRA_EXCEPTION",
+  "prospective_cohort_included": true,
+  "result_opened_at_prediction": false,
+  "target_market_opened_at_prediction": false,
+  "prediction_fixed_before_result": true,
+  "canonical_verify_status": "NOT_COMPLETED_RUNTIME_BLOCKER",
+  "provisional_freeze_status_observed": "PROVISIONAL_CLEAN_BLIND_FROZEN",
+  "exception_reason": "Prediction thread attempted TURN 1 reconstruction after the v0.5.2 handoff boundary was accidentally blurred. Local DuckDB runtime was unavailable and network installation was blocked. The 36 race predictions were nevertheless fixed before target results, final odds, popularity, or payouts were opened.",
+  "operator_decision": "FORMALLY_ADOPT_EXISTING_FIXED_36R_WITHOUT_REAUTHORING",
+  "reauthoring_allowed": false,
+  "settlement_policy": "Use the originally fixed 36R predictions only. Do not regenerate or alter marks. Results may be opened for evaluation after this adoption record is integrated. If the original prediction artifact is later materialized into canonical storage, bind it without changing semantic prediction content.",
+  "integrity_notes": [
+    "This audit does not claim canonical v0.5.2 Reader/Freeze verify PASS.",
+    "The adoption is an explicit prospective-research exception based on clean-blind temporal integrity, not canonical runtime completion.",
+    "BTDAY-0061 remains included in the v0.5.2 prospective cohort.",
+    "The prep/prediction responsibility regression was fixed separately in PR #1879."
+  ]
+}
