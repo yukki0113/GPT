@@ -1,7 +1,13 @@
 # RaceNote v0.4.6 / v0.5.0 / v0.5.1 Clean-Blind Three-Way Runbook v0.1
 
-Status: **RESEARCH HARNESS FOR INITIAL v0.5.1 VALIDATION**  
+Status: **HISTORICAL INITIAL v0.5.1 VALIDATION HARNESS — PROSPECTIVE USE SUPERSEDED BY v0.5.1/v0.5.2 A/B**  
 Date: 2026-10-07
+
+## Supersession note
+
+This runbook remains authoritative for already-sealed v046/v050/v051 three-way sessions. Do not rewrite or migrate those historical sessions.
+
+For new prospective BTDAYs after the initial v0.5.1 validation, use `RACENOTE_CLEAN_BLIND_V051_V052_AB_RUNBOOK_v0_1.md`.
 
 ## Purpose
 

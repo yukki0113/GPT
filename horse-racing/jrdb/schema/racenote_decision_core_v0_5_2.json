@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_decision_core_v0_5_2.json",
+  "title": "RaceNote v0.5.2 Decision Core",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "venue",
+    "race_no",
+    "race_model",
+    "marks",
+    "mainline_cases",
+    "single_shot_case",
+    "boundary_review",
+    "candidate_compression",
+    "role_assignment",
+    "rrdb_refs",
+    "reader_facing_reason"
+  ],
+  "properties": {
+    "venue": {"type": "string", "minLength": 1},
+    "race_no": {"type": "integer", "minimum": 1},
+    "race_model": {"type": "string", "minLength": 30},
+    "marks": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "mainline_cases": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["horse_no", "case"],
+        "properties": {
+          "horse_no": {"type": "integer", "minimum": 1},
+          "case": {"type": "string", "minLength": 8}
+        }
+      }
+    },
+    "single_shot_case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["horse_no", "case"],
+      "properties": {
+        "horse_no": {"type": "integer", "minimum": 1},
+        "case": {"type": "string", "minLength": 8}
+      }
+    },
+    "boundary_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alternative_horse_no", "reason"],
+      "properties": {
+        "alternative_horse_no": {"type": ["integer", "null"], "minimum": 1},
+        "reason": {"type": "string", "minLength": 8}
+      }
+    },
+    "candidate_compression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinary_five",
+        "external_challenger_horse_no",
+        "external_challenger_case",
+        "excluded_horse_no",
+        "decision",
+        "reason"
+      ],
+      "properties": {
+        "ordinary_five": {
+          "description": "Five ordinary candidates before external-shot comparison. Order records ordinary/repeatability rank; it does not bind final ◎/○.",
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "external_challenger_horse_no": {"type": ["integer", "null"], "minimum": 1},
+        "external_challenger_case": {"type": "string", "minLength": 12},
+        "excluded_horse_no": {"type": ["integer", "null"], "minimum": 1},
+        "decision": {
+          "type": "string",
+          "enum": ["ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE", "NO_EXTERNAL_CHALLENGER"]
+        },
+        "reason": {"type": "string", "minLength": 16}
+      }
+    },
+    "role_assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "honmei_horse_no",
+        "second_horse_no",
+        "honmei_win_case",
+        "second_case",
+        "honmei_selection_mode",
+        "shot_selection_mode",
+        "ranking_reason"
+      ],
+      "properties": {
+        "honmei_horse_no": {"type": "integer", "minimum": 1},
+        "second_horse_no": {"type": "integer", "minimum": 1},
+        "honmei_win_case": {"type": "string", "minLength": 16},
+        "second_case": {"type": "string", "minLength": 12},
+        "honmei_selection_mode": {"const": "WIN_FIRST_NOT_PLACE_FIRST"},
+        "shot_selection_mode": {"const": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK"},
+        "ranking_reason": {"type": "string", "minLength": 20}
+      }
+    },
+    "rrdb_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["horse_no", "decision_role"],
+        "properties": {
+          "horse_no": {"type": "integer", "minimum": 1},
+          "decision_role": {
+            "type": "string",
+            "enum": [
+              "UPGRADE_RECENT_FORM",
+              "DOWNGRADE_APPARENT_FORM",
+              "SUPPORT_REPEATABILITY",
+              "SUPPORT_COUNTERARGUMENT",
+              "CONTEXT_ONLY"
+            ]
+          }
+        }
+      }
+    },
+    "reader_facing_reason": {"type": "string", "minLength": 45}
+  }
+}

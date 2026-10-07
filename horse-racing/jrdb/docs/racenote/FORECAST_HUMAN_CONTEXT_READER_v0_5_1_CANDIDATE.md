@@ -124,7 +124,7 @@ The first two trials are intended to answer whether changing only the compressio
 - protects trio capture;
 - does so without using result or market information.
 
-After two three-way BTDAYs, retire v0.5.0 from prospective authoring if v0.5.1 clearly preserves its discovery benefit while reducing role/boundary damage. Continue v0.4.6 vs v0.5.1 thereafter.
+After the first two three-way BTDAYs, the initial v0.5.1 validation phase is complete. For prospective work after 2026-10-07, use the v0.5.1 vs v0.5.2 two-lane profile defined in `RACENOTE_CLEAN_BLIND_V051_V052_AB_RUNBOOK_v0_1.md`. v0.4.6 remains a retrospective historical baseline rather than a required prospective authoring lane.
 
 ## 6. Production boundary
 

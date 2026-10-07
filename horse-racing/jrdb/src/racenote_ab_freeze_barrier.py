@@ -17,7 +17,7 @@ def validated_barrier(ab_root: Path) -> dict[str, Any]:
     session, readers, derived = load_session(ab_root)
     lanes = {}
     race_keys = [(x["venue"], x["race_no"]) for x in session["race_roster"]]
-    enabled_lanes = [lane for lane in ("v046", "v050", "v051") if lane in session.get("lane_definitions", {})]
+    enabled_lanes = [lane for lane in ("v046", "v050", "v051", "v052") if lane in session.get("lane_definitions", {})]
     for lane in enabled_lanes:
         handoff, records = load_lane_freeze(ab_root, lane, session, readers, derived)
         if [(x["venue"], x["race_no"]) for x in records] != race_keys:
@@ -36,7 +36,7 @@ def validated_barrier(ab_root: Path) -> dict[str, Any]:
     originals = {item["original_clean_reader_manifest_sha256"] for item in lanes.values()}
     if len(originals) != 1:
         raise ValueError("lane original clean Reader manifests differ")
-    status = "BOTH_LANES_FROZEN_CLEAN_BLIND" if enabled_lanes == ["v046", "v050"] else "ALL_LANES_FROZEN_CLEAN_BLIND"
+    status = "BOTH_LANES_FROZEN_CLEAN_BLIND" if len(enabled_lanes) == 2 else "ALL_LANES_FROZEN_CLEAN_BLIND"
     return {
         "schema_version": BARRIER_VERSION,
         "status": status,
