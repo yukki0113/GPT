@@ -14,6 +14,7 @@ import racenote_ab_freeze_barrier as barrier
 import racenote_ab_lane as lane
 import racenote_ab_session as session
 import racenote_reader_v050 as v050
+import racenote_reader_v051 as v051
 import racenote_reader_view as v046_reader
 
 
@@ -32,6 +33,19 @@ def core(venue: str, race_no: int, label: str) -> dict:
         "rrdb_refs": [],
         "reader_facing_reason": f"{label}: The race shape supports the selected five runners, with an independent upside case for horse three and a considered fifth-mark boundary.",
     }
+
+
+def core_v051(venue: str, race_no: int, label: str) -> dict:
+    result = core(venue, race_no, label)
+    result["candidate_compression"] = {
+        "ordinary_five": [1, 2, 4, 5, 6],
+        "external_challenger_horse_no": 3,
+        "external_challenger_case": f"{label} race {race_no}: external asymmetric challenger with a distinct win route.",
+        "excluded_horse_no": 6,
+        "decision": "ADMIT_CHALLENGER",
+        "reason": f"{label} race {race_no}: preserve the two mainline anchors and admit horse 3 over ordinary support horse 6.",
+    }
+    return result
 
 
 class ABHarnessTest(unittest.TestCase):
@@ -220,11 +234,55 @@ class ABHarnessTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             barrier.require_barrier(self.ab)
 
+
+    def test_optional_v051_lane_uses_identical_normal_view_and_three_lane_barrier(self) -> None:
+        ab3 = Path(self.tmp.name) / "BTDAY-9999" / "ab-v051"
+        sealed = session.init_session(
+            self.prep, self.request, ab3, self.main_sha, include_v051=True
+        )
+        self.assertTrue(sealed["v051_enabled"])
+        sealed2, readers, derived = session.load_session(ab3)
+        self.assertIn("v051", sealed2["lane_definitions"])
+        for entry in derived.values():
+            name = entry["derived_normal_filename"]
+            self.assertEqual(
+                (ab3 / "v050" / "reader" / name).read_bytes(),
+                (ab3 / "v051" / "reader" / name).read_bytes(),
+            )
+
+        for which in ("v046", "v050", "v051"):
+            for venue, race_nos in (("東京", [1, 2]), ("京都", [3])):
+                path = ab3 / which / "incoming" / f"{venue}.json"
+                path.parent.mkdir(parents=True, exist_ok=True)
+                maker = core_v051 if which == "v051" else core
+                path.write_text(
+                    json.dumps([maker(venue, n, which) for n in race_nos], ensure_ascii=False),
+                    encoding="utf-8",
+                )
+                lane.save_venue(ab3, which, path)
+            lane.build_freeze(ab3, which)
+
+        result = barrier.create_barrier(ab3)
+        self.assertEqual(result["status"], "ALL_LANES_FROZEN_CLEAN_BLIND")
+        self.assertEqual(set(result["lanes"]), {"v046", "v050", "v051"})
+        self.assertEqual(result["lanes"]["v051"]["logic_version"], v051.VERSION)
+
+    def test_v051_cannot_be_added_to_legacy_two_lane_session(self) -> None:
+        path = self.ab / "v051" / "incoming" / "東京.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps([core_v051("東京", 1, "v051"), core_v051("東京", 2, "v051")], ensure_ascii=False),
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(ValueError, "not enabled"):
+            lane.save_venue(self.ab, "v051", path)
+
     def test_no_early_result_gate_and_current_pointer_unchanged(self) -> None:
         with self.assertRaisesRegex(ValueError, "barrier missing"):
             barrier.require_barrier(self.ab)
         current = (ROOT / "config" / "racenote_forecast_logic_current.json").read_text(encoding="utf-8")
         self.assertNotIn(v050.VERSION, current)
+        self.assertNotIn(v051.VERSION, current)
 
 
 if __name__ == "__main__":
