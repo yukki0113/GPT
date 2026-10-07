@@ -17,7 +17,11 @@ UNORDERED_WAGERS = {"quinella", "wide", "trio", "frame_quinella"}
 STRATEGIES = {
     "honmei_win": ("◎ 単勝", "win"),
     "honmei_place": ("◎ 複勝", "place"),
+    "quinella_second": ("馬連 ◎－○", "quinella"),
+    "quinella_shot": ("馬連 ◎－▲", "quinella"),
     "quinella_main": ("馬連 ◎－○▲", "quinella"),
+    "exacta_second": ("馬単 ◎→○", "exacta"),
+    "exacta_shot": ("馬単 ◎→▲", "exacta"),
     "exacta_main": ("馬単 ◎→○▲", "exacta"),
     "trio_flow": ("3連複 ◎1頭軸－他印流し", "trio"),
     "trifecta_flow": ("3連単 ◎1着固定－他印流し", "trifecta"),
@@ -223,6 +227,22 @@ def settle(forecast_records: list[dict[str, Any]], results: dict[str, Any], *, t
 
         tickets = build_tickets(record)
         by_strategy: dict[str, list[dict[str, Any]]] = {code: [] for code in STRATEGIES}
+        race_ticket_items: list[dict[str, Any]] = []
+
+        def record_strategy(code: str, item: dict[str, Any]) -> None:
+            by_strategy[code].append(item)
+            row = strategy_rows[code]
+            row["ticket_count"] += 1
+            row["stake_jpy"] += UNIT_STAKE_JPY
+            row["payout_jpy"] += item["payout_jpy"]
+            row["hit_tickets"] += int(item["hit"])
+            if item["hit"]:
+                top_candidates[code].append({
+                    "date": key[0], "venue": key[1], "race_no": key[2],
+                    "ticket": item["ticket"], "marks": item["mark_ticket"],
+                    "payout_jpy": item["payout_jpy"],
+                })
+
         for ticket in tickets:
             payout = payout_for_ticket(ticket, result_race)
             item = {
@@ -236,24 +256,29 @@ def settle(forecast_records: list[dict[str, Any]], results: dict[str, Any], *, t
                 "payout_jpy": payout,
                 "hit": payout > 0,
             }
-            by_strategy[ticket.strategy].append(item)
-            row = strategy_rows[ticket.strategy]
-            row["ticket_count"] += 1
-            row["stake_jpy"] += UNIT_STAKE_JPY
-            row["payout_jpy"] += payout
-            row["hit_tickets"] += int(payout > 0)
-            if payout > 0:
-                top_candidates[ticket.strategy].append({
-                    "date": key[0], "venue": key[1], "race_no": key[2],
-                    "ticket": item["ticket"], "marks": item["mark_ticket"], "payout_jpy": payout,
-                })
+            race_ticket_items.append(item)
+            record_strategy(ticket.strategy, item)
+
+            # Keep the physical 24-ticket formation unchanged while exposing
+            # ○ and ▲ contribution as separate analytical settlement rows.
+            if ticket.strategy == "quinella_main":
+                record_strategy(
+                    "quinella_second" if ticket.marks == ("◎", "○") else "quinella_shot",
+                    item,
+                )
+            elif ticket.strategy == "exacta_main":
+                record_strategy(
+                    "exacta_second" if ticket.marks == ("◎", "○") else "exacta_shot",
+                    item,
+                )
+
         for code in STRATEGIES:
             row = strategy_rows[code]
             row["settled_races"] += 1
             row["hit_races"] += int(any(item["hit"] for item in by_strategy[code]))
         race_details.append({
             "date": key[0], "venue": key[1], "race_no": key[2],
-            "tickets": [item for code in STRATEGIES for item in by_strategy[code]],
+            "tickets": race_ticket_items,
         })
 
     for code, row in strategy_rows.items():
