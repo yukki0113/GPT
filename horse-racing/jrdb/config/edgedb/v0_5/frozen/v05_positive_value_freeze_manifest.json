@@ -1,0 +1,60 @@
+{
+  "counts": {
+    "by_family": {
+      "T1": 100,
+      "T2": 1102,
+      "T3": 93,
+      "T4": 117,
+      "T5": 22,
+      "T6": 186
+    },
+    "by_support_class": {
+      "LARGE": 181,
+      "MEDIUM": 317,
+      "MICRO": 650,
+      "SMALL": 472
+    },
+    "by_value_strength_band": {
+      "VALUE_100_119": 542,
+      "VALUE_120_149": 410,
+      "VALUE_150_PLUS": 668
+    }
+  },
+  "files": {
+    "v05_positive_value_frozen_cohort.json": {
+      "sha256": "a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9",
+      "size_bytes": 1350799
+    },
+    "v05_positive_value_frozen_cohort.parquet": {
+      "sha256": "a57c9dcbc9c8c93d9c88e98a0db26818b628dbd580c2c9108d20a67adbab425b",
+      "size_bytes": 169252
+    }
+  },
+  "freeze": {
+    "candidate_count": 1620,
+    "cohort_sha256": "a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9",
+    "context_window": [
+      "2022-01-01",
+      "2023-12-31"
+    ],
+    "discovery_window": [
+      "2024-01-01",
+      "2025-12-31"
+    ],
+    "gate": "n >= 5 AND combined 2024-2025 place ROI >= 100%",
+    "oos_not_used": true,
+    "oos_window_start": "2026-01-01",
+    "sort_key": "candidate_id ASC"
+  },
+  "schema_version": "edgedb-v05-positive-value-freeze-manifest/v1",
+  "source": {
+    "actions_run_id": 37596365904,
+    "artifact_digest": "sha256:dc46a1ad1b5beeb4e641ba9b0b5801495d68e61cb2d10759a79754f1696ee5c0",
+    "artifact_id": 11470539365,
+    "artifact_name": "data-storage-fallback-37596365904",
+    "source_file": "output/combined_candidate_summary.csv",
+    "source_merge_commit": "3c5264197165a18949d003aac93b6c5fc2918cc0",
+    "source_pr": 1890
+  },
+  "status": "PASS"
+}
