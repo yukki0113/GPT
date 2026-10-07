@@ -34,7 +34,30 @@ one PACI ZIP
 Target results, target final odds/popularity and payouts remain forbidden until
 the single-day Freeze is complete.
 
-## 1. Prepare directly from PACI
+## 1. TURN 1 — DAY PREP / orchestration responsibility
+
+PACI acquisition, Analysis/RRDB enrichment, daily RaceNote build, market stripping and sealed v0.5.2 Reader creation belong to the **orchestration / analysis side**, not to the prediction-authoring thread.
+
+The prediction thread must not attempt to rebuild canonical Reader inputs from PACI on its own merely because it can see the PACI file. In particular, it must not treat missing local DuckDB/runtime dependencies as a reason to fall back to a provisional Reader or provisional Freeze.
+
+The prediction thread starts only after the following handoff already exists:
+
+```text
+<output-root>/operation_handoff.json
+<output-root>/forecast_prep/
+<output-root>/v052/session.json
+<output-root>/v052/reader_manifest.json
+<output-root>/v052/reader/*.json
+```
+
+Required handoff state:
+
+- `status=READY_FOR_V052_AUTHORING`
+- `market_blind=true`
+- `result_opened=false`
+- canonical v0.5.2 Reader/session materialized
+
+The orchestration side may use the PACI entrypoint below.
 
 Historical BTDAY:
 
@@ -81,7 +104,19 @@ and:
 - `market_blind=true`;
 - `result_opened=false`.
 
-## 2. Authoring input
+## 2. TURN 2 — prediction thread responsibility
+
+The prediction thread owns only model judgment and the deterministic save/freeze/verify steps against the already prepared canonical v0.5.2 Reader.
+
+It must not:
+- rerun PACI -> daily build;
+- rebuild Analysis/RRDB enrichment;
+- create an alternative/provisional Reader;
+- invent a provisional Freeze status when canonical input is unavailable.
+
+If the canonical handoff above is not ready, stop before authoring and report the missing orchestration artifact.
+
+## 2.1 Authoring input
 
 Only read:
 
