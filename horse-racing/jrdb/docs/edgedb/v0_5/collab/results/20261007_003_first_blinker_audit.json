@@ -1,0 +1,49 @@
+{
+  "blinker_chronology_count": 14078,
+  "blinker_code_1_count": 15027,
+  "blinker_code_distribution": [
+    {
+      "code": "1",
+      "count": 15027
+    },
+    {
+      "code": "2",
+      "count": 3372
+    },
+    {
+      "code": "3",
+      "count": 52599
+    },
+    {
+      "code": "<BLANK>",
+      "count": 710163
+    }
+  ],
+  "blinker_code_parity_mismatch_count": 657,
+  "kyi_conflict_or_unjoined_groups": 0,
+  "kyi_duplicate_groups_collapsed": 0,
+  "kyi_rows": 781161,
+  "unknown_feature_rows": {
+    "first_blinkers": 205,
+    "first_dirt": 0,
+    "first_turf": 0
+  },
+  "representative_mismatch_patterns": [
+    {
+      "blinker_code": "1",
+      "chronology_first": false,
+      "code_1_first_use": true
+    },
+    {
+      "blinker_code": "3",
+      "chronology_first": true,
+      "code_1_first_use": false
+    },
+    {
+      "blinker_code": "2",
+      "chronology_first": true,
+      "code_1_first_use": false
+    }
+  ],
+  "row_level_identity_fields_redacted": true
+}
