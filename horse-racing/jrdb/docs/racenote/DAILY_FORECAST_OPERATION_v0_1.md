@@ -18,7 +18,18 @@ Forecast logic must always be re-resolved from latest `main` before a new day st
 
 As of 2026-10-07, the ordinary prospective baseline is RaceNote v0.5.2. Normal BTDAY and forward daily operation should use `RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`; the v0.5.1/v0.5.2 A/B harness is retained for research/audit and is not required for ordinary daily operation.
 
-The v0.5.2 single-day path does **not** collapse the two-turn responsibility boundary: TURN 1 materializes the canonical Reader/session; TURN 2 prediction consumes that prepared input. A prediction thread must not rebuild TURN 1 from PACI when the prepared handoff is missing.
+The v0.5.2 single-day path keeps the **two-phase reasoning boundary**, but not a two-thread responsibility split. For an ordinary request such as 「明日の予想をお願いします」, the same prediction thread owns TURN 1 preparation and TURN 2 authoring end-to-end. If TURN 1 requires a different runtime, the prediction thread routes that mechanical stage to the appropriate execution environment and resumes only after `READY_FOR_V052_AUTHORING`.
+
+---
+
+## 1.1 Thread responsibility
+
+User-facing ownership is one prediction thread per target day.
+
+- Prediction thread: PACI resolution -> DAY PREP -> Analysis/RRDB enrichment -> canonical Reader/session -> forecast -> Freeze -> Verify
+- Analysis/research thread: target-day reservation when backtesting, post-race result retrieval, settlement, aggregate evaluation and logic research
+
+TURN 1 and TURN 2 below are internal execution/reasoning phases. They may use different runtimes, but the user should not need to manually invoke a separate prep thread before asking for a prediction.
 
 ---
 

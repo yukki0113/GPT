@@ -34,13 +34,25 @@ one PACI ZIP
 Target results, target final odds/popularity and payouts remain forbidden until
 the single-day Freeze is complete.
 
-## 1. TURN 1 — DAY PREP / orchestration responsibility
+## 1. TURN 1 — DAY PREP / prediction-thread orchestration responsibility
 
-PACI acquisition, Analysis/RRDB enrichment, daily RaceNote build, market stripping and sealed v0.5.2 Reader creation belong to the **orchestration / analysis side**, not to the prediction-authoring thread.
+The **prediction thread owns the entire pre-result operation from PACI through Verify** when the user asks for a day's prediction.
 
-The prediction thread must not attempt to rebuild canonical Reader inputs from PACI on its own merely because it can see the PACI file. In particular, it must not treat missing local DuckDB/runtime dependencies as a reason to fall back to a provisional Reader or provisional Freeze.
+TURN 1 and TURN 2 are internal phases of the same prediction request, not separate threads.
 
-The prediction thread starts only after the following handoff already exists:
+The prediction thread must:
+- acquire or resolve the target PACI;
+- run/route Analysis and RRDB enrichment;
+- build the daily RaceNote package;
+- create the market-blind forecast_prep;
+- create the sealed v0.5.2 Reader/session;
+- then continue into race-by-race authoring, Freeze and Verify.
+
+If the current local runtime lacks DuckDB or another required dependency, the prediction thread must **route TURN 1 through an execution environment that supports the canonical pipeline** rather than omit the stage or create a provisional Reader/Freeze.
+
+The analysis/research thread is not a prerequisite for ordinary daily prediction. Its normal responsibilities are date reservation, post-race settlement, research aggregation and logic development.
+
+Before authoring begins, the following handoff must exist:
 
 ```text
 <output-root>/operation_handoff.json
@@ -57,7 +69,7 @@ Required handoff state:
 - `result_opened=false`
 - canonical v0.5.2 Reader/session materialized
 
-The orchestration side may use the PACI entrypoint below.
+The prediction thread's TURN 1 orchestration may use the PACI entrypoint below.
 
 Historical BTDAY:
 
@@ -104,17 +116,17 @@ and:
 - `market_blind=true`;
 - `result_opened=false`.
 
-## 2. TURN 2 — prediction thread responsibility
+## 2. TURN 2 — model authoring responsibility
 
-The prediction thread owns only model judgment and the deterministic save/freeze/verify steps against the already prepared canonical v0.5.2 Reader.
+After TURN 1 reaches `READY_FOR_V052_AUTHORING`, the same prediction thread changes phase from mechanical preparation to model judgment.
 
 It must not:
-- rerun PACI -> daily build;
-- rebuild Analysis/RRDB enrichment;
+- bypass a failed TURN 1;
 - create an alternative/provisional Reader;
-- invent a provisional Freeze status when canonical input is unavailable.
+- invent a provisional Freeze status when canonical input is unavailable;
+- silently omit Analysis/RRDB enrichment.
 
-If the canonical handoff above is not ready, stop before authoring and report the missing orchestration artifact.
+If the canonical handoff is not ready, repair or reroute TURN 1 before authoring. Do not proceed with a degraded prediction input.
 
 ## 2.1 Authoring input
 
