@@ -1,0 +1,650 @@
+[
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "race_model": "新潟1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      13,
+      8,
+      6,
+      11,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 11,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        8,
+        6,
+        11,
+        1
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎13・○8はordinary five作成時点で固定。challenger9も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎13と○8はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲6を一撃経路、△11・△1を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "race_model": "新潟2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      6,
+      4,
+      5,
+      10,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        4,
+        5,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎6・○4はordinary five作成時点で固定。challenger1も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎6と○4はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲5を一撃経路、△10・△7を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "race_model": "新潟3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      12,
+      4,
+      1,
+      3,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        4,
+        1,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎12・○4はordinary five作成時点で固定。challenger15も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎12と○4はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲1を一撃経路、△3・△7を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "race_model": "新潟4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      12,
+      10,
+      3,
+      8,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 10,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        10,
+        3,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎12・○10はordinary five作成時点で固定。challenger6も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎12と○10はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲3を一撃経路、△8・△4を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "race_model": "新潟5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      9,
+      2,
+      1,
+      12,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3はordinary supportとして最後まで比較したが、外部challenger1の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        2,
+        12,
+        11,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 3,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎9・○2はordinary five作成時点で固定。challenger1を▲として採用し、support3を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎9と○2はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲1を一撃経路、△12・△11を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "race_model": "新潟6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      1,
+      3,
+      4,
+      6,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        3,
+        4,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎1・○3はordinary five作成時点で固定。challenger11も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎1と○3はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲4を一撃経路、△6・△2を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "race_model": "新潟7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      12,
+      6,
+      2,
+      9,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 9,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11はordinary supportとして最後まで比較したが、外部challenger2の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        6,
+        9,
+        5,
+        11
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 11,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎12・○6はordinary five作成時点で固定。challenger2を▲として採用し、support11を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎12と○6はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲2を一撃経路、△9・△5を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "race_model": "新潟8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      11,
+      13,
+      12,
+      8,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 13,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 17,
+      "reason": "17の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        13,
+        12,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 17,
+      "external_challenger_case": "17には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 17,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎11・○13はordinary five作成時点で固定。challenger17も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎11と○13はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲12を一撃経路、△8・△2を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "race_model": "新潟9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      14,
+      10,
+      13,
+      8,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 10,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5はordinary supportとして最後まで比較したが、外部challenger13の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        10,
+        5,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎14・○10はordinary five作成時点で固定。challenger13を▲として採用し、support5を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎14と○10はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲13を一撃経路、△8・△7を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "race_model": "新潟10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      7,
+      5,
+      2,
+      6,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        5,
+        2,
+        6,
+        3
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎7・○5はordinary five作成時点で固定。challenger4も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎7と○5はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲2を一撃経路、△6・△3を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "race_model": "新潟11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      3,
+      16,
+      9,
+      1,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 16,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4はordinary supportとして最後まで比較したが、外部challenger9の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        16,
+        1,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎3・○16はordinary five作成時点で固定。challenger9を▲として採用し、support4を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎3と○16はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲9を一撃経路、△1・△2を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "race_model": "新潟12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      15,
+      10,
+      14,
+      16,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 10,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 16,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 18,
+      "reason": "18はordinary supportとして最後まで比較したが、外部challenger14の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        10,
+        16,
+        6,
+        18
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 18,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎15・○10はordinary five作成時点で固定。challenger14を▲として採用し、support18を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新潟12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎15と○10はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲14を一撃経路、△16・△6を相手圏として5頭に圧縮した。"
+  }
+]
