@@ -103,6 +103,27 @@ def test_unordered_ticket_matching_keeps_mark_to_horse_display_order() -> None:
     assert subject.payout_for_ticket(ticket, race) == 310
 
 
+def test_ab_frozen_record_marks_are_supported_directly() -> None:
+    record = {
+        "target_date": "2026-10-03",
+        "venue": "東京",
+        "race_no": 1,
+        "decision_core": {"marks": [5, 13, 1, 7, 9]},
+    }
+    marks = subject.extract_marks(record)
+    assert [(x.mark, x.horse_no) for x in marks] == [
+        ("◎", 5), ("○", 13), ("▲", 1), ("△1", 7), ("△2", 9)
+    ]
+
+    payload = subject.settle([record], results(), top_n=3)
+    by_code = {row["code"]: row for row in payload["strategies"]}
+    assert by_code["quinella_second"]["payout_jpy"] == 310
+    assert by_code["quinella_shot"]["payout_jpy"] == 0
+    assert by_code["exacta_second"]["payout_jpy"] == 1490
+    assert by_code["exacta_shot"]["payout_jpy"] == 0
+    assert payload["races"][0]["tickets"] and len(payload["races"][0]["tickets"]) == 24
+
+
 def test_pending_race_is_not_counted_as_loss_or_stake() -> None:
     payload = subject.settle([forecast()], results(status="pending"))
 
