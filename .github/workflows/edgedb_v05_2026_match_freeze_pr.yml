@@ -1,0 +1,63 @@
+name: EdgeDB v0.5 2026 pre-race match freeze (PR #1895)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/edgedb_v05_2026_match_freeze_pr.yml'
+      - 'horse-racing/jrdb/src/jrdb_edge_v05_2026_pre_race_match_freeze.py'
+      - 'horse-racing/jrdb/src/build_jrdb_edge_current_facts.py'
+      - 'horse-racing/jrdb/src/aggregate_jrdb_edge_v05_first_history.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_pre_race_match_freeze.py'
+      - 'horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  pre-race-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install canonical data tooling
+        run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Fetch the complete canonical PACI folder
+        run: |
+          gdown --folder --remaining-ok 'https://drive.google.com/drive/folders/1zFajenPU5jxInZCcmqZzkgiaYil3MD8r' -O /tmp/paci
+          count=$(find /tmp/paci -type f -name 'PACI26????.zip' | wc -l)
+          test "$count" -eq 84
+      - name: Download accepted 2010-2025 Warehouse artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download 37592837881 --repo yukki0113/GPT --name jrdb-warehouse-research-37592837881 --dir /tmp/warehouse
+      - name: Download canonical 2026 SED chronology artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download 37604723913 --repo yukki0113/GPT --name jrdb-daily-history-20260101-20261007 --dir /tmp/sed2026
+      - name: Verify cohort and run focused matcher tests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python -m unittest horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_pre_race_match_freeze.py -v
+      - name: Build the result-blind 2026 match freeze
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/jrdb_edge_v05_2026_pre_race_match_freeze.py \
+            --cohort horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json \
+            --paci-root /tmp/paci --sed-root /tmp/sed2026 --warehouse-root /tmp/warehouse \
+            --output-root /tmp/v05-2026-freeze
+      - name: Preserve row-level freeze as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: edgedb-v05-2026-match-freeze-pr-${{ github.event.pull_request.number || 'manual' }}
+          path: /tmp/v05-2026-freeze/
+          if-no-files-found: error
+          retention-days: 90
