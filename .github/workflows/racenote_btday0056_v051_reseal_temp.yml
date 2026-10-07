@@ -1,0 +1,46 @@
+name: RaceNote BTDAY-0056 v051 reseal temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0056.v051-reseal'
+permissions:
+  contents: write
+jobs:
+  reseal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reseal three-way session
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          PREP='horse-racing/jrdb/backtests/BTDAY-0056/20260606/forecast_prep'
+          REQUEST='horse-racing/jrdb/backtests/requests/BTDAY-0056.json'
+          AB='horse-racing/jrdb/backtests/BTDAY-0056/20260606/ab'
+          test ! -e "$AB/v046/incoming"
+          test ! -e "$AB/v050/incoming"
+          test ! -e "$AB/v046/frozen"
+          test ! -e "$AB/v050/frozen"
+          rm -rf "$AB"
+          python horse-racing/jrdb/src/racenote_ab_session.py --prep-root "$PREP" --request "$REQUEST" --ab-root "$AB" --base-main-sha 'd8f78415f8621fe20cbc907f8d61a5339041fe49' --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json --include-v051
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('horse-racing/jrdb/backtests/BTDAY-0056/20260606/ab/ab_session.json').read_text())
+          assert s['v051_enabled'] is True
+          assert len(s['race_roster']) == 24
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A "$AB"
+          git commit -m 'RaceNote: reseal BTDAY-0056 with v051 lane'
+          git pull --rebase origin main
+          git push origin HEAD:main
