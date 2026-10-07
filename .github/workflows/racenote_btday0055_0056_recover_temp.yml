@@ -24,6 +24,11 @@ jobs:
         run: |
           set -euo pipefail
 
+          # BTDAY-0056 forecast_prep on main was regenerated after the sealed session.
+          # Restore the exact prep used by all three authoring PR heads before validation.
+          git checkout bf78282f0b4a6561a3d58f97f6d36dffd876f60c -- \
+            horse-racing/jrdb/backtests/BTDAY-0056/20260606/forecast_prep
+
           python - <<'PY'
           from pathlib import Path
           import json, subprocess, hashlib
