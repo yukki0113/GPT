@@ -24,7 +24,7 @@ MARKET_FIELDS = frozenset({"hit_pop_5_plus", "hit_pop_8_plus", "hit_pop_10_plus"
 BLOCKED_FEATURES = {"first_dirt", "first_turf", "first_blinkers", "course_topology"}
 VENUES = {"01":"札幌","02":"函館","03":"福島","04":"新潟","05":"東京","06":"中山","07":"中京","08":"京都","09":"阪神","10":"小倉"}
 SURFACES = {"1":"芝","2":"ダート","3":"障害"}
-GOING = {"1":"GOOD","2":"SOFT_OR_WORSE","3":"SOFT_OR_WORSE","4":"SOFT_OR_WORSE"}
+GOING = {"1":"GOOD","2":"SOFT_OR_WORSE","3":"SOFT_OR_WORSE","4":"SOFT_OR_WORSE","GOOD":"GOOD","SOFT_OR_WORSE":"SOFT_OR_WORSE"}
 DISTANCE = {"EXTEND":"EXTEND","LARGE_EXTEND":"EXTEND","SHORTEN":"SHORTEN","LARGE_SHORTEN":"SHORTEN"}
 SPECS = {
  "T1_COURSE_FRAME": {"conditions":["venue_code","surface_code","distance_m","frame_no"],"parent":["venue_code","surface_code","distance_m"],"family":"T1"},
