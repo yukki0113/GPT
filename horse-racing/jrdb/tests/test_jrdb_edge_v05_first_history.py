@@ -73,7 +73,7 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             kyi_rows = [
                 {"blood_registration_no": "00000001", "race_key_raw": "r20", "horse_no": "01", "blinker_code": "0"},
                 {"blood_registration_no": "00000001", "race_key_raw": "r21", "horse_no": "01", "blinker_code": "1"},
-                {"blood_registration_no": "00000001", "race_key_raw": "r22", "horse_no": "01", "blinker_code": "3"},
+                {"blood_registration_no": "00000001", "race_key_raw": "r22", "horse_no": "01", "blinker_code": "2"},
                 {"blood_registration_no": "00000002", "race_key_raw": "r10", "horse_no": "01", "blinker_code": "0"},
                 {"blood_registration_no": "00000002", "race_key_raw": "r23", "horse_no": "01", "blinker_code": "1"},
             ]
@@ -108,7 +108,7 @@ class FirstHistoryAggregationTests(unittest.TestCase):
             self.assertTrue(rows["00000001"]["first_dirt"])
             self.assertIsNone(rows["00000002"]["first_dirt"])  # 2010 left censor
             self.assertFalse(rows["00000002"]["first_turf"])  # target is dirt, so FIRST_TURF is definitively false
-            self.assertFalse(rows["00000001"]["first_blinkers"])  # prior code 1; target code 3 is not first
+            self.assertFalse(rows["00000001"]["first_blinkers"])  # prior code 1; target code 2 is a re-wear
             self.assertFalse(rows["00000003"]["first_blinkers"])  # blank equipment code means no active blinkers
             self.assertEqual(audit["sed_duplicate_groups_collapsed"], 1)
             self.assertGreaterEqual(audit["blinker_code_parity_mismatch_count"], 0)
