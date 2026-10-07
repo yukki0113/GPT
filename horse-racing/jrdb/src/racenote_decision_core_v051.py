@@ -30,7 +30,7 @@ COMPRESSION_FIELDS = {
     "decision",
     "reason",
 }
-DECISIONS = {"ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE"}
+DECISIONS = {"ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE", "NO_EXTERNAL_CHALLENGER"}
 
 
 def _text(value: Any, minimum: int, label: str) -> None:
@@ -70,22 +70,7 @@ def validate_core(core: dict, reader: dict) -> None:
         raise ValueError(f"{venue}{race_no}R: ordinary_five must be five unique Reader horses")
 
     challenger = review.get("external_challenger_horse_no")
-    if (
-        not isinstance(challenger, int)
-        or isinstance(challenger, bool)
-        or challenger not in roster
-        or challenger in ordinary
-    ):
-        raise ValueError(f"{venue}{race_no}R: challenger must be one external Reader horse")
-
     excluded = review.get("excluded_horse_no")
-    if (
-        not isinstance(excluded, int)
-        or isinstance(excluded, bool)
-        or excluded not in set(ordinary) | {challenger}
-    ):
-        raise ValueError(f"{venue}{race_no}R: excluded_horse_no must belong to the six-candidate pool")
-
     decision = review.get("decision")
     if decision not in DECISIONS:
         raise ValueError(f"{venue}{race_no}R: invalid candidate_compression decision")
@@ -96,6 +81,31 @@ def validate_core(core: dict, reader: dict) -> None:
     # ◎ and ○ are decided before asymmetric exploration and are protected.
     if marks[0] != ordinary[0] or marks[1] != ordinary[1]:
         raise ValueError(f"{venue}{race_no}R: ◎/○ must remain the ordinary-five anchors")
+
+    if len(roster) == 5:
+        if decision != "NO_EXTERNAL_CHALLENGER" or challenger is not None or excluded is not None:
+            raise ValueError(f"{venue}{race_no}R: five-runner field requires NO_EXTERNAL_CHALLENGER")
+        if set(ordinary) != roster or set(marks) != set(ordinary):
+            raise ValueError(f"{venue}{race_no}R: five-runner field must retain the full ordinary five")
+        if marks[2] not in ordinary[2:]:
+            raise ValueError(f"{venue}{race_no}R: retained ▲ must come from ordinary support")
+        return
+
+    if (
+        not isinstance(challenger, int)
+        or isinstance(challenger, bool)
+        or challenger not in roster
+        or challenger in ordinary
+    ):
+        raise ValueError(f"{venue}{race_no}R: challenger must be one external Reader horse")
+    if (
+        not isinstance(excluded, int)
+        or isinstance(excluded, bool)
+        or excluded not in set(ordinary) | {challenger}
+    ):
+        raise ValueError(f"{venue}{race_no}R: excluded_horse_no must belong to the six-candidate pool")
+    if decision == "NO_EXTERNAL_CHALLENGER":
+        raise ValueError(f"{venue}{race_no}R: NO_EXTERNAL_CHALLENGER is only valid in a five-runner field")
 
     final_expected = (set(ordinary) | {challenger}) - {excluded}
     if set(marks) != final_expected:
