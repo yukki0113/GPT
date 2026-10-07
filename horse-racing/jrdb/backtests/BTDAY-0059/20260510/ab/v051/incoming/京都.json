@@ -1,0 +1,650 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "race_model": "京都1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      3,
+      7,
+      8,
+      11,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 11,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        7,
+        8,
+        11,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎3・○7はordinary five作成時点で固定。challenger4を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎3と○7はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "race_model": "京都2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      2,
+      6,
+      5,
+      14,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 14,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 4,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        6,
+        5,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎2・○6はordinary five作成時点で固定。challenger9を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎2と○6はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "race_model": "京都3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      1,
+      11,
+      6,
+      2,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 2,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 9,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        11,
+        6,
+        2,
+        9
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎1・○11はordinary five作成時点で固定。challenger3を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎1と○11はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "race_model": "京都4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      16,
+      10,
+      9,
+      4,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 10,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        10,
+        9,
+        4,
+        1
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎16・○10はordinary five作成時点で固定。challenger15を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎16と○10はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "race_model": "京都5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      8,
+      1,
+      9,
+      3,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 3,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        1,
+        9,
+        3,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎8・○1はordinary five作成時点で固定。challenger6を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎8と○1はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "race_model": "京都6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      2,
+      1,
+      6,
+      3,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 3,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        1,
+        6,
+        3,
+        5
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎2・○1はordinary five作成時点で固定。challenger7を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎2と○1はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "race_model": "京都7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      6,
+      1,
+      10,
+      7,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 7,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 11,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5はordinary supportとして比較したが、外部challenger10の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        1,
+        7,
+        11,
+        5
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎6・○1はordinary five作成時点で固定。challenger10を▲に採用しsupport5を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎6と○1はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "race_model": "京都8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      12,
+      11,
+      1,
+      2,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 2,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 4,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        11,
+        1,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎12・○11はordinary five作成時点で固定。challenger8を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎12と○11はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "race_model": "京都9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      13,
+      6,
+      3,
+      9,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 9,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5はordinary supportとして比較したが、外部challenger3の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        6,
+        9,
+        12,
+        5
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎13・○6はordinary five作成時点で固定。challenger3を▲に採用しsupport5を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎13と○6はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "race_model": "京都10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      4,
+      5,
+      6,
+      1,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 1,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "通常5頭の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7の別経路も比較したが、ordinary fiveのsupportを押し出すだけの根拠には届かなかった。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        5,
+        6,
+        1,
+        10
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7も主線と異なる展開経路を検討したが、今回条件で通常5頭を押し出すほどの再現性・優位性には届かない。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎4・○5はordinary five作成時点で固定。challenger7を比較したがordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎4と○5はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "race_model": "京都11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      10,
+      4,
+      2,
+      16,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 16,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14はordinary supportとして比較したが、外部challenger2の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        4,
+        16,
+        5,
+        14
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。",
+      "excluded_horse_no": 14,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎10・○4はordinary five作成時点で固定。challenger2を▲に採用しsupport14を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎10と○4はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "race_model": "京都12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。",
+    "marks": [
+      8,
+      2,
+      1,
+      11,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、本線の中心とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路を持ち、相手本線として固定する。"
+      },
+      {
+        "horse_no": 11,
+        "case": "通常評価で上位圏を維持できる地力と展開適性があり、相手圏に残す。"
+      },
+      {
+        "horse_no": 14,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10はordinary supportとして比較したが、外部challenger1の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        2,
+        11,
+        14,
+        10
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は通常5頭の主線とは異なる位置取り・末脚・先行残り等の勝ち切り経路があり、展開が振れた場合の非対称な上振れを評価する。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎8・○2はordinary five作成時点で固定。challenger1を▲に採用しsupport10を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、通常評価の5頭を先に固定したうえで、別経路の外部challengerを1頭だけ比較する。 ◎8と○2はchallenger検討前に固定し、その後も変更していない。最終5頭は◎○を主線、▲を一撃経路、△2頭を相手圏として圧縮した。"
+  }
+]
