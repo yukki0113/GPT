@@ -10,9 +10,12 @@ from typing import Any
 
 from racenote_ab_session import digest, encoded, load_session, read_json, write_json
 from racenote_reader_v050 import VERSION as V050
-from racenote_save_venue_batch_v046 import LOGIC as V046, validate_core
+from racenote_reader_v051 import VERSION as V051
+from racenote_save_venue_batch_v046 import LOGIC as V046, validate_core as validate_core_v046
+from racenote_decision_core_v051 import validate_core as validate_core_v051
 
-LANES = {"v046": V046, "v050": V050}
+LANES = {"v046": V046, "v050": V050, "v051": V051}
+VALIDATORS = {"v046": validate_core_v046, "v050": validate_core_v046, "v051": validate_core_v051}
 AUTHORED_VERSION = "racenote-ab-authored-venue-0.1"
 FROZEN_VERSION = "racenote-ab-lane-frozen-0.1"
 
@@ -20,7 +23,9 @@ FROZEN_VERSION = "racenote-ab-lane-frozen-0.1"
 def lane_reader_manifest_sha(ab_root: Path, lane: str, session: dict) -> str:
     if lane == "v046":
         return session["clean_reader_manifest_sha256"]
-    return session["v050_reader_manifest_sha256"]
+    if lane == "v050":
+        return session["v050_reader_manifest_sha256"]
+    return session["v051_reader_manifest_sha256"]
 
 
 def lane_reader(ab_root: Path, lane: str, key: tuple[str, int], readers: dict, derived: dict) -> tuple[dict, str]:
@@ -28,7 +33,7 @@ def lane_reader(ab_root: Path, lane: str, key: tuple[str, int], readers: dict, d
         item = readers[key]
         return item["reader"], item["sha256"]
     entry = derived[key]
-    normal = read_json(ab_root / "v050" / "reader" / entry["derived_normal_filename"])
+    normal = read_json(ab_root / lane / "reader" / entry["derived_normal_filename"])
     # Reuse the existing Decision Core validator only for identity and RRDB
     # citations. It receives the candidate normal view, never provenance or
     # the original v0.4.6 evidence values.
@@ -71,13 +76,15 @@ def _validate_venue_cores(
         if core.get("venue") != venue or key not in readers:
             raise ValueError("Decision Core race identity mismatch")
         reader, _ = lane_reader(ab_root, lane, key, readers, derived)
-        validate_core(core, reader)
+        VALIDATORS[lane](core, reader)
 
 
 def save_venue(ab_root: Path, lane: str, decisions_path: Path) -> dict[str, Any]:
     if lane not in LANES:
         raise ValueError("unknown A/B lane")
     session, readers, derived = load_session(ab_root)
+    if lane not in session.get("lane_definitions", {}):
+        raise ValueError("lane is not enabled in this sealed session")
     incoming = (ab_root / lane / "incoming").resolve()
     path = decisions_path.resolve()
     if path.parent != incoming or path.suffix != ".json":
@@ -150,6 +157,8 @@ def build_freeze(ab_root: Path, lane: str) -> dict[str, Any]:
     if lane not in LANES:
         raise ValueError("unknown A/B lane")
     session, readers, derived = load_session(ab_root)
+    if lane not in session.get("lane_definitions", {}):
+        raise ValueError("lane is not enabled in this sealed session")
     authored = _load_authored(ab_root, lane, session, readers, derived)
     records = []
     for payload in authored:
@@ -212,6 +221,8 @@ def build_freeze(ab_root: Path, lane: str) -> dict[str, Any]:
 def load_lane_freeze(ab_root: Path, lane: str, session: dict, readers: dict, derived: dict) -> tuple[dict, list[dict]]:
     if lane not in LANES:
         raise ValueError("unknown A/B lane")
+    if lane not in session.get("lane_definitions", {}):
+        raise ValueError("lane is not enabled in this sealed session")
     root = ab_root / lane / "frozen"
     handoff = read_json(root / "lane_handoff.json")
     raw = (root / "records.json").read_bytes()
@@ -262,7 +273,7 @@ def load_lane_freeze(ab_root: Path, lane: str, session: dict, readers: dict, der
             or row["decision_core"] != authored_by_key[key]
         ):
             raise ValueError(f"{lane}: frozen record binding mismatch: {key}")
-        validate_core(row["decision_core"], reader)
+        VALIDATORS[lane](row["decision_core"], reader)
     return handoff, records
 
 
