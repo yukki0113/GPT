@@ -1,0 +1,40 @@
+name: RaceNote BTDAY-0055 A/B session temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0055.session'
+permissions:
+  contents: write
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Initialize sealed A/B session
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          PREP='horse-racing/jrdb/backtests/BTDAY-0055/20260105/forecast_prep'
+          REQUEST='horse-racing/jrdb/backtests/requests/BTDAY-0055.json'
+          AB='horse-racing/jrdb/backtests/BTDAY-0055/20260105/ab'
+          BASE_MAIN_SHA="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('horse-racing/jrdb/backtests/BTDAY-0055/20260105/forecast_prep/day_prep_handoff.json').read_text())['main_sha'])
+          PY
+          )"
+          python horse-racing/jrdb/src/racenote_ab_session.py             --prep-root "$PREP"             --request "$REQUEST"             --ab-root "$AB"             --base-main-sha "$BASE_MAIN_SHA"             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$AB"
+          git commit -m 'RaceNote: seal BTDAY-0055 A/B session'
+          git pull --rebase origin main
+          git push origin HEAD:main
