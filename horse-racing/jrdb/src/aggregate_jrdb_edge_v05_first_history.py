@@ -146,6 +146,8 @@ def build_history_features(con: Any, warehouse: Path, feature_path: Path,
     mismatch = int(con.execute("SELECT count(*) FROM kyi_flags WHERE first_blinkers_chronology IS NOT NULL AND code_first_use IS NOT NULL AND first_blinkers_chronology!=code_first_use").fetchone()[0])
     mismatch_cur = con.execute("SELECT blood_id,race_key,horse_no,race_date,blinker_code,first_blinkers_chronology,code_first_use FROM kyi_flags WHERE first_blinkers_chronology IS NOT NULL AND code_first_use IS NOT NULL AND first_blinkers_chronology!=code_first_use ORDER BY race_date,blood_id,race_key LIMIT 20")
     mismatch_samples = [dict(zip([d[0] for d in mismatch_cur.description], row)) for row in mismatch_cur.fetchall()]
+    code_cur = con.execute("SELECT coalesce(nullif(blinker_code,''),'<BLANK>') code,count(*) n FROM kyi_groups GROUP BY 1 ORDER BY 1")
+    blinker_code_distribution = [{"code": row[0], "count": int(row[1])} for row in code_cur.fetchall()]
     con.execute("""
       CREATE OR REPLACE TEMP VIEW kyi_flags_checked AS
       SELECT *, CASE WHEN first_blinkers_chronology IS NULL OR code_first_use IS NULL OR first_blinkers_chronology!=code_first_use THEN NULL ELSE first_blinkers_chronology END first_blinkers
@@ -182,6 +184,7 @@ def build_history_features(con: Any, warehouse: Path, feature_path: Path,
             "blinker_chronology_count": int(con.execute("SELECT count(*) FROM kyi_flags WHERE first_blinkers_chronology=TRUE").fetchone()[0]),
             "blinker_code_1_count": int(con.execute("SELECT count(*) FROM kyi_flags WHERE code_first_use=TRUE").fetchone()[0]),
             "blinker_code_parity_mismatch_count": mismatch, "blinker_mismatch_examples": mismatch_samples,
+            "blinker_code_distribution": blinker_code_distribution,
             "identity_coverage": {"surface_event_rows": sed_unique,
                                   "valid_canonical_registration": int(con.execute("SELECT count(*) FROM sed_groups WHERE regexp_full_match(blood_id,'[0-9]{8}')").fetchone()[0])}}
 
@@ -283,6 +286,13 @@ def write_outputs(out: Path, additions: list[dict[str, Any]], base_summary: dict
                 w.writerow({k: base.canonical_json(v) if isinstance(v, (dict, list)) else v for k, v in r.items()})
     base._write_csv(out / "first_history_audit.csv", [{"audit": "summary", **{k: json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list)) else v for k, v in history_audit.items() if k != "blinker_mismatch_examples"}}])
     base._write_json(out / "first_history_audit.json", history_audit)
+    surface_keys = ("sed_rows", "sed_reconciled_events", "sed_duplicate_groups_collapsed", "sed_conflict_groups",
+                    "same_day_multi_race_horses_dates", "history_join_counts", "unknown_feature_rows", "identity_coverage")
+    blinkers_keys = ("kyi_rows", "kyi_duplicate_groups_collapsed", "kyi_conflict_or_unjoined_groups", "blinker_chronology_count",
+                     "blinker_code_1_count", "blinker_code_parity_mismatch_count", "blinker_mismatch_examples",
+                     "blinker_code_distribution", "unknown_feature_rows")
+    base._write_json(out / "first_surface_audit.json", {k: history_audit[k] for k in surface_keys})
+    base._write_json(out / "first_blinker_audit.json", {k: history_audit[k] for k in blinkers_keys})
 
     family_counts = {fam: dict(info) for fam, info in base_summary["candidate_counts"]["by_family"].items()}
     for family in ("T4", "T5"):
@@ -293,6 +303,14 @@ def write_outputs(out: Path, additions: list[dict[str, Any]], base_summary: dict
         existing_family["candidate_count_raw_n_lt_5"] = int(existing_family.get("candidate_count_raw_n_lt_5", 0)) + sum(not x["shortlist_eligible"] for x in rows)
         existing_family["positive_value_count"] = int(existing_family.get("positive_value_count", 0)) + sum(x["positive_value_eligible"] for x in rows)
         existing_family["negative_edge_count"] = int(existing_family.get("negative_edge_count", 0)) + sum(x["negative_value_eligible"] for x in rows)
+        for field, extra in (("support_classes", Counter(x["support_class"] for x in rows)),
+                             ("freshness_counts", Counter(x["freshness"] for x in rows if x["shortlist_eligible"])),
+                             ("label_counts", Counter(label for x in rows if x["shortlist_eligible"] for label in x["research_labels"])),
+                             ("positive_value_by_support_class", Counter(x["support_class"] for x in rows if x["positive_value_eligible"]))):
+            current = existing_family.get(field, {})
+            existing_family[field] = dict(Counter(current) + extra)
+        existing_family["longshot_evidence_positive_count"] = int(existing_family.get("longshot_evidence_positive_count", 0)) + sum(x["positive_value_eligible"] and "LONGSHOT_EVIDENCE" in x["research_labels"] for x in rows)
+        existing_family["positive_value_representatives_status"] = "not recalculated; inventory task retains existing-family representatives and all new candidates"
         existing_family["history_extension_by_template"] = {t: sum(x["template_id"] == t for x in rows) for t in FIRST_SPECS}
         family_counts[family] = existing_family
     base_summary["source_provenance"].update({"warehouse_research_run": WAREHOUSE_RUN, "warehouse_artifact_id": WAREHOUSE_ARTIFACT_ID,
@@ -348,11 +366,15 @@ def render_result(summary: dict[str, Any], additions: list[dict[str, Any]], hist
              "- Flags use strict earlier race_date; the target row is excluded. Same-day duplicate/source rows are collapsed on canonical identity and conflicting/multiple-race dates are UNKNOWN.", "",
              "## First blinkers audit", "",
              f"- Chronology-derived active-first rows: {history['blinker_chronology_count']:,}; code==1 rows: {history['blinker_code_1_count']:,}; parity mismatches: {history['blinker_code_parity_mismatch_count']:,}.",
+             f"- Warehouse code distribution: `{json.dumps(history['blinker_code_distribution'], ensure_ascii=False)}`.",
              f"- UNKNOWN blinkers target rows: {history['unknown_feature_rows']['first_blinkers']:,}. Mismatches are UNKNOWN for candidate membership; see `first_history_audit.json` for representative rows.",
              "- Active semantics are codes 1/2/3; code 2 re-wear is not accepted as first use when codebook and chronology disagree.", "",
-             "## Unified candidate counts", "", "| Family | All candidates | n>=5 | Positive Value | Negative Edge |", "|---|---:|---:|---:|---:|"]
+             "## Unified candidate counts", "", "| Family | All candidates | n>=5 | Positive Value | Negative Edge | Support classes | Freshness | LONGSHOT_EVIDENCE |", "|---|---:|---:|---:|---:|---|---|---:|"]
     for fam, row in sorted(families.items()):
-        lines.append(f"| {fam} | {row.get('candidate_count_all', 0)} | {row.get('candidate_count_n_ge_5', 0)} | {row.get('positive_value_count', 0)} | {row.get('negative_edge_count', 0)} |")
+        support = json.dumps(row.get("support_classes", {}), ensure_ascii=False, sort_keys=True)
+        freshness = json.dumps(row.get("freshness_counts", {}), ensure_ascii=False, sort_keys=True)
+        longshot = row.get("label_counts", {}).get("LONGSHOT_EVIDENCE", 0)
+        lines.append(f"| {fam} | {row.get('candidate_count_all', 0)} | {row.get('candidate_count_n_ge_5', 0)} | {row.get('positive_value_count', 0)} | {row.get('negative_edge_count', 0)} | `{support}` | `{freshness}` | {longshot} |")
     lines.extend(["", f"Unified inventory: {summary['candidate_counts']['unified_raw_candidate_total']:,} raw candidates; {summary['candidate_counts']['unified_n_ge_5_total']:,} with n>=5.",
                   "Positive Value remains exactly `n >= 5 AND combined 2024-2025 place ROI >= 100%`; no threshold or support floor changed. No popularity, payout, or odds field defines candidate membership.", "",
                   "## History-dependent family counts", "", "| Template | Candidates | n>=5 | Positive Value | Negative Edge |", "|---|---:|---:|---:|---:|"])
@@ -420,6 +442,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             additions, _ = assemble_new_candidates(con, enriched, out)
             summary = write_outputs(out, additions, base_summary, history, warehouse_audit, args.source_commit)
             summary["existing_family_parity"] = parity
+            base._write_json(out / "existing_family_parity_audit.json", parity)
             base._write_json(out / "t1_t6_summary.json", summary)
             report = render_result(summary, additions, history)
             (out / "first_surface_and_blinker_full_history_result.md").write_text(report, encoding="utf-8")
