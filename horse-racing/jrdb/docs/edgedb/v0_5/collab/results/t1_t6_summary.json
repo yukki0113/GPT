@@ -1,0 +1,1206 @@
+{
+  "blocked_features": {
+    "course_topology": "BLOCKED; no complete venue+surface+distance(+variant) canonical topology lookup found; do not infer from distance",
+    "first_blinkers": "UNAVAILABLE_IN_FROZEN_FEATURE_MART; current KYI blinker code is not part of this frozen mart",
+    "first_dirt": "UNAVAILABLE_IN_FROZEN_FEATURE_MART; true career-first exposure cannot be asserted from immediate previous surface alone",
+    "first_turf": "UNAVAILABLE_IN_FROZEN_FEATURE_MART; true career-first exposure cannot be asserted from immediate previous surface alone"
+  },
+  "candidate_counts": {
+    "by_family": {
+      "T1": {
+        "candidate_count_all": 800,
+        "candidate_count_n_ge_5": 725,
+        "candidate_count_raw_n_lt_5": 75,
+        "freshness_counts": {
+          "CURRENT": 321,
+          "DECAYING": 166,
+          "EMERGING": 43,
+          "INSUFFICIENT_HISTORY": 15,
+          "OLD_ONLY": 3,
+          "VOLATILE": 177
+        },
+        "label_counts": {
+          "CURRENT_BUT_LOW_SUPPORT": 8,
+          "DECAYING": 166,
+          "EMERGING": 43,
+          "INSUFFICIENT": 15,
+          "LONGSHOT_EVIDENCE": 614,
+          "NICHE_VALUE_NEGATIVE": 365,
+          "NICHE_VALUE_POSITIVE": 360,
+          "SATURATED_OR_PRICED": 274,
+          "WEAK": 492
+        },
+        "longshot_place_hit_count_distribution": {
+          "count": 725,
+          "max": 20.0,
+          "median": 3.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 10.0
+        },
+        "n_distribution": {
+          "count": 725,
+          "max": 542.0,
+          "median": 101.0,
+          "min": 5.0,
+          "p10": 23.0,
+          "p90": 250.0
+        },
+        "place_roi_distribution": {
+          "count": 725,
+          "max": 238.90625,
+          "median": 67.84210526315789,
+          "min": 0.0,
+          "p10": 39.391304347826086,
+          "p90": 109.10714285714286
+        },
+        "support_classes": {
+          "LARGE": 550,
+          "MEDIUM": 106,
+          "MICRO": 46,
+          "RAW_ONLY": 75,
+          "SMALL": 23
+        },
+        "win_roi_distribution": {
+          "count": 725,
+          "max": 718.3333333333334,
+          "median": 54.72727272727273,
+          "min": 0.0,
+          "p10": 15.357142857142858,
+          "p90": 130.2173913043478
+        },
+        "year_2024_place_roi_distribution": {
+          "count": 725,
+          "max": 377.5,
+          "median": 64.35146443514644,
+          "min": 0.0,
+          "p10": 29.75609756097561,
+          "p90": 125.53191489361703
+        },
+        "year_2024_win_roi_distribution": {
+          "count": 725,
+          "max": 937.5,
+          "median": 45.9375,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 154.3548387096774
+        },
+        "year_2025_place_roi_distribution": {
+          "count": 725,
+          "max": 470.6666666666667,
+          "median": 63.14049586776859,
+          "min": 0.0,
+          "p10": 31.89189189189189,
+          "p90": 112.72727272727273
+        },
+        "year_2025_win_roi_distribution": {
+          "count": 725,
+          "max": 866.6666666666666,
+          "median": 48.028169014084504,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 156.33333333333334
+        }
+      },
+      "T2": {
+        "candidate_count_all": 12939,
+        "candidate_count_n_ge_5": 4767,
+        "candidate_count_raw_n_lt_5": 8172,
+        "freshness_counts": {
+          "CURRENT": 659,
+          "DECAYING": 804,
+          "EMERGING": 80,
+          "INSUFFICIENT_HISTORY": 1845,
+          "OLD_ONLY": 17,
+          "VOLATILE": 1362
+        },
+        "label_counts": {
+          "CURRENT_BUT_LOW_SUPPORT": 197,
+          "DECAYING": 804,
+          "EMERGING": 80,
+          "INSUFFICIENT": 1845,
+          "LONGSHOT_EVIDENCE": 1724,
+          "NICHE_VALUE_NEGATIVE": 2575,
+          "NICHE_VALUE_POSITIVE": 2186,
+          "SATURATED_OR_PRICED": 1291,
+          "WEAK": 3205
+        },
+        "longshot_place_hit_count_distribution": {
+          "count": 4767,
+          "max": 8.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 2.0
+        },
+        "n_distribution": {
+          "count": 4767,
+          "max": 155.0,
+          "median": 11.0,
+          "min": 5.0,
+          "p10": 5.0,
+          "p90": 34.0
+        },
+        "place_roi_distribution": {
+          "count": 4767,
+          "max": 1480.0,
+          "median": 55.625,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 147.3684210526316
+        },
+        "support_classes": {
+          "LARGE": 191,
+          "MEDIUM": 1004,
+          "MICRO": 2076,
+          "RAW_ONLY": 8172,
+          "SMALL": 1496
+        },
+        "win_roi_distribution": {
+          "count": 4767,
+          "max": 3251.6666666666665,
+          "median": 18.666666666666668,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 176.55172413793105
+        },
+        "year_2024_place_roi_distribution": {
+          "count": 4513,
+          "max": 3590.0,
+          "median": 45.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 170.0
+        },
+        "year_2024_win_roi_distribution": {
+          "count": 4513,
+          "max": 5136.666666666667,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 170.0
+        },
+        "year_2025_place_roi_distribution": {
+          "count": 4657,
+          "max": 2960.0,
+          "median": 41.81818181818182,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 161.25
+        },
+        "year_2025_win_roi_distribution": {
+          "count": 4657,
+          "max": 5062.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 170.0
+        }
+      },
+      "T3": {
+        "candidate_count_all": 928,
+        "candidate_count_n_ge_5": 523,
+        "candidate_count_raw_n_lt_5": 405,
+        "freshness_counts": {
+          "CURRENT": 134,
+          "DECAYING": 84,
+          "EMERGING": 9,
+          "INSUFFICIENT_HISTORY": 160,
+          "VOLATILE": 136
+        },
+        "label_counts": {
+          "CURRENT_BUT_LOW_SUPPORT": 23,
+          "DECAYING": 84,
+          "EMERGING": 9,
+          "INSUFFICIENT": 160,
+          "LONGSHOT_EVIDENCE": 288,
+          "NICHE_VALUE_NEGATIVE": 350,
+          "NICHE_VALUE_POSITIVE": 161,
+          "SATURATED_OR_PRICED": 101,
+          "WEAK": 376
+        },
+        "longshot_place_hit_count_distribution": {
+          "count": 523,
+          "max": 21.0,
+          "median": 1.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 7.0
+        },
+        "n_distribution": {
+          "count": 523,
+          "max": 661.0,
+          "median": 19.0,
+          "min": 5.0,
+          "p10": 5.0,
+          "p90": 183.0
+        },
+        "place_roi_distribution": {
+          "count": 523,
+          "max": 622.0,
+          "median": 57.94117647058823,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 132.6315789473684
+        },
+        "support_classes": {
+          "LARGE": 177,
+          "MEDIUM": 80,
+          "MICRO": 164,
+          "RAW_ONLY": 405,
+          "SMALL": 102
+        },
+        "win_roi_distribution": {
+          "count": 523,
+          "max": 3251.6666666666665,
+          "median": 31.944444444444443,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 138.5897435897436
+        },
+        "year_2024_place_roi_distribution": {
+          "count": 492,
+          "max": 1555.0,
+          "median": 55.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 137.77777777777777
+        },
+        "year_2024_win_roi_distribution": {
+          "count": 492,
+          "max": 6530.0,
+          "median": 6.808510638297872,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 166.25
+        },
+        "year_2025_place_roi_distribution": {
+          "count": 519,
+          "max": 606.6666666666666,
+          "median": 48.392857142857146,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 127.14285714285714
+        },
+        "year_2025_win_roi_distribution": {
+          "count": 519,
+          "max": 4877.5,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 146.22641509433961
+        }
+      },
+      "T4": {
+        "candidate_count_all": 656,
+        "candidate_count_n_ge_5": 264,
+        "candidate_count_raw_n_lt_5": 392,
+        "freshness_counts": {
+          "CURRENT": 43,
+          "DECAYING": 61,
+          "EMERGING": 4,
+          "INSUFFICIENT_HISTORY": 73,
+          "VOLATILE": 83
+        },
+        "label_counts": {
+          "CURRENT_BUT_LOW_SUPPORT": 11,
+          "DECAYING": 61,
+          "EMERGING": 4,
+          "INSUFFICIENT": 73,
+          "LONGSHOT_EVIDENCE": 131,
+          "NICHE_VALUE_NEGATIVE": 232,
+          "NICHE_VALUE_POSITIVE": 30,
+          "SATURATED_OR_PRICED": 17,
+          "WEAK": 195
+        },
+        "longshot_place_hit_count_distribution": {
+          "count": 264,
+          "max": 7.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 3.0
+        },
+        "n_distribution": {
+          "count": 264,
+          "max": 173.0,
+          "median": 22.0,
+          "min": 5.0,
+          "p10": 6.0,
+          "p90": 80.0
+        },
+        "place_roi_distribution": {
+          "count": 264,
+          "max": 750.0,
+          "median": 44.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 136.0
+        },
+        "support_classes": {
+          "LARGE": 54,
+          "MEDIUM": 86,
+          "MICRO": 73,
+          "RAW_ONLY": 392,
+          "SMALL": 51
+        },
+        "win_roi_distribution": {
+          "count": 264,
+          "max": 805.8333333333334,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 149.3684210526316
+        },
+        "year_2024_place_roi_distribution": {
+          "count": 248,
+          "max": 1510.0,
+          "median": 26.229508196721312,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 153.91304347826087
+        },
+        "year_2024_win_roi_distribution": {
+          "count": 248,
+          "max": 743.3333333333334,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 99.44444444444444
+        },
+        "year_2025_place_roi_distribution": {
+          "count": 262,
+          "max": 750.0,
+          "median": 31.428571428571427,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 154.42307692307693
+        },
+        "year_2025_win_roi_distribution": {
+          "count": 262,
+          "max": 1260.0,
+          "median": 0.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 173.04347826086956
+        }
+      },
+      "T6": {
+        "candidate_count_all": 1614,
+        "candidate_count_n_ge_5": 1024,
+        "candidate_count_raw_n_lt_5": 590,
+        "freshness_counts": {
+          "CURRENT": 242,
+          "DECAYING": 197,
+          "EMERGING": 20,
+          "INSUFFICIENT_HISTORY": 306,
+          "OLD_ONLY": 5,
+          "VOLATILE": 254
+        },
+        "label_counts": {
+          "CURRENT_BUT_LOW_SUPPORT": 29,
+          "DECAYING": 197,
+          "EMERGING": 20,
+          "INSUFFICIENT": 306,
+          "LONGSHOT_EVIDENCE": 572,
+          "NICHE_VALUE_NEGATIVE": 435,
+          "NICHE_VALUE_POSITIVE": 463,
+          "SATURATED_OR_PRICED": 326,
+          "WEAK": 707
+        },
+        "longshot_place_hit_count_distribution": {
+          "count": 1024,
+          "max": 45.0,
+          "median": 1.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 8.0
+        },
+        "n_distribution": {
+          "count": 1024,
+          "max": 1538.0,
+          "median": 23.0,
+          "min": 5.0,
+          "p10": 6.0,
+          "p90": 234.0
+        },
+        "place_roi_distribution": {
+          "count": 1024,
+          "max": 814.0,
+          "median": 62.5,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 125.0
+        },
+        "support_classes": {
+          "LARGE": 353,
+          "MEDIUM": 199,
+          "MICRO": 262,
+          "RAW_ONLY": 590,
+          "SMALL": 210
+        },
+        "win_roi_distribution": {
+          "count": 1024,
+          "max": 2611.6666666666665,
+          "median": 31.666666666666668,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 146.0
+        },
+        "year_2024_place_roi_distribution": {
+          "count": 950,
+          "max": 1090.0,
+          "median": 58.333333333333336,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 145.0
+        },
+        "year_2024_win_roi_distribution": {
+          "count": 950,
+          "max": 3265.0,
+          "median": 20.0,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 136.4
+        },
+        "year_2025_place_roi_distribution": {
+          "count": 991,
+          "max": 1017.5,
+          "median": 54.82837528604119,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 128.57142857142858
+        },
+        "year_2025_win_roi_distribution": {
+          "count": 991,
+          "max": 2232.222222222222,
+          "median": 18.536585365853657,
+          "min": 0.0,
+          "p10": 0.0,
+          "p90": 147.14285714285714
+        }
+      }
+    },
+    "by_freshness": {
+      "CURRENT": 1399,
+      "DECAYING": 1312,
+      "EMERGING": 156,
+      "INSUFFICIENT_HISTORY": 2399,
+      "OLD_ONLY": 25,
+      "VOLATILE": 2012
+    },
+    "by_label": {
+      "CURRENT_BUT_LOW_SUPPORT": 268,
+      "DECAYING": 1312,
+      "EMERGING": 156,
+      "INSUFFICIENT": 2399,
+      "LONGSHOT_EVIDENCE": 3329,
+      "NICHE_VALUE_NEGATIVE": 3957,
+      "NICHE_VALUE_POSITIVE": 3200,
+      "SATURATED_OR_PRICED": 2009,
+      "WEAK": 4975
+    },
+    "by_support_class": {
+      "LARGE": 1325,
+      "MEDIUM": 1475,
+      "MICRO": 2621,
+      "SMALL": 1882
+    },
+    "n_ge_5_total": 7303,
+    "n_lt_5_total": 9634
+  },
+  "desired_pattern_check": {
+    "sire_x_distance_extension": "EXPRESSIBLE/DISCOVERED by T3 canonical distance bucket",
+    "sire_x_first_dirt": "BLOCKED; no true first-surface flag in frozen mart",
+    "sire_x_turf_one_turn": "BLOCKED; no canonical topology map"
+  },
+  "distribution_summary_by_family": {
+    "T1": {
+      "candidate_count_all": 800,
+      "candidate_count_n_ge_5": 725,
+      "candidate_count_raw_n_lt_5": 75,
+      "freshness_counts": {
+        "CURRENT": 321,
+        "DECAYING": 166,
+        "EMERGING": 43,
+        "INSUFFICIENT_HISTORY": 15,
+        "OLD_ONLY": 3,
+        "VOLATILE": 177
+      },
+      "label_counts": {
+        "CURRENT_BUT_LOW_SUPPORT": 8,
+        "DECAYING": 166,
+        "EMERGING": 43,
+        "INSUFFICIENT": 15,
+        "LONGSHOT_EVIDENCE": 614,
+        "NICHE_VALUE_NEGATIVE": 365,
+        "NICHE_VALUE_POSITIVE": 360,
+        "SATURATED_OR_PRICED": 274,
+        "WEAK": 492
+      },
+      "longshot_place_hit_count_distribution": {
+        "count": 725,
+        "max": 20.0,
+        "median": 3.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 10.0
+      },
+      "n_distribution": {
+        "count": 725,
+        "max": 542.0,
+        "median": 101.0,
+        "min": 5.0,
+        "p10": 23.0,
+        "p90": 250.0
+      },
+      "place_roi_distribution": {
+        "count": 725,
+        "max": 238.90625,
+        "median": 67.84210526315789,
+        "min": 0.0,
+        "p10": 39.391304347826086,
+        "p90": 109.10714285714286
+      },
+      "support_classes": {
+        "LARGE": 550,
+        "MEDIUM": 106,
+        "MICRO": 46,
+        "RAW_ONLY": 75,
+        "SMALL": 23
+      },
+      "win_roi_distribution": {
+        "count": 725,
+        "max": 718.3333333333334,
+        "median": 54.72727272727273,
+        "min": 0.0,
+        "p10": 15.357142857142858,
+        "p90": 130.2173913043478
+      },
+      "year_2024_place_roi_distribution": {
+        "count": 725,
+        "max": 377.5,
+        "median": 64.35146443514644,
+        "min": 0.0,
+        "p10": 29.75609756097561,
+        "p90": 125.53191489361703
+      },
+      "year_2024_win_roi_distribution": {
+        "count": 725,
+        "max": 937.5,
+        "median": 45.9375,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 154.3548387096774
+      },
+      "year_2025_place_roi_distribution": {
+        "count": 725,
+        "max": 470.6666666666667,
+        "median": 63.14049586776859,
+        "min": 0.0,
+        "p10": 31.89189189189189,
+        "p90": 112.72727272727273
+      },
+      "year_2025_win_roi_distribution": {
+        "count": 725,
+        "max": 866.6666666666666,
+        "median": 48.028169014084504,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 156.33333333333334
+      }
+    },
+    "T2": {
+      "candidate_count_all": 12939,
+      "candidate_count_n_ge_5": 4767,
+      "candidate_count_raw_n_lt_5": 8172,
+      "freshness_counts": {
+        "CURRENT": 659,
+        "DECAYING": 804,
+        "EMERGING": 80,
+        "INSUFFICIENT_HISTORY": 1845,
+        "OLD_ONLY": 17,
+        "VOLATILE": 1362
+      },
+      "label_counts": {
+        "CURRENT_BUT_LOW_SUPPORT": 197,
+        "DECAYING": 804,
+        "EMERGING": 80,
+        "INSUFFICIENT": 1845,
+        "LONGSHOT_EVIDENCE": 1724,
+        "NICHE_VALUE_NEGATIVE": 2575,
+        "NICHE_VALUE_POSITIVE": 2186,
+        "SATURATED_OR_PRICED": 1291,
+        "WEAK": 3205
+      },
+      "longshot_place_hit_count_distribution": {
+        "count": 4767,
+        "max": 8.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 2.0
+      },
+      "n_distribution": {
+        "count": 4767,
+        "max": 155.0,
+        "median": 11.0,
+        "min": 5.0,
+        "p10": 5.0,
+        "p90": 34.0
+      },
+      "place_roi_distribution": {
+        "count": 4767,
+        "max": 1480.0,
+        "median": 55.625,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 147.3684210526316
+      },
+      "support_classes": {
+        "LARGE": 191,
+        "MEDIUM": 1004,
+        "MICRO": 2076,
+        "RAW_ONLY": 8172,
+        "SMALL": 1496
+      },
+      "win_roi_distribution": {
+        "count": 4767,
+        "max": 3251.6666666666665,
+        "median": 18.666666666666668,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 176.55172413793105
+      },
+      "year_2024_place_roi_distribution": {
+        "count": 4513,
+        "max": 3590.0,
+        "median": 45.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 170.0
+      },
+      "year_2024_win_roi_distribution": {
+        "count": 4513,
+        "max": 5136.666666666667,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 170.0
+      },
+      "year_2025_place_roi_distribution": {
+        "count": 4657,
+        "max": 2960.0,
+        "median": 41.81818181818182,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 161.25
+      },
+      "year_2025_win_roi_distribution": {
+        "count": 4657,
+        "max": 5062.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 170.0
+      }
+    },
+    "T3": {
+      "candidate_count_all": 928,
+      "candidate_count_n_ge_5": 523,
+      "candidate_count_raw_n_lt_5": 405,
+      "freshness_counts": {
+        "CURRENT": 134,
+        "DECAYING": 84,
+        "EMERGING": 9,
+        "INSUFFICIENT_HISTORY": 160,
+        "VOLATILE": 136
+      },
+      "label_counts": {
+        "CURRENT_BUT_LOW_SUPPORT": 23,
+        "DECAYING": 84,
+        "EMERGING": 9,
+        "INSUFFICIENT": 160,
+        "LONGSHOT_EVIDENCE": 288,
+        "NICHE_VALUE_NEGATIVE": 350,
+        "NICHE_VALUE_POSITIVE": 161,
+        "SATURATED_OR_PRICED": 101,
+        "WEAK": 376
+      },
+      "longshot_place_hit_count_distribution": {
+        "count": 523,
+        "max": 21.0,
+        "median": 1.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 7.0
+      },
+      "n_distribution": {
+        "count": 523,
+        "max": 661.0,
+        "median": 19.0,
+        "min": 5.0,
+        "p10": 5.0,
+        "p90": 183.0
+      },
+      "place_roi_distribution": {
+        "count": 523,
+        "max": 622.0,
+        "median": 57.94117647058823,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 132.6315789473684
+      },
+      "support_classes": {
+        "LARGE": 177,
+        "MEDIUM": 80,
+        "MICRO": 164,
+        "RAW_ONLY": 405,
+        "SMALL": 102
+      },
+      "win_roi_distribution": {
+        "count": 523,
+        "max": 3251.6666666666665,
+        "median": 31.944444444444443,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 138.5897435897436
+      },
+      "year_2024_place_roi_distribution": {
+        "count": 492,
+        "max": 1555.0,
+        "median": 55.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 137.77777777777777
+      },
+      "year_2024_win_roi_distribution": {
+        "count": 492,
+        "max": 6530.0,
+        "median": 6.808510638297872,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 166.25
+      },
+      "year_2025_place_roi_distribution": {
+        "count": 519,
+        "max": 606.6666666666666,
+        "median": 48.392857142857146,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 127.14285714285714
+      },
+      "year_2025_win_roi_distribution": {
+        "count": 519,
+        "max": 4877.5,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 146.22641509433961
+      }
+    },
+    "T4": {
+      "candidate_count_all": 656,
+      "candidate_count_n_ge_5": 264,
+      "candidate_count_raw_n_lt_5": 392,
+      "freshness_counts": {
+        "CURRENT": 43,
+        "DECAYING": 61,
+        "EMERGING": 4,
+        "INSUFFICIENT_HISTORY": 73,
+        "VOLATILE": 83
+      },
+      "label_counts": {
+        "CURRENT_BUT_LOW_SUPPORT": 11,
+        "DECAYING": 61,
+        "EMERGING": 4,
+        "INSUFFICIENT": 73,
+        "LONGSHOT_EVIDENCE": 131,
+        "NICHE_VALUE_NEGATIVE": 232,
+        "NICHE_VALUE_POSITIVE": 30,
+        "SATURATED_OR_PRICED": 17,
+        "WEAK": 195
+      },
+      "longshot_place_hit_count_distribution": {
+        "count": 264,
+        "max": 7.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 3.0
+      },
+      "n_distribution": {
+        "count": 264,
+        "max": 173.0,
+        "median": 22.0,
+        "min": 5.0,
+        "p10": 6.0,
+        "p90": 80.0
+      },
+      "place_roi_distribution": {
+        "count": 264,
+        "max": 750.0,
+        "median": 44.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 136.0
+      },
+      "support_classes": {
+        "LARGE": 54,
+        "MEDIUM": 86,
+        "MICRO": 73,
+        "RAW_ONLY": 392,
+        "SMALL": 51
+      },
+      "win_roi_distribution": {
+        "count": 264,
+        "max": 805.8333333333334,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 149.3684210526316
+      },
+      "year_2024_place_roi_distribution": {
+        "count": 248,
+        "max": 1510.0,
+        "median": 26.229508196721312,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 153.91304347826087
+      },
+      "year_2024_win_roi_distribution": {
+        "count": 248,
+        "max": 743.3333333333334,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 99.44444444444444
+      },
+      "year_2025_place_roi_distribution": {
+        "count": 262,
+        "max": 750.0,
+        "median": 31.428571428571427,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 154.42307692307693
+      },
+      "year_2025_win_roi_distribution": {
+        "count": 262,
+        "max": 1260.0,
+        "median": 0.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 173.04347826086956
+      }
+    },
+    "T6": {
+      "candidate_count_all": 1614,
+      "candidate_count_n_ge_5": 1024,
+      "candidate_count_raw_n_lt_5": 590,
+      "freshness_counts": {
+        "CURRENT": 242,
+        "DECAYING": 197,
+        "EMERGING": 20,
+        "INSUFFICIENT_HISTORY": 306,
+        "OLD_ONLY": 5,
+        "VOLATILE": 254
+      },
+      "label_counts": {
+        "CURRENT_BUT_LOW_SUPPORT": 29,
+        "DECAYING": 197,
+        "EMERGING": 20,
+        "INSUFFICIENT": 306,
+        "LONGSHOT_EVIDENCE": 572,
+        "NICHE_VALUE_NEGATIVE": 435,
+        "NICHE_VALUE_POSITIVE": 463,
+        "SATURATED_OR_PRICED": 326,
+        "WEAK": 707
+      },
+      "longshot_place_hit_count_distribution": {
+        "count": 1024,
+        "max": 45.0,
+        "median": 1.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 8.0
+      },
+      "n_distribution": {
+        "count": 1024,
+        "max": 1538.0,
+        "median": 23.0,
+        "min": 5.0,
+        "p10": 6.0,
+        "p90": 234.0
+      },
+      "place_roi_distribution": {
+        "count": 1024,
+        "max": 814.0,
+        "median": 62.5,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 125.0
+      },
+      "support_classes": {
+        "LARGE": 353,
+        "MEDIUM": 199,
+        "MICRO": 262,
+        "RAW_ONLY": 590,
+        "SMALL": 210
+      },
+      "win_roi_distribution": {
+        "count": 1024,
+        "max": 2611.6666666666665,
+        "median": 31.666666666666668,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 146.0
+      },
+      "year_2024_place_roi_distribution": {
+        "count": 950,
+        "max": 1090.0,
+        "median": 58.333333333333336,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 145.0
+      },
+      "year_2024_win_roi_distribution": {
+        "count": 950,
+        "max": 3265.0,
+        "median": 20.0,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 136.4
+      },
+      "year_2025_place_roi_distribution": {
+        "count": 991,
+        "max": 1017.5,
+        "median": 54.82837528604119,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 128.57142857142858
+      },
+      "year_2025_win_roi_distribution": {
+        "count": 991,
+        "max": 2232.222222222222,
+        "median": 18.536585365853657,
+        "min": 0.0,
+        "p10": 0.0,
+        "p90": 147.14285714285714
+      }
+    }
+  },
+  "execution": {
+    "2026_used": false,
+    "candidate_generation_market_blind": true,
+    "context_window": {
+      "end": "2023-12-31",
+      "start": "2022-01-01"
+    },
+    "discovery_rows_pre_race_eligible": 94330,
+    "duckdb": "1.1.3",
+    "membership_window": {
+      "end": "2025-12-31",
+      "start": "2024-01-01"
+    },
+    "metrics_joined_after_membership_freeze": true,
+    "pyarrow": "25.0.1",
+    "python": "3.12.14"
+  },
+  "feature_availability": {
+    "distance_change_bucket": {
+      "available": true,
+      "coverage_pct": 87.6826,
+      "non_null": 82711,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "distance_m": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "frame_no": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "horse_id": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "horse_no": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "label_final_win_odds": {
+      "available": true,
+      "coverage_pct": 99.6258,
+      "non_null": 93977,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_final_win_popularity": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_finish": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_place_hit": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_place_payout": {
+      "available": true,
+      "coverage_pct": 21.6198,
+      "non_null": 20394,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_win_hit": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "label_win_payout": {
+      "available": true,
+      "coverage_pct": 7.2808,
+      "non_null": 6868,
+      "role": "POST_RACE_EVALUATION_ONLY",
+      "rows": 94330
+    },
+    "race_date": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "race_key": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "sire_name": {
+      "available": true,
+      "coverage_pct": 99.9989,
+      "non_null": 94329,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "surface_code": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "surface_transition": {
+      "available": true,
+      "coverage_pct": 87.6826,
+      "non_null": 82711,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "track_condition_bucket": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    },
+    "venue_code": {
+      "available": true,
+      "coverage_pct": 100.0,
+      "non_null": 94330,
+      "role": "PRE_RACE_CANDIDATE",
+      "rows": 94330
+    }
+  },
+  "freshness_rule": {
+    "labels": [
+      "EMERGING",
+      "CURRENT",
+      "DECAYING",
+      "OLD_ONLY",
+      "VOLATILE",
+      "INSUFFICIENT_HISTORY"
+    ],
+    "rules": "context n<5 => INSUFFICIENT_HISTORY; 2024 vs 2025 place ROI gap >=50pp => VOLATILE; 2025 ROI >=100 with context <100 => EMERGING; 2025 ROI <100 with context >=100 => DECAYING; context >=100 and recent ROI <100 => OLD_ONLY; recent and 2025 ROI >=100 => CURRENT; otherwise relative recent decline >=20pp => DECAYING, else CURRENT. Descriptive; not optimized.",
+    "version": "v0.5.1"
+  },
+  "generated_at": "2026-10-07T07:18:35.711057+00:00",
+  "longshot_definition": "place/top-3 hits at final popularity >=5/8/10 after candidate membership freeze; payout/odds/popularity never define membership",
+  "performance_return_separation": {
+    "jackpot": "top1/top3 contributions and ex-top1/ex-top3 ROI are descriptive only, never candidate gates",
+    "misses": "n minus top-3 place hits",
+    "performance": "n, wins, places, misses, win_rate, place_rate, unique_horses, unique_race_days",
+    "return": "win_return_sum, place_return_sum, win_roi, place_roi; returns are per 100-yen stakes, ROI=return_sum/(n*100)*100"
+  },
+  "recommendation": "PARTIAL_WITH_BLOCKED_FAMILIES",
+  "redundancy": {
+    "candidate_runner_overlap_pairs": 135220,
+    "clusters": 260,
+    "raw_candidates_retained": true,
+    "suggested_review_pairs": 667,
+    "threshold": 0.8
+  },
+  "schema_version": "edgedb-v05-prototype-summary/v1",
+  "shortlist_example_count": 24,
+  "source_provenance": {
+    "analysis_artifact_digest": "sha256:d159c2fca9959d9b144d55f9b3ba98228158cc38b85fcc730032a53f29252a55",
+    "analysis_artifact_run_id": 36437363166,
+    "analysis_coverage": "validated v1.4 generation; discovery scan intentionally does not use Analysis 2026 rows",
+    "analysis_generation_id": "analysis-v1_4-canonical-20260928-02",
+    "analysis_manifest_sha256": "e9c391e76fac86a15526e8ab453558e68fc00400a18674e26edf64aad9feec9e",
+    "analysis_rows": 517622,
+    "execution_source_commit_expected": "ab6392f2181d67f9157e4da8b4435fbd86054115",
+    "feature_mart_artifact_digest": "sha256:19d713da2e6ebf57965de98952fbf18d79f9ddfd5c1996833af3267b1a53f725",
+    "feature_mart_artifact_run_id": 36116777782,
+    "feature_mart_coverage": [
+      "2010-01-05",
+      "2025-12-28"
+    ],
+    "feature_mart_generation_id": "edge_feature_mart_v0_2_g20260925_pq1",
+    "feature_mart_manifest_sha256": "2b7d1d61a3b6b582f10d7bcdd6655ccb3f8abb2479b117935a49aa1b87aa68c8",
+    "feature_mart_parquet_sha256": "82e6550639210eea6cf1fc1ac374ee8b6fc07115214fe75ea6e1bb704d3751f6",
+    "feature_mart_rows": 781161,
+    "instruction_source_commit": "ab6392f2181d67f9157e4da8b4435fbd86054115",
+    "warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+    "warehouse_manifest_sha256": "a25cedfb5d76c1f9f2ed65308181e2f5222f294ee8015f93aabe3771fb7f1087"
+  },
+  "status": "PASS_WITH_BLOCKED_FEATURE_FAMILIES",
+  "template_families": {
+    "T1": "PASS",
+    "T2": "PASS; sire x course; topology semantic variant BLOCKED",
+    "T3": "PASS; canonical +/-200m semantics aggregated into EXTEND/SHORTEN",
+    "T4": "PARTIAL; cross-surface switch PASS; FIRST_DIRT/FIRST_TURF BLOCKED",
+    "T5": "BLOCKED; FIRST_BLINKERS unavailable",
+    "T6": "PASS"
+  },
+  "version": "0.1.0"
+}
