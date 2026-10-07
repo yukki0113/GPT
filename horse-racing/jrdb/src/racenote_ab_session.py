@@ -12,6 +12,7 @@ from typing import Any
 
 from racenote_reader_v050 import DEFAULT_BINDING, VERSION as V050, load_binding, transform, validate_policy_binding
 from racenote_reader_v051 import VERSION as V051
+from racenote_reader_v052 import VERSION as V052
 from racenote_save_venue_batch_v046 import LOGIC as V046, RRDB, load_clean
 
 SESSION_VERSION = "racenote-ab-session-0.1"
@@ -81,9 +82,12 @@ def init_session(
     binding_path: Path = DEFAULT_BINDING,
     policy_path: Path = DEFAULT_POLICY,
     include_v051: bool = False,
+    pair_v051_v052: bool = False,
 ) -> dict[str, Any]:
     if ab_root.exists():
         raise FileExistsError(f"A/B session already exists: {ab_root}")
+    if include_v051 and pair_v051_v052:
+        raise ValueError("include_v051 and pair_v051_v052 are mutually exclusive")
     if len(base_main_sha) != 40 or any(c not in "0123456789abcdef" for c in base_main_sha):
         raise ValueError("base_main_sha must be a full lowercase commit SHA")
     handoff, clean_manifest, readers = load_clean(prep_root)
@@ -134,13 +138,23 @@ def init_session(
         "target_market_opened": False,
         "result_opened": False,
         "sibling_forecast_input_forbidden": True,
-        "lane_definitions": {
-            "v046": {"logic_version": V046, "reader": "canonical_clean"},
-            "v050": {"logic_version": V050, "reader": "derived_normal_view_only"},
-            **({"v051": {"logic_version": V051, "reader": "derived_normal_view_only"}} if include_v051 else {}),
-        },
-        "v051_enabled": include_v051,
-        "v051_contract_version": "racenote-decision-core-0.5.1" if include_v051 else None,
+        "lane_definitions": (
+            {
+                "v051": {"logic_version": V051, "reader": "derived_normal_view_only"},
+                "v052": {"logic_version": V052, "reader": "derived_normal_view_only"},
+            }
+            if pair_v051_v052
+            else {
+                "v046": {"logic_version": V046, "reader": "canonical_clean"},
+                "v050": {"logic_version": V050, "reader": "derived_normal_view_only"},
+                **({"v051": {"logic_version": V051, "reader": "derived_normal_view_only"}} if include_v051 else {}),
+            }
+        ),
+        "v051_enabled": include_v051 or pair_v051_v052,
+        "v051_contract_version": "racenote-decision-core-0.5.1" if (include_v051 or pair_v051_v052) else None,
+        "v052_enabled": pair_v051_v052,
+        "v052_contract_version": "racenote-decision-core-0.5.2" if pair_v051_v052 else None,
+        **({"ab_profile": "v051_v052"} if pair_v051_v052 else {}),
         "source_prep_root": os.path.relpath(prep_root.resolve(), ab_root.resolve()),
         "status": "SESSION_SEALED",
     }
@@ -192,7 +206,7 @@ def init_session(
         derived_path = staging / "v050" / "reader_manifest.json"
         write_json(derived_path, derived_manifest)
         session["v050_reader_manifest_sha256"] = digest(derived_path.read_bytes())
-        if include_v051:
+        if include_v051 or pair_v051_v052:
             v051_entries = []
             for entry in derived_entries:
                 source_path = staging / "v050" / "reader" / entry["derived_normal_filename"]
@@ -218,6 +232,32 @@ def init_session(
             v051_path = staging / "v051" / "reader_manifest.json"
             write_json(v051_path, v051_manifest)
             session["v051_reader_manifest_sha256"] = digest(v051_path.read_bytes())
+            if pair_v051_v052:
+                v052_entries = []
+                for entry in derived_entries:
+                    source_path = staging / "v050" / "reader" / entry["derived_normal_filename"]
+                    target_path = staging / "v052" / "reader" / entry["derived_normal_filename"]
+                    target_path.parent.mkdir(parents=True, exist_ok=True)
+                    target_path.write_bytes(source_path.read_bytes())
+                    v052_entries.append({
+                        **entry,
+                        "candidate_version": V052,
+                        "derived_normal_sha256": digest(target_path.read_bytes()),
+                    })
+                v052_manifest = {
+                    "manifest_version": MANIFEST_VERSION,
+                    "session_id": session["session_id"],
+                    "selection_id": session["selection_id"],
+                    "target_date": session["target_date"],
+                    "clean_reader_manifest_sha256": clean_manifest_sha,
+                    "logic_version": V052,
+                    "model_input": "normal_view_only",
+                    "projection_equivalent_to": V050,
+                    "entries": v052_entries,
+                }
+                v052_path = staging / "v052" / "reader_manifest.json"
+                write_json(v052_path, v052_manifest)
+                session["v052_reader_manifest_sha256"] = digest(v052_path.read_bytes())
         write_json(staging / "ab_session.json", session)
         staging.rename(ab_root)
     return session
@@ -327,6 +367,55 @@ def load_session(
         actual_v051 = {p.name for p in (ab_root / "v051" / "reader").glob("*.json")}
         if actual_v051 != expected_files:
             raise ValueError("v0.5.1 Reader file set mismatch")
+    if session.get("v052_enabled"):
+        if session.get("v052_contract_version") != "racenote-decision-core-0.5.2":
+            raise ValueError("v0.5.2 Decision Core contract mismatch")
+        if session.get("ab_profile") != "v051_v052":
+            raise ValueError("v0.5.2 session profile mismatch")
+        if set(session.get("lane_definitions", {})) != {"v051", "v052"}:
+            raise ValueError("v0.5.1/v0.5.2 pair must enable exactly two authoring lanes")
+        if session.get("lane_definitions", {}).get("v052") != {
+            "logic_version": V052, "reader": "derived_normal_view_only"
+        }:
+            raise ValueError("v0.5.2 lane definition mismatch")
+        v052_path = ab_root / "v052" / "reader_manifest.json"
+        if digest(v052_path.read_bytes()) != session.get("v052_reader_manifest_sha256"):
+            raise ValueError("v0.5.2 Reader manifest digest mismatch")
+        v052_manifest = read_json(v052_path)
+        if (
+            v052_manifest.get("session_id") != session["session_id"]
+            or v052_manifest.get("logic_version") != V052
+            or v052_manifest.get("model_input") != "normal_view_only"
+            or v052_manifest.get("projection_equivalent_to") != V050
+            or v052_manifest.get("clean_reader_manifest_sha256") != session["clean_reader_manifest_sha256"]
+            or len(v052_manifest.get("entries", [])) != len(roster)
+        ):
+            raise ValueError("v0.5.2 Reader manifest identity mismatch")
+        v052_entries = {(x["venue"], x["race_no"]): x for x in v052_manifest["entries"]}
+        if set(v052_entries) != set(readers):
+            raise ValueError("v0.5.2 Reader roster mismatch")
+        for key, entry in v052_entries.items():
+            source_entry = entries[key]
+            if (
+                entry.get("candidate_version") != V052
+                or entry.get("original_clean_reader_filename") != source_entry["original_clean_reader_filename"]
+                or entry.get("original_clean_reader_sha256") != source_entry["original_clean_reader_sha256"]
+                or entry.get("source_semantic_sha256") != source_entry["source_semantic_sha256"]
+                or entry.get("horse_nos") != source_entry["horse_nos"]
+            ):
+                raise ValueError(f"v0.5.2 Reader source binding mismatch: {key}")
+            path = ab_root / "v052" / "reader" / entry["derived_normal_filename"]
+            v050_path = ab_root / "v050" / "reader" / source_entry["derived_normal_filename"]
+            v051_path = ab_root / "v051" / "reader" / source_entry["derived_normal_filename"]
+            if (
+                digest(path.read_bytes()) != entry["derived_normal_sha256"]
+                or path.read_bytes() != v050_path.read_bytes()
+                or path.read_bytes() != v051_path.read_bytes()
+            ):
+                raise ValueError(f"v0.5.2 normal_view must equal v0.5.0/v0.5.1 normal_view: {key}")
+        actual_v052 = {p.name for p in (ab_root / "v052" / "reader").glob("*.json")}
+        if actual_v052 != expected_files:
+            raise ValueError("v0.5.2 Reader file set mismatch")
 
     for key, source in readers.items():
         entry = entries[key]
@@ -356,8 +445,12 @@ def main() -> int:
     ap.add_argument("--binding", type=Path, default=DEFAULT_BINDING)
     ap.add_argument("--policy", type=Path, default=DEFAULT_POLICY)
     ap.add_argument("--include-v051", action="store_true", help="seal a third v0.5.1 clean-blind lane using the same normal_view as v0.5.0")
+    ap.add_argument("--pair-v051-v052", action="store_true", help="seal the prospective two-lane v0.5.1 vs v0.5.2 clean-blind profile")
     args = ap.parse_args()
-    session = init_session(args.prep_root, args.request, args.ab_root, args.base_main_sha, args.binding, args.policy, args.include_v051)
+    session = init_session(
+        args.prep_root, args.request, args.ab_root, args.base_main_sha,
+        args.binding, args.policy, args.include_v051, args.pair_v051_v052
+    )
     print(json.dumps({"status": session["status"], "session_id": session["session_id"], "race_count": len(session["race_roster"])}, ensure_ascii=False))
     return 0
 
