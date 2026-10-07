@@ -48,7 +48,11 @@ def test_current_five_marks_build_24_fixed_100_yen_tickets() -> None:
     assert counts == {
         "honmei_win": 1,
         "honmei_place": 1,
+        "quinella_second": 0,
+        "quinella_shot": 0,
         "quinella_main": 2,
+        "exacta_second": 0,
+        "exacta_shot": 0,
         "exacta_main": 2,
         "trio_flow": 6,
         "trifecta_flow": 12,
@@ -63,8 +67,16 @@ def test_settlement_reports_requested_strategy_roi_and_top_payout() -> None:
     assert by_code["honmei_win"]["payout_jpy"] == 760
     assert by_code["honmei_win"]["return_rate_pct"] == 760.0
     assert by_code["honmei_place"]["payout_jpy"] == 150
+    assert by_code["quinella_second"]["stake_jpy"] == 100
+    assert by_code["quinella_second"]["payout_jpy"] == 310
+    assert by_code["quinella_shot"]["stake_jpy"] == 100
+    assert by_code["quinella_shot"]["payout_jpy"] == 0
     assert by_code["quinella_main"]["stake_jpy"] == 200
     assert by_code["quinella_main"]["payout_jpy"] == 310
+    assert by_code["exacta_second"]["stake_jpy"] == 100
+    assert by_code["exacta_second"]["payout_jpy"] == 1490
+    assert by_code["exacta_shot"]["stake_jpy"] == 100
+    assert by_code["exacta_shot"]["payout_jpy"] == 0
     assert by_code["exacta_main"]["payout_jpy"] == 1490
     assert by_code["trio_flow"]["stake_jpy"] == 600
     assert by_code["trio_flow"]["payout_jpy"] == 6200
