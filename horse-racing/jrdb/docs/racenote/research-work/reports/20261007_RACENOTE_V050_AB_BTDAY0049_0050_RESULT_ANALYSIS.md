@@ -89,6 +89,96 @@ Thus v0.5.0's ▲ was much more longshot-oriented. Its top3 frequency fell from 
 
 This is consistent with a more asymmetric ▲ interpretation, but 72 races are too few to claim that the Reader change caused the effect.
 
+## Fixed-ticket settlement comparison
+
+The existing RaceNote 100-yen fixed-ticket settlement contract was applied to both
+frozen lanes. Quinella/exacta are shown both by opponent role and as the combined
+two-ticket `◎-○▲` / `◎→○▲` formation.
+
+### Combined 72 races
+
+| Formation | v0.4.6 hits | v0.4.6 ROI | v0.5.0 hits | v0.5.0 ROI |
+|---|---:|---:|---:|---:|
+| ◎ win | 18 | 60.7% | 15 | 44.3% |
+| ◎ place | 44 | 80.6% | 44 | 80.0% |
+| Quinella ◎-○ | 8 | 56.0% | 6 | 46.0% |
+| Quinella ◎-▲ | 3 | 34.4% | 3 | **170.3%** |
+| Quinella ◎-○▲ | 11 | 45.2% | 9 | **108.1%** |
+| Exacta ◎→○ | 6 | 83.2% | 2 | 24.3% |
+| Exacta ◎→▲ | 1 | 18.2% | 3 | **263.1%** |
+| Exacta ◎→○▲ | 7 | 50.7% | 5 | **143.7%** |
+| Trio ◎ axis -> other 4 marks | 21 | **130.2%** | 20 | 75.2% |
+| Trifecta ◎ 1st-fixed -> other 4 marks | 8 | 43.4% | 5 | 42.2% |
+
+Combined stakes/payouts:
+
+- v0.4.6 quinella ◎-○▲: stake 14,400 / payout 6,510 / profit -7,890
+- v0.5.0 quinella ◎-○▲: stake 14,400 / payout 15,570 / profit +1,170
+- v0.4.6 exacta ◎→○▲: stake 14,400 / payout 7,300 / profit -7,100
+- v0.5.0 exacta ◎→○▲: stake 14,400 / payout 20,690 / profit +6,290
+- v0.4.6 trio flow: stake 43,200 / payout 56,240 / profit +13,040
+- v0.5.0 trio flow: stake 43,200 / payout 32,490 / profit -10,710
+- v0.4.6 trifecta flow: stake 86,400 / payout 37,520 / profit -48,880
+- v0.5.0 trifecta flow: stake 86,400 / payout 36,480 / profit -49,920
+
+### BTDAY-0049
+
+| Formation | v0.4.6 ROI | v0.5.0 ROI |
+|---|---:|---:|
+| ◎ win | 53.9% | 50.6% |
+| ◎ place | 72.2% | 78.3% |
+| Quinella ◎-○ | 56.1% | 76.9% |
+| Quinella ◎-▲ | 44.2% | **340.6%** |
+| Quinella ◎-○▲ | 50.1% | **208.8%** |
+| Exacta ◎→○ | 63.1% | 28.3% |
+| Exacta ◎→▲ | 36.4% | **526.1%** |
+| Exacta ◎→○▲ | 49.7% | **277.2%** |
+| Trio flow | **171.2%** | 59.9% |
+| Trifecta flow | 22.2% | 49.5% |
+
+The v0.5.0 ▲ leg produced three quinella hits and three exacta hits. The largest
+was 中山11R: ◎10-▲11, quinella 8,450 yen and exacta 13,990 yen. This single day
+therefore shows the intended payout-boost behavior very clearly.
+
+### BTDAY-0050
+
+| Formation | v0.4.6 ROI | v0.5.0 ROI |
+|---|---:|---:|
+| ◎ win | 67.5% | 38.1% |
+| ◎ place | 88.9% | 81.7% |
+| Quinella ◎-○ | 55.8% | 15.0% |
+| Quinella ◎-▲ | 24.7% | 0.0% |
+| Quinella ◎-○▲ | 40.3% | 7.5% |
+| Exacta ◎→○ | 103.3% | 20.3% |
+| Exacta ◎→▲ | 0.0% | 0.0% |
+| Exacta ◎→○▲ | 51.7% | 10.1% |
+| Trio flow | 89.1% | 90.5% |
+| Trifecta flow | 64.6% | 35.0% |
+
+BTDAY-0050 provided no v0.5.0 ◎-▲ quinella or exacta hit. The payout boost seen
+on BTDAY-0049 therefore did not repeat on the second day.
+
+### Payout-boost interpretation
+
+For the two-day sample, v0.5.0 did exactly what the ▲ design is intended to do on
+the direct ◎-▲ pair channel:
+
+- quinella ◎-▲ ROI: 34.4% -> **170.3%**
+- exacta ◎→▲ ROI: 18.2% -> **263.1%**
+- adding ▲ beside ○ moved combined quinella ROI from 46.0% on the ○ leg alone
+  to **108.1%** across the two-ticket ◎-○▲ formation;
+- adding ▲ beside ○ moved combined exacta ROI from 24.3% on the ○ leg alone
+  to **143.7%** across the two-ticket ◎→○▲ formation.
+
+So in this 72-race sample, v0.5.0 ▲ was not merely a higher-priced horse: it
+materially boosted the direct ◎-anchored pair payout profile.
+
+However the effect is concentrated in BTDAY-0049 and did not reproduce in
+BTDAY-0050. It also did not translate into superior three-horse flow economics:
+v0.4.6 led trio ROI 130.2% to 75.2%, while trifecta ROI was similarly poor for
+both lanes. Treat the pair-channel boost as a promising signal requiring more
+prospective BTDAYs, not as stable profitability.
+
 ## Mark-only betting economics — separate from prediction accuracy
 
 For diagnostic purposes only, each mark was treated as one independent 100-yen win/place bet in every race. This is **not** the primary A/B criterion.
