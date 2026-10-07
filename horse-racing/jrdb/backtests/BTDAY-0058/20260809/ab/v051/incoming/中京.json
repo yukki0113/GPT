@@ -1,0 +1,650 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 1,
+    "race_model": "中京1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      14,
+      3,
+      15,
+      12,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 13,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        3,
+        15,
+        12,
+        13
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎14・○3はordinary five作成時点で固定。challenger16も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京1Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎14と○3はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲15を一撃経路、△12・△13を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 2,
+    "race_model": "中京2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      1,
+      3,
+      2,
+      6,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 5,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        3,
+        2,
+        6,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎1・○3はordinary five作成時点で固定。challenger9も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京2Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎1と○3はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲2を一撃経路、△6・△5を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 3,
+    "race_model": "中京3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      6,
+      2,
+      7,
+      4,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 4,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        2,
+        7,
+        4,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎6・○2はordinary five作成時点で固定。challenger8も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京3Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎6と○2はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲7を一撃経路、△4・△1を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "race_model": "中京4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      4,
+      13,
+      7,
+      6,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 13,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11はordinary supportとして最後まで比較したが、外部challenger7の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        13,
+        6,
+        12,
+        11
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 11,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎4・○13はordinary five作成時点で固定。challenger7を▲として採用し、support11を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京4Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎4と○13はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲7を一撃経路、△6・△12を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "race_model": "中京5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      14,
+      12,
+      3,
+      13,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 12,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 13,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        12,
+        3,
+        13,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎14・○12はordinary five作成時点で固定。challenger4も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京5Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎14と○12はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲3を一撃経路、△13・△8を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "race_model": "中京6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      3,
+      1,
+      5,
+      2,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        1,
+        5,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎3・○1はordinary five作成時点で固定。challenger4も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京6Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎3と○1はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲5を一撃経路、△2・△6を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 7,
+    "race_model": "中京7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      7,
+      3,
+      10,
+      15,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 15,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 14,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5はordinary supportとして最後まで比較したが、外部challenger10の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        3,
+        15,
+        14,
+        5
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎7・○3はordinary five作成時点で固定。challenger10を▲として採用し、support5を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京7Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎7と○3はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲10を一撃経路、△15・△14を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 8,
+    "race_model": "中京8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      11,
+      4,
+      5,
+      2,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        4,
+        5,
+        2,
+        3
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎11・○4はordinary five作成時点で固定。challenger8も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京8Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎11と○4はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲5を一撃経路、△2・△3を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 9,
+    "race_model": "中京9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      5,
+      13,
+      2,
+      12,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 13,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        13,
+        2,
+        12,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎5・○13はordinary five作成時点で固定。challenger4も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京9Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎5と○13はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲2を一撃経路、△12・△6を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "race_model": "中京10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      13,
+      2,
+      10,
+      14,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 2,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 14,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        2,
+        10,
+        14,
+        11
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎13・○2はordinary five作成時点で固定。challenger12も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京10Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎13と○2はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲10を一撃経路、△14・△11を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "race_model": "中京11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      14,
+      15,
+      13,
+      7,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 15,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 7,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6はordinary supportとして最後まで比較したが、外部challenger13の独立した勝ち切り経路を優先して最終5頭から外した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        15,
+        7,
+        1,
+        6
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は通常5頭とは異なる位置取り・末脚または前残りの経路が明確で、展開が振れた際に序列を飛び越えて勝ち切る余地を評価する。",
+      "excluded_horse_no": 6,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "◎14・○15はordinary five作成時点で固定。challenger13を▲として採用し、support6を押し出す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京11Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎14と○15はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲13を一撃経路、△7・△1を相手圏として5頭に圧縮した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "race_model": "中京12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。",
+    "marks": [
+      13,
+      7,
+      3,
+      10,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "能力・近走内容と今回条件の噛み合わせを最も高く評価し、通常本線の中心とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "◎に次ぐ再現性の高い勝ち負け経路があり、相手本線として残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "上位2頭を崩さず相手圏に残せる地力と展開適性があり、押さえ本線とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "弱点はあるが今回条件で圏内へ残る具体的な経路があり、5頭目として保持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "通常5頭の支持馬の中で、主軸2頭とは異なる展開・位置取りが噛み合った時の一撃余地を▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15の別経路も比較したが、ordinary fiveの支持馬を押し出すだけの再現性には届かないため最終5頭外とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        7,
+        3,
+        10,
+        4
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15には通常5頭と異なる展開上振れの経路があるが、近走再現性と今回条件を合わせると支持馬を押し出すまでの根拠には届かない。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "◎13・○7はordinary five作成時点で固定。challenger15も比較したが、support3頭を押し出すほどではなくordinary fiveを維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中京12Rは、能力・近走内容・位置取り・調教・条件適性を統合し、上位2頭を軸に通常5頭を先に固定したうえで別経路候補を比較する。 ◎13と○7はordinary five作成時点で固定し、外部challenger比較後も変更していない。最終的には◎○を本線、▲3を一撃経路、△10・△4を相手圏として5頭に圧縮した。"
+  }
+]
