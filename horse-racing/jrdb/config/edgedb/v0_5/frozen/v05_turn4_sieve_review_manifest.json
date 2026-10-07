@@ -1,0 +1,99 @@
+{
+  "schema_version": "edgedb-v05-turn4-sieve-review/v1",
+  "status": "PASS",
+  "recommendation": "NO_STATIC_SIEVE_ACCEPTED__OOS_TIERING_SHADOW_ONLY",
+  "production_impact": "NONE",
+  "scientific_boundary": {
+    "static_policies": "use 2024-2025 evidence only; evaluated on frozen 2026 replay",
+    "oos_informed_policies": "use 2026 OOS labels; diagnostic only and require future-forward validation",
+    "gate_changed": false
+  },
+  "baseline": {
+    "candidate_count": 1620,
+    "match_rows": 15330,
+    "total_runners_2026": 36706,
+    "unique_runners_with_signal": 12633,
+    "runner_density": {
+      "0": 24073,
+      "1": 10266,
+      "2": 2074,
+      "3": 262,
+      "4_PLUS": 31
+    },
+    "avg_signals_per_all_runner": 0.4176428921702174,
+    "avg_signals_per_signaled_runner": 1.2134884825457135,
+    "max_signals_per_runner": 5,
+    "baseline_unique_pop8_plus_place_hits": 418,
+    "baseline_unique_pop10_plus_place_hits": 194
+  },
+  "static_policy_findings": {
+    "P1_STATIC_N20": {
+      "candidate_count": 498,
+      "confirmed_retention": 0.6632653061224489,
+      "contradicted_retention": 0.9038461538461539,
+      "pop8_plus_place_hit_retention": 0.8181818181818182,
+      "pop10_plus_place_hit_retention": 0.8195876288659794
+    },
+    "P2_STATIC_ROI120": {
+      "candidate_count": 1078,
+      "confirmed_retention": 0.5408163265306123,
+      "contradicted_retention": 0.47115384615384615,
+      "pop8_plus_place_hit_retention": 0.4880382775119617,
+      "pop10_plus_place_hit_retention": 0.4587628865979381
+    },
+    "P3_STATIC_EX_TOP1_ROI100": {
+      "candidate_count": 237,
+      "confirmed_retention": 0.11224489795918367,
+      "contradicted_retention": 0.23076923076923078,
+      "pop8_plus_place_hit_retention": 0.19138755980861244,
+      "pop10_plus_place_hit_retention": 0.15463917525773196
+    },
+    "P4_STATIC_TWO_LANE_10PLUS_RESCUE": {
+      "candidate_count": 564,
+      "confirmed_retention": 0.21428571428571427,
+      "contradicted_retention": 0.25961538461538464,
+      "pop8_plus_place_hit_retention": 0.24641148325358853,
+      "pop10_plus_place_hit_retention": 0.211340206185567
+    },
+    "P5_STATIC_TWO_LANE_8PLUS_RESCUE": {
+      "candidate_count": 747,
+      "confirmed_retention": 0.2857142857142857,
+      "contradicted_retention": 0.2692307692307692,
+      "pop8_plus_place_hit_retention": 0.2942583732057416,
+      "pop10_plus_place_hit_retention": 0.26804123711340205
+    }
+  },
+  "oos_informed_diagnostics": {
+    "D1_OOS_EXCLUDE_CONTRADICTED": {
+      "candidate_count": 1516,
+      "match_rows": 10901,
+      "confirmed_retention": 1,
+      "contradicted_retention": 0,
+      "pop8_plus_place_hit_retention": 0.84688995215311,
+      "pop10_plus_place_hit_retention": 0.8505154639175257,
+      "note": "promising for future-forward shadow suppression only; not OOS-validated because 2026 labels define the policy"
+    },
+    "D2_OOS_CONFIRMED_OR_PLAUSIBLE": {
+      "candidate_count": 292,
+      "match_rows": 6148,
+      "confirmed_retention": 1,
+      "contradicted_retention": 0,
+      "pop8_plus_place_hit_retention": 0.6507177033492823,
+      "pop10_plus_place_hit_retention": 0.654639175257732,
+      "note": "aggressive diagnostic tier only; not a validated production sieve"
+    }
+  },
+  "conclusion": {
+    "keep_full_research_inventory": true,
+    "static_sieve_to_freeze": null,
+    "suggested_next_state": "retain 1,620 inventory; treat OOS labels as presentation/shadow tiers and validate prospectively after 2026-10-04",
+    "topology_status": "BLOCKED_UNCHANGED"
+  },
+  "actions": {
+    "run_id": 37615460773,
+    "artifact_id": 11479194562,
+    "artifact_name": "edgedb-v05-turn4-sieve-pr-1899",
+    "artifact_digest": "sha256:73d66fc13069bca4d13317e463314f53e9b9de16bb7a46159b30334a2ec3b64c",
+    "focused_tests": 10
+  }
+}

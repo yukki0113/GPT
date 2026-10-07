@@ -1,0 +1,59 @@
+name: EdgeDB v0.5 Turn 4 sieve review
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/edgedb_v05_turn4_sieve_pr.yml'
+      - 'horse-racing/jrdb/src/jrdb_edge_v05_turn4_sieve_review.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_edge_v05_turn4_sieve_review.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  sieve-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Download frozen 2024-2025 source metrics
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/v05-source
+          gh run download 37596365904 --repo yukki0113/GPT             --name data-storage-fallback-37596365904 --dir /tmp/v05-source
+          test -f /tmp/v05-source/output/combined_candidate_summary.csv
+      - name: Download Turn 3 OOS artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/v05-turn3
+          gh run download 37614611257 --repo yukki0113/GPT             --name edgedb-v05-2026-oos-eval-pr-1898 --dir /tmp/v05-turn3
+          test -f /tmp/v05-turn3/v05_2026_oos_candidate_eval.csv
+          test -f /tmp/v05-turn3/v05_2026_oos_joined_matches.parquet
+      - name: Run focused tests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python -m unittest horse-racing/jrdb/tests/test_jrdb_edge_v05_turn4_sieve_review.py -v
+      - name: Run Turn 4 comparison
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/jrdb_edge_v05_turn4_sieve_review.py             --source-summary /tmp/v05-source/output/combined_candidate_summary.csv             --candidate-eval /tmp/v05-turn3/v05_2026_oos_candidate_eval.csv             --joined-matches /tmp/v05-turn3/v05_2026_oos_joined_matches.parquet             --output-root /tmp/v05-turn4
+      - name: Upload comparison artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: edgedb-v05-turn4-sieve-pr-${{ github.event.pull_request.number || 'manual' }}
+          path: /tmp/v05-turn4/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
