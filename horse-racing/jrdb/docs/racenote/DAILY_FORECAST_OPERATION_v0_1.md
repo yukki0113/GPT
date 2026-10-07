@@ -18,6 +18,8 @@ Forecast logic must always be re-resolved from latest `main` before a new day st
 
 As of 2026-10-07, the ordinary prospective baseline is RaceNote v0.5.2. Normal BTDAY and forward daily operation should use `RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`; the v0.5.1/v0.5.2 A/B harness is retained for research/audit and is not required for ordinary daily operation.
 
+The v0.5.2 single-day path does **not** collapse the two-turn responsibility boundary: TURN 1 materializes the canonical Reader/session; TURN 2 prediction consumes that prepared input. A prediction thread must not rebuild TURN 1 from PACI when the prepared handoff is missing.
+
 ---
 
 ## 2. Daily unit and standard turn shape
