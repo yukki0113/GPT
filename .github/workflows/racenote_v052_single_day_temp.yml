@@ -1,0 +1,26 @@
+name: RaceNote v052 single-day validation
+on:
+  push:
+    branches:
+      - research/racenote-v052-baseline-single-day
+    paths:
+      - 'horse-racing/jrdb/tests/.v052_single_day_trigger'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/racenote-v052-baseline-single-day
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate v052 baseline and single-day path
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python -m pytest -q             horse-racing/jrdb/tests/test_racenote_v052_contract.py             horse-racing/jrdb/tests/test_racenote_v052_single_day.py
+          python horse-racing/jrdb/src/racenote_v052_from_paci.py --help >/dev/null
+          python horse-racing/jrdb/src/racenote_v052_single_day.py --help >/dev/null
