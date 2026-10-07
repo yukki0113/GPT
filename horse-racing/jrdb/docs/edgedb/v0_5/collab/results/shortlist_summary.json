@@ -1,0 +1,1442 @@
+{
+  "count": 21,
+  "example_type_counts": {
+    "current": 2,
+    "emerging": 2,
+    "longshot_evidence": 2,
+    "micro_positive_value": 2,
+    "negative_edge": 3,
+    "positive_value": 5,
+    "redundant_cluster": 3,
+    "saturated_or_priced": 2
+  },
+  "examples": [
+    {
+      "candidate_id": "v05-7bfd3cf14969877bc589a27c",
+      "example_type": "positive_value",
+      "freshness": "EMERGING",
+      "memo": "中山ダート1200mは7枠で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 19,
+          "hit_pop_8_plus": 7,
+          "largest_place_payout": 5550,
+          "n": 238,
+          "place_roi": 103.4453781512605,
+          "places": 59,
+          "top1_place_contribution": 0.22542648253452477
+        },
+        "2025": {
+          "hit_pop_10_plus": 6,
+          "hit_pop_5_plus": 22,
+          "hit_pop_8_plus": 11,
+          "largest_place_payout": 5630,
+          "n": 232,
+          "place_roi": 112.62931034482759,
+          "places": 46,
+          "top1_place_contribution": 0.2154611557596632
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 6,
+          "hit_pop_5_plus": 41,
+          "hit_pop_8_plus": 21,
+          "largest_place_payout": 2580,
+          "n": 504,
+          "place_roi": 66.56746031746032,
+          "places": 102,
+          "top1_place_contribution": 0.07690014903129658
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 8,
+          "hit_pop_5_plus": 41,
+          "hit_pop_8_plus": 18,
+          "largest_place_payout": 5630,
+          "n": 470,
+          "place_roi": 107.97872340425532,
+          "places": 105,
+          "top1_place_contribution": 0.110935960591133
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.030825707106797884,
+        "place_roi": 36.60548396763561,
+        "win_rate": 0.008147576127797873,
+        "win_roi": 14.299013392960049
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "EMERGING",
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T1_COURSE_FRAME",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-f3045c1c5f451e1e825f6f6e",
+      "example_type": "positive_value",
+      "freshness": "VOLATILE",
+      "memo": "シニスターミニスター産駒は京都ダート1800mで、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 16,
+          "hit_pop_8_plus": 6,
+          "largest_place_payout": 1180,
+          "n": 73,
+          "place_roi": 133.42465753424656,
+          "places": 30,
+          "top1_place_contribution": 0.12114989733059549
+        },
+        "2025": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 5,
+          "hit_pop_8_plus": 1,
+          "largest_place_payout": 590,
+          "n": 52,
+          "place_roi": 75.1923076923077,
+          "places": 15,
+          "top1_place_contribution": 0.15089514066496162
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 6,
+          "hit_pop_8_plus": 3,
+          "largest_place_payout": 1620,
+          "n": 40,
+          "place_roi": 180.0,
+          "places": 17,
+          "top1_place_contribution": 0.225
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 21,
+          "hit_pop_8_plus": 7,
+          "largest_place_payout": 1180,
+          "n": 125,
+          "place_roi": 109.2,
+          "places": 45,
+          "top1_place_contribution": 0.08644688644688645
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.08347535505430242,
+        "place_roi": 21.42222222222223,
+        "win_rate": 0.06225563909774437,
+        "win_roi": 14.512347535505427
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T2_SIRE_COURSE",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-0cdf0a7051d2145310ce0270",
+      "example_type": "positive_value",
+      "freshness": "CURRENT",
+      "memo": "モーリス産駒は距離延長で、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 19,
+          "hit_pop_8_plus": 6,
+          "largest_place_payout": 7030,
+          "n": 216,
+          "place_roi": 114.30555555555556,
+          "places": 38,
+          "top1_place_contribution": 0.28473066018631027
+        },
+        "2025": {
+          "hit_pop_10_plus": 7,
+          "hit_pop_5_plus": 23,
+          "hit_pop_8_plus": 12,
+          "largest_place_payout": 1660,
+          "n": 205,
+          "place_roi": 97.70731707317073,
+          "places": 44,
+          "top1_place_contribution": 0.08287568647029456
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 8,
+          "hit_pop_5_plus": 33,
+          "hit_pop_8_plus": 12,
+          "largest_place_payout": 3550,
+          "n": 462,
+          "place_roi": 69.02597402597402,
+          "places": 93,
+          "top1_place_contribution": 0.11132016306052053
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 10,
+          "hit_pop_5_plus": 42,
+          "hit_pop_8_plus": 18,
+          "largest_place_payout": 7030,
+          "n": 421,
+          "place_roi": 106.22327790973871,
+          "places": 82,
+          "top1_place_contribution": 0.15720035778175312
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": -0.03801724020473876,
+        "place_roi": 29.2156297261823,
+        "win_rate": -0.010944305418674471,
+        "win_roi": 54.67155729552236
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": "red-955e47721c0b73a3",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_NEGATIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T3_SIRE_DISTANCE_CHANGE",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-c98b14f4a0ae9188a963b4a9",
+      "example_type": "positive_value",
+      "freshness": "VOLATILE",
+      "memo": "サトノダイヤモンド産駒は芝→ダート替わりで、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 4,
+          "hit_pop_8_plus": 1,
+          "largest_place_payout": 990,
+          "n": 51,
+          "place_roi": 76.86274509803921,
+          "places": 9,
+          "top1_place_contribution": 0.25255102040816324
+        },
+        "2025": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 8,
+          "hit_pop_8_plus": 4,
+          "largest_place_payout": 2480,
+          "n": 52,
+          "place_roi": 154.42307692307693,
+          "places": 13,
+          "top1_place_contribution": 0.30884184308841844
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 3,
+          "hit_pop_8_plus": 0,
+          "largest_place_payout": 1980,
+          "n": 49,
+          "place_roi": 118.77551020408163,
+          "places": 10,
+          "top1_place_contribution": 0.3402061855670103
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 12,
+          "hit_pop_8_plus": 5,
+          "largest_place_payout": 2480,
+          "n": 103,
+          "place_roi": 116.01941747572816,
+          "places": 22,
+          "top1_place_contribution": 0.20753138075313807
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": -0.01688824747077175,
+        "place_roi": 38.12902708533777,
+        "win_rate": -0.03548937286801365,
+        "win_roi": -30.955640106125543
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_NEGATIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T4_SIRE_SURFACE_SWITCH",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-971f98c5c9616673e88b466d",
+      "example_type": "positive_value",
+      "freshness": "CURRENT",
+      "memo": "イスラボニータ産駒は芝・良馬場で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 6,
+          "hit_pop_5_plus": 38,
+          "hit_pop_8_plus": 15,
+          "largest_place_payout": 3950,
+          "n": 273,
+          "place_roi": 124.65201465201466,
+          "places": 90,
+          "top1_place_contribution": 0.11607405230678813
+        },
+        "2025": {
+          "hit_pop_10_plus": 5,
+          "hit_pop_5_plus": 26,
+          "hit_pop_8_plus": 10,
+          "largest_place_payout": 2140,
+          "n": 283,
+          "place_roi": 80.6713780918728,
+          "places": 59,
+          "top1_place_contribution": 0.09373631187034603
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 37,
+          "hit_pop_8_plus": 10,
+          "largest_place_payout": 2720,
+          "n": 469,
+          "place_roi": 69.87206823027718,
+          "places": 116,
+          "top1_place_contribution": 0.08300274641440342
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 11,
+          "hit_pop_5_plus": 64,
+          "hit_pop_8_plus": 25,
+          "largest_place_payout": 3950,
+          "n": 556,
+          "place_roi": 102.26618705035972,
+          "places": 149,
+          "top1_place_contribution": 0.06946887091100949
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.028631720174521175,
+        "place_roi": 12.178081323487476,
+        "win_rate": 0.0055673522855724245,
+        "win_roi": 13.386550671357185
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": "red-810cee7c23ba2512",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-94b6f1d7c7285dba02b8b53d",
+      "example_type": "longshot_evidence",
+      "freshness": "CURRENT",
+      "memo": "エピファネイア産駒は芝・良馬場で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 9,
+          "hit_pop_5_plus": 56,
+          "hit_pop_8_plus": 19,
+          "largest_place_payout": 1950,
+          "n": 778,
+          "place_roi": 74.53727506426735,
+          "places": 229,
+          "top1_place_contribution": 0.03362648732540093
+        },
+        "2025": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 48,
+          "hit_pop_8_plus": 17,
+          "largest_place_payout": 1260,
+          "n": 760,
+          "place_roi": 67.90789473684211,
+          "places": 223,
+          "top1_place_contribution": 0.02441387328037202
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 11,
+          "hit_pop_5_plus": 95,
+          "hit_pop_8_plus": 35,
+          "largest_place_payout": 11090,
+          "n": 1382,
+          "place_roi": 76.77279305354558,
+          "places": 335,
+          "top1_place_contribution": 0.10452403393025447
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 12,
+          "hit_pop_5_plus": 104,
+          "hit_pop_8_plus": 36,
+          "largest_place_payout": 1950,
+          "n": 1538,
+          "place_roi": 71.26137841352406,
+          "places": 452,
+          "top1_place_contribution": 0.017791970802919707
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.01179624885880981,
+        "place_roi": 3.6279922539889213,
+        "win_rate": -0.002393665801800768,
+        "win_roi": 1.845894497350784
+      },
+      "positive_shortlist_status": "BELOW_VALUE_GATE",
+      "positive_value_eligible": false,
+      "redundancy_cluster_id": "red-83672a7dd24f01af",
+      "redundancy_status": "SUGGESTED_REDUNDANT",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "PERFORMANCE_NEGATIVE",
+        "PERFORMANCE_POSITIVE",
+        "SATURATED_OR_PRICED",
+        "WEAK"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": null
+    },
+    {
+      "candidate_id": "v05-ddbd88d51edb8f683244ec4b",
+      "example_type": "longshot_evidence",
+      "freshness": "DECAYING",
+      "memo": "キズナ産駒は芝・良馬場で、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 5,
+          "hit_pop_5_plus": 45,
+          "hit_pop_8_plus": 17,
+          "largest_place_payout": 2870,
+          "n": 748,
+          "place_roi": 70.93582887700535,
+          "places": 212,
+          "top1_place_contribution": 0.05408970976253298
+        },
+        "2025": {
+          "hit_pop_10_plus": 6,
+          "hit_pop_5_plus": 44,
+          "hit_pop_8_plus": 13,
+          "largest_place_payout": 1510,
+          "n": 742,
+          "place_roi": 64.63611859838275,
+          "places": 221,
+          "top1_place_contribution": 0.03148457047539616
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 31,
+          "hit_pop_5_plus": 123,
+          "hit_pop_8_plus": 58,
+          "largest_place_payout": 4740,
+          "n": 1169,
+          "place_roi": 105.62874251497006,
+          "places": 354,
+          "top1_place_contribution": 0.038386783284742466
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 11,
+          "hit_pop_5_plus": 89,
+          "hit_pop_8_plus": 30,
+          "largest_place_payout": 2870,
+          "n": 1490,
+          "place_roi": 67.79865771812081,
+          "places": 433,
+          "top1_place_contribution": 0.028410215798851713
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": -0.002303390588038634,
+        "place_roi": -4.2316617188039345,
+        "win_rate": -0.0023335501429853633,
+        "win_roi": -1.7190946319625766
+      },
+      "positive_shortlist_status": "BELOW_VALUE_GATE",
+      "positive_value_eligible": false,
+      "redundancy_cluster_id": "red-f12d4c614b168c16",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "DECAYING",
+        "LONGSHOT_EVIDENCE",
+        "PERFORMANCE_NEGATIVE",
+        "WEAK"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": null
+    },
+    {
+      "candidate_id": "v05-7bfd3cf14969877bc589a27c",
+      "example_type": "emerging",
+      "freshness": "EMERGING",
+      "memo": "中山ダート1200mは7枠で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 19,
+          "hit_pop_8_plus": 7,
+          "largest_place_payout": 5550,
+          "n": 238,
+          "place_roi": 103.4453781512605,
+          "places": 59,
+          "top1_place_contribution": 0.22542648253452477
+        },
+        "2025": {
+          "hit_pop_10_plus": 6,
+          "hit_pop_5_plus": 22,
+          "hit_pop_8_plus": 11,
+          "largest_place_payout": 5630,
+          "n": 232,
+          "place_roi": 112.62931034482759,
+          "places": 46,
+          "top1_place_contribution": 0.2154611557596632
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 6,
+          "hit_pop_5_plus": 41,
+          "hit_pop_8_plus": 21,
+          "largest_place_payout": 2580,
+          "n": 504,
+          "place_roi": 66.56746031746032,
+          "places": 102,
+          "top1_place_contribution": 0.07690014903129658
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 8,
+          "hit_pop_5_plus": 41,
+          "hit_pop_8_plus": 18,
+          "largest_place_payout": 5630,
+          "n": 470,
+          "place_roi": 107.97872340425532,
+          "places": 105,
+          "top1_place_contribution": 0.110935960591133
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.030825707106797884,
+        "place_roi": 36.60548396763561,
+        "win_rate": 0.008147576127797873,
+        "win_roi": 14.299013392960049
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "EMERGING",
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T1_COURSE_FRAME",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-7bd2f6c9349bea59e893c21f",
+      "example_type": "emerging",
+      "freshness": "EMERGING",
+      "memo": "シルバーステート産駒は距離延長で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 4,
+          "hit_pop_5_plus": 15,
+          "hit_pop_8_plus": 6,
+          "largest_place_payout": 2900,
+          "n": 151,
+          "place_roi": 93.04635761589404,
+          "places": 29,
+          "top1_place_contribution": 0.20640569395017794
+        },
+        "2025": {
+          "hit_pop_10_plus": 5,
+          "hit_pop_5_plus": 15,
+          "hit_pop_8_plus": 8,
+          "largest_place_payout": 2980,
+          "n": 156,
+          "place_roi": 109.2948717948718,
+          "places": 36,
+          "top1_place_contribution": 0.1747800586510264
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 25,
+          "hit_pop_8_plus": 7,
+          "largest_place_payout": 1190,
+          "n": 271,
+          "place_roi": 61.69741697416974,
+          "places": 54,
+          "top1_place_contribution": 0.07117224880382775
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 9,
+          "hit_pop_5_plus": 30,
+          "hit_pop_8_plus": 14,
+          "largest_place_payout": 2980,
+          "n": 307,
+          "place_roi": 101.3029315960912,
+          "places": 65,
+          "top1_place_contribution": 0.09581993569131833
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.0022669249053614005,
+        "place_roi": 28.221850515010118,
+        "win_rate": -0.002854564662382257,
+        "win_roi": 63.669667224227496
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "EMERGING",
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_NEGATIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T3_SIRE_DISTANCE_CHANGE",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-971f98c5c9616673e88b466d",
+      "example_type": "current",
+      "freshness": "CURRENT",
+      "memo": "イスラボニータ産駒は芝・良馬場で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 6,
+          "hit_pop_5_plus": 38,
+          "hit_pop_8_plus": 15,
+          "largest_place_payout": 3950,
+          "n": 273,
+          "place_roi": 124.65201465201466,
+          "places": 90,
+          "top1_place_contribution": 0.11607405230678813
+        },
+        "2025": {
+          "hit_pop_10_plus": 5,
+          "hit_pop_5_plus": 26,
+          "hit_pop_8_plus": 10,
+          "largest_place_payout": 2140,
+          "n": 283,
+          "place_roi": 80.6713780918728,
+          "places": 59,
+          "top1_place_contribution": 0.09373631187034603
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 37,
+          "hit_pop_8_plus": 10,
+          "largest_place_payout": 2720,
+          "n": 469,
+          "place_roi": 69.87206823027718,
+          "places": 116,
+          "top1_place_contribution": 0.08300274641440342
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 11,
+          "hit_pop_5_plus": 64,
+          "hit_pop_8_plus": 25,
+          "largest_place_payout": 3950,
+          "n": 556,
+          "place_roi": 102.26618705035972,
+          "places": 149,
+          "top1_place_contribution": 0.06946887091100949
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.028631720174521175,
+        "place_roi": 12.178081323487476,
+        "win_rate": 0.0055673522855724245,
+        "win_roi": 13.386550671357185
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": "red-810cee7c23ba2512",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-0cdf0a7051d2145310ce0270",
+      "example_type": "current",
+      "freshness": "CURRENT",
+      "memo": "モーリス産駒は距離延長で、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 19,
+          "hit_pop_8_plus": 6,
+          "largest_place_payout": 7030,
+          "n": 216,
+          "place_roi": 114.30555555555556,
+          "places": 38,
+          "top1_place_contribution": 0.28473066018631027
+        },
+        "2025": {
+          "hit_pop_10_plus": 7,
+          "hit_pop_5_plus": 23,
+          "hit_pop_8_plus": 12,
+          "largest_place_payout": 1660,
+          "n": 205,
+          "place_roi": 97.70731707317073,
+          "places": 44,
+          "top1_place_contribution": 0.08287568647029456
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 8,
+          "hit_pop_5_plus": 33,
+          "hit_pop_8_plus": 12,
+          "largest_place_payout": 3550,
+          "n": 462,
+          "place_roi": 69.02597402597402,
+          "places": 93,
+          "top1_place_contribution": 0.11132016306052053
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 10,
+          "hit_pop_5_plus": 42,
+          "hit_pop_8_plus": 18,
+          "largest_place_payout": 7030,
+          "n": 421,
+          "place_roi": 106.22327790973871,
+          "places": 82,
+          "top1_place_contribution": 0.15720035778175312
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": -0.03801724020473876,
+        "place_roi": 29.2156297261823,
+        "win_rate": -0.010944305418674471,
+        "win_roi": 54.67155729552236
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": "red-955e47721c0b73a3",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_NEGATIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T3_SIRE_DISTANCE_CHANGE",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-0504f624af17aeb01c7fdf6d",
+      "example_type": "micro_positive_value",
+      "freshness": "VOLATILE",
+      "memo": "タイムパラドックス産駒は東京ダート1600mで、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 2,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 760,
+          "n": 5,
+          "place_roi": 246.0,
+          "places": 2,
+          "top1_place_contribution": 0.6178861788617886
+        },
+        "2025": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 0,
+          "hit_pop_8_plus": 0,
+          "largest_place_payout": null,
+          "n": 4,
+          "place_roi": 0.0,
+          "places": 0,
+          "top1_place_contribution": 0.0
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 1,
+          "hit_pop_8_plus": 0,
+          "largest_place_payout": 400,
+          "n": 12,
+          "place_roi": 33.333333333333336,
+          "places": 1,
+          "top1_place_contribution": 1.0
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 2,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 760,
+          "n": 9,
+          "place_roi": 136.66666666666666,
+          "places": 2,
+          "top1_place_contribution": 0.6178861788617886
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.15079365079365079,
+        "place_roi": 92.73809523809523,
+        "win_rate": 0.0,
+        "win_roi": 0.0
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "MICRO",
+      "template_id": "T2_SIRE_COURSE",
+      "value_strength_band": "VALUE_120_149"
+    },
+    {
+      "candidate_id": "v05-0e11a3e306fcf291ec0d3a93",
+      "example_type": "micro_positive_value",
+      "freshness": "VOLATILE",
+      "memo": "メンデルスゾーン産駒は中山ダート1800mで、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 1,
+          "hit_pop_8_plus": 1,
+          "largest_place_payout": 700,
+          "n": 7,
+          "place_roi": 180.0,
+          "places": 4,
+          "top1_place_contribution": 0.5555555555555556
+        },
+        "2025": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 0,
+          "hit_pop_8_plus": 0,
+          "largest_place_payout": null,
+          "n": 2,
+          "place_roi": 0.0,
+          "places": 0,
+          "top1_place_contribution": 0.0
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 2,
+          "hit_pop_8_plus": 0,
+          "largest_place_payout": 270,
+          "n": 5,
+          "place_roi": 100.0,
+          "places": 2,
+          "top1_place_contribution": 0.54
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 1,
+          "hit_pop_8_plus": 1,
+          "largest_place_payout": 700,
+          "n": 9,
+          "place_roi": 140.0,
+          "places": 4,
+          "top1_place_contribution": 0.5555555555555556
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.07407407407407407,
+        "place_roi": 50.37037037037037,
+        "win_rate": -0.037037037037037035,
+        "win_roi": 327.96296296296293
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_NEGATIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "MICRO",
+      "template_id": "T2_SIRE_COURSE",
+      "value_strength_band": "VALUE_120_149"
+    },
+    {
+      "candidate_id": "v05-94b6f1d7c7285dba02b8b53d",
+      "example_type": "saturated_or_priced",
+      "freshness": "CURRENT",
+      "memo": "エピファネイア産駒は芝・良馬場で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 9,
+          "hit_pop_5_plus": 56,
+          "hit_pop_8_plus": 19,
+          "largest_place_payout": 1950,
+          "n": 778,
+          "place_roi": 74.53727506426735,
+          "places": 229,
+          "top1_place_contribution": 0.03362648732540093
+        },
+        "2025": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 48,
+          "hit_pop_8_plus": 17,
+          "largest_place_payout": 1260,
+          "n": 760,
+          "place_roi": 67.90789473684211,
+          "places": 223,
+          "top1_place_contribution": 0.02441387328037202
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 11,
+          "hit_pop_5_plus": 95,
+          "hit_pop_8_plus": 35,
+          "largest_place_payout": 11090,
+          "n": 1382,
+          "place_roi": 76.77279305354558,
+          "places": 335,
+          "top1_place_contribution": 0.10452403393025447
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 12,
+          "hit_pop_5_plus": 104,
+          "hit_pop_8_plus": 36,
+          "largest_place_payout": 1950,
+          "n": 1538,
+          "place_roi": 71.26137841352406,
+          "places": 452,
+          "top1_place_contribution": 0.017791970802919707
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.01179624885880981,
+        "place_roi": 3.6279922539889213,
+        "win_rate": -0.002393665801800768,
+        "win_roi": 1.845894497350784
+      },
+      "positive_shortlist_status": "BELOW_VALUE_GATE",
+      "positive_value_eligible": false,
+      "redundancy_cluster_id": "red-83672a7dd24f01af",
+      "redundancy_status": "SUGGESTED_REDUNDANT",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "PERFORMANCE_NEGATIVE",
+        "PERFORMANCE_POSITIVE",
+        "SATURATED_OR_PRICED",
+        "WEAK"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": null
+    },
+    {
+      "candidate_id": "v05-d858f933b434d8dfce050607",
+      "example_type": "saturated_or_priced",
+      "freshness": "CURRENT",
+      "memo": "ロードカナロア産駒は芝・良馬場で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 9,
+          "hit_pop_5_plus": 38,
+          "hit_pop_8_plus": 17,
+          "largest_place_payout": 1730,
+          "n": 676,
+          "place_roi": 72.24852071005917,
+          "places": 206,
+          "top1_place_contribution": 0.03542178542178542
+        },
+        "2025": {
+          "hit_pop_10_plus": 10,
+          "hit_pop_5_plus": 51,
+          "hit_pop_8_plus": 20,
+          "largest_place_payout": 3570,
+          "n": 588,
+          "place_roi": 85.71428571428571,
+          "places": 166,
+          "top1_place_contribution": 0.07083333333333333
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 30,
+          "hit_pop_5_plus": 130,
+          "hit_pop_8_plus": 45,
+          "largest_place_payout": 1990,
+          "n": 1620,
+          "place_roi": 74.11111111111111,
+          "places": 435,
+          "top1_place_contribution": 0.01657504581042812
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 19,
+          "hit_pop_5_plus": 89,
+          "hit_pop_8_plus": 37,
+          "largest_place_payout": 3570,
+          "n": 1264,
+          "place_roi": 78.5126582278481,
+          "places": 372,
+          "top1_place_contribution": 0.035973397823458285
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.005499726221535106,
+        "place_roi": -0.36138757367861274,
+        "win_rate": 0.006866605469127457,
+        "win_roi": 2.8207435501014686
+      },
+      "positive_shortlist_status": "BELOW_VALUE_GATE",
+      "positive_value_eligible": false,
+      "redundancy_cluster_id": "red-5a7d51487db49a3a",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "PERFORMANCE_POSITIVE",
+        "SATURATED_OR_PRICED",
+        "WEAK"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": null
+    },
+    {
+      "candidate_id": "v05-f208589c42a8e8b8f06c4f1e",
+      "example_type": "negative_edge",
+      "freshness": "DECAYING",
+      "memo": "オルフェーヴル産駒は距離延長で、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 11,
+          "hit_pop_8_plus": 3,
+          "largest_place_payout": 1390,
+          "n": 157,
+          "place_roi": 47.13375796178344,
+          "places": 25,
+          "top1_place_contribution": 0.18783783783783783
+        },
+        "2025": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 10,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 950,
+          "n": 151,
+          "place_roi": 40.19867549668874,
+          "places": 18,
+          "top1_place_contribution": 0.15650741350906094
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 10,
+          "hit_pop_5_plus": 41,
+          "hit_pop_8_plus": 19,
+          "largest_place_payout": 2700,
+          "n": 335,
+          "place_roi": 93.1044776119403,
+          "places": 74,
+          "top1_place_contribution": 0.08656620711766592
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 21,
+          "hit_pop_8_plus": 5,
+          "largest_place_payout": 1390,
+          "n": 308,
+          "place_roi": 43.73376623376623,
+          "places": 43,
+          "top1_place_contribution": 0.10319227913882702
+        }
+      },
+      "negative_value_eligible": true,
+      "parent_delta": {
+        "place_rate": -0.034870778721662665,
+        "place_roi": -23.506817932259906,
+        "win_rate": -0.02210587260548829,
+        "win_roi": -49.47944637990756
+      },
+      "positive_shortlist_status": "BELOW_VALUE_GATE",
+      "positive_value_eligible": false,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "DECAYING",
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_NEGATIVE",
+        "PERFORMANCE_NEGATIVE",
+        "WEAK"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T3_SIRE_DISTANCE_CHANGE",
+      "value_strength_band": null
+    },
+    {
+      "candidate_id": "v05-fe485fd68f71c7302a2ec4ff",
+      "example_type": "negative_edge",
+      "freshness": "DECAYING",
+      "memo": "京都ダート1400mは2枠で、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 9,
+          "hit_pop_8_plus": 3,
+          "largest_place_payout": 1800,
+          "n": 170,
+          "place_roi": 52.76470588235294,
+          "places": 30,
+          "top1_place_contribution": 0.20066889632107024
+        },
+        "2025": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 6,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 850,
+          "n": 112,
+          "place_roi": 36.607142857142854,
+          "places": 16,
+          "top1_place_contribution": 0.2073170731707317
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 7,
+          "hit_pop_8_plus": 1,
+          "largest_place_payout": 860,
+          "n": 68,
+          "place_roi": 70.73529411764706,
+          "places": 19,
+          "top1_place_contribution": 0.1787941787941788
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 4,
+          "hit_pop_5_plus": 15,
+          "hit_pop_8_plus": 5,
+          "largest_place_payout": 1800,
+          "n": 282,
+          "place_roi": 46.347517730496456,
+          "places": 46,
+          "top1_place_contribution": 0.13771996939556236
+        }
+      },
+      "negative_value_eligible": true,
+      "parent_delta": {
+        "place_rate": -0.04227613016740786,
+        "place_roi": -23.24974364686964,
+        "win_rate": -0.012130715817916443,
+        "win_roi": 25.307623756437394
+      },
+      "positive_shortlist_status": "BELOW_VALUE_GATE",
+      "positive_value_eligible": false,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "DECAYING",
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_NEGATIVE",
+        "PERFORMANCE_NEGATIVE",
+        "WEAK"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T1_COURSE_FRAME",
+      "value_strength_band": null
+    },
+    {
+      "candidate_id": "v05-b793e6173a75ef378bc8b3dd",
+      "example_type": "negative_edge",
+      "freshness": "DECAYING",
+      "memo": "リアルスティール産駒はダート・稍重以上で、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 7,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 890,
+          "n": 95,
+          "place_roi": 62.94736842105263,
+          "places": 23,
+          "top1_place_contribution": 0.1488294314381271
+        },
+        "2025": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 8,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 620,
+          "n": 168,
+          "place_roi": 45.654761904761905,
+          "places": 32,
+          "top1_place_contribution": 0.08083441981747067
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 9,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 1160,
+          "n": 87,
+          "place_roi": 93.9080459770115,
+          "places": 31,
+          "top1_place_contribution": 0.1419828641370869
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 15,
+          "hit_pop_8_plus": 4,
+          "largest_place_payout": 890,
+          "n": 263,
+          "place_roi": 51.90114068441065,
+          "places": 55,
+          "top1_place_contribution": 0.0652014652014652
+        }
+      },
+      "negative_value_eligible": true,
+      "parent_delta": {
+        "place_rate": -0.031070603146201442,
+        "place_roi": -20.18219264892268,
+        "win_rate": -0.005558972638485052,
+        "win_roi": -44.2616771043018
+      },
+      "positive_shortlist_status": "BELOW_VALUE_GATE",
+      "positive_value_eligible": false,
+      "redundancy_cluster_id": null,
+      "redundancy_status": "NO_SUGGESTED_CLUSTER",
+      "research_labels": [
+        "DECAYING",
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_NEGATIVE",
+        "PERFORMANCE_NEGATIVE",
+        "WEAK"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": null
+    },
+    {
+      "candidate_id": "v05-2706e22ceabe46817834a751",
+      "example_type": "redundant_cluster",
+      "freshness": "VOLATILE",
+      "memo": "プリサイスエンド産駒はダート・良馬場で、近年、親条件より複勝率が低い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 3,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 1160,
+          "n": 26,
+          "place_roi": 108.46153846153847,
+          "places": 5,
+          "top1_place_contribution": 0.41134751773049644
+        },
+        "2025": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 2,
+          "hit_pop_8_plus": 1,
+          "largest_place_payout": 2860,
+          "n": 18,
+          "place_roi": 183.88888888888889,
+          "places": 3,
+          "top1_place_contribution": 0.8640483383685801
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 10,
+          "hit_pop_8_plus": 6,
+          "largest_place_payout": 1240,
+          "n": 113,
+          "place_roi": 78.40707964601769,
+          "places": 29,
+          "top1_place_contribution": 0.1399548532731377
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 5,
+          "hit_pop_8_plus": 3,
+          "largest_place_payout": 2860,
+          "n": 44,
+          "place_roi": 139.3181818181818,
+          "places": 8,
+          "top1_place_contribution": 0.466557911908646
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": -0.01490312965722801,
+        "place_roi": -0.026080476900148142,
+        "win_rate": -0.020119225037257826,
+        "win_roi": -166.3971684053651
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": "red-e834941e20e1d5c5",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_NEGATIVE"
+      ],
+      "support_class": "MEDIUM",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": "VALUE_120_149"
+    },
+    {
+      "candidate_id": "v05-39ec333e58fed6561c997a20",
+      "example_type": "redundant_cluster",
+      "freshness": "CURRENT",
+      "memo": "グレーターロンドン産駒は芝・良馬場で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 14,
+          "hit_pop_8_plus": 8,
+          "largest_place_payout": 1760,
+          "n": 113,
+          "place_roi": 110.79646017699115,
+          "places": 29,
+          "top1_place_contribution": 0.14057507987220447
+        },
+        "2025": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 16,
+          "hit_pop_8_plus": 5,
+          "largest_place_payout": 1100,
+          "n": 114,
+          "place_roi": 93.7719298245614,
+          "places": 33,
+          "top1_place_contribution": 0.1028999064546305
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 13,
+          "hit_pop_8_plus": 3,
+          "largest_place_payout": 1050,
+          "n": 107,
+          "place_roi": 85.23364485981308,
+          "places": 31,
+          "top1_place_contribution": 0.11513157894736842
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 5,
+          "hit_pop_5_plus": 30,
+          "hit_pop_8_plus": 13,
+          "largest_place_payout": 1760,
+          "n": 227,
+          "place_roi": 102.2466960352423,
+          "places": 62,
+          "top1_place_contribution": 0.07582938388625593
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.01858229875851025,
+        "place_roi": 8.828514217060473,
+        "win_rate": 0.0004805766920304433,
+        "win_roi": -5.953063676411688
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": "red-356431a30f6ece22",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "LARGE",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": "VALUE_100_119"
+    },
+    {
+      "candidate_id": "v05-3ccaf20c760f18fcc6324366",
+      "example_type": "redundant_cluster",
+      "freshness": "VOLATILE",
+      "memo": "レーヴミストラル産駒は芝・良馬場で、近年、親条件より複勝率が高い",
+      "metrics": {
+        "2024": {
+          "hit_pop_10_plus": 1,
+          "hit_pop_5_plus": 1,
+          "hit_pop_8_plus": 1,
+          "largest_place_payout": 6110,
+          "n": 6,
+          "place_roi": 1018.3333333333334,
+          "places": 1,
+          "top1_place_contribution": 1.0
+        },
+        "2025": {
+          "hit_pop_10_plus": 2,
+          "hit_pop_5_plus": 2,
+          "hit_pop_8_plus": 2,
+          "largest_place_payout": 1520,
+          "n": 10,
+          "place_roi": 270.0,
+          "places": 2,
+          "top1_place_contribution": 0.562962962962963
+        },
+        "context_2022_2023": {
+          "hit_pop_10_plus": 0,
+          "hit_pop_5_plus": 0,
+          "hit_pop_8_plus": 0,
+          "largest_place_payout": null,
+          "n": 29,
+          "place_roi": 0.0,
+          "places": 0,
+          "top1_place_contribution": 0.0
+        },
+        "overall_2024_2025": {
+          "hit_pop_10_plus": 3,
+          "hit_pop_5_plus": 3,
+          "hit_pop_8_plus": 3,
+          "largest_place_payout": 6110,
+          "n": 16,
+          "place_roi": 550.625,
+          "places": 3,
+          "top1_place_contribution": 0.6935300794551645
+        }
+      },
+      "negative_value_eligible": false,
+      "parent_delta": {
+        "place_rate": 0.029605263157894746,
+        "place_roi": 86.94078947368422,
+        "win_rate": 0.0,
+        "win_roi": 0.0
+      },
+      "positive_shortlist_status": "REPRESENTATIVE",
+      "positive_value_eligible": true,
+      "redundancy_cluster_id": "red-b43eec64848180e3",
+      "redundancy_status": "REPRESENTATIVE",
+      "research_labels": [
+        "LONGSHOT_EVIDENCE",
+        "NICHE_VALUE_POSITIVE",
+        "PERFORMANCE_POSITIVE"
+      ],
+      "support_class": "SMALL",
+      "template_id": "T6_SIRE_SURFACE_GOING",
+      "value_strength_band": "VALUE_150_PLUS"
+    }
+  ],
+  "full_candidate_data_in_actions_artifact": true,
+  "schema_version": "edgedb-v05-review-shortlist/v2",
+  "shortlist_is_human_review_only": true
+}
