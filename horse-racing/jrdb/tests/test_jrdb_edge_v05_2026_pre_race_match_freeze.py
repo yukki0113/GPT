@@ -1,6 +1,9 @@
 import copy
+import json
 import sys
+import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +18,9 @@ from jrdb_edge_v05_2026_pre_race_match_freeze import (  # noqa: E402
     fingerprint_rows,
     load_cohort,
     validate_match_fact_schema,
+    load_going_snapshot,
 )
+from recover_jrdb_edge_v05_2026_paci import recover
 
 COHORT = ROOT / "config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json"
 
@@ -125,6 +130,84 @@ class MatchFreezeTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(fingerprint_rows(first, ("race_date", "race_key", "race_horse_key", "candidate_id")),
                          fingerprint_rows(second, ("race_date", "race_key", "race_horse_key", "candidate_id")))
+
+    def test_21_exact_id_fallback_recovers_missing(self):
+        with tempfile.TemporaryDirectory() as root:
+            base = Path(root); (base / "sed").mkdir(); (base / "paci").mkdir()
+            (base / "sed/SED260101.zip").write_bytes(b"sed")
+            inventory = base / "inventory.json"
+            inventory.write_text(json.dumps({"files": {"PACI260101.zip": "exact-id"}}))
+            calls = []
+            def fetch(file_id, target):
+                calls.append(file_id); target.write_bytes(b"paci")
+            result = recover(base / "paci", base / "sed", inventory, fetch)
+            self.assertEqual(calls, ["exact-id"])
+            self.assertEqual(result["exact_id_recovered_count"], 1)
+            self.assertEqual(result["remaining_missing_date_count"], 0)
+
+    def test_22_missing_inventory_date_fails_closed(self):
+        with tempfile.TemporaryDirectory() as root:
+            base = Path(root); (base / "sed").mkdir(); (base / "paci").mkdir()
+            (base / "sed/SED260101.zip").write_bytes(b"sed")
+            inventory = base / "inventory.json"; inventory.write_text('{"files":{}}')
+            with self.assertRaisesRegex(ValueError, "absent from canonical PACI inventory"):
+                recover(base / "paci", base / "sed", inventory)
+
+    def _snapshot(self, codes):
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "SED260101.zip"
+            with zipfile.ZipFile(path, "w") as archive:
+                records = []
+                for code in codes:
+                    row = bytearray(b" " * 374)
+                    row[:8] = b"26010101"
+                    row[69:71] = code.encode().ljust(2, b" ")
+                    row[18:26] = b"20260101"
+                    records.append(bytes(row))
+                archive.writestr("SED260101.txt", b"\n".join(records))
+            return load_going_snapshot(Path(root))
+
+    def test_23_snapshot_only_race_context_fields(self):
+        rows, _ = self._snapshot(["10"])
+        self.assertEqual(set(rows["26010101"]), {"race_key", "track_condition_code", "going_bucket"})
+
+    def test_24_canonical_mapping_reused(self):
+        rows, _ = self._snapshot(["10"])
+        self.assertEqual(rows["26010101"]["going_bucket"], "GOOD")
+
+    def test_25_runner_race_going_consistency(self):
+        rows, audit = self._snapshot(["10", "10"])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(audit["conflict_count"], 0)
+
+    def test_26_conflicting_going_fails_closed(self):
+        with self.assertRaisesRegex(FreezeError, "conflicting track_condition_code"):
+            self._snapshot(["10", "20"])
+
+    def test_27_missing_going_unknown_does_not_match_t6(self):
+        rows, audit = self._snapshot([""])
+        self.assertIsNone(rows["26010101"]["going_bucket"])
+        self.assertEqual(audit["race_keys_unknown"], 1)
+        self.assertFalse(condition_matches({"going_bucket": "GOOD"}, fact(going_bucket=None)))
+
+    def test_28_t6_good_exact(self):
+        self.assertTrue(condition_matches({"going_bucket": "GOOD"}, fact()))
+
+    def test_29_t6_soft_exact(self):
+        rows, _ = self._snapshot(["31"])
+        self.assertEqual(rows["26010101"]["going_bucket"], "SOFT_OR_WORSE")
+        self.assertTrue(condition_matches({"going_bucket": "SOFT_OR_WORSE"}, fact(going_bucket="SOFT_OR_WORSE")))
+
+    def test_30_result_fields_rejected(self):
+        for key in ("finish", "result_rank", "final_win_odds", "win_payout", "idm"):
+            with self.subTest(key=key), self.assertRaises(FreezeError):
+                validate_match_fact_schema(fact(**{key: 1}))
+
+    def test_31_snapshot_fingerprint_deterministic(self):
+        first, audit1 = self._snapshot(["10", "10"])
+        second, audit2 = self._snapshot(["10", "10"])
+        self.assertEqual(first, second)
+        self.assertEqual(audit1["snapshot_sha256"], audit2["snapshot_sha256"])
 
 
 if __name__ == "__main__":

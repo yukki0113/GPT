@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 from build_jrdb_edge_current_facts import build_current_facts
+from jrdb_edge_v02_canonical import track_condition_bucket
 from jrdb_edge_canonical import derive_transition_features
 from jrdb_raw import ReaderAudit, canonical_members, number_field, raw_field, read_fixed_records
 
@@ -28,6 +29,7 @@ WAREHOUSE_ARTIFACT_ID = 11468713930
 SED_2026_RUN_ID = 37604723913
 SED_2026_ARTIFACT_ID = 11474018960
 PACI_FOLDER_ID = "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r"
+SUPERSEDED_PARTIAL = {"pre_race_fact_sha256": "526516f9e5a1f46d96de6484e68a9b04237f6f5d6ac2f80f0c34ad380e5ef5c0", "match_sha256": "fbc6258626e9f407990639b1bcb3cfaad3b7d83666aee418c754d74f79240cf4"}
 SUPPORTED_CONDITION_KEYS = {
     "distance_m", "frame_no", "going_bucket", "sire_name", "surface_code",
     "venue_code", "distance_change", "surface_transition", "first_dirt",
@@ -293,6 +295,37 @@ def load_2026_sed(sed_artifact_root: Path) -> list[dict[str, str]]:
     return rows
 
 
+def load_going_snapshot(sed_artifact_root: Path) -> tuple[dict[str, dict[str, str | None]], dict[str, Any]]:
+    """Isolated race-level SED projection: race key and track condition only."""
+    codes: dict[str, set[str]] = defaultdict(set)
+    for archive_path in sorted(sed_artifact_root.rglob("SED26????.zip")):
+        with zipfile.ZipFile(archive_path) as archive:
+            for member in archive.namelist():
+                if not member.lower().endswith(".txt"):
+                    continue
+                for record in archive.read(member).splitlines():
+                    if len(record) != 374:
+                        continue
+                    race_key = record[0:8].decode("ascii").strip()
+                    raw = record[69:71].decode("ascii").strip()
+                    if race_key:
+                        codes[race_key].add(raw)
+    snapshot = {}
+    for race_key, observed in sorted(codes.items()):
+        nonblank = observed - {""}
+        if len(nonblank) > 1:
+            raise FreezeError(f"conflicting track_condition_code for {race_key}: {sorted(nonblank)}")
+        raw = next(iter(nonblank), "")
+        broad = track_condition_bucket(raw)
+        snapshot[race_key] = {"race_key": race_key, "track_condition_code": raw,
+                              "going_bucket": "GOOD" if broad == "1" else "SOFT_OR_WORSE" if broad in {"2", "3", "4"} else None}
+    audit = {"race_keys_with_going": sum(row["going_bucket"] is not None for row in snapshot.values()),
+             "race_keys_unknown": sum(row["going_bucket"] is None for row in snapshot.values()),
+             "conflict_count": 0,
+             "snapshot_sha256": fingerprint_rows(snapshot.values(), ("race_key",))}
+    return snapshot, audit
+
+
 def _asset_paths(warehouse_root: Path) -> tuple[list[Path], list[Path], dict[str, Any]]:
     from aggregate_jrdb_edge_v05_first_history import verify_warehouse
     audit = verify_warehouse(warehouse_root)
@@ -519,8 +552,21 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
     sed_rows = load_2026_sed(sed_root)
     sed_dates = {row["race_date"] for row in sed_rows}
     paci_dates = {row["race_date"] for row in facts}
-    if not paci_dates.issubset(sed_dates):
-        raise FreezeError(f"PACI dates missing from SED chronology: {len(paci_dates-sed_dates)}")
+    if paci_dates != sed_dates:
+        raise FreezeError(f"PACI/SED date mismatch: PACI-only={sorted(paci_dates-sed_dates)}, SED-only={sorted(sed_dates-paci_dates)}")
+    going_snapshot, going_audit = load_going_snapshot(sed_root)
+    for fact in facts:
+        fact["going_bucket"] = going_snapshot.get(fact["race_key"], {}).get("going_bucket")
+    going_path = output_root / "v05_2026_going_snapshot.csv"
+    with going_path.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["race_key", "track_condition_code", "going_bucket"])
+        writer.writeheader(); writer.writerows(going_snapshot.values())
+    inventory_path = paci_root / "v05_2026_paci_input_inventory.json"
+    inventory = json.loads(inventory_path.read_text()) if inventory_path.exists() else None
+    if inventory is None or inventory["remaining_missing_date_count"]:
+        raise FreezeError("canonical PACI recovery inventory missing or incomplete")
+    (output_root / "v05_2026_paci_input_inventory.json").write_text(
+        json.dumps(inventory, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     history_audit = build_history_index(facts, sed_rows, warehouse_root)
     for fact in facts:
         validate_match_fact_schema(fact)
@@ -567,15 +613,14 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
     _write_parquet(matches, MATCH_COLUMNS, output_root / "v05_2026_match_freeze.parquet")
     missing_days = sorted(sed_dates - paci_dates)
     paci_sed_equal = paci_dates == sed_dates
-    recommendation = ("PARTIAL_PRE_RACE_COVERAGE"
-        if not paci_sed_equal or history_audit["sed_2026_unjoined_to_paci"] or
-           (facts and any(row["going_bucket"] is None for row in facts))
-        else "READY_FOR_TURN3_OUTCOME_JOIN")
+    recommendation = ("PARTIAL_PRE_RACE_COVERAGE" if not paci_sed_equal or history_audit["sed_2026_unjoined_to_paci"]
+                      else "READY_FOR_TURN3_OUTCOME_JOIN")
     audit = {
         "status": "PASS" if facts and paci_sed_equal else "PARTIAL",
         "recommendation": recommendation,
         "production_impact": "NONE",
         "input_provenance": {"cohort": cohort_audit, "paci": paci_audit,
+            "paci_recovery_inventory": inventory,
             "paci_drive_folder_id": PACI_FOLDER_ID,
             "paci_source_generation": "Drive PACI folder snapshot, 2026-10-07",
             "sed_2026_run_id": SED_2026_RUN_ID, "sed_2026_artifact_id": SED_2026_ARTIFACT_ID,
@@ -594,7 +639,10 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
             "sed_fields_read": ["race_key", "horse_no", "blood_registration_no", "race_date"],
             "warehouse_sed_fields_read": ["race_key_raw", "horse_no", "blood_registration_no", "race_date", "surface_code", "distance_m"],
             "warehouse_kyi_fields_read": ["race_key_raw", "horse_no", "blood_registration_no", "blinker_code"],
-            "analysis_2026_fields_read": [], "going_bucket_source": "UNAVAILABLE_IN_CANONICAL_PRE_RACE_FACT_BUILDER"},
+            "analysis_2026_fields_read": [], "going_bucket_source": "ISOLATED_SED_RACE_CONTEXT_V02_EXCEPTION",
+            "going_sed_fields_read": ["race_key", "track_condition_code"]},
+        "going_audit": going_audit,
+        "superseded_partial": {"status": "SUPERSEDED_PARTIAL", **SUPERSEDED_PARTIAL},
         "history_audit": history_audit,
         "cohort_verification": {**cohort_audit, "all_candidates_consumed": True},
         "matching": {"total_match_rows": len(matches), "unique_matched_runners": len(runner_match_counts),
@@ -602,7 +650,8 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
             "maximum_matches_on_one_runner": max(runner_match_counts.values(), default=0),
             "candidate_count": len(candidates)},
         "fingerprints": {"pre_race_fact_sha256": fact_sha, "match_sha256": match_sha,
-            "day_fingerprints": month_day},
+            "day_fingerprints": month_day, "paci_input_set_sha256": inventory["input_set_sha256"],
+            "going_snapshot_sha256": going_audit["snapshot_sha256"]},
         "unknown_condition_values": {key: sum(row.get(key) is None for row in facts)
             for key in ("sire_name", "distance_change", "surface_transition", "first_dirt", "first_turf", "first_blinkers", "going_bucket")},
     }
@@ -611,6 +660,9 @@ def run_freeze(cohort_path: Path, paci_root: Path, sed_root: Path,
         "status": audit["status"], "recommendation": recommendation,
         "cohort_sha256": cohort_audit["cohort_sha256"], "candidate_count": len(candidates),
         "pre_race_fact_sha256": fact_sha, "match_sha256": match_sha,
+        "paci_input_set_sha256": inventory["input_set_sha256"],
+        "going_snapshot_sha256": going_audit["snapshot_sha256"],
+        "superseded_partial": {"status": "SUPERSEDED_PARTIAL", **SUPERSEDED_PARTIAL},
         "fact_row_count": len(fact_rows), "match_row_count": len(matches),
         "first_race_date": audit["coverage"]["first_race_date"],
         "latest_race_date": audit["coverage"]["latest_race_date"],
