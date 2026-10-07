@@ -142,7 +142,8 @@ def build_history_features(con: Any, warehouse: Path, feature_path: Path,
       FROM kyi_history h
     """)
     mismatch = int(con.execute("SELECT count(*) FROM kyi_flags WHERE first_blinkers_chronology IS NOT NULL AND code_first_use IS NOT NULL AND first_blinkers_chronology!=code_first_use").fetchone()[0])
-    mismatch_samples = con.execute("SELECT blood_id,race_key,horse_no,race_date,blinker_code,first_blinkers_chronology,code_first_use FROM kyi_flags WHERE first_blinkers_chronology IS NOT NULL AND code_first_use IS NOT NULL AND first_blinkers_chronology!=code_first_use ORDER BY race_date,blood_id,race_key LIMIT 20").fetchdf().to_dict("records")
+    mismatch_cur = con.execute("SELECT blood_id,race_key,horse_no,race_date,blinker_code,first_blinkers_chronology,code_first_use FROM kyi_flags WHERE first_blinkers_chronology IS NOT NULL AND code_first_use IS NOT NULL AND first_blinkers_chronology!=code_first_use ORDER BY race_date,blood_id,race_key LIMIT 20")
+    mismatch_samples = [dict(zip([d[0] for d in mismatch_cur.description], row)) for row in mismatch_cur.fetchall()]
     con.execute("""
       CREATE OR REPLACE TEMP VIEW kyi_flags_checked AS
       SELECT *, CASE WHEN first_blinkers_chronology IS NULL OR code_first_use IS NULL OR first_blinkers_chronology!=code_first_use THEN NULL ELSE first_blinkers_chronology END first_blinkers
@@ -180,7 +181,7 @@ def build_history_features(con: Any, warehouse: Path, feature_path: Path,
             "blinker_code_1_count": int(con.execute("SELECT count(*) FROM kyi_flags WHERE code_first_use=TRUE").fetchone()[0]),
             "blinker_code_parity_mismatch_count": mismatch, "blinker_mismatch_examples": mismatch_samples,
             "identity_coverage": {"surface_event_rows": sed_unique,
-                                  "valid_canonical_registration": int(con.execute("SELECT count(*) FROM sed_groups WHERE length(blood_id)=8 AND blood_id NOT LIKE '%[^0-9]%'").fetchone()[0])}}
+                                  "valid_canonical_registration": int(con.execute("SELECT count(*) FROM sed_groups WHERE regexp_full_match(blood_id,'[0-9]{8}')").fetchone()[0])}}
 
 
 def assemble_new_candidates(con: Any, enriched: Path, base_output: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -305,10 +306,13 @@ def write_outputs(out: Path, additions: list[dict[str, Any]], base_summary: dict
     base_summary["candidate_counts"]["unified_raw_candidate_total"] = base_summary["candidate_counts"]["n_ge_5_total"] + base_summary["candidate_counts"]["n_lt_5_total"] + len(additions)
     base_summary["candidate_counts"]["n_ge_5_total"] = base_summary["candidate_counts"]["unified_n_ge_5_total"]
     base_summary["candidate_counts"]["n_lt_5_total"] += sum(not x["shortlist_eligible"] for x in additions)
-    base_summary["candidate_counts"]["by_support_class"].update(Counter(x["support_class"] for x in additions))
-    base_summary["candidate_counts"]["by_freshness"].update(Counter(x["freshness"] for x in additions if x["shortlist_eligible"]))
-    base_summary["candidate_counts"]["by_label"].update(Counter(label for x in additions if x["shortlist_eligible"] for label in x["research_labels"]))
+    for field, extra in (("by_support_class", Counter(x["support_class"] for x in additions)),
+                         ("by_freshness", Counter(x["freshness"] for x in additions if x["shortlist_eligible"])),
+                         ("by_label", Counter(label for x in additions if x["shortlist_eligible"] for label in x["research_labels"]))):
+        current = base_summary["candidate_counts"][field]
+        base_summary["candidate_counts"][field] = dict(Counter(current) + extra)
     base_summary["value_gate"]["positive_value_count"] += sum(x["positive_value_eligible"] for x in additions)
+    base_summary["value_gate"]["raw_n_ge_5_preserved"] = base_summary["candidate_counts"]["n_ge_5_total"]
     base_summary["value_gate"]["positive_value_by_family"] = {k: v.get("positive_value_count", 0) for k, v in family_counts.items()}
     base_summary["value_gate"]["negative_edge_count"] += sum(x["negative_value_eligible"] for x in additions)
     base_summary["recommendation"] = "PARTIAL_WITH_TOPOLOGY_BLOCKED"
