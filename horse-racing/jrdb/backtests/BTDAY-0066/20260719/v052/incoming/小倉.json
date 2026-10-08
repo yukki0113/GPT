@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "小倉",
+    "race_no": 1,
+    "race_model": "このレースは、障害経験で9・8が一歩リードし、初障害6の平地能力が割って入る構図。主線が崩れる条件は、9が飛越でリズムを崩し、経験組の優位が消えること。",
+    "marks": [
+      9,
+      8,
+      6,
+      10,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "◎の主線。前走障害2750mで2着、飛越しながら好位で運べており勝ちに最も近い。"
+      },
+      {
+        "horse_no": 8,
+        "case": "○の主線。前走2860mで3着、好位から向正面で進出する再現性がある。"
+      },
+      {
+        "horse_no": 10,
+        "case": "△1。10は平地1勝級の地力があり、前走障害は躓きの影響が大きい。"
+      },
+      {
+        "horse_no": 5,
+        "case": "△2。5は障害5着歴があり、慎重な飛越でも崩れ切らない。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "▲の単発経路。6は初障害だが平地3勝クラスまで走った地力があり、飛越が無難なら能力差で一変できる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "最終境界は5を残し2を外した。5は5着実績があり、2は直近障害で10着と飛越不安が強い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9は前走障害2750mで2着、飛越しながら好位で運べており勝ちに最も近い。 ○8は前走2860mで3着、好位から向正面で進出する再現性がある。 ▲6は6は初障害だが平地3勝クラスまで走った地力があり、飛越が無難なら能力差で一変できる。。△10・5まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        8,
+        10,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は障害経験こそないが平地能力が最上位で、無難な飛越なら一気の上昇がある。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "初障害の不確実性はあるが別経路として6を▲に採り、飛越不安が続く2を圧縮した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 8,
+      "honmei_win_case": "前走障害2750mで2着、飛越しながら好位で運べており勝ちに最も近い。",
+      "second_case": "前走2860mで3着、好位から向正面で進出する再現性がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎9を○8より上に置いた決め手は、9は8より直近で2着まで詰め、障害で勝ち切る位置取りが明確。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 2,
+    "race_model": "このレースは、2の先行力に6の差し脚が迫り、後方型が直線でどこまで詰めるか。主線が崩れる条件は、2が前半で脚を使い、差し優勢の流れになること。",
+    "marks": [
+      2,
+      6,
+      14,
+      5,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "◎の主線。直近1200mでIDM43、番手から3着と前で勝負できる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "○の主線。1400m2着・1200m3着で上がりの再現性が高く、前崩れなら逆転まで。"
+      },
+      {
+        "horse_no": 5,
+        "case": "△1。5は直近3着で中団差しの安定がある。"
+      },
+      {
+        "horse_no": 13,
+        "case": "△2。13は前走3着で内をロスなく伸びた。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "▲の単発経路。14は前走1200m2着で後方から伸び、展開ひとつでまとめて差す経路。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 17,
+      "reason": "最終境界は13を残し17を外した。13は直近3着、17は4着止まりで決め手に差がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2は直近1200mでIDM43、番手から3着と前で勝負できる。 ○6は1400m2着・1200m3着で上がりの再現性が高く、前崩れなら逆転まで。 ▲14は14は前走1200m2着で後方から伸び、展開ひとつでまとめて差す経路。。△5・13まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        2,
+        5,
+        13,
+        17
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14は普通順位では境界外だが、後方から差し切る形が先行中心の主線と異なる。",
+      "excluded_horse_no": 17,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "14の直線一気を▲で採用し、好位型17を圧縮して脚質の幅を取った。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 6,
+      "honmei_win_case": "直近1200mでIDM43、番手から3着と前で勝負できる。",
+      "second_case": "1400m2着・1200m3着で上がりの再現性が高く、前崩れなら逆転まで。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2を○6より上に置いた決め手は、2は6より前を取り、自分で勝ち筋を作れる。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 3,
+    "race_model": "このレースは、6の先行力を軸に、7・9が好位差し、14が後方から追う形。主線が崩れる条件は、6が逃げで競られ、終いが甘くなること。",
+    "marks": [
+      6,
+      7,
+      14,
+      9,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "◎の主線。1800mで3着歴があり、今回も予測先行で自分から勝ちに行ける。"
+      },
+      {
+        "horse_no": 7,
+        "case": "○の主線。過去に1800m2着IDM40があり、近走凡走でも地力上位。"
+      },
+      {
+        "horse_no": 9,
+        "case": "△1。9は直近1700m3着で好位から粘れる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "△2。13は予測上がり上位で展開が向けば浮上できる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "▲の単発経路。14は連続で終いを伸ばす履歴があり、前が止まれば差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "最終境界は13を残し15を外した。13は近走着順は悪いが当日の位置予測が上で、休養明け15より判断材料が多い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6は1800mで3着歴があり、今回も予測先行で自分から勝ちに行ける。 ○7は過去に1800m2着IDM40があり、近走凡走でも地力上位。 ▲14は14は連続で終いを伸ばす履歴があり、前が止まれば差し切る経路がある。。△9・13まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        7,
+        9,
+        14,
+        13
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15は長期休養明けで過去の36だけでは上位を崩す根拠が弱い。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "休養明け15より、近走の1700・1800mで内容がある5頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 7,
+      "honmei_win_case": "1800mで3着歴があり、今回も予測先行で自分から勝ちに行ける。",
+      "second_case": "過去に1800m2着IDM40があり、近走凡走でも地力上位。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎6を○7より上に置いた決め手は、6は7より現状の先行力とレース支配力が明確。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 4,
+    "race_model": "このレースは、11の逃げと8・12の差しが中心で、3の前受けが変化を作る。主線が崩れる条件は、11が序盤から競られて先行勢が共倒れになること。",
+    "marks": [
+      11,
+      8,
+      3,
+      12,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "◎の主線。2000mで連続2着、逃げて粘る内容が安定している。"
+      },
+      {
+        "horse_no": 8,
+        "case": "○の主線。1800mで3、4着を続け最速上がり反復、差し切り候補。"
+      },
+      {
+        "horse_no": 12,
+        "case": "△1。12は2000m連続3着で好位差しが安定。"
+      },
+      {
+        "horse_no": 13,
+        "case": "△2。13は2200m3着、2400m4着で持続力がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "▲の単発経路。3は前々走2000m2着IDM44があり、前走凡走からの反発で先行残りを作れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "最終境界は13を残し4を外した。13は長め距離で上位実績があり、4の近走より持続力を評価。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎11は2000mで連続2着、逃げて粘る内容が安定している。 ○8は1800mで3、4着を続け最速上がり反復、差し切り候補。 ▲3は3は前々走2000m2着IDM44があり、前走凡走からの反発で先行残りを作れる。。△12・13まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        8,
+        12,
+        13,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3は普通評価では一段下だが、先行して前走以前の指数まで戻れば勝ち筋が別。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "前残りの非対称経路として3を▲に入れ、4を圧縮した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 8,
+      "honmei_win_case": "2000mで連続2着、逃げて粘る内容が安定している。",
+      "second_case": "1800mで3、4着を続け最速上がり反復、差し切り候補。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎11を○8より上に置いた決め手は、11は8より前を取り切って勝負を作れる。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 5,
+    "race_model": "このレースは、初出走で8が能力・仕上がりとも中心、2・7・6が続く。主線が崩れる条件は、8が初戦で発馬や折り合いを崩すこと。",
+    "marks": [
+      8,
+      2,
+      7,
+      6,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "◎の主線。IDM38、予測三指標最上位、調教も上昇で初戦から完成度が高い。"
+      },
+      {
+        "horse_no": 2,
+        "case": "○の主線。IDM36.2で調教16.1、8に次ぐ総合力。"
+      },
+      {
+        "horse_no": 6,
+        "case": "△1。6はIDM31.3で予測上がり上位。"
+      },
+      {
+        "horse_no": 3,
+        "case": "△2。3はIDM29.6で情報値も高め。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "▲の単発経路。7はIDM35.3で調教上昇、初戦で一段上振れる余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "最終境界は3を残し4を外した。3は4よりIDM・情報値とも上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8はIDM38、予測三指標最上位、調教も上昇で初戦から完成度が高い。 ○2はIDM36.2で調教16.1、8に次ぐ総合力。 ▲7は7はIDM35.3で調教上昇、初戦で一段上振れる余地がある。。△6・3まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        2,
+        7,
+        6,
+        3
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4はIDM19.7で上位との基礎能力差が大きい。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "初戦なので能力予測と調教を優先し、上位5頭をそのまま維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 2,
+      "honmei_win_case": "IDM38、予測三指標最上位、調教も上昇で初戦から完成度が高い。",
+      "second_case": "IDM36.2で調教16.1、8に次ぐ総合力。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎8を○2より上に置いた決め手は、8は2より基礎能力と予測位置で一段上。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 6,
+    "race_model": "このレースは、8の先行力が主線で、6・4・13が中団から追い、12は状態面の上振れ待ち。主線が崩れる条件は、8が前で競られて差し馬の射程に入ること。",
+    "marks": [
+      8,
+      6,
+      12,
+      4,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "◎の主線。1800mで連続3着、先手・好位からIDM38まで出しており勝ち切りに近い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "○の主線。1800mで4着IDM39歴があり、差しに回っても地力がある。"
+      },
+      {
+        "horse_no": 4,
+        "case": "△1。4は芝で3、4着の先行力がありダート替わりで前残り余地。"
+      },
+      {
+        "horse_no": 13,
+        "case": "△2。13は位置予測上位で展開対応力がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "▲の単発経路。12は過去に大きな逸走がある一方、今回はデキ抜群で状態面の反発幅が大きい。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "最終境界は13を残し2を外した。13は当日の予測位置が上で、2より勝負所で前にいられる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8は1800mで連続3着、先手・好位からIDM38まで出しており勝ち切りに近い。 ○6は1800mで4着IDM39歴があり、差しに回っても地力がある。 ▲12は12は過去に大きな逸走がある一方、今回はデキ抜群で状態面の反発幅が大きい。。△4・13まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        6,
+        4,
+        13,
+        12
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は後方一気信号はあるが直近8着で上位差が大きい。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2の追込一発より、8・6・4・13・12の近走内容と状態変化を優先。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 6,
+      "honmei_win_case": "1800mで連続3着、先手・好位からIDM38まで出しており勝ち切りに近い。",
+      "second_case": "1800mで4着IDM39歴があり、差しに回っても地力がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎8を○6より上に置いた決め手は、8は6より先行して自分で勝ちに行ける。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 7,
+    "race_model": "このレースは、10・1・11の近走好走組が中心で、差しの4・6が追う。主線が崩れる条件は、先行勢が多く前半が速くなり、後方差しに傾くこと。",
+    "marks": [
+      10,
+      1,
+      11,
+      4,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "◎の主線。前走1200m1勝で2着IDM49、好位内から最後まで伸びた。"
+      },
+      {
+        "horse_no": 1,
+        "case": "○の主線。前走同条件2着IDM47で差しの再現性が高い。"
+      },
+      {
+        "horse_no": 4,
+        "case": "△1。4は1200mでIDM46を安定して出す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "△2。6は前走4着で外から差を詰めた。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "▲の単発経路。11は前走2着、先団で渋太く運べて展開の主導権も取れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "最終境界は6を残し2を外した。6は芝1200で4着実績があり、2の芝不確実性より上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎10は前走1200m1勝で2着IDM49、好位内から最後まで伸びた。 ○1は前走同条件2着IDM47で差しの再現性が高い。 ▲11は11は前走2着、先団で渋太く運べて展開の主導権も取れる。。△4・6まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        1,
+        11,
+        4,
+        6
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2はダート実績中心で芝1200の再現性が不足。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "芝1200で近走内容がある5頭を保護し、2は条件替わりで外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 1,
+      "honmei_win_case": "前走1200m1勝で2着IDM49、好位内から最後まで伸びた。",
+      "second_case": "前走同条件2着IDM47で差しの再現性が高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎10を○1より上に置いた決め手は、10は1より前で競馬でき、勝ち切りの位置取りが明確。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 8,
+    "race_model": "このレースは、3が先手、1・10・6・5が好位で追う1000mの前傾戦。主線が崩れる条件は、3が昇級で競られ、好位差し勢に差されること。",
+    "marks": [
+      3,
+      1,
+      10,
+      6,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "◎の主線。前走1000m未勝利を逃げ切りIDM47、速度で押し切る形が最も明確。"
+      },
+      {
+        "horse_no": 1,
+        "case": "○の主線。前走1000m1勝2着IDM45、クラス実績で安定。"
+      },
+      {
+        "horse_no": 6,
+        "case": "△1。6は1200mで先行2着歴があり短縮で前残り。"
+      },
+      {
+        "horse_no": 5,
+        "case": "△2。5は1000mで5着、好位運びの再現性がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "▲の単発経路。10は前走同条件3着IDM45、番手からの差しで前崩れも拾える。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "最終境界は5を残し9を外した。5は同条件経験があり、9の初ダートより裏付けがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎3は前走1000m未勝利を逃げ切りIDM47、速度で押し切る形が最も明確。 ○1は前走1000m1勝2着IDM45、クラス実績で安定。 ▲10は10は前走同条件3着IDM45、番手からの差しで前崩れも拾える。。△6・5まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        3,
+        10,
+        6,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9は芝1200逃げ切りで、ダート1000への転換が読みにくい。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ダート1000実績組を優先して9は外部候補に留めた。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 1,
+      "honmei_win_case": "前走1000m未勝利を逃げ切りIDM47、速度で押し切る形が最も明確。",
+      "second_case": "前走1000m1勝2着IDM45、クラス実績で安定。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3を○1より上に置いた決め手は、3は1より昇級でも逃げ切りという勝ち筋を自分で作れる。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 9,
+    "race_model": "このレースは、3・7の前受けに8が好位、4・6が後方から差す形。主線が崩れる条件は、3が単騎で行けずペースが上がること。",
+    "marks": [
+      3,
+      8,
+      4,
+      7,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "◎の主線。1勝を連勝してIDM56.1、逃げでも差しでも勝っており昇級でも主力。"
+      },
+      {
+        "horse_no": 8,
+        "case": "○の主線。前走2勝3着IDM55でクラス実績がある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "△1。7は2勝で3着歴があり先手を取れる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "△2。6は後方から2着歴があり展開待ちで浮上。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "▲の単発経路。4は後方から最速上がりを繰り返し、前崩れなら一気に差す。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "最終境界は6を残し2を外した。6は1勝で2着IDM52があり、2より決め手が上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎3は1勝を連勝してIDM56.1、逃げでも差しでも勝っており昇級でも主力。 ○8は前走2勝3着IDM55でクラス実績がある。 ▲4は4は後方から最速上がりを繰り返し、前崩れなら一気に差す。。△7・6まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        8,
+        4,
+        7,
+        6
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2も差し型だが上位後方勢ほど決め手の裏付けがない。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3・8の実績に4・7・6の異なる脚質を合わせ、2は外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 8,
+      "honmei_win_case": "1勝を連勝してIDM56.1、逃げでも差しでも勝っており昇級でも主力。",
+      "second_case": "前走2勝3着IDM55でクラス実績がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3を○8より上に置いた決め手は、3は8より自ら前に行って勝ち切れる幅が広い。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 10,
+    "race_model": "このレースは、16・12の先行力に13・14・1の高能力が迫る3勝戦。主線が崩れる条件は、先行勢が競り合い、後方の13が届く展開になること。",
+    "marks": [
+      16,
+      13,
+      12,
+      14,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "◎の主線。3勝で2着・4着、前でも好位でも運べてIDM59を連続、勝ち切りに近い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "○の主線。2勝でIDM65勝ちの能力上限が高く、差しが届けば逆転。"
+      },
+      {
+        "horse_no": 14,
+        "case": "△1。14は前走1700m2勝勝ちIDM59。"
+      },
+      {
+        "horse_no": 1,
+        "case": "△2。1は前走3勝3着IDM59で好位差しが安定。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "▲の単発経路。12は2勝で逃げ切り、昇級でも単騎なら残り切る経路。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "最終境界は1を残し10を外した。1は直近3勝3着、10はダート実績不足。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎16は3勝で2着・4着、前でも好位でも運べてIDM59を連続、勝ち切りに近い。 ○13は2勝でIDM65勝ちの能力上限が高く、差しが届けば逆転。 ▲12は12は2勝で逃げ切り、昇級でも単騎なら残り切る経路。。△14・1まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        14,
+        1,
+        16,
+        12
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は芝主体でダート1700の裏付けがない。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ダート実績上位5頭を維持し、10は条件不確実で除外。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 13,
+      "honmei_win_case": "3勝で2着・4着、前でも好位でも運べてIDM59を連続、勝ち切りに近い。",
+      "second_case": "2勝でIDM65勝ちの能力上限が高く、差しが届けば逆転。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎16を○13より上に置いた決め手は、16は13より現級で前に行きながら2着まで残しており勝ち筋が現実的。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 11,
+    "race_model": "このレースは、6・17の能力上位に9・14が続き、18の逃げが展開を作る。主線が崩れる条件は、18が楽逃げし、差し上位が届かないこと。",
+    "marks": [
+      6,
+      17,
+      18,
+      14,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "◎の主線。前走オープン1800mをIDM67で勝ち、2000mでも2着があり中心。"
+      },
+      {
+        "horse_no": 17,
+        "case": "○の主線。皐月賞級2000mで2着IDM68があり、基礎能力は最上位級。"
+      },
+      {
+        "horse_no": 14,
+        "case": "△1。14は2400mオープン勝ち、2600m2着で高い持続力。"
+      },
+      {
+        "horse_no": 9,
+        "case": "△2。9は1800mオープン3着、3勝勝ちで安定。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 18,
+      "case": "▲の単発経路。18は1800mオープンで逃げてIDM62、単騎なら前残りの別経路。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "最終境界は9を残し2を外した。9はオープン3着実績があり、2の昇級直後より上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6は前走オープン1800mをIDM67で勝ち、2000mでも2着があり中心。 ○17は皐月賞級2000mで2着IDM68があり、基礎能力は最上位級。 ▲18は18は1800mオープンで逃げてIDM62、単騎なら前残りの別経路。。△14・9まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        17,
+        14,
+        9,
+        2
+      ],
+      "external_challenger_horse_no": 18,
+      "external_challenger_case": "18は普通順位では下でも逃げて展開を固定できる点が非対称。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "前残りの勝ち筋として18を▲に入れ、差し型2を圧縮した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 17,
+      "honmei_win_case": "前走オープン1800mをIDM67で勝ち、2000mでも2着があり中心。",
+      "second_case": "皐月賞級2000mで2着IDM68があり、基礎能力は最上位級。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎6を○17より上に置いた決め手は、6は17より直近でオープンを勝ち切っており状態と条件適合を優先。"
+    }
+  },
+  {
+    "venue": "小倉",
+    "race_no": 12,
+    "race_model": "このレースは、7の先行力と能力が中心で、4・5・8・9が追う1勝戦。主線が崩れる条件は、7が逃げ争いで脚を使い、差し勢の射程に入ること。",
+    "marks": [
+      7,
+      4,
+      8,
+      5,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "◎の主線。1勝で2着IDM52、オープンでも49を出しておりここでは能力上位。"
+      },
+      {
+        "horse_no": 4,
+        "case": "○の主線。オープン2400mでIDM55経験があり、自己条件なら地力で押し上げる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "△1。5は1勝でIDM45、逃げて粘る形がある。"
+      },
+      {
+        "horse_no": 9,
+        "case": "△2。9は直近1800m1勝5着で差しの保険。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "▲の単発経路。8は未勝利勝ち直後でも好位差しで伸び代があり、流れに乗れば一発。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "最終境界は9を残し2を外した。9は直近5着、2より現状の競争力が上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎7は1勝で2着IDM52、オープンでも49を出しておりここでは能力上位。 ○4はオープン2400mでIDM55経験があり、自己条件なら地力で押し上げる。 ▲8は8は未勝利勝ち直後でも好位差しで伸び代があり、流れに乗れば一発。。△5・9まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        4,
+        5,
+        8,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は近走7、8着で決め手が足りない。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7を軸に能力と脚質の異なる4・5・8・9を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 4,
+      "honmei_win_case": "1勝で2着IDM52、オープンでも49を出しておりここでは能力上位。",
+      "second_case": "オープン2400mでIDM55経験があり、自己条件なら地力で押し上げる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎7を○4より上に置いた決め手は、7は4より自己条件での勝ち負け実績が明確。"
+    }
+  }
+]
