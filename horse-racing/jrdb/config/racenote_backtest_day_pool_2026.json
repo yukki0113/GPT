@@ -5,7 +5,7 @@
     "inventory_snapshot_date": "2026-09-29",
     "note": "Sync newer PACI inventory while preserving used flags and eligibility. Clean blind picks exclude known result-exposed dates by default."
   },
-  "updated_at": "2026-10-07T08:10:38+00:00",
+  "updated_at": "2026-10-08T07:49:18+00:00",
   "days": [
     {
       "date": "2026-01-04",
@@ -41,9 +41,9 @@
       "date": "2026-01-11",
       "file_name": "PACI260111.zip",
       "drive_file_id": "1PYMEkJKMAgMsNhp498WH2sr4Np4iGBDS",
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-10-08T07:49:18+00:00",
+      "selection_id": "BTDAY-0067",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -441,9 +441,9 @@
       "date": "2026-05-24",
       "file_name": "PACI260524.zip",
       "drive_file_id": "1erzdIYnQCRThKuGxjKOYAjHUTORs1gdO",
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-10-08T07:49:18+00:00",
+      "selection_id": "BTDAY-0065",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -461,9 +461,9 @@
       "date": "2026-05-31",
       "file_name": "PACI260531.zip",
       "drive_file_id": "1kg7qxyHFDkriJVEWLdIYK5652WDZw3PM",
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-10-08T07:49:18+00:00",
+      "selection_id": "BTDAY-0068",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -601,9 +601,9 @@
       "date": "2026-07-19",
       "file_name": "PACI260719.zip",
       "drive_file_id": "18uopE4WrWTo4aAhlXZtlYJu4IyrWe7Mv",
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-10-08T07:49:18+00:00",
+      "selection_id": "BTDAY-0066",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -1406,6 +1406,42 @@
       "n": 1,
       "dates": [
         "2026-05-02"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0065",
+      "selected_at": "2026-10-08T07:49:18+00:00",
+      "seed": "544de2417e3b98c29264388929aafef2",
+      "n": 1,
+      "dates": [
+        "2026-05-24"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0066",
+      "selected_at": "2026-10-08T07:49:18+00:00",
+      "seed": "52d4caae69a6111bcc0d7440fc017cc2",
+      "n": 1,
+      "dates": [
+        "2026-07-19"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0067",
+      "selected_at": "2026-10-08T07:49:18+00:00",
+      "seed": "7df048c69702f7dc06395be00053e564",
+      "n": 1,
+      "dates": [
+        "2026-01-11"
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0068",
+      "selected_at": "2026-10-08T07:49:18+00:00",
+      "seed": "891fd3058dceddfef0eb7ae0fc4103e8",
+      "n": 1,
+      "dates": [
+        "2026-05-31"
       ]
     }
   ]
