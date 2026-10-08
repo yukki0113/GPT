@@ -1,0 +1,24 @@
+{
+  "schema_version": "racenote-v052-from-paci-0.1",
+  "status": "READY_FOR_V052_AUTHORING",
+  "selection_id": "BTDAY-0066",
+  "target_date": "2026-07-19",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.2-candidate",
+  "session_id": "V052-b289b693420880df3e57",
+  "paci": {
+    "filename": "PACI260719.zip",
+    "sha256": "93b365feaa7f99f4a906ce506949b3cf24c040416fe007c9c66b6939f8cc19a5"
+  },
+  "daily_manifest_status": "PASS",
+  "forecast_prep": "horse-racing/jrdb/backtests/BTDAY-0066/20260719/forecast_prep",
+  "v052_root": "horse-racing/jrdb/backtests/BTDAY-0066/20260719/v052",
+  "race_count": 36,
+  "expected_venues": [
+    "函館",
+    "小倉",
+    "福島"
+  ],
+  "market_blind": true,
+  "result_opened": false,
+  "ab_required": false
+}
