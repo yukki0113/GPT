@@ -173,6 +173,45 @@ The Decision Core must retain:
 - `ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK` ▲ mode;
 - audited six-to-five compression.
 
+## 2.2 Decision Core prose recording (2026-10-08; no prediction change)
+
+Follow section 4.1 of `FORECAST_HUMAN_CONTEXT_READER_v0_5_2_CANDIDATE.md`
+**after** making the normal v0.5.2 five-horse judgment. This is an
+**authoring instruction for the existing explanation fields**, not another
+prediction stage, another model input, a score or an A/B lane.
+
+Use the ordinary v0.5.2 record shape unchanged. In the existing text fields:
+
+1. `race_model`: preserve the race's actual decisive scenario and meaningful
+   conditions under which the main scenario could fail.
+2. `honmei_win_case`: record the concrete, pre-race ◎ winning route and any
+   material dependency, without converting ◎ to a place-safety choice.
+3. `second_case` / `ranking_reason`: state why ◎ was preferred to ○, or
+   honestly describe a marginal comparison. Preserve the actual role decision.
+4. `boundary_review.reason`: distinguish final △2 from the closest excluded
+   alternative *when one exists*, including a thin margin where justified.
+5. `candidate_compression.reason`: preserve the distinct six-to-five
+   challenger decision, separate from the △2 boundary rationale.
+
+Leave `mainline_cases`, `single_shot_case`, `rrdb_refs` semantics,
+`ordinary_five`, marks, all existing field names, the validator and Reader
+identity unchanged. `reader_facing_reason` remains natural, compact
+newspaper prose; never attach a multi-field checklist or confidence label.
+
+Before each existing venue save, perform one **prose-only** cross-race review:
+repeated interchangeable reasons (especially text differing only in horse
+number/name) must be replaced by the actual observed contrast in the clean
+Reader. If no real contrast was established, state the limitation instead of
+inventing a difference. The review cannot change any mark, candidate
+membership, role assignment, raw evidence or the answer to Step E.
+
+Do not write A/B/C labels, score bands or outcome-conditioned explanations
+into the Decision Core. Downstream research may label races later using
+frozen, pre-result text, with the annotation protocol kept distinct from the
+v0.5.2 prediction cohort. Do not modify older FROZEN outputs to imitate the
+new prose policy. The existing session's `base_main_sha` identifies the
+authoring instruction revision for subsequent BTDAY comparisons.
+
 ## 3. Save each venue
 
 Place one full venue Decision Core array at:
