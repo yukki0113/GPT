@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "race_model": "ダート1400mは2・4・15が前へ行き、10・13が差す構成。2が先手から粘る主線に、流れが締まれば10の後方差しが迫る。",
+    "marks": [
+      2,
+      10,
+      15,
+      13,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "前走同舞台を逃げて2着。前傾でも前受けした履歴があり、今回も先手なら押し切りまで。"
+      },
+      {
+        "horse_no": 10,
+        "case": "前走同舞台で大きく出遅れながら大外を猛追して2着。五分の発馬なら差し切りも可能。"
+      },
+      {
+        "horse_no": 13,
+        "case": "前走1400mはヨレながら外を回って3着。スムーズなら好位差しで上位へ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "1200mで逃げる先行力があり、距離延長で息を入れられれば粘り込みがある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "前走1600mはハナを切って坂上まで粘り、着順以上の時計内容。1400m短縮で先行負荷が軽くなれば、2より前で運んで逃げ残る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7は同舞台6着で好位から伸び切れず。短縮で先行力が生きる15と、前走3着の13を上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ミエスタは前走東京1400mを逃げて2着、前傾でも粘れる先行力がありここでも主役。ハンナパールは同舞台で大きく出遅れながら大外から2着まで猛追した。ルンベーラは1600mを逃げて坂上まで粘っており、1400m短縮で先手を取れれば本線を崩す余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        10,
+        13,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "1600mで逃げて坂上まで粘り時計内容も着順以上。1400m短縮で単騎に近い先行ができれば別の逃げ残り経路がある。",
+      "excluded_horse_no": 7,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "7は同舞台好位から伸び切れず、15は距離短縮でハナ条件が改善する。先行経路の非対称性を評価して入れ替える。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 10,
+      "honmei_win_case": "2は前走東京1400mで自ら先手を取り、直線半ばまで後続を離して2着。今回も主導権を握る勝ち筋が最も具体的。",
+      "second_case": "10は前走2着の末脚が強烈だが、出遅れ癖があり展開依存が残る。自力で前を取れる2を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10の末脚能力より、2が同舞台で先手から勝ちに行ける主導性をWIN_FIRSTで優先した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "race_model": "ダート1600mは7が好位、11が中団から運び、1・9が後ろから差す形。11の能力を軸に、前残りなら7、前が止まれば1が浮上する。",
+    "marks": [
+      11,
+      7,
+      1,
+      9,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "前走同舞台で中団から3着、時計内容は着順以上。好位勢を見ながら直線で差し切れる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "前走東京1600mを3番手から2着。広いコース向きで今回も前で勝ちに行ける。"
+      },
+      {
+        "horse_no": 9,
+        "case": "1800mで早め進出の経験と速い上がりの履歴がある。1600mで脚をためれば差し込める。"
+      },
+      {
+        "horse_no": 16,
+        "case": "1400mで中団内から一瞬脚を使った。1600mで追走に余裕が出れば相手候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "前走1600mは8着でも最速級の末脚を使った履歴があり、序盤を急がず直線勝負に徹すれば前をまとめて差す経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3は芝2000mからのダート短縮で先行材料はあるが、同舞台実績がない。1600m適性を示す16を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "トルネードアイルは前走東京1600mで中団から3着、時計内容も着順以上でここでは能力上位。スティールヴォーグは同舞台を3番手から2着と前で運べる。ファイアリービートは前走8着でも末脚を使う材料があり、前が止まれば直線勝負で一気に浮上する可能性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        7,
+        1,
+        9,
+        16
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "芝中距離で先行した経験と位置取り耐性があり、ダート1600mで前へ行ければ通常の差し勢と異なる粘り込み経路がある。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3はダート1600mの裏付けがなく、通常5頭の東京ダート実績や末脚材料を崩すほどではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 7,
+      "honmei_win_case": "11は前走同舞台で中団から3着、能力値45で時計評価も上向き。7を射程に入れて直線で交わす形が描きやすい。",
+      "second_case": "7は同舞台2着で前受けできるが、直線で競り負けた点から11の差し切りを上に取る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7の先行安定より、11の同舞台での能力と直線の伸びを勝ち切り側で評価した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "race_model": "ダート1300mは2・8が先行し、5がその後ろ、12が後方から差す。2と8の前受けが主線だが、競り合えば12の末脚が一気に届く。",
+    "marks": [
+      2,
+      8,
+      12,
+      16,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "前走1200mで番手から2着。前受けの強さがあり1300mでも先団から勝ちに行ける。"
+      },
+      {
+        "horse_no": 8,
+        "case": "前走1200mを逃げて早めに並ばれても2着。1300mでも先手を取ればしぶとい。"
+      },
+      {
+        "horse_no": 16,
+        "case": "前走1200mは出遅れと進路ロスがありながら5着。1300mで追走に余裕が出れば差し込める。"
+      },
+      {
+        "horse_no": 5,
+        "case": "1200mで先団内から3着。立ち回りを生かして前2頭の直後なら相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "前走1400mで大きく出遅れながら直線外から鋭く伸び2着。東京の長い直線で先行2頭が競れば後方一気が成立する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1は1400m3着歴があるが長期休養明け。直近で不利を受けながら5着の16を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ツクバヴァンガードは1200mで番手から2着、先行して勝ちに行ける形が安定している。アイムインディも逃げて早めに並ばれながら2着。セキテイロックスは1400mで大きく出遅れても直線だけで2着まで追い込んでおり、前2頭がやり合えば東京の直線で一気に差し切る余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        8,
+        12,
+        16,
+        5
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "休養前の1400mで二の脚を使って番手から3着。久々でも仕上がっていれば先行勢の直後から粘る別経路がある。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1の先行材料は古く、休養明けの不確実性が大きい。直近の同系距離で具体的な内容を示す通常5頭を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 8,
+      "honmei_win_case": "2は前走1200mで番手から4角楽に並び2着。1300mでも前を見て運べ、自分から先頭へ出る勝ち筋が明確。",
+      "second_case": "8も逃げて2着だが、2に外から並ばれる形では受けに回る。番手から動ける2を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8の逃げ残りより、2が前を見ながら勝負所で自ら動ける点を勝ち切り要素として取った。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "race_model": "芝1600m未勝利で4・16・17が前寄り、14・11・8が差す構成。16が先団から抜け出す主線に、14の中団差しが迫る。",
+    "marks": [
+      16,
+      14,
+      11,
+      8,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "1800mで出負けしながら好位まで挽回し能力値43。1600m短縮で前の位置を取りやすくなり勝ち切りまで。"
+      },
+      {
+        "horse_no": 14,
+        "case": "2000mで中団から2着。距離短縮で追走が締まっても末脚を使える能力がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "前走東京1600mで中団内から5着、着順以上の時計内容。スムーズなら差を詰める。"
+      },
+      {
+        "horse_no": 4,
+        "case": "2000mで逃げて4着。1600m短縮で先行力が生きれば残り目がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "前走東京1600mで好発から内を立ち回り3着。通常上位より能力値は少し下でも、最短距離で先団を捉える経路が具体的。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 17,
+      "reason": "17は同舞台5着で先行力があるが、直近3着の11と時計内容の良い8を上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダノンアスコルティは1800mで出負けしながら好位まで取り付き、1600m短縮ならより前で運べそう。クレアノアは2000mで中団から2着と能力上位。ダイヤテソーロは前走東京1600mで好発から内を立ち回って3着しており、ロスの少ない競馬なら本線を崩す余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        14,
+        11,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 17,
+      "external_challenger_case": "前走東京1600mで好発から外3番手を取り5着。前が楽な流れなら先行粘りに特化した別経路がある。",
+      "excluded_horse_no": 17,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "17の先行筋は4・16と重なり、直近3着の11や着順以上の内容を持つ8を入れ替えるほどの独立性はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 14,
+      "honmei_win_case": "16は1800mで出負けしても好位まで挽回し能力値43。1600m短縮で先団を取り、直線で先に抜け出す勝ち筋が明確。",
+      "second_case": "14は能力値42で2000m2着だが、1600m短縮では位置が後ろになる可能性がある。主導性で16を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "14の末脚より、16が距離短縮で前の位置を取って自ら勝ちに行ける点を優先した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "race_model": "芝1800m未勝利で7が好位、13が中団、差し勢が多い。7が前を射程に置いて抜け出す主線で、13が外から迫り、前残りなら1が粘る。",
+    "marks": [
+      7,
+      13,
+      1,
+      12,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "前走同舞台で2番手から2着。ブリンカー効果もあり、今回も好位から勝ちに行ける。"
+      },
+      {
+        "horse_no": 13,
+        "case": "前走1800mで中団から外を伸び2着。時計内容も着順以上で差し切り候補。"
+      },
+      {
+        "horse_no": 12,
+        "case": "前走同舞台は出遅れて大外を回り8着。最速級の末脚材料があり、発馬改善なら浮上。"
+      },
+      {
+        "horse_no": 11,
+        "case": "前走1800mは出遅れて中団外から6着。五分なら差しの相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "前走東京1800mで外3番手から6着。差し勢が多い組み合わせで先行位置を取り切れば、展開利を最大化して残る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5は2000mで一瞬脚を使うが出負けと位置取りが不安定。1800mで前へ行ける1を展開分岐として残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ルーリングクラスは前走東京1800mで2番手から2着、好位で自分から勝ちに行ける。ジュナベーラも同距離で中団から外を伸びて2着と差し脚は強い。マトリカリアは前走この舞台で3番手から6着で、差し馬が多い今回に先行位置を取れれば展開利で残り込む可能性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        13,
+        12,
+        11,
+        5
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "東京1800mで外3番手から運べる先行力があり、差し馬が多い今回に前を取り切れば展開を独占して残る経路がある。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "5は差し経路が13・12・11と重なる。1の先行残りはレース展開を反転させる独立した勝ち筋として採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 13,
+      "honmei_win_case": "7は前走同舞台で2番手から直線まで粘り2着。今回も自ら好位を取って勝ちに行ける形が最も直接的。",
+      "second_case": "13は同舞台2着で末脚は強いが、後ろからの展開待ちが少し増える。位置の主導性で7を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "13の差し安定より、7の好位から先に抜け出す勝ち筋を重視した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "race_model": "ダート1400mは2・4・8など前へ行く馬がいて、6が中団前から進出する形。6の総合力が主線で、2の逃げ残りと9の差しが対抗する。",
+    "marks": [
+      6,
+      2,
+      9,
+      1,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "前走同舞台を中団前から外へ進出して2着。上級相当の履歴と速い上がりがあり、直線で前を交わせる。"
+      },
+      {
+        "horse_no": 2,
+        "case": "前走東京1400mを逃げて2着。息を入れながらしぶとく、今回も先手なら残る。"
+      },
+      {
+        "horse_no": 1,
+        "case": "前走同舞台で途中から早めに動いて勝利。昇級でも広いコース向きで相手圏。"
+      },
+      {
+        "horse_no": 3,
+        "case": "1200mを出負けから外を進出して勝利。1400m延長でも好位差しに転じられる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "前走東京1400mは出遅れて中団から狭い内を捌き3着。前がやり合えば直線で馬群を割って差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14は1800m逃げ切り歴と前傾耐性があるが1400mでは位置争いが忙しい。直近1400m勝ちの1を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヘリテージブルームは前走東京1400mで中団前から外を進出して2着、能力と末脚の両方が上位。チームユートピアは同舞台を逃げて2着と展開を作れる。ベルゼビュートは出遅れても馬群の内を捌いて3着まで来ており、前が競れば直線でまとめて差す可能性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        2,
+        9,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "1800mで前傾気味の先行戦を押し切った材料があり、1400mでも外から主導権を取れれば先行耐久の別経路がある。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14の先行耐久は魅力だが距離短縮で位置取りが不確実。直近東京1400mで結果を出した通常5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 2,
+      "honmei_win_case": "6は前走東京1400mで中団前から4角外を進出して2着。前を射程に入れながら速い脚を使え、自分から差し切る形が明確。",
+      "second_case": "2は逃げて2着と強いが、他の先行馬から圧力を受ける可能性がある。展開対応幅で6を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2の逃げ残りより、6が先行勢を見ながら直線で勝ち切れる自在性を優先した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "race_model": "芝2400mの1勝クラスで明確な逃げ馬は少なく、好位〜中団の持続力勝負。13・16の長距離適性を中心に、久々8の先行力が展開を変える。",
+    "marks": [
+      13,
+      16,
+      8,
+      7,
+      17
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "前走2600mで出遅れ後方から鋭く伸び5着、上級相当の時計材料もある。2400mで差し切りまで。"
+      },
+      {
+        "horse_no": 16,
+        "case": "前走2000mを後方から2着。速い上がりを繰り返し、2400mで追走が楽なら長く脚を使える。"
+      },
+      {
+        "horse_no": 7,
+        "case": "前走2400mで中団後ろから4着。距離実績があり安定して差せる。"
+      },
+      {
+        "horse_no": 17,
+        "case": "前走2400mは出遅れと外回しで6着。上級相当の履歴と末脚がありスムーズなら巻き返す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "長期休養前の東京2400mで先団から運んだ経験があり、状態評価は高い。差し馬が多い今回に前を取れれば展開を独占する経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は2000mで上級相当の内容を持つが出遅れ癖があり2400m実績で7・17に譲る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "キロノヴァは2600mで出遅れながら外から鋭く伸び、長距離での末脚が強み。サラコスティも2000mで後方から2着と能力上位。ポルトフェリスは長期休養明けでも東京2400mの先行経験があり、差し馬の多い組み合わせで前を取れれば展開を味方に残り込む可能性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        16,
+        7,
+        17,
+        9
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "長期休養前に東京2400mを先団で運んだ経験があり、差し馬の多い今回に好位を独占すれば前残りの別経路が成立する。",
+      "excluded_horse_no": 9,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "9は差し経路が13・16・17と重なる。8の前残りは展開を反転させる非対称な勝ち筋として価値がある。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 16,
+      "honmei_win_case": "13は2600mで出遅れから大外を伸び5着、長距離で高い時計材料もある。2400mで中団まで取れれば直線の持続力で勝ち切れる。",
+      "second_case": "16は2000m2着で末脚は強いが2400mへの延長が未知。長距離実績で13を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "16の直近2着より、13の2600mでの末脚と長距離適性を勝ち切り要素として重視した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "race_model": "ダート1600mは1などが前、4・9・11・16が好位〜中団。11の地力が主線だが長期休養明けで、前が流れれば14の追込が浮上する。",
+    "marks": [
+      11,
+      9,
+      14,
+      4,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "休養前の東京1600mを出遅れから中団へ取り付き完勝。上級相当の履歴もあり仕上がれば能力は最上位。"
+      },
+      {
+        "horse_no": 9,
+        "case": "1800mで早めに来られながら2着。上級相当の内容と末脚があり、1600mでも好位から粘れる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "前走東京1600mで先団から3着。状態評価も高く、内を立ち回れば相手圏。"
+      },
+      {
+        "horse_no": 16,
+        "case": "1800mで先団から3着。1600m短縮で先行位置を取りやすくなれば粘り込みがある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "前走東京1600mは出遅れて後方から5着。速い上がりと不利な流れを差した履歴があり、前が流れれば後方一気が成立する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6は東京1600mで3着歴があるが決め手はジリ脚。14の末脚と16の先行短縮を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヘニーガイストは長期休養明けでも、休養前の東京1600mを出遅れから突き抜けた内容が強く能力は最上位。リザードアイランドは1800mで早めに来られても2着としぶとい。バルダンツァは東京1600mで出遅れて5着まで差を詰め、前が流れれば後方から一気に浮上する余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        9,
+        4,
+        16,
+        6
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "東京1600mで出遅れても後方から5着まで詰め、速い上がりを繰り返す。先行勢が消耗すれば後方一気の別経路がある。",
+      "excluded_horse_no": 6,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "6は好位差しで主線と重なる。14は前崩れ時にのみ大きく浮上する独立した追込経路を持つため採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 9,
+      "honmei_win_case": "11は休養前の東京1600mで出遅れから中団へ取り付き、そのまま突き抜けた。調教・状態評価も高く、能力を出せれば勝ち切る形が明確。",
+      "second_case": "9は近況が安定し前で運べるが、11の東京1600m完勝時の地力を上回る材料まではない。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "休養リスクはあるが、複勝安定より11が能力を出した時の勝ち切り性能を優先した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "race_model": "芝1800mは3が逃げ候補で、1・8・10が中団から追う。10・8の差しが主線だが、3が単騎で息を入れれば前残りが大きな分岐になる。",
+    "marks": [
+      10,
+      8,
+      3,
+      6,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "前走1800mで内を捌いて3着、能力値58級で状態評価も非常に高い。中団から差し切りまで。"
+      },
+      {
+        "horse_no": 8,
+        "case": "前走1800mで掛かりながら3着。能力値58で、折り合えば直線の伸びが増す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "1800mで上級相当の履歴があり、後方からでも長く脚を使える。"
+      },
+      {
+        "horse_no": 1,
+        "case": "2000mで先団後ろから5着、上級相当の履歴も持つ。1800m短縮で好位差しが可能。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "前走1800mは逃げて15着でも上級相当の履歴があり、今回は他に強い逃げ馬が少ない。単騎で息を入れれば一変して残る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12は前傾前受けの材料があるが前走1800m9着。差し性能と近況で1を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "コスモイシュタルは前走1800mで狭い内を捌いて3着、状態面も高くここでは差し切り候補。フォルラニーニも掛かりながら3着と地力は高い。ドリームクルーズは前走大敗でも逃げられる馬が少ない組み合わせで、単騎で息を入れられれば一変して粘り込む可能性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        8,
+        6,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "上級相当の履歴を持つ先行馬で、今回は明確な逃げ候補が少ない。単騎で息を入れる逃げ切りが通常の差し序列とは別に成立する。",
+      "excluded_horse_no": 12,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "12は主線の中団差しと経路が重なる。3の単騎逃げはレース展開そのものを変えるため非対称性が高い。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 8,
+      "honmei_win_case": "10は前走東京1800mで中団内から進路を捌いて3着、状態評価も高い。3を見ながら運び直線で交わす形が最も明確。",
+      "second_case": "8も能力は互角だが前走は掛かり気味。折り合いの再現性と状態面で10を上に取る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "能力値が近い8より、10の同舞台での立ち回りと高い状態評価を勝ち切り側で優先した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "race_model": "芝1400mの3勝クラスで8が前、4が好位、1・3・6が中団から差す。3の中団差しが主線で、1が外から迫り、1600mから短縮する9が早め進出の分岐になる。",
+    "marks": [
+      3,
+      1,
+      9,
+      6,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "前走1400mで中団から3着、能力値61。瞬発力があり直線で前を交わせる。"
+      },
+      {
+        "horse_no": 1,
+        "case": "前走1400mで外を回りながら3着。前傾を受ける耐性もあり東京1400mで安定。"
+      },
+      {
+        "horse_no": 6,
+        "case": "1200mで勝負所のロスがありながら3着。1400m延長で追走が楽になれば差し込める。"
+      },
+      {
+        "horse_no": 4,
+        "case": "1200mで好発から3番手、3着。1400mでも先団直後を取れれば残れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "1600mで着順以上の時計内容を持ち、距離短縮で中団前を取りやすくなる。直線入口で差し勢より先に動く別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11は速い上がりを繰り返すが1600mからの短縮で位置が後ろになりやすい。先行位置を取れる4を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "コートアリシアンは前走1400mで中団から3着、瞬発力があり東京の直線で勝ち切りまで狙える。スカイハイも同距離で外を回りながら3着と安定。グーテンベルクは1600mで着順以上の時計内容があり、1400m短縮で中団前を取れれば差し勢より先に抜け出す可能性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        1,
+        6,
+        4,
+        11
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "1600mで高い時計内容を持ち、1400m短縮で中団前へ位置を上げれば直線で先に抜け出す別経路がある。",
+      "excluded_horse_no": 11,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "11は3・1・6と末脚経路が重なる。9は距離短縮で位置を前へ変える可能性があり非対称性がある。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 1,
+      "honmei_win_case": "3は前走1400mで中団から進路を確保して3着、能力値61。今回も前を射程に置き直線の瞬発力で交わす形が具体的。",
+      "second_case": "1も同距離3着で前傾耐性があるが、外回しのロスを受けやすい。直線の瞬発力で3を上に取る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1の前傾耐性より、3の同距離での瞬発力と中団から勝ちに行ける位置を優先した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "race_model": "芝2400mの3歳オープンで、1・5・9など前へ行く馬に対し、18・13・10・12が差す構成。2000m以上で持続力を示す18・13を主線に、2の好位スタミナが展開分岐。",
+    "marks": [
+      18,
+      13,
+      2,
+      10,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 18,
+        "case": "前走2000mを中団外から鋭く差し切り。上級相当の履歴と広いコース適性があり、2400mでも長く脚を使える。"
+      },
+      {
+        "horse_no": 13,
+        "case": "前走2000mで大きく出遅れながら外を伸び2着。終いが確実で東京の長い直線向き。"
+      },
+      {
+        "horse_no": 10,
+        "case": "1600mを完勝して能力値69と抜けた地力。距離延長を折り合えば決め手で上位へ。"
+      },
+      {
+        "horse_no": 12,
+        "case": "1600mでは距離不足の所見がありながら高い能力を維持。2400mで追走が楽になれば持続力を生かせる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "前走2200mを好位から早めに前を追って2着。差し馬が多い中で2400mでも前の位置を取り、スタミナで押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8は1800m勝ちで長く脚を使うが2400mへの延長幅が大きい。2200mで好位2着の2を距離経路で上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ラフターラインズは2000mを中団外から鋭く差し切り、広いコースで長く脚を使えるのが強み。エンネは2000mで大きく出遅れながら2着まで伸びた。レイクラシックは2200mで好位から早めに前を追って2着しており、差し馬が多い今回に前の位置からスタミナで押し切る別の勝ち筋がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        18,
+        13,
+        10,
+        12,
+        8
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2200mを好位から早めに前を追って2着。2400mでも前の位置を確保し、差し勢より先に動くスタミナ勝負の別経路がある。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "8は差し・持続経路が18・13と重なるうえ2400m延長幅が大きい。2は2200m好位実績で前残り分岐を作れる。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 18,
+      "second_horse_no": 13,
+      "honmei_win_case": "18は前走2000mを中団外から鋭く差し切り、広いコース向きと上級相当の持続力を示した。2400mでも中団で折り合えば直線で長く伸びる勝ち筋が明確。",
+      "second_case": "13も2000mで後方から2着と末脚は強いが、出遅れで位置が後ろになるリスクがある。位置の融通で18を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10の絶対能力も高いが距離延長が大きい。2400mで勝ち切る経路として2000mからの持続力を示す18を最上位、13を次位とした。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "race_model": "ダート2100mの3勝クラスで7・10が前、5が好位、3・2が差す構成。7が同舞台の先行力で主線を作り、5が追い、流れが速くなれば14の持続差しが浮上する。",
+    "marks": [
+      7,
+      5,
+      14,
+      3,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "前走東京2100mを逃げ、早めに並ばれても2着。能力値62で先行力が明確。"
+      },
+      {
+        "horse_no": 5,
+        "case": "前走2000mで不利を受けながら2着、距離短いとの所見もあった。2100mで好位から伸びる。"
+      },
+      {
+        "horse_no": 3,
+        "case": "1900mで後方から3着。東京2100mでも流れが締まれば直線で差し込める。"
+      },
+      {
+        "horse_no": 2,
+        "case": "短い1600mで出遅れながら追走し、上級相当と速い上がりの履歴を持つ。距離延長で追走が楽になる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "1900mを中団内から外へ出して勝利し、速い上がりと前傾耐性を持つ。7・10が競れば2100mで好位差しに転じる別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10は2400m逃げ切りがあるがスロー単騎条件が強く、今回は7と先行位置が重なる。差し分岐を持つ2を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ギュルヴィは前走東京2100mを逃げ、早めに並ばれても2着に粘った。ロングウェイホームは2000mで不利を受けながら2着で、2100mへの延長もプラス。ロカヒは1900mを中団から勝ち、前傾でも脚を使えるため、先行2頭がやり合えば好位差しから一気に浮上する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        5,
+        3,
+        2,
+        10
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "1900mを中団内から差し切り、速い上がりと前傾耐性を持つ。7と10が競れば2100mで好位差しへ転じる独立経路がある。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "10は逃げ条件が7と競合し、前走2400mもスロー単騎の恩恵が大きい。14は先行争いが激化した時の差し経路として独立している。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 5,
+      "honmei_win_case": "7は前走東京2100mで先手を取り、早めに並ばれても2着。今回も自力で主導権を握り直線まで粘る勝ち筋が最も明確。",
+      "second_case": "5は距離延長が合いそうで差し脚も強いが、7を捕まえるには展開の助けが必要。主導性で7を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5の差し安定性より、7が同舞台で前から勝ちに行ける先行持続力を優先した。"
+    }
+  }
+]
