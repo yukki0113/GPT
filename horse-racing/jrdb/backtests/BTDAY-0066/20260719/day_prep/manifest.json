@@ -1,0 +1,131 @@
+{
+  "schema_version": "RaceNote-Daily-Build-Manifest-0.1",
+  "target_date": "2026-07-19",
+  "status": "PASS",
+  "pipeline_version": "RaceNote-Daily-Build-0.1",
+  "stages": {
+    "base": "PASS",
+    "history": "PASS",
+    "rrdb": "PASS",
+    "reader": "PASS",
+    "validation": "PASS",
+    "package": "PASS"
+  },
+  "sources": {
+    "paci": {
+      "target_date": "2026-07-19",
+      "date_raw": "20260719",
+      "record_counts": {
+        "BAC": 36,
+        "KYI": 492,
+        "CHA": 492,
+        "CYB": 492,
+        "ZED": 2075,
+        "ZKB": 1855
+      }
+    },
+    "analysis": {
+      "kind": "PARQUET",
+      "backend": "parquet_duckdb",
+      "path": "/tmp/analysis",
+      "manifest_path": "/tmp/analysis/generations/analysis-v1_4-canonical-20260928-02/manifest.json",
+      "generation_id": "analysis-v1_4-canonical-20260928-02",
+      "min_race_date": "2016-01-05",
+      "max_race_date": "2026-09-27",
+      "rows": 517622,
+      "query_count": 9,
+      "parquet_scan_count": 9
+    },
+    "rrdb": {
+      "mode": "generation_root",
+      "root": "/tmp/rrdb/postrace_review/v0_1",
+      "generation_id": "jrdb_race_review_v0_1_incremental_g36514429467"
+    },
+    "rrdb_recommendation": {
+      "contract_version": "rrdb-recommendation-signals-v0.3",
+      "grade_status": "DISABLED",
+      "lookback_days": 730
+    },
+    "legacy_next_watch": {
+      "rule_version": "next-watch-rules-discovery-v0.1",
+      "status": "HISTORICAL_COMPATIBILITY_ONLY"
+    }
+  },
+  "counts": {
+    "races_expected": 36,
+    "races_built": 36,
+    "reader_views": 36,
+    "horses": 492,
+    "technical_skips": 0
+  },
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": null,
+    "raw_reader_market_object_count": 492,
+    "forecast_input_market_blind": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "validation": {
+    "base": "PASS",
+    "history": "PASS",
+    "pedigree": "PASS",
+    "rrdb": "PASS",
+    "reader_roundtrip": "PASS"
+  },
+  "artifacts": {
+    "authoritative_dir": "horse-racing/jrdb/backtests/BTDAY-0066/20260719/day_prep/RaceNote_20260719/authoritative",
+    "reader_dir": "horse-racing/jrdb/backtests/BTDAY-0066/20260719/day_prep/RaceNote_20260719/reader",
+    "manifest": "horse-racing/jrdb/backtests/BTDAY-0066/20260719/day_prep/RaceNote_20260719/manifest.json",
+    "validation_report": "horse-racing/jrdb/backtests/BTDAY-0066/20260719/day_prep/RaceNote_20260719/validation_report.json"
+  },
+  "warnings": [
+    "unknown_tokki:333:7",
+    "unknown_tokki:091:6",
+    "unknown_leg_condition:114:5",
+    "unknown_tokki:796:4",
+    "unknown_tokki:369:4",
+    "unknown_tokki:054:3",
+    "unknown_leg_condition:074:3",
+    "unknown_tokki:233:3",
+    "unknown_tokki:702:3",
+    "unknown_tokki:302:2",
+    "unknown_leg_condition:055:2",
+    "unknown_tokki:407:2",
+    "unknown_tokki:206:2",
+    "unknown_venue:80:2",
+    "unknown_tokki:242:2",
+    "unknown_leg_condition:069:2",
+    "unknown_tokki:927:2",
+    "unknown_tokki:325:1",
+    "unknown_tokki:543:1",
+    "unknown_tokki:607:1",
+    "unknown_tokki:429:1",
+    "unknown_tokki:142:1",
+    "unknown_tokki:128:1",
+    "unknown_tokki:956:1",
+    "unknown_tokki:716:1",
+    "unknown_tokki:165:1",
+    "unknown_tokki:409:1",
+    "unknown_tokki:877:1",
+    "unknown_tokki:875:1",
+    "unknown_tokki:719:1",
+    "unknown_tokki:122:1",
+    "unknown_tokki:771:1",
+    "unknown_tokki:225:1",
+    "unknown_tokki:208:1",
+    "unknown_tokki:212:1",
+    "unknown_tokki:799:1",
+    "unknown_body_condition:0:1",
+    "unknown_tokki:800:1",
+    "unknown_tokki:743:1",
+    "unknown_tokki:744:1",
+    "unknown_tokki:352:1",
+    "unknown_tokki:765:1",
+    "unknown_tokki:879:1",
+    "unknown_tokki:769:1",
+    "unknown_tokki:178:1",
+    "unknown_tokki:533:1"
+  ],
+  "errors": []
+}
