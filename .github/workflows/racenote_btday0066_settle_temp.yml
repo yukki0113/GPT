@@ -1,0 +1,62 @@
+name: RaceNote BTDAY-0066 settle
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0066.settle'
+permissions:
+  contents: write
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize Drive Raw
+        env:
+          SED_URL: "https://sdmntprjapaneast.oaiusercontent.com/files/00000000-6a04-8209-bbf4-22d13f45f061/raw?se=2026-10-08T12%3A22%3A12Z&sp=r&sv=2026-02-06&sr=b&scid=0522d0fd-9353-529e-90c3-76bb944cd5ee&skoid=bb372dd6-3b2a-4af2-b355-c26497ba23cd&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-07T23%3A56%3A49Z&ske=2026-10-08T23%3A56%3A49Z&sks=b&skv=2026-02-06&sig=%2BZi8QtWETzFUw5oRpEzXeTaSGjDjZKlpg49aKH4SXck%3D"
+          HJC_URL: "https://sdmntprjapaneast.oaiusercontent.com/files/00000000-4248-8209-91e3-9a4fd21de451/raw?se=2026-10-08T12%3A22%3A12Z&sp=r&sv=2026-02-06&sr=b&scid=8c0c69bd-188a-5b22-9099-1560d0f6a62e&skoid=bb372dd6-3b2a-4af2-b355-c26497ba23cd&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-07T23%3A08%3A12Z&ske=2026-10-08T23%3A08%3A12Z&sks=b&skv=2026-02-06&sig=l52nrKZ7dHFC%2BuQuHqr1yxL0J4qXTE8EvqVyCmmxxuU%3D"
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_result_query/20260524
+          curl -fL "$SED_URL" -o /tmp/jrdb_result_query/20260524/SED260524.zip
+          curl -fL "$HJC_URL" -o /tmp/jrdb_result_query/20260524/HJC260524.zip
+          python - <<'PY'
+          import zipfile
+          for p in ["/tmp/jrdb_result_query/20260524/SED260524.zip","/tmp/jrdb_result_query/20260524/HJC260524.zip"]:
+              with zipfile.ZipFile(p) as z:
+                  assert z.testzip() is None, p
+          PY
+      - name: Build canonical JRDB result
+        run: |
+          set -euo pipefail
+          ROOT="horse-racing/jrdb/backtests/BTDAY-0066/20260524/v052"
+          mkdir -p "$ROOT/settlement"
+          python horse-racing/jrdb/src/racenote_daily_result_from_jrdb.py \
+            --date 2026-05-24 \
+            --sed /tmp/jrdb_result_query/20260524/SED260524.zip \
+            --hjc /tmp/jrdb_result_query/20260524/HJC260524.zip \
+            --output "$ROOT/settlement/20260524_JRDB_Result.json" \
+            --pretty
+      - name: Settle frozen RaceNote
+        run: |
+          set -euo pipefail
+          ROOT="horse-racing/jrdb/backtests/BTDAY-0066/20260524/v052"
+          python horse-racing/jrdb/src/racenote_daily_settlement.py \
+            --forecast "$ROOT/frozen/records.json" \
+            --results "$ROOT/settlement/20260524_JRDB_Result.json" \
+            --output-json "$ROOT/settlement/settlement.json" \
+            --output-md "$ROOT/settlement/settlement.md" \
+            --top 5
+      - name: Commit settlement outputs
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add horse-racing/jrdb/backtests/BTDAY-0066/20260524/v052/settlement
+          git commit -m "RaceNote: settle BTDAY-0066 v0.5.2"
+          git push origin HEAD:main
