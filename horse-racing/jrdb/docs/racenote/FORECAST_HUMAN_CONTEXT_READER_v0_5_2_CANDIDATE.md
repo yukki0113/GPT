@@ -109,6 +109,71 @@ In addition to `candidate_compression`, v0.5.2 requires:
 
 The validator checks structure and identity. It does not mechanically score racing evidence.
 
+## 4.1 Research-oriented reasoning capture — prose-only revision 2026-10-08
+
+This revision changes **how the already-made judgment is recorded**, not the
+decision procedure in Steps A-E. Use the same normal_view, ordinary-five
+selection, WIN_FIRST_NOT_PLACE_FIRST ◎/○ choice, one independent ▲ challenger,
+six-to-five compression and final mark assignment. Do not run another ranking
+pass, add thresholds, change the model-facing Reader, or select marks to improve
+the research labels. The record remains
+`RaceNote-Human-Context-Reader-0.5.2-candidate`.
+
+Once the five marks and the actual reasons are decided, keep the **existing
+Decision Core fields** but make the reasoning genuinely discriminative:
+
+- `race_model`: name the concrete condition that defines today's main race
+  scenario (position, pace, class, course or condition), and, **where material**,
+  which plausible departure from that scenario would threaten the main line.
+  Do not invent alternative scenarios just to fill a checklist.
+- `role_assignment.honmei_win_case`: specify why ◎ can *win*, rather than
+  merely place, with one or more concrete pre-race observations. If the path
+  depends on a particular pace/position/smooth trip, state that dependency
+  plainly instead of declaring confidence.
+- `role_assignment.second_case` and `ranking_reason`: preserve the real
+  distinction between ◎ and ○. State the decisive **reason for ◎ over ○**
+  when one exists; if both are very close, record the actual tie-break and
+  residual uncertainty without pretending the gap is clear. Do not force
+  ordinary rank 1 to be ◎.
+- `boundary_review.reason`: explain the real final △2 vs closest excluded
+  alternative comparison using their contrasting evidence when a meaningful
+  alternative exists. Say when the margin is thin, if it truly is. Keep the
+  original `alternative_horse_no` meaning; no newly selected runner or
+  manufactured sixth candidate is allowed.
+- `candidate_compression.reason`: keep the independent challenger admission
+  or rejection rationale specific to that horse's alternative win path.
+  Do not replace the six-to-five audit with a confidence judgment.
+- `single_shot_case` and `mainline_cases`: retain their original roles and
+  actual supporting race evidence. Do not impose new ordering or scoring.
+
+**Evidence specificity:** writing "most reproducible", "clear winning path",
+"stable second", or "better boundary" without the race-specific observation
+does not record a useful comparison. Replacing horse names or numbers in a
+shared sentence is not a genuine reason. When the evidence is ambiguous, say
+so; do not fabricate a neat contrast, hidden doubt, objective probability or
+post hoc winning condition.
+
+**Output boundaries:** do not add A/B/C, confidence percentages, numeric
+scores, extra schema keys, required subheadings, or artificial sentence
+templates. `reader_facing_reason` remains one compact, natural race comment
+under `FORECAST_READER_FACING_PROSE_v0_1.md`, not a transcript of the audit
+fields. Keep all existing validation, hashes, Freeze and market/result
+firewalls unchanged.
+
+Before saving each venue, compare its race explanations for identical or
+near-identical wording after replacing horse names, numbers and venue names.
+If a repeated passage conceals materially different reasoning, repair the
+prose **only**, using already-seen clean Reader evidence. Do not revise the
+horse selection, introduce evidence after Freeze, or force variation where
+the evidence really is the same.
+
+For analysis, preserve a separate annotation/output-policy cohort:
+records authored using this guidance can be compared with older v0.5.2
+FROZEN records for **mark/outcome metrics**, but differences in prose quality
+must not be treated as pre-existing features of the older cohort. Use the
+existing `base_main_sha` / authored-session provenance to distinguish
+generations; do not backfill or rewrite historical frozen Decision Cores.
+
 ## 5. What v0.5.2 must not become
 
 v0.5.2 is not:
