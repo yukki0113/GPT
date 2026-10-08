@@ -1,0 +1,722 @@
+[
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "race_model": "11は直線1000mで47を出して2着。外ラチ沿いへ持ち出す形が最も素直で、1200mでも先行力を生かせる。",
+    "marks": [
+      11,
+      13,
+      10,
+      12,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "13は1200m2着43で前傾を前で受けても残るが、直線1000m実績まである11を◎にした。"
+      },
+      {
+        "horse_no": 13,
+        "case": "12は差しで40、15は直線1000m5着42。距離適性の明確さから△2は15を残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "9は芝1400m6着32で、調教は良いが1200mで通常5頭を崩すだけの速度裏付けが足りない。"
+      },
+      {
+        "horse_no": 15,
+        "case": "9は芝1400m6着32で、調教は良いが1200mで通常5頭を崩すだけの速度裏付けが足りない。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は芝1400m6着32で、調教は良いが1200mで通常5頭を崩すだけの速度裏付けが足りない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "13は1200m2着43で前傾を前で受けても残るが、直線1000m実績まである11を◎にした。 12は差しで40、15は直線1000m5着42。距離適性の明確さから△2は15を残す。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        13,
+        10,
+        12,
+        15
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 13,
+      "honmei_win_case": "13は1200m2着43で前傾を前で受けても残るが、直線1000m実績まである11を◎にした。",
+      "second_case": "12は差しで40、15は直線1000m5着42。距離適性の明確さから△2は15を残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、13は1200m2着43で前傾を前で受けても残るが、直線1000m実績まである11を◎にした。 ○については、12は差しで40、15は直線1000m5着42。距離適性の明確さから△2は15を残す。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "race_model": "1は1200m2着47で先行力が明確。前傾を前で受けて0.1差まで残した内容なら押し切りまで届く。",
+    "marks": [
+      1,
+      13,
+      15,
+      3,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "13は1400m3着42でダート適性はあるが、1200mの完成度で1が上。"
+      },
+      {
+        "horse_no": 13,
+        "case": "3は1400m5着41で外を回した内容、7は1200m3着38で平坦向き。近距離適性から△2は7。"
+      },
+      {
+        "horse_no": 3,
+        "case": "5は同条件5着38。悪くないがフワつく面があり、外部challengerとして勝ち切る別経路が弱い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "5は同条件5着38。悪くないがフワつく面があり、外部challengerとして勝ち切る別経路が弱い。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5は同条件5着38。悪くないがフワつく面があり、外部challengerとして勝ち切る別経路が弱い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "13は1400m3着42でダート適性はあるが、1200mの完成度で1が上。 3は1400m5着41で外を回した内容、7は1200m3着38で平坦向き。近距離適性から△2は7。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        13,
+        15,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 13,
+      "honmei_win_case": "13は1400m3着42でダート適性はあるが、1200mの完成度で1が上。",
+      "second_case": "3は1400m5着41で外を回した内容、7は1200m3着38で平坦向き。近距離適性から△2は7。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、13は1400m3着42でダート適性はあるが、1200mの完成度で1が上。 ○については、3は1400m5着41で外を回した内容、7は1200m3着38で平坦向き。近距離適性から△2は7。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "race_model": "10は1800m2着44、1700m2着40と先行して崩れず、同じ中距離ダートで最も再現性が高い。",
+    "marks": [
+      10,
+      2,
+      6,
+      5,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "2は1800m3着37、先手を取れる点は魅力だが、能力上限で10を上に取った。"
+      },
+      {
+        "horse_no": 2,
+        "case": "5は1600mで37、9は芝からの転戦で不確定。ダート経験の差で△2は9より5を上に見る。"
+      },
+      {
+        "horse_no": 5,
+        "case": "1は長期休養明けで近走ダートの裏付けが薄く、外部から勝ち切る材料は不足。"
+      },
+      {
+        "horse_no": 9,
+        "case": "1は長期休養明けで近走ダートの裏付けが薄く、外部から勝ち切る材料は不足。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1は長期休養明けで近走ダートの裏付けが薄く、外部から勝ち切る材料は不足。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2は1800m3着37、先手を取れる点は魅力だが、能力上限で10を上に取った。 5は1600mで37、9は芝からの転戦で不確定。ダート経験の差で△2は9より5を上に見る。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        2,
+        6,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 2,
+      "honmei_win_case": "2は1800m3着37、先手を取れる点は魅力だが、能力上限で10を上に取った。",
+      "second_case": "5は1600mで37、9は芝からの転戦で不確定。ダート経験の差で△2は9より5を上に見る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、2は1800m3着37、先手を取れる点は魅力だが、能力上限で10を上に取った。 ○については、5は1600mで37、9は芝からの転戦で不確定。ダート経験の差で△2は9より5を上に見る。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "race_model": "1は前走同じ新潟障害2890mで2着。渋馬場でも安定した飛越を見せ、今回の軸になる。",
+    "marks": [
+      1,
+      8,
+      5,
+      9,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "8は2890m3着、2860m3着と障害で安定。1との差は直近同コース2着の再現性。"
+      },
+      {
+        "horse_no": 8,
+        "case": "9は飛越ミスが続く一方、3は初障害で不確定。既走の安定性を優先して△2は3より9。"
+      },
+      {
+        "horse_no": 9,
+        "case": "2は平地近走中心で障害の実戦裏付けがなく、外部challengerとしては採らない。"
+      },
+      {
+        "horse_no": 3,
+        "case": "2は平地近走中心で障害の実戦裏付けがなく、外部challengerとしては採らない。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2は平地近走中心で障害の実戦裏付けがなく、外部challengerとしては採らない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8は2890m3着、2860m3着と障害で安定。1との差は直近同コース2着の再現性。 9は飛越ミスが続く一方、3は初障害で不確定。既走の安定性を優先して△2は3より9。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        8,
+        5,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 8,
+      "honmei_win_case": "8は2890m3着、2860m3着と障害で安定。1との差は直近同コース2着の再現性。",
+      "second_case": "9は飛越ミスが続く一方、3は初障害で不確定。既走の安定性を優先して△2は3より9。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、8は2890m3着、2860m3着と障害で安定。1との差は直近同コース2着の再現性。 ○については、9は飛越ミスが続く一方、3は初障害で不確定。既走の安定性を優先して△2は3より9。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "race_model": "15は2200mで連続3着、44もあり、2000m短縮なら先行して長く脚を使える。",
+    "marks": [
+      15,
+      2,
+      7,
+      4,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "2は1800m3着40で終いを使えるが、距離延長で位置取りが後ろになる分15を◎にした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "4は2000m2着39、12は前傾を前で受けた補正があり、13は2400m型で瞬発力不足から境界外。"
+      },
+      {
+        "horse_no": 4,
+        "case": "7は2000m3着35でも前で運び前傾を0.1差まで耐えた。軽い先行展開なら粘り切る別経路があり▲採用。"
+      },
+      {
+        "horse_no": 12,
+        "case": "7は2000m3着35でも前で運び前傾を0.1差まで耐えた。軽い先行展開なら粘り切る別経路があり▲採用。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "7は2000m3着35でも前で運び前傾を0.1差まで耐えた。軽い先行展開なら粘り切る別経路があり▲採用。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2は1800m3着40で終いを使えるが、距離延長で位置取りが後ろになる分15を◎にした。 4は2000m2着39、12は前傾を前で受けた補正があり、13は2400m型で瞬発力不足から境界外。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        2,
+        4,
+        12,
+        13
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 13,
+      "decision": "ADMIT_CHALLENGER"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 2,
+      "honmei_win_case": "2は1800m3着40で終いを使えるが、距離延長で位置取りが後ろになる分15を◎にした。",
+      "second_case": "4は2000m2着39、12は前傾を前で受けた補正があり、13は2400m型で瞬発力不足から境界外。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、2は1800m3着40で終いを使えるが、距離延長で位置取りが後ろになる分15を◎にした。 ○については、4は2000m2着39、12は前傾を前で受けた補正があり、13は2400m型で瞬発力不足から境界外。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "race_model": "7は1800m2着38、43の能力歴があり、先行して前傾を受けても0.1差。勝ち筋が最も具体的。",
+    "marks": [
+      7,
+      6,
+      10,
+      4,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "6は過去1800m2着34・3着43があり休み明けでも地力十分だが、近況の鮮度で7を上に取った。"
+      },
+      {
+        "horse_no": 6,
+        "case": "4は前走同距離4着41、1は過去39があるが休みが長い。現状の再現性から△2は1。"
+      },
+      {
+        "horse_no": 4,
+        "case": "5は近走2000mで10着、1800mで4着33。上振れ余地はあるが通常5頭を崩すほどではない。"
+      },
+      {
+        "horse_no": 1,
+        "case": "5は近走2000mで10着、1800mで4着33。上振れ余地はあるが通常5頭を崩すほどではない。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5は近走2000mで10着、1800mで4着33。上振れ余地はあるが通常5頭を崩すほどではない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "6は過去1800m2着34・3着43があり休み明けでも地力十分だが、近況の鮮度で7を上に取った。 4は前走同距離4着41、1は過去39があるが休みが長い。現状の再現性から△2は1。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        6,
+        10,
+        4,
+        1
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 6,
+      "honmei_win_case": "6は過去1800m2着34・3着43があり休み明けでも地力十分だが、近況の鮮度で7を上に取った。",
+      "second_case": "4は前走同距離4着41、1は過去39があるが休みが長い。現状の再現性から△2は1。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、6は過去1800m2着34・3着43があり休み明けでも地力十分だが、近況の鮮度で7を上に取った。 ○については、4は前走同距離4着41、1は過去39があるが休みが長い。現状の再現性から△2は1。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "race_model": "10は同条件1200m2着52でスタート良く平坦向き。今回も先行してそのまま押し切る像が明瞭。",
+    "marks": [
+      10,
+      14,
+      7,
+      2,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "14は1200m2着48で馬群もこなせるが、能力上限と先行位置で10を◎にした。"
+      },
+      {
+        "horse_no": 14,
+        "case": "2は1400mで49、15は1200m2着46で追い通しながら伸びる。距離適性から△2は15。"
+      },
+      {
+        "horse_no": 2,
+        "case": "5は終いは確実だが追込依存が大きく、外部challengerとしては展開待ち過ぎる。"
+      },
+      {
+        "horse_no": 15,
+        "case": "5は終いは確実だが追込依存が大きく、外部challengerとしては展開待ち過ぎる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5は終いは確実だが追込依存が大きく、外部challengerとしては展開待ち過ぎる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "14は1200m2着48で馬群もこなせるが、能力上限と先行位置で10を◎にした。 2は1400mで49、15は1200m2着46で追い通しながら伸びる。距離適性から△2は15。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        14,
+        7,
+        2,
+        15
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 14,
+      "honmei_win_case": "14は1200m2着48で馬群もこなせるが、能力上限と先行位置で10を◎にした。",
+      "second_case": "2は1400mで49、15は1200m2着46で追い通しながら伸びる。距離適性から△2は15。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、14は1200m2着48で馬群もこなせるが、能力上限と先行位置で10を◎にした。 ○については、2は1400mで49、15は1200m2着46で追い通しながら伸びる。距離適性から△2は15。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "race_model": "8は1400m2着46で渋馬場もこなし、1200m短縮なら位置を取りやすい。調教17.1も後押し。",
+    "marks": [
+      8,
+      6,
+      3,
+      12,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "6は1200m3・4着で安定し能力49。前進余地は大きいが、差し脚の鋭さで8を僅かに上位。"
+      },
+      {
+        "horse_no": 6,
+        "case": "12は1200m4着46、15は1400m5着45。距離実績の明確さから△2は15より12。"
+      },
+      {
+        "horse_no": 12,
+        "case": "9は後傾での末脚は目立つが直近1200m5着45止まり。通常5頭を崩す勝ち切り材料は不足。"
+      },
+      {
+        "horse_no": 15,
+        "case": "9は後傾での末脚は目立つが直近1200m5着45止まり。通常5頭を崩す勝ち切り材料は不足。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は後傾での末脚は目立つが直近1200m5着45止まり。通常5頭を崩す勝ち切り材料は不足。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "6は1200m3・4着で安定し能力49。前進余地は大きいが、差し脚の鋭さで8を僅かに上位。 12は1200m4着46、15は1400m5着45。距離実績の明確さから△2は15より12。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        6,
+        3,
+        12,
+        15
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 6,
+      "honmei_win_case": "6は1200m3・4着で安定し能力49。前進余地は大きいが、差し脚の鋭さで8を僅かに上位。",
+      "second_case": "12は1200m4着46、15は1400m5着45。距離実績の明確さから△2は15より12。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、6は1200m3・4着で安定し能力49。前進余地は大きいが、差し脚の鋭さで8を僅かに上位。 ○については、12は1200m4着46、15は1400m5着45。距離実績の明確さから△2は15より12。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "race_model": "14は1600m3着46、前走も距離適性と追いの確かさを示し、1800m延長でも終いを伸ばせる。",
+    "marks": [
+      14,
+      8,
+      9,
+      13,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "8は2000m2着48で後方から脚を使えるが、1800mの機動力で14を◎にした。"
+      },
+      {
+        "horse_no": 8,
+        "case": "13は1600m2着46、7は1800m3着46。直近の安定性から△2は7。"
+      },
+      {
+        "horse_no": 13,
+        "case": "6は能力49だが近2走9着が続き、外部challengerとしての別勝ち筋は弱い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "6は能力49だが近2走9着が続き、外部challengerとしての別勝ち筋は弱い。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6は能力49だが近2走9着が続き、外部challengerとしての別勝ち筋は弱い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8は2000m2着48で後方から脚を使えるが、1800mの機動力で14を◎にした。 13は1600m2着46、7は1800m3着46。直近の安定性から△2は7。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        8,
+        9,
+        13,
+        7
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 8,
+      "honmei_win_case": "8は2000m2着48で後方から脚を使えるが、1800mの機動力で14を◎にした。",
+      "second_case": "13は1600m2着46、7は1800m3着46。直近の安定性から△2は7。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、8は2000m2着48で後方から脚を使えるが、1800mの機動力で14を◎にした。 ○については、13は1600m2着46、7は1800m3着46。直近の安定性から△2は7。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "race_model": "14は1200m勝ち53で休養効果もあり、前傾を前で0.0差まで耐える先行力が今回の主武器。",
+    "marks": [
+      14,
+      2,
+      9,
+      10,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "2は1300m3着54でシブトく先行できるが、1200m直結の勝ち実績で14を上に取った。"
+      },
+      {
+        "horse_no": 2,
+        "case": "10は1200m3着52、7は1200m2着52。近走の安定性から△2は7を残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "3は能力54近辺でも前走中止明け要素があり、通常5頭を崩すまでの確信は持てない。"
+      },
+      {
+        "horse_no": 7,
+        "case": "3は能力54近辺でも前走中止明け要素があり、通常5頭を崩すまでの確信は持てない。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3は能力54近辺でも前走中止明け要素があり、通常5頭を崩すまでの確信は持てない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2は1300m3着54でシブトく先行できるが、1200m直結の勝ち実績で14を上に取った。 10は1200m3着52、7は1200m2着52。近走の安定性から△2は7を残す。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        2,
+        9,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 2,
+      "honmei_win_case": "2は1300m3着54でシブトく先行できるが、1200m直結の勝ち実績で14を上に取った。",
+      "second_case": "10は1200m3着52、7は1200m2着52。近走の安定性から△2は7を残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、2は1300m3着54でシブトく先行できるが、1200m直結の勝ち実績で14を上に取った。 ○については、10は1200m3着52、7は1200m2着52。近走の安定性から△2は7を残す。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "race_model": "12は1200m4着63で能力上位。直線競馬でも先行力を生かせる速度があり中心視する。",
+    "marks": [
+      12,
+      6,
+      14,
+      5,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "6は1200m2着63の末脚があり直線1000m適性も高そうだが、差し一辺倒の分12を上にした。"
+      },
+      {
+        "horse_no": 6,
+        "case": "5は逃げの速度、8は直線1000m勝ち57。9は近2走大敗で境界外。"
+      },
+      {
+        "horse_no": 5,
+        "case": "14はダート短距離で強い先行力を示し、芝直線で行き切れれば押し切る別経路があるため▲採用。"
+      },
+      {
+        "horse_no": 8,
+        "case": "14はダート短距離で強い先行力を示し、芝直線で行き切れれば押し切る別経路があるため▲採用。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "14はダート短距離で強い先行力を示し、芝直線で行き切れれば押し切る別経路があるため▲採用。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "6は1200m2着63の末脚があり直線1000m適性も高そうだが、差し一辺倒の分12を上にした。 5は逃げの速度、8は直線1000m勝ち57。9は近2走大敗で境界外。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        6,
+        5,
+        8,
+        9
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 9,
+      "decision": "ADMIT_CHALLENGER"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 6,
+      "honmei_win_case": "6は1200m2着63の末脚があり直線1000m適性も高そうだが、差し一辺倒の分12を上にした。",
+      "second_case": "5は逃げの速度、8は直線1000m勝ち57。9は近2走大敗で境界外。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、6は1200m2着63の末脚があり直線1000m適性も高そうだが、差し一辺倒の分12を上にした。 ○については、5は逃げの速度、8は直線1000m勝ち57。9は近2走大敗で境界外。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "race_model": "3は1800m2・3着で51前後を安定して出し、好位から確実に伸びる今回の主線。",
+    "marks": [
+      3,
+      10,
+      1,
+      12,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "10は2100m2着49で長く脚を使えるが、距離短縮で位置取りが忙しくなる分3を◎。"
+      },
+      {
+        "horse_no": 10,
+        "case": "12は1800m2着49、2は同距離2着46。近走の能力差から△2は2。"
+      },
+      {
+        "horse_no": 12,
+        "case": "11は同距離3着44で悪くないが、後方依存が強く通常5頭を崩す決め手に欠ける。"
+      },
+      {
+        "horse_no": 2,
+        "case": "11は同距離3着44で悪くないが、後方依存が強く通常5頭を崩す決め手に欠ける。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11は同距離3着44で悪くないが、後方依存が強く通常5頭を崩す決め手に欠ける。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10は2100m2着49で長く脚を使えるが、距離短縮で位置取りが忙しくなる分3を◎。 12は1800m2着49、2は同距離2着46。近走の能力差から△2は2。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        10,
+        1,
+        12,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 10,
+      "honmei_win_case": "10は2100m2着49で長く脚を使えるが、距離短縮で位置取りが忙しくなる分3を◎。",
+      "second_case": "12は1800m2着49、2は同距離2着46。近走の能力差から△2は2。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎を優先した理由は、10は2100m2着49で長く脚を使えるが、距離短縮で位置取りが忙しくなる分3を◎。 ○については、12は1800m2着49、2は同距離2着46。近走の能力差から△2は2。"
+    }
+  }
+]
