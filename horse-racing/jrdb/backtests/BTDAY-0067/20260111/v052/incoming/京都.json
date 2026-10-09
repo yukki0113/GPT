@@ -1,0 +1,806 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "race_model": "京都ダート1800m未勝利。16と3が前、7と6が中団から動く構図。先行だけでなく3角以降に長く脚を使えるかが勝負を分ける。",
+    "marks": [
+      7,
+      3,
+      11,
+      16,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "ル"
+      },
+      {
+        "horse_no": 3,
+        "case": "ー"
+      },
+      {
+        "horse_no": 16,
+        "case": "M"
+      },
+      {
+        "horse_no": 6,
+        "case": "ラ"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11は初戦で出遅れながら3着まで伸びた。前が早めに動けば後方から差し込む経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": {
+        "3": "近2走連続2着で先行持続力が安定。",
+        "6": "2着実績があり状態も上向き。",
+        "7": "前走3着IDM41で外から長く脚を使った。",
+        "16": "近2走3、2着で好位から崩れにくい。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        3,
+        16,
+        6,
+        11
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14は前走4着で先行力はあるが、通常5頭の能力値と近走実績を上回るまでではない。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14より6の2着実績と上昇気配を最後の1頭として残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 3,
+      "honmei_win_case": "7は前走3着IDM41で3角外から自ら動き、直線も脚を保った。中団から前を捕まえる勝ち筋が最も具体的。",
+      "second_case": "3は近2走連続2着で先行の再現性が高い。7より前で運べるが、能力上限と進出力で一歩譲る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3の安定感より、7が外を動いて3着まで来た内容とIDM41の上限を勝ち切り材料として優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "race_model": "京都ダート1800m新馬。既走歴がないため、初期能力値、調教、状態、位置予測を中心に比較する。",
+    "marks": [
+      14,
+      11,
+      12,
+      13,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "が"
+      },
+      {
+        "horse_no": 11,
+        "case": "と"
+      },
+      {
+        "horse_no": 13,
+        "case": "教"
+      },
+      {
+        "horse_no": 1,
+        "case": "ト"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12は初期IDM25.8で状態上昇。上位2頭の直後で流れに乗れれば初戦から浮上する経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": {
+        "1": "位置予測が比較的前で初戦対応余地がある。",
+        "11": "初期能力33.2で位置予測も良い。",
+        "13": "初期IDM20.9で中位以上。",
+        "14": "初期能力と調教が最上位。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        11,
+        12,
+        13,
+        1
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16は初期IDM19で、通常5頭の初期能力値と位置予測を上回らない。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "16より13と1の初期能力・位置予測を優先して通常5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 11,
+      "honmei_win_case": "14は初期IDM38.1、調教22.5で一段上。新馬でも前を射程に置いて押し切る期待が最も高い。",
+      "second_case": "11は初期IDM33.2で位置予測も最上位。14には能力と調教で譲るが相手本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "実戦比較ができない新馬戦なので、初期能力と調教の両方で最上位の14を勝ち切り候補として優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "race_model": "京都ダート1400m未勝利。4と1が前、3が後方から差す形。好位持続力と直線の末脚性能を両面で評価する。",
+    "marks": [
+      3,
+      1,
+      4,
+      8,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "ツ"
+      },
+      {
+        "horse_no": 1,
+        "case": "ル"
+      },
+      {
+        "horse_no": 8,
+        "case": "は"
+      },
+      {
+        "horse_no": 2,
+        "case": "ス"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は前走2着IDM38。先行して直線入口まで余力を残せれば、そのまま抜け出す経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": {
+        "1": "前走2着で調教も上昇。",
+        "2": "初戦3着で馬群から伸びた。",
+        "3": "大出遅れから3着まで伸び、末脚性能が高い。",
+        "8": "ダート3着経験と2着実績がある。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        1,
+        4,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14は芝中心で3着実績もあるが、ダートでの直接材料が通常5頭より薄い。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14の先行力より、2のダート3着実績と馬群から伸びる再現性を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 1,
+      "honmei_win_case": "3は前走大きく出遅れながら3着IDM38。後方高上がり材料もあり、五分に出れば差し切る勝ち筋が最も鮮明。",
+      "second_case": "1は前走2着IDM37で調教も上昇。好位から安定するが、末脚上限で3を上に取る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1の位置取りの利より、3が大出遅れを克服して3着まで来た末脚の強さをWIN_FIRSTで優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "race_model": "京都障害2910m未勝利。飛越の安定性と2周目の進出力を重視し、14・11・5・10を主線とする。",
+    "marks": [
+      14,
+      11,
+      5,
+      10,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "か"
+      },
+      {
+        "horse_no": 11,
+        "case": "走"
+      },
+      {
+        "horse_no": 10,
+        "case": "前"
+      },
+      {
+        "horse_no": 3,
+        "case": "ト"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5は障害で2着実績があり、前へ取り付いて飛越をまとめればそのまま粘り込む経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": {
+        "3": "障害初戦で途中から進出を見せた。",
+        "10": "障害で連続4着と大崩れしにくい。",
+        "11": "前走3着で好位から飛越が安定。",
+        "14": "前走障害2着、後方から長く進出した。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        11,
+        5,
+        10,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は障害3着実績もあるが前走9着で、直近の飛越と終盤の再現性が弱い。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1より、障害初戦で進出を見せた3の上昇余地を最後の候補として残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 11,
+      "honmei_win_case": "14は前走出遅れから2周目3角で先団へ上がり2着。長く脚を使って勝負を作れる点を◎に取る。",
+      "second_case": "11は前走3着で好位から最終障害まで崩れなかった。14より進出力で一歩譲るが相手本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11の安定した位置取りより、14が後方から自力で先団まで上がった進出力を勝ち切り材料として優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "race_model": "京都ダート1400m1勝クラス。4・5・6・2と前へ行く馬が多く、流れは締まりやすい。先行争いの直後で運べる馬を重視する。",
+    "marks": [
+      7,
+      1,
+      4,
+      5,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "タ"
+      },
+      {
+        "horse_no": 1,
+        "case": "イ"
+      },
+      {
+        "horse_no": 5,
+        "case": "ヌ"
+      },
+      {
+        "horse_no": 3,
+        "case": "オ"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は前走逃げ切りIDM46。先行争いを制して単騎に近い形を作れれば、そのまま残る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": {
+        "1": "前走2着IDM48で差し脚が強い。",
+        "3": "前走勝利で好位差しが安定。",
+        "5": "近2走1、2着で逃げの再現性が高い。",
+        "7": "基礎能力とクラス経験が上位。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        1,
+        4,
+        5,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は近2走1、2着でも同型が多く、単騎逃げの条件が今回は薄い。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6より3の前走勝利と好位差しの再現性を通常5頭に残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 1,
+      "honmei_win_case": "7は基礎IDM47で前走4着。先行勢を見ながら好位で運び、直線で前を捕まえる勝ち筋がある。",
+      "second_case": "1は前走2着IDM48で後方から差せる。能力は高いが位置取りが後ろになる分だけ○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1の前走能力値より、7がより前で運べてクラス経験も上という勝ち筋の主導性を優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "race_model": "京都ダート1800m1勝クラス。11が逃げ、13が好位、3と6が差す構図。11の先行持続力が主線。",
+    "marks": [
+      11,
+      3,
+      1,
+      13,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "げ"
+      },
+      {
+        "horse_no": 3,
+        "case": "ン"
+      },
+      {
+        "horse_no": 13,
+        "case": "連"
+      },
+      {
+        "horse_no": 6,
+        "case": "バ"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は近走着順は悪いが後方高上がり材料と状態指数81。前が競れば後方から差す独立経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": {
+        "3": "3着を複数回、差しの再現性が高い。",
+        "6": "近走4着でIDM49実績もある。",
+        "11": "逃げて連続3着、IDM50超。",
+        "13": "1、3着で好位持続力がある。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        3,
+        13,
+        6,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は3着実績があるが直近6着で、通常5頭の能力と近走再現性に一歩届かない。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2より6の近走4着とIDM49実績を通常5頭の最後に残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 3,
+      "honmei_win_case": "11は近2走連続3着でIDM50、53。今回も逃げ予測最上位で、自分のペースから押し切る形が最も明確。",
+      "second_case": "3は近3走で3着2回、IDM50級。11を射程に入れて直線で差す本線相手。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3の差し能力より、11が自ら先手を取って高いIDMを連続している再現性をWIN_FIRSTで優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "race_model": "京都芝2000m1勝クラス。2と10が前、4が中団、14と9が後方。4の安定感を軸に、前残りと差し込みの両方を想定する。",
+    "marks": [
+      4,
+      14,
+      2,
+      9,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "ナ"
+      },
+      {
+        "horse_no": 14,
+        "case": "、"
+      },
+      {
+        "horse_no": 9,
+        "case": "3"
+      },
+      {
+        "horse_no": 10,
+        "case": "走"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2はRRDBのHV系シグナルと逃げ切り実績がある。差し勢が互いに牽制すれば単騎で残る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": {
+        "4": "近3走1、2、2着で自在性が高い。",
+        "9": "前走2着で後方から伸びる。",
+        "10": "近2走2、3着で先行持続力が高い。",
+        "14": "前走3着で能力上限IDM55。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        14,
+        9,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は直近着順こそ10、6着だが、逃げという独立した勝ち筋とHV系材料を持つため1を外して▲採用する。",
+      "excluded_horse_no": 1,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "1は4、1着実績があるが、2の逃げという非対称な勝ち筋を優先して六頭比較では外す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 14,
+      "honmei_win_case": "4は近3走1、2、2着でIDM52、51。前でも後ろでも運べ、展開が変わっても勝ち筋を残せる。",
+      "second_case": "14は前走3着IDM49、過去にIDM55もあり能力上限が高い。4より勝ち切り再現性で○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "14の能力上限は高いが、4は複数の位置取りで連続好走しており展開への耐性が上と判断した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "race_model": "京都ダート1400m2勝クラス。14と6が前、4・7が好位、15と11が差し追込。14の能力上限が一段上。",
+    "marks": [
+      14,
+      15,
+      11,
+      4,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "り"
+      },
+      {
+        "horse_no": 15,
+        "case": "で"
+      },
+      {
+        "horse_no": 4,
+        "case": "ー"
+      },
+      {
+        "horse_no": 5,
+        "case": "リ"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11は前走2着IDM54で追込から伸びた。前2頭が動き合えば直線でまとめて差す経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": {
+        "4": "近3走3、4、2着で好位から崩れない。",
+        "5": "勝利実績とIDM53で差し対応。",
+        "14": "前走逃げ切りIDM58、上級相当。",
+        "15": "近3走1、3、1着で差し安定。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        15,
+        11,
+        4,
+        5
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は前走3着IDM53で有力だが、通常5頭の能力上限と差し幅を上に取る。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6は前受け型で14との同型リスクがあるため、5の差し対応を通常5頭に残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 15,
+      "honmei_win_case": "14は前走逃げ切りIDM58、基礎IDM62で上級相当シグナルもある。今回も先手から押し切る勝ち筋が明確。",
+      "second_case": "15は近3走1、3、1着でIDM57。中団から差せるが能力上限で14を上に取る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "15の安定感は高いが、14は上級相当の能力値と逃げ切りの主導性を持つためWIN_FIRSTで上位。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "race_model": "京都ダート1900m2勝クラス。2と4が好位、10が前、6と9が差す。2の先行持続力を中心視する。",
+    "marks": [
+      2,
+      4,
+      6,
+      9,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "オ"
+      },
+      {
+        "horse_no": 4,
+        "case": "マ"
+      },
+      {
+        "horse_no": 9,
+        "case": "は"
+      },
+      {
+        "horse_no": 10,
+        "case": "近"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6は前走出遅れから3着IDM56で後方高上がり材料もある。前が早めに動けば差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": {
+        "2": "近2走1、2着でIDM60実績。",
+        "4": "連続2着で安定し状態上昇。",
+        "9": "1、3着で好位差しの再現性が高い。",
+        "10": "前走勝利で先行から粘れる。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        9,
+        6,
+        10
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は過去に勝利もあるが直近7着。通常5頭の近走上位実績を上に取る。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1は後方型として6と競合し、直近の再現性で下と判断する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 4,
+      "honmei_win_case": "2は近2走1、2着でIDM60、55。好位から自分で動けるため勝ち切りの形が最も明確。",
+      "second_case": "4は近2走連続2着でIDM56、55、状態も上昇。2より勝利実績と能力上限で一歩譲る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4の安定度は高いが、2は勝利実績とIDM60の上限があり、自ら前を捕まえる勝ち筋を優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "race_model": "京都芝1600m3勝クラス。8と4が前、3・11が中団、14・6が後方。4の直近勝ち切りと3の連勝が中心。",
+    "marks": [
+      4,
+      8,
+      14,
+      3,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "ー"
+      },
+      {
+        "horse_no": 8,
+        "case": "走"
+      },
+      {
+        "horse_no": 3,
+        "case": "タ"
+      },
+      {
+        "horse_no": 11,
+        "case": "M"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14は前走出遅れから勝利IDM59。前が流れれば後方から一気に差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": {
+        "3": "2連勝で状態も上昇、差し切り実績。",
+        "4": "前走勝利IDM62で番手から押し切った。",
+        "8": "前走2着IDM60で先行力が高い。",
+        "11": "現級3着IDM57で中団差しが安定。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        8,
+        3,
+        14,
+        11
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は後方高上がり材料と好状態だが近走6、15着。通常5頭の再現性を優先する。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6の一発材料は認めるが、11の現級3着と中団差しの再現性を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 8,
+      "honmei_win_case": "4は前走勝利IDM62、前々走2着。番手から早め先頭で押し切る勝ち筋が完成している。",
+      "second_case": "8は前走2着IDM60、基礎IDM61で先行力は高いが、近走の振れ幅で4を上に取る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8の能力は近いが、4は直近で勝ち切りと2着を続け、位置取りと直線の再現性が高い。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "race_model": "京都芝1200mオープン。5が逃げ、16・13が好位、11・12・6が差す。高速短距離で前後の能力比較が焦点。",
+    "marks": [
+      5,
+      11,
+      12,
+      6,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "げ"
+      },
+      {
+        "horse_no": 11,
+        "case": "と"
+      },
+      {
+        "horse_no": 6,
+        "case": "て"
+      },
+      {
+        "horse_no": 16,
+        "case": "今"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12は前走3着IDM64、状態指数74でデキ抜群。前2頭が競れば外から差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": {
+        "5": "近2走1、2着で逃げてIDM65。",
+        "6": "前走勝利IDM61、好位から伸びる。",
+        "11": "前走2着IDM65、好位差しが安定。",
+        "16": "前走勝利IDM59で好位から対応。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        11,
+        12,
+        6,
+        16
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7は前受け耐性材料があるがIDM59。通常5頭の能力上限を優先する。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7は安定差しだが、16の勝利IDM59と好位位置を通常5頭に残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 11,
+      "honmei_win_case": "5は近2走1、2着でIDM65、60。逃げの形が明確で、自らペースを作って押し切れる。",
+      "second_case": "11は前走2着IDM65で好位差し。5を見ながら運べるが、流れを作る側の5を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "能力は互角だが、5は逃げて勝ち切る形を直近で再現しており主導性が高い。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "race_model": "京都芝1800m未勝利。5・12・10が前、8・14・17が差す。決め手のある8を主線に先行勢の残りも警戒する。",
+    "marks": [
+      8,
+      12,
+      14,
+      17,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "は"
+      },
+      {
+        "horse_no": 12,
+        "case": "ら"
+      },
+      {
+        "horse_no": 17,
+        "case": "脚"
+      },
+      {
+        "horse_no": 10,
+        "case": "方"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14は2、3着実績があり、向正面から動いて先頭まで行く形も持つ。前が緩めば早め進出で押し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": {
+        "8": "前々走2着、基礎IDM40で末脚上位。",
+        "10": "近2走2、3着で先行持続力が高い。",
+        "12": "連続3着で先行安定。",
+        "17": "近2走4着でIDM38実績がある。"
+      }
+    },
+    "rrdb_refs": [],
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        12,
+        14,
+        17,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は初戦5着で上昇余地はあるが、通常5頭の複数走実績を優先する。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6は一走分の材料しかなく、10の2、3着実績を通常5頭に残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 12,
+      "honmei_win_case": "8は前走6着でもIDM40、前々走2着IDM38で後方から伸びる。能力上限と末脚を◎に取る。",
+      "second_case": "12は近2走連続3着でIDM36、33。先行から安定するが決め手で8を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "12は位置取りの利があるが、8は後方から2着まで追い込んだ末脚とIDM40の上限がある。"
+    }
+  }
+]
