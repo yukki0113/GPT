@@ -5,12 +5,16 @@ on:
     paths:
       - 'horse-racing/jrdb/src/racenote_v052_equivalence.py'
       - 'horse-racing/jrdb/src/racenote_v052_historical_probe.py'
+      - 'horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py'
+      - 'horse-racing/jrdb/src/racenote_backtest_day_picker.py'
       - '.github/workflows/racenote_historical_v052_probe.yml'
   push:
     branches: [codex/racenote-historical-v052]
     paths:
       - 'horse-racing/jrdb/src/racenote_v052_equivalence.py'
       - 'horse-racing/jrdb/src/racenote_v052_historical_probe.py'
+      - 'horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py'
+      - 'horse-racing/jrdb/src/racenote_backtest_day_picker.py'
       - '.github/workflows/racenote_historical_v052_probe.yml'
   workflow_dispatch:
 permissions:
@@ -28,7 +32,12 @@ jobs:
       - name: Test equivalence firewall
         env:
           PYTHONPATH: horse-racing/jrdb/src
-        run: python -m unittest -v horse-racing/jrdb/tests/test_racenote_v052_equivalence.py
+        run: |
+          python -m unittest -v \
+            horse-racing/jrdb/tests/test_racenote_v052_equivalence.py \
+            horse-racing/jrdb/tests/test_racenote_historical_picker.py \
+            horse-racing/jrdb/tests/test_racenote_backtest_day_picker.py \
+            horse-racing/jrdb/tests/test_racenote_v052_single_day.py
       - name: Fetch accepted 2025 golden-day inputs
         run: |
           set -euo pipefail
@@ -88,9 +97,46 @@ jobs:
             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
             --main-sha "$GITHUB_SHA" \
             --output-root /tmp/golden/probe
+      - name: Prepare historical BTDAY from accepted Warehouse
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py \
+            --date 2025-12-28 \
+            --selection-id BTDAY-GOLDEN-HISTORICAL \
+            --main-sha "$GITHUB_SHA" \
+            --equivalence-report /tmp/golden/probe/equivalence_report.json \
+            --warehouse-current /tmp/golden/warehouse/current.json \
+            --warehouse-asset-root /tmp/golden/warehouse \
+            --analysis-root /tmp/golden/analysis \
+            --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
+            --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
+            --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+            --output-root /tmp/golden/historical-route
+          python horse-racing/jrdb/src/racenote_v052_equivalence.py \
+            --date 2025-12-28 \
+            --paci-root /tmp/golden/probe/warehouse \
+            --warehouse-root /tmp/golden/historical-route \
+            --report /tmp/golden/historical-route/route_consistency_report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/golden/historical-route')
+          session=json.loads((root/'v052/session.json').read_text())
+          op=json.loads((root/'operation_handoff.json').read_text())
+          assert session['status']=='SESSION_SEALED'
+          assert session['market_blind'] is True
+          assert session['result_opened'] is False
+          assert session['target_market_opened'] is False
+          assert op['source_backend']=='historical_warehouse'
+          assert op['as_of_exclusive']=='2025-12-28'
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: racenote-historical-v052-golden
-          path: /tmp/golden/probe/equivalence_report.json
+          path: |
+            /tmp/golden/probe/equivalence_report.json
+            /tmp/golden/historical-route/route_consistency_report.json
+            /tmp/golden/historical-route/operation_handoff.json
           if-no-files-found: ignore
