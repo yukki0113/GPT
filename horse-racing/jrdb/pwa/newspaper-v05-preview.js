@@ -11,7 +11,7 @@ const NEWSPAPER_V05_TIER_TEXT = {
 
 function newspaperV05Ids(horse) {
   const status = currentBundle && currentBundle.metadata && currentBundle.metadata.source_status;
-  if (!status || !status.edge_v05 || status.edge_v05.state !== "PARTIAL") return [];
+  if (!status || !status.edge_v05 || !["PARTIAL", "READY"].includes(status.edge_v05.state)) return [];
   const addon = horse && horse.addons && horse.addons.edge_v05;
   const dictionary = currentBundle.edge_v05_candidates || {};
   if (!addon || !Array.isArray(addon.candidate_ids)) return [];

@@ -43,6 +43,8 @@ assert.equal((context.dialogBody.innerHTML.match(/class="newspaper-v05-detail"/g
 assert.ok(context.dialogBody.innerHTML.indexOf('cの条件') > context.dialogBody.innerHTML.indexOf('その他のEdge'));
 context.currentBundle.metadata.source_status.edge_v05.state = 'ERROR';
 assert.equal(vm.runInContext('newspaperV05Ids', context)(horse(['a'])).length, 0);
+context.currentBundle.metadata.source_status.edge_v05.state = 'READY';
+assert.equal(vm.runInContext('newspaperV05Ids', context)(horse(['a'])).length, 1);
 assert.equal(vm.runInContext('newspaperV05Metric', context)(0, null, 'rate'), '未観測');
 assert.equal(vm.runInContext('newspaperV05Metric', context)(5, null, 'roi'), '算出不可');
 context.currentBundle.metadata.source_status.edge_v05.state = 'PARTIAL';
