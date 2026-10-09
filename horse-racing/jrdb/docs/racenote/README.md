@@ -20,12 +20,14 @@ Current Stage A instruction:
 
 # RaceNote current guide
 
-For new unused BTDAY selections, the active prospective research contract is
-`RaceNote-Human-Context-Reader-0.4.6-candidate`. Resolve it from
-`config/racenote_forecast_logic_current.json -> prospective_research_candidate`
-and use `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` for
-execution. The production `current_logic_version` is a separate pointer.
-The older baseline cadence described below is historical research context.
+For new unused BTDAY selections, the current operational baseline is
+`RaceNote-Human-Context-Reader-0.5.2-candidate` and the canonical procedure is
+`docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
+BTDAY source routing is unified: 2026 uses PACI and 2010–2025 uses the accepted
+Historical Warehouse according to the reserved row's `source_mode`.
+The production `current_logic_version` remains a separate pointer.
+`BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` is retained as the legacy
+v0.4.6 procedure only.
 
 ## 1. Current architecture
 
@@ -159,10 +161,11 @@ Current baseline status:
 - v0.2 change reason: pre-result observability fix, not result-based tuning
 - each usable race must preserve explicit ◎ vs ○ comparison and Decision Trace
 
-Historical standard cadence:
+Historical standard cadence (legacy context):
 
-- random PICK = 2 unused eligible PACI days
-- typically about 48–72 races
+- random PICK previously used only eligible PACI days
+- current v0.5.2 BTDAY lottery may select a 2026 PACI day or a 2025 Historical Warehouse day
+- typically about 24–36 races per selected day
 - one logic_version for the whole turn
 - one race = one independent forecast
 - Freeze all usable predictions before any target result open
@@ -332,9 +335,11 @@ Use latest main, current contracts, and current source as truth. Do not reintrod
 For current research, follow this guide and the Forecast Gen0 contract. For deterministic/legacy reproduction, use the dedicated legacy documents and preserved artifacts.
 
 
-### Current Human-Context Reader prospective validation — 2026-10-05
+### Legacy Human-Context Reader v0.4.6 prospective validation — 2026-10-05
 
-New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.6-candidate`.
+This section is retained for historical reproducibility. New unused BTDAYs use
+`RaceNote-Human-Context-Reader-0.5.2-candidate` through
+`RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
 
 v0.4.6 remains one prediction cohort. The 2026-10-05 refinements affect
 reader-facing prose, RRDB trace sparsity and deterministic execution only; they
