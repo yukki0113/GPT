@@ -84,7 +84,7 @@ jobs:
             --warehouse-asset-root /tmp/golden/warehouse \
             --analysis-root /tmp/golden/analysis \
             --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
-            --binding horse-racing/jrdb/src/config/racenote_reader_v050_binding.json \
+            --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
             --main-sha "$GITHUB_SHA" \
             --output-root /tmp/golden/probe
