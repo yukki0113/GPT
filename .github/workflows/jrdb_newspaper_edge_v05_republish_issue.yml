@@ -106,12 +106,6 @@ jobs:
           BUNDLE="$(find /tmp/analysis-artifact -type f -name 'analysis-parquet-candidate.tar.xz' -print -quit)"
           test -n "$BUNDLE"
           tar -xJf "$BUNDLE" -C /tmp/analysis
-          python - <<'PY'
-          import hashlib,json,os
-          from pathlib import Path
-          from horse_racing_dummy import nope
-          PY
-        continue-on-error: true
 
       - name: Bind and validate canonical Analysis
         env:
