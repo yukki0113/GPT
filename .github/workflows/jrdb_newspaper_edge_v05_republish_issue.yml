@@ -1,0 +1,260 @@
+name: JRDB Newspaper Edge v0.5 Republish via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[JRDB_NEWSPAPER_EDGE_V05_REPUBLISH]'
+  RELEASE_TAG: jrdb-newspaper-current
+  RELEASE_ARCHIVE: jrdb_newspaper_current.tar.xz
+  RELEASE_META: jrdb_newspaper_current_release.json
+
+jobs:
+  republish:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EDGE_V05_REPUBLISH]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Parse request
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          required={
+              'date','source_revision','target_revision','paci_drive_file_id',
+              'analysis_source_run_id','analysis_source_artifact',
+              'analysis_generation_id','analysis_manifest_sha256'
+          }
+          missing=sorted(required-set(req))
+          if missing: raise SystemExit(f'missing: {missing}')
+          if not re.fullmatch(r'20\d{2}-\d{2}-\d{2}',str(req['date'])):
+              raise SystemExit('date must be YYYY-MM-DD')
+          if not isinstance(req['source_revision'],int) or req['source_revision']<1:
+              raise SystemExit('source_revision invalid')
+          if req['target_revision'] != req['source_revision']+1:
+              raise SystemExit('target_revision must be source_revision + 1')
+          if not isinstance(req['analysis_source_run_id'],int) or req['analysis_source_run_id']<=0:
+              raise SystemExit('analysis_source_run_id invalid')
+          if not re.fullmatch(r'[0-9a-f]{64}',str(req['analysis_manifest_sha256'])):
+              raise SystemExit('analysis_manifest_sha256 invalid')
+          Path('/tmp/request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          with open(os.environ['GITHUB_ENV'],'a',encoding='utf-8') as h:
+              for k,v in {
+                  'REQUEST_DATE':req['date'],
+                  'SOURCE_REVISION':req['source_revision'],
+                  'TARGET_REVISION':req['target_revision'],
+                  'PACI_DRIVE_FILE_ID':req['paci_drive_file_id'],
+                  'ANALYSIS_RUN_ID':req['analysis_source_run_id'],
+                  'ANALYSIS_ARTIFACT':req['analysis_source_artifact'],
+                  'ANALYSIS_GENERATION_ID':req['analysis_generation_id'],
+                  'ANALYSIS_MANIFEST_SHA256':req['analysis_manifest_sha256'],
+              }.items():
+                  h.write(f'{k}={v}\n')
+          PY
+
+      - name: Download current personal release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/current /tmp/current-release
+          mkdir -p /tmp/current /tmp/current-release
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --pattern "$RELEASE_ARCHIVE" --dir /tmp/current-release --clobber
+          tar -xJf "/tmp/current-release/$RELEASE_ARCHIVE" -C /tmp/current
+
+      - name: Validate current identity
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          m=json.loads(Path('/tmp/current/manifest.json').read_text(encoding='utf-8'))
+          if m.get('date') != os.environ['REQUEST_DATE']:
+              raise SystemExit(f"date mismatch: {m.get('date')}")
+          if int(m.get('revision') or 0) != int(os.environ['SOURCE_REVISION']):
+              raise SystemExit(f"revision mismatch: {m.get('revision')}")
+          PY
+
+      - name: Prepare PACI and canonical Analysis
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/raw /tmp/analysis-artifact /tmp/analysis
+          mkdir -p /tmp/raw /tmp/analysis-artifact /tmp/analysis
+          DATE_COMPACT="${REQUEST_DATE//-/}"
+          curl --fail --location --retry 3             "https://drive.usercontent.google.com/download?id=${PACI_DRIVE_FILE_ID}&export=download&confirm=t"             --output "/tmp/raw/PACI${DATE_COMPACT:2}.zip"
+          gh run download "$ANALYSIS_RUN_ID" --repo "$GITHUB_REPOSITORY"             --name "$ANALYSIS_ARTIFACT" --dir /tmp/analysis-artifact
+          BUNDLE="$(find /tmp/analysis-artifact -type f -name 'analysis-parquet-candidate.tar.xz' -print -quit)"
+          test -n "$BUNDLE"
+          tar -xJf "$BUNDLE" -C /tmp/analysis
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from horse_racing_dummy import nope
+          PY
+        continue-on-error: true
+
+      - name: Bind and validate canonical Analysis
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
+          root=Path('/tmp/analysis')
+          generation=os.environ['ANALYSIS_GENERATION_ID']
+          manifest=root/'generations'/generation/'manifest.json'
+          if not manifest.is_file():
+              raise SystemExit(f'missing Analysis manifest: {manifest}')
+          sha=hashlib.sha256(manifest.read_bytes()).hexdigest()
+          if sha != os.environ['ANALYSIS_MANIFEST_SHA256']:
+              raise SystemExit(f'Analysis manifest SHA mismatch: {sha}')
+          (root/'current.json').write_text(json.dumps({
+              'status':'CURRENT',
+              'generation_id':generation,
+              'manifest':f'generations/{generation}/manifest.json'
+          },ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          report=resolve_current(root)
+          if report['generation_id'] != generation:
+              raise SystemExit('Analysis current generation mismatch')
+          print(json.dumps({'generation_id':report['generation_id'],'rows':report['rows']},ensure_ascii=False))
+          PY
+
+      - name: Re-match Edge v0.5 onto current personal day
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          DATE_COMPACT="${REQUEST_DATE//-/}"
+          PACI="/tmp/raw/PACI${DATE_COMPACT:2}.zip"
+          rm -rf /tmp/edge-day
+          python horse-racing/jrdb/src/jrdb_newspaper_edge_v05_preview.py             --base-day /tmp/current             --output-dir /tmp/edge-day             --paci "$PACI"             --analysis-root /tmp/analysis             --oos-artifact-zip horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_artifact.zip             --revision "$TARGET_REVISION"             > /tmp/edge-v05-result.json
+
+      - name: Validate Edge result and preserved addons
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          result=json.loads(Path('/tmp/edge-v05-result.json').read_text(encoding='utf-8'))
+          if result.get('status') not in {'PARTIAL','READY'}:
+              raise SystemExit(f'Edge v0.5 failed: {result}')
+          if int(result.get('missing_join_count') or 0)!=0 or int(result.get('extra_join_count') or 0)!=0:
+              raise SystemExit('Edge join mismatch')
+          root=Path('/tmp/edge-day')
+          m=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          st=(m.get('source_status') or {}).get('edge_v05') or {}
+          if st.get('state') not in {'PARTIAL','READY'}:
+              raise SystemExit(f'manifest edge_v05 state invalid: {st}')
+          if int(m.get('revision') or 0)!=int(os.environ['TARGET_REVISION']):
+              raise SystemExit('target revision mismatch')
+          rn=rrdb=oji=0
+          edge_horses=edge_ids=0
+          for entry in m.get('races') or []:
+              b=json.loads((root/entry['path']).read_text(encoding='utf-8'))
+              rst=((b.get('metadata') or {}).get('source_status') or {}).get('edge_v05') or {}
+              if rst.get('state') not in {'PARTIAL','READY'}:
+                  raise SystemExit(f'race edge_v05 state invalid: {b["race"]["race_key"]} {rst}')
+              for h in b.get('horses') or []:
+                  a=h.get('addons') or {}
+                  if ((a.get('racenote_prediction') or {}).get('mark')): rn+=1
+                  if isinstance(a.get('rrdb_recommendation'),dict): rrdb+=1
+                  mm=(a.get('momotaro') or {}).get('oji') or {}
+                  if mm.get('review_horse') is True: oji+=1
+                  ids=((a.get('edge_v05') or {}).get('candidate_ids') or [])
+                  if ids:
+                      edge_horses+=1
+                      edge_ids+=len(ids)
+          if rn!=120 or rrdb!=9:
+              raise SystemExit(f'preserved addon mismatch rn={rn} rrdb={rrdb}')
+          # Oji is companion/public-projection data and need not live in personal archive.
+          report={
+              'status':'PASS','date':m['date'],'revision':m['revision'],
+              'edge_state':st.get('state'),
+              'matched_runner_count':result.get('matched_runner_count'),
+              'signal_count':result.get('signal_count'),
+              'missing_join_count':result.get('missing_join_count'),
+              'extra_join_count':result.get('extra_join_count'),
+              'edge_horses':edge_horses,'edge_ids':edge_ids,
+              'racenote_marked':rn,'rrdb':rrdb,'oji_in_personal':oji,
+          }
+          Path('/tmp/edge-validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Publish personal current release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/release && mkdir -p /tmp/release
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/edge-day -cJf "/tmp/release/$RELEASE_ARCHIVE" .
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path('/tmp/edge-day'); out=Path('/tmp/release')
+          m=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          archive=out/os.environ['RELEASE_ARCHIVE']
+          meta={
+              'schema_version':'0.1',
+              'release_kind':'jrdb_newspaper_current_cache',
+              'date':m['date'],'revision':m['revision'],'race_count':len(m.get('races') or []),
+              'manifest_sha256':hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest(),
+              'archive_filename':archive.name,'archive_size_bytes':archive.stat().st_size,
+              'archive_sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),
+              'source_run_id':int(os.environ['GITHUB_RUN_ID']),
+              'source_artifact':'edge-v05-republish',
+          }
+          (out/os.environ['RELEASE_META']).write_text(
+              json.dumps(meta,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n',
+              encoding='utf-8')
+          PY
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
+          fi
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Newspaper current"             --notes "Current personal newspaper with EdgeDB v0.5 re-matched."             "/tmp/release/$RELEASE_ARCHIVE" "/tmp/release/$RELEASE_META"             /tmp/edge-validation.json
+
+      - name: Comment success and close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          BODY="$(cat /tmp/edge-validation.json)"
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB_NEWSPAPER_EDGE_V05_REPUBLISH_RESULT: PASS
+
+```json
+$BODY
+```"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Comment failure and close
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY"             --body "JRDB Newspaper Edge v0.5 republish failed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned"
