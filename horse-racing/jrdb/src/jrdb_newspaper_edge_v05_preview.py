@@ -167,11 +167,29 @@ def _set_state(day: Path, state: str, message: str) -> None:
     _write_json(manifest, manifest_path)
 
 
+def _set_revision(day: Path, revision: int) -> None:
+    if revision < 1:
+        raise PreviewError('revision must be >= 1')
+    manifest_path = day / 'manifest.json'
+    manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+    manifest['revision'] = revision
+    for entry in manifest.get('races') or []:
+        race_path = day / entry['path']
+        bundle = json.loads(race_path.read_text(encoding='utf-8'))
+        bundle.setdefault('metadata', {})['revision'] = revision
+        _write_json(bundle, race_path)
+        entry['revision'] = revision
+        entry['sha256'] = _sha_file(race_path)
+        entry['size_bytes'] = race_path.stat().st_size
+    _write_json(manifest, manifest_path)
+
+
 def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: Path | None,
                   oos_artifact_zip: Path, *, cohort_path: Path = DEFAULT_COHORT,
                   oos_manifest_path: Path = DEFAULT_OOS_MANIFEST,
                   freeze_manifest_path: Path = DEFAULT_FREEZE_MANIFEST,
-                  display_smoke_test: bool = False) -> dict[str, Any]:
+                  display_smoke_test: bool = False,
+                  revision: int | None = None) -> dict[str, Any]:
     if output_dir.resolve() == base_day.resolve():
         raise PreviewError('preview output must differ from base day')
     if output_dir.exists():
@@ -216,6 +234,8 @@ def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: P
                          if display_smoke_test else '') + \
                         'T1/T2 and resolved T3/T4 transition preview; first-use history and verified pre-race going unavailable'
         _set_state(output_dir, 'PARTIAL', state_message)
+        if revision is not None:
+            _set_revision(output_dir, revision)
         package = _write_day_package(output_dir, output_dir / 'day-package.json')
         audit = {'status': 'PARTIAL', 'source_version': VERSION, 'source': provenance,
                  'paci_sha256': _sha_file(paci), 'analysis_root': str(analysis_root) if analysis_root else None,
@@ -236,6 +256,8 @@ def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: P
             shutil.rmtree(output_dir)
         shutil.copytree(base_day, output_dir)
         _set_state(output_dir, 'ERROR', f'{type(exc).__name__}: {exc}'[:500])
+        if revision is not None:
+            _set_revision(output_dir, revision)
         package = _write_day_package(output_dir, output_dir / 'day-package.json')
         audit = {'status': 'ERROR', 'message': f'{type(exc).__name__}: {exc}'[:500],
                  'day_package': package}
@@ -253,9 +275,11 @@ def main() -> int:
     parser.add_argument('--analysis-root', type=Path)
     parser.add_argument('--display-smoke-test', action='store_true',
                         help='Allow an in-window historical date for UI/merge smoke testing only.')
+    parser.add_argument('--revision', type=int)
     args = parser.parse_args()
     print(json.dumps(build_preview(args.base_day, args.output_dir, args.paci, args.analysis_root,
-                                   args.oos_artifact_zip, display_smoke_test=args.display_smoke_test), ensure_ascii=False, sort_keys=True))
+                                   args.oos_artifact_zip, display_smoke_test=args.display_smoke_test,
+                                   revision=args.revision), ensure_ascii=False, sort_keys=True))
     return 0
 
 if __name__ == '__main__':
