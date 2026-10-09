@@ -284,44 +284,41 @@ The Decision Core must retain:
 - `ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK` ▲ mode;
 - audited six-to-five compression.
 
-## 2.2 Decision Core prose recording (2026-10-08; no prediction change)
+## 2.2 Decision Core prose recording (2026-10-09; no prediction change)
 
-Follow section 4.1 of `FORECAST_HUMAN_CONTEXT_READER_v0_5_2_CANDIDATE.md`
-**after** making the normal v0.5.2 five-horse judgment. This is an
-**authoring instruction for the existing explanation fields**, not another
-prediction stage, another model input, a score or an A/B lane.
+After the ordinary v0.5.2 judgment is complete, record the reasoning under
+section 4.1 of `FORECAST_HUMAN_CONTEXT_READER_v0_5_2_CANDIDATE.md` and the
+reader-facing contract in `FORECAST_READER_FACING_PROSE_v0_1.md`.
 
-Use the ordinary v0.5.2 record shape unchanged. In the existing text fields:
+This is still the same prediction. The explanation fields are a faithful record
+of that prediction, not a second scoring pass.
 
-1. `race_model`: preserve the race's actual decisive scenario and meaningful
-   conditions under which the main scenario could fail.
-2. `honmei_win_case`: record the concrete, pre-race ◎ winning route and any
-   material dependency, without converting ◎ to a place-safety choice.
-3. `second_case` / `ranking_reason`: state why ◎ was preferred to ○, or
-   honestly describe a marginal comparison. Preserve the actual role decision.
-4. `boundary_review.reason`: distinguish final △2 from the closest excluded
-   alternative *when one exists*, including a thin margin where justified.
-5. `candidate_compression.reason`: preserve the distinct six-to-five
-   challenger decision, separate from the △2 boundary rationale.
+The important operational principle is that the written record should preserve
+the real shape of the comparison. A materially stronger ◎ case should remain
+materially stronger because of the race evidence that supports it. A marginal
+◎/○ ordering should remain visibly marginal. A conditional winning route
+should retain its condition. The prose should not strengthen, flatten or
+sanitize the judgment merely because a later research process may classify the
+frozen explanation.
 
-Leave `mainline_cases`, `single_shot_case`, `rrdb_refs` semantics,
-`ordinary_five`, marks, all existing field names, the validator and Reader
-identity unchanged. `reader_facing_reason` remains natural, compact
-newspaper prose; never attach a multi-field checklist or confidence label.
+Use the existing Decision Core shape unchanged. `race_model`,
+`honmei_win_case`, `second_case`, `ranking_reason`,
+`boundary_review.reason`, `candidate_compression.reason`,
+`mainline_cases` and `single_shot_case` each keep their existing semantic
+roles. They should form one internally consistent account of the race rather
+than independent text boxes written to satisfy separate wording rules.
 
-Before each existing venue save, perform one **prose-only** cross-race review:
-repeated interchangeable reasons (especially text differing only in horse
-number/name) must be replaced by the actual observed contrast in the clean
-Reader. If no real contrast was established, state the limitation instead of
-inventing a difference. The review cannot change any mark, candidate
-membership, role assignment, raw evidence or the answer to Step E.
+`reader_facing_reason` is the same judgment compressed into natural newspaper
+prose. It should not copy audit text mechanically, but it also must not tell a
+different story about the relative strength of ◎ and ○.
 
-Do not write A/B/C labels, score bands or outcome-conditioned explanations
-into the Decision Core. Downstream research may label races later using
-frozen, pre-result text, with the annotation protocol kept distinct from the
-v0.5.2 prediction cohort. Do not modify older FROZEN outputs to imitate the
-new prose policy. The existing session's `base_main_sha` identifies the
-authoring instruction revision for subsequent BTDAY comparisons.
+Card-level review remains prose-only: remove interchangeable boilerplate where
+it hides different reasoning, but leave genuinely similar races similar.
+Marks, candidate membership, role assignment, Reader evidence and Step E are
+not reopened during this review.
+
+Older FROZEN outputs remain immutable. Provenance identifies which authoring
+guidance produced each cohort.
 
 ## 3. Save each venue
 
