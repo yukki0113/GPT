@@ -31,16 +31,29 @@ The target publication surface is the newspaper PWA race-short-comment section. 
 Write one short piece of racing analysis, not a serialization of the five
 marks.
 
-The marks are already shown elsewhere. The comment should explain the race
-through the concrete evidence that mattered most: the main horse's strongest
-case, the important opponent or race-shape tension, and the specific reason
-the independent ▲ can overturn the main line when that is useful.
+The marks are already shown elsewhere. The comment should preserve the actual
+shape of the race judgment in ordinary racing language: what gives ◎ its
+winning case, what keeps ○ dangerous, where the important tension lies, and
+what specific route allows ▲ to overturn the main line when that matters.
+
+The prose should be faithful to the relative strength of the judgment. If ◎
+was clearly preferred to ○ for a concrete race-specific reason, the comment may
+read clearly. If the two were close and the order turned on one narrower
+tie-break, the comment should preserve that closeness rather than upgrading the
+choice into a strong declaration. If ◎ needs a particular setup, the setup
+belongs in the explanation.
+
+This is not a separate confidence-writing task. Do not choose stronger or
+weaker language in order to create a useful research label. Later analysis may
+read the frozen comment as evidence about how decisive the forecast was, but
+the writing stage only records the judgment that already exists.
 
 There is no preferred sentence order such as ◎ -> ○ -> ▲ -> △1 -> △2.
 Mention only the horses needed to make the race view understandable.
 
 A good test is whether the paragraph would still read naturally if the mark
-symbols were removed.
+symbols were removed, and whether its degree of certainty would still match
+the underlying race analysis if no later research existed.
 
 ## 3. Translate evidence into racing language
 
@@ -116,27 +129,32 @@ Look for repeated structure, especially:
 This review changes prose only. It never changes the Frozen mark decision.
 
 
-## 7. ◎ prose
+## 7. ◎ and ○ prose
 
-For ◎, explain the strongest concrete reason the horse deserves to be the main bet today.
+The main-line discussion should make the actual ◎/○ relationship
+understandable without turning the paragraph into a comparison worksheet.
 
-The prose does not need to prove a formal winning path.
+For ◎, explain the strongest concrete reason the horse deserves to be the main
+bet today. This may be a prior run whose content is stronger than the result, a
+return to suitable conditions, current improvement, a race-shape advantage, an
+ability edge, or another observation that creates a realistic winning route.
 
-Good ◎ prose may show a prior run whose content is stronger than the result, a return to a suitable condition, current improvement that connects directly to today's setup, a race-shape advantage, evidence the horse can sustain a race-winning move, or opponent / class context that makes today's task more realistic.
+For ○, state the strongest reason it remains the principal opponent. Write ○ as
+a horse, not as "the second slot".
 
-Do not end every ◎ portion with the same declaration.
+Where the race analysis genuinely separates them, let the decisive point be
+visible. For example, ◎ may control the position while ○ needs the race to come
+back, or ◎ may have shown the stronger class evidence while ○ is preferred
+mainly for repeatability. Where they are close, a short natural description of
+both cases plus the real tie-break is better than an exaggerated contrast.
 
-The conclusion may be direct and ordinary: 「巻き返しを期待します。」「ここでは最も買いやすい馬です。」「本命にします。」「押し切りまで見ます。」 Or omit an explicit conclusion when the preceding analysis already makes the judgment clear.
+The prose does not need a ceremonial declaration such as "◎ is clearly
+superior" or "○ is only second best". Concrete racing evidence should carry
+the comparison. Likewise, do not mechanically manufacture a reliability story
+for ○ simply because it wears the second mark.
 
-## 8. ○ prose
-
-○ should be written as a horse, not as 'the second slot'.
-
-In the one-paragraph format, ○ is usually concise. State the strongest race-specific reason it remains the principal opponent.
-
-Do not mechanically contrast ○ with ◎. Do not force a reliability / stability story. If the meaningful point is the same kind of strength as ◎, say so.
-
-A short natural clause is enough when the case is straightforward.
+An explicit conclusion such as 「本命にします」「押し切りまで見ます」 is
+optional. Omit it when the preceding analysis already makes the judgment clear.
 
 ## 9. ▲ prose
 
@@ -178,11 +196,19 @@ Also check whether ○ is always introduced by the same connector or ▲ is alwa
 
 ## 13. Audit separation
 
-Audit fields may remain structured and repetitive. mainline_cases, single_shot_case, rrdb_evidence, and mark_reason may use concise controlled language for verification.
+Audit fields may remain structured and comparatively controlled because they
+serve verification. The reader-facing paragraph should be regenerated from the
+underlying evidence and the Frozen decision rather than copied from those
+fields.
 
-Do not copy those fields directly into reader_facing_reason.
+The audit layer and reader-facing layer must nevertheless describe the same
+judgment strength. A close ◎/○ call must not become emphatically one-sided only
+in the newspaper comment, and a genuinely decisive comparison must not be
+flattened into generic equal-treatment prose.
 
-The reader-facing paragraph should be regenerated from the underlying evidence and the Frozen decision.
+Neither layer should encode a downstream research category directly. The
+research process reads the frozen forecast record after authoring; it does not
+supply wording targets to the authoring process.
 
 ## 14. Style anchor examples
 
