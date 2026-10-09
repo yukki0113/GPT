@@ -79,12 +79,12 @@ def load_sources(cohort_path: Path, oos_manifest_path: Path, freeze_manifest_pat
     }
 
 
-def project_facts(raw_rows: list[Mapping[str, Any]], latest_evaluated_date: str) -> tuple[list[dict[str, Any]], dict[str, int]]:
+def project_facts(raw_rows: list[Mapping[str, Any]], latest_evaluated_date: str, *, allow_evaluated_date: bool = False) -> tuple[list[dict[str, Any]], dict[str, int]]:
     projected = []
     audit = Counter()
     for row in raw_rows:
         date = str(row['race_date'])[:10]
-        if date <= latest_evaluated_date:
+        if date <= latest_evaluated_date and not allow_evaluated_date:
             raise PreviewError(f'preview target {date} is not after frozen OOS endpoint {latest_evaluated_date}')
         fact = _fact_projection(row, None)
         # Existing Analysis lookup resolves exactly the KYI prev1 link and enforces
@@ -167,10 +167,11 @@ def _set_state(day: Path, state: str, message: str) -> None:
     _write_json(manifest, manifest_path)
 
 
-def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: Path,
+def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: Path | None,
                   oos_artifact_zip: Path, *, cohort_path: Path = DEFAULT_COHORT,
                   oos_manifest_path: Path = DEFAULT_OOS_MANIFEST,
-                  freeze_manifest_path: Path = DEFAULT_FREEZE_MANIFEST) -> dict[str, Any]:
+                  freeze_manifest_path: Path = DEFAULT_FREEZE_MANIFEST,
+                  display_smoke_test: bool = False) -> dict[str, Any]:
     if output_dir.resolve() == base_day.resolve():
         raise PreviewError('preview output must differ from base day')
     if output_dir.exists():
@@ -179,7 +180,7 @@ def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: P
     try:
         candidates, oos, provenance = load_sources(cohort_path, oos_manifest_path, freeze_manifest_path, oos_artifact_zip)
         raw_facts, fact_audit = build_current_facts(paci, analysis_root=analysis_root)
-        facts, availability = project_facts(raw_facts, provenance['latest_evaluated_race_date'])
+        facts, availability = project_facts(raw_facts, provenance['latest_evaluated_race_date'], allow_evaluated_date=display_smoke_test)
         matches = build_matches(list(candidates.values()), facts)
         fact_keys = [(str(f['race_key']), str(f['race_horse_key']), int(f['horse_no'])) for f in facts]
         if len(fact_keys) != len(set(fact_keys)):
@@ -211,10 +212,14 @@ def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: P
             _write_json(bundle, race_path)
         if consumed != set(fact_keys):
             raise PreviewError(f'extra fact joins: {len(set(fact_keys) - consumed)}')
-        _set_state(output_dir, 'PARTIAL', 'T1/T2 and resolved T3/T4 transition preview; first-use history and verified pre-race going unavailable')
+        state_message = ('DISPLAY SMOKE TEST: layout/merge only; target date may be inside frozen OOS window; '
+                         if display_smoke_test else '') + \
+                        'T1/T2 and resolved T3/T4 transition preview; first-use history and verified pre-race going unavailable'
+        _set_state(output_dir, 'PARTIAL', state_message)
         package = _write_day_package(output_dir, output_dir / 'day-package.json')
         audit = {'status': 'PARTIAL', 'source_version': VERSION, 'source': provenance,
-                 'paci_sha256': _sha_file(paci), 'analysis_root': str(analysis_root),
+                 'paci_sha256': _sha_file(paci), 'analysis_root': str(analysis_root) if analysis_root else None,
+                 'display_smoke_test': display_smoke_test,
                  'analysis_generation': (fact_audit.get('analysis_history') or {}).get('generation_id'),
                  'runner_rows': len(facts), 'matched_runner_count': len(by_key),
                  'signal_count': len(matches), 'newspaper_merged_rows': horse_count,
@@ -243,11 +248,14 @@ def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: P
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ('base-day', 'output-dir', 'paci', 'analysis-root', 'oos-artifact-zip'):
+    for name in ('base-day', 'output-dir', 'paci', 'oos-artifact-zip'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--analysis-root', type=Path)
+    parser.add_argument('--display-smoke-test', action='store_true',
+                        help='Allow an in-window historical date for UI/merge smoke testing only.')
     args = parser.parse_args()
     print(json.dumps(build_preview(args.base_day, args.output_dir, args.paci, args.analysis_root,
-                                   args.oos_artifact_zip), ensure_ascii=False, sort_keys=True))
+                                   args.oos_artifact_zip, display_smoke_test=args.display_smoke_test), ensure_ascii=False, sort_keys=True))
     return 0
 
 if __name__ == '__main__':
