@@ -87,8 +87,22 @@ jobs:
               print(f'{k}={v}')
           PY
 
+      - name: Check existing canonical target
+        id: target
+        env:
+          SEL: ${{ steps.req.outputs.selection_id }}
+          COMPACT: ${{ steps.req.outputs.compact }}
+        shell: bash
+        run: |
+          TARGET="horse-racing/jrdb/backtests/$SEL/$COMPACT"
+          if test -f "$TARGET/operation_handoff.json" && test -f "$TARGET/v052/session.json"; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Materialize PACI canonical sources
-        if: steps.req.outputs.source_mode == 'paci'
+        if: steps.target.outputs.exists != 'true' && steps.req.outputs.source_mode == 'paci'
         env:
           GH_TOKEN: ${{ github.token }}
           COMPACT: ${{ steps.req.outputs.compact }}
@@ -128,7 +142,7 @@ jobs:
           unzip -q /tmp/input/NextWatch.zip -d /tmp/rules
 
       - name: Materialize Historical Warehouse canonical sources
-        if: steps.req.outputs.source_mode == 'historical_warehouse'
+        if: steps.target.outputs.exists != 'true' && steps.req.outputs.source_mode == 'historical_warehouse'
         shell: bash
         run: |
           set -euo pipefail
@@ -216,6 +230,7 @@ jobs:
           PY
 
       - name: Commit immutable canonical v0.5.2 TURN 1
+        if: steps.target.outputs.exists != 'true'
         env:
           SEL: ${{ steps.req.outputs.selection_id }}
           COMPACT: ${{ steps.req.outputs.compact }}
