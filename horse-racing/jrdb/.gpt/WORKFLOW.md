@@ -283,16 +283,22 @@ D5 PASS後のfull-day production entrypointは `src/build_racenote_daily.py`。
 
 ### RaceNote Forecast Gen0での標準適用
 
-2026-10-04のv0.4.6有効化以降、新規の未使用BTDAY prospective validationは
-`config/racenote_forecast_logic_current.json -> prospective_research_candidate` と
-`docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` を入口とし、
-v0.4.6 candidate単独で進める。既存PACIをDriveから取得し、Workで
-DAY PREP・clean binding・会場単位のDecision Core保存・全日bind・preflight・
-Freeze・Validatorを行い、GitHub mainへ保存する経路は A/C/B。
-Actions環境の有無を前提にしない。JRDB Secrets取得や正式Actions run証跡が
-個別に必要なときだけDへ分類する。予想の印・△2の除外候補・理由文を
-スクリプトで補完しない。会場バッチ保存後は同じ実行で次会場へ進む。
-結果/対象日marketは全日FreezeとValidator PASSまで開かない。
+新規の未使用BTDAYは v0.5.2 single-day baseline で進める。
+入口は `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`、
+GitHub-backed TURN 1 は
+`.github/workflows/racenote_btday_v052_prepare.yml` とする。
+予約row / requestの `source_mode` で分岐し、2026はPACI、
+2010–2025はaccepted Historical Warehouseを使う。Historical rowへ
+`paci_file_id` を捏造しない。
+
+DAY PREP・market-blind forecast_prep・sealed v0.5.2 session・会場単位の
+Decision Core保存・Freeze・Verifyまでを同じpre-result operationとして扱う。
+予想の印・境界候補・理由文をスクリプトで補完しない。結果/対象日marketは
+全日FreezeとVerify PASSまで開かない。
+
+v0.4.6の `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` と
+`racenote_btday_v046_*.yml` はhistorical reproduction用であり、
+current BTDAY entrypointではない。
 
 Current prediction researchは **RaceNote Forecast Gen0**。作業開始時に `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` を確認する。
 
