@@ -1,6 +1,6 @@
 # JRDB Newspaper Daily Work Contract
 
-Status: OPERATIONAL CONTRACT / 2026-09-13
+Status: OPERATIONAL CONTRACT / 2026-10-09
 
 この文書は、専用Workスレッドから中央競馬の「競馬新聞」日次JSONを生成・保存・公開する通常運用の正本契約です。
 
@@ -32,7 +32,8 @@ Workは対象日を確定し、利用可能な入力を自律的に探索・検�
 - keibailuka / イルカブログ
 - Eval
 - RaceNote prediction output
-- EdgeDB matcher output
+- STANDARD EdgeDB Query output
+- EdgeDB v0.5 production addon
 
 ### Eval PWA analysis submission
 
@@ -69,7 +70,11 @@ Newspaperは値の再計算・補正・丸め・順位化・他指数との合�
 
 RaceNoteは完成済みprediction outputのみをaddonとして利用し、RaceNote bundleやRaceNote内部実装をNewspaper Base/historyへ流用しません。
 
-EdgeDBはEdge側matcherの照合結果をconsumer入力とし、Newspaper側でEdge条件を再実装・再判定しません。新規Newspaper packageでは表示対象を `special_memos` として保持し、旧 `edge_matches` は過去package互換に限定します。
+STANDARD EdgeDBは `jrdb_edgedb_query.py --profile STANDARD` の照合結果をconsumer入力とし、Newspaper側で条件を再実装・再判定しません。`special_memos` は旧表示互換・監査互換のため保持してよいですが、通常PWAの旧「特注メモ」列は表示しません。
+
+EdgeDB v0.5は日次生成時に既存frozen cohort / 既存matcherを使って照合し、馬単位の `addons.edge_v05.candidate_ids` とレース単位の `edge_v05_candidates` を生成します。PWAはこの確定済み結果だけをconsumeし、ブラウザ側でEdge条件・2026診断・ROIを再計算しません。
+
+EdgeDB v0.5の現在のsource stateは完全対応ではないため、正常な部分対応は `PARTIAL`、完全対応は `READY`、生成またはjoin異常は `ERROR` とします。`PARTIAL` / `READY` のときだけ候補を表示し、`ERROR` ではEdge列を空欄にして他addonを維持します。
 
 ## 3. Input resolution order
 
@@ -125,13 +130,17 @@ Eval、RaceNote、RaceReviewDB recommendation、keibailuka、EdgeDB、独自指�
 ```text
 PACI / neutral JRDB layer
   -> Newspaper Base / history
-  -> available optional addons merge
+  -> canonical Analysis resolve
+  -> STANDARD EdgeDB Query
+  -> EdgeDB v0.5 addon
+  -> available external addons merge
   -> audit
   -> day package
   -> Drive canonical save
   -> current pointer update
   -> Current Publish
-  -> Pages
+  -> JRDB PWA Pages
+  -> public PWA check
 ```
 
 mergeはnamespace ownershipとexact-key joinを守ります。
@@ -229,6 +238,10 @@ previous revisionで使用したverified inputs
 - runner headcount
 - canonical key uniqueness
 - exact-key merge coverage
+- STANDARD EdgeDB query/merge state
+- EdgeDB v0.5 `source_status.edge_v05.state`
+- EdgeDB v0.5 matched runner / signal count where available
+- EdgeDB v0.5 `missing_join_count` / `extra_join_count` (normally both 0)
 - history as-of / leakage
 - schema validity
 - source state / source coverage
@@ -256,8 +269,9 @@ optional sourceの未着はaudit failureではなく、source stateとして記�
 2. Google Drive canonical保存
 3. revision/current metadata更新
 4. Newspaper Current Publish
-5. GitHub Pages反映
-6. publication run / result確認
+5. downstream `JRDB PWA Pages` 反映
+6. public Newspaper表示確認
+7. publication run / result確認
 ```
 
 Pagesや正式publicationはActions-Native Executionとして扱います。
@@ -291,7 +305,8 @@ PACI: READY
 Eval: READY
 RaceNote: READY
 keibailuka: NOT_FOUND
-EdgeDB: READY
+STANDARD EdgeDB: READY
+EdgeDB v0.5: PARTIAL
 independent index: NOT_EXPECTED
 
 Races / runners: 36R / NNN頭
@@ -299,6 +314,7 @@ Audit: PASS
 Drive canonical: SAVED
 Current Publish: SUCCESS
 Pages: SUCCESS
+Public PWA: VERIFIED
 
 Pending:
 - keibailuka: target-date source not found
@@ -355,3 +371,49 @@ RRDB推奨は独立した印列を新設しない。
 ### Edge Query consumer
 
 日次Newspaper Baseと同じPACIを `jrdb_edgedb_query.py --profile STANDARD` に一度渡す。Analysisは既存のcanonical Parquet current bundleを世代IDとmanifest SHAで検証して利用する。adapterは `STANDARD` かつ `production_eligible=true` のsignalだけを `special_memos` に投影し、三つのidentity keyで完全一致mergeする。Edge Query/merge単独失敗時は `edge.state=ERROR` とaudit理由を残してBaseを維持する。旧matcher JSONLは互換入力に限定する。
+
+
+## 15. EdgeDB v0.5 daily production rules
+
+2026-10-09以降の日次通常新聞では、EdgeDB v0.5を正式なPWA addonとして扱います。
+
+正規順序:
+
+```text
+PACI
+-> Newspaper Base
+-> canonical Analysis
+-> STANDARD EdgeDB
+-> EdgeDB v0.5 addon
+-> remaining addons
+-> audit / day artifact
+-> Current Publish
+-> JRDB PWA Pages
+-> public verification
+```
+
+v0.5の表示契約:
+
+- 馬単位: `horse.addons.edge_v05.candidate_ids`
+- レース単位辞書: `edge_v05_candidates`
+- 通常PWAでは既存mark群の直後、過去走の直前に独立Edge列を置く
+- 該当馬だけ `○`、非該当馬は空欄
+- `○` から詳細modalを開く
+- 2026診断・複勝ROIは説明情報であり予想印・買い推奨へ変換しない
+- 旧 `special_memos` は互換データとして残してよいが、旧「特注メモ」列は通常PWAへ出さない
+
+現在の対応範囲は `EDGE_V05_PRODUCTION.md` を正本とし、未接続項目を推測で補完しません。特に結果SEDの馬場状態をpre-race goingとして流用せず、不完全履歴から初芝・初ダート・初ブリンカーを決め打ちしません。
+
+日次artifactでは最低限、通常監査に加えて次を確認します。
+
+```text
+source_status.edge_v05.state
+matched_runner_count
+signal_count
+missing_join_count
+extra_join_count
+```
+
+`missing_join_count = 0`、`extra_join_count = 0` を通常条件とします。matched runner 0件だけでは直ちにERRORとしませんが、通常開催全体で完全0件なら入力・matcher・source statusを確認します。
+
+公開完了はRelease更新ではなく、`JRDB PWA Pages` の `Run PWA focused tests / Prepare Pages artifact / Upload Pages artifact / Deploy to GitHub Pages` がすべてSUCCESSで、公開新聞を確認した時点です。
