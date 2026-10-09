@@ -1,0 +1,95 @@
+name: JRDB Newspaper Current Audit via Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_CURRENT_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download current personal release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/current
+          gh release download jrdb-newspaper-current --repo "$GITHUB_REPOSITORY"             --pattern 'jrdb_newspaper_current.tar.xz' --dir /tmp/current --clobber
+          tar -xJf /tmp/current/jrdb_newspaper_current.tar.xz -C /tmp/current
+          rm /tmp/current/jrdb_newspaper_current.tar.xz
+
+      - name: Audit Edge status
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifests=list(Path('/tmp/current').rglob('manifest.json'))
+          manifests=[p for p in manifests if p.parent.joinpath('races').is_dir()]
+          if len(manifests)!=1:
+              raise SystemExit(f'expected one manifest, got {manifests}')
+          m=json.loads(manifests[0].read_text(encoding='utf-8'))
+          root=manifests[0].parent
+          race_states={}
+          candidate_races=0
+          candidate_horses=0
+          candidate_ids=0
+          for p in sorted((root/'races').glob('*.json')):
+              b=json.loads(p.read_text(encoding='utf-8'))
+              st=((b.get('metadata') or {}).get('source_status') or {}).get('edge_v05')
+              state=(st or {}).get('state') if isinstance(st,dict) else None
+              race_states[state]=race_states.get(state,0)+1
+              d=b.get('edge_v05_candidates') or {}
+              if d:
+                  candidate_races+=1
+              for h in b.get('horses') or []:
+                  ids=(((h.get('addons') or {}).get('edge_v05') or {}).get('candidate_ids') or [])
+                  if ids:
+                      candidate_horses+=1
+                      candidate_ids+=len(ids)
+          out={
+              'date':m.get('date'),
+              'revision':m.get('revision'),
+              'manifest_edge':(m.get('source_status') or {}).get('edge'),
+              'manifest_edge_v05':(m.get('source_status') or {}).get('edge_v05'),
+              'race_edge_v05_states':race_states,
+              'candidate_races':candidate_races,
+              'candidate_horses':candidate_horses,
+              'candidate_ids':candidate_ids,
+          }
+          Path('/tmp/audit.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Comment and close
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          if [ "$JOB_STATUS" = "success" ]; then
+            BODY="$(cat /tmp/audit.json)"
+            gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB_NEWSPAPER_CURRENT_AUDIT_RESULT: PASS
+
+```json
+$BODY
+```"
+            gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+          else
+            gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB_NEWSPAPER_CURRENT_AUDIT_RESULT: FAILED."
+            gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason "not planned"
+          fi
