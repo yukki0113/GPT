@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 from racenote_v052_equivalence import compare
-from racenote_v052_from_historical_warehouse import validate_gate
+from racenote_v052_from_historical_warehouse import REQUIRED_PASS, validate_gate
 
 
 DATE = "2025-12-28"
@@ -79,6 +79,16 @@ class EquivalenceGateTest(unittest.TestCase):
                            "golden_day": DATE, "mismatch_count": 0,
                            "warehouse_reconstruction": {"generation_id": "accepted-generation"}})
             with self.assertRaisesRegex(ValueError, "lacks race_roster_equal"):
+                validate_gate(report, pointer)
+            forged = json.loads(report.read_text())
+            forged.update({key: True for key in REQUIRED_PASS})
+            forged.update(race_count=1, horse_count=1,
+                          normal_view_semantic_sha256={
+                              "raw": {"race": "aaa"},
+                              "warehouse": {"race": "bbb"},
+                          })
+            write(report, forged)
+            with self.assertRaisesRegex(ValueError, "inconsistent normal_view hashes"):
                 validate_gate(report, pointer)
 
     def test_identical_inputs_pass(self):
