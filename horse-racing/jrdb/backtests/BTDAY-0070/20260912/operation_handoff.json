@@ -1,0 +1,23 @@
+{
+  "schema_version": "racenote-v052-from-paci-0.1",
+  "status": "READY_FOR_V052_AUTHORING",
+  "selection_id": "BTDAY-0070",
+  "target_date": "2026-09-12",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.2-candidate",
+  "session_id": "V052-7bd25ca187d8fd0b8829",
+  "paci": {
+    "filename": "PACI260912.zip",
+    "sha256": "f770e4c1f34b2d2803b0c9a18c2ffcd84ef4959278d011037cbca71ff6b3c150"
+  },
+  "daily_manifest_status": "PASS",
+  "forecast_prep": "horse-racing/jrdb/backtests/BTDAY-0070/20260912/forecast_prep",
+  "v052_root": "horse-racing/jrdb/backtests/BTDAY-0070/20260912/v052",
+  "race_count": 24,
+  "expected_venues": [
+    "中山",
+    "阪神"
+  ],
+  "market_blind": true,
+  "result_opened": false,
+  "ab_required": false
+}
