@@ -212,11 +212,24 @@ jobs:
           python - "$PACI" <<'PY'
           import json, sys
           from pathlib import Path
+          from jrdb_analysis_parquet_current import resolve_current
           from jrdb_newspaper_edge_v05_preview import build_preview
+
+          request=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
+          analysis_root=Path('/tmp/analysis_parquet')
+          generation=request['analysis_generation_id']
+          (analysis_root/'current.json').write_text(json.dumps({
+              'status':'CURRENT',
+              'generation_id':generation,
+              'manifest':f'generations/{generation}/manifest.json'
+          },ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          resolved=resolve_current(analysis_root)
+          if resolved['generation_id'] != generation:
+              raise SystemExit('Analysis current rebind mismatch before Edge v0.5')
 
           archive = Path('horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_artifact.zip')
           result = build_preview(Path('/tmp/day'), Path('/tmp/day-v05'), Path(sys.argv[1]),
-                                 Path('/tmp/analysis_parquet'), archive)
+                                 analysis_root, archive)
           print(json.dumps(result, ensure_ascii=False, sort_keys=True))
           PY
           rm -rf /tmp/day
