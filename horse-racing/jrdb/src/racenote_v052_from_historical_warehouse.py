@@ -37,6 +37,15 @@ def validate_gate(path: Path, current: Path) -> dict:
     for key in REQUIRED_PASS:
         if report.get(key) is not True:
             raise ValueError(f"historical equivalence gate lacks {key}=true")
+    views = report.get("normal_view_semantic_sha256") or {}
+    raw_hashes = views.get("raw")
+    warehouse_hashes = views.get("warehouse")
+    if (not isinstance(raw_hashes, dict) or not raw_hashes
+            or raw_hashes != warehouse_hashes
+            or len(raw_hashes) != report.get("race_count")
+            or not isinstance(report.get("horse_count"), int)
+            or report["horse_count"] <= 0):
+        raise ValueError("historical equivalence gate has inconsistent normal_view hashes")
     golden = date.fromisoformat(report["target_date"])
     if not 2010 <= golden.year <= 2025 or report.get("golden_day") != report["target_date"]:
         raise ValueError("historical equivalence gate has invalid golden day")
