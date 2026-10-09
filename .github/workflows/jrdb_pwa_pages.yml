@@ -27,6 +27,7 @@ on:
       - "JRDB Newspaper Skeleton Publish"
       - "JRDB Newspaper External Merge via Issue"
       - "JRDB Newspaper Kensho Merge via Issue"
+      - "JRDB Newspaper Edge v0.5 Republish via Issue"
       - "JRDB Newspaper v0.3 Rehearsal Publish"
     types:
       - completed
