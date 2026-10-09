@@ -1,4 +1,23 @@
 
+## RaceNote v0.5.2 mixed-source BTDAY operation — 2026-10-09
+
+- New unused BTDAYs use `RaceNote-Human-Context-Reader-0.5.2-candidate`.
+- Canonical procedure: `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
+- Canonical prepare workflow: `.github/workflows/racenote_btday_v052_prepare.yml`.
+- Lottery state remains `config/racenote_backtest_day_pool_2026.json`, but it is mixed-source:
+  - 2026 -> `source_mode=paci`;
+  - 2025 -> `source_mode=historical_warehouse`, accepted generation
+    `jrdb_normalized_warehouse_v1_2010_2025_g20260921`.
+- Request orchestration must branch by `source_mode`; never fabricate a PACI id for Historical rows.
+- Historical transport uses only the reviewed SHA-pinned manifest
+  `config/public_drive/racenote_historical_golden_20251228_v1.json` through
+  `tools/gpt_io/public_drive/fetch.py`.
+- Both branches converge on the same sealed v0.5.2 Reader/session, Decision Core,
+  venue save, Freeze and Verify contracts.
+- BTDAY-0072 / 2025-12-21 verified the Historical route: 36R / 546 horses,
+  DAY PREP PASS, SESSION_SEALED, READY_FOR_V052_AUTHORING.
+- The v0.4.6 section below is historical/reproducibility context only.
+
 ## RaceNote research-work handoff area — 2026-10-05
 
 Substantial design / execution / audit handoffs are stored under:
@@ -18,7 +37,7 @@ Historical feature analysis must start with **2023-2025** and may extend to **20
 Current Stage A instruction:
 `docs/racenote/research-work/instructions/20261005_JRDB_FEATURE_AUDIT_STAGE_A_INSTRUCTION.md`
 
-### RaceNote Human-Context v0.4.6 unified prospective — 2026-10-05
+### Legacy RaceNote Human-Context v0.4.6 unified prospective — 2026-10-05
 
 - New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.6-candidate` from `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
 - v0.4.6 remains one prediction cohort. 2026-10-05 refinements change prose, trace sparsity and deterministic execution only; they do not change horse-selection semantics.
@@ -73,7 +92,7 @@ Current Stage A instruction:
 - Normal GPT/Work request should need only date, optional venue/race/bet type. First run `jrdb_result_query_runner.py --plan`, materialize the listed Drive SED/HJC with the native connector, then execute the runner. Do not ask the user for artifact paths.
 - Repository absence of Raw is expected. Never jump to Web search merely because SED/HJC is not checked into Git.
 
-### RaceNote clean blind daily backtest activation — current routing
+### Legacy v0.4.6 clean blind daily backtest activation
 
 - Phase: `BLIND_RESEARCH_ACTIVE`; clean-blind picks are allowed.
 - DAY PREP entrypoint remains `src/build_racenote_daily.py`.
