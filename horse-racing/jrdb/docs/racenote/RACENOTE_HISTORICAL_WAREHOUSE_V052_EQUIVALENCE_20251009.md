@@ -18,14 +18,18 @@
 | RaceNote base evidence semantic hash | PASS、24/24 |
 | 共通 Analysis 履歴補強後の evidence semantic hash | PASS、24/24 |
 | 履歴補強段階の v0.5.2 `normal_view` semantic hash | PASS、24/24 |
-| 最終 RRDB を含む DAY PREP と `source_semantic_sha256` | CI 判定待ち |
-| 最終 `normal_view`、`SESSION_SEALED`、blind firewall | CI 判定待ち |
+| 最終 RRDB を含む DAY PREP、forecast_prep、`SESSION_SEALED` | PASS、両経路24/24 |
+| 最終 `normal_view` semantic hash | PASS、24/24 |
+| Reader manifest model identity | PASS |
+| 生の `source_semantic_sha256` | 不一致（実行メタデータを含む） |
+| execution-only metadataを除いたsource semantics | PASS、24/24 |
+| market/result blind firewall | PASS、両経路 |
 
-`metadata.generated_at` は実行ごとに異なる。Reader View の生の `source_semantic_sha256` はこの時刻を含むため、独立実行の生ハッシュは 24/24 で異なった。既存 DAY PREP の `evidence_semantic_sha256()` はこの実行メタデータとローカルの照会テレメトリを除外する。この正規化後は24/24で一致した。予想モデルが読む履歴補強段階の `normal_view` は24/24で一致した。最終判定では生ハッシュの差異を報告し、正規化後のsource semanticsと実際の `normal_view` の一致を必須とする。
+`metadata.generated_at` は実行ごとに異なる。Reader View の生の `source_semantic_sha256` はこの時刻を含むため、独立実行の生ハッシュは24/24で異なった。既存 DAY PREP の `evidence_semantic_sha256()` はこの実行メタデータとローカルの照会テレメトリを除外する。この正規化後は24/24で一致した。予想モデルが実際に読む最終 `normal_view` の意味ハッシュは24/24で一致した。生ハッシュの差異を隠さず、正規化後のsource semanticsと実際の `normal_view` の一致を受入判定に用いる。
 
 ## 最終ゲート
 
-PR #1908 の Actions が RaceReviewDB を取得して全経路を実行する。`equivalence_report.json` の `status=PASS` を確認するまで、historical BTDAY source mode を有効化しない。PASSしない場合はレース単位の差分と原因を修正する。
+PR #1908 の [Actions run 37895352821](https://github.com/yukki0113/GPT/actions/runs/37895352821) がRaceReviewDBを取得し、全経路を実行して成功した。機械可読な[同値性レポート](RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json)の `status=PASS`、`mismatch_count=0` を確認した。historical BTDAY 入口はこのPASSレポートと同じaccepted Warehouse generationを要求する。
 
 ## データ境界
 
