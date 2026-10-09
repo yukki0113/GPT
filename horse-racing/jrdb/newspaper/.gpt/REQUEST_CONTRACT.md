@@ -4,18 +4,26 @@
 
 ## 1. Standard daily operation
 
-通常の日次Newspaper生成は次の分離を標準とします。
+2026-10-09以降、**公開PWAまで更新する日次Newspaper運用**では、既存の正式workflowを優先します。PACI取得済みでも、canonical Analysis / STANDARD EdgeDB / EdgeDB v0.5 / day artifactを同一監査chainで固定する必要があるためです。
 
 ```text
-official PACI acquisition if needed  -> D / Actions
-obtained PACI + Analysis             -> C / GPT local build
-Eval / RaceNote / keibailuka merge   -> C / GPT local merge
-schema / SHA / day-package           -> C / GPT local validation/build
-PWA source change                    -> B / direct Git commit
-Pages deployment                     -> D / push-triggered Pages Actions
+official PACI acquisition if needed
+  -> JRDB Raw Fetch / Actions
+verified PACI artifact
+  -> JRDB Newspaper Day Build via Issue
+  -> canonical Analysis resolve
+  -> STANDARD EdgeDB
+  -> EdgeDB v0.5 addon
+  -> audited day artifact
+external late addons / deterministic checks
+  -> existing canonical merge modules
+Drive canonical + publish/current.json
+  -> JRDB Newspaper Current Publish
+  -> JRDB PWA Pages
+  -> public verification
 ```
 
-PACIが添付・Library・既存artifact等から取得済みなら、Newspaper生成のためのIssueは作りません。
+C / Pure Deterministic Executionは、取得済み入力に対する単体build・merge・診断・回帰確認には引き続き利用できます。ただし、正式日次PWA公開で既存Actions artifact chainが正本になっている工程を、Chat側の独自Pythonへ置き換えません。
 
 ## 2. JRDB official data acquisition
 
@@ -63,29 +71,65 @@ Issue作成前にroot `.gpt/ISSUE_REQUEST_CONTRACTS.md` と対象workflow parser
 
 Hosted PoCを使う場合は `newspaper_poc.audit_status=PASS`、target identity、chronology/duplicate、architecture boundaryを監査します。
 
-## 4. Full-day Issue workflow
+## 4. Full-day daily Newspaper workflow
 
-`.github/workflows/jrdb_newspaper_day_issue.yml` / `[JRDB_NEWSPAPER_DAY_REQUEST]` は、Secretを使ったPACI取得から日次artifact生成までをActions上で一括固定したい場合の **fallback / audit route** とします。
+正本workflow:
 
-通常の日次Workでは、PACI取得後にGPTローカルで `jrdb_newspaper_day_build.py` を実行するため、このIssueは使いません。
+```text
+.github/workflows/jrdb_newspaper_day_issue.yml
+workflow name: JRDB Newspaper Day Build via Issue
+title prefix: [JRDB_NEWSPAPER_DAY_REQUEST]
+```
 
-Request body:
+このworkflowは、既に取得済みのJRDB Raw/PACI artifactを入力に、Base生成からcanonical Analysis、STANDARD EdgeDB、EdgeDB v0.5 addon、day artifact出力までを一括で監査します。
+
+Request bodyの現行contract:
 
 ```json
 {
   "date": "YYYYMMDD",
-  "analysis_url": "<optional Google Drive URL>",
-  "revision": 1
+  "revision": 1,
+  "raw_run_id": 123456789,
+  "artifact_name": "jrdb-raw-YYYYMMDD",
+  "analysis_bundle_drive_file_id": "<canonical Analysis bundle Drive file id>",
+  "analysis_generation_id": "<canonical generation id>",
+  "analysis_manifest_sha256": "<64 lowercase hex>"
 }
 ```
 
-このrouteを選ぶ条件:
+必須identity:
 
-- Actions artifact自体を正式な監査証跡として残す必要がある
-- GitHub-hosted runnerで一括再現することが要件
-- Chat側で必要入力を取得できず、Actions環境での取得が必要
+- `date`: 対象日 `YYYYMMDD`
+- `revision`: integer >= 1
+- `raw_run_id`: 成功済みJRDB Raw Fetch run
+- `artifact_name`: 必ず `jrdb-raw-YYYYMMDD`
+- `analysis_bundle_drive_file_id`
+- `analysis_generation_id`
+- `analysis_manifest_sha256`
 
-上記以外ではCを優先します。
+Analysis 3項目が欠けるとBaseは作れてもcanonical Analysisを解決できず、Edge系が正常生成されません。日次PWA公開では、原則として3項目を事前解決してからrequestを発行します。
+
+workflow内の正規順序:
+
+```text
+PACI artifact verify
+-> Newspaper Base / history
+-> canonical Analysis bundle download + generation/SHA verify
+-> jrdb_edgedb_query.py --profile STANDARD
+-> Edge exact merge
+-> EdgeDB v0.5 addon
+-> audited day artifact
+```
+
+EdgeDB v0.5は既存frozen cohort / matcher / addon moduleを使用します。未取得featureを独自推測で補いません。
+
+Success marker:
+
+```text
+JRDB_NEWSPAPER_DAY_RESULT
+```
+
+Success後はartifactの `audit.json` / `manifest.json` を確認し、少なくともrace count、venue codes、history coverage、completeness、source status、Edge v0.5 join状態を監査します。
 
 ## 5. Retry rule
 
