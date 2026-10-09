@@ -25,6 +25,55 @@ from racenote_v052_equivalence import compare
 from racenote_v052_single_day import init_session
 
 
+def build_warehouse_daily(
+    *, day: date, warehouse_current: Path, warehouse_asset_root: Path,
+    analysis_root: Path, racereview_root: Path, output_root: Path,
+    rrdb_work_root: Path,
+) -> tuple[dict, dict]:
+    """Use the canonical Warehouse Reader and existing common D2-D4 stages."""
+    reader = WarehouseRaceNoteReader(
+        warehouse_current,
+        asset_roots={family: warehouse_asset_root for family in
+                     ("BAC", "KYI", "CHA", "CYB", "ZED", "ZKB")},
+    )
+    warehouse, warehouse_report = reader.build(day, source_member_date=day)
+    analysis = open_analysis_backend(analysis_root=analysis_root, backend="parquet")
+    try:
+        bases = [warehouse[key] for key in sorted(warehouse)]
+        history_bundles, history_report = enrich_history_bundles(bases, analysis)
+    finally:
+        analysis.close()
+    enriched, rrdb_report = enrich_rrdb_bundles(
+        history_bundles, racereview_root=racereview_root,
+        racereview_current_cache=None, next_watch_rules=None,
+        work_root=rrdb_work_root,
+    )
+    views, reader_report = build_reader_views(enriched)
+    target_date = day.isoformat()
+    report = {
+        "base": {"target_date": target_date, "date_raw": day.strftime("%Y%m%d"),
+                 "race_count": len(bases), "target_result_contamination": 0,
+                 "record_counts": warehouse_report["record_counts"]},
+        "history": history_report, "rrdb": rrdb_report, "reader": reader_report,
+    }
+    validation = validate_daily_bundles(enriched, views, report, target_date)
+    package = write_daily_package(
+        bundles=enriched, views=views, report=report, validation=validation,
+        target_date=target_date, output_root=output_root,
+    )
+    manifest_path = Path(package["manifest"])
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["sources"].pop("paci", None)
+    manifest["sources"]["historical_warehouse"] = {
+        "generation_id": warehouse_report["generation_id"],
+        "target_date": target_date,
+        "as_of_exclusive": target_date,
+        "record_counts": warehouse_report["record_counts"],
+    }
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return warehouse, warehouse_report
+
+
 def run(args: argparse.Namespace) -> dict:
     day = date.fromisoformat(args.date)
     if not 2010 <= day.year <= 2025:
@@ -50,15 +99,6 @@ def run(args: argparse.Namespace) -> dict:
     raw_report = build_paci_equivalent(
         args.raw_root, day.year, compact, keys, paci, require_raw,
     )
-    reader = WarehouseRaceNoteReader(
-        args.warehouse_current,
-        asset_roots={family: args.warehouse_asset_root for family in
-                     ("BAC", "KYI", "CHA", "CYB", "ZED", "ZKB")},
-    )
-    warehouse, warehouse_report = reader.build(day, source_member_date=day)
-    if set(warehouse) != {key.decode("ascii") for key in keys}:
-        raise ValueError("Raw/Warehouse race keys differ before DAY PREP")
-
     raw_root = args.output_root / "raw"
     warehouse_root = args.output_root / "warehouse"
     with tempfile.TemporaryDirectory(prefix="v052-historical-rrdb-") as tmp:
@@ -68,39 +108,16 @@ def run(args: argparse.Namespace) -> dict:
             racereview_current_cache=None, next_watch_rules=None,
             output_root=raw_root / "day_prep", rrdb_work_root=Path(tmp) / "raw",
         )
-        analysis = open_analysis_backend(analysis_root=args.analysis_root, backend="parquet")
-        try:
-            bases = [warehouse[key] for key in sorted(warehouse)]
-            history_bundles, history_report = enrich_history_bundles(bases, analysis)
-        finally:
-            analysis.close()
-        enriched, rrdb_report = enrich_rrdb_bundles(
-            history_bundles, racereview_root=args.racereview_root,
-            racereview_current_cache=None, next_watch_rules=None,
-            work_root=Path(tmp) / "warehouse",
+        warehouse, warehouse_report = build_warehouse_daily(
+            day=day, warehouse_current=args.warehouse_current,
+            warehouse_asset_root=args.warehouse_asset_root,
+            analysis_root=args.analysis_root,
+            racereview_root=args.racereview_root,
+            output_root=warehouse_root / "day_prep",
+            rrdb_work_root=Path(tmp) / "warehouse",
         )
-        views, reader_report = build_reader_views(enriched)
-        report = {
-            "base": {"target_date": args.date, "date_raw": day.strftime("%Y%m%d"),
-                     "race_count": len(bases), "target_result_contamination": 0,
-                     "record_counts": warehouse_report["record_counts"]},
-            "history": history_report, "rrdb": rrdb_report, "reader": reader_report,
-        }
-        validation = validate_daily_bundles(enriched, views, report, args.date)
-        package = write_daily_package(
-            bundles=enriched, views=views, report=report, validation=validation,
-            target_date=args.date, output_root=warehouse_root / "day_prep",
-        )
-        manifest_path = Path(package["manifest"])
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        manifest["sources"].pop("paci", None)
-        manifest["sources"]["historical_warehouse"] = {
-            "generation_id": warehouse_report["generation_id"],
-            "target_date": args.date,
-            "as_of_exclusive": args.date,
-            "record_counts": warehouse_report["record_counts"],
-        }
-        manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if set(warehouse) != {key.decode("ascii") for key in keys}:
+            raise ValueError("Raw/Warehouse race keys differ before DAY PREP")
 
     for root in (raw_root, warehouse_root):
         daily = root / "day_prep" / f"RaceNote_{day:%Y%m%d}"
