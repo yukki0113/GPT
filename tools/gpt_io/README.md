@@ -5,13 +5,13 @@
 - **Git direct read/write:** PRODUCTION / STANDARD.
 - **Git Issue/Actions transport:** COMPATIBILITY FALLBACK.
 - **Google Drive native connector route:** PRODUCTION / STANDARD FOR CHATGPT-WORK.
-- **Google Drive Actions backend:** DISCONTINUED FOR OPERATION / NOT PRODUCTION-ACCEPTED.
+- **Google Drive authenticated Actions backend:** DISCONTINUED / NOT ACCEPTED.\n- **Public Drive read-only helper:** narrowly ACCEPTED with reviewed manifest and SHA-256.
 
 Repository-wide GitHub routing is defined by `.gpt/GITHUB_OPERATION_POLICY.md`. This bridge must not override the A/B/C/D routing decision.
 
-Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. Do not configure or use an Actions-side Google Drive Service Account backend, direct `drive.google.com` download, `gdown`, or an Issue bridge for Drive transport.
+Use connected native Google Drive tools for normal Drive operations. Google Docs, Sheets and Slides must use their native tools. Do not configure an Actions-side authenticated Drive backend or issue bridge. Direct workflow `gdown` remains prohibited; the manifest-pinned public read-only helper is the sole exception.
 
-See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` for the architecture decision and safety contract.
+See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md` for the current architecture decision and safety contract.
 
 ## GitHub routing
 
@@ -81,39 +81,19 @@ Do not create an Issue merely to run a preflight. The routing decision comes fir
 
 ## Google Drive transport
 
-Production-standard Drive transport is:
+Decision: `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md`.
+Authenticated/private Drive operations, Drive writes and native
+Docs/Sheets/Slides stay in ChatGPT/Work's connected native tools.
 
-```text
-GitHub source / artifact
--> GPT runtime
--> connected native Google Drive connector
--> Drive
-```
+For **reviewed public, immutable read-only inputs only**, Actions or local
+Python may use the manifest-pinned `tools/gpt_io/public_drive/fetch.py`
+helper with mandatory SHA-256 verification. See
+`tools/gpt_io/public_drive/README.md` for its exact CLI and manifest contract.
 
-When a Drive input must be processed by canonical repository code:
-
-```text
-Google Drive
--> connected native Google Drive connector
--> GPT runtime
--> canonical GitHub module
--> local deterministic execution
--> optional native Drive connector write-back
-```
-
-Actions-side Drive transport is not an operational fallback. In particular, do not use:
-
-- `gdown`
-- direct `drive.google.com` downloads
-- Google Drive REST API from Actions
-- `GPT_GDRIVE_SERVICE_ACCOUNT_JSON`
-- `GPT_GDRIVE_AUTOMATION_ROOT_ID`
-- `[gpt-gdrive-request]`
-- a Drive-transport-only Actions chain
-
-Historical workflows that depended on those routes are stored only as non-runnable references under `.gpt/legacy_workflows/drive_direct/`. They must not be moved back into `.github/workflows/` without a new repository-level routing decision.
-
-Adapter/source code for the discontinued backend may remain only as historical/reference implementation where needed. It is not a current operation surface.
+Do not put raw `gdown` calls or ad-hoc Drive URLs in workflows.
+Do not use authenticated Drive API, service-account secrets, OAuth, or
+Drive write/upload from Actions. The retired `gdrive/` backend is not
+reactivated. The A/B/C/D routing decision remains prior to transport selection.
 
 ## Key rule
 

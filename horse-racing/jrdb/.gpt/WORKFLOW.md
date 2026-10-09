@@ -1,5 +1,34 @@
 # JRDB GPT workflow
 
+## Public Drive read-only Historical Golden input (2026-10-09)
+
+For the 2010–2025 Historical v0.5.2 golden regression, the verified,
+unauthenticated transport is `tools/gpt_io/public_drive/fetch.py` with
+`config/public_drive/racenote_historical_golden_20251228_v1.json`.
+The manifest pins 20 public file IDs, filenames, sizes and SHA-256 values.
+The GitHub workflow downloads via the shared helper, then executes the **same**
+Raw-equivalence and Warehouse readers; no new prediction semantics or
+result/market access are introduced.
+
+Do not add direct `gdown` URLs to JRDB workflows or silently use authenticated
+Drive access on failure. 2026 daily PACI remains unchanged. See
+`tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md` for the narrowly scoped policy.
+
+
+## RaceNote v0.5.2 source routing — 2026-10-09
+
+- 2026: continue using the existing PACI daily ZIP entrypoint.
+- 2010–2025: require the committed Raw/Warehouse equivalence report `PASS`
+  for the same accepted Warehouse generation, then use
+  `src/racenote_v052_from_historical_warehouse.py` to create DAY PREP,
+  market-blind forecast_prep and a sealed v0.5.2 session.
+- Use the same v0.5.2 authoring, Decision Core, `save`, `freeze`, and `verify`
+  commands for either source. Never open target results or final market before
+  Freeze/Verify. Preserve `as_of_exclusive=target_date`.
+- Historical picker inventory must record source reference and selection cycle;
+  do not clear first-cycle usage to replay a date.
+- Detailed commands and gate: `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
+
 Last reviewed: 2026-09-13
 
 ## Thread restart bootstrap
