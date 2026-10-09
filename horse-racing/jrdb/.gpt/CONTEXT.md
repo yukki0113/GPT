@@ -19,10 +19,10 @@
   Reader, DAY PREP functions, forecast_prep and existing v0.5.2 session.
 - Raw Reader `source_semantic_sha256` includes execution timestamps; the
   normalized source semantics and model-facing `normal_view` are equal.
-- See `docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251009.md`
+- See `docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json`
   and `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
 
-Last reviewed: 2026-09-23
+Last reviewed: 2026-10-09
 
 ## Current storage precedence — 2026-09-23
 
