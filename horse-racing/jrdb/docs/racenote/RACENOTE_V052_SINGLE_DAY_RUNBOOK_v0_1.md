@@ -152,7 +152,8 @@ The **prediction thread owns the entire pre-result operation from PACI through V
 TURN 1 and TURN 2 are internal phases of the same prediction request, not separate threads.
 
 The prediction thread must:
-- acquire or resolve the target PACI;
+- resolve the reserved BTDAY source mode;
+- for 2026, acquire/resolve the target PACI; for 2010–2025, materialize the accepted Historical Warehouse bundle;
 - run/route Analysis and RRDB enrichment;
 - build the daily RaceNote package;
 - create the market-blind forecast_prep;
@@ -180,22 +181,28 @@ Required handoff state:
 - `result_opened=false`
 - canonical v0.5.2 Reader/session materialized
 
-The prediction thread's TURN 1 orchestration may use the PACI entrypoint below.
+The prediction thread's TURN 1 orchestration must branch by the reserved
+`source_mode`.
 
-Historical BTDAY:
+Historical BTDAY (2010–2025) uses the Historical Warehouse entrypoint documented
+in the preceding section:
 
 ```bash
-python horse-racing/jrdb/src/racenote_v052_from_paci.py \
+python horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py \
   --date YYYY-MM-DD \
-  --paci /path/to/PACIyymmdd.zip \
   --selection-id BTDAY-XXXX \
   --main-sha <40-char-main-sha> \
-  --analysis-root <canonical-analysis-root> \
-  --racereview-current-cache <rrdb-current-cache> \
-  --output-root horse-racing/jrdb/backtests/BTDAY-XXXX/YYYYMMDD/v052_day
+  --equivalence-report horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json \
+  --warehouse-current <historical-input-root>/warehouse/current.json \
+  --warehouse-asset-root <historical-input-root>/warehouse \
+  --analysis-root <historical-input-root>/analysis \
+  --racereview-root <historical-input-root>/rrdb/postrace_review/v0_1 \
+  --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
+  --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+  --output-root horse-racing/jrdb/backtests/BTDAY-XXXX/YYYYMMDD
 ```
 
-Normal forward day:
+Normal 2026 / forward PACI day:
 
 ```bash
 python horse-racing/jrdb/src/racenote_v052_from_paci.py \
@@ -234,7 +241,12 @@ For GitHub-backed BTDAY preparation, the canonical workflow is:
 
 `/.github/workflows/racenote_btday_v052_prepare.yml`
 
-It must call `racenote_v052_from_paci.py` as the v0.5.2 TURN 1 entrypoint so that one request produces all of:
+It must branch on request `source_mode`:
+- `paci` -> `racenote_v052_from_paci.py`;
+- `historical_warehouse` -> `racenote_v052_from_historical_warehouse.py`
+  after materializing the reviewed SHA-pinned public bundle.
+
+Either branch must produce all of:
 
 - validated daily RaceNote manifest / validation report;
 - market-blind `forecast_prep`;
