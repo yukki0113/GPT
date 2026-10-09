@@ -152,7 +152,7 @@ jobs:
           unzip -q /tmp/historical/rrdb.zip -d /tmp/historical/rrdb
 
       - name: Build canonical PACI v0.5.2 TURN 1
-        if: steps.req.outputs.source_mode == 'paci'
+        if: steps.target.outputs.exists != 'true' && steps.req.outputs.source_mode == 'paci'
         env:
           PYTHONPATH: horse-racing/jrdb/src
           SEL: ${{ steps.req.outputs.selection_id }}
@@ -174,7 +174,7 @@ jobs:
           cp "$ROOT/validation_report.json" "$TARGET/day_prep/validation_report.json"
 
       - name: Build canonical Historical Warehouse v0.5.2 TURN 1
-        if: steps.req.outputs.source_mode == 'historical_warehouse'
+        if: steps.target.outputs.exists != 'true' && steps.req.outputs.source_mode == 'historical_warehouse'
         env:
           PYTHONPATH: horse-racing/jrdb/src
           SEL: ${{ steps.req.outputs.selection_id }}
