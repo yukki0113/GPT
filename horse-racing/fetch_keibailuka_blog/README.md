@@ -153,10 +153,20 @@ CSVはUTF-8・ヘッダー付きで、日付は `YYYY-MM-DD`、Rは `1R`〜`12R`
 
 日次の外部取得だけは `.github/workflows/keibailuka_chat.yml` のActions-Native経路を使います。
 
+通常Issue入口:
+
 - Issue title: `[KEIBAILUKA_REQUEST] <request_id>`
 - Issue body: `date` と `venues` を持つraw JSON
+- `.github/workflows/issue_router.yml` が `.gpt/issue_router_registry.json` を参照し、`keibailuka_request` の `repository_dispatch` としてtargetへ渡す。
+- `keibailuka_chat.yml` 自体は `on: issues` を持たない。
 
-ActionsはGit正本のPythonを実行し、結果JSON / TSV / CSV / validationをartifact化します。完了後、同じIssueへ `KEIBAILUKA_RESULT` コメントを返し、自動クローズします。
+manual fallback:
+
+- `workflow_dispatch` inputs: `request_id`, `date`, `venues_json`, optional `request_interval_seconds`, optional `issue_number`
+- `issue_number` なしではartifact / run summaryのみを生成する。
+- 既存Issue番号を明示した場合は同じ `KEIBAILUKA_RESULT` を返し、そのIssueをcloseする。
+
+Issue Router経由とmanual経由は最初のResolve requestで同じcanonical configへ正規化し、その後は同じGit正本Python / validation / artifact contractを使用します。完了後、Issue番号がある場合だけ同じIssueへ `KEIBAILUKA_RESULT` コメントを返して自動クローズします。
 
 成功条件は次の3点です。
 

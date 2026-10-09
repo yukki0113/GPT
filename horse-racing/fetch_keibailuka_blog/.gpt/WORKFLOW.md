@@ -77,23 +77,25 @@ Issue作成前に次を確認する。
 1. 一意の `request_id` を生成する。
 2. タイトル `[KEIBAILUKA_REQUEST] <request_id>` のIssueを作成する。
 3. Issue本文はraw JSONとし、`date` と `venues` を渡す。
-4. `.github/workflows/keibailuka_chat.yml` がIssue作成をトリガーに `src/fetch_keibailuka_blog.py` を実行する。
-5. module側ではBlogger公開feed本文を第一選択とし、ブログトップ、月別アーカイブ、ブログ内検索、個別記事通常表示、`?m=1` をfallbackとして使う。
-6. 各開催場の記事に1R〜12Rが順番どおり12個存在することを必須条件とする。構造不一致や馬名を安全に確定できないRがある場合は推測補完せずfailureとする。
-7. `該当無し` は除外する。`勝負レース` やnote有料記事への導入も除外する。`🤡` は馬名欄を `🤡` として残し、公開されているコメントだけを採用する。
-8. 対象Issueの `KEIBAILUKA_RESULT` コメントをAで読む。
-9. `fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を必須成功条件とする。
-10. 成功時は `entries` またはPlain text TSVを基に、`場所 / R / 馬名 / コメント` を1R→12R順、同一R内は依頼された開催場順でコードブロックとして返す。
-11. 同じrunの `keibailuka_YYYYMMDD.csv` をPWA用成果物として返す。列は `日付 / 会場 / R / 馬名 / コメント`。
-12. CSVを回収する場合はRESULTの `run_id` と `artifact_name` を完全一致で使い、既存artifactをAで直接取得する。追加Issueは作らない。
-13. 長いコメントだけ、意味を変えない範囲でChatコードブロック側が軽く要約する。CSVは元コメントを維持する。
-14. ユーザーから記事URLが提示された場合も恒常的な入力仕様には変更せず、取得障害やブログ仕様変更の調査材料としてのみ扱う。
+4. repository共通 `.github/workflows/issue_router.yml` がprefixをresolveし、`keibailuka_request` の `repository_dispatch` で `.github/workflows/keibailuka_chat.yml` を起動する。target自体は `on: issues` を持たない。
+5. Issue起動経路に異常がある場合は、同じtargetの `workflow_dispatch` をmanual fallbackとして使える。manualでも正本module / validation / artifact contractは同一とし、別ロジックへ切り替えない。既存IssueへRESULTを戻す場合だけ `issue_number` を指定する。
+7. module側ではBlogger公開feed本文を第一選択とし、ブログトップ、月別アーカイブ、ブログ内検索、個別記事通常表示、`?m=1` をfallbackとして使う。
+7. 各開催場の記事に1R〜12Rが順番どおり12個存在することを必須条件とする。構造不一致や馬名を安全に確定できないRがある場合は推測補完せずfailureとする。
+8. `該当無し` は除外する。`勝負レース` やnote有料記事への導入も除外する。`🤡` は馬名欄を `🤡` として残し、公開されているコメントだけを採用する。
+9. 対象Issueの `KEIBAILUKA_RESULT` コメントをAで読む。
+10. `fetch_exit_code=0`、`validation_exit_code=0`、`validation.validation_status=success` を必須成功条件とする。
+11. 成功時は `entries` またはPlain text TSVを基に、`場所 / R / 馬名 / コメント` を1R→12R順、同一R内は依頼された開催場順でコードブロックとして返す。
+12. 同じrunの `keibailuka_YYYYMMDD.csv` をPWA用成果物として返す。列は `日付 / 会場 / R / 馬名 / コメント`。
+13. CSVを回収する場合はRESULTの `run_id` と `artifact_name` を完全一致で使い、既存artifactをAで直接取得する。追加Issueは作らない。
+14. 長いコメントだけ、意味を変えない範囲でChatコードブロック側が軽く要約する。CSVは元コメントを維持する。
+15. ユーザーから記事URLが提示された場合も恒常的な入力仕様には変更せず、取得障害やブログ仕様変更の調査材料としてのみ扱う。
 
 ### Retry
 
 失敗時はfailed step / result comment / job logをAで確認する。
 
 - request不備: requestを修正し、新しいrequest_idで再発行
+- Issue Router / Issue event異常: target `workflow_dispatch` のmanual fallbackを使い、同じ正本moduleを実行する。既存IssueへRESULTを戻す場合だけそのIssue番号を明示する。
 - external transient: 原因確認後に新しいrequest_idで再試行
 - domain validation failure: 盲目的にretryせず記事構造を確認
 - implementation error: Bでコード修正後、必要な回帰を実施

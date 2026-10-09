@@ -89,6 +89,26 @@ python .gpt/tools/gpt_issue_preflight.py \
 
 JSON bodyや複雑な条件分岐はproject専用validatorを用意するか、共通tool contractを拡張します。
 
+## 3.1 Issue Router contract
+
+Router移行済みprefixは、Issue作成後に個別workflowへ直接fan-outさせず、`.gpt/issue_router_registry.json` と `.github/workflows/issue_router.yml` を経由する。
+
+Routerがtargetへ渡す `repository_dispatch.client_payload` の共通field:
+
+- `router_version`
+- `source=issue_router`
+- `issue_number`
+- `issue_actor`
+- `request_id`
+- `title`
+- `body`
+- `router_run_id`
+- `target_workflow`
+
+Routerはprefix routingだけを担当し、bodyのproject固有validationはtarget側の既存contractで行う。targetはcanonical requestへ正規化後、Issue起動とmanual起動で同じmodule / validation / artifact contractを使用する。
+
+manual fallbackで既存IssueへRESULTを返す必要がある場合だけ `issue_number` を明示する。Issue番号なしのmanual実行ではartifact / run summaryを成果とし、Issue comment / closeは行わない。
+
 ## 4. Chained workflow rule
 
 upstream artifact / fileを参照するIssueは、upstream runが「終了した」だけでは発行しません。

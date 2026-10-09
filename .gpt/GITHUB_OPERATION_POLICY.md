@@ -151,6 +151,37 @@ Chat / Work
 
 **Issueは原則としてこの系統に限定します。**
 
+#### D-1. Issue Router standard
+
+Actions-NativeなIssue起動は、個別workflowへ `on: issues` を増やし続けない。Router移行済みprefixは repository共通の次を入口とする。
+
+- route registry: `.gpt/issue_router_registry.json`
+- router workflow: `.github/workflows/issue_router.yml`
+
+標準経路:
+
+```text
+Issue opened
+-> issue_router.yml がprefixをresolve
+-> registryのevent_typeへrepository_dispatch
+-> project target workflow
+-> project固有request validation / module / artifact / RESULT
+-> Issue comment / close
+```
+
+責務境界:
+
+- Router: owner gate、prefix resolve、registry validation、dispatch、routing audit
+- target workflow: project固有request validation、業務処理、artifact、RESULT、Issue close
+- Routerはproject固有business logicやschemaを再実装しない。
+- Routerはtargetへdispatchできた時点でIssueをcloseしない。
+- registry未登録prefixは段階移行中はno-opとし、既存legacy `on: issues` workflowへ干渉しない。
+
+移行済みtargetは `on: issues` を外し、`repository_dispatch` を通常Issue入口、`workflow_dispatch` をmanual fallbackとする。manual fallbackも同じ正本module / validation / artifact contractを使用する。
+
+新規project-specific Actions Issue workflowでは、原則として個別の `on: issues` を追加せずRouterへrouteを登録する。既存workflowはpilot確認後に段階移行し、一括変更で業務contractを壊さない。
+
+
 ## 3. Actions Issue発行前Preflight
 
 Dを選んだ場合、Issue作成前に以下を確認します。

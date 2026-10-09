@@ -1,8 +1,32 @@
 name: keibailuka-chat
 
 on:
-  issues:
-    types: [opened]
+  repository_dispatch:
+    types: [keibailuka_request]
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: Unique request id
+        required: true
+        type: string
+      date:
+        description: Target date (YYYY-MM-DD)
+        required: true
+        type: string
+      venues_json:
+        description: JSON array of venues, e.g. ["東京","京都"]
+        required: true
+        type: string
+      request_interval_seconds:
+        description: Request interval seconds
+        required: false
+        default: '0.8'
+        type: string
+      issue_number:
+        description: Optional existing Issue number to receive RESULT and close
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: read
@@ -13,7 +37,6 @@ env:
 
 jobs:
   fetch:
-    if: startsWith(github.event.issue.title, '[KEIBAILUKA_REQUEST]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,11 +50,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r horse-racing/fetch_keibailuka_blog/requirements.txt
 
-      - name: Parse request
+      - name: Resolve request
+        id: request
         env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+          MANUAL_REQUEST_ID: ${{ inputs.request_id }}
+          MANUAL_DATE: ${{ inputs.date }}
+          MANUAL_VENUES_JSON: ${{ inputs.venues_json }}
+          MANUAL_INTERVAL: ${{ inputs.request_interval_seconds }}
+          MANUAL_ISSUE_NUMBER: ${{ inputs.issue_number }}
         run: |
           python - <<'PY'
           import json
@@ -41,19 +69,70 @@ jobs:
           from pathlib import Path
 
           prefix = '[KEIBAILUKA_REQUEST]'
-          title = os.environ['ISSUE_TITLE']
-          if not title.startswith(prefix):
-              raise SystemExit('Unexpected issue title')
+          event_name = os.environ['EVENT_NAME']
 
-          request_id = title[len(prefix):].strip()
+          if event_name == 'repository_dispatch':
+              payload = json.loads(os.environ.get('DISPATCH_PAYLOAD') or '{}')
+              if payload.get('source') != 'issue_router':
+                  raise SystemExit('repository_dispatch source must be issue_router')
+              if str(payload.get('router_version', '')) != '1.0':
+                  raise SystemExit('unsupported issue router version')
+
+              title = str(payload.get('title', '') or '')
+              if not title.startswith(prefix):
+                  raise SystemExit('Unexpected routed issue title')
+
+              request_id = str(payload.get('request_id', '') or '').strip()
+              expected_request_id = title[len(prefix):].strip()
+              if request_id != expected_request_id:
+                  raise SystemExit('routed request_id does not match issue title')
+
+              issue_number_value = payload.get('issue_number')
+              try:
+                  issue_number = int(issue_number_value)
+              except (TypeError, ValueError):
+                  raise SystemExit('routed issue_number must be an integer')
+              if issue_number <= 0:
+                  raise SystemExit('routed issue_number must be positive')
+
+              body = str(payload.get('body', '') or '').strip()
+              try:
+                  request = json.loads(body)
+              except json.JSONDecodeError as exc:
+                  raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+              trigger_source = 'issue_router'
+
+          elif event_name == 'workflow_dispatch':
+              request_id = str(os.environ.get('MANUAL_REQUEST_ID', '') or '').strip()
+              date_text = str(os.environ.get('MANUAL_DATE', '') or '').strip()
+              venues_text = str(os.environ.get('MANUAL_VENUES_JSON', '') or '').strip()
+              try:
+                  venues_value = json.loads(venues_text)
+              except json.JSONDecodeError as exc:
+                  raise SystemExit(f'venues_json must be a JSON array: {exc}') from exc
+
+              request = {
+                  'date': date_text,
+                  'venues': venues_value,
+                  'request_interval_seconds': str(
+                      os.environ.get('MANUAL_INTERVAL', '') or '0.8'
+                  ).strip(),
+              }
+
+              issue_text = str(os.environ.get('MANUAL_ISSUE_NUMBER', '') or '').strip()
+              if issue_text:
+                  if not re.fullmatch(r'[1-9][0-9]*', issue_text):
+                      raise SystemExit('manual issue_number must be a positive integer')
+                  issue_number = int(issue_text)
+              else:
+                  issue_number = None
+              trigger_source = 'workflow_dispatch'
+
+          else:
+              raise SystemExit(f'unsupported event_name: {event_name}')
+
           if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
-              raise SystemExit('Invalid request_id in issue title')
-
-          body = (os.environ.get('ISSUE_BODY') or '').strip()
-          try:
-              request = json.loads(body)
-          except json.JSONDecodeError as exc:
-              raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
+              raise SystemExit('Invalid request_id')
 
           date_text = str(request.get('date', '') or '').strip()
           datetime.strptime(date_text, '%Y-%m-%d')
@@ -92,7 +171,8 @@ jobs:
 
           config = {
               'request_id': request_id,
-              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'issue_number': issue_number,
+              'trigger_source': trigger_source,
               'date': date_text,
               'venues': venues,
               'request_interval_seconds': interval,
@@ -109,6 +189,11 @@ jobs:
               file.write(f'TARGET_DATE={date_text}\n')
               file.write(f'COMPACT_DATE={compact_date}\n')
               file.write(f'OUTPUT_DIR={output_dir}\n')
+              file.write(f'TRIGGER_SOURCE={trigger_source}\n')
+
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as file:
+              file.write(f'issue_number={issue_number or ""}\n')
+              file.write(f'trigger_source={trigger_source}\n')
           PY
 
       - name: Save resolved request
@@ -166,7 +251,8 @@ jobs:
           mkdir -p "$OUTPUT_DIR"
           {
             echo "request_id=$REQUEST_ID"
-            echo "issue_number=${{ github.event.issue.number }}"
+            echo "issue_number=${{ steps.request.outputs.issue_number }}"
+            echo "trigger_source=$TRIGGER_SOURCE"
             echo "run_id=${{ github.run_id }}"
             echo "head_sha=${{ github.sha }}"
             echo "event_name=${{ github.event_name }}"
@@ -184,10 +270,9 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Comment machine-readable result
+      - name: Build machine-readable result
         if: always()
         env:
-          GH_TOKEN: ${{ github.token }}
           FETCH_EXIT: ${{ steps.fetch.outputs.exit_code }}
           VALIDATE_EXIT: ${{ steps.validate.outputs.exit_code }}
         run: |
@@ -226,6 +311,8 @@ jobs:
                   f"keibailuka-{os.environ['REQUEST_ID']}-"
                   f"{os.environ['COMPACT_DATE']}-{os.environ['GITHUB_RUN_ID']}"
               ),
+              'trigger_source': config['trigger_source'],
+              'issue_number': config['issue_number'],
               'date': config['date'],
               'venues': config['venues'],
               'fetch_exit_code': os.environ.get('FETCH_EXIT', ''),
@@ -256,18 +343,45 @@ jobs:
               '\n'.join(parts) + '\n',
               encoding='utf-8',
           )
+
+          summary = [
+              '## keibailuka execution',
+              '',
+              f"- trigger_source: {config['trigger_source']}",
+              f"- request_id: {config['request_id']}",
+              f"- issue_number: {config['issue_number'] or 'none'}",
+              f"- date: {config['date']}",
+              f"- venues: {', '.join(config['venues'])}",
+              f"- artifact: {result['artifact_name']}",
+              f"- fetch_exit_code: {result['fetch_exit_code']}",
+              f"- validation_exit_code: {result['validation_exit_code']}",
+              f"- validation_status: {validation.get('validation_status')}",
+          ]
+          Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(
+              '\n'.join(summary) + '\n',
+              encoding='utf-8',
+          )
           PY
-          gh issue comment "${{ github.event.issue.number }}" \
+
+      - name: Comment machine-readable result
+        if: always() && steps.request.outputs.issue_number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.request.outputs.issue_number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
             --repo "${{ github.repository }}" \
             --body-file /tmp/result_comment.md
 
       - name: Close request issue
-        if: always()
+        if: always() && steps.request.outputs.issue_number != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.request.outputs.issue_number }}
         run: |
-          gh issue close "${{ github.event.issue.number }}" \
-            --repo "${{ github.repository }}"
+          gh issue close "$ISSUE_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --reason completed
 
       - name: Fail workflow when fetch or validation failed
         if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "router_version": "1.0",
+  "routes": [
+    {
+      "prefix": "[KEIBAILUKA_REQUEST]",
+      "event_type": "keibailuka_request",
+      "workflow": ".github/workflows/keibailuka_chat.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
+      "migration_status": "pilot"
+    }
+  ]
+}
