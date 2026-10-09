@@ -18,16 +18,19 @@
 ```text
 PACI / Base
   -> day build
+  -> canonical Analysis
+  -> STANDARD EdgeDB Query
+  -> EdgeDB v0.5 addon
   -> Eval (PWA submission preferred)
   -> Training Edge / 独自指数 (available day only)
   -> RaceNote prediction
   -> keibailuka
-  -> Edge matcher output
   -> audit / day package
   -> immutable Drive revision
   -> current.json
   -> Current Publish
-  -> Pages
+  -> JRDB PWA Pages
+  -> public Newspaper verification
 ```
 
 - PACI/BaseだけがHard Stop対象。optional addonの欠損は`READY / NOT_FOUND / ERROR / NOT_EXPECTED`で扱い、可能な範囲でrevisionを公開する。
@@ -43,24 +46,27 @@ PACI / Base
 | Training Edge CSV | `--my-index-csv`で全馬exact joinし、numeric/nullを`addons.my_index`へ透過格納 | 再計算・補正・丸め・順位化、null行の除外、近似join |
 | RaceNote prediction | 完成handoffのnamespace merge | Base/historyへのRaceNote内部実装依存 |
 | keibailuka | sparse exact match | 馬名の近似・自動補正 |
-| EdgeDB | matcher outputを`special_memos`へexact merge | Edge条件の再実装・再判定 |
+| STANDARD EdgeDB | `jrdb_edgedb_query.py --profile STANDARD` の結果をexact mergeし、互換`special_memos`を保持 | Edge条件の再実装・再判定、SHADOW/OBSERVE_ONLYの通常表示 |
+| EdgeDB v0.5 | frozen cohort / matcherの確定済みcandidateを`addons.edge_v05.candidate_ids`と`edge_v05_candidates`へ格納 | 未取得featureの推測補完、PWA側再判定、ROI/診断の買い推奨化 |
 
 Eval PWA提出CSVは旧Eval完成CSVより優先する。analysis列が無い旧CSVは正常で、`analysis: null`として扱う。
 
 ## Minimum publication checklist
 
 - Base date、race count、runner headcount、canonical key一意性
-- Eval/RaceNote exact join、keibailuka sparse coverage、Edge full exact join
+- Eval/RaceNote exact join、keibailuka sparse coverage、STANDARD Edge exact join
+- Edge v0.5 `state`、matched runner / signal count、`missing_join_count=0`、`extra_join_count=0`
 - Training Edge CSV使用時は全馬exact join、merged/value/null件数、CSV extra/missing=0
 - history `as_of < target_date`、schema、SHA-256、same-input merge idempotence
 - Eval提出CSVではcomment行数と`NONE / WATCH / MATCH`受領件数
-- Drive保存済み、`current.json`更新済み、Current Publish success、Pages success
+- Drive保存済み、`current.json`更新済み、Current Publish success、`JRDB PWA Pages` full deploy success、公開新聞確認済み
 
 ## Where to investigate
 
 - 日次契約・例外規則: `DAILY_WORK_CONTRACT.md`
 - D routeのIssue/body/parser規約: `REQUEST_CONTRACT.md`
 - 実行経路A/B/C/D: `WORKFLOW.md`
-- UI表示とPWA配布: `../../pwa/README.md`、`../../pwa/newspaper.html`、`../../pwa/newspaper-v9.js`
+- UI表示とPWA配布: `../../pwa/README.md`、`../../pwa/newspaper.html`、`../../pwa/newspaper-edge-v05.js`、`../../pwa/newspaper-edge-v05.css`
+- EdgeDB v0.5 production contract: `../EDGE_V05_PRODUCTION.md`
 - Eval分析コメント契約: `../../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 - Current publish contract: `../publish/README.md`
