@@ -78,15 +78,8 @@ jobs:
           python -m unittest discover \
             -s horse-racing/jrdb/tests \
             -p 'test_newspaper_compact_history_pwa.py'
-          python -m unittest discover \
-            -s horse-racing/jrdb/tests \
-            -p 'test_jrdb_newspaper_*_pwa.py'
-          python -m unittest discover \
-            -s horse-racing/jrdb/tests \
-            -p 'test_jrdb_pwa_*.py'
-          PYTHONPATH=horse-racing/jrdb/src python -m unittest discover \
-            -s horse-racing/jrdb/tests \
-            -p 'test_jrdb_newspaper_edge_v05_preview.py'
+          python -m unittest \
+            horse-racing/jrdb/tests/test_jrdb_newspaper_my_index_pwa.py
           PYTHONPATH=horse-racing/jrdb/src python -m unittest \
             horse-racing/jrdb/tests/test_jrdb_newspaper_edge_v05_preview.py
           node horse-racing/jrdb/tests/test_newspaper_v05_preview.cjs

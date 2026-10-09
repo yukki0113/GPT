@@ -36,11 +36,16 @@ class FactLiteDuckDbRuntimeContractTest(unittest.TestCase):
         self.assertIn('await validateDuckDbCachedGeneration(cached)', source)
         self.assertIn('current_generation: candidate.generationId', source)
 
-    def test_current_publisher_uses_sqlite_without_duckdb_assets(self) -> None:
+    def test_publish_workflow_vendors_exact_runtime_assets(self) -> None:
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('jrdb_pwa_fact_lite.sqlite', workflow)
-        self.assertNotIn('duckdb-browser.mjs', workflow)
-        self.assertNotIn('.pages/vendor/duckdb/', workflow)
+        base = "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.32.0/dist/"
+        for asset in (
+            "duckdb-browser.mjs",
+            "duckdb-browser-mvp.worker.js",
+            "duckdb-mvp.wasm",
+        ):
+            self.assertIn(base + asset, workflow)
+            self.assertIn(".pages/vendor/duckdb/" + asset, workflow)
 
 
 if __name__ == "__main__":

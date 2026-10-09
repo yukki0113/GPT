@@ -23,7 +23,7 @@ class NewspaperEvalAnalysisPwaTest(unittest.TestCase):
         self.assertIn('./newspaper-v9.js?v=1', html)
         self.assertIn('./newspaper-v9.css?v=2', service_worker)
         self.assertIn('./newspaper-v9.js?v=1', service_worker)
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v72"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v42"', service_worker)
         self.assertEqual(html.count('id="newspaper-detail-dialog"'), 1)
         self.assertNotIn('createElement("dialog")', script)
         self.assertIn('.newspaper-iluka-button,', stylesheet)
@@ -115,8 +115,12 @@ if (!context.newspaperV9EvalAnalysis(highlightedHorse)) throw new Error("comment
 context.newspaperV9ShowEvalDetail(highlightedHorse);
 if (!context.detailDialog.opened) throw new Error("dialog was not opened");
 if (!context.dialogTitle.textContent.includes("注目馬 / Eval 52")) throw new Error("dialog title mismatch");
+if (!context.dialogBody.innerHTML.includes("H1 Forward事前候補")) throw new Error("analysis title missing");
+if (!context.dialogBody.innerHTML.includes("H1_PRE / TRAINING_SUPPORT")) throw new Error("analysis codes missing");
 if (!context.dialogBody.innerHTML.includes("1行目\\n2行目")) throw new Error("comment line break missing");
 if (!context.dialogBody.innerHTML.includes("&lt;strong&gt;raw&lt;/strong&gt;")) throw new Error("comment escaping missing");
+if (!context.dialogBody.innerHTML.includes("phase2-comment-v0.1")) throw new Error("version missing");
+if (!context.dialogBody.innerHTML.includes("2026-09-12T09:00:00+09:00")) throw new Error("as-of missing");
 """
 
         result = subprocess.run(

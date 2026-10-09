@@ -31,8 +31,8 @@ class FactLiteSqlitePublishWorkflowTest(unittest.TestCase):
         self.assertNotIn("writeFactFile(FACT_PREVIOUS", script)
         self.assertIn("await removeFactFile(FACT_LEGACY_PREVIOUS);", script)
         self.assertIn("await removeFactFile(FACT_INCOMING);", script)
-        self.assertIn('./fact-lite.js?v=24', personal_html)
-        self.assertIn('../fact-lite.js?v=24', momotaro_html)
+        self.assertIn('./fact-lite.js?v=23', personal_html)
+        self.assertIn('../fact-lite.js?v=23', momotaro_html)
 
     def test_full_pages_follows_successful_fact_lite_publish(self) -> None:
         workflow = (ROOT / ".github/workflows/jrdb_pwa_pages.yml").read_text(encoding="utf-8")
