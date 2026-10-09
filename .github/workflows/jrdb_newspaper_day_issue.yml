@@ -158,6 +158,25 @@ jobs:
             mv /tmp/day-edge /tmp/day
           fi
 
+      - name: Attach optional v0.5 Edge addon
+        env:
+          PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
+        run: |
+          set -euo pipefail
+          PACI="$(find /tmp/raw -type f -name "PACI${REQUEST_DATE:2}.zip" -print -quit)"
+          python - "$PACI" <<'PY'
+          import json, sys
+          from pathlib import Path
+          from jrdb_newspaper_edge_v05_preview import build_preview
+
+          archive = Path('horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_artifact.zip')
+          result = build_preview(Path('/tmp/day'), Path('/tmp/day-v05'), Path(sys.argv[1]),
+                                 Path('/tmp/analysis_parquet'), archive)
+          print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+          PY
+          rm -rf /tmp/day
+          mv /tmp/day-v05 /tmp/day
+
       - name: Upload day artifact
         uses: actions/upload-artifact@v4
         with:

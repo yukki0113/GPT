@@ -10,6 +10,16 @@ from jrdb_edge_v05_2026_pre_race_match_freeze import build_matches, load_cohort
 
 
 class PreviewTests(unittest.TestCase):
+    def test_frozen_oos_artifact_matches_manifest(self):
+        archive = Path(__file__).resolve().parents[1] / 'config/edgedb/v0_5/frozen/v05_2026_oos_eval_artifact.zip'
+        candidates, oos, provenance = preview.load_sources(
+            preview.DEFAULT_COHORT, preview.DEFAULT_OOS_MANIFEST,
+            preview.DEFAULT_FREEZE_MANIFEST, archive)
+        self.assertEqual(len(candidates), 1620)
+        self.assertEqual(len(oos), 1620)
+        self.assertEqual(provenance['oos_artifact_sha256'],
+                         'f10034cf6d2d730dcb3d76b6c9be41c90d36e61e49c94b70ab7458f296eb9f13')
+
     def test_frozen_t1_t2_match_without_first_history_or_going(self):
         candidates, audit = load_cohort(preview.DEFAULT_COHORT)
         self.assertEqual(audit['candidate_count'], 1620)

@@ -1,0 +1,19 @@
+/* The v0.5 display is one independent column between marks and history. */
+.newspaper-table-v4 .newspaper-edge-v05 {
+  width: 34px;
+  min-width: 34px;
+  max-width: 34px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.newspaper-table-v4 .newspaper-edge-v05-button {
+  min-width: 26px;
+  min-height: 28px;
+  padding: 2px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.newspaper-v05-detail + .newspaper-v05-detail { border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px; }
+.newspaper-v05-other { margin-top: 12px; }
+.newspaper-v05-other summary { cursor: pointer; }
+.newspaper-v05-disclaimer { font-size: 12px; line-height: 1.5; margin-top: 12px; }

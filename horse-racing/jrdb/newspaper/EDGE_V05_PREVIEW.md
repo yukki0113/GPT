@@ -1,11 +1,11 @@
 # EdgeDB v0.5 PWA preview
 
-This branch adds a separate research preview. It does not change `current_manifest.json`, STANDARD Query, the daily production Action, Current Publish, or the public `newspaper.html` route. The public `special_memos` data remains available for compatibility; the preview route hides its old display column.
+This page remains a separate research preview. The production route and daily addon are documented in [EDGE_V05_PRODUCTION.md](EDGE_V05_PRODUCTION.md). The preview does not change `current_manifest.json` or STANDARD Query. The public `special_memos` data remains available for compatibility; the preview route hides its old display column.
 
 ## Sources and boundary
 
 - Candidate inventory: `config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json`, exactly 1,620 candidates; SHA-256 `a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9`.
-- OOS diagnostic data: existing Actions run `37614611257`, artifact `11478468034` (`edgedb-v05-2026-oos-eval-pr-1898`); ZIP SHA-256 `f10034cf6d2d730dcb3d76b6c9be41c90d36e61e49c94b70ab7458f296eb9f13`. The preview requires this exact ZIP; the CSV is not copied into Git.
+- OOS diagnostic data: existing Actions run `37614611257`, artifact `11478468034` (`edgedb-v05-2026-oos-eval-pr-1898`); ZIP SHA-256 `f10034cf6d2d730dcb3d76b6c9be41c90d36e61e49c94b70ab7458f296eb9f13`. The preview requires this exact ZIP. An immutable copy is checked into `config/edgedb/v0_5/frozen/v05_2026_oos_eval_artifact.zip` for daily production runs; its digest is checked before use.
 - Matcher: existing `jrdb_edge_v05_2026_pre_race_match_freeze.py` condition matcher. Its candidate inventory and gates are unchanged.
 - Facts: the same PACI as Newspaper Base plus existing canonical Analysis current root. Only exact previous-race links dated before the target may supply T3 or T4 transition conditions.
 - Frozen 2026 OOS evaluation ends on 2026-10-04. To avoid displaying future evaluation facts in a historical preview, the target date must be later than this endpoint.

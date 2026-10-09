@@ -18,12 +18,12 @@ class NewspaperMyIndexPwaTest(unittest.TestCase):
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
         script = (PWA_ROOT / "newspaper-v10.js").read_text(encoding="utf-8")
 
-        self.assertIn('./newspaper-v10.js?v=2', html)
-        self.assertIn('./newspaper-v10.js?v=2', service_worker)
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v44"', service_worker)
+        self.assertIn('./newspaper-v10.js?v=3', html)
+        self.assertIn('./newspaper-v10.js?v=3', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v72"', service_worker)
         self.assertIn('"training_edge_index"', script)
-        self.assertIn('sources.my_index', script)
-        self.assertIn('"指数○"', script)
+        self.assertIn('sources.edge', script)
+        self.assertIn('"Edge○"', script)
 
     def test_independent_index_layer_does_not_recalculate_index(self) -> None:
         script = (PWA_ROOT / "newspaper-v10.js").read_text(encoding="utf-8")
@@ -77,11 +77,11 @@ if (context.newspaperV10MyIndexValue(legacy) !== "47.4") throw new Error("legacy
 const absent = {{ addons: {{}} }};
 if (context.newspaperV10MyIndexValue(absent) !== "—") throw new Error("absent addon should be dash");
 
-const ready = context.dayPackageSummary({{ manifest: {{ source_status: {{ my_index: {{ state: "READY" }} }} }} }});
-if (ready !== "base / 指数○") throw new Error(`READY summary mismatch: ${{ready}}`);
+const ready = context.dayPackageSummary({{ manifest: {{date: "2026-10-10", source_status: {{ edge: {{ state: "READY" }} }} }}, races: [] }});
+if (ready !== "2026-10-10 / 0R / Eval— / 🐬— / Edge○") throw new Error(`READY summary mismatch: ${{ready}}`);
 
-const notReady = context.dayPackageSummary({{ manifest: {{ source_status: {{ my_index: {{ state: "NOT_FOUND" }} }} }} }});
-if (notReady !== "base / 指数—") throw new Error(`NOT_FOUND summary mismatch: ${{notReady}}`);
+const notReady = context.dayPackageSummary({{ manifest: {{date: "2026-10-10", source_status: {{ edge: {{ state: "ERROR" }} }} }}, races: [] }});
+if (notReady !== "2026-10-10 / 0R / Eval— / 🐬— / Edge—") throw new Error(`NOT_FOUND summary mismatch: ${{notReady}}`);
 """
 
         result = subprocess.run(
