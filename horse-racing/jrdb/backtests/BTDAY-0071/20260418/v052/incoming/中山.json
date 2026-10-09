@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "race_model": "1200mで先行力と持続力が重要。15番の先行安定感を軸に、4番の近走安定、14番の距離短縮での先手変化を警戒する。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      15,
+      4,
+      14,
+      12,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "最終枠は9番を残し、2番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        4,
+        12,
+        2,
+        9
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "14番の別線の勝ち筋を採用し、通常候補の2番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 4,
+      "honmei_win_case": "15番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "4番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1200mで先行力と持続力が重要。15番の先行安定感を軸に、4番の近走安定、14番の距離短縮での先手変化を警戒する。その中で15番の勝ち切り経路を4番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1200mで先行力と持続力が重要。15番の先行安定感を軸に、4番の近走安定、14番の距離短縮での先手変化を警戒する。15番を本命、4番を相手本線とし、14番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "race_model": "1800mで前受けできる6番の再現性が高く、8番の終いも堅実。11番は距離延長で先行できれば別の勝ち筋がある。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      6,
+      8,
+      11,
+      1,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "最終枠は5番を残し、10番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        8,
+        1,
+        5,
+        10
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "11番の別線の勝ち筋を採用し、通常候補の10番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 8,
+      "honmei_win_case": "6番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "8番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1800mで前受けできる6番の再現性が高く、8番の終いも堅実。11番は距離延長で先行できれば別の勝ち筋がある。その中で6番の勝ち切り経路を8番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1800mで前受けできる6番の再現性が高く、8番の終いも堅実。11番は距離延長で先行できれば別の勝ち筋がある。6番を本命、8番を相手本線とし、11番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "race_model": "1200mの先行争いで11番の状態と近走内容を最重視。9番も能力上位で、5番は距離短縮と前進位置で変化余地がある。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      11,
+      9,
+      5,
+      10,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "最終枠は7番を残し、4番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        11,
+        10,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "5番の別線の勝ち筋を採用し、通常候補の4番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 9,
+      "honmei_win_case": "11番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "9番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1200mの先行争いで11番の状態と近走内容を最重視。9番も能力上位で、5番は距離短縮と前進位置で変化余地がある。その中で11番の勝ち切り経路を9番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1200mの先行争いで11番の状態と近走内容を最重視。9番も能力上位で、5番は距離短縮と前進位置で変化余地がある。11番を本命、9番を相手本線とし、5番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "race_model": "1800mで8番の先行持続と上昇状態が中心。3番の近走2着実績が対抗し、5番は差し脚を生かす流れなら外から届く。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      8,
+      3,
+      5,
+      10,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "最終枠は7番を残し、11番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        3,
+        10,
+        7,
+        11
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 11,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "5番の別線の勝ち筋を採用し、通常候補の11番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 3,
+      "honmei_win_case": "8番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "3番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1800mで8番の先行持続と上昇状態が中心。3番の近走2着実績が対抗し、5番は差し脚を生かす流れなら外から届く。その中で8番の勝ち切り経路を3番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1800mで8番の先行持続と上昇状態が中心。3番の近走2着実績が対抗し、5番は差し脚を生かす流れなら外から届く。8番を本命、3番を相手本線とし、5番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "race_model": "芝1600mで8番の先行力とマイル実績が軸。11番の末脚が対抗、12番は距離短縮で前目を取れれば押し上げ余地がある。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      8,
+      11,
+      12,
+      13,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "最終枠は16番を残し、3番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        11,
+        13,
+        16,
+        3
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 3,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "12番の別線の勝ち筋を採用し、通常候補の3番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 11,
+      "honmei_win_case": "8番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "11番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "芝1600mで8番の先行力とマイル実績が軸。11番の末脚が対抗、12番は距離短縮で前目を取れれば押し上げ余地がある。その中で8番の勝ち切り経路を11番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1600mで8番の先行力とマイル実績が軸。11番の末脚が対抗、12番は距離短縮で前目を取れれば押し上げ余地がある。8番を本命、11番を相手本線とし、12番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "race_model": "少頭数芝1800mで先行力と完成度を重視。2番の距離実績と上昇度、1番の上級条件経験を主線に置く。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      2,
+      1,
+      3,
+      5,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "最終枠は6番を残し、4番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4番の別線は確認したが、通常候補5頭の再現性を上回らないため見送った。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 1,
+      "honmei_win_case": "2番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "1番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "少頭数芝1800mで先行力と完成度を重視。2番の距離実績と上昇度、1番の上級条件経験を主線に置く。その中で2番の勝ち切り経路を1番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "少頭数芝1800mで先行力と完成度を重視。2番の距離実績と上昇度、1番の上級条件経験を主線に置く。2番を本命、1番を相手本線とし、3番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "race_model": "芝2000mで終いの持続力が鍵。10番の近走上がり性能と9番の前受けを主線とし、5番の単騎気味先行を一変候補とする。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      10,
+      9,
+      5,
+      8,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "最終枠は3番を残し、7番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        9,
+        8,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 7,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "5番の別線の勝ち筋を採用し、通常候補の7番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 9,
+      "honmei_win_case": "10番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "9番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "芝2000mで終いの持続力が鍵。10番の近走上がり性能と9番の前受けを主線とし、5番の単騎気味先行を一変候補とする。その中で10番の勝ち切り経路を9番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝2000mで終いの持続力が鍵。10番の近走上がり性能と9番の前受けを主線とし、5番の単騎気味先行を一変候補とする。10番を本命、9番を相手本線とし、5番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "race_model": "ダート2400mで距離実績と位置取りを優先。16番の近走安定、3番の同距離2着を中心に、6番が楽に先手なら粘り込みがある。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      16,
+      3,
+      6,
+      15,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "16番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "最終枠は11番を残し、14番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        3,
+        15,
+        11,
+        14
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 14,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "6番の別線の勝ち筋を採用し、通常候補の14番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 3,
+      "honmei_win_case": "16番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "3番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ダート2400mで距離実績と位置取りを優先。16番の近走安定、3番の同距離2着を中心に、6番が楽に先手なら粘り込みがある。その中で16番の勝ち切り経路を3番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート2400mで距離実績と位置取りを優先。16番の近走安定、3番の同距離2着を中心に、6番が楽に先手なら粘り込みがある。16番を本命、3番を相手本線とし、6番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "race_model": "芝1200mで先行勢が多く差し余地もある。12番の能力と上昇度を軸に4番の先行持続、3番の後方一気を別線で評価する。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      12,
+      4,
+      3,
+      9,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "最終枠は6番を残し、10番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        4,
+        9,
+        6,
+        10
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "3番の別線の勝ち筋を採用し、通常候補の10番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 4,
+      "honmei_win_case": "12番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "4番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "芝1200mで先行勢が多く差し余地もある。12番の能力と上昇度を軸に4番の先行持続、3番の後方一気を別線で評価する。その中で12番の勝ち切り経路を4番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1200mで先行勢が多く差し余地もある。12番の能力と上昇度を軸に4番の先行持続、3番の後方一気を別線で評価する。12番を本命、4番を相手本線とし、3番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "race_model": "ダート1800mの3勝級で先行持続力が重要。5番の現級2着と9番の安定した先行力を主線に、12番の連勝勢いを昇級即通用候補とする。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      5,
+      9,
+      12,
+      10,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "最終枠は11番を残し、8番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        9,
+        10,
+        8,
+        11
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "12番の別線の勝ち筋を採用し、通常候補の8番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 9,
+      "honmei_win_case": "5番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "9番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ダート1800mの3勝級で先行持続力が重要。5番の現級2着と9番の安定した先行力を主線に、12番の連勝勢いを昇級即通用候補とする。その中で5番の勝ち切り経路を9番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1800mの3勝級で先行持続力が重要。5番の現級2着と9番の安定した先行力を主線に、12番の連勝勢いを昇級即通用候補とする。5番を本命、9番を相手本線とし、12番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "race_model": "長距離障害でスタミナと飛越の安定を重視。6番のG2級実績と10番の近走連続好走を中心に、3番の連勝中の上昇力を単独候補に置く。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      6,
+      10,
+      3,
+      7,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "最終枠は5番を残し、4番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        10,
+        7,
+        5,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "3番の別線の勝ち筋を採用し、通常候補の4番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 10,
+      "honmei_win_case": "6番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "10番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "長距離障害でスタミナと飛越の安定を重視。6番のG2級実績と10番の近走連続好走を中心に、3番の連勝中の上昇力を単独候補に置く。その中で6番の勝ち切り経路を10番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "長距離障害でスタミナと飛越の安定を重視。6番のG2級実績と10番の近走連続好走を中心に、3番の連勝中の上昇力を単独候補に置く。6番を本命、10番を相手本線とし、3番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "race_model": "ダート1200mで7番の速度優位と逃げ切り経路が明確。12番の先行安定を対抗とし、8番は中山で差しが届く流れなら浮上する。主線が崩れる場合は位置取りやペースの偏りが大きくなった時とみる。",
+    "marks": [
+      7,
+      12,
+      8,
+      5,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7番は今回条件で勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番は主線に沿う能力と再現性を評価。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番は展開が標準なら相手圏を維持できる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番は候補下限でも今回条件への適合を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "8番は主線とは異なる展開経路から勝ち切りまで届く余地を取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "最終枠は13番を残し、10番は比較上の再現性または今回条件の裏付けで一歩下とした。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        12,
+        5,
+        13,
+        10
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8番は通常順位とは別に、展開や位置取りが噛み合った場合の非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "8番の別線の勝ち筋を採用し、通常候補の10番を比較の末に外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 12,
+      "honmei_win_case": "7番は複勝圏の安全性ではなく、今回の流れで先に勝ち切る具体的な経路を最も描きやすい。",
+      "second_case": "12番は能力と近走内容の再現性が高く、主線の次位として残す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ダート1200mで7番の速度優位と逃げ切り経路が明確。12番の先行安定を対抗とし、8番は中山で差しが届く流れなら浮上する。その中で7番の勝ち切り経路を12番より明確と判断して◎を入れ替えず確定した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1200mで7番の速度優位と逃げ切り経路が明確。12番の先行安定を対抗とし、8番は中山で差しが届く流れなら浮上する。7番を本命、12番を相手本線とし、8番は展開が主線からずれた時に頭まで届く余地を評価した。"
+  }
+]
