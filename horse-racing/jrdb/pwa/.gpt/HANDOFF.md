@@ -160,10 +160,39 @@ canonical horse addon:
 
 PWAはEdge outputを表示するconsumerです。
 
+### STANDARD / legacy compatibility
+
 - exact matching / eligibilityはEdge / adapter側
 - PWAでconditionsを再評価しない
-- reader-facing表示とraw/audit情報を混同しない
-- 特注メモ表示のためにEdge strength等を独自scoreへ加算しない
+- `special_memos` は互換データとして残っていてよい
+- 通常新聞では旧「特注メモ」列を表示しない
+
+### EdgeDB v0.5 production display
+
+canonical input:
+
+```text
+horse.addons.edge_v05.candidate_ids
+race.edge_v05_candidates
+```
+
+- source statusが `PARTIAL` または `READY` のときだけ表示する
+- `ERROR` / missing時はEdge cellを空欄にし、他addonを壊さない
+- Edge列は既存印群の直後・過去走列の直前に置く独立列
+- mark groupのcolSpanへ含めない
+- current widthは34px
+- candidate 1件以上の馬だけ `○` を表示
+- `○` tap/clickで既存dialog系の詳細modalを開く
+- 代表2件を表示し、3件以上は「その他のEdge」で展開する
+- 2026診断と複勝ROIは説明情報。印・買い推奨・自動馬券判断へ変換しない
+- PWAでcandidate順序を再評価・再scoreしない
+
+current assets:
+
+- `newspaper-edge-v05.js`
+- `newspaper-edge-v05.css`
+
+mobile-sensitive変更では360 / 390 / 430pxを目安に、sticky馬番・馬名、印列、Edge列、過去走、横スクロール、modalを確認する。
 
 ## Shared compact past-run display
 
