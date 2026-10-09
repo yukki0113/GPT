@@ -109,70 +109,88 @@ In addition to `candidate_compression`, v0.5.2 requires:
 
 The validator checks structure and identity. It does not mechanically score racing evidence.
 
-## 4.1 Research-oriented reasoning capture — prose-only revision 2026-10-08
+## 4.1 Judgment-faithful reasoning capture — prose-only revision 2026-10-09
 
-This revision changes **how the already-made judgment is recorded**, not the
-decision procedure in Steps A-E. Use the same normal_view, ordinary-five
-selection, WIN_FIRST_NOT_PLACE_FIRST ◎/○ choice, one independent ▲ challenger,
-six-to-five compression and final mark assignment. Do not run another ranking
-pass, add thresholds, change the model-facing Reader, or select marks to improve
-the research labels. The record remains
-`RaceNote-Human-Context-Reader-0.5.2-candidate`.
+This section governs how the already-made forecast judgment is recorded. It
+does not create another decision layer. Steps A-E still determine the race
+model, ordinary five, ◎/○, independent challenger, six-to-five compression and
+final marks from the same clean `normal_view`.
 
-Once the five marks and the actual reasons are decided, keep the **existing
-Decision Core fields** but make the reasoning genuinely discriminative:
+The purpose of the written reasoning is to preserve the shape of the judgment
+well enough that another reader can later understand **why ◎ was preferred to
+○ and how decisive that preference actually was**. The prose is therefore an
+observation record of the forecast, not a target signal to be manufactured for
+later analysis.
 
-- `race_model`: name the concrete condition that defines today's main race
-  scenario (position, pace, class, course or condition), and, **where material**,
-  which plausible departure from that scenario would threaten the main line.
-  Do not invent alternative scenarios just to fill a checklist.
-- `role_assignment.honmei_win_case`: specify why ◎ can *win*, rather than
-  merely place, with one or more concrete pre-race observations. If the path
-  depends on a particular pace/position/smooth trip, state that dependency
-  plainly instead of declaring confidence.
-- `role_assignment.second_case` and `ranking_reason`: preserve the real
-  distinction between ◎ and ○. State the decisive **reason for ◎ over ○**
-  when one exists; if both are very close, record the actual tie-break and
-  residual uncertainty without pretending the gap is clear. Do not force
-  ordinary rank 1 to be ◎.
-- `boundary_review.reason`: explain the real final △2 vs closest excluded
-  alternative comparison using their contrasting evidence when a meaningful
-  alternative exists. Say when the margin is thin, if it truly is. Keep the
-  original `alternative_horse_no` meaning; no newly selected runner or
-  manufactured sixth candidate is allowed.
-- `candidate_compression.reason`: keep the independent challenger admission
-  or rejection rationale specific to that horse's alternative win path.
-  Do not replace the six-to-five audit with a confidence judgment.
-- `single_shot_case` and `mainline_cases`: retain their original roles and
-  actual supporting race evidence. Do not impose new ordering or scoring.
+Author the decision first. Then describe it at the same strength at which it
+was actually held.
 
-**Evidence specificity:** writing "most reproducible", "clear winning path",
-"stable second", or "better boundary" without the race-specific observation
-does not record a useful comparison. Replacing horse names or numbers in a
-shared sentence is not a genuine reason. When the evidence is ambiguous, say
-so; do not fabricate a neat contrast, hidden doubt, objective probability or
-post hoc winning condition.
+- When one horse has a materially stronger winning route than ○, identify the
+  race-specific reason that creates that separation.
+- When ◎ and ○ are close and the final order rests on a narrower tie-break,
+  preserve that narrowness. The record should make clear what tipped the choice
+  without rewriting a marginal call as a dominant one.
+- When ◎ depends on a particular pace, position, trip or condition, state that
+  dependency as part of the winning case. A conditional path should read as a
+  conditional path.
+- When several pieces of evidence point in different directions, keep the
+  tension that mattered to the choice instead of compressing it into a generic
+  declaration that ◎ is simply "best".
+- When the choice is straightforward, concise prose is enough. Extra certainty
+  language is not evidence.
 
-**Output boundaries:** do not add A/B/C, confidence percentages, numeric
-scores, extra schema keys, required subheadings, or artificial sentence
-templates. `reader_facing_reason` remains one compact, natural race comment
-under `FORECAST_READER_FACING_PROSE_v0_1.md`, not a transcript of the audit
-fields. Keep all existing validation, hashes, Freeze and market/result
-firewalls unchanged.
+The existing Decision Core fields divide that record naturally.
 
-Before saving each venue, compare its race explanations for identical or
-near-identical wording after replacing horse names, numbers and venue names.
-If a repeated passage conceals materially different reasoning, repair the
-prose **only**, using already-seen clean Reader evidence. Do not revise the
-horse selection, introduce evidence after Freeze, or force variation where
-the evidence really is the same.
+`race_model` should capture the concrete race structure that drove the
+forecast. `role_assignment.honmei_win_case` should explain the realistic path
+by which ◎ wins. `second_case` should preserve the strongest case for ○, and
+`ranking_reason` should record the actual comparative reason that left ◎
+ahead of ○. These fields should agree with one another: if the comparison was
+close, the combination of fields should read close; if one route was plainly
+stronger, the underlying race evidence should make that plain without relying
+on a stock adjective.
 
-For analysis, preserve a separate annotation/output-policy cohort:
-records authored using this guidance can be compared with older v0.5.2
-FROZEN records for **mark/outcome metrics**, but differences in prose quality
-must not be treated as pre-existing features of the older cohort. Use the
-existing `base_main_sha` / authored-session provenance to distinguish
-generations; do not backfill or rewrite historical frozen Decision Cores.
+The same principle applies elsewhere in the core. `boundary_review.reason`
+records the real final candidate-boundary comparison.
+`candidate_compression.reason` records why the independent challenger was
+admitted or rejected. `single_shot_case` and `mainline_cases` retain the
+specific racing evidence for their own roles. They should not be rewritten as
+generic confidence statements.
+
+Specificity matters more than emphatic wording. Phrases such as "clear winning
+path", "most reproducible", "stable second" or "strongest candidate" carry
+little information unless the concrete race observation is also present.
+Likewise, a sentence that could be reused across many races by swapping horse
+numbers is not a faithful record of the judgment.
+
+The downstream research process may later infer relative confidence from these
+frozen explanations. That possibility must not feed back into authoring.
+Forecast prose must not be optimized to produce a desired downstream category,
+balanced label counts, stronger-looking comments or easier separation. The
+authoring task is only to preserve the genuine forecast comparison before
+results are known.
+
+`reader_facing_reason` remains one compact natural race comment under
+`FORECAST_READER_FACING_PROSE_v0_1.md`. It should express the same judgment in
+ordinary racing language, not serialize the audit fields. The reader-facing
+comment may naturally reveal that ◎ stands clearly above ○, that the pair is
+closely matched, or that ◎ needs a specific setup, but only when that is what
+the race analysis actually says.
+
+No new schema fields, numeric confidence scores, probability estimates or
+separate rating pass are introduced by this revision. Validation, hashes,
+Freeze and market/result firewalls are unchanged.
+
+Before saving a venue, review the card for repeated generic wording. Repair
+only wording that obscures materially different race reasoning, using already
+seen clean Reader evidence. Do not change marks merely to create prose
+variation, and do not force every race to exhibit a visible degree of
+separation.
+
+For analysis, records authored under this guidance form a later prose-quality
+cohort. Older frozen v0.5.2 Decision Cores remain immutable and must not be
+backfilled. Use existing provenance to distinguish generations when prose
+quality itself is under study.
 
 ## 5. What v0.5.2 must not become
 
