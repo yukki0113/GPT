@@ -323,13 +323,41 @@ jobs:
           if not rows:
               raise SystemExit(0)
           fields=["date","venue_code","race_no","horse_no","horse_name","member","mark","confidence","tag","review_horse","comment"]
+          # Allow Library-style review-horse rows to omit horse_no when venue/race
+          # and horse_name identify exactly one current runner.  Do not fuzzy-match.
+          runner_lookup={}
+          for p in Path("/tmp/merged-day/races").glob("*.json"):
+              b=json.loads(p.read_text(encoding="utf-8"))
+              venue_code=str(b["race"]["venue_code"]).zfill(2)
+              race_no=int(b["race"]["race_no"])
+              for horse in b.get("horses") or []:
+                  key=(venue_code,race_no,str(horse["basic"]["horse_name"]))
+                  if key in runner_lookup:
+                      raise SystemExit(f"duplicate exact horse lookup key: {key}")
+                  runner_lookup[key]=int(horse["key"]["horse_no"])
+          resolved=[]
           with Path("/tmp/kensho/momotaro_predictions.csv").open("w",encoding="utf-8",newline="") as h:
               w=csv.DictWriter(h,fieldnames=fields)
               w.writeheader()
               for row in rows:
+                  row=dict(row)
+                  venue_code=str(row.get("venue_code") or "").zfill(2)
+                  race_no=int(row.get("race_no"))
+                  horse_name=str(row.get("horse_name") or "").strip()
+                  raw_no=row.get("horse_no")
+                  if raw_no in (None,""):
+                      key=(venue_code,race_no,horse_name)
+                      if key not in runner_lookup:
+                          raise SystemExit(f"exact horse lookup failed: {key}")
+                      row["horse_no"]=runner_lookup[key]
                   out={key:row.get(key,"") for key in fields}
                   out["review_horse"]="1" if row.get("review_horse") is True else ""
                   w.writerow(out)
+                  resolved.append(row)
+          req["momotaro_predictions"]=resolved
+          Path("/tmp/kensho/request.json").write_text(
+              json.dumps(req,ensure_ascii=False,indent=2)+"\n",
+              encoding="utf-8")
           PY
 
       - name: Prepare optional Momotaro race comments
