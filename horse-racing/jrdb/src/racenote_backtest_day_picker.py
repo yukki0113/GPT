@@ -3,7 +3,7 @@
 """Small persistent random day picker for RaceNote historical backtests."""
 from __future__ import annotations
 import argparse, json, random, secrets
-from datetime import datetime, timezone
+from datetime import date as calendar_date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -28,19 +28,38 @@ def normalize_inventory_rows(rows: Iterable[dict[str, Any]]):
         date = str(row.get("date") or "").strip()
         file_name = str(row.get("file_name") or "").strip()
         drive_file_id = str(row.get("drive_file_id") or "").strip()
+        source_mode = str(row.get("source_mode") or "paci")
+        cycle = int(row.get("selection_cycle") or 1)
         if len(date) != 10 or date[4] != "-" or date[7] != "-":
             raise ValueError(f"invalid date: {date!r}")
-        if date in seen:
-            raise ValueError(f"duplicate date in inventory: {date}")
-        seen.add(date)
-        out.append({
+        year = calendar_date.fromisoformat(date).year
+        if source_mode not in ("paci", "historical_warehouse") or cycle < 1:
+            raise ValueError("invalid source_mode or selection_cycle")
+        if source_mode == "historical_warehouse" and not 2010 <= year <= 2025:
+            raise ValueError("Historical Warehouse inventory is limited to 2010-2025")
+        key = (date, source_mode, cycle)
+        if key in seen:
+            raise ValueError(f"duplicate date/source/cycle in inventory: {key}")
+        seen.add(key)
+        item = {
             "date": date,
             "file_name": file_name,
             "drive_file_id": drive_file_id,
             "eligible": bool(row.get("eligible", True)),
             "exclusion_reason": row.get("exclusion_reason"),
-        })
-    return sorted(out, key=lambda r: r["date"])
+        }
+        if source_mode == "historical_warehouse":
+            reference = str(row.get("source_reference") or "").strip()
+            if not reference:
+                raise ValueError("Historical Warehouse source_reference is required")
+            item.update(source_mode=source_mode, source_reference=reference,
+                        selection_cycle=cycle)
+        out.append(item)
+    return sorted(out, key=lambda r: (r["date"], r.get("source_mode", "paci"), r.get("selection_cycle", 1)))
+
+
+def day_key(row):
+    return (row["date"], row.get("source_mode", "paci"), row.get("selection_cycle", 1))
 
 def new_state(rows):
     normalized = normalize_inventory_rows(rows)
@@ -60,10 +79,10 @@ def new_state(rows):
 
 def sync_state(state, rows):
     normalized = normalize_inventory_rows(rows)
-    existing = {r["date"]: r for r in state.get("days", [])}
+    existing = {day_key(r): r for r in state.get("days", [])}
     merged = []
     for r in normalized:
-        old = existing.get(r["date"])
+        old = existing.get(day_key(r))
         merged.append({
             **r,
             "eligible": bool(old.get("eligible", True)) if old else bool(r.get("eligible", True)),
@@ -72,18 +91,27 @@ def sync_state(state, rows):
             "used_at": old.get("used_at") if old else None,
             "selection_id": old.get("selection_id") if old else None,
         })
+    # Retain used historical cycles even if a later inventory only lists the
+    # next cycle. This is the audit trail of first blind and reused dates.
+    present = {day_key(r) for r in merged}
+    merged.extend(r for r in state.get("days", [])
+                  if r.get("source_mode") == "historical_warehouse"
+                  and r.get("used") and day_key(r) not in present)
     state["version"] = VERSION
     state["updated_at"] = now_iso()
     state["days"] = merged
     state.setdefault("selections", [])
     return state
 
-def pick_days(state, n, seed=None, include_ineligible=False):
+def pick_days(state, n, seed=None, include_ineligible=False,
+              source_mode=None, selection_cycle=None):
     if n <= 0:
         raise ValueError("n must be >= 1")
     available = [
         r for r in state.get("days", [])
         if not r.get("used") and (include_ineligible or r.get("eligible", True))
+        and (source_mode is None or r.get("source_mode", "paci") == source_mode)
+        and (selection_cycle is None or r.get("selection_cycle", 1) == selection_cycle)
     ]
     if len(available) < n:
         raise ValueError(
@@ -93,9 +121,9 @@ def pick_days(state, n, seed=None, include_ineligible=False):
     selected = sorted(random.Random(actual_seed).sample(available, n), key=lambda r: r["date"])
     sid = f"BTDAY-{len(state.get('selections', [])) + 1:04d}"
     used_at = now_iso()
-    dates = {r["date"] for r in selected}
+    selected_keys = {day_key(r) for r in selected}
     for r in state["days"]:
-        if r["date"] in dates:
+        if day_key(r) in selected_keys:
             r["used"] = True
             r["used_at"] = used_at
             r["selection_id"] = sid
@@ -106,6 +134,12 @@ def pick_days(state, n, seed=None, include_ineligible=False):
         "n": n,
         "dates": [r["date"] for r in selected],
     }
+    if any(r.get("source_mode") == "historical_warehouse" for r in selected):
+        rec["sources"] = [{"target_date": r["date"],
+                           "source_mode": r.get("source_mode", "paci"),
+                           "source_reference": r.get("source_reference"),
+                           "selection_cycle": r.get("selection_cycle", 1)}
+                          for r in selected]
     state.setdefault("selections", []).append(rec)
     state["updated_at"] = used_at
     return rec
@@ -162,6 +196,8 @@ def main():
     a.add_argument("--state", type=Path, required=True)
     a.add_argument("-n", type=int, default=2)
     a.add_argument("--seed")
+    a.add_argument("--source-mode", choices=("paci", "historical_warehouse"))
+    a.add_argument("--selection-cycle", type=int)
     a.add_argument(
         "--include-ineligible",
         action="store_true",
@@ -187,7 +223,8 @@ def main():
         print(json.dumps(summary(state), ensure_ascii=False))
         return 0
     if args.command == "pick":
-        rec = pick_days(state, args.n, args.seed, args.include_ineligible)
+        rec = pick_days(state, args.n, args.seed, args.include_ineligible,
+                        args.source_mode, args.selection_cycle)
         save_json(args.state, state)
         print(json.dumps(rec, ensure_ascii=False))
         return 0
