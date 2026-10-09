@@ -236,11 +236,8 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           BODY="$(cat /tmp/edge-validation.json)"
-          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB_NEWSPAPER_EDGE_V05_REPUBLISH_RESULT: PASS
-
-```json
-$BODY
-```"
+          printf '%s\n' "JRDB_NEWSPAPER_EDGE_V05_REPUBLISH_RESULT: PASS" "" "$BODY" > /tmp/comment.md
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
           gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
 
       - name: Comment failure and close
