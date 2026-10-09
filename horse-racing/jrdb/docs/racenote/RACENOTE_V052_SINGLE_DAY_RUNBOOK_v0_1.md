@@ -9,10 +9,15 @@ Logic: `RaceNote-Human-Context-Reader-0.5.2-candidate`
 This is the ordinary prospective RaceNote path after the BTDAY-0057..0060
 v0.5.1/v0.5.2 comparison.
 
-The same path is used for:
+The input source depends on the target year:
 
-- a historical BTDAY;
-- a normal forward JRA day.
+- **2026:** existing daily PACI ZIP → `racenote_v052_from_paci.py` (unchanged default).
+- **2010–2025:** accepted Historical Warehouse →
+  `racenote_v052_from_historical_warehouse.py`, after the Raw/Warehouse
+  v0.5.2 equivalence report says `PASS`.
+
+Both sources converge at the same DAY PREP, forecast_prep, v0.5.2 Reader,
+Decision Core, Freeze and Verify contracts.
 
 A/B session creation, sibling lanes and a two-lane Freeze barrier are not
 required.
@@ -20,7 +25,7 @@ required.
 The operational shape is:
 
 ```text
-one PACI ZIP
+2026 PACI ZIP or 2010–2025 accepted Historical Warehouse
   -> RaceNote daily build
   -> market-blind forecast_prep
   -> one sealed v0.5.2 Reader set
@@ -33,6 +38,37 @@ one PACI ZIP
 
 Target results, target final odds/popularity and payouts remain forbidden until
 the single-day Freeze is complete.
+
+## 2010–2025 Historical Warehouse prepare
+
+The accepted Warehouse pointer and local immutable assets must match the
+generation in
+`RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json`.
+The prepare command rejects a missing/FAIL report, another generation, a
+target year outside 2010–2025, or an existing output root.
+
+```bash
+python horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py \
+  --date YYYY-MM-DD \
+  --selection-id BTDAY-XXXX \
+  --main-sha <full-main-SHA> \
+  --equivalence-report horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json \
+  --warehouse-current <accepted-warehouse-root>/current.json \
+  --warehouse-asset-root <accepted-warehouse-root> \
+  --analysis-root <verified-analysis-current-root> \
+  --racereview-root <verified-racereview-generation-root> \
+  --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
+  --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+  --output-root <new-immutable-operation-root>
+```
+
+This writes `day_prep`, `forecast_prep`, `v052/session.json`,
+`v052/reader_manifest.json`, `v052/reader/*.json`, and
+`operation_handoff.json`. Require `SESSION_SEALED`, `market_blind=true`,
+`result_opened=false`, `target_market_opened=false`, and
+`as_of_exclusive=target_date` before authoring. Continue with the existing
+`racenote_v052_single_day.py save`, `freeze` and `verify` steps below. Open
+target results only after Freeze/Verify succeeds.
 
 ## 1. TURN 1 — DAY PREP / prediction-thread orchestration responsibility
 
