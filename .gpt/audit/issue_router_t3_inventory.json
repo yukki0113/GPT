@@ -1,0 +1,3378 @@
+{
+  "base_commit": "5f2e5b2e9807bff54bf84e5561e5273c8ffc40f5",
+  "workflow_file_count": 200,
+  "issues_opened_count": 121,
+  "parse_errors": [
+    ".github/workflows/jrdb_newspaper_current_audit_issue.yml"
+  ],
+  "workflows": [
+    {
+      "workflow_path": ".github/workflows/boatrace_pre_race_issue.yml",
+      "workflow_name": "boatrace-pre-race-issue",
+      "issue_prefix": [
+        "[BOATRACE_PRE_RACE_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[BOATRACE_PRE_RACE_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "boat-racing",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/boatrace_results_chat.yml",
+      "workflow_name": "boatrace-results-chat",
+      "issue_prefix": [
+        "[BOATRACE_RESULTS_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[BOATRACE_RESULTS_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "boat-racing",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/data_storage_fallback_issue.yml",
+      "workflow_name": "Data Storage fallback via Issue",
+      "issue_prefix": [
+        "[DATA_STORAGE_FALLBACK]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[DATA_STORAGE_FALLBACK]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "repository-common",
+      "migration_class": "D",
+      "migration_candidate": false,
+      "migration_reason": "共通Router・互換/運用入口。個別prefixの機械移行対象外",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/edgedb_v05_positive_freeze_issue.yml",
+      "workflow_name": "EdgeDB v0.5 Positive Value Freeze",
+      "issue_prefix": [
+        "[EDGEDB_V05_POSITIVE_FREEZE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[EDGEDB_V05_POSITIVE_FREEZE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/eval_jrdb_dataset_issue.yml",
+      "workflow_name": "eval-jrdb-dataset-issue",
+      "issue_prefix": [
+        "[EVAL_JRDB_DATASET]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[EVAL_JRDB_DATASET]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/eval",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/eval_media_chat.yml",
+      "workflow_name": "eval-media-chat",
+      "issue_prefix": [
+        "[EVAL_MEDIA_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[EVAL_MEDIA_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/eval",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/eval_ocr_chat.yml",
+      "workflow_name": "eval-ocr-chat",
+      "issue_prefix": [
+        "[EVAL_OCR_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[EVAL_OCR_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/eval",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/gpt_git_binary_read_issue.yml",
+      "workflow_name": "GPT Git Binary Read via Issue",
+      "issue_prefix": [
+        "[gpt-git-binary-read]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[gpt-git-binary-read]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "repository-common",
+      "migration_class": "D",
+      "migration_candidate": false,
+      "migration_reason": "共通Router・互換/運用入口。個別prefixの機械移行対象外",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/gpt_git_update_issue.yml",
+      "workflow_name": "GPT Git Update via Issue",
+      "issue_prefix": [
+        "[gpt-git-update]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[gpt-git-update]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "repository-common",
+      "migration_class": "D",
+      "migration_candidate": false,
+      "migration_reason": "共通Router・互換/運用入口。個別prefixの機械移行対象外",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/issue_router.yml",
+      "workflow_name": "Issue Router",
+      "issue_prefix": [],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113'"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": false,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "repository-common",
+      "migration_class": "D",
+      "migration_candidate": false,
+      "migration_reason": "共通Router・互換/運用入口。個別prefixの機械移行対象外",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jra_results_chat.yml",
+      "workflow_name": "jra-results-chat",
+      "issue_prefix": [
+        "[JRA_RESULTS_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRA_RESULTS_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "other",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb-race-review-acceptance.yml",
+      "workflow_name": "RaceReviewDB Candidate Acceptance",
+      "issue_prefix": [
+        "[JRDB_RACE_REVIEW_ACCEPTANCE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_RACE_REVIEW_ACCEPTANCE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_ability_compare_issue.yml",
+      "workflow_name": "JRDB Ability existing-horse comparison via Issue",
+      "issue_prefix": [
+        "[JRDB_ABILITY_COMPARE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_ABILITY_COMPARE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_ability_holdout_issue.yml",
+      "workflow_name": "JRDB Ability existing-horse temporal confirmation via Issue",
+      "issue_prefix": [
+        "[JRDB_ABILITY_HOLDOUT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_ABILITY_HOLDOUT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_ability_snapshot_audit_issue.yml",
+      "workflow_name": "JRDB Ability snapshot structural audit via Issue",
+      "issue_prefix": [
+        "[JRDB_ABILITY_SNAPSHOT_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_ABILITY_SNAPSHOT_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_analysis_parquet_canonical_issue.yml",
+      "workflow_name": "JRDB Analysis Parquet canonical generation",
+      "issue_prefix": [
+        "[JRDB_ANALYSIS_PARQUET_CANONICAL]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_ANALYSIS_PARQUET_CANONICAL]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_analysis_parquet_shadow_issue.yml",
+      "workflow_name": "JRDB Analysis Parquet shadow migration",
+      "issue_prefix": [
+        "[JRDB_ANALYSIS_PARQUET_SHADOW]",
+        "[JRDB_ANALYSIS_V14_SHADOW]",
+        "[RACENOTE_TREND_SMOKE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_ANALYSIS_PARQUET_SHADOW]') || startsWith(github.event.issue.title, '[JRDB_ANALYSIS_V14_SHADOW]')",
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_TREND_SMOKE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_analysis_win5_migrate_issue.yml",
+      "workflow_name": "JRDB Analysis WIN5 Migration via Issue",
+      "issue_prefix": [
+        "[JRDB_ANALYSIS_WIN5_MIGRATE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_ANALYSIS_WIN5_MIGRATE]') && github.event.issue.user.login == 'yukki0113'"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_annual_raw_fetch_issue.yml",
+      "workflow_name": "JRDB Annual Raw Fetch via Issue",
+      "issue_prefix": [
+        "[JRDB_ANNUAL_RAW_FETCH_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_ANNUAL_RAW_FETCH_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "A",
+      "migration_candidate": true,
+      "migration_reason": "単一prefix・JSON本文・既存JRDB module中心。上流run入力なし。RESULT/close仕様を維持して移行可能",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_bac_duplicate_inspect_issue.yml",
+      "workflow_name": "JRDB BAC duplicate inspect via Issue",
+      "issue_prefix": [
+        "[JRDB_BAC_DUP_INSPECT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_BAC_DUP_INSPECT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_cha_duplicate_inspect_issue.yml",
+      "workflow_name": "JRDB CHA duplicate inspect via Issue",
+      "issue_prefix": [
+        "[JRDB_CHA_DUP_INSPECT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_CHA_DUP_INSPECT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_daily_403_probe_issue.yml",
+      "workflow_name": "JRDB Daily 403 Probe via Issue",
+      "issue_prefix": [
+        "[JRDB_DAILY_403_PROBE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_DAILY_403_PROBE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_daily_history_fetch_issue.yml",
+      "workflow_name": "JRDB Daily History Fetch via Issue",
+      "issue_prefix": [
+        "[JRDB_DAILY_HISTORY_FETCH_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_DAILY_HISTORY_FETCH_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "A",
+      "migration_candidate": true,
+      "migration_reason": "単一prefix・JSON本文・既存JRDB module中心。上流run入力なし。RESULT/close仕様を維持して移行可能",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_debut_ability_coverage_issue.yml",
+      "workflow_name": "JRDB Debut Ability development coverage via Issue",
+      "issue_prefix": [
+        "[JRDB_DEBUT_ABILITY_COVERAGE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_DEBUT_ABILITY_COVERAGE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_debut_ability_smoke_issue.yml",
+      "workflow_name": "JRDB Debut Ability snapshot smoke via Issue",
+      "issue_prefix": [
+        "[JRDB_DEBUT_ABILITY_SMOKE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_DEBUT_ABILITY_SMOKE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_debut_ability_snapshot_audit_issue.yml",
+      "workflow_name": "JRDB Debut Ability snapshot audit via Issue",
+      "issue_prefix": [
+        "[JRDB_DEBUT_ABILITY_SNAPSHOT_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_DEBUT_ABILITY_SNAPSHOT_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_analysis_parquet_equivalence_issue.yml",
+      "workflow_name": "JRDB Edge Analysis Parquet equivalence via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_ANALYSIS_PARQUET_EQ]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_ANALYSIS_PARQUET_EQ]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_forward_selftest_issue.yml",
+      "workflow_name": "JRDB Edge Forward Operations Selftest via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_FORWARD_SELFTEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_FORWARD_SELFTEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": false,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_forward_settle_issue.yml",
+      "workflow_name": "JRDB Edge TRUE_FORWARD Settlement via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_FORWARD_SETTLE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_FORWARD_SETTLE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": false,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_legacy_audit_issue.yml",
+      "workflow_name": "JRDB Edge legacy dependency audit via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_LEGACY_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_LEGACY_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": false,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_parquet_completion_audit_issue.yml",
+      "workflow_name": "JRDB Edge Parquet completion audit via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_PARQUET_COMPLETION_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_PARQUET_COMPLETION_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_registry_build_issue.yml",
+      "workflow_name": "JRDB Edge Registry build via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_REGISTRY_BUILD]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_REGISTRY_BUILD]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_registry_build_v2_issue.yml",
+      "workflow_name": "JRDB Edge Registry V2 build via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_REGISTRY_BUILD_V2]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_REGISTRY_BUILD_V2]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_registry_parquet_issue.yml",
+      "workflow_name": "JRDB Edge Registry Parquet migration via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_REGISTRY_PARQUET]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_REGISTRY_PARQUET]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_registry_v02_issue.yml",
+      "workflow_name": "JRDB Edge Registry v0.2 build via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_REGISTRY_V02]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_REGISTRY_V02]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_serving_publication_issue.yml",
+      "workflow_name": "JRDB Edge v0.2 Serving Publication via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_SERVING_PUBLICATION]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_SERVING_PUBLICATION]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v02_operational_audit_issue.yml",
+      "workflow_name": "JRDB Edge v0.2 operational audit via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V02_OPERATIONAL_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V02_OPERATIONAL_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v03_b2b_gate_issue.yml",
+      "workflow_name": "JRDB Edge v0.3 B2b frozen gate via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V03_B2B_GATE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V03_B2B_GATE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v03_forward_shadow_freeze_issue.yml",
+      "workflow_name": "JRDB Edge v0.3 Stage-E forward shadow freeze via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V03_FORWARD_SHADOW_FREEZE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V03_FORWARD_SHADOW_FREEZE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v03_operational_replay_issue.yml",
+      "workflow_name": "JRDB Edge v0.3 Stage-D operational replay via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V03_OPERATIONAL_REPLAY]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V03_OPERATIONAL_REPLAY]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v03_shadow_catalog_issue.yml",
+      "workflow_name": "JRDB Edge v0.3 Stage-C shadow catalog via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V03_SHADOW_CATALOG]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V03_SHADOW_CATALOG]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v04_artifact_cleanup_issue.yml",
+      "workflow_name": "JRDB Edge v0.4 Artifact Cleanup via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V04_ARTIFACT_CLEANUP]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_ARTIFACT_CLEANUP]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v04_c1_pool_audit_issue.yml",
+      "workflow_name": "JRDB Edge v0.4 Stage C1 Pool Audit via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V04_C1_POOL_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_C1_POOL_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v04_stage_a_issue.yml",
+      "workflow_name": "JRDB Edge v0.4 Stage A via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V04_STAGE_A]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_A]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v04_stage_b_issue.yml",
+      "workflow_name": "JRDB Edge v0.4 Stage B via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V04_STAGE_B]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_B]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v04_stage_c1_sharded_issue.yml",
+      "workflow_name": "JRDB Edge v0.4 Stage C1 sharded via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V04_STAGE_C1_SHARDED]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_C1_SHARDED]')",
+        "${{ always() && needs.prepare.result == 'success' && needs.evaluate.result == 'success' }}",
+        "${{ always() && github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_C1_SHARDED]') && (needs.prepare.result != 'success' || needs.evaluate.result != 'success' || needs.aggregate.result != 'success') }}"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v04_stage_c2a_issue.yml",
+      "workflow_name": "JRDB Edge v0.4 Stage C2A via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V04_STAGE_C2A]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_C2A]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_edge_v04_stage_c_issue.yml",
+      "workflow_name": "JRDB Edge v0.4 Stage C via Issue",
+      "issue_prefix": [
+        "[JRDB_EDGE_V04_STAGE_C]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_EDGE_V04_STAGE_C]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_fact_lite_dual_shadow_issue.yml",
+      "workflow_name": "JRDB Fact Lite dual-format shadow audit",
+      "issue_prefix": [
+        "[JRDB_FACT_LITE_DUAL_SHADOW]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_FACT_LITE_DUAL_SHADOW]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_historical_warehouse_family.yml",
+      "workflow_name": "JRDB Historical Warehouse Family",
+      "issue_prefix": [
+        "[JRDB_WAREHOUSE_FAMILY]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event_name == 'workflow_dispatch' || (github.event.issue.user.login == 'yukki0113' &&\n startsWith(github.event.issue.title, '[JRDB_WAREHOUSE_FAMILY]'))"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": false,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": false,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": true,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_index_base_audit_issue.yml",
+      "workflow_name": "JRDB Index Base full audit via Issue",
+      "issue_prefix": [
+        "[JRDB_INDEX_BASE_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_INDEX_BASE_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "A",
+      "migration_candidate": true,
+      "migration_reason": "単一prefix・JSON本文・既存JRDB module中心。上流run入力なし。RESULT/close仕様を維持して移行可能",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_legacy_daily_annualize_issue.yml",
+      "workflow_name": "JRDB Legacy Daily Family Annualize via Issue",
+      "issue_prefix": [
+        "[JRDB_LEGACY_DAILY_ANNUALIZE_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_LEGACY_DAILY_ANNUALIZE_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_legacy_family_year_issue.yml",
+      "workflow_name": "JRDB Legacy Family Year via Issue",
+      "issue_prefix": [
+        "[JRDB_LEGACY_FAMILY_YEAR_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_LEGACY_FAMILY_YEAR_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "A",
+      "migration_candidate": true,
+      "migration_reason": "単一prefix・JSON本文・既存JRDB module中心。上流run入力なし。RESULT/close仕様を維持して移行可能",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_legacy_source_probe_issue.yml",
+      "workflow_name": "JRDB Legacy Source Probe via Issue",
+      "issue_prefix": [
+        "[JRDB_LEGACY_SOURCE_PROBE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_LEGACY_SOURCE_PROBE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_momotaro_newspaper_publish_issue.yml",
+      "workflow_name": "JRDB Momotaro Newspaper Current Publish",
+      "issue_prefix": [
+        "[MOMOTARO_NEWSPAPER_PUBLISH_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[MOMOTARO_NEWSPAPER_PUBLISH_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_current_audit_issue.yml",
+      "workflow_name": "jrdb_newspaper_current_audit_issue",
+      "issue_prefix": [],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": true
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_day_issue.yml",
+      "workflow_name": "JRDB Newspaper Day Build via Issue",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_DAY_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_DAY_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_edge_republish_issue.yml",
+      "workflow_name": "JRDB Newspaper Edge-only Republish via Issue",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_EDGE_REPUBLISH]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EDGE_REPUBLISH]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_edge_v05_republish_issue.yml",
+      "workflow_name": "JRDB Newspaper Edge v0.5 Republish via Issue",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_EDGE_V05_REPUBLISH]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EDGE_V05_REPUBLISH]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_edgedb_live_parity_issue.yml",
+      "workflow_name": "JRDB Newspaper EdgeDB live parity test",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_EDGEDB_LIVE_PARITY]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EDGEDB_LIVE_PARITY]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_external_merge_issue.yml",
+      "workflow_name": "JRDB Newspaper External Merge via Issue",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_EXTERNAL_MERGE_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EXTERNAL_MERGE_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_kensho_merge_issue.yml",
+      "workflow_name": "JRDB Newspaper Kensho Merge via Issue",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_KENSHO_MERGE_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_KENSHO_MERGE_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_poc_issue.yml",
+      "workflow_name": "JRDB Newspaper real-data PoC via Issue",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_POC_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_POC_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_skeleton_publish_issue.yml",
+      "workflow_name": "JRDB Newspaper Skeleton Publish",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_SKELETON_PUBLISH_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_SKELETON_PUBLISH_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_newspaper_v03_rehearsal_publish_issue.yml",
+      "workflow_name": "JRDB Newspaper v0.3 Rehearsal Publish",
+      "issue_prefix": [
+        "[JRDB_NEWSPAPER_V03_REHEARSAL_PUBLISH_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_V03_REHEARSAL_PUBLISH_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_official_existing_ability_audit_issue.yml",
+      "workflow_name": "JRDB official Existing-Horse Ability v0.1 audit via Issue",
+      "issue_prefix": [
+        "[JRDB_OFFICIAL_ABILITY_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_OFFICIAL_ABILITY_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_official_existing_ability_smoke_issue.yml",
+      "workflow_name": "JRDB official Existing-Horse Ability smoke via Issue",
+      "issue_prefix": [
+        "[JRDB_OFFICIAL_ABILITY_SMOKE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_OFFICIAL_ABILITY_SMOKE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_post_race_parquet_dry_run_issue.yml",
+      "workflow_name": "JRDB Post-Race Parquet dry run",
+      "issue_prefix": [
+        "[JRDB_POST_RACE_PARQUET_DRY_RUN]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_POST_RACE_PARQUET_DRY_RUN]') && github.event.issue.user.login == 'yukki0113'"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_post_race_parquet_refresh_issue.yml",
+      "workflow_name": "JRDB Post-Race Parquet refresh candidate",
+      "issue_prefix": [
+        "[JRDB_POST_RACE_PARQUET_REFRESH]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_POST_RACE_PARQUET_REFRESH]') && github.event.issue.user.login == 'yukki0113'"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_post_race_refresh_issue.yml",
+      "workflow_name": "JRDB Post-Race Analysis Mart Refresh via Issue",
+      "issue_prefix": [
+        "[JRDB_POST_RACE_REFRESH]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_POST_RACE_REFRESH]') && github.event.issue.user.login == 'yukki0113'"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_prerace_duplicate_inspect_issue.yml",
+      "workflow_name": "JRDB pre-race duplicate inspect via Issue",
+      "issue_prefix": [
+        "[JRDB_PRERACE_DUP_INSPECT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_PRERACE_DUP_INSPECT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_pwa_fact_lite_build.yml",
+      "workflow_name": "JRDB PWA Fact Lite Build",
+      "issue_prefix": [
+        "[JRDB_PWA_FACT_LITE_BUILD]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_PWA_FACT_LITE_BUILD]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_pwa_fact_lite_publish.yml",
+      "workflow_name": "JRDB PWA Fact Lite Publish",
+      "issue_prefix": [
+        "[JRDB_PWA_FACT_LITE_PUBLISH]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_PWA_FACT_LITE_PUBLISH]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_pwa_publish_data.yml",
+      "workflow_name": "JRDB PWA Publish Data",
+      "issue_prefix": [
+        "[JRDB_PWA_DATA_PUBLISH]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_PWA_DATA_PUBLISH]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_retry403_test_issue.yml",
+      "workflow_name": "JRDB Retry403 Regression Test via Issue",
+      "issue_prefix": [
+        "[JRDB_RETRY403_TEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_RETRY403_TEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_runperf_audit_issue.yml",
+      "workflow_name": "JRDB RunPerf real-history audit via Issue",
+      "issue_prefix": [
+        "[JRDB_RUNPERF_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_RUNPERF_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "A",
+      "migration_candidate": true,
+      "migration_reason": "単一prefix・JSON本文・既存JRDB module中心。上流run入力なし。RESULT/close仕様を維持して移行可能",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_runperf_compare_issue.yml",
+      "workflow_name": "JRDB RunPerf development comparison via Issue",
+      "issue_prefix": [
+        "[JRDB_RUNPERF_COMPARE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_RUNPERF_COMPARE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_runperf_holdout_issue.yml",
+      "workflow_name": "JRDB RunPerf frozen holdout via Issue",
+      "issue_prefix": [
+        "[JRDB_RUNPERF_HOLDOUT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_RUNPERF_HOLDOUT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_runperf_smoke_issue.yml",
+      "workflow_name": "JRDB RunPerf smoke via Issue",
+      "issue_prefix": [
+        "[JRDB_RUNPERF_SMOKE]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[JRDB_RUNPERF_SMOKE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_training_stage2b_parquet_issue.yml",
+      "workflow_name": "JRDB Training Stage2b Parquet via Issue",
+      "issue_prefix": [
+        "[JRDB_TRAINING_STAGE2B_PARQUET]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_TRAINING_STAGE2B_PARQUET]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_ukc_availability_probe_issue.yml",
+      "workflow_name": "JRDB UKC availability probe via Issue",
+      "issue_prefix": [
+        "[JRDB_UKC_AVAILABILITY_PROBE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_UKC_AVAILABILITY_PROBE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/jrdb_warehouse_research_materialize_issue.yml",
+      "workflow_name": "JRDB Warehouse Research Materialization",
+      "issue_prefix": [
+        "[JRDB_WAREHOUSE_RESEARCH_MATERIALIZE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[JRDB_WAREHOUSE_RESEARCH_MATERIALIZE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keibailuka_historical_chat.yml",
+      "workflow_name": "keibailuka-historical-chat",
+      "issue_prefix": [
+        "[KEIBAILUKA_HISTORICAL_REQUEST]",
+        "[KEIBAILUKA_ANALYSIS_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[KEIBAILUKA_HISTORICAL_REQUEST]')",
+        "startsWith(github.event.issue.title, '[KEIBAILUKA_ANALYSIS_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/fetch_keibailuka_blog",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keibailuka_settlement_issue.yml",
+      "workflow_name": "keibailuka settlement issue",
+      "issue_prefix": [
+        "[KEIBAILUKA_SETTLEMENT_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[KEIBAILUKA_SETTLEMENT_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/fetch_keibailuka_blog",
+      "migration_class": "A",
+      "migration_candidate": true,
+      "migration_reason": "単一prefixとJSON本文。上流artifact参照なし。close/失敗時の契約は個別維持",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keibailuka_shadow_issue.yml",
+      "workflow_name": "keibailuka shadow score issue",
+      "issue_prefix": [
+        "[KEIBAILUKA_SHADOW_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[KEIBAILUKA_SHADOW_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/fetch_keibailuka_blog",
+      "migration_class": "A",
+      "migration_candidate": true,
+      "migration_reason": "単一prefixとJSON本文。上流artifact参照なし。close/失敗時の契約は個別維持",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keirin_crossyear_structure_audit_issue.yml",
+      "workflow_name": "Keirin Historical Crossyear Structure Audit via Issue",
+      "issue_prefix": [
+        "[KEIRIN_CROSSYEAR_STRUCTURE_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[KEIRIN_CROSSYEAR_STRUCTURE_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "keirin",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keirin_historical_10y_backfill_issue.yml",
+      "workflow_name": "Keirin Historical 10Y Backfill via Issue",
+      "issue_prefix": [
+        "[KEIRIN_10Y_BACKFILL]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[KEIRIN_10Y_BACKFILL]')",
+        "always() && startsWith(github.event.issue.title, '[KEIRIN_10Y_BACKFILL]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "keirin",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keirin_historical_annual_audit_issue.yml",
+      "workflow_name": "Keirin Historical Annual Audit via Issue",
+      "issue_prefix": [
+        "[KEIRIN_ANNUAL_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[KEIRIN_ANNUAL_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "keirin",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keirin_historical_month_poc_issue.yml",
+      "workflow_name": "Keirin Historical Month PoC via Issue",
+      "issue_prefix": [
+        "[KEIRIN_MONTH_POC]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[KEIRIN_MONTH_POC]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "keirin",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "削除操作・ad hoc業務実装・holdout/終端契約・非JSON本文の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keirin_historical_probe_issue.yml",
+      "workflow_name": "Keirin Historical Source Probe via Issue",
+      "issue_prefix": [
+        "[KEIRIN_HISTORICAL_PROBE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[KEIRIN_HISTORICAL_PROBE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "keirin",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keirin_historical_racelist_probe_issue.yml",
+      "workflow_name": "Keirin Historical RaceList Probe via Issue",
+      "issue_prefix": [
+        "[KEIRIN_RACELIST_PROBE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[KEIRIN_RACELIST_PROBE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "keirin",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/keirin_historical_structure_probe_issue.yml",
+      "workflow_name": "Keirin Historical Structure Probe via Issue",
+      "issue_prefix": [
+        "[KEIRIN_STRUCTURE_PROBE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[KEIRIN_STRUCTURE_PROBE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "keirin",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/maintenance_reclassify_stale_issues_20260917.yml",
+      "workflow_name": "One-off stale issue reclassification 20260917",
+      "issue_prefix": [
+        "[MAINTENANCE_RECLASSIFY_STALE_ISSUES_20260917_RUN]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "github.event.issue.title == '[MAINTENANCE_RECLASSIFY_STALE_ISSUES_20260917_RUN]'"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "repository-common",
+      "migration_class": "D",
+      "migration_candidate": false,
+      "migration_reason": "共通Router・互換/運用入口。個別prefixの機械移行対象外",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/nar_backfill_issue.yml",
+      "workflow_name": "NAR monthly backfill via Issue",
+      "issue_prefix": [
+        "[NAR_BACKFILL_REQUEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[NAR_BACKFILL_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "local-horse-racing",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_archive_resolver_test_issue.yml",
+      "workflow_name": "racenote-archive-resolver-test-issue",
+      "issue_prefix": [
+        "[RACENOTE_ARCHIVE_RESOLVE_TEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_RESOLVE_TEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_archive_test_issue.yml",
+      "workflow_name": "racenote-archive-test-issue",
+      "issue_prefix": [
+        "[RACENOTE_ARCHIVE_TEST]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[RACENOTE_ARCHIVE_TEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_betting_audit_issue.yml",
+      "workflow_name": "RaceNote Betting Audit via Issue",
+      "issue_prefix": [
+        "[RACENOTE_BETTING_AUDIT_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_BETTING_AUDIT_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_btday_0042_0043_temp.yml",
+      "workflow_name": "RaceNote BTDAY-0042-0043 DAY PREP temp",
+      "issue_prefix": [
+        "[RACENOTE_DAILY_BTDAY0042_0043]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[RACENOTE_DAILY_BTDAY0042_0043]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_btday_freeze_runner_temp.yml",
+      "workflow_name": "RaceNote BTDAY freeze runner temp",
+      "issue_prefix": [
+        "[RACENOTE_FREEZE_RUNNER_SMOKE]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[RACENOTE_FREEZE_RUNNER_SMOKE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": false,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": false,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_edge_prediction_freeze_issue.yml",
+      "workflow_name": "RaceNote Edge Prediction Freeze via Issue v0.1",
+      "issue_prefix": [
+        "[RACENOTE_EDGE_PREDICTION_FREEZE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_EDGE_PREDICTION_FREEZE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_gen0_3_day_author.yml",
+      "workflow_name": "RaceNote Gen0.3 day author",
+      "issue_prefix": [
+        "[RACENOTE_GEN03_DAY_AUTHOR]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_GEN03_DAY_AUTHOR]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_gen0_3_realdata_author.yml",
+      "workflow_name": "RaceNote Gen0.3 real-data author validation",
+      "issue_prefix": [
+        "[RACENOTE_GEN03_AUTHOR]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_GEN03_AUTHOR]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_gen0_3_realdata_prepare.yml",
+      "workflow_name": "RaceNote Gen0.3 real-data prepare",
+      "issue_prefix": [
+        "[RACENOTE_GEN03_PREPARE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event_name == 'workflow_dispatch' || (github.event_name == 'issues' &&\n github.event.issue.user.login == 'yukki0113' &&\n startsWith(github.event.issue.title, '[RACENOTE_GEN03_PREPARE]'))"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": true,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_gen0_g001_manifest_issue.yml",
+      "workflow_name": "RaceNote Gen0-G001 sample manifest",
+      "issue_prefix": [
+        "[RACENOTE_GEN0_G001_MANIFEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[RACENOTE_GEN0_G001_MANIFEST]') && github.event.issue.user.login == 'yukki0113'"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_gen0_result_acquire_issue.yml",
+      "workflow_name": "RaceNote Gen0 Result Acquire",
+      "issue_prefix": [
+        "[RACENOTE_GEN0_RESULT_ACQUIRE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_GEN0_RESULT_ACQUIRE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_mark_policy_research_v0_1.yml",
+      "workflow_name": "RaceNote Mark Policy research v0.1",
+      "issue_prefix": [
+        "[RACENOTE_MARK_POLICY_V01]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_MARK_POLICY_V01]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_schedule_issue.yml",
+      "workflow_name": "RaceNote Schedule Metadata via Issue",
+      "issue_prefix": [
+        "[RACENOTE_SCHEDULE_REQUEST]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_SCHEDULE_REQUEST]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_semantic_author_research_v0_2.yml",
+      "workflow_name": "RaceNote semantic author research v0.2",
+      "issue_prefix": [
+        "[RACENOTE_SEMANTIC_AUTHOR_V02]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_SEMANTIC_AUTHOR_V02]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_semantic_author_research_v0_3.yml",
+      "workflow_name": "RaceNote semantic author research v0.3",
+      "issue_prefix": [
+        "[RACENOTE_SEMANTIC_AUTHOR_V03]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_SEMANTIC_AUTHOR_V03]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_semantic_pairwise_research_v0_2.yml",
+      "workflow_name": "RaceNote semantic Pairwise research v0.2",
+      "issue_prefix": [
+        "[RACENOTE_SEMANTIC_PAIRWISE_V02]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_SEMANTIC_PAIRWISE_V02]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_v11p_blind_freeze_issue.yml",
+      "workflow_name": "RaceNote v1.1-P Blind Freeze",
+      "issue_prefix": [
+        "[RACENOTE_V11P_BLIND_FREEZE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_BLIND_FREEZE]') }}"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_v11p_repeat_blind_freeze_issue.yml",
+      "workflow_name": "RaceNote v1.1-P Repeat Blind Freeze",
+      "issue_prefix": [
+        "[RACENOTE_V11P_REPEAT_BLIND_FREEZE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_REPEAT_BLIND_FREEZE]') }}"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_v11p_repeat_settlement_issue.yml",
+      "workflow_name": "RaceNote v1.1-P Repeat Settlement",
+      "issue_prefix": [
+        "[RACENOTE_V11P_REPEAT_SETTLEMENT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_REPEAT_SETTLEMENT]') }}"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_v11p_settlement_issue.yml",
+      "workflow_name": "RaceNote v1.1-P Settlement",
+      "issue_prefix": [
+        "[RACENOTE_V11P_SETTLEMENT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_SETTLEMENT]') }}"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_v11p_settlement_metrics_issue.yml",
+      "workflow_name": "RaceNote v1.1-P Settlement Metrics",
+      "issue_prefix": [
+        "[RACENOTE_V11P_SETTLEMENT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "${{ github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RACENOTE_V11P_SETTLEMENT]') }}"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": false,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/racenote_v11p_true_forward_issue.yml",
+      "workflow_name": "RaceNote v1.1-P TRUE_FORWARD freeze via Issue",
+      "issue_prefix": [
+        "[RACENOTE_TRUE_FORWARD_FREEZE]"
+      ],
+      "owner_gate": "none in job condition",
+      "job_if_condition": [
+        "startsWith(github.event.issue.title, '[RACENOTE_TRUE_FORWARD_FREEZE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb/RaceNote",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/rlt_historical_warehouse_audit_issue.yml",
+      "workflow_name": "RL-T Historical Warehouse Audit via Issue",
+      "issue_prefix": [
+        "[RL_T_HISTORICAL_WAREHOUSE_AUDIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RL_T_HISTORICAL_WAREHOUSE_AUDIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": true,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/rlt_record_hash_compat_direct_smoke_issue.yml",
+      "workflow_name": "RL-T Record Hash Compatibility Direct Smoke",
+      "issue_prefix": [
+        "[RL_T_RECORD_HASH_COMPAT_DIRECT_SMOKE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RL_T_RECORD_HASH_COMPAT_DIRECT_SMOKE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": false,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "C",
+      "migration_candidate": false,
+      "migration_reason": "ファイル名が一時検証・smoke・保守用途を示す。現行参照と履歴を個別確認するまで削除しない",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/rlt_record_hash_compat_export_issue.yml",
+      "workflow_name": "RL-T Record Hash Compatibility Export",
+      "issue_prefix": [
+        "[RL_T_RECORD_HASH_COMPAT_EXPORT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RL_T_RECORD_HASH_COMPAT_EXPORT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [
+        "JRDB_PASSWORD",
+        "JRDB_USER"
+      ],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/rlt_record_hash_compat_split_issue.yml",
+      "workflow_name": "RL-T Record Hash Compatibility Split",
+      "issue_prefix": [
+        "[RL_T_RECORD_HASH_COMPAT_SPLIT]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RL_T_RECORD_HASH_COMPAT_SPLIT]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "複数prefix、上流artifact/SHA、またはIssue固有event依存の個別契約",
+      "risk_level": "high",
+      "parse_error": false
+    },
+    {
+      "workflow_path": ".github/workflows/rlt_warehouse_direct_materialize_issue.yml",
+      "workflow_name": "RL-T Warehouse Direct Materialization Smoke",
+      "issue_prefix": [
+        "[RL_T_WAREHOUSE_DIRECT_MATERIALIZE]"
+      ],
+      "owner_gate": "yukki0113",
+      "job_if_condition": [
+        "github.event.issue.user.login == 'yukki0113' && startsWith(github.event.issue.title, '[RL_T_WAREHOUSE_DIRECT_MATERIALIZE]')"
+      ],
+      "issue_title_reference": true,
+      "issue_body_reference": false,
+      "issue_number_reference": true,
+      "secrets_usage": [],
+      "artifact_generation": true,
+      "issue_result_comment": true,
+      "issue_close": true,
+      "workflow_call": false,
+      "repository_dispatch": false,
+      "workflow_dispatch": false,
+      "project": "horse-racing/jrdb",
+      "migration_class": "B",
+      "migration_candidate": false,
+      "migration_reason": "JSON本文・RESULT/closeの標準形を満たさない、または契約の個別確認が必要",
+      "risk_level": "medium",
+      "parse_error": false
+    }
+  ]
+}

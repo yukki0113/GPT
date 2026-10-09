@@ -37,6 +37,42 @@
       "owner_only": true,
       "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
       "migration_status": "t2"
+    },
+    {
+      "prefix": "[JRDB_ANNUAL_RAW_FETCH_REQUEST]",
+      "event_type": "jrdb_annual_raw_fetch_request",
+      "workflow": ".github/workflows/jrdb_annual_raw_fetch_issue.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{0,80}$",
+      "migration_status": "t3"
+    },
+    {
+      "prefix": "[JRDB_DAILY_HISTORY_FETCH_REQUEST]",
+      "event_type": "jrdb_daily_history_fetch_request",
+      "workflow": ".github/workflows/jrdb_daily_history_fetch_issue.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{0,80}$",
+      "migration_status": "t3"
+    },
+    {
+      "prefix": "[JRDB_LEGACY_FAMILY_YEAR_REQUEST]",
+      "event_type": "jrdb_legacy_family_year_request",
+      "workflow": ".github/workflows/jrdb_legacy_family_year_issue.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{0,80}$",
+      "migration_status": "t3"
+    },
+    {
+      "prefix": "[JRDB_INDEX_BASE_AUDIT]",
+      "event_type": "jrdb_index_base_audit",
+      "workflow": ".github/workflows/jrdb_index_base_audit_issue.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
+      "migration_status": "t3"
     }
   ]
 }
