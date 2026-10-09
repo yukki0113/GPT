@@ -166,3 +166,16 @@ Newspaper更新:
 - latest relevant workflow run
 
 をその都度読みます。
+
+
+### EdgeDB v0.5 personal republish
+
+EdgeDB v0.5だけを現行個人Newspaperへ再突合する場合は、
+
+- workflow: `.github/workflows/jrdb_newspaper_edge_v05_republish_issue.yml`
+- workflow name: `JRDB Newspaper Edge v0.5 Republish via Issue`
+- request prefix: `[JRDB_NEWSPAPER_EDGE_V05_REPUBLISH]`
+
+を使用します。
+
+この経路は既存の個人currentを土台に、PACI＋canonical Analysisでv0.5を再照合し、既存RaceNote/RRDB等を保持したままrevisionを1つ進めます。成功後は `JRDB PWA Pages` のfull deployまで確認します。
