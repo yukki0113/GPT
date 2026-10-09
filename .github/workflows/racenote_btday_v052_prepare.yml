@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install duckdb pyarrow pandas numpy jsonschema gdown
+          python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema gdown
 
       - name: Resolve request
         id: req
@@ -45,28 +45,41 @@ jobs:
           from pathlib import Path
           p=Path(sys.argv[1])
           r=json.loads(p.read_text(encoding='utf-8'))
-          required=('selection_id','target_date','paci_file_id','analysis_artifact_run_id','analysis_artifact_name','analysis_generation_id')
-          missing=[k for k in required if not r.get(k)]
+          source_mode=str(r.get('source_mode') or 'paci')
+          common=('selection_id','target_date')
+          missing=[k for k in common if not r.get(k)]
+          if source_mode == 'paci':
+              required=('paci_file_id','analysis_artifact_run_id','analysis_artifact_name','analysis_generation_id')
+              missing += [k for k in required if not r.get(k)]
+          elif source_mode == 'historical_warehouse':
+              required=('source_reference',)
+              missing += [k for k in required if not r.get(k)]
+              if r.get('source_reference') != 'jrdb_normalized_warehouse_v1_2010_2025_g20260921':
+                  raise SystemExit('unsupported historical source_reference')
+          else:
+              raise SystemExit(f'unsupported source_mode: {source_mode}')
           if missing:
-              raise SystemExit(f'missing request fields: {missing}')
+              raise SystemExit(f'missing request fields: {sorted(set(missing))}')
           if not re.fullmatch(r'BTDAY-[0-9]{4}', str(r['selection_id'])):
               raise SystemExit('invalid selection_id')
           if not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', str(r['target_date'])):
               raise SystemExit('invalid target_date')
+          if source_mode == 'historical_warehouse' and not str(r['target_date']).startswith(tuple(str(y) for y in range(2010,2026))):
+              raise SystemExit('historical target outside 2010-2025')
           cfg=json.loads(Path('horse-racing/jrdb/config/racenote_forecast_logic_current.json').read_text(encoding='utf-8'))
-          rrdb=(r.get('rrdb_file_id') or cfg['rrdb_integration']['current_file_id'])
-          nxt=(r.get('next_watch_file_id') or cfg['rrdb_integration']['legacy_next_watch_rules_file_id'])
           vals={
               'request':str(p),
               'selection_id':str(r['selection_id']),
               'target_date':str(r['target_date']),
               'compact':str(r['target_date']).replace('-',''),
-              'paci_file_id':str(r['paci_file_id']),
-              'analysis_run_id':str(r['analysis_artifact_run_id']),
-              'analysis_artifact_name':str(r['analysis_artifact_name']),
-              'analysis_generation_id':str(r['analysis_generation_id']),
-              'rrdb_file_id':str(rrdb),
-              'next_watch_file_id':str(nxt),
+              'source_mode':source_mode,
+              'source_reference':str(r.get('source_reference') or ''),
+              'paci_file_id':str(r.get('paci_file_id') or ''),
+              'analysis_run_id':str(r.get('analysis_artifact_run_id') or ''),
+              'analysis_artifact_name':str(r.get('analysis_artifact_name') or ''),
+              'analysis_generation_id':str(r.get('analysis_generation_id') or ''),
+              'rrdb_file_id':str(r.get('rrdb_file_id') or cfg['rrdb_integration']['current_file_id']),
+              'next_watch_file_id':str(r.get('next_watch_file_id') or cfg['rrdb_integration']['legacy_next_watch_rules_file_id']),
           }
           for k,v in vals.items():
               if '\n' in v or '\r' in v:
@@ -74,7 +87,8 @@ jobs:
               print(f'{k}={v}')
           PY
 
-      - name: Materialize canonical sources
+      - name: Materialize PACI canonical sources
+        if: steps.req.outputs.source_mode == 'paci'
         env:
           GH_TOKEN: ${{ github.token }}
           COMPACT: ${{ steps.req.outputs.compact }}
@@ -92,7 +106,6 @@ jobs:
           gdown "https://drive.google.com/uc?id=$PACI_ID" -O "$PACI_PATH"
           gdown "https://drive.google.com/uc?id=$RRDB_ID" -O /tmp/input/RaceReviewDB_CURRENT.zip
           gdown "https://drive.google.com/uc?id=$NEXTWATCH_ID" -O /tmp/input/NextWatch.zip
-
           gh run download "$ANALYSIS_RUN" --repo "$GITHUB_REPOSITORY" --name "$ANALYSIS_ARTIFACT" --dir /tmp/analysis_art
           ANALYSIS_ARCHIVE="$(find /tmp/analysis_art -maxdepth 1 -type f \( -name '*.tar.xz' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' \) | sort | head -n 1)"
           test -n "$ANALYSIS_ARCHIVE"
@@ -102,26 +115,30 @@ jobs:
             *.zip) unzip -q "$ANALYSIS_ARCHIVE" -d /tmp/analysis ;;
             *) echo "unsupported analysis artifact: $ANALYSIS_ARCHIVE" >&2; exit 1 ;;
           esac
-
           python - <<'PY'
           import json, os
           from pathlib import Path
-          root=Path('/tmp/analysis')
-          gen=os.environ['ANALYSIS_GEN']
+          root=Path('/tmp/analysis'); gen=os.environ['ANALYSIS_GEN']
           manifest=root/'generations'/gen/'manifest.json'
           if not manifest.is_file():
               raise SystemExit(f'analysis generation missing: {manifest}')
-          (root/'current.json').write_text(json.dumps({
-              'status':'CURRENT',
-              'generation_id':gen,
-              'manifest':f'generations/{gen}/manifest.json',
-          }, indent=2)+'\n', encoding='utf-8')
+          (root/'current.json').write_text(json.dumps({'status':'CURRENT','generation_id':gen,'manifest':f'generations/{gen}/manifest.json'},indent=2)+'\n',encoding='utf-8')
           PY
-
           unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
           unzip -q /tmp/input/NextWatch.zip -d /tmp/rules
 
-      - name: Build canonical v0.5.2 TURN 1
+      - name: Materialize Historical Warehouse canonical sources
+        if: steps.req.outputs.source_mode == 'historical_warehouse'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/gpt_io/public_drive/fetch.py             --manifest horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json             --output-root /tmp/historical             --receipt /tmp/historical/public_drive_fetch_receipt.json
+          mkdir -p /tmp/historical/analysis /tmp/historical/rrdb
+          tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
+          unzip -q /tmp/historical/rrdb.zip -d /tmp/historical/rrdb
+
+      - name: Build canonical PACI v0.5.2 TURN 1
+        if: steps.req.outputs.source_mode == 'paci'
         env:
           PYTHONPATH: horse-racing/jrdb/src
           SEL: ${{ steps.req.outputs.selection_id }}
@@ -135,29 +152,49 @@ jobs:
             echo "immutable v0.5.2 TURN 1 target already exists: $TARGET" >&2
             exit 1
           fi
-
           PACI_PATH="/tmp/input/PACI${COMPACT:2}.zip"
           MAIN_SHA="$(git rev-parse HEAD)"
-
-          python horse-racing/jrdb/src/racenote_v052_from_paci.py \
-            --date "$TARGET_DATE" \
-            --paci "$PACI_PATH" \
-            --selection-id "$SEL" \
-            --main-sha "$MAIN_SHA" \
-            --analysis-root /tmp/analysis \
-            --racereview-root /tmp/rrdb/postrace_review/v0_1 \
-            --next-watch-rules /tmp/rules/next_watch_candidate_rules_frozen.json \
-            --output-root "$TARGET"
-
+          python horse-racing/jrdb/src/racenote_v052_from_paci.py             --date "$TARGET_DATE"             --paci "$PACI_PATH"             --selection-id "$SEL"             --main-sha "$MAIN_SHA"             --analysis-root /tmp/analysis             --racereview-root /tmp/rrdb/postrace_review/v0_1             --next-watch-rules /tmp/rules/next_watch_candidate_rules_frozen.json             --output-root "$TARGET"
           ROOT="$TARGET/day_prep/RaceNote_$COMPACT"
           cp "$ROOT/manifest.json" "$TARGET/day_prep/manifest.json"
           cp "$ROOT/validation_report.json" "$TARGET/day_prep/validation_report.json"
 
+      - name: Build canonical Historical Warehouse v0.5.2 TURN 1
+        if: steps.req.outputs.source_mode == 'historical_warehouse'
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          SEL: ${{ steps.req.outputs.selection_id }}
+          TARGET_DATE: ${{ steps.req.outputs.target_date }}
+          COMPACT: ${{ steps.req.outputs.compact }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="horse-racing/jrdb/backtests/$SEL/$COMPACT"
+          if test -e "$TARGET/forecast_prep" || test -e "$TARGET/v052" || test -e "$TARGET/operation_handoff.json"; then
+            echo "immutable v0.5.2 TURN 1 target already exists: $TARGET" >&2
+            exit 1
+          fi
+          MAIN_SHA="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py             --date "$TARGET_DATE"             --selection-id "$SEL"             --main-sha "$MAIN_SHA"             --equivalence-report horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json             --warehouse-current /tmp/historical/warehouse/current.json             --warehouse-asset-root /tmp/historical/warehouse             --analysis-root /tmp/historical/analysis             --racereview-root /tmp/historical/rrdb/postrace_review/v0_1             --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json             --output-root "$TARGET"
+          ROOT="$TARGET/day_prep/RaceNote_$COMPACT"
+          cp "$ROOT/manifest.json" "$TARGET/day_prep/manifest.json"
+          cp "$ROOT/validation_report.json" "$TARGET/day_prep/validation_report.json"
+          mkdir -p "$TARGET/source_audit"
+          cp /tmp/historical/public_drive_fetch_receipt.json "$TARGET/source_audit/public_drive_fetch_receipt.json"
+          cp horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json "$TARGET/source_audit/accepted_equivalence_gate.json"
+
+      - name: Validate canonical v0.5.2 TURN 1
+        env:
+          SEL: ${{ steps.req.outputs.selection_id }}
+          TARGET_DATE: ${{ steps.req.outputs.target_date }}
+          COMPACT: ${{ steps.req.outputs.compact }}
+          SOURCE_MODE: ${{ steps.req.outputs.source_mode }}
+        run: |
+          set -euo pipefail
           python - <<'PY'
           import json, os
           from pathlib import Path
-          sel=os.environ['SEL']; compact=os.environ['COMPACT']
-          root=Path('horse-racing/jrdb/backtests')/sel/compact
+          root=Path('horse-racing/jrdb/backtests')/os.environ['SEL']/os.environ['COMPACT']
           m=json.loads((root/'day_prep/manifest.json').read_text())
           v=json.loads((root/'day_prep/validation_report.json').read_text())
           p=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
@@ -166,9 +203,16 @@ jobs:
           assert m['status']=='PASS' and v['status']=='PASS'
           assert p['market_blind'] is True and p['result_opened'] is False and p['target_market_opened'] is False
           assert o['status']=='READY_FOR_V052_AUTHORING'
-          assert o['market_blind'] is True and o['result_opened'] is False and o['ab_required'] is False
+          assert o['market_blind'] is True and o['result_opened'] is False
           assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.2-candidate'
+          assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
           assert len(s['race_roster'])==m['counts']['races_built']==p['race_count']==o['race_count']
+          if os.environ['SOURCE_MODE']=='historical_warehouse':
+              assert o['source_backend']=='historical_warehouse'
+              assert o['source_generation_id']=='jrdb_normalized_warehouse_v1_2010_2025_g20260921'
+              assert o['as_of_exclusive']==os.environ['TARGET_DATE']
+          else:
+              assert o['ab_required'] is False
           PY
 
       - name: Commit immutable canonical v0.5.2 TURN 1
@@ -181,10 +225,9 @@ jobs:
           TARGET="horse-racing/jrdb/backtests/$SEL/$COMPACT"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
           git add "$TARGET/day_prep/manifest.json" "$TARGET/day_prep/validation_report.json"
           git add "$TARGET/forecast_prep" "$TARGET/v052" "$TARGET/operation_handoff.json"
-
+          if test -d "$TARGET/source_audit"; then git add "$TARGET/source_audit"; fi
           git commit -m "RaceNote: stage $SEL canonical v0.5.2 TURN 1"
           git pull --rebase origin main
           git push origin HEAD:main
