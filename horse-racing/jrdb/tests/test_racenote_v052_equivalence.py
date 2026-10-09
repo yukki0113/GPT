@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 
 from racenote_v052_equivalence import compare
+from racenote_v052_from_historical_warehouse import validate_gate
 
 
 DATE = "2025-12-28"
@@ -68,6 +69,18 @@ def side(root: Path, *, target_run: bool = False, market: bool = False,
 
 
 class EquivalenceGateTest(unittest.TestCase):
+    def test_historical_prepare_requires_full_gate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            pointer = root / "current.json"
+            report = root / "report.json"
+            write(pointer, {"status": "accepted", "generation_id": "accepted-generation"})
+            write(report, {"status": "PASS", "target_date": DATE,
+                           "golden_day": DATE, "mismatch_count": 0,
+                           "warehouse_reconstruction": {"generation_id": "accepted-generation"}})
+            with self.assertRaisesRegex(ValueError, "lacks race_roster_equal"):
+                validate_gate(report, pointer)
+
     def test_identical_inputs_pass(self):
         with tempfile.TemporaryDirectory() as tmp:
             a, b = Path(tmp) / "a", Path(tmp) / "b"
