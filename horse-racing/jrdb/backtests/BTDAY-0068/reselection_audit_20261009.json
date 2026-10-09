@@ -1,0 +1,25 @@
+{
+  "schema_version": "racenote-btday-reselection-audit-0.1",
+  "selection_id": "BTDAY-0068",
+  "reason": "user-requested fresh unused-day reselection after prior BTDAY-0068 execution",
+  "canonical_picker": {
+    "workflow_run_id": 37900409607,
+    "seed": "13a30c6df3449ff21288fba4435c0415",
+    "selected_at": "2026-10-09T07:41:04+00:00"
+  },
+  "old_reservation": {
+    "date": "2026-05-31",
+    "paci": "PACI260531.zip",
+    "drive_file_id": "1kg7qxyHFDkriJVEWLdIYK5652WDZw3PM",
+    "handling": "kept permanently ineligible because prior forecast exposure exists"
+  },
+  "new_reservation": {
+    "date": "2026-09-27",
+    "paci": "PACI260927.zip",
+    "drive_file_id": "1G57s0Ix5Xb6AcKfZ2HrpOvasLC05dYg8"
+  },
+  "concurrent_reservation_preserved": {
+    "selection_id": "BTDAY-0069",
+    "date": "2026-07-04"
+  }
+}
