@@ -1,8 +1,14 @@
 name: JRDB Raw Fetch via Issue
 
 on:
-  issues:
-    types: [opened]
+  repository_dispatch:
+    types: [jrdb_raw_fetch_request]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Existing request Issue number
+        required: true
+        type: string
 
 permissions:
   actions: read
@@ -11,11 +17,51 @@ permissions:
 
 jobs:
   fetch:
-    if: >-
-      github.event.issue.user.login == 'yukki0113' &&
-      startsWith(github.event.issue.title, '[JRDB_RAW_FETCH_REQUEST]')
+
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve request Issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          ROUTED_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          MANUAL_ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+
+          event_name = os.environ['EVENT_NAME']
+          if event_name == 'repository_dispatch':
+              issue_text = str(os.environ.get('ROUTED_ISSUE_NUMBER') or '').strip()
+          elif event_name == 'workflow_dispatch':
+              issue_text = str(os.environ.get('MANUAL_ISSUE_NUMBER') or '').strip()
+          else:
+              raise SystemExit(f'unsupported event: {event_name}')
+
+          if not re.fullmatch(r'[1-9][0-9]*', issue_text):
+              raise SystemExit('issue_number must be a positive integer')
+
+          completed = subprocess.run(
+              ['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{issue_text}"],
+              check=True, capture_output=True, text=True,
+          )
+          issue = json.loads(completed.stdout)
+          Path('/tmp/routed_issue.json').write_text(
+              json.dumps(issue, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
+              f.write(f"ISSUE_TITLE={issue.get('title','')}\n")
+              body = str(issue.get('body') or '').replace('%','%25').replace('\r','%0D').replace('\n','%0A')
+              f.write(f"ISSUE_BODY={body}\n")
+              f.write(f"ISSUE_NUMBER={issue_text}\n")
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as f:
+              f.write(f"issue_number={issue_text}\n")
+          PY
       - name: Checkout latest main
         uses: actions/checkout@v4
         with:
@@ -25,7 +71,7 @@ jobs:
       - name: Parse request
         id: request
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_BODY: ${{ env.ISSUE_BODY }}
         run: |
           python - <<'PY'
           import json, os, re
@@ -99,7 +145,7 @@ jobs:
         if: success()
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
           RUN_ID: ${{ github.run_id }}
           ARTIFACT_NAME: ${{ steps.request.outputs.artifact_name }}
         run: |
@@ -117,7 +163,7 @@ jobs:
         if: failure()
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body "JRDB raw fetch failed. Workflow run: $RUN_URL"

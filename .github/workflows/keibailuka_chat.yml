@@ -95,7 +95,14 @@ jobs:
               if issue_number <= 0:
                   raise SystemExit('routed issue_number must be positive')
 
-              body = str(payload.get('body', '') or '').strip()
+              completed = __import__('subprocess').run(
+                  ['gh', 'api', f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{issue_number}"],
+                  check=True, capture_output=True, text=True,
+              )
+              issue = json.loads(completed.stdout)
+              if str(issue.get('title', '') or '') != title:
+                  raise SystemExit('routed issue title does not match current Issue')
+              body = str(issue.get('body', '') or '').strip()
               try:
                   request = json.loads(body)
               except json.JSONDecodeError as exc:

@@ -94,7 +94,6 @@ jobs:
               'issue_actor': actor,
               'request_id': request_id,
               'title': title,
-              'body': os.environ.get('ISSUE_BODY') or '',
               'router_run_id': int(os.environ['ROUTER_RUN_ID']),
               'target_workflow': route['workflow'],
           }

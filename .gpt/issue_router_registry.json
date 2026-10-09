@@ -10,6 +10,33 @@
       "owner_only": true,
       "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
       "migration_status": "pilot"
+    },
+    {
+      "prefix": "[JRDB_RAW_FETCH_REQUEST]",
+      "event_type": "jrdb_raw_fetch_request",
+      "workflow": ".github/workflows/jrdb_raw_fetch_issue.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
+      "migration_status": "t2"
+    },
+    {
+      "prefix": "[EVAL_PACI_ENRICH_REQUEST]",
+      "event_type": "eval_paci_enrich_request",
+      "workflow": ".github/workflows/eval_paci_enrich_chat.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
+      "migration_status": "t2"
+    },
+    {
+      "prefix": "[BOATRACE_RACELIST_REQUEST]",
+      "event_type": "boatrace_racelist_request",
+      "workflow": ".github/workflows/boatrace_racelist_issue.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
+      "migration_status": "t2"
     }
   ]
 }

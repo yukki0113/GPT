@@ -101,11 +101,10 @@ Routerがtargetへ渡す `repository_dispatch.client_payload` の共通field:
 - `issue_actor`
 - `request_id`
 - `title`
-- `body`
 - `router_run_id`
 - `target_workflow`
 
-Routerはprefix routingだけを担当し、bodyのproject固有validationはtarget側の既存contractで行う。targetはcanonical requestへ正規化後、Issue起動とmanual起動で同じmodule / validation / artifact contractを使用する。
+Routerはprefix routingだけを担当し、Issue body自体はdispatch payloadへ転送しない。targetは `issue_number` からGitHub APIで現在のIssue title/bodyを取得し、project固有validationを行う。これにより大きなIssue bodyも `repository_dispatch` payload上限に依存しない。targetはcanonical requestへ正規化後、Issue起動とmanual起動で同じmodule / validation / artifact contractを使用する。
 
 manual fallbackで既存IssueへRESULTを返す必要がある場合だけ `issue_number` を明示する。Issue番号なしのmanual実行ではartifact / run summaryを成果とし、Issue comment / closeは行わない。
 

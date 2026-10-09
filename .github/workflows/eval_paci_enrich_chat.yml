@@ -1,8 +1,14 @@
 name: eval-paci-enrich-chat
 
 on:
-  issues:
-    types: [opened]
+  repository_dispatch:
+    types: [eval_paci_enrich_request]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Existing request Issue number
+        required: true
+        type: string
 
 permissions:
   actions: read
@@ -14,10 +20,52 @@ env:
 
 jobs:
   enrich:
-    if: startsWith(github.event.issue.title, '[EVAL_PACI_ENRICH_REQUEST]')
+
     runs-on: ubuntu-latest
 
     steps:
+      - name: Resolve request Issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          ROUTED_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          MANUAL_ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+
+          event_name = os.environ['EVENT_NAME']
+          if event_name == 'repository_dispatch':
+              issue_text = str(os.environ.get('ROUTED_ISSUE_NUMBER') or '').strip()
+          elif event_name == 'workflow_dispatch':
+              issue_text = str(os.environ.get('MANUAL_ISSUE_NUMBER') or '').strip()
+          else:
+              raise SystemExit(f'unsupported event: {event_name}')
+
+          if not re.fullmatch(r'[1-9][0-9]*', issue_text):
+              raise SystemExit('issue_number must be a positive integer')
+
+          completed = subprocess.run(
+              ['gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{issue_text}"],
+              check=True, capture_output=True, text=True,
+          )
+          issue = json.loads(completed.stdout)
+          Path('/tmp/routed_issue.json').write_text(
+              json.dumps(issue, ensure_ascii=False, indent=2), encoding='utf-8'
+          )
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
+              f.write(f"ISSUE_TITLE={issue.get('title','')}\n")
+              body = str(issue.get('body') or '').replace('%','%25').replace('\r','%0D').replace('\n','%0A')
+              f.write(f"ISSUE_BODY={body}\n")
+              f.write(f"ISSUE_NUMBER={issue_text}\n")
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as f:
+              f.write(f"issue_number={issue_text}\n")
+          PY
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -28,9 +76,9 @@ jobs:
 
       - name: Parse request and restore Eval OCR CSV
         env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ env.ISSUE_TITLE }}
+          ISSUE_BODY: ${{ env.ISSUE_BODY }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
         run: |
           python - <<'PY'
           import base64
@@ -420,7 +468,7 @@ jobs:
           mkdir -p "$OUTPUT_DIR/artifact"
           {
             echo "request_id=$REQUEST_ID"
-            echo "issue_number=${{ github.event.issue.number }}"
+            echo "issue_number=${{ steps.issue.outputs.issue_number }}"
             echo "run_id=${{ github.run_id }}"
             echo "head_sha=${{ github.sha }}"
             echo "fetch_exit_code=${{ steps.fetch.outputs.exit_code }}"
@@ -477,14 +525,14 @@ jobs:
               encoding='utf-8'
           )
           PY
-          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/eval_paci_enrich_result.md
+          gh issue comment "${{ steps.issue.outputs.issue_number }}" --repo "${{ github.repository }}" --body-file /tmp/eval_paci_enrich_result.md
 
       - name: Close request issue
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+          gh issue close "${{ steps.issue.outputs.issue_number }}" --repo "${{ github.repository }}"
 
       - name: Fail workflow when request failed
         if: always() && (steps.fetch.outputs.exit_code != '0' || steps.enrich.outputs.exit_code != '0' || steps.collect.outputs.exit_code != '0')
