@@ -70,6 +70,7 @@
 - `newspaper-v8.js` — source status表示拡張
 - `newspaper-v9.js` / `newspaper-v9.css` — Eval分析コメントリンク・modal表示
 - `newspaper-v10.js` — 独自指数（Training Edge）表示とsource status
+- `newspaper-edge-v05.js` / `newspaper-edge-v05.css` — EdgeDB v0.5 production列・modal表示
 - `../src/jrdb_newspaper_merge_external.py` — Eval / RaceNote / keibailuka merge
 - `../src/jrdb_newspaper_merge_edge.py` — Edge merge
 - `../src/jrdb_newspaper_edge_adapter.py` — Edge reader-facing display boundary
@@ -167,9 +168,32 @@ PWAは上流で算出済みの独自指数を **再計算せずそのまま表�
 
 元CSVの標準列は `date, venue_code, race_no, horse_no, training_edge_index`。CSVからNewspaper day packageへのexact join・source_status・auditはNewspaper生成側の責務であり、PWAは完成JSONだけをconsumerとして扱います。
 
-### Edge / 特注メモ
+### Edge / EdgeDB v0.5
 
 PWA / NewspaperはEdge matcher / serving結果をconsumerとして表示します。PWA側でEdge条件を再match・再評価せず、reader-facing translationとaudit情報の表示境界を守ります。
+
+STANDARD Edgeの `special_memos` は後方互換・監査用途として残してよいですが、通常新聞では旧「特注メモ」列を表示しません。
+
+EdgeDB v0.5のcanonical表示入力:
+
+```text
+horse.addons.edge_v05.candidate_ids
+race.edge_v05_candidates
+```
+
+表示rule:
+
+- `source_status.edge_v05.state` が `PARTIAL` / `READY` の場合だけ候補表示
+- `ERROR` / missingではEdge列を空欄にし、RaceNote / Eval / JRDB等の他addonは維持
+- Edge列はmark群の直後、1走前の直前に置く独立34px列
+- candidateがある馬だけ `○`
+- `○` tap/clickで詳細modal
+- 先頭2件を表示し、3件以上は「その他のEdge」で展開
+- 2026診断 `CONFIRMED / STILL_PLAUSIBLE / INSUFFICIENT_OOS / DECAYING / CONTRADICTED` と複勝ROIは説明情報
+- 診断・ROIを予想印、買い推奨、自動馬券判断へ変換しない
+- PWA側でcandidate条件・rank・scoreを再計算しない
+
+日次生成・未接続feature・source stateの正本は `../newspaper/EDGE_V05_PRODUCTION.md` と `../newspaper/.gpt/DAILY_WORK_CONTRACT.md`。
 
 ## Distribution channels
 
@@ -219,7 +243,8 @@ PWA変更・データ更新を「完了」とする際は、commitやRelease更�
 2. 必要なtest / validationを通す
 3. current Release / manifestが想定世代か確認
 4. **`JRDB PWA Pages` がfull-site artifactを成功deployしたことを確認**
-5. 必要に応じてiPhone実機でlayout / tap / offline / syncを確認
+5. Newspaper更新では公開 `newspaper.html` の対象日・主要addon・Edge列を確認
+6. 必要に応じてiPhone実機でlayout / tap / offline / syncを確認
 
 コード更新経路・データpublisherごとのtrigger差は `DEPLOYMENT_TRIGGER.md` を正本とします。
 
