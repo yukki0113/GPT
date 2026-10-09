@@ -28,6 +28,12 @@ class HistoricalPickerTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source_reference"):
             new_state([{**row(1), "source_reference": ""}])
 
+    def test_second_cycle_requires_used_first_cycle(self):
+        state = new_state([row(1), row(2)])
+        with self.assertRaisesRegex(ValueError, "not enough unused eligible dates"):
+            pick_days(state, 1, source_mode="historical_warehouse",
+                      selection_cycle=2)
+
 
 if __name__ == "__main__":
     unittest.main()
