@@ -1,18 +1,29 @@
 # JRDB GPT workflow
 
-## Public Drive read-only Historical Golden input (2026-10-09)
+## Public Drive read-only Historical input (2026-10-09)
 
-For the 2010–2025 Historical v0.5.2 golden regression, the verified,
-unauthenticated transport is `tools/gpt_io/public_drive/fetch.py` with
+For accepted 2010–2025 Historical v0.5.2 work, the verified unauthenticated
+transport boundary is `tools/gpt_io/public_drive/fetch.py`. For the current
+accepted 2025 Warehouse generation, use the reviewed manifest
 `config/public_drive/racenote_historical_golden_20251228_v1.json`.
-The manifest pins 20 public file IDs, filenames, sizes and SHA-256 values.
-The GitHub workflow downloads via the shared helper, then executes the **same**
-Raw-equivalence and Warehouse readers; no new prediction semantics or
-result/market access are introduced.
+The manifest pins public file IDs, filenames, sizes and SHA-256 values. The
+shared helper downloads read-only and validates integrity before local
+promotion; downstream work must continue through the existing Warehouse /
+RaceNote readers.
 
 Do not add direct `gdown` URLs to JRDB workflows or silently use authenticated
-Drive access on failure. 2026 daily PACI remains unchanged. See
-`tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md` for the narrowly scoped policy.
+Drive access on failure. Do not write back to Drive from Actions. 2026 daily
+PACI remains unchanged. See `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md`.
+
+The BTDAY lottery state
+`config/racenote_backtest_day_pool_2026.json` is legacy-named but now unified:
+it contains remaining 2026 PACI rows and 109 actual 2025 race days from
+`BAC_2025.zip` as `source_mode=historical_warehouse`,
+`selection_cycle=1`. A normal unfiltered pick may select either source.
+After every pick, branch on the selected row's `source_mode`; never fabricate
+a `paci_file_id` for a Historical row. Historical preparation must first
+materialize the reviewed public bundle through the shared helper, then call
+`src/racenote_v052_from_historical_warehouse.py`.
 
 
 ## RaceNote v0.5.2 source routing — 2026-10-09
