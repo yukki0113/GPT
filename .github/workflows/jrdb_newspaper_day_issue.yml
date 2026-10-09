@@ -37,7 +37,10 @@ jobs:
           revision = req.get("revision", 1)
           raw_run_id = req.get("raw_run_id")
           artifact_name = str(req.get("artifact_name") or "").strip()
+          paci_drive_file_id = str(req.get("paci_drive_file_id") or "").strip()
           analysis_bundle_drive_file_id = str(req.get("analysis_bundle_drive_file_id") or "").strip()
+          analysis_source_run_id = req.get("analysis_source_run_id")
+          analysis_source_artifact = str(req.get("analysis_source_artifact") or "").strip()
           analysis_generation_id = str(req.get("analysis_generation_id") or "").strip()
           analysis_manifest_sha256 = str(req.get("analysis_manifest_sha256") or "").strip().lower()
 
@@ -45,10 +48,23 @@ jobs:
               raise SystemExit("date must be YYYYMMDD")
           if not isinstance(revision, int) or isinstance(revision, bool) or revision < 1:
               raise SystemExit("revision must be integer >= 1")
-          if not isinstance(raw_run_id, int) or isinstance(raw_run_id, bool) or raw_run_id <= 0:
-              raise SystemExit("raw_run_id must be positive integer")
-          if artifact_name != f"jrdb-raw-{date}":
+          has_raw_artifact = isinstance(raw_run_id, int) and not isinstance(raw_run_id, bool) and raw_run_id > 0
+          has_paci_drive = bool(paci_drive_file_id)
+          if has_raw_artifact == has_paci_drive:
+              raise SystemExit("supply exactly one PACI source: raw_run_id/artifact_name or paci_drive_file_id")
+          if has_raw_artifact and artifact_name != f"jrdb-raw-{date}":
               raise SystemExit(f"artifact_name must be jrdb-raw-{date}")
+          has_analysis_drive = bool(analysis_bundle_drive_file_id)
+          has_analysis_artifact = (
+              isinstance(analysis_source_run_id, int)
+              and not isinstance(analysis_source_run_id, bool)
+              and analysis_source_run_id > 0
+              and bool(analysis_source_artifact)
+          )
+          if has_analysis_drive == has_analysis_artifact:
+              raise SystemExit("supply exactly one Analysis source: Drive bundle or Actions artifact")
+          if not analysis_generation_id or not re.fullmatch(r"[0-9a-f]{64}", analysis_manifest_sha256):
+              raise SystemExit("analysis_generation_id and 64-hex analysis_manifest_sha256 are required")
 
           Path("/tmp/request.json").write_text(
               json.dumps({
@@ -56,7 +72,10 @@ jobs:
                   "revision": revision,
                   "raw_run_id": raw_run_id,
                   "artifact_name": artifact_name,
+                  "paci_drive_file_id": paci_drive_file_id,
                   "analysis_bundle_drive_file_id": analysis_bundle_drive_file_id,
+                  "analysis_source_run_id": analysis_source_run_id,
+                  "analysis_source_artifact": analysis_source_artifact,
                   "analysis_generation_id": analysis_generation_id,
                   "analysis_manifest_sha256": analysis_manifest_sha256,
               }, ensure_ascii=False, indent=2) + "\n",
@@ -65,27 +84,29 @@ jobs:
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
               env.write(f"REQUEST_DATE={date}\n")
               env.write(f"REQUEST_REVISION={revision}\n")
-              env.write(f"RAW_RUN_ID={raw_run_id}\n")
+              env.write(f"RAW_RUN_ID={raw_run_id or ''}\n")
               env.write(f"RAW_ARTIFACT={artifact_name}\n")
+              env.write(f"PACI_DRIVE_FILE_ID={paci_drive_file_id}\n")
+              env.write(f"ANALYSIS_SOURCE_RUN_ID={analysis_source_run_id or ''}\n")
+              env.write(f"ANALYSIS_SOURCE_ARTIFACT={analysis_source_artifact}\n")
               env.write(f"OUTPUT_ARTIFACT=jrdb-newspaper-day-{date}\n")
           PY
 
-      - name: Verify raw run
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          STATUS="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RAW_RUN_ID}" --jq '.status + "/" + (.conclusion // "")')"
-          test "$STATUS" = "completed/success"
-
-      - name: Download raw artifact
+      - name: Prepare PACI input
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           rm -rf /tmp/raw
           mkdir -p /tmp/raw
-          gh run download "$RAW_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$RAW_ARTIFACT" --dir /tmp/raw
+          if [ -n "$PACI_DRIVE_FILE_ID" ]; then
+            curl --fail --location --retry 3               "https://drive.usercontent.google.com/download?id=${PACI_DRIVE_FILE_ID}&export=download&confirm=t"               --output "/tmp/raw/PACI${REQUEST_DATE:2}.zip"
+          else
+            STATUS="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RAW_RUN_ID}" --jq '.status + "/" + (.conclusion // "")')"
+            test "$STATUS" = "completed/success"
+            gh run download "$RAW_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$RAW_ARTIFACT" --dir /tmp/raw
+          fi
+          test -s "/tmp/raw/PACI${REQUEST_DATE:2}.zip"
           find /tmp/raw -maxdepth 4 -type f -print
 
       - name: Build audited day package
@@ -118,32 +139,56 @@ jobs:
           set -euo pipefail
           PACI="$(find /tmp/raw -type f -name "PACI${REQUEST_DATE:2}.zip" -print -quit)"
           python - <<'PY'
-          import json, subprocess, tarfile
+          import json, os, subprocess, tarfile
           from pathlib import Path
           from jrdb_analysis_parquet_current import resolve_current
           from jrdb_newspaper_query_edge_day import _error_day
           req=json.loads(Path('/tmp/request.json').read_text())
           root=Path('/tmp/analysis_parquet')
           try:
-              file_id=req['analysis_bundle_drive_file_id']
-              if not file_id or not req['analysis_generation_id'] or not req['analysis_manifest_sha256']:
-                  raise ValueError('canonical Analysis bundle identity missing from request')
-              bundle=Path('/tmp/analysis-parquet-current.tar.xz')
-              subprocess.run(['curl','--fail','--location','--retry','3',
-                  f'https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t',
-                  '--output',str(bundle)],check=True)
               root.mkdir(parents=True,exist_ok=True)
+              if req.get('analysis_source_run_id'):
+                  artifact_dir=Path('/tmp/analysis-artifact')
+                  artifact_dir.mkdir(parents=True,exist_ok=True)
+                  subprocess.run([
+                      'gh','run','download',str(req['analysis_source_run_id']),
+                      '--repo',os.environ['GITHUB_REPOSITORY'],
+                      '--name',req['analysis_source_artifact'],
+                      '--dir',str(artifact_dir)
+                  ],check=True)
+                  bundles=list(artifact_dir.rglob('analysis-parquet-candidate.tar.xz'))
+                  if len(bundles)!=1:
+                      raise ValueError(f'expected one analysis-parquet-candidate.tar.xz, got {bundles}')
+                  bundle=bundles[0]
+              else:
+                  file_id=req['analysis_bundle_drive_file_id']
+                  bundle=Path('/tmp/analysis-parquet-current.tar.xz')
+                  subprocess.run(['curl','--fail','--location','--retry','3',
+                      f'https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t',
+                      '--output',str(bundle)],check=True)
               with tarfile.open(bundle,'r:xz') as archive:
                   for member in archive.getmembers():
                       target=(root/member.name).resolve()
                       if root.resolve() not in (target,*target.parents) or member.issym() or member.islnk():
                           raise ValueError('unsafe Analysis archive member')
                   archive.extractall(root)
-              report=resolve_current(root)
+
+              generation=req['analysis_generation_id']
+              manifest=root / 'generations' / generation / 'manifest.json'
+              if not manifest.is_file():
+                  raise ValueError(f'requested Analysis generation missing: {generation}')
               import hashlib
-              sha=hashlib.sha256(Path(report['manifest']).read_bytes()).hexdigest()
-              if report['generation_id']!=req['analysis_generation_id'] or sha!=req['analysis_manifest_sha256']:
-                  raise ValueError('canonical Analysis generation or manifest SHA mismatch')
+              sha=hashlib.sha256(manifest.read_bytes()).hexdigest()
+              if sha!=req['analysis_manifest_sha256']:
+                  raise ValueError('canonical Analysis manifest SHA mismatch')
+              (root/'current.json').write_text(json.dumps({
+                  'status':'CURRENT',
+                  'generation_id':generation,
+                  'manifest':f'generations/{generation}/manifest.json'
+              },ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+              report=resolve_current(root)
+              if report['generation_id']!=generation:
+                  raise ValueError('canonical Analysis generation mismatch after pointer bind')
           except Exception as exc:
               _error_day(Path('/tmp/day'),Path('/tmp/day-edge'),f'Analysis unavailable: {exc}')
           PY
