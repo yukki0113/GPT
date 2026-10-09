@@ -1,0 +1,157 @@
+name: RaceNote historical v0.5.2 equivalence regression
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v052_equivalence.py'
+      - 'horse-racing/jrdb/src/racenote_v052_historical_probe.py'
+      - 'horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py'
+      - 'horse-racing/jrdb/src/racenote_backtest_day_picker.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_raw_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_reader.py'
+      - 'horse-racing/jrdb/src/racenote_request.py'
+      - 'horse-racing/jrdb/src/build_racenote_daily.py'
+      - 'horse-racing/jrdb/src/racenote_reader_v052.py'
+      - 'horse-racing/jrdb/src/racenote_v052_single_day.py'
+      - '.github/workflows/racenote_historical_v052_equivalence.yml'
+      - 'tools/gpt_io/public_drive/**'
+      - 'horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  golden:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema gdown pytest
+      - name: Test equivalence firewall
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python -m unittest -v \
+            horse-racing/jrdb/tests/test_racenote_v052_equivalence.py \
+            horse-racing/jrdb/tests/test_racenote_historical_picker.py \
+            horse-racing/jrdb/tests/test_racenote_backtest_day_picker.py
+          python -m pytest -q horse-racing/jrdb/tests/test_racenote_v052_single_day.py
+      - name: Fetch SHA-256 pinned 2025 golden-day inputs
+        run: |
+          set -euo pipefail
+          python tools/gpt_io/public_drive/fetch.py \
+            --manifest horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json \
+            --output-root /tmp/golden \
+            --receipt /tmp/golden/public_drive_fetch_receipt.json
+          mkdir -p /tmp/golden/analysis /tmp/golden/rrdb
+          tar -xJf /tmp/golden/analysis.tar.xz -C /tmp/golden/analysis
+          unzip -q /tmp/golden/rrdb.zip -d /tmp/golden/rrdb
+      - name: Compare through v0.5.2 sealed session
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/racenote_v052_historical_probe.py \
+            --date 2025-12-28 \
+            --raw-root /tmp/golden/raw \
+            --warehouse-current /tmp/golden/warehouse/current.json \
+            --warehouse-asset-root /tmp/golden/warehouse \
+            --analysis-root /tmp/golden/analysis \
+            --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
+            --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
+            --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+            --main-sha "$GITHUB_SHA" \
+            --output-root /tmp/golden/probe
+      - name: Prepare historical BTDAY from accepted Warehouse
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py \
+            --date 2025-12-28 \
+            --selection-id BTDAY-GOLDEN-HISTORICAL \
+            --main-sha "$GITHUB_SHA" \
+            --equivalence-report /tmp/golden/probe/equivalence_report.json \
+            --warehouse-current /tmp/golden/warehouse/current.json \
+            --warehouse-asset-root /tmp/golden/warehouse \
+            --analysis-root /tmp/golden/analysis \
+            --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
+            --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
+            --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+            --output-root /tmp/golden/historical-route
+          python horse-racing/jrdb/src/racenote_v052_equivalence.py \
+            --date 2025-12-28 \
+            --paci-root /tmp/golden/probe/warehouse \
+            --warehouse-root /tmp/golden/historical-route \
+            --report /tmp/golden/historical-route/route_consistency_report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/golden/historical-route')
+          session=json.loads((root/'v052/session.json').read_text())
+          op=json.loads((root/'operation_handoff.json').read_text())
+          assert session['status']=='SESSION_SEALED'
+          assert session['market_blind'] is True
+          assert session['result_opened'] is False
+          assert session['target_market_opened'] is False
+          assert op['source_backend']=='historical_warehouse'
+          assert op['as_of_exclusive']=='2025-12-28'
+          # Structural authoring fixture only: exercise the unchanged
+          # save/freeze/verify contract without making a prediction.
+          from racenote_v052_single_day import save_venue, build_freeze, verify_freeze
+          by_venue={}
+          for row in session['race_roster']:
+              normal=json.loads((root/'v052/reader'/row['file']).read_text())
+              nums=sorted(int(h['identity']['horse_no']) for h in normal['horses'])
+              assert len(nums)>=5
+              marks=nums[:5]
+              challenger=nums[5] if len(nums)>5 else None
+              core={
+                  'venue':row['venue'],'race_no':row['race_no'],
+                  'race_model':'Structural blind test case for the sealed historical input.',
+                  'marks':marks,
+                  'mainline_cases':[{'horse_no':n,'case':'Structural input contract case.'}
+                                    for n in (marks[0],marks[1],marks[3],marks[4])],
+                  'single_shot_case':{'horse_no':marks[2],
+                                      'case':'Structural input contract case.'},
+                  'boundary_review':{'alternative_horse_no':challenger,
+                                     'reason':'Structural boundary audit only.'},
+                  'rrdb_refs':[],
+                  'reader_facing_reason':'Structural test text that verifies the immutable blind Freeze contract without a forecast.',
+                  'candidate_compression':{
+                      'ordinary_five':marks,
+                      'external_challenger_horse_no':challenger,
+                      'external_challenger_case':'Structural challenger audit only.',
+                      'excluded_horse_no':challenger,
+                      'decision':'KEEP_ORDINARY_FIVE' if challenger else 'NO_EXTERNAL_CHALLENGER',
+                      'reason':'Structural six-to-five contract audit only.',
+                  },
+                  'role_assignment':{
+                      'honmei_horse_no':marks[0],'second_horse_no':marks[1],
+                      'honmei_win_case':'Structural win case for contract validation.',
+                      'second_case':'Structural second case for validation.',
+                      'honmei_selection_mode':'WIN_FIRST_NOT_PLACE_FIRST',
+                      'shot_selection_mode':'ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK',
+                      'ranking_reason':'Structural ranking reason for contract validation.',
+                  },
+              }
+              by_venue.setdefault(row['venue'],[]).append(core)
+          for venue, cores in by_venue.items():
+              path=root/'v052/incoming'/f'{venue}.json'
+              path.write_text(json.dumps(cores,ensure_ascii=False))
+              save_venue(root/'v052',path)
+          frozen=build_freeze(root/'v052')
+          verified=verify_freeze(root/'v052')
+          assert frozen['status']=='FROZEN_CLEAN_BLIND'
+          assert frozen['record_count']==verified['record_count']==24
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: racenote-historical-v052-golden
+          path: |
+            /tmp/golden/public_drive_fetch_receipt.json
+            /tmp/golden/probe/equivalence_report.json
+            /tmp/golden/historical-route/route_consistency_report.json
+            /tmp/golden/historical-route/operation_handoff.json
+          if-no-files-found: ignore

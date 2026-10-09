@@ -7,6 +7,21 @@
 - canonical doc: `docs/racenote/DECISION_TRACE_v0_1.md`.
 # JRDB project context
 
+## RaceNote v0.5.2 historical input — 2026-10-09
+
+- 2026 retains the existing PACI → v0.5.2 path.
+- 2010–2025 uses accepted Historical Warehouse only after the annual Raw
+  PACI-equivalent vs Warehouse v0.5.2 `normal_view` equivalence gate is PASS.
+- Golden day 2025-12-28: 24 races / 356 horses; model-facing `normal_view`
+  semantic hash matched 24/24 through RRDB, forecast_prep and sealed session.
+- The canonical historical entrypoint is
+  `src/racenote_v052_from_historical_warehouse.py`; it reuses the Warehouse
+  Reader, DAY PREP functions, forecast_prep and existing v0.5.2 session.
+- Raw Reader `source_semantic_sha256` includes execution timestamps; the
+  normalized source semantics and model-facing `normal_view` are equal.
+- See `docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251009.md`
+  and `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
+
 Last reviewed: 2026-09-23
 
 ## Current storage precedence — 2026-09-23

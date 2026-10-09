@@ -1,7 +1,12 @@
 # RaceNote BTDAY Prospective Validation Runbook v0.1
 
-Status: **ACTIVE FOR NEW UNUSED BTDAYs — v0.4.6 CANDIDATE ONLY**  
+Status: **LEGACY v0.4.6 PROCEDURE; current v0.5.2 uses `RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`**  
 Date: 2026-10-05
+
+For a 2010–2025 BTDAY using accepted Historical Warehouse, use the current
+v0.5.2 single-day runbook and the Raw/Warehouse equivalence PASS gate. For
+2026, keep the existing PACI → v0.5.2 path. The v0.4.6 workflow below is
+retained only for its historical operation record.
 
 ## 1. One operating path
 
