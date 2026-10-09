@@ -50,18 +50,95 @@ assert.equal(vm.runInContext('newspaperV05Metric', context)(5, null, 'roi'), '�
 context.currentBundle.metadata.source_status.edge_v05.state = 'PARTIAL';
 context.currentBundle.horses = [horse([]), horse(['a']), horse(['a', 'b', 'c'])]
   .map((item, i) => ({ ...item, key: { horse_no: i + 1 } }));
-let removed = 0;
-const groupHead = { colSpan: 6 };
-const headRow = { querySelector() { return null; }, appendChild() {} };
-const rows = [0, 1, 2].map(() => ({ inserted: [], querySelector() { return {}; },
-  insertBefore(cell) { this.inserted.push(cell); }, appendChild(cell) { this.inserted.push(cell); } }));
-const table = { querySelector(selector) { return selector === '.newspaper-mark-group-head' ? groupHead : headRow; },
-  querySelectorAll(selector) { return selector === '.newspaper-edge' ? [{ remove() { removed++; } }] : rows; } };
-context.tableWrap = { querySelector() { return table; } };
-vm.runInContext('newspaperV05ApplyColumn', context)();
-assert.equal(removed, 1);
-assert.equal(groupHead.colSpan, 7);
-assert.equal(rows[0].inserted[0].children.length, 0);
-assert.equal(rows[1].inserted[0].children[0].textContent, '○');
-assert.equal(rows[2].inserted[0].children[0].textContent, '○');
+// Mirror the v4 output: seven mark heads, a separate two-row Edge head,
+// and a separate Edge cell in every horse row. v6 removes mark-my later.
+const v4Source = fs.readFileSync(path.join(__dirname, '../pwa/newspaper-v4.js'), 'utf8');
+assert.match(v4Source, /class="newspaper-mark-group-head" colspan="7"/);
+assert.match(v4Source, /<th class="newspaper-edge" rowspan="2">Edge<\/th>/);
+assert.match(v4Source, /<td class="newspaper-edge">\$\{edgeHtml\(horse\)\}<\/td>/);
+const v4Marks = ['ability', 'training', 'jrdb', 'eval', 'rn', 'iluka', 'my'];
+function node(tag, className = '') {
+  return {
+    tag, className, children: [], parent: null,
+    setAttribute(name, value) { this[name] = value; },
+    addEventListener() {},
+    appendChild(child) {
+      if (child.parent) child.remove();
+      this.children.push(child); child.parent = this;
+    },
+    insertBefore(child, anchor) {
+      if (child.parent) child.remove();
+      this.children.splice(this.children.indexOf(anchor), 0, child); child.parent = this;
+    },
+    remove() {
+      if (this.parent) this.parent.children.splice(this.parent.children.indexOf(this), 1);
+      this.parent = null;
+    },
+    querySelector(selector) { return this.querySelectorAll(selector)[0] || null; },
+    querySelectorAll(selector) {
+      if (selector === 'tbody tr') return this.querySelector('tbody').children;
+      const selectors = selector.split(',').map(part => part.trim().split(' ').pop());
+      const result = [];
+      const visit = current => {
+        for (const child of current.children) {
+          if (selectors.some(part => {
+            const [wantedTag, ...classes] = part.split('.');
+            return (!wantedTag || child.tag === wantedTag) && classes.every(name => child.className.split(' ').includes(name));
+          })) result.push(child);
+          visit(child);
+        }
+      };
+      visit(this);
+      return result;
+    }
+  };
+}
+context.document.createElement = tag => node(tag);
+function fixture(markNames) {
+  const table = node('table', 'newspaper-table-v4');
+  const thead = node('thead'); table.appendChild(thead);
+  const firstHead = node('tr'); thead.appendChild(firstHead);
+  for (let i = 0; i < 4; i++) firstHead.appendChild(node('th'));
+  const groupHead = node('th', 'newspaper-mark-group-head');
+  groupHead.colSpan = markNames.length; firstHead.appendChild(groupHead);
+  firstHead.appendChild(node('th', 'newspaper-history-head'));
+  firstHead.appendChild(node('th', 'newspaper-edge'));
+  const markHead = node('tr', 'newspaper-mark-head-row'); thead.appendChild(markHead);
+  markNames.forEach(name => markHead.appendChild(node('th', `newspaper-mark-col mark-${name}`)));
+  const tbody = node('tbody'); table.appendChild(tbody);
+  const rows = [0, 1, 2].map(() => {
+    const row = node('tr'); tbody.appendChild(row);
+    for (let i = 0; i < 4; i++) row.appendChild(node('td'));
+    markNames.forEach(name => row.appendChild(node('td', `newspaper-mark-col mark-${name}`)));
+    row.appendChild(node('td', 'newspaper-history-cell'));
+    row.appendChild(node('td', 'newspaper-edge'));
+    return row;
+  });
+  return { table, firstHead, groupHead, markHead, rows };
+}
+for (const markNames of [v4Marks, v4Marks.filter(name => name !== 'my')]) {
+  const { table, firstHead, groupHead, markHead, rows } = fixture(markNames);
+  assert.equal(table.querySelector('.newspaper-mark-head-row'), markHead);
+  assert.notEqual(firstHead, markHead);
+  context.tableWrap = { querySelector() { return table; } };
+  vm.runInContext('newspaperV05ApplyColumn', context)();
+  assert.equal(firstHead.querySelectorAll('.newspaper-edge').length, 0,
+    JSON.stringify(firstHead.children.map(child => child.className)));
+  assert.equal(table.querySelectorAll('.newspaper-edge').length, 0);
+  assert.equal(groupHead.colSpan, markNames.length + 1);
+  assert.equal(markHead.querySelectorAll('th.mark-edge').length, 1);
+  assert.equal(markHead.querySelectorAll('th.newspaper-mark-col').length, groupHead.colSpan);
+  assert.equal(firstHead.children.length - 1 + groupHead.colSpan, rows[0].children.length,
+    `first head ${JSON.stringify(firstHead.children.map(child => child.className))}, mark span ${groupHead.colSpan}, body ${rows[0].children.length}`);
+  rows.forEach(row => {
+    assert.equal(row.children.length, rows[0].children.length);
+    assert.equal(row.querySelectorAll('td.mark-edge').length, 1);
+  });
+  assert.equal(rows[0].querySelector('td.mark-edge').children.length, 0);
+  assert.equal(rows[1].querySelector('td.mark-edge').children[0].textContent, '○');
+  assert.equal(rows[2].querySelector('td.mark-edge').children[0].textContent, '○');
+  vm.runInContext('newspaperV05ApplyColumn', context)();
+  assert.equal(markHead.querySelectorAll('th.mark-edge').length, 1);
+  rows.forEach(row => assert.equal(row.querySelectorAll('td.mark-edge').length, 1));
+}
 console.log('v0.5 preview UI contract: PASS');

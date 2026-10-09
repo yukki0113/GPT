@@ -59,9 +59,8 @@ function newspaperV05ApplyColumn() {
   if (!currentBundle || !tableWrap) return;
   const table = tableWrap.querySelector(".newspaper-table-v4");
   if (!table) return;
-  table.querySelectorAll(".newspaper-edge").forEach(cell => cell.remove());
+  table.querySelectorAll("thead th.newspaper-edge, tbody td.newspaper-edge").forEach(cell => cell.remove());
   const groupHead = table.querySelector(".newspaper-mark-group-head");
-  if (groupHead) groupHead.colSpan = 7;
   const headRow = table.querySelector(".newspaper-mark-head-row");
   if (headRow && !headRow.querySelector(".mark-edge")) {
     const head = document.createElement("th");
@@ -69,10 +68,12 @@ function newspaperV05ApplyColumn() {
     head.textContent = "Edge";
     headRow.appendChild(head);
   }
+  if (groupHead && headRow) groupHead.colSpan = headRow.querySelectorAll("th.newspaper-mark-col").length;
   const horses = [...currentBundle.horses].sort((a, b) => Number(a.key.horse_no) - Number(b.key.horse_no));
   table.querySelectorAll("tbody tr").forEach((row, index) => {
     const horse = horses[index];
     if (!horse) return;
+    if (row.querySelector("td.mark-edge")) return;
     const cell = document.createElement("td");
     cell.className = "newspaper-mark-col mark-edge";
     if (newspaperV05Ids(horse).length) {
