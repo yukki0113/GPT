@@ -44,9 +44,16 @@ PWA code / CSS / HTML / Service Worker / PWA docsをdirect Git updateした場�
 
 ### 2. Newspaper publish completion
 
-`workflow_run` で `JRDB Newspaper Current Publish` のsuccessful completionを受けて再構成します。
+正式なNewspaper current publishは:
 
-このためNewspaper current更新は、current Release更新後にfull-site Pagesへ自動連携する経路を持ちます。
+- workflow: `.github/workflows/jrdb_newspaper_publish_current.yml`
+- workflow name: `JRDB Newspaper Current Publish`
+- request pointer: `horse-racing/jrdb/newspaper/publish/current.json`
+- current Release: `jrdb-newspaper-current`
+
+です。
+
+`workflow_run` で `JRDB Newspaper Current Publish` のsuccessful completionを受けてPagesを再構成します。Newspaper current更新は、検証済みday-packageをDrive canonicalへ保存し、`publish/current.json` を更新してCurrent Publishを完走させた後、full-site Pagesへ自動連携します。
 
 ### 3. Fact Lite publish completion
 
@@ -133,11 +140,19 @@ Fact Lite / Stats Mart更新:
 
 Newspaper更新:
 
-1. immutable revision生成・audit
-2. current pointer / Release更新
-3. Newspaper Current Publish success
-4. downstream `JRDB PWA Pages` success
-5. 必要に応じて当日packageの実表示確認
+1. PACIからimmutable revisionを生成・audit
+2. canonical Analysis / STANDARD EdgeDB / EdgeDB v0.5のsource statusを確認
+3. EdgeDB v0.5は `missing_join_count=0` / `extra_join_count=0` を確認し、`PARTIAL` または `READY` を正常表示対象とする
+4. Drive canonical保存と `publish/current.json` 更新
+5. 正式 `JRDB Newspaper Current Publish` success
+6. current Release `jrdb-newspaper-current` のdate/revision確認
+7. downstream `JRDB PWA Pages` の以下4 stepがSUCCESS
+   - Run PWA focused tests
+   - Prepare Pages artifact
+   - Upload Pages artifact
+   - Deploy to GitHub Pages
+8. 公開 `newspaper.html` で対象日、全レース切替、既存addon、Edge列を確認
+9. UI変更を伴う場合は360 / 390 / 430pxのスマホ幅も確認
 
 ## Do not use stale IDs as current state
 
