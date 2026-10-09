@@ -8,6 +8,16 @@ v0.5.2 single-day runbook and the Raw/Warehouse equivalence PASS gate. For
 2026, keep the existing PACI → v0.5.2 path. The v0.4.6 workflow below is
 retained only for its historical operation record.
 
+Current lottery note (v0.5.2): the legacy-named
+`config/racenote_backtest_day_pool_2026.json` now contains both 2026 PACI
+rows and 109 actual 2025 Historical Warehouse race days. After `pick`, inspect
+`source_mode`. If it is `historical_warehouse`, **do not** create the PACI
+request described in the legacy section below. Materialize the reviewed public
+Drive bundle via `tools/gpt_io/public_drive/fetch.py` and
+`config/public_drive/racenote_historical_golden_20251228_v1.json`, then use
+`racenote_v052_from_historical_warehouse.py` as documented in
+`RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
+
 ## 1. One operating path
 
 Use this path only:
