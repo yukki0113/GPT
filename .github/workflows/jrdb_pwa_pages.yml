@@ -75,6 +75,10 @@ jobs:
           python -m unittest discover \
             -s horse-racing/jrdb/tests \
             -p 'test_newspaper_compact_history_pwa.py'
+          PYTHONPATH=horse-racing/jrdb/src python -m unittest \
+            horse-racing/jrdb/tests/test_jrdb_newspaper_edge_v05_preview.py
+          node horse-racing/jrdb/tests/test_newspaper_v05_preview.cjs
+          node --check horse-racing/jrdb/pwa/newspaper-v05-preview.js
           node --check horse-racing/jrdb/pwa/newspaper-v4.js
           node --check horse-racing/jrdb/pwa/service-worker.js
           node --check horse-racing/jrdb/pwa/momotaro/momotaro.js
@@ -252,6 +256,44 @@ jobs:
             rm -rf .pages/data/newspaper/current
             mkdir -p .pages/data/newspaper
             cp -a .newspaper-release/current .pages/data/newspaper/current
+
+            # Isolated 2026-10-04 EdgeDB v0.5 display smoke fixture.
+            # This is UI/merge verification only; it does not replace current
+            # Newspaper data and must not be used as a performance evaluation.
+            if python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest=json.loads(Path('.newspaper-release/current/manifest.json').read_text(encoding='utf-8'))
+          raise SystemExit(0 if manifest.get('date') == '2026-10-04' else 1)
+          PY
+            then
+              rm -rf /tmp/v05-smoke .pages/data/newspaper/v05-smoke-20261004
+              curl --fail --location --retry 3 \
+                'https://drive.usercontent.google.com/download?id=1hT2CWIYmdeZqD98G0FryK2sJUaMXO1jL&export=download&confirm=t' \
+                --output /tmp/PACI261004.zip
+              gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11478468034/zip > /tmp/v05-oos.zip
+              PYTHONPATH=horse-racing/jrdb/src:tools/data-storage \
+                python horse-racing/jrdb/src/jrdb_newspaper_edge_v05_preview.py \
+                  --base-day .newspaper-release/current \
+                  --output-dir /tmp/v05-smoke \
+                  --paci /tmp/PACI261004.zip \
+                  --oos-artifact-zip /tmp/v05-oos.zip \
+                  --display-smoke-test \
+                  > /tmp/v05-smoke-result.json
+              python - <<'PY'
+          import json
+          from pathlib import Path
+          audit=json.loads(Path('/tmp/v05-smoke/audit.json').read_text(encoding='utf-8'))['edge_v05_preview']
+          if audit.get('status') != 'PARTIAL' or not audit.get('display_smoke_test'):
+              raise SystemExit(f"unexpected v0.5 smoke audit: {audit}")
+          if int(audit.get('matched_runner_count') or 0) <= 0 or int(audit.get('signal_count') or 0) <= 0:
+              raise SystemExit(f"v0.5 smoke produced no matches: {audit}")
+          PY
+              cp -a /tmp/v05-smoke .pages/data/newspaper/v05-smoke-20261004
+              echo "EdgeDB v0.5 2026-10-04 display smoke fixture added to Pages artifact."
+            else
+              echo "Current Newspaper is not 2026-10-04; v0.5 smoke fixture skipped."
+            fi
 
             MOMOTARO_ARGS=()
             if gh release view "$MOMOTARO_PREDICTION_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
