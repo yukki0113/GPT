@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "race_model": "京都ダート1800mの牝馬未勝利。前半は極端に速くなりにくく、中団より前で運びつつ長く脚を使える馬を主線とする。後方一辺倒になると届かないリスクがある。",
+    "marks": [
+      7,
+      2,
+      8,
+      16,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "同距離で近2走とも上位争い。中団から前を射程に入れて直線で押し切る形がある。"
+      },
+      {
+        "horse_no": 2,
+        "case": "前走京都1800m2着。長く脚を使える差しで崩れにくい。"
+      },
+      {
+        "horse_no": 16,
+        "case": "近走3、4着で同距離の持続力が安定。好位差しなら連下以上。"
+      },
+      {
+        "horse_no": 6,
+        "case": "京都1800mで2着実績があり、早め進出なら粘り込みがある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "8は近走で最速上がりを繰り返す材料があり、前が甘くなれば中団後ろから一気に差す経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14は前走4着の末脚がある一方、同距離での蓄積が薄い。8は複数走で終いを使う形が確認でき、最後の1頭として残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ルージュエピックは同距離で安定して勝負圏に入り、前を射程に置く形なら勝ち切りまで。グロリアスは前走2着で長く脚を使える。ウンナターシャは前が甘くなった時の末脚を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        2,
+        16,
+        6,
+        8
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14は前走で中団から4着まで差を詰め、位置取りに逆らって伸びる材料がある。前が崩れる展開なら外から届く別経路がある。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14の差し脚は認めるが、同距離での再現性は7・2・16・6・8に及ばないため通常5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 2,
+      "honmei_win_case": "7は同距離で3着、4着と崩れず、今回の予測でも中団から勝負圏へ上がる形が最も素直。前を射程に置いて直線で抜け出す勝ち筋を取る。",
+      "second_case": "2は前走同舞台2着で、3角から長く脚を使える。7より後ろになりやすい分だけ相手評価だが、持続力は主線級。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7と2は僅差だが、7の方が直近の位置取りと終いの組み合わせが安定しており、自力で勝負圏を作れる点を優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "race_model": "京都ダート1200m。16と15を中心に前へ行ける馬が多く、速い流れでも先団で踏ん張れるかが焦点。前が止まれば中団差しの5に展開が向く。",
+    "marks": [
+      16,
+      15,
+      5,
+      14,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "1200mで2、3着を続ける高水準の先行型。自分で隊列を作れる。"
+      },
+      {
+        "horse_no": 15,
+        "case": "近3走すべて3着以内で前受け耐性もある。"
+      },
+      {
+        "horse_no": 14,
+        "case": "前走4着で好位から運べる。先行争いを見ながら立ち回れる。"
+      },
+      {
+        "horse_no": 12,
+        "case": "後方型だが末脚の基礎値が高く、前崩れなら押さえられる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5は後方からでも最速級の末脚を使っており、16と15が競る形なら直線でまとめて差す余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4は単騎なら粘り目があるが近走の終いが弱い。12は追込ながらIDM35を持ち、流れが速くなる今回の方が残す価値が高い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "カーリキューは1200mで高い先行性能を続けており、主導権を取れば押し切りまで。マリリンバローズも前受けして崩れにくい。ナムラソランは前が流れた時の差し込みを狙う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        15,
+        14,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4は逃げて粘る形を複数回作っており、内から単騎で主導権を奪えれば前残りの別経路がある。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4は先手を取れても終いの失速が続く。今回の先行比較では16・15・14が上で、差しの5と12も含め通常5頭を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 15,
+      "honmei_win_case": "16は直近1200mで2、3着を続け、逃げても好位でも高いIDMを出している。先手か番手から自分で勝負を作れる点を◎に取る。",
+      "second_case": "15は近3走が2、3、2着で、前受けしても崩れない。16を見ながら運べるが、主導権の取りやすさで一歩譲る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "15の安定性は高いが、16は近走のIDMが一段上で逃げ切り・番手押し切りの双方を持つため勝率側を優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "race_model": "京都ダート1900m。先行できる11と15が前を形成し、5・10が中団から追う想定。前が極端に楽にならなければ、好位から長く脚を使える馬を重視する。",
+    "marks": [
+      11,
+      15,
+      10,
+      5,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "近2走2、3着で先行持続力が安定。1900mでも前を取れる。"
+      },
+      {
+        "horse_no": 15,
+        "case": "前走3着で好位から最後まで脚を残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "前走3着で中団前から粘り、調教も上向き。"
+      },
+      {
+        "horse_no": 2,
+        "case": "前走2着で番手から渋太く粘った。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は近走で終い上位を繰り返し、前が早めに動けば後方から一気に差す別経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8は一走の上積み余地はあるが、2は前走2着で先行持続力を示している。最後の枠は実戦再現性を優先して2を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "グランワールドは近2走で先行して2、3着と安定し、1900mでも自分で勝負を作れる。サラサダンディーは好位から崩れにくい。クリノリキオーは前が動けば終いの脚で浮上する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        15,
+        10,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8は初ダート近い経験でもIDM34を出し、追走が噛み合えば中団から伸びる未知の上積みがある。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は材料が一走分に寄る一方、通常5頭は同系距離で複数の再現性があるため、今回は入れ替えない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 15,
+      "honmei_win_case": "11は近2走が2、3着で先行して崩れず、1900mでも前を射程に置いた持続戦へ持ち込める。直線で先に抜け出す勝ち筋が明確。",
+      "second_case": "15は前走3着でIDM38、好位からバテずに走れている。11より位置取りが一段後ろになる分だけ○とした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11は前で自らレースを動かせるのに対し、15は展開を受ける差し寄り。勝ち切り経路の主導性で11を上に置く。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "race_model": "障害3170mのオープン。飛越の安定と長距離での位置取りが最重要で、9が逃げて1・4・3が好位追走する形。飛越でリズムを崩すと能力差は簡単に消える。",
+    "marks": [
+      9,
+      1,
+      7,
+      4,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "障害で1、2、2着と先行して高い再現性。"
+      },
+      {
+        "horse_no": 1,
+        "case": "障害で2、1、2着。差しでも崩れず相手筆頭。"
+      },
+      {
+        "horse_no": 4,
+        "case": "前走障害勝ちで好位から運べる。"
+      },
+      {
+        "horse_no": 3,
+        "case": "障害で逃げ切り実績があり先行力は上位。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は障害で勝利実績があり、前走も後方から5着。前が飛越で乱れれば外から進出する独立経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2は前走2着で能力はあるが、7の方が勝利実績と後方からの進出経路を持つ。候補圧縮では2を外す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "スノーディーヴァは障害で先手を取って1、2、2着と安定し、今回も自分の形なら押し切りまで。ハイウェイスターは差しでも崩れない。ベイビーベリッシモは前が乱れた時の差し切り候補。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        1,
+        4,
+        3,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7は後方からでも障害で勝ち切った実績があり、逃げ先行勢が飛越で消耗した時に長く脚を使う別経路が成立する。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "2も近走2着があるが、7は勝ち切った経験と差し経路がより独立しているため、2を外して▲として採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 1,
+      "honmei_win_case": "9は障害で1、2、2着と先手から崩れず、今回も逃げて自分のリズムを作れる。長距離障害で最も勝ち切りの形がはっきりしている。",
+      "second_case": "1は障害で2、1、2着と安定し、差しでも勝ち切れる。9を追う立場になるため○だが総合再現性は高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1の安定度は非常に高いが、9は自ら先手を取り飛越とペースを支配できるため、WIN_FIRSTでは9を上に取る。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "race_model": "京都芝1600m未勝利。10が前へ行き、3・17がその直後、1や14が中団以降から追う構図。先行勢が速くなり過ぎなければ好位型が優勢。",
+    "marks": [
+      3,
+      17,
+      1,
+      14,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "近3走2、4、2着。好位から直線で脚を使える。"
+      },
+      {
+        "horse_no": 17,
+        "case": "前受けしてIDM42、状態も上向き。"
+      },
+      {
+        "horse_no": 14,
+        "case": "直近IDM41で中団から差を詰める形が安定。"
+      },
+      {
+        "horse_no": 10,
+        "case": "逃げてIDM41を出し、自分でペースを作れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は後方から高いIDMを出し続け、前が流れれば直線外からまとめて差す勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 18,
+      "reason": "18の伸びしろはあるが実戦材料が一走。10は逃げてIDM41を出した直近内容があり、展開を作れる点で残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "エアヴァイブスは近3走で2、4、2着と安定し、好位から抜け出す形が最も明確。アイルトンも状態上昇で前受け可能。エイシンビーコンは前が流れた時の末脚を評価する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        17,
+        1,
+        14,
+        10
+      ],
+      "external_challenger_horse_no": 18,
+      "external_challenger_case": "18は一走のみでも後方からIDM36を出し、前が崩れれば追込に徹して伸びる余地がある。",
+      "excluded_horse_no": 18,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "18は一走分の材料に留まり、3・17・1・14・10の複数走の再現性を上回らないため通常5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 17,
+      "honmei_win_case": "3は近3走が2、4、2着でIDMも44まで上昇。先団から直線で抜ける形を繰り返しており、勝ち切り経路が最も明確。",
+      "second_case": "17は前走IDM42で好位から5着、状態指数も高く上昇。3より決め手の再現性で少し劣るが前受けの相手本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3は好位から終いを使う形を複数回再現しており、17より直線で一段伸びる根拠が明確なため◎を譲らない。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "race_model": "京都ダート1400mの1勝クラス。8と9が前を主張し10も好位、差し勢はその後ろ。8の能力が一段上だが、先行争いが激化すると差しへ展開が向く。",
+    "marks": [
+      8,
+      9,
+      10,
+      6,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "前走IDM54で勝利。先行から押し切る能力が一段上。"
+      },
+      {
+        "horse_no": 9,
+        "case": "近2走1、2着で逃げ先行の再現性が高い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "前走は8着でも同クラスで勝利実績があり好位で運べる。"
+      },
+      {
+        "horse_no": 3,
+        "case": "直近勝利があり、中団から流れに乗れる余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は好発から前で競馬でき、1200mでは1、2着。8・9がやり合えばその直後から抜け出す経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13は能力値だけなら圏内だが直近の内容が不安定。3は芝中心でも直近勝利と位置予測が良く、最後の枠は3を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ピカラは前走IDM54で勝ち切り、ここでも能力と位置取りが一枚上。アパレイユは逃げ先行で1、2着と安定する。エコロボルトは前2頭の直後から運べれば差し込める。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        9,
+        10,
+        6,
+        3
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13はIDM43を持ち、前が速くなるほど差し脚を温存して外から浮上する別経路がある。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "13は直近13着で再現性に欠ける。通常5頭は近走の上位実績と位置取りの具体性が上のため入れ替えない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 9,
+      "honmei_win_case": "8は前走IDM54で勝ち切り、今回も予測位置・終いとも最上位。逃げても番手でも押し切れるため勝ち筋が最も太い。",
+      "second_case": "9は1、2着と先手から安定し状態も上昇。8との先行比較では能力値で劣るが、単独で運べれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9の先行力は魅力だが、8は前走の能力値が明確に上で番手でも勝てる。先手争いに依存しない分8を◎とした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "race_model": "京都芝2400mの1勝クラス。6が前へ行き、3・8が好位、1・2・10が中団から動く構図。長距離だけに早仕掛けよりも直線まで脚を残せるかを重視する。",
+    "marks": [
+      1,
+      2,
+      10,
+      3,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "長距離で3着を重ね、終いを残す形が安定。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2400mで2着実績があり早め進出も可能。"
+      },
+      {
+        "horse_no": 3,
+        "case": "好位から2400mで3着。前残りなら粘り込める。"
+      },
+      {
+        "horse_no": 8,
+        "case": "前走3着で好位から長く脚を使った。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は近走3着を含め中団から長く脚を使う。前が早めに動けば脚を溜めて直線で差す経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4は独立材料がある一方で近走が大きく崩れている。8は前走3着と長距離の好位競馬を再現しており残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ロードガレリアは長距離で3着を重ね、直線まで脚を残す形が安定。クラッチプレイヤーは2400mで2着実績。ウインリュクスは前が早めに動いた時の差し込みを狙う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        2,
+        10,
+        3,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4はRRDBのHV系シグナルがあり、低い近走評価からでも持続戦で一変する可能性を持つ。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4はシグナルはあるが近走8、16、11着と実戦再現性が弱い。通常5頭の距離適性と直近内容を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 2,
+      "honmei_win_case": "1は近走3、5、3着で長距離でも末脚を維持し、調教指数も高い。中団から直線で前を交わす勝ち筋が最も安定する。",
+      "second_case": "2は2400mで2着実績があり、捲り気味に動く形も可能。1より道中で力むリスクがあるため○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1と2は能力差が小さいが、1は位置取りを急がず終いを残す形を複数回再現しており、2400mでの勝ち切りやすさを上に見た。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "race_model": "京都芝2000mの2勝クラス。1と3が前へ行き8が好位、2・4・7が差し追込。先行2頭のペース次第で、前残りと差し込みの両方を想定する。",
+    "marks": [
+      3,
+      8,
+      4,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "前走逃げ切りでIDM56。上級相当の先行力を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "近3走1、2、3着で好位差しの再現性が高い。"
+      },
+      {
+        "horse_no": 2,
+        "case": "近3走すべて2着で差しの安定度が高い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "後方から3着を重ね、前崩れで浮上する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は1、2、2着と後方からの差しが安定。1と3が競れば直線で一気に差し切る独立した形がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1は単騎なら怖いが3との先行競合がある。7は後方から3着を重ね、前が競る今回の保険として残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "エコテーラーは前走逃げ切りで上級相当の能力も示し、先手なら押し切りまで。パフュームセントは1、2、3着と好位から安定。ホウオウタイタンは前が競った時の差し切り候補。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        8,
+        2,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は前走逃げ切りで、3が控える展開になれば単騎先行からそのまま残る別経路がある。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1の逃げ切りは魅力だが3も前へ行くため単騎条件が薄い。通常5頭の能力と差し経路を優先して入れ替えない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 8,
+      "honmei_win_case": "3は前走逃げ切りでIDM56、上級クラス相当の能力もあり状態も抜群。自ら先手を取り押し切る経路を◎に取る。",
+      "second_case": "8は近3走1、2、3着で好位から安定し、予測着差も最上位。3を見ながら運べる相手本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8の安定性は高いが、3は自分で先手を取って勝ち切った直近内容とクラス能力があり、WIN_FIRSTでは3を上にする。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "race_model": "京都ダート1800mの2勝クラス。6が逃げ10・8・11が好位、4・5が差し。前がある程度締まるため、前受けの持続力と直線での差しの両面を評価する。",
+    "marks": [
+      6,
+      10,
+      4,
+      8,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "逃げて3、3、4着と高い再現性。"
+      },
+      {
+        "horse_no": 10,
+        "case": "IDM60で前走2着、好位から直線で伸びる。"
+      },
+      {
+        "horse_no": 8,
+        "case": "IDM59級で好位から運べる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "近走1、4着で前受け持続力がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4はIDM59級の能力があり、過去に捲り気味の競馬で3着。前が消耗すれば外から長く脚を使って差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5は近走4着など安定する一方、4はより高い能力値と捲りの勝ち筋がある。六頭比較では5を外す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ジョータルマエは逃げて3、3、4着と安定し、今回も主導権を取れば押し切りまで。ゴッドエスパーダはIDM60で好位差しの本線。エンマは前が消耗した時の捲り差しを評価する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        6,
+        8,
+        11,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4は直近着順以上の能力値を持ち、前が締まれば後方から早めに動いて持続力勝負へ変える別経路がある。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "5も安定するが4の能力上限と差しの独立性を評価。◎○を崩さず5を外して4を▲として採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 10,
+      "honmei_win_case": "6は近3走3、3、4着をすべて逃げてIDM58以上。今回も主導権を取り、自分のペースから粘り切る勝ち筋が最も明確。",
+      "second_case": "10はIDM60で近走2着、同条件の好位差しが安定。6を射程に運べるが、展開を自ら作れる点で6を上にした。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "能力値では10が上でも、6は逃げの再現性が高く今回も先手が明確。勝ち切り経路の主導性を優先して6を◎とした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "race_model": "京都芝1400mのオープン。11や10など先行勢が複数いて流れは締まりやすい。好位で耐える5と、中団以降から脚を使える12・1・16を主線にする。",
+    "marks": [
+      12,
+      5,
+      17,
+      1,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "高いIDMと上昇状態。中団差しで流れに対応できる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "先行持続力があり前受け不利でも崩れにくい。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1400mで勝利実績があり末脚を使える。"
+      },
+      {
+        "horse_no": 16,
+        "case": "近走上級で3着実績、差しの能力上限が高い。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 17,
+      "case": "17は前走4着、過去に勝利もあり、好位から脚を温存できれば先行勢の直後から抜ける別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2は追込能力があるが位置取り依存が大きい。17は好位からの勝ち筋を持つため六頭比較で2を外す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヨシノイースターは高い能力値と状態上昇があり、速い流れを中団で受けて抜け出す形を狙う。タガノエルピーダは先行持続力が強い。エコロブルームは好位で脚を残せれば一発がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        5,
+        1,
+        16,
+        2
+      ],
+      "external_challenger_horse_no": 17,
+      "external_challenger_case": "17は近走4着で1400m適性を示し、先行争いの直後で脚を溜めて抜け出す経路が通常候補と異なる。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "2も能力はあるが後方依存が強い。17は好位から勝ちに行く独立性があり、2を外して▲として採用する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 5,
+      "honmei_win_case": "12はIDM62前後を維持し状態も上昇、1400mでの差し脚と好位対応を両立する。速い流れを中団で受けて直線で抜ける勝ち筋を◎に取る。",
+      "second_case": "5は前走4着、前受け不利の履歴もあり先行持続力が高い。12より展開の影響を受けるが相手本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5は前で粘る強みがある一方、今回は先行馬が多い。12の方が流れを受けながら終いを使えるため勝ち切り側を上にした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "race_model": "京都芝1800mのオープン。1・7が前、4が中団から差し、2・8が後方。少頭数で前が楽になりやすいが、クラス能力の高い4の差し切りを主線とする。",
+    "marks": [
+      4,
+      2,
+      1,
+      7,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "上級水準の勝利直後で末脚も強い。"
+      },
+      {
+        "horse_no": 2,
+        "case": "近走4、1着で中団差しが安定。"
+      },
+      {
+        "horse_no": 7,
+        "case": "前走逃げ切りで先行残りの主力。"
+      },
+      {
+        "horse_no": 8,
+        "case": "オープン経験があり後方から末脚を使える。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は前走1勝クラスを好位から勝利。少頭数で先行が楽ならそのまま粘り切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は能力値はあるが直近の勝ち切り材料が乏しい。8はオープン経験と高い末脚性能があり、最後の枠は8を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "テーオーアルアインは上級水準の勝利直後で末脚も強く、直線で前を捕まえる形を本線にする。シーミハットクは差しの安定型。ロサルゴサは少頭数の先行残りなら押し切りまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        2,
+        1,
+        7,
+        8
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9は差し型で近走IDM51もあり、前が想定以上に流れれば後方からまとめて差す別経路がある。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9は近走6、9着で再現性が弱い。通常5頭は勝利実績または直近上位内容が明確なため維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 2,
+      "honmei_win_case": "4は2勝クラス勝ち直後でIDM54、調教も上昇し末脚シグナルもある。少頭数でも中団から直線で前を捕まえる勝ち筋が明確。",
+      "second_case": "2はIDM53で近走4、1着。中団差しの再現性は高いが、4のクラス上限と直近勝利内容を一段上に評価した。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2の安定感より、4が上のクラス水準で勝ち切った直近内容と速い上がりを使える点を勝率側で優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "race_model": "京都芝1400mの3勝クラス。10・11・12・16・18など前へ行く馬が多く、流れは締まりやすい。中団で脚を残せる9を中心に、前崩れなら14の追込が浮上する。",
+    "marks": [
+      9,
+      8,
+      14,
+      12,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "近3走1、3、1着。好位差しでIDM61まで到達。"
+      },
+      {
+        "horse_no": 8,
+        "case": "IDM60級で先行して2着実績がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "近2走連勝で1400m適性と前受け力が高い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "現級で連続掲示板、流れに乗る差しが安定。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14は後方から速い上がりを繰り返し、RRDBにも後方高上がりシグナル。先行勢が潰れれば一気に差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15は勝ち上がりの勢いがある一方、14は現級での高い末脚実績と独立シグナルがある。最後の比較では14を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ガンマジーティーピは近3走1、3、1着と勝ち切る力が高く、速い流れでも中団から抜け出せる。スマートワイスは先行対応力がある。ブリュットミレジメは前が崩れた時の追込一発を評価する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        8,
+        12,
+        14,
+        7
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15は近3走に2勝があり、内を捌いて差す形なら前が崩れた際に別経路を持つ。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15の勝利実績は評価するが、3勝クラスでの能力上限と末脚再現性では9・8・12・14・7を上に取り、通常5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 8,
+      "honmei_win_case": "9は近3走1、3、1着でIDM61まで上げ、好位からでも差しても勝ち切れる。今回の速い流れを中団で受けて抜ける形が最も明確。",
+      "second_case": "8は近走2着を含めIDM60級の実績があり先行対応も可能。9より勝ち切り実績の連続性で一歩譲る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8の能力は近いが、9は複数回勝ち切っており位置取りの幅も広い。流れが変わっても勝ち筋を残せる点を優先した。"
+    }
+  }
+]
