@@ -1,0 +1,4649 @@
+{
+  "schema_version": "0.1",
+  "generator_version": "racenote-daily-result-jrdb-0.1.0",
+  "target_date": "2026-07-19",
+  "status": "complete",
+  "source": {
+    "provider": "JRDB",
+    "result": "SED",
+    "payout": "HJC",
+    "web_used": false,
+    "provenance": {
+      "source_mode": "raw",
+      "sed_archives": [
+        "/tmp/jrdb_result_query/20260719/SED260719.zip"
+      ],
+      "hjc_archives": [
+        "/tmp/jrdb_result_query/20260719/HJC260719.zip"
+      ],
+      "result_source": "SED",
+      "payout_source": "HJC",
+      "web_used": false
+    }
+  },
+  "race_count": 36,
+  "review_required_count": 0,
+  "review_required": [],
+  "races": [
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 1,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 1,
+          "horse_name": "ステラトップガン"
+        },
+        {
+          "finish": 2,
+          "horse_no": 5,
+          "horse_name": "タイフーンナイン"
+        },
+        {
+          "finish": 3,
+          "horse_no": 3,
+          "horse_name": "リアルジャパン"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 170
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 110
+          },
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 170
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 270
+          }
+        ],
+        "frame_quinella": [],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              5
+            ],
+            "payout_jpy": 510
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              5
+            ],
+            "payout_jpy": 260
+          },
+          {
+            "combination": [
+              1,
+              3
+            ],
+            "payout_jpy": 550
+          },
+          {
+            "combination": [
+              3,
+              5
+            ],
+            "payout_jpy": 890
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              1,
+              5
+            ],
+            "payout_jpy": 820
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              3,
+              5
+            ],
+            "payout_jpy": 1260
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              1,
+              5,
+              3
+            ],
+            "payout_jpy": 4880
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 2,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 7,
+          "horse_name": "ミスチヴマリアンヌ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 4,
+          "horse_name": "ジャーナーリア"
+        },
+        {
+          "finish": 3,
+          "horse_no": 1,
+          "horse_name": "デルマハルナ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 1280
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 300
+          },
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 130
+          },
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 870
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 230
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 880
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 390
+          },
+          {
+            "combination": [
+              1,
+              7
+            ],
+            "payout_jpy": 3450
+          },
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 1140
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              7,
+              4
+            ],
+            "payout_jpy": 2700
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              4,
+              7
+            ],
+            "payout_jpy": 7920
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              7,
+              4,
+              1
+            ],
+            "payout_jpy": 53750
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 3,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 9,
+          "horse_name": "ブレイズランナー"
+        },
+        {
+          "finish": 2,
+          "horse_no": 3,
+          "horse_name": "ルージュリヴィエラ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 11,
+          "horse_name": "ホウオウファラオ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 500
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 140
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 190
+          },
+          {
+            "combination": [
+              11
+            ],
+            "payout_jpy": 170
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              3,
+              6
+            ],
+            "payout_jpy": 940
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              3,
+              9
+            ],
+            "payout_jpy": 1020
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              3,
+              9
+            ],
+            "payout_jpy": 410
+          },
+          {
+            "combination": [
+              9,
+              11
+            ],
+            "payout_jpy": 450
+          },
+          {
+            "combination": [
+              3,
+              11
+            ],
+            "payout_jpy": 710
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              9,
+              3
+            ],
+            "payout_jpy": 2140
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              3,
+              9,
+              11
+            ],
+            "payout_jpy": 2270
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              9,
+              3,
+              11
+            ],
+            "payout_jpy": 11290
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 4,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 8,
+          "horse_name": "レイヌドプランタン"
+        },
+        {
+          "finish": 2,
+          "horse_no": 3,
+          "horse_name": "ウインカトリーヌ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 11,
+          "horse_name": "マコトアディントン"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 2010
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 490
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 230
+          },
+          {
+            "combination": [
+              11
+            ],
+            "payout_jpy": 260
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              3,
+              6
+            ],
+            "payout_jpy": 4470
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              3,
+              8
+            ],
+            "payout_jpy": 6200
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              3,
+              8
+            ],
+            "payout_jpy": 1940
+          },
+          {
+            "combination": [
+              8,
+              11
+            ],
+            "payout_jpy": 2320
+          },
+          {
+            "combination": [
+              3,
+              11
+            ],
+            "payout_jpy": 970
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              8,
+              3
+            ],
+            "payout_jpy": 15150
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              3,
+              8,
+              11
+            ],
+            "payout_jpy": 17160
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              8,
+              3,
+              11
+            ],
+            "payout_jpy": 119040
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 5,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 4,
+          "horse_name": "テンカタイヘイ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 1,
+          "horse_name": "ランフォーザエイジ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 5,
+          "horse_name": "ルージュロマーナ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 1940
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 480
+          },
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 340
+          },
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 830
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              3
+            ],
+            "payout_jpy": 1930
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 6280
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 1980
+          },
+          {
+            "combination": [
+              4,
+              5
+            ],
+            "payout_jpy": 4410
+          },
+          {
+            "combination": [
+              1,
+              5
+            ],
+            "payout_jpy": 4460
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              4,
+              1
+            ],
+            "payout_jpy": 15980
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              4,
+              5
+            ],
+            "payout_jpy": 48940
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              4,
+              1,
+              5
+            ],
+            "payout_jpy": 266390
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 6,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 1,
+          "horse_name": "コスモファーブロス"
+        },
+        {
+          "finish": 2,
+          "horse_no": 9,
+          "horse_name": "リネアベルタ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 10,
+          "horse_name": "マメーアップル"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 340
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 150
+          },
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 240
+          },
+          {
+            "combination": [
+              10
+            ],
+            "payout_jpy": 130
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              5
+            ],
+            "payout_jpy": 450
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              9
+            ],
+            "payout_jpy": 2000
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              9
+            ],
+            "payout_jpy": 680
+          },
+          {
+            "combination": [
+              1,
+              10
+            ],
+            "payout_jpy": 270
+          },
+          {
+            "combination": [
+              9,
+              10
+            ],
+            "payout_jpy": 580
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              1,
+              9
+            ],
+            "payout_jpy": 3280
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              9,
+              10
+            ],
+            "payout_jpy": 1890
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              1,
+              9,
+              10
+            ],
+            "payout_jpy": 10940
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 7,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 4,
+          "horse_name": "プリンセスアツコ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 6,
+          "horse_name": "ビーチイン"
+        },
+        {
+          "finish": 3,
+          "horse_no": 10,
+          "horse_name": "ゴールドドレッサ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 330
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 130
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 140
+          },
+          {
+            "combination": [
+              10
+            ],
+            "payout_jpy": 320
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              3,
+              4
+            ],
+            "payout_jpy": 620
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 670
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 290
+          },
+          {
+            "combination": [
+              4,
+              10
+            ],
+            "payout_jpy": 1090
+          },
+          {
+            "combination": [
+              6,
+              10
+            ],
+            "payout_jpy": 750
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 1070
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              4,
+              6,
+              10
+            ],
+            "payout_jpy": 2570
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              4,
+              6,
+              10
+            ],
+            "payout_jpy": 10070
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 8,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 8,
+          "horse_name": "フレンズプラス"
+        },
+        {
+          "finish": 2,
+          "horse_no": 4,
+          "horse_name": "ワイドデコラシオン"
+        },
+        {
+          "finish": 3,
+          "horse_no": 5,
+          "horse_name": "グレイトソン"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 770
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 200
+          },
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 190
+          },
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 200
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 1630
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              4,
+              8
+            ],
+            "payout_jpy": 1470
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              4,
+              8
+            ],
+            "payout_jpy": 750
+          },
+          {
+            "combination": [
+              5,
+              8
+            ],
+            "payout_jpy": 770
+          },
+          {
+            "combination": [
+              4,
+              5
+            ],
+            "payout_jpy": 640
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              8,
+              4
+            ],
+            "payout_jpy": 3870
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              4,
+              5,
+              8
+            ],
+            "payout_jpy": 3600
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              8,
+              4,
+              5
+            ],
+            "payout_jpy": 28770
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 9,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 9,
+          "horse_name": "モンローウォーク"
+        },
+        {
+          "finish": 2,
+          "horse_no": 4,
+          "horse_name": "アストリル"
+        },
+        {
+          "finish": 3,
+          "horse_no": 6,
+          "horse_name": "ロートホルン"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 150
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 110
+          },
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 140
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 240
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 460
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              4,
+              9
+            ],
+            "payout_jpy": 480
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              4,
+              9
+            ],
+            "payout_jpy": 240
+          },
+          {
+            "combination": [
+              6,
+              9
+            ],
+            "payout_jpy": 440
+          },
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 870
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              9,
+              4
+            ],
+            "payout_jpy": 630
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              4,
+              6,
+              9
+            ],
+            "payout_jpy": 1920
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              9,
+              4,
+              6
+            ],
+            "payout_jpy": 4470
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 10,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 9,
+          "horse_name": "シーズザスローン"
+        },
+        {
+          "finish": 2,
+          "horse_no": 12,
+          "horse_name": "タガノエルー"
+        },
+        {
+          "finish": 3,
+          "horse_no": 14,
+          "horse_name": "プライベートアイズ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 410
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 150
+          },
+          {
+            "combination": [
+              12
+            ],
+            "payout_jpy": 120
+          },
+          {
+            "combination": [
+              14
+            ],
+            "payout_jpy": 200
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              6,
+              7
+            ],
+            "payout_jpy": 430
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              9,
+              12
+            ],
+            "payout_jpy": 440
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              9,
+              12
+            ],
+            "payout_jpy": 210
+          },
+          {
+            "combination": [
+              9,
+              14
+            ],
+            "payout_jpy": 610
+          },
+          {
+            "combination": [
+              12,
+              14
+            ],
+            "payout_jpy": 380
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              9,
+              12
+            ],
+            "payout_jpy": 970
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              9,
+              12,
+              14
+            ],
+            "payout_jpy": 1050
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              9,
+              12,
+              14
+            ],
+            "payout_jpy": 6440
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 11,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 5,
+          "horse_name": "フェリチタ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 9,
+          "horse_name": "イモージェン"
+        },
+        {
+          "finish": 3,
+          "horse_no": 2,
+          "horse_name": "ダイシンドラゴン"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 2360
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 650
+          },
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 170
+          },
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 430
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 1750
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              5,
+              9
+            ],
+            "payout_jpy": 3630
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              5,
+              9
+            ],
+            "payout_jpy": 1330
+          },
+          {
+            "combination": [
+              2,
+              5
+            ],
+            "payout_jpy": 3380
+          },
+          {
+            "combination": [
+              2,
+              9
+            ],
+            "payout_jpy": 960
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              5,
+              9
+            ],
+            "payout_jpy": 10120
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              2,
+              5,
+              9
+            ],
+            "payout_jpy": 11530
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              5,
+              9,
+              2
+            ],
+            "payout_jpy": 79530
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "函館",
+      "race_no": 12,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 4,
+          "horse_name": "ホウオウヘッセン"
+        },
+        {
+          "finish": 2,
+          "horse_no": 1,
+          "horse_name": "ザカリナン"
+        },
+        {
+          "finish": 3,
+          "horse_no": 3,
+          "horse_name": "マグネシアブリック"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 330
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 170
+          },
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 260
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 180
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              3
+            ],
+            "payout_jpy": 950
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 1600
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 570
+          },
+          {
+            "combination": [
+              3,
+              4
+            ],
+            "payout_jpy": 380
+          },
+          {
+            "combination": [
+              1,
+              3
+            ],
+            "payout_jpy": 670
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              4,
+              1
+            ],
+            "payout_jpy": 2320
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              3,
+              4
+            ],
+            "payout_jpy": 1890
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              4,
+              1,
+              3
+            ],
+            "payout_jpy": 8480
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 1,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 1,
+          "horse_name": "ムーンベリル"
+        },
+        {
+          "finish": 2,
+          "horse_no": 6,
+          "horse_name": "ドナビッグベン"
+        },
+        {
+          "finish": 3,
+          "horse_no": 10,
+          "horse_name": "ユイノキャッツアイ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 110
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 110
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 180
+          },
+          {
+            "combination": [
+              10
+            ],
+            "payout_jpy": 110
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              6
+            ],
+            "payout_jpy": 880
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              6
+            ],
+            "payout_jpy": 920
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              6
+            ],
+            "payout_jpy": 230
+          },
+          {
+            "combination": [
+              1,
+              10
+            ],
+            "payout_jpy": 150
+          },
+          {
+            "combination": [
+              6,
+              10
+            ],
+            "payout_jpy": 560
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              1,
+              6
+            ],
+            "payout_jpy": 960
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              6,
+              10
+            ],
+            "payout_jpy": 840
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              1,
+              6,
+              10
+            ],
+            "payout_jpy": 2630
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 2,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 16,
+          "horse_name": "クレアノア"
+        },
+        {
+          "finish": 2,
+          "horse_no": 15,
+          "horse_name": "クリスタルドレス"
+        },
+        {
+          "finish": 3,
+          "horse_no": 13,
+          "horse_name": "アマンヘセル"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              16
+            ],
+            "payout_jpy": 340
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              16
+            ],
+            "payout_jpy": 170
+          },
+          {
+            "combination": [
+              15
+            ],
+            "payout_jpy": 180
+          },
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 710
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              8,
+              8
+            ],
+            "payout_jpy": 1260
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              15,
+              16
+            ],
+            "payout_jpy": 1480
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              15,
+              16
+            ],
+            "payout_jpy": 590
+          },
+          {
+            "combination": [
+              13,
+              16
+            ],
+            "payout_jpy": 1580
+          },
+          {
+            "combination": [
+              13,
+              15
+            ],
+            "payout_jpy": 2760
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              16,
+              15
+            ],
+            "payout_jpy": 2380
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              13,
+              15,
+              16
+            ],
+            "payout_jpy": 9150
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              16,
+              15,
+              13
+            ],
+            "payout_jpy": 37800
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 3,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 8,
+          "horse_name": "ペプチドドリーム"
+        },
+        {
+          "finish": 2,
+          "horse_no": 13,
+          "horse_name": "ベルランコントル"
+        },
+        {
+          "finish": 3,
+          "horse_no": 2,
+          "horse_name": "ラクシオンデクラ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 190
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 130
+          },
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 250
+          },
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 1760
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 330
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              8,
+              13
+            ],
+            "payout_jpy": 1420
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              8,
+              13
+            ],
+            "payout_jpy": 500
+          },
+          {
+            "combination": [
+              2,
+              8
+            ],
+            "payout_jpy": 3860
+          },
+          {
+            "combination": [
+              2,
+              13
+            ],
+            "payout_jpy": 12940
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              8,
+              13
+            ],
+            "payout_jpy": 1990
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              2,
+              8,
+              13
+            ],
+            "payout_jpy": 39930
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              8,
+              13,
+              2
+            ],
+            "payout_jpy": 94170
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 4,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 2,
+          "horse_name": "アーティラリー"
+        },
+        {
+          "finish": 2,
+          "horse_no": 5,
+          "horse_name": "デルマザオウ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 9,
+          "horse_name": "ユニバーサルラヴ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 970
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 250
+          },
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 190
+          },
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 220
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              2,
+              3
+            ],
+            "payout_jpy": 620
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              2,
+              5
+            ],
+            "payout_jpy": 2770
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              2,
+              5
+            ],
+            "payout_jpy": 800
+          },
+          {
+            "combination": [
+              2,
+              9
+            ],
+            "payout_jpy": 680
+          },
+          {
+            "combination": [
+              5,
+              9
+            ],
+            "payout_jpy": 650
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              2,
+              5
+            ],
+            "payout_jpy": 6300
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              2,
+              5,
+              9
+            ],
+            "payout_jpy": 3230
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              2,
+              5,
+              9
+            ],
+            "payout_jpy": 23000
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 5,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 4,
+          "horse_name": "グランオギュール"
+        },
+        {
+          "finish": 2,
+          "horse_no": 11,
+          "horse_name": "エンルートフライト"
+        },
+        {
+          "finish": 3,
+          "horse_no": 9,
+          "horse_name": "ヴェルバーニア"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 170
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 110
+          },
+          {
+            "combination": [
+              11
+            ],
+            "payout_jpy": 210
+          },
+          {
+            "combination": [
+              9
+            ],
+            "payout_jpy": 130
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 970
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              4,
+              11
+            ],
+            "payout_jpy": 1320
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              4,
+              11
+            ],
+            "payout_jpy": 430
+          },
+          {
+            "combination": [
+              4,
+              9
+            ],
+            "payout_jpy": 160
+          },
+          {
+            "combination": [
+              9,
+              11
+            ],
+            "payout_jpy": 500
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              4,
+              11
+            ],
+            "payout_jpy": 1540
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              4,
+              9,
+              11
+            ],
+            "payout_jpy": 1010
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              4,
+              11,
+              9
+            ],
+            "payout_jpy": 4780
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 6,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 14,
+          "horse_name": "チャランダマルツ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 6,
+          "horse_name": "グルーヴェンス"
+        },
+        {
+          "finish": 3,
+          "horse_no": 10,
+          "horse_name": "セイウンイーリス"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              14
+            ],
+            "payout_jpy": 270
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              14
+            ],
+            "payout_jpy": 150
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 190
+          },
+          {
+            "combination": [
+              10
+            ],
+            "payout_jpy": 390
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 700
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              6,
+              14
+            ],
+            "payout_jpy": 980
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              6,
+              14
+            ],
+            "payout_jpy": 480
+          },
+          {
+            "combination": [
+              10,
+              14
+            ],
+            "payout_jpy": 1220
+          },
+          {
+            "combination": [
+              6,
+              10
+            ],
+            "payout_jpy": 1870
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              14,
+              6
+            ],
+            "payout_jpy": 1380
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              6,
+              10,
+              14
+            ],
+            "payout_jpy": 5920
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              14,
+              6,
+              10
+            ],
+            "payout_jpy": 14500
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 7,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 3,
+          "horse_name": "チェイサー"
+        },
+        {
+          "finish": 2,
+          "horse_no": 7,
+          "horse_name": "ユイノサダハル"
+        },
+        {
+          "finish": 3,
+          "horse_no": 13,
+          "horse_name": "ファイアリービート"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 270
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 150
+          },
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 310
+          },
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 220
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              2,
+              4
+            ],
+            "payout_jpy": 2320
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 2380
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 760
+          },
+          {
+            "combination": [
+              3,
+              13
+            ],
+            "payout_jpy": 490
+          },
+          {
+            "combination": [
+              7,
+              13
+            ],
+            "payout_jpy": 1080
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 3010
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              3,
+              7,
+              13
+            ],
+            "payout_jpy": 4180
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              3,
+              7,
+              13
+            ],
+            "payout_jpy": 20090
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 8,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 13,
+          "horse_name": "ピエナフェーヴル"
+        },
+        {
+          "finish": 2,
+          "horse_no": 3,
+          "horse_name": "スイートオレンジ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 6,
+          "horse_name": "ミッドセンチュリー"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 2200
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 800
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 340
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 890
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              2,
+              7
+            ],
+            "payout_jpy": 5000
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              3,
+              13
+            ],
+            "payout_jpy": 7960
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              3,
+              13
+            ],
+            "payout_jpy": 2640
+          },
+          {
+            "combination": [
+              6,
+              13
+            ],
+            "payout_jpy": 8490
+          },
+          {
+            "combination": [
+              3,
+              6
+            ],
+            "payout_jpy": 3980
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              13,
+              3
+            ],
+            "payout_jpy": 16690
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              3,
+              6,
+              13
+            ],
+            "payout_jpy": 62120
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              13,
+              3,
+              6
+            ],
+            "payout_jpy": 261920
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 9,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 13,
+          "horse_name": "ハッピーエンジェル"
+        },
+        {
+          "finish": 2,
+          "horse_no": 8,
+          "horse_name": "セイウンデセオ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 1,
+          "horse_name": "ガラベイヤ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 400
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 200
+          },
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 340
+          },
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 190
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 2600
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              8,
+              13
+            ],
+            "payout_jpy": 5210
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              8,
+              13
+            ],
+            "payout_jpy": 1670
+          },
+          {
+            "combination": [
+              1,
+              13
+            ],
+            "payout_jpy": 640
+          },
+          {
+            "combination": [
+              1,
+              8
+            ],
+            "payout_jpy": 1610
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              13,
+              8
+            ],
+            "payout_jpy": 7040
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              8,
+              13
+            ],
+            "payout_jpy": 8020
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              13,
+              8,
+              1
+            ],
+            "payout_jpy": 49080
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 10,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 7,
+          "horse_name": "ルールーリマ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 4,
+          "horse_name": "アロンズロッド"
+        },
+        {
+          "finish": 3,
+          "horse_no": 6,
+          "horse_name": "コスモイシュタル"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 360
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 130
+          },
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 120
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 130
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 530
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 550
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 220
+          },
+          {
+            "combination": [
+              6,
+              7
+            ],
+            "payout_jpy": 250
+          },
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 240
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              7,
+              4
+            ],
+            "payout_jpy": 1100
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              4,
+              6,
+              7
+            ],
+            "payout_jpy": 650
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              7,
+              4,
+              6
+            ],
+            "payout_jpy": 3220
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 11,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 2,
+          "horse_name": "ジョーローリット"
+        },
+        {
+          "finish": 2,
+          "horse_no": 7,
+          "horse_name": "ガビーズシスター"
+        },
+        {
+          "finish": 3,
+          "horse_no": 14,
+          "horse_name": "ファムエレガンテ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 2220
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 760
+          },
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 280
+          },
+          {
+            "combination": [
+              14
+            ],
+            "payout_jpy": 400
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 1440
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              2,
+              7
+            ],
+            "payout_jpy": 11010
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              2,
+              7
+            ],
+            "payout_jpy": 3620
+          },
+          {
+            "combination": [
+              2,
+              14
+            ],
+            "payout_jpy": 3160
+          },
+          {
+            "combination": [
+              7,
+              14
+            ],
+            "payout_jpy": 1700
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              2,
+              7
+            ],
+            "payout_jpy": 21670
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              2,
+              7,
+              14
+            ],
+            "payout_jpy": 35610
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              2,
+              7,
+              14
+            ],
+            "payout_jpy": 238390
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "福島",
+      "race_no": 12,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 11,
+          "horse_name": "エアトベーレ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 4,
+          "horse_name": "ジーティーブラック"
+        },
+        {
+          "finish": 3,
+          "horse_no": 6,
+          "horse_name": "サムシングニュー"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              11
+            ],
+            "payout_jpy": 360
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              11
+            ],
+            "payout_jpy": 150
+          },
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 330
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 220
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              3,
+              6
+            ],
+            "payout_jpy": 3110
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              4,
+              11
+            ],
+            "payout_jpy": 2890
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              4,
+              11
+            ],
+            "payout_jpy": 920
+          },
+          {
+            "combination": [
+              6,
+              11
+            ],
+            "payout_jpy": 460
+          },
+          {
+            "combination": [
+              4,
+              6
+            ],
+            "payout_jpy": 1320
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              11,
+              4
+            ],
+            "payout_jpy": 5490
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              4,
+              6,
+              11
+            ],
+            "payout_jpy": 5430
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              11,
+              4,
+              6
+            ],
+            "payout_jpy": 30100
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 1,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 10,
+          "horse_name": "バニーラビット"
+        },
+        {
+          "finish": 2,
+          "horse_no": 5,
+          "horse_name": "ブランフォルテ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 8,
+          "horse_name": "メイショウソウセキ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              10
+            ],
+            "payout_jpy": 980
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              10
+            ],
+            "payout_jpy": 320
+          },
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 440
+          },
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 190
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              5,
+              8
+            ],
+            "payout_jpy": 5670
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              5,
+              10
+            ],
+            "payout_jpy": 7480
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              5,
+              10
+            ],
+            "payout_jpy": 1590
+          },
+          {
+            "combination": [
+              8,
+              10
+            ],
+            "payout_jpy": 470
+          },
+          {
+            "combination": [
+              5,
+              8
+            ],
+            "payout_jpy": 670
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              10,
+              5
+            ],
+            "payout_jpy": 13060
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              5,
+              8,
+              10
+            ],
+            "payout_jpy": 5380
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              10,
+              5,
+              8
+            ],
+            "payout_jpy": 47490
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 2,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 2,
+          "horse_name": "ハクサンテドリガワ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 3,
+          "horse_name": "グレンセロース"
+        },
+        {
+          "finish": 3,
+          "horse_no": 5,
+          "horse_name": "ルナフィオーレ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 600
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 240
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 330
+          },
+          {
+            "combination": [
+              5
+            ],
+            "payout_jpy": 200
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              2
+            ],
+            "payout_jpy": 1970
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              2,
+              3
+            ],
+            "payout_jpy": 2450
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              2,
+              3
+            ],
+            "payout_jpy": 830
+          },
+          {
+            "combination": [
+              2,
+              5
+            ],
+            "payout_jpy": 530
+          },
+          {
+            "combination": [
+              3,
+              5
+            ],
+            "payout_jpy": 800
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              2,
+              3
+            ],
+            "payout_jpy": 3870
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              2,
+              3,
+              5
+            ],
+            "payout_jpy": 3130
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              2,
+              3,
+              5
+            ],
+            "payout_jpy": 19150
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 3,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 12,
+          "horse_name": "テクノピーチ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 14,
+          "horse_name": "エレーデサンライズ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 6,
+          "horse_name": "メイショウメゴヒメ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              12
+            ],
+            "payout_jpy": 1050
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              12
+            ],
+            "payout_jpy": 310
+          },
+          {
+            "combination": [
+              14
+            ],
+            "payout_jpy": 180
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 180
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              6,
+              7
+            ],
+            "payout_jpy": 2060
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              12,
+              14
+            ],
+            "payout_jpy": 3410
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              12,
+              14
+            ],
+            "payout_jpy": 1050
+          },
+          {
+            "combination": [
+              6,
+              12
+            ],
+            "payout_jpy": 990
+          },
+          {
+            "combination": [
+              6,
+              14
+            ],
+            "payout_jpy": 660
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              12,
+              14
+            ],
+            "payout_jpy": 6790
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              6,
+              12,
+              14
+            ],
+            "payout_jpy": 5900
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              12,
+              14,
+              6
+            ],
+            "payout_jpy": 39050
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 4,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 8,
+          "horse_name": "ダンツウルス"
+        },
+        {
+          "finish": 2,
+          "horse_no": 3,
+          "horse_name": "ホウオウモチーヴ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 11,
+          "horse_name": "アラムシャピラス"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 350
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              8
+            ],
+            "payout_jpy": 110
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 160
+          },
+          {
+            "combination": [
+              11
+            ],
+            "payout_jpy": 110
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              3,
+              5
+            ],
+            "payout_jpy": 640
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              3,
+              8
+            ],
+            "payout_jpy": 810
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              3,
+              8
+            ],
+            "payout_jpy": 300
+          },
+          {
+            "combination": [
+              8,
+              11
+            ],
+            "payout_jpy": 170
+          },
+          {
+            "combination": [
+              3,
+              11
+            ],
+            "payout_jpy": 260
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              8,
+              3
+            ],
+            "payout_jpy": 1380
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              3,
+              8,
+              11
+            ],
+            "payout_jpy": 450
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              8,
+              3,
+              11
+            ],
+            "payout_jpy": 3570
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 5,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 7,
+          "horse_name": "ユーダブルワン"
+        },
+        {
+          "finish": 2,
+          "horse_no": 3,
+          "horse_name": "メイショウジェード"
+        },
+        {
+          "finish": 3,
+          "horse_no": 6,
+          "horse_name": "レイクイーン"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 360
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 140
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 420
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 260
+          }
+        ],
+        "frame_quinella": [],
+        "quinella": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 3710
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 950
+          },
+          {
+            "combination": [
+              6,
+              7
+            ],
+            "payout_jpy": 400
+          },
+          {
+            "combination": [
+              3,
+              6
+            ],
+            "payout_jpy": 1360
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              7,
+              3
+            ],
+            "payout_jpy": 4750
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              3,
+              6,
+              7
+            ],
+            "payout_jpy": 3770
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              7,
+              3,
+              6
+            ],
+            "payout_jpy": 23560
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 6,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 13,
+          "horse_name": "コズミックフレア"
+        },
+        {
+          "finish": 2,
+          "horse_no": 6,
+          "horse_name": "リリーサンダー"
+        },
+        {
+          "finish": 3,
+          "horse_no": 11,
+          "horse_name": "レッドフレーザー"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 910
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 280
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 230
+          },
+          {
+            "combination": [
+              11
+            ],
+            "payout_jpy": 790
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              4,
+              8
+            ],
+            "payout_jpy": 1700
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              6,
+              13
+            ],
+            "payout_jpy": 2940
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              6,
+              13
+            ],
+            "payout_jpy": 1050
+          },
+          {
+            "combination": [
+              11,
+              13
+            ],
+            "payout_jpy": 2710
+          },
+          {
+            "combination": [
+              6,
+              11
+            ],
+            "payout_jpy": 2260
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              13,
+              6
+            ],
+            "payout_jpy": 5570
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              6,
+              11,
+              13
+            ],
+            "payout_jpy": 18830
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              13,
+              6,
+              11
+            ],
+            "payout_jpy": 91460
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 7,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 1,
+          "horse_name": "ピアストイヤーズ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 10,
+          "horse_name": "ダイアナクイーン"
+        },
+        {
+          "finish": 3,
+          "horse_no": 13,
+          "horse_name": "マウンテンバローズ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 450
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 180
+          },
+          {
+            "combination": [
+              10
+            ],
+            "payout_jpy": 200
+          },
+          {
+            "combination": [
+              13
+            ],
+            "payout_jpy": 360
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              5
+            ],
+            "payout_jpy": 610
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              10
+            ],
+            "payout_jpy": 1270
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              10
+            ],
+            "payout_jpy": 420
+          },
+          {
+            "combination": [
+              1,
+              13
+            ],
+            "payout_jpy": 1660
+          },
+          {
+            "combination": [
+              10,
+              13
+            ],
+            "payout_jpy": 1880
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              1,
+              10
+            ],
+            "payout_jpy": 2400
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              10,
+              13
+            ],
+            "payout_jpy": 8110
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              1,
+              10,
+              13
+            ],
+            "payout_jpy": 37730
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 8,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 12,
+          "horse_name": "ジャンシ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 14,
+          "horse_name": "ミヤラティーニ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 7,
+          "horse_name": "ペルセポネ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              12
+            ],
+            "payout_jpy": 5960
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              12
+            ],
+            "payout_jpy": 1190
+          },
+          {
+            "combination": [
+              14
+            ],
+            "payout_jpy": 650
+          },
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 330
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              7,
+              8
+            ],
+            "payout_jpy": 5790
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              12,
+              14
+            ],
+            "payout_jpy": 53390
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              12,
+              14
+            ],
+            "payout_jpy": 15560
+          },
+          {
+            "combination": [
+              7,
+              12
+            ],
+            "payout_jpy": 6010
+          },
+          {
+            "combination": [
+              7,
+              14
+            ],
+            "payout_jpy": 1810
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              12,
+              14
+            ],
+            "payout_jpy": 94840
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              7,
+              12,
+              14
+            ],
+            "payout_jpy": 93010
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              12,
+              14,
+              7
+            ],
+            "payout_jpy": 893120
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 9,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 7,
+          "horse_name": "クスクス"
+        },
+        {
+          "finish": 2,
+          "horse_no": 3,
+          "horse_name": "タンテドヴィーヴル"
+        },
+        {
+          "finish": 3,
+          "horse_no": 6,
+          "horse_name": "ゼンノインヴォーク"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 700
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 190
+          },
+          {
+            "combination": [
+              3
+            ],
+            "payout_jpy": 110
+          },
+          {
+            "combination": [
+              6
+            ],
+            "payout_jpy": 130
+          }
+        ],
+        "frame_quinella": [],
+        "quinella": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 890
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              3,
+              7
+            ],
+            "payout_jpy": 310
+          },
+          {
+            "combination": [
+              6,
+              7
+            ],
+            "payout_jpy": 530
+          },
+          {
+            "combination": [
+              3,
+              6
+            ],
+            "payout_jpy": 180
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              7,
+              3
+            ],
+            "payout_jpy": 1930
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              3,
+              6,
+              7
+            ],
+            "payout_jpy": 960
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              7,
+              3,
+              6
+            ],
+            "payout_jpy": 6320
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 10,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 4,
+          "horse_name": "グランキングオー"
+        },
+        {
+          "finish": 2,
+          "horse_no": 1,
+          "horse_name": "ジューンエオス"
+        },
+        {
+          "finish": 3,
+          "horse_no": 7,
+          "horse_name": "プロミシングスター"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 1700
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 560
+          },
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 220
+          },
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 660
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              2
+            ],
+            "payout_jpy": 2150
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 5340
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              4
+            ],
+            "payout_jpy": 2170
+          },
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 4740
+          },
+          {
+            "combination": [
+              1,
+              7
+            ],
+            "payout_jpy": 2720
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              4,
+              1
+            ],
+            "payout_jpy": 10760
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              4,
+              7
+            ],
+            "payout_jpy": 37220
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              4,
+              1,
+              7
+            ],
+            "payout_jpy": 181950
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 11,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 1,
+          "horse_name": "ゼンダンハヤブサ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 17,
+          "horse_name": "ジョバンニ"
+        },
+        {
+          "finish": 3,
+          "horse_no": 18,
+          "horse_name": "レーゼドラマ"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 3310
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              1
+            ],
+            "payout_jpy": 600
+          },
+          {
+            "combination": [
+              17
+            ],
+            "payout_jpy": 150
+          },
+          {
+            "combination": [
+              18
+            ],
+            "payout_jpy": 420
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              1,
+              8
+            ],
+            "payout_jpy": 840
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              1,
+              17
+            ],
+            "payout_jpy": 5650
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              1,
+              17
+            ],
+            "payout_jpy": 1750
+          },
+          {
+            "combination": [
+              1,
+              18
+            ],
+            "payout_jpy": 4910
+          },
+          {
+            "combination": [
+              17,
+              18
+            ],
+            "payout_jpy": 1020
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              1,
+              17
+            ],
+            "payout_jpy": 17030
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              1,
+              17,
+              18
+            ],
+            "payout_jpy": 22060
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              1,
+              17,
+              18
+            ],
+            "payout_jpy": 261530
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "venue": "小倉",
+      "race_no": 12,
+      "status": "official",
+      "top3": [
+        {
+          "finish": 1,
+          "horse_no": 7,
+          "horse_name": "ミッキージャンプ"
+        },
+        {
+          "finish": 2,
+          "horse_no": 2,
+          "horse_name": "ヴィーナスバブル"
+        },
+        {
+          "finish": 3,
+          "horse_no": 4,
+          "horse_name": "ロングトールサリー"
+        }
+      ],
+      "payouts": {
+        "win": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 220
+          }
+        ],
+        "place": [
+          {
+            "combination": [
+              7
+            ],
+            "payout_jpy": 110
+          },
+          {
+            "combination": [
+              2
+            ],
+            "payout_jpy": 340
+          },
+          {
+            "combination": [
+              4
+            ],
+            "payout_jpy": 120
+          }
+        ],
+        "frame_quinella": [
+          {
+            "combination": [
+              2,
+              7
+            ],
+            "payout_jpy": 3670
+          }
+        ],
+        "quinella": [
+          {
+            "combination": [
+              2,
+              7
+            ],
+            "payout_jpy": 3570
+          }
+        ],
+        "wide": [
+          {
+            "combination": [
+              2,
+              7
+            ],
+            "payout_jpy": 770
+          },
+          {
+            "combination": [
+              4,
+              7
+            ],
+            "payout_jpy": 170
+          },
+          {
+            "combination": [
+              2,
+              4
+            ],
+            "payout_jpy": 780
+          }
+        ],
+        "exacta": [
+          {
+            "combination": [
+              7,
+              2
+            ],
+            "payout_jpy": 4680
+          }
+        ],
+        "trio": [
+          {
+            "combination": [
+              2,
+              4,
+              7
+            ],
+            "payout_jpy": 1170
+          }
+        ],
+        "trifecta": [
+          {
+            "combination": [
+              7,
+              2,
+              4
+            ],
+            "payout_jpy": 11280
+          }
+        ]
+      },
+      "warnings": [],
+      "source": {
+        "provider": "JRDB",
+        "result": "SED",
+        "payout": "HJC"
+      }
+    }
+  ]
+}
