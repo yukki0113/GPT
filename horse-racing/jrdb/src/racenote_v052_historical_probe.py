@@ -37,6 +37,14 @@ def build_warehouse_daily(
                      ("BAC", "KYI", "CHA", "CYB", "ZED", "ZKB")},
     )
     warehouse, warehouse_report = reader.build(day, source_member_date=day)
+    for bundle in warehouse.values():
+        if bundle["race"]["date"] != day.isoformat():
+            raise ValueError("Warehouse race date differs from target")
+        for horse in bundle["horses"]:
+            for run in horse.get("recent_runs") or []:
+                run_date = (run.get("race") or {}).get("date")
+                if isinstance(run_date, str) and run_date >= day.isoformat():
+                    raise ValueError("target/future result in Warehouse recent_runs")
     analysis = open_analysis_backend(analysis_root=analysis_root, backend="parquet")
     try:
         bases = [warehouse[key] for key in sorted(warehouse)]
@@ -116,7 +124,7 @@ def run(args: argparse.Namespace) -> dict:
             output_root=warehouse_root / "day_prep",
             rrdb_work_root=Path(tmp) / "warehouse",
         )
-        if set(warehouse) != {key.decode("ascii") for key in keys}:
+        if set(warehouse) != {str(key) for key in keys}:
             raise ValueError("Raw/Warehouse race keys differ before DAY PREP")
 
     for root in (raw_root, warehouse_root):
