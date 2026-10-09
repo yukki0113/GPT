@@ -212,4 +212,4 @@ No standalone RRDB mark column is created.
 
 ### EdgeDB v0.5 preview（研究表示）
 
-v0.5の出馬表 `Edge` 列と専用addonを、公開新聞とは別の手動import previewとして検証できます。取得元、未接続の初系履歴・レース前馬場、dry-run手順は [EDGE_V05_PREVIEW.md](EDGE_V05_PREVIEW.md) を参照してください。通常のSTANDARD Query・`special_memos`・Current Publishはこのpreviewで変更しません。
+v0.5の出馬表 `Edge` 列と専用addonは通常新聞の日次生成にも接続されています。運用と表示条件は [EDGE_V05_PRODUCTION.md](EDGE_V05_PRODUCTION.md) を参照してください。別の手動import previewでも検証できます。取得元、未接続の初系履歴・レース前馬場、dry-run手順は [EDGE_V05_PREVIEW.md](EDGE_V05_PREVIEW.md) を参照してください。通常のSTANDARD Query・`special_memos`・Current Publishはこのpreviewで変更しません。
