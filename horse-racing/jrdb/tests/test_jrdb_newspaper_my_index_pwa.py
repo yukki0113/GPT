@@ -22,7 +22,7 @@ class NewspaperMyIndexPwaTest(unittest.TestCase):
         self.assertIn('./newspaper-v10.js?v=3', service_worker)
         self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v72"', service_worker)
         self.assertIn('"training_edge_index"', script)
-        self.assertIn('sources.edge', script)
+        self.assertIn('sources.edge_v05', script)
         self.assertIn('"Edge○"', script)
 
     def test_independent_index_layer_does_not_recalculate_index(self) -> None:
@@ -77,10 +77,10 @@ if (context.newspaperV10MyIndexValue(legacy) !== "47.4") throw new Error("legacy
 const absent = {{ addons: {{}} }};
 if (context.newspaperV10MyIndexValue(absent) !== "—") throw new Error("absent addon should be dash");
 
-const ready = context.dayPackageSummary({{ manifest: {{date: "2026-10-10", source_status: {{ edge: {{ state: "READY" }} }} }}, races: [] }});
+const ready = context.dayPackageSummary({{ manifest: {{date: "2026-10-10", source_status: {{ edge_v05: {{ state: "PARTIAL" }} }} }}, races: [] }});
 if (ready !== "2026-10-10 / 0R / Eval— / 🐬— / Edge○") throw new Error(`READY summary mismatch: ${{ready}}`);
 
-const notReady = context.dayPackageSummary({{ manifest: {{date: "2026-10-10", source_status: {{ edge: {{ state: "ERROR" }} }} }}, races: [] }});
+const notReady = context.dayPackageSummary({{ manifest: {{date: "2026-10-10", source_status: {{ edge_v05: {{ state: "ERROR" }}, edge: {{ state: "READY" }} }} }}, races: [] }});
 if (notReady !== "2026-10-10 / 0R / Eval— / 🐬— / Edge—") throw new Error(`NOT_FOUND summary mismatch: ${{notReady}}`);
 """
 

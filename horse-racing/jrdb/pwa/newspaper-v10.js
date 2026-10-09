@@ -58,7 +58,7 @@ dayPackageSummary = function (value) {
   const sources = value.manifest.source_status || {};
   const evalState = sources.eval && sources.eval.state === "READY" ? "Eval○" : "Eval—";
   const ilukaState = sources.keibailuka && sources.keibailuka.state === "READY" ? "🐬○" : "🐬—";
-  const edgeState = sources.edge && sources.edge.state === "READY" ? "Edge○" : "Edge—";
+  const edgeState = sources.edge_v05 && ["READY", "PARTIAL"].includes(sources.edge_v05.state) ? "Edge○" : "Edge—";
   const count = Array.isArray(value.races) ? value.races.length : 0;
 
   return `${value.manifest.date} / ${count}R / ${evalState} / ${ilukaState} / ${edgeState}`;
