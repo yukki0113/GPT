@@ -240,7 +240,7 @@ def build_preview(base_day: Path, output_dir: Path, paci: Path, analysis_root: P
         audit = {'status': 'ERROR', 'message': f'{type(exc).__name__}: {exc}'[:500],
                  'day_package': package}
     audit_path = output_dir / 'audit.json'
-    saved = json.loads(audit_path.read_text(encoding='utf-8'))
+    saved = json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.is_file() else {}
     saved['edge_v05_preview'] = audit
     _write_json(saved, audit_path)
     return audit
