@@ -46,6 +46,9 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(build_matches(candidates, facts), [])
         with self.assertRaises(preview.PreviewError):
             preview.project_facts([{**raw, 'race_date': '2026-10-04'}], '2026-10-04')
+        smoke, _ = preview.project_facts([{**raw, 'race_date': '2026-10-04'}], '2026-10-04', allow_evaluated_date=True)
+        self.assertEqual(smoke[0]['race_date'], '2026-10-04')
+        self.assertIsNone(smoke[0]['going_bucket'])
 
     def test_order_retains_all_and_uses_family_diversity(self):
         details = {cid: {'family': family, 'oos_tier': tier, 'oos_2026': {'n': n},
