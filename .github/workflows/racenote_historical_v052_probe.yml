@@ -1,5 +1,11 @@
 name: RaceNote historical v0.5.2 golden probe
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v052_equivalence.py'
+      - 'horse-racing/jrdb/src/racenote_v052_historical_probe.py'
+      - '.github/workflows/racenote_historical_v052_probe.yml'
   push:
     branches: [codex/racenote-historical-v052]
     paths:
