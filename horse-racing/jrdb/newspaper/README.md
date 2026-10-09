@@ -209,3 +209,7 @@ No standalone RRDB mark column is created.
 日次Actions `jrdb_newspaper_day_issue.yml` はBaseをPACIから生成した後、同じPACIを `jrdb_edgedb_query.py --profile STANDARD` に一度渡し、全出走馬を照合する。入力の `analysis_bundle_drive_file_id`、`analysis_generation_id`、`analysis_manifest_sha256` は既存のcanonical Analysis Parquet current世代を指定する。Actionsはbundleを取得して `resolve_current()` とmanifest SHAを検証し、独自のAnalysisコピーを正本にしない。
 
 `jrdb_newspaper_query_edge_day.py` がQuery JSONLを既存Edge adapterとexact mergeに渡す。Queryまたはmergeが失敗してもBase成果物を残し、manifestと各raceの `source_status.edge.state` を `ERROR` にしてauditに理由を記録する。成功時は `READY`。通常の `special_memos` には `STANDARD` かつ `production_eligible=true` のsignalだけを表示する。旧matcher JSONLは互換入力として引き続き受けられる。
+
+### EdgeDB v0.5 preview（研究表示）
+
+v0.5の出馬表 `Edge` 列と専用addonを、公開新聞とは別の手動import previewとして検証できます。取得元、未接続の初系履歴・レース前馬場、dry-run手順は [EDGE_V05_PREVIEW.md](EDGE_V05_PREVIEW.md) を参照してください。通常のSTANDARD Query・`special_memos`・Current Publishはこのpreviewで変更しません。
