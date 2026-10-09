@@ -40,7 +40,7 @@ materialize the reviewed public bundle through the shared helper, then call
   do not clear first-cycle usage to replay a date.
 - Detailed commands and gate: `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
 
-Last reviewed: 2026-09-13
+Last reviewed: 2026-10-09
 
 ## Thread restart bootstrap
 
@@ -225,7 +225,12 @@ JRDBのRaw / Analysis / Fact Lite / research asset等をGoogle Driveへ保存・
 
 - production-standard: **GitHub source / artifact -> GPTが取得 -> GPT runtime -> connected native Google Drive connectorでupload**
 - Drive入力の利用: **native Google Drive connector -> GPT runtime -> GitHub正本moduleを取得してGPT側で実行**
-- prohibited: GitHub ActionsからDriveを直接read / writeする経路全般。旧`[gpt-gdrive-request]`だけでなく、workflow内の`gdown` / `drive.google.com` / Google Drive API直接利用も含む。
+- prohibited: GitHub ActionsからDriveを直接read / writeする通常経路全般。旧`[gpt-gdrive-request]`だけでなく、workflow内のad-hoc `gdown` / `drive.google.com` / Google Drive API直接利用も含む。
+- narrow exception: accepted RaceNote 2010–2025 Historical v0.5.2 input may use
+  `tools/gpt_io/public_drive/fetch.py` with the repository-reviewed,
+  SHA-256-pinned manifest `config/public_drive/racenote_historical_golden_20251228_v1.json`.
+  This is unauthenticated read-only public transport only; direct URLs,
+  authenticated fallback, arbitrary file IDs and Drive writes remain prohibited.
 - `.github/workflows/gpt_gdrive_request_issue.yml` は運用廃止・削除済み。`tools/gpt_io/gdrive/` はcurrent operational routeではない。
 - GitHub Actions artifactをDriveへ保存する場合は、GPTがGitHub connectorでartifactを取得し、native Google Drive connectorへ渡す。
 - Drive transportだけを理由にIssue / Actionsを作らない。
