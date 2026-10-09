@@ -153,28 +153,67 @@ jobs:
           if data.get("date") != os.environ["REQUEST_DATE"]:
               raise SystemExit("RaceNote date mismatch")
           fields=["date","venue_code","venue","race_no","race_key","horse_no","horse_name","mark","prediction_rank","confidence","race_short_comment","model_version","source_semantic_sha256"]
+          current={}
+          for p in Path("/tmp/current-day/races").glob("*.json"):
+              b=json.loads(p.read_text(encoding="utf-8"))
+              r=b["race"]
+              key=(str(r["venue"]),int(r["race_no"]))
+              current[key]={
+                  "venue_code":str(r["venue_code"]).zfill(2),
+                  "race_key":str(r["race_key"]),
+                  "horses":{int(h["key"]["horse_no"]):str(h["basic"]["horse_name"]) for h in b.get("horses") or []},
+              }
           count=0
+          marked=0
+          sparse=False
           with Path("/tmp/kensho/racenote.csv").open("w",encoding="utf-8",newline="") as h:
               w=csv.DictWriter(h,fieldnames=fields)
               w.writeheader()
               for race in data.get("races") or []:
-                  for horse in race.get("horses") or []:
-                      w.writerow({
-                          "date":data["date"],"venue_code":race["venue_code"],"venue":race["venue"],
-                          "race_no":race["race_no"],"race_key":race["race_key"],
-                          "horse_no":horse["horse_no"],"horse_name":horse["horse_name"],
-                          "mark":horse.get("mark") or "","prediction_rank":horse["prediction_rank"],
-                          "confidence":horse["confidence"],"race_short_comment":race.get("race_short_comment") or "",
-                          "model_version":data["model_version"],
-                          "source_semantic_sha256":horse["source_semantic_sha256"],
-                      })
-                      count+=1
+                  if isinstance(race.get("horses"),list):
+                      for horse in race.get("horses") or []:
+                          w.writerow({
+                              "date":data["date"],"venue_code":race["venue_code"],"venue":race["venue"],
+                              "race_no":race["race_no"],"race_key":race["race_key"],
+                              "horse_no":horse["horse_no"],"horse_name":horse["horse_name"],
+                              "mark":horse.get("mark") or "","prediction_rank":horse["prediction_rank"],
+                              "confidence":horse["confidence"],"race_short_comment":race.get("race_short_comment") or "",
+                              "model_version":data["model_version"],
+                              "source_semantic_sha256":horse["source_semantic_sha256"],
+                          })
+                          count+=1
+                          marked+=int(bool(str(horse.get("mark") or "").strip()))
+                  else:
+                      sparse=True
+                      venue=str(race.get("venue") or "").strip()
+                      race_no=int(race.get("race_no"))
+                      base=current.get((venue,race_no))
+                      if base is None:
+                          raise SystemExit(f"RaceNote race not found in current day: {(venue,race_no)}")
+                      marks=race.get("marks") or []
+                      if len(marks)!=5:
+                          raise SystemExit(f"RaceNote sparse marks must contain 5 rows: {(venue,race_no)} got={len(marks)}")
+                      for item in marks:
+                          horse_no=int(item["horse_no"])
+                          horse_name=base["horses"].get(horse_no)
+                          if not horse_name:
+                              raise SystemExit(f"RaceNote horse not found in current day: {(venue,race_no,horse_no)}")
+                          w.writerow({
+                              "date":data["date"],"venue_code":base["venue_code"],"venue":venue,
+                              "race_no":race_no,"race_key":base["race_key"],
+                              "horse_no":horse_no,"horse_name":horse_name,
+                              "mark":str(item.get("mark") or "").strip(),"prediction_rank":int(item["prediction_rank"]),
+                              "confidence":"","race_short_comment":str(race.get("race_short_comment") or "").strip(),
+                              "model_version":str(race.get("model_version") or "").strip(),
+                              "source_semantic_sha256":str(race.get("source_semantic_sha256") or "").strip(),
+                          })
+                          count+=1
+                          marked+=1
           race_count=len(data.get("races") or [])
           if race_count != 24 or count <= 0:
               raise SystemExit(f"RaceNote completeness mismatch races={race_count} horses={count}")
-          marked=sum(1 for race in data.get("races") or [] for horse in race.get("horses") or [] if str(horse.get("mark") or "").strip())
           Path("/tmp/kensho/expected-counts.json").write_text(
-              json.dumps({"racenote":count,"racenote_marked":marked},ensure_ascii=False)+"\n",
+              json.dumps({"racenote":count,"racenote_marked":marked,"racenote_sparse_marks":sparse},ensure_ascii=False)+"\n",
               encoding="utf-8")
           PY
 
@@ -192,7 +231,17 @@ jobs:
           then
             EXTRA_ARGS+=(--keibailuka-json /tmp/kensho/keibailuka.json)
           fi
-          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/current-day             --output-dir /tmp/merged-day             --racenote-csv /tmp/kensho/racenote.csv             --rrdb-recommendation-csv "$RRDB_PATH"             "${EXTRA_ARGS[@]}"             --revision "$REQUEST_REVISION"             > /tmp/kensho/merge-result.json
+          RN_ARGS=()
+          if python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("/tmp/kensho/expected-counts.json").read_text(encoding="utf-8"))
+          raise SystemExit(0 if x.get("racenote_sparse_marks") else 1)
+          PY
+          then
+            RN_ARGS+=(--racenote-sparse-marks)
+          fi
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/current-day             --output-dir /tmp/merged-day             --racenote-csv /tmp/kensho/racenote.csv             "${RN_ARGS[@]}"             --rrdb-recommendation-csv "$RRDB_PATH"             "${EXTRA_ARGS[@]}"             --revision "$REQUEST_REVISION"             > /tmp/kensho/merge-result.json
 
       - name: Validate personal merge
         run: |
