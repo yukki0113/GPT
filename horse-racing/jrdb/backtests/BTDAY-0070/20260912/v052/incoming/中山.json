@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "race_model": "中山ダート1800mの未勝利。差し型のサクセスボーイと差し型のソラニワラエバを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      9,
+      2,
+      7,
+      6,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "サクセスボーイはIDM25、予測着差0で差し想定。4着・IDM25の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ソラニワラエバはIDM19、予測着差3で差し想定。7着・IDM24を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ナムラダックスはIDM16、差し想定。7着・IDM16を根拠に、想定したダート1800mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ゼラニウムはIDM12.1、差し想定。10着・IDM16を根拠に、想定したダート1800mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "グラスクラージュは追込想定でIDM12。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "イキフンにも勝負圏へ入る条件はあるが、△2のゼラニウムはIDM12.1と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "サクセスボーイはIDM25、予測着差0で差し想定。4着・IDM25の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ソラニワラエバはIDM19、予測着差3で差し想定。7着・IDM24を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲グラスクラージュはグラスクラージュは追込想定でIDM12。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        2,
+        6,
+        1,
+        7
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "イキフンはordinary five外だがIDM10、差し想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "イキフンの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 2,
+      "honmei_win_case": "サクセスボーイはIDM25、予測着差0で差し想定。4着・IDM25の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ソラニワラエバはIDM19、予測着差3で差し想定。7着・IDM24を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎サクセスボーイは○ソラニワラエバよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "race_model": "中山芝1600mの未勝利。逃げ型のヨドノプレミアムと追込型のアイファーマーリンを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      9,
+      10,
+      2,
+      4,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "ヨドノプレミアムはIDM34、予測着差0で逃げ想定。3着・IDM34の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 10,
+        "case": "アイファーマーリンはIDM32、予測着差4で追込想定。2着・IDM32を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "モーモーゼロはIDM30、追込想定。7着・IDM29を根拠に、想定した芝1600mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 1,
+        "case": "プレママドンナはIDM27.2、差し想定。8着・IDM27を根拠に、想定した芝1600mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "イントゥーザブルーは先行想定でIDM29.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "マーズワースにも勝負圏へ入る条件はあるが、△2のプレママドンナはIDM27.2と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヨドノプレミアムはIDM34、予測着差0で逃げ想定。3着・IDM34の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 アイファーマーリンはIDM32、予測着差4で追込想定。2着・IDM32を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲イントゥーザブルーはイントゥーザブルーは先行想定でIDM29.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        10,
+        2,
+        4,
+        1
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "マーズワースはordinary five外だがIDM27、追込想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "マーズワースの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 10,
+      "honmei_win_case": "ヨドノプレミアムはIDM34、予測着差0で逃げ想定。3着・IDM34の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "アイファーマーリンはIDM32、予測着差4で追込想定。2着・IDM32を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎ヨドノプレミアムは○アイファーマーリンよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "race_model": "中山ダート1200mの未勝利。先行型のジーティーニッツァと先行型のエリースノーを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      10,
+      9,
+      2,
+      8,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "ジーティーニッツァはIDM44、予測着差2で先行想定。4着・IDM34の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 9,
+        "case": "エリースノーはIDM43、予測着差1で先行想定。2着・IDM43を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ハングローズはIDM39.2、先行想定。4着・IDM39を根拠に、想定したダート1200mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ミッキーサウザンドはIDM37、逃げ想定。3着・IDM37を根拠に、想定したダート1200mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "セイウンヤオヨロズは逃げ想定でIDM39.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "ツクバヴァンガードにも勝負圏へ入る条件はあるが、△2のミッキーサウザンドはIDM37と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ジーティーニッツァはIDM44、予測着差2で先行想定。4着・IDM34の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 エリースノーはIDM43、予測着差1で先行想定。2着・IDM43を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲セイウンヤオヨロズはセイウンヤオヨロズは逃げ想定でIDM39.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        9,
+        2,
+        8,
+        15
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "ツクバヴァンガードはordinary five外だがIDM39、先行想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ツクバヴァンガードの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 9,
+      "honmei_win_case": "ジーティーニッツァはIDM44、予測着差2で先行想定。4着・IDM34の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "エリースノーはIDM43、予測着差1で先行想定。2着・IDM43を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎ジーティーニッツァは○エリースノーよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "race_model": "中山芝2000mの未勝利。先行型のヒシナスキロと逃げ型のミナヅキを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      16,
+      2,
+      12,
+      8,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "ヒシナスキロはIDM47.1、予測着差1で先行想定。8着・IDM38の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ミナヅキはIDM43、予測着差0で逃げ想定。6着・IDM40を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ヤマニンリンキングはIDM42.3、差し想定。2着・IDM38を根拠に、想定した芝2000mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 7,
+        "case": "アンヴデットはIDM42、差し想定。5着・IDM38を根拠に、想定した芝2000mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "ナイトバードは差し想定でIDM43.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "シルバープレミアにも勝負圏へ入る条件はあるが、△2のアンヴデットはIDM42と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヒシナスキロはIDM47.1、予測着差1で先行想定。8着・IDM38の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ミナヅキはIDM43、予測着差0で逃げ想定。6着・IDM40を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲ナイトバードはナイトバードは差し想定でIDM43.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        2,
+        12,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "シルバープレミアはordinary five外だがIDM39、先行想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "シルバープレミアの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 2,
+      "honmei_win_case": "ヒシナスキロはIDM47.1、予測着差1で先行想定。8着・IDM38の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ミナヅキはIDM43、予測着差0で逃げ想定。6着・IDM40を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎ヒシナスキロは○ミナヅキよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "race_model": "中山芝1600mの新馬。差し型のサトノハクマイと差し型のラインディアーナを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      8,
+      6,
+      9,
+      4,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "サトノハクマイはIDM50.2、予測着差0で差し想定。初戦想定IDM50.2の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ラインディアーナはIDM41.3、予測着差5で差し想定。初戦想定IDM41.3を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ブルードロップはIDM36.6、差し想定。初戦想定IDM36.6を根拠に、想定した芝1600mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 7,
+        "case": "メイプルルビーはIDM35.3、差し想定。初戦想定IDM35.3を根拠に、想定した芝1600mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ワンモアタイムは差し想定でIDM39。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "グリマルキンにも勝負圏へ入る条件はあるが、△2のメイプルルビーはIDM35.3と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "サトノハクマイはIDM50.2、予測着差0で差し想定。初戦想定IDM50.2の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ラインディアーナはIDM41.3、予測着差5で差し想定。初戦想定IDM41.3を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲ワンモアタイムはワンモアタイムは差し想定でIDM39。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        6,
+        9,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "グリマルキンはordinary five外だがIDM33.1、差し想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "グリマルキンの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 6,
+      "honmei_win_case": "サトノハクマイはIDM50.2、予測着差0で差し想定。初戦想定IDM50.2の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ラインディアーナはIDM41.3、予測着差5で差し想定。初戦想定IDM41.3を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎サトノハクマイは○ラインディアーナよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "race_model": "中山ダート1200mの新馬。差し型のレーヴデリオンと差し型のソットマツモトを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      1,
+      7,
+      2,
+      11,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "レーヴデリオンはIDM38.2、予測着差0で差し想定。初戦想定IDM38.2の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ソットマツモトはIDM32.3、予測着差2で差し想定。初戦想定IDM32.3を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ナイトパイロットはIDM24.6、差し想定。初戦想定IDM24.6を根拠に、想定したダート1200mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 3,
+        "case": "ジェミニディウはIDM20.1、差し想定。初戦想定IDM20.1を根拠に、想定したダート1200mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "アーバーバイティは差し想定でIDM26.7。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "ノーブルパラスにも勝負圏へ入る条件はあるが、△2のジェミニディウはIDM20.1と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "レーヴデリオンはIDM38.2、予測着差0で差し想定。初戦想定IDM38.2の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ソットマツモトはIDM32.3、予測着差2で差し想定。初戦想定IDM32.3を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲アーバーバイティはアーバーバイティは差し想定でIDM26.7。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        7,
+        2,
+        11,
+        3
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "ノーブルパラスはordinary five外だがIDM18.5、差し想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ノーブルパラスの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 7,
+      "honmei_win_case": "レーヴデリオンはIDM38.2、予測着差0で差し想定。初戦想定IDM38.2の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ソットマツモトはIDM32.3、予測着差2で差し想定。初戦想定IDM32.3を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎レーヴデリオンは○ソットマツモトよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "race_model": "中山ダート1800mの未勝利。差し型のカシマライフウと先行型のイーサンミラーを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      14,
+      7,
+      4,
+      9,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "カシマライフウはIDM45、予測着差0で差し想定。2着・IDM45の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 7,
+        "case": "イーサンミラーはIDM42、予測着差0で先行想定。3着・IDM42を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "サングラントはIDM41.1、差し想定。2着・IDM36を根拠に、想定したダート1800mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ユイノサダハルはIDM42.3、差し想定。3着・IDM42を根拠に、想定したダート1800mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "イントゥザウインドは先行想定でIDM42.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "ゴールドプレイヤーにも勝負圏へ入る条件はあるが、△2のユイノサダハルはIDM42.3と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "カシマライフウはIDM45、予測着差0で差し想定。2着・IDM45の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 イーサンミラーはIDM42、予測着差0で先行想定。3着・IDM42を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲イントゥザウインドはイントゥザウインドは先行想定でIDM42.1。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        7,
+        4,
+        9,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "ゴールドプレイヤーはordinary five外だがIDM40、差し想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ゴールドプレイヤーの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 7,
+      "honmei_win_case": "カシマライフウはIDM45、予測着差0で差し想定。2着・IDM45の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "イーサンミラーはIDM42、予測着差0で先行想定。3着・IDM42を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎カシマライフウは○イーサンミラーよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "race_model": "中山芝2500mの1勝クラス。逃げ型のヤマニンヘルシェと差し型のベルトラッキを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      5,
+      13,
+      1,
+      8,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "ヤマニンヘルシェはIDM52.2、予測着差0で逃げ想定。2着・IDM51の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 13,
+        "case": "ベルトラッキはIDM53、予測着差13で差し想定。1着・IDM51を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 8,
+        "case": "マイネルアウルムはIDM51、差し想定。4着・IDM43を根拠に、想定した芝2500mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 11,
+        "case": "マーゴットドライはIDM46、差し想定。1着・IDM44を根拠に、想定した芝2500mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "ヴァルカンテソーロは追込想定でIDM47。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "コスモナエマにも勝負圏へ入る条件はあるが、△2のマーゴットドライはIDM46と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヤマニンヘルシェはIDM52.2、予測着差0で逃げ想定。2着・IDM51の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ベルトラッキはIDM53、予測着差13で差し想定。1着・IDM51を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲ヴァルカンテソーロはヴァルカンテソーロは追込想定でIDM47。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        13,
+        8,
+        1,
+        11
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "コスモナエマはordinary five外だがIDM44.1、逃げ想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "コスモナエマの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 13,
+      "honmei_win_case": "ヤマニンヘルシェはIDM52.2、予測着差0で逃げ想定。2着・IDM51の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ベルトラッキはIDM53、予測着差13で差し想定。1着・IDM51を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎ヤマニンヘルシェは○ベルトラッキよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "race_model": "中山芝1600mの2勝クラス。先行型のシャンソンドールと先行型のロケベンドラを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      12,
+      2,
+      10,
+      1,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "シャンソンドールはIDM59、予測着差0で先行想定。3着・IDM59の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ロケベンドラはIDM58、予測着差3で先行想定。1着・IDM58を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ホウオウシンデレラはIDM54.1、差し想定。4着・IDM57を根拠に、想定した芝1600mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 13,
+        "case": "キスアンドクライはIDM53.1、先行想定。4着・IDM53を根拠に、想定した芝1600mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "ルナルーチェットは先行想定でIDM55。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "ミーントゥビーにも勝負圏へ入る条件はあるが、△2のキスアンドクライはIDM53.1と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "シャンソンドールはIDM59、予測着差0で先行想定。3着・IDM59の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ロケベンドラはIDM58、予測着差3で先行想定。1着・IDM58を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲ルナルーチェットはルナルーチェットは先行想定でIDM55。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        2,
+        10,
+        1,
+        13
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "ミーントゥビーはordinary five外だがIDM54、追込想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ミーントゥビーの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 2,
+      "honmei_win_case": "シャンソンドールはIDM59、予測着差0で先行想定。3着・IDM59の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ロケベンドラはIDM58、予測着差3で先行想定。1着・IDM58を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎シャンソンドールは○ロケベンドラよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "race_model": "中山芝2000mの3勝クラス。逃げ型のダンツファイターと追込型のデルアヴァーを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      10,
+      1,
+      9,
+      3,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "ダンツファイターはIDM61.3、予測着差3で逃げ想定。2着・IDM59の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 1,
+        "case": "デルアヴァーはIDM62、予測着差3で追込想定。4着・IDM62を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "ルールーリマはIDM59.1、逃げ想定。1着・IDM57を根拠に、想定した芝2000mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ショウナンサムデイはIDM59、逃げ想定。3着・IDM58を根拠に、想定した芝2000mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ダノンジャイアンは先行想定でIDM57。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "マイネルフーガにも勝負圏へ入る条件はあるが、△2のショウナンサムデイはIDM59と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダンツファイターはIDM61.3、予測着差3で逃げ想定。2着・IDM59の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 デルアヴァーはIDM62、予測着差3で追込想定。4着・IDM62を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲ダノンジャイアンはダノンジャイアンは先行想定でIDM57。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        1,
+        3,
+        8,
+        9
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "マイネルフーガはordinary five外だがIDM55.3、先行想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "マイネルフーガの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 1,
+      "honmei_win_case": "ダンツファイターはIDM61.3、予測着差3で逃げ想定。2着・IDM59の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "デルアヴァーはIDM62、予測着差3で追込想定。4着・IDM62を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎ダンツファイターは○デルアヴァーよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "race_model": "中山ダート1200mのオープン。先行型のゲイルライダーと逃げ型のジョーローリットを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      10,
+      5,
+      13,
+      9,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "ゲイルライダーはIDM64、予測着差2で先行想定。1着・IDM64の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ジョーローリットはIDM62、予測着差2で逃げ想定。3着・IDM58を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 9,
+        "case": "ブレーザーはIDM61.5、先行想定。1着・IDM65を根拠に、想定したダート1200mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ユキマルはIDM60.2、差し想定。5着・IDM59を根拠に、想定したダート1200mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "ショウナンアビアスは差し想定でIDM61。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "ロードフロンティアにも勝負圏へ入る条件はあるが、△2のユキマルはIDM60.2と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ゲイルライダーはIDM64、予測着差2で先行想定。1着・IDM64の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ジョーローリットはIDM62、予測着差2で逃げ想定。3着・IDM58を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲ショウナンアビアスはショウナンアビアスは差し想定でIDM61。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        5,
+        9,
+        13,
+        15
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "ロードフロンティアはordinary five外だがIDM59.1、差し想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ロードフロンティアの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 5,
+      "honmei_win_case": "ゲイルライダーはIDM64、予測着差2で先行想定。1着・IDM64の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ジョーローリットはIDM62、予測着差2で逃げ想定。3着・IDM58を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎ゲイルライダーは○ジョーローリットよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "race_model": "中山ダート1800mの1勝クラス。逃げ型のユアフェリシティと先行型のヨドノタイヨウを主線に、前半の位置取りと直線まで脚を残せるかが勝敗を分ける。",
+    "marks": [
+      12,
+      14,
+      8,
+      7,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "ユアフェリシティはIDM53.5、予測着差0で逃げ想定。3着・IDM50の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。"
+      },
+      {
+        "horse_no": 14,
+        "case": "ヨドノタイヨウはIDM52、予測着差2で先行想定。2着・IDM52を踏まえ、◎を射程に置いて直線で迫る本線相手とする。"
+      },
+      {
+        "horse_no": 7,
+        "case": "タリスマンはIDM46、追込想定。9着・IDM37を根拠に、想定したダート1800mの流れで勝負圏へ入る通常経路を持つ。"
+      },
+      {
+        "horse_no": 13,
+        "case": "ジェネラスキングはIDM43、追込想定。4着・IDM41を根拠に、想定したダート1800mの流れで勝負圏へ入る通常経路を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "インナーパッションは差し想定でIDM47。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "ボールドタワーにも勝負圏へ入る条件はあるが、△2のジェネラスキングはIDM43と通常経路の再現性で上回るため最終5頭に残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ユアフェリシティはIDM53.5、予測着差0で逃げ想定。3着・IDM50の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。 ヨドノタイヨウはIDM52、予測着差2で先行想定。2着・IDM52を踏まえ、◎を射程に置いて直線で迫る本線相手とする。 ▲インナーパッションはインナーパッションは差し想定でIDM47。◎○と異なる位置取りから運べるため、主線2頭の形が崩れた時に直線で浮上する一発経路を持つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        14,
+        8,
+        7,
+        13
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "ボールドタワーはordinary five外だがIDM42、差し想定。展開がこの馬の形へ偏れば勝負圏へ入る余地があるため外部challengerとして比較した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ボールドタワーの別経路は認めるが、通常5頭の能力値・近走再現性・予測位置の総合比較を上に取り、ordinary fiveを維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 14,
+      "honmei_win_case": "ユアフェリシティはIDM53.5、予測着差0で逃げ想定。3着・IDM50の内容から、自分の位置を確保して直線で先に勝負を決める経路を最上位に取る。",
+      "second_case": "ヨドノタイヨウはIDM52、予測着差2で先行想定。2着・IDM52を踏まえ、◎を射程に置いて直線で迫る本線相手とする。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎ユアフェリシティは○ヨドノタイヨウよりも、予測位置とIDMの組み合わせから自ら勝ち筋を作りやすい。安定着順より勝ち切る経路を優先してこの順序とした。"
+    }
+  }
+]
