@@ -509,6 +509,7 @@ def _normalize_racenote(
     line_no: int,
     *,
     comments: bool,
+    sparse_marks: bool = False,
 ) -> dict[str, Any]:
     try:
         out = {
@@ -561,7 +562,9 @@ def _normalize_racenote(
         or not out["model_version"]
     ):
         raise ValueError(f"blank required RaceNote value at line {line_no}")
-    if out["confidence"] not in RACENOTE_CONFIDENCE:
+    if out["confidence"] not in RACENOTE_CONFIDENCE and not (
+        sparse_marks and out["confidence"] == ""
+    ):
         raise ValueError(
             f"invalid RaceNote confidence at line {line_no}: "
             f"{out['confidence']!r}"
@@ -593,6 +596,8 @@ def _normalize_racenote(
 
 def load_racenote(
     path: Path,
+    *,
+    sparse_marks: bool = False,
 ) -> tuple[
     dict[tuple[str, int, int], dict[str, Any]],
     dict[tuple[str, int], dict[str, Any]],
@@ -608,7 +613,12 @@ def load_racenote(
             )
         comments = "horse_short_comment" in fields
         rows = [
-            _normalize_racenote(row, n, comments=comments)
+            _normalize_racenote(
+                row,
+                n,
+                comments=comments,
+                sparse_marks=sparse_marks,
+            )
             for n, row in enumerate(reader, start=2)
         ]
     if not rows:
@@ -640,9 +650,11 @@ def load_racenote(
     )
     for race_id, race_rows in grouped.items():
         ranks = sorted(row["prediction_rank"] for row in race_rows)
-        if ranks != list(range(1, len(race_rows) + 1)):
+        expected_ranks = [1, 2, 3, 4, 5] if sparse_marks else list(range(1, len(race_rows) + 1))
+        if ranks != expected_ranks:
             raise ValueError(
-                f"RaceNote ranks are not complete 1..N for {race_id}: {ranks}"
+                f"RaceNote ranks mismatch for {race_id}: "
+                f"{ranks} expected={expected_ranks}"
             )
         for field in same_fields:
             values = {row[field] for row in race_rows}
@@ -714,6 +726,7 @@ def merge_day(
     eval_csv: Path | None = None,
     iluka_json: Path | None = None,
     racenote_csv: Path | None = None,
+    racenote_sparse_marks: bool = False,
     my_index_csv: Path | None = None,
     rrdb_recommendation_csv: Path | None = None,
     rrdb_recommendation_json: Path | None = None,
@@ -776,7 +789,10 @@ def merge_day(
     rn_index, rn_races, rn_sha = (
         ({}, {}, None)
         if racenote_csv is None
-        else load_racenote(racenote_csv)
+        else load_racenote(
+            racenote_csv,
+            sparse_marks=racenote_sparse_marks,
+        )
     )
     iluka_index = {
         (entry["venue"], entry["race_no"], entry["horse_name"]): entry
@@ -834,7 +850,10 @@ def merge_day(
                 raise ValueError(
                     f"RaceNote race identity mismatch for {race_id}"
                 )
-            if rn_meta["horse_count"] != len(bundle["horses"]):
+            if (
+                not racenote_sparse_marks
+                and rn_meta["horse_count"] != len(bundle["horses"])
+            ):
                 raise ValueError(
                     f"RaceNote headcount mismatch for {race_id}"
                 )
@@ -948,6 +967,8 @@ def merge_day(
                 key = (venue_code, race_no, horse_no)
                 row = rn_index.get(key)
                 if row is None:
+                    if racenote_sparse_marks:
+                        continue
                     raise ValueError(
                         f"RaceNote row missing for {key} {horse_name}"
                     )
@@ -1074,7 +1095,7 @@ def merge_day(
                     f"merged={rn_merged}/{count}{comment_msg}; "
                     f"handoff={racenote_csv.name}"
                 ),
-                expected=count,
+                expected=(len([k for k in rn_index if k[:2] == race_id]) if racenote_sparse_marks else count),
                 resolved=rn_merged,
             )
 
@@ -1308,6 +1329,7 @@ def merge_day(
                 )
                 for label in sorted(RACENOTE_CONFIDENCE)
             },
+            "sparse_marks": racenote_sparse_marks,
             "horse_comment_extension": extension,
             "expected_horse_comments": (
                 sum(
@@ -1366,6 +1388,11 @@ def main() -> int:
     parser.add_argument("--keibailuka-json", type=Path)
     parser.add_argument("--racenote-csv", type=Path)
     parser.add_argument(
+        "--racenote-sparse-marks",
+        action="store_true",
+        help="Treat RaceNote CSV as exactly five marked horses per race; unlisted horses remain blank.",
+    )
+    parser.add_argument(
         "--my-index-csv",
         type=Path,
         help=(
@@ -1389,6 +1416,7 @@ def main() -> int:
                 else args.keibailuka_json
             ),
             racenote_csv=args.racenote_csv,
+            racenote_sparse_marks=args.racenote_sparse_marks,
             my_index_csv=args.my_index_csv,
             rrdb_recommendation_csv=args.rrdb_recommendation_csv,
             rrdb_recommendation_json=args.rrdb_recommendation_json,
