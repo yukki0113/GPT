@@ -58,11 +58,6 @@ jobs:
           Path('/tmp/routed_issue.json').write_text(
               json.dumps(issue, ensure_ascii=False, indent=2), encoding='utf-8'
           )
-          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
-              f.write(f"ISSUE_TITLE={issue.get('title','')}\n")
-              body = str(issue.get('body') or '').replace('%','%25').replace('\r','%0D').replace('\n','%0A')
-              f.write(f"ISSUE_BODY={body}\n")
-              f.write(f"ISSUE_NUMBER={issue_text}\n")
           with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as f:
               f.write(f"issue_number={issue_text}\n")
           PY
@@ -80,10 +75,6 @@ jobs:
         run: python -m pip install -r boat-racing/requirements.txt
 
       - name: Parse request
-        env:
-          ISSUE_TITLE: ${{ env.ISSUE_TITLE }}
-          ISSUE_BODY: ${{ env.ISSUE_BODY }}
-          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
         run: |
           python - <<'PY'
           import json
@@ -92,8 +83,9 @@ jobs:
           from datetime import datetime
           from pathlib import Path
 
+          issue = json.loads(Path('/tmp/routed_issue.json').read_text(encoding='utf-8'))
           prefix = os.environ['REQUEST_PREFIX']
-          title = os.environ['ISSUE_TITLE']
+          title = str(issue.get('title') or '')
           if not title.startswith(prefix):
               raise SystemExit('Unexpected issue title')
 
@@ -102,7 +94,7 @@ jobs:
               raise SystemExit('Invalid request_id')
 
           try:
-              request = json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+              request = json.loads(str(issue.get('body') or '').strip())
           except json.JSONDecodeError as exc:
               raise SystemExit(f'Issue body must be raw JSON: {exc}') from exc
 
@@ -150,7 +142,7 @@ jobs:
 
           resolved = {
               'request_id': request_id,
-              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'issue_number': int(issue['number']),
               'output_dir': output_dir,
               'command': [
                   'python',

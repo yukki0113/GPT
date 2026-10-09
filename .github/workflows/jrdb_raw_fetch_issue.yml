@@ -54,11 +54,6 @@ jobs:
           Path('/tmp/routed_issue.json').write_text(
               json.dumps(issue, ensure_ascii=False, indent=2), encoding='utf-8'
           )
-          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as f:
-              f.write(f"ISSUE_TITLE={issue.get('title','')}\n")
-              body = str(issue.get('body') or '').replace('%','%25').replace('\r','%0D').replace('\n','%0A')
-              f.write(f"ISSUE_BODY={body}\n")
-              f.write(f"ISSUE_NUMBER={issue_text}\n")
           with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as f:
               f.write(f"issue_number={issue_text}\n")
           PY
@@ -70,13 +65,12 @@ jobs:
 
       - name: Parse request
         id: request
-        env:
-          ISSUE_BODY: ${{ env.ISSUE_BODY }}
         run: |
           python - <<'PY'
-          import json, os, re
+          import json, re
           from pathlib import Path
-          req=json.loads((os.environ.get('ISSUE_BODY') or '').strip())
+          issue=json.loads(Path('/tmp/routed_issue.json').read_text(encoding='utf-8'))
+          req=json.loads(str(issue.get('body') or '').strip())
           date=str(req.get('date','')).strip()
           kinds=req.get('kinds') or []
           if not re.fullmatch(r'20\d{6}',date):
