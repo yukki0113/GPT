@@ -62,6 +62,7 @@ function node(tag, className = '') {
     tag, className, children: [], parent: null,
     setAttribute(name, value) { this[name] = value; },
     addEventListener() {},
+    get parentElement() { return this.parent; },
     appendChild(child) {
       if (child.parent) child.remove();
       this.children.push(child); child.parent = this;
@@ -125,8 +126,10 @@ for (const markNames of [v4Marks, v4Marks.filter(name => name !== 'my')]) {
   assert.equal(firstHead.querySelectorAll('.newspaper-edge').length, 0,
     JSON.stringify(firstHead.children.map(child => child.className)));
   assert.equal(table.querySelectorAll('.newspaper-edge').length, 0);
-  assert.equal(groupHead.colSpan, markNames.length + 1);
-  assert.equal(markHead.querySelectorAll('th.mark-edge').length, 1);
+  assert.equal(groupHead.colSpan, markNames.length);
+  assert.equal(markHead.querySelectorAll('th.mark-edge').length, 0);
+  assert.equal(firstHead.querySelectorAll('th.mark-edge').length, 1);
+  assert.equal(firstHead.querySelector('th.mark-edge').rowSpan, 2);
   assert.equal(markHead.querySelectorAll('th.newspaper-mark-col').length, groupHead.colSpan);
   assert.equal(firstHead.children.length - 1 + groupHead.colSpan, rows[0].children.length,
     `first head ${JSON.stringify(firstHead.children.map(child => child.className))}, mark span ${groupHead.colSpan}, body ${rows[0].children.length}`);
@@ -138,7 +141,8 @@ for (const markNames of [v4Marks, v4Marks.filter(name => name !== 'my')]) {
   assert.equal(rows[1].querySelector('td.mark-edge').children[0].textContent, '○');
   assert.equal(rows[2].querySelector('td.mark-edge').children[0].textContent, '○');
   vm.runInContext('newspaperV05ApplyColumn', context)();
-  assert.equal(markHead.querySelectorAll('th.mark-edge').length, 1);
+  assert.equal(markHead.querySelectorAll('th.mark-edge').length, 0);
+  assert.equal(firstHead.querySelectorAll('th.mark-edge').length, 1);
   rows.forEach(row => assert.equal(row.querySelectorAll('td.mark-edge').length, 1));
 }
 console.log('v0.5 preview UI contract: PASS');
