@@ -130,6 +130,54 @@ jobs:
           assert session['target_market_opened'] is False
           assert op['source_backend']=='historical_warehouse'
           assert op['as_of_exclusive']=='2025-12-28'
+          # Structural authoring fixture only: exercise the unchanged
+          # save/freeze/verify contract without making a prediction.
+          from racenote_v052_single_day import save_venue, build_freeze, verify_freeze
+          by_venue={}
+          for row in session['race_roster']:
+              normal=json.loads((root/'v052/reader'/row['file']).read_text())
+              nums=sorted(int(h['identity']['horse_no']) for h in normal['horses'])
+              assert len(nums)>=5
+              marks=nums[:5]
+              challenger=nums[5] if len(nums)>5 else None
+              core={
+                  'venue':row['venue'],'race_no':row['race_no'],
+                  'race_model':'Structural blind test case for the sealed historical input.',
+                  'marks':marks,
+                  'mainline_cases':[{'horse_no':n,'case':'Structural input contract case.'}
+                                    for n in (marks[0],marks[1],marks[3],marks[4])],
+                  'single_shot_case':{'horse_no':marks[2],
+                                      'case':'Structural input contract case.'},
+                  'boundary_review':{'alternative_horse_no':challenger,
+                                     'reason':'Structural boundary audit only.'},
+                  'rrdb_refs':[],
+                  'reader_facing_reason':'Structural test text that verifies the immutable blind Freeze contract without a forecast.',
+                  'candidate_compression':{
+                      'ordinary_five':marks,
+                      'external_challenger_horse_no':challenger,
+                      'external_challenger_case':'Structural challenger audit only.',
+                      'excluded_horse_no':challenger,
+                      'decision':'KEEP_ORDINARY_FIVE' if challenger else 'NO_EXTERNAL_CHALLENGER',
+                      'reason':'Structural six-to-five contract audit only.',
+                  },
+                  'role_assignment':{
+                      'honmei_horse_no':marks[0],'second_horse_no':marks[1],
+                      'honmei_win_case':'Structural win case for contract validation.',
+                      'second_case':'Structural second case for validation.',
+                      'honmei_selection_mode':'WIN_FIRST_NOT_PLACE_FIRST',
+                      'shot_selection_mode':'ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK',
+                      'ranking_reason':'Structural ranking reason for contract validation.',
+                  },
+              }
+              by_venue.setdefault(row['venue'],[]).append(core)
+          for venue, cores in by_venue.items():
+              path=root/'v052/incoming'/f'{venue}.json'
+              path.write_text(json.dumps(cores,ensure_ascii=False))
+              save_venue(root/'v052',path)
+          frozen=build_freeze(root/'v052')
+          verified=verify_freeze(root/'v052')
+          assert frozen['status']=='FROZEN_CLEAN_BLIND'
+          assert frozen['record_count']==verified['record_count']==24
           PY
       - uses: actions/upload-artifact@v4
         if: always()
