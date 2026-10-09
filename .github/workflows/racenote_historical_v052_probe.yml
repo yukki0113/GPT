@@ -25,6 +25,10 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema gdown
+      - name: Test equivalence firewall
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python -m unittest -v horse-racing/jrdb/tests/test_racenote_v052_equivalence.py
       - name: Fetch accepted 2025 golden-day inputs
         run: |
           set -euo pipefail
