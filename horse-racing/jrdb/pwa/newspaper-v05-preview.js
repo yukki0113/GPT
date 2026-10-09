@@ -59,21 +59,34 @@ function newspaperV05ApplyColumn() {
   if (!currentBundle || !tableWrap) return;
   const table = tableWrap.querySelector(".newspaper-table-v4");
   if (!table) return;
-  table.querySelectorAll("thead th.newspaper-edge, tbody td.newspaper-edge").forEach(cell => cell.remove());
+
+  // Remove the legacy wide memo Edge column and any stale preview column.
+  table.querySelectorAll("thead th.newspaper-edge, tbody td.newspaper-edge, thead th.mark-edge, tbody td.mark-edge")
+    .forEach(cell => cell.remove());
+
   const groupHead = table.querySelector(".newspaper-mark-group-head");
   const headRow = table.querySelector(".newspaper-mark-head-row");
-  if (headRow && !headRow.querySelector(".mark-edge")) {
-    const head = document.createElement("th");
-    head.className = "newspaper-mark-col mark-edge";
-    head.textContent = "Edge";
-    headRow.appendChild(head);
-  }
-  if (groupHead && headRow) groupHead.colSpan = headRow.querySelectorAll("th.newspaper-mark-col").length;
+  const firstHeadRow = groupHead && groupHead.parentElement;
+  if (!groupHead || !headRow || !firstHeadRow) return;
+
+  // Keep the existing mark group's colspan untouched. Edge is a narrow,
+  // rowspan=2 neighbour immediately before the history columns. This avoids
+  // coupling to v6+ mark reordering while still placing Edge with the marks.
+  const edgeHead = document.createElement("th");
+  edgeHead.className = "newspaper-mark-col mark-edge newspaper-v05-head";
+  edgeHead.textContent = "Edge";
+  edgeHead.rowSpan = 2;
+  const historyHead = firstHeadRow.querySelector(".newspaper-history-head");
+  if (historyHead) firstHeadRow.insertBefore(edgeHead, historyHead);
+  else firstHeadRow.appendChild(edgeHead);
+
+  // Re-derive the existing mark span only from the actual second-row marks.
+  groupHead.colSpan = headRow.querySelectorAll("th.newspaper-mark-col").length;
+
   const horses = [...currentBundle.horses].sort((a, b) => Number(a.key.horse_no) - Number(b.key.horse_no));
   table.querySelectorAll("tbody tr").forEach((row, index) => {
     const horse = horses[index];
     if (!horse) return;
-    if (row.querySelector("td.mark-edge")) return;
     const cell = document.createElement("td");
     cell.className = "newspaper-mark-col mark-edge";
     if (newspaperV05Ids(horse).length) {
