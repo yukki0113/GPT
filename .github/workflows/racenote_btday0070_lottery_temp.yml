@@ -1,0 +1,61 @@
+name: RaceNote BTDAY-0070 lottery and reserve
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0070.lottery'
+permissions:
+  contents: write
+jobs:
+  reserve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Canonical lottery and reservation
+        run: |
+          set -euo pipefail
+          STATE="horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json"
+          python horse-racing/jrdb/src/racenote_backtest_day_picker.py pick --state "$STATE" -n 1 > /tmp/btday0070_pick.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          state_path=Path("horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json")
+          pick=json.loads(Path("/tmp/btday0070_pick.json").read_text())
+          if pick["selection_id"]!="BTDAY-0070":
+              raise SystemExit(f"unexpected selection id: {pick['selection_id']}")
+          state=json.loads(state_path.read_text())
+          date=pick["dates"][0]
+          rows=[x for x in state["days"] if x["date"]==date and x.get("selection_id")=="BTDAY-0070"]
+          if len(rows)!=1:
+              raise SystemExit("reserved row not found uniquely")
+          row=rows[0]
+          req={
+              "selection_id":"BTDAY-0070",
+              "target_date":date,
+              "paci_file_id":row["drive_file_id"],
+              "analysis_artifact_run_id":"36437363166",
+              "analysis_artifact_name":"jrdb-post-race-parquet-refresh-36437363166",
+              "analysis_generation_id":"analysis-v1_4-canonical-20260928-02",
+              "reservation_seed":pick["seed"]
+          }
+          Path("horse-racing/jrdb/backtests/requests/BTDAY-0070.json").write_text(
+              json.dumps(req,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps({"pick":pick,"paci":row["file_name"],"drive_file_id":row["drive_file_id"]},ensure_ascii=False))
+          PY
+      - name: Commit reservation and request
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json
+          git add horse-racing/jrdb/backtests/requests/BTDAY-0070.json
+          git rm .github/workflows/racenote_btday0070_lottery_temp.yml
+          git rm horse-racing/jrdb/backtests/requests/BTDAY-0070.lottery
+          git commit -m "Reserve randomized RaceNote BTDAY-0070 and request canonical v0.5.2 TURN 1"
+          git pull --rebase origin main
+          git push origin HEAD:main
