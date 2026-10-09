@@ -70,6 +70,21 @@ This writes `day_prep`, `forecast_prep`, `v052/session.json`,
 `racenote_v052_single_day.py save`, `freeze` and `verify` steps below. Open
 target results only after Freeze/Verify succeeds.
 
+For a historical date pool, use the existing
+`racenote_backtest_day_picker.py` with inventory rows such as:
+
+```json
+{"date":"2025-12-28","source_mode":"historical_warehouse","source_reference":"jrdb_normalized_warehouse_v1_2010_2025_g20260921","selection_cycle":1,"eligible":true,"exclusion_reason":null}
+```
+
+`pick --source-mode historical_warehouse --selection-cycle 1` selects first
+blind turns. Add `selection_cycle: 2` as a new inventory row only after the
+first turn is used; `pick --selection-cycle 2` preserves the first-cycle
+selection and usage history. The picker state records source reference,
+cycle, eligibility and selection ID. A 2010 day whose previous-result keys
+precede Warehouse coverage fails closed; the explicit Raw boundary fallback
+in `racenote_request.py` remains a separate audit/rollback procedure.
+
 ## 1. TURN 1 — DAY PREP / prediction-thread orchestration responsibility
 
 The **prediction thread owns the entire pre-result operation from PACI through Verify** when the user asks for a day's prediction.
