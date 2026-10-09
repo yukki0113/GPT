@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 from build_racenote_daily import evidence_semantic_sha256
+from racenote_prepare_forecast_input import contains_market
 
 
 def read_json(path: Path) -> dict:
@@ -33,11 +34,18 @@ def horse_numbers(bundle: dict) -> tuple:
 def load_side(root: Path, target_date: str) -> tuple[dict, dict, dict, dict]:
     daily = root / "day_prep" / f"RaceNote_{target_date.replace('-', '')}"
     manifest = read_json(daily / "manifest.json")
+    validation = read_json(daily / "validation_report.json")
     handoff = read_json(root / "forecast_prep" / "day_prep_handoff.json")
     session = read_json(root / "v052" / "session.json")
     reader_manifest = read_json(root / "v052" / "reader_manifest.json")
     if manifest.get("status") != "PASS" or manifest.get("target_date") != target_date:
         raise ValueError(f"DAY PREP is not PASS for {target_date}: {root}")
+    firewall = validation.get("firewall") or {}
+    if (validation.get("status") != "PASS"
+            or firewall.get("target_result_exposed") is not False
+            or firewall.get("analysis_as_of_violations") != 0
+            or firewall.get("rrdb_as_of_violations") != 0):
+        raise ValueError(f"DAY PREP firewall is not clean: {root}")
     if session.get("status") != "SESSION_SEALED" or session.get("target_date") != target_date:
         raise ValueError(f"v0.5.2 session is not sealed for {target_date}: {root}")
     for key, expected in (("market_blind", True), ("result_opened", False),
@@ -53,6 +61,10 @@ def load_side(root: Path, target_date: str) -> tuple[dict, dict, dict, dict]:
         key = (race["venue"], race["race_no"])
         if key in bundles or race.get("date") != target_date:
             raise ValueError(f"duplicate or wrong-date race: {path}")
+        for horse in bundle.get("horses") or []:
+            for run in horse.get("recent_runs") or []:
+                if isinstance(run, dict) and str((run.get("race") or {}).get("date") or "") >= target_date:
+                    raise ValueError(f"target/future result in recent_runs: {path}")
         bundles[key] = bundle
     views = {}
     entries = {}
@@ -65,6 +77,8 @@ def load_side(root: Path, target_date: str) -> tuple[dict, dict, dict, dict]:
         if hashlib.sha256(data).hexdigest() != entry["derived_normal_sha256"]:
             raise ValueError(f"Reader hash mismatch: {path}")
         views[key] = read_json(path)
+        if contains_market(views[key]):
+            raise ValueError(f"target market in normal_view: {path}")
         entries[key] = entry
     if not bundles or set(bundles) != set(views):
         raise ValueError(f"RaceNote/Reader roster mismatch: {root}")
