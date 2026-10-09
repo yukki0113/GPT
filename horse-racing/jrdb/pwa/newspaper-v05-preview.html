@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f7f7f7" />
-  <title>Kenshow_Labo. / Edge v0.5 preview</title>
+  <title>Kenshow_Labo. / Edge v0.5 実機表示テスト</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="stylesheet" href="./newspaper.css?v=3" />
@@ -35,8 +35,8 @@
   <main class="newspaper-main">
     <h1 class="visually-hidden">競馬新聞</h1>
     <section class="card">
-      <h2>新聞データ — Edge v0.5 preview</h2>
-      <p class="note">検証用の表示です。公開新聞とは別の保存領域を使い、v0.5 preview packageを手動で読み込みます。</p>
+      <h2>新聞データ — Edge v0.5 実機表示テスト</h2>
+      <p class="note">2026/10/4の既存新聞とPACIを使う表示確認専用ページです。的中率・回収率の検証には使用せず、公開新聞とは別の保存領域を使います。</p>
       <dl class="status-grid">
         <div><dt>端末保存</dt><dd id="newspaper-local-status">確認中</dd></div>
         <div><dt>OPFS</dt><dd id="newspaper-opfs-status">確認中</dd></div>
@@ -46,7 +46,7 @@
 
       <div class="sync-panel newspaper-sync-panel">
         <div class="button-row">
-          <button id="newspaper-day-refresh" type="button" hidden>previewは手動取込のみ</button>
+          <button id="newspaper-day-refresh" type="button">10/4テストデータを再読込</button>
         </div>
         <div id="newspaper-day-race-wrap" hidden>
           <label>
@@ -121,10 +121,11 @@
     window.JRDB_PWA_CONFIG = {
       newspaperHistoryDisplayMode: "compact",
       newspaperCompanionBase: "",
-      newspaperCurrentBase: "./data/newspaper/v05-preview-unpublished/",
-      newspaperDayOpfsFile: "v05-preview-day.json",
-      newspaperOpfsDir: "jrdb-newspaper-v05-preview",
-      newspaperOpfsFile: "v05-preview-race.json"
+      newspaperCurrentBase: "./data/newspaper/v05-smoke-20261004/",
+      newspaperV05AllowPublishedSmoke: true,
+      newspaperDayOpfsFile: "v05-smoke-20261004-day.json",
+      newspaperOpfsDir: "jrdb-newspaper-v05-smoke-20261004",
+      newspaperOpfsFile: "v05-smoke-20261004-race.json"
     };
   </script>
   <script src="./newspaper.js?v=3"></script>
