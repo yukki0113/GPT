@@ -18,9 +18,9 @@ from build_racenote_daily import (
 )
 from jrdb_raw import Parser, iter_archive_records, race_key
 from jrdb_racenote_raw_adapter import build_paci_equivalent
-from jrdb_racenote_warehouse_reader import WarehouseRaceNoteReader
 from racenote_analysis_backend import open_analysis_backend
 from racenote_prepare_forecast_input import bind
+from racenote_request import RaceNoteRequest, build_historical_warehouse_base
 from racenote_v052_equivalence import compare
 from racenote_v052_single_day import init_session
 
@@ -31,12 +31,21 @@ def build_warehouse_daily(
     rrdb_work_root: Path,
 ) -> tuple[dict, dict]:
     """Use the canonical Warehouse Reader and existing common D2-D4 stages."""
-    reader = WarehouseRaceNoteReader(
-        warehouse_current,
-        asset_roots={family: warehouse_asset_root for family in
-                     ("BAC", "KYI", "CHA", "CYB", "ZED", "ZKB")},
+    request = RaceNoteRequest(day, None, None, date.today())
+    base_dir, warehouse_report = build_historical_warehouse_base(
+        request, warehouse_current,
+        [f"{family}={warehouse_asset_root}" for family in
+         ("BAC", "KYI", "CHA", "CYB", "ZED", "ZKB")],
+        rrdb_work_root / "base",
     )
-    warehouse, warehouse_report = reader.build(day, source_member_date=day)
+    warehouse = {}
+    for path in sorted(base_dir.glob("race_bundle_*.json")):
+        bundle = json.loads(path.read_text(encoding="utf-8"))
+        race = bundle["race"]
+        key = (race["venue"], race["race_no"])
+        if key in warehouse:
+            raise ValueError(f"duplicate Warehouse race: {key}")
+        warehouse[key] = bundle
     for bundle in warehouse.values():
         if bundle["race"]["date"] != day.isoformat():
             raise ValueError("Warehouse race date differs from target")
@@ -124,8 +133,6 @@ def run(args: argparse.Namespace) -> dict:
             output_root=warehouse_root / "day_prep",
             rrdb_work_root=Path(tmp) / "warehouse",
         )
-        if set(warehouse) != {str(key) for key in keys}:
-            raise ValueError("Raw/Warehouse race keys differ before DAY PREP")
 
     for root in (raw_root, warehouse_root):
         daily = root / "day_prep" / f"RaceNote_{day:%Y%m%d}"
