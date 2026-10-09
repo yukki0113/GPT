@@ -12,7 +12,7 @@ Use:
 - `audits/` for acceptance/revision decisions.
 
 Current parallel research lane: **RaceNote 0.5.x JRDB Feature Audit**.
-The active v0.4.6 prediction cohort remains unchanged while this research is exploratory.
+The current operational prediction baseline is v0.5.2. The parallel 0.5.x feature audit remains research-only and must not silently change the v0.5.2 selection semantics.
 Historical feature analysis must start with **2023-2025** and may extend to **2021-2025** only if the three-year result is inconclusive. If five years still yield no stable practical signal, stop expanding the horizon and retain the 0.4.x Human-Context principle rather than forcing a new feature hierarchy.
 
 Current Stage A instruction:
@@ -360,9 +360,12 @@ The permanent finalizer waits until every expected venue exists, then performs
 venue validation/batch materialization, bind, Freeze, Validator and archive once.
 
 Per-race checkpoints, mandatory Reader chunks and per-BTDAY temporary workflows
-are not part of the active v0.4.6 route.
+were not part of that v0.4.6 route. This paragraph is historical context.
 
-Canonical procedure:
+Historical procedure:
 `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`.
+
+Current procedure:
+`RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
 
 The production Forecast pointer remains unchanged pending explicit promotion.
