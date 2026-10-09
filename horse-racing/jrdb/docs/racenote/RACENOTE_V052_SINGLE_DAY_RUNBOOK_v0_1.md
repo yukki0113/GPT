@@ -39,7 +39,67 @@ The operational shape is:
 Target results, target final odds/popularity and payouts remain forbidden until
 the single-day Freeze is complete.
 
+## BTDAY lottery source routing
+
+The canonical lottery state remains the legacy-named file:
+
+`horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json`
+
+Despite the filename, it is now the unified first-cycle clean-blind state for:
+
+- **2026** daily PACI rows (`source_mode` omitted/treated as `paci`);
+- **2025** accepted Historical Warehouse rows (`source_mode=historical_warehouse`,
+  `source_reference=jrdb_normalized_warehouse_v1_2010_2025_g20260921`,
+  `selection_cycle=1`).
+
+The 2025 inventory is derived from the actual `BAC_2025.zip` member dates
+(109 JRA race days), not from a guessed weekend calendar. A normal unfiltered
+`pick` therefore samples from both remaining 2026 PACI days and unused 2025
+Historical days:
+
+```bash
+python horse-racing/jrdb/src/racenote_backtest_day_picker.py pick \
+  --state horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json \
+  -n 1
+```
+
+After reservation, inspect the selected row's `source_mode`; do not assume a
+`paci_file_id` exists.
+
+- `paci` -> keep the existing 2026 `racenote_v052_from_paci.py` route.
+- `historical_warehouse` -> use the Historical prepare route below. The request /
+  temporary orchestration must carry `source_mode`, `source_reference`, target
+  date and reservation seed instead of inventing a PACI file id.
+
+For an explicitly Historical-only draw, use
+`--source-mode historical_warehouse --selection-cycle 1`. Do not clear used
+flags to replay a date; add a later selection cycle instead.
+
+
 ## 2010–2025 Historical Warehouse prepare
+
+### Materialize the accepted public Drive inputs first
+
+For the accepted 2025 Historical route, do not add ad-hoc `gdown` URLs to a
+BTDAY workflow. Use the reviewed manifest and the shared unauthenticated
+read-only helper introduced by Drive routing decision v0.2:
+
+```bash
+python tools/gpt_io/public_drive/fetch.py \
+  --manifest horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json \
+  --output-root <historical-input-root> \
+  --receipt <historical-input-root>/public_drive_fetch_receipt.json
+```
+
+The helper is the canonical `gdown` transport boundary: every file id is
+repository-reviewed, SHA-256 pinned, downloaded read-only, and promoted locally
+only after integrity validation. Direct workflow `gdown`, ad-hoc
+`drive.google.com` URLs, authenticated fallback and Drive writes remain
+prohibited.
+
+Use the resulting local `warehouse/`, Analysis and RaceReview assets with the
+Historical command below. The committed equivalence PASS report is a generation
+gate; the target BTDAY date does not need to equal the golden-day date.
 
 The accepted Warehouse pointer and local immutable assets must match the
 generation in
