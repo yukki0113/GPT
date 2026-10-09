@@ -292,48 +292,34 @@ branch protection、権限、競合、API制約で安全にまとめられない
 
 上位共通文書に個別プロジェクトのfile ID / Spreadsheet ID /日次データ配置を固定しません。正本の具体的所在は各プロジェクト文書を参照します。
 
-### 9.1 Google Drive transport routing — direct GitHub/Actions ↔ Drive transport is prohibited
+### 9.1 Google Drive transport routing — private vs public read-only
 
-Google Driveへのread / write / upload / downloadは、**ChatGPT / Work側のconnected native Google Drive connector / native toolsをproduction-standard route** とします。
+Decision: `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md`. The former v0.1 decision remains historical.
 
-**GitHub Actions runnerからGoogle Driveへ直接接続する経路、およびGoogle DriveからGitHub Actions runnerへ直接取得する経路は通常運用では禁止します。** Service Account/API clientだけでなく、`gdown`、`drive.google.com` URL、Google Drive REST API等をworkflowから直接利用する方式も同じ扱いです。
+**Authenticated or writable Drive transport from GitHub Actions is prohibited.**
+Do not use Drive REST API / Service Account / OAuth credentials in Actions,
+upload/update/delete/share Drive content, restore `[gpt-gdrive-request]`,
+or enable `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED`. Never place credential material
+in repository files, Issues, logs or artifacts. Native Google Docs/Sheets/Slides
+and authenticated Drive management use ChatGPT/Work's connected native tools.
 
-旧 `.github/workflows/gpt_gdrive_request_issue.yml` は運用廃止とし、workflow自体を削除します。`tools/gpt_io/gdrive/` 等のadapter/sourceは履歴・将来検討用資産として残り得ますが、**current operational routeではありません**。
+**Narrow exception: already-public, unauthenticated, read-only file downloads.**
+A GitHub Actions job or Python runtime may fetch explicitly approved public Drive
+files only via the canonical `tools/gpt_io/public_drive/fetch.py` helper
+and repository-reviewed manifest with mandatory pinned SHA-256. The helper
+uses unauthenticated `gdown`, validates artifact integrity, and writes only
+to a local output directory. Raw workflow `gdown` commands, ad-hoc
+`drive.google.com` URLs, folder listing, private files, authenticated
+fallback and Drive write operations remain prohibited.
 
-禁止事項:
+Existing direct-Drive workflows are **not grandfathered in**. Migrate them
+to the helper + manifest and verify the input hashes before acceptance.
+`tools/gpt_io/gdrive/` stays discontinued for Actions authentication.
 
-- `[gpt-gdrive-request]` Issueを発行しない。
-- GitHub Actions workflowから `gdown` / `drive.google.com` / Google Drive APIを使ってDriveを直接read / writeしない。
-- `GPT_GDRIVE_ACTIONS_BRIDGE_ENABLED` を有効化しない。
-- `GPT_GDRIVE_SERVICE_ACCOUNT_JSON` 等の長期Service Account keyを通常運用のために作成・設定しない。
-- GitHub Actions artifactをDriveへ搬送するためだけにActions Drive bridgeをchainしない。
-- workflow / adapterがrepositoryに存在することを「利用可能な標準経路」と解釈しない。
+This transport exception does not select an execution category. Continue
+to choose A Read/Audit, B Git Change, C local deterministic, or D Actions-native
+based on workload, artifact chain, secrets and audit requirements.
 
-GitHub側の成果物をDriveへ保存する場合の標準経路:
-
-```text
-GitHub source / artifact
--> GPTがGitHub connectorから取得
--> Chat / runtime file reference
--> GPTのconnected native Google Drive connectorでupload
--> destination folder
-```
-
-Drive上の入力をGitHub正本moduleで処理する場合も、Actionsから直接Driveを読ませません。
-
-```text
-Google Drive
--> GPTのconnected native Google Drive connectorで取得
--> GPT runtime
--> GitHub正本moduleを取得してローカル実行
--> 必要なら成果物をDrive connectorで戻す
-```
-
-Actions-nativeでなければ成立しない処理でもDrive transportだけはGPT側で分離し、ActionsにはGitHub artifact等のGitHub内で完結する入力を渡す設計を優先します。
-
-Google Docs / Sheets / Slidesは各native toolを使用します。
-
-正本判断は `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md` とします。同文書はActions Drive backendを **DISCONTINUED FOR OPERATION / NOT PRODUCTION-ACCEPTED / NOT THE STANDARD ROUTE** と定義しています。将来再開する場合は、明示的な新decisionが必要です。
 
 ## 10. 作業開始時の読み順
 
@@ -364,6 +350,6 @@ Google Docs / Sheets / Slidesは各native toolを使用します。
 >
 > **failedで役目を終えたIssueはopenのまま放置せず、実態に応じたstate reasonでcloseする。**
 >
-> **Google Drive transportはGPT側native connectorに集約し、GitHub ActionsからDriveへ直接接続しない。**
+> **認証付きDrive操作はnative connectorに限定する。公開済みread-onlyファイルのみ検証付き共通helper経由で取得できる。**
 >
 > **作業分割はIssue単位ではなく、論理的な完了点・監査点単位で行う。**
