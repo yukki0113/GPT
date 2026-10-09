@@ -1,0 +1,188 @@
+name: RaceNote historical v0.5.2 equivalence regression
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v052_equivalence.py'
+      - 'horse-racing/jrdb/src/racenote_v052_historical_probe.py'
+      - 'horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py'
+      - 'horse-racing/jrdb/src/racenote_backtest_day_picker.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_raw_adapter.py'
+      - 'horse-racing/jrdb/src/jrdb_racenote_warehouse_reader.py'
+      - 'horse-racing/jrdb/src/racenote_request.py'
+      - 'horse-racing/jrdb/src/build_racenote_daily.py'
+      - 'horse-racing/jrdb/src/racenote_reader_v052.py'
+      - 'horse-racing/jrdb/src/racenote_v052_single_day.py'
+      - '.github/workflows/racenote_historical_v052_equivalence.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  golden:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema gdown pytest
+      - name: Test equivalence firewall
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python -m unittest -v \
+            horse-racing/jrdb/tests/test_racenote_v052_equivalence.py \
+            horse-racing/jrdb/tests/test_racenote_historical_picker.py \
+            horse-racing/jrdb/tests/test_racenote_backtest_day_picker.py
+          python -m pytest -q horse-racing/jrdb/tests/test_racenote_v052_single_day.py
+      - name: Fetch accepted 2025 golden-day inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/golden/warehouse/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921
+          gdown "https://drive.google.com/uc?id=1uB0IQecWNKNn_ASZx4_0MhlWNXUmFrYA" -O /tmp/golden/warehouse/current.json
+          gdown "https://drive.google.com/uc?id=1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN" -O /tmp/golden/warehouse/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921/manifest.json
+          mkdir -p /tmp/golden/raw/BAC
+          gdown "https://drive.google.com/uc?id=1k1HagEAM0BjwEVD0bT1sz1PwEMQy3btg" -O /tmp/golden/raw/BAC/BAC_2025.zip
+          mkdir -p /tmp/golden/raw/KYI
+          gdown "https://drive.google.com/uc?id=17JU7BIAEnLOVyKWtoKw-BYkSugykbrfi" -O /tmp/golden/raw/KYI/KYI_2025.zip
+          mkdir -p /tmp/golden/raw/CHA
+          gdown "https://drive.google.com/uc?id=1ci38S2wRDQfmvj1IM8INO7cX5nGX7Iww" -O /tmp/golden/raw/CHA/CHA_2025.zip
+          mkdir -p /tmp/golden/raw/CYB
+          gdown "https://drive.google.com/uc?id=1Qcom4iheK07eyAAX8jO2wBkChYuN1oFS" -O /tmp/golden/raw/CYB/CYB_2025.zip
+          mkdir -p /tmp/golden/raw/ZED
+          gdown "https://drive.google.com/uc?id=1arU2LbSU1u--qEqKpAvlNBjLapflh2nw" -O /tmp/golden/raw/ZED/ZED_2025.zip
+          mkdir -p /tmp/golden/raw/ZKB
+          gdown "https://drive.google.com/uc?id=1lFQky-22SLQqBMLwVbkLBEJTMfLesMf8" -O /tmp/golden/raw/ZKB/ZKB_2025.zip
+          mkdir -p /tmp/golden/raw/ZED
+          gdown "https://drive.google.com/uc?id=1OPXGvbo66mUx1cMpu2t1w2JxjAY02i1o" -O /tmp/golden/raw/ZED/ZED_2024.zip
+          mkdir -p /tmp/golden/raw/ZKB
+          gdown "https://drive.google.com/uc?id=1HCv3w6G1JphMXBtLGTXZgZyNZ3poNzEn" -O /tmp/golden/raw/ZKB/ZKB_2024.zip
+          mkdir -p /tmp/golden/warehouse/objects/bac/year=2025
+          gdown "https://drive.google.com/uc?id=1gA9eBkY7cF30FnkjhSnIxEVE-_TgLK3v" -O /tmp/golden/warehouse/objects/bac/year=2025/f6ceb99ab6ebadf88a44315276bb50b7f4e1f536c2651a793a6c0f1f7b4ef738.parquet
+          mkdir -p /tmp/golden/warehouse/objects/kyi/year=2025
+          gdown "https://drive.google.com/uc?id=1BsUYCalaMyVAZsjEa1R0i_YzsdzrvcJW" -O /tmp/golden/warehouse/objects/kyi/year=2025/55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b.parquet
+          mkdir -p /tmp/golden/warehouse/objects/cha/year=2025
+          gdown "https://drive.google.com/uc?id=1uTc41dqOriuVa_ZUL3VMPvx43Fclso8M" -O /tmp/golden/warehouse/objects/cha/year=2025/29a553954b25f75e1ea21965a62e5466c1ad0f13b50aa9a7548c160d1d3a6fc3.parquet
+          mkdir -p /tmp/golden/warehouse/objects/cyb/year=2025
+          gdown "https://drive.google.com/uc?id=1g0xyGcGRB5K9VQdtrIC1uJJQ7DK7sdPr" -O /tmp/golden/warehouse/objects/cyb/year=2025/90f7ae295afc5e461458b236fc17c1abff200c7bc658638bb51d6a12709b5d04.parquet
+          mkdir -p /tmp/golden/warehouse/objects/zed/year=2025
+          gdown "https://drive.google.com/uc?id=1ouEluqM2BkcbVsoGa1Bi_gSuUTPsdSp2" -O /tmp/golden/warehouse/objects/zed/year=2025/2097b5386817ed228715bf33bd9316c42478c5f8a65a55e6810e139bcd7bd9f0.parquet
+          mkdir -p /tmp/golden/warehouse/objects/zkb/year=2025
+          gdown "https://drive.google.com/uc?id=1JO8OlVc6gMqfCq9sA2RcILw9HmUcC7Vo" -O /tmp/golden/warehouse/objects/zkb/year=2025/a5ff1aff1bfa8d16033d27f20ebefb7d795710e72b9cf3384479a579cf37c5c1.parquet
+          mkdir -p /tmp/golden/warehouse/objects/zed/year=2024
+          gdown "https://drive.google.com/uc?id=1yKQ90cMI_l7x5EqkSZmwrBdw16wn8P6H" -O /tmp/golden/warehouse/objects/zed/year=2024/3ae57e5df93dd12f362e7196ec9e3e7507f0ad1cb5eb9924df3b21664f973403.parquet
+          mkdir -p /tmp/golden/warehouse/objects/zkb/year=2024
+          gdown "https://drive.google.com/uc?id=1Q8aQz7kApjQjhzqp9DyUJ2uj1OtGLAaw" -O /tmp/golden/warehouse/objects/zkb/year=2024/986ddf27250f1ba443334a23e85e085b45ee374906333520b3fbe1a5b4e84bbd.parquet
+          gdown "https://drive.google.com/uc?id=1qCoOmnH73QvrVMYNhTG28shPHg8yru2S" -O /tmp/golden/analysis.tar.xz
+          mkdir -p /tmp/golden/analysis
+          tar -xJf /tmp/golden/analysis.tar.xz -C /tmp/golden/analysis
+          gdown "https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg" -O /tmp/golden/rrdb.zip
+          mkdir -p /tmp/golden/rrdb
+          unzip -q /tmp/golden/rrdb.zip -d /tmp/golden/rrdb
+      - name: Compare through v0.5.2 sealed session
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/racenote_v052_historical_probe.py \
+            --date 2025-12-28 \
+            --raw-root /tmp/golden/raw \
+            --warehouse-current /tmp/golden/warehouse/current.json \
+            --warehouse-asset-root /tmp/golden/warehouse \
+            --analysis-root /tmp/golden/analysis \
+            --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
+            --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
+            --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+            --main-sha "$GITHUB_SHA" \
+            --output-root /tmp/golden/probe
+      - name: Prepare historical BTDAY from accepted Warehouse
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/racenote_v052_from_historical_warehouse.py \
+            --date 2025-12-28 \
+            --selection-id BTDAY-GOLDEN-HISTORICAL \
+            --main-sha "$GITHUB_SHA" \
+            --equivalence-report /tmp/golden/probe/equivalence_report.json \
+            --warehouse-current /tmp/golden/warehouse/current.json \
+            --warehouse-asset-root /tmp/golden/warehouse \
+            --analysis-root /tmp/golden/analysis \
+            --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
+            --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
+            --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
+            --output-root /tmp/golden/historical-route
+          python horse-racing/jrdb/src/racenote_v052_equivalence.py \
+            --date 2025-12-28 \
+            --paci-root /tmp/golden/probe/warehouse \
+            --warehouse-root /tmp/golden/historical-route \
+            --report /tmp/golden/historical-route/route_consistency_report.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/golden/historical-route')
+          session=json.loads((root/'v052/session.json').read_text())
+          op=json.loads((root/'operation_handoff.json').read_text())
+          assert session['status']=='SESSION_SEALED'
+          assert session['market_blind'] is True
+          assert session['result_opened'] is False
+          assert session['target_market_opened'] is False
+          assert op['source_backend']=='historical_warehouse'
+          assert op['as_of_exclusive']=='2025-12-28'
+          # Structural authoring fixture only: exercise the unchanged
+          # save/freeze/verify contract without making a prediction.
+          from racenote_v052_single_day import save_venue, build_freeze, verify_freeze
+          by_venue={}
+          for row in session['race_roster']:
+              normal=json.loads((root/'v052/reader'/row['file']).read_text())
+              nums=sorted(int(h['identity']['horse_no']) for h in normal['horses'])
+              assert len(nums)>=5
+              marks=nums[:5]
+              challenger=nums[5] if len(nums)>5 else None
+              core={
+                  'venue':row['venue'],'race_no':row['race_no'],
+                  'race_model':'Structural blind test case for the sealed historical input.',
+                  'marks':marks,
+                  'mainline_cases':[{'horse_no':n,'case':'Structural input contract case.'}
+                                    for n in (marks[0],marks[1],marks[3],marks[4])],
+                  'single_shot_case':{'horse_no':marks[2],
+                                      'case':'Structural input contract case.'},
+                  'boundary_review':{'alternative_horse_no':challenger,
+                                     'reason':'Structural boundary audit only.'},
+                  'rrdb_refs':[],
+                  'reader_facing_reason':'Structural test text that verifies the immutable blind Freeze contract without a forecast.',
+                  'candidate_compression':{
+                      'ordinary_five':marks,
+                      'external_challenger_horse_no':challenger,
+                      'external_challenger_case':'Structural challenger audit only.',
+                      'excluded_horse_no':challenger,
+                      'decision':'KEEP_ORDINARY_FIVE' if challenger else 'NO_EXTERNAL_CHALLENGER',
+                      'reason':'Structural six-to-five contract audit only.',
+                  },
+                  'role_assignment':{
+                      'honmei_horse_no':marks[0],'second_horse_no':marks[1],
+                      'honmei_win_case':'Structural win case for contract validation.',
+                      'second_case':'Structural second case for validation.',
+                      'honmei_selection_mode':'WIN_FIRST_NOT_PLACE_FIRST',
+                      'shot_selection_mode':'ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK',
+                      'ranking_reason':'Structural ranking reason for contract validation.',
+                  },
+              }
+              by_venue.setdefault(row['venue'],[]).append(core)
+          for venue, cores in by_venue.items():
+              path=root/'v052/incoming'/f'{venue}.json'
+              path.write_text(json.dumps(cores,ensure_ascii=False))
+              save_venue(root/'v052',path)
+          frozen=build_freeze(root/'v052')
+          verified=verify_freeze(root/'v052')
+          assert frozen['status']=='FROZEN_CLEAN_BLIND'
+          assert frozen['record_count']==verified['record_count']==24
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: racenote-historical-v052-golden
+          path: |
+            /tmp/golden/probe/equivalence_report.json
+            /tmp/golden/historical-route/route_consistency_report.json
+            /tmp/golden/historical-route/operation_handoff.json
+          if-no-files-found: ignore
