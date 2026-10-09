@@ -108,7 +108,9 @@ dayPackageSummary = function (value) {
   return `${value.manifest.date} / ${count}R / ${evalState} / ${rnState} / ${ilukaState} / v0.5 preview ${v05}`;
 };
 
-refreshPublishedDay = async function () {
-  if (!currentDayPackage) dayStatus.textContent = "v0.5 preview packageを手動で取り込んでください。";
-  return false;
-};
+if (!(globalThis.JRDB_PWA_CONFIG && globalThis.JRDB_PWA_CONFIG.newspaperV05AllowPublishedSmoke)) {
+  refreshPublishedDay = async function () {
+    if (!currentDayPackage) dayStatus.textContent = "v0.5 preview packageを手動で取り込んでください。";
+    return false;
+  };
+}
