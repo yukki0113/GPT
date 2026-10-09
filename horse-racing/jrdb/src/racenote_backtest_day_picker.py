@@ -107,11 +107,22 @@ def pick_days(state, n, seed=None, include_ineligible=False,
               source_mode=None, selection_cycle=None):
     if n <= 0:
         raise ValueError("n must be >= 1")
+    def prior_cycles_used(row):
+        cycle = row.get("selection_cycle", 1)
+        if row.get("source_mode") != "historical_warehouse" or cycle == 1:
+            return True
+        earlier = [x for x in state.get("days", [])
+                   if x["date"] == row["date"]
+                   and x.get("source_mode") == "historical_warehouse"
+                   and x.get("selection_cycle", 1) < cycle]
+        return (len(earlier) == cycle - 1
+                and all(x.get("used") for x in earlier))
     available = [
         r for r in state.get("days", [])
         if not r.get("used") and (include_ineligible or r.get("eligible", True))
         and (source_mode is None or r.get("source_mode", "paci") == source_mode)
         and (selection_cycle is None or r.get("selection_cycle", 1) == selection_cycle)
+        and prior_cycles_used(r)
     ]
     if len(available) < n:
         raise ValueError(
