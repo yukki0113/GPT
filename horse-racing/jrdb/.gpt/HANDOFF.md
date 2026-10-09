@@ -31,7 +31,7 @@ Use:
 - `audits/` for acceptance/revision decisions.
 
 Current parallel research lane: **RaceNote 0.5.x JRDB Feature Audit**.
-The active v0.4.6 prediction cohort remains unchanged while this research is exploratory.
+The current operational prediction baseline is v0.5.2. The parallel 0.5.x feature audit remains research-only and must not silently alter frozen/current v0.5.2 judgments.
 Historical feature analysis must start with **2023-2025** and may extend to **2021-2025** only if the three-year result is inconclusive. If five years still yield no stable practical signal, stop expanding the horizon and retain the 0.4.x Human-Context principle rather than forcing a new feature hierarchy.
 
 Current Stage A instruction:
@@ -39,7 +39,7 @@ Current Stage A instruction:
 
 ### Legacy RaceNote Human-Context v0.4.6 unified prospective — 2026-10-05
 
-- New unused BTDAYs use `RaceNote-Human-Context-Reader-0.4.6-candidate` from `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
+- Historical note: at the time of this section, new unused BTDAYs used `RaceNote-Human-Context-Reader-0.4.6-candidate`. Current operation is v0.5.2 and this section is retained only for reproduction.
 - v0.4.6 remains one prediction cohort. 2026-10-05 refinements change prose, trace sparsity and deterministic execution only; they do not change horse-selection semantics.
 - Governing prediction context: complete market-blind Reader, integrated race model, ◎○△1△2 ordinary support, independent ▲, final △2 versus closest excluded alternative.
 - RRDB is read as contextual evidence, but `rrdb_refs` should include only horses whose RRDB evidence materially changed or sharpened the final judgment. Do not mirror all marked/reviewed horses.
@@ -96,10 +96,9 @@ Current Stage A instruction:
 
 - Phase: `BLIND_RESEARCH_ACTIVE`; clean-blind picks are allowed.
 - DAY PREP entrypoint remains `src/build_racenote_daily.py`.
-- BTDAY prediction logic is always resolved from latest
-  `config/racenote_forecast_logic_current.json -> prospective_research_candidate`.
-- Current prospective logic is v0.4.6; do not reuse the older v0.3-era
-  per-venue-turn or old-version workflow instructions from historical handoffs.
+- Historical v0.4.6 note only. Current BTDAY operation is governed by
+  `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md` and
+  `.github/workflows/racenote_btday_v052_prepare.yml`.
 - Target results remain unopened until the full requested forecast scope is
   Frozen and validated.
 - RRDB remains contextual evidence under its current recommendation contract.
