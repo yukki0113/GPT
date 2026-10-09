@@ -1,5 +1,19 @@
 # JRDB GPT workflow
 
+## RaceNote v0.5.2 source routing — 2026-10-09
+
+- 2026: continue using the existing PACI daily ZIP entrypoint.
+- 2010–2025: require the committed Raw/Warehouse equivalence report `PASS`
+  for the same accepted Warehouse generation, then use
+  `src/racenote_v052_from_historical_warehouse.py` to create DAY PREP,
+  market-blind forecast_prep and a sealed v0.5.2 session.
+- Use the same v0.5.2 authoring, Decision Core, `save`, `freeze`, and `verify`
+  commands for either source. Never open target results or final market before
+  Freeze/Verify. Preserve `as_of_exclusive=target_date`.
+- Historical picker inventory must record source reference and selection cycle;
+  do not clear first-cycle usage to replay a date.
+- Detailed commands and gate: `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`.
+
 Last reviewed: 2026-09-13
 
 ## Thread restart bootstrap
