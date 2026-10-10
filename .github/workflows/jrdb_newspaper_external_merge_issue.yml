@@ -176,8 +176,11 @@ jobs:
                   if addons.get("keibailuka") is not None:
                       iluka_count += 1
 
-          if eval_count != 349:
-              raise SystemExit(f"Eval merge count mismatch: {eval_count}")
+          import csv
+          with Path("/tmp/external-merge/eval.csv").open(encoding="utf-8-sig", newline="") as handle:
+              expected_eval_count = sum(1 for _ in csv.DictReader(handle))
+          if expected_eval_count <= 0 or eval_count != expected_eval_count:
+              raise SystemExit(f"Eval merge count mismatch: expected={expected_eval_count}, actual={eval_count}")
           baseline = json.loads(
               Path("/tmp/external-merge/baseline.json").read_text(encoding="utf-8")
           )
