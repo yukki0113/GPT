@@ -1,0 +1,23 @@
+{
+  "schema_version": "racenote-v052-from-paci-0.1",
+  "status": "READY_FOR_V052_AUTHORING",
+  "selection_id": "DAILY-20261011",
+  "target_date": "2026-10-11",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.2-candidate",
+  "session_id": "V052-1584f076258f0c30bd78",
+  "paci": {
+    "filename": "PACI261011.zip",
+    "sha256": "2b37834f6c621cdaabc75c7c55096baf216ca49b30213f333e7477e0a21ea6e7"
+  },
+  "daily_manifest_status": "PASS",
+  "forecast_prep": "horse-racing/jrdb/daily/20261011/v052_day/forecast_prep",
+  "v052_root": "horse-racing/jrdb/daily/20261011/v052_day/v052",
+  "race_count": 24,
+  "expected_venues": [
+    "京都",
+    "東京"
+  ],
+  "market_blind": true,
+  "result_opened": false,
+  "ab_required": false
+}
