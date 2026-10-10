@@ -1,0 +1,240 @@
+{
+  "schema_version": "racenote-v052-confidence-freeze-0.1",
+  "selection_id": "BTDAY-0072",
+  "target_date": "2025-12-21",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.2-candidate",
+  "source_status": "FROZEN_CLEAN_BLIND",
+  "source_records_sha256": "470f2cccc8b5edb88ceea2301562bf9d4f0aa61c84e122458c13249ff36a62d7",
+  "source_reader_manifest_sha256": "fe78724c04ef3fd1744b3ea1bf40c1bdf187b33e14b294ba25153a43b0d4320f",
+  "result_opened_at_classification": false,
+  "target_market_opened_at_classification": false,
+  "confidence_definition": {
+    "A": "◎が○より明確に上と、レース固有の根拠から読める",
+    "B": "◎を○より上に置く理由はあるが、差の大きさまでは明確ではない",
+    "C": "◎と○が僅差・ほぼ互角・差が小さいなど、tie-break的に◎を上に置いている"
+  },
+  "counts": {
+    "A": 4,
+    "B": 20,
+    "C": 12,
+    "total": 36
+  },
+  "records": [
+    {
+      "venue": "中京",
+      "race_no": 1,
+      "confidence": "A",
+      "basis": "ranking_reasonで勝ち切り経路を「一段上」"
+    },
+    {
+      "venue": "中京",
+      "race_no": 2,
+      "confidence": "B",
+      "basis": "同コース実績を根拠に◎を上位評価。差幅の明示なし"
+    },
+    {
+      "venue": "中京",
+      "race_no": 3,
+      "confidence": "B",
+      "basis": "ハイペース下の位置取り像を理由に◎。差幅の明示なし"
+    },
+    {
+      "venue": "中京",
+      "race_no": 4,
+      "confidence": "C",
+      "basis": "reader-facingで○を「ほぼ互角」"
+    },
+    {
+      "venue": "中京",
+      "race_no": 5,
+      "confidence": "A",
+      "basis": "能力評価と調教の両方が最上位"
+    },
+    {
+      "venue": "中京",
+      "race_no": 6,
+      "confidence": "B",
+      "basis": "自ら先手を取れる点を勝ち切り側で上位評価"
+    },
+    {
+      "venue": "中京",
+      "race_no": 7,
+      "confidence": "B",
+      "basis": "同コース直接実績を理由に◎。差幅の明示なし"
+    },
+    {
+      "venue": "中京",
+      "race_no": 8,
+      "confidence": "B",
+      "basis": "直近同コース2着と展開適合を理由に◎"
+    },
+    {
+      "venue": "中京",
+      "race_no": 9,
+      "confidence": "B",
+      "basis": "新馬勝ちの勝ち切り像を優先"
+    },
+    {
+      "venue": "中京",
+      "race_no": 10,
+      "confidence": "B",
+      "basis": "ハイ想定で差し切り側を上位評価"
+    },
+    {
+      "venue": "中京",
+      "race_no": 11,
+      "confidence": "C",
+      "basis": "Decision Coreで◎○差が僅差の扱い"
+    },
+    {
+      "venue": "中京",
+      "race_no": 12,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "confidence": "B",
+      "basis": "短縮と先行力の上振れを勝ち切り側で評価"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "confidence": "B",
+      "basis": "距離延長での位置取り自在性を上位評価"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "confidence": "B",
+      "basis": "直接距離実績と展開依存の小ささを評価"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "confidence": "B",
+      "basis": "同コース障害実績を優先"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "confidence": "C",
+      "basis": "reader-facingで○を「僅差の相手」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "confidence": "A",
+      "basis": "基礎評価と調教が「一段上」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "confidence": "C",
+      "basis": "reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "confidence": "B",
+      "basis": "展開待ちでない勝ち方を評価"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "confidence": "C",
+      "basis": "reader-facingで○を「僅差の相手」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "confidence": "B",
+      "basis": "逃げ切り再現性を能力上位馬より優先"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "confidence": "B",
+      "basis": "ハイ想定でも位置を失いにくい点を評価"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "confidence": "A",
+      "basis": "能力値が「一段上」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "confidence": "B",
+      "basis": "スローで先に動ける位置取り優位を評価"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "confidence": "B",
+      "basis": "発馬五分なら自力で勝ち切り位置へ入れると評価"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "confidence": "C",
+      "basis": "reader-facingで末脚は「互角に近い」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "confidence": "C",
+      "basis": "reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "confidence": "C",
+      "basis": "reader-facingで○を「僅差」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "confidence": "C",
+      "basis": "ranking_reasonで「非常に近い」「僅かに上」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "confidence": "B",
+      "basis": "能力最上位とハイ適性を評価"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "confidence": "B",
+      "basis": "ハイ想定で直線一気を勝ち切り側に評価"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "confidence": "C",
+      "basis": "Decision Coreで◎○差が僅差の扱い"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "confidence": "B",
+      "basis": "ハイ想定で末脚を勝ち切り側に評価"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「ほぼ互角」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "confidence": "B",
+      "basis": "スローで勝ち切り位置へ入りやすい点を評価"
+    }
+  ]
+}
