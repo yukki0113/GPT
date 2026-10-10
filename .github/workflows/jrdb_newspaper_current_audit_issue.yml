@@ -82,12 +82,13 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$JOB_STATUS" = "success" ]; then
-            BODY="$(cat /tmp/audit.json)"
-            gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB_NEWSPAPER_CURRENT_AUDIT_RESULT: PASS
-
-```json
-$BODY
-```"
+            {
+              printf '%s\n\n' 'JRDB_NEWSPAPER_CURRENT_AUDIT_RESULT: PASS'
+              printf '%s\n' '```json'
+              cat /tmp/audit.json
+              printf '%s\n' '```'
+            } > /tmp/comment.md
+            gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/comment.md
             gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
           else
             gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "JRDB_NEWSPAPER_CURRENT_AUDIT_RESULT: FAILED."
