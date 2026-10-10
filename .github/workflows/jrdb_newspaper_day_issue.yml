@@ -134,6 +134,7 @@ jobs:
 
       - name: Resolve canonical Analysis and attach STANDARD Edge
         env:
+          GH_TOKEN: ${{ github.token }}
           PYTHONPATH: horse-racing/jrdb/src:tools/data-storage
         run: |
           set -euo pipefail
