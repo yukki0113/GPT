@@ -67,7 +67,7 @@ jobs:
         id: request
         run: |
           python - <<'PY'
-          import json, re
+          import json, os, re
           from pathlib import Path
           issue=json.loads(Path('/tmp/routed_issue.json').read_text(encoding='utf-8'))
           req=json.loads(str(issue.get('body') or '').strip())
