@@ -23,7 +23,6 @@ function momotaroHasPrediction(value) {
   if (!value || typeof value !== "object") return false;
   return Boolean(
     text(value.mark, "") ||
-    text(value.confidence, "") ||
     text(value.comment, "") ||
     value.review_horse === true
   );
