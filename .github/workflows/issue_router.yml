@@ -23,7 +23,6 @@ jobs:
         id: route
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_ACTOR: ${{ github.event.issue.user.login }}
           ROUTER_RUN_ID: ${{ github.run_id }}
