@@ -90,17 +90,10 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
   const confidence = text(value.confidence, "");
   const comment = text(value.comment, "");
   const display = mark || "";
-  const ryotaConfidenceTarget =
-    contributor.key === "ryota" &&
-    mark === "◎" &&
-    Boolean(confidence);
+  // レース自信度単独ではモーダル化しない。馬単位の短評がある印のみ詳細を開く。
+  const ryotaDetailTarget = contributor.key === "ryota" && Boolean(comment.trim());
 
-  const ryotaReviewTarget =
-    contributor.key === "ryota" &&
-    value.review_horse === true &&
-    Boolean(mark);
-
-  if (ryotaConfidenceTarget || ryotaReviewTarget || (contributor.key !== "ryota" && comment)) {
+  if (ryotaDetailTarget || (contributor.key !== "ryota" && comment)) {
     return '<td class="newspaper-mark-col mark-momotaro mark-' + escapeHtml(contributor.key) + '">' +
       '<button type="button" class="newspaper-addon-link momotaro-contributor-button" ' +
       'data-horse-index="' + horseIndex + '" data-contributor-key="' + escapeHtml(contributor.key) + '" ' +
