@@ -59,9 +59,8 @@ function personalMomotaroCell(horse, horseIndex, contributor) {
   const value = personalMomotaroPrediction(horse, contributor.key);
   const display = personalMomotaroDisplayMark(horse, contributor);
   const comment = text(value.comment, "");
-  const confidence = text(value.confidence, "");
-  const tag = text(value.tag, "");
-  const hasDetail = Boolean(comment || confidence || tag || value.review_horse === true);
+  // 自信度・タグ・review_horseだけではモーダル化しない。馬単位の本文がある場合だけ開く。
+  const hasDetail = Boolean(comment.trim());
 
   if (hasDetail) {
     return '<td class="newspaper-mark-col mark-momotaro mark-' + contributor.key + '">' +
