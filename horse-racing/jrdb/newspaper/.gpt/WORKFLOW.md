@@ -152,6 +152,20 @@ previous revision verified inputs
 
 RaceNote prediction成果物の入力契約は別途正式化する。RaceNote本体bundleをNewspaper Base/historyへ流用しない。
 
+## 桃太郎・りょーた予想のレース短評取り込み（2026-10-10追加）
+
+りょーたの「新聞提出用・前日予想」など、印の後に【見解】やレース別文章が付く原稿は、印だけではなく**レース単位の短評も正式入力**とする。短評を馬単位 `momotaro_predictions[].comment` に無理に複製しない。
+
+- 原稿の対象日・場・レース番号ごとに印・馬番・馬名を正確に照合し、`momotaro_predictions` に投入する。
+- 印の直下にあるレース全体の見解は原文を維持して `momotaro_race_comments` の `{date,venue_code,race_no,member:"ryota",comment}` として渡す。表示先は `race.notes.momotaro_comments.ryota`。
+- 新馬戦・障害戦など見解のないレースは**原文に短評がないことを確認してから**コメントを省略する。空コメントを想像して作らない。
+- 同日訂正が提供された場合は訂正版を優先し、以前の不一致・旧短評を混在させない。
+- 発行前に「予想対象24R」「印行数」「原文で短評があるレース数」「提出コメント数」「短評本文の一致」を別々に監査する。コメント数0は原文に短評がある限りERROR。
+- 公開後に桃太郎projectionの `race.notes.momotaro_comments.ryota` をレース別に検証する。既存RaceNote/RRDB/🐬等を失わないことも監査する。
+- 個人PWAのりょーた短評表示は桃太郎projectionとは別の表示契約であり、個人PWAにも表示されると断定せず実装・公開画面を確認する。
+
+正規の統合は `[JRDB_NEWSPAPER_KENSHO_MERGE_REQUEST]` と `build_momotaro_newspaper_projection.py` を使用し、表示要件を満たすために既存モジュールを再実装しない。
+
 ## Source-state semantics
 
 - `READY`: 対象日の正しいsourceを発見し、検証・merge完了
