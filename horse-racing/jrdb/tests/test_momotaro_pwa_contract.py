@@ -114,6 +114,17 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('signal: "不利分析"', predictions)
         self.assertNotIn('signal: "RaceNote"', predictions)
 
+    def test_personal_ryota_modal_requires_horse_comment(self) -> None:
+        script = (PWA_ROOT / "newspaper-momotaro.js").read_text(encoding="utf-8")
+        html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
+        worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
+
+        self.assertIn("const hasDetail = Boolean(comment.trim());", script)
+        self.assertNotIn("Boolean(comment || confidence || tag || value.review_horse === true)", script)
+        self.assertIn("newspaper-momotaro.js?v=4", html)
+        self.assertIn("newspaper-momotaro.js?v=4", worker)
+        self.assertIn('jrdb-pwa-shell-v74', worker)
+
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
 
