@@ -1,0 +1,168 @@
+{
+  "schema_version": "racenote-v052-confidence-freeze-0.1",
+  "selection_id": "BTDAY-0073",
+  "target_date": "2025-04-05",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.2-candidate",
+  "source_status": "FROZEN_CLEAN_BLIND",
+  "source_records_sha256": "313276828888488b99e87edd180338939daf99292eb54235b0f49136df8a6c78",
+  "source_reader_manifest_sha256": "620f4370fa9d0b664e595a4173e9d30ff8d74d66dcb7f3d2be9d0cfcbaa1a807",
+  "result_opened_at_classification": false,
+  "target_market_opened_at_classification": false,
+  "confidence_definition": {
+    "A": "◎が○より明確に上と、レース固有の根拠から読める",
+    "B": "◎を○より上に置く理由はあるが、差の大きさまでは明確ではない",
+    "C": "◎と○が僅差・ほぼ互角・差が小さいなど、tie-break的に◎を上に置いている"
+  },
+  "counts": {
+    "A": 6,
+    "B": 4,
+    "C": 14,
+    "total": 24
+  },
+  "records": [
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "confidence": "C",
+      "basis": "ranking_reasonで「わずかに上」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "confidence": "A",
+      "basis": "ranking_reasonで◎○差を明確に取る。能力値・直近2着・先行力が揃う"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "confidence": "C",
+      "basis": "ranking_reasonで「わずかに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "confidence": "C",
+      "basis": "ranking_reasonで明確差ではなく「僅かに◎」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "confidence": "B",
+      "basis": "勝ち切りに直結する能動性を理由に◎。差幅の明示なし"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "confidence": "A",
+      "basis": "現級能力値を「一段上」、能力差を明確評価"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "confidence": "B",
+      "basis": "ハイ想定への噛み合いを理由に◎。差幅の明示なし"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "confidence": "C",
+      "basis": "reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "confidence": "B",
+      "basis": "ハイ想定への適合を勝ち切り側で上位評価"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "confidence": "A",
+      "basis": "能力値が「一段高い」、勝ち切り側は明確に◎"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "confidence": "A",
+      "basis": "能力・仕上がりも上で「一段上」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "confidence": "A",
+      "basis": "能力・仕上がりとも「一段上」、◎○差を明確評価"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "confidence": "C",
+      "basis": "ranking_reasonで「差は小さい」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "confidence": "A",
+      "basis": "IDM66で能力が「一段高い」、勝ち切り側を明確に上"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "confidence": "C",
+      "basis": "ranking_reasonで「僅かに上」、reader-facingで「差は小さい」"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "confidence": "B",
+      "basis": "ハイ想定で末脚が勝ち切りへ直結すると評価"
+    }
+  ]
+}
