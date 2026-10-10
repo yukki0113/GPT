@@ -25,7 +25,7 @@
 - registry の prefix / event_type 重複なし、path 実在、必須 field 非空: PASS。
 - 4 target の埋め込み Python の構文 parse と `git diff --check`: PASS。
 - Issue body の `GITHUB_ENV` 経由転送: なし。
-- 既存 workflow `jrdb_newspaper_current_audit_issue.yml` は YAML parse error（88 行目の Markdown fence）。今回の移行対象外。別途修正判断が必要。
+- 監査基準時点の `jrdb_newspaper_current_audit_issue.yml` には YAML parse error（88 行目の Markdown fence）があった。後続修正の結果は末尾に記録。
 
 ## Live verification と fan-out
 
@@ -41,7 +41,7 @@
 | Issue 1 件あたりの `issues` event run 数 | 120 | 116 | 移行前の `[JRDB_NEWSPAPER_CURRENT_AUDIT] 20261010 edge-status-recheck` と移行後の #1938 / #1939 に紐づく Actions run を GitHub API で集計。2 ケースとも 116。 |
 | `issues: opened` listener 静的件数 | 121 | 117 | 200 workflow ファイルを監査し、今回 4 target の listener を撤去。 |
 
-静的 117 と実測 116 の差は、監査で検出した既存 YAML parse error の workflow が有効な Actions run を生成していない可能性がある。原因の確定は保留する。
+静的 117 と実測 116 の差は、監査時点で構文エラーのあった workflow が Actions run を生成していなかったため。後続修正後の実 Issue #1943 では 117 run を実測した。
 
 ## 保留とリスク
 
@@ -54,3 +54,12 @@
 ## 次のバッチ
 
 JRDB の `jrdb_runperf_audit_issue.yml` と、他 project の候補は各 project contract と failure/close を個別確認してから選ぶ。Class B/C/D は機械的に置換しない。
+
+## 後続修正: Newspaper Current Audit の YAML エラー（2026-10-10 JST）
+
+- `.github/workflows/jrdb_newspaper_current_audit_issue.yml` の成功コメント内にあったインデント外の Markdown fence を修正。`/tmp/comment.md` を作成し、`gh issue comment --body-file` で投稿する形にした。業務監査ロジックと Issue close 条件は変更していない。
+- YAML、埋め込み Python、各 `run` の `bash -n`、`git diff --check`: PASS。
+- 修正 commit: `f590596c2ff6f265006eb844435e1c385c141c12`。
+- 実 Issue [#1943](https://github.com/yukki0113/GPT/issues/1943) → run [38007831076](https://github.com/yukki0113/GPT/actions/runs/38007831076): workflow `success`、JSON fence 付き RESULT コメント、`completed` close を確認。`issues` event run は 117 本。
+- RESULT 内の `manifest_edge.state=ERROR` は参照した current release の既存状態であり、workflow の構文・実行成功とは区別する。
+- inventory JSON/MD の `parse_errors` は監査基準 commit の履歴値として保持する。
