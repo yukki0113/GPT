@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "race_model": "ハイ想定の1600m。ベルグラースは好位から4角先頭で2着、テンユメノオーロラは出遅れ後方から2着。サンクサンスは最後方から3着まで追い上げた差しを▲に置く。",
+    "marks": [
+      2,
+      14,
+      9,
+      6,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ベルグラースは前走、二の脚で好位を取り4角で先頭へ並んで2着。IDM46と仕上がりが一段上で、ハイでも好位で我慢できれば押し切りまで最も近い。"
+      },
+      {
+        "horse_no": 14,
+        "case": "テンユメノオーロラは出遅れて後方から2着まで伸びた。状態上昇もあり、前が止まる流れなら本命との差は縮まる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "フィールザウィルは番手から早め先頭で2着。前受けできる再現性を相手圏に残す。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ヴァルブロッサは2列目外から6着でも状態上昇。前を追い過ぎなければ粘り込みがある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "サンクサンスは出遅れて最後方から直線外を追い上げ3着。ハイペースで前が崩れれば、位置取りを捨てて末脚だけで差し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "ヴァルブロッサは状態上昇と前受けの形があり、ステラガーネットより今回の位置取り再現性を上に取る。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        14,
+        9,
+        6,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "ステラガーネットは出遅れ後に向正面で進出して4着だが、能力値が上位5頭に及ばず普通候補を押し出すほどではない。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ステラガーネットの差し込みは認めるが、上位5頭の能力・近走着順・状態の方が明確で普通候補を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 14,
+      "honmei_win_case": "ベルグラースは前走、二の脚で好位を取り4角で先頭へ並んで2着。IDM46と仕上がりが一段上で、ハイでも好位で我慢できれば押し切りまで最も近い。",
+      "second_case": "テンユメノオーロラは出遅れて後方から2着まで伸びた。状態上昇もあり、前が止まる流れなら本命との差は縮まる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "テンユメノオーロラの末脚も強いが、ベルグラースは好位から4角先頭で2着、能力・仕上がりも一段上。勝ち切り側を明確に本命へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ベルグラースは前走、好位から4角先頭に並んで2着。能力と仕上がりが一段上で中心。テンユメノオーロラは出遅れ後方から2着まで伸びて相手本線。サンクサンスは最後方から3着まで追い上げており、前が崩れれば一気差しまである。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "race_model": "平均想定の芝1600m。ニースケンスは好発後に中団で直線の捌き遅れがありながら2着、ミラマルニは大出遅れでも終着位置予測が高い。イントゥーザブルーはデキ抜群で前受けの別線とする。",
+    "marks": [
+      9,
+      11,
+      6,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "ニースケンスは前走、好発から中団で促されつつ直線内を捌くのが遅れて2着。情報評価4.7で、スムーズなら勝ち切りへ最も近い。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ミラマルニは前走大きく出遅れ後方から5着。想定終着位置が高く、発馬が改善すれば本命へ迫れる。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ニーナラルゴは好発から番手で4着。平均ペースなら前で脚を残せる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ドナフェリーチェは好発から2番手、直線入口で先頭まで出た。仕掛けを待てれば相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "イントゥーザブルーは前走8着でも先団で流れに乗り、今回はデキ抜群。仕上がり上昇で前の位置を保てればそのまま押し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "コスモシグナスは想定終着位置は高いが前走6着で直線の伸びが甘い。ドナフェリーチェの明確な先行力を普通候補下限に残す。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        11,
+        2,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "イントゥーザブルーは能力順位では普通候補外だが、デキ抜群の仕上がりと先行力が近走着順を覆す別線になる。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "仕上がり上振れの大きいイントゥーザブルーを▲に採り、コスモシグナスを比較で外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 11,
+      "honmei_win_case": "ニースケンスは前走、好発から中団で促されつつ直線内を捌くのが遅れて2着。情報評価4.7で、スムーズなら勝ち切りへ最も近い。",
+      "second_case": "ミラマルニは前走大きく出遅れ後方から5着。想定終着位置が高く、発馬が改善すれば本命へ迫れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ミラマルニは発馬改善なら怖いが、ニースケンスは実際に2着まで来ており直線の捌きにも余地があった。現在地を◎に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ニースケンスは前走、直線で捌きが遅れながら2着。スムーズなら勝ち切りまで最も近い。ミラマルニは大出遅れから5着で発馬改善なら差は縮まる。イントゥーザブルーは今回はデキ抜群で、前目を保てれば近走着順を覆す余地がある。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "race_model": "平均想定の芝2000m。ヴェルバーニアはヨレて後方から向正面で3番手まで進出して3着、ハナナは勝負所の反応が鈍くても能力上位。ドナズエクリプスは好位から4着で前受けの▲。",
+    "marks": [
+      2,
+      9,
+      13,
+      5,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ヴェルバーニアは前走、ヨレて後方から向正面で3番手まで進出し3着。デキ抜群で想定終着位置も最上位、平均ペースなら押し切りまで最も近い。"
+      },
+      {
+        "horse_no": 9,
+        "case": "ハナナは前走6着でもIDM31.3、状態上昇。勝負所の反応が改善すれば本命へ迫れる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ディヴァンパーレは前走6着でもタイム内容が着順以上。中団から相手圏へ。"
+      },
+      {
+        "horse_no": 12,
+        "case": "タイセイソアリングは煽って後方から9着。発馬改善で位置を上げられれば巻き返せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "ドナズエクリプスは前走、促して好位内を取り4着。差し主線より前でロスなく運べれば、直線で先に抜け出す勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "タイセイソアリングは近走着順が悪くても能力30を持ち、パッションノーヴァより上限を普通候補下限で優先した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        9,
+        13,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "パッションノーヴァは前走4着だが能力24で、上位5頭を押し出すほどの基礎能力差はない。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "パッションノーヴァの4着は評価するが、普通候補5頭の能力・仕上がり・位置取りの方が勝ち筋として明確なため維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 9,
+      "honmei_win_case": "ヴェルバーニアは前走、ヨレて後方から向正面で3番手まで進出し3着。デキ抜群で想定終着位置も最上位、平均ペースなら押し切りまで最も近い。",
+      "second_case": "ハナナは前走6着でもIDM31.3、状態上昇。勝負所の反応が改善すれば本命へ迫れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ハナナの上昇もあるが、ヴェルバーニアは後方から自力で3番手まで動いて3着、今回はデキ抜群。◎優位を明確に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヴェルバーニアは前走、ヨレて後方から向正面で3番手まで動いて3着。今回はデキ抜群で中心。ハナナは状態上昇で相手本線。ドナズエクリプスは好位から4着で、差し勢より前でロスなく運べれば押し切りまである。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "race_model": "ダート1600m新馬。ロードアマデウスは能力・情報・調教で最上位、ギルデッドグロスが能力次位で上昇状態。ベアフラッシュは能力では一段下でも調教上昇から前受けの別線を取る。",
+    "marks": [
+      7,
+      14,
+      15,
+      6,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "ロードアマデウスは能力32.2、情報2.9、調教18.2で新馬組の最上位。初戦から流れに乗れれば好位から押し切る形が明確。"
+      },
+      {
+        "horse_no": 14,
+        "case": "ギルデッドグロスは能力27.3で状態上昇。ロードアマデウスとは差があるが、完成度では次位。"
+      },
+      {
+        "horse_no": 6,
+        "case": "リオフラウスは能力24.6で上位圏。初戦でスムーズなら相手候補。"
+      },
+      {
+        "horse_no": 16,
+        "case": "ユイノゲリラゴウウは能力22.9、調教8.3で中位上。外から流れに乗れれば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "ベアフラッシュは能力18.7と上位には劣るが調教8.7で上昇。初戦から先手圏へ入れれば前残りで上位を崩す余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "レヴフィリアは能力21.6で一定水準だが、ユイノゲリラゴウウの能力・調教の組み合わせを普通候補下限に残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        14,
+        6,
+        16,
+        8
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "ベアフラッシュは通常能力順位では普通候補外だが、調教上昇と初戦の前受け上振れを非対称な勝ち筋として評価する。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "前受け上振れのあるベアフラッシュを▲に採り、レヴフィリアを普通候補から押し出した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 14,
+      "honmei_win_case": "ロードアマデウスは能力32.2、情報2.9、調教18.2で新馬組の最上位。初戦から流れに乗れれば好位から押し切る形が明確。",
+      "second_case": "ギルデッドグロスは能力27.3で状態上昇。ロードアマデウスとは差があるが、完成度では次位。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ギルデッドグロスも上昇するが、ロードアマデウスは能力・情報・調教の三点で一段上。◎優位を明確に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ロードアマデウスは能力・情報・仕上がりが新馬組で最上位。ギルデッドグロスが状態上昇で相手本線。ベアフラッシュは総合では一段下でも調教が上向き、初戦から前へ行ければ前残りの上振れがある。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "race_model": "芝2000m新馬。ラニアケアは能力47.9・情報4.4・調教21.2で大きく抜け、ソルフィーナが能力40.2で続く。ハナコは中位上の能力から前目で運べた時の別線。",
+    "marks": [
+      5,
+      4,
+      7,
+      2,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "ラニアケアは能力47.9、情報4.4、調教21.2と全指標で最上位。新馬戦でも能力差が大きく、通常に走れば押し切りまで強く見る。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ソルフィーナは能力40.2、状態上昇で次位。ラニアケアとの差は明確だが、初戦の完成度で相手本線。"
+      },
+      {
+        "horse_no": 2,
+        "case": "アインザッツは能力38.7で状態上昇。上位二頭に続く能力を相手圏に残す。"
+      },
+      {
+        "horse_no": 9,
+        "case": "グロリアススマイルは能力37.5、調教12.3で高水準。スムーズなら圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "ハナコは能力32で上位二頭より下だが、初戦から前目へ付けてスロー寄りに運べれば先に抜け出す余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "ホールノートは能力35.2で悪くないが、グロリアススマイルの能力・調教を普通候補下限で上に取る。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        4,
+        2,
+        9,
+        8
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "ハナコは通常能力順位では普通候補外だが、初戦の位置取り上振れが差し主線とは異なる勝ち筋になる。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "前受け上振れのハナコを▲に採り、ホールノートを普通候補から外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 4,
+      "honmei_win_case": "ラニアケアは能力47.9、情報4.4、調教21.2と全指標で最上位。新馬戦でも能力差が大きく、通常に走れば押し切りまで強く見る。",
+      "second_case": "ソルフィーナは能力40.2、状態上昇で次位。ラニアケアとの差は明確だが、初戦の完成度で相手本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ソルフィーナも能力40超で有力だが、ラニアケアは能力・情報・調教すべてで一段上。ここは◎優位を強く記録する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ラニアケアは能力・情報・仕上がりが新馬組で大きく抜けており中心。ソルフィーナが次位だが差は明確。ハナコは総合では下でも、初戦から前目を取れれば先に抜け出す上振れがある。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "race_model": "平均想定の1400m1勝。ノアスペシャルは先団後ろから4着で能力・状態上昇、プリプリプリンは逃げ切り直後。ラエトゥスは出遅れ後方から6着で能力最上位級の差しを▲に置く。",
+    "marks": [
+      16,
+      7,
+      12,
+      8,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "ノアスペシャルは前走、先団後ろから早めに手が動きながら4着。IDM47、状態上昇で、平均ペースなら好位差しの形を最も作りやすい。"
+      },
+      {
+        "horse_no": 7,
+        "case": "プリプリプリンは前走、内から先手を取り緩めず運んで押し切り勝ち。前傾前受け耐性があり、今回も主導権を握れば連勝まである。"
+      },
+      {
+        "horse_no": 8,
+        "case": "フュルスティンは煽って後方から5着まで差を詰めた。発馬改善なら相手圏。"
+      },
+      {
+        "horse_no": 13,
+        "case": "テンハートビートは前走6着でも今回はデキ抜群。中団より前を取れれば前進可能。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "ラエトゥスは前走、出遅れて後方から6着でもIDM45。能力評価48で、前が少し甘くなれば外から差し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "テンハートビートはデキ抜群で前進余地が明確。ベルメサイアより今回の上振れを普通候補下限に残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        7,
+        12,
+        8,
+        13
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "ベルメサイアは後方から内を突いて6着、終着位置予測は高いが状態面で上位5頭ほど強くない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ベルメサイアの差し込みはあるが、普通候補5頭の能力・直近勝ち・状態上昇の方が具体的で維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 7,
+      "honmei_win_case": "ノアスペシャルは前走、先団後ろから早めに手が動きながら4着。IDM47、状態上昇で、平均ペースなら好位差しの形を最も作りやすい。",
+      "second_case": "プリプリプリンは前走、内から先手を取り緩めず運んで押し切り勝ち。前傾前受け耐性があり、今回も主導権を握れば連勝まである。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "プリプリプリンの逃げ切りは強いが、ノアスペシャルは前で運べるうえ状態上昇、展開の幅が広い。差は小さく◎を僅かに上へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ノアスペシャルは先団後ろから4着で状態も上向き。プリプリプリンは逃げ切り直後で前傾耐性もあり差は小さい。ラエトゥスは出遅れ後方からでも脚を使えており、前が甘くなれば差し切りまで届く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "race_model": "ハイ想定の1600m1勝。アクアマーズは2番手から一騎打ちを制して勝利し能力・状態最上位、ブルーミーティアも中団内から勝利。サマーマッドネスは4角で一度抜けた前受けを▲に置く。",
+    "marks": [
+      15,
+      9,
+      2,
+      4,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "アクアマーズは前走、ヨレて出ても2番手へ付き直線の一騎打ちを制した。IDM56、調教18.3で一段上、ハイでも番手なら押し切れる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "ブルーミーティアは前走、中団内から直線を捌いて抜け出し勝利。状態上昇もあり、本命が前で苦しくなれば差し切れる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "アンシュウマトは出遅れを即挽回して外3番手から3着。状態上昇で相手圏。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ライカは好発から2番手、4角先頭で楽に抜けて勝利。昇級でも先行力を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "サマーマッドネスは前走、先団外から4角で抜け出し4着。最後は一杯でも、仕掛けを少し待って前で脚を残せれば勝ち切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "ライカは直近勝ちで先行して形を作った。カーマンラインより今回の勝ち筋が明確。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        9,
+        2,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "カーマンラインは後方から5着まで伸びるが、差し役はブルーミーティアと重なり上位5頭を押し出すほどではない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "カーマンラインの差し込みは評価するが、普通候補5頭の直近勝ち・状態・位置取りがより具体的で維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 9,
+      "honmei_win_case": "アクアマーズは前走、ヨレて出ても2番手へ付き直線の一騎打ちを制した。IDM56、調教18.3で一段上、ハイでも番手なら押し切れる。",
+      "second_case": "ブルーミーティアは前走、中団内から直線を捌いて抜け出し勝利。状態上昇もあり、本命が前で苦しくなれば差し切れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ブルーミーティアも直近勝ちで上昇するが、アクアマーズは能力値が一段高く、2番手から競り勝つ強い内容。◎優位を明確に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "アクアマーズは2番手から直線の一騎打ちを制して勝利し、能力と状態が一段上。ブルーミーティアは中団内から抜け出して勝った直後で相手本線。サマーマッドネスは4角で一度抜けており、仕掛けを待てれば前残りまである。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "race_model": "ハイ想定の芝2400m1勝。ゴンファロニエーレは好位から2着で状態上昇、イブキは出遅れ後方から進路不利の5着。パーヴォは4角外から進出して勝った勢いを別線に取る。",
+    "marks": [
+      9,
+      1,
+      16,
+      14,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "ゴンファロニエーレは前走、好位で控え直線内を空けて2着。IDM45から今回評価50、状態上昇で前から長く脚を使える。"
+      },
+      {
+        "horse_no": 1,
+        "case": "イブキは前走、出遅れ後方から直線最内へ入り狭くなる不利があって5着。IDM52で能力は高く、スムーズなら本命と差は小さい。"
+      },
+      {
+        "horse_no": 14,
+        "case": "ウルフマンは中団から4角外へ接近し決め手で勝利。上位クラス時計もあり相手圏。"
+      },
+      {
+        "horse_no": 3,
+        "case": "サンセットビューは先団で3着。前で脚を残せる位置取りを評価する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "パーヴォは前走、4角外から進出して直線外を渋太く伸び勝利。昇級でもハイペースで同じ長い脚を使えれば連勝まである。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "ポッドクロスは状態上昇と終着位置予測が高いが前走6着。サンセットビューの現級3着を普通候補下限に残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        1,
+        14,
+        3,
+        8
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "パーヴォは通常能力順位では普通候補外だが、直近勝ちと長く脚を使う形が2400mのハイ想定で上振れる。",
+      "excluded_horse_no": 8,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "直近勝ちの勢いが明確なパーヴォを▲に採り、近況の勝ち切り像で劣るポッドクロスを普通候補から外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 1,
+      "honmei_win_case": "ゴンファロニエーレは前走、好位で控え直線内を空けて2着。IDM45から今回評価50、状態上昇で前から長く脚を使える。",
+      "second_case": "イブキは前走、出遅れ後方から直線最内へ入り狭くなる不利があって5着。IDM52で能力は高く、スムーズなら本命と差は小さい。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "イブキは能力値で上だが前走は出遅れと進路不利。ゴンファロニエーレは好位から2着で状態も上昇し、今回の勝ち切り像がより素直。差は小さい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ゴンファロニエーレは好位から2着で状態も上向き。イブキは出遅れ後方から直線で狭くなる不利があり、スムーズなら差は小さい。パーヴォは4角外から進出して勝った直後で、昇級でも長く脚を使えれば連勝まである。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "race_model": "平均想定の芝1600m2勝。エラルディークは狭い内から抜けて勝利しIDM58、クレパスキュラーは能力62で最上位。ポペットは出遅れ後方から大外を伸びて勝った差しを別線に取る。",
+    "marks": [
+      12,
+      9,
+      3,
+      11,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "エラルディークは前走、中団内から狭い進路を抜けて勝利。IDM58、状態上昇で、平均ペースでも位置を選べる勝ち方を評価する。"
+      },
+      {
+        "horse_no": 9,
+        "case": "クレパスキュラーは前走5着でも能力評価62で最上位。直線で伸びなかった点は残るが、能力差で本命を逆転する余地は大きい。"
+      },
+      {
+        "horse_no": 11,
+        "case": "フジガイフウは好発から中団へ控え3着、状態上昇。前を見ながら相手圏。"
+      },
+      {
+        "horse_no": 4,
+        "case": "エーデルヴェーグは後方から直線外を伸び3着。差しの再現性を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "ポペットは前走出遅れ後方から直線大外を良く伸びて勝利。平均以上に流れて前が止まれば、連勝の末脚で主線をまとめて差す。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "フミサウンドは前走2着で強いが、同じ差し役が多い。エーデルヴェーグの能力57と3着を普通候補下限に残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        9,
+        11,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "ポペットは能力順位では普通候補外だが、直近の後方差し切りが主線とは違う展開依存の勝ち筋になる。",
+      "excluded_horse_no": 7,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "直近勝ちで末脚の上振れが具体的なポペットを▲に採り、差し役が重なるフミサウンドを外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 9,
+      "honmei_win_case": "エラルディークは前走、中団内から狭い進路を抜けて勝利。IDM58、状態上昇で、平均ペースでも位置を選べる勝ち方を評価する。",
+      "second_case": "クレパスキュラーは前走5着でも能力評価62で最上位。直線で伸びなかった点は残るが、能力差で本命を逆転する余地は大きい。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "クレパスキュラーは能力値で上だが、前走5着で直線の反応が鈍かった。エラルディークは狭い内から実際に勝ち切っており、現在の勝ち筋を◎に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "エラルディークは狭い内から抜けて勝った直後で状態も上向き。クレパスキュラーは能力値では最上位で逆転余地が大きい。ポペットは出遅れ後方から大外を伸びて勝っており、前が止まれば連勝まである。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "race_model": "ハイ想定の1400m3勝。カルパは後方内から3着で能力61、キョウエイカンセは出遅れ後方から差し切り勝ち。サンドブラストは先団から楽に捉えて勝った前受けの別線。",
+    "marks": [
+      7,
+      1,
+      14,
+      15,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "カルパは前走、後方内から直線で前を捌き3着。IDM61で能力最上位、ハイペースなら末脚を勝ち切りへつなげやすい。"
+      },
+      {
+        "horse_no": 1,
+        "case": "キョウエイカンセは前走、出遅れ後方から直線外を回して差し切り。IDM62の勝ち内容で、本命との差はほとんどない。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ヤマニンアストロンは後方から4着まで脚を見せ、状態上昇。ハイで末脚を使いやすい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "メイショウタムシバは好発から好位で早め抜け出し勝利。前受けの安定候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "サンドブラストは前走、先団で前を見ながら楽に運びきっちり捉えて勝利。差し主線が後ろで牽制する間に先に抜け出す勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "フウセツは速い流れを番手で3着と強いが、メイショウタムシバの直近勝ちを普通候補下限に残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        1,
+        15,
+        6,
+        11
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "サンドブラストは通常能力順位では普通候補外だが、直近勝ちの前受けが差し主線とは異なる非対称な勝ち筋になる。",
+      "excluded_horse_no": 11,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "差し勢が上位を占めるため、前受けで直近勝ちのサンドブラストを▲に採り、役割が重なるフウセツを外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 1,
+      "honmei_win_case": "カルパは前走、後方内から直線で前を捌き3着。IDM61で能力最上位、ハイペースなら末脚を勝ち切りへつなげやすい。",
+      "second_case": "キョウエイカンセは前走、出遅れ後方から直線外を回して差し切り。IDM62の勝ち内容で、本命との差はほとんどない。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "キョウエイカンセは差し切り勝ちで非常に近いが、カルパは能力61で現級3着、安定して末脚を使える。◎○は僅差として扱う。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "カルパは後方内から3着で能力上位。キョウエイカンセは出遅れ後方から差し切っており、◎○はかなり近い。サンドブラストは先団から楽に捉えて勝った直後で、差し勢が後ろで構えれば先に抜け出す余地がある。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "race_model": "ハイ想定の芝1800mオープン。カムニャックは躓いても中団から2着で能力74、ラヴァンダは好位内から勝利IDM73。ウイントワイライトは出負け後方から2着まで浮上した末脚を別線に取る。",
+    "marks": [
+      16,
+      11,
+      9,
+      3,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "カムニャックは前走、躓いても遅れず中団から直線外を伸び2着。IDM74、状態上昇で能力最上位、ハイでも位置を失わず差せる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ラヴァンダは前走、好位内から直線で前を捌きゴール前に抜けて勝利。IDM73で本命との差は極小、位置取りではこちらが上。"
+      },
+      {
+        "horse_no": 3,
+        "case": "クイーンズウォークは中団から外を回して3着、IDM69。能力上位で相手圏。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ジョスランは前走8着でもIDM67、状態上昇。中団からスムーズなら巻き返せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ウイントワイライトは前走、出負けから後方内を通り2着まで浮上。前が速くなれば末脚を温存して外差しに転じる余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "セキトバイーストは逃げ切りIDM70で強いが、先行馬が多いハイ想定。ジョスランの差し上限を普通候補下限に残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        11,
+        3,
+        15,
+        10
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "ウイントワイライトは通常能力順位では普通候補外だが、出負け後方から2着まで伸びた末脚がハイペース時の独立した勝ち筋になる。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "先行負荷が高い構成でウイントワイライトの後方差しを▲に採り、逃げ役が重なるセキトバイーストを比較で外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 11,
+      "honmei_win_case": "カムニャックは前走、躓いても遅れず中団から直線外を伸び2着。IDM74、状態上昇で能力最上位、ハイでも位置を失わず差せる。",
+      "second_case": "ラヴァンダは前走、好位内から直線で前を捌きゴール前に抜けて勝利。IDM73で本命との差は極小、位置取りではこちらが上。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ラヴァンダは直近勝ちIDM73でほぼ互角。カムニャックは躓きながらIDM74の2着で、ロス込みの能力を僅かに上へ置く。◎○は明確な僅差。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "カムニャックは躓きながら中団から2着、IDM74で能力最上位。ラヴァンダは好位内から勝ってIDM73とほぼ互角。ウイントワイライトは出負け後方から2着まで伸びており、速い流れなら末脚で二頭へ迫れる。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "race_model": "ハイ想定の1300m2勝。ジャスティンルマンは好位から差し切り勝ち、ジャックナダルは状態上昇と高い総合評価。オカメノコイは出遅れ後方型で前崩れ時の追込を別線に取る。",
+    "marks": [
+      6,
+      8,
+      10,
+      1,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "ジャスティンルマンは前走、促して好位を取り逃げ馬を目標に差し切って勝利。IDM50で、ハイでも前を追い過ぎず運べれば連勝まである。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ジャックナダルは前走5着でも能力52.2、情報3.6、調教20.2と状態が大きく上昇。現在地は本命に近い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ピコテンダーは好発から1列目外で6着、今回はデキ抜群。前で脚を残せれば相手圏。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ラインジークは前走12着でも速い上がりの履歴があり、展開が崩れれば差し込み可能。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "オカメノコイは前走出遅れ後方から11着でも、末脚履歴と後傾差し逆行の材料がある。前がやり合えば最後だけで一気に差し込む余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "ドントゥザムーンは状態上昇があるが前走13着で先行失速。ラインジークの末脚履歴を普通候補下限に残した。"
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        8,
+        1,
+        7,
+        13
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "オカメノコイは通常の近走順位では普通候補外だが、出遅れ後方型ゆえハイペース時だけ大きく上振れる非対称な勝ち筋を持つ。",
+      "excluded_horse_no": 13,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "前崩れを最大限拾えるオカメノコイを▲に採り、前受けで近況失速のドントゥザムーンを外した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 8,
+      "honmei_win_case": "ジャスティンルマンは前走、促して好位を取り逃げ馬を目標に差し切って勝利。IDM50で、ハイでも前を追い過ぎず運べれば連勝まである。",
+      "second_case": "ジャックナダルは前走5着でも能力52.2、情報3.6、調教20.2と状態が大きく上昇。現在地は本命に近い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ジャックナダルは仕上がりで強く迫るが、ジャスティンルマンは直近で好位から実際に勝ち切った。現在の勝ち形を僅かに上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ジャスティンルマンは好位から逃げ馬を目標に差し切って勝った直後。ジャックナダルは能力・仕上がりが上向いており差は小さい。オカメノコイは出遅れ後方型で、先行勢がやり合えば最後だけで一気に差し込む余地がある。"
+  }
+]
