@@ -59,8 +59,10 @@ function collectRows(bundle) {
     const ryota = momotaro.ryota || {};
     const ryotaConfidence = predictionText(ryota.confidence, "").toUpperCase();
     const ryotaTag = predictionText(ryota.tag, "");
+    const ryotaComment = predictionText(ryota.comment, "").trim();
     const ryotaSpecial = ryota.review_horse === true;
-    if (ryotaConfidence || ryotaSpecial) {
+    // 自信度は出走馬の評価情報であり、注目馬の掲載条件ではない。
+    if (ryotaComment) {
       const ryotaSignals = [];
       if (ryotaConfidence) ryotaSignals.push("自信度" + ryotaConfidence);
       if (ryotaTag) ryotaSignals.push(ryotaTag);
