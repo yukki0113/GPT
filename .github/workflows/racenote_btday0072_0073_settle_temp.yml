@@ -1,0 +1,135 @@
+name: RaceNote BTDAY-0072-0073 settlement temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0072_0073_SETTLE_TRIGGER'
+permissions:
+  actions: read
+  contents: write
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download accepted 2025 annual raw artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/raw
+          gh run download 35063842610 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name jrdb-annual-raw-2025-2025 \
+            --dir /tmp/raw
+          SED="$(find /tmp/raw -type f -name 'SED_2025.zip' -print -quit)"
+          HJC="$(find /tmp/raw -type f -name 'HJC_2025.zip' -print -quit)"
+          test -n "$SED" && test -n "$HJC"
+          echo "SED=$SED" >> "$GITHUB_ENV"
+          echo "HJC=$HJC" >> "$GITHUB_ENV"
+      - name: Query canonical JRDB results
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          mkdir -p horse-racing/jrdb/backtests/BTDAY-0072/20251221/v052/settlement
+          mkdir -p horse-racing/jrdb/backtests/BTDAY-0073/20250405/v052/settlement
+          python horse-racing/jrdb/src/jrdb_result_query.py \
+            --date 2025-12-21 --sed "$SED" --hjc "$HJC" --include-all-runners --pretty \
+            --output horse-racing/jrdb/backtests/BTDAY-0072/20251221/v052/settlement/20251221_JRDB_Result.json
+          python horse-racing/jrdb/src/jrdb_result_query.py \
+            --date 2025-04-05 --sed "$SED" --hjc "$HJC" --include-all-runners --pretty \
+            --output horse-racing/jrdb/backtests/BTDAY-0073/20250405/v052/settlement/20250405_JRDB_Result.json
+      - name: Convert result-query contract for existing settlement module
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          jobs = [
+              ("BTDAY-0072", "20251221", 36),
+              ("BTDAY-0073", "20250405", 24),
+          ]
+          for btday, ymd, expected in jobs:
+              root = Path("horse-racing/jrdb/backtests") / btday / ymd / "v052" / "settlement"
+              src = root / f"{ymd}_JRDB_Result.json"
+              value = json.loads(src.read_text(encoding="utf-8"))
+              if value.get("status") != "success":
+                  raise SystemExit(f"{btday}: result query status={value.get('status')}")
+              if value.get("race_count") != expected:
+                  raise SystemExit(f"{btday}: race_count={value.get('race_count')} expected={expected}")
+              races = []
+              for race in value["races"]:
+                  if race.get("cross_validation", {}).get("review_required"):
+                      raise SystemExit(f"{btday}: cross-validation mismatch {race.get('venue_name')} {race.get('race_no')}")
+                  payouts = {}
+                  for wager, slots in (race.get("payouts") or {}).items():
+                      payouts[wager] = [
+                          {
+                              "combination": slot.get("numbers") or [],
+                              "payout_jpy": slot.get("payout_yen"),
+                          }
+                          for slot in slots
+                      ]
+                  races.append({
+                      "date": race["race_date"],
+                      "venue": race["venue_name"],
+                      "race_no": race["race_no"],
+                      "status": "official",
+                      "top3": race.get("top3") or [],
+                      "payouts": payouts,
+                  })
+              out = {
+                  "schema_version": "RaceNote-SameDay-Result-0.1",
+                  "target_date": value["query"]["date"],
+                  "status": "complete",
+                  "source": {
+                      "provider": "jrdb_result_query",
+                      "result_source": "SED",
+                      "payout_source": "HJC",
+                      "web_used": False,
+                  },
+                  "race_count": len(races),
+                  "official_race_count": len(races),
+                  "pending_race_count": 0,
+                  "review_required_race_count": 0,
+                  "races": races,
+              }
+              (root / f"{ymd}_Settlement_Input.json").write_text(
+                  json.dumps(out, ensure_ascii=False, indent=2) + "\n",
+                  encoding="utf-8",
+              )
+          PY
+      - name: Settle frozen v0.5.2 marks
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_daily_settlement.py \
+            --forecast horse-racing/jrdb/backtests/BTDAY-0072/20251221/v052/frozen/records.json \
+            --results horse-racing/jrdb/backtests/BTDAY-0072/20251221/v052/settlement/20251221_Settlement_Input.json \
+            --output-json horse-racing/jrdb/backtests/BTDAY-0072/20251221/v052/settlement/settlement.json \
+            --output-md horse-racing/jrdb/backtests/BTDAY-0072/20251221/v052/settlement/settlement.md \
+            --top 10
+          python horse-racing/jrdb/src/racenote_daily_settlement.py \
+            --forecast horse-racing/jrdb/backtests/BTDAY-0073/20250405/v052/frozen/records.json \
+            --results horse-racing/jrdb/backtests/BTDAY-0073/20250405/v052/settlement/20250405_Settlement_Input.json \
+            --output-json horse-racing/jrdb/backtests/BTDAY-0073/20250405/v052/settlement/settlement.json \
+            --output-md horse-racing/jrdb/backtests/BTDAY-0073/20250405/v052/settlement/settlement.md \
+            --top 10
+      - name: Commit settlement outputs
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0072/20251221/v052/settlement
+          git add horse-racing/jrdb/backtests/BTDAY-0073/20250405/v052/settlement
+          git commit -m 'RaceNote: settle BTDAY-0072 and BTDAY-0073'
+          git pull --rebase origin main
+          git push origin HEAD:main
