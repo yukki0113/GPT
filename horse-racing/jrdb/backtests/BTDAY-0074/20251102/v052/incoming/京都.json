@@ -1,1 +1,758 @@
-[]
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "race_model": "先行力のある4と9が主線を作る一方、後方勢は発馬や追走に不安が多い。前で運べる組を中心に、差し込みは近走で不利を抱えた馬だけを拾う形。",
+    "marks": [
+      4,
+      9,
+      13,
+      15,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "先手から自分のリズムで運べれば、初戦以上に直線の粘りを伸ばせる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "番手から流れに乗る形なら新馬2着時の持続力を再現しやすい。"
+      },
+      {
+        "horse_no": 15,
+        "case": "初戦4着時は厳しい流れでも粘っており、上昇気配を伴う前進余地がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "初戦は砂を被って後方から6着。外へ出せれば終いの前進が見込める。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は出遅れと外回しを解消できれば、普通の能力順以上に着順を上げる余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14はIDM水準はあるが、近2走の追走反応の鈍さが続き、13の条件改善余地に一歩譲る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "4の先行力を◎。9の持続力を○。発馬改善で一変余地のある13を▲に上げ、15と12まで。4と9が前で流れを作る想定を軸に、差し勢は不利歴まで見て絞った。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        9,
+        15,
+        12,
+        14
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は初戦で出遅れて大外を回しながら7着。前が止まらない流れで位置を失った分が大きく、発馬五分なら差し込み余地がある。",
+      "excluded_horse_no": 14,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "14は近2走とも勝負所でモタつき、6頭目比較では13の発馬改善による上振れ経路を優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 9,
+      "honmei_win_case": "4は新馬戦で先手を取り4着まで粘り、今回は調教気配も強い。自分で主導権を作って直線入口まで余力を残す形が最も勝ち切りに直結する。",
+      "second_case": "9は新馬2着の持続力があり、前走は出遅れて外を回った分を考えれば巻き返せる。4を見ながら運べるのが強み。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9の実績安定感よりも、4の先手を取った時の能動的な勝ち筋を上位に取った。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "race_model": "7頭立てで能力差は大きくないが、2000m初戦で内容を残した1・3・4が中心。特に3は直線で前を捌くロスがあり、4は先行して粘る形が明確。",
+    "marks": [
+      3,
+      4,
+      1,
+      7,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "初戦の進路ロスが減れば、終いの伸びをもっと使える。"
+      },
+      {
+        "horse_no": 4,
+        "case": "先行して大崩れしない持続力があり、流れが緩めば粘り込める。"
+      },
+      {
+        "horse_no": 7,
+        "case": "初戦6着でも2000mを経験済みで、展開ひとつで差を詰められる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "発馬不安はあるが、少頭数で追走が楽になれば末を残せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は初戦3着で後方から内を突いて伸びており、展開が差し向きなら一撃候補。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6は先行経路はあるものの、既存5頭の2000m実戦内容を上回る材料まではない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初戦で詰まりながら5着の3を◎。前で粘れる4が○。1の差し脚を▲に置き、7・5まで。2000m初戦組の内容差を重視し、前受けと直線の伸びを比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        3,
+        1,
+        7,
+        5
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は先行できる可能性があるが、芝での実戦値と終いの甘さがまだ弱く、前残りに振れた時だけの外部経路。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6の前残り経路は認めるが、1・3・4・7・5の実戦内容を崩してまで入れる根拠は不足。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 4,
+      "honmei_win_case": "3は初戦5着でも直線で前を捌くのに手間取りながらIDM34。流れに乗って進路を確保できれば差し切る余地が最も大きい。",
+      "second_case": "4は新馬3着で掛かりながらも大きく崩れず、前受けから長く脚を使える。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4の先行安定感より、3のロスを取り除いた時の上積み幅を勝ち切り側で評価した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "race_model": "全馬初出走で、事前指数と調教・厩舎気配の差を素直に見る新馬戦。2が総合値で抜け、15・13・14・4が次位グループ。",
+    "marks": [
+      2,
+      15,
+      13,
+      14,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "事前の能力・情報・厩舎指標が最上位で、初戦から完成度で押し切れる。"
+      },
+      {
+        "horse_no": 15,
+        "case": "上位水準の総合値と騎手面が揃い、好位で流れに乗れれば勝ち負け。"
+      },
+      {
+        "horse_no": 14,
+        "case": "中上位の事前値で大きな弱点がなく、相手なりに運べる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "上位ほどではないが能力想定が高く、初戦から先行圏なら残り目がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は調教と能力想定のバランスが良く、上位2頭に続く組の中では変化幅を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11は外部候補としての上振れはあるが、13・14・4を押し出すだけの事前差はない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初出走勢では2の事前材料が一段上。15を○、13を▲にして14・4までを本線とする。全馬初出走のため、調教・厩舎気配と事前指数のまとまりを重視した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        15,
+        13,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11は中位の事前値ながら厩舎・調教が極端に弱くなく、上位勢が初戦で揉まれた時に浮上する経路。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "11の上振れ余地は認めるが、2・15・13・14・4の事前総合値を崩すほどではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 15,
+      "honmei_win_case": "2はIDM想定38.7、情報・厩舎・調教の各指標が揃って高い。初戦から先団で形を作れる前提なら勝ち切り経路が最も明確。",
+      "second_case": "15は総合値が次位で、浜中騎乗と厩舎・調教のバランスが良く、2を追う主線候補。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "初出走同士で不確定要素はあるが、2は単一指標でなく複数の事前材料が同方向に揃う点を優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "race_model": "障害実績の再現性を最優先。9と1は近走で安定して好位から運べ、5も障害で3着実績。平地オープン級の3は初障害でも前に行ける潜在力が別経路になる。",
+    "marks": [
+      9,
+      1,
+      3,
+      5,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "障害で好位を取って最後まで脚を残す近走内容が最も安定している。"
+      },
+      {
+        "horse_no": 1,
+        "case": "同条件3着の実戦内容があり、序盤のロスを抑えれば勝ち負けに近づく。"
+      },
+      {
+        "horse_no": 5,
+        "case": "障害3着歴があり、早め進出から渋太く粘る形なら圏内。"
+      },
+      {
+        "horse_no": 4,
+        "case": "飛越に課題はあるが、後方から長く脚を使える展開なら差し込める。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3は飛越をこなす条件付きだが、平地オープンでの先行力がこの組では異質な勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6は障害での裏付けがなく、未知数同士の比較では3の先行力を上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "障害で安定する9を◎、同条件3着の1を○。初障害でも平地力で前に行ける3を▲に狙う。既走馬の飛越と立ち回りの再現性を軸に、3だけ別経路の上積みを見込む。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        1,
+        5,
+        4,
+        6
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3は平地オープンで先行して粘れる能力があり、障害初戦でも飛越をこなせば前受けから一変する非連続な経路。",
+      "excluded_horse_no": 6,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "6は平地能力はあるが障害材料に乏しいため、同じ未知数なら前で運べる3の一撃経路を優先。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 1,
+      "honmei_win_case": "9は近2走が4着、3着で障害での位置取りと持続力が安定。飛越をまとめて好位から運べれば最も勝ち筋が太い。",
+      "second_case": "1は前走同条件3着で、序盤の挽回から直線まで脚を残した。9に次ぐ再現性がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "平地能力より障害での再現性を上位に取り、9の近走安定度を1よりわずかに上とした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "race_model": "新馬戦で12の事前完成度が明確に高く、8と1が次位。6・7までが調教と能力想定でまとまった上位群。",
+    "marks": [
+      12,
+      8,
+      1,
+      6,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "能力・情報・厩舎・調教が揃い、初戦から主導権を取れる完成度。"
+      },
+      {
+        "horse_no": 8,
+        "case": "上昇気配と上位の能力想定があり、好位なら最後まで伸びられる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "能力想定と厩舎値が中上位で、スムーズなら相手候補。"
+      },
+      {
+        "horse_no": 7,
+        "case": "調教値が良く、上位2頭の後ろで脚をためれば差を詰められる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は能力想定32.7と調教状態が高く、展開が流れれば差し込みの一撃がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15は騎手面の上振れはあるが、1・6・7の総合的な事前材料を上回らない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "完成度で12を◎。8が○。1の調教と能力想定を▲に取り、6・7まで。初出走同士なので調教と事前指数の完成度差を中心に序列を付けた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        8,
+        1,
+        6,
+        7
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15は能力想定こそ中位だが騎手・調教面は悪くなく、内外の流れが噛み合えば先団から残る経路。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15の上振れはあるが、1・6・7の事前能力と調教バランスを崩すには弱い。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 8,
+      "honmei_win_case": "12は能力想定43.3に加え情報・騎手・厩舎・調教が全て高水準。初戦から好位で力を出せれば押し切りが最も自然。",
+      "second_case": "8は能力想定32.8で調教も上向き、12が取りこぼす場合の次位ルートがある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "12は複数材料の一致度が高く、8との差は単なる指数一点ではなく完成度全体でついている。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "race_model": "5・6・12・14と前に行きたい馬が多く、1800mでも前半から息の入らない形を想定。差し脚の質が高い8と9を中心に取る。",
+    "marks": [
+      8,
+      9,
+      13,
+      5,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "前走2着の末脚と高い終い指標が、先行競合の流れに噛み合う。"
+      },
+      {
+        "horse_no": 9,
+        "case": "好位から長く脚を使え、前が残る流れでも崩れにくい。"
+      },
+      {
+        "horse_no": 5,
+        "case": "1700mで2着した先行力があり、自分の形なら押し切り圏。"
+      },
+      {
+        "horse_no": 14,
+        "case": "前走3着の逃げ粘りがあり、競り合いが軽ければ残れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は前走の大敗だけで切れず、2走前の1800m差し切り再現なら一気に浮上する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10は能力差は小さいが、先行馬の多さを考えると展開面で13に譲る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前が多い組み合わせで8の差し脚を◎。9が○。13の巻き返しを▲に置き、5・14まで。先行馬が多く流れが締まる想定で、終いを使える組を上位に取った。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        9,
+        5,
+        14,
+        10
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は前走11着でもその前に同距離を差して勝っており、近走凡走からの反発で外差しに乗る経路。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "10は安定した先行力がある一方、前が多い今回は負荷を受けやすい。13の差し戻し経路を優先。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 9,
+      "honmei_win_case": "8は前走2着でIDM52、終い指標も高く調教気配も抜群。前が競り合えば中団から差し切る経路が最も明確。",
+      "second_case": "9は前走4着、前々走1着で高いIDMを連続しており、8より前で運べる安定した差し候補。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "前受けの再現性では9だが、先行勢が多い組み合わせを踏まえ、8の末脚が勝ち切り側で優位と見た。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "race_model": "2200mで先行馬もいるが、上位は終いを伸ばせる差し型が多い。9の長い末脚と7の地力を主線に、昇級直後の10を外部上昇馬として見る。",
+    "marks": [
+      9,
+      7,
+      10,
+      13,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "距離短縮で後方の位置損を減らせれば、終いの伸びが勝ち筋になる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "2200m2着実績があり、能力水準もこの組で上位。"
+      },
+      {
+        "horse_no": 13,
+        "case": "前走2200m勝ちの好位差しが再現できれば昇級でも通用する。"
+      },
+      {
+        "horse_no": 5,
+        "case": "前走4着、前々走1着で2000mの持続力が安定している。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は前走2200m勝ちからの上昇馬で、差しに徹した時の伸びしろを▲評価。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16は先行力は魅力だが休み明けで、10の近況上昇と末脚の再現性を上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "距離短縮で差しやすくなる9を◎。2200m実績の7を○。昇級でも末脚を生かせる10を▲。2200m前後の持続力と近走の差し脚を比較し、長く脚を使える組を優先した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        7,
+        13,
+        5,
+        16
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は前走2200mを差し切って未勝利を勝ち、近2走で終いを使えている。昇級でも直線勝負に徹すれば連続好走の余地。",
+      "excluded_horse_no": 16,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "16は先行力があるが休養明けで、2200mの前受け負荷より10の上昇差しを優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 7,
+      "honmei_win_case": "9は2400mで後方から届かなかった前走でもIDM55。今回は距離短縮で位置負けが緩和されれば差し切りやすい。",
+      "second_case": "7は春に2200m2着があり、前走の11着でもIDM53。条件実績を踏まえれば巻き返しの軸。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7の条件実績は強いが、9は近走の能力水準と距離短縮で勝ち切り経路がより具体的。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "race_model": "1200mらしく前に行く馬が多く、14が番手で流れを作る一方、6や7の差し脚が生きる余地もある。能力上位14を中心に展開の逆側も取る。",
+    "marks": [
+      14,
+      6,
+      7,
+      13,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "同距離2着の先行力と高い能力値で、好位から抜け出す形が明確。"
+      },
+      {
+        "horse_no": 6,
+        "case": "差しに回して終いを伸ばせるため、前が競れば勝ち負けに近づく。"
+      },
+      {
+        "horse_no": 13,
+        "case": "1200mで2、3着を続けた先行持続力があり、内外問わず運べる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "1300m4着と1400m1着があり、距離短縮でも好位差しなら対応できる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は発馬が決まらなくても末脚を温存でき、ハイペース時だけ一気に浮上する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2は安定度はあるが決め手で見劣り、展開上振れの大きい7を採用。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "同距離2着の14を◎。差し脚の6を○。前崩れ専用の7を▲に上げ、13・5まで。前に行く馬が揃うため、1200mで末脚を残せる差し勢の台頭まで織り込んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        6,
+        13,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7は後方一気型で、前が競り合って流れが速くなれば直線だけで差し込む非対称な経路。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "2はIDM54でも近走はジリ脚傾向。前崩れ時の伸びしろでは7を優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 6,
+      "honmei_win_case": "14は前走同距離2着でIDM61、先行して崩れず調教も上向き。好位から自力で抜け出す勝ち筋が最も太い。",
+      "second_case": "6は前走3着でIDM55。好位勢が競れば差しに回って終いを伸ばせる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6の差し脚も魅力だが、14は同距離で先行して高い能力値を出しており、自分から勝ちに行ける点を上位とした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "race_model": "2歳1勝クラスで逃げ・先行勢が多く、能力の高い10が前で主導権を取れるかが中心。9は差しで高水準、15は後方からの一撃経路。",
+    "marks": [
+      10,
+      9,
+      15,
+      3,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "高い初戦IDMと先行持続力があり、番手でも逃げでも押し切れる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "出遅れを挽回して楽に勝った内容から、展開不問の能力を評価。"
+      },
+      {
+        "horse_no": 3,
+        "case": "逃げて連続好走しており、自分のペースなら粘り込み可能。"
+      },
+      {
+        "horse_no": 16,
+        "case": "好発から逃げ切った初戦で持続力を示しており、楽に行ければ残る。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15は出遅れから差し切った前走の再現で、先行過多の流れを一気に拾える。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4は勝ち方は強いが前受け競合の影響を受けやすく、今回は15の展開逆張りを上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初戦の能力値が高い10を◎。自在性ある9が○。先行競合を差す15を▲に据える。2歳戦でも1800mで既に勝ち切った内容と、位置取りの自在性を重視した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        9,
+        3,
+        16,
+        4
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15は出遅れから外を回して差し切った前走があり、先行勢がやり合えば外差しで一気に届く経路。",
+      "excluded_horse_no": 4,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "4の前走は早め先頭から完勝だが、先行馬が多い今回は同じ形の再現が難しく、15の差し込みを優先。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 9,
+      "honmei_win_case": "10は新馬でIDM52、好発から先頭併走でも直線もう一伸びして勝利。現時点の能力値が最上位で前から押し切れる。",
+      "second_case": "9は出遅れても即座に挽回して楽に抜け出した勝ち方が強く、10を追う能力型。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9の自在性も高いが、10は初戦から高い能力値で自分からレースを作れるため勝ち切り側を上に取る。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "race_model": "3000mで先行勢が複数おり、単純な前残りより長距離で脚を残せる馬を重視。9の2600m2着内容と2の長距離適性を中心にする。",
+    "marks": [
+      9,
+      2,
+      11,
+      13,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "2600m2着時の持久力がこの距離で最も直接的な強み。"
+      },
+      {
+        "horse_no": 2,
+        "case": "長距離適性が高く、早めに動いても止まりにくい。"
+      },
+      {
+        "horse_no": 13,
+        "case": "2400mを好位から勝った能力があり、折り合えば距離延長にも対応可能。"
+      },
+      {
+        "horse_no": 4,
+        "case": "2600m逃げ切り実績があり、単騎なら粘り込みがある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11は前が消耗する展開に限れば、近走の差し脚が3000mで一気に浮上する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3は安定した差し型だが、3000mでの決め手比較では11の上振れを上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2600m実績の9を◎、長距離適性の2を○。消耗戦なら差し込む11を▲に狙う。3000mへの延長で、2600m以上の持続力と消耗戦での差し脚を重く見た。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        4,
+        2,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11は近走2000mで後方から鋭く伸びており、前が長距離で消耗した時に終いだけで差し込む経路。",
+      "excluded_horse_no": 3,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "3は長距離適性はあるが近走の決め手不足が目立ち、11の後方一気の上振れを優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 2,
+      "honmei_win_case": "9は2600mでIDM62の2着があり、長距離適性も高い。前走大敗から距離延長で自分の持久力勝負に戻れば勝ち切れる。",
+      "second_case": "2は長距離適性◎で、前走2400mは向正面から動いて5着。早め進出でも最後まで残す体力がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "13や4の先行力より、3000mで最後まで脚を残せる実績を優先し、9を勝ち切り側に上げた。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "race_model": "マイルで先行勢も差し勢も揃うが、近走内容の鮮度では6が優位。3の逃げ粘りと15の地力を相手に、総合力勝負を想定。",
+    "marks": [
+      6,
+      3,
+      15,
+      14,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "1600m連勝中で、外を回っても差し切る現在の完成度が高い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "逃げて高い能力値を出せており、自分のペースなら押し切りまで。"
+      },
+      {
+        "horse_no": 14,
+        "case": "1400mで高いIDMを出しており、差しに回れば終いの伸びがある。"
+      },
+      {
+        "horse_no": 2,
+        "case": "マイルで安定した能力値があり、好位差しで崩れにくい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15は休養明けでも地力上位で、前受けから早めに動く形なら一撃がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10は展開待ちの色が強く、通常能力で上回る15・14・2を押し出せない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "近2走を連勝した6を◎。逃げで高水準の3を○。地力上位15を▲に残す。1600mで高い水準を示す先行勢と、近走で勝ち切っている差し馬を比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        14,
+        3,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は後方一気型で、先行勢がやり合って上がりの掛かる流れになれば最速級の末脚を使う経路。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10の末脚経路はあるが、近走の停滞を考えると15・14・2の通常候補を崩すほどではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 3,
+      "honmei_win_case": "6は1600mを連勝しており、直近も外を回しながら差し切った。調教も良く、流れに左右されにくい現在の勝ち筋が最も強い。",
+      "second_case": "3は前走1600m2着で逃げてIDM63。自分のリズムなら直線まで粘り込む。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "15の絶対値は高いが休養明けで、6は近走2連勝の再現性、3は逃げの明確さがあるためこの順。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "race_model": "1400mで8が前を取り、4も先行できる。差し勢では7の能力が抜け、前後両方の展開を押さえる構成。",
+    "marks": [
+      7,
+      8,
+      3,
+      4,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "1400mで高い能力値と安定した末脚があり、流れが締まれば差し切れる。"
+      },
+      {
+        "horse_no": 8,
+        "case": "前走逃げ切りの先行力があり、楽に先手ならそのまま残せる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "1600m1勝の先行持続力があり、1400m短縮で粘りやすい。"
+      },
+      {
+        "horse_no": 12,
+        "case": "前走1400mを好位から勝っており、位置を取れるのが強み。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3は1800mでも崩れず、距離短縮で追走が噛み合えば差し込む余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11は調教面の上振れはあるが、実戦の再現性では普通の5頭に届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "末脚上位の7を◎、逃げ残りの8を○。距離短縮で差しやすい3を▲に置く。1400mでの末脚と逃げの残り目を両方残し、展開の両側から組み立てた。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        3,
+        4,
+        12,
+        8
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11は調教気配が強く、近走の着順以上に一変する余地があるが、休み明けの色が強い外部経路。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "11の上昇余地はあるものの、3・4・12・8の近走実績を押し出すまでの材料はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 8,
+      "honmei_win_case": "7は1400mで近2走4着、2着と安定し、IDM59。後方からでも終いを伸ばせるため、前が競れば差し切りが最も見えやすい。",
+      "second_case": "8は前走1600mを逃げ切り、1400mでも単騎気味なら前残りの主線になる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8の逃げ切りも強いが、同型がいる分だけ展開依存が増す。7の差し脚を勝ち切り側で上に取った。"
+    }
+  }
+]
