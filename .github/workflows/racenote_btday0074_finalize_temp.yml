@@ -1,0 +1,57 @@
+name: RaceNote BTDAY-0074 finalize temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0074/FINALIZE_TRIGGER'
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore authored Decision Cores
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0074/20251102/v052'
+          mkdir -p "$ROOT/incoming"
+          cat "$ROOT"/.incoming_encoded/kyoto.* | base64 -d | gzip -d > "$ROOT/incoming/京都.json"
+          cat "$ROOT"/.incoming_encoded/tokyo.* | base64 -d | gzip -d > "$ROOT/incoming/東京.json"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0074/20251102/v052/incoming')
+          for venue in ('京都','東京'):
+              rows=json.loads((root/f'{venue}.json').read_text(encoding='utf-8'))
+              assert len(rows)==12
+              assert [x['race_no'] for x in rows]==list(range(1,13))
+              assert all(x['venue']==venue for x in rows)
+          PY
+      - name: Save venues, Freeze, Verify
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0074/20251102/v052'
+          python horse-racing/jrdb/src/racenote_v052_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/京都.json"
+          python horse-racing/jrdb/src/racenote_v052_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/東京.json"
+          python horse-racing/jrdb/src/racenote_v052_single_day.py freeze --root "$ROOT"
+          python horse-racing/jrdb/src/racenote_v052_single_day.py verify --root "$ROOT"
+      - name: Commit canonical outputs
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0074/20251102/v052'
+          rm -rf "$ROOT/.incoming_encoded"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A "$ROOT/.incoming_encoded" "$ROOT/incoming" "$ROOT/authored_decisions" "$ROOT/frozen"
+          git commit -m 'RaceNote: freeze and verify BTDAY-0074 v052'
+          git pull --rebase origin main
+          git push origin HEAD:main
