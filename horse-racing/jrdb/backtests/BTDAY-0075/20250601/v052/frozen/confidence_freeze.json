@@ -14,9 +14,9 @@
     "C": "◎と○が僅差・ほぼ互角・差が小さいなど、tie-break的に◎を上に置いている"
   },
   "counts": {
-    "A": 0,
-    "B": 24,
-    "C": 0,
+    "A": 6,
+    "B": 13,
+    "C": 5,
     "total": 24
   },
   "records": [
@@ -24,145 +24,146 @@
       "venue": "京都",
       "race_no": 1,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: メイショウアキカゼの安定感よりも、ペンテリコンが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+      "basis": "◎は能動的な先行勝ち筋、○は安定性。優位はあるが差幅は明確でない。"
     },
     {
       "venue": "京都",
       "race_no": 2,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: サルファーの安定感よりも、サルタールが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+      "basis": "◎は主導権を取りやすく、○は安定型。勝ち筋差はあるが決定的ではない。"
     },
     {
       "venue": "京都",
       "race_no": 3,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ヴァイスクレーの安定感よりも、ドバイミッションが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+      "confidence": "C",
+      "basis": "race_modelで「決め手差が小さい」とされ、◎○とも先行主線。tie-breakに近い。"
     },
     {
       "venue": "京都",
       "race_no": 4,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ナリノモンターニュの安定感よりも、ディナースタが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+      "basis": "◎は障害で連続2着、○は同距離勝ち。◎を上にする再現性根拠はあるが差は中程度。"
     },
     {
       "venue": "京都",
       "race_no": 5,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ヤマニンヒストリアの安定感よりも、ジョイボーイが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+      "basis": "◎は同距離で連続好走、○も2400m適性あり。◎優位はあるが明確差まではない。"
     },
     {
       "venue": "京都",
       "race_no": 6,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: チュウワチーフの安定感よりもソリスクラヴィスが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+      "confidence": "A",
+      "basis": "◎は直近同距離を好位抜け出しで勝利。○の安定性より勝ち切り根拠が明確。"
     },
     {
       "venue": "京都",
       "race_no": 7,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ゼンノインヴォークの安定感よりもヴィスマールが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+      "confidence": "A",
+      "basis": "race_modelで◎の近2走2着内容を「一段安定」と評価。○より明確に上。"
     },
     {
       "venue": "京都",
       "race_no": 8,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: フレイミングパイの安定感よりもニホンピロトッティが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+      "confidence": "A",
+      "basis": "◎は1200mで先手性能・直近2着を最上位評価。○との差が複数材料で明確。"
     },
     {
       "venue": "京都",
       "race_no": 9,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ルナビスの安定感よりもホルトバージが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+      "basis": "◎は直近2着と好位差し、○は差し脚。◎を上にする理由はあるが差幅は中程度。"
     },
     {
       "venue": "京都",
       "race_no": 10,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: タマモブラックタイの先行安定感より、バウンシーステップの差し切り性能を勝ち切り側で優先した。"
+      "basis": "◎の直近勝利と差し切り性能を○の先行安定より優先。差幅は明示されない。"
     },
     {
       "venue": "京都",
       "race_no": 11,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: マイユニバースの安定感より、キングメーカーの決め手が勝ち切りに直結する点を優先して◎とした。"
+      "confidence": "C",
+      "basis": "◎○とも差して勝ち上がり、内容も濃いとrace_modelが評価。決め手比較の僅差。"
     },
     {
       "venue": "京都",
       "race_no": 12,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ガロンヌの総合力より、ユハンヌスの近走差し脚の再現性を勝ち切り側で優先して◎とした。"
+      "basis": "◎は近走2着の差し再現性、○は総合力。◎を上にする理由はあるが差幅は中程度。"
     },
     {
       "venue": "東京",
       "race_no": 1,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: アイスリーディングの差し脚より、スカイビートの先行して勝ち筋を作れる点を優先して◎とした。"
+      "confidence": "A",
+      "basis": "◎は直近2着に加え能力指数が「一段上」。○より明確に上。"
     },
     {
       "venue": "東京",
       "race_no": 2,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: カフェブーケットの末脚より、キョウエイスレーヴの位置取りと再現性を勝ち切り側で優先した。"
+      "basis": "◎は直近3着と位置取り再現性、○は末脚。優位理由はあるが決定的ではない。"
     },
     {
       "venue": "東京",
       "race_no": 3,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: サトミノエンジェルの安定感より、セブンメデュラスの能力優位と能動的な勝ち筋を優先して◎とした。"
+      "basis": "◎は出遅れから先団へ取り付き2着で内容優位、○も連続2着級。明確差までは取らない。"
     },
     {
       "venue": "東京",
       "race_no": 4,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ソナタンの実績より、ノーブルライナーの直近安定度と仕上がりを勝ち切り側で優先して◎とした。"
+      "confidence": "C",
+      "basis": "◎○とも連続2着級で、◎は仕上がり差で上位。基礎能力差は小さくtie-break寄り。"
     },
     {
       "venue": "東京",
       "race_no": 5,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: レーティッシュの実戦安定感より、ドラゴンの能力上限と仕上がりを勝ち切り側で優先して◎とした。"
+      "confidence": "A",
+      "basis": "◎は能力指数・調教とも一段上、○は同距離2着。複数材料で◎優位が明確。"
     },
     {
       "venue": "東京",
       "race_no": 6,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: パストラーレの安定感より、アンドローゼスの前受けできる勝ち筋を優先して◎とした。"
+      "basis": "◎2着、○3着、▲も2着で上位接近。◎の前受け勝ち筋を上にするが差幅は中程度。"
     },
     {
       "venue": "東京",
       "race_no": 7,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: キミハスコールの末脚より、ノルドヴェストの総合的な安定度を勝ち切り側で優先した。"
+      "basis": "◎は総合安定度、○は末脚。順位理由はあるが差の大きさまでは明確でない。"
     },
     {
       "venue": "東京",
       "race_no": 8,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: クルミナーレの安定感より、デュアルウィルダーの直近内容と決め手を勝ち切り側で優先した。"
+      "basis": "◎は直近勝利と末脚・調教、○は同距離2着。◎を上にする理由はあるが明確差まではない。"
     },
     {
       "venue": "東京",
       "race_no": 9,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 9 is ranked above horse 5 because its race-specific route is more directly connected to winning rather than merely placing."
+      "confidence": "C",
+      "basis": "sealed Readerでは◎○とも同距離直近勝ち、IDMも62.0対62.1で拮抗。tie-break相当。"
     },
     {
       "venue": "東京",
       "race_no": 10,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 7 is ranked above horse 2 because its race-specific route is more directly connected to winning rather than merely placing."
+      "confidence": "A",
+      "basis": "sealed Readerでは◎が現級2000m2着・適性一致、○はマイル寄りで近走3着。◎優位が明確。"
     },
     {
       "venue": "東京",
       "race_no": 11,
-      "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 13 is ranked above horse 7 because its race-specific route is more directly connected to winning rather than merely placing."
+      "confidence": "C",
+      "basis": "sealed Readerでは◎○ともG1級で、直近直接対決は○1着・◎2着。能力値も○が上で、◎選択は僅差判断。"
     },
     {
       "venue": "東京",
       "race_no": 12,
       "confidence": "B",
-      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 10 is ranked above horse 8 because its race-specific route is more directly connected to winning rather than merely placing."
+      "basis": "sealed Readerでは◎は直近2600mオープン勝ち、○は2500m連勝。クラス優位で◎を上にするが差は中程度。"
     }
-  ]
+  ],
+  "classification_method": "post-freeze blind review of Decision Core comparison structure; sealed Reader consulted only where Decision Core had generic fallback text"
 }
