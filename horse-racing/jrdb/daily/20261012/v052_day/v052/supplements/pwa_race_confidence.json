@@ -1,0 +1,321 @@
+{
+  "schema_version": "racenote-race-confidence-supplement-0.1",
+  "date": "2026-10-12",
+  "canonical_commit": "dc603188124e93ea3b3e7a8773d1645c03a61ec8",
+  "canonical_records_sha256": "b4507085527ce1f0a64284410ebd0a06ad43987f5a36f26b2752207fa33216ed",
+  "confidence_source": "User-provided RaceNote_20261012_v0.5.2.json (image handoff); separate from frozen canonical records",
+  "entries": [
+    {
+      "venue": "京都",
+      "race_no": 1,
+      "confidence": "A",
+      "marks": [
+        14,
+        1,
+        6,
+        12,
+        10
+      ],
+      "source_semantic_sha256": "0533ba31ac02e7ea2738210db9eecf0781cc8a76eea2fcdc2c218368fdf875b4"
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "confidence": "A",
+      "marks": [
+        11,
+        10,
+        4,
+        2,
+        12
+      ],
+      "source_semantic_sha256": "57815349c8e704d3ee6ee30059bdeaf864c550fc35445777677b15609b543246"
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "confidence": "B",
+      "marks": [
+        6,
+        12,
+        5,
+        1,
+        9
+      ],
+      "source_semantic_sha256": "0373ca9e138cc2574ac98385d33235c76e2b4485c364e70ea52255129eab04c2"
+    },
+    {
+      "venue": "京都",
+      "race_no": 4,
+      "confidence": "A",
+      "marks": [
+        12,
+        4,
+        8,
+        14,
+        13
+      ],
+      "source_semantic_sha256": "d8b9a123c8828775351fafa51f24759f3ecc50d014ce9853c8fed0b7b9eb6bad"
+    },
+    {
+      "venue": "京都",
+      "race_no": 5,
+      "confidence": "A",
+      "marks": [
+        2,
+        6,
+        4,
+        5,
+        3
+      ],
+      "source_semantic_sha256": "785572f8d259d7df78cc34d1a8f49f2e107f5b095706d9b67197158415a26292"
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "confidence": "A",
+      "marks": [
+        12,
+        11,
+        2,
+        7,
+        3
+      ],
+      "source_semantic_sha256": "9a4003ff5a388ef5d17617b71ee6c14d5c8bf092b33e52eca9ad41f0fffb0c5d"
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "confidence": "B",
+      "marks": [
+        12,
+        15,
+        10,
+        2,
+        5
+      ],
+      "source_semantic_sha256": "21577d524b0ca70b48a07adf4662ad2d351aad295010fbd4e783bb3fc69c4635"
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "confidence": "B",
+      "marks": [
+        9,
+        11,
+        3,
+        1,
+        10
+      ],
+      "source_semantic_sha256": "b5841e01ff3f254fbae885a96b24bc2b340881575f6ecf2486817cade1572bde"
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "confidence": "A",
+      "marks": [
+        12,
+        10,
+        3,
+        4,
+        7
+      ],
+      "source_semantic_sha256": "4b07b8676d1f234b82f09fa9bda41dea2b03764fe957048e3a1f4fe0fe33c0b7"
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "confidence": "B",
+      "marks": [
+        5,
+        2,
+        9,
+        7,
+        6
+      ],
+      "source_semantic_sha256": "cedaeeb74d1cbda6e4a1eeb9495428429b3db11ae2c55a2e683352c68ee9e81f"
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "confidence": "B",
+      "marks": [
+        9,
+        17,
+        13,
+        18,
+        15
+      ],
+      "source_semantic_sha256": "101f481b053fdbd0dda4c86131d781de95df644e541f819a0a8c157a411cb45e"
+    },
+    {
+      "venue": "京都",
+      "race_no": 12,
+      "confidence": "B",
+      "marks": [
+        1,
+        14,
+        10,
+        16,
+        8
+      ],
+      "source_semantic_sha256": "9cc33db890dc5109c0d77f3907c11273d4ab32976e9085140fa8c8d7a2025da5"
+    },
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "confidence": "A",
+      "marks": [
+        15,
+        3,
+        6,
+        4,
+        13
+      ],
+      "source_semantic_sha256": "fe421522d5b68c718a3e977cd29d4e0142fa2d16170663782dd4f6acdf6aba1c"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "confidence": "B",
+      "marks": [
+        2,
+        7,
+        12,
+        1,
+        11
+      ],
+      "source_semantic_sha256": "9f87410862d3509969c02e27a257a75c17bdd39c6ee3a9a4380925bd38cbe7a2"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "confidence": "A",
+      "marks": [
+        8,
+        11,
+        1,
+        3,
+        4
+      ],
+      "source_semantic_sha256": "c691987f85a19388ddaa8ce97942cfe5a8ec327512a743efd5e5b364a1f7b4e3"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "confidence": "B",
+      "marks": [
+        8,
+        4,
+        5,
+        10,
+        2
+      ],
+      "source_semantic_sha256": "f895744c0bf657128aca7d8962e484f0cf65c41b1d026d1d6c0530499e46ebed"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "confidence": "A",
+      "marks": [
+        10,
+        6,
+        7,
+        12,
+        1
+      ],
+      "source_semantic_sha256": "7b30b28f89e334960ae322c62a1f8ab9465a65751c739822aa73010802614d0d"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "confidence": "A",
+      "marks": [
+        14,
+        5,
+        7,
+        1,
+        11
+      ],
+      "source_semantic_sha256": "fc2b35e4e9cb48445faf4d1aabbe96742db56fa464b868df78d5180c99520e53"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "confidence": "B",
+      "marks": [
+        15,
+        8,
+        10,
+        5,
+        11
+      ],
+      "source_semantic_sha256": "819e4fdc70da4032928832fc12468e4dbd0e1992cbd2f8415ce1f919445621e9"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "confidence": "A",
+      "marks": [
+        5,
+        1,
+        2,
+        4,
+        6
+      ],
+      "source_semantic_sha256": "d75aa8ba4b1ece5960b4906be79bc36513dbbdc2ba6ee737a3d65e8c7bfca05e"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "confidence": "B",
+      "marks": [
+        8,
+        10,
+        9,
+        12,
+        4
+      ],
+      "source_semantic_sha256": "30bb6a862d5f422f9e569642b07762a946996986ed3c3b57f52deb9bf811b964"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "confidence": "B",
+      "marks": [
+        11,
+        1,
+        10,
+        7,
+        5
+      ],
+      "source_semantic_sha256": "d0315d57db5c412416110e16dd4bc6174a6ba3d2c840b20957f209af8641cf93"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "confidence": "A",
+      "marks": [
+        2,
+        9,
+        18,
+        5,
+        16
+      ],
+      "source_semantic_sha256": "8c8336d8ae7c7af24be22c2db9c054f261b9bd4bd29853e90cb5856ae1f69121"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "confidence": "B",
+      "marks": [
+        8,
+        11,
+        3,
+        15,
+        2
+      ],
+      "source_semantic_sha256": "527497c61ec358aac8af33bfd6210a39606144861c9365f46dec126f093e4b95"
+    }
+  ]
+}
