@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "race_model": "1200mで前に行ける馬が多く、先行争いの中でも自分の形を崩しにくい馬を上位に取る。13は近2走で先手から崩れず、16は好位から抜け出す形が安定している。",
+    "marks": [
+      13,
+      16,
+      9,
+      1,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "ペンテリコンは近走内容と当日の事前指標が噛み合い、自分の形を作れれば勝ち負けの主線になる。"
+      },
+      {
+        "horse_no": 16,
+        "case": "メイショウアキカゼは近走で安定した内容を示し、展開が少し変わっても上位争いへ残る余地が大きい。"
+      },
+      {
+        "horse_no": 1,
+        "case": "メイショウホダワラは上位2頭ほどの決め手差はないが、立ち回りが噛み合えば連下圏へ入れる材料がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "フラッシュケリーは条件への適合材料が残っており、流れひとつで5頭圏内を守れる比較対象。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "チムニーパイプは通常順位以上に展開や位置取りの振れ幅があり、条件が噛み合った時の上振れを▲として取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "ヴィヴァシャスにも浮上経路はあるが、近走内容と事前材料の総合比較では最終5頭を入れ替えるまでの優位差がない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ペンテリコンを◎、メイショウアキカゼを○。チムニーパイプは展開が噛み合った時の上振れを見て▲に置く。メイショウホダワラ、フラッシュケリーまでを本線とし、近走内容・位置取り・調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        16,
+        9,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "ヴィヴァシャスは展開や位置取りが大きく好転すれば5頭圏へ割って入る余地はあり、外部挑戦馬として比較対象に残した。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ヴィヴァシャスの上振れ経路は認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差まではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 16,
+      "honmei_win_case": "ペンテリコンはこの組み合わせで最も能動的に勝ち筋を作れる。近走の内容と事前指標が同方向で、展開が標準範囲なら先頭まで届く経路が明確。",
+      "second_case": "メイショウアキカゼは安定感と再現性が高く、◎が取りこぼす流れでは最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "メイショウアキカゼの安定感よりも、ペンテリコンが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "race_model": "1900mで先行力のある3と11が主導権を握る想定。前で長く脚を使える2頭を中心に、差し勢は近走の持続力と位置取り改善余地を比較する。",
+    "marks": [
+      3,
+      11,
+      14,
+      7,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "サルタールは近走内容と当日の事前指標が噛み合い、自分の形を作れれば勝ち負けの主線になる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "サルファーは近走で安定した内容を示し、展開が少し変わっても上位争いへ残る余地が大きい。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ピエナアイルは上位2頭ほどの決め手差はないが、立ち回りが噛み合えば連下圏へ入れる材料がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "オリジナルファインは条件への適合材料が残っており、流れひとつで5頭圏内を守れる比較対象。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "マテンロウシルビアは通常順位以上に展開や位置取りの振れ幅があり、条件が噛み合った時の上振れを▲として取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "ペプチドモガミにも浮上経路はあるが、近走内容と事前材料の総合比較では最終5頭を入れ替えるまでの優位差がない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "サルタールを◎、サルファーを○。マテンロウシルビアは展開が噛み合った時の上振れを見て▲に置く。ピエナアイル、オリジナルファインまでを本線とし、近走内容・位置取り・調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        11,
+        14,
+        7,
+        12
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "ペプチドモガミは展開や位置取りが大きく好転すれば5頭圏へ割って入る余地はあり、外部挑戦馬として比較対象に残した。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ペプチドモガミの上振れ経路は認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差まではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 11,
+      "honmei_win_case": "サルタールはこの組み合わせで最も能動的に勝ち筋を作れる。近走の内容と事前指標が同方向で、展開が標準範囲なら先頭まで届く経路が明確。",
+      "second_case": "サルファーは安定感と再現性が高く、◎が取りこぼす流れでは最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "サルファーの安定感よりも、サルタールが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "race_model": "マイル未勝利で決め手差が小さく、先行して形を作れる13と15を中心視。出遅れ後に脚を使った18、逃げ残りの1までが主線で、差し勢は位置取り改善が鍵になる。",
+    "marks": [
+      13,
+      15,
+      18,
+      1,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "ドバイミッションは近走内容と当日の事前指標が噛み合い、自分の形を作れれば勝ち負けの主線になる。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ヴァイスクレーは近走で安定した内容を示し、展開が少し変わっても上位争いへ残る余地が大きい。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ビリオネアボーイは上位2頭ほどの決め手差はないが、立ち回りが噛み合えば連下圏へ入れる材料がある。"
+      },
+      {
+        "horse_no": 14,
+        "case": "コリカンチャは条件への適合材料が残っており、流れひとつで5頭圏内を守れる比較対象。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 18,
+      "case": "ダノンプリマは通常順位以上に展開や位置取りの振れ幅があり、条件が噛み合った時の上振れを▲として取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "レインオンミーにも浮上経路はあるが、近走内容と事前材料の総合比較では最終5頭を入れ替えるまでの優位差がない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ドバイミッションを◎、ヴァイスクレーを○。ダノンプリマは展開が噛み合った時の上振れを見て▲に置く。ビリオネアボーイ、コリカンチャまでを本線とし、近走内容・位置取り・調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        15,
+        18,
+        1,
+        14
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "レインオンミーは展開や位置取りが大きく好転すれば5頭圏へ割って入る余地はあり、外部挑戦馬として比較対象に残した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "レインオンミーの上振れ経路は認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差まではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 15,
+      "honmei_win_case": "ドバイミッションはこの組み合わせで最も能動的に勝ち筋を作れる。近走の内容と事前指標が同方向で、展開が標準範囲なら先頭まで届く経路が明確。",
+      "second_case": "ヴァイスクレーは安定感と再現性が高く、◎が取りこぼす流れでは最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ヴァイスクレーの安定感よりも、ドバイミッションが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "race_model": "障害3170mで飛越の安定と近走のオープン実績を重視。9は連続2着で終いも確実、11は同距離勝ちがあり、1の先行持続力も展開上の強みになる。",
+    "marks": [
+      9,
+      11,
+      1,
+      3,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "ディナースタは近走内容と当日の事前指標が噛み合い、自分の形を作れれば勝ち負けの主線になる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ナリノモンターニュは近走で安定した内容を示し、展開が少し変わっても上位争いへ残る余地が大きい。"
+      },
+      {
+        "horse_no": 3,
+        "case": "ナイトスピアーは上位2頭ほどの決め手差はないが、立ち回りが噛み合えば連下圏へ入れる材料がある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "プラチナムレイアーは条件への適合材料が残っており、流れひとつで5頭圏内を守れる比較対象。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "コンテナワールドは通常順位以上に展開や位置取りの振れ幅があり、条件が噛み合った時の上振れを▲として取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "スヴァルナにも浮上経路はあるが、近走内容と事前材料の総合比較では最終5頭を入れ替えるまでの優位差がない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ディナースタを◎、ナリノモンターニュを○。コンテナワールドは展開が噛み合った時の上振れを見て▲に置く。ナイトスピアー、プラチナムレイアーまでを本線とし、近走内容・位置取り・調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        11,
+        1,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "スヴァルナは展開や位置取りが大きく好転すれば5頭圏へ割って入る余地はあり、外部挑戦馬として比較対象に残した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "スヴァルナの上振れ経路は認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差まではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 11,
+      "honmei_win_case": "ディナースタはこの組み合わせで最も能動的に勝ち筋を作れる。近走の内容と事前指標が同方向で、展開が標準範囲なら先頭まで届く経路が明確。",
+      "second_case": "ナリノモンターニュは安定感と再現性が高く、◎が取りこぼす流れでは最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ナリノモンターニュの安定感よりも、ディナースタが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "race_model": "芝2400mの持続戦で、近走同距離の内容を最優先。3は連続好走で長く脚を使え、5と8も2400mで差を詰めており、前受けできる4を交える構図。",
+    "marks": [
+      3,
+      5,
+      8,
+      4,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "ジョイボーイは近走内容と当日の事前指標が噛み合い、自分の形を作れれば勝ち負けの主線になる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ヤマニンヒストリアは近走で安定した内容を示し、展開が少し変わっても上位争いへ残る余地が大きい。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ジャックオダモは上位2頭ほどの決め手差はないが、立ち回りが噛み合えば連下圏へ入れる材料がある。"
+      },
+      {
+        "horse_no": 10,
+        "case": "プレデスティナーレは条件への適合材料が残っており、流れひとつで5頭圏内を守れる比較対象。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "セキトバシューズは通常順位以上に展開や位置取りの振れ幅があり、条件が噛み合った時の上振れを▲として取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "ジーティートシオーにも浮上経路はあるが、近走内容と事前材料の総合比較では最終5頭を入れ替えるまでの優位差がない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ジョイボーイを◎、ヤマニンヒストリアを○。セキトバシューズは展開が噛み合った時の上振れを見て▲に置く。ジャックオダモ、プレデスティナーレまでを本線とし、近走内容・位置取り・調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        5,
+        8,
+        4,
+        10
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "ジーティートシオーは展開や位置取りが大きく好転すれば5頭圏へ割って入る余地はあり、外部挑戦馬として比較対象に残した。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ジーティートシオーの上振れ経路は認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差まではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 5,
+      "honmei_win_case": "ジョイボーイはこの組み合わせで最も能動的に勝ち筋を作れる。近走の内容と事前指標が同方向で、展開が標準範囲なら先頭まで届く経路が明確。",
+      "second_case": "ヤマニンヒストリアは安定感と再現性が高く、◎が取りこぼす流れでは最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ヤマニンヒストリアの安定感よりも、ジョイボーイが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "race_model": "1400mで先行勢が多いが、6は直近同距離を好位抜け出しで勝利。11も好位安定、12は逃げ切り歴があり、前受け組を中心に7の差し脚を押さえる。",
+    "marks": [
+      6,
+      11,
+      12,
+      10,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "ソリスクラヴィスは近走内容と事前指標が揃い、自分の形なら勝ち負けまで届く。"
+      },
+      {
+        "horse_no": 11,
+        "case": "チュウワチーフは安定した実戦内容があり、標準展開なら上位争いへ残れる。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ホウショウマリスは立ち回りが噛み合えば連下圏へ入れる比較材料がある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "エナジーガンツは条件適性があり、流れ次第で5頭圏を守れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "サンライズブレイクは位置取りや展開が好転した時の上振れを▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "ライツユーアップにも浮上余地はあるが、通常5頭を崩すだけの比較優位には届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ソリスクラヴィスを◎、チュウワチーフを○。サンライズブレイクは展開が噛み合った時の上振れを見て▲。ホウショウマリス、エナジーガンツまでを本線とし、近走内容と位置取り、調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        11,
+        12,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "ライツユーアップは展開が大きく向けば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ライツユーアップの上振れは認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 11,
+      "honmei_win_case": "ソリスクラヴィスはこの組み合わせで最も能動的に勝ち筋を作れる。近走内容と事前指標が同方向で、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "チュウワチーフは安定感と再現性が高く、◎が取りこぼす流れなら自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "チュウワチーフの安定感よりもソリスクラヴィスが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "race_model": "芝2000mで11の近2走2着内容が一段安定。4も2200mで惜敗し持続力が高く、3は内立ち回りで崩れにくい。上位3頭の実戦内容を軸に組み立てる。",
+    "marks": [
+      11,
+      4,
+      3,
+      7,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "ヴィスマールは近走内容と事前指標が揃い、自分の形なら勝ち負けまで届く。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ゼンノインヴォークは安定した実戦内容があり、標準展開なら上位争いへ残れる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "サスケは立ち回りが噛み合えば連下圏へ入れる比較材料がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "レジェンドシップは条件適性があり、流れ次第で5頭圏を守れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "トリオンファルマンは位置取りや展開が好転した時の上振れを▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "シルバーカレッジにも浮上余地はあるが、通常5頭を崩すだけの比較優位には届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヴィスマールを◎、ゼンノインヴォークを○。トリオンファルマンは展開が噛み合った時の上振れを見て▲。サスケ、レジェンドシップまでを本線とし、近走内容と位置取り、調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        4,
+        3,
+        7,
+        8
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "シルバーカレッジは展開が大きく向けば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "シルバーカレッジの上振れは認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 4,
+      "honmei_win_case": "ヴィスマールはこの組み合わせで最も能動的に勝ち筋を作れる。近走内容と事前指標が同方向で、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "ゼンノインヴォークは安定感と再現性が高く、◎が取りこぼす流れなら自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ゼンノインヴォークの安定感よりもヴィスマールが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "race_model": "1200mで10の先手性能と直近2着を最上位評価。1は中団差しで安定し、4も外を回して2着の内容が強い。前残り一辺倒ではなく差し込みも届く想定。",
+    "marks": [
+      10,
+      1,
+      4,
+      13,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "ニホンピロトッティは近走内容と事前指標が揃い、自分の形なら勝ち負けまで届く。"
+      },
+      {
+        "horse_no": 1,
+        "case": "フレイミングパイは安定した実戦内容があり、標準展開なら上位争いへ残れる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "パドマは立ち回りが噛み合えば連下圏へ入れる比較材料がある。"
+      },
+      {
+        "horse_no": 15,
+        "case": "カンザシは条件適性があり、流れ次第で5頭圏を守れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "ワークソングは位置取りや展開が好転した時の上振れを▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "フォルテローザにも浮上余地はあるが、通常5頭を崩すだけの比較優位には届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ニホンピロトッティを◎、フレイミングパイを○。ワークソングは展開が噛み合った時の上振れを見て▲。パドマ、カンザシまでを本線とし、近走内容と位置取り、調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        1,
+        4,
+        13,
+        15
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "フォルテローザは展開が大きく向けば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "フォルテローザの上振れは認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 1,
+      "honmei_win_case": "ニホンピロトッティはこの組み合わせで最も能動的に勝ち筋を作れる。近走内容と事前指標が同方向で、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "フレイミングパイは安定感と再現性が高く、◎が取りこぼす流れなら自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "フレイミングパイの安定感よりもニホンピロトッティが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "race_model": "1800mで11の直近2着と中団立ち回りを軸に、差しの6、先行して勝ち上がった3を相手上位に取る。前受け勢が多く、好位差しの持続力を重視する。",
+    "marks": [
+      11,
+      6,
+      3,
+      13,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "ホルトバージは近走内容と事前指標が揃い、自分の形なら勝ち負けまで届く。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ルナビスは安定した実戦内容があり、標準展開なら上位争いへ残れる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "ミヤジレガリアは立ち回りが噛み合えば連下圏へ入れる比較材料がある。"
+      },
+      {
+        "horse_no": 9,
+        "case": "テーオールビーは条件適性があり、流れ次第で5頭圏を守れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "メイショウソウタは位置取りや展開が好転した時の上振れを▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "ギマールにも浮上余地はあるが、通常5頭を崩すだけの比較優位には届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ホルトバージを◎、ルナビスを○。メイショウソウタは展開が噛み合った時の上振れを見て▲。ミヤジレガリア、テーオールビーまでを本線とし、近走内容と位置取り、調教気配を同一レース内で比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        6,
+        3,
+        13,
+        9
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "ギマールは展開が大きく向けば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ギマールの上振れは認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 6,
+      "honmei_win_case": "ホルトバージはこの組み合わせで最も能動的に勝ち筋を作れる。近走内容と事前指標が同方向で、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "ルナビスは安定感と再現性が高く、◎が取りこぼす流れなら自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ルナビスの安定感よりもホルトバージが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "race_model": "芝1400mオープンで11の直近勝利と反応の良さを軸。13は逃げて高水準を維持し、5は近走凡走でも地力と調教気配が高い。前後のバランスを取った構成。",
+    "marks": [
+      11,
+      13,
+      5,
+      10,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "バウンシーステップは近走内容と事前指標が揃い、自分の形なら勝ち負けまで届く。"
+      },
+      {
+        "horse_no": 13,
+        "case": "タマモブラックタイは先行力が安定し、標準展開なら上位争いへ残れる。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ヤマニンサンパは展開が差し向きなら連下圏へ入れる比較材料がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "グレイイングリーンは末脚実績があり、流れ次第で5頭圏を守れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "クランフォードは近走凡走でも地力があり、条件が噛み合った時の上振れを▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "アスクワンタイムにも末脚の浮上余地はあるが、通常5頭を崩すだけの比較優位には届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "バウンシーステップを◎、タマモブラックタイを○。クランフォードは地力の上振れを見て▲。ヤマニンサンパ、グレイイングリーンまでを本線とし、近走内容と位置取り、調教気配を比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        13,
+        5,
+        10,
+        8
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "アスクワンタイムは展開が大きく向けば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "アスクワンタイムの上振れは認めるが、通常5頭の近走内容・能力・条件適性を総合すると入れ替えを正当化する差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 13,
+      "honmei_win_case": "バウンシーステップは直近勝利の反応と差し切り性能が高く、標準展開なら先頭まで届く経路が最も明確。",
+      "second_case": "タマモブラックタイは逃げて高水準を維持し、◎が取りこぼす流れなら自然に勝ち負けへ残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "タマモブラックタイの先行安定感より、バウンシーステップの差し切り性能を勝ち切り側で優先した。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "race_model": "3歳オープンの1800mで、6と5はともに差して勝ち上がりながら内容も濃い。10も後方から決め手を示しており、上がり性能を中心に比較する。",
+    "marks": [
+      6,
+      5,
+      10,
+      8,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "キングメーカーは直線の決め手が明確で、標準展開なら勝ち負けまで届く。"
+      },
+      {
+        "horse_no": 5,
+        "case": "マイユニバースは後方から長く脚を使え、再現性のある差し脚が強み。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ライトトラックは初戦の差し切り内容が良く、流れが向けば連下圏へ入れる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "センツブラッドは先行して押し切った実績があり、前残りなら5頭圏を守れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "ニュークレドは後方から決め手を発揮して勝っており、上がり勝負での上振れを▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "ロードガレリアにも先行経路はあるが、上位5頭の直近内容を崩すだけの比較優位には届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "キングメーカーを◎、マイユニバースを○。ニュークレドは上がり勝負の上振れを見て▲。ライトトラック、センツブラッドまでを本線とし、近走の決め手と位置取りを比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        5,
+        10,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "ロードガレリアは先行して流れに乗れれば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ロードガレリアの前残りは認めるが、通常5頭の決め手と近走内容を総合すると入れ替えを正当化する差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 5,
+      "honmei_win_case": "キングメーカーは直近で最後方から差し切り、今回も決め手を生かせる展開なら先頭まで届く経路が最も明確。",
+      "second_case": "マイユニバースは近走勝ち切りと末脚の再現性が高く、◎が取りこぼす流れなら自然に浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "マイユニバースの安定感より、キングメーカーの決め手が勝ち切りに直結する点を優先して◎とした。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "race_model": "芝1400mの3勝クラスで2の安定した差し脚と近走2着を最上位評価。8は能力水準と位置取り柔軟性があり、6は出遅れから強襲した末脚が魅力。",
+    "marks": [
+      2,
+      8,
+      6,
+      13,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ユハンヌスは近走2着の差し脚が安定し、今回も標準展開なら勝ち負けまで届く。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ガロンヌは能力水準と位置取りの柔軟性があり、流れが変わっても上位争いへ残れる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "ウインスノーライトは終いを伸ばす形なら連下圏へ入れる比較材料がある。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ムーンリットナイトは先行して形を作れれば5頭圏を守れる余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "バンドシェルは出遅れから強襲した末脚があり、展開が差し向きになった時の上振れを▲として評価する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "ブリュットミレジメにも末脚の浮上余地はあるが、通常5頭を崩すだけの比較優位には届かない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ユハンヌスを◎、ガロンヌを○。バンドシェルは差し向きの上振れを見て▲。ウインスノーライト、ムーンリットナイトまでを本線とし、近走の末脚と位置取りを比較した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        8,
+        6,
+        13,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "ブリュットミレジメは流れが強く差し向きになれば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ブリュットミレジメの上振れは認めるが、通常5頭の近走内容と能力を総合すると入れ替えを正当化する差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 8,
+      "honmei_win_case": "ユハンヌスは直近2着で内を捌きながら伸びており、今回も差し脚を再現できれば先頭まで届く経路が明確。",
+      "second_case": "ガロンヌは能力水準と位置取りの柔軟性が高く、◎が取りこぼす流れなら自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ガロンヌの総合力より、ユハンヌスの近走差し脚の再現性を勝ち切り側で優先して◎とした。"
+    }
+  }
+]
