@@ -1,0 +1,63 @@
+{
+  "venue": "東京",
+  "race_no": 3,
+  "race_model": "ダート1600mで2は出遅れから早めに先団へ取り付き2着と内容が強い。15も連続2着級の安定感があり、13と4の差し脚を続ける。",
+  "marks": [
+    2,
+    15,
+    13,
+    4,
+    14
+  ],
+  "mainline_cases": [
+    {
+      "horse_no": 2,
+      "case": "セブンメデュラスは出遅れから先団へ取り付き2着で、能力面の優位が大きい。"
+    },
+    {
+      "horse_no": 15,
+      "case": "サトミノエンジェルは近走2着級の安定感があり、標準展開なら上位争いへ残れる。"
+    },
+    {
+      "horse_no": 4,
+      "case": "ダイタエリュシオンは後方から脚を使えており、差し向きなら連下圏へ入れる。"
+    },
+    {
+      "horse_no": 14,
+      "case": "ゴールドパートナーは中団から運べれば5頭圏を守れる比較材料がある。"
+    }
+  ],
+  "single_shot_case": {
+    "horse_no": 13,
+    "case": "マルターズヴェロスは持続的に脚を使えるため、前が苦しくなった時の上振れを▲として評価する。"
+  },
+  "boundary_review": {
+    "alternative_horse_no": 9,
+    "reason": "ブランディストックにも先行経路はあるが、近走内容では通常5頭を崩すだけの比較優位には届かない。"
+  },
+  "rrdb_refs": [],
+  "reader_facing_reason": "セブンメデュラスを◎、サトミノエンジェルを○。マルターズヴェロスは差し向きの上振れを見て▲。ダイタエリュシオン、ゴールドパートナーまでを本線とする。",
+  "candidate_compression": {
+    "ordinary_five": [
+      2,
+      15,
+      13,
+      4,
+      14
+    ],
+    "external_challenger_horse_no": 9,
+    "external_challenger_case": "ブランディストックは前受けが噛み合えば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+    "excluded_horse_no": 9,
+    "decision": "KEEP_ORDINARY_FIVE",
+    "reason": "ブランディストックの前残りは認めるが、通常5頭の近走内容と能力を総合すると入れ替えを正当化する差はない。"
+  },
+  "role_assignment": {
+    "honmei_horse_no": 2,
+    "second_horse_no": 15,
+    "honmei_win_case": "セブンメデュラスは出遅れから早めに先団へ取り付き2着と内容が強く、普通に運べれば先頭まで届く経路が最も明確。",
+    "second_case": "サトミノエンジェルは近走の安定感が高く、◎が取りこぼす流れなら自然に勝ち負けへ浮上する。",
+    "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+    "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+    "ranking_reason": "サトミノエンジェルの安定感より、セブンメデュラスの能力優位と能動的な勝ち筋を優先して◎とした。"
+  }
+}
