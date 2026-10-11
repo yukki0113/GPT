@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "race_model": "ダート1800m未勝利。14は同距離2着、15は1800m先行歴、11は出遅れから4着。16は芝実績からの条件替わり、13は同距離差し経験を持ち、前後の経路を比較する。",
+    "marks": [
+      14,
+      15,
+      11,
+      16,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "モーニングマジックはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ネクストダンサーは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 16,
+        "case": "ミライヘノハナは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 13,
+        "case": "キタノラブミーは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "バラダレイナは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "リリカルガンマンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1800m未勝利。14は同距離2着、15は1800m先行歴、11は出遅れから4着。16は芝実績からの条件替わり、13は同距離差し経験を持ち、前後の経路を比較する。 その比較からモーニングマジックを◎、ネクストダンサーを○。バラダレイナは非対称の勝ち筋を▲として取り、ミライヘノハナ、キタノラブミーまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        15,
+        11,
+        16,
+        13
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "リリカルガンマンはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "リリカルガンマンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 15,
+      "honmei_win_case": "モーニングマジックは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "ネクストダンサーは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ネクストダンサーの安定感より、モーニングマジックが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "race_model": "ダート1200m未勝利。2と15が能力・仕上がりで上位。5は過去の同距離2着という直接証拠を近走凡走だけで落とさずordinary fiveに保護し、前受け時の非対称経路として評価する。",
+    "marks": [
+      2,
+      15,
+      5,
+      7,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ガンバレベアーはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ピコテンダーは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ハナナラツボミは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 11,
+        "case": "シンガソングは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "ミラクルミッキーは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "グリームスターにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1200m未勝利。2と15が能力・仕上がりで上位。5は過去の同距離2着という直接証拠を近走凡走だけで落とさずordinary fiveに保護し、前受け時の非対称経路として評価する。 その比較からガンバレベアーを◎、ピコテンダーを○。ミラクルミッキーは非対称の勝ち筋を▲として取り、ハナナラツボミ、シンガソングまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        15,
+        7,
+        5,
+        11
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "グリームスターはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "グリームスターにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 15,
+      "honmei_win_case": "ガンバレベアーは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "ピコテンダーは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ピコテンダーの安定感より、ガンバレベアーが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "race_model": "ダート1800m未勝利。5は同距離2着で能力差が明確。14は1600m差し3着、12は2100m4着、6は長距離からの短縮、1は芝からの替わりで、5を軸に差し経路を比較する。",
+    "marks": [
+      5,
+      14,
+      12,
+      6,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "オキョンピーはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 14,
+        "case": "アールプロストは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ホークライトは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ホウオウブライツは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "ティアップドライブは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "クルーンチャンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1800m未勝利。5は同距離2着で能力差が明確。14は1600m差し3着、12は2100m4着、6は長距離からの短縮、1は芝からの替わりで、5を軸に差し経路を比較する。 その比較からオキョンピーを◎、アールプロストを○。ティアップドライブは非対称の勝ち筋を▲として取り、ホークライト、ホウオウブライツまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        14,
+        12,
+        6,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "クルーンチャンはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "クルーンチャンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 14,
+      "honmei_win_case": "オキョンピーは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "アールプロストは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "アールプロストの安定感より、オキョンピーが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "race_model": "ダート1800m未勝利。1は1600m2着から距離延長、11は1800m2着、12は2100m連続3着。15と10の差し経路も含め、前受けと持続力の両面を保護する。",
+    "marks": [
+      1,
+      11,
+      12,
+      15,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "オンザスクエアはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ヒサエノオモカゲは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ルクスエクレールは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ドラゴンバスターは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "フィールザゴールドは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "ブラーブデシジョンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1800m未勝利。1は1600m2着から距離延長、11は1800m2着、12は2100m連続3着。15と10の差し経路も含め、前受けと持続力の両面を保護する。 その比較からオンザスクエアを◎、ヒサエノオモカゲを○。フィールザゴールドは非対称の勝ち筋を▲として取り、ルクスエクレール、ドラゴンバスターまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        11,
+        12,
+        15,
+        10
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "ブラーブデシジョンはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ブラーブデシジョンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 11,
+      "honmei_win_case": "オンザスクエアは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "ヒサエノオモカゲは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ヒサエノオモカゲの安定感より、オンザスクエアが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "race_model": "芝1600m未勝利。15は1800m連続3着、10は1600m2着、12は1600m3・4着。4は1400m好走、16は1600m経験があり、距離適性と位置取り再現性を比較する。",
+    "marks": [
+      15,
+      10,
+      12,
+      4,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "キャトルエピスはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ブドワールドールは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ベルアーブルは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 16,
+        "case": "マザーズウィルは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "ヤマニンパルフェは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "ダングラールにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1600m未勝利。15は1800m連続3着、10は1600m2着、12は1600m3・4着。4は1400m好走、16は1600m経験があり、距離適性と位置取り再現性を比較する。 その比較からキャトルエピスを◎、ブドワールドールを○。ヤマニンパルフェは非対称の勝ち筋を▲として取り、ベルアーブル、マザーズウィルまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        10,
+        12,
+        4,
+        16
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "ダングラールはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ダングラールにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 10,
+      "honmei_win_case": "キャトルエピスは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "ブドワールドールは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "ブドワールドールの安定感より、キャトルエピスが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "race_model": "芝1200m1勝クラス。3は1400m2着、2と5は1200mの直接好走、1は先行力、8は差し脚。7の直線競馬勝ちは確認するが、1200mのordinary fiveを交換するほどではない。",
+    "marks": [
+      3,
+      2,
+      5,
+      1,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "ソーダーンライトはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 2,
+        "case": "マイネルステラートは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 1,
+        "case": "マックアルイーンは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ナムラトロムは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "カンシンは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "シュラフにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1200m1勝クラス。3は1400m2着、2と5は1200mの直接好走、1は先行力、8は差し脚。7の直線競馬勝ちは確認するが、1200mのordinary fiveを交換するほどではない。 その比較からソーダーンライトを◎、マイネルステラートを○。カンシンは非対称の勝ち筋を▲として取り、マックアルイーン、ナムラトロムまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        2,
+        5,
+        1,
+        8
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "シュラフはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "シュラフにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 2,
+      "honmei_win_case": "ソーダーンライトは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "マイネルステラートは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "マイネルステラートの安定感より、ソーダーンライトが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "race_model": "ダート1200m1勝クラス。5と3は同距離2着歴、9は後方から3着、16は前受け、13は好位差し。先行勢が作る流れに対して9の末脚を非対称経路として保護する。",
+    "marks": [
+      5,
+      3,
+      9,
+      16,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "ルージュアズライトはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 3,
+        "case": "チェルシーは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 16,
+        "case": "カラフルメロディーは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 13,
+        "case": "フォンメイリーは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ラヴァグロウは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "バロンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1200m1勝クラス。5と3は同距離2着歴、9は後方から3着、16は前受け、13は好位差し。先行勢が作る流れに対して9の末脚を非対称経路として保護する。 その比較からルージュアズライトを◎、チェルシーを○。ラヴァグロウは非対称の勝ち筋を▲として取り、カラフルメロディー、フォンメイリーまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        3,
+        9,
+        16,
+        13
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "バロンはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "バロンにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 3,
+      "honmei_win_case": "ルージュアズライトは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "チェルシーは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "チェルシーの安定感より、ルージュアズライトが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "race_model": "ダート2400m1勝クラス。2は2100m2着、11は1800m3着から距離延長、13は2100m差し3着。5は2400m連続4着の直接証拠を保護し、8も長距離への持続力を比較する。",
+    "marks": [
+      2,
+      11,
+      13,
+      5,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "タケルゴールドはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 11,
+        "case": "オウケンシルヴァーは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 5,
+        "case": "アスクヒロイズガイは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 8,
+        "case": "サトノバトラーは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "セイウンガレオンは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "ブレイヴアロウにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート2400m1勝クラス。2は2100m2着、11は1800m3着から距離延長、13は2100m差し3着。5は2400m連続4着の直接証拠を保護し、8も長距離への持続力を比較する。 その比較からタケルゴールドを◎、オウケンシルヴァーを○。セイウンガレオンは非対称の勝ち筋を▲として取り、アスクヒロイズガイ、サトノバトラーまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        11,
+        13,
+        5,
+        8
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "ブレイヴアロウはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ブレイヴアロウにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 11,
+      "honmei_win_case": "タケルゴールドは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "オウケンシルヴァーは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "オウケンシルヴァーの安定感より、タケルゴールドが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "race_model": "芝1800m2勝クラス。4と6は同距離2着、3は2000m2着、15は1800m2着、8・14も中距離で安定。4の逃げ主線に対し15の差し上昇を非対称経路として評価する。",
+    "marks": [
+      4,
+      3,
+      15,
+      8,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "ラーンザロープスはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 3,
+        "case": "フォーザボーイズは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 8,
+        "case": "リラボニートは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 14,
+        "case": "フラミニアは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "パレハは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "ルーチェロッサにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1800m2勝クラス。4と6は同距離2着、3は2000m2着、15は1800m2着、8・14も中距離で安定。4の逃げ主線に対し15の差し上昇を非対称経路として評価する。 その比較からラーンザロープスを◎、フォーザボーイズを○。パレハは非対称の勝ち筋を▲として取り、リラボニート、フラミニアまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        3,
+        15,
+        8,
+        14
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "ルーチェロッサはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ルーチェロッサにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 3,
+      "honmei_win_case": "ラーンザロープスは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "フォーザボーイズは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "フォーザボーイズの安定感より、ラーンザロープスが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "race_model": "芝1600mオープン。6は同距離勝ち、7は同距離3・4着、1は高い能力上限を持つ差し馬。近走11着だけで1の強い条件関連能力を消さず、ordinary fiveで明示的に保護する。",
+    "marks": [
+      6,
+      7,
+      1,
+      4,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "タシットはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 7,
+        "case": "キープカルムは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 4,
+        "case": "マルディランダは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ビーアストニッシドは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "サイルーンは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "ディオスバリエンテにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1600mオープン。6は同距離勝ち、7は同距離3・4着、1は高い能力上限を持つ差し馬。近走11着だけで1の強い条件関連能力を消さず、ordinary fiveで明示的に保護する。 その比較からタシットを◎、キープカルムを○。サイルーンは非対称の勝ち筋を▲として取り、マルディランダ、ビーアストニッシドまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        7,
+        1,
+        4,
+        11
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "ディオスバリエンテはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ディオスバリエンテにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 7,
+      "honmei_win_case": "タシットは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "キープカルムは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "キープカルムの安定感より、タシットが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "race_model": "スプリングS芝1800m。9は1800m2着と高い事前値、7は1800m新馬勝ち、8はマイル連勝。10・4は2000mでの持続力があり、距離延長に対する勝ち筋を比較する。",
+    "marks": [
+      9,
+      7,
+      8,
+      10,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "ピコチャンブラックはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 7,
+        "case": "キングスコールは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 10,
+        "case": "フクノブルーレイクは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ニホンピロデヴィンは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "マテンロウバローズは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "レーヴブリリアントにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "スプリングS芝1800m。9は1800m2着と高い事前値、7は1800m新馬勝ち、8はマイル連勝。10・4は2000mでの持続力があり、距離延長に対する勝ち筋を比較する。 その比較からピコチャンブラックを◎、キングスコールを○。マテンロウバローズは非対称の勝ち筋を▲として取り、フクノブルーレイク、ニホンピロデヴィンまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        7,
+        8,
+        10,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "レーヴブリリアントはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "レーヴブリリアントにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 7,
+      "honmei_win_case": "ピコチャンブラックは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "キングスコールは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "キングスコールの安定感より、ピコチャンブラックが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "race_model": "ダート1200m2勝クラス。13は同距離3・4着、16は昇級でも逃げ勝ちの勢い、3は後方から3着。9は同距離逃げ切りの条件関連証拠を近走大敗だけで消さず5頭内に保護する。",
+    "marks": [
+      13,
+      16,
+      3,
+      14,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "ショウナンアビアスはReader内の能力・近走再現性・今回条件への適合が噛み合い、自分の形なら勝ち切る経路が最も明確。"
+      },
+      {
+        "horse_no": 16,
+        "case": "イノセントキャットは今回条件に直結する実戦材料があり、標準展開なら◎に続く主線として勝ち負けへ残る。"
+      },
+      {
+        "horse_no": 14,
+        "case": "プレイテシアは位置取りと展開が噛み合えば、通常経路から連下圏へ入る再現性を持つ。"
+      },
+      {
+        "horse_no": 9,
+        "case": "メイショウキルギスは近走着順だけでは消せない条件関連材料があり、ordinary fiveに残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "メモリーグラスは通常順位以上に、展開・位置取り・条件変化が噛み合った時に勝ち筋が跳ねる非対称ルートを持つため▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "サイレンスゴールドにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1200m2勝クラス。13は同距離3・4着、16は昇級でも逃げ勝ちの勢い、3は後方から3着。9は同距離逃げ切りの条件関連証拠を近走大敗だけで消さず5頭内に保護する。 その比較からショウナンアビアスを◎、イノセントキャットを○。メモリーグラスは非対称の勝ち筋を▲として取り、プレイテシア、メイショウキルギスまでを最終5頭とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        16,
+        3,
+        14,
+        9
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "サイレンスゴールドはordinary five外でも、レース形が偏った場合に別方向から勝ちまで届く経路があり、外部challengerとして直接比較した。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "サイレンスゴールドにも異なる勝ち筋はあるが、ordinary fiveの境界経路と比べて今回条件での追加価値が上回るまではなく、5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 16,
+      "honmei_win_case": "ショウナンアビアスは今回のレース形で最も能動的に勝ち筋を作れ、標準展開なら先頭まで届く経路が明確。",
+      "second_case": "イノセントキャットは安定した主線経路を持ち、◎が取りこぼす形で最も自然に勝ち負けへ浮上する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "イノセントキャットの安定感より、ショウナンアビアスが自分の形を作った時の勝ち切り可能性を優先してWIN_FIRSTで◎を上位に置いた。"
+    }
+  }
+]
