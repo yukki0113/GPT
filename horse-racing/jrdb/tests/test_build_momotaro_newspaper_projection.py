@@ -28,7 +28,17 @@ class MomotaroProjectionTest(unittest.TestCase):
         self.assertEqual(len(records), 24)
         self.assertTrue(all("confidence" not in record and "confidence" not in record["decision_core"] for record in records))
         workflow = (PROJECT_ROOT.parents[1] / ".github/workflows/jrdb_newspaper_kensho_merge_issue.yml").read_text(encoding="utf-8")
-        self.assertIn('"confidence":"","race_short_comment"', workflow)
+        self.assertIn('RACENOTE_CONFIDENCE_PATH', workflow)
+        supplement_path = PROJECT_ROOT / "daily/20261012/v052_day/v052/supplements/pwa_race_confidence.json"
+        supplement = json.loads(supplement_path.read_text(encoding="utf-8"))
+        self.assertEqual(supplement["canonical_commit"], "dc603188124e93ea3b3e7a8773d1645c03a61ec8")
+        entries = {(r["venue"], r["race_no"]): r for r in supplement["entries"]}
+        self.assertEqual(len(entries), 24)
+        for record in records:
+            entry = entries[(record["venue"], record["race_no"])]
+            self.assertEqual(entry["marks"], record["decision_core"]["marks"])
+            self.assertEqual(entry["source_semantic_sha256"], record["source_semantic_sha256"])
+            self.assertIn(entry["confidence"], ("A", "B", "C"))
 
     def test_conflicting_ryota_race_confidence_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
