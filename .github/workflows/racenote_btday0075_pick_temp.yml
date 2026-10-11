@@ -1,0 +1,44 @@
+name: RaceNote BTDAY-0075 pick temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0075/PICK_TRIGGER'
+permissions:
+  contents: write
+jobs:
+  pick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pick one canonical BTDAY
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_backtest_day_picker.py pick \
+            --state horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json \
+            -n 1 | tee /tmp/pick.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/pick.json').read_text())
+          assert r['selection_id']=='BTDAY-0075', r
+          Path('horse-racing/jrdb/backtests/BTDAY-0075').mkdir(parents=True,exist_ok=True)
+          Path('horse-racing/jrdb/backtests/BTDAY-0075/selection.json').write_text(
+              json.dumps(r,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Commit reservation
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json
+          git add horse-racing/jrdb/backtests/BTDAY-0075/selection.json
+          git commit -m 'RaceNote: reserve BTDAY-0075'
+          git pull --rebase origin main
+          git push origin HEAD:main
