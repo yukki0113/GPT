@@ -187,8 +187,23 @@ jobs:
                   if ids:
                       edge_horses+=1
                       edge_ids+=len(ids)
-          if rn!=120 or rrdb!=9:
-              raise SystemExit(f'preserved addon mismatch rn={rn} rrdb={rrdb}')
+          # Assert preservation against the actual incoming revision, never historical constants.
+          def addon_counts(root):
+              manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+              counts={'rn':0,'rrdb':0,'eval':0,'iluka':0}
+              for item in manifest.get('races') or []:
+                  bundle=json.loads((root/item['path']).read_text(encoding='utf-8'))
+                  for horse in bundle.get('horses') or []:
+                      addons=horse.get('addons') or {}
+                      counts['rn']+=bool((addons.get('racenote_prediction') or {}).get('mark'))
+                      counts['rrdb']+=isinstance(addons.get('rrdb_recommendation'),dict)
+                      counts['eval']+=isinstance(addons.get('eval'),dict)
+                      counts['iluka']+=isinstance(addons.get('keibailuka'),dict)
+              return counts
+          before=addon_counts(Path('/tmp/current'))
+          after=addon_counts(root)
+          if after != before:
+              raise SystemExit(f'preserved addon mismatch before={before} after={after}')
           # Oji is companion/public-projection data and need not live in personal archive.
           report={
               'status':'PASS','date':m['date'],'revision':m['revision'],
