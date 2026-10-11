@@ -77,6 +77,12 @@ class V053DecisionCoreTest(unittest.TestCase):
             "horse_no": 2,
             "case": "通常五頭の非アンカーでは2が最も非対称な勝ち筋を持つため▲へ置く。",
         }
+        changed["mainline_cases"] = [
+            {"horse_no": 4, "case": "勝ち切り経路が最も明確で◎として評価する。"},
+            {"horse_no": 1, "case": "能力と再現性から○として主線に残す。"},
+            {"horse_no": 5, "case": "通常支持として相手本線に残す根拠がある。"},
+            {"horse_no": 6, "case": "境界比較後も通常候補として残す根拠が十分にある。"},
+        ]
         changed["boundary_review"] = {
             "alternative_horse_no": 3,
             "reason": "外部3の経路と通常境界を直接比較したが、通常五頭を崩す交換価値には届かない。",
@@ -93,6 +99,12 @@ class V053DecisionCoreTest(unittest.TestCase):
             "horse_no": 2,
             "case": "通常五頭の非アンカーでは2が最も非対称な勝ち筋を持つため▲へ置く。",
         }
+        changed["mainline_cases"] = [
+            {"horse_no": 4, "case": "勝ち切り経路が最も明確で◎として評価する。"},
+            {"horse_no": 1, "case": "能力と再現性から○として主線に残す。"},
+            {"horse_no": 5, "case": "通常支持として相手本線に残す根拠がある。"},
+            {"horse_no": 6, "case": "境界比較後も通常候補として残す根拠が十分にある。"},
+        ]
         changed["boundary_review"]["alternative_horse_no"] = 6
         changed["candidate_compression"]["excluded_horse_no"] = 3
         changed["candidate_compression"]["decision"] = "KEEP_ORDINARY_FIVE"
