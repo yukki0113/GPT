@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "target_date": "2025-06-01",
+  "race_count": 24,
+  "reader_view_count": 24,
+  "firewall": {
+    "target_result_exposed": false,
+    "market_exposed": null,
+    "raw_reader_market_object_count": 362,
+    "forecast_input_market_blind": false,
+    "analysis_as_of_violations": 0,
+    "rrdb_as_of_violations": 0
+  },
+  "checks": {
+    "race_structure": "PASS",
+    "provenance": "PASS",
+    "reader_roundtrip": "PASS"
+  },
+  "warnings": [],
+  "errors": []
+}
