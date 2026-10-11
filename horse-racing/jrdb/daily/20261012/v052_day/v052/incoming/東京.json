@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "race_model": "ダート1400m未勝利。15は1200m新馬2着で能力・情報・調教が一段上。3は1200mで末脚を見せ、6は1700mで安定。距離延長への対応を比較。",
+    "marks": [
+      15,
+      3,
+      6,
+      4,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15は初戦1200mで番手から2着、IDM43。1400mでも前で自分の形を作れるため勝ち切り経路が最も明確。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3は1200mで5着まで詰め、前走より内容を上げている。差しが届く流れなら○圏。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は1800mで逃げて4着。距離短縮で先行力を生かせれば連下。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13は1200m5着の終いを評価し5頭目。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6は1700mで3、4着と安定。1400mで追走が楽になれば好位から上振れする▲経路。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9は初戦8着で出遅れ。改善余地はあるが通常5頭の実戦内容を崩すほどではない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "イトウカカリチョウを◎、ファイアリーボルトを○。距離短縮でアンバーバレットを▲。オーケーエース、ヤマニンスペッキオまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        3,
+        6,
+        4,
+        13
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9は発馬五分で追走位置を上げられる場合の外部候補。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9は初戦8着で出遅れ。改善余地はあるが通常5頭の実戦内容を崩すほどではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 3,
+      "honmei_win_case": "15は初戦1200mで番手から2着、IDM43。1400mでも前で自分の形を作れるため勝ち切り経路が最も明確。",
+      "second_case": "3は1200mで5着まで詰め、前走より内容を上げている。差しが届く流れなら○圏。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3の差し余地より15の先行再現性と高い総合値を勝ち切り側で優先した。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "race_model": "芝1400m未勝利。2は1200m2着歴と調教上昇、7・12は1600m2着。距離短縮での追走と末脚の使い方を比較。",
+    "marks": [
+      2,
+      7,
+      12,
+      1,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2は1200mで2着、前走4着でも後方から差を詰めた。1400mで折り合えば勝ち切りまで最も自然。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は1600m2着でIDM36。1400mでも好位差しができれば○。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は1600mで先行4着。1400mなら前で粘る連下経路。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は1400m3着歴があり、差し脚を5頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12は1600m2着で内から伸びた。距離短縮で位置を取れた時の上振れを▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10は能力30はあるが直近1400m14着と調教低下が大きく、上位5頭を崩す材料に欠ける。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ソニックアイルを◎、コスモティタノを○。フォンターナドーロを▲。クラオルグジェシダ、サンレガートまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        7,
+        12,
+        1,
+        11
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は発馬改善と立て直しが噛み合う場合のみ外部候補。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10は能力30はあるが直近1400m14着と調教低下が大きく、上位5頭を崩す材料に欠ける。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 7,
+      "honmei_win_case": "2は1200mで2着、前走4着でも後方から差を詰めた。1400mで折り合えば勝ち切りまで最も自然。",
+      "second_case": "7は1600m2着でIDM36。1400mでも好位差しができれば○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7の近走安定感より、2の調教上昇と1200mで示した決め手を1400mの勝ち筋として優先。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "race_model": "芝1800m未勝利。8は1600m初戦4着からデキ抜群、11は同距離4着、1は逃げ4着。調教上昇と1800m実戦内容を比較。",
+    "marks": [
+      8,
+      11,
+      1,
+      3,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8は初戦1600m4着から調教23でデキ抜群。距離延長でも差し脚を使えれば勝ち切りの上積みが最も大きい。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は1800mで4着、出負けから番手まで挽回した内容があり○。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3は2000m経験があり調教上昇。距離短縮で先行できれば連下。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は1600m新馬6着から距離延長で差し脚を生かす5頭目。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は1800m新馬で逃げ4着。単騎で運べる時の前残りを▲として取る。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7は格上戦を経験しているが未勝利での近走内容が弱く、上位5頭を入れ替えるまでではない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "マルスレジーナを◎、コスモバルムンクを○。前残りのツェルプストを▲。ロワデュモンド、モンサンラパージュまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        11,
+        1,
+        3,
+        4
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7は格上経験が刺激になり末脚を出し切る場合の外部候補。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7は格上戦を経験しているが未勝利での近走内容が弱く、上位5頭を入れ替えるまでではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 11,
+      "honmei_win_case": "8は初戦1600m4着から調教23でデキ抜群。距離延長でも差し脚を使えれば勝ち切りの上積みが最も大きい。",
+      "second_case": "11は1800mで4着、出負けから番手まで挽回した内容があり○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11の同距離実績より、8の仕上がり上昇と初戦の余力を勝ち切り側で優先。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "race_model": "障害3000m未勝利。8は直近障害2着、4は3000mを含む連続3着、5は逃げて3着。飛越安定と近走障害実績を重視。",
+    "marks": [
+      8,
+      4,
+      5,
+      10,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8は前走2880mで手応え良く接近して2着。近走の飛越と位置取りが最も安定し勝ち切りに近い。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は3000m3着、2860m3着と距離対応と安定度が高い。○の本線。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10は2880m4着で、出遅れても徐々に接近した内容を連下評価。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は前で運べる脚があり調教上昇。飛越が安定すれば5頭圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5は2850mで逃げて3着。自分のリズムで飛べた時の粘り込みを▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6は2970m3着歴はあるが飛越で後手を踏む走りもあり、上位5頭の安定度に一歩譲る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "セイウンビッグバンを◎、セイフウサツキを○。逃げ粘りのエポカスピーガを▲。コトブキヘスペラス、バンデルオーラまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        4,
+        5,
+        10,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6は飛越をまとめて後方からロスなく運べる場合の外部候補。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6は2970m3着歴はあるが飛越で後手を踏む走りもあり、上位5頭の安定度に一歩譲る。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 4,
+      "honmei_win_case": "8は前走2880mで手応え良く接近して2着。近走の飛越と位置取りが最も安定し勝ち切りに近い。",
+      "second_case": "4は3000m3着、2860m3着と距離対応と安定度が高い。○の本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4の連続3着より、8の直近2着と勝ち馬へ迫った内容を勝ち切り側で優先。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "race_model": "芝1600m新馬。10が想定IDM44.8で一段上、6・7・12が次位群。全馬初出走のため能力・情報・調教のまとまりを重視。",
+    "marks": [
+      10,
+      6,
+      7,
+      12,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10は想定44.8、情報3.8、調教17.7と複数材料が高水準。初戦から完成度で押し切る勝ち筋。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は想定39.7に調教18.3で上昇。10を追う相手本線。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は想定37.8、調教上昇で連下。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は想定32.1で上位4頭とは差があるが5頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は想定38.7、情報2.7で上位。初戦の流れに乗れた時の上振れを▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8は想定29.2で、上位5頭を入れ替えるだけの事前差はない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "サントシャペルを◎、フォンテキアーラを○。エイシンスパニエルを▲。スパリエーラ、ダンツトリノまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        6,
+        7,
+        12,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8は初戦で想定以上に先行できる場合の外部候補。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は想定29.2で、上位5頭を入れ替えるだけの事前差はない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 6,
+      "honmei_win_case": "10は想定44.8、情報3.8、調教17.7と複数材料が高水準。初戦から完成度で押し切る勝ち筋。",
+      "second_case": "6は想定39.7に調教18.3で上昇。10を追う相手本線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6も仕上がりは良いが、10は能力想定と情報値がさらに高く勝ち切り根拠が厚い。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "race_model": "ダート1300m新馬。14と5が事前総合で抜け、7・1が次位。短距離初戦なので完成度と調教状態を重視。",
+    "marks": [
+      14,
+      5,
+      7,
+      1,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "14は想定38.2、情報4.1、調教23でデキ抜群。初戦からスピードを出し切る勝ち筋が最も明確。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は想定35、情報3.6、厩舎値も高く○。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は想定25.3だが情報1.9。前で流れに乗れば連下。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は想定20.7で上位から差があるが、残る候補の中では事前材料が最もまとまる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は想定31に調教13.2。上位2頭が初戦で揉まれた時の上振れを▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10は想定19.2で11との差が小さいが、総合では5頭目を押し出すほどではない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "サノノソルジャーを◎、ツジベンを○。マインドブレイズを▲。アルタイルテソーロ、シュトラールモルンまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        5,
+        7,
+        1,
+        11
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10は発馬から前目を取れる場合の外部候補。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10は想定19.2で11との差が小さいが、総合では5頭目を押し出すほどではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 5,
+      "honmei_win_case": "14は想定38.2、情報4.1、調教23でデキ抜群。初戦からスピードを出し切る勝ち筋が最も明確。",
+      "second_case": "5は想定35、情報3.6、厩舎値も高く○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5の厩舎材料も強いが、14は能力・情報・調教の全てが同方向に最上位。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "race_model": "ダート2100m1勝クラス。15は2100m勝ちと2着、8は同距離3着、10・5・11は2400m実績。距離適性と現在の仕上がりを比較。",
+    "marks": [
+      15,
+      8,
+      10,
+      5,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15は2100mを番手から勝ち、同距離2着もある。自分で好位を取って勝ち筋を作れるため◎。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は前走2100mで後方内から3着、調教も高い。差しの再現性で○。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は2400mで高い能力値を持ち、流れが持続戦なら連下。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は2400mで終いを伸ばす近走があり5頭目。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は2400m3着で長距離適性があり、2100mへの短縮で追走が楽になった時の▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13は芝で高い末脚材料はあるがダート2100mの直接実績がなく、上位5頭より条件不確実性が大きい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "クアッドフォルツァを◎、タマモトリノを○。ターフクリスタルを▲。サトノリアン、ブレイクザアイスまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        8,
+        10,
+        5,
+        11
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13はダート替わりがプラスに出て末脚を使える場合の外部候補。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "13は芝で高い末脚材料はあるがダート2100mの直接実績がなく、上位5頭より条件不確実性が大きい。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 8,
+      "honmei_win_case": "15は2100mを番手から勝ち、同距離2着もある。自分で好位を取って勝ち筋を作れるため◎。",
+      "second_case": "8は前走2100mで後方内から3着、調教も高い。差しの再現性で○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8の総合値は高いが、15の同距離勝ちと前受けできる能動的な勝ち筋を◎に優先。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "race_model": "ダート1600mプラタナス賞。5は1800m圧勝でIDM63、1は1700m独走、2も1800m勝ち。6頭立てで上位3頭の能力差を素直に重視。",
+    "marks": [
+      5,
+      1,
+      2,
+      4,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5は前走1800mを好位から4角先頭で引き離す圧勝。能力値63で、この組み合わせでは勝ち切り経路が最も強い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は1700m新馬を3角進出から独走。末脚値も高く5を追う○。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は1400m3着と1800m勝ちがあり連下。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は芝実績中心でダート材料が弱いが6頭立ての5頭目として残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2は1800mで番手から突き放して勝利。上位2頭が牽制し合う時の前受け上振れを▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3はダート1800m4着歴があるが能力値18と低く、6との比較でも上積み材料に欠ける。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ウィンターブリーズを◎、レガメデルヴェントを○。ユイノリュウギを▲。リーチツモドライチ、ユイノヘラクレスまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        1,
+        2,
+        4,
+        6
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3は単騎逃げで大きく展開利を得る場合だけ外部候補。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3はダート1800m4着歴があるが能力値18と低く、6との比較でも上積み材料に欠ける。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 1,
+      "honmei_win_case": "5は前走1800mを好位から4角先頭で引き離す圧勝。能力値63で、この組み合わせでは勝ち切り経路が最も強い。",
+      "second_case": "1は1700m新馬を3角進出から独走。末脚値も高く5を追う○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1の独走内容も強いが、5のIDM63と1800m圧勝の完成度を勝ち切り側で優先。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "race_model": "芝1600m1勝クラス。8は同距離連続3着とデキ抜群、10は同距離2、3着、9は1800m2着と末脚材料。差しと逃げのバランスを比較。",
+    "marks": [
+      8,
+      10,
+      9,
+      12,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8は1600mで連続3着、能力・情報・調教が揃って高い。差し脚を再現できれば勝ち切りまで最も自然。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10は1600mで逃げて2、3着。単騎なら粘り込みの再現性が高く○。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は出遅れ癖があるが能力52と末脚値が高く連下。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は1600m2着歴があり、後方からの差しを5頭目。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9は1800m2着歴と速い末脚材料があり、距離短縮で差しが届く時の▲経路。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11は1600m4着まで来ているが、上位5頭より能力・近走安定度で一歩譲る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "サレジオを◎、マツリダイコを○。ターンザテーブルスを▲。ゴバド、タイセイアストロまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        10,
+        9,
+        12,
+        4
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11は発馬を決めて中団より前で運べる場合の外部候補。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "11は1600m4着まで来ているが、上位5頭より能力・近走安定度で一歩譲る。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 10,
+      "honmei_win_case": "8は1600mで連続3着、能力・情報・調教が揃って高い。差し脚を再現できれば勝ち切りまで最も自然。",
+      "second_case": "10は1600mで逃げて2、3着。単騎なら粘り込みの再現性が高く○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10の逃げ安定感より、8の仕上がりと同距離での差し再現性を勝ち切り側で優先。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "race_model": "芝2400m3勝クラス昇仙峡S。11は2400m勝ち、1は高い総合値と調教上昇、10・7・5も長距離実績。2400mでの末脚と持続力を比較。",
+    "marks": [
+      11,
+      1,
+      10,
+      7,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11は前々走2400mを中団から鋭く差し切り、今回調教も23で上昇。距離実績と仕上がりから勝ち切り経路が最も明確。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は能力61、情報3.7、調教17と総合値最上位級。2200m8着からの巻き返しを○。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は2400mで高い能力を出しており、持続戦なら連下。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は2400mで不利を受けた近走があり、2200m勝ちの地力を5頭目。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は2000m勝ち、2200mでも後方から脚を使う。2400mで流れが締まった時の差し上振れを▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2は能力57級だが2000m中心で、今回2400mの上位5頭より直接材料が薄い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "レッドバンデを◎、バドリナートを○。ロードガレリアを▲。バレンタインガール、オメガナビゲーターまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        1,
+        10,
+        7,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2は先行して距離ロスなく運べる場合の外部候補。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2は能力57級だが2000m中心で、今回2400mの上位5頭より直接材料が薄い。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 1,
+      "honmei_win_case": "11は前々走2400mを中団から鋭く差し切り、今回調教も23で上昇。距離実績と仕上がりから勝ち切り経路が最も明確。",
+      "second_case": "1は能力61、情報3.7、調教17と総合値最上位級。2200m8着からの巻き返しを○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1の総合指数より、11の2400m勝ちと今回の調教上昇を勝ち切り側で優先。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "race_model": "芝2000mオクトーバーS。2は2000m勝ちと総合値が突出、9は末脚型、18は情報・差し材料、5・16は2000〜2200mの地力を評価。",
+    "marks": [
+      2,
+      9,
+      18,
+      5,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2は2000m勝ちでIDM65、今回も能力66.8・情報4.3・調教23.6と抜ける。標準展開なら勝ち切り経路が最も明確。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9は1800mで出遅れながら脚を使い、末脚値も高い。2000mで流れが向けば○。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は2000mでIDM64級を維持し、地力で連下。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16は2200m勝ちと2000m実績があり5頭目。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 18,
+      "case": "18は近走2000mで伸び切れないが情報値3、後方からの差し材料がある。前が止まる時の▲経路。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1は2000m勝ち歴があるが2400m13着からで、今回の上位5頭より現在の再現性に不安。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "アスクセクシーモアを◎、ディマイザキッドを○。差し展開でトーセンリョウを▲。ボーンディスウェイ、ミッキーゴールドまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        9,
+        18,
+        5,
+        16
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は楽に前へ行って自分のペースを作れる場合の外部候補。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1は2000m勝ち歴があるが2400m13着からで、今回の上位5頭より現在の再現性に不安。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 9,
+      "honmei_win_case": "2は2000m勝ちでIDM65、今回も能力66.8・情報4.3・調教23.6と抜ける。標準展開なら勝ち切り経路が最も明確。",
+      "second_case": "9は1800mで出遅れながら脚を使い、末脚値も高い。2000mで流れが向けば○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9の末脚も魅力だが、2は2000m実績と今回の全主要指標が揃って高く、◎として明確。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "race_model": "ダート1300m1勝クラス。8は1200mで後方から4着と調教デキ抜群、11は末脚値11.5、15は1150m3着。短距離で差し脚の再現性を重視。",
+    "marks": [
+      8,
+      11,
+      3,
+      15,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8は前走1200mで3角遅れながら直線外から4着、調教もデキ抜群。1300mで追走が噛み合えば勝ち切りまで届く。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は1200mで後方から連続5着、末脚値が最上位。流れが締まれば8を追う○。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15は1150m3着で好位から脚を続けた実績を連下。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は直近1200m6着だが位置取り指標は悪くなく、1300mで前進余地を5頭目。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3は1200mで大きく出遅れながら終いを使い、最速級の脚材料もある。発馬改善時の上振れを▲。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1は1300m3着歴があるが直近1150m9着。上昇調教はあるものの上位5頭を崩すまでではない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ロードトライデントを◎、エテオクロスを○。発馬改善のキイチムーブメントを▲。アンプイットアップ、ベアハンドキャッチまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        11,
+        3,
+        15,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は発馬と位置取りが改善し、1300m3着時の先行力を再現する場合の外部候補。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1は1300m3着歴があるが直近1150m9着。上昇調教はあるものの上位5頭を崩すまでではない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 11,
+      "honmei_win_case": "8は前走1200mで3角遅れながら直線外から4着、調教もデキ抜群。1300mで追走が噛み合えば勝ち切りまで届く。",
+      "second_case": "11は1200mで後方から連続5着、末脚値が最上位。流れが締まれば8を追う○。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11の末脚上限より、8の仕上がりと1200mでの不利を含む4着内容を勝ち切り側で優先。"
+    }
+  }
+]
