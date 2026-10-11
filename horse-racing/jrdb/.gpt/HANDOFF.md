@@ -1,3 +1,12 @@
+# RaceNote v0.5.3 forward candidate — 2026-10-12
+
+- New unresolved forward forecasts after the already-frozen 2026-10-12 v0.5.2 cohort use `RaceNote-Human-Context-Reader-0.5.3-candidate`.
+- Contract: `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md`.
+- Single-day path: `docs/racenote/RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`, `src/racenote_v053_from_paci.py`, `src/racenote_v053_single_day.py`.
+- v0.5.2 remains the promoted baseline and immutable comparison/reproduction path. Do not backfill or alter the 2026-10-12 v0.5.2 Freeze.
+- v0.5.3 changes candidate-boundary procedure only; Reader evidence projection remains identical to v0.5.2 and confidence remains a separate post-Freeze/pre-result layer.
+- Do not clone the v0.5.2 GitHub BTDAY transport workflow for v0.5.3 without a separate Drive-routing review.
+
 
 ## RaceNote v0.5.2 mixed-source BTDAY operation — 2026-10-09
 
