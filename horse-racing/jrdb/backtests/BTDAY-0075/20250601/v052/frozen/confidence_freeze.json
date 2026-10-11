@@ -1,0 +1,168 @@
+{
+  "schema_version": "racenote-v052-confidence-freeze-0.1",
+  "selection_id": "BTDAY-0075",
+  "target_date": "2025-06-01",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.2-candidate",
+  "source_status": "FROZEN_CLEAN_BLIND",
+  "source_records_sha256": "67ac0131056e0c9c2dbdcd6e8cd950eca8dbfba94a507d1f676721fdb78f64ac",
+  "source_reader_manifest_sha256": "30785073206ade6c9181596492c27865fc386a7724ef89164e0b2f16cf8309c2",
+  "result_opened_at_classification": false,
+  "target_market_opened_at_classification": false,
+  "confidence_definition": {
+    "A": "◎が○より明確に上と、レース固有の根拠から読める",
+    "B": "◎を○より上に置く理由はあるが、差の大きさまでは明確ではない",
+    "C": "◎と○が僅差・ほぼ互角・差が小さいなど、tie-break的に◎を上に置いている"
+  },
+  "counts": {
+    "A": 0,
+    "B": 24,
+    "C": 0,
+    "total": 24
+  },
+  "records": [
+    {
+      "venue": "京都",
+      "race_no": 1,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: メイショウアキカゼの安定感よりも、ペンテリコンが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: サルファーの安定感よりも、サルタールが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ヴァイスクレーの安定感よりも、ドバイミッションが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 4,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ナリノモンターニュの安定感よりも、ディナースタが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 5,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ヤマニンヒストリアの安定感よりも、ジョイボーイが自分の形を作った時の勝ち切り経路を優先し、◎と○の順序を決めた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: チュウワチーフの安定感よりもソリスクラヴィスが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ゼンノインヴォークの安定感よりもヴィスマールが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: フレイミングパイの安定感よりもニホンピロトッティが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ルナビスの安定感よりもホルトバージが自分の形を作った時の勝ち切り経路を優先し、この順序にした。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: タマモブラックタイの先行安定感より、バウンシーステップの差し切り性能を勝ち切り側で優先した。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: マイユニバースの安定感より、キングメーカーの決め手が勝ち切りに直結する点を優先して◎とした。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 12,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ガロンヌの総合力より、ユハンヌスの近走差し脚の再現性を勝ち切り側で優先して◎とした。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: アイスリーディングの差し脚より、スカイビートの先行して勝ち筋を作れる点を優先して◎とした。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: カフェブーケットの末脚より、キョウエイスレーヴの位置取りと再現性を勝ち切り側で優先した。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: サトミノエンジェルの安定感より、セブンメデュラスの能力優位と能動的な勝ち筋を優先して◎とした。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: ソナタンの実績より、ノーブルライナーの直近安定度と仕上がりを勝ち切り側で優先して◎とした。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: レーティッシュの実戦安定感より、ドラゴンの能力上限と仕上がりを勝ち切り側で優先して◎とした。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: パストラーレの安定感より、アンドローゼスの前受けできる勝ち筋を優先して◎とした。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: キミハスコールの末脚より、ノルドヴェストの総合的な安定度を勝ち切り側で優先した。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: クルミナーレの安定感より、デュアルウィルダーの直近内容と決め手を勝ち切り側で優先した。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 9 is ranked above horse 5 because its race-specific route is more directly connected to winning rather than merely placing."
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 7 is ranked above horse 2 because its race-specific route is more directly connected to winning rather than merely placing."
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 13 is ranked above horse 7 because its race-specific route is more directly connected to winning rather than merely placing."
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "confidence": "B",
+      "basis": "◎を○より上に置くレース固有理由はあるが差幅は明示されない: Horse 10 is ranked above horse 8 because its race-specific route is more directly connected to winning rather than merely placing."
+    }
+  ]
+}
