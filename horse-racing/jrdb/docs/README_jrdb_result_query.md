@@ -52,6 +52,11 @@ All runners are opt-in with `--include-all-runners`.
 
 ## GPT / Work operational runner
 
+**Fresh Chat / Work runtime:** follow `JRDB_RESULT_QUERY_GPT_RUNTIME_RUNBOOK_v0_1.md` first.
+It defines source materialization, the required four-file source bundle, native Drive
+SED/HJC materialization, ZIP preflight, exact execution commands, success criteria,
+and failure recovery. Do not assume GitHub source is already present under `/mnt/data`.
+
 Repository source and JRDB Raw are intentionally stored separately. Raw absence from Git is therefore normal.
 
 For GPT/Work, the standard entrypoint is `src/jrdb_result_query_runner.py`, not direct Web search and not a guessed local Raw path.
