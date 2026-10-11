@@ -44,6 +44,7 @@ jobs:
           revision=req.get("revision")
           rn=str(req.get("racenote_repo_path") or "").strip()
           rn_gzip_b64=str(req.get("racenote_gzip_b64") or "").strip()
+          confidence_path=str(req.get("racenote_confidence_repo_path") or "").strip()
           rr=str(req.get("rrdb_repo_path") or "").strip()
           rr_csv=str(req.get("rrdb_csv") or "")
           momotaro_predictions=req.get("momotaro_predictions", [])
@@ -96,12 +97,18 @@ jobs:
           else:
               Path("/tmp/kensho/rrdb.csv").write_text(rr_csv,encoding="utf-8")
               rr="/tmp/kensho/rrdb.csv"
+          if confidence_path:
+              p=Path(confidence_path)
+              if p.is_absolute() or ".." in p.parts or not p.is_file():
+                  raise SystemExit("invalid racenote_confidence_repo_path")
           Path("/tmp/kensho/request.json").write_text(json.dumps(req,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           Path("/tmp/kensho/keibailuka.json").write_text(
               json.dumps({"entries":keibailuka_entries},ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8")
           with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as h:
               h.write(f"REQUEST_DATE={date}\nREQUEST_REVISION={revision}\nRACENOTE_PATH={rn}\nRRDB_PATH={rr}\n")
+              if confidence_path:
+                  h.write(f"RACENOTE_CONFIDENCE_PATH={confidence_path}\n")
           PY
 
       - name: Download current personal release
@@ -154,6 +161,19 @@ jobs:
           # Preserve the authored reader-facing race reason rather than using
           # an image handoff, which intentionally contains only five marks.
           if isinstance(data,list):
+              supplement_index={}
+              supplement_path=os.environ.get("RACENOTE_CONFIDENCE_PATH")
+              if supplement_path:
+                  supplement=json.loads(Path(supplement_path).read_text(encoding="utf-8"))
+                  if supplement.get("schema_version")!="racenote-race-confidence-supplement-0.1" or supplement.get("date")!=os.environ["REQUEST_DATE"]:
+                      raise SystemExit("invalid RaceNote confidence supplement metadata")
+                  if len(supplement.get("entries") or [])!=24:
+                      raise SystemExit("RaceNote confidence supplement requires 24 races")
+                  for entry in supplement["entries"]:
+                      key=(str(entry["venue"]),int(entry["race_no"]))
+                      if key in supplement_index or entry.get("confidence") not in ("A","B","C"):
+                          raise SystemExit(f"invalid RaceNote confidence entry: {key}")
+                      supplement_index[key]=entry
               if len(data)!=24:
                   raise SystemExit(f"frozen RaceNote must contain 24 records, got {len(data)}")
               converted=[]
@@ -167,6 +187,9 @@ jobs:
                       raise SystemExit(f"duplicate frozen RaceNote race: {identity}")
                   seen.add(identity)
                   marks=core["marks"]
+                  extra=supplement_index.get(identity)
+                  if supplement_index and (extra is None or extra.get("marks")!=marks or extra.get("source_semantic_sha256")!=record["source_semantic_sha256"]):
+                      raise SystemExit(f"RaceNote confidence does not match frozen marks: {identity}")
                   reason=str(core.get("reader_facing_reason") or "").strip()
                   if len(marks)!=5 or len(set(marks))!=5 or not reason:
                       raise SystemExit(f"frozen RaceNote incomplete: {identity}")
@@ -177,9 +200,12 @@ jobs:
                       "marks":[{"horse_no":int(no),"mark":symbol,"prediction_rank":rank}
                                for rank,(no,symbol) in enumerate(zip(marks,["◎","○","▲","△","△"]),start=1)],
                       "race_short_comment":reason,
+                      "confidence":extra["confidence"] if extra else "",
                       "model_version":record["logic_version"],
                       "source_semantic_sha256":record["source_semantic_sha256"],
                   })
+              if supplement_index and set(supplement_index)!=seen:
+                  raise SystemExit("RaceNote confidence race roster mismatch")
               data={"date":os.environ["REQUEST_DATE"],"races":converted}
           if data.get("date") != os.environ["REQUEST_DATE"]:
               raise SystemExit("RaceNote date mismatch")
@@ -234,7 +260,7 @@ jobs:
                               "race_no":race_no,"race_key":base["race_key"],
                               "horse_no":horse_no,"horse_name":horse_name,
                               "mark":str(item.get("mark") or "").strip(),"prediction_rank":int(item["prediction_rank"]),
-                              "confidence":"","race_short_comment":str(race.get("race_short_comment") or "").strip(),
+                              "confidence":str(race.get("confidence") or "").strip(),"race_short_comment":str(race.get("race_short_comment") or "").strip(),
                               "model_version":str(race.get("model_version") or "").strip(),
                               "source_semantic_sha256":str(race.get("source_semantic_sha256") or "").strip(),
                           })
