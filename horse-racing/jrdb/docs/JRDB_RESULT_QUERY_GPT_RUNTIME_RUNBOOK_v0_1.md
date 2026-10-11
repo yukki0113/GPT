@@ -163,6 +163,93 @@ If SED or HJC is genuinely absent from canonical Drive, report that the JRDB
 result is not yet materialized. Do not silently switch to Web unless the user
 explicitly requests a Web fallback or the calling workflow defines one.
 
+
+## Historical 2010–2025 GPT runtime route
+
+For completed races in 2010–2025, do **not** fall back to a public result Web
+site merely because the annual Raw ZIP is not present in the connected Drive
+inventory. The accepted Historical Warehouse is a canonical JRDB result source
+for this period.
+
+For 2025, the repository carries a SHA-256-pinned public read-only transport
+manifest specifically for completed-race result lookup:
+
+```text
+horse-racing/jrdb/config/public_drive/jrdb_result_query_historical_2025_v1.json
+```
+
+It contains only the accepted generation manifest and the 2025 `sed` /
+`hjc_payout` Parquet objects required by `jrdb_result_query.py`.
+The pinned assets belong to generation
+`jrdb_normalized_warehouse_v1_2010_2025_g20260921`.
+
+### Preferred local execution
+
+If `duckdb` is already available, or `tools/data-storage/requirements.txt`
+can be installed normally, fetch the pinned files with the reviewed
+`tools/gpt_io/public_drive/fetch.py` helper and execute the canonical query
+engine in Warehouse mode:
+
+```bash
+python tools/gpt_io/public_drive/fetch.py \
+  --manifest horse-racing/jrdb/config/public_drive/jrdb_result_query_historical_2025_v1.json \
+  --output-root /mnt/data/jrdb_result_query_historical_2025 \
+  --receipt /mnt/data/jrdb_result_query_historical_2025/receipt.json
+
+python horse-racing/jrdb/src/jrdb_result_query.py \
+  --date 2025-03-16 \
+  --source warehouse \
+  --warehouse-root /mnt/data/jrdb_result_query_historical_2025/warehouse \
+  --warehouse-manifest /mnt/data/jrdb_result_query_historical_2025/warehouse/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921/manifest.json \
+  --pretty
+```
+
+Use the requested target date in place of the example date.
+
+### Managed-runtime dependency fallback
+
+If the GPT runtime does not contain `duckdb` / `pyarrow` and the single
+documented install attempt from `tools/data-storage/requirements.txt` is
+blocked by the managed runtime network policy, do not switch to Web and do not
+reimplement Parquet parsing.
+
+Use the repository-wide `[DATA_STORAGE_FALLBACK]` contract from
+`tools/data-storage/docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md`.
+
+The fallback request must:
+
+1. run `tools/gpt_io/public_drive/fetch.py` with the pinned 2025 result-query
+   manifest into `{work}`;
+2. run `horse-racing/jrdb/src/jrdb_result_query.py --source warehouse` against
+   those exact verified files;
+3. write the result JSON into `{output}`;
+4. accept only `status=success` or stop for `review_required`;
+5. preserve `provenance.web_used=false`.
+
+This is an approved deterministic execution fallback. It is **not** a general
+GitHub Actions ↔ Drive bridge: only the repository-reviewed, SHA-pinned public
+read-only helper is allowed.
+
+### Historical routing rule
+
+For 2010–2025 completed-race result lookup:
+
+```text
+annual SED/HJC Raw available
+  -> normal runner Raw route
+annual Raw unavailable
+  -> accepted Historical Warehouse route
+local DuckDB usable
+  -> local deterministic query
+local dependency install blocked
+  -> DATA_STORAGE_FALLBACK with pinned public read-only assets
+public result Web
+  -> not part of the standard route
+```
+
+A public result page may be used only when the user explicitly requests a Web
+fallback or the requested fact is outside JRDB coverage.
+
 ## Step 4 — Raw ZIP preflight
 
 Before executing the query, verify that both local files exist and are readable
