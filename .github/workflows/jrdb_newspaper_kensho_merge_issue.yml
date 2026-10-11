@@ -150,6 +150,37 @@ jobs:
           from pathlib import Path
           src=Path(os.environ["RACENOTE_PATH"])
           data=json.loads(src.read_text(encoding="utf-8"))
+          # Frozen canonical RaceNote decision records (DAILY-YYYYMMDD).
+          # Preserve the authored reader-facing race reason rather than using
+          # an image handoff, which intentionally contains only five marks.
+          if isinstance(data,list):
+              if len(data)!=24:
+                  raise SystemExit(f"frozen RaceNote must contain 24 records, got {len(data)}")
+              converted=[]
+              seen=set()
+              for record in data:
+                  core=record["decision_core"]
+                  venue=str(record["venue"])
+                  race_no=int(record["race_no"])
+                  identity=(venue,race_no)
+                  if identity in seen:
+                      raise SystemExit(f"duplicate frozen RaceNote race: {identity}")
+                  seen.add(identity)
+                  marks=core["marks"]
+                  reason=str(core.get("reader_facing_reason") or "").strip()
+                  if len(marks)!=5 or len(set(marks))!=5 or not reason:
+                      raise SystemExit(f"frozen RaceNote incomplete: {identity}")
+                  if record["target_date"] != os.environ["REQUEST_DATE"]:
+                      raise SystemExit(f"frozen RaceNote date mismatch: {identity}")
+                  converted.append({
+                      "venue":venue,"race_no":race_no,
+                      "marks":[{"horse_no":int(no),"mark":symbol,"prediction_rank":rank}
+                               for rank,(no,symbol) in enumerate(zip(marks,["◎","○","▲","△","△"]),start=1)],
+                      "race_short_comment":reason,
+                      "model_version":record["logic_version"],
+                      "source_semantic_sha256":record["source_semantic_sha256"],
+                  })
+              data={"date":os.environ["REQUEST_DATE"],"races":converted}
           if data.get("date") != os.environ["REQUEST_DATE"]:
               raise SystemExit("RaceNote date mismatch")
           fields=["date","venue_code","venue","race_no","race_key","horse_no","horse_name","mark","prediction_rank","confidence","race_short_comment","model_version","source_semantic_sha256"]
