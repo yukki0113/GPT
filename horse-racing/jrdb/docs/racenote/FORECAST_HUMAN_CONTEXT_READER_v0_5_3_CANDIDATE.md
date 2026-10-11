@@ -82,6 +82,18 @@ Final marks are ◎ ○ ▲ △ △.
 
 Reasoning fields are audit records of the already-made judgment, not a second scoring pass.
 
+For every six-or-more-runner race, the boundary record must preserve the concrete comparison that was already used in Step E:
+
+- one material strength or route of the external challenger;
+- one material strength or route of the ordinary boundary horse;
+- why the exchange value favors ADMIT or KEEP.
+
+Do not record only a conclusion such as "追加価値が上回らないのでKEEP" or "別経路の交換価値が高いのでADMIT". The stored prose must make the comparison auditable from the frozen Decision Core without requiring a later analyst to reconstruct the whole comparison from Reader files.
+
+The same principle applies to ◎/○. `ranking_reason` must state at least one race-specific reason why ◎ has the clearer win-first route than ○. Generic wording such as "○の安定感より◎の勝ち切り可能性を優先" is insufficient by itself.
+
+This is a recording requirement only. It must not reopen candidate membership, marks, or Step E after the judgment is complete.
+
 ## 4. Boundary semantics
 
 `boundary_review` always represents the last direct keep/drop comparison.
