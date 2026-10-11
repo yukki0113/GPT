@@ -1,3 +1,11 @@
+# JRDB Result Query fresh-runtime bootstrap — 2026-10-12
+
+- Completed-race result/payout lookup in a new Chat / Work runtime must follow `docs/JRDB_RESULT_QUERY_GPT_RUNTIME_RUNBOOK_v0_1.md`.
+- Do not assume GitHub source exists under `/mnt/data`. If no repo checkout is mounted, materialize `jrdb_result_query_runner.py`, `jrdb_result_query.py`, `jrdb_raw.py`, and `jrdb_ukc.py` from the same latest `main` observation before execution.
+- Run the runner `--plan`, then materialize the exact SED/HJC archives from canonical Drive to the exact planned local paths.
+- Accept normal complete execution only when `status=success`; `partial` and `review_required` are not complete results.
+- Raw absence from Git or runtime is not a Web-fallback condition. Do not create a substitute fixed-width parser.
+
 # RaceNote v0.5.3 forward candidate — 2026-10-12
 
 - New unresolved forward forecasts after the already-frozen 2026-10-12 v0.5.2 cohort use `RaceNote-Human-Context-Reader-0.5.3-candidate`.
