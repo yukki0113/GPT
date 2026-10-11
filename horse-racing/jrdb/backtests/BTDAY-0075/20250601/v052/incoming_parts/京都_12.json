@@ -1,0 +1,63 @@
+{
+  "venue": "京都",
+  "race_no": 12,
+  "race_model": "芝1400mの3勝クラスで2の安定した差し脚と近走2着を最上位評価。8は能力水準と位置取り柔軟性があり、6は出遅れから強襲した末脚が魅力。",
+  "marks": [
+    2,
+    8,
+    6,
+    13,
+    5
+  ],
+  "mainline_cases": [
+    {
+      "horse_no": 2,
+      "case": "ユハンヌスは近走2着の差し脚が安定し、今回も標準展開なら勝ち負けまで届く。"
+    },
+    {
+      "horse_no": 8,
+      "case": "ガロンヌは能力水準と位置取りの柔軟性があり、流れが変わっても上位争いへ残れる。"
+    },
+    {
+      "horse_no": 13,
+      "case": "ウインスノーライトは終いを伸ばす形なら連下圏へ入れる比較材料がある。"
+    },
+    {
+      "horse_no": 5,
+      "case": "ムーンリットナイトは先行して形を作れれば5頭圏を守れる余地がある。"
+    }
+  ],
+  "single_shot_case": {
+    "horse_no": 6,
+    "case": "バンドシェルは出遅れから強襲した末脚があり、展開が差し向きになった時の上振れを▲として評価する。"
+  },
+  "boundary_review": {
+    "alternative_horse_no": 9,
+    "reason": "ブリュットミレジメにも末脚の浮上余地はあるが、通常5頭を崩すだけの比較優位には届かない。"
+  },
+  "rrdb_refs": [],
+  "reader_facing_reason": "ユハンヌスを◎、ガロンヌを○。バンドシェルは差し向きの上振れを見て▲。ウインスノーライト、ムーンリットナイトまでを本線とし、近走の末脚と位置取りを比較した。",
+  "candidate_compression": {
+    "ordinary_five": [
+      2,
+      8,
+      6,
+      13,
+      5
+    ],
+    "external_challenger_horse_no": 9,
+    "external_challenger_case": "ブリュットミレジメは流れが強く差し向きになれば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+    "excluded_horse_no": 9,
+    "decision": "KEEP_ORDINARY_FIVE",
+    "reason": "ブリュットミレジメの上振れは認めるが、通常5頭の近走内容と能力を総合すると入れ替えを正当化する差はない。"
+  },
+  "role_assignment": {
+    "honmei_horse_no": 2,
+    "second_horse_no": 8,
+    "honmei_win_case": "ユハンヌスは直近2着で内を捌きながら伸びており、今回も差し脚を再現できれば先頭まで届く経路が明確。",
+    "second_case": "ガロンヌは能力水準と位置取りの柔軟性が高く、◎が取りこぼす流れなら自然に勝ち負けへ浮上する。",
+    "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+    "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+    "ranking_reason": "ガロンヌの総合力より、ユハンヌスの近走差し脚の再現性を勝ち切り側で優先して◎とした。"
+  }
+}
