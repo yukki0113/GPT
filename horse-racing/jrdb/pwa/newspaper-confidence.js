@@ -65,4 +65,12 @@ function newspaperApplyConfidenceHeaders(table, bundle, publicSurface) {
     row.appendChild(confidence);
   }
   markRow.after(row);
+  // Sticky rows must use their actual rendered heights. Fixed 31px/50px
+  // offsets do not match the grouped header height on narrow mobile tables.
+  const groupHeight = originalTopRow ? originalTopRow.offsetHeight : 0;
+  const labelHeight = markRow.offsetHeight;
+  if (groupHeight > 0 && labelHeight > 0) {
+    table.style.setProperty("--newspaper-group-header-height", groupHeight + "px");
+    table.style.setProperty("--newspaper-label-header-height", labelHeight + "px");
+  }
 }
