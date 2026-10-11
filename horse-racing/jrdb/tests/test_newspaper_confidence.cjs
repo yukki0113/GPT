@@ -29,7 +29,7 @@ const publicHtml = fs.readFileSync(path.join(root, 'momotaro/newspaper.html'), '
 assert.ok(html.indexOf('newspaper-confidence.js') < html.indexOf('newspaper-momotaro.js'));
 assert.ok(publicHtml.indexOf('newspaper-confidence.js') < publicHtml.indexOf('momotaro.js'));
 for (const value of [html, publicHtml]) {
-  assert.match(value, /newspaper-confidence\.css\?v=2/);
-  assert.match(value, /newspaper-confidence\.js\?v=1/);
+  assert.match(value, /newspaper-confidence\.css\?v=3/);
+  assert.match(value, /newspaper-confidence\.js\?v=2/);
 }
 console.log('race confidence contract: PASS');
