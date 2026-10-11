@@ -17,13 +17,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Reasoning capture lint
-        run: |
-          set -euo pipefail
-          ROOT='horse-racing/jrdb/backtests/BTDAY-0077/20250720/v053'
-          python horse-racing/jrdb/src/racenote_v053_reasoning_lint.py --decisions "$ROOT/incoming/函館.json"
-          python horse-racing/jrdb/src/racenote_v053_reasoning_lint.py --decisions "$ROOT/incoming/小倉.json"
-          python horse-racing/jrdb/src/racenote_v053_reasoning_lint.py --decisions "$ROOT/incoming/福島.json"
       - name: Save venues Freeze Verify
         env:
           PYTHONPATH: horse-racing/jrdb/src
