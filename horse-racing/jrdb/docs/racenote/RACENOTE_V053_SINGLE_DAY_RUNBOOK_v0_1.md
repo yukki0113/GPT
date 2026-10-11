@@ -282,64 +282,23 @@ The Decision Core must retain:
 - `ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK` ▲ mode;
 - audited six-to-five compression.
 
-## 2.2 Decision Core prose recording (2026-10-09; no prediction change)
+## 2.2 Decision Core recording
 
-After the ordinary v0.5.3 judgment is complete, record the reasoning under
-Section 3 / Step G of `FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md` and
-the reader-facing contract in `FORECAST_READER_FACING_PROSE_v0_1.md`.
+After the v0.5.3 judgment is complete, record that judgment once in the existing Decision Core fields.
 
-This is still the same prediction. The explanation fields are a faithful record
-of that prediction, not a second scoring pass.
+The recording step must not reopen the race. Do not perform a second evidence scan, prose-quality audit, comparison rewrite, or lint pass. Repeated wording is acceptable when the underlying judgment is genuinely similar.
 
-The important operational principle is that the written record should preserve
-the real shape of the comparison. A materially stronger ◎ case should remain
-materially stronger because of the race evidence that supports it. A marginal
-◎/○ ordering should remain visibly marginal. A conditional winning route
-should retain its condition. The prose should not strengthen, flatten or
-sanitize the judgment merely because a later research process may classify the
-frozen explanation.
+Keep the existing field roles:
 
-Use the existing Decision Core shape unchanged. `race_model`,
-`honmei_win_case`, `second_case`, `ranking_reason`,
-`boundary_review.reason`, `candidate_compression.reason`,
-`mainline_cases` and `single_shot_case` each keep their existing semantic
-roles. They should form one internally consistent account of the race rather
-than independent text boxes written to satisfy separate wording rules.
+- `race_model`: compact race structure;
+- `honmei_win_case` / `second_case` / `ranking_reason`: the already-decided ◎○ relationship;
+- `candidate_compression` / `boundary_review`: the already-decided final exchange;
+- `mainline_cases` / `single_shot_case`: the final five-horse role structure;
+- `reader_facing_reason`: a compact natural-language summary of the same judgment.
 
-`reader_facing_reason` is the same judgment compressed into natural newspaper
-prose. It should not copy audit text mechanically, but it also must not tell a
-different story about the relative strength of ◎ and ○.
+The goal is reproducibility of the decision, not literary variation. Marks, candidate membership and role assignment are finalized before recording and are not revisited because the prose looks generic.
 
-For six-or-more-runner races, `candidate_compression.reason` and
-`boundary_review.reason` must together preserve the already-made direct
-comparison:
-
-1. challenger-specific material strength/route;
-2. ordinary-boundary-horse-specific material strength/route;
-3. the concrete exchange reason for ADMIT/KEEP.
-
-A generic KEEP/ADMIT conclusion without both sides of the comparison is not
-sufficient reasoning capture. `ranking_reason` likewise needs at least one
-race-specific ◎>○ win-first basis, not only generic "安定感より勝ち切り"
-wording.
-
-Before venue save, run the reasoning-capture lint:
-
-```bash
-python horse-racing/jrdb/src/racenote_v053_reasoning_lint.py \
-  --decisions <output-root>/v053/incoming/<venue>.json
-```
-
-The lint checks recording quality only. It must never rewrite marks or reopen
-Step E. Existing frozen cohorts are not re-linted retroactively.
-
-Card-level review remains prose-only: remove interchangeable boilerplate where
-it hides different reasoning, but leave genuinely similar races similar.
-Marks, candidate membership, role assignment, Reader evidence and Step E are
-not reopened during this review.
-
-Older FROZEN outputs remain immutable. Provenance identifies which authoring
-guidance produced each cohort.
+Older FROZEN outputs remain immutable.
 
 ## 3. Save each venue
 
