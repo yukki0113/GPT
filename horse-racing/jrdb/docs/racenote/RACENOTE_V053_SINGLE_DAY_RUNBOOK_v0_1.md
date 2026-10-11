@@ -310,6 +310,29 @@ than independent text boxes written to satisfy separate wording rules.
 prose. It should not copy audit text mechanically, but it also must not tell a
 different story about the relative strength of ◎ and ○.
 
+For six-or-more-runner races, `candidate_compression.reason` and
+`boundary_review.reason` must together preserve the already-made direct
+comparison:
+
+1. challenger-specific material strength/route;
+2. ordinary-boundary-horse-specific material strength/route;
+3. the concrete exchange reason for ADMIT/KEEP.
+
+A generic KEEP/ADMIT conclusion without both sides of the comparison is not
+sufficient reasoning capture. `ranking_reason` likewise needs at least one
+race-specific ◎>○ win-first basis, not only generic "安定感より勝ち切り"
+wording.
+
+Before venue save, run the reasoning-capture lint:
+
+```bash
+python horse-racing/jrdb/src/racenote_v053_reasoning_lint.py \
+  --decisions <output-root>/v053/incoming/<venue>.json
+```
+
+The lint checks recording quality only. It must never rewrite marks or reopen
+Step E. Existing frozen cohorts are not re-linted retroactively.
+
 Card-level review remains prose-only: remove interchangeable boilerplate where
 it hides different reasoning, but leave genuinely similar races similar.
 Marks, candidate membership, role assignment, Reader evidence and Step E are
