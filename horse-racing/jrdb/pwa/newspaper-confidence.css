@@ -27,5 +27,5 @@
   border-top: 1px solid #e2e2e2;
 }
 .newspaper-table-v4 thead tr:nth-child(3) > th {
-  top: 50px;
+  top: calc(var(--newspaper-group-header-height, 31px) + var(--newspaper-label-header-height, 19px));
 }
