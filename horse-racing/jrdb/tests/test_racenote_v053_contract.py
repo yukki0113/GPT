@@ -105,7 +105,7 @@ class V053DecisionCoreTest(unittest.TestCase):
             {"horse_no": 5, "case": "通常支持として相手本線に残す根拠がある。"},
             {"horse_no": 6, "case": "境界比較後も通常候補として残す根拠が十分にある。"},
         ]
-        changed["boundary_review"]["alternative_horse_no"] = 6
+        changed["boundary_review"]["alternative_horse_no"] = 7
         changed["candidate_compression"]["excluded_horse_no"] = 3
         changed["candidate_compression"]["decision"] = "KEEP_ORDINARY_FIVE"
         changed["candidate_compression"]["reason"] = "外部3の独立経路は認めるが通常五頭を失う損失が大きいため維持する。"
