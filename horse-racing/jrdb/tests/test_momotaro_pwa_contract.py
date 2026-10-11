@@ -123,7 +123,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertNotIn("Boolean(comment || confidence || tag || value.review_horse === true)", script)
         self.assertIn("newspaper-momotaro.js?v=5", html)
         self.assertIn("newspaper-momotaro.js?v=5", worker)
-        self.assertIn('jrdb-pwa-shell-v75', worker)
+        self.assertIn('jrdb-pwa-shell-v76', worker)
 
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
@@ -157,7 +157,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function factDownloadUrl(manifest)', fact_script)
         self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v29"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v30"', service_worker)
 
 
 if __name__ == "__main__":
