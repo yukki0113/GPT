@@ -27,16 +27,42 @@ function newspaperRaceConfidence(bundle, member, publicSurface) {
 }
 
 function newspaperApplyConfidenceHeaders(table, bundle, publicSurface) {
-  for (const [member, selector, label] of [
-    ["kenshow", publicSurface ? ".mark-kenshow" : ".mark-rn", "けん"],
-    ["ryota", ".mark-ryota", "りょ"],
-    ["oji", ".mark-oji", "王子"]
-  ]) {
-    const head = table.querySelector(`.newspaper-mark-head-row th${selector}`);
-    if (!head) continue;
-    const confidence = newspaperRaceConfidence(bundle, member, publicSurface);
-    head.classList.add("newspaper-confidence-head");
-    head.innerHTML = `<span class="newspaper-confidence-inner"><span class="newspaper-confidence-label">${label}</span>` +
-      `<span class="newspaper-confidence-value">${escapeHtml(confidence)}</span></span>`;
+  if (!table) return;
+  const markRow = table.querySelector(".newspaper-mark-head-row");
+  if (!markRow) return;
+  // The contributor labels and confidence values occupy *separate table rows*.
+  // All non-contributor mark headers span both rows. The identity/history
+  // headers span the group header plus both mark rows.
+  const originalTopRow = markRow.previousElementSibling;
+  if (originalTopRow) {
+    originalTopRow.querySelectorAll('th[rowspan="2"]').forEach(head => {
+      head.rowSpan = 3;
+    });
   }
+  const previous = table.querySelector(".newspaper-confidence-row");
+  if (previous) previous.remove();
+
+  const row = document.createElement("tr");
+  row.className = "newspaper-confidence-row";
+  const targets = new Map([
+    [publicSurface ? "mark-kenshow" : "mark-rn", "kenshow"],
+    ["mark-ryota", "ryota"],
+    ["mark-oji", "oji"]
+  ]);
+  for (const head of markRow.querySelectorAll("th")) {
+    const match = [...targets].find(([cls]) => head.classList.contains(cls));
+    if (!match) {
+      head.rowSpan = 2;
+      continue;
+    }
+    const [cls, member] = match;
+    const value = newspaperRaceConfidence(bundle, member, publicSurface);
+    head.classList.add("newspaper-confidence-head");
+    head.textContent = member === "kenshow" ? "けん" : member === "ryota" ? "りょ" : "王子";
+    const confidence = document.createElement("th");
+    confidence.className = "newspaper-mark-col newspaper-confidence-cell " + cls;
+    confidence.textContent = value;
+    row.appendChild(confidence);
+  }
+  markRow.after(row);
 }
