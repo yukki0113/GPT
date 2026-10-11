@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'horse-racing/jrdb/backtests/BTDAY-0075/FINALIZE_TRIGGER'
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0075.json'
 permissions:
   contents: write
 jobs:
