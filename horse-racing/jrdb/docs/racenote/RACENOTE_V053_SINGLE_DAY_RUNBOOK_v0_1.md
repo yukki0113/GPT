@@ -271,9 +271,9 @@ Do not use:
 - an old v0.5.1/v0.5.3 sibling prediction;
 - prior BTDAY marks as prediction evidence.
 
-Follow the promoted v0.5.3 contract:
+Follow the current v0.5.3 candidate contract:
 
-`FORECAST_HUMAN_CONTEXT_READER_v0_5_2_CANDIDATE.md`
+`FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md`
 
 The Decision Core must retain:
 
@@ -285,8 +285,8 @@ The Decision Core must retain:
 ## 2.2 Decision Core prose recording (2026-10-09; no prediction change)
 
 After the ordinary v0.5.3 judgment is complete, record the reasoning under
-section 4.1 of `FORECAST_HUMAN_CONTEXT_READER_v0_5_2_CANDIDATE.md` and the
-reader-facing contract in `FORECAST_READER_FACING_PROSE_v0_1.md`.
+Section 3 / Step G of `FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md` and
+the reader-facing contract in `FORECAST_READER_FACING_PROSE_v0_1.md`.
 
 This is still the same prediction. The explanation fields are a faithful record
 of that prediction, not a second scoring pass.
