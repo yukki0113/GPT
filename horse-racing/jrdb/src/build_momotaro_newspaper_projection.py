@@ -238,6 +238,15 @@ def load_predictions(
             "comment": comment,
         }
 
+    ryota_confidence: dict[tuple[str, str, int], set[str]] = {}
+    for (date, venue_code, race_no, _horse_no, member), row in index.items():
+        if member == "ryota" and row["confidence"]:
+            ryota_confidence.setdefault((date, venue_code, race_no), set()).add(
+                row["confidence"]
+            )
+    for race_key, values in ryota_confidence.items():
+        if len(values) > 1:
+            raise ValueError(f"conflicting Ryota race confidence for {race_key}: {sorted(values)}")
     return index, sha_file(path)
 
 
@@ -293,6 +302,21 @@ def automatic_kenshow_race_comment(bundle: dict[str, Any]) -> str:
     if not isinstance(race_notes, dict):
         return ""
     return str(race_notes.get("racenote_short_comment") or "").strip()
+
+
+def automatic_kenshow_race_confidence(bundle: dict[str, Any]) -> str | None:
+    """Project only the validated RaceNote race confidence, never a horse star."""
+    values = {
+        str(((horse.get("addons") or {}).get("racenote_prediction") or {}).get("confidence") or "").strip()
+        for horse in bundle.get("horses") or []
+    }
+    values.discard("")
+    if len(values) > 1:
+        raise ValueError(f"conflicting RaceNote race confidence: {sorted(values)}")
+    value = next(iter(values), None)
+    if value is not None and value not in {"A", "B", "C"}:
+        raise ValueError(f"invalid RaceNote race confidence: {value!r}")
+    return value
 
 
 def project_horse(
@@ -367,6 +391,7 @@ def project_horse(
 
     projected["addons"] = shared_addons
     projected["edge_matches"] = []
+    projected.pop("special_memos", None)
     return projected
 
 
@@ -440,6 +465,8 @@ def build_projection(
         race_date = str(race.get("date") or "")
         venue_code = str(race.get("venue_code") or "").zfill(2)
         race_no = int(race.get("race_no") or 0)
+        kenshow_confidence = automatic_kenshow_race_confidence(bundle)
+        bundle.pop("edge_v05_candidates", None)
 
         projected_horses: list[dict[str, Any]] = []
         for horse in bundle.get("horses") or []:
@@ -499,6 +526,10 @@ def build_projection(
             race_notes = {}
             bundle["race_notes"] = race_notes
         race_notes.pop("racenote_short_comment", None)
+        if kenshow_confidence:
+            race_notes["momotaro_race_confidence"] = {"kenshow": kenshow_confidence}
+        else:
+            race_notes.pop("momotaro_race_confidence", None)
 
         member_comments: dict[str, str] = {}
         if automatic_kenshow_comment:

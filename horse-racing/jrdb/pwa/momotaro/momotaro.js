@@ -186,6 +186,8 @@ renderTable = function () {
     '<tbody>' + rows + '</tbody>' +
     '</table>';
 
+  newspaperApplyConfidenceHeaders(tableWrap.querySelector('.momotaro-newspaper-table'), currentBundle, true);
+
   tableWrap.querySelectorAll(".newspaper-detail-button").forEach(function (button) {
     button.addEventListener("click", function () {
       const horse = horses[Number(button.dataset.horseIndex)];

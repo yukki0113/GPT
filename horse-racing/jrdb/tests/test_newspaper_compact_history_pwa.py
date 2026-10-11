@@ -39,11 +39,11 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
 
         self.assertIn('newspaperCompanionBase: "./momotaro/data/newspaper/current/"', html)
         self.assertIn('./newspaper-day.js?v=5', html)
-        self.assertIn('./newspaper-momotaro.js?v=4', html)
+        self.assertIn('./newspaper-momotaro.js?v=5', html)
         self.assertIn("function mergeNewspaperCompanion", day)
         self.assertIn("horse.addons.momotaro = companionAddons.momotaro", day)
         self.assertIn("momotaro_comments", day)
-        self.assertIn('groupHead.colSpan = 8', overlay)
+        self.assertIn('groupHead.colSpan = headRow.querySelectorAll("th.newspaper-mark-col").length', overlay)
         self.assertIn('short: "りょ"', overlay)
         self.assertIn('short: "王子"', overlay)
         self.assertNotIn('short: "けん"', overlay)
@@ -69,7 +69,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertNotIn("<h3>RaceNote短評</h3>", v6)
         self.assertIn("<h3>RaceReviewDB</h3>", v6)
         self.assertIn('headRow.querySelector(".mark-iluka")', v6)
-        self.assertIn('groupHead.colSpan = 8', overlay)
+        self.assertIn('groupHead.colSpan = headRow.querySelectorAll("th.newspaper-mark-col").length', overlay)
         self.assertNotIn('short: "けん"', overlay)
         self.assertIn(".mark-ryota", css)
         self.assertIn(".mark-oji", css)
@@ -167,7 +167,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v74"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v75"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
         self.assertIn('"./newspaper-v4.css?v=9"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=8"', service_worker)

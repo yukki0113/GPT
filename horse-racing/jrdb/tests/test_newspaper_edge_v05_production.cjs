@@ -75,13 +75,13 @@ const context = vm.createContext({
 vm.runInContext(source, context);
 context.renderTable();
 assert.equal(table.querySelectorAll('.newspaper-edge').length, 0);
-assert.equal(top.querySelectorAll('th.newspaper-edge-v05').length, 1);
-assert.equal(top.querySelector('th.newspaper-edge-v05').rowSpan, 2);
-assert.equal(top.querySelector('th.newspaper-edge-v05').textContent, 'Edge');
-assert.equal(group.colSpan, 8);
-assert.deepEqual(markRow.children.map(cell => cell.className.split('mark-').at(-1)), marks);
-assert.equal(top.children.indexOf(top.querySelector('th.newspaper-edge-v05')) + 1,
-  top.children.indexOf(top.querySelector('th.newspaper-history-head')));
+assert.equal(top.querySelectorAll('th.newspaper-edge-v05').length, 0);
+assert.equal(markRow.querySelectorAll('th.newspaper-edge-v05').length, 1);
+assert.equal(markRow.querySelector('th.newspaper-edge-v05').textContent, 'Edge');
+assert.equal(group.colSpan, 9);
+assert.deepEqual(markRow.children.map(cell => cell.className.split(' ').find(name => name.startsWith('mark-')).slice(5)), [...marks, 'edge']);
+assert.equal(markRow.children.at(-1).className.includes('newspaper-edge-v05'), true);
+assert.equal(top.children.indexOf(group) + 1, top.children.indexOf(top.querySelector('th.newspaper-history-head')));
 assert.equal(top.children.length - 1 + group.colSpan, rows[0].children.length);
 rows.forEach((row, i) => {
   const edge = row.querySelector('td.newspaper-edge-v05');
@@ -94,9 +94,11 @@ assert.equal(rows[1].querySelector('td.newspaper-edge-v05').children[0].textCont
 rows[2].querySelector('td.newspaper-edge-v05').children[0].listeners.click();
 assert.equal(context.detailDialog.opened, true);
 assert.match(context.dialogBody.innerHTML, /その他のEdge（1件）/);
-assert.match(context.dialogBody.innerHTML, /2026診断は過去評価の説明/);
+assert.match(context.dialogBody.innerHTML, /10頭 \/ 複勝ROI 120\.0%/);
+assert.match(context.dialogBody.innerHTML, /過去の条件別実績であり、今回の予測成績ではありません。/);
+assert.doesNotMatch(context.dialogBody.innerHTML, /複勝率|系列|2026診断|再現確認/);
 context.renderTable();
-assert.equal(top.querySelectorAll('th.newspaper-edge-v05').length, 1);
+assert.equal(markRow.querySelectorAll('th.newspaper-edge-v05').length, 1);
 rows.forEach(row => assert.equal(row.querySelectorAll('td.newspaper-edge-v05').length, 1));
 context.currentBundle.metadata.source_status.edge_v05.state = 'ERROR';
 assert.equal(vm.runInContext('newspaperV05Ids', context)(context.currentBundle.horses[1]).length, 0);
