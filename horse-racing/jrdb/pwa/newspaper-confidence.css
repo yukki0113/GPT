@@ -1,40 +1,31 @@
-/* Shared compact contributor confidence header: two lines within one table row.
-   No additional table row or relative offsets; all other mark headers stay centered. */
+/* Three physical header rows: group, contributor labels, confidence.
+   Non-contributor headers rowspan=2; identity/history columns rowspan=3. */
 .newspaper-table-v4 .newspaper-mark-head-row th {
-  height: 40px;
-  padding-top: 1px;
-  padding-bottom: 1px;
+  height: 19px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 .newspaper-table-v4 .newspaper-mark-head-row th.newspaper-confidence-head {
-  white-space: nowrap;
+  height: 19px;
   padding-left: 1px;
   padding-right: 1px;
-}
-.newspaper-confidence-inner {
-  display: grid;
-  grid-template-rows: 17px 17px;
-  align-items: center;
-  justify-items: center;
-  height: 34px;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-}
-.newspaper-confidence-label,
-.newspaper-confidence-value {
-  display: block;
-  width: 100%;
-  margin: 0;
-  padding: 0;
   white-space: nowrap;
-  text-align: center;
-  line-height: 17px;
 }
-.newspaper-confidence-value {
+.newspaper-table-v4 .newspaper-confidence-row th {
+  height: 18px;
+  padding: 1px;
   box-sizing: border-box;
-  border-top: 1px solid #ddd;
+  text-align: center;
+  vertical-align: middle;
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  background: #f7f7f7;
+  border-top: 1px solid #e2e2e2;
+}
+.newspaper-table-v4 thead tr:nth-child(3) > th {
+  top: 50px;
 }
