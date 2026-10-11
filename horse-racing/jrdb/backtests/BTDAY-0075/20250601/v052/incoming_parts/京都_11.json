@@ -1,0 +1,63 @@
+{
+  "venue": "京都",
+  "race_no": 11,
+  "race_model": "3歳オープンの1800mで、6と5はともに差して勝ち上がりながら内容も濃い。10も後方から決め手を示しており、上がり性能を中心に比較する。",
+  "marks": [
+    6,
+    5,
+    10,
+    8,
+    7
+  ],
+  "mainline_cases": [
+    {
+      "horse_no": 6,
+      "case": "キングメーカーは直線の決め手が明確で、標準展開なら勝ち負けまで届く。"
+    },
+    {
+      "horse_no": 5,
+      "case": "マイユニバースは後方から長く脚を使え、再現性のある差し脚が強み。"
+    },
+    {
+      "horse_no": 8,
+      "case": "ライトトラックは初戦の差し切り内容が良く、流れが向けば連下圏へ入れる。"
+    },
+    {
+      "horse_no": 7,
+      "case": "センツブラッドは先行して押し切った実績があり、前残りなら5頭圏を守れる。"
+    }
+  ],
+  "single_shot_case": {
+    "horse_no": 10,
+    "case": "ニュークレドは後方から決め手を発揮して勝っており、上がり勝負での上振れを▲として評価する。"
+  },
+  "boundary_review": {
+    "alternative_horse_no": 4,
+    "reason": "ロードガレリアにも先行経路はあるが、上位5頭の直近内容を崩すだけの比較優位には届かない。"
+  },
+  "rrdb_refs": [],
+  "reader_facing_reason": "キングメーカーを◎、マイユニバースを○。ニュークレドは上がり勝負の上振れを見て▲。ライトトラック、センツブラッドまでを本線とし、近走の決め手と位置取りを比較した。",
+  "candidate_compression": {
+    "ordinary_five": [
+      6,
+      5,
+      10,
+      8,
+      7
+    ],
+    "external_challenger_horse_no": 4,
+    "external_challenger_case": "ロードガレリアは先行して流れに乗れれば5頭圏へ割って入る余地があるため、外部挑戦馬として比較した。",
+    "excluded_horse_no": 4,
+    "decision": "KEEP_ORDINARY_FIVE",
+    "reason": "ロードガレリアの前残りは認めるが、通常5頭の決め手と近走内容を総合すると入れ替えを正当化する差はない。"
+  },
+  "role_assignment": {
+    "honmei_horse_no": 6,
+    "second_horse_no": 5,
+    "honmei_win_case": "キングメーカーは直近で最後方から差し切り、今回も決め手を生かせる展開なら先頭まで届く経路が最も明確。",
+    "second_case": "マイユニバースは近走勝ち切りと末脚の再現性が高く、◎が取りこぼす流れなら自然に浮上する。",
+    "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+    "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+    "ranking_reason": "マイユニバースの安定感より、キングメーカーの決め手が勝ち切りに直結する点を優先して◎とした。"
+  }
+}
