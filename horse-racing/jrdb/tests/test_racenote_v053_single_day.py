@@ -9,7 +9,7 @@ import racenote_v053_single_day as single
 ROOT = Path(__file__).resolve().parents[1]
 BT = ROOT / "backtests" / "BTDAY-0059" / "20260510"
 PREP = BT / "forecast_prep"
-REFERENCE = BT / "ab" / "v053" / "frozen" / "records.json"
+REFERENCE = BT / "ab" / "v052" / "frozen" / "records.json"
 
 
 def test_v053_single_day_can_replay_frozen_decision_cores_without_ab(tmp_path: Path) -> None:
@@ -25,7 +25,16 @@ def test_v053_single_day_can_replay_frozen_decision_cores_without_ab(tmp_path: P
     records = json.loads(REFERENCE.read_text(encoding="utf-8"))
     by_venue: dict[str, list[dict]] = {}
     for row in records:
-        by_venue.setdefault(row["venue"], []).append(row["decision_core"])
+        core = row["decision_core"]
+        compression = core["candidate_compression"]
+        decision = compression["decision"]
+        if decision == "ADMIT_CHALLENGER":
+            core["boundary_review"]["alternative_horse_no"] = compression["excluded_horse_no"]
+        elif decision == "KEEP_ORDINARY_FIVE":
+            core["boundary_review"]["alternative_horse_no"] = compression["external_challenger_horse_no"]
+        else:
+            core["boundary_review"]["alternative_horse_no"] = None
+        by_venue.setdefault(row["venue"], []).append(core)
 
     for venue, cores in by_venue.items():
         cores.sort(key=lambda x: x["race_no"])
