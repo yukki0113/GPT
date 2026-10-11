@@ -558,7 +558,7 @@ def _normalize_racenote(
     if (
         not out["race_key"]
         or not out["horse_name"]
-        or not out["race_short_comment"]
+        or (not sparse_marks and not out["race_short_comment"])
         or not out["model_version"]
     ):
         raise ValueError(f"blank required RaceNote value at line {line_no}")
