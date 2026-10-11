@@ -20,7 +20,7 @@ class NewspaperMyIndexPwaTest(unittest.TestCase):
 
         self.assertIn('./newspaper-v10.js?v=3', html)
         self.assertIn('./newspaper-v10.js?v=3', service_worker)
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v72"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v74"', service_worker)
         self.assertIn('"training_edge_index"', script)
         self.assertIn('sources.edge_v05', script)
         self.assertIn('"Edge○"', script)
