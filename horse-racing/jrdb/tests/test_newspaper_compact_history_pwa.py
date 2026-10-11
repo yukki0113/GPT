@@ -39,7 +39,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
 
         self.assertIn('newspaperCompanionBase: "./momotaro/data/newspaper/current/"', html)
         self.assertIn('./newspaper-day.js?v=5', html)
-        self.assertIn('./newspaper-momotaro.js?v=3', html)
+        self.assertIn('./newspaper-momotaro.js?v=4', html)
         self.assertIn("function mergeNewspaperCompanion", day)
         self.assertIn("horse.addons.momotaro = companionAddons.momotaro", day)
         self.assertIn("momotaro_comments", day)
@@ -167,7 +167,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v72"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v74"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
         self.assertIn('"./newspaper-v4.css?v=9"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=8"', service_worker)
