@@ -32,7 +32,7 @@ jobs:
           ky=[json.loads((parts/f'京都_{i:02d}.json').read_text(encoding='utf-8')) for i in range(1,13)]
           tk=[json.loads((parts/f'東京_{i:02d}.json').read_text(encoding='utf-8')) for i in range(1,9)]
           import subprocess
-          api=subprocess.check_output(['gh','api','repos/'+__import__('os').environ['GITHUB_REPOSITORY']+'/git/blobs/b7bf17a264fe1da96513e4465580f65dc7b08622','--jq','.content'],text=True)
+          api=subprocess.check_output(['gh','api','repos/'+__import__('os').environ['GITHUB_REPOSITORY']+'/git/blobs/9e7621260622e813a6f7ddb0a0bc6e76f05fb7bc','--jq','.content'],text=True)
           enc=base64.b64decode(''.join(api.split())).decode()
           tk.extend(json.loads(gzip.decompress(base64.b64decode(enc))))
           assert [x['race_no'] for x in ky]==list(range(1,13))
