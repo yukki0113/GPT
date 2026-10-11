@@ -32,4 +32,11 @@ for (const value of [html, publicHtml]) {
   assert.match(value, /newspaper-confidence\.css\?v=4/);
   assert.match(value, /newspaper-confidence\.js\?v=3/);
 }
+const confidenceCss = fs.readFileSync(path.join(root, 'newspaper-confidence.css'), 'utf8');
+const v4Css = fs.readFileSync(path.join(root, 'newspaper-v4.css'), 'utf8');
+assert.match(source, /originalTopRow\.offsetHeight/);
+assert.match(source, /markRow\.offsetHeight/);
+assert.match(source, /--newspaper-group-header-height/);
+assert.match(v4Css, /top: var\(--newspaper-group-header-height/);
+assert.match(confidenceCss, /--newspaper-label-header-height/);
 console.log('race confidence contract: PASS');
