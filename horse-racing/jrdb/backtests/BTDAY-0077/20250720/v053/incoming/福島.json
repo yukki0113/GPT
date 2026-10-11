@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "福島",
+    "race_no": 1,
+    "race_model": "障害2770m未勝利。10は障害2890m3着・2880m4着、13も障害3・5着、11は障害5着。飛越実績を最優先し、平地能力は補助材料にする。",
+    "marks": [
+      10,
+      13,
+      11,
+      4,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "マルベリーシチーは障害2890m3着、2880m4着と連続して完走好走し、今回も差しで安定した飛越経路を持つ。"
+      },
+      {
+        "horse_no": 13,
+        "case": "セファーラジエルは2890m3着・2860m5着で障害経験が豊富、調教18.8上昇。先行して自分のリズムを作れる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ファベルは障害初戦ではないが平地芝2000mで能力56があり、飛越適応時の上限が高い。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "インヴァリアンスは障害2880m経験があり、調教上昇で前走11着からの改善余地がある。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "カイコウは障害2860m5着に加え平地ダート能力48を持つ。飛越が噛み合えば平地脚で終盤の順位を一段上げられる。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "イチリュウオーの障害2戦の経験量と、インヴァリアンスの上昇調教と平地能力48を直接比べ、現在の改善余地が大きい2を保護する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "障害2770m未勝利。10は障害2890m3着・2880m4着、13も障害3・5着、11は障害5着。飛越実績を最優先し、平地能力は補助材料にする。 ◎マルベリーシチーはundefined。○セファーラジエル、▲カイコウ、△ファベル・インヴァリアンスまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        13,
+        11,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "イチリュウオーは障害2880m・2850mを完走しており、経験量そのものはordinary境界馬以上ため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "イチリュウオーは障害2880m・2850mを完走しており、経験量そのものはordinary境界馬以上。一方、境界のインヴァリアンスは障害経験に加えて調教上昇があり、平地ダート能力48から終いの伸び代も残る。1は障害2走とも11着で勝負所の改善が見えにくい一方、2は今回の上昇気配と平地能力の裏付けがあり、境界として2を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 13,
+      "honmei_win_case": "マルベリーシチーは障害2890m3着、2880m4着と連続して完走好走し、今回も差しで安定した飛越経路を持つ。",
+      "second_case": "セファーラジエルは2890m3着・2860m5着で障害経験が豊富、調教18.8上昇。先行して自分のリズムを作れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎10は○13より直近2走とも障害で4着以内を確保し、飛越の再現性が高い。13の先行力より完走安定度をWIN_FIRSTで優先する。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 2,
+    "race_model": "ダート1700m未勝利。4と13が同距離2着、6は1600m2着、12は1600m5着。9は1400m連続好走から延長し、先行と差し双方を残す。",
+    "marks": [
+      4,
+      6,
+      9,
+      12,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "ミュージックマンは1700m2着IDM43。先行して自分で位置を作れ、今回距離の直接実績と能力値が最上位。"
+      },
+      {
+        "horse_no": 6,
+        "case": "コーシューパンジャは1600m2着IDM42、4着36。追込でも末脚2.9を使え、1700m延長で前が止まる形に強い。"
+      },
+      {
+        "horse_no": 12,
+        "case": "カーフキックは1600m・1800mで5着を続け、調教16.8で差しの現在値が安定。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 13,
+        "case": "パワーオブドリームは1700m2着IDM39を持ち、芝大敗だけでダート同距離証拠を消せない。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ガンバレベアーは1400m2・3着IDM38〜40、調教12.3上昇。1700mでも中団差しに回れば距離延長で脚を溜められる。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "コンヴァージョンの1600m3着の差しと、パワーオブドリームの1700m2着の直接実績を直接比べ、距離実証のある13を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1700m未勝利。4と13が同距離2着、6は1600m2着、12は1600m5着。9は1400m連続好走から延長し、先行と差し双方を残す。 ◎ミュージックマンはundefined。○コーシューパンジャ、▲ガンバレベアー、△カーフキック・パワーオブドリームまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        6,
+        12,
+        9,
+        13
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "コンヴァージョンは1600m3着IDM38で差し脚があり、芝を挟んでもダート戻りで前進余地があるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "コンヴァージョンは1600m3着IDM38で差し脚があり、芝を挟んでもダート戻りで前進余地がある。一方、境界のパワーオブドリームは1700m2着IDM39という今回距離の直接好走を持つ。15の1600m3着も評価するが、13は1700mで既に2着しており距離適性の確度が高い。直接証拠を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "honmei_win_case": "ミュージックマンは1700m2着IDM43。先行して自分で位置を作れ、今回距離の直接実績と能力値が最上位。",
+      "second_case": "コーシューパンジャは1600m2着IDM42、4着36。追込でも末脚2.9を使え、1700m延長で前が止まる形に強い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎4は○6より今回1700mで既に2着43を実証し、先行して展開依存が小さい。6は差し展開待ちがあるため4をWIN_FIRSTで上。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 3,
+    "race_model": "芝1200m未勝利の6頭立て。4は同距離2着、1は1400m4着から短縮。3は1800m3着からの大幅短縮で、少頭数ゆえ位置取り変化を重視する。",
+    "marks": [
+      4,
+      1,
+      3,
+      2,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "タイセイフレッサは1200m初戦2着IDM26、情報3.9・調教17.5上昇。今回条件で既に勝ち負けしており最も直接的な勝ち筋。"
+      },
+      {
+        "horse_no": 1,
+        "case": "クリエープキーは1400m4着IDM28、調教20.2上昇。逃げ脚があり1200m短縮で粘りが増す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "フェイスリフトは1200m7着でも追込で末脚を使う経路があり、少頭数で前との差が縮まりやすい。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 6,
+        "case": "トラスコンガーデンは初出走で未知の上積みがあり、既走低指数組との比較で5頭目に残す。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "ルクスアンジュは1800m3着から1200mへ大幅短縮。情報3.5・調教18.7で、追走に対応できれば前受けの変化幅が大きい。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "セイウンヤオヨロズの1200m先行経験と、トラスコンガーデンの初出走想定21.1の上積みを直接比べ、能力想定差を取り6を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1200m未勝利の6頭立て。4は同距離2着、1は1400m4着から短縮。3は1800m3着からの大幅短縮で、少頭数ゆえ位置取り変化を重視する。 ◎タイセイフレッサはundefined。○クリエープキー、▲ルクスアンジュ、△フェイスリフト・トラスコンガーデンまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        4,
+        3,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "セイウンヤオヨロズは1200m5着の先行経験があり、少頭数で前残りなら着順以上に残れるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "セイウンヤオヨロズは1200m5着の先行経験があり、少頭数で前残りなら着順以上に残れる。一方、境界のトラスコンガーデンは初出走で未知数だが想定21.1と5の既走14を上回る事前能力がある。5は直接1200m経験を持つが能力14と低く、6は初出走ながら想定21.1。未知の上積み幅を捨てるほど5の実績は強くない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 1,
+      "honmei_win_case": "タイセイフレッサは1200m初戦2着IDM26、情報3.9・調教17.5上昇。今回条件で既に勝ち負けしており最も直接的な勝ち筋。",
+      "second_case": "クリエープキーは1400m4着IDM28、調教20.2上昇。逃げ脚があり1200m短縮で粘りが増す。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎4は○1より能力想定では僅差だが、1200mで実際に2着している。1は短縮適応が必要なため、条件実証済みの4をWIN_FIRSTで上。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 4,
+    "race_model": "ダート1150m未勝利。2と1が同距離3・4着で主線。7と3は芝短距離先行からダート替わり、4は同距離経験を持つ。",
+    "marks": [
+      2,
+      1,
+      7,
+      3,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "チュラヴェールは1150m初戦3着IDM29、先行して直線まで粘った。今回距離の直接実績で最も勝ちに近い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ヴィビームは同じ1150m4着IDM29、調教15.5上昇。2との差は小さく、仕上がり上昇で逆転余地がある。"
+      },
+      {
+        "horse_no": 3,
+        "case": "カイトヴァイターは芝1200m4着と調教14.4上昇があり、距離短縮ダートで先行スピードが生きる。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ボールドタワーは1150mを一度経験済みで、後方からの追走改善があれば5頭圏。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "ライヴマルガリータは芝1200m3着からダート替わり、情報3.5・調教17。逃げ脚がダートで通れば通常順位以上の残り目がある。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "ロココの芝からダート替わりの未知の変化と、ボールドタワーの1150m実戦経験を直接比べ、条件経験のある4を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1150m未勝利。2と1が同距離3・4着で主線。7と3は芝短距離先行からダート替わり、4は同距離経験を持つ。 ◎チュラヴェールはundefined。○ヴィビーム、▲ライヴマルガリータ、△カイトヴァイター・ボールドタワーまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        1,
+        7,
+        3,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "ロココは芝1200m8着で差し脚を経験し、ダート替わりで追走が変わる可能性があるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ロココは芝1200m8着で差し脚を経験し、ダート替わりで追走が変わる可能性がある。一方、境界のボールドタワーは1150mを実際に走っており、今回条件のペースとキックバックを経験済み。6の条件替わりは未知数が大きい一方、4には1150mの直接経験がある。低水準戦でも条件実証を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 1,
+      "honmei_win_case": "チュラヴェールは1150m初戦3着IDM29、先行して直線まで粘った。今回距離の直接実績で最も勝ちに近い。",
+      "second_case": "ヴィビームは同じ1150m4着IDM29、調教15.5上昇。2との差は小さく、仕上がり上昇で逆転余地がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2と○1は能力29で並ぶが、同距離で3着対4着とゴール到達点が一歩上。勝ち筋の実証差で2をWIN_FIRSTの上位に置く。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 5,
+    "race_model": "芝2000m新馬。2が想定IDM43.5・調教20.9デキ抜群で先頭、6が41.5で続く。初出走のため事前能力・情報・調教の整合を重視する。",
+    "marks": [
+      2,
+      6,
+      10,
+      13,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ショウナンダインは想定IDM43.5、情報3.5、調教20.9デキ抜群と主要指標が揃って最上位。初戦から勝ち切る完成度が高い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ポルフュロゲネトスは想定41.5、情報3.1・調教14.8上昇で次位。2との差は小さく、長く脚を使えれば逆転候補。"
+      },
+      {
+        "horse_no": 13,
+        "case": "シトリンテソーロは想定36.7・情報2.4で中位上位、初戦の不確実性込みで通常候補。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ホッカイダイオーは想定33・情報1.5で上位4頭に次ぎ、事前能力を5頭目に残す。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "テルケンレンスキーは想定38.2・情報2.5で上位圏。初戦でスムーズに先行できれば2・6へ割って入る変化幅がある。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "オブラプリーマの想定32.2の初戦上振れと、ホッカイダイオーの想定33の能力優位を直接比べ、事前能力の小差を尊重して1を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝2000m新馬。2が想定IDM43.5・調教20.9デキ抜群で先頭、6が41.5で続く。初出走のため事前能力・情報・調教の整合を重視する。 ◎ショウナンダインはundefined。○ポルフュロゲネトス、▲テルケンレンスキー、△シトリンテソーロ・ホッカイダイオーまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        6,
+        10,
+        13,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "オブラプリーマは想定32.2で1と近く、調教7.8と初戦上振れの余地を持つため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "オブラプリーマは想定32.2で1と近く、調教7.8と初戦上振れの余地を持つ。一方、境界のホッカイダイオーは想定33で8を上回り、事前能力の優位が明確。両馬の差は小さいが1が能力想定で上、8にそれを覆す具体的な調教優位もないため初期5頭を維持する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 6,
+      "honmei_win_case": "ショウナンダインは想定IDM43.5、情報3.5、調教20.9デキ抜群と主要指標が揃って最上位。初戦から勝ち切る完成度が高い。",
+      "second_case": "ポルフュロゲネトスは想定41.5、情報3.1・調教14.8上昇で次位。2との差は小さく、長く脚を使えれば逆転候補。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2は○6より想定IDM43.5対41.5、調教20.9対14.8。能力と仕上がりの両方で明確に上回るためWIN_FIRSTで2を上。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 6,
+    "race_model": "芝1800m未勝利。5は同距離2着、4と10も1800m2着、11・12は1600m好走から延長。先行力と距離延長差しを比較する。",
+    "marks": [
+      5,
+      11,
+      4,
+      12,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "キアラメンテは1800m2着IDM42、1600m3着38、情報4.1・調教17.6上昇。好位から自分で勝ちに行ける。"
+      },
+      {
+        "horse_no": 11,
+        "case": "フィーユチャンは1600m2着IDM43、調教15.6上昇。1800m延長でも差し脚を温存できれば5に迫る。"
+      },
+      {
+        "horse_no": 12,
+        "case": "エンゲルシュピールは1600m3着を連続しIDM40〜41、距離延長でも好位持続が可能。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ウインベアトリスは1800m2着IDM36があり、同距離の直接実績を保護する。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "ディフューズは1800m2着IDM39があり、先行して距離適性を実証。前が楽になると粘り込みが通常順位以上に跳ねる。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "テンドリームガールの1600m差しIDM38と、ウインベアトリスの1800m2着の直接証拠を直接比べ、同距離実績のある10を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1800m未勝利。5は同距離2着、4と10も1800m2着、11・12は1600m好走から延長。先行力と距離延長差しを比較する。 ◎キアラメンテはundefined。○フィーユチャン、▲ディフューズ、△エンゲルシュピール・ウインベアトリスまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        11,
+        12,
+        4,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "テンドリームガールは1600m5・6着でIDM38を維持し、差し脚で前崩れを拾えるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "テンドリームガールは1600m5・6着でIDM38を維持し、差し脚で前崩れを拾える。一方、境界のウインベアトリスは1800m2着という今回距離の直接実績があり、前受け経路を持つ。6の差しは11と経路が重なり、10は1800m2着の直接証拠を持つ。距離適性の確度を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 11,
+      "honmei_win_case": "キアラメンテは1800m2着IDM42、1600m3着38、情報4.1・調教17.6上昇。好位から自分で勝ちに行ける。",
+      "second_case": "フィーユチャンは1600m2着IDM43、調教15.6上昇。1800m延長でも差し脚を温存できれば5に迫る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎5は○11より今回1800mで既に2着を実証し、先行して能動的に運べる。11は距離延長適応が必要なので5をWIN_FIRSTで上。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 7,
+    "race_model": "ダート1150m未勝利。9は同距離2着、15は3着、11は5着。2と12は1400mから短縮し、前受け勢の残りと差し込みを比較する。",
+    "marks": [
+      9,
+      15,
+      11,
+      2,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "アイドルは1150m2着IDM39、1300m5着37。逃げて自分の形を作れ、今回距離で最も勝ち切りに近い。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ダイメイナガスは1150m初戦3着IDM37、調教17.7上昇。9と同じ前受けでも上昇余地が大きい。"
+      },
+      {
+        "horse_no": 2,
+        "case": "アミラジオネは1400m6着から短縮し、差し脚で先行勢の競り合いを拾える。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "エレレラナキラは1400m8着IDM34の逃げ経験があり、短縮で粘りが増す可能性がある。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "ポムは1150m5着IDM33、情報3.2。先行して9・15の直後に付けられれば、前残りの隊列で通常順位以上に粘る。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "メイデンヘッドの距離短縮の逃げ経路と、エレレラナキラの同じ逃げ経路でIDM34を直接比べ、能力差を優先して12を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1150m未勝利。9は同距離2着、15は3着、11は5着。2と12は1400mから短縮し、前受け勢の残りと差し込みを比較する。 ◎アイドルはundefined。○ダイメイナガス、▲ポム、△アミラジオネ・エレレラナキラまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        15,
+        2,
+        11,
+        12
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "メイデンヘッドは1400mで逃げた経験があり、1150m短縮で先手を取りやすくなるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "メイデンヘッドは1400mで逃げた経験があり、1150m短縮で先手を取りやすくなる。一方、境界のエレレラナキラは1400mでIDM34を出しており、6の28より能力上限が高い。両馬とも短縮先行型だが、12は能力34、6は28。似た経路なら能力上限の高い12を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 15,
+      "honmei_win_case": "アイドルは1150m2着IDM39、1300m5着37。逃げて自分の形を作れ、今回距離で最も勝ち切りに近い。",
+      "second_case": "ダイメイナガスは1150m初戦3着IDM37、調教17.7上昇。9と同じ前受けでも上昇余地が大きい。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎9は○15より同距離で2着39対3着37と実戦到達点が上。1150mを既に二度経験している再現性も加えて9を上位。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 8,
+    "race_model": "芝1800m未勝利。1は同距離2・3着、2は1800m5着から上昇、7も同距離5着。14は1600m安定、4は1800m5着の差し。",
+    "marks": [
+      1,
+      2,
+      4,
+      14,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "マイネルアズーロは1800m2着IDM43・3着39、情報4。先行から直線まで安定し、勝ち切りの再現性が最も高い。"
+      },
+      {
+        "horse_no": 2,
+        "case": "スペードギニーは1800m5着36、1600m2着38に加え調教21.1上昇。状態上昇で1へ迫る対抗。"
+      },
+      {
+        "horse_no": 14,
+        "case": "ポタリングは1600mで4・5着IDM38を維持し、延長して前で運べる。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ウインバーテックスは1800mで連続5着、距離実績と先行再現性を持つ。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "ヴィアトルは1800m5着IDM35、調教13.5上昇。差しに回れるため先行馬が多い時に末脚が相対的に浮上する。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "ワウワウワウの芝替わりの先行変化と、ヴィアトルの1800m5着と上昇調教を直接比べ、直接条件証拠を持つ4を保護する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1800m未勝利。1は同距離2・3着、2は1800m5着から上昇、7も同距離5着。14は1600m安定、4は1800m5着の差し。 ◎マイネルアズーロはundefined。○スペードギニー、▲ヴィアトル、△ポタリング・ウインバーテックスまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        2,
+        14,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "ワウワウワウはダートから芝替わりだが、先行経験があり展開変化で前進する余地があるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ワウワウワウはダートから芝替わりだが、先行経験があり展開変化で前進する余地がある。一方、境界のヴィアトルは1800m5着を実際に経験し、調教13.5上昇で差し脚の現在値がある。6は芝1800mの直接証拠がなく、4には同距離5着と上昇調教がある。条件適性の確度で4を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 2,
+      "honmei_win_case": "マイネルアズーロは1800m2着IDM43・3着39、情報4。先行から直線まで安定し、勝ち切りの再現性が最も高い。",
+      "second_case": "スペードギニーは1800m5着36、1600m2着38に加え調教21.1上昇。状態上昇で1へ迫る対抗。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎1は○2より今回1800mで2着43まで実証し、同距離経験を重ねる。2の調教上昇を認めても勝ち切り実証差で1を上。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 9,
+    "race_model": "芝1200m1勝クラス。5は同距離2着IDM45、6は1200m勝ち、4も同距離4着。7は1600mから短縮、2は1200m3着を持つ。",
+    "marks": [
+      5,
+      6,
+      2,
+      7,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "セイウンデセオは1200m2着IDM45、調教17.2上昇。追込で結果を出しており、前の多い構成で勝ち切り脚が最も明確。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ノーブルオリンポスは1200mを逃げ切りIDM43、調教16.8上昇。自分でレースを作れる点が強い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "スターウェーブは1600mから1200mへ短縮し、能力45.2をスピード戦へ転用できる。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ラトルシェは1200m4着IDM42、逃げて残る直接経路を持つ。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "ウイントールキンは1200m3着IDM42があり、障害を挟んでも芝短距離の直接能力を保持。差し展開なら一段上へ届く。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "ツィスカリーゼの1200m差し6着38と、ウイントールキンの1200m3着42を直接比べ、同距離の到達点が高い2を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝1200m1勝クラス。5は同距離2着IDM45、6は1200m勝ち、4も同距離4着。7は1600mから短縮、2は1200m3着を持つ。 ◎セイウンデセオはundefined。○ノーブルオリンポス、▲ウイントールキン、△スターウェーブ・ラトルシェまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        6,
+        7,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "ツィスカリーゼは1200m6着IDM38があり、差し脚で前崩れを拾えるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ツィスカリーゼは1200m6着IDM38があり、差し脚で前崩れを拾える。一方、境界のウイントールキンは1200m3着IDM42という今回距離の強い直接実績を持つ。9の差し経路は5と重なる一方、2は同距離3着で能力も42。直接実績の差が大きく交換しない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 6,
+      "honmei_win_case": "セイウンデセオは1200m2着IDM45、調教17.2上昇。追込で結果を出しており、前の多い構成で勝ち切り脚が最も明確。",
+      "second_case": "ノーブルオリンポスは1200mを逃げ切りIDM43、調教16.8上昇。自分でレースを作れる点が強い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎5は○6より同距離能力45対43で、差し脚0.9を使える。先行馬が複数いる今回、逃げ展開依存の6より5の勝ち筋が広い。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 10,
+    "race_model": "芝2000m2勝クラス。7は2000m2着・1800m2着で能力57、9は2400m3着55、8は2000m連続2着。10・3も同距離実戦を持つ。",
+    "marks": [
+      7,
+      9,
+      10,
+      8,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "ユキワリザクラは2000m2着IDM53、1800m2着61、調教19.9上昇。差しで能力上限が高く今回距離でも勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 9,
+        "case": "プリズマジコは2400m3着55、2000m5着53。距離短縮で追走が楽になり、差しの持続力で7を追う。"
+      },
+      {
+        "horse_no": 8,
+        "case": "マイネルトルファンは2000mで連続2着IDM51〜52、先行して安定する主線。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "ヴァイルマティは2000m6着IDM48があり、差し経路の5頭目として条件実績を残す。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "ミスティアは2000m5着を続けながら末脚0.5、調教11.9上昇。前が流れれば着順以上に差しが届く。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "フロムナウオンの過去中距離能力と、ヴァイルマティの直近2000m48を直接比べ、現在値の高い3を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝2000m2勝クラス。7は2000m2着・1800m2着で能力57、9は2400m3着55、8は2000m連続2着。10・3も同距離実戦を持つ。 ◎ユキワリザクラはundefined。○プリズマジコ、▲ミスティア、△マイネルトルファン・ヴァイルマティまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        9,
+        8,
+        10,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "フロムナウオンは過去中距離で一定の能力を持つが、直近2000m15着38・2200m10着45と現在値が低いため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "フロムナウオンは過去中距離で一定の能力を持つが、直近2000m15着38・2200m10着45と現在値が低い。一方、境界のヴァイルマティは2000m6着IDM48で、今回距離の現在値が5より高い。5の過去能力より直近低下が大きく、3は同距離で48を維持。現在の条件再現性を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 9,
+      "honmei_win_case": "ユキワリザクラは2000m2着IDM53、1800m2着61、調教19.9上昇。差しで能力上限が高く今回距離でも勝ち切りに最も近い。",
+      "second_case": "プリズマジコは2400m3着55、2000m5着53。距離短縮で追走が楽になり、差しの持続力で7を追う。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎7は○9より2000mで2着まで到達し、1800mではIDM61と上限が明確に高い。今回距離の勝ち切り実証差で7を上。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 11,
+    "race_model": "ダート1150mオープン。11は1150m勝ちを含む連勝で能力62、1は1200m61級の追込。6・3・13も1200mオープン級で前後の経路を揃える。",
+    "marks": [
+      11,
+      1,
+      3,
+      6,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "オーブルクールは1150mを逃げ切りIDM62、その前も1200m勝ち57。今回距離で自分から先手を取り押し切る勝ち筋が完成している。"
+      },
+      {
+        "horse_no": 1,
+        "case": "グッジョブは1200m4着61・6着57で末脚10.3。前が速くなれば後方からまとめて差す能力を持つ。"
+      },
+      {
+        "horse_no": 6,
+        "case": "エコロガイアは1200m勝ちIDM61の先行力があり、近走10着だけでは能力上限を消せない。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 13,
+        "case": "レディフォースは1200m3着IDM57の逃げ実績があり、1150m短縮で粘りが増す。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "イスラアネーロは1200m6着IDM59と末脚7.6。先行馬が多い組み合わせで差しが嵌ると通常順位以上に浮上する。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "シアージストの1200m逃げIDM58と、レディフォースの直近1200m3着57を直接比べ、好走証拠の鮮度で13を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1150mオープン。11は1150m勝ちを含む連勝で能力62、1は1200m61級の追込。6・3・13も1200mオープン級で前後の経路を揃える。 ◎オーブルクールはundefined。○グッジョブ、▲イスラアネーロ、△エコロガイア・レディフォースまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        1,
+        6,
+        3,
+        13
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "シアージストは1200m7着IDM58を含む逃げ先行能力があり、短縮で前残り余地を持つため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "シアージストは1200m7着IDM58を含む逃げ先行能力があり、短縮で前残り余地を持つ。一方、境界のレディフォースは1200m3着IDM57と逃げ実績があり、10より直近の好走証拠が明確。10の能力上限は13と近いが、13は直近3着57という鮮度の高い条件証拠を持つため境界を守る。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 1,
+      "honmei_win_case": "オーブルクールは1150mを逃げ切りIDM62、その前も1200m勝ち57。今回距離で自分から先手を取り押し切る勝ち筋が完成している。",
+      "second_case": "グッジョブは1200m4着61・6着57で末脚10.3。前が速くなれば後方からまとめて差す能力を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎11は○1より今回1150mで実際にIDM62で勝ち切り、連勝中。1は差し展開待ちがあるため、展開を自分で作れる11をWIN_FIRSTで上。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 12,
+    "race_model": "ダート1700m1勝クラス。3と10は同距離3着、12は1600m勝ちから昇級3着。9は1600m差し、7は1800m4着から短縮する。",
+    "marks": [
+      12,
+      10,
+      3,
+      9,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "ラヴアンドライクは1600m勝ち46から昇級3着48、調教13上昇。先行してクラスでも通用し、1700m延長でも主導権を取りやすい。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ブルータスは1700m3着IDM46と同距離勝ち38、調教19.4上昇。差しで今回距離への適性が明確。"
+      },
+      {
+        "horse_no": 9,
+        "case": "マテンロウブレイブは1600m6着45・5着41の追込経験があり、1700mで脚を溜めれば前崩れを拾える。主線に次ぐ通常経路として残す。"
+      },
+      {
+        "horse_no": 7,
+        "case": "メリークリスマスは1800m4着IDM46、5着41から短縮し、差しの持続力を生かせる。今回条件に結びつく材料をordinary five内で保護する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "シュレンは1700m3着IDM47、1400m5着から距離を戻す。差し脚-1.9で中団から安定して伸びる経路がある。条件が噛み合った時の非対称な勝ち筋として▲に置く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "キレナイカの1800mIDM47の過去上限と、メリークリスマスの直近1800m4着46と調教17.1を直接比べ、現在値を優先して7を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1700m1勝クラス。3と10は同距離3着、12は1600m勝ちから昇級3着。9は1600m差し、7は1800m4着から短縮する。 ◎ラヴアンドライクはundefined。○ブルータス、▲シュレン、△マテンロウブレイブ・メリークリスマスまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        3,
+        10,
+        9,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "キレナイカは1800m6着IDM47の過去上限があり、追込で消耗戦を拾う可能性があるため、ordinary five外から交換候補として確認した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "キレナイカは1800m6着IDM47の過去上限があり、追込で消耗戦を拾う可能性がある。一方、境界のメリークリスマスは1800m4着IDM46を直近に持ち、調教17.1で状態も保つ。4の過去上限47は高いが直近12着32。7は直近4着46と現在の再現性が明確に上で、境界を交換しない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 10,
+      "honmei_win_case": "ラヴアンドライクは1600m勝ち46から昇級3着48、調教13上昇。先行してクラスでも通用し、1700m延長でも主導権を取りやすい。",
+      "second_case": "ブルータスは1700m3着IDM46と同距離勝ち38、調教19.4上昇。差しで今回距離への適性が明確。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎12は○10より直近クラス3着のIDMが48対46で、先行して展開依存が小さい。10の上昇調教を認めても現在の到達点で12を上。"
+    }
+  }
+]
