@@ -63,6 +63,7 @@ function newspaperV05ApplyColumn() {
   if (markRow && !markRow.querySelector("th.newspaper-edge-v05")) {
     const head = document.createElement("th");
     head.className = "newspaper-mark-col mark-edge newspaper-edge-v05";
+    head.rowSpan = 2;
     head.textContent = "Edge";
     markRow.appendChild(head);
   }
