@@ -8,6 +8,7 @@ on:
       - "horse-racing/jrdb/pwa/**"
       - "horse-racing/jrdb/tests/test_momotaro_pwa_contract.py"
       - "horse-racing/jrdb/tests/test_build_momotaro_newspaper_projection.py"
+      - "horse-racing/jrdb/tests/test_newspaper_confidence.cjs"
       - "horse-racing/jrdb/daily/**/supplements/**"
       - "horse-racing/jrdb/tests/test_newspaper_compact_history_pwa.py"
       - "horse-racing/jrdb/src/build_momotaro_newspaper_projection.py"
