@@ -7,7 +7,7 @@
     "historical_warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
     "historical_warehouse_2025_inventory_basis": "BAC_2025.zip member dates (109 actual JRA race days)"
   },
-  "updated_at": "2026-10-11T00:30:32+00:00",
+  "updated_at": "2026-10-11T16:20:47+00:00",
   "days": [
     {
       "date": "2025-01-05",
@@ -315,9 +315,9 @@
       "source_mode": "historical_warehouse",
       "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
       "selection_cycle": 1,
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-10-11T16:20:47+00:00",
+      "selection_id": "BTDAY-0076",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -2952,6 +2952,23 @@
       "sources": [
         {
           "target_date": "2025-06-01",
+          "source_mode": "historical_warehouse",
+          "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+          "selection_cycle": 1
+        }
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0076",
+      "selected_at": "2026-10-11T16:20:47+00:00",
+      "seed": "770a7833e33d2bb603fe54a419064abd",
+      "n": 1,
+      "dates": [
+        "2025-03-16"
+      ],
+      "sources": [
+        {
+          "target_date": "2025-03-16",
           "source_mode": "historical_warehouse",
           "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
           "selection_cycle": 1
