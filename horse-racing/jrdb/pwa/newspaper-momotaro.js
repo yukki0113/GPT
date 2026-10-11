@@ -81,7 +81,6 @@ function personalMomotaroApplyMarks() {
   });
 
   const groupHead = table.querySelector(".newspaper-mark-group-head");
-  if (groupHead) groupHead.colSpan = 8;
 
   const headRow = table.querySelector(".newspaper-mark-head-row");
   if (headRow && !headRow.querySelector(".mark-ryota")) {
@@ -94,6 +93,8 @@ function personalMomotaroApplyMarks() {
       else headRow.appendChild(th);
     });
   }
+  if (groupHead && headRow) groupHead.colSpan = headRow.querySelectorAll("th.newspaper-mark-col").length;
+  newspaperApplyConfidenceHeaders(table, currentBundle, false);
 
   table.querySelectorAll("tbody tr").forEach(function (row, index) {
     const horse = horses[index];
@@ -167,10 +168,15 @@ function personalMomotaroAppendNotes() {
   );
 }
 
+const personalMomotaroRenderTableBase = renderTable;
+renderTable = function () {
+  personalMomotaroRenderTableBase();
+  personalMomotaroApplyMarks();
+};
+
 const personalMomotaroRenderBundleBase = renderBundle;
 renderBundle = function () {
   personalMomotaroRenderBundleBase();
-  personalMomotaroApplyMarks();
   personalMomotaroAppendNotes();
 };
 

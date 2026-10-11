@@ -23,6 +23,22 @@ SPEC.loader.exec_module(MODULE)
 
 
 class MomotaroProjectionTest(unittest.TestCase):
+    def test_frozen_20261012_racenote_has_no_race_confidence(self) -> None:
+        records = json.loads((PROJECT_ROOT / "daily/20261012/v052_day/v052/frozen/records.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(records), 24)
+        self.assertTrue(all("confidence" not in record and "confidence" not in record["decision_core"] for record in records))
+        workflow = (PROJECT_ROOT.parents[1] / ".github/workflows/jrdb_newspaper_kensho_merge_issue.yml").read_text(encoding="utf-8")
+        self.assertIn('"confidence":"","race_short_comment"', workflow)
+
+    def test_conflicting_ryota_race_confidence_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = self._write_prediction_csv(Path(temp_dir))
+            with path.open("a", encoding="utf-8", newline="") as handle:
+                writer = csv.writer(handle)
+                writer.writerow(["2026-09-26", "09", 1, 2, "別馬", "りょーた", "○", "PASS", "", ""])
+            with self.assertRaisesRegex(ValueError, "conflicting Ryota race confidence"):
+                MODULE.load_predictions(path)
+
     def _write_source_day(self, root: Path) -> Path:
         day = root / "source"
         races = day / "races"
@@ -54,6 +70,7 @@ class MomotaroProjectionTest(unittest.TestCase):
                 "items": [{"label": "予想ペース", "value": "M"}],
                 "racenote_short_comment": "個人用短評",
             },
+            "edge_v05_candidates": {"private-v05": {"condition_text": "private"}},
             "horses": [
                 {
                     "key": {"horse_no": 1, "frame_no": 1},
@@ -75,6 +92,7 @@ class MomotaroProjectionTest(unittest.TestCase):
                         "my_index": {"training_edge_index": 80.1},
                     },
                     "edge_matches": [{"id": "private-edge"}],
+                    "special_memos": [{"edge_id": "private-v02"}],
                 }
             ],
         }
@@ -197,6 +215,9 @@ class MomotaroProjectionTest(unittest.TestCase):
 
             self.assertEqual(kenshow["mark"], "◎")
             self.assertEqual(kenshow["confidence"], "A")
+            self.assertEqual(projected["race_notes"]["momotaro_race_confidence"], {"kenshow": "A"})
+            self.assertNotIn("edge_v05_candidates", projected)
+            self.assertNotIn("special_memos", horse)
             self.assertEqual(kenshow["tag"], "不利分析")
             self.assertTrue(kenshow["review_horse"])
             self.assertEqual(

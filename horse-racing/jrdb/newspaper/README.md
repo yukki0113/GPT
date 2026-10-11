@@ -4,6 +4,12 @@ Status: OPERATIONAL / DAILY PACKAGE + EXTERNAL MERGE + CURRENT PUBLISH + PWA DEL
 
 このディレクトリは、JRDB PWA向け「自分用競馬新聞」の日次生成・外部source merge・配布契約を独立管理するためのmodule boundaryです。
 
+## PWA display data limits (2026-10-12)
+
+両PWAの「けん」ヘッダは検証済み RaceNote レース自信度だけを表示し、値がなければ `–`（未提供）を表示する。2026-10-12 の frozen `records.json` はレース自信度を持たず、正式な `jrdb_newspaper_kensho_merge_issue.yml` の疎形式変換も空欄とするため、この日の実データは個人版・桃太郎版とも `–` となる。画像用出力や他 revision から A/B/C を補わない。将来、正本に確定値が追加された場合は、正式な変換・merge 経路の確認と実データでの受け入れテストが必要。
+
+v0.5 Edge の方向別 `○/△/×` は未確定・未実装。凍結候補辞書に承認済みの方向フィールドと統合規則がなく、複勝ROI、研究ラベル、条件文章から独自に判定しない。現行の `○` は候補該当を示す既存表示であり、プラス方向や買い推奨を意味しない。方向別表示は正式な契約・判定規則が決まってから別タスクで実装する。
+
 ## Design source of truth
 
 - `../docs/JRDB_PWA_Newspaper_Design_v0_1.md`
