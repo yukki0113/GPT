@@ -82,7 +82,7 @@
 次走注目ランクは `tag=次走S` / `tag=次走A` 等で保持する。
 `confidence` は当日予想の自信度という別概念として保持し、次走注目ランクと同義にはしない。
 
-新聞表では、けんしょー・りょーた・王子の列見出しを二段にし、下段にレース単位の自信度を表示する。けんしょーは検証済み RaceNote の `A/B/C` を公開 projection の `race_notes.momotaro_race_confidence.kenshow` に移す。りょーたは exact-key CSV 由来の同一レース内 `addons.momotaro.ryota.confidence` を用い、値の衝突は projection 時にエラーとする。`A−` と `PASS` はそのまま表示する。王子には確認済みのレース単位フィールドがないため `–` と表示し、馬単位の星を昇格させない。自信度だけで馬印や次走注目リンクは変更しない。公開 projection は私用 `edge_v05_candidates` と `special_memos` を除去する。
+新聞表では、けんしょー・りょーた・王子の列見出しを二段にし、下段にレース単位の自信度を表示する。けんしょーは検証済み RaceNote の `A/B/C` がある場合だけ公開 projection の `race_notes.momotaro_race_confidence.kenshow` に移す。2026-10-12 の frozen `records.json` はレース自信度を持たず、正式な `jrdb_newspaper_kensho_merge_issue.yml` の疎形式変換も `confidence` を空欄にするため、この日の個人版・公開版とも `–`（未提供）となる。画像用の A/B や別 revision の値は補完に使わない。りょーたは exact-key CSV 由来の同一レース内 `addons.momotaro.ryota.confidence` を用い、値の衝突は projection 時にエラーとする。`A−` と `PASS` はそのまま表示する。王子には確認済みのレース単位フィールドがないため `–` と表示し、馬単位の星を昇格させない。自信度だけで馬印や次走注目リンクは変更しない。公開 projection は私用 `edge_v05_candidates` と `special_memos` を除去する。
 
 将来、特注区分が複数必要になった場合は専用fieldへの拡張を検討する。
 

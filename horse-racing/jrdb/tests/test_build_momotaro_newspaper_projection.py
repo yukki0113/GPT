@@ -23,6 +23,13 @@ SPEC.loader.exec_module(MODULE)
 
 
 class MomotaroProjectionTest(unittest.TestCase):
+    def test_frozen_20261012_racenote_has_no_race_confidence(self) -> None:
+        records = json.loads((PROJECT_ROOT / "daily/20261012/v052_day/v052/frozen/records.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(records), 24)
+        self.assertTrue(all("confidence" not in record and "confidence" not in record["decision_core"] for record in records))
+        workflow = (PROJECT_ROOT.parents[1] / ".github/workflows/jrdb_newspaper_kensho_merge_issue.yml").read_text(encoding="utf-8")
+        self.assertIn('"confidence":"","race_short_comment"', workflow)
+
     def test_conflicting_ryota_race_confidence_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             path = self._write_prediction_csv(Path(temp_dir))
