@@ -1,25 +1,40 @@
-/* Two lines inside only the three contributor header cells. */
-.newspaper-table-v4 .newspaper-mark-head-row th.newspaper-confidence-head {
+/* Shared compact contributor confidence header: two lines within one table row.
+   No additional table row or relative offsets; all other mark headers stay centered. */
+.newspaper-table-v4 .newspaper-mark-head-row th {
+  height: 40px;
+  padding-top: 1px;
+  padding-bottom: 1px;
   vertical-align: middle;
+}
+.newspaper-table-v4 .newspaper-mark-head-row th.newspaper-confidence-head {
   white-space: nowrap;
   padding-left: 1px;
   padding-right: 1px;
 }
 .newspaper-confidence-inner {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 17px 17px;
   align-items: center;
-  justify-content: center;
-  min-height: 36px;
-  line-height: 1.1;
+  justify-items: center;
+  height: 34px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
 }
 .newspaper-confidence-label,
-.newspaper-confidence-value { display: block; white-space: nowrap; }
 .newspaper-confidence-value {
+  display: block;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  text-align: center;
+  line-height: 17px;
+}
+.newspaper-confidence-value {
+  box-sizing: border-box;
   border-top: 1px solid #ddd;
-  margin-top: 2px;
-  padding-top: 2px;
   font-size: 9px;
   font-weight: 600;
 }
