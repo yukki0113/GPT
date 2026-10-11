@@ -127,6 +127,7 @@ Canonical SQLiteはRawを置換する正本ではなく、反復・横断アク�
 
 - `src/jrdb_result_query.py` — completed-race deterministic lookup for **SED top-3 result + HJC all payouts**.
 - `src/jrdb_result_query_runner.py` — GPT/Work operational runner. It emits the exact native-Drive materialization plan, then executes only after those Raw ZIPs are present in the runtime.
+- `docs/JRDB_RESULT_QUERY_GPT_RUNTIME_RUNBOOK_v0_1.md` — fresh Chat/Work runtime bootstrap. GitHub source materialization -> native Drive SED/HJC materialization -> ZIP preflight -> deterministic execution -> success/failure criteria.
 - Default output is 1st-3rd finishers (horse no/name/final popularity/final win odds) plus all eight payout types: win/place/frame quinella/quinella/wide/exacta/trio/trifecta.
 - `--include-all-runners` exposes the full SED field only when needed.
 - 2010-2025 historical mode can read accepted Warehouse `sed` + `hjc_payout`; current operation reads SED/HJC Raw.
