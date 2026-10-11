@@ -14,9 +14,9 @@ v0.5.3 preserves the promoted v0.5.2 character:
 - no fixed-weight score;
 - no result/market access before Freeze.
 
-The change is limited to candidate-boundary quality. Post-race review of v0.5.2 found three related failure modes: a boundary explanation can disagree with Reader evidence; strong condition-relevant Reader evidence can disappear before compression; and admitting an external challenger can remove a stronger ordinary horse without a sufficiently explicit exchange comparison.
+The change is limited to candidate-boundary quality. Post-race review of v0.5.2 found three related failure modes: a boundary explanation can disagree with Reader evidence; strong condition-relevant Reader evidence can disappear before compression; and admitting an external challenger can remove a stronger ordinary horse when the exchange itself is not judged as one integrated candidate-set decision.
 
-v0.5.3 does not add three exception rules. It rewrites candidate formation as one evidence-preserving procedure.
+v0.5.3 does not add exception rules or a second audit pass. It rewrites candidate formation as one evidence-preserving, single-pass procedure.
 
 ## 2. Reader invariants
 
@@ -50,49 +50,26 @@ When there are six or more runners, identify exactly one horse outside the ordin
 
 Finding a distinct route does not itself justify admission.
 
-### Step E — direct boundary exchange
+### Step E — direct boundary exchange and final five
 
-Keep ◎ and ○ fixed. Compare the challenger directly with the ordinary-five horse whose removal would cost the least candidate-set value.
+Keep ◎ and ○ fixed. Compare the external challenger directly with the ordinary-five horse whose removal would cost the least candidate-set value.
 
-Candidate-set value includes ability/repeatability, direct relevance to the current conditions, current condition, race-model fit and whether the route is replaceable by another retained horse.
+Candidate-set value is judged from the same evidence already used to form the race model and ordinary five: ability/repeatability, direct relevance to current conditions, current condition, race-model fit and whether another retained horse already covers the same route.
 
-Use `ADMIT_CHALLENGER` only when the added asymmetric route is worth more than the ordinary route being removed. Otherwise use `KEEP_ORDINARY_FIVE`.
+Use `ADMIT_CHALLENGER` only when the challenger adds more candidate-set value than the ordinary horse being displaced. Otherwise use `KEEP_ORDINARY_FIVE`.
 
-Compression is therefore an exchange decision, not a challenger-appreciation decision.
+This is the final candidate decision. There is no second review pass.
 
-### Step F — one-pass coherence check
+The direct comparison itself must remain internally coherent with the Reader evidence being used. If the stated reason for preferring one side contradicts that evidence, resolve the contradiction inside this comparison before finalizing. Do not restart the race analysis and do not scan all horses again.
 
-Before Freeze, perform one bounded consistency pass. Do not restart the prediction.
+Then assign the final marks:
 
-Check only:
+- ◎ and ○ remain those chosen in Step C;
+- under `ADMIT_CHALLENGER`, the challenger is ▲;
+- under `KEEP_ORDINARY_FIVE`, ▲ is chosen from the remaining ordinary-five non-anchor horses by the same asymmetric-route principle;
+- the remaining two horses are △ △.
 
-1. **Evidence continuity** — no excluded boundary horse has materially relevant Reader evidence that was never considered.
-2. **Comparative consistency** — the stated comparison reason agrees with the actual Reader evidence used for that reason.
-3. **Exchange value** — an admitted challenger does not improve novelty by discarding a clearly stronger indispensable ordinary route.
-
-If a contradiction is found, repair that boundary comparison once. Do not loop through all horses again.
-
-### Step G — final marks and reasoning
-
-Final marks are ◎ ○ ▲ △ △.
-
-- ◎/○ remain those assigned in Step C.
-- Under `ADMIT_CHALLENGER`, challenger is ▲.
-- Under `KEEP_ORDINARY_FIVE`, ▲ is the strongest asymmetric route among the three non-anchor ordinary horses.
-
-Reasoning fields are audit records of the already-made judgment, not a second scoring pass.
-
-For every six-or-more-runner race, the boundary record must preserve the concrete comparison that was already used in Step E:
-
-- one material strength or route of the external challenger;
-- one material strength or route of the ordinary boundary horse;
-- why the exchange value favors ADMIT or KEEP.
-
-Do not record only a conclusion such as "追加価値が上回らないのでKEEP" or "別経路の交換価値が高いのでADMIT". The stored prose must make the comparison auditable from the frozen Decision Core without requiring a later analyst to reconstruct the whole comparison from Reader files.
-
-The same principle applies to ◎/○. `ranking_reason` must state at least one race-specific reason why ◎ has the clearer win-first route than ○. Generic wording such as "○の安定感より◎の勝ち切り可能性を優先" is insufficient by itself.
-
-This is a recording requirement only. It must not reopen candidate membership, marks, or Step E after the judgment is complete.
+Record the decision briefly in the existing Decision Core fields. The prose is only a compact trace of the judgment already made. It must not trigger another comparison, another scoring pass, or a prose-quality rewrite loop.
 
 ## 4. Boundary semantics
 
