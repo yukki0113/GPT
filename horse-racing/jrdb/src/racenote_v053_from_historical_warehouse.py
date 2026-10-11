@@ -14,7 +14,7 @@ from datetime import date
 from pathlib import Path
 
 from racenote_prepare_forecast_input import bind
-from racenote_v053_historical_probe import build_warehouse_daily
+from racenote_v052_historical_probe import build_warehouse_daily
 from racenote_v053_single_day import init_session
 
 VERSION = "racenote-v053-from-historical-warehouse-0.1"
