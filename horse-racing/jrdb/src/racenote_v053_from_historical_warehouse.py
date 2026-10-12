@@ -95,6 +95,7 @@ def prepare(args: argparse.Namespace) -> dict:
         "target_date": args.date,
         "as_of_exclusive": args.date,
         "logic_version": session["logic_version"],
+        "contract_revision": session.get("contract_revision"),
         "session_id": session["session_id"],
         "forecast_prep": str(forecast_prep),
         "v053_root": str(v053_root),

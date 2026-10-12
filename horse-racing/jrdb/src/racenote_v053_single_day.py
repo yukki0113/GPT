@@ -15,7 +15,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from racenote_decision_core_v053 import validate_core
+from racenote_decision_core_v053 import CONTRACT_REVISION, validate_core
 from racenote_reader_v050 import DEFAULT_BINDING
 from racenote_reader_v053 import VERSION as LOGIC, load_binding, transform
 from racenote_save_venue_batch_v046 import load_clean
@@ -68,7 +68,7 @@ def roster_from_readers(readers: dict) -> list[dict[str, Any]]:
 
 
 def session_identity(session: dict[str, Any]) -> dict[str, Any]:
-    return {
+    result = {
         k: session[k]
         for k in (
             "schema_version", "selection_id", "target_date", "base_main_sha",
@@ -76,6 +76,11 @@ def session_identity(session: dict[str, Any]) -> dict[str, Any]:
             "logic_version", "binding_sha256", "policy_sha256",
         )
     }
+    # Pre-rebuild v0.5.3 sessions did not carry a contract revision. Keep their
+    # session ids reproducible while binding every new r2 session explicitly.
+    if session.get("contract_revision") is not None:
+        result["contract_revision"] = session["contract_revision"]
+    return result
 
 
 def expected_session_id(session: dict[str, Any]) -> str:
@@ -108,11 +113,14 @@ def init_session(
     base_main_sha: str,
     binding_path: Path = DEFAULT_BINDING,
     policy_path: Path = DEFAULT_POLICY,
+    contract_revision: str | None = CONTRACT_REVISION,
 ) -> dict[str, Any]:
     if root.exists():
         raise FileExistsError(f"v0.5.3 single-day root already exists: {root}")
     if len(base_main_sha) != 40 or any(c not in "0123456789abcdef" for c in base_main_sha):
         raise ValueError("base_main_sha must be a full lowercase commit SHA")
+    if contract_revision not in {None, CONTRACT_REVISION}:
+        raise ValueError(f"unsupported v0.5.3 contract revision: {contract_revision}")
 
     handoff, clean_manifest, readers = load_clean(prep_root)
     if handoff.get("main_sha") != base_main_sha:
@@ -156,6 +164,8 @@ def init_session(
         "result_opened": False,
         "status": "SESSION_SEALED",
     }
+    if contract_revision is not None:
+        session["contract_revision"] = contract_revision
     session["session_id"] = expected_session_id(session)
 
     root.parent.mkdir(parents=True, exist_ok=True)
@@ -185,6 +195,7 @@ def init_session(
             "target_date": session["target_date"],
             "clean_reader_manifest_sha256": clean_sha,
             "logic_version": LOGIC,
+            "contract_revision": session.get("contract_revision"),
             "model_input": "normal_view_only",
             "projection_equivalent_to": "RaceNote-Human-Context-Reader-0.5.0-candidate",
             "entries": entries,
@@ -205,6 +216,7 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         session.get("schema_version") != SESSION_VERSION
         or session.get("status") != "SESSION_SEALED"
         or session.get("logic_version") != LOGIC
+        or session.get("contract_revision") not in {None, CONTRACT_REVISION}
         or session.get("market_blind") is not True
         or session.get("target_market_opened") is not False
         or session.get("result_opened") is not False
@@ -260,7 +272,11 @@ def save_venue(root: Path, decisions_path: Path) -> dict[str, Any]:
         normal = read_json(root / "reader" / entries[key]["derived_normal_filename"])
         if core.get("venue") != venue:
             raise ValueError("Decision Core venue mismatch")
-        validate_core(core, _validator_reader(normal))
+        validate_core(
+            core,
+            _validator_reader(normal),
+            contract_revision=session.get("contract_revision"),
+        )
 
     payload = {
         "schema_version": AUTHORED_VERSION,
@@ -268,6 +284,7 @@ def save_venue(root: Path, decisions_path: Path) -> dict[str, Any]:
         "selection_id": session["selection_id"],
         "target_date": session["target_date"],
         "logic_version": LOGIC,
+        "contract_revision": session.get("contract_revision"),
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "venue": venue,
         "race_nos": expected[venue],
@@ -298,6 +315,7 @@ def _load_authored(root: Path, session: dict, entries: dict) -> list[dict[str, A
             or item.get("selection_id") != session["selection_id"]
             or item.get("target_date") != session["target_date"]
             or item.get("logic_version") != LOGIC
+            or item.get("contract_revision") != session.get("contract_revision")
             or item.get("reader_manifest_sha256") != session["reader_manifest_sha256"]
             or item.get("venue") != venue
             or item.get("race_nos") != expected[venue]
@@ -308,7 +326,11 @@ def _load_authored(root: Path, session: dict, entries: dict) -> list[dict[str, A
         for core in cores:
             key = (venue, int(core["race_no"]))
             normal = read_json(root / "reader" / entries[key]["derived_normal_filename"])
-            validate_core(core, _validator_reader(normal))
+            validate_core(
+                core,
+                _validator_reader(normal),
+                contract_revision=session.get("contract_revision"),
+            )
         payloads.append(item)
     return payloads
 
@@ -326,6 +348,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
                 "selection_id": session["selection_id"],
                 "target_date": session["target_date"],
                 "logic_version": LOGIC,
+                "contract_revision": session.get("contract_revision"),
                 "venue": key[0],
                 "race_no": key[1],
                 "horse_nos": entry["horse_nos"],
@@ -350,6 +373,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
         "selection_id": session["selection_id"],
         "target_date": session["target_date"],
         "logic_version": LOGIC,
+        "contract_revision": session.get("contract_revision"),
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "race_roster": session["race_roster"],
         "expected_venues": session["expected_venues"],
@@ -388,6 +412,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
         or handoff.get("selection_id") != session["selection_id"]
         or handoff.get("target_date") != session["target_date"]
         or handoff.get("logic_version") != LOGIC
+        or handoff.get("contract_revision") != session.get("contract_revision")
         or handoff.get("reader_manifest_sha256") != session["reader_manifest_sha256"]
         or handoff.get("race_roster") != session["race_roster"]
         or handoff.get("expected_venues") != session["expected_venues"]
@@ -407,6 +432,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
             or row.get("selection_id") != session["selection_id"]
             or row.get("target_date") != session["target_date"]
             or row.get("logic_version") != LOGIC
+            or row.get("contract_revision") != session.get("contract_revision")
             or row.get("reader_manifest_sha256") != session["reader_manifest_sha256"]
             or row.get("original_clean_reader_manifest_sha256") != session["clean_reader_manifest_sha256"]
             or row.get("original_clean_reader_sha256") != readers[key]["sha256"]
@@ -417,7 +443,11 @@ def verify_freeze(root: Path) -> dict[str, Any]:
             or row["decision_core"] != authored_by_key[key]
         ):
             raise ValueError(f"frozen record binding mismatch: {key}")
-        validate_core(row["decision_core"], _validator_reader(normal))
+        validate_core(
+            row["decision_core"],
+            _validator_reader(normal),
+            contract_revision=session.get("contract_revision"),
+        )
     return handoff
 
 

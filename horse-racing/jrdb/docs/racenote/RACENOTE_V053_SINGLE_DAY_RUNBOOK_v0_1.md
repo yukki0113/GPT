@@ -1,12 +1,19 @@
 # RaceNote v0.5.3 Single-Day Runbook v0.1
 
-Status: **CURRENT CANDIDATE OPERATION — NON-A/B**
+Status: **CURRENT CANDIDATE OPERATION — REBUILT R2 / NON-A/B**
 Date: 2026-10-12
 Logic: `RaceNote-Human-Context-Reader-0.5.3-candidate`
+Contract revision: `v053-boundary-safety-r2`
 
 ## Purpose
 
-This is the prospective single-day candidate path derived from the promoted v0.5.2 baseline.\nNo v0.5.1/v0.5.3 A/B comparison is claimed.
+This is the prospective single-day candidate path derived from the promoted v0.5.2 baseline.
+No v0.5.1/v0.5.3 A/B comparison is claimed.
+
+The 2026-10-12 rebuild narrows v0.5.3 back to **v0.5.2 + boundary safety**.
+New sessions are bound to `contract_revision=v053-boundary-safety-r2`.
+Pre-rebuild v0.5.3 sessions without that field remain immutable audit evidence.
+BTDAY-0077 and BTDAY-0078 are closed unprocessed and are not r2 performance evidence.
 
 The input source depends on the target year:
 
@@ -179,6 +186,7 @@ Required handoff state:
 - `market_blind=true`
 - `result_opened=false`
 - canonical v0.5.3 Reader/session materialized
+- `v053/session.json.contract_revision=v053-boundary-safety-r2`
 
 The prediction thread's TURN 1 orchestration must branch by the reserved
 `source_mode`.
@@ -247,14 +255,16 @@ reviewed public-drive helper path and invoke the v0.5.3 entrypoints above.
 After TURN 1 reaches `READY_FOR_V053_AUTHORING`, the same prediction thread changes phase from mechanical preparation to model judgment.
 
 It must not:
+
 - bypass a failed TURN 1;
 - create an alternative/provisional Reader;
 - invent a provisional Freeze status when canonical input is unavailable;
-- silently omit Analysis/RRDB enrichment.
+- silently omit Analysis/RRDB enrichment;
+- consult prior BTDAY marks or a sibling forecast.
 
 If the canonical handoff is not ready, repair or reroute TURN 1 before authoring. Do not proceed with a degraded prediction input.
 
-## 2.1 Authoring input
+### 2.1 Authoring input
 
 Only read:
 
@@ -264,39 +274,53 @@ Only read:
 <output-root>/v053/session.json
 ```
 
-Do not use:
+Do not use target results, target final market, prior v0.5.3 outputs, or earlier BTDAY marks as prediction evidence.
 
-- target-day result files;
-- target final market;
-- an old v0.5.1/v0.5.3 sibling prediction;
-- prior BTDAY marks as prediction evidence.
-
-Follow the current v0.5.3 candidate contract:
+Follow:
 
 `FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md`
 
-The Decision Core must retain:
+### 2.2 r2 judgment procedure
 
-- protected `ordinary_five`;
-- `WIN_FIRST_NOT_PLACE_FIRST` ◎ selection;
-- `ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK` ▲ mode;
-- audited six-to-five compression.
+The r2 procedure deliberately restores the v0.5.2 separation.
 
-## 2.2 Decision Core recording
+1. **Race model** — read the complete Reader and form the race structure.
+2. **Ordinary five** — author an ordered protected five before searching for an outside shot.
+3. **◎ / ○** — choose both only inside the ordinary five using `WIN_FIRST_NOT_PLACE_FIRST`.
+4. **External challenger** — choose exactly one outside horse with a genuinely asymmetric win route.
+5. **Fixed boundary comparison** — expose only the lowest-ranked non-anchor horse in the already-authored ordinary five.
 
-After the v0.5.3 judgment is complete, record that judgment once in the existing Decision Core fields.
+The Step E presumption is `KEEP_ORDINARY_FIVE`.
 
-The recording step must not reopen the race. Do not perform a second evidence scan, prose-quality audit, comparison rewrite, or lint pass. Repeated wording is acceptable when the underlying judgment is genuinely similar.
+A challenger is not admitted merely because it supplies a different running style or makes the five-horse set more diverse. Route uniqueness qualified the horse for Step D; it is not an exchange bonus in Step E.
 
-Keep the existing field roles:
+Use `ADMIT_CHALLENGER` only when current-condition-relevant Reader evidence makes the challenger genuinely competitive with the fixed boundary horse even before route diversity is considered. If that comparison is ambiguous, KEEP.
+
+Do not search the ordinary five for another horse that is easier to remove.
+
+For r2 sessions the validator mechanically rejects ADMIT when `excluded_horse_no` is not the lowest-ranked non-anchor horse from `ordinary_five`.
+
+### 2.3 Decision Core recording
+
+Record the completed judgment once. Recording is not another prediction pass.
+
+Keep field roles separate:
 
 - `race_model`: compact race structure;
-- `honmei_win_case` / `second_case` / `ranking_reason`: the already-decided ◎○ relationship;
-- `candidate_compression` / `boundary_review`: the already-decided final exchange;
-- `mainline_cases` / `single_shot_case`: the final five-horse role structure;
-- `reader_facing_reason`: a compact natural-language summary of the same judgment.
+- `honmei_win_case` / `second_case` / `ranking_reason`: ◎ versus ○ only;
+- `external_challenger_case`: why the outside horse qualifies for asymmetric review;
+- `boundary_review.reason`: challenger versus the fixed ordinary boundary horse;
+- `candidate_compression.reason`: final KEEP / ADMIT conclusion;
+- `mainline_cases` / `single_shot_case`: final five-horse role structure;
+- `reader_facing_reason`: compact natural-language summary.
 
-The goal is reproducibility of the decision, not literary variation. Marks, candidate membership and role assignment are finalized before recording and are not revisited because the prose looks generic.
+Do not put ▲ selection into `ranking_reason`.
+
+Do not copy `race_model` wholesale into ranking, boundary or compression fields.
+
+When writing concrete facts such as distance, finish, surface or running style, verify them against the Reader already open for that race. This is a transcription/fact check only: do not reopen candidate selection or perform a second evidence scan.
+
+Repeated wording is acceptable when the underlying judgment is genuinely similar. Generic prose is not a reason to change marks.
 
 Older FROZEN outputs remain immutable.
 
@@ -318,6 +342,10 @@ python horse-racing/jrdb/src/racenote_v053_single_day.py save \
 
 Save is immutable per venue. A second materially different write must not
 silently replace an authored venue.
+
+For r2 sessions, `save` applies the rebuilt boundary guard before writing the
+authored venue. A failed boundary identity is an authoring error and must be
+fixed before Freeze; it is not deferred to post-race review.
 
 ## 4. Freeze the day
 
@@ -378,13 +406,23 @@ They are not required for normal v0.5.3 operation.
 
 ## 7. Operational principle
 
-v0.5.3 is now the baseline, not merely one lane of an experiment.
+The promoted baseline remains v0.5.2. v0.5.3 r2 is the current boundary-safety candidate.
 
-Therefore the default mental model is:
+The mental model is:
 
 ```text
-PACI -> one evidence package -> one v0.5.3 judgment -> one immutable Freeze
+PACI / Historical Warehouse
+  -> one clean Reader
+  -> v0.5.2-style ordinary five + win-first roles
+  -> one external asymmetric challenger
+  -> one fixed-boundary KEEP/ADMIT decision
+  -> immutable Freeze
 ```
+
+Do not optimize candidate-set diversity after the ordinary five is formed.
+
+Do not treat BTDAY-0077 or BTDAY-0078 as r2 performance samples. They are
+pre-rebuild audit artifacts and are closed unprocessed in the research ledger.
 
 A/B machinery should be introduced only when there are actually two competing
 forecast contracts to compare.

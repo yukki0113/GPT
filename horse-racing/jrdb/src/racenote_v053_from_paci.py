@@ -84,6 +84,7 @@ def main() -> int:
         "selection_id": args.selection_id,
         "target_date": args.date,
         "logic_version": session["logic_version"],
+        "contract_revision": session.get("contract_revision"),
         "session_id": session["session_id"],
         "paci": {
             "filename": args.paci.name,

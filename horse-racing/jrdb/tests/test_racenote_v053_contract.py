@@ -62,7 +62,11 @@ def core() -> dict:
 
 class V053DecisionCoreTest(unittest.TestCase):
     def test_admit_boundary_is_displaced_ordinary_horse(self) -> None:
-        v053.validate_core(core(), reader())
+        v053.validate_core(
+            core(),
+            reader(),
+            contract_revision=v053.CONTRACT_REVISION,
+        )
 
     def test_admit_rejects_unrelated_boundary_alternative(self) -> None:
         changed = copy.deepcopy(core())
@@ -90,6 +94,51 @@ class V053DecisionCoreTest(unittest.TestCase):
         changed["candidate_compression"]["excluded_horse_no"] = 3
         changed["candidate_compression"]["decision"] = "KEEP_ORDINARY_FIVE"
         changed["candidate_compression"]["reason"] = "外部3の独立経路は認めるが通常五頭を失う損失が大きいため維持する。"
+        v053.validate_core(
+            changed,
+            reader(),
+            contract_revision=v053.CONTRACT_REVISION,
+        )
+
+    def test_rebuild_admit_requires_lowest_ranked_non_anchor_boundary(self) -> None:
+        changed = copy.deepcopy(core())
+        changed["marks"] = [4, 1, 3, 2, 6]
+        changed["mainline_cases"] = [
+            {"horse_no": 4, "case": "勝ち切り経路が最も明確で◎として評価する。"},
+            {"horse_no": 1, "case": "能力と再現性から○として主線に残す。"},
+            {"horse_no": 2, "case": "通常支持として五頭内に残す根拠が十分にある。"},
+            {"horse_no": 6, "case": "通常順位の境界より上で残る支持根拠が十分にある。"},
+        ]
+        changed["boundary_review"] = {
+            "alternative_horse_no": 5,
+            "reason": "外部3と通常候補5を比較して5を外す判断を記録する。",
+        }
+        changed["candidate_compression"]["excluded_horse_no"] = 5
+        changed["candidate_compression"]["reason"] = (
+            "外部3を通常候補5との交換で採用するが、再構築版ではこの境界選択自体が禁止される。"
+        )
+        with self.assertRaisesRegex(ValueError, "lowest-ranked non-anchor"):
+            v053.validate_core(
+                changed,
+                reader(),
+                contract_revision=v053.CONTRACT_REVISION,
+            )
+
+    def test_legacy_pre_rebuild_admit_remains_verifiable(self) -> None:
+        changed = copy.deepcopy(core())
+        changed["marks"] = [4, 1, 3, 2, 6]
+        changed["mainline_cases"] = [
+            {"horse_no": 4, "case": "勝ち切り経路が最も明確で◎として評価する。"},
+            {"horse_no": 1, "case": "能力と再現性から○として主線に残す。"},
+            {"horse_no": 2, "case": "通常支持として五頭内に残す根拠が十分にある。"},
+            {"horse_no": 6, "case": "通常順位の境界より上で残る支持根拠が十分にある。"},
+        ]
+        changed["boundary_review"] = {
+            "alternative_horse_no": 5,
+            "reason": "旧版では外部3と通常候補5の直接交換も構造上は許容されていた。",
+        }
+        changed["candidate_compression"]["excluded_horse_no"] = 5
+        changed["candidate_compression"]["reason"] = "旧版の構造互換確認として外部3を通常候補5と交換する。"
         v053.validate_core(changed, reader())
 
     def test_keep_rejects_wrong_boundary_alternative(self) -> None:

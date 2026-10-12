@@ -6,13 +6,17 @@
 - Accept normal complete execution only when `status=success`; `partial` and `review_required` are not complete results.
 - Raw absence from Git or runtime is not a Web-fallback condition. Do not create a substitute fixed-width parser.
 
-# RaceNote v0.5.3 forward candidate — 2026-10-12
+# RaceNote v0.5.3 rebuilt boundary-safety candidate — 2026-10-12
 
-- New unresolved forward forecasts after the already-frozen 2026-10-12 v0.5.2 cohort use `RaceNote-Human-Context-Reader-0.5.3-candidate`.
+- v0.5.2 remains the promoted baseline and immutable comparison/reproduction path.
+- New v0.5.3 candidate sessions use `RaceNote-Human-Context-Reader-0.5.3-candidate` with `contract_revision=v053-boundary-safety-r2`.
 - Contract: `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md`.
+- Rebuild note: `docs/racenote/RACENOTE_V053_REBUILD_20261012.md`.
 - Single-day path: `docs/racenote/RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`, `src/racenote_v053_from_paci.py`, `src/racenote_v053_single_day.py`.
-- v0.5.2 remains the promoted baseline and immutable comparison/reproduction path. Do not backfill or alter the 2026-10-12 v0.5.2 Freeze.
-- v0.5.3 changes candidate-boundary procedure only; Reader evidence projection remains identical to v0.5.2 and confidence remains a separate post-Freeze/pre-result layer.
+- r2 restores the v0.5.2 Step A-D behavior and ordinary-five protection. The only added prediction rule is a narrow fixed-boundary challenge: the outside challenger may challenge only the lowest-ranked non-anchor ordinary horse; route diversity is not an ADMIT bonus.
+- Pre-rebuild v0.5.3 sessions without `contract_revision` remain immutable audit evidence and verify under legacy semantics.
+- BTDAY-0077 and BTDAY-0078 are closed unprocessed and excluded from performance evaluation. Do not use their results to tune r2.
+- Reader evidence projection remains identical to v0.5.2 and confidence remains a separate post-Freeze/pre-result layer.
 - Do not clone the v0.5.2 GitHub BTDAY transport workflow for v0.5.3 without a separate Drive-routing review.
 
 

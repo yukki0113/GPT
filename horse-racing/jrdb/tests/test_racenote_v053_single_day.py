@@ -16,11 +16,17 @@ def test_v053_single_day_can_replay_frozen_decision_cores_without_ab(tmp_path: P
     handoff = json.loads((PREP / "day_prep_handoff.json").read_text(encoding="utf-8"))
     root = tmp_path / "v053"
 
-    session = single.init_session(PREP, root, handoff["main_sha"])
+    session = single.init_session(
+        PREP,
+        root,
+        handoff["main_sha"],
+        contract_revision=None,
+    )
     assert session["logic_version"] == "RaceNote-Human-Context-Reader-0.5.3-candidate"
     assert session["market_blind"] is True
     assert session["result_opened"] is False
     assert session["expected_venues"] == ["京都", "新潟", "東京"]
+    assert "contract_revision" not in session
 
     records = json.loads(REFERENCE.read_text(encoding="utf-8"))
     by_venue: dict[str, list[dict]] = {}
@@ -63,4 +69,5 @@ def test_single_day_session_is_one_lane_only(tmp_path: Path) -> None:
     assert "v051_enabled" not in payload
     assert "ab_profile" not in payload
     assert payload["logic_version"] == single.LOGIC
+    assert payload["contract_revision"] == single.CONTRACT_REVISION
     assert not (root / "ab_session.json").exists()

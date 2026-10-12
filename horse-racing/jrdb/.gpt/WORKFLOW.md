@@ -283,18 +283,27 @@ D5 PASS後のfull-day production entrypointは `src/build_racenote_daily.py`。
 
 ### RaceNote Forecast Gen0での標準適用
 
-新規の未使用BTDAYは v0.5.2 single-day baseline で進める。
-入口は `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`、
-GitHub-backed TURN 1 は
-`.github/workflows/racenote_btday_v052_prepare.yml` とする。
+Promoted baseline / reproductionは v0.5.2 のまま維持する。
+新規の未使用BTDAYで current candidate を検証する場合は、
+v0.5.3 rebuilt r2（`contract_revision=v053-boundary-safety-r2`）を使う。
+入口は `docs/racenote/RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`。
+v0.5.2再現時のみ `docs/racenote/RACENOTE_V052_SINGLE_DAY_RUNBOOK_v0_1.md`
+と既存prepare workflowを使う。
+
 予約row / requestの `source_mode` で分岐し、2026はPACI、
 2010–2025はaccepted Historical Warehouseを使う。Historical rowへ
 `paci_file_id` を捏造しない。
 
-DAY PREP・market-blind forecast_prep・sealed v0.5.2 session・会場単位の
+DAY PREP・market-blind forecast_prep・sealed v0.5.3 r2 session・会場単位の
 Decision Core保存・Freeze・Verifyまでを同じpre-result operationとして扱う。
+r2ではordinary five形成と◎○、external challenger選定はv0.5.2を維持し、
+challengerはlowest-ranked non-anchor ordinary horseだけを境界比較する。
+route diversityだけを理由にADMITしない。
 予想の印・境界候補・理由文をスクリプトで補完しない。結果/対象日marketは
 全日FreezeとVerify PASSまで開かない。
+
+BTDAY-0077 / 0078はpre-rebuild v0.5.3監査資産として保持するが、
+性能評価には使わず未処理クローズとする。
 
 v0.4.6の `BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` と
 `racenote_btday_v046_*.yml` はhistorical reproduction用であり、
