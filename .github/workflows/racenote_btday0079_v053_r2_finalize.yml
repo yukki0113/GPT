@@ -1,0 +1,40 @@
+name: RaceNote BTDAY-0079 v0.5.3 r2 finalize
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0079/FINALIZE_TRIGGER'
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Save venues Freeze Verify
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0079/20251018/v053'
+          python horse-racing/jrdb/src/racenote_v053_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/京都.json"
+          python horse-racing/jrdb/src/racenote_v053_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/新潟.json"
+          python horse-racing/jrdb/src/racenote_v053_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/東京.json"
+          python horse-racing/jrdb/src/racenote_v053_single_day.py freeze --root "$ROOT"
+          python horse-racing/jrdb/src/racenote_v053_single_day.py verify --root "$ROOT"
+      - name: Commit frozen outputs
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0079/20251018/v053'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/authored_decisions" "$ROOT/frozen"
+          git commit -m 'RaceNote: freeze and verify BTDAY-0079 v0.5.3 r2'
+          git pull --rebase origin main
+          git push origin HEAD:main
