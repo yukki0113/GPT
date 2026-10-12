@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "福島",
+    "race_no": 1,
+    "race_model": "障害未勝利で飛越の安定と終盤まで位置を保つ持続力が最重要。直近障害で上位に来た馬を主線にし、平地能力が高い初障害寄りの馬は別経路として扱う。",
+    "marks": [
+      10,
+      13,
+      4,
+      7,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "直近障害で3着、4着と前で運びながら安定。飛越に課題を残しても今回の中では勝ちに最も近い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "直近2戦の障害で3着、5着。早めに好位へ挽回でき、持続力も比較的安定している。"
+      },
+      {
+        "horse_no": 7,
+        "case": "障害で3着歴があり、好位から運べる。終いの甘さはあるが主線候補として残す。"
+      },
+      {
+        "horse_no": 11,
+        "case": "前走障害5着で好位を取れた。勝負所の反応に課題はあるが、飛越経験を相手評価する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "障害経験では見劣るが平地上級での地力が高く、飛越が初手から噛み合えば通常の障害実績順を一気に覆す上振れがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5は障害経験があるが飛越不安が続く。障害実績の薄さを承知でも、4の平地地力が適性に転化する上振れを候補に加える価値を上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10は直近障害の3着、4着を素直に◎。13を安定した○に置き、4は平地地力が障害へ転化した時だけ大きく跳ねる▲として扱う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        13,
+        7,
+        11,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "平地では上級条件まで走った地力があり、障害適性は未知でも飛越が噛み合えば既走障害馬を上回る上限を持つ。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "5は障害経験があるが飛越不安が続く。障害実績の薄さを承知でも、4の平地地力が適性に転化する上振れを候補に加える価値を上に取る。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 13,
+      "honmei_win_case": "10は最近の障害戦で3着と4着を続け、前目から最後まで競馬を成立させているため勝ち切り経路が最も明瞭。",
+      "second_case": "13は障害で3着、5着と好位へ進出する形が安定し、10に次ぐ再現性を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "障害の直接実績で10を◎、13を○。4は通常順位ではなく高い平地地力が障害適性へ転化する非対称な可能性を▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 2,
+    "race_model": "ダート1700m未勝利。直近同距離2着の4と、1600mで鋭い末脚を続ける6を主線に、1700m実績と先行持続のバランスを見る。",
+    "marks": [
+      4,
+      6,
+      13,
+      9,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "福島1700mで2着を2度持ち、前走も高能力2着。好位から自力で抜ける形が最も直接的。"
+      },
+      {
+        "horse_no": 6,
+        "case": "1600mで2着、4着と後方から強い脚を使い、距離延長で追走が楽なら差し切りまで届く。"
+      },
+      {
+        "horse_no": 9,
+        "case": "1400mで2着、3着を続け末脚が安定。1700mで折り合えば相手圏へ届く。"
+      },
+      {
+        "horse_no": 15,
+        "case": "前走1600m3着で先団から脚を持続。距離延長でも流れに乗れる相手候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "前走1700m2着で好位から最後まで脚を続けた。上位2頭とは異なる前寄りの経路で、そのまま押し切る可能性を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3の先行力は評価するが、同距離2着の4・13と、差し能力の6・9・15を含む通常5頭の方が条件実績と経路の両面で厚い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "4は同舞台実績が抜けており◎。6を末脚上限の○にし、13は前走1700m2着の先行持続を▲として評価する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        6,
+        13,
+        9,
+        15
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "1600mで先行して高水準を示すが、1700mの直接実績で上位5頭を崩すほどの材料はまだない。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3の先行力は評価するが、同距離2着の4・13と、差し能力の6・9・15を含む通常5頭の方が条件実績と経路の両面で厚い。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "honmei_win_case": "4は福島1700mで複数2着し、直近も高い能力を示しており、条件再現性から勝ち切り経路が最も太い。",
+      "second_case": "6は1600mで後方から強い末脚を繰り返し、1700mで追走が楽になれば4を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "直接実績で4を◎、末脚上限で6を○。13は通常順位ではなく好位から早めに抜ける先行持続の勝ち筋を▲に置く。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 3,
+    "race_model": "芝1200mの2歳未勝利で6頭立て。直接1200mで2着の4を中心に、距離短縮で先行力が生きる馬と、少頭数で前を取れる馬を比較する。",
+    "marks": [
+      4,
+      1,
+      3,
+      5,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "前走福島1200m2着。好位内から直線で先頭に迫り、同条件の勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1400mで逃げて4着、調教と状態が大きく上昇。1200m短縮で粘りが増す余地が大きい。"
+      },
+      {
+        "horse_no": 5,
+        "case": "前走1200m5着で先行経験があり、少頭数なら位置を取りやすく相手に残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "前走1200m7着でも後方から最速級の脚を使う想定があり、前が競る形への保険になる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "1800mで逃げて3着の先行力があり、1200mへ大幅短縮して楽に前を取れれば一気に押し切る別経路を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6の未知性より、1200m直接実績の4・5・2と、距離短縮で前進が見込める1・3を維持する方が候補集合価値が高い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "4は同舞台2着を◎、短縮と状態上昇の1を○。3は距離短縮で先行力が強く出た時の一撃を▲として取る。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        1,
+        3,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "初出走で未知の上振れはあるが事前能力は既走上位に届かず、少頭数でも通常5頭を交換する根拠に乏しい。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6の未知性より、1200m直接実績の4・5・2と、距離短縮で前進が見込める1・3を維持する方が候補集合価値が高い。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 1,
+      "honmei_win_case": "4は福島1200mで2着し、立ち回りと終いを両立したため今回最も直接的な勝ち切り経路を持つ。",
+      "second_case": "1は1400mで逃げた経験に加え状態が上向き、短縮で終いの甘さが軽減する逆転経路がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "同条件実績で4を◎、短縮上昇の1を○。3は通常順位ではなく大幅短縮で逃げ切る上振れを▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 4,
+    "race_model": "ダート1150mの2歳未勝利。前走同舞台3着、4着の2・1が中心で、芝先行実績からダート替わりで上振れる馬を比較する。",
+    "marks": [
+      2,
+      1,
+      7,
+      3,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "前走福島1150mで3着。番手から早めに並びかける競馬ができ、今回最も勝利に近い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "前走同舞台4着。好位から早めに動けており、終いを少し詰めれば逆転可能。"
+      },
+      {
+        "horse_no": 3,
+        "case": "芝1200mで好位から4着。ダート適性が出れば先行力をそのまま生かせる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "前走同舞台は出遅れて10着だが、短距離で後方から脚を使う経路を一応残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "芝1200mで番手から3着。ダート替わりでも先行できれば、同舞台実績組とは違うスピード上限で押し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5の状態上積みより、同舞台3着と4着の2・1、芝で先行できる7・3を含む通常5頭の方が今回の勝ち筋を具体的に描ける。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2は同舞台3着の再現性で◎、1を同条件4着の○。7は芝で示した先行スピードがダートで噛み合うケースを▲に取る。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        1,
+        7,
+        3,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "同舞台で大敗しており状態面の数値だけでは通常5頭を崩せない。砂被り不安も残る。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "5の状態上積みより、同舞台3着と4着の2・1、芝で先行できる7・3を含む通常5頭の方が今回の勝ち筋を具体的に描ける。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 1,
+      "honmei_win_case": "2は福島1150mで番手から3着し、今回も同じ形を作りやすいため最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "1は同舞台4着で好位から早めに動けており、2との差は小さく○に置く。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "直接条件で2を◎、1を○。7は通常順位ではなく芝の先行スピードがダート替わりで強く出る上振れを▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 5,
+    "race_model": "全馬初出走の芝2000m。長い距離だけに事前能力だけでなく調教、状態、想定の折り合いと持続力を統合して初戦の勝ち筋を比較する。",
+    "marks": [
+      2,
+      6,
+      10,
+      13,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "事前能力が最上位で調教・状態も良好。長い直線で終いを伸ばす想定が明確で中心。"
+      },
+      {
+        "horse_no": 6,
+        "case": "能力は2に次ぎ、初戦から前目で運べる想定。持続戦なら逆転まで見込める。"
+      },
+      {
+        "horse_no": 13,
+        "case": "能力上位で終いを使える想定があり、中団から長く脚を使う相手候補。"
+      },
+      {
+        "horse_no": 1,
+        "case": "能力と調教のバランスが良く、内でロスなく運べれば上位に残れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "事前能力が高く上位上がりの想定もあり、初戦の実戦適性が噛み合えば2・6をまとめて上回る上振れがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8にも初戦上振れはあるが、能力上位かつ調教も整った通常5頭の方が2000mで勝ち筋を描きやすい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2は能力・調教・状態が揃い◎。6を先行持続の○に置き、10は初戦で終いの質が想定以上だった時の上振れを▲にする。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        6,
+        10,
+        13,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "事前能力は上位に近いが、2・6・10・13に比べ決め手想定と調教の総合で交換するほどの優位はない。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8にも初戦上振れはあるが、能力上位かつ調教も整った通常5頭の方が2000mで勝ち筋を描きやすい。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 6,
+      "honmei_win_case": "2は事前能力が抜けて高く、調教と状態も整っているため初戦から勝ち切る経路が最も明瞭。",
+      "second_case": "6は能力次位で2000mの持続戦を前目から運べる想定があり、2を逆転する経路を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "初出走では安全度より上限を優先し2を◎、6を○。10は通常順位ではなく実戦で決め手が跳ねるケースを▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 6,
+    "race_model": "芝1800m未勝利。直近1800m2着の5・4・10と、マイルで高い末脚を示す11・12を主線に、前後の位置取りを分散させる。",
+    "marks": [
+      5,
+      11,
+      10,
+      12,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "芝1800m2着を含む3戦すべて3着以内で能力も最上位。先行して勝ちに行く形が明確。"
+      },
+      {
+        "horse_no": 11,
+        "case": "前走1600m2着、過去1800m2着で末脚能力が高い。状態も上向きで○にふさわしい。"
+      },
+      {
+        "horse_no": 12,
+        "case": "1600mで連続3着、高能力を安定して出す。1800mでも折り合えば相手圏へ届く。"
+      },
+      {
+        "horse_no": 4,
+        "case": "前走1800m2着。中団からロスなく押し上げる再現性があり相手候補に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "前走1800m2着で好位から最後まで脚を使った。上位2頭とは違う前寄りの持続力でそのまま押し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14の福島1800m3着は評価するが、5・4・10の直近1800m上位実績と11・12の能力を含む通常5頭を崩すには足りない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "5は能力と1800m実績で◎、11を末脚上限の○。10は好位から前を捕まえ切る形を▲として評価する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        11,
+        12,
+        4,
+        10
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "前走同舞台3着で条件適性はあるが、上位5頭に比べ能力上限が低く、候補交換まではしない。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14の福島1800m3着は評価するが、5・4・10の直近1800m上位実績と11・12の能力を含む通常5頭を崩すには足りない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 11,
+      "honmei_win_case": "5は1800mを含む3戦すべて上位で能力値も最上位、先行から勝ち切る経路が最も太い。",
+      "second_case": "11は1600m2着と1800m2着の実績を持ち、差し脚の上限が高く5を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "勝ち切りの直接性で5を◎、末脚上限で11を○。10は通常順位より好位から早めに抜ける持続戦の上振れを▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 7,
+    "race_model": "ダート1150m未勝利。直近同舞台で2着、3着の9・15が明確な中心。以下は距離短縮で前に行ける馬と差し脚を比較する。",
+    "marks": [
+      9,
+      15,
+      12,
+      11,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "前走福島1150m2着で能力最上位。好発から先行して高水準を続け、勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 15,
+        "case": "前走同舞台3着。キャリア1戦で先行して粘り、上積み込みで逆転余地がある。"
+      },
+      {
+        "horse_no": 11,
+        "case": "前走同舞台5着。出遅れ後も好位へ挽回でき、時計への慣れで前進を見込める。"
+      },
+      {
+        "horse_no": 2,
+        "case": "1400mで終いを使った経験があり、短縮で流れが速くなれば差し込みの相手候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "1400mで逃げられる先行力があり、1150m短縮で楽に主導権を取れれば通常評価以上に押し切る可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5の過去1200m4着より、直近1150m2・3・5着を含む9・15・11と、短縮先行の12を含む通常5頭の現在価値を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "9は同舞台2着の直接性を◎、キャリア1戦で3着の15を○。12は距離短縮で逃げが強く出た時の一撃を▲にする。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        15,
+        11,
+        12,
+        2
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "1200m4着歴はあるが休養が長く、現在の同舞台実績を持つ通常5頭を崩すほどの根拠はない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "5の過去1200m4着より、直近1150m2・3・5着を含む9・15・11と、短縮先行の12を含む通常5頭の現在価値を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 15,
+      "honmei_win_case": "9は福島1150mで2着し高い能力を示し、今回も先行から勝ちに行けるため最も明瞭な勝ち筋を持つ。",
+      "second_case": "15は初戦の同舞台で3着し、先行力と上積み余地の両方があるため○に置く。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "直接実績で9を◎、上積みで15を○。12は通常順位ではなく短縮で逃げ切る展開を▲として狙う。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 8,
+    "race_model": "芝1800m未勝利。直近1800mで2着、3着を続ける1が中心で、11・2・10の末脚と、条件実績のある候補を比較する。",
+    "marks": [
+      1,
+      11,
+      7,
+      2,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1800mで直近2着、3着。福島でも能力上位で、内からロスなく運ぶ勝ち筋が最も明確。"
+      },
+      {
+        "horse_no": 11,
+        "case": "1600m2着、過去1800m2着で能力も高い。差し脚と状態上昇から○に置く。"
+      },
+      {
+        "horse_no": 2,
+        "case": "1800m3着歴とマイル2着があり、好位から終いを使える。休養明けでも地力を評価する。"
+      },
+      {
+        "horse_no": 10,
+        "case": "前走1800m2着で好位から最後まで脚を続けた。相手圏への再現性が高い。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "1800mで3着を含む好走歴があり、前寄りで流れに乗れる。差し中心の上位候補が牽制すれば先行残りの勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14はマイルで高能力でも1800mの直接材料が薄い。7の1800m3着と前で運ぶ経路を加える方が今回条件への直接性が高い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1は直近1800mの再現性で◎、11を末脚上限の○。7は前で運んでそのまま残す別経路を▲として採用する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        11,
+        2,
+        10,
+        14
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "1800mで3着を含む安定した先行実績があり、上位候補と異なる前寄りの経路で候補集合に価値を加える。",
+      "excluded_horse_no": 14,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "14はマイルで高能力でも1800mの直接材料が薄い。7の1800m3着と前で運ぶ経路を加える方が今回条件への直接性が高い。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 11,
+      "honmei_win_case": "1は1800mで連続して高水準を示し、福島でも内を立ち回って勝ちに行ける経路が最も太い。",
+      "second_case": "11はマイル2着と1800m2着の実績があり、差し脚の上限から1を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "直接条件で1を◎、末脚上限で11を○。7は通常順位ではなく前残りの独立した経路を評価して▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 9,
+    "race_model": "芝1200m1勝クラス。直近同距離で2着の5、勝利した6を主線に、前に行ける4と差し候補を組み合わせる。",
+    "marks": [
+      5,
+      6,
+      4,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "前走福島1200m2着で最速級の末脚。直近1200mでも3着があり、差し切りに最も近い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "前走1200mを逃げ切り。先行して自分で流れを作れるため、5とは異なる主線の勝ち筋。"
+      },
+      {
+        "horse_no": 2,
+        "case": "前走1200m3着。後方から差を詰める形ができ、5が届く展開なら一緒に浮上できる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "マイル中心だが能力上限が高く、1200m短縮で折り合いがつけば相手圏へ残る。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "前走1200mを逃げて4着。6と先行争いを制して自分のリズムに持ち込めれば、そのまま押し切る上振れがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10の福島適性は評価するが、直近1200m2着・1着の5・6と、先行経路の4を含む通常5頭の方が現在価値が高い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "5の確実な末脚を◎、前走逃げ切りの6を○。4は前を取り切った時だけ評価が跳ねる逃げ残りを▲にする。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        6,
+        4,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "福島1200m3着歴はあるが直近内容と能力で通常5頭を上回らず、差し経路も5・2と重なる。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10の福島適性は評価するが、直近1200m2着・1着の5・6と、先行経路の4を含む通常5頭の方が現在価値が高い。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 6,
+      "honmei_win_case": "5は福島1200mで2着し終いの伸びが最も安定しており、前が止まる形を自力で差し切る勝ち筋が太い。",
+      "second_case": "6は前走1200mを逃げ切り、今回も主導権を取れば5を封じる明確な逆転経路を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "末脚再現性で5を◎、前走勝ちの6を○。4は通常順位より先手争いを制した時の押し切りを▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 10,
+    "race_model": "芝2000m2勝クラス。近走中距離で高水準を続ける7が一段上で、9の末脚、8の先行持続、10の福島実績を比較する。",
+    "marks": [
+      7,
+      9,
+      8,
+      10,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "直近2000m2着、1800m2着と高能力を連続。差しながら余力を残す内容で今回の中心。"
+      },
+      {
+        "horse_no": 9,
+        "case": "2400m3着、2000m4着・5着と高能力。長く脚を使えるため○として強い。"
+      },
+      {
+        "horse_no": 10,
+        "case": "福島2000m勝ちがあり、近2走も同距離5着。最速級の末脚を使える相手候補。"
+      },
+      {
+        "horse_no": 3,
+        "case": "2000mで安定して能力を出し、後方からでも脚を使える。流れが向けば相手圏に届く。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "2000mで連続2着し、前目から自分で流れを作れる。差し有力馬が多い中で楽に先行できれば押し切りまである。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1の過去実績より、直近2着を重ねる7・8と、高能力を続ける9・10・3を含む通常5頭の現在価値を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "7の近走水準を◎、末脚と距離適性の9を○。8は差し勢を尻目に前から押し切る経路を▲として評価する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        9,
+        8,
+        10,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "2000m2勝歴はあるが近走の失速が続き、現在の上位5頭を入れ替えるだけの直接的な復調材料に乏しい。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1の過去実績より、直近2着を重ねる7・8と、高能力を続ける9・10・3を含む通常5頭の現在価値を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 9,
+      "honmei_win_case": "7は中距離で連続2着を重ね能力も最上位で、差しから自力で勝ち切る経路が最も太い。",
+      "second_case": "9は2000m以上で高い末脚を安定して使い、7が取りこぼす形で差し切る余地がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "現在能力で7を◎、末脚上限で9を○。8は通常順位ではなく前残りの独立した勝ち筋を▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 11,
+    "race_model": "ダート1150mオープン。前走同舞台を高能力で勝った11を中心に、差しの1と先行持続の6・13を比較。短距離だけに前崩れと前残り双方を残す。",
+    "marks": [
+      11,
+      1,
+      13,
+      6,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "前走福島1150mを高能力で快勝。6戦4勝と成長も著しく、先行して抜け出す形が最も強い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1200mでオープン級の末脚を繰り返し、出遅れても最後に伸びる。前が競れば逆転の主線。"
+      },
+      {
+        "horse_no": 6,
+        "case": "1200mを逃げ切る高能力を持ち、先行して崩れても上限は高い。相手候補として残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "1200mでオープン上位の能力を安定して出し、中団から差す経路で展開の幅を持つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "前走1200m3着で好発から先頭争いに加われる。11が少しでも脚を使わされる形なら、前で先に抜ける勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10の逃げ経路は11・13と重なるため、後方差しの1と中団型3を含む通常5頭の方が展開変化への幅を持つ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "11は同舞台快勝をそのまま◎。差し切りの1を○に置き、13は前が残る中でも11を先に負かす先行上振れを▲にする。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        1,
+        6,
+        13,
+        3
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "1200mで高能力を持つ逃げ型だが、11・13と前の経路が重なり、候補集合を入れ替える追加価値は限定的。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "10の逃げ経路は11・13と重なるため、後方差しの1と中団型3を含む通常5頭の方が展開変化への幅を持つ。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 1,
+      "honmei_win_case": "11は福島1150mを高能力で快勝し、先行から楽に抜ける勝ち切り経路が今回最も直接的。",
+      "second_case": "1は後方からオープン級の末脚を繰り返し、先行争いが激しくなれば11を差し切れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "直接条件で11を◎、展開反転の1を○。13は通常順位ではなく先行競争を制した時の押し切りを▲にする。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 12,
+    "race_model": "ダート1700m1勝クラス。近走1600～1700mで高水準の12・3・10を主線に、1700m実績のある古馬と距離延長の先行型を比較する。",
+    "marks": [
+      12,
+      3,
+      2,
+      10,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "1600mで1着、3着と高能力を続け、先行して最後まで脚を使える。1700mでも主線の勝ち筋。"
+      },
+      {
+        "horse_no": 3,
+        "case": "前走福島1700m3着で能力も上位。後方からロスなく伸びる形が同条件で再現できる。"
+      },
+      {
+        "horse_no": 10,
+        "case": "福島1700mで勝ちと3着があり、条件適性が高い。中団から自力で進出できる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "1600～1800mで高能力を持ち、後方から末脚を使えるため相手に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "福島1700m2着と他場1700m勝ちがあり、向正面から早めに動いて押し切る形が決まれば近走大敗から一変できる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7は中距離で安定するが1700mの直接材料がない。2の1700m2着・勝利という条件適性と捲り経路を候補に加える価値を上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "12は現在能力と先行力で◎、同舞台3着の3を○。2は近走順位より1700m適性と早仕掛けの反発ルートを▲に採用する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        3,
+        10,
+        9,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "1700mで2着と勝利があり、直近1800m大敗だけで消し切れない。早めに動いて長く脚を使う経路が通常候補と異なる。",
+      "excluded_horse_no": 7,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "7は中距離で安定するが1700mの直接材料がない。2の1700m2着・勝利という条件適性と捲り経路を候補に加える価値を上に取る。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 3,
+      "honmei_win_case": "12は直近1600mを勝ち次走も3着と高能力を続け、先行から勝ちに行く経路が最も太い。",
+      "second_case": "3は前走福島1700m3着で末脚を示し、12が前で消耗した時に差し切る逆転経路を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "現在能力で12を◎、同舞台実績で3を○。2は通常順位ではなく1700mで早めに動く反発経路を▲にする。"
+    }
+  }
+]
