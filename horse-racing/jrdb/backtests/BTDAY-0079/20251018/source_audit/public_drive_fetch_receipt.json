@@ -1,0 +1,390 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "golden_01",
+      "file_id": "1uB0IQecWNKNn_ASZx4_0MhlWNXUmFrYA",
+      "destination": "warehouse/current.json",
+      "size": 606,
+      "sha256": "ef02b9c4c65150017c18aa7d49b1a923b144b18c8f5edd8b3739d97d1046582c",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_02",
+      "file_id": "1jUX9geM4IrOcWygzbSTGVsgCJ37ULXQN",
+      "destination": "warehouse/generations/jrdb_normalized_warehouse_v1_2010_2025_g20260921/manifest.json",
+      "size": 1144002,
+      "sha256": "62fb6eb79546e3e0dd2b70592e0324d52c33c361f7073e78c2b420b82e1e008d",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_03",
+      "file_id": "1k1HagEAM0BjwEVD0bT1sz1PwEMQy3btg",
+      "destination": "raw/BAC/BAC_2025.zip",
+      "size": 109750,
+      "sha256": "aeab5d807c12640b908152eb24249c872b4aaafcfc7e97baaafda440994c5491",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_04",
+      "file_id": "17JU7BIAEnLOVyKWtoKw-BYkSugykbrfi",
+      "destination": "raw/KYI/KYI_2025.zip",
+      "size": 9577491,
+      "sha256": "c892642a9c5ddbb1ba16486eb90e98507737fc51f73972593ce11dc99e71e8ce",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_05",
+      "file_id": "1ci38S2wRDQfmvj1IM8INO7cX5nGX7Iww",
+      "destination": "raw/CHA/CHA_2025.zip",
+      "size": 709576,
+      "sha256": "5ae1aef735031735e8a60d37d6bf7540872ddd5debfb6091beb9e199c7fe6465",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_06",
+      "file_id": "1Qcom4iheK07eyAAX8jO2wBkChYuN1oFS",
+      "destination": "raw/CYB/CYB_2025.zip",
+      "size": 527950,
+      "sha256": "6277536c75fa537d9aac7bed4604cfd8774ce24889265a71d15411758ac447ca",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_07",
+      "file_id": "1arU2LbSU1u--qEqKpAvlNBjLapflh2nw",
+      "destination": "raw/ZED/ZED_2025.zip",
+      "size": 17631409,
+      "sha256": "ea70bafd765c313d892ef09db76e547912f5c1b2206c13136d550e03de7b391b",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_08",
+      "file_id": "1lFQky-22SLQqBMLwVbkLBEJTMfLesMf8",
+      "destination": "raw/ZKB/ZKB_2025.zip",
+      "size": 10698210,
+      "sha256": "9161ed2f2c6996f3b100fdd15de0c5f466e6aaee2ab69a34632124afcf908de6",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_09",
+      "file_id": "1OPXGvbo66mUx1cMpu2t1w2JxjAY02i1o",
+      "destination": "raw/ZED/ZED_2024.zip",
+      "size": 17368343,
+      "sha256": "f5fabd5994e1287a5143f52576780e631e8291c9eeb8241bb18f0034ea8c4d66",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_10",
+      "file_id": "1HCv3w6G1JphMXBtLGTXZgZyNZ3poNzEn",
+      "destination": "raw/ZKB/ZKB_2024.zip",
+      "size": 11022585,
+      "sha256": "af33b3c7ee710c64a2441929293a9e3d341504df6363f8c04d4729666191deae",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_11",
+      "file_id": "1gA9eBkY7cF30FnkjhSnIxEVE-_TgLK3v",
+      "destination": "warehouse/objects/bac/year=2025/f6ceb99ab6ebadf88a44315276bb50b7f4e1f536c2651a793a6c0f1f7b4ef738.parquet",
+      "size": 169370,
+      "sha256": "f6ceb99ab6ebadf88a44315276bb50b7f4e1f536c2651a793a6c0f1f7b4ef738",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_12",
+      "file_id": "1BsUYCalaMyVAZsjEa1R0i_YzsdzrvcJW",
+      "destination": "warehouse/objects/kyi/year=2025/55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b.parquet",
+      "size": 5914994,
+      "sha256": "55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_13",
+      "file_id": "1uTc41dqOriuVa_ZUL3VMPvx43Fclso8M",
+      "destination": "warehouse/objects/cha/year=2025/29a553954b25f75e1ea21965a62e5466c1ad0f13b50aa9a7548c160d1d3a6fc3.parquet",
+      "size": 2264678,
+      "sha256": "29a553954b25f75e1ea21965a62e5466c1ad0f13b50aa9a7548c160d1d3a6fc3",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_14",
+      "file_id": "1g0xyGcGRB5K9VQdtrIC1uJJQ7DK7sdPr",
+      "destination": "warehouse/objects/cyb/year=2025/90f7ae295afc5e461458b236fc17c1abff200c7bc658638bb51d6a12709b5d04.parquet",
+      "size": 2082812,
+      "sha256": "90f7ae295afc5e461458b236fc17c1abff200c7bc658638bb51d6a12709b5d04",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_15",
+      "file_id": "1ouEluqM2BkcbVsoGa1Bi_gSuUTPsdSp2",
+      "destination": "warehouse/objects/zed/year=2025/2097b5386817ed228715bf33bd9316c42478c5f8a65a55e6810e139bcd7bd9f0.parquet",
+      "size": 15889372,
+      "sha256": "2097b5386817ed228715bf33bd9316c42478c5f8a65a55e6810e139bcd7bd9f0",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_16",
+      "file_id": "1JO8OlVc6gMqfCq9sA2RcILw9HmUcC7Vo",
+      "destination": "warehouse/objects/zkb/year=2025/a5ff1aff1bfa8d16033d27f20ebefb7d795710e72b9cf3384479a579cf37c5c1.parquet",
+      "size": 13033079,
+      "sha256": "a5ff1aff1bfa8d16033d27f20ebefb7d795710e72b9cf3384479a579cf37c5c1",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_17",
+      "file_id": "1yKQ90cMI_l7x5EqkSZmwrBdw16wn8P6H",
+      "destination": "warehouse/objects/zed/year=2024/3ae57e5df93dd12f362e7196ec9e3e7507f0ad1cb5eb9924df3b21664f973403.parquet",
+      "size": 15622143,
+      "sha256": "3ae57e5df93dd12f362e7196ec9e3e7507f0ad1cb5eb9924df3b21664f973403",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_18",
+      "file_id": "1Q8aQz7kApjQjhzqp9DyUJ2uj1OtGLAaw",
+      "destination": "warehouse/objects/zkb/year=2024/986ddf27250f1ba443334a23e85e085b45ee374906333520b3fbe1a5b4e84bbd.parquet",
+      "size": 13178976,
+      "sha256": "986ddf27250f1ba443334a23e85e085b45ee374906333520b3fbe1a5b4e84bbd",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_19",
+      "file_id": "1qCoOmnH73QvrVMYNhTG28shPHg8yru2S",
+      "destination": "analysis.tar.xz",
+      "size": 11810696,
+      "sha256": "ba611a0ea124ee04b14d7028b08187e1a347254a61033f1118a6ce12726739e3",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_20",
+      "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+      "destination": "rrdb.zip",
+      "size": 47410583,
+      "sha256": "a46eb35f2525cada2ae42ec4e0f2d783e5cb7ed24db5eb2d9b7c07e2322099f9",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_21",
+      "file_id": "1-k1Z-VvhHRjpkviMgGRr5UOEU23Bbd03",
+      "destination": "warehouse/objects/zed/year=2022/666e812fb957e588bc985f293312de7d849e5d465a4fe064bd9291f980fb44cf.parquet",
+      "size": 15716676,
+      "sha256": "666e812fb957e588bc985f293312de7d849e5d465a4fe064bd9291f980fb44cf",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_22",
+      "file_id": "1CQ_NmkxUUxvzmPdLFKrY7l9HMv9tCdDr",
+      "destination": "warehouse/objects/zkb/year=2022/5914c81ed3130760b3a2728077784cedff4001c8b953e7f1ca1f3511d72d4027.parquet",
+      "size": 13161777,
+      "sha256": "5914c81ed3130760b3a2728077784cedff4001c8b953e7f1ca1f3511d72d4027",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_23",
+      "file_id": "1qIAW_yzApwA4jGRejE8nuyTO4fdgESS3",
+      "destination": "warehouse/objects/zed/year=2023/315c69e1a884ccae735703b4312a91e5a86e84d638682f0532cce42613bf38a2.parquet",
+      "size": 15915106,
+      "sha256": "315c69e1a884ccae735703b4312a91e5a86e84d638682f0532cce42613bf38a2",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_24",
+      "file_id": "1AyEPSr-ilV85SfW1_RMM1M3kAE6TxF5z",
+      "destination": "warehouse/objects/zkb/year=2023/aa9df1dcf291f75369ae574c9a7b22ea44fa8becb1383d044fccc2bb522f3957.parquet",
+      "size": 13571638,
+      "sha256": "aa9df1dcf291f75369ae574c9a7b22ea44fa8becb1383d044fccc2bb522f3957",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_25",
+      "file_id": "1hyaXOqJ3xGdgrIAJ6HnSIC0TJG5cC4PM",
+      "destination": "warehouse/objects/zed/year=2021/7b17f3c7b76022fddbbd4fcfd812079a239ee4efeec9909cbf322c79683007b0.parquet",
+      "size": 15786127,
+      "sha256": "7b17f3c7b76022fddbbd4fcfd812079a239ee4efeec9909cbf322c79683007b0",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_26",
+      "file_id": "1gQuwX1jSCwIE5KoMQ2rEPmsL7ygcE1jj",
+      "destination": "warehouse/objects/zed/year=2020/51539a84c8ecf9c5f98170a9e13e24e0eb248bf56bb0de39eb66c75e2e975da0.parquet",
+      "size": 15902766,
+      "sha256": "51539a84c8ecf9c5f98170a9e13e24e0eb248bf56bb0de39eb66c75e2e975da0",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_27",
+      "file_id": "1_9Rxk4_H59dnRE2I_WpW8tDNvKQaRnk0",
+      "destination": "warehouse/objects/zed/year=2019/f14b3f5624e4ac85f9b067346a092db9bc3e6529bd4befcf5bf129be8c47d320.parquet",
+      "size": 15577719,
+      "sha256": "f14b3f5624e4ac85f9b067346a092db9bc3e6529bd4befcf5bf129be8c47d320",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_28",
+      "file_id": "1yzN0SotxydGOc2v87SVza9hp3XV_daQ2",
+      "destination": "warehouse/objects/zed/year=2018/c05f16799f088b28decc3725928c5b80f16ac96eefc49c0cf801f2c8fd3ba0b2.parquet",
+      "size": 14915169,
+      "sha256": "c05f16799f088b28decc3725928c5b80f16ac96eefc49c0cf801f2c8fd3ba0b2",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_29",
+      "file_id": "1jklJA7avDCd5_rBrF5ULnUzEfNBfDEZF",
+      "destination": "warehouse/objects/zed/year=2017/2386d540c509adbc4728f20073a5f8904318b805beb9115fd9ecba8c994703ce.parquet",
+      "size": 14962469,
+      "sha256": "2386d540c509adbc4728f20073a5f8904318b805beb9115fd9ecba8c994703ce",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_30",
+      "file_id": "1Yp67ej8IGjeprB9rkky03n1xsYSBdBRm",
+      "destination": "warehouse/objects/zed/year=2016/c3105f3a693e209ee35d835a083e2148ea51f71531c46b7ce3b2595f7b164b12.parquet",
+      "size": 15231735,
+      "sha256": "c3105f3a693e209ee35d835a083e2148ea51f71531c46b7ce3b2595f7b164b12",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_31",
+      "file_id": "1nVkhvW53nKC7RmA0c7-_LHnwmt7b9WW6",
+      "destination": "warehouse/objects/zed/year=2015/922d1f34e9efcfa9a6ff51312969d4f22ac921aa59c55f3839cef10521ac899a.parquet",
+      "size": 15375855,
+      "sha256": "922d1f34e9efcfa9a6ff51312969d4f22ac921aa59c55f3839cef10521ac899a",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_32",
+      "file_id": "14o0-3P_3hC16Eq2DBbZsl00k-3hXlyZ6",
+      "destination": "warehouse/objects/zed/year=2014/9ff9954cfe4642bc7c9ffe40827d1e09586d8e1b4552395c178425c3836da9aa.parquet",
+      "size": 15371733,
+      "sha256": "9ff9954cfe4642bc7c9ffe40827d1e09586d8e1b4552395c178425c3836da9aa",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_33",
+      "file_id": "1guGF-2HvVi_DYGm0pta-NS4FjRa5HmGw",
+      "destination": "warehouse/objects/zed/year=2013/1c374d40899dccdeee0fcd5ec0096b0b2400cbc792121315ec4a2ffa34fcda2d.parquet",
+      "size": 15420847,
+      "sha256": "1c374d40899dccdeee0fcd5ec0096b0b2400cbc792121315ec4a2ffa34fcda2d",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_34",
+      "file_id": "1awgcnITIx46b51UkXdy08zIZ_f9pLAFs",
+      "destination": "warehouse/objects/zed/year=2012/cef048bde9941b377741954ff335514dabaa37e5337d71243f1d23cd4b188d69.parquet",
+      "size": 15328207,
+      "sha256": "cef048bde9941b377741954ff335514dabaa37e5337d71243f1d23cd4b188d69",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_35",
+      "file_id": "1VQ3PShAriPY_0dI9uP44D5GOgtNLmBqx",
+      "destination": "warehouse/objects/zed/year=2011/d1dc585bfbeb9b2c09f4912b93d892cf0c900a30d82ebc35628a33aa6fd590ee.parquet",
+      "size": 15054541,
+      "sha256": "d1dc585bfbeb9b2c09f4912b93d892cf0c900a30d82ebc35628a33aa6fd590ee",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_36",
+      "file_id": "1peQaSiN7LTu6jqf6pHEPR3XGoABx1pgP",
+      "destination": "warehouse/objects/zed/year=2010/dee6cde998065cc542a2e991be3f0d2b4cf789795a6d9eef44d9b09ffc850b8e.parquet",
+      "size": 15445616,
+      "sha256": "dee6cde998065cc542a2e991be3f0d2b4cf789795a6d9eef44d9b09ffc850b8e",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_37",
+      "file_id": "1uFDCUzop_3kypXGV0rtiWikN8uGT4d7R",
+      "destination": "warehouse/objects/zkb/year=2021/2c56079bed6b88edf6cee4c784607faea3f303e213e51c58ef25a27ef7a4f3f6.parquet",
+      "size": 13246173,
+      "sha256": "2c56079bed6b88edf6cee4c784607faea3f303e213e51c58ef25a27ef7a4f3f6",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_38",
+      "file_id": "1uDmIPO26ag748a34tutlasnDizDyXc2k",
+      "destination": "warehouse/objects/zkb/year=2020/5575ab94d19ec2146c10b8291f89146be8be9e68902559d8a8cf5ab914f37cc4.parquet",
+      "size": 13103389,
+      "sha256": "5575ab94d19ec2146c10b8291f89146be8be9e68902559d8a8cf5ab914f37cc4",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_39",
+      "file_id": "13q3oqDh7rJFZyHXav8D67exUWmFtLSZJ",
+      "destination": "warehouse/objects/zkb/year=2019/56e38cc8ca3de468ce6f3c9177084938fd0c349fd005e04d42f75c2bd5b819c1.parquet",
+      "size": 12762782,
+      "sha256": "56e38cc8ca3de468ce6f3c9177084938fd0c349fd005e04d42f75c2bd5b819c1",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_40",
+      "file_id": "1pJ8Ndo4z3hv8b4Mnm8AtmqNB8hIQSVac",
+      "destination": "warehouse/objects/zkb/year=2018/05bddacb4e0b3ece2437331ed77494fba0138135826ad01b96565fc514dcc173.parquet",
+      "size": 13239417,
+      "sha256": "05bddacb4e0b3ece2437331ed77494fba0138135826ad01b96565fc514dcc173",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_41",
+      "file_id": "1PRJpOmJ1L4WEiLolBtrmoc2uRr9OJ1pr",
+      "destination": "warehouse/objects/zkb/year=2017/5546839a4af381116929df676960a12fae5c66cc3ed48c3a4a0cf8860eb71cba.parquet",
+      "size": 13997040,
+      "sha256": "5546839a4af381116929df676960a12fae5c66cc3ed48c3a4a0cf8860eb71cba",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_42",
+      "file_id": "1FvL1hAB1nYOfrhdRGAkDwB_u6I14lF2B",
+      "destination": "warehouse/objects/zkb/year=2016/4373b1feca9a0b59bdaaa67801b49f5f0e4cfb014490bf4022393c92e90ad08f.parquet",
+      "size": 14443191,
+      "sha256": "4373b1feca9a0b59bdaaa67801b49f5f0e4cfb014490bf4022393c92e90ad08f",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_43",
+      "file_id": "1NRiWvs2GBKmiQ3sWDkGND8E-M1KqX7ZG",
+      "destination": "warehouse/objects/zkb/year=2015/e05f9e1265297c3e588a3092adba67c15e828e60795a3d1036cba38eb5890a00.parquet",
+      "size": 14657721,
+      "sha256": "e05f9e1265297c3e588a3092adba67c15e828e60795a3d1036cba38eb5890a00",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_44",
+      "file_id": "1buD1pqGOHV1Bwxc-PgnHei7YjevdzwkU",
+      "destination": "warehouse/objects/zkb/year=2014/8616c0ab9501f67c436d3c3340a439e46a7bbb1e759447eb4df4ab60f68f3bcf.parquet",
+      "size": 14827632,
+      "sha256": "8616c0ab9501f67c436d3c3340a439e46a7bbb1e759447eb4df4ab60f68f3bcf",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_45",
+      "file_id": "1zG9hCFALjTmXSa9tPhBrDn8RgGhPXoGo",
+      "destination": "warehouse/objects/zkb/year=2013/874281a8f3afb7d9d95ba1f9c2166ca71d1cc8f673b98e2fff24c9c262a37860.parquet",
+      "size": 14845568,
+      "sha256": "874281a8f3afb7d9d95ba1f9c2166ca71d1cc8f673b98e2fff24c9c262a37860",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_46",
+      "file_id": "13tq7IsbBUZjfRLdAI3oSudGQJRZ0f1pU",
+      "destination": "warehouse/objects/zkb/year=2012/5b6abc31a8465d1d28509bde90efe9e67af6853c2c6d0f3e09242ae3f8cff954.parquet",
+      "size": 14705828,
+      "sha256": "5b6abc31a8465d1d28509bde90efe9e67af6853c2c6d0f3e09242ae3f8cff954",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_47",
+      "file_id": "1GhN5-mPD_96CBhBGn7VGHsFRnqZV_6mv",
+      "destination": "warehouse/objects/zkb/year=2011/33769ddc1c355d5177ac6b6b079bb54fa321f080d4f4b9140260649f52ec8587.parquet",
+      "size": 14295011,
+      "sha256": "33769ddc1c355d5177ac6b6b079bb54fa321f080d4f4b9140260649f52ec8587",
+      "verified": true
+    },
+    {
+      "artifact_id": "golden_48",
+      "file_id": "1cLCKnBXaySv-S7MtZhYwOSEzU-dXz7pS",
+      "destination": "warehouse/objects/zkb/year=2010/f1f47f5e8e4d29ea299fd2efbd0d7bfe8690cc74b8941f882464ab0dfc8c8c33.parquet",
+      "size": 14587006,
+      "sha256": "f1f47f5e8e4d29ea299fd2efbd0d7bfe8690cc74b8941f882464ab0dfc8c8c33",
+      "verified": true
+    }
+  ]
+}
