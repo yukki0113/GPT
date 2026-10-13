@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: write
-  issues: read
+  issues: write
 
 jobs:
   route:
@@ -33,91 +33,173 @@ jobs:
           import re
           from pathlib import Path
 
-          registry_path = Path('.gpt/issue_router_registry.json')
-          registry = json.loads(registry_path.read_text(encoding='utf-8'))
+          output_path = Path(os.environ['GITHUB_OUTPUT'])
+          resolution_path = Path('/tmp/issue_router_resolution.json')
+          dispatch_path = Path('/tmp/issue_router_dispatch.json')
 
-          if registry.get('schema_version') != '1.0':
-              raise SystemExit('unsupported issue router registry schema')
-          if registry.get('router_version') != '1.0':
-              raise SystemExit('unsupported issue router version')
+          def write_outputs(resolution):
+              with output_path.open('a', encoding='utf-8') as out:
+                  out.write(f"route_status={resolution['status']}\n")
+                  out.write(f"matched={'true' if resolution.get('matched') else 'false'}\n")
+                  out.write(f"event_type={resolution.get('event_type', '')}\n")
+                  out.write(f"target_workflow={resolution.get('target_workflow', '')}\n")
+                  out.write(f"request_id={resolution.get('request_id', '')}\n")
+                  out.write(f"error_code={resolution.get('error_code', '')}\n")
 
-          routes = registry.get('routes')
-          if not isinstance(routes, list):
-              raise SystemExit('routes must be a list')
+          def persist(resolution):
+              resolution_path.write_text(
+                  json.dumps(resolution, ensure_ascii=False, indent=2),
+                  encoding='utf-8',
+              )
+              write_outputs(resolution)
 
-          prefixes = []
-          event_types = []
-          for route in routes:
-              if not isinstance(route, dict):
-                  raise SystemExit('each route must be an object')
-              prefix = str(route.get('prefix', '') or '')
-              event_type = str(route.get('event_type', '') or '')
-              workflow = str(route.get('workflow', '') or '')
-              if not prefix or not event_type or not workflow:
-                  raise SystemExit('route requires prefix, event_type, workflow')
-              prefixes.append(prefix)
-              event_types.append(event_type)
+          try:
+              registry_path = Path('.gpt/issue_router_registry.json')
+              registry = json.loads(registry_path.read_text(encoding='utf-8'))
 
-          if len(prefixes) != len(set(prefixes)):
-              raise SystemExit('duplicate route prefix in registry')
-          if len(event_types) != len(set(event_types)):
-              raise SystemExit('duplicate event_type in registry')
+              if registry.get('schema_version') != '1.0':
+                  raise ValueError('unsupported issue router registry schema')
+              if registry.get('router_version') != '1.0':
+                  raise ValueError('unsupported issue router version')
 
-          title = os.environ['ISSUE_TITLE']
-          actor = os.environ['ISSUE_ACTOR']
-          enabled = [route for route in routes if route.get('enabled') is True]
-          matches = [route for route in enabled if title.startswith(route['prefix'])]
+              routes = registry.get('routes')
+              if not isinstance(routes, list):
+                  raise ValueError('routes must be a list')
 
-          if not matches:
-              with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as out:
-                  out.write('matched=false\n')
-              raise SystemExit(0)
+              prefixes = []
+              event_types = []
+              for route in routes:
+                  if not isinstance(route, dict):
+                      raise ValueError('each route must be an object')
+                  prefix = str(route.get('prefix', '') or '')
+                  event_type = str(route.get('event_type', '') or '')
+                  workflow = str(route.get('workflow', '') or '')
+                  if not prefix or not event_type or not workflow:
+                      raise ValueError('route requires prefix, event_type, workflow')
+                  prefixes.append(prefix)
+                  event_types.append(event_type)
 
-          if len(matches) != 1:
-              raise SystemExit('issue title matched multiple router prefixes')
+              if len(prefixes) != len(set(prefixes)):
+                  raise ValueError('duplicate route prefix in registry')
+              if len(event_types) != len(set(event_types)):
+                  raise ValueError('duplicate event_type in registry')
 
-          route = matches[0]
-          if route.get('owner_only', False) and actor != 'yukki0113':
-              raise SystemExit('route is owner-only')
+              title = os.environ['ISSUE_TITLE']
+              actor = os.environ['ISSUE_ACTOR']
+              issue_number = int(os.environ['ISSUE_NUMBER'])
+              router_run_id = int(os.environ['ROUTER_RUN_ID'])
+              enabled = [route for route in routes if route.get('enabled') is True]
+              matches = [route for route in enabled if title.startswith(route['prefix'])]
 
-          request_id = title[len(route['prefix']):].strip()
-          pattern = str(route.get('request_id_pattern') or r'^[A-Za-z0-9._-]{1,80}$')
-          if not re.fullmatch(pattern, request_id):
-              raise SystemExit('request_id does not satisfy route contract')
+              if not matches:
+                  persist({
+                      'status': 'no_match',
+                      'matched': False,
+                      'issue_number': issue_number,
+                      'router_run_id': router_run_id,
+                  })
+                  raise SystemExit(0)
 
-          issue_number = int(os.environ['ISSUE_NUMBER'])
-          payload = {
-              'router_version': '1.0',
-              'source': 'issue_router',
-              'issue_number': issue_number,
-              'issue_actor': actor,
-              'request_id': request_id,
-              'title': title,
-              'router_run_id': int(os.environ['ROUTER_RUN_ID']),
-              'target_workflow': route['workflow'],
-          }
-          dispatch = {
-              'event_type': route['event_type'],
-              'client_payload': payload,
-          }
-          encoded = json.dumps(dispatch, ensure_ascii=False).encode('utf-8')
-          if len(encoded) >= 64 * 1024:
-              raise SystemExit('repository_dispatch payload exceeds 64 KiB limit')
+              if len(matches) != 1:
+                  persist({
+                      'status': 'internal_error',
+                      'matched': True,
+                      'issue_number': issue_number,
+                      'router_run_id': router_run_id,
+                      'failure_class': 'ROUTER_INTERNAL_ERROR',
+                      'error_code': 'MULTIPLE_ROUTE_MATCH',
+                      'message': 'issue title matched multiple enabled router prefixes',
+                  })
+                  raise SystemExit(0)
 
-          Path('/tmp/issue_router_dispatch.json').write_text(
-              json.dumps(dispatch, ensure_ascii=False, indent=2),
-              encoding='utf-8',
-          )
+              route = matches[0]
+              base = {
+                  'matched': True,
+                  'issue_number': issue_number,
+                  'router_run_id': router_run_id,
+                  'event_type': route['event_type'],
+                  'target_workflow': route['workflow'],
+              }
 
-          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as out:
-              out.write('matched=true\n')
-              out.write(f"event_type={route['event_type']}\n")
-              out.write(f"target_workflow={route['workflow']}\n")
-              out.write(f"request_id={request_id}\n")
+              if route.get('owner_only', False) and actor != 'yukki0113':
+                  persist({
+                      **base,
+                      'status': 'invalid',
+                      'failure_class': 'REQUEST_INVALID',
+                      'error_code': 'OWNER_ONLY',
+                      'message': 'request Issue actor is not allowed for this route',
+                  })
+                  raise SystemExit(0)
+
+              request_id = title[len(route['prefix']):].strip()
+              pattern = str(route.get('request_id_pattern') or r'^[A-Za-z0-9._-]{1,80}$')
+              if not re.fullmatch(pattern, request_id):
+                  persist({
+                      **base,
+                      'status': 'invalid',
+                      'request_id': request_id,
+                      'failure_class': 'REQUEST_INVALID',
+                      'error_code': 'INVALID_REQUEST_ID',
+                      'message': (
+                          'request_id does not satisfy route contract; '
+                          f'expected pattern: {pattern}'
+                      ),
+                  })
+                  raise SystemExit(0)
+
+              payload = {
+                  'router_version': '1.0',
+                  'source': 'issue_router',
+                  'issue_number': issue_number,
+                  'issue_actor': actor,
+                  'request_id': request_id,
+                  'title': title,
+                  'router_run_id': router_run_id,
+                  'target_workflow': route['workflow'],
+              }
+              dispatch = {
+                  'event_type': route['event_type'],
+                  'client_payload': payload,
+              }
+              encoded = json.dumps(dispatch, ensure_ascii=False).encode('utf-8')
+              if len(encoded) >= 64 * 1024:
+                  persist({
+                      **base,
+                      'status': 'invalid',
+                      'request_id': request_id,
+                      'failure_class': 'REQUEST_INVALID',
+                      'error_code': 'DISPATCH_PAYLOAD_TOO_LARGE',
+                      'message': 'repository_dispatch payload exceeds 64 KiB limit',
+                  })
+                  raise SystemExit(0)
+
+              dispatch_path.write_text(
+                  json.dumps(dispatch, ensure_ascii=False, indent=2),
+                  encoding='utf-8',
+              )
+              persist({
+                  **base,
+                  'status': 'ready',
+                  'request_id': request_id,
+              })
+          except SystemExit:
+              raise
+          except Exception as exc:
+              persist({
+                  'status': 'internal_error',
+                  'matched': True,
+                  'issue_number': int(os.environ['ISSUE_NUMBER']),
+                  'router_run_id': int(os.environ['ROUTER_RUN_ID']),
+                  'failure_class': 'ROUTER_INTERNAL_ERROR',
+                  'error_code': 'ROUTER_RESOLUTION_EXCEPTION',
+                  'message': str(exc),
+              })
           PY
 
       - name: Dispatch target
-        if: steps.route.outputs.matched == 'true'
+        id: dispatch
+        if: steps.route.outputs.route_status == 'ready'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -127,24 +209,104 @@ jobs:
             "repos/${{ github.repository }}/dispatches" \
             --input /tmp/issue_router_dispatch.json
 
+      - name: Report routing result
+        if: always() && steps.route.outputs.route_status != 'no_match'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          DISPATCH_OUTCOME: ${{ steps.dispatch.outcome }}
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+          ROUTER_RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/issue_router_resolution.json')
+          if path.exists():
+              result = json.loads(path.read_text(encoding='utf-8'))
+          else:
+              result = {
+                  'status': 'internal_error',
+                  'matched': True,
+                  'failure_class': 'ROUTER_INTERNAL_ERROR',
+                  'error_code': 'MISSING_RESOLUTION',
+                  'message': 'router resolution record was not created',
+              }
+
+          route_status = result.get('status')
+          dispatch_outcome = os.environ.get('DISPATCH_OUTCOME', '')
+          if route_status == 'ready':
+              if dispatch_outcome == 'success':
+                  result['status'] = 'dispatched'
+                  result['dispatch_status'] = 'accepted'
+              else:
+                  result['status'] = 'failure'
+                  result['dispatch_status'] = dispatch_outcome or 'unknown'
+                  result['failure_class'] = 'ROUTER_DISPATCH_FAILED'
+                  result['error_code'] = 'REPOSITORY_DISPATCH_FAILED'
+                  result['message'] = 'repository_dispatch was not accepted'
+          elif route_status in {'invalid', 'internal_error'}:
+              result['status'] = 'failure'
+
+          result['router_run_url'] = (
+              f"{os.environ['SERVER_URL']}/{os.environ['REPOSITORY']}/actions/runs/"
+              f"{os.environ['ROUTER_RUN_ID']}"
+          )
+          Path('/tmp/issue_router_result.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2),
+              encoding='utf-8',
+          )
+          Path('/tmp/issue_router_comment.md').write_text(
+              'ISSUE_ROUTER_RESULT\n\`\`\`json\n'
+              + json.dumps(result, ensure_ascii=False, indent=2)
+              + '\n\`\`\`\n',
+              encoding='utf-8',
+          )
+          PY
+
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" \
+            --body-file /tmp/issue_router_comment.md
+
+          ROUTE_STATUS="${{ steps.route.outputs.route_status }}"
+          if [ "$ROUTE_STATUS" = "invalid" ]; then
+            gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason "not planned"
+          fi
+
       - name: Write routing summary
         if: always()
         env:
+          ROUTE_STATUS: ${{ steps.route.outputs.route_status }}
           MATCHED: ${{ steps.route.outputs.matched }}
           EVENT_TYPE: ${{ steps.route.outputs.event_type }}
           TARGET_WORKFLOW: ${{ steps.route.outputs.target_workflow }}
           REQUEST_ID: ${{ steps.route.outputs.request_id }}
+          ERROR_CODE: ${{ steps.route.outputs.error_code }}
+          DISPATCH_OUTCOME: ${{ steps.dispatch.outcome }}
         run: |
           {
             echo "## Issue Router"
             echo
             echo "- issue: #${{ github.event.issue.number }}"
+            echo "- route_status: ${ROUTE_STATUS:-unknown}"
             echo "- matched: ${MATCHED:-false}"
             if [ "${MATCHED:-false}" = "true" ]; then
               echo "- request_id: $REQUEST_ID"
               echo "- event_type: $EVENT_TYPE"
               echo "- target_workflow: $TARGET_WORKFLOW"
+              echo "- dispatch_outcome: ${DISPATCH_OUTCOME:-not-run}"
+              if [ -n "$ERROR_CODE" ]; then
+                echo "- error_code: $ERROR_CODE"
+              fi
             else
               echo "- action: no-op (prefix not migrated)"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail routing error
+        if: always() && (steps.route.outputs.route_status == 'invalid' || steps.route.outputs.route_status == 'internal_error' || steps.dispatch.outcome == 'failure')
+        run: |
+          echo "Issue Router failed; see ISSUE_ROUTER_RESULT on the request Issue."
+          exit 1
