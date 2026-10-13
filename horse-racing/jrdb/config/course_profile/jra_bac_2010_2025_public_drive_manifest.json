@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "bac_2010",
+      "file_id": "1UXczYcRwQ-SP5qoR1IcaBexMxiGwJH3c",
+      "destination": "bac/year=2010/6f4866c9494a53f89fa907c1354f044005166aca416509d5b4f8107fea1bc2af.parquet",
+      "expected_name": "6f4866c9494a53f89fa907c1354f044005166aca416509d5b4f8107fea1bc2af.parquet",
+      "sha256": "6f4866c9494a53f89fa907c1354f044005166aca416509d5b4f8107fea1bc2af",
+      "expected_size": 170520
+    },
+    {
+      "artifact_id": "bac_2011",
+      "file_id": "1XmkEazA9mmjmwn1A59QfnjuzB6W8CKSG",
+      "destination": "bac/year=2011/ec8fddb9e63f1ad666c9f4598b27ee53a7713d5402c5389eefac9a7ae65abe6a.parquet",
+      "expected_name": "ec8fddb9e63f1ad666c9f4598b27ee53a7713d5402c5389eefac9a7ae65abe6a.parquet",
+      "sha256": "ec8fddb9e63f1ad666c9f4598b27ee53a7713d5402c5389eefac9a7ae65abe6a",
+      "expected_size": 170732
+    },
+    {
+      "artifact_id": "bac_2012",
+      "file_id": "1Wt5aXtJvyRFspoAKPYIPBuBrgj9UmpsA",
+      "destination": "bac/year=2012/54b30227d3878755a9b8425cef96310cea5361ffe95b95794c70959c29ac181a.parquet",
+      "expected_name": "54b30227d3878755a9b8425cef96310cea5361ffe95b95794c70959c29ac181a.parquet",
+      "sha256": "54b30227d3878755a9b8425cef96310cea5361ffe95b95794c70959c29ac181a",
+      "expected_size": 168948
+    },
+    {
+      "artifact_id": "bac_2013",
+      "file_id": "1l0Zs1q9oQU8-ToIZu9MPSgwmBw1JIYfz",
+      "destination": "bac/year=2013/6c8f58446c76874c4e981f18fc491a06c5fabc733e4512377489db1a766f8474.parquet",
+      "expected_name": "6c8f58446c76874c4e981f18fc491a06c5fabc733e4512377489db1a766f8474.parquet",
+      "sha256": "6c8f58446c76874c4e981f18fc491a06c5fabc733e4512377489db1a766f8474",
+      "expected_size": 169942
+    },
+    {
+      "artifact_id": "bac_2014",
+      "file_id": "1G30BscqXkp72W_gr6BttHRYT4xXA3d4r",
+      "destination": "bac/year=2014/9a1a1812b3b942ace79b944371ca01ed5a085a75a9cc2663b90b2da276e8d4f7.parquet",
+      "expected_name": "9a1a1812b3b942ace79b944371ca01ed5a085a75a9cc2663b90b2da276e8d4f7.parquet",
+      "sha256": "9a1a1812b3b942ace79b944371ca01ed5a085a75a9cc2663b90b2da276e8d4f7",
+      "expected_size": 170134
+    },
+    {
+      "artifact_id": "bac_2015",
+      "file_id": "1JSt6nBos45-vHm7FoUfR9deFCw0F60iG",
+      "destination": "bac/year=2015/761fd74ff7ea26557136bf4e99d077799f26dabb48351736b4cf21183feb36fa.parquet",
+      "expected_name": "761fd74ff7ea26557136bf4e99d077799f26dabb48351736b4cf21183feb36fa.parquet",
+      "sha256": "761fd74ff7ea26557136bf4e99d077799f26dabb48351736b4cf21183feb36fa",
+      "expected_size": 169064
+    },
+    {
+      "artifact_id": "bac_2016",
+      "file_id": "1v1Y4bUb4K-8F7L6RFblYX-ILgXdIskTF",
+      "destination": "bac/year=2016/b99dc0af4db6638efc74c2473a838d994971a5cee16ca1a5532d3e393ef5ec3f.parquet",
+      "expected_name": "b99dc0af4db6638efc74c2473a838d994971a5cee16ca1a5532d3e393ef5ec3f.parquet",
+      "sha256": "b99dc0af4db6638efc74c2473a838d994971a5cee16ca1a5532d3e393ef5ec3f",
+      "expected_size": 169314
+    },
+    {
+      "artifact_id": "bac_2017",
+      "file_id": "1SjsgihUNooQgIqWtAw-DLwoRMDmlEXk2",
+      "destination": "bac/year=2017/fb4596e94d845969ebb2092e159f7f9ddd5d599b03a1f1f19e0db46e8b84e5e5.parquet",
+      "expected_name": "fb4596e94d845969ebb2092e159f7f9ddd5d599b03a1f1f19e0db46e8b84e5e5.parquet",
+      "sha256": "fb4596e94d845969ebb2092e159f7f9ddd5d599b03a1f1f19e0db46e8b84e5e5",
+      "expected_size": 170002
+    },
+    {
+      "artifact_id": "bac_2018",
+      "file_id": "1N1olCniTMiLyvXp8KoNq99PrXzVA_pZQ",
+      "destination": "bac/year=2018/62304fcab54dc98006f041394faf265a65e76d6946b8c399867da7e8be4e1861.parquet",
+      "expected_name": "62304fcab54dc98006f041394faf265a65e76d6946b8c399867da7e8be4e1861.parquet",
+      "sha256": "62304fcab54dc98006f041394faf265a65e76d6946b8c399867da7e8be4e1861",
+      "expected_size": 170845
+    },
+    {
+      "artifact_id": "bac_2019",
+      "file_id": "1cAHYDIi71wE9ZC52yI51IqwcSx9aVveV",
+      "destination": "bac/year=2019/9254dd301356192c29bb33efbe8a39c7ff39c9ce7732fd6b8d5a3bdd43530efb.parquet",
+      "expected_name": "9254dd301356192c29bb33efbe8a39c7ff39c9ce7732fd6b8d5a3bdd43530efb.parquet",
+      "sha256": "9254dd301356192c29bb33efbe8a39c7ff39c9ce7732fd6b8d5a3bdd43530efb",
+      "expected_size": 170866
+    },
+    {
+      "artifact_id": "bac_2020",
+      "file_id": "1JWtEeASnWunDyKksTllMG3mjVMQNdGqh",
+      "destination": "bac/year=2020/e8b8bd1beb6e7b36502b8fe8c04c61b1e9cc594c430a6679f8f83d22075300e7.parquet",
+      "expected_name": "e8b8bd1beb6e7b36502b8fe8c04c61b1e9cc594c430a6679f8f83d22075300e7.parquet",
+      "sha256": "e8b8bd1beb6e7b36502b8fe8c04c61b1e9cc594c430a6679f8f83d22075300e7",
+      "expected_size": 170037
+    },
+    {
+      "artifact_id": "bac_2021",
+      "file_id": "1-9qd-kEamEvOvH9qbGo8nBxwqBZylyaw",
+      "destination": "bac/year=2021/9722e80a0b60d16eb236c4c4fc3a02116b382441c0f398625f4aa7a2f328d90b.parquet",
+      "expected_name": "9722e80a0b60d16eb236c4c4fc3a02116b382441c0f398625f4aa7a2f328d90b.parquet",
+      "sha256": "9722e80a0b60d16eb236c4c4fc3a02116b382441c0f398625f4aa7a2f328d90b",
+      "expected_size": 169921
+    },
+    {
+      "artifact_id": "bac_2022",
+      "file_id": "1EcSNcOQcC-UE5lfBPTLrSkt1t_9colM5",
+      "destination": "bac/year=2022/b3edaaa893fd735f043aa876cf67cfc01fd3cca54fe5f276131ade2d4acb167b.parquet",
+      "expected_name": "b3edaaa893fd735f043aa876cf67cfc01fd3cca54fe5f276131ade2d4acb167b.parquet",
+      "sha256": "b3edaaa893fd735f043aa876cf67cfc01fd3cca54fe5f276131ade2d4acb167b",
+      "expected_size": 170128
+    },
+    {
+      "artifact_id": "bac_2023",
+      "file_id": "1XGYonMUbiYunmQcjnXK-k5n2iNNVZLbE",
+      "destination": "bac/year=2023/c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa.parquet",
+      "expected_name": "c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa.parquet",
+      "sha256": "c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa",
+      "expected_size": 170174
+    },
+    {
+      "artifact_id": "bac_2024",
+      "file_id": "1xhErVj2_Qv_wVkX1Xmznl0k66_olsEs4",
+      "destination": "bac/year=2024/ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898.parquet",
+      "expected_name": "ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898.parquet",
+      "sha256": "ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898",
+      "expected_size": 171800
+    },
+    {
+      "artifact_id": "bac_2025",
+      "file_id": "1gA9eBkY7cF30FnkjhSnIxEVE-_TgLK3v",
+      "destination": "bac/year=2025/f6ceb99ab6ebadf88a44315276bb50b7f4e1f536c2651a793a6c0f1f7b4ef738.parquet",
+      "expected_name": "f6ceb99ab6ebadf88a44315276bb50b7f4e1f536c2651a793a6c0f1f7b4ef738.parquet",
+      "sha256": "f6ceb99ab6ebadf88a44315276bb50b7f4e1f536c2651a793a6c0f1f7b4ef738",
+      "expected_size": 169370
+    }
+  ]
+}
