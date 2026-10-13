@@ -21,7 +21,8 @@ RATE_COLUMNS = [
     "middle_draw_win_rate", "middle_draw_top3_rate",
     "outside_draw_win_rate", "outside_draw_top3_rate",
 ]
-DEFINITION_VERSION = "jra-course-stats-definition-v0.1"\nPOPULATION_FILTER_ID = "ALL_FLAT_RESULTS_V0_1"
+DEFINITION_VERSION = "jra-course-stats-definition-v0.1"
+POPULATION_FILTER_ID = "ALL_FLAT_RESULTS_V0_1"
 
 
 def main() -> int:
