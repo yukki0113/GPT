@@ -28,12 +28,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          rm -rf /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb
-          mkdir -p /tmp/input /tmp/analysis_art /tmp/analysis /tmp/rrdb
+          rm -rf /tmp/input /tmp/analysis /tmp/rrdb
+          mkdir -p /tmp/input /tmp/analysis /tmp/rrdb
           gdown 'https://drive.google.com/uc?id=1YN5jmdw2eYawyO_Of8CFNfCPvoU9mFvo' -O /tmp/input/PACI260613.zip
           gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/input/RaceReviewDB_CURRENT.zip
-          gh run download 36437363166 --repo "$GITHUB_REPOSITORY" --name 'jrdb-post-race-parquet-refresh-36437363166' --dir /tmp/analysis_art
-          ANALYSIS_ARCHIVE="$(find /tmp/analysis_art -maxdepth 1 -type f \( -name '*.tar.xz' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' \) | sort | head -n 1)"
+          gdown 'https://drive.google.com/uc?id=1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5' -O /tmp/input/jrdb_analysis_v1_4_canonical_current.tar.xz
+          ANALYSIS_ARCHIVE='/tmp/input/jrdb_analysis_v1_4_canonical_current.tar.xz'
           test -n "$ANALYSIS_ARCHIVE"
           case "$ANALYSIS_ARCHIVE" in
             *.tar.xz) tar -xJf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
