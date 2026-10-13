@@ -1,0 +1,120 @@
+PRAGMA foreign_keys=ON;
+
+CREATE TABLE course_master (
+  course_key TEXT PRIMARY KEY,
+  venue_code TEXT NOT NULL,
+  venue_name TEXT NOT NULL,
+  surface_code TEXT NOT NULL,
+  surface TEXT NOT NULL,
+  distance_m INTEGER NOT NULL,
+  layout_variant TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PROVISIONAL',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  CHECK (surface_code IN ('1','2','3')),
+  CHECK (surface IN ('turf','dirt','obstacle')),
+  CHECK (distance_m > 0),
+  CHECK (status IN ('ACTIVE','HISTORICAL','PROVISIONAL','RETIRED')),
+  UNIQUE (venue_code, surface_code, distance_m, layout_variant)
+);
+
+CREATE TABLE course_version (
+  course_version_id TEXT PRIMARY KEY,
+  course_key TEXT NOT NULL,
+  version_no INTEGER NOT NULL,
+  valid_from TEXT,
+  valid_to_exclusive TEXT,
+  version_status TEXT NOT NULL DEFAULT 'PROVISIONAL',
+  physical_data_status TEXT NOT NULL DEFAULT 'UNKNOWN',
+  turn_direction TEXT,
+  turn_count INTEGER,
+  start_position TEXT,
+  start_straight_m REAL,
+  first_corner_distance_m REAL,
+  final_straight_m REAL,
+  start_slope_flag INTEGER,
+  start_slope_type TEXT,
+  final_straight_slope_flag INTEGER,
+  final_straight_slope_type TEXT,
+  elevation_difference_m REAL,
+  elevation_profile TEXT,
+  course_width_class TEXT,
+  course_size_class TEXT,
+  inner_outer_layout TEXT,
+  notes TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(course_key) REFERENCES course_master(course_key),
+  CHECK (version_no > 0),
+  CHECK (version_status IN ('ACTIVE','HISTORICAL','PROVISIONAL','RETIRED')),
+  CHECK (physical_data_status IN ('CONFIRMED','PARTIAL','PROVISIONAL','UNKNOWN')),
+  CHECK (turn_direction IS NULL OR turn_direction IN ('right','left','straight','other')),
+  CHECK (turn_count IS NULL OR turn_count >= 0),
+  CHECK (start_straight_m IS NULL OR start_straight_m >= 0),
+  CHECK (first_corner_distance_m IS NULL OR first_corner_distance_m >= 0),
+  CHECK (final_straight_m IS NULL OR final_straight_m >= 0),
+  CHECK (start_slope_flag IS NULL OR start_slope_flag IN (0,1)),
+  CHECK (final_straight_slope_flag IS NULL OR final_straight_slope_flag IN (0,1)),
+  UNIQUE (course_key, version_no)
+);
+
+CREATE TABLE course_jrdb_mapping (
+  mapping_id INTEGER PRIMARY KEY,
+  venue_code TEXT NOT NULL,
+  surface_code TEXT NOT NULL,
+  distance_m INTEGER NOT NULL,
+  turn_code TEXT NOT NULL,
+  layout_code TEXT NOT NULL,
+  course_code TEXT,
+  course_key TEXT,
+  course_version_id TEXT,
+  valid_from TEXT,
+  valid_to_exclusive TEXT,
+  mapping_status TEXT NOT NULL DEFAULT 'UNRESOLVED',
+  mapping_reason TEXT,
+  first_observed_race_date TEXT,
+  last_observed_race_date TEXT,
+  observed_race_count INTEGER,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY(course_key) REFERENCES course_master(course_key),
+  FOREIGN KEY(course_version_id) REFERENCES course_version(course_version_id),
+  CHECK (surface_code IN ('1','2','3')),
+  CHECK (turn_code IN ('1','2','3','9')),
+  CHECK (layout_code IN ('1','2','3','9')),
+  CHECK (course_code IS NULL OR course_code IN ('1','2','3','4','5','6')),
+  CHECK (distance_m > 0),
+  CHECK (mapping_status IN ('CONFIRMED','PROVISIONAL','UNRESOLVED','REJECTED')),
+  CHECK (observed_race_count IS NULL OR observed_race_count >= 0),
+  UNIQUE (venue_code, surface_code, distance_m, turn_code, layout_code, course_code, valid_from)
+);
+
+CREATE TABLE course_attribute_evidence (
+  evidence_id INTEGER PRIMARY KEY,
+  course_version_id TEXT NOT NULL,
+  attribute_name TEXT NOT NULL,
+  attribute_value_text TEXT,
+  source_kind TEXT NOT NULL,
+  source_title TEXT NOT NULL,
+  source_locator TEXT NOT NULL,
+  retrieved_at TEXT,
+  effective_from TEXT,
+  effective_to_exclusive TEXT,
+  evidence_status TEXT NOT NULL DEFAULT 'CONFIRMED',
+  notes TEXT,
+  FOREIGN KEY(course_version_id) REFERENCES course_version(course_version_id),
+  CHECK (source_kind IN ('JRA_OFFICIAL','PRIMARY_OTHER','SECONDARY_VERIFIED','JRDB_OBSERVED')),
+  CHECK (evidence_status IN ('CONFIRMED','SUPPORTING','CONFLICTING','SUPERSEDED'))
+);
+
+CREATE INDEX idx_course_master_lookup
+  ON course_master(venue_code, surface_code, distance_m);
+
+CREATE INDEX idx_course_version_date
+  ON course_version(course_key, valid_from, valid_to_exclusive);
+
+CREATE INDEX idx_course_jrdb_mapping_lookup
+  ON course_jrdb_mapping(venue_code, surface_code, distance_m, turn_code, layout_code, course_code);
+
+CREATE INDEX idx_course_evidence_version
+  ON course_attribute_evidence(course_version_id, attribute_name);
