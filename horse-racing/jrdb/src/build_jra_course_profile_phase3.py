@@ -5,8 +5,7 @@ import argparse, json
 from collections import defaultdict
 from pathlib import Path
 
-SURFACE_NAMES={"1":"turf","2":"dirt","3":"obstacle"}
-TOKENS={"1":"T","2":"D","3":"O"}
+from jrdb_course_profile_identity import SURFACE_NAMES, TOKENS, layout_from_observation
 
 def load_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -14,23 +13,6 @@ def load_json(path):
 def write_jsonl(path, rows):
     p=Path(path); p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text("".join(json.dumps(r,ensure_ascii=False,sort_keys=True)+"\n" for r in rows),encoding="utf-8")
-
-def layout_from_observation(venue,surface,distance,turn,layout):
-    if surface=="1":
-        if turn=="3":
-            return "straight"
-        if venue=="04":
-            return "outer" if layout=="2" else "inner"
-        if venue=="06":
-            return "outer-inner" if distance==3200 else ("outer" if layout=="2" else "inner")
-        if venue=="08":
-            return "outer" if layout=="2" else "inner"
-        if venue=="09":
-            return "outer-inner" if distance==3200 else ("outer" if layout=="2" else "inner")
-        return "main"
-    if surface=="2":
-        return "main"
-    return "obstacle"
 
 def main():
     ap=argparse.ArgumentParser()
