@@ -1,0 +1,53 @@
+{
+  "schema_version": "jra-course-profile-identity-v0.1",
+  "surface": {
+    "1": {"name": "turf", "token": "T"},
+    "2": {"name": "dirt", "token": "D"},
+    "3": {"name": "obstacle", "token": "O"}
+  },
+  "turn": {
+    "1": "right",
+    "2": "left",
+    "3": "straight",
+    "9": "other"
+  },
+  "jrdb_layout": {
+    "1": "normal_or_inner",
+    "2": "outer",
+    "3": "straight_dirt",
+    "9": "other"
+  },
+  "jrdb_course": {
+    "1": "A",
+    "2": "A1",
+    "3": "A2",
+    "4": "B",
+    "5": "C",
+    "6": "D"
+  },
+  "course_key": {
+    "format": "JRA:{venue_code}:{surface_token}:{distance_m}:{layout_variant}",
+    "identity_fields": ["venue_code", "surface_code", "distance_m", "layout_variant"],
+    "forbidden_direct_identity_fields": ["course_code"],
+    "default_layout_variant": "main",
+    "default_requires_confirmation": true
+  },
+  "course_version_id": {
+    "format": "{course_key}:v{version_no_3digit}",
+    "date_not_embedded": true
+  },
+  "mapping": {
+    "source_fields": ["venue_code", "surface_code", "distance_m", "turn_code", "layout_code", "course_code"],
+    "blank_course_code_allowed": true,
+    "fail_closed_on_unresolved": true,
+    "course_code_role": "observation_metadata",
+    "layout_code_role": "mapping_evidence_not_automatic_physical_identity"
+  },
+  "phase1_multi_turn_layout_conditions": [
+    {"venue_code": "04", "surface_code": "1", "distance_m": 2000},
+    {"venue_code": "05", "surface_code": "3", "distance_m": 3300},
+    {"venue_code": "08", "surface_code": "1", "distance_m": 1400},
+    {"venue_code": "08", "surface_code": "1", "distance_m": 1600},
+    {"venue_code": "08", "surface_code": "3", "distance_m": 3170}
+  ]
+}
