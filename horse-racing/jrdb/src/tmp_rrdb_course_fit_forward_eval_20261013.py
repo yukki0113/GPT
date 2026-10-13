@@ -80,27 +80,27 @@ c.execute("""create view m as select e.race_date,e.race_key,e.horse_id,e.finish,
  x.sample_count,x.shrunk_delta,x.confidence from ev e join cand x
  on e.horse_id=x.horse_id and e.surface_code=x.surface_code and e.fam=x.fit_family
  and e.ft=x.feature_type and e.fv=x.feature_value and e.sc=x.surface_changed""")
-c.execute("""create view b as select fam,ft,count(*) bn,avg(finish=1)::double bw,
- avg(finish<=3)::double bp,avg(perf) bf from m where sample_count>=4 group by 1,2""")
+c.execute("""create view b as select fam,ft,count(*) bn,avg((finish=1)::int)::double bw,
+ avg((finish<=3)::int)::double bp,avg(perf) bf from m where sample_count>=4 group by 1,2""")
 thresholds=[("POS",0,0,4),("D05C03",.05,.3,4),("D10C05",.10,.5,4),("D15C05",.15,.5,4),("D10C07H",.10,.7,6)]
 qs=[]
 for n,d,cf,nn in thresholds:
  qs.append(f"""select m.fam,m.ft,'{n}' rule,count(*) n,count(distinct horse_id) horses,
- avg(finish=1)::double win,avg(finish<=3)::double top3,avg(perf) perf,
- avg(finish=1)::double-b.bw win_lift,avg(finish<=3)::double-b.bp top3_lift,
+ avg((finish=1)::int)::double win,avg((finish<=3)::int)::double top3,avg(perf) perf,
+ avg((finish=1)::int)::double-b.bw win_lift,avg((finish<=3)::int)::double-b.bp top3_lift,
  avg(perf)-b.bf perf_lift from m join b using(fam,ft)
  where sample_count>={nn} and shrunk_delta>={d} and confidence>={cf}
  group by 1,2,3,b.bw,b.bp,b.bf""")
 c.execute("create view ts as "+" union all ".join(qs))
 c.execute(f"copy(select * from ts order by fam,ft,rule) to {q(a.out/'thresholds.csv')} (header,delimiter ',')")
-c.execute(f"""copy(select m.fam,m.ft,m.fv,count(*) n,avg(finish=1)::double win,
- avg(finish<=3)::double top3,avg(perf) perf,avg(finish=1)::double-b.bw win_lift,
- avg(finish<=3)::double-b.bp top3_lift,avg(perf)-b.bf perf_lift
+c.execute(f"""copy(select m.fam,m.ft,m.fv,count(*) n,avg((finish=1)::int)::double win,
+ avg((finish<=3)::int)::double top3,avg(perf) perf,avg((finish=1)::int)::double-b.bw win_lift,
+ avg((finish<=3)::int)::double-b.bp top3_lift,avg(perf)-b.bf perf_lift
  from m join b using(fam,ft) where sample_count>=4 and shrunk_delta>=.10 and confidence>=.5
  group by 1,2,3,b.bw,b.bp,b.bf order by n desc)
  to {q(a.out/'values.csv')} (header,delimiter ',')""")
 c.execute(f"""copy(select fam,ft,case when race_date<date '2026-07-01' then 'H1' else 'H2' end period,
- count(*) n,avg(finish=1)::double win,avg(finish<=3)::double top3,avg(perf) perf
+ count(*) n,avg((finish=1)::int)::double win,avg((finish<=3)::int)::double top3,avg(perf) perf
  from m where sample_count>=4 and shrunk_delta>=.10 and confidence>=.5
  group by 1,2,3 order by 1,2,3) to {q(a.out/'stability.csv')} (header,delimiter ',')""")
 meta={"rrdb_runs":c.execute("select count(*) from e").fetchone()[0],
