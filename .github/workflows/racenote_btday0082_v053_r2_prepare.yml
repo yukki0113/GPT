@@ -1,0 +1,94 @@
+name: RaceNote BTDAY-0082 v0.5.3 r2 TURN 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0082/R2_PREPARE_TRIGGER'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema gdown
+      - name: Materialize canonical 2026 inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/input /tmp/analysis /tmp/rrdb
+          mkdir -p /tmp/input /tmp/analysis /tmp/rrdb
+          gdown 'https://drive.google.com/uc?id=1YN5jmdw2eYawyO_Of8CFNfCPvoU9mFvo' -O /tmp/input/PACI260613.zip
+          gdown 'https://drive.google.com/uc?id=1UwNfrupMTHRPhkzULPvClGre4MWz2TFg' -O /tmp/input/RaceReviewDB_CURRENT.zip
+          gdown 'https://drive.google.com/uc?id=1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5' -O /tmp/input/jrdb_analysis_v1_4_canonical_current.tar.xz
+          ANALYSIS_ARCHIVE='/tmp/input/jrdb_analysis_v1_4_canonical_current.tar.xz'
+          test -n "$ANALYSIS_ARCHIVE"
+          case "$ANALYSIS_ARCHIVE" in
+            *.tar.xz) tar -xJf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
+            *.tar.gz|*.tgz) tar -xzf "$ANALYSIS_ARCHIVE" -C /tmp/analysis ;;
+            *.zip) unzip -q "$ANALYSIS_ARCHIVE" -d /tmp/analysis ;;
+          esac
+          unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+      - name: Build canonical v0.5.3 r2 TURN 1
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          TARGET='horse-racing/jrdb/backtests/BTDAY-0082/20260613'
+          test ! -e "$TARGET"
+          MAIN_SHA="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/racenote_v053_from_paci.py             --date 2026-06-13             --paci /tmp/input/PACI260613.zip             --selection-id BTDAY-0082             --main-sha "$MAIN_SHA"             --analysis-root /tmp/analysis             --racereview-root /tmp/rrdb/postrace_review/v0_1             --output-root "$TARGET"
+          ROOT="$TARGET/day_prep/RaceNote_20260613"
+          cp "$ROOT/manifest.json" "$TARGET/day_prep/manifest.json"
+          cp "$ROOT/validation_report.json" "$TARGET/day_prep/validation_report.json"
+      - name: Validate sealed v0.5.3 r2 TURN 1
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0082/20260613')
+          o=json.loads((root/'operation_handoff.json').read_text())
+          s=json.loads((root/'v053/session.json').read_text())
+          rm=json.loads((root/'v053/reader_manifest.json').read_text())
+          m=json.loads((root/'day_prep/manifest.json').read_text())
+          v=json.loads((root/'day_prep/validation_report.json').read_text())
+          p=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
+          assert o['status']=='READY_FOR_V053_AUTHORING'
+          assert o['logic_version']=='RaceNote-Human-Context-Reader-0.5.3-candidate'
+          assert o['contract_revision']=='v053-boundary-safety-r2'
+          assert o['market_blind'] is True and o['result_opened'] is False
+          assert s['status']=='SESSION_SEALED'
+          assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.3-candidate'
+          assert s['contract_revision']=='v053-boundary-safety-r2'
+          assert s['market_blind'] is True and s['target_market_opened'] is False and s['result_opened'] is False
+          assert p['market_blind'] is True and p['target_market_opened'] is False and p['result_opened'] is False
+          assert rm['contract_revision']=='v053-boundary-safety-r2'
+          assert m['status']=='PASS' and v['status']=='PASS'
+          assert v['firewall']['target_result_exposed'] is False
+          assert v['firewall']['analysis_as_of_violations']==0
+          assert v['firewall']['rrdb_as_of_violations']==0
+          assert o['race_count']==len(s['race_roster'])==m['counts']['races_built']==len(rm['entries'])
+          PY
+      - name: Commit immutable r2 TURN 1
+        run: |
+          set -euo pipefail
+          TARGET='horse-racing/jrdb/backtests/BTDAY-0082/20260613'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET"
+          git commit -m 'RaceNote: stage BTDAY-0082 v0.5.3 r2 TURN 1'
+          git pull --rebase origin main
+          git push origin HEAD:main
