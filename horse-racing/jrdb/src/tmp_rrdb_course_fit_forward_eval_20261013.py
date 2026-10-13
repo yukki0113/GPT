@@ -85,7 +85,7 @@ c.execute("""create view b as select fam,ft,count(*) bn,avg((finish=1)::int)::do
 thresholds=[("POS",0,0,4),("D05C03",.05,.3,4),("D10C05",.10,.5,4),("D15C05",.15,.5,4),("D10C07H",.10,.7,6)]
 qs=[]
 for n,d,cf,nn in thresholds:
- qs.append(f"""select m.fam,m.ft,'{n}' rule,count(*) n,count(distinct horse_id) horses,
+ qs.append(f"""select m.fam,m.ft,'{n}' threshold_name,count(*) n,count(distinct horse_id) horses,
  avg((finish=1)::int)::double win,avg((finish<=3)::int)::double top3,avg(perf) perf,
  avg((finish=1)::int)::double-b.bw win_lift,avg((finish<=3)::int)::double-b.bp top3_lift,
  avg(perf)-b.bf perf_lift from m join b using(fam,ft)
