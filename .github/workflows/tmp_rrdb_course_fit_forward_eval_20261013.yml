@@ -1,0 +1,39 @@
+name: TMP RRDB Course Fit Forward Eval
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/tmp_rrdb_course_fit_forward_eval_20261013.py'
+      - '.github/workflows/tmp_rrdb_course_fit_forward_eval_20261013.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: rrdb-course-fit-v0-1-38370479179
+          run-id: 38370479179
+          github-token: ${{ github.token }}
+          path: /tmp/fit
+      - uses: actions/download-artifact@v4
+        with:
+          name: rrdb-current-ready-20261013
+          run-id: 38327108923
+          github-token: ${{ github.token }}
+          path: /tmp/rrdb
+      - run: python horse-racing/jrdb/src/tmp_rrdb_course_fit_forward_eval_20261013.py --fit-root /tmp/fit --rrdb-root /tmp/rrdb --out /tmp/eval
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tmp-rrdb-course-fit-forward-eval-${{ github.run_id }}
+          path: /tmp/eval/
