@@ -78,16 +78,35 @@ This class measures circuit scale only. It does **not** claim to measure turn ra
 
 If rail configurations disagree, or no applicable circumference exists, the CourseMaster value remains null.
 
-## Historical caveat
+## Historical validity contract
 
-Historical `course_version` periods remain incomplete.
+Historical `course_version` periods remain incomplete. v0.1 therefore defines a conservative verification epoch rather than pretending that every current physical value is proven for the full 2010–2025 Warehouse period.
 
-Therefore:
+Canonical validity for RRDB physical-feature research:
 
-- these fields describe the current JRA physical layout;
-- RRDB replay must use explicit period constraints;
-- no claim is made that a current physical value is valid for all 2010–2025 races;
-- three-year rolling Horse Fit research should fail closed or exclude periods where physical-version purity cannot be established.
+```text
+physical_valid_from = 2023-01-01
+physical_valid_to_exclusive = null
+historical_course_version_status = NOT_FULLY_RECONSTRUCTED
+```
+
+Semantics:
+
+- `2023-01-01` is the earliest date RRDB v0.1 is allowed to treat the current physical attributes as verified for research use.
+- It is **not** a claim that each course changed on 2023-01-01.
+- Races before that date must not receive current slope / straight / course-size attributes in Horse Fit or Transition Fit.
+- Transition features that use physical attributes require both the previous race and the current race to fall inside the verified physical period.
+- If a later course-shape change is identified, `physical_valid_to_exclusive` must be populated and a new `physical_version_id` created rather than mutating the old version.
+
+Evidence supporting this conservative epoch includes:
+
+- Kyoto: JRA states that the 2020-autumn to 2023-spring renovation did not involve a large-scale change of course shape.
+- Chukyo: JRA documents the current enlarged course and uphill straight as the layout introduced with the March 2012 reopening, so the 2023+ epoch is safely after that structural change.
+- Hanshin: the 2024–2025 closure is documented by JRA as a stand refresh project; v0.1 does not infer a new course geometry from that closure.
+
+This is deliberately more conservative than the likely true historical validity of many venues.
+
+Historical reconstruction before 2023 may be added later as separate versioned rows. Until then, fail closed.
 
 This completion does not modify the existing CourseStats long-period baseline.
 
