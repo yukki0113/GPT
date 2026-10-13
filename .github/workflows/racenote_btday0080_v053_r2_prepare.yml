@@ -25,10 +25,21 @@ jobs:
       - name: Materialize reviewed Historical inputs
         run: |
           set -euo pipefail
-          python tools/gpt_io/public_drive/fetch.py \
-            --manifest horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json \
-            --output-root /tmp/historical \
-            --receipt /tmp/historical/public_drive_fetch_receipt.json
+          ok=0
+          for attempt in 1 2 3 4; do
+            rm -rf /tmp/historical
+            mkdir -p /tmp/historical
+            if python tools/gpt_io/public_drive/fetch.py \
+              --manifest horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json \
+              --output-root /tmp/historical \
+              --receipt /tmp/historical/public_drive_fetch_receipt.json; then
+              ok=1
+              break
+            fi
+            echo "Public Drive fetch attempt $attempt failed; retrying" >&2
+            sleep $((attempt * 5))
+          done
+          test "$ok" = 1
           mkdir -p /tmp/historical/analysis /tmp/historical/rrdb
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
           unzip -q /tmp/historical/rrdb.zip -d /tmp/historical/rrdb
