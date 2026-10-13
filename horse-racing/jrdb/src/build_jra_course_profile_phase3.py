@@ -94,17 +94,26 @@ def main():
             straights={r.get("final_straight_m") for r in rows if r.get("final_straight_m") is not None}
             slope_flags={r.get("final_straight_slope_flag") for r in rows if r.get("final_straight_slope_flag") is not None}
             size_classes={r.get("course_size_class") for r in rows if r.get("course_size_class") is not None}
+            valid_froms={r.get("physical_valid_from") for r in rows if r.get("physical_valid_from") is not None}
+            valid_tos={r.get("physical_valid_to_exclusive") for r in rows}
+            version_ids={r.get("physical_version_id") for r in rows if r.get("physical_version_id") is not None}
             rec["elevation_difference_m"]=next(iter(elevations)) if len(elevations)==1 else None
             rec["final_straight_m"]=next(iter(straights)) if len(straights)==1 else None
             rec["final_straight_m_varies_by_rail"]=len(straights)>1
             rec["final_straight_slope_flag"]=next(iter(slope_flags)) if len(slope_flags)==1 else None
             rec["course_size_class"]=next(iter(size_classes)) if len(size_classes)==1 else None
+            rec["physical_valid_from"]=next(iter(valid_froms)) if len(valid_froms)==1 else None
+            rec["physical_valid_to_exclusive"]=next(iter(valid_tos)) if len(valid_tos)==1 else None
+            rec["physical_version_id"]=next(iter(version_ids)) if len(version_ids)==1 else None
         else:
             rec["elevation_difference_m"]=None
             rec["final_straight_m"]=None
             rec["final_straight_m_varies_by_rail"]=False
             rec["final_straight_slope_flag"]=None
             rec["course_size_class"]=None
+            rec["physical_valid_from"]=None
+            rec["physical_valid_to_exclusive"]=None
+            rec["physical_version_id"]=None
 
     mappings=[]
     for r in audit["distinct_course_combinations"]:
