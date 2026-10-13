@@ -26,6 +26,7 @@ VERSION = "rrdb-horse-course-fit-v0.1"
 CONSTANTS = dict(LOOKBACK_YEARS=3, MAX_PREVIOUS_RUNS=10,
                  MIN_PREVIOUS_RUNS_FOR_BASELINE=3, SHRINKAGE_K=5,
                  STORE_MIN_SAMPLE=2, SIGNAL_MIN_SAMPLE=4,
+                 HIGH_SUPPORT_MIN_SAMPLE=6,
                  CONFIDENCE_SAMPLE_DENOMINATOR=8,
                  FINAL_STRAIGHT_BUCKET_BOUNDARIES_M=[350, 450],
                  FINAL_STRAIGHT_SIMILAR_TOLERANCE_M=5,
@@ -65,6 +66,7 @@ def require(con, sql, name):
     n = int(con.execute(sql).fetchone()[0])
     if n:
         raise ValueError(f"{name}: {n} violations")
+    return n
 
 
 def verify_course_master(master_dir: Path, official: Path):
@@ -251,19 +253,20 @@ class Pipeline:
 
     def residual(self):
         c = self.con
-        c.execute("""CREATE TEMP VIEW prior_sources AS SELECT l.race_horse_key,
+        c.execute(f"""CREATE TEMP VIEW prior_sources AS SELECT l.race_horse_key,
           p.race_date source_date,p.performance_signal,
           ROW_NUMBER() OVER(PARTITION BY l.race_horse_key ORDER BY p.race_date DESC,p.race_key DESC,p.horse_no DESC) rn
           FROM ledger l JOIN ledger p ON l.horse_id=p.horse_id
-          AND p.started AND p.race_date<l.race_date AND p.race_date>=l.race_date-INTERVAL '3 years'""")
-        sql = """WITH baseline AS (SELECT race_horse_key,COUNT(performance_signal) baseline_sample_count,
+          AND p.started AND p.race_date<l.race_date AND p.race_date>=l.race_date-INTERVAL '{CONSTANTS['LOOKBACK_YEARS']} years'""")
+        maximum=CONSTANTS['MAX_PREVIOUS_RUNS'];minimum=CONSTANTS['MIN_PREVIOUS_RUNS_FOR_BASELINE']
+        sql = f"""WITH baseline AS (SELECT race_horse_key,COUNT(performance_signal) baseline_sample_count,
           AVG(performance_signal) horse_baseline_performance,MIN(source_date) baseline_source_min_date,
-          MAX(source_date) baseline_source_max_date FROM prior_sources WHERE rn<=10 GROUP BY 1)
+          MAX(source_date) baseline_source_max_date FROM prior_sources WHERE rn<={maximum} GROUP BY 1)
           SELECT l.*,COALESCE(b.baseline_sample_count,0) baseline_sample_count,
-          CASE WHEN b.baseline_sample_count>=3 THEN b.horse_baseline_performance END horse_baseline_performance,
+          CASE WHEN b.baseline_sample_count>={minimum} THEN b.horse_baseline_performance END horse_baseline_performance,
           b.baseline_source_min_date,b.baseline_source_max_date,
-          CASE WHEN b.baseline_sample_count>=3 THEN 'READY' ELSE 'INSUFFICIENT_HISTORY' END baseline_status,
-          CASE WHEN b.baseline_sample_count>=3 THEN l.performance_signal-b.horse_baseline_performance END performance_residual
+          CASE WHEN b.baseline_sample_count>={minimum} THEN 'READY' ELSE 'INSUFFICIENT_HISTORY' END baseline_status,
+          CASE WHEN b.baseline_sample_count>={minimum} THEN l.performance_signal-b.horse_baseline_performance END performance_residual
           FROM ledger l LEFT JOIN baseline b USING(race_horse_key) ORDER BY l.race_date,l.race_key,l.horse_no"""
         path = self.stage('base/horse_performance_residual', sql, ['race_horse_key'], ['base/horse_race_course_ledger'])
         self.view('residual', path)
@@ -272,13 +275,15 @@ class Pipeline:
 
     def features(self):
         c = self.con
-        c.execute("""CREATE TEMP VIEW feature_base AS SELECT *,
+        lo,hi=CONSTANTS['FINAL_STRAIGHT_BUCKET_BOUNDARIES_M']
+        c.execute('CREATE TEMP TABLE going_coarse_map(surface_code VARCHAR,going_bucket VARCHAR,going_coarse VARCHAR)')
+        c.executemany('INSERT INTO going_coarse_map VALUES (?,?,?)',[(s,b,v) for s,m in GOING_COARSE.items() for b,v in m.items()])
+        c.execute(f"""CREATE TEMP VIEW feature_base AS SELECT r.*,
           CASE WHEN final_straight_slope_flag IS TRUE THEN 'PRESENT' WHEN final_straight_slope_flag IS FALSE THEN 'ABSENT' END final_slope,
-          CASE WHEN final_straight_m<350 THEN 'SHORT' WHEN final_straight_m<450 THEN 'MEDIUM' WHEN final_straight_m>=450 THEN 'LONG' END final_straight_bucket,
-          CASE WHEN surface_code IN ('1','2') AND going_bucket='1' THEN 'FIRM'
-            WHEN surface_code IN ('1','2') AND going_bucket IN ('2','3','4') THEN 'SOFT' END going_coarse,
+          CASE WHEN final_straight_m<{lo} THEN 'SHORT' WHEN final_straight_m<{hi} THEN 'MEDIUM' WHEN final_straight_m>={hi} THEN 'LONG' END final_straight_bucket,
+          g.going_coarse,
           COUNT(*) OVER(PARTITION BY horse_id,race_date) horse_day_count
-          FROM residual""")
+          FROM residual r LEFT JOIN going_coarse_map g USING(surface_code,going_bucket)""")
         prev_fields = ['race_date','race_key','distance_m','surface_code','physical_valid','physical_valid_from',
                        'physical_valid_to_exclusive','turn_direction','final_slope','final_straight_m',
                        'final_straight_bucket','course_size_class','layout_variant','going_coarse','track_condition_code',
@@ -288,15 +293,16 @@ class Pipeline:
         c.execute(f"""CREATE TEMP VIEW previous_starts AS SELECT race_horse_key,{lag} FROM feature_base
           WHERE started AND horse_id IS NOT NULL
           WINDOW w AS (PARTITION BY horse_id ORDER BY race_date,race_key,horse_no)""")
-        c.execute("""CREATE TEMP VIEW transitions AS SELECT f.*,p.* EXCLUDE(race_horse_key),
+        shorten_large,shorten_small,extend_small,extend_large=CONSTANTS['DISTANCE_CHANGE_BOUNDARIES_M']
+        c.execute(f"""CREATE TEMP VIEW transitions AS SELECT f.*,p.* EXCLUDE(race_horse_key),
           distance_m-previous_distance_m distance_delta_m,
           final_straight_m-previous_final_straight_m final_straight_delta_m,
           surface_code IS DISTINCT FROM previous_surface_code surface_changed,
-          CASE WHEN distance_m-previous_distance_m<=-400 THEN 'SHORTEN_LARGE'
-            WHEN distance_m-previous_distance_m<=-100 THEN 'SHORTEN_SMALL'
-            WHEN distance_m-previous_distance_m<100 THEN 'SAME'
-            WHEN distance_m-previous_distance_m<400 THEN 'EXTEND_SMALL'
-            WHEN distance_m-previous_distance_m>=400 THEN 'EXTEND_LARGE' END distance_change
+          CASE WHEN distance_m-previous_distance_m<={shorten_large} THEN 'SHORTEN_LARGE'
+            WHEN distance_m-previous_distance_m<={shorten_small} THEN 'SHORTEN_SMALL'
+            WHEN distance_m-previous_distance_m<{extend_small} THEN 'SAME'
+            WHEN distance_m-previous_distance_m<{extend_large} THEN 'EXTEND_SMALL'
+            WHEN distance_m-previous_distance_m>={extend_large} THEN 'EXTEND_LARGE' END distance_change
           FROM feature_base f LEFT JOIN previous_starts p USING(race_horse_key)""")
         path = self.stage('base/horse_course_transition_ledger', 'SELECT * FROM transitions ORDER BY race_date,race_key,horse_no',
                           ['race_horse_key'], ['base/horse_performance_residual'])
@@ -327,7 +333,8 @@ class Pipeline:
                     # Aggregate the specified distance-delta bucket, not individual exact distances.
                     frm, to = 'NULL::VARCHAR', 'NULL::VARCHAR'
                 elif feature == 'FINAL_STRAIGHT_CHANGE':
-                    value = "CASE WHEN final_straight_delta_m < -5 THEN 'SHORTER' WHEN final_straight_delta_m > 5 THEN 'LONGER' ELSE 'SIMILAR' END"
+                    tolerance=CONSTANTS['FINAL_STRAIGHT_SIMILAR_TOLERANCE_M']
+                    value = f"CASE WHEN final_straight_delta_m < -{tolerance} THEN 'SHORTER' WHEN final_straight_delta_m > {tolerance} THEN 'LONGER' ELSE 'SIMILAR' END"
                     frm, to = 'NULL::VARCHAR', 'NULL::VARCHAR'
                     where += " AND final_straight_delta_m IS NOT NULL"
                 elif feature == 'FINAL_SLOPE_CHANGE':
@@ -342,9 +349,9 @@ class Pipeline:
             # Assert the actual selected source population, independently of aggregate output.
             self.con.execute('CREATE OR REPLACE TEMP VIEW selected AS ' + population)
             if physical:
-                require(self.con, "SELECT COUNT(*) FROM selected WHERE NOT physical_valid OR physical_valid_from IS NULL OR physical_valid_from>race_date OR (physical_valid_to_exclusive IS NOT NULL AND race_date>=physical_valid_to_exclusive)", 'current physical validity')
+                self.checks[feature+'_invalid_current_physical'] = require(self.con, "SELECT COUNT(*) FROM selected WHERE NOT physical_valid OR physical_valid_from IS NULL OR physical_valid_from>race_date OR (physical_valid_to_exclusive IS NOT NULL AND race_date>=physical_valid_to_exclusive)", 'current physical validity')
                 if family == 'TRANSITION':
-                    require(self.con, "SELECT COUNT(*) FROM selected WHERE NOT previous_physical_valid OR previous_physical_valid_from IS NULL OR previous_physical_valid_from>previous_race_date OR (previous_physical_valid_to_exclusive IS NOT NULL AND previous_race_date>=previous_physical_valid_to_exclusive)", 'previous physical validity')
+                    self.checks[feature+'_invalid_previous_physical'] = require(self.con, "SELECT COUNT(*) FROM selected WHERE NOT previous_physical_valid OR previous_physical_valid_from IS NULL OR previous_physical_valid_from>previous_race_date OR (previous_physical_valid_to_exclusive IS NOT NULL AND previous_race_date>=previous_physical_valid_to_exclusive)", 'previous physical validity')
             # Surface remains a grouping dimension in both families; distance has a change flag.
             grouping = "horse_id,surface_code,feature_value,from_value,to_value,transition_key"
             if family == 'TRANSITION':
@@ -361,14 +368,14 @@ class Pipeline:
               COUNT(*) FILTER(WHERE performance_residual=0) zero_count,
               MIN(race_date) source_min_date,MAX(race_date) source_max_date,
               AVG(distance_delta_m) distance_delta_m_mean,AVG(final_straight_delta_m) final_straight_delta_m_mean
-              FROM {source} WHERE feature_value IS NOT NULL GROUP BY {grouping} HAVING COUNT(*)>=2)
+              FROM {source} WHERE feature_value IS NOT NULL GROUP BY {grouping} HAVING COUNT(*)>={CONSTANTS['STORE_MIN_SAMPLE']})
               SELECT *,DATE {lit(self.as_of)} as_of_date,DATE {lit(self.lookback)} lookback_from,
               DATE {lit(self.as_of)} lookback_to_exclusive,{lit(family)} fit_family,{lit(feature)} feature_type,
-              sample_count/(sample_count+5.0)*raw_delta shrunk_delta,
+              sample_count/(sample_count+{CONSTANTS['SHRINKAGE_K']}.0)*raw_delta shrunk_delta,
               positive_count::DOUBLE/sample_count positive_rate,
-              LEAST(1.0,sample_count/8.0)*ABS(positive_count::DOUBLE/sample_count-0.5)*2 confidence,
-              CASE WHEN sample_count<2 THEN 'NO_DATA' WHEN sample_count<4 THEN 'LOW_SUPPORT'
-                WHEN sample_count<6 THEN 'MEDIUM_SUPPORT' ELSE 'HIGH_SUPPORT' END support_level
+              LEAST(1.0,sample_count/{CONSTANTS['CONFIDENCE_SAMPLE_DENOMINATOR']}.0)*ABS(positive_count::DOUBLE/sample_count-0.5)*2 confidence,
+              CASE WHEN sample_count<{CONSTANTS['STORE_MIN_SAMPLE']} THEN 'NO_DATA' WHEN sample_count<{CONSTANTS['SIGNAL_MIN_SAMPLE']} THEN 'LOW_SUPPORT'
+                WHEN sample_count<{CONSTANTS['HIGH_SUPPORT_MIN_SAMPLE']} THEN 'MEDIUM_SUPPORT' ELSE 'HIGH_SUPPORT' END support_level
               FROM a ORDER BY horse_id,surface_code,feature_value,from_value,to_value,surface_changed"""
             name = f"{family.lower()}_fit/horse_{feature.lower()}_fit"
             self.stage(name, sql, ['horse_id','surface_code','feature_value','from_value','to_value','surface_changed'],
@@ -403,6 +410,19 @@ class Pipeline:
             path = self.output / ('reports/' + name + '.csv')
             path.parent.mkdir(parents=True, exist_ok=True)
             c.execute(f"COPY ({sql}) TO {lit(str(path))} (HEADER,DELIMITER ',')")
+        transition_coverage=[]
+        for feature,field in TRANSITION.items():
+            needed=('distance_delta_m' if feature=='DISTANCE_CHANGE' else
+                    'final_straight_delta_m' if feature=='FINAL_STRAIGHT_CHANGE' else field)
+            previous = ('previous_'+field) if feature not in ('DISTANCE_CHANGE','FINAL_STRAIGHT_CHANGE') else needed
+            row=c.execute(f"""SELECT COUNT(*),COUNT(*) FILTER(WHERE {needed} IS NULL OR {previous} IS NULL),
+              COUNT(*) FILTER(WHERE previous_race_date IS NULL),
+              COUNT(*) FILTER(WHERE NOT physical_valid OR NOT COALESCE(previous_physical_valid,FALSE))
+              FROM transitions WHERE race_date>=DATE {lit(self.lookback)} AND race_date<DATE {lit(self.as_of)}""").fetchone()
+            transition_coverage.append(dict(feature_type=feature,runner_count=row[0],null_endpoint_count=row[1],
+                null_endpoint_rate=row[1]/row[0] if row[0] else None,missing_previous_count=row[2],
+                invalid_physical_pair_count=row[3] if feature in PHYSICAL else None))
+        write_json(self.output/'reports/transition_coverage.json',transition_coverage)
         inventory=[]
         for family, features in [('ABSOLUTE',ABSOLUTE),('TRANSITION',TRANSITION)]:
             for feature in features:
@@ -439,6 +459,7 @@ class Pipeline:
             'flat_unresolved': "SELECT COUNT(*) FROM ledger WHERE surface_code IN ('1','2') AND course_key IS NULL",
         }
         values = {name: int(c.execute(sql).fetchone()[0]) for name,sql in checks.items()}
+        values.update(self.checks)
         dup_days = c.execute("SELECT COUNT(*) FROM (SELECT horse_id,race_date FROM ledger WHERE horse_id IS NOT NULL AND started GROUP BY 1,2 HAVING COUNT(*)>1)").fetchone()[0]
         audit = dict(status='PASS' if not any(values.values()) else 'FAIL', checks=values,
                      counts=dict(zip(names,summary)), same_day_multiple_start_groups=dup_days,
@@ -447,6 +468,7 @@ class Pipeline:
                      distance_policy='surface change retained as separate grouping flag; same-surface view provided',
                      baseline_policy='last 10 actual starts within 3 calendar years; average available canonical values, minimum 3',
                      rrdb_v03_modified=False)
+        audit['counts']['fit_window_runner_count']=c.execute(f"SELECT COUNT(*) FROM residual WHERE race_date>=DATE {lit(self.lookback)} AND race_date<DATE {lit(self.as_of)}").fetchone()[0]
         write_json(self.output / 'audit.json', audit)
         if audit['status'] != 'PASS':
             raise ValueError(f'audit failed: {values}')

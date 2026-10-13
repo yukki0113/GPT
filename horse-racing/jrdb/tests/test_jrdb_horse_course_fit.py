@@ -161,3 +161,22 @@ def test_three_year_old_sources_do_not_enter_baseline(tmp_path):
     assert p.con.execute("SELECT baseline_sample_count FROM residual WHERE race_key='05230003'").fetchone()[0]==2
     assert p.con.execute("SELECT MIN(source_min_date) FROM candidate").fetchone()[0]>=date(2023,1,1)
     p.con.close()
+
+
+def test_going_cross_surface_excluded_distance_preserved(tmp_path):
+    master,dates=fixture_inputs(tmp_path)
+    c=duckdb.connect()
+    for name in ('sed','hp'):
+        c.execute(f"CREATE TABLE {name} AS SELECT * FROM read_parquet('{tmp_path/name}.parquet')")
+        key='race_key_raw' if name=='sed' else 'race_key'
+        c.execute(f"UPDATE {name} SET surface_code='2' WHERE {key} IN ('05230008','05230010','05230012','05230014')")
+        c.execute(f"COPY {name} TO '{tmp_path/(name+'2')}.parquet' (FORMAT PARQUET)")
+    c.close()
+    p=fit.Pipeline(tmp_path/'out','2024-02-01',{},'fixture')
+    p.base([tmp_path/'sed2.parquet'],[tmp_path/'hp2.parquet'],[tmp_path/'rr.parquet'],master)
+    p.residual();p.features()
+    p.fits('TRANSITION','GOING_CHANGE')
+    assert p.con.execute('SELECT COUNT(*) FROM selected WHERE surface_changed').fetchone()[0]==0
+    p.fits('TRANSITION','DISTANCE_CHANGE')
+    assert p.con.execute('SELECT COUNT(*) FROM selected WHERE surface_changed').fetchone()[0]>0
+    p.con.close()
