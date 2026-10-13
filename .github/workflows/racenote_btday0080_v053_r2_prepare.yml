@@ -25,21 +25,35 @@ jobs:
       - name: Materialize reviewed Historical inputs
         run: |
           set -euo pipefail
-          ok=0
-          for attempt in 1 2 3 4; do
-            rm -rf /tmp/historical
-            mkdir -p /tmp/historical
-            if python tools/gpt_io/public_drive/fetch.py \
-              --manifest horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json \
-              --output-root /tmp/historical \
-              --receipt /tmp/historical/public_drive_fetch_receipt.json; then
-              ok=1
-              break
-            fi
-            echo "Public Drive fetch attempt $attempt failed; retrying" >&2
-            sleep $((attempt * 5))
+          rm -rf /tmp/historical
+          mkdir -p /tmp/historical
+          MANIFEST='horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json'
+          mapfile -t ARTIFACTS < <(python - <<'PY'
+          import json
+          p='horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json'
+          for row in json.load(open(p, encoding='utf-8'))['artifacts']:
+              print(row['artifact_id'])
+          PY
+          )
+          for artifact in "${ARTIFACTS[@]}"; do
+            ok=0
+            for attempt in 1 2 3 4 5 6; do
+              if python tools/gpt_io/public_drive/fetch.py \
+                --manifest "$MANIFEST" \
+                --artifact "$artifact" \
+                --output-root /tmp/historical; then
+                ok=1
+                break
+              fi
+              echo "Public Drive artifact $artifact attempt $attempt failed; retrying" >&2
+              sleep $((attempt * 4))
+            done
+            test "$ok" = 1
           done
-          test "$ok" = 1
+          python tools/gpt_io/public_drive/fetch.py \
+            --manifest "$MANIFEST" \
+            --output-root /tmp/historical \
+            --receipt /tmp/historical/public_drive_fetch_receipt.json
           mkdir -p /tmp/historical/analysis /tmp/historical/rrdb
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
           unzip -q /tmp/historical/rrdb.zip -d /tmp/historical/rrdb
