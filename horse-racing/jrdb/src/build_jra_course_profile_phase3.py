@@ -69,7 +69,7 @@ def main():
             "course_key":ck,"venue_code":venue,"venue_name":cfg["venue_name"],
             "surface_code":surface,"surface":SURFACE_NAMES[surface],"distance_m":distance,
             "layout_variant":lv,"status":"ACTIVE" if current else ("PROVISIONAL" if surface=="3" else "HISTORICAL"),
-            "turn_direction":cfg["turn_direction"] if surface!="3" else None,
+            "turn_direction":"straight" if lv=="straight" else (cfg["turn_direction"] if surface!="3" else None),
             "physical_data_status":"PARTIAL" if current and surface!="3" else "UNKNOWN",
             "observed_2010_2025":True,"current_jra_official":current,
             "first_observed_race_date":g["first_race_date"],"last_observed_race_date":g["last_race_date"],
@@ -77,7 +77,8 @@ def main():
             "first_corner_distance_m":None,"start_straight_m":None,
             "final_straight_slope_flag":None,"start_slope_flag":None
         })
-        rec["observed_race_count"]=max(rec["observed_race_count"],g["race_count"])
+        if rec["first_observed_race_date"] != g["first_race_date"] or rec["last_observed_race_date"] != g["last_race_date"]:
+            rec["observed_race_count"] += g["race_count"]
         rec["first_observed_race_date"]=min(rec["first_observed_race_date"],g["first_race_date"])
         rec["last_observed_race_date"]=max(rec["last_observed_race_date"],g["last_race_date"])
 
@@ -88,7 +89,7 @@ def main():
             masters[ck]={
                 "course_key":ck,"venue_code":venue,"venue_name":cfg["venue_name"],
                 "surface_code":surface,"surface":SURFACE_NAMES[surface],"distance_m":distance,
-                "layout_variant":lv,"status":"ACTIVE","turn_direction":cfg["turn_direction"],
+                "layout_variant":lv,"status":"ACTIVE","turn_direction":"straight" if lv=="straight" else cfg["turn_direction"],
                 "physical_data_status":"PARTIAL","observed_2010_2025":False,"current_jra_official":True,
                 "first_observed_race_date":None,"last_observed_race_date":None,"observed_race_count":0,
                 "source_locator":cfg["source_locator"],"first_corner_distance_m":None,"start_straight_m":None,
