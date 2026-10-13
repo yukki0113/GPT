@@ -59,7 +59,7 @@ Use the repository-wide local-first -> Actions fallback contract:
 - workflow: `.github/workflows/data_storage_fallback_issue.yml`
 - request title prefix: `[DATA_STORAGE_FALLBACK]`
 
-The fallback installs the pinned Data Storage requirements on GitHub Actions, downloads declared upstream Actions artifacts, executes validated repository Python entrypoints with argv arrays (no arbitrary shell request), uploads outputs/audit logs, and closes the request Issue.
+The fallback installs the pinned Data Storage requirements on GitHub Actions, downloads declared upstream Actions artifacts and/or explicitly approved public read-only Google Drive inputs through repository-reviewed SHA-256 manifests, executes validated repository Python entrypoints with argv arrays (no arbitrary shell request), uploads outputs/audit logs, and closes the request Issue.
 
 Routing rule:
 
@@ -70,11 +70,12 @@ local .venv-data-storage
 -> repair succeeds: execute locally
 -> repair blocked by managed runtime/network policy:
      use [DATA_STORAGE_FALLBACK] when inputs are reproducible from checkout/Actions artifacts
+     or from reviewed public_google_drive manifests
 -> inspect fallback audit/artifact
 -> continue task
 ```
 
-A local package-transport restriction is not, by itself, a reason to redesign scientific logic or report the repository task as permanently blocked.
+A local package-transport restriction is not, by itself, a reason to redesign scientific logic or report the repository task as permanently blocked. Public Drive inputs do not require a separate staging layer when they already satisfy `tools/gpt_io/public_drive/` policy: use a repository-reviewed manifest with pinned SHA-256 and the fallback `public_drive_inputs` route. Private/authenticated Drive access and all Drive writes remain outside this fallback.
 
 ## CLI
 

@@ -48,6 +48,7 @@ jobs:
             /tmp/data-storage-fallback/fallback-audit.json
             /tmp/data-storage-fallback/request.json
             /tmp/data-storage-fallback/request.sha256
+            /tmp/data-storage-fallback/public-drive-receipts/
             /tmp/data-storage-fallback/stdout/
             /tmp/data-storage-fallback/stderr/
 
