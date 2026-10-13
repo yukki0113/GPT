@@ -115,8 +115,14 @@ def pearson(xs: list[float], ys: list[float]) -> float | None:
 def proxy_band(rank: int | None, band: str) -> bool:
     if rank is None:
         return False
+    if band == "1-3":
+        return 1 <= rank <= 3
+    if band == "4-5":
+        return 4 <= rank <= 5
     if band == "6-9":
         return 6 <= rank <= 9
+    if band == "10+":
+        return rank >= 10
     if band == "5-10":
         return 5 <= rank <= 10
     if band == "4-11":
@@ -382,6 +388,38 @@ def main() -> None:
                 **m,
             })
 
+    # Full primary-reason x executable KYI base-rank bands.
+    # These are descriptive recalculations, separate from the frozen shadow rule.
+    reason_rank_band_metrics = {}
+    primary_reasons = sorted({str(r.get("primary_reason") or "") for r in picks})
+    standard_bands = ("1-3", "4-5", "6-9", "10+")
+    periods = (
+        ("2024", {2024}),
+        ("2025", {2025}),
+        ("historical_2024_2025", {2024, 2025}),
+        ("2026_oot", {2026}),
+    )
+    for reason in primary_reasons:
+        reason_rank_band_metrics[reason] = {}
+        for band in standard_bands:
+            reason_rank_band_metrics[reason][band] = {}
+            for period, years in periods:
+                selected = [
+                    r for r in picks
+                    if r["year"] in years
+                    and r["primary_reason"] == reason
+                    and proxy_band(to_int(r.get("base_win_rank")), band)
+                ]
+                reason_rank_band_metrics[reason][band][period] = metric(selected)
+
+    surface_rank_band_metrics = {
+        band: {
+            period: reason_rank_band_metrics.get("surface", {}).get(band, {}).get(period, metric([]))
+            for period, _years in periods
+        }
+        for band in standard_bands
+    }
+
     final_target_metrics = {
         period: metric([
             r for r in picks
@@ -410,10 +448,23 @@ def main() -> None:
         },
         "rank_audits": audits,
         "surface_proxy_metrics": proxy_metrics,
+        "surface_rank_band_metrics": surface_rank_band_metrics,
+        "reason_rank_band_metrics": reason_rank_band_metrics,
         "final_target_reference": final_target_metrics,
     }
     write_json(output_dir / "summary.json", summary)
     write_csv(output_dir / "proxy_surface_metrics.csv", detail_rows)
+    reason_band_rows = []
+    for reason, by_band in reason_rank_band_metrics.items():
+        for band, by_period in by_band.items():
+            for period, values in by_period.items():
+                reason_band_rows.append({
+                    "primary_reason": reason,
+                    "base_rank_band": band,
+                    "period": period,
+                    **values,
+                })
+    write_csv(output_dir / "reason_rank_band_metrics.csv", reason_band_rows)
     write_csv(output_dir / "unmatched.csv", unmatched)
     write_csv(output_dir / "ambiguous.csv", ambiguous)
     write_csv(output_dir / "source_audit.csv", source_audit)
@@ -449,6 +500,22 @@ def main() -> None:
             f"placeROI={h['place_roi_pct']}% final6-9share={h['final_6_9_share_pct']}% | "
             f"2026 N={f['N']} winROI={f['win_roi_pct']}% "
             f"placeROI={f['place_roi_pct']}% final6-9share={f['final_6_9_share_pct']}%"
+        )
+
+    lines += ["", "## Surface x KYI base-rank bands (recalculation)"]
+    for band in ("1-3", "4-5", "6-9", "10+"):
+        vals = surface_rank_band_metrics[band]
+        lines.append(
+            f"- {band}: 2024 N={vals['2024']['N']} winROI={vals['2024']['win_roi_pct']}% "
+            f"placeROI={vals['2024']['place_roi_pct']}% | "
+            f"2025 N={vals['2025']['N']} winROI={vals['2025']['win_roi_pct']}% "
+            f"placeROI={vals['2025']['place_roi_pct']}% | "
+            f"Hist N={vals['historical_2024_2025']['N']} "
+            f"winROI={vals['historical_2024_2025']['win_roi_pct']}% "
+            f"placeROI={vals['historical_2024_2025']['place_roi_pct']}% | "
+            f"2026 OOT N={vals['2026_oot']['N']} "
+            f"winROI={vals['2026_oot']['win_roi_pct']}% "
+            f"placeROI={vals['2026_oot']['place_roi_pct']}%"
         )
 
     h = final_target_metrics["historical_2024_2025"]
