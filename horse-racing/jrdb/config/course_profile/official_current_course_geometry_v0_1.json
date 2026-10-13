@@ -44,7 +44,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:10:T:main:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -63,7 +67,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:10:T:main:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -82,7 +90,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:10:T:main:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "2",
@@ -101,7 +113,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:10:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -146,7 +162,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:01:T:main:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -165,7 +185,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:01:T:main:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -184,7 +208,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:01:T:main:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "2",
@@ -203,7 +231,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:01:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -248,7 +280,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:02:T:main:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -267,7 +303,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:02:T:main:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -286,7 +326,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:02:T:main:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "2",
@@ -305,7 +349,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:02:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -351,7 +399,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:03:T:main:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -370,7 +422,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:03:T:main:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -389,7 +445,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:03:T:main:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "2",
@@ -408,7 +468,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:03:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -465,7 +529,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:04:T:inner:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -484,7 +552,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:04:T:inner:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -503,7 +575,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:04:T:outer:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -522,7 +598,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:04:T:outer:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -541,7 +621,11 @@
           "source_locator": "https://www.jra.go.jp/facilities/race/niigata/course/",
           "retrieved_at": "2026-10-13",
           "surface": "turf",
-          "geometry_key": "JRA-GEO:04:T:straight:A"
+          "geometry_key": "JRA-GEO:04:T:straight:A",
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": null,
+          "course_size_class_basis": null
         },
         {
           "surface_code": "1",
@@ -560,7 +644,11 @@
           "source_locator": "https://www.jra.go.jp/facilities/race/niigata/course/",
           "retrieved_at": "2026-10-13",
           "surface": "turf",
-          "geometry_key": "JRA-GEO:04:T:straight:B"
+          "geometry_key": "JRA-GEO:04:T:straight:B",
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": null,
+          "course_size_class_basis": null
         },
         {
           "surface_code": "2",
@@ -579,7 +667,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:04:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -630,7 +722,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:05:T:main:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -649,7 +745,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:05:T:main:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -668,7 +768,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:05:T:main:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -687,7 +791,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:05:T:main:D",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "2",
@@ -706,7 +814,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:05:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -762,7 +874,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:inner:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -781,7 +897,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:inner:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -800,7 +920,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:inner:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -819,7 +943,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:outer:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -838,7 +966,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:outer:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -857,7 +989,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:outer:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -876,7 +1012,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:outer-inner:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": null,
+          "course_size_class_basis": null
         },
         {
           "surface_code": "1",
@@ -895,7 +1035,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:outer-inner:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": null,
+          "course_size_class_basis": null
         },
         {
           "surface_code": "1",
@@ -914,7 +1058,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:06:T:outer-inner:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": null,
+          "course_size_class_basis": null
         },
         {
           "surface_code": "2",
@@ -933,7 +1081,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:06:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -981,7 +1133,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:07:T:main:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1000,7 +1156,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:07:T:main:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "2",
@@ -1019,7 +1179,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:07:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -1077,7 +1241,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:inner:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1096,7 +1264,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:inner:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1115,7 +1287,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:inner:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1134,7 +1310,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:inner:D",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1153,7 +1333,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:outer:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1172,7 +1356,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:outer:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1191,7 +1379,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:outer:C",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1210,7 +1402,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:08:T:outer:D",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "2",
@@ -1229,7 +1425,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:08:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": false,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
     },
@@ -1285,7 +1485,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:09:T:inner:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1304,7 +1508,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:09:T:inner:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "MEDIUM",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1323,7 +1531,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:09:T:outer:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1342,7 +1554,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:09:T:outer:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "LARGE",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         },
         {
           "surface_code": "1",
@@ -1361,7 +1577,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:09:T:outer-inner:A",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": null,
+          "course_size_class_basis": null
         },
         {
           "surface_code": "1",
@@ -1380,7 +1600,11 @@
           "retrieved_at": "2026-10-13",
           "surface": "turf",
           "geometry_key": "JRA-GEO:09:T:outer-inner:B",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": null,
+          "course_size_class_basis": null
         },
         {
           "surface_code": "2",
@@ -1399,9 +1623,31 @@
           "retrieved_at": "2026-10-13",
           "surface": "dirt",
           "geometry_key": "JRA-GEO:09:D:main:FIXED",
-          "straight_course_length_m": null
+          "straight_course_length_m": null,
+          "final_straight_slope_flag": true,
+          "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
+          "course_size_class": "SMALL",
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
         }
       ]
+    }
+  },
+  "physical_feature_completion": {
+    "version": "jra-course-profile-physical-features-v0.1",
+    "completed_at": "2026-10-13",
+    "final_straight_slope_policy": {
+      "definition": "true when the current JRA flat course has a material uphill section in the home/final straight before the finish; false when the final straight is flat or downhill/no material uphill is documented",
+      "source_policy": "JRA official racecourse/course descriptions and official course-feature pages",
+      "scope": "current JRA flat turf/dirt geometry only"
+    },
+    "course_size_class_policy": {
+      "definition": "deterministic project-derived class from reference circuit circumference_m; it is not a JRA label and does not encode turn radius",
+      "thresholds_m": {
+        "SMALL": "circumference_m < 1600",
+        "MEDIUM": "1600 <= circumference_m < 1800",
+        "LARGE": "circumference_m >= 1800"
+      },
+      "null_policy": "non-circuit/combined layouts without a single canonical circumference remain null"
     }
   }
 }
