@@ -108,6 +108,23 @@ Routerはprefix routingだけを担当し、Issue body自体はdispatch payload�
 
 manual fallbackで既存IssueへRESULTを返す必要がある場合だけ `issue_number` を明示する。Issue番号なしのmanual実行ではartifact / run summaryを成果とし、Issue comment / closeは行わない。
 
+## 3.2 Issue Router observability
+
+Router移行済みprefixでは、Issue作成後のrouting結果を request Issue 上の `ISSUE_ROUTER_RESULT` コメントで監査可能にする。
+
+- route解決 + `repository_dispatch` 成功: `status=dispatched` / `dispatch_status=accepted`
+- request_id等のroute contract違反: `status=failure` / `failure_class=REQUEST_INVALID` / machine-readable `error_code`
+- Router内部異常: `status=failure` / `failure_class=ROUTER_INTERNAL_ERROR`
+- `repository_dispatch` 自体の失敗: `status=failure` / `failure_class=ROUTER_DISPATCH_FAILED`
+
+Routerが認識したrequestのvalidation failureは、理由をIssueへ残したうえで `not_planned` closeする。dispatch failure / Router内部異常は自動closeせず、retry判断のためopenを維持する。prefix未移行の通常Issueは従来どおりno-opとし、不要なコメントを付けない。
+
+これにより、少なくとも次をIssue単体で切り分ける。
+
+1. `ISSUE_ROUTER_RESULT` failureあり -> target workflow起動前のRouter/request failure
+2. `ISSUE_ROUTER_RESULT status=dispatched` あり、target RESULTなし -> dispatch後〜target起動/初期処理を調査
+3. target固有RESULTあり -> target workflow側の結果を正本として扱う
+
 ## 4. Chained workflow rule
 
 upstream artifact / fileを参照するIssueは、upstream runが「終了した」だけでは発行しません。
