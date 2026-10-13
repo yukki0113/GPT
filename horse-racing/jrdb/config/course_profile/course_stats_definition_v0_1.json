@@ -1,0 +1,67 @@
+{
+  "schema_version": "jra-course-stats-definition-v0.1",
+  "surfaces": [
+    "1",
+    "2"
+  ],
+  "obstacle_policy": "excluded",
+  "running_style_groups": {
+    "front": [
+      "1"
+    ],
+    "stalker": [
+      "2",
+      "5"
+    ],
+    "midpack": [
+      "3"
+    ],
+    "closer": [
+      "4"
+    ]
+  },
+  "running_style_source": "SED.race_running_style_code",
+  "pace": {
+    "source_code": "SED.race_pace_code",
+    "high": "H",
+    "middle": "M",
+    "slow": "S",
+    "race_pace_index_source": "SED.metric_race_pace_index"
+  },
+  "draw_band": {
+    "source": "SED.horse_no / SED.field_size",
+    "normalized_position_formula": "(horse_no - 0.5) / field_size",
+    "inside_max_inclusive": 0.3333333333333333,
+    "middle_max_inclusive": 0.6666666666666666,
+    "outside_above": 0.6666666666666666
+  },
+  "last3f": {
+    "source": "SED.last3f_sec",
+    "speed_percentile": "1 - percent_rank(last3f_sec ASC) within race among normal finishers with last3f",
+    "fastest_value": 1,
+    "slowest_value": 0,
+    "late_speed_importance": "avg_top3_last3f_percentile - avg_all_last3f_percentile"
+  },
+  "finish_population": {
+    "normal_abnormal_code": [
+      "",
+      "0"
+    ],
+    "win_finish": 1,
+    "top3_max_finish": 3
+  },
+  "race_time": {
+    "source": "SED.time_raw winner row",
+    "format": "1 byte minute + 3 bytes seconds in tenths",
+    "sentinel_excluded": "9999"
+  },
+  "geometry": {
+    "source": "JRA official geometry config joined through venue/surface/layout_variant/course_code",
+    "minimum_race_count_for_use": 30,
+    "unmapped_geometry_policy": "retain in course_key stats; exclude from geometry stats"
+  },
+  "temporal": {
+    "interval": "[period_from, period_to_exclusive)",
+    "prediction_rule": "period_to_exclusive <= target_race_date"
+  }
+}
