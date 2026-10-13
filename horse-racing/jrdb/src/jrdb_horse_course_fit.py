@@ -133,10 +133,12 @@ class Pipeline:
             if old.get("stage_fingerprint") == token and sha256_file(path) == old.get("sha256"):
                 self.artifacts[name] = old
                 self.reused.append(name)
+                print(json.dumps({'stage':name,'status':'REUSED','row_count':old['row_count']}),flush=True)
                 return path
         path.parent.mkdir(parents=True, exist_ok=True)
         partial = path.with_suffix(".partial.parquet")
         start = time.monotonic()
+        print(json.dumps({'stage':name,'status':'STARTED'}),flush=True)
         self.con.execute(f"COPY ({sql}) TO {lit(str(partial))} (FORMAT PARQUET,COMPRESSION ZSTD)")
         checked = validate({"source": {}, "target": {"path": str(partial)},
                             "keys": {"canonical": keys},
@@ -151,6 +153,8 @@ class Pipeline:
                     stage_fingerprint=token, dependencies=list(dependencies))
         write_json(receipt_path, meta)
         self.artifacts[name] = meta
+        print(json.dumps({'stage':name,'status':'COMPLETE','row_count':meta['row_count'],
+                          'elapsed_seconds':meta['elapsed_seconds']}),flush=True)
         return path
 
     def view(self, name, path):
@@ -282,7 +286,7 @@ class Pipeline:
           CASE WHEN final_straight_slope_flag IS TRUE THEN 'PRESENT' WHEN final_straight_slope_flag IS FALSE THEN 'ABSENT' END final_slope,
           CASE WHEN final_straight_m<{lo} THEN 'SHORT' WHEN final_straight_m<{hi} THEN 'MEDIUM' WHEN final_straight_m>={hi} THEN 'LONG' END final_straight_bucket,
           g.going_coarse,
-          COUNT(*) OVER(PARTITION BY horse_id,race_date) horse_day_count
+          COUNT(*) FILTER(WHERE started) OVER(PARTITION BY horse_id,race_date) horse_day_count
           FROM residual r LEFT JOIN going_coarse_map g USING(surface_code,going_bucket)""")
         prev_fields = ['race_date','race_key','distance_m','surface_code','physical_valid','physical_valid_from',
                        'physical_valid_to_exclusive','turn_direction','final_slope','final_straight_m',
@@ -357,7 +361,7 @@ class Pipeline:
             if family == 'TRANSITION':
                 grouping += ',surface_changed'
             else:
-                self.con.execute("CREATE OR REPLACE TEMP VIEW selected_with_surface AS SELECT *,FALSE surface_changed FROM selected")
+                self.con.execute("CREATE OR REPLACE TEMP VIEW selected_with_surface AS SELECT * EXCLUDE(surface_changed),FALSE surface_changed FROM selected")
                 grouping += ',surface_changed'
             source = 'selected' if family == 'TRANSITION' else 'selected_with_surface'
             sql = f"""WITH a AS (SELECT {grouping},COUNT(*) sample_count,
@@ -544,6 +548,8 @@ def main():
     args = ap.parse_args()
     if args.feature and args.stage not in ('absolute','transition'):
         ap.error('--feature requires absolute or transition')
+    if args.feature and args.feature not in (ABSOLUTE if args.stage=='absolute' else TRANSITION):
+        ap.error('--feature does not belong to the selected fit family')
     run(args)
 
 

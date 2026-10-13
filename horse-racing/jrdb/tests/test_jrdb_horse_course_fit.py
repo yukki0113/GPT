@@ -179,4 +179,9 @@ def test_going_cross_surface_excluded_distance_preserved(tmp_path):
     assert p.con.execute('SELECT COUNT(*) FROM selected WHERE surface_changed').fetchone()[0]==0
     p.fits('TRANSITION','DISTANCE_CHANGE')
     assert p.con.execute('SELECT COUNT(*) FROM selected WHERE surface_changed').fetchone()[0]>0
+    p.fits('ABSOLUTE','FINAL_SLOPE')
+    absolute=duckdb.connect()
+    rows=absolute.execute(f"SELECT surface_changed FROM read_parquet('{tmp_path/'out/absolute_fit/horse_final_slope_fit.parquet'}')").fetchall()
+    assert rows==[(False,)]
+    absolute.close()
     p.con.close()
