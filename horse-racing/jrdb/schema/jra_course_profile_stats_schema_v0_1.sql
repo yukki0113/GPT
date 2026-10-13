@@ -4,6 +4,7 @@ CREATE TABLE course_stats (
   period_from TEXT NOT NULL,
   period_to_exclusive TEXT NOT NULL,
   stats_definition_version TEXT NOT NULL,
+  population_filter_id TEXT NOT NULL,
   source_generation TEXT NOT NULL,
   generated_at TEXT NOT NULL,
 
@@ -56,7 +57,7 @@ CREATE TABLE course_stats (
   inside_draw_advantage REAL,
   outside_draw_advantage REAL,
 
-  UNIQUE(course_key, period_from, period_to_exclusive, stats_definition_version)
+  UNIQUE(course_key, period_from, period_to_exclusive, stats_definition_version, population_filter_id)
 );
 
 CREATE TABLE course_geometry_stats (
@@ -67,6 +68,7 @@ CREATE TABLE course_geometry_stats (
   period_from TEXT NOT NULL,
   period_to_exclusive TEXT NOT NULL,
   stats_definition_version TEXT NOT NULL,
+  population_filter_id TEXT NOT NULL,
   source_generation TEXT NOT NULL,
   generated_at TEXT NOT NULL,
 
@@ -120,5 +122,5 @@ CREATE TABLE course_geometry_stats (
   outside_draw_advantage REAL,
 
   eligible_for_use INTEGER NOT NULL,
-  UNIQUE(course_key, geometry_key, period_from, period_to_exclusive, stats_definition_version)
+  UNIQUE(course_key, geometry_key, period_from, period_to_exclusive, stats_definition_version, population_filter_id)
 );
