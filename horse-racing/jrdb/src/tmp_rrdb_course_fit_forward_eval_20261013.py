@@ -92,7 +92,7 @@ for n,d,cf,nn in thresholds:
  where sample_count>={nn} and shrunk_delta>={d} and confidence>={cf}
  group by 1,2,3,b.bw,b.bp,b.bf""")
 c.execute("create view ts as "+" union all ".join(qs))
-c.execute(f"copy(select * from ts order by fam,ft,rule) to {q(a.out/'thresholds.csv')} (header,delimiter ',')")
+c.execute(f"copy(select * from ts order by fam,ft,threshold_name) to {q(a.out/'thresholds.csv')} (header,delimiter ',')")
 c.execute(f"""copy(select m.fam,m.ft,m.fv,count(*) n,avg((finish=1)::int)::double win,
  avg((finish<=3)::int)::double top3,avg(perf) perf,avg((finish=1)::int)::double-b.bw win_lift,
  avg((finish<=3)::int)::double-b.bp top3_lift,avg(perf)-b.bf perf_lift
