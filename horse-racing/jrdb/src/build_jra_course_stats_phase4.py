@@ -105,6 +105,7 @@ SELECT
   {", ".join("ra." + k for k in keys)},
   ra.sample_race_count,
   ua.sample_runner_count,
+  ua.overall_top3_rate,
   ra.race_first3f_sample_count,
   ra.avg_race_first3f_sec,
   ra.race_time_sample_count,
