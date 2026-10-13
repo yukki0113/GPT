@@ -65,22 +65,24 @@ def main():
         ck=f"JRA:{venue}:{TOKENS[surface]}:{distance}:{lv}"
         current=(venue,surface,distance,lv) in current_keys
         cfg=venues[venue]
-        rec=masters.setdefault(ck,{
-            "course_key":ck,"venue_code":venue,"venue_name":cfg["venue_name"],
-            "surface_code":surface,"surface":SURFACE_NAMES[surface],"distance_m":distance,
-            "layout_variant":lv,"status":"ACTIVE" if current else ("PROVISIONAL" if surface=="3" else "HISTORICAL"),
-            "turn_direction":"straight" if lv=="straight" else (cfg["turn_direction"] if surface!="3" else None),
-            "physical_data_status":"PARTIAL" if current and surface!="3" else "UNKNOWN",
-            "observed_2010_2025":True,"current_jra_official":current,
-            "first_observed_race_date":g["first_race_date"],"last_observed_race_date":g["last_race_date"],
-            "observed_race_count":g["race_count"],"source_locator":cfg["source_locator"] if current else None,
-            "first_corner_distance_m":None,"start_straight_m":None,
-            "final_straight_slope_flag":None,"start_slope_flag":None
-        })
-        if rec["first_observed_race_date"] != g["first_race_date"] or rec["last_observed_race_date"] != g["last_race_date"]:
+        if ck not in masters:
+            masters[ck]={
+                "course_key":ck,"venue_code":venue,"venue_name":cfg["venue_name"],
+                "surface_code":surface,"surface":SURFACE_NAMES[surface],"distance_m":distance,
+                "layout_variant":lv,"status":"ACTIVE" if current else ("PROVISIONAL" if surface=="3" else "HISTORICAL"),
+                "turn_direction":"straight" if lv=="straight" else (cfg["turn_direction"] if surface!="3" else None),
+                "physical_data_status":"PARTIAL" if current and surface!="3" else "UNKNOWN",
+                "observed_2010_2025":True,"current_jra_official":current,
+                "first_observed_race_date":g["first_race_date"],"last_observed_race_date":g["last_race_date"],
+                "observed_race_count":g["race_count"],"source_locator":cfg["source_locator"] if current else None,
+                "first_corner_distance_m":None,"start_straight_m":None,
+                "final_straight_slope_flag":None,"start_slope_flag":None
+            }
+        else:
+            rec=masters[ck]
             rec["observed_race_count"] += g["race_count"]
-        rec["first_observed_race_date"]=min(rec["first_observed_race_date"],g["first_race_date"])
-        rec["last_observed_race_date"]=max(rec["last_observed_race_date"],g["last_race_date"])
+            rec["first_observed_race_date"]=min(rec["first_observed_race_date"],g["first_race_date"])
+            rec["last_observed_race_date"]=max(rec["last_observed_race_date"],g["last_race_date"])
 
     for venue,surface,distance,lv in sorted(current_keys):
         ck=f"JRA:{venue}:{TOKENS[surface]}:{distance}:{lv}"
