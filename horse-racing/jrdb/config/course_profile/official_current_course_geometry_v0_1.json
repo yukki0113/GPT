@@ -48,7 +48,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:10:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -71,7 +76,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:10:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -94,7 +104,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:10:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -117,7 +132,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:10:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -166,7 +186,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:01:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -189,7 +214,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:01:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -212,7 +242,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:01:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -235,7 +270,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:01:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -284,7 +324,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:02:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -307,7 +352,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:02:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -330,7 +380,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:02:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -353,7 +408,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:02:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -403,7 +463,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:03:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -426,7 +491,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:03:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -449,7 +519,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:03:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -472,7 +547,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:03:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -533,7 +613,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:04:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -556,7 +641,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:04:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -579,7 +669,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:04:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -602,7 +697,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:04:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -625,7 +725,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": null,
-          "course_size_class_basis": null
+          "course_size_class_basis": null,
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:04:1:straight:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -648,7 +753,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": null,
-          "course_size_class_basis": null
+          "course_size_class_basis": null,
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:04:1:straight:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -671,7 +781,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:04:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -726,7 +841,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:05:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -749,7 +869,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:05:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -772,7 +897,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:05:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -795,7 +925,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:05:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -818,7 +953,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:05:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -878,7 +1018,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -901,7 +1046,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -924,7 +1074,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -947,7 +1102,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -970,7 +1130,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -993,7 +1158,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1016,7 +1186,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": null,
-          "course_size_class_basis": null
+          "course_size_class_basis": null,
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:outer-inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1039,7 +1214,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": null,
-          "course_size_class_basis": null
+          "course_size_class_basis": null,
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:outer-inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1062,7 +1242,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": null,
-          "course_size_class_basis": null
+          "course_size_class_basis": null,
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:1:outer-inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -1085,7 +1270,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:06:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -1137,7 +1327,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:07:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1160,7 +1355,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:07:1:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -1183,7 +1383,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:07:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -1245,7 +1450,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1268,7 +1478,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1291,7 +1506,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1314,7 +1534,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1337,7 +1562,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1360,7 +1590,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1383,7 +1618,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1406,7 +1646,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -1429,7 +1674,12 @@
           "final_straight_slope_flag": false,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:08:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     },
@@ -1489,7 +1739,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:09:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1512,7 +1767,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "MEDIUM",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:09:1:inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1535,7 +1795,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:09:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1558,7 +1823,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "LARGE",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:09:1:outer:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1581,7 +1851,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": null,
-          "course_size_class_basis": null
+          "course_size_class_basis": null,
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:09:1:outer-inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "1",
@@ -1604,7 +1879,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": null,
-          "course_size_class_basis": null
+          "course_size_class_basis": null,
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:09:1:outer-inner:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         },
         {
           "surface_code": "2",
@@ -1627,7 +1907,12 @@
           "final_straight_slope_flag": true,
           "final_straight_slope_basis": "JRA_OFFICIAL_COURSE_DESCRIPTION",
           "course_size_class": "SMALL",
-          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1"
+          "course_size_class_basis": "CIRCUMFERENCE_BUCKET_V0_1",
+          "physical_valid_from": "2023-01-01",
+          "physical_valid_to_exclusive": null,
+          "physical_version_id": "JRA-PHYS:09:2:main:2023PLUS:v0.1",
+          "physical_validity_basis": "CONSERVATIVE_VERIFICATION_EPOCH_2023PLUS",
+          "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
         }
       ]
     }
@@ -1648,6 +1933,14 @@
         "LARGE": "circumference_m >= 1800"
       },
       "null_policy": "non-circuit/combined layouts without a single canonical circumference remain null"
+    },
+    "validity_policy": {
+      "version": "jra-course-profile-physical-validity-v0.1",
+      "verification_epoch_from": "2023-01-01",
+      "verification_epoch_to_exclusive": null,
+      "semantics": "Conservative RRDB research eligibility window for current physical attributes; not a claim that the course changed on this date.",
+      "fail_closed_rule": "Physical-feature consumers must exclude races before physical_valid_from and must require both previous/current races to be within validity for transition features.",
+      "historical_course_version_status": "NOT_FULLY_RECONSTRUCTED"
     }
   }
 }
