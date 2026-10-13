@@ -1,0 +1,50 @@
+name: keibailuka oneoff recalc
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/keibailuka_oneoff_recalc.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  recalc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r horse-racing/fetch_keibailuka_blog/requirements.txt
+      - name: Write request
+        run: |
+          cat > /tmp/request.json <<'JSON'
+          {
+            "spreadsheet_id": "1bAN-nlwEBcg3qtr7SyhPkluRqiTBY2sDU2QkSbRB2jM",
+            "reason_tag_version": "comment-reason-v0.1",
+            "forward_manifest_path": "horse-racing/fetch_keibailuka_blog/research/forward_2026_source_manifest_v0_1.json",
+            "historical": {
+              "2024": {
+                "kyi": {"id": "1A0Nw2V81xy9cL6laJDMa7n19xGvV1nJY", "size": 9433468, "expected_rows": 47181},
+                "sed": {"id": "1F6z2JJQ6SNLPehurP-p-BTTOXsIxZ_zJ", "size": 5823386, "expected_rows": 47181}
+              },
+              "2025": {
+                "kyi": {"id": "17JU7BIAEnLOVyKWtoKw-BYkSugykbrfi", "size": 9577491, "expected_rows": 47884},
+                "sed": {"id": "1BNxeaDzlQMZrfl5JuNJ2PB8GPbGs6_XZ", "size": 5859134, "expected_rows": 47884}
+              }
+            }
+          }
+          JSON
+      - name: Recalculate
+        run: |
+          mkdir -p /tmp/recalc
+          python horse-racing/fetch_keibailuka_blog/src/audit_keibailuka_popularity_proxy.py \
+            --request-json /tmp/request.json --output-dir /tmp/recalc
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keibailuka-oneoff-recalc
+          path: /tmp/recalc
