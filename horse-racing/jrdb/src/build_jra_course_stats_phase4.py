@@ -11,7 +11,8 @@ import duckdb
 
 from jrdb_course_profile_identity import course_key_from_observation, layout_from_observation
 
-DEFINITION_VERSION = "jra-course-stats-definition-v0.1"\nPOPULATION_FILTER_ID = "ALL_FLAT_RESULTS_V0_1"
+DEFINITION_VERSION = "jra-course-stats-definition-v0.1"
+POPULATION_FILTER_ID = "ALL_FLAT_RESULTS_V0_1"
 JRA_VENUES = tuple(f"{i:02d}" for i in range(1, 11))
 
 
