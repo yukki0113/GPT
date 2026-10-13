@@ -1,0 +1,25 @@
+{
+  "schema_version": "racenote-v053-from-paci-0.1",
+  "status": "READY_FOR_V053_AUTHORING",
+  "selection_id": "BTDAY-0082",
+  "target_date": "2026-06-13",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "session_id": "V053-37a0fc3a139bdec45b95",
+  "paci": {
+    "filename": "PACI260613.zip",
+    "sha256": "439c6622b5c32f44ff3e63b9aee404a8ec3f153bb246ab87d64c94965cebe8db"
+  },
+  "daily_manifest_status": "PASS",
+  "forecast_prep": "horse-racing/jrdb/backtests/BTDAY-0082/20260613/forecast_prep",
+  "v053_root": "horse-racing/jrdb/backtests/BTDAY-0082/20260613/v053",
+  "race_count": 36,
+  "expected_venues": [
+    "函館",
+    "東京",
+    "阪神"
+  ],
+  "market_blind": true,
+  "result_opened": false,
+  "ab_required": false
+}
