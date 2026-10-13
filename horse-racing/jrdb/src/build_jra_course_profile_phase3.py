@@ -58,7 +58,8 @@ def main():
                 "first_observed_race_date":g["first_race_date"],"last_observed_race_date":g["last_race_date"],
                 "observed_race_count":g["race_count"],"source_locator":cfg["source_locator"] if current else None,
                 "first_corner_distance_m":None,"start_straight_m":None,
-                "final_straight_slope_flag":None,"start_slope_flag":None
+                "final_straight_slope_flag":None,"start_slope_flag":None,
+                "course_size_class":None
             }
         else:
             rec=masters[ck]
@@ -91,13 +92,19 @@ def main():
         if rec["current_jra_official"] and rows:
             elevations={r.get("elevation_difference_m") for r in rows if r.get("elevation_difference_m") is not None}
             straights={r.get("final_straight_m") for r in rows if r.get("final_straight_m") is not None}
+            slope_flags={r.get("final_straight_slope_flag") for r in rows if r.get("final_straight_slope_flag") is not None}
+            size_classes={r.get("course_size_class") for r in rows if r.get("course_size_class") is not None}
             rec["elevation_difference_m"]=next(iter(elevations)) if len(elevations)==1 else None
             rec["final_straight_m"]=next(iter(straights)) if len(straights)==1 else None
             rec["final_straight_m_varies_by_rail"]=len(straights)>1
+            rec["final_straight_slope_flag"]=next(iter(slope_flags)) if len(slope_flags)==1 else None
+            rec["course_size_class"]=next(iter(size_classes)) if len(size_classes)==1 else None
         else:
             rec["elevation_difference_m"]=None
             rec["final_straight_m"]=None
             rec["final_straight_m_varies_by_rail"]=False
+            rec["final_straight_slope_flag"]=None
+            rec["course_size_class"]=None
 
     mappings=[]
     for r in audit["distinct_course_combinations"]:
