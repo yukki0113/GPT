@@ -41,7 +41,8 @@ c.execute(f"""create view r0 as select h.*,substr(h.race_key,1,2) venue_code,
  m.course_size,
  case when m.final_straight_m<350 then 'SHORT' when m.final_straight_m<450 then 'MEDIUM'
  when m.final_straight_m>=450 then 'LONG' end straight_bucket,
- cast({track_expr} as varchar) going,cast({pace_expr} as varchar) pace
+ cast({track_expr} as varchar) going,cast({pace_expr} as varchar) pace,
+ x.pace_balance_percentile
  from hp h left join cmu m on substr(h.race_key,1,2)=m.venue_code
  and h.surface_code=m.surface_code and h.distance_m=m.distance_m
  left join rc x on h.race_key=x.race_key
@@ -51,7 +52,15 @@ c.execute("""create view r as select *,
  lag(distance_m) over w prev_distance,lag(turn_direction) over w prev_turn,
  lag(final_slope) over w prev_slope,lag(final_straight_m) over w prev_straight,
  lag(course_size) over w prev_size,lag(layout_variant) over w prev_layout,
- lag(going) over w prev_going
+ lag(going) over w prev_going,
+ lag(finish) over w prev_finish,
+ lag(perf) over w prev_perf,
+ lag(declared_class_group) over w prev_declared_class_group,
+ lag(time_class_equivalent_numeric) over w prev_time_class_equivalent_numeric,
+ lag(pace_balance_percentile) over w prev_pace_balance_percentile,
+ lag(corner4_frontness) over w prev_corner4_frontness,
+ lag(winner_gap_sec) over w prev_winner_gap_sec,
+ lag(last3f_speed_percentile) over w prev_last3f_speed_percentile
  from r0 window w as(partition by horse_id order by race_date,race_key,horse_no)""")
 c.execute("""create view e as select *,
  distance_m-prev_distance dd,final_straight_m-prev_straight sd,
@@ -62,7 +71,18 @@ c.execute("""create view e as select *,
  when distance_m-prev_distance<400 then 'EXTEND_SMALL'
  else 'EXTEND_LARGE' end dchg,
  case when going='1' then 'FIRM' when going in('2','3','4') then 'SOFT' end gc,
- case when prev_going='1' then 'FIRM' when prev_going in('2','3','4') then 'SOFT' end pgc
+ case when prev_going='1' then 'FIRM' when prev_going in('2','3','4') then 'SOFT' end pgc,
+ case
+  when prev_date is null or race_date-prev_date > 730 then false
+  when (prev_time_class_equivalent_numeric -
+    case upper(coalesce(prev_declared_class_group,''))
+      when 'NEWCOMER' then 0 when 'MAIDEN' then 1 when 'CLASS_1' then 2
+      when 'CLASS_2' then 3 when 'CLASS_3' then 4 when 'OPEN' then 5
+      when 'G3' then 6 when 'G2' then 7 when 'G1' then 8 else null end) >= 1 then true
+  when prev_pace_balance_percentile>=70 and prev_corner4_frontness>=0.60 and prev_winner_gap_sec<=0.50 then true
+  when prev_pace_balance_percentile<=30 and prev_corner4_frontness<=0.40 and prev_last3f_speed_percentile>=90 then true
+  when prev_finish>=6 and prev_perf>=0.03422932330827132 and prev_perf<0.16777149321267684 then true
+  else false end v03_match
  from r where race_date>=date '2026-01-01'""")
 parts=[
 "select *,'ABSOLUTE' fam,'TURN_DIRECTION' ft,turn_direction fv,false sc from e where turn_direction is not null",
@@ -112,6 +132,21 @@ c.execute(f"""copy(select m.fam,m.ft,case when m.race_date<date '2026-07-01' the
  from m join pb p on m.fam=p.fam and m.ft=p.ft and (case when m.race_date<date '2026-07-01' then 'H1' else 'H2' end)=p.period
  where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
  group by 1,2,3,p.bw,p.bp,p.bf order by 1,2,3) to {q(a.out/'stability.csv')} (header,delimiter ',')""")
+c.execute(f"""copy(
+ select m.fam,m.ft,m.fv,e.v03_match,count(*) n,count(distinct m.horse_id) horses,
+ avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf
+ from m join e on m.race_key=e.race_key and m.horse_id=e.horse_id
+ where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
+ group by 1,2,3,4 order by 1,2,3,4
+) to {q(a.out/'v03_overlap_values.csv')} (header,delimiter ',')""")
+c.execute(f"""copy(
+ select m.fam,m.ft,e.v03_match,count(*) n,count(distinct m.horse_id) horses,
+ avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf
+ from m join e on m.race_key=e.race_key and m.horse_id=e.horse_id
+ where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
+ group by 1,2,3 order by 1,2,3
+) to {q(a.out/'v03_overlap_axis.csv')} (header,delimiter ',')""")
+
 meta={"rrdb_runs":c.execute("select count(*) from e").fetchone()[0],
 "races":c.execute("select count(distinct race_key) from e").fetchone()[0],
 "matched":c.execute("select count(*) from m").fetchone()[0],
