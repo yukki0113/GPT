@@ -132,19 +132,28 @@ c.execute(f"""copy(select m.fam,m.ft,case when m.race_date<date '2026-07-01' the
  from m join pb p on m.fam=p.fam and m.ft=p.ft and (case when m.race_date<date '2026-07-01' then 'H1' else 'H2' end)=p.period
  where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
  group by 1,2,3,p.bw,p.bp,p.bf order by 1,2,3) to {q(a.out/'stability.csv')} (header,delimiter ',')""")
+c.execute("""create view mv as select m.*,e.v03_match from m join e
+ on m.race_key=e.race_key and m.horse_id=e.horse_id""")
+c.execute("""create view vb as select fam,ft,v03_match,
+ avg((finish=1)::int)::double bw,avg((finish<=3)::int)::double bp,avg(perf) bf
+ from mv where sample_count>=4 group by 1,2,3""")
 c.execute(f"""copy(
- select m.fam,m.ft,m.fv,e.v03_match,count(*) n,count(distinct m.horse_id) horses,
- avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf
- from m join e on m.race_key=e.race_key and m.horse_id=e.horse_id
+ select m.fam,m.ft,m.fv,m.v03_match,count(*) n,count(distinct m.horse_id) horses,
+ avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf,
+ avg((m.finish=1)::int)::double-b.bw win_lift,
+ avg((m.finish<=3)::int)::double-b.bp top3_lift,avg(m.perf)-b.bf perf_lift
+ from mv m join vb b using(fam,ft,v03_match)
  where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
- group by 1,2,3,4 order by 1,2,3,4
+ group by 1,2,3,4,b.bw,b.bp,b.bf order by 1,2,3,4
 ) to {q(a.out/'v03_overlap_values.csv')} (header,delimiter ',')""")
 c.execute(f"""copy(
- select m.fam,m.ft,e.v03_match,count(*) n,count(distinct m.horse_id) horses,
- avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf
- from m join e on m.race_key=e.race_key and m.horse_id=e.horse_id
+ select m.fam,m.ft,m.v03_match,count(*) n,count(distinct m.horse_id) horses,
+ avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf,
+ avg((m.finish=1)::int)::double-b.bw win_lift,
+ avg((m.finish<=3)::int)::double-b.bp top3_lift,avg(m.perf)-b.bf perf_lift
+ from mv m join vb b using(fam,ft,v03_match)
  where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
- group by 1,2,3 order by 1,2,3
+ group by 1,2,3,b.bw,b.bp,b.bf order by 1,2,3
 ) to {q(a.out/'v03_overlap_axis.csv')} (header,delimiter ',')""")
 
 meta={"rrdb_runs":c.execute("select count(*) from e").fetchone()[0],
