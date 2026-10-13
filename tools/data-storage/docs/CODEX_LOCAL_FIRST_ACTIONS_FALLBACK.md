@@ -64,8 +64,8 @@ Use the fallback when all of the following are true:
 - the operation is deterministic;
 - the canonical implementation already exists in the repository or is part of the reviewed change;
 - the local managed runtime cannot satisfy the pinned data-storage dependencies;
-- required inputs are available from the checkout and/or immutable GitHub Actions artifacts;
-- no Google Drive transport is required inside Actions;
+- required inputs are available from the checkout, immutable GitHub Actions artifacts, and/or repository-reviewed `public_google_drive` manifests;
+- any Google Drive input is already public, unauthenticated, read-only, and SHA-256 pinned under `tools/gpt_io/public_drive/`;
 - the task does not require arbitrary interactive shell work.
 
 If an input exists only as an ephemeral local file, first resolve a reproducible source. Do not upload opaque local state just to make the fallback run.
@@ -91,11 +91,12 @@ The workflow:
 3. installs `tools/data-storage/requirements.txt`;
 4. runs `data_storage check-deps`;
 5. downloads declared upstream Actions artifacts;
-6. executes one or more repository Python entrypoints with `subprocess` argument arrays, never through arbitrary shell;
-7. records source/input/request provenance;
-8. uploads the output directory plus audit/stdout/stderr;
-9. comments the Issue with the run/artifact status;
-10. closes the request Issue. Failed requests are not left open.
+6. fetches declared public Drive inputs through `tools/gpt_io/public_drive/fetch.py` and records integrity receipts;
+7. executes one or more repository Python entrypoints with `subprocess` argument arrays, never through arbitrary shell;
+8. records source/input/request provenance;
+9. uploads the output directory plus audit/stdout/stderr;
+10. comments the Issue with the run/artifact status;
+11. closes the request Issue. Failed requests are not left open.
 
 ## 4. Request contract
 
@@ -112,6 +113,12 @@ Example:
       "artifact_name": "jrdb-edge-v04-stage-c1-123456789"
     }
   ],
+  "public_drive_inputs": [
+    {
+      "label": "warehouse",
+      "manifest": "horse-racing/example/config/public_drive_manifest.json"
+    }
+  ],
   "steps": [
     {
       "name": "canonical-c2a",
@@ -119,6 +126,8 @@ Example:
       "args": [
         "--c1-parquet",
         "{input:c1}/research_candidates.parquet",
+        "--warehouse-root",
+        "{public_drive:warehouse}",
         "--output-dir",
         "{output}"
       ]
@@ -136,6 +145,7 @@ Example:
 - `request_id`: audit label.
 - `source_ref`: branch, tag, or commit to checkout. Default: `main`.
 - `input_artifacts`: zero to 8 upstream Actions artifacts.
+- `public_drive_inputs`: zero to 8 approved public Drive input manifests.
 
 ### input_artifacts item
 
@@ -150,6 +160,21 @@ Artifacts are downloaded to:
 ```text
 /tmp/data-storage-fallback/inputs/<label>/
 ```
+
+### public_drive_inputs item
+
+Each item requires:
+
+- `label`: unique identifier matching `[A-Za-z0-9_-]{1,40}` and not reused by `input_artifacts`;
+- `manifest`: repository-relative JSON manifest reviewed in the requested source ref.
+
+The manifest must satisfy `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md` and `tools/gpt_io/public_drive/fetch.py`: already-public files only, unauthenticated read-only fetch, mandatory pinned SHA-256, no folder enumeration, no credentials and no Drive writes. Files are materialized to:
+
+```text
+/tmp/data-storage-fallback/public-drive/<label>/
+```
+
+An integrity receipt is written under `/tmp/data-storage-fallback/public-drive-receipts/` and its SHA-256 is recorded in the fallback audit.
 
 ### step item
 
@@ -176,7 +201,8 @@ Arguments may use:
 - `{repo}` — checked-out repository root;
 - `{work}` — shared writable work directory;
 - `{output}` — directory uploaded as the result artifact;
-- `{input:LABEL}` — downloaded artifact directory for LABEL.
+- `{input:LABEL}` — downloaded Actions artifact directory for LABEL.
+- `{public_drive:LABEL}` — verified public Drive materialization directory for LABEL.
 
 Example:
 
@@ -215,6 +241,7 @@ The audit records:
 - source ref and resolved source commit;
 - Python, DuckDB, PyArrow versions;
 - each upstream artifact run/name/label;
+- each public Drive manifest path/hash and integrity receipt hash;
 - each entrypoint path and SHA-256;
 - expanded argument vector;
 - per-step exit status;
@@ -235,7 +262,7 @@ The workflow artifact is an execution artifact, not automatically a production p
 
 - the managed local runtime cannot install the pinned dependencies;
 - the operation is deterministic and repository-defined;
-- upstream inputs already live as Actions artifacts;
+- upstream inputs already live as Actions artifacts or satisfy the reviewed public Drive manifest contract;
 - running in Actions avoids semantic reimplementation.
 
 ### Use a project-specific Actions workflow instead when
@@ -247,14 +274,22 @@ The workflow artifact is an execution artifact, not automatically a production p
 
 ## 8. Google Drive boundary
 
-This fallback does not create a direct GitHub Actions <-> Google Drive bridge.
+The fallback supports the narrow public read-only exception already approved by `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_2.md`.
 
-If a required input is only in connected Google Drive:
+Allowed:
 
-1. resolve/materialize it through the native GPT/Drive route;
-2. use the project's approved publication/artifact route if Actions execution is genuinely required.
+- repository-reviewed `public_google_drive` manifests;
+- already-public files;
+- unauthenticated download only through `tools/gpt_io/public_drive/fetch.py`;
+- mandatory SHA-256 verification and local integrity receipt.
 
-Do not add Drive credentials, `gdown`, or Drive API transport to this generic fallback.
+Still prohibited:
+
+- private or authenticated Drive reads;
+- Drive writes, uploads, deletes, permission changes, OAuth/service-account credentials;
+- ad-hoc Drive URLs, raw workflow `gdown` calls, folder enumeration, or unpinned files.
+
+If the required Drive input is private/authenticated, use the native GPT/Work Drive route and an approved project publication/artifact path instead.
 
 ## 9. Codex behavior
 
