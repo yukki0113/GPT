@@ -260,9 +260,9 @@ jobs:
               encoding='utf-8',
           )
           Path('/tmp/issue_router_comment.md').write_text(
-              'ISSUE_ROUTER_RESULT\n\`\`\`json\n'
+              'ISSUE_ROUTER_RESULT\n```json\n'
               + json.dumps(result, ensure_ascii=False, indent=2)
-              + '\n\`\`\`\n',
+              + '\n```\n',
               encoding='utf-8',
           )
           PY
