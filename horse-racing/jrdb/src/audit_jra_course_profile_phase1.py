@@ -21,7 +21,8 @@ def main() -> int:
     parquet_glob = str(args.input_root / "bac" / "year=*" / "*.parquet")
     con = duckdb.connect()
     try:
-        con.execute("CREATE TEMP VIEW bac_raw AS SELECT * FROM read_parquet(?, union_by_name=true)", [parquet_glob])
+        escaped_glob = parquet_glob.replace("'", "''")
+        con.execute(f"CREATE TEMP VIEW bac_raw AS SELECT * FROM read_parquet('{escaped_glob}', union_by_name=true)")
         con.execute("""
             CREATE TEMP VIEW bac_jra AS
             SELECT * FROM bac_raw
