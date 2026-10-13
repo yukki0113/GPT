@@ -1,0 +1,763 @@
+[
+  {
+    "venue": "函館",
+    "race_no": 1,
+    "race_model": "函館1RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      9,
+      6,
+      15,
+      5,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "外部16と固定境界7を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、7を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館1Rは通常五頭を先に保護し、◎9・○6を固定した。外部16にも別経路はあるが、固定境界7を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲15を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        6,
+        5,
+        15,
+        7
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "外部16は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界7の直接支持を外部16より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 6,
+      "honmei_win_case": "9は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "6は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎9と○6は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ9を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 2,
+    "race_model": "函館2RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      10,
+      4,
+      7,
+      8,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "外部1と固定境界2を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、2を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館2Rは通常五頭を先に保護し、◎10・○4を固定した。外部1にも別経路はあるが、固定境界2を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲7を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        4,
+        8,
+        7,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "外部1は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界2の直接支持を外部1より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 4,
+      "honmei_win_case": "10は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "4は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎10と○4は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ10を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 3,
+    "race_model": "函館3RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      9,
+      1,
+      4,
+      8,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "外部6と固定境界10を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、10を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館3Rは通常五頭を先に保護し、◎9・○1を固定した。外部6にも別経路はあるが、固定境界10を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲4を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        1,
+        4,
+        8,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "外部6は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界10の直接支持を外部6より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 1,
+      "honmei_win_case": "9は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "1は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎9と○1は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ9を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 4,
+    "race_model": "函館4RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      2,
+      6,
+      15,
+      8,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "外部14と固定境界10を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、10を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館4Rは通常五頭を先に保護し、◎2・○6を固定した。外部14にも別経路はあるが、固定境界10を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲15を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        6,
+        8,
+        15,
+        10
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "外部14は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界10の直接支持を外部14より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 6,
+      "honmei_win_case": "2は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "6は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2と○6は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ2を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 5,
+    "race_model": "函館5RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      12,
+      1,
+      4,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10と固定境界7を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、7を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館5Rは通常五頭を先に保護し、◎12・○1を固定した。外部10にも別経路はあるが、固定境界7を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲4を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        1,
+        2,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "外部10は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界7の直接支持を外部10より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 1,
+      "honmei_win_case": "12は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "1は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎12と○1は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ12を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 6,
+    "race_model": "函館6RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      10,
+      11,
+      7,
+      5,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3と固定境界2を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、2を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館6Rは通常五頭を先に保護し、◎10・○11を固定した。外部3にも別経路はあるが、固定境界2を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲7を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        11,
+        5,
+        7,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "外部3は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界2の直接支持を外部3より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 11,
+      "honmei_win_case": "10は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "11は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎10と○11は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ10を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 7,
+    "race_model": "函館7RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      6,
+      3,
+      4,
+      7,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "外部2と固定境界5を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、5を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館7Rは通常五頭を先に保護し、◎6・○3を固定した。外部2にも別経路はあるが、固定境界5を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲4を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        3,
+        7,
+        4,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "外部2は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界5の直接支持を外部2より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 3,
+      "honmei_win_case": "6は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "3は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎6と○3は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ6を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 8,
+    "race_model": "函館8RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      10,
+      11,
+      11,
+      9,
+      7,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "外部6と固定境界12を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、12を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館8Rは通常五頭を先に保護し、◎10・○11を固定した。外部6にも別経路はあるが、固定境界12を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲11を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        11,
+        9,
+        7,
+        12
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "外部6は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12の直接支持を外部6より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 11,
+      "honmei_win_case": "10は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "11は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎10と○11は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ10を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 9,
+    "race_model": "函館9RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      10,
+      1,
+      2,
+      8,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "外部5と固定境界6を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、6を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館9Rは通常五頭を先に保護し、◎10・○1を固定した。外部5にも別経路はあるが、固定境界6を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲2を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        1,
+        2,
+        8,
+        6
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "外部5は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界6の直接支持を外部5より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 1,
+      "honmei_win_case": "10は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "1は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎10と○1は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ10を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 10,
+    "race_model": "函館10RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      3,
+      15,
+      14,
+      8,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10と固定境界11を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、11を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館10Rは通常五頭を先に保護し、◎3・○15を固定した。外部10にも別経路はあるが、固定境界11を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲14を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        15,
+        14,
+        8,
+        11
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "外部10は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界11の直接支持を外部10より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 15,
+      "honmei_win_case": "3は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "15は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3と○15は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ3を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 11,
+    "race_model": "函館11RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      3,
+      10,
+      9,
+      12,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8と固定境界4を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、4を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館11Rは通常五頭を先に保護し、◎3・○10を固定した。外部8にも別経路はあるが、固定境界4を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲9を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        10,
+        12,
+        9,
+        4
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "外部8は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界4の直接支持を外部8より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 10,
+      "honmei_win_case": "3は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "10は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3と○10は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ3を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 12,
+    "race_model": "函館12RはReader全体の能力、現条件適合、近走再現性、状態と位置取りを統合し、通常五頭を先に固定したうえで外部候補一頭だけを固定境界と比較する構図と判断した。",
+    "marks": [
+      5,
+      1,
+      10,
+      7,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5はReader上の能力・現条件・勝ち切り経路の組み合わせが通常五頭内で最も明瞭で、主線の◎とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は直接能力と再現性の支持が強く、◎に次ぐ主線の勝ち筋として○に残した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は通常五頭として保護するだけの直接支持があり、相手本線に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は通常五頭内で主線二頭とは異なる展開・位置取りから勝ち切る余地があり、▲として評価した。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "外部9と固定境界12を直接比較したが、経路差だけでは通常候補を崩す根拠にならず、12を維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "函館12Rは通常五頭を先に保護し、◎5・○1を固定した。外部9にも別経路はあるが、固定境界12を直接上回るだけの現条件支持まではなく通常五頭を維持し、その内部から▲10を選んだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        1,
+        10,
+        7,
+        12
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "外部9は通常五頭とは異なる展開・位置取りから勝ち切る余地があり、通常六番手ではない一頭として境界比較に送った。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12の直接支持を外部9より上に取り、通常五頭をそのまま保持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 1,
+      "honmei_win_case": "5は安全な複勝圏ではなく、Reader上で最も具体的に勝ち切る展開と能力の組み合わせを持つ。",
+      "second_case": "1は通常五頭内で次に強い主線の勝ち筋を持ち、◎を逆転できる余地も残る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎5と○1は安定性だけでなく勝ち切り経路を比較し、より明瞭な勝ち筋を持つ5を上位に置いた。"
+    }
+  }
+]
