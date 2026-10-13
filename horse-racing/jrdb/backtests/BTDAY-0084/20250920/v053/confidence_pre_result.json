@@ -1,0 +1,193 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎が○より明確に上。序列への確信が高い。",
+    "B": "◎を○より上に置く根拠はあるが、差は明瞭ではない。",
+    "C": "◎と○が近い、または強弱材料が交差し、序列がタイブレークに近い。"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "source_commit": "009b905ad0610e9a71d190f39fb2148b8238c082",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0084",
+  "target_date": "2025-09-20",
+  "assignments": [
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "honmei_horse_no": 1,
+      "second_horse_no": 10,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "honmei_horse_no": 14,
+      "second_horse_no": 11,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "honmei_horse_no": 16,
+      "second_horse_no": 12,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "honmei_horse_no": 2,
+      "second_horse_no": 9,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "honmei_horse_no": 1,
+      "second_horse_no": 3,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "honmei_horse_no": 3,
+      "second_horse_no": 1,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "honmei_horse_no": 8,
+      "second_horse_no": 5,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "honmei_horse_no": 9,
+      "second_horse_no": 6,
+      "confidence": "C"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "honmei_horse_no": 5,
+      "second_horse_no": 10,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "honmei_horse_no": 1,
+      "second_horse_no": 4,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "honmei_horse_no": 11,
+      "second_horse_no": 7,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "honmei_horse_no": 15,
+      "second_horse_no": 12,
+      "confidence": "A"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "honmei_horse_no": 1,
+      "second_horse_no": 2,
+      "confidence": "A"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "honmei_horse_no": 3,
+      "second_horse_no": 5,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "confidence": "A"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "honmei_horse_no": 5,
+      "second_horse_no": 6,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "honmei_horse_no": 5,
+      "second_horse_no": 14,
+      "confidence": "A"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "honmei_horse_no": 5,
+      "second_horse_no": 14,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "honmei_horse_no": 4,
+      "second_horse_no": 16,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "honmei_horse_no": 4,
+      "second_horse_no": 1,
+      "confidence": "C"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "honmei_horse_no": 8,
+      "second_horse_no": 4,
+      "confidence": "A"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "honmei_horse_no": 1,
+      "second_horse_no": 4,
+      "confidence": "A"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "honmei_horse_no": 9,
+      "second_horse_no": 1,
+      "confidence": "C"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "honmei_horse_no": 2,
+      "second_horse_no": 15,
+      "confidence": "B"
+    }
+  ],
+  "counts": {
+    "A": 13,
+    "B": 8,
+    "C": 3,
+    "total": 24
+  }
+}
