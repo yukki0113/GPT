@@ -1,0 +1,72 @@
+name: RRDB Horse Course Fit v0.1 validation
+
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/jrdb_horse_course_fit.py'
+      - 'horse-racing/jrdb/src/run_rrdb_horse_course_fit_validation.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_horse_course_fit.py'
+      - '.github/workflows/rrdb_horse_course_fit_validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/data-storage/requirements.txt pytest
+      - name: Focused leakage and restart regressions
+        run: python -m pytest horse-racing/jrdb/tests/test_jrdb_horse_course_fit.py -q
+      - name: Verify pinned canonical RRDB artifact identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${{ github.repository }}/actions/artifacts/11780924435 > /tmp/rrdb-source-artifact.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/rrdb-source-artifact.json'))
+          assert d['id']==11780924435 and d['name']=='rrdb-current-ready-20261013'
+          assert not d['expired']
+          assert d['workflow_run']['id']==38327108923
+          assert d['digest']=='sha256:ea1d4e1f3f0efdebee512a3ba09f7f9fd253a3851b42c562698bc11102fb011a'
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: rrdb-current-ready-20261013
+          run-id: 38327108923
+          github-token: ${{ github.token }}
+          path: /tmp/course-fit-input/rrdb
+      - name: Materialize reviewed public Warehouse BAC and SED
+        run: |
+          python tools/gpt_io/public_drive/fetch.py --manifest horse-racing/jrdb/config/course_profile/jra_bac_2010_2025_public_drive_manifest.json --output-root /tmp/course-fit-input/warehouse --receipt /tmp/bac-receipt.json
+          python tools/gpt_io/public_drive/fetch.py --manifest horse-racing/jrdb/config/course_profile/jra_sed_2010_2025_public_drive_manifest.json --output-root /tmp/course-fit-input/warehouse --receipt /tmp/sed-receipt.json
+      - name: Rebuild Phase3, build all stages, assert identical restart
+        run: python horse-racing/jrdb/src/run_rrdb_horse_course_fit_validation.py --warehouse-root /tmp/course-fit-input/warehouse --rrdb-artifact-root /tmp/course-fit-input/rrdb --output-dir /tmp/course-fit-output --as-of-date 2026-01-01
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rrdb-course-fit-reports-${{ github.run_id }}
+          path: |
+            /tmp/course-fit-output/reports/
+            /tmp/course-fit-output/fit/reports/
+            /tmp/course-fit-output/fit/manifest.json
+            /tmp/course-fit-output/fit/audit.json
+            /tmp/rrdb-source-artifact.json
+            /tmp/bac-receipt.json
+            /tmp/sed-receipt.json
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: rrdb-course-fit-v0-1-${{ github.run_id }}
+          path: /tmp/course-fit-output/

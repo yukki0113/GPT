@@ -1,0 +1,76 @@
+name: RRDB Course Fit approved archive materialization
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rrdb_course_fit_drive_materialization.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  materialize:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download exact approved generated ZIP and verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${{ github.repository }}/actions/artifacts/11799761734/zip > /tmp/approved-fit.zip
+          python - <<'PY'
+          import hashlib,pathlib
+          path=pathlib.Path('/tmp/approved-fit.zip')
+          assert path.stat().st_size==170365515
+          h=hashlib.sha256()
+          with path.open('rb') as f:
+              for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
+          assert h.hexdigest()=='18570ef9c366f78b2f8bb60c380e24b70f1b80e070ddf1961acaed7bde35627d'
+          with path.open('rb') as f:
+              for i in range(7):
+                  block=f.read(24*1024*1024)
+                  assert block
+                  pathlib.Path(f'/tmp/approved-fit.part{i}').write_bytes(block)
+              assert not f.read(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-fit-part0-${{ github.run_id }}
+          path: /tmp/approved-fit.part0
+          compression-level: 0
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-fit-part1-${{ github.run_id }}
+          path: /tmp/approved-fit.part1
+          compression-level: 0
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-fit-part2-${{ github.run_id }}
+          path: /tmp/approved-fit.part2
+          compression-level: 0
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-fit-part3-${{ github.run_id }}
+          path: /tmp/approved-fit.part3
+          compression-level: 0
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-fit-part4-${{ github.run_id }}
+          path: /tmp/approved-fit.part4
+          compression-level: 0
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-fit-part5-${{ github.run_id }}
+          path: /tmp/approved-fit.part5
+          compression-level: 0
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-fit-part6-${{ github.run_id }}
+          path: /tmp/approved-fit.part6
+          compression-level: 0
+          retention-days: 7
