@@ -14,16 +14,19 @@ c=duckdb.connect()
 cand=a.fit_root/"fit/research/candidate_fit_view.parquet"
 cm=a.fit_root/"course_master/course_master_seed_v0_1.jsonl"
 hp=list(a.rrdb_root.glob("**/objects/fact_horse_performance/year=202[56]/*.parquet"))
+rc=list(a.rrdb_root.glob("**/objects/fact_race_context/year=2026/*.parquet"))
 c.execute(f"create view cand as select * from read_parquet({q(cand)})")
 c.execute("create view hp as select * from read_parquet(["+",".join(q(x) for x in hp)+"],union_by_name=true)")
+if rc: c.execute("create view rc as select * from read_parquet(["+",".join(q(x) for x in rc)+"],union_by_name=true)")
 c.execute(f"create view cm0 as select * from read_json_auto({q(cm)})")
 schemas={x:[r[0] for r in c.execute("describe "+x).fetchall()] for x in ["cand","hp","cm0"]}
+if rc: schemas["rc"]=[r[0] for r in c.execute("describe rc").fetchall()]
 (a.out/"schemas.json").write_text(json.dumps(schemas,indent=2,ensure_ascii=False)+"\n")
 need=["race_date","race_key","horse_id","horse_no","surface_code","distance_m","finish","horse_adjusted_delta_per_1000m"]
 miss=[x for x in need if x not in schemas["hp"]]
 if miss: raise SystemExit("missing hp "+repr(miss))
 track="track_condition_code" if "track_condition_code" in schemas["hp"] else None
-pace="race_pace_code" if "race_pace_code" in schemas["hp"] else None
+pace="race_pace_code" if ("race_pace_code" in schemas["hp"] or (rc and "race_pace_code" in schemas["rc"])) else None
 c.execute("""create view cmu as with x as(
  select venue_code,surface_code,distance_m,count(*) n,min(turn_direction) turn_direction,
  min(layout_variant) layout_variant,min(final_straight_m) final_straight_m,
@@ -31,17 +34,18 @@ c.execute("""create view cmu as with x as(
  from cm0 where current_jra_official and surface_code in ('1','2') and physical_valid_from is not null
  group by 1,2,3) select * from x where n=1""")
 track_expr=f"h.{track}" if track else "NULL::VARCHAR"
-pace_expr=f"h.{pace}" if pace else "NULL::VARCHAR"
-c.execute(f"""create view r0 as select h.*,substr(race_key,1,2) venue_code,
- -horse_adjusted_delta_per_1000m perf,m.turn_direction,m.layout_variant,m.final_straight_m,
+pace_expr=("h.race_pace_code" if "race_pace_code" in schemas["hp"] else ("x.race_pace_code" if pace else "NULL::VARCHAR"))
+c.execute(f"""create view r0 as select h.*,substr(h.race_key,1,2) venue_code,
+ -horse_adjusted_delta_per_1000m perf,upper(m.turn_direction) turn_direction,m.layout_variant,m.final_straight_m,
  case when m.slope then 'PRESENT' when m.slope=false then 'ABSENT' end final_slope,
  m.course_size,
  case when m.final_straight_m<350 then 'SHORT' when m.final_straight_m<450 then 'MEDIUM'
  when m.final_straight_m>=450 then 'LONG' end straight_bucket,
  cast({track_expr} as varchar) going,cast({pace_expr} as varchar) pace
- from hp h left join cmu m on substr(race_key,1,2)=m.venue_code
+ from hp h left join cmu m on substr(h.race_key,1,2)=m.venue_code
  and h.surface_code=m.surface_code and h.distance_m=m.distance_m
- where race_date>=date '2025-01-01' and race_date<date '2026-10-13'""")
+ left join rc x on h.race_key=x.race_key
+ where h.race_date>=date '2025-01-01' and h.race_date<date '2026-10-13'""")
 c.execute("""create view r as select *,
  lag(race_date) over w prev_date,lag(surface_code) over w prev_surface,
  lag(distance_m) over w prev_distance,lag(turn_direction) over w prev_turn,
@@ -99,10 +103,15 @@ c.execute(f"""copy(select m.fam,m.ft,m.fv,count(*) n,avg((finish=1)::int)::doubl
  from m join b using(fam,ft) where sample_count>=4 and shrunk_delta>=.10 and confidence>=.5
  group by 1,2,3,b.bw,b.bp,b.bf order by n desc)
  to {q(a.out/'values.csv')} (header,delimiter ',')""")
-c.execute(f"""copy(select fam,ft,case when race_date<date '2026-07-01' then 'H1' else 'H2' end period,
- count(*) n,avg((finish=1)::int)::double win,avg((finish<=3)::int)::double top3,avg(perf) perf
- from m where sample_count>=4 and shrunk_delta>=.10 and confidence>=.5
- group by 1,2,3 order by 1,2,3) to {q(a.out/'stability.csv')} (header,delimiter ',')""")
+c.execute("""create view pb as select fam,ft,case when race_date<date '2026-07-01' then 'H1' else 'H2' end period,
+ avg((finish=1)::int)::double bw,avg((finish<=3)::int)::double bp,avg(perf) bf
+ from m where sample_count>=4 group by 1,2,3""")
+c.execute(f"""copy(select m.fam,m.ft,case when m.race_date<date '2026-07-01' then 'H1' else 'H2' end period,
+ count(*) n,avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf,
+ avg((m.finish=1)::int)::double-p.bw win_lift,avg((m.finish<=3)::int)::double-p.bp top3_lift,avg(m.perf)-p.bf perf_lift
+ from m join pb p on m.fam=p.fam and m.ft=p.ft and (case when m.race_date<date '2026-07-01' then 'H1' else 'H2' end)=p.period
+ where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
+ group by 1,2,3,p.bw,p.bp,p.bf order by 1,2,3) to {q(a.out/'stability.csv')} (header,delimiter ',')""")
 meta={"rrdb_runs":c.execute("select count(*) from e").fetchone()[0],
 "races":c.execute("select count(distinct race_key) from e").fetchone()[0],
 "matched":c.execute("select count(*) from m").fetchone()[0],
