@@ -27,10 +27,21 @@ jobs:
           set -euo pipefail
           rm -rf /tmp/historical
           mkdir -p /tmp/historical
-          MANIFEST='horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json'
+          SOURCE_MANIFEST='horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json'
+          MANIFEST='/tmp/racenote_historical_golden_btday0080.json'
+          python - <<'PY'
+          import json
+          src='horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json'
+          dst='/tmp/racenote_historical_golden_btday0080.json'
+          data=json.load(open(src, encoding='utf-8'))
+          for row in data['artifacts']:
+              if row['artifact_id']=='golden_20':
+                  row['file_id']='1qP-LQwELUTZsEPBxCAVoIO8e-rphchLC'
+          json.dump(data, open(dst,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
+          PY
           mapfile -t ARTIFACTS < <(python - <<'PY'
           import json
-          p='horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json'
+          p='/tmp/racenote_historical_golden_btday0080.json'
           for row in json.load(open(p, encoding='utf-8'))['artifacts']:
               print(row['artifact_id'])
           PY
