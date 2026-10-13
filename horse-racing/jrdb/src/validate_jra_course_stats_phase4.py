@@ -21,7 +21,7 @@ RATE_COLUMNS = [
     "middle_draw_win_rate", "middle_draw_top3_rate",
     "outside_draw_win_rate", "outside_draw_top3_rate",
 ]
-DEFINITION_VERSION = "jra-course-stats-definition-v0.1"
+DEFINITION_VERSION = "jra-course-stats-definition-v0.1"\nPOPULATION_FILTER_ID = "ALL_FLAT_RESULTS_V0_1"
 
 
 def main() -> int:
@@ -56,6 +56,8 @@ def main() -> int:
             ("positive_geometry_samples", count("SELECT COUNT(*) FROM g WHERE sample_race_count<=0 OR sample_runner_count<=0") == 0),
             ("definition_course", count(f"SELECT COUNT(*) FROM c WHERE stats_definition_version <> '{DEFINITION_VERSION}'") == 0),
             ("definition_geometry", count(f"SELECT COUNT(*) FROM g WHERE stats_definition_version <> '{DEFINITION_VERSION}'") == 0),
+            ("population_course", count(f"SELECT COUNT(*) FROM c WHERE population_filter_id <> '{POPULATION_FILTER_ID}'") == 0),
+            ("population_geometry", count(f"SELECT COUNT(*) FROM g WHERE population_filter_id <> '{POPULATION_FILTER_ID}'") == 0),
             ("period_course", count(f"SELECT COUNT(*) FROM c WHERE period_from <> '{args.period_from}' OR period_to_exclusive <> '{args.period_to_exclusive}'") == 0),
             ("period_geometry", count(f"SELECT COUNT(*) FROM g WHERE period_from <> '{args.period_from}' OR period_to_exclusive <> '{args.period_to_exclusive}'") == 0),
             ("geometry_eligibility", count(f"SELECT COUNT(*) FROM g WHERE eligible_for_use <> (sample_race_count >= {args.min_geometry_races})") == 0),
