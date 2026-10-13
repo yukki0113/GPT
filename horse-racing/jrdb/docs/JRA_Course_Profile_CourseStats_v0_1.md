@@ -19,9 +19,12 @@ Every row has:
 period_from
 period_to_exclusive
 stats_definition_version
+population_filter_id
 source_generation
 generated_at
 ```
+
+v0.1 uses `population_filter_id=ALL_FLAT_RESULTS_V0_1`. Future good-track-only, class-restricted, age-restricted, or other populations must use a different filter ID rather than silently changing the meaning of the same row.
 
 The interval is half-open:
 
