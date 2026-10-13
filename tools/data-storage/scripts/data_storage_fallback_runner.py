@@ -19,6 +19,8 @@ from typing import Any
 
 BASE = Path("/tmp/data-storage-fallback")
 INPUTS = BASE / "inputs"
+PUBLIC_DRIVE = BASE / "public-drive"
+PUBLIC_DRIVE_RECEIPTS = BASE / "public-drive-receipts"
 WORK = BASE / "work"
 OUTPUT = BASE / "output"
 STDOUT = BASE / "stdout"
@@ -88,6 +90,26 @@ def validate_request(raw: str) -> dict[str, Any]:
         if not isinstance(artifact_name, str) or not artifact_name.strip() or len(artifact_name) > 255:
             raise ValueError(f"invalid artifact_name for input {label}")
 
+    public_drive_inputs = request.get("public_drive_inputs", [])
+    if not isinstance(public_drive_inputs, list) or len(public_drive_inputs) > 8:
+        raise ValueError("public_drive_inputs must be an array with at most 8 items")
+    public_drive_labels: set[str] = set()
+    for item in public_drive_inputs:
+        if not isinstance(item, dict):
+            raise ValueError("each public_drive_inputs item must be an object")
+        label = item.get("label")
+        manifest = item.get("manifest")
+        if not isinstance(label, str) or not LABEL_RE.fullmatch(label):
+            raise ValueError(f"invalid public Drive input label: {label!r}")
+        if label in labels or label in public_drive_labels:
+            raise ValueError(f"duplicate input label: {label}")
+        public_drive_labels.add(label)
+        if not isinstance(manifest, str) or not manifest.endswith(".json"):
+            raise ValueError(f"public Drive input {label}: manifest must be a repository-relative .json file")
+        manifest_path = Path(manifest)
+        if manifest_path.is_absolute() or ".." in manifest_path.parts or any(part.startswith(".") for part in manifest_path.parts):
+            raise ValueError(f"public Drive input {label}: unsafe manifest path")
+
     steps = request.get("steps")
     if not isinstance(steps, list) or not 1 <= len(steps) <= 20:
         raise ValueError("steps must contain 1..20 items")
@@ -114,6 +136,9 @@ def validate_request(raw: str) -> dict[str, Any]:
             for found in re.findall(r"\{input:([^}]+)\}", arg):
                 if found not in labels:
                     raise ValueError(f"step {name}: unknown input label {found!r}")
+            for found in re.findall(r"\{public_drive:([^}]+)\}", arg):
+                if found not in public_drive_labels:
+                    raise ValueError(f"step {name}: unknown public Drive input label {found!r}")
     return request
 
 
@@ -152,10 +177,13 @@ def bootstrap_dependencies(root: Path) -> tuple[str | None, str | None]:
 
 
 def download_inputs(request: dict[str, Any], repository: str) -> None:
+    artifacts = request.get("input_artifacts", [])
+    if not artifacts:
+        return
     token = os.environ.get("GH_TOKEN")
     if not token:
         raise RuntimeError("GH_TOKEN is required to download declared artifacts")
-    for item in request.get("input_artifacts", []):
+    for item in artifacts:
         destination = INPUTS / item["label"]
         destination.mkdir(parents=True, exist_ok=True)
         proc = run(
@@ -180,17 +208,66 @@ def download_inputs(request: dict[str, Any], repository: str) -> None:
             )
 
 
-def expand_arg(value: str, root: Path, labels: dict[str, Path]) -> str:
+def download_public_drive_inputs(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
+    helper = root / "tools/gpt_io/public_drive/fetch.py"
+    if request.get("public_drive_inputs") and not helper.is_file():
+        raise RuntimeError("canonical public Drive fetch helper is missing")
+    audits: list[dict[str, Any]] = []
+    for item in request.get("public_drive_inputs", []):
+        manifest = (root / item["manifest"]).resolve()
+        if root not in manifest.parents or not manifest.is_file():
+            raise RuntimeError(f"public Drive manifest missing after checkout: {item['manifest']}")
+        destination = PUBLIC_DRIVE / item["label"]
+        receipt = PUBLIC_DRIVE_RECEIPTS / f"{item['label']}.json"
+        destination.mkdir(parents=True, exist_ok=True)
+        proc = run(
+            [
+                sys.executable,
+                str(helper),
+                "--manifest",
+                str(manifest),
+                "--output-root",
+                str(destination),
+                "--receipt",
+                str(receipt),
+            ],
+            cwd=root,
+        )
+        if proc.returncode != 0 or not receipt.is_file():
+            raise RuntimeError(f"public Drive fetch failed: label={item['label']} manifest={item['manifest']}")
+        audits.append(
+            {
+                "label": item["label"],
+                "manifest": item["manifest"],
+                "manifest_sha256": sha256_file(manifest),
+                "receipt": str(receipt.relative_to(BASE)),
+                "receipt_sha256": sha256_file(receipt),
+            }
+        )
+    return audits
+
+
+def expand_arg(
+    value: str,
+    root: Path,
+    labels: dict[str, Path],
+    public_drive_labels: dict[str, Path],
+) -> str:
     value = value.replace("{repo}", str(root))
     value = value.replace("{work}", str(WORK))
     value = value.replace("{output}", str(OUTPUT))
     for label, path in labels.items():
         value = value.replace("{input:" + label + "}", str(path))
+    for label, path in public_drive_labels.items():
+        value = value.replace("{public_drive:" + label + "}", str(path))
     return value
 
 
 def execute_steps(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
     labels = {item["label"]: INPUTS / item["label"] for item in request.get("input_artifacts", [])}
+    public_drive_labels = {
+        item["label"]: PUBLIC_DRIVE / item["label"] for item in request.get("public_drive_inputs", [])
+    }
     env = os.environ.copy()
     env["PYTHONPATH"] = str(root / "tools/data-storage")
     audits: list[dict[str, Any]] = []
@@ -199,7 +276,7 @@ def execute_steps(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
         entrypoint = (root / step["entrypoint"]).resolve()
         if root not in entrypoint.parents or not entrypoint.is_file() or entrypoint.suffix != ".py":
             raise RuntimeError(f"invalid or missing entrypoint after checkout: {step['entrypoint']}")
-        args = [expand_arg(arg, root, labels) for arg in step.get("args", [])]
+        args = [expand_arg(arg, root, labels, public_drive_labels) for arg in step.get("args", [])]
         stdout_path = STDOUT / f"{index:02d}-{step['name']}.log"
         stderr_path = STDERR / f"{index:02d}-{step['name']}.log"
         started = time.monotonic()
@@ -228,7 +305,7 @@ def execute_steps(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
 
 
 def main() -> int:
-    for directory in (BASE, INPUTS, WORK, OUTPUT, STDOUT, STDERR):
+    for directory in (BASE, INPUTS, PUBLIC_DRIVE, PUBLIC_DRIVE_RECEIPTS, WORK, OUTPUT, STDOUT, STDERR):
         directory.mkdir(parents=True, exist_ok=True)
 
     raw = os.environ.get("FALLBACK_REQUEST_JSON", "").strip()
@@ -253,6 +330,7 @@ def main() -> int:
         source_commit = checkout_source(root, source_ref)
         duckdb_version, pyarrow_version = bootstrap_dependencies(root)
         download_inputs(request, repository)
+        public_drive_inputs = download_public_drive_inputs(request, root)
         steps = execute_steps(request, root)
 
         audit.update(
@@ -266,6 +344,7 @@ def main() -> int:
                 "duckdb_version": duckdb_version,
                 "pyarrow_version": pyarrow_version,
                 "input_artifacts": request.get("input_artifacts", []),
+                "public_drive_inputs": public_drive_inputs,
                 "steps": steps,
             }
         )
