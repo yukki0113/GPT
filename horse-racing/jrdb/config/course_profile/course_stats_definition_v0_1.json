@@ -63,5 +63,6 @@
   "temporal": {
     "interval": "[period_from, period_to_exclusive)",
     "prediction_rule": "period_to_exclusive <= target_race_date"
-  }
+  },
+  "population_filter_id": "ALL_FLAT_RESULTS_V0_1"
 }
