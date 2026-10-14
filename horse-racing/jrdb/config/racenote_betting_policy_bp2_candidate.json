@@ -1,0 +1,106 @@
+{
+  "schema_version": "racenote-betting-policy-bp2-candidate-v0.1",
+  "created_at": "2026-10-14",
+  "status": "CLEAN_BLIND_VALIDATION_CANDIDATE",
+  "source_cohort": {
+    "btday_from": "BTDAY-0088",
+    "btday_to": "BTDAY-0092",
+    "race_count": 144,
+    "days": 5
+  },
+  "unit_stake_yen": 100,
+  "primary_policy": {
+    "quinella": {
+      "A": {
+        "bets": [
+          "◎-○",
+          "◎-▲",
+          "○-▲"
+        ],
+        "points": 3
+      },
+      "B": {
+        "bets": [
+          "◎-○",
+          "◎-▲",
+          "○-▲"
+        ],
+        "points": 3
+      },
+      "C": {
+        "bets": [
+          "◎-○",
+          "◎-▲",
+          "◎-△1",
+          "◎-△2"
+        ],
+        "points": 4
+      }
+    },
+    "trio": {
+      "A": {
+        "formation": "◎ 1頭軸 - 相手 ○▲△1△2 の組合せ",
+        "points": 6
+      },
+      "B": {
+        "formation": "◎ 1頭軸 - 相手 ○▲△1△2 の組合せ",
+        "points": 6
+      },
+      "C": {
+        "action": "NO_BET",
+        "points": 0
+      }
+    }
+  },
+  "bp1_observed": {
+    "quinella_conf_policy": {
+      "stake_yen": 47100,
+      "return_yen": 60010,
+      "profit_yen": 12910,
+      "roi_pct": 127.40976645435244
+    },
+    "trio_AB_only": {
+      "stake_yen": 63000,
+      "return_yen": 72340,
+      "profit_yen": 9340,
+      "roi_pct": 114.82539682539682
+    },
+    "combined_primary": {
+      "stake_yen": 110100,
+      "return_yen": 132350,
+      "profit_yen": 22250,
+      "roi_pct": 120.20890099909174
+    }
+  },
+  "validation_rules": {
+    "freeze_before_result": true,
+    "no_retrospective_rule_change": true,
+    "primary_metrics": [
+      "roi_pct",
+      "profit_yen",
+      "hit_rate_pct",
+      "profitable_days",
+      "max_drawdown_yen",
+      "largest_hit_share_pct"
+    ],
+    "minimum_next_clean_blind_races": 120,
+    "prefer_next_clean_blind_days": 5
+  },
+  "shadow_research": {
+    "exacta": {
+      "A": "◎→○▲",
+      "B": "◎⇔○▲",
+      "C": "NO_FIXED_POLICY_YET"
+    },
+    "trifecta_star": {
+      "scope": "confidence B/C only",
+      "formation": "◎○ 1-2着入替 - 3着に▲△1△2☆",
+      "status": "SHADOW_ONLY"
+    }
+  },
+  "notes": [
+    "BP2 is selected after observing BP1 and is therefore not validated by BTDAY-0088..0092.",
+    "Control five and mark assignment remain unchanged.",
+    "The sixth horse is not promoted to the normal five; ☆ is shadow-only for trifecta research."
+  ]
+}
