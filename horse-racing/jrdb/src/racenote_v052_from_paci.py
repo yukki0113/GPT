@@ -36,6 +36,7 @@ def main() -> int:
                     help="BTDAY-XXXX for backtest or DAILY-YYYYMMDD for forward operation")
     ap.add_argument("--main-sha", required=True)
     ap.add_argument("--analysis-root", type=Path, required=True)
+    ap.add_argument("--course-fit-root", type=Path, required=True)
     rrdb = ap.add_mutually_exclusive_group(required=True)
     rrdb.add_argument("--racereview-root", type=Path)
     rrdb.add_argument("--racereview-current-cache", type=Path)
@@ -57,6 +58,7 @@ def main() -> int:
             paci_path=args.paci,
             target_date=args.date,
             analysis_root=args.analysis_root,
+            course_fit_root=args.course_fit_root,
             racereview_root=args.racereview_root,
             racereview_current_cache=args.racereview_current_cache,
             next_watch_rules=args.next_watch_rules,
