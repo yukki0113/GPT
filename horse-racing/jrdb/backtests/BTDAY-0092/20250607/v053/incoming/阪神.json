@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "race_model": "阪神1Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      13,
+      2,
+      6,
+      11,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 2,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 11,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8は固定境界1を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎13○2▲6。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        2,
+        6,
+        11,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界1を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 2,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎13を○2より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "race_model": "阪神2Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      4,
+      6,
+      1,
+      10,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 6,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 10,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3は固定境界12を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎4○6▲1。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        6,
+        1,
+        10,
+        12
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎4を○6より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "race_model": "阪神3Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      2,
+      4,
+      13,
+      15,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 4,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 15,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "外部14は固定境界1を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2○4▲13。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        13,
+        15,
+        1
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界1を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 4,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2を○4より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "race_model": "阪神4Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      9,
+      16,
+      7,
+      15,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 16,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 15,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "外部14は固定境界2を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9○16▲7。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        16,
+        7,
+        15,
+        2
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界2を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 16,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎9を○16より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "race_model": "阪神5Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      2,
+      1,
+      6,
+      4,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 1,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 4,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3は固定境界8を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2○1▲6。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        1,
+        6,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界8を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 1,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2を○1より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "race_model": "阪神6Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      11,
+      7,
+      3,
+      1,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 7,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 1,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "外部9は固定境界12を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎11○7▲3。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        7,
+        3,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 7,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎11を○7より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 7,
+    "race_model": "阪神7Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      1,
+      9,
+      8,
+      3,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 9,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 3,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 2,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "外部7は固定境界2を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1○9▲8。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        9,
+        8,
+        3,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界2を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 9,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎1を○9より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 8,
+    "race_model": "阪神8Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      2,
+      9,
+      6,
+      7,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 9,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 7,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "外部5は固定境界8を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2○9▲6。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        9,
+        6,
+        7,
+        8
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界8を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 9,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2を○9より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "race_model": "阪神9Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      2,
+      5,
+      6,
+      9,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 5,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 9,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10は固定境界8を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2○5▲6。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        5,
+        6,
+        9,
+        8
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界8を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 5,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2を○5より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 10,
+    "race_model": "阪神10Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      2,
+      8,
+      6,
+      3,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 8,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 3,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 1,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4は固定境界1を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2○8▲6。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        8,
+        6,
+        3,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界1を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 8,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2を○8より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 11,
+    "race_model": "阪神11Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      12,
+      15,
+      11,
+      9,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 15,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 9,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 3,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "外部6は固定境界3を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎12○15▲11。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        15,
+        11,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界3を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 15,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎12を○15より勝ち切り再現性で上位。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 12,
+    "race_model": "阪神12Rはsealed Reader全馬比較でordinary fiveを先に固定。",
+    "marks": [
+      10,
+      5,
+      9,
+      16,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "勝ち切り経路を最上位評価。"
+      },
+      {
+        "horse_no": 5,
+        "case": "次位の主線勝ち筋。"
+      },
+      {
+        "horse_no": 16,
+        "case": "通常展開で残す。"
+      },
+      {
+        "horse_no": 12,
+        "case": "通常展開で残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "主線と異なる非対称勝ち筋。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3は固定境界12を明確に上回らずKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎10○5▲9。r2固定境界。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        5,
+        9,
+        16,
+        12
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 5,
+      "honmei_win_case": "勝ち切り経路を最優先。",
+      "second_case": "次位の主線。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎10を○5より勝ち切り再現性で上位。"
+    }
+  }
+]
