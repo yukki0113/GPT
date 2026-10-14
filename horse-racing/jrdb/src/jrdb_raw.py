@@ -29,6 +29,7 @@ RECORD_LENGTHS: dict[str, int] = {
     "CHA": 64,
     "CYB": 96,
     "SED": 376,
+    "SRB": 852,
     "SKB": 304,
     "ZED": 376,
     "ZKB": 304,
@@ -468,6 +469,35 @@ class Parser:
             "place_payout": number_field(record, 349, 7),
             "fourth_corner_lane_code": raw_field(record, 370, 1),
             "start_time_raw": raw_field(record, 371, 4),
+        }
+
+    def srb(self, record: bytes) -> dict[str, Any]:
+        """Parse SRB race-level result data.
+
+        SRB stores up to 18 leader-based furlong times in tenths of a second.
+        Distance-aware interval normalization belongs to the consumer layer
+        because SRB itself does not carry race distance.
+        """
+        return {
+            "race_key_raw": race_key(record),
+            "furlong_times_sec": [
+                tenths(record, 9 + index * 3, 3)
+                for index in range(18)
+            ],
+            "corner_positions_raw": [
+                text_field(record, pos, 64)
+                for pos in (63, 127, 191, 255)
+            ],
+            "pace_up_remaining_furlongs": number_field(record, 319, 2),
+            "track_bias_raw": {
+                "corner1": text_field(record, 321, 3),
+                "corner2": text_field(record, 324, 3),
+                "backstretch": text_field(record, 327, 3),
+                "corner3": text_field(record, 330, 3),
+                "corner4": text_field(record, 333, 5),
+                "homestretch": text_field(record, 338, 5),
+            },
+            "race_comment": text_field(record, 343, 500),
         }
 
     def zed(self, record: bytes) -> dict[str, Any]:
