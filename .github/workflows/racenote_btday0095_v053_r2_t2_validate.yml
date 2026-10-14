@@ -41,7 +41,17 @@ jobs:
               for core in rows:
                   key=(str(core['venue']),int(core['race_no']))
                   assert key in expected and key not in seen, key
-                  reader=json.loads((root/'reader'/expected[key]['file']).read_text(encoding='utf-8'))
+                  normal=json.loads((root/'reader'/expected[key]['file']).read_text(encoding='utf-8'))
+                  reader={
+                      'race': normal['race'],
+                      'horses': [
+                          {
+                              'basic': h['identity'],
+                              'racereview': (h.get('other_context') or {}).get('racereview'),
+                          }
+                          for h in normal['horses']
+                      ],
+                  }
                   validate_core(core, reader, contract_revision=CONTRACT_REVISION)
                   seen.add(key)
           assert seen==set(expected), (len(seen),len(expected))
