@@ -31,7 +31,7 @@
 | JRDB主要ファイル相関・キー整理 | `docs/reference/JRDB_File_Relation_Key_Definition.md` |
 | RaceNote正式仕様 | `docs/README_racenote_v1.md` / `docs/README_racenote_request.md` |
 | RaceNote現行開発方針 | `docs/racenote/README.md` |
-| RaceNote BTDAY prospective v0.4.6 | `config/racenote_forecast_logic_current.json` の `prospective_research_candidate` + `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md` |
+| RaceNote 新規clean-blind予想 v0.5.3 r2 | `config/racenote_forecast_logic_current.json` の `prospective_research_candidate` + `docs/racenote/RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md` |
 | RaceNote Forecast Gen0研究計画 | `docs/racenote/FORECAST_GEN0_PLAN.md` |
 | RaceNote旧予想系境界 | `docs/racenote/legacy/README.md` |
 | EdgeDB v0.2 serving | `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md` |
@@ -181,7 +181,7 @@ RaceNote authoritative bundleはfacts / evidence / provenanceを担当し、予�
 
 ### RaceNote Forecast Gen0
 
-現在のRaceNote予想研究の正本方針は `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` です。
+現在のRaceNote予想研究の正本方針は `docs/racenote/README.md` と `docs/racenote/FORECAST_GEN0_PLAN.md` です。新規clean-blind candidate予想は v0.5.3 rebuilt r2（`v053-boundary-safety-r2`）を使用し、v0.5.2はpromoted baselineとして比較・再現に保持します。`current_logic_version` は別管理のproduction pointerであり、新規candidate選択には使用しません。
 
 RaceNote Forecast Gen0では、RaceNote v1.0 / Reader ViewをGPTが読み、レース条件・能力・適性・展開・調教状態・近走・長期履歴・補助統計・coverageを横比較して予想します。
 
