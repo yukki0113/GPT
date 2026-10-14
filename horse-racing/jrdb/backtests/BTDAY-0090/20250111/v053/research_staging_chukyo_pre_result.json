@@ -1,0 +1,652 @@
+{
+  "btday": "BTDAY-0090",
+  "venue": "中京",
+  "source": "sealed pre-race reader",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "entries": [
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 1,
+        "honmei": 12,
+        "second": 9,
+        "confidence": "C",
+        "reason": "◎12と○9の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎12と○9を比較し、現条件への直接支持と勝ち切りの再現性で12を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 1,
+        "control_final_five": [
+          12,
+          9,
+          6,
+          1,
+          11
+        ],
+        "ordinary_five": [
+          12,
+          9,
+          6,
+          1,
+          11
+        ],
+        "protected_anchors": [
+          12,
+          9,
+          6
+        ],
+        "ordinary_flex": [
+          1,
+          11
+        ],
+        "shadow_external_pool": [
+          10,
+          15,
+          14
+        ],
+        "shadow_final_five": [
+          12,
+          9,
+          6,
+          1,
+          15
+        ],
+        "removed": [
+          11
+        ],
+        "admitted": [
+          15
+        ],
+        "decision": "SWAP",
+        "reason": "ordinary flex 11に対し外部15はIDM/現条件支援で上回り、flex枠のみ入替。IDM 34.6対32、調教指数 2.9対0.8。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 2,
+        "honmei": 7,
+        "second": 3,
+        "confidence": "A",
+        "reason": "◎7と○3の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎7と○3を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 2,
+        "control_final_five": [
+          7,
+          3,
+          1,
+          13,
+          10
+        ],
+        "ordinary_five": [
+          7,
+          3,
+          13,
+          1,
+          10
+        ],
+        "protected_anchors": [
+          7,
+          3,
+          13
+        ],
+        "ordinary_flex": [
+          1,
+          10
+        ],
+        "shadow_external_pool": [
+          11,
+          5,
+          15
+        ],
+        "shadow_final_five": [
+          7,
+          3,
+          13,
+          1,
+          10
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 3,
+        "honmei": 14,
+        "second": 2,
+        "confidence": "C",
+        "reason": "◎14と○2の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎14と○2を比較し、現条件への直接支持と勝ち切りの再現性で14を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 3,
+        "control_final_five": [
+          14,
+          2,
+          16,
+          13,
+          15
+        ],
+        "ordinary_five": [
+          14,
+          2,
+          16,
+          13,
+          15
+        ],
+        "protected_anchors": [
+          14,
+          2,
+          16
+        ],
+        "ordinary_flex": [
+          13,
+          15
+        ],
+        "shadow_external_pool": [
+          5,
+          3,
+          9
+        ],
+        "shadow_final_five": [
+          14,
+          2,
+          16,
+          13,
+          15
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 4,
+        "honmei": 13,
+        "second": 14,
+        "confidence": "B",
+        "reason": "◎13と○14の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎13と○14を比較し、現条件への直接支持と勝ち切りの再現性で13を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 4,
+        "control_final_five": [
+          13,
+          14,
+          16,
+          10,
+          9
+        ],
+        "ordinary_five": [
+          13,
+          14,
+          16,
+          10,
+          9
+        ],
+        "protected_anchors": [
+          13,
+          14,
+          16
+        ],
+        "ordinary_flex": [
+          10,
+          9
+        ],
+        "shadow_external_pool": [
+          6,
+          5,
+          15
+        ],
+        "shadow_final_five": [
+          13,
+          14,
+          16,
+          10,
+          9
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 5,
+        "honmei": 17,
+        "second": 1,
+        "confidence": "B",
+        "reason": "◎17と○1の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎17と○1を比較し、現条件への直接支持と勝ち切りの再現性で17を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 5,
+        "control_final_five": [
+          17,
+          1,
+          8,
+          9,
+          2
+        ],
+        "ordinary_five": [
+          17,
+          1,
+          8,
+          9,
+          2
+        ],
+        "protected_anchors": [
+          17,
+          1,
+          8
+        ],
+        "ordinary_flex": [
+          9,
+          2
+        ],
+        "shadow_external_pool": [
+          11,
+          16,
+          18
+        ],
+        "shadow_final_five": [
+          17,
+          1,
+          8,
+          9,
+          2
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 6,
+        "honmei": 7,
+        "second": 5,
+        "confidence": "C",
+        "reason": "◎7と○5の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎7と○5を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 6,
+        "control_final_five": [
+          7,
+          5,
+          3,
+          6,
+          1
+        ],
+        "ordinary_five": [
+          7,
+          5,
+          3,
+          6,
+          1
+        ],
+        "protected_anchors": [
+          7,
+          5,
+          3
+        ],
+        "ordinary_flex": [
+          6,
+          1
+        ],
+        "shadow_external_pool": [
+          2,
+          4
+        ],
+        "shadow_final_five": [
+          7,
+          5,
+          3,
+          6,
+          1
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 7,
+        "honmei": 1,
+        "second": 4,
+        "confidence": "B",
+        "reason": "◎1と○4の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎1と○4を比較し、現条件への直接支持と勝ち切りの再現性で1を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 7,
+        "control_final_five": [
+          1,
+          4,
+          6,
+          11,
+          12
+        ],
+        "ordinary_five": [
+          1,
+          4,
+          6,
+          11,
+          12
+        ],
+        "protected_anchors": [
+          1,
+          4,
+          6
+        ],
+        "ordinary_flex": [
+          11,
+          12
+        ],
+        "shadow_external_pool": [
+          15,
+          10,
+          5
+        ],
+        "shadow_final_five": [
+          1,
+          4,
+          6,
+          11,
+          12
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 8,
+        "honmei": 7,
+        "second": 2,
+        "confidence": "C",
+        "reason": "◎7と○2の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎7と○2を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 8,
+        "control_final_five": [
+          7,
+          2,
+          9,
+          1,
+          4
+        ],
+        "ordinary_five": [
+          7,
+          2,
+          9,
+          1,
+          4
+        ],
+        "protected_anchors": [
+          7,
+          2,
+          9
+        ],
+        "ordinary_flex": [
+          1,
+          4
+        ],
+        "shadow_external_pool": [
+          11,
+          5,
+          3
+        ],
+        "shadow_final_five": [
+          7,
+          2,
+          9,
+          1,
+          4
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 9,
+        "honmei": 8,
+        "second": 10,
+        "confidence": "B",
+        "reason": "◎8と○10の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎8と○10を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 9,
+        "control_final_five": [
+          8,
+          10,
+          12,
+          7,
+          5
+        ],
+        "ordinary_five": [
+          8,
+          10,
+          7,
+          5,
+          12
+        ],
+        "protected_anchors": [
+          8,
+          10,
+          7
+        ],
+        "ordinary_flex": [
+          5,
+          12
+        ],
+        "shadow_external_pool": [
+          4,
+          11,
+          3
+        ],
+        "shadow_final_five": [
+          8,
+          10,
+          7,
+          5,
+          4
+        ],
+        "removed": [
+          12
+        ],
+        "admitted": [
+          4
+        ],
+        "decision": "SWAP",
+        "reason": "ordinary flex 12に対し外部4はIDM/現条件支援で上回り、flex枠のみ入替。IDM 53対49、調教指数 8.7対-2.2。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 10,
+        "honmei": 16,
+        "second": 8,
+        "confidence": "A",
+        "reason": "◎16と○8の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎16と○8を比較し、現条件への直接支持と勝ち切りの再現性で16を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 10,
+        "control_final_five": [
+          16,
+          8,
+          1,
+          2,
+          3
+        ],
+        "ordinary_five": [
+          16,
+          8,
+          2,
+          3,
+          1
+        ],
+        "protected_anchors": [
+          16,
+          8,
+          2
+        ],
+        "ordinary_flex": [
+          3,
+          1
+        ],
+        "shadow_external_pool": [
+          13,
+          10,
+          14
+        ],
+        "shadow_final_five": [
+          16,
+          8,
+          2,
+          3,
+          1
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 11,
+        "honmei": 12,
+        "second": 10,
+        "confidence": "C",
+        "reason": "◎12と○10の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎12と○10を比較し、現条件への直接支持と勝ち切りの再現性で12を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 11,
+        "control_final_five": [
+          12,
+          10,
+          3,
+          7,
+          4
+        ],
+        "ordinary_five": [
+          12,
+          10,
+          7,
+          3,
+          4
+        ],
+        "protected_anchors": [
+          12,
+          10,
+          7
+        ],
+        "ordinary_flex": [
+          3,
+          4
+        ],
+        "shadow_external_pool": [
+          15,
+          11,
+          14
+        ],
+        "shadow_final_five": [
+          12,
+          10,
+          7,
+          3,
+          4
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中京",
+        "race_no": 12,
+        "honmei": 3,
+        "second": 2,
+        "confidence": "C",
+        "reason": "◎3と○2の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎3と○2を比較し、現条件への直接支持と勝ち切りの再現性で3を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中京",
+        "race_no": 12,
+        "control_final_five": [
+          3,
+          2,
+          14,
+          8,
+          7
+        ],
+        "ordinary_five": [
+          3,
+          2,
+          14,
+          8,
+          7
+        ],
+        "protected_anchors": [
+          3,
+          2,
+          14
+        ],
+        "ordinary_flex": [
+          8,
+          7
+        ],
+        "shadow_external_pool": [
+          12,
+          9,
+          15
+        ],
+        "shadow_final_five": [
+          3,
+          2,
+          14,
+          8,
+          7
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+      }
+    }
+  ]
+}
