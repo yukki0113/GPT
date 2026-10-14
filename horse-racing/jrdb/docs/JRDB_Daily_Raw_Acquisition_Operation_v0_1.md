@@ -112,6 +112,27 @@ For every requested race date:
    - HJC -> canonical `00_raw/HJC` folder
 6. Re-list Drive and verify filename and size.
 
+### SRB late-finalization note
+
+SED ZIPs also contain the race-level SRB member used for detailed lap analysis.
+The immediate post-race SED snapshot is sufficient for the lap array itself, but
+Phase 3B verified that JRDB may later revise the same SED backnumber after the
+published Monday update window:
+
+- optional SRB fields (pace-up position / track bias / race comment) may be blank
+  in the immediate snapshot and populated later;
+- RCA may be added later;
+- SED and SRB member bytes may both change.
+
+Therefore the ordinary post-race acquisition remains the current immediate
+result-capture operation, but consumers must not treat optional SRB context as
+final merely because SED is present.
+
+Do not silently overwrite an existing Raw SED ZIP with a later backnumber.
+The Raw invariant requires previous source bytes to be retained with an audit
+record. A separate late-finalization/revision retention contract must be used
+before replacing or repointing canonical Raw.
+
 ## 5. Acquisition and transport boundary
 
 JRDB authenticated acquisition is Actions-native because it requires JRDB secrets.
