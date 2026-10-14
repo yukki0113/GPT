@@ -373,7 +373,7 @@ def enrich_rrdb_bundles(
     next_watch_rules: Path | None,
     work_root: Path,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Resolve RRDB once and enrich all daily RaceNotes with recommendation v0.2."""
+    """Resolve RRDB once and enrich all daily RaceNotes with recommendation v0.4."""
     work_root.mkdir(parents=True, exist_ok=True)
     try:
         contract = (
@@ -595,6 +595,9 @@ def validate_daily_bundles(
                 race_date = node.get("race_date")
                 if isinstance(race_date, str) and race_date >= target_date:
                     rrdb_as_of_violations += 1
+                fit_as_of = node.get("fit_as_of_date")
+                if isinstance(fit_as_of, str) and fit_as_of > target_date:
+                    rrdb_as_of_violations += 1
 
     if analysis_as_of_violations:
         errors.append(
@@ -606,6 +609,8 @@ def validate_daily_bundles(
     rrdb_report = report.get("rrdb") or {}
     if not rrdb_report.get("rrdb_generation_id"):
         errors.append("RRDB generation provenance is missing")
+    if not rrdb_report.get("course_fit_source"):
+        errors.append("RRDB v0.4 Course Fit provenance is missing")
     if rrdb_report.get("recommendation_contract_version") != rrdb.RECOMMENDATION_VERSION:
         errors.append("RRDB recommendation contract provenance is missing or stale")
     if rrdb_report.get("recommendation_grade_status") != "DISABLED":
@@ -849,6 +854,7 @@ def run(args: argparse.Namespace) -> int:
             paci_path=args.paci,
             target_date=args.target_date,
             analysis_root=args.analysis_root,
+            course_fit_root=args.course_fit_root,
             racereview_root=args.racereview_root,
             racereview_current_cache=args.racereview_current_cache,
             next_watch_rules=args.next_watch_rules,
