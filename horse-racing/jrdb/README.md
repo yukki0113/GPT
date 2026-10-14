@@ -48,14 +48,14 @@
 
 2026 current-operation raw acquisition is defined in:
 
-- `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`
+- `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md`
 
 Normal user-facing commands:
 
-- `mmddの開催前取得をお願いします` -> target PACI + missing SKB from the immediately preceding JRA race week
+- `mmddの開催前取得をお願いします` -> target PACI + missing SKB from the immediately preceding JRA race week + fresh SED re-fetch for every preceding-week race date
 - `mmdd〜mmddの開催後取得をお願いします` -> SED + HJC for each requested race date
 
-SKB is intentionally excluded from immediate post-race acquisition and is recovered on the following pre-race cycle after checking canonical Drive inventory.
+SKB is intentionally excluded from immediate post-race acquisition and is recovered on the following pre-race cycle after checking canonical Drive inventory. The same pre-race cycle also re-fetches the preceding race week's SED and refreshes canonical Drive SED in place when JRDB has revised it.
 
 Authenticated JRDB acquisition remains GitHub Actions-native; Drive publication is performed only through the connected native Google Drive connector after artifact validation.
 
