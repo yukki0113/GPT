@@ -1,0 +1,1086 @@
+{
+  "schema_version": "racenote-shadow-cf1-pre-result-v0.1",
+  "experiment_id": "RaceNote-Candidate-Formation-Shadow-CF1",
+  "purpose": "Evaluate final-five candidate formation without changing frozen prediction",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "source_commit": "7917d455298bb51debf03f37b983af0e99451146",
+  "baseline_forecast_commit": "d21d539f942ad1a719711a3a2025e60937f179fe",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0092",
+  "target_date": "2025-06-07",
+  "control_prediction_immutable": true,
+  "role_reassignment": false,
+  "policy": {
+    "protected": "ordinary_five top 3",
+    "flex": "ordinary_five positions 4-5",
+    "external_pool": "max 3 horses from sealed Reader; includes r2 challenger when present",
+    "decision": "reselect only flex slots using pre-race ability / information / training / condition; default KEEP unless composite support clearly exceeds flex",
+    "output": "five-horse set only; marks and confidence unchanged"
+  },
+  "races": [
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "control_final_five": [
+        8,
+        3,
+        14,
+        1,
+        6
+      ],
+      "ordinary_five": [
+        8,
+        3,
+        14,
+        1,
+        6
+      ],
+      "protected_anchors": [
+        8,
+        3,
+        14
+      ],
+      "ordinary_flex": [
+        1,
+        6
+      ],
+      "shadow_external_pool": [
+        9,
+        5,
+        7
+      ],
+      "shadow_final_five": [
+        8,
+        3,
+        14,
+        1,
+        6
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "control_final_five": [
+        16,
+        9,
+        8,
+        2,
+        6
+      ],
+      "ordinary_five": [
+        16,
+        9,
+        8,
+        2,
+        6
+      ],
+      "protected_anchors": [
+        16,
+        9,
+        8
+      ],
+      "ordinary_flex": [
+        2,
+        6
+      ],
+      "shadow_external_pool": [
+        13,
+        4,
+        12
+      ],
+      "shadow_final_five": [
+        16,
+        9,
+        8,
+        2,
+        4
+      ],
+      "removed": [
+        6
+      ],
+      "admitted": [
+        4
+      ],
+      "decision": "SWAP",
+      "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "control_final_five": [
+        5,
+        16,
+        11,
+        15,
+        14
+      ],
+      "ordinary_five": [
+        5,
+        16,
+        11,
+        15,
+        14
+      ],
+      "protected_anchors": [
+        5,
+        16,
+        11
+      ],
+      "ordinary_flex": [
+        15,
+        14
+      ],
+      "shadow_external_pool": [
+        4,
+        10,
+        13
+      ],
+      "shadow_final_five": [
+        5,
+        16,
+        11,
+        15,
+        14
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "control_final_five": [
+        13,
+        10,
+        11,
+        8,
+        4
+      ],
+      "ordinary_five": [
+        13,
+        10,
+        11,
+        8,
+        4
+      ],
+      "protected_anchors": [
+        13,
+        10,
+        11
+      ],
+      "ordinary_flex": [
+        8,
+        4
+      ],
+      "shadow_external_pool": [
+        2,
+        7,
+        1
+      ],
+      "shadow_final_five": [
+        13,
+        10,
+        11,
+        8,
+        4
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "control_final_five": [
+        7,
+        2,
+        5,
+        8,
+        4
+      ],
+      "ordinary_five": [
+        7,
+        2,
+        5,
+        8,
+        4
+      ],
+      "protected_anchors": [
+        7,
+        2,
+        5
+      ],
+      "ordinary_flex": [
+        8,
+        4
+      ],
+      "shadow_external_pool": [
+        10,
+        1,
+        6
+      ],
+      "shadow_final_five": [
+        7,
+        2,
+        5,
+        8,
+        4
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "control_final_five": [
+        13,
+        5,
+        15,
+        16,
+        9
+      ],
+      "ordinary_five": [
+        13,
+        5,
+        15,
+        16,
+        9
+      ],
+      "protected_anchors": [
+        13,
+        5,
+        15
+      ],
+      "ordinary_flex": [
+        16,
+        9
+      ],
+      "shadow_external_pool": [
+        11,
+        14,
+        1
+      ],
+      "shadow_final_five": [
+        13,
+        5,
+        15,
+        16,
+        9
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "control_final_five": [
+        15,
+        1,
+        4,
+        6,
+        10
+      ],
+      "ordinary_five": [
+        15,
+        1,
+        4,
+        6,
+        10
+      ],
+      "protected_anchors": [
+        15,
+        1,
+        4
+      ],
+      "ordinary_flex": [
+        6,
+        10
+      ],
+      "shadow_external_pool": [
+        3,
+        11,
+        7
+      ],
+      "shadow_final_five": [
+        15,
+        1,
+        4,
+        6,
+        10
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "control_final_five": [
+        4,
+        11,
+        15,
+        5,
+        3
+      ],
+      "ordinary_five": [
+        4,
+        11,
+        15,
+        5,
+        3
+      ],
+      "protected_anchors": [
+        4,
+        11,
+        15
+      ],
+      "ordinary_flex": [
+        5,
+        3
+      ],
+      "shadow_external_pool": [
+        13,
+        14,
+        12
+      ],
+      "shadow_final_five": [
+        4,
+        11,
+        15,
+        5,
+        3
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "control_final_five": [
+        7,
+        6,
+        11,
+        9,
+        12
+      ],
+      "ordinary_five": [
+        7,
+        6,
+        11,
+        9,
+        12
+      ],
+      "protected_anchors": [
+        7,
+        6,
+        11
+      ],
+      "ordinary_flex": [
+        9,
+        12
+      ],
+      "shadow_external_pool": [
+        2,
+        8,
+        4
+      ],
+      "shadow_final_five": [
+        7,
+        6,
+        11,
+        9,
+        12
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "control_final_five": [
+        11,
+        10,
+        7,
+        12,
+        6
+      ],
+      "ordinary_five": [
+        11,
+        10,
+        7,
+        12,
+        6
+      ],
+      "protected_anchors": [
+        11,
+        10,
+        7
+      ],
+      "ordinary_flex": [
+        12,
+        6
+      ],
+      "shadow_external_pool": [
+        3,
+        13,
+        8
+      ],
+      "shadow_final_five": [
+        11,
+        10,
+        7,
+        6,
+        13
+      ],
+      "removed": [
+        12
+      ],
+      "admitted": [
+        13
+      ],
+      "decision": "SWAP",
+      "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "control_final_five": [
+        10,
+        15,
+        12,
+        4,
+        16
+      ],
+      "ordinary_five": [
+        10,
+        15,
+        12,
+        4,
+        16
+      ],
+      "protected_anchors": [
+        10,
+        15,
+        12
+      ],
+      "ordinary_flex": [
+        4,
+        16
+      ],
+      "shadow_external_pool": [
+        7,
+        9,
+        2
+      ],
+      "shadow_final_five": [
+        10,
+        15,
+        12,
+        4,
+        16
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "control_final_five": [
+        15,
+        13,
+        7,
+        6,
+        8
+      ],
+      "ordinary_five": [
+        15,
+        13,
+        7,
+        6,
+        8
+      ],
+      "protected_anchors": [
+        15,
+        13,
+        7
+      ],
+      "ordinary_flex": [
+        6,
+        8
+      ],
+      "shadow_external_pool": [
+        4,
+        2,
+        3
+      ],
+      "shadow_final_five": [
+        15,
+        13,
+        7,
+        6,
+        8
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "control_final_five": [
+        13,
+        2,
+        6,
+        11,
+        1
+      ],
+      "ordinary_five": [
+        13,
+        2,
+        6,
+        11,
+        1
+      ],
+      "protected_anchors": [
+        13,
+        2,
+        6
+      ],
+      "ordinary_flex": [
+        11,
+        1
+      ],
+      "shadow_external_pool": [
+        8,
+        7,
+        10
+      ],
+      "shadow_final_five": [
+        13,
+        2,
+        6,
+        11,
+        1
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "control_final_five": [
+        4,
+        6,
+        1,
+        10,
+        12
+      ],
+      "ordinary_five": [
+        4,
+        6,
+        1,
+        10,
+        12
+      ],
+      "protected_anchors": [
+        4,
+        6,
+        1
+      ],
+      "ordinary_flex": [
+        10,
+        12
+      ],
+      "shadow_external_pool": [
+        3,
+        11,
+        8
+      ],
+      "shadow_final_five": [
+        4,
+        6,
+        1,
+        10,
+        3
+      ],
+      "removed": [
+        12
+      ],
+      "admitted": [
+        3
+      ],
+      "decision": "SWAP",
+      "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "control_final_five": [
+        2,
+        4,
+        13,
+        15,
+        1
+      ],
+      "ordinary_five": [
+        2,
+        4,
+        13,
+        15,
+        1
+      ],
+      "protected_anchors": [
+        2,
+        4,
+        13
+      ],
+      "ordinary_flex": [
+        15,
+        1
+      ],
+      "shadow_external_pool": [
+        14,
+        10,
+        3
+      ],
+      "shadow_final_five": [
+        2,
+        4,
+        13,
+        1,
+        14
+      ],
+      "removed": [
+        15
+      ],
+      "admitted": [
+        14
+      ],
+      "decision": "SWAP",
+      "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "control_final_five": [
+        9,
+        16,
+        7,
+        15,
+        2
+      ],
+      "ordinary_five": [
+        9,
+        16,
+        7,
+        15,
+        2
+      ],
+      "protected_anchors": [
+        9,
+        16,
+        7
+      ],
+      "ordinary_flex": [
+        15,
+        2
+      ],
+      "shadow_external_pool": [
+        14,
+        5,
+        1
+      ],
+      "shadow_final_five": [
+        9,
+        16,
+        7,
+        15,
+        5
+      ],
+      "removed": [
+        2
+      ],
+      "admitted": [
+        5
+      ],
+      "decision": "SWAP",
+      "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "control_final_five": [
+        2,
+        1,
+        6,
+        4,
+        8
+      ],
+      "ordinary_five": [
+        2,
+        1,
+        6,
+        4,
+        8
+      ],
+      "protected_anchors": [
+        2,
+        1,
+        6
+      ],
+      "ordinary_flex": [
+        4,
+        8
+      ],
+      "shadow_external_pool": [
+        3,
+        7,
+        5
+      ],
+      "shadow_final_five": [
+        2,
+        1,
+        6,
+        4,
+        8
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "control_final_five": [
+        11,
+        7,
+        3,
+        1,
+        12
+      ],
+      "ordinary_five": [
+        11,
+        7,
+        3,
+        1,
+        12
+      ],
+      "protected_anchors": [
+        11,
+        7,
+        3
+      ],
+      "ordinary_flex": [
+        1,
+        12
+      ],
+      "shadow_external_pool": [
+        9,
+        4,
+        13
+      ],
+      "shadow_final_five": [
+        11,
+        7,
+        3,
+        1,
+        12
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "control_final_five": [
+        1,
+        9,
+        8,
+        3,
+        2
+      ],
+      "ordinary_five": [
+        1,
+        9,
+        8,
+        3,
+        2
+      ],
+      "protected_anchors": [
+        1,
+        9,
+        8
+      ],
+      "ordinary_flex": [
+        3,
+        2
+      ],
+      "shadow_external_pool": [
+        7,
+        5,
+        4
+      ],
+      "shadow_final_five": [
+        1,
+        9,
+        8,
+        3,
+        2
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "control_final_five": [
+        2,
+        9,
+        6,
+        7,
+        8
+      ],
+      "ordinary_five": [
+        2,
+        9,
+        6,
+        7,
+        8
+      ],
+      "protected_anchors": [
+        2,
+        9,
+        6
+      ],
+      "ordinary_flex": [
+        7,
+        8
+      ],
+      "shadow_external_pool": [
+        5,
+        4,
+        3
+      ],
+      "shadow_final_five": [
+        2,
+        9,
+        6,
+        7,
+        8
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "control_final_five": [
+        2,
+        5,
+        6,
+        9,
+        8
+      ],
+      "ordinary_five": [
+        2,
+        5,
+        6,
+        9,
+        8
+      ],
+      "protected_anchors": [
+        2,
+        5,
+        6
+      ],
+      "ordinary_flex": [
+        9,
+        8
+      ],
+      "shadow_external_pool": [
+        10,
+        3,
+        1
+      ],
+      "shadow_final_five": [
+        2,
+        5,
+        6,
+        9,
+        8
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "control_final_five": [
+        2,
+        8,
+        6,
+        3,
+        1
+      ],
+      "ordinary_five": [
+        2,
+        8,
+        6,
+        3,
+        1
+      ],
+      "protected_anchors": [
+        2,
+        8,
+        6
+      ],
+      "ordinary_flex": [
+        3,
+        1
+      ],
+      "shadow_external_pool": [
+        4,
+        7,
+        5
+      ],
+      "shadow_final_five": [
+        2,
+        8,
+        6,
+        3,
+        1
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "control_final_five": [
+        12,
+        15,
+        11,
+        9,
+        3
+      ],
+      "ordinary_five": [
+        12,
+        15,
+        11,
+        9,
+        3
+      ],
+      "protected_anchors": [
+        12,
+        15,
+        11
+      ],
+      "ordinary_flex": [
+        9,
+        3
+      ],
+      "shadow_external_pool": [
+        6,
+        5,
+        7
+      ],
+      "shadow_final_five": [
+        12,
+        15,
+        11,
+        9,
+        3
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "外部poolにflexを明確に上回る複合支持なし。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "control_final_five": [
+        10,
+        5,
+        9,
+        16,
+        12
+      ],
+      "ordinary_five": [
+        10,
+        5,
+        9,
+        16,
+        12
+      ],
+      "protected_anchors": [
+        10,
+        5,
+        9
+      ],
+      "ordinary_flex": [
+        16,
+        12
+      ],
+      "shadow_external_pool": [
+        3,
+        2,
+        13
+      ],
+      "shadow_final_five": [
+        10,
+        5,
+        9,
+        16,
+        2
+      ],
+      "removed": [
+        12
+      ],
+      "admitted": [
+        2
+      ],
+      "decision": "SWAP",
+      "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+    }
+  ],
+  "counts": {
+    "races": 24,
+    "keep": 18,
+    "swap": 6
+  }
+}
