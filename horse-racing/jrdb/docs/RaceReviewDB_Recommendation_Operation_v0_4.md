@@ -1,6 +1,6 @@
 # RaceReviewDB Recommendation Operation v0.4
 
-Status: OPERATIONAL CANDIDATE  
+Status: OPERATIONAL  
 Date: 2026-10-14  
 Supersedes: `RaceReviewDB_Recommendation_Operation_v0_3.md`
 
