@@ -1,0 +1,1077 @@
+{
+  "schema_version": "racenote-shadow-cf1-pre-result-v0.1",
+  "experiment_id": "RaceNote-Candidate-Formation-Shadow-CF1",
+  "purpose": "Clean-blind comparison of five-horse candidate set; no change to frozen prediction",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "source_commit": "e19b467f638bbc020c962253433eaf254bd4e2df",
+  "baseline_forecast_commit": "61e57f59f8611ba4756f3922c83dbdb59f496d9f",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0090",
+  "target_date": "2025-01-11",
+  "control_prediction_immutable": true,
+  "role_reassignment": false,
+  "policy": {
+    "protected": "ordinary five top 3",
+    "flex": "ordinary five positions 4-5",
+    "external_pool": "max 3 horses chosen from sealed pre-race Reader, including external challenger",
+    "decision": "default KEEP; compare ability, training and condition without target results",
+    "output": "five-horse set only"
+  },
+  "races": [
+    {
+      "venue": "中京",
+      "race_no": 1,
+      "control_final_five": [
+        12,
+        9,
+        6,
+        1,
+        11
+      ],
+      "ordinary_five": [
+        12,
+        9,
+        6,
+        1,
+        11
+      ],
+      "protected_anchors": [
+        12,
+        9,
+        6
+      ],
+      "ordinary_flex": [
+        1,
+        11
+      ],
+      "shadow_external_pool": [
+        10,
+        15,
+        14
+      ],
+      "shadow_final_five": [
+        12,
+        9,
+        6,
+        1,
+        15
+      ],
+      "removed": [
+        11
+      ],
+      "admitted": [
+        15
+      ],
+      "decision": "SWAP",
+      "reason": "ordinary flex 11に対し外部15はIDM/現条件支援で上回り、flex枠のみ入替。IDM 34.6対32、調教指数 2.9対0.8。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 2,
+      "control_final_five": [
+        7,
+        3,
+        1,
+        13,
+        10
+      ],
+      "ordinary_five": [
+        7,
+        3,
+        13,
+        1,
+        10
+      ],
+      "protected_anchors": [
+        7,
+        3,
+        13
+      ],
+      "ordinary_flex": [
+        1,
+        10
+      ],
+      "shadow_external_pool": [
+        11,
+        5,
+        15
+      ],
+      "shadow_final_five": [
+        7,
+        3,
+        13,
+        1,
+        10
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 3,
+      "control_final_five": [
+        14,
+        2,
+        16,
+        13,
+        15
+      ],
+      "ordinary_five": [
+        14,
+        2,
+        16,
+        13,
+        15
+      ],
+      "protected_anchors": [
+        14,
+        2,
+        16
+      ],
+      "ordinary_flex": [
+        13,
+        15
+      ],
+      "shadow_external_pool": [
+        5,
+        3,
+        9
+      ],
+      "shadow_final_five": [
+        14,
+        2,
+        16,
+        13,
+        15
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 4,
+      "control_final_five": [
+        13,
+        14,
+        16,
+        10,
+        9
+      ],
+      "ordinary_five": [
+        13,
+        14,
+        16,
+        10,
+        9
+      ],
+      "protected_anchors": [
+        13,
+        14,
+        16
+      ],
+      "ordinary_flex": [
+        10,
+        9
+      ],
+      "shadow_external_pool": [
+        6,
+        5,
+        15
+      ],
+      "shadow_final_five": [
+        13,
+        14,
+        16,
+        10,
+        9
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 5,
+      "control_final_five": [
+        17,
+        1,
+        8,
+        9,
+        2
+      ],
+      "ordinary_five": [
+        17,
+        1,
+        8,
+        9,
+        2
+      ],
+      "protected_anchors": [
+        17,
+        1,
+        8
+      ],
+      "ordinary_flex": [
+        9,
+        2
+      ],
+      "shadow_external_pool": [
+        11,
+        16,
+        18
+      ],
+      "shadow_final_five": [
+        17,
+        1,
+        8,
+        9,
+        2
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 6,
+      "control_final_five": [
+        7,
+        5,
+        3,
+        6,
+        1
+      ],
+      "ordinary_five": [
+        7,
+        5,
+        3,
+        6,
+        1
+      ],
+      "protected_anchors": [
+        7,
+        5,
+        3
+      ],
+      "ordinary_flex": [
+        6,
+        1
+      ],
+      "shadow_external_pool": [
+        2,
+        4
+      ],
+      "shadow_final_five": [
+        7,
+        5,
+        3,
+        6,
+        1
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 7,
+      "control_final_five": [
+        1,
+        4,
+        6,
+        11,
+        12
+      ],
+      "ordinary_five": [
+        1,
+        4,
+        6,
+        11,
+        12
+      ],
+      "protected_anchors": [
+        1,
+        4,
+        6
+      ],
+      "ordinary_flex": [
+        11,
+        12
+      ],
+      "shadow_external_pool": [
+        15,
+        10,
+        5
+      ],
+      "shadow_final_five": [
+        1,
+        4,
+        6,
+        11,
+        12
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 8,
+      "control_final_five": [
+        7,
+        2,
+        9,
+        1,
+        4
+      ],
+      "ordinary_five": [
+        7,
+        2,
+        9,
+        1,
+        4
+      ],
+      "protected_anchors": [
+        7,
+        2,
+        9
+      ],
+      "ordinary_flex": [
+        1,
+        4
+      ],
+      "shadow_external_pool": [
+        11,
+        5,
+        3
+      ],
+      "shadow_final_five": [
+        7,
+        2,
+        9,
+        1,
+        4
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 9,
+      "control_final_five": [
+        8,
+        10,
+        12,
+        7,
+        5
+      ],
+      "ordinary_five": [
+        8,
+        10,
+        7,
+        5,
+        12
+      ],
+      "protected_anchors": [
+        8,
+        10,
+        7
+      ],
+      "ordinary_flex": [
+        5,
+        12
+      ],
+      "shadow_external_pool": [
+        4,
+        11,
+        3
+      ],
+      "shadow_final_five": [
+        8,
+        10,
+        7,
+        5,
+        4
+      ],
+      "removed": [
+        12
+      ],
+      "admitted": [
+        4
+      ],
+      "decision": "SWAP",
+      "reason": "ordinary flex 12に対し外部4はIDM/現条件支援で上回り、flex枠のみ入替。IDM 53対49、調教指数 8.7対-2.2。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 10,
+      "control_final_five": [
+        16,
+        8,
+        1,
+        2,
+        3
+      ],
+      "ordinary_five": [
+        16,
+        8,
+        2,
+        3,
+        1
+      ],
+      "protected_anchors": [
+        16,
+        8,
+        2
+      ],
+      "ordinary_flex": [
+        3,
+        1
+      ],
+      "shadow_external_pool": [
+        13,
+        10,
+        14
+      ],
+      "shadow_final_five": [
+        16,
+        8,
+        2,
+        3,
+        1
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 11,
+      "control_final_five": [
+        12,
+        10,
+        3,
+        7,
+        4
+      ],
+      "ordinary_five": [
+        12,
+        10,
+        7,
+        3,
+        4
+      ],
+      "protected_anchors": [
+        12,
+        10,
+        7
+      ],
+      "ordinary_flex": [
+        3,
+        4
+      ],
+      "shadow_external_pool": [
+        15,
+        11,
+        14
+      ],
+      "shadow_final_five": [
+        12,
+        10,
+        7,
+        3,
+        4
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 12,
+      "control_final_five": [
+        3,
+        2,
+        14,
+        8,
+        7
+      ],
+      "ordinary_five": [
+        3,
+        2,
+        14,
+        8,
+        7
+      ],
+      "protected_anchors": [
+        3,
+        2,
+        14
+      ],
+      "ordinary_flex": [
+        8,
+        7
+      ],
+      "shadow_external_pool": [
+        12,
+        9,
+        15
+      ],
+      "shadow_final_five": [
+        3,
+        2,
+        14,
+        8,
+        7
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "Readerの能力・現条件・調教を比較し、外部poolにflexを置き換える十分な複合的優位を認めずKEEP。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "control_final_five": [
+        6,
+        16,
+        9,
+        7,
+        2
+      ],
+      "ordinary_five": [
+        6,
+        16,
+        9,
+        7,
+        2
+      ],
+      "protected_anchors": [
+        6,
+        16,
+        9
+      ],
+      "ordinary_flex": [
+        7,
+        2
+      ],
+      "shadow_external_pool": [
+        4,
+        14,
+        15
+      ],
+      "shadow_final_five": [
+        6,
+        16,
+        9,
+        7,
+        2
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "control_final_five": [
+        14,
+        16,
+        7,
+        2,
+        6
+      ],
+      "ordinary_five": [
+        14,
+        16,
+        7,
+        2,
+        6
+      ],
+      "protected_anchors": [
+        14,
+        16,
+        7
+      ],
+      "ordinary_flex": [
+        2,
+        6
+      ],
+      "shadow_external_pool": [
+        3,
+        11,
+        5
+      ],
+      "shadow_final_five": [
+        14,
+        16,
+        7,
+        2,
+        6
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "control_final_five": [
+        10,
+        15,
+        2,
+        12,
+        4
+      ],
+      "ordinary_five": [
+        10,
+        15,
+        2,
+        12,
+        4
+      ],
+      "protected_anchors": [
+        10,
+        15,
+        2
+      ],
+      "ordinary_flex": [
+        12,
+        4
+      ],
+      "shadow_external_pool": [
+        9,
+        11,
+        5
+      ],
+      "shadow_final_five": [
+        10,
+        15,
+        2,
+        12,
+        4
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "control_final_five": [
+        12,
+        3,
+        9,
+        2,
+        14
+      ],
+      "ordinary_five": [
+        12,
+        3,
+        9,
+        2,
+        14
+      ],
+      "protected_anchors": [
+        12,
+        3,
+        9
+      ],
+      "ordinary_flex": [
+        2,
+        14
+      ],
+      "shadow_external_pool": [
+        5,
+        13,
+        16
+      ],
+      "shadow_final_five": [
+        12,
+        3,
+        9,
+        2,
+        14
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "control_final_five": [
+        1,
+        2,
+        10,
+        17,
+        14
+      ],
+      "ordinary_five": [
+        1,
+        2,
+        10,
+        17,
+        14
+      ],
+      "protected_anchors": [
+        1,
+        2,
+        10
+      ],
+      "ordinary_flex": [
+        17,
+        14
+      ],
+      "shadow_external_pool": [
+        13,
+        8,
+        12
+      ],
+      "shadow_final_five": [
+        1,
+        2,
+        10,
+        17,
+        14
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "control_final_five": [
+        8,
+        4,
+        11,
+        13,
+        3
+      ],
+      "ordinary_five": [
+        8,
+        4,
+        13,
+        3,
+        11
+      ],
+      "protected_anchors": [
+        8,
+        4,
+        13
+      ],
+      "ordinary_flex": [
+        3,
+        11
+      ],
+      "shadow_external_pool": [
+        9,
+        2,
+        5
+      ],
+      "shadow_final_five": [
+        8,
+        4,
+        13,
+        3,
+        11
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "control_final_five": [
+        14,
+        10,
+        9,
+        6,
+        7
+      ],
+      "ordinary_five": [
+        14,
+        10,
+        9,
+        6,
+        7
+      ],
+      "protected_anchors": [
+        14,
+        10,
+        9
+      ],
+      "ordinary_flex": [
+        6,
+        7
+      ],
+      "shadow_external_pool": [
+        11,
+        3,
+        12
+      ],
+      "shadow_final_five": [
+        14,
+        10,
+        9,
+        6,
+        11
+      ],
+      "removed": [
+        7
+      ],
+      "admitted": [
+        11
+      ],
+      "decision": "SWAP",
+      "reason": "外部11の調教・現条件支持を優先。IDM 36 vs 40、調教 12.6 vs -10.3"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "control_final_five": [
+        4,
+        6,
+        15,
+        13,
+        8
+      ],
+      "ordinary_five": [
+        4,
+        6,
+        15,
+        13,
+        8
+      ],
+      "protected_anchors": [
+        4,
+        6,
+        15
+      ],
+      "ordinary_flex": [
+        13,
+        8
+      ],
+      "shadow_external_pool": [
+        1,
+        7,
+        2
+      ],
+      "shadow_final_five": [
+        4,
+        6,
+        15,
+        13,
+        7
+      ],
+      "removed": [
+        8
+      ],
+      "admitted": [
+        7
+      ],
+      "decision": "SWAP",
+      "reason": "外部7の調教・現条件支持を優先。IDM 39 vs 38、調教 8.4 vs 1.9"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "control_final_five": [
+        9,
+        10,
+        13,
+        5,
+        12
+      ],
+      "ordinary_five": [
+        9,
+        10,
+        13,
+        5,
+        12
+      ],
+      "protected_anchors": [
+        9,
+        10,
+        13
+      ],
+      "ordinary_flex": [
+        5,
+        12
+      ],
+      "shadow_external_pool": [
+        6,
+        14,
+        2
+      ],
+      "shadow_final_five": [
+        9,
+        10,
+        13,
+        5,
+        12
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "control_final_five": [
+        15,
+        12,
+        2,
+        16,
+        13
+      ],
+      "ordinary_five": [
+        15,
+        12,
+        16,
+        2,
+        13
+      ],
+      "protected_anchors": [
+        15,
+        12,
+        16
+      ],
+      "ordinary_flex": [
+        2,
+        13
+      ],
+      "shadow_external_pool": [
+        9,
+        4,
+        3
+      ],
+      "shadow_final_five": [
+        15,
+        12,
+        16,
+        2,
+        13
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "control_final_five": [
+        4,
+        3,
+        13,
+        12,
+        2
+      ],
+      "ordinary_five": [
+        4,
+        3,
+        13,
+        12,
+        2
+      ],
+      "protected_anchors": [
+        4,
+        3,
+        13
+      ],
+      "ordinary_flex": [
+        12,
+        2
+      ],
+      "shadow_external_pool": [
+        11,
+        6,
+        8
+      ],
+      "shadow_final_five": [
+        4,
+        3,
+        13,
+        12,
+        2
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "control_final_five": [
+        4,
+        2,
+        5,
+        1,
+        9
+      ],
+      "ordinary_five": [
+        4,
+        2,
+        1,
+        5,
+        9
+      ],
+      "protected_anchors": [
+        4,
+        2,
+        1
+      ],
+      "ordinary_flex": [
+        5,
+        9
+      ],
+      "shadow_external_pool": [
+        6,
+        8,
+        7
+      ],
+      "shadow_final_five": [
+        4,
+        2,
+        1,
+        5,
+        9
+      ],
+      "removed": [],
+      "admitted": [],
+      "decision": "KEEP",
+      "reason": "現条件支持の明確な逆転根拠なし。"
+    }
+  ],
+  "counts": {
+    "races": 24,
+    "keep": 20,
+    "swap": 4
+  }
+}
