@@ -209,7 +209,10 @@ class WarehouseRaceNoteBulkReadTest(unittest.TestCase):
         }
         self.assertEqual(by_relation["bac"][0], (2025,))
         self.assertEqual(by_relation["kyi"][0], (2025,))
-        self.assertIn("source_member_date", by_relation["bac"][1])
+        bac_calls = [item for item in calls if item[0] == "bac"]
+        self.assertEqual(len(bac_calls), 2)
+        self.assertIn("source_member_date", bac_calls[0][2])
+        self.assertIn("target_race_keys", bac_calls[1][2])
         self.assertIn("source_member_date", by_relation["kyi"][1])
         self.assertIn("target_race_keys", by_relation["cha"][1])
         self.assertIn("target_race_keys", by_relation["cyb"][1])
