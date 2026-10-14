@@ -12,7 +12,7 @@ import json
 import tempfile
 from pathlib import Path
 
-RRDB = "rrdb-recommendation-signals-v0.3"
+RRDB = "rrdb-recommendation-signals-v0.4"
 
 
 def digest(data: bytes) -> str:
