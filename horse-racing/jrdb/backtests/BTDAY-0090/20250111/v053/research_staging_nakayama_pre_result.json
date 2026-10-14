@@ -1,0 +1,652 @@
+{
+  "btday": "BTDAY-0090",
+  "venue": "中山",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "entries": [
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 1,
+        "honmei": 6,
+        "second": 16,
+        "confidence": "A",
+        "reason": "◎6と○16を比較し、現条件への直接支持と勝ち切りの再現性で6を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 1,
+        "control_final_five": [
+          6,
+          16,
+          9,
+          7,
+          2
+        ],
+        "ordinary_five": [
+          6,
+          16,
+          9,
+          7,
+          2
+        ],
+        "protected_anchors": [
+          6,
+          16,
+          9
+        ],
+        "ordinary_flex": [
+          7,
+          2
+        ],
+        "shadow_external_pool": [
+          4,
+          14,
+          15
+        ],
+        "shadow_final_five": [
+          6,
+          16,
+          9,
+          7,
+          2
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 2,
+        "honmei": 14,
+        "second": 16,
+        "confidence": "B",
+        "reason": "◎14と○16を比較し、現条件への直接支持と勝ち切りの再現性で14を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 2,
+        "control_final_five": [
+          14,
+          16,
+          7,
+          2,
+          6
+        ],
+        "ordinary_five": [
+          14,
+          16,
+          7,
+          2,
+          6
+        ],
+        "protected_anchors": [
+          14,
+          16,
+          7
+        ],
+        "ordinary_flex": [
+          2,
+          6
+        ],
+        "shadow_external_pool": [
+          3,
+          11,
+          5
+        ],
+        "shadow_final_five": [
+          14,
+          16,
+          7,
+          2,
+          6
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 3,
+        "honmei": 10,
+        "second": 15,
+        "confidence": "C",
+        "reason": "◎10と○15を比較し、現条件への直接支持と勝ち切りの再現性で10を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 3,
+        "control_final_five": [
+          10,
+          15,
+          2,
+          12,
+          4
+        ],
+        "ordinary_five": [
+          10,
+          15,
+          2,
+          12,
+          4
+        ],
+        "protected_anchors": [
+          10,
+          15,
+          2
+        ],
+        "ordinary_flex": [
+          12,
+          4
+        ],
+        "shadow_external_pool": [
+          9,
+          11,
+          5
+        ],
+        "shadow_final_five": [
+          10,
+          15,
+          2,
+          12,
+          4
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 4,
+        "honmei": 12,
+        "second": 3,
+        "confidence": "A",
+        "reason": "◎12と○3を比較し、現条件への直接支持と勝ち切りの再現性で12を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 4,
+        "control_final_five": [
+          12,
+          3,
+          9,
+          2,
+          14
+        ],
+        "ordinary_five": [
+          12,
+          3,
+          9,
+          2,
+          14
+        ],
+        "protected_anchors": [
+          12,
+          3,
+          9
+        ],
+        "ordinary_flex": [
+          2,
+          14
+        ],
+        "shadow_external_pool": [
+          5,
+          13,
+          16
+        ],
+        "shadow_final_five": [
+          12,
+          3,
+          9,
+          2,
+          14
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 5,
+        "honmei": 1,
+        "second": 2,
+        "confidence": "A",
+        "reason": "◎1と○2を比較し、現条件への直接支持と勝ち切りの再現性で1を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 5,
+        "control_final_five": [
+          1,
+          2,
+          10,
+          17,
+          14
+        ],
+        "ordinary_five": [
+          1,
+          2,
+          10,
+          17,
+          14
+        ],
+        "protected_anchors": [
+          1,
+          2,
+          10
+        ],
+        "ordinary_flex": [
+          17,
+          14
+        ],
+        "shadow_external_pool": [
+          13,
+          8,
+          12
+        ],
+        "shadow_final_five": [
+          1,
+          2,
+          10,
+          17,
+          14
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 6,
+        "honmei": 8,
+        "second": 4,
+        "confidence": "B",
+        "reason": "◎8と○4を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 6,
+        "control_final_five": [
+          8,
+          4,
+          11,
+          13,
+          3
+        ],
+        "ordinary_five": [
+          8,
+          4,
+          13,
+          3,
+          11
+        ],
+        "protected_anchors": [
+          8,
+          4,
+          13
+        ],
+        "ordinary_flex": [
+          3,
+          11
+        ],
+        "shadow_external_pool": [
+          9,
+          2,
+          5
+        ],
+        "shadow_final_five": [
+          8,
+          4,
+          13,
+          3,
+          11
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 7,
+        "honmei": 14,
+        "second": 10,
+        "confidence": "C",
+        "reason": "◎14と○10を比較し、現条件への直接支持と勝ち切りの再現性で14を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 7,
+        "control_final_five": [
+          14,
+          10,
+          9,
+          6,
+          7
+        ],
+        "ordinary_five": [
+          14,
+          10,
+          9,
+          6,
+          7
+        ],
+        "protected_anchors": [
+          14,
+          10,
+          9
+        ],
+        "ordinary_flex": [
+          6,
+          7
+        ],
+        "shadow_external_pool": [
+          11,
+          3,
+          12
+        ],
+        "shadow_final_five": [
+          14,
+          10,
+          9,
+          6,
+          11
+        ],
+        "removed": [
+          7
+        ],
+        "admitted": [
+          11
+        ],
+        "decision": "SWAP",
+        "reason": "外部11の調教・現条件支持を優先。IDM 36 vs 40、調教 12.6 vs -10.3"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 8,
+        "honmei": 4,
+        "second": 6,
+        "confidence": "B",
+        "reason": "◎4と○6を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 8,
+        "control_final_five": [
+          4,
+          6,
+          15,
+          13,
+          8
+        ],
+        "ordinary_five": [
+          4,
+          6,
+          15,
+          13,
+          8
+        ],
+        "protected_anchors": [
+          4,
+          6,
+          15
+        ],
+        "ordinary_flex": [
+          13,
+          8
+        ],
+        "shadow_external_pool": [
+          1,
+          7,
+          2
+        ],
+        "shadow_final_five": [
+          4,
+          6,
+          15,
+          13,
+          7
+        ],
+        "removed": [
+          8
+        ],
+        "admitted": [
+          7
+        ],
+        "decision": "SWAP",
+        "reason": "外部7の調教・現条件支持を優先。IDM 39 vs 38、調教 8.4 vs 1.9"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 9,
+        "honmei": 9,
+        "second": 10,
+        "confidence": "A",
+        "reason": "◎9と○10を比較し、現条件への直接支持と勝ち切りの再現性で9を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 9,
+        "control_final_five": [
+          9,
+          10,
+          13,
+          5,
+          12
+        ],
+        "ordinary_five": [
+          9,
+          10,
+          13,
+          5,
+          12
+        ],
+        "protected_anchors": [
+          9,
+          10,
+          13
+        ],
+        "ordinary_flex": [
+          5,
+          12
+        ],
+        "shadow_external_pool": [
+          6,
+          14,
+          2
+        ],
+        "shadow_final_five": [
+          9,
+          10,
+          13,
+          5,
+          12
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 10,
+        "honmei": 15,
+        "second": 12,
+        "confidence": "B",
+        "reason": "◎15と○12を比較し、現条件への直接支持と勝ち切りの再現性で15を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 10,
+        "control_final_five": [
+          15,
+          12,
+          2,
+          16,
+          13
+        ],
+        "ordinary_five": [
+          15,
+          12,
+          16,
+          2,
+          13
+        ],
+        "protected_anchors": [
+          15,
+          12,
+          16
+        ],
+        "ordinary_flex": [
+          2,
+          13
+        ],
+        "shadow_external_pool": [
+          9,
+          4,
+          3
+        ],
+        "shadow_final_five": [
+          15,
+          12,
+          16,
+          2,
+          13
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 11,
+        "honmei": 4,
+        "second": 3,
+        "confidence": "B",
+        "reason": "◎4と○3を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 11,
+        "control_final_five": [
+          4,
+          3,
+          13,
+          12,
+          2
+        ],
+        "ordinary_five": [
+          4,
+          3,
+          13,
+          12,
+          2
+        ],
+        "protected_anchors": [
+          4,
+          3,
+          13
+        ],
+        "ordinary_flex": [
+          12,
+          2
+        ],
+        "shadow_external_pool": [
+          11,
+          6,
+          8
+        ],
+        "shadow_final_five": [
+          4,
+          3,
+          13,
+          12,
+          2
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "中山",
+        "race_no": 12,
+        "honmei": 4,
+        "second": 2,
+        "confidence": "C",
+        "reason": "◎4と○2を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+      },
+      "cf": {
+        "venue": "中山",
+        "race_no": 12,
+        "control_final_five": [
+          4,
+          2,
+          5,
+          1,
+          9
+        ],
+        "ordinary_five": [
+          4,
+          2,
+          1,
+          5,
+          9
+        ],
+        "protected_anchors": [
+          4,
+          2,
+          1
+        ],
+        "ordinary_flex": [
+          5,
+          9
+        ],
+        "shadow_external_pool": [
+          6,
+          8,
+          7
+        ],
+        "shadow_final_five": [
+          4,
+          2,
+          1,
+          5,
+          9
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "現条件支持の明確な逆転根拠なし。"
+      }
+    }
+  ]
+}
