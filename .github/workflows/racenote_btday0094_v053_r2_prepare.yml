@@ -29,15 +29,52 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf /tmp/historical
+          MANIFEST='horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json'
+          # Fetch the target-year BAC first so the duplicate-snapshot diagnosis is
+          # not blocked by unrelated deep-history Drive throttling.
           for attempt in 1 2 3; do
-            if python tools/gpt_io/public_drive/fetch.py --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json --output-root /tmp/historical --receipt /tmp/historical/public_drive_fetch_receipt.json; then
-              break
-            fi
-            if [ "$attempt" -eq 3 ]; then
-              exit 1
-            fi
+            if python tools/gpt_io/public_drive/fetch.py --manifest "$MANIFEST" --output-root /tmp/historical --artifact golden_03; then break; fi
+            test "$attempt" -lt 3 || exit 1
             sleep 10
           done
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          from jrdb_raw import split_fixed_records, race_key
+          p=Path('/tmp/historical/raw/BAC/BAC_2025.zip')
+          with zipfile.ZipFile(p) as zf:
+              infos=[i for i in zf.infolist() if Path(i.filename).name.upper()=='BAC251214.TXT']
+              print('EARLY_BAC_ZIP_DUPLICATE_ENTRIES',len(infos))
+              for idx,info in enumerate(infos):
+                  keys=[race_key(x) for x in split_fixed_records(zf.read(info),'BAC')]
+                  print('EARLY_BAC_ZIP_ENTRY',idx,len(keys),keys[:3],keys[-3:] if keys else [])
+          PY
+          # Fetch only the range relevant to a late-2025 card and its recent history.
+          # This intentionally excludes deep-history artifacts that are not needed
+          # unless the selected KYI actually references them.
+          for n in $(seq -w 1 24); do
+            id="golden_$n"
+            [ "$id" = "golden_03" ] && continue
+            for attempt in 1 2 3; do
+              if python tools/gpt_io/public_drive/fetch.py --manifest "$MANIFEST" --output-root /tmp/historical --artifact "$id"; then break; fi
+              test "$attempt" -lt 3 || exit 1
+              sleep 10
+            done
+          done
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          manifest=json.loads(Path('horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json').read_text())
+          root=Path('/tmp/historical')
+          rows=[]
+          for item in manifest['artifacts']:
+              p=root/item['destination']
+              if p.is_file():
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  assert h==item['sha256']
+                  rows.append({'artifact_id':item['artifact_id'],'file_id':item['file_id'],'destination':item['destination'],'size':p.stat().st_size,'sha256':h,'verified':True})
+          (root/'public_drive_fetch_receipt.json').write_text(json.dumps({'schema_version':1,'transport':'public_google_drive','artifacts':rows},ensure_ascii=False,indent=2)+'\n')
+          PY
           mkdir -p /tmp/historical/analysis /tmp/historical/rrdb
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
           unzip -q /tmp/historical/rrdb.zip -d /tmp/historical/rrdb
