@@ -1,0 +1,313 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "baseline_forecast_commit": "d0c6a3b6393cba71b51bc307349e932d2d64160a",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0091",
+  "target_date": "2025-11-15",
+  "assignments": [
+    {
+      "venue": "京都",
+      "race_no": 1,
+      "honmei": 4,
+      "second": 5,
+      "confidence": "B",
+      "reason": "◎4と○5を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "honmei": 8,
+      "second": 4,
+      "confidence": "A",
+      "reason": "◎8と○4を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "honmei": 5,
+      "second": 9,
+      "confidence": "B",
+      "reason": "◎5と○9を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 4,
+      "honmei": 9,
+      "second": 3,
+      "confidence": "B",
+      "reason": "◎9と○3を比較し、現条件への直接支持と勝ち切りの再現性で9を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 5,
+      "honmei": 7,
+      "second": 13,
+      "confidence": "B",
+      "reason": "◎7と○13を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "honmei": 5,
+      "second": 7,
+      "confidence": "A",
+      "reason": "◎5と○7を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "honmei": 8,
+      "second": 2,
+      "confidence": "C",
+      "reason": "◎8と○2を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "honmei": 5,
+      "second": 6,
+      "confidence": "A",
+      "reason": "◎5と○6を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "honmei": 11,
+      "second": 7,
+      "confidence": "C",
+      "reason": "◎11と○7を比較し、現条件への直接支持と勝ち切りの再現性で11を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "honmei": 6,
+      "second": 9,
+      "confidence": "B",
+      "reason": "◎6と○9を比較し、現条件への直接支持と勝ち切りの再現性で6を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "honmei": 5,
+      "second": 7,
+      "confidence": "A",
+      "reason": "◎5と○7を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 12,
+      "honmei": 10,
+      "second": 9,
+      "confidence": "C",
+      "reason": "◎10と○9を比較し、現条件への直接支持と勝ち切りの再現性で10を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "honmei": 7,
+      "second": 11,
+      "confidence": "A",
+      "reason": "honmei 7 over second 11 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "honmei": 5,
+      "second": 13,
+      "confidence": "A",
+      "reason": "honmei 5 over second 13 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "honmei": 15,
+      "second": 5,
+      "confidence": "A",
+      "reason": "honmei 15 over second 5 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "honmei": 4,
+      "second": 12,
+      "confidence": "A",
+      "reason": "honmei 4 over second 12 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "honmei": 5,
+      "second": 4,
+      "confidence": "A",
+      "reason": "honmei 5 over second 4 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "honmei": 4,
+      "second": 13,
+      "confidence": "A",
+      "reason": "honmei 4 over second 13 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "honmei": 9,
+      "second": 4,
+      "confidence": "C",
+      "reason": "honmei 9 over second 4 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "honmei": 12,
+      "second": 6,
+      "confidence": "C",
+      "reason": "honmei 12 over second 6 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "honmei": 12,
+      "second": 4,
+      "confidence": "B",
+      "reason": "honmei 12 over second 4 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "honmei": 8,
+      "second": 10,
+      "confidence": "B",
+      "reason": "honmei 8 over second 10 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "honmei": 4,
+      "second": 11,
+      "confidence": "B",
+      "reason": "honmei 4 over second 11 on win-route repeatability"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "honmei": 12,
+      "second": 6,
+      "confidence": "B",
+      "reason": "honmei 12 over second 6 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 1,
+      "honmei": 13,
+      "second": 4,
+      "confidence": "A",
+      "reason": "honmei 13 over second 4 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 2,
+      "honmei": 7,
+      "second": 8,
+      "confidence": "A",
+      "reason": "honmei 7 over second 8 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 3,
+      "honmei": 5,
+      "second": 10,
+      "confidence": "B",
+      "reason": "honmei 5 over second 10 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 4,
+      "honmei": 5,
+      "second": 2,
+      "confidence": "B",
+      "reason": "honmei 5 over second 2 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 5,
+      "honmei": 16,
+      "second": 9,
+      "confidence": "B",
+      "reason": "honmei 16 over second 9 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 6,
+      "honmei": 13,
+      "second": 2,
+      "confidence": "C",
+      "reason": "honmei 13 over second 2 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 7,
+      "honmei": 12,
+      "second": 11,
+      "confidence": "C",
+      "reason": "honmei 12 over second 11 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 8,
+      "honmei": 7,
+      "second": 2,
+      "confidence": "B",
+      "reason": "honmei 7 over second 2 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 9,
+      "honmei": 2,
+      "second": 3,
+      "confidence": "B",
+      "reason": "honmei 2 over second 3 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 10,
+      "honmei": 9,
+      "second": 10,
+      "confidence": "A",
+      "reason": "honmei 9 over second 10 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 11,
+      "honmei": 13,
+      "second": 1,
+      "confidence": "B",
+      "reason": "honmei 13 over second 1 on win-route repeatability"
+    },
+    {
+      "venue": "福島",
+      "race_no": 12,
+      "honmei": 9,
+      "second": 2,
+      "confidence": "C",
+      "reason": "honmei 9 over second 2 on win-route repeatability"
+    }
+  ],
+  "counts": {
+    "A": 13,
+    "B": 15,
+    "C": 8,
+    "total": 36
+  }
+}
