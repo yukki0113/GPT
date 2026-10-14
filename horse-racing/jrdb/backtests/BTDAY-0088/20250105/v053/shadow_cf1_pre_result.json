@@ -1,0 +1,1094 @@
+{
+  "schema_version": "racenote-shadow-cf1-pre-result-v0.1",
+  "experiment_id": "RaceNote-Candidate-Formation-Shadow-CF1",
+  "purpose": "Evaluate whether final-five top2/top3 coverage can improve without changing ticket count or control prediction.",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "source_commit": "149841b93333486263854c0931fd0cbc10843baf",
+  "baseline_forecast_commit": "1c5a1270ab23cc045af80cd3a9cdd2ede9d87745",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0088",
+  "target_date": "2025-01-05",
+  "control_prediction_immutable": true,
+  "role_reassignment": false,
+  "policy": {
+    "protected": "ordinary_five top 3",
+    "flex": "ordinary_five positions 4-5",
+    "external_pool": "max 3 horses from sealed Reader; includes the r2 external challenger when present",
+    "decision": "reselect only the two flex slots from ordinary flex + external pool; default KEEP unless sealed Reader gives a meaningful ability/current-condition/pace-route case",
+    "output": "five-horse set only; does not alter ◎○▲△△ or confidence"
+  },
+  "races": [
+    {
+      "venue": "中京",
+      "race_no": 1,
+      "control": [
+        5,
+        4,
+        10,
+        2,
+        7
+      ],
+      "ordinary": [
+        5,
+        4,
+        2,
+        10,
+        7
+      ],
+      "anchors": [
+        5,
+        4,
+        2
+      ],
+      "flex": [
+        10,
+        7
+      ],
+      "pool": [
+        11,
+        1,
+        14
+      ],
+      "shadow": [
+        5,
+        4,
+        2,
+        10,
+        11
+      ],
+      "removed": [
+        7
+      ],
+      "added": [
+        11
+      ],
+      "decision": "SWAP",
+      "reason": "11は7に対し能力差がなく、情報・調教支持が上で、sealed Reader上の現条件支持を優先。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 2,
+      "control": [
+        15,
+        4,
+        13,
+        11,
+        8
+      ],
+      "ordinary": [
+        15,
+        4,
+        11,
+        13,
+        8
+      ],
+      "anchors": [
+        15,
+        4,
+        11
+      ],
+      "flex": [
+        13,
+        8
+      ],
+      "pool": [
+        10,
+        3,
+        5
+      ],
+      "shadow": [
+        15,
+        4,
+        11,
+        13,
+        8
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 3,
+      "control": [
+        5,
+        6,
+        16,
+        12,
+        9
+      ],
+      "ordinary": [
+        5,
+        6,
+        16,
+        12,
+        9
+      ],
+      "anchors": [
+        5,
+        6,
+        16
+      ],
+      "flex": [
+        12,
+        9
+      ],
+      "pool": [
+        10,
+        8,
+        14
+      ],
+      "shadow": [
+        5,
+        6,
+        16,
+        9,
+        10
+      ],
+      "removed": [
+        12
+      ],
+      "added": [
+        10
+      ],
+      "decision": "SWAP",
+      "reason": "10は12の能力優位を一部譲るが、調教・情報と差し込み経路の直接支持が明確で、下位flex比較では10を上位。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 4,
+      "control": [
+        16,
+        1,
+        15,
+        14,
+        2
+      ],
+      "ordinary": [
+        16,
+        1,
+        15,
+        14,
+        2
+      ],
+      "anchors": [
+        16,
+        1,
+        15
+      ],
+      "flex": [
+        14,
+        2
+      ],
+      "pool": [
+        4,
+        3,
+        5
+      ],
+      "shadow": [
+        16,
+        1,
+        15,
+        14,
+        2
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 5,
+      "control": [
+        17,
+        4,
+        18,
+        15,
+        7
+      ],
+      "ordinary": [
+        17,
+        4,
+        18,
+        15,
+        7
+      ],
+      "anchors": [
+        17,
+        4,
+        18
+      ],
+      "flex": [
+        15,
+        7
+      ],
+      "pool": [
+        10,
+        9,
+        14
+      ],
+      "shadow": [
+        17,
+        4,
+        18,
+        15,
+        7
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 6,
+      "control": [
+        4,
+        14,
+        8,
+        7,
+        13
+      ],
+      "ordinary": [
+        4,
+        14,
+        7,
+        13,
+        8
+      ],
+      "anchors": [
+        4,
+        14,
+        7
+      ],
+      "flex": [
+        13,
+        8
+      ],
+      "pool": [
+        10,
+        2,
+        16
+      ],
+      "shadow": [
+        4,
+        14,
+        7,
+        13,
+        8
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 7,
+      "control": [
+        7,
+        9,
+        3,
+        6,
+        2
+      ],
+      "ordinary": [
+        7,
+        9,
+        3,
+        6,
+        2
+      ],
+      "anchors": [
+        7,
+        9,
+        3
+      ],
+      "flex": [
+        6,
+        2
+      ],
+      "pool": [
+        1,
+        8,
+        5
+      ],
+      "shadow": [
+        7,
+        9,
+        3,
+        6,
+        2
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "1は比較圏だが6・2を明確に上回るほどではなくdefault KEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 8,
+      "control": [
+        12,
+        1,
+        3,
+        8,
+        11
+      ],
+      "ordinary": [
+        12,
+        1,
+        8,
+        11,
+        3
+      ],
+      "anchors": [
+        12,
+        1,
+        8
+      ],
+      "flex": [
+        11,
+        3
+      ],
+      "pool": [
+        14,
+        4,
+        5
+      ],
+      "shadow": [
+        12,
+        1,
+        8,
+        11,
+        3
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "4は11に近いが明確な優位までなくdefault KEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 9,
+      "control": [
+        2,
+        11,
+        4,
+        5,
+        3
+      ],
+      "ordinary": [
+        2,
+        11,
+        5,
+        4,
+        3
+      ],
+      "anchors": [
+        2,
+        11,
+        5
+      ],
+      "flex": [
+        4,
+        3
+      ],
+      "pool": [
+        8,
+        10,
+        7
+      ],
+      "shadow": [
+        2,
+        11,
+        5,
+        4,
+        3
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 10,
+      "control": [
+        4,
+        10,
+        14,
+        1,
+        7
+      ],
+      "ordinary": [
+        4,
+        10,
+        14,
+        1,
+        7
+      ],
+      "anchors": [
+        4,
+        10,
+        14
+      ],
+      "flex": [
+        1,
+        7
+      ],
+      "pool": [
+        15,
+        8,
+        6
+      ],
+      "shadow": [
+        4,
+        10,
+        14,
+        1,
+        7
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "15・8は比較圏だが1・7を明確に上回らずdefault KEEP。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 11,
+      "control": [
+        7,
+        9,
+        4,
+        15,
+        16
+      ],
+      "ordinary": [
+        7,
+        9,
+        15,
+        16,
+        12
+      ],
+      "anchors": [
+        7,
+        9,
+        15
+      ],
+      "flex": [
+        16,
+        12
+      ],
+      "pool": [
+        4,
+        5,
+        1
+      ],
+      "shadow": [
+        7,
+        9,
+        15,
+        16,
+        12
+      ],
+      "removed": [
+        4
+      ],
+      "added": [
+        12
+      ],
+      "decision": "SWAP",
+      "reason": "12は4と能力同等以上で、情報・調教支持が明確に強い。CF1ではordinary flexの12を保持。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 12,
+      "control": [
+        7,
+        11,
+        6,
+        13,
+        10
+      ],
+      "ordinary": [
+        7,
+        11,
+        13,
+        10,
+        6
+      ],
+      "anchors": [
+        7,
+        11,
+        13
+      ],
+      "flex": [
+        10,
+        6
+      ],
+      "pool": [
+        16,
+        9,
+        2
+      ],
+      "shadow": [
+        7,
+        11,
+        13,
+        10,
+        6
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "control": [
+        11,
+        10,
+        4,
+        7,
+        12
+      ],
+      "ordinary": [
+        11,
+        10,
+        4,
+        7,
+        12
+      ],
+      "anchors": [
+        11,
+        10,
+        4
+      ],
+      "flex": [
+        7,
+        12
+      ],
+      "pool": [
+        3,
+        2,
+        9
+      ],
+      "shadow": [
+        11,
+        10,
+        4,
+        7,
+        12
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "3は上昇だが7・12を明確に上回らずdefault KEEP。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "control": [
+        13,
+        12,
+        4,
+        6,
+        2
+      ],
+      "ordinary": [
+        13,
+        12,
+        4,
+        6,
+        2
+      ],
+      "anchors": [
+        13,
+        12,
+        4
+      ],
+      "flex": [
+        6,
+        2
+      ],
+      "pool": [
+        15,
+        14,
+        9
+      ],
+      "shadow": [
+        13,
+        12,
+        4,
+        6,
+        2
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "control": [
+        7,
+        13,
+        1,
+        15,
+        11
+      ],
+      "ordinary": [
+        7,
+        13,
+        1,
+        15,
+        11
+      ],
+      "anchors": [
+        7,
+        13,
+        1
+      ],
+      "flex": [
+        15,
+        11
+      ],
+      "pool": [
+        12,
+        5,
+        2
+      ],
+      "shadow": [
+        7,
+        13,
+        1,
+        15,
+        11
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "12は比較圏だが15・11を明確に上回らずdefault KEEP。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "control": [
+        5,
+        1,
+        8,
+        9,
+        14
+      ],
+      "ordinary": [
+        5,
+        1,
+        9,
+        14,
+        16
+      ],
+      "anchors": [
+        5,
+        1,
+        9
+      ],
+      "flex": [
+        14,
+        16
+      ],
+      "pool": [
+        8,
+        4,
+        10
+      ],
+      "shadow": [
+        5,
+        1,
+        9,
+        14,
+        16
+      ],
+      "removed": [
+        8
+      ],
+      "added": [
+        16
+      ],
+      "decision": "SWAP",
+      "reason": "8と16は接近するが16は調教・hidden-strength支持があり、CF1の明確優位なしはordinary flex保持という原則を適用。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "control": [
+        11,
+        1,
+        7,
+        8,
+        3
+      ],
+      "ordinary": [
+        11,
+        1,
+        8,
+        3,
+        7
+      ],
+      "anchors": [
+        11,
+        1,
+        8
+      ],
+      "flex": [
+        3,
+        7
+      ],
+      "pool": [
+        5,
+        16,
+        12
+      ],
+      "shadow": [
+        11,
+        1,
+        8,
+        3,
+        5
+      ],
+      "removed": [
+        7
+      ],
+      "added": [
+        5
+      ],
+      "decision": "SWAP",
+      "reason": "5は7と能力差が小さい一方、情報・調教支持が大きく上回り、current-condition側の直接支持を採用。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "control": [
+        4,
+        10,
+        8,
+        3,
+        9
+      ],
+      "ordinary": [
+        4,
+        10,
+        3,
+        8,
+        9
+      ],
+      "anchors": [
+        4,
+        10,
+        3
+      ],
+      "flex": [
+        8,
+        9
+      ],
+      "pool": [
+        2,
+        6,
+        12
+      ],
+      "shadow": [
+        4,
+        10,
+        3,
+        8,
+        9
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "control": [
+        6,
+        5,
+        12,
+        11,
+        10
+      ],
+      "ordinary": [
+        6,
+        5,
+        12,
+        11,
+        10
+      ],
+      "anchors": [
+        6,
+        5,
+        12
+      ],
+      "flex": [
+        11,
+        10
+      ],
+      "pool": [
+        14,
+        3,
+        7
+      ],
+      "shadow": [
+        6,
+        5,
+        12,
+        10,
+        3
+      ],
+      "removed": [
+        11
+      ],
+      "added": [
+        3
+      ],
+      "decision": "SWAP",
+      "reason": "3は11より能力値は低いが、情報・調教、forecast margin、履歴の上振れ余地が揃い、下位flex比較では3を上位。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "control": [
+        6,
+        11,
+        3,
+        8,
+        12
+      ],
+      "ordinary": [
+        6,
+        11,
+        3,
+        8,
+        12
+      ],
+      "anchors": [
+        6,
+        11,
+        3
+      ],
+      "flex": [
+        8,
+        12
+      ],
+      "pool": [
+        16,
+        7,
+        5
+      ],
+      "shadow": [
+        6,
+        11,
+        3,
+        8,
+        12
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "control": [
+        14,
+        9,
+        7,
+        1,
+        6
+      ],
+      "ordinary": [
+        14,
+        9,
+        1,
+        6,
+        13
+      ],
+      "anchors": [
+        14,
+        9,
+        1
+      ],
+      "flex": [
+        6,
+        13
+      ],
+      "pool": [
+        7,
+        15,
+        10
+      ],
+      "shadow": [
+        14,
+        9,
+        1,
+        6,
+        13
+      ],
+      "removed": [
+        7
+      ],
+      "added": [
+        13
+      ],
+      "decision": "SWAP",
+      "reason": "13は7に対し情報・調教・forecast margin・履歴支持が明瞭に強く、CF1ではordinary flexの13を保持。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "control": [
+        9,
+        10,
+        8,
+        6,
+        7
+      ],
+      "ordinary": [
+        9,
+        10,
+        8,
+        6,
+        7
+      ],
+      "anchors": [
+        9,
+        10,
+        8
+      ],
+      "flex": [
+        6,
+        7
+      ],
+      "pool": [
+        1,
+        2,
+        4
+      ],
+      "shadow": [
+        9,
+        10,
+        8,
+        6,
+        1
+      ],
+      "removed": [
+        7
+      ],
+      "added": [
+        1
+      ],
+      "decision": "SWAP",
+      "reason": "1は7より能力・情報・調教および履歴支持が強く、下位flex比較で1を上位。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "control": [
+        18,
+        15,
+        16,
+        14,
+        17
+      ],
+      "ordinary": [
+        18,
+        15,
+        14,
+        17,
+        16
+      ],
+      "anchors": [
+        18,
+        15,
+        14
+      ],
+      "flex": [
+        17,
+        16
+      ],
+      "pool": [
+        4,
+        8,
+        2
+      ],
+      "shadow": [
+        18,
+        15,
+        14,
+        17,
+        16
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "control": [
+        6,
+        14,
+        4,
+        5,
+        16
+      ],
+      "ordinary": [
+        6,
+        14,
+        5,
+        16,
+        4
+      ],
+      "anchors": [
+        6,
+        14,
+        5
+      ],
+      "flex": [
+        16,
+        4
+      ],
+      "pool": [
+        15,
+        3,
+        2
+      ],
+      "shadow": [
+        6,
+        14,
+        5,
+        16,
+        4
+      ],
+      "removed": [],
+      "added": [],
+      "decision": "KEEP",
+      "reason": "外部候補にflex2頭を明確に上回る直接支持なし。"
+    }
+  ],
+  "counts": {
+    "races": 24,
+    "keep": 16,
+    "swap": 8
+  }
+}
