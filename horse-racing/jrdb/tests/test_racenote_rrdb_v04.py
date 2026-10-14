@@ -139,14 +139,10 @@ class RaceNoteRRDBV04Test(unittest.TestCase):
                     )
                 """)
                 con.execute("INSERT INTO rc VALUES ('X',0.5)")
-                con.execute(
-                    f"COPY hp TO '{str(root / 'hp.parquet').replace("'", "''")}' "
-                    "(FORMAT PARQUET)"
-                )
-                con.execute(
-                    f"COPY rc TO '{str(root / 'rc.parquet').replace("'", "''")}' "
-                    "(FORMAT PARQUET)"
-                )
+                hp_path = str(root / "hp.parquet").replace("'", "''")
+                rc_path = str(root / "rc.parquet").replace("'", "''")
+                con.execute(f"COPY hp TO '{hp_path}' (FORMAT PARQUET)")
+                con.execute(f"COPY rc TO '{rc_path}' (FORMAT PARQUET)")
                 con.execute("""
                     CREATE TABLE fit(
                         horse_id VARCHAR,
@@ -167,10 +163,8 @@ class RaceNoteRRDBV04Test(unittest.TestCase):
                         ("H1","1","2026-01-01","ABSOLUTE","FINAL_STRAIGHT_BUCKET","LONG",5,0.12,0.60),
                     ],
                 )
-                con.execute(
-                    f"COPY fit TO '{str(root / 'fit.parquet').replace("'", "''")}' "
-                    "(FORMAT PARQUET)"
-                )
+                fit_path = str(root / "fit.parquet").replace("'", "''")
+                con.execute(f"COPY fit TO '{fit_path}' (FORMAT PARQUET)")
             finally:
                 con.close()
 
