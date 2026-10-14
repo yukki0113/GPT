@@ -103,7 +103,7 @@ class RecommendationReverseV04Test(unittest.TestCase):
             "distance_raw": "1600",
             "turn_code": "1",
             "layout_code": "1",
-            "course_code": "A",
+            "course_code": "1",
         }
         # The exact course_key is intentionally taken from the canonical identity
         # function in the production helper.
@@ -121,7 +121,7 @@ class RecommendationReverseV04Test(unittest.TestCase):
             "venue_code": "05",
             "surface_code": "1",
             "layout_variant": "main",
-            "jrdb_course_code": "A",
+            "jrdb_course_code": "1",
             "course_size_class": "LARGE",
             "final_straight_m": 525.9,
             "physical_valid_from": "2023-01-01",
