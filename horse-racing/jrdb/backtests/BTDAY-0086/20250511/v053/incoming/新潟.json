@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "race_model": "新潟1RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      8,
+      1,
+      12,
+      5,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "外部14と固定境界2を直接比較したが、境界2を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎8・○1を勝ち切り優先で選択。▲12は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        1,
+        5,
+        12,
+        2
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "外部14はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界2の直接支持を外部14より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 1,
+      "honmei_win_case": "8は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "1はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎8と○1を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "race_model": "新潟2RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      11,
+      10,
+      12,
+      2,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "外部7と固定境界12を直接比較したが、境界12を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎11・○10を勝ち切り優先で選択。▲12は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        10,
+        2,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "外部7はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12の直接支持を外部7より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 10,
+      "honmei_win_case": "11は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "10はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎11と○10を比較し、現条件への直接支持と勝ち切りの再現性で11を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "race_model": "新潟3RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      4,
+      6,
+      9,
+      2,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8と固定境界13を直接比較したが、境界13を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎4・○6を勝ち切り優先で選択。▲9は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        6,
+        2,
+        9,
+        13
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "外部8はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界13の直接支持を外部8より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "honmei_win_case": "4は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "6はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎4と○6を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "race_model": "新潟4RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      1,
+      11,
+      14,
+      2,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "外部13と固定境界4を直接比較したが、境界4を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎1・○11を勝ち切り優先で選択。▲14は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        11,
+        2,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "外部13はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界4の直接支持を外部13より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 11,
+      "honmei_win_case": "1は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "11はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎1と○11を比較し、現条件への直接支持と勝ち切りの再現性で1を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "race_model": "新潟5RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      15,
+      7,
+      5,
+      2,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10と固定境界8を直接比較したが、境界8を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎15・○7を勝ち切り優先で選択。▲5は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        7,
+        5,
+        2,
+        8
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "外部10はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界8の直接支持を外部10より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 7,
+      "honmei_win_case": "15は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "7はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎15と○7を比較し、現条件への直接支持と勝ち切りの再現性で15を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "race_model": "新潟6RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      6,
+      16,
+      7,
+      1,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "外部15と固定境界12を直接比較したが、境界12を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎6・○16を勝ち切り優先で選択。▲7は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        16,
+        7,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "外部15はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12の直接支持を外部15より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 16,
+      "honmei_win_case": "6は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "16はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎6と○16を比較し、現条件への直接支持と勝ち切りの再現性で6を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "race_model": "新潟7RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      7,
+      8,
+      14,
+      12,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "外部11と固定境界3を直接比較したが、境界3を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎7・○8を勝ち切り優先で選択。▲14は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        8,
+        14,
+        12,
+        3
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "外部11はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界3の直接支持を外部11より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 8,
+      "honmei_win_case": "7は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "8はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎7と○8を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "race_model": "新潟8RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      5,
+      2,
+      1,
+      13,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4と固定境界12を直接比較したが、境界12を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎5・○2を勝ち切り優先で選択。▲1は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        2,
+        13,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "外部4はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界12の直接支持を外部4より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 2,
+      "honmei_win_case": "5は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "2はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎5と○2を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "race_model": "新潟9RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      4,
+      9,
+      1,
+      11,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3と固定境界13を直接比較したが、境界13を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎4・○9を勝ち切り優先で選択。▲1は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        9,
+        1,
+        11,
+        13
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "外部3はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界13の直接支持を外部3より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 9,
+      "honmei_win_case": "4は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "9はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎4と○9を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "race_model": "新潟10RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      6,
+      8,
+      10,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "外部12と固定境界7を直接比較したが、境界7を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎6・○8を勝ち切り優先で選択。▲10は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        8,
+        2,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "外部12はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界7の直接支持を外部12より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 8,
+      "honmei_win_case": "6は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "8はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎6と○8を比較し、現条件への直接支持と勝ち切りの再現性で6を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "race_model": "新潟11RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      7,
+      10,
+      4,
+      2,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8と固定境界14を直接比較したが、境界14を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎7・○10を勝ち切り優先で選択。▲4は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        10,
+        2,
+        4,
+        14
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "外部8はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界14の直接支持を外部8より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 10,
+      "honmei_win_case": "7は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "10はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎7と○10を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    }
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "race_model": "新潟12RはReader全馬を横比較し、能力、現条件適性、近走内容、位置取り、状態から通常展開のordinary fiveを先に固定した。◎○は勝ち切り優先で選び、境界比較はr2規約に従った。",
+    "marks": [
+      7,
+      9,
+      4,
+      2,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7は現条件への直接支持と勝ち切り経路を最も強く評価して主軸とした。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9はordinary five内で次に明瞭な勝ち筋を持ち、◎を逆転できる相手とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は能力・適性・状態の直接支持から通常展開で残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は主線二頭とは異なる展開または位置取りから頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "外部13と固定境界8を直接比較したが、境界8を明確に上回る現条件の根拠まではなくordinary fiveを維持した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "Reader evidenceを全馬比較し、通常五頭を先に固定したうえで◎7・○9を勝ち切り優先で選択。▲4は主線二頭と異なる勝ち筋を評価した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        9,
+        2,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "外部13はordinary five外から、異なる展開または位置取りで勝ち切る経路がある馬として一頭だけ比較対象にした。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界8の直接支持を外部13より上に取り、ordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 9,
+      "honmei_win_case": "7は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つ。",
+      "second_case": "9はordinary five内で次に強い勝ち筋があり、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎7と○9を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    }
+  }
+]
