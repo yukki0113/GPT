@@ -403,7 +403,6 @@ def build_historical_warehouse_base(
     current: Path | None,
     asset_root_values: list[str],
     output_dir: Path,
-    race_keys: Iterable[bytes | str] | None = None,
 ) -> tuple[Path, dict]:
     """Materialize unchanged RaceNote v0.2 bundles from accepted Parquet only."""
     if current is None:
@@ -413,17 +412,7 @@ def build_historical_warehouse_base(
         )
     try:
         reader = WarehouseRaceNoteReader(current, asset_roots=warehouse_asset_roots(asset_root_values))
-        # Historical annual BAC can carry only a subset of a day's races under
-        # the target delivery/date snapshot. Resolve the complete target race
-        # roster from Analysis and use those race keys as the authoritative scope.
-        normalized_keys = [
-            value.decode("ascii") if isinstance(value, bytes) else str(value)
-            for value in (race_keys or [])
-        ]
-        bundles, evidence = reader.build(
-            request.target_date,
-            race_keys=normalized_keys or None,
-        )
+        bundles, evidence = reader.build(request.target_date, source_member_date=request.target_date)
     except WarehouseRaceNoteReaderError as exc:
         raise RaceNoteRequestError(str(exc)) from exc
     bundle_dir = output_dir / f"RaceNote_{request.compact_date}"
@@ -590,9 +579,6 @@ def main() -> int:
                     args.warehouse_current,
                     args.warehouse_asset_root,
                     work_dir,
-                    race_keys=target_race_keys(
-                        analysis, request, analysis_backend
-                    ),
                 )
                 plan["base_backend"] = "historical_warehouse"
             except RaceNoteRequestError as exc:
