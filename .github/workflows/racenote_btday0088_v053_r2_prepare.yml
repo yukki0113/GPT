@@ -27,7 +27,15 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf /tmp/historical
-          python tools/gpt_io/public_drive/fetch.py --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json --output-root /tmp/historical --receipt /tmp/historical/public_drive_fetch_receipt.json
+          for attempt in 1 2 3; do
+            if python tools/gpt_io/public_drive/fetch.py --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json --output-root /tmp/historical --receipt /tmp/historical/public_drive_fetch_receipt.json; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            sleep 10
+          done
           mkdir -p /tmp/historical/analysis /tmp/historical/rrdb
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
           unzip -q /tmp/historical/rrdb.zip -d /tmp/historical/rrdb
