@@ -72,6 +72,8 @@ def prepare(args: argparse.Namespace) -> dict:
             warehouse_asset_root=args.warehouse_asset_root,
             analysis_root=args.analysis_root,
             racereview_root=args.racereview_root,
+            course_fit_root=args.course_fit_root,
+            paci_path=args.target_bac,
             output_root=args.output_root / "day_prep",
             rrdb_work_root=Path(tmp),
         )
@@ -121,6 +123,13 @@ def main() -> int:
     parser.add_argument("--warehouse-asset-root", required=True, type=Path)
     parser.add_argument("--analysis-root", required=True, type=Path)
     parser.add_argument("--racereview-root", required=True, type=Path)
+    parser.add_argument("--course-fit-root", required=True, type=Path)
+    parser.add_argument(
+        "--target-bac",
+        required=True,
+        type=Path,
+        help="PACI ZIP or annual BAC ZIP containing the target-date BAC rows for RRDB v0.4 course resolution.",
+    )
     parser.add_argument("--binding", required=True, type=Path)
     parser.add_argument("--policy", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
