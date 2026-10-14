@@ -32,7 +32,7 @@ Common JRDB Raw Reader
 - 1-based byte offset による field parse
 - race key / race-horse key / result key の生成
 - PACI の CRLF 込み固定長形式と、annual Raw の line body 形式の両方の分割
-- BAC / KYI / CHA / CYB / SED / SKB / ZED / ZKB / UKC の neutral parse
+- BAC / KYI / CHA / CYB / SED / SRB / SKB / ZED / ZKB / UKC の neutral parse
 - ZIP 内の canonical member 列挙
 - record-length audit
 
@@ -106,6 +106,7 @@ v0.1 では以下を再確認した。
 - CHA: 64 bytes
 - CYB: 96 bytes
 - SED/ZED: 376 bytes
+- SRB: 852 bytes（CR/LF含む。本文850 bytes）
 - SKB/ZKB: 304 bytes
 - UKC body: 290 bytes（ZIP内固定長では CR/LF を含め292 bytesとして扱う）
 - KYI previous result links: relative 204/220/236/252/268
