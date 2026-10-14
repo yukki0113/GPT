@@ -52,6 +52,30 @@ jobs:
           PY
           mkdir -p /tmp/historical/course-fit
           unzip -q /tmp/historical/course-fit.zip -d /tmp/historical/course-fit
+      - name: Diagnose BAC snapshots for target day
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import datetime as dt
+          from pathlib import Path
+          import duckdb
+          from jrdb_racenote_warehouse_reader import WarehouseRaceNoteReader
+          from jrdb_racenote_warehouse_adapter import source_order
+          root=Path('/tmp/historical/warehouse')
+          reader=WarehouseRaceNoteReader(root/'current.json', asset_roots={k:root for k in ('BAC','KYI','CHA','CYB','ZED','ZKB')})
+          con=duckdb.connect(':memory:')
+          day=dt.date(2025,12,14)
+          bac=[r for r in reader._rows_on(con,'bac',[2025]) if str(r.get('race_date'))==day.isoformat()]
+          kyi=reader._rows_on(con,'kyi',[2025])
+          counts={}
+          for r in kyi:
+              if str(r.get('source_member_date','')).replace('-','')==day.strftime('%Y%m%d'):
+                  counts[str(r.get('race_key_raw'))]=counts.get(str(r.get('race_key_raw')),0)+1
+          for r in sorted(bac,key=lambda x:(str(x.get('race_key_raw')),source_order(x))):
+              key=str(r.get('race_key_raw'))
+              print('BAC_DIAG',key,r.get('source_member'),r.get('source_member_date'),r.get('source_record_ordinal'),r.get('field_size'),'KYI',counts.get(key))
+          PY
       - name: Build and validate TURN 1
         env:
           PYTHONPATH: horse-racing/jrdb/src
