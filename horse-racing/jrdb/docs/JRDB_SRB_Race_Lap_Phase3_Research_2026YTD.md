@@ -151,6 +151,9 @@ update window.
 
 ## 7. Forward predictive experiment
 
+**Phase 3B coverage correction note:** the three recovered September race dates are included in the coverage counts above, but the exploratory model metrics below are the original Phase 3 run and were not retrained for the 84 additional races. They remain evidence about direction, not a refreshed benchmark.
+
+
 A chronological exploratory test was performed on horse runs having a prior
 observed 2026 run.
 
