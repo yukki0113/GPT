@@ -66,15 +66,30 @@ jobs:
           reader=WarehouseRaceNoteReader(root/'current.json', asset_roots={k:root for k in ('BAC','KYI','CHA','CYB','ZED','ZKB')})
           con=duckdb.connect(':memory:')
           day=dt.date(2025,12,14)
-          bac=[r for r in reader._rows_on(con,'bac',[2025]) if str(r.get('race_date'))==day.isoformat()]
+          all_bac=reader._rows_on(con,'bac',[2025])
+          bac=[r for r in all_bac if str(r.get('race_date'))==day.isoformat()]
           kyi=reader._rows_on(con,'kyi',[2025])
           counts={}
           for r in kyi:
-              if str(r.get('source_member_date','')).replace('-','')==day.strftime('%Y%m%d'):
-                  counts[str(r.get('race_key_raw'))]=counts.get(str(r.get('race_key_raw')),0)+1
+              key=str(r.get('race_key_raw'))
+              counts[key]=counts.get(key,0)+1
           for r in sorted(bac,key=lambda x:(str(x.get('race_key_raw')),source_order(x))):
               key=str(r.get('race_key_raw'))
               print('BAC_DIAG',key,r.get('source_member'),r.get('source_member_date'),r.get('source_record_ordinal'),r.get('field_size'),'KYI',counts.get(key))
+          prefixes=sorted({str(r.get('race_key_raw'))[:-2] for r in bac if len(str(r.get('race_key_raw')))==8})
+          assert prefixes == ['062554','072554','092554'], prefixes
+          race_keys=[f'{prefix}{race_no:02d}' for prefix in prefixes for race_no in range(1,13)]
+          bac_keys={str(r.get('race_key_raw')) for r in all_bac}
+          kyi_keys={str(r.get('race_key_raw')) for r in kyi}
+          missing_bac=sorted(set(race_keys)-bac_keys)
+          missing_kyi=sorted(set(race_keys)-kyi_keys)
+          assert not missing_bac, missing_bac
+          assert not missing_kyi, missing_kyi
+          assert len(race_keys)==36
+          Path('/tmp/historical/btday0094_race_keys.txt').write_text(
+              '\n'.join(race_keys)+'\n', encoding='utf-8'
+          )
+          print('BTDAY0094_RACE_KEYS',len(race_keys),prefixes)
           PY
       - name: Build and validate TURN 1
         env:
@@ -84,7 +99,7 @@ jobs:
           TARGET='horse-racing/jrdb/backtests/BTDAY-0094/20251214'
           rm -rf "$TARGET"
           MAIN_SHA="$(git rev-parse HEAD)"
-          python horse-racing/jrdb/src/racenote_v053_from_historical_warehouse.py             --date 2025-12-14             --selection-id BTDAY-0094             --main-sha "$MAIN_SHA"             --equivalence-report horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json             --warehouse-current /tmp/historical/warehouse/current.json             --warehouse-asset-root /tmp/historical/warehouse             --analysis-root /tmp/historical/analysis             --racereview-root /tmp/historical/rrdb/postrace_review/v0_1             --course-fit-root /tmp/historical/course-fit             --target-bac /tmp/historical/raw/BAC/BAC_2025.zip             --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json             --output-root "$TARGET"
+          python horse-racing/jrdb/src/racenote_v053_from_historical_warehouse.py             --date 2025-12-14             --selection-id BTDAY-0094             --main-sha "$MAIN_SHA"             --equivalence-report horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json             --warehouse-current /tmp/historical/warehouse/current.json             --warehouse-asset-root /tmp/historical/warehouse             --analysis-root /tmp/historical/analysis             --racereview-root /tmp/historical/rrdb/postrace_review/v0_1             --course-fit-root /tmp/historical/course-fit             --race-keys-file /tmp/historical/btday0094_race_keys.txt             --target-bac /tmp/historical/raw/BAC/BAC_2025.zip             --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json             --output-root "$TARGET"
           ROOT="$TARGET/day_prep/RaceNote_20251214"
           cp "$ROOT/manifest.json" "$TARGET/day_prep/manifest.json"
           cp "$ROOT/validation_report.json" "$TARGET/day_prep/validation_report.json"
