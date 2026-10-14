@@ -1,0 +1,217 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "baseline_forecast_commit": "61e57f59f8611ba4756f3922c83dbdb59f496d9f",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0090",
+  "target_date": "2025-01-11",
+  "assignments": [
+    {
+      "venue": "中京",
+      "race_no": 1,
+      "honmei": 12,
+      "second": 9,
+      "confidence": "C",
+      "reason": "◎12と○9の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎12と○9を比較し、現条件への直接支持と勝ち切りの再現性で12を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 2,
+      "honmei": 7,
+      "second": 3,
+      "confidence": "A",
+      "reason": "◎7と○3の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎7と○3を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 3,
+      "honmei": 14,
+      "second": 2,
+      "confidence": "C",
+      "reason": "◎14と○2の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎14と○2を比較し、現条件への直接支持と勝ち切りの再現性で14を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 4,
+      "honmei": 13,
+      "second": 14,
+      "confidence": "B",
+      "reason": "◎13と○14の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎13と○14を比較し、現条件への直接支持と勝ち切りの再現性で13を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 5,
+      "honmei": 17,
+      "second": 1,
+      "confidence": "B",
+      "reason": "◎17と○1の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎17と○1を比較し、現条件への直接支持と勝ち切りの再現性で17を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 6,
+      "honmei": 7,
+      "second": 5,
+      "confidence": "C",
+      "reason": "◎7と○5の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎7と○5を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 7,
+      "honmei": 1,
+      "second": 4,
+      "confidence": "B",
+      "reason": "◎1と○4の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎1と○4を比較し、現条件への直接支持と勝ち切りの再現性で1を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 8,
+      "honmei": 7,
+      "second": 2,
+      "confidence": "C",
+      "reason": "◎7と○2の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎7と○2を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 9,
+      "honmei": 8,
+      "second": 10,
+      "confidence": "B",
+      "reason": "◎8と○10の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎8と○10を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 10,
+      "honmei": 16,
+      "second": 8,
+      "confidence": "A",
+      "reason": "◎16と○8の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎16と○8を比較し、現条件への直接支持と勝ち切りの再現性で16を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 11,
+      "honmei": 12,
+      "second": 10,
+      "confidence": "C",
+      "reason": "◎12と○10の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎12と○10を比較し、現条件への直接支持と勝ち切りの再現性で12を上位に置いた。"
+    },
+    {
+      "venue": "中京",
+      "race_no": 12,
+      "honmei": 3,
+      "second": 2,
+      "confidence": "C",
+      "reason": "◎3と○2の事前支持差をReaderのIDM・総合指数・情報・調教とFrozen role理由で比較。◎3と○2を比較し、現条件への直接支持と勝ち切りの再現性で3を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "honmei": 6,
+      "second": 16,
+      "confidence": "A",
+      "reason": "◎6と○16を比較し、現条件への直接支持と勝ち切りの再現性で6を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "honmei": 14,
+      "second": 16,
+      "confidence": "B",
+      "reason": "◎14と○16を比較し、現条件への直接支持と勝ち切りの再現性で14を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "honmei": 10,
+      "second": 15,
+      "confidence": "C",
+      "reason": "◎10と○15を比較し、現条件への直接支持と勝ち切りの再現性で10を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "honmei": 12,
+      "second": 3,
+      "confidence": "A",
+      "reason": "◎12と○3を比較し、現条件への直接支持と勝ち切りの再現性で12を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "honmei": 1,
+      "second": 2,
+      "confidence": "A",
+      "reason": "◎1と○2を比較し、現条件への直接支持と勝ち切りの再現性で1を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "honmei": 8,
+      "second": 4,
+      "confidence": "B",
+      "reason": "◎8と○4を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "honmei": 14,
+      "second": 10,
+      "confidence": "C",
+      "reason": "◎14と○10を比較し、現条件への直接支持と勝ち切りの再現性で14を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "honmei": 4,
+      "second": 6,
+      "confidence": "B",
+      "reason": "◎4と○6を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "honmei": 9,
+      "second": 10,
+      "confidence": "A",
+      "reason": "◎9と○10を比較し、現条件への直接支持と勝ち切りの再現性で9を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "honmei": 15,
+      "second": 12,
+      "confidence": "B",
+      "reason": "◎15と○12を比較し、現条件への直接支持と勝ち切りの再現性で15を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "honmei": 4,
+      "second": 3,
+      "confidence": "B",
+      "reason": "◎4と○3を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "honmei": 4,
+      "second": 2,
+      "confidence": "C",
+      "reason": "◎4と○2を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    }
+  ],
+  "counts": {
+    "A": 6,
+    "B": 9,
+    "C": 9,
+    "total": 24
+  }
+}
