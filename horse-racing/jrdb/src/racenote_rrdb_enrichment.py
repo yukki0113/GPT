@@ -436,30 +436,19 @@ def enrich_bundle(
     reader: RaceReviewReader,
     contract: Mapping[str, object] | None = None,
     *,
+    paci_path: Path,
+    course_fit_root: Path,
     per_horse_limit: int = 5,
 ) -> dict[str, object]:
-    """Backward-compatible single-bundle enrichment."""
-    race = bundle.get("race")
-    horses = bundle.get("horses")
-    if not isinstance(race, Mapping) or not isinstance(horses, list):
-        raise RRDBEnrichmentError("RaceNote bundle missing race/horses")
-    target_date = str(race.get("date") or "")
-    ids: list[str] = []
-    for raw in horses:
-        if not isinstance(raw, Mapping):
-            continue
-        basic = _horse_basic(raw)
-        horse_id = str(basic.get("horse_id") or "").strip()
-        if horse_id:
-            ids.append(horse_id)
-    recommendation = _latest_recommendation(reader, ids, target_date)
-    return _apply_bundle_enrichment(
-        bundle,
+    """Enrich one authoritative RaceNote bundle under the current RRDB contract."""
+    return enrich_bundles(
+        [bundle],
         reader,
-        recommendation,
         contract,
+        paci_path=paci_path,
+        course_fit_root=course_fit_root,
         per_horse_limit=per_horse_limit,
-    )
+    )[0]
 
 
 def enrich_bundles(
@@ -467,16 +456,18 @@ def enrich_bundles(
     reader: RaceReviewReader,
     contract: Mapping[str, object] | None = None,
     *,
+    paci_path: Path,
+    course_fit_root: Path,
     per_horse_limit: int = 5,
 ) -> list[dict[str, object]]:
-    """Enrich one target day's RaceNotes with one shared Next-Watch query.
-
-    The day-level path intentionally preserves the same per-race RaceReview
-    adapter/Card semantics as enrich_bundle(). Only source resolution and
-    latest-prior Next-Watch reconstruction are shared.
-    """
+    """Enrich one target day with RRDB v0.4 prior-run and Course Fit evidence."""
     if not bundles:
         return []
+
+    if RECOMMENDATION_VERSION != "rrdb-recommendation-signals-v0.4":
+        raise RRDBEnrichmentError(
+            f"unsupported operational recommendation contract: {RECOMMENDATION_VERSION}"
+        )
 
     target_dates: set[str] = set()
     horse_ids: list[str] = []
@@ -506,11 +497,18 @@ def enrich_bundles(
             f"daily RRDB enrichment requires one target date: {sorted(target_dates)}"
         )
 
+    candidate_fit_path, target_profiles = _course_profile_context(
+        bundles,
+        paci_path,
+        course_fit_root,
+    )
     target_date = next(iter(target_dates))
     recommendation = _latest_recommendation(
         reader,
         sorted(set(horse_ids)),
         target_date,
+        candidate_fit_path=candidate_fit_path,
+        target_profiles=target_profiles,
     )
     return [
         _apply_bundle_enrichment(
@@ -522,7 +520,6 @@ def enrich_bundles(
         )
         for bundle in bundles
     ]
-
 def main() -> int:
     p = argparse.ArgumentParser(description="Add formal RRDB evidence to RaceNote v1.0")
     p.add_argument("--bundle", type=Path, required=True)
@@ -530,6 +527,8 @@ def main() -> int:
     source.add_argument("--racereview-root", type=Path)
     source.add_argument("--racereview-current-cache", type=Path)
     p.add_argument("--racereview-drive-file-id", default=STABLE_CURRENT_FILE_ID)
+    p.add_argument("--paci", type=Path, required=True)
+    p.add_argument("--course-fit-root", type=Path, required=True)
     p.add_argument(
         "--next-watch-rules",
         type=Path,
@@ -573,6 +572,8 @@ def main() -> int:
             bundle,
             reader,
             contract,
+            paci_path=args.paci,
+            course_fit_root=args.course_fit_root,
             per_horse_limit=args.per_horse_limit,
         )
         args.output.parent.mkdir(parents=True, exist_ok=True)
