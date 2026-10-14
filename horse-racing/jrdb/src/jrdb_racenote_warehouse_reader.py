@@ -128,6 +128,43 @@ class WarehouseRaceNoteReader:
             connection.close()
 
     @staticmethod
+    def _reconcile_bac_field_sizes(
+        bac_rows: list[dict[str, Any]],
+        kyi_rows: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        """Normalize preliminary BAC registration counts to the actual KYI roster.
+
+        JRDB BAC explicitly allows special-race headcount to be the registration
+        count in the preliminary phase. Historical annual BAC can retain that
+        value while KYI already contains the confirmed runner roster. For the
+        Warehouse reconstruction only, a strictly larger BAC count is therefore
+        normalized to the confirmed KYI count. A smaller BAC count remains an
+        integrity error and is left for BundleBuilder's fail-closed check.
+        """
+        counts: dict[str, int] = {}
+        for row in kyi_rows:
+            key = _text(row.get("race_key_raw"))
+            counts[key] = counts.get(key, 0) + 1
+
+        reconciled: list[dict[str, Any]] = []
+        for row in bac_rows:
+            key = _text(row.get("race_key_raw"))
+            actual = counts.get(key)
+            declared = row.get("field_size")
+            if (
+                actual is not None
+                and isinstance(declared, (int, float))
+                and declared > actual
+            ):
+                reconciled.append({
+                    "race_key_raw": key,
+                    "bac_field_size": declared,
+                    "kyi_runner_count": actual,
+                })
+                row["field_size"] = actual
+        return reconciled
+
+    @staticmethod
     def _replace_filter_table(
         connection: Any,
         table: str,
@@ -317,6 +354,9 @@ class WarehouseRaceNoteReader:
                 "BAC": select_raw_compatible_rows("BAC", bac),
                 "KYI": select_raw_compatible_rows("KYI", kyi),
             }
+            field_size_reconciliations = self._reconcile_bac_field_sizes(
+                parsed["BAC"], parsed["KYI"]
+            )
 
             race_where = (
                 "EXISTS ("
@@ -402,5 +442,6 @@ class WarehouseRaceNoteReader:
             },
             "joins": dict(builder.join),
             "previous_result_years": previous_years,
+            "field_size_reconciliations": field_size_reconciliations,
             "boundary_fallback_required": False,
         }
