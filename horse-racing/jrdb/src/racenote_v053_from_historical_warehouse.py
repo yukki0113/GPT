@@ -66,15 +66,6 @@ def prepare(args: argparse.Namespace) -> dict:
         raise ValueError("--main-sha must be a full lowercase commit SHA")
     gate = validate_gate(args.equivalence_report, args.warehouse_current)
     args.output_root.mkdir(parents=True)
-    race_keys = None
-    if args.race_keys_file is not None:
-        race_keys = {
-            line.strip()
-            for line in args.race_keys_file.read_text(encoding="utf-8").splitlines()
-            if line.strip()
-        }
-        if not race_keys:
-            raise ValueError("--race-keys-file is empty")
     with tempfile.TemporaryDirectory(prefix="v053-historical-rrdb-") as tmp:
         _, reconstruction = build_warehouse_daily(
             day=day, warehouse_current=args.warehouse_current,
@@ -85,7 +76,6 @@ def prepare(args: argparse.Namespace) -> dict:
             paci_path=args.target_bac,
             output_root=args.output_root / "day_prep",
             rrdb_work_root=Path(tmp),
-            race_keys=race_keys,
         )
     if reconstruction["generation_id"] != gate["warehouse_reconstruction"]["generation_id"]:
         raise ValueError("Warehouse generation changed after acceptance gate")
