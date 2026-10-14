@@ -50,22 +50,21 @@ The supplied SRB specification states an update timing of approximately Monday 1
 
 Conclusion: the ordinary immediate post-race SED acquisition is sufficient for the race-level lap array, but it is not guaranteed to contain finalized SRB optional context. A later JRDB refresh can change SED/SRB bytes and add RCA.
 
-## 4. Raw retention implication
+## 4. Raw overwrite implication
 
-The project Raw invariant says acquired source bytes should not normally be overwritten; when replacement is unavoidable, the previous version must be retained with audit evidence.
+As of 2026-10-14 the operating rule was explicitly changed for SED.
 
-Therefore Phase 3B does not silently replace the existing Drive SED260829.zip.
+SED is now the formal exception to the default Raw no-replacement rule:
 
-Recommended storage/operation policy:
+1. Keep the immediate post-race SED as the canonical速報 snapshot.
+2. Before the next race meeting, re-fetch every prior-week race-date SED after the JRDB update window.
+3. Compare ZIP validity, size, SHA-256 and members.
+4. If unchanged, do not rewrite the Drive object.
+5. If changed, overwrite the existing canonical SED Drive file in place under the same filename/file ID.
+6. The replacement must be a JRDB source-for-source replacement only. No byte editing, normalization, renaming or derived content is allowed.
+7. Consumers may use the immediate snapshot for lap arrays; optional SRB context becomes reliable only after the pre-race refresh.
 
-1. Keep the immediate post-race SED snapshot as the original acquisition evidence.
-2. After the JRDB Monday update window, re-fetch the prior race weekend.
-3. Compare size, SHA-256, ZIP members and optional-SRB coverage.
-4. If unchanged, record FINAL_UNCHANGED.
-5. If changed, retain both snapshots under an explicit revision/audit contract before changing any canonical pointer.
-6. Consumers requiring only lap arrays may use the immediate snapshot; consumers requiring pace-up/bias/comment must require a finalized snapshot.
-
-The exact Drive revision-retention layout should be fixed before any existing Raw object is replaced.
+The prior requirement to retain the old SED bytes before canonical replacement is superseded by this explicit SED operating exception.
 
 ## 5. RaceNote lap-shape evidence contract
 
@@ -109,8 +108,8 @@ The two new RaceNote lap-shape tests pass in GitHub Actions. The overall JRDB Co
 
 Before production RaceNote consumption:
 
-1. define the Raw revision retention/pointer rule for late-finalized SED;
-2. publish the three recovered September ZIPs to canonical Drive once the transport step can preserve the individual files and verification contract;
+1. apply the new prior-week SED overwrite rule in routine pre-race acquisition;
+2. publish/overwrite recovered or refreshed SED files in canonical Drive when the individual-file transport step is available;
 3. optionally add lap-shape evidence into the General Evidence / RaceReview reading lane without numeric weighting;
 4. extend historical coverage if annual SED archives contain SRB members;
 5. true-forward evaluate the resulting evidence wording/selection before changing production decisions.
