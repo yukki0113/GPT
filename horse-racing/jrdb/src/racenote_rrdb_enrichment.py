@@ -44,7 +44,7 @@ from racenote_racereview_current import (
     resolve_racereview_current,
 )
 
-VERSION = "RRDB-RaceNote-0.1"
+VERSION = "RRDB-RaceNote-0.2"
 
 
 class RRDBEnrichmentError(RuntimeError):
@@ -261,6 +261,8 @@ def _latest_recommendation(
                 surface_code=str(profile.get("surface_code") or ""),
                 target_date=target_date,
             )
+            if fit.get("as_of_date") is not None:
+                fit["as_of_date"] = str(fit["as_of_date"])
 
             cur = con.execute(f"""
             SELECT *
