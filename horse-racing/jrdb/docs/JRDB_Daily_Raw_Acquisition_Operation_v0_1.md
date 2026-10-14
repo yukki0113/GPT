@@ -55,13 +55,25 @@ mmddの開催前取得をお願いします
    - Do not assume exactly seven days earlier.
    - Include all race dates in a three-day meeting or other irregular calendar.
    - Use known PACI/Drive inventory or the project schedule source to identify actual race dates.
-6. For each preceding-week race date, check the canonical SKB Drive folder first.
+6. For each preceding-week race date:
+   - re-fetch `SEDYYMMDD.zip` unconditionally from JRDB;
+   - check the canonical SKB Drive folder.
 7. Fetch only missing `SKBYYMMDD.zip` files.
-8. Validate each fetched SKB ZIP and record size/SHA-256/member count.
+8. Validate every re-fetched SED and fetched SKB ZIP:
+   - ZIP readable
+   - `testzip() == None`
+   - expected members present
+   - size recorded
+   - SHA-256 recorded
 9. Publish outputs with the native connected Google Drive connector:
    - PACI -> canonical `00_raw/PACI` folder
+   - SED -> canonical `00_raw/SED` folder
    - SKB -> canonical `00_raw/SKB` folder
-10. Re-list the Drive target folders and verify the uploaded filename and size.
+10. For preceding-week SED:
+   - if the canonical filename does not exist, create it;
+   - if it exists and bytes differ, overwrite the same Drive file in place;
+   - if it exists and SHA-256 is unchanged, leave it unchanged.
+11. Re-list the Drive target folders and verify the final filename and size.
 
 ### Important SKB timing rule
 
@@ -73,10 +85,11 @@ Operationally:
 
 ```text
 race weekend N
-  -> post-race: SED + HJC only
+  -> post-race: acquire速報版 SED + HJC immediately
 
 before race weekend N+1
   -> PACI for N+1
+  -> re-fetch prior-week SED and overwrite canonical SED when updated
   -> recover any missing SKB from race weekend N
 ```
 
@@ -124,14 +137,16 @@ published Monday update window:
 - RCA may be added later;
 - SED and SRB member bytes may both change.
 
-Therefore the ordinary post-race acquisition remains the current immediate
-result-capture operation, but consumers must not treat optional SRB context as
-final merely because SED is present.
+Therefore the ordinary post-race acquisition remains the immediate速報 capture.
+For SED, the canonical Drive object is intentionally refreshable: during the
+next pre-race acquisition, the preceding race week's SED is re-fetched and the
+same canonical Drive file is overwritten when JRDB has published a different
+backnumber.
 
-Do not silently overwrite an existing Raw SED ZIP with a later backnumber.
-The Raw invariant requires previous source bytes to be retained with an audit
-record. A separate late-finalization/revision retention contract must be used
-before replacing or repointing canonical Raw.
+This SED overwrite is the explicit exception to the normal Raw no-replacement
+rule. The overwrite is source-for-source replacement only: no byte editing,
+normalization, renaming, or derived content is allowed. Validation and
+before/after size/SHA-256 comparison must be recorded in the operation result.
 
 ## 5. Acquisition and transport boundary
 
@@ -158,13 +173,22 @@ Do not use the retired Issue/Actions Drive bridge.
 
 Before an upstream fetch, check the canonical Drive folder for the requested filename.
 
-If a valid file already exists:
+Default rule for PACI/HJC/SKB and other Raw families:
 
 - do not create a duplicate Drive object;
 - do not refetch merely because the user did not provide a path;
 - report that the canonical file already exists when no further action is required.
 
-If an existing file is suspicious, size-mismatched, corrupt, or otherwise fails validation, do not silently overwrite it. Audit the discrepancy first.
+SED exception:
+
+- immediate post-race acquisition may create the速報版 canonical SED;
+- the next pre-race acquisition must re-fetch each preceding-week race-date SED even when the canonical file already exists;
+- compare the upstream re-fetch with the existing canonical file;
+- when bytes differ, replace the existing Drive file in place under the same filename/file ID;
+- when bytes are unchanged, do not rewrite it;
+- never create a duplicate same-name SED object as the refresh mechanism.
+
+If a non-SED existing file is suspicious, size-mismatched, corrupt, or otherwise fails validation, do not silently overwrite it. Audit the discrepancy first.
 
 ## 7. Success criteria
 
@@ -183,7 +207,7 @@ Do not report "Drive保存済み" before step 6.
 
 | User request | Acquire now | Deferred / excluded |
 |---|---|---|
-| `mmddの開催前取得` | target PACI + missing SKB from immediately preceding race week | SED/HJC for target date |
-| `mmdd〜mmddの開催後取得` | SED + HJC for every specified race date | SKB, PACI |
+| `mmddの開催前取得` | target PACI + refreshed/overwritten preceding-week SED + missing SKB from preceding race week | HJC for target date |
+| `mmdd〜mmddの開催後取得` |速報版 SED + HJC for every specified race date | SKB, PACI |
 
 This table is the current default for routine 2026 daily raw operation.
