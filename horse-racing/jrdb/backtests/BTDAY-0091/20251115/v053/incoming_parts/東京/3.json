@@ -1,0 +1,63 @@
+{
+  "venue": "東京",
+  "race_no": 3,
+  "race_model": "sealed Reader all-horse comparison; ordinary five fixed first.",
+  "marks": [
+    15,
+    5,
+    12,
+    11,
+    8
+  ],
+  "mainline_cases": [
+    {
+      "horse_no": 15,
+      "case": "clearest win route"
+    },
+    {
+      "horse_no": 5,
+      "case": "next mainline win route"
+    },
+    {
+      "horse_no": 11,
+      "case": "retain on comparative support"
+    },
+    {
+      "horse_no": 8,
+      "case": "retain on comparative support"
+    }
+  ],
+  "single_shot_case": {
+    "horse_no": 12,
+    "case": "asymmetric win route"
+  },
+  "boundary_review": {
+    "alternative_horse_no": 6,
+    "reason": "challenger 6 does not clearly exceed fixed boundary 12; KEEP"
+  },
+  "rrdb_refs": [],
+  "reader_facing_reason": "honmei 15, second 5, shot 12; r2 fixed-boundary review.",
+  "candidate_compression": {
+    "ordinary_five": [
+      15,
+      5,
+      11,
+      8,
+      12
+    ],
+    "external_challenger_horse_no": 6,
+    "external_challenger_case": "one outside horse with asymmetric win route",
+    "excluded_horse_no": 6,
+    "decision": "KEEP_ORDINARY_FIVE",
+    "reason": "fixed boundary 12 retained"
+  },
+  "role_assignment": {
+    "honmei_horse_no": 15,
+    "second_horse_no": 5,
+    "honmei_win_case": "WIN-first clearest realistic route",
+    "second_case": "next strongest mainline route",
+    "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+    "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+    "ranking_reason": "honmei 15 over second 5 on win-route repeatability"
+  }
+}
