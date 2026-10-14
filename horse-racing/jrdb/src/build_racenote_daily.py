@@ -78,7 +78,7 @@ def parse_args() -> argparse.Namespace:
         required=False,
         type=Path,
         default=None,
-        help="Deprecated legacy compatibility input; current RRDB recommendation v0.2 does not require it.",
+        help="Deprecated legacy compatibility input; current RRDB recommendation contract does not require it.",
     )
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
@@ -688,6 +688,14 @@ def write_daily_package(
         encoding="utf-8",
     )
 
+    rrdb_report = report.get("rrdb") or {}
+    report_contract = rrdb_report.get("recommendation_contract_version")
+    if report_contract != rrdb.RECOMMENDATION_VERSION:
+        raise DailyBuildError(
+            "RRDB recommendation contract provenance mismatch at manifest write: "
+            f"report={report_contract!r} current={rrdb.RECOMMENDATION_VERSION!r}"
+        )
+
     manifest = {
         "schema_version": MANIFEST_SCHEMA_VERSION,
         "target_date": target_date,
@@ -704,7 +712,7 @@ def write_daily_package(
             "rrdb": report["rrdb"].get("rrdb_source"),
             "course_fit": report["rrdb"].get("course_fit_source"),
             "rrdb_recommendation": {
-                "contract_version": report["rrdb"].get("recommendation_contract_version"),
+                "contract_version": rrdb.RECOMMENDATION_VERSION,
                 "grade_status": report["rrdb"].get("recommendation_grade_status"),
                 "lookback_days": report["rrdb"].get("operational_lookback_days"),
             },
