@@ -246,6 +246,24 @@ class WarehouseRaceNoteReader:
 
             self._replace_filter_table(connection, "target_race_keys", keys)
 
+            # source_member_date proves that the target delivery exists and
+            # identifies the race keys for that day.  BAC, however, can have
+            # later correction snapshots for the same race keys (notably
+            # special-race registration counts).  The Raw reconstruction sees
+            # all annual BAC snapshots and keeps the last source-order row, so
+            # reload BAC by resolved race key before applying the shared
+            # raw-compatible snapshot selector.
+            if source_member_date is not None:
+                bac = self._rows_on(
+                    connection,
+                    "bac",
+                    [year],
+                    "EXISTS ("
+                    "SELECT 1 FROM target_race_keys t "
+                    "WHERE t.value = race_key_raw"
+                    ")",
+                )
+
             if source_member_date is not None:
                 member_where, member_params = self._member_date_where(
                     source_member_date
