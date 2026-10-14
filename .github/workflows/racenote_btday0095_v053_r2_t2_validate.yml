@@ -1,0 +1,50 @@
+name: RaceNote BTDAY-0095 v0.5.3 r2 TURN 2 validate
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0095/T2_VALIDATE_TRIGGER'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate authored incoming decisions
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from racenote_decision_core_v053 import CONTRACT_REVISION, validate_core
+
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0095/20250712/v053')
+          session=json.loads((root/'session.json').read_text(encoding='utf-8'))
+          assert session['status']=='SESSION_SEALED'
+          assert session['contract_revision']==CONTRACT_REVISION
+          assert session['market_blind'] is True
+          assert session['result_opened'] is False
+          assert session['target_market_opened'] is False
+
+          expected={(r['venue'], int(r['race_no'])): r for r in session['race_roster']}
+          seen=set()
+          for venue in session['expected_venues']:
+              rows=json.loads((root/'incoming'/f'{venue}.json').read_text(encoding='utf-8'))
+              assert isinstance(rows,list) and len(rows)==12, (venue,len(rows))
+              for core in rows:
+                  key=(str(core['venue']),int(core['race_no']))
+                  assert key in expected and key not in seen, key
+                  reader=json.loads((root/'reader'/expected[key]['file']).read_text(encoding='utf-8'))
+                  validate_core(core, reader, contract_revision=CONTRACT_REVISION)
+                  seen.add(key)
+          assert seen==set(expected), (len(seen),len(expected))
+          assert len(seen)==36
+          print(json.dumps({'status':'PASS','selection_id':'BTDAY-0095','target_date':'2025-07-12','races':len(seen),'venues':session['expected_venues'],'freeze_performed':False},ensure_ascii=False))
+          PY
