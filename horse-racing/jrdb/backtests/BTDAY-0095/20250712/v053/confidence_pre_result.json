@@ -1,0 +1,314 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "baseline_forecast_commit": "b0bd5920ad2937735b9a58d2190ae89b1cf6a96b",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0095",
+  "target_date": "2025-07-12",
+  "methodology": "human_context_pairwise_review_of_sealed_reader_pre_result_fields",
+  "assignments": [
+    {
+      "venue": "函館",
+      "race_no": 1,
+      "honmei": 3,
+      "second": 13,
+      "confidence": "A",
+      "reason": "◎3はIDM・総合・情報・調教・市場支持で○13を一貫して上回り、履歴評価も崩れず序列差は明確。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 2,
+      "honmei": 11,
+      "second": 7,
+      "confidence": "A",
+      "reason": "◎11は能力・総合・情報・調教・市場支持で○7に大差があり、勝ち切り序列は明確。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 3,
+      "honmei": 3,
+      "second": 4,
+      "confidence": "C",
+      "reason": "○4がIDM・総合・市場支持で上回る一方、◎3はReader上の反復実績と現条件再現性を評価して上位。数値面の反証が強くtie-break寄り。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 4,
+      "honmei": 1,
+      "second": 7,
+      "confidence": "B",
+      "reason": "◎1は能力・総合・情報・調教・市場支持で小幅優位だが、○7にはhidden strengthがあり差は限定的。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 5,
+      "honmei": 3,
+      "second": 1,
+      "confidence": "A",
+      "reason": "◎3はIDM・総合・情報・市場支持で○1を明確に上回り、調教も同水準で序列差は大きい。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 6,
+      "honmei": 1,
+      "second": 14,
+      "confidence": "B",
+      "reason": "○14がIDMで上回るが、◎1は総合・情報・調教・市場支持で優位。◎上位の根拠は複数あるが能力面の反証を残す。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 7,
+      "honmei": 2,
+      "second": 5,
+      "confidence": "C",
+      "reason": "○5が総合・情報・市場・履歴支持で強く、◎2はReader上の末脚と勝ち筋を重視して上位。序列判断は文脈依存が大きい。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 8,
+      "honmei": 7,
+      "second": 3,
+      "confidence": "C",
+      "reason": "○3がIDM・総合・調教・市場支持で上回る一方、◎7はReader上の反復実績を評価して上位。数値面では○優勢でtie-break色が強い。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 9,
+      "honmei": 8,
+      "second": 5,
+      "confidence": "C",
+      "reason": "◎8は能力・総合で上だが、○5は情報・調教・市場・履歴支持で優位。異なる強みが拮抗し、序列は僅差。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 10,
+      "honmei": 3,
+      "second": 9,
+      "confidence": "C",
+      "reason": "○9がIDM・総合・情報・調教・市場支持で上回り、◎3はReader上の展開逆風耐性を根拠に上位。通常指標では○優勢でC。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 11,
+      "honmei": 14,
+      "second": 12,
+      "confidence": "B",
+      "reason": "◎14はIDM・総合・市場支持で上回るが、○12は情報指数で優位。◎優勢だが明確Aまでは置かない。"
+    },
+    {
+      "venue": "函館",
+      "race_no": 12,
+      "honmei": 9,
+      "second": 4,
+      "confidence": "A",
+      "reason": "◎9はIDM・総合・情報・調教・市場支持で○4を明確に上回り、○側にはfragile要素もあり序列差は強い。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 1,
+      "honmei": 8,
+      "second": 3,
+      "confidence": "A",
+      "reason": "◎8は能力・総合・調教・市場・履歴支持で○3を明確に上回り、情報指数も同等で序列差は大きい。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 2,
+      "honmei": 4,
+      "second": 14,
+      "confidence": "A",
+      "reason": "◎4はIDM・総合・情報・調教・市場支持で○14を大きく上回り、勝ち切り序列は明確。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 3,
+      "honmei": 8,
+      "second": 2,
+      "confidence": "C",
+      "reason": "○2が総合・情報・調教・市場支持で優位。◎8はIDMとReader文脈で上位だが、序列判断への反証が強い。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 4,
+      "honmei": 2,
+      "second": 1,
+      "confidence": "C",
+      "reason": "◎2と○1は能力・総合・調教・市場がほぼ同水準で、互いに優位項目が分かれるためほぼtie-break。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 5,
+      "honmei": 11,
+      "second": 5,
+      "confidence": "A",
+      "reason": "◎11はIDM・総合・情報・調教・市場支持で○5を明確に上回り、新馬同士でも差は大きい。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 6,
+      "honmei": 10,
+      "second": 7,
+      "confidence": "A",
+      "reason": "◎10は能力・総合・情報・調教・市場支持で○7を大きく上回り、履歴面でも優位。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 7,
+      "honmei": 3,
+      "second": 17,
+      "confidence": "A",
+      "reason": "◎3はIDM・総合・情報・調教・市場・履歴支持で○17を上回り、hidden strengthも加わるため明確に上。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 8,
+      "honmei": 14,
+      "second": 9,
+      "confidence": "B",
+      "reason": "◎14は能力・総合で優位だが、○9は調教状態と履歴安定性で対抗。市場差も小さくB。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 9,
+      "honmei": 1,
+      "second": 9,
+      "confidence": "A",
+      "reason": "◎1は総合・情報・調教・市場・履歴支持で○9を明確に上回り、IDM差も小さいため序列は強い。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 10,
+      "honmei": 5,
+      "second": 9,
+      "confidence": "C",
+      "reason": "○9がIDM・総合・情報・調教・市場支持で大幅に上回る。◎5はReader上の時計内容を根拠に上位だが、序列は強い反証を受ける。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 11,
+      "honmei": 2,
+      "second": 5,
+      "confidence": "C",
+      "reason": "○5がIDM・総合・情報・調教・市場支持で優位。◎2はhidden strengthを重視した選択で、通常指標との乖離が大きい。"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 12,
+      "honmei": 7,
+      "second": 6,
+      "confidence": "B",
+      "reason": "◎7はIDM・総合・情報・調教・市場支持で○6を上回るが、○6の履歴3着内率は高く、Aほどの差ではない。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 1,
+      "honmei": 9,
+      "second": 10,
+      "confidence": "A",
+      "reason": "○10がIDMで上回る一方、◎9は総合・情報・調教・市場支持で大きく優位で、履歴も同等。現条件序列は明確。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 2,
+      "honmei": 6,
+      "second": 1,
+      "confidence": "B",
+      "reason": "◎6は能力・総合・情報で上だが、○1は調教・市場・履歴支持で優位。◎上位の理由はあるが差は中程度。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 3,
+      "honmei": 12,
+      "second": 6,
+      "confidence": "B",
+      "reason": "◎12は能力・総合・情報・市場で小幅優位だが、○6は調教上昇・履歴・hidden strengthで対抗し差は限定的。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 4,
+      "honmei": 3,
+      "second": 7,
+      "confidence": "A",
+      "reason": "◎3はIDM・総合・情報・調教・市場・履歴支持の主要項目で○7を大きく上回り、序列差は明確。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 5,
+      "honmei": 9,
+      "second": 1,
+      "confidence": "B",
+      "reason": "◎9は能力・総合・情報・市場で小幅優位だが、○1は調教で同等以上。新馬同士で差は小さめ。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 6,
+      "honmei": 12,
+      "second": 4,
+      "confidence": "C",
+      "reason": "○4がIDM・総合・情報・調教で上回り、◎12はReader文脈と市場支持で上位。通常指標の反証が強くC。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 7,
+      "honmei": 9,
+      "second": 8,
+      "confidence": "C",
+      "reason": "○8がIDM・総合・情報・調教・市場支持で上回り、◎9は履歴安定性とReader上の勝ち筋で上位。序列は文脈依存。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 8,
+      "honmei": 8,
+      "second": 15,
+      "confidence": "C",
+      "reason": "○15が能力・総合・情報・調教・市場・履歴支持で大幅に上回る。◎8はReader上の勝ち筋評価による上位で、確信度は低い。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 9,
+      "honmei": 2,
+      "second": 1,
+      "confidence": "B",
+      "reason": "○1がIDM・総合・履歴で上回る一方、◎2は情報・調教・市場・fragile差で優位。◎上位の根拠はあるが拮抗。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 10,
+      "honmei": 6,
+      "second": 8,
+      "confidence": "C",
+      "reason": "○8がIDM・総合・情報・調教・市場・履歴支持で上回り、◎6はReader文脈上の勝ち筋で上位。強い反証がありC。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 11,
+      "honmei": 4,
+      "second": 6,
+      "confidence": "A",
+      "reason": "◎4はIDM・総合・情報・調教・市場・履歴支持で○6を明確に上回り、序列差は大きい。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 12,
+      "honmei": 13,
+      "second": 6,
+      "confidence": "C",
+      "reason": "◎13は能力・総合で上だが、○6は情報・調教・市場・履歴支持で優位。異なる強みが拮抗し、序列はtie-break寄り。"
+    }
+  ],
+  "counts": {
+    "A": 13,
+    "B": 9,
+    "C": 14,
+    "total": 36
+  }
+}
