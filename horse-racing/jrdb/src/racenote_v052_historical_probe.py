@@ -27,8 +27,8 @@ from racenote_v052_single_day import init_session
 
 def build_warehouse_daily(
     *, day: date, warehouse_current: Path, warehouse_asset_root: Path,
-    analysis_root: Path, racereview_root: Path, output_root: Path,
-    rrdb_work_root: Path,
+    analysis_root: Path, racereview_root: Path, course_fit_root: Path,
+    paci_path: Path, output_root: Path, rrdb_work_root: Path,
 ) -> tuple[dict, dict]:
     """Use the canonical Warehouse Reader and existing common D2-D4 stages."""
     request = RaceNoteRequest(day, None, None, date.today())
@@ -61,9 +61,9 @@ def build_warehouse_daily(
     finally:
         analysis.close()
     enriched, rrdb_report = enrich_rrdb_bundles(
-        history_bundles, racereview_root=racereview_root,
-        racereview_current_cache=None, next_watch_rules=None,
-        work_root=rrdb_work_root,
+        history_bundles, paci_path=paci_path, course_fit_root=course_fit_root,
+        racereview_root=racereview_root, racereview_current_cache=None,
+        next_watch_rules=None, work_root=rrdb_work_root,
     )
     views, reader_report = build_reader_views(enriched)
     target_date = day.isoformat()
@@ -121,7 +121,8 @@ def run(args: argparse.Namespace) -> dict:
     with tempfile.TemporaryDirectory(prefix="v052-historical-rrdb-") as tmp:
         build_daily_package(
             paci_path=paci, target_date=args.date,
-            analysis_root=args.analysis_root, racereview_root=args.racereview_root,
+            analysis_root=args.analysis_root, course_fit_root=args.course_fit_root,
+            racereview_root=args.racereview_root,
             racereview_current_cache=None, next_watch_rules=None,
             output_root=raw_root / "day_prep", rrdb_work_root=Path(tmp) / "raw",
         )
@@ -130,6 +131,8 @@ def run(args: argparse.Namespace) -> dict:
             warehouse_asset_root=args.warehouse_asset_root,
             analysis_root=args.analysis_root,
             racereview_root=args.racereview_root,
+            course_fit_root=args.course_fit_root,
+            paci_path=paci,
             output_root=warehouse_root / "day_prep",
             rrdb_work_root=Path(tmp) / "warehouse",
         )
@@ -159,6 +162,7 @@ def main() -> int:
     parser.add_argument("--warehouse-asset-root", required=True, type=Path)
     parser.add_argument("--analysis-root", required=True, type=Path)
     parser.add_argument("--racereview-root", required=True, type=Path)
+    parser.add_argument("--course-fit-root", required=True, type=Path)
     parser.add_argument("--binding", required=True, type=Path)
     parser.add_argument("--policy", required=True, type=Path)
     parser.add_argument("--selection-id", default="BTDAY-GOLDEN-20251228")
