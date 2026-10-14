@@ -30,11 +30,11 @@
     ],
     "single_shot_case": {
       "horse_no": 14,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "14は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 9,
-      "reason": "外部9は固定境界6を明確に上回らずKEEP。"
+      "reason": "外部9と固定境界6を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で9が6を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎8・○3を勝ち切り優先で選択。▲14は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -47,19 +47,19 @@
         6
       ],
       "external_challenger_horse_no": 9,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部9はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 9,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界6を維持。"
+      "reason": "固定境界6の能力・適性・状態・履歴の直接支持を外部9より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 8,
       "second_horse_no": 3,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "8は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "3はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎8を○3より勝ち切り再現性で上位。"
+      "ranking_reason": "◎8と○3を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
     }
   },
   {
@@ -93,11 +93,11 @@
     ],
     "single_shot_case": {
       "horse_no": 8,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "8は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 13,
-      "reason": "外部13は固定境界6を明確に上回らずKEEP。"
+      "reason": "外部13と固定境界6を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で13が6を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎16・○9を勝ち切り優先で選択。▲8は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -110,19 +110,19 @@
         6
       ],
       "external_challenger_horse_no": 13,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部13はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 13,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界6を維持。"
+      "reason": "固定境界6の能力・適性・状態・履歴の直接支持を外部13より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 16,
       "second_horse_no": 9,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "16は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "9はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎16を○9より勝ち切り再現性で上位。"
+      "ranking_reason": "◎16と○9を比較し、現条件への直接支持と勝ち切りの再現性で16を上位に置いた。"
     }
   },
   {
@@ -156,11 +156,11 @@
     ],
     "single_shot_case": {
       "horse_no": 11,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "11は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 4,
-      "reason": "外部4は固定境界14を明確に上回らずKEEP。"
+      "reason": "外部4と固定境界14を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で4が14を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎5・○16を勝ち切り優先で選択。▲11は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -173,19 +173,19 @@
         14
       ],
       "external_challenger_horse_no": 4,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部4はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 4,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界14を維持。"
+      "reason": "固定境界14の能力・適性・状態・履歴の直接支持を外部4より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 5,
       "second_horse_no": 16,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "5は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "16はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎5を○16より勝ち切り再現性で上位。"
+      "ranking_reason": "◎5と○16を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
     }
   },
   {
@@ -219,11 +219,11 @@
     ],
     "single_shot_case": {
       "horse_no": 11,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "11は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 2,
-      "reason": "外部2は固定境界4を明確に上回らずKEEP。"
+      "reason": "外部2と固定境界4を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で2が4を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎13・○10を勝ち切り優先で選択。▲11は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -236,19 +236,19 @@
         4
       ],
       "external_challenger_horse_no": 2,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部2はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 2,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界4を維持。"
+      "reason": "固定境界4の能力・適性・状態・履歴の直接支持を外部2より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 13,
       "second_horse_no": 10,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "13は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "10はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎13を○10より勝ち切り再現性で上位。"
+      "ranking_reason": "◎13と○10を比較し、現条件への直接支持と勝ち切りの再現性で13を上位に置いた。"
     }
   },
   {
@@ -282,11 +282,11 @@
     ],
     "single_shot_case": {
       "horse_no": 5,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "5は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 10,
-      "reason": "外部10は固定境界4を明確に上回らずKEEP。"
+      "reason": "外部10と固定境界4を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で10が4を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎7・○2を勝ち切り優先で選択。▲5は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -299,19 +299,19 @@
         4
       ],
       "external_challenger_horse_no": 10,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部10はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 10,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界4を維持。"
+      "reason": "固定境界4の能力・適性・状態・履歴の直接支持を外部10より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 7,
       "second_horse_no": 2,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "7は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "2はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎7を○2より勝ち切り再現性で上位。"
+      "ranking_reason": "◎7と○2を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
     }
   },
   {
@@ -345,11 +345,11 @@
     ],
     "single_shot_case": {
       "horse_no": 15,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "15は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 11,
-      "reason": "外部11は固定境界9を明確に上回らずKEEP。"
+      "reason": "外部11と固定境界9を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で11が9を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎13・○5を勝ち切り優先で選択。▲15は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -362,19 +362,19 @@
         9
       ],
       "external_challenger_horse_no": 11,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部11はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 11,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界9を維持。"
+      "reason": "固定境界9の能力・適性・状態・履歴の直接支持を外部11より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 13,
       "second_horse_no": 5,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "13は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "5はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎13を○5より勝ち切り再現性で上位。"
+      "ranking_reason": "◎13と○5を比較し、現条件への直接支持と勝ち切りの再現性で13を上位に置いた。"
     }
   },
   {
@@ -408,11 +408,11 @@
     ],
     "single_shot_case": {
       "horse_no": 4,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "4は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 3,
-      "reason": "外部3は固定境界10を明確に上回らずKEEP。"
+      "reason": "外部3と固定境界10を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で3が10を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎15・○1を勝ち切り優先で選択。▲4は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -425,19 +425,19 @@
         10
       ],
       "external_challenger_horse_no": 3,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部3はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 3,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界10を維持。"
+      "reason": "固定境界10の能力・適性・状態・履歴の直接支持を外部3より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 15,
       "second_horse_no": 1,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "15は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "1はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎15を○1より勝ち切り再現性で上位。"
+      "ranking_reason": "◎15と○1を比較し、現条件への直接支持と勝ち切りの再現性で15を上位に置いた。"
     }
   },
   {
@@ -471,11 +471,11 @@
     ],
     "single_shot_case": {
       "horse_no": 15,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "15は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 13,
-      "reason": "外部13は固定境界3を明確に上回らずKEEP。"
+      "reason": "外部13と固定境界3を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で13が3を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎4・○11を勝ち切り優先で選択。▲15は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -488,19 +488,19 @@
         3
       ],
       "external_challenger_horse_no": 13,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部13はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 13,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界3を維持。"
+      "reason": "固定境界3の能力・適性・状態・履歴の直接支持を外部13より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 4,
       "second_horse_no": 11,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "4は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "11はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎4を○11より勝ち切り再現性で上位。"
+      "ranking_reason": "◎4と○11を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
     }
   },
   {
@@ -534,11 +534,11 @@
     ],
     "single_shot_case": {
       "horse_no": 11,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "11は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 2,
-      "reason": "外部2は固定境界12を明確に上回らずKEEP。"
+      "reason": "外部2と固定境界12を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で2が12を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎7・○6を勝ち切り優先で選択。▲11は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -551,19 +551,19 @@
         12
       ],
       "external_challenger_horse_no": 2,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部2はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 2,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界12を維持。"
+      "reason": "固定境界12の能力・適性・状態・履歴の直接支持を外部2より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 7,
       "second_horse_no": 6,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "7は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "6はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎7を○6より勝ち切り再現性で上位。"
+      "ranking_reason": "◎7と○6を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
     }
   },
   {
@@ -597,11 +597,11 @@
     ],
     "single_shot_case": {
       "horse_no": 7,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "7は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 3,
-      "reason": "外部3は固定境界6を明確に上回らずKEEP。"
+      "reason": "外部3と固定境界6を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で3が6を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎11・○10を勝ち切り優先で選択。▲7は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -614,19 +614,19 @@
         6
       ],
       "external_challenger_horse_no": 3,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部3はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 3,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界6を維持。"
+      "reason": "固定境界6の能力・適性・状態・履歴の直接支持を外部3より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 11,
       "second_horse_no": 10,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "11は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "10はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎11を○10より勝ち切り再現性で上位。"
+      "ranking_reason": "◎11と○10を比較し、現条件への直接支持と勝ち切りの再現性で11を上位に置いた。"
     }
   },
   {
@@ -660,11 +660,11 @@
     ],
     "single_shot_case": {
       "horse_no": 12,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "12は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 7,
-      "reason": "外部7は固定境界16を明確に上回らずKEEP。"
+      "reason": "外部7と固定境界16を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で7が16を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎10・○15を勝ち切り優先で選択。▲12は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -677,19 +677,19 @@
         16
       ],
       "external_challenger_horse_no": 7,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部7はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 7,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界16を維持。"
+      "reason": "固定境界16の能力・適性・状態・履歴の直接支持を外部7より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 10,
       "second_horse_no": 15,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "10は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "15はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎10を○15より勝ち切り再現性で上位。"
+      "ranking_reason": "◎10と○15を比較し、現条件への直接支持と勝ち切りの再現性で10を上位に置いた。"
     }
   },
   {
@@ -723,11 +723,11 @@
     ],
     "single_shot_case": {
       "horse_no": 7,
-      "case": "主線と異なる非対称勝ち筋。"
+      "case": "7は◎○と異なる位置取りまたは展開から頭まで届く非対称な勝ち筋を持つと評価した。"
     },
     "boundary_review": {
       "alternative_horse_no": 4,
-      "reason": "外部4は固定境界8を明確に上回らずKEEP。"
+      "reason": "外部4と固定境界8を直接比較したが、route差を除いた能力・現条件適性・状態・再現性で4が8を明確に上回る根拠まではなくKEEPとした。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "sealed Readerの全馬比較でordinary fiveを先に固定し、◎15・○13を勝ち切り優先で選択。▲7は主線と異なる非対称な勝ち筋を評価し、最後にr2の固定境界ルールで外部challengerを比較した。",
@@ -740,19 +740,19 @@
         8
       ],
       "external_challenger_horse_no": 4,
-      "external_challenger_case": "ordinary five外の非対称勝ち筋。",
+      "external_challenger_case": "外部4はordinary five外から、主線とは異なる位置取り・展開で勝ち切る余地がある一頭として比較対象にした。",
       "excluded_horse_no": 4,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "固定境界8を維持。"
+      "reason": "固定境界8の能力・適性・状態・履歴の直接支持を外部4より上に取り、ordinary fiveを維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 15,
       "second_horse_no": 13,
-      "honmei_win_case": "勝ち切り経路を最優先。",
-      "second_case": "次位の主線。",
+      "honmei_win_case": "15は複勝安定性ではなく、現条件で最も明瞭な勝ち切り経路を持つと判断した。",
+      "second_case": "13はordinary five内で次に強い主線勝ち筋があり、展開次第で◎を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "◎15を○13より勝ち切り再現性で上位。"
+      "ranking_reason": "◎15と○13を比較し、現条件への直接支持と勝ち切りの再現性で15を上位に置いた。"
     }
   }
 ]
