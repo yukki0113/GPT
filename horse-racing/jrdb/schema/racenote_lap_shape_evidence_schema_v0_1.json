@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "racenote_lap_shape_evidence_schema_v0_1.json",
+  "title": "RaceNote Lap Shape Evidence v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","logic_version","policy","races"],
+  "properties": {
+    "schema_version": {"const":"RaceNote-Lap-Shape-Evidence-0.1"},
+    "logic_version": {"const":"SRB-Neutral-RaceShape-v0.1"},
+    "policy": {
+      "type":"object",
+      "additionalProperties":false,
+      "required":["source_kind","leader_based","individual_sectionals","score_status","target_race_usage","partial_first_segment_policy"],
+      "properties":{
+        "source_kind":{"const":"JRDB_SRB"},
+        "leader_based":{"const":true},
+        "individual_sectionals":{"const":false},
+        "score_status":{"const":"NO_ADDITIVE_SCORE"},
+        "target_race_usage":{"const":"HISTORICAL_ONLY_AS_OF_EXCLUSIVE"},
+        "partial_first_segment_policy":{"const":"EXCLUDE_FROM_200M_COMPARABLE_METRICS"}
+      }
+    },
+    "races":{
+      "type":"array",
+      "items":{"$ref":"#/$defs/race"}
+    }
+  },
+  "$defs":{
+    "numberOrNull":{"type":["number","null"]},
+    "integerOrNull":{"type":["integer","null"]},
+    "race":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":["race_key_raw","race_date","surface_code","distance_m","lap_count","coverage","lap_shape","source"],
+      "properties":{
+        "race_key_raw":{"type":"string","minLength":8,"maxLength":8},
+        "race_date":{"type":"string","format":"date"},
+        "surface_code":{"type":"string"},
+        "distance_m":{"type":"integer","minimum":1},
+        "lap_count":{"type":"integer","minimum":0,"maximum":18},
+        "coverage":{
+          "type":"object",
+          "additionalProperties":false,
+          "required":["status","comparable_200m_lap_count","early_late_delta_available","optional_srb_context_available"],
+          "properties":{
+            "status":{"enum":["AVAILABLE","NO_LAPS"]},
+            "comparable_200m_lap_count":{"type":"integer","minimum":0,"maximum":18},
+            "early_late_delta_available":{"type":"boolean"},
+            "optional_srb_context_available":{"type":"boolean"}
+          }
+        },
+        "lap_shape":{
+          "type":"object",
+          "additionalProperties":false,
+          "required":["early3f_sec","late3f_sec","early_late_delta_sec","lap_std_sec","lap_range_sec","fastest_lap_sec","fastest_segment_no","max_accel_sec","max_decel_sec","last_vs_best_sec","last3_slope_sec_per_segment","pace_up_remaining_furlongs"],
+          "properties":{
+            "early3f_sec":{"$ref":"#/$defs/numberOrNull"},
+            "late3f_sec":{"$ref":"#/$defs/numberOrNull"},
+            "early_late_delta_sec":{"$ref":"#/$defs/numberOrNull"},
+            "lap_std_sec":{"$ref":"#/$defs/numberOrNull"},
+            "lap_range_sec":{"$ref":"#/$defs/numberOrNull"},
+            "fastest_lap_sec":{"$ref":"#/$defs/numberOrNull"},
+            "fastest_segment_no":{"$ref":"#/$defs/integerOrNull"},
+            "max_accel_sec":{"$ref":"#/$defs/numberOrNull"},
+            "max_decel_sec":{"$ref":"#/$defs/numberOrNull"},
+            "last_vs_best_sec":{"$ref":"#/$defs/numberOrNull"},
+            "last3_slope_sec_per_segment":{"$ref":"#/$defs/numberOrNull"},
+            "pace_up_remaining_furlongs":{"$ref":"#/$defs/integerOrNull"}
+          }
+        },
+        "source":{
+          "type":"object",
+          "additionalProperties":false,
+          "required":["archive","sed_member","srb_member"],
+          "properties":{
+            "archive":{"type":"string"},
+            "sed_member":{"type":"string"},
+            "srb_member":{"type":"string"}
+          }
+        }
+      }
+    }
+  }
+}
