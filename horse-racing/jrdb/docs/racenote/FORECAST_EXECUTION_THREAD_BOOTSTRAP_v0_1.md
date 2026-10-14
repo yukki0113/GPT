@@ -1,119 +1,67 @@
 # RaceNote Forecast Execution Thread Bootstrap v0.1
 
-このスレッドは RaceNote の **pre-result prediction execution専用** とする。
+Status: CURRENT — v0.5.3 rebuilt r2 (2026-10-14)
 
-## 1. 最初に読むもの
+このスレッドはRaceNoteの **pre-result prediction execution専用** とする。
 
-latest mainから次だけを読む。
+## 1. Latest main / pointer interpretation
 
-1. `config/racenote_forecast_logic_current.json`
-2. BTDAYなら `prospective_research_candidate.logic_contract`
-3. BTDAYなら `prospective_research_candidate.runbook`
-4. pointerが示す Decision Core schema
-5. `FORECAST_READER_FACING_PROSE_v0_1.md`
-6. BTDAY day-pool/history
+開始時は最新 `main` の `README.md`、`.gpt/HANDOFF.md`、`.gpt/CONTEXT.md`、`.gpt/WORKFLOW.md`、および `docs/racenote/README.md` を確認する。
 
-旧versionの手順を足し合わせない。
-active pointerが示すcontract/runbookを、そのversionの一つの文脈として使う。
+`config/racenote_forecast_logic_current.json` のポインタは用途別に分離する。
 
-## 2. Current BTDAY route
+- `current_logic_version`: 別管理のproduction pointer。新規candidate予想を選ぶフィールドではない。
+- `prospective_research_candidate`: 新規clean-blind candidate予想の入口。
 
-Current prospective logic:
+新規予想では `prospective_research_candidate.logic_contract` と `runbook` を一組として読み、v0.5.3 r2 contract revisionを確認する。過去versionの手順を混ぜない。歴史再現を明示された場合だけ対象versionのfrozen contractを使う。
 
-`RaceNote-Human-Context-Reader-0.4.6-candidate`
+## 2. Current candidate route
 
-通常経路:
+- Logic: `RaceNote-Human-Context-Reader-0.5.3-candidate`
+- Contract revision: `v053-boundary-safety-r2`
+- Logic: `FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md`
+- Operation: `RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`
+- Promoted baseline / historical reproduction: v0.5.2
+- Reader-facing language: `FORECAST_READER_FACING_PROSE_v0_1.md`
+
+対象日指定またはBTDAY抽選後、source mode（2026 PACI / accepted Historical Warehouse）を解決し、canonical入力からDAY PREP、market-blind forecast_prep、sealed v0.5.3 Reader/sessionまで構築する。必要な依存が現runtimeに無い場合はcanonical pipelineを実行可能な環境へrouteし、代替Reader・暫定Freezeを作らない。
 
 ```text
-unused day selection
--> prepare request JSON
--> permanent prepare workflow
--> clean Reader
--> venue単位で連続予想
--> authored_decisions/<venue>.json を保存
--> 次会場へ自動継続
--> 全会場揃ったら permanent finalizer
--> Freeze / Validator / archive
--> STOP before results
+source resolve / pre-race canonical input
+  -> day prep + forecast prep
+  -> SEALED v0.5.3 r2 Reader (READY_FOR_V053_AUTHORING)
+  -> complete-Reader model authoring, all expected venues
+  -> venue immutable save
+  -> FROZEN_CLEAN_BLIND
+  -> verify
+  -> downstream publication; results only after Freeze/Verify
 ```
 
-通常運用では、BTDAYごとのtemporary workflowを作らない。
+BTDAY予約、PACI / Warehouse準備、全会場の予想、Freeze/Verifyは同一予想依頼の内部工程である。会場保存後に確認待ちで止まらない。v0.5.2用workflowをv0.5.3に無審査で複製しない。
 
-## 3. Prediction work
+## 3. v0.5.3 r2 model judgment
 
-各レースで行うのは一つの統合判断だけ。
+Readerの全馬を読み、固定weightではなくレース全体の展開・能力・適性・状態・再現性・履歴を横比較する。
 
-- race model
-- ◎ ○ △1 △2 の通常支持4頭
-- 独立▲
-- 最終△2と最良の除外候補の境界確認
-- 最終 ◎ ○ ▲ △1 △2
-- sparse RRDB refs
-- reader-facing reason
+1. race modelを決める。
+2. 順序付きordinary fiveを先に保護する。
+3. ordinary five内から勝ち切る筋を重視して◎・○を確定する（`WIN_FIRST_NOT_PLACE_FIRST`）。
+4. ordinary five外から非対称の勝ち筋を持つchallengerを1頭選ぶ（6頭以上）。
+5. ◎○を除くordinary fiveの最低順位馬だけと比較する。`KEEP_ORDINARY_FIVE`が原則。route diversityはADMIT理由にならず、直接的なReader証拠で明確に競争力があるときだけ`ADMIT_CHALLENGER`。
+6. Decision Coreを一度記録し、読者向けには自然な短評へ翻訳する。
 
-過去versionの hierarchy pass / promotion pass / Coverage state machineを
-別工程として追加しない。
+Decision Coreの`ranking_reason`は◎と○の比較だけ、`boundary_review.reason`は固定境界との比較だけに用いる。既読Readerにない具体的事実を創作しない。候補選びを二度やり直さない。
 
-RRDBは全体文脈として読んでよいが、`rrdb_refs` は
-**RRDBが最終判断を実際に変えた・明確に補強した馬だけ**を残す。
-印馬一覧の複製にはしない。
+## 4. Save / Freeze / recovery
 
-## 4. Reader and prose
+正式な保存先は `<output-root>/v053/incoming/<venue>.json`、復旧点はv0.5.3 `save` 済み会場。対象venueを保存したら次会場へ自動継続する。
 
-予想入力の正本はmarket-stripped clean Reader。全馬情報を読む。
+全会場分を保存してから `racenote_v053_single_day.py freeze` → `verify` を実行。検証後のみpublicationや結果照合を行う。保存済み会場は障害復旧時に再予想・上書きしない。
 
-Readerのツール上の分割方法は実装詳細であり、mandatory chunkや
-一頭ずつのreadを通常手順にしない。
+## 5. Clean-blind / stop conditions
 
-reader-facing proseは、印の順番をJSONのように読み上げるのではなく、
-そのレースで重要だった具体的な競馬内容を一つの短評として書く。
+Freeze/Verify前に対象日の結果・払戻・最終オッズ/人気・兄弟lane予想・過去BTDAY印を入力しない。入力の欠損、identity/hash/roster/schemaのfail-closed gateを迂回しない。
 
-RRDB / IDM / 内部指数名・role名は原則audit側に置き、読者向けには
-その根拠となる競馬内容へ翻訳する。
+正常終了は全対象レースの`FROZEN_CLEAN_BLIND` + Verify PASS。予想を完遂できない場合は失敗したgateと保存済み会場・未保存会場を報告し、架空の予想やFreezeを出力しない。
 
-## 5. Save and recovery
-
-一会場を予想したら
-`authored_decisions/<venue>.json`
-をGitへ保存する。これが復旧点。
-
-保存後は確認を求めず次会場へ進む。
-
-実行が本当に途切れた場合だけ、既存authored venue filesを確認し、
-最初の未保存会場から再開する。保存済み会場を再予想しない。
-
-permanent finalizerは全会場が揃うまでは何も生成せず正常終了し、
-揃った時だけdeterministic packagingを一度実行する。
-
-## 6. Clean-blind boundary
-
-Freeze完了まではtarget result、payout、final odds/popularity、
-result join、post-race評価を開かない。
-
-target-day marketもclean bind後のモデル入力には含めない。
-
-結果確認・成績評価はFreeze後の別工程。
-
-## 7. Responsibility boundary
-
-モデル:
-印、▲、boundary alternative、race model、horse case、reader-facing prose。
-
-機械:
-identity、hash、roster、schema、complete-card確認、bind、Freeze、
-Validator、archive。
-
-この境界を越えて機械が予想を作ったり、モデルがworkflow監査項目を
-大量に手書きしたりしない。
-
-## 8. Stop conditions
-
-正常完了:
-full card Freeze + Validator PASS + archive/readback完了。
-
-途中終了:
-保存済み会場と最初の未保存会場を報告する。確認待ちのために止まらない。
-
-異常終了:
-必要asset欠落またはdeterministic invariant FAILのみ。
-結果を開かず、具体的なgate名と到達点を報告する。
+BTDAY-0077/0078はpre-rebuild監査のみで、r2 performance評価から除外する。
