@@ -1,0 +1,648 @@
+{
+  "btday": "BTDAY-0091",
+  "venue": "福島",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "entries": [
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 1,
+        "honmei": 13,
+        "second": 4,
+        "confidence": "A",
+        "reason": "honmei 13 over second 4 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 1,
+        "control_final_five": [
+          13,
+          4,
+          3,
+          6,
+          15
+        ],
+        "ordinary_five": [
+          13,
+          4,
+          6,
+          15,
+          3
+        ],
+        "protected_anchors": [
+          13,
+          4,
+          6
+        ],
+        "ordinary_flex": [
+          15,
+          3
+        ],
+        "shadow_external_pool": [
+          12,
+          1,
+          2
+        ],
+        "shadow_final_five": [
+          13,
+          4,
+          6,
+          15,
+          3
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 2,
+        "honmei": 7,
+        "second": 8,
+        "confidence": "A",
+        "reason": "honmei 7 over second 8 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 2,
+        "control_final_five": [
+          7,
+          8,
+          14,
+          4,
+          13
+        ],
+        "ordinary_five": [
+          7,
+          8,
+          4,
+          13,
+          14
+        ],
+        "protected_anchors": [
+          7,
+          8,
+          4
+        ],
+        "ordinary_flex": [
+          13,
+          14
+        ],
+        "shadow_external_pool": [
+          15,
+          12,
+          1
+        ],
+        "shadow_final_five": [
+          7,
+          8,
+          4,
+          13,
+          14
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 3,
+        "honmei": 5,
+        "second": 10,
+        "confidence": "B",
+        "reason": "honmei 5 over second 10 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 3,
+        "control_final_five": [
+          5,
+          10,
+          12,
+          15,
+          1
+        ],
+        "ordinary_five": [
+          5,
+          10,
+          15,
+          1,
+          12
+        ],
+        "protected_anchors": [
+          5,
+          10,
+          15
+        ],
+        "ordinary_flex": [
+          1,
+          12
+        ],
+        "shadow_external_pool": [
+          14,
+          8,
+          6
+        ],
+        "shadow_final_five": [
+          5,
+          10,
+          15,
+          1,
+          12
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 4,
+        "honmei": 5,
+        "second": 2,
+        "confidence": "B",
+        "reason": "honmei 5 over second 2 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 4,
+        "control_final_five": [
+          5,
+          2,
+          12,
+          9,
+          8
+        ],
+        "ordinary_five": [
+          5,
+          2,
+          9,
+          12,
+          8
+        ],
+        "protected_anchors": [
+          5,
+          2,
+          9
+        ],
+        "ordinary_flex": [
+          12,
+          8
+        ],
+        "shadow_external_pool": [
+          13,
+          4,
+          10
+        ],
+        "shadow_final_five": [
+          5,
+          2,
+          9,
+          12,
+          8
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 5,
+        "honmei": 16,
+        "second": 9,
+        "confidence": "B",
+        "reason": "honmei 16 over second 9 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 5,
+        "control_final_five": [
+          16,
+          9,
+          12,
+          8,
+          15
+        ],
+        "ordinary_five": [
+          16,
+          9,
+          12,
+          8,
+          15
+        ],
+        "protected_anchors": [
+          16,
+          9,
+          12
+        ],
+        "ordinary_flex": [
+          8,
+          15
+        ],
+        "shadow_external_pool": [
+          4,
+          5,
+          7
+        ],
+        "shadow_final_five": [
+          16,
+          9,
+          12,
+          8,
+          5
+        ],
+        "removed": [
+          15
+        ],
+        "admitted": [
+          5
+        ],
+        "decision": "SWAP",
+        "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 6,
+        "honmei": 13,
+        "second": 2,
+        "confidence": "C",
+        "reason": "honmei 13 over second 2 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 6,
+        "control_final_five": [
+          13,
+          2,
+          16,
+          4,
+          10
+        ],
+        "ordinary_five": [
+          13,
+          2,
+          16,
+          4,
+          10
+        ],
+        "protected_anchors": [
+          13,
+          2,
+          16
+        ],
+        "ordinary_flex": [
+          4,
+          10
+        ],
+        "shadow_external_pool": [
+          6,
+          3,
+          1
+        ],
+        "shadow_final_five": [
+          13,
+          2,
+          16,
+          4,
+          10
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 7,
+        "honmei": 12,
+        "second": 11,
+        "confidence": "C",
+        "reason": "honmei 12 over second 11 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 7,
+        "control_final_five": [
+          12,
+          11,
+          7,
+          1,
+          5
+        ],
+        "ordinary_five": [
+          12,
+          11,
+          7,
+          1,
+          5
+        ],
+        "protected_anchors": [
+          12,
+          11,
+          7
+        ],
+        "ordinary_flex": [
+          1,
+          5
+        ],
+        "shadow_external_pool": [
+          14,
+          9,
+          15
+        ],
+        "shadow_final_five": [
+          12,
+          11,
+          7,
+          1,
+          5
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 8,
+        "honmei": 7,
+        "second": 2,
+        "confidence": "B",
+        "reason": "honmei 7 over second 2 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 8,
+        "control_final_five": [
+          7,
+          2,
+          9,
+          12,
+          15
+        ],
+        "ordinary_five": [
+          7,
+          2,
+          9,
+          12,
+          15
+        ],
+        "protected_anchors": [
+          7,
+          2,
+          9
+        ],
+        "ordinary_flex": [
+          12,
+          15
+        ],
+        "shadow_external_pool": [
+          14,
+          11,
+          1
+        ],
+        "shadow_final_five": [
+          7,
+          2,
+          9,
+          12,
+          15
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 9,
+        "honmei": 2,
+        "second": 3,
+        "confidence": "B",
+        "reason": "honmei 2 over second 3 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 9,
+        "control_final_five": [
+          2,
+          3,
+          7,
+          5,
+          1
+        ],
+        "ordinary_five": [
+          2,
+          3,
+          7,
+          5,
+          1
+        ],
+        "protected_anchors": [
+          2,
+          3,
+          7
+        ],
+        "ordinary_flex": [
+          5,
+          1
+        ],
+        "shadow_external_pool": [
+          16,
+          11,
+          13
+        ],
+        "shadow_final_five": [
+          2,
+          3,
+          7,
+          5,
+          1
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 10,
+        "honmei": 9,
+        "second": 10,
+        "confidence": "A",
+        "reason": "honmei 9 over second 10 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 10,
+        "control_final_five": [
+          9,
+          10,
+          14,
+          2,
+          13
+        ],
+        "ordinary_five": [
+          9,
+          10,
+          14,
+          2,
+          13
+        ],
+        "protected_anchors": [
+          9,
+          10,
+          14
+        ],
+        "ordinary_flex": [
+          2,
+          13
+        ],
+        "shadow_external_pool": [
+          7,
+          1,
+          15
+        ],
+        "shadow_final_five": [
+          9,
+          10,
+          14,
+          2,
+          13
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 11,
+        "honmei": 13,
+        "second": 1,
+        "confidence": "B",
+        "reason": "honmei 13 over second 1 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 11,
+        "control_final_five": [
+          13,
+          1,
+          8,
+          7,
+          9
+        ],
+        "ordinary_five": [
+          13,
+          1,
+          8,
+          7,
+          9
+        ],
+        "protected_anchors": [
+          13,
+          1,
+          8
+        ],
+        "ordinary_flex": [
+          7,
+          9
+        ],
+        "shadow_external_pool": [
+          6,
+          16,
+          4
+        ],
+        "shadow_final_five": [
+          13,
+          1,
+          8,
+          7,
+          9
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "福島",
+        "race_no": 12,
+        "honmei": 9,
+        "second": 2,
+        "confidence": "C",
+        "reason": "honmei 9 over second 2 on win-route repeatability"
+      },
+      "cf": {
+        "venue": "福島",
+        "race_no": 12,
+        "control_final_five": [
+          9,
+          2,
+          14,
+          4,
+          8
+        ],
+        "ordinary_five": [
+          9,
+          2,
+          14,
+          4,
+          8
+        ],
+        "protected_anchors": [
+          9,
+          2,
+          14
+        ],
+        "ordinary_flex": [
+          4,
+          8
+        ],
+        "shadow_external_pool": [
+          11,
+          13,
+          15
+        ],
+        "shadow_final_five": [
+          9,
+          2,
+          14,
+          4,
+          8
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    }
+  ]
+}
