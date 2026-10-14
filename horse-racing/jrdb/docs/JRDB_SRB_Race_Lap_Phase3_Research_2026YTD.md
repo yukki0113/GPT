@@ -22,23 +22,24 @@ Canonical source used in this run:
 
 Locally materialized in this study:
 
-- 84 race-date ZIPs
-- 2,646 races
-- 36,565 horse-result rows
-- 2,555 races with populated SRB lap arrays
-- 91 races without SRB lap arrays
+- 87 race-date ZIPs
+- 2,730 races
+- 37,686 horse-result rows
+- 2,636 races with populated SRB lap arrays
+- 94 races without SRB lap arrays
 
-All 91 no-lap races were obstacle-surface records in this sample. No flat-race
+All 94 no-lap races were obstacle-surface records in this sample. No flat-race
 lap-count mismatch was found: every populated SRB record matched
 `ceil(distance_m / 200)`.
 
 The locally materialized set spans 2026-01-04 through 2026-10-12.
 
-The JRA calendar confirms racing also occurred on 2026-09-06, 2026-09-12 and
-2026-09-13, but those three SED ZIPs were not materialized from the current
-Drive inventory/search path during this run. Therefore this Phase 3 result is
-year-to-date with an explicit three-race-date gap, not a claim of literally
-complete 2026 coverage.
+Phase 3B re-fetched the previously missing 2026-09-06, 2026-09-12 and
+2026-09-13 SED archives from JRDB and verified their SRB members. The three
+dates add 84 races, 1,121 horse-result rows and 81 populated flat-race lap
+arrays; the remaining three no-lap rows are obstacle races. The research
+coverage is therefore complete for the identified JRA race dates through
+2026-10-12.
 
 ## 3. SRB fields evaluated
 
@@ -248,8 +249,8 @@ Phase 3 result: **RESEARCH-POSITIVE FOR CONTEXT, NOT FOR DIRECT SCORING**.
 
 Recommended next step is a Phase 3B / integration design:
 
-1. resolve the three missing September race dates;
-2. audit why optional SRB enrichment becomes blank from 2026-08-29;
+1. retain the Phase 3B resolution of the three September race dates in the canonical Raw operation;
+2. adopt a late-finalization policy for optional SRB enrichment after the JRDB Monday update window;
 3. extend the same lap-shape extraction into historical years if SRB is present
    in annual SED archives;
 4. define RaceNote-compatible structured evidence;
