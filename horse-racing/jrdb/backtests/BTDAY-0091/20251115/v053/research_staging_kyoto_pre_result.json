@@ -1,0 +1,663 @@
+{
+  "btday": "BTDAY-0091",
+  "venue": "京都",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "entries": [
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 1,
+        "honmei": 4,
+        "second": 5,
+        "confidence": "B",
+        "reason": "◎4と○5を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 1,
+        "control_final_five": [
+          4,
+          5,
+          8,
+          1,
+          3
+        ],
+        "ordinary_five": [
+          4,
+          5,
+          1,
+          3,
+          8
+        ],
+        "protected_anchors": [
+          4,
+          5,
+          1
+        ],
+        "ordinary_flex": [
+          3,
+          8
+        ],
+        "shadow_external_pool": [
+          6,
+          9,
+          11
+        ],
+        "shadow_final_five": [
+          4,
+          5,
+          1,
+          3,
+          8
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 2,
+        "honmei": 8,
+        "second": 4,
+        "confidence": "A",
+        "reason": "◎8と○4を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 2,
+        "control_final_five": [
+          8,
+          4,
+          9,
+          5,
+          11
+        ],
+        "ordinary_five": [
+          8,
+          4,
+          5,
+          9,
+          11
+        ],
+        "protected_anchors": [
+          8,
+          4,
+          5
+        ],
+        "ordinary_flex": [
+          9,
+          11
+        ],
+        "shadow_external_pool": [
+          1,
+          6,
+          2
+        ],
+        "shadow_final_five": [
+          8,
+          4,
+          5,
+          9,
+          6
+        ],
+        "removed": [
+          11
+        ],
+        "admitted": [
+          6
+        ],
+        "decision": "SWAP",
+        "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 3,
+        "honmei": 5,
+        "second": 9,
+        "confidence": "B",
+        "reason": "◎5と○9を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 3,
+        "control_final_five": [
+          5,
+          9,
+          10,
+          2,
+          1
+        ],
+        "ordinary_five": [
+          5,
+          9,
+          2,
+          1,
+          10
+        ],
+        "protected_anchors": [
+          5,
+          9,
+          2
+        ],
+        "ordinary_flex": [
+          1,
+          10
+        ],
+        "shadow_external_pool": [
+          4,
+          3,
+          6
+        ],
+        "shadow_final_five": [
+          5,
+          9,
+          2,
+          1,
+          3
+        ],
+        "removed": [
+          10
+        ],
+        "admitted": [
+          3
+        ],
+        "decision": "SWAP",
+        "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 4,
+        "honmei": 9,
+        "second": 3,
+        "confidence": "B",
+        "reason": "◎9と○3を比較し、現条件への直接支持と勝ち切りの再現性で9を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 4,
+        "control_final_five": [
+          9,
+          3,
+          7,
+          8,
+          6
+        ],
+        "ordinary_five": [
+          9,
+          3,
+          7,
+          8,
+          6
+        ],
+        "protected_anchors": [
+          9,
+          3,
+          7
+        ],
+        "ordinary_flex": [
+          8,
+          6
+        ],
+        "shadow_external_pool": [
+          1,
+          4,
+          11
+        ],
+        "shadow_final_five": [
+          9,
+          3,
+          7,
+          8,
+          6
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 5,
+        "honmei": 7,
+        "second": 13,
+        "confidence": "B",
+        "reason": "◎7と○13を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 5,
+        "control_final_five": [
+          7,
+          13,
+          15,
+          11,
+          9
+        ],
+        "ordinary_five": [
+          7,
+          13,
+          15,
+          11,
+          9
+        ],
+        "protected_anchors": [
+          7,
+          13,
+          15
+        ],
+        "ordinary_flex": [
+          11,
+          9
+        ],
+        "shadow_external_pool": [
+          2,
+          4,
+          10
+        ],
+        "shadow_final_five": [
+          7,
+          13,
+          15,
+          11,
+          9
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 6,
+        "honmei": 5,
+        "second": 7,
+        "confidence": "A",
+        "reason": "◎5と○7を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 6,
+        "control_final_five": [
+          5,
+          7,
+          15,
+          9,
+          11
+        ],
+        "ordinary_five": [
+          5,
+          7,
+          15,
+          9,
+          11
+        ],
+        "protected_anchors": [
+          5,
+          7,
+          15
+        ],
+        "ordinary_flex": [
+          9,
+          11
+        ],
+        "shadow_external_pool": [
+          8,
+          4,
+          12
+        ],
+        "shadow_final_five": [
+          5,
+          7,
+          15,
+          9,
+          8
+        ],
+        "removed": [
+          11
+        ],
+        "admitted": [
+          8
+        ],
+        "decision": "SWAP",
+        "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 7,
+        "honmei": 8,
+        "second": 2,
+        "confidence": "C",
+        "reason": "◎8と○2を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 7,
+        "control_final_five": [
+          8,
+          2,
+          6,
+          16,
+          5
+        ],
+        "ordinary_five": [
+          8,
+          2,
+          6,
+          16,
+          5
+        ],
+        "protected_anchors": [
+          8,
+          2,
+          6
+        ],
+        "ordinary_flex": [
+          16,
+          5
+        ],
+        "shadow_external_pool": [
+          1,
+          9,
+          3
+        ],
+        "shadow_final_five": [
+          8,
+          2,
+          6,
+          5,
+          1
+        ],
+        "removed": [
+          16
+        ],
+        "admitted": [
+          1
+        ],
+        "decision": "SWAP",
+        "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 8,
+        "honmei": 5,
+        "second": 6,
+        "confidence": "A",
+        "reason": "◎5と○6を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 8,
+        "control_final_five": [
+          5,
+          6,
+          3,
+          2,
+          7
+        ],
+        "ordinary_five": [
+          5,
+          6,
+          2,
+          3,
+          7
+        ],
+        "protected_anchors": [
+          5,
+          6,
+          2
+        ],
+        "ordinary_flex": [
+          3,
+          7
+        ],
+        "shadow_external_pool": [
+          1,
+          4
+        ],
+        "shadow_final_five": [
+          5,
+          6,
+          2,
+          3,
+          7
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 9,
+        "honmei": 11,
+        "second": 7,
+        "confidence": "C",
+        "reason": "◎11と○7を比較し、現条件への直接支持と勝ち切りの再現性で11を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 9,
+        "control_final_five": [
+          11,
+          7,
+          5,
+          1,
+          4
+        ],
+        "ordinary_five": [
+          11,
+          7,
+          5,
+          1,
+          4
+        ],
+        "protected_anchors": [
+          11,
+          7,
+          5
+        ],
+        "ordinary_flex": [
+          1,
+          4
+        ],
+        "shadow_external_pool": [
+          13,
+          8,
+          3
+        ],
+        "shadow_final_five": [
+          11,
+          7,
+          5,
+          1,
+          4
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 10,
+        "honmei": 6,
+        "second": 9,
+        "confidence": "B",
+        "reason": "◎6と○9を比較し、現条件への直接支持と勝ち切りの再現性で6を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 10,
+        "control_final_five": [
+          6,
+          9,
+          14,
+          3,
+          7
+        ],
+        "ordinary_five": [
+          6,
+          9,
+          14,
+          3,
+          7
+        ],
+        "protected_anchors": [
+          6,
+          9,
+          14
+        ],
+        "ordinary_flex": [
+          3,
+          7
+        ],
+        "shadow_external_pool": [
+          13,
+          1,
+          4
+        ],
+        "shadow_final_five": [
+          6,
+          9,
+          14,
+          3,
+          7
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 11,
+        "honmei": 5,
+        "second": 7,
+        "confidence": "A",
+        "reason": "◎5と○7を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 11,
+        "control_final_five": [
+          5,
+          7,
+          6,
+          3,
+          1
+        ],
+        "ordinary_five": [
+          5,
+          7,
+          6,
+          3,
+          1
+        ],
+        "protected_anchors": [
+          5,
+          7,
+          6
+        ],
+        "ordinary_flex": [
+          3,
+          1
+        ],
+        "shadow_external_pool": [
+          8,
+          2,
+          4
+        ],
+        "shadow_final_five": [
+          5,
+          7,
+          6,
+          3,
+          1
+        ],
+        "removed": [],
+        "admitted": [],
+        "decision": "KEEP",
+        "reason": "外部poolにflexを明確に上回る複合支持なし。"
+      }
+    },
+    {
+      "confidence": {
+        "venue": "京都",
+        "race_no": 12,
+        "honmei": 10,
+        "second": 9,
+        "confidence": "C",
+        "reason": "◎10と○9を比較し、現条件への直接支持と勝ち切りの再現性で10を上位に置いた。"
+      },
+      "cf": {
+        "venue": "京都",
+        "race_no": 12,
+        "control_final_five": [
+          10,
+          9,
+          18,
+          3,
+          5
+        ],
+        "ordinary_five": [
+          10,
+          9,
+          3,
+          18,
+          5
+        ],
+        "protected_anchors": [
+          10,
+          9,
+          3
+        ],
+        "ordinary_flex": [
+          18,
+          5
+        ],
+        "shadow_external_pool": [
+          1,
+          2,
+          16
+        ],
+        "shadow_final_five": [
+          10,
+          9,
+          3,
+          5,
+          1
+        ],
+        "removed": [
+          18
+        ],
+        "admitted": [
+          1
+        ],
+        "decision": "SWAP",
+        "reason": "sealed Readerの複合支持で外部候補をflex枠へ採用。"
+      }
+    }
+  ]
+}
