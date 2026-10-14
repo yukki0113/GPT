@@ -1,0 +1,218 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "baseline_forecast_commit": "e95e86e0fb4dfb34d832d454499d097757c0bc74",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0093",
+  "target_date": "2025-06-08",
+  "methodology": "human_context_pairwise_review_of_sealed_reader_pre_result_fields",
+  "assignments": [
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "honmei": 5,
+      "second": 1,
+      "confidence": "A",
+      "reason": "◎5はIDM・総合指数・想定着順で○1を明確に上回り、○側の情報・調教優位を考慮しても勝ち切り序列の差は大きい。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "honmei": 14,
+      "second": 13,
+      "confidence": "B",
+      "reason": "◎14は情報・調教・市場支持で優位だが、○13はIDMと総合指数で上回るため、◎上位の根拠はあるものの差は中程度。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "honmei": 18,
+      "second": 8,
+      "confidence": "A",
+      "reason": "◎18はIDM・総合・情報・調教・市場支持で一貫して○8を上回り、○にはfragile要素もあるため明確に上。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "honmei": 11,
+      "second": 10,
+      "confidence": "A",
+      "reason": "◎11は能力・情報・調教・市場支持の主要項目で○10を大きく上回り、勝ち切り序列は明確。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "honmei": 2,
+      "second": 6,
+      "confidence": "A",
+      "reason": "◎2はIDM・総合・情報・調教・市場支持で○6に大差をつけており、新馬同士でも◎上位は明確。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "honmei": 8,
+      "second": 9,
+      "confidence": "B",
+      "reason": "◎8は能力・総合・情報で上だが、○9は調教・市場支持で優位。◎を上に置く理由はあるが差は限定的。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "honmei": 13,
+      "second": 8,
+      "confidence": "A",
+      "reason": "◎13はIDM・総合・調教で○8を明確に上回り、○側にはfragile要素もあるため◎優位は強い。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "honmei": 3,
+      "second": 2,
+      "confidence": "C",
+      "reason": "IDMはほぼ同等で、○2が総合・情報・調教・市場支持で優位。◎3を上に置く判断はReader文脈依存のtie-break色が強い。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "honmei": 5,
+      "second": 1,
+      "confidence": "A",
+      "reason": "◎5はIDM・総合・情報・調教・市場支持で○1を一貫して上回り、序列差は明確。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "honmei": 13,
+      "second": 1,
+      "confidence": "B",
+      "reason": "◎13は能力・総合・市場支持で上だが、○1は調教と履歴安定性で対抗できるため、差はあるが決定的ではない。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "honmei": 13,
+      "second": 10,
+      "confidence": "B",
+      "reason": "◎13はIDM・総合・市場支持で上回る一方、○10は履歴の3着内安定性とhidden strengthが強く、明確Aまでは置けない。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "honmei": 5,
+      "second": 12,
+      "confidence": "C",
+      "reason": "◎5は能力・総合で大きく上だが、○12は情報・調教・市場・履歴支持で優位。異なる強みが拮抗し、序列はtie-break寄り。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "honmei": 9,
+      "second": 6,
+      "confidence": "B",
+      "reason": "◎9は情報・調教・市場支持で○6をわずかに上回るが、能力差はごく小さく、◎上位の差は中程度以下。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "honmei": 7,
+      "second": 13,
+      "confidence": "A",
+      "reason": "◎7はIDM・総合・情報・調教・市場支持で○13を明確に上回り、勝ち切り序列は強い。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "honmei": 10,
+      "second": 3,
+      "confidence": "B",
+      "reason": "IDMは互角だが、◎10は総合・情報・市場支持で優位。○3の上昇調教を考慮すると差は中程度。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "honmei": 2,
+      "second": 14,
+      "confidence": "C",
+      "reason": "○14がIDMで上回る一方、◎2は情報・調教・市場支持で優位。双方に強い根拠があり、◎上位はtie-breakに近い。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "honmei": 3,
+      "second": 8,
+      "confidence": "B",
+      "reason": "◎3は能力・総合・情報・調教・市場支持で小幅に○8を上回るが、差は総じて小さくB相当。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "honmei": 5,
+      "second": 6,
+      "confidence": "C",
+      "reason": "◎5と○6は能力・総合・情報がほぼ同水準で、○6は調教とhidden strengthで優位。◎上位は僅差判断。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "honmei": 2,
+      "second": 10,
+      "confidence": "C",
+      "reason": "◎2はIDMで上だが、○10は情報・調教・市場・履歴支持で強く、総合差も小さい。◎上位は文脈的tie-break。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "honmei": 6,
+      "second": 5,
+      "confidence": "B",
+      "reason": "◎6は総合・情報・調教・市場支持で○5を上回り、○側のfragile要素もあるがIDMは○が上で差は中程度。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "honmei": 8,
+      "second": 3,
+      "confidence": "B",
+      "reason": "◎8はIDM・総合・情報・調教・市場支持で一貫して小幅優位。明確差というほどではないが◎上位の根拠は複数。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "honmei": 7,
+      "second": 16,
+      "confidence": "B",
+      "reason": "○16はIDMで上だが、◎7は情報・調教・市場支持で大きく優位。現条件重視で◎を上に置く理由はあるが能力面の反証が強い。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "honmei": 10,
+      "second": 14,
+      "confidence": "B",
+      "reason": "◎10はIDM・総合で明確に上回る一方、○14は情報・調教・市場支持で優位。能力差を評価して◎上位だが確信は中程度。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "honmei": 16,
+      "second": 8,
+      "confidence": "B",
+      "reason": "◎16はIDM・総合で大きく上回るが、○8は情報・調教・市場・履歴支持で優位。◎上位の能力根拠は強いものの現条件面で相殺される。"
+    }
+  ],
+  "counts": {
+    "A": 7,
+    "B": 12,
+    "C": 5,
+    "total": 24
+  }
+}
