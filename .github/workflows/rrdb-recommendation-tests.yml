@@ -54,6 +54,11 @@ jobs:
           python -m py_compile src/racenote_racereview_adapter.py
           python -m py_compile src/racenote_history_enrichment.py
           python -m py_compile src/build_racenote_daily.py
+          python -m py_compile src/racenote_v052_historical_probe.py
+          python -m py_compile src/racenote_v052_from_historical_warehouse.py
+          python -m py_compile src/racenote_v053_from_historical_warehouse.py
+          python -m py_compile src/racenote_v052_from_paci.py
+          python -m py_compile src/racenote_v053_from_paci.py
           python -m py_compile src/jrdb_newspaper_merge_external.py
           python -m py_compile src/build_momotaro_newspaper_projection.py
       - name: Run recommendation contract tests
