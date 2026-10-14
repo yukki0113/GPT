@@ -1,0 +1,217 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "baseline_forecast_commit": "d21d539f942ad1a719711a3a2025e60937f179fe",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0092",
+  "target_date": "2025-06-07",
+  "assignments": [
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "honmei": 8,
+      "second": 3,
+      "confidence": "B",
+      "reason": "◎8と○3を比較し、現条件への直接支持と勝ち切りの再現性で8を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "honmei": 16,
+      "second": 9,
+      "confidence": "C",
+      "reason": "◎16と○9を比較し、現条件への直接支持と勝ち切りの再現性で16を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "honmei": 5,
+      "second": 16,
+      "confidence": "A",
+      "reason": "◎5と○16を比較し、現条件への直接支持と勝ち切りの再現性で5を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "honmei": 13,
+      "second": 10,
+      "confidence": "B",
+      "reason": "◎13と○10を比較し、現条件への直接支持と勝ち切りの再現性で13を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "honmei": 7,
+      "second": 2,
+      "confidence": "B",
+      "reason": "◎7と○2を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "honmei": 13,
+      "second": 5,
+      "confidence": "C",
+      "reason": "◎13と○5を比較し、現条件への直接支持と勝ち切りの再現性で13を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "honmei": 15,
+      "second": 1,
+      "confidence": "C",
+      "reason": "◎15と○1を比較し、現条件への直接支持と勝ち切りの再現性で15を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "honmei": 4,
+      "second": 11,
+      "confidence": "A",
+      "reason": "◎4と○11を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "honmei": 7,
+      "second": 6,
+      "confidence": "A",
+      "reason": "◎7と○6を比較し、現条件への直接支持と勝ち切りの再現性で7を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "honmei": 11,
+      "second": 10,
+      "confidence": "C",
+      "reason": "◎11と○10を比較し、現条件への直接支持と勝ち切りの再現性で11を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "honmei": 10,
+      "second": 15,
+      "confidence": "A",
+      "reason": "◎10と○15を比較し、現条件への直接支持と勝ち切りの再現性で10を上位に置いた。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "honmei": 15,
+      "second": 13,
+      "confidence": "A",
+      "reason": "◎15と○13を比較し、現条件への直接支持と勝ち切りの再現性で15を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "honmei": 13,
+      "second": 2,
+      "confidence": "A",
+      "reason": "◎13と○2を比較し、現条件への直接支持と勝ち切りの再現性で13を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "honmei": 4,
+      "second": 6,
+      "confidence": "C",
+      "reason": "◎4と○6を比較し、現条件への直接支持と勝ち切りの再現性で4を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "honmei": 2,
+      "second": 4,
+      "confidence": "A",
+      "reason": "◎2と○4を比較し、現条件への直接支持と勝ち切りの再現性で2を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "honmei": 9,
+      "second": 16,
+      "confidence": "A",
+      "reason": "◎9と○16を比較し、現条件への直接支持と勝ち切りの再現性で9を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "honmei": 2,
+      "second": 1,
+      "confidence": "A",
+      "reason": "◎2と○1を比較し、現条件への直接支持と勝ち切りの再現性で2を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "honmei": 11,
+      "second": 7,
+      "confidence": "C",
+      "reason": "◎11と○7を比較し、現条件への直接支持と勝ち切りの再現性で11を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "honmei": 1,
+      "second": 9,
+      "confidence": "A",
+      "reason": "◎1と○9を比較し、現条件への直接支持と勝ち切りの再現性で1を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "honmei": 2,
+      "second": 9,
+      "confidence": "A",
+      "reason": "◎2と○9を比較し、現条件への直接支持と勝ち切りの再現性で2を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "honmei": 2,
+      "second": 5,
+      "confidence": "A",
+      "reason": "◎2と○5を比較し、現条件への直接支持と勝ち切りの再現性で2を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "honmei": 2,
+      "second": 8,
+      "confidence": "A",
+      "reason": "◎2と○8を比較し、現条件への直接支持と勝ち切りの再現性で2を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "honmei": 12,
+      "second": 15,
+      "confidence": "B",
+      "reason": "◎12と○15を比較し、現条件への直接支持と勝ち切りの再現性で12を上位に置いた。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "honmei": 10,
+      "second": 5,
+      "confidence": "A",
+      "reason": "◎10と○5を比較し、現条件への直接支持と勝ち切りの再現性で10を上位に置いた。"
+    }
+  ],
+  "counts": {
+    "A": 14,
+    "B": 4,
+    "C": 6,
+    "total": 24
+  }
+}
