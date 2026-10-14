@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Canonical RaceReviewDB recommendation signals v0.3.
+"""Canonical RaceReviewDB recommendation signals v0.4.
 
 This module is the current operational recommendation contract after the
 2024-2025 Historical OOS and strength/monotonicity studies.
@@ -14,7 +14,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 import math
 
-VERSION = "rrdb-recommendation-signals-v0.3"
+VERSION = "rrdb-recommendation-signals-v0.4"
 OPERATIONAL_LOOKBACK_DAYS = 730
 
 # Frozen from the accepted pre-OOS / OOS research contracts.
@@ -50,6 +50,7 @@ SIGNAL_ORDER = (
     "FRONT_SURVIVE_GAP05",
     "REAR_HIGH_LAST3F90",
     "HV02_Q85_Q90",
+    "COURSE_PROFILE_FIT",
 )
 
 SIGNAL_LABELS = {
@@ -57,6 +58,7 @@ SIGNAL_LABELS = {
     "FRONT_SURVIVE_GAP05": "前傾前受け耐性",
     "REAR_HIGH_LAST3F90": "後傾差し逆行",
     "HV02_Q85_Q90": "大敗着順以上のタイム内容",
+    "COURSE_PROFILE_FIT": "大箱コース適性",
 }
 
 
@@ -155,6 +157,9 @@ def matched_signals(row: Mapping[str, object]) -> list[str]:
     ):
         matched.append("HV02_Q85_Q90")
 
+    if row.get("course_profile_fit_match") is True:
+        matched.append("COURSE_PROFILE_FIT")
+
     return [signal for signal in SIGNAL_ORDER if signal in matched]
 
 
@@ -186,6 +191,18 @@ def signal_strength(signal_id: str, row: Mapping[str, object]) -> dict[str, obje
             "performance_signal": perf,
             "performance_band": performance_band(perf),
             "source_finish": _int(row.get("finish")),
+        }
+    if signal_id == "COURSE_PROFILE_FIT":
+        return {
+            "target_course_size_class": row.get("target_course_size_class"),
+            "target_final_straight_bucket": row.get("target_final_straight_bucket"),
+            "large_sample_count": _int(row.get("course_profile_large_sample_count")),
+            "large_shrunk_delta": _finite(row.get("course_profile_large_shrunk_delta")),
+            "large_confidence": _finite(row.get("course_profile_large_confidence")),
+            "long_sample_count": _int(row.get("course_profile_long_sample_count")),
+            "long_shrunk_delta": _finite(row.get("course_profile_long_shrunk_delta")),
+            "long_confidence": _finite(row.get("course_profile_long_confidence")),
+            "fit_as_of_date": row.get("course_profile_fit_as_of_date"),
         }
     raise ValueError(f"unknown recommendation signal: {signal_id}")
 
@@ -239,6 +256,9 @@ def newspaper_comment(row: Mapping[str, object]) -> str | None:
     if "HV02_Q85_Q90" in ids and "TIME_CLASS_PLUS1" not in ids:
         phrases.append("敗戦でもタイムは水準以上。")
 
+    if "COURSE_PROFILE_FIT" in ids:
+        phrases.append("大箱コースで好走傾向。")
+
     return "".join(phrases)
 
 def human_summary(row: Mapping[str, object]) -> str | None:
@@ -274,4 +294,6 @@ def human_summary(row: Mapping[str, object]) -> str | None:
             band = strength.get("performance_band")
             finish = strength.get("source_finish")
             phrases.append(f"{finish}着から補正タイム{band}" if finish else f"補正タイム{band}")
+        elif signal_id == "COURSE_PROFILE_FIT":
+            phrases.append("大箱コースで好走傾向")
     return " / ".join(phrases)

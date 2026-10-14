@@ -36,7 +36,7 @@ def base_row() -> dict[str, object]:
 
 class RecommendationSignalsTest(unittest.TestCase):
     def test_contract_has_two_year_operational_lookback(self) -> None:
-        self.assertEqual(VERSION, "rrdb-recommendation-signals-v0.3")
+        self.assertEqual(VERSION, "rrdb-recommendation-signals-v0.4")
         self.assertEqual(OPERATIONAL_LOOKBACK_DAYS, 730)
 
     def test_time_class_plus1(self) -> None:
@@ -143,6 +143,42 @@ class RecommendationSignalsTest(unittest.TestCase):
         self.assertEqual(
             newspaper_comment(row),
             "後傾ラップ戦も後方から上位の上がりは使った。",
+        )
+
+    def test_course_profile_fit_signal_and_comment(self) -> None:
+        row = base_row()
+        row.update({
+            "course_profile_fit_match": True,
+            "target_course_size_class": "LARGE",
+            "target_final_straight_bucket": "LONG",
+            "course_profile_large_sample_count": 5,
+            "course_profile_large_shrunk_delta": 0.12,
+            "course_profile_large_confidence": 0.6,
+            "course_profile_long_sample_count": 6,
+            "course_profile_long_shrunk_delta": 0.14,
+            "course_profile_long_confidence": 0.7,
+            "course_profile_fit_as_of_date": "2026-01-01",
+        })
+        payload = recommendation_payload(row)
+        self.assertEqual(payload["matched_signal_ids"], ["COURSE_PROFILE_FIT"])
+        self.assertEqual(newspaper_comment(row), "大箱コースで好走傾向。")
+        strength = payload["signals"][0]["strength"]
+        self.assertEqual(strength["target_course_size_class"], "LARGE")
+        self.assertEqual(strength["target_final_straight_bucket"], "LONG")
+
+    def test_course_profile_fit_does_not_change_existing_signal_order(self) -> None:
+        row = base_row()
+        row.update({
+            "time_class_equivalent_numeric": 3.0,
+            "course_profile_fit_match": True,
+        })
+        self.assertEqual(
+            matched_signals(row),
+            ["TIME_CLASS_PLUS1", "COURSE_PROFILE_FIT"],
+        )
+        self.assertEqual(
+            newspaper_comment(row),
+            "前走時計はクラス水準より上。大箱コースで好走傾向。",
         )
 
     def test_below_threshold_is_no_match(self) -> None:
