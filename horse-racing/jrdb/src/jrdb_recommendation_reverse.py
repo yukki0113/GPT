@@ -371,8 +371,9 @@ def main() -> int:
 
     con = duckdb.connect(":memory:")
     try:
+        candidate_sql = str(candidate_path).replace("'", "''")
         con.execute(
-            f"CREATE TEMP VIEW course_fit AS SELECT * FROM read_parquet('{str(candidate_path).replace("'", "''")}')"
+            f"CREATE TEMP VIEW course_fit AS SELECT * FROM read_parquet('{candidate_sql}')"
         )
         con.execute(f"""
         CREATE TEMP VIEW hp_current AS
