@@ -85,19 +85,22 @@ Current Stage A instruction:
 - v0.4.5 chunk/checkpoint modules remain historical/reproducibility assets only.
 - Production `current_logic_version` remains unchanged and separate.
 
-### JRDB Daily Raw Acquisition v0.1 — 2026-10-01
+### JRDB Daily Raw Acquisition v0.2 — 2026-10-14
 
 - Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`.
 - Normal pre-race command: `mmddの開催前取得をお願いします`.
   - acquire target-date PACI;
   - resolve the immediately preceding JRA race week's actual race dates;
   - check canonical Drive SKB inventory;
-  - recover/upload only missing preceding-week SKB.
+  - recover/upload only missing preceding-week SKB;
+  - re-fetch preceding-week SED for every actual race date even when canonical SED already exists;
+  - if refreshed SED bytes differ, update the existing Drive file in place so the canonical file ID stays stable and the previous snapshot remains in Drive revision history.
 - Normal post-race command: `mmdd〜mmddの開催後取得をお願いします`.
   - acquire/upload SED + HJC for each requested race date;
   - do not request SKB;
   - do not request PACI.
 - SKB is intentionally recovered on the following pre-race cycle because its publication timing lags SED/HJC. Same-week SKB `NOT_FOUND` is not a reason for blind retry.
+- Post-race SED remains the first-available analysis snapshot. The following pre-race cycle is the standard late-finalization refresh for the preceding race week's SED after JRDB's later update window.
 - Always check Drive before upstream fetch, validate artifact ZIP + size/SHA, upload with the native Google Drive connector, then re-list Drive before claiming completion.
 - GitHub Actions is used for authenticated JRDB acquisition only; no Actions-to-Drive transport.
 
