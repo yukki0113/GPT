@@ -153,14 +153,32 @@ def _course_profile_context(
             f"Horse Course Fit root not found for RRDB v0.4: {course_fit_root}"
         )
 
+    target_dates = {
+        str((bundle.get("race") or {}).get("date") or "")
+        for bundle in bundles
+        if isinstance(bundle.get("race"), Mapping)
+    }
+    if len(target_dates) != 1 or not next(iter(target_dates)):
+        raise RRDBEnrichmentError(
+            f"RRDB v0.4 requires one target date: {sorted(target_dates)}"
+        )
+    target_date_only = next(iter(target_dates))
+
     target_races = _parse_target_races(paci_path)
     candidate_path, masters, geometry = _load_course_profile_sources(course_fit_root)
     race_lookup: dict[tuple[str, int], dict[str, object]] = {}
     for race_key, row in target_races.items():
+        if str(row.get("date_raw") or "") != target_date_only.replace("-", ""):
+            continue
         if len(race_key) < 8 or not race_key[6:8].isdigit():
             continue
         venue = VENUES.get(race_key[:2], race_key[:2])
-        race_lookup[(venue, int(race_key[6:8]))] = row
+        key = (venue, int(race_key[6:8]))
+        if key in race_lookup:
+            raise RRDBEnrichmentError(
+                f"duplicate target BAC row for {venue}{key[1]}R on {target_date_only}"
+            )
+        race_lookup[key] = row
 
     profiles: dict[str, dict[str, object]] = {}
     for bundle in bundles:
