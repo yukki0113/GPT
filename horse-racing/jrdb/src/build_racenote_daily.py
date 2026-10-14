@@ -64,6 +64,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--date", required=True, type=iso_date, dest="target_date")
     parser.add_argument("--paci", required=True, type=Path)
     parser.add_argument("--analysis-root", required=True, type=Path)
+    parser.add_argument(
+        "--course-fit-root",
+        required=True,
+        type=Path,
+        help="Extracted RRDB Horse Course Fit v0.1 artifact root required by recommendation v0.4.",
+    )
     rrdb_source = parser.add_mutually_exclusive_group(required=True)
     rrdb_source.add_argument("--racereview-root", type=Path)
     rrdb_source.add_argument("--racereview-current-cache", type=Path)
@@ -117,6 +123,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "sources": {
             "paci": {"path": str(args.paci)},
             "analysis": {"root": str(args.analysis_root), "backend": "parquet"},
+            "course_fit": {"root": str(args.course_fit_root), "required_by": rrdb.RECOMMENDATION_VERSION},
             "rrdb": rrdb_source,
             "rrdb_recommendation": {
                 "contract_version": rrdb.RECOMMENDATION_VERSION,
@@ -359,6 +366,8 @@ def build_through_history(
 def enrich_rrdb_bundles(
     bundles: list[dict[str, Any]],
     *,
+    paci_path: Path,
+    course_fit_root: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
     next_watch_rules: Path | None,
@@ -396,6 +405,8 @@ def enrich_rrdb_bundles(
             bundles,
             reader,
             contract,
+            paci_path=paci_path,
+            course_fit_root=course_fit_root,
             per_horse_limit=5,
         )
     except (
@@ -409,6 +420,10 @@ def enrich_rrdb_bundles(
         "horse_count": sum(len(x.get("horses", [])) for x in enriched),
         "rrdb_source": rrdb_source,
         "rrdb_generation_id": reader.generation_id,
+        "course_fit_source": {
+            "root": str(course_fit_root),
+            "contract": "RRDB Horse Course Fit v0.1",
+        },
         "recommendation_contract_version": rrdb.RECOMMENDATION_VERSION,
         "recommendation_grade_status": "DISABLED",
         "operational_lookback_days": rrdb.OPERATIONAL_LOOKBACK_DAYS,
@@ -418,6 +433,7 @@ def enrich_rrdb_bundles(
         "enrichment_version": rrdb.VERSION,
         "source_resolutions": {
             "rrdb": 1,
+            "course_fit": 1,
             "legacy_next_watch_contract": 1 if contract is not None else 0,
         },
     }
@@ -428,6 +444,7 @@ def build_through_rrdb(
     paci_path: Path,
     target_date: str,
     analysis_root: Path,
+    course_fit_root: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
     next_watch_rules: Path | None,
@@ -441,6 +458,8 @@ def build_through_rrdb(
     )
     enriched, rrdb_report = enrich_rrdb_bundles(
         bundles,
+        paci_path=paci_path,
+        course_fit_root=course_fit_root,
         racereview_root=racereview_root,
         racereview_current_cache=racereview_current_cache,
         next_watch_rules=next_watch_rules,
@@ -678,6 +697,7 @@ def write_daily_package(
             },
             "analysis": report["history"].get("analysis_source"),
             "rrdb": report["rrdb"].get("rrdb_source"),
+            "course_fit": report["rrdb"].get("course_fit_source"),
             "rrdb_recommendation": {
                 "contract_version": report["rrdb"].get("recommendation_contract_version"),
                 "grade_status": report["rrdb"].get("recommendation_grade_status"),
@@ -734,6 +754,7 @@ def build_daily_package(
     paci_path: Path,
     target_date: str,
     analysis_root: Path,
+    course_fit_root: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
     next_watch_rules: Path | None,
@@ -745,6 +766,7 @@ def build_daily_package(
         paci_path=paci_path,
         target_date=target_date,
         analysis_root=analysis_root,
+        course_fit_root=course_fit_root,
         racereview_root=racereview_root,
         racereview_current_cache=racereview_current_cache,
         next_watch_rules=next_watch_rules,
@@ -840,6 +862,7 @@ def run(args: argparse.Namespace) -> int:
                 paci_path=args.paci,
                 target_date=args.target_date,
                 analysis_root=args.analysis_root,
+                course_fit_root=args.course_fit_root,
                 racereview_root=args.racereview_root,
                 racereview_current_cache=args.racereview_current_cache,
                 next_watch_rules=args.next_watch_rules,
