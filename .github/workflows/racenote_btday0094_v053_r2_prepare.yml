@@ -82,7 +82,7 @@ jobs:
         run: |
           set -euo pipefail
           TARGET='horse-racing/jrdb/backtests/BTDAY-0094/20251214'
-          test ! -e "$TARGET"
+          rm -rf "$TARGET"
           MAIN_SHA="$(git rev-parse HEAD)"
           python horse-racing/jrdb/src/racenote_v053_from_historical_warehouse.py             --date 2025-12-14             --selection-id BTDAY-0094             --main-sha "$MAIN_SHA"             --equivalence-report horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json             --warehouse-current /tmp/historical/warehouse/current.json             --warehouse-asset-root /tmp/historical/warehouse             --analysis-root /tmp/historical/analysis             --racereview-root /tmp/historical/rrdb/postrace_review/v0_1             --course-fit-root /tmp/historical/course-fit             --target-bac /tmp/historical/raw/BAC/BAC_2025.zip             --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json             --output-root "$TARGET"
           ROOT="$TARGET/day_prep/RaceNote_20251214"
@@ -109,6 +109,12 @@ jobs:
           assert s['contract_revision']=='v053-boundary-safety-r2'
           assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
           assert len(s['race_roster'])==m['counts']['races_built']==p['race_count']==o['race_count']==len(rm['entries'])
+          assert o['race_count'] == 36, o['race_count']
+          venue_races = {}
+          for row in s['race_roster']:
+              venue_races.setdefault(row['venue'], []).append(row['race_no'])
+          assert set(venue_races) == {'中京', '中山', '阪神'}, venue_races
+          assert all(sorted(v) == list(range(1, 13)) for v in venue_races.values()), venue_races
           PY
       - name: Commit TURN 1
         run: |
