@@ -1,0 +1,758 @@
+[
+  {
+    "venue": "函館",
+    "race_no": 1,
+    "race_model": "函館1Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      3,
+      13,
+      4,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3はIDM 45を軸にクラス上位相当の反復実績と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13はクラス上位相当の反復実績を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は着順以上の時計内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は着順以上の時計内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4は先行からの運びとクラス上位相当の反復実績を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10の着順以上の時計内容も比較したが、固定境界4の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎3・○13を選択した。▲4は主線二頭と異なる先行の勝ち筋を評価し、外部10は固定境界4を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        13,
+        2,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "外部10は先行からの運びと着順以上の時計内容により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界4にはクラス上位相当の反復実績の直接支持があり、外部10が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 13,
+      "honmei_win_case": "3は複勝安定性ではなく、クラス上位相当の反復実績と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "13はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3と○13を比較し、クラス上位相当の反復実績と現条件での勝ち切り再現性をより強く評価して3を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 2,
+    "race_model": "函館2Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      11,
+      7,
+      12,
+      9,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11はIDM 40を軸に展開逆風下でも崩れない内容と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は展開逆風下でも崩れない内容を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9は展開逆風下でも崩れない内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12は先行からの運びと展開逆風下でも崩れない内容を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10の展開逆風下でも崩れない内容も比較したが、固定境界6の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎11・○7を選択した。▲12は主線二頭と異なる先行の勝ち筋を評価し、外部10は固定境界6を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        7,
+        12,
+        9,
+        6
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "外部10は差しからの運びと展開逆風下でも崩れない内容により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界6には現在の能力・状態指標の直接支持があり、外部10が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 7,
+      "honmei_win_case": "11は複勝安定性ではなく、展開逆風下でも崩れない内容と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "7はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎11と○7を比較し、展開逆風下でも崩れない内容と現条件での勝ち切り再現性をより強く評価して11を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 3,
+    "race_model": "函館3Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      3,
+      4,
+      11,
+      6,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3はIDM 39.1を軸にクラス上位相当の反復実績と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4はクラス上位相当の反復実績を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は着順以上の時計内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9はクラス上位相当の反復実績と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11は逃げからの運びとクラス上位相当の反復実績を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8の最速級の末脚も比較したが、固定境界9の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎3・○4を選択した。▲11は主線二頭と異なる逃げの勝ち筋を評価し、外部8は固定境界9を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        4,
+        6,
+        11,
+        9
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "外部8は差しからの運びと最速級の末脚により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界9にはクラス上位相当の反復実績の直接支持があり、外部8が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 4,
+      "honmei_win_case": "3は複勝安定性ではなく、クラス上位相当の反復実績と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "4はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3と○4を比較し、クラス上位相当の反復実績と現条件での勝ち切り再現性をより強く評価して3を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 4,
+    "race_model": "函館4Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      1,
+      7,
+      6,
+      2,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1はIDM 35を軸に展開逆風下でも崩れない内容と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7は履歴上の隠れた強さを支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6は追込からの運びと現在の能力・状態指標を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "外部14の現在の能力・状態指標も比較したが、固定境界6の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎1・○7を選択した。▲6は主線二頭と異なる追込の勝ち筋を評価し、外部14は固定境界6を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        7,
+        2,
+        4,
+        6
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "外部14は差しからの運びと現在の能力・状態指標により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界6には現在の能力・状態指標の直接支持があり、外部14が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 7,
+      "honmei_win_case": "1は複勝安定性ではなく、展開逆風下でも崩れない内容と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "7はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎1と○7を比較し、展開逆風下でも崩れない内容と現条件での勝ち切り再現性をより強く評価して1を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 5,
+    "race_model": "函館5Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      3,
+      1,
+      7,
+      4,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3はIDM 50.5を軸に現在の能力・状態指標と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は現在の能力・状態指標を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7は別ルートからの運びと現在の能力・状態指標を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "外部2の現在の能力・状態指標も比較したが、固定境界5の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎3・○1を選択した。▲7は主線二頭と異なる位置取りの勝ち筋を評価し、外部2は固定境界5を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        1,
+        7,
+        4,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "外部2は別ルートからの運びと現在の能力・状態指標により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界5には現在の能力・状態指標の直接支持があり、外部2が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 1,
+      "honmei_win_case": "3は複勝安定性ではなく、現在の能力・状態指標と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "1はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3と○1を比較し、現在の能力・状態指標と現条件での勝ち切り再現性をより強く評価して3を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 6,
+    "race_model": "函館6Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      1,
+      14,
+      11,
+      6,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1はIDM 39.1を軸に展開逆風下でも崩れない内容と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14は展開逆風下でも崩れない内容を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6は履歴上の隠れた強さと現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2は展開逆風下でも崩れない内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11は差しからの運びと履歴上の隠れた強さを評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "外部15の履歴上の隠れた強さも比較したが、固定境界2の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎1・○14を選択した。▲11は主線二頭と異なる差しの勝ち筋を評価し、外部15は固定境界2を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        14,
+        11,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "外部15は追込からの運びと履歴上の隠れた強さにより、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界2には展開逆風下でも崩れない内容の直接支持があり、外部15が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 14,
+      "honmei_win_case": "1は複勝安定性ではなく、展開逆風下でも崩れない内容と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "14はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎1と○14を比較し、展開逆風下でも崩れない内容と現条件での勝ち切り再現性をより強く評価して1を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 7,
+    "race_model": "函館7Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      2,
+      5,
+      3,
+      9,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2はIDM 44を軸に最速級の末脚と平行線の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は履歴上の隠れた強さを支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9は履歴上の隠れた強さと現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3は差しからの運びと現在の能力・状態指標を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4の末脚の反復性も比較したが、固定境界3の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎2・○5を選択した。▲3は主線二頭と異なる差しの勝ち筋を評価し、外部4は固定境界3を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        5,
+        9,
+        8,
+        3
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "外部4は差しからの運びと末脚の反復性により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界3には現在の能力・状態指標の直接支持があり、外部4が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 5,
+      "honmei_win_case": "2は複勝安定性ではなく、最速級の末脚と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "5はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎2と○5を比較し、最速級の末脚と現条件での勝ち切り再現性をより強く評価して2を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 8,
+    "race_model": "函館8Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      7,
+      3,
+      2,
+      10,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7はIDM 40を軸にクラス上位相当の反復実績と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3は末脚の反復性を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10は着順以上の時計内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1は末脚の反復性と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2は追込からの運びとクラス上位相当の反復実績を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4のクラス上位相当の反復実績も比較したが、固定境界1の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎7・○3を選択した。▲2は主線二頭と異なる追込の勝ち筋を評価し、外部4は固定境界1を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        3,
+        10,
+        2,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "外部4は差しからの運びとクラス上位相当の反復実績により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界1には末脚の反復性の直接支持があり、外部4が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 3,
+      "honmei_win_case": "7は複勝安定性ではなく、クラス上位相当の反復実績と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "3はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎7と○3を比較し、クラス上位相当の反復実績と現条件での勝ち切り再現性をより強く評価して7を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 9,
+    "race_model": "函館9Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      8,
+      5,
+      3,
+      4,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8はIDM 49.1を軸にクラス上位相当の反復実績と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5は履歴上の隠れた強さを支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4はクラス上位相当の反復実績と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9は展開逆風下でも崩れない内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3は追込からの運びと着順以上の時計内容を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "外部2のクラス上位相当の反復実績も比較したが、固定境界3の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎8・○5を選択した。▲3は主線二頭と異なる追込の勝ち筋を評価し、外部2は固定境界3を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        5,
+        4,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "外部2は差しからの運びとクラス上位相当の反復実績により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界3には着順以上の時計内容の直接支持があり、外部2が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 5,
+      "honmei_win_case": "8は複勝安定性ではなく、クラス上位相当の反復実績と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "5はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎8と○5を比較し、クラス上位相当の反復実績と現条件での勝ち切り再現性をより強く評価して8を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 10,
+    "race_model": "函館10Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      3,
+      9,
+      5,
+      4,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3はIDM 52.1を軸に展開逆風下でも崩れない内容と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9は現在の能力・状態指標を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は着順以上の時計内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は展開逆風下でも崩れない内容と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5は逃げからの運びと現在の能力・状態指標を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "外部6の展開逆風下でも崩れない内容も比較したが、固定境界11の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎3・○9を選択した。▲5は主線二頭と異なる逃げの勝ち筋を評価し、外部6は固定境界11を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        9,
+        4,
+        5,
+        11
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "外部6は差しからの運びと展開逆風下でも崩れない内容により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界11には展開逆風下でも崩れない内容の直接支持があり、外部6が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 9,
+      "honmei_win_case": "3は複勝安定性ではなく、展開逆風下でも崩れない内容と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "9はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎3と○9を比較し、展開逆風下でも崩れない内容と現条件での勝ち切り再現性をより強く評価して3を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 11,
+    "race_model": "函館11Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      14,
+      12,
+      13,
+      6,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "14はIDM 61を軸にクラス上位相当の反復実績と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12はクラス上位相当の反復実績を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6はクラス上位相当の反復実績と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9は最速級の末脚と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13は差しからの運びとクラス上位相当の反復実績を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10のクラス上位相当の反復実績も比較したが、固定境界9の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎14・○12を選択した。▲13は主線二頭と異なる差しの勝ち筋を評価し、外部10は固定境界9を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        12,
+        6,
+        13,
+        9
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "外部10は差しからの運びとクラス上位相当の反復実績により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界9には最速級の末脚の直接支持があり、外部10が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 12,
+      "honmei_win_case": "14は複勝安定性ではなく、クラス上位相当の反復実績と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "12はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎14と○12を比較し、クラス上位相当の反復実績と現条件での勝ち切り再現性をより強く評価して14を上位に置いた。"
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 12,
+    "race_model": "函館12Rはsealed Reader全馬を能力、現条件適性、想定位置、調教状態、過去走の再現性で横比較し、通常展開で勝ち切りまで見込めるordinary fiveを先に固定した。",
+    "marks": [
+      9,
+      4,
+      5,
+      11,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9はIDM 50を軸に展開逆風下でも崩れない内容と上昇の調教状態が揃い、通常展開で最も明瞭な勝ち切り経路を持つ。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4は末脚の反復性を支持材料に、◎とは異なる形でも主線で勝ち切れる余地が大きい。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10は現在の能力・状態指標と現条件の位置取り・状態を合わせ、通常展開の五頭枠に残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5は差しからの運びと展開逆風下でも崩れない内容を評価し、◎○と異なる展開で頭まで届く非対称な勝ち筋を持つ。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "外部2の現在の能力・状態指標も比較したが、固定境界10の能力・現条件適性・状態・再現性を明確に上回る根拠まではなくKEEPとした。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "sealed Readerの全馬を比較してordinary fiveを先に固定し、勝ち切り優先で◎9・○4を選択した。▲5は主線二頭と異なる差しの勝ち筋を評価し、外部2は固定境界10を明確に上回らないためr2既定どおり通常五頭を維持した。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        4,
+        5,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "外部2は先行からの運びと現在の能力・状態指標により、ordinary five外から勝ち切る余地がある一頭として比較対象にした。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界10には現在の能力・状態指標の直接支持があり、外部2が現条件で明確に上回るとは言えないためordinary fiveを維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 4,
+      "honmei_win_case": "9は複勝安定性ではなく、展開逆風下でも崩れない内容と現在の能力・状態を合わせた勝ち切り経路が最も明瞭と判断した。",
+      "second_case": "4はordinary five内で次に強い主線勝ち筋を持ち、展開次第で◎を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "◎9と○4を比較し、展開逆風下でも崩れない内容と現条件での勝ち切り再現性をより強く評価して9を上位に置いた。"
+    }
+  }
+]
