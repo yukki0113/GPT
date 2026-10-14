@@ -258,5 +258,28 @@ class WarehouseRaceNoteBulkReadTest(unittest.TestCase):
         self.assertIn("target_race_keys", by_relation["kyi"][1])
 
 
+    def test_reconcile_preliminary_bac_registration_count(self) -> None:
+        bac = [{"race_key_raw": "RACE0001", "field_size": 17}]
+        kyi = [{"race_key_raw": "RACE0001"} for _ in range(12)]
+
+        reconciled = WarehouseRaceNoteReader._reconcile_bac_field_sizes(bac, kyi)
+
+        self.assertEqual(bac[0]["field_size"], 12)
+        self.assertEqual(reconciled, [{
+            "race_key_raw": "RACE0001",
+            "bac_field_size": 17,
+            "kyi_runner_count": 12,
+        }])
+
+    def test_reconcile_does_not_hide_bac_smaller_than_kyi(self) -> None:
+        bac = [{"race_key_raw": "RACE0001", "field_size": 1}]
+        kyi = [{"race_key_raw": "RACE0001"} for _ in range(2)]
+
+        reconciled = WarehouseRaceNoteReader._reconcile_bac_field_sizes(bac, kyi)
+
+        self.assertEqual(bac[0]["field_size"], 1)
+        self.assertEqual(reconciled, [])
+
+
 if __name__ == "__main__":
     unittest.main()
