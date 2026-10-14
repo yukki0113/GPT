@@ -84,13 +84,15 @@ User-facing commands:
   - identify the actual race dates in the immediately preceding JRA race week
   - check canonical Drive SKB inventory first
   - fetch/upload only missing SKB for those preceding-week race dates
+  - re-fetch SED for every actual preceding-week race date even when a canonical SED already exists
+  - compare refreshed SED with canonical Drive bytes; if changed, replace the existing Drive file bytes in place to preserve file ID and Drive revision history
   - do not fetch target-date SED/HJC as part of this command
 - `mmdd〜mmddの開催後取得をお願いします`
   - fetch/upload SED and HJC for each requested race date
   - do not request SKB
   - do not request PACI
 
-SKB is a delayed-recovery family in routine daily operation. A same-week `NOT_FOUND` for SKB is not by itself an error and must not trigger repeated blind retries. Missing SKB is recovered during the next pre-race acquisition after a Drive inventory check.
+SKB is a delayed-recovery family in routine daily operation. A same-week `NOT_FOUND` for SKB is not by itself an error and must not trigger repeated blind retries. Missing SKB is recovered during the next pre-race acquisition after a Drive inventory check. That same pre-race operation also performs the routine late-finalization SED refresh for every preceding-week race date.
 
 For both commands:
 
