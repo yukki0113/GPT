@@ -1,3 +1,11 @@
+## RaceNote current clean-blind candidate — 2026-10-14
+
+- New prediction authoring: `RaceNote-Human-Context-Reader-0.5.3-candidate`, `contract_revision=v053-boundary-safety-r2`.
+- Canonical candidate pointer: `config/racenote_forecast_logic_current.json` -> `prospective_research_candidate`; legacy `current_logic_version` is a separate production pointer.
+- Governing contract: `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md`; runbook: `docs/racenote/RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`.
+- v0.5.2 remains the promoted comparison/reproduction baseline. Historical v0.5.2 sections below are not new-prediction instructions.
+- Use canonical PACI/Historical source routing; market-blind Reader, immutable venue save, Freeze and Verify before target results.
+
 
 - Forecast reason provenance uses `RaceNote-Decision-Trace-0.1`.
 - Decision Trace binds primary / secondary / concern prose to real Trend / RR /
