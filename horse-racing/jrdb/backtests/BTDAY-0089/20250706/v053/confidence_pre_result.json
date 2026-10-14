@@ -1,0 +1,277 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "source_commit": "f5f41cf4ee5beb7c130c60444d657d9f8ddc3d59",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0089",
+  "target_date": "2025-07-06",
+  "assignments": [
+    {
+      "venue": "函館",
+      "race_no": 1,
+      "honmei": 2,
+      "second": 5,
+      "confidence": "B"
+    },
+    {
+      "venue": "函館",
+      "race_no": 2,
+      "honmei": 8,
+      "second": 7,
+      "confidence": "C"
+    },
+    {
+      "venue": "函館",
+      "race_no": 3,
+      "honmei": 6,
+      "second": 8,
+      "confidence": "A"
+    },
+    {
+      "venue": "函館",
+      "race_no": 4,
+      "honmei": 3,
+      "second": 12,
+      "confidence": "B"
+    },
+    {
+      "venue": "函館",
+      "race_no": 5,
+      "honmei": 1,
+      "second": 6,
+      "confidence": "A"
+    },
+    {
+      "venue": "函館",
+      "race_no": 6,
+      "honmei": 4,
+      "second": 5,
+      "confidence": "A"
+    },
+    {
+      "venue": "函館",
+      "race_no": 7,
+      "honmei": 7,
+      "second": 12,
+      "confidence": "A"
+    },
+    {
+      "venue": "函館",
+      "race_no": 8,
+      "honmei": 9,
+      "second": 11,
+      "confidence": "B"
+    },
+    {
+      "venue": "函館",
+      "race_no": 9,
+      "honmei": 7,
+      "second": 9,
+      "confidence": "C"
+    },
+    {
+      "venue": "函館",
+      "race_no": 10,
+      "honmei": 10,
+      "second": 9,
+      "confidence": "A"
+    },
+    {
+      "venue": "函館",
+      "race_no": 11,
+      "honmei": 9,
+      "second": 4,
+      "confidence": "C"
+    },
+    {
+      "venue": "函館",
+      "race_no": 12,
+      "honmei": 9,
+      "second": 4,
+      "confidence": "A"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 1,
+      "honmei": 6,
+      "second": 4,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 2,
+      "honmei": 4,
+      "second": 5,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 3,
+      "honmei": 15,
+      "second": 16,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 4,
+      "honmei": 14,
+      "second": 2,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 5,
+      "honmei": 1,
+      "second": 2,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 6,
+      "honmei": 2,
+      "second": 5,
+      "confidence": "A"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 7,
+      "honmei": 6,
+      "second": 5,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 8,
+      "honmei": 11,
+      "second": 10,
+      "confidence": "A"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 9,
+      "honmei": 4,
+      "second": 7,
+      "confidence": "A"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 10,
+      "honmei": 6,
+      "second": 3,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 11,
+      "honmei": 9,
+      "second": 18,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 12,
+      "honmei": 9,
+      "second": 11,
+      "confidence": "A"
+    },
+    {
+      "venue": "福島",
+      "race_no": 1,
+      "honmei": 11,
+      "second": 2,
+      "confidence": "B"
+    },
+    {
+      "venue": "福島",
+      "race_no": 2,
+      "honmei": 2,
+      "second": 11,
+      "confidence": "A"
+    },
+    {
+      "venue": "福島",
+      "race_no": 3,
+      "honmei": 4,
+      "second": 8,
+      "confidence": "A"
+    },
+    {
+      "venue": "福島",
+      "race_no": 4,
+      "honmei": 1,
+      "second": 7,
+      "confidence": "A"
+    },
+    {
+      "venue": "福島",
+      "race_no": 5,
+      "honmei": 5,
+      "second": 7,
+      "confidence": "B"
+    },
+    {
+      "venue": "福島",
+      "race_no": 6,
+      "honmei": 1,
+      "second": 16,
+      "confidence": "B"
+    },
+    {
+      "venue": "福島",
+      "race_no": 7,
+      "honmei": 14,
+      "second": 7,
+      "confidence": "B"
+    },
+    {
+      "venue": "福島",
+      "race_no": 8,
+      "honmei": 9,
+      "second": 14,
+      "confidence": "B"
+    },
+    {
+      "venue": "福島",
+      "race_no": 9,
+      "honmei": 6,
+      "second": 8,
+      "confidence": "A"
+    },
+    {
+      "venue": "福島",
+      "race_no": 10,
+      "honmei": 2,
+      "second": 14,
+      "confidence": "C"
+    },
+    {
+      "venue": "福島",
+      "race_no": 11,
+      "honmei": 9,
+      "second": 1,
+      "confidence": "C"
+    },
+    {
+      "venue": "福島",
+      "race_no": 12,
+      "honmei": 14,
+      "second": 5,
+      "confidence": "C"
+    }
+  ],
+  "counts": {
+    "A": 14,
+    "B": 13,
+    "C": 9,
+    "total": 36
+  }
+}
