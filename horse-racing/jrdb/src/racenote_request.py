@@ -412,7 +412,10 @@ def build_historical_warehouse_base(
         )
     try:
         reader = WarehouseRaceNoteReader(current, asset_roots=warehouse_asset_roots(asset_root_values))
-        bundles, evidence = reader.build(request.target_date, source_member_date=request.target_date)
+        # Full-day historical reconstruction is keyed by the race's actual date.
+        # source_member_date is a delivery-snapshot constraint and can omit races
+        # whose BAC/KYI were delivered on an earlier day.
+        bundles, evidence = reader.build(request.target_date)
     except WarehouseRaceNoteReaderError as exc:
         raise RaceNoteRequestError(str(exc)) from exc
     bundle_dir = output_dir / f"RaceNote_{request.compact_date}"
