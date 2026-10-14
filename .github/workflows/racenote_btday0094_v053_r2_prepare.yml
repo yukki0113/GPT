@@ -68,6 +68,15 @@ jobs:
           day=dt.date(2025,12,14)
           all_bac=reader._rows_on(con,'bac',[2025])
           bac=[r for r in all_bac if str(r.get('race_date'))==day.isoformat()]
+          import zipfile
+          from jrdb_raw import split_fixed_records, race_key
+          raw_zip=Path('/tmp/historical/raw/BAC/BAC_2025.zip')
+          with zipfile.ZipFile(raw_zip) as zf:
+              infos=[i for i in zf.infolist() if Path(i.filename).name.upper()=='BAC251214.TXT']
+              print('BAC_ZIP_DUPLICATE_ENTRIES',len(infos))
+              for idx,info in enumerate(infos):
+                  keys=[race_key(x) for x in split_fixed_records(zf.read(info),'BAC')]
+                  print('BAC_ZIP_ENTRY',idx,info.filename,len(keys),keys[:3],keys[-3:] if keys else [])
           kyi=reader._rows_on(con,'kyi',[2025])
           counts={}
           for r in kyi:
