@@ -20,9 +20,7 @@ from jrdb_raw import Parser, iter_archive_records, race_key
 from jrdb_racenote_raw_adapter import build_paci_equivalent
 from racenote_analysis_backend import open_analysis_backend
 from racenote_prepare_forecast_input import bind
-from racenote_request import (
-    RaceNoteRequest, build_historical_warehouse_base, target_race_keys,
-)
+from racenote_request import RaceNoteRequest, build_historical_warehouse_base
 from racenote_v052_equivalence import compare
 from racenote_v052_single_day import init_session
 
@@ -31,7 +29,6 @@ def build_warehouse_daily(
     *, day: date, warehouse_current: Path, warehouse_asset_root: Path,
     analysis_root: Path, racereview_root: Path, course_fit_root: Path,
     paci_path: Path, output_root: Path, rrdb_work_root: Path,
-    race_keys: set[str] | None = None,
 ) -> tuple[dict, dict]:
     """Use the canonical Warehouse Reader and existing common D2-D4 stages."""
     request = RaceNoteRequest(day, None, None, date.today())
@@ -40,11 +37,6 @@ def build_warehouse_daily(
         [f"{family}={warehouse_asset_root}" for family in
          ("BAC", "KYI", "CHA", "CYB", "ZED", "ZKB")],
         rrdb_work_root / "base",
-        race_keys=(
-            race_keys
-            if race_keys is not None
-            else target_race_keys(analysis_root, request, "parquet")
-        ),
     )
     warehouse = {}
     for path in sorted(base_dir.glob("race_bundle_*.json")):
