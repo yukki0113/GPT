@@ -59,7 +59,14 @@ def report() -> dict:
                 "generation_id": "rrdb-test",
             },
             "rrdb_generation_id": "rrdb-test",
-            "next_watch_rule_version": "rules-test",
+            "course_fit_source": {
+                "root": "/tmp/course-fit",
+                "contract": "RRDB Horse Course Fit v0.1",
+            },
+            "recommendation_contract_version": daily.rrdb.RECOMMENDATION_VERSION,
+            "recommendation_grade_status": "DISABLED",
+            "operational_lookback_days": daily.rrdb.OPERATIONAL_LOOKBACK_DAYS,
+            "legacy_next_watch_rule_version": "rules-test",
         },
         "stages": {
             "base": "PASS",
@@ -106,6 +113,43 @@ class DailyBuildD4Test(unittest.TestCase):
             self.assertEqual(payload["counts"]["races_built"], 1)
             self.assertEqual(payload["counts"]["reader_views"], 1)
             self.assertEqual(payload["stages"]["package"], "PASS")
+            self.assertEqual(
+                payload["sources"]["rrdb_recommendation"]["contract_version"],
+                "rrdb-recommendation-signals-v0.4",
+            )
+
+    def test_manifest_write_rejects_stale_recommendation_contract(self) -> None:
+        bundles = [bundle(1)]
+        views, _ = daily.build_reader_views(bundles)
+        rep = report()
+        rep["rrdb"]["recommendation_contract_version"] = "rrdb-recommendation-signals-v0.3"
+        validation = {
+            "status": "PASS",
+            "firewall": {
+                "target_result_exposed": False,
+                "market_exposed": None,
+                "raw_reader_market_object_count": 0,
+                "forecast_input_market_blind": False,
+                "analysis_as_of_violations": 0,
+                "rrdb_as_of_violations": 0,
+            },
+            "checks": {"reader_roundtrip": "PASS"},
+            "warnings": [],
+            "errors": [],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(
+                daily.DailyBuildError,
+                "recommendation contract provenance mismatch",
+            ):
+                daily.write_daily_package(
+                    bundles=bundles,
+                    views=views,
+                    report=rep,
+                    validation=validation,
+                    target_date="2026-05-23",
+                    output_root=Path(tmp),
+                )
 
     def test_rrdb_future_row_fails_validation(self) -> None:
         bundles = [bundle(1)]
