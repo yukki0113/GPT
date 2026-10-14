@@ -20,11 +20,10 @@ Current Stage A instruction:
 
 # RaceNote current guide
 
-For new unused BTDAY selections, the promoted operational baseline remains
-`RaceNote-Human-Context-Reader-0.5.2-candidate`. New v0.5.3 candidate runs use
-the rebuilt r2 contract through
+For new clean-blind candidate predictions, use
+`RaceNote-Human-Context-Reader-0.5.3-candidate` (rebuilt r2) through
 `docs/racenote/RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`.
-The v0.5.2 runbook remains the immutable baseline/reproduction path.
+The promoted v0.5.2 baseline and its runbook remain the immutable comparison/reproduction path.
 BTDAY source routing is unified: 2026 uses PACI and 2010–2025 uses the accepted
 Historical Warehouse according to the reserved row's `source_mode`.
 The production `current_logic_version` remains a separate pointer.
