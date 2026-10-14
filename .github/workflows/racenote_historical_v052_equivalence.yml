@@ -19,6 +19,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 jobs:
   golden:
     runs-on: ubuntu-latest
@@ -39,6 +40,8 @@ jobs:
             horse-racing/jrdb/tests/test_racenote_backtest_day_picker.py
           python -m pytest -q horse-racing/jrdb/tests/test_racenote_v052_single_day.py
       - name: Fetch SHA-256 pinned 2025 golden-day inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python tools/gpt_io/public_drive/fetch.py \
@@ -48,6 +51,17 @@ jobs:
           mkdir -p /tmp/golden/analysis /tmp/golden/rrdb
           tar -xJf /tmp/golden/analysis.tar.xz -C /tmp/golden/analysis
           unzip -q /tmp/golden/rrdb.zip -d /tmp/golden/rrdb
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11799761734/zip > /tmp/golden/course-fit.zip
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('/tmp/golden/course-fit.zip')
+          assert p.stat().st_size == 170365515
+          h=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert h == '18570ef9c366f78b2f8bb60c380e24b70f1b80e070ddf1961acaed7bde35627d'
+          PY
+          mkdir -p /tmp/golden/course-fit
+          unzip -q /tmp/golden/course-fit.zip -d /tmp/golden/course-fit
       - name: Compare through v0.5.2 sealed session
         env:
           PYTHONPATH: horse-racing/jrdb/src
@@ -59,6 +73,7 @@ jobs:
             --warehouse-asset-root /tmp/golden/warehouse \
             --analysis-root /tmp/golden/analysis \
             --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
+            --course-fit-root /tmp/golden/course-fit \
             --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
             --main-sha "$GITHUB_SHA" \
@@ -76,6 +91,8 @@ jobs:
             --warehouse-asset-root /tmp/golden/warehouse \
             --analysis-root /tmp/golden/analysis \
             --racereview-root /tmp/golden/rrdb/postrace_review/v0_1 \
+            --course-fit-root /tmp/golden/course-fit \
+            --target-bac /tmp/golden/raw/BAC/BAC_2025.zip \
             --binding horse-racing/jrdb/config/racenote_reader_v050_binding.json \
             --policy horse-racing/jrdb/docs/racenote/research-work/results/stage_c/reader_feature_policy_v0_5_candidate.json \
             --output-root /tmp/golden/historical-route
