@@ -100,7 +100,7 @@ if pace: parts.append("select *,'ABSOLUTE' fam,'PACE_PROFILE' ft,pace fv,false s
 if track:
  parts.append("select *,'TRANSITION' fam,'GOING_CHANGE' ft,pgc||'_TO_'||gc fv,schg sc from e where pgc is not null and gc is not null and not schg")
 c.execute("create view ev as "+" union all ".join(parts))
-c.execute("""create view m as select e.race_date,e.race_key,e.horse_id,e.finish,e.perf,e.fam,e.ft,e.fv,
+c.execute("""create view m as select e.race_date,e.race_key,e.horse_no,e.horse_id,e.finish,e.perf,e.fam,e.ft,e.fv,
  x.sample_count,x.shrunk_delta,x.confidence from ev e join cand x
  on e.horse_id=x.horse_id and e.surface_code=x.surface_code and e.fam=x.fit_family
  and e.ft=x.feature_type and e.fv=x.feature_value and e.sc=x.surface_changed""")
@@ -146,6 +146,14 @@ c.execute(f"""copy(
  where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
  group by 1,2,3,4,b.bw,b.bp,b.bf order by 1,2,3,4
 ) to {q(a.out/'v03_overlap_values.csv')} (header,delimiter ',')""")
+c.execute(f"""copy(
+ select m.race_date,m.race_key,m.horse_no,m.horse_id,m.finish,m.fam,m.ft,m.fv,m.v03_match,
+ m.sample_count,m.shrunk_delta,m.confidence,m.perf
+ from mv m
+ where m.sample_count>=4 and m.shrunk_delta>=.10 and m.confidence>=.5
+ order by m.race_date,m.race_key,m.horse_no,m.fam,m.ft
+) to {q(a.out/'candidate_details.csv')} (header,delimiter ',')""")
+
 c.execute(f"""copy(
  select m.fam,m.ft,m.v03_match,count(*) n,count(distinct m.horse_id) horses,
  avg((m.finish=1)::int)::double win,avg((m.finish<=3)::int)::double top3,avg(m.perf) perf,
