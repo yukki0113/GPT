@@ -89,6 +89,7 @@ def summarize(records):
     balances=[]; bal=0; peak=0; maxdd=0
     for r in sorted(records,key=lambda x:(x["date"],x["venue"],x["race_no"])):
         bal+=r["return"]-r["stake"]; peak=max(peak,bal); maxdd=max(maxdd,peak-bal); balances.append(bal)
+    by_day={d:{"stake_yen":st,"return_yen":rt,"profit_yen":rt-st,"roi_pct":100*rt/st if st else None} for d,(st,rt) in sorted(day.items())}
     return {
         "races":len(records),"tickets":sum(r["tickets"] for r in records),"stake_yen":stake,"return_yen":ret,
         "profit_yen":ret-stake,"roi_pct":100*ret/stake if stake else None,
@@ -97,7 +98,7 @@ def summarize(records):
         "max_hit_return_yen":max(hitrets) if hitrets else 0,
         "largest_hit_share_pct":100*max(hitrets)/ret if hitrets and ret else 0,
         "profitable_days":sum(ret>st for st,ret in day.values()),"days":len(day),
-        "max_drawdown_yen":maxdd,
+        "max_drawdown_yen":maxdd,"by_day":by_day,
     }
 
 def main():
