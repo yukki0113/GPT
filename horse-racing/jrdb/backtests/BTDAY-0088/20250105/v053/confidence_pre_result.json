@@ -1,0 +1,193 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "source_commit": "1c5a1270ab23cc045af80cd3a9cdd2ede9d87745",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0088",
+  "target_date": "2025-01-05",
+  "assignments": [
+    {
+      "venue": "中京",
+      "race_no": 1,
+      "honmei": 5,
+      "second": 4,
+      "confidence": "C"
+    },
+    {
+      "venue": "中京",
+      "race_no": 2,
+      "honmei": 15,
+      "second": 4,
+      "confidence": "A"
+    },
+    {
+      "venue": "中京",
+      "race_no": 3,
+      "honmei": 5,
+      "second": 6,
+      "confidence": "A"
+    },
+    {
+      "venue": "中京",
+      "race_no": 4,
+      "honmei": 16,
+      "second": 1,
+      "confidence": "A"
+    },
+    {
+      "venue": "中京",
+      "race_no": 5,
+      "honmei": 17,
+      "second": 4,
+      "confidence": "A"
+    },
+    {
+      "venue": "中京",
+      "race_no": 6,
+      "honmei": 4,
+      "second": 14,
+      "confidence": "A"
+    },
+    {
+      "venue": "中京",
+      "race_no": 7,
+      "honmei": 7,
+      "second": 9,
+      "confidence": "C"
+    },
+    {
+      "venue": "中京",
+      "race_no": 8,
+      "honmei": 12,
+      "second": 1,
+      "confidence": "C"
+    },
+    {
+      "venue": "中京",
+      "race_no": 9,
+      "honmei": 2,
+      "second": 11,
+      "confidence": "B"
+    },
+    {
+      "venue": "中京",
+      "race_no": 10,
+      "honmei": 4,
+      "second": 10,
+      "confidence": "B"
+    },
+    {
+      "venue": "中京",
+      "race_no": 11,
+      "honmei": 7,
+      "second": 9,
+      "confidence": "C"
+    },
+    {
+      "venue": "中京",
+      "race_no": 12,
+      "honmei": 7,
+      "second": 11,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "honmei": 11,
+      "second": 10,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "honmei": 13,
+      "second": 12,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "honmei": 7,
+      "second": 13,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "honmei": 5,
+      "second": 1,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "honmei": 11,
+      "second": 1,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "honmei": 4,
+      "second": 10,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "honmei": 6,
+      "second": 5,
+      "confidence": "C"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "honmei": 6,
+      "second": 11,
+      "confidence": "C"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "honmei": 14,
+      "second": 9,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "honmei": 9,
+      "second": 10,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "honmei": 18,
+      "second": 15,
+      "confidence": "C"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "honmei": 6,
+      "second": 14,
+      "confidence": "B"
+    }
+  ],
+  "counts": {
+    "A": 8,
+    "B": 9,
+    "C": 7,
+    "total": 24
+  }
+}
