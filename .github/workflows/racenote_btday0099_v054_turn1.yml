@@ -294,11 +294,11 @@ jobs:
           assert o['source_backend']=='historical_warehouse'
           assert o['rrdb_contract_version']=='rrdb-recommendation-signals-v0.5'
           assert o['logic_version']=='RaceNote-Human-Context-Reader-0.5.4-candidate'
-          assert o['contract_revision']=='v054-context-evidence-r1'
+          assert o['contract_revision']=='v054-authored-prose-r2'
           assert o['market_blind'] is True and o['result_opened'] is False and o['target_market_opened'] is False
           assert s['status']=='SESSION_SEALED'
           assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.4-candidate'
-          assert s['contract_revision']=='v054-context-evidence-r1'
+          assert s['contract_revision']=='v054-authored-prose-r2'
           assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
           assert len(s['race_roster'])==m['counts']['races_built']==p['race_count']==o['race_count']==len(rm['entries'])
           assert o['race_count'] > 0
