@@ -1,0 +1,223 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 7,
+    "race_model": "阪神7Rはダート1200m1勝クラス。1200mの直接実績と短距離での先行・差し再現性、状態上昇を比較する。",
+    "marks": [
+      4,
+      6,
+      3,
+      7,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "モンテディアーナはダ1400m4着IDM48、1200m5着IDM43で、先行して能力48。調教18.3とCYB66も高く、短縮で前から押し切る形が明確。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ゴールデンチップスはダ1200mで2着IDM44、4着IDM43。差しで同距離の再現性が高く、調教16.5の状態上昇もある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ヴィヴァシャスはダ1200m勝ちIDM42、1400m3着IDM38。差しで短距離実績が安定しており、連下圏なら再現性を見込める。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ペレグリンはダ1150m3着IDM44、1000mで3着IDM43。追込型で展開待ちだが、短距離の能力上限は高い。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "ペンテリコンはダ1400m3着IDM48、1200m7着IDM45。差し脚の上限が高く、先行勢が競れば1200mで一気に差し切る可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5レストプレドゥモアはダ1000m勝ちIDM47の先行馬だが、五頭目2ペレグリンは1150m3着IDM44、1000m3着IDM43と短距離で複数回好走しており、再現性で2を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎4はダ1400m4着IDM48、1200m5着IDM43に調教18.3と高い仕上がりが加わる。○6は1200mで2、4着と安定するが、先行力と能力上限で4を上位。▲3は1400m3着IDM48の差し脚があり、前が競れば1200mでまとめて差せる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        6,
+        3,
+        7,
+        2
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5レストプレドゥモアはダ1000m勝ちIDM47の先行力を、五頭目2の1150m3着IDM44と1000m3着IDM43の短距離再現性に対して比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "5は1000m勝ちの一発力があるが、2は1150～1000mで複数回好走し、短距離実績の再現性で上回るため2を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "honmei_win_case": "4モンテディアーナはダ1400m4着IDM48、1200m5着IDM43で先行し、調教18.3とCYB66から短縮で押し切れる。",
+      "second_case": "6ゴールデンチップスはダ1200m2着IDM44、4着IDM43で、差しの同距離再現性と状態上昇がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○6はダ1200mで2、4着と直接再現性が高い一方、◎4は能力48と先行力、調教18.3で自分から勝ちに行けるため4を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 8,
+    "race_model": "阪神8Rは芝1800m2勝クラス。1800mの現級実績を最優先し、2000m以上からの短縮組は末脚能力と状態で比較する。",
+    "marks": [
+      6,
+      3,
+      7,
+      5,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "コンフォルツァは芝1800m3着IDM57、同距離勝ちIDM50があり、差しで能力57。調教21.4、状態上昇も強く、現級で勝ち切る材料が最も揃う。"
+      },
+      {
+        "horse_no": 3,
+        "case": "コスモアンソロジーは芝1800mで3着IDM55、2着IDM51。先行して同距離の再現性が高く、状態上昇もあり崩れにくい。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ダンツエスプリは芝2000m4着IDM54、2600m5着IDM52。追込型で1800m短縮は忙しいが、能力上限は高く連下へ届く。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ジーティームソウは芝1800mを連勝IDM50～51した実績があり、前走11着でも同距離への条件戻りで見直せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "チェルノボーグは芝1800m5着IDM56、1600m3、4着IDM53～54。差し脚の能力が高く、主力先行馬が止まれば1800mでまとめて差す一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2ショウナンガチは芝2000m7着IDM50、2600m3着IDM51に対し、五頭目4ジーティームソウは芝1800m連勝IDM50～51があり、今回距離への直接実績で4を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6は芝1800m3着IDM57と同距離勝ちに調教21.4の状態上昇が加わる。○3も1800mで2、3着と安定するが、能力上限で6を上位。▲7は1800m5着IDM56とマイル好走歴があり、差し展開なら主線をまとめて逆転できる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        3,
+        7,
+        5,
+        4
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2ショウナンガチは芝2000mIDM50、2600mIDM51の中距離能力を、五頭目4の芝1800m連勝IDM50～51に対して比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2は中長距離の能力があるが、4は今回の芝1800mを連勝しており、距離直接性で4を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 3,
+      "honmei_win_case": "6コンフォルツァは芝1800m3着IDM57、同距離勝ちIDM50に調教21.4の状態上昇があり、差して勝ち切れる。",
+      "second_case": "3コスモアンソロジーは芝1800m2着IDM51、3着IDM55で先行し、同距離の安定度で6を追う。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○3は芝1800mで2、3着と安定する一方、◎6は同距離3着IDM57と能力上限が高く、調教21.4の上昇もあるため6を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "race_model": "阪神9R豊中特別はダート1800m2勝クラス。同距離の現級好走実績を軸に、1700mからの延長組は能力上限と先行力で比較する。",
+    "marks": [
+      6,
+      4,
+      1,
+      5,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "ジューンエオスはダ1700m1着IDM55、2着IDM58で逃げ、能力60.1。調教21.1の状態上昇が強く、1800m延長でも前から押し切る余地が大きい。"
+      },
+      {
+        "horse_no": 4,
+        "case": "タマモキャリコはダ1800mで2着IDM57、4着IDM52、5着IDM54。先行して同距離の現級再現性が最も高い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ジーニアスバローズはダ1800m6着IDM57があり、先行型。近走9着でも能力上限は高く、距離戻りで連下圏へ見直せる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "ギマールはダ1700m3、4着IDM48～51、1800m6着IDM49。差しで安定しており、展開が向けば連下へ届く。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "メイショウカシワデはダ1800m3着IDM55、RRDBの先行持続材料もある差し馬。前走7着からでも同距離実績を戻せば主線を差し切る一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2クリノグローリーはダ1800m6着IDM53、8着IDM50に対し、五頭目13ギマールは1700m3着IDM51と1800m6着IDM49があり、近走の安定度で13を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 1,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎6はダ1700m1、2着IDM55～58に能力60.1、調教21.1の上昇が揃い、延長でも逃げて押し切れる。○4は1800m2着IDM57など直接実績で安定するが、上昇度で6を上位。▲1は1800m3着IDM55に先行持続の裏付けがあり差し切りを警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        4,
+        1,
+        5,
+        13
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2クリノグローリーはダ1800m6着IDM53の直接実績を、五頭目13の1700m3着IDM51と1800m6着IDM49の近走安定度に対して比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2は1800mIDM53を持つが近走の振れが大きく、13は1700～1800mでIDM49～51を安定して出すため13を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 4,
+      "honmei_win_case": "6ジューンエオスはダ1700m1着IDM55、2着IDM58で逃げ、能力60.1と調教21.1の状態上昇から1800mでも押し切れる。",
+      "second_case": "4タマモキャリコはダ1800m2着IDM57、4着IDM52、5着IDM54で、先行して同距離の再現性が高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○4はダ1800mで2、4、5着と直接再現性が高い一方、◎6は1700m1、2着IDM55～58に能力60.1と状態上昇が加わるため、勝ち切り上限で6を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
